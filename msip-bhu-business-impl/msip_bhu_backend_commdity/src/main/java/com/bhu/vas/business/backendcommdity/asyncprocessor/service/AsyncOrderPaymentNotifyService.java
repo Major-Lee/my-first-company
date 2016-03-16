@@ -16,6 +16,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
@@ -85,10 +86,9 @@ public class AsyncOrderPaymentNotifyService {
 		//订单处理逻辑 
 		Order order = orderFacadeService.validateOrderId(orderid);
 		//支付完成时进行设备的uid获取并设置订单
-		Integer bindUid = userDeviceFacadeService.getBindUidByMac(order.getMac());
-		order.setUid(bindUid);
+		User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
 		
-		order = orderFacadeService.orderPaymentCompletedNotify(success, order, paymented_ds);
+		order = orderFacadeService.orderPaymentCompletedNotify(success, order, bindUser, paymented_ds);
 		//判断订单状态为支付成功或发货成功
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){

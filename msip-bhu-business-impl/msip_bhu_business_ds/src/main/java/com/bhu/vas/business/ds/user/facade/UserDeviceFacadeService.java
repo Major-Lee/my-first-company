@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -34,6 +36,9 @@ public class UserDeviceFacadeService {
     
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private UserService userService;
 
 	//@Resource
 	//private DeviceUpgradeFacadeService deviceUpgradeFacadeService;
@@ -468,13 +473,16 @@ public class UserDeviceFacadeService {
 	 * @param mac 设备mac
 	 * @return
 	 */
-	public Integer getBindUidByMac(String mac){
+	public User getBindUserByMac(String mac){
 		if(StringUtils.isNotEmpty(mac)){
 			String mac_lower = mac.toLowerCase();
-			WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
-			if(wifiDevice != null){
-				return userDeviceService.fetchBindUid(mac_lower);
+			//WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
+			//if(wifiDevice != null){
+			Integer bindUid = userDeviceService.fetchBindUid(mac_lower);
+			if(bindUid != null){
+				return userService.getById(bindUid);
 			}
+			//}
 		}
 		return null;
 	}

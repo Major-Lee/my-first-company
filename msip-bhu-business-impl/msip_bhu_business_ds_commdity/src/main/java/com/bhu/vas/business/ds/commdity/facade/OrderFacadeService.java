@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
@@ -266,9 +267,10 @@ public class OrderFacadeService {
 	 * 通知应用发货成功以后 更新支付状态为发货完成
 	 * @param success 支付是否成功
 	 * @param order 订单实体
+	 * @param bindUser 设备绑定的用户实体
 	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
 	 */
-	public Order orderPaymentCompletedNotify(boolean success, Order order, String paymented_ds){
+	public Order orderPaymentCompletedNotify(boolean success, Order order, User bindUser, String paymented_ds){
 		Integer changed_status = null;
 		Integer changed_process_status = null;
 		try{
@@ -282,6 +284,10 @@ public class OrderFacadeService {
 				order.setPaymented_at(DateTimeHelper.parseDate(paymented_ds, DateTimeHelper.DefalutFormatPattern));
 			}
 			
+			if(bindUser != null){
+				order.setUid(bindUser.getId());
+			}
+			
 			//支付成功
 			if(success){
 				changed_status = OrderStatus.PaySuccessed.getKey();
@@ -289,7 +295,7 @@ public class OrderFacadeService {
 
 				logger.info(String.format("OrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
 				//进行发货通知
-				boolean deliver_notify_ret = orderDeliverNotify(order);
+				boolean deliver_notify_ret = orderDeliverNotify(order, bindUser);
 				//判断通知发货成功 更新订单状态
 				if(deliver_notify_ret){
 					changed_status = OrderStatus.DeliverCompleted.getKey();
@@ -318,20 +324,22 @@ public class OrderFacadeService {
 	 * 通知应用发货成功以后 更新支付状态为发货完成
 	 * @param success 支付是否成功
 	 * @param orderid 订单id
+	 * @param bindUser 设备绑定的用户实体
 	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
 	 * @return
 	 */
-	public Order orderPaymentCompletedNotify(boolean success, String orderid, String paymented_ds){
+	public Order orderPaymentCompletedNotify(boolean success, String orderid, User bindUser, String paymented_ds){
 		Order order = validateOrderId(orderid);
-		return orderPaymentCompletedNotify(success, order, paymented_ds);
+		return orderPaymentCompletedNotify(success, order, bindUser, paymented_ds);
 	}
 	
 	/**
 	 * 通知应用发货，按照约定的redis写入
-	 * @param order
+	 * @param order 订单实体
+	 * @param bindUser 设备绑定的用户实体
 	 * @return
 	 */
-	public boolean orderDeliverNotify(Order order){
+	public boolean orderDeliverNotify(Order order, User bindUser){
 		try{
 			if(order == null) {
 				logger.error("orderDeliverNotify order data not exist");
@@ -343,7 +351,7 @@ public class OrderFacadeService {
 				logger.error("orderDeliverNotify order commdity data not exist");
 				return false;
 			}
-			RequestDeliverNotifyDTO requestDeliverNotifyDto = RequestDeliverNotifyDTO.from(order, commdity);
+			RequestDeliverNotifyDTO requestDeliverNotifyDto = RequestDeliverNotifyDTO.from(order, commdity, bindUser);
 			if(requestDeliverNotifyDto != null){
 				String requestDeliverNotifyMessage = JsonHelper.getJSONString(requestDeliverNotifyDto);
 				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(requestDeliverNotifyMessage);
