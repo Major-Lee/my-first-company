@@ -320,15 +320,21 @@ public class SocialFacadeRpcService {
     /**
      * 修改终端信息,暂时只修改终端用户昵称
      *
+     * 如果用户修改备注,算关注,业务理解.
+     *
      * @param uid
      * @param hd_mac
      * @param nick
      * @return
      */
     public boolean modifyHandset(long uid, String hd_mac, String nick) {
+
         HandsetUser handsetUser = handsetUserService.getById(hd_mac);
         handsetUser.setNick(nick);
         handsetUserService.update(handsetUser);
+
+        this.follow(uid, hd_mac);
+
         return true;
     }
 
