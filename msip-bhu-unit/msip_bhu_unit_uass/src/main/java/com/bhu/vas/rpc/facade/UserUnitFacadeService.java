@@ -61,7 +61,6 @@ public class UserUnitFacadeService {
 	@Resource
 	private DeliverMessageService deliverMessageService;
 
-	
 	/**
 	 * 需要兼容uidParam为空的情况
 	 * @param uidParam
@@ -77,15 +76,14 @@ public class UserUnitFacadeService {
 			if(StringUtils.isNotEmpty(uidParam)){
 				uid = Integer.parseInt(uidParam);
 			}
-			//Integer uid = Integer.parseInt(uidParam);
-			//if(uid.intValue() <=0) return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UID_EMPTY);
 			boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uid);
-			if(!validate && uid>0 && StringUtils.isNotEmpty(d_uuid)){//验证不通过，则需要通过uuid进行比对，看是否uuid变更
+			//20160316 移除多终端 udid验证
+			/*if(!validate && uid>0 && StringUtils.isNotEmpty(d_uuid)){//验证不通过，则需要通过uuid进行比对，看是否uuid变更
 				User user  = userService.getById(uid);
 				if(user != null && StringUtils.isNotEmpty(user.getLastlogindevice_uuid()) && !user.getLastlogindevice_uuid().equals(d_uuid)){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED);
 				}
-			}
+			}*/
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(validate?Boolean.TRUE:Boolean.FALSE);
 		}catch(TokenValidateBusinessException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
@@ -239,7 +237,7 @@ public class UserUnitFacadeService {
 			}
 			this.userService.update(user);
 			
-			uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+			uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
 			{//write header to response header
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
 				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
