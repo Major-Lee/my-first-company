@@ -47,7 +47,7 @@
 
 	    	uid = #{uid},
 			nick = #{nick},
-		  	created_at = #{created_at}
+		  	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
