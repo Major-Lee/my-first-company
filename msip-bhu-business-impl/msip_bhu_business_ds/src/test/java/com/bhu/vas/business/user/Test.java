@@ -14,7 +14,7 @@ public class Test {
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
 		
-		String aaa = "&asdfdsdfgdfgasd^";
+		String aaa = "陈磊兴";
 		
 		System.out.println(StringEscapeUtils.unescapeXml(aaa));
 		
