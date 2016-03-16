@@ -574,6 +574,8 @@ public class SocialFacadeRpcService {
                 commentedWifiVTO.setMax_rate(wifi.getMax_rate());
                 commentedWifiVTO.setLat(wifi.getLat());
                 commentedWifiVTO.setLon(wifi.getLon());
+                commentedWifiVTO.setSsid(wifi.getSsid());
+                commentedWifiVTO.setAddr(wifi.getAddr());
                 }
                 vtos.add(commentedWifiVTO);
                 i++;

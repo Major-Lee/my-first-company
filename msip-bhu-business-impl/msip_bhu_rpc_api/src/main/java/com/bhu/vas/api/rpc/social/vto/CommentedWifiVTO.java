@@ -12,7 +12,21 @@ public class CommentedWifiVTO implements Serializable{
 	//wifi所在坐标
 	private String lat;
 	private String lon;
+	private String ssid;
+	private String addr;
 	
+	public String getAddr() {
+		return addr;
+	}
+	public void setAddr(String addr) {
+		this.addr = addr;
+	}
+	public String getSsid() {
+		return ssid;
+	}
+	public void setSsid(String ssid) {
+		this.ssid = ssid;
+	}
 	public String getBssid() {
 		return bssid;
 	}
