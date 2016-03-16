@@ -1,6 +1,7 @@
 package com.bhu.vas.api.vto;
 
 import com.bhu.vas.api.dto.social.HandsetMeetDTO;
+import com.bhu.vas.api.rpc.social.vto.SocialUserVTO;
 
 import java.io.Serializable;
 
@@ -13,9 +14,7 @@ public class SocialFetchFollowListVTO implements Serializable{
     public static final String TYPE = "urooter";
 
     private String hd_mac;
-    private long uid;
-    private String avatar;
-    private String nick;
+    private SocialUserVTO SUser;
     private HandsetMeetDTO last_meet;
     private String type;
 
@@ -27,28 +26,12 @@ public class SocialFetchFollowListVTO implements Serializable{
         this.hd_mac = hd_mac;
     }
 
-    public long getUid() {
-        return uid;
+    public SocialUserVTO getSUser() {
+        return SUser;
     }
 
-    public void setUid(long uid) {
-        this.uid = uid;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getNick() {
-        return nick;
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick;
+    public void setSUser(SocialUserVTO SUser) {
+        this.SUser = SUser;
     }
 
     public HandsetMeetDTO getLast_meet() {

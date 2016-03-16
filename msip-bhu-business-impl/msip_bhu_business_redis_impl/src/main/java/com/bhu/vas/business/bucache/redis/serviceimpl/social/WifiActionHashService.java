@@ -48,11 +48,11 @@ public class WifiActionHashService extends AbstractRelationHashCache{
 	
 	public WifiActionDTO counts(String bssid){
 	    Map<String,String> map = this.hgetall(generateKey(bssid));
-	    WifiActionDTO vto = new WifiActionDTO();
-	    vto.setUp(map.get(followType.up.name()));
-	    vto.setDown(map.get(followType.down.name()));
-	    vto.setReport(map.get(followType.report.name()));
-	    return vto;
+	    WifiActionDTO dto = new WifiActionDTO();
+	    dto.setUp(map.get(followType.up.name()));
+	    dto.setDown(map.get(followType.down.name()));
+	    dto.setReport(map.get(followType.report.name()));
+	    return dto;
 	}
 	
 	public void init(String bssid) {

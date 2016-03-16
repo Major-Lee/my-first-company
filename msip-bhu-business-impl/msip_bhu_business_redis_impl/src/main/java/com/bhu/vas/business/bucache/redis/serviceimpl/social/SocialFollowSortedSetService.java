@@ -61,7 +61,6 @@ public class SocialFollowSortedSetService
         }
     }
 
-
     public boolean isFollowed(long uid, String hd_mac) {
         Long zrank = this.zrank(generateKey(uid), hd_mac);
         return zrank == null;
@@ -72,12 +71,6 @@ public class SocialFollowSortedSetService
         return set;
     }
 
-    /**
-     * todo(xiaowei):
-     * 1.业务逻辑的判断不要放在这层, follow方法返回true/false外层来判断.
-     * @param uid
-     * @param hd_mac
-     */
     public void follow(long uid, String hd_mac) {
            this.zadd(generateKey(uid), System.currentTimeMillis(), hd_mac);
     }

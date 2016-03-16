@@ -135,7 +135,6 @@ public class SocialFacadeRpcService {
                 hds.add(hd_mac);
                 vto.setHd_mac(hd_mac);
                 HandsetMeetDTO meetDto = SocialStorageFacadeService.getLastHandsetMeet(hd_mac_self, hd_mac);
-                //System.out.println(meetDto.getBssid()+"|"+meetDto.getSsid()); //todo(xiaowei): 去掉sysout的日志
                 vto.setLast_meet(meetDto);
                 result.add(vto);
             }
@@ -148,8 +147,10 @@ public class SocialFacadeRpcService {
             for (HandsetUser handSerUser : handsetList) {
                 SocialFetchFollowListVTO vtos = result.get(index);
                 if (handSerUser != null) {
-                    vtos.setNick(handSerUser.getNick());
-                    vtos.setUid(handSerUser.getUid());
+                    SocialUserVTO SUser = new SocialUserVTO();
+                    SUser.setNick(handSerUser.getNick());
+                    SUser.setUid(handSerUser.getUid());
+                    vtos.setSUser(SUser);
                     ids.add((int) handSerUser.getUid());
                 }
                 index++;
@@ -162,12 +163,11 @@ public class SocialFacadeRpcService {
             int index = 0;
             for (User user : users){
                 SocialFetchFollowListVTO vtos = result.get(index);
-                if (vtos != null ){
-                    vtos.setAvatar(user.getAvatar());
+                if (user != null ){
+                    vtos.getSUser().setAvatar(user.getAvatar());
                     vtos.setType(SocialFetchFollowListVTO.TYPE);
-                    vtos.setUid(user.getId());
-                    if (StringUtils.isEmpty(vtos.getNick())){
-                        vtos.setNick(user.getNick());
+                    if (StringUtils.isEmpty(vtos.getSUser().getNick())){
+                        vtos.getSUser().setNick(user.getNick());
                     }
                 }
                 index++;
