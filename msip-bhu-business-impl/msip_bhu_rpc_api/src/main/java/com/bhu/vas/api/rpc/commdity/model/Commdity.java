@@ -13,7 +13,7 @@ public class Commdity extends BaseIntModel{
 	//商品名称
 	private String name;
 	//商品描述
-	private String desc;
+	private String description;
 	//商品类别
 	private Integer category;
 	//商品价格(两种方式 10.25 和 5.25-10.25)
@@ -50,12 +50,12 @@ public class Commdity extends BaseIntModel{
 		this.name = name;
 	}
 
-	public String getDesc() {
-		return desc;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Integer getCategory() {
