@@ -298,6 +298,22 @@ public class UserWalletFacadeService{
 	public UserWalletWithdrawApply doWithdrawApply(int appid,ThirdpartiesPaymentType type,int uid, String pwd,double cash,String remoteip){
 		
 		validateThirdpartiesPaymentType(uid,type);
+		/*logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
+		this.cashWithdrawOperFromUserWallet(uid, pwd, cash);
+		UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
+		apply.setUid(uid);
+		apply.setAppid(appid);
+		apply.setPayment_type(type.getType());
+		
+		apply.setCash(cash);
+		apply.setRemoteip(remoteip);
+		apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.Apply.getKey());
+		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(BusinessEnumType.UWithdrawStatus.Apply.getKey(), BusinessEnumType.UWithdrawStatus.Apply.getName()));
+		apply = userWalletWithdrawApplyService.insert(apply);*/
+		return doWithdrawApplyOper(appid,type,uid,pwd,cash,remoteip);
+	}
+	
+	private synchronized UserWalletWithdrawApply doWithdrawApplyOper(int appid,ThirdpartiesPaymentType type,int uid, String pwd,double cash,String remoteip){
 		logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
 		this.cashWithdrawOperFromUserWallet(uid, pwd, cash);
 		UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
@@ -312,7 +328,6 @@ public class UserWalletFacadeService{
 		apply = userWalletWithdrawApplyService.insert(apply);
 		return apply;
 	}
-	
 	/**
 	 * 提现申请审核列表
 	 * @param uid
