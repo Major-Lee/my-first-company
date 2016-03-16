@@ -49,7 +49,6 @@ import javax.servlet.http.HttpServletResponse;
         try {
             boolean ret  = socialRpcService.modifyHandset(uid, hd_mac, nick);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
-
         } catch (Exception e) {
             e.printStackTrace();
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
