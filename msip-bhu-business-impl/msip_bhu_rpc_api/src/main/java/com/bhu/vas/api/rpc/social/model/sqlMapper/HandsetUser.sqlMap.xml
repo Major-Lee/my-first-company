@@ -5,11 +5,11 @@
 <mapper namespace="com.bhu.vas.api.rpc.social.model.HandsetUser">
 
   <resultMap id="modelResult" type="handsetUser">
-    <id property="id" column="id"/>
-	  <id property="uid" column="uid"/>
-	  <id property="nick" column="nick"/>
-    <result property="created_at" column="created_at"/>
-    <result property="updated_at" column="updated_at"/>
+	  <id property="id" column="id"/>
+	  <result property="uid" column="uid"/>
+	  <result property="nick" column="nick"/>
+	  <result property="created_at" column="created_at"/>
+	  <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
