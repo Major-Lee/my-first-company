@@ -108,7 +108,7 @@ public class OrderServiceTest extends BaseTest{
     			System.out.println(orderid);
     			Order order = orderService.getById(orderid);
     			Commdity commdity = commdityService.getById(order.getCommdityid());
-    			RequestDeliverNotifyDTO dto = RequestDeliverNotifyDTO.from(order, commdity);
+    			RequestDeliverNotifyDTO dto = RequestDeliverNotifyDTO.from(order, commdity, null);
     			System.out.println(JsonHelper.getJSONString(dto));
     			System.out.println(order.getId() + " - " + order.getAmount());
     		}

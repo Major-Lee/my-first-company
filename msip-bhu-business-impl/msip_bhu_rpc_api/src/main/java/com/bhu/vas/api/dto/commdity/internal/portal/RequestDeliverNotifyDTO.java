@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 
@@ -30,6 +31,8 @@ public class RequestDeliverNotifyDTO  implements java.io.Serializable{
 	private String paymented_ds;
 	//业务上下文
 	private String context;
+	//bind user mobileno 设备的绑定用户的手机号
+	private String bu_mobileno;
 	
 	public String getOrderid() {
 		return orderid;
@@ -79,8 +82,14 @@ public class RequestDeliverNotifyDTO  implements java.io.Serializable{
 	public void setContext(String context) {
 		this.context = context;
 	}
+	public String getBu_mobileno() {
+		return bu_mobileno;
+	}
+	public void setBu_mobileno(String bu_mobileno) {
+		this.bu_mobileno = bu_mobileno;
+	}
 	
-	public static RequestDeliverNotifyDTO from(Order order, Commdity commdity){
+	public static RequestDeliverNotifyDTO from(Order order, Commdity commdity, User bindUser){
 		if(order == null || commdity == null) return null;
 		RequestDeliverNotifyDTO requestDeliverNotifyDto = new RequestDeliverNotifyDTO();
 		requestDeliverNotifyDto.setOrderid(order.getId());
@@ -94,6 +103,9 @@ public class RequestDeliverNotifyDTO  implements java.io.Serializable{
 			requestDeliverNotifyDto.setPaymented_ds(DateTimeHelper.formatDate(paymented_at, DateTimeHelper.DefalutFormatPattern));
 		}
 		requestDeliverNotifyDto.setApp_deliver_detail(commdity.getApp_deliver_detail());
+		if(bindUser != null){
+			requestDeliverNotifyDto.setBu_mobileno(bindUser.getMobileno());
+		}
 		return requestDeliverNotifyDto;
 	}
 }

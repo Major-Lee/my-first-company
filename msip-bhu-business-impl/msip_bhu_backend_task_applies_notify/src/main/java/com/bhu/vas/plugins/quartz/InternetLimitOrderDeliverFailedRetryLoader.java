@@ -13,9 +13,11 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 
@@ -37,6 +39,9 @@ public class InternetLimitOrderDeliverFailedRetryLoader {
 	
 	@Resource
 	private OrderFacadeService orderFacadeService;
+	
+	@Resource
+	private UserService userService;
     
     public void execute(){
 		logger.info("OrderDeliverFailedRetryLoader starting...");
@@ -54,7 +59,11 @@ public class InternetLimitOrderDeliverFailedRetryLoader {
     	while(pagecount > current_page){
     		List<Order> orders = orderService.findModelByModelCriteria(mc);
     		for(Order order : orders){
-				boolean deliver_notify_ret = orderFacadeService.orderDeliverNotify(order);
+    			User bindUser = null;
+    			if(order.getUid() != null){
+    				bindUser = userService.getById(order.getUid());
+    			}
+				boolean deliver_notify_ret = orderFacadeService.orderDeliverNotify(order, bindUser);
 				if(deliver_notify_ret){
 					//如果通知发货成功 更新订单状态为发货完成
 					orderFacadeService.orderStatusChanged(order, OrderStatus.DeliverCompleted.getKey(),  
