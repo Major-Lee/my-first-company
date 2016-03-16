@@ -72,7 +72,7 @@ public class SocialFollowSortedSetService
     }
 
     public void follow(long uid, String hd_mac) {
-           this.zadd(generateKey(uid), System.currentTimeMillis(), hd_mac);
+            this.zadd(generateKey(uid), System.currentTimeMillis(), hd_mac);
     }
 
     public void unFollow(long uid, String hd_mac) {
