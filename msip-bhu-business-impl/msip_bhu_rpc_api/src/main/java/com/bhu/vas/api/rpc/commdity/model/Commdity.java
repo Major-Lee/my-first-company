@@ -10,6 +10,10 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
  */
 @SuppressWarnings("serial")
 public class Commdity extends BaseIntModel{
+	//商品名称
+	private String name;
+	//商品描述
+	private String desc;
 	//商品类别
 	private Integer category;
 	//商品价格(两种方式 10.25 和 5.25-10.25)
@@ -36,6 +40,22 @@ public class Commdity extends BaseIntModel{
 		if (this.created_at == null)
 			this.created_at = new Date();
 		super.preInsert();
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
 	}
 
 	public Integer getCategory() {

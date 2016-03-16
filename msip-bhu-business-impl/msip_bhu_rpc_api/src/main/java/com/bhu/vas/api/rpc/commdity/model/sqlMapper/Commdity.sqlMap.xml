@@ -6,6 +6,8 @@
 
   <resultMap id="modelResult" type="commdity">
     <id property="id" column="id"/>
+    <result property="name" column="name"/>
+    <result property="description" column="description"/>
     <result property="category" column="category"/>
     <result property="price" column="price"/>
     <result property="status" column="status"/>
@@ -24,6 +26,8 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	name,
+	    	description,
 	    	category,
 	    	price,
 	    	status,
@@ -36,6 +40,8 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	name,
+	    	description,
 	    	category,
 	    	price,
 	    	status,
@@ -49,6 +55,8 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{name},
+			#{description},
 	    	#{category},
 	    	#{price},
 	    	#{status},
@@ -60,6 +68,8 @@
 	</sql> 
 	
 	<sql id="modelUpdateValues">
+			name = #{name},
+			description = #{description},
 	    	category = #{category},
 	    	price = #{price},
 	    	status = #{status},
