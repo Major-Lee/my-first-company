@@ -150,7 +150,7 @@ public class SocialFacadeRpcService {
                     SocialUserVTO SUser = new SocialUserVTO();
                     SUser.setNick(handSerUser.getNick());
                     SUser.setUid(handSerUser.getUid());
-                    vtos.setSUser(SUser);
+                    vtos.setUser(SUser);
                     ids.add((int) handSerUser.getUid());
                 }
                 index++;
@@ -164,10 +164,10 @@ public class SocialFacadeRpcService {
             for (User user : users){
                 SocialFetchFollowListVTO vtos = result.get(index);
                 if (user != null ){
-                    vtos.getSUser().setAvatar(user.getAvatar());
+                    vtos.getUser().setAvatar(user.getAvatar());
                     vtos.setType(SocialFetchFollowListVTO.TYPE);
-                    if (StringUtils.isEmpty(vtos.getSUser().getNick())){
-                        vtos.getSUser().setNick(user.getNick());
+                    if (StringUtils.isEmpty(vtos.getUser().getNick())){
+                        vtos.getUser().setNick(user.getNick());
                     }
                 }
                 index++;

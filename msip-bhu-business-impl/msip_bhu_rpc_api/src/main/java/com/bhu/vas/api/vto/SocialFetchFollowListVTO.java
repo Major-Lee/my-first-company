@@ -14,7 +14,7 @@ public class SocialFetchFollowListVTO implements Serializable{
     public static final String TYPE = "urooter";
 
     private String hd_mac;
-    private SocialUserVTO SUser;
+    private SocialUserVTO User;
     private HandsetMeetDTO last_meet;
     private String type;
 
@@ -26,12 +26,12 @@ public class SocialFetchFollowListVTO implements Serializable{
         this.hd_mac = hd_mac;
     }
 
-    public SocialUserVTO getSUser() {
-        return SUser;
+    public SocialUserVTO getUser() {
+        return User;
     }
 
-    public void setSUser(SocialUserVTO SUser) {
-        this.SUser = SUser;
+    public void setUser(SocialUserVTO User) {
+        this.User = User;
     }
 
     public HandsetMeetDTO getLast_meet() {
