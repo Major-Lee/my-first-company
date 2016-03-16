@@ -65,13 +65,16 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 	
 	@Override
 	public Object[] builderProperties(int type) {
-		Object[] properties = new Object[2];
+		Object[] properties = null;
 		if (MODEL_Power_Radio == type) {
+			properties = new Object[2];
 			properties[0] = name;
 			properties[1] = power;
         }else if (MODEL_RealChannel_Radio == type) {
+        	properties = new Object[3];
         	properties[0] = name;
 			properties[1] = real_channel;
+			properties[2] = real_channel;
         }
 		return properties;
 	}
