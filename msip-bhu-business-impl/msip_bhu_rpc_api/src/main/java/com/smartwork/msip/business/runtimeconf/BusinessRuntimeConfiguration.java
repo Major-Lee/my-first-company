@@ -133,7 +133,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
             
             Device_Firmware_ForceUpdateImmediately_AfterDays = PropertiesHelper.getInt("device.firmware.forceupdateimmediately.afterdays", paramProperties, Device_Firmware_ForceUpdateImmediately_AfterDays);
             
-            User_WalletWithdraw_Default_MaxLimit = PropertiesHelper.getDouble("user.walletWithdraw.default.maxLimit", paramProperties, User_WalletWithdraw_Default_MaxLimit);
+            User_WalletWithdraw_Default_MinLimit = PropertiesHelper.getDouble("user.walletWithdraw.default.minLimit", paramProperties, User_WalletWithdraw_Default_MinLimit);
             
         	logger.info("loading business runtime configuration successfully!");  
         }  
@@ -317,7 +317,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static int CheckArtificialFrdsAddLimitCount = 5;//5个好友数量, 超过数量不在分配客服
 
 	
-	public static double User_WalletWithdraw_Default_MaxLimit = 10.00d;//5个好友数量, 超过数量不在分配客服
+	public static double User_WalletWithdraw_Default_MinLimit = 10.00d;//5个好友数量, 超过数量不在分配客服
 	
 	/**
 	 * 判断是否是console用户
