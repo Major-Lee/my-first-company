@@ -309,6 +309,7 @@ public class SocialFacadeRpcService {
                 }
                 userVTO.setMemo(user.getMemo());
                 hdVTO.setUser(userVTO);
+                index ++;
             }
         }
 
