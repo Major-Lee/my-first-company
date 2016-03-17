@@ -227,7 +227,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	}
 
 	////users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
-	public static ParamSharedNetworkDTO builderDefault(String ntype, boolean router){
+	public static ParamSharedNetworkDTO builderDefault(String ntype){
 		ParamSharedNetworkDTO param = new ParamSharedNetworkDTO();
 		if(StringUtils.isEmpty(ntype)) ntype = (SharedNetworkType.Uplink.getKey());
 		param.setNtype(ntype);
@@ -238,8 +238,8 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		param.setForce_timeout(WifiDeviceHelper.SharedNetworkWifi_Default_Force_timeout);
 		param.setOpen_resource(WifiDeviceHelper.SharedNetworkWifi_Default_Open_resource);
 		param.setMax_clients(WifiDeviceHelper.SharedNetworkWifi_Default_Maxclients);
-		param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
-		param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
+		//param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
+		//param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
 		if(SharedNetworkType.Uplink.getKey().equals(param.getNtype())){
 			param.setSsid(SharedNetworkType.Uplink.getDefalutSsid());
 			param.setRedirect_url(WifiDeviceHelper.SharedNetworkWifi_Default_Redirect_url);
@@ -252,8 +252,8 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return param;
 	}
 	
-	public static ParamSharedNetworkDTO fufillWithDefault(ParamSharedNetworkDTO param,boolean router){
-		if(param == null) return builderDefault(SharedNetworkType.Uplink.getKey(),router);
+	public static ParamSharedNetworkDTO fufillWithDefault(ParamSharedNetworkDTO param){
+		if(param == null) return builderDefault(SharedNetworkType.Uplink.getKey());
 		if(StringUtils.isEmpty(param.getNtype())) param.setNtype(SharedNetworkType.Uplink.getKey());
 		if(param.getSignal_limit() == 0) param.setSignal_limit(WifiDeviceHelper.SharedNetworkWifi_Default_Signal_limit);
 		//if(StringUtils.isEmpty(param.getRedirect_url())) param.setRedirect_url(WifiDeviceHelper.SharedNetworkWifi_Default_Redirect_url);
@@ -265,8 +265,8 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(StringUtils.isEmpty(param.getOpen_resource())) {
 			param.setOpen_resource(WifiDeviceHelper.SharedNetworkWifi_Default_Open_resource);
 		}
-		param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
-		param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
+		//param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
+		//param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
 		if(SharedNetworkType.Uplink.getKey().equals(param.getNtype())){
 			if(StringUtils.isEmpty(param.getSsid())){
 				param.setSsid(SharedNetworkType.Uplink.getDefalutSsid());
@@ -291,6 +291,39 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return param;
 	}
 	
+	public static boolean wasChanged(ParamSharedNetworkDTO param1,ParamSharedNetworkDTO param2){
+		if(param1 == null || param2 == null) return false;
+		if(!param1.getNtype().equals(param2.getNtype())){
+			return false;
+		}
+		if(param1.getUsers_rx_rate() != param2.getUsers_rx_rate()) return false;
+		if(param1.getUsers_tx_rate() != param2.getUsers_tx_rate()) return false;
+		if(param1.getSignal_limit() != param2.getSignal_limit()) return false;
+		if(param1.getIdle_timeout() != param2.getIdle_timeout()) return false;
+		if(param1.getForce_timeout() != param2.getForce_timeout()) return false;
+		
+		
+		param.setUsers_tx_rate(WifiDeviceHelper.SharedNetworkWifi_Default_Users_tx_rate);
+		param.setUsers_rx_rate(WifiDeviceHelper.SharedNetworkWifi_Default_Users_rx_rate);
+		param.setSignal_limit(WifiDeviceHelper.SharedNetworkWifi_Default_Signal_limit);
+		param.setIdle_timeout(WifiDeviceHelper.SharedNetworkWifi_Default_Idle_timeout);//
+		param.setForce_timeout(WifiDeviceHelper.SharedNetworkWifi_Default_Force_timeout);
+		param.setOpen_resource(WifiDeviceHelper.SharedNetworkWifi_Default_Open_resource);
+		param.setMax_clients(WifiDeviceHelper.SharedNetworkWifi_Default_Maxclients);
+		//param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
+		//param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
+		if(SharedNetworkType.Uplink.getKey().equals(param.getNtype())){
+			param.setSsid(SharedNetworkType.Uplink.getDefalutSsid());
+			param.setRedirect_url(WifiDeviceHelper.SharedNetworkWifi_Default_Redirect_url);
+		}else{
+			param.setSsid(SharedNetworkType.SafeSecure.getDefalutSsid());
+			param.setRemote_auth_url(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_auth_url);
+			param.setPortal_server_url(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_portal_server_url);
+			param.setDns_default_ip(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_Dns_default_ip);
+		}
+	}
+	
+	
 	public static void main(String[] argv){
 /*		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.builderDefault(null, true).builderProperties()));
 		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.builderDefault(null, false).builderProperties()));
@@ -298,7 +331,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_SafeSecure, ParamSharedNetworkDTO.builderDefault(SharedNetworkType.SafeSecure.getKey(), true).builderProperties()));
 		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_SafeSecure, ParamSharedNetworkDTO.builderDefault(SharedNetworkType.SafeSecure.getKey(), false).builderProperties()));
 */	
-		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO(), false).builderProperties()));
-		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_SafeSecure, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO(SharedNetworkType.SafeSecure.getKey()), false).builderProperties()));
+		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO()).builderProperties()));
+		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_SafeSecure, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO(SharedNetworkType.SafeSecure.getKey())).builderProperties()));
 	}
 }
