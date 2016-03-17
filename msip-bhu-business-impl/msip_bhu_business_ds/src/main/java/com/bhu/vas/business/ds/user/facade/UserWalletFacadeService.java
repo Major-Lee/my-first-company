@@ -2,7 +2,9 @@ package com.bhu.vas.business.ds.user.facade;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -194,8 +196,8 @@ public class UserWalletFacadeService{
 		if(StringUtils.isEmpty(uwallet.getPassword())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAWPWD_SETOPER_NEEDED);
 		}
-		if(uwallet.getCash() < BusinessRuntimeConfiguration.User_WalletWithdraw_Default_MaxLimit){
-			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_OPER_BREAK,new String[]{String.valueOf(BusinessRuntimeConfiguration.User_WalletWithdraw_Default_MaxLimit)});
+		if(uwallet.getCash() < BusinessRuntimeConfiguration.User_WalletWithdraw_Default_MinLimit){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_CASH_LOWERTHAN_WITHDRAW_MINLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.User_WalletWithdraw_Default_MinLimit)});
 		}
 		if(uwallet.getCash() < cash){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_CASH_NOT_SUFFICIENT);
@@ -296,7 +298,6 @@ public class UserWalletFacadeService{
 	 * @param cash 
 	 */
 	public UserWalletWithdrawApply doWithdrawApply(int appid,ThirdpartiesPaymentType type,int uid, String pwd,double cash,String remoteip){
-		
 		validateThirdpartiesPaymentType(uid,type);
 		/*logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
 		this.cashWithdrawOperFromUserWallet(uid, pwd, cash);
@@ -312,21 +313,34 @@ public class UserWalletFacadeService{
 		apply = userWalletWithdrawApplyService.insert(apply);*/
 		return doWithdrawApplyOper(appid,type,uid,pwd,cash,remoteip);
 	}
+	private Map<String,String> lockWithdrawMap = new HashMap<>();
+	//给每个用户维护一个锁定key，没有就创建一个
+	private synchronized String lockObjectFetch(int uid){
+		String lockKey = String.valueOf(uid);
+		if(!lockWithdrawMap.containsKey(lockKey)){
+			lockWithdrawMap.put(lockKey, lockKey);
+			return lockKey;
+		}else{
+			return lockWithdrawMap.get(lockKey);
+		}
+	}
 	
-	private synchronized UserWalletWithdrawApply doWithdrawApplyOper(int appid,ThirdpartiesPaymentType type,int uid, String pwd,double cash,String remoteip){
-		logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
-		this.cashWithdrawOperFromUserWallet(uid, pwd, cash);
-		UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
-		apply.setUid(uid);
-		apply.setAppid(appid);
-		apply.setPayment_type(type.getType());
-		
-		apply.setCash(cash);
-		apply.setRemoteip(remoteip);
-		apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.Apply.getKey());
-		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(BusinessEnumType.UWithdrawStatus.Apply.getKey(), BusinessEnumType.UWithdrawStatus.Apply.getName()));
-		apply = userWalletWithdrawApplyService.insert(apply);
-		return apply;
+	private UserWalletWithdrawApply doWithdrawApplyOper(int appid,ThirdpartiesPaymentType type,int uid, String pwd,double cash,String remoteip){
+		synchronized(lockObjectFetch(uid)){
+			logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
+			this.cashWithdrawOperFromUserWallet(uid, pwd, cash);
+			UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
+			apply.setUid(uid);
+			apply.setAppid(appid);
+			apply.setPayment_type(type.getType());
+			
+			apply.setCash(cash);
+			apply.setRemoteip(remoteip);
+			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.Apply.getKey());
+			apply.addResponseDTO(WithdrawRemoteResponseDTO.build(BusinessEnumType.UWithdrawStatus.Apply.getKey(), BusinessEnumType.UWithdrawStatus.Apply.getName()));
+			apply = userWalletWithdrawApplyService.insert(apply);
+			return apply;
+		}
 	}
 	/**
 	 * 提现申请审核列表

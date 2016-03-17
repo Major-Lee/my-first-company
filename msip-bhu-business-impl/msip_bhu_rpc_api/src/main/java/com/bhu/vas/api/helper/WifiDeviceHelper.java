@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.smartwork.msip.cores.helper.HtmlHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -348,4 +349,9 @@ public class WifiDeviceHelper {
 		return persistenceKey.split(StringHelper.MINUS_STRING_GAP);
 	}
 	
+	
+	public static String xmlContentEncoder(String content){
+		if(StringUtils.isEmpty(content)) return content;
+		return HtmlHelper.htmlEncode(content);
+	}
 }
