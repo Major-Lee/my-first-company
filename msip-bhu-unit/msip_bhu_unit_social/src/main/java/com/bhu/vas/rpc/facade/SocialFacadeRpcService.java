@@ -268,6 +268,10 @@ public class SocialFacadeRpcService {
             for (String mac : list) {
                 HandsetUserVTO handsetVTO = new HandsetUserVTO();
                 handsetVTO.setHd_mac(mac);
+                if (uid != null && uid >0) {
+                    handsetVTO.setNick(SocialCareFacadeService.getNick(uid, hd_mac));
+                }
+
                 handsetVTO.setLast(SocialStorageFacadeService.getLastHandsetMeet(hd_mac, mac));
                 hds.add(mac);
                 hdVTOs.add(handsetVTO);
@@ -284,7 +288,6 @@ public class SocialFacadeRpcService {
                     HandsetUserVTO hdVTO = hdVTOs.get(index);
 
                     if (uid != null && uid >0) {
-                        hdVTO.setNick(SocialCareFacadeService.getNick(uid, hd_mac));
                         hdVTO.setFollowed(SocialFollowSortedSetService.getInstance().isFollowed(uid,handsetUser.getId()));
                     }
                     ids.add((int)handsetUser.getUid());
