@@ -113,6 +113,7 @@ public class SocialFacadeRpcService {
      */
     public void unFollow(long uid, String hd_mac) {
         SocialFollowSortedSetService.getInstance().unFollow(uid, hd_mac);
+        SocialCareHashService.getInstance().unCare(uid,hd_mac);
     }
 
     /**
@@ -147,8 +148,8 @@ public class SocialFacadeRpcService {
                 SocialFetchFollowListVTO vtos = result.get(index);
                 if (handSerUser != null) {
                     SocialUserVTO SUser = new SocialUserVTO();
-                    SUser.setNick(""); //todo(bluesand):
                     SUser.setUid(handSerUser.getUid());
+                    SUser.setNick(SocialCareHashService.getInstance().getNick(handSerUser.getUid(),vtos.getHd_mac()));
                     vtos.setUser(SUser);
                     ids.add((int) handSerUser.getUid());
                 }

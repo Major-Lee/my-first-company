@@ -25,26 +25,26 @@ public class SocialCareHashService extends AbstractRelationHashCache {
         return ServiceHolder.instance;
     }
 
-    private String generateKey(String uid){
+    private String generateKey(long uid){
         StringBuilder sb = new StringBuilder();
         sb.append(BusinessKeyDefine.Social.REMARKS).append(uid);
         return sb.toString();
     }
 
-    public void care(String uid, String hd_mac, SocialRemarkDTO dto){
+    public void care(long uid, String hd_mac, SocialRemarkDTO dto){
         this.hset(generateKey(uid),hd_mac, JsonHelper.getJSONString(dto));
     }
 
-    public void unCare(String uid,String hd_mac){
+    public void unCare(long uid,String hd_mac){
         this.hdel(generateKey(uid),hd_mac);
     }
 
-    public boolean isCared(String uid, String hd_mac){
-       return this.hexists(uid,hd_mac);
+    public boolean isCared(long uid, String hd_mac){
+       return this.hexists(Long.toString(uid),hd_mac);
     }
 
-    public String getNick(String uid,String hd_mac){
-        return this.hget(uid,hd_mac);
+    public String getNick(long uid,String hd_mac){
+        return this.hget(Long.toString(uid),hd_mac);
     }
 
 
