@@ -9,7 +9,7 @@ public class WifiVisitorVTO  implements Serializable{
 
     private long uid;
 
-    private String n;
+    private String nick;
 
     private String avatar;
 
@@ -21,12 +21,12 @@ public class WifiVisitorVTO  implements Serializable{
         this.uid = uid;
     }
 
-    public String getN() {
-        return n;
+    public String getNick() {
+        return nick;
     }
 
-    public void setN(String n) {
-        this.n = n;
+    public void setNick(String nick) {
+        this.nick = nick;
     }
 
     public String getAvatar() {

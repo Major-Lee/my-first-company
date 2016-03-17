@@ -11,8 +11,6 @@ public class HandsetUser extends BaseStringModel {
 
     private long uid;
 
-    private String nick;
-
     private Date created_at;
 
     public long getUid() {
@@ -21,14 +19,6 @@ public class HandsetUser extends BaseStringModel {
 
     public void setUid(long uid) {
         this.uid = uid;
-    }
-
-    public String getNick() {
-        return nick;
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick;
     }
 
     public Date getCreated_at() {

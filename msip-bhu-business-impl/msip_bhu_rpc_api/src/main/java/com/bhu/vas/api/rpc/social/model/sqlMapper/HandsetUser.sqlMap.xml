@@ -7,7 +7,6 @@
   <resultMap id="modelResult" type="handsetUser">
 	  <id property="id" column="id"/>
 	  <result property="uid" column="uid"/>
-	  <result property="nick" column="nick"/>
 	  <result property="created_at" column="created_at"/>
 	  <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -21,7 +20,6 @@
 	    <![CDATA[
 	    	id,
 	    	uid,
-	    	nick,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -29,7 +27,6 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	uid,
-	    	nick,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -38,7 +35,6 @@
 	<sql id="modelInsertValues">
 			#{id},
 	    	#{uid},
-	    	#{nick},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -46,7 +42,6 @@
 	<sql id="modelUpdateValues">
 
 	    	uid = #{uid},
-			nick = #{nick},
 		  	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

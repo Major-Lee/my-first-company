@@ -18,6 +18,8 @@ public class WifiVTO implements Serializable {
 
     private String lon;
 
+    private String addr;
+
     private String max_rate;
 
     /**
@@ -68,6 +70,14 @@ public class WifiVTO implements Serializable {
 
     public void setMax_rate(String max_rate) {
         this.max_rate = max_rate;
+    }
+
+    public String getAddr() {
+        return addr;
+    }
+
+    public void setAddr(String addr) {
+        this.addr = addr;
     }
 
     public String getManu() {

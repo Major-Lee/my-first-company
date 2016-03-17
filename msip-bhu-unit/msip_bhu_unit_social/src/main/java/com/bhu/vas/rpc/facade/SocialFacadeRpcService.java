@@ -59,7 +59,6 @@ public class SocialFacadeRpcService {
     private SocialMessageService socialMessageService;
 
 
-
     /**
      * 点赞/踩/举报
      * todo(xiaowei):
@@ -148,7 +147,7 @@ public class SocialFacadeRpcService {
                 SocialFetchFollowListVTO vtos = result.get(index);
                 if (handSerUser != null) {
                     SocialUserVTO SUser = new SocialUserVTO();
-                    SUser.setNick(handSerUser.getNick());
+                    SUser.setNick(""); //todo(bluesand):
                     SUser.setUid(handSerUser.getUid());
                     vtos.setUser(SUser);
                     ids.add((int) handSerUser.getUid());
@@ -282,7 +281,7 @@ public class SocialFacadeRpcService {
             for (HandsetUser handsetUser : handsetUsers) {
                 if (handsetUser != null) {
                     HandsetUserVTO hdVTO = hdVTOs.get(index);
-                    hdVTO.setNick(handsetUser.getNick());
+                    hdVTO.setNick(""); //todo(bluesand):
 
                     if (uid != null && uid >0) {
                         hdVTO.setFollowed(SocialFollowSortedSetService.getInstance().isFollowed(uid,handsetUser.getId()));
@@ -330,9 +329,9 @@ public class SocialFacadeRpcService {
      */
     public boolean modifyHandset(long uid, String hd_mac, String nick) {
 
-        HandsetUser handsetUser = handsetUserService.getById(hd_mac);
-        handsetUser.setNick(nick);
-        handsetUserService.update(handsetUser);
+        //todo(bluesand):修改终端昵称
+
+        //如果用户对应的这个终端没有,就构建一个新的,
 
         this.follow(uid, hd_mac);
 
@@ -392,6 +391,7 @@ public class SocialFacadeRpcService {
         wifiVTO.setSsid(wifi.getSsid());
         wifiVTO.setLat(wifi.getLat());
         wifiVTO.setLon(wifi.getLon());
+        wifiVTO.setAddr(wifi.getAddr());
 
         WifiActionDTO action = WifiActionHashService.getInstance().counts(bssid);
         wifiVTO.setAction(action);
@@ -411,7 +411,7 @@ public class SocialFacadeRpcService {
             WifiVisitorVTO vto = new WifiVisitorVTO();
             vto.setUid(user.getId());
             vto.setAvatar(user.getAvatar());
-            vto.setN(user.getNick());
+            vto.setNick(user.getNick());
             vtos.add(vto);
         }
 
