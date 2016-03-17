@@ -23,6 +23,10 @@ public enum OperationDS {
 	
 	
 	DS_Http_Ad_Start("01","开启广告注入"),
+	
+	DS_SharedNetworkWifi_Start("15","开启共享网络"),
+	DS_SharedNetworkWifi_Stop("16" ,"关闭共享网络"),
+	
 	//DS_Http_404_Start("15","开启404错误页面"),
 	//DS_Http_Redirect_Start("16","开启http redirect"),
 	

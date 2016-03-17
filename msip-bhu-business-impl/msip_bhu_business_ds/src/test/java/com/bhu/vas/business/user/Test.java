@@ -12,13 +12,13 @@ import com.smartwork.msip.cores.helper.ArithHelper;
 
 public class Test {
 
-	public static void main(String[] args) throws UnsupportedEncodingException {
+	public static void main(String[] args) throws UnsupportedEncodingException, InterruptedException {
 		
-		String aaa = "陈磊兴";
+		String aaa = "1必虎Uplink共享WiFi";
 		
-		System.out.println(StringEscapeUtils.unescapeXml(aaa));
+		System.out.println(StringEscapeUtils.unescapeHtml(aaa));
 		
-		System.out.println(StringEscapeUtils.escapeXml(aaa));
+		System.out.println(StringEscapeUtils.escapeHtml(aaa));//.escapeXml(aaa));
 		
 		// TODO Auto-generated method stub
 		List<Integer> list = new ArrayList<Integer>();
@@ -39,8 +39,39 @@ public class Test {
 //		System.out.println(entity.getCurrent_cpu_usage());
 		//System.out.println(URLEncoder.encode("北京市", "utf-8"));
 		System.out.println(ArithHelper.percent(13495, 13496, 2));
+		
+		final String aa = new String("1");
+		final String bb = new String("1");
+		final Test ttt = new Test();
+		Thread a1 = new Thread(){
+			@Override
+			public void run() {
+				ttt.doPrint("a1",aa);
+			}
+		};
+		
+		Thread a2 = new Thread(){
+			@Override
+			public void run() {
+				ttt.doPrint("a2",bb);
+			}
+		};
+		a1.start();
+		a2.start();
+		Thread.currentThread().join();
 	}
 	
+	
+	public void doPrint(final String name,String lock){
+		synchronized (lock) {
+			System.out.println(name+":"+lock);
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 		//使用java正则表达式获取url地址中的主域名代码如下:
 		/**

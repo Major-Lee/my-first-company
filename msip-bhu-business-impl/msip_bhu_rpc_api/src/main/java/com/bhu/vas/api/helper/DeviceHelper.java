@@ -855,33 +855,56 @@ public class DeviceHelper {
 				"</mod>"+
 				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
 			"</dev>";
-/*	public static final String DeviceSetting_Switch_Workmode_Router2Bridge =
-			"<dev>"+
-			    "<sys>"+
-			    	"<config><ITEM sequence=\"-1\" /></config>"+
-			    "</sys>"+
-			    "<mod>"+
-					"<basic>"+
-						"<mode><ITEM mode=\"bridge-ap\" scene=\"ap\"/></mode>"+
-						"<lan><ITEM ip_mode=\"dhcpc\" /></lan>"+
-					"</basic>"+
-				"</mod>"+
-				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
+
+	
+	
+	
+	public static final String DeviceSetting_Start_SharedNetworkWifi_Uplink =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"14\" /></vap></wifi>"+
+				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+	
+				"<net>"+
+					"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/></interface>"+
+					"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"%s\"/></bridge>"+
+					"<webportal>"+
+						"<setting>"+
+							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3\" auth_mode=\"local\" block_mode=\"%s\" local_mode=\"signal\" signal_limit=\"%s\" max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+
+							"extend_memory_enable=\"disable\" guest_portal_en=\"enable\" progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\" "+ 
+							"open_resource=\"%s\" forbid_management=\"enable\" "+ 
+							"redirect_url=\"%s\"/>"+ 
+						"</setting>"+
+					"</webportal>"+
+				"</net>"+
 			"</dev>";
-	public static final String DeviceSetting_Switch_Workmode_Bridge2Router =
-			"<dev>"+
-			    "<sys>"+
-			    	"<config><ITEM sequence=\"-1\" /></config>"+
-			    "</sys>"+
-			    "<mod>"+
-					"<basic>"+
-						"<mode><ITEM mode=\"router-ap\" scene=\"router\"/></mode>"+
-						"<wan><ITEM mode=\"dhcpc\" /></wan>"+
-						"<lan><ITEM ip=\"192.168.62.1\" netmask=\"255.255.255.0\" dhcp_enable=\"enable\" /></lan>"+
-					"</basic>"+
-				"</mod>"+
-				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
-			"</dev>";*/
+	public static final String DeviceSetting_Start_SharedNetworkWifi_SafeSecure =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"14\" /></vap></wifi>"+
+				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+		
+				"<net>"+
+					"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/></interface>"+
+					"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"%s\"/></bridge>"+	
+					"<webportal>"+
+						"<setting>"+
+							"<ITEM enable=\"enable\" interface=\"wlan3\" auth_mode=\"remote\" block_mode=\"%s\" local_mode=\"immediate\" signal_limit=\"%s\"  max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+ 
+							" guest_portal_en=\"disable\" allow_ip=\"\" allow_domain=\"\" tmp_pass=\"enable\" tmp_pass_duration=\"60\" manage_server=\"disable\" "+
+							" open_resource=\"%s\" forbid_management=\"disable\" allow_https=\"disable\" "+
+							" remote_auth_url=\"%s\" portal_server_url=\"%s\" dns_default_ip=\"%s\"  />"+ 
+						"<setting>"+
+					"</webportal>"+
+				"</net>"+	
+			"</dev>";
+	
+	public static final String DeviceSetting_Stop_SharedNetworkWifi =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+			     "<net>"+
+			          "<interface><ITEM name=\"wlan3\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\"/></interface>"+
+			          "<webportal><setting><ITEM  enable=\"disable\"  /></setting></webportal>"+
+			     "</net>"+
+			     "<wifi>"+
+			          "<vap><ITEM name=\"wlan3\" guest_en=\"disable\" isolation=\"0\" /></vap>"+
+			     "</wifi>"+
+			     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>"+
+		    "</dev>";
 	
 	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" real_channel=\"%s\"/>";
