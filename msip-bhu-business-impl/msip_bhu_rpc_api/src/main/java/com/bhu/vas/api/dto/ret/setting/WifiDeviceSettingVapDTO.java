@@ -1,7 +1,5 @@
 package com.bhu.vas.api.dto.ret.setting;
 
-import org.apache.commons.lang.StringEscapeUtils;
-
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 
 
