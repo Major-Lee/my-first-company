@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.social.SocialRemarkDTO;
 import com.bhu.vas.api.dto.social.WifiActionDTO;
 import com.bhu.vas.api.helper.SocialActionType;
 import com.bhu.vas.api.rpc.social.dto.SocialStatisManufatorDTO;

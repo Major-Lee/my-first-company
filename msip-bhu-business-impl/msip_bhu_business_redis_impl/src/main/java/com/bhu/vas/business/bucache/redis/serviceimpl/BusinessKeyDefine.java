@@ -112,7 +112,7 @@ public class BusinessKeyDefine {
 
 		public static final String VISITOR= "SV";
 
-		public static final String REMARKS= "SRM.";
+		public static final String CARE = "SC.";
 
 	}
 }

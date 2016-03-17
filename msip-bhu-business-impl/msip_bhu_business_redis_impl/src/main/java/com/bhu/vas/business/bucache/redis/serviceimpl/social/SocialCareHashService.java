@@ -1,11 +1,9 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.social;
 
-import com.bhu.vas.api.dto.social.SocialRemarkDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import redis.clients.jedis.JedisPool;
 
 /**
@@ -27,7 +25,7 @@ public class SocialCareHashService extends AbstractRelationHashCache {
 
     private String generateKey(long uid){
         StringBuilder sb = new StringBuilder();
-        sb.append(BusinessKeyDefine.Social.REMARKS).append(uid);
+        sb.append(BusinessKeyDefine.Social.CARE).append(uid);
         return sb.toString();
     }
 
@@ -41,12 +39,12 @@ public class SocialCareHashService extends AbstractRelationHashCache {
     }
 
     public boolean isCared(long uid, String hd_mac){
-       return this.hexists(Long.toString(uid),hd_mac);
+       return this.hexists(generateKey(uid),hd_mac);
     }
 
 
     public String getCareValue(long uid, String hd_mac) {
-        return this.hget(String.valueOf(uid) ,hd_mac);
+        return this.hget(generateKey(uid) ,hd_mac);
     }
 
 
