@@ -313,15 +313,15 @@ public class UserWalletFacadeService{
 		apply = userWalletWithdrawApplyService.insert(apply);*/
 		return doWithdrawApplyOper(appid,type,uid,pwd,cash,remoteip);
 	}
-	private Map<String,String> lockMap = new HashMap<>();
+	private Map<String,String> lockWithdrawMap = new HashMap<>();
 	//给每个用户维护一个锁定key，没有就创建一个
 	private synchronized String lockObjectFetch(int uid){
 		String lockKey = String.valueOf(uid);
-		if(!lockMap.containsKey(lockKey)){
-			lockMap.put(lockKey, lockKey);
+		if(!lockWithdrawMap.containsKey(lockKey)){
+			lockWithdrawMap.put(lockKey, lockKey);
 			return lockKey;
 		}else{
-			return lockMap.get(lockKey);
+			return lockWithdrawMap.get(lockKey);
 		}
 	}
 	
