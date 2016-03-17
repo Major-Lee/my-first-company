@@ -213,8 +213,8 @@ public enum ResponseErrorCode {
 	REQUEST_UNKNOW_ERROR("599","unknow.pagerequest.error"),
 
 	//Social
-	SOCIAL_FOLLOW_ERROR("1100","1100.follow.error"),
-	SOCIAL_FOLLOW_MAX("1101","1101.follow.isMAX.error");
+	SOCIAL_FOLLOW_ERROR("1100","follow.error"),
+	SOCIAL_FOLLOW_MAX("1101","follow.max.error");
 
     private String code;
     private String i18n;
