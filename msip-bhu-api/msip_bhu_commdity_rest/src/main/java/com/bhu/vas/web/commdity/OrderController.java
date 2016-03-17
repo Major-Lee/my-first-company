@@ -135,7 +135,7 @@ public class OrderController extends BaseController{
 			@RequestParam(required = false) String context,
 			@RequestParam(required = true) Integer commdityid,
 			@RequestParam(required = true) String payment_type,
-			@RequestParam(required = true, value = "pcd_url") String payment_completed_url
+			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
 			) {
 		
 		//1:生成订单
