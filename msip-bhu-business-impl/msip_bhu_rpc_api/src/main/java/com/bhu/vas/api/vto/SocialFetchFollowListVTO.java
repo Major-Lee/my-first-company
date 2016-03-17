@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 public class SocialFetchFollowListVTO implements Serializable{
 
-    public static final String TYPE = "urooter";
+    public static final String TYPE = "urouter";
 
     private String hd_mac;
     private SocialUserVTO User;
