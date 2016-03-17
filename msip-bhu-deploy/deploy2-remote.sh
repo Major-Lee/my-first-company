@@ -321,23 +321,23 @@ echo '发布其他服务成功'$Deploy2ComponentServerUsoop
 
 echo '准备发布其他服务到'$Deploy2ComponentServerLaw
 
-echo 'deploy msip_bhu_backend_online to ...@'$Deploy2ComponentServerLaw
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/spring*.RELEASE.jar    root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/msip_*.jar   root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/classes/com/     root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_online/bin/com/
-echo 'deploy msip_bhu_backend_online successfully @'$Deploy2ComponentServerLaw
+echo 'deploy msip_bhu_unit_commdity to ...@'$Deploy2ComponentServerLaw
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_commdity/lib/spring*.RELEASE.jar  root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_unit_commdity/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_commdity/lib/msip_*.jar           root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_unit_commdity/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_commdity/classes/com/             root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_unit_commdity/classes/com/
+echo 'deploy msip_bhu_unit_commdity successfully @'$Deploy2ComponentServerLaw
 
-echo 'deploy msip_bhu_backend_task to ...@'$Deploy2ComponentServerLaw
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/lib/spring*.RELEASE.jar    root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_task/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/lib/msip_*.jar   root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_task/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/classes/com/     root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_task/bin/com/
-echo 'deploy msip_bhu_backend_task successfully @'$Deploy2ComponentServerLaw
+echo 'deploy msip_bhu_backend_commdity to ...@'$Deploy2ComponentServerLaw
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_commdity/lib/spring*.RELEASE.jar    root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_commdity/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_commdity/lib/msip_*.jar   root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_commdity/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_commdity/classes/com/   root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_commdity/bin/com/
+echo 'deploy msip_bhu_backend_commdity successfully @'$Deploy2ComponentServerLaw
 
-echo 'deploy msip_bhu_dataimport to ...@'$Deploy2ComponentServerLaw
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/spring*.RELEASE.jar      root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_dataimport/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/msip_*.jar     root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_dataimport/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/classes/com/       root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_dataimport/bin/com/
-echo 'deploy msip_bhu_dataimport successfully @'$Deploy2ComponentServerLaw
+echo 'deploy msip_bhu_backend_task_applies_notify to ...@'$Deploy2ComponentServerLaw
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task_applies_notify/lib/spring*.RELEASE.jar    root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_task_applies_notify/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task_applies_notify/lib/msip_*.jar   root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_task_applies_notify/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task_applies_notify/classes/com/     root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_backend_task_applies_notify/bin/com/
+echo 'deploy msip_bhu_backend_task_applies_notify successfully @'$Deploy2ComponentServerLaw
 
 echo 'deploy msip_bhu_commdity_rest to ...@'$Deploy2ComponentServerLaw
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_commdity_rest/WEB-INF/lib/spring*.RELEASE.jar    root@$Deploy2ComponentServerLaw:/BHUData/apps/msip_bhu_commdity_rest/WEB-INF/lib/
