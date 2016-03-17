@@ -31,8 +31,9 @@ public class SocialCareHashService extends AbstractRelationHashCache {
         return sb.toString();
     }
 
-    public void care(long uid, String hd_mac, SocialRemarkDTO dto){
-        this.hset(generateKey(uid),hd_mac, JsonHelper.getJSONString(dto));
+
+    public void care(long uid, String hd_mac, String dto){
+        this.hset(generateKey(uid),hd_mac, dto);
     }
 
     public void unCare(long uid,String hd_mac){
@@ -43,8 +44,9 @@ public class SocialCareHashService extends AbstractRelationHashCache {
        return this.hexists(Long.toString(uid),hd_mac);
     }
 
-    public String getNick(long uid,String hd_mac){
-        return this.hget(Long.toString(uid),hd_mac);
+
+    public String getCareValue(long uid, String hd_mac) {
+        return this.hget(String.valueOf(uid) ,hd_mac);
     }
 
 

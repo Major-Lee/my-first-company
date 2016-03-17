@@ -149,7 +149,7 @@ public class SocialFacadeRpcService {
                 if (handSerUser != null) {
                     SocialUserVTO SUser = new SocialUserVTO();
                     SUser.setUid(handSerUser.getUid());
-                    SUser.setNick(SocialCareHashService.getInstance().getNick(handSerUser.getUid(),vtos.getHd_mac()));
+                    SUser.setNick(SocialCareFacadeService.getNick(handSerUser.getUid(),vtos.getHd_mac()));
                     vtos.setUser(SUser);
                     ids.add((int) handSerUser.getUid());
                 }
@@ -282,9 +282,9 @@ public class SocialFacadeRpcService {
             for (HandsetUser handsetUser : handsetUsers) {
                 if (handsetUser != null) {
                     HandsetUserVTO hdVTO = hdVTOs.get(index);
-                    hdVTO.setNick(""); //todo(bluesand):
 
                     if (uid != null && uid >0) {
+                        hdVTO.setNick(SocialCareFacadeService.getNick(uid, hd_mac));
                         hdVTO.setFollowed(SocialFollowSortedSetService.getInstance().isFollowed(uid,handsetUser.getId()));
                     }
                     ids.add((int)handsetUser.getUid());
@@ -330,11 +330,10 @@ public class SocialFacadeRpcService {
      */
     public boolean modifyHandset(long uid, String hd_mac, String nick) {
 
-        //todo(bluesand):修改终端昵称
-
-        //如果用户对应的这个终端没有,就构建一个新的,
 
         this.follow(uid, hd_mac);
+
+        SocialCareFacadeService.moidfyNick(uid, hd_mac, nick);
 
         return true;
     }
