@@ -1161,11 +1161,12 @@ public class DeviceURouterRestBusinessFacadeService {
 		if(uws_dto != null){
 			uws_vto.setOn(uws_dto.isOn());
 			//获取最近12小时出现的终端数量
-			long current_ts = System.currentTimeMillis();
+/*			long current_ts = System.currentTimeMillis();
 			long hours12ago_ts = current_ts - (12 * 3600 * 1000l);
 			long recent12hours_count = TerminalRecentSortedSetService.getInstance().sizeByScore(user_setting_entity.getId(), 
 					hours12ago_ts, current_ts);
-			uws_vto.setRecent_c(recent12hours_count);
+			uws_vto.setRecent_c(recent12hours_count);*/
+			uws_vto.setRecent_c(0);
 		}
 		UserVistorWifiSettingDTO uvw_dto = user_setting_entity.getUserSetting(UserVistorWifiSettingDTO.
 				Setting_Key, UserVistorWifiSettingDTO.class);
