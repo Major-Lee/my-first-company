@@ -61,7 +61,7 @@ public class SharedNetworkFacadeServiceTest extends BaseTest{
 	public void test003FetchUserSharedNetworkConf(){
 		for(int i = 0;i<100;i++){
 			ParamSharedNetworkDTO dto = sharedNetworkFacadeService.fetchUserSharedNetworkConf(i,VapEnumType.SharedNetworkType.SafeSecure);
-			System.out.println("2"+JsonHelper.getJSONString(dto));	
+			System.out.println("0"+JsonHelper.getJSONString(dto));	
 		}
 	}
 	
@@ -69,7 +69,7 @@ public class SharedNetworkFacadeServiceTest extends BaseTest{
 	public void test004AddDevices2SharedNetwork(){
 			List<String> result =  sharedNetworkFacadeService.addDevices2SharedNetwork(3,VapEnumType.SharedNetworkType.SafeSecure, 
 					"84:82:f4:de:26:8a","84:82:f4:de:26:8c","84:82:f4:de:26:88");
-			System.out.println("2"+JsonHelper.getJSONString(result));	
+			System.out.println("1"+JsonHelper.getJSONString(result));	
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class SharedNetworkFacadeServiceTest extends BaseTest{
 	@Test
 	public void test005FetchSupportedSharedNetwork(){
 			List<SharedNetworkVTO> result = sharedNetworkFacadeService.fetchSupportedSharedNetwork();
-			System.out.println("2"+JsonHelper.getJSONString(result));	
+			System.out.println("3"+JsonHelper.getJSONString(result));	
 	}
 	
 	//@Test
