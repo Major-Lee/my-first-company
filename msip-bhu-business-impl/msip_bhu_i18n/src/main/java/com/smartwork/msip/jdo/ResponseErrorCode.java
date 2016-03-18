@@ -141,6 +141,7 @@ public enum ResponseErrorCode {
 	AUTH_MOBILENO_INVALID_FORMAT("271","auth.mobileno.format.invalid"),
 	AUTH_MOBILENO_DATA_EXIST("272","auth.mobileno.data.exist"),
 	AUTH_MOBILENO_INVALID_LENGTH("273","auth.mobileno.length.invalid"),
+	AUTH_MOBILENO_DATA_NOTEXIST("274","auth.mobileno.data.notexist"),
 	
 	AUTH_CAPTCHA_EMPTY("275","auth.captcha.empty"),
 	AUTH_CAPTCHA_DATA_NOTEXIST("276","auth.captcha.data.notexist"),
@@ -176,6 +177,7 @@ public enum ResponseErrorCode {
 	USER_TYPE_NOTMATCHED("320","user.type.notmatched"),
 	USER_TYPE_WASNOT_NORMAL("321", "user.type.wasnot.normal"),
 	USER_MOBILE_ALREADY_BEUSED("322","user.mobile.already.beused"),
+	USER_MOBILE_ATTRIBUTE_NOTEXIST("323","user.mobile.attribute.notexist"),
 	
 	
 	USER_WALLET_WITHDRAW_OPER_BREAK("324", "user.wallet.withdraw.break"),

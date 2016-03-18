@@ -102,16 +102,16 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> withdrawPwdSet(int uid, String pwd) {
-		logger.info(String.format("withdrawPwdSet with uid[%s] pwd[%s]",uid,pwd));
-		return userWalletUnitFacadeService.withdrawPwdSet(uid, pwd);
+	public RpcResponseDTO<Boolean> withdrawPwdSet(int uid,String captcha, String pwd) {
+		logger.info(String.format("withdrawPwdSet with uid[%s] captcha[%s] pwd[%s]",uid,captcha,pwd));
+		return userWalletUnitFacadeService.withdrawPwdSet(uid,captcha, pwd);
 	}
 
-	@Override
+/*	@Override
 	public RpcResponseDTO<Boolean> withdrawPwdUpd(int uid, String pwd,String npwd) {
 		logger.info(String.format("withdrawPwdUpd with uid[%s] pwd[%s] npwd[%s]",uid,pwd,npwd));
 		return userWalletUnitFacadeService.withdrawPwdUpd(uid, pwd, npwd);
-	}
+	}*/
 
 	@Override
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(int uid, String transmode,String transtype, int pageNo, int pageSize) {
