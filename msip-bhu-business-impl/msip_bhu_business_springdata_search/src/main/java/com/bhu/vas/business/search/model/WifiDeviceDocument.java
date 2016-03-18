@@ -218,6 +218,15 @@ public class WifiDeviceDocument extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
+			index = FieldIndex.analyzed,
+			searchAnalyzer = "lowercase_whitespace",
+			indexAnalyzer = "lowercase_whitespace",
+			store = true
+	)
+	private String d_extension;//设备业务扩展大字段
+	
+	@Field(
+			type = FieldType.String,
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
@@ -506,6 +515,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_industry(String d_industry) {
 		this.d_industry = d_industry;
+	}
+	
+	public String getD_extension() {
+		return d_extension;
+	}
+
+	public void setD_extension(String d_extension) {
+		this.d_extension = d_extension;
 	}
 
 	public String getUpdatedat() {
