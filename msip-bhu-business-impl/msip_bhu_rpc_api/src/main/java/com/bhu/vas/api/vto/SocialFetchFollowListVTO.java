@@ -17,6 +17,15 @@ public class SocialFetchFollowListVTO implements Serializable{
     private SocialUserVTO User;
     private HandsetMeetDTO last_meet;
     private String type;
+    private String nick;
+
+    public String getNick() {
+        return nick;
+    }
+
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
 
     public String getHd_mac() {
         return hd_mac;
