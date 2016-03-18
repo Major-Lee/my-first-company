@@ -12,6 +12,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceCloudDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
@@ -23,6 +24,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.rpc.facade.UserDeviceUnitFacadeService;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
@@ -218,4 +220,11 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 		logger.info(String.format("portalDeviceProfile mac[%s]",mac));
 		return userDeviceUnitFacadeService.portalDeviceProfile(mac);
 	}
+    
+    @Override
+	public RpcResponseDTO<TailPage<UserDeviceCloudDTO>> devicePagesByUid(Integer uid, String dut, int pageNo, int pageSize){
+    	logger.info(String.format("devicePagesByUid with uid[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, dut, pageNo, pageSize));
+		return userDeviceUnitFacadeService.devicePagesByUid(uid, dut, pageNo, pageSize);
+	}
+    
 }
