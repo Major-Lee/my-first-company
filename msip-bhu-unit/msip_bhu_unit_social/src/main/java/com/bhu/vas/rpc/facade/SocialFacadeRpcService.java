@@ -348,6 +348,10 @@ public class SocialFacadeRpcService {
     public HandsetUserDetailVTO fetchHandsetUserDetail(Long uid, String hd_mac_self, String hd_mac, String bssid) {
 
         HandsetUserVTO handsetUserVTO = new HandsetUserVTO();
+
+        if (uid != null && uid >0) {
+            handsetUserVTO.setNick(SocialCareFacadeService.getNick(uid, hd_mac));
+        }
         handsetUserVTO.setHd_mac(hd_mac);
         handsetUserVTO.setLast(SocialStorageFacadeService.getLastHandsetMeet(hd_mac_self, hd_mac));
 
