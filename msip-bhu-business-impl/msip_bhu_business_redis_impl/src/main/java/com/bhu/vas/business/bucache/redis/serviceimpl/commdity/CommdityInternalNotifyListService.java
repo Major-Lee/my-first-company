@@ -1,5 +1,7 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.commdity;
 
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 
 import redis.clients.jedis.JedisPool;
@@ -97,9 +99,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     	//boolean success = true;
     	//simulateResponsePaymentCompletedNotify(orderid, success);
     	//simulateDeliverNotify();
-    	while(true){
-    		simulateUpayDrawPaymentCompletedNotify(true);
-    	}
+//    	while(true){
+//    		simulateUpayDrawPaymentCompletedNotify(true);
+//    	}
+    	simulateDeliverNotify();
     }
     
     /*************           test           **************/
@@ -128,11 +131,20 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     
     public static void simulateDeliverNotify(){
 		RequestDeliverNotifyDTO requestDeliverNotifyDto = new RequestDeliverNotifyDTO();
+		requestDeliverNotifyDto.setOrderid("10012016031800000000000000000030");
+		requestDeliverNotifyDto.setAmount("0.1");
+		requestDeliverNotifyDto.setApp_deliver_detail("14400");
+		requestDeliverNotifyDto.setBu_mobileno("18673117874");
+		requestDeliverNotifyDto.setMac("84:82:f4:09:54:27");
+		requestDeliverNotifyDto.setUmac("38:bc:1a:2f:7e:2a");
+		requestDeliverNotifyDto.setPaymented_ds(DateTimeHelper.getDateTime());
+		requestDeliverNotifyDto.setCommdityid(1);
+		requestDeliverNotifyDto.setContext("aaa");
 		String notify_message = JsonHelper.getJSONString(requestDeliverNotifyDto);
-		for(int i = 0;i<1000;i++){
-			System.out.println("ok1");
-			CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(notify_message);
-		}
+		//for(int i = 0;i<1000;i++){
+		System.out.println("ok1");
+		CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(notify_message);
+		//}
 		System.out.println("ok");
     }
 

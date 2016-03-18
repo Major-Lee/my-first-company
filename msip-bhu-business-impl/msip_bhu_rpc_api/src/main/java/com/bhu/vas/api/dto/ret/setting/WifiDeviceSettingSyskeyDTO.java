@@ -2,7 +2,10 @@ package com.bhu.vas.api.dto.ret.setting;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
+import com.smartwork.msip.cores.helper.StringHelper;
 /**
  * 通过设备操作绑定dto
  * @author tangzichao
@@ -67,7 +70,11 @@ public class WifiDeviceSettingSyskeyDTO implements Serializable, DeviceSettingBu
 		Object[] properties = new Object[3];
 		properties[0] = keynum;
 		properties[1] = keystatus;
-		properties[2] = industry;
+		if(StringUtils.isNotEmpty(industry)){
+			properties[2] = industry;
+		}else{
+			properties[2] = StringHelper.EMPTY_STRING_GAP;
+		}
 		return properties;
 	}
 	
