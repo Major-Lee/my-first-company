@@ -40,7 +40,7 @@ public class SocialRelationController extends BaseController {
      * @param type
      */
     @ResponseBody()
-    @RequestMapping(value = "/click_praise", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/click", method = {RequestMethod.GET, RequestMethod.POST})
     public void clickPraise(
             HttpServletResponse response,
             @RequestParam(required = true) long uid,

@@ -121,20 +121,24 @@ public class SocialFacadeRpcService {
      * 获取关注列表
      *
      * @param uid
-     * @param hd_mac_self
      * @return
      */
-    public TailPage<SocialFetchFollowListVTO> fetchFollowList(long uid, String hd_mac_self, int pageNo, int pageSize) {
+    public TailPage<SocialFetchFollowListVTO> fetchFollowList(long uid, int pageNo, int pageSize) {
         Set<String> set = SocialFollowSortedSetService.getInstance().fetchFollowList(uid, pageNo, pageSize);
         int total = set.size();
         List<SocialFetchFollowListVTO> result = new ArrayList<SocialFetchFollowListVTO>();
         List<String> hds = new ArrayList<>();
 
         if (set != null && set.size() > 0) {
+            ModelCriteria mc = new ModelCriteria();
+            mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("uid", uid);
+            List<HandsetUser> list= handsetUserService.findModelByModelCriteria(mc);
+            String hd_mac_self = list.get(0).getId();
             for (String hd_mac : set) {
                 SocialFetchFollowListVTO vto = new SocialFetchFollowListVTO();
                 hds.add(hd_mac);
                 vto.setHd_mac(hd_mac);
+
                 HandsetMeetDTO meetDto = SocialStorageFacadeService.getLastHandsetMeet(hd_mac_self, hd_mac);
                 vto.setLast_meet(meetDto);
                 result.add(vto);
