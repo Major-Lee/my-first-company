@@ -472,9 +472,9 @@ public class UserWalletFacadeService{
 	public UserWallet doSetWithdrawPwd(int uid,String pwd){
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
-		if(StringUtils.isNotEmpty(uwallet.getPassword())){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_ALREADYEXIST,new String[]{"提现密码"});
-		}
+		//if(StringUtils.isNotEmpty(uwallet.getPassword())){
+		//	throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_ALREADYEXIST,new String[]{"提现密码"});
+		//}
 		uwallet.setPlainpwd(pwd);
 		uwallet.setPassword(null);
 		uwallet = userWalletService.update(uwallet);
