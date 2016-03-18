@@ -93,7 +93,7 @@ public class SocialFacadeRpcService {
     public void follow(long uid, String hd_mac) {
 
         HandsetUser handsetUser = handsetUserService.getById(hd_mac);
-            if (handsetUser.getUid() != uid) {
+            if (handsetUser == null || handsetUser.getUid() != uid) {
                 if (SocialFollowSortedSetService.getInstance().isFollowMax(uid)){
                     SocialFollowSortedSetService.getInstance().follow(uid, hd_mac);
                 }else {
