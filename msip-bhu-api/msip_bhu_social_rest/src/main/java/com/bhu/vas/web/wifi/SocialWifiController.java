@@ -78,7 +78,9 @@ public class SocialWifiController extends BaseController {
             @RequestParam(required = true, value = "message") String message) {
         try {
         	bssid=bssid.toLowerCase();
+        	if(hd_mac!=null){
         	hd_mac=hd_mac.toLowerCase();
+        	}
             if (socialRpcService.comment(uid, bssid, hd_mac, message)) {
                 SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ResponseSuccessCode.COMMON_BUSINESS_SUCCESS));
             } else {
@@ -127,7 +129,9 @@ public class SocialWifiController extends BaseController {
                                          @RequestParam(required = true, value = "uid") String uid,
                                          @RequestParam(required = false, value = "hd_mac") String hd_mac) {
         try {
+        	if(hd_mac!=null){
         	hd_mac=hd_mac.toLowerCase();
+        	}
             RpcResponseDTO<List<CommentedWifiVTO>> rpcResult = socialRpcService.fetchUserCommentWifiList(uid, hd_mac);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } catch (Exception ex) {
