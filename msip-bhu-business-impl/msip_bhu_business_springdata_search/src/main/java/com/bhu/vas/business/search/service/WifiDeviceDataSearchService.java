@@ -73,6 +73,36 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	}
 	
 	/**
+	 * 根据条件搜索分页数据
+	 * 绑定设备的用户id
+	 * 设备的业务线类型
+	 * @param u_id 用户id
+	 * @param d_dut 设备业务线
+	 * @param pageNo 
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<WifiDeviceDocument> searchPageByUidAndDut(Integer u_id, String d_dut, int pageNo, int pageSize){
+		if(u_id == null) return null;
+		
+		SearchConditionPack pack_must = null;
+		
+		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
+		
+		if(StringUtils.isNotEmpty(d_dut)){
+			SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_dut);
+			pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_d_dut, sc_u_id);
+		}else{
+			pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_u_id);
+		}
+
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		return super.searchByConditionMessage(scm, pageNo, pageSize);
+	}
+	
+	/**
 	 * 根据message动态条件进行scan的iterator
 	 * @param message
 	 * @param notify
