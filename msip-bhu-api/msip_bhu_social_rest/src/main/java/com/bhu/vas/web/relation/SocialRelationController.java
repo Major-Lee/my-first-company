@@ -45,7 +45,7 @@ public class SocialRelationController extends BaseController {
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
             @RequestParam(required = true) String bssid,
-            @RequestParam(required = false, defaultValue = "up") String type) {
+            @RequestParam(required = true) String type) {
 
         RpcResponseDTO<Boolean> rpcResult = socialRpcService.clickPraise(uid, bssid.toLowerCase(), type);
         if (!rpcResult.hasError())
@@ -108,7 +108,6 @@ public class SocialRelationController extends BaseController {
      *
      * @param response
      * @param uid
-     * @param hd_mac
      * @param pageNo
      * @param pageSize
      */
@@ -117,10 +116,9 @@ public class SocialRelationController extends BaseController {
     public void fetchFollowList(
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
-            @RequestParam(required = true) String hd_mac,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
-        RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> rpcResult = socialRpcService.fetchFollowList(uid, hd_mac.toLowerCase(), pageNo, pageSize);
+        RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> rpcResult = socialRpcService.fetchFollowList(uid,pageNo, pageSize);
         try {
             SpringMVCHelper.renderJson(response,
                     ResponseSuccess.embed(rpcResult.getPayload()));

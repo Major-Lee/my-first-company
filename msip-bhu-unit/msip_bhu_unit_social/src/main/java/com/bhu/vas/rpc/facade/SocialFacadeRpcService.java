@@ -62,11 +62,6 @@ public class SocialFacadeRpcService {
 
     /**
      * 点赞/踩/举报
-     * todo(xiaowei):
-     * 1. WifiActionHashService单例直接调用就行了.
-     * 2. type定义一个枚举类型,其他的action type不处理
-     * 3. hadd方法换个init的方法名字,见名知义
-     * 4. counts方法如果业务不需要就去掉
      * @param bssid
      * @param type
      * @return
@@ -130,10 +125,12 @@ public class SocialFacadeRpcService {
         List<String> hds = new ArrayList<>();
 
         if (set != null && set.size() > 0) {
+
             ModelCriteria mc = new ModelCriteria();
             mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("uid", uid);
             List<HandsetUser> list= handsetUserService.findModelByModelCriteria(mc);
             String hd_mac_self = list.get(0).getId();
+
             for (String hd_mac : set) {
                 SocialFetchFollowListVTO vto = new SocialFetchFollowListVTO();
                 hds.add(hd_mac);
