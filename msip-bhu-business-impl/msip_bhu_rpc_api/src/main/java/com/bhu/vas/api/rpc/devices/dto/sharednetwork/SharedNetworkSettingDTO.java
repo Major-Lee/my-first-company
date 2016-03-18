@@ -47,7 +47,6 @@ public class SharedNetworkSettingDTO implements java.io.Serializable{
 		this.c = c;
 	}
 	
-	
 	public void turnOn(ParamSharedNetworkDTO psn){
 		this.setOn(true);
 		this.setDs(false);
@@ -62,5 +61,6 @@ public class SharedNetworkSettingDTO implements java.io.Serializable{
 	}
 	public void remoteNotify(boolean on){
 		this.setDs(true);
+		this.setC(System.currentTimeMillis());
 	}
 }

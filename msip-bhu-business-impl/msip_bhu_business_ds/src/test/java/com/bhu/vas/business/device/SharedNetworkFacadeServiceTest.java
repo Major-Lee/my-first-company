@@ -11,6 +11,7 @@ import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkVTO;
 import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetwork;
 import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -78,6 +79,11 @@ public class SharedNetworkFacadeServiceTest extends BaseTest{
 			System.out.println("2"+JsonHelper.getJSONString(result));	
 	}
 	
+	@Test
+	public void test005FetchSupportedSharedNetwork(){
+			List<SharedNetworkVTO> result = sharedNetworkFacadeService.fetchSupportedSharedNetwork();
+			System.out.println("2"+JsonHelper.getJSONString(result));	
+	}
 	
 	//@Test
 	public void test100Get(){

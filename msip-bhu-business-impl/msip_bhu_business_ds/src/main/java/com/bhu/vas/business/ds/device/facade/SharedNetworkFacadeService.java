@@ -10,8 +10,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkVTO;
 import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetwork;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.business.ds.device.service.UserDevicesSharedNetworkService;
@@ -72,14 +74,6 @@ public class SharedNetworkFacadeService {
 	 * @param paramDto
 	 */
 	public void doApplySharedNetworksConfig2Devices(int uid,ParamSharedNetworkDTO paramDto){
-		
-	}
-	
-	public void saveSharedNetworksConfig(){
-		
-	}
-	
-	public void removeSharedNetworksConfig(){
 		
 	}
 	
@@ -198,8 +192,8 @@ public class SharedNetworkFacadeService {
 	}
 	
 	
-	public List<VapEnumType.SharedNetworkType> fetchSupportedSharedNetwork(){
-		return Arrays.asList(VapEnumType.SharedNetworkType.values());
+	public List<SharedNetworkVTO> fetchSupportedSharedNetwork(){
+		return SharedNetworkType.getSharedNetworkVtos();
 	}
 
 	public UserService getUserService() {
