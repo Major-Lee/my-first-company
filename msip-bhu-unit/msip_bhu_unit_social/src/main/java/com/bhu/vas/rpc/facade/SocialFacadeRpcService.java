@@ -147,14 +147,14 @@ public class SocialFacadeRpcService {
             int index = 0;
             for (HandsetUser handSerUser : handsetList) {
                 SocialFetchFollowListVTO vtos = result.get(index);
-                
+
+                SocialUserVTO SUser = new SocialUserVTO();
+                SUser.setNick(SocialCareFacadeService.getNick(uid,vtos.getHd_mac()));
                 if (handSerUser != null) {
-                    SocialUserVTO SUser = new SocialUserVTO();
                     SUser.setUid(handSerUser.getUid());
-                    SUser.setNick(SocialCareFacadeService.getNick(uid,vtos.getHd_mac()));
-                    vtos.setUser(SUser);
                     ids.add((int) handSerUser.getUid());
                 }
+                vtos.setUser(SUser);
                 index++;
             }
         }
