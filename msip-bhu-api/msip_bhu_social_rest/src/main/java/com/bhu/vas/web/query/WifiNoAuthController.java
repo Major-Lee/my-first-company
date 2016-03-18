@@ -44,7 +44,7 @@ public class WifiNoAuthController extends BaseController {
             @RequestParam(required = true, value = "rate") String rate) {
 
         try {
-            boolean ret  = socialRpcService.modifyWifi(uid, bssid, rate);
+            boolean ret  = socialRpcService.modifyWifi(uid, bssid.toLowerCase(), rate);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
 
         } catch (Exception e) {

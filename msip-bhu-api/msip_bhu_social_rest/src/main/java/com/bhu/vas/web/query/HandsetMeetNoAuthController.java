@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletResponse;
     ) {
 
         try {
-            boolean ret = socialRpcService.handsetMeet(uid, hd_mac, hd_macs, bssid, ssid, lat, lon, addr);
+            boolean ret = socialRpcService.handsetMeet(uid, hd_mac.toLowerCase(), hd_macs.toLowerCase(), bssid.toLowerCase(), ssid, lat, lon, addr);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
 
         } catch (Exception e) {
@@ -85,7 +85,7 @@ import javax.servlet.http.HttpServletResponse;
             @RequestParam(required = true, value = "hd_macs") String hd_macs) {
 
         try {
-            WifiHandsetUserVTO vto = socialRpcService.fetchHandsetList(uid, hd_mac, bssid, hd_macs);
+            WifiHandsetUserVTO vto = socialRpcService.fetchHandsetList(uid, hd_mac.toLowerCase(), bssid.toLowerCase(), hd_macs.toLowerCase());
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
         } catch (Exception e) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
@@ -112,7 +112,7 @@ import javax.servlet.http.HttpServletResponse;
             @RequestParam(required = true, value = "hd_mac") String hd_mac) {
 
         try {
-            HandsetUserDetailVTO vto = socialRpcService.fetchHandsetDetail(uid, hd_mac_self, hd_mac, bssid);
+            HandsetUserDetailVTO vto = socialRpcService.fetchHandsetDetail(uid, hd_mac_self.toLowerCase(), hd_mac.toLowerCase(), bssid.toLowerCase());
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
         } catch (Exception e) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));

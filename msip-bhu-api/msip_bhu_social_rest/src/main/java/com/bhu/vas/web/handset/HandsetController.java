@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletResponse;
             @RequestParam(required = true, value = "nick") String nick) {
 
         try {
-            boolean ret  = socialRpcService.modifyHandset(uid, hd_mac, nick);
+            boolean ret  = socialRpcService.modifyHandset(uid, hd_mac.toLowerCase(), nick);
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
         } catch (Exception e) {
             e.printStackTrace();

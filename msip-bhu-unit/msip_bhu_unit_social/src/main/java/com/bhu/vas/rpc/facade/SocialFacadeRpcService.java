@@ -335,9 +335,9 @@ public class SocialFacadeRpcService {
     public boolean modifyHandset(long uid, String hd_mac, String nick) {
 
 
-        this.follow(uid, hd_mac);
-
         SocialCareFacadeService.moidfyNick(uid, hd_mac, nick);
+
+        this.follow(uid, hd_mac);
 
         return true;
     }
