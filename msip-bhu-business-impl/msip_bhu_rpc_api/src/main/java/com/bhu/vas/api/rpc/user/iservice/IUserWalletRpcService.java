@@ -16,10 +16,11 @@ public interface IUserWalletRpcService {
 	 * 设置提现密码
 	 * 如果密码已经设置过，则跑错误码
 	 * @param uid
+	 * @param captcha
 	 * @param pwd
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> withdrawPwdSet(int uid,String pwd);
+	public RpcResponseDTO<Boolean> withdrawPwdSet(int uid,String captcha,String pwd);
 	
 	/**
 	 * 更改密码
@@ -29,7 +30,7 @@ public interface IUserWalletRpcService {
 	 * @param npwd
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> withdrawPwdUpd(int uid,String pwd,String npwd);
+	//public RpcResponseDTO<Boolean> withdrawPwdUpd(int uid,String pwd,String npwd);
 	
 	/**
 	 * 分页提取提现申请记录
