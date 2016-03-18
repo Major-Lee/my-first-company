@@ -133,12 +133,12 @@ public class SocialRpcService implements ISocialRpcService {
 //        }
 //    }
 
-    @Override
-    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac) {
-        logger.info(String.format("unFollow uid[%s] hd_mac[%s]", uid, hd_mac));
-        socialFacadeRpcService.unFollow(uid, hd_mac);
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-    }
+//    @Override
+//    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac) {
+//        logger.info(String.format("unFollow uid[%s] hd_mac[%s]", uid, hd_mac));
+//        socialFacadeRpcService.unFollow(uid, hd_mac);
+//        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+//    }
 
     @Override
     public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, String hd_mac, int pageNo, int pageSize) {

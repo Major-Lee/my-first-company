@@ -47,7 +47,6 @@ public class SocialCareHashService extends AbstractRelationHashCache {
         return this.hget(generateKey(uid) ,hd_mac);
     }
 
-
     @Override
     public String getRedisKey() {
         return null;

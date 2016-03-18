@@ -127,15 +127,15 @@ public interface ISocialRpcService {
 //     */
 //    public RpcResponseDTO<Boolean> follow(long uid, String hd_mac);
 
-    /**
-     * 取消关注
-     *
-     * @param uid
-     * @param hd_mac
-     * @return
-     */
-
-    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac);
+//    /**
+//     * 取消关注
+//     *
+//     * @param uid
+//     * @param hd_mac
+//     * @return
+//     */
+//
+//    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac);
 
     /**
      * 获取关注列表
