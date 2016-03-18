@@ -1,5 +1,7 @@
 package com.bhu.vas.business.device;
 
+import java.util.Collection;
+
 import javax.annotation.Resource;
 
 import org.junit.FixMethodOrder;
@@ -7,13 +9,11 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.helper.VapEnumType;
-import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetwork;
 import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.localunit.BaseTest;
-import com.smartwork.msip.localunit.RandomData;
-import com.smartwork.msip.localunit.RandomPicker;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SharedNetworkFacadeServiceTest extends BaseTest{
@@ -33,19 +33,35 @@ public class SharedNetworkFacadeServiceTest extends BaseTest{
 			sharedNetworkFacadeService.getUserDevicesSharedNetworkService().insert(shared);
 		}*/
 		ParamSharedNetworkDTO dto = new ParamSharedNetworkDTO();
-		dto.setNtype(VapEnumType.SharedNetworkType.Uplink.getKey());
+		dto.setNtype(VapEnumType.SharedNetworkType.SafeSecure.getKey());
+		dto.setSsid("w哇哈哈");
 		dto.setMax_clients(233);
 		dto.setUsers_rx_rate(128);
 		dto.setUsers_tx_rate(126);
 		
 		ParamSharedNetworkDTO.fufillWithDefault(dto);
-		UserDevicesSharedNetwork shared = null;
 		for(int i = 0;i<100;i++){
 			System.out.println(sharedNetworkFacadeService.doApplySharedNetworksConfig(i, dto));
 		}
 	}
+	@Test
+	public void test002FetchAllUserSharedNetworkConf(){
+		for(int i = 0;i<100;i++){
+			Collection<ParamSharedNetworkDTO> dtos = sharedNetworkFacadeService.fetchAllUserSharedNetworkConf(i);
+			for(ParamSharedNetworkDTO dto:dtos){
+				System.out.println(JsonHelper.getJSONString(dto));	
+			}
+			
+		}
+	}
 	
-	
+	@Test
+	public void test002FetchUserSharedNetworkConf(){
+		for(int i = 0;i<100;i++){
+			ParamSharedNetworkDTO dto = sharedNetworkFacadeService.fetchUserSharedNetworkConf(i,VapEnumType.SharedNetworkType.SafeSecure);
+			System.out.println("2"+JsonHelper.getJSONString(dto));	
+		}
+	}
 	
 	
 	//@Test

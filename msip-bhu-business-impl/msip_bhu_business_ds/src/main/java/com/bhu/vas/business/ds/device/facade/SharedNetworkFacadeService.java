@@ -17,7 +17,6 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.business.ds.device.service.UserDevicesSharedNetworkService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
-import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.service.UserService;
 
 @Service
@@ -90,8 +89,7 @@ public class SharedNetworkFacadeService {
 	 * @param uid
 	 * @param sharednetwork_type
 	 */
-	public Collection<ParamSharedNetworkDTO> fetchUserSharedNetworkConf(int uid){
-		UserValidateServiceHelper.validateUser(uid,this.userService);
+	public Collection<ParamSharedNetworkDTO> fetchAllUserSharedNetworkConf(int uid){
 		UserDevicesSharedNetwork configs = userDevicesSharedNetworkService.getById(uid);
 		//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
 		if(configs == null){
@@ -111,7 +109,7 @@ public class SharedNetworkFacadeService {
 	}
 	
 	
-	private ParamSharedNetworkDTO fetchUserSharedNetworkConf(int uid,VapEnumType.SharedNetworkType sharedNetwork){
+	public ParamSharedNetworkDTO fetchUserSharedNetworkConf(int uid,VapEnumType.SharedNetworkType sharedNetwork){
 		UserDevicesSharedNetwork configs = userDevicesSharedNetworkService.getById(uid);
 		ParamSharedNetworkDTO dto = null;
 		//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);

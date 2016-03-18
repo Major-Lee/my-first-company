@@ -299,6 +299,9 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(!param1.getNtype().equals(param2.getNtype())){
 			return false;
 		}
+		
+		if(!param1.getSsid().equals(param2.getSsid())) return true;
+		
 		if(param1.getUsers_rx_rate() != param2.getUsers_rx_rate()) return true;
 		if(param1.getUsers_tx_rate() != param2.getUsers_tx_rate()) return true;
 		if(param1.getSignal_limit() != param2.getSignal_limit()) return true;
