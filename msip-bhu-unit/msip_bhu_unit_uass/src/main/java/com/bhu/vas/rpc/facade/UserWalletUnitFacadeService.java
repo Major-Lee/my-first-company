@@ -323,10 +323,13 @@ public class UserWalletUnitFacadeService {
 
 	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(int uid, String payment_type, String id, String name) {
 		try{
-			if(!ThirdpartiesPaymentType.supported(payment_type)){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED);
-			}
+			/*if(!ThirdpartiesPaymentType.supported(payment_type)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"payment_type:".concat(payment_type)});
+			}*/
 			ThirdpartiesPaymentType paymenttype = ThirdpartiesPaymentType.fromType(payment_type);
+			if(paymenttype == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"payment_type:".concat(payment_type)});
+			}
 			List<ThirdpartiesPaymentDTO> payments = userWalletFacadeService.addThirdpartiesPayment(uid, paymenttype, ThirdpartiesPaymentDTO.build(paymenttype, id, name));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payments);
 		}catch(BusinessI18nCodeException bex){
