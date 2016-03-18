@@ -141,7 +141,7 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 		Object[] properties = new Object[8];
 		properties[0] = name;
 		properties[1] = radio;
-		properties[2] = ssid;//StringEscapeUtils.escapeXml(ssid);
+		properties[2] = WifiDeviceHelper.xmlContentEncoder(ssid);//StringEscapeUtils.escapeXml(ssid);
 		properties[3] = auth;
 		properties[4] = enable;
 		properties[5] = acl_type;
