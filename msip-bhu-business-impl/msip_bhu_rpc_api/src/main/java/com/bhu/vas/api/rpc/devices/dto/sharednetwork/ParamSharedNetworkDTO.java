@@ -2,7 +2,6 @@ package com.bhu.vas.api.rpc.devices.dto.sharednetwork;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
@@ -301,26 +300,17 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(param1.getSignal_limit() != param2.getSignal_limit()) return false;
 		if(param1.getIdle_timeout() != param2.getIdle_timeout()) return false;
 		if(param1.getForce_timeout() != param2.getForce_timeout()) return false;
+		if(param1.getMax_clients() != param2.getMax_clients()) return false;
+		if(!param1.getOpen_resource().equals(param2.getOpen_resource())) return false;
 		
-		
-		param.setUsers_tx_rate(WifiDeviceHelper.SharedNetworkWifi_Default_Users_tx_rate);
-		param.setUsers_rx_rate(WifiDeviceHelper.SharedNetworkWifi_Default_Users_rx_rate);
-		param.setSignal_limit(WifiDeviceHelper.SharedNetworkWifi_Default_Signal_limit);
-		param.setIdle_timeout(WifiDeviceHelper.SharedNetworkWifi_Default_Idle_timeout);//
-		param.setForce_timeout(WifiDeviceHelper.SharedNetworkWifi_Default_Force_timeout);
-		param.setOpen_resource(WifiDeviceHelper.SharedNetworkWifi_Default_Open_resource);
-		param.setMax_clients(WifiDeviceHelper.SharedNetworkWifi_Default_Maxclients);
-		//param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
-		//param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
-		if(SharedNetworkType.Uplink.getKey().equals(param.getNtype())){
-			param.setSsid(SharedNetworkType.Uplink.getDefalutSsid());
-			param.setRedirect_url(WifiDeviceHelper.SharedNetworkWifi_Default_Redirect_url);
+		if(SharedNetworkType.Uplink.getKey().equals(param1.getNtype())){
+			if(!param1.getRedirect_url().equals(param2.getRedirect_url())) return false;
 		}else{
-			param.setSsid(SharedNetworkType.SafeSecure.getDefalutSsid());
-			param.setRemote_auth_url(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_auth_url);
-			param.setPortal_server_url(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_portal_server_url);
-			param.setDns_default_ip(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_Dns_default_ip);
+			if(!param1.getRemote_auth_url().equals(param2.getRemote_auth_url())) return false;
+			if(!param1.getPortal_server_url().equals(param2.getPortal_server_url())) return false;
+			if(!param1.getDns_default_ip().equals(param2.getDns_default_ip())) return false;
 		}
+		return true;
 	}
 	
 	
@@ -331,7 +321,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_SafeSecure, ParamSharedNetworkDTO.builderDefault(SharedNetworkType.SafeSecure.getKey(), true).builderProperties()));
 		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_SafeSecure, ParamSharedNetworkDTO.builderDefault(SharedNetworkType.SafeSecure.getKey(), false).builderProperties()));
 */	
-		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO()).builderProperties()));
-		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_SafeSecure, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO(SharedNetworkType.SafeSecure.getKey())).builderProperties()));
+		//System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO()).builderProperties()));
+		//System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_SafeSecure, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO(SharedNetworkType.SafeSecure.getKey())).builderProperties()));
 	}
 }
