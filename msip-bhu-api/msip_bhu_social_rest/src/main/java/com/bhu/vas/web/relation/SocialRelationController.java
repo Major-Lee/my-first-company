@@ -56,6 +56,33 @@ public class SocialRelationController extends BaseController {
                     ResponseError.embed(rpcResult));
     }
 
+
+
+    /**
+     * 分页获取关注列表
+     *
+     * @param response
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/list", method = {RequestMethod.POST})
+    public void fetchFollowList(
+            HttpServletResponse response,
+            @RequestParam(required = true) long uid,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
+        RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> rpcResult = socialRpcService.fetchFollowList(uid,pageNo, pageSize);
+        try {
+            SpringMVCHelper.renderJson(response,
+                    ResponseSuccess.embed(rpcResult.getPayload()));
+        } catch (Exception e) {
+            SpringMVCHelper.renderJson(response,
+                    ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
+        }
+    }
+
 //    /**
 //     * 关注
 //     *
@@ -103,28 +130,4 @@ public class SocialRelationController extends BaseController {
 //        }
 //    }
 
-    /**
-     * 分页获取关注列表
-     *
-     * @param response
-     * @param uid
-     * @param pageNo
-     * @param pageSize
-     */
-    @ResponseBody()
-    @RequestMapping(value = "/list", method = {RequestMethod.POST})
-    public void fetchFollowList(
-            HttpServletResponse response,
-            @RequestParam(required = true) long uid,
-            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-            @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
-        RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> rpcResult = socialRpcService.fetchFollowList(uid,pageNo, pageSize);
-        try {
-            SpringMVCHelper.renderJson(response,
-                    ResponseSuccess.embed(rpcResult.getPayload()));
-        } catch (Exception e) {
-            SpringMVCHelper.renderJson(response,
-                    ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
-        }
-    }
 }

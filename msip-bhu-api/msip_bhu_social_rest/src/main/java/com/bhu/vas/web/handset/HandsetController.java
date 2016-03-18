@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
     private ISocialRpcService socialRpcService;
 
     /**
-     * 修改终端
+     * 修改终端信息,暂时只提供修改终端的备注
      *
      * @param response
      * @param uid

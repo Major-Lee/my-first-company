@@ -28,7 +28,7 @@ public class WifiNoAuthController extends BaseController {
     private ISocialRpcService socialRpcService;
 
     /**
-     * 获取终端列表
+     * 修改wifi信息,暂时只修改rate速率
      *
      * @param response
      * @param uid
