@@ -27,6 +27,7 @@ import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceCloudDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
@@ -677,6 +678,63 @@ public class UserDeviceUnitFacadeService {
 				}
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	/**
+	 * 根据用户uid获取绑定的设备分页数据
+	 * @param uid 用户uid
+	 * @param dut 设备业务线
+	 * @param pageNo 页码
+	 * @param pageSize 每页数量
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserDeviceCloudDTO>> devicePagesByUid(Integer uid, String dut, int pageNo, int pageSize){
+		try{
+			int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut, searchPageNo, pageSize);
+			
+			List<UserDeviceCloudDTO> vtos = null;
+			int total = 0;
+			if(search_result != null){
+				total = (int)search_result.getTotalElements();//.getTotal();
+				if(total == 0){
+					vtos = Collections.emptyList();
+				}else{
+					List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+					if(searchDocuments.isEmpty()) {
+						vtos = Collections.emptyList();
+					}else{
+						UserDeviceCloudDTO vto = null;
+						vtos = new ArrayList<UserDeviceCloudDTO>();
+						for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
+							vto = new UserDeviceCloudDTO();
+							vto.setD_mac(wifiDeviceDocument.getId());
+							vto.setD_name(wifiDeviceDocument.getU_dnick());
+							vto.setD_online(wifiDeviceDocument.getD_online());
+							vto.setD_origmodel(wifiDeviceDocument.getD_origmodel());
+							vto.setD_workmode(wifiDeviceDocument.getD_workmodel());
+							String u_id = wifiDeviceDocument.getU_id();
+							if(StringUtils.isEmpty(u_id)){
+								vto.setUid(Integer.parseInt(u_id));
+							}
+							long ohd_count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDeviceDocument.getId());
+							vto.setOhd_count(ohd_count);
+							vtos.add(vto);
+						}
+					}
+				}
+			}else{
+				vtos = Collections.emptyList();
+			}
+			TailPage<UserDeviceCloudDTO> returnRet = new CommonPage<UserDeviceCloudDTO>(pageNo, pageSize, total, vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
