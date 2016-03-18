@@ -171,6 +171,33 @@ public class SharedNetworkFacadeService {
 		return result;
 	}
 	
+	/**
+	 * 移除设备从指定的配置
+	 * 需要置Sharednetwork_type null
+	 * 需要置turnOff
+	 * @param uid
+	 * @param sharednetwork_type
+	 * @param macs
+	 * @return 配置变更了的具体设备地址集合
+	 */
+	public List<String> removeDevicesFromSharedNetwork(int uid,String... macs){
+		List<String> result = new ArrayList<String>();
+		for(String mac:macs){
+			String mac_lowercase = mac.toLowerCase();
+			WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
+			if(sharednetwork != null){
+				sharednetwork.setSharednetwork_type(null);
+				SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
+				sharedNetworkSettingDTO.turnOff();
+				sharednetwork.putInnerModel(sharedNetworkSettingDTO);
+				wifiDeviceSharedNetworkService.update(sharednetwork);
+				result.add(mac_lowercase);
+			}
+		}
+		return result;
+	}
+	
+	
 	public List<VapEnumType.SharedNetworkType> fetchSupportedSharedNetwork(){
 		return Arrays.asList(VapEnumType.SharedNetworkType.values());
 	}

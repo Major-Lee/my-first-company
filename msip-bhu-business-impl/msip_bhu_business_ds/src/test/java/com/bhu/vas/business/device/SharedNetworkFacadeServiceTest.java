@@ -1,6 +1,7 @@
 package com.bhu.vas.business.device;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -20,7 +21,7 @@ public class SharedNetworkFacadeServiceTest extends BaseTest{
 	@Resource
 	private SharedNetworkFacadeService sharedNetworkFacadeService;
 	
-	@Test
+	//@Test
 	public void test001BatchCreateUserDevicesSharedNetwork(){
 		/*UserDevicesSharedNetwork shared = null;
 		for(int i = 0;i<100;i++){
@@ -44,23 +45,37 @@ public class SharedNetworkFacadeServiceTest extends BaseTest{
 			System.out.println(sharedNetworkFacadeService.doApplySharedNetworksConfig(i, dto));
 		}
 	}
-	@Test
+	//@Test
 	public void test002FetchAllUserSharedNetworkConf(){
 		for(int i = 0;i<100;i++){
 			Collection<ParamSharedNetworkDTO> dtos = sharedNetworkFacadeService.fetchAllUserSharedNetworkConf(i);
 			for(ParamSharedNetworkDTO dto:dtos){
 				System.out.println(JsonHelper.getJSONString(dto));	
 			}
-			
 		}
 	}
 	
-	@Test
-	public void test002FetchUserSharedNetworkConf(){
+	
+	//@Test
+	public void test003FetchUserSharedNetworkConf(){
 		for(int i = 0;i<100;i++){
 			ParamSharedNetworkDTO dto = sharedNetworkFacadeService.fetchUserSharedNetworkConf(i,VapEnumType.SharedNetworkType.SafeSecure);
 			System.out.println("2"+JsonHelper.getJSONString(dto));	
 		}
+	}
+	
+	@Test
+	public void test004AddDevices2SharedNetwork(){
+			List<String> result =  sharedNetworkFacadeService.addDevices2SharedNetwork(3,VapEnumType.SharedNetworkType.SafeSecure, 
+					"84:82:f4:de:26:8a","84:82:f4:de:26:8c","84:82:f4:de:26:88");
+			System.out.println("2"+JsonHelper.getJSONString(result));	
+	}
+
+	@Test
+	public void test004RemoveDevicesFromSharedNetwork(){
+			List<String> result =  sharedNetworkFacadeService.removeDevicesFromSharedNetwork(3,
+					"84:82:f4:de:26:8a","84:82:f4:de:26:8c","84:82:f4:de:26:89");
+			System.out.println("2"+JsonHelper.getJSONString(result));	
 	}
 	
 	

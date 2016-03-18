@@ -13,7 +13,7 @@ import com.smartwork.msip.cores.orm.model.extjson.DtoJsonExtPKModel;
  */
 @SuppressWarnings("serial")
 public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetworkSettingDTO> {
-	
+	private Integer owner;
 	private String sharednetwork_type;
 	
 	public String getSharednetwork_type() {
@@ -42,5 +42,13 @@ public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetw
 	@Override
 	public void setId(String id) {
 		super.setId(id);
+	}
+
+	public Integer getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Integer owner) {
+		this.owner = owner;
 	}
 }
