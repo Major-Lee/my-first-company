@@ -1267,7 +1267,7 @@ public class DeviceHelper {
 	}
 	
 	
-	private static final String[] optionalChannel4URouter = {"1","6","11"};
+	//private static final String[] optionalChannel4URouter = {"1","6","11"};
 	public static String builderDSRealChannelOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
 		WifiDeviceSettingRadioDTO radio_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRadioDTO.class);
 		if(radio_dto == null /*|| StringUtils.isEmpty(radio_dto.getReal_channel()) || 
@@ -1289,12 +1289,14 @@ public class DeviceHelper {
 			if(frist_radio_dto == null) 
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
 			if(StringUtils.isEmpty(radio_dto.getReal_channel())){
-				String old_real_channel = frist_radio_dto.getReal_channel();
+				/*String old_real_channel = frist_radio_dto.getReal_channel();
 				Set<String> optionals = ArrayHelper.toSet(optionalChannel4URouter);
 				if(StringUtils.isNotEmpty(old_real_channel)){
 					optionals.remove(old_real_channel);
 				}
-				radio_dto.setReal_channel(RandomPicker.pick(optionals));
+				radio_dto.setReal_channel(RandomPicker.pick(optionals));*/
+				//在没有传递参数Real_channel的情况下，使用0，代表设备自动随机
+				radio_dto.setReal_channel("0");
 			}
 			radio_dto.setName(frist_radio_dto.getName());
 		}
