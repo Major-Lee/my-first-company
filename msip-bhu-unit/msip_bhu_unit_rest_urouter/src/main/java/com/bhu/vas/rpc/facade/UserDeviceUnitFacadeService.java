@@ -721,7 +721,7 @@ public class UserDeviceUnitFacadeService {
 							vto.setD_origmodel(wifiDeviceDocument.getD_origmodel());
 							vto.setD_workmode(wifiDeviceDocument.getD_workmodel());
 							String u_id = wifiDeviceDocument.getU_id();
-							if(StringUtils.isEmpty(u_id)){
+							if(StringUtils.isNotEmpty(u_id)){
 								vto.setUid(Integer.parseInt(u_id));
 							}
 							long ohd_count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDeviceDocument.getId());
