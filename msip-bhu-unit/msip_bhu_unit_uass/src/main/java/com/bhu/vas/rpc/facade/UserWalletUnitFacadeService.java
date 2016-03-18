@@ -27,7 +27,11 @@ import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -38,6 +42,9 @@ public class UserWalletUnitFacadeService {
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
 
+	@Resource
+	private UserCaptchaCodeService userCaptchaCodeService;
+	
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
 			String transmode,String transtype, 
@@ -340,9 +347,25 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<Boolean> withdrawPwdSet(int uid, String pwd) {
+
+	
+	public RpcResponseDTO<Boolean> withdrawPwdSet(int uid,String captcha, String pwd) {
 		try{
-			userWalletFacadeService.doFirstSetWithdrawPwd(uid, pwd);
+			//TODO验证用户是否存在，验证手机号是否存在，此手机号的验证验证码
+			User user = UserValidateServiceHelper.validateUser(uid,userWalletFacadeService.getUserService());
+			if(StringUtils.isEmpty(user.getMobileno())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_MOBILE_ATTRIBUTE_NOTEXIST,new String[]{"uid:".concat(String.valueOf(uid))});
+			}
+			if(!RuntimeConfiguration.SecretInnerTest){
+				String accWithCountryCode = PhoneHelper.format(user.getCountrycode(), user.getMobileno());
+				if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
+					ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
+					if(errorCode != null){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
+					}
+				}
+			}
+			userWalletFacadeService.doSetWithdrawPwd(uid, pwd);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -352,7 +375,7 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<Boolean> withdrawPwdUpd(int uid, String pwd, String npwd) {
+	/*public RpcResponseDTO<Boolean> withdrawPwdUpd(int uid, String pwd, String npwd) {
 		try{
 			userWalletFacadeService.doChangedWithdrawPwd(uid, pwd, npwd);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
@@ -362,5 +385,5 @@ public class UserWalletUnitFacadeService {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-	}
+	}*/
 }

@@ -82,9 +82,10 @@ public class UserWalletController extends BaseController{
 	public void withdrawPwdSet(
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid,
+			@RequestParam(required=true) String captcha,
 			@RequestParam(required=true) String pwd){
 		try{
-			RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.withdrawPwdSet(uid, pwd);
+			RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.withdrawPwdSet(uid,captcha, pwd);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
@@ -95,7 +96,7 @@ public class UserWalletController extends BaseController{
 		}
 	}
 	
-	@ResponseBody()
+	/*@ResponseBody()
 	@RequestMapping(value="/wallet/pwdupd", method={RequestMethod.GET,RequestMethod.POST})
 	public void withdrawPwdSet(
 			HttpServletResponse response, 
@@ -112,7 +113,7 @@ public class UserWalletController extends BaseController{
 		}catch(Exception ex){
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
-	}
+	}*/
 	
 	/**
 	 * 分页提取钱包流水日志记录

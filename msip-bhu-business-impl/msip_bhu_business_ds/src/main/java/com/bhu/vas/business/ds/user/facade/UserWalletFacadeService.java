@@ -465,10 +465,28 @@ public class UserWalletFacadeService{
 	
 	/**
 	 * 设置提现密码
+	 * 添加和修改都是此方法，采用验证码验证机制
 	 * @param uid 审核用户id
 	 * @param pwd 新的密码
 	 */
-	public UserWallet doFirstSetWithdrawPwd(int uid,String pwd){
+	public UserWallet doSetWithdrawPwd(int uid,String pwd){
+		UserValidateServiceHelper.validateUser(uid,this.userService);
+		UserWallet uwallet = userWalletService.getOrCreateById(uid);
+		//if(StringUtils.isNotEmpty(uwallet.getPassword())){
+		//	throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_ALREADYEXIST,new String[]{"提现密码"});
+		//}
+		uwallet.setPlainpwd(pwd);
+		uwallet.setPassword(null);
+		uwallet = userWalletService.update(uwallet);
+		return uwallet;
+	}
+	
+	/**
+	 * 设置提现密码
+	 * @param uid 审核用户id
+	 * @param pwd 新的密码
+	 */
+/*	public UserWallet doFirstSetWithdrawPwd(int uid,String pwd){
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
 		if(StringUtils.isNotEmpty(uwallet.getPassword())){
@@ -490,7 +508,7 @@ public class UserWalletFacadeService{
 		uwallet.setPassword(null);
 		uwallet = userWalletService.update(uwallet);
 		return uwallet;
-	}
+	}*/
 	
 	
 	private void doWalletLog(int uid,String orderid,
