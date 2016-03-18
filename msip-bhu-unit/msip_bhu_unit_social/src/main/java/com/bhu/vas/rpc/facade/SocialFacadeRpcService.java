@@ -354,11 +354,13 @@ public class SocialFacadeRpcService {
             if (handsetUser != null) {
                 User user = userService.getById((int) handsetUser.getUid());
                 if (user != null) {
-                    handsetUserVTO.setNick(user.getNick());
+
                     SocialUserVTO socialUserVTO = new SocialUserVTO();
                     socialUserVTO.setUid((long)user.getId());
                     socialUserVTO.setAvatar(user.getAvatar());
                     socialUserVTO.setMemo(user.getMemo());
+                    socialUserVTO.setNick(user.getNick());
+                    
                     handsetUserVTO.setUser(socialUserVTO);
 
                 }
