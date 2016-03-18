@@ -720,6 +720,7 @@ public class UserDeviceUnitFacadeService {
 							vto.setD_online(wifiDeviceDocument.getD_online());
 							vto.setD_origmodel(wifiDeviceDocument.getD_origmodel());
 							vto.setD_workmode(wifiDeviceDocument.getD_workmodel());
+							vto.setD_dut(wifiDeviceDocument.getD_dut());
 							String u_id = wifiDeviceDocument.getU_id();
 							if(StringUtils.isNotEmpty(u_id)){
 								vto.setUid(Integer.parseInt(u_id));
