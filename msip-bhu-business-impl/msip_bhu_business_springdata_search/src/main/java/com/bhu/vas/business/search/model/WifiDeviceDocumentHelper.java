@@ -11,6 +11,7 @@ import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
@@ -58,11 +59,12 @@ public class WifiDeviceDocumentHelper {
 	 * @param agentUser
 	 * @param o_template
 	 * @param hoc
+	 * @param wifiDeviceSharedNetwork
 	 * @return
 	 */
 	public static WifiDeviceDocument fromNormalWifiDevice(WifiDevice wifiDevice, WifiDeviceModule deviceModule,
 			AgentDeviceClaim agentDeviceClaim, WifiDeviceGray wifiDeviceGray, User bindUser, String bindUserDNick, 
-			User agentUser, String o_template, int hoc){
+			User agentUser, String o_template, int hoc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork){
 		if(wifiDevice == null) return null;
 		
 		WifiDeviceDocument doc = new WifiDeviceDocument();
@@ -152,9 +154,34 @@ public class WifiDeviceDocumentHelper {
 			doc.setA_org(agentUser.getOrg());
 		}
 		doc.setD_hoc(hoc);
+		if(wifiDeviceSharedNetwork != null){
+			String sharedNetwork_type = wifiDeviceSharedNetwork.getSharednetwork_type();
+			if(StringUtils.isNotEmpty(sharedNetwork_type)){
+				doc.setD_snk_type(sharedNetwork_type);
+			}
+		}
 		doc.setUpdatedat(DateTimeHelper.getDateTime());
 		return doc;
 	}
+	
+	/**
+	 * 构建扩展字段的设备doc
+	 * @param doc
+	 * @param wifiDeviceSharedNetwork 设备共享网络实体
+	 * @return
+	 */
+/*	public static WifiDeviceDocument fromExtension(WifiDeviceDocument doc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork){
+		if(doc == null) return null;
+		
+		String sharedNetworkExtension =  WifiDeviceExtensionBuilder.builderSharedNetworkExtension(wifiDeviceSharedNetwork);
+		*//**
+		 * 当扩展属性是多个的时候 再加入
+		 * String d_extension = WifiDeviceExtensionBuilder.generateExtensionString(sharedNetworkExtension);
+		 *//*
+		String d_extension = sharedNetworkExtension;
+		doc.setD_extension(d_extension);
+		return doc;
+	}*/
 	
 	/**
 	 * 创建在导入的确认的设备数据
