@@ -115,4 +115,11 @@ public interface IWifiDeviceIndexIncrement {
 	 * @param hocs 设备的终端数量的集合
 	 */
 	public void hocMultiUpdIncrement(List<String> ids, List<Integer> hocs);
+	
+	/**
+	 * 设备的共享网络变更multi
+	 * @param ids
+	 * @param sharedNetwork_type
+	 */
+	public void sharedNetworkMultiUpdIncrement(List<String> ids, String sharedNetwork_type);
 }

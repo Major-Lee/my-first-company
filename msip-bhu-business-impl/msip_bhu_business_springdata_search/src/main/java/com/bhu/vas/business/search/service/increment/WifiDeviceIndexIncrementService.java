@@ -507,4 +507,21 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, false, true, true);
 	}
 
+	/**
+	 * 设备的共享网络的变更multi
+	 * 变更涉及的更改索引字段是
+	 * 1) d_snk_type
+	 */
+	@Override
+	public void sharedNetworkMultiUpdIncrement(List<String> ids, String sharedNetwork_type) {
+		logger.info(String.format("SharedNetworkMultiUpdIncrement Request ids [%s] sharedNetwork_type [%s]", ids, sharedNetwork_type));
+		if(ids == null || ids.isEmpty()) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TYPE.getName(), sharedNetwork_type);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(),  DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, false, true, true);
+	}
+
 }
