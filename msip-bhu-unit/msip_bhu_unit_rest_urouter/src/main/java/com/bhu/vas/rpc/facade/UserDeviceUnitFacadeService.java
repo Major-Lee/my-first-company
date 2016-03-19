@@ -717,6 +717,7 @@ public class UserDeviceUnitFacadeService {
 							vto = new UserDeviceCloudDTO();
 							vto.setD_mac(wifiDeviceDocument.getId());
 							vto.setD_name(wifiDeviceDocument.getU_dnick());
+							vto.setD_type(wifiDeviceDocument.getD_type());
 							vto.setD_online(wifiDeviceDocument.getD_online());
 							vto.setD_origmodel(wifiDeviceDocument.getD_origmodel());
 							vto.setD_workmode(wifiDeviceDocument.getD_workmodel());
