@@ -410,7 +410,7 @@ public class VapEnumType {
 		static {
 			allSharedNetworkTypes = new HashMap<String, SharedNetworkType>();
 			sharedNetworkVtos = new ArrayList<>();
-			SharedNetworkType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			SharedNetworkType[] types = values();
 			for (SharedNetworkType type : types){
 				allSharedNetworkTypes.put(type.getKey(), type);
 				sharedNetworkVtos.add(new SharedNetworkVTO(type.getKey(),type.getName(),type.getDefalutSsid()));

@@ -39,6 +39,13 @@ public class ValidateService {
 		else return true;
 	}*/
 	
+	public static ResponseError validatePageSize(int pageSize){
+		if(pageSize >50){
+			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"pageSize:".concat(String.valueOf(pageSize))});
+		}
+		return null;
+	}
+	
 	public static boolean validateUserTypeApiGen(UserType ut){
 		if(!ut.isApiGen()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_PARAM_USERTYPE_APIGEN_FORBIDDEN, new String[]{ut.getSname()});
