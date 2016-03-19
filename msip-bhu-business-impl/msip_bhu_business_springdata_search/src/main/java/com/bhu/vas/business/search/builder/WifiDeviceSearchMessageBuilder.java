@@ -1,0 +1,65 @@
+package com.bhu.vas.business.search.builder;
+
+import org.elasticsearch.common.lang3.StringUtils;
+
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.core.condition.component.SearchCondition;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionPack;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionPattern;
+import com.smartwork.msip.cores.helper.JsonHelper;
+
+/**
+ * 用于构建业务搜索条件的builder
+ * @author tangzichao
+ *
+ */
+public class WifiDeviceSearchMessageBuilder {
+	
+	/**
+	 * 根据uid和设备业务线构建搜索message对象
+	 * @param u_id 用户uid
+	 * @param d_dut 设备业务线
+	 * @return
+	 */
+	public static SearchConditionMessage builderSearchMessageWithDut(Integer u_id, String d_dut){
+		SearchConditionPack pack_must = null;
+		
+		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
+		
+		if(StringUtils.isNotEmpty(d_dut)){
+			SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_dut);
+			pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_d_dut, sc_u_id);
+		}else{
+			pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_u_id);
+		}
+		return SearchConditionMessage.builderSearchConditionMessage(pack_must);
+	}
+	
+	/**
+	 * 根据uid和设备共享网络类型构建搜索message对象
+	 * @param u_id 用户id
+	 * @param sharedNetwork_type 设备共享网络类型
+	 * @return
+	 */
+	public static SearchConditionMessage builderSearchMessageWithSharedNetwork(Integer u_id, String sharedNetwork_type){
+		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionMustPack();
+		if(u_id != null){
+			SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
+			pack_must.addChildSearchCondtions(sc_u_id);
+		}
+		SearchCondition sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), sharedNetwork_type);
+		pack_must.addChildSearchCondtions(sc_d_snk_type);
+		
+		return SearchConditionMessage.builderSearchConditionMessage(pack_must);
+	}
+	
+	public static String builderSearchMessageString(SearchConditionMessage searchConditionMessage){
+		if(searchConditionMessage == null) return null;
+		return JsonHelper.getJSONString(searchConditionMessage);
+	}
+}
