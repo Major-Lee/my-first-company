@@ -154,9 +154,14 @@ public class PaymentInternalHelper {
 		}
 	}
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws Exception{
 		String orderid = "10012016031700000000000000000244";
-		simulatePaysuccessCommunication(orderid);
+		
+/*		Map<String, String> api_params = generateWithdrawApiParamMap();
+		api_params.put("userName", "网文龙咔咔咔咔");
+		String response = HttpHelper.postUrlAsString("http://192.168.66.88:8005/api/ucloud/withdraw", api_params, null, "utf-8");
+		System.out.println(new String("\u8bf7\u63d0\u4f9b\u63d0\u73b0\u7c7b\u578b"));
+*/		//simulatePaysuccessCommunication(orderid);
 		//simulateWithdrawSuccessCommunication(orderid);
 		//System.out.println(new String("\u53c2\u6570\u9519\u8bef:openid\u5b57\u6bb5\u4e0d\u6b63\u786e,\u8bf7\u68c0\u67e5\u662f\u5426\u5408\u6cd5"));
 		//ResponseCreatePaymentUrlDTO rcp_dto = createPaymentUrlCommunication("PcWeixin","0.8","192.168.66.162",orderid);
