@@ -1077,12 +1077,12 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams);
 			case DS_Http_Portal_Stop:
 				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence);*/
-			case DS_VistorWifi_Limit:
-				return DeviceHelper.builderDSLimitVisitorWifiOuter(extparams);
-			case DS_VistorWifi_Start:
-				return DeviceHelper.builderDSStartVisitorWifiOuter(extparams);
-			case DS_VistorWifi_Stop:
-				return DeviceHelper.builderDSStopVisitorWifiOuter();
+			//case DS_VistorWifi_Limit:
+			//	return DeviceHelper.builderDSLimitVisitorWifiOuter(extparams);
+			case DS_SharedNetworkWifi_Start:
+				return DeviceHelper.builderDSStartSharedNetworkWifiOuter(extparams);
+			case DS_SharedNetworkWifi_Stop:
+				return DeviceHelper.builderDSStopSharedNetworkWifiOuter();
 			case DS_Plugins:
 				return DeviceHelper.builderDSPluginOuter(extparams);
 			case DS_Switch_WorkMode:

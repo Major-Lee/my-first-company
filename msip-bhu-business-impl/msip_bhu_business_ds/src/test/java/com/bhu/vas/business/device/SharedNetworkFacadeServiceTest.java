@@ -67,15 +67,14 @@ public class SharedNetworkFacadeServiceTest extends BaseTest{
 	
 	@Test
 	public void test004AddDevices2SharedNetwork(){
-			List<String> result =  sharedNetworkFacadeService.addDevices2SharedNetwork(3,VapEnumType.SharedNetworkType.SafeSecure, 
+			List<String> result =  sharedNetworkFacadeService.addDevices2SharedNetwork(3,VapEnumType.SharedNetworkType.SafeSecure,true, 
 					"84:82:f4:de:26:8a","84:82:f4:de:26:8c","84:82:f4:de:26:88");
 			System.out.println("1"+JsonHelper.getJSONString(result));	
 	}
 
 	@Test
 	public void test004RemoveDevicesFromSharedNetwork(){
-			List<String> result =  sharedNetworkFacadeService.removeDevicesFromSharedNetwork(3,
-					"84:82:f4:de:26:8a","84:82:f4:de:26:8c","84:82:f4:de:26:89");
+			List<String> result =  sharedNetworkFacadeService.removeDevicesFromSharedNetwork("84:82:f4:de:26:8a","84:82:f4:de:26:8c","84:82:f4:de:26:89");
 			System.out.println("2"+JsonHelper.getJSONString(result));	
 	}
 	

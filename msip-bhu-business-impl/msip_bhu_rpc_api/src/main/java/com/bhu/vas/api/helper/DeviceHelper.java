@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.ret.param.ParamVapAdDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
@@ -29,6 +28,8 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
+import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -1136,33 +1137,42 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_Http404Item);
 	}*/
 	
-	public static String builderDSStartVisitorWifiOuter(String extparams){
+	/*public static String builderDSStartVisitorWifiOuter(String extparams){
 		ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
-		//ad_dto = ParamVapVistorWifiDTO.fufillWithDefault(ad_dto);
-		//if(ad_dto == null)
-		//	throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		return builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi,vistor_dto.builderProperties());
-		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
-		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
 	}
 	public static String builderDSLimitVisitorWifiOuter(String extparams){
 		ParamVapVistorLimitWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorLimitWifiDTO.class);
 		ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
-		//if(ad_dto == null)
-		//	throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		return builderDeviceSettingItem(DeviceSetting_Limit_VisitorWifi,ad_dto.builderProperties());
-		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
-		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
 	}
 	public static String builderDSStopVisitorWifiOuter(){
 		return DeviceSetting_Stop_VisitorWifi;
-		//ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
-		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
-		//if(ad_dto == null)
-		//	throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Stop_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
-		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, DeviceSetting_Stop_HttpPortalItem);
+	}*/
+	
+	/**
+	 * 
+	 * @param extparams 此参数注意的内容数据需要包括 bridge和router相关
+	 * @return
+	 */
+	public static String builderDSStartSharedNetworkWifiOuter(String extparams){
+		ParamSharedNetworkDTO vistor_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
+		if(SharedNetworkType.SafeSecure.getKey().equals(vistor_dto.getNtype()))
+			return builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_SafeSecure,vistor_dto.builderProperties());
+		else
+			return builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_Uplink,vistor_dto.builderProperties());
 	}
+	/*public static String builderDSLimitSharedNetworkWifiOuter(String extparams){
+		ParamVapVistorLimitWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorLimitWifiDTO.class);
+		ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
+		
+		
+		return builderDeviceSettingItem(DeviceSetting_Limit_SharedNetworkWifi,ad_dto.builderProperties());
+	}*/
+	public static String builderDSStopSharedNetworkWifiOuter(){
+		return DeviceSetting_Stop_SharedNetworkWifi;
+	}
+	
 	
 	public static String builderDSPluginOuter(String extparams){
 		ParamVasPluginDTO ad_dto = JsonHelper.getDTO(extparams, ParamVasPluginDTO.class);
