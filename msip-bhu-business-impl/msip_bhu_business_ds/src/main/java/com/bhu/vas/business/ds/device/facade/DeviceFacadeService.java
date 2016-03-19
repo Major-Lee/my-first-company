@@ -21,7 +21,6 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasSwitchWorkmodeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -35,16 +34,16 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
 import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
-import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
-import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -117,6 +116,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	@Resource
 	private UserService userService;
 	
+	@Resource
+	private SharedNetworkFacadeService sharedNetworkFacadeService;
 //	@Resource
 //	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 
@@ -1111,11 +1112,18 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 	}
 	
+	//ParamSharedNetworkDTO
 	public String generateDeviceSettingWithSwitchWorkMode(String mac, String extparams){
 		ParamVasSwitchWorkmodeDTO wk_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
 		int switchAct = wk_dto.getWmode();
 		if(switchAct == WifiDeviceHelper.SwitchMode_Router2Bridge_Act || switchAct == WifiDeviceHelper.SwitchMode_Bridge2Router_Act){
-			ParamVapVistorWifiDTO vw_dto = null;
+			ParamSharedNetworkDTO vw_dto = null;
+			SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
+			if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
+				vw_dto = sharedNetworkConf.getPsn();
+				vw_dto.switchWorkMode(switchAct);
+			}
+			/*ParamVapVistorWifiDTO vw_dto = null;
 			UserSettingState settingState = userSettingStateService.getById(mac);
 			if(settingState != null){
 				UserVistorWifiSettingDTO vistorWifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
@@ -1126,7 +1134,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 					//更新操作应该在设备切换工作模式后上线后，如果模式变更了，再更新状态
 					//userSettingStateService.update(settingState);
 				}
-			}
+			}*/
 			return DeviceHelper.builderDSWorkModeSwitchOuter(mac, switchAct, validateDeviceSettingReturnDTO(mac), vw_dto);
 		}
 		return null;

@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.ret.param.ParamVapAdDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
@@ -1179,7 +1178,7 @@ public class DeviceHelper {
 		return builderDeviceSettingItem(DeviceSetting_Plugins_Samba,ad_dto.builderProperties());
 	}
 	
-	public static String builderDSWorkModeSwitchOuter(String mac, int switchAct, WifiDeviceSettingDTO s_dto, ParamVapVistorWifiDTO vw_dto){
+	public static String builderDSWorkModeSwitchOuter(String mac, int switchAct, WifiDeviceSettingDTO s_dto, ParamSharedNetworkDTO vw_dto){
 		StringBuffer workModeSwitchBuilder = new StringBuffer();
 		//组装切换工作模式配置修改指令
 		if(switchAct == WifiDeviceHelper.SwitchMode_Router2Bridge_Act){
@@ -1189,8 +1188,12 @@ public class DeviceHelper {
 		}
 		//组装访客网络配置修改指令
 		if(vw_dto != null){
-			workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi, 
-					vw_dto.builderProperties()));
+			if(SharedNetworkType.SafeSecure.getKey().equals(vw_dto.getNtype()))
+				return builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_SafeSecure,vw_dto.builderProperties());
+			else
+				return builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_Uplink,vw_dto.builderProperties());
+			/*workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi, 
+					vw_dto.builderProperties()));*/
 		}
 		//3、ssid 密码
 		//4、黑名单

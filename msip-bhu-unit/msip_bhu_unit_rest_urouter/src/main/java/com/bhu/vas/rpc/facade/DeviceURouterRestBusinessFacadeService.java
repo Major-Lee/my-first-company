@@ -21,7 +21,6 @@ import redis.clients.jedis.Tuple;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
@@ -39,10 +38,10 @@ import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
-import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
@@ -84,6 +83,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.UserTermina
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.builder.WifiStasnifferHelper;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
@@ -139,7 +139,8 @@ public class DeviceURouterRestBusinessFacadeService {
 	//@Resource
 	//private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 
-	
+	@Resource
+	private SharedNetworkFacadeService sharedNetworkFacadeService;
 	/**
 	 * urouter 主入口界面数据
 	 *  hd_list接口需要终端的所有数据
@@ -1135,7 +1136,6 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 	
-	
 	/**
 	 * 插件数据 
 	 * 	终端上线通知
@@ -1167,7 +1167,11 @@ public class DeviceURouterRestBusinessFacadeService {
 					hours12ago_ts, current_ts);
 			uws_vto.setRecent_c(recent12hours_count);
 		}
-		UserVistorWifiSettingDTO uvw_dto = user_setting_entity.getUserSetting(UserVistorWifiSettingDTO.
+		SharedNetworkSettingDTO uvw_dto = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(wifiDevice.getId());
+		if(uvw_dto != null && uvw_dto.isOn() && uvw_dto.getPsn() != null){
+			uvw_dto.setC(WifiDeviceVisitorService.getInstance().countAuthPresent(user_setting_entity.getId()));
+		}
+		/*UserVistorWifiSettingDTO uvw_dto = user_setting_entity.getUserSetting(UserVistorWifiSettingDTO.
 				Setting_Key, UserVistorWifiSettingDTO.class);
 		if(uvw_dto == null){
 			uvw_dto = new UserVistorWifiSettingDTO();
@@ -1175,7 +1179,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			//throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST);
 		}else{
 			uvw_dto.setC(WifiDeviceVisitorService.getInstance().countAuthPresent(user_setting_entity.getId()));
-		}
+		}*/
 		if(uto_dto != null)
 			ret.put(UserTerminalOnlineSettingDTO.Setting_Key, uto_dto);
 		if(uwt_dto != null)
@@ -1183,7 +1187,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		if(uws_dto != null)
 			ret.put(UserWifiSinfferSettingDTO.Setting_Key, uws_vto);
 		if(uvw_dto != null)
-			ret.put(UserVistorWifiSettingDTO.Setting_Key, uvw_dto);
+			ret.put(SharedNetworkSettingDTO.Setting_Key, uvw_dto);
 	}
 	
 	/**
@@ -1706,7 +1710,14 @@ public class DeviceURouterRestBusinessFacadeService {
 		URouterVisitorListVTO vto = new URouterVisitorListVTO();
 		vto.setMac(wifiId);
 
-		UserSettingState settingState = userSettingStateService.getById(wifiId);
+		SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(wifiId);
+		if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
+			vto.setN(sharedNetworkConf.getPsn().getSsid());
+			vto.setRx_rate(sharedNetworkConf.getPsn().getUsers_rx_rate());
+		}else{
+			vto.setN("");
+		}
+		/*UserSettingState settingState = userSettingStateService.getById(wifiId);
 
 		if (settingState != null) {
 			UserVistorWifiSettingDTO vistorwifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
@@ -1718,7 +1729,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					vto.setRx_rate(vistorwifi.getVw().getUsers_rx_rate());
 				}
 			}
-		}
+		}*/
 
 		if(!presents.isEmpty()) {
 			List<String> hd_macs = new ArrayList<String>();

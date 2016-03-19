@@ -1,9 +1,5 @@
 package com.bhu.vas.web.device;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,27 +9,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
-import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkVTO;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
-import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
-import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
-import com.bhu.vas.api.vto.URouterEnterVTO;
-import com.bhu.vas.api.vto.URouterHdDetailVTO;
-import com.bhu.vas.api.vto.URouterHdHostNameVTO;
-import com.bhu.vas.api.vto.URouterMainEnterVTO;
-import com.bhu.vas.api.vto.URouterModeVTO;
-import com.bhu.vas.api.vto.URouterPeakSectionsDTO;
-import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
-import com.bhu.vas.api.vto.URouterSettingVTO;
-import com.bhu.vas.api.vto.URouterVapPasswordVTO;
-import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller

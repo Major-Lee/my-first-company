@@ -12,6 +12,7 @@ package com.bhu.vas.api.rpc.devices.dto.sharednetwork;
  */
 @SuppressWarnings("serial")
 public class SharedNetworkSettingDTO implements java.io.Serializable{
+	public static final String Setting_Key = "uvw";
 	//访客网络Wifi开关
 	private boolean on = false;
 	//device response ok 时 为true
