@@ -118,9 +118,9 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     @Test
 	public void test002DoUpdWithdrawPwd(){
     	//AssertHelper.isTrue(randon_key.equals(userid));
-    	UserWallet uWallet = userWalletFacadeService.doFirstSetWithdrawPwd(testUserId, testWithdrawPwd);
+    	/*UserWallet uWallet = userWalletFacadeService.doFirstSetWithdrawPwd(testUserId, testWithdrawPwd);
     	userWalletFacadeService.doChangedWithdrawPwd(testUserId, testWithdrawPwd, testWithdrawPwd);
-    	System.out.println(uWallet);
+    	System.out.println(uWallet);*/
 	}
     @Test
     public void test003DoWithdrawApply(){
