@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceSharedNetworkRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
@@ -118,8 +119,15 @@ public class DeviceSharedNetworkController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type) {
-		
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
+			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+			) {
+		ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
 		/*RpcResponseDTO<URouterEnterVTO> rpcResult = deviceURouterRestRpcService.urouterEnter(uid, mac.toLowerCase());
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
