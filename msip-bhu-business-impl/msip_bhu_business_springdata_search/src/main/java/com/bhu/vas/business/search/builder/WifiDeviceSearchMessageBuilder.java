@@ -1,12 +1,15 @@
 package com.bhu.vas.business.search.builder;
 
 import org.elasticsearch.common.lang3.StringUtils;
+import org.elasticsearch.search.sort.SortOrder;
 
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.core.condition.component.SearchCondition;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionPack;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionPattern;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionSort;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionSortPattern;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**
@@ -35,7 +38,14 @@ public class WifiDeviceSearchMessageBuilder {
 		}else{
 			pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_u_id);
 		}
-		return SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		
+		SearchConditionSort sc_sortByOnine = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.WifiDevice.
+				Field.D_ONLINE.getName(), SearchConditionSortPattern.Sort.getPattern(),
+				SortOrder.DESC, null);
+		scm.addSorts(sc_sortByOnine);
+		return scm;
 	}
 	
 	/**
@@ -55,7 +65,13 @@ public class WifiDeviceSearchMessageBuilder {
 				Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), sharedNetwork_type);
 		pack_must.addChildSearchCondtions(sc_d_snk_type);
 		
-		return SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		
+		SearchConditionSort sc_sortByOnine = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.WifiDevice.
+				Field.D_ONLINE.getName(), SearchConditionSortPattern.Sort.getPattern(),
+				SortOrder.DESC, null);
+		scm.addSorts(sc_sortByOnine);
+		return scm;
 	}
 	
 	public static String builderSearchMessageString(SearchConditionMessage searchConditionMessage){
