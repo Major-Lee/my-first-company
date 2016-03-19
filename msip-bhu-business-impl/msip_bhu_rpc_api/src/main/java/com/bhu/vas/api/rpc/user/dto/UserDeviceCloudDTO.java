@@ -23,6 +23,8 @@ public class UserDeviceCloudDTO implements Serializable {
     private String d_workmode;
     //设备的原始设备型号
     private String d_origmodel;
+    //设备的软件版本号
+    private String d_origswver;
     //设备的业务线
     private String d_dut;
     
@@ -73,6 +75,12 @@ public class UserDeviceCloudDTO implements Serializable {
 	}
 	public void setD_origmodel(String d_origmodel) {
 		this.d_origmodel = d_origmodel;
+	}
+	public String getD_origswver() {
+		return d_origswver;
+	}
+	public void setD_origswver(String d_origswver) {
+		this.d_origswver = d_origswver;
 	}
 	public String getD_dut() {
 		return d_dut;
