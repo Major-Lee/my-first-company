@@ -204,6 +204,10 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		this.portal_server_url = portal_server_url;
 	}
 	
+	public void switchWorkMode(boolean switchAct){
+		switchWorkMode(switchAct?WifiDeviceHelper.SwitchMode_Bridge2Router_Act:WifiDeviceHelper.SwitchMode_Router2Bridge_Act);
+	}
+	
 	public void switchWorkMode(int switchAct){
 		switch(switchAct){
 			case WifiDeviceHelper.SwitchMode_Router2Bridge_Act:
