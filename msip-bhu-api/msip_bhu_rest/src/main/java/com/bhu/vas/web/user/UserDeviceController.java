@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,7 @@ import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -169,6 +171,11 @@ public class UserDeviceController extends BaseController {
                                  @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 
                                  ) {
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
         UserDeviceTCPageVTO rpcResult = userDeviceRpcService.pageBindDevicesCustom(uid, u_id, d_online,
         		s_content, pageNo, pageSize);
 //        System.out.println("ret===" + rpcResult.isEmpty());
@@ -201,6 +208,11 @@ public class UserDeviceController extends BaseController {
                                  @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 
     ) {
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
         List<UserDeviceVTO>rpcResult = userDeviceRpcService.pageBindDevices(uid, u_id, d_online,
                 s_content, pageNo, pageSize);
 //        System.out.println("ret===" + rpcResult.isEmpty());
