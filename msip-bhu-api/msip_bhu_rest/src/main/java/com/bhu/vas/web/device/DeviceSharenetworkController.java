@@ -89,7 +89,7 @@ public class DeviceSharenetworkController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false,defaultValue= "SafeSecure",value="snt") String sharenetwork_type) {
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type) {
 		
 		/*RpcResponseDTO<URouterEnterVTO> rpcResult = deviceURouterRestRpcService.urouterEnter(uid, mac.toLowerCase());
 		if(!rpcResult.hasError()){
