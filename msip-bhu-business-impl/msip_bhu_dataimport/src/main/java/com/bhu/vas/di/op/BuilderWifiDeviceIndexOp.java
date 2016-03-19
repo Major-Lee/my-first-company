@@ -12,6 +12,7 @@ import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -20,6 +21,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceGrayService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
@@ -45,6 +47,7 @@ public class BuilderWifiDeviceIndexOp {
 	private static WifiDeviceService wifiDeviceService;
 	private static WifiDeviceModuleService wifiDeviceModuleService;
 	private static UserDeviceService userDeviceService;
+	private static WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
 	
 	public static void main(String[] argv) throws IOException, ParseException{
 		
@@ -63,6 +66,7 @@ public class BuilderWifiDeviceIndexOp {
 			wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
 			wifiDeviceModuleService= (WifiDeviceModuleService)ctx.getBean("wifiDeviceModuleService");
 			userDeviceService = (UserDeviceService)ctx.getBean("userDeviceService");
+			wifiDeviceSharedNetworkService = (WifiDeviceSharedNetworkService)ctx.getBean("wifiDeviceSharedNetworkService");
 			
 			long t0 = System.currentTimeMillis();
 			
@@ -174,8 +178,16 @@ public class BuilderWifiDeviceIndexOp {
 							bindUser = userService.getById(bindUserId);
 						}
 					}
+					
+					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
+					
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, agentDeviceClaim, 
-							wifiDeviceGray, bindUser, bindUserDNick, agentUser, o_template, (int)hoc);
+							wifiDeviceGray, bindUser, bindUserDNick, agentUser, o_template, (int)hoc, wifiDeviceSharedNetwork);
+					
+/*					//构建设备索引的扩展字段
+					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
+					doc = WifiDeviceDocumentHelper.fromExtension(doc, wifiDeviceSharedNetwork);*/
+					
 					if(doc != null){
 						docs.add(doc);
 						index_count++;
@@ -194,4 +206,5 @@ public class BuilderWifiDeviceIndexOp {
 		
 		System.out.println("wifiDevice 数据全量导入 成功批量次数:" + bulk_success + " 一共索引数量:" + index_count);
 	}
+	
 }

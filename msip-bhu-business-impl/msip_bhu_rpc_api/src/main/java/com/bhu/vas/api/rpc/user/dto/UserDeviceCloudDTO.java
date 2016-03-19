@@ -13,6 +13,8 @@ public class UserDeviceCloudDTO implements Serializable {
     private String d_mac;
     //设备名称
     private String d_name;
+	//设备的hdtype
+	private String d_type;
     //设备在线状态 -1 从未上线 1 在线 0 离线
     private String d_online;
     //设备在线终端数量
@@ -41,6 +43,12 @@ public class UserDeviceCloudDTO implements Serializable {
 	}
 	public void setD_name(String d_name) {
 		this.d_name = d_name;
+	}
+	public String getD_type() {
+		return d_type;
+	}
+	public void setD_type(String d_type) {
+		this.d_type = d_type;
 	}
 	public String getD_online() {
 		return d_online;

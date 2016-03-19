@@ -9,8 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasSwitchWorkmodeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
@@ -24,6 +22,7 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
@@ -31,15 +30,13 @@ import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
-import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
-import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskService;
@@ -73,8 +70,11 @@ public class TaskFacadeService {
 	@Resource
 	private WifiDeviceModuleService wifiDeviceModuleService;
 	
+	//@Resource
+	//private WifiDeviceSettingService wifiDeviceSettingService;
+	
 	@Resource
-	private WifiDeviceSettingService wifiDeviceSettingService;
+	private SharedNetworkFacadeService sharedNetworkFacadeService;
 
 	/**
 	 * 任务执行callback通知
@@ -519,8 +519,8 @@ public class TaskFacadeService {
 					String stopTemplate = vasModuleCmdDefinedService.fetchCommonStopTemplate();
 					cmd = (CMDBuilder.autoBuilderVapFullCMD4Opt(mac, taskid, stopTemplate));
 					break;	
-				case DS_VistorWifi_Limit:
-					//需要判定访客网络是否开启
+				case DS_SharedNetworkWifi_Limit:
+					/*//需要判定访客网络是否开启
 					UserSettingState user_setting_entity = userSettingStateService.getById(mac);
 					if(user_setting_entity != null){
 						UserVistorWifiSettingDTO uvw_dto = user_setting_entity.getUserSetting(UserVistorWifiSettingDTO.
@@ -537,11 +537,25 @@ public class TaskFacadeService {
 						}
 					}
 					//如果未开启，则重新构建访客网络开启指令则不break，直接走DS_VistorWifi_Start开启访客网络
-					ods_cmd = OperationDS.DS_VistorWifi_Start;
-				case DS_VistorWifi_Start:
+					ods_cmd = OperationDS.DS_VistorWifi_Start;*/
+				case DS_SharedNetworkWifi_Start:
 					{
-						ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
-						vistor_dto = ParamVapVistorWifiDTO.fufillWithDefault(vistor_dto,WifiDeviceHelper.isWorkModeRouter(work_mode));
+						ParamSharedNetworkDTO shared_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
+						ParamSharedNetworkDTO.fufillWithDefault(shared_dto);
+						sharedNetworkFacadeService.updateDevices2SharedNetwork(mac,shared_dto);
+						shared_dto.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(work_mode));
+						//vistor_dto = ParamSharedNetworkDTO.fufillWithDefault(shared_dto,WifiDeviceHelper.isWorkModeRouter(work_mode));
+						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(shared_dto),deviceFacadeService));
+						/*UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
+						vistorwifi.setOn(true);
+						vistorwifi.setDs(false);
+						//置为空 是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
+						vistor_dto.setBlock_mode(null);
+						vistor_dto.setComplete_isolate_ports(null);
+						vistorwifi.setVw(vistor_dto);
+						userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));*/
+/*						ParamSharedNetworkDTO shared_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
+						vistor_dto = ParamSharedNetworkDTO.fufillWithDefault(shared_dto,WifiDeviceHelper.isWorkModeRouter(work_mode));
 						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(vistor_dto),deviceFacadeService));
 						UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
 						vistorwifi.setOn(true);
@@ -551,12 +565,12 @@ public class TaskFacadeService {
 						vistor_dto.setComplete_isolate_ports(null);
 						vistorwifi.setVw(vistor_dto);
 						userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
-						
+*/						
 					}
 					break;
-				case DS_VistorWifi_Stop:
+				case DS_SharedNetworkWifi_Stop:
 					{
-						UserSettingState settingState = userSettingStateService.getById(mac);
+						/*UserSettingState settingState = userSettingStateService.getById(mac);
 						if(settingState != null){
 							UserVistorWifiSettingDTO vistorwifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
 							if(vistorwifi != null && vistorwifi.isOn()){
@@ -565,7 +579,8 @@ public class TaskFacadeService {
 								vistorwifi.setVw(null);
 								userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
 							}
-						}
+						}*/
+						sharedNetworkFacadeService.removeDevicesFromSharedNetwork(mac);
 						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
 					}
 					break;

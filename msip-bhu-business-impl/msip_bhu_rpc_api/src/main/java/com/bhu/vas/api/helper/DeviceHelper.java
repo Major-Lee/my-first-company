@@ -13,8 +13,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.ret.param.ParamVapAdDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapVistorLimitWifiDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
@@ -29,6 +27,8 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
+import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -855,33 +855,56 @@ public class DeviceHelper {
 				"</mod>"+
 				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
 			"</dev>";
-/*	public static final String DeviceSetting_Switch_Workmode_Router2Bridge =
-			"<dev>"+
-			    "<sys>"+
-			    	"<config><ITEM sequence=\"-1\" /></config>"+
-			    "</sys>"+
-			    "<mod>"+
-					"<basic>"+
-						"<mode><ITEM mode=\"bridge-ap\" scene=\"ap\"/></mode>"+
-						"<lan><ITEM ip_mode=\"dhcpc\" /></lan>"+
-					"</basic>"+
-				"</mod>"+
-				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
+
+	
+	
+	
+	public static final String DeviceSetting_Start_SharedNetworkWifi_Uplink =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"14\" /></vap></wifi>"+
+				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+	
+				"<net>"+
+					"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/></interface>"+
+					"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"%s\"/></bridge>"+
+					"<webportal>"+
+						"<setting>"+
+							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3\" auth_mode=\"local\" block_mode=\"%s\" local_mode=\"signal\" signal_limit=\"%s\" max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+
+							"extend_memory_enable=\"disable\" guest_portal_en=\"enable\" progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\" "+ 
+							"open_resource=\"%s\" forbid_management=\"enable\" "+ 
+							"redirect_url=\"%s\"/>"+ 
+						"</setting>"+
+					"</webportal>"+
+				"</net>"+
 			"</dev>";
-	public static final String DeviceSetting_Switch_Workmode_Bridge2Router =
-			"<dev>"+
-			    "<sys>"+
-			    	"<config><ITEM sequence=\"-1\" /></config>"+
-			    "</sys>"+
-			    "<mod>"+
-					"<basic>"+
-						"<mode><ITEM mode=\"router-ap\" scene=\"router\"/></mode>"+
-						"<wan><ITEM mode=\"dhcpc\" /></wan>"+
-						"<lan><ITEM ip=\"192.168.62.1\" netmask=\"255.255.255.0\" dhcp_enable=\"enable\" /></lan>"+
-					"</basic>"+
-				"</mod>"+
-				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
-			"</dev>";*/
+	public static final String DeviceSetting_Start_SharedNetworkWifi_SafeSecure =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"14\" /></vap></wifi>"+
+				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+		
+				"<net>"+
+					"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/></interface>"+
+					"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"%s\"/></bridge>"+	
+					"<webportal>"+
+						"<setting>"+
+							"<ITEM enable=\"enable\" interface=\"wlan3\" auth_mode=\"remote\" block_mode=\"%s\" local_mode=\"immediate\" signal_limit=\"%s\"  max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+ 
+							" guest_portal_en=\"disable\" allow_ip=\"\" allow_domain=\"\" tmp_pass=\"enable\" tmp_pass_duration=\"60\" manage_server=\"disable\" "+
+							" open_resource=\"%s\" forbid_management=\"disable\" allow_https=\"disable\" "+
+							" remote_auth_url=\"%s\" portal_server_url=\"%s\" dns_default_ip=\"%s\"  />"+ 
+						"<setting>"+
+					"</webportal>"+
+				"</net>"+	
+			"</dev>";
+	
+	public static final String DeviceSetting_Stop_SharedNetworkWifi =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+			     "<net>"+
+			          "<interface><ITEM name=\"wlan3\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\"/></interface>"+
+			          "<webportal><setting><ITEM  enable=\"disable\"  /></setting></webportal>"+
+			     "</net>"+
+			     "<wifi>"+
+			          "<vap><ITEM name=\"wlan3\" guest_en=\"disable\" isolation=\"0\" /></vap>"+
+			     "</wifi>"+
+			     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>"+
+		    "</dev>";
 	
 	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" real_channel=\"%s\"/>";
@@ -1113,40 +1136,49 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_Http404Item);
 	}*/
 	
-	public static String builderDSStartVisitorWifiOuter(String extparams){
+	/*public static String builderDSStartVisitorWifiOuter(String extparams){
 		ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
-		//ad_dto = ParamVapVistorWifiDTO.fufillWithDefault(ad_dto);
-		//if(ad_dto == null)
-		//	throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		return builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi,vistor_dto.builderProperties());
-		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
-		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
 	}
 	public static String builderDSLimitVisitorWifiOuter(String extparams){
 		ParamVapVistorLimitWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorLimitWifiDTO.class);
 		ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
-		//if(ad_dto == null)
-		//	throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		return builderDeviceSettingItem(DeviceSetting_Limit_VisitorWifi,ad_dto.builderProperties());
-		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
-		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
 	}
 	public static String builderDSStopVisitorWifiOuter(){
 		return DeviceSetting_Stop_VisitorWifi;
-		//ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
-		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
-		//if(ad_dto == null)
-		//	throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Stop_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
-		//return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, DeviceSetting_Stop_HttpPortalItem);
+	}*/
+	
+	/**
+	 * 
+	 * @param extparams 此参数注意的内容数据需要包括 bridge和router相关
+	 * @return
+	 */
+	public static String builderDSStartSharedNetworkWifiOuter(String extparams){
+		ParamSharedNetworkDTO vistor_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
+		if(SharedNetworkType.SafeSecure.getKey().equals(vistor_dto.getNtype()))
+			return builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_SafeSecure,vistor_dto.builderProperties());
+		else
+			return builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_Uplink,vistor_dto.builderProperties());
 	}
+	/*public static String builderDSLimitSharedNetworkWifiOuter(String extparams){
+		ParamVapVistorLimitWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorLimitWifiDTO.class);
+		ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
+		
+		
+		return builderDeviceSettingItem(DeviceSetting_Limit_SharedNetworkWifi,ad_dto.builderProperties());
+	}*/
+	public static String builderDSStopSharedNetworkWifiOuter(){
+		return DeviceSetting_Stop_SharedNetworkWifi;
+	}
+	
 	
 	public static String builderDSPluginOuter(String extparams){
 		ParamVasPluginDTO ad_dto = JsonHelper.getDTO(extparams, ParamVasPluginDTO.class);
 		return builderDeviceSettingItem(DeviceSetting_Plugins_Samba,ad_dto.builderProperties());
 	}
 	
-	public static String builderDSWorkModeSwitchOuter(String mac, int switchAct, WifiDeviceSettingDTO s_dto, ParamVapVistorWifiDTO vw_dto){
+	public static String builderDSWorkModeSwitchOuter(String mac, int switchAct, WifiDeviceSettingDTO s_dto, ParamSharedNetworkDTO vw_dto){
 		StringBuffer workModeSwitchBuilder = new StringBuffer();
 		//组装切换工作模式配置修改指令
 		if(switchAct == WifiDeviceHelper.SwitchMode_Router2Bridge_Act){
@@ -1156,8 +1188,12 @@ public class DeviceHelper {
 		}
 		//组装访客网络配置修改指令
 		if(vw_dto != null){
-			workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi, 
-					vw_dto.builderProperties()));
+			if(SharedNetworkType.SafeSecure.getKey().equals(vw_dto.getNtype()))
+				return builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_SafeSecure,vw_dto.builderProperties());
+			else
+				return builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_Uplink,vw_dto.builderProperties());
+			/*workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi, 
+					vw_dto.builderProperties()));*/
 		}
 		//3、ssid 密码
 		//4、黑名单

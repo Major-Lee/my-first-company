@@ -11,6 +11,7 @@ import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
  * @author tangzichao
  *
  */
+@Deprecated
 @SuppressWarnings("serial")
 public class UserVistorWifiSettingDTO extends UserSettingDTO{
 	public static final String Setting_Key = "uvw";

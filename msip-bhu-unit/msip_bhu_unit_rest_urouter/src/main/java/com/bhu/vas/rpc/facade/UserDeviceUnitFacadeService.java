@@ -20,6 +20,7 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
@@ -29,11 +30,9 @@ import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCloudDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
-import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
-import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.api.vto.device.DeviceBaseVTO;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
@@ -48,6 +47,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetP
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
 import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
@@ -113,6 +113,9 @@ public class UserDeviceUnitFacadeService {
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
     
+	@Resource
+	private SharedNetworkFacadeService sharedNetworkFacadeService;
+	
 	@Resource
 	private DeliverMessageService deliverMessageService;
 	
@@ -670,13 +673,17 @@ public class UserDeviceUnitFacadeService {
 				vto.setMobileno(StringHelper.MINUS_STRING_GAP);
 				vto.setAvatar(StringHelper.MINUS_STRING_GAP);
 			}
-			UserSettingState settingState = userSettingStateService.getById(mac);
+			SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
+			if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
+				vto.setUsers_rate(sharedNetworkConf.getPsn().getUsers_tx_rate());
+			}
+			/*UserSettingState settingState = userSettingStateService.getById(mac);
 			if(settingState != null){
 				UserVistorWifiSettingDTO vistorWifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
 				if(vistorWifi != null && vistorWifi.isOn() && vistorWifi.getVw() != null){//访客网络是开启
 					vto.setUsers_rate(vistorWifi.getVw().getUsers_tx_rate());
 				}
-			}
+			}*/
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);
@@ -717,6 +724,7 @@ public class UserDeviceUnitFacadeService {
 							vto = new UserDeviceCloudDTO();
 							vto.setD_mac(wifiDeviceDocument.getId());
 							vto.setD_name(wifiDeviceDocument.getU_dnick());
+							vto.setD_type(wifiDeviceDocument.getD_type());
 							vto.setD_online(wifiDeviceDocument.getD_online());
 							vto.setD_origmodel(wifiDeviceDocument.getD_origmodel());
 							vto.setD_workmode(wifiDeviceDocument.getD_workmodel());

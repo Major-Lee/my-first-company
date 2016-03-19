@@ -16,6 +16,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  * @author edmond
  *
  */
+@Deprecated
 @SuppressWarnings("serial")
 public class ParamVapVistorWifiDTO implements java.io.Serializable{
 	//users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")

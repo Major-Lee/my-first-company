@@ -216,6 +216,22 @@ public class WifiDeviceDocument extends AbstractDocument{
 	)
 	private String d_industry;//设备行业信息
 	
+/*	@Field(
+			type = FieldType.String,
+			index = FieldIndex.analyzed,
+			searchAnalyzer = "lowercase_whitespace",
+			indexAnalyzer = "lowercase_whitespace",
+			store = true
+	)
+	private String d_extension;//设备业务扩展大字段
+*/	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_snk_type;//设备的共享网络类型
+	
 	@Field(
 			type = FieldType.String,
 			index = FieldIndex.not_analyzed,
@@ -506,6 +522,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_industry(String d_industry) {
 		this.d_industry = d_industry;
+	}
+
+	public String getD_snk_type() {
+		return d_snk_type;
+	}
+
+	public void setD_snk_type(String d_snk_type) {
+		this.d_snk_type = d_snk_type;
 	}
 
 	public String getUpdatedat() {
