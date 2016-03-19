@@ -43,6 +43,21 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	}
 	
 	/**
+	 * 根据条件搜索数据分页
+	 * 绑定设备的用户id
+	 * 设备的业务线类型
+	 * @param u_id
+	 * @param d_dut
+	 * @return
+	 */
+	public Page<WifiDeviceDocument> searchPageByUidAndDut(Integer u_id, String d_dut, int pageNo, int pageSize){
+		if(u_id == null) return null;
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithDut(u_id, d_dut);
+		return super.searchByConditionMessage(scm, pageNo, pageSize);
+	}
+	
+	/**
 	 * 根据条件搜索数据
 	 * 绑定设备的用户id
 	 * 设备的业务线类型
