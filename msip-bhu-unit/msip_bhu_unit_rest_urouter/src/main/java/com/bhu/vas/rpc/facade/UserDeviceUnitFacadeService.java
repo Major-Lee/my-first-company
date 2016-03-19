@@ -44,6 +44,7 @@ import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
@@ -60,6 +61,7 @@ import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.search.builder.WifiDeviceTCSearchMessageBuilder;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -718,8 +720,12 @@ public class UserDeviceUnitFacadeService {
 					if(searchDocuments.isEmpty()) {
 						vtos = Collections.emptyList();
 					}else{
+						List<String> macs = WifiDeviceDocumentHelper.generateDocumentIds(searchDocuments);
+						List<Object> ohd_counts = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSizes(macs);
+						List<String> d_linkmodes = WifiDeviceModeStatusService.getInstance().getPresents(macs);
 						UserDeviceCloudDTO vto = null;
 						vtos = new ArrayList<UserDeviceCloudDTO>();
+						int cursor = 0;
 						for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
 							vto = new UserDeviceCloudDTO();
 							vto.setD_mac(wifiDeviceDocument.getId());
@@ -734,9 +740,21 @@ public class UserDeviceUnitFacadeService {
 							if(StringUtils.isNotEmpty(u_id)){
 								vto.setUid(Integer.parseInt(u_id));
 							}
-							long ohd_count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDeviceDocument.getId());
-							vto.setOhd_count(ohd_count);
+							//long ohd_count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDeviceDocument.getId());
+							if(ohd_counts != null){
+								Object ohd_count_obj = ohd_counts.get(cursor);
+								if(ohd_count_obj != null){
+									vto.setOhd_count((Long)ohd_count_obj);
+								}
+							}
+							if(d_linkmodes != null){
+								String d_linkmode = d_linkmodes.get(cursor);
+								if(StringUtils.isNotEmpty(d_linkmode)){
+									vto.setLink_mode_type(DeviceHelper.getDeviceMode(d_linkmode));
+								}
+							}
 							vtos.add(vto);
+							cursor++;
 						}
 					}
 				}

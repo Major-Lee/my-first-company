@@ -52,6 +52,17 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return sb.toString();
 	}
 	
+	private static String[] generateKeys(List<String> wifiIds){
+		if(wifiIds == null || wifiIds.isEmpty()) return null;
+		String[] keys = new String[wifiIds.size()];
+		int cursor = 0;
+		for(String wifiId : wifiIds){
+			keys[cursor] = generateKey(wifiId);
+			cursor++;
+		}
+		return keys;
+	}
+	
 //	public void addPresent(String wifiId, String handsetId, long login_at){
 //		super.zadd(generateKey(wifiId), login_at, handsetId);
 //	}
@@ -83,6 +94,11 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 	 */
 	public Long presentOnlineSize(String wifiId){
 		return super.zcount(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE);
+	}
+	
+	public List<Object> presentOnlineSizes(List<String> wifiIds){
+		if(wifiIds == null || wifiIds.isEmpty()) return null;
+		return super.pipelineZCount_diffKeyWithSameScore(generateKeys(wifiIds), OnlineBaseScore, Long.MAX_VALUE);
 	}
 	
 	public Long presentOfflineSize(String wifiId){

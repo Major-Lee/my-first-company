@@ -1,5 +1,9 @@
 package com.bhu.vas.business.search.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.VapEnumType;
@@ -47,6 +51,16 @@ public class WifiDeviceDocumentHelper {
 //		doc1.setUpdatedat(DateTimeHelper.getDateTime());
 //		return doc1;
 //	}
+	
+	public static List<String> generateDocumentIds(List<WifiDeviceDocument> wifiDeviceDocuments){
+		if(wifiDeviceDocuments == null || wifiDeviceDocuments.isEmpty()) return Collections.emptyList();
+		
+		List<String> ids = new ArrayList<String>();
+		for(WifiDeviceDocument wifiDeviceDocument : wifiDeviceDocuments){
+			ids.add(wifiDeviceDocument.getId());
+		}
+		return ids;
+	}
 	
 	/**
 	 * 创建上过线的设备的索引数据

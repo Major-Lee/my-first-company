@@ -27,6 +27,8 @@ public class UserDeviceCloudDTO implements Serializable {
     private String d_origswver;
     //设备的业务线
     private String d_dut;
+    //设备上网方式
+    private String link_mode_type;
     
 	public int getUid() {
 		return uid;
@@ -87,5 +89,11 @@ public class UserDeviceCloudDTO implements Serializable {
 	}
 	public void setD_dut(String d_dut) {
 		this.d_dut = d_dut;
+	}
+	public String getLink_mode_type() {
+		return link_mode_type;
+	}
+	public void setLink_mode_type(String link_mode_type) {
+		this.link_mode_type = link_mode_type;
 	}
 }
