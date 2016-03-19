@@ -1,5 +1,6 @@
 package com.bhu.vas.web.device;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,15 +11,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceSharedNetworkRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
 @RequestMapping("/device/sharenetwork")
-public class DeviceSharenetworkController extends BaseController{
-	//@Resource
-	//private IDeviceURouterRestRpcService deviceURouterRestRpcService;
+public class DeviceSharedNetworkController extends BaseController{
+	@Resource
+	private IDeviceSharedNetworkRpcService deviceSharedNetworkRpcService;
 	
 	@ResponseBody()
 	@RequestMapping(value="/supported",method={RequestMethod.POST})
@@ -30,7 +35,7 @@ public class DeviceSharenetworkController extends BaseController{
 	}
 	
 	/**
-	 * 获取或修改用户共享网络配置并应用接口
+	 * 修改用户共享网络配置并应用接口
 	 * @param request
 	 * @param response
 	 * @param uid
@@ -43,14 +48,37 @@ public class DeviceSharenetworkController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false,defaultValue= "SafeSecure",value="snt") String sharenetwork_type,
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
 			@RequestParam(required = false) String extparams) {
-		/*RpcResponseDTO<URouterMainEnterVTO> rpcResult = deviceURouterRestRpcService.urouterMainEnter(uid, mac.toLowerCase());
+		RpcResponseDTO<ParamSharedNetworkDTO> rpcResult = deviceSharedNetworkRpcService.applyNetworkConf(uid, sharenetwork_type, extparams);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}*/
+		}
+	}
+	
+	/**
+	 * 获取用户共享网络配置并应用接口
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param sharenetwork_type
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/fetch",method={RequestMethod.POST})
+	public void fetch(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type) {
+		RpcResponseDTO<ParamSharedNetworkDTO> rpcResult = deviceSharedNetworkRpcService.fetchNetworkConf(uid, sharenetwork_type);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
 	}
 	
 	/**
@@ -61,20 +89,21 @@ public class DeviceSharenetworkController extends BaseController{
 	 * @param sharenetwork_type
 	 * @param mac
 	 */
+	@ResponseBody()
+	@RequestMapping(value="/takeeffect",method={RequestMethod.POST})	
 	public void takeeffect(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false,defaultValue= "SafeSecure",value="snt") String sharenetwork_type,
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
 			@RequestParam(required = false) String mac) {
-		/*RpcResponseDTO<URouterMainEnterVTO> rpcResult = deviceURouterRestRpcService.urouterMainEnter(uid, mac.toLowerCase());
+		RpcResponseDTO<Boolean> rpcResult = deviceSharedNetworkRpcService.takeEffectNetworkConf(uid, sharenetwork_type, mac);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}*/
+		}
 	}
-	
 	
 	/**
 	 * 获取用户所属指定共享网络配置的设备分页列表
@@ -84,8 +113,8 @@ public class DeviceSharenetworkController extends BaseController{
 	 * @param sharenetwork_type
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/pagedevices",method={RequestMethod.POST})
-	public void pagedevices(
+	@RequestMapping(value="/pages",method={RequestMethod.POST})
+	public void pages(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
