@@ -14,7 +14,7 @@
  
 	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_vas_users_sharednetwork
+	    	t_wifi_devices_sharednetwork
 	    ]]>
 	</sql>
 	  

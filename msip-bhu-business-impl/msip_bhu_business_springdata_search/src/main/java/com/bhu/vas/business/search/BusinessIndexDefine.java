@@ -14,7 +14,7 @@ public interface BusinessIndexDefine {
 		public static final int Shards		    = 5;
 		public static final int replicas 		= 1;
 		public static final String refreshInterval = "-1";
-		public static final int RetryOnConflict = 2;
+		public static final int RetryOnConflict = 3;
 /*		interface Field{
 			public static final String ID 		= "id";
 			public static final String SN 		= "sn";
@@ -61,6 +61,8 @@ public interface BusinessIndexDefine {
 			D_UPTIME("d_uptime", null),//设备在线总时长 单位秒
 			D_WANIP("d_wanip", null),//设备wanip
 			D_INDUSTRY("d_industry", null),//设备行业信息
+			D_SHAREDNETWORK_TYPE("d_snk_type", null),//设备的共享网络类型
+			//D_EXTENSION("d_extension", null),//设备业务扩展字段
 			/**** 运营信息 operate ****/
 			O_TEMPLATE("o_template",null),//运营模板编号
 			O_GRAYLEVEL("o_graylevel", null),//设备的灰度定义

@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -373,7 +374,7 @@ public class VapEnumType {
 		private String name;
 		private String defalutSsid;
 		static Map<String, SharedNetworkType> allSharedNetworkTypes;
-		
+		static List<SharedNetworkVTO> sharedNetworkVtos;
 		private SharedNetworkType(String key,String name,String defalutSsid){
 			this.key = key;
 			this.name = name;
@@ -406,13 +407,17 @@ public class VapEnumType {
 		public static boolean supported(String key){
 			return allSharedNetworkTypes.containsKey(key);
 		}
-		
 		static {
 			allSharedNetworkTypes = new HashMap<String, SharedNetworkType>();
+			sharedNetworkVtos = new ArrayList<>();
 			SharedNetworkType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (SharedNetworkType type : types){
 				allSharedNetworkTypes.put(type.getKey(), type);
+				sharedNetworkVtos.add(new SharedNetworkVTO(type.getKey(),type.getName(),type.getDefalutSsid()));
 			}
+		}
+		public static List<SharedNetworkVTO> getSharedNetworkVtos() {
+			return sharedNetworkVtos;
 		}
 	}
 	

@@ -63,11 +63,29 @@ public class WifiDeviceHelper {
 	public final static String VistorWifi_Default_Open_resource = "bhuwifi.com,bhunetworks.com";
 	//public final static String VistorWifi_Default_SSID = "BhuWiFi-访客";
 	
-	public final static int VistorWifi_Default_Users_tx_rate= 128;
-	public final static int VistorWifi_Default_Users_rx_rate= 128;
+	
+	public final static int VistorWifi_Default_Users_tx_rate= 256;//单位 KB/s
+	public final static int VistorWifi_Default_Users_rx_rate= 256;//单位 KB/s
 	public final static int VistorWifi_Default_Signal_limit= -30;
 	public final static int VistorWifi_Default_Idle_timeout= 3*60*60;
 	public final static int VistorWifi_Default_Force_timeout= 12*60*60;
+	
+	
+	
+	public final static String SharedNetworkWifi_Default_Open_resource = "bhuwifi.com,bhunetworks.com";
+	public final static String SharedNetworkWifi_Default_Redirect_url = "www.bhuwifi.com";
+	
+	public final static String SharedNetworkWifi_Default_Remote_auth_url = "http://123.56.227.18:9158/common/api/reward";
+	public final static String SharedNetworkWifi_Default_Remote_portal_server_url = "123.56.227.18:18085";
+	public final static String SharedNetworkWifi_Default_Remote_Dns_default_ip = "123.57.26.170";
+	//public final static String VistorWifi_Default_SSID = "BhuWiFi-访客";
+	
+	public final static int SharedNetworkWifi_Default_Users_tx_rate= 256;
+	public final static int SharedNetworkWifi_Default_Users_rx_rate= 256;
+	public final static int SharedNetworkWifi_Default_Signal_limit= -30;
+	public final static int SharedNetworkWifi_Default_Idle_timeout= 3*60*60;
+	public final static int SharedNetworkWifi_Default_Force_timeout= 12*60*60;
+	public final static int SharedNetworkWifi_Default_Maxclients= 128;
 	//public final static String VistorWifi_Default_SSID_WhenEmpty = "BhuWiFi-访客";
 	
 	static{
@@ -219,7 +237,7 @@ public class WifiDeviceHelper {
 					|| OperationDS.DS_Http_Redirect_Start == subopt || OperationDS.DS_Http_Redirect_Stop == subopt*/
 					//|| OperationDS.DS_Http_Portal_Start == subopt || OperationDS.DS_Http_Portal_Stop == subopt
 					OperationDS.DS_Http_Ad_Start == subopt || OperationDS.DS_Http_Ad_Stop == subopt
-					|| OperationDS.DS_VistorWifi_Start == subopt || OperationDS.DS_VistorWifi_Stop == subopt
+					|| OperationDS.DS_SharedNetworkWifi_Start == subopt || OperationDS.DS_SharedNetworkWifi_Limit == subopt || OperationDS.DS_SharedNetworkWifi_Stop == subopt
 					|| OperationDS.DS_Http_VapModuleCMD_Start == subopt || OperationDS.DS_Http_VapModuleCMD_Stop == subopt
 					);
 		}else{

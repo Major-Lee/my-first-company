@@ -88,6 +88,12 @@ public class SearchConditionPack extends SearchConditionLogic implements ICondit
 		return pack;
 	}
 	
+	public static SearchConditionPack builderSearchConditionMustPack(){
+		SearchConditionPack pack = new SearchConditionPack();
+		pack.setLogic(SearchConditionLogicEnumType.Must.getName());
+		return pack;
+	}
+	
 	public static SearchConditionPack builderSearchConditionPackWithConditions(SearchCondition... conditions){
 		return builderSearchConditionPackWithConditions(null, conditions);
 	}
