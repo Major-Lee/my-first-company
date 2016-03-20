@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.devices.iservice;
 
+import java.util.List;
+
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 
@@ -29,7 +31,7 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @param mac
 	 * @return
 	 */
-	RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,String sharenetwork_type,String mac);
+	RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,String sharenetwork_type,List<String> macs);
 	
 	
 	/**

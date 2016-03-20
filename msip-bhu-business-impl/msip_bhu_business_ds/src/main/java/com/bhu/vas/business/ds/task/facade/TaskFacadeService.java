@@ -34,6 +34,7 @@ import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
+import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
@@ -67,7 +68,10 @@ public class TaskFacadeService {
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
-	
+
+	@Resource
+	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
+
 	@Resource
 	private WifiDeviceModuleService wifiDeviceModuleService;
 	
@@ -545,7 +549,7 @@ public class TaskFacadeService {
 						sharedNetworkFacadeService.updateDevices2SharedNetwork(mac,shared_dto);
 						shared_dto.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(work_mode));
 						//vistor_dto = ParamSharedNetworkDTO.fufillWithDefault(shared_dto,WifiDeviceHelper.isWorkModeRouter(work_mode));
-						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(shared_dto),deviceFacadeService));
+						cmd = CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(shared_dto),deviceCMDGenFacadeService);
 						/*UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
 						vistorwifi.setOn(true);
 						vistorwifi.setDs(false);
@@ -581,19 +585,19 @@ public class TaskFacadeService {
 							}
 						}*/
 						sharedNetworkFacadeService.removeDevicesFromSharedNetwork(mac);
-						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
+						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceCMDGenFacadeService));
 					}
 					break;
 				case DS_Switch_WorkMode:
-					WifiDeviceSettingDTO setting_dto = deviceFacadeService.validateDeviceSettingReturnDTO(mac);
+					WifiDeviceSettingDTO setting_dto = deviceCMDGenFacadeService.validateDeviceSettingReturnDTO(mac);
 					//需要判定是否可以进行切换
 					ParamVasSwitchWorkmodeDTO param_switch_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
 					WifiDeviceHelper.deviceWorkModeNeedChanged(work_mode,param_switch_dto.getWmode(), 
 							DeviceHelper.getLinkModeValue(setting_dto));
-					cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
+					cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceCMDGenFacadeService));
 					break;
 				default:
-					cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
+					cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams/*,wifiDevice.getOrig_swver()*/,deviceCMDGenFacadeService));
 					break;
 			}
 		}else{
@@ -655,7 +659,7 @@ public class TaskFacadeService {
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
 		
-		downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams/*,wifiDevice.getOrig_swver()*/,deviceFacadeService));
+		downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, downTask.getId(),extparams/*,wifiDevice.getOrig_swver()*/,deviceCMDGenFacadeService));
 /*=======
 		downTask.setPayload(CMDBuilder.autoBuilderCMD4Opt(opt_cmd, ods_cmd, mac, downTask.getId(), extparams, wifiDevice.getOrig_swver(), deviceFacadeService));
 >>>>>>> bacd3bab901df86e48761ff076d84a2471f98f3f*/

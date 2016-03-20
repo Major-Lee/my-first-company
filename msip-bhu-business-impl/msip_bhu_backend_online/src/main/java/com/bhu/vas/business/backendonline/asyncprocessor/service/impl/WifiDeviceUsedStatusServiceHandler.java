@@ -71,9 +71,9 @@ public class WifiDeviceUsedStatusServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("WifiDeviceUsedStatusServiceHandler process message[%s] successful", message));
 	}
 
-	@Override
+	/*@Override
 	public void createDeviceGroupIndex(String message) {
 		// TODO Auto-generated method stub
-	}
+	}*/
 
 }

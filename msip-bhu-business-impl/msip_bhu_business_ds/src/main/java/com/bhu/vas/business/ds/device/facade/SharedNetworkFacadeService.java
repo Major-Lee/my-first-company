@@ -15,16 +15,12 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkVTO;
 import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetwork;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
-import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
+import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.business.ds.device.service.UserDevicesSharedNetworkService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -85,7 +81,8 @@ public class SharedNetworkFacadeService {
 	 * @param sharedNetwork
 	 * @return 需要发送指令的mac地址
 	 */
-	public List<String> doApplySharedNetworksConfig2Devices(int uid,VapEnumType.SharedNetworkType sharedNetwork){
+	//@Deprecated
+	/*public List<String> doApplySharedNetworksConfig2Devices(int uid,VapEnumType.SharedNetworkType sharedNetwork){
 		List<String> dmacs = new ArrayList<String>();
 		List<String> tmpDmacs = new ArrayList<String>();
 		try{
@@ -103,7 +100,7 @@ public class SharedNetworkFacadeService {
 				}
 				if(!tmpDmacs.isEmpty()){
 					//未设定的sharedNetwork 或sharedNetwork相等的需要应用
-					dmacs.addAll(addDevices2SharedNetwork(uid,sharedNetwork,true,tmpDmacs.toArray(new String[0])));
+					dmacs.addAll(addDevices2SharedNetwork(uid,sharedNetwork,true,tmpDmacs));
 					tmpDmacs.clear();
 				}
 			}
@@ -114,7 +111,7 @@ public class SharedNetworkFacadeService {
 			}
 		}
 		return dmacs;
-	}
+	}*/
 	
 	/**
 	 * 获取用户关于共享网络的配置
@@ -184,18 +181,23 @@ public class SharedNetworkFacadeService {
 	 * 添加设备应用指定的配置
 	 * 如果用户不存在此配置，需要建立新的用户配置
 	 * 如果配置不存在则需要新建缺省的进去
+	 * 此接口在后台backend执行,主要配合doApplySharedNetworksConfig 和 修改一个或多个设备的共享网络配置的后续执行
 	 * @param uid
 	 * @param sharednetwork_type
 	 * @param sharednetworkMatched true 进行比对，只有sharednetwork_type相同的配置才会更新 false 都更新
 	 * @param macs
 	 * @return 配置变更了的具体设备地址集合
 	 */
-	public List<String> addDevices2SharedNetwork(int uid,
+	public void addDevices2SharedNetwork(int uid,
 			VapEnumType.SharedNetworkType sharednetwork_type,
 			boolean sharednetworkMatched,
-			String... macs){
+			List<String> macs,ISharedNetworkNotifyCallback callback){
 		if(sharednetwork_type == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"sharednetwork_type:".concat(String.valueOf(sharednetwork_type))});
+		}
+		
+		if(macs == null || macs.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY,new String[]{"macs:"});
 		}
 		List<String> result = new ArrayList<String>();
 		ParamSharedNetworkDTO configDto = fetchUserSharedNetworkConf(uid,sharednetwork_type);
@@ -230,7 +232,10 @@ public class SharedNetworkFacadeService {
 				}
 			}
 		}
-		return result;
+		if(callback != null){
+			callback.notify(configDto, result);
+		}
+		//return result;
 	}
 	
 	/**
