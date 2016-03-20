@@ -72,9 +72,9 @@ public class SharedNetworkFacadeServiceTest extends BaseTest{
 		macs.add("84:82:f4:de:26:8a");
 		macs.add("84:82:f4:de:26:8c");
 		macs.add("84:82:f4:de:26:88");
-			List<String> result =  sharedNetworkFacadeService.addDevices2SharedNetwork(3,VapEnumType.SharedNetworkType.SafeSecure,true, 
-					macs);
-			System.out.println("1"+JsonHelper.getJSONString(result));	
+			sharedNetworkFacadeService.addDevices2SharedNetwork(3,VapEnumType.SharedNetworkType.SafeSecure,true, 
+					macs,null);
+			//System.out.println("1"+JsonHelper.getJSONString(result));	
 	}
 
 	@Test
