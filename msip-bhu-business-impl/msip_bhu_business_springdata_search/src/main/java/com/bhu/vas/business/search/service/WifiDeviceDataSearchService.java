@@ -91,14 +91,15 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param u_id 用户uid
 	 * @param sharedNetwork_type 共享网络类型
 	 * @param notify
+	 * @param pageSize
 	 */
-	public void iteratorWithSharedNetwork(Integer u_id, String sharedNetwork_type, IteratorNotify<Page<WifiDeviceDocument>> notify){
+	public void iteratorWithSharedNetwork(Integer u_id, String sharedNetwork_type, int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
 		if(u_id == null) return;
 		
 		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithSharedNetwork(u_id, sharedNetwork_type);
 		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
 		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, BusinessIndexDefine.WifiDevice.Type, 
-				message, notify);
+				message, pageSize, notify);
 	}
 	
 	/**

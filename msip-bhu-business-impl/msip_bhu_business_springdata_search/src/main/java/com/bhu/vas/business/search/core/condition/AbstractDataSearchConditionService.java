@@ -454,14 +454,21 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 			throw new SearchQueryValidateException(String.format("ValidateMethodParamVaild param unvaild fieldName[%s]", fieldName));
 	}
 	
+	public static final int Default_Iterator_PageSize = 200;
 	
 	public void iteratorAll(String indices, String types, String message, IteratorNotify<Page<MODEL>> notify){
+		iteratorAll(indices, types, message, Default_Iterator_PageSize, notify);
+	}
+	
+	public void iteratorAll(String indices, String types, String message, int pageSize, IteratorNotify<Page<MODEL>> notify){
+		if(pageSize <= 0) return;
+		
 		SearchConditionMessage searchConditionMessage = null;
 		if(!StringUtils.isEmpty(message)){
 			searchConditionMessage = JsonHelper.getDTO(message, SearchConditionMessage.class);
 		}
 		
-		SearchQuery searchQuery = builderNativeSearchQueryByConditionMessage(searchConditionMessage, indices, types, 0, 500).build();
+		SearchQuery searchQuery = builderNativeSearchQueryByConditionMessage(searchConditionMessage, indices, types, 0, pageSize).build();
 
 		String scrollId = getElasticsearchTemplate().scan(searchQuery, 30000, false);
 		boolean hasRecords = true;
