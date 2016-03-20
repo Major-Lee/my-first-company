@@ -1,5 +1,7 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
+import java.util.List;
+
 import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
@@ -37,6 +39,11 @@ public class WifiDeviceModeStatusService extends AbstractRelationStringCache{
 	
 	public String getPresent(String wifiId){
 		return super.get(generateKey(wifiId));
+	}
+	
+	public List<String> getPresents(List<String> wifiIds){
+		if(wifiIds == null || wifiIds.isEmpty()) return null;
+		return super.mget(wifiIds.toArray(new String[]{}));
 	}
 
 	public void removePresent(String wifiId){

@@ -65,6 +65,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorS
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
+import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceAlarmService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
@@ -118,6 +119,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
+	
+	@Resource
+	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
 	
 	@Resource
 	private DeliverMessageService deliverMessageService;
@@ -1070,7 +1074,7 @@ public class DeviceBusinessFacadeService {
 						if((StringUtils.isNotEmpty(dto.getSequence()) && Integer.parseInt(dto.getSequence()) > 0) && !dto.hasPlugin(BusinessRuntimeConfiguration.Devices_Plugin_Samba_Name)){
 							String pluginCmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_Plugins,wifiId,
 									CMDBuilder.auto_taskid_fragment.getNextSequence(),JsonHelper.getJSONString(ParamVasPluginDTO.builderDefaultSambaPlugin()),
-									deviceFacadeService);
+									deviceCMDGenFacadeService);
 							//System.out.println("~~~~~~~~~~~~~2:cmd:"+pluginCmd);
 							afterQueryPayloads.add(pluginCmd);
 						}
@@ -1086,7 +1090,7 @@ public class DeviceBusinessFacadeService {
 					}
 				}
 				//设备持久指令分发
-				List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceExceptVapModuleCMD(wifiId);
+				List<String> persistencePayloads = deviceCMDGenFacadeService.fetchWifiDevicePersistenceExceptVapModuleCMD(wifiId);
 				if((persistencePayloads != null && !persistencePayloads.isEmpty()) ||
 						(afterQueryPayloads != null && !afterQueryPayloads.isEmpty())){
 					if(persistencePayloads != null) afterQueryPayloads.addAll(persistencePayloads);
@@ -1456,7 +1460,7 @@ public class DeviceBusinessFacadeService {
 				cmdPayloads.add(CMDBuilder.builderVapModuleRegisterResponse(mac));
 				if(vapDTO.getModules() != null && !vapDTO.getModules().isEmpty()){
 					//比对本地内容，看是否需要重新下发增值指令，以服务器内容为基准，所以直接生成指令下发，此部分操作设备在登录后查询配置响应的时候会做相关操作，所以这里就不做了
-					List<String> persistencePayloads = deviceFacadeService.fetchWifiDevicePersistenceVapModuleCMD(mac);
+					List<String> persistencePayloads = deviceCMDGenFacadeService.fetchWifiDevicePersistenceVapModuleCMD(mac);
 					if(persistencePayloads != null && !persistencePayloads.isEmpty()){
 						cmdPayloads.addAll(persistencePayloads);
 						/*deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, persistencePayloads);
