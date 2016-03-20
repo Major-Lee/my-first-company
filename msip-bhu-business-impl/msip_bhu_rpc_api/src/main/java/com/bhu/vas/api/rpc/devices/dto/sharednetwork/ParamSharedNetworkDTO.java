@@ -301,7 +301,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	public static boolean wasChanged(ParamSharedNetworkDTO param1,ParamSharedNetworkDTO param2){
 		if(param1 == null || param2 == null) return false;
 		if(!param1.getNtype().equals(param2.getNtype())){
-			return false;
+			return true;
 		}
 		
 		if(!param1.getSsid().equals(param2.getSsid())) return true;

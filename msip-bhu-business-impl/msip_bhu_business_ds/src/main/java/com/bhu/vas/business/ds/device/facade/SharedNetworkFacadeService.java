@@ -220,6 +220,7 @@ public class SharedNetworkFacadeService {
 						continue;
 					}
 				}
+				sharednetwork.setSharednetwork_type(configDto.getNtype());
 				SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
 				ParamSharedNetworkDTO dbDto = sharedNetworkSettingDTO.getPsn();
 				if(dbDto == null || ParamSharedNetworkDTO.wasChanged(configDto, dbDto)){
