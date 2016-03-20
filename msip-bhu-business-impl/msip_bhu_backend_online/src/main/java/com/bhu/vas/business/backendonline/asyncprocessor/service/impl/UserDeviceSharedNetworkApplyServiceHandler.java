@@ -22,7 +22,6 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceSharedNetworkApplyDTO;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
@@ -35,7 +34,7 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 @Service
 public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerService {
-	private final Logger logger = LoggerFactory.getLogger(AsyncMsgHandleService.class);
+	private final Logger logger = LoggerFactory.getLogger(UserDeviceSharedNetworkApplyServiceHandler.class);
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
