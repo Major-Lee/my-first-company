@@ -108,7 +108,7 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 							}
 						});*/
 			}else{//给此用户所有的sharedNetwork的设备变更配置并下发指令更新索引，
-				wifiDeviceDataSearchService.iteratorWithSharedNetwork(userid, sharedNetwork.getKey(), new IteratorNotify<Page<WifiDeviceDocument>>() {
+				wifiDeviceDataSearchService.iteratorWithSharedNetwork(userid, sharedNetwork.getKey(),200, new IteratorNotify<Page<WifiDeviceDocument>>() {
 				    @Override
 				    public void notifyComming(Page<WifiDeviceDocument> pages) {
 				    	for (WifiDeviceDocument doc : pages) {
