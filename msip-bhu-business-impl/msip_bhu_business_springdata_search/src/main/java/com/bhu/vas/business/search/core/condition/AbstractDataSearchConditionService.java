@@ -463,10 +463,10 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 		
 		SearchQuery searchQuery = builderNativeSearchQueryByConditionMessage(searchConditionMessage, indices, types, 0, 500).build();
 
-		String scrollId = getElasticsearchTemplate().scan(searchQuery, 60000, false);
+		String scrollId = getElasticsearchTemplate().scan(searchQuery, 30000, false);
 		boolean hasRecords = true;
 		while (hasRecords) {
-			Page<MODEL> page = getElasticsearchTemplate().scroll(scrollId, 60000, entityClass);
+			Page<MODEL> page = getElasticsearchTemplate().scroll(scrollId, 30000, entityClass);
 			if (page.hasContent()) {
 				notify.notifyComming(page);
 			} else {
