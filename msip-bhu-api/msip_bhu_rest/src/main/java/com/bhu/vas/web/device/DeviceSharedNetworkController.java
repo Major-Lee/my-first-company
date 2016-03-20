@@ -24,7 +24,7 @@ import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-@RequestMapping("/device/sharenetwork")
+@RequestMapping("/device/sharednetwork")
 public class DeviceSharedNetworkController extends BaseController{
 	@Resource
 	private IDeviceSharedNetworkRpcService deviceSharedNetworkRpcService;

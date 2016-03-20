@@ -19,7 +19,7 @@ import com.bhu.vas.rpc.facade.DeviceSharedNetworkUnitFacadeService;
  * @author Edmond Lee
  *
  */
-@Service("deviceRestRpcService")
+@Service("deviceSharedNetworkRpcService")
 public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcService {
 	private final Logger logger = LoggerFactory.getLogger(DeviceSharedNetworkRpcService.class);
 	@Resource
