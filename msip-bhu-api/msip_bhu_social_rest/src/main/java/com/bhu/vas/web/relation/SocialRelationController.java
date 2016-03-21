@@ -45,9 +45,10 @@ public class SocialRelationController extends BaseController {
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
             @RequestParam(required = true) String bssid,
-            @RequestParam(required = true) String type) {
+            @RequestParam(required = true) String type,
+            @RequestParam(required = true) boolean flag) {
 
-        RpcResponseDTO<Boolean> rpcResult = socialRpcService.clickPraise(uid, bssid.toLowerCase(), type);
+        RpcResponseDTO<Boolean> rpcResult = socialRpcService.clickPraise(uid, bssid.toLowerCase(), type, flag);
         if (!rpcResult.hasError())
             SpringMVCHelper.renderJson(response,
                     ResponseSuccess.embed(rpcResult.getPayload()));

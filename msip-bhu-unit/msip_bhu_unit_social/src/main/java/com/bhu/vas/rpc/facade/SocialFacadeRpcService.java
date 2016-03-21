@@ -66,14 +66,16 @@ public class SocialFacadeRpcService {
      * @param type
      * @return
      */
-    public void clickPraise(String bssid, String type) {
+    public void clickPraise(String bssid, String type, boolean flag) {
 
         if (WifiActionHashService.getInstance().isNoExist(bssid)) {
             WifiActionHashService.getInstance().init(bssid);
         }
 
-        if (SocialActionType.isActionType(type)){
+        if (SocialActionType.isActionType(type) && flag){
             WifiActionHashService.getInstance().hincrease(bssid, type);
+        }else if (SocialActionType.isActionType(type) && !flag){
+
         }else
             throw  new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
     }
@@ -254,7 +256,6 @@ public class SocialFacadeRpcService {
      * @return
      */
     public WifiHandsetUserVTO fetchHandsetList(Long uid, String hd_mac, String bssid, String hd_macs) {
-
 
         WifiHandsetUserVTO vto = new WifiHandsetUserVTO();
         Wifi wifi = wifiService.getById(bssid);

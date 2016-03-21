@@ -8,7 +8,6 @@ import java.io.Serializable;
  */
 public class WifiActionDTO implements Serializable{
     private int up;
-    private int down;
     private int report;
 
     public int getUp() {
@@ -16,12 +15,6 @@ public class WifiActionDTO implements Serializable{
     }
     public void setUp(String up) {
         this.up = Integer.parseInt(up);
-    }
-    public int getDown() {
-        return down;
-    }
-    public void setDown(String down) {
-        this.down = Integer.parseInt(down);
     }
     public int getReport() {
         return report;

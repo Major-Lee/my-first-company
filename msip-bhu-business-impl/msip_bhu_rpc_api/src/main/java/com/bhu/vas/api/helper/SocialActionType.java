@@ -8,7 +8,6 @@ import java.util.Map;
  */
 public enum  SocialActionType{
     ACTION_UP("up"),
-    ACTION_DOWN("down"),
     ACTIOM_REPORT("report");
 
     private final String value;

@@ -83,11 +83,11 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid, String type) {
+    public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid, String type, boolean flag) {
         logger.info(String.format("clickPraise uid[%s]  bssid[%s] type[%s]",
                 uid, bssid, type));
         try {
-            socialFacadeRpcService.clickPraise(bssid, type);
+            socialFacadeRpcService.clickPraise(bssid, type,flag);
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         } catch (BusinessI18nCodeException i18nex) {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());

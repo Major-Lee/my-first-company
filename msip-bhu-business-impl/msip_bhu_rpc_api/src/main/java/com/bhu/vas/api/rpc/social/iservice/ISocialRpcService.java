@@ -117,7 +117,7 @@ public interface ISocialRpcService {
      * @param type  up/down/type
      * @return
      */
-    public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid, String type);
+    public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid, String type, boolean flag);
 
 //    /**
 //     * 关注
