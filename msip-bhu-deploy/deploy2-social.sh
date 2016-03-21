@@ -4,10 +4,10 @@ Current_DIR=`pwd`
 echo $Current_DIR
 
 #Deploy2Server=$1
-Deploy2ServerBrook=192.168.66.191
-Deploy2ServerSanji=192.168.66.147
+Deploy2ServerBrook=192.168.66.188
+Deploy2ServerSanji=192.168.66.188
 Deploy2ServerFranky=192.168.66.123
-Deploy2ServerWeb=192.168.66.124
+Deploy2ServerWeb=192.168.66.155
 
 read -n1 -p "Do you want to deploy 2 $Deploy2Server(Local Test) [Y/N]?"
 case $REPLY in
