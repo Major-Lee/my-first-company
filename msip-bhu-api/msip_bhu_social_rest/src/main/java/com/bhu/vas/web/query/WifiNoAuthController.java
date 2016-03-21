@@ -52,4 +52,31 @@ public class WifiNoAuthController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
         }
     }
+
+
+    /**
+     * 统计终端品牌分布
+     *
+     * @param response
+     * @param uid
+     * @param bssid
+     * @param manu
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/statis", method = {RequestMethod.POST})
+    public void statis(
+            HttpServletResponse response,
+            @RequestParam(required = false, value = "uid") Long uid,
+            @RequestParam(required = true, value = "bssid") String bssid,
+            @RequestParam(required = true, value = "manu") String manu) {
+
+        try {
+            boolean ret  = socialRpcService.statis(uid, bssid.toLowerCase(), manu);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
+        }
+    }
 }
