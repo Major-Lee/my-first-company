@@ -49,6 +49,7 @@ import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
@@ -67,6 +68,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealt
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceAlarmService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
@@ -143,6 +145,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
+	
+	@Resource
+	private SharedNetworkFacadeService sharedNetworkFacadeService;
 	
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
@@ -1587,8 +1592,26 @@ public class DeviceBusinessFacadeService {
 					}
 				}
 				//通过任务的opt和subopt可以判定出什么类型的指令，进行具体操作
-				//TODO:增加访客网络设备响应处理
-				//TODO:增加信道切换设备响应处理
+				
+				if(task_with_paylaod != null){
+					//TODO:增加共享网络设备响应处理
+					//TODO:增加信道切换设备响应处理
+					OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(task_with_paylaod.getOpt());
+					OperationDS ods_cmd = OperationDS.getOperationDSFromNo(task_with_paylaod.getSubopt());
+					if(ods_cmd == null) return;
+					if(OperationCMD.ModifyDeviceSetting == opt_cmd){
+						switch(ods_cmd){
+							case DS_SharedNetworkWifi_Limit:
+							case DS_SharedNetworkWifi_Start:
+							case DS_SharedNetworkWifi_Stop:
+								sharedNetworkFacadeService.remoteResponseNotifyFromDevice(wifiId);
+								break;
+							default:
+								break;
+						}
+					}
+				}
+				
 			}
 		}else{//特殊处理，自动下发的增值指令中会修改配置
 			if(WifiDeviceDownTask.State_Done.equals(status)){
@@ -1599,6 +1622,10 @@ public class DeviceBusinessFacadeService {
 					entity.putInnerModel(setting_dto);
 					wifiDeviceSettingService.update(entity);
 				}
+			}
+			if(CMDBuilder.wasAutoSharedNetworkTaskid(taskid)){
+				//更新 t_wifi_devices_sharednetwork ds = true
+				sharedNetworkFacadeService.remoteResponseNotifyFromDevice(wifiId);
 			}
 		}
 
