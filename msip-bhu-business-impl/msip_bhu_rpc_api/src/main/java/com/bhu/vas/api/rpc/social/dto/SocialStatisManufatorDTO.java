@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.social.dto;
 
+import com.smartwork.msip.cores.helper.JsonHelper;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -26,5 +28,12 @@ public class SocialStatisManufatorDTO implements Serializable {
 
     public void setItems(List<SocialStatisManufatorItemDTO> items) {
         this.items = items;
+    }
+
+
+    public static void main(String[] args) {
+        String manu = "{ \"bssid\": \"84:82:f4:1c:00:03\", \"items\": [  { \"name\": \"apple\", \"count\": 10},             { \"name\": \"samsung\", \"count\": 2},             { \"name\": \"mi\", \"count\": 1},             { \"name\": \"huawei\", \"count\": 5},             { \"name\": \"vivo\", \"count\": 6}         ]     }";
+        SocialStatisManufatorDTO dto = JsonHelper.getDTO(manu,SocialStatisManufatorDTO.class);
+        System.out.println(dto);
     }
 }

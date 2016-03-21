@@ -464,11 +464,11 @@ public class SocialFacadeRpcService {
         /**
          * 两个for循环,客户端目前只定义10-15个厂商
          */
-        if (dto != null && !dto.getItems().isEmpty()) {
+        if (dto != null && dto.getItems()!= null && !dto.getItems().isEmpty()) {
             for (SocialStatisManufatorItemDTO item : dto.getItems()) {
                 String name  = item.getName().trim();
                 int count = item.getCount();
-                if (dto != null && !old.getItems().isEmpty()) {
+                if (old != null && old.getItems() != null && !old.getItems().isEmpty()) {
                     for (SocialStatisManufatorItemDTO olditem : old.getItems()) {
                         if (name.equals(olditem.getName())) {
                             olditem.setCount(count + olditem.getCount());
