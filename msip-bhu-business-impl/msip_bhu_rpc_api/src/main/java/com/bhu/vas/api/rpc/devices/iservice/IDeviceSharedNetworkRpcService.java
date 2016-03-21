@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public interface IDeviceSharedNetworkRpcService {
 	
@@ -41,5 +43,5 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @param mac
 	 * @return
 	 */
-	RpcResponseDTO<Boolean> pages(int uid,String sharenetwork_type);
+	RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type, int pageNo, int pageSize);
 }
