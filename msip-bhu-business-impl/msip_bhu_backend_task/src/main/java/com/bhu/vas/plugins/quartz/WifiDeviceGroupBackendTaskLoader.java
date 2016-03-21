@@ -202,7 +202,7 @@ public class WifiDeviceGroupBackendTaskLoader {
 	String extparams = task.getContext_var();
 
 	String payload = taskFacadeService.apiCmdGenerate(task.getUid(),
-		wifi_mac, opt_cmd, ods_cmd, extparams, task.getId(), workmodel);
+		wifi_mac, opt_cmd, ods_cmd, extparams, task.getId(), workmodel,null);
 
 	return payload;
     }

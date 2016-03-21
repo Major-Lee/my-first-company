@@ -228,11 +228,12 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendUserDeviceSharedNetworkApplyActionMessage(int uid,String snk_type, List<String> dmacs,char dtoType){
+	public void sendUserDeviceSharedNetworkApplyActionMessage(int uid,String snk_type, List<String> dmacs,boolean onlyindexupdate,char dtoType){
 		UserDeviceSharedNetworkApplyDTO dto = new UserDeviceSharedNetworkApplyDTO();
 		dto.setUid(uid);
 		dto.setSnk_type(snk_type);
 		dto.setMacs(dmacs);
+		dto.setOnlyindexupdate(onlyindexupdate);
 		dto.setDtoType(dtoType);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));

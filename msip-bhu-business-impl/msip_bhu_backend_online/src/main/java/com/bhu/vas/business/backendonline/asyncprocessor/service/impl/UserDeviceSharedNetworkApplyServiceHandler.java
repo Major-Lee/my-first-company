@@ -21,6 +21,7 @@ import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceSharedNetworkApplyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
@@ -57,7 +58,6 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 	@Override
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
-		
 		try{
 			UserDeviceSharedNetworkApplyDTO applyDto = JsonHelper.getDTO(message, UserDeviceSharedNetworkApplyDTO.class);
 			final int userid = applyDto.getUid();
@@ -67,45 +67,30 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.Uplink;
 			}
+			boolean onlyindexupdate = applyDto.isOnlyindexupdate();
+			char dtoType = applyDto.getDtoType();
+			
 			if(userid <= 0 && dmacs.isEmpty()){
 				logger.info("UserDeviceSharedNetworkApplyServiceHandler 条件不符");
 				return;
 			}
-			/*if(!dmacs.isEmpty()){//需根据uid获取指定的sharedNetwork的配置的设备，数据来源 索引
-				wifiDeviceDataSearchService.iteratorWithSharedNetwork(userid, sharedNetwork.getKey(), new IteratorNotify<Page<WifiDeviceDocument>>() {
-				    @Override
-				    public void notifyComming(Page<WifiDeviceDocument> pages) {
-				    	for (WifiDeviceDocument doc : pages) {
-				    		String work_mode = doc.getD_workmodel();
-				    	}
-				    }
-				});
-			}*/
+			if(onlyindexupdate){
+				logger.info(String.format("process dmacs[%s] sharedNetwork[%s] onlyindexupdate[%s] dtoType[%s]", dmacs,sharedNetwork, onlyindexupdate,dtoType));
+				if(dmacs.isEmpty()) return;
+				switch(dtoType){
+					case IDTO.ACT_DELETE:
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, null);
+						break;
+					default:
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey());
+						break;
+				}
+				return;
+			}
+			
+			
 			final List<DownCmds> downCmds = new ArrayList<DownCmds>();
 			if(!dmacs.isEmpty()){//应用指令下发，取值从设备t_wifi_devices_sharednetwork中获取，更新索引生成指令下发
-				/*sharedNetworkFacadeService.addDevices2SharedNetwork(userid,sharedNetwork,false,dmacs,
-						new ISharedNetworkNotifyCallback(){
-							@Override
-							public void notify(ParamSharedNetworkDTO current,List<String> dmacs) {
-								logger.info(String.format("notify callback dmacs[%s] sharednetwork conf[%s]", dmacs,JsonHelper.getJSONString(current)));
-								if(dmacs == null || dmacs.isEmpty()){
-									return;
-								}
-								for(String mac:dmacs){
-									WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-									if(wifiDevice == null) continue;
-									current.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
-									//生成下发指令
-									String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, mac, -1,JsonHelper.getJSONString(current),deviceCMDGenFacadeService);
-									downCmds.add(DownCmds.builderDownCmds(mac, cmd));
-								}
-								if(!downCmds.isEmpty()){
-									daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
-									downCmds.clear();
-								}
-								wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, current.getNtype());
-							}
-						});*/
 			}else{//给此用户所有的sharedNetwork的设备变更配置并下发指令更新索引，
 				wifiDeviceDataSearchService.iteratorWithSharedNetwork(userid, sharedNetwork.getKey(),200, new IteratorNotify<Page<WifiDeviceDocument>>() {
 				    @Override

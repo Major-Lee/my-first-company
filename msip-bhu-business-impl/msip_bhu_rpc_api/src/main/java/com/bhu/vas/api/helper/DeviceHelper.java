@@ -37,7 +37,6 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
-import com.smartwork.msip.localunit.RandomPicker;
 
 public class DeviceHelper {
 	
@@ -889,7 +888,7 @@ public class DeviceHelper {
 							" guest_portal_en=\"disable\" allow_ip=\"\" allow_domain=\"\" tmp_pass=\"enable\" tmp_pass_duration=\"60\" manage_server=\"disable\" "+
 							" open_resource=\"%s\" forbid_management=\"disable\" allow_https=\"disable\" "+
 							" remote_auth_url=\"%s\" portal_server_url=\"%s\" dns_default_ip=\"%s\"  />"+ 
-						"<setting>"+
+						"</setting>"+
 					"</webportal>"+
 				"</net>"+	
 			"</dev>";
