@@ -20,18 +20,19 @@
         <module>msip-bhu-business-impl/msip_bhu_web</module>
         <module>msip-bhu-business-impl/msip_bhu_rpc_api</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
+<<<<<<< HEAD
         <module>msip-bhu-business-impl/msip_bhu_business_ds_commdity</module>
         
+=======
+        <module>msip-bhu-business-impl/msip_bhu_business_ds_social</module>
+>>>>>>> develop_social
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
         <!---->
         <module>msip-bhu-business-impl/msip_bhu_business_kafka_asynmessage</module>
         <!---->
         <module>msip-bhu-business-impl/msip_bhu_business_kafka_pure_asynmessage</module>
-        
-        <!--
-        <module>msip-bhu-business-impl/msip_bhu_business_search</module>
-    -->
+   
         <module>msip-bhu-business-impl/msip_bhu_business_springdata_search</module>
         
         <!--
@@ -47,20 +48,29 @@
 
         <module>msip-bhu-unit/msip_bhu_unit_rest_urouter</module>
         <module>msip-bhu-unit/msip_bhu_unit_vas</module>
+<<<<<<< HEAD
         <module>msip-bhu-unit/msip_bhu_unit_commdity</module>
         
+=======
+        <module>msip-bhu-unit/msip_bhu_unit_social</module>
+>>>>>>> develop_social
         <module>msip-bhu-unit/msip_bhu_unit_agent</module>
         <module>msip-bhu-business-impl/msip_bhu_business_push</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_online</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_wifistasniffer</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_modulestat</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
+<<<<<<< HEAD
         <module>msip-bhu-business-impl/msip_bhu_backend_task_applies_notify</module>
         
         <module>msip-bhu-business-impl/msip_bhu_backend_commdity</module>
+=======
+        <module>msip-bhu-business-impl/msip_bhu_backend_social</module>
+>>>>>>> develop_social
         <module>msip-bhu-api/msip_bhu_rest</module>
         <module>msip-bhu-api/msip_bhu_commdity_rest</module>
         <module>msip-bhu-api/msip_bhu_agent_rest</module>
+        <module>msip-bhu-api/msip_bhu_social_rest</module>
         <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
     </modules>
     <properties>

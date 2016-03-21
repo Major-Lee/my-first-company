@@ -29,7 +29,7 @@ public class WifiDeviceBackendTaskTest extends BaseTest {
 		System.out.println(bean+"success...");
 	}
 
-	// @Test
+	//@Test
 	public void test002() {
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("id", 10000);
