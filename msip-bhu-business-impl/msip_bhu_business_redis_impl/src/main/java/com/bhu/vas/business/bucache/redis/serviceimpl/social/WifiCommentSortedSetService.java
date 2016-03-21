@@ -11,7 +11,6 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
 
 import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Tuple;
 
 public class WifiCommentSortedSetService  extends AbstractRelationSortedSetCache{
 	
@@ -45,13 +44,11 @@ public class WifiCommentSortedSetService  extends AbstractRelationSortedSetCache
 	
 	public Set<String> fetchUserWifiList(String uid){
 		if(StringUtils.isEmpty(uid)) return Collections.emptySet();
-
-		return super.zrangeByScore(generateKey(uid), 0, Double.MAX_VALUE);
-				
+		  return super.zrevrange(generateKey(uid), 0, -1);		
 	}
 	@Override
 	public String getName() {
-		 return WifiActionHashService.class.getName();
+		 return WifiCommentSortedSetService.class.getName();
 	}
 
 	@Override
