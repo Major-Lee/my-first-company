@@ -471,13 +471,11 @@ public class SocialFacadeRpcService {
                 if (old != null && old.getItems() != null && !old.getItems().isEmpty()) {
                     for (SocialStatisManufatorItemDTO olditem : old.getItems()) {
                         if (name.equals(olditem.getName())) {
-                            olditem.setCount(count + olditem.getCount());
-                        } else {
-                            olditem.setCount(count);
+                            item.setCount(count + olditem.getCount());
+                            continue;
                         }
                     }
-
-                    wifi.setManufacturer(JsonHelper.getJSONString(old));
+                    wifi.setManufacturer(JsonHelper.getJSONString(dto));
 
                 } else {
                     wifi.setManufacturer(JsonHelper.getJSONString(dto));
