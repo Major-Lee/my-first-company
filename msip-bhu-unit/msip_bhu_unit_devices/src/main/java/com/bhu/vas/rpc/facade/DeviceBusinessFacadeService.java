@@ -1595,7 +1595,6 @@ public class DeviceBusinessFacadeService {
 				
 				if(task_with_paylaod != null){
 					//TODO:增加共享网络设备响应处理
-					//TODO:增加信道切换设备响应处理
 					OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(task_with_paylaod.getOpt());
 					OperationDS ods_cmd = OperationDS.getOperationDSFromNo(task_with_paylaod.getSubopt());
 					if(ods_cmd == null) return;
@@ -1623,7 +1622,8 @@ public class DeviceBusinessFacadeService {
 					wifiDeviceSettingService.update(entity);
 				}
 			}
-			if(CMDBuilder.wasAutoSharedNetworkTaskid(taskid)){
+			
+			if(CMDBuilder.wasAutoSharedNetworkTaskid(taskid)){//共享网络
 				//更新 t_wifi_devices_sharednetwork ds = true
 				sharedNetworkFacadeService.remoteResponseNotifyFromDevice(wifiId);
 			}

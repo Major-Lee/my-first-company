@@ -350,7 +350,11 @@ public class CMDBuilder {
 		String resultCmd = null;
 		if(opt != null){
 			if(taskid <= 0){
-				taskid = auto_taskid_fragment.getNextSequence();
+				if(subopt == OperationDS.DS_SharedNetworkWifi_Start || subopt == OperationDS.DS_SharedNetworkWifi_Stop || subopt == OperationDS.DS_SharedNetworkWifi_Limit){
+					taskid = auto_taskid_sharednetwork_fragment.getNextSequence();
+				}else{
+					taskid = auto_taskid_fragment.getNextSequence();
+				}
 			}
 			switch(opt){
 				case ModifyDeviceSetting:
