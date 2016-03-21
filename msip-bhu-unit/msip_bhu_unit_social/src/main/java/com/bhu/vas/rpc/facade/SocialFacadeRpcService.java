@@ -472,13 +472,19 @@ public class SocialFacadeRpcService {
                 String name  = item.getName().trim();
                 int count = item.getCount();
                 if (old != null && old.getItems() != null && !old.getItems().isEmpty()) {
+                    boolean flag = false;
                     for (SocialStatisManufatorItemDTO olditem : old.getItems()) {
                         if (name.equals(olditem.getName())) {
-                            item.setCount(count + olditem.getCount());
-                            continue;
+                            olditem.setCount(count + olditem.getCount());
+                            flag = true;
+                            break;
                         }
                     }
-                    wifi.setManufacturer(JsonHelper.getJSONString(dto));
+                    if (!flag) { //老的记录里面没有就保存
+                        old.getItems().add(item);
+                    }
+
+                    wifi.setManufacturer(JsonHelper.getJSONString(old));
 
                 } else {
                     wifi.setManufacturer(JsonHelper.getJSONString(dto));
