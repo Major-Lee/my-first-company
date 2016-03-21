@@ -180,7 +180,7 @@ public enum ResponseErrorCode {
 	USER_MOBILE_ATTRIBUTE_NOTEXIST("323","user.mobile.attribute.notexist"),
 	
 	
-	USER_WALLET_WITHDRAW_OPER_BREAK("324", "user.wallet.withdraw.break"),
+	USER_WALLET_WITHDRAW_OPER_DOING("324", "user.wallet.withdraw.doing"),
 	USER_WALLET_CASH_LOWERTHAN_WITHDRAW_MINLIMIT("325", "user.wallet.cash.lowerthan.withdraw.minlimit"),
 	USER_WALLET_CASH_NOTREACHED_MAXLIMIT("326", "user.wallet.cash.notreached.maxlimit"),
 	USER_WALLET_CASH_NOT_SUFFICIENT("327", "user.wallet.cash.not.sufficient"),

@@ -305,9 +305,11 @@ public class SharedNetworkFacadeService {
 		WifiDeviceSharedNetwork sharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
 		if(sharedNetwork != null){
 			SharedNetworkSettingDTO settingDto = sharedNetwork.getInnerModel();
-			settingDto.remoteNotify();
-			sharedNetwork.putInnerModel(settingDto);
-			wifiDeviceSharedNetworkService.update(sharedNetwork);
+			if(!settingDto.isDs()){
+				settingDto.remoteNotify();
+				sharedNetwork.putInnerModel(settingDto);
+				wifiDeviceSharedNetworkService.update(sharedNetwork);
+			}
 		}
 	}
 	

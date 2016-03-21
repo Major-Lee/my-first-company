@@ -190,7 +190,10 @@ public class UserWalletFacadeService{
 		}
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getById(uid);
-		if(uwallet == null || uwallet.isWithdraw()){
+		if(uwallet == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"用户钱包"});
+		}
+		if(uwallet.isWithdraw()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_OPER_BREAK);
 		}
 		if(StringUtils.isEmpty(uwallet.getPassword())){
