@@ -585,7 +585,7 @@ public class TaskFacadeService {
 							}
 						}*/
 						sharedNetworkFacadeService.removeDevicesFromSharedNetwork(mac);
-						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceCMDGenFacadeService));
+						cmd = CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceCMDGenFacadeService);
 					}
 					break;
 				case DS_Switch_WorkMode:
