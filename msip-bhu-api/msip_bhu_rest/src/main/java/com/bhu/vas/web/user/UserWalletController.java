@@ -37,7 +37,7 @@ public class UserWalletController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam(required = true) int uid,
-			@RequestParam(required = true) int appid,
+			@RequestParam(required = false,defaultValue = "1001") int appid,
 			@RequestParam(required = false) String payment_type,
 			@RequestParam(required = false) String pwd,
 			@RequestParam(required = true) double cash
