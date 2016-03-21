@@ -394,12 +394,15 @@ public class SocialFacadeRpcService {
         WifiVTO wifiVTO = new WifiVTO();
 
         wifiVTO.setBssid(bssid);
-        wifiVTO.setMax_rate(wifi.getMax_rate());
-        wifiVTO.setManu(wifi.getManufacturer());
-        wifiVTO.setSsid(wifi.getSsid());
-        wifiVTO.setLat(wifi.getLat());
-        wifiVTO.setLon(wifi.getLon());
-        wifiVTO.setAddr(wifi.getAddr());
+        if (wifi != null) {
+            wifiVTO.setMax_rate(wifi.getMax_rate());
+            wifiVTO.setManu(wifi.getManufacturer());
+            wifiVTO.setSsid(wifi.getSsid());
+            wifiVTO.setLat(wifi.getLat());
+            wifiVTO.setLon(wifi.getLon());
+            wifiVTO.setAddr(wifi.getAddr());
+        }
+
 
         WifiActionDTO action = WifiActionHashService.getInstance().counts(bssid);
         wifiVTO.setAction(action);
