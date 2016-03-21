@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceSharedNetworkRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
@@ -114,12 +116,12 @@ public class DeviceSharedNetworkController extends BaseController{
 	 * @param sharenetwork_type
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/pages",method={RequestMethod.POST})
-	public void pages(
+	@RequestMapping(value="/device/pages",method={RequestMethod.POST})
+	public void device_pages(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharedNetwork_type,
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
@@ -128,12 +130,13 @@ public class DeviceSharedNetworkController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		/*RpcResponseDTO<URouterEnterVTO> rpcResult = deviceURouterRestRpcService.urouterEnter(uid, mac.toLowerCase());
+		RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> rpcResult = deviceSharedNetworkRpcService.pages(uid, 
+				sharedNetwork_type, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}*/
+		}
 	}
 	
 }
