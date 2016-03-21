@@ -279,6 +279,7 @@ public class SharedNetworkFacadeService {
 	 * 移除设备从指定的配置
 	 * 需要置Sharednetwork_type null
 	 * 需要置turnOff
+	 * 用于用户关闭共享网络
 	 * @param uid
 	 * @param sharednetwork_type
 	 * @param macs
@@ -305,9 +306,11 @@ public class SharedNetworkFacadeService {
 		WifiDeviceSharedNetwork sharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
 		if(sharedNetwork != null){
 			SharedNetworkSettingDTO settingDto = sharedNetwork.getInnerModel();
-			settingDto.remoteNotify();
-			sharedNetwork.putInnerModel(settingDto);
-			wifiDeviceSharedNetworkService.update(sharedNetwork);
+			if(!settingDto.isDs()){
+				settingDto.remoteNotify();
+				sharedNetwork.putInnerModel(settingDto);
+				wifiDeviceSharedNetworkService.update(sharedNetwork);
+			}
 		}
 	}
 	

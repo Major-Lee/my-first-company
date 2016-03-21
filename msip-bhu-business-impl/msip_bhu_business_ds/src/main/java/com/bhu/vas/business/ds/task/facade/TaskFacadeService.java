@@ -542,42 +542,11 @@ public class TaskFacadeService {
 						ParamSharedNetworkDTO.fufillWithDefault(shared_dto);
 						sharedNetworkFacadeService.updateDevices2SharedNetwork(mac,shared_dto);
 						shared_dto.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(work_mode));
-						//vistor_dto = ParamSharedNetworkDTO.fufillWithDefault(shared_dto,WifiDeviceHelper.isWorkModeRouter(work_mode));
 						cmd = CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(shared_dto),deviceCMDGenFacadeService);
-						/*UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
-						vistorwifi.setOn(true);
-						vistorwifi.setDs(false);
-						//置为空 是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
-						vistor_dto.setBlock_mode(null);
-						vistor_dto.setComplete_isolate_ports(null);
-						vistorwifi.setVw(vistor_dto);
-						userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));*/
-/*						ParamSharedNetworkDTO shared_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
-						vistor_dto = ParamSharedNetworkDTO.fufillWithDefault(shared_dto,WifiDeviceHelper.isWorkModeRouter(work_mode));
-						cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(vistor_dto),deviceFacadeService));
-						UserVistorWifiSettingDTO vistorwifi = new UserVistorWifiSettingDTO();
-						vistorwifi.setOn(true);
-						vistorwifi.setDs(false);
-						//置为空 是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
-						vistor_dto.setBlock_mode(null);
-						vistor_dto.setComplete_isolate_ports(null);
-						vistorwifi.setVw(vistor_dto);
-						userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
-*/						
 					}
 					break;
 				case DS_SharedNetworkWifi_Stop:
 					{
-						/*UserSettingState settingState = userSettingStateService.getById(mac);
-						if(settingState != null){
-							UserVistorWifiSettingDTO vistorwifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
-							if(vistorwifi != null && vistorwifi.isOn()){
-								vistorwifi.setOn(false);
-								vistorwifi.setDs(false);
-								vistorwifi.setVw(null);
-								userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(vistorwifi));
-							}
-						}*/
 						sharedNetworkFacadeService.removeDevicesFromSharedNetwork(mac);
 						cmd = CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceCMDGenFacadeService);
 					}
