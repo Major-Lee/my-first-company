@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceSharedNetworkRpcService;
 import com.bhu.vas.rpc.facade.DeviceSharedNetworkUnitFacadeService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * device sharednetwork rpc组件服务service 对外暴露接口
@@ -47,9 +49,9 @@ public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcSer
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> pages(int uid, String sharenetwork_type) {
-		logger.info(String.format("pages with uid[%s] sharenetwork_type[%s] ", uid,sharenetwork_type));
-		return deviceSharedNetworkUnitFacadeService.pages(uid, sharenetwork_type);
+	public RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type, int pageNo, int pageSize) {
+		logger.info(String.format("pages with uid[%s] sharedNetwork_type[%s] ", uid, sharedNetwork_type));
+		return deviceSharedNetworkUnitFacadeService.pages(uid, sharedNetwork_type, pageNo, pageSize);
 	}
 	
 	
