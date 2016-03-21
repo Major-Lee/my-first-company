@@ -75,7 +75,7 @@ public class SocialFacadeRpcService {
         if (SocialActionType.isActionType(type) && flag){
             WifiActionHashService.getInstance().hincrease(bssid, type);
         }else if (SocialActionType.isActionType(type) && !flag){
-
+            WifiActionHashService.getInstance().hdecrease(bssid,type);
         }else
             throw  new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
     }
