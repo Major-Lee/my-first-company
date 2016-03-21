@@ -1,5 +1,6 @@
 package com.bhu.vas.business.device;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -67,9 +68,13 @@ public class SharedNetworkFacadeServiceTest extends BaseTest{
 	
 	@Test
 	public void test004AddDevices2SharedNetwork(){
-			List<String> result =  sharedNetworkFacadeService.addDevices2SharedNetwork(3,VapEnumType.SharedNetworkType.SafeSecure,true, 
-					"84:82:f4:de:26:8a","84:82:f4:de:26:8c","84:82:f4:de:26:88");
-			System.out.println("1"+JsonHelper.getJSONString(result));	
+		List<String> macs = new ArrayList<>();
+		macs.add("84:82:f4:de:26:8a");
+		macs.add("84:82:f4:de:26:8c");
+		macs.add("84:82:f4:de:26:88");
+			sharedNetworkFacadeService.addDevices2SharedNetwork(3,VapEnumType.SharedNetworkType.SafeSecure,true, 
+					macs,null);
+			//System.out.println("1"+JsonHelper.getJSONString(result));	
 	}
 
 	@Test

@@ -34,7 +34,8 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Resource
 	private IMsgHandlerService wifiDeviceGroupServiceHandler;
-
+	@Resource
+	private IMsgHandlerService userDeviceSharedNetworkApplyServiceHandler;
 	@Resource
 	private AgentDeviceClaimServiceHandler agentDeviceClaimServiceHandler;
 	
@@ -147,9 +148,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDeviceAsyncCMDGen:
 							wifiDeviceGroupServiceHandler.process(message);
 							break;
-						case WifiDeviceGroupCreateIndex:
-							wifiDeviceGroupServiceHandler.createDeviceGroupIndex(message);
-							break;
+						//case WifiDeviceGroupCreateIndex:
+						//	wifiDeviceGroupServiceHandler.createDeviceGroupIndex(message);
+						//	break;
 						case USERBBSSIGNEDON:
 							asyncMsgHandleService.userBBSsignedon(message);
 							break;
@@ -167,6 +168,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case SearchResultExportFile:
 							consoleServiceHandler.searchResultExportFile(message);
+							break;
+						case UserDeviceSharedNetworkApply:
+							userDeviceSharedNetworkApplyServiceHandler.process(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);

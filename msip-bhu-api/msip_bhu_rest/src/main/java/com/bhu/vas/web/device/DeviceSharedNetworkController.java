@@ -1,5 +1,7 @@
 package com.bhu.vas.web.device;
 
+import java.util.Arrays;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,11 +21,12 @@ import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-@RequestMapping("/device/sharenetwork")
+@RequestMapping("/device/sharednetwork")
 public class DeviceSharedNetworkController extends BaseController{
 	@Resource
 	private IDeviceSharedNetworkRpcService deviceSharedNetworkRpcService;
@@ -99,8 +102,10 @@ public class DeviceSharedNetworkController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
-			@RequestParam(required = false) String mac) {
-		RpcResponseDTO<Boolean> rpcResult = deviceSharedNetworkRpcService.takeEffectNetworkConf(uid, sharenetwork_type, mac);
+			@RequestParam(required = true) String macs) {
+		String[] mac_array = macs.toLowerCase().split(StringHelper.COMMA_STRING_GAP);
+		
+		RpcResponseDTO<Boolean> rpcResult = deviceSharedNetworkRpcService.takeEffectNetworkConf(uid, sharenetwork_type, Arrays.asList(mac_array));
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

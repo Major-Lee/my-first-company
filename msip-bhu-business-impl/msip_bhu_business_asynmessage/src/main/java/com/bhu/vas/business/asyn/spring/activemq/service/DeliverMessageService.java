@@ -24,6 +24,7 @@ import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceForceBindDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceSharedNetworkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
@@ -225,8 +226,16 @@ public class DeliverMessageService {
 		dto.setMac(wifiId);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendUserDeviceSharedNetworkApplyActionMessage(int uid,String snk_type, List<String> dmacs,char dtoType){
+		UserDeviceSharedNetworkApplyDTO dto = new UserDeviceSharedNetworkApplyDTO();
+		dto.setUid(uid);
+		dto.setSnk_type(snk_type);
+		dto.setMacs(dmacs);
+		dto.setDtoType(dtoType);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
 	public void sendDeviceHDRateFetchActionMessage(String wifiId){
@@ -234,8 +243,6 @@ public class DeliverMessageService {
 		dto.setMac(wifiId);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//deliverMessageQueueProducer.send(message);
 	}
 	
 	public void sendQueryDeviceSpeedFetchActionMessage(String wifiId, int type, int period, int duration){
@@ -246,8 +253,6 @@ public class DeliverMessageService {
 		dto.setDuration(duration);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//deliverMessageQueueProducer.send(message);
 	}
 	
 	public void sendUserSignedonActionMessage(int uid,String remoteip,String d){

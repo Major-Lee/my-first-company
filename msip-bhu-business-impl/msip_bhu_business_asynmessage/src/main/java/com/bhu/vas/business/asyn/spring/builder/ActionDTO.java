@@ -1,7 +1,11 @@
 package com.bhu.vas.business.asyn.spring.builder;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public abstract class ActionDTO {
 	private int uid;
+	@JsonInclude(Include.NON_NULL)
 	private String mac;
 	/**
 	 * 动作时间

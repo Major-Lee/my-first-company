@@ -112,11 +112,11 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 	}
 
 
-	@Override
+/*	@Override
 	public void createDeviceGroupIndex(String message) {
 
-		logger.info(String.format("WifiDeviceGroupServiceHandler createDeviceGroupIndex message[%s]", message));
-/*		WifiDeviceGroupAsynCreateIndexDTO dto = JsonHelper.getDTO(message, WifiDeviceGroupAsynCreateIndexDTO.class);
+		logger.info(String.format("WifiDeviceGroupServiceHandler createDeviceGroupIndex message[%s]", message))
+		WifiDeviceGroupAsynCreateIndexDTO dto = JsonHelper.getDTO(message, WifiDeviceGroupAsynCreateIndexDTO.class);
 		String wifiIdsStr = dto.getWifiIds();
 		String type = dto.getType();
 		Long gid = dto.getGid();
@@ -136,7 +136,7 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 			groupIdList.add(gids);
 		}
 		List<WifiDevice> wifiDeviceList = wifiDeviceService.findByIds(wifiIds);
-		wifiDeviceIndexIncrementService.wifiDeviceIndexBlukIncrement(wifiDeviceList, groupIdList);*/
+		wifiDeviceIndexIncrementService.wifiDeviceIndexBlukIncrement(wifiDeviceList, groupIdList);
 
-	}
+	}*/
 }

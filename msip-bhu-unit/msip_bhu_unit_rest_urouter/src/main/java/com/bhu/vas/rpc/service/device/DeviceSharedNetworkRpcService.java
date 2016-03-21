@@ -1,5 +1,7 @@
 package com.bhu.vas.rpc.service.device;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -19,7 +21,7 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
  * @author Edmond Lee
  *
  */
-@Service("deviceRestRpcService")
+@Service("deviceSharedNetworkRpcService")
 public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcService {
 	private final Logger logger = LoggerFactory.getLogger(DeviceSharedNetworkRpcService.class);
 	@Resource
@@ -41,9 +43,9 @@ public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcSer
 
 	@Override
 	public RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,
-			String sharenetwork_type, String mac) {
-		logger.info(String.format("takeEffectNetworkConf with uid[%s] sharenetwork_type[%s] mac[%s]", uid,sharenetwork_type,mac));
-		return deviceSharedNetworkUnitFacadeService.takeEffectNetworkConf(uid, sharenetwork_type, mac);
+			String sharenetwork_type, List<String> macs) {
+		logger.info(String.format("takeEffectNetworkConf with uid[%s] sharenetwork_type[%s] macs[%s]", uid,sharenetwork_type,macs));
+		return deviceSharedNetworkUnitFacadeService.takeEffectNetworkConf(uid, sharenetwork_type, macs);
 	}
 
 	@Override
