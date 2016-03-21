@@ -84,7 +84,7 @@ public interface ISocialRpcService {
      * @param manu
      * @return
      */
-    boolean statis(Long uid, String bssid, String manu);
+    boolean statis(long uid, String bssid, String manu);
 
     /**
      * 评论

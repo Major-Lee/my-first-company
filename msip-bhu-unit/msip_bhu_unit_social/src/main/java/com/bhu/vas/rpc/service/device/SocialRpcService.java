@@ -77,7 +77,7 @@ public class SocialRpcService implements ISocialRpcService {
     }
 
     @Override
-    public boolean statis(Long uid, String bssid, String manu) {
+    public boolean statis(long uid, String bssid, String manu) {
         logger.info(String.format("modifyWifi uid[%s]  bssid[%s] manu[%s]", uid, bssid, manu));
         return socialFacadeRpcService.statis(uid, bssid, manu);
     }
