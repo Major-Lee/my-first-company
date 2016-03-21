@@ -121,7 +121,7 @@ public class DeviceSharedNetworkController extends BaseController{
 	 * @param sharenetwork_type
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/device/pages",method={RequestMethod.POST})
+	@RequestMapping(value="/pages",method={RequestMethod.POST})
 	public void device_pages(
 			HttpServletRequest request,
 			HttpServletResponse response,
