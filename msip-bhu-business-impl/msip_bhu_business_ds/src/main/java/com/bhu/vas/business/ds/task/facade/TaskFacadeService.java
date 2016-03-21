@@ -23,6 +23,7 @@ import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
@@ -524,24 +525,17 @@ public class TaskFacadeService {
 					cmd = (CMDBuilder.autoBuilderVapFullCMD4Opt(mac, taskid, stopTemplate));
 					break;	
 				case DS_SharedNetworkWifi_Limit:
-					/*//需要判定访客网络是否开启
-					UserSettingState user_setting_entity = userSettingStateService.getById(mac);
-					if(user_setting_entity != null){
-						UserVistorWifiSettingDTO uvw_dto = user_setting_entity.getUserSetting(UserVistorWifiSettingDTO.
-								Setting_Key, UserVistorWifiSettingDTO.class);
-						//如果开启则把limit的限速值写入到访客网络plugin配置里
-						if(uvw_dto != null && uvw_dto.isOn() && uvw_dto.getVw() != null){//访客网络是开启
-							ParamVapVistorLimitWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorLimitWifiDTO.class);
-							ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
-							uvw_dto.getVw().setUsers_rx_rate(ad_dto.getUsers_rx_rate());
-							uvw_dto.getVw().setUsers_tx_rate(ad_dto.getUsers_tx_rate());
-							userSettingStateService.updateUserSetting(mac, UserVistorWifiSettingDTO.Setting_Key, JsonHelper.getJSONString(uvw_dto));
-							cmd = (CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceFacadeService));
-							break;
-						}
+					//重新构建共享网络开启指令则不break，直接走DS_VistorWifi_Start开启访客网络
+					ods_cmd = OperationDS.DS_SharedNetworkWifi_Start;
+					ParamSharedNetworkDTO limit_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
+					SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
+					if(sharedNetworkConf != null && sharedNetworkConf.getPsn() != null){
+						ParamSharedNetworkDTO dto = sharedNetworkConf.getPsn();
+						dto.setUsers_rx_rate(limit_dto.getUsers_rx_rate());
+						dto.setUsers_tx_rate(limit_dto.getUsers_tx_rate());
+						//重新构建共享网络开启指令
+						extparams = JsonHelper.getJSONString(dto);
 					}
-					//如果未开启，则重新构建访客网络开启指令则不break，直接走DS_VistorWifi_Start开启访客网络
-					ods_cmd = OperationDS.DS_VistorWifi_Start;*/
 				case DS_SharedNetworkWifi_Start:
 					{
 						ParamSharedNetworkDTO shared_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);

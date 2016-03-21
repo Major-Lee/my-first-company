@@ -1621,11 +1621,10 @@ public class DeviceBusinessFacadeService {
 					entity.putInnerModel(setting_dto);
 					wifiDeviceSettingService.update(entity);
 				}
-			}
-			
-			if(CMDBuilder.wasAutoSharedNetworkTaskid(taskid)){//共享网络
-				//更新 t_wifi_devices_sharednetwork ds = true
-				sharedNetworkFacadeService.remoteResponseNotifyFromDevice(wifiId);
+				if(CMDBuilder.wasAutoSharedNetworkTaskid(taskid)){//共享网络
+					//更新 t_wifi_devices_sharednetwork ds = true
+					sharedNetworkFacadeService.remoteResponseNotifyFromDevice(wifiId);
+				}
 			}
 		}
 
