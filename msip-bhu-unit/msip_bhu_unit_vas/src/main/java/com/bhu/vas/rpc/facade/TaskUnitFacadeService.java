@@ -74,7 +74,7 @@ public class TaskUnitFacadeService {
 						@Override
 						public void notify(int uid, OperationCMD opt_cmd,
 								OperationDS ods_cmd, String dmac, Object payload) {
-							if(ods_cmd != null){
+							if(ods_cmd != null && uid>0){
 								switch(ods_cmd){
 									case DS_Http_VapModuleCMD_Start:
 										ParamVasModuleDTO param_dto =(ParamVasModuleDTO) payload;//JsonHelper.getDTO(extparams, ParamVasModuleDTO.class);
