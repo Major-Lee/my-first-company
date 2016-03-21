@@ -181,7 +181,7 @@ public class SocialFacadeRpcService {
      * 终端遇见
      * 1. 终端遇见现在只计算,当前扫描的终端和其他终端为一次遇见,其他终端之间不算遇见.
      * 2. 构建Wifi实体  (Wifi)
-     * 3. 构建终端和用户的关系 (HandsetUser)
+     * 3. 构建终端和用户的关系 (HandsetUser),暂时只构建有uid的用户
      * 4. 异步队列处理终端遇见
      *
      * @param uid
@@ -271,6 +271,7 @@ public class SocialFacadeRpcService {
                 handsetVTO.setHd_mac(mac);
                 if (uid != null && uid >0) {
                     handsetVTO.setNick(SocialCareFacadeService.getNick(uid, mac));
+                    handsetVTO.setFollowed(SocialFollowSortedSetService.getInstance().isFollowed(uid, mac));
                 }
 
                 handsetVTO.setLast(SocialStorageFacadeService.getLastHandsetMeet(hd_mac, mac));
@@ -287,10 +288,6 @@ public class SocialFacadeRpcService {
             for (HandsetUser handsetUser : handsetUsers) {
                 if (handsetUser != null) {
                     HandsetUserVTO hdVTO = hdVTOs.get(index);
-
-                    if (uid != null && uid >0) {
-                        hdVTO.setFollowed(SocialFollowSortedSetService.getInstance().isFollowed(uid,handsetUser.getId()));
-                    }
                     ids.add((int)handsetUser.getUid());
                 } else {
                     ids.add(0);
