@@ -304,7 +304,9 @@ public class SharedNetworkFacadeService {
 	public void remoteResponseNotifyFromDevice(String mac){
 		WifiDeviceSharedNetwork sharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
 		if(sharedNetwork != null){
-			sharedNetwork.getInnerModel().remoteNotify();
+			SharedNetworkSettingDTO settingDto = sharedNetwork.getInnerModel();
+			settingDto.remoteNotify();
+			sharedNetwork.putInnerModel(settingDto);
 			wifiDeviceSharedNetworkService.update(sharedNetwork);
 		}
 	}
