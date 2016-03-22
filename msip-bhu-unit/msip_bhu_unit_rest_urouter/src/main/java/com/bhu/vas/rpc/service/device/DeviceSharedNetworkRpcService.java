@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceSharedNetworkRpcService;
 import com.bhu.vas.rpc.facade.DeviceSharedNetworkUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -28,12 +29,18 @@ public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcSer
 	private DeviceSharedNetworkUnitFacadeService deviceSharedNetworkUnitFacadeService;
 
 	@Override
-	public RpcResponseDTO<ParamSharedNetworkDTO> fetchNetworkConf(int uid,
-			String sharenetwork_type) {
-		logger.info(String.format("fetchNetworkConf with uid[%s] sharenetwork_type[%s] ", uid,sharenetwork_type));
-		return deviceSharedNetworkUnitFacadeService.fetchNetworkConf(uid, sharenetwork_type);
+	public RpcResponseDTO<ParamSharedNetworkDTO> fetchUserNetworkConf(int uid, String sharenetwork_type) {
+		logger.info(String.format("fetchUserNetworkConf with uid[%s] sharenetwork_type[%s] ", uid,sharenetwork_type));
+		return deviceSharedNetworkUnitFacadeService.fetchUserNetworkConf(uid, sharenetwork_type);
 	}
 
+	@Override
+	public RpcResponseDTO<SharedNetworkSettingDTO> fetchDeviceNetworkConf(int uid, String mac) {
+		logger.info(String.format("fetchDeviceNetworkConf with uid[%s] mac[%s] ", uid,mac));
+		return deviceSharedNetworkUnitFacadeService.fetchDeviceNetworkConf(uid, mac);
+	}
+	
+	
 	@Override
 	public RpcResponseDTO<ParamSharedNetworkDTO> applyNetworkConf(int uid,
 			String sharenetwork_type, String extparams) {
@@ -53,6 +60,5 @@ public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcSer
 		logger.info(String.format("pages with uid[%s] sharedNetwork_type[%s] ", uid, sharedNetwork_type));
 		return deviceSharedNetworkUnitFacadeService.pages(uid, sharedNetwork_type, pageNo, pageSize);
 	}
-	
-	
+
 }

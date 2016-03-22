@@ -65,7 +65,7 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 			String snk_type = applyDto.getSnk_type();
 			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(snk_type);
 			if(sharedNetwork == null){
-				sharedNetwork = SharedNetworkType.Uplink;
+				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
 			boolean onlyindexupdate = applyDto.isOnlyindexupdate();
 			char dtoType = applyDto.getDtoType();
@@ -74,7 +74,7 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 				logger.info("UserDeviceSharedNetworkApplyServiceHandler 条件不符");
 				return;
 			}
-			if(onlyindexupdate){
+			if(onlyindexupdate){//只进行索引更新
 				logger.info(String.format("process dmacs[%s] sharedNetwork[%s] onlyindexupdate[%s] dtoType[%s]", dmacs,sharedNetwork, onlyindexupdate,dtoType));
 				if(dmacs.isEmpty()) return;
 				switch(dtoType){
@@ -109,7 +109,7 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 							@Override
 							public void notify(ParamSharedNetworkDTO current,List<String> rdmacs) {
 								logger.info(String.format("notify callback uid[%s] rdmacs[%s] sharednetwork conf[%s]", userid,rdmacs,JsonHelper.getJSONString(current)));
-								if(dmacs == null || dmacs.isEmpty()){
+								if(rdmacs == null || rdmacs.isEmpty()){
 									return;
 								}
 								for(String mac:rdmacs){

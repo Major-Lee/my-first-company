@@ -88,7 +88,7 @@ public class CMDBuilder {
 	public static final long AutoGen = 0l;
 	
 	public static String builderClearDeviceBootReset(String wifi_mac,long taskid){
-		if(taskid == AutoGen){
+		if(taskid <= AutoGen){
 			taskid = auto_taskid_fragment.getNextSequence();
 		}
 		return String.format(OperationCMD.ClearDeviceBootReset.getCmdtpl(), 
@@ -111,7 +111,7 @@ public class CMDBuilder {
 	}
 	
 	public static String builderDeviceSettingModify(String wifi_mac,long taskid, String payload){
-		if(taskid <= 0){
+		if(taskid <= AutoGen){
 			taskid = auto_taskid_fragment.getNextSequence();
 		}
 		return String.format(OperationCMD.ModifyDeviceSetting.getCmdtpl(),//query_device_flow_cmd_template, 
@@ -349,7 +349,7 @@ public class CMDBuilder {
 	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams/*,String orig_swver*/,IGenerateDeviceSetting generateDeviceSetting){
 		String resultCmd = null;
 		if(opt != null){
-			if(taskid <= 0){
+			if(taskid <= AutoGen){
 				if(subopt == OperationDS.DS_SharedNetworkWifi_Start || subopt == OperationDS.DS_SharedNetworkWifi_Stop || subopt == OperationDS.DS_SharedNetworkWifi_Limit){
 					taskid = auto_taskid_sharednetwork_fragment.getNextSequence();
 				}else{

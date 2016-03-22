@@ -16,12 +16,13 @@ import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceSharedNetworkRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
@@ -73,13 +74,28 @@ public class DeviceSharedNetworkController extends BaseController{
 	 * @param mac
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/fetch",method={RequestMethod.POST})
-	public void fetch(
+	@RequestMapping(value="/fetch_user",method={RequestMethod.POST})
+	public void fetch_user(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type) {
-		RpcResponseDTO<ParamSharedNetworkDTO> rpcResult = deviceSharedNetworkRpcService.fetchNetworkConf(uid, sharenetwork_type);
+		RpcResponseDTO<ParamSharedNetworkDTO> rpcResult = deviceSharedNetworkRpcService.fetchUserNetworkConf(uid, sharenetwork_type);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/fetch_device",method={RequestMethod.POST})
+	public void fetch_device(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type) {
+		RpcResponseDTO<SharedNetworkSettingDTO> rpcResult = deviceSharedNetworkRpcService.fetchDeviceNetworkConf(uid, sharenetwork_type);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

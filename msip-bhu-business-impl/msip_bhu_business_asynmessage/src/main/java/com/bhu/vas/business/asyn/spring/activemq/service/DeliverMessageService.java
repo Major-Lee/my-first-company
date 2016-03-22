@@ -1,5 +1,6 @@
 package com.bhu.vas.business.asyn.spring.activemq.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -228,6 +229,19 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
+	public void sendUserSingleDeviceSharedNetworkApplyActionMessage(int uid,String snk_type, String mac,boolean onlyindexupdate,char dtoType){
+		List<String> dmacs = new ArrayList<String>();
+		dmacs.add(mac);
+		this.sendUserDeviceSharedNetworkApplyActionMessage(uid, snk_type, dmacs, onlyindexupdate, dtoType);
+		/*UserDeviceSharedNetworkApplyDTO dto = new UserDeviceSharedNetworkApplyDTO();
+		dto.setUid(uid);
+		dto.setSnk_type(snk_type);
+		dto.setMacs(dmacs);
+		dto.setOnlyindexupdate(onlyindexupdate);
+		dto.setDtoType(dtoType);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));*/
+	}
 	public void sendUserDeviceSharedNetworkApplyActionMessage(int uid,String snk_type, List<String> dmacs,boolean onlyindexupdate,char dtoType){
 		UserDeviceSharedNetworkApplyDTO dto = new UserDeviceSharedNetworkApplyDTO();
 		dto.setUid(uid);

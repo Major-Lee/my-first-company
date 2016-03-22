@@ -43,6 +43,7 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -220,17 +221,20 @@ public class AsyncMsgHandleService {
 			}
 			
 			{//开启共享网络判定，并更新索引
-				SharedNetworkSettingDTO sharedNetwork = sharedNetworkFacadeService.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac());
-				ParamSharedNetworkDTO psn = sharedNetwork.getPsn();
-				if(sharedNetwork != null && sharedNetwork.isOn() && psn != null){
-					logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
-					//更新索引，下发指令
-					wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype());
-					psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
-					//生成下发指令
-					String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
-							dto.getMac(), -1,JsonHelper.getJSONString(psn),deviceCMDGenFacadeService);
-					payloads.add(sharedNetworkCMD);
+				logger.info(String.format("Device SharedNetwork Option[%s]", BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start));
+				if(BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start){
+					SharedNetworkSettingDTO sharedNetwork = sharedNetworkFacadeService.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac());
+					ParamSharedNetworkDTO psn = sharedNetwork.getPsn();
+					if(sharedNetwork != null && sharedNetwork.isOn() && psn != null){
+						logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
+						//更新索引，下发指令
+						wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype());
+						psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+						//生成下发指令
+						String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
+								dto.getMac(), -1,JsonHelper.getJSONString(psn),deviceCMDGenFacadeService);
+						payloads.add(sharedNetworkCMD);
+					}
 				}
 			}
 			
@@ -930,8 +934,8 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s]", message));
 		
 		WifiDeviceSettingQueryDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingQueryDTO.class);
-		List<String> cmdPayloads = dto.getPayloads();
-		if(cmdPayloads == null) cmdPayloads = new ArrayList<String>();
+		final List<String> cmdPayloads = dto.getPayloads()== null?new ArrayList<String>():dto.getPayloads();
+		//if(cmdPayloads == null) cmdPayloads = new ArrayList<String>();
 		
 		String mac = dto.getMac();
 		//只有urouter设备才会执行
@@ -955,13 +959,18 @@ public class AsyncMsgHandleService {
 				logger.info(String.format("start execute deviceRestoreFactory mac[%s]", dto.getMac()));
 				backendBusinessService.deviceResetFactory(dto.getMac());
 				//解绑后需要发送指令通知设备
-				cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
+				//cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
 				logger.info(String.format("successed execute deviceRestoreFactory mac[%s]", dto.getMac()));
 			}catch(Exception ex){
 				//ex.printStackTrace();
 				//清除失败后是否需要通知设备清除状态
-				cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
+				//cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
 				logger.error(String.format("fail execute deviceRestoreFactory mac[%s]", dto.getMac()), ex);
+			}finally{
+				cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
+			}
+			{//在设备重置后的共享网络配置,给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
+				addDevices2SharedNetwork(dto.getMac(),cmdPayloads);
 			}
 		}else{
 			//检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
@@ -993,6 +1002,39 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s] successful", message));
 	}
 	
+	private void addDevices2SharedNetwork(String mac,final List<String> cmdPayloads){
+		List<String> dmacs = null;
+		try{
+			dmacs = new ArrayList<String>();
+			dmacs.add(mac);
+			sharedNetworkFacadeService.addDevices2SharedNetwork(-1,null,false,dmacs,
+					new ISharedNetworkNotifyCallback(){
+						@Override
+						public void notify(ParamSharedNetworkDTO current,List<String> rdmacs) {
+							logger.info(String.format("notify callback uid[%s] rdmacs[%s] sharednetwork conf[%s]", -1,rdmacs,JsonHelper.getJSONString(current)));
+							if(rdmacs == null || rdmacs.isEmpty()){
+								return;
+							}
+							for(String mac:rdmacs){
+								WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+								if(wifiDevice == null) continue;
+								current.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+								//生成下发指令
+								String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
+										mac, CMDBuilder.AutoGen,JsonHelper.getJSONString(current),
+										deviceCMDGenFacadeService);
+								cmdPayloads.add(cmd);
+							}
+							wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype());
+						}
+					});
+		}finally{
+			if(dmacs != null){
+				dmacs.clear();
+				dmacs = null;
+			}
+		}
+	}
 	
 	/**
 	 * 配置变更或者获取设备配置的后续处理
@@ -1424,24 +1466,22 @@ public class AsyncMsgHandleService {
 	public void userDeviceDestory(String message){
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s]", message));
 		UserDeviceDestoryDTO dto = JsonHelper.getDTO(message, UserDeviceDestoryDTO.class);
-		
-		//WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(dto.getMac());
 		deviceFacadeService.removeMobilePresent(dto.getUid(), dto.getMac());
-		//用户解绑设备后其开启的插件不需要清除 20160113 by EdmondLee
-		//userSettingStateService.deleteById(dto.getMac());
 		userDeviceBindOperateSyskeySync(dto.getMac(), null);
-		/*//如果没有绑定其他设备，删除别名
-		int count = userDeviceService.countBindDevices(dto.getUid());
-		if(count == 0 ){
-			WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(dto.getUid(), dto.getMac());
-		}*/
-		/*List<UserDevicePK> ids = userDeviceService.findAllIds();
-		if (ids == null || ids.size() ==0) {
-			WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(dto.getUid(), dto.getMac());
-		}*/
-
-//		wifiDeviceIndexIncrementProcesser.bindUserUpdIncrement(dto.getMac(), null);
-		
+		{//给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
+        	//deliverMessageService.sendUserSingleDeviceSharedNetworkApplyActionMessage(uid,null, mac,false,IDTO.ACT_UPDATE);
+			List<String> cmdPayloads = null;
+			try{
+				cmdPayloads = new ArrayList<>();
+				addDevices2SharedNetwork(dto.getMac(),cmdPayloads);
+				daemonRpcService.wifiDeviceCmdsDown(null, dto.getMac(), cmdPayloads);
+			}finally{
+				if(cmdPayloads != null){
+					cmdPayloads.clear();
+					cmdPayloads = null;
+				}
+			}
+		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
 	}
 	

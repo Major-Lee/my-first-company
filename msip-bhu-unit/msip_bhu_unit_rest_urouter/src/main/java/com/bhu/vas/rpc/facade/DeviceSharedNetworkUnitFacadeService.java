@@ -15,9 +15,10 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
@@ -58,7 +59,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 		try{
 			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
 			if(sharedNetwork == null){
-				sharedNetwork = SharedNetworkType.Uplink;
+				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
 			
 			ParamSharedNetworkDTO sharednetwork_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
@@ -91,7 +92,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 		try{
 			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
 			if(sharedNetwork == null){
-				sharedNetwork = SharedNetworkType.Uplink;
+				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
 			//异步消息执行用户的 addDevices2SharedNetwork 设备应用此配置并发送指令
 			deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(), dmacs,false,IDTO.ACT_UPDATE);
@@ -109,14 +110,33 @@ public class DeviceSharedNetworkUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<ParamSharedNetworkDTO> fetchNetworkConf(int uid, String sharenetwork_type) {
+	public RpcResponseDTO<ParamSharedNetworkDTO> fetchUserNetworkConf(int uid, String sharenetwork_type) {
 		try{
 			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
 			if(sharedNetwork == null){
-				sharedNetwork = SharedNetworkType.Uplink;
+				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
 			ParamSharedNetworkDTO sharedNetworkConf = sharedNetworkFacadeService.fetchUserSharedNetworkConf(uid, sharedNetwork);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(sharedNetworkConf);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<SharedNetworkSettingDTO> fetchDeviceNetworkConf(int uid, String mac) {
+		try{
+			/*SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
+			if(sharedNetwork == null){
+				sharedNetwork = SharedNetworkType.SafeSecure;
+			}*/
+			SharedNetworkSettingDTO sharedNetworkSetting = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
+			if(sharedNetworkSetting == null){
+				sharedNetworkSetting = SharedNetworkSettingDTO.buildOffSetting();
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(sharedNetworkSetting);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

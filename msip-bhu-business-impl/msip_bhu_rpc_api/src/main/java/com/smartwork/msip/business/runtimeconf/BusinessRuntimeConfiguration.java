@@ -135,6 +135,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
             
             User_WalletWithdraw_Default_MinLimit = PropertiesHelper.getDouble("user.walletWithdraw.default.minLimit", paramProperties, User_WalletWithdraw_Default_MinLimit);
             
+            Device_SharedNetwork_Default_Start = PropertiesHelper.getBoolean("device.sharednetwork.default.start", paramProperties, Device_SharedNetwork_Default_Start);
         	logger.info("loading business runtime configuration successfully!");  
         }  
     }  
@@ -318,6 +319,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 
 	
 	public static double User_WalletWithdraw_Default_MinLimit = 10.00d;//5个好友数量, 超过数量不在分配客服
+	
+	public static boolean Device_SharedNetwork_Default_Start = false;
 	
 	/**
 	 * 判断是否是console用户

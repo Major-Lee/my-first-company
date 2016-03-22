@@ -45,6 +45,7 @@ import com.bhu.vas.api.vto.device.UserDeviceStatisticsVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
@@ -174,7 +175,6 @@ public class UserDeviceUnitFacadeService {
             
         	wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null, null);
         	deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
-            
         } /*else {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(
                     ResponseErrorCode.RPC_MESSAGE_UNSUPPORT, Boolean.FALSE);
