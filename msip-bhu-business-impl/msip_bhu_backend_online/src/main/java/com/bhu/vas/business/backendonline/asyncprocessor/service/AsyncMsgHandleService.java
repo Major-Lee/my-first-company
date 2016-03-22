@@ -218,19 +218,19 @@ public class AsyncMsgHandleService {
 					}
 				}
 			}
-
+			
 			{//开启共享网络判定，并更新索引
 				SharedNetworkSettingDTO sharedNetwork = sharedNetworkFacadeService.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac());
 				ParamSharedNetworkDTO psn = sharedNetwork.getPsn();
 				if(sharedNetwork != null && sharedNetwork.isOn() && psn != null){
 					logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
 					//更新索引，下发指令
-					wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, psn.getNtype());
+					wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype());
 					psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
 					//生成下发指令
-					String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
+					String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
 							dto.getMac(), -1,JsonHelper.getJSONString(psn),deviceCMDGenFacadeService);
-
+					payloads.add(sharedNetworkCMD);
 				}
 			}
 			
@@ -239,7 +239,7 @@ public class AsyncMsgHandleService {
 			boolean needUpdate = false;
 			boolean needClaim = wifiDevice.needClaim();
 			try{
-				//设备上线后认领 20160322 modify by Edmond Lee 分销商机制移除
+				//设备上线后认领
 				if(needClaim){
 					DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
 					AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
