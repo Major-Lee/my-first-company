@@ -32,11 +32,15 @@ import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.ExchangeBBSHelper;
+import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
@@ -77,8 +81,10 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerServi
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
+import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
@@ -89,6 +95,7 @@ import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
+import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -112,15 +119,6 @@ public class AsyncMsgHandleService {
 	@Resource
 	private WifiDeviceSettingService wifiDeviceSettingService;
 	
-	/*@Resource
-	private HandsetDeviceService handsetDeviceService;*/
-	
-	//@Resource
-	//private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
-	
-	//@Resource
-	//private WifiHandsetDeviceLoginCountMService wifiHandsetDeviceLoginCountMService;
-	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	
@@ -138,15 +136,6 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
-	
-//	@Resource
-//	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
-	
-//	@Resource
-//	private WifiHandsetDeviceMarkService wifiHandsetDeviceMarkService;
-	
-	//@Resource
-	//private WifiDeviceGroupService wifiDeviceGroupService;
 	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
@@ -169,7 +158,14 @@ public class AsyncMsgHandleService {
 	@Resource
 	private UserService userService;
 
-
+	@Resource
+	private SharedNetworkFacadeService sharedNetworkFacadeService;
+	
+	@Resource
+	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+	
+	@Resource
+	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
 	/**
 	 * wifi设备上线
 	 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
@@ -197,25 +193,10 @@ public class AsyncMsgHandleService {
 				boolean needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(dto.getMac(),false);
 				if(needDeviceUsedQuery)
 					payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(dto.getMac()));
-/*				//判断周边探测是否开启 如果开启 再次下发开启指令
-				UserSettingState settingState = userSettingStateService.getById(dto.getMac());
-				if(settingState != null){
-					UserWifiSinfferSettingDTO wifiSniffer = settingState.getUserSetting(UserWifiSinfferSettingDTO.Setting_Key, UserWifiSinfferSettingDTO.class);
-					if(wifiSniffer != null){
-						needWiffsniffer = wifiSniffer.isOn();
-					}
-				}*/
 				//设备上线push
 				if(WifiDeviceDTO.UserCmdRebootReason.equals(dto.getJoin_reason())){
 					pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
 				}
-				/*try{
-					int ret = DeviceHelper.compareDeviceVersions(wifiDevice.getOrig_swver(),"AP106P06V1.2.15Build8064");
-					if(ret == -1) forceFirmwareUpdate = true;
-					System.out.println("~~~~~~~~~~~~:forceFirmwareUpdate"+forceFirmwareUpdate);
-				}catch(Exception ex){
-					ex.printStackTrace(System.out);
-				}*/
 				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
 				if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 					//如果是指定的版本出厂版本 并且 第一次注册创建时间超过指定定义的天数,立刻升级
@@ -225,7 +206,6 @@ public class AsyncMsgHandleService {
 					}else{
 						payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
 					}
-					//payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
 				}
 				//added by Edmond Lee @20160106 for mark workmode changed of device
 				if(!dto.isNewWifi()){
@@ -233,59 +213,33 @@ public class AsyncMsgHandleService {
 					//判定workmode是否变更
 					if(StringUtils.isNotEmpty(dto.getO_wmode()) && StringUtils.isNotEmpty(dto.getN_wmode())){
 						if(!dto.getO_wmode().equals(dto.getN_wmode())){
-							/*//在判定workmode变更后打上标记，标记内容代表什么模式切换到什么模式，
-							//由于模式切换还需要和设备重置有所相关，所以在查询配置分析中继续进行模式变更的操作内容
-							if(WifiDeviceHelper.WorkMode_Router.equals(dto.getN_wmode())){
-								BusinessMarkerService.getInstance().deviceWorkmodeChangedMarker(dto.getMac(), WifiDeviceHelper.SwitchMode_Bridge2Router_Act);
-							}
-							if(WifiDeviceHelper.WorkMode_Bridge.equals(dto.getN_wmode())){
-								BusinessMarkerService.getInstance().deviceWorkmodeChangedMarker(dto.getMac(), WifiDeviceHelper.SwitchMode_Bridge2Router_Act);
-							}*/
-							/*//在切换模式后，如果设备开启过访客网络，则
-							ParamVapVistorWifiDTO vw_dto = null;
-							UserSettingState settingState = userSettingStateService.getById(dto.getMac());
-							if(settingState != null){
-								UserVistorWifiSettingDTO vistorWifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
-								if(vistorWifi != null && vistorWifi.isOn()){
-									vw_dto = vistorWifi.getVw();
-									//TODO:ParamVapVistorWifiDTO block_mode变更并且更新配置 或者数据库中就不存ParamVapVistorWifiDTO字段block_mode
-									int switchAct = 0;
-									if(WifiDeviceHelper.WorkMode_Router.equals(dto.getN_wmode())){
-										switchAct = WifiDeviceHelper.SwitchMode_Bridge2Router_Act;
-									}
-									if(WifiDeviceHelper.WorkMode_Bridge.equals(dto.getN_wmode())){
-										switchAct = WifiDeviceHelper.SwitchMode_Bridge2Router_Act;
-									}
-									vw_dto.switchWorkMode(switchAct);
-									//更新操作应该在设备切换工作模式后上线后，如果模式变更了，再更新状态
-									userSettingStateService.update(settingState);
-								}
-							}*/
 							pushService.push(new WifiDeviceWorkModeChangedDTO(dto.getMac(), wifiDevice.getWork_mode()));
 						}
 					}
 				}
 			}
-			/*try{
-				//开启设备终端自动上报（uRouter( TU  TS TC)和 SOC（ TS TC） ）支持
-				if(WifiDeviceHelper.isDeviceNeedOnlineTeminalQuery(wifiDevice.getOrig_model(), wifiDevice.getOrig_swver())){
-					//对uRouter设备才下发管理参数触发设备自动上报用户通知并同步终端，其他设备不下发此指令（其他设备通过下发查询在线终端列表指令获取数据）
-					payloads.add(CMDBuilder.builderDeviceOnlineTeminalQuery(dto.getMac()));
+
+			{//开启共享网络判定，并更新索引
+				SharedNetworkSettingDTO sharedNetwork = sharedNetworkFacadeService.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac());
+				ParamSharedNetworkDTO psn = sharedNetwork.getPsn();
+				if(sharedNetwork != null && sharedNetwork.isOn() && psn != null){
+					logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
+					//更新索引，下发指令
+					wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, psn.getNtype());
+					psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+					//生成下发指令
+					String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
+							dto.getMac(), -1,JsonHelper.getJSONString(psn),deviceCMDGenFacadeService);
+
 				}
-				//暂时只对uRouter设备进行终端上下线上报指令
-				if(WifiDeviceHelper.isURouterDevice()){wifiDevice.getOrig_model())){
-					
-				}
-			}catch(Exception ex){
-				ex.printStackTrace(System.out);
-			}*/
+			}
 			
 			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),payloads);
 			
 			boolean needUpdate = false;
 			boolean needClaim = wifiDevice.needClaim();
 			try{
-				//设备上线后认领
+				//设备上线后认领 20160322 modify by Edmond Lee 分销商机制移除
 				if(needClaim){
 					DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
 					AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
@@ -300,7 +254,6 @@ public class AsyncMsgHandleService {
 									agentDeviceClaim.getImport_id(), agentUser);
 						}
 					}
-					
 				}
 				//根据wan_ip获取设备的网络运营商信息
 				if(dto.isWanIpChanged() && StringUtils.isNotEmpty(wifiDevice.getWan_ip())){
@@ -317,18 +270,6 @@ public class AsyncMsgHandleService {
 			}catch(Exception ex){
 				ex.printStackTrace(System.out);
 			}
-			
-/*			try{
-				boolean newWifi = dto.isNewWifi();
-				if(needClaim || newWifi){
-					wifiDeviceIndexIncrementService.onlineCrdIncrement(wifiDevice);
-				}else{
-					wifiDeviceIndexIncrementService.onlineUpdIncrement(wifiDevice);
-				}
-				wifiDeviceIndexIncrementProcesser.onlineCrdIncrement(wifiDevice);
-			}catch(Exception ex){
-				ex.printStackTrace(System.out);
-			}*/
 			//设备统计
 			deviceFacadeService.deviceStatisticsOnline(new DeviceStatistics(dto.getMac(), dto.isNewWifi(), 
 					new Date(dto.getLast_login_at())), DeviceStatistics.Statis_Device_Type);
@@ -605,8 +546,6 @@ public class AsyncMsgHandleService {
 		if(entity != null){
 			//3:wifi上的移动设备基础信息表的在线状态更新
 			//deviceFacadeService.allHandsetDoOfflines(dto.getMac());
-
-
 			//3:wifi上的移动设备基础信息表的在线状态更新,返回在线设备记录，继续更新终端离线状态
 			String wifiId = dto.getMac();
 			{//修改为redis实现终端上下线日志 2015-12-11
