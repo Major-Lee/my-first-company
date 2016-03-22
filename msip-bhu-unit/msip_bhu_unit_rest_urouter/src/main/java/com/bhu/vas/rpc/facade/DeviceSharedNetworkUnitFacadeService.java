@@ -67,7 +67,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 			boolean configChanged = sharedNetworkFacadeService.doApplySharedNetworksConfig(uid, sharednetwork_dto);
 			if(configChanged){
 				//异步消息执行用户的所有设备应用此配置并发送指令
-				deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(), null,IDTO.ACT_UPDATE);
+				deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(), null,false,IDTO.ACT_UPDATE);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(sharednetwork_dto);
 		}catch(BusinessI18nCodeException bex){
@@ -94,7 +94,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 				sharedNetwork = SharedNetworkType.Uplink;
 			}
 			//异步消息执行用户的 addDevices2SharedNetwork 设备应用此配置并发送指令
-			deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(), dmacs,IDTO.ACT_UPDATE);
+			deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(), dmacs,false,IDTO.ACT_UPDATE);
 			/*List<String> addDevices2SharedNetwork = sharedNetworkFacadeService.addDevices2SharedNetwork(uid,sharedNetwork,false,dmacs);
 			if(!addDevices2SharedNetwork.isEmpty()){
 				//异步消息执行用户的 addDevices2SharedNetwork 设备应用此配置并发送指令

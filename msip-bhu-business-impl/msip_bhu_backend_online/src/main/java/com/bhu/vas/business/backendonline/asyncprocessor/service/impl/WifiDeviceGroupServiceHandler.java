@@ -83,7 +83,7 @@ public class WifiDeviceGroupServiceHandler implements IMsgHandlerService {
 			for(String wifi_id:onlineDevices){
 				try{
 					WifiDeviceDownTask downTask = taskFacadeService.apiTaskGenerate(dto.getUid(), wifi_id, dto.getOpt(), dto.getSubopt(), 
-							dto.getExtparams(), dto.getChannel(), dto.getChannel_taskid());
+							dto.getExtparams(), dto.getChannel(), dto.getChannel_taskid(),null);
 					DaemonHelper.daemonCmdDown(wifi_id, downTask.getPayload(), daemonRpcService);
 				}catch(BusinessI18nCodeException bex){
 					System.out.println(bex.getErrorCode());

@@ -109,8 +109,21 @@ public class BusinessKeyDefine {
 		public static final String WithdrawAppliesRequestNotifyKey = "WAR_KEY";
 	}
 	
-	public static class CommdityRAmount{
+	public static class CommdityRAmount {
 		public static final String CommdityIntervalAmountPrefixKey = "CIA";
+	}
+
+	public static class Social{
+		public static final String ACTION = "SA.";
+		public static final String MEET = "SM";
+
+		public static final String COMMENT = "CM";
+
+		public static final String RELATION= "SREL.";
+
+		public static final String VISITOR= "SV";
+
+		public static final String CARE = "SC.";
 
 	}
 }

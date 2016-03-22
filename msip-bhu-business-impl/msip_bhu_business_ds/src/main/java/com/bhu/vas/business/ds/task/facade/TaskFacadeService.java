@@ -31,6 +31,7 @@ import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
+import com.bhu.vas.api.rpc.task.notify.ITaskProcessNotifyCallback;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
@@ -335,7 +336,7 @@ public class TaskFacadeService {
 	
 	
 	public WifiDeviceDownTask apiTaskGenerate(int uid, String mac, String opt, String subopt, String extparams,
-			String channel, String channel_taskid) throws Exception{
+			String channel, String channel_taskid,ITaskProcessNotifyCallback callback) throws Exception{
 		
 		OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
 		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
@@ -501,12 +502,12 @@ public class TaskFacadeService {
 		downTask.setSubopt(subopt);
 		downTask.setOpt(opt);
 		downTask.setMac(mac);
-		downTask.setPayload(apiCmdGenerate(uid,mac,opt_cmd,ods_cmd,extparams,taskid,wifiDevice.getWork_mode()));
+		downTask.setPayload(apiCmdGenerate(uid,mac,opt_cmd,ods_cmd,extparams,taskid,wifiDevice.getWork_mode(),callback));
 		this.taskComming(downTask);
 		return downTask;
 	}
 	
-	public String apiCmdGenerate(int uid, String mac, OperationCMD opt_cmd, OperationDS ods_cmd, String extparams,long taskid,String work_mode){
+	public String apiCmdGenerate(int uid, String mac, OperationCMD opt_cmd, OperationDS ods_cmd, String extparams,long taskid,String work_mode,ITaskProcessNotifyCallback callback){
 		String cmd = null;
 		if(OperationCMD.ModifyDeviceSetting == opt_cmd){
 			switch(ods_cmd){
@@ -519,10 +520,12 @@ public class TaskFacadeService {
 						throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VAP_MODULE_CMD_NOT_DEFINED,new String[]{ods_cmd.getRef(),param_dto.getStyle()});
 					}
 					cmd = (CMDBuilder.autoBuilderVapFullCMD4Opt(mac, taskid,cmdDefined.getTemplate()));
+					callback.notify(uid, opt_cmd, ods_cmd, mac, param_dto);
 					break;
 				case DS_Http_VapModuleCMD_Stop:
 					String stopTemplate = vasModuleCmdDefinedService.fetchCommonStopTemplate();
 					cmd = (CMDBuilder.autoBuilderVapFullCMD4Opt(mac, taskid, stopTemplate));
+					callback.notify(uid, opt_cmd, ods_cmd, mac, null);
 					break;	
 				case DS_SharedNetworkWifi_Limit:
 					//重新构建共享网络开启指令则不break，直接走DS_VistorWifi_Start开启访客网络
@@ -543,12 +546,14 @@ public class TaskFacadeService {
 						sharedNetworkFacadeService.updateDevices2SharedNetwork(mac,shared_dto);
 						shared_dto.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(work_mode));
 						cmd = CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(shared_dto),deviceCMDGenFacadeService);
+						callback.notify(uid, opt_cmd, ods_cmd, mac, shared_dto);
 					}
 					break;
 				case DS_SharedNetworkWifi_Stop:
 					{
 						sharedNetworkFacadeService.removeDevicesFromSharedNetwork(mac);
 						cmd = CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceCMDGenFacadeService);
+						callback.notify(uid, opt_cmd, ods_cmd, mac, null);
 					}
 					break;
 				case DS_Switch_WorkMode:
