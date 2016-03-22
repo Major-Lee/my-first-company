@@ -180,6 +180,33 @@ public class SharedNetworkFacadeService {
 		}
 	}
 	
+	/**
+	 * 获取设备当前的配置，如果不存在则创建新的缺省配置
+	 * 为了考虑效率，如果此设备有绑定用户的话，不会以绑定用户的个人共享网络配置为准，少操作一次数据库
+	 * 只以设备配置的数据为准
+	 * 目前只为设备上线需要调用时处理
+	 * @param mac
+	 * @return
+	 */
+	public SharedNetworkSettingDTO fetchDeviceSharedNetworkConfWhenEmptyThenCreate(String mac){
+		String mac_lowercase = mac.toLowerCase();
+		WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
+		if(sharednetwork != null){
+			return sharednetwork.getInnerModel();
+		}else{
+			sharednetwork = new WifiDeviceSharedNetwork();
+			sharednetwork.setId(mac_lowercase);
+			ParamSharedNetworkDTO configDto = ParamSharedNetworkDTO.builderDefault();
+			sharednetwork.setSharednetwork_type(configDto.getNtype());
+			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
+			sharedNetworkSettingDTO.turnOn(configDto);
+			sharednetwork.putInnerModel(sharedNetworkSettingDTO);
+			wifiDeviceSharedNetworkService.insert(sharednetwork);
+			return sharedNetworkSettingDTO;
+		}
+	}
+	
+	
 	
 	/**
 	 * 添加设备应用指定的配置

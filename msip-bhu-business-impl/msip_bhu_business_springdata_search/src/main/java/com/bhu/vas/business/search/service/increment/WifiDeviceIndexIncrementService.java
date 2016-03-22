@@ -524,4 +524,22 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, false, true, true);
 	}
 
+	/**
+	 * 设备的共享网络的变更
+	 * 变更涉及的更改索引字段是
+	 * 1) d_snk_type
+	 * @param id
+	 * @param sharedNetwork_type
+	 */
+	@Override
+	public void sharedNetworkUpdIncrement(String id, String sharedNetwork_type) {
+		logger.info(String.format("sharedNetworkUpdIncrement Request id [%s] sharedNetwork_type [%s]", id, sharedNetwork_type));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TYPE.getName(), sharedNetwork_type);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(),  DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+	}
 }
