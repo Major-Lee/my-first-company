@@ -224,11 +224,12 @@ public class SharedNetworkFacadeService {
 			boolean sharednetworkMatched,
 			List<String> macs,ISharedNetworkNotifyCallback callback){
 		if(sharednetwork_type == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"sharednetwork_type:".concat(String.valueOf(sharednetwork_type))});
+			sharednetwork_type = SharedNetworkType.SafeSecure;
+			//throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"sharednetwork_type:".concat(String.valueOf(sharednetwork_type))});
 		}
 		
 		if(macs == null || macs.isEmpty()){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY,new String[]{"macs:"});
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY,new String[]{"macs"});
 		}
 		List<String> result = new ArrayList<String>();
 		ParamSharedNetworkDTO configDto = fetchUserSharedNetworkConf(uid,sharednetwork_type);
@@ -343,6 +344,15 @@ public class SharedNetworkFacadeService {
 				wifiDeviceSharedNetworkService.update(sharedNetwork);
 			}
 		}
+	}
+	
+	
+	public void deivceUnbinded(String mac){
+		wifiDeviceSharedNetworkService.deleteById(mac);
+	}
+	
+	public void deivceReset(String mac){
+		wifiDeviceSharedNetworkService.deleteById(mac);
 	}
 	
 	public List<SharedNetworkVTO> fetchSupportedSharedNetwork(){
