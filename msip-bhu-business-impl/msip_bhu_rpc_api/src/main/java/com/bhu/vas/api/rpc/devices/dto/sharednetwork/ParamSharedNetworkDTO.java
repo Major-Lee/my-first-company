@@ -232,11 +232,13 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	public void setDns_default_ip(String dns_default_ip) {
 		this.dns_default_ip = dns_default_ip;
 	}
-
+	public static ParamSharedNetworkDTO builderDefault(){
+		return builderDefault(SharedNetworkType.SafeSecure.getKey());
+	}
 	////users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
 	public static ParamSharedNetworkDTO builderDefault(String ntype){
 		ParamSharedNetworkDTO param = new ParamSharedNetworkDTO();
-		if(StringUtils.isEmpty(ntype)) ntype = (SharedNetworkType.Uplink.getKey());
+		if(StringUtils.isEmpty(ntype)) ntype = (SharedNetworkType.SafeSecure.getKey());
 		param.setNtype(ntype);
 		param.setUsers_tx_rate(WifiDeviceHelper.SharedNetworkWifi_Default_Users_tx_rate);
 		param.setUsers_rx_rate(WifiDeviceHelper.SharedNetworkWifi_Default_Users_rx_rate);
@@ -260,7 +262,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	}
 	
 	public static ParamSharedNetworkDTO fufillWithDefault(ParamSharedNetworkDTO param){
-		if(param == null) return builderDefault(SharedNetworkType.Uplink.getKey());
+		if(param == null) return builderDefault(SharedNetworkType.SafeSecure.getKey());
 		if(StringUtils.isEmpty(param.getNtype())) param.setNtype(SharedNetworkType.Uplink.getKey());
 		if(param.getSignal_limit() == 0) param.setSignal_limit(WifiDeviceHelper.SharedNetworkWifi_Default_Signal_limit);
 		//if(StringUtils.isEmpty(param.getRedirect_url())) param.setRedirect_url(WifiDeviceHelper.SharedNetworkWifi_Default_Redirect_url);
