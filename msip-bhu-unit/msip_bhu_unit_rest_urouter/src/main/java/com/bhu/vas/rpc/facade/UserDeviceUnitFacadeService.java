@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
@@ -68,6 +69,7 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -756,7 +758,10 @@ public class UserDeviceUnitFacadeService {
 							if(d_linkmodes != null){
 								String d_linkmode = d_linkmodes.get(cursor);
 								if(StringUtils.isNotEmpty(d_linkmode)){
-									vto.setLink_mode_type(DeviceHelper.getDeviceMode(d_linkmode));
+									WifiDeviceSettingLinkModeDTO mode_dto = JsonHelper.getDTO(d_linkmode, WifiDeviceSettingLinkModeDTO.class);
+									if(mode_dto != null){
+										vto.setLink_mode_type(DeviceHelper.getDeviceMode(mode_dto.getModel()));
+									}
 								}
 							}
 							vtos.add(vto);
