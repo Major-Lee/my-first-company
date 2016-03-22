@@ -5,11 +5,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
 import com.bhu.vas.api.vto.BackendTaskVTO;
+import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.devicegroup.facade.WifiDeviceGroupFacadeService;

@@ -119,6 +119,7 @@ public class OrderFacadeService {
 		if(StringUtils.isNotEmpty(dut)){
 			criteria.andColumnEqualTo("mac_dut", dut);
 		}
+		mc.setOrderByClause("created_at desc");
 		mc.setPageNumber(pageNo);
 		mc.setSize(pageSize);
 		return orderService.findModelByModelCriteria(mc);

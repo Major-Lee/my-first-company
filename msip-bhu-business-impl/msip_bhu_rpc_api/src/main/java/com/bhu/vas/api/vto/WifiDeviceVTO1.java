@@ -28,7 +28,7 @@ public class WifiDeviceVTO1 implements Serializable{
 	private long d_createdat;//设备的接入时间(入库时间)
 	private String d_dut;//设备的业务线定义
 	private String d_uptime;//设备在线总时长 单位秒
-
+	private String d_snk_type;//设备的共享网络类型
 	private String o_template;//运营模板编号
 	private String o_graylevel;//设备的灰度定义
 	private String o_batch;//设备的导入批次
@@ -156,6 +156,12 @@ public class WifiDeviceVTO1 implements Serializable{
 	}
 	public void setD_uptime(String d_uptime) {
 		this.d_uptime = d_uptime;
+	}
+	public String getD_snk_type() {
+		return d_snk_type;
+	}
+	public void setD_snk_type(String d_snk_type) {
+		this.d_snk_type = d_snk_type;
 	}
 	public String getO_template() {
 		return o_template;
