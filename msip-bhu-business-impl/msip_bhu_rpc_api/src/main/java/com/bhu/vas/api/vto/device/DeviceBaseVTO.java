@@ -24,6 +24,9 @@ public class DeviceBaseVTO implements java.io.Serializable{
 	private String orig_model;
 	//工作模式
 	private String work_mode;
+	//设备共享网络类型
+	private String d_snk_type;
+	
 	public String getMac() {
 		return mac;
 	}
@@ -84,5 +87,10 @@ public class DeviceBaseVTO implements java.io.Serializable{
 	public void setDutn(String dutn) {
 		this.dutn = dutn;
 	}
-	
+	public String getD_snk_type() {
+		return d_snk_type;
+	}
+	public void setD_snk_type(String d_snk_type) {
+		this.d_snk_type = d_snk_type;
+	}
 }
