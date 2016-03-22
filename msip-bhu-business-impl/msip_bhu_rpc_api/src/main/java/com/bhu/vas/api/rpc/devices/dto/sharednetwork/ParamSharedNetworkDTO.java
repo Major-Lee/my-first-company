@@ -8,6 +8,7 @@ import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.smartwork.msip.cores.helper.HtmlHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**
  * 设备配置信息的ad
@@ -336,5 +337,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 */	
 		//System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO()).builderProperties()));
 		//System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_SafeSecure, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO(SharedNetworkType.SafeSecure.getKey())).builderProperties()));
+		
+		System.out.println(JsonHelper.getJSONString(ParamSharedNetworkDTO.builderDefault()));
 	}
 }
