@@ -391,5 +391,25 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 			}
 		}));
 	}
+	/**
+	 * 设备的共享网络变更
+	 * @param id
+	 * @param sharedNetwork_type
+	 */
+	public void sharedNetworkUpdIncrement(final String id, final String sharedNetwork_type){
+		ExecutorService executor = singleExecProcesser(id);
+		if(executor != null){
+			executor.submit((new Runnable() {
+				@Override
+				public void run() {
+					try{
+						wifiDeviceIndexIncrement.sharedNetworkUpdIncrement(id, sharedNetwork_type);
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
+				}
+			}));
+		}
+	}
 	
 }

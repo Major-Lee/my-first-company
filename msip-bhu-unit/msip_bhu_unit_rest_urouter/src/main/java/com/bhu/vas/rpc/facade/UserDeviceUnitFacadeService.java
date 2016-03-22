@@ -24,6 +24,7 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
@@ -583,6 +584,8 @@ public class UserDeviceUnitFacadeService {
 			if(bindUid != null){
 				user = userService.getById(bindUid);
 			}
+			
+			WifiDeviceSharedNetwork wifiDeviceSharedNetwork = sharedNetworkFacadeService.fetchDeviceSharedNetwork(mac);
 			//基础信息
 			DeviceBaseVTO dbv = new DeviceBaseVTO();
 			dbv.setMac(wifiDevice.getId());
@@ -598,6 +601,9 @@ public class UserDeviceUnitFacadeService {
 			dbv.setDut(parser.getDut());
 			DeviceUnitType unitType = DeviceUnitType.fromIndex(parser.getDut());
 			dbv.setDutn(unitType != null ?unitType.getName():StringHelper.MINUS_STRING_GAP);
+			if(wifiDeviceSharedNetwork != null){
+				dbv.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
+			}
 			//状态信息
 			DevicePresentVTO dpv = new DevicePresentVTO();
 			dpv.setMac(wifiDevice.getId());

@@ -36,6 +36,7 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.localunit.BaseTest;
 
@@ -891,7 +892,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UNOBinded.getType());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), null);
 	 */
-	@Test
+	//@Test
 	public void test001IncrementSearchTest(){
 		String mac = "84:82:f4:28:8f:ac";
 		for(int i = 1;i<101;i++){
@@ -923,6 +924,22 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 			System.out.println(same + "-"+i);
 		}
 		
+	}
+	
+	//@Test
+	public void test0019SearchTest(){
+		SearchCondition sc_d_online = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+				StringHelper.EMPTY_STRING_GAP);
+		SearchConditionPack pack_must_1 = SearchConditionPack.builderSearchConditionPackWithConditions(sc_d_online);
+
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must_1);
+		
+		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchByConditionMessage(scm, 0, 10);
+    	System.out.println("test0019SearchTest" + result.getTotalElements());
+		for(WifiDeviceDocument doc : result){
+    	    System.out.println("test0019SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
+    	}
 	}
 	
 }
