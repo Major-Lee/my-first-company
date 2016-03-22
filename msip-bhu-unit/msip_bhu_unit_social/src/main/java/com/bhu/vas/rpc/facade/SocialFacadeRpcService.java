@@ -227,6 +227,9 @@ public class SocialFacadeRpcService {
                     handsetUser.setUid(uid);
                     handsetUser.setCreated_at(new Date());
                     handsetUserService.insert(handsetUser);
+                } else {
+                    handsetUser.setUid(uid);
+                    handsetUserService.update(handsetUser);
                 }
                 WifiSortedSetService.getInstance().addWifiVistor(bssid, uid);
             }
