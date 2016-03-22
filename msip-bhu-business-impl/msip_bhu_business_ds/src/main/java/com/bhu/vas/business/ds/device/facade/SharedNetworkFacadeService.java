@@ -167,8 +167,12 @@ public class SharedNetworkFacadeService {
 		return dto;
 	}
 	
+	public WifiDeviceSharedNetwork fetchDeviceSharedNetwork(String mac){
+		return wifiDeviceSharedNetworkService.getById(mac);
+	}
+	
 	public SharedNetworkSettingDTO fetchDeviceSharedNetworkConf(String mac){
-		WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(mac);
+		WifiDeviceSharedNetwork configs = fetchDeviceSharedNetwork(mac);
 		if(configs != null){
 			return configs.getInnerModel();
 		}else{
