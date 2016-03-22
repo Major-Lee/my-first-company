@@ -1086,13 +1086,14 @@ public class DeviceBusinessFacadeService {
 					
 					//System.out.println("~~~~~~~~~~~~~3:mac:"+wifiId);
 					
-					//如果是dhcp模式 则下发指令查询dhcp相关数据
-					String queryDHCPStatus = updateDeviceModeStatusWithMode(wifiId, dto);
-					if(!StringUtils.isEmpty(queryDHCPStatus)){
-						//if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
-						afterQueryPayloads.add(queryDHCPStatus);
-					}
 				}
+				//如果是dhcp模式 则下发指令查询dhcp相关数据
+				String queryDHCPStatus = updateDeviceModeStatusWithMode(wifiId, dto);
+				if(!StringUtils.isEmpty(queryDHCPStatus)){
+					//if(afterQueryPayloads == null) afterQueryPayloads = new ArrayList<String>();
+					afterQueryPayloads.add(queryDHCPStatus);
+				}
+				
 				//设备持久指令分发
 				List<String> persistencePayloads = deviceCMDGenFacadeService.fetchWifiDevicePersistenceExceptVapModuleCMD(wifiId);
 				if((persistencePayloads != null && !persistencePayloads.isEmpty()) ||
