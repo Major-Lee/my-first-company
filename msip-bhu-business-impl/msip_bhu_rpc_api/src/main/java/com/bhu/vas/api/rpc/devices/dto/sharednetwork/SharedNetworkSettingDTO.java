@@ -64,4 +64,10 @@ public class SharedNetworkSettingDTO implements java.io.Serializable{
 		this.setDs(true);
 		this.setC(System.currentTimeMillis());
 	}
+	
+	public static SharedNetworkSettingDTO buildOffSetting(){
+		SharedNetworkSettingDTO result = new SharedNetworkSettingDTO();
+		result.turnOff();
+		return result;
+	}
 }
