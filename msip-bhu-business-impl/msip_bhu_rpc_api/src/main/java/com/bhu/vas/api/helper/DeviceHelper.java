@@ -1188,9 +1188,9 @@ public class DeviceHelper {
 		//组装访客网络配置修改指令
 		if(vw_dto != null){
 			if(SharedNetworkType.SafeSecure.getKey().equals(vw_dto.getNtype()))
-				return builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_SafeSecure,vw_dto.builderProperties());
+				workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_SafeSecure,vw_dto.builderProperties()));
 			else
-				return builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_Uplink,vw_dto.builderProperties());
+				workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_Uplink,vw_dto.builderProperties()));
 			/*workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi, 
 					vw_dto.builderProperties()));*/
 		}
