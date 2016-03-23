@@ -18,4 +18,7 @@ public class CommdityService extends AbstractCommdityService<Integer, Commdity, 
 		super.setEntityDao(commdityDao);
 	}
 
+	public int porcByCommdityTest(int commdityid){
+		return super.getEntityDao().porcByCommdityTest(commdityid);
+	}
 }

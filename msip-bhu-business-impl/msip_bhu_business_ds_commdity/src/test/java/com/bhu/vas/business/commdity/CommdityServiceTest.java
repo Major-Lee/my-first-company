@@ -81,7 +81,7 @@ public class CommdityServiceTest extends BaseTest{
 		//userService.insertMulti(users);
 	}	
     
-    @Test
+    //@Test
     public void testGetById(){
     	ModelCriteria mc = new ModelCriteria();
     	mc.setSize(5);
@@ -93,5 +93,11 @@ public class CommdityServiceTest extends BaseTest{
     			System.out.println(commdity.getId() + " - " + commdity.getStock_quantity());
     		}
     	}
+    }
+    
+    @Test
+    public void testPorcByCommdityTest(){
+    	int ret = commdityService.porcByCommdityTest(4);
+    	System.out.println("testPorcByCommdityTest = " + ret);
     }
 }
