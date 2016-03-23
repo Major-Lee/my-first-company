@@ -126,10 +126,11 @@ public class DeviceSharedNetworkController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
+			@RequestParam(required = false,defaultValue = "true") boolean on,
 			@RequestParam(required = true) String macs) {
 		String[] mac_array = macs.toLowerCase().split(StringHelper.COMMA_STRING_GAP);
 		
-		RpcResponseDTO<Boolean> rpcResult = deviceSharedNetworkRpcService.takeEffectNetworkConf(uid, sharenetwork_type, Arrays.asList(mac_array));
+		RpcResponseDTO<Boolean> rpcResult = deviceSharedNetworkRpcService.takeEffectNetworkConf(uid,on, sharenetwork_type, Arrays.asList(mac_array));
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

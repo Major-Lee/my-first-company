@@ -84,18 +84,19 @@ public class DeviceSharedNetworkUnitFacadeService {
 	 * 
 	 * 异步消息修改数据库,并发送指令并且更新索引
 	 * @param uid
+	 * @param on 开启或关闭
 	 * @param sharenetwork_type
 	 * @param mac
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,String sharenetwork_type,List<String> dmacs){
+	public RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,boolean on,String sharenetwork_type,List<String> dmacs){
 		try{
 			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
 			//异步消息执行用户的 addDevices2SharedNetwork 设备应用此配置并发送指令
-			deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(), dmacs,false,IDTO.ACT_UPDATE);
+			deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(), dmacs,false,on?IDTO.ACT_UPDATE:IDTO.ACT_DELETE);
 			/*List<String> addDevices2SharedNetwork = sharedNetworkFacadeService.addDevices2SharedNetwork(uid,sharedNetwork,false,dmacs);
 			if(!addDevices2SharedNetwork.isEmpty()){
 				//异步消息执行用户的 addDevices2SharedNetwork 设备应用此配置并发送指令
