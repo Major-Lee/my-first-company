@@ -88,14 +88,22 @@ public class DeviceSharedNetworkController extends BaseController{
 		}
 	}
 	
+	
+	/**
+	 * 获取指定设备的共享网络配置并应用接口
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param sharenetwork_type
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/fetch_device",method={RequestMethod.POST})
 	public void fetch_device(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type) {
-		RpcResponseDTO<SharedNetworkSettingDTO> rpcResult = deviceSharedNetworkRpcService.fetchDeviceNetworkConf(uid, sharenetwork_type);
+			@RequestParam(required = true) String mac) {
+		RpcResponseDTO<SharedNetworkSettingDTO> rpcResult = deviceSharedNetworkRpcService.fetchDeviceNetworkConf(uid, mac);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
