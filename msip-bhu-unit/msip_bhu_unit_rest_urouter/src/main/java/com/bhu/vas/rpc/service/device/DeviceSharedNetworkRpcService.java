@@ -49,10 +49,10 @@ public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcSer
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,
+	public RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,boolean on,
 			String sharenetwork_type, List<String> macs) {
-		logger.info(String.format("takeEffectNetworkConf with uid[%s] sharenetwork_type[%s] macs[%s]", uid,sharenetwork_type,macs));
-		return deviceSharedNetworkUnitFacadeService.takeEffectNetworkConf(uid, sharenetwork_type, macs);
+		logger.info(String.format("takeEffectNetworkConf with uid[%s] on[%s] sharenetwork_type[%s] macs[%s]", uid,on,sharenetwork_type,macs));
+		return deviceSharedNetworkUnitFacadeService.takeEffectNetworkConf(uid,on, sharenetwork_type, macs);
 	}
 
 	@Override

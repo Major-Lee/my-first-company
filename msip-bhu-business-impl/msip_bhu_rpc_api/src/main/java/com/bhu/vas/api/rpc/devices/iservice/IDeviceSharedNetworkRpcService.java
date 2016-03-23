@@ -35,7 +35,7 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @param mac
 	 * @return
 	 */
-	RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,String sharenetwork_type,List<String> macs);
+	RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,boolean on,String sharenetwork_type,List<String> macs);
 	
 	
 	/**
