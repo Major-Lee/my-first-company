@@ -147,8 +147,13 @@ public class UserWalletFacadeService{
 		}
 		return sharedealCashToUserWallet(sharedeal_uid, cash, orderid, owner);
 	}
+	
 	/**
 	 * 分成现金入账
+	 * TODO:分成现金分为几部分 
+	 * 	绑定用户
+		分销商用户
+		我司
 	 * @param uid  具体的入账用户
 	 * @param cash 总收益现金
 	 * @param orderid
