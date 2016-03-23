@@ -1185,15 +1185,6 @@ public class DeviceHelper {
 		}else{
 			workModeSwitchBuilder.append(DeviceSetting_Switch_Workmode_Bridge2Router);
 		}
-		//组装访客网络配置修改指令
-		if(vw_dto != null){
-			if(SharedNetworkType.SafeSecure.getKey().equals(vw_dto.getNtype()))
-				workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_SafeSecure,vw_dto.builderProperties()));
-			else
-				workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_Uplink,vw_dto.builderProperties()));
-			/*workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi, 
-					vw_dto.builderProperties()));*/
-		}
 		//3、ssid 密码
 		//4、黑名单
 		//5、别名(暂时不需要下发指令)
@@ -1207,6 +1198,15 @@ public class DeviceHelper {
 //					payloads.add(CMDBuilder.builderDeviceSettingModify(dmac, 0l, dsworkModelChanged));
 				}
 			}
+		}
+		//组装访客网络配置修改指令
+		if(vw_dto != null){
+			if(SharedNetworkType.SafeSecure.getKey().equals(vw_dto.getNtype()))
+				workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_SafeSecure,vw_dto.builderProperties()));
+			else
+				workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_Uplink,vw_dto.builderProperties()));
+			/*workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi, 
+					vw_dto.builderProperties()));*/
 		}
 		
 		if(workModeSwitchBuilder.length() > 0){
