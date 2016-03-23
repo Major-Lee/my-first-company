@@ -45,7 +45,6 @@ import com.bhu.vas.api.vto.device.UserDeviceStatisticsVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
@@ -456,7 +455,7 @@ public class UserDeviceUnitFacadeService {
 			if(total == 0){
 				vtos = Collections.emptyList();
 			}else {
-				List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+				//List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
  				vtos = builderUserDeviceVTOs(search_result);
 			}
 		}

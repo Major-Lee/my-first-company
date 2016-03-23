@@ -69,7 +69,7 @@ public class CommdityServiceTest extends BaseTest{
 		for(int i=0;i<batch_create_size;i++){
 			Commdity commdity = new Commdity();
 			commdity.setCategory(CommdityCategory.InternetLimit.getCategory());
-			commdity.setPrice("[0.25,10.25]");
+			commdity.setPrice("0.25-10.25");
 			commdity.setStatus(CommdityStatus.OnSale.getKey());
 			commdity.setTags("tags"+i);
 			commdity.setStock_quantity(CommdityHelper.STOCK_QUANTITY_INFINITE);
@@ -81,7 +81,7 @@ public class CommdityServiceTest extends BaseTest{
 		//userService.insertMulti(users);
 	}	
     
-    @Test
+    //@Test
     public void testGetById(){
     	ModelCriteria mc = new ModelCriteria();
     	mc.setSize(5);
@@ -93,5 +93,11 @@ public class CommdityServiceTest extends BaseTest{
     			System.out.println(commdity.getId() + " - " + commdity.getStock_quantity());
     		}
     	}
+    }
+    
+    @Test
+    public void testPorcByCommdityTest(){
+    	int ret = commdityService.porcByCommdityTest(4);
+    	System.out.println("testPorcByCommdityTest = " + ret);
     }
 }
