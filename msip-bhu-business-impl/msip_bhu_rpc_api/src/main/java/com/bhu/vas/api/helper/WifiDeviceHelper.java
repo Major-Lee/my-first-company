@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HtmlHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -97,6 +98,26 @@ public class WifiDeviceHelper {
 		Soc_HdTypes.add("H201");
 		Soc_HdTypes.add("H303");*/
 		//vapExceptDevices.add("84:82:f4:23:06:68");
+	}
+	
+	/**
+	 * 共享网络支持的设备的判定
+	 * 标准的版本号 需要valid
+	 * 大版本号 >= 1.5.6 并且为uRouter设备
+	 * @param orig_swver
+	 * @return
+	 */
+	public static boolean deviceSharedNetworkStrategy(String orig_swver){
+		DeviceVersion ver = DeviceVersion.parser(orig_swver);
+		if(ver == null || !ver.valid()) return false;
+		if(BusinessRuntimeConfiguration.Device_SharedNetwork_DUT.equals(ver.getDut())){
+			String[] orig_swver1_versions = ver.parseDeviceSwverVersion();
+			int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], BusinessRuntimeConfiguration.Device_SharedNetwork_Top_Version);
+			if(top_ret>=0){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static String dutDevice(String orig_swver){
@@ -371,5 +392,10 @@ public class WifiDeviceHelper {
 	public static String xmlContentEncoder(String content){
 		if(StringUtils.isEmpty(content)) return content;
 		return HtmlHelper.htmlEncode(content);
+	}
+	
+	
+	public static void main(String[] argv){
+		System.out.println(WifiDeviceHelper.deviceSharedNetworkStrategy("AP106P07V1.5.7r1_TC_UGX"));
 	}
 }
