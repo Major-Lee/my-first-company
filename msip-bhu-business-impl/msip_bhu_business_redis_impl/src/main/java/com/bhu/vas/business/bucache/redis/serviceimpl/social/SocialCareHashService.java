@@ -59,6 +59,6 @@ public class SocialCareHashService extends AbstractRelationHashCache {
 
     @Override
     public JedisPool getRedisPool() {
-        return RedisPoolManager.getInstance().getPool(RedisKeyEnum.DEFAULT);
+        return RedisPoolManager.getInstance().getPool(RedisKeyEnum.SOCIAL);
     }
 }
