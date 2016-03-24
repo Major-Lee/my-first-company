@@ -206,8 +206,6 @@ public class SharedNetworkFacadeService {
 		}
 	}
 	
-	
-	
 	/**
 	 * 添加设备应用指定的配置
 	 * 如果用户不存在此配置，需要建立新的用户配置

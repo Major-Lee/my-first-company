@@ -63,7 +63,7 @@ public class SocialFollowSortedSetService
 
     public boolean isFollowed(long uid, String hd_mac) {
         Long zrank = this.zrank(generateKey(uid), hd_mac);
-        return zrank == null;
+        return zrank != null;
     }
 
     public Set<String> fetchFollowList(long uid, int pageNo, int pageSize) {
@@ -72,7 +72,7 @@ public class SocialFollowSortedSetService
     }
 
     public void follow(long uid, String hd_mac) {
-            this.zadd(generateKey(uid), System.currentTimeMillis(), hd_mac);
+        this.zadd(generateKey(uid), System.currentTimeMillis(), hd_mac);
     }
 
     public void unFollow(long uid, String hd_mac) {

@@ -13,6 +13,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityStatus;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
+import com.bhu.vas.business.commdity.dto.CommdityPorcDTO;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -97,7 +98,9 @@ public class CommdityServiceTest extends BaseTest{
     
     @Test
     public void testPorcByCommdityTest(){
-    	int ret = commdityService.porcByCommdityTest(4);
-    	System.out.println("testPorcByCommdityTest = " + ret);
+    	CommdityPorcDTO dto = new CommdityPorcDTO();
+    	dto.setId(4);
+    	//int ret = commdityService.porcByCommdityTest(dto);
+    	//System.out.println("testPorcByCommdityTest = " + ret + "--- " + dto.getError());
     }
 }
