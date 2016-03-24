@@ -366,8 +366,8 @@ public class VapEnumType {
 	
 	
 	public enum SharedNetworkType{
-		SafeSecure("SafeSecure","必虎安全共享网络","必虎安全共享WiFi"),
-		Uplink("Uplink","必虎Uplink共享网络","必虎Uplink共享WiFi"),
+		SafeSecure("SafeSecure","必虎安全共享网络"," 必虎安全共享WiFi"),
+		Uplink("Uplink","必虎Uplink共享网络"," 必虎Uplink共享WiFi"),
 		;
 		
 		private String key;
