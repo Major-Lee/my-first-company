@@ -100,7 +100,7 @@ public class CommdityServiceTest extends BaseTest{
     public void testPorcByCommdityTest(){
     	CommdityPorcDTO dto = new CommdityPorcDTO();
     	dto.setId(4);
-    	int ret = commdityService.porcByCommdityTest(dto);
-    	System.out.println("testPorcByCommdityTest = " + ret + "--- " + dto.getError());
+    	//int ret = commdityService.porcByCommdityTest(dto);
+    	//System.out.println("testPorcByCommdityTest = " + ret + "--- " + dto.getError());
     }
 }
