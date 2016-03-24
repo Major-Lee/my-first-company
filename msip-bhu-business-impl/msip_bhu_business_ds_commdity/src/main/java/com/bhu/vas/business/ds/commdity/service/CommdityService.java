@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
+import com.bhu.vas.business.commdity.dto.CommdityPorcDTO;
 import com.bhu.vas.business.ds.commdity.dao.CommdityDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCommdityService;
 @Service
@@ -18,7 +19,7 @@ public class CommdityService extends AbstractCommdityService<Integer, Commdity, 
 		super.setEntityDao(commdityDao);
 	}
 
-	public int porcByCommdityTest(int commdityid){
-		return super.getEntityDao().porcByCommdityTest(commdityid);
+	public int porcByCommdityTest(CommdityPorcDTO dto){
+		return super.getEntityDao().porcByCommdityTest(dto);
 	}
 }

@@ -194,6 +194,7 @@
     	</if>  
 	</delete>
 	
+	<!--  
 	<parameterMap type="java.util.Map" id="commdityTestMap">
         <parameter property="id" mode="IN" jdbcType="INTEGER"/>
     </parameterMap>
@@ -201,4 +202,9 @@
     <select id="porcByCommdityTest" parameterMap="commdityTestMap" statementType="CALLABLE" resultType="int">
         CALL commdity_test(?)
     </select>
+    -->
+    
+    <select id="porcByCommdityTest" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
+		${proc_call}
+	</select>
 </mapper>
