@@ -42,11 +42,12 @@ public class PaymentInternalHelper {
 	 * @return
 	 */
 	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(String payment_type, String amount, 
-			String requestip, String orderid, String payment_completed_url){
+			String requestip, String umac, String orderid, String payment_completed_url){
 		Map<String, String> api_params = generatePaymentApiParamMap();
 		api_params.put("payment_type", payment_type);
 		api_params.put("total_fee", amount);
 		api_params.put("exter_invoke_ip", requestip);
+		api_params.put("umac", umac);
 		api_params.put("goods_no", orderid);
 		api_params.put("payment_completed_url", payment_completed_url);
 		
@@ -57,13 +58,13 @@ public class PaymentInternalHelper {
 /*			System.out.println(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
 					+ "amount[%s] ip[%s] req[%s]", orderid, payment_type, amount, requestip, response));*/
 			logger.info(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] pcd_url[%s] req[%s]", orderid, payment_type, amount, requestip, payment_completed_url, response));
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] req[%s]", orderid, payment_type, amount, requestip, umac, payment_completed_url, response));
 			if(StringUtils.isNotEmpty(response)){
 				return JsonHelper.getDTO(response, ResponseCreatePaymentUrlDTO.class);
 			}
 		} catch (Exception ex) {
 			logger.error(String.format("CreatePaymentUrlCommunication Response  orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] pcd_url[%s] Exception ", orderid, payment_type, amount, requestip, payment_completed_url), ex);
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] Exception ", orderid, payment_type, amount, requestip, umac, payment_completed_url), ex);
 			ex.printStackTrace(System.out);
 		}
 		return rcp_dto;
