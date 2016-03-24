@@ -31,7 +31,7 @@ public class WifiSortedSetService extends AbstractRelationSortedSetCache {
 
     @Override
     public JedisPool getRedisPool() {
-        return RedisPoolManager.getInstance().getPool(RedisKeyEnum.DEFAULT);
+        return RedisPoolManager.getInstance().getPool(RedisKeyEnum.SOCIAL);
     }
 
     @Override
