@@ -77,13 +77,13 @@ public class UserUnitFacadeService {
 				uid = Integer.parseInt(uidParam);
 			}
 			boolean validate = IegalTokenHashService.getInstance().validateUserToken(token,uid);
-			//token 验证正确，需要进行uuid比对
+			/*//token 验证正确，需要进行uuid比对
 			if(!validate && uid>0 && StringUtils.isNotEmpty(d_uuid)){//验证不通过，则需要通过uuid进行比对，看是否uuid变更
 				User user  = userService.getById(uid);
 				if(user != null && StringUtils.isNotEmpty(user.getLastlogindevice_uuid()) && !user.getLastlogindevice_uuid().equals(d_uuid)){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED);
 				}
-			}
+			}*/
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(validate?Boolean.TRUE:Boolean.FALSE);
 		}catch(TokenValidateBusinessException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
@@ -131,7 +131,7 @@ public class UserUnitFacadeService {
 		}catch(TokenValidateBusinessException ex){
 			int validateCode = ex.getValidateCode();
 			System.out.println("~~~~step5 failure~~~~~~token validatecode:"+validateCode);
-			//token 验证错误，需要进行uuid比对
+			/*//token 验证错误，需要进行uuid比对
 			if(StringUtils.isNotEmpty(d_udid)){
 				if(ex.getUid() >0 && (validateCode== ITokenService.Access_Token_NotExist || validateCode== ITokenService.Access_Token_NotMatch)){
 					User user  = userService.getById(ex.getUid());
@@ -139,7 +139,7 @@ public class UserUnitFacadeService {
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_UUID_VALID_SELFOTHER_HANDSET_CHANGED);
 					}
 				}
-			}
+			}*/
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
 		}catch(Exception ex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_TOKEN_INVALID);
@@ -237,7 +237,7 @@ public class UserUnitFacadeService {
 			}
 			this.userService.update(user);
 			
-			uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, true);
+			uToken = userTokenService.generateUserAccessToken(user.getId().intValue(), true, false);
 			{//write header to response header
 				//BusinessWebHelper.setCustomizeHeader(response, uToken);
 				IegalTokenHashService.getInstance().userTokenRegister(user.getId().intValue(), uToken.getAtoken());
