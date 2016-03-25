@@ -351,8 +351,10 @@ public class KafkaMessageTest {
 //			producer.send("up_ursids1_1", null, key+"", "msg"+key+"-happy yetao");
 //			producer.send("up_ursids2_0", null, key+"", "msg"+key+"-happy yetao");
 //			producer.send("up_ursids2_1", null, key+"", "msg"+key+"-happy yetao");
-			producer1.send("up_ursids3_0", key+"", "msg"+key+"-happy yetao");
-			producer2.send("mng_queue", key+"", "msg"+key+"-happy yetao");
+			//producer1.send("up_ursids3_0", "8482f423070c", "000000058482f423070c000000000000000000000000001<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H106\" orig_model=\"uRouter\" orig_hdver=\"Z01\" orig_swver=\"AP106P06V1.5.2Build9396_TU\" oem_vendor=\"BHU\" oem_model=\"Urouter\" oem_hdver=\"Z01\" oem_swver=\"AP106P06V1.5.2Build9396_TU\" sn=\"BN207DE100080AA\" mac=\"84:82:f4:23:07:0c\" ip=\"192.168.66.161\" build_info=\"2016-02-19-13:31 Revision: 9396\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"60\" join_reason=\"3\" wan_ip=\"192.168.66.161\" /></join_req>");
+			producer1.sendAsync("up_ursids3_0", null, "8482f423070c", "000000058482f423070c000000000000000000000000001<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H106\" orig_model=\"uRouter\" orig_hdver=\"Z01\" orig_swver=\"AP106P06V1.5.2Build9396_TU\" oem_vendor=\"BHU\" oem_model=\"Urouter\" oem_hdver=\"Z01\" oem_swver=\"AP106P06V1.5.2Build9396_TU\" sn=\"BN207DE100080AA\" mac=\"84:82:f4:23:07:0c\" ip=\"192.168.66.161\" build_info=\"2016-02-19-13:31 Revision: 9396\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"60\" join_reason=\"3\" wan_ip=\"192.168.66.161\" /></join_req>", null);
+			//producer1.send("up_ursids3_0", key+"","msg"+key+"-happy yetao");
+			//producer2.send("mng_queue", key+"", "msg"+key+"-happy yetao");
 //			producer.send("up_ursids3_1", null, key+"", "msg"+key+"-happy yetao");
 //			producer.send("up_ursids4_0", null, key+"", "msg"+key+"-happy yetao");
 //			producer.send("up_ursids4_1", null, key+"", "msg"+key+"-happy yetao");
