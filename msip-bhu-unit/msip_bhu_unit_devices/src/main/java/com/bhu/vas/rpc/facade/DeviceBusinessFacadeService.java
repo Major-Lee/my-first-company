@@ -1604,6 +1604,9 @@ public class DeviceBusinessFacadeService {
 							case DS_SharedNetworkWifi_Start:
 							case DS_SharedNetworkWifi_Stop:
 								sharedNetworkFacadeService.remoteResponseNotifyFromDevice(wifiId);
+
+								clearDeviceVisitorList(wifiId);
+								
 								break;
 							default:
 								break;
@@ -1624,6 +1627,8 @@ public class DeviceBusinessFacadeService {
 				if(CMDBuilder.wasAutoSharedNetworkTaskid(taskid)){//共享网络
 					//更新 t_wifi_devices_sharednetwork ds = true
 					sharedNetworkFacadeService.remoteResponseNotifyFromDevice(wifiId);
+
+					clearDeviceVisitorList(wifiId);
 				}
 			}
 		}

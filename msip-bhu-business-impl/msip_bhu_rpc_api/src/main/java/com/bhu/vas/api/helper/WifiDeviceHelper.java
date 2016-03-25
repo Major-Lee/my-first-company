@@ -81,11 +81,12 @@ public class WifiDeviceHelper {
 	public final static String SharedNetworkWifi_Default_Remote_Dns_default_ip = "123.57.26.170";
 	//public final static String VistorWifi_Default_SSID = "BhuWiFi-访客";
 	
-	public final static int SharedNetworkWifi_Default_Users_tx_rate= 256;
-	public final static int SharedNetworkWifi_Default_Users_rx_rate= 256;
+	//KB/s 
+	public final static int SharedNetworkWifi_Default_Users_tx_rate= 256;//2Mb/s
+	public final static int SharedNetworkWifi_Default_Users_rx_rate= 256;//2Mb/s
 	public final static int SharedNetworkWifi_Default_Signal_limit= -30;
-	public final static int SharedNetworkWifi_Default_Idle_timeout= 3*60*60;
-	public final static int SharedNetworkWifi_Default_Force_timeout= 12*60*60;
+	public final static int SharedNetworkWifi_Default_Idle_timeout= 20*60;//20分钟
+	public final static int SharedNetworkWifi_Default_Force_timeout= 6*60*60;//6小时
 	public final static int SharedNetworkWifi_Default_Maxclients= 128;
 	//public final static String VistorWifi_Default_SSID_WhenEmpty = "BhuWiFi-访客";
 	
