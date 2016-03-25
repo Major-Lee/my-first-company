@@ -138,9 +138,24 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
             Device_SharedNetwork_Default_Start = PropertiesHelper.getBoolean("device.sharednetwork.default.start", paramProperties, Device_SharedNetwork_Default_Start);
         	Device_SharedNetwork_DUT = PropertiesHelper.getString("device.sharednetwork.dut", paramProperties, Device_SharedNetwork_DUT);
         	Device_SharedNetwork_Top_Version = PropertiesHelper.getString("device.sharednetwork.top.version", paramProperties, Device_SharedNetwork_Top_Version);
-            logger.info("loading business runtime configuration successfully!");  
+            
+        	SharedNetworkWifi_Default_Open_resource 	= PropertiesHelper.getString("sharednetworkwifi.default.openresource", paramProperties, SharedNetworkWifi_Default_Open_resource);
+        	SharedNetworkWifi_Default_Redirect_url 		= PropertiesHelper.getString("sharednetworkwifi.default.redirecturl", paramProperties, SharedNetworkWifi_Default_Redirect_url);
+        	SharedNetworkWifi_Default_Remote_auth_url 	= PropertiesHelper.getString("sharednetworkwifi.default.remote.authurl", paramProperties, SharedNetworkWifi_Default_Remote_auth_url);
+        	SharedNetworkWifi_Default_Remote_portal_server_url = PropertiesHelper.getString("sharednetworkwifi.default.remote.protalserverurl", paramProperties, SharedNetworkWifi_Default_Remote_portal_server_url);
+        	SharedNetworkWifi_Default_Remote_Dns_default_ip = PropertiesHelper.getString("sharednetworkwifi.default.dns.default.ip", paramProperties, SharedNetworkWifi_Default_Remote_Dns_default_ip);
+        	
+        	
+        	logger.info("loading business runtime configuration successfully!");  
         }  
     }  
+	
+	public static String SharedNetworkWifi_Default_Open_resource = "bhuwifi.com,bhunetworks.com";
+	public static String SharedNetworkWifi_Default_Redirect_url = "www.bhuwifi.com";
+	public static String SharedNetworkWifi_Default_Remote_auth_url = "http://123.56.227.18:9158/portal/default/reward/index_before.html";
+	public static String SharedNetworkWifi_Default_Remote_portal_server_url = "123.56.227.18:18085";
+	public static String SharedNetworkWifi_Default_Remote_Dns_default_ip = "123.57.26.170";
+	
 	
 	public static String DeviceTesting_Mac_Prefix = "42:66";
 	//缺省值 是否针对日志分析的数据进行过滤 agent.charging.param.filter
