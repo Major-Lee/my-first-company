@@ -21,6 +21,7 @@ import redis.clients.jedis.Tuple;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
@@ -42,6 +43,7 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
+import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
@@ -1168,9 +1170,12 @@ public class DeviceURouterRestBusinessFacadeService {
 			uws_vto.setRecent_c(recent12hours_count);*/
 			uws_vto.setRecent_c(0);
 		}
+		
 		SharedNetworkSettingDTO uvw_dto = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(wifiDevice.getId());
 		if(uvw_dto != null && uvw_dto.isOn() && uvw_dto.getPsn() != null){
 			uvw_dto.setC(WifiDeviceVisitorService.getInstance().countAuthPresent(user_setting_entity.getId()));
+		}else{
+			uvw_dto = SharedNetworkSettingDTO.buildOffSetting();
 		}
 		/*UserVistorWifiSettingDTO uvw_dto = user_setting_entity.getUserSetting(UserVistorWifiSettingDTO.
 				Setting_Key, UserVistorWifiSettingDTO.class);
@@ -1187,8 +1192,30 @@ public class DeviceURouterRestBusinessFacadeService {
 			ret.put(UserWifiTimerSettingDTO.Setting_Key, uwt_dto);
 		if(uws_dto != null)
 			ret.put(UserWifiSinfferSettingDTO.Setting_Key, uws_vto);
-		if(uvw_dto != null)
+		if(uvw_dto != null){
+			UserVistorWifiSettingDTO tmp_uvw_dto = new UserVistorWifiSettingDTO();
+			tmp_uvw_dto.setOn(uvw_dto.isOn());
+			tmp_uvw_dto.setDs(uvw_dto.isDs());
+			tmp_uvw_dto.setC(uvw_dto.getC());
+			if(uvw_dto.getPsn() != null){
+				ParamVapVistorWifiDTO  tmp_param_dto = new ParamVapVistorWifiDTO();
+				tmp_param_dto.setSsid(uvw_dto.getPsn().getSsid());
+				tmp_param_dto.setUsers_rx_rate(uvw_dto.getPsn().getUsers_rx_rate());
+				tmp_param_dto.setUsers_tx_rate(uvw_dto.getPsn().getUsers_tx_rate());
+				tmp_param_dto.setForce_timeout(uvw_dto.getPsn().getForce_timeout());
+				tmp_param_dto.setIdle_timeout(uvw_dto.getPsn().getIdle_timeout());
+				tmp_param_dto.setOpen_resource(uvw_dto.getPsn().getOpen_resource());
+				tmp_param_dto.setRedirect_url(uvw_dto.getPsn().getRedirect_url());
+				tmp_param_dto.setSignal_limit(uvw_dto.getPsn().getSignal_limit());
+				tmp_uvw_dto.setVw(tmp_param_dto);
+			}
+			
+			ret.put(UserVistorWifiSettingDTO.Setting_Key, tmp_uvw_dto);
+		}
+		
+		if(uvw_dto != null){
 			ret.put(SharedNetworkSettingDTO.Setting_Key, uvw_dto);
+		}
 	}
 	
 	/**
