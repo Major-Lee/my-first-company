@@ -64,9 +64,13 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO{
 		this.manufacturercash = manufacturercash;
 	}
 	
+	@Override
+	public String getName() {
+		return "msip_bhu_core.sharedeal";
+	}
 	public static void main(String[] argv){
 		ShareDealWalletProcedureDTO proDto = new ShareDealWalletProcedureDTO();
-		proDto.setName("msip_bhu_core.sharedeal");
+		//proDto.setName("msip_bhu_core.sharedeal");
 		System.out.println(proDto.getProc_call());
 			/*proDto.setName("subjectIncrement");
 			proDto.setIncr_down(10);
