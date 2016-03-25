@@ -253,11 +253,15 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(SharedNetworkType.Uplink.getKey().equals(param.getNtype())){
 			param.setSsid(SharedNetworkType.Uplink.getDefalutSsid());
 			param.setRedirect_url(WifiDeviceHelper.SharedNetworkWifi_Default_Redirect_url);
+			param.setRemote_auth_url(null);
+			param.setPortal_server_url(null);
+			param.setDns_default_ip(null);
 		}else{
 			param.setSsid(SharedNetworkType.SafeSecure.getDefalutSsid());
 			param.setRemote_auth_url(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_auth_url);
 			param.setPortal_server_url(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_portal_server_url);
 			param.setDns_default_ip(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_Dns_default_ip);
+			param.setRedirect_url(null);
 		}
 		return param;
 	}
@@ -284,6 +288,9 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			if(StringUtils.isEmpty(param.getRedirect_url())){
 				param.setRedirect_url(WifiDeviceHelper.SharedNetworkWifi_Default_Redirect_url);
 			}
+			param.setRemote_auth_url(null);
+			param.setPortal_server_url(null);
+			param.setDns_default_ip(null);
 		}else{
 			if(StringUtils.isEmpty(param.getSsid())){
 				param.setSsid(SharedNetworkType.SafeSecure.getDefalutSsid());
@@ -297,6 +304,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			if(StringUtils.isEmpty(param.getDns_default_ip())){
 				param.setDns_default_ip(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_Dns_default_ip);
 			}
+			param.setRedirect_url(null);
 		}
 		return param;
 	}
