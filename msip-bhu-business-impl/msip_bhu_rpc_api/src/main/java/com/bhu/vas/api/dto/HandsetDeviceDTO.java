@@ -22,6 +22,8 @@ public class HandsetDeviceDTO implements Serializable{
 	public static final String VAPNAME_WLAN3 = "wlan3";
 
 	public static final String PORTAL_LOCAL = "local";
+	public static final String PROTAL_NONE = "none";
+	public static final String PROTAL_REMOTE= "remote";
 
 
 	private String action;

@@ -454,11 +454,11 @@ public class DeviceBusinessFacadeService {
 	 * @return
 	 */
 	private boolean isVisitorWifi(String ctx, HandsetDeviceDTO dto) {
-		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
+		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
 	}
 
 	private boolean isVisitorWifi(WifiDeviceTerminalDTO dto) {
-		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && HandsetDeviceDTO.PORTAL_LOCAL.equals(dto.getPortal());
+		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
 	}
 
 	/**
