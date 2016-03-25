@@ -15,6 +15,7 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationListCache;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.localunit.RandomData;
 
 /**
  * 用于存放支付系统支付成功的通知消息
@@ -102,7 +103,8 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 //    	while(true){
 //    		simulateUpayDrawPaymentCompletedNotify(true);
 //    	}
-    	simulateDeliverNotify();
+    	//simulateDeliverNotify();
+    	simulateMultiDeliverNotify();
     }
     
     /*************           test           **************/
@@ -146,6 +148,45 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 		CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(notify_message);
 		//}
 		System.out.println("ok");
+    }
+    
+    public static void simulateMultiDeliverNotify(){
+    	String umac_prefix = "38:bc:1a:2f:7e:";
+    	String orderid_prefix = "10012016031800000000";
+    	//System.out.println(umac_prefix.concat(String.format("%02d", RandomData.intNumber(99))));
+    	String mac = "84:82:f4:09:54:27";
+    	int batch_sequence = 1;
+    	long order_sequence = 1;
+    	try{
+	    	while(true){
+	    		for(int i=0;i<5;i++){
+	    			String umac = umac_prefix.concat(String.format("%02d", RandomData.intNumber(99)));
+	    			String orderid = orderid_prefix.concat(String.format("%012d", order_sequence));
+		    		RequestDeliverNotifyDTO requestDeliverNotifyDto = new RequestDeliverNotifyDTO();
+		    		requestDeliverNotifyDto.setOrderid(orderid);
+		    		requestDeliverNotifyDto.setAmount("0.1");
+		    		requestDeliverNotifyDto.setApp_deliver_detail("14400");
+		    		requestDeliverNotifyDto.setBu_mobileno("18673117874");
+		    		requestDeliverNotifyDto.setMac(mac);
+		    		requestDeliverNotifyDto.setUmac(umac);
+		    		requestDeliverNotifyDto.setPaymented_ds(DateTimeHelper.getDateTime());
+		    		requestDeliverNotifyDto.setCommdityid(1);
+		    		requestDeliverNotifyDto.setContext("aaa");
+		    		String notify_message = JsonHelper.getJSONString(requestDeliverNotifyDto);
+		    		CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(notify_message);
+		    		order_sequence++;
+	    		}
+	    		Thread.sleep(1000l);
+	    		System.out.println(batch_sequence);
+	    		batch_sequence++;
+	    	}
+    	}catch(Exception ex){
+    		ex.printStackTrace();
+    	}
+
+		//for(int i = 0;i<1000;i++){
+		//System.out.println("ok1");
+		
     }
 
 }
