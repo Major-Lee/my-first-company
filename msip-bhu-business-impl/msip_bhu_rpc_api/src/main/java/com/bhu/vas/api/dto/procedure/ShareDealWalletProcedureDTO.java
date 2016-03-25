@@ -66,7 +66,7 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO{
 	
 	public static void main(String[] argv){
 		ShareDealWalletProcedureDTO proDto = new ShareDealWalletProcedureDTO();
-		proDto.setName("sharedeal");
+		proDto.setName("msip_bhu_core.sharedeal");
 		System.out.println(proDto.getProc_call());
 			/*proDto.setName("subjectIncrement");
 			proDto.setIncr_down(10);
