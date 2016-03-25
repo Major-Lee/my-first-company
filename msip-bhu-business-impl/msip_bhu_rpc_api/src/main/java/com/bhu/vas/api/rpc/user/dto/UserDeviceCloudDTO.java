@@ -25,6 +25,8 @@ public class UserDeviceCloudDTO implements Serializable {
     private String d_origmodel;
     //设备的软件版本号
     private String d_origswver;
+    //设备的共享网络类型
+    private String d_snk_type;
     //设备的业务线
     private String d_dut;
     //设备上网方式
@@ -83,6 +85,12 @@ public class UserDeviceCloudDTO implements Serializable {
 	}
 	public void setD_origswver(String d_origswver) {
 		this.d_origswver = d_origswver;
+	}
+	public String getD_snk_type() {
+		return d_snk_type;
+	}
+	public void setD_snk_type(String d_snk_type) {
+		this.d_snk_type = d_snk_type;
 	}
 	public String getD_dut() {
 		return d_dut;
