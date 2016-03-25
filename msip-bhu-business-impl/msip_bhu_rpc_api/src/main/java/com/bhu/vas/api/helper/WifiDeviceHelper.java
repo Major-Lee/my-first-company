@@ -70,15 +70,7 @@ public class WifiDeviceHelper {
 	public final static int VistorWifi_Default_Signal_limit= -30;
 	public final static int VistorWifi_Default_Idle_timeout= 3*60*60;
 	public final static int VistorWifi_Default_Force_timeout= 12*60*60;
-	
-	
-	
-	public final static String SharedNetworkWifi_Default_Open_resource = "bhuwifi.com,bhunetworks.com";
-	public final static String SharedNetworkWifi_Default_Redirect_url = "www.bhuwifi.com";
-	
-	public final static String SharedNetworkWifi_Default_Remote_auth_url = "http://123.56.227.18:8117/portal/default/reward/index_before.html";
-	public final static String SharedNetworkWifi_Default_Remote_portal_server_url = "123.56.227.18:18085";
-	public final static String SharedNetworkWifi_Default_Remote_Dns_default_ip = "123.57.26.170";
+
 	//public final static String VistorWifi_Default_SSID = "BhuWiFi-访客";
 	
 	//KB/s 

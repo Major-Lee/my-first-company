@@ -1,7 +1,6 @@
 package com.bhu.vas.api.helper;
 
 
-@SuppressWarnings("serial")
 public class WithdrawCashHelper{
 	/*private double cash;
 	//交易手续费

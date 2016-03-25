@@ -1,7 +1,5 @@
 package com.bhu.vas.api.helper;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by newBie on 2016/3/11.
