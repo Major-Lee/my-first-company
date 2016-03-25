@@ -180,6 +180,16 @@ public class SharedNetworkFacadeService {
 		}
 	}
 	
+	public ParamSharedNetworkDTO fetchDeviceSharedNetworkConfAndSwitchWorkmode(String mac,int switchAct){
+		ParamSharedNetworkDTO vw_dto = null;
+		SharedNetworkSettingDTO sharedNetworkConf = fetchDeviceSharedNetworkConf(mac);
+		if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
+			vw_dto = sharedNetworkConf.getPsn();
+			vw_dto.switchWorkMode(switchAct);
+		}
+		return vw_dto;
+	}
+	
 	/**
 	 * 获取设备当前的配置，如果不存在则创建新的缺省配置
 	 * 为了考虑效率，如果此设备有绑定用户的话，不会以绑定用户的个人共享网络配置为准，少操作一次数据库

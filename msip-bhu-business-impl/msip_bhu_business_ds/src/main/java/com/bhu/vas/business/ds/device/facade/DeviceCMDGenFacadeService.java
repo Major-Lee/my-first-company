@@ -21,7 +21,6 @@ import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
-import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
@@ -108,12 +107,12 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 		ParamVasSwitchWorkmodeDTO wk_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
 		int switchAct = wk_dto.getWmode();
 		if(switchAct == WifiDeviceHelper.SwitchMode_Router2Bridge_Act || switchAct == WifiDeviceHelper.SwitchMode_Bridge2Router_Act){
-			ParamSharedNetworkDTO vw_dto = null;
-			SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
+			ParamSharedNetworkDTO vw_dto = sharedNetworkFacadeService.fetchDeviceSharedNetworkConfAndSwitchWorkmode(mac, switchAct);
+			/*SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
 			if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
 				vw_dto = sharedNetworkConf.getPsn();
 				vw_dto.switchWorkMode(switchAct);
-			}
+			}*/
 			/*ParamVapVistorWifiDTO vw_dto = null;
 			UserSettingState settingState = userSettingStateService.getById(mac);
 			if(settingState != null){
