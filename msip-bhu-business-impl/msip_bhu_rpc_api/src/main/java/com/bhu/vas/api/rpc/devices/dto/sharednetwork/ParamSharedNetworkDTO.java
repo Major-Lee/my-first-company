@@ -7,6 +7,7 @@ import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HtmlHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -246,21 +247,21 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		param.setSignal_limit(WifiDeviceHelper.SharedNetworkWifi_Default_Signal_limit);
 		param.setIdle_timeout(WifiDeviceHelper.SharedNetworkWifi_Default_Idle_timeout);//
 		param.setForce_timeout(WifiDeviceHelper.SharedNetworkWifi_Default_Force_timeout);
-		param.setOpen_resource(WifiDeviceHelper.SharedNetworkWifi_Default_Open_resource);
+		param.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Open_resource);
 		param.setMax_clients(WifiDeviceHelper.SharedNetworkWifi_Default_Maxclients);
 		//param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		//param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
 		if(SharedNetworkType.Uplink.getKey().equals(param.getNtype())){
 			param.setSsid(SharedNetworkType.Uplink.getDefalutSsid());
-			param.setRedirect_url(WifiDeviceHelper.SharedNetworkWifi_Default_Redirect_url);
+			param.setRedirect_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Redirect_url);
 			param.setRemote_auth_url(null);
 			param.setPortal_server_url(null);
 			param.setDns_default_ip(null);
 		}else{
 			param.setSsid(SharedNetworkType.SafeSecure.getDefalutSsid());
-			param.setRemote_auth_url(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_auth_url);
-			param.setPortal_server_url(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_portal_server_url);
-			param.setDns_default_ip(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_Dns_default_ip);
+			param.setRemote_auth_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_auth_url);
+			param.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
+			param.setDns_default_ip(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_Dns_default_ip);
 			param.setRedirect_url(null);
 		}
 		return param;
@@ -277,7 +278,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			param.setMax_clients(WifiDeviceHelper.SharedNetworkWifi_Default_Maxclients);
 		}
 		if(StringUtils.isEmpty(param.getOpen_resource())) {
-			param.setOpen_resource(WifiDeviceHelper.SharedNetworkWifi_Default_Open_resource);
+			param.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Open_resource);
 		}
 		//param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		//param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
@@ -286,7 +287,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				param.setSsid(SharedNetworkType.Uplink.getDefalutSsid());
 			}
 			if(StringUtils.isEmpty(param.getRedirect_url())){
-				param.setRedirect_url(WifiDeviceHelper.SharedNetworkWifi_Default_Redirect_url);
+				param.setRedirect_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Redirect_url);
 			}
 			param.setRemote_auth_url(null);
 			param.setPortal_server_url(null);
@@ -296,13 +297,13 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				param.setSsid(SharedNetworkType.SafeSecure.getDefalutSsid());
 			}
 			if(StringUtils.isEmpty(param.getRemote_auth_url())){
-				param.setRemote_auth_url(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_auth_url);
+				param.setRemote_auth_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_auth_url);
 			}
 			if(StringUtils.isEmpty(param.getPortal_server_url())){
-				param.setPortal_server_url(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_portal_server_url);
+				param.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
 			}
 			if(StringUtils.isEmpty(param.getDns_default_ip())){
-				param.setDns_default_ip(WifiDeviceHelper.SharedNetworkWifi_Default_Remote_Dns_default_ip);
+				param.setDns_default_ip(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_Dns_default_ip);
 			}
 			param.setRedirect_url(null);
 		}

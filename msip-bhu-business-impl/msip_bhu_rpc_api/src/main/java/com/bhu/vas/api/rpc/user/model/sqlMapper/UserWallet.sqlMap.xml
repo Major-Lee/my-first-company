@@ -179,4 +179,8 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
+	
+	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
+		${proc_call} 		
+	</select>		
 </mapper>
