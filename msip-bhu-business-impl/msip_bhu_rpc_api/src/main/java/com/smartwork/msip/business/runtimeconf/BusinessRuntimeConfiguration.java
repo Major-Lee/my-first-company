@@ -335,7 +335,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static int CheckArtificialFrdsAddLimitCount = 5;//5个好友数量, 超过数量不在分配客服
 
 	//钱包中有多少零钱之后才能开始提现
-	public static double User_WalletWithdraw_Default_MinLimit = 0.10;//10.00d;
+	public static double User_WalletWithdraw_Default_MinLimit = 0.10d;//10.00d;
 	
 	public static boolean Device_SharedNetwork_Default_Start = false;
 	public static String Device_SharedNetwork_DUT = "TU";
