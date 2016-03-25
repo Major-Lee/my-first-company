@@ -1,15 +1,13 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.social;
 
+import java.util.Set;
+
+import redis.clients.jedis.JedisPool;
+
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
-
-import com.smartwork.msip.exception.BusinessI18nCodeException;
-import com.smartwork.msip.jdo.ResponseErrorCode;
-import redis.clients.jedis.JedisPool;
-
-import java.util.Set;
 
 public class SocialFollowSortedSetService
         extends AbstractRelationSortedSetCache {
