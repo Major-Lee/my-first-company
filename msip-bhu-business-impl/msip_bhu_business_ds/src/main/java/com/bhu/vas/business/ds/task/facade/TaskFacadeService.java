@@ -21,6 +21,7 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
@@ -531,6 +532,7 @@ public class TaskFacadeService {
 					//重新构建共享网络开启指令则不break，直接走DS_VistorWifi_Start开启访客网络
 					ods_cmd = OperationDS.DS_SharedNetworkWifi_Start;
 					ParamSharedNetworkDTO limit_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
+					limit_dto.setNtype(SharedNetworkType.Uplink.getKey());
 					SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
 					if(sharedNetworkConf != null && sharedNetworkConf.getPsn() != null){
 						ParamSharedNetworkDTO dto = sharedNetworkConf.getPsn();
@@ -542,6 +544,7 @@ public class TaskFacadeService {
 				case DS_SharedNetworkWifi_Start:
 					{
 						ParamSharedNetworkDTO shared_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
+						shared_dto.setNtype(SharedNetworkType.Uplink.getKey());
 						ParamSharedNetworkDTO.fufillWithDefault(shared_dto);
 						sharedNetworkFacadeService.updateDevices2SharedNetwork(mac,shared_dto);
 						shared_dto.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(work_mode));
