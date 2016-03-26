@@ -310,28 +310,29 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return param;
 	}
 	
-	public static boolean wasChanged(ParamSharedNetworkDTO param1,ParamSharedNetworkDTO param2){
-		if(param1 == null || param2 == null) return false;
-		if(!param1.getNtype().equals(param2.getNtype())){
+	public static boolean wasChanged(ParamSharedNetworkDTO paramDTO,ParamSharedNetworkDTO dbDTO){
+		if(dbDTO == null) return true;
+		if(paramDTO == null) return false;
+		if(!paramDTO.getNtype().equals(dbDTO.getNtype())){
 			return true;
 		}
 		
-		if(!param1.getSsid().equals(param2.getSsid())) return true;
+		if(!paramDTO.getSsid().equals(dbDTO.getSsid())) return true;
 		
-		if(param1.getUsers_rx_rate() != param2.getUsers_rx_rate()) return true;
-		if(param1.getUsers_tx_rate() != param2.getUsers_tx_rate()) return true;
-		if(param1.getSignal_limit() != param2.getSignal_limit()) return true;
-		if(param1.getIdle_timeout() != param2.getIdle_timeout()) return true;
-		if(param1.getForce_timeout() != param2.getForce_timeout()) return true;
-		if(param1.getMax_clients() != param2.getMax_clients()) return true;
-		if(!param1.getOpen_resource().equals(param2.getOpen_resource())) return true;
+		if(paramDTO.getUsers_rx_rate() != dbDTO.getUsers_rx_rate()) return true;
+		if(paramDTO.getUsers_tx_rate() != dbDTO.getUsers_tx_rate()) return true;
+		if(paramDTO.getSignal_limit() != dbDTO.getSignal_limit()) return true;
+		if(paramDTO.getIdle_timeout() != dbDTO.getIdle_timeout()) return true;
+		if(paramDTO.getForce_timeout() != dbDTO.getForce_timeout()) return true;
+		if(paramDTO.getMax_clients() != dbDTO.getMax_clients()) return true;
+		if(!paramDTO.getOpen_resource().equals(dbDTO.getOpen_resource())) return true;
 		
-		if(SharedNetworkType.Uplink.getKey().equals(param1.getNtype())){
-			if(!param1.getRedirect_url().equals(param2.getRedirect_url())) return true;
+		if(SharedNetworkType.Uplink.getKey().equals(paramDTO.getNtype())){
+			if(!paramDTO.getRedirect_url().equals(dbDTO.getRedirect_url())) return true;
 		}else{
-			if(!param1.getRemote_auth_url().equals(param2.getRemote_auth_url())) return true;
-			if(!param1.getPortal_server_url().equals(param2.getPortal_server_url())) return true;
-			if(!param1.getDns_default_ip().equals(param2.getDns_default_ip())) return true;
+			if(!paramDTO.getRemote_auth_url().equals(dbDTO.getRemote_auth_url())) return true;
+			if(!paramDTO.getPortal_server_url().equals(dbDTO.getPortal_server_url())) return true;
+			if(!paramDTO.getDns_default_ip().equals(dbDTO.getDns_default_ip())) return true;
 		}
 		return false;
 	}
