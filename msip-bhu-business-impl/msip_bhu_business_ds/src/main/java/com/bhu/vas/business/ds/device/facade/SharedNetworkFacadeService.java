@@ -263,15 +263,21 @@ public class SharedNetworkFacadeService {
 				}
 				sharednetwork.setSharednetwork_type(configDto.getNtype());
 				SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
-				ParamSharedNetworkDTO dbDto = sharedNetworkSettingDTO.getPsn();
-				if(dbDto == null || ParamSharedNetworkDTO.wasChanged(configDto, dbDto)){
+				
+				sharedNetworkSettingDTO.turnOn(configDto);
+				sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
+				wifiDeviceSharedNetworkService.update(sharednetwork);
+				result.add(mac_lowercase);
+				/*
+				 	ParamSharedNetworkDTO dbDto = sharedNetworkSettingDTO.getPsn();
+					if(dbDto == null || ParamSharedNetworkDTO.wasChanged(configDto, dbDto)){
 					sharedNetworkSettingDTO.turnOn(configDto);
 					sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
 					wifiDeviceSharedNetworkService.update(sharednetwork);
 					result.add(mac_lowercase);
 				}else{
 					;
-				}
+				}*/
 			}
 		}
 		if(callback != null){
