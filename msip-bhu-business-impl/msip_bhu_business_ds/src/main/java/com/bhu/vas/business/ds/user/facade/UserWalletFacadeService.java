@@ -189,7 +189,7 @@ public class UserWalletFacadeService{
 	 * 需要验证零钱是否小于要出账的金额
 	 * 现金出账需要把提现状态标记
 	 */
-	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,double cash){
+	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,double cash,String orderid){
 		if(StringUtils.isEmpty(pwd) || cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -217,7 +217,7 @@ public class UserWalletFacadeService{
 		uwallet.setCash(uwallet.getCash()-cash);
 		uwallet.setWithdraw(true);
 		uwallet = userWalletService.update(uwallet);
-		this.doWalletLog(uid, StringUtils.EMPTY,UWalletTransMode.CashPayment, UWalletTransType.Cash2Realmoney, cash, cash,0d, String.format("WalletTotal:%s withdraw:%s ",wallettotal, cash));
+		this.doWalletLog(uid, orderid,UWalletTransMode.CashPayment, UWalletTransType.Cash2Realmoney, cash, cash,0d, String.format("WalletTotal:%s withdraw:%s ",wallettotal, cash));
 		return uwallet;
 	}
 	
@@ -336,7 +336,6 @@ public class UserWalletFacadeService{
 	private UserWalletWithdrawApply doWithdrawApplyOper(int appid,ThirdpartiesPaymentType type,int uid, String pwd,double cash,String remoteip){
 		synchronized(lockObjectFetch(uid)){
 			logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
-			this.cashWithdrawOperFromUserWallet(uid, pwd, cash);
 			UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
 			apply.setUid(uid);
 			apply.setAppid(appid);
@@ -347,6 +346,7 @@ public class UserWalletFacadeService{
 			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.Apply.getKey());
 			apply.addResponseDTO(WithdrawRemoteResponseDTO.build(BusinessEnumType.UWithdrawStatus.Apply.getKey(), BusinessEnumType.UWithdrawStatus.Apply.getName()));
 			apply = userWalletWithdrawApplyService.insert(apply);
+			this.cashWithdrawOperFromUserWallet(uid, pwd, cash,apply.getId());
 			return apply;
 		}
 	}
