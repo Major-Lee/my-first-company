@@ -104,6 +104,7 @@ public class SocialRpcService implements ISocialRpcService {
             socialFacadeRpcService.comment(uid, bssid, hd_mac, message);
             return true;
         } catch (Exception ex) {
+        	ex.printStackTrace();
             return false;
         }
     }
