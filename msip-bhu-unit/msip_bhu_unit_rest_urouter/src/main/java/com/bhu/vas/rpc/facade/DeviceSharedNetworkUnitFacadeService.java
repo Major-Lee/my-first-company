@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -165,6 +166,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 						vtos = Collections.emptyList();
 					}else{
 						List<String> macs = WifiDeviceDocumentHelper.generateDocumentIds(searchDocuments);
+						List<WifiDeviceSharedNetwork> deviceConfs = sharedNetworkFacadeService.getWifiDeviceSharedNetworkService().findByIds(macs, true, true);
 						List<Object> ohd_counts = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSizes(macs);
 						
 						vtos = new ArrayList<SharedNetworkDeviceDTO>();
@@ -179,6 +181,16 @@ public class DeviceSharedNetworkUnitFacadeService {
 								Object ohd_count_obj = ohd_counts.get(cursor);
 								if(ohd_count_obj != null){
 									vto.setOhd_count((Long)ohd_count_obj);
+								}
+							}
+							vto.setSnk_type(sharedNetwork_type);
+							if(deviceConfs != null && !deviceConfs.isEmpty()){
+								WifiDeviceSharedNetwork deviceConf = deviceConfs.get(cursor);
+								if(deviceConf != null){
+									if(sharedNetwork_type.equals(deviceConf.getSharednetwork_type())){
+										vto.setMatched(true);
+									}
+									vto.setOn(deviceConf.getInnerModel().isOn());
 								}
 							}
 							vtos.add(vto);
