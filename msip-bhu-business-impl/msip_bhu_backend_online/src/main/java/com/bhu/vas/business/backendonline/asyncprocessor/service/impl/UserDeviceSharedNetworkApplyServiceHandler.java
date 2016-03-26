@@ -79,7 +79,8 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 				if(dmacs.isEmpty()) return;
 				switch(dtoType){
 					case IDTO.ACT_DELETE:
-						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, null);
+						//移除设备的所属类型不清空sharedNetwork
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey());
 						break;
 					default:
 						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey());
@@ -131,7 +132,7 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 						String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,deviceCMDGenFacadeService);
 						downCmds.add(DownCmds.builderDownCmds(mac, cmd));
 					}
-					wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs,null);
+					wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs,sharedNetwork.getKey());
 				}
 				if(!downCmds.isEmpty()){
 					daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));

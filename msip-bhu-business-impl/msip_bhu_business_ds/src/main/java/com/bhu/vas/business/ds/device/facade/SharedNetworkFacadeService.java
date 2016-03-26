@@ -299,17 +299,29 @@ public class SharedNetworkFacadeService {
 			wifiDeviceSharedNetworkService.insert(sharednetwork);
 			wasUpdated = true;
 		}else{
-			sharednetwork.setSharednetwork_type(configDto.getNtype());
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
-			ParamSharedNetworkDTO dbDto = sharedNetworkSettingDTO.getPsn();
-			if(dbDto == null || ParamSharedNetworkDTO.wasChanged(configDto, dbDto)){
+			sharedNetworkSettingDTO.turnOn(configDto);
+			sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
+			wifiDeviceSharedNetworkService.update(sharednetwork);
+			wasUpdated = true;
+			/*sharednetwork.setSharednetwork_type(configDto.getNtype());
+			SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
+			if(sharedNetworkSettingDTO.isOn()){
+				ParamSharedNetworkDTO dbDto = sharedNetworkSettingDTO.getPsn();
+				if(dbDto == null || ParamSharedNetworkDTO.wasChanged(configDto, dbDto)){
+					sharedNetworkSettingDTO.turnOn(configDto);
+					sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
+					wifiDeviceSharedNetworkService.update(sharednetwork);
+					wasUpdated = true;
+				}else{
+					;
+				}
+			}else{
 				sharedNetworkSettingDTO.turnOn(configDto);
-				sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
 				wifiDeviceSharedNetworkService.update(sharednetwork);
 				wasUpdated = true;
-			}else{
-				;
-			}
+			}*/
+
 		}
 		return wasUpdated;
 	}
@@ -317,11 +329,9 @@ public class SharedNetworkFacadeService {
 	
 	/**
 	 * 移除设备从指定的配置
-	 * 需要置Sharednetwork_type null
+	 * 不需要置Sharednetwork_type null
 	 * 需要置turnOff
 	 * 用于用户关闭共享网络
-	 * @param uid
-	 * @param sharednetwork_type
 	 * @param macs
 	 * @return 配置变更了的具体设备地址集合
 	 */
@@ -331,7 +341,7 @@ public class SharedNetworkFacadeService {
 			String mac_lowercase = mac.toLowerCase();
 			WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
 			if(sharednetwork != null){
-				sharednetwork.setSharednetwork_type(null);
+				//sharednetwork.setSharednetwork_type(null);
 				SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
 				sharedNetworkSettingDTO.turnOff();
 				sharednetwork.putInnerModel(sharedNetworkSettingDTO);
