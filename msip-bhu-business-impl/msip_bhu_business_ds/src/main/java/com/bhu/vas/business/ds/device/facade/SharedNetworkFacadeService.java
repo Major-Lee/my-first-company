@@ -221,6 +221,7 @@ public class SharedNetworkFacadeService {
 	 * 如果用户不存在此配置，需要建立新的用户配置
 	 * 如果配置不存在则需要新建缺省的进去
 	 * 此接口在后台backend执行,主要配合doApplySharedNetworksConfig 和 修改一个或多个设备的共享网络配置的后续执行
+	 * 如果相关设备关闭了，则需要重新开启
 	 * @param uid
 	 * @param sharednetwork_type
 	 * @param sharednetworkMatched true 进行比对，只有sharednetwork_type相同的配置才会更新 false 都更新
