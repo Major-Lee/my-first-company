@@ -221,6 +221,7 @@ public class SharedNetworkFacadeService {
 	 * 如果用户不存在此配置，需要建立新的用户配置
 	 * 如果配置不存在则需要新建缺省的进去
 	 * 此接口在后台backend执行,主要配合doApplySharedNetworksConfig 和 修改一个或多个设备的共享网络配置的后续执行
+	 * 如果相关设备关闭了，则需要重新开启
 	 * @param uid
 	 * @param sharednetwork_type
 	 * @param sharednetworkMatched true 进行比对，只有sharednetwork_type相同的配置才会更新 false 都更新
@@ -299,17 +300,29 @@ public class SharedNetworkFacadeService {
 			wifiDeviceSharedNetworkService.insert(sharednetwork);
 			wasUpdated = true;
 		}else{
-			sharednetwork.setSharednetwork_type(configDto.getNtype());
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
-			ParamSharedNetworkDTO dbDto = sharedNetworkSettingDTO.getPsn();
-			if(dbDto == null || ParamSharedNetworkDTO.wasChanged(configDto, dbDto)){
+			sharedNetworkSettingDTO.turnOn(configDto);
+			sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
+			wifiDeviceSharedNetworkService.update(sharednetwork);
+			wasUpdated = true;
+			/*sharednetwork.setSharednetwork_type(configDto.getNtype());
+			SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
+			if(sharedNetworkSettingDTO.isOn()){
+				ParamSharedNetworkDTO dbDto = sharedNetworkSettingDTO.getPsn();
+				if(dbDto == null || ParamSharedNetworkDTO.wasChanged(configDto, dbDto)){
+					sharedNetworkSettingDTO.turnOn(configDto);
+					sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
+					wifiDeviceSharedNetworkService.update(sharednetwork);
+					wasUpdated = true;
+				}else{
+					;
+				}
+			}else{
 				sharedNetworkSettingDTO.turnOn(configDto);
-				sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
 				wifiDeviceSharedNetworkService.update(sharednetwork);
 				wasUpdated = true;
-			}else{
-				;
-			}
+			}*/
+
 		}
 		return wasUpdated;
 	}
@@ -317,11 +330,9 @@ public class SharedNetworkFacadeService {
 	
 	/**
 	 * 移除设备从指定的配置
-	 * 需要置Sharednetwork_type null
+	 * 不需要置Sharednetwork_type null
 	 * 需要置turnOff
 	 * 用于用户关闭共享网络
-	 * @param uid
-	 * @param sharednetwork_type
 	 * @param macs
 	 * @return 配置变更了的具体设备地址集合
 	 */
@@ -331,7 +342,7 @@ public class SharedNetworkFacadeService {
 			String mac_lowercase = mac.toLowerCase();
 			WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
 			if(sharednetwork != null){
-				sharednetwork.setSharednetwork_type(null);
+				//sharednetwork.setSharednetwork_type(null);
 				SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
 				sharedNetworkSettingDTO.turnOff();
 				sharednetwork.putInnerModel(sharedNetworkSettingDTO);

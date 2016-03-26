@@ -4,6 +4,7 @@ package com.bhu.vas.api.rpc.devices.dto.sharednetwork;
 
 
 
+
 /**
  * Wifi 设置定时开关
  * 存储的数据
@@ -54,10 +55,13 @@ public class SharedNetworkSettingDTO implements java.io.Serializable{
 		this.setPsn(psn);
 		this.setC(System.currentTimeMillis());
 	}
+	/**
+	 * 关闭的时候不置空psn
+	 */
 	public void turnOff(){
 		this.setOn(false);
 		this.setDs(false);
-		this.setPsn(null);
+		//this.setPsn(null);
 		this.setC(System.currentTimeMillis());
 	}
 	public void remoteNotify(){
@@ -67,6 +71,7 @@ public class SharedNetworkSettingDTO implements java.io.Serializable{
 	
 	public static SharedNetworkSettingDTO buildOffSetting(){
 		SharedNetworkSettingDTO result = new SharedNetworkSettingDTO();
+		result.setPsn(ParamSharedNetworkDTO.builderDefault());
 		result.turnOff();
 		return result;
 	}
