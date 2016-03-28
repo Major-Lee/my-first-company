@@ -94,6 +94,8 @@ public enum ResponseErrorCode {
 
 	WIFIDEVICE_VERSION_TOO_HIGH("760", "wifidevice.version.too.high"),
 	WIFIDEVICE_VERSION_INVALID_FORMAT("761", "wifidevice.version.invalid.format"),
+	WIFIDEVICE_VERSION_TOO_LOWER("762", "wifidevice.version.too.lower"),
+	
 	WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED("770", "wifidevice.gray.deviceunittype.notmatched"),
 	
 	WIFISTASNIFFER_NICK_LENGTH_INVALID("781", "wifistasniffer.nick.length.invalid"),
