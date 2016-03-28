@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
@@ -24,6 +26,7 @@ import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -96,6 +99,16 @@ public class DeviceSharedNetworkUnitFacadeService {
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
+			//TODO：等设备版本升级上来后可以去掉此条件约束
+			if(dmacs!= null && !dmacs.isEmpty() && on && SharedNetworkType.SafeSecure.getKey().equals(sharedNetwork.getKey())){
+				List<WifiDevice> wifiDevices = sharedNetworkFacadeService.getWifiDeviceService().findByIds(dmacs);
+				for(WifiDevice device :wifiDevices){
+					if(!WifiDeviceHelper.suppertedDeviceSecureSharedNetwork(device.getOrig_swver())){
+						throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_TOO_LOWER,new String[]{BusinessRuntimeConfiguration.Device_SharedNetwork_Top_Version});
+					}
+				}
+			}
+			
 			//异步消息执行用户的 addDevices2SharedNetwork 设备应用此配置并发送指令
 			deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(), dmacs,false,on?IDTO.ACT_UPDATE:IDTO.ACT_DELETE);
 			/*List<String> addDevices2SharedNetwork = sharedNetworkFacadeService.addDevices2SharedNetwork(uid,sharedNetwork,false,dmacs);

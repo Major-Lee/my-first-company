@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkVTO;
 import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetwork;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.business.ds.device.service.UserDevicesSharedNetworkService;
@@ -264,7 +266,18 @@ public class SharedNetworkFacadeService {
 		}
 		List<String> result = new ArrayList<String>();
 		ParamSharedNetworkDTO configDto = fetchUserSharedNetworkConf(uid,sharednetwork_type);
-		//验证设备是否真实绑定
+		//TODO：验证设备是否真实绑定
+		//TODO：等设备版本升级上来后可以去掉此条件约束
+		if(SharedNetworkType.SafeSecure.getKey().equals(sharednetwork_type.getKey())){
+			List<WifiDevice> wifiDevices = wifiDeviceService.findByIds(macs);
+			for(WifiDevice device :wifiDevices){
+				if(!WifiDeviceHelper.suppertedDeviceSecureSharedNetwork(device.getOrig_swver())){
+					macs.remove(device.getId());
+					//throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_TOO_LOWER,new String[]{BusinessRuntimeConfiguration.Device_SharedNetwork_Top_Version});
+				}
+			}
+		}
+		
 		for(String mac:macs){
 			String mac_lowercase = mac.toLowerCase();
 			WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);

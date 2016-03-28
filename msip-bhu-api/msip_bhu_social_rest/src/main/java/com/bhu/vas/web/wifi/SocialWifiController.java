@@ -45,7 +45,7 @@ public class SocialWifiController extends BaseController {
             @RequestParam(required = true, value = "bssid") String bssid,
             @RequestParam(required = true, value = "uid") long uid) {
 
-        WifiVTO vto = socialRpcService.fetchWifiDetail(uid, bssid);
+        WifiVTO vto = socialRpcService.fetchWifiDetail(uid, bssid.toLowerCase());
 
         try {
             if (vto != null) {
@@ -165,6 +165,5 @@ public class SocialWifiController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
         }
     }
-
 
 }
