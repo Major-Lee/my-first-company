@@ -94,7 +94,7 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 			if(!dmacs.isEmpty()){//应用指令下发，取值从设备t_wifi_devices_sharednetwork中获取，更新索引生成指令下发
 				;
 			}else{//给此用户所有的sharedNetwork的设备变更配置并下发指令更新索引，
-				wifiDeviceDataSearchService.iteratorWithSharedNetwork(userid, sharedNetwork.getKey(),200, new IteratorNotify<Page<WifiDeviceDocument>>() {
+				wifiDeviceDataSearchService.iteratorWithSharedNetwork(userid, sharedNetwork.getKey(), null, 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
 				    @Override
 				    public void notifyComming(Page<WifiDeviceDocument> pages) {
 				    	for (WifiDeviceDocument doc : pages) {

@@ -79,10 +79,10 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param pageSize
 	 * @return
 	 */
-	public Page<WifiDeviceDocument> searchPageBySharedNetwork(Integer u_id, String sharedNetwork_type, int pageNo, int pageSize){
+	public Page<WifiDeviceDocument> searchPageBySharedNetwork(Integer u_id, String sharedNetwork_type, String d_dut, int pageNo, int pageSize){
 		if(u_id == null) return null;
 		
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithSharedNetwork(u_id, sharedNetwork_type);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithSharedNetwork(u_id, sharedNetwork_type, d_dut);
 		return super.searchByConditionMessage(scm, pageNo, pageSize);
 	}
 	
@@ -93,10 +93,10 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param notify
 	 * @param pageSize
 	 */
-	public void iteratorWithSharedNetwork(Integer u_id, String sharedNetwork_type, int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
+	public void iteratorWithSharedNetwork(Integer u_id, String sharedNetwork_type, String d_dut, int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
 		if(u_id == null) return;
 		
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithSharedNetwork(u_id, sharedNetwork_type);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithSharedNetwork(u_id, sharedNetwork_type, d_dut);
 		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
 		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, BusinessIndexDefine.WifiDevice.Type, 
 				message, pageSize, notify);

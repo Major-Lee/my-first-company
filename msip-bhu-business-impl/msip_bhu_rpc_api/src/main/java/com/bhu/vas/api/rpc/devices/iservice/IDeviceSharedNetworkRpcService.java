@@ -45,5 +45,5 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @param mac
 	 * @return
 	 */
-	RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type, int pageNo, int pageSize);
+	RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type, String d_dut, int pageNo, int pageSize);
 }

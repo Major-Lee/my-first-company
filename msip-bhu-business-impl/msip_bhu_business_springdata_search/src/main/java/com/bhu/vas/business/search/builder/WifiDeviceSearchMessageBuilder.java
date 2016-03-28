@@ -54,7 +54,8 @@ public class WifiDeviceSearchMessageBuilder {
 	 * @param sharedNetwork_type 设备共享网络类型
 	 * @return
 	 */
-	public static SearchConditionMessage builderSearchMessageWithSharedNetwork(Integer u_id, String sharedNetwork_type){
+	public static SearchConditionMessage builderSearchMessageWithSharedNetwork(Integer u_id, String sharedNetwork_type,
+			String d_dut){
 		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionMustPack();
 		//if(u_id != null){
 		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
@@ -70,6 +71,12 @@ public class WifiDeviceSearchMessageBuilder {
 					Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.Missing.getPattern(), sharedNetwork_type);
 		}
 		pack_must.addChildSearchCondtions(sc_d_snk_type);
+		
+		if(StringUtils.isNotEmpty(d_dut)){
+			SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_dut);
+			pack_must.addChildSearchCondtions(sc_d_dut);
+		}
 		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
 		

@@ -16,6 +16,10 @@ public class SharedNetworkDeviceDTO implements java.io.Serializable{
 	private long ohd_count;
 	//设备的工作模式
 	private String d_workmodel;
+	//设备的原始设备型号
+	private String d_origmodel;
+	//用户绑定的设备的昵称
+	private String device_name;
 	
 	private String snk_type;
 	private boolean on;
@@ -49,6 +53,18 @@ public class SharedNetworkDeviceDTO implements java.io.Serializable{
 	}
 	public void setSnk_type(String snk_type) {
 		this.snk_type = snk_type;
+	}
+	public String getD_origmodel() {
+		return d_origmodel;
+	}
+	public void setD_origmodel(String d_origmodel) {
+		this.d_origmodel = d_origmodel;
+	}
+	public String getDevice_name() {
+		return device_name;
+	}
+	public void setDevice_name(String device_name) {
+		this.device_name = device_name;
 	}
 	public boolean isOn() {
 		return on;

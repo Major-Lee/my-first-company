@@ -152,6 +152,7 @@ public class DeviceSharedNetworkController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharedNetwork_type,
+			@RequestParam(required = false) String dut,
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
@@ -161,7 +162,7 @@ public class DeviceSharedNetworkController extends BaseController{
 			return;
 		}
 		RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> rpcResult = deviceSharedNetworkRpcService.pages(uid, 
-				sharedNetwork_type, pageNo, pageSize);
+				sharedNetwork_type, dut, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
