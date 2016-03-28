@@ -20,6 +20,7 @@ package com.bhu.pure.kafka.examples.zero9;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -34,7 +35,8 @@ public class Producer extends Thread
   public Producer(String topic, Boolean isAsync)
   {
     Properties props = new Properties();
-    props.put("bootstrap.servers", "localhost:9092");
+    //props.put("bootstrap.servers", "192.168.66.123:9092");
+    props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka.sanji.bhunetworks.com:9092,kafka.sanji.bhunetworks.com:9093,kafka.franky.bhunetworks.com:9092,kafka.franky.bhunetworks.com:9093");
     props.put("client.id", "DemoProducer");
     props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
     props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
@@ -47,6 +49,7 @@ public class Producer extends Thread
     int messageNo = 1;
     while(true)
     {
+    	System.out.println("send");
       String messageStr = "Message_" + messageNo;
       long startTime = System.currentTimeMillis();
       if (isAsync) { // Send asynchronously
@@ -60,11 +63,14 @@ public class Producer extends Thread
               messageStr)).get();
           //System.out.println("Sent message: (" + messageNo + ", " + messageStr + ")");
         } catch (InterruptedException e) {
+        	System.out.println("send fail 1");
           e.printStackTrace();
         } catch (ExecutionException e) {
+        	System.out.println("send fail 2");
           e.printStackTrace();
         }
       }
+      
       ++messageNo;
       try {
 		sleep(1000l);

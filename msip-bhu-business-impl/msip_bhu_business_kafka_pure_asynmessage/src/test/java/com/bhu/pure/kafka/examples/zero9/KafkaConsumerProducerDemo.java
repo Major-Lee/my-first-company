@@ -23,8 +23,8 @@ public class KafkaConsumerProducerDemo implements KafkaProperties
 {
   public static void main(String[] args)
   {
-    final boolean isAsync = args.length > 0 ? !args[0].trim().toLowerCase().equals("sync") : true;
-    Producer producerThread = new Producer(KafkaProperties.topic, isAsync);
+    final boolean isAsync = args.length > 0 ? !args[0].trim().toLowerCase().equals("sync") : false;
+    Producer producerThread = new Producer("demotest2", isAsync);
     producerThread.start();
 
 //    Producer producerThread2 = new Producer(KafkaProperties.topic2, isAsync);
@@ -33,7 +33,7 @@ public class KafkaConsumerProducerDemo implements KafkaProperties
 //    producerThread3.start();
     
     
-    Consumer consumerThread = new Consumer(KafkaProperties.topic);
+    Consumer consumerThread = new Consumer("demotest2");
     consumerThread.start();
 //    List<String> ss = Arrays.asList(new String[]{KafkaProperties.topic,KafkaProperties.topic2,KafkaProperties.topic2});
 //    MultiConsumer consumerThread = new MultiConsumer(ss);

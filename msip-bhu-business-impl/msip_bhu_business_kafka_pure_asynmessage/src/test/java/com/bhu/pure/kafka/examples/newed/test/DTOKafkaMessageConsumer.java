@@ -19,10 +19,6 @@ public class DTOKafkaMessageConsumer extends KafkaMessageConsumer<String, TestDT
 		return props;
 	}*/
 
-	@Override
-	public long pollSize() {
-		return DEFAULT_POLLSIZE;
-	}
 
 	@Override
 	public String keyDeserializer() {

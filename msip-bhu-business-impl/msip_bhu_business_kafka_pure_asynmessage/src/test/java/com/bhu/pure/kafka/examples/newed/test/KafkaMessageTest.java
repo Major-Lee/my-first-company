@@ -14,6 +14,7 @@ import com.bhu.pure.kafka.client.producer.StringKafkaMessageProducer;
 import com.bhu.pure.kafka.client.producer.callback.KeyValueProducerCallback;
 import com.bhu.pure.kafka.subscribe.TopicSubscriber;
 
+
 public class KafkaMessageTest {
 	public static final String TOPIC1 = "topic1";
 	public static final String TOPIC2 = "topic2";
@@ -23,12 +24,13 @@ public class KafkaMessageTest {
 	public static final int PARTITION1 = 1;
 	
 	public static void main(String[] args) throws Exception{
-//		TestConsumerSubscriber();
+		//TestConsumerSubscriber();
 //		TestConsumerAssgin();
 //		TestProducerAsync();
 //		TestDTO();
 //		TestStringKafkaMessage();
-		TestAddSubscribeTopics();
+//		TestAddSubscribeTopics();
+		TestConsumerSubscriberGroup();
 	}
 	
 	/**
@@ -83,12 +85,12 @@ public class KafkaMessageTest {
 	 */
 	public static void TestConsumerSubscriber() throws Exception{
 		//consumer
-		SimpleKafkaMessageConsumer consumer = new SimpleKafkaMessageConsumer();
-		TopicSubscriber subscriber = new TopicSubscriber(Collections.singletonList(TOPIC1));
-		consumer.doSubscribe(subscriber, new PollIteratorNotify<ConsumerRecords<Integer, String>>(){
+		StringKafkaMessageConsumer consumer = new StringKafkaMessageConsumer();
+		TopicSubscriber subscriber = new TopicSubscriber(Collections.singletonList("t12"));
+		consumer.doSubscribe(subscriber, new PollIteratorNotify<ConsumerRecords<String, String>>(){
 			@Override
-			public void notifyComming(String consumerId, ConsumerRecords<Integer, String> records) {
-				for(ConsumerRecord<Integer, String> record : records){
+			public void notifyComming(String consumerId, ConsumerRecords<String, String> records) {
+				for(ConsumerRecord<String, String> record : records){
 					System.out.println(String
 							.format("Received message: topic[%s] partition[%s] key[%s] value[%s] offset[%s]",
 									record.topic(), record.partition(),
@@ -102,7 +104,7 @@ public class KafkaMessageTest {
 		
 		Thread.sleep(2000l);
 		//producer
-		SimpleKafkaMessageProducer producer = new SimpleKafkaMessageProducer();
+		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
 		int key = 0;
 		while(true){
 /*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
@@ -110,7 +112,8 @@ public class KafkaMessageTest {
 			if(ret != null){
 				System.out.println("successed");
 			}*/
-			RecordMetadata ret = producer.send(TOPIC1, null, key, "msg"+key);
+			System.out.println("send message " + key);
+			RecordMetadata ret = producer.send("t12", null, key+"", "msg"+key);
 			Thread.sleep(2000l);
 			key++;
 		}
@@ -206,7 +209,7 @@ public class KafkaMessageTest {
 		
 		Thread.sleep(2000l);
 		//producer
-//		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
+		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
 		int key = 0;
 		while(true){
 /*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
@@ -215,7 +218,7 @@ public class KafkaMessageTest {
 				System.out.println("successed");
 			}*/
 			
-			RecordMetadata ret = StringKafkaMessageProducer.getInstance().send(TOPIC1, null, String.valueOf(key), "msg"+key);
+			RecordMetadata ret = producer.send(TOPIC1, null, String.valueOf(key), "msg"+key);
 			Thread.sleep(2000l);
 			key++;
 		}
@@ -244,31 +247,131 @@ public class KafkaMessageTest {
 		});
 		
 		Thread.sleep(2000l);
+		
 		//producer
-//		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
+/*		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
 		int key = 0;
-		int topic_index = 1;
 		while(true){
-/*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
+			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
 			RecordMetadata ret = producer.send(record);
 			if(ret != null){
 				System.out.println("successed");
-			}*/
+			}
+			System.out.println("send message " + key);
+			RecordMetadata ret = producer.send("t11", null, key+"", "msg"+key);
+			Thread.sleep(2000l);
+			key++;
+		}*/
+		//producer
+		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
+		int key = 0;
+		int topic_index = 1;
+		while(true){
+//			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
+//			RecordMetadata ret = producer.send(record);
+//			if(ret != null){
+//				System.out.println("successed");
+//			}
 			System.out.println("send message " + key);
 			for(int i = 0;i<topic_index;i++){
-				StringKafkaMessageProducer.getInstance().send("topic"+i, null, String.valueOf(key), "msg"+key+"-"+System.currentTimeMillis());
+				RecordMetadata ret = producer.send("tt"+i, null, String.valueOf(key), "msg"+key+"-"+System.currentTimeMillis());
 			}
 			
 			Thread.sleep(2000l);
 			key++;
 			
 			System.out.println("addSubscribeTopic");
-			consumer1.addSubscribeTopic("topic"+topic_index);
+			consumer1.addSubscribeTopic("tt"+topic_index);
 			topic_index++;
 //			
 //				Thread.sleep(2000l);
 
 		}
+	}
+	
+	/**
+	 * subscriber方式consumer
+	 * 可以实现多topic的全分区消费
+	 * @throws Exception
+	 */
+	public static void TestConsumerSubscriberGroup() throws Exception{
+		//consumer c1
+/*		StringKafkaMessageConsumer consumer_c1 = new StringKafkaMessageConsumer("c1");
+		consumer_c1.doSubscribeTopics(new PollIteratorNotify<ConsumerRecords<String, String>>(){
+			@Override
+			public void notifyComming(String consumerId, ConsumerRecords<String, String> records) {
+				for(ConsumerRecord<String, String> record : records){
+					System.out.println(String
+							.format("Received message: consumerId[%s] topic[%s] partition[%s] key[%s] value[%s] offset[%s]",
+									consumerId, record.topic(), record.partition(),
+									record.key(), record.value(),
+									record.offset()));
+				}
+			}
+		});
+		
+		//consumer c2
+		StringKafkaMessageConsumer consumer_c2 = new StringKafkaMessageConsumer("c2");
+		consumer_c2.doSubscribeTopics(new PollIteratorNotify<ConsumerRecords<String, String>>(){
+			@Override
+			public void notifyComming(String consumerId, ConsumerRecords<String, String> records) {
+				for(ConsumerRecord<String, String> record : records){
+					System.out.println(String
+							.format("Received message: consumerId[%s] topic[%s] partition[%s] key[%s] value[%s] offset[%s]",
+									consumerId, record.topic(), record.partition(),
+									record.key(), record.value(),
+									record.offset()));
+				}
+			}
+		});*/
+		
+		Thread.sleep(2000l);
+		//producer
+		StringKafkaMessageProducer producer1 = new StringKafkaMessageProducer("biz");
+		StringKafkaMessageProducer producer2 = new StringKafkaMessageProducer("mng");
+		int key = 0;
+		//while(true){
+/*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
+			RecordMetadata ret = producer.send(record);
+			if(ret != null){
+				System.out.println("successed");
+			}*/
+			System.out.println("send message " + key);
+//			producer.send("up_ursids1_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("down_ursids1_1", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("down_ursids2_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("down_ursids2_1", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("down_ursids3_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("down_ursids3_1", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("down_ursids4_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("down_ursids4_1", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("down_ursidsdebugB_0", null, key+"", "msg"+key+"-happy yetao");
+			
+//			producer.send("up_ursids1_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids1_1", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids2_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids2_1", null, key+"", "msg"+key+"-happy yetao");
+			//producer1.send("up_ursids3_0", "8482f423070c", "000000058482f423070c000000000000000000000000001<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H106\" orig_model=\"uRouter\" orig_hdver=\"Z01\" orig_swver=\"AP106P06V1.5.2Build9396_TU\" oem_vendor=\"BHU\" oem_model=\"Urouter\" oem_hdver=\"Z01\" oem_swver=\"AP106P06V1.5.2Build9396_TU\" sn=\"BN207DE100080AA\" mac=\"84:82:f4:23:07:0c\" ip=\"192.168.66.161\" build_info=\"2016-02-19-13:31 Revision: 9396\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"60\" join_reason=\"3\" wan_ip=\"192.168.66.161\" /></join_req>");
+			producer1.sendAsync("up_ursids3_0", null, "8482f423070c", "000000058482f423070c000000000000000000000000001<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H106\" orig_model=\"uRouter\" orig_hdver=\"Z01\" orig_swver=\"AP106P06V1.5.2Build9396_TU\" oem_vendor=\"BHU\" oem_model=\"Urouter\" oem_hdver=\"Z01\" oem_swver=\"AP106P06V1.5.2Build9396_TU\" sn=\"BN207DE100080AA\" mac=\"84:82:f4:23:07:0c\" ip=\"192.168.66.161\" build_info=\"2016-02-19-13:31 Revision: 9396\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"60\" join_reason=\"3\" wan_ip=\"192.168.66.161\" /></join_req>", null);
+			//producer1.send("up_ursids3_0", key+"","msg"+key+"-happy yetao");
+			//producer2.send("mng_queue", key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids3_1", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids4_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursids4_1", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursidsdebugB_0", null, key+"", "msg"+key+"-happy yetao");
+			
+//			producer.send("mng_queue", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("up_ursidsdebug_0", null, key+"", "msg"+key+"-happy yetao");
+
+//			RecordMetadata ret1 = producer.send("tdeliver", null, key+"", "msg"+key);
+//			RecordMetadata ret2 = producer.send("tcm1", null, key+"", "msg"+key);
+			
+//			producer.send("down_ursids9_0", null, key+"", "msg"+key+"-happy yetao");
+//			producer.send("down_ursids9_1", null, key+"", "msg"+key+"-happy yetao");
+			Thread.sleep(2000l);
+			System.out.println("send message end " + key);
+			key++;
+		//}
 	}
 	
 }

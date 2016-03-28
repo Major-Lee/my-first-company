@@ -12,10 +12,10 @@ public class StringKafkaMessageConsumer extends KafkaMessageConsumer<String, Str
 		super(consumerId);
 	}
 	
-	@Override
-	public long pollSize() {
-		return DEFAULT_POLLSIZE;
-	}
+//	@Override
+//	public long pollSize() {
+//		return DEFAULT_POLLSIZE;
+//	}
 
 	@Override
 	public String keyDeserializer() {

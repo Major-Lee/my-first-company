@@ -9,9 +9,6 @@ import com.bhu.pure.kafka.client.consumer.callback.PollIteratorNotify;
 import com.bhu.pure.kafka.subscribe.Subscriber;
 
 public interface IKafkaMessageConsumer<KEY, VALUE>{
-	public static long DEFAULT_POLLSIZE = 1000;
-	
-	public long pollSize();
 	
 	public void addSubscribeTopic(String topic);
 	

@@ -11,16 +11,16 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
-import com.bhu.pure.kafka.business.observer.KafkaMsgObserverManager;
-import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
 import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
+import com.bhu.vas.business.asyn.normal.activemq.model.QueueInfo;
+import com.bhu.vas.business.asyn.normal.activemq.multi.ActiveMQConnectionsManager;
 import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
-import com.bhu.vas.processor.input.DeliverMessageTopicConsumer;
+import com.bhu.vas.business.observer.QueueMsgObserverManager;
+import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**
@@ -28,9 +28,9 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  * @author Edmond
  *
  */
-@Service
-public class NotifyCmMsgProcessor implements DynaMessageListener{
-	private final Logger logger = LoggerFactory.getLogger(NotifyCmMsgProcessor.class);
+//@Service
+public class NotifyCmMsgProcessorActiveMq implements SpringQueueMessageListener{
+	private final Logger logger = LoggerFactory.getLogger(NotifyCmMsgProcessorActiveMq.class);
 	private ExecutorService exec = Executors.newFixedThreadPool(5);
 	//00010000{"name":"cm001","thread":"3","ip":"192.168.0.101"}
 	/*private static String Online_Prefix = "00000001";
@@ -40,27 +40,18 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 	//@Resource
 	//private IDaemonRpcService daemonRpcService;
 	@Resource
-	private DeliverMessageTopicConsumer deliverMessageTopicConsumer;
-	@Resource
 	private DeliverTopicMessageService deliverTopicMessageService;// =(DeliverTopicMessageService) ctx.getBean("deliverTopicMessageService");
 	
 	//private Map<String,Set<WifiDeviceDTO>> localCaches = new HashMap<String,Set<WifiDeviceDTO>>();
 	@PostConstruct
 	public void initialize() {
 		logger.info("NotifyCmMsgProcessor initialize...");
-		KafkaMsgObserverManager.CMNotifyCommingObserver.addMsgCommingListener(this);
+		QueueMsgObserverManager.SpringQueueMessageObserver.addSpringQueueMessageListener(this);
 	}
 	
 	@Override
-	//public void onMessage(final String message){
-	public void onMessage(final String topic,int partition,String key,final String message,long offset,String consumerId) {
-		System.out.println(String
-				.format("CM Received message: topic[%s] partition[%s] key[%s] message[%s] "
-						+ "offset[%s] consumerId[%s]",
-						topic, partition,
-						key, message,
-						offset, consumerId));
-		//logger.info(String.format("NotifyCmMsgProcessor receive message[%s]", message));
+	public void onMessage(final String message){
+		logger.info(String.format("NotifyCmMsgProcessor receive message[%s]", message));
 		exec.submit((new Runnable() {
 			@Override
 			public void run() {
@@ -72,9 +63,8 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 					if(ParserHeader.Online_Prefix == type){
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
 						String ctx = cmInfo.toString();
-						System.out.println("~~~~~~~~~:"+ctx);
-						deliverMessageTopicConsumer.addSubscribeTopic(cmInfo.toUpQueueString());
-						//ActiveMQConnectionsManager.getInstance().createNewConsumerQueues(QueueInfo.build(cmInfo.getMq_host(),cmInfo.getMq_port(), cmInfo.toString()),true);
+						//ActiveMQConnectionManager.getInstance().createNewConsumerQueues("up", cmInfo.toString(),true);
+						ActiveMQConnectionsManager.getInstance().createNewConsumerQueues(QueueInfo.build(cmInfo.getMq_host(),cmInfo.getMq_port(), cmInfo.toString()),true);
 						if(cmInfo.getClient() != null && !cmInfo.getClient().isEmpty()){
 							List<String> macs = new ArrayList<String>();
 							for(WifiDeviceDTO dto:cmInfo.getClient()){
@@ -85,6 +75,25 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 							deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, cmInfo.getClient());
 						}
 						deliverTopicMessageService.sendCmJoinMessage(cmInfo);
+						//daemonRpcService.cmJoinService(cmInfo);
+						/*if(cmInfo.getLast_frag() == 1){//最后一条拆包指令,数据发送成功后需要清除缓存中的ctx数据
+							if(cmInfo != null && cmInfo.getClient() != null && !cmInfo.getClient().isEmpty()){//有同步过来的在线用户
+								put2CtxLocalCache(ctx,cmInfo.getClient());
+								Set<WifiDeviceDTO> localSet = localCaches.get(ctx);
+								logger.info("~~~~~~~共~~Client:"+localSet.size());
+								if(!localSet.isEmpty()){
+									List<String> macs = new ArrayList<String>();
+									for(WifiDeviceDTO dto:localSet){
+										macs.add(dto.getMac());
+									}
+									daemonRpcService.wifiDevicesOnline(ctx, macs);
+									deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, new ArrayList<WifiDeviceDTO>(localSet));
+								}
+							}
+							daemonRpcService.cmJoinService(cmInfo);
+						}else{//不是最后一条拆包指令，则缓存相关client数据
+							put2CtxLocalCache(ctx,cmInfo.getClient());
+						}*/
 					}else if(ParserHeader.Offline_Prefix == type){//移除所有属于此cm的用户，并且down queue不能写入数据
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
 						deliverTopicMessageService.sendCmLeaveMessage(cmInfo);

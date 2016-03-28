@@ -81,8 +81,20 @@ public class CmCtxInfo implements java.io.Serializable{
 		if(split.length != 2) return null;
 		return new CmCtxInfo(split[0],split[1]);
 	}
+	
 	public static String builderDownQueueName(String ctx_name){
 		return DownPrefix.concat(ctx_name);
+	}
+	
+	public static String builderUpQueueName(String ctx_name){
+		return UpPrefix.concat(ctx_name);
+	}
+	
+	public static String parserCtxName(String queue_name){
+		if(StringUtils.isEmpty(queue_name)) return null;
+		String[] split = queue_name.split(StringHelper.UNDERLINE_STRING_GAP);
+		return split[0];
+		//return UpPrefix.concat(ctx_name);
 	}
 	
 	public String getMq_host() {
