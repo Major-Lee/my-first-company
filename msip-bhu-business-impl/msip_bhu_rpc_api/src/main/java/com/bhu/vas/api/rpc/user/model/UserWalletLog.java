@@ -119,7 +119,7 @@ public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenabl
 		this.vcurrency = vcurrency;
 	}
 	
-	public UserWalletLogVTO toUserWalletLogVTO(String mobileno,String nick){
+	public UserWalletLogVTO toUserWalletLogVTO(String mobileno,String nick,String payment_type){
 		UserWalletLogVTO vto = new UserWalletLogVTO();
 		vto.setId(id);
 		vto.setUid(uid);
@@ -131,6 +131,7 @@ public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenabl
 		vto.setVcurrency(vcurrency);
 		vto.setTransmode_desc(transmode_desc);
 		vto.setTranstype_desc(transtype_desc);
+		vto.setPayment_type(payment_type);
 		vto.setMemo(memo);
 		vto.setOperdate(DateTimeHelper.formatDate(this.updated_at, DateTimeHelper.FormatPattern0));
 		return vto;
