@@ -96,10 +96,10 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	public void setWithdraw_oper_desc(String withdraw_oper_desc) {
 		this.withdraw_oper_desc = withdraw_oper_desc;
 	}
-	public void calculate(double withdraw_tax_percent,double withdraw_trancost_percent){
+	/*public void calculate(double withdraw_tax_percent,double withdraw_trancost_percent){
 		if(cash > 0){
 			this.setTaxcost(ArithHelper.round(ArithHelper.mul(cash, withdraw_tax_percent),2));
 			this.setTranscost(ArithHelper.round(ArithHelper.mul(cash, withdraw_trancost_percent),2));
 		}
-	}
+	}*/
 }
