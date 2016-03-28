@@ -94,13 +94,14 @@ public class WifiDeviceHelper {
 	}
 	
 	/**
+	 * 自动开启安全共享网络策略机制
 	 * 共享网络支持的设备的判定
 	 * 标准的版本号 需要valid
 	 * 大版本号 >= 1.5.6 并且为uRouter设备
 	 * @param orig_swver
 	 * @return
 	 */
-	public static boolean deviceSharedNetworkStrategy(String orig_swver){
+	public static boolean autoDeviceSecureSharedNetworkStrategy(String orig_swver){
 		DeviceVersion ver = DeviceVersion.parser(orig_swver);
 		if(ver == null || !ver.valid()) return false;
 		if(BusinessRuntimeConfiguration.Device_SharedNetwork_DUT.equals(ver.getDut())){
@@ -112,6 +113,28 @@ public class WifiDeviceHelper {
 		}
 		return false;
 	}
+	
+	/**
+	 * 支持开启安全共享网络的设备类型
+	 * TU设备 必须大版本号 >= 1.5.6
+	 * 其他设备 则无限制
+	 * @param orig_swver
+	 * @return
+	 */
+	public static boolean suppertedDeviceSecureSharedNetwork(String orig_swver){
+		DeviceVersion ver = DeviceVersion.parser(orig_swver);
+		if(ver == null || !ver.valid()) return false;
+		if(ver.wasDutURouter()){
+			String[] orig_swver1_versions = ver.parseDeviceSwverVersion();
+			int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], BusinessRuntimeConfiguration.Device_SharedNetwork_Top_Version);
+			if(top_ret>=0){
+				return true;
+			}else return false;
+		}else{
+			return true;
+		}
+	}
+	
 	
 	public static String dutDevice(String orig_swver){
 		DeviceVersion parser = DeviceVersion.parser(orig_swver);
@@ -389,6 +412,8 @@ public class WifiDeviceHelper {
 	
 	
 	public static void main(String[] argv){
-		System.out.println(WifiDeviceHelper.deviceSharedNetworkStrategy("AP106P07V1.5.7r1_TC_UGX"));
+		System.out.println(WifiDeviceHelper.autoDeviceSecureSharedNetworkStrategy("AP106P07V1.5.7r1_TC_UGX"));
+		
+		System.out.println(WifiDeviceHelper.suppertedDeviceSecureSharedNetwork("AP106P07V1.5.6r1_TU_UGX"));
 	}
 }

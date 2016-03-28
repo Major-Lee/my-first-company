@@ -1,5 +1,6 @@
 package com.bhu.vas.web.query;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
 import com.bhu.vas.api.rpc.social.vto.HandsetUserDetailVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiHandsetUserVTO;
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/n/hd")
-    public class HandsetMeetNoAuthController extends BaseController {
+public class HandsetMeetNoAuthController extends BaseController {
 
     @Resource
     private ISocialRpcService socialRpcService;
@@ -47,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
             HttpServletResponse response,
             @RequestParam(required = false, value = "uid") Long uid,
             @RequestParam(required = true, value = "hd_mac") String hd_mac,
-            @RequestParam(required = true, value = "hd_macs") String hd_macs,
+            @RequestParam(required = false, value = "hd_macs") String hd_macs,
             @RequestParam(required = true, value = "bssid") String bssid,
             @RequestParam(required = true, value = "ssid") String ssid,
             @RequestParam(required = false, value = "lat") String lat,
@@ -55,15 +56,13 @@ import javax.servlet.http.HttpServletResponse;
             @RequestParam(required = false, value = "addr") String addr
     ) {
 
-        try {
-            boolean ret = socialRpcService.handsetMeet(uid, hd_mac.toLowerCase(), hd_macs.toLowerCase(), bssid.toLowerCase(), ssid, lat, lon, addr);
-            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
-        }
-
+        RpcResponseDTO<Boolean> rpcResult = socialRpcService.handsetMeet(uid, hd_mac.toLowerCase(), hd_macs.toLowerCase(), bssid.toLowerCase(), ssid, lat, lon, addr);
+        if (!rpcResult.hasError())
+            SpringMVCHelper.renderJson(response,
+                    ResponseSuccess.embed(rpcResult.getPayload()));
+        else
+            SpringMVCHelper.renderJson(response,
+                    ResponseError.embed(rpcResult));
     }
 
 
