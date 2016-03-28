@@ -666,6 +666,63 @@ public class BusinessEnumType {
 			}
 		}
 	}
+	/**
+	 * 订单的用户持有的设备类型
+	 * @author tangzichao
+	 *
+	 */
+	public enum OrderUmacType{
+		Pc(1,"Pc类型","Pc类型"),
+		Terminal(2,"终端类型","终端类型"),
+		;
+		private Integer key;
+		private String name;
+		private String desc;
+		
+		static Map<Integer, OrderUmacType> allOrderUmacTypes;
+		
+		private OrderUmacType(Integer key,String name,String desc){
+			this.key = key;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		public Integer getKey() {
+			return key;
+		}
+		public void setKey(Integer key) {
+			this.key = key;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public static OrderUmacType fromKey(Integer key){
+			if(key == null) return null;
+			return allOrderUmacTypes.get(key);
+		}
+		
+		public static boolean supported(Integer key){
+			return allOrderUmacTypes.containsKey(key);
+		}
+		
+		static {
+			allOrderUmacTypes = new HashMap<Integer, OrderUmacType>();
+			OrderUmacType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (OrderUmacType type : types){
+				allOrderUmacTypes.put(type.getKey(), type);
+			}
+		}
+	}
 	
 	public enum ThirdpartiesPaymentType{
 		Weichat("腾讯微信", "weixin"),

@@ -23,6 +23,8 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	private String mac_dut;
 	//用户mac
 	private String umac;
+	//用户终端类型
+	private Integer umactype;
 	//用户uid
 	private Integer uid;
 	//支付订单id
@@ -89,6 +91,14 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 
 	public void setUmac(String umac) {
 		this.umac = umac;
+	}
+
+	public Integer getUmactype() {
+		return umactype;
+	}
+
+	public void setUmactype(Integer umactype) {
+		this.umactype = umactype;
 	}
 
 	public Integer getUid() {

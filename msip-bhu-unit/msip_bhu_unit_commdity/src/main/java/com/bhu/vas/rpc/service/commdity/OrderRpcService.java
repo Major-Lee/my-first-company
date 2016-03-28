@@ -48,10 +48,10 @@ public class OrderRpcService implements IOrderRpcService{
 	}*/
 	@Override
 	public RpcResponseDTO<OrderDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
-			String payment_type, String context){
-		logger.info(String.format("createOrder with commdityid[%s] appid[%s] mac[%s] umac[%s] payment_type[%s] context[%s]",
-				commdityid, appid, mac, umac, payment_type, context));
-		return orderUnitFacadeService.createOrder(commdityid, appid, mac, umac, payment_type, context);
+			Integer umactype, String payment_type, String context){
+		logger.info(String.format("createOrder with commdityid[%s] appid[%s] mac[%s] umac[%s] umactype[%s] payment_type[%s] context[%s]",
+				commdityid, appid, mac, umac, umactype, payment_type, context));
+		return orderUnitFacadeService.createOrder(commdityid, appid, mac, umac, umactype, payment_type, context);
 	}
 	
 	@Override
