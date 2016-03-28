@@ -180,6 +180,28 @@ public class SharedNetworkFacadeService {
 		}
 	}
 	
+	/**
+	 * 如果此设备未开启共享网络则开启指定用户的共享网络存储配置，不过是关闭的，并存储到设备配置中
+	 * @param uid
+	 * @param mac
+	 * @return
+	 */
+	public SharedNetworkSettingDTO fetchDeviceSharedNetworkConfIfEmptyThenCreate(int uid,String mac){
+		WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(mac);
+		if(configs != null){
+			return configs.getInnerModel();
+		}else{
+			ParamSharedNetworkDTO sharedNetworkConf = this.fetchUserSharedNetworkConf(uid, SharedNetworkType.SafeSecure);
+			configs  = new WifiDeviceSharedNetwork();
+			configs.setSharednetwork_type(sharedNetworkConf.getOpen_resource());
+			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
+			sharedNetworkSettingDTO.turnOff(sharedNetworkConf);
+			configs.putInnerModel(sharedNetworkSettingDTO);
+			wifiDeviceSharedNetworkService.insert(configs);
+			return sharedNetworkSettingDTO;
+		}
+	}
+	
 	public ParamSharedNetworkDTO fetchDeviceSharedNetworkConfAndSwitchWorkmode(String mac,int switchAct){
 		ParamSharedNetworkDTO vw_dto = null;
 		SharedNetworkSettingDTO sharedNetworkConf = fetchDeviceSharedNetworkConf(mac);

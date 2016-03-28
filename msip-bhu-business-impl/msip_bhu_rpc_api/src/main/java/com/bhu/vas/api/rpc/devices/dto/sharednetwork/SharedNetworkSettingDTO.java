@@ -64,6 +64,14 @@ public class SharedNetworkSettingDTO implements java.io.Serializable{
 		//this.setPsn(null);
 		this.setC(System.currentTimeMillis());
 	}
+	
+	public void turnOff(ParamSharedNetworkDTO psn){
+		this.setOn(false);
+		this.setDs(false);
+		this.setPsn(psn);
+		this.setC(System.currentTimeMillis());
+	}
+	
 	public void remoteNotify(){
 		this.setDs(true);
 		this.setC(System.currentTimeMillis());
