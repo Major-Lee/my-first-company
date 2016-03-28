@@ -11,6 +11,7 @@
     <result property="mac" column="mac"/>
     <result property="mac_dut" column="mac_dut"/>
     <result property="umac" column="umac"/>
+    <result property="umactype" column="umactype"/>
     <result property="uid" column="uid"/> 
     <result property="paymented_at" column="paymented_at"/>
     <result property="amount" column="amount"/>
@@ -34,6 +35,7 @@
 	    	mac,
 	    	mac_dut,
 	    	umac,
+	    	umactype,
 	    	uid,
 	    	paymented_at,
 	    	amount,
@@ -51,6 +53,7 @@
 	    	mac,
 	    	mac_dut,
 	    	umac,
+	    	umactype,
 	    	uid,
 	    	paymented_at,
 	    	amount,
@@ -69,6 +72,7 @@
 	    	#{mac},
 	    	#{mac_dut},
 	    	#{umac},
+	    	#{umactype},
 	    	#{uid},
 	    	#{paymented_at},
 	    	#{amount},
@@ -85,6 +89,7 @@
 	    	mac = #{mac},
 	    	mac_dut = #{mac_dut},
 	    	umac = #{umac},
+	    	umactype = #{umactype},
 	    	uid = #{uid},
 	    	paymented_at = #{paymented_at},
 	    	amount = #{amount},

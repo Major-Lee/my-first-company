@@ -18,7 +18,7 @@ public interface IOrderRpcService {
 //	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderId, Integer appId);
 	
 	public RpcResponseDTO<OrderDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
-			String payment_type, String context);
+			Integer umactype, String payment_type, String context);
 	
 	public RpcResponseDTO<OrderStatusDTO> orderStatusByUmac(String umac, String orderid, Integer appid);
 	

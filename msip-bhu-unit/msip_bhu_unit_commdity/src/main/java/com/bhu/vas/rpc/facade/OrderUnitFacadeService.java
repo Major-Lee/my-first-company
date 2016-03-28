@@ -150,7 +150,7 @@ public class OrderUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<OrderDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
-			String payment_type, String context){
+			Integer umactype, String payment_type, String context){
 		try{
 			orderFacadeService.supportedAppId(appid);
 			
@@ -171,7 +171,7 @@ public class OrderUnitFacadeService {
 			}
 			//生成订单
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
-			Order order = orderFacadeService.createOrder(commdityid, appid, mac_lower, mac_dut, umac_lower, context);
+			Order order = orderFacadeService.createOrder(commdityid, appid, mac_lower, mac_dut, umac_lower, umactype, context);
 			OrderDTO orderDto = new OrderDTO();
 			BeanUtils.copyProperties(order, orderDto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
@@ -236,6 +236,7 @@ public class OrderUnitFacadeService {
 						userOrderDto.setMac(order.getMac());
 						userOrderDto.setUmac(order.getUmac());
 						userOrderDto.setUid(order.getUid());
+						userOrderDto.setUmactype(order.getUmactype());
 						userOrderDto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
 						userOrderDto.setAmount(order.getAmount());
 						double share_amount = userWalletConfigsService.calculateSharedeal(uid, Double.parseDouble(order.getAmount()));
