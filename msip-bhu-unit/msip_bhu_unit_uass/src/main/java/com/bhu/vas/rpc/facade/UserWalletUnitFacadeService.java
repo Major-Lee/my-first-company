@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
@@ -71,9 +72,17 @@ public class UserWalletUnitFacadeService {
 				int index = 0;
 				for(UserWalletLog log:pages.getItems()){
 					User user = users.get(index);
+					String payment_type = StringUtils.EMPTY;
+					if(BusinessEnumType.UWalletTransMode.CashPayment.getKey().equals(log.getTransmode())
+							&& BusinessEnumType.UWalletTransType.Cash2Realmoney.getKey().equals(log.getTranstype()) 
+							&& StringUtils.isNotEmpty(log.getOrderid())){
+						UserWalletWithdrawApply apply = userWalletFacadeService.getUserWalletWithdrawApplyService().getById(log.getOrderid());
+						payment_type = apply!= null ?apply.getPayment_type():StringUtils.EMPTY;
+					}
 					vtos.add(log.toUserWalletLogVTO(
 							user!=null?user.getMobileno():StringUtils.EMPTY,
-							user!=null?user.getNick():StringUtils.EMPTY));
+							user!=null?user.getNick():StringUtils.EMPTY,
+							payment_type));
 					index++;
 				}
 			}
