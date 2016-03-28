@@ -27,6 +27,7 @@ import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserWalletConfigsService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -52,6 +53,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private UserDeviceFacadeService userDeviceFacadeService;
+	
+	@Resource
+	private UserWalletConfigsService userWalletConfigsService;
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -234,6 +238,8 @@ public class OrderUnitFacadeService {
 						userOrderDto.setUid(order.getUid());
 						userOrderDto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
 						userOrderDto.setAmount(order.getAmount());
+						double share_amount = userWalletConfigsService.calculateSharedeal(uid, Double.parseDouble(order.getAmount()));
+						userOrderDto.setShare_amount(String.valueOf(share_amount));
 						if(order.getCreated_at() != null){
 							userOrderDto.setCreated_ts(order.getCreated_at().getTime());
 						}
