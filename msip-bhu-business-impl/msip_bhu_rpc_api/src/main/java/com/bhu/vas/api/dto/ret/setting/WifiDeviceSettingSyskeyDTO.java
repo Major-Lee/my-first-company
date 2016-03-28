@@ -88,7 +88,15 @@ public class WifiDeviceSettingSyskeyDTO implements Serializable, DeviceSettingBu
 		if(o==null)return false;
 		if(o instanceof WifiDeviceSettingSyskeyDTO){
 			WifiDeviceSettingSyskeyDTO oo = (WifiDeviceSettingSyskeyDTO)o;
-			return this.getKeynum().equals(oo.getKeynum()) && this.getIndustry().equals(oo.getIndustry());
+			if(StringUtils.isEmpty(this.getKeynum()) && StringUtils.isEmpty(oo.getKeynum())){
+				return true;
+			}
+			if(StringUtils.isNotEmpty(this.getKeynum())){
+				if(this.getKeynum().equals(oo.getKeynum())){
+					return true;
+				}
+			}
+			//return this.getKeynum().equals(oo.getKeynum()) && this.getIndustry().equals(oo.getIndustry());
 		}
 		return false;
 	}
