@@ -18,6 +18,8 @@ public class UserOrderDTO implements java.io.Serializable{
 	private Integer uid;
 	//订单金额
 	private String amount;
+	//分成金额
+	private String share_amount;
 	//订单创建时间
 	private long created_ts;
 	//订单支付时间
@@ -58,6 +60,12 @@ public class UserOrderDTO implements java.io.Serializable{
 	}
 	public void setAmount(String amount) {
 		this.amount = amount;
+	}
+	public String getShare_amount() {
+		return share_amount;
+	}
+	public void setShare_amount(String share_amount) {
+		this.share_amount = share_amount;
 	}
 	public long getCreated_ts() {
 		return created_ts;
