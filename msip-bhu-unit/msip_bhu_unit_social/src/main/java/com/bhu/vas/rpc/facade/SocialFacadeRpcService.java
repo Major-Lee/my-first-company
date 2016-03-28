@@ -196,8 +196,11 @@ public class SocialFacadeRpcService {
      * @param addr
      * @return
      */
-    public boolean handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid,
+    public void handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid,
                                String lat, String lon, String addr) {
+        if (hd_mac == null || bssid == null || ssid == null){
+            throw  new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+        }
 
         try {
 
@@ -234,20 +237,21 @@ public class SocialFacadeRpcService {
                 WifiSortedSetService.getInstance().addWifiVistor(bssid, uid);
             }
 
-            HandsetMeetDTO dto = new HandsetMeetDTO();
-            dto.setBssid(bssid);
-            dto.setSsid(ssid);
-            dto.setTs(System.currentTimeMillis());
-            dto.setLat(lat);
-            dto.setLon(lon);
-            dto.setAddr(addr);
+            if (hd_macs !=null){
+                HandsetMeetDTO dto = new HandsetMeetDTO();
+                dto.setBssid(bssid);
+                dto.setSsid(ssid);
+                dto.setTs(System.currentTimeMillis());
+                dto.setLat(lat);
+                dto.setLon(lon);
+                dto.setAddr(addr);
 
-            socialMessageService.sendHandsetMeetMessage(hd_mac, hd_macs, bssid, JsonHelper.getJSONString(dto));
+                socialMessageService.sendHandsetMeetMessage(hd_mac, hd_macs, bssid, JsonHelper.getJSONString(dto));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
     }
 
 

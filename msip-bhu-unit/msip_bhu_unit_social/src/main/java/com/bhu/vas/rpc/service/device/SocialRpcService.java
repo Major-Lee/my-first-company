@@ -33,13 +33,21 @@ public class SocialRpcService implements ISocialRpcService {
 
 
     @Override
-    public boolean handsetMeet(Long uid, String hd_mac, String hd_macs,
+    public RpcResponseDTO<Boolean> handsetMeet(Long uid, String hd_mac, String hd_macs,
                                String bssid, String ssid, String lat, String lon, String addr) {
         logger.info(String.format(
                 "handsetMeet uid[%s] hd_mac[%s] hd_macs[%s] bssid[%s] ssid[%s] lat[%s] lon[%s] addr[%s]",
                 uid, hd_mac, hd_macs, bssid, ssid, lat, lon, addr));
-        return socialFacadeRpcService.handsetMeet(uid, hd_mac, hd_macs, bssid,
-                ssid, lat, lon, addr);
+        try {
+            socialFacadeRpcService.handsetMeet(uid, hd_mac, hd_macs, bssid,
+                    ssid, lat, lon, addr);
+            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+        } catch (BusinessI18nCodeException i18nex) {
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+        } catch (Exception ex){
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+        }
+
     }
 
     @Override
@@ -66,7 +74,7 @@ public class SocialRpcService implements ISocialRpcService {
     @Override
     public WifiVTO fetchWifiDetail(Long uid, String bssid) {
         logger.info(
-                String.format("handsetMeet uid[%s]  bssid[%s] ", uid, bssid));
+                String.format("fetchWifiDetail uid[%s]  bssid[%s] ", uid, bssid));
         return socialFacadeRpcService.fetchWifiDetail(uid, bssid);
     }
 
