@@ -160,13 +160,14 @@ public class DeviceSharedNetworkUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type, int pageNo, int pageSize){
+	public RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type, String d_dut, 
+			int pageNo, int pageSize){
 		try{
 			List<SharedNetworkDeviceDTO> vtos = null;
 			
 			int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
 			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageBySharedNetwork(uid, 
-					sharedNetwork_type, searchPageNo, pageSize);
+					sharedNetwork_type, d_dut, searchPageNo, pageSize);
 			
 			int total = 0;
 			if(search_result != null){
@@ -190,6 +191,8 @@ public class DeviceSharedNetworkUnitFacadeService {
 							vto.setMac(wifiDeviceDocument.getId());
 							vto.setD_address(wifiDeviceDocument.getD_address());
 							vto.setD_workmodel(wifiDeviceDocument.getD_workmodel());
+							vto.setD_origmodel(wifiDeviceDocument.getD_origmodel());
+							vto.setDevice_name(wifiDeviceDocument.getU_dnick());
 							if(ohd_counts != null){
 								Object ohd_count_obj = ohd_counts.get(cursor);
 								if(ohd_count_obj != null){
