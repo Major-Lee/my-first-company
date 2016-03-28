@@ -153,7 +153,7 @@ public class BusinessEnumType {
 		Recharge2V("R2V","虎钻充值"),
 		Recharge2C("R2C","零钱充值"),
 		Rollback2C("B2C","零钱返还"),
-		ReadPacketSettle2C("P2C",	 "红包打赏结算"),
+		ReadPacketSettle2C("P2C",	 "红包打赏"),
 		PurchaseGoodsUsedV("PGV","虚拟币购买道具"),
 		PurchaseGoodsUsedC("PGC","零钱购买道具"),
 		Cash2Realmoney("C2M","零钱提现"),

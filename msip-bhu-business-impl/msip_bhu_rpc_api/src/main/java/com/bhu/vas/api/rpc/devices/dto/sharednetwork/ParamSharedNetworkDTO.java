@@ -347,7 +347,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 */	
 		//System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO()).builderProperties()));
 		//System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_SafeSecure, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO(SharedNetworkType.SafeSecure.getKey())).builderProperties()));
-		
+		System.out.println(JsonHelper.getJSONString(ParamSharedNetworkDTO.builderDefault(SharedNetworkType.Uplink.getKey())));
 		System.out.println(JsonHelper.getJSONString(ParamSharedNetworkDTO.builderDefault()));
 	}
 }
