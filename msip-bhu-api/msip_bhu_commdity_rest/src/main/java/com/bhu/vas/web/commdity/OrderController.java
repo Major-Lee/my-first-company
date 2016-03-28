@@ -15,6 +15,8 @@ import com.bhu.vas.api.dto.commdity.OrderPaymentUrlDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
+import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
@@ -133,13 +135,14 @@ public class OrderController extends BaseController{
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) String umac,
 			@RequestParam(required = false) String context,
+			@RequestParam(required = false, defaultValue = "2") Integer umactype,
 			@RequestParam(required = true) Integer commdityid,
 			@RequestParam(required = true) String payment_type,
 			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
 			) {
 		
 		//1:生成订单
-		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.createOrder(commdityid, appid, mac, umac, 
+		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.createOrder(commdityid, appid, mac, umac, umactype,
 				payment_type, context);
 		if(rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));

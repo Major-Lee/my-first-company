@@ -21,7 +21,6 @@ import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.UserThirdpartiesPayment;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
-import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
@@ -32,7 +31,6 @@ import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
-import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -162,8 +160,9 @@ public class UserWalletFacadeService{
 	public UserWallet sharedealCashToUserWallet(Integer uid, double cash, String orderid, boolean owner){
 		logger.info(String.format("分成现金入账-1 uid[%s] orderid[%s] cash[%s] owner[%s]", uid,orderid,cash,owner));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
-		UserWalletConfigs configs = userWalletConfigsService.userfulWalletConfigs(uid);
-		double realIncommingCash = ArithHelper.round(ArithHelper.mul(cash, configs.getSharedeal_percent()),2);
+		//UserWalletConfigs configs = userWalletConfigsService.userfulWalletConfigs(uid);
+		//double realIncommingCash = ArithHelper.round(ArithHelper.mul(cash, configs.getSharedeal_percent()),2);
+		double realIncommingCash = userWalletConfigsService.calculateSharedeal(uid, cash);
 		logger.info(String.format("分成现金入账-2 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", uid,orderid,cash,realIncommingCash,owner));
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
 		uwallet.setCash(uwallet.getCash()+realIncommingCash);

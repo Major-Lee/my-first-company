@@ -17,9 +17,9 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.user.dto.ApplyCost;
 import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserWalletConfigs;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
@@ -117,12 +117,12 @@ public class UserWalletUnitFacadeService {
 				int index = 0;
 				for(UserWalletWithdrawApply apply:pages.getItems()){
 					User user = users.get(index);
-					UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(user.getId());
+					ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(apply.getUid(), apply.getCash());
+					//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(user.getId());
 					vtos.add(apply.toUserWithdrawApplyVTO(
 							user!=null?user.getMobileno():StringUtils.EMPTY,
 							user!=null?user.getNick():StringUtils.EMPTY,
-									walletConfigs.getWithdraw_tax_percent(),
-									walletConfigs.getWithdraw_trancost_percent()));
+									calculateApplyCost));
 					index++;
 				}
 			}
@@ -207,10 +207,10 @@ public class UserWalletUnitFacadeService {
 			}
 			UserWalletWithdrawApply withdrawApply = userWalletFacadeService.doStartPaymentWithdrawApply(reckoner, applyid);
 			User user = UserValidateServiceHelper.validateUser(withdrawApply.getUid(),userWalletFacadeService.getUserService());
-			UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
+			ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(), withdrawApply.getCash());
+			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
 			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
-					walletConfigs.getWithdraw_tax_percent(), 
-					walletConfigs.getWithdraw_trancost_percent());
+					calculateApplyCost);
 			ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
 			if(paymentDTO == null){
 				throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_WASEMPTY);
@@ -235,10 +235,10 @@ public class UserWalletUnitFacadeService {
 			}
 			UserWalletWithdrawApply withdrawApply = userWalletFacadeService.doWithdrawNotifyFromLocal(applyid, successed);
 			User user = UserValidateServiceHelper.validateUser(withdrawApply.getUid(),userWalletFacadeService.getUserService());
-			UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
+			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
+			ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(), withdrawApply.getCash());
 			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
-					walletConfigs.getWithdraw_tax_percent(), 
-					walletConfigs.getWithdraw_trancost_percent());
+					calculateApplyCost);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(withdrawApplyVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -273,13 +273,13 @@ public class UserWalletUnitFacadeService {
 			//User user = userWalletFacadeService.validateUser(uid);
 			User user = UserValidateServiceHelper.validateUser(uid,userWalletFacadeService.getUserService());
 			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,ThirdpartiesPaymentType.fromType(payment_type),uid, pwd, cash, remoteip);
-			UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(uid);
+			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(uid);
+			ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(uid, cash);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(
 					apply.toUserWithdrawApplyVTO(
 							user.getMobileno(), 
 							user.getNick(),
-							walletConfigs.getWithdraw_tax_percent(),
-							walletConfigs.getWithdraw_trancost_percent()));
+							calculateApplyCost));
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

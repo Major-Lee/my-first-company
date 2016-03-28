@@ -134,7 +134,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;
 			}*/
-			SharedNetworkSettingDTO sharedNetworkSetting = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
+			SharedNetworkSettingDTO sharedNetworkSetting = sharedNetworkFacadeService.fetchDeviceSharedNetworkConfIfEmptyThenCreate(uid,mac);
 			if(sharedNetworkSetting == null){
 				sharedNetworkSetting = SharedNetworkSettingDTO.buildOffSetting();
 			}

@@ -6,6 +6,7 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderExtSegmentPayMode;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
+import com.bhu.vas.api.rpc.user.dto.ApplyCost;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtStringModel;
@@ -110,7 +111,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		return String.format("WalletWithdrawApply id[%s] appid[%s] payment_type[%s] uid[%s] cash[%s] withdraw_oper[%s] last_reckoner[%s]", id,appid,payment_type,uid,cash,withdraw_oper,last_reckoner);
 	}
 	
-	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick,double withdraw_tax_percent, double withdraw_trancost_percent){
+	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick,ApplyCost applyCost){
 		UserWithdrawApplyVTO vto = new UserWithdrawApplyVTO();
 		vto.setApplyid(id);
 		vto.setUid(uid);
@@ -118,10 +119,12 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		vto.setPayment_type(payment_type);
 		vto.setNick(nick);
 		vto.setMobileno(mobileno);
-		vto.setCash(cash);
+		vto.setCash(applyCost.getCash());
+		vto.setTaxcost(applyCost.getTaxcost());
+		vto.setTranscost(applyCost.getTranscost());
 		vto.setWithdraw_oper(withdraw_oper);
 		vto.setWithdraw_oper_desc(BusinessEnumType.UWithdrawStatus.fromKey(withdraw_oper).getName());
-		vto.calculate(withdraw_tax_percent, withdraw_trancost_percent);
+		//vto.calculate(withdraw_tax_percent, withdraw_trancost_percent);
 		return vto;
 	}
 

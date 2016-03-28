@@ -27,6 +27,7 @@ import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserWalletConfigsService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -52,6 +53,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private UserDeviceFacadeService userDeviceFacadeService;
+	
+	@Resource
+	private UserWalletConfigsService userWalletConfigsService;
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -146,7 +150,7 @@ public class OrderUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<OrderDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
-			String payment_type, String context){
+			Integer umactype, String payment_type, String context){
 		try{
 			orderFacadeService.supportedAppId(appid);
 			
@@ -167,7 +171,7 @@ public class OrderUnitFacadeService {
 			}
 			//生成订单
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
-			Order order = orderFacadeService.createOrder(commdityid, appid, mac_lower, mac_dut, umac_lower, context);
+			Order order = orderFacadeService.createOrder(commdityid, appid, mac_lower, mac_dut, umac_lower, umactype, context);
 			OrderDTO orderDto = new OrderDTO();
 			BeanUtils.copyProperties(order, orderDto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
@@ -232,8 +236,11 @@ public class OrderUnitFacadeService {
 						userOrderDto.setMac(order.getMac());
 						userOrderDto.setUmac(order.getUmac());
 						userOrderDto.setUid(order.getUid());
+						userOrderDto.setUmactype(order.getUmactype());
 						userOrderDto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
 						userOrderDto.setAmount(order.getAmount());
+						double share_amount = userWalletConfigsService.calculateSharedeal(uid, Double.parseDouble(order.getAmount()));
+						userOrderDto.setShare_amount(String.valueOf(share_amount));
 						if(order.getCreated_at() != null){
 							userOrderDto.setCreated_ts(order.getCreated_at().getTime());
 						}
