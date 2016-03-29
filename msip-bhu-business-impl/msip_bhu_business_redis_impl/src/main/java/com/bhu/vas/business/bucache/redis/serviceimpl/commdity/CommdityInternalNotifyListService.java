@@ -1,6 +1,6 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.commdity;
 
-import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -65,10 +65,17 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     
     public void rpushOrderPaymentNotify(String notify_message){
     	super.rpush(generateOrderPaymentNotifyKey(), notify_message);
+    	//super.rpush_llen_multi(generateOrderPaymentNotifyKey(), notify_message);
+    }
+    
+    public List<Object> rpushOrderDeliverNotifyTransaction(String notify_message){
+    	//return super.rpush(generateOrderDeliverNotifyKey(), notify_message);
+    	return super.rpush_llen_multi(generateOrderDeliverNotifyKey(), notify_message);
     }
     
     public Long rpushOrderDeliverNotify(String notify_message){
     	return super.rpush(generateOrderDeliverNotifyKey(), notify_message);
+    	//return super.rpush_llen_multi(generateOrderDeliverNotifyKey(), notify_message);
     }
     
     public void rpushWithdrawAppliesRequestNotify(String notify_message){
@@ -173,7 +180,9 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 		    		requestDeliverNotifyDto.setCommdityid(1);
 		    		requestDeliverNotifyDto.setContext("aaa");
 		    		String notify_message = JsonHelper.getJSONString(requestDeliverNotifyDto);
-		    		CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(notify_message);
+		    		List<Object> rets = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotifyTransaction(notify_message);
+		    		System.out.println(String.format("slen[%s] rpush_ret[%s] elen[%s]", rets.get(0), rets.get(1), rets.get(2)));
+		    		//System.out.println(String.format("rpush_ret[%s] lindex[%s]", rets.get(0), rets.get(1)));
 		    		order_sequence++;
 	    		}
 	    		Thread.sleep(1000l);
