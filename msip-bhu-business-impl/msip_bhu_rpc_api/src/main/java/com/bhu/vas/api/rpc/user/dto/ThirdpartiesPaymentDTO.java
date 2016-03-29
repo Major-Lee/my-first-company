@@ -9,6 +9,7 @@ public class ThirdpartiesPaymentDTO implements Serializable{
 	private String type;
 	private String id;
 	private String name;
+	private String avatar;
 	public String getId() {
 		return id;
 	}
@@ -28,11 +29,19 @@ public class ThirdpartiesPaymentDTO implements Serializable{
 	public void setType(String type) {
 		this.type = type;
 	}
-	public static ThirdpartiesPaymentDTO build(ThirdpartiesPaymentType mode,String id,String name){
+	
+	public String getAvatar() {
+		return avatar;
+	}
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+	public static ThirdpartiesPaymentDTO build(ThirdpartiesPaymentType mode,String id,String name,String avatar){
 		ThirdpartiesPaymentDTO dto = new ThirdpartiesPaymentDTO();
 		dto.setType(mode.getType());
 		dto.setId(id);
 		dto.setName(name);
+		dto.setAvatar(avatar);
 		return dto;
 	}
 	

@@ -113,6 +113,6 @@ public interface IUserWalletRpcService {
 	 * @param name
 	 * @return
 	 */
-	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(int uid,String paymode,String id,String name);
+	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(int uid,String paymode,String id,String name,String avatar);
 
 }
