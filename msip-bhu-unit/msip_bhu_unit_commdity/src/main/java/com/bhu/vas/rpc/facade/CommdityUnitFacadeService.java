@@ -99,6 +99,7 @@ public class CommdityUnitFacadeService {
 				amount = commdityFacadeService.commdityAmount(commdityid);
 				CommdityIntervalAmountService.getInstance().addRAmount(mac, umac, commdityid, amount);
 			}
+			logger.info(String.format("intervalAMount success commdityid[%s] appid[%s] mac[%s] umac[%s] amount[%s]", commdityid, appid, mac, umac, amount));
 			CommdityAmountDTO commdityAmountDto = new CommdityAmountDTO();
 			commdityAmountDto.setAmount(amount);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityAmountDto);
