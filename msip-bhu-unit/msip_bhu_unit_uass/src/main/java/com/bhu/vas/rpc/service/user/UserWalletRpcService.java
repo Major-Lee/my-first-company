@@ -96,9 +96,9 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 
 	@Override
 	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(
-			int uid, String payment_type, String id, String name) {
-		logger.info(String.format("createUserThirdpartiesPayment with uid[%s] payment_type[%s] id[%s] name[%s]",uid,payment_type,id,name));
-		return userWalletUnitFacadeService.createUserThirdpartiesPayment(uid, payment_type, id, name);
+			int uid, String payment_type, String id, String name,String avatar) {
+		logger.info(String.format("createUserThirdpartiesPayment with uid[%s] payment_type[%s] id[%s] name[%s] avatar[%s]",uid,payment_type,id,name,avatar));
+		return userWalletUnitFacadeService.createUserThirdpartiesPayment(uid, payment_type, id, name,avatar);
 	}
 
 	@Override

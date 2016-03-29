@@ -70,10 +70,11 @@ public class UserThirdpartiesPaymentController extends BaseController{
 			@RequestParam(required=true) Integer uid,
 			@RequestParam(required=true) String payment_type,
 			@RequestParam(required=true) String id,
-			@RequestParam(required = false) String name
+			@RequestParam(required = false) String name,
+			@RequestParam(required = false) String avatar
 			){
 		try{
-			RpcResponseDTO<List<ThirdpartiesPaymentDTO>> rpcResult = userWalletRpcService.createUserThirdpartiesPayment(uid, payment_type, id, name);
+			RpcResponseDTO<List<ThirdpartiesPaymentDTO>> rpcResult = userWalletRpcService.createUserThirdpartiesPayment(uid, payment_type, id, name,avatar);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
