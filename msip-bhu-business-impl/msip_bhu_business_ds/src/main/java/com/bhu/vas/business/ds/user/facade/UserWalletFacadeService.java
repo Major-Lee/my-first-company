@@ -23,6 +23,7 @@ import com.bhu.vas.api.rpc.user.model.UserThirdpartiesPayment;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
+import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserThirdpartiesPaymentService;
@@ -188,7 +189,7 @@ public class UserWalletFacadeService{
 	 * 需要验证零钱是否小于要出账的金额
 	 * 现金出账需要把提现状态标记
 	 */
-	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,double cash,String orderid){
+	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,double cash,IWalletNotifyCallback callback){
 		if(StringUtils.isEmpty(pwd) || cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -216,6 +217,7 @@ public class UserWalletFacadeService{
 		uwallet.setCash(uwallet.getCash()-cash);
 		uwallet.setWithdraw(true);
 		uwallet = userWalletService.update(uwallet);
+		String orderid = callback.notifyCashWithdrawOper(cash);
 		this.doWalletLog(uid, orderid,UWalletTransMode.CashPayment, UWalletTransType.Cash2Realmoney, cash, cash,0d, String.format("WalletTotal:%s withdraw:%s ",wallettotal, cash));
 		return uwallet;
 	}
@@ -332,20 +334,27 @@ public class UserWalletFacadeService{
 		}
 	}
 	
-	private UserWalletWithdrawApply doWithdrawApplyOper(int appid,ThirdpartiesPaymentType type,int uid, String pwd,double cash,String remoteip){
+	private UserWalletWithdrawApply doWithdrawApplyOper(final int appid,final ThirdpartiesPaymentType type,final int uid, String pwd,double cash,final String remoteip){
 		synchronized(lockObjectFetch(uid)){
 			logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
-			UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
-			apply.setUid(uid);
-			apply.setAppid(appid);
-			apply.setPayment_type(type.getType());
-			
-			apply.setCash(cash);
-			apply.setRemoteip(remoteip);
-			apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.Apply.getKey());
-			apply.addResponseDTO(WithdrawRemoteResponseDTO.build(BusinessEnumType.UWithdrawStatus.Apply.getKey(), BusinessEnumType.UWithdrawStatus.Apply.getName()));
-			apply = userWalletWithdrawApplyService.insert(apply);
-			this.cashWithdrawOperFromUserWallet(uid, pwd, cash,apply.getId());
+			/*String orderid = StructuredIdHelper.generateStructuredIdString(appid, 
+					StructuredIdHelper.buildStructuredExtSegmentString(OrderExtSegmentPayMode.Expend.getKey()),
+					autoid);*/
+			final UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
+			this.cashWithdrawOperFromUserWallet(uid, pwd, cash,new IWalletNotifyCallback(){
+				@Override
+				public String notifyCashWithdrawOper(double callback_cash) {
+					apply.setUid(uid);
+					apply.setAppid(appid);
+					apply.setPayment_type(type.getType());
+					apply.setCash(callback_cash);
+					apply.setRemoteip(remoteip);
+					apply.setWithdraw_oper(BusinessEnumType.UWithdrawStatus.Apply.getKey());
+					apply.addResponseDTO(WithdrawRemoteResponseDTO.build(BusinessEnumType.UWithdrawStatus.Apply.getKey(), BusinessEnumType.UWithdrawStatus.Apply.getName()));
+					UserWalletWithdrawApply tmpApply = userWalletWithdrawApplyService.insert(apply);
+					return tmpApply.getId();
+				}
+			});
 			return apply;
 		}
 	}
