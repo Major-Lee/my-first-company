@@ -358,19 +358,19 @@ public class OrderFacadeService {
 			RequestDeliverNotifyDTO requestDeliverNotifyDto = RequestDeliverNotifyDTO.from(order, commdity, bindUser);
 			if(requestDeliverNotifyDto != null){
 				String requestDeliverNotifyMessage = JsonHelper.getJSONString(requestDeliverNotifyDto);
-/*				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(requestDeliverNotifyMessage);
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(requestDeliverNotifyMessage);
 				//判断通知发货成功
 				if(notify_ret != null && notify_ret > 0){
-					logger.info(String.format("OrderDeliverNotify success deliver notify: message[%s]", requestDeliverNotifyMessage));
+					logger.info(String.format("OrderDeliverNotify success deliver notify: message[%s] rpush_ret[%s]", requestDeliverNotifyMessage, notify_ret));
 					return true;
-				}*/
-				List<Object> notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotifyTransaction(requestDeliverNotifyMessage);
+				}
+/*				List<Object> notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotifyTransaction(requestDeliverNotifyMessage);
 				//判断通知发货成功
 				if(notify_ret != null && notify_ret.size() == 3){
 					logger.info(String.format("OrderDeliverNotify success deliver notify: message[%s] slen[%s] rpush_ret[%s] elen[%s]", 
 							requestDeliverNotifyMessage, notify_ret.get(0), notify_ret.get(1), notify_ret.get(2)));
 					return true;
-				}
+				}*/
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
