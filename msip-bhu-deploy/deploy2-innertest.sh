@@ -238,17 +238,17 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/lib/msip_*.jar		roo
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/classes/com/ 		root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_task/bin/com/
 echo 'deploy msip_bhu_backend_task successfully @'$Deploy2ServerBrook
 
-echo 'deploy msip_bhu_backend_wifistasniffer to ...@'$Deploy2ServerBrook
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/spring*.RELEASE.jar    root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/msip_*.jar   root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/classes/com/     root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_wifistasniffer/bin/com/
-echo 'deploy msip_bhu_backend_wifistasniffer successfully @'$Deploy2ServerBrook
+#echo 'deploy msip_bhu_backend_wifistasniffer to ...@'$Deploy2ServerBrook
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/spring*.RELEASE.jar    root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/msip_*.jar   root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/classes/com/     root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_wifistasniffer/bin/com/
+#echo 'deploy msip_bhu_backend_wifistasniffer successfully @'$Deploy2ServerBrook
 
-echo 'deploy msip_bhu_backend_modulestat to ...@'$Deploy2ServerBrook
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/lib/spring*.RELEASE.jar    root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_modulestat/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/lib/msip_*.jar   root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_modulestat/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/classes/com/     root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_modulestat/bin/com/
-echo 'deploy msip_bhu_backend_modulestat successfully @'$Deploy2ServerBrook
+#echo 'deploy msip_bhu_backend_modulestat to ...@'$Deploy2ServerBrook
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/lib/spring*.RELEASE.jar    root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_modulestat/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/lib/msip_*.jar   root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_modulestat/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/classes/com/     root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_backend_modulestat/bin/com/
+#echo 'deploy msip_bhu_backend_modulestat successfully @'$Deploy2ServerBrook
 
 echo 'deploy msip_bhu_dataimport to ...@'$Deploy2ServerBrook
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/spring*.RELEASE.jar  		root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_dataimport/libs/
