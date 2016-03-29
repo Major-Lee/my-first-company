@@ -726,14 +726,15 @@ public class BusinessEnumType {
 	}
 	
 	public enum ThirdpartiesPaymentType{
-		Weichat("腾讯微信", "weixin"),
-		Alipay("支付宝", "alipay"),
+		Weichat("腾讯微信", "weixin","提现至微信"),
+		Alipay("支付宝", "alipay","提现至支付宝"),
 		;
 		private String name;
 		private String type;
+		private String description;
 		static Map<String, ThirdpartiesPaymentType> allPaymentTypes;
 		
-		private ThirdpartiesPaymentType(String name, String type){
+		private ThirdpartiesPaymentType(String name, String type,String description){
 			this.name = name;
 			this.type = type;
 		}
@@ -749,6 +750,13 @@ public class BusinessEnumType {
 		}
 		public void setType(String type) {
 			this.type = type;
+		}
+		
+		public String getDescription() {
+			return description;
+		}
+		public void setDescription(String description) {
+			this.description = description;
 		}
 		public static ThirdpartiesPaymentType fromType(String type){
 			return allPaymentTypes.get(type);

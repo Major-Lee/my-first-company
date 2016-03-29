@@ -88,11 +88,11 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 	public void test001PrepareUserPayment(){
     	userWalletFacadeService.addThirdpartiesPayment(testUserId, 
     			ThirdpartiesPaymentType.Weichat, 
-    			ThirdpartiesPaymentDTO.build(ThirdpartiesPaymentType.Weichat,weichat_id,null));
+    			ThirdpartiesPaymentDTO.build(ThirdpartiesPaymentType.Weichat,weichat_id,null,null));
     	
     	userWalletFacadeService.addThirdpartiesPayment(testUserId, 
     			ThirdpartiesPaymentType.Alipay, 
-    			ThirdpartiesPaymentDTO.build(ThirdpartiesPaymentType.Alipay,alipay_id,alipay_name));
+    			ThirdpartiesPaymentDTO.build(ThirdpartiesPaymentType.Alipay,alipay_id,alipay_name,null));
     	List<ThirdpartiesPaymentDTO> allPayment = userWalletFacadeService.fetchAllThirdpartiesPayment(testUserId);
     	for(ThirdpartiesPaymentDTO dto:allPayment){
     		System.out.println("0"+dto);
