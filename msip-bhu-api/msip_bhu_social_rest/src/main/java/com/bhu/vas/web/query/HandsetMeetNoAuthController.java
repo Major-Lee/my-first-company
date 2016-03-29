@@ -55,8 +55,10 @@ public class HandsetMeetNoAuthController extends BaseController {
             @RequestParam(required = false, value = "lon") String lon,
             @RequestParam(required = false, value = "addr") String addr
     ) {
-
-        RpcResponseDTO<Boolean> rpcResult = socialRpcService.handsetMeet(uid, hd_mac.toLowerCase(), hd_macs.toLowerCase(), bssid.toLowerCase(), ssid, lat, lon, addr);
+        if(hd_macs != null){
+            hd_macs = hd_macs.toLowerCase();
+        }
+        RpcResponseDTO<Boolean> rpcResult = socialRpcService.handsetMeet(uid, hd_mac.toLowerCase(),hd_macs, bssid.toLowerCase(), ssid, lat, lon, addr);
         if (!rpcResult.hasError())
             SpringMVCHelper.renderJson(response,
                     ResponseSuccess.embed(rpcResult.getPayload()));
