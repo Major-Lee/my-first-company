@@ -536,6 +536,7 @@ public class TaskFacadeService {
 					SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
 					if(sharedNetworkConf != null && sharedNetworkConf.getPsn() != null){
 						ParamSharedNetworkDTO dto = sharedNetworkConf.getPsn();
+						dto.setNtype(limit_dto.getNtype());
 						dto.setUsers_rx_rate(limit_dto.getUsers_rx_rate());
 						dto.setUsers_tx_rate(limit_dto.getUsers_tx_rate());
 						//重新构建共享网络开启指令
