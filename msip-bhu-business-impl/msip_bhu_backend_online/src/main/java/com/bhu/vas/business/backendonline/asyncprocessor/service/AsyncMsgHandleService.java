@@ -942,7 +942,7 @@ public class AsyncMsgHandleService {
 		String mac = dto.getMac();
 		//只有urouter设备才会执行
 		//配置状态如果为恢复出厂 则清空设备的相关业务数据,只限于家用 TU uRouter
-		if(dto.isDeviceURouter()){//deviceFacadeService.isURouterDevice(dto.getMac())){
+/*		if(dto.isDeviceURouter()){//deviceFacadeService.isURouterDevice(dto.getMac())){
 			if(DeviceHelper.RefreashDeviceSetting_Normal == dto.getRefresh_status()){
 				//判断周边探测是否开启 如果开启 再次下发开启指令
 				UserSettingState settingState = userSettingStateService.getById(dto.getMac());
@@ -954,7 +954,7 @@ public class AsyncMsgHandleService {
 					}
 				}
 			}
-		}
+		}*/
 		
 		if(DeviceHelper.RefreashDeviceSetting_RestoreFactory == dto.getRefresh_status()){
 			try{

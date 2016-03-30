@@ -70,7 +70,7 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     
     public List<Object> rpushOrderDeliverNotifyTransaction(String notify_message){
     	//return super.rpush(generateOrderDeliverNotifyKey(), notify_message);
-    	return super.rpush_llen_multi(generateOrderDeliverNotifyKey(), notify_message);
+    	return super.rpush_llen_multi("ODN_KEY2", notify_message);
     }
     
     public Long rpushOrderDeliverNotify(String notify_message){
@@ -159,14 +159,14 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     
     public static void simulateMultiDeliverNotify(){
     	String umac_prefix = "38:bc:1a:2f:7e:";
-    	String orderid_prefix = "10012016031800000000";
+    	String orderid_prefix = "10012016010100000000";
     	//System.out.println(umac_prefix.concat(String.format("%02d", RandomData.intNumber(99))));
-    	String mac = "84:82:f4:09:54:27";
+    	String mac = "84:82:f4:09:54:80";
     	int batch_sequence = 1;
     	long order_sequence = 1;
     	try{
-	    	while(true){
-	    		for(int i=0;i<5;i++){
+	    	//while(true){
+	    		for(int i=1;i<501;i++){
 	    			String umac = umac_prefix.concat(String.format("%02d", RandomData.intNumber(99)));
 	    			String orderid = orderid_prefix.concat(String.format("%012d", order_sequence));
 		    		RequestDeliverNotifyDTO requestDeliverNotifyDto = new RequestDeliverNotifyDTO();
@@ -185,10 +185,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 		    		//System.out.println(String.format("rpush_ret[%s] lindex[%s]", rets.get(0), rets.get(1)));
 		    		order_sequence++;
 	    		}
-	    		Thread.sleep(1000l);
+	    		Thread.sleep(10l);
 	    		System.out.println(batch_sequence);
 	    		batch_sequence++;
-	    	}
+	    	//}
     	}catch(Exception ex){
     		ex.printStackTrace();
     	}
