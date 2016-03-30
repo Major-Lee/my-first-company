@@ -737,6 +737,7 @@ public class BusinessEnumType {
 		private ThirdpartiesPaymentType(String name, String type,String description){
 			this.name = name;
 			this.type = type;
+			this.description = description;
 		}
 		public String getName() {
 			return name;
