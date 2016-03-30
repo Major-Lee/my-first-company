@@ -16,7 +16,7 @@
     <result property="cash" column="cash"/>
     <result property="vcurrency" column="vcurrency"/>
     <result property="memo" column="memo"/>
-    <result property="description" column="memo"/>
+    <result property="description" column="description"/>
     
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
