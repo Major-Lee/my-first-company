@@ -19,7 +19,6 @@ public class UserWalletLogVTO implements java.io.Serializable {
 	private String vcurrency;
 	//交易内容描述
 	private String memo;
-	
 	private String description;
 	//private String payment_type;
 	//private String withdrawdate;

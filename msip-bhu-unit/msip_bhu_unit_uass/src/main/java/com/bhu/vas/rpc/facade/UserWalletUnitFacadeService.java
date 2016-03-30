@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
-import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
@@ -74,25 +73,24 @@ public class UserWalletUnitFacadeService {
 					User user = users.get(index);
 					//String payment_type = StringUtils.EMPTY;
 					//String description = StringUtils.EMPTY;
-					ThirdpartiesPaymentType paymentType = null;
+					/*ThirdpartiesPaymentType paymentType = null;
 					if(BusinessEnumType.UWalletTransMode.CashPayment.getKey().equals(log.getTransmode())
 							&& BusinessEnumType.UWalletTransType.Cash2Realmoney.getKey().equals(log.getTranstype()) 
 							&& StringUtils.isNotEmpty(log.getOrderid())){
 						UserWalletWithdrawApply apply = userWalletFacadeService.getUserWalletWithdrawApplyService().getById(log.getOrderid());
 						paymentType = ThirdpartiesPaymentType.fromType(apply!= null ?apply.getPayment_type():StringUtils.EMPTY);
-						/*String payment_type = apply!= null ?apply.getPayment_type():StringUtils.EMPTY;
+						String payment_type = apply!= null ?apply.getPayment_type():StringUtils.EMPTY;
 						if(StringUtils.isNotEmpty(payment_type)){
 							if(ThirdpartiesPaymentType.Alipay.equals(payment_type)){
 								description = ThirdpartiesPaymentType.Alipay.getDescription();
 							}else if(ThirdpartiesPaymentType.Weichat.equals(payment_type)) {
 								description = ThirdpartiesPaymentType.Weichat.getDescription();
 							}
-						}*/
-					}
+						}
+					}*/
 					vtos.add(log.toUserWalletLogVTO(
 							user!=null?user.getMobileno():StringUtils.EMPTY,
-							user!=null?user.getNick():StringUtils.EMPTY,
-							paymentType!=null?paymentType.getDescription():StringUtils.EMPTY));
+							user!=null?user.getNick():StringUtils.EMPTY));
 					index++;
 				}
 			}
