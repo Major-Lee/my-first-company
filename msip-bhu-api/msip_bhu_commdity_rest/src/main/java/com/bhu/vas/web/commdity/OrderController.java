@@ -4,6 +4,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +32,7 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 @Controller
 @RequestMapping("/order")
 public class OrderController extends BaseController{
+	private final static Logger logger = LoggerFactory.getLogger(OrderController.class);
 	
 	@Resource
 	private IOrderRpcService orderRpcService;
@@ -138,6 +141,7 @@ public class OrderController extends BaseController{
 			@RequestParam(required = true) String payment_type,
 			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
 			) {
+		long start = System.currentTimeMillis();
 		
 		//1:生成订单
 		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.createOrder(commdityid, appid, mac, umac, umactype,
@@ -163,6 +167,11 @@ public class OrderController extends BaseController{
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE)));
 			return;
 		}
+		
+		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
+				+ "ip[%s] mac[%s] umac[%s] rep_time[%s]", orderid, payment_type, commdityid, requestIp, mac, umac,
+				(System.currentTimeMillis() - start)+"ms"));
+		
 		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
 		retDto.setId(order_dto.getId());
 		retDto.setThird_payinfo(rcp_dto.getParams());
