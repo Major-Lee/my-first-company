@@ -97,7 +97,7 @@ public class UserWalletFacadeService{
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
 		uwallet.setCash(uwallet.getCash()+cash);
 		userWalletService.update(uwallet);
-		this.doWalletLog(uid, orderid,UWalletTransMode.RealMoneyPayment, UWalletTransType.Recharge2C, cash, cash,0d, desc);
+		this.doWalletLog(uid, orderid,UWalletTransMode.RealMoneyPayment, UWalletTransType.Recharge2C,StringUtils.EMPTY, cash, cash,0d, desc);
 	}
 	
 	/**
@@ -137,14 +137,14 @@ public class UserWalletFacadeService{
 	 * @param orderid
 	 * @return
 	 */
-	public UserWallet sharedealCashToUserWalletWithBindUid(Integer bindUid, double cash, String orderid){
+	public UserWallet sharedealCashToUserWalletWithBindUid(Integer bindUid, double cash, String orderid,String description){
 		int sharedeal_uid = UserWallet.Default_WalletUID_WhenUIDNotExist;
 		boolean owner = false;
 		if(bindUid != null){
 			sharedeal_uid = bindUid;
 			owner = true; 
 		}
-		return sharedealCashToUserWallet(sharedeal_uid, cash, orderid, owner);
+		return sharedealCashToUserWallet(sharedeal_uid, cash, orderid, owner,description);
 	}
 	
 	/**
@@ -158,7 +158,7 @@ public class UserWalletFacadeService{
 	 * @param orderid
 	 * @param desc
 	 */
-	public UserWallet sharedealCashToUserWallet(Integer uid, double cash, String orderid, boolean owner){
+	public UserWallet sharedealCashToUserWallet(Integer uid, double cash, String orderid, boolean owner,String description){
 		logger.info(String.format("分成现金入账-1 uid[%s] orderid[%s] cash[%s] owner[%s]", uid,orderid,cash,owner));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		//UserWalletConfigs configs = userWalletConfigsService.userfulWalletConfigs(uid);
@@ -168,7 +168,7 @@ public class UserWalletFacadeService{
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
 		uwallet.setCash(uwallet.getCash()+realIncommingCash);
 		uwallet = userWalletService.update(uwallet);
-		this.doWalletLog(uid, orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C, realIncommingCash, realIncommingCash,0d, String.format("Total:%s Incomming:%s owner:%s", cash,realIncommingCash,owner));
+		this.doWalletLog(uid, orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, realIncommingCash, realIncommingCash,0d, String.format("Total:%s Incomming:%s owner:%s", cash,realIncommingCash,owner));
 		return uwallet;
 	}
 	
@@ -189,7 +189,7 @@ public class UserWalletFacadeService{
 	 * 需要验证零钱是否小于要出账的金额
 	 * 现金出账需要把提现状态标记
 	 */
-	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,double cash,IWalletNotifyCallback callback){
+	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,double cash,String description,IWalletNotifyCallback callback){
 		if(StringUtils.isEmpty(pwd) || cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -218,7 +218,7 @@ public class UserWalletFacadeService{
 		uwallet.setWithdraw(true);
 		uwallet = userWalletService.update(uwallet);
 		String orderid = callback.notifyCashWithdrawOper(cash);
-		this.doWalletLog(uid, orderid,UWalletTransMode.CashPayment, UWalletTransType.Cash2Realmoney, cash, cash,0d, String.format("WalletTotal:%s withdraw:%s ",wallettotal, cash));
+		this.doWalletLog(uid, orderid,UWalletTransMode.CashPayment, UWalletTransType.Cash2Realmoney,description, cash, cash,0d, String.format("WalletTotal:%s withdraw:%s ",wallettotal, cash));
 		return uwallet;
 	}
 	
@@ -227,7 +227,7 @@ public class UserWalletFacadeService{
 	 * @param uid
 	 * @param cash
 	 */
-	private void cashWithdrawRollback2UserWalletWhenVerifyFailed(int uid, double cash){
+	private void cashWithdrawRollback2UserWalletWhenVerifyFailed(int uid, double cash,String description){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -236,7 +236,7 @@ public class UserWalletFacadeService{
 		uwallet.setCash(uwallet.getCash()+cash);
 		uwallet.setWithdraw(false);
 		userWalletService.update(uwallet);
-		this.doWalletLog(uid, StringUtils.EMPTY,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C, cash, cash,0d, null);
+		this.doWalletLog(uid, StringUtils.EMPTY,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
 	}
 	
 	/**
@@ -246,7 +246,7 @@ public class UserWalletFacadeService{
 	 * @param uid
 	 * @param cash
 	 */
-	private void cashWithdrawRollback2UserWalletWhenRemoteFailed(int uid, double cash){
+	private void cashWithdrawRollback2UserWalletWhenRemoteFailed(int uid, double cash,String description){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -255,7 +255,7 @@ public class UserWalletFacadeService{
 		uwallet.setCash(uwallet.getCash()+cash);
 		uwallet.setWithdraw(false);
 		userWalletService.update(uwallet);
-		this.doWalletLog(uid, StringUtils.EMPTY,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C, cash, cash,0d, null);
+		this.doWalletLog(uid, StringUtils.EMPTY,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
 	}
 	
 	/**
@@ -341,7 +341,7 @@ public class UserWalletFacadeService{
 					StructuredIdHelper.buildStructuredExtSegmentString(OrderExtSegmentPayMode.Expend.getKey()),
 					autoid);*/
 			final UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
-			this.cashWithdrawOperFromUserWallet(uid, pwd, cash,new IWalletNotifyCallback(){
+			this.cashWithdrawOperFromUserWallet(uid, pwd, cash,type.getDescription(),new IWalletNotifyCallback(){
 				@Override
 				public String notifyCashWithdrawOper(double callback_cash) {
 					apply.setUid(uid);
@@ -405,7 +405,7 @@ public class UserWalletFacadeService{
 			current = BusinessEnumType.UWithdrawStatus.VerifyFailed;
 			apply.setWithdraw_oper(current.getKey());
 			//返还金额到用户钱包
-			this.cashWithdrawRollback2UserWalletWhenVerifyFailed(apply.getUid(), apply.getCash());
+			this.cashWithdrawRollback2UserWalletWhenVerifyFailed(apply.getUid(), apply.getCash(),current.getName());
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
 		apply = userWalletWithdrawApplyService.update(apply);
@@ -471,7 +471,7 @@ public class UserWalletFacadeService{
 		}else{
 			current = BusinessEnumType.UWithdrawStatus.WithdrawFailed;
 			apply.setWithdraw_oper(current.getKey());
-			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getCash());
+			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getCash(),current.getName());
 			logger.info(String.format("提现操作-失败 applyid[%s] 返现并解锁钱包状态", applyid));
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
@@ -529,7 +529,9 @@ public class UserWalletFacadeService{
 	private void doWalletLog(int uid,String orderid,
 			BusinessEnumType.UWalletTransMode transMode,
 			BusinessEnumType.UWalletTransType transType,
+			String description,
 			double rmoney,double cash,double vcurrency,String memo){
+		System.out.println("~~~~~~~~~~~~~~:"+description);
 		UserWalletLog wlog = new UserWalletLog();
 		wlog.setUid(uid);
 		wlog.setOrderid(orderid);
@@ -540,6 +542,7 @@ public class UserWalletFacadeService{
 		wlog.setRmoney("0");
 		wlog.setCash("0");
 		wlog.setVcurrency("0");
+		wlog.setDescription(description);
 		switch(transMode){
 			case RealMoneyPayment://充值零钱、充值虎钻
 				wlog.setRmoney(StringHelper.MINUS_STRING_GAP.concat(String.valueOf(rmoney)));

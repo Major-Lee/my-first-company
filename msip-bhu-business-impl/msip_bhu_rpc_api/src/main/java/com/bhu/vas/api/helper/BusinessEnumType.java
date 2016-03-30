@@ -96,7 +96,7 @@ public class BusinessEnumType {
 	//充值购买虎钻 充值零钱 系统/活动赠送虎钻 消费虎钻 提现(withdraw)
 	public enum UWithdrawStatus{
 		//Init("IN","提现申请（初始）"),
-		Apply("AP","提现申请（确认）"),
+		Apply("AP","提现申请"),
 		VerifyPassed("VP","提现申请审核通过"),
 		VerifyFailed("VF","提现申请审核失败"),
 		WithdrawDoing("WD","uPay正在提现处理中"),
@@ -737,6 +737,7 @@ public class BusinessEnumType {
 		private ThirdpartiesPaymentType(String name, String type,String description){
 			this.name = name;
 			this.type = type;
+			this.description = description;
 		}
 		public String getName() {
 			return name;

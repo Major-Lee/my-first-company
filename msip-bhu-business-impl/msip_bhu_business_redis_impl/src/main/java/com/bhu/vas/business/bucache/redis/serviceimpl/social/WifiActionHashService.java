@@ -52,18 +52,19 @@ public class WifiActionHashService extends AbstractRelationHashCache {
         Map<String, String> map = this.hgetall(generateKey(bssid));
         WifiActionDTO dto = new WifiActionDTO();
         if (map.isEmpty()) {
-            init(bssid);
+            map = init(bssid);
         }
         dto.setUp(map.get(followType.up.name()));
         dto.setReport(map.get(followType.report.name()));
         return dto;
     }
 
-    public void init(String bssid) {
+    public Map<String,String> init(String bssid) {
         Map<String, String> map = new HashMap<String, String>();
         map.put(followType.up.name(), COUNT_DEFAULT);
         map.put(followType.report.name(), COUNT_DEFAULT);
         this.hmset(generateKey(bssid), map);
+        return map;
     }
 
     public void hincrease(String bssid, String type) {
