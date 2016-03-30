@@ -341,6 +341,7 @@ public class SharedNetworkFacadeService {
 			wifiDeviceSharedNetworkService.insert(sharednetwork);
 			wasUpdated = true;
 		}else{
+			sharednetwork.setSharednetwork_type(configDto.getNtype());
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
 			sharedNetworkSettingDTO.turnOn(configDto);
 			sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
