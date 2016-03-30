@@ -29,6 +29,8 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	private Integer uid;
 	//支付订单id
 	//private String pay_orderid;
+	//支付方式
+	private String payment_type;
 	//订单支付成功时间
 	private Date paymented_at;
 	//订单金额
@@ -116,7 +118,14 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	public void setPay_orderid(String pay_orderid) {
 		this.pay_orderid = pay_orderid;
 	}*/
+	public String getPayment_type() {
+		return payment_type;
+	}
 
+	public void setPayment_type(String payment_type) {
+		this.payment_type = payment_type;
+	}
+	
 	public Date getPaymented_at() {
 		return paymented_at;
 	}
