@@ -2,11 +2,11 @@ package com.bhu.vas.api.rpc.user.model;
 
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
-import com.smartwork.msip.cores.orm.model.extjson.SimpleJsonExtPKModel;
+import com.smartwork.msip.cores.orm.model.extjson.DtoJsonExtPKModel;
 @SuppressWarnings("serial")
-public class UserOAuthState extends SimpleJsonExtPKModel<UserOAuthStateDTO,UserOAuthStatePK>{
+public class UserOAuthState extends DtoJsonExtPKModel<UserOAuthStatePK,UserOAuthStateDTO>{
+	//如果是微信 则代表unionid
 	private String auid;
-	
 	public UserOAuthState(){
 	}
 	

@@ -64,7 +64,7 @@ public class UserOAuthFacadeService {
 		UserOAuthStateDTO dto = null;
 		if(oauthState != null){
 			dto = new UserOAuthStateDTO();
-			dto.setIdentify(identify);
+			//dto.setIdentify(identify);
 			dto.setAuid(auid);
 			dto.setNick(nick);
 			dto.setAvatar(avatar);
@@ -75,7 +75,7 @@ public class UserOAuthFacadeService {
 			oauthState.setId(pk);
 			oauthState.setAuid(auid);
 			dto = new UserOAuthStateDTO();
-			dto.setIdentify(identify);
+			//dto.setIdentify(identify);
 			dto.setAuid(auid);
 			dto.setNick(nick);
 			dto.setAvatar(avatar);

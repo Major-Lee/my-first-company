@@ -59,7 +59,7 @@ public class UserOAuthServiceTest extends BaseTest{
     	System.out.println(String.format("Unit test cost:[%s]s", (unit_test_end-unit_test_start)/1000));*/
     }
     
-    //@Test
+    @Test
 	public void test001BatchCreateUserOAuth(){
     	System.out.println(Integer.MAX_VALUE);
     	ModelCriteria mc = new ModelCriteria();
@@ -67,7 +67,7 @@ public class UserOAuthServiceTest extends BaseTest{
 		userOAuthFacadeService.getUserOAuthStateService().deleteByModelCriteria(mc);//.deleteByCommonCriteria(mc);
     	unit_test_start = System.currentTimeMillis();
 		//int count = 10;
-		for(int i=0;i<batch_create_size;i++){
+		for(int i=1;i<=batch_create_size;i++){
 			userOAuthFacadeService.createOrUpdateIdentifies(
 					i,
 					RandomPicker.pick(BusinessEnumType.OAuthType.values()).getType(),
@@ -81,7 +81,7 @@ public class UserOAuthServiceTest extends BaseTest{
     
     @Test
     public void test002OAuthExistAndCached(){
-    	UserOAuthStatePK pk = new UserOAuthStatePK(0,BusinessEnumType.OAuthType.Weichat.getType());
+    	UserOAuthStatePK pk = new UserOAuthStatePK(1,BusinessEnumType.OAuthType.Weichat.getType());
     	UserOAuthState random_user = userOAuthFacadeService.getUserOAuthStateService().getById(pk);
     	AssertHelper.notNull(random_user);
     	
