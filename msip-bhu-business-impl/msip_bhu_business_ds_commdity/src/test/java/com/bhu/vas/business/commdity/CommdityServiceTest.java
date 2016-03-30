@@ -6,14 +6,12 @@ import javax.annotation.Resource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityStatus;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
-import com.bhu.vas.business.commdity.dto.CommdityPorcDTO;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -96,11 +94,11 @@ public class CommdityServiceTest extends BaseTest{
     	}
     }
     
-    @Test
+/*    @Test
     public void testPorcByCommdityTest(){
     	CommdityPorcDTO dto = new CommdityPorcDTO();
     	dto.setId(4);
     	//int ret = commdityService.porcByCommdityTest(dto);
     	//System.out.println("testPorcByCommdityTest = " + ret + "--- " + dto.getError());
-    }
+    }*/
 }

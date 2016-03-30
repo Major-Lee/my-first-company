@@ -229,11 +229,12 @@ public class OrderFacadeService {
 	 * @param mac_dut 设备业务线
 	 * @param umac 用户mac
 	 * @param umactype 终端类型
+	 * @param payment_type 支付方式
 	 * @param context 业务上下文
 	 * @return
 	 */
 	public Order createOrder(Integer commdityid, Integer appid, String mac, String mac_dut, String umac, 
-			Integer umactype, String context){
+			Integer umactype, String payment_type, String context){
 		//商品信息验证
 		Commdity commdity = commdityService.getById(commdityid);
 		if(commdity == null){
@@ -257,8 +258,10 @@ public class OrderFacadeService {
 		order.setUmac(umac);
 		order.setUmactype(umactype);
 		//order.setUid(uid);
+		order.setPayment_type(payment_type);
 		order.setContext(context);
 		order.setStatus(OrderStatus.NotPay.getKey());
+		
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setAmount(amount);
 		orderService.insert(order);
