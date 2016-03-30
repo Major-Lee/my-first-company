@@ -100,7 +100,7 @@ public class AsyncOrderPaymentNotifyService {
 				//String dmac = order.getMac();
 				double amount = Double.parseDouble(order.getAmount());
 				//userWalletFacadeService.sharedealCashToUserWallet(order.getUid(), amount, orderid);
-				userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid);
+				userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,order.getPayment_type());
 			}
 		}
 	}
