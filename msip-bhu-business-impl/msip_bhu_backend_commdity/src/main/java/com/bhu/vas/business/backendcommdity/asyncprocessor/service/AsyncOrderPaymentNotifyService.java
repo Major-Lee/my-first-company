@@ -8,11 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
+
+
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -23,6 +26,7 @@ import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 @Service
 public class AsyncOrderPaymentNotifyService {
@@ -100,7 +104,17 @@ public class AsyncOrderPaymentNotifyService {
 				//String dmac = order.getMac();
 				double amount = Double.parseDouble(order.getAmount());
 				//userWalletFacadeService.sharedealCashToUserWallet(order.getUid(), amount, orderid);
-				userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid);
+				OrderUmacType uMacType = OrderUmacType.fromKey(order.getUmactype());
+				StringBuilder sb_description = new StringBuilder();
+				if(uMacType != null){
+					sb_description.append(uMacType.getName());
+				}
+				if(StringUtils.isNotEmpty(order.getPayment_type())){
+					if(sb_description.length()>0)	
+						sb_description.append(StringHelper.MINUS_CHAR_GAP);
+					sb_description.append(order.getPayment_type());
+				}
+				userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,sb_description.toString());
 			}
 		}
 	}

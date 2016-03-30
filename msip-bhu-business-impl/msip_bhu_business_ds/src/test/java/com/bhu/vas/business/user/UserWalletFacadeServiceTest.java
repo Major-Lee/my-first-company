@@ -3,6 +3,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -88,11 +89,11 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 	public void test001PrepareUserPayment(){
     	userWalletFacadeService.addThirdpartiesPayment(testUserId, 
     			ThirdpartiesPaymentType.Weichat, 
-    			ThirdpartiesPaymentDTO.build(ThirdpartiesPaymentType.Weichat,weichat_id,null));
+    			ThirdpartiesPaymentDTO.build(ThirdpartiesPaymentType.Weichat,weichat_id,null,null));
     	
     	userWalletFacadeService.addThirdpartiesPayment(testUserId, 
     			ThirdpartiesPaymentType.Alipay, 
-    			ThirdpartiesPaymentDTO.build(ThirdpartiesPaymentType.Alipay,alipay_id,alipay_name));
+    			ThirdpartiesPaymentDTO.build(ThirdpartiesPaymentType.Alipay,alipay_id,alipay_name,null));
     	List<ThirdpartiesPaymentDTO> allPayment = userWalletFacadeService.fetchAllThirdpartiesPayment(testUserId);
     	for(ThirdpartiesPaymentDTO dto:allPayment){
     		System.out.println("0"+dto);
@@ -111,7 +112,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     @Test
 	public void test001SharedealCashToUserWallet(){
-    	UserWallet uWallet = userWalletFacadeService.sharedealCashToUserWallet(testUserId, testSharedealCash, testOrderId,true);
+    	UserWallet uWallet = userWalletFacadeService.sharedealCashToUserWallet(testUserId, testSharedealCash, testOrderId,true,StringUtils.EMPTY);
     	System.out.println(uWallet);
 	}	
     
