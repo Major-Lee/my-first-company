@@ -47,6 +47,10 @@
 			<groupId>com.bhu</groupId>
 			<artifactId>msip_bhu_i18n</artifactId>
 		</dependency>
+		<dependency> 
+			<groupId>com.bhu</groupId> 
+			<artifactId>msip_bhu_business_redis_impl</artifactId> 
+		</dependency>
 
 		<dependency>
 			<groupId>com.alibaba</groupId>

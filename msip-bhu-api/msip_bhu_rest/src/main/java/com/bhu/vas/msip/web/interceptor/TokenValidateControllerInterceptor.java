@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
+import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -34,8 +33,8 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapter {
 	private final Logger logger = LoggerFactory.getLogger(TokenValidateControllerInterceptor.class);
 	
-	@Resource
-	private IUserRpcService userRpcService;
+	//@Resource
+	//private IUserRpcService userRpcService;
 
 	private static final String ConsolePrefixUrl = "/console";
 	/*private static final String NoAuthPrefixUrl = "/noauth";
@@ -142,7 +141,42 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 			}*/
 		}
 		logger.info(String.format("Req uri[%s] URL[%s] uid [%s] token[%s] udid[%s] ",uri, request.getRequestURI(), UID,accessToken,udid));
-		RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken,udid);
+		int uid = 0;
+		try{
+			if(StringUtils.isNotEmpty(UID))
+				uid = Integer.parseInt(UID);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
+		try{
+			boolean isReg = IegalTokenHashService.getInstance().validateUserToken(accessToken,uid);
+			if(!isReg){
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
+				return false;
+			}else{
+				if(uri.startsWith(ConsolePrefixUrl)){
+					//if(StringUtils.isNotEmpty(UID) && Integer.parseInt(UID) <=100000){
+					if(BusinessRuntimeConfiguration.isConsoleUser(uid)){
+						System.out.println(UID+"~~~~~~~~~~~~~~能访问管理页面啦！！！！！！！！");
+						return true; 
+					}else{
+						System.out.println(UID+"~~~~~~~~~~~~~~不能访问管理页面啦！！！！！！！！");
+						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+						return false;
+					}
+				}
+			}
+		}catch(TokenValidateBusinessException ex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
+			return false;
+		}
+		
+		/*boolean isReg = IegalTokenHashService.getInstance().validateUserToken(accessToken,uid);
+		if(!isReg){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
+			return false;
+		}*/
+		/*RpcResponseDTO<Boolean> tokenValidate = userRpcService.tokenValidate(UID, accessToken,udid);
 		if(tokenValidate.getErrorCode() == null){
 			if(!tokenValidate.getPayload().booleanValue()){//验证不通过
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
@@ -163,7 +197,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(tokenValidate.getErrorCode()));
 			return false;
-		}
+		}*/
 		return true;
 	}
 	
