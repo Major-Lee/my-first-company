@@ -531,7 +531,7 @@ public class UserWalletFacadeService{
 			BusinessEnumType.UWalletTransType transType,
 			String description,
 			double rmoney,double cash,double vcurrency,String memo){
-		System.out.println("~~~~~~~~~~~~~~:"+description);
+		//System.out.println("~~~~~~~~~~~~~~:"+description);
 		UserWalletLog wlog = new UserWalletLog();
 		wlog.setUid(uid);
 		wlog.setOrderid(orderid);
