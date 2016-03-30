@@ -31,8 +31,7 @@ public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenabl
 	private String vcurrency;
 	//交易内容描述
 	private String memo;
-	
-	private String description;
+	private String explain;
 	public UserWalletLog() {
 		super();
 	}
@@ -121,12 +120,12 @@ public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenabl
 		this.vcurrency = vcurrency;
 	}
 	
-	public String getDescription() {
-		return description;
+	public String getExplain() {
+		return explain;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setExplain(String explain) {
+		this.explain = explain;
 	}
 
 	public UserWalletLogVTO toUserWalletLogVTO(String mobileno,String nick){
@@ -141,7 +140,7 @@ public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenabl
 		vto.setVcurrency(vcurrency);
 		vto.setTransmode_desc(transmode_desc);
 		vto.setTranstype_desc(transtype_desc);
-		vto.setDescription(description);
+		vto.setExplain(explain);
 		//vto.setPayment_type(payment_type);
 		vto.setMemo(memo);
 		vto.setOperdate(DateTimeHelper.formatDate(this.updated_at, DateTimeHelper.FormatPattern0));
