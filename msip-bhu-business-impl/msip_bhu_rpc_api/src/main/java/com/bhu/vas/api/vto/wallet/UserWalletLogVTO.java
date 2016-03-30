@@ -19,7 +19,7 @@ public class UserWalletLogVTO implements java.io.Serializable {
 	private String vcurrency;
 	//交易内容描述
 	private String memo;
-	private String description;
+	private String explain;
 	//private String payment_type;
 	//private String withdrawdate;
 	//日志时间
@@ -96,18 +96,10 @@ public class UserWalletLogVTO implements java.io.Serializable {
 	public void setOperdate(String operdate) {
 		this.operdate = operdate;
 	}
-	/*public String getPayment_type() {
-		return payment_type;
+	public String getExplain() {
+		return explain;
 	}
-	public void setPayment_type(String payment_type) {
-		this.payment_type = payment_type;
-	}*/
-	public String getDescription() {
-		return description;
+	public void setExplain(String explain) {
+		this.explain = explain;
 	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	
 }
