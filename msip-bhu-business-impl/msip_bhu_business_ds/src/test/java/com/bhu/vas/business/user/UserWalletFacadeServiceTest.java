@@ -3,6 +3,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -111,7 +112,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     @Test
 	public void test001SharedealCashToUserWallet(){
-    	UserWallet uWallet = userWalletFacadeService.sharedealCashToUserWallet(testUserId, testSharedealCash, testOrderId,true);
+    	UserWallet uWallet = userWalletFacadeService.sharedealCashToUserWallet(testUserId, testSharedealCash, testOrderId,true,StringUtils.EMPTY);
     	System.out.println(uWallet);
 	}	
     
