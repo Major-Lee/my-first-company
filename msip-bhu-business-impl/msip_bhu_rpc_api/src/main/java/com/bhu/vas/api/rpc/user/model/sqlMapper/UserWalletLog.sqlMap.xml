@@ -16,7 +16,7 @@
     <result property="cash" column="cash"/>
     <result property="vcurrency" column="vcurrency"/>
     <result property="memo" column="memo"/>
-    <result property="explain" column="explain"/>
+    <result property="description" column="description"/>
     
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -39,7 +39,7 @@
 	    	cash,
 	    	vcurrency,
 	    	memo,
-	    	explain,
+	    	description,
 	    	updated_at
 	    ]]>
 	</sql>  
@@ -55,7 +55,7 @@
 	    	cash,
 	    	vcurrency,
 	    	memo,
-	    	explain,
+	    	description,
 	    	updated_at
 	    ]]>
 	</sql> 	
@@ -72,7 +72,7 @@
 	    	#{cash},
 	    	#{vcurrency},
 	    	#{memo},
-	    	#{explain},
+	    	#{description},
 	    	#{updated_at}
 	</sql>
 		
@@ -87,7 +87,7 @@
 	    	cash = #{cash},
 	    	vcurrency = #{vcurrency},
 	    	memo = #{memo},
-	    	explain = #{explain},
+	    	description = #{description},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">

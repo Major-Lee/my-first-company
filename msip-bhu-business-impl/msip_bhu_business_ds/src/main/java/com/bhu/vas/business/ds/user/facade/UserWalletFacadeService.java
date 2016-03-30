@@ -189,7 +189,7 @@ public class UserWalletFacadeService{
 	 * 需要验证零钱是否小于要出账的金额
 	 * 现金出账需要把提现状态标记
 	 */
-	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,double cash,String explain,IWalletNotifyCallback callback){
+	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,double cash,String description,IWalletNotifyCallback callback){
 		if(StringUtils.isEmpty(pwd) || cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -218,7 +218,7 @@ public class UserWalletFacadeService{
 		uwallet.setWithdraw(true);
 		uwallet = userWalletService.update(uwallet);
 		String orderid = callback.notifyCashWithdrawOper(cash);
-		this.doWalletLog(uid, orderid,UWalletTransMode.CashPayment, UWalletTransType.Cash2Realmoney,explain, cash, cash,0d, String.format("WalletTotal:%s withdraw:%s ",wallettotal, cash));
+		this.doWalletLog(uid, orderid,UWalletTransMode.CashPayment, UWalletTransType.Cash2Realmoney,description, cash, cash,0d, String.format("WalletTotal:%s withdraw:%s ",wallettotal, cash));
 		return uwallet;
 	}
 	
@@ -529,9 +529,9 @@ public class UserWalletFacadeService{
 	private void doWalletLog(int uid,String orderid,
 			BusinessEnumType.UWalletTransMode transMode,
 			BusinessEnumType.UWalletTransType transType,
-			String explain,
+			String description,
 			double rmoney,double cash,double vcurrency,String memo){
-		System.out.println("~~~~~~~~~~~~~~:"+explain);
+		System.out.println("~~~~~~~~~~~~~~:"+description);
 		UserWalletLog wlog = new UserWalletLog();
 		wlog.setUid(uid);
 		wlog.setOrderid(orderid);
@@ -542,7 +542,7 @@ public class UserWalletFacadeService{
 		wlog.setRmoney("0");
 		wlog.setCash("0");
 		wlog.setVcurrency("0");
-		wlog.setExplain(explain);
+		wlog.setDescription(description);
 		switch(transMode){
 			case RealMoneyPayment://充值零钱、充值虎钻
 				wlog.setRmoney(StringHelper.MINUS_STRING_GAP.concat(String.valueOf(rmoney)));
