@@ -133,7 +133,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
             
             Device_Firmware_ForceUpdateImmediately_AfterDays = PropertiesHelper.getInt("device.firmware.forceupdateimmediately.afterdays", paramProperties, Device_Firmware_ForceUpdateImmediately_AfterDays);
             
-            User_WalletWithdraw_Default_MinLimit = PropertiesHelper.getDouble("user.walletWithdraw.default.minLimit", paramProperties, User_WalletWithdraw_Default_MinLimit);
+            User_WalletWithdraw_Default_Remainer_MinLimit = PropertiesHelper.getDouble("user.walletWithdraw.default.remainer.minLimit", paramProperties, User_WalletWithdraw_Default_Remainer_MinLimit);
+            User_WalletWithdraw_Default_Withdraw_MinLimit = PropertiesHelper.getDouble("user.walletWithdraw.default.withdraw.minLimit", paramProperties, User_WalletWithdraw_Default_Withdraw_MinLimit);
             
             Device_SharedNetwork_Default_Start = PropertiesHelper.getBoolean("device.sharednetwork.default.start", paramProperties, Device_SharedNetwork_Default_Start);
         	Device_SharedNetwork_DUT = PropertiesHelper.getString("device.sharednetwork.dut", paramProperties, Device_SharedNetwork_DUT);
@@ -336,8 +337,9 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static int CheckArtificialFrdsAddLimitCount = 5;//5个好友数量, 超过数量不在分配客服
 
 	//钱包中有多少零钱之后才能开始提现
-	public static double User_WalletWithdraw_Default_MinLimit = 0.10d;//10.00d;
-	
+	public static double User_WalletWithdraw_Default_Remainer_MinLimit = 0.10d;//10.00d;
+	//每次最小提现金额
+	public static double User_WalletWithdraw_Default_Withdraw_MinLimit = 1.00d;//10.00d;
 	public static boolean Device_SharedNetwork_Default_Start = false;
 	public static String Device_SharedNetwork_DUT = "TU";
 	public static String Device_SharedNetwork_Top_Version = "1.5.6";
