@@ -193,6 +193,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 							vto.setD_workmodel(wifiDeviceDocument.getD_workmodel());
 							vto.setD_origmodel(wifiDeviceDocument.getD_origmodel());
 							vto.setDevice_name(wifiDeviceDocument.getU_dnick());
+							vto.setD_type(wifiDeviceDocument.getD_type());
 							if(ohd_counts != null){
 								Object ohd_count_obj = ohd_counts.get(cursor);
 								if(ohd_count_obj != null){
