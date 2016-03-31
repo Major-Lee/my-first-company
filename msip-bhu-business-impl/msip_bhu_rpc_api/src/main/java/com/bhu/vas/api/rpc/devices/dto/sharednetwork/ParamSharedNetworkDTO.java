@@ -8,7 +8,6 @@ import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
-import com.smartwork.msip.cores.helper.HtmlHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 /**

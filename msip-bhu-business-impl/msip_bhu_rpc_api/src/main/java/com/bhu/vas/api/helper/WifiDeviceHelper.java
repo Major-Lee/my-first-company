@@ -418,7 +418,7 @@ public class WifiDeviceHelper {
                 txt = HtmlHelper.replace(txt, "&amp;gt;", "&gt;");
                 txt = HtmlHelper.replace(txt, ">", "&gt;");
                 txt = HtmlHelper.replace(txt, "&amp;nbsp;", "&nbsp;");
-                txt = HtmlHelper.replace(txt, " ", "&nbsp;");
+                //txt = HtmlHelper.replace(txt, " ", "&nbsp;");
                 txt = HtmlHelper.replace(txt, "&amp;#8217;", "&#8217;");
                 txt = HtmlHelper.replace(txt, "'", "&#8217;");
         } else if (txt == null) {
