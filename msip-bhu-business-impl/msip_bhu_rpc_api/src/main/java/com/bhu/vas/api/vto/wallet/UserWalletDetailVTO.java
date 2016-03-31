@@ -2,7 +2,7 @@ package com.bhu.vas.api.vto.wallet;
 
 import java.util.List;
 
-import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
+import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.smartwork.msip.cores.helper.ArithHelper;
 
 /**
@@ -18,7 +18,7 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 	private double cash = 0.00d;;
 	private boolean withdraw = false;
 	private boolean haspwd = false; 
-	private List<ThirdpartiesPaymentDTO> payments;
+	private List<UserOAuthStateDTO> payments;
 	public int getUid() {
 		return uid;
 	}
@@ -58,10 +58,10 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 	public double getVcurrency_total(){
 		return ArithHelper.add(vcurrency, vcurrency_bing);
 	}
-	public List<ThirdpartiesPaymentDTO> getPayments() {
+	public List<UserOAuthStateDTO> getPayments() {
 		return payments;
 	}
-	public void setPayments(List<ThirdpartiesPaymentDTO> payments) {
+	public void setPayments(List<UserOAuthStateDTO> payments) {
 		this.payments = payments;
 	}
 	

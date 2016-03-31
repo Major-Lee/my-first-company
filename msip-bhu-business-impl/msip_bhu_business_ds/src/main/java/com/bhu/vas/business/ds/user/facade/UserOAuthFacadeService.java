@@ -1,6 +1,7 @@
 package com.bhu.vas.business.ds.user.facade;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -8,6 +9,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
@@ -38,10 +40,32 @@ public class UserOAuthFacadeService {
 		return dtos;
 	}
 	
+	public List<UserOAuthStateDTO> fetchRegisterPaymentIdentifies(Integer uid){
+		List<UserOAuthStateDTO> dtos = fetchRegisterIdentifies(uid);
+		Iterator<UserOAuthStateDTO> iter = dtos.iterator();
+		while(iter.hasNext()){
+			UserOAuthStateDTO next = iter.next();
+			if(!OAuthType.paymentSupported(next.getIdentify())){
+				iter.remove();
+			}
+		}
+		return dtos;
+	}
+	
+	public UserOAuthStateDTO fetchRegisterIndetify(int uid,OAuthType type,boolean validatePayment){
+		if(validatePayment){
+			if(!type.isPayment()) return null;
+		}
+		UserOAuthStatePK pk = new UserOAuthStatePK(uid,type.getType());
+		UserOAuthState state = userOAuthStateService.getById(pk);
+		if(state != null){
+			return state.getInnerModel();
+		}
+		return null;
+	}
+	
+	
 	public boolean removeIdentifies(Integer uid,String identify){
-		/*ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("identify", identify);
-		userOAuthStateService.deleteByModelCriteria(mc);*/
 		UserOAuthStatePK pk = new UserOAuthStatePK(uid,identify);
 		userOAuthStateService.deleteById(pk);
 		return true;

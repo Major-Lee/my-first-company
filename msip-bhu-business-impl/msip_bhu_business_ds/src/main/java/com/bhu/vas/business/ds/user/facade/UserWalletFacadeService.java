@@ -1,9 +1,6 @@
 package com.bhu.vas.business.ds.user.facade;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -14,19 +11,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
-import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
+import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
-import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
+import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
-import com.bhu.vas.api.rpc.user.model.UserThirdpartiesPayment;
+import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
+import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.bhu.vas.business.ds.user.service.UserThirdpartiesPaymentService;
 import com.bhu.vas.business.ds.user.service.UserWalletConfigsService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
@@ -62,9 +59,12 @@ public class UserWalletFacadeService{
 	
 	@Resource
 	private UserWalletWithdrawApplyService userWalletWithdrawApplyService;
-	
+
 	@Resource
-	private UserThirdpartiesPaymentService userThirdpartiesPaymentService;
+	private UserOAuthFacadeService userOAuthFacadeService;
+	
+	//@Resource
+	//private UserThirdpartiesPaymentService userThirdpartiesPaymentService;
 	
 /*	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -77,7 +77,7 @@ public class UserWalletFacadeService{
 	public UserWalletDetailVTO walletDetail(int uid){
 		UserWallet userWallet = userWallet(uid);
 		UserWalletDetailVTO walletDetail = userWallet.toUserWalletDetailVTO();
-		walletDetail.setPayments(fetchThirdpartiesPaymentTypes(uid));
+		walletDetail.setPayments(userOAuthFacadeService.fetchRegisterPaymentIdentifies(uid));
 		return walletDetail;
 	}
 	private UserWallet userWallet(int uid){
@@ -269,7 +269,7 @@ public class UserWalletFacadeService{
 		userWalletService.update(uwallet);
 	}
 	
-	private List<ThirdpartiesPaymentDTO> fetchThirdpartiesPaymentTypes(int uid){
+/*	private List<ThirdpartiesPaymentDTO> fetchThirdpartiesPaymentTypes(int uid){
 		if(uid <=0){
 			return Collections.emptyList();
 		}
@@ -298,7 +298,50 @@ public class UserWalletFacadeService{
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_NOTDEFINED);
 		}
 		
+	}*/
+	
+	private UserOAuthStateDTO validateOAuthPaymentType(int uid,OAuthType type){
+		if(uid <=0){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
+		}
+		if(type == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_PARAM_EMPTY);
+		}
+		if(!type.isPayment()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_PARAM_EMPTY,new String[]{type.getType()});
+		}
+		UserOAuthStatePK pk = new UserOAuthStatePK(uid,type.getType());
+		UserOAuthState oauthState = userOAuthFacadeService.getUserOAuthStateService().getById(pk);
+		
+		if(oauthState == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_NOTDEFINED);
+		}
+		UserOAuthStateDTO innerModel = oauthState.getInnerModel();
+		if(innerModel == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_NOTDEFINED);
+		}
+		
+		//如果是微信的话，需要判定值是否存在openid
+		if(OAuthType.Weichat.getType().equals(type.getType())){
+			if(StringUtils.isEmpty(innerModel.getOpenid())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_DATA_IMPERFECT,new String[]{"weichat-openid"} );
+			}
+		}
+		
+		return innerModel;
+		
+		/*UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getById(uid);
+		if(payment == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_WASEMPTY);
+		}
+		if(payment.containsKey(type.getType())){
+			return payment.getInnerModel(type.getType());
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_NOTDEFINED);
+		}*/
+		
 	}
+	
 	/**
 	 * 生成提现申请
 	 * 申请提交后需要进行相关现金出账
@@ -306,8 +349,8 @@ public class UserWalletFacadeService{
 	 * @param pwd
 	 * @param cash 
 	 */
-	public UserWalletWithdrawApply doWithdrawApply(int appid,ThirdpartiesPaymentType type,int uid, String pwd,double cash,String remoteip){
-		validateThirdpartiesPaymentType(uid,type);
+	public UserWalletWithdrawApply doWithdrawApply(int appid,OAuthType type,int uid, String pwd,double cash,String remoteip){
+		validateOAuthPaymentType(uid,type);
 		/*logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
 		this.cashWithdrawOperFromUserWallet(uid, pwd, cash);
 		UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
@@ -334,7 +377,7 @@ public class UserWalletFacadeService{
 		}
 	}
 	
-	private UserWalletWithdrawApply doWithdrawApplyOper(final int appid,final ThirdpartiesPaymentType type,final int uid, String pwd,double cash,final String remoteip){
+	private UserWalletWithdrawApply doWithdrawApplyOper(final int appid,final OAuthType type,final int uid, String pwd,double cash,final String remoteip){
 		synchronized(lockObjectFetch(uid)){
 			logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
 			/*String orderid = StructuredIdHelper.generateStructuredIdString(appid, 
@@ -582,7 +625,7 @@ public class UserWalletFacadeService{
 	}
 	
 	//userThirdpartiesPaymentService
-	public List<ThirdpartiesPaymentDTO> addThirdpartiesPayment(int uid,ThirdpartiesPaymentType type,ThirdpartiesPaymentDTO paymentDTO){
+/*	public List<ThirdpartiesPaymentDTO> addThirdpartiesPayment(int uid,ThirdpartiesPaymentType type,ThirdpartiesPaymentDTO paymentDTO){
 		UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getOrCreateById(uid);
 		boolean ret = payment.addOrReplace(type, paymentDTO);
 		if(ret){
@@ -622,7 +665,7 @@ public class UserWalletFacadeService{
 			return new ArrayList<>(payment.values());
 		}
 		return Collections.emptyList();
-	}
+	}*/
 	
 	/**
 	 * 钱包日志列表
@@ -674,9 +717,12 @@ public class UserWalletFacadeService{
 	public UserWalletWithdrawApplyService getUserWalletWithdrawApplyService() {
 		return userWalletWithdrawApplyService;
 	}
-
-	public UserThirdpartiesPaymentService getUserThirdpartiesPaymentService() {
-		return userThirdpartiesPaymentService;
+	public UserOAuthFacadeService getUserOAuthFacadeService() {
+		return userOAuthFacadeService;
 	}
+
+	/*public UserThirdpartiesPaymentService getUserThirdpartiesPaymentService() {
+		return userThirdpartiesPaymentService;
+	}*/
 	
 }

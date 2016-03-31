@@ -1,10 +1,7 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
-import java.util.List;
-
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
@@ -94,7 +91,7 @@ public interface IUserWalletRpcService {
 	 * @param uid
 	 * @return
 	 */
-	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> fetchUserThirdpartiesPayments(int uid);
+	//public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> fetchUserThirdpartiesPayments(int uid);
 	
 	/**
 	 * 移除相关第三方的转账账号绑定
@@ -102,7 +99,7 @@ public interface IUserWalletRpcService {
 	 * @param paymode
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> removeUserThirdpartiesPayment(int uid,String payment_type);
+	//public RpcResponseDTO<Boolean> removeUserThirdpartiesPayment(int uid,String payment_type);
 	
 	/**
 	 * 创建或更新第三方转账账号关联信息
@@ -113,6 +110,6 @@ public interface IUserWalletRpcService {
 	 * @param name
 	 * @return
 	 */
-	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(int uid,String paymode,String id,String name,String avatar);
+	//public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(int uid,String paymode,String id,String name,String avatar);
 
 }

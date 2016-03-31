@@ -2,7 +2,7 @@ package com.bhu.vas.api.dto.commdity.internal.pay;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
+import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 
 
@@ -36,7 +36,7 @@ public class RequestWithdrawNotifyDTO  implements java.io.Serializable{
 	private long verify_ts;
 	private UserWithdrawApplyVTO withdraw;
 	
-	private ThirdpartiesPaymentDTO account;
+	private UserOAuthStateDTO account;
 
 	public String getOrderid() {
 		return orderid;
@@ -57,13 +57,13 @@ public class RequestWithdrawNotifyDTO  implements java.io.Serializable{
 		this.withdraw = withdraw;
 	}
 	
-	public ThirdpartiesPaymentDTO getAccount() {
+	public UserOAuthStateDTO getAccount() {
 		return account;
 	}
-	public void setAccount(ThirdpartiesPaymentDTO account) {
+	public void setAccount(UserOAuthStateDTO account) {
 		this.account = account;
 	}
-	public static RequestWithdrawNotifyDTO from(UserWithdrawApplyVTO apply,ThirdpartiesPaymentDTO account,long ts){
+	public static RequestWithdrawNotifyDTO from(UserWithdrawApplyVTO apply,UserOAuthStateDTO account,long ts){
 		RequestWithdrawNotifyDTO notify = new RequestWithdrawNotifyDTO();
 		notify.setOrderid(apply.getApplyid());
 		notify.setVerify_ts(ts);

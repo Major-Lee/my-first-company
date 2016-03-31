@@ -30,8 +30,6 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 public class UserOAuthUnitFacadeService {
 	@Resource
 	private UserService userService;
-	//@Resource
-	//private UserTokenService userTokenService;
 	@Resource
 	private UserSignInOrOnFacadeService userSignInOrOnFacadeService;
 	
@@ -40,9 +38,6 @@ public class UserOAuthUnitFacadeService {
 	
 	@Resource
 	private UserOAuthFacadeService userOAuthFacadeService;
-	
-	//@Resource
-	//private UserUnitFacadeService userUnitFacadeService;
 	
 	/**
 	 * 通过用户id获取其绑定或注册的第三方类型和帐号
@@ -140,4 +135,44 @@ public class UserOAuthUnitFacadeService {
 		}
 	}
 	
+	/**
+	 * 根据auid填充相关信息
+	 * @param identify
+	 * @param auid
+	 * @param openid
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> fullfillOpenid(String identify, String auid,String openid){
+		if(StringUtils.isEmpty(identify) || !BusinessEnumType.OAuthType.supported(identify)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"identify:".concat(identify)});
+		}
+		if(StringUtils.isEmpty(auid)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"auid:".concat(auid)});
+		}
+		if(StringUtils.isEmpty(openid)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"openid:".concat(openid)});
+		}
+		try{
+			ModelCriteria mc = new ModelCriteria();
+			mc.createCriteria().andColumnEqualTo("identify", identify).andColumnEqualTo("auid", auid);
+			List<UserOAuthState> models = userOAuthFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);
+			
+			if(models == null || models.isEmpty()){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{identify,auid});
+			}
+			UserOAuthState userOAuthState = models.get(0);
+			UserOAuthStateDTO innerModel = userOAuthState.getInnerModel();
+			innerModel.setAuid(auid);
+			innerModel.setOpenid(openid);
+			userOAuthState.replaceInnerModel(innerModel);
+			userOAuthFacadeService.getUserOAuthStateService().update(userOAuthState);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

@@ -33,11 +33,17 @@ public class UserOAuthRpcService implements IUserOAuthRpcService{
 	@Override
 	public RpcResponseDTO<Map<String, Object>> createIdentifies(
 			Integer uid,
-			String identify,String auid, String nick, String avatar,
+			String identify,String auid, String openid, String nick, String avatar,
 			String device,String regIp,String deviceuuid, String ut
 			) {
-		logger.info(String.format("createIdentifies with identify[%s] auid[%s] nick[%s] avatar[%s]",identify,auid,nick,avatar));
+		logger.info(String.format("createIdentifies with identify[%s] auid[%s] openid[%s] nick[%s] avatar[%s]",identify,auid,openid,nick,avatar));
 		return userOAuthUnitFacadeService.createOrUpdateIdentifies(uid,identify, auid, nick, avatar, 
 				device, regIp, deviceuuid, ut);
+	}
+	@Override
+	public RpcResponseDTO<Boolean> fullfillOpenid(String identify, String auid,
+			String openid) {
+		logger.info(String.format("fullfillOpenid with identify[%s] auid[%s] openid[%s]",identify,auid,openid));
+		return userOAuthUnitFacadeService.fullfillOpenid(identify,auid,openid);
 	}
 }

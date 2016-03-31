@@ -6,6 +6,7 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2016/3/7.
  */
+@SuppressWarnings("serial")
 public class WifiActionDTO implements Serializable{
     private int up;
     private int report;

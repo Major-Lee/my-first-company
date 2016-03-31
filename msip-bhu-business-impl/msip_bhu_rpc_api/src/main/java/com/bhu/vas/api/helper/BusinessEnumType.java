@@ -10,18 +10,26 @@ public class BusinessEnumType {
 	 *
 	 */
 	public enum OAuthType{
-		Local("本地", "local"),
-		Weichat("腾讯微信", "weichat"),
+		Weichat("腾讯微信", "weixin",true,"提现至微信"),
+		Alipay("支付宝", "alipay",true,"提现至支付宝"),
 		QQ("腾讯QQ", "qq"),
 		Weibo("新浪微博", "weibo"),
 		;
 		private String name;
 		private String type;
-		static Map<String, OAuthType> allOAuthTypeTypes;
-		
+		private boolean payment;
+		private String description;
+		static Map<String, OAuthType> allOAuthTypes;
+		static Map<String, OAuthType> allOAuthPaymentTypes;
 		private OAuthType(String name, String type){
 			this.name = name;
 			this.type = type;
+		}
+		private OAuthType(String name, String type,boolean payment,String description){
+			this.name = name;
+			this.type = type;
+			this.payment = payment;
+			this.description = description;
 		}
 		public String getName() {
 			return name;
@@ -35,22 +43,94 @@ public class BusinessEnumType {
 		public void setType(String type) {
 			this.type = type;
 		}
+		
+		public boolean isPayment() {
+			return payment;
+		}
+		public void setPayment(boolean payment) {
+			this.payment = payment;
+		}
+		public String getDescription() {
+			return description;
+		}
+		public void setDescription(String description) {
+			this.description = description;
+		}
 		public static OAuthType fromType(String type){
-			return allOAuthTypeTypes.get(type);
+			return allOAuthTypes.get(type);
 		}
 		
 		public static boolean supported(String type){
-			return allOAuthTypeTypes.containsKey(type);
+			return allOAuthTypes.containsKey(type);
+		}
+		
+		public static boolean paymentSupported(String type){
+			return allOAuthPaymentTypes.containsKey(type);
 		}
 		
 		static {
-			allOAuthTypeTypes = new HashMap<String, OAuthType>();
+			allOAuthTypes = new HashMap<String, OAuthType>();
+			allOAuthPaymentTypes = new HashMap<String, OAuthType>();
 			OAuthType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (OAuthType type : types){
-				allOAuthTypeTypes.put(type.getType(), type);
+				allOAuthTypes.put(type.getType(), type);
+				if(type.isPayment()){
+					allOAuthPaymentTypes.put(type.getType(), type);
+				}
 			}
 		}
 	}
+	
+/*	public enum ThirdpartiesPaymentType{
+		Weichat("腾讯微信", "weixin","提现至微信"),
+		Alipay("支付宝", "alipay","提现至支付宝"),
+		;
+		private String name;
+		private String type;
+		private String description;
+		static Map<String, ThirdpartiesPaymentType> allPaymentTypes;
+		
+		private ThirdpartiesPaymentType(String name, String type,String description){
+			this.name = name;
+			this.type = type;
+			this.description = description;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public String getType() {
+			return type;
+		}
+		public void setType(String type) {
+			this.type = type;
+		}
+		
+		public String getDescription() {
+			return description;
+		}
+		public void setDescription(String description) {
+			this.description = description;
+		}
+		public static ThirdpartiesPaymentType fromType(String type){
+			return allPaymentTypes.get(type);
+		}
+		
+		public static boolean supported(String type){
+			return allPaymentTypes.containsKey(type);
+		}
+		
+		static {
+			allPaymentTypes = new HashMap<String, ThirdpartiesPaymentType>();
+			ThirdpartiesPaymentType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (ThirdpartiesPaymentType type : types){
+				allPaymentTypes.put(type.getType(), type);
+			}
+		}
+	}*/
 	
 	public enum UserSex{
 		Male("男"),
@@ -721,57 +801,6 @@ public class BusinessEnumType {
 			OrderUmacType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (OrderUmacType type : types){
 				allOrderUmacTypes.put(type.getKey(), type);
-			}
-		}
-	}
-	
-	public enum ThirdpartiesPaymentType{
-		Weichat("腾讯微信", "weixin","提现至微信"),
-		Alipay("支付宝", "alipay","提现至支付宝"),
-		;
-		private String name;
-		private String type;
-		private String description;
-		static Map<String, ThirdpartiesPaymentType> allPaymentTypes;
-		
-		private ThirdpartiesPaymentType(String name, String type,String description){
-			this.name = name;
-			this.type = type;
-			this.description = description;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		
-		public String getType() {
-			return type;
-		}
-		public void setType(String type) {
-			this.type = type;
-		}
-		
-		public String getDescription() {
-			return description;
-		}
-		public void setDescription(String description) {
-			this.description = description;
-		}
-		public static ThirdpartiesPaymentType fromType(String type){
-			return allPaymentTypes.get(type);
-		}
-		
-		public static boolean supported(String type){
-			return allPaymentTypes.containsKey(type);
-		}
-		
-		static {
-			allPaymentTypes = new HashMap<String, ThirdpartiesPaymentType>();
-			ThirdpartiesPaymentType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
-			for (ThirdpartiesPaymentType type : types){
-				allPaymentTypes.put(type.getType(), type);
 			}
 		}
 	}
