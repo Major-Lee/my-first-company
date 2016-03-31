@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.user.dto;
+/*package com.bhu.vas.api.rpc.user.dto;
 
 import java.io.Serializable;
 
@@ -49,3 +49,4 @@ public class ThirdpartiesPaymentDTO implements Serializable{
 		return String.format("ThirdpartiesPayment type[%s] id[%s] name[%s]", type,id,name);
 	}
 }
+*/

@@ -12,7 +12,7 @@ public class UserOAuthStateDTO implements java.io.Serializable{
 	private String openid;
 	private String nick;
 	private String avatar;
-	//private String identify;
+	private String identify;
 	
 	public String getAuid() {
 		return auid;
@@ -32,12 +32,12 @@ public class UserOAuthStateDTO implements java.io.Serializable{
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
-	/*public String getIdentify() {
+	public String getIdentify() {
 		return identify;
 	}
 	public void setIdentify(String identify) {
 		this.identify = identify;
-	}*/
+	}
 	public String getOpenid() {
 		return openid;
 	}

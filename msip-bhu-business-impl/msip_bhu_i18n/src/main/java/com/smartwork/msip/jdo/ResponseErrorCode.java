@@ -193,6 +193,7 @@ public enum ResponseErrorCode {
 	USER_WALLET_PAYMENT_PARAM_EMPTY("331", "user.wallet.payment.param.empty"),
 	USER_WALLET_PAYMENT_WASEMPTY("332", "user.wallet.payment.wasempty"),
 	USER_WALLET_PAYMENT_NOTDEFINED("333", "user.wallet.payment.notdefined"),
+	USER_WALLET_PAYMENT_NOT_VALIDATE_PAYMENTTYPE("333", "user.wallet.payment.not.validate.paymenttype"),
 	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
 	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),

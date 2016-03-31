@@ -1,7 +1,5 @@
 package com.bhu.vas.rpc.service.user;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -10,7 +8,6 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
@@ -80,7 +77,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 		return userWalletUnitFacadeService.walletDetail(uid);
 	}
 
-	@Override
+	/*@Override
 	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> fetchUserThirdpartiesPayments(
 			int uid) {
 		logger.info(String.format("fetchUserThirdpartiesPayments with uid[%s]",uid));
@@ -99,7 +96,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 			int uid, String payment_type, String id, String name,String avatar) {
 		logger.info(String.format("createUserThirdpartiesPayment with uid[%s] payment_type[%s] id[%s] name[%s] avatar[%s]",uid,payment_type,id,name,avatar));
 		return userWalletUnitFacadeService.createUserThirdpartiesPayment(uid, payment_type, id, name,avatar);
-	}
+	}*/
 
 	@Override
 	public RpcResponseDTO<Boolean> withdrawPwdSet(int uid,String captcha, String pwd) {

@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.user.dao;
+/*package com.bhu.vas.business.ds.user.dao;
 
 import org.springframework.stereotype.Repository;
 
@@ -9,3 +9,4 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 public class UserThirdpartiesPaymentDao extends AbstractCoreDao<Integer, UserThirdpartiesPayment>{
 	
 }
+*/

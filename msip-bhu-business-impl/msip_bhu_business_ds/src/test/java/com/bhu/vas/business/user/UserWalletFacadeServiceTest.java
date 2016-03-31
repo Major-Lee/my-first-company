@@ -12,9 +12,9 @@ import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
-import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
+import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.rpc.user.dto.ApplyCost;
-import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
+import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
@@ -87,7 +87,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     @Test
 	public void test001PrepareUserPayment(){
-    	userWalletFacadeService.addThirdpartiesPayment(testUserId, 
+    	/*userWalletFacadeService.addThirdpartiesPayment(testUserId, 
     			ThirdpartiesPaymentType.Weichat, 
     			ThirdpartiesPaymentDTO.build(ThirdpartiesPaymentType.Weichat,weichat_id,null,null));
     	
@@ -107,7 +107,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	}
     	
     	ThirdpartiesPaymentDTO payment = userWalletFacadeService.fetchThirdpartiesPayment(testUserId, ThirdpartiesPaymentType.Alipay);
-    	System.out.println("2"+payment);
+    	System.out.println("2"+payment);*/
 	}
     
     @Test
@@ -125,7 +125,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 	}
     @Test
     public void test003DoWithdrawApply(){
-    	UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(testAppid,ThirdpartiesPaymentType.Alipay,testUserId, testWithdrawPwd, testWithdrawCash,testWithdrawIP);
+    	UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(testAppid,OAuthType.Alipay,testUserId, testWithdrawPwd, testWithdrawCash,testWithdrawIP);
     	System.out.println(apply);
     }
 
@@ -152,7 +152,8 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 			ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(applynow.getUid(),applynow.getCash());
 			UserWithdrawApplyVTO withdrawApplyVTO = applynow.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 					calculateApplyCost);
-			ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(applynow.getUid(), ThirdpartiesPaymentType.fromType(applynow.getPayment_type()));
+			//ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(applynow.getUid(), ThirdpartiesPaymentType.fromType(applynow.getPayment_type()));
+			UserOAuthStateDTO paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(applynow.getUid(),OAuthType.fromType(applynow.getPayment_type()),true);
 			RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
 			String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 			System.out.println("to Redis prepare:"+jsonNotify);
@@ -251,7 +252,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 						calculateApplyCost);
 				
-				ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
+				UserOAuthStateDTO paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(withdrawApply.getUid(),OAuthType.fromType(withdrawApply.getPayment_type()),true);//.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
 				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
 				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 				System.out.println(String.format("to Redis prepare[%s]:%s",withdrawApply.getId(), jsonNotify));

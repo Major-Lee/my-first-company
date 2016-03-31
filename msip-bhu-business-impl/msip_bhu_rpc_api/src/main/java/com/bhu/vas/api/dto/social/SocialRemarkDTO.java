@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2016/3/17.
  */
+@SuppressWarnings("serial")
 public class SocialRemarkDTO implements Serializable {
     private String nick;
 

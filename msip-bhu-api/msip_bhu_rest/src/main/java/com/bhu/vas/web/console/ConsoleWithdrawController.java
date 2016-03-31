@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreateWithdrawDTO;
+import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
@@ -135,10 +136,11 @@ public class ConsoleWithdrawController extends BaseController {
 			String order_totalamount = String.valueOf(withdrawNotify.getWithdraw().getCash());
 			String requestIp = WebHelper.getRemoteAddr(request);
 			ResponseCreateWithdrawDTO rcp_dto = PaymentInternalHelper.createWithdrawUrlCommunication(
-					withdrawNotify.getAccount().getType(), 
+					withdrawNotify.getAccount().getIdentify(),//.getType(), 
 					orderid,
-					withdrawNotify.getAccount().getId(),
-					withdrawNotify.getAccount().getName(),
+					OAuthType.Weichat.getType().equals(withdrawNotify.getAccount().getIdentify())?
+							withdrawNotify.getAccount().getOpenid():withdrawNotify.getAccount().getAuid(),
+					withdrawNotify.getAccount().getNick(),
 					requestIp,
 					order_amount, order_transcost, order_taxcost,order_totalamount);
 			System.out.println("apply_payment step 1:"+JsonHelper.getJSONString(rcp_dto));

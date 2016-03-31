@@ -1,4 +1,4 @@
-package com.bhu.vas.web.user;
+/*package com.bhu.vas.web.user;
 
 import java.util.List;
 
@@ -86,3 +86,4 @@ public class UserThirdpartiesPaymentController extends BaseController{
 	}
 
 }
+*/

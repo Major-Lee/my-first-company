@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
-import com.bhu.vas.api.helper.BusinessEnumType.ThirdpartiesPaymentType;
+import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.ApplyCost;
-import com.bhu.vas.api.rpc.user.dto.ThirdpartiesPaymentDTO;
+import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
@@ -228,7 +228,8 @@ public class UserWalletUnitFacadeService {
 			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
 			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 					calculateApplyCost);
-			ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
+			UserOAuthStateDTO paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(withdrawApply.getUid(),OAuthType.fromType(withdrawApply.getPayment_type()),true);
+			//ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
 			if(paymentDTO == null){
 				throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_WASEMPTY);
 			}
@@ -272,9 +273,11 @@ public class UserWalletUnitFacadeService {
 			if(!CommdityApplication.supported(appid)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_APPID_INVALID,new String[]{String.valueOf(appid)});
 			}
-			
+			if(!OAuthType.paymentSupported(payment_type)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{String.valueOf(payment_type)});
+			}
 			//payment_type为空的情况下直接取用户绑定过的第一个账户
-			if(StringUtils.isEmpty(payment_type)){
+			/*if(StringUtils.isEmpty(payment_type)){
 				//如果没有指定则去除用户定义的第一个
 				ThirdpartiesPaymentDTO payment = userWalletFacadeService.fetchFirstThirdpartiesPayment(uid);
 				if(payment != null){
@@ -285,11 +288,11 @@ public class UserWalletUnitFacadeService {
 				if(!ThirdpartiesPaymentType.supported(payment_type)){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED);
 				}
-			}
+			}*/
 			//User user = userWalletFacadeService.getUserService().getById(uid);
 			//User user = userWalletFacadeService.validateUser(uid);
 			User user = UserValidateServiceHelper.validateUser(uid,userWalletFacadeService.getUserService());
-			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,ThirdpartiesPaymentType.fromType(payment_type),uid, pwd, cash, remoteip);
+			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,OAuthType.fromType(payment_type),uid, pwd, cash, remoteip);
 			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(uid);
 			ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(uid, cash);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(
@@ -318,7 +321,7 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> fetchUserThirdpartiesPayments(int uid) {
+/*	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> fetchUserThirdpartiesPayments(int uid) {
 		try{
 			List<ThirdpartiesPaymentDTO> payments = userWalletFacadeService.fetchAllThirdpartiesPayment(uid);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payments);
@@ -347,9 +350,9 @@ public class UserWalletUnitFacadeService {
 
 	public RpcResponseDTO<List<ThirdpartiesPaymentDTO>> createUserThirdpartiesPayment(int uid, String payment_type, String id, String name,String avatar) {
 		try{
-			/*if(!ThirdpartiesPaymentType.supported(payment_type)){
+			if(!ThirdpartiesPaymentType.supported(payment_type)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"payment_type:".concat(payment_type)});
-			}*/
+			}
 			ThirdpartiesPaymentType paymenttype = ThirdpartiesPaymentType.fromType(payment_type);
 			if(paymenttype == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"payment_type:".concat(payment_type)});
@@ -362,7 +365,7 @@ public class UserWalletUnitFacadeService {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-	}
+	}*/
 	
 
 	

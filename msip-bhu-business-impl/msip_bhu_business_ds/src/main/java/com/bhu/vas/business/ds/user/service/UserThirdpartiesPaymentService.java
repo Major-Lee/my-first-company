@@ -1,4 +1,4 @@
-package com.bhu.vas.business.ds.user.service;
+/*package com.bhu.vas.business.ds.user.service;
 
 import javax.annotation.Resource;
 
@@ -18,3 +18,4 @@ public class UserThirdpartiesPaymentService extends AbstractCoreService<Integer,
 		super.setEntityDao(userThirdpartiesPaymentDao);
 	}
 }
+*/
