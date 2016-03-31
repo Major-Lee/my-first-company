@@ -44,7 +44,7 @@ public class CommdityFacadeService {
 			mc.createCriteria().andColumnEqualTo("status", status);
 		}
 		mc.setPageNumber(pageNo);
-		mc.setSize(pageSize);
+		mc.setPageSize(pageSize);
 		return commdityService.findModelByModelCriteria(mc);
 	}
 	
