@@ -404,13 +404,33 @@ public class WifiDeviceHelper {
 	
 	public static String xmlContentEncoder(String content){
 		if(StringUtils.isEmpty(content)) return content;
-		return HtmlHelper.htmlEncode(content);
+		return htmlEncode(content);
 	}
 	
-	
+	public static String htmlEncode(String txt) {
+        if (txt != null) {
+                txt = HtmlHelper.replace(txt, "&", "&amp;");
+                txt = HtmlHelper.replace(txt, "&amp;amp;", "&amp;");
+                txt = HtmlHelper.replace(txt, "&amp;quot;", "&quot;");
+                txt = HtmlHelper.replace(txt, "\"", "&quot;");
+                txt = HtmlHelper.replace(txt, "&amp;lt;", "&lt;");
+                txt = HtmlHelper.replace(txt, "<", "&lt;");
+                txt = HtmlHelper.replace(txt, "&amp;gt;", "&gt;");
+                txt = HtmlHelper.replace(txt, ">", "&gt;");
+                txt = HtmlHelper.replace(txt, "&amp;nbsp;", "&nbsp;");
+                txt = HtmlHelper.replace(txt, " ", "&nbsp;");
+                txt = HtmlHelper.replace(txt, "&amp;#8217;", "&#8217;");
+                txt = HtmlHelper.replace(txt, "'", "&#8217;");
+        } else if (txt == null) {
+                txt = "";
+        }
+        return txt;
+}
 	public static void main(String[] argv){
 		System.out.println(WifiDeviceHelper.autoDeviceSecureSharedNetworkStrategy("AP106P07V1.5.7r1_TC_UGX"));
 		
 		System.out.println(WifiDeviceHelper.suppertedDeviceSecureSharedNetwork("AP106P07V1.5.6r1_TU_UGX"));
+		System.out.println(WifiDeviceHelper.xmlContentEncoder(" 必虎安全共享WiFi"));
+		
 	}
 }
