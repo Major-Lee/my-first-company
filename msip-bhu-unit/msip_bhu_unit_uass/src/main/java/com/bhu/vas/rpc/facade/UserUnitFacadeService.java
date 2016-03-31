@@ -463,7 +463,7 @@ public class UserUnitFacadeService {
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
 			//UserWallet uwallet = userWalletFacadeService.userWallet(user.getId());
 			userExchange.setWallet(userWalletFacadeService.walletDetail(uid));
-			userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId()));
+			userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId(),false));
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){

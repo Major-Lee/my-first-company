@@ -77,7 +77,7 @@ public class UserWalletFacadeService{
 	public UserWalletDetailVTO walletDetail(int uid){
 		UserWallet userWallet = userWallet(uid);
 		UserWalletDetailVTO walletDetail = userWallet.toUserWalletDetailVTO();
-		walletDetail.setPayments(userOAuthFacadeService.fetchRegisterPaymentIdentifies(uid));
+		walletDetail.setPayments(userOAuthFacadeService.fetchRegisterIdentifies(uid,true));
 		return walletDetail;
 	}
 	private UserWallet userWallet(int uid){

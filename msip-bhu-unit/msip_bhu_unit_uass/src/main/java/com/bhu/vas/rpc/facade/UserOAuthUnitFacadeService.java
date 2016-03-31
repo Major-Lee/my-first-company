@@ -44,9 +44,9 @@ public class UserOAuthUnitFacadeService {
 	 * @param uid
 	 * @return
 	 */
-	public RpcResponseDTO<List<UserOAuthStateDTO>> fetchRegisterIdentifies(Integer uid){
+	public RpcResponseDTO<List<UserOAuthStateDTO>> fetchRegisterIdentifies(Integer uid,boolean payment){
 		try{
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userOAuthFacadeService.fetchRegisterIdentifies(uid));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userOAuthFacadeService.fetchRegisterIdentifies(uid,payment));
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
@@ -122,7 +122,7 @@ public class UserOAuthUnitFacadeService {
 				//UserOAuthStateDTO oauthStateDTO = 
 			}
 			userOAuthFacadeService.createOrUpdateIdentifies(userExchange.getUser().getId(), identify, auid, nick, avatar);
-			userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId()));
+			userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId(),false));
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 					userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
