@@ -190,6 +190,10 @@ public class UserWalletFacadeService{
 	 * 现金出账需要把提现状态标记
 	 */
 	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,double cash,String description,IWalletNotifyCallback callback){
+		if(cash < BusinessRuntimeConfiguration.User_WalletWithdraw_Default_Withdraw_MinLimit){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.User_WalletWithdraw_Default_Withdraw_MinLimit)});
+		}
+		
 		if(StringUtils.isEmpty(pwd) || cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -204,8 +208,8 @@ public class UserWalletFacadeService{
 		if(StringUtils.isEmpty(uwallet.getPassword())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAWPWD_SETOPER_NEEDED);
 		}
-		if(uwallet.getCash() < BusinessRuntimeConfiguration.User_WalletWithdraw_Default_MinLimit){
-			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_CASH_LOWERTHAN_WITHDRAW_MINLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.User_WalletWithdraw_Default_MinLimit)});
+		if(uwallet.getCash() < BusinessRuntimeConfiguration.User_WalletWithdraw_Default_Remainer_MinLimit){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_CASH_LOWERTHAN_WITHDRAW_MINLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.User_WalletWithdraw_Default_Remainer_MinLimit)});
 		}
 		if(uwallet.getCash() < cash){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_CASH_NOT_SUFFICIENT);
