@@ -173,7 +173,9 @@ public class SocialFacadeRpcService {
                 if (user != null && (int)user.getId() == vtos.getUser().getUid()){
                     vtos.getUser().setAvatar(user.getAvatar());
                     vtos.setType(SocialFetchFollowListVTO.TYPE);
-                    vtos.getUser().setNick(user.getNick());
+                    if (vtos.getNick() == null || vtos.getNick().isEmpty()){
+                        vtos.getUser().setNick(user.getNick());
+                    }
                 }
                 index++;
             }
