@@ -156,6 +156,8 @@ public class SocialFacadeRpcService {
                 if (handSerUser != null) {
                     SUser.setUid(handSerUser.getUid());
                     ids.add((int) handSerUser.getUid());
+                }else {
+                    ids.add(null);
                 }
                 vtos.setUser(SUser);
                 index++;
