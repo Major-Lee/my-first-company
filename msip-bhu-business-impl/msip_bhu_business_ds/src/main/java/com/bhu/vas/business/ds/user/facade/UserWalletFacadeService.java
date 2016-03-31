@@ -320,6 +320,14 @@ public class UserWalletFacadeService{
 		if(innerModel == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_NOTDEFINED);
 		}
+		
+		//如果是微信的话，需要判定值是否存在openid
+		if(OAuthType.Weichat.getType().equals(type.getType())){
+			if(StringUtils.isEmpty(innerModel.getOpenid())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_DATA_IMPERFECT,new String[]{"weichat-openid"} );
+			}
+		}
+		
 		return innerModel;
 		
 		/*UserThirdpartiesPayment payment = userThirdpartiesPaymentService.getById(uid);
