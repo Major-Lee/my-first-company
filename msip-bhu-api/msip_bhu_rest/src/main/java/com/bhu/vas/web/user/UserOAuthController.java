@@ -36,9 +36,10 @@ public class UserOAuthController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/fetch_identifies", method={RequestMethod.GET,RequestMethod.POST})
 	public void fetch_identifies(HttpServletResponse response, 
-			@RequestParam(required=true) Integer uid){
+			@RequestParam(required=true) Integer uid,
+			@RequestParam(required=false, defaultValue="false") boolean payment){
 		try{
-			RpcResponseDTO<List<UserOAuthStateDTO>> rpcResult = userOAuthRpcService.fetchRegisterIdentifies(uid);
+			RpcResponseDTO<List<UserOAuthStateDTO>> rpcResult = userOAuthRpcService.fetchRegisterIdentifies(uid,payment);
 			if(!rpcResult.hasError()){
 				//UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 				//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));

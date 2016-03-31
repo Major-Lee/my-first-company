@@ -1,7 +1,6 @@
 package com.bhu.vas.business.ds.user.facade;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -27,20 +26,32 @@ public class UserOAuthFacadeService {
 	@Resource
 	private UserOAuthStateService userOAuthStateService;
 
-	public List<UserOAuthStateDTO> fetchRegisterIdentifies(Integer uid){
+	/**
+	 * 
+	 * @param uid
+	 * @param payment true 返回带支付帐号属性的相关数据， false 全部返回
+	 * @return
+	 */
+	public List<UserOAuthStateDTO> fetchRegisterIdentifies(Integer uid, boolean payment){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("uid", uid);
 		List<UserOAuthState> models = userOAuthStateService.findModelByModelCriteria(mc);
 		List<UserOAuthStateDTO> dtos = new ArrayList<UserOAuthStateDTO>();
 		if(!models.isEmpty()){
 			for(UserOAuthState model : models){
-				dtos.add(model.getInnerModel());
+				if(payment){
+					if(OAuthType.paymentSupported(model.getIdentify())){
+						dtos.add(model.getInnerModel());
+					}
+				}else{
+					dtos.add(model.getInnerModel());
+				}
 			}
 		}
 		return dtos;
 	}
 	
-	public List<UserOAuthStateDTO> fetchRegisterPaymentIdentifies(Integer uid){
+	/*public List<UserOAuthStateDTO> fetchRegisterPaymentIdentifies(Integer uid){
 		List<UserOAuthStateDTO> dtos = fetchRegisterIdentifies(uid);
 		Iterator<UserOAuthStateDTO> iter = dtos.iterator();
 		while(iter.hasNext()){
@@ -50,7 +61,7 @@ public class UserOAuthFacadeService {
 			}
 		}
 		return dtos;
-	}
+	}*/
 	
 	public UserOAuthStateDTO fetchRegisterIndetify(int uid,OAuthType type,boolean validatePayment){
 		if(validatePayment){

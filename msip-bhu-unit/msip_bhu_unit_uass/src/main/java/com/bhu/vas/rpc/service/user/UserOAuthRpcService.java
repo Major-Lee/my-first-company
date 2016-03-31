@@ -21,9 +21,9 @@ public class UserOAuthRpcService implements IUserOAuthRpcService{
 	private UserOAuthUnitFacadeService userOAuthUnitFacadeService;
 	@Override
 	public RpcResponseDTO<List<UserOAuthStateDTO>> fetchRegisterIdentifies(
-			Integer uid) {
+			Integer uid,boolean payment) {
 		logger.info(String.format("fetchRegisterIdentifies with uid[%s]",uid));
-		return userOAuthUnitFacadeService.fetchRegisterIdentifies(uid);
+		return userOAuthUnitFacadeService.fetchRegisterIdentifies(uid,payment);
 	}
 	@Override
 	public RpcResponseDTO<Boolean> removeIdentifies(Integer uid, String identify) {
