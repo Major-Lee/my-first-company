@@ -121,7 +121,7 @@ public class OrderFacadeService {
 		}
 		mc.setOrderByClause("created_at desc");
 		mc.setPageNumber(pageNo);
-		mc.setSize(pageSize);
+		mc.setPageSize(pageSize);
 		return orderService.findModelByModelCriteria(mc);
 	}
 	
