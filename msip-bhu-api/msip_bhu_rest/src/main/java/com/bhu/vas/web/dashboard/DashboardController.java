@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -39,6 +40,10 @@ public class DashboardController extends BaseController{
 	
     @Resource
     private IUserDeviceRpcService userDeviceRpcService;
+    
+    @Resource
+    private IUserOAuthRpcService userOAuthRpcService;
+    
 	private static final String DefaultSecretkey = "PzdfTFJSUEBHG0dcWFcLew==";
 	private ResponseError validate(String secretKey){
 		if(!DefaultSecretkey.equals(secretKey)){
@@ -155,6 +160,23 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = true,value="sk") String secretKey,
 			@RequestParam(required = true) String dmac) {
 		RpcResponseDTO<DeviceProfileVTO> rpcResult = userDeviceRpcService.portalDeviceProfile(dmac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	}
+
+	
+	@ResponseBody()
+	@RequestMapping(value="/oauth/fullfill",method={RequestMethod.POST})
+	public void fullfill(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true,value="sk") String secretKey,
+			@RequestParam(required = true) String identify,
+			@RequestParam(required = true) String auid,
+			@RequestParam(required = true) String openid) {
+		RpcResponseDTO<Boolean> rpcResult = userOAuthRpcService.fullfillOpenid(identify, auid, openid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else

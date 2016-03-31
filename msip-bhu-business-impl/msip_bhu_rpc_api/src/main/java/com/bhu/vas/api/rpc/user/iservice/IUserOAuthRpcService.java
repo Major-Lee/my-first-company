@@ -32,6 +32,15 @@ public interface IUserOAuthRpcService {
 	 * @param avatar
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> createIdentifies(Integer uid,String identify,String auid,String nick,String avatar,String device,String regIp,String deviceuuid, String ut);
+	public RpcResponseDTO<Map<String, Object>> createIdentifies(Integer uid,String identify,String auid,String openid,String nick,String avatar,String device,String regIp,String deviceuuid, String ut);
 
+	
+	/**
+	 * 通过auid填充openid接口
+	 * @param identify
+	 * @param auid
+	 * @param openid
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> fullfillOpenid(String identify,String auid,String openid);
 }

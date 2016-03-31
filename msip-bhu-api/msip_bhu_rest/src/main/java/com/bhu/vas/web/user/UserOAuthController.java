@@ -83,13 +83,14 @@ public class UserOAuthController extends BaseController{
 			@RequestParam(required=true) String auid,
 			@RequestParam(required = false) String nick,
 			@RequestParam(required = false) String avatar,
+			@RequestParam(required = false) String openid,
 			@RequestParam(required = false,defaultValue="N") String ut,//用户类型标识 UserType
 			@RequestParam(required = false, value="d",defaultValue="R") String device
 			) throws Exception{
 		try{
 			String remoteIp = WebHelper.getRemoteAddr(request);
 			String from_device = DeviceEnum.getBySName(device).getSname();
-			RpcResponseDTO<Map<String,Object>> rpcResult = userOAuthRpcService.createIdentifies(uid,identify, auid, nick, avatar,
+			RpcResponseDTO<Map<String,Object>> rpcResult = userOAuthRpcService.createIdentifies(uid,identify, auid,openid, nick, avatar,
 					from_device, remoteIp, deviceuuid, ut);
 			if(!rpcResult.hasError()){
 				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
