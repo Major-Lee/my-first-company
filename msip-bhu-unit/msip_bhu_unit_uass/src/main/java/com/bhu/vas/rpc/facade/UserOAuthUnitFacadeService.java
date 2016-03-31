@@ -82,11 +82,11 @@ public class UserOAuthUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Map<String, Object>> createOrUpdateIdentifies(Integer uid,String identify,String auid,String nick,String avatar,String device,String regIp,String deviceuuid, String ut){
-		if(StringUtils.isEmpty(identify) || !BusinessEnumType.OAuthType.supported(identify)){
-			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"identify:".concat(identify)});
-		}
 		UserInnerExchangeDTO userExchange = null;
 		try{
+			if(StringUtils.isEmpty(identify) || !BusinessEnumType.OAuthType.supported(identify)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"identify:".concat(identify)});
+			}
 			ModelCriteria mc = new ModelCriteria();
 			mc.createCriteria().andColumnEqualTo("identify", identify).andColumnEqualTo("auid", auid);
 			List<UserOAuthState> models = userOAuthFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);
@@ -143,16 +143,16 @@ public class UserOAuthUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Boolean> fullfillOpenid(String identify, String auid,String openid){
-		if(StringUtils.isEmpty(identify) || !BusinessEnumType.OAuthType.supported(identify)){
-			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"identify:".concat(identify)});
-		}
-		if(StringUtils.isEmpty(auid)){
-			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"auid:".concat(auid)});
-		}
-		if(StringUtils.isEmpty(openid)){
-			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"openid:".concat(openid)});
-		}
 		try{
+			if(StringUtils.isEmpty(identify) || !BusinessEnumType.OAuthType.supported(identify)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"identify:".concat(identify)});
+			}
+			if(StringUtils.isEmpty(auid)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"auid:".concat(auid)});
+			}
+			if(StringUtils.isEmpty(openid)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{"openid:".concat(openid)});
+			}
 			ModelCriteria mc = new ModelCriteria();
 			mc.createCriteria().andColumnEqualTo("identify", identify).andColumnEqualTo("auid", auid);
 			List<UserOAuthState> models = userOAuthFacadeService.getUserOAuthStateService().findModelByModelCriteria(mc);
