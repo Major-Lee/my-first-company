@@ -155,9 +155,8 @@ public class SocialFacadeRpcService {
                 vtos.setNick(SocialCareFacadeService.getNick(uid,vtos.getHd_mac()));
                 if (handSerUser != null) {
                     SUser.setUid(handSerUser.getUid());
-                    ids.add((int) handSerUser.getUid());
-                }else {
-                    ids.add(null);
+
+                    ids.add(index,(int) handSerUser.getUid());
                 }
                 vtos.setUser(SUser);
                 index++;
