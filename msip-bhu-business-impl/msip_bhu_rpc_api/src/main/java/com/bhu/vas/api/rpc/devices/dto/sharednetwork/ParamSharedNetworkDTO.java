@@ -62,7 +62,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		Object[] properties = null;
 		if(VapEnumType.SharedNetworkType.Uplink.getKey().equals(ntype)){
 			properties = new Object[11];
-			properties[0] = HtmlHelper.htmlEncode(ssid);
+			properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
 			properties[1] = users_tx_rate * 8;//转成大B-》小b的单位
 			properties[2] = users_rx_rate * 8;//转成大B-》小b的单位
 			properties[3] = complete_isolate_ports;
@@ -75,7 +75,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			properties[10] = redirect_url;
 		}else{
 			properties = new Object[13];
-			properties[0] = HtmlHelper.htmlEncode(ssid);
+			properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
 			properties[1] = users_tx_rate * 8;//转成大B-》小b的单位
 			properties[2] = users_rx_rate * 8;//转成大B-》小b的单位
 			properties[3] = complete_isolate_ports;
