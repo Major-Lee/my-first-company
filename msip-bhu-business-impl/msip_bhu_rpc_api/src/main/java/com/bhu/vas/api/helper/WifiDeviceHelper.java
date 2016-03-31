@@ -78,7 +78,7 @@ public class WifiDeviceHelper {
 	public final static int SharedNetworkWifi_Default_Users_rx_rate= 256;//2Mb/s
 	public final static int SharedNetworkWifi_Default_Signal_limit= -30;
 	public final static int SharedNetworkWifi_Default_Idle_timeout= 20*60;//20分钟
-	public final static int SharedNetworkWifi_Default_Force_timeout= 6*60*60;//6小时
+	public final static int SharedNetworkWifi_Default_Force_timeout= 4*60*60;//4小时
 	public final static int SharedNetworkWifi_Default_Maxclients= 128;
 	//public final static String VistorWifi_Default_SSID_WhenEmpty = "BhuWiFi-访客";
 	
