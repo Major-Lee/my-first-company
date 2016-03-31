@@ -159,6 +159,11 @@ public class DashboardController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true,value="sk") String secretKey,
 			@RequestParam(required = true) String dmac) {
+		ResponseError validateError = validate(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
 		RpcResponseDTO<DeviceProfileVTO> rpcResult = userDeviceRpcService.portalDeviceProfile(dmac.toLowerCase());
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -166,7 +171,6 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 
-	
 	@ResponseBody()
 	@RequestMapping(value="/oauth/fullfill",method={RequestMethod.POST})
 	public void fullfill(
@@ -176,6 +180,11 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = true) String identify,
 			@RequestParam(required = true) String auid,
 			@RequestParam(required = true) String openid) {
+		ResponseError validateError = validate(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
 		RpcResponseDTO<Boolean> rpcResult = userOAuthRpcService.fullfillOpenid(identify, auid, openid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

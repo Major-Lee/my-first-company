@@ -12,7 +12,7 @@ public interface IUserOAuthRpcService {
 	 * @param uid
 	 * @return
 	 */
-	public RpcResponseDTO<List<UserOAuthStateDTO>> fetchRegisterIdentifies(Integer uid);
+	public RpcResponseDTO<List<UserOAuthStateDTO>> fetchRegisterIdentifies(Integer uid,boolean payment);
 	
 	/**
 	 * 移除相关第三方的帐号绑定
