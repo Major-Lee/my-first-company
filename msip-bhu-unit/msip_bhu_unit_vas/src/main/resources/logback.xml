@@ -56,10 +56,21 @@
 			<charset>UTF-8</charset>
 		</encoder>
 	</appender>
+	<!-- 目前这是透传指令这里会打印出来 -->
+	<appender name="businesslog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}.businesslog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd_HH}.businesslog.zip</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
 
 	<logger name="com.bhu.vas.rpc.service" additivity="false" level="INFO">
 		<appender-ref ref="stdout" />
-		<appender-ref ref="unitrequestfile" />
+		<appender-ref ref="businesslog" />
 	</logger>
 
 	<logger name="com.bhu.vas.rpc.facade" additivity="false" level="INFO">
@@ -67,6 +78,9 @@
 		<appender-ref ref="unitfacadefile" />
 	</logger>
 	
+	<logger name="com.smartwork.msip.business.logger.BusinessDefinedLogger" additivity="false" level="INFO">
+		<appender-ref ref="businesslog" />
+	</logger>	
 	<root level="WARN">
 		<appender-ref ref="stdout" />
 		<!-- 

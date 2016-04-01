@@ -45,6 +45,7 @@ import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskCompletedService;
 import com.bhu.vas.business.ds.task.service.WifiDeviceDownTaskService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.smartwork.msip.business.logger.BusinessDefinedLogger;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -358,15 +359,17 @@ public class TaskFacadeService {
 			}*/
 		}
 		
-		/*if(OperationCMD.DeviceCmdPassThrough == opt_cmd){//远端透传指令，直接下发，无需生成任务
+		if(OperationCMD.DeviceCmdPassThrough == opt_cmd){//远端透传指令，直接下发，无需生成任务
 			WifiDeviceDownTask simulateTask = new WifiDeviceDownTask();
 			simulateTask.setId(-1l);
 			simulateTask.setChannel(channel);
 			simulateTask.setChannel_taskid(channel_taskid);
-			simulateTask.setPayload(CMDBuilder.builderDeviceCmdPassThrough(mac,extparams));
+			String passThroughCMD = CMDBuilder.builderDeviceCmdPassThrough(mac,CMDBuilder.AutoGen,extparams);
+			BusinessDefinedLogger.doInfoLog(passThroughCMD);
+			simulateTask.setPayload(passThroughCMD);
 			simulateTask.setMac(mac);
 			return simulateTask;
-		}*/
+		}
 		
 		
 		if (OperationCMD.ModifyDeviceSetting.getNo().equals(opt)) {

@@ -190,12 +190,11 @@ public class UserWalletFacadeService{
 	 * 现金出账需要把提现状态标记
 	 */
 	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,double cash,String description,IWalletNotifyCallback callback){
-		if(cash < BusinessRuntimeConfiguration.User_WalletWithdraw_Default_Withdraw_MinLimit){
-			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.User_WalletWithdraw_Default_Withdraw_MinLimit)});
-		}
-		
 		if(StringUtils.isEmpty(pwd) || cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		}
+		if(cash < BusinessRuntimeConfiguration.User_WalletWithdraw_Default_Withdraw_MinLimit){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.User_WalletWithdraw_Default_Withdraw_MinLimit)});
 		}
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getById(uid);
