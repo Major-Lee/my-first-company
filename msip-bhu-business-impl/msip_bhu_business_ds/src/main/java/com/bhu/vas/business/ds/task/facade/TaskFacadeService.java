@@ -364,7 +364,7 @@ public class TaskFacadeService {
 			simulateTask.setId(-1l);
 			simulateTask.setChannel(channel);
 			simulateTask.setChannel_taskid(channel_taskid);
-			String passThroughCMD = CMDBuilder.builderDeviceCmdPassThrough(mac,-1l,extparams);
+			String passThroughCMD = CMDBuilder.builderDeviceCmdPassThrough(mac,CMDBuilder.AutoGen,extparams);
 			BusinessDefinedLogger.doInfoLog(passThroughCMD);
 			simulateTask.setPayload(passThroughCMD);
 			simulateTask.setMac(mac);

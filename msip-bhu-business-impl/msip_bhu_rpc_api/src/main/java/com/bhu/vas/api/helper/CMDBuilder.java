@@ -78,7 +78,7 @@ public class CMDBuilder {
 	}
 	
 	public static String builderDeviceCmdPassThrough(String wifi_mac,long taskid,String cmdContent){
-		if(taskid == AutoGen){
+		if(taskid <= AutoGen){
 			taskid = auto_taskid_fragment.getNextSequence();
 		}
 		return String.format(OperationCMD.DeviceCmdPassThrough.getCmdtpl(), 
