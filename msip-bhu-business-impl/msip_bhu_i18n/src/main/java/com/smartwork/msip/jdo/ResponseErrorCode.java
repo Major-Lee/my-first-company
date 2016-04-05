@@ -195,6 +195,9 @@ public enum ResponseErrorCode {
 	USER_WALLET_PAYMENT_NOTDEFINED("333", "user.wallet.payment.notdefined"),
 	USER_WALLET_PAYMENT_NOT_VALIDATE_PAYMENTTYPE("334", "user.wallet.payment.not.validate.paymenttype"),
 	USER_WALLET_PAYMENT_DATA_IMPERFECT("335", "user.wallet.payment.data.imperfect"),
+	USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT("336", "user.wallet.withdraw.lowerthan.minlimit"),
+	
+	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
 	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),
 	DEVICE_ALREADY_BEBINDED("342","device.already.bebinded"),
