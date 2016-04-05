@@ -12,6 +12,8 @@ import java.util.Date;
 public class UserDevice extends BasePKModel<UserDevicePK> {
 
     private String device_name;
+    //设备名称是否正式修改
+    private boolean device_name_modifyed;
     private Date created_at;
 
     public String getDevice_name() {
@@ -21,8 +23,16 @@ public class UserDevice extends BasePKModel<UserDevicePK> {
     public void setDevice_name(String device_name) {
         this.device_name = device_name;
     }
+    
+    public boolean isDevice_name_modifyed() {
+		return device_name_modifyed;
+	}
 
-    public Date getCreated_at() {
+	public void setDevice_name_modifyed(boolean device_name_modifyed) {
+		this.device_name_modifyed = device_name_modifyed;
+	}
+
+	public Date getCreated_at() {
         return created_at;
     }
 

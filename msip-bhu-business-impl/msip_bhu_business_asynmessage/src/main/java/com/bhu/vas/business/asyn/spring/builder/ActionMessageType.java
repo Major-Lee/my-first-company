@@ -27,6 +27,7 @@ public enum ActionMessageType {
 	
 	DeviceModifySettingAclMacs("修改黑名单内容","dsaclmacs","DA"),
 	DeviceModifySettingAalias("修改终端别名","dsalias","DI"),
+	DeviceModifySettingVap("修改VAP信息","dsvap","DV"),
 	
 	CMUPWithWifiDeviceOnlines("CM上线的wifi设备在线信息","cmup","CW"),
 	

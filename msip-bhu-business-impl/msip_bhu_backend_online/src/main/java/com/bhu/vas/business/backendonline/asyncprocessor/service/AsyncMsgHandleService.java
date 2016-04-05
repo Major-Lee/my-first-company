@@ -46,10 +46,12 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAliasDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingVapDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceVisitorAuthorizeOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
@@ -94,6 +96,7 @@ import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
+import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -106,6 +109,7 @@ import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 import com.smartwork.msip.cores.helper.ip.IpLookup;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 @Service
 public class AsyncMsgHandleService {
@@ -161,6 +165,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+	
+	@Resource
+	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 	
 	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
@@ -1095,8 +1102,32 @@ public class AsyncMsgHandleService {
 				}
 			}*/
 		}
+		ssidModifyWithChangeDeviceName(dto.getMac());
 		
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceSettingChanged message[%s] successful", message));
+	}
+	
+	/**
+	 * 当设备的ssid发生变化时 判断设备昵称是否已经被用户改过
+	 * 如果没有被用户改过 则要随着ssid变化而变化
+	 * @param mac
+	 */
+	public void ssidModifyWithChangeDeviceName(String mac){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("mac", mac);
+		List<UserDevice> userDevices = userDeviceService.findModelByModelCriteria(mc);
+		if(!userDevices.isEmpty()){
+			UserDevice userDevice = userDevices.get(0);
+			if(!userDevice.isDevice_name_modifyed()){
+				String ssid = deviceFacadeService.getUrouterSSID(mac);
+				if(StringUtils.isNotEmpty(ssid) && !ssid.equals(userDevice.getDevice_name())){
+					userDevice.setDevice_name(ssid);
+					userDeviceService.update(userDevice);
+					
+					 wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, ssid);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -1405,8 +1436,20 @@ public class AsyncMsgHandleService {
 		}
 		logger.info(String.format("deviceModifySettingAalias message[%s] successful", message));
 	}
-
 	
+	/**
+	 * 修改VAP内容的后续操作
+	   如果修改了ssid，则判断是否需要修改设备昵称
+	 * @param message
+	 */
+	public void deviceModifySettingVap(String message){
+		logger.info(String.format("deviceModifySettingVap message[%s]", message));
+		DeviceModifySettingVapDTO dto = JsonHelper.getDTO(message, DeviceModifySettingVapDTO.class);
+
+		ssidModifyWithChangeDeviceName(dto.getMac());
+		
+		logger.info(String.format("deviceModifySettingVap message[%s] successful", message));
+	}
 	
 	
 //	public void wifiDeviceSettingNotify(String message){
