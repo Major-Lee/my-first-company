@@ -15,6 +15,7 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAliasDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingVapDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceSearchResultExportFileDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
@@ -404,6 +405,16 @@ public class DeliverMessageService {
 		dto.setUid(uid);
 		dto.setMac(mac);
 		dto.setContent(content);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendDeviceModifySettingVapActionMessage(Integer uid, String mac){
+		DeviceModifySettingVapDTO dto = new DeviceModifySettingVapDTO();
+		dto.setUid(uid);
+		dto.setMac(mac);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));

@@ -222,6 +222,7 @@ public class UserDeviceUnitFacadeService {
             }
             userDevice.setId(new UserDevicePK(mac, uid));
             userDevice.setDevice_name(deviceName);
+            userDevice.setDevice_name_modifyed(true);
             userDeviceService.update(userDevice);
             
             wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, deviceName);

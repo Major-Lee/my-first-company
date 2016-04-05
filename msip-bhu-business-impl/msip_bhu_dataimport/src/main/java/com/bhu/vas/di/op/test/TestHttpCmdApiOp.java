@@ -84,7 +84,7 @@ public class TestHttpCmdApiOp {
 						try{
 							String response = HttpHelper.postUrlAsString("http://vap.bhunetworks.com/bhu_api/v1/dashboard/cmd/generate", 
 									api_params);
-							System.out.println(response);
+							//System.out.println(response);
 						}catch(Exception ex){
 							ex.printStackTrace();
 						}
