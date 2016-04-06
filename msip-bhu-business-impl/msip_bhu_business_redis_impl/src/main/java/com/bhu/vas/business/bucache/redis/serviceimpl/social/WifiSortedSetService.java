@@ -49,7 +49,7 @@ public class WifiSortedSetService extends AbstractRelationSortedSetCache {
     }
 
     public Set<String> getWifiVistors(String bssid) {
-        return this.zrange(generateKey(bssid), 0, -1);
+        return this.zrevrange(generateKey(bssid), 0, -1);
     }
 
 
