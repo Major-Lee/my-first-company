@@ -47,6 +47,7 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 	//private Map<String,Set<WifiDeviceDTO>> localCaches = new HashMap<String,Set<WifiDeviceDTO>>();
 	@PostConstruct
 	public void initialize() {
+		System.out.println("NotifyCmMsgProcessor initialize...");
 		logger.info("NotifyCmMsgProcessor initialize...");
 		KafkaMsgObserverManager.CMNotifyCommingObserver.addMsgCommingListener(this);
 	}

@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 
 
 
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -66,6 +67,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 
 	@PostConstruct
 	public void initialize(){
+		System.out.println("BusinessDynaMsgProcessor initialize...");
 		logger.info("BusinessDynaMsgProcessor initialize...");
 		
 		for(int i=0;i<hash_prime;i++){
@@ -85,12 +87,17 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 						topic, partition,
 						key, message,
 						offset, consumerId));*/
+
 		validateStep1(message);
 		exec_dispatcher.submit((new Runnable() {
 			@Override
 			public void run() {
 				//logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 				try{
+					System.out.println(String.format("Dyna Received message: topic[%s] partition[%s] key[%s] message[%s] offset[%s] consumerId[%s]",
+							topic, partition,
+							key, message,
+							offset, consumerId));
 					//System.out.println(String.format("BusinessNotifyMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 					logger.info(String.format("Dyna Received message: topic[%s] partition[%s] key[%s] message[%s] offset[%s] consumerId[%s]",
 							topic, partition,
