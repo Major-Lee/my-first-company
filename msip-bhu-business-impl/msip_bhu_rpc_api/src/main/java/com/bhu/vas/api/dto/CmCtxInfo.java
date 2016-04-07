@@ -92,8 +92,15 @@ public class CmCtxInfo implements java.io.Serializable{
 	
 	public static String parserCtxName(String queue_name){
 		if(StringUtils.isEmpty(queue_name)) return null;
-		String[] split = queue_name.split(StringHelper.UNDERLINE_STRING_GAP);
-		return split[0];
+		if(queue_name.startsWith(UpPrefix)){
+			return queue_name.substring(UpPrefix.length());
+		}else if(queue_name.startsWith(DownPrefix)){
+			return queue_name.substring(DownPrefix.length());
+		}else{
+			return queue_name;
+		}
+		//String[] split = queue_name.split(StringHelper.UNDERLINE_STRING_GAP);
+		//return split[0];
 		//return UpPrefix.concat(ctx_name);
 	}
 	
@@ -120,12 +127,15 @@ public class CmCtxInfo implements java.io.Serializable{
 	public static final String DownPrefix = "down_";
 	public static final String UpPrefix = "up_";
 	
-	/*public static void main(String[] argv){
-		CmCtxInfo info = new CmCtxInfo();
+	public static void main(String[] argv){
+		
+		String queue_name = "down_ursids3_0";
+		System.out.println(CmCtxInfo.parserCtxName(queue_name));
+		/*CmCtxInfo info = new CmCtxInfo();
 		info.set_mq_host("1234");
 		String json = (JsonHelper.getJSONString(info));
 		
 		CmCtxInfo dto = JsonHelper.getDTO(json, CmCtxInfo.class);
-		System.out.println(dto.get_mq_host());
-	}*/
+		System.out.println(dto.get_mq_host());*/
+	}
 }
