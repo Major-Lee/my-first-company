@@ -96,7 +96,7 @@ public class DeviceUnitFacadeRpcService{
 			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(grayUsageVTO);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
@@ -111,7 +111,7 @@ public class DeviceUnitFacadeRpcService{
 			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(deviceVersion);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
@@ -124,7 +124,7 @@ public class DeviceUnitFacadeRpcService{
 			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(deviceVersion);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode());
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
