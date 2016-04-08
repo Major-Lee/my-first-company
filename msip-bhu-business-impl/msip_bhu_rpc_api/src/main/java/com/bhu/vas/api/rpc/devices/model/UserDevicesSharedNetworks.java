@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.devices.model;
 
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.smartwork.msip.cores.orm.model.extjson.KeyListMapJsonExtPKModel;
 
 /**
  * 用户统一共享网络配置存储
