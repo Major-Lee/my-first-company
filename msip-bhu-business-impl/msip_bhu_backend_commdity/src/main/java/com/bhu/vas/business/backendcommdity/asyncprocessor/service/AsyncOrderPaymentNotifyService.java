@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 
 
 
+
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
@@ -105,7 +107,13 @@ public class AsyncOrderPaymentNotifyService {
 				double amount = Double.parseDouble(order.getAmount());
 				//userWalletFacadeService.sharedealCashToUserWallet(order.getUid(), amount, orderid);
 				OrderUmacType uMacType = OrderUmacType.fromKey(order.getUmactype());
-				StringBuilder sb_description = new StringBuilder();
+				if(uMacType == null){
+					uMacType = OrderUmacType.Terminal;
+				}
+				if(StringUtils.isNotEmpty(order.getPayment_type())){
+					order.setPayment_type(BusinessEnumType.unknownPaymentType);
+				}
+				/*StringBuilder sb_description = new StringBuilder();
 				if(uMacType != null){
 					sb_description.append(uMacType.getName());
 				}
@@ -113,8 +121,9 @@ public class AsyncOrderPaymentNotifyService {
 					if(sb_description.length()>0)	
 						sb_description.append(StringHelper.MINUS_CHAR_GAP);
 					sb_description.append(order.getPayment_type());
-				}
-				userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,sb_description.toString());
+				}*/
+				userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
+						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(),order.getPayment_type()));
 			}
 		}
 	}
