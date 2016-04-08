@@ -15,6 +15,7 @@ import com.bhu.vas.api.rpc.social.dto.SocialStatisManufatorItemDTO;
 import com.bhu.vas.api.rpc.social.model.Wifi;
 import com.bhu.vas.api.rpc.social.vto.*;
 import com.bhu.vas.business.asyn.spring.activemq.service.SocialMessageService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.*;
 import com.bhu.vas.business.ds.social.service.WifiService;
 import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
@@ -111,7 +112,7 @@ public class SocialFacadeRpcService {
      */
     public void unFollow(long uid, String hd_mac) {
         SocialFollowSortedSetService.getInstance().unFollow(uid, hd_mac);
-        SocialCareHashService.getInstance().unCare(uid,hd_mac);
+//        SocialCareHashService.getInstance().unCare(uid,hd_mac);
     }
 
     /**
@@ -152,7 +153,7 @@ public class SocialFacadeRpcService {
                 SocialFetchFollowListVTO vtos = result.get(index);
 
                 SocialUserVTO SUser = new SocialUserVTO();
-                vtos.setNick(SocialCareFacadeService.getNick(uid,vtos.getHd_mac()));
+                vtos.setNick(WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias((int)uid,vtos.getHd_mac()));
                 if (handSerUser != null) {
                     SUser.setUid(handSerUser.getUid());
                     ids.add((int) handSerUser.getUid());
@@ -282,7 +283,7 @@ public class SocialFacadeRpcService {
                 HandsetUserVTO handsetVTO = new HandsetUserVTO();
                 handsetVTO.setHd_mac(mac);
                 if (uid != null && uid >0) {
-                    handsetVTO.setNick(SocialCareFacadeService.getNick(uid, mac));
+                    handsetVTO.setNick(WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid.intValue(),mac));
                     handsetVTO.setFollowed(SocialFollowSortedSetService.getInstance().isFollowed(uid, mac));
                 }
 
@@ -344,11 +345,9 @@ public class SocialFacadeRpcService {
      */
     public boolean modifyHandset(long uid, String hd_mac, String nick) {
 
-
-        SocialCareFacadeService.moidfyNick(uid, hd_mac, nick);
-
-        this.follow(uid, hd_mac);
-
+//        SocialCareFacadeService.moidfyNick(uid, hd_mac, nick);
+//        this.follow(uid, hd_mac);
+        WifiDeviceHandsetAliasService.getInstance().hsetHandsetAlias((int)uid, hd_mac, nick);
         return true;
     }
 
@@ -357,7 +356,7 @@ public class SocialFacadeRpcService {
         HandsetUserVTO handsetUserVTO = new HandsetUserVTO();
 
         if (uid != null && uid >0) {
-            handsetUserVTO.setNick(SocialCareFacadeService.getNick(uid, hd_mac));
+            handsetUserVTO.setNick(WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid.intValue(),hd_mac));
         }
         handsetUserVTO.setHd_mac(hd_mac);
         handsetUserVTO.setLast(SocialStorageFacadeService.getLastHandsetMeet(hd_mac_self, hd_mac));
