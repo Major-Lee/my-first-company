@@ -1,7 +1,6 @@
 package com.bhu.vas.business.ds.device.facade;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -14,11 +13,11 @@ import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkVTO;
-import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetwork;
+import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetworks;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
-import com.bhu.vas.business.ds.device.service.UserDevicesSharedNetworkService;
+import com.bhu.vas.business.ds.device.service.UserDevicesSharedNetworksService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
@@ -26,9 +25,8 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
-@Deprecated
 @Service
-public class SharedNetworkFacadeService {
+public class SharedNetworksFacadeService {
 	@Resource
 	private UserService userService;
 
@@ -39,7 +37,7 @@ public class SharedNetworkFacadeService {
 	private WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
 
 	@Resource
-	private UserDevicesSharedNetworkService userDevicesSharedNetworkService;
+	private UserDevicesSharedNetworksService userDevicesSharedNetworksService;
 
     @Resource
     private UserDeviceService userDeviceService;
@@ -54,22 +52,31 @@ public class SharedNetworkFacadeService {
 	 */
 	public boolean doApplySharedNetworksConfig(int uid,ParamSharedNetworkDTO paramDto){
 		boolean configChanged = false;
-		UserDevicesSharedNetwork configs = userDevicesSharedNetworkService.getById(uid);
+		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
 		paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
 		if(configs == null){
-			configs = new UserDevicesSharedNetwork();
+			configs = new UserDevicesSharedNetworks();
 			configs.setId(uid);
-			configs.putInnerModel(paramDto.getNtype(), paramDto);
-			userDevicesSharedNetworkService.insert(configs);
+			List<ParamSharedNetworkDTO> models = new ArrayList<ParamSharedNetworkDTO>();
+			models.add(paramDto);
+			configs.put(paramDto.getNtype(), models);
+			userDevicesSharedNetworksService.insert(configs);
 			configChanged = true;
 		}else{
-			ParamSharedNetworkDTO fromdb = configs.getInnerModel(paramDto.getNtype());
-			if(fromdb == null || ParamSharedNetworkDTO.wasChanged(fromdb, paramDto)){
-				//比对是否变化了
-					configs.putInnerModel(paramDto.getNtype(), paramDto);
-					userDevicesSharedNetworkService.update(configs);
+			List<ParamSharedNetworkDTO> models_fromdb = configs.get(paramDto.getNtype(),new ArrayList<ParamSharedNetworkDTO>(),true);
+			//验证models_fromdb 是否存在 template编号,如果存在则替换，否则增加
+			int index = models_fromdb.indexOf(paramDto);
+			if(index != -1){
+				ParamSharedNetworkDTO dto_fromdb = models_fromdb.get(index);
+				if(dto_fromdb == null || ParamSharedNetworkDTO.wasChanged(dto_fromdb, paramDto)){
 					configChanged = true;
+					models_fromdb.set(index, paramDto);
+					userDevicesSharedNetworksService.update(configs);
+				}
 			}else{
+				models_fromdb.add(paramDto);
+				userDevicesSharedNetworksService.update(configs);
+				//当前未有新设备应用新模板，所以返回false
 				configChanged = false;
 			}
 		}
@@ -77,99 +84,73 @@ public class SharedNetworkFacadeService {
 	}
 	
 	/**
-	 * 此接口在后台backend执行,主要配合doApplySharedNetworksConfig后续执行
-	 * 获取用户绑定的所有设备中开启了指定的sharedNetwork的设备，比对是否变化然后进行相关共享网络变更并且发送指令到设备
-	 * 每次应用后替换用户指定类型的所有设备的共享网络配置
-	 * @param uid
-	 * @param sharedNetwork
-	 * @return 需要发送指令的mac地址
-	 */
-	//@Deprecated
-	/*public List<String> doApplySharedNetworksConfig2Devices(int uid,VapEnumType.SharedNetworkType sharedNetwork){
-		List<String> dmacs = new ArrayList<String>();
-		List<String> tmpDmacs = new ArrayList<String>();
-		try{
-			ModelCriteria mc = new ModelCriteria();
-	        mc.createCriteria().andColumnEqualTo("uid", uid);
-	        mc.setPageNumber(1);
-	        mc.setPageSize(100);
-	        EntityIterator<UserDevicePK, UserDevice> it = new KeyBasedEntityBatchIterator<UserDevicePK,UserDevice>(UserDevicePK.class
-					,UserDevice.class, userDeviceService.getEntityDao(), mc);
-			while(it.hasNext()){
-				List<UserDevicePK> nextKeys = it.nextKeys();
-				for(UserDevicePK pk:nextKeys){
-					String dmac= pk.getMac();
-					tmpDmacs.add(dmac);
-				}
-				if(!tmpDmacs.isEmpty()){
-					//未设定的sharedNetwork 或sharedNetwork相等的需要应用
-					dmacs.addAll(addDevices2SharedNetwork(uid,sharedNetwork,true,tmpDmacs));
-					tmpDmacs.clear();
-				}
-			}
-		}finally{
-			if(tmpDmacs != null){
-				tmpDmacs.clear();
-				tmpDmacs = null;
-			}
-		}
-		return dmacs;
-	}*/
-	
-	/**
 	 * 获取用户关于共享网络的配置
 	 * 如果为空则采用缺省值构建
 	 * @param uid
 	 * @param sharednetwork_type
 	 */
-	public Collection<ParamSharedNetworkDTO> fetchAllUserSharedNetworkConf(int uid){
-		UserDevicesSharedNetwork configs = userDevicesSharedNetworkService.getById(uid);
+	public List<ParamSharedNetworkDTO> fetchAllUserSharedNetworkConf(int uid,VapEnumType.SharedNetworkType sharedNetwork){
+		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
 		//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
 		if(configs == null){
-			configs = new UserDevicesSharedNetwork();
+			configs = new UserDevicesSharedNetworks();
 			configs.setId(uid);
-			configs.putInnerModel(VapEnumType.SharedNetworkType.SafeSecure.getKey(), ParamSharedNetworkDTO.builderDefault(VapEnumType.SharedNetworkType.SafeSecure.getKey()));
-			configs.putInnerModel(VapEnumType.SharedNetworkType.Uplink.getKey(), ParamSharedNetworkDTO.builderDefault(VapEnumType.SharedNetworkType.Uplink.getKey()));
-			userDevicesSharedNetworkService.insert(configs);
+			List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
+			sharedNetworkType_models.add(ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey()));
+			configs.put(sharedNetwork.getKey(), sharedNetworkType_models);
+			userDevicesSharedNetworksService.insert(configs);
 		}else{
-			if(configs.getExtension().isEmpty()){
-				configs.putInnerModel(VapEnumType.SharedNetworkType.SafeSecure.getKey(), ParamSharedNetworkDTO.builderDefault(VapEnumType.SharedNetworkType.SafeSecure.getKey()));
-				configs.putInnerModel(VapEnumType.SharedNetworkType.Uplink.getKey(), ParamSharedNetworkDTO.builderDefault(VapEnumType.SharedNetworkType.Uplink.getKey()));
-				userDevicesSharedNetworkService.update(configs);
+			List<ParamSharedNetworkDTO> models = configs.get(sharedNetwork.getKey(),new ArrayList<ParamSharedNetworkDTO>(),true);
+			if(models.isEmpty()){
+				models.add(ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey()));
+				userDevicesSharedNetworksService.update(configs);
 			}
 		}
-		return configs.getExtension().values();
+		return configs.get(sharedNetwork.getKey());
 	}
 	
 	/**
 	 * 获取用户的指定的共享网络配置
-	 * 如果不存在则建立缺省值
+	 * 如果不存在则建立缺省值或者返回index=0值
 	 * @param uid
 	 * @param sharedNetwork
 	 * @return
 	 */
-	public ParamSharedNetworkDTO fetchUserSharedNetworkConf(int uid,VapEnumType.SharedNetworkType sharedNetwork){
-		UserDevicesSharedNetwork configs = userDevicesSharedNetworkService.getById(uid);
+	public ParamSharedNetworkDTO fetchUserSharedNetworkConf(int uid,VapEnumType.SharedNetworkType sharedNetwork,int template){
+		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
 		ParamSharedNetworkDTO dto = null;
 		//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
 		if(configs == null){
-			configs = new UserDevicesSharedNetwork();
+			configs = new UserDevicesSharedNetworks();
 			configs.setId(uid);
+			List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
 			dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
-			configs.putInnerModel(sharedNetwork.getKey(), dto);
-			userDevicesSharedNetworkService.insert(configs);
+			sharedNetworkType_models.add(dto);
+			configs.put(sharedNetwork.getKey(), sharedNetworkType_models);
+			userDevicesSharedNetworksService.insert(configs);
 		}else{
-			if(!configs.containsKey(sharedNetwork.getKey())){
+			List<ParamSharedNetworkDTO> models = configs.get(sharedNetwork.getKey(),new ArrayList<ParamSharedNetworkDTO>(),true);
+			if(models.isEmpty()){
 				dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
-				configs.putInnerModel(sharedNetwork.getKey(), dto);
-				userDevicesSharedNetworkService.update(configs);
+				models.add(dto);
+				userDevicesSharedNetworksService.update(configs);
 			}else{
-				dto = configs.getInnerModel(sharedNetwork.getKey());
+				ParamSharedNetworkDTO temp = new ParamSharedNetworkDTO();
+				temp.setTemplate(template);
+				int index = models.indexOf(temp);
+				if(index != -1){
+					dto = models.get(index);
+				}else{
+					dto = models.get(0);
+				}
 			}
 		}
 		return dto;
 	}
 	
+	public ParamSharedNetworkDTO fetchUserSharedNetworkConf(int uid,VapEnumType.SharedNetworkType sharedNetwork){
+		return fetchUserSharedNetworkConf(uid,sharedNetwork,0);
+	}
 	public WifiDeviceSharedNetwork fetchDeviceSharedNetwork(String mac){
 		return wifiDeviceSharedNetworkService.getById(mac);
 	}
@@ -196,7 +177,7 @@ public class SharedNetworkFacadeService {
 		}else{
 			ParamSharedNetworkDTO sharedNetworkConf = this.fetchUserSharedNetworkConf(uid, SharedNetworkType.SafeSecure);
 			configs  = new WifiDeviceSharedNetwork();
-			configs.setSharednetwork_type(sharedNetworkConf.getOpen_resource());
+			configs.setSharednetwork_type(sharedNetworkConf.getNtype());
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
 			sharedNetworkSettingDTO.turnOff(sharedNetworkConf);
 			configs.putInnerModel(sharedNetworkSettingDTO);
@@ -254,19 +235,19 @@ public class SharedNetworkFacadeService {
 	 * @return 配置变更了的具体设备地址集合
 	 */
 	public void addDevices2SharedNetwork(int uid,
-			VapEnumType.SharedNetworkType sharednetwork_type,
+			VapEnumType.SharedNetworkType sharednetwork_type,int template,
 			boolean sharednetworkMatched,
 			List<String> macs,ISharedNetworkNotifyCallback callback){
 		if(sharednetwork_type == null){
 			sharednetwork_type = SharedNetworkType.SafeSecure;
-			//throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"sharednetwork_type:".concat(String.valueOf(sharednetwork_type))});
 		}
-		
 		if(macs == null || macs.isEmpty()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY,new String[]{"macs"});
 		}
 		List<String> result = new ArrayList<String>();
-		ParamSharedNetworkDTO configDto = fetchUserSharedNetworkConf(uid,sharednetwork_type);
+		ParamSharedNetworkDTO configDto = fetchUserSharedNetworkConf(uid,sharednetwork_type,template);
+		//如果template不存在则返回的dto中是列表的第一个值
+		template = configDto.getTemplate();
 		//TODO：验证设备是否真实绑定
 		//TODO：等设备版本升级上来后可以去掉此条件约束
 		if(SharedNetworkType.SafeSecure.getKey().equals(sharednetwork_type.getKey())){
@@ -286,6 +267,7 @@ public class SharedNetworkFacadeService {
 				sharednetwork = new WifiDeviceSharedNetwork();
 				sharednetwork.setId(mac_lowercase);
 				sharednetwork.setSharednetwork_type(configDto.getNtype());
+				sharednetwork.setTemplate(template);
 				SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
 				sharedNetworkSettingDTO.turnOn(configDto);
 				sharednetwork.putInnerModel(sharedNetworkSettingDTO);
@@ -298,6 +280,7 @@ public class SharedNetworkFacadeService {
 					}
 				}
 				sharednetwork.setSharednetwork_type(configDto.getNtype());
+				sharednetwork.setTemplate(template);
 				SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
 				
 				sharedNetworkSettingDTO.turnOn(configDto);
@@ -336,6 +319,7 @@ public class SharedNetworkFacadeService {
 			sharednetwork = new WifiDeviceSharedNetwork();
 			sharednetwork.setId(mac_lowercase);
 			sharednetwork.setSharednetwork_type(configDto.getNtype());
+			sharednetwork.setTemplate(configDto.getTemplate());
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
 			sharedNetworkSettingDTO.turnOn(configDto);
 			sharednetwork.putInnerModel(sharedNetworkSettingDTO);
@@ -343,29 +327,12 @@ public class SharedNetworkFacadeService {
 			wasUpdated = true;
 		}else{
 			sharednetwork.setSharednetwork_type(configDto.getNtype());
+			sharednetwork.setTemplate(configDto.getTemplate());
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
 			sharedNetworkSettingDTO.turnOn(configDto);
 			sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
 			wifiDeviceSharedNetworkService.update(sharednetwork);
 			wasUpdated = true;
-			/*sharednetwork.setSharednetwork_type(configDto.getNtype());
-			SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
-			if(sharedNetworkSettingDTO.isOn()){
-				ParamSharedNetworkDTO dbDto = sharedNetworkSettingDTO.getPsn();
-				if(dbDto == null || ParamSharedNetworkDTO.wasChanged(configDto, dbDto)){
-					sharedNetworkSettingDTO.turnOn(configDto);
-					sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
-					wifiDeviceSharedNetworkService.update(sharednetwork);
-					wasUpdated = true;
-				}else{
-					;
-				}
-			}else{
-				sharedNetworkSettingDTO.turnOn(configDto);
-				wifiDeviceSharedNetworkService.update(sharednetwork);
-				wasUpdated = true;
-			}*/
-
 		}
 		return wasUpdated;
 	}
@@ -433,7 +400,7 @@ public class SharedNetworkFacadeService {
 		return wifiDeviceSharedNetworkService;
 	}
 
-	public UserDevicesSharedNetworkService getUserDevicesSharedNetworkService() {
-		return userDevicesSharedNetworkService;
+	public UserDevicesSharedNetworksService getUserDevicesSharedNetworksService() {
+		return userDevicesSharedNetworksService;
 	}
 }

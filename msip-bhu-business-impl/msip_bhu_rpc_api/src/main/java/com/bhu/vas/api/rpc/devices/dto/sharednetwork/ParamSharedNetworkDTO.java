@@ -19,6 +19,8 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 @SuppressWarnings("serial")
 public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String ntype;
+	//int 缺省值为0 有个default
+	private int template;
 	//通用字段
 	private String ssid;
 	private int users_tx_rate;
@@ -93,6 +95,12 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return properties;
 	}
 
+	public int getTemplate() {
+		return template;
+	}
+	public void setTemplate(int template) {
+		this.template = template;
+	}
 	public int getMax_clients() {
 		return max_clients;
 	}
@@ -268,7 +276,8 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	
 	public static ParamSharedNetworkDTO fufillWithDefault(ParamSharedNetworkDTO param){
 		if(param == null) return builderDefault(SharedNetworkType.SafeSecure.getKey());
-		if(StringUtils.isEmpty(param.getNtype())) param.setNtype(SharedNetworkType.Uplink.getKey());
+		if(StringUtils.isEmpty(param.getNtype())) param.setNtype(SharedNetworkType.SafeSecure.getKey());
+		
 		if(param.getSignal_limit() == 0) param.setSignal_limit(WifiDeviceHelper.SharedNetworkWifi_Default_Signal_limit);
 		//if(StringUtils.isEmpty(param.getRedirect_url())) param.setRedirect_url(WifiDeviceHelper.SharedNetworkWifi_Default_Redirect_url);
 		if(param.getIdle_timeout() == 0) param.setIdle_timeout(WifiDeviceHelper.SharedNetworkWifi_Default_Idle_timeout);
@@ -336,7 +345,20 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return false;
 	}
 	
+	@Override
+	public int hashCode() {
+		return this.template;
+	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(o instanceof ParamSharedNetworkDTO){
+			ParamSharedNetworkDTO oo = (ParamSharedNetworkDTO)o;
+			return this.template== oo.template;
+		}
+		return false;
+	}
 	public static void main(String[] argv){
 /*		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.builderDefault(null, true).builderProperties()));
 		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.builderDefault(null, false).builderProperties()));

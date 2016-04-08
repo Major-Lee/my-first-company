@@ -63,6 +63,7 @@
 			type="com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState" />
 			
 		<typeAlias alias="userDevicesSharedNetwork" type="com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetwork" />
+		<typeAlias alias="userDevicesSharedNetworks" type="com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetworks" />
 		<typeAlias alias="wifiDeviceSharedNetwork" type="com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork" />
 			
 		<!-- 	
@@ -174,6 +175,8 @@
 		<mapper
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceSetting.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevicePersistenceCMDState.sqlMap.xml" />
+		
+		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/UserDevicesSharedNetworks.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/UserDevicesSharedNetwork.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceSharedNetwork.sqlMap.xml" />
 			<!--

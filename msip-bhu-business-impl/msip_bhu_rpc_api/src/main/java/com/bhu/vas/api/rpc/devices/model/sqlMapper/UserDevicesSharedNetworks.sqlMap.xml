@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetwork">
+<mapper namespace="com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetworks">
 
-  <resultMap id="modelResult" type="userDevicesSharedNetwork">
+  <resultMap id="modelResult" type="userDevicesSharedNetworks">
     <id property="id" column="id"/>
     <result property="updated_at" column="updated_at"/>
     <result property="extension_content" column="extension_content"/>
@@ -94,7 +94,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="userDevicesSharedNetwork">
+	<delete id="delete" parameterType="userDevicesSharedNetworks">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -103,11 +103,11 @@
 		</where>
 	</delete>
 	
-	<insert id="insert" parameterType="userDevicesSharedNetwork">
+	<insert id="insert" parameterType="userDevicesSharedNetworks">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="userDevicesSharedNetwork">
+	<update id="update" parameterType="userDevicesSharedNetworks">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
