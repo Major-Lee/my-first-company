@@ -72,6 +72,9 @@ public class SharedNetworksFacadeService {
 		boolean configChanged = false;
 		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
 		paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
+		if(StringUtils.isEmpty(paramDto.getTemplate())){
+			paramDto.setTemplate(DefaultTemplate);
+		}
 		if(configs == null){
 			configs = new UserDevicesSharedNetworks();
 			configs.setId(uid);
@@ -92,6 +95,8 @@ public class SharedNetworksFacadeService {
 						configChanged = true;
 						models_fromdb.set(index, paramDto);
 						userDevicesSharedNetworksService.update(configs);
+					}else{
+						//System.out.println("0hhhh:"+paramDto.getTemplate());
 					}
 				}else{
 					String template = fetchValidTemplate(models_fromdb);
@@ -129,6 +134,8 @@ public class SharedNetworksFacadeService {
 					tmp = new ArrayList<String>(subtract);
 					return tmp.get(0);
 				}
+			}else{
+				return DefaultTemplate;
 			}
 		}finally{
 			if(templates_fromdb != null){
