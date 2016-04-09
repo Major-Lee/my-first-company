@@ -513,7 +513,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * 1) d_snk_type
 	 */
 	@Override
-	public void sharedNetworkMultiUpdIncrement(List<String> ids, String sharedNetwork_type) {
+	public void sharedNetworkMultiUpdIncrement(List<String> ids, String sharedNetwork_type,String template) {
 		logger.info(String.format("SharedNetworkMultiUpdIncrement Request ids [%s] sharedNetwork_type [%s]", ids, sharedNetwork_type));
 		if(ids == null || ids.isEmpty()) return;
 		

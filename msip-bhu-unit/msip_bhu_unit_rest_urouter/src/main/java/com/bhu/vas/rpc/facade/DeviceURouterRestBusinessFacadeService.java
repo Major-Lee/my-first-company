@@ -85,7 +85,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.UserTermina
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.builder.WifiStasnifferHelper;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
@@ -142,7 +142,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	//private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 
 	@Resource
-	private SharedNetworkFacadeService sharedNetworkFacadeService;
+	private SharedNetworksFacadeService sharedNetworksFacadeService;
 	/**
 	 * urouter 主入口界面数据
 	 *  hd_list接口需要终端的所有数据
@@ -1171,7 +1171,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			uws_vto.setRecent_c(0);
 		}
 		
-		SharedNetworkSettingDTO uvw_dto = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(wifiDevice.getId());
+		SharedNetworkSettingDTO uvw_dto = sharedNetworksFacadeService.fetchDeviceSharedNetworkConf(wifiDevice.getId());
 		if(uvw_dto != null && uvw_dto.isOn() && uvw_dto.getPsn() != null){
 			uvw_dto.setC(WifiDeviceVisitorService.getInstance().countAuthPresent(user_setting_entity.getId()));
 		}else{
@@ -1738,7 +1738,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		URouterVisitorListVTO vto = new URouterVisitorListVTO();
 		vto.setMac(wifiId);
 
-		SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(wifiId);
+		SharedNetworkSettingDTO sharedNetworkConf = sharedNetworksFacadeService.fetchDeviceSharedNetworkConf(wifiId);
 		if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
 			vto.setN(sharedNetworkConf.getPsn().getSsid());
 			vto.setRx_rate(sharedNetworkConf.getPsn().getUsers_rx_rate());

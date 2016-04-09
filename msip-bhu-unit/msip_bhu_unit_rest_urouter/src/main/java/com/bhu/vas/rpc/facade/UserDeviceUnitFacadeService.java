@@ -50,7 +50,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStat
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
-import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
@@ -119,7 +119,7 @@ public class UserDeviceUnitFacadeService {
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
     
 	@Resource
-	private SharedNetworkFacadeService sharedNetworkFacadeService;
+	private SharedNetworksFacadeService sharedNetworksFacadeService;
 	
 	@Resource
 	private DeliverMessageService deliverMessageService;
@@ -587,7 +587,7 @@ public class UserDeviceUnitFacadeService {
 				user = userService.getById(bindUid);
 			}
 			
-			WifiDeviceSharedNetwork wifiDeviceSharedNetwork = sharedNetworkFacadeService.fetchDeviceSharedNetwork(mac);
+			WifiDeviceSharedNetwork wifiDeviceSharedNetwork = sharedNetworksFacadeService.fetchDeviceSharedNetwork(mac);
 			//基础信息
 			DeviceBaseVTO dbv = new DeviceBaseVTO();
 			dbv.setMac(wifiDevice.getId());
@@ -683,7 +683,7 @@ public class UserDeviceUnitFacadeService {
 				vto.setMobileno(StringHelper.MINUS_STRING_GAP);
 				vto.setAvatar(StringHelper.MINUS_STRING_GAP);
 			}
-			SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
+			SharedNetworkSettingDTO sharedNetworkConf = sharedNetworksFacadeService.fetchDeviceSharedNetworkConf(mac);
 			if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
 				vto.setUsers_rate(sharedNetworkConf.getPsn().getUsers_tx_rate());
 			}

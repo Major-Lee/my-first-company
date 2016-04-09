@@ -85,7 +85,7 @@ import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
-import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
@@ -161,7 +161,7 @@ public class AsyncMsgHandleService {
 	private UserService userService;
 
 	@Resource
-	private SharedNetworkFacadeService sharedNetworkFacadeService;
+	private SharedNetworksFacadeService sharedNetworksFacadeService;
 	
 	@Resource
 	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
@@ -228,7 +228,7 @@ public class AsyncMsgHandleService {
 				if(BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start){
 					logger.info(String.format("Device SharedNetwork Option[%s]", BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start));
 					if(WifiDeviceHelper.autoDeviceSecureSharedNetworkStrategy(wifiDevice.getOrig_swver())){
-						SharedNetworkSettingDTO sharedNetwork = sharedNetworkFacadeService.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac());
+						SharedNetworkSettingDTO sharedNetwork = sharedNetworksFacadeService.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac());
 						ParamSharedNetworkDTO psn = sharedNetwork.getPsn();
 						if(sharedNetwork != null && sharedNetwork.isOn() && psn != null){
 							logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
@@ -1049,7 +1049,7 @@ public class AsyncMsgHandleService {
 			if(!WifiDeviceHelper.autoDeviceSecureSharedNetworkStrategy(wifiDevice.getOrig_swver())) return;
 			dmacs = new ArrayList<String>();
 			dmacs.add(mac);
-			sharedNetworkFacadeService.addDevices2SharedNetwork(uid,null,false,dmacs,
+			sharedNetworksFacadeService.addDevices2SharedNetwork(uid,null,null,false,dmacs,
 					new ISharedNetworkNotifyCallback(){
 						@Override
 						public void notify(ParamSharedNetworkDTO current,List<String> rdmacs) {
@@ -1067,7 +1067,7 @@ public class AsyncMsgHandleService {
 										deviceCMDGenFacadeService);
 								daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 							}
-							wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype());
+							wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate());
 						}
 					});
 		}finally{

@@ -16,7 +16,8 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @param sharenetwork_type
 	 * @return
 	 */
-	RpcResponseDTO<ParamSharedNetworkDTO> fetchUserNetworkConf(int uid, String sharenetwork_type);
+	RpcResponseDTO<ParamSharedNetworkDTO> fetchUserNetworkConf(int uid, String sharenetwork_type,String template);
+	RpcResponseDTO<List<ParamSharedNetworkDTO>> fetchUserNetworksConf(int uid, String sharenetwork_type);
 	
 	RpcResponseDTO<SharedNetworkSettingDTO> fetchDeviceNetworkConf(int uid, String mac);
 	/**
@@ -26,7 +27,7 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @param extparams
 	 * @return
 	 */
-	RpcResponseDTO<ParamSharedNetworkDTO> applyNetworkConf(int uid, String sharenetwork_type, String extparams);
+	RpcResponseDTO<ParamSharedNetworkDTO> applyNetworkConf(int uid, String sharenetwork_type,String template, String extparams);
 	
 	/**
 	 * 具体某个设备生效用户的指定共享网络类型配置
@@ -35,7 +36,7 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @param mac
 	 * @return
 	 */
-	RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,boolean on,String sharenetwork_type,List<String> macs);
+	RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,boolean on,String sharenetwork_type,String template,List<String> macs);
 	
 	
 	/**
@@ -45,5 +46,5 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @param mac
 	 * @return
 	 */
-	RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type, String d_dut, int pageNo, int pageSize);
+	RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type, String template, String d_dut, int pageNo, int pageSize);
 }

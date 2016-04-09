@@ -49,13 +49,25 @@ public class SharedNetworksFacadeService {
     private UserDeviceService userDeviceService;
 	
     private static final String FormatTemplete = "%04d";
-    private static final String DefaultTemplate = "0001";
+    public static final String DefaultTemplate = "0001";
     private static final List<String> TemplateSequences = new ArrayList<>();
     static{
     	for(int i=1;i<BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit+1;i++){
     		TemplateSequences.add(String.format(FormatTemplete, i));
     	}
     }
+    
+    public static boolean validTemplateFormat(String template){
+    	if(StringUtils.isEmpty(template)) return false;
+    	if(template.length() != 4) return false;
+    	try{
+    		Integer.parseInt(template);
+    	}catch(NumberFormatException ex){
+    		return false;
+    	}
+    	return true;
+    }
+    
 	/**
 	 * 接受页面传递的参数，
 	 * 1、比对配置是否变化，如变化则更新用户的配置
@@ -63,7 +75,7 @@ public class SharedNetworksFacadeService {
 	 * 3、需要注意的是 paramDto中的template字段
 	 * 		如果不存在configs 则新建template 为 0 的配置并录入数据库
 	 * 		如果存在configs，则判定template是否存在 存在的话判定是否配置变更了，更新数据库 ，如果不存在则获取一个有效的template并add进去一个
-	 * 		
+	 * 4、处理完后 paramDto中的template值可能会改变，
 	 * @param uid
 	 * @param paramDto
 	 * @return 配置是否变化了
