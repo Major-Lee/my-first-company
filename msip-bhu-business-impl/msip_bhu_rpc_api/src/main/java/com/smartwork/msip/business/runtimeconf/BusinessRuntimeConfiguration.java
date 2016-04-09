@@ -344,6 +344,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String Device_SharedNetwork_DUT = "TU";
 	public static String Device_SharedNetwork_Top_Version = "1.5.6";
 	
+	
+	public static int SharedNetworksTemplateMaxLimit = 50;
 	/**
 	 * 判断是否是console用户
 	 * @param uid

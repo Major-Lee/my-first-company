@@ -19,8 +19,8 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 @SuppressWarnings("serial")
 public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String ntype;
-	//int 缺省值为0 有个default
-	private int template;
+	@JsonInclude(Include.NON_NULL)
+	private String template;
 	//通用字段
 	private String ssid;
 	private int users_tx_rate;
@@ -95,12 +95,6 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return properties;
 	}
 
-	public int getTemplate() {
-		return template;
-	}
-	public void setTemplate(int template) {
-		this.template = template;
-	}
 	public int getMax_clients() {
 		return max_clients;
 	}
@@ -345,9 +339,17 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return false;
 	}
 	
+	public String getTemplate() {
+		return template;
+	}
+	public void setTemplate(String template) {
+		this.template = template;
+	}
 	@Override
 	public int hashCode() {
-		return this.template;
+		if(this.template == null) 
+			return StringUtils.EMPTY.hashCode();
+		return this.template.hashCode();
 	}
 	
 	@Override
@@ -355,7 +357,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(o == null) return false;
 		if(o instanceof ParamSharedNetworkDTO){
 			ParamSharedNetworkDTO oo = (ParamSharedNetworkDTO)o;
-			return this.template== oo.template;
+			return this.template.equals(oo.template);
 		}
 		return false;
 	}

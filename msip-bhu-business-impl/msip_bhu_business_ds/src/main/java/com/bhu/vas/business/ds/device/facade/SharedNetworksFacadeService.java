@@ -1,10 +1,15 @@
 package com.bhu.vas.business.ds.device.facade;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.VapEnumType;
@@ -22,6 +27,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -42,10 +48,22 @@ public class SharedNetworksFacadeService {
     @Resource
     private UserDeviceService userDeviceService;
 	
+    private static final String FormatTemplete = "%04d";
+    private static final String DefaultTemplate = "0001";
+    private static final List<String> TemplateSequences = new ArrayList<>();
+    static{
+    	for(int i=1;i<BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit+1;i++){
+    		TemplateSequences.add(String.format(FormatTemplete, i));
+    	}
+    }
 	/**
 	 * 接受页面传递的参数，
 	 * 1、比对配置是否变化，如变化则更新用户的配置
 	 * 2、配置变化了在其它调用程序发送异步消息到后台，批量更新其绑定的属于ntype的设备
+	 * 3、需要注意的是 paramDto中的template字段
+	 * 		如果不存在configs 则新建template 为 0 的配置并录入数据库
+	 * 		如果存在configs，则判定template是否存在 存在的话判定是否配置变更了，更新数据库 ，如果不存在则获取一个有效的template并add进去一个
+	 * 		
 	 * @param uid
 	 * @param paramDto
 	 * @return 配置是否变化了
@@ -58,29 +76,75 @@ public class SharedNetworksFacadeService {
 			configs = new UserDevicesSharedNetworks();
 			configs.setId(uid);
 			List<ParamSharedNetworkDTO> models = new ArrayList<ParamSharedNetworkDTO>();
+			paramDto.setTemplate(DefaultTemplate);
 			models.add(paramDto);
 			configs.put(paramDto.getNtype(), models);
 			userDevicesSharedNetworksService.insert(configs);
 			configChanged = true;
 		}else{
 			List<ParamSharedNetworkDTO> models_fromdb = configs.get(paramDto.getNtype(),new ArrayList<ParamSharedNetworkDTO>(),true);
-			//验证models_fromdb 是否存在 template编号,如果存在则替换，否则增加
-			int index = models_fromdb.indexOf(paramDto);
-			if(index != -1){
-				ParamSharedNetworkDTO dto_fromdb = models_fromdb.get(index);
-				if(dto_fromdb == null || ParamSharedNetworkDTO.wasChanged(dto_fromdb, paramDto)){
-					configChanged = true;
-					models_fromdb.set(index, paramDto);
+			if(VapEnumType.SharedNetworkType.SafeSecure.getKey().equals(paramDto.getNtype())){
+				//验证models_fromdb 是否存在 template编号,如果存在则替换，否则增加
+				int index = models_fromdb.indexOf(paramDto);
+				if(index != -1){
+					ParamSharedNetworkDTO dto_fromdb = models_fromdb.get(index);
+					if(dto_fromdb == null || ParamSharedNetworkDTO.wasChanged(dto_fromdb, paramDto)){
+						configChanged = true;
+						models_fromdb.set(index, paramDto);
+						userDevicesSharedNetworksService.update(configs);
+					}
+				}else{
+					String template = fetchValidTemplate(models_fromdb);
+					paramDto.setTemplate(template);
+					models_fromdb.add(paramDto);
 					userDevicesSharedNetworksService.update(configs);
+					//当前不可能有新设备应用新模板，所以返回false
+					configChanged = false;
 				}
 			}else{
+				paramDto.setTemplate(DefaultTemplate);
+				models_fromdb.clear();
 				models_fromdb.add(paramDto);
 				userDevicesSharedNetworksService.update(configs);
-				//当前未有新设备应用新模板，所以返回false
-				configChanged = false;
+				configChanged = true;
 			}
 		}
 		return configChanged;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public String fetchValidTemplate(List<ParamSharedNetworkDTO> models_fromdb){
+		Set<String> templates_fromdb = null;
+		Collection<String> subtract = null;
+		List<String> tmp = null;
+		try{
+			if(!models_fromdb.isEmpty()){
+				templates_fromdb = new HashSet<String>();
+				for(ParamSharedNetworkDTO dto:models_fromdb){
+					templates_fromdb.add(dto.getTemplate());
+				}
+				subtract = CollectionUtils.subtract(TemplateSequences, templates_fromdb);
+				System.out.println("valid templates:"+subtract);
+				if(!subtract.isEmpty()){
+					tmp = new ArrayList<String>(subtract);
+					return tmp.get(0);
+				}
+			}
+		}finally{
+			if(templates_fromdb != null){
+				templates_fromdb.clear();
+				templates_fromdb = null;
+			}
+			if(tmp != null){
+				tmp.clear();
+				tmp = null;
+			}
+			if(subtract != null){
+				subtract.clear();
+				subtract = null;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -93,16 +157,19 @@ public class SharedNetworksFacadeService {
 		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
 		//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
 		if(configs == null){
-			configs = new UserDevicesSharedNetworks();
+			configs = UserDevicesSharedNetworks.buildDefault(uid, sharedNetwork, DefaultTemplate);
+			/*configs = new UserDevicesSharedNetworks();
 			configs.setId(uid);
 			List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
 			sharedNetworkType_models.add(ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey()));
-			configs.put(sharedNetwork.getKey(), sharedNetworkType_models);
+			configs.put(sharedNetwork.getKey(), sharedNetworkType_models);*/
 			userDevicesSharedNetworksService.insert(configs);
 		}else{
 			List<ParamSharedNetworkDTO> models = configs.get(sharedNetwork.getKey(),new ArrayList<ParamSharedNetworkDTO>(),true);
 			if(models.isEmpty()){
-				models.add(ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey()));
+				ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
+				dto.setTemplate(DefaultTemplate);
+				models.add(dto);
 				userDevicesSharedNetworksService.update(configs);
 			}
 		}
@@ -116,22 +183,26 @@ public class SharedNetworksFacadeService {
 	 * @param sharedNetwork
 	 * @return
 	 */
-	public ParamSharedNetworkDTO fetchUserSharedNetworkConf(int uid,VapEnumType.SharedNetworkType sharedNetwork,int template){
+	public ParamSharedNetworkDTO fetchUserSharedNetworkConf(int uid,VapEnumType.SharedNetworkType sharedNetwork,String template){
+		if(StringUtils.isEmpty(template)) template = DefaultTemplate;
 		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
 		ParamSharedNetworkDTO dto = null;
 		//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
 		if(configs == null){
-			configs = new UserDevicesSharedNetworks();
+			configs = UserDevicesSharedNetworks.buildDefault(uid, sharedNetwork, DefaultTemplate);
+			userDevicesSharedNetworksService.insert(configs);
+			/*configs = new UserDevicesSharedNetworks();
 			configs.setId(uid);
 			List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
 			dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
 			sharedNetworkType_models.add(dto);
 			configs.put(sharedNetwork.getKey(), sharedNetworkType_models);
-			userDevicesSharedNetworksService.insert(configs);
+			userDevicesSharedNetworksService.insert(configs);*/
 		}else{
 			List<ParamSharedNetworkDTO> models = configs.get(sharedNetwork.getKey(),new ArrayList<ParamSharedNetworkDTO>(),true);
 			if(models.isEmpty()){
 				dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
+				dto.setTemplate(DefaultTemplate);
 				models.add(dto);
 				userDevicesSharedNetworksService.update(configs);
 			}else{
@@ -149,7 +220,7 @@ public class SharedNetworksFacadeService {
 	}
 	
 	public ParamSharedNetworkDTO fetchUserSharedNetworkConf(int uid,VapEnumType.SharedNetworkType sharedNetwork){
-		return fetchUserSharedNetworkConf(uid,sharedNetwork,0);
+		return fetchUserSharedNetworkConf(uid,sharedNetwork,DefaultTemplate);
 	}
 	public WifiDeviceSharedNetwork fetchDeviceSharedNetwork(String mac){
 		return wifiDeviceSharedNetworkService.getById(mac);
@@ -178,6 +249,7 @@ public class SharedNetworksFacadeService {
 			ParamSharedNetworkDTO sharedNetworkConf = this.fetchUserSharedNetworkConf(uid, SharedNetworkType.SafeSecure);
 			configs  = new WifiDeviceSharedNetwork();
 			configs.setSharednetwork_type(sharedNetworkConf.getNtype());
+			configs.setTemplate(sharedNetworkConf.getTemplate());
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
 			sharedNetworkSettingDTO.turnOff(sharedNetworkConf);
 			configs.putInnerModel(sharedNetworkSettingDTO);
@@ -197,7 +269,7 @@ public class SharedNetworksFacadeService {
 	}
 	
 	/**
-	 * 获取设备当前的配置，如果不存在则创建新的缺省配置
+	 * 获取设备当前的配置，如果不存在则创建新的缺省关闭配置
 	 * 为了考虑效率，如果此设备有绑定用户的话，不会以绑定用户的个人共享网络配置为准，少操作一次数据库
 	 * 只以设备配置的数据为准
 	 * 目前只为设备上线需要调用时处理
@@ -214,8 +286,9 @@ public class SharedNetworksFacadeService {
 			sharednetwork.setId(mac_lowercase);
 			ParamSharedNetworkDTO configDto = ParamSharedNetworkDTO.builderDefault();
 			sharednetwork.setSharednetwork_type(configDto.getNtype());
+			sharednetwork.setTemplate(DefaultTemplate);
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
-			sharedNetworkSettingDTO.turnOn(configDto);
+			sharedNetworkSettingDTO.turnOff(configDto);
 			sharednetwork.putInnerModel(sharedNetworkSettingDTO);
 			wifiDeviceSharedNetworkService.insert(sharednetwork);
 			return sharedNetworkSettingDTO;
@@ -235,7 +308,7 @@ public class SharedNetworksFacadeService {
 	 * @return 配置变更了的具体设备地址集合
 	 */
 	public void addDevices2SharedNetwork(int uid,
-			VapEnumType.SharedNetworkType sharednetwork_type,int template,
+			VapEnumType.SharedNetworkType sharednetwork_type,String template,
 			boolean sharednetworkMatched,
 			List<String> macs,ISharedNetworkNotifyCallback callback){
 		if(sharednetwork_type == null){
@@ -248,7 +321,7 @@ public class SharedNetworksFacadeService {
 		ParamSharedNetworkDTO configDto = fetchUserSharedNetworkConf(uid,sharednetwork_type,template);
 		//如果template不存在则返回的dto中是列表的第一个值
 		template = configDto.getTemplate();
-		//TODO：验证设备是否真实绑定
+		//TODO：验证设备是否真实绑定,假定设备macs param 里面的数据真实存在
 		//TODO：等设备版本升级上来后可以去掉此条件约束
 		if(SharedNetworkType.SafeSecure.getKey().equals(sharednetwork_type.getKey())){
 			List<WifiDevice> wifiDevices = wifiDeviceService.findByIds(macs);

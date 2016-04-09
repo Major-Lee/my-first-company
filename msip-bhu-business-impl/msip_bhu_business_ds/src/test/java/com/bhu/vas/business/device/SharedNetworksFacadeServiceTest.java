@@ -1,5 +1,6 @@
 package com.bhu.vas.business.device;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,6 +11,7 @@ import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.localunit.BaseTest;
@@ -21,7 +23,7 @@ public class SharedNetworksFacadeServiceTest extends BaseTest{
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
 	
-	//@Test
+	@Test
 	public void test001BatchCreateUserDevicesSharedNetwork(){
 		/*UserDevicesSharedNetwork shared = null;
 		for(int i = 0;i<100;i++){
@@ -43,18 +45,17 @@ public class SharedNetworksFacadeServiceTest extends BaseTest{
 		ParamSharedNetworkDTO.fufillWithDefault(dto);*/
 		for(int i = 0;i<100;i++){
 			ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(RandomPicker.pick(VapEnumType.SharedNetworkType.values()).getKey());
-			dto.setTemplate(RandomData.intNumber(100));
 			System.out.println(sharedNetworksFacadeService.doApplySharedNetworksConfig(i, dto));
 		}
 	}
 	
 	//@Test
-	public void test002FetchAllUserSharedNetworkConfAndModify(){
+/*	public void test002FetchAllUserSharedNetworkConfAndModify(){
 		for(int i = 0;i<100;i++){
 			List<ParamSharedNetworkDTO> dtos = sharedNetworksFacadeService.fetchAllUserSharedNetworkConf(i,RandomPicker.pick(VapEnumType.SharedNetworkType.values()));
-			/*for(ParamSharedNetworkDTO dto:dtos){
+			for(ParamSharedNetworkDTO dto:dtos){
 				System.out.println(JsonHelper.getJSONString(dto));	
-			}*/
+			}
 			if(!dtos.isEmpty()){
 				ParamSharedNetworkDTO current = RandomPicker.pick(dtos);
 				System.out.println(JsonHelper.getJSONString(current));
@@ -64,29 +65,37 @@ public class SharedNetworksFacadeServiceTest extends BaseTest{
 			}
 			
 		}
-	}
+	}*/
 	
 	
 	
-	@Test
-	public void test003FetchUserSharedNetworkConf(){
+	//@Test
+/*	public void test003FetchUserSharedNetworkConf(){
 		for(int i = 0;i<100;i++){
 			ParamSharedNetworkDTO dto = sharedNetworksFacadeService.fetchUserSharedNetworkConf(i,VapEnumType.SharedNetworkType.SafeSecure,10);
 			System.out.println("0"+JsonHelper.getJSONString(dto));	
 		}
-	}
-	/*
-	@Test
-	public void test004AddDevices2SharedNetwork(){
+	}*/
+	
+	//@Test
+/*	public void test004AddDevices2SharedNetwork(){
 		List<String> macs = new ArrayList<>();
 		macs.add("84:82:f4:de:26:8a");
 		macs.add("84:82:f4:de:26:8c");
 		macs.add("84:82:f4:de:26:88");
-			sharedNetworkFacadeService.addDevices2SharedNetwork(3,VapEnumType.SharedNetworkType.SafeSecure,true, 
-					macs,null);
+		sharedNetworksFacadeService.addDevices2SharedNetwork(3,VapEnumType.SharedNetworkType.SafeSecure,"10",true, 
+					macs,new ISharedNetworkNotifyCallback(){
+						@Override
+						public void notify(ParamSharedNetworkDTO current,
+								List<String> dmacs) {
+							System.out.println(dmacs);
+							
+						}
+		});
 			//System.out.println("1"+JsonHelper.getJSONString(result));	
-	}
+	}*/
 
+	/*
 	@Test
 	public void test004RemoveDevicesFromSharedNetwork(){
 			List<String> result =  sharedNetworkFacadeService.removeDevicesFromSharedNetwork("84:82:f4:de:26:8a","84:82:f4:de:26:8c","84:82:f4:de:26:89");

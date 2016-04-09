@@ -16,7 +16,7 @@ public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetw
 	public static final String ModuleStyleTemplete = "%04d";
 	private Integer owner;
 	//采用的模板编号四位字符串 整数format
-	private int template;
+	private String template;
 	private String sharednetwork_type;
 	
 	public String getSharednetwork_type() {
@@ -55,11 +55,11 @@ public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetw
 		this.owner = owner;
 	}
 
-	public int getTemplate() {
+	public String getTemplate() {
 		return template;
 	}
 
-	public void setTemplate(int template) {
+	public void setTemplate(String template) {
 		this.template = template;
 	}
 }
