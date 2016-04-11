@@ -817,6 +817,8 @@ public class BusinessEnumType {
 	public enum OrderPaymentType{
 		Weixin("Weixin","微信","微信"),
 		Alipay("Alipay","支付宝","支付宝"),
+		PcWeixin("PcWeixin","微信","微信"),
+		PcAlipay("PcAlipay","支付宝","支付宝"),
 		Midas("Midas","米大师","米大师"),
 		;
 		private String key;
