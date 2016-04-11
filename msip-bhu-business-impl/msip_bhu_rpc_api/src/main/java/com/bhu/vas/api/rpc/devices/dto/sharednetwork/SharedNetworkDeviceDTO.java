@@ -10,6 +10,8 @@ package com.bhu.vas.api.rpc.devices.dto.sharednetwork;
 public class SharedNetworkDeviceDTO implements java.io.Serializable{
 	//设备mac
 	private String mac;
+	//设备sn
+	private String d_sn;
 	//设备所在位置
 	private String d_address;
 	//设备的在线终端数量
@@ -86,4 +88,11 @@ public class SharedNetworkDeviceDTO implements java.io.Serializable{
 	public void setMatched(boolean matched) {
 		this.matched = matched;
 	}
+	public String getD_sn() {
+		return d_sn;
+	}
+	public void setD_sn(String d_sn) {
+		this.d_sn = d_sn;
+	}
+	
 }

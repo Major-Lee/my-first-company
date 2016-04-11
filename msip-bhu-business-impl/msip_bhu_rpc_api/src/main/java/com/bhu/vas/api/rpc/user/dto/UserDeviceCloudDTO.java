@@ -13,6 +13,8 @@ public class UserDeviceCloudDTO implements Serializable {
     private String d_mac;
     //设备名称
     private String d_name;
+    //设备sn
+    private String d_sn;
 	//设备的hdtype
 	private String d_type;
     //设备在线状态 -1 从未上线 1 在线 0 离线
@@ -29,6 +31,8 @@ public class UserDeviceCloudDTO implements Serializable {
     private String d_snk_type;
     //设备的业务线
     private String d_dut;
+    //设备所在位置
+    private String d_address;
     //设备上网方式
     private String link_mode_type;
     
@@ -103,5 +107,17 @@ public class UserDeviceCloudDTO implements Serializable {
 	}
 	public void setLink_mode_type(String link_mode_type) {
 		this.link_mode_type = link_mode_type;
+	}
+	public String getD_sn() {
+		return d_sn;
+	}
+	public void setD_sn(String d_sn) {
+		this.d_sn = d_sn;
+	}
+	public String getD_address() {
+		return d_address;
+	}
+	public void setD_address(String d_address) {
+		this.d_address = d_address;
 	}
 }

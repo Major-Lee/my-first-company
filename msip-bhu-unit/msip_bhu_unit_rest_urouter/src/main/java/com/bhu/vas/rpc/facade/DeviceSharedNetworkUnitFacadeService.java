@@ -189,6 +189,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 						for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
 							vto = new SharedNetworkDeviceDTO();
 							vto.setMac(wifiDeviceDocument.getId());
+							vto.setD_sn(wifiDeviceDocument.getD_sn());
 							vto.setD_address(wifiDeviceDocument.getD_address());
 							vto.setD_workmodel(wifiDeviceDocument.getD_workmodel());
 							vto.setD_origmodel(wifiDeviceDocument.getD_origmodel());
