@@ -119,23 +119,23 @@ public interface ISocialRpcService {
      */
     public RpcResponseDTO<Boolean> clickPraise(long uid, String bssid, String type, boolean flag);
 
-//    /**
-//     * 关注
-//     *
-//     * @param uid
-//     * @param hd_mac
-//     */
-//    public RpcResponseDTO<Boolean> follow(long uid, String hd_mac);
+    /**
+     * 关注
+     *
+     * @param uid
+     * @param hd_mac
+     */
+    public RpcResponseDTO<Boolean> follow(long uid, String hd_mac);
 
-//    /**
-//     * 取消关注
-//     *
-//     * @param uid
-//     * @param hd_mac
-//     * @return
-//     */
-//
-//    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac);
+    /**
+     * 取消关注
+     *
+     * @param uid
+     * @param hd_mac
+     * @return
+     */
+
+    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac);
 
     /**
      * 获取关注列表

@@ -80,7 +80,7 @@
         <dependency>
             <groupId>com.googlecode.libphonenumber</groupId>
             <artifactId>libphonenumber</artifactId>
-        </dependency>        
+        </dependency>
 	</dependencies>
 	<build>
 		<finalName>msip_bhu_unit_social</finalName>

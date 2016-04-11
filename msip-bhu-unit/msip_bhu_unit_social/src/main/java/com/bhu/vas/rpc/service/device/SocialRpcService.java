@@ -128,26 +128,26 @@ public class SocialRpcService implements ISocialRpcService {
 
     }
 
-//    @Override
-//    public RpcResponseDTO<Boolean> follow(long uid, String hd_mac) {
-//
-//            logger.info(String.format("follow uid[%s] hd_mac[%s]", uid, hd_mac));
-//        try {
-//            socialFacadeRpcService.follow(uid, hd_mac);
-//            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-//        } catch (BusinessI18nCodeException i18nex) {
-//            return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
-//        } catch (Exception ex) {
-//            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-//        }
-//    }
+    @Override
+    public RpcResponseDTO<Boolean> follow(long uid, String hd_mac) {
 
-//    @Override
-//    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac) {
-//        logger.info(String.format("unFollow uid[%s] hd_mac[%s]", uid, hd_mac));
-//        socialFacadeRpcService.unFollow(uid, hd_mac);
-//        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-//    }
+            logger.info(String.format("follow uid[%s] hd_mac[%s]", uid, hd_mac));
+        try {
+            socialFacadeRpcService.follow(uid, hd_mac);
+            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+        } catch (BusinessI18nCodeException i18nex) {
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+        } catch (Exception ex) {
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+        }
+    }
+
+    @Override
+    public RpcResponseDTO<Boolean> unFollow(long uid, String hd_mac) {
+        logger.info(String.format("unFollow uid[%s] hd_mac[%s]", uid, hd_mac));
+        socialFacadeRpcService.unFollow(uid, hd_mac);
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+    }
 
     @Override
     public RpcResponseDTO<TailPage<SocialFetchFollowListVTO>> fetchFollowList(long uid, int pageNo, int pageSize) {

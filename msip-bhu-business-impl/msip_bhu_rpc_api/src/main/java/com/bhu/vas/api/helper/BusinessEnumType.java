@@ -747,18 +747,22 @@ public class BusinessEnumType {
 			}
 		}
 	}
+	
+	public static String unknownPaymentType = "未知支付";
+	public static String templateRedpacketPaymentDesc = "通过%s%s打赏";
 	/**
 	 * 订单的用户持有的设备类型
 	 * @author tangzichao
 	 *
 	 */
 	public enum OrderUmacType{
-		Pc(1,"Pc类型","Pc类型"),
-		Terminal(2,"终端类型","终端类型"),
+		Pc(1,"Pc类型","PC端"),
+		Terminal(2,"终端类型","移动端"),
 		;
 		private Integer key;
 		private String name;
 		private String desc;
+		
 		
 		static Map<Integer, OrderUmacType> allOrderUmacTypes;
 		

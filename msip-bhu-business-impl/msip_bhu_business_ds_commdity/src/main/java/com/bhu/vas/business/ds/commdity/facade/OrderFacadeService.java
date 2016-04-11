@@ -258,7 +258,7 @@ public class OrderFacadeService {
 		order.setUmac(umac);
 		order.setUmactype(umactype);
 		//order.setUid(uid);
-		order.setPayment_type(payment_type);
+		//order.setPayment_type(payment_type);
 		order.setContext(context);
 		order.setStatus(OrderStatus.NotPay.getKey());
 		
@@ -276,8 +276,11 @@ public class OrderFacadeService {
 	 * @param order 订单实体
 	 * @param bindUser 设备绑定的用户实体
 	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
+	 * @param payment_type 支付方式
+	 * @param payment_proxy_type 支付代理方式
 	 */
-	public Order orderPaymentCompletedNotify(boolean success, Order order, User bindUser, String paymented_ds){
+	public Order orderPaymentCompletedNotify(boolean success, Order order, User bindUser, String paymented_ds,
+			String payment_type, String payment_proxy_type){
 		Integer changed_status = null;
 		Integer changed_process_status = null;
 		try{
@@ -288,6 +291,8 @@ public class OrderFacadeService {
 			}
 			
 			if(StringUtils.isNotEmpty(paymented_ds)){
+				order.setPayment_type(payment_type);
+				order.setPayment_proxy_type(payment_proxy_type);
 				order.setPaymented_at(DateTimeHelper.parseDate(paymented_ds, DateTimeHelper.DefalutFormatPattern));
 			}
 			
@@ -333,11 +338,14 @@ public class OrderFacadeService {
 	 * @param orderid 订单id
 	 * @param bindUser 设备绑定的用户实体
 	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
+	 * @param payment_type 支付方式
+	 * @param payment_proxy_type 支付代理方式
 	 * @return
 	 */
-	public Order orderPaymentCompletedNotify(boolean success, String orderid, User bindUser, String paymented_ds){
+	public Order orderPaymentCompletedNotify(boolean success, String orderid, User bindUser, String paymented_ds,
+			String payment_type, String payment_proxy_type){
 		Order order = validateOrderId(orderid);
-		return orderPaymentCompletedNotify(success, order, bindUser, paymented_ds);
+		return orderPaymentCompletedNotify(success, order, bindUser, paymented_ds, payment_type, payment_proxy_type);
 	}
 	
 	/**

@@ -84,51 +84,51 @@ public class SocialRelationController extends BaseController {
         }
     }
 
-//    /**
-//     * 关注
-//     *
-//     * @param request
-//     * @param response
-//     * @param uid
-//     * @param hd_mac
-//     */
-//    @ResponseBody()
-//    @RequestMapping(value = "/follow", method = {RequestMethod.GET, RequestMethod.POST})
-//    public void follow(
-//            HttpServletRequest request,
-//            HttpServletResponse response,
-//            @RequestParam(required = true) long uid,
-//            @RequestParam(required = true) String hd_mac) {
-//        RpcResponseDTO<Boolean> rpcResult = socialRpcService.follow(uid, hd_mac);
-//        if (!rpcResult.hasError())
-//            SpringMVCHelper.renderJson(response,
-//                    ResponseSuccess.embed(rpcResult.getPayload()));
-//        else
-//            SpringMVCHelper.renderJson(response,
-//                    ResponseError.embed(rpcResult));
-//    }
+    /**
+     * 关注
+     *
+     * @param request
+     * @param response
+     * @param uid
+     * @param hd_mac
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/follow", method = {RequestMethod.GET, RequestMethod.POST})
+    public void follow(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) long uid,
+            @RequestParam(required = true) String hd_mac) {
+        RpcResponseDTO<Boolean> rpcResult = socialRpcService.follow(uid, hd_mac);
+        if (!rpcResult.hasError())
+            SpringMVCHelper.renderJson(response,
+                    ResponseSuccess.embed(rpcResult.getPayload()));
+        else
+            SpringMVCHelper.renderJson(response,
+                    ResponseError.embed(rpcResult));
+    }
 
-//    /**
-//     * 取消关注
-//     *
-//     * @param request
-//     * @param response
-//     * @param uid
-//     * @param hd_mac
-//     */
-//    @ResponseBody()
-//    @RequestMapping(value = "/unfollow", method = {RequestMethod.GET, RequestMethod.POST})
-//    public void unFollow(
-//            HttpServletRequest request,
-//            HttpServletResponse response,
-//            @RequestParam(required = true) long uid,
-//            @RequestParam(required = true) String hd_mac) {
-//        try {
-//            RpcResponseDTO<Boolean> rpcResult = socialRpcService.unFollow(uid, hd_mac);
-//            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-//        } catch (Exception e) {
-//            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
-//        }
-//    }
+    /**
+     * 取消关注
+     *
+     * @param request
+     * @param response
+     * @param uid
+     * @param hd_mac
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/unfollow", method = {RequestMethod.GET, RequestMethod.POST})
+    public void unFollow(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) long uid,
+            @RequestParam(required = true) String hd_mac) {
+        try {
+            RpcResponseDTO<Boolean> rpcResult = socialRpcService.unFollow(uid, hd_mac);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } catch (Exception e) {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
+        }
+    }
 
 }
