@@ -48,7 +48,7 @@ public class DeviceSharedNetworkController extends BaseController{
 	 * @param response
 	 * @param uid
 	 * @param sharenetwork_type
-	 * @param template 如果为"0000"或者不存在的template 则代表新建 参数为空则采用0001的缺省值
+	 * @param template 如果为"0000"或者不存在的template，0000也是不存在的编号 则代表新建 参数为空则采用0001的缺省值
 	 * @param mac
 	 */
 	@ResponseBody()
