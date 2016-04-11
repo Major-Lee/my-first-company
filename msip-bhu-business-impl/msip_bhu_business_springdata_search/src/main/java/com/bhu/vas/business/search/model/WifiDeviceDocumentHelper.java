@@ -169,10 +169,12 @@ public class WifiDeviceDocumentHelper {
 		}
 		doc.setD_hoc(hoc);
 		if(wifiDeviceSharedNetwork != null){
-			String sharedNetwork_type = wifiDeviceSharedNetwork.getSharednetwork_type();
+/*			String sharedNetwork_type = wifiDeviceSharedNetwork.getSharednetwork_type();
 			if(StringUtils.isNotEmpty(sharedNetwork_type)){
 				doc.setD_snk_type(sharedNetwork_type);
-			}
+			}*/
+			doc.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
+			doc.setD_snk_template(wifiDeviceSharedNetwork.getTemplate());
 		}
 		doc.setUpdatedat(DateTimeHelper.getDateTime());
 		return doc;

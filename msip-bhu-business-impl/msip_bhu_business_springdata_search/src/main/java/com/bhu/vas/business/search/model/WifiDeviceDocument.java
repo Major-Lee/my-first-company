@@ -238,6 +238,13 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
+	private String d_snk_template;//安全共享网络模板
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
 	private String updatedat;//索引记录的更新时间
 	
 	/*@Field(
@@ -531,6 +538,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_snk_type(String d_snk_type) {
 		this.d_snk_type = d_snk_type;
+	}
+
+	public String getD_snk_template() {
+		return d_snk_template;
+	}
+
+	public void setD_snk_template(String d_snk_template) {
+		this.d_snk_template = d_snk_template;
 	}
 
 	public String getUpdatedat() {
