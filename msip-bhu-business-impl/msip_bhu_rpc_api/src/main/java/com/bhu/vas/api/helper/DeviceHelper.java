@@ -30,7 +30,6 @@ import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -330,14 +329,14 @@ public class DeviceHelper {
 	 * @param rc_list
 	 * @return
 	 */
-	public static List<Integer> getDeviceRateControlIndex(List<WifiDeviceSettingRateControlDTO> rc_list){
+/*	public static List<Integer> getDeviceRateControlIndex(List<WifiDeviceSettingRateControlDTO> rc_list){
 		if(rc_list == null || rc_list.isEmpty()) return null;
 		List<Integer> indexs = new ArrayList<Integer>();
 		for(WifiDeviceSettingRateControlDTO rc_dto : rc_list){
 			indexs.add(Integer.parseInt(rc_dto.getIndex()));
 		}
 		return indexs;
-	}
+	}*/
 	
 	/**
 	 * 获取urouter设备的正常vap
@@ -909,11 +908,13 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" real_channel=\"%s\"/>";
 	
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\" hide_ssid=\"%s\"/>";
-	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
+	//public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
+	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" />";
 	public static final String DeviceSetting_AdminPasswordItem = "<ITEM password_rsa=\"%s\" name=\"admin\" />";
 	public static final String DeviceSetting_MMItem = "<ITEM mac=\"%s\" name=\"%s\" />";
 	
-	public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM index=\"%s\" ssdel=\"1\" mac=\"%s\"/>";
+	//public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM index=\"%s\" ssdel=\"1\" mac=\"%s\"/>";
+	public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM ssdel=\"1\" mac=\"%s\"/>";
 	public static final String DeviceSetting_RemoveMMItem = "<ITEM mac=\"%s\" ssdel=\"1\" />";
 
 	public static final String DeviceSetting_LinkModelPPPOEItem = "<ITEM mode=\"%s\" username=\"%s\" password_rsa=\"%s\" link_mode=\"%s\" idle=\"%s\"/>";
@@ -1459,9 +1460,9 @@ public class DeviceHelper {
 		
 		List<RateControlParamDTO> rc_incr_dtos = rc_dto_map.get(DeviceSettingAction_Incr);
 		if(rc_incr_dtos != null && !rc_incr_dtos.isEmpty()){
-			List<Integer> rc_indexs = getDeviceRateControlIndex(rc_current_dtos);
+/*			List<Integer> rc_indexs = getDeviceRateControlIndex(rc_current_dtos);
 			if(rc_indexs == null)
-				rc_indexs = new ArrayList<Integer>();
+				rc_indexs = new ArrayList<Integer>();*/
 			
 			for(RateControlParamDTO rc_incr_dto : rc_incr_dtos){
 				//验证限速数值是否合法
@@ -1479,13 +1480,13 @@ public class DeviceHelper {
 				}
 				//没匹配到 说明是新增 获取新的index
 				else{
-					int index = ArrayHelper.getMinOrderNumberVacant(rc_indexs);
+					//int index = ArrayHelper.getMinOrderNumberVacant(rc_indexs);
 					match_rc_dto = new WifiDeviceSettingRateControlDTO();
 					match_rc_dto.setMac(rc_incr_dto.getMac());
-					match_rc_dto.setIndex(String.valueOf(index));
+					//match_rc_dto.setIndex(String.valueOf(index));
 					match_rc_dto.setTx(rc_incr_dto.getTm_rx());
 					match_rc_dto.setRx(rc_incr_dto.getTm_tx());
-					rc_indexs.add(index);
+					//rc_indexs.add(index);
 					rc_changed_count++;
 				}
 				ds.append(builderDeviceSettingItem(DeviceSetting_RatecontrolItem, match_rc_dto.builderProperties()));

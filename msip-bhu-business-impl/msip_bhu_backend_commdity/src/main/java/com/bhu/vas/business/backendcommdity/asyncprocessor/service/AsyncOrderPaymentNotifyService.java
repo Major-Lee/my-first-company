@@ -8,9 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
-
-
-
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
@@ -28,7 +25,6 @@ import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 
 @Service
 public class AsyncOrderPaymentNotifyService {
@@ -89,12 +85,14 @@ public class AsyncOrderPaymentNotifyService {
 		String orderid = rpcn_dto.getOrderid();
 		boolean success = rpcn_dto.isSuccess();
 		String paymented_ds = rpcn_dto.getPaymented_ds();
+		String payment_type = rpcn_dto.getPayment_type();
+		String payment_proxy_type = rpcn_dto.getPayment_proxy_type();
 		//订单处理逻辑 
 		Order order = orderFacadeService.validateOrderId(orderid);
 		//支付完成时进行设备的uid获取并设置订单
 		User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
 		
-		order = orderFacadeService.orderPaymentCompletedNotify(success, order, bindUser, paymented_ds);
+		order = orderFacadeService.orderPaymentCompletedNotify(success, order, bindUser, paymented_ds, payment_type, payment_proxy_type);
 		//判断订单状态为支付成功或发货成功
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){

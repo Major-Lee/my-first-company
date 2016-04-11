@@ -31,6 +31,8 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	//private String pay_orderid;
 	//支付方式
 	private String payment_type;
+	//支付代理方式
+	private String payment_proxy_type;
 	//订单支付成功时间
 	private Date paymented_at;
 	//订单金额
@@ -126,6 +128,14 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 		this.payment_type = payment_type;
 	}
 	
+	public String getPayment_proxy_type() {
+		return payment_proxy_type;
+	}
+
+	public void setPayment_proxy_type(String payment_proxy_type) {
+		this.payment_proxy_type = payment_proxy_type;
+	}
+
 	public Date getPaymented_at() {
 		return paymented_at;
 	}
