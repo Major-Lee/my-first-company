@@ -99,19 +99,6 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED("770", "wifidevice.gray.deviceunittype.notmatched"),
 	
 	WIFISTASNIFFER_NICK_LENGTH_INVALID("781", "wifistasniffer.nick.length.invalid"),
-
-	
-	
-	//WIFIDEVICE_GROUP_REMOVE_NOTEXIST("711","wifidevice.group.notexist"),
-//	WIFIDEVICE_NOTEXIST("702","wifidevice.notexist"),
-//	WIFIDEVICE_OFFLINE("703","wifidevice.offline"),
-	
-//	USER_FRD_EXIST("720","user.frd.exist"),
-//	USER_FRD_APPLY_EXIST("721","user.frd.apply.exist"),
-//	USER_FRD_APPLY_EXPIRE("722","user.frd.apply.expire"),
-//	USER_FRD_STATE_NO_CHANGE("730","user.frd.state.no.change"),
-//	USER_FRD_COUNT_LIMIT("723","user.frd.count.max"),
-//	USER_ARTIFICIAL_FRDADD_LIMIT("725","user.artificial.add.limit"),
 	
 	LOGIN_UNAME_OR_PWD_INVALID("201","login.usernameOrpwd.invalid"),
 	LOGIN_PWD_INVALID("202","login.pwd.invalid"),
@@ -180,8 +167,6 @@ public enum ResponseErrorCode {
 	USER_TYPE_WASNOT_NORMAL("321", "user.type.wasnot.normal"),
 	USER_MOBILE_ALREADY_BEUSED("322","user.mobile.already.beused"),
 	USER_MOBILE_ATTRIBUTE_NOTEXIST("323","user.mobile.attribute.notexist"),
-	
-	
 	USER_WALLET_WITHDRAW_OPER_DOING("324", "user.wallet.withdraw.doing"),
 	USER_WALLET_CASH_LOWERTHAN_WITHDRAW_MINLIMIT("325", "user.wallet.cash.lowerthan.withdraw.minlimit"),
 	USER_WALLET_CASH_NOTREACHED_MAXLIMIT("326", "user.wallet.cash.notreached.maxlimit"),
@@ -196,6 +181,7 @@ public enum ResponseErrorCode {
 	USER_WALLET_PAYMENT_NOT_VALIDATE_PAYMENTTYPE("334", "user.wallet.payment.not.validate.paymenttype"),
 	USER_WALLET_PAYMENT_DATA_IMPERFECT("335", "user.wallet.payment.data.imperfect"),
 	USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT("336", "user.wallet.withdraw.lowerthan.minlimit"),
+	
 	
 	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
@@ -219,6 +205,7 @@ public enum ResponseErrorCode {
 	UPLOAD_FILE_CERTAIN_MEDIA_SEQUENCETYPE_NOTSUPPORTED("372","upload.file.certain.media.sequencetype.notsupported"),
 	SMS_COUNTRYCODE_NOTSUPPORTED("373", "sms.countrycode.notsupported"),
 	
+	USER_DEVICE_SHAREDNETWORK_TEMPLATES_MAXLIMIT("380", "user.device.sharednetwork.templates.maxlimit"),
 	
 	/******************    Commdity    ******************/
 	VALIDATE_ORDER_UMAC_UID_ILLEGAL("410","validate.order.umac.uid.illegal"),

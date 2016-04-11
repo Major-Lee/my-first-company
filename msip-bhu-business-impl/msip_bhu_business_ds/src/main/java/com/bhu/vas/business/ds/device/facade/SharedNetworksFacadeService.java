@@ -99,6 +99,11 @@ public class SharedNetworksFacadeService {
 		}else{
 			List<ParamSharedNetworkDTO> models_fromdb = configs.get(paramDto.getNtype(),new ArrayList<ParamSharedNetworkDTO>(),true);
 			if(VapEnumType.SharedNetworkType.SafeSecure.getKey().equals(paramDto.getNtype())){
+				//SafeSecure网络需要限制模板数量
+				if(models_fromdb.size() >= BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit){
+					throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_TEMPLATES_MAXLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit)});
+				}
+				
 				//验证models_fromdb 是否存在 template编号,如果存在则替换，否则增加
 				int index = models_fromdb.indexOf(paramDto);
 				if(index != -1){
