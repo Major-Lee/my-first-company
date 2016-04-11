@@ -225,8 +225,8 @@ public class AsyncMsgHandleService {
 			}
 			
 			{//开启共享网络判定，并更新索引
+				logger.info(String.format("Device SharedNetwork Option[%s]", BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start));
 				if(BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start){
-					logger.info(String.format("Device SharedNetwork Option[%s]", BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start));
 					if(WifiDeviceHelper.autoDeviceSecureSharedNetworkStrategy(wifiDevice.getOrig_swver())){
 						SharedNetworkSettingDTO sharedNetwork = sharedNetworkFacadeService.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac());
 						ParamSharedNetworkDTO psn = sharedNetwork.getPsn();
@@ -1042,6 +1042,12 @@ public class AsyncMsgHandleService {
 	 * @param cmdPayloads
 	 */
 	private void addDevices2SharedNetwork(int uid,String mac){
+		{//开启共享网络判定
+			logger.info(String.format("Device SharedNetwork Option[%s]", BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start));
+			if(!BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start){
+				return;
+			}
+		}
 		List<String> dmacs = null;
 		try{
 			final WifiDevice wifiDevice = wifiDeviceService.getById(mac);
