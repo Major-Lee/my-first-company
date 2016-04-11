@@ -15,6 +15,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -240,6 +241,10 @@ public class OrderUnitFacadeService {
 						userOrderDto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
 						userOrderDto.setAmount(order.getAmount());
 						userOrderDto.setPayment_type(order.getPayment_type());
+						OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+						if(orderPaymentType != null){
+							userOrderDto.setPayment_type_name(orderPaymentType.getDesc());
+						}
 						double share_amount = userWalletConfigsService.calculateSharedeal(uid, Double.parseDouble(order.getAmount()));
 						userOrderDto.setShare_amount(String.valueOf(share_amount));
 						if(order.getCreated_at() != null){

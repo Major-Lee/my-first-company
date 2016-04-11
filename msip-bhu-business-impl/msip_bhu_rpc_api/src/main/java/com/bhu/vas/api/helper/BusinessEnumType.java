@@ -808,4 +808,64 @@ public class BusinessEnumType {
 			}
 		}
 	}
+	
+	/**
+	 * 支付方式对应
+	 * @author tangzichao
+	 *
+	 */
+	public enum OrderPaymentType{
+		Weixin("Weixin","微信","微信"),
+		Alipay("Alipay","支付宝","支付宝"),
+		Midas("Midas","米大师","米大师"),
+		;
+		private String key;
+		private String name;
+		private String desc;
+		
+		
+		static Map<String, OrderPaymentType> allOrderPaymentTypes;
+		
+		private OrderPaymentType(String key,String name,String desc){
+			this.key = key;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		public String getKey() {
+			return key;
+		}
+		public void setKey(String key) {
+			this.key = key;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public static OrderPaymentType fromKey(String key){
+			if(key == null) return null;
+			return allOrderPaymentTypes.get(key);
+		}
+		
+		public static boolean supported(String key){
+			return allOrderPaymentTypes.containsKey(key);
+		}
+		
+		static {
+			allOrderPaymentTypes = new HashMap<String, OrderPaymentType>();
+			OrderPaymentType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (OrderPaymentType type : types){
+				allOrderPaymentTypes.put(type.getKey(), type);
+			}
+		}
+	}
 }

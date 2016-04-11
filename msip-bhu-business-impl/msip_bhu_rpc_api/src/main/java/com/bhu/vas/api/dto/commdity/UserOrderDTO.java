@@ -24,6 +24,8 @@ public class UserOrderDTO implements java.io.Serializable{
 	private String share_amount;
 	//支付方式
 	private String payment_type;
+	//支付方式名称
+	private String payment_type_name;
 	//订单创建时间
 	private long created_ts;
 	//订单支付时间
@@ -82,6 +84,12 @@ public class UserOrderDTO implements java.io.Serializable{
 	}
 	public void setPayment_type(String payment_type) {
 		this.payment_type = payment_type;
+	}
+	public String getPayment_type_name() {
+		return payment_type_name;
+	}
+	public void setPayment_type_name(String payment_type_name) {
+		this.payment_type_name = payment_type_name;
 	}
 	public long getCreated_ts() {
 		return created_ts;

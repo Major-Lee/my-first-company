@@ -8,11 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
+
+
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
@@ -25,6 +28,7 @@ import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 @Service
 public class AsyncOrderPaymentNotifyService {
@@ -120,8 +124,10 @@ public class AsyncOrderPaymentNotifyService {
 						sb_description.append(StringHelper.MINUS_CHAR_GAP);
 					sb_description.append(order.getPayment_type());
 				}*/
+				OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
 				userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
-						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(),order.getPayment_type()));
+						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
+								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));
 			}
 		}
 	}
