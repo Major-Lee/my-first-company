@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.charging.model;
 
+import java.util.Date;
+
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 /**
@@ -10,12 +12,12 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	public static final String Default_ConfigsWifiID = "00:00:00:00:00:00";
 	public static final String Default_Range_Cash = "1.5-3.5";
-	public static final String Default_Range_AIT = "14400";
+	public static final String Default_AIT = "14400";
 	//如果owner字段为<=0则采用此值为缺省分成用户
 	public static final String Default_Owner = "1";
 	//如果manufacturer<=0字段为空则采用此值为缺省分成用户
 	public static final String Default_Manufacturer = "110";
-	//设备批次号（导入批次号-一般库房进行编号）
+	//设备批次号（导入批次号-一般库房进行编号）格式为 yyyyMMdd-longsequence
 	private String batchno;
 	//绑定用户 <=0 代表未绑定的设备（此数据为冗余数据，解绑和绑定、重置操作都需要操作此值）
 	private int owner = 0;
@@ -29,12 +31,17 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	private String range_cash_pc = Default_Range_Cash;
 	private String range_cash_mobile = Default_Range_Cash;
 	//acessInternettime ait
-	private String range_ait_pc = Default_Range_AIT;
-	private String range_ait_mobile = Default_Range_AIT;
+	private String ait_pc = Default_AIT;
+	private String ait_mobile = Default_AIT;
 	//是否可以关闭开关
 	private boolean canbe_turnoff;
 	//生产环境过程中不存在的设备分成配置 会缺省应用并生效缺省配置时，此值为true，通过导入的设备值为false，后续修改设备配置值为false
 	private boolean runtime_applydefault = true;
+	
+    /**
+     * 创建日期
+     */
+    private Date created_at;
 	public int getOwner() {
 		return owner;
 	}
@@ -88,22 +95,36 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	public void setRange_cash_mobile(String range_cash_mobile) {
 		this.range_cash_mobile = range_cash_mobile;
 	}
-	public String getRange_ait_pc() {
-		return range_ait_pc;
+	
+	public String getAit_pc() {
+		return ait_pc;
 	}
-	public void setRange_ait_pc(String range_ait_pc) {
-		this.range_ait_pc = range_ait_pc;
+	public void setAit_pc(String ait_pc) {
+		this.ait_pc = ait_pc;
 	}
-	public String getRange_ait_mobile() {
-		return range_ait_mobile;
+	public String getAit_mobile() {
+		return ait_mobile;
 	}
-	public void setRange_ait_mobile(String range_ait_mobile) {
-		this.range_ait_mobile = range_ait_mobile;
+	public void setAit_mobile(String ait_mobile) {
+		this.ait_mobile = ait_mobile;
 	}
 	public boolean isCanbe_turnoff() {
 		return canbe_turnoff;
 	}
 	public void setCanbe_turnoff(boolean canbe_turnoff) {
 		this.canbe_turnoff = canbe_turnoff;
+	}
+	public Date getCreated_at() {
+		return created_at;
+	}
+	public void setCreated_at(Date created_at) {
+		this.created_at = created_at;
 	}	
+	
+	@Override
+	public void preInsert() {
+		if (this.created_at == null)
+			this.created_at = new Date();
+		super.preInsert();
+	}
 }

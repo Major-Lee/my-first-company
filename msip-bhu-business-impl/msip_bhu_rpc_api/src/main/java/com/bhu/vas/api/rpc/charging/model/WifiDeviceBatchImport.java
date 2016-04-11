@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.charging.model;
 
+import java.util.Date;
+
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 /**
@@ -12,14 +14,18 @@ public class WifiDeviceBatchImport extends BaseStringModel{
 	
 	//文件存储路径
 	private String filepath;
-	// 0-文件导入成功 1-确认导入成功
+	// 0-文件正在导入 1-文件导入成功 1-确认导入成功
 	private int status;
-	
-	
-	private int total;
+	//导入用户
+	private int importor;
+	//private int total;
 	private int succeed;
 	private int failed;
 	private String remark;
+    /**
+     * 创建日期
+     */
+    private Date created_at;
 	public String getFilepath() {
 		return filepath;
 	}
@@ -38,12 +44,6 @@ public class WifiDeviceBatchImport extends BaseStringModel{
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	public int getTotal() {
-		return total;
-	}
-	public void setTotal(int total) {
-		this.total = total;
-	}
 	public int getSucceed() {
 		return succeed;
 	}
@@ -56,5 +56,22 @@ public class WifiDeviceBatchImport extends BaseStringModel{
 	public void setFailed(int failed) {
 		this.failed = failed;
 	}
-	
+	public int getImportor() {
+		return importor;
+	}
+	public void setImportor(int importor) {
+		this.importor = importor;
+	}
+	public Date getCreated_at() {
+		return created_at;
+	}
+	public void setCreated_at(Date created_at) {
+		this.created_at = created_at;
+	}
+	@Override
+	public void preInsert() {
+		if (this.created_at == null)
+			this.created_at = new Date();
+		super.preInsert();
+	}
 }

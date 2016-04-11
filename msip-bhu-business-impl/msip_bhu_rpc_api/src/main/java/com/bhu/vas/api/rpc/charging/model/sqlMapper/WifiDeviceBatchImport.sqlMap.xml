@@ -2,61 +2,46 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs">
+<mapper namespace="com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport">
 
-  <resultMap id="modelResult" type="wifiDeviceSharedealConfigs">
+  <resultMap id="modelResult" type="wifiDeviceBatchImport">
     <id property="id" column="id"/>
-    <result property="batchno" column="batchno"/>
-    <result property="owner" column="owner"/>
-    <result property="manufacturer" column="manufacturer"/>
-    <result property="owner_percent" column="owner_percent"/>
-    <result property="manufacturer_percent" column="manufacturer_percent"/>
-    <result property="range_cash_pc" column="range_cash_pc"/>
-    <result property="range_cash_mobile" column="range_cash_mobile"/>
-    <result property="ait_pc" column="ait_pc"/>
-    <result property="ait_mobile" column="ait_mobile"/>
-    <result property="canbe_turnoff" column="canbe_turnoff"/>
-    <result property="runtime_applydefault" column="runtime_applydefault"/>
-    <result property="created_at" column="created_at"/>
-    <result property="updated_at" column="updated_at"/>
+	  <result property="filepath" column="filepath"/>
+	  <result property="status" column="status"/>
+	  <result property="importor" column="importor"/>
+	  <result property="succeed" column="succeed"/>
+	  <result property="failed" column="failed"/>
+	  <result property="remark" column="remark"/>
+	  <result property="created_at" column="created_at"/>
+	  <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_wifi_devices_sharedeal_configs
+	    	t_wifi_devices_import
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	batchno,
-	    	owner,
-	    	manufacturer,
-	    	owner_percent,
-	    	manufacturer_percent,
-	    	range_cash_pc,
-	    	range_cash_mobile,
-	    	ait_pc,
-	    	ait_mobile,
-	    	canbe_turnoff,
-	    	runtime_applydefault,
+	    	filepath,
+	    	status,
+	    	importor,
+	    	succeed,
+	    	failed,
+	    	remark,
 	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-			batchno,
-	    	owner,
-	    	manufacturer,
-	    	owner_percent,
-	    	manufacturer_percent,
-	    	range_cash_pc,
-	    	range_cash_mobile,
-	    	ait_pc,
-	    	ait_mobile,
-	    	canbe_turnoff,
-	    	runtime_applydefault,
+	    	filepath,
+	    	status,
+	    	importor,
+	    	succeed,
+	    	failed,
+	    	remark,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -64,33 +49,23 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{batchno},
-	    	#{owner},
-	    	#{manufacturer},
-	    	#{owner_percent},
-	    	#{manufacturer_percent},
-	    	#{range_cash_pc},
-	    	#{range_cash_mobile},
-	    	#{ait_pc},
-	    	#{ait_mobile},
-	    	#{canbe_turnoff},
-	    	#{runtime_applydefault},
-	    	#{created_at},
+			#{filepath},
+			#{status},
+			#{importor},
+			#{succeed},
+			#{failed},
+			#{remark},
+			#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	batchno = #{batchno},
-	    	owner = #{owner},
-	    	manufacturer = #{manufacturer},
-	    	owner_percent = #{owner_percent},
-	    	manufacturer_percent = #{manufacturer_percent},
-	    	range_cash_pc = #{range_cash_pc},
-	    	range_cash_mobile = #{range_cash_mobile},
-	    	ait_pc = #{ait_pc},
-	    	ait_mobile = #{ait_mobile},
-	    	canbe_turnoff = #{canbe_turnoff},
-	    	runtime_applydefault = #{runtime_applydefault},
+	    	filepath = #{filepath},
+	    	status = #{status},
+	    	importor = #{importor},
+	    	succeed = #{succeed},
+	    	failed = #{failed},
+	    	remark = #{remark},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
@@ -146,7 +121,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="wifiDeviceSharedealConfigs">
+	<delete id="delete" parameterType="wifiDeviceBatchImport">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -154,11 +129,16 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="wifiDeviceSharedealConfigs">
+	<insert id="insert" parameterType="wifiDeviceBatchImport">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
+		<!-- 
+		<selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+			select last_insert_id(); 
+		</selectKey>
+		 -->
 	</insert>
  
-	<update id="update" parameterType="wifiDeviceSharedealConfigs">
+	<update id="update" parameterType="wifiDeviceBatchImport">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
