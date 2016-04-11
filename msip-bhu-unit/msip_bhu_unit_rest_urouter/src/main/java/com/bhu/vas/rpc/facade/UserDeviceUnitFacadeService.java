@@ -424,7 +424,7 @@ public class UserDeviceUnitFacadeService {
 			if(total == 0){
 				vtos = Collections.emptyList();
 			}else {
-				List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+				//List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
 				vtos = builderUserDeviceVTOs(search_result);
 			}
 		}
