@@ -57,6 +57,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 	 * 如果配置变更了则通过异步消息重新应用到此用户的sharenetwork_type设备（修改设备配置及下发指令）
 	 * @param uid
 	 * @param sharenetwork_type
+	 * @param template DefaultCreateTemplate= 0000 则代表新建模板
 	 * @param extparams
 	 * @return
 	 */
@@ -66,6 +67,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
+			
 			//template 不为空并且 是无效的template格式,如果为空或者是有效的格式 则传递后续处理
 			if(StringUtils.isNotEmpty(template) && !SharedNetworksFacadeService.validTemplateFormat(template)){
 				template = SharedNetworksFacadeService.DefaultTemplate;

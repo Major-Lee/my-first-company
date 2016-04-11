@@ -233,7 +233,7 @@ public class AsyncMsgHandleService {
 						if(sharedNetwork != null && sharedNetwork.isOn() && psn != null){
 							logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
 							//更新索引，下发指令
-							wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype());
+							wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),psn.getTemplate());
 							psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
 							//生成下发指令
 							String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 

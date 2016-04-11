@@ -49,12 +49,18 @@ public class SharedNetworksFacadeService {
     private UserDeviceService userDeviceService;
 	
     private static final String FormatTemplete = "%04d";
+    //如果为DefaultCreateTemplate 则代表新建一个模板
+    public static final String DefaultCreateTemplate = "0000";
     public static final String DefaultTemplate = "0001";
     private static final List<String> TemplateSequences = new ArrayList<>();
     static{
     	for(int i=1;i<BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit+1;i++){
     		TemplateSequences.add(String.format(FormatTemplete, i));
     	}
+    }
+    
+    public static boolean validDefaultCreateTemplateFormat(String template){
+    	return DefaultCreateTemplate.equals(template);
     }
     
     public static boolean validTemplateFormat(String template){
