@@ -45,6 +45,7 @@ public enum ActionMessageType {
 	USERBBSSIGNEDON("用户bbs登陆","user bbs signedon","UB"),//用户登陆
 	
 	UserDeviceSharedNetworkApply("用户设备共享网络应用","user device sharednetwork apply","UD"),
+	UserPortalUpdate("用户Portal数据更新","user portal data update","UU"),
 	
 	USERDEVICEFORCEBIND("用户设备强制绑定","user device force bind","DF"),
 	
