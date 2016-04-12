@@ -171,7 +171,7 @@ public class DeviceSharedNetworkController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharedNetwork_type,
-			@RequestParam(required = false,defaultValue= "0001",value="tpl") String template,
+			@RequestParam(required = false,defaultValue= "",value="tpl") String template,
 			@RequestParam(required = false) String dut,
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
