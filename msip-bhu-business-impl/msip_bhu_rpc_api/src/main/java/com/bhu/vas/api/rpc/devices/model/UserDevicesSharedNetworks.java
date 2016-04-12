@@ -1,5 +1,9 @@
 package com.bhu.vas.api.rpc.devices.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.smartwork.msip.cores.orm.model.extjson.KeyListMapJsonExtPKModel;
 
@@ -32,4 +36,15 @@ public class UserDevicesSharedNetworks extends KeyListMapJsonExtPKModel<Integer,
 		super.setId(id);
 	}
 	
+	
+	public static UserDevicesSharedNetworks buildDefault(int uid,VapEnumType.SharedNetworkType sharedNetwork,String template){
+		UserDevicesSharedNetworks configs = new UserDevicesSharedNetworks();
+		configs.setId(uid);
+		List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
+		ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
+		dto.setTemplate(template);
+		sharedNetworkType_models.add(dto);
+		configs.put(sharedNetwork.getKey(), sharedNetworkType_models);
+		return configs;
+	}
 }

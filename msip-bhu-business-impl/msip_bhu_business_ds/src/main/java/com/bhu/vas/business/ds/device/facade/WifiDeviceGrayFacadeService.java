@@ -705,11 +705,11 @@ public class WifiDeviceGrayFacadeService {
     }
     
     private boolean validateDut(VapEnumType.DeviceUnitType dut){
-    	if(dut == null) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	if(dut == null) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"Dut not defined"});
     	return true;
     }
     private boolean validateGrayEnalbe(VapEnumType.GrayLevel gray){
-    	if(gray == null) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+    	if(gray == null) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"Gray not defined"});
     	if(!gray.isEnable()){
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
     	}

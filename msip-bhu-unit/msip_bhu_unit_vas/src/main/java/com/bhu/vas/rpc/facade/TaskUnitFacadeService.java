@@ -89,7 +89,7 @@ public class TaskUnitFacadeService {
 											ParamSharedNetworkDTO shared_dto = (ParamSharedNetworkDTO) payload;
 											List<String> dmacs = new ArrayList<>();
 											dmacs.add(dmac);
-											deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,shared_dto.getNtype(), dmacs,true,IDTO.ACT_UPDATE);
+											deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,shared_dto.getNtype(),shared_dto.getTemplate(), dmacs,true,IDTO.ACT_UPDATE);
 										}
 										break;
 									case DS_SharedNetworkWifi_Start:
@@ -97,14 +97,14 @@ public class TaskUnitFacadeService {
 											ParamSharedNetworkDTO shared_dto = (ParamSharedNetworkDTO) payload;
 											List<String> dmacs = new ArrayList<>();
 											dmacs.add(dmac);
-											deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,shared_dto.getNtype(), dmacs,true,IDTO.ACT_UPDATE);
+											deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,shared_dto.getNtype(),shared_dto.getTemplate(), dmacs,true,IDTO.ACT_UPDATE);
 										}
 										break;
 									case DS_SharedNetworkWifi_Stop:
 										{
 											List<String> dmacs = new ArrayList<>();
 											dmacs.add(dmac);
-											deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,null, dmacs,true,IDTO.ACT_DELETE);
+											deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,null,null, dmacs,true,IDTO.ACT_DELETE);
 										}
 										break;	
 									default:

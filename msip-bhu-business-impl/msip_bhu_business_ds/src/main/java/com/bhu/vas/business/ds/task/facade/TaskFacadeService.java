@@ -39,7 +39,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorS
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
@@ -83,7 +83,7 @@ public class TaskFacadeService {
 	//private WifiDeviceSettingService wifiDeviceSettingService;
 	
 	@Resource
-	private SharedNetworkFacadeService sharedNetworkFacadeService;
+	private SharedNetworksFacadeService sharedNetworksFacadeService;
 
 	/**
 	 * 任务执行callback通知
@@ -536,7 +536,7 @@ public class TaskFacadeService {
 					ods_cmd = OperationDS.DS_SharedNetworkWifi_Start;
 					ParamSharedNetworkDTO limit_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
 					limit_dto.setNtype(SharedNetworkType.Uplink.getKey());
-					SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
+					SharedNetworkSettingDTO sharedNetworkConf = sharedNetworksFacadeService.fetchDeviceSharedNetworkConf(mac);
 					if(sharedNetworkConf != null && sharedNetworkConf.getPsn() != null){
 						ParamSharedNetworkDTO dto = sharedNetworkConf.getPsn();
 						dto.setNtype(limit_dto.getNtype());
@@ -550,7 +550,7 @@ public class TaskFacadeService {
 						ParamSharedNetworkDTO shared_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
 						shared_dto.setNtype(SharedNetworkType.Uplink.getKey());
 						ParamSharedNetworkDTO.fufillWithDefault(shared_dto);
-						sharedNetworkFacadeService.updateDevices2SharedNetwork(mac,shared_dto);
+						sharedNetworksFacadeService.updateDevices2SharedNetwork(mac,shared_dto);
 						shared_dto.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(work_mode));
 						cmd = CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,JsonHelper.getJSONString(shared_dto),deviceCMDGenFacadeService);
 						callback.notify(uid, opt_cmd, ods_cmd, mac, shared_dto);
@@ -558,7 +558,7 @@ public class TaskFacadeService {
 					break;
 				case DS_SharedNetworkWifi_Stop:
 					{
-						sharedNetworkFacadeService.removeDevicesFromSharedNetwork(mac);
+						sharedNetworksFacadeService.removeDevicesFromSharedNetwork(mac);
 						cmd = CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceCMDGenFacadeService);
 						callback.notify(uid, opt_cmd, ods_cmd, mac, null);
 					}

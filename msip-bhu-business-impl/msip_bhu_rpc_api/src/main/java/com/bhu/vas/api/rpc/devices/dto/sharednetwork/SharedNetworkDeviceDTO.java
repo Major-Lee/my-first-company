@@ -26,6 +26,7 @@ public class SharedNetworkDeviceDTO implements java.io.Serializable{
 	private String device_name;
 	
 	private String snk_type;
+	private String template;
 	private boolean on;
 	private boolean matched;
 	public String getMac() {
@@ -93,6 +94,12 @@ public class SharedNetworkDeviceDTO implements java.io.Serializable{
 	}
 	public void setD_sn(String d_sn) {
 		this.d_sn = d_sn;
+	}
+	public String getTemplate() {
+		return template;
+	}
+	public void setTemplate(String template) {
+		this.template = template;
 	}
 	
 }

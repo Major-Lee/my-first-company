@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 public class UserDeviceSharedNetworkApplyDTO extends ActionDTO implements IDTO {
 	private String snk_type;
+	private String template;
 	@JsonInclude(Include.NON_NULL)
 	private List<String> macs;
 	private boolean onlyindexupdate;
@@ -49,6 +50,14 @@ public class UserDeviceSharedNetworkApplyDTO extends ActionDTO implements IDTO {
 
 	public void setOnlyindexupdate(boolean onlyindexupdate) {
 		this.onlyindexupdate = onlyindexupdate;
+	}
+
+	public String getTemplate() {
+		return template;
+	}
+
+	public void setTemplate(String template) {
+		this.template = template;
 	}
 	
 }

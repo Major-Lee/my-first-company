@@ -46,7 +46,7 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 	private VasModuleCmdDefinedService vasModuleCmdDefinedService;
 	
 	@Resource
-	private SharedNetworkFacadeService sharedNetworkFacadeService;
+	private SharedNetworksFacadeService sharedNetworksFacadeService;
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
@@ -107,7 +107,7 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 		ParamVasSwitchWorkmodeDTO wk_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
 		int switchAct = wk_dto.getWmode();
 		if(switchAct == WifiDeviceHelper.SwitchMode_Router2Bridge_Act || switchAct == WifiDeviceHelper.SwitchMode_Bridge2Router_Act){
-			ParamSharedNetworkDTO vw_dto = sharedNetworkFacadeService.fetchDeviceSharedNetworkConfAndSwitchWorkmode(mac, switchAct);
+			ParamSharedNetworkDTO vw_dto = sharedNetworksFacadeService.fetchDeviceSharedNetworkConfAndSwitchWorkmode(mac, switchAct);
 			/*SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
 			if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
 				vw_dto = sharedNetworkConf.getPsn();

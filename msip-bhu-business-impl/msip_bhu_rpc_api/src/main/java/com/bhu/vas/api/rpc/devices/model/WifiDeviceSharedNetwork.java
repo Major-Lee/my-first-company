@@ -13,7 +13,10 @@ import com.smartwork.msip.cores.orm.model.extjson.DtoJsonExtPKModel;
  */
 @SuppressWarnings("serial")
 public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetworkSettingDTO> {
+	public static final String ModuleStyleTemplete = "%04d";
 	private Integer owner;
+	//采用的模板编号四位字符串 整数format
+	private String template;
 	private String sharednetwork_type;
 	
 	public String getSharednetwork_type() {
@@ -50,5 +53,13 @@ public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetw
 
 	public void setOwner(Integer owner) {
 		this.owner = owner;
+	}
+
+	public String getTemplate() {
+		return template;
+	}
+
+	public void setTemplate(String template) {
+		this.template = template;
 	}
 }

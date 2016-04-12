@@ -19,6 +19,8 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 @SuppressWarnings("serial")
 public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String ntype;
+	@JsonInclude(Include.NON_NULL)
+	private String template;
 	//通用字段
 	private String ssid;
 	private int users_tx_rate;
@@ -268,7 +270,8 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	
 	public static ParamSharedNetworkDTO fufillWithDefault(ParamSharedNetworkDTO param){
 		if(param == null) return builderDefault(SharedNetworkType.SafeSecure.getKey());
-		if(StringUtils.isEmpty(param.getNtype())) param.setNtype(SharedNetworkType.Uplink.getKey());
+		if(StringUtils.isEmpty(param.getNtype())) param.setNtype(SharedNetworkType.SafeSecure.getKey());
+		
 		if(param.getSignal_limit() == 0) param.setSignal_limit(WifiDeviceHelper.SharedNetworkWifi_Default_Signal_limit);
 		//if(StringUtils.isEmpty(param.getRedirect_url())) param.setRedirect_url(WifiDeviceHelper.SharedNetworkWifi_Default_Redirect_url);
 		if(param.getIdle_timeout() == 0) param.setIdle_timeout(WifiDeviceHelper.SharedNetworkWifi_Default_Idle_timeout);
@@ -336,7 +339,28 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return false;
 	}
 	
+	public String getTemplate() {
+		return template;
+	}
+	public void setTemplate(String template) {
+		this.template = template;
+	}
+	@Override
+	public int hashCode() {
+		if(this.template == null) 
+			return StringUtils.EMPTY.hashCode();
+		return this.template.hashCode();
+	}
 	
+	@Override
+	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(o instanceof ParamSharedNetworkDTO){
+			ParamSharedNetworkDTO oo = (ParamSharedNetworkDTO)o;
+			return this.template.equals(oo.template);
+		}
+		return false;
+	}
 	public static void main(String[] argv){
 /*		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.builderDefault(null, true).builderProperties()));
 		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.builderDefault(null, false).builderProperties()));

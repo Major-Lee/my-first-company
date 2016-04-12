@@ -25,7 +25,7 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceSharedNetworkApplyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
-import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -41,7 +41,7 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 	private WifiDeviceService wifiDeviceService;
 	
 	@Resource
-	private SharedNetworkFacadeService sharedNetworkFacadeService;
+	private SharedNetworksFacadeService sharedNetworksFacadeService;
 	
 	@Resource
 	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
@@ -67,6 +67,7 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
+			final String template = applyDto.getTemplate();
 			boolean onlyindexupdate = applyDto.isOnlyindexupdate();
 			char dtoType = applyDto.getDtoType();
 			
@@ -80,10 +81,10 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 				switch(dtoType){
 					case IDTO.ACT_DELETE:
 						//移除设备的所属类型不清空sharedNetwork
-						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey());
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey(),template);
 						break;
 					default:
-						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey());
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey(),template);
 						break;
 				}
 				return;
@@ -107,7 +108,7 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 			if(!dmacs.isEmpty()){
 				logger.info(String.format("prepare apply sharednetwork conf uid[%s] dtoType[%s] dmacs[%s]",userid,applyDto.getDtoType(), dmacs));
 				if(IDTO.ACT_ADD == applyDto.getDtoType() || IDTO.ACT_UPDATE == applyDto.getDtoType()){//开启
-					sharedNetworkFacadeService.addDevices2SharedNetwork(userid,sharedNetwork,false,dmacs,
+					sharedNetworksFacadeService.addDevices2SharedNetwork(userid,sharedNetwork,template,false,dmacs,
 							new ISharedNetworkNotifyCallback(){
 								@Override
 								public void notify(ParamSharedNetworkDTO current,List<String> rdmacs) {
@@ -123,16 +124,16 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 										String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, mac, -1,JsonHelper.getJSONString(current),deviceCMDGenFacadeService);
 										downCmds.add(DownCmds.builderDownCmds(mac, cmd));
 									}
-									wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype());
+									wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate());
 								}
 							});
 				}else{//关闭
-					List<String> rdmacs = sharedNetworkFacadeService.removeDevicesFromSharedNetwork(dmacs.toArray(new String[0]));
+					List<String> rdmacs = sharedNetworksFacadeService.removeDevicesFromSharedNetwork(dmacs.toArray(new String[0]));
 					for(String mac:rdmacs){
 						String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,deviceCMDGenFacadeService);
 						downCmds.add(DownCmds.builderDownCmds(mac, cmd));
 					}
-					wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs,sharedNetwork.getKey());
+					wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs,sharedNetwork.getKey(),template);
 				}
 				if(!downCmds.isEmpty()){
 					daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
