@@ -191,14 +191,14 @@ public class DeviceSharedNetworkUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type, String d_dut, String template,
+	public RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type, String template, String d_dut,
 			int pageNo, int pageSize){
 		try{
 			List<SharedNetworkDeviceDTO> vtos = null;
 			
 			int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
 			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageBySharedNetwork(uid, 
-					sharedNetwork_type, d_dut, template, searchPageNo, pageSize);
+					sharedNetwork_type, template, d_dut, searchPageNo, pageSize);
 			
 			int total = 0;
 			if(search_result != null){

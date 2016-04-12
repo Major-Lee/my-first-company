@@ -11,7 +11,6 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionPatte
 import com.bhu.vas.business.search.core.condition.component.SearchConditionSort;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionSortPattern;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
  * 用于构建业务搜索条件的builder
@@ -56,8 +55,8 @@ public class WifiDeviceSearchMessageBuilder {
 	 * @param d_snk_template
 	 * @return
 	 */
-	public static SearchConditionMessage builderSearchMessageWithSharedNetwork(Integer u_id, String sharedNetwork_type,
-			String d_dut, String d_snk_template){
+	public static SearchConditionMessage builderSearchMessageWithSharedNetwork(Integer u_id, String sharedNetwork_type, String d_snk_template,
+			String d_dut){
 		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionMustPack();
 		//if(u_id != null){
 		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.

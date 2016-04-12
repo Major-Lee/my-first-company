@@ -64,7 +64,7 @@ public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcSer
 	@Override
 	public RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type,String template, String d_dut, int pageNo, int pageSize) {
 		logger.info(String.format("pages with uid[%s] sharedNetwork_type[%s] template[%s] d_dut[%s]", uid, sharedNetwork_type, d_dut, template));
-		return deviceSharedNetworkUnitFacadeService.pages(uid, sharedNetwork_type, d_dut, template, pageNo, pageSize);
+		return deviceSharedNetworkUnitFacadeService.pages(uid, sharedNetwork_type, template, d_dut, pageNo, pageSize);
 	}
 
 }
