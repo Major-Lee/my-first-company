@@ -120,12 +120,14 @@ public interface IWifiDeviceIndexIncrement {
 	 * 设备的共享网络变更multi
 	 * @param ids
 	 * @param sharedNetwork_type
+	 * @param template
 	 */
-	public void sharedNetworkMultiUpdIncrement(List<String> ids, String sharedNetwork_type);
+	public void sharedNetworkMultiUpdIncrement(List<String> ids, String sharedNetwork_type, String template);
 	/**
 	 * 设备的共享网络变更
 	 * @param id
 	 * @param sharedNetwork_type
+	 * @param template
 	 */
-	public void sharedNetworkUpdIncrement(String id, String sharedNetwork_type);
+	public void sharedNetworkUpdIncrement(String id, String sharedNetwork_type, String template);
 }

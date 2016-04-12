@@ -67,7 +67,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealt
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceAlarmService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
@@ -146,7 +146,7 @@ public class DeviceBusinessFacadeService {
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 	
 	@Resource
-	private SharedNetworkFacadeService sharedNetworkFacadeService;
+	private SharedNetworksFacadeService sharedNetworksFacadeService;
 	
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
@@ -1603,7 +1603,7 @@ public class DeviceBusinessFacadeService {
 							case DS_SharedNetworkWifi_Limit:
 							case DS_SharedNetworkWifi_Start:
 							case DS_SharedNetworkWifi_Stop:
-								sharedNetworkFacadeService.remoteResponseNotifyFromDevice(wifiId);
+								sharedNetworksFacadeService.remoteResponseNotifyFromDevice(wifiId);
 
 								clearDeviceVisitorList(wifiId);
 								
@@ -1626,7 +1626,7 @@ public class DeviceBusinessFacadeService {
 				}
 				if(CMDBuilder.wasAutoSharedNetworkTaskid(taskid)){//共享网络
 					//更新 t_wifi_devices_sharednetwork ds = true
-					sharedNetworkFacadeService.remoteResponseNotifyFromDevice(wifiId);
+					sharedNetworksFacadeService.remoteResponseNotifyFromDevice(wifiId);
 
 					clearDeviceVisitorList(wifiId);
 				}

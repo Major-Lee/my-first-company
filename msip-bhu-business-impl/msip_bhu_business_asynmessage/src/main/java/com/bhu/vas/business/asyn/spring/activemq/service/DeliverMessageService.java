@@ -230,10 +230,10 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendUserSingleDeviceSharedNetworkApplyActionMessage(int uid,String snk_type, String mac,boolean onlyindexupdate,char dtoType){
+	public void sendUserSingleDeviceSharedNetworkApplyActionMessage(int uid,String snk_type,String template, String mac,boolean onlyindexupdate,char dtoType){
 		List<String> dmacs = new ArrayList<String>();
 		dmacs.add(mac);
-		this.sendUserDeviceSharedNetworkApplyActionMessage(uid, snk_type, dmacs, onlyindexupdate, dtoType);
+		this.sendUserDeviceSharedNetworkApplyActionMessage(uid, snk_type,template, dmacs, onlyindexupdate, dtoType);
 		/*UserDeviceSharedNetworkApplyDTO dto = new UserDeviceSharedNetworkApplyDTO();
 		dto.setUid(uid);
 		dto.setSnk_type(snk_type);
@@ -243,10 +243,11 @@ public class DeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));*/
 	}
-	public void sendUserDeviceSharedNetworkApplyActionMessage(int uid,String snk_type, List<String> dmacs,boolean onlyindexupdate,char dtoType){
+	public void sendUserDeviceSharedNetworkApplyActionMessage(int uid,String snk_type,String template, List<String> dmacs,boolean onlyindexupdate,char dtoType){
 		UserDeviceSharedNetworkApplyDTO dto = new UserDeviceSharedNetworkApplyDTO();
 		dto.setUid(uid);
 		dto.setSnk_type(snk_type);
+		dto.setTemplate(template);
 		dto.setMacs(dmacs);
 		dto.setOnlyindexupdate(onlyindexupdate);
 		dto.setDtoType(dtoType);

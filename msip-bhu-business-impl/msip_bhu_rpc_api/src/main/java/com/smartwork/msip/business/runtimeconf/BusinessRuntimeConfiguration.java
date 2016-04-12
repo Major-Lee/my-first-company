@@ -145,7 +145,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	SharedNetworkWifi_Default_Remote_auth_url 	= PropertiesHelper.getString("sharednetworkwifi.default.remote.authurl", paramProperties, SharedNetworkWifi_Default_Remote_auth_url);
         	SharedNetworkWifi_Default_Remote_portal_server_url = PropertiesHelper.getString("sharednetworkwifi.default.remote.protalserverurl", paramProperties, SharedNetworkWifi_Default_Remote_portal_server_url);
         	SharedNetworkWifi_Default_Remote_Dns_default_ip = PropertiesHelper.getString("sharednetworkwifi.default.dns.default.ip", paramProperties, SharedNetworkWifi_Default_Remote_Dns_default_ip);
-        	
+        	SharedNetworksTemplateMaxLimit = PropertiesHelper.getInt("sharednetwork.template.max.limit", paramProperties, SharedNetworksTemplateMaxLimit);
         	
         	logger.info("loading business runtime configuration successfully!");  
         }  
@@ -344,6 +344,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String Device_SharedNetwork_DUT = "TU";
 	public static String Device_SharedNetwork_Top_Version = "1.5.6";
 	
+	
+	public static int SharedNetworksTemplateMaxLimit = 50;
 	/**
 	 * 判断是否是console用户
 	 * @param uid

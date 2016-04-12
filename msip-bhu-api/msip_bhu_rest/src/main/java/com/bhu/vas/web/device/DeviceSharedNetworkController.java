@@ -1,6 +1,7 @@
 package com.bhu.vas.web.device;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -47,6 +48,7 @@ public class DeviceSharedNetworkController extends BaseController{
 	 * @param response
 	 * @param uid
 	 * @param sharenetwork_type
+	 * @param template 如果为"0000"或者不存在的template，0000也是不存在的编号 则代表新建 参数为空则采用0001的缺省值
 	 * @param mac
 	 */
 	@ResponseBody()
@@ -56,8 +58,9 @@ public class DeviceSharedNetworkController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
+			@RequestParam(required = false,defaultValue= "0001",value="tpl") String template,
 			@RequestParam(required = false) String extparams) {
-		RpcResponseDTO<ParamSharedNetworkDTO> rpcResult = deviceSharedNetworkRpcService.applyNetworkConf(uid, sharenetwork_type, extparams);
+		RpcResponseDTO<ParamSharedNetworkDTO> rpcResult = deviceSharedNetworkRpcService.applyNetworkConf(uid, sharenetwork_type,template, extparams);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -79,8 +82,9 @@ public class DeviceSharedNetworkController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type) {
-		RpcResponseDTO<ParamSharedNetworkDTO> rpcResult = deviceSharedNetworkRpcService.fetchUserNetworkConf(uid, sharenetwork_type);
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
+			@RequestParam(required = false,defaultValue= "0001",value="tpl") String template) {
+		RpcResponseDTO<ParamSharedNetworkDTO> rpcResult = deviceSharedNetworkRpcService.fetchUserNetworkConf(uid, sharenetwork_type,template);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -88,6 +92,20 @@ public class DeviceSharedNetworkController extends BaseController{
 		}
 	}
 	
+	@ResponseBody()
+	@RequestMapping(value="/fetch_users",method={RequestMethod.POST})
+	public void fetch_users(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type) {
+		RpcResponseDTO<List<ParamSharedNetworkDTO>> rpcResult = deviceSharedNetworkRpcService.fetchUserNetworksConf(uid, sharenetwork_type);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
 	
 	/**
 	 * 获取指定设备的共享网络配置并应用接口
@@ -126,11 +144,12 @@ public class DeviceSharedNetworkController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
+			@RequestParam(required = false,defaultValue= "0001",value="tpl") String template,
 			@RequestParam(required = false,defaultValue = "true") boolean on,
 			@RequestParam(required = true) String macs) {
 		String[] mac_array = macs.toLowerCase().split(StringHelper.COMMA_STRING_GAP);
 		
-		RpcResponseDTO<Boolean> rpcResult = deviceSharedNetworkRpcService.takeEffectNetworkConf(uid,on, sharenetwork_type, Arrays.asList(mac_array));
+		RpcResponseDTO<Boolean> rpcResult = deviceSharedNetworkRpcService.takeEffectNetworkConf(uid,on, sharenetwork_type,template, Arrays.asList(mac_array));
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -152,6 +171,7 @@ public class DeviceSharedNetworkController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharedNetwork_type,
+			@RequestParam(required = false,defaultValue= "0001",value="tpl") String template,
 			@RequestParam(required = false) String dut,
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
@@ -162,7 +182,7 @@ public class DeviceSharedNetworkController extends BaseController{
 			return;
 		}
 		RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> rpcResult = deviceSharedNetworkRpcService.pages(uid, 
-				sharedNetwork_type, dut, pageNo, pageSize);
+				sharedNetwork_type,template, dut, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

@@ -7,6 +7,8 @@
   <resultMap id="modelResult" type="wifiDeviceSharedNetwork">
     <id property="id" column="id"/>
     <result property="owner" column="owner"/>
+    <result property="template" column="template"/>
+    
     <result property="sharednetwork_type" column="sharednetwork_type"/>
     <result property="updated_at" column="updated_at"/>
     <result property="extension_content" column="extension_content"/>
@@ -22,6 +24,7 @@
 	    <![CDATA[
 	    	id,
 	    	owner,
+	    	template,
 	    	sharednetwork_type,
 	    	updated_at,
 	    	extension_content
@@ -31,6 +34,7 @@
 	<sql id="modelInsertValues">
 	    	#{id},
 	    	#{owner},
+	    	#{template},
 	    	#{sharednetwork_type},
 	    	#{updated_at},
 	    	#{extension_content}
@@ -38,6 +42,7 @@
 	
 	<sql id="modelUpdateValues">
 	    	owner = #{owner},
+	    	template = #{template},
 	    	sharednetwork_type = #{sharednetwork_type},	
 	    	updated_at=#{updated_at},
 	    	extension_content=#{extension_content}
@@ -46,6 +51,7 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	owner,
+	    	template,
 	    	sharednetwork_type,	    
 	    	updated_at,
 	    	extension_content
