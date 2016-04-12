@@ -37,6 +37,10 @@ public class CommdityIntervalAmountService extends AbstractRelationStringCache{
 		super.set(generateKey(mac, umac, commdityid), amount);
 	}
 	
+	public Long addNx_RAmount(String mac, String umac, Integer commdityid, String amount){
+		return super.setnx(generateKey(mac, umac, commdityid), amount);
+	}
+	
 	public String getRAmount(String mac, String umac, Integer commdityid){
 		return super.get(generateKey(mac, umac, commdityid));
 	}
