@@ -1,9 +1,6 @@
 package com.bhu.vas.rpc.consumer;
 
-import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.util.Set;
 
 public class SocialServiceConsumer_xw {
 	public static void main(String[] args) throws Exception {
@@ -15,7 +12,7 @@ public class SocialServiceConsumer_xw {
 				"classpath*:/com/bhu/vas/rpc/consumer/applicationContextRpcUnitConsumer.xml"});
 		context.start();
 
-		ISocialRpcService socialRpcService = (ISocialRpcService)context.getBean("socialRpcService");
+//		ISocialRpcService socialRpcService = (ISocialRpcService)context.getBean("socialRpcService");
 		System.out.println("123123123");
 //		socialRpcService.fetchFollowList(6,"84:82:f4:28:7a:ec",1,5);
 

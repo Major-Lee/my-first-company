@@ -22,6 +22,7 @@
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds_commdity</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds_social</module>
+        <module>msip-bhu-business-impl/msip_bhu_business_ds_tag</module>
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
         <!---->
@@ -46,6 +47,7 @@
         <module>msip-bhu-unit/msip_bhu_unit_vas</module>
         <module>msip-bhu-unit/msip_bhu_unit_commdity</module>
         <module>msip-bhu-unit/msip_bhu_unit_social</module>
+        <module>msip-bhu-unit/msip_bhu_unit_tag</module>
         <module>msip-bhu-unit/msip_bhu_unit_agent</module>
         <module>msip-bhu-business-impl/msip_bhu_business_push</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_online</module>
@@ -157,6 +159,11 @@
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_ds_commdity</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_ds_tag</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

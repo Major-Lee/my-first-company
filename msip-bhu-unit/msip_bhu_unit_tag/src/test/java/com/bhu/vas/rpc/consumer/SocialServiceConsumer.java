@@ -1,13 +1,10 @@
 package com.bhu.vas.rpc.consumer;
 
-import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.Set;
-
-public class SocialServiceConsumer_xw {
+public class SocialServiceConsumer {
 	public static void main(String[] args) throws Exception {
-		System.setProperty("appname", "BHUUserRpcConsumerApp");
+		System.setProperty("appname", "BHUSocial");
 		System.setProperty("zookeeper", "192.168.66.7:2181");
 		System.setProperty("provider.port", "");
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[] {
@@ -15,11 +12,14 @@ public class SocialServiceConsumer_xw {
 				"classpath*:/com/bhu/vas/rpc/consumer/applicationContextRpcUnitConsumer.xml"});
 		context.start();
 
-		ISocialRpcService socialRpcService = (ISocialRpcService)context.getBean("socialRpcService");
+//		ISocialRpcService socialRpcService = (ISocialRpcService)context.getBean("socialRpcService");
+
 		System.out.println("123123123");
-//		socialRpcService.fetchFollowList(6,"84:82:f4:28:7a:ec",1,5);
+//		socialRpcService.comment(1016,"1234","u3333", "123123123");
+//		socialRpcService.handsetMeet(1016L, "123123123", "34234234", "13333", "baidu", "10.18", "10.1");
 
 		System.out.println("end");
+		
 		Thread.currentThread().join();
 		context.close();
 	}

@@ -23,7 +23,7 @@ public class HandsetUserTest extends BaseTest {
         HandsetUser handsetUser = new HandsetUser();
         handsetUser.setId("2");
         handsetUser.setUid(3);
-        handsetUser.setNick("456456");
+//        handsetUser.setNick("456456");
         handsetUser.setCreated_at(new Date());
         handsetUserService.insert(handsetUser);
 

@@ -1,11 +1,8 @@
 package com.bhu.vas.rpc.consumer;
 
-import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.Set;
-
-public class SocialServiceConsumer_xw {
+public class SocialCommentServiceConsumer {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUUserRpcConsumerApp");
 		System.setProperty("zookeeper", "192.168.66.7:2181");
@@ -15,10 +12,12 @@ public class SocialServiceConsumer_xw {
 				"classpath*:/com/bhu/vas/rpc/consumer/applicationContextRpcUnitConsumer.xml"});
 		context.start();
 
-		ISocialRpcService socialRpcService = (ISocialRpcService)context.getBean("socialRpcService");
-		System.out.println("123123123");
-//		socialRpcService.fetchFollowList(6,"84:82:f4:28:7a:ec",1,5);
+//		ISocialRpcService socialRpcService = (ISocialRpcService)context.getBean("socialRpcService");
 
+		System.out.println("123123123");
+//		socialRpcService.comment(100312,"123123","ussss", "123123123");
+//		RpcResponseDTO<TailPage<WifiCommentVTO>> rpcResult=socialRpcService.pageWifiCommentVTO(100312,"123123", 1, 3);
+//		RpcResponseDTO<List<CommentedWifiVTO>>rpcset=socialRpcService.fetchUserCommentWifiList("100312","222222");
 		System.out.println("end");
 		Thread.currentThread().join();
 		context.close();
