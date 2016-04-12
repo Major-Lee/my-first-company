@@ -95,7 +95,7 @@ public class UserSharedNetworkMigrateEnvOp {
 						sharednetwork.putInnerModel(sharedNetworkSettingDTO);
 						sharedNetworkFacadeService.getWifiDeviceSharedNetworkService().update(sharednetwork);
 					}
-					wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(setting.getId(), sharednetwork.getSharednetwork_type());
+					wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(setting.getId(), sharednetwork.getSharednetwork_type(),sharednetwork.getTemplate());
 					System.out.println(String.format("mac[%s] sharednetwork_type[%s]", setting.getId(), sharednetwork.getSharednetwork_type()));
 				}
 			}
