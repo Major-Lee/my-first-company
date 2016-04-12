@@ -221,6 +221,7 @@ public class SharedNetworksFacadeService {
 		if(configs == null){
 			configs = UserDevicesSharedNetworks.buildDefault(uid, sharedNetwork, DefaultTemplate);
 			userDevicesSharedNetworksService.insert(configs);
+			dto = configs.get(sharedNetwork.getKey()).get(0);
 			/*configs = new UserDevicesSharedNetworks();
 			configs.setId(uid);
 			List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
