@@ -182,7 +182,7 @@ public class DeviceSharedNetworkController extends BaseController{
 			return;
 		}
 		RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> rpcResult = deviceSharedNetworkRpcService.pages(uid, 
-				sharedNetwork_type,template, dut, pageNo, pageSize);
+				sharedNetwork_type, dut, template, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
