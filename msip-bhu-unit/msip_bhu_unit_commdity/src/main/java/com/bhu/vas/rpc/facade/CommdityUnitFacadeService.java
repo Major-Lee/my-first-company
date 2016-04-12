@@ -97,7 +97,12 @@ public class CommdityUnitFacadeService {
 			if(StringUtils.isEmpty(amount)){
 				//处理商品金额
 				amount = commdityFacadeService.commdityAmount(commdityid);
-				CommdityIntervalAmountService.getInstance().addRAmount(mac, umac, commdityid, amount);
+				//CommdityIntervalAmountService.getInstance().addRAmount(mac, umac, commdityid, amount);
+				Long addnx_ret = CommdityIntervalAmountService.getInstance().addNx_RAmount(mac, umac, commdityid, amount);
+				if(addnx_ret == null || addnx_ret <= 0){
+					//如果多线程问题，同一个key,setnx有可能未设置成功，则获取目前存在的金额
+					amount = CommdityIntervalAmountService.getInstance().getRAmount(mac, umac, commdityid);
+				}
 			}
 			logger.info(String.format("intervalAMount success commdityid[%s] appid[%s] mac[%s] umac[%s] amount[%s]", commdityid, appid, mac, umac, amount));
 			CommdityAmountDTO commdityAmountDto = new CommdityAmountDTO();
