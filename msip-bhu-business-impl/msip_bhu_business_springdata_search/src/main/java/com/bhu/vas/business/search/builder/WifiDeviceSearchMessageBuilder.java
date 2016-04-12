@@ -11,6 +11,7 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionPatte
 import com.bhu.vas.business.search.core.condition.component.SearchConditionSort;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionSortPattern;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
  * 用于构建业务搜索条件的builder
@@ -52,10 +53,11 @@ public class WifiDeviceSearchMessageBuilder {
 	 * 根据uid和设备共享网络类型构建搜索message对象
 	 * @param u_id 用户id
 	 * @param sharedNetwork_type 设备共享网络类型
+	 * @param d_snk_template
 	 * @return
 	 */
 	public static SearchConditionMessage builderSearchMessageWithSharedNetwork(Integer u_id, String sharedNetwork_type,
-			String d_dut){
+			String d_dut, String d_snk_template){
 		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionMustPack();
 		//if(u_id != null){
 		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
@@ -78,6 +80,18 @@ public class WifiDeviceSearchMessageBuilder {
 			pack_must.addChildSearchCondtions(sc_d_dut);
 		}
 		
+		if(StringUtils.isNotEmpty(d_snk_template)){
+			SearchCondition sc_d_snk_template = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_SHAREDNETWORK_TEMPLATE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_snk_template);
+			pack_must.addChildSearchCondtions(sc_d_snk_template);
+		}else{
+			if(d_snk_template == null){
+				SearchCondition sc_d_snk_template = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+						Field.D_SHAREDNETWORK_TEMPLATE.getName(), SearchConditionPattern.Missing.getPattern(), d_snk_template);
+				pack_must.addChildSearchCondtions(sc_d_snk_template);
+			}
+		}
+
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
 		
 		SearchConditionSort sc_sortByOnine = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.WifiDevice.
