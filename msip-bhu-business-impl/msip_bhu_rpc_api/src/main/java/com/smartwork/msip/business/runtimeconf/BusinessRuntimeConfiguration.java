@@ -147,6 +147,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	SharedNetworkWifi_Default_Remote_Dns_default_ip = PropertiesHelper.getString("sharednetworkwifi.default.dns.default.ip", paramProperties, SharedNetworkWifi_Default_Remote_Dns_default_ip);
         	SharedNetworksTemplateMaxLimit = PropertiesHelper.getInt("sharednetwork.template.max.limit", paramProperties, SharedNetworksTemplateMaxLimit);
         	
+        	
+        	UserPortalUpdate2UPortalApi = PropertiesHelper.getString("user.portal.update.uportalapi", paramProperties, UserPortalUpdate2UPortalApi);
         	logger.info("loading business runtime configuration successfully!");  
         }  
     }  
@@ -346,6 +348,9 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	
 	public static int SharedNetworksTemplateMaxLimit = 50;
+	
+	
+	public static String UserPortalUpdate2UPortalApi = "http://192.168.66.91:8550/protal/set/recreate";
 	/**
 	 * 判断是否是console用户
 	 * @param uid
