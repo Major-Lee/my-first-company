@@ -64,7 +64,6 @@ public class UserPortalUpdateServiceHandler implements IMsgHandlerService {
 			}
 		logger.info(String.format("process message[%s] successful", message));
 	}
-
 	public static Map<String, String> generateCommonApiParamMap(String uid){
 		Map<String, String> api_params = new HashMap<String, String>();
 		api_params.put("uid", uid);

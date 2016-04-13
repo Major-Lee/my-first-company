@@ -37,6 +37,8 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	@Resource
 	private IMsgHandlerService userDeviceSharedNetworkApplyServiceHandler;
 	@Resource
+	private IMsgHandlerService userPortalUpdateServiceHandler;
+	@Resource
 	private AgentDeviceClaimServiceHandler agentDeviceClaimServiceHandler;
 	
 	@Resource
@@ -174,6 +176,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case UserDeviceSharedNetworkApply:
 							userDeviceSharedNetworkApplyServiceHandler.process(message);
+							break;
+						case UserPortalUpdate:
+							userPortalUpdateServiceHandler.process(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);

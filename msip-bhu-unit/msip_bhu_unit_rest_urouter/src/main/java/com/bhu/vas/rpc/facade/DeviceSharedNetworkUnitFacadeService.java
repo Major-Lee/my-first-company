@@ -81,6 +81,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 			if(configChanged){
 				//异步消息执行用户的所有设备应用此配置并发送指令
 				deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(),sharednetwork_dto.getTemplate(), null,false,IDTO.ACT_UPDATE);
+				deliverMessageService.sendPortalUpdateRateChangedActionMessage(uid, sharedNetwork.getKey(), sharednetwork_dto.getTemplate(), sharednetwork_dto.getUsers_tx_rate());
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(sharednetwork_dto);
 		}catch(BusinessI18nCodeException bex){
