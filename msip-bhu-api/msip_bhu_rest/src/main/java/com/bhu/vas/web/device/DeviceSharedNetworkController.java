@@ -161,6 +161,7 @@ public class DeviceSharedNetworkController extends BaseController{
 	 * 获取用户所属指定共享网络配置的设备分页列表
 	 * @param request
 	 * @param response
+	 * @param template null 没有此条件 "" 搜不存在的 其他则是搜索指定匹配数据
 	 * @param uid
 	 * @param sharenetwork_type
 	 */
@@ -170,8 +171,8 @@ public class DeviceSharedNetworkController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharedNetwork_type,
-			@RequestParam(required = false,defaultValue= "",value="tpl") String template,
+			@RequestParam(required = false, defaultValue= "SafeSecure",value="snk_type") String sharedNetwork_type,
+			@RequestParam(required = false, value="tpl") String template,
 			@RequestParam(required = false) String dut,
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize

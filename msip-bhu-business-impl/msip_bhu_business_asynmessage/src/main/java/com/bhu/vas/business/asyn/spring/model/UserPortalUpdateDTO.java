@@ -6,7 +6,6 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 public class UserPortalUpdateDTO extends ActionDTO {
 	public static String PortalUpdate_User = "User";
 	public static String PortalUpdate_SNK = "Snk";
-	
 	//update type 
 	private String type;
 	
