@@ -2,7 +2,7 @@ package com.bhu.vas.rpc.consumer;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class SocialServiceConsumer {
+public class TagServiceConsumer {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUSocial");
 		System.setProperty("zookeeper", "192.168.66.7:2181");

@@ -38,5 +38,5 @@
 	<!--<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"-->
 		<!--interface="com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService" ref="statisticsRpcService"/>-->
 	<dubbo:service delay="5000" timeout="2000" retries="0" actives="100" loadbalance="random"
-				   interface="com.bhu.vas.api.rpc.social.iservice.ISocialRpcService" ref="socialRpcService"/>
+				   interface="com.bhu.vas.api.rpc.tag.iservice.ITagRpcService" ref="tagRpcService"/>
 </beans>

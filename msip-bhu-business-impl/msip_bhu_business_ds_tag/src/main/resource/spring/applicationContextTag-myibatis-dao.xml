@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+    default-lazy-init="true">
+	<!-- Core数据源定义,使用Apache DBCP 连接池 -->
+	<bean id="dataSourceTagMaster" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" 	value="${tag.jdbc.master.driverClassName}"/>
+		<property name="url" 				value="${tag.jdbc.master.url}"/>
+		<property name="username" 			value="${tag.jdbc.master.username}"/>
+		<property name="password" 			value="${tag.jdbc.master.password}"/>
+		<property name="initialSize" 		value="${tag.jdbc.master.pool.initialsize}"/>
+		<property name="maxActive" 			value="${tag.jdbc.master.pool.maxactive}"/>
+		<property name="maxIdle" 			value="${tag.jdbc.master.pool.maxidle}"/>
+		<property name="maxWait" 			value="10000"/>
+		<property name="testWhileIdle" 		value="true"/>
+		<property name="validationQuery" 	value="Select 1"/>
+	</bean>
+	
+	<bean id="dataSourceTagSlaver" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" 	value="${tag.jdbc.slaver.driverClassName}"/>
+		<property name="url" 				value="${tag.jdbc.slaver.url}"/>
+		<property name="username" 			value="${tag.jdbc.slaver.username}"/>
+		<property name="password" 			value="${tag.jdbc.slaver.password}"/>
+		<property name="initialSize" 		value="${tag.jdbc.slaver.pool.initialsize}"/>
+		<property name="maxActive" 			value="${tag.jdbc.slaver.pool.maxactive}"/>
+		<property name="maxIdle" 			value="${tag.jdbc.slaver.pool.maxidle}"/>
+		<property name="maxWait" 			value="10000"/>
+		<property name="testWhileIdle" 		value="true"/>
+		<property name="validationQuery" 	value="Select 1"/>
+	</bean>	
+
+    <bean id="sqlSessionTagMaster" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:myibatis/tag-myibatis-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceTagMaster"/>
+        </property>    
+    </bean>
+	<!-- scope="prototype" just for mybatis 3.2.x  如果是mybatis3.1.x则不需要scope="prototype"-->
+    <bean id="sqlSessionTemplateTagMaster"     class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg index="0" ref="sqlSessionTagMaster" />
+    </bean> 
+
+    <bean id="sqlSessionTagSlaver" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:myibatis/tag-myibatis-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceTagSlaver"/>
+        </property>    
+    </bean>
+	<!-- scope="prototype" just for mybatis 3.2.x  如果是mybatis3.1.x则不需要scope="prototype"-->
+    <bean id="sqlSessionTemplateTagSlaver"     class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg index="0" ref="sqlSessionTagSlaver" />
+    </bean> 
+ 
+	<bean id="tagTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"><!-- org.springframework.transaction.jta.JtaTransactionManager"> -->
+		<property name="dataSource" ref="dataSourceTagMaster"/>
+	</bean>
+	
+</beans>

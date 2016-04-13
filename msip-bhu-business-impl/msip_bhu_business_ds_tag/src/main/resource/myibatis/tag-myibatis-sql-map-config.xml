@@ -21,8 +21,8 @@
 		<setting name="logPrefix" value="mybatisDaoLogger." />
 	</settings>
 	<typeAliases>
-		<typeAlias alias="order" type="com.bhu.vas.api.rpc.commdity.model.Order" />
-		<typeAlias alias="commdity" type="com.bhu.vas.api.rpc.commdity.model.Commdity" />
+		<typeAlias alias="tagName" type="com.bhu.vas.api.rpc.tag.model.TagName" />
+		<typeAlias alias="tagDevices" type="com.bhu.vas.api.rpc.tag.model.TagDevices" />
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin"> 
@@ -30,8 +30,8 @@
 		</plugin> </plugins> -->
 
 	<mappers>
-		<mapper resource="com/bhu/vas/api/rpc/commdity/model/sqlMapper/Order.sqlMap.xml" />
-		<mapper resource="com/bhu/vas/api/rpc/commdity/model/sqlMapper/Commdity.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/tag/model/sqlMapper/TagName.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/tag/model/sqlMapper/TagDevices.sqlMap.xml" />
 	</mappers>
 
 </configuration>
