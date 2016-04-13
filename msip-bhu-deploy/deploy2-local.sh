@@ -106,6 +106,12 @@ cp ../../msip-bhu-business-impl/msip_bhu_backend_task_applies_notify/target/msip
 echo '拷贝文件 msip_bhu_commdity_rest.war到'$CuDateDir
 cp ../../msip-bhu-api/msip_bhu_commdity_rest/target/msip_bhu_commdity_rest.war ./$CuDateDir
 
+#tag
+echo '拷贝文件 msip_bhu_unit_tag-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_tag/target/msip_bhu_unit_tag-bin.zip ./$CuDateDir
+
+
+
 cd $CuDateDir
 echo '进行文件解压过程'
 unzip -q msip_bhu_unit_input_processor-bin.zip
@@ -163,6 +169,10 @@ unzip -q msip_bhu_backend_task_applies_notify-bin.zip
 unzip -qo msip_bhu_backend_task_applies_notify/bin/msip_bhu_backend_task_applies_notify.jar -d msip_bhu_backend_task_applies_notify/classes/
 
 unzip -qo msip_bhu_commdity_rest.war -d msip_bhu_commdity_rest
+
+#tag
+unzip -q msip_bhu_unit_tag-bin.zip
+unzip -qo msip_bhu_unit_tag/bin/msip_bhu_unit_tag.jar -d msip_bhu_unit_tag/classes/
 
 
 echo '文件解压过程成功'
@@ -229,6 +239,12 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_commdity/lib/spring*.RELEAS
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_commdity/lib/msip_*.jar           root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_commdity/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_commdity/classes/com/             root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_commdity/classes/com/
 echo 'deploy msip_bhu_unit_commdity successfully @'$Deploy2Server1
+
+echo 'deploy msip_bhu_unit_tag to ...@'$Deploy2Server0
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/lib/spring*.RELEASE.jar  root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_tag/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/lib/msip_*.jar           root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_tag/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/classes/com/             root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_tag/classes/com/
+echo 'deploy msip_bhu_unit_tag successfully @'$Deploy2Server0
 
 echo '发布业务组件成功'
 
