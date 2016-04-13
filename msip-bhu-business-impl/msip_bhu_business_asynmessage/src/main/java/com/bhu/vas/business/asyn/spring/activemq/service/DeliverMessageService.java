@@ -27,6 +27,7 @@ import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceForceBindDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceSharedNetworkApplyDTO;
+import com.bhu.vas.business.asyn.spring.model.UserPortalUpdateDTO;
 import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
@@ -491,4 +492,26 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
+	
+	public void sendPortalUpdateUserChangedActionMessage(int uid,String nick,String mobileno,String avatar){
+		UserPortalUpdateDTO dto = new UserPortalUpdateDTO();
+		dto.setUid(uid);
+		dto.setType(UserPortalUpdateDTO.PortalUpdate_User);
+		dto.setNick(nick);
+		dto.setMobileno(mobileno);
+		dto.setAvatar(avatar);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendPortalUpdateRateChangedActionMessage(int uid,String snk,String tpl,int users_rate){
+		UserPortalUpdateDTO dto = new UserPortalUpdateDTO();
+		dto.setUid(uid);
+		dto.setType(UserPortalUpdateDTO.PortalUpdate_SNK);
+		dto.setSnk(snk);
+		dto.setTpl(tpl);
+		dto.setUsers_rate(users_rate);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
 }

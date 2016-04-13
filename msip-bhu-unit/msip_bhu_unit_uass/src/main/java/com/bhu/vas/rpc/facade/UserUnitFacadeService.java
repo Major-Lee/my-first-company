@@ -280,6 +280,7 @@ public class UserUnitFacadeService {
 		try{
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserCreate(countrycode, acc, nick, pwd, sex, device, regIp, deviceuuid, userType, org);
 			deliverMessageService.sendUserRegisteredActionMessage(userExchange.getUser().getId(),acc, null, device,regIp);
+			deliverMessageService.sendPortalUpdateUserChangedActionMessage(userExchange.getUser().getId(), nick, acc, userExchange.getUser().getAvatar());
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 					userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
@@ -433,8 +434,8 @@ public class UserUnitFacadeService {
 			this.userService.update(user);
 			if(isNickUpdated){
 				UniqueFacadeService.uniqueNickChanged(user.getId(), nick,oldNick);
+				deliverMessageService.sendPortalUpdateUserChangedActionMessage(uid, nick, user.getMobileno(), avatar);
 			}
-		
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);

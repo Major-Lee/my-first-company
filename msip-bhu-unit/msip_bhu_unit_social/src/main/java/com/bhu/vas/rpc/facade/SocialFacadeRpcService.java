@@ -499,7 +499,6 @@ public class SocialFacadeRpcService {
                 } else {
                     wifi.setManufacturer(JsonHelper.getJSONString(dto));
                 }
-
             }
         }
         wifiService.update(wifi);
