@@ -1585,7 +1585,8 @@ public class DeviceBusinessFacadeService {
 									wifiDeviceSettingService.update(entity);
 									//修改配置成功的后续业务操作
 									this.taskModifyDeviceSettingCompletedDeliverMessage(task_with_paylaod.getUid(), 
-												wifiId, task_with_paylaod.getSubopt(), task_with_paylaod.getContext_var());
+												wifiId, task_with_paylaod.getSubopt(), task_with_paylaod.getContext_var(),
+												setting_dto, modify_setting_dto);
 								}
 							}
 						}
@@ -1692,7 +1693,8 @@ public class DeviceBusinessFacadeService {
 	 * @param mac
 	 * @param subopt
 	 */
-	public void taskModifyDeviceSettingCompletedDeliverMessage(Integer uid, String mac, String subopt, String content){
+	public void taskModifyDeviceSettingCompletedDeliverMessage(Integer uid, String mac, String subopt, 
+			String content, WifiDeviceSettingDTO setting_dto, WifiDeviceSettingDTO modify_setting_dto){
 		OperationDS ods = OperationDS.getOperationDSFromNo(subopt);
 		if(ods != null){
 			switch(ods){
@@ -1705,11 +1707,21 @@ public class DeviceBusinessFacadeService {
 				case DS_VapPassword: //修改vap ssid
 					deliverMessageService.sendDeviceModifySettingVapActionMessage(uid, mac);
 					break;
+/*				case DS_PassThrough:
+					taskModifyDeviceSettingPassThroughCompletedDeliverMessage(setting_dto, modify_setting_dto);
+					break;*/
 				default:
 					break;
 			}
 		}
 	}
+	
+/*	public void taskModifyDeviceSettingPassThroughCompletedDeliverMessage(WifiDeviceSettingDTO setting_dto, 
+			WifiDeviceSettingDTO modify_setting_dto){
+		if(setting_dto != null && modify_setting_dto != null){
+			
+		}
+	}*/
 	
 	/**
 	 * 获取VAP下的终端列表的响应处理

@@ -11,6 +11,7 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionPatte
 import com.bhu.vas.business.search.core.condition.component.SearchConditionSort;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionSortPattern;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
  * 用于构建业务搜索条件的builder
@@ -84,7 +85,7 @@ public class WifiDeviceSearchMessageBuilder {
 					Field.D_SHAREDNETWORK_TEMPLATE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_snk_template);
 			pack_must.addChildSearchCondtions(sc_d_snk_template);
 		}else{
-			if(d_snk_template == null){
+			if(StringHelper.EMPTY_STRING_GAP.equals(d_snk_template)){
 				SearchCondition sc_d_snk_template = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 						Field.D_SHAREDNETWORK_TEMPLATE.getName(), SearchConditionPattern.Missing.getPattern(), d_snk_template);
 				pack_must.addChildSearchCondtions(sc_d_snk_template);
