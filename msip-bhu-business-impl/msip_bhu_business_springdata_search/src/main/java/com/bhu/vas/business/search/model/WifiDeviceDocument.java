@@ -242,6 +242,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
+			searchAnalyzer = "whitespace",
+			indexAnalyzer = "whitespace",
+			store = true
+	)
+	private String d_tags;//设备tags
+	
+	@Field(
+			type = FieldType.String,
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
@@ -546,6 +554,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_snk_template(String d_snk_template) {
 		this.d_snk_template = d_snk_template;
+	}
+	
+	public String getD_tags() {
+		return d_tags;
+	}
+
+	public void setD_tags(String d_tags) {
+		this.d_tags = d_tags;
 	}
 
 	public String getUpdatedat() {

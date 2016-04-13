@@ -11,6 +11,7 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionPatte
 import com.bhu.vas.business.search.core.condition.component.SearchConditionSort;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionSortPattern;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
  * 用于构建业务搜索条件的builder
@@ -63,15 +64,19 @@ public class WifiDeviceSearchMessageBuilder {
 				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
 		pack_must.addChildSearchCondtions(sc_u_id);
 		//}
-		SearchCondition sc_d_snk_type = null;
+
 		if(StringUtils.isNotEmpty(sharedNetwork_type)){
-			sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+			SearchCondition sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 					Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), sharedNetwork_type);
+			pack_must.addChildSearchCondtions(sc_d_snk_type);
 		}else{
-			sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-					Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.Missing.getPattern(), sharedNetwork_type);
+			if(StringHelper.EMPTY_STRING_GAP.equals(sharedNetwork_type)){
+				SearchCondition sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+						Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.Missing.getPattern(), sharedNetwork_type);
+				pack_must.addChildSearchCondtions(sc_d_snk_type);
+			}
 		}
-		pack_must.addChildSearchCondtions(sc_d_snk_type);
+		
 		
 		if(StringUtils.isNotEmpty(d_dut)){
 			SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
@@ -84,7 +89,7 @@ public class WifiDeviceSearchMessageBuilder {
 					Field.D_SHAREDNETWORK_TEMPLATE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_snk_template);
 			pack_must.addChildSearchCondtions(sc_d_snk_template);
 		}else{
-			if(d_snk_template == null){
+			if(StringHelper.EMPTY_STRING_GAP.equals(d_snk_template)){
 				SearchCondition sc_d_snk_template = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 						Field.D_SHAREDNETWORK_TEMPLATE.getName(), SearchConditionPattern.Missing.getPattern(), d_snk_template);
 				pack_must.addChildSearchCondtions(sc_d_snk_template);

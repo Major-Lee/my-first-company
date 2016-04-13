@@ -48,6 +48,7 @@ public enum OperationDS {
 	
 	DS_Plugins("50","plugins"),
 	
+	DS_PassThrough("99","透传配置"),
 	;
 
 	public static final String Empty_OperationDS = "00";
