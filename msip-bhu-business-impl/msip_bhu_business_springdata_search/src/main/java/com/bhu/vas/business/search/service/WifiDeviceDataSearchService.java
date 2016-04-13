@@ -90,8 +90,8 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	/**
 	 * 根据设备共享网络类型进行scan的iterator
 	 * @param u_id 用户uid
-	 * @param sharedNetwork_type 共享网络类型
-	 * @param d_snk_template 模板 空字符串 忽略此条件 null 没有赋予template的sharedNetwork_type的设备 正常值则是取服务此值的数据
+	 * @param sharedNetwork_type 共享网络类型 null 忽略此条件  空字符串 没有赋予sharedNetwork_type的设备 正常值则是取服务此值的数据
+	 * @param d_snk_template 模板 null 忽略此条件  空字符串 没有赋予template的sharedNetwork_type的设备 正常值则是取服务此值的数据
 	 * @param notify
 	 * @param pageSize
 	 */

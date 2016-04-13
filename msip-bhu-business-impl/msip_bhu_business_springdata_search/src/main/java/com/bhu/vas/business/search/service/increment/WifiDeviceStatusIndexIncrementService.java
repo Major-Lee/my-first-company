@@ -220,4 +220,22 @@ public class WifiDeviceStatusIndexIncrementService{
 
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
+	
+	/**
+	 * 用户设置绑定的设备的昵称
+	 * 变更涉及的更改索引字段是
+	 * 1) d_tags
+	 * @param id 设备mac
+	 * @param d_tags 设备tags
+	 */
+	public void bindDTagsUpdIncrement(String id, String d_tags){
+		logger.info(String.format("BindDTagsUpdIncrement Request id [%s] d_tags [%s]", id, d_tags));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TAGS.getName(), d_tags);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+	}
 }

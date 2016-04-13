@@ -63,6 +63,7 @@ public interface BusinessIndexDefine {
 			D_INDUSTRY("d_industry", null),//设备行业信息
 			D_SHAREDNETWORK_TYPE("d_snk_type", null),//设备的共享网络类型
 			D_SHAREDNETWORK_TEMPLATE("d_snk_template", null),//设备的共享网络模板
+			D_TAGS("d_tags", null),//设备的tags
 			//D_EXTENSION("d_extension", null),//设备业务扩展字段
 			/**** 运营信息 operate ****/
 			O_TEMPLATE("o_template",null),//运营模板编号

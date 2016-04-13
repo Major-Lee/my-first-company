@@ -64,15 +64,19 @@ public class WifiDeviceSearchMessageBuilder {
 				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
 		pack_must.addChildSearchCondtions(sc_u_id);
 		//}
-		SearchCondition sc_d_snk_type = null;
+
 		if(StringUtils.isNotEmpty(sharedNetwork_type)){
-			sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+			SearchCondition sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 					Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), sharedNetwork_type);
+			pack_must.addChildSearchCondtions(sc_d_snk_type);
 		}else{
-			sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-					Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.Missing.getPattern(), sharedNetwork_type);
+			if(StringHelper.EMPTY_STRING_GAP.equals(sharedNetwork_type)){
+				SearchCondition sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+						Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.Missing.getPattern(), sharedNetwork_type);
+				pack_must.addChildSearchCondtions(sc_d_snk_type);
+			}
 		}
-		pack_must.addChildSearchCondtions(sc_d_snk_type);
+		
 		
 		if(StringUtils.isNotEmpty(d_dut)){
 			SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
