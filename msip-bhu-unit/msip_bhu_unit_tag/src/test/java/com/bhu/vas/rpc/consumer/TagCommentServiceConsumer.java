@@ -16,7 +16,8 @@ public class TagCommentServiceConsumer {
 
 		ITagRpcService tagRpcService = (ITagRpcService)context.getBean("tagRpcService");
 		System.out.println("123123123");
-		tagRpcService.bindTag("84:82:f4:28:7a:ec", "{\"items\":[{\"tag\":\"咖啡馆\"}]}"); //{"items":[{"tag":"公司"}]}
+		//tagRpcService.bindTag("84:82:f4:28:7a:ec", "{\"items\":[{\"tag\":\"咖啡馆\"}]}"); //{"items":[{"tag":"公司"}]}
+		tagRpcService.fetchTag(1, 5);
 //		socialRpcService.comment(100312,"123123","ussss", "123123123");
 //		RpcResponseDTO<TailPage<WifiCommentVTO>> rpcResult=socialRpcService.pageWifiCommentVTO(100312,"123123", 1, 3);
 //		RpcResponseDTO<List<CommentedWifiVTO>>rpcset=socialRpcService.fetchUserCommentWifiList("100312","222222");
