@@ -360,6 +360,7 @@ public class SocialFacadeRpcService {
         }
         handsetUserVTO.setHd_mac(hd_mac);
         handsetUserVTO.setLast(SocialStorageFacadeService.getLastHandsetMeet(hd_mac_self, hd_mac));
+        handsetUserVTO.setFollowed(SocialFollowSortedSetService.getInstance().isFollowed(uid, hd_mac));
 
         if (uid != null && uid > 0) {
             HandsetUser handsetUser = handsetUserService.getById(hd_mac);

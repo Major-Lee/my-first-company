@@ -25,7 +25,10 @@
 			<groupId>com.smartwork</groupId>
 			<artifactId>msip_core_cachedext</artifactId>
 		</dependency>	
-		
+		<dependency>
+			<groupId>com.smartwork</groupId>
+			<artifactId>msip_core_dubbo_logger_ext</artifactId>
+		</dependency>		
 		<dependency>
 			<groupId>com.bhu</groupId>
 			<artifactId>msip_bhu_rpc_api</artifactId>
@@ -36,13 +39,7 @@
         </dependency>
 		<dependency>
             <groupId>com.bhu</groupId>
-            <artifactId>msip_bhu_business_ds_social</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-            <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_ds_tag</artifactId>
-			<version>1.0</version>
 		</dependency>
         <dependency>
                 <groupId>com.bhu</groupId>

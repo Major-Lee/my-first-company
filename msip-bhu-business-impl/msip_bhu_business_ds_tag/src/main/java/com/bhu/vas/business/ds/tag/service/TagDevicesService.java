@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
-import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.business.ds.tag.dao.TagDevicesDao;
-import com.bhu.vas.business.ds.tag.dao.TagNameDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractTagService;
 
 /**
@@ -18,7 +16,7 @@ import com.smartwork.msip.business.abstractmsd.service.AbstractTagService;
  */
 
 @Service
-@Transactional("socialTransactionManager")
+@Transactional("tagTransactionManager")
 public class TagDevicesService extends AbstractTagService<String, TagDevices, TagDevicesDao> {
 
     @Resource
