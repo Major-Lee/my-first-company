@@ -1,10 +1,12 @@
 package com.bhu.vas.api.rpc.tag.vto;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.bhu.vas.api.rpc.tag.model.TagName;
 
-public class TagItemsVTO {
+@SuppressWarnings("serial")
+public class TagItemsVTO implements Serializable {
 	
 	private List<TagName> items;
 

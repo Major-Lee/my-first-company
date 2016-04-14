@@ -1,10 +1,10 @@
 package com.bhu.vas.api.rpc.tag.model;
 
 import java.util.Date;
-import java.util.List;
 
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
+@SuppressWarnings("serial")
 public class TagDevices extends BaseStringModel {
 	
 	/**
