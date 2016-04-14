@@ -38,24 +38,29 @@ public class TagFacadeRpcSerivce {
 	@Resource
 	private TagDevicesService tagDevicesService;
 	
-	private void addTag(String tag){
+	private void addTag(TagDTO tag){
+		
+		
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tag);
         
         List<TagName> list = tagNameService.findModelByModelCriteria(mc);
-        if (list.isEmpty()) {
-        	TagName tagName = new TagName();
-    		tagName.setTag(tag);
-    		tagName.setCreated_at(new Date());
-    		tagNameService.insert(tagName);
+        
+        if (!list.isEmpty() && list != null) {
+            for(TagItemsDTO dto : tag.getItems()){
+            	TagName tagName = new TagName();
+        		tagName.setTag(dto.getTag());
+        		tagName.setCreated_at(new Date());
+        		tagNameService.insert(tagName);
+            }   
 		}
 	}
 	
 	public void bindTag(String mac,String tag){
-		addTag(tag);
+
 		
 		TagDTO dto = JsonHelper.getDTO(tag, TagDTO.class);
-		
+		addTag(dto);
 		TagDevices tagDevices = tagDevicesService.getById(mac);
 		
 		if (tagDevices !=null) {
