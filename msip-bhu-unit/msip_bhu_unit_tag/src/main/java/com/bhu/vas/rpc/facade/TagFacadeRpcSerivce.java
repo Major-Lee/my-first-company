@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,15 +10,19 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask;
 import com.bhu.vas.api.rpc.tag.dto.TagDTO;
 import com.bhu.vas.api.rpc.tag.dto.TagItemsDTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.TagItemsVTO;
+import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * 
@@ -87,16 +92,20 @@ public class TagFacadeRpcSerivce {
 		}
 	}
 	
-	public RpcResponseDTO<TagItemsVTO> fetchTag(int pageNo,int pageSize){
+	public TailPage<TagName> fetchTag(int pageNo,int pageSize){
 		
 		ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1");
         mc.setPageSize(pageSize);
         mc.setPageNumber(pageNo);
-        List<TagName> list = tagNameService.findModelByModelCriteria(mc);
-        TagItemsVTO vto = new TagItemsVTO();
-        vto.setItems(list);
-
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto); 
+        
+        TailPage<TagName> tailPages = tagNameService.findModelTailPageByModelCriteria(mc);
+        
+        List<TagName> result = new ArrayList<TagName>();
+        for(TagName tagName : tailPages){
+        	result.add(tagName);
+        }
+        
+        return new CommonPage<TagName>(pageNo, pageSize,result.size(), result); 
 	}
 }

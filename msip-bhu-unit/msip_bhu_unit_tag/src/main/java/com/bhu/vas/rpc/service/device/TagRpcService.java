@@ -5,8 +5,11 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
+import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.TagItemsVTO;
+import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.rpc.facade.TagFacadeRpcSerivce;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +40,11 @@ public class TagRpcService implements ITagRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<TagItemsVTO> fetchTag(int pageNo, int pageSize) {
+	public RpcResponseDTO<TailPage<TagName>> fetchTag(int pageNo, int pageSize) {
 		logger.info(String.format("fetchTag pageNo[%s] pageSize[%s]",pageNo,pageSize));
-		return tagFacadeRpcSerivce.fetchTag(pageNo, pageSize);
+		
+		TailPage<TagName> tagName = tagFacadeRpcSerivce.fetchTag(pageNo, pageSize);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(tagName);
 		
 	}
 	
