@@ -87,7 +87,7 @@ public class TagFacadeRpcSerivce {
 		} else {
 			TagDevices td = new TagDevices();
 			td.setId(mac);
-			td.setTag(JsonHelper.getJSONString(dto));
+			td.setTag(tag);
 			td.setCreated_at(new Date());
 			tagDevicesService.insert(td);
 		}
