@@ -16,7 +16,7 @@ import com.smartwork.msip.business.abstractmsd.service.AbstractTagService;
  */
 
 @Service
-@Transactional("socialTransactionManager")
+@Transactional("tagTransactionManager")
 public class TagNameService extends AbstractTagService<Long, TagName, TagNameDao> {
 
     @Resource
