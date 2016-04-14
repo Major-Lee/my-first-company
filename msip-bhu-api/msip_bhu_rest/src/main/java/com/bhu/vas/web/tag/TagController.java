@@ -20,48 +20,49 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
 @RequestMapping("/tag")
-public class TagController extends BaseController{
-    @Resource
-    private ITagRpcService tagRpcService;
-    
-    
-    /**
-     * 分页获取标签
-     * @param request
-     * @param response
-     * @param pageNo
-     * @param pageSize
-     */
-    @ResponseBody()
-    @RequestMapping(value = "/fetch", method = {RequestMethod.POST})
-    public void fetch_tag(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-            @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
-    	TagItemsVTO vto = tagRpcService.fetchTag(pageNo, pageSize);
-        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
-    }
-    
-    /**
-     * 设备捆绑标签
-     * @param request
-     * @param response
-     * @param mac
-     * @param tag
-     */
-    @ResponseBody()
-    @RequestMapping(value = "/bind", method = {RequestMethod.POST})
-    public void buid_tag(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            @RequestParam() String mac,
-            @RequestParam() String tag) {
-    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.bindTag(mac, tag);
-		if(!rpcResult.hasError()){
+public class TagController extends BaseController {
+	@Resource
+	private ITagRpcService tagRpcService;
+
+	/**
+	 * 分页获取标签
+	 * 
+	 * @param request
+	 * @param response
+	 * @param pageNo
+	 * @param pageSize
+	 */
+	@ResponseBody()
+	@RequestMapping(value = "/fetch", method = { RequestMethod.POST })
+	public void fetch_tag(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
+		RpcResponseDTO<TagItemsVTO> rpcResult = tagRpcService.fetchTag(pageNo, pageSize);
+		if (!rpcResult.hasError()) {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
+		} else {
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
-    }   
+		;
+	}
+
+	/**
+	 * 设备捆绑标签
+	 * 
+	 * @param request
+	 * @param response
+	 * @param mac
+	 * @param tag
+	 */
+	@ResponseBody()
+	@RequestMapping(value = "/bind", method = { RequestMethod.POST })
+	public void buid_tag(HttpServletRequest request, HttpServletResponse response, @RequestParam() String mac,
+			@RequestParam() String tag) {
+		RpcResponseDTO<Boolean> rpcResult = tagRpcService.bindTag(mac, tag);
+		if (!rpcResult.hasError()) {
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		} else {
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
 }

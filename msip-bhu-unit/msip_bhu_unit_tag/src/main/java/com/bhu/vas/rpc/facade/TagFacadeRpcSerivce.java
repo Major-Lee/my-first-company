@@ -7,6 +7,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.tag.dto.TagDTO;
 import com.bhu.vas.api.rpc.tag.dto.TagItemsDTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
@@ -85,7 +87,7 @@ public class TagFacadeRpcSerivce {
 		}
 	}
 	
-	public TagItemsVTO fetchTag(int pageNo,int pageSize){
+	public RpcResponseDTO<TagItemsVTO> fetchTag(int pageNo,int pageSize){
 		
 		ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1");
@@ -95,6 +97,6 @@ public class TagFacadeRpcSerivce {
         TagItemsVTO vto = new TagItemsVTO();
         vto.setItems(list);
 
-        return  vto; 
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto); 
 	}
 }

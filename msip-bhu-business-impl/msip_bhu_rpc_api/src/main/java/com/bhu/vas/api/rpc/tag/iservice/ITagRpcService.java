@@ -18,6 +18,6 @@ public interface ITagRpcService {
 	 */
     RpcResponseDTO<Boolean> bindTag(String mac, String tag);
     
-    TagItemsVTO fetchTag(int pageNo, int pageSize);
+    RpcResponseDTO<TagItemsVTO> fetchTag(int pageNo, int pageSize);
 	
 }	

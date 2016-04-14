@@ -37,9 +37,10 @@ public class TagRpcService implements ITagRpcService {
 	}
 
 	@Override
-	public TagItemsVTO fetchTag(int pageNo, int pageSize) {
-		logger.info(String.format("fetchTag....]"));
+	public RpcResponseDTO<TagItemsVTO> fetchTag(int pageNo, int pageSize) {
+		logger.info(String.format("fetchTag pageNo[%s] pageSize[%s]",pageNo,pageSize));
 		return tagFacadeRpcSerivce.fetchTag(pageNo, pageSize);
+		
 	}
 	
 }
