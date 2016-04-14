@@ -26,69 +26,65 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * 
- * @author xiaowei
- *		by 16/04/12
+ * @author xiaowei by 16/04/12
  */
 @Service
 public class TagFacadeRpcSerivce {
-	
+
 	@Resource
 	private TagNameService tagNameService;
-	
+
 	@Resource
 	private TagDevicesService tagDevicesService;
-	
-	private void addTag(TagDTO tag){
-		
-		
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tag);
-        
-        List<TagName> list = tagNameService.findModelByModelCriteria(mc);
-        
-        if (!list.isEmpty() && list != null) {
-            for(TagItemsDTO dto : tag.getItems()){
-            	TagName tagName = new TagName();
-        		tagName.setTag(dto.getTag());
-        		tagName.setCreated_at(new Date());
-        		tagNameService.insert(tagName);
-            }   
+
+	private void addTag(TagDTO tag) {
+
+		for (TagItemsDTO dto : tag.getItems()) {
+
+			ModelCriteria mc = new ModelCriteria();
+			mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", dto.getTag());
+			List<TagName> list = tagNameService.findModelByModelCriteria(mc);
+			if (list.isEmpty()) {
+				TagName tagName = new TagName();
+				tagName.setTag(dto.getTag());
+				tagName.setCreated_at(new Date());
+				tagNameService.insert(tagName);
+			}
 		}
 	}
-	
-	public void bindTag(String mac,String tag){
 
-		
+	public void bindTag(String mac, String tag) {
+
 		TagDTO dto = JsonHelper.getDTO(tag, TagDTO.class);
 		addTag(dto);
 		TagDevices tagDevices = tagDevicesService.getById(mac);
-		
-		if (tagDevices !=null) {
-			
+
+		if (tagDevices != null) {
+
 			TagDTO old = JsonHelper.getDTO(tagDevices.getTag(), TagDTO.class);
-			
-			if (dto != null && dto.getItems()!= null && !dto.getItems().isEmpty()) {
+
+			if (dto != null && dto.getItems() != null && !dto.getItems().isEmpty()) {
 				for (TagItemsDTO item : dto.getItems()) {
-					String name  = item.getTag().trim();
+					String name = item.getTag().trim();
 					if (old != null && old.getItems() != null && !old.getItems().isEmpty()) {
-	                    boolean flag = false;
-	                    for (TagItemsDTO olditem : old.getItems()) {
-	                        if (name.equals(olditem.getTag())) {
-	                        	flag = true;
-	                            break;
-	                        }
-	                    }
-	                    if(!flag){
-	                    	old.getItems().add(item);
-	                    }
-	                    tagDevices.setTag(JsonHelper.getJSONString(old));
-	                    tagDevices.setUpdate_at(new Date());
+						boolean flag = false;
+						for (TagItemsDTO olditem : old.getItems()) {
+							if (name.equals(olditem.getTag())) {
+								flag = true;
+								break;
+							}
+						}
+						if (!flag) {
+							old.getItems().add(item);
+						}
+						tagDevices.setTag(JsonHelper.getJSONString(old));
+						tagDevices.setUpdate_at(new Date());
 					}
 				}
 				tagDevicesService.update(tagDevices);
 			}
-			
-		}else{
+
+		} else {
 			TagDevices td = new TagDevices();
 			td.setId(mac);
 			td.setTag(JsonHelper.getJSONString(dto));
@@ -96,21 +92,21 @@ public class TagFacadeRpcSerivce {
 			tagDevicesService.insert(td);
 		}
 	}
-	
-	public TailPage<TagName> fetchTag(int pageNo,int pageSize){
-		
+
+	public TailPage<TagName> fetchTag(int pageNo, int pageSize) {
+
 		ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse("1=1");
-        mc.setPageSize(pageSize);
-        mc.setPageNumber(pageNo);
-        
-        TailPage<TagName> tailPages = tagNameService.findModelTailPageByModelCriteria(mc);
-        
-        List<TagName> result = new ArrayList<TagName>();
-        for(TagName tagName : tailPages){
-        	result.add(tagName);
-        }
-        
-        return new CommonPage<TagName>(pageNo, pageSize,result.size(), result); 
+		mc.createCriteria().andSimpleCaulse("1=1");
+		mc.setPageSize(pageSize);
+		mc.setPageNumber(pageNo);
+
+		TailPage<TagName> tailPages = tagNameService.findModelTailPageByModelCriteria(mc);
+
+		List<TagName> result = new ArrayList<TagName>();
+		for (TagName tagName : tailPages) {
+			result.add(tagName);
+		}
+
+		return new CommonPage<TagName>(pageNo, pageSize, result.size(), result);
 	}
 }
