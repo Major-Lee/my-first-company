@@ -24,12 +24,17 @@ public class AsyncMsgHandleSocialService {
         HandsetMeetDTO dto = JsonHelper.getDTO(message, HandsetMeetDTO.class);
         String hd_macs = dto.getHd_macs().toLowerCase();
         String uid = dto.getUid();
+        String hd_mac = dto.getHd_mac();
         String bssid = dto.getBssid().toLowerCase();
         String[] list = hd_macs.split(",");
         if (list != null && list.length > 0) {
             for (String mac : list) {
 //                logger.info(String.format("AsyncMsgHandleSocialService handsetmeet mac[%s] message[%s]", mac, message));
-                SocialStorageFacadeService.handsetMeet(uid, mac.trim(), bssid, dto.getMeet());
+                if (uid !=null) {
+                	SocialStorageFacadeService.handsetMeet(uid, mac.trim(), bssid, dto.getMeet());
+				}else{
+					SocialStorageFacadeService.handsetMeet(hd_mac.trim(), mac.trim(), bssid, dto.getMeet());
+				}
             }
         }
 

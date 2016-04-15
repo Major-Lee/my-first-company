@@ -15,9 +15,9 @@ public class SocialStorageFacadeService  {
     private final static int MAX_HANDSET_MEET_COUNT = 10;
 
 
-    public static void handsetMeet(String uid, String hd_mac, String bssid, String dto) {
+    public static void handsetMeet(String uidOrhd_mac, String hd_mac, String bssid, String dto) {
 
-        List<HandsetMeetDTO> meets = getHandsetMeets(uid, hd_mac, bssid);
+        List<HandsetMeetDTO> meets = getHandsetMeets(uidOrhd_mac, hd_mac, bssid);
 
         if (meets != null) {
             if (meets.size() < MAX_HANDSET_MEET_COUNT && meets.size() >= 0) {
@@ -31,13 +31,13 @@ public class SocialStorageFacadeService  {
             meets.add(0, JsonHelper.getDTO(dto, HandsetMeetDTO.class));
         }
 
-        SocialHandsetMeetHashService.getInstance().hsetHadsetMeets(uid, hd_mac, bssid, JsonHelper.getJSONString(meets));
+        SocialHandsetMeetHashService.getInstance().hsetHadsetMeets(uidOrhd_mac, hd_mac, bssid, JsonHelper.getJSONString(meets));
 
 //        SocialHandsetMeetHashService.getInstance().hincrbyHadsetMeetTotalWithBssid(uid, hd_mac, bssid);
-        SocialHandsetMeetHashService.getInstance().hincrbyHadsetMeetTotal(uid, hd_mac);
+        SocialHandsetMeetHashService.getInstance().hincrbyHadsetMeetTotal(uidOrhd_mac, hd_mac);
 
 //        SocialHandsetMeetHashService.getInstance().hsetLastMeetWithBssid(uid, hd_mac, bssid, dto);
-        SocialHandsetMeetHashService.getInstance().hsetLastMeet(uid, hd_mac, dto);
+        SocialHandsetMeetHashService.getInstance().hsetLastMeet(uidOrhd_mac, hd_mac, dto);
 
     }
 

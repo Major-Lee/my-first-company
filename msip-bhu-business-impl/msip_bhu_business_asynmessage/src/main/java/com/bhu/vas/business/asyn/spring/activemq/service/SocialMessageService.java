@@ -36,4 +36,13 @@ public class SocialMessageService {
 		dto.setMeet(meet);
 		socialMessageQueueProducer.sendPureText(ActionSocialMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
+	
+	public void sendHandsetMeetMessage(String hd_mac, String hd_macs, String bssid, String meet) {
+		HandsetMeetDTO  dto = new HandsetMeetDTO();
+		dto.setBssid(bssid);
+		dto.setHd_macs(hd_macs);
+		dto.setHd_mac(hd_mac);
+		dto.setMeet(meet);
+		socialMessageQueueProducer.sendPureText(ActionSocialMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
 }

@@ -129,10 +129,10 @@ public class SocialFacadeRpcService {
 
         if (set != null && set.size() > 0) {
 
-            ModelCriteria mc = new ModelCriteria();
-            mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("uid", uid);
-            List<HandsetUser> list= handsetUserService.findModelByModelCriteria(mc);
-            String hd_mac_self = list.get(0).getId();
+//            ModelCriteria mc = new ModelCriteria();
+//            mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("uid", uid);
+//            List<HandsetUser> list= handsetUserService.findModelByModelCriteria(mc);
+//            String hd_mac_self = list.get(0).getId();
 
             for (String hd_mac : set) {
                 SocialFetchFollowListVTO vto = new SocialFetchFollowListVTO();
@@ -242,7 +242,7 @@ public class SocialFacadeRpcService {
                 WifiSortedSetService.getInstance().addWifiVistor(bssid, uid);
             }
 
-            if (hd_macs !=null &&uid != null){
+            if (hd_macs !=null){
                 HandsetMeetDTO dto = new HandsetMeetDTO();
                 dto.setBssid(bssid);
                 dto.setSsid(ssid);
@@ -250,8 +250,11 @@ public class SocialFacadeRpcService {
                 dto.setLat(lat);
                 dto.setLon(lon);
                 dto.setAddr(addr);
-
-                socialMessageService.sendHandsetMeetMessage(uid, hd_macs, bssid, JsonHelper.getJSONString(dto));
+                if (uid!=null) {
+                    socialMessageService.sendHandsetMeetMessage(uid, hd_macs, bssid, JsonHelper.getJSONString(dto));			
+				}else{
+					socialMessageService.sendHandsetMeetMessage(hd_mac, hd_macs, bssid, JsonHelper.getJSONString(dto));		
+				}
             }
 
         } catch (Exception e) {

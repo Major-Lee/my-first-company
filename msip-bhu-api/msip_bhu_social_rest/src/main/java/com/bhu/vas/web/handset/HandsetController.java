@@ -1,15 +1,11 @@
 package com.bhu.vas.web.handset;
 
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.social.iservice.ISocialRpcService;
-import com.bhu.vas.api.rpc.social.vto.HandsetUserDetailVTO;
-import com.bhu.vas.api.rpc.social.vto.WifiHandsetUserVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
-import com.smartwork.msip.jdo.ResponseSuccessCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

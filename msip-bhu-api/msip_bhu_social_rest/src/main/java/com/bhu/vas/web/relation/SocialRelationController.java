@@ -99,7 +99,7 @@ public class SocialRelationController extends BaseController {
             HttpServletResponse response,
             @RequestParam(required = true) long uid,
             @RequestParam(required = true) String hd_mac) {
-        RpcResponseDTO<Boolean> rpcResult = socialRpcService.follow(uid, hd_mac);
+        RpcResponseDTO<Boolean> rpcResult = socialRpcService.follow(uid, hd_mac.toLowerCase());
         if (!rpcResult.hasError())
             SpringMVCHelper.renderJson(response,
                     ResponseSuccess.embed(rpcResult.getPayload()));
@@ -124,7 +124,7 @@ public class SocialRelationController extends BaseController {
             @RequestParam(required = true) long uid,
             @RequestParam(required = true) String hd_mac) {
         try {
-            RpcResponseDTO<Boolean> rpcResult = socialRpcService.unFollow(uid, hd_mac);
+            RpcResponseDTO<Boolean> rpcResult = socialRpcService.unFollow(uid, hd_mac.toLowerCase());
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } catch (Exception e) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));

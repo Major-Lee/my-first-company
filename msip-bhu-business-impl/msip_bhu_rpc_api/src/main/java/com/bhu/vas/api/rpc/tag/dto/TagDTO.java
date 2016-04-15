@@ -16,5 +16,12 @@ public class TagDTO implements Serializable {
 		this.items = items;
 	}
 
-	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (TagItemsDTO itemsDto : this.getItems()) {
+			sb.append(itemsDto.getTag()).append(" ");
+		}
+		return sb.toString();
+	}
 }
