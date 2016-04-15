@@ -8,17 +8,14 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask;
 import com.bhu.vas.api.rpc.tag.dto.TagDTO;
 import com.bhu.vas.api.rpc.tag.dto.TagItemsDTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagName;
-import com.bhu.vas.api.rpc.tag.vto.TagItemsVTO;
-import com.bhu.vas.api.vto.BackendTaskVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
+import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -36,8 +33,11 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private TagDevicesService tagDevicesService;
+	
+	@Resource 
+	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 
-	private void addTag(TagDTO tag) {
+	private void addTag(String mac,TagDTO tag) {
 
 		for (TagItemsDTO dto : tag.getItems()) {
 
@@ -49,6 +49,8 @@ public class TagFacadeRpcSerivce {
 				tagName.setTag(dto.getTag());
 				tagName.setCreated_at(new Date());
 				tagNameService.insert(tagName);
+				String d_tags = fetchTag4ES(mac);
+				wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, d_tags);
 			}
 		}
 	}
@@ -56,9 +58,9 @@ public class TagFacadeRpcSerivce {
 	public void bindTag(String mac, String tag) {
 
 		TagDTO dto = JsonHelper.getDTO(tag, TagDTO.class);
-		addTag(dto);
 		TagDevices tagDevices = tagDevicesService.getById(mac);
-
+		addTag(mac,dto);
+		
 		if (tagDevices != null) {
 
 			TagDTO old = JsonHelper.getDTO(tagDevices.getTag(), TagDTO.class);
@@ -93,7 +95,7 @@ public class TagFacadeRpcSerivce {
 		}
 	}
 
-	public TailPage<TagName> fetchTag(int pageNo, int pageSize) {
+	public TailPage<TagNameVTO> fetchTag(int pageNo, int pageSize) {
 
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse("1=1");
@@ -102,11 +104,24 @@ public class TagFacadeRpcSerivce {
 
 		TailPage<TagName> tailPages = tagNameService.findModelTailPageByModelCriteria(mc);
 
-		List<TagName> result = new ArrayList<TagName>();
+		List<TagNameVTO> result = new ArrayList<TagNameVTO>();
 		for (TagName tagName : tailPages) {
-			result.add(tagName);
+			TagNameVTO vto = new TagNameVTO();
+			vto.setTagName(tagName.getTag());
+			result.add(vto);
 		}
 
-		return new CommonPage<TagName>(pageNo, pageSize, result.size(), result);
+		return new CommonPage<TagNameVTO>(pageNo, pageSize, result.size(), result);
+	}
+	
+	private String fetchTag4ES(String mac){
+		TagDevices tagDevices = tagDevicesService.getById(mac);
+		TagDTO dto = JsonHelper.getDTO(tagDevices.getTag(), TagDTO.class);
+		
+		StringBuilder sb = new StringBuilder();
+		for (TagItemsDTO itemsDto : dto.getItems()) {
+			sb.append(itemsDto.getTag()).append(" ");
+		}
+		return sb.toString();
 	}
 }

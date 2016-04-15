@@ -139,7 +139,7 @@ public class SocialFacadeRpcService {
                 hds.add(hd_mac);
                 vto.setHd_mac(hd_mac);
 
-                HandsetMeetDTO meetDto = SocialStorageFacadeService.getLastHandsetMeet(hd_mac_self, hd_mac);
+                HandsetMeetDTO meetDto = SocialStorageFacadeService.getLastHandsetMeet(Long.toString(uid), hd_mac);
                 vto.setLast_meet(meetDto);
                 result.add(vto);
             }
@@ -242,7 +242,7 @@ public class SocialFacadeRpcService {
                 WifiSortedSetService.getInstance().addWifiVistor(bssid, uid);
             }
 
-            if (hd_macs !=null){
+            if (hd_macs !=null &&uid != null){
                 HandsetMeetDTO dto = new HandsetMeetDTO();
                 dto.setBssid(bssid);
                 dto.setSsid(ssid);
@@ -251,7 +251,7 @@ public class SocialFacadeRpcService {
                 dto.setLon(lon);
                 dto.setAddr(addr);
 
-                socialMessageService.sendHandsetMeetMessage(hd_mac, hd_macs, bssid, JsonHelper.getJSONString(dto));
+                socialMessageService.sendHandsetMeetMessage(uid, hd_macs, bssid, JsonHelper.getJSONString(dto));
             }
 
         } catch (Exception e) {
@@ -287,7 +287,7 @@ public class SocialFacadeRpcService {
                     handsetVTO.setFollowed(SocialFollowSortedSetService.getInstance().isFollowed(uid, mac));
                 }
 
-                handsetVTO.setLast(SocialStorageFacadeService.getLastHandsetMeet(hd_mac, mac));
+                handsetVTO.setLast(SocialStorageFacadeService.getLastHandsetMeet(uid.toString(), mac));
                 hds.add(mac);
                 hdVTOs.add(handsetVTO);
             }
@@ -359,7 +359,7 @@ public class SocialFacadeRpcService {
             handsetUserVTO.setNick(WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid.intValue(),hd_mac));
         }
         handsetUserVTO.setHd_mac(hd_mac);
-        handsetUserVTO.setLast(SocialStorageFacadeService.getLastHandsetMeet(hd_mac_self, hd_mac));
+        handsetUserVTO.setLast(SocialStorageFacadeService.getLastHandsetMeet(Long.toString(uid), hd_mac));
         handsetUserVTO.setFollowed(SocialFollowSortedSetService.getInstance().isFollowed(uid, hd_mac));
 
         if (uid != null && uid > 0) {
@@ -383,7 +383,7 @@ public class SocialFacadeRpcService {
 
         vto.setHandset(handsetUserVTO);
 
-        List<HandsetMeetDTO> meets = SocialStorageFacadeService.getHandsetMeets(hd_mac_self, hd_mac, bssid);
+        List<HandsetMeetDTO> meets = SocialStorageFacadeService.getHandsetMeets(uid.toString(), hd_mac, bssid);
         vto.setMeets(meets);
 
         return vto;

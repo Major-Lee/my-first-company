@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.model.TagName;
-import com.bhu.vas.api.rpc.tag.vto.TagItemsVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -41,7 +41,7 @@ public class TagController extends BaseController{
             HttpServletResponse response,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
-    	RpcResponseDTO<TailPage<TagName>> rpcResult = tagRpcService.fetchTag(pageNo, pageSize);
+    	RpcResponseDTO<TailPage<TagNameVTO>> rpcResult = tagRpcService.fetchTag(pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

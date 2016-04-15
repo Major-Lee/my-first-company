@@ -6,7 +6,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.model.TagName;
-import com.bhu.vas.api.rpc.tag.vto.TagItemsVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.rpc.facade.TagFacadeRpcSerivce;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -40,12 +40,11 @@ public class TagRpcService implements ITagRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<TagName>> fetchTag(int pageNo, int pageSize) {
+	public RpcResponseDTO<TailPage<TagNameVTO>> fetchTag(int pageNo, int pageSize) {
 		logger.info(String.format("fetchTag pageNo[%s] pageSize[%s]",pageNo,pageSize));
 		
-		TailPage<TagName> tagName = tagFacadeRpcSerivce.fetchTag(pageNo, pageSize);
+		TailPage<TagNameVTO> tagName = tagFacadeRpcSerivce.fetchTag(pageNo, pageSize);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(tagName);
 		
 	}
-	
 }
