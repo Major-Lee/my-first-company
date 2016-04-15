@@ -34,8 +34,8 @@ public class TagFacadeRpcSerivce {
 	@Resource
 	private TagDevicesService tagDevicesService;
 	
-//	@Resource 
-//	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+	@Resource 
+	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 
 	private void addTag(String mac,TagDTO tag) {
 
@@ -49,8 +49,8 @@ public class TagFacadeRpcSerivce {
 				tagName.setTag(dto.getTag());
 				tagName.setCreated_at(new Date());
 				tagNameService.insert(tagName);
-//				String d_tags = fetchTag4ES(mac);
-//				wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, d_tags);
+				String d_tags = fetchTag4ES(mac);
+				wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, d_tags);
 			}
 		}
 	}
@@ -114,7 +114,6 @@ public class TagFacadeRpcSerivce {
 		return new CommonPage<TagNameVTO>(pageNo, pageSize, result.size(), result);
 	}
 	
-	@SuppressWarnings("unused")
 	private String fetchTag4ES(String mac){
 		TagDevices tagDevices = tagDevicesService.getById(mac);
 		TagDTO dto = JsonHelper.getDTO(tagDevices.getTag(), TagDTO.class);
