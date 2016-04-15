@@ -241,9 +241,9 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_commdity/classes/com/      
 echo 'deploy msip_bhu_unit_commdity successfully @'$Deploy2Server1
 
 echo 'deploy msip_bhu_unit_tag to ...@'$Deploy2Server0
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/lib/spring*.RELEASE.jar  root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_tag/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/lib/msip_*.jar           root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_tag/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/classes/com/             root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_tag/classes/com/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/lib/spring*.RELEASE.jar  root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_tag/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/lib/msip_*.jar           root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_tag/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/classes/com/             root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_tag/classes/com/
 echo 'deploy msip_bhu_unit_tag successfully @'$Deploy2Server0
 
 echo '发布业务组件成功'

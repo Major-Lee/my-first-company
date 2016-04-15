@@ -83,6 +83,10 @@
             <groupId>com.googlecode.libphonenumber</groupId>
             <artifactId>libphonenumber</artifactId>
         </dependency>
+        <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_springdata_search</artifactId>
+        </dependency>
 	</dependencies>
 	<build>
 		<finalName>msip_bhu_unit_tag</finalName>

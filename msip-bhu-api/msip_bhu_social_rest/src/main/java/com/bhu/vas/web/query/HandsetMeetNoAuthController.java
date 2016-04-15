@@ -119,6 +119,4 @@ public class HandsetMeetNoAuthController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
         }
     }
-
-
 }
