@@ -61,9 +61,10 @@ public class TagController extends BaseController{
     public void buid_tag(
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam() String mac,
-            @RequestParam() String tag) {
-    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.bindTag(mac, tag);
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String mac,
+            @RequestParam(required = true) String tag) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.bindTag(uid, mac, tag);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

@@ -27,11 +27,11 @@ public class TagRpcService implements ITagRpcService {
 	private TagFacadeRpcSerivce tagFacadeRpcSerivce;
 
 	@Override
-	public RpcResponseDTO<Boolean> bindTag(String mac, String tag) {
+	public RpcResponseDTO<Boolean> bindTag(int uid, String mac, String tag) {
 		logger.info(
-				String.format("bindTag mac[%s] tag[%s]",mac,tag));
+				String.format("bindTag uid[%s] mac[%s] tag[%s]",uid, mac,tag));
 		try {
-			tagFacadeRpcSerivce.bindTag(mac, tag);
+			tagFacadeRpcSerivce.bindTag(uid, mac, tag);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		} catch (Exception ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
