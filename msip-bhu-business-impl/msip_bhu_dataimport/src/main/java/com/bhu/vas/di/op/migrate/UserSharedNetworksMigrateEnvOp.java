@@ -47,8 +47,13 @@ public class UserSharedNetworksMigrateEnvOp {
 		mc_usersharednetwork.setPageSize(200);
     	EntityIterator<Integer, UserDevicesSharedNetwork> itit = new KeyBasedEntityBatchIterator<Integer, UserDevicesSharedNetwork>(Integer.class, UserDevicesSharedNetwork.class, sharedNetworkFacadeService.getUserDevicesSharedNetworkService().getEntityDao(), mc_usersharednetwork);
 		while(itit.hasNext()){
+			
+			
 			List<UserDevicesSharedNetwork> list = itit.next();
 			for(UserDevicesSharedNetwork sdn:list){
+				UserDevicesSharedNetworks current = sharedNetworksFacadeService.getUserDevicesSharedNetworksService().getById(sdn.getId());
+				if(current != null) continue;
+				
 				ParamSharedNetworkDTO safeSecure = sdn.getInnerModel(SharedNetworkType.SafeSecure.getKey());
 				ParamSharedNetworkDTO uplink = sdn.getInnerModel(SharedNetworkType.Uplink.getKey());
 				
