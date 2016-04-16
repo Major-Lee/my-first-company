@@ -49,11 +49,6 @@ public class TagFacadeRpcSerivce {
 				tagName.setTag(dto.getTag());
 				tagName.setCreated_at(new Date());
 				tagNameService.insert(tagName);
-				
-				TagDevices tagDevices = tagDevicesService.getById(mac);
-				TagDTO tagDto= JsonHelper.getDTO(tagDevices.getTag(), TagDTO.class);
-				String d_tags = tagDto.toString();
-				wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, d_tags);
 			}
 		}
 	}
@@ -81,6 +76,9 @@ public class TagFacadeRpcSerivce {
 						}
 						if (!flag) {
 							old.getItems().add(item);
+							
+							String d_tags = old.toString();
+							wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, d_tags);
 						}
 						tagDevices.setTag(JsonHelper.getJSONString(old));
 						tagDevices.setUpdate_at(new Date());
