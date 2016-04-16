@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.facade;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -35,70 +36,38 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private TagDevicesService tagDevicesService;
-	
-	@Resource 
+
+	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 
-	private void addTag(String mac,TagDTO tag) {
+	private void addTag(int uid, String mac, String tag) {
 
-		for (TagItemsDTO dto : tag.getItems()) {
-
-			ModelCriteria mc = new ModelCriteria();
-			mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", dto.getTag());
-			List<TagName> list = tagNameService.findModelByModelCriteria(mc);
-			if (list.isEmpty()) {
-				TagName tagName = new TagName();
-				tagName.setTag(dto.getTag());
-				tagName.setCreated_at(new Date());
-				tagNameService.insert(tagName);
-			}
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tag);
+		int count = tagNameService.countByModelCriteria(mc);
+		if (count == 0) {
+			TagName tagName = new TagName();
+			tagName.setTag(tag);
+			tagName.setOperator(uid);
+			tagNameService.insert(tagName);
 		}
 	}
 
-	public void bindTag(String mac, String tag) {
+	public void bindTag(int uid, String mac, String tag) {
 
-		TagDTO dto = JsonHelper.getDTO(tag, TagDTO.class);
+		TagDevices tagDevices = tagDevicesService.getOrCreateById(mac);
+
+		tagDevices.setLast_operator(uid);
+		boolean flag = tagDevices.addTag(tag);
 		
-		tagDevicesService.getOrCreateById(mac);
-		
-		TagDevices tagDevices = tagDevicesService.getById(mac);
-		addTag(mac,dto);
-		
-		if (tagDevices != null) {
+		if (flag) {
+			tagDevicesService.update(tagDevices);
 
-			TagDTO old = JsonHelper.getDTO(tagDevices.getTag(), TagDTO.class);
-
-			if (dto != null && dto.getItems() != null && !dto.getItems().isEmpty()) {
-				for (TagItemsDTO item : dto.getItems()) {
-					String name = item.getTag().trim();
-					if (old != null && old.getItems() != null && !old.getItems().isEmpty()) {
-						boolean flag = false;
-						for (TagItemsDTO olditem : old.getItems()) {
-							if (name.equals(olditem.getTag())) {
-								flag = true;
-								break;
-							}
-						}
-						//ArrayHelper.toSplitString(new HashSet<String>(), StringHelper.WHITESPACE_STRING_GAP);
-						if (!flag) {
-							old.getItems().add(item);
-							
-							String d_tags = old.toString();
-							wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, d_tags);
-						}
-						tagDevices.setTag(JsonHelper.getJSONString(old));
-						tagDevices.setUpdate_at(new Date());
-					}
-				}
-				tagDevicesService.update(tagDevices);
-			}
-
-		} else {
-			TagDevices td = new TagDevices();
-			td.setId(mac);
-			td.setTag(tag);
-			td.setCreated_at(new Date());
-			tagDevicesService.insert(td);
+			Set<String> set = tagDevices.fetchTags(tag);
+			String d_tags = ArrayHelper.toSplitString(set, StringHelper.WHITESPACE_STRING_GAP);
+			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, d_tags);
+			
+			addTag(uid, mac, tag);
 		}
 	}
 

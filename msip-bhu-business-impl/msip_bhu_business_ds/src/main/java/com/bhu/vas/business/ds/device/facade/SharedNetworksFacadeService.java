@@ -306,9 +306,10 @@ public class SharedNetworksFacadeService {
 	 * 只以设备配置的数据为准
 	 * 目前只为设备上线需要调用时处理
 	 * @param mac
+	 * @param notExistThenOn true 不存在 则创建开启的共享网络  false 不存在 则创建关闭的共享网络
 	 * @return
 	 */
-	public SharedNetworkSettingDTO fetchDeviceSharedNetworkConfWhenEmptyThenCreate(String mac){
+	public SharedNetworkSettingDTO fetchDeviceSharedNetworkConfWhenEmptyThenCreate(String mac,boolean notExistThenOn){
 		String mac_lowercase = mac.toLowerCase();
 		WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
 		if(sharednetwork != null){
@@ -320,7 +321,10 @@ public class SharedNetworksFacadeService {
 			sharednetwork.setSharednetwork_type(configDto.getNtype());
 			sharednetwork.setTemplate(DefaultTemplate);
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
-			sharedNetworkSettingDTO.turnOff(configDto);
+			if(notExistThenOn)
+				sharedNetworkSettingDTO.turnOn(configDto);
+			else
+				sharedNetworkSettingDTO.turnOff(configDto);
 			sharednetwork.putInnerModel(sharedNetworkSettingDTO);
 			wifiDeviceSharedNetworkService.insert(sharednetwork);
 			return sharedNetworkSettingDTO;

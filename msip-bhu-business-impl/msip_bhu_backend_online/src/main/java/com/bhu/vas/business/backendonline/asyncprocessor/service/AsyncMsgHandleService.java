@@ -228,9 +228,9 @@ public class AsyncMsgHandleService {
 				logger.info(String.format("Device SharedNetwork Option[%s]", BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start));
 				if(BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start){
 					if(WifiDeviceHelper.autoDeviceSecureSharedNetworkStrategy(wifiDevice.getOrig_swver())){
-						SharedNetworkSettingDTO sharedNetwork = sharedNetworksFacadeService.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac());
+						SharedNetworkSettingDTO sharedNetwork = sharedNetworksFacadeService.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac(),true);
 						ParamSharedNetworkDTO psn = sharedNetwork.getPsn();
-						if(sharedNetwork != null && sharedNetwork.isOn() && psn != null){
+						if(sharedNetwork != null && sharedNetwork.isOn()  && psn != null){
 							logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
 							//更新索引，下发指令
 							wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),psn.getTemplate());
