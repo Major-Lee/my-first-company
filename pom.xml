@@ -48,18 +48,24 @@
         <module>msip-bhu-unit/msip_bhu_unit_commdity</module>
         <module>msip-bhu-unit/msip_bhu_unit_social</module>
         <module>msip-bhu-unit/msip_bhu_unit_tag</module>
+        <!--
         <module>msip-bhu-unit/msip_bhu_unit_agent</module>
+    -->
         <module>msip-bhu-business-impl/msip_bhu_business_push</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_online</module>
+        <!--
         <module>msip-bhu-business-impl/msip_bhu_backend_wifistasniffer</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_modulestat</module>
+    -->
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task_applies_notify</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_commdity</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_social</module>
         <module>msip-bhu-api/msip_bhu_rest</module>
         <module>msip-bhu-api/msip_bhu_commdity_rest</module>
+        <!--
         <module>msip-bhu-api/msip_bhu_agent_rest</module>
+    -->
         <module>msip-bhu-api/msip_bhu_social_rest</module>
         <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
     </modules>
@@ -186,7 +192,8 @@
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_springdata_search</artifactId>
                 <version>${project.version}</version>
-            </dependency>            
+            </dependency>        
+            <!--    
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_im_common</artifactId>
@@ -197,13 +204,13 @@
                 <artifactId>msip_im_cm</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
+           
             <dependency>
                 <groupId>com.smartwork</groupId>
                 <artifactId>msip_core_lucene_es</artifactId>
                 <version>3.0-SNAPSHOT</version>
             </dependency>
-<!--
+
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_search</artifactId>
