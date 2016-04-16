@@ -279,6 +279,7 @@ public class SharedNetworksFacadeService {
 		}else{
 			ParamSharedNetworkDTO sharedNetworkConf = this.fetchUserSharedNetworkConf(uid, SharedNetworkType.SafeSecure);
 			configs  = new WifiDeviceSharedNetwork();
+			configs.setId(mac);
 			configs.setSharednetwork_type(sharedNetworkConf.getNtype());
 			configs.setTemplate(sharedNetworkConf.getTemplate());
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
