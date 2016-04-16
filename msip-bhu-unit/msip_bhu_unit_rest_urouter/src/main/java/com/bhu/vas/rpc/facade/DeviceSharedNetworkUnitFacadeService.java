@@ -20,15 +20,21 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
+import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.vto.device.DeviceProfileVTO;
+import com.bhu.vas.api.vto.device.SnkPortalVTO;
+import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -51,6 +57,79 @@ public class DeviceSharedNetworkUnitFacadeService {
 	@Resource
 	private DeliverMessageService deliverMessageService;
 	
+	/**
+	 * 通过dmac获取绑定用户id、nick、mobileno、avatar、设备访客相关限速
+	 * @param mac
+	 * @return
+	 */
+	public RpcResponseDTO<DeviceProfileVTO> fetchDeviceSnks4Portal(String mac) {
+		try{
+			WifiDevice wifiDevice = sharedNetworksFacadeService.getWifiDeviceService().getById(mac);
+			if(wifiDevice == null){
+				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{"mac"});
+			}
+			User user = null;
+			Integer bindUid = sharedNetworksFacadeService.getUserDeviceService().fetchBindUid(mac);
+			if(bindUid != null){
+				user = sharedNetworksFacadeService.getUserService().getById(bindUid);
+			}
+			DeviceProfileVTO vto = new DeviceProfileVTO();
+			vto.setMac(mac);
+			if(user != null){
+				vto.setId(user.getId());
+				vto.setNick(user.getNick());
+				vto.setMobileno(user.getMobileno());
+				vto.setAvatar(user.getAvatar());
+			}else{
+				vto.setId(-1);
+				vto.setNick(StringHelper.MINUS_STRING_GAP);
+				vto.setMobileno(StringHelper.MINUS_STRING_GAP);
+				vto.setAvatar(StringHelper.MINUS_STRING_GAP);
+			}
+			SharedNetworkSettingDTO sharedNetworkConf = sharedNetworksFacadeService.fetchDeviceSharedNetworkConf(mac);
+			if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
+				vto.setUsers_rate(sharedNetworkConf.getPsn().getUsers_tx_rate());
+			}
+			/*UserSettingState settingState = userSettingStateService.getById(mac);
+			if(settingState != null){
+				UserVistorWifiSettingDTO vistorWifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
+				if(vistorWifi != null && vistorWifi.isOn() && vistorWifi.getVw() != null){//访客网络是开启
+					vto.setUsers_rate(vistorWifi.getVw().getUsers_tx_rate());
+				}
+			}*/
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	public RpcResponseDTO<UserSnkPortalVTO> fetchUserSnks4Portal(int uid) {
+		User user = UserValidateServiceHelper.validateUser(uid,sharedNetworksFacadeService.getUserService());
+		try{
+			List<ParamSharedNetworkDTO> snks = sharedNetworksFacadeService.fetchAllUserSharedNetworkConf(uid, SharedNetworkType.SafeSecure);
+			UserSnkPortalVTO vto = new UserSnkPortalVTO();
+			vto.setId(user.getId());
+			vto.setNick(user.getNick());
+			vto.setAvatar(user.getAvatar());
+			vto.setMobileno(user.getMobileno());
+			vto.setSnks(new ArrayList<SnkPortalVTO>());
+			for(ParamSharedNetworkDTO snk:snks){
+				SnkPortalVTO inner = new SnkPortalVTO();
+				inner.setTpl(snk.getTemplate());
+				inner.setUsers_rate(snk.getUsers_tx_rate());
+				vto.getSnks().add(inner);
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 	
 	/**
 	 * 修改用户的sharenetwork_type共享网络的配置，得出配置是否变更了

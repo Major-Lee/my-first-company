@@ -11,13 +11,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceSharedNetworkRpcService;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
-import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
+import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
@@ -38,11 +40,15 @@ public class DashboardController extends BaseController{
 	@Resource
 	private ITaskRpcService taskRpcService;
 	
-    @Resource
-    private IUserDeviceRpcService userDeviceRpcService;
+    //@Resource
+    //private IUserDeviceRpcService userDeviceRpcService;
     
     @Resource
     private IUserOAuthRpcService userOAuthRpcService;
+    
+	@Resource
+	private IDeviceSharedNetworkRpcService deviceSharedNetworkRpcService;
+
     
 	private static final String DefaultSecretkey = "PzdfTFJSUEBHG0dcWFcLew==";
 	private ResponseError validate(String secretKey){
@@ -164,15 +170,22 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<DeviceProfileVTO> rpcResult = userDeviceRpcService.portalDeviceProfile(dmac.toLowerCase());
+		RpcResponseDTO<DeviceProfileVTO> rpcResult = deviceSharedNetworkRpcService.fetchDeviceSnks4Portal(dmac.toLowerCase());
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
-	/*@ResponseBody()
-	@RequestMapping(value="/user/portals",method={RequestMethod.POST})
+	/**
+	 * 通过用户id获取用户相关的信息、所有模板及共享网络的限速
+	 * @param request
+	 * @param response
+	 * @param secretKey
+	 * @param uid
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/snk/userportals",method={RequestMethod.POST})
 	public void uportal(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -183,14 +196,47 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<DeviceProfileVTO> rpcResult = userDeviceRpcService.portalDeviceProfile(dmac.toLowerCase());
+		RpcResponseDTO<UserSnkPortalVTO> rpcResult = deviceSharedNetworkRpcService.fetchUserSnks4Portal(uid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-	}*/
+	}
 	
 
+	/**
+	 * 修改用户共享网络配置并应用接口（用于服务器之间交互）
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param sharenetwork_type
+	 * @param template 如果为"0000"或者不存在的template，0000也是不存在的编号 则代表新建 参数为空则采用0001的缺省值
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/snk/apply",method={RequestMethod.POST})
+	public void apply(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true,value="sk") String secretKey,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
+			@RequestParam(required = false,defaultValue= "0001",value="tpl") String template,
+			@RequestParam(required = false) String extparams) {
+		ResponseError validateError = validate(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		RpcResponseDTO<ParamSharedNetworkDTO> rpcResult = deviceSharedNetworkRpcService.applyNetworkConf(uid, sharenetwork_type,template, extparams);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	
 	@ResponseBody()
 	@RequestMapping(value="/oauth/fullfill",method={RequestMethod.POST})
 	public void fullfill(

@@ -655,56 +655,6 @@ public class UserDeviceUnitFacadeService {
 	}
 	
 	/**
-	 * 通过dmac获取绑定用户id、nick、mobileno、avatar、设备访客相关限速
-	 * @param mac
-	 * @return
-	 */
-	public RpcResponseDTO<DeviceProfileVTO> portalDeviceProfile(String mac){
-		try{
-			WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-			if(wifiDevice == null){
-				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{"mac"});
-			}
-			User user = null;
-			Integer bindUid = userDeviceService.fetchBindUid(mac);
-			if(bindUid != null){
-				user = userService.getById(bindUid);
-			}
-			DeviceProfileVTO vto = new DeviceProfileVTO();
-			vto.setMac(mac);
-			if(user != null){
-				vto.setId(user.getId());
-				vto.setNick(user.getNick());
-				vto.setMobileno(user.getMobileno());
-				vto.setAvatar(user.getAvatar());
-			}else{
-				vto.setId(-1);
-				vto.setNick(StringHelper.MINUS_STRING_GAP);
-				vto.setMobileno(StringHelper.MINUS_STRING_GAP);
-				vto.setAvatar(StringHelper.MINUS_STRING_GAP);
-			}
-			SharedNetworkSettingDTO sharedNetworkConf = sharedNetworksFacadeService.fetchDeviceSharedNetworkConf(mac);
-			if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
-				vto.setUsers_rate(sharedNetworkConf.getPsn().getUsers_tx_rate());
-			}
-			/*UserSettingState settingState = userSettingStateService.getById(mac);
-			if(settingState != null){
-				UserVistorWifiSettingDTO vistorWifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
-				if(vistorWifi != null && vistorWifi.isOn() && vistorWifi.getVw() != null){//访客网络是开启
-					vto.setUsers_rate(vistorWifi.getVw().getUsers_tx_rate());
-				}
-			}*/
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
-		}catch(BusinessI18nCodeException i18nex){
-			i18nex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
-		}catch(Exception ex){
-			ex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
-	}
-
-	/**
 	 * 根据用户uid获取绑定的设备分页数据
 	 * @param uid 用户uid
 	 * @param dut 设备业务线

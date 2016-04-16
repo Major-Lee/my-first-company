@@ -6,10 +6,15 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
+import com.bhu.vas.api.vto.device.DeviceProfileVTO;
+import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public interface IDeviceSharedNetworkRpcService {
 	
+	
+	RpcResponseDTO<UserSnkPortalVTO> fetchUserSnks4Portal(int uid);
+	RpcResponseDTO<DeviceProfileVTO> fetchDeviceSnks4Portal(String mac);
 	/**
 	 * 获取指定用户的指定共享网络类型的配置
 	 * @param uid
@@ -17,6 +22,7 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @return
 	 */
 	RpcResponseDTO<ParamSharedNetworkDTO> fetchUserNetworkConf(int uid, String sharenetwork_type,String template);
+	
 	RpcResponseDTO<List<ParamSharedNetworkDTO>> fetchUserNetworksConf(int uid, String sharenetwork_type);
 	
 	RpcResponseDTO<SharedNetworkSettingDTO> fetchDeviceNetworkConf(int uid, String mac);

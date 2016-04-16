@@ -508,4 +508,10 @@ public class SharedNetworksFacadeService {
 	public UserDevicesSharedNetworksService getUserDevicesSharedNetworksService() {
 		return userDevicesSharedNetworksService;
 	}
+
+	public UserDeviceService getUserDeviceService() {
+		return userDeviceService;
+	}
+	
+	
 }
