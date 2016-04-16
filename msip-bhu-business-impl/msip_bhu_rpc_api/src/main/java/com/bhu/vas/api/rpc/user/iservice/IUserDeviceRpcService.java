@@ -9,7 +9,6 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceCloudDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
-import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -62,7 +61,7 @@ public interface IUserDeviceRpcService {
 	
     RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid);
     
-    RpcResponseDTO<DeviceProfileVTO> portalDeviceProfile(String mac);
+    //RpcResponseDTO<DeviceProfileVTO> portalDeviceProfile(String mac);
     
     public RpcResponseDTO<TailPage<UserDeviceCloudDTO>> devicePagesByUid(Integer uid, 
     		String dut, int pageNo, int pageSize);

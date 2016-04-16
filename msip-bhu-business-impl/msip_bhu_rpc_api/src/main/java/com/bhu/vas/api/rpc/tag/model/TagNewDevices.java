@@ -1,11 +1,12 @@
 package com.bhu.vas.api.rpc.tag.model;
 
 import java.util.Date;
+import java.util.Set;
 
-import com.smartwork.msip.cores.orm.model.BaseStringModel;
+import com.smartwork.msip.cores.orm.model.extjson.SetJsonExtStringModel;
 
 @SuppressWarnings("serial")
-public class TagDevices extends BaseStringModel {
+public class TagNewDevices extends SetJsonExtStringModel<String> {
 	
 	/**
 	 * 标签名
@@ -33,11 +34,18 @@ public class TagDevices extends BaseStringModel {
 	public void setUpdate_at(Date update_at) {
 		this.update_at = update_at;
 	}
+	
+	public Set<String> fetchTags(String tag){
+		return this.getInnerModels();
+	}
+	public boolean addTag(String tag){
+		boolean ret = this.putInnerModel(tag);
+		return ret;
+	}
+	
 	@Override
-	public void preInsert() {
-		if (this.created_at == null)
-			this.created_at = new Date();
-		super.preInsert();
+	public Class<String> getJsonParserModel() {
+		return String.class;
 	}
 	
 	

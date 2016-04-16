@@ -13,6 +13,8 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceSharedNetworkRpcService;
+import com.bhu.vas.api.vto.device.DeviceProfileVTO;
+import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.rpc.facade.DeviceSharedNetworkUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -65,6 +67,18 @@ public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcSer
 	public RpcResponseDTO<TailPage<SharedNetworkDeviceDTO>> pages(int uid, String sharedNetwork_type, String template, String d_dut, int pageNo, int pageSize) {
 		logger.info(String.format("pages with uid[%s] sharedNetwork_type[%s] template[%s] d_dut[%s]", uid, sharedNetwork_type, template, d_dut));
 		return deviceSharedNetworkUnitFacadeService.pages(uid, sharedNetwork_type, template, d_dut, pageNo, pageSize);
+	}
+
+	@Override
+	public RpcResponseDTO<UserSnkPortalVTO> fetchUserSnks4Portal(int uid) {
+		logger.info(String.format("fetchUserSnks4Portal with uid[%s]", uid));
+		return deviceSharedNetworkUnitFacadeService.fetchUserSnks4Portal(uid);
+	}
+
+	@Override
+	public RpcResponseDTO<DeviceProfileVTO> fetchDeviceSnks4Portal(String mac) {
+		logger.info(String.format("fetchUserSnks4Portal with uid[%s]", mac));
+		return deviceSharedNetworkUnitFacadeService.fetchDeviceSnks4Portal(mac);
 	}
 
 }
