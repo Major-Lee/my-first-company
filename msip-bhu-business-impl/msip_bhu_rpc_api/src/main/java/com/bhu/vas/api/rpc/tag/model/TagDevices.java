@@ -33,6 +33,12 @@ public class TagDevices extends BaseStringModel {
 	public void setUpdate_at(Date update_at) {
 		this.update_at = update_at;
 	}
+	@Override
+	public void preInsert() {
+		if (this.created_at == null)
+			this.created_at = new Date();
+		super.preInsert();
+	}
 	
 	
 }
