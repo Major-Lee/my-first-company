@@ -12,16 +12,13 @@ public class TagName extends BaseLongModel implements Serializable{
 	 */
 	private String tag;
 	
+	/**
+	 * 当前操作用户
+	 */
+	private int operator; 
+	
 	private Date created_at;
 	
-	public Date getCreated_at() {
-		return created_at;
-	}
-
-	public void setCreated_at(Date created_at) {
-		this.created_at = created_at;
-	}
-
 	public String getTag() {
 		return tag;
 	}
@@ -30,4 +27,19 @@ public class TagName extends BaseLongModel implements Serializable{
 		this.tag = tag;
 	}
 	
+	public int getOperator() {
+		return operator;
+	}
+
+	public void setOperator(int operator) {
+		this.operator = operator;
+	}
+
+	@Override
+	public void preInsert() {
+		if (created_at == null) {
+			this.created_at = new Date();
+		}
+		super.preInsert();
+	}
 }

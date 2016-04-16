@@ -7,6 +7,7 @@
   <resultMap id="modelResult" type="tagName">
 	  <id property="id" column="id" />
 	  <result property="tag" column="tag"/>
+	  <result property="operator" column="operator"/>
 	  <result property="created_at" column="created_at"/>
   </resultMap>  
   
@@ -19,6 +20,7 @@
 	    <![CDATA[
 	    	id,
 	    	tag,
+	    	operator,
 	    	created_at
 	    ]]>
 	</sql>  
@@ -26,12 +28,14 @@
 	<sql id="modelInsertValues">
 			#{id},
 	    	#{tag},
+	    	#{operator},
 	    	#{created_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
 			id = #{id},
 	    	tag = #{tag},
+	    	operator = #{operator},
 		  	created_at = #{created_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">

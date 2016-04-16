@@ -6,7 +6,7 @@
 
   <resultMap id="modelResult" type="tagDevices">
 	  <id property="id" column="id" />
-	  <result property="tag" column="tag"/>
+	  <result property="last_operator" column="last_operator"/>
 	  <result property="created_at" column="created_at"/>
 	  <result property="update_at" column="update_at"/>
   </resultMap>  
@@ -19,7 +19,7 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	tag,
+	    	last_operator,
 	    	created_at,
 	    	update_at
 	    ]]>
@@ -27,14 +27,14 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{tag},
+	    	#{last_operator},
 	    	#{created_at},
 	    	#{update_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
 			id = #{id},
-	    	tag = #{tag},
+	    	last_operator = #{last_operator},
 		  	created_at = #{created_at},
 		  	update_at = #{update_at}
 	</sql>
