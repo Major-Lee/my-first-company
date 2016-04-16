@@ -1,11 +1,12 @@
 package com.bhu.vas.api.rpc.tag.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.smartwork.msip.cores.orm.model.BaseLongModel;
 
 @SuppressWarnings("serial")
-public class TagName extends BaseLongModel {
+public class TagName extends BaseLongModel implements Serializable{
 	/**
 	 * 标签名
 	 */

@@ -1,7 +1,7 @@
 package com.bhu.vas.business.asyn.spring.builder;
 
 public abstract class ActionSocialDTO {
-	private int uid;
+	private String uid;
 	/**
 	 * 动作时间
 	 */
@@ -16,11 +16,11 @@ public abstract class ActionSocialDTO {
 		this.ts = ts;
 	}
 
-	public int getUid() {
+	public String getUid() {
 		return uid;
 	}
 
-	public void setUid(int uid) {
+	public void setUid(String uid) {
 		this.uid = uid;
 	}
 }

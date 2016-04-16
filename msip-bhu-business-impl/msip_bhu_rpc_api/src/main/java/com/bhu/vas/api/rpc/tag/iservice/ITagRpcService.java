@@ -1,7 +1,9 @@
 package com.bhu.vas.api.rpc.tag.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.tag.vto.TagItemsVTO;
+import com.bhu.vas.api.rpc.tag.model.TagName;
+import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * 
@@ -18,6 +20,6 @@ public interface ITagRpcService {
 	 */
     RpcResponseDTO<Boolean> bindTag(String mac, String tag);
     
-    TagItemsVTO fetchTag(int pageNo, int pageSize);
-	
+    RpcResponseDTO<TailPage<TagNameVTO>> fetchTag(int pageNo, int pageSize);
+    
 }	

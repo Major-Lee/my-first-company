@@ -19,6 +19,7 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
 
     private final static String HANDSET_MEET_TOTAL_COUNT_KEY = "total";
     private final static String HANDSET_MEET_LAST_KEY = "last";
+    private final static String HANDSET_MEET = "meet";
 
     private static class ServiceHolder{
         private static SocialHandsetMeetHashService instance =new SocialHandsetMeetHashService();
@@ -51,39 +52,34 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
     }
 
 
-    private static String generateKey(String hd_mac_self, String hd_mac){
+    private static String generateKey(String uid, String hd_mac){
         StringBuilder sb = new StringBuilder(BusinessKeyDefine.Social.MEET);
-        String key = null;
-        if (hd_mac_self.hashCode() >= hd_mac.hashCode()) {
-            key = hd_mac_self  + "_" + hd_mac;
-        } else {
-            key = hd_mac + "_" + hd_mac_self;
-        }
+        String key = uid  + "_" + hd_mac;
         sb.append(StringHelper.POINT_CHAR_GAP).append(key);
         return sb.toString();
     }
 
 
 
-    public void hsetHadsetMeets(String hd_mac_self, String hd_mac, String bssid, String meets) {
-        this.hset(generateKey(hd_mac_self, hd_mac), bssid, meets);
+    public void hsetHadsetMeets(String uid, String hd_mac, String bssid, String meets) {
+        this.hset(generateKey(uid, hd_mac), HANDSET_MEET, meets);
     }
 
-    public void hincrbyHadsetMeetTotalWithBssid(String hd_mac_self, String hd_mac, String bssid) {
-        //bssid场景下的统计
-        this.hincrby(generateKey(hd_mac_self, hd_mac), bssid + "_" + HANDSET_MEET_TOTAL_COUNT_KEY, 1);
+//    public void hincrbyHadsetMeetTotalWithBssid(String hd_mac_self, String hd_mac, String bssid) {
+//        //bssid场景下的统计
+//        this.hincrby(generateKey(hd_mac_self, hd_mac), bssid + "_" + HANDSET_MEET_TOTAL_COUNT_KEY, 1);
+//    }
+
+    public void hincrbyHadsetMeetTotal(String uid, String hd_mac) {
+        this.hincrby(generateKey(uid, hd_mac), HANDSET_MEET_TOTAL_COUNT_KEY, 1);
     }
 
-    public void hincrbyHadsetMeetTotal(String hd_mac_self, String hd_mac) {
-        this.hincrby(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_TOTAL_COUNT_KEY, 1);
+    public void hsetLastMeetWithBssid(String uid, String hd_mac, String bssid, String dto) {
+        this.hset(generateKey(uid, hd_mac), bssid + "_" + HANDSET_MEET_LAST_KEY, dto);
     }
 
-    public void hsetLastMeetWithBssid(String hd_mac_self, String hd_mac, String bssid, String dto) {
-        this.hset(generateKey(hd_mac_self, hd_mac), bssid + "_" + HANDSET_MEET_LAST_KEY, dto);
-    }
-
-    public void hsetLastMeet(String hd_mac_self, String hd_mac, String dto) {
-        this.hset(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_LAST_KEY, dto);
+    public void hsetLastMeet(String uid, String hd_mac, String dto) {
+        this.hset(generateKey(uid, hd_mac), HANDSET_MEET_LAST_KEY, dto);
     }
 
 
@@ -91,17 +87,17 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
         return this.hget(generateKey(hd_mac_self, hd_mac), bssid);
     }
 
-    public String hgetLastHandsetMeet(String hd_mac_self, String hd_mac) {
-        return this.hget(generateKey(hd_mac_self, hd_mac), HANDSET_MEET_LAST_KEY);
+    public String hgetLastHandsetMeet(String uid, String hd_mac) {
+        return this.hget(generateKey(uid, hd_mac), HANDSET_MEET_LAST_KEY);
     }
 
-    public String hgetHandsetMeets(String hd_mac_self, String hd_mac, String bssid) {
-        return this.hget(generateKey(hd_mac_self, hd_mac), bssid);
+    public String hgetHandsetMeets(String uid, String hd_mac, String bssid) {
+        return this.hget(generateKey(uid, hd_mac), HANDSET_MEET);
     }
 
     public static void main(String[] args) {
-        System.out.println(generateKey("84:82:f4:19:01:0c", "84:82:f4:19:00:c0"));
-        System.out.println(generateKey("84:82:f4:19:00:c0", "84:82:f4:19:01:0c"));
+        System.out.println(generateKey("100027", "84:82:f4:19:00:c0"));
+        System.out.println(generateKey("100027", "84:82:f4:19:01:0c"));
 
         HandsetMeetDTO dto = new HandsetMeetDTO();
         dto.setBssid("google");
@@ -110,9 +106,9 @@ public class SocialHandsetMeetHashService extends AbstractRelationHashCache {
         dto.setSsid("gooogle-wifi");
         dto.setTs(System.currentTimeMillis());
 
-        //SocialHandsetMeetHashService.getInstance().handsetMeet("82:83:90:12:32:34", "82:83:90:12:32:35", "google", JsonHelper.getJSONString(dto));
+        SocialHandsetMeetHashService.getInstance().hsetHadsetMeets("100027", "82:83:90:12:32:35", "google", JsonHelper.getJSONString(dto));
 
-        String dd = SocialHandsetMeetHashService.getInstance().hget(generateKey("84:82:f4:28:7a:ec", "82:83:90:12:32:34"), HANDSET_MEET_LAST_KEY);
+        String dd = SocialHandsetMeetHashService.getInstance().hget(generateKey("100027", "82:83:90:12:32:34"), HANDSET_MEET_LAST_KEY);
 
         System.out.println("===" + dd);
 

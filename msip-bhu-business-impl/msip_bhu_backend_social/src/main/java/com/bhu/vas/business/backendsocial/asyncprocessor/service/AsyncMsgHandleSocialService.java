@@ -1,7 +1,6 @@
 package com.bhu.vas.business.backendsocial.asyncprocessor.service;
 
 import com.bhu.vas.business.asyn.spring.model.social.HandsetMeetDTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialHandsetMeetHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.social.SocialStorageFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import org.slf4j.Logger;
@@ -24,13 +23,18 @@ public class AsyncMsgHandleSocialService {
         logger.info(String.format("AsyncMsgHandleSocialService handsetMeet message[%s]", message));
         HandsetMeetDTO dto = JsonHelper.getDTO(message, HandsetMeetDTO.class);
         String hd_macs = dto.getHd_macs().toLowerCase();
-        String hd_mac = dto.getHd_mac().toLowerCase();
+        String uid = dto.getUid();
+        String hd_mac = dto.getHd_mac();
         String bssid = dto.getBssid().toLowerCase();
         String[] list = hd_macs.split(",");
         if (list != null && list.length > 0) {
             for (String mac : list) {
 //                logger.info(String.format("AsyncMsgHandleSocialService handsetmeet mac[%s] message[%s]", mac, message));
-                SocialStorageFacadeService.handsetMeet(hd_mac, mac.trim(), bssid, dto.getMeet());
+                if (uid !=null) {
+                	SocialStorageFacadeService.handsetMeet(uid, mac.trim(), bssid, dto.getMeet());
+				}else{
+					SocialStorageFacadeService.handsetMeet(hd_mac.trim(), mac.trim(), bssid, dto.getMeet());
+				}
             }
         }
 

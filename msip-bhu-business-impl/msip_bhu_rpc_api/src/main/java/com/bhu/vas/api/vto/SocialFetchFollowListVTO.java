@@ -9,6 +9,7 @@ import java.io.Serializable;
 /**
  * Created by NeeBie_xw on 2016/3/7.
  */
+@SuppressWarnings("serial")
 public class SocialFetchFollowListVTO implements Serializable{
 
     public static final String TYPE = "urouter";

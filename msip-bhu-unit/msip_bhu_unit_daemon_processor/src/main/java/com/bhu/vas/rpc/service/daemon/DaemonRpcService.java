@@ -128,7 +128,8 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 							//logger.info(String.format("wifiDeviceCmdsDown1 ctx[%s] mac[%s] cmds[%s] ctx existed",ctx,downCmd.getMac(),cmds));
 						}else{
 							logger.info(String.format("wifiMultiDevicesCmdsDown ctx[%s] mac[%s] ctx not existed",ctx,downCmd.getMac()));
-							return false;
+							//return false;
+							continue;
 						}
 					}
 					for(String cmd:downCmd.getCmds()){
