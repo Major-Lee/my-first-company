@@ -20,6 +20,7 @@ import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.header.ParserHeader;
+import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
@@ -27,6 +28,7 @@ import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
 import com.bhu.vas.processor.bulogs.DynamicLogWriter;
 import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
+import com.smartwork.msip.business.logger.BusinessDefinedLogger;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -130,6 +132,10 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	}
 	
 	public void doSpecialProcessor(final String ctx,final String payload,final int type,final ParserHeader headers){
+		//System.out.println(String.format("ctx[%s] type[%s] paylod[%s]", ctx,type,payload));
+		if(headers != null && OperationCMD.DeviceCmdPassThrough.getNo().equals(headers.getOpt())){
+			BusinessDefinedLogger.doInfoLog(String.format("ctx[%s] type[%s] paylod[%s]", ctx,type,payload));
+		}
 		switch(type){
 			case ParserHeader.DeviceOffline_Prefix:
 				DynamicLogWriter.doLogger(headers.getMac(), 
