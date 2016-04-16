@@ -33,6 +33,7 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	//设备批次号（导入批次号-一般库房进行编号）格式为 yyyyMMdd-longsequence
 	private String batchno;
 	//绑定用户 <=0 代表未绑定的设备（此数据为冗余数据，解绑和绑定、重置操作都需要操作此值）
+	//批量导入时获取设备的绑定用户，解绑、绑定、重置对owner字段的影响，解绑和重置owner值变为-1
 	private int owner = 0;
 	//厂商用户  必须>零 目前值为定值
 	private int manufacturer = 0;
