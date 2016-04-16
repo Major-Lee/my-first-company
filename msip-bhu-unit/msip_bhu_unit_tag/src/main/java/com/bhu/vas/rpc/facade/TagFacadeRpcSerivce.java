@@ -16,7 +16,9 @@ import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
+import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -56,6 +58,9 @@ public class TagFacadeRpcSerivce {
 	public void bindTag(String mac, String tag) {
 
 		TagDTO dto = JsonHelper.getDTO(tag, TagDTO.class);
+		
+		tagDevicesService.getOrCreateById(mac);
+		
 		TagDevices tagDevices = tagDevicesService.getById(mac);
 		addTag(mac,dto);
 		
@@ -74,6 +79,7 @@ public class TagFacadeRpcSerivce {
 								break;
 							}
 						}
+						//ArrayHelper.toSplitString(new HashSet<String>(), StringHelper.WHITESPACE_STRING_GAP);
 						if (!flag) {
 							old.getItems().add(item);
 							
