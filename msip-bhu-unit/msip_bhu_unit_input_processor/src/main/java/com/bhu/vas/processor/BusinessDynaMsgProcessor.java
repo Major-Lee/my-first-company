@@ -134,7 +134,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 	public void doSpecialProcessor(final String ctx,final String payload,final int type,final ParserHeader headers){
 		//System.out.println(String.format("ctx[%s] type[%s] paylod[%s]", ctx,type,payload));
 		if(headers != null && OperationCMD.DeviceCmdPassThrough.getNo().equals(headers.getOpt())){
-			BusinessDefinedLogger.doInfoLog(String.format("ctx[%s] type[%s] paylod[%s]", ctx,type,payload));
+			BusinessDefinedLogger.doInfoLog(String.format("ctx[%s] mac[%s] paylod[%s]", ctx,headers.getMac(),payload));
 		}
 		switch(type){
 			case ParserHeader.DeviceOffline_Prefix:
