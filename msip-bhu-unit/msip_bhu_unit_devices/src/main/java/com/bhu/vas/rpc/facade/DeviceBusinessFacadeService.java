@@ -1704,6 +1704,7 @@ public class DeviceBusinessFacadeService {
 				case DS_MM: //修改昵称
 					deliverMessageService.sendDeviceModifySettingAaliasActionMessage(uid, mac, content);
 					break;
+				case DS_VapPassword_multi://修改vap ssid
 				case DS_VapPassword: //修改vap ssid
 					deliverMessageService.sendDeviceModifySettingVapActionMessage(uid, mac);
 					break;

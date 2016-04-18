@@ -22,6 +22,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRf2in1DTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
@@ -42,6 +43,8 @@ public class DeviceHelper {
 	public static final int Device_Peak_Section_Type_OnlyDownload = 1;//设备只测速下行
 	public static final int Device_Peak_Section_Type_OnlyUpload = 2;//设备只测速上行
 	public static final int Device_Peak_Section_Type_All = 3;//设备上下行都进行测速
+	
+	public static final String[] NormalVapNames = new String[]{"wlan0","wlan10"};
 	
 	//获取配置数据正常
 	public static final int RefreashDeviceSetting_Normal = 0;
@@ -294,8 +297,12 @@ public class DeviceHelper {
 	 * @return
 	 */
 	public static String[] getURouterDevicePowerAndRealChannel(WifiDeviceSettingDTO dto){
-		String[] result = new String[2];
 		WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(dto);
+		return getURouterDevicePowerAndRealChannel(radio_dto);
+	}
+	
+	public static String[] getURouterDevicePowerAndRealChannel(WifiDeviceSettingRadioDTO radio_dto){
+		String[] result = new String[2];
 		if(radio_dto == null){
 			result[0] = Unknow_Power;
 			result[1] = Unknow_RealChannel;
@@ -356,6 +363,28 @@ public class DeviceHelper {
 			}
 		}
 		return null;
+	}
+	/**
+	 * 获取指定name的vap节点对象
+	 * @param dto
+	 * @param names
+	 * @return
+	 */
+	public static List<WifiDeviceSettingVapDTO> getUrouterDeviceVapWithNames(WifiDeviceSettingDTO dto, String... names){
+		if(dto == null || names == null || names.length == 0) return null;
+		List<WifiDeviceSettingVapDTO> vaps = dto.getVaps();
+		if(vaps == null || vaps.isEmpty()) return null;
+		
+		List<WifiDeviceSettingVapDTO> vap_dtos = new ArrayList<WifiDeviceSettingVapDTO>();
+		for(WifiDeviceSettingVapDTO vap : vaps){
+			for(String name : names){
+				if(name.equals(vap.getName())){
+					vap_dtos.add(vap);
+					break;
+				}
+			}
+		}
+		return vap_dtos;
 	}
 	
 	public static String getLinkModeValue(WifiDeviceSettingDTO dto){
@@ -581,6 +610,11 @@ public class DeviceHelper {
 				if(source.getSyskey() != null){
 					ReflectionHelper.copyProperties(source.getSyskey(), target.getSyskey());
 				}
+				
+				//合并rf_2in1
+				if(source.getRf_2in1() != null){
+					target.setRf_2in1(source.getRf_2in1());
+				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -649,6 +683,7 @@ public class DeviceHelper {
 	
 	public static final String DeviceSetting_ConfigSequenceOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys></dev>";
 	public static final String DeviceSetting_ConfigSequenceInner = "<sys><config><ITEM sequence=\"%s\"/></config></sys>";
+	public static final String DeviceSetting_ConfigSequenceRf2in1Outer = "<dev><sys><config><ITEM sequence=\"%s\" rf_2in1=\"%s\"/></config></sys></dev>";
 	
 	public static final String DeviceSetting_URouterDefaultVapAclOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><vap>%s</vap><acllist>%s</acllist></wifi></dev>");
 	
@@ -1302,6 +1337,34 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
 	}
 	
+	/**
+	 * 构建信号强度multi配置数据
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return 
+	 */
+	public static String builderDSPowerMultiOuter(String config_sequence, String extparams){
+		List<WifiDeviceSettingRadioDTO> radio_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingRadioDTO.class);
+		if(radio_dtos == null || radio_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+		
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
+			if(radio_dto == null || StringUtils.isEmpty(radio_dto.getPower()) || 
+					Integer.parseInt(radio_dto.getPower()) < 0) {
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			
+			String item = builderDeviceSettingItem(DeviceSetting_RadioItem_Power, 
+					radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
+			items.append(item);
+		}
+		//String item = builderDeviceSettingItemWithDto(DeviceSetting_RadioItem_Power, radio_dto);
+		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, items.toString());
+	}
+	
 	
 	//private static final String[] optionalChannel4URouter = {"1","6","11"};
 	public static String builderDSRealChannelOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
@@ -1368,6 +1431,35 @@ public class DeviceHelper {
 		String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
 				vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
 		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, item);
+	}
+	
+	/**
+	 * 构建vap密码修改配置multi
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return 
+	 */
+	public static String builderDSVapPasswordMultiOuter(String config_sequence, String extparams){
+		List<WifiDeviceSettingVapDTO> vap_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingVapDTO.class);
+		if(vap_dtos == null || vap_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+	
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
+			if(StringUtils.isEmpty(vap_dto.getName()) || StringUtils.isEmpty(vap_dto.getAuth_key())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			
+			String auth_key = vap_dto.getAuth_key();
+			vap_dto.setAuth_key_rsa(JNIRsaHelper.jniRsaEncryptHexStr(auth_key));
+			
+			String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
+					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
+			items.append(item);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, items.toString());
 	}
 	
 //	public static String builderDSVapGuestOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
@@ -1550,6 +1642,24 @@ public class DeviceHelper {
 		String item = builderDeviceSettingItem(DeviceSetting_AdminPasswordItem, user_dto.builderProperties());
 		return builderDeviceSettingOuter(DeviceSetting_AdminPasswordOuter, config_sequence, item);
 	}
+	
+	/**
+		构建rf_2in1的配置修改
+     *  双频合一
+	 * @param config_sequence
+	 * @param extparams
+	 * @return
+	 * @throws Exception 
+	 */
+	public static String builderDSMultiCombineOuter(String config_sequence, String extparams)
+			throws Exception {
+		WifiDeviceSettingRf2in1DTO rf2in1_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRf2in1DTO.class);
+		if(rf2in1_dto == null || StringUtils.isEmpty(rf2in1_dto.getRf_2in1())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_ConfigSequenceRf2in1Outer, config_sequence, rf2in1_dto.builderProperties());
+	}
+	
 
 	/**
 	 * 修改上网方式配置()

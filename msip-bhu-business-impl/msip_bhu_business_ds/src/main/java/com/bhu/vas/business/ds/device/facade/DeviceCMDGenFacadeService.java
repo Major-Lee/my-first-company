@@ -80,10 +80,14 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 				return generateDeviceSettingWithSwitchWorkMode(mac, extparams);
 			case DS_Power:
 				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
+			case DS_Power_multi:
+				return DeviceHelper.builderDSPowerMultiOuter(config_sequence, extparams);
 			case DS_RealChannel:
 				return DeviceHelper.builderDSRealChannelOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_VapPassword:
 				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
+			case DS_VapPassword_multi:
+				return DeviceHelper.builderDSVapPasswordMultiOuter(config_sequence, extparams);
 			case DS_AclMacs:
 				return DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_RateControl:
@@ -94,7 +98,8 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSLinkModeOuter(config_sequence, extparams);
 			case DS_MM:
 				return DeviceHelper.builderDSHDAliasOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
-			
+			case DS_Multi_Combine:
+				return DeviceHelper.builderDSMultiCombineOuter(config_sequence, extparams);
 //			case DS_VapGuest:
 //				return DeviceHelper.builderDSVapGuestOuter(config_sequence, extparams, ds_dto);
 			default:

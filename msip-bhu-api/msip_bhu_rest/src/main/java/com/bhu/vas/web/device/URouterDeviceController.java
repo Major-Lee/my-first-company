@@ -27,6 +27,7 @@ import com.bhu.vas.api.vto.URouterPeakSectionsDTO;
 import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigMutilVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -409,6 +410,30 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String mac) {
 		
 		RpcResponseDTO<URouterDeviceConfigVTO> rpcResult = deviceURouterRestRpcService.urouterConfigs(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	/**
+	 * 获取urouter设备的相关配置数据multi
+	 * 支持双频
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/configs_multi",method={RequestMethod.POST})
+	public void configs_multi(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac) {
+		
+		RpcResponseDTO<URouterDeviceConfigMutilVTO> rpcResult = deviceURouterRestRpcService.urouterConfigsSupportMulti(uid, mac.toLowerCase());
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

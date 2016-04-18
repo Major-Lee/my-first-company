@@ -26,6 +26,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
@@ -65,9 +66,12 @@ import com.bhu.vas.api.vto.URouterWSHotVTO;
 import com.bhu.vas.api.vto.URouterWSRecentVTO;
 import com.bhu.vas.api.vto.WifiSinfferSettingVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMMVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigMutilVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigNVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigRadioVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigRateControlVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigVapVTO;
 import com.bhu.vas.api.vto.guest.URouterVisitorDetailVTO;
 import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
@@ -1322,6 +1326,130 @@ public class DeviceURouterRestBusinessFacadeService {
 			String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
 			vto.setPower(Integer.parseInt(powerAndRealChannel[0]));
 			vto.setReal_channel(Integer.parseInt(powerAndRealChannel[1]));
+			//admin密码
+			WifiDeviceSettingUserDTO admin_user_dto = DeviceHelper.getURouterDeviceAdminUser(setting_dto);
+			if(admin_user_dto != null){
+				vto.setAdmin_pwd(JNIRsaHelper.jniRsaDecryptHexStr(admin_user_dto.getPassword_rsa()));
+			}
+			//上网方式
+			WifiDeviceSettingLinkModeDTO mode_dto = deviceFacadeService.getDeviceModeStatus(mac);
+			if(mode_dto != null){
+				URouterModeVTO link_vto = new URouterModeVTO();
+				link_vto.setIp(mode_dto.getIp());
+				link_vto.setMode(DeviceHelper.getDeviceMode(mode_dto.getModel()));
+				link_vto.setNetmask(mode_dto.getNetmask());
+				link_vto.setP_un(mode_dto.getUsername());
+				link_vto.setP_pwd(JNIRsaHelper.jniRsaDecryptHexStr(mode_dto.getPassword_rsa()));
+				link_vto.setGateway(mode_dto.getGateway());
+				link_vto.setDns(mode_dto.getDns());
+				vto.setLinkmode(link_vto);
+			}
+			//设备基本信息
+			URouterInfoVTO info_vto = new URouterInfoVTO();
+			info_vto.setWan_ip(device_entity.getWan_ip());
+			info_vto.setAdr(device_entity.getFormatted_address());
+			info_vto.setCarrier(device_entity.getCarrier());
+			info_vto.setWm(device_entity.getWork_mode());
+			vto.setInfo(info_vto);
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}
+	}
+	
+	public RpcResponseDTO<URouterDeviceConfigMutilVTO> urouterConfigsSupportMulti(Integer uid, String mac) {
+		try{
+			WifiDevice device_entity = deviceFacadeService.validateUserDevice(uid, mac);
+			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(mac);
+			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+			
+			URouterDeviceConfigMutilVTO vto = new URouterDeviceConfigMutilVTO();
+			
+			vto.setRf_2in1(setting_dto.getRf_2in1());
+			//获取正常的vap
+			List<WifiDeviceSettingVapDTO> normal_vaps = DeviceHelper.getUrouterDeviceVapWithNames(setting_dto, DeviceHelper.NormalVapNames);
+			if(normal_vaps != null && !normal_vaps.isEmpty()){
+				List<URouterDeviceConfigVapVTO> vaps_vto = new ArrayList<URouterDeviceConfigVapVTO>();
+				URouterDeviceConfigVapVTO vap_vto = null; 
+				for(WifiDeviceSettingVapDTO vap : normal_vaps){
+					vap_vto = new URouterDeviceConfigVapVTO();
+					vap_vto.setVap_auth(vap.getAuth());
+					vap_vto.setVap_name(vap.getName());
+					vap_vto.setVap_ssid(vap.getSsid());
+					vap_vto.setVap_pwd(JNIRsaHelper.jniRsaDecryptHexStr(vap.getAuth_key_rsa()));
+					vap_vto.setVap_hide_ssid(vap.getHide_ssid());
+				}
+				vto.setVaps(vaps_vto);
+			}
+			
+			//黑名单列表
+			WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(setting_dto);
+			if(acl_dto != null){
+				List<String> macs = acl_dto.getMacs();
+				
+				if(macs != null && !macs.isEmpty()){
+					//老版本app的返回值
+					vto.setBlock_macs(macs);
+					//新版本app的返回值
+					List<URouterDeviceConfigNVTO> block_with_names = new ArrayList<URouterDeviceConfigNVTO>();
+					int i = 0;
+					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(macs);
+					for (String dto_mac: macs) {
+						URouterDeviceConfigNVTO nvto = new URouterDeviceConfigNVTO();
+						nvto.setMac(dto_mac);
+						HandsetDeviceDTO dto = handsets.get(i);
+						if (dto != null) {
+							nvto.setN(dto.getDhcp_name());
+						}
+						i++;
+						block_with_names.add(nvto);
+					}
+					vto.setBlock_with_names(block_with_names);
+				}
+			}
+			//终端别名
+			List<WifiDeviceSettingMMDTO> mm_dtos = setting_dto.getMms();
+			if(mm_dtos != null){
+				List<URouterDeviceConfigMMVTO> mm_vtos = new ArrayList<URouterDeviceConfigMMVTO>();
+				for(WifiDeviceSettingMMDTO mm_dto : mm_dtos){
+					mm_vtos.add(new URouterDeviceConfigMMVTO(mm_dto.getMac(), mm_dto.getName()));
+				}
+				vto.setMms(mm_vtos);
+			}
+			//终端限速
+			List<WifiDeviceSettingRateControlDTO> rateControls = setting_dto.getRatecontrols();
+			if(rateControls != null){
+				List<URouterDeviceConfigRateControlVTO> rcs_vtos = new ArrayList<URouterDeviceConfigRateControlVTO>();
+				for(WifiDeviceSettingRateControlDTO rc_dto : rateControls){
+					URouterDeviceConfigRateControlVTO rc = new URouterDeviceConfigRateControlVTO();
+					rc.setMac(rc_dto.getMac());
+					if(!StringUtils.isEmpty(rc_dto.getRx()))
+						rc.setTx_limit(ArithHelper.unitConversionDoKbpsTobps(rc_dto.getRx()));
+					if(!StringUtils.isEmpty(rc_dto.getTx()))
+						rc.setRx_limit(ArithHelper.unitConversionDoKbpsTobps(rc_dto.getTx()));
+					rcs_vtos.add(rc);
+				}
+				vto.setRcs(rcs_vtos);
+			}
+			//信号强度和当前信道
+			List<WifiDeviceSettingRadioDTO> radio_dtos = setting_dto.getRadios();
+			if(radio_dtos != null && !radio_dtos.isEmpty()){
+				List<URouterDeviceConfigRadioVTO> radios_vto = new ArrayList<URouterDeviceConfigRadioVTO>();
+				URouterDeviceConfigRadioVTO radio_vto = null; 
+				for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
+					String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(radio_dto);
+					radio_vto = new URouterDeviceConfigRadioVTO();
+					radio_vto.setPower(Integer.parseInt(powerAndRealChannel[0]));
+					radio_vto.setReal_channel(Integer.parseInt(powerAndRealChannel[1]));
+					radios_vto.add(radio_vto);
+				}
+				vto.setRadios(radios_vto);
+			}
+//			String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
+//			vto.setPower(Integer.parseInt(powerAndRealChannel[0]));
+//			vto.setReal_channel(Integer.parseInt(powerAndRealChannel[1]));
 			//admin密码
 			WifiDeviceSettingUserDTO admin_user_dto = DeviceHelper.getURouterDeviceAdminUser(setting_dto);
 			if(admin_user_dto != null){

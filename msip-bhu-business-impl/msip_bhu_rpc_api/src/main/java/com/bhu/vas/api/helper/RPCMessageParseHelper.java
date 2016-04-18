@@ -619,6 +619,7 @@ public class RPCMessageParseHelper {
 					dto.setBoot_on_reset(WifiDeviceHelper.Boot_On_Reset_Happen);
 				else
 					dto.setBoot_on_reset(WifiDeviceHelper.Boot_On_Reset_NotHappen);
+				dto.setRf_2in1(config_element.attributeValue("rf_2in1"));
 			}
 			
 			//解析插件配置

@@ -11,7 +11,9 @@ import java.util.Map;
 public enum OperationDS {
 	
 	DS_Power("02","修改信号强度"),
+	DS_Power_multi("42","修改信号强度"),
 	DS_VapPassword("03","修改vap密码"),
+	DS_VapPassword_multi("43","修改vap密码"),
 	DS_AclMacs("04","修改黑名单列表名单"),
 	DS_RateControl("05","修改流量控制"),
 	DS_AdminPassword("06","修改管理密码"),
@@ -19,6 +21,7 @@ public enum OperationDS {
 	DS_VapGuest("08","修改vap访客网络开关"),
 	DS_LinkMode("10","修改上网方式"),
 	
+	DS_Multi_Combine("49","双频合一修改"),
 	DS_RealChannel("11","切换信道"),
 	
 	
@@ -48,7 +51,7 @@ public enum OperationDS {
 	
 	DS_Plugins("50","plugins"),
 	
-	DS_PassThrough("99","透传配置"),
+	//DS_PassThrough("99","透传配置"),
 	;
 
 	public static final String Empty_OperationDS = "00";
