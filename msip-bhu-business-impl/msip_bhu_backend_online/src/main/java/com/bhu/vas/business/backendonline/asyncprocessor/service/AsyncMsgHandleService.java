@@ -34,6 +34,7 @@ import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.ExchangeBBSHelper;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
@@ -228,17 +229,32 @@ public class AsyncMsgHandleService {
 				logger.info(String.format("Device SharedNetwork Option[%s]", BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start));
 				if(BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start){
 					if(WifiDeviceHelper.autoDeviceSecureSharedNetworkStrategy(wifiDevice.getOrig_swver())){
-						SharedNetworkSettingDTO sharedNetwork = sharedNetworksFacadeService.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac(),true);
+						SharedNetworkSettingDTO sharedNetwork = sharedNetworksFacadeService.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac(),true,true);
 						ParamSharedNetworkDTO psn = sharedNetwork.getPsn();
-						if(sharedNetwork != null && sharedNetwork.isOn()  && psn != null){
-							logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
-							//更新索引，下发指令
-							wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),psn.getTemplate());
-							psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
-							//生成下发指令
-							String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
-									dto.getMac(), -1,JsonHelper.getJSONString(psn),deviceCMDGenFacadeService);
-							payloads.add(sharedNetworkCMD);
+						if(sharedNetwork != null){
+							if(sharedNetwork.isOn()  && psn != null && SharedNetworkType.SafeSecure.getKey().equals(psn.getNtype())){//如果是开启的 重新下发开启指令
+								logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
+								//更新索引，下发指令
+								wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),psn.getTemplate());
+								psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+								//生成下发指令
+								String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
+										dto.getMac(), -1,JsonHelper.getJSONString(psn),deviceCMDGenFacadeService);
+								payloads.add(sharedNetworkCMD);
+							}
+							
+							/*if(!sharedNetwork.isOn() && !sharedNetwork.isDs() && psn != null){//如果是关闭的 并且设备未响应的ds=false 重新下发开启指令
+								logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
+								sharedNetwork.turnOn(psn);
+								sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(sharedNetwork);
+								//更新索引，下发指令
+								wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),psn.getTemplate());
+								psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+								//生成下发指令
+								String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
+										dto.getMac(), -1,JsonHelper.getJSONString(psn),deviceCMDGenFacadeService);
+								payloads.add(sharedNetworkCMD);
+							}*/
 						}
 					}
 				}
