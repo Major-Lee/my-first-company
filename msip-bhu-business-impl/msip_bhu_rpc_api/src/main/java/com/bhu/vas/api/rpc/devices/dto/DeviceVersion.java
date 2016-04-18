@@ -255,8 +255,9 @@ public class DeviceVersion {
 			System.out.println(orig);
 		}*/
 		
-		DeviceVersion parser = DeviceVersion.parser("AP106P06V1.3.0Build8482");
+		DeviceVersion parser = DeviceVersion.parser("AP401P06V1.5.7Build9673_TU");
 		System.out.println(" ver:"+parser.toDeviceUnitTypeIndex());
+		System.out.println(" ver:"+parser.wasDutURouter());
 		
 		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(parser.getDut(), parser.getPrefix());
 		System.out.println(parser.getDut());

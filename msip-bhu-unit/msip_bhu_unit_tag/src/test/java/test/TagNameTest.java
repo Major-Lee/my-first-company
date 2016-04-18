@@ -23,7 +23,7 @@ public class TagNameTest extends BaseTest {
     
     //@Test
     public void test003(){
-    	tagRpcService.bindTag("84:82:f4:28:7a:ec", "公司");
+    	tagRpcService.bindTag(100027,"84:82:f4:28:7a:ec", "公司");
     	System.out.println("111");
     }
     @Test
