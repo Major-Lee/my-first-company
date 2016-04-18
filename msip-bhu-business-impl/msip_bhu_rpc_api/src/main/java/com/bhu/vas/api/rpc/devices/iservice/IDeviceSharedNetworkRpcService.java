@@ -43,7 +43,7 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @return
 	 */
 	RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,boolean on,String sharenetwork_type,String template,List<String> macs);
-	
+	//RpcResponseDTO<SharedNetworkSettingDTO> takeEffectiveNetworkConf(int uid,boolean on,String sharenetwork_type,String template,List<String> macs);
 	
 	/**
 	 * 指定共享网络类型的设备分页列表
