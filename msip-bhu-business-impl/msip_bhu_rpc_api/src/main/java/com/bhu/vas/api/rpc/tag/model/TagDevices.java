@@ -12,9 +12,16 @@ public class TagDevices extends SetJsonExtStringModel<String> {
 	 * 最后操作用户
 	 */
 	private int last_operator;
+	
+	private String tag;
+	
 	private Date created_at;
 	private Date update_at;
 	
+	public String getTag() {
+		return tag;
+	}
+
 	public void setLast_operator(int last_operator) {
 		this.last_operator = last_operator;
 	}
