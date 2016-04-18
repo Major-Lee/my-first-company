@@ -23,6 +23,8 @@
         <module>msip-bhu-business-impl/msip_bhu_business_ds_commdity</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds_social</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds_tag</module>
+        <module>msip-bhu-business-impl/msip_bhu_business_ds_payment</module>
+        
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
         <!---->
@@ -172,6 +174,11 @@
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_ds_tag</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_ds_payment</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
