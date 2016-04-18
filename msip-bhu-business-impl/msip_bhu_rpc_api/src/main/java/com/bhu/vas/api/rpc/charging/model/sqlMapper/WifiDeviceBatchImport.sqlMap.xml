@@ -18,7 +18,7 @@
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_wifi_devices_import
+	    	t_charging_wifi_devices_batchimport
 	    ]]>
 	</sql>
 	<sql id="modelColumns">

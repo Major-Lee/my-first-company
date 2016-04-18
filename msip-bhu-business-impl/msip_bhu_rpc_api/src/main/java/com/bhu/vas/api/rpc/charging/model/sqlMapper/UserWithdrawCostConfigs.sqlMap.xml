@@ -13,7 +13,7 @@
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_vas_users_wallet_configs
+	    	t_charging_users_withdrawcost_configs
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
