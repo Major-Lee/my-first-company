@@ -22,6 +22,7 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String d_address;//设备所在位置的详细地址
 	private String d_online;//设备在线状态 -1 从未上线 1 在线 0 离线
 	private String d_monline;//设备增值模块是否在线 -1 从未上线 1 在线 0 离线
+	private String d_tags;//设备tags
 	private int d_hoc;//设备终端在线数量
 	private long d_lastregedat;//设备的最新的上线时间
 	private long d_lastlogoutat;//设备的最新的下线时间
@@ -120,6 +121,12 @@ public class WifiDeviceVTO1 implements Serializable{
 	}
 	public void setD_monline(String d_monline) {
 		this.d_monline = d_monline;
+	}
+	public String getD_tags() {
+		return d_tags;
+	}
+	public void setD_tags(String d_tags) {
+		this.d_tags = d_tags;
 	}
 	public int getD_hoc() {
 		return d_hoc;
