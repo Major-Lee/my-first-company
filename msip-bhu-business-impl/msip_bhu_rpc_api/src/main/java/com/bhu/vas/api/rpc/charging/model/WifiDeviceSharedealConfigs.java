@@ -40,7 +40,6 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	//约定的收益分成比例 最多小数点保留后两位 70%-30%开，总值为1；
 	private double owner_percent = 0.70d;
 	private double manufacturer_percent = 0.30d;
-	
 	//pc端和移动端的打赏金额范围及相关时长
 	private String range_cash_pc = Default_Range_Cash_PC;
 	private String range_cash_mobile = Default_Range_Cash_Mobile;
@@ -48,7 +47,7 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	private String ait_pc = Default_AIT;
 	private String ait_mobile = Default_AIT;
 	//是否可以关闭开关
-	private boolean canbe_turnoff;
+	private boolean canbe_turnoff = true;
 	//生产环境过程中不存在的设备分成配置 会缺省应用并生效缺省配置时，此值为true，通过导入的设备值为false，后续修改设备配置值为false
 	private boolean runtime_applydefault = true;
 	
