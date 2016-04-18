@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
+import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
@@ -71,6 +72,7 @@ public class WifiDeviceDocumentHelper {
 	 * @param bindUser
 	 * @param bindUserDNick 用户绑定的设备的昵称
 	 * @param agentUser
+	 * @param tagDevices
 	 * @param o_template
 	 * @param hoc
 	 * @param wifiDeviceSharedNetwork
@@ -78,7 +80,7 @@ public class WifiDeviceDocumentHelper {
 	 */
 	public static WifiDeviceDocument fromNormalWifiDevice(WifiDevice wifiDevice, WifiDeviceModule deviceModule,
 			AgentDeviceClaim agentDeviceClaim, WifiDeviceGray wifiDeviceGray, User bindUser, String bindUserDNick, 
-			User agentUser, String o_template, int hoc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork){
+			User agentUser, TagDevices tagDevices, String o_template, int hoc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork){
 		if(wifiDevice == null) return null;
 		
 		WifiDeviceDocument doc = new WifiDeviceDocument();
@@ -175,6 +177,10 @@ public class WifiDeviceDocumentHelper {
 			}*/
 			doc.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
 			doc.setD_snk_template(wifiDeviceSharedNetwork.getTemplate());
+		}
+		if(tagDevices != null){
+			//tagDevices.
+			//doc.setD_tags(d_tags);
 		}
 		doc.setUpdatedat(DateTimeHelper.getDateTime());
 		return doc;

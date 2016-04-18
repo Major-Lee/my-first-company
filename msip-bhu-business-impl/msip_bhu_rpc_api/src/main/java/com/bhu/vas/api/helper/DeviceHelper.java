@@ -1657,7 +1657,7 @@ public class DeviceHelper {
 		if(rf2in1_dto == null || StringUtils.isEmpty(rf2in1_dto.getRf_2in1())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
-		return builderDeviceSettingOuter(DeviceSetting_ConfigSequenceRf2in1Outer, config_sequence, rf2in1_dto.builderProperties());
+		return builderDeviceSettingOuter(DeviceSetting_ConfigSequenceRf2in1Outer, config_sequence, rf2in1_dto.getRf_2in1());
 	}
 	
 

@@ -13,6 +13,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
+import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -22,6 +23,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
+import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
@@ -47,6 +49,7 @@ public class BuilderWifiDeviceIndexOp {
 	private static WifiDeviceService wifiDeviceService;
 	private static WifiDeviceModuleService wifiDeviceModuleService;
 	private static UserDeviceService userDeviceService;
+	private static TagDevicesService tagDevicesService;
 	private static WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
 	
 	public static void main(String[] argv) throws IOException, ParseException{
@@ -66,6 +69,7 @@ public class BuilderWifiDeviceIndexOp {
 			wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
 			wifiDeviceModuleService= (WifiDeviceModuleService)ctx.getBean("wifiDeviceModuleService");
 			userDeviceService = (UserDeviceService)ctx.getBean("userDeviceService");
+			tagDevicesService = (TagDevicesService)ctx.getBean("tagDevicesService");
 			wifiDeviceSharedNetworkService = (WifiDeviceSharedNetworkService)ctx.getBean("wifiDeviceSharedNetworkService");
 			
 			long t0 = System.currentTimeMillis();
@@ -158,6 +162,7 @@ public class BuilderWifiDeviceIndexOp {
 					//System.out.println("2="+mac);
 					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(mac);
 					WifiDeviceModule deviceModule = wifiDeviceModuleService.getById(mac);
+					TagDevices tagDevices = tagDevicesService.getById(mac);
 					AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
 					String o_template = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(mac);
 					long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
@@ -182,7 +187,8 @@ public class BuilderWifiDeviceIndexOp {
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
 					
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, agentDeviceClaim, 
-							wifiDeviceGray, bindUser, bindUserDNick, agentUser, o_template, (int)hoc, wifiDeviceSharedNetwork);
+							wifiDeviceGray, bindUser, bindUserDNick, agentUser, tagDevices,
+							o_template, (int)hoc, wifiDeviceSharedNetwork);
 					
 /*					//构建设备索引的扩展字段
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);

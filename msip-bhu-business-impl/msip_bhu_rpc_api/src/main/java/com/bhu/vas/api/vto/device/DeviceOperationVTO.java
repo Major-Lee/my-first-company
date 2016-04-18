@@ -11,6 +11,7 @@ public class DeviceOperationVTO implements java.io.Serializable{
 	private int gl;
 	private String gln;
 	private String mstyle;
+	//private String tags;
 	public String getDut() {
 		return dut;
 	}
@@ -35,5 +36,10 @@ public class DeviceOperationVTO implements java.io.Serializable{
 	public void setGln(String gln) {
 		this.gln = gln;
 	}
-	
+	/*public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
+	}*/
 }

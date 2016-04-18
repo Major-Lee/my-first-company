@@ -21,7 +21,6 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
-import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
@@ -40,7 +39,6 @@ import com.bhu.vas.api.vto.device.DeviceBaseVTO;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceOperationVTO;
 import com.bhu.vas.api.vto.device.DevicePresentVTO;
-import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserDeviceStatisticsVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
@@ -114,6 +112,9 @@ public class UserDeviceUnitFacadeService {
 	
 	@Resource
 	private WifiDeviceModuleService wifiDeviceModuleService;
+	
+	//@Resource
+	//private TagDevicesService tagDevicesService;
 	
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
