@@ -315,7 +315,7 @@ public class SharedNetworksFacadeService {
 		WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
 		if(sharednetwork != null){
 			SharedNetworkSettingDTO settingDto = sharednetwork.getInnerModel();
-			if(existIfOnFalseAndDsFalseThenOn){
+			if(notExistThenOn && existIfOnFalseAndDsFalseThenOn ){
 				if(!settingDto.isOn() && !settingDto.isDs() && settingDto.getPsn() != null){//这种情况一般是代表提取设备的共享网络不存在建立的关闭的共享网络
 					settingDto.turnOn(settingDto.getPsn());
 					wifiDeviceSharedNetworkService.update(sharednetwork);
