@@ -1380,6 +1380,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					vap_vto.setVap_ssid(vap.getSsid());
 					vap_vto.setVap_pwd(JNIRsaHelper.jniRsaDecryptHexStr(vap.getAuth_key_rsa()));
 					vap_vto.setVap_hide_ssid(vap.getHide_ssid());
+					vaps_vto.add(vap_vto);
 				}
 				vto.setVaps(vaps_vto);
 			}
@@ -1441,6 +1442,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
 					String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(radio_dto);
 					radio_vto = new URouterDeviceConfigRadioVTO();
+					radio_vto.setName(radio_dto.getName());
 					radio_vto.setPower(Integer.parseInt(powerAndRealChannel[0]));
 					radio_vto.setReal_channel(Integer.parseInt(powerAndRealChannel[1]));
 					radios_vto.add(radio_vto);
