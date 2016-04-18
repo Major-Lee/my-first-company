@@ -63,8 +63,7 @@ public class TagFacadeRpcSerivce {
 		if (flag) {
 			tagDevicesService.update(tagDevices);
 
-			Set<String> set = tagDevices.fetchTags(tag);
-			String d_tags = ArrayHelper.toSplitString(set, StringHelper.WHITESPACE_STRING_GAP);
+			String d_tags = tagDevices.getTag2ES();
 			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, d_tags);
 			
 			addTag(uid, mac, tag);
