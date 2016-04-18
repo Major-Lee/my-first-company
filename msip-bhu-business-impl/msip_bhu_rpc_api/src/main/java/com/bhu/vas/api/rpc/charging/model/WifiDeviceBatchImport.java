@@ -2,6 +2,11 @@ package com.bhu.vas.api.rpc.charging.model;
 
 import java.util.Date;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
+import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 /**
@@ -9,7 +14,7 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
  *
  */
 @SuppressWarnings("serial")
-public class WifiDeviceBatchImport extends BaseStringModel{
+public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequenceGenable{
 	//ID 格式为 yyyyMMdd-longsequence
 	
 	//文件存储路径
@@ -73,5 +78,19 @@ public class WifiDeviceBatchImport extends BaseStringModel{
 		if (this.created_at == null)
 			this.created_at = new Date();
 		super.preInsert();
+	}
+	
+	private static final String FormatSequenceTemplete = "%08d";
+	@Override
+	public void setSequenceKey(Long key) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern7))
+			.append(StringHelper.MINUS_CHAR_GAP)
+			.append(String.format(FormatSequenceTemplete, key));
+		this.setId(sb.toString());
+	}
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

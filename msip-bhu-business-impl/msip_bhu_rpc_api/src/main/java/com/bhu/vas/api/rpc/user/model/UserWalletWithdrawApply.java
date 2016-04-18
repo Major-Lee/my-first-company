@@ -4,9 +4,9 @@ import java.util.Date;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderExtSegmentPayMode;
+import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
-import com.bhu.vas.api.rpc.user.dto.ApplyCost;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtStringModel;
@@ -111,7 +111,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		return String.format("WalletWithdrawApply id[%s] appid[%s] payment_type[%s] uid[%s] cash[%s] withdraw_oper[%s] last_reckoner[%s]", id,appid,payment_type,uid,cash,withdraw_oper,last_reckoner);
 	}
 	
-	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick,ApplyCost applyCost){
+	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick,WithdrawCostInfo applyCost){
 		UserWithdrawApplyVTO vto = new UserWithdrawApplyVTO();
 		vto.setApplyid(id);
 		vto.setUid(uid);

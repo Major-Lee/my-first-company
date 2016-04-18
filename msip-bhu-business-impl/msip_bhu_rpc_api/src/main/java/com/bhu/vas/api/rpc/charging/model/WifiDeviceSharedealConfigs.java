@@ -22,7 +22,8 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
  */
 @SuppressWarnings("serial")
 public class WifiDeviceSharedealConfigs extends BaseStringModel{
-	public static final String Default_ConfigsWifiID = "00:00:00:00:00:00";
+	public static final String Default_ConfigsWifiID  = "00:00:00:00:00:00";
+	public static final String Default_ConfigsBatchno = "00000000-00000000";
 	public static final String Default_Range_Cash_PC = "1.5-3.5";
 	public static final String Default_Range_Cash_Mobile = "0.5-0.9";
 	public static final String Default_AIT = "14400";
@@ -139,5 +140,16 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 		if (this.created_at == null)
 			this.created_at = new Date();
 		super.preInsert();
+	}
+	
+	public void doRuntimeInit(String dmac,Integer owner){
+		this.setId(dmac);
+		if(owner == null || owner.intValue() <=0){
+			this.setOwner(-1);
+		}else{
+			this.setOwner(owner);
+		}
+		this.setCanbe_turnoff(true);
+		this.setRuntime_applydefault(true);
 	}
 }

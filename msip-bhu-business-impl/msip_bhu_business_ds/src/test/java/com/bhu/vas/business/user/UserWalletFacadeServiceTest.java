@@ -3,7 +3,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -13,11 +12,10 @@ import org.junit.runners.MethodSorters;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
-import com.bhu.vas.api.rpc.user.dto.ApplyCost;
+import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
@@ -112,8 +110,8 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     @Test
 	public void test001SharedealCashToUserWallet(){
-    	UserWallet uWallet = userWalletFacadeService.sharedealCashToUserWallet(testUserId, testSharedealCash, testOrderId,true,StringUtils.EMPTY);
-    	System.out.println(uWallet);
+    	//UserWallet uWallet = userWalletFacadeService.sharedealCashToUserWallet(testUserId, testSharedealCash, testOrderId,true,StringUtils.EMPTY);
+    	//System.out.println(uWallet);
 	}	
     
     @Test
@@ -149,7 +147,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 			//User user = userWalletFacadeService.validateUser(withdrawApply.getUid());
 			User user = UserValidateServiceHelper.validateUser(applynow.getUid(),userWalletFacadeService.getUserService());
 			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(applynow.getUid());
-			ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(applynow.getUid(),applynow.getCash());
+			WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(applynow.getUid(),applynow.getId(),applynow.getCash());
 			UserWithdrawApplyVTO withdrawApplyVTO = applynow.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 					calculateApplyCost);
 			//ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(applynow.getUid(), ThirdpartiesPaymentType.fromType(applynow.getPayment_type()));
@@ -247,7 +245,8 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 				withdrawApply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
 				withdrawApply.setWithdraw_oper(current.getKey());
 				User user =UserValidateServiceHelper.validateUser(withdrawApply.getUid(),userWalletFacadeService.getUserService());
-				ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(),withdrawApply.getCash());
+				WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(withdrawApply.getUid(),withdrawApply.getId(),withdrawApply.getCash());
+				//ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(),withdrawApply.getCash());
 				//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
 				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 						calculateApplyCost);

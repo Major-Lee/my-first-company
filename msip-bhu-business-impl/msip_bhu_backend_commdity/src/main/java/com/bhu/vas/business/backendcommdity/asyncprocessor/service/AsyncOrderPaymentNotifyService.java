@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
-
-
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
@@ -125,9 +123,12 @@ public class AsyncOrderPaymentNotifyService {
 					sb_description.append(order.getPayment_type());
 				}*/
 				OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
-				userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
+				userWalletFacadeService.sharedealCashToUserWallet(order.getMac(), amount, orderid, 
 						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
 								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));
+				/*userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
+						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
+								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
 			}
 		}
 	}
