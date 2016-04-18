@@ -179,8 +179,7 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_snk_template(wifiDeviceSharedNetwork.getTemplate());
 		}
 		if(tagDevices != null){
-			//tagDevices.
-			//doc.setD_tags(d_tags);
+			doc.setD_tags(tagDevices.getTag2ES());
 		}
 		doc.setUpdatedat(DateTimeHelper.getDateTime());
 		return doc;
