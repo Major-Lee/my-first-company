@@ -3,6 +3,8 @@ package com.bhu.vas.api.rpc.tag.model;
 import java.util.Date;
 import java.util.Set;
 
+import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.model.extjson.SetJsonExtStringModel;
 
 @SuppressWarnings("serial")
@@ -18,10 +20,12 @@ public class TagDevices extends SetJsonExtStringModel<String> {
 	private Date created_at;
 	private Date update_at;
 	
-	public String getTag() {
-		return tag;
+	public String getTag2ES(){
+		Set<String> set = fetchTags(tag);
+		String d_tags = ArrayHelper.toSplitString(set, StringHelper.WHITESPACE_STRING_GAP);
+		return d_tags;
 	}
-
+	
 	public void setLast_operator(int last_operator) {
 		this.last_operator = last_operator;
 	}
