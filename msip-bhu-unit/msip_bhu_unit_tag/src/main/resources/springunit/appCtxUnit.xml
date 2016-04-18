@@ -16,6 +16,7 @@
 	<import resource="classpath*:springcache/applicationContextCore-cache.xml"/>
 	<import resource="classpath*:springcache/applicationContextCore-cache.xml"/> -->   
 	<import resource="classpath*:spring/applicationContext*.xml"/>
+	
 	<import resource="classpath*:springcache/applicationContextCore-cache.xml"/> 
 	<import resource="classpath*:springservice/applicationContext-bhu-tag-service.xml"/>
 	<!-- -->

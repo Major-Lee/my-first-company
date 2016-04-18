@@ -67,6 +67,8 @@
         <module>msip-bhu-api/msip_bhu_agent_rest</module>
     -->
         <module>msip-bhu-api/msip_bhu_social_rest</module>
+        <module>msip-bhu-unit/msip_bhu_unit_restful_payment</module>
+        
         <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
     </modules>
     <properties>

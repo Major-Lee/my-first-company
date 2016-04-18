@@ -16,6 +16,7 @@ import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.api.vto.URouterWSCommunityVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigMutilVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 
@@ -53,6 +54,7 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<Boolean> urouterUpdPluginWifisniffer(Integer uid,String wifiId, boolean on);
 	public RpcResponseDTO<DeviceUsedStatisticsDTO> urouterDeviceUsedStatusQuery(Integer uid,String wifiId);
 	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String mac);
+	public RpcResponseDTO<URouterDeviceConfigMutilVTO> urouterConfigsSupportMulti(Integer uid, String mac);
 	
 	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs);
 

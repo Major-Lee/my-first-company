@@ -26,6 +26,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  * ./startupbuilder_bhu_userregister.sh ADD 7 13810048517 bhunetworks 唐子超
  * ./startupbuilder_bhu_userregister.sh ADD 8 13691091975 test 高凯
  * 
+ * 
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 100027 13811561274 test 张盼
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 100025 18911372223 test 郭旭锋
  * 
@@ -58,6 +59,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  * 
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 9 13611361274 361274 小武
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 10 18655580588 580588 宋顺利
+ * ./startupbuilder_bhu_userregister.sh RemoveAndADD 11 18611765239 BHU2016 然然
  * 
  * 
  */

@@ -23,6 +23,7 @@ import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.api.vto.URouterWSCommunityVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigMutilVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.bhu.vas.rpc.facade.DeviceURouterRestBusinessFacadeService;
@@ -423,6 +424,26 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		}
 	}
 	
+	@Override
+	public RpcResponseDTO<URouterDeviceConfigMutilVTO> urouterConfigsSupportMulti(Integer uid, String mac) {
+		logger.info(String.format("DeviceURouterRestRPC urouterConfigsSupportMulti invoke uid [%s] mac [%s]", 
+				uid, mac));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterConfigsSupportMulti(uid, mac);
+		}catch(BusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterConfigsSupportMulti failed uid [%s] mac [%s]",
+					uid, mac));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterConfigsSupportMulti exception uid [%s] mac [%s] exmsg[%s]",
+					uid, mac, ex.getMessage()), ex);
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
 	@Override
 	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs) {
 		logger.info(String.format("DeviceURouterRestRPC terminalHostnames invoke uid [%s] macs [%s]", 

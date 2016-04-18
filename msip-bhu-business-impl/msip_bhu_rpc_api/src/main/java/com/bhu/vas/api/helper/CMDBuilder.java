@@ -359,12 +359,7 @@ public class CMDBuilder {
 			switch(opt){
 				case ModifyDeviceSetting:
 					try{
-						String payload = null;
-						if(OperationDS.DS_PassThrough == subopt){
-							payload = extparams;
-						}else{
-							payload = generateDeviceSetting.generateDeviceSetting(wifi_mac, subopt, extparams);
-						}
+						String payload = generateDeviceSetting.generateDeviceSetting(wifi_mac, subopt, extparams);
 						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, payload);
 					}catch(Exception ex){
 						ex.printStackTrace(System.out);

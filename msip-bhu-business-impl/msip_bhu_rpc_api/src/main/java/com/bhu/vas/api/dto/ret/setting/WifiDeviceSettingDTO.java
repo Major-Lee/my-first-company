@@ -26,6 +26,8 @@ public class WifiDeviceSettingDTO {
 	private WifiDeviceSettingLinkModeDTO linkmode;
 	//配置流水号
 	private String sequence;
+	//双频合一
+	private String rf_2in1;
 	//取值0和1， 1 表示设备做过reset后重启进行的上报数据。
 	private int boot_on_reset;
 	//VAP列表
@@ -62,6 +64,14 @@ public class WifiDeviceSettingDTO {
 
 	public String getSequence() {
 		return sequence;
+	}
+	
+	public String getRf_2in1() {
+		return rf_2in1;
+	}
+
+	public void setRf_2in1(String rf_2in1) {
+		this.rf_2in1 = rf_2in1;
 	}
 
 	public WifiDeviceSettingLinkModeDTO getLinkmode() {

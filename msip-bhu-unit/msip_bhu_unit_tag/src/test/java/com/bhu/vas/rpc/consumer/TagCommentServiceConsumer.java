@@ -22,7 +22,7 @@ public class TagCommentServiceConsumer {
 
 		ITagRpcService tagRpcService = (ITagRpcService)context.getBean("tagRpcService");
 		System.out.println("123123123");
-		//tagRpcService.bindTag("84:82:f4:28:7a:ec", "{\"items\":[{\"tag\":\"咖啡馆\"}]}"); //{"items":[{"tag":"公司"}]}
+		tagRpcService.bindTag(100035,"84:82:f4:28:7a:ec", "咖啡馆"); //{"items":[{"tag":"公司"}]}
 //		String str =  JsonHelper.getJSONString(tagRpcService.fetchTag(1, 5));
 //		System.out.println(tagRpcService.fetchTag4ES("84:82:f4:2f:3a:50"));
 //		socialRpcService.comment(100312,"123123","ussss", "123123123");

@@ -19,6 +19,7 @@ import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
 import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.api.vto.URouterWSCommunityVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigMutilVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -186,6 +187,15 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceURouterRestRpcService.urouterConfigs(uid, mac);
+	}
+	
+	@Override
+	public RpcResponseDTO<URouterDeviceConfigMutilVTO> urouterConfigsSupportMulti(Integer uid,
+			String mac) {
+		if(uid == null || StringUtils.isEmpty(mac)) 
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
+		
+		return deviceURouterRestRpcService.urouterConfigsSupportMulti(uid, mac);
 	}
 	
 	@Override
