@@ -1,6 +1,5 @@
 package com.bhu.vas.api.rpc.user.model;
 
-import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.model.BaseLongModel;
@@ -12,7 +11,7 @@ import com.smartwork.msip.cores.orm.model.BaseLongModel;
  *
  */
 @SuppressWarnings("serial")
-public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenable {
+public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGenable {
 	private int uid;
 	private String orderid;
 	//交易模式 UWalletTransMode
@@ -59,10 +58,10 @@ public class UserWalletLog extends BaseLongModel implements IRedisSequenceGenabl
 		this.orderid = orderid;
 	}
 
-	@Override
+	/*@Override
 	public void setSequenceKey(Long key) {
 		this.id = key;
-	}
+	}*/
 
 	public String getTransmode() {
 		return transmode;

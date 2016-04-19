@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.procedure.ShareDealWalletProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
@@ -52,8 +53,6 @@ public class UserWalletFacadeService{
 	@Resource
 	private UserWalletService userWalletService;
 
-	//@Resource
-	//private UserWithdrawCostConfigsService userWithdrawCostConfigsService;
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
 	
@@ -65,17 +64,6 @@ public class UserWalletFacadeService{
 
 	@Resource
 	private UserOAuthFacadeService userOAuthFacadeService;
-	
-	//@Resource
-	//private UserThirdpartiesPaymentService userThirdpartiesPaymentService;
-	
-/*	@Resource
-	private WifiDeviceService wifiDeviceService;
-	
-	@Resource
-	private UserDeviceService userDeviceService;*/
-	
-	
 	
 	public UserWalletDetailVTO walletDetail(int uid){
 		UserWallet userWallet = userWallet(uid);
@@ -175,6 +163,41 @@ public class UserWalletFacadeService{
 		this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 		return uwallet;
 	}
+	
+	/**
+	 * 分成现金入账 存储过程实现
+	 * TODO:分成现金分为几部分 
+	 * 	绑定用户
+		我司
+		TODO：需要改成部分由存储过程实现
+	 * @param uid  具体的入账用户
+	 * @param cash 总收益现金
+	 * @param orderid
+	 * @param desc
+	 */
+	public int sharedealCashToUserWalletWithProcedure(String dmac, double cash, String orderid,String description){
+		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
+		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, orderid, cash);
+		ShareDealWalletProcedureDTO procedureDTO = ShareDealWalletProcedureDTO.buildWith(sharedeal);
+		procedureDTO.setTransmode(UWalletTransMode.SharedealPayment.getKey());
+		procedureDTO.setTransmode_desc(UWalletTransMode.SharedealPayment.getName());
+		procedureDTO.setTranstype(UWalletTransType.ReadPacketSettle2C.getKey());
+		procedureDTO.setTranstype_desc(UWalletTransType.ReadPacketSettle2C.getName());
+		procedureDTO.setDescription(description);
+		procedureDTO.setOwner_memo(String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		procedureDTO.setManufacturer_memo(String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getManufacturer_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		int executeRet = userWalletService.executeProcedure(procedureDTO);
+		if(executeRet == 0)
+			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+		else
+			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
+		//uwallet = userWalletService.update(uwallet);
+		//this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		//this.doWalletLog(sharedeal.getManufacturer(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getManufacturer_cash(), sharedeal.getManufacturer_cash(),0d, String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		return executeRet;
+	}
+	
 	
 	/**
 	 * 虚拟币入账
@@ -629,6 +652,8 @@ public class UserWalletFacadeService{
 		}
 		wlog.setMemo(memo);
 		userWalletLogService.insert(wlog);
+		
+		//System.out.println("~~~~~~~~~~"+wlog.getId());
 	}
 	
 	//userThirdpartiesPaymentService
