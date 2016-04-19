@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.user.dto;
 
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.CMDBuilder;
@@ -18,6 +20,8 @@ public class UpgradeDTO {
 	private String currentDVB;
     private String currentAVB;
     private String desc;
+    
+    private Date currentGrayPublished_at;
     
     public UpgradeDTO(boolean fw,boolean forceDeviceUpgrade) {
     	this.fw = fw;
@@ -135,5 +139,16 @@ public class UpgradeDTO {
 		return cmd;
 		//return CMDBuilder.builderDeviceUpgrade(mac, taskid,beginTime,endTime,this.getUpgradeurl());
 	}
+
+	public Date getCurrentGrayPublished_at() {
+		return currentGrayPublished_at;
+	}
+
+	public void setCurrentGrayPublished_at(Date currentGrayPublished_at) {
+		this.currentGrayPublished_at = currentGrayPublished_at;
+	}
 	
+	/*public boolean aaa(){
+		
+	}*/
 }

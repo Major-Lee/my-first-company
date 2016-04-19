@@ -29,6 +29,7 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -50,6 +51,9 @@ public class DeviceSharedNetworkUnitFacadeService {
 	
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
+	
+	@Resource
+	private UserDeviceService userDeviceService;
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
@@ -142,6 +146,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 	 */
 	public RpcResponseDTO<ParamSharedNetworkDTO> applyNetworkConf(int uid, String sharenetwork_type,String template, String extparams) {
 		try{
+			//UserValidateServiceHelper.validateUserDevice(uid, dmac, userDeviceService)
 			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;
@@ -183,6 +188,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 	 */
 	public RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,boolean on,String sharenetwork_type,String template,List<String> dmacs){
 		try{
+			UserValidateServiceHelper.validateUserDevices(uid, dmacs, userDeviceService);
 			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;
@@ -254,6 +260,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 	
 	public RpcResponseDTO<SharedNetworkSettingDTO> fetchDeviceNetworkConf(int uid, String mac) {
 		try{
+			UserValidateServiceHelper.validateUserDevice(uid, mac, userDeviceService);
 			/*SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;
