@@ -1,6 +1,8 @@
 package com.bhu.vas.business.search.service.increment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -222,7 +224,7 @@ public class WifiDeviceStatusIndexIncrementService{
 	}
 	
 	/**
-	 * 用户设置绑定的设备的昵称
+	 * 用户设置绑定的设备的tags
 	 * 变更涉及的更改索引字段是
 	 * 1) d_tags
 	 * @param id 设备mac
@@ -237,5 +239,29 @@ public class WifiDeviceStatusIndexIncrementService{
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+	}
+	
+	/**
+	 * 用户设置绑定的设备的tags multi
+	 * 变更涉及的更改索引字段是
+	 * 1) d_tags
+	 * @param id 设备mac
+	 * @param d_tags 设备tags
+	 */
+	public void bindDTagsMultiUpdIncrement(List<String> ids, List<String> d_tags){
+		logger.info(String.format("bindDTagsMultiUpdIncrement Request ids [%s] d_tags [%s]", ids, d_tags));
+		if(ids == null || ids.isEmpty()) return;
+		if(d_tags == null || d_tags.isEmpty()) return;
+		if(ids.size() != d_tags.size()) return;
+		
+		List<Map<String, Object>> sourceMaps = new ArrayList<Map<String, Object>>();
+		String updatedat = DateTimeHelper.getDateTime();
+		for(String d_tag : d_tags){
+			Map<String, Object> sourceMap = new HashMap<String, Object>();
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TAGS.getName(), d_tag);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), updatedat);
+			sourceMaps.add(sourceMap);
+		}
+		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, false, true, true);
 	}
 }
