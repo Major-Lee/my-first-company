@@ -12,12 +12,11 @@ import com.bhu.vas.business.ds.charging.service.WifiDeviceBatchImportService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
-import com.bhu.vas.business.ds.user.service.UserService;
 
 @Service
 public class ChargingFacadeService {
-	@Resource
-	private UserService userService;
+	//@Resource
+	//private UserService userService;
 
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -34,9 +33,9 @@ public class ChargingFacadeService {
     @Resource
     private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
 
-	public UserService getUserService() {
+	/*public UserService getUserService() {
 		return userService;
-	}
+	}*/
 
 	public WifiDeviceService getWifiDeviceService() {
 		return wifiDeviceService;

@@ -33,4 +33,13 @@ public class UserWithdrawCostConfigsService extends AbstractCoreService<Integer,
 		WithdrawCostInfo cost = WithdrawCostInfo.calculate(uid, applyid, cash, walletConfigs.getWithdraw_tax_percent(), walletConfigs.getWithdraw_trancost_percent());
 		return cost;
 	}
+	
+	public UserWithdrawCostConfigs addDefault(){
+		UserWithdrawCostConfigs configs = new UserWithdrawCostConfigs();
+		configs.setId(-1);
+		configs.setWithdraw_tax_percent(0.20d);
+		configs.setWithdraw_tax_percent(0.03d);
+		this.insert(configs);
+		return configs;
+	}
 }
