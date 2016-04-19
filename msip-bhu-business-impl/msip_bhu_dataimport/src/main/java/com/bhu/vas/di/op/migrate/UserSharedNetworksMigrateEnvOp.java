@@ -91,6 +91,7 @@ public class UserSharedNetworksMigrateEnvOp {
 				if(innerModel.getPsn() != null){
 					innerModel.getPsn().setTemplate(SharedNetworksFacadeService.DefaultTemplate);
 				}
+				sdn.replaceInnerModel(innerModel);
 				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(sdn);
 				wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(sdn.getId(), sdn.getSharednetwork_type(),sdn.getTemplate());
 			}
