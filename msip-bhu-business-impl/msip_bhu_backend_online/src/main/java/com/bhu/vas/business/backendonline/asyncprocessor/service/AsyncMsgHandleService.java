@@ -210,7 +210,13 @@ public class AsyncMsgHandleService {
 							&& !DateTimeHelper.isTimeDaysRecent(wifiDevice.getCreated_at().getTime(), BusinessRuntimeConfiguration.Device_Firmware_ForceUpdateImmediately_AfterDays)){
 						payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP));
 					}else{
-						payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
+						// modify by EdmondLee@20160419 针对某个灰度指定版本的时间点为x，设备上线时，如果发现当前时间点y>x+24小时（暂定），将会触发设备立即升级。降低产品运营成本
+						if(upgrade.needImmediatelyUpgrade()){
+							payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP));
+						}else{
+							payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
+						}
+						
 					}
 				}
 				//added by Edmond Lee @20160106 for mark workmode changed of device

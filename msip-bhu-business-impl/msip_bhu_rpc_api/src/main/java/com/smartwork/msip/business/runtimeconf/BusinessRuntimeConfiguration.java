@@ -245,7 +245,10 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	
 	public static Set<String> Device_Firmware_Initial_Versions = new HashSet<String>();
+	
+	public static int Device_Firmware_ForceUpdateImmediately_GrayPublishedDays = 1;
 	public static int Device_Firmware_ForceUpdateImmediately_AfterDays = 2;
+	
 	public static boolean isSystemNoneedCaptchaValidAcc(String acc){
 		return SystemNoneedCaptchaValidAccs.contains(acc);
 	}

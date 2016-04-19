@@ -6,6 +6,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 public class UpgradeDTO {
 	private String dut;
@@ -76,8 +78,8 @@ public class UpgradeDTO {
 		this.currentAVB = currentAVB;
 	}
 	public String toString(){
-		return String.format("dut[%s] gl[%s] fw[%s] currentDVB[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] desc[%s]", 
-				dut,gl,fw,currentDVB,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,desc);
+		return String.format("dut[%s] gl[%s] fw[%s] currentDVB[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] desc[%s] currentGrayPublished_at[%s]", 
+				dut,gl,fw,currentDVB,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,desc,currentGrayPublished_at);
 		/*StringBuilder sb = new StringBuilder();
 		sb.append("gray")
 		return sb.toString();*/
@@ -148,7 +150,14 @@ public class UpgradeDTO {
 		this.currentGrayPublished_at = currentGrayPublished_at;
 	}
 	
-	/*public boolean aaa(){
-		
-	}*/
+	public boolean needImmediatelyUpgrade(){
+		if(forceDeviceUpgrade){
+			if(currentGrayPublished_at != null){
+				if(!DateTimeHelper.isTimeDaysRecent(currentGrayPublished_at.getTime(), BusinessRuntimeConfiguration.Device_Firmware_ForceUpdateImmediately_GrayPublishedDays)){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
