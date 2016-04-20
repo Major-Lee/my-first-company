@@ -374,13 +374,13 @@ public class VapEnumType {
 		
 		private String key;
 		private String name;
-		private String defalutSsid;
+		private String defaultSsid;
 		static Map<String, SharedNetworkType> allSharedNetworkTypes;
 		static List<SharedNetworkVTO> sharedNetworkVtos;
-		private SharedNetworkType(String key,String name,String defalutSsid){
+		private SharedNetworkType(String key,String name,String defaultSsid){
 			this.key = key;
 			this.name = name;
-			this.defalutSsid = defalutSsid;
+			this.defaultSsid = defaultSsid;
 		}
 		public String getName() {
 			return name;
@@ -396,11 +396,11 @@ public class VapEnumType {
 			this.key = key;
 		}
 		
-		public String getDefalutSsid() {
-			return defalutSsid;
+		public String getDefaultSsid() {
+			return defaultSsid;
 		}
-		public void setDefalutSsid(String defalutSsid) {
-			this.defalutSsid = defalutSsid;
+		public void setDefaultSsid(String defaultSsid) {
+			this.defaultSsid = defaultSsid;
 		}
 		public static SharedNetworkType fromKey(String key){
 			return allSharedNetworkTypes.get(key);
@@ -415,7 +415,7 @@ public class VapEnumType {
 			SharedNetworkType[] types = values();
 			for (SharedNetworkType type : types){
 				allSharedNetworkTypes.put(type.getKey(), type);
-				sharedNetworkVtos.add(new SharedNetworkVTO(type.getKey(),type.getName(),type.getDefalutSsid()));
+				sharedNetworkVtos.add(new SharedNetworkVTO(type.getKey(),type.getName(),type.getDefaultSsid()));
 			}
 		}
 		public static List<SharedNetworkVTO> getSharedNetworkVtos() {
