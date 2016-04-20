@@ -19,6 +19,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -37,6 +38,8 @@ public class CommdityUnitFacadeService {
 	@Resource
 	private CommdityFacadeService commdityFacadeService;
 
+	@Resource
+	private ChargingFacadeService chargingFacadeService;
 	/**
 	 * 获取商品列表
 	 * @param status 商品状态
