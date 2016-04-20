@@ -123,9 +123,13 @@ public class AsyncOrderPaymentNotifyService {
 					sb_description.append(order.getPayment_type());
 				}*/
 				OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
-				userWalletFacadeService.sharedealCashToUserWallet(order.getMac(), amount, orderid, 
+				userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), amount, orderid, 
 						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
 								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));
+				
+				/*userWalletFacadeService.sharedealCashToUserWallet(order.getMac(), amount, orderid, 
+						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
+								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
 				/*userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
 						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
 								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
