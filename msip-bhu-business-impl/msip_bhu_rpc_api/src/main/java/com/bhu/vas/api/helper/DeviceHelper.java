@@ -1267,14 +1267,25 @@ public class DeviceHelper {
 		if(ds_dto != null){
 			dsworkModelChangedList = new ArrayList<String>();
 			//获取当前配置功率
-			WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(ds_dto);
+/*			WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(ds_dto);
 			if(radio_dto != null){
 				//功率
 				String radio_item = builderDeviceSettingItem(DeviceSetting_RadioItem_Power, 
 						radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
 				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RadioOuter, 
 						Common_Config_Sequence, radio_item));
+			}*/
+			List<WifiDeviceSettingRadioDTO> radio_dtos = ds_dto.getRadios();
+			if(radio_dtos != null && !radio_dtos.isEmpty()){
+				List<Object[]> radio_dto_properties = new ArrayList<Object[]>();
+				for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
+					radio_dto_properties.add(radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
+				}
+				String radio_items = builderDeviceSettingItems(DeviceSetting_RadioItem_Power, radio_dto_properties);
+				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RadioOuter, 
+						Common_Config_Sequence, radio_items));
 			}
+
 			//限速
 			List<WifiDeviceSettingRateControlDTO> rc_dtos = ds_dto.getRatecontrols();
 			if(rc_dtos != null && !rc_dtos.isEmpty()){
