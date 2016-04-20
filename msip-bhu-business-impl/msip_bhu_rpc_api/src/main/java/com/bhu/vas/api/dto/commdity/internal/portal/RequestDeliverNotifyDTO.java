@@ -108,5 +108,25 @@ public class RequestDeliverNotifyDTO  implements java.io.Serializable{
 		}
 		return requestDeliverNotifyDto;
 	}
+	
+	public static RequestDeliverNotifyDTO from(Order order, String ait_time, User bindUser){
+		if(order == null || ait_time == null) return null;
+		RequestDeliverNotifyDTO requestDeliverNotifyDto = new RequestDeliverNotifyDTO();
+		requestDeliverNotifyDto.setOrderid(order.getId());
+		requestDeliverNotifyDto.setMac(order.getMac());
+		requestDeliverNotifyDto.setUmac(order.getUmac());
+		requestDeliverNotifyDto.setContext(order.getContext());
+		requestDeliverNotifyDto.setCommdityid(order.getCommdityid());
+		requestDeliverNotifyDto.setAmount(order.getAmount());
+		Date paymented_at = order.getPaymented_at();
+		if(paymented_at != null){
+			requestDeliverNotifyDto.setPaymented_ds(DateTimeHelper.formatDate(paymented_at, DateTimeHelper.DefalutFormatPattern));
+		}
+		requestDeliverNotifyDto.setApp_deliver_detail(ait_time);
+		if(bindUser != null){
+			requestDeliverNotifyDto.setBu_mobileno(bindUser.getMobileno());
+		}
+		return requestDeliverNotifyDto;
+	}
 }
 

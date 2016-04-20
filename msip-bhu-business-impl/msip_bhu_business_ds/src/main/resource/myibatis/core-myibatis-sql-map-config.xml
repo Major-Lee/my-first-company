@@ -26,9 +26,12 @@
 		<typeAlias alias="userToken" 	type="com.bhu.vas.api.rpc.user.model.UserToken" />
 		
 		<typeAlias alias="userWallet" 				type="com.bhu.vas.api.rpc.user.model.UserWallet" />
-		<typeAlias alias="userWalletConfigs" 		type="com.bhu.vas.api.rpc.user.model.UserWalletConfigs" />
 		<typeAlias alias="userWalletLog" 			type="com.bhu.vas.api.rpc.user.model.UserWalletLog" />
 		<typeAlias alias="userWalletWithdrawApply" 	type="com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply" />
+		
+		<typeAlias alias="userWithdrawCostConfigs" 		type="com.bhu.vas.api.rpc.charging.model.UserWithdrawCostConfigs" />
+		<typeAlias alias="wifiDeviceBatchImport" 		type="com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport" />
+		<typeAlias alias="wifiDeviceSharedealConfigs" 		type="com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs" />
 		<!-- 
 		<typeAlias alias="userThirdpartiesPayment" 	type="com.bhu.vas.api.rpc.user.model.UserThirdpartiesPayment" />
 		 -->
@@ -142,9 +145,13 @@
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserOAuthState.sqlMap.xml" />
 		
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWallet.sqlMap.xml" />
-		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWalletConfigs.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWalletLog.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserWalletWithdrawApply.sqlMap.xml" />
+		
+		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/UserWithdrawCostConfigs.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/WifiDeviceBatchImport.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/WifiDeviceSharedealConfigs.sqlMap.xml" />		
+		
 		<!-- 
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserThirdpartiesPayment.sqlMap.xml" />
 		 -->

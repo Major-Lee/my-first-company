@@ -23,7 +23,7 @@
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_wifi_devices_sharedeal_configs
+	    	t_charging_wifi_devices_sharedeal_configs
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
