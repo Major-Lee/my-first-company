@@ -159,7 +159,7 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		dto.setOpen_resource(WifiDeviceHelper.VistorWifi_Default_Open_resource);
 		dto.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		dto.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
-		dto.setSsid(SharedNetworkType.Uplink.getDefalutSsid());//WifiDeviceHelper.VistorWifi_Default_SSID);
+		dto.setSsid(SharedNetworkType.Uplink.getDefaultSsid());//WifiDeviceHelper.VistorWifi_Default_SSID);
 		return dto;
 	}
 	
@@ -178,7 +178,7 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
 		//if(StringUtils.isEmpty(param.getSsid())) param.setSsid(WifiDeviceHelper.VistorWifi_Default_SSID);
-		if(StringUtils.isEmpty(param.getSsid())) param.setSsid(SharedNetworkType.Uplink.getDefalutSsid());
+		if(StringUtils.isEmpty(param.getSsid())) param.setSsid(SharedNetworkType.Uplink.getDefaultSsid());
 		return param;
 	}
 	
