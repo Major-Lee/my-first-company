@@ -1363,8 +1363,11 @@ public class DeviceHelper {
 		
 		StringBuffer items = new StringBuffer();
 		for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
-			if(radio_dto == null || StringUtils.isEmpty(radio_dto.getPower()) || 
-					Integer.parseInt(radio_dto.getPower()) < 0) {
+			if(radio_dto == null || StringUtils.isEmpty(radio_dto.getPower())) {
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			int power_int = Integer.parseInt(radio_dto.getPower());
+			if(power_int < 0 || power_int > 27){
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 			}
 			
