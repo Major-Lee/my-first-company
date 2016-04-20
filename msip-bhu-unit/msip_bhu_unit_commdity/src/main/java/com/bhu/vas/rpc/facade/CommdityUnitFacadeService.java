@@ -81,9 +81,11 @@ public class CommdityUnitFacadeService {
 	 * @param appid 应用id
 	 * @param mac 设备mac
 	 * @param umac 用户mac
+	 * @param umactype 终端类型
 	 * @return
 	 */
-	public RpcResponseDTO<CommdityAmountDTO> intervalAMount(Integer commdityid, Integer appid, String mac, String umac){
+	public RpcResponseDTO<CommdityAmountDTO> intervalAMount(Integer commdityid, Integer appid, String mac, 
+			String umac, Integer umactype){
 		try{
 			OrderHelper.supportedAppId(appid);
 			
