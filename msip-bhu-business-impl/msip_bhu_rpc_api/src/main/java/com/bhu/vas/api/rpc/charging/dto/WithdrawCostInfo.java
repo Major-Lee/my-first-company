@@ -7,7 +7,7 @@ import com.smartwork.msip.cores.helper.ArithHelper;
  * @author Edmond
  *
  */
-public class ApplyCostInfo {
+public class WithdrawCostInfo {
 	private int uid;
 	private String applyid;
 	//提现金额
@@ -18,7 +18,7 @@ public class ApplyCostInfo {
 	private double transcost;
 
 	private double remain;
-	public ApplyCostInfo(int uid,String applyid,double cash) {
+	public WithdrawCostInfo(int uid,String applyid,double cash) {
 		super();
 		this.uid = uid;
 		this.applyid = applyid;
@@ -63,9 +63,9 @@ public class ApplyCostInfo {
 		return ArithHelper.sub(cash,ArithHelper.add(transcost, taxcost));
 	}*/
 	
-	public static ApplyCostInfo calculate(int uid,String applyid,double cash,
+	public static WithdrawCostInfo calculate(int uid,String applyid,double cash,
 			double withdraw_tax_percent,double withdraw_trancost_percent){
-		ApplyCostInfo costInfo= new ApplyCostInfo(uid,applyid,cash);
+		WithdrawCostInfo costInfo= new WithdrawCostInfo(uid,applyid,cash);
 		if(cash > 0){
 			costInfo.setTaxcost(ArithHelper.round(ArithHelper.mul(cash, withdraw_tax_percent),2));
 			costInfo.setTranscost(ArithHelper.round(ArithHelper.mul(cash, withdraw_trancost_percent),2));

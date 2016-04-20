@@ -2,12 +2,10 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.user.model.UserWalletConfigs">
+<mapper namespace="com.bhu.vas.api.rpc.charging.model.UserWithdrawCostConfigs">
 
-  <resultMap id="modelResult" type="userWalletConfigs">
+  <resultMap id="modelResult" type="userWithdrawCostConfigs">
     <id property="id" column="id"/>
-    <result property="sharedeal_percent" column="sharedeal_percent"/>
-    
     <result property="withdraw_tax_percent" column="withdraw_tax_percent"/>
     <result property="withdraw_trancost_percent" column="withdraw_trancost_percent"/>
     <result property="updated_at" column="updated_at"/>
@@ -15,13 +13,12 @@
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_vas_users_wallet_configs
+	    	t_charging_users_withdrawcost_configs
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	sharedeal_percent,
 	    	withdraw_tax_percent,
 	    	withdraw_trancost_percent,
 	    	updated_at
@@ -29,7 +26,6 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	sharedeal_percent,
 	    	withdraw_tax_percent,
 	    	withdraw_trancost_percent,
 	    	updated_at
@@ -38,14 +34,12 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{sharedeal_percent},
 	    	#{withdraw_tax_percent},
 	    	#{withdraw_trancost_percent},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	sharedeal_percent = #{sharedeal_percent},
 	    	withdraw_tax_percent = #{withdraw_tax_percent},
 	    	withdraw_trancost_percent = #{withdraw_trancost_percent},
 	    	updated_at = #{updated_at}
@@ -102,7 +96,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="userWalletConfigs">
+	<delete id="delete" parameterType="userWithdrawCostConfigs">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -110,11 +104,11 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="userWalletConfigs">
+	<insert id="insert" parameterType="userWithdrawCostConfigs">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="userWalletConfigs">
+	<update id="update" parameterType="userWithdrawCostConfigs">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		

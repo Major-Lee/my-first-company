@@ -19,16 +19,17 @@ import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
-import com.bhu.vas.business.ds.user.service.UserWalletConfigsService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -55,9 +56,10 @@ public class OrderUnitFacadeService {
 	@Resource
 	private UserDeviceFacadeService userDeviceFacadeService;
 	
+	//@Resource
+	//private UserWalletConfigsService userWalletConfigsService;
 	@Resource
-	private UserWalletConfigsService userWalletConfigsService;
-	
+	private ChargingFacadeService chargingFacadeService;
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 /*	*//**
@@ -245,8 +247,9 @@ public class OrderUnitFacadeService {
 						if(orderPaymentType != null){
 							userOrderDto.setPayment_type_name(orderPaymentType.getDesc());
 						}
-						double share_amount = userWalletConfigsService.calculateSharedeal(uid, Double.parseDouble(order.getAmount()));
-						userOrderDto.setShare_amount(String.valueOf(share_amount));
+						SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(order.getMac(), order.getId(), Double.parseDouble(order.getAmount()));
+						//double share_amount = userWalletConfigsService.calculateSharedeal(uid, Double.parseDouble(order.getAmount()));
+						userOrderDto.setShare_amount(String.valueOf(sharedeal.getOwner_cash()));
 						if(order.getCreated_at() != null){
 							userOrderDto.setCreated_ts(order.getCreated_at().getTime());
 						}

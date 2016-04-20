@@ -152,6 +152,9 @@
 	</delete>
 	<insert id="insert" parameterType="userWalletLog">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
+		<selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+			select last_insert_id(); 
+		</selectKey>
 	</insert>
  
 	<update id="update" parameterType="userWalletLog">

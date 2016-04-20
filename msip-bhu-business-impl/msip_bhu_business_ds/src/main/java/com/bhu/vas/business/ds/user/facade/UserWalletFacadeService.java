@@ -10,10 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.procedure.ShareDealWalletProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
+import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
@@ -23,8 +25,8 @@ import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.bhu.vas.business.ds.user.service.UserWalletConfigsService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
@@ -52,8 +54,8 @@ public class UserWalletFacadeService{
 	private UserWalletService userWalletService;
 
 	@Resource
-	private UserWalletConfigsService userWalletConfigsService;
-
+	private ChargingFacadeService chargingFacadeService;
+	
 	@Resource
 	private UserWalletLogService userWalletLogService;
 	
@@ -62,17 +64,6 @@ public class UserWalletFacadeService{
 
 	@Resource
 	private UserOAuthFacadeService userOAuthFacadeService;
-	
-	//@Resource
-	//private UserThirdpartiesPaymentService userThirdpartiesPaymentService;
-	
-/*	@Resource
-	private WifiDeviceService wifiDeviceService;
-	
-	@Resource
-	private UserDeviceService userDeviceService;*/
-	
-	
 	
 	public UserWalletDetailVTO walletDetail(int uid){
 		UserWallet userWallet = userWallet(uid);
@@ -137,7 +128,7 @@ public class UserWalletFacadeService{
 	 * @param orderid
 	 * @return
 	 */
-	public UserWallet sharedealCashToUserWalletWithBindUid(Integer bindUid, double cash, String orderid,String description){
+	/*public UserWallet sharedealCashToUserWalletWithBindUid(Integer bindUid, double cash, String orderid,String description){
 		int sharedeal_uid = UserWallet.Default_WalletUID_WhenUIDNotExist;
 		boolean owner = false;
 		if(bindUid != null){
@@ -145,32 +136,68 @@ public class UserWalletFacadeService{
 			owner = true; 
 		}
 		return sharedealCashToUserWallet(sharedeal_uid, cash, orderid, owner,description);
-	}
+	}*/
 	
 	/**
 	 * 分成现金入账
 	 * TODO:分成现金分为几部分 
 	 * 	绑定用户
-		分销商用户
 		我司
+		TODO：需要改成部分由存储过程实现
 	 * @param uid  具体的入账用户
 	 * @param cash 总收益现金
 	 * @param orderid
 	 * @param desc
 	 */
-	public UserWallet sharedealCashToUserWallet(Integer uid, double cash, String orderid, boolean owner,String description){
-		logger.info(String.format("分成现金入账-1 uid[%s] orderid[%s] cash[%s] owner[%s]", uid,orderid,cash,owner));
-		UserValidateServiceHelper.validateUser(uid,this.userService);
+	public UserWallet sharedealCashToUserWallet(String dmac, double cash, String orderid,String description){
+		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
+		//UserValidateServiceHelper.validateUser(uid,this.userService);
 		//UserWalletConfigs configs = userWalletConfigsService.userfulWalletConfigs(uid);
 		//double realIncommingCash = ArithHelper.round(ArithHelper.mul(cash, configs.getSharedeal_percent()),2);
-		double realIncommingCash = userWalletConfigsService.calculateSharedeal(uid, cash);
-		logger.info(String.format("分成现金入账-2 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", uid,orderid,cash,realIncommingCash,owner));
-		UserWallet uwallet = userWalletService.getOrCreateById(uid);
-		uwallet.setCash(uwallet.getCash()+realIncommingCash);
+		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, orderid, cash);
+		//double realIncommingCash = userWithdrawCostConfigsService.calculateSharedeal(uid, cash);
+		logger.info(String.format("分成现金入账-2 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+		UserWallet uwallet = userWalletService.getOrCreateById(sharedeal.getOwner());
+		uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
 		uwallet = userWalletService.update(uwallet);
-		this.doWalletLog(uid, orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, realIncommingCash, realIncommingCash,0d, String.format("Total:%s Incomming:%s owner:%s", cash,realIncommingCash,owner));
+		this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 		return uwallet;
 	}
+	
+	/**
+	 * 分成现金入账 存储过程实现
+	 * TODO:分成现金分为几部分 
+	 * 	绑定用户
+		我司
+		TODO：需要改成部分由存储过程实现
+	 * @param uid  具体的入账用户
+	 * @param cash 总收益现金
+	 * @param orderid
+	 * @param desc
+	 */
+	public int sharedealCashToUserWalletWithProcedure(String dmac, double cash, String orderid,String description){
+		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
+		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, orderid, cash);
+		ShareDealWalletProcedureDTO procedureDTO = ShareDealWalletProcedureDTO.buildWith(sharedeal);
+		procedureDTO.setTransmode(UWalletTransMode.SharedealPayment.getKey());
+		procedureDTO.setTransmode_desc(UWalletTransMode.SharedealPayment.getName());
+		procedureDTO.setTranstype(UWalletTransType.ReadPacketSettle2C.getKey());
+		procedureDTO.setTranstype_desc(UWalletTransType.ReadPacketSettle2C.getName());
+		procedureDTO.setDescription(description);
+		procedureDTO.setOwner_memo(String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		procedureDTO.setManufacturer_memo(String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getManufacturer_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		int executeRet = userWalletService.executeProcedure(procedureDTO);
+		if(executeRet == 0)
+			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+		else
+			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
+		//uwallet = userWalletService.update(uwallet);
+		//this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		//this.doWalletLog(sharedeal.getManufacturer(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getManufacturer_cash(), sharedeal.getManufacturer_cash(),0d, String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		return executeRet;
+	}
+	
 	
 	/**
 	 * 虚拟币入账
@@ -625,6 +652,8 @@ public class UserWalletFacadeService{
 		}
 		wlog.setMemo(memo);
 		userWalletLogService.insert(wlog);
+		
+		//System.out.println("~~~~~~~~~~"+wlog.getId());
 	}
 	
 	//userThirdpartiesPaymentService
@@ -709,10 +738,6 @@ public class UserWalletFacadeService{
 		return userWalletService;
 	}
 
-	public UserWalletConfigsService getUserWalletConfigsService() {
-		return userWalletConfigsService;
-	}
-
 	public UserWalletLogService getUserWalletLogService() {
 		return userWalletLogService;
 	}
@@ -722,6 +747,9 @@ public class UserWalletFacadeService{
 	}
 	public UserOAuthFacadeService getUserOAuthFacadeService() {
 		return userOAuthFacadeService;
+	}
+	public ChargingFacadeService getChargingFacadeService() {
+		return chargingFacadeService;
 	}
 
 	/*public UserThirdpartiesPaymentService getUserThirdpartiesPaymentService() {
