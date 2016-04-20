@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
@@ -64,12 +65,14 @@ public class UserSharedNetworksMigrateEnvOp {
 				if(safeSecure != null){
 					List<ParamSharedNetworkDTO> dtos = new ArrayList<>();
 					safeSecure.setTemplate(SharedNetworksFacadeService.DefaultTemplate);
+					safeSecure.setTemplate_name(SharedNetworkType.SafeSecure.getName().concat(SharedNetworksFacadeService.DefaultTemplate));
 					dtos.add(safeSecure);
 					sdns.put(SharedNetworkType.SafeSecure.getKey(), dtos);
 				}
 				if(uplink != null){
 					List<ParamSharedNetworkDTO> dtos = new ArrayList<>();
 					uplink.setTemplate(SharedNetworksFacadeService.DefaultTemplate);
+					uplink.setTemplate_name(SharedNetworkType.Uplink.getName().concat(SharedNetworksFacadeService.DefaultTemplate));
 					dtos.add(uplink);
 					sdns.put(SharedNetworkType.Uplink.getKey(), dtos);
 				}
@@ -89,7 +92,9 @@ public class UserSharedNetworksMigrateEnvOp {
 				sdn.setTemplate(SharedNetworksFacadeService.DefaultTemplate);
 				SharedNetworkSettingDTO innerModel = sdn.getInnerModel();
 				if(innerModel.getPsn() != null){
+					SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(innerModel.getPsn().getNtype());
 					innerModel.getPsn().setTemplate(SharedNetworksFacadeService.DefaultTemplate);
+					innerModel.getPsn().setTemplate_name(sharedNetwork.getName().concat(SharedNetworksFacadeService.DefaultTemplate));
 				}
 				sdn.replaceInnerModel(innerModel);
 				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(sdn);
