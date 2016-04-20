@@ -19,8 +19,9 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 @SuppressWarnings("serial")
 public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String ntype;
-	@JsonInclude(Include.NON_NULL)
+	//@JsonInclude(Include.NON_NULL)
 	private String template;
+	private String template_name;
 	//通用字段
 	private String ssid;
 	private int users_tx_rate;
@@ -95,6 +96,12 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return properties;
 	}
 
+	public String getTemplate_name() {
+		return template_name;
+	}
+	public void setTemplate_name(String template_name) {
+		this.template_name = template_name;
+	}
 	public int getMax_clients() {
 		return max_clients;
 	}
@@ -253,13 +260,13 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		//param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		//param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
 		if(SharedNetworkType.Uplink.getKey().equals(param.getNtype())){
-			param.setSsid(SharedNetworkType.Uplink.getDefalutSsid());
+			param.setSsid(SharedNetworkType.Uplink.getDefaultSsid());
 			param.setRedirect_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Redirect_url);
 			param.setRemote_auth_url(null);
 			param.setPortal_server_url(null);
 			param.setDns_default_ip(null);
 		}else{
-			param.setSsid(SharedNetworkType.SafeSecure.getDefalutSsid());
+			param.setSsid(SharedNetworkType.SafeSecure.getDefaultSsid());
 			param.setRemote_auth_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_auth_url);
 			param.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
 			param.setDns_default_ip(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_Dns_default_ip);
@@ -286,7 +293,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		//param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
 		if(SharedNetworkType.Uplink.getKey().equals(param.getNtype())){
 			if(StringUtils.isEmpty(param.getSsid())){
-				param.setSsid(SharedNetworkType.Uplink.getDefalutSsid());
+				param.setSsid(SharedNetworkType.Uplink.getDefaultSsid());
 			}
 			if(StringUtils.isEmpty(param.getRedirect_url())){
 				param.setRedirect_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Redirect_url);
@@ -296,7 +303,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			param.setDns_default_ip(null);
 		}else{
 			if(StringUtils.isEmpty(param.getSsid())){
-				param.setSsid(SharedNetworkType.SafeSecure.getDefalutSsid());
+				param.setSsid(SharedNetworkType.SafeSecure.getDefaultSsid());
 			}
 			if(StringUtils.isEmpty(param.getRemote_auth_url())){
 				param.setRemote_auth_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_auth_url);
@@ -312,7 +319,14 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return param;
 	}
 	
-	public static boolean wasChanged(ParamSharedNetworkDTO paramDTO,ParamSharedNetworkDTO dbDTO){
+	public static boolean wasTemplateNameChanged(ParamSharedNetworkDTO paramDTO,ParamSharedNetworkDTO dbDTO){
+		if(dbDTO == null) return true;
+		if(paramDTO == null) return false;
+		if(!paramDTO.getTemplate_name().equalsIgnoreCase(dbDTO.getTemplate_name())) 
+			return true;
+		return false;
+	}
+	public static boolean wasConfigChanged(ParamSharedNetworkDTO paramDTO,ParamSharedNetworkDTO dbDTO){
 		if(dbDTO == null) return true;
 		if(paramDTO == null) return false;
 		if(!paramDTO.getNtype().equals(dbDTO.getNtype())){

@@ -88,18 +88,28 @@ public class SharedNetworksFacadeService {
 	 */
 	public boolean doApplySharedNetworksConfig(int uid,ParamSharedNetworkDTO paramDto){
 		boolean configChanged = false;
-		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
+		SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(paramDto.getNtype());
 		paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
 		if(StringUtils.isEmpty(paramDto.getTemplate())){
 			paramDto.setTemplate(DefaultTemplate);
 		}
+		if(StringUtils.isEmpty(paramDto.getTemplate_name())){
+			paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
+		}
+		
+		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
+		//SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(paramDto.getNtype());
+		//if(StringUtils.isNotEmpty(sharednetwork_dto.getTemplate_name())){
+		//	sharednetwork_dto.setTemplate_name(SharedNetworkType.SafeSecure.getName().concat(sharednetwork_dto.getTemplate()));
+		//}
 		if(configs == null){
-			configs = new UserDevicesSharedNetworks();
+			configs = UserDevicesSharedNetworks.buildDefault(uid, paramDto);
+			/*configs = new UserDevicesSharedNetworks();
 			configs.setId(uid);
 			List<ParamSharedNetworkDTO> models = new ArrayList<ParamSharedNetworkDTO>();
 			paramDto.setTemplate(DefaultTemplate);
 			models.add(paramDto);
-			configs.put(paramDto.getNtype(), models);
+			configs.put(paramDto.getNtype(), models);*/
 			userDevicesSharedNetworksService.insert(configs);
 			configChanged = true;
 		}else{
@@ -109,21 +119,34 @@ public class SharedNetworksFacadeService {
 				if(models_fromdb.size() >= BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit){
 					throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_TEMPLATES_MAXLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit)});
 				}
-				
 				//验证models_fromdb 是否存在 template编号,如果存在则替换，否则增加
 				int index = models_fromdb.indexOf(paramDto);
 				if(index != -1){
 					ParamSharedNetworkDTO dto_fromdb = models_fromdb.get(index);
-					if(dto_fromdb == null || ParamSharedNetworkDTO.wasChanged(dto_fromdb, paramDto)){
+					if(ParamSharedNetworkDTO.wasConfigChanged(dto_fromdb, paramDto)){
+						configChanged = true;
+					}
+					models_fromdb.set(index, paramDto);
+					userDevicesSharedNetworksService.update(configs);
+					/*if(ParamSharedNetworkDTO.wasConfigChanged(dto_fromdb, paramDto)){
 						configChanged = true;
 						models_fromdb.set(index, paramDto);
 						userDevicesSharedNetworksService.update(configs);
-					}else{
+					}else if(ParamSharedNetworkDTO.wasTemplateNameChanged(dto_fromdb, paramDto)){
+						models_fromdb.set(index, paramDto);
+						userDevicesSharedNetworksService.update(configs);
+					}*/
+					/*if(dto_fromdb == null || ParamSharedNetworkDTO.wasChanged(dto_fromdb, paramDto)){
+						configChanged = true;
+						models_fromdb.set(index, paramDto);
+						userDevicesSharedNetworksService.update(configs);
+					}else if(){
 						//System.out.println("0hhhh:"+paramDto.getTemplate());
-					}
+					}*/
 				}else{
 					String template = fetchValidTemplate(models_fromdb);
 					paramDto.setTemplate(template);
+					paramDto.setTemplate_name(sharedNetwork.getName().concat(template));
 					models_fromdb.add(paramDto);
 					userDevicesSharedNetworksService.update(configs);
 					//当前不可能有新设备应用新模板，所以返回false
@@ -199,6 +222,7 @@ public class SharedNetworksFacadeService {
 			if(models.isEmpty()){
 				ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
 				dto.setTemplate(DefaultTemplate);
+				dto.setTemplate_name(sharedNetwork.getName().concat(DefaultTemplate));
 				models.add(dto);
 				userDevicesSharedNetworksService.update(configs);
 			}
@@ -234,6 +258,7 @@ public class SharedNetworksFacadeService {
 			if(models.isEmpty()){
 				dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
 				dto.setTemplate(DefaultTemplate);
+				dto.setTemplate_name(sharedNetwork.getName().concat(DefaultTemplate));
 				models.add(dto);
 				userDevicesSharedNetworksService.update(configs);
 			}else{
@@ -326,7 +351,9 @@ public class SharedNetworksFacadeService {
 		}else{
 			sharednetwork = new WifiDeviceSharedNetwork();
 			sharednetwork.setId(mac_lowercase);
-			ParamSharedNetworkDTO configDto = ParamSharedNetworkDTO.builderDefault();
+			ParamSharedNetworkDTO configDto = ParamSharedNetworkDTO.builderDefault(SharedNetworkType.SafeSecure.getKey());
+			configDto.setTemplate(DefaultTemplate);
+			configDto.setTemplate_name(SharedNetworkType.SafeSecure.getName().concat(DefaultTemplate));
 			sharednetwork.setSharednetwork_type(configDto.getNtype());
 			sharednetwork.setTemplate(DefaultTemplate);
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
@@ -425,6 +452,7 @@ public class SharedNetworksFacadeService {
 	
 	/**
 	 * 单个设备设置共享网络，不更新用户共享网络配置
+	 * 目前是有taskfacade 老接口调用
 	 * @param mac
 	 * @param configDto
 	 * @return

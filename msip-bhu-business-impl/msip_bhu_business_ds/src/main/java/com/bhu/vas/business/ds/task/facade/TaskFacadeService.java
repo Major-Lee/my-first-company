@@ -550,6 +550,7 @@ public class TaskFacadeService {
 						ParamSharedNetworkDTO shared_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
 						shared_dto.setNtype(SharedNetworkType.Uplink.getKey());
 						shared_dto.setTemplate(SharedNetworksFacadeService.DefaultTemplate);
+						shared_dto.setTemplate_name(SharedNetworkType.Uplink.getName().concat(SharedNetworksFacadeService.DefaultTemplate));
 						ParamSharedNetworkDTO.fufillWithDefault(shared_dto);
 						sharedNetworksFacadeService.updateDevices2SharedNetwork(mac,shared_dto);
 						shared_dto.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(work_mode));
