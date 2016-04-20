@@ -101,7 +101,8 @@ public class CommdityUnitFacadeService {
 			String amount = CommdityIntervalAmountService.getInstance().getRAmount(mac, umac, commdityid);
 			if(StringUtils.isEmpty(amount)){
 				//处理商品金额
-				amount = commdityFacadeService.commdityAmount(commdityid);
+				amount = chargingFacadeService.fetchAmountRange(mac, umactype);
+				//amount = commdityFacadeService.commdityAmount(commdityid);
 				//CommdityIntervalAmountService.getInstance().addRAmount(mac, umac, commdityid, amount);
 				Long addnx_ret = CommdityIntervalAmountService.getInstance().addNx_RAmount(mac, umac, commdityid, amount);
 				if(addnx_ret == null || addnx_ret <= 0){

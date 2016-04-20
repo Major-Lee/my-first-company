@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
@@ -68,6 +69,39 @@ public class ChargingFacadeService {
 			configs = wifiDeviceSharedealConfigsService.insert(configs);
 		}
 		return configs;
+	}
+	
+	public String fetchAmountRange(String dmac,Integer umactype){
+		try{
+			WifiDeviceSharedealConfigs configs = userfulWifiDeviceSharedealConfigs(dmac);
+			String amountRange = null;
+			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
+				amountRange = configs.getRange_cash_pc();
+			}else{
+				amountRange = configs.getRange_cash_mobile();
+			}
+			return amountRange;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return WifiDeviceSharedealConfigs.Default_Range_Cash_Mobile;
+		}
+		
+	}
+	
+	public String fetchAccessInternetTime(String dmac,Integer umactype){
+		try{
+			WifiDeviceSharedealConfigs configs = userfulWifiDeviceSharedealConfigs(dmac);
+			String ait = null;
+			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
+				ait = configs.getAit_pc();
+			}else{
+				ait = configs.getAit_mobile();
+			}
+			return ait;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return WifiDeviceSharedealConfigs.Default_AIT;
+		}
 	}
 	
 	/**

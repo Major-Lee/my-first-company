@@ -280,7 +280,7 @@ public class OrderFacadeService {
 	 * @param payment_proxy_type 支付代理方式
 	 */
 	public Order orderPaymentCompletedNotify(boolean success, Order order, User bindUser, String paymented_ds,
-			String payment_type, String payment_proxy_type){
+			String payment_type, String payment_proxy_type,String ait_time){
 		Integer changed_status = null;
 		Integer changed_process_status = null;
 		try{
@@ -307,7 +307,7 @@ public class OrderFacadeService {
 
 				logger.info(String.format("OrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
 				//进行发货通知
-				boolean deliver_notify_ret = orderDeliverNotify(order, bindUser);
+				boolean deliver_notify_ret = orderDeliverNotify(order, bindUser,ait_time);
 				//判断通知发货成功 更新订单状态
 				if(deliver_notify_ret){
 					changed_status = OrderStatus.DeliverCompleted.getKey();
@@ -343,9 +343,9 @@ public class OrderFacadeService {
 	 * @return
 	 */
 	public Order orderPaymentCompletedNotify(boolean success, String orderid, User bindUser, String paymented_ds,
-			String payment_type, String payment_proxy_type){
+			String payment_type, String payment_proxy_type,String ait_time){
 		Order order = validateOrderId(orderid);
-		return orderPaymentCompletedNotify(success, order, bindUser, paymented_ds, payment_type, payment_proxy_type);
+		return orderPaymentCompletedNotify(success, order, bindUser, paymented_ds, payment_type, payment_proxy_type,ait_time);
 	}
 	
 	/**
@@ -354,7 +354,7 @@ public class OrderFacadeService {
 	 * @param bindUser 设备绑定的用户实体
 	 * @return
 	 */
-	public boolean orderDeliverNotify(Order order, User bindUser){
+	public boolean orderDeliverNotify(Order order, User bindUser,String ait_time){
 		try{
 			if(order == null) {
 				logger.error("orderDeliverNotify order data not exist");
@@ -366,7 +366,8 @@ public class OrderFacadeService {
 				logger.error("orderDeliverNotify order commdity data not exist");
 				return false;
 			}
-			RequestDeliverNotifyDTO requestDeliverNotifyDto = RequestDeliverNotifyDTO.from(order, commdity, bindUser);
+			//RequestDeliverNotifyDTO requestDeliverNotifyDto = RequestDeliverNotifyDTO.from(order, commdity, bindUser);
+			RequestDeliverNotifyDTO requestDeliverNotifyDto = RequestDeliverNotifyDTO.from(order, ait_time, bindUser);
 			if(requestDeliverNotifyDto != null){
 				String requestDeliverNotifyMessage = JsonHelper.getJSONString(requestDeliverNotifyDto);
 				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(requestDeliverNotifyMessage);

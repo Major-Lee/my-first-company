@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
+
+
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
@@ -20,6 +22,7 @@ import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
@@ -46,6 +49,10 @@ public class AsyncOrderPaymentNotifyService {
 	
 	@Resource
 	private UserDeviceFacadeService userDeviceFacadeService;
+	
+	
+	@Resource
+	private ChargingFacadeService chargingFacadeService;
 	/**
 	 * 支付系统支付完成的通知处理
 	 * @param message
@@ -94,7 +101,9 @@ public class AsyncOrderPaymentNotifyService {
 		//支付完成时进行设备的uid获取并设置订单
 		User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
 		
-		order = orderFacadeService.orderPaymentCompletedNotify(success, order, bindUser, paymented_ds, payment_type, payment_proxy_type);
+		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+		
+		order = orderFacadeService.orderPaymentCompletedNotify(success, order, bindUser, paymented_ds, payment_type, payment_proxy_type,accessInternetTime);
 		//判断订单状态为支付成功或发货成功
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
