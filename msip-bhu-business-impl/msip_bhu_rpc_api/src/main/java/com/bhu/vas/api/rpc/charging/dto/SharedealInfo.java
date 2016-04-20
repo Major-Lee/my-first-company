@@ -13,10 +13,13 @@ public class SharedealInfo {
 	private String orderid;
 	//总金额
 	private double cash;
+	private boolean belong = true;
+	private int owner;
 	//绑定用户分成金额
 	private double owner_cash;
 	//代理商用户分成金额
-	private double agent_cash;
+	//private double agent_cash;
+	private int manufacturer;
 	//厂商用户分成金额
 	private double manufacturer_cash;
 	
@@ -52,12 +55,12 @@ public class SharedealInfo {
 	public void setOwner_cash(double owner_cash) {
 		this.owner_cash = owner_cash;
 	}
-	public double getAgent_cash() {
+	/*public double getAgent_cash() {
 		return agent_cash;
 	}
 	public void setAgent_cash(double agent_cash) {
 		this.agent_cash = agent_cash;
-	}
+	}*/
 	public double getManufacturer_cash() {
 		return manufacturer_cash;
 	}
@@ -68,15 +71,34 @@ public class SharedealInfo {
 	public static SharedealInfo calculate(String mac,String orderid,
 			double cash,
 			double owner_percent,
-			double agent_percent,
+			//double agent_percent,
 			double manufacturer_percent
 			){
 		SharedealInfo info = new SharedealInfo(mac,orderid,cash);
 		if(cash > 0){
 			info.setOwner_cash(ArithHelper.round(ArithHelper.mul(cash, owner_percent),2));
-			info.setAgent_cash(ArithHelper.round(ArithHelper.mul(cash, agent_percent),2));
-			info.setManufacturer_cash(ArithHelper.sub(cash,ArithHelper.add(info.getOwner_cash(), info.getAgent_cash())));
+			//info.setAgent_cash(ArithHelper.round(ArithHelper.mul(cash, agent_percent),2));
+			info.setManufacturer_cash(ArithHelper.sub(cash,info.getOwner_cash()));
 		}
 		return info;
 	}
+	public int getOwner() {
+		return owner;
+	}
+	public void setOwner(int owner) {
+		this.owner = owner;
+	}
+	public int getManufacturer() {
+		return manufacturer;
+	}
+	public void setManufacturer(int manufacturer) {
+		this.manufacturer = manufacturer;
+	}
+	public boolean isBelong() {
+		return belong;
+	}
+	public void setBelong(boolean belong) {
+		this.belong = belong;
+	}
+	
 }

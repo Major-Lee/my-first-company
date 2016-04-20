@@ -3,7 +3,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -13,7 +12,7 @@ import org.junit.runners.MethodSorters;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
-import com.bhu.vas.api.rpc.user.dto.ApplyCost;
+import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -64,7 +63,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 		userWalletFacadeService.getUserWalletService().findIdsByModelCriteria(mc);
 	}*/
     
-    @Test
+    //@Test
 	public void test000EmptyAndPrepareData(){
     	ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1");
@@ -85,7 +84,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     private String alipay_id = "2sf!sdfsdf";
     private String alipay_name = "Edmond Lee";
     
-    @Test
+    //@Test
 	public void test001PrepareUserPayment(){
     	/*userWalletFacadeService.addThirdpartiesPayment(testUserId, 
     			ThirdpartiesPaymentType.Weichat, 
@@ -110,26 +109,26 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	System.out.println("2"+payment);*/
 	}
     
-    @Test
+    //@Test
 	public void test001SharedealCashToUserWallet(){
-    	UserWallet uWallet = userWalletFacadeService.sharedealCashToUserWallet(testUserId, testSharedealCash, testOrderId,true,StringUtils.EMPTY);
-    	System.out.println(uWallet);
+    	//UserWallet uWallet = userWalletFacadeService.sharedealCashToUserWallet(testUserId, testSharedealCash, testOrderId,true,StringUtils.EMPTY);
+    	//System.out.println(uWallet);
 	}	
     
-    @Test
+    //@Test
 	public void test002DoUpdWithdrawPwd(){
     	//AssertHelper.isTrue(randon_key.equals(userid));
     	/*UserWallet uWallet = userWalletFacadeService.doFirstSetWithdrawPwd(testUserId, testWithdrawPwd);
     	userWalletFacadeService.doChangedWithdrawPwd(testUserId, testWithdrawPwd, testWithdrawPwd);
     	System.out.println(uWallet);*/
 	}
-    @Test
+    //@Test
     public void test003DoWithdrawApply(){
     	UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(testAppid,OAuthType.Alipay,testUserId, testWithdrawPwd, testWithdrawCash,testWithdrawIP);
     	System.out.println(apply);
     }
 
-    @Test
+    //@Test
 	public void test004DoWithdrawVerifyPassed(){
     	ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
@@ -149,7 +148,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 			//User user = userWalletFacadeService.validateUser(withdrawApply.getUid());
 			User user = UserValidateServiceHelper.validateUser(applynow.getUid(),userWalletFacadeService.getUserService());
 			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(applynow.getUid());
-			ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(applynow.getUid(),applynow.getCash());
+			WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(applynow.getUid(),applynow.getId(),applynow.getCash());
 			UserWithdrawApplyVTO withdrawApplyVTO = applynow.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 					calculateApplyCost);
 			//ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(applynow.getUid(), ThirdpartiesPaymentType.fromType(applynow.getPayment_type()));
@@ -168,7 +167,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	}
 	}
     
-    @Test
+    //@Test
     public void test005PageWithdrawApplies(){
     	TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(testUserId, BusinessEnumType.UWithdrawStatus.VerifyPassed, 1, 10);
     	System.out.println(pages.getItems().size());
@@ -211,7 +210,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 	}
     
     
-    @Test
+    //@Test
    	public void test008DoWithdrawNotifyFromRemote(){
     	ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
@@ -226,12 +225,13 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     		UserWalletWithdrawApply applynow = userWalletFacadeService.doWithdrawNotifyFromRemote(apply.getId(), false);
         	System.out.println("RemoteNotifyFailed:"+applynow);
     	}
+    	//userWalletFacadeService.getUserWalletService().executeProcedure(pdto)
     	//System.out.println(WithdrawCashDetail.build(100.00d, 0.20d, 0.03d));
     	//System.out.println(WithdrawCashDetail.build(1000.00d, 0.20d, 0.03d));
     	//System.out.println(WithdrawCashDetail.build(485.33d, 0.20d, 0.03d));
    	}
     
-    @Test
+    //@Test
     public void test009DoWithdrawAppliesFailedRollbackLoader(){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("withdraw_oper", BusinessEnumType.UWithdrawStatus.WithdrawFailed.getKey());
@@ -247,7 +247,8 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 				withdrawApply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
 				withdrawApply.setWithdraw_oper(current.getKey());
 				User user =UserValidateServiceHelper.validateUser(withdrawApply.getUid(),userWalletFacadeService.getUserService());
-				ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(),withdrawApply.getCash());
+				WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(withdrawApply.getUid(),withdrawApply.getId(),withdrawApply.getCash());
+				//ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(),withdrawApply.getCash());
 				//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
 				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 						calculateApplyCost);
@@ -266,4 +267,16 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 			}
 		}
     }
+    
+    @Test
+   	public void test010DoSharedeal(){
+    	double cashIncomming = 108.39d;
+    	String dmac = "84:82:f4:23:06:e8";
+    	
+    	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
+    	//System.out.println(JsonHelper.getJSONString(wallet));
+    	
+    	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
+    	System.out.println("dddd:"+ret);
+   	}
 }

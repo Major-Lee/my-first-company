@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.user.model;
+package com.bhu.vas.api.rpc.charging.model;
 
 import com.smartwork.msip.cores.orm.model.BaseIntModel;
 
@@ -11,21 +11,13 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
  *
  */
 @SuppressWarnings("serial")
-public class UserWalletConfigs extends BaseIntModel{
+public class UserWithdrawCostConfigs extends BaseIntModel{
 	public static final int Default_ConfigsID = -1;
-	//约定的收益分成比例 最多小数点保留后两位 3-7开，30%
-	private double sharedeal_percent = 0.30d;
 	//扣除20%的税，3%的交易费用
 	private double withdraw_tax_percent = 0.20d;
 	//3%的交易费用
 	private double withdraw_trancost_percent = 0.03d;
 	
-	public double getSharedeal_percent() {
-		return sharedeal_percent;
-	}
-	public void setSharedeal_percent(double sharedeal_percent) {
-		this.sharedeal_percent = sharedeal_percent;
-	}
 	public double getWithdraw_tax_percent() {
 		return withdraw_tax_percent;
 	}

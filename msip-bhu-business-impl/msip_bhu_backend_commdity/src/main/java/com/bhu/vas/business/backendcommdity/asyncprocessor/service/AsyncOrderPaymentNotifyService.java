@@ -22,6 +22,7 @@ import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
@@ -48,6 +49,10 @@ public class AsyncOrderPaymentNotifyService {
 	
 	@Resource
 	private UserDeviceFacadeService userDeviceFacadeService;
+	
+	
+	@Resource
+	private ChargingFacadeService chargingFacadeService;
 	/**
 	 * 支付系统支付完成的通知处理
 	 * @param message
@@ -96,7 +101,9 @@ public class AsyncOrderPaymentNotifyService {
 		//支付完成时进行设备的uid获取并设置订单
 		User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
 		
-		order = orderFacadeService.orderPaymentCompletedNotify(success, order, bindUser, paymented_ds, payment_type, payment_proxy_type);
+		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+		
+		order = orderFacadeService.orderPaymentCompletedNotify(success, order, bindUser, paymented_ds, payment_type, payment_proxy_type,accessInternetTime);
 		//判断订单状态为支付成功或发货成功
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
@@ -125,9 +132,16 @@ public class AsyncOrderPaymentNotifyService {
 					sb_description.append(order.getPayment_type());
 				}*/
 				OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
-				userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
+				userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), amount, orderid, 
 						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
 								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));
+				
+				/*userWalletFacadeService.sharedealCashToUserWallet(order.getMac(), amount, orderid, 
+						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
+								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
+				/*userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
+						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
+								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
 			}
 		}
 	}

@@ -27,9 +27,9 @@ public class CommdityRpcService implements ICommdityRpcService{
 	}
 	
 	public RpcResponseDTO<CommdityAmountDTO> intervalAMount(Integer commdityid, Integer appid, 
-			String mac, String umac){
-		logger.info(String.format("intervalAMount with commdityid[%s] appid[%s] mac[%s] umac[%s]", commdityid, 
-				appid, mac, umac));
-		return commdityUnitFacadeService.intervalAMount(commdityid, appid, mac, umac);
+			String mac, String umac, Integer umactype){
+		logger.info(String.format("intervalAMount with commdityid[%s] appid[%s] mac[%s] umac[%s] umactype[%s]", commdityid, 
+				appid, mac, umac, umactype));
+		return commdityUnitFacadeService.intervalAMount(commdityid, appid, mac, umac, umactype);
 	}
 }
