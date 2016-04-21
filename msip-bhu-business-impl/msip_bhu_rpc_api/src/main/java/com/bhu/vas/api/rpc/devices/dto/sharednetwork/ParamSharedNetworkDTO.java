@@ -379,7 +379,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	public static boolean wasTemplateNameChanged(ParamSharedNetworkDTO paramDTO,ParamSharedNetworkDTO dbDTO){
 		if(dbDTO == null) return true;
 		if(paramDTO == null) return false;
-		if(!paramDTO.getTemplate_name().equalsIgnoreCase(dbDTO.getTemplate_name())) 
+		if(!paramDTO.getTemplate_name().equals(dbDTO.getTemplate_name())) 
 			return true;
 		return false;
 	}
