@@ -304,7 +304,7 @@ public class DeviceHelper {
 	}
 	
 	public static String[] getURouterDevicePowerAndRealChannel(WifiDeviceSettingRadioDTO radio_dto){
-		String[] result = new String[2];
+		String[] result = new String[5];
 		if(radio_dto == null){
 			result[0] = Unknow_Power;
 			result[1] = Unknow_RealChannel;
@@ -312,6 +312,9 @@ public class DeviceHelper {
 			result[0] = StringUtils.isEmpty(radio_dto.getPower())?Unknow_Power:radio_dto.getPower();
 			result[1] = StringUtils.isEmpty(radio_dto.getReal_channel())?Unknow_RealChannel:radio_dto.getReal_channel();
 		}
+		result[2] = radio_dto.getRf();
+		result[3] = radio_dto.getCountry();
+		result[4] = radio_dto.getChannel_bandwidth();
 		return result;
 	}
 	
