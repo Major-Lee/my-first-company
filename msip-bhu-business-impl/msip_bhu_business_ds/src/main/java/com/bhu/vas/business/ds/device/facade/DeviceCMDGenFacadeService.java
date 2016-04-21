@@ -88,6 +88,8 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_VapPassword_multi:
 				return DeviceHelper.builderDSVapPasswordMultiOuter(config_sequence, extparams);
+			case DS_VapHidessid_multi:
+				return DeviceHelper.builderDSVapHidessidMultiOuter(config_sequence, extparams);
 			case DS_AclMacs:
 				return DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_RateControl:

@@ -943,6 +943,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" real_channel=\"%s\"/>";
 	
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\" hide_ssid=\"%s\"/>";
+	public static final String DeviceSetting_VapHidessidItem = "<ITEM name=\"%s\" hide_ssid=\"%s\"/>";
 	//public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
 	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" />";
 	public static final String DeviceSetting_AdminPasswordItem = "<ITEM password_rsa=\"%s\" name=\"admin\" />";
@@ -1267,14 +1268,25 @@ public class DeviceHelper {
 		if(ds_dto != null){
 			dsworkModelChangedList = new ArrayList<String>();
 			//获取当前配置功率
-			WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(ds_dto);
+/*			WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(ds_dto);
 			if(radio_dto != null){
 				//功率
 				String radio_item = builderDeviceSettingItem(DeviceSetting_RadioItem_Power, 
 						radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
 				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RadioOuter, 
 						Common_Config_Sequence, radio_item));
+			}*/
+			List<WifiDeviceSettingRadioDTO> radio_dtos = ds_dto.getRadios();
+			if(radio_dtos != null && !radio_dtos.isEmpty()){
+				List<Object[]> radio_dto_properties = new ArrayList<Object[]>();
+				for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
+					radio_dto_properties.add(radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
+				}
+				String radio_items = builderDeviceSettingItems(DeviceSetting_RadioItem_Power, radio_dto_properties);
+				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RadioOuter, 
+						Common_Config_Sequence, radio_items));
 			}
+
 			//限速
 			List<WifiDeviceSettingRateControlDTO> rc_dtos = ds_dto.getRatecontrols();
 			if(rc_dtos != null && !rc_dtos.isEmpty()){
@@ -1352,8 +1364,11 @@ public class DeviceHelper {
 		
 		StringBuffer items = new StringBuffer();
 		for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
-			if(radio_dto == null || StringUtils.isEmpty(radio_dto.getPower()) || 
-					Integer.parseInt(radio_dto.getPower()) < 0) {
+			if(radio_dto == null || StringUtils.isEmpty(radio_dto.getPower())) {
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			int power_int = Integer.parseInt(radio_dto.getPower());
+			if(power_int < 0 || power_int > 27){
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 			}
 			
@@ -1457,6 +1472,31 @@ public class DeviceHelper {
 			
 			String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
 					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
+			items.append(item);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, items.toString());
+	}
+	
+	/**
+	 * 构建vap隐藏ssid修改配置multi
+	 * @param config_sequence
+	 * @param extparams
+	 * @return
+	 */
+	public static String builderDSVapHidessidMultiOuter(String config_sequence, String extparams){
+		List<WifiDeviceSettingVapDTO> vap_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingVapDTO.class);
+		if(vap_dtos == null || vap_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+	
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
+			if(StringUtils.isEmpty(vap_dto.getName()) || StringUtils.isEmpty(vap_dto.getHide_ssid())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			
+			String item = builderDeviceSettingItem(DeviceSetting_VapHidessidItem, 
+					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapHidessid));
 			items.append(item);
 		}
 		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, items.toString());
