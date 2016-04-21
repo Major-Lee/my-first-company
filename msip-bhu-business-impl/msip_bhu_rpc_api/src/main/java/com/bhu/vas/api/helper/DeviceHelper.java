@@ -943,6 +943,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" real_channel=\"%s\"/>";
 	
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\" hide_ssid=\"%s\"/>";
+	public static final String DeviceSetting_VapHidessidItem = "<ITEM name=\"%s\" hide_ssid=\"%s\"/>";
 	//public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
 	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" />";
 	public static final String DeviceSetting_AdminPasswordItem = "<ITEM password_rsa=\"%s\" name=\"admin\" />";
@@ -1471,6 +1472,31 @@ public class DeviceHelper {
 			
 			String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
 					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
+			items.append(item);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, items.toString());
+	}
+	
+	/**
+	 * 构建vap隐藏ssid修改配置multi
+	 * @param config_sequence
+	 * @param extparams
+	 * @return
+	 */
+	public static String builderDSVapHidessidMultiOuter(String config_sequence, String extparams){
+		List<WifiDeviceSettingVapDTO> vap_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingVapDTO.class);
+		if(vap_dtos == null || vap_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+	
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
+			if(StringUtils.isEmpty(vap_dto.getName()) || StringUtils.isEmpty(vap_dto.getHide_ssid())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			
+			String item = builderDeviceSettingItem(DeviceSetting_VapHidessidItem, 
+					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapHidessid));
 			items.append(item);
 		}
 		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, items.toString());
