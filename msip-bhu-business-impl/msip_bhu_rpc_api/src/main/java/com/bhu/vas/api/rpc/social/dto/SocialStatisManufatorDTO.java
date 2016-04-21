@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Created by bluesand on 3/12/16.
  */
+@SuppressWarnings("serial")
 public class SocialStatisManufatorDTO implements Serializable {
 
     private String bssid;

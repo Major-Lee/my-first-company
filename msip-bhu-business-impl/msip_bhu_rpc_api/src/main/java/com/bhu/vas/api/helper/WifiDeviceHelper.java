@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HtmlHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -46,12 +47,14 @@ public class WifiDeviceHelper {
 	public final static String WorkMode_Bridge = "bridge-ap";
 	public final static String Default_BlockMode_Router = "route";
 	public final static String Default_BlockMode_Bridge = "bridge";
-	public final static String Default_CompleteIsolatePorts_Router = "wlan3";
+	public final static String Default_CompleteIsolatePorts_Router_Single = "wlan3";
+	public final static String Default_CompleteIsolatePorts_Router_Dual = "wlan3,wlan13";
 	public final static String Default_CompleteIsolatePorts_Bridge = "";
 	public final static int SwitchMode_NoAction = -1;
 	public final static int SwitchMode_Router2Bridge_Act = 1;
 	public final static int SwitchMode_Bridge2Router_Act = 0;
 	
+	public final static String Default_Dual_Suffix = "-5G";
 	
 	public static final int Boot_On_Reset_Happen = 1;
 	public static final int Boot_On_Reset_NotHappen = 0;
@@ -162,7 +165,7 @@ public class WifiDeviceHelper {
 		return WorkMode_Router.equals(work_mode);
 	}
 	//act 0代表bridge to router 1反之
-	public static void deviceWorkModeNeedChanged(String d_work_mode,int act, String linkmode_value){
+	public static DeviceStatusExchangeDTO deviceWorkModeNeedChanged(DeviceStatusExchangeDTO d_staus,int act, String linkmode_value){
 		if(act <0 || act >1)
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"mode:"+act});
 //		String paramWorkMode = SwitchMode_Router2Bridge_Act==act?WorkMode_Bridge:WorkMode_Router;
@@ -175,11 +178,11 @@ public class WifiDeviceHelper {
 		}else{
 			paramWorkMode = WorkMode_Router;
 		}
-		if(paramWorkMode.equals(d_work_mode)) {
-			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_WORKMODE_NOCHANGED,new String[]{d_work_mode});
+		if(paramWorkMode.equals(d_staus.getWorkmode())) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_WORKMODE_NOCHANGED,new String[]{d_staus.getWorkmode()});
 		}
-
-
+		d_staus.setWorkmode(paramWorkMode);
+		return d_staus;
 	}
 	
 	/*public static boolean isURouterDevice(String orig_model) {

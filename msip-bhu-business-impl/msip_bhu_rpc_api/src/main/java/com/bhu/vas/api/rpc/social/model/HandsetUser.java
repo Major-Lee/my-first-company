@@ -7,6 +7,7 @@ import java.util.Date;
 /**
  * Created by bluesand on 3/3/16.
  */
+@SuppressWarnings("serial")
 public class HandsetUser extends BaseStringModel {
 
     private long uid;

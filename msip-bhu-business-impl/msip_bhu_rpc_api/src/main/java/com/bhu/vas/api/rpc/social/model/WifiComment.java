@@ -11,6 +11,7 @@ import com.smartwork.msip.cores.orm.model.BaseLongModel;
  * Wifi下的用户评论
  *
  */
+@SuppressWarnings("serial")
 public class WifiComment  extends BaseLongModel implements IRedisSequenceGenable {
 
     private long uid;

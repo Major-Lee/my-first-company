@@ -19,7 +19,6 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 @SuppressWarnings("serial")
 public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String ntype;
-	//@JsonInclude(Include.NON_NULL)
 	private String template;
 	private String template_name;
 	//通用字段
@@ -33,13 +32,13 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private int max_clients;
 	//users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
 	
-	//此值不体现在参数传递中，是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
+/*	//此值不体现在参数传递中，是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
 	@JsonInclude(Include.NON_NULL)
 	private String block_mode;
 	//此值不体现在参数传递中，是根据设备当前的工作模式来决定是什么值,就是参数在过程中进行初始化
 	@JsonInclude(Include.NON_NULL)
 	private String complete_isolate_ports;
-
+*/
 	//uplink 特殊字段
 	@JsonInclude(Include.NON_NULL)
 	private String redirect_url;
@@ -60,36 +59,94 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		this.ntype = ntype;
 	}
 
-	public Object[] builderProperties() {
+	public Object[] builderProperties(DeviceStatusExchangeDTO device_status) {
 		Object[] properties = null;
 		if(VapEnumType.SharedNetworkType.Uplink.getKey().equals(ntype)){
-			properties = new Object[11];
-			properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
-			properties[1] = users_tx_rate * 8;//转成大B-》小b的单位
-			properties[2] = users_rx_rate * 8;//转成大B-》小b的单位
-			properties[3] = complete_isolate_ports;
-			properties[4] = block_mode;
-			properties[5] = signal_limit;
-			properties[6] = max_clients;
-			properties[7] = idle_timeout;
-			properties[8] = force_timeout;
-			properties[9] = open_resource;
-			properties[10] = redirect_url;
+			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
+				properties = new Object[14];
+				properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
+				properties[1] = WifiDeviceHelper.xmlContentEncoder(ssid).concat(WifiDeviceHelper.Default_Dual_Suffix);
+				properties[2] = users_tx_rate * 8;//转成大B-》小b的单位
+				properties[3] = users_rx_rate * 8;//转成大B-》小b的单位
+				properties[4] = users_tx_rate * 8;//转成大B-》小b的单位
+				properties[5] = users_rx_rate * 8;//转成大B-》小b的单位
+				if(WifiDeviceHelper.isWorkModeRouter(device_status.getWorkmode())){
+					properties[6] = WifiDeviceHelper.Default_CompleteIsolatePorts_Router_Single;
+					properties[7] = WifiDeviceHelper.Default_BlockMode_Router;
+				}else{
+					properties[6] = WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge;
+					properties[7] = WifiDeviceHelper.Default_BlockMode_Bridge;
+				}
+				properties[8] = signal_limit;
+				properties[9] = max_clients;
+				properties[10] = idle_timeout;
+				properties[11] = force_timeout;
+				properties[12] = open_resource;
+				properties[13] = redirect_url;
+			}else{//单频
+				properties = new Object[11];
+				properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
+				properties[1] = users_tx_rate * 8;//转成大B-》小b的单位
+				properties[2] = users_rx_rate * 8;//转成大B-》小b的单位
+				if(WifiDeviceHelper.isWorkModeRouter(device_status.getWorkmode())){
+					properties[3] = WifiDeviceHelper.Default_CompleteIsolatePorts_Router_Single;
+					properties[4] = WifiDeviceHelper.Default_BlockMode_Router;
+				}else{
+					properties[3] = WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge;
+					properties[4] = WifiDeviceHelper.Default_BlockMode_Bridge;
+				}
+				properties[5] = signal_limit;
+				properties[6] = max_clients;
+				properties[7] = idle_timeout;
+				properties[8] = force_timeout;
+				properties[9] = open_resource;
+				properties[10] = redirect_url;
+			}
 		}else{
-			properties = new Object[13];
-			properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
-			properties[1] = users_tx_rate * 8;//转成大B-》小b的单位
-			properties[2] = users_rx_rate * 8;//转成大B-》小b的单位
-			properties[3] = complete_isolate_ports;
-			properties[4] = block_mode;
-			properties[5] = signal_limit;
-			properties[6] = max_clients;
-			properties[7] = idle_timeout;
-			properties[8] = force_timeout;
-			properties[9] = open_resource;
-			properties[10] = remote_auth_url;
-			properties[11] = portal_server_url;
-			properties[12] = dns_default_ip;
+			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
+				properties = new Object[16];
+				properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
+				properties[1] = WifiDeviceHelper.xmlContentEncoder(ssid).concat(WifiDeviceHelper.Default_Dual_Suffix);
+				properties[2] = users_tx_rate * 8;//转成大B-》小b的单位
+				properties[3] = users_rx_rate * 8;//转成大B-》小b的单位
+				properties[4] = users_tx_rate * 8;//转成大B-》小b的单位
+				properties[5] = users_rx_rate * 8;//转成大B-》小b的单位
+				if(WifiDeviceHelper.isWorkModeRouter(device_status.getWorkmode())){
+					properties[6] = WifiDeviceHelper.Default_CompleteIsolatePorts_Router_Single;
+					properties[7] = WifiDeviceHelper.Default_BlockMode_Router;
+				}else{
+					properties[6] = WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge;
+					properties[7] = WifiDeviceHelper.Default_BlockMode_Bridge;
+				}
+				properties[8] = signal_limit;
+				properties[9] = max_clients;
+				properties[10] = idle_timeout;
+				properties[11] = force_timeout;
+				properties[12] = open_resource;
+				properties[13] = remote_auth_url;
+				properties[14] = portal_server_url;
+				properties[15] = dns_default_ip;
+			}else{//单频
+				properties = new Object[13];
+				properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
+				properties[1] = users_tx_rate * 8;//转成大B-》小b的单位
+				properties[2] = users_rx_rate * 8;//转成大B-》小b的单位
+				if(WifiDeviceHelper.isWorkModeRouter(device_status.getWorkmode())){
+					properties[3] = WifiDeviceHelper.Default_CompleteIsolatePorts_Router_Single;
+					properties[4] = WifiDeviceHelper.Default_BlockMode_Router;
+				}else{
+					properties[3] = WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge;
+					properties[4] = WifiDeviceHelper.Default_BlockMode_Bridge;
+				}
+				properties[5] = signal_limit;
+				properties[6] = max_clients;
+				properties[7] = idle_timeout;
+				properties[8] = force_timeout;
+				properties[9] = open_resource;
+				properties[10] = remote_auth_url;
+				properties[11] = portal_server_url;
+				properties[12] = dns_default_ip;
+			}
 		}
 		
 		
@@ -182,7 +239,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		this.ssid = ssid;
 	}
 
-	public String getBlock_mode() {
+	/*public String getBlock_mode() {
 		return block_mode;
 	}
 
@@ -196,7 +253,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 
 	public void setComplete_isolate_ports(String complete_isolate_ports) {
 		this.complete_isolate_ports = complete_isolate_ports;
-	}
+	}*/
 
 	public String getRemote_auth_url() {
 		return remote_auth_url;
@@ -214,7 +271,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		this.portal_server_url = portal_server_url;
 	}
 	
-	public void switchWorkMode(boolean switchAct){
+	/*public void switchWorkMode(boolean switchAct){
 		switchWorkMode(switchAct?WifiDeviceHelper.SwitchMode_Bridge2Router_Act:WifiDeviceHelper.SwitchMode_Router2Bridge_Act);
 	}
 	
@@ -231,7 +288,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			default:
 				break;
 		}
-	}
+	}*/
 
 
 
@@ -322,7 +379,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	public static boolean wasTemplateNameChanged(ParamSharedNetworkDTO paramDTO,ParamSharedNetworkDTO dbDTO){
 		if(dbDTO == null) return true;
 		if(paramDTO == null) return false;
-		if(!paramDTO.getTemplate_name().equalsIgnoreCase(dbDTO.getTemplate_name())) 
+		if(!paramDTO.getTemplate_name().equals(dbDTO.getTemplate_name())) 
 			return true;
 		return false;
 	}

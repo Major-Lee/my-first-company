@@ -20,7 +20,8 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDTO;
-import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
@@ -61,7 +62,7 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 	 * @return
 	 * @throws Exception 
 	 */
-	public String generateDeviceSetting(String mac, OperationDS ods, String extparams) throws Exception {
+	public String generateDeviceSetting(String mac, OperationDS ods, String extparams,DeviceStatusExchangeDTO device_status) throws Exception {
 		if(ods == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		String config_sequence = DeviceHelper.Common_Config_Sequence;
@@ -71,13 +72,13 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 			case DS_Http_Ad_Stop:
 				return DeviceHelper.builderDSHttpAdStopOuter(config_sequence);	
 			case DS_SharedNetworkWifi_Start:
-				return DeviceHelper.builderDSStartSharedNetworkWifiOuter(extparams);
+				return DeviceHelper.builderDSStartSharedNetworkWifiOuter(extparams,device_status);
 			case DS_SharedNetworkWifi_Stop:
-				return DeviceHelper.builderDSStopSharedNetworkWifiOuter();
+				return DeviceHelper.builderDSStopSharedNetworkWifiOuter(device_status);
 			case DS_Plugins:
 				return DeviceHelper.builderDSPluginOuter(extparams);
 			case DS_Switch_WorkMode:
-				return generateDeviceSettingWithSwitchWorkMode(mac, extparams);
+				return generateDeviceSettingWithSwitchWorkMode(mac, extparams,device_status);
 			case DS_Power:
 				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_Power_multi:
@@ -110,29 +111,14 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 	}
 	
 	//ParamSharedNetworkDTO
-	public String generateDeviceSettingWithSwitchWorkMode(String mac, String extparams){
+	public String generateDeviceSettingWithSwitchWorkMode(String mac, String extparams,DeviceStatusExchangeDTO will_device_status){
 		ParamVasSwitchWorkmodeDTO wk_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
 		int switchAct = wk_dto.getWmode();
 		if(switchAct == WifiDeviceHelper.SwitchMode_Router2Bridge_Act || switchAct == WifiDeviceHelper.SwitchMode_Bridge2Router_Act){
-			ParamSharedNetworkDTO vw_dto = sharedNetworksFacadeService.fetchDeviceSharedNetworkConfAndSwitchWorkmode(mac, switchAct);
-			/*SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
-			if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
-				vw_dto = sharedNetworkConf.getPsn();
-				vw_dto.switchWorkMode(switchAct);
-			}*/
-			/*ParamVapVistorWifiDTO vw_dto = null;
-			UserSettingState settingState = userSettingStateService.getById(mac);
-			if(settingState != null){
-				UserVistorWifiSettingDTO vistorWifi = settingState.getUserSetting(UserVistorWifiSettingDTO.Setting_Key, UserVistorWifiSettingDTO.class);
-				if(vistorWifi != null && vistorWifi.isOn()){
-					vw_dto = vistorWifi.getVw();
-					//TODO:ParamVapVistorWifiDTO block_mode变更并且更新配置 或者数据库中就不存ParamVapVistorWifiDTO字段block_mode
-					vw_dto.switchWorkMode(switchAct);
-					//更新操作应该在设备切换工作模式后上线后，如果模式变更了，再更新状态
-					//userSettingStateService.update(settingState);
-				}
-			}*/
-			return DeviceHelper.builderDSWorkModeSwitchOuter(mac, switchAct, validateDeviceSettingReturnDTO(mac), vw_dto);
+			//ParamSharedNetworkDTO vw_dto = sharedNetworksFacadeService.fetchDeviceSharedNetworkConfAndSwitchWorkmode(mac, switchAct);
+			//return DeviceHelper.builderDSWorkModeSwitchOuter(mac, switchAct, validateDeviceSettingReturnDTO(mac), vw_dto);
+			SharedNetworkSettingDTO sharedNetworkConf = sharedNetworksFacadeService.fetchDeviceSharedNetworkConf(mac);
+			return DeviceHelper.builderDSWorkModeSwitchOuter(mac, switchAct, validateDeviceSettingReturnDTO(mac), sharedNetworkConf,will_device_status);
 		}
 		return null;
 	}

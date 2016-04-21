@@ -285,6 +285,23 @@ public class VapEnumType {
 			return false;
 		}
 		
+		//是否双频设备
+		public static boolean isDualBandByVersionPrefix(String prefix){
+			if(StringUtils.isEmpty(prefix)) return false;
+			if(uRouterAcTU_401.getPrefix().equals(prefix)){
+				return true;
+			}
+			return false;
+		}
+		public static boolean isDualBandByOrigSwver(String orig_swver){
+			if(StringUtils.isEmpty(orig_swver)) return false;
+			if(orig_swver.startsWith(uRouterAcTU_401.getPrefix())){
+				return true;
+			}
+			return false;
+		}
+		
+		
 		/**
 		 * 以TS结尾的
 		 * @param orig_swver

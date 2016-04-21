@@ -123,7 +123,7 @@ public class SharedNetworksFacadeService {
 				int index = models_fromdb.indexOf(paramDto);
 				if(index != -1){
 					ParamSharedNetworkDTO dto_fromdb = models_fromdb.get(index);
-					if(ParamSharedNetworkDTO.wasConfigChanged(dto_fromdb, paramDto)){
+					if(ParamSharedNetworkDTO.wasConfigChanged(dto_fromdb, paramDto) || ParamSharedNetworkDTO.wasTemplateNameChanged(dto_fromdb, paramDto)){
 						configChanged = true;
 					}
 					models_fromdb.set(index, paramDto);
@@ -314,8 +314,7 @@ public class SharedNetworksFacadeService {
 			return sharedNetworkSettingDTO;
 		}
 	}
-	
-	public ParamSharedNetworkDTO fetchDeviceSharedNetworkConfAndSwitchWorkmode(String mac,int switchAct){
+	/*public ParamSharedNetworkDTO fetchDeviceSharedNetworkConf(String mac,int switchAct){
 		ParamSharedNetworkDTO vw_dto = null;
 		SharedNetworkSettingDTO sharedNetworkConf = fetchDeviceSharedNetworkConf(mac);
 		if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
@@ -323,7 +322,16 @@ public class SharedNetworksFacadeService {
 			vw_dto.switchWorkMode(switchAct);
 		}
 		return vw_dto;
-	}
+	}*/
+	/*public ParamSharedNetworkDTO fetchDeviceSharedNetworkConfAndSwitchWorkmode(String mac,int switchAct){
+		ParamSharedNetworkDTO vw_dto = null;
+		SharedNetworkSettingDTO sharedNetworkConf = fetchDeviceSharedNetworkConf(mac);
+		if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
+			vw_dto = sharedNetworkConf.getPsn();
+			vw_dto.switchWorkMode(switchAct);
+		}
+		return vw_dto;
+	}*/
 	
 	/**
 	 * 获取设备当前的配置，如果不存在则创建新的缺省关闭配置

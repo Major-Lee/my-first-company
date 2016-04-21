@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 3/12/16.
  */
+@SuppressWarnings("serial")
 public class SocialUserVTO implements Serializable {
 
     private Long uid;

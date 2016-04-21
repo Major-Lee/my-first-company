@@ -2,8 +2,6 @@ package com.bhu.vas.di.op.migrate;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
@@ -16,7 +14,6 @@ import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;

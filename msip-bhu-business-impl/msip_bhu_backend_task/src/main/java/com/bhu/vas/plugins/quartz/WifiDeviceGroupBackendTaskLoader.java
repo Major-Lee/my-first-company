@@ -24,6 +24,7 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 //import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 //import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.ds.devicegroup.facade.WifiDeviceGroupFacadeService;
@@ -125,7 +126,8 @@ public class WifiDeviceGroupBackendTaskLoader {
 						    if (doc.getD_online().equals("1")) {
 							String payload = autoGenerateCmds(
 								task, doc.getD_mac(),
-								doc.getD_workmodel());
+								DeviceStatusExchangeDTO.build(doc.getD_workmodel(), doc.getD_origswver()));
+								//doc.getD_workmodel());
 							downCmdsList.add(
 								DownCmds.builderDownCmds(
 									doc.getD_mac(),
@@ -191,7 +193,7 @@ public class WifiDeviceGroupBackendTaskLoader {
      * @throws Throwable
      */
     public String autoGenerateCmds(WifiDeviceBackendTask task, String wifi_mac,
-	    String workmodel) {
+    		DeviceStatusExchangeDTO d_status_dto) {
 
 	task.setState(WifiDeviceBackendTask.State_Reading);
 	wifiDeviceBackendTaskService.update(task);
@@ -200,9 +202,9 @@ public class WifiDeviceGroupBackendTaskLoader {
 	OperationDS ods_cmd = OperationDS
 		.getOperationDSFromNo(task.getSubopt());
 	String extparams = task.getContext_var();
-
+//
 	String payload = taskFacadeService.apiCmdGenerate(task.getUid(),
-		wifi_mac, opt_cmd, ods_cmd, extparams, task.getId(), workmodel,null);
+		wifi_mac, opt_cmd, ods_cmd, extparams, task.getId(), d_status_dto,null);
 
 	return payload;
     }

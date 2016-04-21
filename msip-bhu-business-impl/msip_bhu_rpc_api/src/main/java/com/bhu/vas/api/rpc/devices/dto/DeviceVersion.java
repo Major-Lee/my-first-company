@@ -106,6 +106,10 @@ public class DeviceVersion {
 		return StringHelper.EMPTY_STRING_GAP;
 	}
 	
+	public boolean wasDualBand(){
+		return DeviceUnitType.isDualBandByVersionPrefix(prefix);
+	}
+	
 	/**/
 	public boolean wasDutSoc(){
 		if(StringUtils.isEmpty(dut)) return false;
