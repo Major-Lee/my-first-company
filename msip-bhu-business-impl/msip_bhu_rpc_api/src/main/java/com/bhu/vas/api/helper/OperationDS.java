@@ -21,6 +21,7 @@ public enum OperationDS {
 	DS_VapGuest("08","修改vap访客网络开关"),
 	DS_LinkMode("10","修改上网方式"),
 	
+	DS_VapHidessid_multi("48","修改vap hide ssid"),
 	DS_Multi_Combine("49","双频合一修改"),
 	DS_RealChannel("11","切换信道"),
 	
