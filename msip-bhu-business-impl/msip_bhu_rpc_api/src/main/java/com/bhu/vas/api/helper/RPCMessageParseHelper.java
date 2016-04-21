@@ -463,6 +463,9 @@ public class RPCMessageParseHelper {
 					radio_dto.setName(radio_item.attributeValue("name"));
 					radio_dto.setPower(radio_item.attributeValue("power"));
 					radio_dto.setReal_channel(radio_item.attributeValue("real_channel"));
+					radio_dto.setRf(radio_item.attributeValue("rf"));
+					radio_dto.setCountry(radio_item.attributeValue("country"));
+					radio_dto.setChannel_bandwidth(radio_item.attributeValue("channel_bandwidth"));
 					radio_dtos.add(radio_dto);
 				}
 				dto.setRadios(radio_dtos);

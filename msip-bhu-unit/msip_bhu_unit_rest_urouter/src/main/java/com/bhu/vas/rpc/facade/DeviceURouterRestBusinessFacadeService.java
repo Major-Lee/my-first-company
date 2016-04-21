@@ -1445,6 +1445,9 @@ public class DeviceURouterRestBusinessFacadeService {
 					radio_vto.setName(radio_dto.getName());
 					radio_vto.setPower(Integer.parseInt(powerAndRealChannel[0]));
 					radio_vto.setReal_channel(Integer.parseInt(powerAndRealChannel[1]));
+					radio_vto.setRf(powerAndRealChannel[2]);
+					radio_vto.setCountry(powerAndRealChannel[3]);
+					radio_vto.setChannel_bandwidth(powerAndRealChannel[4]);
 					radios_vto.add(radio_vto);
 				}
 				vto.setRadios(radios_vto);
