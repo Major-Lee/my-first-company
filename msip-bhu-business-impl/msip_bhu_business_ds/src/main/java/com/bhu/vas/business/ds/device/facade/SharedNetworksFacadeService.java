@@ -115,14 +115,11 @@ public class SharedNetworksFacadeService {
 		}else{
 			List<ParamSharedNetworkDTO> models_fromdb = configs.get(paramDto.getNtype(),new ArrayList<ParamSharedNetworkDTO>(),true);
 			if(VapEnumType.SharedNetworkType.SafeSecure.getKey().equals(paramDto.getNtype())){
-				//SafeSecure网络需要限制模板数量
-				if(models_fromdb.size() >= BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit){
-					throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_TEMPLATES_MAXLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit)});
-				}
 				//验证models_fromdb 是否存在 template编号,如果存在则替换，否则增加
 				int index = models_fromdb.indexOf(paramDto);
 				if(index != -1){
 					ParamSharedNetworkDTO dto_fromdb = models_fromdb.get(index);
+					
 					if(ParamSharedNetworkDTO.wasConfigChanged(dto_fromdb, paramDto) || ParamSharedNetworkDTO.wasTemplateNameChanged(dto_fromdb, paramDto)){
 						configChanged = true;
 					}
@@ -144,9 +141,14 @@ public class SharedNetworksFacadeService {
 						//System.out.println("0hhhh:"+paramDto.getTemplate());
 					}*/
 				}else{
+					//SafeSecure网络需要限制模板数量
+					if(models_fromdb.size() >= BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit){
+						throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_TEMPLATES_MAXLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit)});
+					}
 					String template = fetchValidTemplate(models_fromdb);
 					paramDto.setTemplate(template);
-					paramDto.setTemplate_name(sharedNetwork.getName().concat(template));
+					if(StringUtils.isEmpty(paramDto.getTemplate_name()))
+						paramDto.setTemplate_name(sharedNetwork.getName().concat(template));
 					models_fromdb.add(paramDto);
 					userDevicesSharedNetworksService.update(configs);
 					//当前不可能有新设备应用新模板，所以返回false
