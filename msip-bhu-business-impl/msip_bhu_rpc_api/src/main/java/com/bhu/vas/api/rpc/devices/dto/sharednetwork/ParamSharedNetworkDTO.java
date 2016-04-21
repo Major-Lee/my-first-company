@@ -71,7 +71,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[4] = users_tx_rate * 8;//转成大B-》小b的单位
 				properties[5] = users_rx_rate * 8;//转成大B-》小b的单位
 				if(WifiDeviceHelper.isWorkModeRouter(device_status.getWorkmode())){
-					properties[6] = WifiDeviceHelper.Default_CompleteIsolatePorts_Router_Single;
+					properties[6] = WifiDeviceHelper.Default_CompleteIsolatePorts_Router_Dual;
 					properties[7] = WifiDeviceHelper.Default_BlockMode_Router;
 				}else{
 					properties[6] = WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge;
@@ -112,7 +112,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[4] = users_tx_rate * 8;//转成大B-》小b的单位
 				properties[5] = users_rx_rate * 8;//转成大B-》小b的单位
 				if(WifiDeviceHelper.isWorkModeRouter(device_status.getWorkmode())){
-					properties[6] = WifiDeviceHelper.Default_CompleteIsolatePorts_Router_Single;
+					properties[6] = WifiDeviceHelper.Default_CompleteIsolatePorts_Router_Dual;
 					properties[7] = WifiDeviceHelper.Default_BlockMode_Router;
 				}else{
 					properties[6] = WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge;
