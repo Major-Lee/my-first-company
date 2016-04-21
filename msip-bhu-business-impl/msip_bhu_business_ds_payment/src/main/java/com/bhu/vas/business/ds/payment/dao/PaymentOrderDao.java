@@ -6,9 +6,9 @@ import com.bhu.vas.api.rpc.payment.model.PaymentOrder;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractPaymentDao;
 
 /**
- * 
- * @author xiaowei by 16/04/12
- *
+ * @Editor Eclipse
+ * @Author Zongshuai
+ * @CreateTime 2016年4月18日 下午5:40:19
  */
 @Repository
 public class PaymentOrderDao extends AbstractPaymentDao<Long, PaymentOrder>{
