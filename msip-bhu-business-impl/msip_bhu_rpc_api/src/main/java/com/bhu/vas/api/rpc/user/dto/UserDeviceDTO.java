@@ -17,6 +17,8 @@ public class UserDeviceDTO implements Serializable {
 
     private String work_mode;
     private String orig_model;
+    private String d_sn;
+    private String d_address;
     
 	//设备的固件版本号
     private String ver;
@@ -104,4 +106,20 @@ public class UserDeviceDTO implements Serializable {
     public void setIp(String ip) {
         this.ip = ip;
     }
+
+	public String getD_sn() {
+		return d_sn;
+	}
+
+	public void setD_sn(String d_sn) {
+		this.d_sn = d_sn;
+	}
+
+	public String getD_address() {
+		return d_address;
+	}
+
+	public void setD_address(String d_address) {
+		this.d_address = d_address;
+	}
 }
