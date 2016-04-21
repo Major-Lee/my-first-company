@@ -810,7 +810,7 @@ public class DeviceHelper {
 	//open_resource=bhuwifi.com,bhunetworks.com
 	//切AP模式需修改参数：将block_mode="route"改为block_mode="bridge"。
 	//参数顺序 users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
-	public static final String DeviceSetting_Start_VisitorWifi =
+	/*public static final String DeviceSetting_Start_VisitorWifi =
 			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
 				"<net>"+
 				"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\" /></interface>"+
@@ -844,7 +844,7 @@ public class DeviceHelper {
 			          "<vap><ITEM name=\"wlan3\" guest_en=\"disable\" isolation=\"0\" /></vap>"+
 			     "</wifi>"+
 			     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>"+
-		    "</dev>";
+		    "</dev>";*/
 	public static final String DeviceSetting_Plugins_Samba =
 	"<dev>"+
 	    "<sys>"+
@@ -890,6 +890,36 @@ public class DeviceHelper {
 			"</dev>";
 
 	
+	
+	
+	
+	
+	
+	
+	///complete_isolate_ports 区分 工作模式和单双频
+	public static final String DeviceSetting_Start_SharedNetworkWifi_Uplink_Double =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<wifi><vap>"
+				+ "<ITEM name=\"wlan3\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" />"
+				+ "<ITEM name=\"wlan13\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" />"
+				+ "</vap></wifi>"+
+				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+	
+				"<net>"+
+					"<interface>"
+					+ "<ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/>"
+					+ "<ITEM name=\"wlan13\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/>"
+					+ "</interface>"+
+					"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"%s\"/></bridge>"+
+					"<webportal>"+
+						"<setting>"+
+							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3,wlan13\" auth_mode=\"local\" block_mode=\"%s\" local_mode=\"signal\" signal_limit=\"%s\" max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+
+							"extend_memory_enable=\"disable\" guest_portal_en=\"enable\" allow_https=\"disable\" progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\" "+ 
+							"open_resource=\"%s\" forbid_management=\"enable\" "+ 
+							"redirect_url=\"%s\"/>"+ 
+						"</setting>"+
+					"</webportal>"+
+				"</net>"+
+			"</dev>";
 	
 	
 	public static final String DeviceSetting_Start_SharedNetworkWifi_Uplink =

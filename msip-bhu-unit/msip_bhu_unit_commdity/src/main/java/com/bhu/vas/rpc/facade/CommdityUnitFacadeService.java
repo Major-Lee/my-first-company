@@ -16,6 +16,7 @@ import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
@@ -101,7 +102,7 @@ public class CommdityUnitFacadeService {
 			String amount = CommdityIntervalAmountService.getInstance().getRAmount(mac, umac, commdityid);
 			if(StringUtils.isEmpty(amount)){
 				//处理商品金额
-				amount = chargingFacadeService.fetchAmountRange(mac, umactype);
+				amount = CommdityHelper.generateCommdityAmount(chargingFacadeService.fetchAmountRange(mac, umactype));
 				//amount = commdityFacadeService.commdityAmount(commdityid);
 				//CommdityIntervalAmountService.getInstance().addRAmount(mac, umac, commdityid, amount);
 				Long addnx_ret = CommdityIntervalAmountService.getInstance().addNx_RAmount(mac, umac, commdityid, amount);
