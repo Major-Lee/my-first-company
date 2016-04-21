@@ -1,12 +1,7 @@
 package com.bhu.vas.api.dto.ret.param;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
-import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.smartwork.msip.cores.helper.JsonHelper;
 
 
 
@@ -131,7 +126,7 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		this.complete_isolate_ports = complete_isolate_ports;
 	}
 
-	public void switchWorkMode(int switchAct){
+/*	public void switchWorkMode(int switchAct){
 		switch(switchAct){
 			case WifiDeviceHelper.SwitchMode_Router2Bridge_Act:
 				this.block_mode = WifiDeviceHelper.Default_BlockMode_Bridge;
@@ -180,13 +175,13 @@ public class ParamVapVistorWifiDTO implements java.io.Serializable{
 		//if(StringUtils.isEmpty(param.getSsid())) param.setSsid(WifiDeviceHelper.VistorWifi_Default_SSID);
 		if(StringUtils.isEmpty(param.getSsid())) param.setSsid(SharedNetworkType.Uplink.getDefaultSsid());
 		return param;
-	}
+	}*/
 	
-	public static void main(String[] argv){
+	/*public static void main(String[] argv){
 		System.out.println(JsonHelper.getJSONString(fufillWithDefault(null,false)));
 		
 		ParamVapVistorWifiDTO param = new ParamVapVistorWifiDTO();
 		param.setSsid("GOOO理论");
 		System.out.println(JsonHelper.getJSONString(fufillWithDefault(param,true)));
-	}
+	}*/
 }

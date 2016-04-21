@@ -14,11 +14,8 @@ public class TagDevices extends SetJsonExtStringModel<String> {
 	 * 最后操作用户
 	 */
 	private int last_operator;
-	
 	private String tag;
-	
 	private Date created_at;
-	private Date update_at;
 	
 	public String getTag2ES(){
 		Set<String> set = fetchTags(tag);
@@ -38,6 +35,26 @@ public class TagDevices extends SetJsonExtStringModel<String> {
 		return ret;
 	}
 
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	public Date getCreated_at() {
+		return created_at;
+	}
+
+	public void setCreated_at(Date created_at) {
+		this.created_at = created_at;
+	}
+
+	public int getLast_operator() {
+		return last_operator;
+	}
+
 	@Override
 	public void preInsert() {
 		if (this.created_at == null)
@@ -45,11 +62,6 @@ public class TagDevices extends SetJsonExtStringModel<String> {
 		super.preInsert();
 	}
 	
-	@Override
-	public void preUpdate() {
-		this.update_at = new Date();
-		super.preUpdate();
-	}
 	@Override
 	public Class<String> getJsonParserModel() {
 		return String.class;

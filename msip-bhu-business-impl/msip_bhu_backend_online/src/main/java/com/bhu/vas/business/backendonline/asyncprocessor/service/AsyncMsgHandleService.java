@@ -40,6 +40,7 @@ import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -242,10 +243,12 @@ public class AsyncMsgHandleService {
 								logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
 								//更新索引，下发指令
 								wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),psn.getTemplate());
-								psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+								//psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
 								//生成下发指令
 								String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
-										dto.getMac(), -1,JsonHelper.getJSONString(psn),deviceCMDGenFacadeService);
+										dto.getMac(), -1,JsonHelper.getJSONString(psn),
+										DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),
+										deviceCMDGenFacadeService);
 								payloads.add(sharedNetworkCMD);
 							}
 							
@@ -1086,12 +1089,11 @@ public class AsyncMsgHandleService {
 								return;
 							}
 							for(String mac:rdmacs){
-								//WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-								//if(wifiDevice == null) continue;
-								current.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+								//current.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
 								//生成下发指令
 								String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
 										mac, CMDBuilder.AutoGen,JsonHelper.getJSONString(current),
+										DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),
 										deviceCMDGenFacadeService);
 								daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 							}

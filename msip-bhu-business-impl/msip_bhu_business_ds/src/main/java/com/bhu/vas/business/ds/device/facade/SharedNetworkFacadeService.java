@@ -206,7 +206,7 @@ public class SharedNetworkFacadeService {
 		}
 	}
 	
-	public ParamSharedNetworkDTO fetchDeviceSharedNetworkConfAndSwitchWorkmode(String mac,int switchAct){
+	/*public ParamSharedNetworkDTO fetchDeviceSharedNetworkConfAndSwitchWorkmode(String mac,int switchAct){
 		ParamSharedNetworkDTO vw_dto = null;
 		SharedNetworkSettingDTO sharedNetworkConf = fetchDeviceSharedNetworkConf(mac);
 		if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
@@ -214,7 +214,7 @@ public class SharedNetworkFacadeService {
 			vw_dto.switchWorkMode(switchAct);
 		}
 		return vw_dto;
-	}
+	}*/
 	
 	/**
 	 * 获取设备当前的配置，如果不存在则创建新的缺省配置

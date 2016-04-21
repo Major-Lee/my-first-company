@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Created by bluesand on 3/8/16.
  */
+@SuppressWarnings("serial")
 public class HandsetUserDetailVTO implements Serializable {
 
     private HandsetUserVTO handset;

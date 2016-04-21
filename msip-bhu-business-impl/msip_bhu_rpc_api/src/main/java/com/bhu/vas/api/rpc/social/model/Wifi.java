@@ -7,6 +7,7 @@ import java.util.Date;
 /**
  * Created by bluesand on 3/7/16.
  */
+@SuppressWarnings("serial")
 public class Wifi extends BaseStringModel {
 
     /**

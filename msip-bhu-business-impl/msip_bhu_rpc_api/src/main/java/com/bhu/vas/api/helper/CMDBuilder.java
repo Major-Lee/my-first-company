@@ -11,6 +11,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceModuleUpgradeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceVisitorKickoffDTO;
 import com.bhu.vas.api.dto.ret.transfer.ParamDeviceRemoteControlDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -346,7 +347,10 @@ public class CMDBuilder {
 	 * 			其余属性直接extparams为相关参数，可能是字符串 可能是jason参数
 	 * @return
 	 */
-	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams/*,String orig_swver*/,IGenerateDeviceSetting generateDeviceSetting){
+	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams,IGenerateDeviceSetting generateDeviceSetting){
+		return autoBuilderCMD4Opt(opt,subopt,wifi_mac,taskid,extparams,null,generateDeviceSetting);
+	}
+	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams, DeviceStatusExchangeDTO device_status,IGenerateDeviceSetting generateDeviceSetting){
 		String resultCmd = null;
 		if(opt != null){
 			if(taskid <= AutoGen){
@@ -359,7 +363,7 @@ public class CMDBuilder {
 			switch(opt){
 				case ModifyDeviceSetting:
 					try{
-						String payload = generateDeviceSetting.generateDeviceSetting(wifi_mac, subopt, extparams);
+						String payload = generateDeviceSetting.generateDeviceSetting(wifi_mac, subopt, extparams,device_status);
 						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, payload);
 					}catch(Exception ex){
 						ex.printStackTrace(System.out);

@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Created by bluesand on 3/7/16.
  */
+@SuppressWarnings("serial")
 public class WifiVTO implements Serializable {
 
     private String bssid;

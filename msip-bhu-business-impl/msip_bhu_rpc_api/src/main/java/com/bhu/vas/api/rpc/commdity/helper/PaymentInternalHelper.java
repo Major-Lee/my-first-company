@@ -156,7 +156,7 @@ public class PaymentInternalHelper {
 	}
 	
 	public static void main(String[] args) throws Exception{
-		String orderid = "10012016031700000000000000000244";
+		//String orderid = "10012016031700000000000000000244";
 		
 /*		Map<String, String> api_params = generateWithdrawApiParamMap();
 		api_params.put("userName", "网文龙咔咔咔咔");

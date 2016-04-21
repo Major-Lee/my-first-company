@@ -2,14 +2,14 @@ package com.bhu.vas.api.rpc.social.iservice;
 
 
 import java.util.List;
-import java.util.Set;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.social.vto.CommentedWifiVTO;
+import com.bhu.vas.api.rpc.social.vto.HandsetUserDetailVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiCommentVTO;
+import com.bhu.vas.api.rpc.social.vto.WifiHandsetUserVTO;
 import com.bhu.vas.api.rpc.social.vto.WifiVTO;
 import com.bhu.vas.api.vto.SocialFetchFollowListVTO;
-import com.bhu.vas.api.rpc.social.vto.*;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 

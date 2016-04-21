@@ -5,6 +5,7 @@ import java.io.Serializable;
 /**
  * Created by bluesand on 3/7/16.
  */
+@SuppressWarnings("serial")
 public class WifiVisitorVTO  implements Serializable{
 
     private long uid;

@@ -389,7 +389,7 @@ public class WifiDeviceGroupFacadeService {
         return vto;
     }
 
-    private DeviceGroupVTO fromWifiDeviceGroup(WifiDeviceGroup dgroup) {
+    /*private DeviceGroupVTO fromWifiDeviceGroup(WifiDeviceGroup dgroup) {
         DeviceGroupVTO vto = new DeviceGroupVTO();
         vto.setGid(dgroup.getId());
         vto.setName(dgroup.getName());
@@ -406,53 +406,8 @@ public class WifiDeviceGroupFacadeService {
         vto.setParent(dgroup.getChildren() > 0);
         vto.setPath(dgroup.getPath());
 
-	/*
-	 * ModelCriteria mc = new ModelCriteria();
-	 * mc.createCriteria().andColumnEqualTo("gid", dgroup.getId()); int
-	 * total = wifiDeviceGroupRelationService.countByCommonCriteria(mc);
-	 * 
-	 * mc.setPageNumber(pageNo); mc.setPageSize(pageSize);
-	 * 
-	 * List<WifiDeviceGroupRelationPK> ids =
-	 * wifiDeviceGroupRelationService.findIdsByModelCriteria(mc);
-	 * 
-	 * List<String> deviceIds = new ArrayList<String>(); for
-	 * (WifiDeviceGroupRelationPK pk : ids) { deviceIds.add(pk.getMac()); }
-	 * 
-	 * List<WifiDevice> entitys = wifiDeviceService.findByIds(deviceIds,
-	 * true, true); List<WifiDeviceVTO> vtos = new
-	 * ArrayList<WifiDeviceVTO>(); WifiDeviceVTO wifiDeviceVTO = null;
-	 * for(WifiDevice entity : entitys){ if(entity != null){
-	 * //todo(bluesand):此处以后会跟搜索结果合并？现在用于群组菜单业务。 wifiDeviceVTO = new
-	 * WifiDeviceVTO(); wifiDeviceVTO.setWid(entity.getId());
-	 * wifiDeviceVTO.setOl(entity.isOnline()? 1: 0);
-	 * wifiDeviceVTO.setOm(org.apache.commons.lang.StringUtils.isEmpty(
-	 * entity.getOem_model()) ? entity.getOrig_model() :
-	 * entity.getOem_model()); wifiDeviceVTO.setWm(entity.getWork_mode());
-	 * wifiDeviceVTO.setCfm(entity.getConfig_mode());
-	 * wifiDeviceVTO.setRts(entity.getLast_reged_at().getTime());
-	 * wifiDeviceVTO.setCts(entity.getCreated_at().getTime());
-	 * wifiDeviceVTO.setOvd(org.apache.commons.lang.StringUtils.isEmpty(
-	 * entity.getOem_vendor()) ? entity.getOrig_vendor() :
-	 * entity.getOem_vendor());
-	 * wifiDeviceVTO.setOesv(entity.getOem_swver());
-	 * wifiDeviceVTO.setDof(org.apache.commons.lang.StringUtils.isEmpty(
-	 * entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
-	 * wifiDeviceVTO.setUof(org.apache.commons.lang.StringUtils.isEmpty(
-	 * entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
-	 * wifiDeviceVTO.setIpgen(entity.isIpgen()); //如果是离线 计算离线时间
-	 * if(wifiDeviceVTO.getOl() == 0){ long logout_ts =
-	 * entity.getLast_logout_at().getTime();
-	 * wifiDeviceVTO.setOfts(logout_ts);
-	 * wifiDeviceVTO.setOftd(System.currentTimeMillis() - logout_ts); }
-	 * vtos.add(wifiDeviceVTO); }
-	 * 
-	 * }
-	 */
-        // vto.setPage_devices(new CommonPage<WifiDeviceVTO>(pageNo, pageSize,
-        // total, vtos));
         return vto;
-    }
+    }*/
 
     public TailPage<BackendTaskVTO> fetch_backendtask(int uid, String state,
                                                       int pageNo, int pageSize) {
