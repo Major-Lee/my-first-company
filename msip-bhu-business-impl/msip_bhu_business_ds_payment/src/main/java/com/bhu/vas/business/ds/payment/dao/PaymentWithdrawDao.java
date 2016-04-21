@@ -6,6 +6,9 @@ import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractPaymentDao;
 
 /**
+ * @Editor Eclipse
+ * @Author Zongshuai
+ * @CreateTime 2016年4月18日 下午5:40:19
  */
 @Repository
 public class PaymentWithdrawDao extends AbstractPaymentDao<Long, PaymentWithdraw>{
