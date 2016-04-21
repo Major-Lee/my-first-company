@@ -431,6 +431,7 @@ public class BusinessEnumType {
 		//DeliverPrepared(6,"准备发货状态","系统通知应用发货失败时更新为此状态"),
 		//Delivering(9,"发货中状态",""),
 		DeliverCompleted(10,"发货完成状态","系统通知应用发货成功时更新为此状态"),
+		SharedealCompleted(100,"分成完成状态","系统分成完成时更新为此状态"),
 		;
 		private Integer key;
 		private String name;
