@@ -13,7 +13,7 @@
         </repository>
     </repositories>
 
-    <artifactId>msip_bhu_commdity_rest</artifactId>
+    <artifactId>msip_bhu_payment_rest</artifactId>
     <packaging>war</packaging>
 
     <dependencies>
@@ -25,6 +25,7 @@
             <groupId>com.smartwork</groupId>
             <artifactId>msip_fsstorerule</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.smartwork</groupId>
             <artifactId>msip_core_plugins_wordfilter</artifactId>
@@ -36,16 +37,22 @@
         <dependency>
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_web</artifactId>
-        </dependency> 
+        </dependency>  
         <dependency>
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_i18n</artifactId>
-        </dependency>
-
+        </dependency>        
         <dependency>
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_rpc_api</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_ds_payment</artifactId>
+        </dependency>
+        
+        <!-- 
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
@@ -60,6 +67,7 @@
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
         </dependency> 
+         -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -69,7 +77,7 @@
     </dependencies>
 
     <build>
-        <finalName>msip_bhu_commdity_rest</finalName>
+        <finalName>msip_bhu_payment_rest</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
