@@ -1,6 +1,7 @@
 package com.bhu.vas.api.dto.push;
 
 import com.bhu.vas.api.rpc.user.model.PushType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 打赏分成push dto
@@ -10,14 +11,18 @@ import com.bhu.vas.api.rpc.user.model.PushType;
 @SuppressWarnings("serial")
 public class SharedealNotifyPushDTO extends NotificationPushDTO{
 	//终端mac
+	@JsonIgnore
 	private String hd_mac;
 	//绑定设备的用户id
+	@JsonIgnore
 	private Integer uid;
 	//分成金额
 	private String cash;
 	//支付方式
+	@JsonIgnore
 	private String payment_type;
 	//终端类型
+	@JsonIgnore
 	private int umac_type;
 	
 	public String getHd_mac() {
