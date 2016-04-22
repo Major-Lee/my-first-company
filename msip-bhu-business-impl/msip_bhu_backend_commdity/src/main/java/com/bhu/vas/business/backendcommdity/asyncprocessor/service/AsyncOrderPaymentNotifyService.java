@@ -123,7 +123,7 @@ public class AsyncOrderPaymentNotifyService {
 				if(uMacType == null){
 					uMacType = OrderUmacType.Terminal;
 				}
-				if(StringUtils.isNotEmpty(order.getPayment_type())){
+				if(StringUtils.isEmpty(order.getPayment_type())){
 					order.setPayment_type(BusinessEnumType.unknownPaymentType);
 				}
 				/*StringBuilder sb_description = new StringBuilder();
@@ -146,7 +146,8 @@ public class AsyncOrderPaymentNotifyService {
 								new IWalletSharedealNotifyCallback(){
 									@Override
 									public String notifyCashSharedealOper(int uid, double cash) {
-										logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper: uid[%s] cash[%s]", uid, cash));
+										logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper: uid[%s] "
+												+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
 										if(uid > 0 && cash > 0){
 											SharedealNotifyPushDTO sharedeal_push_dto = new SharedealNotifyPushDTO();
 											sharedeal_push_dto.setMac(mac);
@@ -157,7 +158,8 @@ public class AsyncOrderPaymentNotifyService {
 											sharedeal_push_dto.setUmac_type(order_umac_type);
 											pushService.pushSharedealNotify(sharedeal_push_dto);
 										}
-										logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper successful: uid[%s] cash[%s]", uid, cash));
+										logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper successful: uid[%s] "
+												+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
 										return null;
 									}
 				});
