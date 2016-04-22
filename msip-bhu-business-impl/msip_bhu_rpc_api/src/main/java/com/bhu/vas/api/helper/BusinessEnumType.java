@@ -757,8 +757,8 @@ public class BusinessEnumType {
 	 *
 	 */
 	public enum OrderUmacType{
-		Pc(1,"Pc类型","PC端"),
-		Terminal(2,"终端类型","移动端"),
+		Pc(1,"Pc类型","PC"),
+		Terminal(2,"终端类型","手机"),
 		;
 		private Integer key;
 		private String name;

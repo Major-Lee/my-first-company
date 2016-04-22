@@ -13,6 +13,7 @@ import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceWSOnlinePushDTO;
 import com.bhu.vas.api.dto.push.NotificationPushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
+import com.bhu.vas.api.dto.push.SharedealNotifyPushDTO;
 import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
@@ -26,6 +27,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.context.HandsetOnlineContext;
+import com.bhu.vas.push.common.context.SharedealNofityContext;
 import com.bhu.vas.push.common.dto.PushMsg;
 import com.bhu.vas.push.common.service.gexin.GexinPushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -82,6 +84,9 @@ public class PushService{
 						break;
 					case WifiDeviceWorkModeChanged:
 						push_ret = this.pushWifiDeviceWorkModeChanged(pushDto);
+						break;
+					case SharedealNotify:
+						push_ret = this.pushSharedealNotify(pushDto);
 						break;
 					default:
 						break;
@@ -255,6 +260,38 @@ public class PushService{
 	}
 	
 	/**
+	 * 终端打赏分成push
+	 * @param pushDto
+	 * @param presentDto
+	 * @return
+	 */
+	public boolean pushSharedealNotify(PushDTO pushDto){
+		boolean ret = false;
+		try{
+			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
+			//System.out.println("终端上线push2:"+presentDto);
+			if(presentDto != null){
+				SharedealNotifyPushDTO sharedeal_push_dto = (SharedealNotifyPushDTO)pushDto;
+				SharedealNofityContext context = businessPushContextService.sharedealNotifyContext(sharedeal_push_dto);
+
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
+				this.builderSharedealNotifyPushMsg(pushMsg, sharedeal_push_dto, context);
+					//发送push
+				ret = pushNotification(pushMsg);
+				if(ret){
+					logger.info("PushSharedealNotify Successed " + pushMsg.toString());
+				}else{
+					logger.info("PushSharedealNotify Failed " + pushMsg.toString());
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("PushSharedealNotify exception " + ex.getMessage(), ex);
+		}
+		return ret;
+	}
+	
+	/**
 	 * 发送用户bbs登录消息
 	 * @param pushDto
 	 * @param presentDto
@@ -416,6 +453,21 @@ public class PushService{
 		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 
+	/**
+	 * 构建打赏分成push的透传内容
+	 * @param pushMsg
+	 * @param context
+	 * @return
+	 */
+	public void builderSharedealNotifyPushMsg(PushMsg pushMsg, NotificationPushDTO notificationPushDto, SharedealNofityContext context){
+		pushMsg.setTitle(PushType.SharedealNotify.getTitle());
+		pushMsg.setText(String.format(PushType.SharedealNotify.getText(), context.getUmac_mf(), 
+				context.getUmac_type_desc(), context.getPayment_type_name(), context.getCash()));
+		notificationPushDto.setTitle(PushType.SharedealNotify.getP_title());
+		notificationPushDto.setText(String.format(PushType.SharedealNotify.getP_text(), context.getUmac_mf(), 
+				context.getUmac_type_desc(), context.getPayment_type_name(), context.getCash()));
+		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
+	}
 
 	/**
 	 * 构建终端上线push的透传内容
