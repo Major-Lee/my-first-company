@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.procedure.ShareDealWalletProcedureDTO;
+import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
@@ -32,6 +33,7 @@ import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -200,6 +202,38 @@ public class UserWalletFacadeService{
 		//this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		//this.doWalletLog(sharedeal.getManufacturer(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getManufacturer_cash(), sharedeal.getManufacturer_cash(),0d, String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		return executeRet;
+	}
+	
+	public int sharedealSummaryWithProcedure(int uid){
+		ShareDealWalletSummaryProcedureDTO procedureDTO = new ShareDealWalletSummaryProcedureDTO();
+		procedureDTO.setUserid(uid);
+		int executeRet = userWalletService.executeProcedure(procedureDTO);
+		System.out.println(JsonHelper.getJSONString(procedureDTO));
+		return executeRet;
+		/*
+		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
+		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, orderid, cash);
+		ShareDealWalletProcedureDTO procedureDTO = ShareDealWalletProcedureDTO.buildWith(sharedeal);
+		procedureDTO.setTransmode(UWalletTransMode.SharedealPayment.getKey());
+		procedureDTO.setTransmode_desc(UWalletTransMode.SharedealPayment.getName());
+		procedureDTO.setTranstype(UWalletTransType.ReadPacketSettle2C.getKey());
+		procedureDTO.setTranstype_desc(UWalletTransType.ReadPacketSettle2C.getName());
+		procedureDTO.setDescription(description);
+		procedureDTO.setOwner_memo(String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		procedureDTO.setManufacturer_memo(String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getManufacturer_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		int executeRet = userWalletService.executeProcedure(procedureDTO);
+		if(executeRet == 0){
+			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+			if(sharedeal.isBelong() && callback != null){
+				callback.notifyCashSharedealOper(sharedeal.getOwner(),sharedeal.getOwner_cash());
+			}
+		}else
+			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
+		//uwallet = userWalletService.update(uwallet);
+		//this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		//this.doWalletLog(sharedeal.getManufacturer(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getManufacturer_cash(), sharedeal.getManufacturer_cash(),0d, String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		return executeRet;*/
 	}
 	
 	
