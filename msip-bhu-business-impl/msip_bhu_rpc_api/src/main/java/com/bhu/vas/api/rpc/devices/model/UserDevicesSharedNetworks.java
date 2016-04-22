@@ -46,6 +46,7 @@ public class UserDevicesSharedNetworks extends KeyListMapJsonExtPKModel<Integer,
 			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(paramDto.getNtype());
 			paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
 		}
+		paramDto.setTs(System.currentTimeMillis());
 		List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
 		sharedNetworkType_models.add(paramDto);
 		configs.put(paramDto.getNtype(), sharedNetworkType_models);
@@ -76,6 +77,7 @@ public class UserDevicesSharedNetworks extends KeyListMapJsonExtPKModel<Integer,
 		configs.setId(uid);
 		List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
 		ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
+		dto.setTs(System.currentTimeMillis());
 		dto.setTemplate(template);
 		dto.setTemplate_name(sharedNetwork.getName().concat(template));
 		sharedNetworkType_models.add(dto);

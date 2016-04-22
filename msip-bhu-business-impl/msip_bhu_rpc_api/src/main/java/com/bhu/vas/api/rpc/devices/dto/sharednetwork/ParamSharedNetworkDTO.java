@@ -21,6 +21,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String ntype;
 	private String template;
 	private String template_name;
+	private long ts;
 	//通用字段
 	private String ssid;
 	private int users_tx_rate;
@@ -153,6 +154,12 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return properties;
 	}
 
+	public long getTs() {
+		return ts;
+	}
+	public void setTs(long ts) {
+		this.ts = ts;
+	}
 	public String getTemplate_name() {
 		return template_name;
 	}

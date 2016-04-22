@@ -122,6 +122,7 @@ public class SharedNetworksFacadeService {
 					ParamSharedNetworkDTO dto_fromdb = models_fromdb.get(index);
 					if(StringUtils.isEmpty(paramDto.getTemplate_name()))
 						paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
+					paramDto.setTs(System.currentTimeMillis());
 					if(ParamSharedNetworkDTO.wasConfigChanged( paramDto,dto_fromdb) || ParamSharedNetworkDTO.wasTemplateNameChanged(paramDto,dto_fromdb)){
 						configChanged = true;
 					}
@@ -149,6 +150,7 @@ public class SharedNetworksFacadeService {
 					}
 					String template = fetchValidTemplate(models_fromdb);
 					paramDto.setTemplate(template);
+					paramDto.setTs(System.currentTimeMillis()
 					if(StringUtils.isEmpty(paramDto.getTemplate_name()))
 						paramDto.setTemplate_name(sharedNetwork.getName().concat(template));
 					models_fromdb.add(paramDto);
@@ -160,6 +162,7 @@ public class SharedNetworksFacadeService {
 				paramDto.setTemplate(DefaultTemplate);
 				if(StringUtils.isEmpty(paramDto.getTemplate_name()))
 					paramDto.setTemplate_name(sharedNetwork.getName().concat(DefaultTemplate));
+				paramDto.setTs(System.currentTimeMillis());
 				models_fromdb.clear();
 				models_fromdb.add(paramDto);
 				userDevicesSharedNetworksService.update(configs);
@@ -229,6 +232,7 @@ public class SharedNetworksFacadeService {
 				ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
 				dto.setTemplate(DefaultTemplate);
 				dto.setTemplate_name(sharedNetwork.getName().concat(DefaultTemplate));
+				dto.setTs(System.currentTimeMillis());
 				models.add(dto);
 				userDevicesSharedNetworksService.update(configs);
 			}
@@ -265,6 +269,7 @@ public class SharedNetworksFacadeService {
 				dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
 				dto.setTemplate(DefaultTemplate);
 				dto.setTemplate_name(sharedNetwork.getName().concat(DefaultTemplate));
+				dto.setTs(System.currentTimeMillis());
 				models.add(dto);
 				userDevicesSharedNetworksService.update(configs);
 			}else{
@@ -368,6 +373,7 @@ public class SharedNetworksFacadeService {
 			ParamSharedNetworkDTO configDto = ParamSharedNetworkDTO.builderDefault(SharedNetworkType.SafeSecure.getKey());
 			configDto.setTemplate(DefaultTemplate);
 			configDto.setTemplate_name(SharedNetworkType.SafeSecure.getName().concat(DefaultTemplate));
+			configDto.setTs(System.currentTimeMillis());
 			sharednetwork.setSharednetwork_type(configDto.getNtype());
 			sharednetwork.setTemplate(DefaultTemplate);
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
