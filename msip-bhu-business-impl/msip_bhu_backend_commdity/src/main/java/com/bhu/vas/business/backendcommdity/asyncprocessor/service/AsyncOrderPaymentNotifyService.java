@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
 
-
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
@@ -22,6 +21,7 @@ import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
@@ -132,9 +132,16 @@ public class AsyncOrderPaymentNotifyService {
 					sb_description.append(order.getPayment_type());
 				}*/
 				OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
-				userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), amount, orderid, 
+				int sucessed = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), amount, orderid, 
 						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
-								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));
+								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP),
+								new IWalletSharedealNotifyCallback(){
+									@Override
+									public String notifyCashSharedealOper(
+											int uid, double cash) {
+										return null;
+									}
+				});
 				
 				/*userWalletFacadeService.sharedealCashToUserWallet(order.getMac(), amount, orderid, 
 						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
