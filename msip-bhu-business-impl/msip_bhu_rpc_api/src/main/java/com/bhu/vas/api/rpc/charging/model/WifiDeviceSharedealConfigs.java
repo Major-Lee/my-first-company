@@ -31,6 +31,8 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	public static final double Default_Manufacturer_Percent = 0.30d;
 	//如果owner字段为<=0则采用此值为缺省分成用户
 	public static final int Default_Owner = 1;
+	
+	public static final int None_Owner = -1;
 	//如果manufacturer<=0字段为空则采用此值为缺省分成用户
 	public static final int Default_Manufacturer = 110;
 	//设备批次号（导入批次号-一般库房进行编号）格式为 yyyyMMdd-longsequence
@@ -144,10 +146,10 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 		super.preInsert();
 	}
 	
-	public void doRuntimeInit(String dmac,Integer owner){
+	public void doRuntimeInit(String dmac,int owner){
 		this.setId(dmac);
-		if(owner == null || owner.intValue() <=0){
-			this.setOwner(-1);
+		if(owner <=0){
+			this.setOwner(None_Owner);
 		}else{
 			this.setOwner(owner);
 		}

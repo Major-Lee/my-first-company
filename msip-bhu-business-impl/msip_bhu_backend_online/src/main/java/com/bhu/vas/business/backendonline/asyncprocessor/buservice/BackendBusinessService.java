@@ -13,6 +13,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDet
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 
@@ -32,6 +33,11 @@ public class BackendBusinessService {
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
+	
+	@Resource
+	private ChargingFacadeService chargingFacadeService;
+
+	
 	/**********************************     清除设备数据业务 start   *****************************************/
 	
 	/**
@@ -182,7 +188,7 @@ public class BackendBusinessService {
 	public void clearDeviceBindedRelation(String mac){
 		try{
 			deviceFacadeService.deviceResetDestory(mac);
-			//userDeviceService.clearDeviceBinded(mac);
+			chargingFacadeService.wifiDeviceResetNotify(mac);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}

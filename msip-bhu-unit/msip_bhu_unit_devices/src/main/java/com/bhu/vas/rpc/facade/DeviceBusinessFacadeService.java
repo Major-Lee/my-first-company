@@ -65,6 +65,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorS
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
@@ -77,7 +78,6 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
-import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -136,8 +136,8 @@ public class DeviceBusinessFacadeService {
 	@Resource
 	private UserDeviceService userDeviceService;
 	
-	@Resource
-	private UserService userService;
+	//@Resource
+	//private UserService userService;
 	
 	@Resource
 	private UserFacadeService userFacadeService;
@@ -147,6 +147,10 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
+	
+	@Resource
+	private ChargingFacadeService chargingFacadeService;
+
 	
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
@@ -382,7 +386,7 @@ public class DeviceBusinessFacadeService {
 								        wifiDevice.setIndustry(industry);
 								        wifiDeviceService.update(wifiDevice);
 						    		}
-							        
+						    		chargingFacadeService.wifiDeviceBindedNotify(mac, user.getId());
 							        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, bindDeviceName, industry);
 									keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
 								}

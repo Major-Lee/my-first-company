@@ -84,6 +84,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerServi
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
@@ -170,6 +171,9 @@ public class AsyncMsgHandleService {
 	
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+	
+	@Resource
+	private ChargingFacadeService chargingFacadeService;
 	
 	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
@@ -1553,26 +1557,12 @@ public class AsyncMsgHandleService {
 		afterUserSignedonThenCmdDown(dto.getMac());
 
 		userDeviceBindOperateSyskeySync(dto.getMac(), dto.getUid());
-		
-		{//给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
-			/*List<String> cmdPayloads = null;
-			try{
-				WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
-				if(wifiDevice != null){
-					if(WifiDeviceHelper.deviceSharedNetworkStrategy(wifiDevice.getOrig_swver())){
-						cmdPayloads = new ArrayList<>();
-						addDevices2SharedNetwork(dto.getUid(),dto.getMac(),cmdPayloads);
-					}
-				}
-				if(cmdPayloads!= null && !cmdPayloads.isEmpty())
-					daemonRpcService.wifiDeviceCmdsDown(null, dto.getMac(), cmdPayloads);
-			}finally{
-				if(cmdPayloads != null){
-					cmdPayloads.clear();
-					cmdPayloads = null;
-				}
-			}*/
+		{
+			//进行分成owner字段重置
+			chargingFacadeService.wifiDeviceBindedNotify(dto.getMac(), dto.getUid());
+			//给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
 			addDevices2SharedNetwork(dto.getUid(),dto.getMac());
+			
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s] successful", message));
 	}
@@ -1586,24 +1576,10 @@ public class AsyncMsgHandleService {
 		UserDeviceDestoryDTO dto = JsonHelper.getDTO(message, UserDeviceDestoryDTO.class);
 		deviceFacadeService.removeMobilePresent(dto.getUid(), dto.getMac());
 		userDeviceBindOperateSyskeySync(dto.getMac(), null);
-		{//给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
-			/*List<String> cmdPayloads = null;
-			try{
-				WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
-				if(wifiDevice != null){
-					if(WifiDeviceHelper.deviceSharedNetworkStrategy(wifiDevice.getOrig_swver())){
-						cmdPayloads = new ArrayList<>();
-						addDevices2SharedNetwork(-1,dto.getMac(),cmdPayloads);
-					}
-				}
-				if(cmdPayloads!= null && !cmdPayloads.isEmpty())
-					daemonRpcService.wifiDeviceCmdsDown(null, dto.getMac(), cmdPayloads);
-			}finally{
-				if(cmdPayloads != null){
-					cmdPayloads.clear();
-					cmdPayloads = null;
-				}
-			}*/
+		{
+			//设备分成owner字段重置
+			chargingFacadeService.wifiDeviceUnBindedNotify(dto.getMac());
+			//给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
 			addDevices2SharedNetwork(-1,dto.getMac());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
