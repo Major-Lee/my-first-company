@@ -352,8 +352,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static int SharedNetworksTemplateMaxLimit = 50;
 	
-	
-	public static String UserPortalUpdate2UPortalApi = "http://192.168.66.91:8550/portal/set/recreate";
+	public static String UserPortalUpdate2UPortalApi = "http://192.168.66.157:9157/portal/set/recreate";
 	/**
 	 * 判断是否是console用户
 	 * @param uid
