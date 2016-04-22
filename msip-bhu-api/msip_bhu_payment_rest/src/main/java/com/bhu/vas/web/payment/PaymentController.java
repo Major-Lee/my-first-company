@@ -38,7 +38,7 @@ public class PaymentController extends BaseController{
 		logger.info(String.format(" query_paymentorder order[%s]", orderid));
 		PaymentOrder order = paymentOrderService.getById(orderid);
 		if(order != null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(order));
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(order.toPaymentOrderVTO()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.COMMON_DATA_NOTEXIST)));

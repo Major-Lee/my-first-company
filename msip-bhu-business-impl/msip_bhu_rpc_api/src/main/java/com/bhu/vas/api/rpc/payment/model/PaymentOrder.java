@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.payment.model;
 
 import java.util.Date;
 
+import com.bhu.vas.api.rpc.payment.dto.PaymentOrderVTO;
 import com.smartwork.msip.cores.orm.model.BaseLongModel;
 
 @SuppressWarnings("serial")
@@ -220,5 +221,13 @@ public class PaymentOrder extends BaseLongModel{
 		if (this.created_at == null)
 			this.created_at = new Date();
 		super.preInsert();
+	}
+	
+	
+	public PaymentOrderVTO toPaymentOrderVTO(){
+		PaymentOrderVTO vto = new PaymentOrderVTO();
+		vto.setOrdierid(id);
+		vto.setTid(tid);
+		return vto;
 	}
 }
