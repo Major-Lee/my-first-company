@@ -150,7 +150,7 @@ public class SharedNetworksFacadeService {
 					}
 					String template = fetchValidTemplate(models_fromdb);
 					paramDto.setTemplate(template);
-					paramDto.setTs(System.currentTimeMillis()
+					paramDto.setTs(System.currentTimeMillis());
 					if(StringUtils.isEmpty(paramDto.getTemplate_name()))
 						paramDto.setTemplate_name(sharedNetwork.getName().concat(template));
 					models_fromdb.add(paramDto);
