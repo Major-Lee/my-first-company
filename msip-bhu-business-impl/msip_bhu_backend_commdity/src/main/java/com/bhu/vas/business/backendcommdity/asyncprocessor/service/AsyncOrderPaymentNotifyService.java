@@ -149,7 +149,7 @@ public class AsyncOrderPaymentNotifyService {
 										logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper: uid[%s] cash[%s]", uid, cash));
 										if(uid > 0 && cash > 0){
 											SharedealNotifyPushDTO sharedeal_push_dto = new SharedealNotifyPushDTO();
-											//sharedeal_push_dto.setMac(mac);
+											sharedeal_push_dto.setMac(mac);
 											sharedeal_push_dto.setUid(uid);
 											sharedeal_push_dto.setCash(String.valueOf(cash));
 											sharedeal_push_dto.setHd_mac(umac);

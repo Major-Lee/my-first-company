@@ -273,7 +273,9 @@ public class PushService{
 			if(presentDto != null){
 				SharedealNotifyPushDTO sharedeal_push_dto = (SharedealNotifyPushDTO)pushDto;
 				SharedealNofityContext context = businessPushContextService.sharedealNotifyContext(sharedeal_push_dto);
-
+				//由于push payload limit Allowed: 256 字节 不需要的数据就不放在payload中
+				sharedeal_push_dto.setMac(StringHelper.EMPTY_STRING_GAP);
+				
 				PushMsg pushMsg = this.generatePushMsg(presentDto);
 				this.builderSharedealNotifyPushMsg(pushMsg, sharedeal_push_dto, context);
 					//发送push
