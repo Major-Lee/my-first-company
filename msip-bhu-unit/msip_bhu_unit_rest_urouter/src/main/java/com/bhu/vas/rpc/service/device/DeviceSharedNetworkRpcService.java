@@ -51,8 +51,8 @@ public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcSer
 	
 	@Override
 	public RpcResponseDTO<ParamSharedNetworkDTO> applyNetworkConf(int uid,
-			String sharenetwork_type,String template, String extparams) {
-		logger.info(String.format("applyNetworkConf with uid[%s] sharenetwork_type[%s] template[%s] extparams[%s]", uid,sharenetwork_type,template,extparams));
+			String sharenetwork_type,String template, String extparams,boolean fromclient) {
+		logger.info(String.format("applyNetworkConf with uid[%s] sharenetwork_type[%s] template[%s] extparams[%s] fromclient[%s]", uid,sharenetwork_type,template,extparams,fromclient));
 		return deviceSharedNetworkUnitFacadeService.applyNetworkConf(uid, sharenetwork_type,template, extparams);
 	}
 

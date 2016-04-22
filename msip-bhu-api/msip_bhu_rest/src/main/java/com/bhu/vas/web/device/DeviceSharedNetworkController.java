@@ -60,7 +60,7 @@ public class DeviceSharedNetworkController extends BaseController{
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
 			@RequestParam(required = false,defaultValue= "0001",value="tpl") String template,
 			@RequestParam(required = false) String extparams) {
-		RpcResponseDTO<ParamSharedNetworkDTO> rpcResult = deviceSharedNetworkRpcService.applyNetworkConf(uid, sharenetwork_type,template, extparams);
+		RpcResponseDTO<ParamSharedNetworkDTO> rpcResult = deviceSharedNetworkRpcService.applyNetworkConf(uid, sharenetwork_type,template, extparams,true);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
