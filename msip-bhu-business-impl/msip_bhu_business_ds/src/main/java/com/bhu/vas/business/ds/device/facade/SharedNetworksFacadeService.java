@@ -113,14 +113,16 @@ public class SharedNetworksFacadeService {
 			userDevicesSharedNetworksService.insert(configs);
 			configChanged = true;
 		}else{
+			if(StringUtils.isEmpty(paramDto.getTemplate_name()))
+				paramDto.setTemplate_name(sharedNetwork.getName().concat(DefaultTemplate));
 			List<ParamSharedNetworkDTO> models_fromdb = configs.get(paramDto.getNtype(),new ArrayList<ParamSharedNetworkDTO>(),true);
 			if(VapEnumType.SharedNetworkType.SafeSecure.getKey().equals(paramDto.getNtype())){
 				//验证models_fromdb 是否存在 template编号,如果存在则替换，否则增加
 				int index = models_fromdb.indexOf(paramDto);
 				if(index != -1){
 					ParamSharedNetworkDTO dto_fromdb = models_fromdb.get(index);
-					if(StringUtils.isEmpty(paramDto.getTemplate_name()))
-						paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
+					//if(StringUtils.isEmpty(paramDto.getTemplate_name()))
+					//	paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
 					if(ParamSharedNetworkDTO.wasConfigChanged( paramDto,dto_fromdb) || ParamSharedNetworkDTO.wasTemplateNameChanged(paramDto,dto_fromdb)){
 						configChanged = true;
 					}
@@ -148,8 +150,8 @@ public class SharedNetworksFacadeService {
 					}
 					String template = fetchValidTemplate(models_fromdb);
 					paramDto.setTemplate(template);
-					if(StringUtils.isEmpty(paramDto.getTemplate_name()))
-						paramDto.setTemplate_name(sharedNetwork.getName().concat(template));
+					//if(StringUtils.isEmpty(paramDto.getTemplate_name()))
+					//	paramDto.setTemplate_name(sharedNetwork.getName().concat(template));
 					models_fromdb.add(paramDto);
 					userDevicesSharedNetworksService.update(configs);
 					//当前不可能有新设备应用新模板，所以返回false
