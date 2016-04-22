@@ -93,9 +93,9 @@ public class SharedNetworksFacadeService {
 		if(StringUtils.isEmpty(paramDto.getTemplate())){
 			paramDto.setTemplate(DefaultTemplate);
 		}
-		if(StringUtils.isEmpty(paramDto.getTemplate_name())){
+		/*if(StringUtils.isEmpty(paramDto.getTemplate_name())){
 			paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
-		}
+		}*/
 		
 		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
 		//SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(paramDto.getNtype());
