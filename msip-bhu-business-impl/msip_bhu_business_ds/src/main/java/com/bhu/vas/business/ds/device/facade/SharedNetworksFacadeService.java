@@ -119,8 +119,9 @@ public class SharedNetworksFacadeService {
 				int index = models_fromdb.indexOf(paramDto);
 				if(index != -1){
 					ParamSharedNetworkDTO dto_fromdb = models_fromdb.get(index);
-					
-					if(ParamSharedNetworkDTO.wasConfigChanged(dto_fromdb, paramDto) || ParamSharedNetworkDTO.wasTemplateNameChanged(dto_fromdb, paramDto)){
+					if(StringUtils.isEmpty(paramDto.getTemplate_name()))
+						paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
+					if(ParamSharedNetworkDTO.wasConfigChanged( paramDto,dto_fromdb) || ParamSharedNetworkDTO.wasTemplateNameChanged(paramDto,dto_fromdb)){
 						configChanged = true;
 					}
 					models_fromdb.set(index, paramDto);
