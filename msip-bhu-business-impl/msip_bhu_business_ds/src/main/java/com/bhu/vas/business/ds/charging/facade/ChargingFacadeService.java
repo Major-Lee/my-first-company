@@ -16,9 +16,6 @@ import com.bhu.vas.business.ds.user.service.UserDeviceService;
 
 @Service
 public class ChargingFacadeService {
-	//@Resource
-	//private UserService userService;
-
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
