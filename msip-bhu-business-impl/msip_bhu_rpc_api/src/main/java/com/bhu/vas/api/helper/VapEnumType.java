@@ -112,6 +112,7 @@ public class VapEnumType {
 		
 		uRouterTU_106("TU_H106",	"AP106",DUT_uRouter,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		uRouterPlusTU_112("TU_H112","AP112",DUT_uRouter,"uRouter Plus","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+		uRouterMiniTU_901("TU_H901","AP901",DUT_uRouter,"uRouter Mini","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		uRouterAcTU_401("TU_H401","AP401",DUT_uRouter,"uRouter AC","uRouter","2.4GHz 5GHz 家用AP","64M内存、TF卡版本、9531芯片"),
 		
 		MassAP_2_103("TS_H103",		"AP103",DUT_soc,"MassAP 2 H103","MassAP 2","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
@@ -279,7 +280,7 @@ public class VapEnumType {
 		public static boolean isURouter(String prefix,String dut) {
 			if(StringUtils.isEmpty(prefix) || StringUtils.isEmpty(dut)) return false;
 			if((prefix.equals(uRouterTU_106.getPrefix()) || prefix.equals(uRouterPlusTU_112.getPrefix()) 
-					|| prefix.equals(uRouterAcTU_401.getPrefix())) && dut.equals(uRouterRoot.getIndex())){
+					|| prefix.equals(uRouterAcTU_401.getPrefix()) || prefix.equals(uRouterMiniTU_901.getPrefix())) && dut.equals(uRouterRoot.getIndex())){
 				return true;
 			}
 			return false;
