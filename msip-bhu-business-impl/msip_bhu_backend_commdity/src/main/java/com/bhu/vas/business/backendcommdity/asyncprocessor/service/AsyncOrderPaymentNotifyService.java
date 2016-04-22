@@ -146,6 +146,7 @@ public class AsyncOrderPaymentNotifyService {
 								new IWalletSharedealNotifyCallback(){
 									@Override
 									public String notifyCashSharedealOper(int uid, double cash) {
+										logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper: uid[%s] cash[%s]", uid, cash));
 										if(uid > 0){
 											SharedealNotifyPushDTO sharedeal_push_dto = new SharedealNotifyPushDTO();
 											sharedeal_push_dto.setMac(mac);
@@ -155,6 +156,7 @@ public class AsyncOrderPaymentNotifyService {
 											sharedeal_push_dto.setUmac_type(order_umac_type);
 											pushService.pushSharedealNotify(sharedeal_push_dto);
 										}
+										logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper successful: uid[%s] cash[%s]", uid, cash));
 										return null;
 									}
 				});
