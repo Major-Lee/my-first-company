@@ -17,6 +17,7 @@ public class SharedealNotifyPushDTO extends NotificationPushDTO{
 	@JsonIgnore
 	private Integer uid;
 	//分成金额
+	@JsonIgnore
 	private String cash;
 	//支付方式
 	@JsonIgnore
