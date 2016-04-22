@@ -24,6 +24,7 @@ import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
+import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -175,7 +176,7 @@ public class UserWalletFacadeService{
 	 * @param orderid
 	 * @param desc
 	 */
-	public int sharedealCashToUserWalletWithProcedure(String dmac, double cash, String orderid,String description){
+	public int sharedealCashToUserWalletWithProcedure(String dmac, double cash, String orderid,String description,IWalletSharedealNotifyCallback callback){
 		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
 		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, orderid, cash);
 		ShareDealWalletProcedureDTO procedureDTO = ShareDealWalletProcedureDTO.buildWith(sharedeal);
@@ -187,9 +188,12 @@ public class UserWalletFacadeService{
 		procedureDTO.setOwner_memo(String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		procedureDTO.setManufacturer_memo(String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getManufacturer_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
-		if(executeRet == 0)
+		if(executeRet == 0){
 			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
-		else
+			if(sharedeal.isBelong() && callback != null){
+				callback.notifyCashSharedealOper(sharedeal.getOwner(),sharedeal.getOwner_cash());
+			}
+		}else
 			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
 		//uwallet = userWalletService.update(uwallet);

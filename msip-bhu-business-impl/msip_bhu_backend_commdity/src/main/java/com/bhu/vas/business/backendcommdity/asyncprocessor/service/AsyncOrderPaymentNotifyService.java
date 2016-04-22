@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
 
-
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.dto.push.SharedealNotifyPushDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
@@ -22,12 +22,14 @@ import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -50,6 +52,8 @@ public class AsyncOrderPaymentNotifyService {
 	@Resource
 	private UserDeviceFacadeService userDeviceFacadeService;
 	
+	@Resource
+	private PushService pushService;
 	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
@@ -131,10 +135,29 @@ public class AsyncOrderPaymentNotifyService {
 						sb_description.append(StringHelper.MINUS_CHAR_GAP);
 					sb_description.append(order.getPayment_type());
 				}*/
+				final String order_payment_type = order.getPayment_type();
+				final Integer order_umac_type = order.getUmactype();
+				final String mac = order.getMac();
+				final String umac = order.getUmac();
 				OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
 				userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), amount, orderid, 
 						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
-								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));
+								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP),
+								new IWalletSharedealNotifyCallback(){
+									@Override
+									public String notifyCashSharedealOper(int uid, double cash) {
+										if(uid > 0){
+											SharedealNotifyPushDTO sharedeal_push_dto = new SharedealNotifyPushDTO();
+											sharedeal_push_dto.setMac(mac);
+											sharedeal_push_dto.setUid(uid);
+											sharedeal_push_dto.setHd_mac(umac);
+											sharedeal_push_dto.setPayment_type(order_payment_type);
+											sharedeal_push_dto.setUmac_type(order_umac_type);
+											pushService.pushSharedealNotify(sharedeal_push_dto);
+										}
+										return null;
+									}
+				});
 				
 				/*userWalletFacadeService.sharedealCashToUserWallet(order.getMac(), amount, orderid, 
 						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 

@@ -276,7 +276,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
     	//System.out.println(JsonHelper.getJSONString(wallet));
     	
-    	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
+    	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!",null);
     	System.out.println("dddd:"+ret);
    	}
 }

@@ -4,15 +4,18 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
+import com.bhu.vas.api.dto.push.SharedealNotifyPushDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
@@ -22,6 +25,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.context.HandsetOnlineContext;
+import com.bhu.vas.push.common.context.SharedealNofityContext;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -271,6 +275,35 @@ public class BusinessPushContextService {
 		}else{
 			context.setHandsetName(hd_mac);
 		}
+	}
+	
+	/**
+	 * 打赏分成上下文组成
+	 * @param pushDto
+	 * @param presentDto
+	 * @return
+	 */
+	public SharedealNofityContext sharedealNotifyContext(SharedealNotifyPushDTO sharedeal_push_dto){
+		SharedealNofityContext context = new SharedealNofityContext();
+		
+		OrderPaymentType payment_type = OrderPaymentType.fromKey(sharedeal_push_dto.getPayment_type());
+		if(payment_type == null){
+			payment_type = OrderPaymentType.Weixin;
+		}
+		context.setPayment_type_name(payment_type.getDesc());
+		context.setCash(sharedeal_push_dto.getCash());
+		
+		String umac_mf = MacDictParserFilterHelper.prefixMactch(sharedeal_push_dto.getHd_mac(),true,false);
+		if(StringUtils.isNotEmpty(umac_mf) && !umac_mf.equals(DevicesSet.Unknow.getScn())){
+			context.setUmac_mf(umac_mf);
+		}
+		
+		OrderUmacType umac_type = OrderUmacType.fromKey(sharedeal_push_dto.getUmac_type());
+		if(umac_type == null){
+			umac_type = OrderUmacType.Terminal;
+		}
+		context.setUmac_type_desc(umac_type.getDesc());
+		return context;
 	}
 	
 }

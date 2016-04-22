@@ -16,9 +16,6 @@ import com.bhu.vas.business.ds.user.service.UserDeviceService;
 
 @Service
 public class ChargingFacadeService {
-	//@Resource
-	//private UserService userService;
-
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
@@ -54,6 +51,33 @@ public class ChargingFacadeService {
 		return wifiDeviceSharedealConfigsService;
 	}
 	
+	public void wifiDeviceBindedNotify(String dmac,int uid){
+		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
+		if(configs == null){
+			configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
+			configs.doRuntimeInit(dmac,uid);
+			wifiDeviceSharedealConfigsService.insert(configs);
+		}else{
+			configs.setOwner(uid);
+			wifiDeviceSharedealConfigsService.update(configs);
+		}
+	}
+	
+	public void wifiDeviceUnBindedNotify(String dmac){
+		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
+		if(configs == null){
+			configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
+			configs.doRuntimeInit(dmac,WifiDeviceSharedealConfigs.None_Owner);
+			wifiDeviceSharedealConfigsService.insert(configs);
+		}else{
+			configs.setOwner(WifiDeviceSharedealConfigs.None_Owner);
+			wifiDeviceSharedealConfigsService.update(configs);
+		}
+	}
+	
+	public void wifiDeviceResetNotify(String dmac){
+		wifiDeviceUnBindedNotify(dmac);
+	}
 	
 	/**
 	 * 获取当前对此用户生效的钱包配置
