@@ -288,6 +288,7 @@ public class BusinessModelBuilder {
 			if(StringUtils.isEmpty(vto.getN())){
 				vto.setN(hd_entity.getDhcp_name());
 			}
+			vto.setHd_vapname(hd_entity.getVapname());
 			vto.setIp(hd_entity.getIp());
 			vto.setUptime(hd_entity.getUptime());
 			//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
