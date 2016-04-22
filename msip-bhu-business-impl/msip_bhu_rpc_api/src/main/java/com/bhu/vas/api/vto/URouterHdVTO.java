@@ -11,6 +11,8 @@ import java.io.Serializable;
 public class URouterHdVTO implements Serializable{
 	//终端mac
 	private String hd_mac;
+	//终端所在的vapname
+	private String hd_vapname;
 	//终端上行速率 bps
 	private String tx_rate;
 	//终端下行速率 bps
@@ -49,6 +51,12 @@ public class URouterHdVTO implements Serializable{
 	}
 	public void setHd_mac(String hd_mac) {
 		this.hd_mac = hd_mac;
+	}
+	public String getHd_vapname() {
+		return hd_vapname;
+	}
+	public void setHd_vapname(String hd_vapname) {
+		this.hd_vapname = hd_vapname;
 	}
 	public String getRx_rate() {
 		return rx_rate;
