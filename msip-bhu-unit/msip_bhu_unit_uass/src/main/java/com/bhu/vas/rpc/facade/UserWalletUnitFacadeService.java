@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
-import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
@@ -27,6 +26,7 @@ import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
+import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
@@ -46,6 +46,9 @@ public class UserWalletUnitFacadeService {
 
 	@Resource
 	private UserCaptchaCodeService userCaptchaCodeService;
+	
+	@Resource
+	private BusinessWalletCacheService businessWalletCacheService;
 	
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
@@ -416,7 +419,12 @@ public class UserWalletUnitFacadeService {
 	public RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> walletLogStatistics(
 			int uid) {
 		try{
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userWalletFacadeService.sharedealSummaryWithProcedure(uid));
+			ShareDealWalletSummaryProcedureVTO cacheByUser = businessWalletCacheService.getWalletLogStatisticsDSCacheByUser(uid);
+			if(cacheByUser == null){
+				cacheByUser = userWalletFacadeService.sharedealSummaryWithProcedure(uid);
+				businessWalletCacheService.storeWalletLogStatisticsDSCacheResult(uid, cacheByUser);
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(cacheByUser);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
