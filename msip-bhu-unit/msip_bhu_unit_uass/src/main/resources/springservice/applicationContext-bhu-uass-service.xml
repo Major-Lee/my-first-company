@@ -10,6 +10,7 @@
 	<context:component-scan base-package="com.teacherclub.business.**.service" />
 	-->
 	<context:component-scan base-package="com.bhu.vas.rpc"/>
+	<context:component-scan base-package="com.bhu.vas.business.bucache.local.serviceimpl.wallet"/>
 	<!-- -->
 	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/> 
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-producer.xml"/> 
