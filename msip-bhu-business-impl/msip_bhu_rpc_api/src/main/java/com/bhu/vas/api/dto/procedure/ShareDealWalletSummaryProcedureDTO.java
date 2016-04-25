@@ -10,12 +10,27 @@ import com.smartwork.msip.cores.orm.logic.procedure.OUT;
 public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 	@IN(jdbcType = JdbcType.INTEGER)
 	private int userid;
+	@OUT(jdbcType = JdbcType.VARCHAR)
+	private String today_date;
+	@OUT(jdbcType = JdbcType.DOUBLE)
+	private double today_cash;
+	@OUT(jdbcType = JdbcType.INTEGER)
+	private int today_nums;
+	
+	@OUT(jdbcType = JdbcType.VARCHAR)
+	private String yesterday_date;
+	@OUT(jdbcType = JdbcType.DOUBLE)
+	private double yesterday_cash;
+	@OUT(jdbcType = JdbcType.INTEGER)
+	private int yesterday_nums;
 	
 	@OUT(jdbcType = JdbcType.DOUBLE)
-	private String cur_cash;
+	private double total_cash;
 	@OUT(jdbcType = JdbcType.INTEGER)
-	private int cur_total;
+	private int total_nums;
 	
+	@OUT(jdbcType = JdbcType.INTEGER)
+	private int ods;//online devices
 	public int getUserid() {
 		return userid;
 	}
@@ -24,20 +39,76 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 		this.userid = userid;
 	}
 
-	public String getCur_cash() {
-		return cur_cash;
+	public double getToday_cash() {
+		return today_cash;
 	}
 
-	public void setCur_cash(String cur_cash) {
-		this.cur_cash = cur_cash;
+	public void setToday_cash(double today_cash) {
+		this.today_cash = today_cash;
 	}
 
-	public int getCur_total() {
-		return cur_total;
+	public int getToday_nums() {
+		return today_nums;
 	}
 
-	public void setCur_total(int cur_total) {
-		this.cur_total = cur_total;
+	public void setToday_nums(int today_nums) {
+		this.today_nums = today_nums;
+	}
+
+	public double getYesterday_cash() {
+		return yesterday_cash;
+	}
+
+	public void setYesterday_cash(double yesterday_cash) {
+		this.yesterday_cash = yesterday_cash;
+	}
+
+	public int getYesterday_nums() {
+		return yesterday_nums;
+	}
+
+	public void setYesterday_nums(int yesterday_nums) {
+		this.yesterday_nums = yesterday_nums;
+	}
+
+	public double getTotal_cash() {
+		return total_cash;
+	}
+
+	public void setTotal_cash(double total_cash) {
+		this.total_cash = total_cash;
+	}
+
+	public int getTotal_nums() {
+		return total_nums;
+	}
+
+	public void setTotal_nums(int total_nums) {
+		this.total_nums = total_nums;
+	}
+
+	public int getOds() {
+		return ods;
+	}
+
+	public void setOds(int ods) {
+		this.ods = ods;
+	}
+
+	public String getToday_date() {
+		return today_date;
+	}
+
+	public void setToday_date(String today_date) {
+		this.today_date = today_date;
+	}
+
+	public String getYesterday_date() {
+		return yesterday_date;
+	}
+
+	public void setYesterday_date(String yesterday_date) {
+		this.yesterday_date = yesterday_date;
 	}
 
 	@Override

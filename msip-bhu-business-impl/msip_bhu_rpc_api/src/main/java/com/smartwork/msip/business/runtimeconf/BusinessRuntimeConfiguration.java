@@ -228,6 +228,9 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	//增值平台设备信息搜索结果导出文件目录
 	public static String Search_Result_Export_Dir = "/BHUData/srexport/";
 	
+	public static String BatchImport_Dir = "/BHUData/batchimport/";
+	public static String BatchImport_Sub_Input_Dir = "input/";
+	public static String BatchImport_Sub_Output_Dir = "output/";
 	
 	public static final List<String> SystemNoneedCaptchaValidAccs = new ArrayList<String>(); 
 	public static final String  DefaultCaptchaCode = "123456";
