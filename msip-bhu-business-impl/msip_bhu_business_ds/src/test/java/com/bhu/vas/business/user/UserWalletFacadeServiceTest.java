@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
@@ -289,7 +290,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
     	//System.out.println(JsonHelper.getJSONString(wallet));
     	
-    	int ret  = userWalletFacadeService.sharedealSummaryWithProcedure(110);
-    	System.out.println("dddd:"+ret);
+    	ShareDealWalletSummaryProcedureDTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(1);
+    	System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
    	}
 }

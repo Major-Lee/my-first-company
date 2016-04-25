@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
@@ -410,4 +411,17 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}*/
+	
+	public RpcResponseDTO<ShareDealWalletSummaryProcedureDTO> walletLogStatistics(
+			int uid) {
+		try{
+			ShareDealWalletSummaryProcedureDTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(1);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(procedureDTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

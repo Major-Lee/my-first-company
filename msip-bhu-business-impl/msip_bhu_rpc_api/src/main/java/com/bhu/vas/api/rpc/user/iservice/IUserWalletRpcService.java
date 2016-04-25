@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
@@ -84,7 +85,7 @@ public interface IUserWalletRpcService {
 	 */
 	public RpcResponseDTO<UserWalletDetailVTO> walletDetail(int uid);
 	
-
+	public RpcResponseDTO<ShareDealWalletSummaryProcedureDTO> walletLogStatistics(int uid);
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

@@ -33,7 +33,6 @@ import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -204,12 +203,16 @@ public class UserWalletFacadeService{
 		return executeRet;
 	}
 	
-	public int sharedealSummaryWithProcedure(int uid){
+	public ShareDealWalletSummaryProcedureDTO sharedealSummaryWithProcedure(int uid){
 		ShareDealWalletSummaryProcedureDTO procedureDTO = new ShareDealWalletSummaryProcedureDTO();
 		procedureDTO.setUserid(uid);
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
-		System.out.println(JsonHelper.getJSONString(procedureDTO));
-		return executeRet;
+		if(executeRet == 0){
+			;
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
+		}
+		return procedureDTO;
 		/*
 		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
 		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, orderid, cash);

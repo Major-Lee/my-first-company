@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
@@ -143,6 +144,21 @@ public class UserWalletController extends BaseController{
 			return;
 		}
 		RpcResponseDTO<TailPage<UserWalletLogVTO>> rpcResult = userWalletRpcService.pageUserWalletlogs(uid, transmode, transtype, pageNo, pageSize);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    }
+    
+    
+    @ResponseBody()
+    @RequestMapping(value = "/wallet/fetch_logstatistics", method = {RequestMethod.POST})
+    public void fetch_logs(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid
+    		) {
+		RpcResponseDTO<ShareDealWalletSummaryProcedureDTO> rpcResult = userWalletRpcService.walletLogStatistics(uid);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
