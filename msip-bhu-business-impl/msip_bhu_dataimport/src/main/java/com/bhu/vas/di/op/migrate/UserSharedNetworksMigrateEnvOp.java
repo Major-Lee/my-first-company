@@ -48,8 +48,6 @@ public class UserSharedNetworksMigrateEnvOp {
 		mc_usersharednetwork.setPageSize(200);
     	EntityIterator<Integer, UserDevicesSharedNetwork> itit = new KeyBasedEntityBatchIterator<Integer, UserDevicesSharedNetwork>(Integer.class, UserDevicesSharedNetwork.class, sharedNetworkFacadeService.getUserDevicesSharedNetworkService().getEntityDao(), mc_usersharednetwork);
 		while(itit.hasNext()){
-			
-			
 			List<UserDevicesSharedNetwork> list = itit.next();
 			for(UserDevicesSharedNetwork sdn:list){
 				UserDevicesSharedNetworks current = sharedNetworksFacadeService.getUserDevicesSharedNetworksService().getById(sdn.getId());
@@ -66,6 +64,7 @@ public class UserSharedNetworksMigrateEnvOp {
 					List<ParamSharedNetworkDTO> dtos = new ArrayList<>();
 					safeSecure.setTemplate(SharedNetworksFacadeService.DefaultTemplate);
 					safeSecure.setTemplate_name(SharedNetworkType.SafeSecure.getName().concat(SharedNetworksFacadeService.DefaultTemplate));
+					safeSecure.setTs(System.currentTimeMillis());
 					dtos.add(safeSecure);
 					sdns.put(SharedNetworkType.SafeSecure.getKey(), dtos);
 				}
@@ -73,6 +72,7 @@ public class UserSharedNetworksMigrateEnvOp {
 					List<ParamSharedNetworkDTO> dtos = new ArrayList<>();
 					uplink.setTemplate(SharedNetworksFacadeService.DefaultTemplate);
 					uplink.setTemplate_name(SharedNetworkType.Uplink.getName().concat(SharedNetworksFacadeService.DefaultTemplate));
+					uplink.setTs(System.currentTimeMillis());
 					dtos.add(uplink);
 					sdns.put(SharedNetworkType.Uplink.getKey(), dtos);
 				}
@@ -95,6 +95,7 @@ public class UserSharedNetworksMigrateEnvOp {
 					SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(innerModel.getPsn().getNtype());
 					innerModel.getPsn().setTemplate(SharedNetworksFacadeService.DefaultTemplate);
 					innerModel.getPsn().setTemplate_name(sharedNetwork.getName().concat(SharedNetworksFacadeService.DefaultTemplate));
+					innerModel.getPsn().setTs(System.currentTimeMillis());
 				}
 				sdn.replaceInnerModel(innerModel);
 				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(sdn);
