@@ -10,14 +10,13 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
-import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
@@ -290,7 +289,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
     	//System.out.println(JsonHelper.getJSONString(wallet));
     	
-    	ShareDealWalletSummaryProcedureDTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(1);
+    	ShareDealWalletSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(1);
     	System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
    	}
 }

@@ -19,6 +19,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
@@ -412,11 +413,10 @@ public class UserWalletUnitFacadeService {
 		}
 	}*/
 	
-	public RpcResponseDTO<ShareDealWalletSummaryProcedureDTO> walletLogStatistics(
+	public RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> walletLogStatistics(
 			int uid) {
 		try{
-			ShareDealWalletSummaryProcedureDTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(1);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(procedureDTO);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userWalletFacadeService.sharedealSummaryWithProcedure(uid));
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

@@ -17,6 +17,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
+import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
@@ -203,7 +204,7 @@ public class UserWalletFacadeService{
 		return executeRet;
 	}
 	
-	public ShareDealWalletSummaryProcedureDTO sharedealSummaryWithProcedure(int uid){
+	public ShareDealWalletSummaryProcedureVTO sharedealSummaryWithProcedure(int uid){
 		ShareDealWalletSummaryProcedureDTO procedureDTO = new ShareDealWalletSummaryProcedureDTO();
 		procedureDTO.setUserid(uid);
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
@@ -212,7 +213,7 @@ public class UserWalletFacadeService{
 		}else{
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
 		}
-		return procedureDTO;
+		return procedureDTO.toVTO();
 		/*
 		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
 		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, orderid, cash);

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
@@ -158,7 +158,7 @@ public class UserWalletController extends BaseController{
             HttpServletResponse response,
             @RequestParam(required = true) int uid
     		) {
-		RpcResponseDTO<ShareDealWalletSummaryProcedureDTO> rpcResult = userWalletRpcService.walletLogStatistics(uid);
+		RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> rpcResult = userWalletRpcService.walletLogStatistics(uid);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else

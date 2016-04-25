@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
-import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
@@ -130,7 +130,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<ShareDealWalletSummaryProcedureDTO> walletLogStatistics(
+	public RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> walletLogStatistics(
 			int uid) {
 		logger.info(String.format("doWithdrawNotifyFromLocal with uid[%s]",uid));
 		return userWalletUnitFacadeService.walletLogStatistics(uid);
