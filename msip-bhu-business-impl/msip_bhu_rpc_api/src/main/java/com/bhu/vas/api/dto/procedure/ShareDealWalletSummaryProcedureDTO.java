@@ -2,6 +2,7 @@ package com.bhu.vas.api.dto.procedure;
 
 import org.apache.ibatis.type.JdbcType;
 
+import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.smartwork.msip.cores.orm.logic.procedure.AbstractProcedureDTO;
 import com.smartwork.msip.cores.orm.logic.procedure.IN;
 import com.smartwork.msip.cores.orm.logic.procedure.OUT;
@@ -144,5 +145,20 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 			System.out.println(result);
 			System.out.println(proDto.getOut1());
 			System.out.println(proDto.getOut2());*/
+	}
+	
+	public ShareDealWalletSummaryProcedureVTO toVTO(){
+		ShareDealWalletSummaryProcedureVTO vto = new ShareDealWalletSummaryProcedureVTO();
+		vto.setUserid(this.getUserid());
+		vto.setOds(this.getOds());
+		vto.setToday_date(this.getToday_date());
+		vto.setToday_cash(this.getToday_cash());
+		vto.setToday_nums(this.getToday_nums());
+		vto.setYesterday_date(this.getYesterday_date());
+		vto.setYesterday_cash(this.getYesterday_cash());
+		vto.setYesterday_nums(this.getYesterday_nums());
+		vto.setTotal_cash(this.getTotal_cash());
+		vto.setTotal_nums(this.getTotal_nums());
+		return vto;
 	}
 }
