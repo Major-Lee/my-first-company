@@ -1,4 +1,4 @@
-package com.bhu.vas.di.op.batchimport.frommanufacturing;
+package com.bhu.vas.di.op.batchimport.shipmentlist;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,11 +13,11 @@ import com.bhu.vas.di.op.batchimport.frommanufacturing.notify.ExcelElementNotify
 
 
 /**
- * 出厂设备清单数据导入程序
+ * 出库设备清单数据导入程序
  * @author Edmond
  *
  */
-public class ManufacturerDeviceDataImportOP {
+public class ShipmentDataImportOP {
 	///Users/Edmond/gospace
 	public static void main(String[] argv) {//throws ElasticsearchException, ESException, IOException, ParseException{
 		if(argv.length < 2) {
@@ -33,7 +33,8 @@ public class ManufacturerDeviceDataImportOP {
 		final WifiDeviceService wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
 		final AtomicInteger atomic_failed = new AtomicInteger(0);
 		final AtomicInteger atomic_successed = new AtomicInteger(0);
-		ManufacturerExcelImport.excelImport(filepath, new ExcelElementNotify(){
+		
+		/*ManufacturerExcelImport.excelImport(filepath, new ExcelElementNotify(){
 			@Override
 			public void elementNotify(String mac, String sn) {
 				//System.out.println(String.format("mac[%s] sn[%s]", mac,sn));
@@ -66,7 +67,7 @@ public class ManufacturerDeviceDataImportOP {
 					System.out.println(String.format("mac[%s] sn[%s] insert successfully! ", mac,sn));
 				}
 			}
-		});
+		});*/
 		
 		System.out.println(String.format("filepath[%s] import successfully! successed[%s] failed[%s]", filepath,atomic_successed.get(),atomic_failed.get()));
 	}

@@ -36,7 +36,6 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
-import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
@@ -276,10 +275,10 @@ public class AsyncMsgHandleService {
 			afterDeviceOnlineThenCmdDown(dto.getMac(),dto.isNeedLocationQuery(),payloads);
 			
 			boolean needUpdate = false;
-			boolean needClaim = wifiDevice.needClaim();
+			//boolean needClaim = wifiDevice.needClaim();
 			try{
-				//设备上线后认领
-				if(needClaim){
+				//设备上线后认领 去除认领代理商
+				/*if(needClaim){
 					DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
 					AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
 					int claim_ret = agentDeviceClaimService.claimAgentDevice(agentDeviceClaim, wifiDevice.getId(), parser.toDeviceUnitTypeIndex());
@@ -293,7 +292,7 @@ public class AsyncMsgHandleService {
 									agentDeviceClaim.getImport_id(), agentUser);
 						}
 					}
-				}
+				}*/
 				//根据wan_ip获取设备的网络运营商信息
 				if(dto.isWanIpChanged() && StringUtils.isNotEmpty(wifiDevice.getWan_ip())){
 					String carrier = IpLookup.lookup_carrier(wifiDevice.getWan_ip());
