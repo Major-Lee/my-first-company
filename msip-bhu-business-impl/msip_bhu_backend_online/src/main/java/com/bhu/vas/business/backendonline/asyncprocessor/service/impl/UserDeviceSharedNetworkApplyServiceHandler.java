@@ -131,7 +131,10 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 				}else{//关闭
 					List<String> rdmacs = sharedNetworksFacadeService.removeDevicesFromSharedNetwork(dmacs.toArray(new String[0]));
 					for(String mac:rdmacs){
-						String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,deviceCMDGenFacadeService);
+						WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+						if(wifiDevice == null) continue;
+						String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,
+								DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
 						downCmds.add(DownCmds.builderDownCmds(mac, cmd));
 					}
 					wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs,sharedNetwork.getKey(),template);
