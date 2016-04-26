@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -15,6 +16,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.di.op.batchimport.shipmentlist.callback.ExcelElementCallback;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 public class ShipmentExcelImport {
 	private static final Set<String> MacFields = new HashSet<String>();
@@ -51,8 +53,17 @@ public class ShipmentExcelImport {
 	        		Row row = sheet.getRow(rowNum);
 	        		String sn = row.getCell(0).getStringCellValue();
 	        		if(StringUtils.isNotEmpty(sn)){
-	        			//WifiDevice wifiDevice = callback.elementCallback(sn);
-	        			row.getCell(1).setCellValue("哇哈哈哈");
+	        			WifiDevice wifiDevice = callback.elementCallback(sn);
+	        			if(wifiDevice == null){
+	        				;//row.getCell(1).setCellValue("不存在");
+	        			}else{
+	        				Cell cell_mac = row.getCell(1);
+	        				if(cell_mac == null){
+	        					cell_mac = row.createCell(1);
+	        				}
+	        				//System.out.println(wifiDevice.getId());
+	        				cell_mac.setCellValue(wifiDevice.getId());//"84:82:f4:32:3c:80");
+	        			}
 	        		}
 	        	}
 	        	
