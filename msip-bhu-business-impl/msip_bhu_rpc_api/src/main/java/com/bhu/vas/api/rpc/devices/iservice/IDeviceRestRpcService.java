@@ -41,5 +41,5 @@ public interface IDeviceRestRpcService {
 	public RpcResponseDTO<TailPage<UserSearchConditionDTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize);
 	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid);
 	public RpcResponseDTO<String> exportWifiDeviceResult(int uid, String message);
-	public RpcResponseDTO<String> exportOrderResult(int uid, String message);
+	public RpcResponseDTO<String> exportOrderResult(int uid, String message, String start_date, String end_date);
 }

@@ -590,10 +590,10 @@ public class DeviceRestBusinessFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileName);
 	}
 	
-	public RpcResponseDTO<String> exportOrderResult(int uid, String message){
+	public RpcResponseDTO<String> exportOrderResult(int uid, String message, String start_date, String end_date){
 		String exportFileName = String.valueOf(uid).concat(StringHelper.MINUS_STRING_GAP).
 				concat(DateTimeHelper.getDateTime());
-		deliverMessageService.sendOrderSearchResultExportFileMessage(uid, message, exportFileName);
+		deliverMessageService.sendOrderSearchResultExportFileMessage(uid, message, exportFileName, start_date, end_date);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileName);
 	}
 	

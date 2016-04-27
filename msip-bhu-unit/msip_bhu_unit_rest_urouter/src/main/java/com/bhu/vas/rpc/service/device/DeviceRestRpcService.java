@@ -291,10 +291,10 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 	
 	@Override
-	public RpcResponseDTO<String> exportOrderResult(int uid, String message) {
+	public RpcResponseDTO<String> exportOrderResult(int uid, String message, String start_date, String end_date) {
 		logger.info(String.format("DeviceRestRPC exportOrderResult invoke uid [%s]", uid));
 		try{
-			return deviceRestBusinessFacadeService.exportOrderResult(uid, message);
+			return deviceRestBusinessFacadeService.exportOrderResult(uid, message, start_date, end_date);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC exportOrderResult exception exmsg[%s]",ex.getMessage()), ex);

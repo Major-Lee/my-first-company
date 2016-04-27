@@ -156,8 +156,8 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<String> exportOrderResult(int uid, String message) {
-		return deviceRestRpcService.exportOrderResult(uid, message);
+	public RpcResponseDTO<String> exportOrderResult(int uid, String message, String start_date, String end_date) {
+		return deviceRestRpcService.exportOrderResult(uid, message, start_date, end_date);
 	}
 
 	/*@Override
