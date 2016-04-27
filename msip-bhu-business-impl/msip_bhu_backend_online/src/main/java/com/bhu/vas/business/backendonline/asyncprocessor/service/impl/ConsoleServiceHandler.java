@@ -68,12 +68,12 @@ public class ConsoleServiceHandler {
 		"归属业务线","状态","是否绑定","绑定手机号","地理位置","在线总时长","首次上线时间",
 		"末次上线时间","末次离线时间","灰度","关联模板","工作模式","在线总时长占比"};
 	
-	public static final String[] SearchOrderResultExportColumns = new String[]{"Mac","UMac","终端类型","打赏金额",
+	public static final String[] SearchOrderResultExportColumns = new String[]{"订单号","Mac","UMac","终端类型","打赏金额",
 		"分成金额","打赏方式","打赏日期"};
 	
 	
-	public void exportWifiDeviceFile(String message){
-		DeviceSearchResultExportFileDTO dto = JsonHelper.getDTO(message, DeviceSearchResultExportFileDTO.class);
+	public void exportWifiDeviceFile(String jsonmessage){
+		DeviceSearchResultExportFileDTO dto = JsonHelper.getDTO(jsonmessage, DeviceSearchResultExportFileDTO.class);
 		if(dto == null || StringUtils.isEmpty(dto.getMessage())) return;
 		
 		String exportFilePath = BusinessRuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
@@ -95,8 +95,8 @@ public class ConsoleServiceHandler {
 		searchResultExportFile(dto.getMessage(), exportFilePath, SearchWifiDeviceResultExportColumns, lines);
 	}
 	
-	public void exportOrderFile(String message){
-		final OrderSearchResultExportFileDTO dto = JsonHelper.getDTO(message, OrderSearchResultExportFileDTO.class);
+	public void exportOrderFile(String jsonmessage){
+		final OrderSearchResultExportFileDTO dto = JsonHelper.getDTO(jsonmessage, OrderSearchResultExportFileDTO.class);
 		if(dto == null || StringUtils.isEmpty(dto.getMessage())) return;
 		
 		String exportFilePath = BusinessRuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
@@ -105,18 +105,26 @@ public class ConsoleServiceHandler {
 		
 		final List<String> lines = new ArrayList<String>();
 		
-		wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, 
-				BusinessIndexDefine.WifiDevice.Type, dto.getMessage(), new IteratorNotify<Page<WifiDeviceDocument>>(){
-			@Override
-			public void notifyComming(Page<WifiDeviceDocument> pages) {
-				for(WifiDeviceDocument doc : pages){
-					logger.info("pages item:"+doc);
-					lines.addAll(outputOrderStringByItem(doc, dto.getStart_date(), dto.getEnd_date()));
+		String message = dto.getMessage();
+		if(message.startsWith(StringHelper.LEFT_BRACE_STRING)){
+			wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, 
+					BusinessIndexDefine.WifiDevice.Type, message, new IteratorNotify<Page<WifiDeviceDocument>>(){
+				@Override
+				public void notifyComming(Page<WifiDeviceDocument> pages) {
+					for(WifiDeviceDocument doc : pages){
+						//logger.info("pages item:"+doc);
+						lines.addAll(outputOrderStringByItem(doc.getId(), dto.getStart_date(), dto.getEnd_date()));
+					}
 				}
+			});
+		}else{
+			String[] macs_array = message.split(StringHelper.COMMA_STRING_GAP);
+			for(String mac : macs_array){
+				lines.addAll(outputOrderStringByItem(mac, dto.getStart_date(), dto.getEnd_date()));
 			}
-		});
+		}
 		
-		searchResultExportFile(dto.getMessage(), exportFilePath, SearchOrderResultExportColumns, lines);
+		searchResultExportFile(message, exportFilePath, SearchOrderResultExportColumns, lines);
 
 	}
 	
@@ -153,7 +161,7 @@ public class ConsoleServiceHandler {
 //				fw.append(formatStr(columns));
 //			}
 			fw.newLine();
-			logger.info("lines:"+lines);
+			//logger.info("lines:"+lines);
 			for(String item : lines){
 				fw.append(item);
 				fw.newLine();
@@ -244,12 +252,12 @@ public class ConsoleServiceHandler {
 	 * @param doc
 	 * @throws IOException
 	 */
-	private List<String> outputOrderStringByItem(WifiDeviceDocument doc, String start_date, String end_date){
+	private List<String> outputOrderStringByItem(String mac, String start_date, String end_date){
 		List<String> mac_orderlines = new ArrayList<String>();
 		
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
-		criteria.andColumnEqualTo("mac", doc.getId())
+		criteria.andColumnEqualTo("mac", mac)
 				.andColumnEqualTo("status", OrderStatus.DeliverCompleted.getKey());
 		if(StringUtils.isNotEmpty(start_date)){
 			criteria.andColumnGreaterThanOrEqualTo("created_at", start_date);
@@ -268,26 +276,27 @@ public class ConsoleServiceHandler {
 			for(Order order : orders){
 				orderids.add(order.getId());
 			}
-			logger.info("orderids:"+orderids);
+			//logger.info("orderids:"+orderids);
 			//List<Order> orders = it.next();
 			List<UserWalletLog> userWalletLogs = userWalletLogService.findModelByOrderids(orderids);
-			logger.info("userWalletLogs:"+userWalletLogs.size());
+			//logger.info("userWalletLogs:"+userWalletLogs.size());
 			for(Order order : orders){
 				UserWalletLog userWalletLog = containOrderidByList(order.getId(), userWalletLogs);
 				if(userWalletLog != null){
-					logger.info("userWalletLogs != null:"+userWalletLog.getOrderid());
+					//logger.info("userWalletLogs != null:"+userWalletLog.getOrderid());
 					StringBuffer bw = new StringBuffer();
+					bw.append(formatStr(order.getId()));
 					bw.append(formatStr(order.getMac()));
 					bw.append(formatStr(order.getUmac()));
 					OrderUmacType orderUmacType = OrderUmacType.fromKey(order.getUmactype());
-					if(orderUmacType != null){
+					if(orderUmacType == null){
 						orderUmacType = OrderUmacType.Unknown;
 					}
 					bw.append(formatStr(orderUmacType.getDesc()));
 					bw.append(formatStr(order.getAmount()));
 					bw.append(formatStr(userWalletLog.getCash().substring(1)));
 					OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
-					if(orderPaymentType != null){
+					if(orderPaymentType == null){
 						orderPaymentType = OrderPaymentType.Unknown;
 					}
 					bw.append(formatStr(orderPaymentType.getDesc()));

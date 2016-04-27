@@ -493,11 +493,13 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
-	public void sendOrderSearchResultExportFileMessage(int uid, String message, String exportFileName){
+	public void sendOrderSearchResultExportFileMessage(int uid, String message, String exportFileName, String start_date, String end_date){
 		OrderSearchResultExportFileDTO dto = new OrderSearchResultExportFileDTO();
 		dto.setUid(uid);
 		dto.setMessage(message);
 		dto.setExportFileName(exportFileName);
+		dto.setStart_date(start_date);
+		dto.setEnd_date(end_date);
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//deliverMessageQueueProducer.send(message);
