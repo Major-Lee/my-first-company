@@ -1573,13 +1573,20 @@ public class DeviceHelper {
 	
 		StringBuffer items = new StringBuffer();
 		for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
-			if(StringUtils.isEmpty(vap_dto.getName()) || StringUtils.isEmpty(vap_dto.getAuth_key())){
+			if(StringUtils.isEmpty(vap_dto.getName()) || StringUtils.isEmpty(vap_dto.getAuth())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			String auth_key = vap_dto.getAuth_key();
+			if(!"open".equals(vap_dto.getAuth()) && StringUtils.isEmpty(auth_key)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 			}
 			
-			String auth_key = vap_dto.getAuth_key();
-			vap_dto.setAuth_key_rsa(JNIRsaHelper.jniRsaEncryptHexStr(auth_key));
-			
+			if(StringUtils.isEmpty(auth_key)){
+				vap_dto.setAuth_key_rsa(StringHelper.EMPTY_STRING_GAP);
+			}else{
+				vap_dto.setAuth_key_rsa(JNIRsaHelper.jniRsaEncryptHexStr(auth_key));
+			}
+
 			String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
 					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
 			items.append(item);
