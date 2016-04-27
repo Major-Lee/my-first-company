@@ -9,6 +9,7 @@
 	  <result property="filepath" column="filepath"/>
 	  <result property="status" column="status"/>
 	  <result property="importor" column="importor"/>
+	  <result property="mobileno" column="mobileno"/>
 	  <result property="succeed" column="succeed"/>
 	  <result property="failed" column="failed"/>
 	  <result property="remark" column="remark"/>
@@ -27,6 +28,7 @@
 	    	filepath,
 	    	status,
 	    	importor,
+	    	mobileno,
 	    	succeed,
 	    	failed,
 	    	remark,
@@ -39,6 +41,7 @@
 	    	filepath,
 	    	status,
 	    	importor,
+	    	mobileno,
 	    	succeed,
 	    	failed,
 	    	remark,
@@ -52,6 +55,7 @@
 			#{filepath},
 			#{status},
 			#{importor},
+			#{mobileno},
 			#{succeed},
 			#{failed},
 			#{remark},
@@ -63,6 +67,7 @@
 	    	filepath = #{filepath},
 	    	status = #{status},
 	    	importor = #{importor},
+	    	mobileno = #{mobileno},
 	    	succeed = #{succeed},
 	    	failed = #{failed},
 	    	remark = #{remark},

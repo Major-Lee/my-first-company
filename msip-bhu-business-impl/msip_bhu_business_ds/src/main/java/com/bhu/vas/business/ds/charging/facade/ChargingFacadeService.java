@@ -2,22 +2,34 @@ package com.bhu.vas.business.ds.charging.facade;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
+import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
+import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.charging.service.UserWithdrawCostConfigsService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceBatchImportService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class ChargingFacadeService {
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private UserService userService;
 	
 	@Resource
 	private UserDeviceService userDeviceService;
@@ -35,22 +47,27 @@ public class ChargingFacadeService {
 		return userService;
 	}*/
 
-	public WifiDeviceService getWifiDeviceService() {
-		return wifiDeviceService;
-	}
-
-	public WifiDeviceBatchImportService getWifiDeviceBatchImportService() {
-		return wifiDeviceBatchImportService;
-	}
-
-	public UserWithdrawCostConfigsService getUserWithdrawCostConfigsService() {
-		return userWithdrawCostConfigsService;
-	}
-
-	public WifiDeviceSharedealConfigsService getWifiDeviceSharedealConfigsService() {
-		return wifiDeviceSharedealConfigsService;
-	}
-	
+    public BatchImportVTO doBatchImportCreate(int uid,int countrycode,String mobileno, String filepath_suffix, String remark){
+    	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
+    	if(StringUtils.isNotEmpty(mobileno)){
+    		boolean exist = UniqueFacadeService.checkMobilenoExist(countrycode,mobileno);
+        	if(!exist){
+        		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"mobileno",mobileno});
+        	}
+    	}
+    	WifiDeviceBatchImport batch_import = new WifiDeviceBatchImport();
+    	batch_import.setImportor(uid);
+    	batch_import.setMobileno(mobileno);
+    	batch_import.setFilepath(filepath_suffix);
+    	batch_import.setRemark(remark);
+    	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTED_FILE);
+    	wifiDeviceBatchImportService.insert(batch_import);
+    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno());
+    }
+    
+    
+    
+    
 	public void wifiDeviceBindedNotify(String dmac,int uid){
 		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
 		if(configs == null){
@@ -151,5 +168,21 @@ public class ChargingFacadeService {
 	
 	public WithdrawCostInfo calculateWithdrawCost(int uid,String applyid,double cash){
 		return userWithdrawCostConfigsService.calculateWithdrawCost(uid,applyid,cash);
+	}
+	
+	public WifiDeviceService getWifiDeviceService() {
+		return wifiDeviceService;
+	}
+
+	public WifiDeviceBatchImportService getWifiDeviceBatchImportService() {
+		return wifiDeviceBatchImportService;
+	}
+
+	public UserWithdrawCostConfigsService getUserWithdrawCostConfigsService() {
+		return userWithdrawCostConfigsService;
+	}
+
+	public WifiDeviceSharedealConfigsService getWifiDeviceSharedealConfigsService() {
+		return wifiDeviceSharedealConfigsService;
 	}
 }
