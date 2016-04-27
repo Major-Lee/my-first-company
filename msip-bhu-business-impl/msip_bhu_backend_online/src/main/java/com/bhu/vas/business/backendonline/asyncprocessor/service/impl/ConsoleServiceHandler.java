@@ -263,9 +263,13 @@ public class ConsoleServiceHandler {
 		EntityIterator<String, Order> it = new KeyBasedEntityBatchIterator<String,Order>(String.class
 				,Order.class, orderService.getEntityDao(), mc);
 		while(it.hasNext()){
-			List<String> orderids = it.nextKeys();
-			logger.info("orderids:"+orderids);
 			List<Order> orders = it.next();
+			List<String> orderids = new ArrayList<String>();
+			for(Order order : orders){
+				orderids.add(order.getId());
+			}
+			logger.info("orderids:"+orderids);
+			//List<Order> orders = it.next();
 			List<UserWalletLog> userWalletLogs = userWalletLogService.findModelByOrderids(orderids);
 			logger.info("userWalletLogs:"+userWalletLogs.size());
 			for(Order order : orders){
