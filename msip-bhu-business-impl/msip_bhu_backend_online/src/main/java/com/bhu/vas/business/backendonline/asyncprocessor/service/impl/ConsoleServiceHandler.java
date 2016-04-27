@@ -25,6 +25,7 @@ import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.UBindedEnum;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
@@ -342,6 +343,9 @@ public class ConsoleServiceHandler {
 		if(StringUtils.isEmpty(orderid)) return null;
 		
 		for(UserWalletLog userWalletLog : userWalletLogList){
+			if(WifiDeviceSharedealConfigs.Default_Manufacturer == userWalletLog.getUid()){
+				continue;
+			}
 			if(orderid.equals(userWalletLog.getOrderid())){
 				return userWalletLog;
 			}
