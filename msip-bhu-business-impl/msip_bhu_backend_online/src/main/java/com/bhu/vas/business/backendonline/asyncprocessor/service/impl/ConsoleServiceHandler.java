@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
@@ -45,6 +46,7 @@ import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 
 @Service
 public class ConsoleServiceHandler {
@@ -94,7 +96,7 @@ public class ConsoleServiceHandler {
 	}
 	
 	public void exportOrderFile(String message){
-		OrderSearchResultExportFileDTO dto = JsonHelper.getDTO(message, OrderSearchResultExportFileDTO.class);
+		final OrderSearchResultExportFileDTO dto = JsonHelper.getDTO(message, OrderSearchResultExportFileDTO.class);
 		if(dto == null || StringUtils.isEmpty(dto.getMessage())) return;
 		
 		String exportFilePath = BusinessRuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
@@ -108,7 +110,8 @@ public class ConsoleServiceHandler {
 			@Override
 			public void notifyComming(Page<WifiDeviceDocument> pages) {
 				for(WifiDeviceDocument doc : pages){
-					lines.addAll(outputOrderStringByItem(doc));
+					logger.info("pages item:"+doc);
+					lines.addAll(outputOrderStringByItem(doc, dto.getStart_date(), dto.getEnd_date()));
 				}
 			}
 		});
@@ -150,6 +153,7 @@ public class ConsoleServiceHandler {
 //				fw.append(formatStr(columns));
 //			}
 			fw.newLine();
+			logger.info("lines:"+lines);
 			for(String item : lines){
 				fw.append(item);
 				fw.newLine();
@@ -240,10 +244,19 @@ public class ConsoleServiceHandler {
 	 * @param doc
 	 * @throws IOException
 	 */
-	private List<String> outputOrderStringByItem(WifiDeviceDocument doc){
+	private List<String> outputOrderStringByItem(WifiDeviceDocument doc, String start_date, String end_date){
 		List<String> mac_orderlines = new ArrayList<String>();
 		
 		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		criteria.andColumnEqualTo("mac", doc.getId())
+				.andColumnEqualTo("status", OrderStatus.DeliverCompleted.getKey());
+		if(StringUtils.isNotEmpty(start_date)){
+			criteria.andColumnGreaterThanOrEqualTo("created_at", start_date);
+		}
+		if(StringUtils.isNotEmpty(end_date)){
+			criteria.andColumnLessThanOrEqualTo("created_at", end_date);
+		}
     	mc.setPageNumber(1);
     	mc.setPageSize(200);
     	mc.setOrderByClause("created_at desc");
@@ -251,11 +264,14 @@ public class ConsoleServiceHandler {
 				,Order.class, orderService.getEntityDao(), mc);
 		while(it.hasNext()){
 			List<String> orderids = it.nextKeys();
+			logger.info("orderids:"+orderids);
 			List<Order> orders = it.next();
 			List<UserWalletLog> userWalletLogs = userWalletLogService.findModelByOrderids(orderids);
+			logger.info("userWalletLogs:"+userWalletLogs.size());
 			for(Order order : orders){
 				UserWalletLog userWalletLog = containOrderidByList(order.getId(), userWalletLogs);
 				if(userWalletLog != null){
+					logger.info("userWalletLogs != null:"+userWalletLog.getOrderid());
 					StringBuffer bw = new StringBuffer();
 					bw.append(formatStr(order.getMac()));
 					bw.append(formatStr(order.getUmac()));
