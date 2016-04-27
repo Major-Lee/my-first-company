@@ -40,6 +40,6 @@ public interface IDeviceRestRpcService {
 	public RpcResponseDTO<Boolean> removeUserSearchConditions(int uid, String message_ts_splits);
 	public RpcResponseDTO<TailPage<UserSearchConditionDTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize);
 	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid);
-	public RpcResponseDTO<String> exportResult(int uid, String message);
-
+	public RpcResponseDTO<String> exportWifiDeviceResult(int uid, String message);
+	public RpcResponseDTO<String> exportOrderResult(int uid, String message);
 }

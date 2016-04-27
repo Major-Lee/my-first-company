@@ -170,7 +170,26 @@ public class ConsoleSearchController extends BaseController {
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) String message) {
     	
-        RpcResponseDTO<String> result = deviceRestRpcService.exportResult(uid, message);
+        RpcResponseDTO<String> result = deviceRestRpcService.exportWifiDeviceResult(uid, message);
+        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+    }
+    
+    /**
+     * 搜索结果打赏订单可进行导出txt文件
+     * @param request
+     * @param response
+     * @param uid
+     * @param message
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/export_order_result", method = {RequestMethod.POST})
+    public void export_order_result(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String message) {
+    	
+        RpcResponseDTO<String> result = deviceRestRpcService.exportOrderResult(uid, message);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
     }
 }

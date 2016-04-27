@@ -1,5 +1,16 @@
 package com.bhu.vas.di.op.batchimport.frommanufacturing;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.di.op.batchimport.frommanufacturing.notify.ExcelElementNotify;
+
 
 /**
  * 出厂设备清单数据导入程序
@@ -7,158 +18,56 @@ package com.bhu.vas.di.op.batchimport.frommanufacturing;
  *
  */
 public class ManufacturerDeviceDataImportOP {
-	
-	/*public static void main(String[] argv) {//throws ElasticsearchException, ESException, IOException, ParseException{
-		if(argv.length < 5) return;
-		String oper = argv[0];// ADD REMOVE
-		
+	///Users/Edmond/gospace
+	public static void main(String[] argv) {//throws ElasticsearchException, ESException, IOException, ParseException{
+		if(argv.length < 2) {
+			System.err.println(String.format("pls input xlsx filepath[%s] and origswver[%s]", "/BHUData/batchimport/manufacturer/uRouter-20160426-双翼.xlsx","AP106P06V1.5.6Build9011_TU"));
+			return;
+		}
+		final String filepath = argv[0];
+		final String orig_swver = argv[1];
+		//final String filepath = "/BHUData/batchimport/manufacturer/uRouter-20160426-双翼.xlsx";
+		//final String orig_swver = "AP106P06V1.5.6Build9011_TU";
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
-		UserService userService = (UserService)ctx.getBean("userService");
-		UserTokenService userTokenService = (UserTokenService)ctx.getBean("userTokenService");
-		UserFacadeService userFacadeService = (UserFacadeService)ctx.getBean("userFacadeService");
+		//UserService userService = (UserService)ctx.getBean("userService");
+		final WifiDeviceService wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
+		final AtomicInteger atomic_failed = new AtomicInteger(0);
+		final AtomicInteger atomic_successed = new AtomicInteger(0);
+		ManufacturerExcelImport.excelImport(filepath, new ExcelElementNotify(){
+			@Override
+			public void elementNotify(String mac, String sn) {
+				//System.out.println(String.format("mac[%s] sn[%s]", mac,sn));
+				if(!mac.startsWith("84:82:f4"))	return;
+				DeviceUnitType dut = VapEnumType.DeviceUnitType.fromDeviceSN(sn);
+				if(dut != null){
+					WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+					if(wifiDevice != null) {
+						System.err.println(String.format("mac[%s] sn[%s] dbsn[%s] already existed! ", mac,sn,wifiDevice.getSn()));
+						atomic_failed.incrementAndGet();
+						return;
+					}
+					wifiDevice = new WifiDevice();
+					wifiDevice.setId(mac);
+					wifiDevice.setHdtype(DeviceUnitType.parserIndex(dut.getIndex())[1]);
+					wifiDevice.setOrig_vendor("BHU");
+					wifiDevice.setOrig_model(dut.getName());
+					wifiDevice.setOrig_hdver("Z01");
+					wifiDevice.setOrig_swver(orig_swver);
+					wifiDevice.setOem_vendor("BHU");
+					wifiDevice.setOem_model(dut.getName());
+					wifiDevice.setOem_hdver("Z01");
+					wifiDevice.setOem_swver(orig_swver);
+					wifiDevice.setConfig_sequence("0");
+					wifiDevice.setOnline(false);
+					wifiDevice.setLast_reged_at(null);
+					wifiDevice.setLast_logout_at(null);
+					wifiDeviceService.insert(wifiDevice);
+					atomic_successed.incrementAndGet();
+					System.out.println(String.format("mac[%s] sn[%s] insert successfully! ", mac,sn));
+				}
+			}
+		});
 		
-        InputStream is = null;
-        HSSFWorkbook hssfWorkbook = null;//new HSSFWorkbook(is);
-        AgentDeviceClaim agentDeviceClaim = null;
-
-        HSSFWorkbook outWorkbook = new HSSFWorkbook();
-        OutputStream out = null;
-
-        int successCount = 0;
-        int failCount = 0;
-        try{
-            is = new FileInputStream(dto.getInputPath());
-            out = new FileOutputStream(dto.getOutputPath());
-            hssfWorkbook = new HSSFWorkbook(is);
-            //代理商导入记录
-            Long import_id = agentDeviceImportLog.getId();
-            logger.info(String.format("sheets size ===" + hssfWorkbook.getNumberOfSheets()));
-            for (int numSheet = 0; numSheet <hssfWorkbook.getNumberOfSheets(); numSheet++) {
-                logger.info(String.format("numSheet ===" + numSheet));
-                HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
-
-                logger.info(String.format("hssfSheet ===" + hssfSheet));
-                if (hssfSheet == null) {
-                    continue;
-                }
-                HSSFSheet outSheet = outWorkbook.createSheet(hssfSheet.getSheetName());
-
-                HSSFRow outputFirstRow = outSheet.createRow(0); // 下标为0的行开始
-                HSSFCell[] firstcell = new HSSFCell[3];
-                firstcell[0] = outputFirstRow.createCell(0);
-                firstcell[0].setCellValue("用户id");
-                firstcell[1] = outputFirstRow.createCell(1);
-                firstcell[1].setCellValue("存货编码");
-                firstcell[2] = outputFirstRow.createCell(2);
-                firstcell[2].setCellValue("存货名称");
-                firstcell[2] = outputFirstRow.createCell(3);
-                firstcell[2].setCellValue("序列号");
-                firstcell[2] = outputFirstRow.createCell(4);
-                firstcell[2].setCellValue("MAC");
-                firstcell[2] = outputFirstRow.createCell(5);
-                firstcell[2].setCellValue("导入结果");
-
-                logger.info(String.format("row size ===" + hssfSheet.getLastRowNum()));
-
-                for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
-                    logger.info(String.format("row num ===" + rowNum));
-                    HSSFRow hssfRow = hssfSheet.getRow(rowNum);
-                    logger.info(String.format("hssfRow" + hssfRow));
-                    if (hssfRow == null) {
-                        continue;
-                    }
-                    agentDeviceClaim = new AgentDeviceClaim();
-
-                    HSSFCell stock_code = hssfRow.getCell(0);
-                    if (stock_code == null) {
-                        continue;
-                    }
-                    agentDeviceClaim.setStock_code(String.valueOf((int) stock_code.getNumericCellValue()));
-
-                    HSSFCell stock_name = hssfRow.getCell(1);
-                    if (stock_name == null || StringHelper.isEmpty(stock_name.getStringCellValue())) {
-                        continue;
-                    }
-                    agentDeviceClaim.setStock_name(stock_name.getStringCellValue());
-
-                    HSSFCell sn = hssfRow.getCell(2);
-                    if (sn == null || StringHelper.isEmpty(sn.getStringCellValue())) {
-                        continue;
-                    }
-                    agentDeviceClaim.setId(sn.getStringCellValue());
-
-                    HSSFCell mac = hssfRow.getCell(3);
-                    String macStr = "";
-                    if (mac != null && !StringHelper.isEmpty(mac.getStringCellValue())) {
-                        macStr = StringHelper.formatMacAddress(mac.getStringCellValue());
-                    }
-                    agentDeviceClaim.setMac(macStr.toLowerCase());
-
-                    Date date = new Date();
-                    agentDeviceClaim.setSold_at(date);
-
-                    agentDeviceClaim.setUid(agentDeviceImportLog.getAid());
-
-                    logger.info(String.format("agentDeviceClaimService insert agentDeviceClaim[%s]", JsonHelper.getJSONString(agentDeviceClaim)));
-
-//                    WifiDevice wifiDevice = wifiDeviceService.getById(macStr);
-//                    if (wifiDevice != null) {
-//                        agentDeviceClaim.setClaim_at(date);
-//                        agentDeviceClaim.setStatus(1);
-//                    }
-
-
-
-                    HSSFRow outRow  = outSheet.createRow(rowNum);
-                    HSSFCell outUid = outRow.createCell(0);
-                    outUid.setCellValue(agentDeviceImportLog.getAid());
-                    HSSFCell outStockCode = outRow.createCell(1);
-                    outStockCode.setCellValue(String.valueOf((int) stock_code.getNumericCellValue()));
-                    HSSFCell outStockName = outRow.createCell(2);
-                    outStockName.setCellValue(stock_name.getStringCellValue());
-                    HSSFCell outSN = outRow.createCell(3);
-                    outSN.setCellValue(sn.getStringCellValue());
-                    HSSFCell outMAC = outRow.createCell(4);
-                    outMAC.setCellValue(macStr);
-
-                    HSSFCell outResult = outRow.createCell(5);
-                    agentDeviceClaim.setImport_id(import_id);
-                    if (agentDeviceClaimService.getById(agentDeviceClaim.getId()) == null) {
-                        agentDeviceClaimService.insert(agentDeviceClaim);
-                        successCount ++;
-                        outResult.setCellValue("success");
-
-                    } else {
-                        failCount ++;
-                        outResult.setCellValue("duplicate imported");
-                    }
-
-
-                }
-            }
-
-            outWorkbook.write(out);
-
-        }catch(Exception ex) {
-            //logger.error(String.format("ex[%s]", ex.getStackTrace()));
-            ex.printStackTrace(System.out);
-        }finally{
-            if(hssfWorkbook != null){
-                hssfWorkbook.close();
-                hssfWorkbook = null;
-            }
-            if(is != null){
-                is.close();
-                is = null;
-            }
-
-            if (outWorkbook != null) {
-                outWorkbook.close();
-            }
-            if (out != null) {
-                out.close();
-                out = null;
-            }
-        }
-	}*/
+		System.out.println(String.format("filepath[%s] import successfully! successed[%s] failed[%s]", filepath,atomic_successed.get(),atomic_failed.get()));
+	}
 }

@@ -171,8 +171,11 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case AgentDeviceClaimUpdate:
 							agentDeviceClaimServiceHandler.updateAgentDeviceClaim(message);
 							break;
-						case SearchResultExportFile:
-							consoleServiceHandler.searchResultExportFile(message);
+						case WifiDeviceResultExportFile:
+							consoleServiceHandler.exportWifiDeviceFile(message);
+							break;
+						case OrderResultExportFile:
+							consoleServiceHandler.exportOrderFile(message);
 							break;
 						case UserDeviceSharedNetworkApply:
 							userDeviceSharedNetworkApplyServiceHandler.process(message);
