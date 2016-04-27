@@ -187,9 +187,11 @@ public class ConsoleSearchController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String message) {
+            @RequestParam(required = true) String message,
+            @RequestParam(required = false) String start_date,
+            @RequestParam(required = false) String end_date) {
     	
-        RpcResponseDTO<String> result = deviceRestRpcService.exportOrderResult(uid, message);
+        RpcResponseDTO<String> result = deviceRestRpcService.exportOrderResult(uid, message, start_date, end_date);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
     }
 }
