@@ -21,6 +21,7 @@ import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
 import com.bhu.vas.business.asyn.spring.model.HandsetDeviceVisitorAuthorizeOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.OrderSearchResultExportFileDTO;
 import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
@@ -482,7 +483,7 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendSearchResultExportFileMessage(int uid, String message, String exportFileName){
+	public void sendWifiDeviceSearchResultExportFileMessage(int uid, String message, String exportFileName){
 		DeviceSearchResultExportFileDTO dto = new DeviceSearchResultExportFileDTO();
 		dto.setUid(uid);
 		dto.setMessage(message);
@@ -492,6 +493,15 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
+	public void sendOrderSearchResultExportFileMessage(int uid, String message, String exportFileName){
+		OrderSearchResultExportFileDTO dto = new OrderSearchResultExportFileDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setExportFileName(exportFileName);
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
 	
 	public void sendPortalUpdateUserChangedActionMessage(int uid,String nick,String mobileno,String avatar){
 		UserPortalUpdateDTO dto = new UserPortalUpdateDTO();

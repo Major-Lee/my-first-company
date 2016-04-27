@@ -59,7 +59,8 @@ public enum ActionMessageType {
 	AgentDeviceClaimImport("代理商设备导入","agent device claim import","AI"),
 	AgentDeviceClaimUpdate("代理商导入更新", "agent device update ", "AU"),
 	
-	SearchResultExportFile("增值平台搜索结果导出文件", "search result export file", "SE"),
+	WifiDeviceResultExportFile("增值平台搜索设备结果导出文件", "search result export file", "WE"),
+	OrderResultExportFile("增值平台搜索打赏订单结果导出文件", "search result export file", "OE"),
 	;
 	
 	static Map<String, ActionMessageType> allActionMessageTypes;

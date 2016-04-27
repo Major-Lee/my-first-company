@@ -759,6 +759,7 @@ public class BusinessEnumType {
 	public enum OrderUmacType{
 		Pc(1,"Pc类型","PC"),
 		Terminal(2,"终端类型","手机"),
+		Unknown(10,"未知终端类型", "未知终端类型"),
 		;
 		private Integer key;
 		private String name;
@@ -821,6 +822,7 @@ public class BusinessEnumType {
 		PcWeixin("PcWeixin","微信","微信"),
 		PcAlipay("PcAlipay","支付宝","支付宝"),
 		Midas("Midas","米大师","米大师"),
+		Unknown("unknown","未知支付方式", "未知支付方式"),
 		;
 		private String key;
 		private String name;

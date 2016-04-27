@@ -17,14 +17,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.UBindedEnum;
+import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.business.asyn.spring.model.DeviceSearchResultExportFileDTO;
+import com.bhu.vas.business.asyn.spring.model.OrderSearchResultExportFileDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
+import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -34,7 +41,10 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
+import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 @Service
 public class ConsoleServiceHandler {
@@ -42,15 +52,77 @@ public class ConsoleServiceHandler {
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
+	@Resource
+	private OrderService orderService;
+	
+	@Resource
+	private UserWalletLogService userWalletLogService;
 
-	public static final String[] SearchResultExportColumns = new String[]{"Mac","SN","软件版本","模块版本",
+//	public static final String WifiDeviceExport = "WifiDeviceExport";
+//	public static final String OrderExport = "OrderExport";
+	
+	public static final String[] SearchWifiDeviceResultExportColumns = new String[]{"Mac","SN","软件版本","模块版本",
 		"归属业务线","状态","是否绑定","绑定手机号","地理位置","在线总时长","首次上线时间",
 		"末次上线时间","末次离线时间","灰度","关联模板","工作模式","在线总时长占比"};
+	
+	public static final String[] SearchOrderResultExportColumns = new String[]{"Mac","UMac","终端类型","打赏金额",
+		"分成金额","打赏方式","打赏日期"};
+	
+	
+	public void exportWifiDeviceFile(String message){
+		DeviceSearchResultExportFileDTO dto = JsonHelper.getDTO(message, DeviceSearchResultExportFileDTO.class);
+		if(dto == null || StringUtils.isEmpty(dto.getMessage())) return;
+		
+		String exportFilePath = BusinessRuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
+				.concat(File.separator).concat(dto.getExportFileName());
+		
+		
+		final List<String> lines = new ArrayList<String>();
+		
+		wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, 
+				BusinessIndexDefine.WifiDevice.Type, dto.getMessage(), new IteratorNotify<Page<WifiDeviceDocument>>(){
+			@Override
+			public void notifyComming(Page<WifiDeviceDocument> pages) {
+				for(WifiDeviceDocument doc : pages){
+					lines.add(outputWifiDeviceStringByItem(doc));
+				}
+			}
+		});
+		
+		searchResultExportFile(dto.getMessage(), exportFilePath, SearchWifiDeviceResultExportColumns, lines);
+	}
+	
+	public void exportOrderFile(String message){
+		OrderSearchResultExportFileDTO dto = JsonHelper.getDTO(message, OrderSearchResultExportFileDTO.class);
+		if(dto == null || StringUtils.isEmpty(dto.getMessage())) return;
+		
+		String exportFilePath = BusinessRuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
+				.concat(File.separator).concat(dto.getExportFileName());
+		
+		
+		final List<String> lines = new ArrayList<String>();
+		
+		wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, 
+				BusinessIndexDefine.WifiDevice.Type, dto.getMessage(), new IteratorNotify<Page<WifiDeviceDocument>>(){
+			@Override
+			public void notifyComming(Page<WifiDeviceDocument> pages) {
+				for(WifiDeviceDocument doc : pages){
+					lines.addAll(outputOrderStringByItem(doc));
+				}
+			}
+		});
+		
+		searchResultExportFile(dto.getMessage(), exportFilePath, SearchOrderResultExportColumns, lines);
+
+	}
+	
 	/**
 	 * 搜索结果导出txt文件
 	 * @param message
 	 */
-	public void searchResultExportFile(String message) {
+	public void searchResultExportFile(String message, String export_filepath,
+			String[] columns, List<String> lines) {
 		logger.info(String.format("ConsoleServiceHandler searchResultExportFile message[%s]", message));
 		DeviceSearchResultExportFileDTO dto = JsonHelper.getDTO(message, DeviceSearchResultExportFileDTO.class);
 		if(dto == null) return;
@@ -62,36 +134,23 @@ public class ConsoleServiceHandler {
 			FileHelper.makeDirectory(exportFilePath);
 			File file = new File(exportFilePath);
 			fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")); // 指定编码格式，以免读取时中文字符异常
-
-			final List<String> allItemStrings = new ArrayList<String>();
-			
-			wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, 
-					BusinessIndexDefine.WifiDevice.Type, dto.getMessage(), new IteratorNotify<Page<WifiDeviceDocument>>(){
-				@Override
-				public void notifyComming(Page<WifiDeviceDocument> pages) {
-					for(WifiDeviceDocument doc : pages){
-						allItemStrings.add(outputStringByItem(doc));
-					}
-					//System.out.println(pages.getTotalElements());
-				}
-			});
 			
 			//输出文件
 			//System.out.println(ret);
 			//输出列
-			int columns_length = SearchResultExportColumns.length;
+			int columns_length = columns.length;
 			for(int i = 0;i<columns_length;i++){
 				if((i+1) == columns_length){
-					fw.append(formatStr(SearchResultExportColumns[i], false));
+					fw.append(formatStr(columns[i], false));
 				}else{
-					fw.append(formatStr(SearchResultExportColumns[i]));
+					fw.append(formatStr(columns[i]));
 				}
 			}
 //			for(String columns : SearchResultExportColumns){
 //				fw.append(formatStr(columns));
 //			}
 			fw.newLine();
-			for(String item : allItemStrings){
+			for(String item : lines){
 				fw.append(item);
 				fw.newLine();
 			}
@@ -116,7 +175,7 @@ public class ConsoleServiceHandler {
 	 * @param doc
 	 * @throws IOException
 	 */
-	private String outputStringByItem(WifiDeviceDocument doc){
+	private String outputWifiDeviceStringByItem(WifiDeviceDocument doc){
 		StringBuffer bw = new StringBuffer();
 		bw.append(formatStr(doc.getD_mac()));
 		bw.append(formatStr(doc.getD_sn()));
@@ -176,6 +235,50 @@ public class ConsoleServiceHandler {
 		return bw.toString();
 	}
 	
+	/**
+	 * 输出一条设备的打赏数据的记录
+	 * @param doc
+	 * @throws IOException
+	 */
+	private List<String> outputOrderStringByItem(WifiDeviceDocument doc){
+		List<String> mac_orderlines = new ArrayList<String>();
+		
+		ModelCriteria mc = new ModelCriteria();
+    	mc.setPageNumber(1);
+    	mc.setPageSize(200);
+    	mc.setOrderByClause("created_at desc");
+		EntityIterator<String, Order> it = new KeyBasedEntityBatchIterator<String,Order>(String.class
+				,Order.class, orderService.getEntityDao(), mc);
+		while(it.hasNext()){
+			List<String> orderids = it.nextKeys();
+			List<Order> orders = it.next();
+			List<UserWalletLog> userWalletLogs = userWalletLogService.findModelByOrderids(orderids);
+			for(Order order : orders){
+				UserWalletLog userWalletLog = containOrderidByList(order.getId(), userWalletLogs);
+				if(userWalletLog != null){
+					StringBuffer bw = new StringBuffer();
+					bw.append(formatStr(order.getMac()));
+					bw.append(formatStr(order.getUmac()));
+					OrderUmacType orderUmacType = OrderUmacType.fromKey(order.getUmactype());
+					if(orderUmacType != null){
+						orderUmacType = OrderUmacType.Unknown;
+					}
+					bw.append(formatStr(orderUmacType.getDesc()));
+					bw.append(formatStr(order.getAmount()));
+					bw.append(formatStr(userWalletLog.getCash().substring(1)));
+					OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+					if(orderPaymentType != null){
+						orderPaymentType = OrderPaymentType.Unknown;
+					}
+					bw.append(formatStr(orderPaymentType.getDesc()));
+					bw.append(formatStr(DateTimeHelper.formatDate(order.getCreated_at(), DateTimeHelper.FormatPattern0)));
+					mac_orderlines.add(bw.toString());
+				}
+			}
+		}
+		return mac_orderlines;
+	}
+	
 	public static final int TxtFileLength = 20;
 	/**
 	 * 格式化txt文本值，保证列间距
@@ -203,5 +306,17 @@ public class ConsoleServiceHandler {
 	
 	private static String formatStr(String str) {
 		return formatStr(str, true);
+	}
+	
+	private static UserWalletLog containOrderidByList(String orderid, List<UserWalletLog> userWalletLogList){
+		if(userWalletLogList == null || userWalletLogList.isEmpty()) return null;
+		if(StringUtils.isEmpty(orderid)) return null;
+		
+		for(UserWalletLog userWalletLog : userWalletLogList){
+			if(orderid.equals(userWalletLog.getOrderid())){
+				return userWalletLog;
+			}
+		}
+		return null;
 	}
 }

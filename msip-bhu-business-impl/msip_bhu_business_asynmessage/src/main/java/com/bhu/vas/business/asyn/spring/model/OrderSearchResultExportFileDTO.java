@@ -3,7 +3,7 @@ package com.bhu.vas.business.asyn.spring.model;
 import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
-public class DeviceSearchResultExportFileDTO extends ActionDTO {
+public class OrderSearchResultExportFileDTO extends ActionDTO {
 	private int uid;
 	//搜索条件json
 	private String message;
@@ -43,7 +43,7 @@ public class DeviceSearchResultExportFileDTO extends ActionDTO {
 
 	@Override
 	public String getActionType() {
-		return ActionMessageType.WifiDeviceResultExportFile.getPrefix();
+		return ActionMessageType.OrderResultExportFile.getPrefix();
 	}
 
 }

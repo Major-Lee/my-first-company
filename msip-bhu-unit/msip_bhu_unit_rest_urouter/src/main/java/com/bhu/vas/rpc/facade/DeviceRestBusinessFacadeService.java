@@ -583,10 +583,17 @@ public class DeviceRestBusinessFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
 	}
 	
-	public RpcResponseDTO<String> exportResult(int uid, String message){
+	public RpcResponseDTO<String> exportWifiDeviceResult(int uid, String message){
 		String exportFileName = String.valueOf(uid).concat(StringHelper.MINUS_STRING_GAP).
 				concat(DateTimeHelper.getDateTime());
-		deliverMessageService.sendSearchResultExportFileMessage(uid, message, exportFileName);
+		deliverMessageService.sendWifiDeviceSearchResultExportFileMessage(uid, message, exportFileName);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileName);
+	}
+	
+	public RpcResponseDTO<String> exportOrderResult(int uid, String message){
+		String exportFileName = String.valueOf(uid).concat(StringHelper.MINUS_STRING_GAP).
+				concat(DateTimeHelper.getDateTime());
+		deliverMessageService.sendOrderSearchResultExportFileMessage(uid, message, exportFileName);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileName);
 	}
 	

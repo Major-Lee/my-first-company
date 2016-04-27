@@ -30,6 +30,11 @@
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_asynmessage</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_ds_commdity</artifactId>
+        </dependency>
         <!-- 
         <dependency>
             <groupId>com.smartwork</groupId>

@@ -279,13 +279,25 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<String> exportResult(int uid, String message) {
-		logger.info(String.format("DeviceRestRPC exportResult invoke uid [%s]", uid));
+	public RpcResponseDTO<String> exportWifiDeviceResult(int uid, String message) {
+		logger.info(String.format("DeviceRestRPC exportWifiDeviceResult invoke uid [%s]", uid));
 		try{
-			return deviceRestBusinessFacadeService.exportResult(uid, message);
+			return deviceRestBusinessFacadeService.exportWifiDeviceResult(uid, message);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceRestRPC exportResult exception exmsg[%s]",ex.getMessage()), ex);
+			logger.error(String.format("DeviceRestRPC exportWifiDeviceResult exception exmsg[%s]",ex.getMessage()), ex);
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	@Override
+	public RpcResponseDTO<String> exportOrderResult(int uid, String message) {
+		logger.info(String.format("DeviceRestRPC exportOrderResult invoke uid [%s]", uid));
+		try{
+			return deviceRestBusinessFacadeService.exportOrderResult(uid, message);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC exportOrderResult exception exmsg[%s]",ex.getMessage()), ex);
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
