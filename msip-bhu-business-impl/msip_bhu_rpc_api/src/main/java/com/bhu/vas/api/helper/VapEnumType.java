@@ -110,10 +110,10 @@ public class VapEnumType {
 		SOCRoot(DUT_soc, StringHelper.MINUS_STRING_GAP,"SOC"),
 		CWifiRoot(DUT_CWifi, StringHelper.MINUS_STRING_GAP,"商业WiFi"),
 		
-		uRouterTU_106("TU_H106",	"AP106","BN207",DUT_uRouter,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
-		uRouterPlusTU_112("TU_H112","AP112","BN209",DUT_uRouter,"uRouter Plus","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
-		uRouterMiniTU_901("TU_H901","AP901","BN210",DUT_uRouter,"uRouter Mini","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
-		uRouterAcTU_401("TU_H401",	"AP401","BN211",DUT_uRouter,"uRouter AC","uRouter","2.4GHz 5GHz 家用AP","64M内存、TF卡版本、9531芯片"),
+		uRouterTU_106("TU_H106",	"AP106","BN207","Z01",DUT_uRouter,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+		uRouterPlusTU_112("TU_H112","AP112","BN209","Z03",DUT_uRouter,"uRouter Plus","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+		uRouterAcTU_401("TU_H401",	"AP401","BN210","Z02",DUT_uRouter,"uRouter AC","uRouter","2.4GHz 5GHz 家用AP","64M内存、TF卡版本、9531芯片"),
+		uRouterMiniTU_901("TU_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter Mini","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		
 		MassAP_2_103("TS_H103",		"AP103",DUT_soc,"MassAP 2 H103","MassAP 2","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
 		MassAP_2_110("TS_H110",		"AP110",DUT_soc,"MassAP 2 H110","MassAP 2","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
@@ -153,6 +153,7 @@ public class VapEnumType {
 		private String prefix;
 		//对应于SN号的前缀
 		private String snprefix;
+		private String hdver;//orig_swver;
 		private String name;
 		private String sname;
 		private String parent;
@@ -172,10 +173,11 @@ public class VapEnumType {
 			this.fname = fname;
 			this.desc = desc;
 		}
-		private DeviceUnitType(String index,String prefix,String snprefix, String parent,String name,String sname,String fname,String desc){
+		private DeviceUnitType(String index,String prefix,String snprefix,String hdver, String parent,String name,String sname,String fname,String desc){
 			this.index = index;
 			this.prefix = prefix;
 			this.snprefix = snprefix;
+			this.hdver = hdver;
 			this.name = name;
 			this.sname = sname;
 			this.parent = parent;
@@ -242,6 +244,13 @@ public class VapEnumType {
 		}
 		public void setSnprefix(String snprefix) {
 			this.snprefix = snprefix;
+		}
+		
+		public String getHdver() {
+			return hdver;
+		}
+		public void setHdver(String hdver) {
+			this.hdver = hdver;
 		}
 		public static DeviceUnitType fromIndex(String index){
 			DeviceUnitType dType = allDeviceUnitHDTypes.get(index); 
