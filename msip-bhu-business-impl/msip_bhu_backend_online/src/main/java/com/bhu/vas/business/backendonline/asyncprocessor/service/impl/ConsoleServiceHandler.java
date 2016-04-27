@@ -124,15 +124,15 @@ public class ConsoleServiceHandler {
 	public void searchResultExportFile(String message, String export_filepath,
 			String[] columns, List<String> lines) {
 		logger.info(String.format("ConsoleServiceHandler searchResultExportFile message[%s]", message));
-		DeviceSearchResultExportFileDTO dto = JsonHelper.getDTO(message, DeviceSearchResultExportFileDTO.class);
-		if(dto == null) return;
+//		DeviceSearchResultExportFileDTO dto = JsonHelper.getDTO(message, DeviceSearchResultExportFileDTO.class);
+//		if(dto == null) return;
 		
-		String exportFilePath = BusinessRuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
-				.concat(File.separator).concat(dto.getExportFileName());
+//		String exportFilePath = BusinessRuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(dto.getUid()))
+//				.concat(File.separator).concat(dto.getExportFileName());
 		BufferedWriter fw = null;
 		try {
-			FileHelper.makeDirectory(exportFilePath);
-			File file = new File(exportFilePath);
+			FileHelper.makeDirectory(export_filepath);
+			File file = new File(export_filepath);
 			fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")); // 指定编码格式，以免读取时中文字符异常
 			
 			//输出文件
