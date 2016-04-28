@@ -1,5 +1,8 @@
 package com.bhu.vas.business.ds.charging.facade;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,6 +24,10 @@ import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -82,6 +89,37 @@ public class ChargingFacadeService {
     	wifiDeviceBatchImportService.update(batch_import);
     	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno());
     }
+    public TailPage<BatchImportVTO> pagesBatchImport(int uid,int status, int pageNo, int pageSize){
+    	TailPage<BatchImportVTO> result_pages = null;
+    	List<BatchImportVTO> vtos_result = new ArrayList<>();
+    	ModelCriteria mc = new ModelCriteria();
+		Criteria createCriteria = mc.createCriteria();
+		if(status != 0){
+			createCriteria.andColumnEqualTo("status", status);
+		}
+		createCriteria.andSimpleCaulse(" 1=1 ");
+    	mc.setPageNumber(pageNo);
+    	mc.setPageSize(pageSize);
+    	mc.setOrderByClause(" updated_at desc ");
+		TailPage<WifiDeviceBatchImport> pages = wifiDeviceBatchImportService.findModelTailPageByModelCriteria(mc);
+		if(!pages.isEmpty()){
+			List<Integer> uids = new ArrayList<>();
+			for(WifiDeviceBatchImport batchimport:pages.getItems()){
+				uids.add(batchimport.getImportor());
+			}
+			List<User> users = userService.findByIds(uids, true, true);
+			int index = 0;
+			for(WifiDeviceBatchImport batchimport:pages.getItems()){
+				User user = users.get(index);
+				vtos_result.add(batchimport.toBatchImportVTO(user.getNick(), user.getMobileno()));
+				index++;
+			}
+		}
+		result_pages = new CommonPage<BatchImportVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos_result);
+		return result_pages;
+    }
+    
+    
     
 	public void wifiDeviceBindedNotify(String dmac,int uid){
 		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);

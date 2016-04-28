@@ -10,6 +10,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.rpc.facade.ChargingUnitFacadeService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * 
@@ -34,6 +35,13 @@ public class ChargingRpcService  implements IChargingRpcService{
 	public RpcResponseDTO<BatchImportVTO> doConfirmDeviceRecord(int uid,String batchno) {
 		logger.info(String.format("doConfirmDeviceRecord uid:%s batchno:%s",uid, batchno));
 		return chargingUnitFacadeService.doConfirmDeviceRecord(uid, batchno);
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<BatchImportVTO>> doPages(int uid,
+			int status, int pageNo, int pageSize) {
+		logger.info(String.format("doPages uid:%s status:%s pageNo:%s pageSize:%s",uid, status,pageNo,pageSize));
+		return chargingUnitFacadeService.doPages(uid,status,pageNo,pageSize);
 	}
 
 }

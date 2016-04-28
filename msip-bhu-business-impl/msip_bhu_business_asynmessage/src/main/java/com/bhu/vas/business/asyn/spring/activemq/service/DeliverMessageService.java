@@ -12,6 +12,7 @@ import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
+import com.bhu.vas.business.asyn.spring.model.BatchImportConfirmDTO;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAliasDTO;
@@ -526,4 +527,14 @@ public class DeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
+	
+	public void sendBatchImportConfirmActionMessage(int uid,String batchno){
+		BatchImportConfirmDTO dto = new BatchImportConfirmDTO();
+		dto.setUid(uid);
+		dto.setBatchno(batchno);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	
 }

@@ -37,7 +37,6 @@ import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
