@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.charging.vto;
 
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+
 @SuppressWarnings("serial")
 public class BatchImportVTO implements java.io.Serializable{
 	private String id;
@@ -9,6 +11,7 @@ public class BatchImportVTO implements java.io.Serializable{
 	private String importor_nick;
 	private String importor_mobileno;
 	private String mobileno;
+	private double manufacturer_percent;
 	private int succeed;
 	private int failed;
 	private String remark;
@@ -65,5 +68,20 @@ public class BatchImportVTO implements java.io.Serializable{
 	}
 	public void setImportor_mobileno(String importor_mobileno) {
 		this.importor_mobileno = importor_mobileno;
+	}
+	public double getManufacturer_percent() {
+		return manufacturer_percent;
+	}
+	public void setManufacturer_percent(double manufacturer_percent) {
+		this.manufacturer_percent = manufacturer_percent;
+	}
+	
+	public String toAbsoluteFilePath(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(BusinessRuntimeConfiguration.BatchImport_Manufacturer)
+			.append(BusinessRuntimeConfiguration.BatchImport_Shipment)
+			.append(BusinessRuntimeConfiguration.BatchImport_Sub_Input_Dir)
+			.append(this.id).append(".xlsx");
+		return sb.toString();
 	}
 }

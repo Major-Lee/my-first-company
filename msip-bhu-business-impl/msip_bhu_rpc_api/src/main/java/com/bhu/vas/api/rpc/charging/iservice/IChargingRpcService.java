@@ -5,6 +5,6 @@ import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 
 public interface IChargingRpcService {
 	
-	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,String mobileno,String filepath_suffix,String remark);
-	public RpcResponseDTO<BatchImportVTO> doConfirmDeviceRecord(int uid,String import_id);
+	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,int countrycode,String mobileno,double sharedeal_manufacturer_percent,String remark);
+	public RpcResponseDTO<BatchImportVTO> doConfirmDeviceRecord(int uid,String batchno);
 }

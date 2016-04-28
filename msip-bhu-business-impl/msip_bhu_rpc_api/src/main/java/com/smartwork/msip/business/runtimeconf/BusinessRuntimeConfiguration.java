@@ -229,6 +229,10 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String Search_Result_Export_Dir = "/BHUData/srexport/";
 	
 	public static String BatchImport_Dir = "/BHUData/batchimport/";
+	//库房出库
+	public static String BatchImport_Shipment = "shipment/";
+	//生产商出厂
+	public static String BatchImport_Manufacturer = "manufacturer/";
 	public static String BatchImport_Sub_Input_Dir = "input/";
 	public static String BatchImport_Sub_Output_Dir = "output/";
 	

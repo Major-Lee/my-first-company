@@ -29,6 +29,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	//导入用户
 	private int importor;
 	private String mobileno;
+	private double manufacturer_percent;
 	//private int total;
 	private int succeed;
 	private int failed;
@@ -112,10 +113,19 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		vto.setId(this.getId());
 		vto.setImportor(this.getImportor());
 		vto.setMobileno(this.getMobileno());
+		vto.setManufacturer_percent(manufacturer_percent);
 		vto.setRemark(this.getRemark());
 		vto.setStatus(this.getStatus());
 		vto.setSucceed(this.getSucceed());
 		vto.setFailed(this.getFailed());
 		return vto;
 	}
+	
+	public double getManufacturer_percent() {
+		return manufacturer_percent;
+	}
+	public void setManufacturer_percent(double manufacturer_percent) {
+		this.manufacturer_percent = manufacturer_percent;
+	}
+	
 }

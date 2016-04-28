@@ -16,7 +16,7 @@ import com.bhu.vas.rpc.facade.ChargingUnitFacadeService;
  * @author Edmond
  *
  */
-@Service("vapRpcService")
+@Service("chargingRpcService")
 public class ChargingRpcService  implements IChargingRpcService{
     private final Logger logger = LoggerFactory.getLogger(ChargingRpcService.class);
 
@@ -24,16 +24,16 @@ public class ChargingRpcService  implements IChargingRpcService{
     private ChargingUnitFacadeService chargingUnitFacadeService;
 
 	@Override
-	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,
-			String mobileno, String filepath_suffix, String remark) {
-		logger.info(String.format("doInputDeviceRecord uid:%s mobileno:%s filepath_suffix:%s remark:%s",uid, mobileno, filepath_suffix, remark));
-		return chargingUnitFacadeService.doInputDeviceRecord(uid, mobileno, filepath_suffix, remark);
+	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,int countrycode,
+			String mobileno,double sharedeal_manufacturer_percent,String remark) {
+		logger.info(String.format("doInputDeviceRecord uid:%s countrycode:%s mobileno:%s remark:%s",uid,countrycode, mobileno, remark));
+		return chargingUnitFacadeService.doInputDeviceRecord(uid,countrycode, mobileno,sharedeal_manufacturer_percent, remark);
 	}
 
 	@Override
-	public RpcResponseDTO<BatchImportVTO> doConfirmDeviceRecord(int uid,String import_id) {
-		logger.info(String.format("doConfirmDeviceRecord uid:%s import_id:%s",uid, import_id));
-		return chargingUnitFacadeService.doConfirmDeviceRecord(uid, import_id);
+	public RpcResponseDTO<BatchImportVTO> doConfirmDeviceRecord(int uid,String batchno) {
+		logger.info(String.format("doConfirmDeviceRecord uid:%s batchno:%s",uid, batchno));
+		return chargingUnitFacadeService.doConfirmDeviceRecord(uid, batchno);
 	}
 
 }
