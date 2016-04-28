@@ -25,9 +25,9 @@ public class ChargingRpcService  implements IChargingRpcService{
 
 	@Override
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,int countrycode,
-			String mobileno,double sharedeal_manufacturer_percent,String remark) {
-		logger.info(String.format("doInputDeviceRecord uid:%s countrycode:%s mobileno:%s remark:%s",uid,countrycode, mobileno, remark));
-		return chargingUnitFacadeService.doInputDeviceRecord(uid,countrycode, mobileno,sharedeal_manufacturer_percent, remark);
+			String mobileno,double sharedeal_manufacturer_percent,boolean canbeturnoff,String remark) {
+		logger.info(String.format("doInputDeviceRecord uid:%s countrycode:%s mobileno:%s canbeturnoff:%s remark:%s",uid,countrycode, mobileno,canbeturnoff, remark));
+		return chargingUnitFacadeService.doInputDeviceRecord(uid,countrycode, mobileno,sharedeal_manufacturer_percent,canbeturnoff, remark);
 	}
 
 	@Override
