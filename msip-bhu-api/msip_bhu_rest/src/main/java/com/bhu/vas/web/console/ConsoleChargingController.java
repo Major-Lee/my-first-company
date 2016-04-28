@@ -56,7 +56,7 @@ public class ConsoleChargingController extends BaseController {
 			if(!rpcResult.hasError()){
 				System.out.println("path:"+rpcResult.getPayload().toAbsoluteFileInputPath());
 				File targetFile = new File(rpcResult.getPayload().toAbsoluteFileInputPath());
-				targetFile.mkdirs();
+				targetFile.getParentFile().mkdirs();
 				file.transferTo(targetFile);
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

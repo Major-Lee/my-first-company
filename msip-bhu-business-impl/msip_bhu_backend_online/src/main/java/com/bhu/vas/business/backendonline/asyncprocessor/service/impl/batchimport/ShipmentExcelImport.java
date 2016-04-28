@@ -32,16 +32,21 @@ public class ShipmentExcelImport {
 		System.out.println("input file:"+fileinputpath);
 		System.out.println("output file:"+fileoutpath);
         InputStream is = null;
+        System.out.println("~~~~~~~~~~~~~~~~~~~~1");
         //HSSFWorkbook hssfWorkbook = null;//new HSSFWorkbook(is);
         //Workbook workbook = null;
         Workbook wb = null;
+        System.out.println("~~~~~~~~~~~~~~~~~~~~2");
 		try{//XSSFWorkbook wb2 = (XSSFWorkbook)
 			 is = new FileInputStream(fileinputpath);
+			 System.out.println("~~~~~~~~~~~~~~~~~~~~3");
 			 wb = WorkbookFactory.create(is);//.openSampleWorkbook("CustomXMLMappings.xlsx");
+			 System.out.println("~~~~~~~~~~~~~~~~~~~~4");
 			 //new XSSFWorkbook(new FileInputStream(args[0]));
 	         //workbook = new XSSFWorkbook(is);
 	         System.out.println(String.format("sheets size ===" + wb.getNumberOfSheets()));
 	         for (int numSheet = 0; numSheet < wb.getNumberOfSheets(); numSheet++) {
+	        	 System.out.println("~~~~~~~~~~~~~~~~~~~~5");
 	        	Sheet sheet = wb.getSheetAt(numSheet);
 	        	System.out.println(String.format("numSheet[%s] SheetName[%s]",numSheet,sheet.getSheetName()));
 	        	int totalRowNum = sheet.getLastRowNum();
@@ -67,11 +72,12 @@ public class ShipmentExcelImport {
 	        	}
 	         }
 	         File targetFile = new File(fileoutpath);
-			 targetFile.mkdirs();
+			 targetFile.getParentFile().mkdirs();
 	         FileOutputStream fileOut = new FileOutputStream(targetFile);
 	         wb.write(fileOut);
 	         fileOut.close();
 		}catch(Exception ex){
+			System.out.println("~~~~~~~~~~~~~~~~~~~~exception");
 			ex.printStackTrace(System.out);
 		}finally{
 			/*if(wb != null){

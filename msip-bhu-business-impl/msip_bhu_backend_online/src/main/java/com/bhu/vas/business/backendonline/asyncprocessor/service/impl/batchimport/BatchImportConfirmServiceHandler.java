@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.asyn.spring.model.BatchImportConfirmDTO;
@@ -18,6 +19,7 @@ import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimpor
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
@@ -76,8 +78,14 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			        List<WifiDevice> models = wifiDeviceService.findModelByModelCriteria(mc);
 			        if(models.isEmpty()) return null;
 			        else{
+			        	String dmac = models.get(0).getId();
+			        	WifiDeviceSharedealConfigs userfulWifiDeviceSharedealConfigs = chargingFacadeService.userfulWifiDeviceSharedealConfigs(dmac);
+			        	userfulWifiDeviceSharedealConfigs.setOwner_percent(ArithHelper.round(ArithHelper.sub(1, importVto.getManufacturer_percent()), 2));
+			        	userfulWifiDeviceSharedealConfigs.setManufacturer_percent(importVto.getManufacturer_percent());
+			        	chargingFacadeService.getWifiDeviceSharedealConfigsService().update(userfulWifiDeviceSharedealConfigs);
 			        	DeviceCallbackDTO result = new DeviceCallbackDTO();
-			        	result.setMac(models.get(0).getId());
+			        	result.setMac(dmac);
+			        	
 			        	return result;
 			        	//return models.get(0);
 			        }
