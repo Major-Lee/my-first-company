@@ -9,6 +9,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -45,7 +46,21 @@ public class ChargingUnitFacadeService {
 		try{
 			BatchImportVTO importVTO = chargingFacadeService.doConfirmDeviceRecord(uid, batchno);
 			//TODO:async message
+			deliverMessageService.sendBatchImportConfirmActionMessage(uid, batchno);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(importVTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<TailPage<BatchImportVTO>> doPages(int uid,
+			int status, int pageNo, int pageSize) {
+		try{
+			TailPage<BatchImportVTO> vtos = chargingFacadeService.pagesBatchImport(uid, status,pageNo,pageSize);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

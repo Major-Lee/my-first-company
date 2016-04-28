@@ -37,6 +37,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	@Resource
 	private IMsgHandlerService userDeviceSharedNetworkApplyServiceHandler;
 	@Resource
+	private IMsgHandlerService batchImportConfirmServiceHandler;
+	
+	@Resource
 	private IMsgHandlerService userPortalUpdateServiceHandler;
 	@Resource
 	private AgentDeviceClaimServiceHandler agentDeviceClaimServiceHandler;
@@ -169,7 +172,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							asyncMsgHandleService.wifiDevicesModuleStyleChanged(message);
 							break;
 						case AgentDeviceClaimUpdate:
-							agentDeviceClaimServiceHandler.updateAgentDeviceClaim(message);
+							//agentDeviceClaimServiceHandler.updateAgentDeviceClaim(message);
 							break;
 						case WifiDeviceResultExportFile:
 							consoleServiceHandler.exportWifiDeviceFile(message);
@@ -179,6 +182,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case UserDeviceSharedNetworkApply:
 							userDeviceSharedNetworkApplyServiceHandler.process(message);
+							break;
+						case BatchImportConfirm:
+							batchImportConfirmServiceHandler.process(message);
 							break;
 						case UserPortalUpdate:
 							userPortalUpdateServiceHandler.process(message);

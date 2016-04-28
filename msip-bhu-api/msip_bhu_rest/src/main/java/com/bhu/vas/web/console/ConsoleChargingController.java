@@ -18,6 +18,8 @@ import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.bhu.vas.validate.ValidateService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -52,9 +54,8 @@ public class ConsoleChargingController extends BaseController {
         try{
         	RpcResponseDTO<BatchImportVTO> rpcResult = chargingRpcService.doInputDeviceRecord(uid, countrycode, mobileno, percent,canturnoff, remark);
 			if(!rpcResult.hasError()){
-				System.out.println("path:-------------");
-				System.out.println("path:"+rpcResult.getPayload().toAbsoluteFilePath());
-				File targetFile = new File(rpcResult.getPayload().toAbsoluteFilePath());
+				System.out.println("path:"+rpcResult.getPayload().toAbsoluteFileInputPath());
+				File targetFile = new File(rpcResult.getPayload().toAbsoluteFileInputPath());
 				targetFile.mkdirs();
 				file.transferTo(targetFile);
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -89,4 +90,29 @@ public class ConsoleChargingController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
     }
+    
+	@ResponseBody()
+	@RequestMapping(value = "/shipment/pages", method = { RequestMethod.POST })
+	public void pagesdv(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(required = true) int uid,
+			@RequestParam(required = true,defaultValue = "0") int status,
+			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
+		
+		ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		try{
+			RpcResponseDTO<TailPage<BatchImportVTO>> rpcResult = chargingRpcService.doPages(uid, status, pageNo, pageSize);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
 }

@@ -1,43 +1,17 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import javax.annotation.Resource;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.helper.AgentBulltinType;
-import com.bhu.vas.api.rpc.agent.dto.AgentOutputDTO;
-import com.bhu.vas.api.rpc.agent.model.AgentBulltinBoard;
-import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
-import com.bhu.vas.api.rpc.agent.model.AgentDeviceImportLog;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
-import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
 import com.bhu.vas.business.ds.agent.service.AgentBulltinBoardService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
-import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
  * Created by bluesand on 9/8/15.
@@ -71,8 +45,7 @@ public class AgentDeviceClaimServiceHandler {
      */
     public void importAgentDeviceClaim(String message) {
         logger.info(String.format("AgentDeviceClaimServiceHandler importAgentDeviceClaim message[%s]", message));
-        AgentDeviceClaimImportDTO dto =  JsonHelper.getDTO(message, AgentDeviceClaimImportDTO.class);
-
+        /*AgentDeviceClaimImportDTO dto =  JsonHelper.getDTO(message, AgentDeviceClaimImportDTO.class);
         //todo(bluesand)：处理POI excel,导入数据
         try {
             logger.info(String.format("Agent excel..."));
@@ -81,7 +54,7 @@ public class AgentDeviceClaimServiceHandler {
             logger.error(String.format("error[%s]",e.getMessage()));
             e.printStackTrace();
 
-        }
+        }*/
     }
 
 
@@ -89,7 +62,7 @@ public class AgentDeviceClaimServiceHandler {
      * 确认导入后建立索引
      * @param message
      */
-    public void updateAgentDeviceClaim(String message) {
+ /*   public void updateAgentDeviceClaim(String message) {
 
         logger.info(String.format("AgentDeviceClaimServiceHandler updateAgentDeviceClaim message[%s]", message));
         AgentDeviceClaimUpdateDTO dto = JsonHelper.getDTO(message, AgentDeviceClaimUpdateDTO.class);
@@ -161,12 +134,9 @@ public class AgentDeviceClaimServiceHandler {
         agentDeviceImportLogService.update(agentDeviceImportLog);
 
 
-    }
+    }*/
 
-
-
-
-    private void excel(AgentDeviceClaimImportDTO dto) throws Exception {
+    /*private void excel(AgentDeviceClaimImportDTO dto) throws Exception {
 
         InputStream is = null;
         HSSFWorkbook hssfWorkbook = null;//new HSSFWorkbook(is);
@@ -335,10 +305,10 @@ public class AgentDeviceClaimServiceHandler {
         agentDeviceImportLog.setStatus(AgentDeviceImportLog.IMPORT_DONE);
         agentDeviceImportLogService.update(agentDeviceImportLog);
 
-    }
+    }*/
 
 
-    public static void main(String[] args) throws  Exception{
+    /*public static void main(String[] args) throws  Exception{
         AgentDeviceClaimImportDTO dto = new AgentDeviceClaimImportDTO();
         dto.setUid(6);
         dto.setInputPath("/Users/bluesand/Downloads/山西岩涛网络NMAC对应代理商.xls");
@@ -347,5 +317,5 @@ public class AgentDeviceClaimServiceHandler {
         dto.setTs(new Date().getTime());
 
         new AgentDeviceClaimServiceHandler().excel(dto);
-    }
+    }*/
 }

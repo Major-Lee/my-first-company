@@ -83,11 +83,19 @@ public class BatchImportVTO implements java.io.Serializable{
 	public void setCanbeturnoff(boolean canbeturnoff) {
 		this.canbeturnoff = canbeturnoff;
 	}
-	public String toAbsoluteFilePath(){
+	public String toAbsoluteFileInputPath(){
 		StringBuilder sb = new StringBuilder();
 		sb.append(BusinessRuntimeConfiguration.BatchImport_Dir)
 			.append(BusinessRuntimeConfiguration.BatchImport_Shipment)
 			.append(BusinessRuntimeConfiguration.BatchImport_Sub_Input_Dir)
+			.append(this.id).append(".xlsx");
+		return sb.toString();
+	}
+	public String toAbsoluteFileOutputPath(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(BusinessRuntimeConfiguration.BatchImport_Dir)
+			.append(BusinessRuntimeConfiguration.BatchImport_Shipment)
+			.append(BusinessRuntimeConfiguration.BatchImport_Sub_Output_Dir)
 			.append(this.id).append(".xlsx");
 		return sb.toString();
 	}
