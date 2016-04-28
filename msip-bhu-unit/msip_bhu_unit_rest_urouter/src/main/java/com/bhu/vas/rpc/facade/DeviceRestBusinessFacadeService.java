@@ -597,7 +597,7 @@ public class DeviceRestBusinessFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
 		}
 		String[] exportFileInfo = generateExportFileInfo(uid);
-		deliverMessageService.sendOrderSearchResultExportFileMessage(uid, message, exportFileInfo[0], start_date, end_date);
+		deliverMessageService.sendOrderSearchResultExportFileMessage(uid, message, messagetype, exportFileInfo[0], start_date, end_date);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileInfo[1]);
 	}
 	
