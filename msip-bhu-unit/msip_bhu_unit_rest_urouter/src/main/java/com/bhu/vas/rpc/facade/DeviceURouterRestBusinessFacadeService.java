@@ -12,9 +12,9 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import redis.clients.jedis.Tuple;
 
@@ -1285,13 +1285,24 @@ public class DeviceURouterRestBusinessFacadeService {
 					List<URouterDeviceConfigNVTO> block_with_names = new ArrayList<URouterDeviceConfigNVTO>();
 					int i = 0;
 					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(macs);
+					List<String> handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, macs);
 					for (String dto_mac: macs) {
 						URouterDeviceConfigNVTO nvto = new URouterDeviceConfigNVTO();
 						nvto.setMac(dto_mac);
-						HandsetDeviceDTO dto = handsets.get(i);
+/*						HandsetDeviceDTO dto = handsets.get(i);
 						if (dto != null) {
 							nvto.setN(dto.getDhcp_name());
+						}*/
+						String alias = handsetAlias.get(i);
+						if(StringUtils.isNotEmpty(alias)){
+							nvto.setN(alias);
+						}else{
+							HandsetDeviceDTO dto = handsets.get(i);
+							if (dto != null) {
+								nvto.setN(dto.getDhcp_name());
+							}
 						}
+						
 						i++;
 						block_with_names.add(nvto);
 					}
