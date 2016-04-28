@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +46,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -584,17 +586,24 @@ public class DeviceRestBusinessFacadeService {
 	}
 	
 	public RpcResponseDTO<String> exportWifiDeviceResult(int uid, String message){
-		String exportFileName = String.valueOf(uid).concat(StringHelper.MINUS_STRING_GAP).
-				concat(DateTimeHelper.getDateTime());
-		deliverMessageService.sendWifiDeviceSearchResultExportFileMessage(uid, message, exportFileName);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileName);
+		String[] exportFileInfo = generateExportFileInfo(uid);
+		deliverMessageService.sendWifiDeviceSearchResultExportFileMessage(uid, message, exportFileInfo[0]);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileInfo[1]);
 	}
 	
 	public RpcResponseDTO<String> exportOrderResult(int uid, String message, String start_date, String end_date){
-		String exportFileName = String.valueOf(uid).concat(StringHelper.MINUS_STRING_GAP).
-				concat(DateTimeHelper.getDateTime());
-		deliverMessageService.sendOrderSearchResultExportFileMessage(uid, message, exportFileName, start_date, end_date);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileName);
+		String[] exportFileInfo = generateExportFileInfo(uid);
+		deliverMessageService.sendOrderSearchResultExportFileMessage(uid, message, exportFileInfo[0], start_date, end_date);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileInfo[1]);
+	}
+	
+	public String[] generateExportFileInfo(int uid){
+		String exportFileName = String.valueOf(uid).concat(StringHelper.MINUS_STRING_GAP).concat(DateTimeHelper.getDateTime());
+		String exportFilePath = BusinessRuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(uid))
+				.concat(File.separator).concat(exportFileName);
+		String exportFileUrl = BusinessRuntimeConfiguration.Search_Result_Export_Uri.concat(String.valueOf(uid))
+				.concat(File.separator).concat(exportFileName);
+		return new String[]{exportFilePath, exportFileUrl};
 	}
 	
 	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid){

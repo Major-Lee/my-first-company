@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -16,13 +17,18 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 @SuppressWarnings("serial")
 public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequenceGenable{
 	//ID 格式为 yyyyMMdd-longsequence
-	
+	public static final int STATUS_IMPORTING_FILE = 0;
+	public static final int STATUS_IMPORTED_FILE = 1;
+	public static final int STATUS_CONFIRMED_DOING = 2;
+	public static final int STATUS_CONTENT_IMPORTING = 3;
+	public static final int STATUS_CONTENT_IMPORTED = 4;
 	//文件存储路径
 	private String filepath;
-	// 0-文件正在导入 1-文件导入成功 1-确认导入成功
+	// 0-文件正在导入 1-文件导入成功 2-确认导入成功
 	private int status;
 	//导入用户
 	private int importor;
+	private String mobileno;
 	//private int total;
 	private int succeed;
 	private int failed;
@@ -67,6 +73,13 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	public void setImportor(int importor) {
 		this.importor = importor;
 	}
+	
+	public String getMobileno() {
+		return mobileno;
+	}
+	public void setMobileno(String mobileno) {
+		this.mobileno = mobileno;
+	}
 	public Date getCreated_at() {
 		return created_at;
 	}
@@ -92,5 +105,17 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
+	}
+	
+	public BatchImportVTO toBatchImportVTO(String importor_nick,String importor_mobileno){
+		BatchImportVTO vto = new BatchImportVTO();
+		vto.setId(this.getId());
+		vto.setImportor(this.getImportor());
+		vto.setMobileno(this.getMobileno());
+		vto.setRemark(this.getRemark());
+		vto.setStatus(this.getStatus());
+		vto.setSucceed(this.getSucceed());
+		vto.setFailed(this.getFailed());
+		return vto;
 	}
 }
