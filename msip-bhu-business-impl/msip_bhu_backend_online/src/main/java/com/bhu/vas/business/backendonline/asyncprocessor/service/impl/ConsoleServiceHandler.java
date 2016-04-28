@@ -100,7 +100,8 @@ public class ConsoleServiceHandler {
 		final List<String> lines = new ArrayList<String>();
 		
 		String message = dto.getMessage();
-		if(message.startsWith(StringHelper.LEFT_BRACE_STRING)){
+		int messagetype = dto.getMessagetype();
+		if(OrderSearchResultExportFileDTO.SearchCondition_MessageType == messagetype){
 			wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, 
 					BusinessIndexDefine.WifiDevice.Type, message, new IteratorNotify<Page<WifiDeviceDocument>>(){
 				@Override
@@ -111,7 +112,8 @@ public class ConsoleServiceHandler {
 					}
 				}
 			});
-		}else{
+		}
+		else if(OrderSearchResultExportFileDTO.Macs_MessageType == messagetype){
 			String[] macs_array = message.split(StringHelper.COMMA_STRING_GAP);
 			for(String mac : macs_array){
 				lines.addAll(outputOrderStringByItem(mac, dto.getStart_date(), dto.getEnd_date()));

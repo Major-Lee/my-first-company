@@ -4,9 +4,14 @@ import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
 public class OrderSearchResultExportFileDTO extends ActionDTO {
+	public static final int SearchCondition_MessageType = 1;
+	public static final int Macs_MessageType = 2;
+	
 	private int uid;
-	//搜索条件json
+	//条件数据
 	private String message;
+	//条件类型
+	private int messagetype;
 	//导出文件路径
 	private String exportFilePath;
 	//开始日期
@@ -31,6 +36,16 @@ public class OrderSearchResultExportFileDTO extends ActionDTO {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+	
+
+	public int getMessagetype() {
+		return messagetype;
+	}
+
+
+	public void setMessagetype(int messagetype) {
+		this.messagetype = messagetype;
 	}
 
 

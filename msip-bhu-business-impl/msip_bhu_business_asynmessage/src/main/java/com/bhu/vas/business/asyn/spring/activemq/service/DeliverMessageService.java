@@ -494,10 +494,11 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
-	public void sendOrderSearchResultExportFileMessage(int uid, String message, String exportFilePath, String start_date, String end_date){
+	public void sendOrderSearchResultExportFileMessage(int uid, String message, int messagetype, String exportFilePath, String start_date, String end_date){
 		OrderSearchResultExportFileDTO dto = new OrderSearchResultExportFileDTO();
 		dto.setUid(uid);
 		dto.setMessage(message);
+		dto.setMessagetype(messagetype);
 		dto.setExportFilePath(exportFilePath);
 		dto.setStart_date(start_date);
 		dto.setEnd_date(end_date);
