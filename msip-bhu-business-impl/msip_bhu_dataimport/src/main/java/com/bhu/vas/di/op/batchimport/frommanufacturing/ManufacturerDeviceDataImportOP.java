@@ -50,6 +50,7 @@ public class ManufacturerDeviceDataImportOP {
 					String orig_swver = dut.getPrefix().concat(Default_orig_swver_prefix).concat(dut.getParent());
 					wifiDevice = new WifiDevice();
 					wifiDevice.setId(mac);
+					wifiDevice.setSn(sn);
 					wifiDevice.setHdtype(DeviceUnitType.parserIndex(dut.getIndex())[1]);
 					wifiDevice.setOrig_vendor(Default_orig_vendor);
 					wifiDevice.setOrig_model(dut.getName());
