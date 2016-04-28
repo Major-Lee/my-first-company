@@ -10,6 +10,7 @@
 	  <result property="status" column="status"/>
 	  <result property="importor" column="importor"/>
 	  <result property="mobileno" column="mobileno"/>
+	  <result property="manufacturer_percent" column="manufacturer_percent"/>
 	  <result property="succeed" column="succeed"/>
 	  <result property="failed" column="failed"/>
 	  <result property="remark" column="remark"/>
@@ -29,6 +30,7 @@
 	    	status,
 	    	importor,
 	    	mobileno,
+	    	manufacturer_percent,
 	    	succeed,
 	    	failed,
 	    	remark,
@@ -42,6 +44,7 @@
 	    	status,
 	    	importor,
 	    	mobileno,
+	    	manufacturer_percent,
 	    	succeed,
 	    	failed,
 	    	remark,
@@ -56,6 +59,7 @@
 			#{status},
 			#{importor},
 			#{mobileno},
+			#{manufacturer_percent},
 			#{succeed},
 			#{failed},
 			#{remark},
@@ -68,6 +72,7 @@
 	    	status = #{status},
 	    	importor = #{importor},
 	    	mobileno = #{mobileno},
+	    	manufacturer_percent = #{manufacturer_percent},
 	    	succeed = #{succeed},
 	    	failed = #{failed},
 	    	remark = #{remark},

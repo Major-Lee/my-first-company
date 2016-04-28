@@ -20,6 +20,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -47,7 +48,10 @@ public class ChargingFacadeService {
 		return userService;
 	}*/
 
-    public BatchImportVTO doBatchImportCreate(int uid,int countrycode,String mobileno, String filepath_suffix, String remark){
+    public BatchImportVTO doBatchImportCreate(int uid,
+    		int countrycode,String mobileno, 
+    		double sharedeal_manufacturer_percent,
+    		String remark){
     	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
     	if(StringUtils.isNotEmpty(mobileno)){
     		boolean exist = UniqueFacadeService.checkMobilenoExist(countrycode,mobileno);
@@ -58,15 +62,24 @@ public class ChargingFacadeService {
     	WifiDeviceBatchImport batch_import = new WifiDeviceBatchImport();
     	batch_import.setImportor(uid);
     	batch_import.setMobileno(mobileno);
-    	batch_import.setFilepath(filepath_suffix);
+    	batch_import.setManufacturer_percent(ArithHelper.round(sharedeal_manufacturer_percent, 2));
+    	//batch_import.setFilepath(filepath_suffix);
     	batch_import.setRemark(remark);
     	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTED_FILE);
     	wifiDeviceBatchImportService.insert(batch_import);
     	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno());
     }
     
-    
-    
+    public BatchImportVTO doConfirmDeviceRecord(int uid,String import_id) {
+    	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
+    	WifiDeviceBatchImport batch_import = wifiDeviceBatchImportService.getById(import_id);
+    	if(batch_import == null){
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"BatchImport",import_id});
+    	}
+    	batch_import.setStatus(WifiDeviceBatchImport.STATUS_CONFIRMED_DOING);
+    	wifiDeviceBatchImportService.update(batch_import);
+    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno());
+    }
     
 	public void wifiDeviceBindedNotify(String dmac,int uid){
 		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);

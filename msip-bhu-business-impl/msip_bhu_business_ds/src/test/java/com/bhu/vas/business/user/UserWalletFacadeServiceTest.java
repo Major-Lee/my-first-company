@@ -268,9 +268,9 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 		}
     }
     
-    //@Test
+    @Test
    	public void test010DoSharedeal(){
-    	double cashIncomming = 108.39d;
+    	double cashIncomming = 10.39d;
     	String dmac = "84:82:f4:23:06:e8";
     	
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
@@ -280,7 +280,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	System.out.println("dddd:"+ret);
    	}
     
-    @Test
+    //@Test
    	public void test011DoSharedealSummary(){
     	
     	//double cashIncomming = 108.39d;
