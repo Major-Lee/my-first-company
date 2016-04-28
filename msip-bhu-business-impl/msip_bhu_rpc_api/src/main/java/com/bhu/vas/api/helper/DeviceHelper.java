@@ -1530,6 +1530,26 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
 	}
 	
+	public static String builderDSRealChannelMultiOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		List<WifiDeviceSettingRadioDTO> radio_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingRadioDTO.class);
+		if(radio_dtos == null || radio_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+		
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
+			if(StringUtils.isEmpty(radio_dto.getName())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			if(StringUtils.isEmpty(radio_dto.getReal_channel())){
+				radio_dto.setReal_channel("0");
+			}
+			items.append(builderDeviceSettingItem(DeviceSetting_RadioItem_RealChannel, 
+					radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_RealChannel_Radio)));
+		}
+		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, items.toString());
+	}
+	
 	/**
 	 * 构建vap密码修改配置
 	 * @param config_sequence
