@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.elasticsearch.ElasticsearchIllegalArgumentException;
+import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -591,7 +592,10 @@ public class DeviceRestBusinessFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileInfo[1]);
 	}
 	
-	public RpcResponseDTO<String> exportOrderResult(int uid, String message, String start_date, String end_date){
+	public RpcResponseDTO<String> exportOrderResult(int uid, String message, int messagetype, String start_date, String end_date){
+		if(StringUtils.isEmpty(message)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+		}
 		String[] exportFileInfo = generateExportFileInfo(uid);
 		deliverMessageService.sendOrderSearchResultExportFileMessage(uid, message, exportFileInfo[0], start_date, end_date);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileInfo[1]);
