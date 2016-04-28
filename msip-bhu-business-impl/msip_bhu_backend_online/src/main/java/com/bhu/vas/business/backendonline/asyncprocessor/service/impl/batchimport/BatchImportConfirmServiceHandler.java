@@ -1,6 +1,7 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Resource;
 
@@ -64,8 +65,8 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			}
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_IMPORTING);
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
-			//final AtomicInteger atomic_failed = new AtomicInteger(0);
-			//final AtomicInteger atomic_successed = new AtomicInteger(0);
+			final AtomicInteger atomic_failed = new AtomicInteger(0);
+			final AtomicInteger atomic_successed = new AtomicInteger(0);
 			//String filepath = "/Users/Edmond/gospace/库房出库清单-20160426-0001.xlsx";
 			//String mobileno = batchImport.getMobileno();
 			final BatchImportVTO importVto = batchImport.toBatchImportVTO(null, null);
@@ -76,21 +77,27 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 					ModelCriteria mc = new ModelCriteria();
 			        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("sn", sn);
 			        List<WifiDevice> models = wifiDeviceService.findModelByModelCriteria(mc);
-			        if(models.isEmpty()) return null;
+			        if(models.isEmpty()){
+			        	atomic_failed.incrementAndGet();
+			        	return null;
+			        }
 			        else{
 			        	String dmac = models.get(0).getId();
 			        	WifiDeviceSharedealConfigs userfulWifiDeviceSharedealConfigs = chargingFacadeService.userfulWifiDeviceSharedealConfigs(dmac);
 			        	userfulWifiDeviceSharedealConfigs.setOwner_percent(ArithHelper.round(ArithHelper.sub(1, importVto.getManufacturer_percent()), 2));
 			        	userfulWifiDeviceSharedealConfigs.setManufacturer_percent(importVto.getManufacturer_percent());
+			        	userfulWifiDeviceSharedealConfigs.setCanbe_turnoff(importVto.isCanbeturnoff());
 			        	chargingFacadeService.getWifiDeviceSharedealConfigsService().update(userfulWifiDeviceSharedealConfigs);
 			        	DeviceCallbackDTO result = new DeviceCallbackDTO();
 			        	result.setMac(dmac);
-			        	
+			        	atomic_successed.incrementAndGet();
 			        	return result;
 			        	//return models.get(0);
 			        }
 				}
 			});
+			batchImport.setSucceed(atomic_successed.get());
+			batchImport.setFailed(atomic_failed.get());
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_IMPORTED);
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
 		}finally{
