@@ -38,7 +38,7 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
             @RequestParam(required = false) String mobileno,
-            @RequestParam(required = false) boolean canturnoff,
+            @RequestParam(required = false,defaultValue="true") boolean canturnoff,
             @RequestParam(required = false) double percent,
             @RequestParam(required = false) String remark
     ) {

@@ -28,5 +28,5 @@
     <dubbo:registry address="multicast://224.5.6.7:1234" />
  	<dubbo:registry protocol="zookeeper" address="127.0.0.1:2181" />
  	<import resource="classpath*:spring/zookeeper/dubbo-jing-zookeeper.xml"/>-->
-	<dubbo:reference id="userWalletRpcService" interface="com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService" retries="0" loadbalance="roundrobin"/>
+	<dubbo:reference id="chargingRpcService" interface="com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService" retries="0" loadbalance="roundrobin"/>
 </beans>
