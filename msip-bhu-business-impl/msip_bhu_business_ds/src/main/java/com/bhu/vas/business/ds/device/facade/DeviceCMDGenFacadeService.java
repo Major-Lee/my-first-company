@@ -85,6 +85,8 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSPowerMultiOuter(config_sequence, extparams);
 			case DS_RealChannel:
 				return DeviceHelper.builderDSRealChannelOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
+			case DS_RealChannel_multi:
+				return DeviceHelper.builderDSRealChannelMultiOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_VapPassword:
 				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_VapPassword_multi:
