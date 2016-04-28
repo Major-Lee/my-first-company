@@ -7,8 +7,8 @@ public class OrderSearchResultExportFileDTO extends ActionDTO {
 	private int uid;
 	//搜索条件json
 	private String message;
-	//导出文件名称
-	private String exportFileName;
+	//导出文件路径
+	private String exportFilePath;
 	//开始日期
 	private String start_date;
 	//结束日期
@@ -34,13 +34,13 @@ public class OrderSearchResultExportFileDTO extends ActionDTO {
 	}
 
 
-	public String getExportFileName() {
-		return exportFileName;
+	public String getExportFilePath() {
+		return exportFilePath;
 	}
 
 
-	public void setExportFileName(String exportFileName) {
-		this.exportFileName = exportFileName;
+	public void setExportFilePath(String exportFilePath) {
+		this.exportFilePath = exportFilePath;
 	}
 
 

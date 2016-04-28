@@ -483,21 +483,21 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendWifiDeviceSearchResultExportFileMessage(int uid, String message, String exportFileName){
+	public void sendWifiDeviceSearchResultExportFileMessage(int uid, String message, String exportFilePath){
 		DeviceSearchResultExportFileDTO dto = new DeviceSearchResultExportFileDTO();
 		dto.setUid(uid);
 		dto.setMessage(message);
-		dto.setExportFileName(exportFileName);
+		dto.setExportFilePath(exportFilePath);
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//deliverMessageQueueProducer.send(message);
 	}
 	
-	public void sendOrderSearchResultExportFileMessage(int uid, String message, String exportFileName, String start_date, String end_date){
+	public void sendOrderSearchResultExportFileMessage(int uid, String message, String exportFilePath, String start_date, String end_date){
 		OrderSearchResultExportFileDTO dto = new OrderSearchResultExportFileDTO();
 		dto.setUid(uid);
 		dto.setMessage(message);
-		dto.setExportFileName(exportFileName);
+		dto.setExportFilePath(exportFilePath);
 		dto.setStart_date(start_date);
 		dto.setEnd_date(end_date);
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
