@@ -50,13 +50,15 @@ public class ConsoleChargingController extends BaseController {
             return ;
         }
         try{
-        	RpcResponseDTO<BatchImportVTO> rpcResult = chargingRpcService.doInputDeviceRecord(uid, countrycode, mobileno, percent, remark);
+        	RpcResponseDTO<BatchImportVTO> rpcResult = chargingRpcService.doInputDeviceRecord(uid, countrycode, mobileno, percent,canturnoff, remark);
 			if(!rpcResult.hasError()){
-				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-			}else{
+				System.out.println("path:-------------");
+				System.out.println("path:"+rpcResult.getPayload().toAbsoluteFilePath());
 				File targetFile = new File(rpcResult.getPayload().toAbsoluteFilePath());
 				targetFile.mkdirs();
 				file.transferTo(targetFile);
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
 				//FileHelper.copyFileTo(file, rpcResult.getPayload().toAbsoluteFilePath());
 				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			}

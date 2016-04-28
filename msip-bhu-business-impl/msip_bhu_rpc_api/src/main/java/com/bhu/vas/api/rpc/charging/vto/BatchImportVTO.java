@@ -78,7 +78,7 @@ public class BatchImportVTO implements java.io.Serializable{
 	
 	public String toAbsoluteFilePath(){
 		StringBuilder sb = new StringBuilder();
-		sb.append(BusinessRuntimeConfiguration.BatchImport_Manufacturer)
+		sb.append(BusinessRuntimeConfiguration.BatchImport_Dir)
 			.append(BusinessRuntimeConfiguration.BatchImport_Shipment)
 			.append(BusinessRuntimeConfiguration.BatchImport_Sub_Input_Dir)
 			.append(this.id).append(".xlsx");

@@ -11,6 +11,8 @@
 	  <result property="importor" column="importor"/>
 	  <result property="mobileno" column="mobileno"/>
 	  <result property="manufacturer_percent" column="manufacturer_percent"/>
+	  <result property="canbeturnoff" column="canbeturnoff"/>
+	  
 	  <result property="succeed" column="succeed"/>
 	  <result property="failed" column="failed"/>
 	  <result property="remark" column="remark"/>
@@ -31,6 +33,7 @@
 	    	importor,
 	    	mobileno,
 	    	manufacturer_percent,
+	    	canbeturnoff,
 	    	succeed,
 	    	failed,
 	    	remark,
@@ -45,6 +48,7 @@
 	    	importor,
 	    	mobileno,
 	    	manufacturer_percent,
+	    	canbeturnoff,
 	    	succeed,
 	    	failed,
 	    	remark,
@@ -60,6 +64,7 @@
 			#{importor},
 			#{mobileno},
 			#{manufacturer_percent},
+			#{canbeturnoff},
 			#{succeed},
 			#{failed},
 			#{remark},
@@ -73,6 +78,7 @@
 	    	importor = #{importor},
 	    	mobileno = #{mobileno},
 	    	manufacturer_percent = #{manufacturer_percent},
+	    	canbeturnoff = #{canbeturnoff},
 	    	succeed = #{succeed},
 	    	failed = #{failed},
 	    	remark = #{remark},

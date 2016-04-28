@@ -30,6 +30,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	private int importor;
 	private String mobileno;
 	private double manufacturer_percent;
+	private boolean canbeturnoff;
 	//private int total;
 	private int succeed;
 	private int failed;
@@ -112,6 +113,8 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		BatchImportVTO vto = new BatchImportVTO();
 		vto.setId(this.getId());
 		vto.setImportor(this.getImportor());
+		vto.setImportor_nick(importor_nick);
+		vto.setImportor_mobileno(importor_mobileno);
 		vto.setMobileno(this.getMobileno());
 		vto.setManufacturer_percent(manufacturer_percent);
 		vto.setRemark(this.getRemark());
@@ -126,6 +129,12 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	}
 	public void setManufacturer_percent(double manufacturer_percent) {
 		this.manufacturer_percent = manufacturer_percent;
+	}
+	public boolean isCanbeturnoff() {
+		return canbeturnoff;
+	}
+	public void setCanbeturnoff(boolean canbeturnoff) {
+		this.canbeturnoff = canbeturnoff;
 	}
 	
 }

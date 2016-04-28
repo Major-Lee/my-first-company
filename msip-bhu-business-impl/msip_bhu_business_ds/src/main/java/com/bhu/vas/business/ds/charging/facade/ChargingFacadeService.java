@@ -51,6 +51,7 @@ public class ChargingFacadeService {
     public BatchImportVTO doBatchImportCreate(int uid,
     		int countrycode,String mobileno, 
     		double sharedeal_manufacturer_percent,
+    		boolean canbeturnoff,
     		String remark){
     	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
     	if(StringUtils.isNotEmpty(mobileno)){
