@@ -147,7 +147,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	SharedNetworkWifi_Default_Remote_Dns_default_ip = PropertiesHelper.getString("sharednetworkwifi.default.dns.default.ip", paramProperties, SharedNetworkWifi_Default_Remote_Dns_default_ip);
         	SharedNetworksTemplateMaxLimit = PropertiesHelper.getInt("sharednetwork.template.max.limit", paramProperties, SharedNetworksTemplateMaxLimit);
         	
-        	
+        	Search_Result_Export_Dir = PropertiesHelper.getString("search.result.export.dir", paramProperties, Search_Result_Export_Dir);
+        	Search_Result_Export_Uri = PropertiesHelper.getString("search.result.export.uri", paramProperties, Search_Result_Export_Uri);
         	UserPortalUpdate2UPortalApi = PropertiesHelper.getString("user.portal.update.uportalapi", paramProperties, UserPortalUpdate2UPortalApi);
         	logger.info("loading business runtime configuration successfully!");  
         }  
@@ -227,6 +228,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	//增值平台设备信息搜索结果导出文件目录
 	public static String Search_Result_Export_Dir = "/BHUData/srexport/";
+	public static String Search_Result_Export_Uri = "http://192.168.66.7/srexport/";
 	
 	public static String BatchImport_Dir = "/BHUData/batchimport/";
 	//库房出库

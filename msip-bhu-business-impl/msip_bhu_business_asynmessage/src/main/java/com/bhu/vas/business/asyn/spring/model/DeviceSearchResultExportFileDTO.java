@@ -7,8 +7,8 @@ public class DeviceSearchResultExportFileDTO extends ActionDTO {
 	private int uid;
 	//搜索条件json
 	private String message;
-	//导出文件名称
-	private String exportFileName;
+	//导出文件路径
+	private String exportFilePath;
 	
 	
 	public int getUid() {
@@ -31,13 +31,13 @@ public class DeviceSearchResultExportFileDTO extends ActionDTO {
 	}
 
 
-	public String getExportFileName() {
-		return exportFileName;
+	public String getExportFilePath() {
+		return exportFilePath;
 	}
 
 
-	public void setExportFileName(String exportFileName) {
-		this.exportFileName = exportFileName;
+	public void setExportFilePath(String exportFilePath) {
+		this.exportFilePath = exportFilePath;
 	}
 
 
