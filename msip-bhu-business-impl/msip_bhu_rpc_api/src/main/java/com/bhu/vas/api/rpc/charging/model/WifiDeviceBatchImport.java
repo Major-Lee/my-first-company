@@ -117,6 +117,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		vto.setImportor_mobileno(importor_mobileno);
 		vto.setMobileno(this.getMobileno());
 		vto.setManufacturer_percent(manufacturer_percent);
+		vto.setCanbeturnoff(this.isCanbeturnoff());
 		vto.setRemark(this.getRemark());
 		vto.setStatus(this.getStatus());
 		vto.setSucceed(this.getSucceed());

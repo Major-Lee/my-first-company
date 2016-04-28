@@ -12,6 +12,7 @@ public class BatchImportVTO implements java.io.Serializable{
 	private String importor_mobileno;
 	private String mobileno;
 	private double manufacturer_percent;
+	private boolean canbeturnoff;
 	private int succeed;
 	private int failed;
 	private String remark;
@@ -76,6 +77,12 @@ public class BatchImportVTO implements java.io.Serializable{
 		this.manufacturer_percent = manufacturer_percent;
 	}
 	
+	public boolean isCanbeturnoff() {
+		return canbeturnoff;
+	}
+	public void setCanbeturnoff(boolean canbeturnoff) {
+		this.canbeturnoff = canbeturnoff;
+	}
 	public String toAbsoluteFilePath(){
 		StringBuilder sb = new StringBuilder();
 		sb.append(BusinessRuntimeConfiguration.BatchImport_Dir)
