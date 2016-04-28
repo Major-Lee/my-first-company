@@ -24,6 +24,7 @@ public enum OperationDS {
 	DS_VapHidessid_multi("48","修改vap hide ssid"),
 	DS_Multi_Combine("49","双频合一修改"),
 	DS_RealChannel("11","切换信道"),
+	DS_RealChannel_multi("41","切换信道"),
 	
 	
 	DS_Http_Ad_Start("01","开启广告注入"),
