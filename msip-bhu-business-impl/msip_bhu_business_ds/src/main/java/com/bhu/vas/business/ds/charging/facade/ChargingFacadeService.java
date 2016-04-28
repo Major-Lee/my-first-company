@@ -159,7 +159,10 @@ public class ChargingFacadeService {
 		if(configs == null){
 			configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
 			Integer bindUid = userDeviceService.fetchBindUid(dmac);
-			configs.doRuntimeInit(dmac,bindUid);
+			if(bindUid == null)
+				configs.doRuntimeInit(dmac,WifiDeviceSharedealConfigs.None_Owner);
+			else
+				configs.doRuntimeInit(dmac,bindUid.intValue());
 			configs = wifiDeviceSharedealConfigsService.insert(configs);
 		}
 		return configs;
