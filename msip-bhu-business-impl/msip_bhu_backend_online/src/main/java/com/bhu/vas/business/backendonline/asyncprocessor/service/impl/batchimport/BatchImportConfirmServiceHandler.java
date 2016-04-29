@@ -1,6 +1,8 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Resource;
@@ -23,6 +25,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.page.PageHelper;
 
 @Service
 public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
@@ -96,6 +99,22 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			        	return result;
 			        	//return models.get(0);
 			        }
+				}
+
+				@Override
+				public void afterExcelImported(Set<String> dmacs) {
+					if(dmacs.isEmpty()) return;
+					List<String> all_dmacs = new ArrayList<String>(dmacs);
+					int total = all_dmacs.size();
+					/*
+					List<String> lists = new ArrayList<String>();
+					for(int i=0;i<100;i++){
+						lists.add(String.valueOf(i));
+					}*/
+					int totalPages = PageHelper.getTotalPages(total, 8);
+					for(int pageno= 1;pageno<=totalPages;pageno++){
+						System.out.println(PageHelper.pageList(all_dmacs, pageno, 8));
+					}
 				}
 			});
 			batchImport.setSucceed(atomic_successed.get());
