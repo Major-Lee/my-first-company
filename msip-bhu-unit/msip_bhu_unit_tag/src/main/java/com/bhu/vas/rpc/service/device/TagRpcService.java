@@ -54,10 +54,10 @@ public class TagRpcService implements ITagRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> delTag(int uid, String mac, String tag) {
-		logger.info(String.format("delTag  uid[%s] mac[%s] tag[%s]",uid,mac,tag));
+	public RpcResponseDTO<Boolean> delTag(int uid, String mac) {
+		logger.info(String.format("delTag  uid[%s] mac[%s]",uid,mac));
 		try {
-			tagFacadeRpcSerivce.delTag(uid,mac, tag);
+			tagFacadeRpcSerivce.delTag(uid,mac);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch (Exception ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);

@@ -25,9 +25,8 @@ public interface ITagRpcService {
      * 单个设备删除标签
      * @param uid
      * @param mac
-     * @param tag
      * @return
      */
-    RpcResponseDTO<Boolean> delTag(int uid, String mac, String tag);
+    RpcResponseDTO<Boolean> delTag(int uid, String mac);
 
 }	

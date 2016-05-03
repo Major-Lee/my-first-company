@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
-import javax.swing.text.html.HTML.Tag;
 
 import org.springframework.stereotype.Service;
 
@@ -79,19 +78,23 @@ public class TagFacadeRpcSerivce {
 		}
 	}
 
-	public void delTag(int uid,String mac,String tag){
-		
-		wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac,"");
-		tagDevicesService.deleteById(mac);
-		
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("extension_content", tag);
-        int count = tagDevicesService.countByModelCriteria(mc);
-        
-        if (count == 0) {
-        	ModelCriteria tagMc = new ModelCriteria();
-        	tagMc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tag);
-            tagNameService.deleteByModelCriteria(tagMc);
+	public void delTag(int uid,String mac) throws Exception{
+		TagDevices tagDevices = tagDevicesService.getById(mac);
+		if (tagDevices !=null) {
+			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac,"");
+			tagDevicesService.deleteById(mac);
+			
+	        ModelCriteria mc = new ModelCriteria();
+	        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("extension_content", tagDevices.getExtension_content());
+	        int count = tagDevicesService.countByModelCriteria(mc);
+	        
+	        if (count == 0) {
+	        	ModelCriteria tagMc = new ModelCriteria();
+	        	tagMc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tagDevices.getExtension_content());
+	            tagNameService.deleteByModelCriteria(tagMc);
+			}
+		}else{
+			throw new Exception();
 		}
 	}
 

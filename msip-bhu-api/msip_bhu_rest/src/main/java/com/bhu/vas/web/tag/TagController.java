@@ -85,9 +85,8 @@ public class TagController extends BaseController{
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String mac,
-            @RequestParam(required = true) String tag) {
-    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.delTag(uid, mac, tag);
+            @RequestParam(required = true) String mac) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.delTag(uid, mac);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
