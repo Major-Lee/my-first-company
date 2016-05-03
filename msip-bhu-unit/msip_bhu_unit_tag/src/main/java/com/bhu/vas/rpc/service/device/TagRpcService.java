@@ -10,6 +10,7 @@ import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.rpc.facade.TagFacadeRpcSerivce;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Service;
 
@@ -33,10 +34,11 @@ public class TagRpcService implements ITagRpcService {
 		try {
 			tagFacadeRpcSerivce.bindTag(uid, mac, tag);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-		} catch (Exception ex) {
+		}catch(BusinessI18nCodeException i18nex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		}catch (Exception ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
-
 	}
 
 	@Override
@@ -45,7 +47,6 @@ public class TagRpcService implements ITagRpcService {
 		
 		TailPage<TagNameVTO> tagName = tagFacadeRpcSerivce.fetchTag(pageNo, pageSize);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(tagName);
-		
 	}
 	
 
