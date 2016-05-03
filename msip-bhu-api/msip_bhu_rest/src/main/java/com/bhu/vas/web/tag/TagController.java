@@ -39,8 +39,8 @@ public class TagController extends BaseController{
     public void fetch_tag(
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-            @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
+    	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+    	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
     	RpcResponseDTO<TailPage<TagNameVTO>> rpcResult = tagRpcService.fetchTag(pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -48,7 +48,6 @@ public class TagController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
     }
-    
     /**
      * 设备捆绑标签
      * @param request
