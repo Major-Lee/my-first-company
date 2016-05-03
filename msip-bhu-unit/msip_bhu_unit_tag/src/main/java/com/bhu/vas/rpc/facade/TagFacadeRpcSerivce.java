@@ -75,10 +75,8 @@ public class TagFacadeRpcSerivce {
 		mc.createCriteria().andSimpleCaulse("1=1");
 		mc.setPageSize(pageSize);
 		mc.setPageNumber(pageNo);
-		
-		System.out.println(pageNo+":::::::::::::::::::"+pageSize);
 
-		TailPage<TagName> tailPages = tagNameService.findModelTailPageByModelCriteria(mc);
+		List<TagName> tailPages = tagNameService.findModelByModelCriteria(mc);
 
 		List<TagNameVTO> result = new ArrayList<TagNameVTO>();
 		for (TagName tagName : tailPages) {
