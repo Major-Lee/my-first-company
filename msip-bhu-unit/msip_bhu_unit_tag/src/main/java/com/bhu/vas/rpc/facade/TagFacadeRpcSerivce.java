@@ -17,6 +17,7 @@ import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrem
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.Page;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -76,7 +77,7 @@ public class TagFacadeRpcSerivce {
 		mc.setPageSize(pageSize);
 		mc.setPageNumber(pageNo);
 
-		List<TagName> tailPages = tagNameService.findModelByModelCriteria(mc);
+		Page<TagName> tailPages = tagNameService.findModelPageByModelCriteria(mc);
 
 		List<TagNameVTO> result = new ArrayList<TagNameVTO>();
 		for (TagName tagName : tailPages) {
