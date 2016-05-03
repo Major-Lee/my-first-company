@@ -1,28 +1,23 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.rpc.tag.dto.TagDTO;
-import com.bhu.vas.api.rpc.tag.dto.TagItemsDTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
-import com.smartwork.msip.cores.helper.ArrayHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 /**
  * 
@@ -39,8 +34,11 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
-
-	private void addTag(int uid, String mac, String tag) {
+	
+	@Resource
+	private DeliverMessageService deliverMessageService;
+	
+	private void addTag(int uid, String tag) {
 
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tag);
@@ -66,7 +64,7 @@ public class TagFacadeRpcSerivce {
 			String d_tags = tagDevices.getTag2ES();
 			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, d_tags);
 			
-			addTag(uid, mac, tag);
+			addTag(uid, tag);
 		}
 	}
 
@@ -88,4 +86,12 @@ public class TagFacadeRpcSerivce {
 
 		return new CommonPage<TagNameVTO>(pageNo, pageSize, result.size(), result);
 	}
+	
+//	public void deviceBatchBindTag(int uid, String message, String tag){
+//		
+//		if (message !=null && tag != null) {
+//			addTag(uid,tag);
+//			deliverMessageService.sentDeviceBatchBindTagActionMessage(uid, message, tag);
+//		}
+//	}
 }
