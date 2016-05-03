@@ -17,7 +17,6 @@ import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrem
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 /**
  * 
@@ -51,20 +50,21 @@ public class TagFacadeRpcSerivce {
 		}
 	}
 
-	public void bindTag(int uid, String mac, String tag) {
+	public void bindTag(int uid, String mac, String tag) throws Exception {
 
 		TagDevices tagDevices = tagDevicesService.getOrCreateById(mac);
 
 		tagDevices.setLast_operator(uid);
-		boolean flag = tagDevices.addTag(tag);
+		boolean flag = tagDevices.getTag().equals(tag);
 		
-		if (flag) {
+		if (!flag) {
 			tagDevicesService.update(tagDevices);
-
-			String d_tags = tagDevices.getTag2ES();
-			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, d_tags);
+			
+			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tag.trim());
 			
 			addTag(uid, tag);
+		}else{
+			throw new Exception();
 		}
 	}
 
@@ -86,12 +86,4 @@ public class TagFacadeRpcSerivce {
 
 		return new CommonPage<TagNameVTO>(pageNo, pageSize, result.size(), result);
 	}
-	
-//	public void deviceBatchBindTag(int uid, String message, String tag){
-//		
-//		if (message !=null && tag != null) {
-//			addTag(uid,tag);
-//			deliverMessageService.sentDeviceBatchBindTagActionMessage(uid, message, tag);
-//		}
-//	}
 }
