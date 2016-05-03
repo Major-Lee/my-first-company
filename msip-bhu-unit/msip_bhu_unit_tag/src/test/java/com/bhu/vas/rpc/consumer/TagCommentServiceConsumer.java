@@ -22,7 +22,8 @@ public class TagCommentServiceConsumer {
 
 		ITagRpcService tagRpcService = (ITagRpcService)context.getBean("tagRpcService");
 		System.out.println("123123123");
-		tagRpcService.bindTag(100035,"84:82:f4:28:7a:ec", "咖啡馆"); //{"items":[{"tag":"公司"}]}
+		//tagRpcService.bindTag(100035,"84:82:f4:28:7a:ec", "咖啡馆"); //{"items":[{"tag":"公司"}]}
+		tagRpcService.aaa("nihao");
 		System.out.println("end");
 		Thread.currentThread().join();
 		context.close();

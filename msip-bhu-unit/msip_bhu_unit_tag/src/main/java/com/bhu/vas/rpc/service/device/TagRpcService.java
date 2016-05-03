@@ -47,4 +47,6 @@ public class TagRpcService implements ITagRpcService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(tagName);
 		
 	}
+	
+
 }
