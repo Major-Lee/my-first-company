@@ -53,15 +53,15 @@ public class TagFacadeRpcSerivce {
 	public void bindTag(int uid, String mac, String tag) throws Exception {
 
 		TagDevices tagDevices = tagDevicesService.getOrCreateById(mac);
-
-		tagDevices.setLast_operator(uid);
-		boolean flag = tagDevices.getTag().equals(tag);
+		boolean flag = tagDevices.getTag2ES().equals(tag);
 		
 		if (!flag) {
+			tagDevices.setLast_operator(uid);
+			tagDevices.setExtension_content(tag);
 			tagDevicesService.update(tagDevices);
 			
 			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tag.trim());
-			
+
 			addTag(uid, tag);
 		}else{
 			throw new Exception();
