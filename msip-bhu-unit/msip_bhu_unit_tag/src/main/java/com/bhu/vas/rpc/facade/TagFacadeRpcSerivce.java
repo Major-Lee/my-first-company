@@ -72,12 +72,12 @@ public class TagFacadeRpcSerivce {
 
 	public TailPage<TagNameVTO> fetchTag(int pageNo, int pageSize) {
 
-		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andSimpleCaulse("1=1");
-		mc.setPageSize(pageSize);
-		mc.setPageNumber(pageNo);
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse("1=1");
+        mc.setPageNumber(pageNo);
+        mc.setPageSize(pageSize);
 
-		Page<TagName> tailPages = tagNameService.findModelPageByModelCriteria(mc);
+		List<TagName> tailPages = tagNameService.findModelByCommonCriteria(mc);
 
 		List<TagNameVTO> result = new ArrayList<TagNameVTO>();
 		for (TagName tagName : tailPages) {
