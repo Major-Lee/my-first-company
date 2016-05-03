@@ -20,5 +20,5 @@ public interface ITagRpcService {
     RpcResponseDTO<Boolean> bindTag(int uid, String mac, String tag);
     
     RpcResponseDTO<TailPage<TagNameVTO>> fetchTag(int pageNo, int pageSize);
-    
+
 }	

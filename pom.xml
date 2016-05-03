@@ -48,6 +48,7 @@
         <module>msip-bhu-unit/msip_bhu_unit_commdity</module>
         <module>msip-bhu-unit/msip_bhu_unit_social</module>
         <module>msip-bhu-unit/msip_bhu_unit_tag</module>
+        <module>msip-bhu-unit/msip_bhu_unit_index</module>
         <!--
         <module>msip-bhu-unit/msip_bhu_unit_agent</module>
     -->

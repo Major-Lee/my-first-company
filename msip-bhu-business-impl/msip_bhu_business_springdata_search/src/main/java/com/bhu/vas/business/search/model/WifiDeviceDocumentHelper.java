@@ -79,8 +79,8 @@ public class WifiDeviceDocumentHelper {
 	 * @return
 	 */
 	public static WifiDeviceDocument fromNormalWifiDevice(WifiDevice wifiDevice, WifiDeviceModule deviceModule,
-			AgentDeviceClaim agentDeviceClaim, WifiDeviceGray wifiDeviceGray, User bindUser, String bindUserDNick, 
-			User agentUser, TagDevices tagDevices, String o_template, int hoc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork){
+			WifiDeviceGray wifiDeviceGray, User bindUser, String bindUserDNick, 
+			TagDevices tagDevices, String o_template, int hoc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork){
 		if(wifiDevice == null) return null;
 		
 		WifiDeviceDocument doc = new WifiDeviceDocument();
@@ -142,11 +142,11 @@ public class WifiDeviceDocumentHelper {
 					: WifiDeviceDocumentEnumType.MOnlineEnum.MOffline.getType());
 		}
 		
-		if(agentDeviceClaim != null){
+/*		if(agentDeviceClaim != null){
 			if(agentDeviceClaim.getImport_id() > 0){
 				doc.setO_batch(String.valueOf(agentDeviceClaim.getImport_id()));
 			}
-		}
+		}*/
 		
 		if(wifiDeviceGray != null){
 			doc.setO_graylevel(String.valueOf(wifiDeviceGray.getGl()));
@@ -163,12 +163,12 @@ public class WifiDeviceDocumentHelper {
 			doc.setU_type(String.valueOf(bindUser.getUtype()));
 			doc.setU_dnick(bindUserDNick);
 		}
-		
+/*		
 		if(agentUser != null){
 			doc.setA_id(String.valueOf(agentUser.getId()));
 			doc.setA_nick(agentUser.getNick());
 			doc.setA_org(agentUser.getOrg());
-		}
+		}*/
 		doc.setD_hoc(hoc);
 		if(wifiDeviceSharedNetwork != null){
 /*			String sharedNetwork_type = wifiDeviceSharedNetwork.getSharednetwork_type();
@@ -178,9 +178,9 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
 			doc.setD_snk_template(wifiDeviceSharedNetwork.getTemplate());
 		}
-		if(tagDevices != null){
-			doc.setD_tags(tagDevices.getTag2ES());
-		}
+//		if(tagDevices != null){
+//			doc.setD_tags(tagDevices.getTag2ES());
+//		}
 		doc.setUpdatedat(DateTimeHelper.getDateTime());
 		return doc;
 	}

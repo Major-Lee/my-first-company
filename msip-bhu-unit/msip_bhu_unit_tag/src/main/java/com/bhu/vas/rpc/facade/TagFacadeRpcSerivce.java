@@ -2,6 +2,8 @@ package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -17,6 +19,8 @@ import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrem
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * 
@@ -51,32 +55,36 @@ public class TagFacadeRpcSerivce {
 	}
 
 	public void bindTag(int uid, String mac, String tag) throws Exception {
-
-		TagDevices tagDevices = tagDevicesService.getOrCreateById(mac);
-
-		boolean flag = tagDevices.getTag2ES().equals(tag);
+		boolean filter = StringFilter(tag);
 		
-		if (!flag) {
-			tagDevices.setLast_operator(uid);
-			tagDevices.setExtension_content(tag);
-			tagDevicesService.update(tagDevices);
+		if (filter) {
 			
-			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tag.trim());
-
-			addTag(uid, tag);
+			TagDevices tagDevices = tagDevicesService.getOrCreateById(mac);
+			boolean flag = tagDevices.getTag2ES().equals(tag);
+			
+			if (!flag) {
+				tagDevices.setLast_operator(uid);
+				tagDevices.setExtension_content(tag);
+				tagDevicesService.update(tagDevices);
+				wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tag.trim());
+				addTag(uid, tag);
+			}else{
+				throw new Exception();
+			}
+			
 		}else{
-			throw new Exception();
+			throw  new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 
 	public TailPage<TagNameVTO> fetchTag(int pageNo, int pageSize) {
 
-		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andSimpleCaulse("1=1");
-		mc.setPageSize(pageSize);
-		mc.setPageNumber(pageNo);
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andSimpleCaulse("1=1");
+        mc.setPageNumber(pageNo);
+        mc.setPageSize(pageSize);
 
-		TailPage<TagName> tailPages = tagNameService.findModelTailPageByModelCriteria(mc);
+		List<TagName> tailPages = tagNameService.findModelByCommonCriteria(mc);
 
 		List<TagNameVTO> result = new ArrayList<TagNameVTO>();
 		for (TagName tagName : tailPages) {
@@ -87,4 +95,12 @@ public class TagFacadeRpcSerivce {
 
 		return new CommonPage<TagNameVTO>(pageNo, pageSize, result.size(), result);
 	}
+	
+    public boolean StringFilter(String str){
+		String regex="^[a-zA-Z0-9_\u4e00-\u9fa5]+$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher match=pattern.matcher(str);
+		boolean flag=match.matches();
+		return flag;
+    }
 }

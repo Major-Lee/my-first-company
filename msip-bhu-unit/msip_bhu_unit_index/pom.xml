@@ -1,0 +1,194 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.bhu</groupId>
+		<artifactId>bhu-parent</artifactId>
+		<version>1.0</version>
+		<relativePath>../..</relativePath>
+	</parent>
+	<repositories>
+		<repository>
+			<id>my-internal-site</id>
+			<url>file:${project.basedir}/../../../local_repo</url>
+		</repository>
+	</repositories>
+
+	<artifactId>msip_bhu_unit_index</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.smartwork</groupId>
+			<artifactId>msip_core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.smartwork</groupId>
+			<artifactId>msip_core_cachedext</artifactId>
+		</dependency>	
+		
+		<dependency>
+			<groupId>com.bhu</groupId>
+			<artifactId>msip_bhu_rpc_api</artifactId>
+		</dependency>
+		
+		<dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_springdata_search</artifactId>
+        </dependency>
+		<!-- 
+		<dependency>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_ds</artifactId>
+        </dependency>
+        <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_asynmessage</artifactId>
+        </dependency>
+        <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_springdata_search</artifactId>
+        </dependency>        
+        
+        
+        <dependency>
+            <groupId>com.smartwork</groupId>
+            <artifactId>msip_core_lucene_es</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_search</artifactId>
+        </dependency>
+         -->
+       <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dubbo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sgroschupf</groupId>
+            <artifactId>zkclient</artifactId>
+        </dependency>     
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <exclusions>
+		      <exclusion> 
+		        <groupId>org.slf4j</groupId>
+		        <artifactId>slf4j-log4j12</artifactId>
+		      </exclusion>
+		      <exclusion> 
+		        <groupId>log4j</groupId>
+		        <artifactId>log4j</artifactId>
+		      </exclusion>
+		    </exclusions>            
+        </dependency> 
+	</dependencies>
+	<build>
+		<finalName>msip_bhu_unit_index</finalName>
+		<plugins>
+			<!-- mina打包为了bundle格式，为此，需要添加插件
+				在maven的pom.xml中plugins段中加入plugin即可 -->
+			<plugin>  
+                    <groupId>org.apache.felix</groupId>  
+                    <artifactId>maven-bundle-plugin</artifactId>  
+                    <extensions>true</extensions>  
+            </plugin>  
+			<!-- The configuration of maven-assembly-plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<!-- The configuration of the plugin -->
+				<configuration>
+					<!-- Specifies the configuration file of the assembly plugin -->
+					<descriptors>
+						<descriptor>${project.basedir}/${project.parent.relativePath}/src/main/assembly/assembly.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- The configuration of maven-jar-plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<!-- The configuration of the plugin -->
+				<configuration>
+					<!-- Configuration of the archiver -->
+					<archive>
+						<!-- Manifest specific configuration -->
+						<manifest>
+							<!-- Classpath is added to the manifest of the created jar file. -->
+							<addClasspath>true</addClasspath>
+							<!-- Configures the classpath prefix. This configuration option is 
+								used to specify that all needed libraries are found under lib/ directory. -->
+							<classpathPrefix>../lib/</classpathPrefix>
+							<!-- Specifies the main class of the application -->
+							<mainClass>com.smartwork.multiplexer.starter.ServerStarter</mainClass>
+						</manifest>
+						<manifestEntries>
+							<Class-Path>../conf/</Class-Path>
+						</manifestEntries>
+					</archive>
+
+					<excludes>
+						<exclude>**/*.xml</exclude>
+						<exclude>**/*.properties</exclude>
+						<exclude>**/*.conf</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/memcached.xml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testResources>
+            <testResource>
+                <directory>src/test/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
+		<!-- 
+		<filters>
+			<filter>src/main/filters/filters-${env}.properties</filter>
+		</filters> -->
+	</build>
+	<!-- <build> <resources> <resource> <directory>src/main/java</directory> 
+		<includes> <include>**/*.xml</include> </includes> </resource> <resource> 
+		<directory>src/main/resource</directory> </resource> </resources> </build> -->
+
+</project>
