@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -32,21 +34,17 @@ public class ShipmentExcelImport {
 		System.out.println("input file:"+fileinputpath);
 		System.out.println("output file:"+fileoutpath);
         InputStream is = null;
-        System.out.println("~~~~~~~~~~~~~~~~~~~~1");
         //HSSFWorkbook hssfWorkbook = null;//new HSSFWorkbook(is);
         //Workbook workbook = null;
         Workbook wb = null;
-        System.out.println("~~~~~~~~~~~~~~~~~~~~2");
+        Set<String> devices = new HashSet<String>();
 		try{//XSSFWorkbook wb2 = (XSSFWorkbook)
 			 is = new FileInputStream(fileinputpath);
-			 System.out.println("~~~~~~~~~~~~~~~~~~~~3");
 			 wb = WorkbookFactory.create(is);//.openSampleWorkbook("CustomXMLMappings.xlsx");
-			 System.out.println("~~~~~~~~~~~~~~~~~~~~4");
 			 //new XSSFWorkbook(new FileInputStream(args[0]));
 	         //workbook = new XSSFWorkbook(is);
 	         System.out.println(String.format("sheets size ===" + wb.getNumberOfSheets()));
 	         for (int numSheet = 0; numSheet < wb.getNumberOfSheets(); numSheet++) {
-	        	 System.out.println("~~~~~~~~~~~~~~~~~~~~5");
 	        	Sheet sheet = wb.getSheetAt(numSheet);
 	        	System.out.println(String.format("numSheet[%s] SheetName[%s]",numSheet,sheet.getSheetName()));
 	        	int totalRowNum = sheet.getLastRowNum();
@@ -66,6 +64,7 @@ public class ShipmentExcelImport {
 	        			if(dcDTO == null){
 	        				row.getCell(1).setCellValue("不存在");
 	        			}else{
+	        				devices.add(dcDTO.getMac());
 	        				cell_mac.setCellValue(dcDTO.getMac());//"84:82:f4:32:3c:80");
 	        			}
 	        		}
@@ -76,18 +75,11 @@ public class ShipmentExcelImport {
 	         FileOutputStream fileOut = new FileOutputStream(targetFile);
 	         wb.write(fileOut);
 	         fileOut.close();
+	         callback.afterExcelImported(devices);
 		}catch(Exception ex){
 			System.out.println("~~~~~~~~~~~~~~~~~~~~exception");
 			ex.printStackTrace(System.out);
 		}finally{
-			/*if(wb != null){
-                try {
-					wb.close();
-				} catch (IOException e) {
-					e.printStackTrace(System.out);
-				}
-                wb = null;
-            }*/
             if(is != null){
                 try {
 					is.close();
