@@ -15,6 +15,7 @@ import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -74,6 +75,8 @@ public class TagFacadeRpcSerivce {
 		mc.createCriteria().andSimpleCaulse("1=1");
 		mc.setPageSize(pageSize);
 		mc.setPageNumber(pageNo);
+		
+		System.out.println(pageNo+":::::::::::::::::::"+pageSize);
 
 		TailPage<TagName> tailPages = tagNameService.findModelTailPageByModelCriteria(mc);
 
