@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
@@ -17,7 +16,6 @@ import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
-import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGrayService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
@@ -42,7 +40,7 @@ public class BuilderWifiDeviceIndexOp {
 	
 	//public static WifiDeviceIndexService wifiDeviceIndexService = null;
 	private static WifiDeviceDataSearchService wifiDeviceDataSearchService;
-	private static AgentDeviceClaimService agentDeviceClaimService;
+	//private static AgentDeviceClaimService agentDeviceClaimService;
 	private static WifiDeviceGrayService wifiDeviceGrayService;
 	private static WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
 	private static UserService userService;
@@ -61,7 +59,7 @@ public class BuilderWifiDeviceIndexOp {
 			//wifiDeviceIndexService = (WifiDeviceIndexService)ctx.getBean("wifiDeviceIndexService");
 			
 			wifiDeviceDataSearchService = (WifiDeviceDataSearchService)ctx.getBean("wifiDeviceDataSearchService");
-			agentDeviceClaimService = (AgentDeviceClaimService)ctx.getBean("agentDeviceClaimService");
+			//agentDeviceClaimService = (AgentDeviceClaimService)ctx.getBean("agentDeviceClaimService");
 			wifiDeviceGrayService = (WifiDeviceGrayService)ctx.getBean("wifiDeviceGrayService");
 			wifiDevicePersistenceCMDStateService = (WifiDevicePersistenceCMDStateService)ctx.getBean("wifiDevicePersistenceCMDStateService");
 			userService = (UserService)ctx.getBean("userService");
@@ -163,14 +161,14 @@ public class BuilderWifiDeviceIndexOp {
 					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(mac);
 					WifiDeviceModule deviceModule = wifiDeviceModuleService.getById(mac);
 					TagDevices tagDevices = tagDevicesService.getById(mac);
-					AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
+					//AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
 					String o_template = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(mac);
 					long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
 					//long hoc = 0;
-					User agentUser = null;
+/*					User agentUser = null;
 					if(wifiDevice.getAgentuser() > 0){
 						agentUser = userService.getById(wifiDevice.getAgentuser());
-					}
+					}*/
 					
 					User bindUser = null;
 					String bindUserDNick = null;
@@ -186,8 +184,8 @@ public class BuilderWifiDeviceIndexOp {
 					
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
 					
-					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, agentDeviceClaim, 
-							wifiDeviceGray, bindUser, bindUserDNick, agentUser, tagDevices,
+					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
+							wifiDeviceGray, bindUser, bindUserDNick, tagDevices,
 							o_template, (int)hoc, wifiDeviceSharedNetwork);
 					
 /*					//构建设备索引的扩展字段
