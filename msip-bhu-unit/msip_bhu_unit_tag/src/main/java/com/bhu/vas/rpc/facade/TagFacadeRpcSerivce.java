@@ -70,11 +70,13 @@ public class TagFacadeRpcSerivce {
 			for(String newTag : arrTemp){
 				addTag(uid, newTag);
 			}
-			
+			System.out.println("--------------------------------------------");
 			tagDevices.replaceInnerModels(ArrayHelper.toSet(arrTemp));
-
+			System.out.println("::::::::::::::::::::::::::::::::::::::::::::::;");
 			tagDevicesService.update(tagDevices);
+			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`");
 			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tagDevices.getTag2ES());
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		} else {
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}

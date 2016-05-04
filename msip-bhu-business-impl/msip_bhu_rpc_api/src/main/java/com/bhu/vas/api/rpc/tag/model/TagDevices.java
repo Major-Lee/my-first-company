@@ -15,22 +15,10 @@ public class TagDevices extends SetJsonExtStringModel<String> {
 	 */
 	private int last_operator;
 	
-	/**
-	 * 标签
-	 */
-	private String extension_content;
 	
 	private Date created_at;
 	private Date update_at;
 	
-	public String getExtension_content() {
-		return extension_content;
-	}
-
-	public void setExtension_content(String extension_content) {
-		this.extension_content = extension_content;
-	}
-
 	public String getTag2ES(){
 		Set<String> set = fetchTags();
 		String d_tags = ArrayHelper.toSplitString(set, StringHelper.WHITESPACE_STRING_GAP);
