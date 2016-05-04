@@ -31,8 +31,8 @@ public class ChargingUnitFacadeService {
 			String mobileno, 
 			String sellor,String partner,
 			double sharedeal_owner_percent, 
-			boolean enterpriselevel,
 			boolean canbeturnoff,
+			boolean enterpriselevel,
 			String remark) {
 		try{
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(
