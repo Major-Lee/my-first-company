@@ -178,9 +178,9 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
 			doc.setD_snk_template(wifiDeviceSharedNetwork.getTemplate());
 		}
-//		if(tagDevices != null){
-//			doc.setD_tags(tagDevices.getTag2ES());
-//		}
+		if(tagDevices != null){
+			doc.setD_tags(tagDevices.getTag2ES());
+		}
 		doc.setUpdatedat(DateTimeHelper.getDateTime());
 		return doc;
 	}
