@@ -160,7 +160,7 @@ public class BuilderWifiDeviceIndexOp {
 					//System.out.println("2="+mac);
 					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(mac);
 					WifiDeviceModule deviceModule = wifiDeviceModuleService.getById(mac);
-					//TagDevices tagDevices = tagDevicesService.getById(mac);
+					TagDevices tagDevices = tagDevicesService.getById(mac);
 					//AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
 					String o_template = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(mac);
 					long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
@@ -185,7 +185,7 @@ public class BuilderWifiDeviceIndexOp {
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
 					
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
-							wifiDeviceGray, bindUser, bindUserDNick, null,
+							wifiDeviceGray, bindUser, bindUserDNick, tagDevices,
 							o_template, (int)hoc, wifiDeviceSharedNetwork);
 					
 /*					//构建设备索引的扩展字段
