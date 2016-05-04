@@ -47,6 +47,11 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = false,value="percent",defaultValue="0.70") double owner_percent,
             @RequestParam(required = false) String remark
     ) {
+    	if(file == null){
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.UPLOAD_FILE_UNKNOW_ERROR));
+            return ;	
+    	}
+    	
     	String originName = file.getOriginalFilename();
         String ext = originName.substring(originName.lastIndexOf("."));
         System.out.println("ext===" + ext);
