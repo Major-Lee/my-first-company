@@ -1851,20 +1851,19 @@ public class AsyncMsgHandleService {
 								TagDevices entity = new TagDevices();
 								entity.setId(macList.get(index));
 								entity.setLast_operator(uid);
-								entity.setExtension_content(newTag);;
+								entity.setExtension_content(newTag);
 								insertList.add(entity);
 								tagNameList.add(newTag);
 							}else{
 								tagDevices.setLast_operator(uid);
-								tagDevices.setExtension_content(newTag);;
+								tagDevices.setExtension_content(newTag);
 								upDateList.add(tagDevices);
 								tagNameList.add(newTag);
 							}
-							tagDevicesService.insertAll(insertList);
-							tagDevicesService.updateAll(upDateList);
-							
 							index++;
 						}
+						tagDevicesService.insertAll(insertList);
+						tagDevicesService.updateAll(upDateList);
 						wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, tagNameList);
 						
 					}

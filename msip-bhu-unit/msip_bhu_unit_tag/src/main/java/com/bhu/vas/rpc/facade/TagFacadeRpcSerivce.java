@@ -118,7 +118,7 @@ public class TagFacadeRpcSerivce {
 	}
 
 	public boolean StringFilter(String str) {
-		String regex = "^[a-zA-Z0-9_\u4e00-\u9fa5]+$";
+		String regex = "^[a-zA-Z0-9,_\u4e00-\u9fa5]+$";
 		Pattern pattern = Pattern.compile(regex);
 		Matcher match = pattern.matcher(str);
 		boolean flag = match.matches();
