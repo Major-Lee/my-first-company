@@ -1,11 +1,19 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.buservice;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
+import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -15,6 +23,16 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHot
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceGrayService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
+import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 
 /**
@@ -36,6 +54,35 @@ public class BackendBusinessService {
 	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
+	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private WifiDeviceGrayService wifiDeviceGrayService;
+	
+	@Resource
+	private WifiDeviceModuleService wifiDeviceModuleService;
+	
+//	@Resource
+//	private TagDevicesService tagDevicesService;
+	
+	@Resource
+	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
+	
+	@Resource
+	private UserService userService;
+	
+	@Resource
+	private UserDeviceService userDeviceService;
+	
+	@Resource
+	private WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
+	
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
+	
 
 	
 	/**********************************     清除设备数据业务 start   *****************************************/
@@ -205,4 +252,53 @@ public class BackendBusinessService {
 	}
 	
 	/**********************************     清除设备数据业务 end   *****************************************/
+	
+	
+	/**********************************     设备全量索引数据业务 start   *****************************************/
+	
+	public void blukIndexs(List<String> macs){
+		if(macs != null && !macs.isEmpty()){
+			List<WifiDevice> wifiDevices = wifiDeviceService.findByIds(macs);
+			if(wifiDevices != null && !wifiDevices.isEmpty()){
+				List<WifiDeviceDocument> docs = new ArrayList<WifiDeviceDocument>();
+				for(WifiDevice wifiDevice : wifiDevices){
+					WifiDeviceDocument doc = new WifiDeviceDocument();
+					
+					String mac = wifiDevice.getId();
+					//System.out.println("2="+mac);
+					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(mac);
+					WifiDeviceModule deviceModule = wifiDeviceModuleService.getById(mac);
+					//TagDevices tagDevices = tagDevicesService.getById(mac);
+					//AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
+					String o_template = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(mac);
+					long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
+
+					User bindUser = null;
+					String bindUserDNick = null;
+					//Integer bindUserId = userDeviceService.fetchBindUid(mac);
+					UserDevice userDevice = userDeviceService.fetchBindByMac(mac);
+					if(userDevice != null){
+						bindUserDNick = userDevice.getDevice_name();
+						Integer bindUserId = userDevice.getId().getUid();
+						if(bindUserId != null){
+							bindUser = userService.getById(bindUserId);
+						}
+					}
+					
+					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
+					
+					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
+							wifiDeviceGray, bindUser, bindUserDNick, null,
+							o_template, (int)hoc, wifiDeviceSharedNetwork);
+					docs.add(doc);
+				}
+				
+				if(!docs.isEmpty()){
+					wifiDeviceDataSearchService.bulkIndex(docs);
+				}
+			}
+		}
+	}
+	
+	/**********************************     设备全量索引数据业务 end   *****************************************/
 }
