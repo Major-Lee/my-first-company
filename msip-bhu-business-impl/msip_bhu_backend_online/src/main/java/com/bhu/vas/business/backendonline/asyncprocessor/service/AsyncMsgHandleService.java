@@ -1851,14 +1851,14 @@ public class AsyncMsgHandleService {
 								TagDevices entity = new TagDevices();
 								entity.setId(macList.get(index));
 								entity.setLast_operator(uid);
-								entity.addTag(newTag);
+								entity.setExtension_content(newTag);;
 								insertList.add(entity);
 								tagNameList.add(newTag);
 							}else{
 								tagDevices.setLast_operator(uid);
-								tagDevices.addTag(newTag);
+								tagDevices.setExtension_content(newTag);;
 								upDateList.add(tagDevices);
-								tagNameList.add(tagDevices.getTag2ES());
+								tagNameList.add(newTag);
 							}
 							tagDevicesService.insertAll(insertList);
 							tagDevicesService.updateAll(upDateList);

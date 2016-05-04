@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
-import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -69,7 +68,6 @@ public class TagController extends BaseController{
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
-<<<<<<< 4c711e6273f1826a544ca1d2286e6649d78c9bd7
     }
     
     /**
@@ -88,7 +86,6 @@ public class TagController extends BaseController{
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) String mac) {
     	RpcResponseDTO<Boolean> rpcResult = tagRpcService.delTag(uid, mac);
-=======
     } 
     
     /**
@@ -108,15 +105,10 @@ public class TagController extends BaseController{
             @RequestParam(required = true) String message,
             @RequestParam(required = true) String tag) {
     	RpcResponseDTO<Boolean> rpcResult = tagRpcService.deviceBatchBindTag(uid, message, tag);
->>>>>>> batch
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
-<<<<<<< 4c711e6273f1826a544ca1d2286e6649d78c9bd7
     }   
-=======
-    } 
->>>>>>> batch
 }

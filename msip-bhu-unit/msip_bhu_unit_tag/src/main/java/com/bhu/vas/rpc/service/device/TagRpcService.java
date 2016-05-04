@@ -70,7 +70,9 @@ public class TagRpcService implements ITagRpcService {
 		try {
 			tagFacadeRpcSerivce.deviceBatchBindTag(uid, message, tag);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-		} catch (Exception ex) {
+		}catch(BusinessI18nCodeException i18nex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		}catch (Exception ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
