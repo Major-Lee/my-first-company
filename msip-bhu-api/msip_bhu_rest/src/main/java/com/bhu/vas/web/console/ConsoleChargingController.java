@@ -39,9 +39,12 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam("file") CommonsMultipartFile file,
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
-            @RequestParam(required = false) String mobileno,
-            @RequestParam(required = false,defaultValue="true") boolean canbeturnoff,
-            @RequestParam(required = false) double percent,
+            @RequestParam(required = false,value = "mobileno") String mobileno_needbinded,
+            @RequestParam(required = false) String sellor,
+            @RequestParam(required = false) String partner,
+            @RequestParam(required = false,value = "cbto",defaultValue="true") boolean canbeturnoff,
+            @RequestParam(required = false,value = "el",defaultValue="false") boolean enterpriselevel,
+            @RequestParam(required = false,value="percent",defaultValue="0.70") double owner_percent,
             @RequestParam(required = false) String remark
     ) {
     	String originName = file.getOriginalFilename();
@@ -52,7 +55,13 @@ public class ConsoleChargingController extends BaseController {
             return ;
         }
         try{
-        	RpcResponseDTO<BatchImportVTO> rpcResult = chargingRpcService.doInputDeviceRecord(uid, countrycode, mobileno, percent,canbeturnoff, remark);
+        	RpcResponseDTO<BatchImportVTO> rpcResult = chargingRpcService.doInputDeviceRecord(uid, countrycode, mobileno_needbinded, 
+        			sellor,
+        			partner,
+        			owner_percent,
+        			canbeturnoff,
+        			enterpriselevel,
+        			remark);
 			if(!rpcResult.hasError()){
 				System.out.println("path:"+rpcResult.getPayload().toAbsoluteFileInputPath());
 				File targetFile = new File(rpcResult.getPayload().toAbsoluteFileInputPath());

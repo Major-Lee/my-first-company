@@ -10,8 +10,11 @@
 	  <result property="status" column="status"/>
 	  <result property="importor" column="importor"/>
 	  <result property="mobileno" column="mobileno"/>
-	  <result property="manufacturer_percent" column="manufacturer_percent"/>
+	  <result property="sellor" column="sellor"/>
+	  <result property="partner" column="partner"/>
+	  <result property="owner_percent" column="owner_percent"/>
 	  <result property="canbeturnoff" column="canbeturnoff"/>
+	  <result property="enterpriselevel" column="enterpriselevel"/>
 	  
 	  <result property="succeed" column="succeed"/>
 	  <result property="failed" column="failed"/>
@@ -32,8 +35,11 @@
 	    	status,
 	    	importor,
 	    	mobileno,
-	    	manufacturer_percent,
+	    	sellor,
+	    	partner,
+	    	owner_percent,
 	    	canbeturnoff,
+	    	enterpriselevel,
 	    	succeed,
 	    	failed,
 	    	remark,
@@ -47,8 +53,11 @@
 	    	status,
 	    	importor,
 	    	mobileno,
-	    	manufacturer_percent,
+	    	sellor,
+	    	partner,
+	    	owner_percent,
 	    	canbeturnoff,
+	    	enterpriselevel,
 	    	succeed,
 	    	failed,
 	    	remark,
@@ -63,8 +72,11 @@
 			#{status},
 			#{importor},
 			#{mobileno},
-			#{manufacturer_percent},
+			#{sellor},
+			#{partner},
+			#{owner_percent},
 			#{canbeturnoff},
+			#{enterpriselevel},
 			#{succeed},
 			#{failed},
 			#{remark},
@@ -77,8 +89,11 @@
 	    	status = #{status},
 	    	importor = #{importor},
 	    	mobileno = #{mobileno},
-	    	manufacturer_percent = #{manufacturer_percent},
+	    	sellor = #{sellor},
+	    	partner = #{partner},
+	    	owner_percent = #{owner_percent},
 	    	canbeturnoff = #{canbeturnoff},
+	    	enterpriselevel = #{enterpriselevel},
 	    	succeed = #{succeed},
 	    	failed = #{failed},
 	    	remark = #{remark},

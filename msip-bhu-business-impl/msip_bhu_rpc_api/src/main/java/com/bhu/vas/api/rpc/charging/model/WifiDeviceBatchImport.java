@@ -29,8 +29,11 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	//导入用户
 	private int importor;
 	private String mobileno;
-	private double manufacturer_percent;
+	private String sellor;
+	private String partner;
+	private double owner_percent;
 	private boolean canbeturnoff;
+	private boolean enterpriselevel;
 	//private int total;
 	private int succeed;
 	private int failed;
@@ -82,6 +85,30 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	public void setMobileno(String mobileno) {
 		this.mobileno = mobileno;
 	}
+	public String getSellor() {
+		return sellor;
+	}
+	public void setSellor(String sellor) {
+		this.sellor = sellor;
+	}
+	public String getPartner() {
+		return partner;
+	}
+	public void setPartner(String partner) {
+		this.partner = partner;
+	}
+	public double getOwner_percent() {
+		return owner_percent;
+	}
+	public void setOwner_percent(double owner_percent) {
+		this.owner_percent = owner_percent;
+	}
+	public boolean isEnterpriselevel() {
+		return enterpriselevel;
+	}
+	public void setEnterpriselevel(boolean enterpriselevel) {
+		this.enterpriselevel = enterpriselevel;
+	}
 	public Date getCreated_at() {
 		return created_at;
 	}
@@ -116,8 +143,12 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		vto.setImportor_nick(importor_nick);
 		vto.setImportor_mobileno(importor_mobileno);
 		vto.setMobileno(this.getMobileno());
-		vto.setManufacturer_percent(manufacturer_percent);
+		vto.setSellor(this.getSellor());
+		vto.setPartner(this.getPartner());
+		vto.setOwner_percent(this.getOwner_percent());
+		//vto.setManufacturer_percent(manufacturer_percent);
 		vto.setCanbeturnoff(this.isCanbeturnoff());
+		vto.setEnterpriselevel(this.isEnterpriselevel());
 		vto.setRemark(this.getRemark());
 		vto.setStatus(this.getStatus());
 		vto.setSucceed(this.getSucceed());
@@ -125,12 +156,6 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		return vto;
 	}
 	
-	public double getManufacturer_percent() {
-		return manufacturer_percent;
-	}
-	public void setManufacturer_percent(double manufacturer_percent) {
-		this.manufacturer_percent = manufacturer_percent;
-	}
 	public boolean isCanbeturnoff() {
 		return canbeturnoff;
 	}

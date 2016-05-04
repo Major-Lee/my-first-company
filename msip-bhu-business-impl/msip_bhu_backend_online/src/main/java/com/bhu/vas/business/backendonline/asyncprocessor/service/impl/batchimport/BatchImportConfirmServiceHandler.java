@@ -87,8 +87,8 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			        else{
 			        	String dmac = models.get(0).getId();
 			        	WifiDeviceSharedealConfigs userfulWifiDeviceSharedealConfigs = chargingFacadeService.userfulWifiDeviceSharedealConfigs(dmac);
-			        	userfulWifiDeviceSharedealConfigs.setOwner_percent(ArithHelper.round(ArithHelper.sub(1, importVto.getManufacturer_percent()), 2));
-			        	userfulWifiDeviceSharedealConfigs.setManufacturer_percent(importVto.getManufacturer_percent());
+			        	userfulWifiDeviceSharedealConfigs.setOwner_percent(importVto.getOwner_percent());
+			        	userfulWifiDeviceSharedealConfigs.setManufacturer_percent(ArithHelper.round(ArithHelper.sub(1, importVto.getOwner_percent()), 2));
 			        	userfulWifiDeviceSharedealConfigs.setCanbe_turnoff(importVto.isCanbeturnoff());
 			        	userfulWifiDeviceSharedealConfigs.setRuntime_applydefault(false);
 			        	chargingFacadeService.getWifiDeviceSharedealConfigsService().update(userfulWifiDeviceSharedealConfigs);
