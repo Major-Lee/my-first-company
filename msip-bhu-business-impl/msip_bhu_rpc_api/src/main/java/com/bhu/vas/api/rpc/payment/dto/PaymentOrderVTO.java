@@ -9,6 +9,7 @@ package com.bhu.vas.api.rpc.payment.dto;
 public class PaymentOrderVTO {
 	private long ordierid;
 	private String tid;
+	private String ts;
 	public long getOrdierid() {
 		return ordierid;
 	}
