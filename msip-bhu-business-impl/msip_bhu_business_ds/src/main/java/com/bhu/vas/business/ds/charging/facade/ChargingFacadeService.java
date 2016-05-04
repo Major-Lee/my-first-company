@@ -168,6 +168,43 @@ public class ChargingFacadeService {
 		return configs;
 	}
 	
+	/*public boolean canBeTurnoff(String dmac){
+		WifiDeviceSharedealConfigs configs = userfulWifiDeviceSharedealConfigs(dmac);
+		if(configs == null){
+			return true;
+		}else{
+			return configs.isCanbe_turnoff();
+		}
+	}*/
+	public boolean canBeTurnoff(String dmac){
+		WifiDeviceSharedealConfigs config = wifiDeviceSharedealConfigsService.getById(dmac);
+		if(config == null){
+			return true;
+		}else{
+			return config.isCanbe_turnoff();
+		}
+	}
+	
+	/**
+	 * 如果有一个设备不能被关闭 返回false
+	 * 不存在配置的设备 缺省定义为可以关闭
+	 * @param dmacs
+	 * @return
+	 */
+	public boolean canAllBeTurnoff(List<String> dmacs){
+		if(dmacs == null || dmacs.isEmpty()) return true;
+		boolean ret = true;
+		List<WifiDeviceSharedealConfigs> configs = wifiDeviceSharedealConfigsService.findByIds(dmacs,true,true);
+		for(WifiDeviceSharedealConfigs config:configs){
+			if(config == null) continue;
+			if(!config.isCanbe_turnoff()){
+				ret = false;
+				break;
+			}
+		}
+		return ret;
+	}
+	
 	public String fetchAmountRange(String dmac,Integer umactype){
 		try{
 			WifiDeviceSharedealConfigs configs = userfulWifiDeviceSharedealConfigs(dmac);

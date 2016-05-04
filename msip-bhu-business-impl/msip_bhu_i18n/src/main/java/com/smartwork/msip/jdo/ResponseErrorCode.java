@@ -207,6 +207,7 @@ public enum ResponseErrorCode {
 	SMS_COUNTRYCODE_NOTSUPPORTED("373", "sms.countrycode.notsupported"),
 	
 	USER_DEVICE_SHAREDNETWORK_TEMPLATES_MAXLIMIT("380", "user.device.sharednetwork.templates.maxlimit"),
+	USER_DEVICE_SHAREDNETWORK_SAFESECURE_CANNOT_BETURNOFF("381", "user.device.sharednetwork.safesecure.cannot.beturnoff"),
 	
 	/******************    Commdity    ******************/
 	VALIDATE_ORDER_UMAC_UID_ILLEGAL("410","validate.order.umac.uid.illegal"),
