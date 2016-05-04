@@ -61,39 +61,42 @@ public class TagFacadeRpcSerivce {
 		if (filter) {
 
 			TagDevices tagDevices = tagDevicesService.getOrCreateById(mac);
-			boolean flag = tagDevices.getTag2ES().equals(tag);
 
-			if (!flag) {
-				tagDevices.setLast_operator(uid);
-				tagDevices.setExtension_content(tag);
-				tagDevicesService.update(tagDevices);
-				wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tag.trim());
-				addTag(uid, tag);
-			} else {
-				throw new Exception();
+			tagDevices.setLast_operator(uid);
+
+			String[] arrTemp = tag.split(",");
+			tagDevices.addTag(null);
+			for (String str : arrTemp) {
+				tagDevices.addTag(str);
+				addTag(uid, str);
 			}
 
+			tagDevicesService.update(tagDevices);
+			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tagDevices.getTag2ES());
 		} else {
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 
-	public void delTag(int uid,String mac) throws Exception{
+	public void delTag(int uid, String mac) throws Exception {
 		TagDevices tagDevices = tagDevicesService.getById(mac);
-		if (tagDevices !=null) {
-			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac,"");
+		if (tagDevices != null) {
+			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, "");
 			tagDevicesService.deleteById(mac);
-			
-	        ModelCriteria mc = new ModelCriteria();
-	        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("extension_content", tagDevices.getExtension_content());
-	        int count = tagDevicesService.countByModelCriteria(mc);
-	        
-	        if (count == 0) {
-	        	ModelCriteria tagMc = new ModelCriteria();
-	        	tagMc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tagDevices.getExtension_content());
-	            tagNameService.deleteByModelCriteria(tagMc);
+
+			ModelCriteria mc = new ModelCriteria();
+			mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("extension_content",
+					tagDevices.getExtension_content());
+			int count = tagDevicesService.countByModelCriteria(mc);
+
+			if (count == 0) {
+				ModelCriteria tagMc = new ModelCriteria();
+				tagMc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag",
+						tagDevices.getExtension_content());
+				tagNameService.deleteByModelCriteria(tagMc);
 			}
-		}else{
+			
+		} else {
 			throw new Exception();
 		}
 	}
@@ -124,13 +127,18 @@ public class TagFacadeRpcSerivce {
 		boolean flag = match.matches();
 		return flag;
 	}
-	
-	public void deviceBatchBindTag(int uid, String message, String tag){
+
+	public void deviceBatchBindTag(int uid, String message, String tag) {
 		boolean filter = StringFilter(tag);
-		if (message !=null && tag != null && filter) {
-			addTag(uid,tag);
+		if (message != null && tag != null && filter) {
+			
+			String[] arrTemp = tag.split(",");
+			for(String newTag : arrTemp){
+				addTag(uid, newTag);
+			}
 			deliverMessageService.sentDeviceBatchBindTagActionMessage(uid, message, tag);
-		}else{
+			
+		} else {
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}

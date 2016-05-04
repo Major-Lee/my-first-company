@@ -44,9 +44,8 @@ public class TagDevices extends SetJsonExtStringModel<String> {
 	private Set<String> fetchTags(){
 		return this.getInnerModels();
 	}
-	public boolean addTag(String tag){
-		boolean ret = this.putInnerModel(tag);
-		return ret;
+	public void addTag(String tag){
+		this.putInnerModel(tag);
 	}
 
 	@Override
@@ -65,4 +64,6 @@ public class TagDevices extends SetJsonExtStringModel<String> {
 	public Class<String> getJsonParserModel() {
 		return String.class;
 	}
+	
+	
 }

@@ -1844,19 +1844,31 @@ public class AsyncMsgHandleService {
 						}
 
 						List<TagDevices> tagList = tagDevicesService.findByIds(macList, true, true);
-
+						
+						String[] arrTemp = newTag.split(",");
+						
 						int index = 0;
 						for (TagDevices tagDevices : tagList) {
 							if (tagDevices == null) {
 								TagDevices entity = new TagDevices();
 								entity.setId(macList.get(index));
 								entity.setLast_operator(uid);
-								entity.setExtension_content(newTag);
+								
+								entity.addTag(null);
+								for (String str : arrTemp) {
+									entity.addTag(str);
+								}
+								
 								insertList.add(entity);
 								tagNameList.add(newTag);
 							}else{
 								tagDevices.setLast_operator(uid);
-								tagDevices.setExtension_content(newTag);
+								
+								tagDevices.addTag(null);
+								for (String str : arrTemp) {
+									tagDevices.addTag(str);
+								}
+								
 								upDateList.add(tagDevices);
 								tagNameList.add(newTag);
 							}
@@ -1864,8 +1876,8 @@ public class AsyncMsgHandleService {
 						}
 						tagDevicesService.insertAll(insertList);
 						tagDevicesService.updateAll(upDateList);
-						wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, tagNameList);
 						
+						wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, tagNameList);
 					}
 				});
 	}
