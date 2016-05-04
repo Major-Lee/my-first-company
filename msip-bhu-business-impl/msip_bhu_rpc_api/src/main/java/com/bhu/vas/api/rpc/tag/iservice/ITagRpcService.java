@@ -20,5 +20,13 @@ public interface ITagRpcService {
     RpcResponseDTO<Boolean> bindTag(int uid, String mac, String tag);
     
     RpcResponseDTO<TailPage<TagNameVTO>> fetchTag(int pageNo, int pageSize);
+    
+    /**
+     * 单个设备删除标签
+     * @param uid
+     * @param mac
+     * @return
+     */
+    RpcResponseDTO<Boolean> delTag(int uid, String mac);
 
 }	

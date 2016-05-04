@@ -11,8 +11,11 @@ public class BatchImportVTO implements java.io.Serializable{
 	private String importor_nick;
 	private String importor_mobileno;
 	private String mobileno;
-	private double manufacturer_percent;
+	private String sellor;
+	private String partner;
+	private double owner_percent;
 	private boolean canbeturnoff;
+	private boolean enterpriselevel;
 	private int succeed;
 	private int failed;
 	private String remark;
@@ -70,18 +73,37 @@ public class BatchImportVTO implements java.io.Serializable{
 	public void setImportor_mobileno(String importor_mobileno) {
 		this.importor_mobileno = importor_mobileno;
 	}
-	public double getManufacturer_percent() {
-		return manufacturer_percent;
-	}
-	public void setManufacturer_percent(double manufacturer_percent) {
-		this.manufacturer_percent = manufacturer_percent;
-	}
 	
+	public double getOwner_percent() {
+		return owner_percent;
+	}
+	public void setOwner_percent(double owner_percent) {
+		this.owner_percent = owner_percent;
+	}
 	public boolean isCanbeturnoff() {
 		return canbeturnoff;
 	}
 	public void setCanbeturnoff(boolean canbeturnoff) {
 		this.canbeturnoff = canbeturnoff;
+	}
+	
+	public String getSellor() {
+		return sellor;
+	}
+	public void setSellor(String sellor) {
+		this.sellor = sellor;
+	}
+	public String getPartner() {
+		return partner;
+	}
+	public void setPartner(String partner) {
+		this.partner = partner;
+	}
+	public boolean isEnterpriselevel() {
+		return enterpriselevel;
+	}
+	public void setEnterpriselevel(boolean enterpriselevel) {
+		this.enterpriselevel = enterpriselevel;
 	}
 	public String toAbsoluteFileInputPath(){
 		StringBuilder sb = new StringBuilder();

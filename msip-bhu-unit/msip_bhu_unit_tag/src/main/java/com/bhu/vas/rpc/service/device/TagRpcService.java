@@ -45,8 +45,23 @@ public class TagRpcService implements ITagRpcService {
 	public RpcResponseDTO<TailPage<TagNameVTO>> fetchTag(int pageNo, int pageSize) {
 		logger.info(String.format("fetchTag pageNo[%s] pageSize[%s]",pageNo,pageSize));
 		
-		TailPage<TagNameVTO> tagName = tagFacadeRpcSerivce.fetchTag(pageNo, pageSize);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(tagName);
+		try {
+			TailPage<TagNameVTO> tagName = tagFacadeRpcSerivce.fetchTag(pageNo, pageSize);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(tagName);
+		} catch (Exception e) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> delTag(int uid, String mac) {
+		logger.info(String.format("delTag  uid[%s] mac[%s]",uid,mac));
+		try {
+			tagFacadeRpcSerivce.delTag(uid,mac);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch (Exception ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 	
 

@@ -28,6 +28,7 @@ import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
@@ -59,6 +60,8 @@ public class DeviceSharedNetworkUnitFacadeService {
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
+	@Resource
+	private ChargingFacadeService chargingFacadeService;
 	@Resource
 	private DeliverMessageService deliverMessageService;
 	
@@ -189,11 +192,16 @@ public class DeviceSharedNetworkUnitFacadeService {
 	 */
 	public RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,boolean on,String sharenetwork_type,String template,List<String> dmacs){
 		try{
-			UserValidateServiceHelper.validateUserDevices(uid, dmacs, userDeviceService);
 			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
+			//关闭 false 并且 安全共享网络 并且 所有的设备中有不可以关闭共享网络的设备
+			if(!on && sharedNetwork==SharedNetworkType.SafeSecure  && !chargingFacadeService.canAllBeTurnoff(dmacs)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_SAFESECURE_CANNOT_BETURNOFF);
+			}
+			UserValidateServiceHelper.validateUserDevices(uid, dmacs, userDeviceService);
+			
 			//template 不为空并且 是无效的template格式,如果为空或者是有效的格式 则传递后续处理
 			if(StringUtils.isNotEmpty(template) && !SharedNetworksFacadeService.validTemplateFormat(template)){
 				template = SharedNetworksFacadeService.DefaultTemplate;

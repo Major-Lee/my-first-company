@@ -37,10 +37,10 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
-	
+
 	@Resource
 	private DeliverMessageService deliverMessageService;
-	
+
 	private void addTag(int uid, String tag) {
 
 		ModelCriteria mc = new ModelCriteria();
@@ -56,33 +56,53 @@ public class TagFacadeRpcSerivce {
 
 	public void bindTag(int uid, String mac, String tag) throws Exception {
 		boolean filter = StringFilter(tag);
-		
+
 		if (filter) {
-			
+
 			TagDevices tagDevices = tagDevicesService.getOrCreateById(mac);
 			boolean flag = tagDevices.getTag2ES().equals(tag);
-			
+
 			if (!flag) {
 				tagDevices.setLast_operator(uid);
 				tagDevices.setExtension_content(tag);
 				tagDevicesService.update(tagDevices);
 				wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tag.trim());
 				addTag(uid, tag);
-			}else{
+			} else {
 				throw new Exception();
 			}
+
+		} else {
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
+		}
+	}
+
+	public void delTag(int uid,String mac) throws Exception{
+		TagDevices tagDevices = tagDevicesService.getById(mac);
+		if (tagDevices !=null) {
+			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac,"");
+			tagDevicesService.deleteById(mac);
 			
+	        ModelCriteria mc = new ModelCriteria();
+	        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("extension_content", tagDevices.getExtension_content());
+	        int count = tagDevicesService.countByModelCriteria(mc);
+	        
+	        if (count == 0) {
+	        	ModelCriteria tagMc = new ModelCriteria();
+	        	tagMc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tagDevices.getExtension_content());
+	            tagNameService.deleteByModelCriteria(tagMc);
+			}
 		}else{
-			throw  new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
+			throw new Exception();
 		}
 	}
 
 	public TailPage<TagNameVTO> fetchTag(int pageNo, int pageSize) {
 
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andSimpleCaulse("1=1");
-        mc.setPageNumber(pageNo);
-        mc.setPageSize(pageSize);
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andSimpleCaulse("1=1");
+		mc.setPageNumber(pageNo);
+		mc.setPageSize(pageSize);
 
 		List<TagName> tailPages = tagNameService.findModelByCommonCriteria(mc);
 
@@ -95,12 +115,12 @@ public class TagFacadeRpcSerivce {
 
 		return new CommonPage<TagNameVTO>(pageNo, pageSize, result.size(), result);
 	}
-	
-    public boolean StringFilter(String str){
-		String regex="^[a-zA-Z0-9_\u4e00-\u9fa5]+$";
+
+	public boolean StringFilter(String str) {
+		String regex = "^[a-zA-Z0-9_\u4e00-\u9fa5]+$";
 		Pattern pattern = Pattern.compile(regex);
-		Matcher match=pattern.matcher(str);
-		boolean flag=match.matches();
+		Matcher match = pattern.matcher(str);
+		boolean flag = match.matches();
 		return flag;
-    }
+	}
 }

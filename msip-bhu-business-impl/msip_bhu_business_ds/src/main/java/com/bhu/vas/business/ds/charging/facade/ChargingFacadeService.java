@@ -57,8 +57,10 @@ public class ChargingFacadeService {
 
     public BatchImportVTO doBatchImportCreate(int uid,
     		int countrycode,String mobileno, 
-    		double sharedeal_manufacturer_percent,
+    		String sellor,String partner,
+    		double sharedeal_owner_percent,
     		boolean canbeturnoff,
+    		boolean enterpriselevel,
     		String remark){
     	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
     	if(StringUtils.isNotEmpty(mobileno)){
@@ -70,8 +72,11 @@ public class ChargingFacadeService {
     	WifiDeviceBatchImport batch_import = new WifiDeviceBatchImport();
     	batch_import.setImportor(uid);
     	batch_import.setMobileno(mobileno);
-    	batch_import.setManufacturer_percent(ArithHelper.round(sharedeal_manufacturer_percent, 2));
+    	batch_import.setSellor(sellor);
+    	batch_import.setPartner(partner);
+    	batch_import.setOwner_percent(ArithHelper.round(sharedeal_owner_percent, 2));
     	batch_import.setCanbeturnoff(canbeturnoff);
+    	batch_import.setEnterpriselevel(enterpriselevel);
     	//batch_import.setFilepath(filepath_suffix);
     	batch_import.setRemark(remark);
     	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTED_FILE);
@@ -166,6 +171,43 @@ public class ChargingFacadeService {
 			configs = wifiDeviceSharedealConfigsService.insert(configs);
 		}
 		return configs;
+	}
+	
+	/*public boolean canBeTurnoff(String dmac){
+		WifiDeviceSharedealConfigs configs = userfulWifiDeviceSharedealConfigs(dmac);
+		if(configs == null){
+			return true;
+		}else{
+			return configs.isCanbe_turnoff();
+		}
+	}*/
+	public boolean canBeTurnoff(String dmac){
+		WifiDeviceSharedealConfigs config = wifiDeviceSharedealConfigsService.getById(dmac);
+		if(config == null){
+			return true;
+		}else{
+			return config.isCanbe_turnoff();
+		}
+	}
+	
+	/**
+	 * 如果有一个设备不能被关闭 返回false
+	 * 不存在配置的设备 缺省定义为可以关闭
+	 * @param dmacs
+	 * @return
+	 */
+	public boolean canAllBeTurnoff(List<String> dmacs){
+		if(dmacs == null || dmacs.isEmpty()) return true;
+		boolean ret = true;
+		List<WifiDeviceSharedealConfigs> configs = wifiDeviceSharedealConfigsService.findByIds(dmacs,true,true);
+		for(WifiDeviceSharedealConfigs config:configs){
+			if(config == null) continue;
+			if(!config.isCanbe_turnoff()){
+				ret = false;
+				break;
+			}
+		}
+		return ret;
 	}
 	
 	public String fetchAmountRange(String dmac,Integer umactype){

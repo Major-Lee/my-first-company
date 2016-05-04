@@ -69,5 +69,28 @@ public class TagController extends BaseController{
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
+    }
+    
+    /**
+     * 设备删除标签
+     * @param request
+     * @param response
+     * @param uid
+     * @param mac
+     * @param tag
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/del", method = {RequestMethod.POST})
+    public void del_tag(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String mac) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.delTag(uid, mac);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
     }   
 }

@@ -29,11 +29,19 @@ public class ChargingUnitFacadeService {
 	
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,int countrycode,
 			String mobileno, 
-			double sharedeal_manufacturer_percent, 
+			String sellor,String partner,
+			double sharedeal_owner_percent, 
+			boolean enterpriselevel,
 			boolean canbeturnoff,
 			String remark) {
 		try{
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(chargingFacadeService.doBatchImportCreate(uid, countrycode, mobileno,sharedeal_manufacturer_percent,canbeturnoff, remark));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(
+					chargingFacadeService.doBatchImportCreate(uid, countrycode, mobileno,
+							sellor,partner,
+							sharedeal_owner_percent,
+							canbeturnoff, 
+							enterpriselevel,
+							remark));
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
