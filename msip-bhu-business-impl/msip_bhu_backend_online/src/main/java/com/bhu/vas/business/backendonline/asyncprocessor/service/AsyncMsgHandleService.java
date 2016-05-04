@@ -1825,7 +1825,7 @@ public class AsyncMsgHandleService {
 	public void deviceBatchBindTag(String message) {
 		logger.info(String.format("deviceBatchBindTag message[%s]", message));
 		final BindTagDTO bindTagDto = JsonHelper.getDTO(message, BindTagDTO.class);
-		final String newTag = bindTagDto.getTag();
+		final String newTags = bindTagDto.getTag();
 		final int uid = bindTagDto.getUid();
 		
 		wifiDeviceDataSearchService.iteratorAll(bindTagDto.getMessage(),
@@ -1845,7 +1845,7 @@ public class AsyncMsgHandleService {
 
 						List<TagDevices> tagList = tagDevicesService.findByIds(macList, true, true);
 						
-						String[] arrTemp = newTag.split(",");
+						String[] arrTemp = newTags.split(",");
 						
 						int index = 0;
 						for (TagDevices tagDevices : tagList) {
@@ -1854,23 +1854,19 @@ public class AsyncMsgHandleService {
 								entity.setId(macList.get(index));
 								entity.setLast_operator(uid);
 								
-								entity.addTag(null);
-								for (String str : arrTemp) {
-									entity.addTag(str);
-								}
+								entity.replaceInnerModels(ArrayHelper.toSet(arrTemp));
+								
+								tagNameList.add(entity.getTag2ES());
 								
 								insertList.add(entity);
-								tagNameList.add(newTag);
+
 							}else{
 								tagDevices.setLast_operator(uid);
 								
-								tagDevices.addTag(null);
-								for (String str : arrTemp) {
-									tagDevices.addTag(str);
-								}
+								tagDevices.replaceInnerModels(ArrayHelper.toSet(arrTemp));
 								
 								upDateList.add(tagDevices);
-								tagNameList.add(newTag);
+								tagNameList.add(tagDevices.getTag2ES());
 							}
 							index++;
 						}

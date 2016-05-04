@@ -16,6 +16,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
+import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -44,7 +45,7 @@ public class TagFacadeRpcSerivce {
 	private void addTag(int uid, String tag) {
 
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tag);
+		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tag.trim());
 		int count = tagNameService.countByModelCriteria(mc);
 		if (count == 0) {
 			TagName tagName = new TagName();
@@ -58,18 +59,19 @@ public class TagFacadeRpcSerivce {
 
 		boolean filter = StringFilter(tag);
 
-		if (filter) {
+		if (tag!=null && filter) {
 
 			TagDevices tagDevices = tagDevicesService.getOrCreateById(mac);
 
 			tagDevices.setLast_operator(uid);
 
 			String[] arrTemp = tag.split(",");
-			tagDevices.addTag(null);
-			for (String str : arrTemp) {
-				tagDevices.addTag(str);
-				addTag(uid, str);
+			
+			for(String newTag : arrTemp){
+				addTag(uid, newTag);
 			}
+			
+			tagDevices.replaceInnerModels(ArrayHelper.toSet(arrTemp));
 
 			tagDevicesService.update(tagDevices);
 			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tagDevices.getTag2ES());
@@ -84,18 +86,18 @@ public class TagFacadeRpcSerivce {
 			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, "");
 			tagDevicesService.deleteById(mac);
 
-			ModelCriteria mc = new ModelCriteria();
-			mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("extension_content",
-					tagDevices.getExtension_content());
-			int count = tagDevicesService.countByModelCriteria(mc);
-
-			if (count == 0) {
-				ModelCriteria tagMc = new ModelCriteria();
-				tagMc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag",
-						tagDevices.getExtension_content());
-				tagNameService.deleteByModelCriteria(tagMc);
-			}
-			
+//			ModelCriteria mc = new ModelCriteria();
+//			mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("extension_content",
+//					tagDevices.getExtension_content());
+//			int count = tagDevicesService.countByModelCriteria(mc);
+//
+//			if (count == 0) {
+//				ModelCriteria tagMc = new ModelCriteria();
+//				tagMc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag",
+//						tagDevices.getExtension_content());
+//				tagNameService.deleteByModelCriteria(tagMc);
+//			}
+//			
 		} else {
 			throw new Exception();
 		}
