@@ -17,11 +17,14 @@ import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.asyn.spring.model.BatchImportConfirmDTO;
+import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ExcelElementCallback;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.dto.DeviceCallbackDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -47,7 +50,13 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;*/
 	
 	@Resource
+	private UserDeviceFacadeService userDeviceFacadeService;
+	
+	@Resource
 	private ChargingFacadeService chargingFacadeService;
+	
+	@Resource
+	private BackendBusinessService backendBusinessService;
 	
 	/*@Resource
 	private IDaemonRpcService daemonRpcService;*/
@@ -57,12 +66,10 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("process message[%s]", message));
 		try{
 			BatchImportConfirmDTO confirm_dto = JsonHelper.getDTO(message, BatchImportConfirmDTO.class);
-			int user = confirm_dto.getUid();
-			String batchno = confirm_dto.getBatchno();
+			//int user = confirm_dto.getUid();
+			final String batchno = confirm_dto.getBatchno();
 			if(StringUtils.isEmpty(batchno)) return;
-			
 			WifiDeviceBatchImport batchImport = chargingFacadeService.getWifiDeviceBatchImportService().getById(batchno);
-			
 			if(batchImport == null){
 				logger.info(String.format("process batchno[%s] not exist!", batchno));
 			}
@@ -73,7 +80,9 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			//String filepath = "/Users/Edmond/gospace/库房出库清单-20160426-0001.xlsx";
 			//String mobileno = batchImport.getMobileno();
 			final BatchImportVTO importVto = batchImport.toBatchImportVTO(null, null);
-			//String filepath = .toAbsoluteFilePath();
+			//final String mobileno = batchImport.getMobileno();
+			final Integer uid_willbinded = UniqueFacadeService.fetchUidByMobileno(86,batchImport.getMobileno());
+			
 			ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), new ExcelElementCallback(){
 				@Override
 				public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
@@ -106,14 +115,21 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 					if(dmacs.isEmpty()) return;
 					List<String> all_dmacs = new ArrayList<String>(dmacs);
 					int total = all_dmacs.size();
-					/*
-					List<String> lists = new ArrayList<String>();
-					for(int i=0;i<100;i++){
-						lists.add(String.valueOf(i));
-					}*/
-					int totalPages = PageHelper.getTotalPages(total, 8);
+					int totalPages = PageHelper.getTotalPages(total, 100);
 					for(int pageno= 1;pageno<=totalPages;pageno++){
-						System.out.println(PageHelper.pageList(all_dmacs, pageno, 8));
+						List<String> pages = PageHelper.pageList(all_dmacs, pageno, 100);
+						logger.info(String.format("pageno:%s pagesize:%s pages:%s", pageno,100,pages));
+						if(uid_willbinded != null && uid_willbinded.intValue() >0){
+							userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
+						}else{
+							userDeviceFacadeService.doForceUnbindDevice(pages);
+						}
+						backendBusinessService.blukIndexs(pages);
+						try {
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							e.printStackTrace(System.out);
+						}
 					}
 				}
 			});
