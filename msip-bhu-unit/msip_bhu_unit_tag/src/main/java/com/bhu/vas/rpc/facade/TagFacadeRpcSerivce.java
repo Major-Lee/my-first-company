@@ -124,4 +124,14 @@ public class TagFacadeRpcSerivce {
 		boolean flag = match.matches();
 		return flag;
 	}
+	
+	public void deviceBatchBindTag(int uid, String message, String tag){
+		boolean filter = StringFilter(tag);
+		if (message !=null && tag != null && filter) {
+			addTag(uid,tag);
+			deliverMessageService.sentDeviceBatchBindTagActionMessage(uid, message, tag);
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
+		}
+	}
 }

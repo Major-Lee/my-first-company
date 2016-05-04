@@ -53,6 +53,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
+import com.bhu.vas.business.asyn.spring.model.tag.BindTagDTO;
 
 
 public class DeliverMessageService {
@@ -538,4 +539,11 @@ public class DeliverMessageService {
 	}
 	
 	
+	public void sentDeviceBatchBindTagActionMessage(int uid,String message ,String tag){
+		BindTagDTO dto = new BindTagDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setTag(tag);
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
 }

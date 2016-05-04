@@ -69,6 +69,7 @@ public class TagController extends BaseController{
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
+<<<<<<< 4c711e6273f1826a544ca1d2286e6649d78c9bd7
     }
     
     /**
@@ -87,10 +88,35 @@ public class TagController extends BaseController{
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) String mac) {
     	RpcResponseDTO<Boolean> rpcResult = tagRpcService.delTag(uid, mac);
+=======
+    } 
+    
+    /**
+     * 批量 绑定标签
+     * @param request
+     * @param response
+     * @param uid
+     * @param message
+     * @param tag
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/batch/bind", method = {RequestMethod.POST})
+    public void device_Batch_Bind_Tag(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String message,
+            @RequestParam(required = true) String tag) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.deviceBatchBindTag(uid, message, tag);
+>>>>>>> batch
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
+<<<<<<< 4c711e6273f1826a544ca1d2286e6649d78c9bd7
     }   
+=======
+    } 
+>>>>>>> batch
 }

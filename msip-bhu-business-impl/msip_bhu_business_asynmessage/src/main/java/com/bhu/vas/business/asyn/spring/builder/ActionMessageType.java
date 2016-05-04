@@ -61,6 +61,9 @@ public enum ActionMessageType {
 	
 	WifiDeviceResultExportFile("增值平台搜索设备结果导出文件", "search result export file", "WE"),
 	OrderResultExportFile("增值平台搜索打赏订单结果导出文件", "search result export file", "OE"),
+	SearchResultExportFile("增值平台搜索结果导出文件", "search result export file", "SE"),
+	
+	DeviceBatchBindTag("设备批量绑定标签", "device batch bind tag", "DT"),
 	;
 	
 	static Map<String, ActionMessageType> allActionMessageTypes;
