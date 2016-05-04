@@ -1,8 +1,10 @@
 package com.bhu.vas.rpc.consumer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
 import com.bhu.vas.api.rpc.index.iservice.IWifiDeviceDocumentRpcService;
 
 public class MessageCenterConsumer {
@@ -75,7 +77,9 @@ public class MessageCenterConsumer {
 			service.messageDispose("9", "message3");
 			service.messageDispose("10", "message1");
 		}*/
-		service.templateUpdIncrement("34:31:11:10:76:35", "tmp1");
-
+		//service.templateUpdIncrement("34:31:11:10:76:35", "tmp1");
+		List<String> ids = new ArrayList<String>();
+		ids.add("34:31:11:10:76:35");
+		service.blukIndexs(ids);
 	}
 }

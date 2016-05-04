@@ -20,6 +20,8 @@ public interface ITagRpcService {
     RpcResponseDTO<Boolean> bindTag(int uid, String mac, String tag);
     
     RpcResponseDTO<TailPage<TagNameVTO>> fetchTag(int pageNo, int pageSize);
+
+	RpcResponseDTO<Boolean> deviceBatchBindTag(int uid, String message, String tag);
     
     /**
      * 单个设备删除标签

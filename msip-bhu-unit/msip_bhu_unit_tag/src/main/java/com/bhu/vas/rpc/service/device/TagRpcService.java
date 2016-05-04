@@ -5,9 +5,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
-import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
-import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.rpc.facade.TagFacadeRpcSerivce;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -64,5 +62,18 @@ public class TagRpcService implements ITagRpcService {
 		}
 	}
 	
-
+	
+	@Override
+	public RpcResponseDTO<Boolean> deviceBatchBindTag(int uid, String message, String tag) {
+		logger.info(
+				String.format("deviceBatchBindTag uid[%s] message[%s] tag[%s]",uid, message,tag));
+		try {
+			tagFacadeRpcSerivce.deviceBatchBindTag(uid, message, tag);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException i18nex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		}catch (Exception ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

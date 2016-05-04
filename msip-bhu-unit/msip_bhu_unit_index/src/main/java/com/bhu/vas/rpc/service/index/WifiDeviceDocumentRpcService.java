@@ -21,6 +21,8 @@ import com.bhu.vas.api.rpc.index.iservice.IWifiDeviceDocumentRpcService;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.rpc.asyncprocessor.dto.AsyncWifiDeviceBlukFullIndexDTO;
+import com.bhu.vas.rpc.asyncprocessor.queue.AsyncIndexProcessorQueue;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -38,6 +40,8 @@ public class WifiDeviceDocumentRpcService implements IWifiDeviceDocumentRpcServi
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
+	@Resource
+	private AsyncIndexProcessorQueue asyncIndexProcessorQueue;
 	/**
 	 * rpc message dispatch
 	 * @param type 消息类型
@@ -581,5 +585,20 @@ public class WifiDeviceDocumentRpcService implements IWifiDeviceDocumentRpcServi
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(),  DateTimeHelper.getDateTime());
 
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+	}
+	
+	/**
+	 * 批量打包全量覆盖索引
+	 * @param macs
+	 */
+	@Override
+	public void blukIndexs(List<String> macs) {
+		logger.info(String.format("blukIndexs Request macs [%s]", macs));
+		if(macs == null || macs.isEmpty()) return;
+		System.out.println("blukIndexs Request macs");
+		AsyncWifiDeviceBlukFullIndexDTO async_action_dto = new AsyncWifiDeviceBlukFullIndexDTO();
+		async_action_dto.setMacs(macs);
+		async_action_dto.setTs(System.currentTimeMillis());
+		asyncIndexProcessorQueue.addQueue(async_action_dto);
 	}
 }

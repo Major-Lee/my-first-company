@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
-import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -87,6 +86,30 @@ public class TagController extends BaseController{
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) String mac) {
     	RpcResponseDTO<Boolean> rpcResult = tagRpcService.delTag(uid, mac);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    } 
+    
+    /**
+     * 批量 绑定标签
+     * @param request
+     * @param response
+     * @param uid
+     * @param message
+     * @param tag
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/batch/bind", method = {RequestMethod.POST})
+    public void device_Batch_Bind_Tag(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String message,
+            @RequestParam(required = true) String tag) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.deviceBatchBindTag(uid, message, tag);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

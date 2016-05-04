@@ -194,4 +194,10 @@ public interface IWifiDeviceDocumentRpcService {
 	 */
 	public void sharedNetworkUpdIncrement(String id, String sharedNetwork_type, String template);
 	
+	/**
+	 * 批量打包全量覆盖索引
+	 * @param macs
+	 */
+	public void blukIndexs(List<String> macs);
+	
 }
