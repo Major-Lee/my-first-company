@@ -124,12 +124,15 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 						}else{
 							userDeviceFacadeService.doForceUnbindDevice(pages);
 						}
-						backendBusinessService.blukIndexs(pages);
+						
 						try {
+							backendBusinessService.blukIndexs(pages);
 							Thread.sleep(500);
 						} catch (InterruptedException e) {
 							e.printStackTrace(System.out);
-						}
+						} catch (Exception e) {
+							e.printStackTrace(System.out);
+						}	
 					}
 				}
 			});
