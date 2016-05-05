@@ -151,6 +151,9 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	Search_Result_Export_Dir = PropertiesHelper.getString("search.result.export.dir", paramProperties, Search_Result_Export_Dir);
         	Search_Result_Export_Uri = PropertiesHelper.getString("search.result.export.uri", paramProperties, Search_Result_Export_Uri);
         	UserPortalUpdate2UPortalApi = PropertiesHelper.getString("user.portal.update.uportalapi", paramProperties, UserPortalUpdate2UPortalApi);
+        	Unicorn_Http_Res_UrlPrefix = PropertiesHelper.getString("unicorn.http.res.urlprefix", paramProperties, Unicorn_Http_Res_UrlPrefix);
+        	
+        	
         	logger.info("loading business runtime configuration successfully!");  
         }  
     }  
@@ -231,6 +234,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String Search_Result_Export_Dir = "/BHUData/srexport/";
 	public static String Search_Result_Export_Uri = "http://192.168.66.7/srexport/";
 	
+	public static String Unicorn_Http_Res_UrlPrefix = "http://192.168.66.7/";
 	public static String BatchImport_Dir = "/BHUData/batchimport/";
 	//库房出库
 	public static String BatchImport_Shipment = "shipment/";
