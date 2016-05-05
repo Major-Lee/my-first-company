@@ -99,6 +99,8 @@ public class ConsoleServiceHandler {
 		String exportFilePath = dto.getExportFilePath();
 		final List<String> lines = new ArrayList<String>();
 		
+		logger.info(String.format("ExportOrderFile searchResultExportFile start message[%s]", jsonmessage));
+		
 		String message = dto.getMessage();
 		int messagetype = dto.getMessagetype();
 		if(OrderSearchResultExportFileDTO.SearchCondition_MessageType == messagetype){
@@ -119,6 +121,8 @@ public class ConsoleServiceHandler {
 				lines.addAll(outputOrderStringByItem(mac, dto.getStart_date(), dto.getEnd_date()));
 			}
 		}
+		
+		logger.info(String.format("ExportOrderFile searchResultExportFile end message[%s]", jsonmessage));
 		
 		searchResultExportFile(message, exportFilePath, SearchOrderResultExportColumns, lines);
 
