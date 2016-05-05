@@ -123,6 +123,23 @@ public class BatchImportVTO implements java.io.Serializable{
 			.append(this.id).append(".xlsx");
 		return sb.toString();
 	}
+	
+	public String getDownInput(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(BusinessRuntimeConfiguration.Unicorn_Http_Res_UrlPrefix)
+			.append(BusinessRuntimeConfiguration.BatchImport_Shipment)
+			.append(BusinessRuntimeConfiguration.BatchImport_Sub_Input_Dir)
+			.append(this.id).append(".xlsx");
+		return sb.toString();
+	}
+	public String getDownOuput(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(BusinessRuntimeConfiguration.Unicorn_Http_Res_UrlPrefix)
+			.append(BusinessRuntimeConfiguration.BatchImport_Shipment)
+			.append(BusinessRuntimeConfiguration.BatchImport_Sub_Output_Dir)
+			.append(this.id).append(".xlsx");
+		return sb.toString();
+	}
 	public String getCreated_at() {
 		return created_at;
 	}
