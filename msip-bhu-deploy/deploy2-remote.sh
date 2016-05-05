@@ -105,6 +105,10 @@ cp ../../msip-bhu-business-impl/msip_bhu_backend_task_applies_notify/target/msip
 echo '拷贝文件 msip_bhu_commdity_rest.war到'$CuDateDir
 cp ../../msip-bhu-api/msip_bhu_commdity_rest/target/msip_bhu_commdity_rest.war ./$CuDateDir
 
+#tag
+echo '拷贝文件 msip_bhu_unit_tag_bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_tag/target/msip_bhu_unit_tag-bin.zip ./$CuDateDir
+
 cd $CuDateDir
 echo '进行文件解压过程'
 unzip -q msip_bhu_unit_input_processor-bin.zip
@@ -157,6 +161,11 @@ unzip -q msip_bhu_backend_task_applies_notify-bin.zip
 unzip -qo msip_bhu_backend_task_applies_notify/bin/msip_bhu_backend_task_applies_notify.jar -d msip_bhu_backend_task_applies_notify/classes/
 
 unzip -qo msip_bhu_commdity_rest.war -d msip_bhu_commdity_rest
+
+#tag
+unzip -q msip_bhu_unit_tag-bin.zip
+unzip -qo msip_bhu_unit_tag/bin/msip_bhu_unit_tag.jar -d msip_bhu_unit_tag/classes/
+
 echo '文件解压过程成功'
 
 
