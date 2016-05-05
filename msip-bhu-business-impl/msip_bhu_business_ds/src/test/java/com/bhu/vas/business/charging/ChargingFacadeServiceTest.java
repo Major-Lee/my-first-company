@@ -22,7 +22,7 @@ public class ChargingFacadeServiceTest extends BaseTest{
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
 	
-    @Test
+    //@Test
 	public void test001BatchCreateDefault(){
     	System.out.println(Integer.MAX_VALUE);
     	ModelCriteria mc = new ModelCriteria();
@@ -47,13 +47,13 @@ public class ChargingFacadeServiceTest extends BaseTest{
 	}
     
     private static String Default_DMac = "84:82:f4:23:06:e8";
-    @Test
+    //@Test
 	public void test002FetchCertainDeviceSharedealConfigs(){
     	WifiDeviceSharedealConfigs  configs = chargingFacadeService.userfulWifiDeviceSharedealConfigs(Default_DMac);
     	System.out.println(JsonHelper.getJSONString(configs));
     }
     
-    @Test
+    //@Test
 	public void test003CalculateSharedeal(){
     	SharedealInfo calculateSharedeal = chargingFacadeService.calculateSharedeal(Default_DMac, "test00012", 789.03d);
     	System.out.println(JsonHelper.getJSONString(calculateSharedeal));

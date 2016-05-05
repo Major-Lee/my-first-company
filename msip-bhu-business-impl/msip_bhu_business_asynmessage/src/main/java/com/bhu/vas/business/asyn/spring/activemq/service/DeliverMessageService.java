@@ -13,6 +13,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.BatchImportConfirmDTO;
+import com.bhu.vas.business.asyn.spring.model.BatchSharedealModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAliasDTO;
@@ -538,6 +539,20 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
+	public void sendBatchSharedealModifyActionMessage(int uid,String message,
+			boolean cbto,double owner_percent,
+			String rcm,String rcp,String ait){
+		BatchSharedealModifyDTO dto = new BatchSharedealModifyDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setCbto(cbto);
+		dto.setOwner_percent(owner_percent);
+		dto.setRcm(rcm);
+		dto.setRcp(rcp);
+		dto.setAit(ait);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
 	
 	public void sentDeviceBatchBindTagActionMessage(int uid,String message ,String tag){
 		BindTagDTO dto = new BindTagDTO();

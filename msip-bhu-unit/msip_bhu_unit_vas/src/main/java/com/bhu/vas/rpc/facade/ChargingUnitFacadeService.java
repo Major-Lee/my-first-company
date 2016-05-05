@@ -76,4 +76,19 @@ public class ChargingUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid,
+			String message, boolean canbeturnoff, double owner_percent,
+			String range_cash_mobile, String range_cash_pc,
+			String access_internet_time) {
+		try{
+			deliverMessageService.sendBatchSharedealModifyActionMessage(uid, message, canbeturnoff, owner_percent, range_cash_mobile, range_cash_pc, access_internet_time);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }
