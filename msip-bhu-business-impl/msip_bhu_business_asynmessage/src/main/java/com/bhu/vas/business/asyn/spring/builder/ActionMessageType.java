@@ -56,6 +56,7 @@ public enum ActionMessageType {
 	TOPICDeviceOfflineNotify("topic消息Device下线","topic cm offline","TF"),
 
 	BatchImportConfirm("出库库房设备导入","shipment import","BI"),
+	BatchSharedealModify("批量更新设备分成","batch sharedeal modify","BS"),
 	AgentDeviceClaimImport("代理商设备导入","agent device claim import","AI"),
 	AgentDeviceClaimUpdate("代理商导入更新", "agent device update ", "AU"),
 	

@@ -74,10 +74,17 @@ public class UserWalletFacadeService{
 		walletDetail.setPayments(userOAuthFacadeService.fetchRegisterIdentifies(uid,true));
 		return walletDetail;
 	}
+	/**
+	 * 对于同一uid进行synchronized操作
+	 * @param uid
+	 * @return
+	 */
 	private UserWallet userWallet(int uid){
 		UserValidateServiceHelper.validateUser(uid,this.userService);
-		UserWallet uwallet = userWalletService.getOrCreateById(uid);
-		return uwallet;
+		synchronized(lockObjectFetch(uid)){
+			UserWallet uwallet = userWalletService.getOrCreateById(uid);
+			return uwallet;
+		}
 	}
 	/**
 	 * 现金充值 充值零钱
