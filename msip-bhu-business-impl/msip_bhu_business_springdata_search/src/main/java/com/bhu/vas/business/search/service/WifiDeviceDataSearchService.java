@@ -114,4 +114,14 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, BusinessIndexDefine.WifiDevice.Type, 
 				message, notify);
 	}
+	
+	/**
+	 * 根据message动态条件进行scan的iterator
+	 * @param message
+	 * @param notify
+	 */
+	public void iteratorAll(String message, int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
+		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, BusinessIndexDefine.WifiDevice.Type, 
+				message, pageSize, notify);
+	}
 }
