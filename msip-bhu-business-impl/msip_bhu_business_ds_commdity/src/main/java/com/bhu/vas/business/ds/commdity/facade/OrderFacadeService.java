@@ -258,7 +258,7 @@ public class OrderFacadeService {
 		order.setUmac(umac);
 		order.setUmactype(umactype);
 		//order.setUid(uid);
-		//order.setPayment_type(payment_type);
+		order.setPayment_type(payment_type);
 		order.setContext(context);
 		order.setStatus(OrderStatus.NotPay.getKey());
 		
