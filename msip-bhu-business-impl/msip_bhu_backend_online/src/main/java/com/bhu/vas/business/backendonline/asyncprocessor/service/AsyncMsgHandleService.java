@@ -45,6 +45,7 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
@@ -1001,6 +1002,7 @@ public class AsyncMsgHandleService {
 				 * getOrig_swver())){
 				 * addDevices2SharedNetwork(-1,dto.getMac(),cmdPayloads); } }
 				 */
+				closeDevices2SharedNetworksWhenDeviceReset(dto.getMac());
 				addDevices2SharedNetwork(-1, dto.getMac());
 			}
 		} else {
@@ -1047,6 +1049,32 @@ public class AsyncMsgHandleService {
 
 	// private void add
 
+	
+	/**
+	 * 删除设备的访客网络，无需下发共享网络关闭指令，因为重置后设备本地共享网络被清空了
+	 * 更新索引并且物理删除访客网络记录
+	 * @param mac
+	 */
+	private void closeDevices2SharedNetworksWhenDeviceReset(String mac){
+		logger.info(String.format("Device[%s] SharedNetwork Clear when Reset",mac));
+		WifiDeviceSharedNetwork sharednetwork = sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().getById(mac);
+		if(sharednetwork == null){
+			logger.info(String.format("Device[%s] SharedNetwork Conf not exist",mac));
+			return;
+		}
+		SharedNetworkSettingDTO settingDto = sharednetwork.getInnerModel();
+		if(!settingDto.isOn() && !settingDto.isDs() && settingDto.getPsn() != null){//这种情况一般是代表提取设备的共享网络不存在建立的关闭的共享网络
+			//下发共享网络关闭指令，并更新索引
+			/*WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+			if(wifiDevice == null) return;
+			String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,
+					DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
+			daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);*/
+			wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(mac,null,null);
+			logger.info(String.format("Device[%s] SharedNetwork Clear Successfully!",mac));
+			sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().deleteById(mac);
+		}
+	}
 	/**
 	 * uid = -1的时候代表此设备未绑定
 	 * 
@@ -1055,9 +1083,8 @@ public class AsyncMsgHandleService {
 	 * @param cmdPayloads
 	 */
 	private void addDevices2SharedNetwork(int uid, String mac) {
-		{// 开启共享网络判定
-			logger.info(String.format("Device SharedNetwork Option[%s]",
-					BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start));
+		{// 开启共享网络开关判定
+			logger.info(String.format("Device SharedNetwork Option[%s]",BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start));
 			if (!BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start) {
 				return;
 			}

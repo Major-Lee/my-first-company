@@ -32,19 +32,43 @@ public class ConsoleChargingController extends BaseController {
     private IChargingRpcService chargingRpcService;
     
     @ResponseBody()
+    @RequestMapping(value = "/sharedeal/batch/modify", method = {RequestMethod.POST})
+    public void deviceBatch_Bind_Tag(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String message,
+            @RequestParam(required = false,value = "cbto",defaultValue="true") boolean canbeturnoff,
+            @RequestParam(required = false,value = "percent",defaultValue="0.70") double owner_percent,
+            @RequestParam(required = false,value = "rcm",defaultValue="0.1-0.3") String range_cash_mobile,
+            @RequestParam(required = false,value = "rcp",defaultValue="0.5-0.8") String range_cash_pc,
+            @RequestParam(required = false,value = "ait",defaultValue="0.70") String access_internet_time
+            ) {
+    	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, message, 
+    			canbeturnoff,owner_percent,
+    			range_cash_mobile,range_cash_pc,access_internet_time);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }  
+    
+    
+    @ResponseBody()
     @RequestMapping(value="/shipment/upload",method={RequestMethod.POST})
     public void uploadClaimAgentDevice(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam("file") CommonsMultipartFile file,
             @RequestParam(required = true) Integer uid,
-            @RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+            @RequestParam(required = false,value = "cc",defaultValue="86") int countrycode,
             @RequestParam(required = false,value = "mobileno") String mobileno_needbinded,
             @RequestParam(required = false) String sellor,
             @RequestParam(required = false) String partner,
             @RequestParam(required = false,value = "cbto",defaultValue="true") boolean canbeturnoff,
             @RequestParam(required = false,value = "el",defaultValue="false") boolean enterpriselevel,
-            @RequestParam(required = false,value="percent",defaultValue="0.70") double owner_percent,
+            @RequestParam(required = false,value = "percent",defaultValue="0.70") double owner_percent,
             @RequestParam(required = false) String remark
     ) {
     	if(file == null){

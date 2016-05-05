@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
-import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.asyn.spring.model.BatchImportConfirmDTO;
@@ -25,7 +24,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacade
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
-import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
@@ -36,19 +34,6 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
-	/*
-	@Resource
-	private SharedNetworksFacadeService sharedNetworksFacadeService;
-	
-	@Resource
-	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
-	
-	@Resource
-	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
-	
-	@Resource
-	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;*/
-	
 	@Resource
 	private UserDeviceFacadeService userDeviceFacadeService;
 	
@@ -58,9 +43,6 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 	@Resource
 	private BackendBusinessService backendBusinessService;
 	
-	/*@Resource
-	private IDaemonRpcService daemonRpcService;*/
-
 	@Override
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
@@ -95,12 +77,15 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			        }
 			        else{
 			        	String dmac = models.get(0).getId();
-			        	WifiDeviceSharedealConfigs userfulWifiDeviceSharedealConfigs = chargingFacadeService.userfulWifiDeviceSharedealConfigs(dmac);
+			        	chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded==null?-1:uid_willbinded.intValue(), dmac, importVto.getOwner_percent(), 
+			        			null, null, null, importVto.isCanbeturnoff(), false);
+			        	/*WifiDeviceSharedealConfigs userfulWifiDeviceSharedealConfigs = chargingFacadeService.userfulWifiDeviceSharedealConfigs(dmac);
+			        	userfulWifiDeviceSharedealConfigs.setBatchno(batchno);
 			        	userfulWifiDeviceSharedealConfigs.setOwner_percent(importVto.getOwner_percent());
 			        	userfulWifiDeviceSharedealConfigs.setManufacturer_percent(ArithHelper.round(ArithHelper.sub(1, importVto.getOwner_percent()), 2));
 			        	userfulWifiDeviceSharedealConfigs.setCanbe_turnoff(importVto.isCanbeturnoff());
 			        	userfulWifiDeviceSharedealConfigs.setRuntime_applydefault(false);
-			        	chargingFacadeService.getWifiDeviceSharedealConfigsService().update(userfulWifiDeviceSharedealConfigs);
+			        	chargingFacadeService.getWifiDeviceSharedealConfigsService().update(userfulWifiDeviceSharedealConfigs);*/
 			        	//TODO:增加索引更新 是否可关闭
 			        	DeviceCallbackDTO result = new DeviceCallbackDTO();
 			        	result.setMac(dmac);

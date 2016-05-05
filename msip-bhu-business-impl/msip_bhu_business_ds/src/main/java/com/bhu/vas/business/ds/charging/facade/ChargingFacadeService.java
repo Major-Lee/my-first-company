@@ -173,6 +173,71 @@ public class ChargingFacadeService {
 		return configs;
 	}
 	
+	/**
+	 * 
+	 * @param batchno
+	 * @param owner null <=0 >0 三种情况 null值代表忽略替换值内容
+	 * @param dmac
+	 * @param owner_percent
+	 * @param range_cash_mobile
+	 * @param range_cash_pc
+	 * @param access_internet_time
+	 * @param canbeturnoff
+	 * @param runtime_applydefault
+	 */
+	public void doWifiDeviceSharedealConfigsUpdate(String batchno,Integer owner,String dmac,
+			double owner_percent,
+			String range_cash_mobile,String range_cash_pc, String access_internet_time,
+			boolean canbeturnoff,boolean runtime_applydefault){
+		boolean insert = false;
+		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
+		if(configs == null){
+			insert = true;
+			configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
+			configs.setId(dmac);
+		}
+		if(StringUtils.isNotEmpty(batchno)){
+			configs.setBatchno(batchno);
+		}
+		if(owner != null){
+			if(owner <=0){
+				configs.setOwner(WifiDeviceSharedealConfigs.None_Owner);
+			}else{
+				configs.setOwner(owner);
+			}
+		}
+		if(owner_percent >=0 && owner_percent <=1){
+			configs.setOwner_percent(owner_percent);
+			configs.setManufacturer_percent(ArithHelper.round(ArithHelper.sub(1, owner_percent), 2));
+		}
+		if(StringUtils.isNotEmpty(range_cash_mobile)){
+			configs.setRange_cash_mobile(range_cash_mobile);
+		}
+		
+		if(StringUtils.isNotEmpty(range_cash_pc)){
+			configs.setRange_cash_pc(range_cash_pc);
+		}
+		
+		if(StringUtils.isNotEmpty(access_internet_time)){
+			configs.setAit_mobile(access_internet_time);
+			configs.setAit_pc(access_internet_time);
+		}
+		configs.setCanbe_turnoff(canbeturnoff);
+		configs.setRuntime_applydefault(runtime_applydefault);
+		
+		if(insert){
+			wifiDeviceSharedealConfigsService.insert(configs);
+		}else{
+			wifiDeviceSharedealConfigsService.update(configs);
+		}
+		/*WifiDeviceSharedealConfigs userfulWifiDeviceSharedealConfigs = this.userfulWifiDeviceSharedealConfigs(dmac);
+    	userfulWifiDeviceSharedealConfigs.setBatchno(batchno);
+    	userfulWifiDeviceSharedealConfigs.setOwner_percent(importVto.getOwner_percent());
+    	userfulWifiDeviceSharedealConfigs.setManufacturer_percent(ArithHelper.round(ArithHelper.sub(1, importVto.getOwner_percent()), 2));
+    	userfulWifiDeviceSharedealConfigs.setCanbe_turnoff(importVto.isCanbeturnoff());
+    	userfulWifiDeviceSharedealConfigs.setRuntime_applydefault(false);
+    	chargingFacadeService.getWifiDeviceSharedealConfigsService().update(userfulWifiDeviceSharedealConfigs);*/
+	}
 	/*public boolean canBeTurnoff(String dmac){
 		WifiDeviceSharedealConfigs configs = userfulWifiDeviceSharedealConfigs(dmac);
 		if(configs == null){
