@@ -1,4 +1,4 @@
-package com.bhu.vas.web.tag;
+package com.bhu.vas.web.console;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +20,8 @@ import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-@RequestMapping("/tag")
-public class TagController extends BaseController{
+@RequestMapping("/console/tag")
+public class ConsoleTagController extends BaseController{
     @Resource
     private ITagRpcService tagRpcService;
     
