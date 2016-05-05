@@ -322,17 +322,29 @@ public class VapEnumType {
 			return false;
 		}
 		
+		
+		//MassAP_Pro_201("TS_H201",	"AP201",DUT_soc,"MassAP Pro H201","MassAP Pro","双频室外AP","16M flash、128M 内存、9350+9592芯片"),
+		//MassAP_Pro_303("TS_H303",	"AP303",DUT_soc,"MassAP Pro H303","MassAP Pro","双频室外APv2","16M Flash、128M内存、9344+9380芯片"),
+		//MassAP_AC_Pro_305("TS_H305","AP305",DUT_soc,"MassAP AC Pro H305","MassAP AC Pro","双频室外11ac AP","16M Flash、128M内存、9344+9882芯片"),
+
 		//是否双频设备
 		public static boolean isDualBandByVersionPrefix(String prefix){
 			if(StringUtils.isEmpty(prefix)) return false;
-			if(uRouterAcTU_401.getPrefix().equals(prefix)){
+			if(uRouterAcTU_401.getPrefix().equals(prefix)
+					|| MassAP_Pro_201.getPrefix().equals(prefix)
+					|| MassAP_Pro_303.getPrefix().equals(prefix)
+					|| MassAP_AC_Pro_305.getPrefix().equals(prefix)){
 				return true;
 			}
 			return false;
 		}
 		public static boolean isDualBandByOrigSwver(String orig_swver){
 			if(StringUtils.isEmpty(orig_swver)) return false;
-			if(orig_swver.startsWith(uRouterAcTU_401.getPrefix())){
+			if(orig_swver.startsWith(uRouterAcTU_401.getPrefix())
+					|| orig_swver.startsWith(MassAP_Pro_201.getPrefix())
+					|| orig_swver.startsWith(MassAP_Pro_303.getPrefix())
+					|| orig_swver.startsWith(MassAP_AC_Pro_305.getPrefix())
+					){
 				return true;
 			}
 			return false;
