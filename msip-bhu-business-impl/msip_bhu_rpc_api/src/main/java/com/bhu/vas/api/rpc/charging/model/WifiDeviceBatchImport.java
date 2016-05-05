@@ -153,6 +153,8 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		vto.setStatus(this.getStatus());
 		vto.setSucceed(this.getSucceed());
 		vto.setFailed(this.getFailed());
+		vto.setCreated_at(DateTimeHelper.getDateTime(this.getCreated_at(), DateTimeHelper.FormatPattern0));
+		vto.setUpdated_at(DateTimeHelper.getDateTime(this.getCreated_at(), DateTimeHelper.FormatPattern0));
 		return vto;
 	}
 	
