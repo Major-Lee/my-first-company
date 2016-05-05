@@ -16,6 +16,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
+import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -44,7 +45,7 @@ public class TagFacadeRpcSerivce {
 	private void addTag(int uid, String tag) {
 
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tag);
+		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tag.trim());
 		int count = tagNameService.countByModelCriteria(mc);
 		if (count == 0) {
 			TagName tagName = new TagName();
@@ -58,42 +59,44 @@ public class TagFacadeRpcSerivce {
 
 		boolean filter = StringFilter(tag);
 
-		if (filter) {
+		if (tag!=null && filter) {
 
 			TagDevices tagDevices = tagDevicesService.getOrCreateById(mac);
-			boolean flag = tagDevices.getTag2ES().equals(tag);
 
-			if (!flag) {
-				tagDevices.setLast_operator(uid);
-				tagDevices.setExtension_content(tag);
-				tagDevicesService.update(tagDevices);
-				wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tag.trim());
-				addTag(uid, tag);
-			} else {
-				throw new Exception();
+			tagDevices.setLast_operator(uid);
+
+			String[] arrTemp = tag.split(",");
+			
+			for(String newTag : arrTemp){
+				addTag(uid, newTag);
 			}
-
+			tagDevices.replaceInnerModels(ArrayHelper.toSet(arrTemp));
+			tagDevicesService.update(tagDevices);
+			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tagDevices.getTag2ES());
 		} else {
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 
-	public void delTag(int uid,String mac) throws Exception{
+	public void delTag(int uid, String mac) throws Exception {
 		TagDevices tagDevices = tagDevicesService.getById(mac);
-		if (tagDevices !=null) {
-			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac,"");
+		if (tagDevices != null) {
+			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, "");
 			tagDevicesService.deleteById(mac);
-			
-	        ModelCriteria mc = new ModelCriteria();
-	        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("extension_content", tagDevices.getExtension_content());
-	        int count = tagDevicesService.countByModelCriteria(mc);
-	        
-	        if (count == 0) {
-	        	ModelCriteria tagMc = new ModelCriteria();
-	        	tagMc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag", tagDevices.getExtension_content());
-	            tagNameService.deleteByModelCriteria(tagMc);
-			}
-		}else{
+
+//			ModelCriteria mc = new ModelCriteria();
+//			mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("extension_content",
+//					tagDevices.getExtension_content());
+//			int count = tagDevicesService.countByModelCriteria(mc);
+//
+//			if (count == 0) {
+//				ModelCriteria tagMc = new ModelCriteria();
+//				tagMc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("tag",
+//						tagDevices.getExtension_content());
+//				tagNameService.deleteByModelCriteria(tagMc);
+//			}
+//			
+		} else {
 			throw new Exception();
 		}
 	}
@@ -118,19 +121,24 @@ public class TagFacadeRpcSerivce {
 	}
 
 	public boolean StringFilter(String str) {
-		String regex = "^[a-zA-Z0-9_\u4e00-\u9fa5]+$";
+		String regex = "^[a-zA-Z0-9,_\u4e00-\u9fa5]+$";
 		Pattern pattern = Pattern.compile(regex);
 		Matcher match = pattern.matcher(str);
 		boolean flag = match.matches();
 		return flag;
 	}
-	
-	public void deviceBatchBindTag(int uid, String message, String tag){
+
+	public void deviceBatchBindTag(int uid, String message, String tag) {
 		boolean filter = StringFilter(tag);
-		if (message !=null && tag != null && filter) {
-			addTag(uid,tag);
+		if (message != null && tag != null && filter) {
+			
+			String[] arrTemp = tag.split(",");
+			for(String newTag : arrTemp){
+				addTag(uid, newTag);
+			}
 			deliverMessageService.sentDeviceBatchBindTagActionMessage(uid, message, tag);
-		}else{
+			
+		} else {
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}

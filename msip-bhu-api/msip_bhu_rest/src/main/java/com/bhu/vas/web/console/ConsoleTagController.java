@@ -1,4 +1,4 @@
-package com.bhu.vas.web.tag;
+package com.bhu.vas.web.console;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +20,8 @@ import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-@RequestMapping("/tag")
-public class TagController extends BaseController{
+@RequestMapping("/console/tag")
+public class ConsoleTagController extends BaseController{
     @Resource
     private ITagRpcService tagRpcService;
     
@@ -86,6 +86,11 @@ public class TagController extends BaseController{
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) String mac) {
     	RpcResponseDTO<Boolean> rpcResult = tagRpcService.delTag(uid, mac);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
     } 
     
     /**

@@ -1,6 +1,7 @@
 package com.bhu.vas.business.ds.user.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -486,4 +487,71 @@ public class UserDeviceFacadeService {
 		}
 		return null;
 	}
+	
+	/**
+	 * 设备强行绑定功能
+	 * 如果设备已经被绑定，则解绑然后绑定uid
+	 * @param uid
+	 * @param mac
+	 * @return
+	 */
+	public void doForceBindDevices(int uid,List<String> dmacs) {
+		if(dmacs == null || dmacs.isEmpty()) throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		if(uid <= 0) throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
+    	//if(StringUtils.isEmpty(mac)) throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+		User user = userService.getById(uid);
+    	if(user == null)
+    		throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
+    	ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnIn("mac", dmacs);//.andColumnEqualTo("mac", mac);
+        userDeviceService.deleteByModelCriteria(mc);
+        for(String dmac:dmacs){
+        	UserDevice userDevice = new UserDevice();
+            userDevice.setId(new UserDevicePK(dmac, uid));
+            userDevice.setCreated_at(new Date());
+            userDeviceService.insert(userDevice);
+        }
+    	/*List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
+    	if()*/
+    	/*if(isDeviceAlreadyBinded(mac)){
+    		throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_ALREADY_BEBINDED);
+    	}else{
+    		UserDevice userDevice = new UserDevice();
+            userDevice.setId(new UserDevicePK(mac, uid));
+            userDevice.setCreated_at(new Date());
+            userDeviceService.insert(userDevice);
+            UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
+            userDeviceDTO.setMac(mac);
+            userDeviceDTO.setUid(uid);
+            return userDeviceDTO;
+    	}*/
+    }
+	
+    /*public Boolean doUnbindDevice(int uid,String mac) {
+    	if(uid <= 0) throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
+    	if(StringUtils.isEmpty(mac)) throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+        //TODO(bluesand):有没有被其他用户绑定，现在一台设备只能被一个客户端绑定。
+        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
+        for (UserDevice bindDevice : bindDevices) {
+            if (bindDevice.getUid() != uid) {
+            	throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER);
+            }
+        }
+        userDeviceService.deleteById(new UserDevicePK(mac, uid));
+        return true;
+    }*/
+
+    public boolean isDeviceAlreadyBinded(String mac) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("mac", mac);
+        return  userDeviceService.countByCommonCriteria(mc) > 0 ? true : false;
+    }
+    
+    public boolean doForceUnbindDevice(List<String> dmacs){
+    	if(dmacs == null || dmacs.isEmpty()) return false;
+    	ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnIn("mac", dmacs);//.andColumnEqualTo("mac", mac);
+        userDeviceService.deleteByModelCriteria(mc);
+        return true;
+    }
 }

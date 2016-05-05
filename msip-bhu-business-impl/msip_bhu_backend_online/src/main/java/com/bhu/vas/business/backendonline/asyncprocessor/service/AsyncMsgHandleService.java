@@ -1825,7 +1825,7 @@ public class AsyncMsgHandleService {
 	public void deviceBatchBindTag(String message) {
 		logger.info(String.format("deviceBatchBindTag message[%s]", message));
 		final BindTagDTO bindTagDto = JsonHelper.getDTO(message, BindTagDTO.class);
-		final String newTag = bindTagDto.getTag();
+		final String newTags = bindTagDto.getTag();
 		final int uid = bindTagDto.getUid();
 		
 		wifiDeviceDataSearchService.iteratorAll(bindTagDto.getMessage(),
@@ -1844,29 +1844,36 @@ public class AsyncMsgHandleService {
 						}
 
 						List<TagDevices> tagList = tagDevicesService.findByIds(macList, true, true);
-
+						
+						String[] arrTemp = newTags.split(",");
+						
 						int index = 0;
 						for (TagDevices tagDevices : tagList) {
 							if (tagDevices == null) {
 								TagDevices entity = new TagDevices();
 								entity.setId(macList.get(index));
 								entity.setLast_operator(uid);
-								entity.setExtension_content(newTag);;
+								
+								entity.replaceInnerModels(ArrayHelper.toSet(arrTemp));
+								
+								tagNameList.add(entity.getTag2ES());
+								
 								insertList.add(entity);
-								tagNameList.add(newTag);
+
 							}else{
 								tagDevices.setLast_operator(uid);
-								tagDevices.setExtension_content(newTag);;
+								
+								tagDevices.replaceInnerModels(ArrayHelper.toSet(arrTemp));
+								
 								upDateList.add(tagDevices);
-								tagNameList.add(newTag);
+								tagNameList.add(tagDevices.getTag2ES());
 							}
-							tagDevicesService.insertAll(insertList);
-							tagDevicesService.updateAll(upDateList);
-							
 							index++;
 						}
-						wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, tagNameList);
+						tagDevicesService.insertAll(insertList);
+						tagDevicesService.updateAll(upDateList);
 						
+						wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, tagNameList);
 					}
 				});
 	}
