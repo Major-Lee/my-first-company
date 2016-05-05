@@ -37,6 +37,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  * 
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90020 18911370020 agent1234 财务1
  * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90021 13910139032 139032 佟艳
+ * ./startupbuilder_bhu_userregister.sh RemoveAndADD 90022 13501261329 sjr1022 孙继茹
  * 
  * 
  销售
