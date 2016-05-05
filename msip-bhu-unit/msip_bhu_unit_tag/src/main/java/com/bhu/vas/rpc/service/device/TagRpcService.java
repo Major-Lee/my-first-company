@@ -76,4 +76,18 @@ public class TagRpcService implements ITagRpcService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> deviceBatchDelTag(int uid, String message) {
+		logger.info(
+				String.format("deviceBatchBindTag uid[%s] message[%s]",uid, message));
+		try {
+			tagFacadeRpcSerivce.deviceBatchDelTag(uid, message);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException i18nex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		}catch (Exception ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

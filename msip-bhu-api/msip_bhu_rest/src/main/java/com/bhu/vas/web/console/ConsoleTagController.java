@@ -116,4 +116,28 @@ public class ConsoleTagController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
     }   
+    
+    
+    /**
+     * 批量删除标签
+     * @param request
+     * @param response
+     * @param uid
+     * @param message
+     * @param tag
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/batch/del", method = {RequestMethod.POST})
+    public void device_Batch_Del_Tag(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String message) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.deviceBatchDelTag(uid, message);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }   
 }

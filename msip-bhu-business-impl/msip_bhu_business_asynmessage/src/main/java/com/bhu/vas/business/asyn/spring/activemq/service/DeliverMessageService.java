@@ -55,6 +55,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
 import com.bhu.vas.business.asyn.spring.model.tag.BindTagDTO;
+import com.bhu.vas.business.asyn.spring.model.tag.DelTagDTO;
 
 
 public class DeliverMessageService {
@@ -559,6 +560,13 @@ public class DeliverMessageService {
 		dto.setUid(uid);
 		dto.setMessage(message);
 		dto.setTag(tag);
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+
+	public void sentDeviceBatchDelTagActionMessage(int uid,String message){
+		DelTagDTO dto = new DelTagDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 }

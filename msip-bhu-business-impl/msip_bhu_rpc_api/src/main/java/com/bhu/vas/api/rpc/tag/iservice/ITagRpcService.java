@@ -30,5 +30,7 @@ public interface ITagRpcService {
      * @return
      */
     RpcResponseDTO<Boolean> delTag(int uid, String mac);
+    
+	RpcResponseDTO<Boolean> deviceBatchDelTag(int uid, String message);
 
 }	
