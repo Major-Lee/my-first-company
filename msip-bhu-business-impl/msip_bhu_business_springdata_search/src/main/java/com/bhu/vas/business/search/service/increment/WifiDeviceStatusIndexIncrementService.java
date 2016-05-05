@@ -264,4 +264,22 @@ public class WifiDeviceStatusIndexIncrementService{
 		}
 		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMaps, false, true, true);
 	}
+	
+	/**
+	 * 用户设置绑定的设备的tags multi
+	 * 变更涉及的更改索引字段是
+	 * 1) d_tags
+	 * @param id 设备mac
+	 * @param d_tag 设备tags
+	 */
+	public void bindDTagsMultiUpdIncrement(List<String> ids, String d_tag){
+		logger.info(String.format("bindDTagsMultiUpdIncrement Request ids [%s] d_tag [%s]", ids, d_tag));
+		if(ids == null || ids.isEmpty()) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TAGS.getName(), d_tag);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
+		
+		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, false, true, true);
+	}
 }

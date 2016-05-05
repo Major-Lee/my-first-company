@@ -142,4 +142,13 @@ public class TagFacadeRpcSerivce {
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
+	
+	public void deviceBatchDelTag(int uid, String message) {
+		if (message != null) {
+			deliverMessageService.sentDeviceBatchDelTagActionMessage(uid, message);
+		} else {
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
+		}
+	}
+	
 }
