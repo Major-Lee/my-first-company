@@ -77,6 +77,7 @@ import com.bhu.vas.business.asyn.spring.model.WifiDevicesModuleStyleChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.tag.BindTagDTO;
+import com.bhu.vas.business.asyn.spring.model.tag.DelTagDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
@@ -179,13 +180,13 @@ public class AsyncMsgHandleService {
 
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
-	
+
 	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
 
 	@Resource
 	private TagDevicesService tagDevicesService;
-	
+
 	/**
 	 * wifi设备上线 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理,
 	 * 防止多线程情况下清除有效移动设备 (backend) 4:统计增量 wifi设备的daily新增设备或活跃设备增量 (backend)
@@ -219,17 +220,23 @@ public class AsyncMsgHandleService {
 					pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
 				}
 				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
-				if(upgrade != null && upgrade.isForceDeviceUpgrade()){
-					//如果是指定的版本出厂版本 并且 第一次注册创建时间超过指定定义的天数,立刻升级
-					if(BusinessRuntimeConfiguration.isInitialDeviceFirmwareVersion(upgrade.getCurrentDVB()) 
-							&& !DateTimeHelper.isTimeDaysRecent(wifiDevice.getCreated_at().getTime(), BusinessRuntimeConfiguration.Device_Firmware_ForceUpdateImmediately_AfterDays)){
-						payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP));
-					}else{
-						// modify by EdmondLee@20160419 针对某个灰度指定版本的时间点为x，设备上线时，如果发现当前时间点y>x+24小时（暂定），将会触发设备立即升级。降低产品运营成本
-						if(upgrade.needImmediatelyUpgrade()){
-							payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP));
-						}else{
-							payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime));
+				if (upgrade != null && upgrade.isForceDeviceUpgrade()) {
+					// 如果是指定的版本出厂版本 并且 第一次注册创建时间超过指定定义的天数,立刻升级
+					if (BusinessRuntimeConfiguration.isInitialDeviceFirmwareVersion(upgrade.getCurrentDVB())
+							&& !DateTimeHelper.isTimeDaysRecent(wifiDevice.getCreated_at().getTime(),
+									BusinessRuntimeConfiguration.Device_Firmware_ForceUpdateImmediately_AfterDays)) {
+						payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, StringHelper.EMPTY_STRING_GAP,
+								StringHelper.EMPTY_STRING_GAP));
+					} else {
+						// modify by EdmondLee@20160419
+						// 针对某个灰度指定版本的时间点为x，设备上线时，如果发现当前时间点y>x+24小时（暂定），将会触发设备立即升级。降低产品运营成本
+						if (upgrade.needImmediatelyUpgrade()) {
+							payloads.add(upgrade.buildUpgradeCMD(dto.getMac(), 0, StringHelper.EMPTY_STRING_GAP,
+									StringHelper.EMPTY_STRING_GAP));
+						} else {
+							payloads.add(
+									upgrade.buildUpgradeCMD(dto.getMac(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime,
+											WifiDeviceHelper.Upgrade_Default_EndTime));
 						}
 					}
 				}
@@ -254,16 +261,22 @@ public class AsyncMsgHandleService {
 						SharedNetworkSettingDTO sharedNetwork = sharedNetworksFacadeService
 								.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac(), true, true);
 						ParamSharedNetworkDTO psn = sharedNetwork.getPsn();
-						if(sharedNetwork != null){
-							if(sharedNetwork.isOn()  && psn != null && SharedNetworkType.SafeSecure.getKey().equals(psn.getNtype())){//如果是开启的 重新下发开启指令
-								logger.info(String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
-								//更新索引，下发指令
-								wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),psn.getTemplate());
-								//psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
-								//生成下发指令
-								String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
-										dto.getMac(), -1,JsonHelper.getJSONString(psn),
-										DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),
+						if (sharedNetwork != null) {
+							if (sharedNetwork.isOn() && psn != null
+									&& SharedNetworkType.SafeSecure.getKey().equals(psn.getNtype())) {// 如果是开启的
+																										// 重新下发开启指令
+								logger.info(
+										String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
+								// 更新索引，下发指令
+								wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),
+										psn.getTemplate());
+								// psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+								// 生成下发指令
+								String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(
+										OperationCMD.ModifyDeviceSetting, OperationDS.DS_SharedNetworkWifi_Start,
+										dto.getMac(), -1,
+										JsonHelper.getJSONString(psn), DeviceStatusExchangeDTO
+												.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),
 										deviceCMDGenFacadeService);
 								payloads.add(sharedNetworkCMD);
 							}
@@ -299,27 +312,28 @@ public class AsyncMsgHandleService {
 			afterDeviceOnlineThenCmdDown(dto.getMac(), dto.isNeedLocationQuery(), payloads);
 
 			boolean needUpdate = false;
-			//boolean needClaim = wifiDevice.needClaim();
-			try{
-				//设备上线后认领 去除认领代理商
-				/*if(needClaim){
-					DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
-					AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
-					int claim_ret = agentDeviceClaimService.claimAgentDevice(agentDeviceClaim, wifiDevice.getId(),
-							parser.toDeviceUnitTypeIndex());
-					if (claim_ret != 0) {// -1 or >0
-						wifiDevice.setAgentuser(claim_ret);
-						needUpdate = true;
-						// 如果认领存在代理商信息 增量设备代理商信息索引
-						if (wifiDevice.getAgentuser() > 0) {
-							User agentUser = userService.getById(wifiDevice.getAgentuser());
-							wifiDeviceIndexIncrementProcesser.agentUpdIncrement(wifiDevice.getId(),
-									agentDeviceClaim.getImport_id(), agentUser);
-						}
-					}
-				}*/
-				//根据wan_ip获取设备的网络运营商信息
-				if(dto.isWanIpChanged() && StringUtils.isNotEmpty(wifiDevice.getWan_ip())){
+			// boolean needClaim = wifiDevice.needClaim();
+			try {
+				// 设备上线后认领 去除认领代理商
+				/*
+				 * if(needClaim){ DeviceVersion parser =
+				 * DeviceVersion.parser(wifiDevice.getOrig_swver());
+				 * AgentDeviceClaim agentDeviceClaim =
+				 * agentDeviceClaimService.getById(wifiDevice.getSn()); int
+				 * claim_ret =
+				 * agentDeviceClaimService.claimAgentDevice(agentDeviceClaim,
+				 * wifiDevice.getId(), parser.toDeviceUnitTypeIndex()); if
+				 * (claim_ret != 0) {// -1 or >0
+				 * wifiDevice.setAgentuser(claim_ret); needUpdate = true; //
+				 * 如果认领存在代理商信息 增量设备代理商信息索引 if (wifiDevice.getAgentuser() > 0) {
+				 * User agentUser =
+				 * userService.getById(wifiDevice.getAgentuser());
+				 * wifiDeviceIndexIncrementProcesser.agentUpdIncrement(
+				 * wifiDevice.getId(), agentDeviceClaim.getImport_id(),
+				 * agentUser); } } }
+				 */
+				// 根据wan_ip获取设备的网络运营商信息
+				if (dto.isWanIpChanged() && StringUtils.isNotEmpty(wifiDevice.getWan_ip())) {
 					String carrier = IpLookup.lookup_carrier(wifiDevice.getWan_ip());
 					if (!StringUtils.isEmpty(carrier) && !carrier.equals(wifiDevice.getCarrier())) {
 						// 可能会引起设备在线状态数据不正常 不过考虑到只有网络运营商发生变化才会更新 可以忽略不计
@@ -1107,12 +1121,13 @@ public class AsyncMsgHandleService {
 							if (rdmacs == null || rdmacs.isEmpty()) {
 								return;
 							}
-							for(String mac:rdmacs){
-								//current.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
-								//生成下发指令
-								String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, 
-										mac, CMDBuilder.AutoGen,JsonHelper.getJSONString(current),
-										DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),
+							for (String mac : rdmacs) {
+								// current.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+								// 生成下发指令
+								String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,
+										OperationDS.DS_SharedNetworkWifi_Start, mac, CMDBuilder.AutoGen,
+										JsonHelper.getJSONString(current), DeviceStatusExchangeDTO
+												.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),
 										deviceCMDGenFacadeService);
 								daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 							}
@@ -1573,10 +1588,10 @@ public class AsyncMsgHandleService {
 
 		userDeviceBindOperateSyskeySync(dto.getMac(), dto.getUid());
 		{
-			//进行分成owner字段重置
+			// 进行分成owner字段重置
 			chargingFacadeService.wifiDeviceBindedNotify(dto.getMac(), dto.getUid());
-			//给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
-			addDevices2SharedNetwork(dto.getUid(),dto.getMac());
+			// 给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
+			addDevices2SharedNetwork(dto.getUid(), dto.getMac());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s] successful", message));
 	}
@@ -1592,10 +1607,10 @@ public class AsyncMsgHandleService {
 		deviceFacadeService.removeMobilePresent(dto.getUid(), dto.getMac());
 		userDeviceBindOperateSyskeySync(dto.getMac(), null);
 		{
-			//设备分成owner字段重置
+			// 设备分成owner字段重置
 			chargingFacadeService.wifiDeviceUnBindedNotify(dto.getMac());
-			//给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
-			addDevices2SharedNetwork(-1,dto.getMac());
+			// 给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
+			addDevices2SharedNetwork(-1, dto.getMac());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
 	}
@@ -1854,44 +1869,44 @@ public class AsyncMsgHandleService {
 		final BindTagDTO bindTagDto = JsonHelper.getDTO(message, BindTagDTO.class);
 		final String newTags = bindTagDto.getTag();
 		final int uid = bindTagDto.getUid();
-		
+
 		wifiDeviceDataSearchService.iteratorAll(bindTagDto.getMessage(),
 				new IteratorNotify<Page<WifiDeviceDocument>>() {
 					@Override
 					public void notifyComming(Page<WifiDeviceDocument> pages) {
-						
+
 						List<String> macList = new ArrayList<String>();
 						List<String> tagNameList = new ArrayList<String>();
-						
+
 						List<TagDevices> insertList = new ArrayList<TagDevices>();
 						List<TagDevices> upDateList = new ArrayList<TagDevices>();
-						
+
 						for (WifiDeviceDocument doc : pages) {
 							macList.add(doc.getD_mac());
 						}
 
 						List<TagDevices> tagList = tagDevicesService.findByIds(macList, true, true);
-						
+
 						String[] arrTemp = newTags.split(",");
-						
+
 						int index = 0;
 						for (TagDevices tagDevices : tagList) {
 							if (tagDevices == null) {
 								TagDevices entity = new TagDevices();
 								entity.setId(macList.get(index));
 								entity.setLast_operator(uid);
-								
+
 								entity.replaceInnerModels(ArrayHelper.toSet(arrTemp));
-								
+
 								tagNameList.add(entity.getTag2ES());
-								
+
 								insertList.add(entity);
 
-							}else{
+							} else {
 								tagDevices.setLast_operator(uid);
-								
+
 								tagDevices.replaceInnerModels(ArrayHelper.toSet(arrTemp));
-								
+
 								upDateList.add(tagDevices);
 								tagNameList.add(tagDevices.getTag2ES());
 							}
@@ -1899,8 +1914,29 @@ public class AsyncMsgHandleService {
 						}
 						tagDevicesService.insertAll(insertList);
 						tagDevicesService.updateAll(upDateList);
-						
+
 						wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, tagNameList);
+					}
+				});
+	}
+
+	public void deviceBatchDelTag(String message) {
+		logger.info(String.format("deviceBatchDelTag message[%s]", message));
+		final DelTagDTO delTagDto = JsonHelper.getDTO(message, DelTagDTO.class);
+
+		wifiDeviceDataSearchService.iteratorAll(delTagDto.getMessage(),
+				new IteratorNotify<Page<WifiDeviceDocument>>() {
+					@Override
+					public void notifyComming(Page<WifiDeviceDocument> pages) {
+						
+						List<String> macList = new ArrayList<String>();
+						for (WifiDeviceDocument doc : pages) {
+							macList.add(doc.getD_mac());
+						}
+						
+						List<TagDevices> entities = tagDevicesService.findByIds(macList, true, true);
+						tagDevicesService.deleteAll(entities);
+						wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, "");
 					}
 				});
 	}

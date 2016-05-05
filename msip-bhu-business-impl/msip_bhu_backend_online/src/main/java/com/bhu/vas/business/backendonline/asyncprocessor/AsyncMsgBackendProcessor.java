@@ -197,6 +197,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case DeviceBatchBindTag:
 							asyncMsgHandleService.deviceBatchBindTag(message);
 							break;
+						case DeviceBatchDelTag:
+							asyncMsgHandleService.deviceBatchDelTag(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

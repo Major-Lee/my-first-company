@@ -65,6 +65,7 @@ public enum ActionMessageType {
 	SearchResultExportFile("增值平台搜索结果导出文件", "search result export file", "SE"),
 	
 	DeviceBatchBindTag("设备批量绑定标签", "device batch bind tag", "DT"),
+	DeviceBatchDelTag("设备批量删除标签", "device batch del tag", "BD"),
 	;
 	
 	static Map<String, ActionMessageType> allActionMessageTypes;
