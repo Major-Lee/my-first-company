@@ -110,7 +110,8 @@ public class ConsoleServiceHandler {
 				public void notifyComming(Page<WifiDeviceDocument> pages) {
 					for(WifiDeviceDocument doc : pages){
 						//logger.info("pages item:"+doc);
-						lines.addAll(outputOrderStringByItem(doc.getId(), dto.getStart_date(), dto.getEnd_date()));
+						ModelCriteria mc = builderOrderModelCriteriaByMac(doc.getId(), dto.getStart_date(), dto.getEnd_date());
+						lines.addAll(outputOrderStringByItem(mc));
 					}
 				}
 			});
@@ -118,8 +119,13 @@ public class ConsoleServiceHandler {
 		else if(OrderSearchResultExportFileDTO.Macs_MessageType == messagetype){
 			String[] macs_array = message.split(StringHelper.COMMA_STRING_GAP);
 			for(String mac : macs_array){
-				lines.addAll(outputOrderStringByItem(mac, dto.getStart_date(), dto.getEnd_date()));
+				ModelCriteria mc = builderOrderModelCriteriaByMac(mac, dto.getStart_date(), dto.getEnd_date());
+				lines.addAll(outputOrderStringByItem(mc));
 			}
+		}
+		else if(OrderSearchResultExportFileDTO.All_MessageType == messagetype){
+			ModelCriteria mc = builderOrderModelCriteriaByAll(dto.getStart_date(), dto.getEnd_date());
+			lines.addAll(outputOrderStringByItem(mc));
 		}
 		
 		logger.info(String.format("ExportOrderFile searchResultExportFile end message[%s]", jsonmessage));
@@ -161,7 +167,7 @@ public class ConsoleServiceHandler {
 //				fw.append(formatStr(columns));
 //			}
 			fw.newLine();
-			//logger.info("lines:"+lines);
+			logger.info("lines:"+lines.size());
 			for(String item : lines){
 				fw.append(item);
 				fw.newLine();
@@ -247,14 +253,8 @@ public class ConsoleServiceHandler {
 		return bw.toString();
 	}
 	
-	/**
-	 * 输出一条设备的打赏数据的记录
-	 * @param doc
-	 * @throws IOException
-	 */
-	private List<String> outputOrderStringByItem(String mac, String start_date, String end_date){
-		List<String> mac_orderlines = new ArrayList<String>();
-		
+	
+	private ModelCriteria builderOrderModelCriteriaByMac(String mac, String start_date, String end_date){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		criteria.andColumnEqualTo("mac", mac)
@@ -268,8 +268,48 @@ public class ConsoleServiceHandler {
     	mc.setPageNumber(1);
     	mc.setPageSize(200);
     	mc.setOrderByClause("created_at desc");
+    	return mc;
+	}
+	
+	private ModelCriteria builderOrderModelCriteriaByAll(String start_date, String end_date){
+		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		criteria.andColumnEqualTo("status", OrderStatus.DeliverCompleted.getKey());
+		if(StringUtils.isNotEmpty(start_date)){
+			criteria.andColumnGreaterThanOrEqualTo("created_at", start_date);
+		}
+		if(StringUtils.isNotEmpty(end_date)){
+			criteria.andColumnLessThanOrEqualTo("created_at", end_date);
+		}
+    	mc.setPageNumber(1);
+    	mc.setPageSize(200);
+    	mc.setOrderByClause("mac, created_at desc");
+    	return mc;
+	}
+	
+	/**
+	 * 输出一条设备的打赏数据的记录
+	 * @param doc
+	 * @throws IOException
+	 */
+	private List<String> outputOrderStringByItem(ModelCriteria modelCriteria){
+		List<String> mac_orderlines = new ArrayList<String>();
+		
+/*		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		criteria.andColumnEqualTo("mac", mac)
+				.andColumnEqualTo("status", OrderStatus.DeliverCompleted.getKey());
+		if(StringUtils.isNotEmpty(start_date)){
+			criteria.andColumnGreaterThanOrEqualTo("created_at", start_date);
+		}
+		if(StringUtils.isNotEmpty(end_date)){
+			criteria.andColumnLessThanOrEqualTo("created_at", end_date);
+		}
+    	mc.setPageNumber(1);
+    	mc.setPageSize(200);
+    	mc.setOrderByClause("created_at desc");*/
 		EntityIterator<String, Order> it = new KeyBasedEntityBatchIterator<String,Order>(String.class
-				,Order.class, orderService.getEntityDao(), mc);
+				,Order.class, orderService.getEntityDao(), modelCriteria);
 		while(it.hasNext()){
 			List<Order> orders = it.next();
 			List<String> orderids = new ArrayList<String>();

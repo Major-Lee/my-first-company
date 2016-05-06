@@ -203,7 +203,7 @@ public class SocialFacadeRpcService {
      */
     public void handsetMeet(Long uid, String hd_mac, String hd_macs, String bssid, String ssid,
                                String lat, String lon, String addr) {
-        if (hd_mac == null || bssid == null || ssid == null){
+        if ((hd_mac == null && uid ==null) || bssid == null || ssid == null){
             throw  new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
         }
 

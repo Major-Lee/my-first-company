@@ -594,12 +594,14 @@ public class DeviceRestBusinessFacadeService {
 	}
 	
 	public RpcResponseDTO<String> exportOrderResult(int uid, String message, int messagetype, String start_date, String end_date){
-		if(StringUtils.isEmpty(message)){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
-		}
-		if(OrderSearchResultExportFileDTO.SearchCondition_MessageType == messagetype){
-			if(!message.startsWith(StringHelper.LEFT_BRACE_STRING)){
+		if(OrderSearchResultExportFileDTO.All_MessageType != messagetype){
+			if(StringUtils.isEmpty(message)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+			}
+			if(OrderSearchResultExportFileDTO.SearchCondition_MessageType == messagetype){
+				if(!message.startsWith(StringHelper.LEFT_BRACE_STRING)){
+					throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+				}
 			}
 		}
 		
