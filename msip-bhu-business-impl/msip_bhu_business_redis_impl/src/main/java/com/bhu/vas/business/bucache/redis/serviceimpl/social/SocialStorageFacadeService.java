@@ -44,7 +44,9 @@ public class SocialStorageFacadeService  {
 
     public static List<HandsetMeetDTO> getHandsetMeets(String uid, String hd_mac, String bssid) {
         String meets = SocialHandsetMeetHashService.getInstance().hgetHandsetMeets(uid, hd_mac, bssid);
-        return JsonHelper.getDTOList(meets,HandsetMeetDTO.class);
+        List<HandsetMeetDTO> list = new ArrayList<HandsetMeetDTO>();
+        list.add(JsonHelper.getDTO(meets,HandsetMeetDTO.class));
+        return list;
     }
 
     public static HandsetMeetDTO getLastHandsetMeetWithBssid(String hd_mac_self, String hd_mac, String bssid) {
