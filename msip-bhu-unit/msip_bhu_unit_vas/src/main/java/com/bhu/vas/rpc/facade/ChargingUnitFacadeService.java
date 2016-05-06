@@ -33,6 +33,7 @@ public class ChargingUnitFacadeService {
 			double sharedeal_owner_percent, 
 			boolean canbeturnoff,
 			boolean enterpriselevel,
+			String range_cash_mobile,String range_cash_pc,String access_internet_time,
 			String remark) {
 		try{
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(
@@ -41,6 +42,7 @@ public class ChargingUnitFacadeService {
 							sharedeal_owner_percent,
 							canbeturnoff, 
 							enterpriselevel,
+							range_cash_mobile, range_cash_pc, access_internet_time,
 							remark));
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -50,6 +52,18 @@ public class ChargingUnitFacadeService {
 		}
 	}
 
+	public RpcResponseDTO<BatchImportVTO> doCancelDeviceRecord(int uid,String batchno) {
+		try{
+			BatchImportVTO importVTO = chargingFacadeService.doCancelDeviceRecord(uid, batchno);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(importVTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 	public RpcResponseDTO<BatchImportVTO> doConfirmDeviceRecord(int uid,String batchno) {
 		try{
 			BatchImportVTO importVTO = chargingFacadeService.doConfirmDeviceRecord(uid, batchno);

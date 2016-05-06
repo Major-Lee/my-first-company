@@ -55,7 +55,9 @@ public interface ISocialRpcService {
      * @param hd_mac
      * @param nick
      */
-    boolean modifyHandset(long uid, String hd_mac, String nick);
+    public boolean modifyHandset(long uid, String hd_mac, String nick);
+    
+	public boolean modifyHandset_new(long uid, String hd_mac, String nick);
 
     /**
      * 获取wifi详情
@@ -151,7 +153,6 @@ public interface ISocialRpcService {
      * @return
      */
     public RpcResponseDTO<List<CommentedWifiVTO>> fetchUserCommentWifiList(String uid, String hd_mac);
-
 
 
 

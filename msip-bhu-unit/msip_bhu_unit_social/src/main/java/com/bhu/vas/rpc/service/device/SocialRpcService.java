@@ -70,6 +70,14 @@ public class SocialRpcService implements ISocialRpcService {
         return socialFacadeRpcService.modifyHandset(uid, hd_mac, nick);
 
     }
+    
+    @Override
+    public boolean modifyHandset_new(long uid, String hd_mac, String nick) {
+        logger.info(String.format("modifyHandset uid[%s] hd_mac[%s] nick[%s]",
+                uid, hd_mac, nick));
+        return socialFacadeRpcService.modifyHandset_new(uid, hd_mac, nick);
+
+    }
 
     @Override
     public WifiVTO fetchWifiDetail(Long uid, String bssid) {

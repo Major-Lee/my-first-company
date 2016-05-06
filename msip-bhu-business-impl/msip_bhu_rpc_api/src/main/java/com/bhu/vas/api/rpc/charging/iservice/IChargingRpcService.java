@@ -15,7 +15,9 @@ public interface IChargingRpcService {
 			double sharedeal_owner_percent,
 			boolean canbeturnoff,
 			boolean enterpriselevel,
+			String range_cash_mobile,String range_cash_pc,String access_internet_time,
             String remark);
+	public RpcResponseDTO<BatchImportVTO> doCancelDeviceRecord(int uid,String batchno);
 	public RpcResponseDTO<BatchImportVTO> doConfirmDeviceRecord(int uid,String batchno);
 	public RpcResponseDTO<TailPage<BatchImportVTO>> doPages(int uid,int status,int pageNo,int pageSize);
 }

@@ -61,6 +61,7 @@ public class ChargingFacadeService {
     		double sharedeal_owner_percent,
     		boolean canbeturnoff,
     		boolean enterpriselevel,
+    		String range_cash_mobile,String range_cash_pc,String access_internet_time,
     		String remark){
     	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
     	if(StringUtils.isNotEmpty(mobileno)){
@@ -81,6 +82,18 @@ public class ChargingFacadeService {
     	batch_import.setRemark(remark);
     	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTED_FILE);
     	wifiDeviceBatchImportService.insert(batch_import);
+    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno());
+    }
+    
+    public BatchImportVTO doCancelDeviceRecord(int uid,String import_id) {
+    	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
+    	WifiDeviceBatchImport batch_import = wifiDeviceBatchImportService.getById(import_id);
+    	if(batch_import == null){
+    		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"BatchImport",import_id});
+    	}
+    	batch_import.setImportor(uid);
+    	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTING_CANCEL);
+    	wifiDeviceBatchImportService.update(batch_import);
     	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno());
     }
     
@@ -169,6 +182,20 @@ public class ChargingFacadeService {
 			else
 				configs.doRuntimeInit(dmac,bindUid.intValue());
 			configs = wifiDeviceSharedealConfigsService.insert(configs);
+		}
+		return configs;
+	}
+	
+	/**
+	 * 只用于显示，不进行数据创建
+	 * @param dmac
+	 * @return
+	 */
+	public WifiDeviceSharedealConfigs userfulWifiDeviceSharedealConfigsJust4View(String dmac){
+		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
+		if(configs == null){
+			configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
+			configs.setId(dmac);
 		}
 		return configs;
 	}

@@ -5,6 +5,7 @@ public class DeviceDetailVTO implements java.io.Serializable{
 	private DeviceBaseVTO dbv;
 	private DevicePresentVTO dpv;
 	private DeviceOperationVTO dov;
+	private DeviceSharedealVTO dsv;
 	public DeviceBaseVTO getDbv() {
 		return dbv;
 	}
@@ -22,6 +23,12 @@ public class DeviceDetailVTO implements java.io.Serializable{
 	}
 	public void setDov(DeviceOperationVTO dov) {
 		this.dov = dov;
+	}
+	public DeviceSharedealVTO getDsv() {
+		return dsv;
+	}
+	public void setDsv(DeviceSharedealVTO dsv) {
+		this.dsv = dsv;
 	}
 	
 }

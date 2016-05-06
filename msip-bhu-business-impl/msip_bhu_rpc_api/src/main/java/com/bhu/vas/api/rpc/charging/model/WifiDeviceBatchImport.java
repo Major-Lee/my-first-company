@@ -17,10 +17,18 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 @SuppressWarnings("serial")
 public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequenceGenable{
 	//ID 格式为 yyyyMMdd-longsequence
+	
+	//取消导入
+	public static final int STATUS_IMPORTING_CANCEL = -1;
+	//导入上传中
 	public static final int STATUS_IMPORTING_FILE = 0;
+	//导入上传成功
 	public static final int STATUS_IMPORTED_FILE = 1;
+	//确定导入批次
 	public static final int STATUS_CONFIRMED_DOING = 2;
+	//导入内容正在处理中
 	public static final int STATUS_CONTENT_IMPORTING = 3;
+	//导入内容处理成功
 	public static final int STATUS_CONTENT_IMPORTED = 4;
 	//文件存储路径
 	private String filepath;
@@ -34,6 +42,9 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	private double owner_percent;
 	private boolean canbeturnoff;
 	private boolean enterpriselevel;
+	private String range_cash_mobile;
+	private String range_cash_pc;
+	private String access_internet_time;
 	//private int total;
 	private int succeed;
 	private int failed;
@@ -149,6 +160,9 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		//vto.setManufacturer_percent(manufacturer_percent);
 		vto.setCanbeturnoff(this.isCanbeturnoff());
 		vto.setEnterpriselevel(this.isEnterpriselevel());
+		vto.setAit(this.getAccess_internet_time());
+		vto.setRcm(this.getRange_cash_mobile());
+		vto.setRcp(this.getRange_cash_pc());
 		vto.setRemark(this.getRemark());
 		vto.setStatus(this.getStatus());
 		vto.setSucceed(this.getSucceed());
@@ -164,5 +178,22 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	public void setCanbeturnoff(boolean canbeturnoff) {
 		this.canbeturnoff = canbeturnoff;
 	}
-	
+	public String getRange_cash_mobile() {
+		return range_cash_mobile;
+	}
+	public void setRange_cash_mobile(String range_cash_mobile) {
+		this.range_cash_mobile = range_cash_mobile;
+	}
+	public String getRange_cash_pc() {
+		return range_cash_pc;
+	}
+	public void setRange_cash_pc(String range_cash_pc) {
+		this.range_cash_pc = range_cash_pc;
+	}
+	public String getAccess_internet_time() {
+		return access_internet_time;
+	}
+	public void setAccess_internet_time(String access_internet_time) {
+		this.access_internet_time = access_internet_time;
+	}
 }
