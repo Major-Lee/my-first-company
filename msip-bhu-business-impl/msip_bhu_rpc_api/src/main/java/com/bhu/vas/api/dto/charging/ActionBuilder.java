@@ -123,10 +123,15 @@ public class ActionBuilder {
 	}
 	
 	
-	public static HandsetOnlineAction builderHandsetOnlineAction(String hmac,String mac,long ts){
+	public static HandsetOnlineAction builderHandsetOnlineAction(String hmac,String mac,
+			//终端上线时间，终端名称，终端ip，终端mac
+			String hname,String hip,
+			long ts){
 		HandsetOnlineAction action = new HandsetOnlineAction();
 		action.setHmac(hmac);
 		action.setMac(mac);
+		action.setHname(hname);
+		action.setHip(hip);
 		action.setTs(ts);
 		return action;
 	}
@@ -139,10 +144,13 @@ public class ActionBuilder {
 		return action;
 	}
 	
-	public static HandsetOfflineAction builderHandsetOfflineAction(String hmac,String mac,long tx_bytes,long rx_bytes,long ts){
+	public static HandsetOfflineAction builderHandsetOfflineAction(String hmac,String mac,
+			String huptime,
+			long tx_bytes,long rx_bytes,long ts){
 		HandsetOfflineAction action = new HandsetOfflineAction();
 		action.setHmac(hmac);
 		action.setMac(mac);
+		action.setHuptime(huptime);
 		action.setTx_bytes(tx_bytes);
 		action.setRx_bytes(rx_bytes);
 		action.setTs(ts);
