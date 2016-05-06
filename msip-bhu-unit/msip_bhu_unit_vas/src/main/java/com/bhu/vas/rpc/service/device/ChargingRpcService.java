@@ -31,6 +31,12 @@ public class ChargingRpcService  implements IChargingRpcService{
 		return chargingUnitFacadeService.doInputDeviceRecord(uid,countrycode, mobileno,sharedeal_manufacturer_percent,canbeturnoff, remark);
 	}*/
 
+    @Override
+	public RpcResponseDTO<BatchImportVTO> doCancelDeviceRecord(int uid,String batchno) {
+		logger.info(String.format("doCancelDeviceRecord uid:%s batchno:%s",uid, batchno));
+		return chargingUnitFacadeService.doCancelDeviceRecord(uid, batchno);
+	}
+    
 	@Override
 	public RpcResponseDTO<BatchImportVTO> doConfirmDeviceRecord(int uid,String batchno) {
 		logger.info(String.format("doConfirmDeviceRecord uid:%s batchno:%s",uid, batchno));
@@ -48,9 +54,12 @@ public class ChargingRpcService  implements IChargingRpcService{
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,
 			int countrycode, String bmobileno, String sellor, String partner,
 			double sharedeal_owner_percent, boolean canbeturnoff,
-			boolean enterpriselevel, String remark) {
-		logger.info(String.format("doInputDeviceRecord uid:%s countrycode:%s bmobileno:%s sellor:%s partner:%s sharedeal_owner_percent:%s canbeturnoff:%s enterpriselevel:%s remark:%s",uid,countrycode, bmobileno,sellor,partner,sharedeal_owner_percent,canbeturnoff,enterpriselevel, remark));
-		return chargingUnitFacadeService.doInputDeviceRecord(uid,countrycode, bmobileno,sellor,partner,sharedeal_owner_percent,canbeturnoff,enterpriselevel, remark);
+			boolean enterpriselevel, 
+			String range_cash_mobile,String range_cash_pc,String access_internet_time,
+			String remark) {
+		logger.info(String.format("doInputDeviceRecord uid:%s countrycode:%s bmobileno:%s sellor:%s partner:%s sharedeal_owner_percent:%s canbeturnoff:%s enterpriselevel:%s range_cash_mobile:%s range_cash_pc:%s access_internet_time:%s remark:%s",
+				uid,countrycode, bmobileno,sellor,partner,sharedeal_owner_percent,canbeturnoff,enterpriselevel, range_cash_mobile, range_cash_pc, access_internet_time, remark));
+		return chargingUnitFacadeService.doInputDeviceRecord(uid,countrycode, bmobileno,sellor,partner,sharedeal_owner_percent,canbeturnoff,enterpriselevel, range_cash_mobile, range_cash_pc, access_internet_time, remark);
 
 	}
 

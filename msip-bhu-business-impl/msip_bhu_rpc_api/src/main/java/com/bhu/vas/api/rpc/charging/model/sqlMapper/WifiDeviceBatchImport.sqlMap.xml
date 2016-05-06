@@ -15,7 +15,9 @@
 	  <result property="owner_percent" column="owner_percent"/>
 	  <result property="canbeturnoff" column="canbeturnoff"/>
 	  <result property="enterpriselevel" column="enterpriselevel"/>
-	  
+	  <result property="range_cash_mobile" column="range_cash_mobile"/>
+	  <result property="range_cash_pc" column="range_cash_pc"/>
+	  <result property="access_internet_time" column="access_internet_time"/>
 	  <result property="succeed" column="succeed"/>
 	  <result property="failed" column="failed"/>
 	  <result property="remark" column="remark"/>
@@ -40,6 +42,9 @@
 	    	owner_percent,
 	    	canbeturnoff,
 	    	enterpriselevel,
+	    	range_cash_mobile,
+	    	range_cash_pc,
+	    	access_internet_time,
 	    	succeed,
 	    	failed,
 	    	remark,
@@ -58,6 +63,9 @@
 	    	owner_percent,
 	    	canbeturnoff,
 	    	enterpriselevel,
+	    	range_cash_mobile,
+	    	range_cash_pc,
+	    	access_internet_time,
 	    	succeed,
 	    	failed,
 	    	remark,
@@ -77,6 +85,9 @@
 			#{owner_percent},
 			#{canbeturnoff},
 			#{enterpriselevel},
+			#{range_cash_mobile},
+	    	#{range_cash_pc},
+	    	#{access_internet_time},
 			#{succeed},
 			#{failed},
 			#{remark},
@@ -94,6 +105,9 @@
 	    	owner_percent = #{owner_percent},
 	    	canbeturnoff = #{canbeturnoff},
 	    	enterpriselevel = #{enterpriselevel},
+	    	range_cash_mobile = #{range_cash_mobile},
+	    	range_cash_pc = #{range_cash_pc},
+	    	access_internet_time = #{access_internet_time},
 	    	succeed = #{succeed},
 	    	failed = #{failed},
 	    	remark = #{remark},
