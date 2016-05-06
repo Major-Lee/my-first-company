@@ -209,12 +209,6 @@ echo 'deploy msip_bhu_unit_vas successfully @'$Deploy2ComponentServerBrook
 #rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/classes/com/         root@$Deploy2ComponentServerBrook:/BHUData/apps/msip_bhu_unit_agent/classes/com/
 #echo 'deploy msip_bhu_unit_agent successfully @'$Deploy2ComponentServerBrook
 
-echo 'deploy msip_bhu_unit_tag to ...@'$Deploy2ComponentServerBrook
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_tag/lib/spring*.RELEASE.jar  root@$Deploy2ComponentServerBrook:/BHUData/apps/msip_bhu_unit_tag/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_tag/lib/msip_*.jar           root@$Deploy2ComponentServerBrook:/BHUData/apps/msip_bhu_unit_tag/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_tag/classes/com/             root@$Deploy2ComponentServerBrook:/BHUData/apps/msip_bhu_unit_tag/classes/com/
-echo 'deploy msip_bhu_unit_tag successfully @'$Deploy2ComponentServerBrook
-
 echo '发布业务组件成功'$Deploy2ComponentServerBrook
 
 echo '准备发布其他服务到'$Deploy2ComponentServerSanji
@@ -253,6 +247,13 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/lib/spring*.RELEAS
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/lib/msip_*.jar               root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_dataimport/libs/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/classes/com/                 root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_dataimport/bin/com/
 echo 'deploy msip_bhu_dataimport successfully @'$Deploy2ComponentServerSanji
+
+echo 'deploy msip_bhu_unit_tag to ...@'$Deploy2ComponentServerSanji
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_tag/lib/spring*.RELEASE.jar  root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_tag/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_tag/lib/msip_*.jar           root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_tag/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_tag/classes/com/             root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_tag/classes/com/
+echo 'deploy msip_bhu_unit_tag successfully @'$Deploy2ComponentServerSanji
+
 echo '发布业务组件成功'$Deploy2ComponentServerSanji
 
 echo '准备发布其他服务到'$Deploy2ComponentServerBrook
