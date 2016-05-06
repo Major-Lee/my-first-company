@@ -2,6 +2,7 @@ package com.bhu.vas.api.dto.charging;
 
 public class HandsetOfflineAction extends ChargingAction{
 	private String hmac;
+	private String huptime;
 	private long tx_bytes;
 	private long rx_bytes;
 	public String getHmac() {
@@ -26,6 +27,12 @@ public class HandsetOfflineAction extends ChargingAction{
 		this.rx_bytes = rx_bytes;
 	}
 
+	public String getHuptime() {
+		return huptime;
+	}
+	public void setHuptime(String huptime) {
+		this.huptime = huptime;
+	}
 	@Override
 	public String getAct() {
 		return ActionBuilder.ActionMode.HandsetOffline.getPrefix();
