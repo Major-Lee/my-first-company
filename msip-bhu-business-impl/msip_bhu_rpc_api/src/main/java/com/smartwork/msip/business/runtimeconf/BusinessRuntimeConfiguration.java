@@ -158,7 +158,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         }  
     }  
 	
-	public static String SharedNetworkWifi_Default_SafeSecure_Open_resource ="isdspeed.qq.com,pay.qq.com,weixin.qq.com,jspay.qq.com,bhuwifi.com,bhunetworks.com,midas.gtimg.cn,alipay.com,123.57.26.170,hao.bhuwifi.com,api.unipay.qq.com,un.winasdaq.com";
+	public static String SharedNetworkWifi_Default_SafeSecure_Open_resource ="isdspeed.qq.com,pay.qq.com,weixin.qq.com,jspay.qq.com,bhuwifi.com,bhunetworks.com,midas.gtimg.cn,alipay.com,123.57.26.170,hao.bhuwifi.com,api.unipay.qq.com,un.winasdaq.com,cnzz.com";
 	public static String SharedNetworkWifi_Default_Uplink_Open_resource = "bhuwifi.com,bhunetworks.com";
 	public static String SharedNetworkWifi_Default_Redirect_url = "www.bhuwifi.com";
 	public static String SharedNetworkWifi_Default_Remote_auth_url = "http://123.56.227.18:9158/portal/default/reward/index_before.html";
