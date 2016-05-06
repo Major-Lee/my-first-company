@@ -187,6 +187,20 @@ public class ChargingFacadeService {
 	}
 	
 	/**
+	 * 只用于显示，不进行数据创建
+	 * @param dmac
+	 * @return
+	 */
+	public WifiDeviceSharedealConfigs userfulWifiDeviceSharedealConfigsJust4View(String dmac){
+		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
+		if(configs == null){
+			configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
+			configs.setId(dmac);
+		}
+		return configs;
+	}
+	
+	/**
 	 * 
 	 * @param batchno
 	 * @param owner null <=0 >0 三种情况 null值代表忽略替换值内容,需要去查询设备的绑定用户
