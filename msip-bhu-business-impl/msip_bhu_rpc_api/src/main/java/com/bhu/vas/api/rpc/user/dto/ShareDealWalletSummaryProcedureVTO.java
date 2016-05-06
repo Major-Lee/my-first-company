@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.user.dto;
 
+import com.smartwork.msip.cores.helper.ArithHelper;
+
 
 @SuppressWarnings("serial")
 public class ShareDealWalletSummaryProcedureVTO implements java.io.Serializable{
@@ -25,7 +27,12 @@ public class ShareDealWalletSummaryProcedureVTO implements java.io.Serializable{
 	}
 
 	public double getToday_cash() {
-		return today_cash;
+		if(today_cash > 0.00d){
+			return ArithHelper.round(today_cash, 2);
+		}else{
+			return 0.00d;
+		}
+		//return today_cash;
 	}
 
 	public void setToday_cash(double today_cash) {
@@ -41,7 +48,12 @@ public class ShareDealWalletSummaryProcedureVTO implements java.io.Serializable{
 	}
 
 	public double getYesterday_cash() {
-		return yesterday_cash;
+		if(yesterday_cash > 0.00d){
+			return ArithHelper.round(yesterday_cash, 2);
+		}else{
+			return 0.00d;
+		}
+		//return yesterday_cash;
 	}
 
 	public void setYesterday_cash(double yesterday_cash) {
@@ -57,7 +69,12 @@ public class ShareDealWalletSummaryProcedureVTO implements java.io.Serializable{
 	}
 
 	public double getTotal_cash() {
-		return total_cash;
+		if(total_cash > 0.00d){
+			return ArithHelper.round(total_cash, 2);
+		}else{
+			return 0.00d;
+		}
+		//return total_cash;
 	}
 
 	public void setTotal_cash(double total_cash) {

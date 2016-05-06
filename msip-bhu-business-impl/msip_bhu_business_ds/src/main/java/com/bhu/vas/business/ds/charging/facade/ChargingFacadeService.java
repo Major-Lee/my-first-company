@@ -176,7 +176,7 @@ public class ChargingFacadeService {
 	/**
 	 * 
 	 * @param batchno
-	 * @param owner null <=0 >0 三种情况 null值代表忽略替换值内容
+	 * @param owner null <=0 >0 三种情况 null值代表忽略替换值内容,需要去查询设备的绑定用户
 	 * @param dmac
 	 * @param owner_percent
 	 * @param range_cash_mobile
@@ -204,6 +204,15 @@ public class ChargingFacadeService {
 				configs.setOwner(WifiDeviceSharedealConfigs.None_Owner);
 			}else{
 				configs.setOwner(owner);
+			}
+		}else{
+			if(insert){//获取设备owner
+				Integer bindUid = userDeviceService.fetchBindUid(dmac);
+				if(bindUid == null || bindUid.intValue()<=0){
+					configs.setOwner(WifiDeviceSharedealConfigs.None_Owner);
+				}else{
+					configs.setOwner(bindUid.intValue());
+				}
 			}
 		}
 		if(owner_percent >=0 && owner_percent <=1){
