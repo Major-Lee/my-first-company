@@ -78,6 +78,9 @@ public class ChargingFacadeService {
     	batch_import.setOwner_percent(ArithHelper.round(sharedeal_owner_percent, 2));
     	batch_import.setCanbeturnoff(canbeturnoff);
     	batch_import.setEnterpriselevel(enterpriselevel);
+    	batch_import.setRange_cash_mobile(range_cash_mobile);
+    	batch_import.setRange_cash_pc(range_cash_pc);
+    	batch_import.setAccess_internet_time(access_internet_time);
     	//batch_import.setFilepath(filepath_suffix);
     	batch_import.setRemark(remark);
     	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTED_FILE);
