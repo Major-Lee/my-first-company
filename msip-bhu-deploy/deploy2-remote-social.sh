@@ -200,9 +200,9 @@ echo '准备发布业务组件到'$Deploy2Server
 #echo 'deploy msip_bhu_unit_agent successfully @'$Deploy2ServerSunny
 
 echo 'deploy msip_bhu_unit_social to ...@'$Deploy2ServerSunny
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_social/lib/spring*.RELEASE.jar      root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_unit_social/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_social/lib/msip_*.jar       root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_unit_social/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_social/classes/com/         root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_unit_social/classes/com/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_social/lib/spring*.RELEASE.jar      root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_unit_social/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_social/lib/msip_*.jar       root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_unit_social/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_social/classes/com/         root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_unit_social/classes/com/
 echo 'deploy msip_bhu_unit_social successfully @'$Deploy2ServerSunny
 
 
@@ -250,9 +250,9 @@ echo '准备发布其他服务到'$Deploy2Server0
 # echo 'deploy msip_bhu_spark_task successfully @'$Deploy2ServerSunny
 
 echo 'deploy msip_bhu_backend_social to ...@'$Deploy2ServerSunny
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_social/lib/spring*.RELEASE.jar    root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_backend_social/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_social/lib/msip_*.jar   root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_backend_social/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_social/classes/com/     root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_backend_social/bin/com/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_social/lib/spring*.RELEASE.jar    root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_backend_social/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_social/lib/msip_*.jar   root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_backend_social/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_social/classes/com/     root@$Deploy2ServerSunny:/BHUData/apps/msip_bhu_backend_social/bin/com/
 echo 'deploy msip_bhu_backend_social successfully @'$Deploy2ServerSunny
 
 echo '发布其他服务成功'
@@ -271,9 +271,9 @@ echo '发布其他服务成功'
 #echo 'deploy msip_bhu_agent_rest successfully @'$Deploy2ServerWeb
 
 echo 'deploy msip_bhu_social_rest to ...@'$Deploy2ServerWeb
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_social_rest/WEB-INF/lib/spring*.RELEASE.jar    root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/lib/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_social_rest/WEB-INF/lib/msip_*.jar   root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/lib/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_social_rest/WEB-INF/classes/com/     root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/classes/com/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_social_rest/WEB-INF/lib/spring*.RELEASE.jar    root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/lib/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_social_rest/WEB-INF/lib/msip_*.jar   root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/lib/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_social_rest/WEB-INF/classes/com/     root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_social_rest/WEB-INF/classes/com/
 echo 'deploy msip_bhu_social_rest successfully @'$Deploy2ServerWeb
 
 echo '发布rest api服务成功'
