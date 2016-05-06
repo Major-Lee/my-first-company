@@ -155,19 +155,21 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 					}
 					if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt()==7){//终端上下线
 						//DynamicLogWriter.doLogger(headers.getMac(), payload);
-						List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload, 
-								HandsetDeviceDTO.class);
+						List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload,HandsetDeviceDTO.class);
 						if(dtos != null && !dtos.isEmpty()){
 							HandsetDeviceDTO fristDto = dtos.get(0);
 							if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
 								DynamicLogWriter.doLogger(headers.getMac(), 
 										ActionBuilder.toJsonHasPrefix(
-												ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),headers.getMac(), System.currentTimeMillis())));
+												ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),headers.getMac(),
+														fristDto.getDhcp_name(),fristDto.getIp(),
+														System.currentTimeMillis())));
 							}
 							else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
 								DynamicLogWriter.doLogger(headers.getMac(), 
 										ActionBuilder.toJsonHasPrefix(
 												ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),headers.getMac(),
+														fristDto.getUptime(),
 														Long.parseLong(fristDto.getTx_bytes()),Long.parseLong(fristDto.getRx_bytes()), System.currentTimeMillis())));
 							}
 							else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
