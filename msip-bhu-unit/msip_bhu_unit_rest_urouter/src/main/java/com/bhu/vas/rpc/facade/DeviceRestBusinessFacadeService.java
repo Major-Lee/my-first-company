@@ -32,6 +32,7 @@ import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.asyn.spring.model.OrderSearchResultExportFileDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
@@ -596,6 +597,12 @@ public class DeviceRestBusinessFacadeService {
 		if(StringUtils.isEmpty(message)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
 		}
+		if(OrderSearchResultExportFileDTO.SearchCondition_MessageType == messagetype){
+			if(!message.startsWith(StringHelper.LEFT_BRACE_STRING)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+			}
+		}
+		
 		String[] exportFileInfo = generateExportFileInfo(uid);
 		deliverMessageService.sendOrderSearchResultExportFileMessage(uid, message, messagetype, exportFileInfo[0], start_date, end_date);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(exportFileInfo[1]);
