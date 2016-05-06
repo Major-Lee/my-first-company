@@ -6,6 +6,7 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 public class OrderSearchResultExportFileDTO extends ActionDTO {
 	public static final int SearchCondition_MessageType = 1;
 	public static final int Macs_MessageType = 2;
+	public static final int All_MessageType = 3;
 	
 	private int uid;
 	//条件数据
