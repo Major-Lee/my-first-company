@@ -19,12 +19,15 @@ import com.bhu.vas.di.op.batchimport.frommanufacturing.notify.ExcelElementNotify
  */
 public class ManufacturerDeviceDataImportOP {
 	///Users/Edmond/gospace
-	public static void main(String[] argv) {//throws ElasticsearchException, ESException, IOException, ParseException{
+	public static void main(String[] argv) throws InterruptedException {//throws ElasticsearchException, ESException, IOException, ParseException{
 		if(argv.length != 1) {
 			System.err.println(String.format("pls input xlsx filepath[%s]", "/BHUData/batchimport/manufacturer/uRouter-20160426-双翼.xlsx"));
 			return;
 		}
 		final String filepath = argv[0];;//"/Users/Edmond/gospace/batchimport/manufacturer/uRouter-20160426-test.xlsx";//argv[0];//
+		
+		System.out.println("xlsx file:"+filepath);
+		Thread.sleep(10*1000);
 		final String Default_orig_vendor = "BHU";
 		final String Default_orig_swver_prefix = "P06V0.0.0Build0000_";
 		//final String filepath = "/BHUData/batchimport/manufacturer/uRouter-20160426-双翼.xlsx";
