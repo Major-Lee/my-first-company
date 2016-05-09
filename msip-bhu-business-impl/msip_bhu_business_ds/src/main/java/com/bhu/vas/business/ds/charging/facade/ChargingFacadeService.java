@@ -399,4 +399,8 @@ public class ChargingFacadeService {
 	public WifiDeviceBatchDetailService getWifiDeviceBatchDetailService() {
 		return wifiDeviceBatchDetailService;
 	}
+
+	public UserService getUserService() {
+		return userService;
+	}
 }

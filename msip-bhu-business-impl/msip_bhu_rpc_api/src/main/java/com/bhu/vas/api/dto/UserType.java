@@ -9,8 +9,10 @@ public enum UserType {
 	Normal(1,"N","普通用户"),
 	AgentNormal(10,"A","分销商用户"),
 	AgentFinance(15,"F","财务用户"),
+	
 	AgentWarehouseManager(20,"W","仓储用户"),
 	AgentSellor(30,"S","销售用户"),
+	
 	
 	//商业 wifi 管理帐号 系统创建
 	BusinessAdmin(40,"BA","商业 wifi 管理员",false),
@@ -18,6 +20,9 @@ public enum UserType {
 	BusinessNormal(41,"BN","商业 wifi 小型运营商客户"),
 	//自运营的商户
 	BusinessSelfor(42,"BS","自运营的商户"),
+	
+	//Comprehensive management department
+	SelfCmdUser(50,"S","我司综合管理部门用户"),
 	;
 	//private String index;
 	private int index;
