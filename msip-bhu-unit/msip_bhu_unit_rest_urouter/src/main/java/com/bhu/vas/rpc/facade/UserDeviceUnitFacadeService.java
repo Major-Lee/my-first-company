@@ -323,15 +323,15 @@ public class UserDeviceUnitFacadeService {
     
 
 	/**
-	 * 获取用户绑定的设备，设备状态只有在线和不在线
+	 * 获取用户绑定的设备，设备状态只有在线和不在线(兼容旧版app的接口)
 	 * @param uid
 	 * @param dut
 	 * @return
 	 */
-	public List<UserDeviceDTO>  fetchBindDevices(int uid, String dut) {
+	public List<UserDeviceDTO>  fetchBindDevices(int uid, String dut, int pageNo, int pageSize) {
 
 		List<UserDeviceDTO> dtos = new ArrayList<UserDeviceDTO>();
-		List<WifiDeviceDocument> searchDocuments = wifiDeviceDataSearchService.searchListByUidAndDut(uid, dut);
+		List<WifiDeviceDocument> searchDocuments = wifiDeviceDataSearchService.searchListByUidAndDut(uid, dut, pageNo, pageSize);
 
 		if (searchDocuments != null && !searchDocuments.isEmpty()) {
 			for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
@@ -356,6 +356,64 @@ public class UserDeviceUnitFacadeService {
 		}
 
 		return dtos;
+	}
+	
+	/**
+	 * 获取用户绑定的设备，设备状态只有在线和不在线
+	 * @param uid
+	 * @param dut
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserDeviceDTO>> fetchPageBindDevices(int uid, String dut, int pageNo, int pageSize) {
+		try{
+			int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut, searchPageNo, pageSize);
+			
+			List<UserDeviceDTO> vtos = null;
+			int total = 0;
+			if(search_result != null){
+				total = (int)search_result.getTotalElements();//.getTotal();
+				if(total == 0){
+					vtos = Collections.emptyList();
+				}else{
+					List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+					if(searchDocuments.isEmpty()) {
+						vtos = Collections.emptyList();
+					}else{
+						vtos = new ArrayList<UserDeviceDTO>();
+						for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
+							UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
+							userDeviceDTO.setMac(wifiDeviceDocument.getD_mac());
+							userDeviceDTO.setUid(Integer.parseInt(wifiDeviceDocument.getU_id()));
+							userDeviceDTO.setDevice_name(wifiDeviceDocument.getU_dnick());
+							userDeviceDTO.setWork_mode(wifiDeviceDocument.getD_workmodel());
+							userDeviceDTO.setOrig_model(wifiDeviceDocument.getD_origmodel());
+							userDeviceDTO.setAdd(wifiDeviceDocument.getD_address());
+							userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
+							userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
+							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
+							if ("1".equals(wifiDeviceDocument.getD_online())) {
+								userDeviceDTO.setOnline(true);
+								userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+										.presentOnlineSize(wifiDeviceDocument.getD_mac()));
+							}
+							userDeviceDTO.setVer(wifiDeviceDocument.getD_origswver());
+							vtos.add(userDeviceDTO);
+						}
+					}
+				}
+			}else{
+				vtos = Collections.emptyList();
+			}
+			TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 
 

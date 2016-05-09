@@ -65,11 +65,11 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param d_dut
 	 * @return
 	 */
-	public List<WifiDeviceDocument> searchListByUidAndDut(Integer u_id, String d_dut){
+	public List<WifiDeviceDocument> searchListByUidAndDut(Integer u_id, String d_dut, int pageNo, int pageSize){
 		if(u_id == null) return Collections.emptyList();
 		
 		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithDut(u_id, d_dut);
-		return super.searchByConditionMessage(scm);
+		return super.searchListByConditionMessage(scm, pageNo, pageSize);
 	}
 	/**
 	 * 根据设备共享网络类型进行分页数据查询

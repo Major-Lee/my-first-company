@@ -116,9 +116,9 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     }
 
     @Override
-    public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid, String dut) {
+    public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid, String dut, int pageNo, int pageSize) {
         logger.info(String.format("fetchBindDevices with uid[%s] dut[%s]", uid, dut));
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceUnitFacadeService.fetchBindDevices(uid, dut));
+        return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceUnitFacadeService.fetchBindDevices(uid, dut, pageNo, pageSize));
     }
 
     @Override
@@ -225,6 +225,12 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 	public RpcResponseDTO<TailPage<UserDeviceCloudDTO>> devicePagesByUid(Integer uid, String dut, int pageNo, int pageSize){
     	logger.info(String.format("devicePagesByUid with uid[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, dut, pageNo, pageSize));
 		return userDeviceUnitFacadeService.devicePagesByUid(uid, dut, pageNo, pageSize);
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<UserDeviceDTO>> fetchPageBindDevices(int uid, String dut, int pageNo, int pageSize) {
+		logger.info(String.format("fetchPageBindDevices with uid[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, dut, pageNo, pageSize));
+		return userDeviceUnitFacadeService.fetchPageBindDevices(uid, dut, pageNo, pageSize);
 	}
     
 }

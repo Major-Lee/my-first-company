@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.common.lang3.StringUtils;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -939,6 +940,28 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	System.out.println("test0019SearchTest" + result.getTotalElements());
 		for(WifiDeviceDocument doc : result){
     	    System.out.println("test0019SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
+    	}
+	}
+	
+	@Test
+	public void test0020SearchTest(){
+		SearchConditionPack pack_must = null;
+
+		SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), "TU");
+		pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_d_dut);
+
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		
+		SearchConditionSort sc_sortByOnine = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.WifiDevice.
+				Field.D_ONLINE.getName(), SearchConditionSortPattern.Sort.getPattern(),
+				SortOrder.DESC, null);
+		scm.addSorts(sc_sortByOnine);
+		
+		List<WifiDeviceDocument> searchDocuments = wifiDeviceDataSearchService.searchListByConditionMessage(scm, 0, 20);
+    	System.out.println("test0020SearchTest" + searchDocuments.size());
+		for(WifiDeviceDocument doc : searchDocuments){
+    	    System.out.println("test0020SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
     	}
 	}
 	
