@@ -67,9 +67,9 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * @return
 	 * @throws ElasticsearchIllegalArgumentException
 	 */
-	public List<MODEL> searchByConditionMessage(String message) 
+	public List<MODEL> searchListByConditionMessage(String message, int pageNo, int pageSize) 
 			throws ElasticsearchIllegalArgumentException{
-		return searchByConditionMessage(getSearchConditionMessageDTO(message));
+		return searchListByConditionMessage(getSearchConditionMessageDTO(message), pageNo, pageSize);
 	}
 	
 	/**
@@ -119,9 +119,9 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 	 * @param searchConditionMessage
 	 * @return
 	 */
-	public List<MODEL> searchByConditionMessage(SearchConditionMessage searchConditionMessage) {
+	public List<MODEL> searchListByConditionMessage(SearchConditionMessage searchConditionMessage, int pageNo, int pageSize) {
 		try{
-			SearchQuery searchQuery = builderSearchQueryByConditionMessage(searchConditionMessage);
+			SearchQuery searchQuery = builderSearchQueryByConditionMessage(searchConditionMessage, pageNo, pageSize);
 			if(searchQuery != null){
 				return getElasticsearchTemplate().queryForList(searchQuery, entityClass);
 			}

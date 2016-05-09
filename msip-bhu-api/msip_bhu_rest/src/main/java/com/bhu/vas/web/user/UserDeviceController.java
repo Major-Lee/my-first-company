@@ -6,8 +6,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.vto.device.UserDeviceVTO;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,10 +19,12 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
+import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -139,9 +139,11 @@ public class UserDeviceController extends BaseController {
     @ResponseBody()
     @RequestMapping(value="/fetchbinded",method={RequestMethod.POST})
     public void listBindDevice(HttpServletResponse response,
-                               @RequestParam(required = true, value = "uid") int uid,
-                               @RequestParam(required = false, defaultValue = VapEnumType.DUT_uRouter, value = "dut") String dut) {
-        RpcResponseDTO<List<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchBindDevices(uid, dut);
+                @RequestParam(required = true, value = "uid") int uid,
+                @RequestParam(required = false, defaultValue = VapEnumType.DUT_uRouter, value = "dut") String dut,
+        		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+        		@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
+    	RpcResponseDTO<List<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchBindDevices(uid, dut, pageNo, pageSize);
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
@@ -149,6 +151,26 @@ public class UserDeviceController extends BaseController {
         }
     }
 
+    /**
+     * 获取用户绑定分页列表,默认为urouter
+     * @param response
+     * @param uid
+     * @param dut
+     */
+    @ResponseBody()
+    @RequestMapping(value="/fetchbinded_pages",method={RequestMethod.POST})
+    public void pageBindDevice(HttpServletResponse response,
+                @RequestParam(required = true, value = "uid") int uid,
+                @RequestParam(required = false, defaultValue = VapEnumType.DUT_uRouter, value = "dut") String dut,
+        		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+        		@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
+    	RpcResponseDTO<TailPage<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchPageBindDevices(uid, dut, pageNo, pageSize);
+        if (!rpcResult.hasError()) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
 
     /**
      * 新增云平台接口

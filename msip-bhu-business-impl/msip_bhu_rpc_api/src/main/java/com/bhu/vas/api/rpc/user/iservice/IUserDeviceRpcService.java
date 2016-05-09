@@ -35,7 +35,8 @@ public interface IUserDeviceRpcService {
     @Deprecated
     RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid);
 
-    RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid, String dut);
+    RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid, String dut, int pageNo, int pageSize);
+    RpcResponseDTO<TailPage<UserDeviceDTO>> fetchPageBindDevices(int uid, String dut, int pageNo, int pageSize);
 
     UserDeviceTCPageVTO pageBindDevicesCustom(Integer uid, Integer u_id,
 			String d_online, String s_content, int pageNo, int pageSize);
