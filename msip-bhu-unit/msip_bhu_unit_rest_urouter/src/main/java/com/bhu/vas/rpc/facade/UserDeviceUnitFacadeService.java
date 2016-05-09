@@ -334,9 +334,9 @@ public class UserDeviceUnitFacadeService {
 	 * @return
 	 */
 	public List<UserDeviceDTO>  fetchBindDevices(int uid, String dut, int pageNo, int pageSize) {
-
+		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
 		List<UserDeviceDTO> dtos = new ArrayList<UserDeviceDTO>();
-		List<WifiDeviceDocument> searchDocuments = wifiDeviceDataSearchService.searchListByUidAndDut(uid, dut, pageNo, pageSize);
+		List<WifiDeviceDocument> searchDocuments = wifiDeviceDataSearchService.searchListByUidAndDut(uid, dut, searchPageNo, pageSize);
 
 		if (searchDocuments != null && !searchDocuments.isEmpty()) {
 			for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
