@@ -16,6 +16,9 @@ public class BatchImportVTO implements java.io.Serializable{
 	private double owner_percent;
 	private boolean canbeturnoff;
 	private boolean enterpriselevel;
+	private String rcp;
+	private String rcm;
+	private String ait;
 	private int succeed;
 	private int failed;
 	private String remark;
@@ -151,6 +154,24 @@ public class BatchImportVTO implements java.io.Serializable{
 	}
 	public void setUpdated_at(String updated_at) {
 		this.updated_at = updated_at;
+	}
+	public String getRcp() {
+		return rcp;
+	}
+	public void setRcp(String rcp) {
+		this.rcp = rcp;
+	}
+	public String getRcm() {
+		return rcm;
+	}
+	public void setRcm(String rcm) {
+		this.rcm = rcm;
+	}
+	public String getAit() {
+		return ait;
+	}
+	public void setAit(String ait) {
+		this.ait = ait;
 	}
 	
 }

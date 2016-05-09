@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.social.SocialRemarkDTO;
 import com.bhu.vas.api.dto.social.WifiActionDTO;
 import com.bhu.vas.api.helper.SocialActionType;
 import com.bhu.vas.api.rpc.social.dto.SocialStatisManufatorDTO;
@@ -24,8 +23,6 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.social.HandsetMeetDTO;
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.social.model.HandsetUser;
 import com.bhu.vas.api.rpc.social.model.WifiComment;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -347,6 +344,25 @@ public class SocialFacadeRpcService {
      * @return
      */
     public boolean modifyHandset(long uid, String hd_mac, String nick) {
+
+//        SocialCareFacadeService.moidfyNick(uid, hd_mac, nick);
+        this.follow(uid, hd_mac);
+        WifiDeviceHandsetAliasService.getInstance().hsetHandsetAlias((int)uid, hd_mac, nick);
+        return true;
+    }
+    
+    /**
+     * 修改终端信息,暂时只修改终端用户昵称
+     *
+     * .
+     *	
+     *	(新)
+     * @param uid
+     * @param hd_mac
+     * @param nick
+     * @return
+     */
+    public boolean modifyHandset_new(long uid, String hd_mac, String nick) {
 
 //        SocialCareFacadeService.moidfyNick(uid, hd_mac, nick);
 //        this.follow(uid, hd_mac);

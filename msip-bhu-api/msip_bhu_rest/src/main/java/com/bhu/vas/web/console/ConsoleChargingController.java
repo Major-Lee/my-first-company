@@ -69,6 +69,9 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = false,value = "cbto",defaultValue="true") boolean canbeturnoff,
             @RequestParam(required = false,value = "el",defaultValue="false") boolean enterpriselevel,
             @RequestParam(required = false,value = "percent",defaultValue="0.70") double owner_percent,
+            @RequestParam(required = false,value = "rcm",defaultValue="0.1-0.3") String range_cash_mobile,
+            @RequestParam(required = false,value = "rcp",defaultValue="0.5-0.8") String range_cash_pc,
+            @RequestParam(required = false,value = "ait",defaultValue="0.70") String access_internet_time,
             @RequestParam(required = false) String remark
     ) {
     	if(file == null){
@@ -90,6 +93,7 @@ public class ConsoleChargingController extends BaseController {
         			owner_percent,
         			canbeturnoff,
         			enterpriselevel,
+        			range_cash_mobile,range_cash_pc, access_internet_time,
         			remark);
 			if(!rpcResult.hasError()){
 				System.out.println("path:"+rpcResult.getPayload().toAbsoluteFileInputPath());
@@ -109,16 +113,23 @@ public class ConsoleChargingController extends BaseController {
         		.concat(BusinessRuntimeConfiguration.BatchImport_Shipment)
         		.concat(BusinessRuntimeConfiguration.BatchImport_Sub_Input_Dir);*/
     }
+    
     @ResponseBody()
     @RequestMapping(value="/shipment/confirm",method={RequestMethod.POST})
     public void uploadClaimAgentDevice(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
-            @RequestParam(required = true) String batchno
+            @RequestParam(required = true) String batchno,
+            @RequestParam(required = true,defaultValue="false") boolean confirm
     ) {
     	try{
-        	RpcResponseDTO<BatchImportVTO> rpcResult = chargingRpcService.doConfirmDeviceRecord(uid, batchno);//(uid, countrycode, mobileno, percent, remark);
+        	RpcResponseDTO<BatchImportVTO> rpcResult = null;//
+        	if(confirm)
+        		rpcResult = chargingRpcService.doConfirmDeviceRecord(uid, batchno);//(uid, countrycode, mobileno, percent, remark);
+        	else{
+        		rpcResult = chargingRpcService.doCancelDeviceRecord(uid, batchno);
+        	}
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
@@ -128,6 +139,7 @@ public class ConsoleChargingController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
     }
+    
     
 	@ResponseBody()
 	@RequestMapping(value = "/shipment/pages", method = { RequestMethod.POST })

@@ -20,6 +20,7 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
@@ -39,6 +40,7 @@ import com.bhu.vas.api.vto.device.DeviceBaseVTO;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceOperationVTO;
 import com.bhu.vas.api.vto.device.DevicePresentVTO;
+import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.bhu.vas.api.vto.device.UserDeviceStatisticsVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
@@ -46,6 +48,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
@@ -113,6 +116,8 @@ public class UserDeviceUnitFacadeService {
 	@Resource
 	private WifiDeviceModuleService wifiDeviceModuleService;
 	
+	@Resource
+	private ChargingFacadeService chargingFacadeService;
 	//@Resource
 	//private TagDevicesService tagDevicesService;
 	
@@ -701,10 +706,27 @@ public class UserDeviceUnitFacadeService {
 				dov.setMstyle(mstyle);
 			else
 				dov.setMstyle(StringHelper.MINUS_STRING_GAP);
+			
+			
+			//分成详情
+			WifiDeviceSharedealConfigs configs = chargingFacadeService.userfulWifiDeviceSharedealConfigsJust4View(mac);
+			DeviceSharedealVTO dsv = new DeviceSharedealVTO();
+			dsv.setMac(configs.getId());
+			dsv.setBatchno(configs.getBatchno());
+			dsv.setOwner_percent(configs.getOwner_percent());
+			dsv.setManufacturer_percent(configs.getManufacturer_percent());
+			dsv.setRcm(configs.getRange_cash_mobile());
+			dsv.setRcp(configs.getRange_cash_pc());
+			dsv.setAitm(configs.getAit_mobile());
+			dsv.setAitp(configs.getAit_pc());
+			dsv.setCanbeturnoff(configs.isCanbe_turnoff());
+			dsv.setRuntime_applydefault(configs.isRuntime_applydefault());
+			
 			DeviceDetailVTO dvto = new DeviceDetailVTO();
 			dvto.setDbv(dbv);
 			dvto.setDpv(dpv);
 			dvto.setDov(dov);
+			dvto.setDsv(dsv);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dvto);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);

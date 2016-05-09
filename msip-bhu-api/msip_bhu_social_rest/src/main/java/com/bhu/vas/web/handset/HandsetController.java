@@ -51,6 +51,30 @@ import javax.servlet.http.HttpServletResponse;
         }
     }
 
+    /**
+     * 修改终端信息,暂时只提供修改终端的备注
+     *
+     * @param response
+     * @param uid
+     * @param hd_mac
+     * @param nick
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/modify/new", method = {RequestMethod.POST})
+    public void modify_new(
+            HttpServletResponse response,
+            @RequestParam(required = true, value = "uid") Long uid,
+            @RequestParam(required = true, value = "hd_mac") String hd_mac,
+            @RequestParam(required = true, value = "nick") String nick) {
+
+        try {
+            boolean ret  = socialRpcService.modifyHandset_new(uid, hd_mac.toLowerCase(), nick);
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret));
+        } catch (Exception e) {
+            e.printStackTrace();
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR));
+        }
+    }
 
 
 
