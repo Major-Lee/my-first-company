@@ -53,6 +53,7 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	private String ait_mobile = Default_AIT;
 	//是否可以关闭开关
 	private boolean canbe_turnoff = true;
+	private boolean enterpriselevel = false;
 	//生产环境过程中不存在的设备分成配置 会缺省应用并生效缺省配置时，此值为true，通过导入的设备值为false，后续修改设备配置值为false
 	private boolean runtime_applydefault = true;
 	
@@ -139,6 +140,12 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 		this.created_at = created_at;
 	}	
 	
+	public boolean isEnterpriselevel() {
+		return enterpriselevel;
+	}
+	public void setEnterpriselevel(boolean enterpriselevel) {
+		this.enterpriselevel = enterpriselevel;
+	}
 	@Override
 	public void preInsert() {
 		if (this.created_at == null)

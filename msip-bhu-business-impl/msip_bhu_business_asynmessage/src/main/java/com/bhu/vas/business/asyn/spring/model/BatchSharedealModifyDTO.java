@@ -6,6 +6,7 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 public class BatchSharedealModifyDTO extends ActionDTO {
 	private String message;
 	private boolean cbto;
+	private boolean el;
 	private double owner_percent;
 	private String rcm;
 	private String rcp;
@@ -57,6 +58,14 @@ public class BatchSharedealModifyDTO extends ActionDTO {
 
 	public void setAit(String ait) {
 		this.ait = ait;
+	}
+
+	public boolean isEl() {
+		return el;
+	}
+
+	public void setEl(boolean el) {
+		this.el = el;
 	}
 
 	@Override

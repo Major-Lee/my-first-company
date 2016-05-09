@@ -541,12 +541,13 @@ public class DeliverMessageService {
 	}
 	
 	public void sendBatchSharedealModifyActionMessage(int uid,String message,
-			boolean cbto,double owner_percent,
+			boolean cbto,boolean el,double owner_percent,
 			String rcm,String rcp,String ait){
 		BatchSharedealModifyDTO dto = new BatchSharedealModifyDTO();
 		dto.setUid(uid);
 		dto.setMessage(message);
 		dto.setCbto(cbto);
+		dto.setEl(el);
 		dto.setOwner_percent(owner_percent);
 		dto.setRcm(rcm);
 		dto.setRcp(rcp);
