@@ -163,7 +163,7 @@ public class UserDeviceController extends BaseController {
                 @RequestParam(required = true, value = "uid") int uid,
                 @RequestParam(required = false, defaultValue = VapEnumType.DUT_uRouter, value = "dut") String dut,
         		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-        		@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
+        		@RequestParam(required = false, defaultValue = "50", value = "ps") int pageSize){
     	RpcResponseDTO<TailPage<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchPageBindDevices(uid, dut, pageNo, pageSize);
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
