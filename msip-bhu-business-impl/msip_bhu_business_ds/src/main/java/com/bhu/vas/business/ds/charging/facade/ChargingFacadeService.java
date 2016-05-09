@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.charging.service.UserWithdrawCostConfigsService;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceBatchDetailService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceBatchImportService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -45,6 +46,9 @@ public class ChargingFacadeService {
 	@Resource
 	private WifiDeviceBatchImportService wifiDeviceBatchImportService;
 
+	@Resource
+	private WifiDeviceBatchDetailService wifiDeviceBatchDetailService;
+	
 	@Resource
 	private UserWithdrawCostConfigsService userWithdrawCostConfigsService;
 
@@ -218,7 +222,9 @@ public class ChargingFacadeService {
 	public void doWifiDeviceSharedealConfigsUpdate(String batchno,Integer owner,String dmac,
 			double owner_percent,
 			String range_cash_mobile,String range_cash_pc, String access_internet_time,
-			boolean canbeturnoff,boolean runtime_applydefault){
+			boolean canbeturnoff,
+			boolean enterpriselevel,
+			boolean runtime_applydefault){
 		boolean insert = false;
 		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
 		if(configs == null){
@@ -262,6 +268,7 @@ public class ChargingFacadeService {
 			configs.setAit_pc(access_internet_time);
 		}
 		configs.setCanbe_turnoff(canbeturnoff);
+		configs.setEnterpriselevel(enterpriselevel);
 		configs.setRuntime_applydefault(runtime_applydefault);
 		
 		if(insert){
@@ -269,6 +276,7 @@ public class ChargingFacadeService {
 		}else{
 			wifiDeviceSharedealConfigsService.update(configs);
 		}
+		
 		/*WifiDeviceSharedealConfigs userfulWifiDeviceSharedealConfigs = this.userfulWifiDeviceSharedealConfigs(dmac);
     	userfulWifiDeviceSharedealConfigs.setBatchno(batchno);
     	userfulWifiDeviceSharedealConfigs.setOwner_percent(importVto.getOwner_percent());
@@ -386,5 +394,9 @@ public class ChargingFacadeService {
 
 	public WifiDeviceSharedealConfigsService getWifiDeviceSharedealConfigsService() {
 		return wifiDeviceSharedealConfigsService;
+	}
+
+	public WifiDeviceBatchDetailService getWifiDeviceBatchDetailService() {
+		return wifiDeviceBatchDetailService;
 	}
 }
