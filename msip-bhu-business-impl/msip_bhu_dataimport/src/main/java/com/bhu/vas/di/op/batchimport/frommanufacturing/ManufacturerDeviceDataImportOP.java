@@ -75,5 +75,6 @@ public class ManufacturerDeviceDataImportOP {
 		});
 		
 		System.out.println(String.format("filepath[%s] import successfully! successed[%s] failed[%s]", filepath,atomic_successed.get(),atomic_failed.get()));
+		System.exit(0);
 	}
 }
