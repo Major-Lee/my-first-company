@@ -11,6 +11,7 @@ import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
@@ -76,11 +77,13 @@ public class WifiDeviceDocumentHelper {
 	 * @param o_template
 	 * @param hoc
 	 * @param wifiDeviceSharedNetwork
+	 * @param wifiDeviceShareConfig
 	 * @return
 	 */
 	public static WifiDeviceDocument fromNormalWifiDevice(WifiDevice wifiDevice, WifiDeviceModule deviceModule,
 			WifiDeviceGray wifiDeviceGray, User bindUser, String bindUserDNick, 
-			TagDevices tagDevices, String o_template, int hoc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork){
+			TagDevices tagDevices, String o_template, int hoc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork,
+			WifiDeviceSharedealConfigs wifiDeviceShareConfig){
 		if(wifiDevice == null) return null;
 		
 		WifiDeviceDocument doc = new WifiDeviceDocument();
@@ -177,6 +180,11 @@ public class WifiDeviceDocumentHelper {
 			}*/
 			doc.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
 			doc.setD_snk_template(wifiDeviceSharedNetwork.getTemplate());
+		}
+		if(wifiDeviceShareConfig != null){
+			doc.setD_snk_allowturnoff(wifiDeviceShareConfig.isCanbe_turnoff() ? "1" : "0");
+		}else{
+			doc.setD_snk_allowturnoff("1");
 		}
 		if(tagDevices != null){
 			doc.setD_tags(tagDevices.getTag2ES());

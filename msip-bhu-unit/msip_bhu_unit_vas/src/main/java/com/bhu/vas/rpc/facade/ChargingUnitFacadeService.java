@@ -103,7 +103,7 @@ public class ChargingUnitFacadeService {
 	}
 	
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid,
-			String message, boolean canbeturnoff,boolean enterpriselevel, double owner_percent,
+			String message, Boolean canbeturnoff,Boolean enterpriselevel, double owner_percent,
 			String range_cash_mobile, String range_cash_pc,
 			String access_internet_time) {
 		try{

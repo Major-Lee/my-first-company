@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
@@ -16,6 +17,7 @@ import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGrayService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
@@ -49,6 +51,7 @@ public class BuilderWifiDeviceIndexOp {
 	private static UserDeviceService userDeviceService;
 	private static TagDevicesService tagDevicesService;
 	private static WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
+	private static WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
 	
 	public static void main(String[] argv) throws IOException, ParseException{
 		
@@ -69,6 +72,7 @@ public class BuilderWifiDeviceIndexOp {
 			userDeviceService = (UserDeviceService)ctx.getBean("userDeviceService");
 			tagDevicesService = (TagDevicesService)ctx.getBean("tagDevicesService");
 			wifiDeviceSharedNetworkService = (WifiDeviceSharedNetworkService)ctx.getBean("wifiDeviceSharedNetworkService");
+			wifiDeviceSharedealConfigsService = (WifiDeviceSharedealConfigsService)ctx.getBean("wifiDeviceSharedealConfigsService");
 			
 			long t0 = System.currentTimeMillis();
 			
@@ -183,10 +187,11 @@ public class BuilderWifiDeviceIndexOp {
 					}
 					
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
+					WifiDeviceSharedealConfigs wifiDeviceShareConfig = wifiDeviceSharedealConfigsService.getById(mac);
 					
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
 							wifiDeviceGray, bindUser, bindUserDNick, tagDevices,
-							o_template, (int)hoc, wifiDeviceSharedNetwork);
+							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig);
 					
 /*					//构建设备索引的扩展字段
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);

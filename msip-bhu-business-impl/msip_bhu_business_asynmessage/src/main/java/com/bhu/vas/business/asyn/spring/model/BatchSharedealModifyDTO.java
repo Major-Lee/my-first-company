@@ -5,8 +5,8 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
 public class BatchSharedealModifyDTO extends ActionDTO {
 	private String message;
-	private boolean cbto;
-	private boolean el;
+	private Boolean cbto;
+	private Boolean el;
 	private double owner_percent;
 	private String rcm;
 	private String rcp;
@@ -18,14 +18,6 @@ public class BatchSharedealModifyDTO extends ActionDTO {
 
 	public void setMessage(String message) {
 		this.message = message;
-	}
-
-	public boolean isCbto() {
-		return cbto;
-	}
-
-	public void setCbto(boolean cbto) {
-		this.cbto = cbto;
 	}
 
 	public double getOwner_percent() {
@@ -60,11 +52,19 @@ public class BatchSharedealModifyDTO extends ActionDTO {
 		this.ait = ait;
 	}
 
-	public boolean isEl() {
+	public Boolean getCbto() {
+		return cbto;
+	}
+
+	public void setCbto(Boolean cbto) {
+		this.cbto = cbto;
+	}
+
+	public Boolean getEl() {
 		return el;
 	}
 
-	public void setEl(boolean el) {
+	public void setEl(Boolean el) {
 		this.el = el;
 	}
 

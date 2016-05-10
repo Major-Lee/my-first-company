@@ -65,7 +65,7 @@ public class ChargingRpcService  implements IChargingRpcService{
 
 	@Override
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid,
-			String message, boolean canbeturnoff,boolean enterpriselevel, double owner_percent,
+			String message, Boolean canbeturnoff,Boolean enterpriselevel, double owner_percent,
 			String range_cash_mobile, String range_cash_pc,
 			String access_internet_time) {
 		logger.info(String.format("doBatchSharedealModify uid:%s message:%s owner_percent:%s canbeturnoff:%s enterpriselevel:%s range_cash_mobile:%s range_cash_pc:%s",uid,message, owner_percent,canbeturnoff,enterpriselevel,range_cash_pc, range_cash_pc,access_internet_time));
