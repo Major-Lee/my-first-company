@@ -1412,6 +1412,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					for (String dto_mac: macs) {
 						URouterDeviceConfigNVTO nvto = new URouterDeviceConfigNVTO();
 						nvto.setMac(dto_mac);
+						nvto.setTt(MacDictParserFilterHelper.prefixMactch(dto_mac,true,false));
 						HandsetDeviceDTO dto = handsets.get(i);
 						if (dto != null) {
 							nvto.setN(dto.getDhcp_name());
