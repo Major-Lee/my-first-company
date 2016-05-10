@@ -242,6 +242,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
+			searchAnalyzer = "whitespace",
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
