@@ -350,7 +350,12 @@ public class UserDeviceUnitFacadeService {
 				userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 				userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
 				userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
-				userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
+				if(wifiDeviceDocument.getD_snk_allowturnoff() != null){
+					userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
+				}else{
+					userDeviceDTO.setD_snk_allowturnoff(1);
+				}
+				
 				if ("1".equals(wifiDeviceDocument.getD_online())) {
 					userDeviceDTO.setOnline(true);
 					userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
@@ -398,7 +403,11 @@ public class UserDeviceUnitFacadeService {
 							userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 							userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
 							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
-							userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
+							if(wifiDeviceDocument.getD_snk_allowturnoff() != null){
+								userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
+							}else{
+								userDeviceDTO.setD_snk_allowturnoff(1);
+							}
 							if ("1".equals(wifiDeviceDocument.getD_online())) {
 								userDeviceDTO.setOnline(true);
 								userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
