@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
@@ -22,6 +23,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDev
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGrayService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
@@ -82,7 +84,8 @@ public class BackendBusinessService {
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
-	
+    @Resource
+    private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
 
 	
 	/**********************************     清除设备数据业务 start   *****************************************/
@@ -286,10 +289,10 @@ public class BackendBusinessService {
 					}
 					
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
-					
+					WifiDeviceSharedealConfigs wifiDeviceShareConfig = wifiDeviceSharedealConfigsService.getById(mac);
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
 							wifiDeviceGray, bindUser, bindUserDNick, null,
-							o_template, (int)hoc, wifiDeviceSharedNetwork);
+							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig);
 					docs.add(doc);
 				}
 				
