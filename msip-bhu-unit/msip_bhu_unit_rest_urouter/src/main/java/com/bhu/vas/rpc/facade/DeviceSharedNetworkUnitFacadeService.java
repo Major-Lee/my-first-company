@@ -333,6 +333,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 							vto.setD_origmodel(wifiDeviceDocument.getD_origmodel());
 							vto.setDevice_name(wifiDeviceDocument.getU_dnick());
 							vto.setD_type(wifiDeviceDocument.getD_type());
+							vto.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
 							if(ohd_counts != null){
 								Object ohd_count_obj = ohd_counts.get(cursor);
 								if(ohd_count_obj != null){

@@ -27,6 +27,7 @@ public class SharedNetworkDeviceDTO implements java.io.Serializable{
 	
 	private String snk_type;
 	private String template;
+	private int d_snk_allowturnoff;
 	private boolean on;
 	private boolean matched;
 	public String getMac() {
@@ -100,6 +101,12 @@ public class SharedNetworkDeviceDTO implements java.io.Serializable{
 	}
 	public void setTemplate(String template) {
 		this.template = template;
+	}
+	public int getD_snk_allowturnoff() {
+		return d_snk_allowturnoff;
+	}
+	public void setD_snk_allowturnoff(int d_snk_allowturnoff) {
+		this.d_snk_allowturnoff = d_snk_allowturnoff;
 	}
 	
 }
