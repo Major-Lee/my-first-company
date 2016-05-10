@@ -19,7 +19,7 @@ public class UserDeviceDTO implements Serializable {
     private String orig_model;
     private String d_sn;
     private String d_address;
-    
+    private int d_snk_allowturnoff;
 	//设备的固件版本号
     private String ver;
 
@@ -122,4 +122,14 @@ public class UserDeviceDTO implements Serializable {
 	public void setD_address(String d_address) {
 		this.d_address = d_address;
 	}
+
+	public int getD_snk_allowturnoff() {
+		return d_snk_allowturnoff;
+	}
+
+	public void setD_snk_allowturnoff(int d_snk_allowturnoff) {
+		this.d_snk_allowturnoff = d_snk_allowturnoff;
+	}
+
+	
 }
