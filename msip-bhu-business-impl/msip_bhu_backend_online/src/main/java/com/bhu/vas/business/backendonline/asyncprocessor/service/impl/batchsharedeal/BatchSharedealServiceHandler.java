@@ -59,7 +59,7 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 						for(String dmac:macList){
 							chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(null,null, dmac, 
 									sharedealDTO.getOwner_percent(),
-									sharedealDTO.getRcm(), sharedealDTO.getRcp(), sharedealDTO.getAit(), sharedealDTO.isCbto(),sharedealDTO.isEl(), false);
+									sharedealDTO.getRcm(), sharedealDTO.getRcp(), sharedealDTO.getAit(), sharedealDTO.getCbto(),sharedealDTO.getEl(), false);
 						}
 					}
 				});

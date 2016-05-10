@@ -216,14 +216,15 @@ public class ChargingFacadeService {
 	 * @param range_cash_mobile
 	 * @param range_cash_pc
 	 * @param access_internet_time
-	 * @param canbeturnoff
+	 * @param canbeturnoff null 忽略此属性
+	 * @param enterpriselevel null 忽略此属性
 	 * @param runtime_applydefault
 	 */
 	public void doWifiDeviceSharedealConfigsUpdate(String batchno,Integer owner,String dmac,
 			double owner_percent,
 			String range_cash_mobile,String range_cash_pc, String access_internet_time,
-			boolean canbeturnoff,
-			boolean enterpriselevel,
+			Boolean canbeturnoff,
+			Boolean enterpriselevel,
 			boolean runtime_applydefault){
 		boolean insert = false;
 		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
@@ -267,8 +268,12 @@ public class ChargingFacadeService {
 			configs.setAit_mobile(access_internet_time);
 			configs.setAit_pc(access_internet_time);
 		}
-		configs.setCanbe_turnoff(canbeturnoff);
-		configs.setEnterpriselevel(enterpriselevel);
+		if(canbeturnoff != null){
+			configs.setCanbe_turnoff(canbeturnoff.booleanValue());
+		}
+		if(enterpriselevel != null){
+			configs.setEnterpriselevel(enterpriselevel.booleanValue());
+		}
 		configs.setRuntime_applydefault(runtime_applydefault);
 		
 		if(insert){

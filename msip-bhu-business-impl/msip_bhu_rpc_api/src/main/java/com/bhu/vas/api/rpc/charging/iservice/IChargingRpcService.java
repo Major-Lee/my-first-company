@@ -6,7 +6,7 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public interface IChargingRpcService {
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String message, 
-			boolean canbeturnoff,boolean enterpriselevel,double owner_percent,
+			Boolean canbeturnoff,Boolean enterpriselevel,double owner_percent,
 			String range_cash_mobile,String range_cash_pc,String access_internet_time);
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,
 			int countrycode,String bmobileno,
