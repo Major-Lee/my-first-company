@@ -17,11 +17,11 @@
 		<property name="messageConverter" ref="defaultFeedMessageConverter" />-->
 	</bean>
 	<!-- POJO which send Message uses  Spring JmsTemplate -->
-	<bean id="deliverAsyncMessageQueueProducer" class="com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer">
+	<bean id="asyncDeliverMessageQueueProducer" class="com.bhu.vas.business.asyn.spring.activemq.queue.producer.async.AsyncDeliverMessageQueueProducer">
 		<property name="template" 		ref="jmsAsyncDeliverMessageTemplate" />
 		<property name="destination" 	ref="destinationAsyncDeliverMessageQueue" />
 	</bean>
 	
-	<bean id="deliverAsyncMessageService" class="com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService">
+	<bean id="asyncDeliverMessageService" class="com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService">
 	</bean>
 </beans>
