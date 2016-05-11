@@ -11,8 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
+import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
+import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchsharedeal.BatchSharedealServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.backendonline.plugins.hook.DaemonExecRunnable;
@@ -55,8 +56,8 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 			@Override
 			public void run() {
 				try{
-					String message = ActionMessageFactoryBuilder.determineActionMessage(messagejsonHasPrefix);
-					ActionMessageType type = ActionMessageFactoryBuilder.determineActionType(messagejsonHasPrefix);
+					String message = AsyncMessageFactoryBuilder.determineActionMessage(messagejsonHasPrefix);
+					AsyncMessageType type = AsyncMessageFactoryBuilder.determineActionType(messagejsonHasPrefix);
 					if(type == null){
 						throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
@@ -78,9 +79,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 		}));
 	}
 	
-	public void throwUnsupportedOperationException(ActionMessageType type, String messagejsonHasPrefix){
+	public void throwUnsupportedOperationException(AsyncMessageType type, String messagejsonHasPrefix){
 		throw new UnsupportedOperationException(
-				String.format("ActionMessageType[%s] not yet implement handler processfull message[%s]",
+				String.format("AsyncMessageType[%s] not yet implement handler processfull message[%s]",
 						type,messagejsonHasPrefix));
 	}
 }
