@@ -1,12 +1,12 @@
-package com.bhu.vas.business.asyn.spring.model.tag;
+/*package com.bhu.vas.business.asyn.spring.model.async.tag;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
-import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
+import com.bhu.vas.business.asyn.spring.builder.async.AsyncDTO;
+import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 
-/**
+*//**
  * Created by xiaowei on 4/19/16.
- */
-public class BindTagDTO extends ActionDTO {
+ *//*
+public class BindTagDTO extends AsyncDTO {
 
 	private int uid;
 	private String message;
@@ -40,7 +40,8 @@ public class BindTagDTO extends ActionDTO {
 	}
 
 	@Override
-    public String getActionType() {
-        return ActionMessageType.DeviceBatchBindTag.getPrefix();
+    public String getAsyncType() {
+        return AsyncMessageType.BatchDeviceBindTag.getPrefix();
     }
 }
+*/

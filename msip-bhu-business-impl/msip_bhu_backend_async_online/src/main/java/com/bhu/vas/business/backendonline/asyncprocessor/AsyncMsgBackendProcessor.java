@@ -11,10 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchsharedeal.BatchSharedealServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.backendonline.plugins.hook.DaemonExecRunnable;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
@@ -34,8 +32,10 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	private IMsgHandlerService batchImportConfirmServiceHandler;
 	
 	@Resource
-	private BatchSharedealServiceHandler batchSharedealServiceHandler;
+	private IMsgHandlerService batchSharedealServiceHandler;
 	
+	@Resource
+	private IMsgHandlerService batchDeviceTagServiceHandler;
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncMsgBackendProcessor initialize...");
@@ -67,6 +67,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case BatchSharedealModify:
 							batchSharedealServiceHandler.process(message);
+							break;
+						case BatchDeviceOperTag:
+							batchDeviceTagServiceHandler.process(message);;
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);

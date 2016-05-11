@@ -15,7 +15,6 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.AgentDeviceClaimServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.ConsoleServiceHandler;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchsharedeal.BatchSharedealServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
@@ -39,8 +38,8 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	private IMsgHandlerService userDeviceSharedNetworkApplyServiceHandler;
 	@Resource
 	private IMsgHandlerService batchImportConfirmServiceHandler;
-	@Resource
-	private BatchSharedealServiceHandler batchSharedealServiceHandler;
+	//@Resource
+	//private BatchSharedealServiceHandler batchSharedealServiceHandler;
 	@Resource
 	private IMsgHandlerService userPortalUpdateServiceHandler;
 	@Resource
@@ -185,21 +184,21 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case UserDeviceSharedNetworkApply:
 							userDeviceSharedNetworkApplyServiceHandler.process(message);
 							break;
-						case BatchImportConfirm:
+						/*case BatchImportConfirm:
 							batchImportConfirmServiceHandler.process(message);
 							break;
 						case BatchSharedealModify:
 							batchSharedealServiceHandler.process(message);
-							break;
+							break;*/
 						case UserPortalUpdate:
 							userPortalUpdateServiceHandler.process(message);
 							break;
-						case DeviceBatchBindTag:
+						/*case DeviceBatchBindTag:
 							asyncMsgHandleService.deviceBatchBindTag(message);
 							break;
 						case DeviceBatchDelTag:
 							asyncMsgHandleService.deviceBatchDelTag(message);
-							break;
+							break;*/
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

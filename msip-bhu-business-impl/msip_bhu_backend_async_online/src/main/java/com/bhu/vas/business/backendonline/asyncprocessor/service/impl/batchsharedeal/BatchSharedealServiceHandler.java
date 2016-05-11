@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.business.asyn.spring.model.BatchSharedealModifyDTO;
+import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;

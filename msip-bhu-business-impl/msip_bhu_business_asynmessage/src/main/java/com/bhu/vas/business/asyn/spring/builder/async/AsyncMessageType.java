@@ -6,6 +6,10 @@ import java.util.Map;
 public enum AsyncMessageType {
 		BatchImportConfirm("出库库房设备导入","shipment import","BICF"),
 		BatchSharedealModify("批量更新设备分成","batch sharedeal modify","BSMF"),
+		
+		BatchDeviceOperTag("设备批量绑定标签", "batch device operation tag", "BDOT"),
+		//BatchDeviceBindTag("设备批量绑定标签", "batch device bind tag", "BDBT"),
+		//BatchDeviceDelTag("设备批量删除标签", "batch device del tag", "BDDT"),
 		;
 		static Map<String, AsyncMessageType> allAsyncMessageTypes;
 		public final static int prefix_length = 4;

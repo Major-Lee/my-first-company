@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.business.asyn.spring.model.BatchImportConfirmDTO;
+import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ExcelElementCallback;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.dto.DeviceCallbackDTO;

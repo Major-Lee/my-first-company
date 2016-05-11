@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
-import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
@@ -39,8 +39,12 @@ public class TagFacadeRpcSerivce {
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 
+	
 	@Resource
-	private DeliverMessageService deliverMessageService;
+	private AsyncDeliverMessageService asyncDeliverMessageService;
+
+	//@Resource
+	//private DeliverMessageService deliverMessageService;
 
 	private void addTag(int uid, String tag) {
 
@@ -135,7 +139,7 @@ public class TagFacadeRpcSerivce {
 			for(String newTag : arrTemp){
 				addTag(uid, newTag);
 			}
-			deliverMessageService.sentDeviceBatchBindTagActionMessage(uid, message, tag);
+			asyncDeliverMessageService.sentDeviceBatchBindTagActionMessage(uid, message, tag);
 			
 		} else {
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
@@ -144,7 +148,7 @@ public class TagFacadeRpcSerivce {
 	
 	public void deviceBatchDelTag(int uid, String message) {
 		if (message != null) {
-			deliverMessageService.sentDeviceBatchDelTagActionMessage(uid, message);
+			asyncDeliverMessageService.sentDeviceBatchDelTagActionMessage(uid, message);
 		} else {
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}

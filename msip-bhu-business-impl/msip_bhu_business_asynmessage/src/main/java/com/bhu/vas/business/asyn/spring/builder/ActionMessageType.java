@@ -55,8 +55,8 @@ public enum ActionMessageType {
 	TOPICDevicesOnlineNotify("topic消息Devices上线","topic cm devices online","TS"),
 	TOPICDeviceOfflineNotify("topic消息Device下线","topic cm offline","TF"),
 
-	BatchImportConfirm("出库库房设备导入","shipment import","BI"),
-	BatchSharedealModify("批量更新设备分成","batch sharedeal modify","BS"),
+	//BatchImportConfirm("出库库房设备导入","shipment import","BI"),
+	//BatchSharedealModify("批量更新设备分成","batch sharedeal modify","BS"),
 	AgentDeviceClaimImport("代理商设备导入","agent device claim import","AI"),
 	AgentDeviceClaimUpdate("代理商导入更新", "agent device update ", "AU"),
 	
@@ -64,8 +64,6 @@ public enum ActionMessageType {
 	OrderResultExportFile("增值平台搜索打赏订单结果导出文件", "search result export file", "OE"),
 	SearchResultExportFile("增值平台搜索结果导出文件", "search result export file", "SE"),
 	
-	DeviceBatchBindTag("设备批量绑定标签", "device batch bind tag", "DT"),
-	DeviceBatchDelTag("设备批量删除标签", "device batch del tag", "BD"),
 	;
 	
 	static Map<String, ActionMessageType> allActionMessageTypes;

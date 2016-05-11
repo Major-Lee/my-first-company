@@ -12,8 +12,6 @@ import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.spring.model.BatchImportConfirmDTO;
-import com.bhu.vas.business.asyn.spring.model.BatchSharedealModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAliasDTO;
@@ -54,8 +52,6 @@ import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
-import com.bhu.vas.business.asyn.spring.model.tag.BindTagDTO;
-import com.bhu.vas.business.asyn.spring.model.tag.DelTagDTO;
 
 
 public class DeliverMessageService {
@@ -532,7 +528,7 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendBatchImportConfirmActionMessage(int uid,String batchno){
+	/*public void sendBatchImportConfirmActionMessage(int uid,String batchno){
 		BatchImportConfirmDTO dto = new BatchImportConfirmDTO();
 		dto.setUid(uid);
 		dto.setBatchno(batchno);
@@ -554,20 +550,6 @@ public class DeliverMessageService {
 		dto.setAit(ait);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-	}
+	}*/
 	
-	public void sentDeviceBatchBindTagActionMessage(int uid,String message ,String tag){
-		BindTagDTO dto = new BindTagDTO();
-		dto.setUid(uid);
-		dto.setMessage(message);
-		dto.setTag(tag);
-		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-	}
-
-	public void sentDeviceBatchDelTagActionMessage(int uid,String message){
-		DelTagDTO dto = new DelTagDTO();
-		dto.setUid(uid);
-		dto.setMessage(message);
-		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-	}
 }
