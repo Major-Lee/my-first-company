@@ -70,18 +70,23 @@ echo '拷贝文件 msip_bhu_unit_uass-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_uass/target/msip_bhu_unit_uass-bin.zip ./$CuDateDir
 
 
-echo '拷贝文件 msip_bhu_unit_agent-bin.zip到'$CuDateDir
-cp ../../msip-bhu-unit/msip_bhu_unit_agent/target/msip_bhu_unit_agent-bin.zip ./$CuDateDir
+#echo '拷贝文件 msip_bhu_unit_agent-bin.zip到'$CuDateDir
+#cp ../../msip-bhu-unit/msip_bhu_unit_agent/target/msip_bhu_unit_agent-bin.zip ./$CuDateDir
 
 
 echo '拷贝文件 msip_bhu_backend_online-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_online/target/msip_bhu_backend_online-bin.zip ./$CuDateDir
+
+
+echo '拷贝文件 msip_bhu_backend_async_online-bin.zip到'$CuDateDir
+cp ../../msip-bhu-business-impl/msip_bhu_backend_async_online/target/msip_bhu_backend_async_online-bin.zip ./$CuDateDir
+
 echo '拷贝文件 msip_bhu_backend_task-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_task/target/msip_bhu_backend_task-bin.zip ./$CuDateDir
-echo '拷贝文件 msip_bhu_backend_wifistasniffer-bin.zip到'$CuDateDir
-cp ../../msip-bhu-business-impl/msip_bhu_backend_wifistasniffer/target/msip_bhu_backend_wifistasniffer-bin.zip ./$CuDateDir
-echo '拷贝文件 msip_bhu_backend_modulestat-bin.zip到'$CuDateDir
-cp ../../msip-bhu-business-impl/msip_bhu_backend_modulestat/target/msip_bhu_backend_modulestat-bin.zip ./$CuDateDir
+#echo '拷贝文件 msip_bhu_backend_wifistasniffer-bin.zip到'$CuDateDir
+#cp ../../msip-bhu-business-impl/msip_bhu_backend_wifistasniffer/target/msip_bhu_backend_wifistasniffer-bin.zip ./$CuDateDir
+#echo '拷贝文件 msip_bhu_backend_modulestat-bin.zip到'$CuDateDir
+#cp ../../msip-bhu-business-impl/msip_bhu_backend_modulestat/target/msip_bhu_backend_modulestat-bin.zip ./$CuDateDir
 
 
 echo '拷贝文件 msip_bhu_dataimport-bin.zip到'$CuDateDir
@@ -90,8 +95,8 @@ cp ../../msip-bhu-business-impl/msip_bhu_dataimport/target/msip_bhu_dataimport-b
 #cp ../../msip-bhu-business-impl/msip_bhu_spark_task/target/msip_bhu_spark_task-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_rest.war到'$CuDateDir
 cp ../../msip-bhu-api/msip_bhu_rest/target/msip_bhu_rest.war ./$CuDateDir
-echo '拷贝文件 msip_bhu_agent_rest.war到'$CuDateDir
-cp ../../msip-bhu-api/msip_bhu_agent_rest/target/msip_bhu_agent_rest.war ./$CuDateDir
+#echo '拷贝文件 msip_bhu_agent_rest.war到'$CuDateDir
+#cp ../../msip-bhu-api/msip_bhu_agent_rest/target/msip_bhu_agent_rest.war ./$CuDateDir
 
 #commdity 
 echo '拷贝文件 msip_bhu_unit_commdity-bin.zip到'$CuDateDir
@@ -130,8 +135,8 @@ unzip -qo msip_bhu_unit_uass/bin/msip_bhu_unit_uass.jar -d msip_bhu_unit_uass/cl
 
 
 
-unzip -q msip_bhu_unit_agent-bin.zip
-unzip -qo msip_bhu_unit_agent/bin/msip_bhu_unit_agent.jar -d msip_bhu_unit_agent/classes/
+#unzip -q msip_bhu_unit_agent-bin.zip
+#unzip -qo msip_bhu_unit_agent/bin/msip_bhu_unit_agent.jar -d msip_bhu_unit_agent/classes/
 
 
 
@@ -139,14 +144,17 @@ unzip -qo msip_bhu_unit_agent/bin/msip_bhu_unit_agent.jar -d msip_bhu_unit_agent
 unzip -q msip_bhu_backend_online-bin.zip
 unzip -qo msip_bhu_backend_online/bin/msip_bhu_backend_online.jar -d msip_bhu_backend_online/classes/
 
+unzip -q msip_bhu_backend_async_online-bin.zip
+unzip -qo msip_bhu_backend_async_online/bin/msip_bhu_backend_async_online.jar -d msip_bhu_backend_async_online/classes/
+
 unzip -q msip_bhu_backend_task-bin.zip
 unzip -qo msip_bhu_backend_task/bin/msip_bhu_backend_task.jar -d msip_bhu_backend_task/classes/
 
-unzip -q msip_bhu_backend_wifistasniffer-bin.zip
-unzip -qo msip_bhu_backend_wifistasniffer/bin/msip_bhu_backend_wifistasniffer.jar -d msip_bhu_backend_wifistasniffer/classes/
+#unzip -q msip_bhu_backend_wifistasniffer-bin.zip
+#unzip -qo msip_bhu_backend_wifistasniffer/bin/msip_bhu_backend_wifistasniffer.jar -d msip_bhu_backend_wifistasniffer/classes/
 
-unzip -q msip_bhu_backend_modulestat-bin.zip
-unzip -qo msip_bhu_backend_modulestat/bin/msip_bhu_backend_modulestat.jar -d msip_bhu_backend_modulestat/classes/
+#unzip -q msip_bhu_backend_modulestat-bin.zip
+#unzip -qo msip_bhu_backend_modulestat/bin/msip_bhu_backend_modulestat.jar -d msip_bhu_backend_modulestat/classes/
 
 
 unzip -q msip_bhu_dataimport-bin.zip
@@ -156,7 +164,7 @@ unzip -qo msip_bhu_dataimport/bin/msip_bhu_dataimport.jar -d msip_bhu_dataimport
 #unzip -qo msip_bhu_spark_task/bin/msip_bhu_spark_task.jar -d msip_bhu_spark_task/classes/
 
 unzip -qo msip_bhu_rest.war -d msip_bhu_rest
-unzip -qo msip_bhu_agent_rest.war -d msip_bhu_agent_rest
+#unzip -qo msip_bhu_agent_rest.war -d msip_bhu_agent_rest
 
 #commdity 
 unzip -q msip_bhu_unit_commdity-bin.zip
@@ -228,11 +236,11 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_rest_urouter/lib/msip_*.jar
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_rest_urouter/classes/com/             root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_rest_urouter/classes/com/
 echo 'deploy msip_bhu_unit_rest_urouter successfully @'$Deploy2Server1
 
-echo 'deploy msip_bhu_unit_agent to ...@'$Deploy2Server2
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/lib/spring*.RELEASE.jar      root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_agent/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/lib/msip_*.jar       root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_agent/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/classes/com/         root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_agent/classes/com/
-echo 'deploy msip_bhu_unit_agent successfully @'$Deploy2Server2
+#echo 'deploy msip_bhu_unit_agent to ...@'$Deploy2Server2
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/lib/spring*.RELEASE.jar      root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_agent/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/lib/msip_*.jar       root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_agent/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_agent/classes/com/         root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_agent/classes/com/
+#echo 'deploy msip_bhu_unit_agent successfully @'$Deploy2Server2
 
 echo 'deploy msip_bhu_unit_commdity to ...@'$Deploy2Server1
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_commdity/lib/spring*.RELEASE.jar  root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_commdity/libs/
@@ -256,17 +264,17 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/lib/msip_*.jar   ro
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task/classes/com/     root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_task/bin/com/
 echo 'deploy msip_bhu_backend_task successfully @'$Deploy2Server0
 
-echo 'deploy msip_bhu_backend_wifistasniffer to ...@'$Deploy2Server0
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/spring*.RELEASE.jar    root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/msip_*.jar   root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/classes/com/     root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_wifistasniffer/bin/com/
-echo 'deploy msip_bhu_backend_wifistasniffer successfully @'$Deploy2Server0
+#echo 'deploy msip_bhu_backend_wifistasniffer to ...@'$Deploy2Server0
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/spring*.RELEASE.jar    root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/lib/msip_*.jar   root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_wifistasniffer/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/classes/com/     root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_wifistasniffer/bin/com/
+#echo 'deploy msip_bhu_backend_wifistasniffer successfully @'$Deploy2Server0
 
-echo 'deploy msip_bhu_backend_modulestat to ...@'$Deploy2Server0
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/lib/spring*.RELEASE.jar    root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_modulestat/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/lib/msip_*.jar   root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_modulestat/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/classes/com/     root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_modulestat/bin/com/
-echo 'deploy msip_bhu_backend_modulestat successfully @'$Deploy2Server0
+#echo 'deploy msip_bhu_backend_modulestat to ...@'$Deploy2Server0
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/lib/spring*.RELEASE.jar    root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_modulestat/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/lib/msip_*.jar   root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_modulestat/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_modulestat/classes/com/     root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_modulestat/bin/com/
+#echo 'deploy msip_bhu_backend_modulestat successfully @'$Deploy2Server0
 
 echo 'deploy msip_bhu_dataimport to ...@'$Deploy2Server0
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_dataimport/lib/spring*.RELEASE.jar      root@$Deploy2Server0:/BHUData/apps/msip_bhu_dataimport/libs/
@@ -285,6 +293,12 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/spring*.RELEA
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/lib/msip_*.jar   root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_online/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_online/classes/com/   root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_online/bin/com/
 echo 'deploy msip_bhu_backend_online successfully @'$Deploy2Server0
+
+echo 'deploy msip_bhu_backend_async_online to ...@'$Deploy2Server0
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_async_online/lib/spring*.RELEASE.jar    root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_async_online/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_async_online/lib/msip_*.jar   root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_async_online/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_async_online/classes/com/   root@$Deploy2Server0:/BHUData/apps/msip_bhu_backend_async_online/bin/com/
+echo 'deploy msip_bhu_backend_async_online successfully @'$Deploy2Server0
 
 echo 'deploy msip_bhu_backend_commdity to ...@'$Deploy2Server1
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_commdity/lib/spring*.RELEASE.jar    root@$Deploy2Server1:/BHUData/apps/msip_bhu_backend_commdity/libs/
@@ -308,11 +322,11 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_rest/WEB-INF/lib/msip_*.jar   ro
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_rest/WEB-INF/classes/com/     root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_rest/WEB-INF/classes/com/
 echo 'deploy msip_bhu_rest successfully @'$Deploy2ServerWeb
 
-echo 'deploy msip_bhu_agent_rest to ...@'$Deploy2ServerWeb
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_agent_rest/WEB-INF/lib/spring*.RELEASE.jar    root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_agent_rest/WEB-INF/lib/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_agent_rest/WEB-INF/lib/msip_*.jar   root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_agent_rest/WEB-INF/lib/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_agent_rest/WEB-INF/classes/com/     root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_agent_rest/WEB-INF/classes/com/
-echo 'deploy msip_bhu_agent_rest successfully @'$Deploy2ServerWeb
+#echo 'deploy msip_bhu_agent_rest to ...@'$Deploy2ServerWeb
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_agent_rest/WEB-INF/lib/spring*.RELEASE.jar    root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_agent_rest/WEB-INF/lib/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_agent_rest/WEB-INF/lib/msip_*.jar   root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_agent_rest/WEB-INF/lib/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_agent_rest/WEB-INF/classes/com/     root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_agent_rest/WEB-INF/classes/com/
+#echo 'deploy msip_bhu_agent_rest successfully @'$Deploy2ServerWeb
 
 echo 'deploy msip_bhu_commdity_rest to ...@'$Deploy2ServerWeb
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_commdity_rest/WEB-INF/lib/spring*.RELEASE.jar    root@$Deploy2ServerWeb:/BHUData/apps/msip_bhu_commdity_rest/WEB-INF/lib/

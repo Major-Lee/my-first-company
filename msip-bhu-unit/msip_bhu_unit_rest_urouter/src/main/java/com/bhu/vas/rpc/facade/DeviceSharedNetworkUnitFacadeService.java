@@ -356,6 +356,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 									vto.setTemplate(deviceConf.getTemplate());
 								}
 							}
+							vto.setD_online(wifiDeviceDocument.getD_online());
 							vtos.add(vto);
 							cursor++;
 						}

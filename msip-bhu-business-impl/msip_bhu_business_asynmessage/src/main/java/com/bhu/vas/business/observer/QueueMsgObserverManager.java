@@ -28,6 +28,23 @@ public class QueueMsgObserverManager {
 		}
 	}
 	
+	private static List<SpringQueueMessageListener> spingQueueAsyncMessageListeners = new CopyOnWriteArrayList<SpringQueueMessageListener>();
+
+	public static class SpringQueueAsyncMessageObserver{
+		public static void addSpringQueueMessageListener(SpringQueueMessageListener listener) {
+			spingQueueAsyncMessageListeners.add(listener);
+	    }
+		
+		public static void removeSpringQueueMessageListener(SpringQueueMessageListener listener) {
+			spingQueueAsyncMessageListeners.remove(listener);
+	    }
+		public static void notifyMsgComming(String msg){
+			//logger.info(String.format("notifyQueueMsgComming msg[%s]",msg));
+	    	for(SpringQueueMessageListener listener:spingQueueAsyncMessageListeners){
+	    		listener.onMessage(msg);
+	    	}
+		}
+	}
 	
 	private static List<SpringQueueMessageListener> spingQueueMessageListeners = new CopyOnWriteArrayList<SpringQueueMessageListener>();
 
@@ -45,20 +62,6 @@ public class QueueMsgObserverManager {
 	    		listener.onMessage(msg);
 	    	}
 		}
-		/*public static void notifyCmOnline(CmInfo cmInfo){
-			logger.info(String.format("notifyCmOnline msg[%s]", cmInfo));
-	    	for(CmMessageListener listener:cmMessageListeners){
-	    		listener.onCmOnline(cmInfo);
-	    	}
-		}
-		
-		
-		public static void notifyCmOffline(CmInfo cmInfo){
-			logger.info(String.format("notifyCmOffline msg[%s]", cmInfo));
-	    	for(CmMessageListener listener:cmMessageListeners){
-	    		listener.onCmOffline(cmInfo);
-	    	}
-		}*/
 	}
 	
 	
