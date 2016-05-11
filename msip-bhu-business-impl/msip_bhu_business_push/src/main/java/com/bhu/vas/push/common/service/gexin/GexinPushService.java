@@ -80,6 +80,7 @@ public class GexinPushService{
 		return false;
 	}
 	
+	public static final String WHITE6_STRING_GAP = "      ";
 	
 	public boolean pushNotification(PushMsg pushMsg) {
 		try{
@@ -90,14 +91,15 @@ public class GexinPushService{
 		        // 收到消息是否立即启动应用，1为立即启动，2则广播等待客户端自启动
 				template.setTransmissionType(2);
 				template.setTransmissionContent(pushMsg.getPaylod());
-				template.setTitle(pushMsg.getTitle());
-				//String titleWithDate = DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern) + StringHelper.WHITESPACE_STRING_GAP + pushMsg.getText();
+				
+				String titleWithDate = pushMsg.getText() + WHITE6_STRING_GAP + DateTimeHelper.formatDate(DateTimeHelper.FormatPattern0);
+				template.setTitle(titleWithDate);
+				//template.setTitle(pushMsg.getTitle());
 		        template.setText(pushMsg.getText());
 	            template.setLogo(pushMsg.getLogo()); // 通知图标，需要客户端开发时嵌入
 	            //template.setIsRing(false); // 收到通知是否响铃，可选，默认响铃
 	            //template.setIsVibrate(false); // 收到通知是否震动，可选，默认振动
 	            // template.setIsClearable(true); // 通知是否可清除，可选，默认可清除
-		        
 		        SingleMessage message = new SingleMessage();
 	            message.setOffline(false); //用户当前不在线时，是否离线存储，可选，默认不存储
 		        //离线有效时间，单位为毫秒，可选
