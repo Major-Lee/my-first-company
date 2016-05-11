@@ -12,6 +12,8 @@ public class UserDeviceDTO implements Serializable {
     private String device_name;
     //wifi设备是否在线
     private boolean online;
+    //包含从未上线的属性
+    private String d_online;
 
     private long ohd_count;
 
@@ -131,5 +133,11 @@ public class UserDeviceDTO implements Serializable {
 		this.d_snk_allowturnoff = d_snk_allowturnoff;
 	}
 
-	
+	public String getD_online() {
+		return d_online;
+	}
+
+	public void setD_online(String d_online) {
+		this.d_online = d_online;
+	}
 }

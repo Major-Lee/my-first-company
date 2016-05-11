@@ -12,6 +12,8 @@ public class SharedNetworkDeviceDTO implements java.io.Serializable{
 	private String mac;
 	//设备sn
 	private String d_sn;
+	//设备在线状态
+	private String d_online;
 	//设备所在位置
 	private String d_address;
 	//设备的在线终端数量
@@ -107,6 +109,12 @@ public class SharedNetworkDeviceDTO implements java.io.Serializable{
 	}
 	public void setD_snk_allowturnoff(int d_snk_allowturnoff) {
 		this.d_snk_allowturnoff = d_snk_allowturnoff;
+	}
+	public String getD_online() {
+		return d_online;
+	}
+	public void setD_online(String d_online) {
+		this.d_online = d_online;
 	}
 	
 }
