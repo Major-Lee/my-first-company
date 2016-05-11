@@ -2,7 +2,7 @@
 <!DOCTYPE configuration>
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
-	<property name="log.base" 		value="/BHUData/logs/backendasynconline/backendonline" />
+	<property name="log.base" 		value="/BHUData/logs/backendasynconline/backendasynconline" />
 	<jmxConfigurator />
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
 		<Encoding>UTF-8</Encoding>
