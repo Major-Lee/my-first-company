@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleS
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.AgentDeviceClaimServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.ConsoleServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
+import com.bhu.vas.business.backendonline.plugins.hook.DaemonExecRunnable;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
 
@@ -56,7 +58,12 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 		logger.info("AnsyncMsgBackendProcessor initialize...");
 		QueueMsgObserverManager.SpringQueueMessageObserver.addSpringQueueMessageListener(this);
 	}
-	
+	@PreDestroy
+	public void destory(){
+		logger.info("AsyncMsgBackendProcessor destory...");
+		Thread desstoryThread = new Thread(new DaemonExecRunnable(exec));
+		desstoryThread.start();
+	}
 	@Override
 	public void onMessage(final String messagejsonHasPrefix){
 		//logger.info(String.format("AnsyncMsgBackendProcessor receive message[%s]", messagejsonHasPrefix));
