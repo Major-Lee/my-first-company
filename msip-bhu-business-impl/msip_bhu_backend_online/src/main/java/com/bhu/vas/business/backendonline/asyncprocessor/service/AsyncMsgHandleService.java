@@ -12,7 +12,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.DownCmds;
@@ -47,7 +46,6 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
-import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
@@ -76,8 +74,6 @@ import com.bhu.vas.business.asyn.spring.model.WifiDevicesGrayChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDevicesModuleStyleChangedDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
-import com.bhu.vas.business.asyn.spring.model.tag.BindTagDTO;
-import com.bhu.vas.business.asyn.spring.model.tag.DelTagDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
@@ -95,7 +91,6 @@ import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
-import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
@@ -117,7 +112,6 @@ import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 import com.smartwork.msip.cores.helper.ip.IpLookup;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
-import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 @Service
@@ -183,9 +177,6 @@ public class AsyncMsgHandleService {
 
 	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
-
-	@Resource
-	private TagDevicesService tagDevicesService;
 
 	/**
 	 * wifi设备上线 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理,
@@ -1863,82 +1854,5 @@ public class AsyncMsgHandleService {
 	 * logger.info(String.format("deviceAsyncCmdGen message[%s] successful",
 	 * message)); }
 	 */
-
-	public void deviceBatchBindTag(String message) {
-		logger.info(String.format("deviceBatchBindTag message[%s]", message));
-		final BindTagDTO bindTagDto = JsonHelper.getDTO(message, BindTagDTO.class);
-		final String newTags = bindTagDto.getTag();
-		final int uid = bindTagDto.getUid();
-
-		wifiDeviceDataSearchService.iteratorAll(bindTagDto.getMessage(),
-				new IteratorNotify<Page<WifiDeviceDocument>>() {
-					@Override
-					public void notifyComming(Page<WifiDeviceDocument> pages) {
-
-						List<String> macList = new ArrayList<String>();
-						List<String> tagNameList = new ArrayList<String>();
-
-						List<TagDevices> insertList = new ArrayList<TagDevices>();
-						List<TagDevices> upDateList = new ArrayList<TagDevices>();
-
-						for (WifiDeviceDocument doc : pages) {
-							macList.add(doc.getD_mac());
-						}
-
-						List<TagDevices> tagList = tagDevicesService.findByIds(macList, true, true);
-
-						String[] arrTemp = newTags.split(",");
-
-						int index = 0;
-						for (TagDevices tagDevices : tagList) {
-							if (tagDevices == null) {
-								TagDevices entity = new TagDevices();
-								entity.setId(macList.get(index));
-								entity.setLast_operator(uid);
-
-								entity.replaceInnerModels(ArrayHelper.toSet(arrTemp));
-
-								tagNameList.add(entity.getTag2ES());
-
-								insertList.add(entity);
-
-							} else {
-								tagDevices.setLast_operator(uid);
-
-								tagDevices.replaceInnerModels(ArrayHelper.toSet(arrTemp));
-
-								upDateList.add(tagDevices);
-								tagNameList.add(tagDevices.getTag2ES());
-							}
-							index++;
-						}
-						tagDevicesService.insertAll(insertList);
-						tagDevicesService.updateAll(upDateList);
-
-						wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, tagNameList);
-					}
-				});
-	}
-
-	public void deviceBatchDelTag(String message) {
-		logger.info(String.format("deviceBatchDelTag message[%s]", message));
-		final DelTagDTO delTagDto = JsonHelper.getDTO(message, DelTagDTO.class);
-
-		wifiDeviceDataSearchService.iteratorAll(delTagDto.getMessage(),
-				new IteratorNotify<Page<WifiDeviceDocument>>() {
-					@Override
-					public void notifyComming(Page<WifiDeviceDocument> pages) {
-						
-						List<String> macList = new ArrayList<String>();
-						for (WifiDeviceDocument doc : pages) {
-							macList.add(doc.getD_mac());
-						}
-						
-						List<TagDevices> entities = tagDevicesService.findByIds(macList, true, true);
-						tagDevicesService.deleteAll(entities);
-						wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, "");
-					}
-				});
-	}
 
 }

@@ -4,8 +4,10 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.async.AsyncDeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
+import com.bhu.vas.business.asyn.spring.model.async.tag.OperTagDTO;
 
 
 public class AsyncDeliverMessageService {
@@ -37,6 +39,23 @@ public class AsyncDeliverMessageService {
 		dto.setRcp(rcp);
 		dto.setAit(ait);
 		dto.setTs(System.currentTimeMillis());
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sentDeviceBatchBindTagActionMessage(int uid,String message ,String tag){
+		OperTagDTO dto = new OperTagDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setTag(tag);
+		dto.setDtoType(IDTO.ACT_ADD);
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+
+	public void sentDeviceBatchDelTagActionMessage(int uid,String message){
+		OperTagDTO dto = new OperTagDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setDtoType(IDTO.ACT_DELETE);
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 }
