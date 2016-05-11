@@ -43,6 +43,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@PreDestroy
 	public void destory(){
+		logger.info("AsyncMsgBackendProcessor destory...");
 		Thread desstoryThread = new Thread(new DaemonExecRunnable(exec));
 		desstoryThread.start();
 	}
