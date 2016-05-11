@@ -2,7 +2,6 @@ package com.bhu.vas.business.asyn.spring.builder.async;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class AsyncMessageFactoryBuilder {
@@ -19,16 +18,16 @@ public class AsyncMessageFactoryBuilder {
     	return messagejsonHasPrefix.substring(AsyncMessageType.prefix_length);
 	}
 	
-	public static <T extends ActionDTO> T fromJson(String messagejson,Class<T> classz){
+	public static <T extends AsyncDTO> T fromJson(String messagejson,Class<T> classz){
 		if(StringUtils.isEmpty(messagejson)) return null;
 		return JsonHelper.getDTO(messagejson, classz);
 	}
-	public static String toJsonHasPrefix(ActionDTO message){
+	public static String toJsonHasPrefix(AsyncDTO message){
 		StringBuilder sb = new StringBuilder();
-		sb.append(message.getActionType()).append(toJson(message));
+		sb.append(message.getAsyncType()).append(toJson(message));
 		return sb.toString();
 	}
-	public static String toJson(ActionDTO message){
+	public static String toJson(AsyncDTO message){
 		return JsonHelper.getJSONString(message,false);
 	}
 }

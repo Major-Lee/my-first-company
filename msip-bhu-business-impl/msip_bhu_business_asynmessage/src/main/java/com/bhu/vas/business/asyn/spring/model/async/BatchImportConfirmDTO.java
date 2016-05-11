@@ -1,9 +1,9 @@
 package com.bhu.vas.business.asyn.spring.model.async;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
+import com.bhu.vas.business.asyn.spring.builder.async.AsyncDTO;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 
-public class BatchImportConfirmDTO extends ActionDTO {
+public class BatchImportConfirmDTO extends AsyncDTO {
 	private String batchno;
 	
 	public String getBatchno() {
@@ -14,7 +14,7 @@ public class BatchImportConfirmDTO extends ActionDTO {
 	}
 
 	@Override
-	public String getActionType() {
+	public String getAsyncType() {
 		return AsyncMessageType.BatchImportConfirm.getPrefix();
 	}
 }

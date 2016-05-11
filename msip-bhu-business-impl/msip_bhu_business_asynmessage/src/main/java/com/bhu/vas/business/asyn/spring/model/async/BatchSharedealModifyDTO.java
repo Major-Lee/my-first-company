@@ -1,9 +1,9 @@
 package com.bhu.vas.business.asyn.spring.model.async;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
+import com.bhu.vas.business.asyn.spring.builder.async.AsyncDTO;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 
-public class BatchSharedealModifyDTO extends ActionDTO {
+public class BatchSharedealModifyDTO extends AsyncDTO {
 	private String message;
 	private Boolean cbto;
 	private Boolean el;
@@ -69,7 +69,7 @@ public class BatchSharedealModifyDTO extends ActionDTO {
 	}
 
 	@Override
-	public String getActionType() {
+	public String getAsyncType() {
 		return AsyncMessageType.BatchSharedealModify.getPrefix();
 	}
 }

@@ -3,9 +3,9 @@ package com.bhu.vas.business.asyn.spring.activemq.service.async;
 import javax.annotation.Resource;
 
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.async.AsyncDeliverMessageQueueProducer;
-import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.spring.model.BatchImportConfirmDTO;
-import com.bhu.vas.business.asyn.spring.model.BatchSharedealModifyDTO;
+import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
+import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
+import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
 
 
 public class AsyncDeliverMessageService {
@@ -21,7 +21,7 @@ public class AsyncDeliverMessageService {
 		dto.setUid(uid);
 		dto.setBatchno(batchno);
 		dto.setTs(System.currentTimeMillis());
-		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
 	public void sendBatchSharedealModifyActionMessage(int uid,String message,
@@ -37,6 +37,6 @@ public class AsyncDeliverMessageService {
 		dto.setRcp(rcp);
 		dto.setAit(ait);
 		dto.setTs(System.currentTimeMillis());
-		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 }
