@@ -91,8 +91,8 @@ public class GexinPushService{
 				template.setTransmissionType(2);
 				template.setTransmissionContent(pushMsg.getPaylod());
 				template.setTitle(pushMsg.getTitle());
-				String titleWithDate = DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern) + StringHelper.WHITESPACE_STRING_GAP + pushMsg.getText();
-		        template.setText(titleWithDate);
+				//String titleWithDate = DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern) + StringHelper.WHITESPACE_STRING_GAP + pushMsg.getText();
+		        template.setText(pushMsg.getText());
 	            template.setLogo(pushMsg.getLogo()); // 通知图标，需要客户端开发时嵌入
 	            //template.setIsRing(false); // 收到通知是否响铃，可选，默认响铃
 	            //template.setIsVibrate(false); // 收到通知是否震动，可选，默认振动
