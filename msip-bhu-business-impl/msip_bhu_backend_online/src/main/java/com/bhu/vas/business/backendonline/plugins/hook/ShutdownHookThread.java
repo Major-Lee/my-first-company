@@ -1,16 +1,19 @@
 package com.bhu.vas.business.backendonline.plugins.hook;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class ShutdownHookThread extends Thread {
-	private ApplicationContext ctx;
+	private ClassPathXmlApplicationContext ctx;
 	
-	public ShutdownHookThread(ApplicationContext ctx){
+	public ShutdownHookThread(ClassPathXmlApplicationContext ctx){
 		this.ctx = ctx;
 	}
 	
     public void run() {
     	System.err.println("BackendOnlineMain Server Hook Starting...");
+    	ctx.destroy();
+    	ctx.close();
     	/*final DefaultMessageListenerContainer container = (DefaultMessageListenerContainer) ctx.getBean("deliverMessageQueueListenerContainer");
 		final DeliverMessageQueueConsumer consumer = (DeliverMessageQueueConsumer) ctx.getBean("deliverMessageQueueConsumer");
 		if(container != null){

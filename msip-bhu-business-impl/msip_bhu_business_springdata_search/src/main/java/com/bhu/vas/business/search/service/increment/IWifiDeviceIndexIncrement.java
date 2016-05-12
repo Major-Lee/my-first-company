@@ -130,4 +130,5 @@ public interface IWifiDeviceIndexIncrement {
 	 * @param template
 	 */
 	public void sharedNetworkUpdIncrement(String id, String sharedNetwork_type, String template);
+
 }
