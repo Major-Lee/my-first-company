@@ -85,6 +85,9 @@ public interface BusinessIndexDefine {
 			A_NICK("a_nick",null),//代理商的用户名称
 			A_ORG("a_org",null),//代理商的公司名称
 			
+			
+			/**** 第三方业务信息 ucloud ****/
+			T_UC_EXTENSION("t_uc_extension",null),//ucloud自定义搜索业务字段
 			;
 			//基本索引字段名称
 			String name;
