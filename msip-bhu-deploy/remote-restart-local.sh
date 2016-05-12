@@ -29,7 +29,7 @@ ssh -p 22 root@192.168.66.155 '/BHUData/appsh/start.sh'
 
 
 sleep 5
-echo "restart 192.168.66.7 web"
-ssh -p 22 root@192.168.66.7 '/usr/local/tomcats/stop_tomcats.sh'
-ssh -p 22 root@192.168.66.7 '/usr/local/tomcats/startup_tomcats.sh'
+echo "restart 192.168.66.124 web"
+ssh -p 22 root@192.168.66.124 '/usr/local/tomcats/stop_tomcats.sh'
+ssh -p 22 root@192.168.66.124 '/usr/local/tomcats/startup_tomcats.sh'
 

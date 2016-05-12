@@ -108,6 +108,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 						if(uid_willbinded != null && uid_willbinded.intValue() >0){
 							userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
 						}else{
+							//如果设备从未上线则强制解绑，如果设备上线过则不动作
 							userDeviceFacadeService.doForceUnbindDevice(pages);
 						}
 						
