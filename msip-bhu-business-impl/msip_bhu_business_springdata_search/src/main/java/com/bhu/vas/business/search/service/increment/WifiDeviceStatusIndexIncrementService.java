@@ -282,4 +282,22 @@ public class WifiDeviceStatusIndexIncrementService{
 		
 		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, false, true, true);
 	}
+	
+	/**
+	 * 设备的ucloud业务搜索字段的变更
+	 * 变更涉及的更改索引字段是
+	 * 1) t_uc_extension
+	 * @param ids
+	 * @param t_uc_extension
+	 */
+	public void ucExtensionMultiUpdIncrement(List<String> ids, String t_uc_extension) {
+		logger.info(String.format("UcExtensionMultiUpdIncrement Request ids [%s] t_uc_extension [%s]", ids, t_uc_extension));
+		if(ids == null || ids.isEmpty()) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.T_UC_EXTENSION.getName(), t_uc_extension);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(),  DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, false, true, true);
+	}
 }

@@ -273,6 +273,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
+			searchAnalyzer = "whitespace",
+			indexAnalyzer = "whitespace",
+			store = true
+	)
+	private String t_uc_extension;//第三方ucloud扩展字段
+	
+	@Field(
+			type = FieldType.String,
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
@@ -702,6 +710,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getT_uc_extension() {
+		return t_uc_extension;
+	}
+
+	public void setT_uc_extension(String t_uc_extension) {
+		this.t_uc_extension = t_uc_extension;
 	}
 
 }
