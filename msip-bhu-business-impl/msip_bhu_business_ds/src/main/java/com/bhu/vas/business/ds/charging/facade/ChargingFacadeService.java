@@ -210,7 +210,7 @@ public class ChargingFacadeService {
 	/**
 	 * 
 	 * @param batchno
-	 * @param owner null <=0 >0 三种情况 null值代表忽略替换值内容,需要去查询设备的绑定用户
+	 * @param owner null <=0 >0 三种情况 null值代表忽略替换值内容,在insert的情况下需要去查询设备的绑定用户
 	 * @param dmac
 	 * @param owner_percent
 	 * @param range_cash_mobile

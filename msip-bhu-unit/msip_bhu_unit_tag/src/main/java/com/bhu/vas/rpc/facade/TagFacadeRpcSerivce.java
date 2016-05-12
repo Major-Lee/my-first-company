@@ -60,7 +60,6 @@ public class TagFacadeRpcSerivce {
 	}
 
 	public void bindTag(int uid, String mac, String tag) throws Exception {
-
 		boolean filter = StringFilter(tag);
 
 		if (tag!=null && filter) {
