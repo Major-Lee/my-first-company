@@ -49,27 +49,37 @@ public class ChargingRpcService  implements IChargingRpcService{
 		logger.info(String.format("doPages uid:%s status:%s pageNo:%s pageSize:%s",uid, status,pageNo,pageSize));
 		return chargingUnitFacadeService.doPages(uid,status,pageNo,pageSize);
 	}
-
+	
 	@Override
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,
 			int countrycode, String bmobileno, String sellor, String partner,
-			double sharedeal_owner_percent, boolean canbeturnoff,
-			boolean enterpriselevel, 
+			boolean canbeturnoff,boolean enterpriselevel, 
+			boolean customized,
+			String sharedeal_owner_percent,
 			String range_cash_mobile,String range_cash_pc,String access_internet_time,
 			String remark) {
-		logger.info(String.format("doInputDeviceRecord uid:%s countrycode:%s bmobileno:%s sellor:%s partner:%s sharedeal_owner_percent:%s canbeturnoff:%s enterpriselevel:%s range_cash_mobile:%s range_cash_pc:%s access_internet_time:%s remark:%s",
-				uid,countrycode, bmobileno,sellor,partner,sharedeal_owner_percent,canbeturnoff,enterpriselevel, range_cash_mobile, range_cash_pc, access_internet_time, remark));
-		return chargingUnitFacadeService.doInputDeviceRecord(uid,countrycode, bmobileno,sellor,partner,sharedeal_owner_percent,canbeturnoff,enterpriselevel, range_cash_mobile, range_cash_pc, access_internet_time, remark);
+		logger.info(String.format("doInputDeviceRecord uid:%s countrycode:%s bmobileno:%s sellor:%s partner:%s canbeturnoff:%s enterpriselevel:%s customized:%s sharedeal_owner_percent:%s range_cash_mobile:%s range_cash_pc:%s access_internet_time:%s remark:%s",
+				uid,countrycode, bmobileno,sellor,partner,canbeturnoff,enterpriselevel,customized,sharedeal_owner_percent, range_cash_mobile, range_cash_pc, access_internet_time, remark));
+		return chargingUnitFacadeService.doInputDeviceRecord(uid,countrycode, bmobileno,sellor,partner,
+				canbeturnoff,enterpriselevel,
+				customized,
+				sharedeal_owner_percent, range_cash_mobile, range_cash_pc, access_internet_time, remark);
 
 	}
 
 	@Override
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid,
-			String message, Boolean canbeturnoff,Boolean enterpriselevel, double owner_percent,
+			String message, Boolean canbeturnoff,Boolean enterpriselevel, 
+			boolean customized,
+			String owner_percent,
 			String range_cash_mobile, String range_cash_pc,
 			String access_internet_time) {
-		logger.info(String.format("doBatchSharedealModify uid:%s message:%s owner_percent:%s canbeturnoff:%s enterpriselevel:%s range_cash_mobile:%s range_cash_pc:%s",uid,message, owner_percent,canbeturnoff,enterpriselevel,range_cash_pc, range_cash_pc,access_internet_time));
-		return chargingUnitFacadeService.doBatchSharedealModify(uid,message, canbeturnoff,enterpriselevel,owner_percent,range_cash_mobile, range_cash_pc,access_internet_time);
+		logger.info(String.format("doBatchSharedealModify uid:%s message:%s canbeturnoff:%s enterpriselevel:%s owner_percent:%s range_cash_mobile:%s range_cash_pc:%s",uid,message, canbeturnoff,enterpriselevel,owner_percent,range_cash_pc, range_cash_pc,access_internet_time));
+		return chargingUnitFacadeService.doBatchSharedealModify(uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,range_cash_mobile, range_cash_pc,access_internet_time);
 	}
+
+
+
+
 
 }

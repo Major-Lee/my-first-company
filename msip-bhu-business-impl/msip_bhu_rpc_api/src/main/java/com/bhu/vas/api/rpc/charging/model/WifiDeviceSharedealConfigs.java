@@ -42,6 +42,7 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	private int owner = 0;
 	//厂商用户  必须>零 目前值为定值
 	private int manufacturer = 0;
+	private boolean customized = false;
 	//约定的收益分成比例 最多小数点保留后两位 70%-30%开，总值为1；
 	private double owner_percent = Default_Owner_Percent;
 	private double manufacturer_percent = Default_Manufacturer_Percent;
@@ -146,6 +147,12 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	public void setEnterpriselevel(boolean enterpriselevel) {
 		this.enterpriselevel = enterpriselevel;
 	}
+	public boolean isCustomized() {
+		return customized;
+	}
+	public void setCustomized(boolean customized) {
+		this.customized = customized;
+	}
 	@Override
 	public void preInsert() {
 		if (this.created_at == null)
@@ -160,6 +167,7 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 		}else{
 			this.setOwner(owner);
 		}
+		this.setCustomized(false);
 		this.setCanbe_turnoff(true);
 		this.setRuntime_applydefault(true);
 	}
