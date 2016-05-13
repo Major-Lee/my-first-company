@@ -78,12 +78,13 @@ public class WifiDeviceDocumentHelper {
 	 * @param hoc
 	 * @param wifiDeviceSharedNetwork
 	 * @param wifiDeviceShareConfig
+	 * @param t_uc_extension
 	 * @return
 	 */
 	public static WifiDeviceDocument fromNormalWifiDevice(WifiDevice wifiDevice, WifiDeviceModule deviceModule,
 			WifiDeviceGray wifiDeviceGray, User bindUser, String bindUserDNick, 
 			TagDevices tagDevices, String o_template, int hoc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork,
-			WifiDeviceSharedealConfigs wifiDeviceShareConfig){
+			WifiDeviceSharedealConfigs wifiDeviceShareConfig, String t_uc_extension){
 		if(wifiDevice == null) return null;
 		
 		WifiDeviceDocument doc = new WifiDeviceDocument();
@@ -98,6 +99,7 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_type(wifiDevice.getHdtype());
 			doc.setD_wanip(wifiDevice.getWan_ip());
 			doc.setD_industry(wifiDevice.getIndustry());
+			doc.setT_uc_extension(t_uc_extension);
 			if(StringUtils.isNotEmpty(wifiDevice.getLon()) && StringUtils.isNotEmpty(wifiDevice.getLat())){
 				doc.setD_geopoint(new double[]{Double.parseDouble(wifiDevice.getLon()), 
 						Double.parseDouble(wifiDevice.getLat())});
