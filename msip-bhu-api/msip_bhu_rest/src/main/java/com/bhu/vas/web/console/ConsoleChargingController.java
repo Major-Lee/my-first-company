@@ -41,9 +41,9 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = false,value = "cbto") Boolean canbeturnoff,
             @RequestParam(required = false,value = "el") Boolean enterpriselevel,
             @RequestParam(required = false,value = "percent",defaultValue="0.70") double owner_percent,
-            @RequestParam(required = false,value = "rcm",defaultValue="0.1-0.3") String range_cash_mobile,
-            @RequestParam(required = false,value = "rcp",defaultValue="0.5-0.8") String range_cash_pc,
-            @RequestParam(required = false,value = "ait",defaultValue="0.70") String access_internet_time
+            @RequestParam(required = false,value = "rcm",defaultValue="0.5-0.9") String range_cash_mobile,
+            @RequestParam(required = false,value = "rcp",defaultValue="1.5-3.5") String range_cash_pc,
+            @RequestParam(required = false,value = "ait",defaultValue="14400") String access_internet_time
             ) {
     	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, message, 
     			canbeturnoff,enterpriselevel,owner_percent,
@@ -70,9 +70,9 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = false,value = "cbto",defaultValue="true") boolean canbeturnoff,
             @RequestParam(required = false,value = "el",defaultValue="false") boolean enterpriselevel,
             @RequestParam(required = false,value = "percent",defaultValue="0.70") double owner_percent,
-            @RequestParam(required = false,value = "rcm",defaultValue="0.1-0.3") String range_cash_mobile,
-            @RequestParam(required = false,value = "rcp",defaultValue="0.5-0.8") String range_cash_pc,
-            @RequestParam(required = false,value = "ait",defaultValue="0.70") String access_internet_time,
+            @RequestParam(required = false,value = "rcm",defaultValue="0.5-0.9") String range_cash_mobile,
+            @RequestParam(required = false,value = "rcp",defaultValue="1.5-3.5") String range_cash_pc,
+            @RequestParam(required = false,value = "ait",defaultValue="14400") String access_internet_time,
             @RequestParam(required = false) String remark
     ) {
     	if(file == null){
