@@ -88,7 +88,7 @@
 			#{partner},
 			#{canbeturnoff},
 			#{enterpriselevel},
-			#{customized}，
+			#{customized},
 			#{owner_percent},
 			#{range_cash_mobile},
 	    	#{range_cash_pc},
@@ -109,7 +109,7 @@
 	    	partner = #{partner},
 	    	canbeturnoff = #{canbeturnoff},
 	    	enterpriselevel = #{enterpriselevel},
-	    	customized = #{customized}，
+	    	customized = #{customized},
 	    	owner_percent = #{owner_percent},
 	    	range_cash_mobile = #{range_cash_mobile},
 	    	range_cash_pc = #{range_cash_pc},
