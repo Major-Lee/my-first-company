@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -140,4 +141,53 @@ public class ConsoleTagController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
     }   
+    
+    @ResponseBody()
+    @RequestMapping(value = "/group/save", method = {RequestMethod.POST})
+    public void tag_Group_Save(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = false) int gid,
+            @RequestParam(required = false) int pid,
+            @RequestParam(required = true) String name) {
+    	RpcResponseDTO<TagGroupVTO> rpcResult = tagRpcService.saveTreeNode(uid, gid, pid, name);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    } 
+    
+    @ResponseBody()
+    @RequestMapping(value = "/group/del", method = {RequestMethod.POST})
+    public void tag_Group_Del_Node(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String gids) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.delNode(uid, gids);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value = "/group/fetch", method = {RequestMethod.POST})
+    public void tag_Group_Fetch(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = false) int pid,
+    	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+    	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
+    	RpcResponseDTO<TailPage<TagGroupVTO>> rpcResult = tagRpcService.fetchChildGroup(uid, pid, pageNo, pageSize);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
 }

@@ -34,13 +34,13 @@ public interface ITagRpcService {
     
 	RpcResponseDTO<Boolean> deviceBatchDelTag(int uid, String message);
 
-	TagGroupVTO saveTreeNode(int uid, int gid, int pid, String name);
+	RpcResponseDTO<TagGroupVTO> saveTreeNode(int uid, int gid, int pid, String name);
 
 	RpcResponseDTO<Boolean> saveDevices2Group(int uid, int gid, int pid, String path, String macs);
 
-	boolean delNode(int uid, String gids);
+	RpcResponseDTO<Boolean> delNode(int uid, String gids);
 
-	TailPage<TagGroupVTO> fetchChildGroup(int uid, int pid, int pageNo, int pageSize);
+	RpcResponseDTO<TailPage<TagGroupVTO>> fetchChildGroup(int uid, int pid, int pageNo, int pageSize);
 
 	TagGroupVTO currentGroupDetail(int uid, int gid);
 

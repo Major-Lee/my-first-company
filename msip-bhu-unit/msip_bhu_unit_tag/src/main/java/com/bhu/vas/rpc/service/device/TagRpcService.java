@@ -92,9 +92,17 @@ public class TagRpcService implements ITagRpcService {
 	 * 添加或修改分组
 	 */
 	@Override
-	public TagGroupVTO saveTreeNode(int uid, int gid, int pid, String name) {
+	public RpcResponseDTO<TagGroupVTO> saveTreeNode(int uid, int gid, int pid, String name) {
+
 		logger.info(String.format("saveTreeNode uid[%s] gid[%s] pid[%s] name[%s]", uid, gid, pid, name));
-		return tagFacadeRpcSerivce.saveTreeNode(uid, gid, pid, name);
+		try {
+			TagGroupVTO tagGroupVTO = tagFacadeRpcSerivce.saveTreeNode(uid, gid, pid, name);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(tagGroupVTO);
+		} catch (BusinessI18nCodeException i18nex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		} catch (Exception ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 
 	/**
@@ -118,9 +126,16 @@ public class TagRpcService implements ITagRpcService {
 	 * 删除分组
 	 */
 	@Override
-	public boolean delNode(int uid, String gids) {
+	public RpcResponseDTO<Boolean> delNode(int uid, String gids) {
 		logger.info(String.format("delNode uid[%s] gids[%s]", uid, gids));
-		return tagFacadeRpcSerivce.delNode(uid, gids);
+		try {
+			tagFacadeRpcSerivce.delNode(uid, gids);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		} catch (BusinessI18nCodeException i18nex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		} catch (Exception ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 
 	/**
@@ -144,10 +159,15 @@ public class TagRpcService implements ITagRpcService {
 	 * 分页查询子节点
 	 */
 	@Override
-	public TailPage<TagGroupVTO> fetchChildGroup(int uid, int pid, int pageNo, int pageSize) {
+	public RpcResponseDTO<TailPage<TagGroupVTO>> fetchChildGroup(int uid, int pid, int pageNo, int pageSize) {
 		logger.info(
 				String.format("fetchChildGroup uid[%s] pid[%s] pageNo[%s] pageSize[%s]", uid, pid, pageNo, pageSize));
-		return tagFacadeRpcSerivce.fetchChildGroup(uid, pid, pageNo, pageSize);
+		try {
+			TailPage<TagGroupVTO> tagGroup = tagFacadeRpcSerivce.fetchChildGroup(uid, pid, pageNo, pageSize);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(tagGroup);
+		} catch (Exception e) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 
 	/**
