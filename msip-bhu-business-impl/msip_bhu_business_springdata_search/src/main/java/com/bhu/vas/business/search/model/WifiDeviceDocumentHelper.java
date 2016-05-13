@@ -103,7 +103,7 @@ public class WifiDeviceDocumentHelper {
 						Double.parseDouble(wifiDevice.getLat())});
 			}
 			doc.setD_address(wifiDevice.getFormatted_address());
-			if(wifiDevice.getLast_reged_at() == null){
+			if(wifiDevice.getFirst_reged_at() == null){
 				doc.setD_online(WifiDeviceDocumentEnumType.OnlineEnum.NeverOnline.getType());
 			}else{
 				doc.setD_online(wifiDevice.isOnline() ? WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()
