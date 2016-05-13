@@ -11,8 +11,6 @@ public class URouterDeviceConfigNVTO  implements Serializable {
     private String mac;
 
     private String n;
-    
-    private String tt;
 
     public String getMac() {
         return mac;
@@ -29,12 +27,4 @@ public class URouterDeviceConfigNVTO  implements Serializable {
     public void setN(String n) {
         this.n = n;
     }
-
-	public String getTt() {
-		return tt;
-	}
-
-	public void setTt(String tt) {
-		this.tt = tt;
-	}
 }
