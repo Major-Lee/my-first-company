@@ -2,7 +2,6 @@ package com.bhu.vas.api.rpc.tag.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import com.smartwork.msip.cores.orm.model.BaseIntModel;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
