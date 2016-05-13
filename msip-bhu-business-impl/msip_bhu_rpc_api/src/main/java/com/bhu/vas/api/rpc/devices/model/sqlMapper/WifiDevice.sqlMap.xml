@@ -49,6 +49,8 @@
 	<result property="last_start_at" column="last_start_at"/>
     <result property="last_reged_at" column="last_reged_at"/>
     <result property="last_logout_at" column="last_logout_at"/>
+    <result property="first_reged_at" column="first_reged_at"/>
+    
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -101,6 +103,7 @@
 	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
+	    	first_reged_at,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -147,6 +150,7 @@
 	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
+	    	first_reged_at,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -194,6 +198,7 @@
 	    	#{last_start_at},
 	    	#{last_reged_at},
 	    	#{last_logout_at},
+	    	#{first_reged_at},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -239,6 +244,7 @@
 	    	last_start_at = #{last_start_at},
 	    	last_reged_at = #{last_reged_at},
 	    	last_logout_at = #{last_logout_at},
+	    	first_reged_at = #{first_reged_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">

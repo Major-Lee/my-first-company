@@ -89,6 +89,8 @@ public class WifiDevice extends BaseStringModel{
 	private Date last_reged_at;
 	//最后一次登出时间
 	private Date last_logout_at;
+	//第一次设备注册时间
+	private Date first_reged_at;
 	private Date created_at;
 	
 	@Override
@@ -452,6 +454,14 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setTfcard_usage(String tfcard_usage) {
 		this.tfcard_usage = tfcard_usage;
+	}
+
+	public Date getFirst_reged_at() {
+		return first_reged_at;
+	}
+
+	public void setFirst_reged_at(Date first_reged_at) {
+		this.first_reged_at = first_reged_at;
 	}
 	
 }
