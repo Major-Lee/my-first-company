@@ -81,9 +81,9 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			        	String dmac = macs_fromdb.get(0);
 			        	//chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded==null?-1:uid_willbinded.intValue(), dmac, importVto.getOwner_percent(), 
 			        	//		importVto.getRcm(), importVto.getRcp(), importVto.getAit(), importVto.isCanbeturnoff(),importVto.isEnterpriselevel(), false);
-			        	chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, dmac, importVto.getOwner_percent(), 
+			        	/*chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, dmac, importVto.getOwner_percent(), 
 			        			importVto.getRcm(), importVto.getRcp(), importVto.getAit(), importVto.isCanbeturnoff(),importVto.isEnterpriselevel(), false);
-			        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);
+			        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);*/
 			        	//TODO:增加索引更新 是否可关闭
 			        	DeviceCallbackDTO result = new DeviceCallbackDTO();
 			        	result.setMac(dmac);
