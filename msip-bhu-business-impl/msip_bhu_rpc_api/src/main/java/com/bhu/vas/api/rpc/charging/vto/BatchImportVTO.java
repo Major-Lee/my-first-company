@@ -13,9 +13,10 @@ public class BatchImportVTO implements java.io.Serializable{
 	private String mobileno;
 	private String sellor;
 	private String partner;
-	private double owner_percent;
+	private String owner_percent;
 	private boolean canbeturnoff;
 	private boolean enterpriselevel;
+	private boolean customized = false;
 	private String rcp;
 	private String rcm;
 	private String ait;
@@ -79,12 +80,13 @@ public class BatchImportVTO implements java.io.Serializable{
 		this.importor_mobileno = importor_mobileno;
 	}
 	
-	public double getOwner_percent() {
+	public String getOwner_percent() {
 		return owner_percent;
 	}
-	public void setOwner_percent(double owner_percent) {
+	public void setOwner_percent(String owner_percent) {
 		this.owner_percent = owner_percent;
 	}
+	
 	public boolean isCanbeturnoff() {
 		return canbeturnoff;
 	}
@@ -173,5 +175,10 @@ public class BatchImportVTO implements java.io.Serializable{
 	public void setAit(String ait) {
 		this.ait = ait;
 	}
-	
+	public boolean isCustomized() {
+		return customized;
+	}
+	public void setCustomized(boolean customized) {
+		this.customized = customized;
+	}
 }

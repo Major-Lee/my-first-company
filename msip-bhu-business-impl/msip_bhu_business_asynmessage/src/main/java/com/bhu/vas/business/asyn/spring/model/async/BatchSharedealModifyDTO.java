@@ -7,7 +7,8 @@ public class BatchSharedealModifyDTO extends AsyncDTO {
 	private String message;
 	private Boolean cbto;
 	private Boolean el;
-	private double owner_percent;
+	private boolean customized;
+	private String owner_percent;
 	private String rcm;
 	private String rcp;
 	private String ait;
@@ -20,11 +21,11 @@ public class BatchSharedealModifyDTO extends AsyncDTO {
 		this.message = message;
 	}
 
-	public double getOwner_percent() {
+	public String getOwner_percent() {
 		return owner_percent;
 	}
 
-	public void setOwner_percent(double owner_percent) {
+	public void setOwner_percent(String owner_percent) {
 		this.owner_percent = owner_percent;
 	}
 
@@ -66,6 +67,14 @@ public class BatchSharedealModifyDTO extends AsyncDTO {
 
 	public void setEl(Boolean el) {
 		this.el = el;
+	}
+
+	public boolean isCustomized() {
+		return customized;
+	}
+
+	public void setCustomized(boolean customized) {
+		this.customized = customized;
 	}
 
 	@Override

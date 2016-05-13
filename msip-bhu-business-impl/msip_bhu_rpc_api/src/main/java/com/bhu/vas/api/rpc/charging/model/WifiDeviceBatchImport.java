@@ -39,9 +39,10 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	private String mobileno;
 	private String sellor;
 	private String partner;
-	private double owner_percent;
 	private boolean canbeturnoff;
 	private boolean enterpriselevel;
+	private boolean customized = false;
+	private String owner_percent;
 	private String range_cash_mobile;
 	private String range_cash_pc;
 	private String access_internet_time;
@@ -108,10 +109,11 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	public void setPartner(String partner) {
 		this.partner = partner;
 	}
-	public double getOwner_percent() {
+	
+	public String getOwner_percent() {
 		return owner_percent;
 	}
-	public void setOwner_percent(double owner_percent) {
+	public void setOwner_percent(String owner_percent) {
 		this.owner_percent = owner_percent;
 	}
 	public boolean isEnterpriselevel() {
@@ -157,6 +159,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		vto.setSellor(this.getSellor());
 		vto.setPartner(this.getPartner());
 		vto.setOwner_percent(this.getOwner_percent());
+		vto.setCustomized(this.isCustomized());
 		//vto.setManufacturer_percent(manufacturer_percent);
 		vto.setCanbeturnoff(this.isCanbeturnoff());
 		vto.setEnterpriselevel(this.isEnterpriselevel());
@@ -196,4 +199,11 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	public void setAccess_internet_time(String access_internet_time) {
 		this.access_internet_time = access_internet_time;
 	}
+	public boolean isCustomized() {
+		return customized;
+	}
+	public void setCustomized(boolean customized) {
+		this.customized = customized;
+	}
+	
 }

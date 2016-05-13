@@ -12,9 +12,11 @@
 	  <result property="mobileno" column="mobileno"/>
 	  <result property="sellor" column="sellor"/>
 	  <result property="partner" column="partner"/>
-	  <result property="owner_percent" column="owner_percent"/>
 	  <result property="canbeturnoff" column="canbeturnoff"/>
 	  <result property="enterpriselevel" column="enterpriselevel"/>
+	  <result property="customized" column="customized"/>
+	  <result property="owner_percent" column="owner_percent"/>
+	  
 	  <result property="range_cash_mobile" column="range_cash_mobile"/>
 	  <result property="range_cash_pc" column="range_cash_pc"/>
 	  <result property="access_internet_time" column="access_internet_time"/>
@@ -39,9 +41,10 @@
 	    	mobileno,
 	    	sellor,
 	    	partner,
-	    	owner_percent,
 	    	canbeturnoff,
 	    	enterpriselevel,
+	    	customized,
+	    	owner_percent,
 	    	range_cash_mobile,
 	    	range_cash_pc,
 	    	access_internet_time,
@@ -60,9 +63,10 @@
 	    	mobileno,
 	    	sellor,
 	    	partner,
-	    	owner_percent,
 	    	canbeturnoff,
 	    	enterpriselevel,
+	    	customized,
+	    	owner_percent,
 	    	range_cash_mobile,
 	    	range_cash_pc,
 	    	access_internet_time,
@@ -82,9 +86,10 @@
 			#{mobileno},
 			#{sellor},
 			#{partner},
-			#{owner_percent},
 			#{canbeturnoff},
 			#{enterpriselevel},
+			#{customized}，
+			#{owner_percent},
 			#{range_cash_mobile},
 	    	#{range_cash_pc},
 	    	#{access_internet_time},
@@ -102,9 +107,10 @@
 	    	mobileno = #{mobileno},
 	    	sellor = #{sellor},
 	    	partner = #{partner},
-	    	owner_percent = #{owner_percent},
 	    	canbeturnoff = #{canbeturnoff},
 	    	enterpriselevel = #{enterpriselevel},
+	    	customized = #{customized}，
+	    	owner_percent = #{owner_percent},
 	    	range_cash_mobile = #{range_cash_mobile},
 	    	range_cash_pc = #{range_cash_pc},
 	    	access_internet_time = #{access_internet_time},
