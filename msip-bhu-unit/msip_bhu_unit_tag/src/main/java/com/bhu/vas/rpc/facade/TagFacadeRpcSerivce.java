@@ -489,9 +489,4 @@ public class TagFacadeRpcSerivce {
 		}
 	}
 	
-	public String fetchPathWithMac(String mac){
-		
-		return tagGroupRelationService.getById(mac).getPath2ES();
-	}
-	
 }

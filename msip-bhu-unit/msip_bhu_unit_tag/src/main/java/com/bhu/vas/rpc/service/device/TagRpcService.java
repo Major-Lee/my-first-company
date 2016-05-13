@@ -28,22 +28,21 @@ public class TagRpcService implements ITagRpcService {
 
 	@Override
 	public RpcResponseDTO<Boolean> bindTag(int uid, String mac, String tag) {
-		logger.info(
-				String.format("bindTag uid[%s] mac[%s] tag[%s]",uid, mac,tag));
+		logger.info(String.format("bindTag uid[%s] mac[%s] tag[%s]", uid, mac, tag));
 		try {
 			tagFacadeRpcSerivce.bindTag(uid, mac, tag);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-		}catch(BusinessI18nCodeException i18nex){
+		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
-		}catch (Exception ex) {
+		} catch (Exception ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
 	@Override
 	public RpcResponseDTO<TailPage<TagNameVTO>> fetchTag(int pageNo, int pageSize) {
-		logger.info(String.format("fetchTag pageNo[%s] pageSize[%s]",pageNo,pageSize));
-		
+		logger.info(String.format("fetchTag pageNo[%s] pageSize[%s]", pageNo, pageSize));
+
 		try {
 			TailPage<TagNameVTO> tagName = tagFacadeRpcSerivce.fetchTag(pageNo, pageSize);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(tagName);
@@ -54,62 +53,63 @@ public class TagRpcService implements ITagRpcService {
 
 	@Override
 	public RpcResponseDTO<Boolean> delTag(int uid, String mac) {
-		logger.info(String.format("delTag  uid[%s] mac[%s]",uid,mac));
+		logger.info(String.format("delTag  uid[%s] mac[%s]", uid, mac));
 		try {
-			tagFacadeRpcSerivce.delTag(uid,mac);
+			tagFacadeRpcSerivce.delTag(uid, mac);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-		}catch (Exception ex) {
+		} catch (Exception ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
-	
+
 	@Override
 	public RpcResponseDTO<Boolean> deviceBatchBindTag(int uid, String message, String tag) {
-		logger.info(
-				String.format("deviceBatchBindTag uid[%s] message[%s] tag[%s]",uid, message,tag));
+		logger.info(String.format("deviceBatchBindTag uid[%s] message[%s] tag[%s]", uid, message, tag));
 		try {
 			tagFacadeRpcSerivce.deviceBatchBindTag(uid, message, tag);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-		}catch(BusinessI18nCodeException i18nex){
+		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
-		}catch (Exception ex) {
+		} catch (Exception ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
+
 	@Override
 	public RpcResponseDTO<Boolean> deviceBatchDelTag(int uid, String message) {
-		logger.info(
-				String.format("deviceBatchBindTag uid[%s] message[%s]",uid, message));
+		logger.info(String.format("deviceBatchBindTag uid[%s] message[%s]", uid, message));
 		try {
 			tagFacadeRpcSerivce.deviceBatchDelTag(uid, message);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-		}catch(BusinessI18nCodeException i18nex){
+		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
-		}catch (Exception ex) {
+		} catch (Exception ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
+
 	@Override
-	public TagGroupVTO saveTreeNode(int uid,int gid,int pid, String name) {
-		logger.info(
-				String.format("deviceBatchBindTag uid[%s] message[%s]",uid, name));
-		 return	tagFacadeRpcSerivce.saveTreeNode(uid, gid, pid, name);
+	public TagGroupVTO saveTreeNode(int uid, int gid, int pid, String name) {
+		logger.info(String.format("deviceBatchBindTag uid[%s] message[%s]", uid, name));
+		return tagFacadeRpcSerivce.saveTreeNode(uid, gid, pid, name);
 	}
-	
+
 	@Override
-	public boolean saveDevices2Group(int uid,int gid,int pid, String macs) {
-		logger.info(
-				String.format("deviceBatchBindTag uid[%s] message[%s]",uid, macs));
-		 return	tagFacadeRpcSerivce.saveDevices2Group(uid, gid, pid, macs);
+	public RpcResponseDTO<Boolean> saveDevices2Group(int uid, int gid, int pid, String path, String macs) {
+		logger.info(String.format("deviceBatchBindTag uid[%s] message[%s]", uid, macs));
+		try {
+			tagFacadeRpcSerivce.saveDevices2Group(uid, gid, pid, path, macs);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		} catch (BusinessI18nCodeException i18nex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		} catch (Exception ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
-	
+
 	@Override
 	public boolean delNode(int uid, String gids) {
-		logger.info(
-				String.format("deviceBatchBindTag uid[%s] message[%s]",uid, gids));
-		 return	tagFacadeRpcSerivce.delNode(uid, gids);
+		logger.info(String.format("deviceBatchBindTag uid[%s] message[%s]", uid, gids));
+		return tagFacadeRpcSerivce.delNode(uid, gids);
 	}
 }

@@ -19,4 +19,9 @@ public class TagGroupRelationService extends AbstractTagService<String, TagGroup
         super.setEntityDao(tagGroupRelationDao);
     }
 	
+	public String fetchPathWithMac(String mac){
+		
+		return this.getById(mac).getPath2ES();
+	}
+    
 }

@@ -36,7 +36,7 @@ public interface ITagRpcService {
 
 	TagGroupVTO saveTreeNode(int uid, int gid, int pid, String name);
 
-	boolean saveDevices2Group(int uid, int gid, int pid, String macs);
+	RpcResponseDTO<Boolean> saveDevices2Group(int uid, int gid, int pid, String path, String macs);
 
 	boolean delNode(int uid, String gids);
 
