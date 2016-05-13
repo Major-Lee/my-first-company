@@ -25,6 +25,7 @@ import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -85,10 +86,27 @@ public class ChargingFacadeService {
     	batch_import.setCanbeturnoff(canbeturnoff);
     	batch_import.setEnterpriselevel(enterpriselevel);
     	batch_import.setCustomized(customized);
-    	batch_import.setOwner_percent(sharedeal_owner_percent);
-    	batch_import.setRange_cash_mobile(range_cash_mobile);
-    	batch_import.setRange_cash_pc(range_cash_pc);
-    	batch_import.setAccess_internet_time(access_internet_time);
+    	//填充数据
+    	WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
+    	if(!customized){
+    		batch_import.setOwner_percent(String.valueOf(configs.getOwner_percent()));
+        	batch_import.setRange_cash_mobile(configs.getRange_cash_mobile());
+        	batch_import.setRange_cash_pc(configs.getRange_cash_pc());
+        	batch_import.setAccess_internet_time(configs.getAit_pc());
+    	}else{
+    		if(StringUtils.isEmpty(sharedeal_owner_percent) || StringHelper.MINUS_STRING_GAP.equals(sharedeal_owner_percent)){
+    			batch_import.setOwner_percent(String.valueOf(configs.getOwner_percent()));
+    		}
+    		if(StringUtils.isEmpty(range_cash_mobile) || StringHelper.MINUS_STRING_GAP.equals(range_cash_mobile)){
+    			batch_import.setRange_cash_mobile(String.valueOf(configs.getRange_cash_mobile()));
+    		}
+    		if(StringUtils.isEmpty(range_cash_pc) || StringHelper.MINUS_STRING_GAP.equals(range_cash_pc)){
+    			batch_import.setRange_cash_pc(String.valueOf(configs.getRange_cash_pc()));
+    		}
+    		if(StringUtils.isEmpty(access_internet_time) || StringHelper.MINUS_STRING_GAP.equals(access_internet_time)){
+    			batch_import.setAccess_internet_time(String.valueOf(configs.getAit_pc()));
+    		}
+    	}
     	//batch_import.setFilepath(filepath_suffix);
     	batch_import.setRemark(remark);
     	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTED_FILE);

@@ -184,9 +184,17 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 					}
 				}
 			});
+			
 			batchImport.setSucceed(atomic_successed.get());
 			batchImport.setFailed(atomic_failed.get());
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_IMPORTED);
+			/*WifiDeviceSharedealConfigs configs = chargingFacadeService.getWifiDeviceSharedealConfigsService().getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
+			if(importVto.isCustomized()){
+				batchImport.setAccess_internet_time(configs.getAit_pc());
+				batchImport.setOwner_percent(String.valueOf(configs.getOwner_percent()));
+				batchImport.setRange_cash_mobile(configs.getRange_cash_mobile());
+				batchImport.setRange_cash_pc(configs.getRange_cash_pc());
+			}*/
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
 		}finally{
 		}
