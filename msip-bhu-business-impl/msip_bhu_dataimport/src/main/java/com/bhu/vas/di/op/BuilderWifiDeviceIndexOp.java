@@ -24,6 +24,7 @@ import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateServi
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
+import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
@@ -52,6 +53,7 @@ public class BuilderWifiDeviceIndexOp {
 	private static TagDevicesService tagDevicesService;
 	private static WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
 	private static WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
+	private static TagGroupRelationService tagGroupRelationService;
 	
 	public static void main(String[] argv) throws IOException, ParseException{
 		
@@ -73,6 +75,7 @@ public class BuilderWifiDeviceIndexOp {
 			tagDevicesService = (TagDevicesService)ctx.getBean("tagDevicesService");
 			wifiDeviceSharedNetworkService = (WifiDeviceSharedNetworkService)ctx.getBean("wifiDeviceSharedNetworkService");
 			wifiDeviceSharedealConfigsService = (WifiDeviceSharedealConfigsService)ctx.getBean("wifiDeviceSharedealConfigsService");
+			tagGroupRelationService = (TagGroupRelationService)ctx.getBean("tagGroupRelationService");
 			
 			long t0 = System.currentTimeMillis();
 			
@@ -188,10 +191,11 @@ public class BuilderWifiDeviceIndexOp {
 					
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
 					WifiDeviceSharedealConfigs wifiDeviceShareConfig = wifiDeviceSharedealConfigsService.getById(mac);
+					String t_uc_extension = tagGroupRelationService.fetchPathWithMac(mac);
 					
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
 							wifiDeviceGray, bindUser, bindUserDNick, tagDevices,
-							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig);
+							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig, t_uc_extension);
 					
 /*					//构建设备索引的扩展字段
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);

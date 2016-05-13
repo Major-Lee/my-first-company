@@ -192,6 +192,7 @@ public class DeviceBusinessFacadeService {
 		if(wifi_device_entity == null){
 			wifi_device_entity = BusinessModelBuilder.wifiDeviceDtoToEntity(dto);
 			wifi_device_entity.setOnline(true);
+			wifi_device_entity.setFirst_reged_at(reged_at);
 			wifi_device_entity.setLast_logout_at(reged_at);
 			wifiDeviceService.insert(wifi_device_entity);
 			newWifi = true;

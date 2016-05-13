@@ -111,7 +111,8 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 //    		simulateUpayDrawPaymentCompletedNotify(true);
 //    	}
     	//simulateDeliverNotify();
-    	simulateMultiDeliverNotify();
+    	//simulateMultiDeliverNotify();
+    	simulateResponsePaymentCompletedNotify("10012016031800000000000000000030", true);
     }
     
     /*************           test           **************/
@@ -158,7 +159,9 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     }
     
     public static void simulateMultiDeliverNotify(){
-    	String umac_prefix = "38:bc:1a:2f:7e:";
+    	
+    	simulateResponsePaymentCompletedNotify("10012016031800000000000000000030", true);
+/*    	String umac_prefix = "38:bc:1a:2f:7e:";
     	String orderid_prefix = "10012016010100000000";
     	//System.out.println(umac_prefix.concat(String.format("%02d", RandomData.intNumber(99))));
     	String mac = "84:82:f4:09:54:80";
@@ -166,7 +169,7 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     	long order_sequence = 1;
     	try{
 	    	//while(true){
-	    		for(int i=1;i<501;i++){
+	    		//for(int i=1;i<501;i++){
 	    			String umac = umac_prefix.concat(String.format("%02d", RandomData.intNumber(99)));
 	    			String orderid = orderid_prefix.concat(String.format("%012d", order_sequence));
 		    		RequestDeliverNotifyDTO requestDeliverNotifyDto = new RequestDeliverNotifyDTO();
@@ -184,14 +187,14 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 		    		System.out.println(String.format("slen[%s] rpush_ret[%s] elen[%s]", rets.get(0), rets.get(1), rets.get(2)));
 		    		//System.out.println(String.format("rpush_ret[%s] lindex[%s]", rets.get(0), rets.get(1)));
 		    		order_sequence++;
-	    		}
+	    		//}
 	    		Thread.sleep(10l);
 	    		System.out.println(batch_sequence);
 	    		batch_sequence++;
 	    	//}
     	}catch(Exception ex){
     		ex.printStackTrace();
-    	}
+    	}*/
 
 		//for(int i = 0;i<1000;i++){
 		//System.out.println("ok1");

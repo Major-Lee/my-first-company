@@ -11,13 +11,26 @@ public class URouterVisitorDetailVTO implements Serializable {
     private String hd_mac;
 
     private String n;
+    
+    /**
+     * 昵称
+     */
+    private String alias;
 
     /**
      * 终端状态: online:0, authonline: 时间戳 , authoffline:1,
      */
     private String s;
 
-    public String getHd_mac() {
+    public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+
+	public String getHd_mac() {
         return hd_mac;
     }
 

@@ -62,9 +62,10 @@ public class ChargingFacadeService {
     public BatchImportVTO doBatchImportCreate(int uid,
     		int countrycode,String mobileno, 
     		String sellor,String partner,
-    		double sharedeal_owner_percent,
     		boolean canbeturnoff,
     		boolean enterpriselevel,
+    		boolean customized,
+    		String sharedeal_owner_percent,
     		String range_cash_mobile,String range_cash_pc,String access_internet_time,
     		String remark){
     	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
@@ -79,7 +80,8 @@ public class ChargingFacadeService {
     	batch_import.setMobileno(mobileno);
     	batch_import.setSellor(sellor);
     	batch_import.setPartner(partner);
-    	batch_import.setOwner_percent(ArithHelper.round(sharedeal_owner_percent, 2));
+    	//ArithHelper.round(sharedeal_owner_percent, 2)
+    	batch_import.setOwner_percent(sharedeal_owner_percent);
     	batch_import.setCanbeturnoff(canbeturnoff);
     	batch_import.setEnterpriselevel(enterpriselevel);
     	batch_import.setRange_cash_mobile(range_cash_mobile);
@@ -210,7 +212,7 @@ public class ChargingFacadeService {
 	/**
 	 * 
 	 * @param batchno
-	 * @param owner null <=0 >0 三种情况 null值代表忽略替换值内容,需要去查询设备的绑定用户
+	 * @param owner null <=0 >0 三种情况 null值代表忽略替换值内容,在insert的情况下需要去查询设备的绑定用户
 	 * @param dmac
 	 * @param owner_percent
 	 * @param range_cash_mobile
@@ -221,10 +223,11 @@ public class ChargingFacadeService {
 	 * @param runtime_applydefault
 	 */
 	public void doWifiDeviceSharedealConfigsUpdate(String batchno,Integer owner,String dmac,
-			double owner_percent,
-			String range_cash_mobile,String range_cash_pc, String access_internet_time,
 			Boolean canbeturnoff,
 			Boolean enterpriselevel,
+			boolean customized,
+			String owner_percent,
+			String range_cash_mobile,String range_cash_pc, String access_internet_time,
 			boolean runtime_applydefault){
 		boolean insert = false;
 		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
@@ -252,30 +255,41 @@ public class ChargingFacadeService {
 				}
 			}
 		}
-		if(owner_percent >=0 && owner_percent <=1){
-			configs.setOwner_percent(owner_percent);
-			configs.setManufacturer_percent(ArithHelper.round(ArithHelper.sub(1, owner_percent), 2));
+		if(customized){
+			try{
+				double custom_owner_percent = Double.valueOf(owner_percent);
+				if(custom_owner_percent >=0 && custom_owner_percent<=1){
+					configs.setOwner_percent(custom_owner_percent);
+					configs.setManufacturer_percent(ArithHelper.round(ArithHelper.sub(1, custom_owner_percent), 2));
+				}
+			}catch(Exception ex){
+				ex.printStackTrace(System.out);
+			}
+			/*if(owner_percent >=0 && owner_percent <=1){
+				configs.setOwner_percent(owner_percent);
+				configs.setManufacturer_percent(ArithHelper.round(ArithHelper.sub(1, owner_percent), 2));
+			}*/
+			if(StringUtils.isNotEmpty(range_cash_mobile)){
+				configs.setRange_cash_mobile(range_cash_mobile);
+			}
+			
+			if(StringUtils.isNotEmpty(range_cash_pc)){
+				configs.setRange_cash_pc(range_cash_pc);
+			}
+			
+			if(StringUtils.isNotEmpty(access_internet_time)){
+				configs.setAit_mobile(access_internet_time);
+				configs.setAit_pc(access_internet_time);
+			}
+			if(canbeturnoff != null){
+				configs.setCanbe_turnoff(canbeturnoff.booleanValue());
+			}
+			if(enterpriselevel != null){
+				configs.setEnterpriselevel(enterpriselevel.booleanValue());
+			}
+			configs.setRuntime_applydefault(runtime_applydefault);
 		}
-		if(StringUtils.isNotEmpty(range_cash_mobile)){
-			configs.setRange_cash_mobile(range_cash_mobile);
-		}
-		
-		if(StringUtils.isNotEmpty(range_cash_pc)){
-			configs.setRange_cash_pc(range_cash_pc);
-		}
-		
-		if(StringUtils.isNotEmpty(access_internet_time)){
-			configs.setAit_mobile(access_internet_time);
-			configs.setAit_pc(access_internet_time);
-		}
-		if(canbeturnoff != null){
-			configs.setCanbe_turnoff(canbeturnoff.booleanValue());
-		}
-		if(enterpriselevel != null){
-			configs.setEnterpriselevel(enterpriselevel.booleanValue());
-		}
-		configs.setRuntime_applydefault(runtime_applydefault);
-		
+		configs.setCustomized(customized);
 		if(insert){
 			wifiDeviceSharedealConfigsService.insert(configs);
 		}else{

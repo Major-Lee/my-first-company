@@ -701,7 +701,12 @@ public class UserDeviceUnitFacadeService {
 			dpv.setAddress(wifiDevice.getFormatted_address());
 			dpv.setOnline(wifiDevice.isOnline());
 			dpv.setMonline(wifiDeviceModule != null?wifiDeviceModule.isModule_online():false);
-			dpv.setFirst_reg_at(DateTimeHelper.formatDate(wifiDevice.getCreated_at(), DateTimeHelper.FormatPattern0));
+			if(wifiDevice.getFirst_reged_at() == null){
+				dpv.setFirst_reg_at(StringHelper.MINUS_STRING_GAP);
+			}else{
+				dpv.setFirst_reg_at(DateTimeHelper.formatDate(wifiDevice.getFirst_reged_at(), DateTimeHelper.FormatPattern0));
+			}
+			
 			if(wifiDevice.getLast_reged_at() != null)
 				dpv.setLast_reg_at(DateTimeHelper.formatDate(wifiDevice.getLast_reged_at(), DateTimeHelper.FormatPattern0));
 			if(wifiDevice.getLast_logout_at() != null)

@@ -17,7 +17,7 @@
     <result property="ait_mobile" column="ait_mobile"/>
     <result property="canbe_turnoff" column="canbe_turnoff"/>
     <result property="enterpriselevel" column="enterpriselevel"/>
-    
+    <result property="customized" column="customized"/>
     <result property="runtime_applydefault" column="runtime_applydefault"/>
     
     <result property="created_at" column="created_at"/>
@@ -43,6 +43,7 @@
 	    	ait_mobile,
 	    	canbe_turnoff,
 	    	enterpriselevel,
+	    	customized,
 	    	runtime_applydefault,
 	    	created_at,
 	    	updated_at
@@ -61,6 +62,7 @@
 	    	ait_mobile,
 	    	canbe_turnoff,
 	    	enterpriselevel,
+	    	customized,
 	    	runtime_applydefault,
 	    	created_at,
 	    	updated_at
@@ -80,6 +82,7 @@
 	    	#{ait_mobile},
 	    	#{canbe_turnoff},
 	    	#{enterpriselevel},
+	    	#{customized},
 	    	#{runtime_applydefault},
 	    	#{created_at},
 	    	#{updated_at}
@@ -97,6 +100,7 @@
 	    	ait_mobile = #{ait_mobile},
 	    	canbe_turnoff = #{canbe_turnoff},
 	    	enterpriselevel = #{enterpriselevel},
+	    	customized = #{customized},
 	    	runtime_applydefault = #{runtime_applydefault},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}

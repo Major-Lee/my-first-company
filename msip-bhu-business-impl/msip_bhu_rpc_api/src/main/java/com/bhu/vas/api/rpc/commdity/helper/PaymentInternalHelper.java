@@ -24,10 +24,10 @@ public class PaymentInternalHelper {
 //	public static final String COMMUNICATION_APPSECRET = "appsecret";
 	//支付系统获取订单支付url的api地址
 	//public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://upay.bhuwifi.com/api/ucloud/pay";
-	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay";
-	
-	public static final String CREATE_WITHDRAWURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/withdraw";///api/ucloud/withdrawpay";
-	
+	//public static final String CREATE_PAYMENTURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay";
+	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+BusinessRuntimeConfiguration.PaymentApiPayUri;
+	//public static final String CREATE_WITHDRAWURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/withdraw";///api/ucloud/withdrawpay";
+	public static final String CREATE_WITHDRAWURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+BusinessRuntimeConfiguration.PaymentApiWithdrawUri;
 	//模拟支付系统支付成功触发api
 	//public static final String SIMULATE_PAYSUCCESS_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay-call";
 	

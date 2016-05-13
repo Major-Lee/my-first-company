@@ -64,32 +64,29 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			final BatchImportVTO importVto = batchImport.toBatchImportVTO(null, null);
 			//final String mobileno = batchImport.getMobileno();
 			final Integer uid_willbinded = UniqueFacadeService.fetchUidByMobileno(86,batchImport.getMobileno());
-			
 			ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), new ExcelElementCallback(){
 				@Override
 				public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
 					ModelCriteria mc = new ModelCriteria();
 			        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("sn", sn);
-			        List<WifiDevice> models = wifiDeviceService.findModelByModelCriteria(mc);
-			        if(models.isEmpty()){
+			        List<String> macs_fromdb = wifiDeviceService.findIdsByModelCriteria(mc);//.findModelByModelCriteria(mc);
+			        if(macs_fromdb.isEmpty()){
 			        	atomic_failed.incrementAndGet();
 			        	return null;
 			        }
 			        else{
-			        	String dmac = models.get(0).getId();
-			        	chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded==null?-1:uid_willbinded.intValue(), dmac, importVto.getOwner_percent(), 
+			        	//WifiDevice wifiDevice = models.get(0);
+			        	//String dmac = wifiDevice.getId();
+			        	String dmac = macs_fromdb.get(0);
+			        	//chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded==null?-1:uid_willbinded.intValue(), dmac, importVto.getOwner_percent(), 
+			        	//		importVto.getRcm(), importVto.getRcp(), importVto.getAit(), importVto.isCanbeturnoff(),importVto.isEnterpriselevel(), false);
+			        	/*chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, dmac, importVto.getOwner_percent(), 
 			        			importVto.getRcm(), importVto.getRcp(), importVto.getAit(), importVto.isCanbeturnoff(),importVto.isEnterpriselevel(), false);
-			        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);
-			        	/*WifiDeviceSharedealConfigs userfulWifiDeviceSharedealConfigs = chargingFacadeService.userfulWifiDeviceSharedealConfigs(dmac);
-			        	userfulWifiDeviceSharedealConfigs.setBatchno(batchno);
-			        	userfulWifiDeviceSharedealConfigs.setOwner_percent(importVto.getOwner_percent());
-			        	userfulWifiDeviceSharedealConfigs.setManufacturer_percent(ArithHelper.round(ArithHelper.sub(1, importVto.getOwner_percent()), 2));
-			        	userfulWifiDeviceSharedealConfigs.setCanbe_turnoff(importVto.isCanbeturnoff());
-			        	userfulWifiDeviceSharedealConfigs.setRuntime_applydefault(false);
-			        	chargingFacadeService.getWifiDeviceSharedealConfigsService().update(userfulWifiDeviceSharedealConfigs);*/
+			        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);*/
 			        	//TODO:增加索引更新 是否可关闭
 			        	DeviceCallbackDTO result = new DeviceCallbackDTO();
 			        	result.setMac(dmac);
+			        	//result.setOrig_swver(wifiDevice.getOrig_swver());
 			        	atomic_successed.incrementAndGet();
 			        	return result;
 			        	//return models.get(0);
@@ -107,8 +104,68 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 						logger.info(String.format("pageno:%s pagesize:%s pages:%s", pageno,100,pages));
 						if(uid_willbinded != null && uid_willbinded.intValue() >0){
 							userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
+							for(String dmac:pages){
+								chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, dmac, 
+										importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
+										importVto.isCustomized(),
+										importVto.getOwner_percent(), 
+					        			importVto.getRcm(), importVto.getRcp(), importVto.getAit(), false);
+					        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);
+							}
+							logger.info(String.format("A uid_willbinded:%s doForceBindDevices:%s", uid_willbinded,pages));
 						}else{
-							userDeviceFacadeService.doForceUnbindDevice(pages);
+							//如果设备从未上线则强制解绑，如果设备上线过则不动作
+							List<String> forceUnbindedDevices = new ArrayList<>();
+							List<String> noActionDevices = new ArrayList<>();
+							List<WifiDevice> wifiDevices = wifiDeviceService.findByIds(pages);
+							try{
+								for(WifiDevice device:wifiDevices){
+									if(device.getLast_logout_at() == null 
+											&& device.getLast_reged_at() == null
+											&& device.getOem_swver().contains("P06V0.0.0Build0000")){//从未上线
+										forceUnbindedDevices.add(device.getId());
+									}else{
+										noActionDevices.add(device.getId());
+									}
+								}
+								if(!forceUnbindedDevices.isEmpty())
+									userDeviceFacadeService.doForceUnbindDevice(forceUnbindedDevices);
+								//变更分成比例
+								for(String dmac:forceUnbindedDevices){//需要变更owner = -1
+									chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,-1, dmac, 
+											importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
+											importVto.isCustomized(),
+											importVto.getOwner_percent(), 
+						        			importVto.getRcm(), importVto.getRcp(), importVto.getAit(), false);
+						        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);
+								}
+								for(String dmac:noActionDevices){//不需要变更owner 
+									chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,null, dmac,
+											importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
+											importVto.isCustomized(),
+											importVto.getOwner_percent(), 
+						        			importVto.getRcm(), importVto.getRcp(), importVto.getAit(), false);
+						        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);
+								}
+								logger.info(String.format("B uid_willbinded:%s forceUnbindedDevices:%s", uid_willbinded,forceUnbindedDevices));
+								logger.info(String.format("B uid_willbinded:%s noActionDevices:%s", uid_willbinded,noActionDevices));
+							}catch(Exception ex){
+								ex.printStackTrace(System.out);
+							}finally{
+								if(forceUnbindedDevices != null){
+									forceUnbindedDevices.clear();
+									forceUnbindedDevices = null;
+								}
+								if(noActionDevices != null){
+									noActionDevices.clear();
+									noActionDevices = null;
+								}
+								if(wifiDevices != null){
+									wifiDevices.clear();
+									wifiDevices = null;
+								}
+							}
+							
 						}
 						
 						try {
@@ -118,7 +175,12 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							e.printStackTrace(System.out);
 						} catch (Exception e) {
 							e.printStackTrace(System.out);
-						}	
+						} finally{
+							if(pages != null){
+								pages.clear();
+								pages = null;
+							}
+						}
 					}
 				}
 			});

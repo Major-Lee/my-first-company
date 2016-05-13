@@ -23,6 +23,10 @@
 	<typeAliases>
 		<typeAlias alias="tagName" type="com.bhu.vas.api.rpc.tag.model.TagName" />
 		<typeAlias alias="tagDevices" type="com.bhu.vas.api.rpc.tag.model.TagDevices" />
+		<typeAlias alias="tagGroup" type="com.bhu.vas.api.rpc.tag.model.TagGroup" />
+		<typeAlias alias="tagGroupRelation"
+			type="com.bhu.vas.api.rpc.tag.model.TagGroupRelation" />
+
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin"> 
@@ -31,7 +35,12 @@
 
 	<mappers>
 		<mapper resource="com/bhu/vas/api/rpc/tag/model/sqlMapper/TagName.sqlMap.xml" />
-		<mapper resource="com/bhu/vas/api/rpc/tag/model/sqlMapper/TagDevices.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/tag/model/sqlMapper/TagDevices.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/tag/model/sqlMapper/TagGroup.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/tag/model/sqlMapper/TagGroupRelation.sqlMap.xml" />
+
 	</mappers>
 
 </configuration>
