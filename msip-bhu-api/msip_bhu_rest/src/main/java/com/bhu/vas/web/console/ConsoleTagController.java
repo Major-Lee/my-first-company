@@ -142,14 +142,23 @@ public class ConsoleTagController extends BaseController{
 		}
     }   
     
+    /**
+     * 新建或修改分组
+     * @param request
+     * @param response
+     * @param uid
+     * @param gid
+     * @param pid
+     * @param name
+     */
     @ResponseBody()
     @RequestMapping(value = "/group/save", method = {RequestMethod.POST})
     public void tag_Group_Save(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = false) int gid,
-            @RequestParam(required = false) int pid,
+            @RequestParam(required = false,defaultValue = "0", value = "gid") int gid,
+            @RequestParam(required = false, defaultValue = "0", value = "pid") int pid,
             @RequestParam(required = true) String name) {
     	RpcResponseDTO<TagGroupVTO> rpcResult = tagRpcService.saveTreeNode(uid, gid, pid, name);
 		if(!rpcResult.hasError()){
@@ -159,6 +168,13 @@ public class ConsoleTagController extends BaseController{
 		}
     } 
     
+    /**
+     * 批量删除分组
+     * @param request
+     * @param response
+     * @param uid
+     * @param gids
+     */
     @ResponseBody()
     @RequestMapping(value = "/group/del", method = {RequestMethod.POST})
     public void tag_Group_Del_Node(
@@ -174,13 +190,22 @@ public class ConsoleTagController extends BaseController{
 		}
     }
     
+    /**
+     * 分页查询
+     * @param request
+     * @param response
+     * @param uid
+     * @param pid
+     * @param pageNo
+     * @param pageSize
+     */
     @ResponseBody()
     @RequestMapping(value = "/group/fetch", method = {RequestMethod.POST})
     public void tag_Group_Fetch(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = false) int pid,
+            @RequestParam(required = false, defaultValue = "0", value = "pid") int pid,
     	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
     	RpcResponseDTO<TailPage<TagGroupVTO>> rpcResult = tagRpcService.fetchChildGroup(uid, pid, pageNo, pageSize);
@@ -190,4 +215,30 @@ public class ConsoleTagController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
     }
+    
+    /**
+     * 添加分组的验证
+     * @param request
+     * @param response
+     * @param uid
+     * @param gid
+     * @param pid
+     * @param name
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/group/check", method = {RequestMethod.POST})
+    public void tag_Group_check(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = false,defaultValue = "0", value = "gid") int gid,
+            @RequestParam(required = false, defaultValue = "0", value = "pid") int pid,
+            @RequestParam(required = true) String name) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.CanSaveNode(uid, gid, pid, name);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    } 
 }

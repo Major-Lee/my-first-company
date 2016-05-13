@@ -46,4 +46,6 @@ public interface ITagRpcService {
 
 	RpcResponseDTO<Boolean> modifyDeciceWithNode(int uid, int gid, int newGid, String macs);
 
+	RpcResponseDTO<Boolean> CanSaveNode(int uid, int gid, int pid, String name);
+
 }	

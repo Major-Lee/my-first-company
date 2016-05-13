@@ -308,7 +308,7 @@ public class TagFacadeRpcSerivce {
 	 * 
 	 * @return
 	 */
-	private boolean CanSaveNode(int uid, int gid, int pid, String name) {
+	public boolean CanSaveNode(int uid, int gid, int pid, String name) {
 
 		boolean flag = StringFilter(name);
 		
