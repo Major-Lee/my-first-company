@@ -3,7 +3,6 @@ package com.bhu.vas.rpc.consumer;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
-import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 
 public class TagCommentServiceConsumer {
 	public static void main(String[] args) throws Exception {

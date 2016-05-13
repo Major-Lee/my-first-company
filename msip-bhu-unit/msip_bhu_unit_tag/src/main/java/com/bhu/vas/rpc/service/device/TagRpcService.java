@@ -88,15 +88,22 @@ public class TagRpcService implements ITagRpcService {
 		}
 	}
 
+	/**
+	 * 添加或修改分组
+	 */
 	@Override
 	public TagGroupVTO saveTreeNode(int uid, int gid, int pid, String name) {
-		logger.info(String.format("deviceBatchBindTag uid[%s] message[%s]", uid, name));
+		logger.info(String.format("saveTreeNode uid[%s] gid[%s] pid[%s] name[%s]", uid, gid, pid, name));
 		return tagFacadeRpcSerivce.saveTreeNode(uid, gid, pid, name);
 	}
 
+	/**
+	 * 分组绑定设备
+	 */
 	@Override
 	public RpcResponseDTO<Boolean> saveDevices2Group(int uid, int gid, int pid, String path, String macs) {
-		logger.info(String.format("deviceBatchBindTag uid[%s] message[%s]", uid, macs));
+		logger.info(String.format("saveDevices2Group uid[%s] gid[%s] pid[%s] path [%s] macs[%s]", uid, gid, pid, path,
+				macs));
 		try {
 			tagFacadeRpcSerivce.saveDevices2Group(uid, gid, pid, path, macs);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
@@ -107,9 +114,48 @@ public class TagRpcService implements ITagRpcService {
 		}
 	}
 
+	/**
+	 * 删除分组
+	 */
 	@Override
 	public boolean delNode(int uid, String gids) {
-		logger.info(String.format("deviceBatchBindTag uid[%s] message[%s]", uid, gids));
+		logger.info(String.format("delNode uid[%s] gids[%s]", uid, gids));
 		return tagFacadeRpcSerivce.delNode(uid, gids);
+	}
+
+	/**
+	 * 修改设备分组信息
+	 */
+	@Override
+	public RpcResponseDTO<Boolean> modifyDeciceWithNode(int uid, int gid, int newGid, String macs) {
+		logger.info(
+				String.format("modifyDeciceWithNode uid[%s] message[%s] newGid[%s] macs[%s]", uid, gid, newGid, macs));
+		try {
+			tagFacadeRpcSerivce.modifyDeciceWithNode(uid, gid, newGid, macs);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		} catch (BusinessI18nCodeException i18nex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		} catch (Exception ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	/**
+	 * 分页查询子节点
+	 */
+	@Override
+	public TailPage<TagGroupVTO> fetchChildGroup(int uid, int pid, int pageNo, int pageSize) {
+		logger.info(
+				String.format("fetchChildGroup uid[%s] pid[%s] pageNo[%s] pageSize[%s]", uid, pid, pageNo, pageSize));
+		return tagFacadeRpcSerivce.fetchChildGroup(uid, pid, pageNo, pageSize);
+	}
+
+	/**
+	 * 查询当前节点信息
+	 */
+	@Override
+	public TagGroupVTO currentGroupDetail(int uid, int gid) {
+		logger.info(String.format("currentGroupDetail uid[%s] gid[%s]", uid, gid));
+		return tagFacadeRpcSerivce.currentGroupDetail(uid, gid);
 	}
 }

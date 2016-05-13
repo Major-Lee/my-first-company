@@ -40,4 +40,10 @@ public interface ITagRpcService {
 
 	boolean delNode(int uid, String gids);
 
+	TailPage<TagGroupVTO> fetchChildGroup(int uid, int pid, int pageNo, int pageSize);
+
+	TagGroupVTO currentGroupDetail(int uid, int gid);
+
+	RpcResponseDTO<Boolean> modifyDeciceWithNode(int uid, int gid, int newGid, String macs);
+
 }	

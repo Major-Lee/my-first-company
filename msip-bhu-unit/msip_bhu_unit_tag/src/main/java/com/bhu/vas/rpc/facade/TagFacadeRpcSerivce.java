@@ -308,7 +308,7 @@ public class TagFacadeRpcSerivce {
 	 * 
 	 * @return
 	 */
-	public boolean CanSaveNode(int uid, int gid, int pid, String name) {
+	private boolean CanSaveNode(int uid, int gid, int pid, String name) {
 
 		boolean flag = StringFilter(name);
 		
@@ -319,6 +319,7 @@ public class TagFacadeRpcSerivce {
 		
 		if (flag && count != 0) {
 			flag = false;
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_ERROR);
 		}
 		
 		if (flag && pid > 0) {
@@ -326,10 +327,12 @@ public class TagFacadeRpcSerivce {
 			TagGroup tagParentGroup = tagGroupService.getById(pid);
 			if (tagParentGroup.getCreator() != uid) {
 				flag = false;
+				throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_USER_PRIVILEGE_ERROR);
 			}
 			// 父节点最多只有100个子节点
 			if (flag && tagParentGroup.getChildren() > 99) {
 				flag = false;
+				throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_COUNT_MAX_ERROR);
 			}
 
 			// 目前限制最多三级
@@ -356,7 +359,7 @@ public class TagFacadeRpcSerivce {
 	 * 
 	 * @return
 	 */
-	public boolean CanAddDevices2Group(int uid, int gid, int tempSize) {
+	private boolean CanAddDevices2Group(int uid, int gid, int tempSize) {
 
 		boolean flag = true;
 
@@ -365,6 +368,7 @@ public class TagFacadeRpcSerivce {
 		// 当前节点是否存在
 		if (tagGroup == null) {
 			flag = false;
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_INEXISTENCE);
 		} else {
 
 			// // 当前节点是否为叶子节点
@@ -375,12 +379,13 @@ public class TagFacadeRpcSerivce {
 			// 当前节点添加设备是否超过100台
 			if (flag && (tagGroup.getDevice_count() > 99 || (tagGroup.getDevice_count() + tempSize > 99))) {
 				flag = false;
+				throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_DEVICE_COUNT_MAX);
 			}
 		}
 		return flag;
 	}
 
-	public static int countSubString(String origin, String sub) {
+	private static int countSubString(String origin, String sub) {
 		Pattern p = Pattern.compile(sub, Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(origin);
 		int count = 0;
@@ -396,7 +401,7 @@ public class TagFacadeRpcSerivce {
 	 * @param gid
 	 * @param num
 	 */
-	public void changeDevicesCount(int gid, int num) {
+	private void changeDevicesCount(int gid, int num) {
 		TagGroup tagGroup = tagGroupService.getById(gid);
 		tagGroup.setDevice_count(tagGroup.getDevice_count() + num);
 		tagGroupService.update(tagGroup);
@@ -411,7 +416,7 @@ public class TagFacadeRpcSerivce {
 	 * @param uid
 	 * @param tagGroup
 	 */
-	public void delChildNodeDevices(TagGroup tagGroup, int uid) {
+	private void delChildNodeDevices(TagGroup tagGroup, int uid) {
 
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("gid", tagGroup.getId());
@@ -488,5 +493,4 @@ public class TagFacadeRpcSerivce {
                     new String[]{String.valueOf(gid)});
 		}
 	}
-	
 }
