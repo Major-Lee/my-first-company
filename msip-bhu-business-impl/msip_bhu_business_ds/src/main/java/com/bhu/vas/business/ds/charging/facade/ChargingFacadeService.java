@@ -81,9 +81,11 @@ public class ChargingFacadeService {
     	batch_import.setSellor(sellor);
     	batch_import.setPartner(partner);
     	//ArithHelper.round(sharedeal_owner_percent, 2)
-    	batch_import.setOwner_percent(sharedeal_owner_percent);
+    	
     	batch_import.setCanbeturnoff(canbeturnoff);
     	batch_import.setEnterpriselevel(enterpriselevel);
+    	batch_import.setCustomized(customized);
+    	batch_import.setOwner_percent(sharedeal_owner_percent);
     	batch_import.setRange_cash_mobile(range_cash_mobile);
     	batch_import.setRange_cash_pc(range_cash_pc);
     	batch_import.setAccess_internet_time(access_internet_time);
