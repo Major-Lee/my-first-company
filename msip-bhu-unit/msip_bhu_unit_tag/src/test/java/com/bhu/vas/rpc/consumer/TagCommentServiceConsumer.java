@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.consumer;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 
 public class TagCommentServiceConsumer {
 	public static void main(String[] args) throws Exception {
@@ -15,10 +16,12 @@ public class TagCommentServiceConsumer {
 		context.start();
 
 		ITagRpcService tagRpcService = (ITagRpcService)context.getBean("tagRpcService");
-		System.out.println("123123123");
 		//tagRpcService.bindTag(100035,"84:82:f4:28:7a:ec", "咖啡馆"); //{"items":[{"tag":"公司"}]}
-		//tagRpcService.aaa("nihao");
-		System.out.println("end");
+		System.out.println("1111");
+//		tagRpcService.saveTreeNode(100001, 0, 24, "101");
+//		boolean tagGroupVTO = tagRpcService.saveDevices2Group(100001, 21, 0, "84:82:f4:28:8f:b2");
+//		tagRpcService.delNode(100001, "19");
+		System.out.println("2222");
 		Thread.currentThread().join();
 		context.close();
 	}

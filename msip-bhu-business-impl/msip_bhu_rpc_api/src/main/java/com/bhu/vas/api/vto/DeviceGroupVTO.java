@@ -3,6 +3,7 @@ package com.bhu.vas.api.vto;
 
 @SuppressWarnings("serial")
 public class DeviceGroupVTO implements java.io.Serializable{
+	
 	private long gid;
 
 	private long pid;
@@ -12,7 +13,9 @@ public class DeviceGroupVTO implements java.io.Serializable{
 	private String pname;
 	
 	private String path;
+	
 	private boolean parent;
+	
 	//private int children;
 
 	//private boolean isParent;

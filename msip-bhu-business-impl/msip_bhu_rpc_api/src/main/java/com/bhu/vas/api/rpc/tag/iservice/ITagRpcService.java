@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.tag.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -32,5 +33,11 @@ public interface ITagRpcService {
     RpcResponseDTO<Boolean> delTag(int uid, String mac);
     
 	RpcResponseDTO<Boolean> deviceBatchDelTag(int uid, String message);
+
+	TagGroupVTO saveTreeNode(int uid, int gid, int pid, String name);
+
+	boolean saveDevices2Group(int uid, int gid, int pid, String macs);
+
+	boolean delNode(int uid, String gids);
 
 }	

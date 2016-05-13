@@ -5,6 +5,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.rpc.facade.TagFacadeRpcSerivce;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -89,5 +90,26 @@ public class TagRpcService implements ITagRpcService {
 		}catch (Exception ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
+	}
+	
+	@Override
+	public TagGroupVTO saveTreeNode(int uid,int gid,int pid, String name) {
+		logger.info(
+				String.format("deviceBatchBindTag uid[%s] message[%s]",uid, name));
+		 return	tagFacadeRpcSerivce.saveTreeNode(uid, gid, pid, name);
+	}
+	
+	@Override
+	public boolean saveDevices2Group(int uid,int gid,int pid, String macs) {
+		logger.info(
+				String.format("deviceBatchBindTag uid[%s] message[%s]",uid, macs));
+		 return	tagFacadeRpcSerivce.saveDevices2Group(uid, gid, pid, macs);
+	}
+	
+	@Override
+	public boolean delNode(int uid, String gids) {
+		logger.info(
+				String.format("deviceBatchBindTag uid[%s] message[%s]",uid, gids));
+		 return	tagFacadeRpcSerivce.delNode(uid, gids);
 	}
 }
