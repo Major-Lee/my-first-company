@@ -91,6 +91,7 @@ public class WifiDevice extends BaseStringModel{
 	private Date last_logout_at;
 	//第一次设备注册时间
 	private Date first_reged_at;
+	//记录创建时间，不一定是设备第一次上线时间
 	private Date created_at;
 	
 	@Override
