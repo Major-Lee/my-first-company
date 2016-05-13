@@ -178,4 +178,20 @@ public class TagRpcService implements ITagRpcService {
 		logger.info(String.format("currentGroupDetail uid[%s] gid[%s]", uid, gid));
 		return tagFacadeRpcSerivce.currentGroupDetail(uid, gid);
 	}
+
+	/**
+	 * 添加分组验证
+	 */
+	@Override
+	public RpcResponseDTO<Boolean> CanSaveNode(int uid, int gid, int pid, String name) {
+		logger.info(String.format("currentGroupDetail uid[%s] gid[%s]", uid, gid));
+		try {
+			tagFacadeRpcSerivce.CanSaveNode(uid, gid, pid, name);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		} catch (BusinessI18nCodeException i18nex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		} catch (Exception ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

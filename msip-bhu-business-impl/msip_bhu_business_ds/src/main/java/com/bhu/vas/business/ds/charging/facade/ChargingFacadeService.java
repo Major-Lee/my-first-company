@@ -235,6 +235,18 @@ public class ChargingFacadeService {
 			insert = true;
 			configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
 			configs.setId(dmac);
+			configs.setCreated_at(null);
+			configs.setUpdated_at(null);
+		}else{
+			if(!customized){//填充缺省值
+				WifiDeviceSharedealConfigs defaultConfigs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
+				configs.setAit_mobile(defaultConfigs.getAit_mobile());
+				configs.setAit_pc(defaultConfigs.getAit_pc());
+				configs.setRange_cash_mobile(defaultConfigs.getRange_cash_mobile());
+				configs.setRange_cash_pc(defaultConfigs.getRange_cash_pc());
+				configs.setOwner_percent(defaultConfigs.getOwner_percent());
+				configs.setManufacturer_percent(defaultConfigs.getManufacturer_percent());
+			}
 		}
 		if(StringUtils.isNotEmpty(batchno)){
 			configs.setBatchno(batchno);
@@ -281,14 +293,14 @@ public class ChargingFacadeService {
 				configs.setAit_mobile(access_internet_time);
 				configs.setAit_pc(access_internet_time);
 			}
-			if(canbeturnoff != null){
-				configs.setCanbe_turnoff(canbeturnoff.booleanValue());
-			}
-			if(enterpriselevel != null){
-				configs.setEnterpriselevel(enterpriselevel.booleanValue());
-			}
-			configs.setRuntime_applydefault(runtime_applydefault);
 		}
+		if(canbeturnoff != null){
+			configs.setCanbe_turnoff(canbeturnoff.booleanValue());
+		}
+		if(enterpriselevel != null){
+			configs.setEnterpriselevel(enterpriselevel.booleanValue());
+		}
+		configs.setRuntime_applydefault(runtime_applydefault);
 		configs.setCustomized(customized);
 		if(insert){
 			wifiDeviceSharedealConfigsService.insert(configs);
