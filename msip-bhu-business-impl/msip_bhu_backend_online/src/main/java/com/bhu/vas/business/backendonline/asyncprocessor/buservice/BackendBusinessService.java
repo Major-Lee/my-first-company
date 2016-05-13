@@ -30,6 +30,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
+import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
@@ -86,6 +87,9 @@ public class BackendBusinessService {
 	
     @Resource
     private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
+    
+    @Resource
+    private TagGroupRelationService tagGroupRelationService;
 
 	
 	/**********************************     清除设备数据业务 start   *****************************************/
@@ -290,9 +294,10 @@ public class BackendBusinessService {
 					
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
 					WifiDeviceSharedealConfigs wifiDeviceShareConfig = wifiDeviceSharedealConfigsService.getById(mac);
+					String t_uc_extension = tagGroupRelationService.fetchPathWithMac(mac);
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
 							wifiDeviceGray, bindUser, bindUserDNick, null,
-							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig);
+							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig,t_uc_extension);
 					docs.add(doc);
 				}
 				
