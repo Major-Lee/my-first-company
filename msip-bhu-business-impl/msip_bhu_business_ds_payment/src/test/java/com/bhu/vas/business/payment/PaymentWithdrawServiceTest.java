@@ -7,9 +7,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
-import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
 import com.bhu.vas.business.ds.payment.service.PaymentWithdrawService;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.BaseTest;
 import com.smartwork.msip.localunit.RandomData;
 import com.smartwork.msip.localunit.RandomPicker;

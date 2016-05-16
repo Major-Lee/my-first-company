@@ -222,6 +222,7 @@ public enum ResponseErrorCode {
 	VALIDATE_COMMDITY_AMOUNT_ILLEGAL("452","validate.commdity.amount.illegal"),
 	VALIDATE_COMMDITY_AMOUNT_INVALID("453","validate.commdity.amount.invalid"),
 	
+	VALIDATE_PAYMENT_DATA_ALREADY_EXIST("454","validate.payment.data.already.exists"),	
 	ORDER_PAYMENT_STATUS_PAYSUCCESSED("460","order.payment.status.paysuccessed"),
 	
 	//INTERNAL_COMMUNICATION_PAYMENTURL_FAILED("490","internal.communication.paymenturl.failed"),

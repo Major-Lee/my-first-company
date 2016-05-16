@@ -2,14 +2,14 @@ package com.bhu.vas.api.rpc.payment.model;
 
 import java.util.Date;
 
-import com.bhu.vas.api.rpc.payment.dto.PaymentOrderVTO;
+import com.bhu.vas.api.rpc.payment.dto.PaymentOrderDTO;
 import com.smartwork.msip.cores.orm.model.BaseLongModel;
 
 @SuppressWarnings("serial")
 public class PaymentOrder extends BaseLongModel{
 	private String tid;
 	private String gid;
-	private float price;
+	private int price;
 	private int num;
 	private String payment_type;
 	private String openid;
@@ -54,7 +54,7 @@ public class PaymentOrder extends BaseLongModel{
 
 
 
-	public void setPrice(float price) {
+	public void setPrice(int price) {
 		this.price = price;
 	}
 
@@ -224,9 +224,9 @@ public class PaymentOrder extends BaseLongModel{
 	}
 	
 	
-	public PaymentOrderVTO toPaymentOrderVTO(){
-		PaymentOrderVTO vto = new PaymentOrderVTO();
-		vto.setOrdierid(id);
+	public PaymentOrderDTO toPaymentOrderVTO(){
+		PaymentOrderDTO vto = new PaymentOrderDTO();
+		vto.setOrdierid(gid);
 		vto.setTid(tid);
 		return vto;
 	}

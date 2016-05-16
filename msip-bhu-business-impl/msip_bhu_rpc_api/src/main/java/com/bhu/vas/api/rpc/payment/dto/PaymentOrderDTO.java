@@ -6,15 +6,14 @@ package com.bhu.vas.api.rpc.payment.dto;
  * @author Edmond
  *
  */
-public class PaymentOrderVTO {
-	private long ordierid;
+public class PaymentOrderDTO {
+	private String ordierId;
 	private String tid;
-	private String ts;
-	public long getOrdierid() {
-		return ordierid;
+	public String getOrdierid() {
+		return ordierId;
 	}
-	public void setOrdierid(long ordierid) {
-		this.ordierid = ordierid;
+	public void setOrdierid(String ordierid) {
+		this.ordierId = ordierid;
 	}
 	public String getTid() {
 		return tid;

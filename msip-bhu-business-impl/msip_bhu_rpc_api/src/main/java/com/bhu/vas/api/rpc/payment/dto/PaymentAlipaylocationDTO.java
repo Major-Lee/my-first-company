@@ -6,7 +6,7 @@ package com.bhu.vas.api.rpc.payment.dto;
  * @author Edmond
  *
  */
-public class PaymentWithdrawVTO {
+public class PaymentAlipaylocationDTO {
 	private int uid;
 	private String applyid;
 	//提现金额

@@ -8,7 +8,6 @@ import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.rpc.payment.model.PaymentAlipaylocation;
 import com.bhu.vas.business.ds.payment.service.PaymentAlipaylocationService;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.BaseTest;
 import com.smartwork.msip.localunit.RandomPicker;
 
