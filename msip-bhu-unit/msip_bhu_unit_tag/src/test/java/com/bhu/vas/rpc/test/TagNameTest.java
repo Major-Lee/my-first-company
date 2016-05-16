@@ -71,15 +71,16 @@ public class TagNameTest extends BaseTest {
     	tagGroupService.insert(tagGroup);
     	System.out.println("222");
     }
-    //@Test
+    @Test
     public void test007(){
     	TagGroupRelation tagGroupRelation = new TagGroupRelation();
     	tagGroupRelation.setId("84:82:f4:28:7a:ec");
-    	tagGroupRelation.setGid(7);
-    	tagGroupRelation.setUid(103209);
+    	tagGroupRelation.setGid(1);
+    	tagGroupRelation.setPath("1/");
+    	tagGroupRelation.setUid(100001);
     	tagGroupRelationService.insert(tagGroupRelation);
     }
-    @Test
+    //@Test
    public void test008(){
 		String[] Parents = "1/2/3/4".split("/");
 		

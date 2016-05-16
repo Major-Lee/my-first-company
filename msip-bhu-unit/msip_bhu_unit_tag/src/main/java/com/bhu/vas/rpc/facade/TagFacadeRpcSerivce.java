@@ -285,10 +285,10 @@ public class TagFacadeRpcSerivce {
 			TagGroup group = tagGroupService.getById(gid);
 			if (group != null && group.getCreator() == uid) {
 				int pid = group.getPid();
-
-				// 先删除设备，再删除节点
-				delChildNodeDevices(group, uid);
-
+				
+				// 先删除设备和索引，再删除节点
+				delChildNodeDevices(uid, group.getPath());
+				
 				tagGroupService.removeAllByPath(group.getPath(), true);
 
 				if (pid != 0) {
@@ -344,7 +344,7 @@ public class TagFacadeRpcSerivce {
 
 		}
 
-		// 最多100个同级节点
+// 		最多100个同级节点
 //		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("pid", pid).andColumnEqualTo("creator", uid);
 //		List<TagGroup> tagSamePidGroups = tagGroupService.findModelByModelCriteria(mc);
 //		if (flag && tagSamePidGroups != null && tagSamePidGroups.size() >= 100) {
@@ -411,26 +411,36 @@ public class TagFacadeRpcSerivce {
 	}
 
 	/**
-	 * 递归删除当前节点下子节点设备关系
-	 * 
+	 * 删除当前节点和子节点设备关系
+	 * 	同时清除ES索引
 	 * @param uid
 	 * @param tagGroup
 	 */
-	private void delChildNodeDevices(TagGroup tagGroup, int uid) {
-
+	private void delChildNodeDevices(int uid, String path) {
+		
+		//模糊搜索
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("gid", tagGroup.getId());
+		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnLike("path", path+"%");
+		List<TagGroupRelation> entities = tagGroupRelationService.findModelByModelCriteria(mc);
+		
+		List<String> macsList = new ArrayList<String>();
+		for(TagGroupRelation tagGroupRelation : entities){
+			macsList.add(tagGroupRelation.getId());
+		}
+		//清除所有索引信息
+		wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, "");
+		
 		tagGroupRelationService.deleteByModelCriteria(mc);
 
-		if (tagGroup.getChildren() != 0) {
-			ModelCriteria newMc = new ModelCriteria();
-			newMc.createCriteria().andColumnEqualTo("pid", tagGroup.getId());
-			// TODO ? 通过冗余path去模糊删除
-			List<TagGroup> tagchildGroups = tagGroupService.findModelByModelCriteria(newMc);
-			for (TagGroup tagChildGroup : tagchildGroups) {
-				delChildNodeDevices(tagChildGroup, uid);
-			}
-		}
+//		if (tagGroup.getChildren() != 0) {
+//			ModelCriteria newMc = new ModelCriteria();
+//			newMc.createCriteria().andColumnEqualTo("pid", tagGroup.getId());
+//			// TODO ? 通过冗余path去模糊删除
+//			List<TagGroup> tagchildGroups = tagGroupService.findModelByModelCriteria(newMc);
+//			for (TagGroup tagChildGroup : tagchildGroups) {
+//				delChildNodeDevices(tagChildGroup);
+//			}
+//		}
 	}
 
 	/**

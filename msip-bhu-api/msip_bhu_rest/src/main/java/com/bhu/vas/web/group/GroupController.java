@@ -1,4 +1,4 @@
-package com.bhu.vas.web.console;
+package com.bhu.vas.web.group;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,72 +21,30 @@ import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-@RequestMapping("/console/tag")
-public class ConsoleTagController extends BaseController{
+@RequestMapping("/group")
+public class GroupController extends BaseController{
     @Resource
     private ITagRpcService tagRpcService;
     
-    
     /**
-     * 分页获取标签
-     * @param request
-     * @param response
-     * @param pageNo
-     * @param pageSize
-     */
-    @ResponseBody()
-    @RequestMapping(value = "/fetch", method = {RequestMethod.POST})
-    public void fetch_tag(
-            HttpServletRequest request,
-            HttpServletResponse response,
-    	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-    	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
-    	RpcResponseDTO<TailPage<TagNameVTO>> rpcResult = tagRpcService.fetchTag(pageNo, pageSize);
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}
-    }
-    /**
-     * 设备捆绑标签
-     * @param request
-     * @param response
-     * @param mac
-     * @param tag
-     */
-    @ResponseBody()
-    @RequestMapping(value = "/bind", method = {RequestMethod.POST})
-    public void buid_tag(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String mac,
-            @RequestParam(required = true) String tag) {
-    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.bindTag(uid, mac, tag);
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}
-    }
-    
-    /**
-     * 设备删除标签
+     * 新建或修改分组
      * @param request
      * @param response
      * @param uid
-     * @param mac
-     * @param tag
+     * @param gid
+     * @param pid
+     * @param name
      */
     @ResponseBody()
-    @RequestMapping(value = "/del", method = {RequestMethod.POST})
-    public void del_tag(
+    @RequestMapping(value = "/save", method = {RequestMethod.POST})
+    public void tag_Group_Save(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String mac) {
-    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.delTag(uid, mac);
+            @RequestParam(required = false,defaultValue = "0", value = "gid") int gid,
+            @RequestParam(required = false, defaultValue = "0", value = "pid") int pid,
+            @RequestParam(required = true) String name) {
+    	RpcResponseDTO<TagGroupVTO> rpcResult = tagRpcService.saveTreeNode(uid, gid, pid, name);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -95,51 +53,76 @@ public class ConsoleTagController extends BaseController{
     } 
     
     /**
-     * 批量 绑定标签
+     * 批量删除分组
      * @param request
      * @param response
      * @param uid
-     * @param message
-     * @param tag
+     * @param gids
      */
     @ResponseBody()
-    @RequestMapping(value = "/batch/bind", method = {RequestMethod.POST})
-    public void device_Batch_Bind_Tag(
+    @RequestMapping(value = "/del", method = {RequestMethod.POST})
+    public void tag_Group_Del_Node(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String message,
-            @RequestParam(required = true) String tag) {
-    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.deviceBatchBindTag(uid, message, tag);
+            @RequestParam(required = true) String gids) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.delNode(uid, gids);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
-    }   
-    
+    }
     
     /**
-     * 批量删除标签
+     * 分页查询
      * @param request
      * @param response
      * @param uid
-     * @param message
-     * @param tag
+     * @param pid
+     * @param pageNo
+     * @param pageSize
      */
     @ResponseBody()
-    @RequestMapping(value = "/batch/del", method = {RequestMethod.POST})
-    public void device_Batch_Del_Tag(
+    @RequestMapping(value = "/fetch", method = {RequestMethod.POST})
+    public void tag_Group_Fetch(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String message) {
-    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.deviceBatchDelTag(uid, message);
+            @RequestParam(required = false, defaultValue = "0", value = "pid") int pid,
+    	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+    	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
+    	RpcResponseDTO<TailPage<TagGroupVTO>> rpcResult = tagRpcService.fetchChildGroup(uid, pid, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
-    }   
+    }
     
+    /**
+     * 添加分组的验证
+     * @param request
+     * @param response
+     * @param uid
+     * @param gid
+     * @param pid
+     * @param name
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/check", method = {RequestMethod.POST})
+    public void tag_Group_check(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = false,defaultValue = "0", value = "gid") int gid,
+            @RequestParam(required = false, defaultValue = "0", value = "pid") int pid,
+            @RequestParam(required = true) String name) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.CanSaveNode(uid, gid, pid, name);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    } 
 }
