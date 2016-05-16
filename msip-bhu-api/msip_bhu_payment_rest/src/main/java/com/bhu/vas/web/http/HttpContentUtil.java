@@ -2,7 +2,7 @@ package com.bhu.vas.web.http;
 
 /**
  * 功能：
- * 马生录(mason) on 2015/7/10.
+ *  on 2015/7/10.
  */
 /*
  *    Copyright 2012-2013 The Haohui Network Corporation

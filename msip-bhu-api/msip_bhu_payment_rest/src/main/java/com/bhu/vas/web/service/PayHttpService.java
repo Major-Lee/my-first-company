@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.http.examples.client.ClientCustomSSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -628,6 +629,7 @@ public class PayHttpService {
 
         UnifiedOrderResponse unifiedOrderResponse;
         try {
+        	
             unifiedOrderResponse = HttpResponseUtil.post(withdrawalsRequestApiBaseUrl, requestXML, UnifiedOrderResponse.class);
         } catch (IOException e) {
             unifiedOrderResponse=new UnifiedOrderResponse();
@@ -637,5 +639,8 @@ public class PayHttpService {
         return unifiedOrderResponse;
 	}
 
+	public static void main(String[] args) {
+		//ClientCustomSSL.gethttpRequests();
+	}
 
 }
