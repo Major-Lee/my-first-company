@@ -537,6 +537,7 @@ public class WifiDeviceGrayFacadeService {
 						resultDto.setUpgrade_slaver_urls(versionfw.getUpgrade_slaver_urls());
 						resultDto.setCurrentDVB(d_version);
 						resultDto.setCurrentGrayPublished_at(grayVersion.getUpdated_at());
+						resultDto.setMinid(versionfw.getMinid());
 						System.out.println("B1 upgradeDecideAction:"+resultDto);
 					}else{
 						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined or invalid!",dmac,fw));

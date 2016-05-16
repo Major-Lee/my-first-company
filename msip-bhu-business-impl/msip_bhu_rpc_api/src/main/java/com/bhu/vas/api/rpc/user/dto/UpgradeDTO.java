@@ -16,11 +16,15 @@ public class UpgradeDTO {
 	private boolean fw;
 	private boolean forceDeviceUpgrade;
 	private boolean forceAppUpgrade;
+	//灰度定义的版本号
 	private String name;
 	private String upgradeurl;
 	private String upgrade_slaver_urls;
+	//设备当前的版本号
 	private String currentDVB;
     private String currentAVB;
+    //灰度定义的最小版本号
+    private String minid;
     private String desc;
     
     private Date currentGrayPublished_at;
@@ -115,6 +119,13 @@ public class UpgradeDTO {
 		this.desc = desc;
 	}
 	
+	public String getMinid() {
+		return minid;
+	}
+
+	public void setMinid(String minid) {
+		this.minid = minid;
+	}
 
 	public String getUpgrade_slaver_urls() {
 		if(StringUtils.isEmpty(upgrade_slaver_urls)) return StringUtils.EMPTY;
