@@ -14,6 +14,7 @@ public class DeviceSharedealVTO implements java.io.Serializable{
 	private double manufacturer_percent;
 	private boolean canbeturnoff;
 	private boolean runtime_applydefault;
+	private boolean customized;
 	private String rcp;
 	private String rcm;
 	private String aitm;
@@ -85,5 +86,10 @@ public class DeviceSharedealVTO implements java.io.Serializable{
 	public void setAitp(String aitp) {
 		this.aitp = aitp;
 	}
-	
+	public boolean isCustomized() {
+		return customized;
+	}
+	public void setCustomized(boolean customized) {
+		this.customized = customized;
+	}
 }

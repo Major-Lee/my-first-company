@@ -739,7 +739,7 @@ public class UserDeviceUnitFacadeService {
 			dsv.setAitp(configs.getAit_pc());
 			dsv.setCanbeturnoff(configs.isCanbe_turnoff());
 			dsv.setRuntime_applydefault(configs.isRuntime_applydefault());
-			
+			dsv.setCustomized(configs.isCustomized());
 			DeviceDetailVTO dvto = new DeviceDetailVTO();
 			dvto.setDbv(dbv);
 			dvto.setDpv(dpv);
