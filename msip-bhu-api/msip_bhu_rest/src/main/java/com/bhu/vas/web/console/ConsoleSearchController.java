@@ -23,7 +23,7 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-@RequestMapping("/console/search")
+@RequestMapping({"/console/search","/customize/search"})
 public class ConsoleSearchController extends BaseController {
 
     @Resource
