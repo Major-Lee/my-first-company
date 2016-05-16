@@ -26,6 +26,8 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 	private String upgrade_slaver_urls;
 	//适用的产品类型
 	private String dut;
+	
+	private String minid;
 	//当前灰度中被引用
 	private boolean related;
 	private Date created_at;
