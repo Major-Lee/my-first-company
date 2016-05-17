@@ -1,7 +1,27 @@
 package com.bhu.vas.web.http;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.Map;
+
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import com.bhu.vas.business.helper.JsonUtil;
 import com.bhu.vas.business.helper.XMLUtil;
@@ -165,6 +185,7 @@ public class HttpResponseUtil {
                 Map map = XMLUtil.doXMLParse(content);
                 response.setPropertyMap(map);
             } catch (Exception e) {
+            	System.out.println(e.getCause()+e.getMessage());
                 return null;
             }
         }else{
@@ -172,4 +193,50 @@ public class HttpResponseUtil {
         }
         return response;
     }
+    
+    public static  <RESPONE extends WxResponse> RESPONE httpRequest(String url,String nOTIFY_URL,String data, Class<RESPONE> responeClass) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, KeyManagementException, UnrecoverableKeyException{
+		 KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+		 String pathFile = nOTIFY_URL+"/payment/1260112001.p12";
+		 //String pathFile = "E://payment//1260112001.p12";
+	        FileInputStream instream = new FileInputStream(new File(pathFile));
+	        System.out.println(pathFile);
+	        try {
+	            keyStore.load(instream, "1260112001".toCharArray());
+	        } finally {
+	            instream.close();
+	        }
+
+	        // Trust own CA and all self-signed certs
+	        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, "1260112001".toCharArray()).build();
+	        // Allow TLSv1 protocol only
+	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null,
+	                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+	        CloseableHttpClient httpclient = HttpClients.custom() .setSSLSocketFactory(sslsf) .build();
+
+	        HttpPost httpost = new HttpPost(url); // 
+
+	        httpost.addHeader("Connection", "keep-alive");
+
+	        httpost.addHeader("Accept", "*/*");
+
+	        httpost.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+
+	        httpost.addHeader("Host", "api.mch.weixin.qq.com");
+
+	        httpost.addHeader("X-Requested-With", "XMLHttpRequest");
+
+	        httpost.addHeader("Cache-Control", "max-age=0");
+
+	        httpost.addHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0) ");
+
+	        httpost.setEntity(new StringEntity(data, "UTF-8"));
+
+	        CloseableHttpResponse response = httpclient.execute(httpost);
+
+	        HttpEntity entity = response.getEntity();
+
+	        String jsonStr = EntityUtils .toString(response.getEntity(), "UTF-8");
+	        EntityUtils.consume(entity);
+			return convertResponse(jsonStr, responeClass);
+	}
 }

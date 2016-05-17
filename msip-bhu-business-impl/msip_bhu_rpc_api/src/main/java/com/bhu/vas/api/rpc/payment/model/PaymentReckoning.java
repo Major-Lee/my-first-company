@@ -9,7 +9,6 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 public class PaymentReckoning  extends BaseStringModel{
 
 	private String order_id; 
-	//private String reckoning_id; 
 	private int amount; 
 	private String payment_type; 
 	private String openid; 
@@ -36,12 +35,6 @@ public class PaymentReckoning  extends BaseStringModel{
 	public void setOrder_id(String order_id) {
 		this.order_id = order_id;
 	}
-	/*public String getReckoning_id() {
-		return reckoning_id;
-	}
-	public void setReckoning_id(String reckoning_id) {
-		this.reckoning_id = reckoning_id;
-	}*/
 	public int getAmount() {
 		return amount;
 	}

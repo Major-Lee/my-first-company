@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.rpc.payment.model.PaymentOrder;
 import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
 import com.bhu.vas.business.ds.payment.dao.PaymentWithdrawDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractTagService;
@@ -24,7 +23,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 @Service
 @Transactional("paymentTransactionManager")
 public class PaymentWithdrawService extends
-		AbstractTagService<Long, PaymentWithdraw, PaymentWithdrawDao> {
+		AbstractTagService<String, PaymentWithdraw, PaymentWithdrawDao> {
 
 	@Resource
 	@Override
@@ -41,15 +40,15 @@ public class PaymentWithdrawService extends
 	}
 
 	// 通过商品中心提现订单号查找订单
-	public PaymentWithdraw findByWid(String wid) {
+	public PaymentWithdraw findByOrderId(String wid) {
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("wid", wid).andSimpleCaulse("1=1");
+		mc.createCriteria().andColumnEqualTo("orderId", wid).andSimpleCaulse("1=1");
 		List<PaymentWithdraw> list = this.findModelByModelCriteria(mc);
 		return list.isEmpty() ? null : list.get(0);
 	}
 
 	// 通过Upay提现订单号获取订单ID
-	public Long getIdByTid(String tid) {
+	public String getIdByTid(String tid) {
 		PaymentWithdraw one = this.findByTid(tid);
 		return one == null ? null : one.getId();
 	}
@@ -67,7 +66,7 @@ public class PaymentWithdrawService extends
 	// 通过Upay提现订单号修改订单
 	// 支持billno,withdraw_status,notify_status,fail_cause,updated.at.修改
 	public void updateByTid(PaymentWithdraw data) {
-		long id = this.getIdByTid(data.getTid());
+		String id = this.getIdByTid(data.getTid());
 		data.setId(id);
 		data.setUpdated_at(new Date());
 		this.update(data);
@@ -80,12 +79,12 @@ public class PaymentWithdrawService extends
 		if (one == null) {
 			return false;
 		}
-		return one.getWithdraw_status() == 1 ? true : false;
+		return one.getWithdrawStatus() == 1 ? true : false;
 	}
 
 	// 判断商品中心提现订单号是否已经存在
 	public boolean isExistByWid(String wid) {
-		PaymentWithdraw one = this.findByWid(wid);
+		PaymentWithdraw one = this.findByOrderId(wid);
 		return one == null ? false : true;
 	}
 

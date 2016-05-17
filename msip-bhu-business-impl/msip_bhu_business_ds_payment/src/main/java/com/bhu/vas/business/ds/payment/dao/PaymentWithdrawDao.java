@@ -11,6 +11,6 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractPaymentDao;
  * @CreateTime 2016年4月18日 下午5:40:19
  */
 @Repository
-public class PaymentWithdrawDao extends AbstractPaymentDao<Long, PaymentWithdraw>{
+public class PaymentWithdrawDao extends AbstractPaymentDao<String, PaymentWithdraw>{
 	
 }

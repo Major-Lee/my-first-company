@@ -3,8 +3,12 @@ package com.bhu.vas.web.service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Formatter;
@@ -16,7 +20,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.http.examples.client.ClientCustomSSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +34,7 @@ import com.bhu.vas.web.http.response.GetJsapiTicketResponse;
 import com.bhu.vas.web.http.response.GetOpenIdResponse;
 import com.bhu.vas.web.http.response.JSAPIUnifiedOrderResponse;
 import com.bhu.vas.web.http.response.UnifiedOrderResponse;
+import com.bhu.vas.web.http.response.WithDrawNotifyResponse;
 
 /**
  * 功能：调用第三方支付web服务
@@ -54,8 +58,8 @@ public class PayHttpService {
     public static String NOTIFY_URL = PAY_HOST_URL+"/notify_success";
     //web回调地址
     public static String WEB_NOTIFY_URL = PAY_HOST_URL+"/weixinPayResult";
-    //web回调地址
-    public static String WEB_Payment_URL = PAY_HOST_URL+"/weixxinPayment";
+    //证书地址
+    public static String WITHDRAW_URL = "/home";
 
     private  Logger log = LoggerFactory.getLogger(PayHttpService.class);
 
@@ -593,8 +597,8 @@ public class PayHttpService {
         return unifiedOrderResponse;
     }
 
-	public UnifiedOrderResponse sendWithdraw(String out_trade_no, String commodityName, String totalPrice,
-			String localIp, String nOTIFY_URL2, String openid, String userName) {
+	public WithDrawNotifyResponse sendWithdraw(String out_trade_no, String commodityName, String totalPrice,
+			String localIp, String nOTIFY_URL, String openid, String userName) {
 		if("0:0:0:0:0:0:0:1".equals(localIp)){
 			localIp="123.57.52.205";
         }
@@ -605,7 +609,7 @@ public class PayHttpService {
         /** 公众号APPID */
         parameters.put("mch_appid", appId);
         /** 商户号 */
-        parameters.put("mch_id", mchId);
+        parameters.put("mchid", mchId);
         /** 随机字符串 */
         parameters.put("nonce_str", getNonceStr());
         /** 商品名称 */
@@ -627,15 +631,24 @@ public class PayHttpService {
         String requestXML = getRequestXml(parameters);
         log.info("requestXML：" + requestXML);
 
-        UnifiedOrderResponse unifiedOrderResponse;
+        WithDrawNotifyResponse unifiedOrderResponse = null;
+        
         try {
-        	
-            unifiedOrderResponse = HttpResponseUtil.post(withdrawalsRequestApiBaseUrl, requestXML, UnifiedOrderResponse.class);
-        } catch (IOException e) {
-            unifiedOrderResponse=new UnifiedOrderResponse();
-            unifiedOrderResponse.setResultSuccess(false);
-            e.printStackTrace();
-        }
+        	unifiedOrderResponse = HttpResponseUtil.httpRequest(withdrawalsRequestApiBaseUrl,nOTIFY_URL, requestXML, WithDrawNotifyResponse.class);
+        	 System.out.println(unifiedOrderResponse);
+		} catch (KeyManagementException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException
+				| CertificateException | IOException e) {
+			System.out.println("提交提现请求失败");
+		}
+        
+//        try {
+//        	
+//            unifiedOrderResponse = HttpResponseUtil.post(withdrawalsRequestApiBaseUrl, requestXML, UnifiedOrderResponse.class);
+//        } catch (IOException e) {
+//            unifiedOrderResponse=new UnifiedOrderResponse();
+//            unifiedOrderResponse.setResultSuccess(false);
+//            e.printStackTrace();
+//        }
         return unifiedOrderResponse;
 	}
 

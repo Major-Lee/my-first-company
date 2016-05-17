@@ -29,7 +29,6 @@ package com.bhu.vas.web.http;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.KeyManagementException;
@@ -44,8 +43,10 @@ import javax.net.ssl.SSLContext;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -56,98 +57,10 @@ import org.apache.http.util.EntityUtils;
  */
 public class ClientCustomSSL {
 	
-	public static  void httpRequest() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, KeyManagementException, UnrecoverableKeyException{
-		 KeyStore keyStore  = KeyStore.getInstance("PKCS12");
-	        FileInputStream instream = new FileInputStream(new File("E:/payment/1260112001.p12"));
-	        try {
-	            keyStore.load(instream, "1260112001".toCharArray());
-	        } finally {
-	            instream.close();
-	        }
-
-	        // Trust own CA and all self-signed certs
-	        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, "1260112001".toCharArray()).build();
-	        // Allow TLSv1 protocol only
-	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null,
-	                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-	        CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
-	        try {
-
-	            HttpGet httpget = new HttpGet("https://api.mch.weixin.qq.com/secapi/pay/refund");
-
-	            System.out.println("executing request" + httpget.getRequestLine());
-
-	            CloseableHttpResponse response = httpclient.execute(httpget);
-	            try {
-	                HttpEntity entity = response.getEntity();
-
-	                System.out.println("----------------------------------------");
-	                System.out.println(response.getStatusLine());
-	                if (entity != null) {
-	                    System.out.println("Response content length: " + entity.getContentLength());
-	                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent()));
-	                    String text;
-	                    while ((text = bufferedReader.readLine()) != null) {
-	                        System.out.println(text);
-	                    }
-	                   
-	                }
-	                EntityUtils.consume(entity);
-	            } finally {
-	                response.close();
-	            }
-	        } finally {
-	            httpclient.close();
-	        }
-	}
+	
 
     public final static void main(String[] args) throws Exception {
-//        KeyStore trustStore  = KeyStore.getInstance(KeyStore.getDefaultType());
-//        FileInputStream instream = new FileInputStream(new File("my.keystore"));
-//        try {
-//            trustStore.load(instream, "nopassword".toCharArray());
-//        } finally {
-//            instream.close();
-//        }
-//
-//        // Trust own CA and all self-signed certs
-//        SSLContext sslcontext = SSLContexts.custom()
-//                .loadTrustMaterial(trustStore, new TrustSelfSignedStrategy())
-//                .build();
-//        // Allow TLSv1 protocol only
-//        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
-//                sslcontext,
-//                new String[] { "TLSv1" },
-//                null,
-//                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-//        CloseableHttpClient httpclient = HttpClients.custom()
-//                .setSSLSocketFactory(sslsf)
-//                .build();
-//        try {
-//
-//            HttpGet httpget = new HttpGet("https://localhost/");
-//
-//            System.out.println("executing request" + httpget.getRequestLine());
-//
-//            CloseableHttpResponse response = httpclient.execute(httpget);
-//            try {
-//                HttpEntity entity = response.getEntity();
-//
-//                System.out.println("----------------------------------------");
-//                System.out.println(response.getStatusLine());
-//                if (entity != null) {
-//                    System.out.println("Response content length: " + entity.getContentLength());
-//                }
-//                EntityUtils.consume(entity);
-//            } finally {
-//                response.close();
-//            }
-//        } finally {
-//            httpclient.close();
-//        }
-    	
-
-       
+    	//ClientCustomSSL.httpRequest("https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers","aa");
     }
 
 }

@@ -10,13 +10,13 @@ public class PaymentWithdrawDTO {
 	private int uid;
 	private String applyid;
 	//提现金额
-	private double cash;
+	private String cash;
 	//税费
-	private double taxcost;
+	private String taxcost;
 	//交易费
-	private double transcost;
+	private String transcost;
 
-	private double remain;
+	private String remain;
 	
 	public String getApplyid() {
 		return applyid;
@@ -33,29 +33,29 @@ public class PaymentWithdrawDTO {
 	public void setUid(int uid) {
 		this.uid = uid;
 	}
-	public double getCash() {
+	public String getCash() {
 		return cash;
 	}
-	public void setCash(double cash) {
+	public void setCash(String cash) {
 		this.cash = cash;
 	}
-	public double getTaxcost() {
+	public String getTaxcost() {
 		return taxcost;
 	}
-	public void setTaxcost(double taxcost) {
+	public void setTaxcost(String taxcost) {
 		this.taxcost = taxcost;
 	}
-	public double getTranscost() {
+	public String getTranscost() {
 		return transcost;
 	}
-	public void setTranscost(double transcost) {
+	public void setTranscost(String transcost) {
 		this.transcost = transcost;
 	}
-	public double getRemain() {
+	public String getRemain() {
 		return remain;
 	}
 
-	public void setRemain(double remain) {
+	public void setRemain(String remain) {
 		this.remain = remain;
 	}
 }

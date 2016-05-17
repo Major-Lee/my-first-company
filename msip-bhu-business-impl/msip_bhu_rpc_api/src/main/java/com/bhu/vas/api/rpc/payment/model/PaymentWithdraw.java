@@ -2,27 +2,28 @@ package com.bhu.vas.api.rpc.payment.model;
 
 import java.util.Date;
 
-import com.smartwork.msip.cores.orm.model.BaseLongModel;
+import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
-public class PaymentWithdraw extends BaseLongModel {
+public class PaymentWithdraw extends BaseStringModel {
 	private String tid;
-	private String wid;
-	private String withdraw_type;
-	private float price;
+	private String orderId;
+	private String withdrawType;
+	private float amount;
 	private float transcost;
 	private float taxcost;
-	private String user_id;
-	private String user_name;
+	private String userId;
+	private String userName;
 	private String subject;
 	private String appid;
-	private String billno;
-	private int withdraw_status;
-	private int notify_status;
-	private String fail_cause;
-	private String exter_invoke_ip;
-	private Date created_at;
-	private Date updated_at;
+	private String thirdPartCode;
+	private int withdrawStatus;
+	private int notifyStatus;
+	private String failCause;
+	private String exterInvokeIp;
+	private Date createdAt;
+	private Date notifiedAt;
+	private Date withdrawAt;
 
 	public String getTid() {
 		return tid;
@@ -32,28 +33,28 @@ public class PaymentWithdraw extends BaseLongModel {
 		this.tid = tid;
 	}
 
-	public String getWid() {
-		return wid;
+	public String getOrderId() {
+		return orderId;
 	}
 
-	public void setWid(String wid) {
-		this.wid = wid;
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
 	}
 
-	public String getWithdraw_type() {
-		return withdraw_type;
+	public String getWithdrawType() {
+		return withdrawType;
 	}
 
-	public void setWithdraw_type(String withdraw_type) {
-		this.withdraw_type = withdraw_type;
+	public void setWithdrawType(String withdrawType) {
+		this.withdrawType = withdrawType;
 	}
 
-	public float getPrice() {
-		return price;
+	public float getAmount() {
+		return amount;
 	}
 
-	public void setPrice(float price) {
-		this.price = price;
+	public void setAmount(float amount) {
+		this.amount = amount;
 	}
 
 	public float getTranscost() {
@@ -72,20 +73,20 @@ public class PaymentWithdraw extends BaseLongModel {
 		this.taxcost = taxcost;
 	}
 
-	public String getUser_id() {
-		return user_id;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setUser_id(String user_id) {
-		this.user_id = user_id;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
-	public String getUser_name() {
-		return user_name;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUser_name(String user_name) {
-		this.user_name = user_name;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getSubject() {
@@ -104,66 +105,67 @@ public class PaymentWithdraw extends BaseLongModel {
 		this.appid = appid;
 	}
 
-	public String getBillno() {
-		return billno;
+	public String getThirdPartCode() {
+		return thirdPartCode;
 	}
 
-	public void setBillno(String billno) {
-		this.billno = billno;
+	public void setThirdPartCode(String thirdPartCode) {
+		this.thirdPartCode = thirdPartCode;
 	}
 
-	public int getWithdraw_status() {
-		return withdraw_status;
+	public int getWithdrawStatus() {
+		return withdrawStatus;
 	}
 
-	public void setWithdraw_status(int withdraw_status) {
-		this.withdraw_status = withdraw_status;
+	public void setWithdrawStatus(int withdrawStatus) {
+		this.withdrawStatus = withdrawStatus;
 	}
 
-	public int getNotify_status() {
-		return notify_status;
+	public int getNotifyStatus() {
+		return notifyStatus;
 	}
 
-	public void setNotify_status(int notify_status) {
-		this.notify_status = notify_status;
+	public void setNotifyStatus(int notifyStatus) {
+		this.notifyStatus = notifyStatus;
 	}
 
-	public String getFail_cause() {
-		return fail_cause;
+	public String getFailCause() {
+		return failCause;
 	}
 
-	public void setFail_cause(String fail_cause) {
-		this.fail_cause = fail_cause;
+	public void setFailCause(String failCause) {
+		this.failCause = failCause;
 	}
 
-	public String getExter_invoke_ip() {
-		return exter_invoke_ip;
+	public String getExterInvokeIp() {
+		return exterInvokeIp;
 	}
 
-	public void setExter_invoke_ip(String exter_invoke_ip) {
-		this.exter_invoke_ip = exter_invoke_ip;
+	public void setExterInvokeIp(String exterInvokeIp) {
+		this.exterInvokeIp = exterInvokeIp;
 	}
 
-	public Date getCreated_at() {
-		return created_at;
+	public Date getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setCreated_at(Date created_at) {
-		this.created_at = created_at;
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 
-	public Date getUpdated_at() {
-		return updated_at;
+	public Date getNotifiedAt() {
+		return notifiedAt;
 	}
 
-	public void setUpdated_at(Date updated_at) {
-		this.updated_at = updated_at;
+	public void setNotifiedAt(Date notifiedAt) {
+		this.notifiedAt = notifiedAt;
 	}
 
-	@Override
-	public void preInsert() {
-		if (this.created_at == null)
-			this.created_at = new Date();
-		super.preInsert();
+	public Date getWithdrawAt() {
+		return withdrawAt;
+	}
+
+	public void setWithdrawAt(Date withdrawAt) {
+		this.withdrawAt = withdrawAt;
 	}
 }

@@ -1,6 +1,5 @@
 package com.whisper.test;
 
-import org.apache.http.examples.client.ClientCustomSSL;
 import org.junit.Test;
 
 import com.smartwork.msip.localunit.BaseTest;
@@ -15,7 +14,6 @@ public class UniqueFacadeServiceTest extends BaseTest{
 //			System.out.println(error.getCodemsg());
 //		}else
 //			System.out.println("不存在");
-		ClientCustomSSL.gethttpRequests();
 		
 	}
 }
