@@ -84,12 +84,19 @@ public class DeviceUpgradeFacadeService {
     	}*/
 		UpgradeDTO upgrade = this.checkDeviceUpgradeWithClientVer(dmac, wifiDevice,handset_device,appver);
 		if(upgrade != null){
-			int ret = DeviceVersion.compareVersions(wifiDevice.getOrig_swver(), upgrade.getMinid());
-			if(ret == -1){//设备版本小于该灰度要求的最小版本
-				;
-			}else{
-				System.out.println(String.format("clientCheckDeviceUpgrade upgrade[%s]",upgrade.toString()));
-				upgrade = null;
+			System.out.println(String.format("clientCheckDeviceUpgrade A decide upgrade[%s]",upgrade.toString()));
+			if(StringUtils.isEmpty(upgrade.getMinid()) || StringHelper.MINUS_STRING_GAP.equals(upgrade.getMinid())){
+				//这种情况则默认为minid == grayid
+				System.out.println(String.format("clientCheckDeviceUpgrade A1  need upgrade"));
+			}else{//如果定义了minid
+				int ret = DeviceVersion.compareVersions(wifiDevice.getOrig_swver(), upgrade.getMinid());
+				if(ret == -1){//设备版本小于该灰度要求的最小版本
+					System.out.println(String.format("clientCheckDeviceUpgrade A2  need upgrade"));
+				}else{
+					System.out.println(String.format("clientCheckDeviceUpgrade B no upgrade"));
+					//System.out.println(String.format("clientCheckDeviceUpgrade upgrade[%s]",upgrade.toString()));
+					upgrade = null;
+				}
 			}
 		}else{
 			System.out.println("clientCheckDeviceUpgrade no need upgrade");
