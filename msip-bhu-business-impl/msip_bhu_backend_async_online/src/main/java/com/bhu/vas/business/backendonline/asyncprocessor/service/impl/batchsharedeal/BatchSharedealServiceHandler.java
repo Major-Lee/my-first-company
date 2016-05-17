@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
+import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -39,7 +40,8 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
-	
+	@Resource
+	private BackendBusinessService backendBusinessService;
 	/*@Resource
 	private IDaemonRpcService daemonRpcService;*/
 
@@ -62,6 +64,19 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 									sharedealDTO.isCustomized(),
 									sharedealDTO.getOwner_percent(),
 									sharedealDTO.getRcm(), sharedealDTO.getRcp(), sharedealDTO.getAit(), false);
+						}
+						try {
+							backendBusinessService.blukIndexs(macList);
+							Thread.sleep(500);
+						} catch (InterruptedException e) {
+							e.printStackTrace(System.out);
+						} catch (Exception e) {
+							e.printStackTrace(System.out);
+						} finally{
+							if(macList != null){
+								macList.clear();
+								macList = null;
+							}
 						}
 					}
 				});
