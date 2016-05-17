@@ -16,6 +16,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
+import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -31,6 +32,21 @@ public class ConsoleChargingController extends BaseController {
 
     @Resource
     private IChargingRpcService chargingRpcService;
+    
+    @ResponseBody()
+    @RequestMapping(value = "/sharedeal/default", method = {RequestMethod.POST})
+    public void sharedeal_default(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid
+            ) {
+    	RpcResponseDTO<SharedealDefaultVTO> rpcResult = chargingRpcService.doFetchDefaultSharedeal(uid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
     
     /**
      * 
@@ -48,7 +64,7 @@ public class ConsoleChargingController extends BaseController {
      */
     @ResponseBody()
     @RequestMapping(value = "/sharedeal/batch/modify", method = {RequestMethod.POST})
-    public void deviceBatch_Bind_Tag(
+    public void deviceBatch_sharedeal_modify(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
