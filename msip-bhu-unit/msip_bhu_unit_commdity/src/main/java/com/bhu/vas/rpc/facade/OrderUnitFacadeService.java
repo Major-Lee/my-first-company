@@ -19,18 +19,16 @@ import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
-import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
-import com.bhu.vas.business.ds.commdity.service.CommdityService;
-import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
@@ -41,25 +39,27 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 public class OrderUnitFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(OrderUnitFacadeService.class);
 	
-	@Resource
-	private OrderService orderService;
+	//@Resource
+	//private OrderService orderService;
 	
-	@Resource
-	private CommdityService commdityService;
+	//@Resource
+	//private CommdityService commdityService;
 	
 	@Resource
 	private OrderFacadeService orderFacadeService;
 	
-	@Resource
-	private CommdityMessageService commdityMessageService;
-	
-	@Resource
-	private UserDeviceFacadeService userDeviceFacadeService;
+	//@Resource
+	//private CommdityMessageService commdityMessageService;
 	
 	//@Resource
-	//private UserWalletConfigsService userWalletConfigsService;
+	//private UserDeviceFacadeService userDeviceFacadeService;
+	
 	@Resource
-	private ChargingFacadeService chargingFacadeService;
+	private UserWalletFacadeService userWalletFacadeService;
+	//@Resource
+	//private UserWalletConfigsService userWalletConfigsService;
+	//@Resource
+	//private ChargingFacadeService chargingFacadeService;
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 /*	*//**
@@ -230,7 +230,18 @@ public class OrderUnitFacadeService {
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut,
 						pageNo, pageSize);
+				
 				if(orderList != null && !orderList.isEmpty()){
+					List<String> orderids = new ArrayList<String>();
+					for(Order order : orderList){
+						orderids.add(order.getId());
+					}
+					List<UserWalletLog> walletLogs = null;
+					{
+						ModelCriteria mc_wallet_log = new ModelCriteria();
+						mc_wallet_log.createCriteria().andColumnNotEqualTo("uid", WifiDeviceSharedealConfigs.Default_Manufacturer).andColumnIn("orderid", orderids).andSimpleCaulse(" 1=1 ");
+						walletLogs = userWalletFacadeService.getUserWalletLogService().findModelByModelCriteria(mc_wallet_log);
+					}
 					retDtos = new ArrayList<UserOrderDTO>();
 					UserOrderDTO userOrderDto = null;
 					for(Order order : orderList){
@@ -247,9 +258,9 @@ public class OrderUnitFacadeService {
 						if(orderPaymentType != null){
 							userOrderDto.setPayment_type_name(orderPaymentType.getDesc());
 						}
-						SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(order.getMac(), order.getId(), Double.parseDouble(order.getAmount()));
-						//double share_amount = userWalletConfigsService.calculateSharedeal(uid, Double.parseDouble(order.getAmount()));
-						userOrderDto.setShare_amount(String.valueOf(sharedeal.getOwner_cash()));
+						//SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(order.getMac(), order.getId(), Double.parseDouble(order.getAmount()));
+						//userOrderDto.setShare_amount(String.valueOf(sharedeal.getOwner_cash()));
+						userOrderDto.setShare_amount(distillOwnercash(order.getId(),walletLogs));
 						if(order.getCreated_at() != null){
 							userOrderDto.setCreated_ts(order.getCreated_at().getTime());
 						}
@@ -268,5 +279,17 @@ public class OrderUnitFacadeService {
 			logger.error("OrderPagesByMac Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
+	}
+	
+	
+	private String distillOwnercash(String orderid,List<UserWalletLog> walletLogs){
+		if(walletLogs != null && !walletLogs.isEmpty()){
+			for(UserWalletLog log:walletLogs){
+				if(orderid.equals(log.getOrderid())){
+					return log.getCash();
+				}
+			}
+		}
+		return StringHelper.MINUS_STRING_GAP;
 	}
 }
