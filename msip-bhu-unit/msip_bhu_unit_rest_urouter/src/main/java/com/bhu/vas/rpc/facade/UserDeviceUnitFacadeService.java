@@ -798,6 +798,11 @@ public class UserDeviceUnitFacadeService {
 							vto.setD_snk_type(wifiDeviceDocument.getD_snk_type());
 							vto.setD_sn(wifiDeviceDocument.getD_sn());
 							vto.setD_address(wifiDeviceDocument.getD_address());
+							if(wifiDeviceDocument.getD_snk_allowturnoff() != null){
+								vto.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
+							}else{
+								vto.setD_snk_allowturnoff(1);
+							}
 							String u_id = wifiDeviceDocument.getU_id();
 							if(StringUtils.isNotEmpty(u_id)){
 								vto.setUid(Integer.parseInt(u_id));
