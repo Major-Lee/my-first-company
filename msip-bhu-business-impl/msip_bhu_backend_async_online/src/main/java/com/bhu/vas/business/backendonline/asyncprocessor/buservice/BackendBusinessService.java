@@ -294,6 +294,10 @@ public class BackendBusinessService {
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
 					WifiDeviceSharedealConfigs wifiDeviceShareConfig = wifiDeviceSharedealConfigsService.getById(mac);
 					String t_uc_extension = tagGroupRelationService.fetchPathWithMac(mac);
+					
+					if(wifiDeviceShareConfig != null){
+						System.out.println("~~~~~~~~~~~~~~~~~~~~Canbe_turnoff:"+wifiDeviceShareConfig.isCanbe_turnoff());
+					}
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
 							wifiDeviceGray, bindUser, bindUserDNick, null,
 							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig,t_uc_extension);
@@ -301,7 +305,7 @@ public class BackendBusinessService {
 				}
 				
 				if(!docs.isEmpty()){
-					wifiDeviceDataSearchService.bulkIndex(docs);
+					wifiDeviceDataSearchService.bulkIndex(docs,true,true);
 				}
 			}
 		}
