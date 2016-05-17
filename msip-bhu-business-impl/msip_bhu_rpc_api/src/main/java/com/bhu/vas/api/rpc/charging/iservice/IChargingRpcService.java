@@ -2,9 +2,12 @@ package com.bhu.vas.api.rpc.charging.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
+import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public interface IChargingRpcService {
+	
+	public RpcResponseDTO<SharedealDefaultVTO> doFetchDefaultSharedeal(int uid);
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String message, 
 			Boolean canbeturnoff,
 			Boolean enterpriselevel,

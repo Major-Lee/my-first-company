@@ -8,6 +8,7 @@ import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
+import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
@@ -126,4 +127,16 @@ public class ChargingUnitFacadeService {
 		}
 	}
 	
+	public RpcResponseDTO<SharedealDefaultVTO> doFetchDefaultSharedeal(int uid){
+		try{
+			User operUser = chargingFacadeService.getUserService().getById(uid);
+			UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(chargingFacadeService.defaultDeviceSharedealConfigs());
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

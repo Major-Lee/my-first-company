@@ -14,6 +14,7 @@ import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
+import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.charging.service.UserWithdrawCostConfigsService;
@@ -235,6 +236,18 @@ public class ChargingFacadeService {
 			configs.setId(dmac);
 		}
 		return configs;
+	}
+	
+	
+	public SharedealDefaultVTO defaultDeviceSharedealConfigs(){
+		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
+		SharedealDefaultVTO vto = new SharedealDefaultVTO();
+		vto.setOwner_percent(configs.getOwner_percent());
+		vto.setManufacturer_percent(configs.getManufacturer_percent());
+		vto.setRcm(configs.getRange_cash_mobile());
+		vto.setRcp(configs.getRange_cash_pc());
+		vto.setAit(configs.getAit_mobile());
+		return vto;
 	}
 	
 	/**

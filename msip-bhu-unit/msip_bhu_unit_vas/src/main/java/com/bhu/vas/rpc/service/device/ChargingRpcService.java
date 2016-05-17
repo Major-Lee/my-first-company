@@ -9,6 +9,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
+import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
 import com.bhu.vas.rpc.facade.ChargingUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -76,6 +77,12 @@ public class ChargingRpcService  implements IChargingRpcService{
 			String access_internet_time) {
 		logger.info(String.format("doBatchSharedealModify uid:%s message:%s canbeturnoff:%s enterpriselevel:%s customized:%s owner_percent:%s range_cash_mobile:%s range_cash_pc:%s",uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,range_cash_pc, range_cash_pc,access_internet_time));
 		return chargingUnitFacadeService.doBatchSharedealModify(uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,range_cash_mobile, range_cash_pc,access_internet_time);
+	}
+
+	@Override
+	public RpcResponseDTO<SharedealDefaultVTO> doFetchDefaultSharedeal(int uid) {
+		logger.info(String.format("doFetchDefaultSharedeal uid:%s",uid));
+		return chargingUnitFacadeService.doFetchDefaultSharedeal(uid);
 	}
 
 
