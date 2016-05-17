@@ -167,9 +167,8 @@ public class TagFacadeRpcSerivce {
 	 */
 	public TagGroupVTO saveTreeNode(int uid, int gid, int pid, String name) {
 
-		if (!CanSaveNode(uid, gid, pid, name)) {
-			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
-		}
+		//验证是否能新建分组
+		CanSaveNode(uid, gid, pid, name);
 
 		TagGroup tagGroup = null;
 		boolean needParentChildrenInr = false;
@@ -200,29 +199,28 @@ public class TagFacadeRpcSerivce {
 	}
 
 	/**
-	 * 节点绑定设备
+	 * 分组添加设备
 	 * 
 	 * @param uid
 	 * @param gid
 	 * @param macs
 	 * @return
 	 */
-	public void saveDevices2Group(int uid, int gid, int pid,String path, String macs) {
+	public void saveDevices2Group(int uid, int gid,String path, String macs) {
 
 		String[] macsTemp = macs.split(StringHelper.COMMA_STRING_GAP);
 
 		List<String> macsList = ArrayHelper.toList(macsTemp);
-
-		if (!CanAddDevices2Group(uid, gid, macsTemp.length)) {
-			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
-		}
+		
+		//验证是否能添加设备
+		CanAddDevices2Group(uid, gid, macsTemp.length);
 
 		List<TagGroupRelation> entities = new ArrayList<TagGroupRelation>();
 
-		TagGroupRelation tagGroupRelation = null;
 
 		for (String mac : macsTemp) {
-			tagGroupRelation = new TagGroupRelation();
+			
+			TagGroupRelation tagGroupRelation = new TagGroupRelation();
 			tagGroupRelation.setId(mac);
 			tagGroupRelation.setGid(gid);
 			tagGroupRelation.setUid(uid);
@@ -254,7 +252,7 @@ public class TagFacadeRpcSerivce {
 
 		if (newGid == 0) {
 			tagGroupRelationService.deleteAll(entities);
-			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, "");
+			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
 		} else {
 			for (TagGroupRelation tagGroupRelation : entities) {
 				tagGroupRelation.setGid(newGid);
@@ -285,10 +283,10 @@ public class TagFacadeRpcSerivce {
 			TagGroup group = tagGroupService.getById(gid);
 			if (group != null && group.getCreator() == uid) {
 				int pid = group.getPid();
-
-				// 先删除设备，再删除节点
-				delChildNodeDevices(group, uid);
-
+				
+				// 先删除设备和索引，再删除节点
+				delChildNodeDevices(uid, group.getPath());
+				
 				tagGroupService.removeAllByPath(group.getPath(), true);
 
 				if (pid != 0) {
@@ -344,7 +342,7 @@ public class TagFacadeRpcSerivce {
 
 		}
 
-		// 最多100个同级节点
+// 		最多100个同级节点
 //		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("pid", pid).andColumnEqualTo("creator", uid);
 //		List<TagGroup> tagSamePidGroups = tagGroupService.findModelByModelCriteria(mc);
 //		if (flag && tagSamePidGroups != null && tagSamePidGroups.size() >= 100) {
@@ -411,26 +409,36 @@ public class TagFacadeRpcSerivce {
 	}
 
 	/**
-	 * 递归删除当前节点下子节点设备关系
-	 * 
+	 * 删除当前节点和子节点设备关系
+	 * 	同时清除ES索引
 	 * @param uid
 	 * @param tagGroup
 	 */
-	private void delChildNodeDevices(TagGroup tagGroup, int uid) {
-
+	private void delChildNodeDevices(int uid, String path) {
+		
+		//模糊搜索
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("gid", tagGroup.getId());
+		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnLike("path", path+"%");
+		List<TagGroupRelation> entities = tagGroupRelationService.findModelByModelCriteria(mc);
+		
+		List<String> macsList = new ArrayList<String>();
+		for(TagGroupRelation tagGroupRelation : entities){
+			macsList.add(tagGroupRelation.getId());
+		}
+		//清除所有索引信息
+		wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
+		
 		tagGroupRelationService.deleteByModelCriteria(mc);
 
-		if (tagGroup.getChildren() != 0) {
-			ModelCriteria newMc = new ModelCriteria();
-			newMc.createCriteria().andColumnEqualTo("pid", tagGroup.getId());
-			// TODO ? 通过冗余path去模糊删除
-			List<TagGroup> tagchildGroups = tagGroupService.findModelByModelCriteria(newMc);
-			for (TagGroup tagChildGroup : tagchildGroups) {
-				delChildNodeDevices(tagChildGroup, uid);
-			}
-		}
+//		if (tagGroup.getChildren() != 0) {
+//			ModelCriteria newMc = new ModelCriteria();
+//			newMc.createCriteria().andColumnEqualTo("pid", tagGroup.getId());
+//			// TODO ? 通过冗余path去模糊删除
+//			List<TagGroup> tagchildGroups = tagGroupService.findModelByModelCriteria(newMc);
+//			for (TagGroup tagChildGroup : tagchildGroups) {
+//				delChildNodeDevices(tagChildGroup);
+//			}
+//		}
 	}
 
 	/**

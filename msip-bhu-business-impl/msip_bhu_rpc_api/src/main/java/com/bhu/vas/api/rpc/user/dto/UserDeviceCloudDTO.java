@@ -35,7 +35,7 @@ public class UserDeviceCloudDTO implements Serializable {
     private String d_address;
     //设备上网方式
     private String link_mode_type;
-    
+    private int d_snk_allowturnoff;
 	public int getUid() {
 		return uid;
 	}
@@ -119,5 +119,11 @@ public class UserDeviceCloudDTO implements Serializable {
 	}
 	public void setD_address(String d_address) {
 		this.d_address = d_address;
+	}
+	public int getD_snk_allowturnoff() {
+		return d_snk_allowturnoff;
+	}
+	public void setD_snk_allowturnoff(int d_snk_allowturnoff) {
+		this.d_snk_allowturnoff = d_snk_allowturnoff;
 	}
 }

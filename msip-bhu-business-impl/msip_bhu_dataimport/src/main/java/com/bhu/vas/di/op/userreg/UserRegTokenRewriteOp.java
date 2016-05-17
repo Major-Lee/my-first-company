@@ -2,9 +2,7 @@ package com.bhu.vas.di.op.userreg;
 
 import java.util.List;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;

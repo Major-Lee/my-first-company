@@ -17,9 +17,9 @@ public class TagCommentServiceConsumer {
 		ITagRpcService tagRpcService = (ITagRpcService)context.getBean("tagRpcService");
 		//tagRpcService.bindTag(100035,"84:82:f4:28:7a:ec", "咖啡馆"); //{"items":[{"tag":"公司"}]}
 		System.out.println("1111");
-//		tagRpcService.saveTreeNode(100001, 0, 24, "101");
-//		boolean tagGroupVTO = tagRpcService.saveDevices2Group(100001, 21, 0, "84:82:f4:28:8f:b2");
-//		tagRpcService.delNode(100001, "19");
+//		tagRpcService.saveTreeNode(100001, 0, 0, "测试");
+		tagRpcService.saveDevices2Group(100234, 11,"11/" , "84:82:f4:28:7a:ec");
+//		tagRpcService.delNode(100001, "2");
 		System.out.println("2222");
 		Thread.currentThread().join();
 		context.close();

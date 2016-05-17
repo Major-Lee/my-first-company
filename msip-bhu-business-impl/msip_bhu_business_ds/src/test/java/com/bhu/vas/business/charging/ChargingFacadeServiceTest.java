@@ -46,8 +46,8 @@ public class ChargingFacadeServiceTest extends BaseTest{
 		//System.out.println(JsonHelper.getJSONString(addDefault2));
 	}
     
-    private static String Default_DMac = "84:82:f4:23:06:e8";
-    //@Test
+    private static String Default_DMac = "84:82:f4:19:01:0c";
+    @Test
 	public void test002FetchCertainDeviceSharedealConfigs(){
     	WifiDeviceSharedealConfigs  configs = chargingFacadeService.userfulWifiDeviceSharedealConfigs(Default_DMac);
     	System.out.println(JsonHelper.getJSONString(configs));
