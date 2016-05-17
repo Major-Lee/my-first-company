@@ -167,9 +167,8 @@ public class TagFacadeRpcSerivce {
 	 */
 	public TagGroupVTO saveTreeNode(int uid, int gid, int pid, String name) {
 
-		if (!CanSaveNode(uid, gid, pid, name)) {
-			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
-		}
+		//验证是否能新建分组
+		CanSaveNode(uid, gid, pid, name);
 
 		TagGroup tagGroup = null;
 		boolean needParentChildrenInr = false;
@@ -212,17 +211,16 @@ public class TagFacadeRpcSerivce {
 		String[] macsTemp = macs.split(StringHelper.COMMA_STRING_GAP);
 
 		List<String> macsList = ArrayHelper.toList(macsTemp);
-
-		if (!CanAddDevices2Group(uid, gid, macsTemp.length)) {
-			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
-		}
+		
+		//验证是否能添加设备
+		CanAddDevices2Group(uid, gid, macsTemp.length);
 
 		List<TagGroupRelation> entities = new ArrayList<TagGroupRelation>();
 
-		TagGroupRelation tagGroupRelation = null;
 
 		for (String mac : macsTemp) {
-			tagGroupRelation = new TagGroupRelation();
+			
+			TagGroupRelation tagGroupRelation = new TagGroupRelation();
 			tagGroupRelation.setId(mac);
 			tagGroupRelation.setGid(gid);
 			tagGroupRelation.setUid(uid);
@@ -254,7 +252,7 @@ public class TagFacadeRpcSerivce {
 
 		if (newGid == 0) {
 			tagGroupRelationService.deleteAll(entities);
-			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, "");
+			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
 		} else {
 			for (TagGroupRelation tagGroupRelation : entities) {
 				tagGroupRelation.setGid(newGid);
@@ -428,7 +426,7 @@ public class TagFacadeRpcSerivce {
 			macsList.add(tagGroupRelation.getId());
 		}
 		//清除所有索引信息
-		wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, "");
+		wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
 		
 		tagGroupRelationService.deleteByModelCriteria(mc);
 
