@@ -11,6 +11,8 @@
     <result property="upgrade_slaver_urls" column="upgrade_slaver_urls"/>
     
     <result property="dut" column="dut"/>
+    <result property="minid" column="minid"/>
+    
     <result property="related" column="related"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
@@ -28,6 +30,7 @@
 	    	upgrade_url,
 	    	upgrade_slaver_urls,
 	    	dut,
+	    	minid,
 	    	related,
 	    	created_at,
 	    	updated_at
@@ -39,6 +42,7 @@
 	    	upgrade_url,
 	    	upgrade_slaver_urls,
 	    	dut,
+	    	minid,
 	    	related,
 	    	created_at,
 	    	updated_at
@@ -51,6 +55,7 @@
 	    	#{upgrade_url},
 	    	#{upgrade_slaver_urls},
 	    	#{dut},
+	    	#{minid},
 	    	#{related},
 	    	#{created_at},
 	    	#{updated_at}
@@ -61,6 +66,7 @@
 	    	upgrade_url = #{upgrade_url},
 	    	upgrade_slaver_urls = #{upgrade_slaver_urls},
 	    	dut= #{dut},
+	    	minid = #{minid},
 	    	related = #{related},
 	    	updated_at = #{updated_at}
 	</sql>

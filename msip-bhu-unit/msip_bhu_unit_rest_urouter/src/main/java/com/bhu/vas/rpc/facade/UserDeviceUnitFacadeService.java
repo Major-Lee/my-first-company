@@ -27,7 +27,6 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
-import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCloudDTO;
@@ -67,7 +66,6 @@ import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
-import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -254,15 +252,19 @@ public class UserDeviceUnitFacadeService {
         	}
         	//发送异步Device升级指令，指定立刻升级
         	{
+        		String cmdPayload = deviceUpgradeFacadeService.clientForceDeviceUpgrade(mac, wifiDevice);
+        		if(StringUtils.isNotEmpty(cmdPayload)){
+        			deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayload);
+        		}
         		//boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
-        		UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
+        		/*UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
         		//UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
 	        	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 	        		//long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
 	        		//String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, upgrade.getUpgradeurl());
 	        		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP);
-	        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, /*new_taskid,OperationCMD.DeviceUpgrade.getNo(),*/ cmdPayload);
-	        	}
+	        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
+	        	}*/
         	}
         	return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         }   	
@@ -299,17 +301,18 @@ public class UserDeviceUnitFacadeService {
         	if(!wifiDevice.isOnline()){
         		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
         	}
-        	UpgradeDTO upgrade = null;
+        	UserDeviceCheckUpdateDTO clientCheckDeviceUpgrade = deviceUpgradeFacadeService.clientCheckDeviceUpgrade(mac, wifiDevice, handset_device, appver);
+        	/*UpgradeDTO upgrade = null;
         	if(!BusinessRuntimeConfiguration.isInitialDeviceFirmwareVersion(wifiDevice.getOrig_swver())){
         		//非固件固化定义的版本，直接返回不需要强制升级
         		System.out.println(String.format("not initial device firmware version:[%s] for[%s]", wifiDevice.getOrig_swver(),wifiDevice.getId()));
         	}else{
             	upgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac, wifiDevice,handset_device,appver);
-            	/*app检测设备是否需要升级的时候不进行定时升级指令的操作
+            	app检测设备是否需要升级的时候不进行定时升级指令的操作
             	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
             		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
             		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
-            	}*/
+            	}
         	}
         	UserDeviceCheckUpdateDTO retDTO = new UserDeviceCheckUpdateDTO();
         	retDTO.setMac(mac);
@@ -320,8 +323,8 @@ public class UserDeviceUnitFacadeService {
         	retDTO.setForceDeviceUpdate(upgrade!=null?upgrade.isForceDeviceUpgrade():false);
         	retDTO.setForceAppUpdate(upgrade!=null?upgrade.isForceAppUpgrade():false);
         	retDTO.setCurrentDVB(wifiDevice.getOrig_swver());
-        	retDTO.setCurrentAVB(upgrade!=null?upgrade.getCurrentAVB():null);
-        	return RpcResponseDTOBuilder.builderSuccessRpcResponse(retDTO);
+        	retDTO.setCurrentAVB(upgrade!=null?upgrade.getCurrentAVB():null);*/
+        	return RpcResponseDTOBuilder.builderSuccessRpcResponse(clientCheckDeviceUpgrade);
         }
     }
     

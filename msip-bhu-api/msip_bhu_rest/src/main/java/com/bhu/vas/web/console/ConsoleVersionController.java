@@ -141,6 +141,7 @@ public class ConsoleVersionController extends BaseController {
 			@RequestParam("file") CommonsMultipartFile file,
 			@RequestParam(required = true) int uid,
 			@RequestParam(required = true) String dut, 
+			@RequestParam(required = false) String minid,
 			@RequestParam(required = true) boolean fw) {
 
 		byte[] bs = new byte[1000];
@@ -151,7 +152,7 @@ public class ConsoleVersionController extends BaseController {
 		String ALurl = url[1];
 		System.out.println(QNurl+"::::::::::::::::::"+ALurl);
 
-		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut, fw, versionId, QNurl, ALurl);
+		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut,minid, fw, versionId, QNurl, ALurl);
 		if (!rpcResult.hasError()){
 			yunOperateService.uploadYun(bs,  uid,  dut,  fw, versionId, vapRpcService);
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

@@ -46,7 +46,6 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
-import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
@@ -104,7 +103,6 @@ import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
@@ -210,7 +208,12 @@ public class AsyncMsgHandleService {
 				if (WifiDeviceDTO.UserCmdRebootReason.equals(dto.getJoin_reason())) {
 					pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
 				}
-				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
+				//设备上线升级策略迁移到DeviceUpgradeFacadeService deviceUpgradeCMDAfterOnline实现
+				String upgradeCMD = deviceUpgradeFacadeService.deviceUpgradeFWCMDAfterOnline(dto.getMac(), wifiDevice);
+				if(StringUtils.isNotEmpty(upgradeCMD)){
+					payloads.add(upgradeCMD);
+				}
+				/*UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(dto.getMac(), wifiDevice);
 				if (upgrade != null && upgrade.isForceDeviceUpgrade()) {
 					// 如果是指定的版本出厂版本 并且 第一次注册创建时间超过指定定义的天数,立刻升级
 					if (BusinessRuntimeConfiguration.isInitialDeviceFirmwareVersion(upgrade.getCurrentDVB())
@@ -230,7 +233,7 @@ public class AsyncMsgHandleService {
 											WifiDeviceHelper.Upgrade_Default_EndTime));
 						}
 					}
-				}
+				}*/
 				// added by Edmond Lee @20160106 for mark workmode changed of
 				// device
 				if (!dto.isNewWifi()) {
@@ -353,14 +356,18 @@ public class AsyncMsgHandleService {
 		WifiDevice wifiDevice = wifiDeviceService.getById(dto.getMac());
 		if (wifiDevice != null) {
 			{// 组件模块升级指令
-				UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceOMUpgrade(dto.getMac(),
+				String upgradeCMD = deviceUpgradeFacadeService.deviceUpgradeOMCMDAfterOnline(dto.getMac(),wifiDevice.getOrig_swver(), dto.getOrig_vap_module());
+				if(StringUtils.isNotEmpty(upgradeCMD)){
+					afterDeviceModuleOnlineThenCmdDown(dto.getMac(), upgradeCMD);
+				}
+				/*UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceOMUpgrade(dto.getMac(),
 						wifiDevice.getOrig_swver(), dto.getOrig_vap_module());
 				if (upgrade != null && upgrade.isForceDeviceUpgrade()
 						&& WifiDeviceHelper.WIFI_DEVICE_UPGRADE_OM == upgrade.isFw()) {
 					String cmd = upgrade.buildUpgradeCMD(dto.getMac(), 0l, WifiDeviceHelper.Upgrade_Default_BeginTime,
 							WifiDeviceHelper.Upgrade_Default_EndTime);
 					afterDeviceModuleOnlineThenCmdDown(dto.getMac(), cmd);
-				}
+				}*/
 			}
 			// wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(wifiDevice);
 			// wifiDeviceIndexIncrementProcesser.moduleOnlineUpdIncrement(wifiDevice.getId(),
