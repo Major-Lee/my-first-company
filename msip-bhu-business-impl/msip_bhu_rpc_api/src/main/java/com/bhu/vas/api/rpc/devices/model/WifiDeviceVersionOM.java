@@ -93,6 +93,7 @@ public class WifiDeviceVersionOM extends BaseStringModel{
 		vto.setId(id);
 		vto.setN(name);
 		vto.setDut(dut);
+		vto.setMinid(StringHelper.MINUS_STRING_GAP);
 		vto.setR(related);
 		vto.setT(VersionVTO.VersionType_OM);
 		vto.setD(DateTimeHelper.formatDate(created_at, DateTimeHelper.FormatPattern1));
@@ -104,6 +105,7 @@ public class WifiDeviceVersionOM extends BaseStringModel{
 		vto.setId(StringHelper.MINUS_STRING_GAP);
 		vto.setN("无");
 		vto.setDut(StringHelper.MINUS_STRING_GAP);
+		vto.setMinid(StringHelper.MINUS_STRING_GAP);
 		vto.setR(false);
 		vto.setT(VersionVTO.VersionType_OM);
 		return vto;

@@ -96,7 +96,7 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 		vto.setId(id);
 		vto.setN(name);
 		vto.setDut(dut);
-		vto.setMinid(minid);
+		vto.setMinid(StringUtils.isEmpty(minid)?StringHelper.MINUS_STRING_GAP:minid);
 		vto.setR(related);
 		vto.setT(VersionVTO.VersionType_FW);
 		vto.setD(DateTimeHelper.formatDate(created_at, DateTimeHelper.FormatPattern1));
