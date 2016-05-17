@@ -82,8 +82,8 @@ public class UpgradeDTO {
 		this.currentAVB = currentAVB;
 	}
 	public String toString(){
-		return String.format("dut[%s] gl[%s] fw[%s] currentDVB[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] desc[%s] currentGrayPublished_at[%s]", 
-				dut,gl,fw,currentDVB,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,desc,currentGrayPublished_at);
+		return String.format("dut[%s] gl[%s] fw[%s] minid[%s] currentDVB[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] desc[%s] currentGrayPublished_at[%s]", 
+				dut,gl,fw,minid,currentDVB,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,desc,currentGrayPublished_at);
 		/*StringBuilder sb = new StringBuilder();
 		sb.append("gray")
 		return sb.toString();*/

@@ -10,12 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.api.dto.DownCmds;
-import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
-import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
-import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
+import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -36,7 +33,7 @@ public class WifiDeviceOnlineUpgradeLoader {
 	private IDaemonRpcService daemonRpcService;
 	
 	@Resource
-	private WifiDeviceGrayFacadeService wifiDeviceGrayFacadeService;
+	private DeviceUpgradeFacadeService deviceUpgradeFacadeService;
 	
 	public void execute() {
 		logger.info("WifiDeviceOnlineUpgradeLoader starting...");
@@ -51,13 +48,17 @@ public class WifiDeviceOnlineUpgradeLoader {
 	    	mc.setPageSize(50);
 	    	
 	    	EntityIterator<String, WifiDevice> it = new KeyBasedEntityBatchIterator<String,WifiDevice>(String.class
-					,WifiDevice.class, wifiDeviceGrayFacadeService.getWifiDeviceService().getEntityDao(), mc);
+					,WifiDevice.class, deviceUpgradeFacadeService.getWifiDeviceGrayFacadeService().getWifiDeviceService().getEntityDao(), mc);
 			while(it.hasNext()){
 				List<WifiDevice> devices = it.next();
 				for(WifiDevice device:devices){
 					if(StringUtils.isEmpty(device.getOrig_swver())) continue;
 					if(!device.getId().startsWith("84:82")) continue;
-					UpgradeDTO upgrade = wifiDeviceGrayFacadeService.deviceFWUpgradeAutoAction(device.getId(),device.getOrig_swver());
+					String upgradeCMD = deviceUpgradeFacadeService.deviceUpgradeCMDFwOrOM4BackTaskTimer(device.getId(),device.getOrig_swver());
+					if(StringUtils.isNotEmpty(upgradeCMD)){
+						downCmds.add(DownCmds.builderDownCmds(device.getId(), upgradeCMD));
+					}
+/*					UpgradeDTO upgrade = wifiDeviceGrayFacadeService.deviceFWUpgradeAutoAction(device.getId(),device.getOrig_swver());
 					if(upgrade != null && upgrade.isForceDeviceUpgrade()){
 						String payload = upgrade.buildUpgradeCMD(device.getId(), 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
 						downCmds.add(DownCmds.builderDownCmds(device.getId(), payload));
@@ -72,7 +73,7 @@ public class WifiDeviceOnlineUpgradeLoader {
 								System.out.println(String.format("mac[%s] cmd[%s]", device.getId(),payload));
 							}
 						}
-					}
+					}*/
 				}
 				if(!downCmds.isEmpty()){
 					total = total+downCmds.size();
@@ -89,7 +90,7 @@ public class WifiDeviceOnlineUpgradeLoader {
 	}
 	
 	public void beforeExecute(){
-		wifiDeviceGrayFacadeService.updateRelatedFieldAction();
-		wifiDeviceGrayFacadeService.updateRelatedDevice4GrayVersion();
+		deviceUpgradeFacadeService.getWifiDeviceGrayFacadeService().updateRelatedFieldAction();
+		deviceUpgradeFacadeService.getWifiDeviceGrayFacadeService().updateRelatedDevice4GrayVersion();
 	}
 }

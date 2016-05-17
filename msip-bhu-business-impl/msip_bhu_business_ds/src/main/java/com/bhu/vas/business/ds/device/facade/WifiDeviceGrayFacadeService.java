@@ -474,39 +474,6 @@ public class WifiDeviceGrayFacadeService {
     	return upgradeDecideAction(dmac,dut,gl,d_om_version,WifiDeviceHelper.WIFI_DEVICE_UPGRADE_OM);
     }
     
-    /*public UpgradeDTO deviceUpgradeAutoAction(String dmac,String d_version,boolean fw){
-    	WifiDeviceGrayVersionPK deviceUnitGrayPk = this.deviceUnitGray(dmac);
-    	String dut = null;
-    	int gl = 0;
-		if(deviceUnitGrayPk == null){//不在灰度等级中，则采用缺省的 其他定义
-			//获取d_version中的dut
-			if(WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW == fw){
-				DeviceVersion dvparser = DeviceVersion.parser(d_version);
-				DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersionPrefix(dvparser.getDut(), dvparser.getPrefix());//.fromIndex(dvparser.getPrefix(x));//Integer.parseInt(dvparser.getHdt()));
-				if(dutype != null){
-					dut = dutype.getIndex();
-				}else{
-					System.out.println(String.format("unable catch the device unitype from:[%s] fw[%s] for[%s]", d_version,fw,dmac));
-					return null;
-				}
-				gl = VapEnumType.GrayLevel.Other.getIndex();
-			}else{
-				DeviceOMVersion dvparser = DeviceOMVersion.parser(d_version);
-				DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromIndex(Integer.parseInt(dvparser.getHdt()));
-				if(dutype != null){
-					dut = dutype.getIndex();
-				}else{
-					System.out.println(String.format("unable catch the device unitype from:[%s] fw[%s] for[%s]", d_version,fw,dmac));
-					return null;
-				}
-				gl = VapEnumType.GrayLevel.Other.getIndex();
-			}
-		}else{
-			dut = deviceUnitGrayPk.getDut();
-			gl = deviceUnitGrayPk.getGl();
-		}
-    	return upgradeDecideAction(dmac,dut,gl,d_version,fw);
-    }*/
     
     private UpgradeDTO upgradeDecideAction(String dmac,String dut,int gl,String d_version,boolean fw){
     	System.out.println(String.format("A upgradeDecideAction dmac[%s] dut[%s] gl[%s] d_version[%s] fw[%s]",dmac,dut,gl,d_version,fw));
