@@ -242,6 +242,7 @@ public class ChargingFacadeService {
 	public SharedealDefaultVTO defaultDeviceSharedealConfigs(){
 		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
 		SharedealDefaultVTO vto = new SharedealDefaultVTO();
+		vto.setId(configs.getId());
 		vto.setOwner_percent(configs.getOwner_percent());
 		vto.setManufacturer_percent(configs.getManufacturer_percent());
 		vto.setRcm(configs.getRange_cash_mobile());
