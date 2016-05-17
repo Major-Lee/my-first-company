@@ -167,7 +167,7 @@ public class TagFacadeRpcSerivce {
 	 */
 	public TagGroupVTO saveTreeNode(int uid, int gid, int pid, String name) {
 
-		//验证是否能新建分组
+		// 验证是否能新建分组
 		CanSaveNode(uid, gid, pid, name);
 
 		TagGroup tagGroup = null;
@@ -206,20 +206,19 @@ public class TagFacadeRpcSerivce {
 	 * @param macs
 	 * @return
 	 */
-	public void saveDevices2Group(int uid, int gid,String path, String macs) {
+	public void saveDevices2Group(int uid, int gid, String path, String macs) {
 
 		String[] macsTemp = macs.split(StringHelper.COMMA_STRING_GAP);
 
 		List<String> macsList = ArrayHelper.toList(macsTemp);
-		
-		//验证是否能添加设备
+
+		// 验证是否能添加设备
 		CanAddDevices2Group(uid, gid, macsTemp.length);
 
 		List<TagGroupRelation> entities = new ArrayList<TagGroupRelation>();
 
-
 		for (String mac : macsTemp) {
-			
+
 			TagGroupRelation tagGroupRelation = new TagGroupRelation();
 			tagGroupRelation.setId(mac);
 			tagGroupRelation.setGid(gid);
@@ -283,10 +282,10 @@ public class TagFacadeRpcSerivce {
 			TagGroup group = tagGroupService.getById(gid);
 			if (group != null && group.getCreator() == uid) {
 				int pid = group.getPid();
-				
+
 				// 先删除设备和索引，再删除节点
 				delChildNodeDevices(uid, group.getPath());
-				
+
 				tagGroupService.removeAllByPath(group.getPath(), true);
 
 				if (pid != 0) {
@@ -309,17 +308,17 @@ public class TagFacadeRpcSerivce {
 	public boolean CanSaveNode(int uid, int gid, int pid, String name) {
 
 		boolean flag = StringFilter(name);
-		
+
 		// 所有节点不可重名
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("creator", uid).andColumnEqualTo("name", name);
 		int count = tagGroupService.countByModelCriteria(mc);
-		
+
 		if (flag && count != 0) {
 			flag = false;
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_ERROR);
 		}
-		
+
 		if (flag && pid > 0) {
 			// 父节点creator是否与当前用户一致
 			TagGroup tagParentGroup = tagGroupService.getById(pid);
@@ -342,12 +341,15 @@ public class TagFacadeRpcSerivce {
 
 		}
 
-// 		最多100个同级节点
-//		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("pid", pid).andColumnEqualTo("creator", uid);
-//		List<TagGroup> tagSamePidGroups = tagGroupService.findModelByModelCriteria(mc);
-//		if (flag && tagSamePidGroups != null && tagSamePidGroups.size() >= 100) {
-//			return false;
-//		}
+		// 最多100个同级节点
+		// mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("pid",
+		// pid).andColumnEqualTo("creator", uid);
+		// List<TagGroup> tagSamePidGroups =
+		// tagGroupService.findModelByModelCriteria(mc);
+		// if (flag && tagSamePidGroups != null && tagSamePidGroups.size() >=
+		// 100) {
+		// return false;
+		// }
 
 		return flag;
 	}
@@ -409,36 +411,37 @@ public class TagFacadeRpcSerivce {
 	}
 
 	/**
-	 * 删除当前节点和子节点设备关系
-	 * 	同时清除ES索引
+	 * 删除当前节点和子节点设备关系 同时清除ES索引
+	 * 
 	 * @param uid
 	 * @param tagGroup
 	 */
 	private void delChildNodeDevices(int uid, String path) {
-		
-		//模糊搜索
+
+		// 模糊搜索
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnLike("path", path+"%");
+		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnLike("path", path + "%");
 		List<TagGroupRelation> entities = tagGroupRelationService.findModelByModelCriteria(mc);
-		
+
 		List<String> macsList = new ArrayList<String>();
-		for(TagGroupRelation tagGroupRelation : entities){
+		for (TagGroupRelation tagGroupRelation : entities) {
 			macsList.add(tagGroupRelation.getId());
 		}
-		//清除所有索引信息
+		// 清除所有索引信息
 		wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
-		
+
 		tagGroupRelationService.deleteByModelCriteria(mc);
 
-//		if (tagGroup.getChildren() != 0) {
-//			ModelCriteria newMc = new ModelCriteria();
-//			newMc.createCriteria().andColumnEqualTo("pid", tagGroup.getId());
-//			// TODO ? 通过冗余path去模糊删除
-//			List<TagGroup> tagchildGroups = tagGroupService.findModelByModelCriteria(newMc);
-//			for (TagGroup tagChildGroup : tagchildGroups) {
-//				delChildNodeDevices(tagChildGroup);
-//			}
-//		}
+		// if (tagGroup.getChildren() != 0) {
+		// ModelCriteria newMc = new ModelCriteria();
+		// newMc.createCriteria().andColumnEqualTo("pid", tagGroup.getId());
+		// // TODO ? 通过冗余path去模糊删除
+		// List<TagGroup> tagchildGroups =
+		// tagGroupService.findModelByModelCriteria(newMc);
+		// for (TagGroup tagChildGroup : tagchildGroups) {
+		// delChildNodeDevices(tagChildGroup);
+		// }
+		// }
 	}
 
 	/**
@@ -463,42 +466,53 @@ public class TagFacadeRpcSerivce {
 		vto.setPath(tagGroup.getPath());
 		return vto;
 	}
-	
+
 	/**
 	 * 分页获取当前节点下一级子节点数据
+	 * 
 	 * @param uid
 	 * @param gid
 	 * @param pageNo
 	 * @param pageSize
 	 */
-	public TailPage<TagGroupVTO> fetchChildGroup(int uid , int pid,int pageNo,int pageSize){
+	public TailPage<TagGroupVTO> fetchChildGroup(int uid, int pid, int pageNo, int pageSize) {
+		
 		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("creator", uid).andColumnEqualTo("pid", pid);
+		int total = tagGroupService.countByModelCriteria(mc);
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
-		mc.createCriteria().andColumnEqualTo("creator", uid).andColumnEqualTo("pid", pid);
-		List<TagGroup> tagGroups = tagGroupService.findModelByModelCriteria(mc);
-		
-		List<TagGroupVTO> result = new ArrayList<TagGroupVTO>();
-		for(TagGroup tagGroup : tagGroups){
 
+		List<TagGroup> tagGroups = tagGroupService.findModelByModelCriteria(mc);
+		List<TagGroupVTO> result = new ArrayList<TagGroupVTO>();
+		for (TagGroup tagGroup : tagGroups) {
 			TagGroupVTO vto = TagGroupDetail(tagGroup);
 			result.add(vto);
 		}
-		
-		return new CommonPage<TagGroupVTO>(pageNo, pageSize, result.size(), result);
+
+		return new CommonPage<TagGroupVTO>(pageNo, pageSize, total, result);
 	}
-	
-	
-	public TagGroupVTO currentGroupDetail(int uid ,int gid){
-		
+
+	public TagGroupVTO currentGroupDetail(int uid, int gid) {
+
 		TagGroup tagGroup = tagGroupService.getById(gid);
-		
-		if (tagGroup !=null) {
+
+		if (tagGroup != null) {
 			return TagGroupDetail(tagGroup);
-		}else{
-			throw new BusinessI18nCodeException(
-                    ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST,
-                    new String[]{String.valueOf(gid)});
+		} else {
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_GROUP_NOTEXIST,
+					new String[] { String.valueOf(gid) });
 		}
+	}
+
+	/**
+	 * 分组下发指令
+	 * 
+	 * @param uid
+	 * @param message
+	 * @param cmds
+	 */
+	public void BatchGroupDownCmds(int uid, String message, String cmds) {
+		asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, cmds);
 	}
 }
