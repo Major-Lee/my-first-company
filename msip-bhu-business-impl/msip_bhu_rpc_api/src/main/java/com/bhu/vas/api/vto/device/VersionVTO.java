@@ -14,6 +14,7 @@ public class VersionVTO implements java.io.Serializable{
 	private String t;
 	//device unit type
 	private String dut;
+	private String minid;
 	//上传日期 yyyy-MM-dd hh:mm:ss
 	private String d;
 	//related
@@ -54,5 +55,10 @@ public class VersionVTO implements java.io.Serializable{
 	public void setR(boolean r) {
 		this.r = r;
 	}
-	
+	public String getMinid() {
+		return minid;
+	}
+	public void setMinid(String minid) {
+		this.minid = minid;
+	}
 }

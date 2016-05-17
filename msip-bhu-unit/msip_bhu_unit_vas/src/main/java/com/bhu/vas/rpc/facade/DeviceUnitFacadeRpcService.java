@@ -104,10 +104,10 @@ public class DeviceUnitFacadeRpcService{
 		
 	}
 
-	public RpcResponseDTO<VersionVTO> addDeviceVersion(int uid, String dut,
+	public RpcResponseDTO<VersionVTO> addDeviceVersion(int uid, String dut,String minid,
 			boolean fw, String versionid, String upgrade_url,String upgrade_slaver_urls) {
 		try{
-			 VersionVTO deviceVersion = wifiDeviceGrayFacadeService.addDeviceVersion(VapEnumType.DeviceUnitType.fromIndex(dut), fw, versionid, upgrade_url,upgrade_slaver_urls);
+			 VersionVTO deviceVersion = wifiDeviceGrayFacadeService.addDeviceVersion(VapEnumType.DeviceUnitType.fromIndex(dut),minid, fw, versionid, upgrade_url,upgrade_slaver_urls);
 			 return RpcResponseDTOBuilder.builderSuccessRpcResponse(deviceVersion);
 		}catch(BusinessI18nCodeException i18nex){
 			i18nex.printStackTrace(System.out);

@@ -16,11 +16,15 @@ public class UpgradeDTO {
 	private boolean fw;
 	private boolean forceDeviceUpgrade;
 	private boolean forceAppUpgrade;
+	//灰度定义的版本号
 	private String name;
 	private String upgradeurl;
 	private String upgrade_slaver_urls;
+	//设备当前的版本号
 	private String currentDVB;
     private String currentAVB;
+    //灰度定义的最小版本号
+    private String minid;
     private String desc;
     
     private Date currentGrayPublished_at;
@@ -78,8 +82,8 @@ public class UpgradeDTO {
 		this.currentAVB = currentAVB;
 	}
 	public String toString(){
-		return String.format("dut[%s] gl[%s] fw[%s] currentDVB[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] desc[%s] currentGrayPublished_at[%s]", 
-				dut,gl,fw,currentDVB,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,desc,currentGrayPublished_at);
+		return String.format("dut[%s] gl[%s] fw[%s] minid[%s] currentDVB[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] desc[%s] currentGrayPublished_at[%s]", 
+				dut,gl,fw,minid,currentDVB,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,desc,currentGrayPublished_at);
 		/*StringBuilder sb = new StringBuilder();
 		sb.append("gray")
 		return sb.toString();*/
@@ -115,6 +119,13 @@ public class UpgradeDTO {
 		this.desc = desc;
 	}
 	
+	public String getMinid() {
+		return minid;
+	}
+
+	public void setMinid(String minid) {
+		this.minid = minid;
+	}
 
 	public String getUpgrade_slaver_urls() {
 		if(StringUtils.isEmpty(upgrade_slaver_urls)) return StringUtils.EMPTY;

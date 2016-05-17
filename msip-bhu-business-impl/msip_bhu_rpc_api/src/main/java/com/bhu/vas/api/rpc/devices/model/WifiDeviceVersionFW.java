@@ -26,6 +26,8 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 	private String upgrade_slaver_urls;
 	//适用的产品类型
 	private String dut;
+	//最小版本号，在设备当前版本号<=最小版本号的情况下，有给app的提示会存在立刻升级的特性
+	private String minid;
 	//当前灰度中被引用
 	private boolean related;
 	private Date created_at;
@@ -94,6 +96,7 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 		vto.setId(id);
 		vto.setN(name);
 		vto.setDut(dut);
+		vto.setMinid(StringUtils.isEmpty(minid)?StringHelper.MINUS_STRING_GAP:minid);
 		vto.setR(related);
 		vto.setT(VersionVTO.VersionType_FW);
 		vto.setD(DateTimeHelper.formatDate(created_at, DateTimeHelper.FormatPattern1));
@@ -105,8 +108,18 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 		vto.setId(StringHelper.MINUS_STRING_GAP);
 		vto.setN("无");
 		vto.setDut(StringHelper.MINUS_STRING_GAP);
+		vto.setMinid(StringHelper.MINUS_STRING_GAP);
 		vto.setR(false);
 		vto.setT(VersionVTO.VersionType_FW);
 		return vto;
 	}
+
+	public String getMinid() {
+		return minid;
+	}
+
+	public void setMinid(String minid) {
+		this.minid = minid;
+	}
+	
 }
