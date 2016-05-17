@@ -18,8 +18,8 @@ public class TagCommentServiceConsumer {
 		//tagRpcService.bindTag(100035,"84:82:f4:28:7a:ec", "咖啡馆"); //{"items":[{"tag":"公司"}]}
 		System.out.println("1111");
 //		tagRpcService.saveTreeNode(100001, 0, 0, "测试");
-//		tagRpcService.saveDevices2Group(100001, 2, 0, "2/" , "84:82:f4:28:7a:ec");
-		tagRpcService.delNode(100001, "2");
+		tagRpcService.saveDevices2Group(100234, 8, 0, "7/8/9/" , "84:82:f4:28:7a:ec");
+//		tagRpcService.delNode(100001, "2");
 		System.out.println("2222");
 		Thread.currentThread().join();
 		context.close();

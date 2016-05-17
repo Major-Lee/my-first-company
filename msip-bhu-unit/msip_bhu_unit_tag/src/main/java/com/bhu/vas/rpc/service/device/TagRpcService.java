@@ -109,11 +109,11 @@ public class TagRpcService implements ITagRpcService {
 	 * 分组绑定设备
 	 */
 	@Override
-	public RpcResponseDTO<Boolean> saveDevices2Group(int uid, int gid, int pid, String path, String macs) {
-		logger.info(String.format("saveDevices2Group uid[%s] gid[%s] pid[%s] path [%s] macs[%s]", uid, gid, pid, path,
+	public RpcResponseDTO<Boolean> saveDevices2Group(int uid, int gid, String path, String macs) {
+		logger.info(String.format("saveDevices2Group uid[%s] gid[%s] pid[%s] path [%s] macs[%s]", uid, gid, path,
 				macs));
 		try {
-			tagFacadeRpcSerivce.saveDevices2Group(uid, gid, pid, path, macs);
+			tagFacadeRpcSerivce.saveDevices2Group(uid, gid, path, macs);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
@@ -184,7 +184,7 @@ public class TagRpcService implements ITagRpcService {
 	 */
 	@Override
 	public RpcResponseDTO<Boolean> CanSaveNode(int uid, int gid, int pid, String name) {
-		logger.info(String.format("currentGroupDetail uid[%s] gid[%s]", uid, gid));
+		logger.info(String.format("canSaveNode uid[%s] gid[%s] name[%s]", uid, gid, name));
 		try {
 			tagFacadeRpcSerivce.CanSaveNode(uid, gid, pid, name);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);

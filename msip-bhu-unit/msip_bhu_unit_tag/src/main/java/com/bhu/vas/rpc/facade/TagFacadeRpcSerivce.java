@@ -207,7 +207,7 @@ public class TagFacadeRpcSerivce {
 	 * @param macs
 	 * @return
 	 */
-	public void saveDevices2Group(int uid, int gid, int pid,String path, String macs) {
+	public void saveDevices2Group(int uid, int gid,String path, String macs) {
 
 		String[] macsTemp = macs.split(StringHelper.COMMA_STRING_GAP);
 

@@ -124,5 +124,40 @@ public class GroupController extends BaseController{
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
+    }
+    
+
+    @ResponseBody()
+    @RequestMapping(value = "/add", method = {RequestMethod.POST})
+    public void save_Devices(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int gid,
+            @RequestParam(required = true) String path,
+            @RequestParam(required = true) String macs) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.saveDevices2Group(uid, gid, path, macs);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    } 
+    
+    @ResponseBody()
+    @RequestMapping(value = "/modify", method = {RequestMethod.POST})
+    public void modify(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int gid,
+            @RequestParam(required = false,defaultValue= "0",value = "newGid") int newGid,
+            @RequestParam(required = true) String macs) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.modifyDeciceWithNode(uid, gid, newGid, macs);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
     } 
 }
