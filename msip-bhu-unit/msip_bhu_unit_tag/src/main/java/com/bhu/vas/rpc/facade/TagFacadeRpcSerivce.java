@@ -200,7 +200,7 @@ public class TagFacadeRpcSerivce {
 	}
 
 	/**
-	 * 节点绑定设备
+	 * 分组添加设备
 	 * 
 	 * @param uid
 	 * @param gid

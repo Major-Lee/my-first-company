@@ -106,11 +106,11 @@ public class TagRpcService implements ITagRpcService {
 	}
 
 	/**
-	 * 分组绑定设备
+	 * 分组添加设备
 	 */
 	@Override
 	public RpcResponseDTO<Boolean> saveDevices2Group(int uid, int gid, String path, String macs) {
-		logger.info(String.format("saveDevices2Group uid[%s] gid[%s] pid[%s] path [%s] macs[%s]", uid, gid, path,
+		logger.info(String.format("saveDevices2Group uid[%s] gid[%s] path [%s] macs[%s]", uid, gid, path,
 				macs));
 		try {
 			tagFacadeRpcSerivce.saveDevices2Group(uid, gid, path, macs);
