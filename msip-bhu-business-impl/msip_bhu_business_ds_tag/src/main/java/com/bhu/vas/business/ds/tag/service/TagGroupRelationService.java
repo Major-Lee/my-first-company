@@ -20,6 +20,9 @@ public class TagGroupRelationService extends AbstractTagService<String, TagGroup
     }
 	
 	public String fetchPathWithMac(String mac){
-		return this.getById(mac).getPath2ES();
+		TagGroupRelation relation = this.getById(mac);
+		if(relation != null)
+			return relation.getPath2ES();
+		return null;
 	}
 }
