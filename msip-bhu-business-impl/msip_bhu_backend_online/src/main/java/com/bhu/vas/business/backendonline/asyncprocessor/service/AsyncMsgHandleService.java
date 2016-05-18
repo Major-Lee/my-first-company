@@ -209,7 +209,7 @@ public class AsyncMsgHandleService {
 					pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
 				}
 				//设备上线升级策略迁移到DeviceUpgradeFacadeService deviceUpgradeCMDAfterOnline实现
-				String upgradeCMD = deviceUpgradeFacadeService.deviceUpgradeFWCMDAfterOnline(dto.getMac(), wifiDevice);
+				String upgradeCMD = deviceUpgradeFacadeService.deviceUpgradeFWCMDAfterOnline(dto.getMac(), wifiDevice.getOrig_swver());
 				if(StringUtils.isNotEmpty(upgradeCMD)){
 					payloads.add(upgradeCMD);
 				}
