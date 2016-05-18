@@ -479,18 +479,16 @@ public class TagFacadeRpcSerivce {
 		
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("creator", uid).andColumnEqualTo("pid", pid);
-		int total = tagGroupService.countByModelCriteria(mc);
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
-
-		List<TagGroup> tagGroups = tagGroupService.findModelByModelCriteria(mc);
+		TailPage<TagGroup> pages = tagGroupService.findModelTailPageByModelCriteria(mc);
 		List<TagGroupVTO> result = new ArrayList<TagGroupVTO>();
-		for (TagGroup tagGroup : tagGroups) {
+		for (TagGroup tagGroup : pages) {
 			TagGroupVTO vto = TagGroupDetail(tagGroup);
 			result.add(vto);
 		}
 
-		return new CommonPage<TagGroupVTO>(pageNo, pageSize, total, result);
+		return new CommonPage<TagGroupVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), result);
 	}
 
 	public TagGroupVTO currentGroupDetail(int uid, int gid) {
@@ -513,6 +511,7 @@ public class TagFacadeRpcSerivce {
 	 * @param cmds
 	 */
 	public void BatchGroupDownCmds(int uid, String message, String cmds) {
+		
 		asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, cmds);
 	}
 }

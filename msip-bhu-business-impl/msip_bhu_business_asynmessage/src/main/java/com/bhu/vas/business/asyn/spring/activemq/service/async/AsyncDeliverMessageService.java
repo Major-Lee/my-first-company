@@ -63,5 +63,9 @@ public class AsyncDeliverMessageService {
 	
 	public void sentBatchGroupCmdsActionMessage(int uid , String message ,String cmds){
 		OperGroupDTO dto = new OperGroupDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setCmds(cmds);
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 }

@@ -2,14 +2,12 @@ package com.bhu.vas.business.asyn.spring.model.async.group;
 
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncDTO;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
-import com.bhu.vas.business.asyn.spring.model.IDTO;
 
-public class OperGroupDTO extends AsyncDTO implements IDTO{
+public class OperGroupDTO extends AsyncDTO{
 	
 	private int uid;
 	private String message;
 	private String cmds;
-	private char dtoType;
 	
 	public int getUid() {
 		return uid;
@@ -38,13 +36,5 @@ public class OperGroupDTO extends AsyncDTO implements IDTO{
 	@Override
 	public String getAsyncType() {
 		return AsyncMessageType.BatchGroupDownCmds.getPrefix();
-	}
-	
-	@Override
-	public char getDtoType() {
-		return dtoType;
-	}
-	public void setDtoType(char dtoType) {
-		this.dtoType = dtoType;
 	}
 }
