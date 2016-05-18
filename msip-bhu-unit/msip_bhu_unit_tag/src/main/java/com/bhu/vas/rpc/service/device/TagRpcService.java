@@ -194,4 +194,20 @@ public class TagRpcService implements ITagRpcService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	/**
+	 * 分组批量下发指令
+	 */
+	@Override
+	public RpcResponseDTO<Boolean> batchGroupDownCmds(int uid, String message, String opt, String subopt,String extparams) {
+		logger.info(String.format("canSaveNode uid[%s] message[%s] opt[%s] subopt[%s] extparams[%s]", uid, message, opt, subopt, extparams));
+		try {
+			tagFacadeRpcSerivce.batchGroupDownCmds(uid, message, opt, subopt, extparams);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		} catch (BusinessI18nCodeException i18nex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		} catch (Exception ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }
