@@ -529,6 +529,28 @@ public class SharedNetworksFacadeService {
 		return result;
 	}
 	
+	public List<String> closeAndApplyDevicesFromSharedNetwork(int uid,VapEnumType.SharedNetworkType sharednetwork_type,String template,List<String> macs){
+		List<String> result = new ArrayList<String>();
+		ParamSharedNetworkDTO configDto = fetchUserSharedNetworkConf(uid,sharednetwork_type,template);
+		for(String mac:macs){
+			String mac_lowercase = mac.toLowerCase();
+			WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
+			sharednetwork.setSharednetwork_type(configDto.getNtype());
+			sharednetwork.setTemplate(configDto.getTemplate());
+			if(sharednetwork != null){
+				//sharednetwork.setSharednetwork_type(null);
+				SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
+				sharedNetworkSettingDTO.setPsn(configDto);
+				sharedNetworkSettingDTO.turnOff();
+				sharednetwork.putInnerModel(sharedNetworkSettingDTO);
+				//sharednetwork.putInnerModel(configDto);
+				wifiDeviceSharedNetworkService.update(sharednetwork);
+				result.add(mac_lowercase);
+			}
+		}
+		return result;
+	}
+	
 	public void remoteResponseNotifyFromDevice(String mac){
 		WifiDeviceSharedNetwork sharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
 		if(sharedNetwork != null){
