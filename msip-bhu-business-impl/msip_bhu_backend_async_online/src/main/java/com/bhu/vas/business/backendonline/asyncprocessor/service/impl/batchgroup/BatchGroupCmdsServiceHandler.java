@@ -47,13 +47,15 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 					public void notifyComming(Page<WifiDeviceDocument> pages) {
 						for (WifiDeviceDocument doc : pages) {
 							
+							System.out.println("000000000000000");
 							String payload = autoGenerateCmds(operGroupDto.getUid(),doc.getD_mac(),
 									operGroupDto.getOpt(),operGroupDto.getSubopt(),operGroupDto.getExtparams(),
 									DeviceStatusExchangeDTO.build(doc.getD_workmodel(), doc.getD_origswver()));
-							
+							System.out.println("111111111111111");
 							downCmdsList.add(DownCmds.builderDownCmds(doc.getD_mac(),payload));
-							
+							System.out.println("2222222222222");
 						    daemonRpcService.wifiMultiDevicesCmdsDown(downCmdsList.toArray(new DownCmds[0]));
+						    System.out.println("3333333333333333");
 						}
 					}
 		});
