@@ -129,8 +129,8 @@ public class ChargingUnitFacadeService {
 	
 	public RpcResponseDTO<SharedealDefaultVTO> doFetchDefaultSharedeal(int uid){
 		try{
-			User operUser = chargingFacadeService.getUserService().getById(uid);
-			UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
+			//User operUser = chargingFacadeService.getUserService().getById(uid);
+			//UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(chargingFacadeService.defaultDeviceSharedealConfigs());
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
