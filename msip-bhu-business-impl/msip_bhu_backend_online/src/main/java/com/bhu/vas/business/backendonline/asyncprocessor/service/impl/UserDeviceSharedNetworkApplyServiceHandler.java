@@ -129,7 +129,9 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 								}
 							});
 				}else{//关闭
-					List<String> rdmacs = sharedNetworksFacadeService.removeDevicesFromSharedNetwork(dmacs.toArray(new String[0]));
+					//TODO:是否应该改进为 关闭设备当前的共享网络并是设备应用指定的网络类型，并且是关闭状态，eg：如果本身是SafeSecure开启状态，请求了 Uplink 关闭？
+					List<String> rdmacs = sharedNetworksFacadeService.closeAndApplyDevicesFromSharedNetwork(userid,sharedNetwork,template,dmacs);//sharedNetworksFacadeService.removeDevicesFromSharedNetwork(dmacs.toArray(new String[0]));
+					logger.info(String.format("close and apply uid[%s] rdmacs[%s] sharednetwork[%s] template[%s]", userid,rdmacs,sharedNetwork.getKey(),template));
 					for(String mac:rdmacs){
 						WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 						if(wifiDevice == null) continue;
@@ -137,7 +139,9 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 								DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
 						downCmds.add(DownCmds.builderDownCmds(mac, cmd));
 					}
-					wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs,sharedNetwork.getKey(),template);
+					if(!rdmacs.isEmpty()){
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs,sharedNetwork.getKey(),template);
+					}
 				}
 				if(!downCmds.isEmpty()){
 					daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
