@@ -261,8 +261,10 @@ public class PaymentController extends BaseController{
         	//判断请求支付类型    	
         	if(payment_type.equals("PcWeixin")){ //PC微信支付
         		result =  doNativeWxPayment(request,response,total_fee,goods_no,exter_invoke_ip);
+        	}else if(payment_type.equals("WapAlipay")){ //Wap微信支付宝
+        		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type);
         	}else if(payment_type.equals("PcAlipay")){ //PC微信支付宝
-        		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip);
+        		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type);
         	}else if(payment_type.equals("Midas")){ //米大师
         		result =  doMidas(response, total_fee, goods_no); //TODO：暂未对接完成。。。
         	}else if(payment_type.equals("Hee")){ //汇付宝
@@ -411,7 +413,8 @@ public class PaymentController extends BaseController{
 	 * @param ip 用户Ip
 	 * @return
 	 */
-    private PaymentTypeVTO doAlipay(HttpServletResponse response,HttpServletRequest request,String totalPrice,String out_trade_no,String locationUrl,String ip){
+    private PaymentTypeVTO doAlipay(HttpServletResponse response,HttpServletRequest request,
+    		String totalPrice,String out_trade_no,String locationUrl,String ip,String type){
     	response.setCharacterEncoding("utf-8");
     	PaymentTypeVTO result = null;
     	
@@ -436,7 +439,12 @@ public class PaymentController extends BaseController{
 		 //以上为正式支付前必有的订单信息，用户信息验证，接下来将用订单号生成一个支付流水号进行在线支付
 		//数据库存的是分，此处需要把传来的支付金额转换成分，而传给支付宝的保持不变（默认元）
 		String total_fee_fen = BusinessHelper.getMoney(total_fee);
-		String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"PCAL");
+		if(type.equals("WapAlipay")){
+			type = "MOAL";
+		}else{
+			type = "PCAL";
+		}
+		String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,type);
 		
 		//记录请求支付完成后返回的地址
 		if (!StringUtils.isBlank(locationUrl)) {
@@ -801,6 +809,8 @@ public class PaymentController extends BaseController{
  			paymentType = "PcAlipay";
  		}else if(type.equalsIgnoreCase("MOHE")){
  			paymentType = "WapWeixin";
+ 		}else if(type.equalsIgnoreCase("MOAL")){
+ 			paymentType = "WapAlipay";
  		}
     	
     	if(Ip == "" || Ip == null){
