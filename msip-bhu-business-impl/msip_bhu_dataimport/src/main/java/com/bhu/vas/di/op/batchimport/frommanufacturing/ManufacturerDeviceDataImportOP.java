@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -58,8 +59,8 @@ public class ManufacturerDeviceDataImportOP {
 			files = new File[1];
 			files[0] = file;
 		}
-		
-		for(File targetfile : files){
+		final StringBuilder sb_error = new StringBuilder();
+		for(final File targetfile : files){
 			System.out.println(targetfile.getAbsolutePath());
 			Thread.sleep(500);
 			ManufacturerExcelImport.excelImport(targetfile.getAbsolutePath(), new ExcelElementNotify(){
@@ -67,11 +68,21 @@ public class ManufacturerDeviceDataImportOP {
 				public void elementNotify(String mac, String sn) {
 					//System.out.println(String.format("mac[%s] sn[%s]", mac,sn));
 					if(!mac.startsWith("84:82:f4"))	return;
+					System.out.println(String.format("mac[%s] sn[%s]", mac,sn));
 					DeviceUnitType dut = VapEnumType.DeviceUnitType.fromDeviceSN(sn);
 					if(dut != null){
 						WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 						if(wifiDevice != null) {
-							System.err.println(String.format("mac[%s] sn[%s] dbsn[%s] already existed! ", mac,sn,wifiDevice.getSn()));
+							if(StringUtils.isNotEmpty(wifiDevice.getSn())){
+								if(wifiDevice.getSn().equals(sn)){
+									System.err.println(String.format("mac[%s] sn[%s] dbsn[%s] matched[%s] already existed! ", mac,sn,wifiDevice.getSn(),true));
+								}else{
+									System.err.println(String.format("mac[%s] sn[%s] dbsn[%s] matched[%s] already existed! ", mac,sn,wifiDevice.getSn(),false));
+									sb_error.append(String.format("mac[%s] sn[%s] dbsn[%s] matched[%s] file[%s]", mac,sn,wifiDevice.getSn(),false,targetfile.getName())).append("\n");
+								}
+							}else{
+								System.err.println(String.format("mac[%s] sn[%s] dbsn[%s] matched[%s] already existed! ", mac,sn,wifiDevice.getSn(),false));
+							}
 							atomic_failed.incrementAndGet();
 							return;
 						}
@@ -102,9 +113,9 @@ public class ManufacturerDeviceDataImportOP {
 			});
 		}
 		
-		
-		
 		System.out.println(String.format("filepath[%s] import successfully! successed[%s] failed[%s]", filepath,atomic_successed.get(),atomic_failed.get()));
+		
+		System.out.println(sb_error.toString());
 		System.exit(0);
 	}
 }

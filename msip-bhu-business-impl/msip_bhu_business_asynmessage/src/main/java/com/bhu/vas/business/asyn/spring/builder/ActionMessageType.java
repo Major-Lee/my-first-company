@@ -44,7 +44,7 @@ public enum ActionMessageType {
 	USERDEVICEDESTORY("用户设备注销","user device destory","DD"),
 	USERBBSSIGNEDON("用户bbs登陆","user bbs signedon","UB"),//用户登陆
 	
-	UserDeviceSharedNetworkApply("用户设备共享网络应用","user device sharednetwork apply","UD"),
+	//UserDeviceSharedNetworkApply("用户设备共享网络应用","user device sharednetwork apply","UD"),
 	UserPortalUpdate("用户Portal数据更新","user portal data update","UU"),
 	
 	USERDEVICEFORCEBIND("用户设备强制绑定","user device force bind","DF"),

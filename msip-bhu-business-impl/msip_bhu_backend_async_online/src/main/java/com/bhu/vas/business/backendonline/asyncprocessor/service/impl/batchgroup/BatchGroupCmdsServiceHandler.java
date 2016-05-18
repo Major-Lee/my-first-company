@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.helper.OperationCMD;
@@ -22,6 +23,7 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
+@Service
 public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 	private final Logger logger = LoggerFactory.getLogger(BatchGroupCmdsServiceHandler.class);
 

@@ -1,4 +1,4 @@
-package com.bhu.vas.business.backendonline.asyncprocessor.service.impl;
+package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchsnk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
-import com.bhu.vas.business.asyn.spring.model.UserDeviceSharedNetworkApplyDTO;
+import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSharedNetworkApplyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
@@ -34,8 +34,8 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 @Service
-public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerService {
-	private final Logger logger = LoggerFactory.getLogger(UserDeviceSharedNetworkApplyServiceHandler.class);
+public class BatchDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerService {
+	private final Logger logger = LoggerFactory.getLogger(BatchDeviceSharedNetworkApplyServiceHandler.class);
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -59,7 +59,7 @@ public class UserDeviceSharedNetworkApplyServiceHandler implements IMsgHandlerSe
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
 		try{
-			UserDeviceSharedNetworkApplyDTO applyDto = JsonHelper.getDTO(message, UserDeviceSharedNetworkApplyDTO.class);
+			BatchDeviceSharedNetworkApplyDTO applyDto = JsonHelper.getDTO(message, BatchDeviceSharedNetworkApplyDTO.class);
 			final int userid = applyDto.getUid();
 			final List<String> dmacs = applyDto.getMacs()== null?new ArrayList<String>():applyDto.getMacs();
 			String snk_type = applyDto.getSnk_type();

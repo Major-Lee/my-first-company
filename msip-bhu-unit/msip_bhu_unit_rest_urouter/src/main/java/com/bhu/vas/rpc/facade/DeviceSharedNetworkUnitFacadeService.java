@@ -25,7 +25,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.SnkPortalVTO;
 import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
-import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
@@ -62,9 +62,11 @@ public class DeviceSharedNetworkUnitFacadeService {
 	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
-	@Resource
-	private DeliverMessageService deliverMessageService;
+	//@Resource
+	//private DeliverMessageService deliverMessageService;
 	
+	@Resource
+	private AsyncDeliverMessageService asyncDeliverMessageService;
 	/**
 	 * 通过dmac获取绑定用户id、nick、mobileno、avatar、设备访客相关限速
 	 * @param mac
@@ -168,7 +170,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 			boolean configChanged = sharedNetworksFacadeService.doApplySharedNetworksConfig(uid, sharednetwork_dto);
 			if(configChanged){
 				//异步消息执行用户的所有设备应用此配置并发送指令
-				deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(),sharednetwork_dto.getTemplate(), null,false,IDTO.ACT_UPDATE);
+				asyncDeliverMessageService.sendBatchDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(),sharednetwork_dto.getTemplate(), null,false,IDTO.ACT_UPDATE);
 				//deliverMessageService.sendPortalUpdateRateChangedActionMessage(uid, sharedNetwork.getKey(), sharednetwork_dto.getTemplate(), sharednetwork_dto.getUsers_tx_rate());
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(sharednetwork_dto);
@@ -234,7 +236,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 				}
 			}
 			//异步消息执行用户的 addDevices2SharedNetwork 设备应用此配置并发送指令
-			deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(),template, dmacs,false,on?IDTO.ACT_UPDATE:IDTO.ACT_DELETE);
+			asyncDeliverMessageService.sendBatchDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(),template, dmacs,false,on?IDTO.ACT_UPDATE:IDTO.ACT_DELETE);
 			/*List<String> addDevices2SharedNetwork = sharedNetworkFacadeService.addDevices2SharedNetwork(uid,sharedNetwork,false,dmacs);
 			if(!addDevices2SharedNetwork.isEmpty()){
 				//异步消息执行用户的 addDevices2SharedNetwork 设备应用此配置并发送指令
