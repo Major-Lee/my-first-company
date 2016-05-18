@@ -48,4 +48,6 @@ public interface ITagRpcService {
 
 	RpcResponseDTO<Boolean> CanSaveNode(int uid, int gid, int pid, String name);
 
+	RpcResponseDTO<Boolean> batchGroupDownCmds(int uid, String message, String opt, String subopt, String extparams);
+
 }	

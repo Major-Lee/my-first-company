@@ -476,7 +476,7 @@ public class WifiDeviceGrayFacadeService {
     
     
     private UpgradeDTO upgradeDecideAction(String dmac,String dut,int gl,String d_version,boolean fw){
-    	System.out.println(String.format("A upgradeDecideAction dmac[%s] dut[%s] gl[%s] d_version[%s] fw[%s]",dmac,dut,gl,d_version,fw));
+    	System.out.println(String.format("upgradeDecideAction withInputParams: dmac[%s] dut[%s] gl[%s] d_version[%s] fw[%s]",dmac,dut,gl,d_version,fw));
     	UpgradeDTO resultDto = null;
     	GrayLevel grayLevel = VapEnumType.GrayLevel.fromIndex(gl);
     	try{
@@ -486,14 +486,14 @@ public class WifiDeviceGrayFacadeService {
     		i18nex.printStackTrace(System.out);
     		resultDto = new UpgradeDTO(dut,gl,fw,false);
     		resultDto.setDesc(i18nex.getMessage());
-    		System.out.println("A1 upgradeDecideAction exception:"+resultDto);
+    		System.out.println(String.format("upgradeDecideAction outPutException:dmac[%s] gl[%s] when validateGrayEnalbe4Upgrade",dmac,gl));
     		return resultDto;
     	}
     	WifiDeviceGrayVersion grayVersion = wifiDeviceGrayVersionService.getById(new WifiDeviceGrayVersionPK(dut,gl));
 		if(grayVersion != null){
 			if(WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW == fw){
 				if(StringUtils.isEmpty(grayVersion.getD_fwid()) || StringHelper.MINUS_STRING_GAP.equals(grayVersion.getD_fwid())){
-					System.out.println(String.format("A2 upgradeDecideAction du[%s] gl[%s] fwid[%s],return null", dut,gl,grayVersion.getD_fwid()));
+					System.out.println(String.format("FW upgradeDecideAction dmac[%s] du[%s] gl[%s] fwid[%s],return null",dmac, dut,gl,grayVersion.getD_fwid()));
 					return resultDto;
 				}
 				
@@ -507,16 +507,16 @@ public class WifiDeviceGrayFacadeService {
 						resultDto.setCurrentDVB(d_version);
 						resultDto.setCurrentGrayPublished_at(grayVersion.getUpdated_at());
 						resultDto.setMinid(versionfw.getMinid());
-						System.out.println("B1 upgradeDecideAction:"+resultDto);
+						System.out.println("FW upgradeDecideAction outPutSuccessfully:"+resultDto);
 					}else{
-						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined or invalid!",dmac,fw));
+						System.out.println(String.format("FW upgradeDecideAction outPutSuccessfully dmac[%s] fw[%s] versionfw undefined or invalid!",dmac,fw));
 					}
 				}else{
-					System.out.println(String.format("B3 upgradeDecideAction dmac[%s] fw[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,fw,d_version,grayVersion.getD_fwid()));
+					System.out.println(String.format("FW upgradeDecideAction outPutSuccessfully dmac[%s] fw[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,fw,d_version,grayVersion.getD_fwid()));
 				}
 			}else{
 				if(StringUtils.isEmpty(grayVersion.getD_omid()) || StringHelper.MINUS_STRING_GAP.equals(grayVersion.getD_omid())){
-					System.out.println(String.format("A3 upgradeDecideAction du[%s] gl[%s] omid[%s],return null", dut,gl,grayVersion.getD_omid()));
+					System.out.println(String.format("OM upgradeDecideAction dmac[%s] du[%s] gl[%s] omid[%s],return null",dmac, dut,gl,grayVersion.getD_omid()));
 					return resultDto;
 				}
 				int ret = DeviceOMVersion.compareVersions(d_version, grayVersion.getD_omid());
@@ -528,16 +528,16 @@ public class WifiDeviceGrayFacadeService {
 						resultDto.setUpgrade_slaver_urls(versionom.getUpgrade_slaver_urls());;
 						resultDto.setCurrentDVB(d_version);
 						resultDto.setCurrentGrayPublished_at(grayVersion.getUpdated_at());
-						System.out.println("B1 upgradeDecideAction:"+resultDto);
+						System.out.println("OM upgradeDecideAction outPutSuccessfully:"+resultDto);
 					}else{
-						System.out.println(String.format("B2 upgradeDecideAction dmac[%s] fw[%s] versionfw undefined! or invalid",dmac,fw));
+						System.out.println(String.format("OM upgradeDecideAction dmac[%s] fw[%s] versionfw undefined! or invalid",dmac,fw));
 					}
 				}else{
-					System.out.println(String.format("B3 upgradeDecideAction dmac[%s] fw[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,fw,d_version,grayVersion.getD_omid()));
+					System.out.println(String.format("OM upgradeDecideAction dmac[%s] fw[%s] ver compare d_mac_ver[%s] large or equal gray_ver[%s]",dmac,fw,d_version,grayVersion.getD_omid()));
 				}
 			}
 		}else{
-			System.out.println(String.format("C upgradeDecideAction dmac[%s] grayVersion undefined!",dmac));
+			System.out.println(String.format("upgradeDecideAction dmac[%s] grayVersion undefined!",dmac));
 		}
 		return resultDto;
     }
@@ -667,7 +667,7 @@ public class WifiDeviceGrayFacadeService {
     	WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionId);
     	if (versionfw != null) {
     		if (miniVersionId == null || miniVersionId.isEmpty()) {
-				versionfw.setMinid(StringHelper.MINUS_STRING_GAP);
+				versionfw.setMinid(null);
 			}else{
 				versionfw.setMinid(miniVersionId);
 			}

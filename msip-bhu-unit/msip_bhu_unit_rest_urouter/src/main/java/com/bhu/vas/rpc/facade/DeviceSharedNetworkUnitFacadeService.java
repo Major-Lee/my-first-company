@@ -182,7 +182,6 @@ public class DeviceSharedNetworkUnitFacadeService {
 	
 	/**
 	 * 指定的设备应用用户的具体指定配置
-	 * 
 	 * 异步消息修改数据库,并发送指令并且更新索引
 	 * @param uid
 	 * @param on 开启或关闭
@@ -197,11 +196,30 @@ public class DeviceSharedNetworkUnitFacadeService {
 				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
 			//关闭 false 并且 安全共享网络 并且 所有的设备中有不可以关闭共享网络的设备
-			if(!on && sharedNetwork==SharedNetworkType.SafeSecure  && !chargingFacadeService.canAllBeTurnoff(dmacs)){
+			/*if(!on && sharedNetwork==SharedNetworkType.SafeSecure  && !chargingFacadeService.canAllBeTurnoff(dmacs)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_SAFESECURE_CANNOT_BETURNOFF);
+			}*/
+			//对于设备allowturnoff标记 如果为false，则只允许开启，不允许关闭或切换为别的网络类型
+			/*if(on){
+				if(sharedNetwork !=SharedNetworkType.SafeSecure && chargingFacadeService.canAllBeTurnoff(dmacs)){
+					throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_SAFESECURE_CANNOT_BETURNOFF);
+				}
+			}else{
+				
+			}*/
+			if(on && sharedNetwork ==SharedNetworkType.SafeSecure){//此种情况为开启SafeSecure网络 ，可以不做任何验证
+				;
+			}else{
+				if(!chargingFacadeService.canAllBeTurnoff(dmacs)){
+					if(on  && sharedNetwork ==SharedNetworkType.Uplink){//不允许开启Uplink网络
+						throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_SAFESECURE_CANNOT_BETURNOFF);
+					}
+					if(!on && sharedNetwork ==SharedNetworkType.SafeSecure){//不允许关闭SafeSecure网络
+						throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_SAFESECURE_CANNOT_BETURNOFF);
+					}
+				}
 			}
 			UserValidateServiceHelper.validateUserDevices(uid, dmacs, userDeviceService);
-			
 			//template 不为空并且 是无效的template格式,如果为空或者是有效的格式 则传递后续处理
 			if(StringUtils.isNotEmpty(template) && !SharedNetworksFacadeService.validTemplateFormat(template)){
 				template = SharedNetworksFacadeService.DefaultTemplate;

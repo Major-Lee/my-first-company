@@ -510,8 +510,12 @@ public class TagFacadeRpcSerivce {
 	 * @param message
 	 * @param cmds
 	 */
-	public void BatchGroupDownCmds(int uid, String message, String cmds) {
+	public void batchGroupDownCmds(int uid, String message, String opt, String subopt,String extparams) {
 		
-		asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, cmds);
+		if (message !=null && opt != null) {
+			asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt,subopt,extparams);
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 }

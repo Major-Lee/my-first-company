@@ -158,5 +158,23 @@ public class GroupController extends BaseController{
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
-    } 
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value = "/config", method = {RequestMethod.POST})
+    public void cmd_generate(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String message,
+            @RequestParam(required = true) String opt,
+            @RequestParam(required = false,defaultValue = "00") String subopt,
+            @RequestParam(required = false) String extparams) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.batchGroupDownCmds(uid, message, opt, subopt, extparams);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
 }

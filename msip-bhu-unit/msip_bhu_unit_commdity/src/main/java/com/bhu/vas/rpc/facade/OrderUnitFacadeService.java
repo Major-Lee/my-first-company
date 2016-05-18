@@ -286,10 +286,18 @@ public class OrderUnitFacadeService {
 		if(walletLogs != null && !walletLogs.isEmpty()){
 			for(UserWalletLog log:walletLogs){
 				if(orderid.equals(log.getOrderid())){
-					return log.getCash();
+					String cash = log.getCash();
+					if(StringUtils.isNotEmpty(cash) && cash.startsWith(StringHelper.PLUS_STRING_GAP) && cash.length()>=1){
+						return cash.substring(1);
+					}else
+						return log.getCash();
 				}
 			}
 		}
 		return StringHelper.MINUS_STRING_GAP;
 	}
+	
+	/*public static void main(String[] argv){
+		System.out.println("+0.84".substring(1));
+	}*/
 }
