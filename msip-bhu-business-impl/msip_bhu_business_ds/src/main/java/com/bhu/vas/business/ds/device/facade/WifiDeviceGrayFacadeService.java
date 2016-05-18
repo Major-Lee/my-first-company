@@ -658,6 +658,22 @@ public class WifiDeviceGrayFacadeService {
     	}
     	return downCmds;
     }
+    /**
+     * 上传最小版本号
+     * @param versionId
+     * @param miniVersionId
+     */
+    public void addMiniDeviceVersion(String versionId, String miniVersionId){
+    	WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionId);
+    	if (versionfw != null) {
+    		if (miniVersionId == null || miniVersionId.isEmpty()) {
+				versionfw.setMinid(StringHelper.MINUS_STRING_GAP);
+			}else{
+				versionfw.setMinid(miniVersionId);
+			}
+    		wifiDeviceVersionFWService.update(versionfw);
+		}
+    }
     
     
     /**

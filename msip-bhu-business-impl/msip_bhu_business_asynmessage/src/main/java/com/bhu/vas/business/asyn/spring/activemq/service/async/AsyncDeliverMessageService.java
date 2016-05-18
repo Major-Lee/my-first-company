@@ -7,6 +7,7 @@ import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
+import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
 import com.bhu.vas.business.asyn.spring.model.async.tag.OperTagDTO;
 
 
@@ -57,6 +58,14 @@ public class AsyncDeliverMessageService {
 		dto.setUid(uid);
 		dto.setMessage(message);
 		dto.setDtoType(IDTO.ACT_DELETE);
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sentBatchGroupCmdsActionMessage(int uid , String message ,String cmds){
+		OperGroupDTO dto = new OperGroupDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setCmds(cmds);
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 }
