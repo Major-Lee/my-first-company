@@ -188,9 +188,6 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case OrderResultExportFile:
 							consoleServiceHandler.exportOrderFile(message);
 							break;
-						case UserDeviceSharedNetworkApply:
-							userDeviceSharedNetworkApplyServiceHandler.process(message);
-							break;
 						/*case BatchImportConfirm:
 							batchImportConfirmServiceHandler.process(message);
 							break;

@@ -1,8 +1,5 @@
 package com.bhu.vas.rpc.facade;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -15,13 +12,11 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.notify.ITaskProcessNotifyCallback;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -84,7 +79,7 @@ public class TaskUnitFacadeService {
 									case DS_Http_VapModuleCMD_Stop:
 										deliverMessageService.sendDevicesModuleStyleChangedNotifyMessage(uid,StringUtils.EMPTY,dmac);
 										break;
-									case DS_SharedNetworkWifi_Limit:
+									/*case DS_SharedNetworkWifi_Limit:
 										{
 											ParamSharedNetworkDTO shared_dto = (ParamSharedNetworkDTO) payload;
 											List<String> dmacs = new ArrayList<>();
@@ -106,7 +101,7 @@ public class TaskUnitFacadeService {
 											dmacs.add(dmac);
 											deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,null,null, dmacs,true,IDTO.ACT_DELETE);
 										}
-										break;	
+										break;	*/
 									default:
 										break;
 								}

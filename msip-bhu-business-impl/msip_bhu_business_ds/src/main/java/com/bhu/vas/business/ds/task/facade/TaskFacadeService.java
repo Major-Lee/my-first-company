@@ -20,12 +20,9 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
-import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
-import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
-import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
@@ -493,8 +490,7 @@ public class TaskFacadeService {
 				}
 			}
 		}
-
-		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
+		/*Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
 		
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
 		downTask.setId(taskid);
@@ -510,6 +506,27 @@ public class TaskFacadeService {
 		
 		downTask.setPayload(apiCmdGenerate(uid,mac,opt_cmd,ods_cmd,extparams,taskid,
 				DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),callback));
+		this.taskComming(downTask);
+		return downTask;*/
+		return this.apiCommonTaskGenerate(uid, mac, opt_cmd, ods_cmd, extparams, channel, channel_taskid, 
+				DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()), callback);
+	}
+	public WifiDeviceDownTask apiCommonTaskGenerate(int uid, String mac, OperationCMD opt_cmd, OperationDS ods_cmd, String extparams,
+			String channel, String channel_taskid,DeviceStatusExchangeDTO device_status,ITaskProcessNotifyCallback callback) throws Exception{
+		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
+		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
+		downTask.setId(taskid);
+		downTask.setUid(uid);
+		downTask.setChannel(channel);
+		downTask.setChannel_taskid(channel_taskid);
+		
+		downTask.setContext_var(extparams);
+		//downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, taskid));
+		downTask.setSubopt(ods_cmd.getNo());
+		downTask.setOpt(opt_cmd.getNo());
+		downTask.setMac(mac);
+		
+		downTask.setPayload(apiCmdGenerate(uid,mac,opt_cmd,ods_cmd,extparams,taskid,device_status,callback));
 		this.taskComming(downTask);
 		return downTask;
 	}
@@ -534,7 +551,7 @@ public class TaskFacadeService {
 					cmd = (CMDBuilder.autoBuilderVapFullCMD4Opt(mac, taskid, stopTemplate));
 					callback.notify(uid, opt_cmd, ods_cmd, mac, null);
 					break;	
-				case DS_SharedNetworkWifi_Limit:
+				/*case DS_SharedNetworkWifi_Limit:
 					//重新构建共享网络开启指令则不break，直接走DS_VistorWifi_Start开启访客网络
 					ods_cmd = OperationDS.DS_SharedNetworkWifi_Start;
 					ParamSharedNetworkDTO limit_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
@@ -567,7 +584,7 @@ public class TaskFacadeService {
 						cmd = CMDBuilder.autoBuilderCMD4Opt(opt_cmd,ods_cmd, mac, taskid,extparams,deviceCMDGenFacadeService);
 						callback.notify(uid, opt_cmd, ods_cmd, mac, null);
 					}
-					break;
+					break;*/
 				case DS_Switch_WorkMode:
 					WifiDeviceSettingDTO setting_dto = deviceCMDGenFacadeService.validateDeviceSettingReturnDTO(mac);
 					//需要判定是否可以进行切换

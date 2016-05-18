@@ -1,6 +1,5 @@
 package com.bhu.vas.business.asyn.spring.activemq.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceForceBindDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
-import com.bhu.vas.business.asyn.spring.model.UserDeviceSharedNetworkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.UserPortalUpdateDTO;
 import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
@@ -228,31 +226,6 @@ public class DeliverMessageService {
 	public void sendDeviceRealtimeRateFetchActionMessage(String wifiId){
 		WifiRealtimeRateFetchDTO dto = new WifiRealtimeRateFetchDTO();
 		dto.setMac(wifiId);
-		dto.setTs(System.currentTimeMillis());
-		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-	}
-	
-	public void sendUserSingleDeviceSharedNetworkApplyActionMessage(int uid,String snk_type,String template, String mac,boolean onlyindexupdate,char dtoType){
-		List<String> dmacs = new ArrayList<String>();
-		dmacs.add(mac);
-		this.sendUserDeviceSharedNetworkApplyActionMessage(uid, snk_type,template, dmacs, onlyindexupdate, dtoType);
-		/*UserDeviceSharedNetworkApplyDTO dto = new UserDeviceSharedNetworkApplyDTO();
-		dto.setUid(uid);
-		dto.setSnk_type(snk_type);
-		dto.setMacs(dmacs);
-		dto.setOnlyindexupdate(onlyindexupdate);
-		dto.setDtoType(dtoType);
-		dto.setTs(System.currentTimeMillis());
-		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));*/
-	}
-	public void sendUserDeviceSharedNetworkApplyActionMessage(int uid,String snk_type,String template, List<String> dmacs,boolean onlyindexupdate,char dtoType){
-		UserDeviceSharedNetworkApplyDTO dto = new UserDeviceSharedNetworkApplyDTO();
-		dto.setUid(uid);
-		dto.setSnk_type(snk_type);
-		dto.setTemplate(template);
-		dto.setMacs(dmacs);
-		dto.setOnlyindexupdate(onlyindexupdate);
-		dto.setDtoType(dtoType);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}

@@ -9,6 +9,8 @@ public enum AsyncMessageType {
 		
 		BatchDeviceOperTag("设备批量绑定标签", "batch device operation tag", "BDOT"),
 		BatchGroupDownCmds("分组批量下发指令","batch Group down cmds","BGDC"),
+		
+		BatchDeviceSharedNetworkApply("用户设备共享网络应用","batch device sharednetwork apply","BDSN"),
 		//BatchDeviceBindTag("设备批量绑定标签", "batch device bind tag", "BDBT"),
 		//BatchDeviceDelTag("设备批量删除标签", "batch device del tag", "BDDT"),
 		;
