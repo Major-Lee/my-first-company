@@ -667,7 +667,7 @@ public class WifiDeviceGrayFacadeService {
     	WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionId);
     	if (versionfw != null) {
     		if (miniVersionId == null || miniVersionId.isEmpty()) {
-				versionfw.setMinid(StringHelper.MINUS_STRING_GAP);
+				versionfw.setMinid(null);
 			}else{
 				versionfw.setMinid(miniVersionId);
 			}
