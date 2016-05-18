@@ -252,7 +252,7 @@ public class UserDeviceUnitFacadeService {
         	}
         	//发送异步Device升级指令，指定立刻升级
         	{
-        		String cmdPayload = deviceUpgradeFacadeService.clientForceDeviceUpgrade(mac, wifiDevice);
+        		String cmdPayload = deviceUpgradeFacadeService.clientForceDeviceUpgrade(mac, wifiDevice.getOrig_swver());
         		if(StringUtils.isNotEmpty(cmdPayload)){
         			deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayload);
         		}

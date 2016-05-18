@@ -40,4 +40,6 @@ public interface IVapRpcService {
     RpcResponseDTO<List<ModuleDefinedVTO>> fetchDayStat(int uid);
     RpcResponseDTO<ModuleDefinedItemVTO> fetchStatDetail(int uid,String style);
 
+	RpcResponseDTO<Boolean> addMiniDeviceVersion(int uid, String versionId, String miniVersionId);
+
 }

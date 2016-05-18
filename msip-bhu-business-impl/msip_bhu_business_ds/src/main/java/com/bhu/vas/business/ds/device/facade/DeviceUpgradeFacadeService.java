@@ -41,8 +41,8 @@ public class DeviceUpgradeFacadeService {
 	@Resource
 	private WifiDeviceGrayFacadeService wifiDeviceGrayFacadeService;
 	
-	private UpgradeDTO checkDeviceUpgrade(String dmac,WifiDevice wifiDevice){
-		return wifiDeviceGrayFacadeService.deviceFWUpgradeAutoAction(dmac, wifiDevice.getOrig_swver());
+	private UpgradeDTO checkDeviceUpgrade(String dmac,String orig_swver){
+		return wifiDeviceGrayFacadeService.deviceFWUpgradeAutoAction(dmac, orig_swver);
 	}
 	
 	private UpgradeDTO checkDeviceUpgradeWithClientVer(String dmac,WifiDevice wifiDevice,String handset_device,String appCurrentVer){
@@ -53,8 +53,8 @@ public class DeviceUpgradeFacadeService {
 		return wifiDeviceGrayFacadeService.deviceOMUpgradeAutoAction(dmac,orig_swver, orig_vap_module);
 	}
 	
-	public String clientForceDeviceUpgrade(String dmac, WifiDevice wifiDevice){
-		UpgradeDTO upgrade = this.checkDeviceUpgrade(dmac, wifiDevice);
+	public String clientForceDeviceUpgrade(String dmac,String orig_swver){
+		UpgradeDTO upgrade = this.checkDeviceUpgrade(dmac, orig_swver);
 		//UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
     	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
     		//long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
@@ -115,8 +115,8 @@ public class DeviceUpgradeFacadeService {
     	return retDTO;
 	}
 	
-	public String deviceUpgradeFWCMDAfterOnline(String dmac,WifiDevice wifiDevice){
-		UpgradeDTO upgrade = this.checkDeviceUpgrade(dmac, wifiDevice);
+	public String deviceUpgradeFWCMDAfterOnline(String dmac,String orig_swver){
+		UpgradeDTO upgrade = this.checkDeviceUpgrade(dmac, orig_swver);
 		if (upgrade != null && upgrade.isForceDeviceUpgrade()) {
 			//【1】如果设备版本为出厂版本，将会触发15分钟后升级策略；
 			//【2】针对某个灰度指定版本的时间点为x，设备上线时，如果发现当前时间点y>x+48小时（暂定），将会触发设备15分钟后升级策略。

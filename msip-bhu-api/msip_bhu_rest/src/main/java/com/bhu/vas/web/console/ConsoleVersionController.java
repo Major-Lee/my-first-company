@@ -150,8 +150,6 @@ public class ConsoleVersionController extends BaseController {
 		String url[] = yunOperateService.getURL(fw, versionId, dut);
 		String QNurl = url[0];
 		String ALurl = url[1];
-		System.out.println(QNurl+"::::::::::::::::::"+ALurl);
-
 		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut,minid, fw, versionId, QNurl, ALurl);
 		if (!rpcResult.hasError()){
 			yunOperateService.uploadYun(bs,  uid,  dut,  fw, versionId, vapRpcService);
@@ -180,6 +178,30 @@ public class ConsoleVersionController extends BaseController {
 
 		yunOperateService.deleteFile(fileName,dut,fw);	
 		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.removeDeviceVersion(uid, dut, fw, fileName);
+		if (!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	}
+	
+	/**
+	 * 删除固件版本或者增值组件版本信息
+	 * 
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param dut
+	 * @param fw
+	 * @param fileName
+	 */
+	@ResponseBody()
+	@RequestMapping(value = "/addmv", method = { RequestMethod.POST })
+	public void addMV(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(required = true) int uid, 
+			@RequestParam(required = true) String versionId,
+			@RequestParam(required = false) String miniVersionId) {
+
+		RpcResponseDTO<Boolean> rpcResult = vapRpcService.addMiniDeviceVersion(uid, versionId, miniVersionId);
 		if (!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else

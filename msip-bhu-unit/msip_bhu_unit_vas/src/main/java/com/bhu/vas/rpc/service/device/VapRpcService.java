@@ -54,6 +54,12 @@ public class VapRpcService  implements IVapRpcService{
 		logger.info(String.format("currentGrays uid[%s] dut[%s]",uid,dut));
 		return deviceUnitFacadeRpcService.currentGrays(uid, dut);
 	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> addMiniDeviceVersion(int uid, String versionId,String miniVersionId) {
+		logger.info(String.format("currentGrays uid[%s] versionId[%s] miniVersionId[%s]",uid,versionId,miniVersionId));
+		return deviceUnitFacadeRpcService.addMiniDeviceVersion(uid, versionId, miniVersionId);
+	}
 
 	@Override
 	public RpcResponseDTO<TailPage<VersionVTO>> pagesDeviceVersions(int uid,String dut,boolean fw,int pn,int ps) {

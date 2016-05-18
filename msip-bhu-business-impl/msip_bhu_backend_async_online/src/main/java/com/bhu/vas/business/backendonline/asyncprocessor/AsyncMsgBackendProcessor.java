@@ -69,7 +69,10 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							batchSharedealServiceHandler.process(message);
 							break;
 						case BatchDeviceOperTag:
-							batchDeviceTagServiceHandler.process(message);;
+							batchDeviceTagServiceHandler.process(message);
+							break;
+						case BatchGroupDownCmds:
+							batchDeviceTagServiceHandler.process(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
