@@ -144,6 +144,8 @@ public class PaymentController extends BaseController{
 		logger.info(String.format(" query Withdrawals order[%s]", withdraw_no));
 		
 		try{
+			
+			
     		//判断非空参数
         	if (StringUtils.isBlank(withdraw_type)) {
     			logger.error("请求参数(withdraw_type)有误,不能为空");
@@ -170,6 +172,25 @@ public class PaymentController extends BaseController{
         		return;
         	}
     		
+        	if (StringUtils.isBlank(secret)) {
+        		logger.error("请求参数(secret)有误,不能为空");
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+        		return;
+        	}
+        	
+        	if (StringUtils.isBlank(appid)) {
+        		logger.error("请求参数(appid)有误,不能为空");
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+        		return;
+        	}
+        	if(!appid.equals("1000")|| !"1F915A8DA370422582CBAC1DB6A806DD".equals(secret)){
+				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+    					ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
+        		return;
+			}
+        	
     		PaymentWithdraw paymentReckoning = paymentWithdrawService.findByOrderId(withdraw_no);
         	if(paymentReckoning != null){
         		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
