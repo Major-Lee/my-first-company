@@ -529,7 +529,9 @@ public class SharedNetworksFacadeService {
 		return result;
 	}
 	
-	public List<String> closeAndApplyDevicesFromSharedNetwork(int uid,VapEnumType.SharedNetworkType sharednetwork_type,String template,List<String> macs){
+	public void closeAndApplyDevicesFromSharedNetwork(int uid,
+			VapEnumType.SharedNetworkType sharednetwork_type,String template,List<String> macs,
+			ISharedNetworkNotifyCallback callback){
 		List<String> result = new ArrayList<String>();
 		ParamSharedNetworkDTO configDto = fetchUserSharedNetworkConf(uid,sharednetwork_type,template);
 		for(String mac:macs){
@@ -548,7 +550,9 @@ public class SharedNetworksFacadeService {
 				result.add(mac_lowercase);
 			}
 		}
-		return result;
+		if(callback != null){
+			callback.notify(configDto, result);
+		}
 	}
 	
 	public void remoteResponseNotifyFromDevice(String mac){

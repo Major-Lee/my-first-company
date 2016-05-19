@@ -10,22 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.DownCmds;
-import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
-import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
-import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkApplyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
-import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
-import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -41,7 +30,10 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 	private WifiDeviceService wifiDeviceService;
 	
 	@Resource
-	private SharedNetworksFacadeService sharedNetworksFacadeService;
+	private BatchSnkApplyService batchSnkApplyService;
+	
+	//@Resource
+	//private SharedNetworksFacadeService sharedNetworksFacadeService;
 	
 	@Resource
 	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
@@ -49,11 +41,11 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
-	@Resource
+/*	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
 	
 	@Resource
-	private IDaemonRpcService daemonRpcService;
+	private IDaemonRpcService daemonRpcService;*/
 
 	@Override
 	public void process(String message) {
@@ -91,7 +83,7 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 			}
 			
 			
-			final List<DownCmds> downCmds = new ArrayList<DownCmds>();
+			//final List<DownCmds> downCmds = new ArrayList<DownCmds>();
 			if(!dmacs.isEmpty()){//应用指令下发，取值从设备t_wifi_devices_sharednetwork中获取，更新索引生成指令下发
 				;
 			}else{//给此用户所有的sharedNetwork的设备变更配置并下发指令更新索引，
@@ -105,7 +97,8 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				    }
 				});
 			}
-			if(!dmacs.isEmpty()){
+			batchSnkApplyService.apply(applyDto.getUid(), applyDto.getDtoType(), dmacs, sharedNetwork, applyDto.getTemplate());
+			/*if(!dmacs.isEmpty()){
 				logger.info(String.format("prepare apply sharednetwork conf uid[%s] dtoType[%s] dmacs[%s]",userid,applyDto.getDtoType(), dmacs));
 				if(IDTO.ACT_ADD == applyDto.getDtoType() || IDTO.ACT_UPDATE == applyDto.getDtoType()){//开启
 					sharedNetworksFacadeService.addDevices2SharedNetwork(userid,sharedNetwork,template,false,dmacs,
@@ -129,25 +122,30 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 								}
 							});
 				}else{//关闭
-					//TODO:是否应该改进为 关闭设备当前的共享网络并是设备应用指定的网络类型，并且是关闭状态，eg：如果本身是SafeSecure开启状态，请求了 Uplink 关闭？
-					List<String> rdmacs = sharedNetworksFacadeService.closeAndApplyDevicesFromSharedNetwork(userid,sharedNetwork,template,dmacs);//sharedNetworksFacadeService.removeDevicesFromSharedNetwork(dmacs.toArray(new String[0]));
-					logger.info(String.format("close and apply uid[%s] rdmacs[%s] sharednetwork[%s] template[%s]", userid,rdmacs,sharedNetwork.getKey(),template));
-					for(String mac:rdmacs){
-						WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-						if(wifiDevice == null) continue;
-						String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,
-								DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
-						downCmds.add(DownCmds.builderDownCmds(mac, cmd));
-					}
-					if(!rdmacs.isEmpty()){
-						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs,sharedNetwork.getKey(),template);
-					}
+					sharedNetworksFacadeService.closeAndApplyDevicesFromSharedNetwork(userid,sharedNetwork,applyDto.getTemplate(),dmacs,new ISharedNetworkNotifyCallback(){
+						@Override
+						public void notify(ParamSharedNetworkDTO current,List<String> rdmacs) {
+							logger.info(String.format("notify callback uid[%s] rdmacs[%s] sharednetwork conf[%s]", userid,rdmacs,JsonHelper.getJSONString(current)));
+							if(rdmacs == null || rdmacs.isEmpty()){
+								return;
+							}
+							for(String mac:rdmacs){
+								WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+								if(wifiDevice == null) continue;
+								//生成下发指令
+								String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,
+										DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
+								downCmds.add(DownCmds.builderDownCmds(mac, cmd));
+							}
+							wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate());
+						}
+					});
 				}
 				if(!downCmds.isEmpty()){
 					daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
 					downCmds.clear();
 				}
-			}
+			}*/
 		}finally{
 		}
 		logger.info(String.format("process message[%s] successful", message));
