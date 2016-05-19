@@ -91,6 +91,7 @@ public class PaymentController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value={"/payment/queryOrderPayStatus","/query"},method={RequestMethod.GET,RequestMethod.POST})
 	public void queryPaymentOrder(HttpServletRequest request,HttpServletResponse response,String goods_no,String exter_invoke_ip,String appid,String secret){
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		logger.info(String.format(" query_paymentorder order[%s]", goods_no));
 		
 		try{
@@ -141,6 +142,7 @@ public class PaymentController extends BaseController{
 	public void submitWithdrawals(HttpServletRequest request,HttpServletResponse response,
 			String withdraw_type,String total_fee,String userId,String userName,
 			String withdraw_no,String exter_invoke_ip,String appid,String secret){
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		logger.info(String.format(" query Withdrawals order[%s]", withdraw_no));
 		
 		try{
@@ -252,7 +254,8 @@ public class PaymentController extends BaseController{
     public void submitPayment(HttpServletResponse response,HttpServletRequest request,
     				String total_fee,String goods_no,String payment_type,String exter_invoke_ip,
     				String payment_completed_url,String usermac,String appid,String secret){
-    	try{
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		try{
     		//判断非空参数
         	if (StringUtils.isBlank(payment_type)) {
     			logger.error("请求参数(payment_type)有误,不能为空");
@@ -442,7 +445,7 @@ public class PaymentController extends BaseController{
 		//需http://格式的完整路径，不能加?id=123这类自定义参数
 
 		//页面跳转同步通知页面路径
-		String return_url = "http://www.bhuwifi.com";
+		String return_url = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/alipayReturn";
 		//需http://格式的完整路径，不能加?id=123这类自定义参数，不能写成http://localhost/
 
 		//订单名称
@@ -502,7 +505,6 @@ public class PaymentController extends BaseController{
 			orderLocation.setTid(reckoningId);
 			orderLocation.setLocation(locationUrl);
 			paymentAlipaylocationService.insert(orderLocation);
-			return_url = locationUrl;
 		}
 		
 		
@@ -576,7 +578,7 @@ public class PaymentController extends BaseController{
      * @throws IOException
      */
     @SuppressWarnings("unchecked")
-	@RequestMapping(value = "/wxPayNotifySuccess")
+	@RequestMapping(value = "/payment/wxPayNotifySuccess")
     public String wxPayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info("/wxPayNotifySuccess******************收到微信订单支付通知***********************");
 
@@ -653,7 +655,7 @@ public class PaymentController extends BaseController{
      * @throws IOException
      * @throws JDOMException
      */
-   	@RequestMapping(value = "/heepayNotifySuccess", method = { RequestMethod.GET,RequestMethod.POST })
+   	@RequestMapping(value = "/payment/heepayNotifySuccess", method = { RequestMethod.GET,RequestMethod.POST })
    	public String heepayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
     	
     	logger.info("/heepayNotifySuccess************接收汇元宝通知*****************************"); 
@@ -738,6 +740,52 @@ public class PaymentController extends BaseController{
     /***************************Hee end**************************************/
     
 	  /********************支付宝接口*****************************/
+        
+    /**
+     * 支付宝通知接口
+     * @param mv
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws JDOMException
+     */
+   	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/payment/alipayReturn" , method = { RequestMethod.GET,RequestMethod.POST })
+   	public void alipayReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    	
+   		logger.info("/alipayReturn************接收支付宝返回通知*****************************"); 
+
+        //获取支付宝POST过来反馈信息
+		Map<String,String> params = new HashMap<String,String>();
+		Map requestParams = request.getParameterMap();
+		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+			String name = (String) iter.next();
+			String[] values = (String[]) requestParams.get(name);
+			String valueStr = "";
+			for (int i = 0; i < values.length; i++) {
+				valueStr = (i == values.length - 1) ? valueStr + values[i]
+						: valueStr + values[i] + ",";
+			}
+			//乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+			//valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
+			params.put(name, valueStr);
+		}
+		
+		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
+		//商户订单号
+		String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
+		
+		String locationUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
+		
+		if(locationUrl == null){
+			response.sendRedirect("http://www.bhuwifi.com");
+		}else if(locationUrl.startsWith("http")){
+			response.sendRedirect(locationUrl);
+		}else{
+			response.sendRedirect("http://www.bhuwifi.com");
+		}
+
+	}
     
     /**
      * 支付宝通知接口
@@ -748,7 +796,7 @@ public class PaymentController extends BaseController{
      * @throws JDOMException
      */
    	@SuppressWarnings("rawtypes")
-	@RequestMapping(value = "/alipayNotifySuccess")
+	@RequestMapping(value = "/payment/alipayNotifySuccess")
    	public String alipayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
     	
    		logger.info("/alipayNotifySuccess************接收支付宝通知*****************************"); 
