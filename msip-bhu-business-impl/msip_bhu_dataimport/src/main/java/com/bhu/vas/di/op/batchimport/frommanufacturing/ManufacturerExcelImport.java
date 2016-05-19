@@ -66,10 +66,16 @@ public class ManufacturerExcelImport {
 	        	
 	        	System.out.println(String.format("MacField[%s] SNField[%s]", macCellNum,snCellNum));
 	        	if(macCellNum == -1 || snCellNum == -1) continue;
+	        	System.out.println(String.format("current Sheet LastRowNum[%s]", sheet.getLastRowNum()));
 	        	for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); rowNum++) {
 	        		Row row = sheet.getRow(rowNum);
-	        		String mac = row.getCell(macCellNum).getStringCellValue();
-	        		String sn = row.getCell(snCellNum).getStringCellValue();
+	        		Cell mac_cell = row.getCell(macCellNum);
+	        		Cell cn_cell = row.getCell(snCellNum);
+	        		if(mac_cell == null || cn_cell == null){
+	        			continue;
+	        		}
+	        		String mac = mac_cell.getStringCellValue();
+	        		String sn = cn_cell.getStringCellValue();
 	        		if(StringUtils.isNotEmpty(mac) && StringUtils.isNotEmpty(sn)){
 	        			mac = mac.replaceAll(StringHelper.MINUS_STRING_GAP, StringHelper.EMPTY_STRING_GAP);
 	        			notify.elementNotify(StringHelper.formatMacAddress(mac).toLowerCase(), sn);
