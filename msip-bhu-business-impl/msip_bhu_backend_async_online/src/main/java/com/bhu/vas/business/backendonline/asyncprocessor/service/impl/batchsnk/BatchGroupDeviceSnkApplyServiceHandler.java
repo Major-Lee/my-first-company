@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -62,7 +63,26 @@ public class BatchGroupDeviceSnkApplyServiceHandler implements IMsgHandlerServic
 				public void notifyComming(Page<WifiDeviceDocument> pages) {
 					List<String> dmacs = new ArrayList<>();
 					for (WifiDeviceDocument doc : pages) {
-			    		String mac = doc.getD_mac();
+						String mac = doc.getD_mac();
+						//TODO:需要判定设备本身是否能关闭访客网络策略
+						if((IDTO.ACT_ADD == applyDto.getDtoType() || IDTO.ACT_UPDATE == applyDto.getDtoType()) 
+								&& sharedNetwork ==SharedNetworkType.SafeSecure){//此种情况为开启SafeSecure网络 ，可以不做任何验证
+							;
+						}else{
+							String allowturnoff = doc.getD_snk_allowturnoff();
+							if("0".equals(allowturnoff)){
+								if((IDTO.ACT_ADD == applyDto.getDtoType() || IDTO.ACT_UPDATE == applyDto.getDtoType()) 
+										&& sharedNetwork ==SharedNetworkType.Uplink){//不允许开启Uplink网络
+									logger.info(String.format("filter mac[%s] sharednetwork[%s] allowturnoff[%s] dtoType[%s]", mac,applyDto.getSnk_type(),allowturnoff,applyDto.getDtoType()));
+									continue;
+								}
+								if((IDTO.ACT_DELETE == applyDto.getDtoType()) && sharedNetwork ==SharedNetworkType.SafeSecure){//不允许关闭SafeSecure网络
+									logger.info(String.format("filter mac[%s] sharednetwork[%s] allowturnoff[%s] dtoType[%s]", mac,applyDto.getSnk_type(),allowturnoff,applyDto.getDtoType()));
+									continue;
+									//throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_SAFESECURE_CANNOT_BETURNOFF);
+								}
+							}
+						}
 			    		dmacs.add(mac);
 			    	}
 					if(!dmacs.isEmpty()){
