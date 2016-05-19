@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+	<substitutionProperty name="log.home" value="/root/log/" />
+	<!--<substitutionProperty file="log.properties" />-->
+
+	<appender name="stdout"
+			  class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{ABSOLUTE} %5p %c{1}:%L - %m%n</Pattern>
+		</layout>
+	</appender>
+
+	<appender name="A1" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.home}/saybar.log</File>
+		<rollingPolicy
+			  class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			  <FileNamePattern>
+				%{log.home}/saybar-%d{yyyy-MM-dd}.log
+			  </FileNamePattern>
+			</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<!--<Pattern>-->
+			  <!--%d{HH:mm:ss.SSS} %5p %c{1} - %m%n-->
+			<!--</Pattern>-->
+			<Pattern>
+			  %d{HH:mm:ss.SSS} %5p %c{1} - %m%n
+			</Pattern>
+		</layout>
+	</appender>
+	
+	<appender name="Abackup" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.home}/backup.log</File>
+		<rollingPolicy
+			  class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			  <FileNamePattern>
+				%{log.home}/backup-%d{yyyy-MM-dd}.log
+			  </FileNamePattern>
+			</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+			  %d{HH:mm:ss.SSS} %5p %c{1} - %m%n
+			</Pattern>
+		</layout>
+	</appender>
+
+	<root>
+		<level value="info"/>
+		<appender-ref ref="stdout"/>
+	</root>
+	
+</configuration>
