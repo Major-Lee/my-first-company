@@ -298,7 +298,9 @@ public class WifiDeviceGrayFacadeService {
     		versionfw.setMinid(minid);
     		versionfw.setUpgrade_url(upgrade_url);
     		versionfw.setUpgrade_slaver_urls(upgrade_slaver_urls);
+    		System.out.println("upgrade_url:::::"+upgrade_url);
     		versionfw = wifiDeviceVersionFWService.insert(versionfw);
+    		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     		return versionfw.toVersionVTO();
     	}else{
     		WifiDeviceVersionOM versionom = wifiDeviceVersionOMService.getById(versionid);
