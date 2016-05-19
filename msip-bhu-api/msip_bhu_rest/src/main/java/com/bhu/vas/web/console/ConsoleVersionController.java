@@ -185,7 +185,7 @@ public class ConsoleVersionController extends BaseController {
 	}
 	
 	/**
-	 * 删除固件版本或者增值组件版本信息
+	 * 固件版本添加最小版本号
 	 * 
 	 * @param request
 	 * @param response
