@@ -41,15 +41,15 @@ public class OpenApiCnzzImpl implements IopenApiCnzz {
 		String response = openapi.executeRequest(url);
 		String responseIp = openapi.executeRequest(urlIP);
 		JSONObject resJson=JSONObject.fromObject(response);
-		List<String> resList=(List<String>) resJson.get("values");
+		List<Double> resList=(List<Double>) resJson.get("values");
 		JSONObject resJsonIp=JSONObject.fromObject(responseIp);
-		List<String> resIpList=(List<String>) resJsonIp.get("values");
+		List<Double> resIpList=(List<Double>) resJsonIp.get("values");
 		
 		Map<String,Object> resMap=new HashMap<String,Object>();
-		resMap.put("pv", resList.get(0));
-		resMap.put("uv", resList.get(1));
-		resMap.put("ip", resIpList.get(0));
-		
-		return resMap.toString();
+		resMap.put("pv", Double.toString(resList.get(0)));
+		resMap.put("uv", Double.toString(resList.get(1)));
+		resMap.put("ip", Double.toString(resIpList.get(0)));
+		JSONObject resultJson=JSONObject.fromObject(resMap);
+		return resultJson.toString();
 	}
 }
