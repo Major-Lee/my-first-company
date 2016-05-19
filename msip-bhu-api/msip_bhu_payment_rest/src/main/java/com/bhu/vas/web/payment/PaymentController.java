@@ -67,7 +67,6 @@ import com.smartwork.msip.localunit.RandomPicker;
  *
  */
 @Controller
-@RequestMapping("/payment")
 public class PaymentController extends BaseController{
 	private final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 	@Resource
@@ -90,7 +89,7 @@ public class PaymentController extends BaseController{
 	 * @param orderid 请求支付流水号
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/queryOrderPayStatus",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value={"/payment/queryOrderPayStatus","/query"},method={RequestMethod.GET,RequestMethod.POST})
 	public void queryPaymentOrder(HttpServletRequest request,HttpServletResponse response,String goods_no,String exter_invoke_ip,String appid,String secret){
 		logger.info(String.format(" query_paymentorder order[%s]", goods_no));
 		
@@ -138,7 +137,7 @@ public class PaymentController extends BaseController{
 	 * @param secret
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/submitWithdrawals",method={RequestMethod.GET,RequestMethod.POST})
+	@RequestMapping(value={"/payment/submitWithdrawals","/withdraw"},method={RequestMethod.GET,RequestMethod.POST})
 	public void submitWithdrawals(HttpServletRequest request,HttpServletResponse response,
 			String withdraw_type,String total_fee,String userId,String userName,
 			String withdraw_no,String exter_invoke_ip,String appid,String secret){
@@ -228,7 +227,7 @@ public class PaymentController extends BaseController{
 	 * @throws IOException
 	 */
 	@ResponseBody
-   	@RequestMapping(value = "/submitPayment", method = { RequestMethod.GET,RequestMethod.POST })
+	@RequestMapping(value={"/payment/submitPayment","/pay"},method={RequestMethod.GET,RequestMethod.POST})
     public void submitPayment(HttpServletResponse response,HttpServletRequest request,
     				String total_fee,String goods_no,String payment_type,String exter_invoke_ip,
     				String payment_completed_url,String usermac,String appid,String secret){
@@ -384,7 +383,6 @@ public class PaymentController extends BaseController{
         System.out.println("NOTIFY_URL:"+NOTIFY_URL);
 
         UnifiedOrderResponse unifiedOrderResponse = payHttpService.unifiedorder(reckoningId, product_name, total_fee, request.getRemoteAddr(), NOTIFY_URL, "");
-        System.out.println(payHttpService.getAppId());
 
         if(!unifiedOrderResponse.isResultSuccess()){
         	String status = unifiedOrderResponse.getResultErrorCode();
