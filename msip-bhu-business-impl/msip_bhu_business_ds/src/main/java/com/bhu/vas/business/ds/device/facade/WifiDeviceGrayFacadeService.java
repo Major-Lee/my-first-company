@@ -666,11 +666,7 @@ public class WifiDeviceGrayFacadeService {
     public void addMiniDeviceVersion(String versionId, String miniVersionId){
     	WifiDeviceVersionFW versionfw = wifiDeviceVersionFWService.getById(versionId);
     	if (versionfw != null) {
-    		if (miniVersionId == null || miniVersionId.isEmpty()) {
-				versionfw.setMinid(null);
-			}else{
-				versionfw.setMinid(miniVersionId);
-			}
+			versionfw.setMinid(miniVersionId);
     		wifiDeviceVersionFWService.update(versionfw);
 		}
     }

@@ -1,0 +1,217 @@
+package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchsnk;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+
+import com.bhu.vas.api.dto.DownCmds;
+import com.bhu.vas.api.helper.CMDBuilder;
+import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
+import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
+import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
+import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
+
+@Service
+public class BatchGroupDeviceSnkApplyServiceHandler implements IMsgHandlerService {
+	private final Logger logger = LoggerFactory.getLogger(BatchGroupDeviceSnkApplyServiceHandler.class);
+	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private SharedNetworksFacadeService sharedNetworksFacadeService;
+	
+	@Resource
+	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+	
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
+	@Resource
+	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
+	
+	@Resource
+	private IDaemonRpcService daemonRpcService;
+
+	@Override
+	public void process(String message) {
+		logger.info(String.format("process message[%s]", message));
+		try{
+			final BatchGroupDeviceSnkApplyDTO applyDto = JsonHelper.getDTO(message, BatchGroupDeviceSnkApplyDTO.class);
+			final int userid = applyDto.getUid();
+			//final String searchMessage = applyDto.getMessage();
+			final SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(applyDto.getSnk_type());
+			//final String template = applyDto.getTemplate();
+			//final char dtoType = applyDto.getDtoType();
+			wifiDeviceDataSearchService.iteratorAll(applyDto.getMessage(),100,new IteratorNotify<Page<WifiDeviceDocument>>() {
+				@Override
+				public void notifyComming(Page<WifiDeviceDocument> pages) {
+					List<String> dmacs = new ArrayList<>();
+					for (WifiDeviceDocument doc : pages) {
+			    		String mac = doc.getD_mac();
+			    		dmacs.add(mac);
+			    	}
+					if(!dmacs.isEmpty()){
+						logger.info(String.format("prepare apply sharednetwork conf uid[%s] dtoType[%s] snk[%s] template[%s] dmacs[%s]",userid,applyDto.getDtoType(),sharedNetwork.getKey(),applyDto.getTemplate(), dmacs));
+					}else{
+						return;
+					}
+					final List<DownCmds> downCmds = new ArrayList<DownCmds>();
+					switch(applyDto.getDtoType()){
+						case IDTO.ACT_ADD:
+						case IDTO.ACT_UPDATE:
+							sharedNetworksFacadeService.addDevices2SharedNetwork(applyDto.getUid(),sharedNetwork,applyDto.getTemplate(),false,dmacs,
+									new ISharedNetworkNotifyCallback(){
+										@Override
+										public void notify(ParamSharedNetworkDTO current,List<String> rdmacs) {
+											logger.info(String.format("notify callback uid[%s] rdmacs[%s] sharednetwork conf[%s]", userid,rdmacs,JsonHelper.getJSONString(current)));
+											if(rdmacs == null || rdmacs.isEmpty()){
+												return;
+											}
+											for(String mac:rdmacs){
+												WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+												if(wifiDevice == null) continue;
+												//生成下发指令
+												String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, mac, -1,JsonHelper.getJSONString(current),
+														DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
+												downCmds.add(DownCmds.builderDownCmds(mac, cmd));
+											}
+											wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate());
+										}
+									});
+							break;
+						case IDTO.ACT_DELETE:
+							List<String> rdmacs = sharedNetworksFacadeService.closeAndApplyDevicesFromSharedNetwork(userid,sharedNetwork,applyDto.getTemplate(),dmacs);//sharedNetworksFacadeService.removeDevicesFromSharedNetwork(dmacs.toArray(new String[0]));
+							logger.info(String.format("close and apply uid[%s] snk[%s] template[%s] rdmacs[%s]", userid,sharedNetwork.getKey(),applyDto.getTemplate(),rdmacs));
+							for(String mac:rdmacs){
+								WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+								if(wifiDevice == null) continue;
+								String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,
+										DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
+								downCmds.add(DownCmds.builderDownCmds(mac, cmd));
+							}
+							if(!rdmacs.isEmpty()){
+								wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs,sharedNetwork.getKey(),applyDto.getTemplate());
+							}
+							break;
+					}
+					if(!downCmds.isEmpty()){
+						daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
+						downCmds.clear();
+					}
+				}
+			});
+/*			
+			final List<DownCmds> downCmds = new ArrayList<DownCmds>();
+			if(!dmacs.isEmpty()){//应用指令下发，取值从设备t_wifi_devices_sharednetwork中获取，更新索引生成指令下发
+				;
+			}else{//给此用户所有的sharedNetwork的设备变更配置并下发指令更新索引，
+				wifiDeviceDataSearchService.iteratorWithSharedNetwork(userid, sharedNetwork.getKey(),template, null, 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
+				    @Override
+				    public void notifyComming(Page<WifiDeviceDocument> pages) {
+				    	for (WifiDeviceDocument doc : pages) {
+				    		String mac = doc.getD_mac();
+				    		dmacs.add(mac);
+				    	}
+				    }
+				});
+			}
+			if(!dmacs.isEmpty()){
+				logger.info(String.format("prepare apply sharednetwork conf uid[%s] dtoType[%s] dmacs[%s]",userid,applyDto.getDtoType(), dmacs));
+				if(IDTO.ACT_ADD == applyDto.getDtoType() || IDTO.ACT_UPDATE == applyDto.getDtoType()){//开启
+					sharedNetworksFacadeService.addDevices2SharedNetwork(userid,sharedNetwork,template,false,dmacs,
+							new ISharedNetworkNotifyCallback(){
+								@Override
+								public void notify(ParamSharedNetworkDTO current,List<String> rdmacs) {
+									logger.info(String.format("notify callback uid[%s] rdmacs[%s] sharednetwork conf[%s]", userid,rdmacs,JsonHelper.getJSONString(current)));
+									if(rdmacs == null || rdmacs.isEmpty()){
+										return;
+									}
+									for(String mac:rdmacs){
+										WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+										if(wifiDevice == null) continue;
+										//current.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
+										//生成下发指令
+										String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, mac, -1,JsonHelper.getJSONString(current),
+												DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
+										downCmds.add(DownCmds.builderDownCmds(mac, cmd));
+									}
+									wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate());
+								}
+							});
+				}else{//关闭
+					//TODO:是否应该改进为 关闭设备当前的共享网络并是设备应用指定的网络类型，并且是关闭状态，eg：如果本身是SafeSecure开启状态，请求了 Uplink 关闭？
+					List<String> rdmacs = sharedNetworksFacadeService.closeAndApplyDevicesFromSharedNetwork(userid,sharedNetwork,template,dmacs);//sharedNetworksFacadeService.removeDevicesFromSharedNetwork(dmacs.toArray(new String[0]));
+					logger.info(String.format("close and apply uid[%s] rdmacs[%s] sharednetwork[%s] template[%s]", userid,rdmacs,sharedNetwork.getKey(),template));
+					for(String mac:rdmacs){
+						WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+						if(wifiDevice == null) continue;
+						String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,
+								DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
+						downCmds.add(DownCmds.builderDownCmds(mac, cmd));
+					}
+					if(!rdmacs.isEmpty()){
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs,sharedNetwork.getKey(),template);
+					}
+				}
+				if(!downCmds.isEmpty()){
+					daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
+					downCmds.clear();
+				}
+			}*/
+		}finally{
+		}
+		logger.info(String.format("process message[%s] successful", message));
+	}
+
+
+/*	@Override
+	public void createDeviceGroupIndex(String message) {
+
+		logger.info(String.format("WifiDeviceGroupServiceHandler createDeviceGroupIndex message[%s]", message))
+		WifiDeviceGroupAsynCreateIndexDTO dto = JsonHelper.getDTO(message, WifiDeviceGroupAsynCreateIndexDTO.class);
+		String wifiIdsStr = dto.getWifiIds();
+		String type = dto.getType();
+		Long gid = dto.getGid();
+
+		List<String> wifiIds = new ArrayList<>();
+		List<List<Long>> groupIdList = new ArrayList<List<Long>>();
+		String[] wifiIdArray = wifiIdsStr.split(StringHelper.COMMA_STRING_GAP);
+		for (String wifiId : wifiIdArray) {
+			wifiIds.add(wifiId);
+
+			List<Long> gids = wifiDeviceGroupRelationService.getDeviceGroupIds(wifiId);
+			if (type.equals(WifiDeviceGroupAsynCreateIndexDTO.GROUP_INDEX_GRANT)) {
+				gids.add(gid);
+			} else if (type.equals(WifiDeviceGroupAsynCreateIndexDTO.GROUP_INDEX_UNGRANT)) {
+				gids.remove(gid);
+			}
+			groupIdList.add(gids);
+		}
+		List<WifiDevice> wifiDeviceList = wifiDeviceService.findByIds(wifiIds);
+		wifiDeviceIndexIncrementService.wifiDeviceIndexBlukIncrement(wifiDeviceList, groupIdList);
+
+	}*/
+}

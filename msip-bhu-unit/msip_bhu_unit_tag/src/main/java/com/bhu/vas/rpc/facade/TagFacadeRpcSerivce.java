@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
@@ -511,11 +512,20 @@ public class TagFacadeRpcSerivce {
 	 * @param cmds
 	 */
 	public void batchGroupDownCmds(int uid, String message, String opt, String subopt,String extparams) {
-		
 		if (message !=null && opt != null) {
 			asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt,subopt,extparams);
 		}else{
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public boolean batchGroupSnkTakeEffectNetworkConf(int uid, String message, boolean on, String snk_type,String template){
+		try{
+			asyncDeliverMessageService.sendBatchGroupDeviceSnkApplyActionMessage(uid,message, snk_type, template,on?IDTO.ACT_UPDATE:IDTO.ACT_DELETE);
+			return true;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return false;
 		}
 	}
 }

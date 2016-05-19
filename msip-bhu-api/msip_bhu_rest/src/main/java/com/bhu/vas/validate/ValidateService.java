@@ -1,6 +1,8 @@
 package com.bhu.vas.validate;
 
 //import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
+import org.apache.commons.lang.StringUtils;
+
 import com.bhu.vas.api.dto.UserType;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
@@ -38,6 +40,13 @@ public class ValidateService {
 		if(error == null) return false;
 		else return true;
 	}*/
+	
+	public static ResponseError validateParamValueEmpty(String paramName,String paramValue){
+		if(StringUtils.isEmpty(paramValue)){
+			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{paramName.concat(paramValue)});
+		}
+		return null;
+	}
 	
 	public static ResponseError validatePageSize(int pageSize){
 		if(pageSize >50){
