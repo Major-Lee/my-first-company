@@ -16,7 +16,7 @@ public class QueryStatisticsFromUMController extends BaseController{
 	@ResponseBody
 	@RequestMapping(value="/index", method = { RequestMethod.GET,
 			RequestMethod.POST })
-	public String queryPriceMgtInfo(HttpServletRequest request,HttpServletResponse response,String data){
+	public String queryIndexInfo(HttpServletRequest request,HttpServletResponse response,String data){
 		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		//data="{\"event_name\":\"$Pv\",\"from_date\":\"2016-05-01\",\"to_date\":\"2016-05-20\",\"on_condition\":\"\",\"where_condition\":\"\"}";
 		JSONObject jsonObject=JSONObject.fromObject(data);
@@ -27,6 +27,16 @@ public class QueryStatisticsFromUMController extends BaseController{
 		String where_condition=jsonObject.getString("where_condition");
 		//String result=apiCnzzImpl.queryCnzzStatistic("$Pv", "2016-05-01", "2016-05-20", "", "");
 		String result=apiCnzzImpl.queryCnzzStatistic(event_name, from_date, to_date, on_condition, where_condition);
+		return result;
+	}
+	@ResponseBody
+	@RequestMapping(value="/queryEventNames", method = { RequestMethod.GET,
+			RequestMethod.POST })
+	public String queryEventNames(HttpServletRequest request,HttpServletResponse response,String data){
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+		//data="{\"event_name\":\"$Pv\",\"from_date\":\"2016-05-01\",\"to_date\":\"2016-05-20\",\"on_condition\":\"\",\"where_condition\":\"\"}";
+		//String result=apiCnzzImpl.queryCnzzStatistic("$Pv", "2016-05-01", "2016-05-20", "", "");
+		String result=apiCnzzImpl.queryCnzzEvents();
 		return result;
 	}
 }

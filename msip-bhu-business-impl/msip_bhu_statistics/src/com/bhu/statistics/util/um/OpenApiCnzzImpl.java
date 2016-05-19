@@ -1,5 +1,6 @@
 package com.bhu.statistics.util.um;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,7 +50,21 @@ public class OpenApiCnzzImpl implements IopenApiCnzz {
 		resMap.put("pv", Double.toString(resList.get(0)));
 		resMap.put("uv", Double.toString(resList.get(1)));
 		resMap.put("ip", Double.toString(resIpList.get(0)));
+		resMap.put("eventName", event_name);
 		JSONObject resultJson=JSONObject.fromObject(resMap);
 		return resultJson.toString();
+	}
+	public String queryCnzzEvents(){
+		Map<String, String> argMap = new LinkedHashMap<String, String>();
+		argMap.put("api_key", api_key);
+		argMap.put("systemtime",String.valueOf(System.currentTimeMillis() / 1000));
+		argMap.put("expire", String.valueOf(300));
+		// 得到openapi
+		OpenApi openapi = OpenApi.getInstance();
+		// 构造请求
+		String url = new StringBuilder("https://dplus.cnzz.com/api/events/names?").append(openapi.generateUrl(argMap)).append("&sign=").append(openapi.generateSignature(argMap, api_secret)).toString();
+		String response = openapi.executeRequest(url);
+		response=response.replaceAll("\\[([^\\]]*)\\]", "$1").replace("\"","");
+		return response;
 	}
 }

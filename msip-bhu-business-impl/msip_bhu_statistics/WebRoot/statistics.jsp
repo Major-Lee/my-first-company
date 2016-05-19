@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -26,34 +26,42 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-    <table >
-    	<thead>
-    		<tr>
-    			<td>
-    				UMPV
-    			</td>
-    			<td>
-    				UMUV
-    			</td>
-    			<td>
-    				UMIP
-    			</td>
-    		</tr>
-    	</thead>
-    	<tbody>
-    		<tr>
-    			<td class="pv">0</td>
-    			<td class="uv">0</td>
-    			<td class="ip">0</td>
-    		</tr>
-    	</tbody>
-    </table>
+  	<div style="text-align: center;width: 100%">
+	  	<select class="eventNames" onchange="testStatistics()"></select>
+	    <table style="width: 500px;height:100px;margin:auto">
+	    	<thead>
+	    		<tr>
+	    			<td>
+	    				UMPV
+	    			</td>
+	    			<td>
+	    				UMUV
+	    			</td>
+	    			<td>
+	    				UMIP
+	    			</td>
+	    		</tr>
+	    	</thead>
+	    	<tbody>
+	    		<tr>
+	    			<td class="pv">0</td>
+	    			<td class="uv">0</td>
+	    			<td class="ip">0</td>
+	    		</tr>
+	    	</tbody>
+	    </table>
+  	</div>
+  	
   </body>
   <script src="js/jquery-1.9.1.min.js"></script>
   <script type="text/javascript">
-  testStatistics();
+  
   function testStatistics(){
-	  var orderJson = '{"event_name":"pc+打赏","from_date":"2016-05-01","to_date":"2016-05-20","on_condition":"","where_condition":""}';
+	  var event_name=$('.eventNames').val();
+	  if(event_name=='0'){
+		  return;
+	  }
+	  var orderJson = '{"event_name":"'+event_name+'","from_date":"2016-05-01","to_date":"2016-05-20","on_condition":"","where_condition":""}';
 	  $.post("/msip_bhu_statistics/index.do", {
 		  	"data": orderJson,
 		  }).success(function(data) {
@@ -61,7 +69,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  $('.pv').html(data.pv);
 			  $('.uv').html(data.uv);
 			  $('.ip').html(data.ip);
-			 // alert(data);
+			  $('.eventName').html(data.eventName);
+		  });
+  }
+  queryEventNames();
+  function queryEventNames(){
+	  var orderJson = '{"event_name":"pc+赏","from_date":"2016-05-01","to_date":"2016-05-20","on_condition":"","where_condition":""}';
+	  $.post("/msip_bhu_statistics/queryEventNames.do", {
+		  	"data": orderJson,
+		  }).success(function(data) {
+			  var resArray=data.split(",");
+			  var html="<option value=\"0\">请选择事件</option>";
+			  for(var i=0;i<resArray.length;i++){
+				  html+="<option value="+resArray[i]+">"+resArray[i]+"</option>";
+			  }
+			  $('.eventNames').html(html);
 		  });
   }
   
