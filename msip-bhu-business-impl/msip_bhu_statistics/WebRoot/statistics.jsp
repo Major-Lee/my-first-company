@@ -27,7 +27,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   <body>
   	<div style="text-align: center;width: 100%">
-	  	<select class="eventNames" onchange="testStatistics()"></select>
+  		<div>
+	  		<select class="eventNames" onchange="testStatistics()"></select>
+			开始时间:<input type="text" id="startTime" name="startTime" onclick="new Calendar().show(this);"/>
+			结束时间:<input type="text" id="endTime" name="endTime" onclick="new Calendar().show(this);"/>
+  		</div>
 	    <table style="width: 500px;height:100px;margin:auto">
 	    	<thead>
 	    		<tr>
@@ -54,14 +58,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   	
   </body>
   <script src="js/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="js/Calendar.js"></script>
   <script type="text/javascript">
   
   function testStatistics(){
 	  var event_name=$('.eventNames').val();
+	  var startTime=$('#startTime').val();
+	  var endTime=$('#endTime').val();
 	  if(event_name=='0'){
 		  return;
 	  }
-	  var orderJson = '{"event_name":"'+event_name+'","from_date":"2016-05-01","to_date":"2016-05-20","on_condition":"","where_condition":""}';
+	  if(startTime == null || startTime == ""){
+			alert("开始时间不能为空！");
+			return;
+		}
+		if(endTime == null || endTime == ""){
+			alert("结束时间不能为空！");
+			return;
+		}
+		var d1 = new Date(startTime.replace(/\-/g, "\/"));  
+		var d2 = new Date(endTime.replace(/\-/g, "\/"));  
+		if(startTime!=""&&endTime!=""&&d1 >d2){  
+		  	alert("开始时间不能大于结束时间！");  
+		  	return false;  
+		}
+	  var orderJson = '{"event_name":"'+event_name+'","from_date":"'+startTime+'","to_date":"'+endTime+'","on_condition":"","where_condition":""}';
 	  $.post("/msip_bhu_statistics/index.do", {
 		  	"data": orderJson,
 		  }).success(function(data) {
