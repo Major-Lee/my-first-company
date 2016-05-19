@@ -43,7 +43,7 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 		
 		final List<DownCmds> downCmdsList = new ArrayList<DownCmds>();
 		
-		wifiDeviceDataSearchService.iteratorAll(operGroupDto.getMessage(),
+		wifiDeviceDataSearchService.iteratorAll(operGroupDto.getMessage(),100,
 				new IteratorNotify<Page<WifiDeviceDocument>>() {
 					@Override
 					public void notifyComming(Page<WifiDeviceDocument> pages) {
@@ -57,7 +57,7 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 					    daemonRpcService.wifiMultiDevicesCmdsDown(downCmdsList.toArray(new DownCmds[0]));
 					}
 		});
-		
+		logger.info(String.format("process message[%s] successful", message));
 	}
 	/**
 	 * 生成指令

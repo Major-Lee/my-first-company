@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
@@ -273,7 +274,7 @@ public class TagFacadeRpcSerivce {
 	 * @param gids
 	 * @return
 	 */
-	public boolean delNode(int uid, String gids) {
+	public void delNode(int uid, String gids) {
 		String[] gidsTemp = gids.split(StringHelper.COMMA_STRING_GAP);
 
 		for (String gidString : gidsTemp) {
@@ -294,9 +295,10 @@ public class TagFacadeRpcSerivce {
 					parent_group.setChildren(parent_group.getChildren() - 1);
 					tagGroupService.update(parent_group);
 				}
+			}else{
+				throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_USER_PRIVILEGE_ERROR);
 			}
 		}
-		return true;
 	}
 
 	/**
@@ -513,7 +515,12 @@ public class TagFacadeRpcSerivce {
 	 */
 	public void batchGroupDownCmds(int uid, String message, String opt, String subopt,String extparams) {
 		if (message !=null && opt != null) {
-			asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt,subopt,extparams);
+			OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
+			if (opt_cmd.equals(OperationCMD.ModifyDeviceSetting)) {
+				asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt,subopt,extparams);
+			}else{	
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			}
 		}else{
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
