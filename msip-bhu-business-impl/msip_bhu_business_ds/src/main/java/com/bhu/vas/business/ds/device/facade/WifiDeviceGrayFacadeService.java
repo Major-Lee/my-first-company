@@ -298,7 +298,9 @@ public class WifiDeviceGrayFacadeService {
     		versionfw.setMinid(minid);
     		versionfw.setUpgrade_url(upgrade_url);
     		versionfw.setUpgrade_slaver_urls(upgrade_slaver_urls);
+    		System.out.println("upgrade_url:::::"+upgrade_url);
     		versionfw = wifiDeviceVersionFWService.insert(versionfw);
+    		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     		return versionfw.toVersionVTO();
     	}else{
     		WifiDeviceVersionOM versionom = wifiDeviceVersionOMService.getById(versionid);
@@ -505,7 +507,7 @@ public class WifiDeviceGrayFacadeService {
 								grayVersion.getD_fwid(),versionfw.getUpgrade_url());
 						resultDto.setUpgrade_slaver_urls(versionfw.getUpgrade_slaver_urls());
 						resultDto.setCurrentDVB(d_version);
-						resultDto.setCurrentGrayPublished_at(grayVersion.getUpdated_at());
+						resultDto.setCurrentGrayPublished_at(grayVersion.getCreated_at());
 						resultDto.setMinid(versionfw.getMinid());
 						System.out.println("FW upgradeDecideAction outPutSuccessfully:"+resultDto);
 					}else{
