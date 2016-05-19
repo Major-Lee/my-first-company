@@ -36,7 +36,6 @@ import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -1114,10 +1113,11 @@ public class DeviceURouterRestBusinessFacadeService {
 			uto_dto.setOn(on);
 			user_setting_entity.putUserSetting(uto_dto);
 			userSettingStateService.update(user_setting_entity);
-			deliverMessageService.sendWifiCmdsCommingNotifyMessage(
-					wifiId,/*0,OperationCMD.ParamWifiSinffer.getNo(),*/
+			//暂时不进行wifi探测指令下发
+			/*deliverMessageService.sendWifiCmdsCommingNotifyMessage(
+					wifiId,0,OperationCMD.ParamWifiSinffer.getNo(),
 					CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,
-							on ? WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer : WifiDeviceHelper.WifiSniffer_Stop_Sta_Sniffer));
+							on ? WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer : WifiDeviceHelper.WifiSniffer_Stop_Sta_Sniffer));*/
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
