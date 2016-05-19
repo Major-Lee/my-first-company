@@ -1,5 +1,7 @@
 package com.bhu.vas.web.group;
 
+import java.util.Arrays;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +17,8 @@ import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.bhu.vas.validate.ValidateService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -177,4 +181,35 @@ public class GroupController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
     }
+    
+    /**
+	 * 修改用户共享网络配置并应用接口
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param sharenetwork_type
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/snk/takeeffect",method={RequestMethod.POST})	
+	public void takeeffect(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String message,
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
+			@RequestParam(required = false,defaultValue= "0001",value="tpl") String template,
+			@RequestParam(required = false,defaultValue = "true") boolean on) {
+		ResponseError validateError = ValidateService.validateParamValueEmpty("message",message);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		RpcResponseDTO<Boolean> rpcResult = tagRpcService.batchGroupSnkTakeEffectNetworkConf(uid,message,on, sharenetwork_type,template);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
 }

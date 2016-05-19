@@ -200,10 +200,23 @@ public class TagRpcService implements ITagRpcService {
 	 */
 	@Override
 	public RpcResponseDTO<Boolean> batchGroupDownCmds(int uid, String message, String opt, String subopt,String extparams) {
-		logger.info(String.format("canSaveNode uid[%s] message[%s] opt[%s] subopt[%s] extparams[%s]", uid, message, opt, subopt, extparams));
+		logger.info(String.format("batchGroupDownCmds uid[%s] message[%s] opt[%s] subopt[%s] extparams[%s]", uid, message, opt, subopt, extparams));
 		try {
 			tagFacadeRpcSerivce.batchGroupDownCmds(uid, message, opt, subopt, extparams);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		} catch (BusinessI18nCodeException i18nex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		} catch (Exception ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> batchGroupSnkTakeEffectNetworkConf(int uid, String message, boolean on, String snk_type,String template) {
+		logger.info(String.format("batchGroupSnkTakeEffectNetworkConf uid[%s] message[%s] on[%s] snk_type[%s] template[%s]", uid, message, on, snk_type, template));
+		try {
+			boolean ret = tagFacadeRpcSerivce.batchGroupSnkTakeEffectNetworkConf(uid, message, on, snk_type, template);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret?Boolean.TRUE:Boolean.FALSE);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
 		} catch (Exception ex) {

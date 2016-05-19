@@ -2,13 +2,13 @@ package com.bhu.vas.business.asyn.spring.model.async.snk;
 
 import java.util.List;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
+import com.bhu.vas.business.asyn.spring.builder.async.AsyncDTO;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-public class BatchDeviceSharedNetworkApplyDTO extends ActionDTO implements IDTO {
+public class BatchDeviceSnkApplyDTO extends AsyncDTO implements IDTO {
 	private String snk_type;
 	private String template;
 	@JsonInclude(Include.NON_NULL)
@@ -33,8 +33,8 @@ public class BatchDeviceSharedNetworkApplyDTO extends ActionDTO implements IDTO 
 
 	
 	@Override
-	public String getActionType() {
-		return AsyncMessageType.BatchDeviceSharedNetworkApply.getPrefix();
+	public String getAsyncType() {
+		return AsyncMessageType.BatchDeviceSnkApply.getPrefix();
 	}
 
 	@Override

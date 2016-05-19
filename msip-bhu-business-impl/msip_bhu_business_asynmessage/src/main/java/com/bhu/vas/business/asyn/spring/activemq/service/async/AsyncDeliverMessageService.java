@@ -5,13 +5,13 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.async.AsyncDeliverMessageQueueProducer;
-import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
+import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
-import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSharedNetworkApplyDTO;
+import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.tag.OperTagDTO;
 
 
@@ -80,8 +80,20 @@ public class AsyncDeliverMessageService {
 		dmacs.add(mac);
 		this.sendUserDeviceSharedNetworkApplyActionMessage(uid, snk_type,template, dmacs, onlyindexupdate, dtoType);
 	}*/
-	public void sendBatchDeviceSharedNetworkApplyActionMessage(int uid,String snk_type,String template, List<String> dmacs,boolean onlyindexupdate,char dtoType){
-		BatchDeviceSharedNetworkApplyDTO dto = new BatchDeviceSharedNetworkApplyDTO();
+	
+	public void sendBatchGroupDeviceSnkApplyActionMessage(int uid,String message,String snk_type,String template,char dtoType){
+		BatchGroupDeviceSnkApplyDTO dto = new BatchGroupDeviceSnkApplyDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setSnk_type(snk_type);
+		dto.setTemplate(template);
+		dto.setDtoType(dtoType);
+		dto.setTs(System.currentTimeMillis());
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendBatchDeviceSnkApplyActionMessage(int uid,String snk_type,String template, List<String> dmacs,boolean onlyindexupdate,char dtoType){
+		BatchDeviceSnkApplyDTO dto = new BatchDeviceSnkApplyDTO();
 		dto.setUid(uid);
 		dto.setSnk_type(snk_type);
 		dto.setTemplate(template);
@@ -89,6 +101,6 @@ public class AsyncDeliverMessageService {
 		dto.setOnlyindexupdate(onlyindexupdate);
 		dto.setDtoType(dtoType);
 		dto.setTs(System.currentTimeMillis());
-		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 }
