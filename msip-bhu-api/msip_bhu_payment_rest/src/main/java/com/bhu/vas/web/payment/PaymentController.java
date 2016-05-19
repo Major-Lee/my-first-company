@@ -264,9 +264,9 @@ public class PaymentController extends BaseController{
         		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type);
         	}else if(payment_type.equals("PcAlipay")){ //PC微信支付宝
         		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type);
-        	}else if(payment_type.equals("Midas")){ //米大师
+        	}else if(payment_type.equals("Hee")){ //米大师
         		result =  doMidas(response, total_fee, goods_no); //TODO：暂未对接完成。。。
-        	}else if(payment_type.equals("Hee")){ //汇付宝
+        	}else if(payment_type.equals("Midas")){ //汇付宝
         		result =  doHee(response, total_fee, goods_no,exter_invoke_ip); 
         	}else{//提示暂不支持的支付方式
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -435,14 +435,44 @@ public class PaymentController extends BaseController{
 		//////////////////////////////////////////////////////////////////////////////////
 			
 		 //以上为正式支付前必有的订单信息，用户信息验证，接下来将用订单号生成一个支付流水号进行在线支付
+		//把请求参数打包成数组
+		Map<String, String> sParaTemp = new HashMap<String, String>();
+		String reckoningId = null;
 		//数据库存的是分，此处需要把传来的支付金额转换成分，而传给支付宝的保持不变（默认元）
 		String total_fee_fen = BusinessHelper.getMoney(total_fee);
 		if(type.equals("WapAlipay")){
-			type = "MOAL";
+			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"MOAL");
+			sParaTemp.put("service", "alipay.wap.create.direct.pay.by.user");
+	        sParaTemp.put("partner", AlipayConfig.partner);
+	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
+	        sParaTemp.put("_input_charset", AlipayConfig.input_charset);
+			sParaTemp.put("payment_type", AlipayConfig.payment_type);
+			sParaTemp.put("notify_url", notify_url);
+			sParaTemp.put("return_url", return_url);
+			sParaTemp.put("show_url", return_url);
+			sParaTemp.put("exter_invoke_ip", ip);
+			sParaTemp.put("out_trade_no", reckoningId);
+			sParaTemp.put("subject", subject);
+			sParaTemp.put("total_fee", total_fee);
+			sParaTemp.put("body", body);
+			sParaTemp.put("it_b_pay", "600");
 		}else{
-			type = "PCAL";
+			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"PCAL");
+			sParaTemp.put("service", AlipayConfig.service);
+	        sParaTemp.put("partner", AlipayConfig.partner);
+	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
+	        sParaTemp.put("_input_charset", AlipayConfig.input_charset);
+			sParaTemp.put("payment_type", AlipayConfig.payment_type);
+			sParaTemp.put("notify_url", notify_url);
+			sParaTemp.put("return_url", return_url);
+			sParaTemp.put("anti_phishing_key", AlipayConfig.anti_phishing_key);
+			sParaTemp.put("exter_invoke_ip", ip);
+			sParaTemp.put("out_trade_no", reckoningId);
+			sParaTemp.put("subject", subject);
+			sParaTemp.put("total_fee", total_fee);
+			sParaTemp.put("body", body);
 		}
-		String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,type);
+		
 		
 		//记录请求支付完成后返回的地址
 		if (!StringUtils.isBlank(locationUrl)) {
@@ -454,21 +484,7 @@ public class PaymentController extends BaseController{
 			return_url = locationUrl;
 		}
 		
-		//把请求参数打包成数组
-		Map<String, String> sParaTemp = new HashMap<String, String>();
-		sParaTemp.put("service", AlipayConfig.service);
-        sParaTemp.put("partner", AlipayConfig.partner);
-        sParaTemp.put("seller_id", AlipayConfig.seller_id);
-        sParaTemp.put("_input_charset", AlipayConfig.input_charset);
-		sParaTemp.put("payment_type", AlipayConfig.payment_type);
-		sParaTemp.put("notify_url", notify_url);
-		sParaTemp.put("return_url", return_url);
-		sParaTemp.put("anti_phishing_key", AlipayConfig.anti_phishing_key);
-		sParaTemp.put("exter_invoke_ip", AlipayConfig.exter_invoke_ip);
-		sParaTemp.put("out_trade_no", reckoningId);
-		sParaTemp.put("subject", subject);
-		sParaTemp.put("total_fee", total_fee);
-		sParaTemp.put("body", body);
+		
 		
 		//建立支付宝支付请求
 		
@@ -477,12 +493,9 @@ public class PaymentController extends BaseController{
         try {
             sHtmlText = AlipaySubmit.buildRequest(sParaTemp,"post","确认");  
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-            String s = gson.toJson(sHtmlText);
-            request.setAttribute("sHtmlText", s);
             logger.info("文本："+sHtmlText);
-            logger.info("gson："+s);
             result = new PaymentTypeVTO();
-            result.setType("text");
+            result.setType("http");
             result.setUrl(sHtmlText);
             //BusinessHelper.writeToWeb(result, "html", response);
             return result;
@@ -589,7 +602,7 @@ public class PaymentController extends BaseController{
 	            if("SUCCESS".equals(paySuccessNotifyResponse.getReturn_code()) && "SUCCESS".equals(paySuccessNotifyResponse.getResult_code())){
 	            	 logger.info("账单流水号："+out_trade_no+"支付成功.微信返回SUCCESS.");
 	 				//修改成账单状态    1:已支付 2：退款已支付 3：退款成功 4：退款失败
-	            	 updatePaymentStatus(payReckoning,out_trade_no,thirdPartCode);
+	            	 updatePaymentStatus(payReckoning,out_trade_no,thirdPartCode,"");
 					return "success";
 	            }else{
 	                //支付s失败
@@ -680,7 +693,7 @@ public class PaymentController extends BaseController{
 					 if (trade_status.equals("1")){
 						//支付成功
 						logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
-						updatePaymentStatus(payReckoning,out_trade_no,trade_no);
+						updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Hee");
 						return "OK";
 					}else{
 						//支付s失败
@@ -770,7 +783,7 @@ public class PaymentController extends BaseController{
 					} else if (trade_status.equals("TRADE_SUCCESS")){
 						//支付成功
 						logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
-						updatePaymentStatus(payReckoning,out_trade_no,trade_no);
+						updatePaymentStatus(payReckoning,out_trade_no,trade_no,"");
 						return "SUCCESS";
 						//注意：
 						//付款完成后，支付宝系统发送该交易状态通知
@@ -869,7 +882,7 @@ public class PaymentController extends BaseController{
     }
     
     
-    private void updatePaymentStatus(PaymentReckoning updatePayStatus,String out_trade_no,String thirdPartCode){
+    private void updatePaymentStatus(PaymentReckoning updatePayStatus,String out_trade_no,String thirdPartCode,String thridType){
 		updatePayStatus.setThird_party_code(thirdPartCode);
 		updatePayStatus.setPay_status(1);
 		updatePayStatus.setPaid_at(new Date());
@@ -885,6 +898,9 @@ public class PaymentController extends BaseController{
  		rpcn_dto.setPayment_type(payNotice.getPayment_type());
  		String fmtDate = BusinessHelper.formatDate(payNotice.getPaid_at(), "yyyy-MM-dd HH:mm:ss");
  		rpcn_dto.setPaymented_ds(fmtDate);
+ 		if(thridType != null){
+ 			rpcn_dto.setPayment_proxy_type(thridType);
+ 		}
  		String notify_message = JsonHelper.getJSONString(rpcn_dto);
  		System.out.println(notify_message);
  		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
