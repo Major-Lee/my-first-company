@@ -18,7 +18,7 @@ public class QueryStatisticsFromUMController extends BaseController{
 			RequestMethod.POST })
 	public String queryIndexInfo(HttpServletRequest request,HttpServletResponse response,String data){
 		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
-		//data="{\"event_name\":\"$Pv\",\"from_date\":\"2016-05-01\",\"to_date\":\"2016-05-20\",\"on_condition\":\"\",\"where_condition\":\"\"}";
+		//data="{\"event_name\":\"$IP\",\"from_date\":\"2016-05-01\",\"to_date\":\"2016-05-20\",\"on_condition\":\"\",\"where_condition\":\"\"}";
 		JSONObject jsonObject=JSONObject.fromObject(data);
 		String event_name=jsonObject.getString("event_name");
 		String from_date=jsonObject.getString("from_date");
