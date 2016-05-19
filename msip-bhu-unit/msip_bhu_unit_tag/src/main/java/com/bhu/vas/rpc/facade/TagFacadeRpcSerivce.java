@@ -484,6 +484,7 @@ public class TagFacadeRpcSerivce {
 		mc.createCriteria().andColumnEqualTo("creator", uid).andColumnEqualTo("pid", pid);
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
+		mc.setOrderByClause(" created_at desc");
 		TailPage<TagGroup> pages = tagGroupService.findModelTailPageByModelCriteria(mc);
 		List<TagGroupVTO> result = new ArrayList<TagGroupVTO>();
 		for (TagGroup tagGroup : pages) {
