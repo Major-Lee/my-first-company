@@ -26,13 +26,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-  	<div style="text-align: center;width: 100%">
-  		<div>
+  	<div style="text-align: center;width: 100%;height:100%">
+  		<div style="margin-top: 50px">
 	  		<select class="eventNames" onchange="testStatistics()"></select>
 			开始时间:<input type="text" id="startTime" name="startTime" onclick="new Calendar().show(this);"/>
 			结束时间:<input type="text" id="endTime" name="endTime" onclick="new Calendar().show(this);"/>
   		</div>
-	    <table style="width: 500px;height:100px;margin:auto">
+	    <table style="width: 500px;height:100px;margin:auto;margin-top: 50px">
 	    	<thead>
 	    		<tr>
 	    			<td>
