@@ -12,21 +12,21 @@ public class TagGroupVTO implements Serializable {
 	private String path;
 	private int creator;
 	private boolean parent;
-	private int device_count;
+//	private int device_count;
 
-//	 private int onLine;
-//	 private int offLine;
+	 private int onLine;
+	 private int offLine;
 //	private double earnings;
 //
 
 
-	public int getDevice_count() {
-		return device_count;
-	}
-
-	public void setDevice_count(int device_count) {
-		this.device_count = device_count;
-	}
+//	public int getDevice_count() {
+//		return device_count;
+//	}
+//
+//	public void setDevice_count(int device_count) {
+//		this.device_count = device_count;
+//	}
 
 	public int getGid() {
 		return gid;
@@ -84,21 +84,21 @@ public class TagGroupVTO implements Serializable {
 		this.parent = parent;
 	}
 	
-//	public int getOnLine() {
-//		return onLine;
-//	}
-//
-//	public void setOnLine(int onLine) {
-//		this.onLine = onLine;
-//	}
-//
-//	public int getOffLine() {
-//		return offLine;
-//	}
-//
-//	public void setOffLine(int offLine) {
-//		this.offLine = offLine;
-//	}
+	public int getOnLine() {
+		return onLine;
+	}
+
+	public void setOnLine(int onLine) {
+		this.onLine = onLine;
+	}
+
+	public int getOffLine() {
+		return offLine;
+	}
+
+	public void setOffLine(int offLine) {
+		this.offLine = offLine;
+	}
 //	
 //	public double getEarnings() {
 //		return earnings;

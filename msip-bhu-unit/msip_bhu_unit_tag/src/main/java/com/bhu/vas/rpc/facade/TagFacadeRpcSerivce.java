@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
@@ -49,6 +50,9 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
+	
+	@Resource
+	private IDeviceRestRpcService deviceRestRpcService;
 
 	/*
 	 * @Resource private DeliverMessageService deliverMessageService;
@@ -458,13 +462,17 @@ public class TagFacadeRpcSerivce {
 		vto.setGid(tagGroup.getId());
 		vto.setName(tagGroup.getName());
 		vto.setPid(tagGroup.getPid());
+		vto.setCreator(tagGroup.getCreator());
 		if (tagGroup.getPid() == 0) {
 			vto.setPname("根节点");
 		} else {
 			TagGroup parent_group = tagGroupService.getById(tagGroup.getPid());
 			vto.setPname((parent_group != null) ? parent_group.getName() : null);
 		}
-		vto.setDevice_count(tagGroup.getDevice_count());
+		
+		int onLineCount = (int)deviceRestRpcService.countByUCExtensionOnline(tagGroup.getCreator(), tagGroupService.getById(tagGroup.getId()).getPath2ES());
+		vto.setOnLine(onLineCount);
+		vto.setOffLine(tagGroup.getDevice_count() - onLineCount);
 		vto.setParent(tagGroup.getChildren() > 0);
 		vto.setPath(tagGroup.getPath());
 		return vto;
