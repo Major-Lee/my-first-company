@@ -218,6 +218,19 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	
+	@Override
+	public long countByUCExtensionOnline(int uid, String t_uc_extension) {
+		logger.info(String.format("DeviceRestRPC countByUCExtensionOnline invoke uid [%s] t_uc_extension [%s]", uid, t_uc_extension));
+		try{
+			return deviceRestBusinessFacadeService.countByUCExtensionOnline(uid, t_uc_extension);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC countByUCExtensionOnline exception exmsg[%s]",ex.getMessage()), ex);
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 
 	@Override
 	public RpcResponseDTO<UserSearchConditionDTO> storeUserSearchCondition(int uid,String message,String desc) {
