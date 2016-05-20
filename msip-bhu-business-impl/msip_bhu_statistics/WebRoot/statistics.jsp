@@ -31,6 +31,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  		<select class="eventNames" onchange="testStatistics()"></select>
 			开始时间:<input type="text" id="startTime" name="startTime" onclick="new Calendar().show(this);"/>
 			结束时间:<input type="text" id="endTime" name="endTime" onclick="new Calendar().show(this);"/>
+  			<select id="type">
+  				<option value="1">今日</option>
+  				<option value="2">昨日</option>
+  				<option value="3">本月</option>
+  			</select>
   		</div>
 	    <table style="width: 500px;height:100px;margin:auto;margin-top: 50px">
 	    	<thead>
@@ -63,7 +68,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   function testStatistics(){
 	  var event_name=$('.eventNames').val();
-	  var startTime=$('#startTime').val();
+	  var type=$('#type').val();
+	  /* var startTime=$('#startTime').val();
 	  var endTime=$('#endTime').val();
 	  if(event_name=='0'){
 		  return;
@@ -81,9 +87,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		if(startTime!=""&&endTime!=""&&d1 >d2){  
 		  	alert("开始时间不能大于结束时间！");  
 		  	return false;  
-		}
-	  var orderJson = '{"event_name":"'+event_name+'","from_date":"'+startTime+'","to_date":"'+endTime+'","on_condition":"","where_condition":""}';
-	  $.post("/msip_bhu_statistics/index.do", {
+		} */
+	  var orderJson = '{"event_name":"'+event_name+'","from_date":"","to_date":"","on_condition":"","where_condition":"","type":"'+type+'"}';
+	  $.post("/bhu_api/v1/msip_bhu_statistics/index.do", {
 		  	"data": orderJson,
 		  }).success(function(data) {
 			  data=eval("(" +data+")");
