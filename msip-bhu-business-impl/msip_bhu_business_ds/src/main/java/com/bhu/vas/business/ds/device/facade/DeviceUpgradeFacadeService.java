@@ -122,14 +122,14 @@ public class DeviceUpgradeFacadeService {
 			//【2】针对某个灰度指定版本的时间点为x，设备上线时，如果发现当前时间点y>x+48小时（暂定），将会触发设备15分钟后升级策略。
 			if (BusinessRuntimeConfiguration.isInitialDeviceFirmwareVersion(upgrade.getCurrentDVB())) {
 				String upgradeBeginTime = DateTimeHelper.formatDate(DateTimeHelper.dateMinuteAfter(new Date(), 15), DateTimeHelper.FormatPattern_Hms);
-				String upgradeEndTime = DateTimeHelper.formatDate(DateTimeHelper.dateMinuteAfter(new Date(), 120), DateTimeHelper.FormatPattern_Hms);
+				String upgradeEndTime = DateTimeHelper.formatDate(DateTimeHelper.dateMinuteAfter(new Date(), 30), DateTimeHelper.FormatPattern_Hms);
 				return upgrade.buildUpgradeCMD(dmac, 0, upgradeBeginTime,upgradeEndTime);
 			}else{
 				Date current  = new Date();
 				Date grayPublished_at = upgrade.getCurrentGrayPublished_at();
 				if(current.after(DateTimeHelper.getDateDaysAfter(grayPublished_at, 2))){
 					String upgradeBeginTime = DateTimeHelper.formatDate(DateTimeHelper.dateMinuteAfter(new Date(), 15), DateTimeHelper.FormatPattern_Hms);
-					String upgradeEndTime = DateTimeHelper.formatDate(DateTimeHelper.dateMinuteAfter(new Date(), 120), DateTimeHelper.FormatPattern_Hms);
+					String upgradeEndTime = DateTimeHelper.formatDate(DateTimeHelper.dateMinuteAfter(new Date(), 30), DateTimeHelper.FormatPattern_Hms);
 					return upgrade.buildUpgradeCMD(dmac, 0, upgradeBeginTime,upgradeEndTime);
 				}else{//缺省的2点到4点升级
 					return upgrade.buildUpgradeCMD(dmac, 0, WifiDeviceHelper.Upgrade_Default_BeginTime,WifiDeviceHelper.Upgrade_Default_EndTime);

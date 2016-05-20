@@ -30,6 +30,7 @@ public class ManufacturerDeviceDataImportOP {
 		}
 		final String filepath = argv[0];;//"/Users/Edmond/gospace/batchimport/manufacturer/uRouter-20160426-test.xlsx";//argv[0];//
 		System.out.println("xlsx file:"+filepath);
+		//final String filepath = "/Users/Edmond/Msip.Test/tmprun/aaaa";
 		File file  = new File(filepath);
 		if(!file.exists()){
 			System.err.println(String.format("file not exist! path[%s]", filepath));
