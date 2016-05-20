@@ -70,6 +70,7 @@ public class LoginConsoleSessionController extends BaseController{
 			UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 			if(!BusinessRuntimeConfiguration.isConsoleUser(tokenDto.getId())){
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+				return;
 			}
 			rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
 			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
