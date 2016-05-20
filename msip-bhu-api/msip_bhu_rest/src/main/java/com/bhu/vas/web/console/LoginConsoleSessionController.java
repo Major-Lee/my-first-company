@@ -22,6 +22,7 @@ import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.jdo.ResponseError;
@@ -67,6 +68,9 @@ public class LoginConsoleSessionController extends BaseController{
 				//userCreateOrLogin(countrycode, acc, from_device, remoteIp, captcha);
 		if(!rpcResult.hasError()){
 			UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
+			if(!BusinessRuntimeConfiguration.isConsoleUser(tokenDto.getId())){
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+			}
 			rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
 			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
