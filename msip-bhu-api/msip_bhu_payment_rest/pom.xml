@@ -55,7 +55,10 @@
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_ds_payment</artifactId>
         </dependency>
-        
+        <dependency>
+			<groupId>com.bhu</groupId>
+			<artifactId>msip_bhu_business_redis_impl</artifactId>
+		</dependency>
         <!-- 
         <dependency>
             <groupId>com.alibaba</groupId>
