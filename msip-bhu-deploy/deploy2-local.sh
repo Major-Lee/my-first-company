@@ -7,7 +7,7 @@ echo $Current_DIR
 Deploy2Server0=192.168.66.162
 Deploy2Server1=192.168.66.188
 Deploy2Server2=192.168.66.155
-Deploy2ServerWeb=192.168.66.124
+Deploy2ServerWeb=192.168.66.7
 ##if read -t 5 -p "Confirm to deploy 2 $Deploy2Server(Local Test):(yes/no)"
 #then
 #  echo "hello $REPLY, welcome to come back here"
