@@ -160,6 +160,11 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 		return deviceRestRpcService.exportOrderResult(uid, message, messagetype, start_date, end_date);
 	}
 
+	@Override
+	public long countByUCExtensionOnline(int uid, String t_uc_extension) {
+		return deviceRestRpcService.countByUCExtensionOnline(uid, t_uc_extension);
+	}
+
 	/*@Override
 	public Collection<GeoMapVTO> fetchGeoMap() {
 		return deviceRestRpcService.fetchGeoMap();
