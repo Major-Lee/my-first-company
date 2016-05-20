@@ -20,6 +20,7 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
@@ -45,6 +46,11 @@ import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateServi
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSearchConditionStateService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.core.condition.component.SearchCondition;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionPack;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionPattern;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
@@ -501,6 +507,34 @@ public class DeviceRestBusinessFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SEARCH_CONDITION_TYPE_NOTEXIST);
 		}
 	}
+	/**
+	 * 根据t_uc_extension条件获取在线设备数量
+	 * @param uid
+	 * @param t_uc_extension
+	 * @return
+	 */
+	public long countByUCExtensionOnline(int uid, String t_uc_extension) {
+		try{
+			SearchConditionPack pack_must = null;
+	
+			SearchCondition sc_uc_extension = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+						Field.T_UC_EXTENSION.getName(), SearchConditionPattern.StringEqual.getPattern(), t_uc_extension);
+			SearchCondition sc_d_uid = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(uid));
+			SearchCondition sc_d_online = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+					WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
+			
+			pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_uc_extension, sc_d_uid, sc_d_online);
+	
+			SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
+			return wifiDeviceDataSearchService.searchCountByConditionMessage(scm);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return 0l;
+	}
+	
 	
 	public RpcResponseDTO<UserSearchConditionDTO> storeUserSearchCondition(int uid, String message, String desc){
 		UserSearchConditionState entity = userSearchConditionStateService.getById(uid);

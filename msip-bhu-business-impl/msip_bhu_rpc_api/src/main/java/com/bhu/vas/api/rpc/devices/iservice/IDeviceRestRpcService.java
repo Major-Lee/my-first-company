@@ -42,4 +42,6 @@ public interface IDeviceRestRpcService {
 	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid);
 	public RpcResponseDTO<String> exportWifiDeviceResult(int uid, String message);
 	public RpcResponseDTO<String> exportOrderResult(int uid, String message, int messagetype, String start_date, String end_date);
+
+	public long countByUCExtensionOnline(int uid, String t_uc_extension);
 }
