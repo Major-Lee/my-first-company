@@ -230,8 +230,8 @@ public class GroupController extends BaseController{
     	List<GroupCountOnlineVTO> list = new ArrayList<GroupCountOnlineVTO>();
     	for(String gid : arr){
     		GroupCountOnlineVTO vto = new GroupCountOnlineVTO();
-    		vto.setGid("g_"+gid);
-    		vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, gid));
+    		vto.setGid(gid);
+    		vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, "g_"+gid));
     		list.add(vto);
     	}
 
