@@ -10,7 +10,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
@@ -51,8 +50,6 @@ public class TagFacadeRpcSerivce {
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
 	
-	@Resource
-	private IDeviceRestRpcService deviceRestRpcService;
 
 	/*
 	 * @Resource private DeliverMessageService deliverMessageService;
@@ -469,10 +466,7 @@ public class TagFacadeRpcSerivce {
 			TagGroup parent_group = tagGroupService.getById(tagGroup.getPid());
 			vto.setPname((parent_group != null) ? parent_group.getName() : null);
 		}
-		
-		int onLineCount = (int)deviceRestRpcService.countByUCExtensionOnline(tagGroup.getCreator(), tagGroupService.getById(tagGroup.getId()).getPath2ES());
-		vto.setOnLine(onLineCount);
-		vto.setOffLine(tagGroup.getDevice_count() - onLineCount);
+		vto.setDevice_count(tagGroup.getDevice_count());
 		vto.setParent(tagGroup.getChildren() > 0);
 		vto.setPath(tagGroup.getPath());
 		return vto;
