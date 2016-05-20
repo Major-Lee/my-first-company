@@ -49,6 +49,7 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
+	
 
 	/*
 	 * @Resource private DeliverMessageService deliverMessageService;
@@ -458,6 +459,7 @@ public class TagFacadeRpcSerivce {
 		vto.setGid(tagGroup.getId());
 		vto.setName(tagGroup.getName());
 		vto.setPid(tagGroup.getPid());
+		vto.setCreator(tagGroup.getCreator());
 		if (tagGroup.getPid() == 0) {
 			vto.setPname("根节点");
 		} else {

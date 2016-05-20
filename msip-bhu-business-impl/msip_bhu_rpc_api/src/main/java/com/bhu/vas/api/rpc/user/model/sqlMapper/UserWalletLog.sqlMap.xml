@@ -15,6 +15,8 @@
     <result property="rmoney" column="rmoney"/>
     <result property="cash" column="cash"/>
     <result property="vcurrency" column="vcurrency"/>
+    <result property="mac" column="mac"/>
+    <result property="current_gpath" column="current_gpath"/>
     <result property="memo" column="memo"/>
     <result property="description" column="description"/>
     
@@ -38,6 +40,8 @@
 	    	rmoney,
 	    	cash,
 	    	vcurrency,
+	    	mac,
+	    	current_gpath,
 	    	memo,
 	    	description,
 	    	updated_at
@@ -54,6 +58,8 @@
 	    	rmoney,
 	    	cash,
 	    	vcurrency,
+	    	mac,
+	    	current_gpath,
 	    	memo,
 	    	description,
 	    	updated_at
@@ -71,6 +77,8 @@
 	    	#{rmoney},
 	    	#{cash},
 	    	#{vcurrency},
+	    	#{mac},
+	    	#{current_gpath},
 	    	#{memo},
 	    	#{description},
 	    	#{updated_at}
@@ -86,6 +94,8 @@
 	    	rmoney = #{rmoney},
 	    	cash = #{cash},
 	    	vcurrency = #{vcurrency},
+	    	mac = #{mac},
+	    	current_gpath = #{current_gpath},
 	    	memo = #{memo},
 	    	description = #{description},
 	    	updated_at = #{updated_at}

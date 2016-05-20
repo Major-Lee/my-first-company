@@ -1,5 +1,8 @@
 package com.bhu.vas.web.group;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,11 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
+import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -26,6 +32,8 @@ public class GroupController extends BaseController{
     @Resource
     private ITagRpcService tagRpcService;
     
+    @Resource
+    private IDeviceRestRpcService deviceRestRpcService;
     /**
      * 新建或修改分组
      * @param request
@@ -209,4 +217,25 @@ public class GroupController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
+	
+    @ResponseBody()
+    @RequestMapping(value = "/count/online", method = {RequestMethod.POST})
+    public void count_online(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String gids) {
+    	
+    	String[] arr = gids.split(StringHelper.COMMA_STRING_GAP);
+    	List<GroupCountOnlineVTO> list = new ArrayList<GroupCountOnlineVTO>();
+    	for(String gid : arr){
+    		GroupCountOnlineVTO vto = new GroupCountOnlineVTO();
+    		vto.setGid(gid);
+    		vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, "g_"+gid));
+    		list.add(vto);
+    	}
+
+    	List<GroupCountOnlineVTO> rpcResult = list;
+    	SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
+    }
 }
