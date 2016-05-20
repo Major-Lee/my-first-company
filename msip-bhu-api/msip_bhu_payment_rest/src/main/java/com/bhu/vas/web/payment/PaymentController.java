@@ -288,9 +288,9 @@ public class PaymentController extends BaseController{
         		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type);
         	}else if(payment_type.equals("PcAlipay")){ //PC微信支付宝
         		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type);
-        	}else if(payment_type.equals("Hee")){ //米大师
+        	}else if(payment_type.equals("Midas")){ //米大师
         		result =  doMidas(response, total_fee, goods_no); //TODO：暂未对接完成。。。
-        	}else if(payment_type.equals("Midas")){ //汇付宝
+        	}else if(payment_type.equals("Hee")){ //汇付宝
         		result =  doHee(response, total_fee, goods_no,exter_invoke_ip); 
         	}else{//提示暂不支持的支付方式
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
