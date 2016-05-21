@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreateWithdrawDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HttpHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -26,6 +27,7 @@ public class PaymentInternalHelper {
 	//public static final String CREATE_PAYMENTURL_COMMUNICATION_API = "http://upay.bhuwifi.com/api/ucloud/pay";
 	//public static final String CREATE_PAYMENTURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay";
 	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+BusinessRuntimeConfiguration.PaymentApiPayUri;
+	public static final String CREATE_PAYMENTURL_JAVA_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentJavaApiDomain+BusinessRuntimeConfiguration.PaymentJavaApiPayUri;
 	//public static final String CREATE_WITHDRAWURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/withdraw";///api/ucloud/withdrawpay";
 	public static final String CREATE_WITHDRAWURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+BusinessRuntimeConfiguration.PaymentApiWithdrawUri;
 	//模拟支付系统支付成功触发api
@@ -53,7 +55,11 @@ public class PaymentInternalHelper {
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = null;
 		try {
-			String response = HttpHelper.postUrlAsString(CREATE_PAYMENTURL_COMMUNICATION_API, api_params);
+			String apiurl = CREATE_PAYMENTURL_COMMUNICATION_API;
+			if(!OrderPaymentType.Midas.getKey().equals(payment_type)){
+				apiurl = CREATE_PAYMENTURL_JAVA_COMMUNICATION_API;
+			}
+			String response = HttpHelper.postUrlAsString(apiurl, api_params);
 			//logger.info(String.format(format, args)"CreatePaymentUrlCommunication Response [%s]");
 /*			System.out.println(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
 					+ "amount[%s] ip[%s] req[%s]", orderid, payment_type, amount, requestip, response));*/
