@@ -1,4 +1,5 @@
 package com.bhu.vas.business.user;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -6,13 +7,13 @@ import javax.annotation.Resource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
@@ -22,6 +23,7 @@ import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
@@ -268,11 +270,11 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 		}
     }
     
-    @Test
+    //@Test
    	public void test010DoSharedeal(){
     	double cashIncomming = 1.39d;
-    	String dmac = "84:82:f4:19:01:0c";
-    	
+    	//String dmac = "84:82:f4:19:01:0c";
+    	String dmac = "84:82:f4:32:3a:90";
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
     	//System.out.println(JsonHelper.getJSONString(wallet));
     	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!",null);
@@ -288,6 +290,19 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
     	//System.out.println(JsonHelper.getJSONString(wallet));
     	
+    	ShareDealWalletSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(1);
+    	System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
+   	}
+   	
+	public void test011DoSharedealDailyUserDailySummary(){
+		String cdate = DateTimeHelper.formatDate(new Date(), DateTimeHelper.FormatPattern5);
+		ShareDealDailyUserSummaryProcedureVTO daily_procedureVTO   = userWalletFacadeService.sharedealDailyUserSummaryWithProcedure(1, cdate);
+    	System.out.println("dddd:"+JsonHelper.getJSONString(daily_procedureVTO));
+    	ShareDealDailyUserSummaryProcedureVTO total_procedureVTO   = userWalletFacadeService.sharedealDailyUserSummaryWithProcedure(1, null);
+    	System.out.println("dddd:"+JsonHelper.getJSONString(total_procedureVTO));
+   	}
+	
+   	public void test011DoSharedealGroupDailySummary(){
     	ShareDealWalletSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(1);
     	System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
    	}
