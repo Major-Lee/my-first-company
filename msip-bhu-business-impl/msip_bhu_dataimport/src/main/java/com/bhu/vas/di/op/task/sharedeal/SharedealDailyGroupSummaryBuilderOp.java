@@ -23,19 +23,21 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 public class SharedealDailyGroupSummaryBuilderOp {
 
 	public static void main(String[] argv) throws IOException, ParseException{
+		argv =new String[]{"2016-05-21"};
 		if(argv == null || argv.length <1){
 			System.out.println("参数不全 $dates");
 			return;
 		}
 		System.out.println("----------ParamsStart------------");
 		//String user = argv[0];
-		String[] dates = argv[1].split(StringHelper.COMMA_STRING_GAP);
+		String[] dates = argv[0].split(StringHelper.COMMA_STRING_GAP);
 		System.out.println("----------ParamsEnd------------");
 		//System.out.println("User参数:"+user);
-		System.out.println("修复日期参数:"+argv[1]);
+		System.out.println("修复日期参数:"+argv[0]);
+		ClassPathXmlApplicationContext context = null;
 		try{
 			String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
-			final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(CONFIG, SharedealDailyGroupSummaryBuilderOp.class);
+			context = new ClassPathXmlApplicationContext(CONFIG, SharedealDailyGroupSummaryBuilderOp.class);
 			context.start();
 			//ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 			long t0 = System.currentTimeMillis();
@@ -70,7 +72,10 @@ public class SharedealDailyGroupSummaryBuilderOp {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}finally{
-
+			if(context != null){
+				context.close();
+				context = null;
+			}
 		}
 		System.exit(1);
 	}

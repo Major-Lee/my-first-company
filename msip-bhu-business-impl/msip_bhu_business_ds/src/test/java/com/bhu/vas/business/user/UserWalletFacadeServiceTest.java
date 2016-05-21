@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
@@ -303,8 +304,10 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	System.out.println("dddd:"+JsonHelper.getJSONString(total_procedureVTO));
    	}
 	
+	
+	@Test
    	public void test011DoSharedealGroupDailySummary(){
-   		ShareDealDailyGroupSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(100153, "10009/", "2016-03-04");
+   		ShareDealDailyGroupSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(100245, "10009/", "2016-05-21");
     	System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
    	}
 }
