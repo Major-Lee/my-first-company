@@ -73,6 +73,29 @@ public class ChargingStatisticsFacadeService {
     }
     
     /**
+     * 增加一个设备分组的收益统计数据
+     * @param uid
+     * @param groupid 分组id
+     * @param date 日期 yyyy-MM-dd
+     * @param total_incoming_amount 分组收益
+     * @param total_times 分组打赏次数
+     */
+    public void gainDeviceGroupPaymentStatistics(int uid, String groupid, String date, String total_incoming_amount,
+    		int total_times){
+    	if(StringUtils.isEmpty(groupid)){
+    		groupid = DeviceGroupPaymentStatistics.DEFAULT_GROUP;
+    	}
+    	DeviceGroupPaymentStatistics entity = new DeviceGroupPaymentStatistics();
+    	entity.setId(DeviceGroupPaymentStatistics.combineid(groupid, date));
+    	entity.setUid(uid);
+    	entity.setGroupid(groupid);
+    	entity.setTotal_incoming_amount(total_incoming_amount);
+    	entity.setTotal_times(total_times);
+    	deviceGroupPaymentStatisticsService.insert(entity);
+    }
+    
+    
+    /**
      * 重新计算此设备分组下的收益总额/次数
      * 并且更新总额数据
      * @param uid
