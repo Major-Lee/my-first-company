@@ -2,102 +2,66 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.user.model.UserWalletLog">
+<mapper namespace="com.bhu.vas.api.rpc.charging.model.DeviceGroupPaymentStatistics">
 
-  <resultMap id="modelResult" type="userWalletLog">
+  <resultMap id="modelResult" type="deviceGroupPaymentStatistics">
     <id property="id" column="id"/>
     <result property="uid" column="uid"/>
-    <result property="orderid" column="orderid"/>
-    <result property="transmode" column="transmode"/>
-    <result property="transtype" column="transtype"/>
-    <result property="transmode_desc" column="transmode_desc"/>
-    <result property="transtype_desc" column="transtype_desc"/>    
-    <result property="rmoney" column="rmoney"/>
-    <result property="cash" column="cash"/>
-    <result property="vcurrency" column="vcurrency"/>
-    <result property="mac" column="mac"/>
-    <result property="current_gpath" column="current_gpath"/>
-    <result property="memo" column="memo"/>
-    <result property="description" column="description"/>
-    
+    <result property="groupid" column="groupid"/>
+    <result property="total_payment_amount" column="total_payment_amount"/>
+    <result property="total_incoming_amount" column="total_incoming_amount"/>
+    <result property="total_times" column="total_times"/>
+    <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_vas_users_wallet_log
+	    	t_charging_devicegroup_payment_statistics
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
 	    	uid,
-	    	orderid,
-	    	transmode,
-	    	transtype,
-	    	transmode_desc,
-	    	transtype_desc,
-	    	rmoney,
-	    	cash,
-	    	vcurrency,
-	    	mac,
-	    	current_gpath,
-	    	memo,
-	    	description,
+	    	groupid,
+	    	total_payment_amount,
+	    	total_incoming_amount,
+	    	total_times,
+	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	uid,
-	    	orderid,
-	    	transmode,
-	    	transtype,
-	    	transmode_desc,
-	    	transtype_desc,
-	    	rmoney,
-	    	cash,
-	    	vcurrency,
-	    	mac,
-	    	current_gpath,
-	    	memo,
-	    	description,
+	    	groupid,
+	    	total_payment_amount,
+	    	total_incoming_amount,
+	    	total_times,
+	    	created_at,
 	    	updated_at
 	    ]]>
-	</sql> 	
+	</sql>   
 	
 	<sql id="modelInsertValues">
 			#{id},
 	    	#{uid},
-	    	#{orderid},
-	    	#{transmode},
-	    	#{transtype},
-	    	#{transmode_desc},
-	    	#{transtype_desc},	    	
-	    	#{rmoney},
-	    	#{cash},
-	    	#{vcurrency},
-	    	#{mac},
-	    	#{current_gpath},
-	    	#{memo},
-	    	#{description},
+	    	#{groupid},
+	    	#{total_payment_amount},
+	    	#{total_incoming_amount},
+	    	#{total_times},
+	    	#{created_at},
 	    	#{updated_at}
-	</sql>
-		
+	</sql> 
+	
 	<sql id="modelUpdateValues">
 	    	uid = #{uid},
-	    	orderid = #{orderid},
-	    	transmode = #{transmode},
-	    	transtype = #{transtype},
-	    	transmode_desc = #{transmode_desc},
-	    	transtype_desc = #{transtype_desc},
-	    	rmoney = #{rmoney},
-	    	cash = #{cash},
-	    	vcurrency = #{vcurrency},
-	    	mac = #{mac},
-	    	current_gpath = #{current_gpath},
-	    	memo = #{memo},
-	    	description = #{description},
+	    	groupid = #{groupid},
+	    	total_payment_amount = #{total_payment_amount},
+	    	total_incoming_amount = #{total_incoming_amount},
+	    	total_times = #{total_times},
+	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
@@ -148,11 +112,11 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="userWalletLog">
+	<delete id="delete" parameterType="deviceGroupPaymentStatistics">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -160,14 +124,11 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="userWalletLog">
+	<insert id="insert" parameterType="deviceGroupPaymentStatistics">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
-		<selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
-			select last_insert_id(); 
-		</selectKey>
 	</insert>
  
-	<update id="update" parameterType="userWalletLog">
+	<update id="update" parameterType="deviceGroupPaymentStatistics">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
@@ -191,7 +152,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="long">
+	<select id="pkSelectByModelCriteria" resultType="String">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />
@@ -217,4 +178,8 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
+	
+	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
+		${proc_call} 		
+	</select>
 </mapper>

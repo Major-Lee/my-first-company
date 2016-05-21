@@ -28,6 +28,11 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 	private String cash;
 	//交易虚拟币相关
 	private String vcurrency;
+	
+	//当前时间 打赏收益 冗余字段 设备mac
+	private String mac;
+	//当前时间 打赏收益 冗余字段 设备所属群组
+	private String current_gpath;
 	//交易内容描述
 	private String memo;
 	private String description;
@@ -145,5 +150,21 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 		vto.setMemo(memo);
 		vto.setOperdate(DateTimeHelper.formatDate(this.updated_at, DateTimeHelper.FormatPattern0));
 		return vto;
+	}
+
+	public String getMac() {
+		return mac;
+	}
+
+	public void setMac(String mac) {
+		this.mac = mac;
+	}
+
+	public String getCurrent_gpath() {
+		return current_gpath;
+	}
+
+	public void setCurrent_gpath(String current_gpath) {
+		this.current_gpath = current_gpath;
 	}
 }

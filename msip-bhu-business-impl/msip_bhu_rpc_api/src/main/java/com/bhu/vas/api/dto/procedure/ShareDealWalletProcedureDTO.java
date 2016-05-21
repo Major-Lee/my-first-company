@@ -8,6 +8,9 @@ import com.smartwork.msip.cores.orm.logic.procedure.IN;
 
 @SuppressWarnings("serial")
 public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO{
+	
+	@IN(jdbcType = JdbcType.VARCHAR)
+	private String mac;
 	@IN(jdbcType = JdbcType.VARCHAR)
 	private String orderid;
 	@IN(jdbcType = JdbcType.INTEGER)
@@ -133,6 +136,7 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO{
 	
 	public static ShareDealWalletProcedureDTO buildWith(SharedealInfo sharedeal){
 		ShareDealWalletProcedureDTO dto = new ShareDealWalletProcedureDTO();
+		dto.setMac(sharedeal.getMac());
 		dto.setOrderid(sharedeal.getOrderid());
 		dto.setOwnerid(sharedeal.getOwner());
 		dto.setManufacturerid(sharedeal.getManufacturer());
@@ -160,4 +164,11 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO{
 			System.out.println(proDto.getOut1());
 			System.out.println(proDto.getOut2());*/
 	}
+	public String getMac() {
+		return mac;
+	}
+	public void setMac(String mac) {
+		this.mac = mac;
+	}
+	
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
@@ -238,4 +239,22 @@ public class GroupController extends BaseController{
     	List<GroupCountOnlineVTO> rpcResult = list;
     	SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
     }
+    
+    @ResponseBody()
+    @RequestMapping(value = "/gains/stats", method = {RequestMethod.POST})
+    public void group_gains_stats(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+    	    @RequestParam(required = true) String gids,
+    	    @RequestParam(required = true) String paths) {
+    	RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> rpcResult = tagRpcService.groupsGainsStatistics(uid, gids, paths);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
+    
+    
 }
