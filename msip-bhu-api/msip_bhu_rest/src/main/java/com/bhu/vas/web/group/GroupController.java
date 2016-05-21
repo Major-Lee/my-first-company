@@ -247,8 +247,8 @@ public class GroupController extends BaseController{
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
     	    @RequestParam(required = true) String gids,
-    	    @RequestParam(required = true) String path) {
-    	RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> rpcResult = tagRpcService.groupsGainsStatistics(uid, gids, path);
+    	    @RequestParam(required = true) String paths) {
+    	RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> rpcResult = tagRpcService.groupsGainsStatistics(uid, gids, paths);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

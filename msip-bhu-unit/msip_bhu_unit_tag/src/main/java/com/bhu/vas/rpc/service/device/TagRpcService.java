@@ -228,10 +228,10 @@ public class TagRpcService implements ITagRpcService {
 	}
 	
 	@Override
-	public RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> groupsGainsStatistics(int uid, String gids,String path) {
-		logger.info(String.format("batchGroupSnkTakeEffectNetworkConf uid[%s] gids[%s] path[%s]", uid, gids,path));
+	public RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> groupsGainsStatistics(int uid, String gids,String paths) {
+		logger.info(String.format("batchGroupSnkTakeEffectNetworkConf uid[%s] gids[%s] paths[%s]", uid, gids,paths));
 		try {
-			List<DeviceGroupPaymentStatisticsVTO> ret = tagFacadeRpcSerivce.groupsGainsStatistics(uid, gids, path);
+			List<DeviceGroupPaymentStatisticsVTO> ret = tagFacadeRpcSerivce.groupsGainsStatistics(uid, gids, paths);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
