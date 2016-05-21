@@ -13,6 +13,7 @@ import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
@@ -303,7 +304,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    	}
 	
    	public void test011DoSharedealGroupDailySummary(){
-    	ShareDealWalletSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(1);
+   		ShareDealDailyGroupSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(100153, "10009/", "2016-03-04");
     	System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
    	}
 }
