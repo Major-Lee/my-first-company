@@ -33,6 +33,8 @@
 		<typeAlias alias="wifiDeviceBatchImport" 		type="com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport" />
 		<typeAlias alias="wifiDeviceBatchDetail" 		type="com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchDetail" />
 		<typeAlias alias="wifiDeviceSharedealConfigs" 	type="com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs" />
+		<typeAlias alias="deviceGroupPaymentStatistics" 	type="com.bhu.vas.api.rpc.charging.model.DeviceGroupPaymentStatistics" />
+		
 		<!-- 
 		<typeAlias alias="userThirdpartiesPayment" 	type="com.bhu.vas.api.rpc.user.model.UserThirdpartiesPayment" />
 		 -->
@@ -152,7 +154,8 @@
 		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/UserWithdrawCostConfigs.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/WifiDeviceBatchImport.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/WifiDeviceBatchDetail.sqlMap.xml" />
-		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/WifiDeviceSharedealConfigs.sqlMap.xml" />		
+		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/WifiDeviceSharedealConfigs.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/DeviceGroupPaymentStatistics.sqlMap.xml" />		
 		
 		<!-- 
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserThirdpartiesPayment.sqlMap.xml" />

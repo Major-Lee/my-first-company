@@ -105,6 +105,9 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	
         	PaymentApiDomain = PropertiesHelper.getString("payment.api.domain", paramProperties, PaymentApiDomain);
         	PaymentApiPayUri = PropertiesHelper.getString("payment.api.pay.uri", paramProperties, PaymentApiPayUri);
+        	PaymentJavaApiDomain = PropertiesHelper.getString("payment.java.api.domain", paramProperties, PaymentJavaApiDomain);
+        	PaymentJavaApiPayUri = PropertiesHelper.getString("payment.java.api.pay.uri", paramProperties, PaymentJavaApiPayUri);
+        	
         	PaymentApiWithdrawUri = PropertiesHelper.getString("payment.api.withdraw.uri", paramProperties, PaymentApiWithdrawUri);
         	
         	Terminal_Push_Notify_Exprie_Second = PropertiesHelper.getInt("terminal.push.notify.exprie.second", paramProperties, Terminal_Push_Notify_Exprie_Second);
@@ -200,10 +203,14 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static final int UserCaptchaCodeLimit = 8;
 	//支付系统api接口的域名
 	public static String PaymentApiDomain = "http://upay.bhuwifi.com";
+	//支付系统java api接口的域名
+	public static String PaymentJavaApiDomain = "http://pay.bhuwifi.com";
 	
 	public static String PaymentApiWithdrawUri = "/api/ucloud/withdraw";
 	
 	public static String PaymentApiPayUri = "/api/ucloud/pay";
+	
+	public static String PaymentJavaApiPayUri = "/msip_bhu_payment_rest/payment/submitPayment";
 	
 	//public static final String InternalCaptchaCodeSMS_Template = "尊敬的用户您好，您此次验证码为@请勿将验证码提供给他人，如非本人操作，请忽略。【华信联创】";
 	

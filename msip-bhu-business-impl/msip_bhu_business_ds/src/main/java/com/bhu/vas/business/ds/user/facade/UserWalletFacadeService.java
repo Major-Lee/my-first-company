@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.procedure.ShareDealDailyGroupSummaryProcedureDTO;
+import com.bhu.vas.api.dto.procedure.ShareDealDailyUserSummaryProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealWalletProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
@@ -17,6 +19,8 @@ import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
+import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
+import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
@@ -247,6 +251,32 @@ public class UserWalletFacadeService{
 		return executeRet;*/
 	}
 	
+	public ShareDealDailyUserSummaryProcedureVTO sharedealDailyUserSummaryWithProcedure(int uid,String cdate){
+		ShareDealDailyUserSummaryProcedureDTO procedureDTO = new ShareDealDailyUserSummaryProcedureDTO();
+		procedureDTO.setUserid(uid);
+		procedureDTO.setCdate(cdate);
+		int executeRet = userWalletService.executeProcedure(procedureDTO);
+		if(executeRet == 0){
+			;
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
+		}
+		return procedureDTO.toVTO();
+	}
+	
+	public ShareDealDailyGroupSummaryProcedureVTO sharedealDailyGroupSummaryWithProcedure(int uid,String gpath,String cdate){
+		ShareDealDailyGroupSummaryProcedureDTO procedureDTO = new ShareDealDailyGroupSummaryProcedureDTO();
+		procedureDTO.setUserid(uid);
+		procedureDTO.setGpath(gpath);
+		procedureDTO.setCdate(cdate);
+		int executeRet = userWalletService.executeProcedure(procedureDTO);
+		if(executeRet == 0){
+			;
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
+		}
+		return procedureDTO.toVTO();
+	}
 	
 	/**
 	 * 虚拟币入账
