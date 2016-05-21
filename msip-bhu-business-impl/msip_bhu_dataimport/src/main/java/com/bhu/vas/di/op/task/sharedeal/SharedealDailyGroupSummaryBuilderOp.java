@@ -2,13 +2,16 @@ package com.bhu.vas.di.op.task.sharedeal;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
+import com.bhu.vas.business.ds.charging.facade.ChargingStatisticsFacadeService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -23,7 +26,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 public class SharedealDailyGroupSummaryBuilderOp {
 
 	public static void main(String[] argv) throws IOException, ParseException{
-		argv =new String[]{"2016-05-21"};
+		//argv =new String[]{"2016-05-21"};
 		if(argv == null || argv.length <1){
 			System.out.println("参数不全 $dates");
 			return;
@@ -40,9 +43,12 @@ public class SharedealDailyGroupSummaryBuilderOp {
 			context = new ClassPathXmlApplicationContext(CONFIG, SharedealDailyGroupSummaryBuilderOp.class);
 			context.start();
 			//ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
-			long t0 = System.currentTimeMillis();
 			UserWalletFacadeService userWalletFacadeService = context.getBean("userWalletFacadeService",UserWalletFacadeService.class);
 			TagGroupService tagGroupService = context.getBean("tagGroupService",TagGroupService.class);
+			ChargingStatisticsFacadeService chargingStatisticsFacadeService = context.getBean("chargingStatisticsFacadeService",ChargingStatisticsFacadeService.class);
+			//ChargingStatisticsFacadeService.deviceGroupPaymentTotalWithProcedure
+			long t0 = System.currentTimeMillis();
+			Set<Integer> users = new HashSet<Integer>();
 			ModelCriteria mc = new ModelCriteria();
 			mc.createCriteria().andSimpleCaulse(" 1=1 ");
 	    	mc.setPageNumber(1);
@@ -52,7 +58,8 @@ public class SharedealDailyGroupSummaryBuilderOp {
 				List<TagGroup> next = it_taggroup.next();
 				for(TagGroup group:next){
 					int creator = group.getCreator();
-					if(creator == 0) continue;
+					if(creator <= 0) continue;
+					users.add(new Integer(creator));
 					String gpath = group.getPath();
 					if(StringUtils.isEmpty(gpath)) continue;
 					for(String cdate:dates){
@@ -60,14 +67,35 @@ public class SharedealDailyGroupSummaryBuilderOp {
 						System.out.println( String.format("daily[%s] gid[%s] creator[%s] gpath[%s] totalcash[%s] totalnums[%s]",
 								groupDailySummary.getCdate(),group.getId(),groupDailySummary.getUserid(),groupDailySummary.getGpath(),
 								groupDailySummary.getTotal_cash(),groupDailySummary.getTotal_nums()));
+						chargingStatisticsFacadeService.gainDeviceGroupPaymentStatistics(group.getCreator(), String.valueOf(group.getId()), groupDailySummary.getCdate(), 
+								String.valueOf(groupDailySummary.getTotal_cash()), groupDailySummary.getTotal_nums());
+						Thread.sleep(100);
 					}
+					chargingStatisticsFacadeService.deviceGroupPaymentTotalWithProcedure(group.getCreator(), String.valueOf(group.getId()));
 					//Total
 					//ShareDealDailyGroupSummaryProcedureVTO groupTotalSummary = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(creator, gpath, null);
 					//System.out.println( String.format("total gid[%s] creator[%s] gpath[%s]",group.getId(),groupTotalSummary.getUserid(),groupTotalSummary.getGpath()));//"daily:"+JsonHelper.getJSONString(groupDailySummary));
 				}
 			}
+			System.out.println("数据分组收益更新成功，总耗时"+((System.currentTimeMillis()-t0)/1000)+"s");
 			
-			System.out.println("数据全量更新，总耗时"+((System.currentTimeMillis()-t0)/1000)+"s");
+			System.out.println("数据默认分组收益开始计算，共计："+users.size()+"个用户");
+			long t1 = System.currentTimeMillis();
+			for(Integer user:users){
+				for(String cdate:dates){
+					ShareDealDailyGroupSummaryProcedureVTO groupDailySummary = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(user.intValue(), null, cdate);
+					System.out.println( String.format("daily[%s] gid[%s] creator[%s] gpath[%s] totalcash[%s] totalnums[%s]",
+							groupDailySummary.getCdate(),"默认群组",groupDailySummary.getUserid(),StringHelper.MINUS_STRING_GAP,
+							groupDailySummary.getTotal_cash(),groupDailySummary.getTotal_nums()));
+					chargingStatisticsFacadeService.gainDeviceGroupPaymentStatistics(user.intValue(), null, groupDailySummary.getCdate(), 
+							String.valueOf(groupDailySummary.getTotal_cash()), groupDailySummary.getTotal_nums());
+					Thread.sleep(100);
+				}
+				
+			}
+			
+			System.out.println("数据默认分组收益更新成功，总耗时"+((System.currentTimeMillis()-t1)/1000)+"s");
+			
 
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);

@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
@@ -18,6 +19,7 @@ import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
+import com.bhu.vas.business.ds.charging.facade.ChargingStatisticsFacadeService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
@@ -49,7 +51,6 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
-	
 
 	/*
 	 * @Resource private DeliverMessageService deliverMessageService;
@@ -60,7 +61,10 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private TagGroupRelationService tagGroupRelationService;
-
+		
+	@Resource
+	private ChargingStatisticsFacadeService chargingStatisticsFacadeService;
+	
 	private void addTag(int uid, String tag) {
 
 		ModelCriteria mc = new ModelCriteria();
@@ -537,5 +541,16 @@ public class TagFacadeRpcSerivce {
 			ex.printStackTrace(System.out);
 			return false;
 		}
+	}
+	
+	public List<DeviceGroupPaymentStatisticsVTO> groupsGainsStatistics(int uid ,String gids,String path){
+		
+		String[] arr = gids.split(StringHelper.COLON_STRING_GAP);
+		List<DeviceGroupPaymentStatisticsVTO> list = new ArrayList<DeviceGroupPaymentStatisticsVTO>();
+		for (String gid : arr) {
+			DeviceGroupPaymentStatisticsVTO vto= chargingStatisticsFacadeService.fetchDeviceGroupPaymentStatistics(uid, gid, path);
+			list.add(vto);
+		}
+		return list;
 	}
 }
