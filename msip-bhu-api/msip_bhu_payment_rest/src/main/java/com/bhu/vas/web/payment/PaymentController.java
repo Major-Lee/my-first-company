@@ -51,7 +51,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.heepay.api.Heepay;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -479,7 +478,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("subject", subject);
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
-			sParaTemp.put("it_b_pay", "600");
+			sParaTemp.put("it_b_pay", "600");	
 		}else{
 			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"PCAL");
 			sParaTemp.put("service", AlipayConfig.service);
