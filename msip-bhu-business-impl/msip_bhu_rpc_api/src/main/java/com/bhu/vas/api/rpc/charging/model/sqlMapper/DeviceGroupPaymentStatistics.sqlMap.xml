@@ -7,6 +7,7 @@
   <resultMap id="modelResult" type="deviceGroupPaymentStatistics">
     <id property="id" column="id"/>
     <result property="uid" column="uid"/>
+    <result property="groupid" column="groupid"/>
     <result property="total_payment_amount" column="total_payment_amount"/>
     <result property="total_incoming_amount" column="total_incoming_amount"/>
     <result property="total_times" column="total_times"/>
@@ -23,6 +24,7 @@
 	    <![CDATA[
 	    	id,
 	    	uid,
+	    	groupid,
 	    	total_payment_amount,
 	    	total_incoming_amount,
 	    	total_times,
@@ -33,6 +35,7 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	uid,
+	    	groupid,
 	    	total_payment_amount,
 	    	total_incoming_amount,
 	    	total_times,
@@ -44,6 +47,7 @@
 	<sql id="modelInsertValues">
 			#{id},
 	    	#{uid},
+	    	#{groupid},
 	    	#{total_payment_amount},
 	    	#{total_incoming_amount},
 	    	#{total_times},
@@ -53,6 +57,7 @@
 	
 	<sql id="modelUpdateValues">
 	    	uid = #{uid},
+	    	groupid = #{groupid},
 	    	total_payment_amount = #{total_payment_amount},
 	    	total_incoming_amount = #{total_incoming_amount},
 	    	total_times = #{total_times},
@@ -173,4 +178,8 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
+	
+	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
+		${proc_call} 		
+	</select>
 </mapper>

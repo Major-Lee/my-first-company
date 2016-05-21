@@ -12,6 +12,8 @@ public class DeviceGroupPaymentStatistics extends BaseStringModel{
 	public static final String TOTAL_DATE_STR = "00000000";
 	
 	private Integer uid;
+	//分组id
+	private String groupid;
 	//总打赏金额
 	private String total_payment_amount;
 	//总收益金额
@@ -41,6 +43,14 @@ public class DeviceGroupPaymentStatistics extends BaseStringModel{
 
 	public void setUid(Integer uid) {
 		this.uid = uid;
+	}
+
+	public String getGroupid() {
+		return groupid;
+	}
+
+	public void setGroupid(String groupid) {
+		this.groupid = groupid;
 	}
 
 	public String getTotal_payment_amount() {

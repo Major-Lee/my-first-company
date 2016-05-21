@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.rpc.charging.dto.DeviceGroupPaymentInfo;
+import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
 import com.smartwork.msip.cores.cache.entitycache.Cache;
 import com.smartwork.msip.cores.cache.entitycache.CacheService;
 
@@ -35,15 +35,15 @@ public class BusinessStatisticsCacheService {
 		return sb.toString();
 	}
 	
-	public void storeWalletLogStatisticsDSCacheResult(String group_date_str,DeviceGroupPaymentInfo result){
+	public void storeDeviceGroupPaymentStatisticsDSCacheResult(String group_date_str, ShareDealDailyGroupSummaryProcedureVTO result){
 		String key = generateDeviceGroupPaymentStatisticsDSCacheKeyBy(group_date_str);
 		this.entityCache.remove(key);
 		this.entityCache.put(key, result,1800);//1小时
 	}
 	
-	public DeviceGroupPaymentInfo getWalletLogStatisticsDSCacheByUser(String group_date_str){
+	public ShareDealDailyGroupSummaryProcedureVTO getDeviceGroupPaymentStatisticsDSCacheBy(String group_date_str){
 		Object cacheObj = this.entityCache.get(generateDeviceGroupPaymentStatisticsDSCacheKeyBy(group_date_str));
 		if(cacheObj == null) return null;
-		return DeviceGroupPaymentInfo.class.cast(cacheObj);
+		return ShareDealDailyGroupSummaryProcedureVTO.class.cast(cacheObj);
 	}
 }
