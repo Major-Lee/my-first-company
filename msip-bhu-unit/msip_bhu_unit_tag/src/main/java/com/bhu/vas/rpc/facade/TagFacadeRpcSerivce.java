@@ -553,7 +553,8 @@ public class TagFacadeRpcSerivce {
 		List<DeviceGroupPaymentStatisticsVTO> list = new ArrayList<DeviceGroupPaymentStatisticsVTO>();
 		if (gidArr.length == pathsArr.length) {
 			for (int i = 0; i < pathsArr.length; i++) {
-				chargingStatisticsFacadeService.fetchDeviceGroupPaymentStatistics(uid, gidArr[i], pathsArr[i]);
+				DeviceGroupPaymentStatisticsVTO vto = chargingStatisticsFacadeService.fetchDeviceGroupPaymentStatistics(uid, gidArr[i], pathsArr[i]);
+				list.add(vto);
 			}
 		}
 		return list;
