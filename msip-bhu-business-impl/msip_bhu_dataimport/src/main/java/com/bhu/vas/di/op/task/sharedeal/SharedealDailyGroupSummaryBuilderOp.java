@@ -26,7 +26,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 public class SharedealDailyGroupSummaryBuilderOp {
 
 	public static void main(String[] argv) throws IOException, ParseException{
-		argv =new String[]{"2016-05-21"};
+		//argv =new String[]{"2016-05-21"};
 		if(argv == null || argv.length <1){
 			System.out.println("参数不全 $dates");
 			return;
