@@ -267,7 +267,11 @@ public class UserWalletFacadeService{
 	public ShareDealDailyGroupSummaryProcedureVTO sharedealDailyGroupSummaryWithProcedure(int uid,String gpath,String cdate){
 		ShareDealDailyGroupSummaryProcedureDTO procedureDTO = new ShareDealDailyGroupSummaryProcedureDTO();
 		procedureDTO.setUserid(uid);
-		procedureDTO.setGpath(gpath);
+		if(StringUtils.isEmpty(gpath)){
+			procedureDTO.setGpath(StringHelper.MINUS_STRING_GAP);
+		}else{
+			procedureDTO.setGpath(gpath);
+		}
 		procedureDTO.setCdate(cdate);
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
