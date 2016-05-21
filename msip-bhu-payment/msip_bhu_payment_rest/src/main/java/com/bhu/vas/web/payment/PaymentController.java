@@ -56,6 +56,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.PaymentResponseSuccess;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -283,22 +284,22 @@ public class PaymentController extends BaseController{
         	PaymentTypeVTO result = null;
         	//判断请求支付类型    	
         	if(payment_type.equals("PcWeixin")){ //PC微信支付
-        		result =  doNativeWxPayment(request,response,total_fee,goods_no,exter_invoke_ip);
+        		result =  doNativeWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url);
         	}else if(payment_type.equals("WapAlipay")){ //Wap微信支付宝
         		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type);
         	}else if(payment_type.equals("PcAlipay")){ //PC微信支付宝
         		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type);
         	}else if(payment_type.equals("Midas")){ //米大师
         		result =  doMidas(response, total_fee, goods_no); //TODO：暂未对接完成。。。
-        	}else if(payment_type.equals("Hee")){ //汇付宝
-        		result =  doHee(response, total_fee, goods_no,exter_invoke_ip); 
+        	}else if(payment_type.equals("WapWeixin")){ //汇付宝
+        		result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url); 
         	}else{//提示暂不支持的支付方式
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT)));
         		return;
         	}
         	if(result != null){
-        		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+        		SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
         	}else{
         		SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
         	}
@@ -397,7 +398,7 @@ public class PaymentController extends BaseController{
      * @throws JsonMappingException
      * @throws IOException
      */
-	private PaymentTypeVTO doNativeWxPayment(HttpServletRequest request, HttpServletResponse response,String total_fee,String out_trade_no,String Ip){
+	private PaymentTypeVTO doNativeWxPayment(HttpServletRequest request, HttpServletResponse response,String total_fee,String out_trade_no,String Ip,String locationUrl){
 		PaymentTypeVTO result= null;
         String NOTIFY_URL = PayHttpService.PAY_HOST_URL +"/wxPayNotifySuccess";
         String product_name="打赏";//订单名称
@@ -405,6 +406,15 @@ public class PaymentController extends BaseController{
         //记录请求的Goods_no
         String reckoningId = createPaymentReckoning(out_trade_no,total_fee,Ip,"PCWX");
         System.out.println("NOTIFY_URL:"+NOTIFY_URL);
+        
+      //记录请求支付完成后返回的地址
+		if (!StringUtils.isBlank(locationUrl)) {
+			logger.error("请求参数(locationUrl)不为空");
+			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
+			orderLocation.setTid(reckoningId);
+			orderLocation.setLocation(locationUrl);
+			paymentAlipaylocationService.insert(orderLocation);
+		}
 
         UnifiedOrderResponse unifiedOrderResponse = payHttpService.unifiedorder(reckoningId, product_name, total_fee, request.getRemoteAddr(), NOTIFY_URL, "");
 
@@ -507,8 +517,6 @@ public class PaymentController extends BaseController{
 			paymentAlipaylocationService.insert(orderLocation);
 		}
 		
-		
-		
 		//建立支付宝支付请求
 		
 		//建立请求
@@ -553,14 +561,30 @@ public class PaymentController extends BaseController{
      * @param ip
      * @return
      */
-    private PaymentTypeVTO doHee(HttpServletResponse response, String total_fee, String out_trade_no,String ip) {
+    private PaymentTypeVTO doHee(HttpServletResponse response, String total_fee, String out_trade_no,String ip,String return_url) {
     	PaymentTypeVTO result = null;
     	if(ip == "" || ip == null){
     		ip = "213.42.3.24";
     	}
+    	
     	String total_fee_fen = BusinessHelper.getMoney(total_fee);
+    	
+    	int temp = Integer.parseInt(total_fee_fen);
+    	if(temp < 50){
+    		total_fee = "0.50";
+    	}
+    	
+    	
     	//记录请求的Goods_no
     	String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"MOHE");
+    	//记录请求支付完成后返回的地址
+    	if (!StringUtils.isBlank(return_url)) {
+    		logger.error("请求参数(locationUrl)不为空");
+    		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
+    		orderLocation.setTid(reckoningId);
+    		orderLocation.setLocation(return_url);
+    		paymentAlipaylocationService.insert(orderLocation);
+    	}
     	String url = Heepay.order(reckoningId, total_fee, ip);
     	System.out.println("url:"+url);
     	url = url.replace("¬", "&not");
@@ -717,7 +741,7 @@ public class PaymentController extends BaseController{
 						//支付成功
 						logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
 						updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Hee");
-						return "OK";
+						return "ok";
 					}else{
 						//支付s失败
 						logger.info("支付失败 修改订单的支付状态");
@@ -729,7 +753,7 @@ public class PaymentController extends BaseController{
 					logger.info("账单支付状态修改，通知完成。");
 				}
 			
-			return "OK";
+			return "ok";
 				
 		}else{//验证失败
 			logger.info("sign verify fail");
@@ -741,6 +765,52 @@ public class PaymentController extends BaseController{
     
 	  /********************支付宝接口*****************************/
         
+    /**
+     * 支付宝通知接口
+     * @param mv
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws JDOMException
+     */
+   	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/payment/heeReturn" , method = { RequestMethod.GET,RequestMethod.POST })
+   	public void heeReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    	
+   		logger.info("/heeReturn************接收汇元宝返回通知*****************************"); 
+
+        //获取支付宝POST过来反馈信息
+		Map<String,String> params = new HashMap<String,String>();
+		Map requestParams = request.getParameterMap();
+		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+			String name = (String) iter.next();
+			String[] values = (String[]) requestParams.get(name);
+			String valueStr = "";
+			for (int i = 0; i < values.length; i++) {
+				valueStr = (i == values.length - 1) ? valueStr + values[i]
+						: valueStr + values[i] + ",";
+			}
+			//乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+			//valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
+			params.put(name, valueStr);
+		}
+		
+		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
+		//商户订单号
+		String out_trade_no = new String(request.getParameter("agent_bill_id").getBytes("ISO-8859-1"),"UTF-8");
+		
+		String locationUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
+		
+		if(locationUrl == null){
+			response.sendRedirect("http://www.bhuwifi.com");
+		}else if(locationUrl.startsWith("http")){
+			response.sendRedirect(locationUrl);
+		}else{
+			response.sendRedirect("http://www.bhuwifi.com");
+		}
+
+	}
+   	
     /**
      * 支付宝通知接口
      * @param mv
@@ -786,6 +856,7 @@ public class PaymentController extends BaseController{
 		}
 
 	}
+   	
     
     /**
      * 支付宝通知接口
