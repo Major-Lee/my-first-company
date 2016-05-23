@@ -225,14 +225,18 @@ public class GroupController extends BaseController{
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String gids) {
+            @RequestParam(required = false) String gids) {
     	
     	String[] arr = gids.split(StringHelper.COMMA_STRING_GAP);
     	List<GroupCountOnlineVTO> list = new ArrayList<GroupCountOnlineVTO>();
     	for(String gid : arr){
     		GroupCountOnlineVTO vto = new GroupCountOnlineVTO();
     		vto.setGid(gid);
-    		vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, "g_"+gid));
+    		if (gid.isEmpty()) {
+    			vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, ""));
+			}else{
+	    		vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, "g_"+gid));
+			}
     		list.add(vto);
     	}
 
@@ -246,8 +250,8 @@ public class GroupController extends BaseController{
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-    	    @RequestParam(required = true) String gids,
-    	    @RequestParam(required = true) String paths) {
+    	    @RequestParam(required = false) String gids,
+    	    @RequestParam(required = false) String paths) {
     	RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> rpcResult = tagRpcService.groupsGainsStatistics(uid, gids, paths);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
