@@ -228,23 +228,8 @@ public class GroupController extends BaseController{
             @RequestParam(required = true) int uid,
             @RequestParam(required = false) String gids) {
     	
-    	String[] arr = gids.split(StringHelper.COMMA_STRING_GAP);
-    	List<GroupCountOnlineVTO> list = new ArrayList<GroupCountOnlineVTO>();
-    	for(String gid : arr){
-    		GroupCountOnlineVTO vto = new GroupCountOnlineVTO();
-    		vto.setGid(gid);
-    		if (gid.isEmpty()) {
-    			vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, null, 
-    					WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
-			}else{
-	    		vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, "g_"+gid, 
-	    				WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
-			}
-    		list.add(vto);
-    	}
-
-    	List<GroupCountOnlineVTO> rpcResult = list;
-    	SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
+    	List<GroupCountOnlineVTO> list = tagRpcService.groupsStatsOnline(uid, gids);
+    	SpringMVCHelper.renderJson(response, ResponseSuccess.embed(list));
     }
     
     @ResponseBody()

@@ -7,6 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetwork;
@@ -90,16 +91,25 @@ public class UserSharedNetworksMigrateEnvOp {
 			List<WifiDeviceSharedNetwork> list = iter.next();
 			for(WifiDeviceSharedNetwork sdn:list){
 				sdn.setTemplate(SharedNetworksFacadeService.DefaultTemplate);
+				
 				SharedNetworkSettingDTO innerModel = sdn.getInnerModel();
+				SnkTurnStateEnum snk_on = null;
 				if(innerModel.getPsn() != null){
 					SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(innerModel.getPsn().getNtype());
 					innerModel.getPsn().setTemplate(SharedNetworksFacadeService.DefaultTemplate);
 					innerModel.getPsn().setTemplate_name(sharedNetwork.getName().concat(SharedNetworksFacadeService.DefaultTemplate));
 					innerModel.getPsn().setTs(System.currentTimeMillis());
 				}
+				{
+					if(innerModel.isOn()){
+						snk_on = SnkTurnStateEnum.On;
+					}else{
+						snk_on = SnkTurnStateEnum.Off;
+					}
+				}
 				sdn.replaceInnerModel(innerModel);
 				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(sdn);
-				wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(sdn.getId(), sdn.getSharednetwork_type(),sdn.getTemplate());
+				wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(sdn.getId(), sdn.getSharednetwork_type(),sdn.getTemplate(),snk_on.getType());
 			}
     	}
 		ctx.stop();
