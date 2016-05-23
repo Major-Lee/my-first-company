@@ -11,6 +11,7 @@ import org.junit.Test;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.rpc.service.device.TagRpcService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.BaseTest;
 
@@ -26,7 +27,7 @@ public class TagNameTest extends BaseTest {
     	//tagRpcService.bindTag("84:82:f4:28:7a:ec", "公司");
     	System.out.println("111");
     }
-    @Test
+    //@Test
     public void test004(){
 		ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andSimpleCaulse("1=1");
@@ -37,5 +38,9 @@ public class TagNameTest extends BaseTest {
         	System.out.println(tagName.getTag());
         }
         System.out.println("end");
+    }
+    @Test
+    public void test005(){
+
     }
 }
