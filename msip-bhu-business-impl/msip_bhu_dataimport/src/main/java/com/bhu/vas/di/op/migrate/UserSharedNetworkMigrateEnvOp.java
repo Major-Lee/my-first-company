@@ -6,6 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
@@ -51,6 +52,7 @@ public class UserSharedNetworkMigrateEnvOp {
 					boolean ds = vistorSetting.isDs();
 					ParamVapVistorWifiDTO vw = vistorSetting.getVw();
 					WifiDeviceSharedNetwork sharednetwork = sharedNetworkFacadeService.getWifiDeviceSharedNetworkService().getById(setting.getId());
+					SnkTurnStateEnum snk_on = null;
 					if(sharednetwork == null){
 						sharednetwork = new WifiDeviceSharedNetwork();
 						sharednetwork.setId(setting.getId());
@@ -69,6 +71,9 @@ public class UserSharedNetworkMigrateEnvOp {
 							psn.setUsers_rx_rate(vw.getUsers_rx_rate());
 							psn.setUsers_tx_rate(vw.getUsers_tx_rate());
 							sharedNetworkSettingDTO.setPsn(ParamSharedNetworkDTO.fufillWithDefault(psn));
+							snk_on = SnkTurnStateEnum.On;
+						}else{
+							snk_on = SnkTurnStateEnum.Off;
 						}
 						sharedNetworkSettingDTO.setC(vistorSetting.getC()==0?System.currentTimeMillis():vistorSetting.getC());
 						sharednetwork.putInnerModel(sharedNetworkSettingDTO);
@@ -77,6 +82,7 @@ public class UserSharedNetworkMigrateEnvOp {
 						if(on)
 							sharednetwork.setSharednetwork_type(SharedNetworkType.Uplink.getKey());
 						SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
+						
 						if(ds)
 							sharedNetworkSettingDTO.setDs(ds);
 						if(on){
@@ -87,12 +93,15 @@ public class UserSharedNetworkMigrateEnvOp {
 							psn.setUsers_rx_rate(vw.getUsers_rx_rate());
 							psn.setUsers_tx_rate(vw.getUsers_tx_rate());
 							sharedNetworkSettingDTO.setPsn(ParamSharedNetworkDTO.fufillWithDefault(psn));
+							snk_on = SnkTurnStateEnum.On;
+						}else{
+							snk_on = SnkTurnStateEnum.Off;
 						}
 						sharedNetworkSettingDTO.setC(vistorSetting.getC()==0?System.currentTimeMillis():vistorSetting.getC());
 						sharednetwork.putInnerModel(sharedNetworkSettingDTO);
 						sharedNetworkFacadeService.getWifiDeviceSharedNetworkService().update(sharednetwork);
 					}
-					wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(setting.getId(), sharednetwork.getSharednetwork_type(),sharednetwork.getTemplate());
+					wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(setting.getId(), sharednetwork.getSharednetwork_type(),sharednetwork.getTemplate(),snk_on.getType());
 					System.out.println(String.format("mac[%s] sharednetwork_type[%s]", setting.getId(), sharednetwork.getSharednetwork_type()));
 				}
 			}
