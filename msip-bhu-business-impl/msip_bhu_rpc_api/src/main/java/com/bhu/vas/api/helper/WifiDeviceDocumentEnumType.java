@@ -175,8 +175,8 @@ public class WifiDeviceDocumentEnumType {
 	}
 	
 	public enum SnkTurnStateEnum{
-		On("1", "开启安全共享网络"),
-		Off("0", "关闭安全共享网络");
+		On("1", "开启共享网络"),
+		Off("0", "关闭共享网络");
 		
 		String type;
 		String name;
