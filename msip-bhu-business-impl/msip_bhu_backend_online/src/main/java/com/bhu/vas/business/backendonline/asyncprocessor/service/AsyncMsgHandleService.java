@@ -31,10 +31,10 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
-import com.bhu.vas.api.helper.ExchangeBBSHelper;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
@@ -60,7 +60,6 @@ import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceForceBindDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
-import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
@@ -263,7 +262,7 @@ public class AsyncMsgHandleService {
 										String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
 								// 更新索引，下发指令
 								wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),
-										psn.getTemplate());
+										psn.getTemplate(),SnkTurnStateEnum.On.getType());
 								// psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
 								// 生成下发指令
 								String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(
@@ -1044,6 +1043,8 @@ public class AsyncMsgHandleService {
 
 		// 分发指令
 		this.wifiCmdsDownNotify(dto.getMac(), cmdPayloads);
+		
+		this.ssidModifyWithChangeDeviceName(dto.getMac());
 		logger.info(String.format("AsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s] successful", message));
 	}
 
@@ -1082,7 +1083,7 @@ public class AsyncMsgHandleService {
 			String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,
 					DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
 			daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);*/
-			wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(mac,null,null);
+			wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(mac,sharednetwork.getSharednetwork_type(),sharednetwork.getTemplate(),SnkTurnStateEnum.Off.getType());
 			logger.info(String.format("Device[%s] SharedNetwork Clear Successfully!",mac));
 			sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().deleteById(mac);
 		}
@@ -1129,8 +1130,7 @@ public class AsyncMsgHandleService {
 										deviceCMDGenFacadeService);
 								daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 							}
-							wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),
-									current.getTemplate());
+							wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.On.getType());
 						}
 					});
 		} finally {

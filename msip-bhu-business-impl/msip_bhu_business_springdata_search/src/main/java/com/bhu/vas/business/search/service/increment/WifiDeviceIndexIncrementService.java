@@ -513,13 +513,14 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * 1) d_snk_type
 	 */
 	@Override
-	public void sharedNetworkMultiUpdIncrement(List<String> ids, String sharedNetwork_type, String template) {
+	public void sharedNetworkMultiUpdIncrement(List<String> ids, String sharedNetwork_type, String template,String sharedNetwork_turnstate) {
 		logger.info(String.format("SharedNetworkMultiUpdIncrement Request ids [%s] d_snk_type [%s] d_snk_template [%s]", ids, sharedNetwork_type, template));
 		if(ids == null || ids.isEmpty()) return;
 		
 		Map<String, Object> sourceMap = new HashMap<String, Object>();
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TYPE.getName(), sharedNetwork_type);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TEMPLATE.getName(), template);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TURNSTATE.getName(), sharedNetwork_turnstate);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(),  DateTimeHelper.getDateTime());
 
 		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, false, true, true);
@@ -534,13 +535,33 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * @param template
 	 */
 	@Override
-	public void sharedNetworkUpdIncrement(String id, String sharedNetwork_type, String template) {
+	public void sharedNetworkUpdIncrement(String id, String sharedNetwork_type, String template,String sharedNetwork_turnstate) {
 		logger.info(String.format("sharedNetworkUpdIncrement Request id [%s] d_snk_type [%s] d_snk_template [%s]", id, sharedNetwork_type, template));
 		if(StringUtils.isEmpty(id)) return;
 		
 		Map<String, Object> sourceMap = new HashMap<String, Object>();
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TYPE.getName(), sharedNetwork_type);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TEMPLATE.getName(), template);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TURNSTATE.getName(), sharedNetwork_turnstate);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(),  DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+	}
+	
+	/**
+	 * 设备的共享网络的变更
+	 * 变更涉及的更改索引字段是
+	 * 1) d_snk_type
+	 * @param id
+	 * @param sharedNetwork_turnstate
+	 */
+	@Override
+	public void sharedNetworkTurnStateUpdIncrement(String id, String sharedNetwork_turnstate) {
+		logger.info(String.format("sharedNetworkUpdIncrement Request id [%s] sharedNetwork_turnstate [%s]", id, sharedNetwork_turnstate));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TURNSTATE.getName(), sharedNetwork_turnstate);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(),  DateTimeHelper.getDateTime());
 
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);

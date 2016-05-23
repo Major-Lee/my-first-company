@@ -6,6 +6,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
+import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.rpc.facade.TagFacadeRpcSerivce;
@@ -113,8 +114,7 @@ public class TagRpcService implements ITagRpcService {
 	 */
 	@Override
 	public RpcResponseDTO<Boolean> saveDevices2Group(int uid, int gid, String path, String macs) {
-		logger.info(String.format("saveDevices2Group uid[%s] gid[%s] path [%s] macs[%s]", uid, gid, path,
-				macs));
+		logger.info(String.format("saveDevices2Group uid[%s] gid[%s] path [%s] macs[%s]", uid, gid, path, macs));
 		try {
 			tagFacadeRpcSerivce.saveDevices2Group(uid, gid, path, macs);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
@@ -197,13 +197,15 @@ public class TagRpcService implements ITagRpcService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
+
 	/**
 	 * 分组批量下发指令
 	 */
 	@Override
-	public RpcResponseDTO<Boolean> batchGroupDownCmds(int uid, String message, String opt, String subopt,String extparams) {
-		logger.info(String.format("batchGroupDownCmds uid[%s] message[%s] opt[%s] subopt[%s] extparams[%s]", uid, message, opt, subopt, extparams));
+	public RpcResponseDTO<Boolean> batchGroupDownCmds(int uid, String message, String opt, String subopt,
+			String extparams) {
+		logger.info(String.format("batchGroupDownCmds uid[%s] message[%s] opt[%s] subopt[%s] extparams[%s]", uid,
+				message, opt, subopt, extparams));
 		try {
 			tagFacadeRpcSerivce.batchGroupDownCmds(uid, message, opt, subopt, extparams);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
@@ -213,30 +215,41 @@ public class TagRpcService implements ITagRpcService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
+
 	@Override
-	public RpcResponseDTO<Boolean> batchGroupSnkTakeEffectNetworkConf(int uid, String message, boolean on, String snk_type,String template) {
-		logger.info(String.format("batchGroupSnkTakeEffectNetworkConf uid[%s] message[%s] on[%s] snk_type[%s] template[%s]", uid, message, on, snk_type, template));
+	public RpcResponseDTO<Boolean> batchGroupSnkTakeEffectNetworkConf(int uid, String message, boolean on,
+			String snk_type, String template) {
+		logger.info(
+				String.format("batchGroupSnkTakeEffectNetworkConf uid[%s] message[%s] on[%s] snk_type[%s] template[%s]",
+						uid, message, on, snk_type, template));
 		try {
 			boolean ret = tagFacadeRpcSerivce.batchGroupSnkTakeEffectNetworkConf(uid, message, on, snk_type, template);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret?Boolean.TRUE:Boolean.FALSE);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret ? Boolean.TRUE : Boolean.FALSE);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
 		} catch (Exception ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
+
 	@Override
-	public RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> groupsGainsStatistics(int uid, String gids,String path) {
-		logger.info(String.format("batchGroupSnkTakeEffectNetworkConf uid[%s] gids[%s] path[%s]", uid, gids,path));
+	public RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> groupsGainsStatistics(int uid, String gids,
+			String paths) {
+		logger.info(String.format("batchGroupSnkTakeEffectNetworkConf uid[%s] gids[%s] paths[%s]", uid, gids, paths));
 		try {
-			List<DeviceGroupPaymentStatisticsVTO> ret = tagFacadeRpcSerivce.groupsGainsStatistics(uid, gids, path);
+			List<DeviceGroupPaymentStatisticsVTO> ret = tagFacadeRpcSerivce.groupsGainsStatistics(uid, gids, paths);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
 		} catch (Exception ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
+	}
+
+	@Override
+	public List<GroupCountOnlineVTO> groupsStatsOnline(int uid, String gids) {
+		logger.info(String.format("groupsStatsOnline uid[%s] gids[%s]", uid, gids));
+		List<GroupCountOnlineVTO> list = tagFacadeRpcSerivce.groupsStatsOnline(uid, gids);
+		return list;
 	}
 }

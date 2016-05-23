@@ -10,11 +10,14 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagName;
+import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
@@ -24,6 +27,7 @@ import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -61,9 +65,12 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private TagGroupRelationService tagGroupRelationService;
-		
+
 	@Resource
 	private ChargingStatisticsFacadeService chargingStatisticsFacadeService;
+	
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
 	private void addTag(int uid, String tag) {
 
@@ -300,7 +307,7 @@ public class TagFacadeRpcSerivce {
 					parent_group.setChildren(parent_group.getChildren() - 1);
 					tagGroupService.update(parent_group);
 				}
-			}else{
+			} else {
 				throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_USER_PRIVILEGE_ERROR);
 			}
 		}
@@ -485,7 +492,7 @@ public class TagFacadeRpcSerivce {
 	 * @param pageSize
 	 */
 	public TailPage<TagGroupVTO> fetchChildGroup(int uid, int pid, int pageNo, int pageSize) {
-		
+
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("creator", uid).andColumnEqualTo("pid", pid);
 		mc.setPageNumber(pageNo);
@@ -493,12 +500,20 @@ public class TagFacadeRpcSerivce {
 		mc.setOrderByClause(" created_at desc");
 		TailPage<TagGroup> pages = tagGroupService.findModelTailPageByModelCriteria(mc);
 		List<TagGroupVTO> result = new ArrayList<TagGroupVTO>();
+		
+		if (pageNo == 1) {
+			TagGroupVTO vto = new TagGroupVTO();
+			vto.setName("默认分组");
+			vto.setDevice_count((int)wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, null));
+		}
+		
 		for (TagGroup tagGroup : pages) {
 			TagGroupVTO vto = TagGroupDetail(tagGroup);
 			result.add(vto);
 		}
 
-		return new CommonPage<TagGroupVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), result);
+		return new CommonPage<TagGroupVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(),
+				result);
 	}
 
 	public TagGroupVTO currentGroupDetail(int uid, int gid) {
@@ -520,37 +535,60 @@ public class TagFacadeRpcSerivce {
 	 * @param message
 	 * @param cmds
 	 */
-	public void batchGroupDownCmds(int uid, String message, String opt, String subopt,String extparams) {
-		if (message !=null && opt != null) {
+	public void batchGroupDownCmds(int uid, String message, String opt, String subopt, String extparams) {
+		if (message != null && opt != null) {
 			OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
 			if (opt_cmd.equals(OperationCMD.ModifyDeviceSetting)) {
-				asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt,subopt,extparams);
-			}else{	
+				asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt, subopt, extparams);
+			} else {
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 			}
-		}else{
+		} else {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
-	public boolean batchGroupSnkTakeEffectNetworkConf(int uid, String message, boolean on, String snk_type,String template){
-		try{
-			asyncDeliverMessageService.sendBatchGroupDeviceSnkApplyActionMessage(uid,message, snk_type, template,on?IDTO.ACT_UPDATE:IDTO.ACT_DELETE);
+
+	public boolean batchGroupSnkTakeEffectNetworkConf(int uid, String message, boolean on, String snk_type,
+			String template) {
+		try {
+			asyncDeliverMessageService.sendBatchGroupDeviceSnkApplyActionMessage(uid, message, snk_type, template,
+					on ? IDTO.ACT_UPDATE : IDTO.ACT_DELETE);
 			return true;
-		}catch(Exception ex){
+		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
 			return false;
 		}
 	}
-	
-	public List<DeviceGroupPaymentStatisticsVTO> groupsGainsStatistics(int uid ,String gids,String path){
+
+	public List<DeviceGroupPaymentStatisticsVTO> groupsGainsStatistics(int uid ,String gids,String paths){
 		
-		String[] arr = gids.split(StringHelper.COLON_STRING_GAP);
+		String[] gidArr = gids.split(StringHelper.COMMA_STRING_GAP);
+		String[] pathsArr = paths.split(StringHelper.COMMA_STRING_GAP);
 		List<DeviceGroupPaymentStatisticsVTO> list = new ArrayList<DeviceGroupPaymentStatisticsVTO>();
-		for (String gid : arr) {
-			DeviceGroupPaymentStatisticsVTO vto= chargingStatisticsFacadeService.fetchDeviceGroupPaymentStatistics(uid, gid, path);
-			list.add(vto);
+		if (gidArr.length == pathsArr.length) {
+			for (int i = 0; i < pathsArr.length; i++) {
+				DeviceGroupPaymentStatisticsVTO vto = chargingStatisticsFacadeService.fetchDeviceGroupPaymentStatistics(uid, gidArr[i], pathsArr[i]);
+				list.add(vto);
+			}
 		}
 		return list;
 	}
+	
+	public List<GroupCountOnlineVTO> groupsStatsOnline(int uid ,String gids){
+    	String[] arr = gids.split(StringHelper.COMMA_STRING_GAP);
+    	List<GroupCountOnlineVTO> list = new ArrayList<GroupCountOnlineVTO>();
+    	for(String gid : arr){
+    		GroupCountOnlineVTO vto = new GroupCountOnlineVTO();
+    		vto.setGid(gid);
+    		if (gid.isEmpty()) {
+    			vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, 
+    					WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
+			}else{
+	    		vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, "g_"+gid, 
+	    				WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
+			}
+    		list.add(vto);
+    	}
+    	return list;
+    }
 }

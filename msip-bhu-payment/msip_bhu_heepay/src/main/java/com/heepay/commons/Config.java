@@ -9,5 +9,5 @@ public class Config {
 	public static String notify_url = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/heepayNotifySuccess"; 
 	
 	// 支付后返回的商户显示页面，URL参数是以http:// 或https://开头的完整URL地址(前台显示)，原则上：该参数与notify_url提交的参数不一致。值可以为空，但不可以为null。
-	public static String return_url = "http://www.bhuwifi.com"; 
+	public static String return_url = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/heeReturn"; 
 }

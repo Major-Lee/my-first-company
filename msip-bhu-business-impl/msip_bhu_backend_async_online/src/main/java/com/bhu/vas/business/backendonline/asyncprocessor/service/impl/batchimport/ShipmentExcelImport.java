@@ -56,6 +56,8 @@ public class ShipmentExcelImport {
 	        		Row row = sheet.getRow(rowNum);
 	        		String sn = row.getCell(0).getStringCellValue();
 	        		if(StringUtils.isNotEmpty(sn)){
+/*	        			devicesssss.add(sn);
+	        			System.out.println(String.format(" row[%s] sn[%s] size[%s]", rowNum,sn,devicesssss.size()));*/
 	        			DeviceCallbackDTO dcDTO = callback.elementDeviceInfoFetch(sn);
 	        			Cell cell_mac = row.getCell(1);
         				if(cell_mac == null){
@@ -90,16 +92,22 @@ public class ShipmentExcelImport {
             }
 		}
 	}
-	/*public static void main(String[] argv){
+	public static void main(String[] argv){
 		//uRouter-20160426-双翼.xlsx
 		//uRouter-20160426-共进.xlsx
-		String filepath = "/Users/Edmond/gospace/库房出库清单-20160426-0001.xlsx";
-		ShipmentExcelImport.excelImport(filepath, new ExcelElementCallback(){
+		String filepath = "/Users/Edmond/gospace/20160523-00000008.xlsx";
+		ShipmentExcelImport.excelImport(filepath, filepath, new ExcelElementCallback(){
 			@Override
-			public WifiDevice elementCallback(String sn) {
+			public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
 				// TODO Auto-generated method stub
 				return null;
 			}
+
+			@Override
+			public void afterExcelImported(Set<String> dmacs) {
+				// TODO Auto-generated method stub
+				
+			}
 		});
-	}*/
+	}
 }

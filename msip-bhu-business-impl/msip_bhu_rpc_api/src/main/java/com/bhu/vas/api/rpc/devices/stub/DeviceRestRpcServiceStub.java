@@ -161,8 +161,8 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 
 	@Override
-	public long countByUCExtensionOnline(int uid, String t_uc_extension) {
-		return deviceRestRpcService.countByUCExtensionOnline(uid, t_uc_extension);
+	public long countByUCExtensionOnline(int uid, String t_uc_extension, String online) {
+		return deviceRestRpcService.countByUCExtensionOnline(uid, t_uc_extension, online);
 	}
 
 	/*@Override

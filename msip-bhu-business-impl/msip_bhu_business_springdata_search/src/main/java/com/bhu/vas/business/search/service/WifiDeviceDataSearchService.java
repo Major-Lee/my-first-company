@@ -88,6 +88,21 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	}
 	
 	/**
+	 * 根据用户分组查询设备数量
+	 * @param u_id
+	 * @param t_uc_extension
+	 * @param d_online
+	 * @return
+	 */
+	public long searchCountByUserGroup(Integer u_id, String t_uc_extension, String d_online){
+		if(u_id == null) return 0;
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithUserGroup(u_id, t_uc_extension, d_online);
+		return super.searchCountByConditionMessage(scm);
+	}
+	
+	
+	/**
 	 * 根据设备共享网络类型进行scan的iterator
 	 * @param u_id 用户uid
 	 * @param sharedNetwork_type 共享网络类型 null 忽略此条件  空字符串 没有赋予sharedNetwork_type的设备 正常值则是取服务此值的数据

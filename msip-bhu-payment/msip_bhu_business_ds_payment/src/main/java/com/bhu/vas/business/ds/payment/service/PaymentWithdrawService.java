@@ -42,16 +42,16 @@ public class PaymentWithdrawService extends
 	// 通过商品中心提现订单号查找订单
 	public PaymentWithdraw findByOrderId(String wid) {
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("orderId", wid).andSimpleCaulse("1=1");
+		mc.createCriteria().andColumnEqualTo("orderId", wid);
 		List<PaymentWithdraw> list = this.findModelByModelCriteria(mc);
 		return list.isEmpty() ? null : list.get(0);
 	}
 
-	// 通过Upay提现订单号获取订单ID
-	public String getIdByTid(String tid) {
-		PaymentWithdraw one = this.findByTid(tid);
-		return one == null ? null : one.getId();
-	}
+//	// 通过Upay提现订单号获取订单ID
+//	public String getIdByTid(String tid) {
+//		PaymentWithdraw one = this.findByTid(tid);
+//		return one == null ? null : one.getId();
+//	}
 
 	// 获取今日支付宝提现订单总数
 	public int countOfTodayAlipay() {
@@ -65,13 +65,13 @@ public class PaymentWithdrawService extends
 
 	// 通过Upay提现订单号修改订单
 	// 支持billno,withdraw_status,notify_status,fail_cause,updated.at.修改
-	public void updateByTid(PaymentWithdraw data) {
-		String id = this.getIdByTid(data.getTid());
-		data.setId(id);
-		data.setUpdated_at(new Date());
-		this.update(data);
-		return;
-	}
+//	public void updateByTid(PaymentWithdraw data) {
+//		String id = this.getIdByTid(data.getTid());
+//		data.setId(id);
+//		data.setUpdated_at(new Date());
+//		this.update(data);
+//		return;
+//	}
 
 	// 通过Upay提现订单号查询是否提现成功，没有订单也表示提现未成功
 	public boolean isWithdraw(String tid) {

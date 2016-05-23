@@ -3,6 +3,7 @@ package com.bhu.vas.business.search.builder;
 import org.elasticsearch.common.lang3.StringUtils;
 import org.elasticsearch.search.sort.SortOrder;
 
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.core.condition.component.SearchCondition;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
@@ -103,6 +104,36 @@ public class WifiDeviceSearchMessageBuilder {
 				SortOrder.DESC, null);
 		scm.addSorts(sc_sortByOnine);
 		return scm;
+	}
+	
+	
+	public static SearchConditionMessage builderSearchMessageWithUserGroup(Integer u_id, String t_uc_extension, String d_online){
+		SearchConditionPack pack_must = null;
+		
+		SearchCondition sc_uc_extension = null;
+		if(StringHelper.isEmpty(t_uc_extension)){
+			sc_uc_extension = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.T_UC_EXTENSION.getName(), SearchConditionPattern.Missing.getPattern(), null);
+		}else{
+			sc_uc_extension = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.T_UC_EXTENSION.getName(), SearchConditionPattern.StringEqual.getPattern(), t_uc_extension);
+		}
+
+		SearchCondition sc_d_uid = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
+		
+		pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_uc_extension, sc_d_uid);
+		
+		if(StringUtils.isNotEmpty(d_online)){
+			SearchCondition sc_d_online = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+					WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
+			pack_must.addChildSearchCondtions(sc_d_online);
+		}
+
+//		pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_uc_extension, sc_d_uid, sc_d_online);
+
+		return SearchConditionMessage.builderSearchConditionMessage(pack_must);
 	}
 	
 	public static String builderSearchMessageString(SearchConditionMessage searchConditionMessage){

@@ -221,10 +221,10 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	
 	
 	@Override
-	public long countByUCExtensionOnline(int uid, String t_uc_extension) {
-		logger.info(String.format("DeviceRestRPC countByUCExtensionOnline invoke uid [%s] t_uc_extension [%s]", uid, t_uc_extension));
+	public long countByUCExtensionOnline(int uid, String t_uc_extension, String online) {
+		logger.info(String.format("DeviceRestRPC countByUCExtensionOnline invoke uid [%s] t_uc_extension [%s] online[%s]", uid, t_uc_extension, online));
 		try{
-			return deviceRestBusinessFacadeService.countByUCExtensionOnline(uid, t_uc_extension);
+			return deviceRestBusinessFacadeService.countByUCExtensionOnline(uid, t_uc_extension, online);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC countByUCExtensionOnline exception exmsg[%s]",ex.getMessage()), ex);

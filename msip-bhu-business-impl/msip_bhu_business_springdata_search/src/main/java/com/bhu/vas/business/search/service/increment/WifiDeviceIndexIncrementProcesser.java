@@ -379,12 +379,12 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * @param ids
 	 * @param sharedNetwork_type
 	 */
-	public void sharedNetworkMultiUpdIncrement(final List<String> ids, final String sharedNetwork_type,final String template){
+	public void sharedNetworkMultiUpdIncrement(final List<String> ids, final String sharedNetwork_type,final String template,final String sharedNetwork_turnstate){
 		multiExecProcesser().submit((new Runnable() {
 			@Override
 			public void run() {
 				try{
-					wifiDeviceIndexIncrement.sharedNetworkMultiUpdIncrement(ids, sharedNetwork_type,template);
+					wifiDeviceIndexIncrement.sharedNetworkMultiUpdIncrement(ids, sharedNetwork_type,template, sharedNetwork_turnstate);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}
@@ -397,14 +397,35 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * @param sharedNetwork_type
 	 * @param template
 	 */
-	public void sharedNetworkUpdIncrement(final String id, final String sharedNetwork_type, final String template){
+	public void sharedNetworkUpdIncrement(final String id, final String sharedNetwork_type, final String template,final String sharedNetwork_turnstate){
 		ExecutorService executor = singleExecProcesser(id);
 		if(executor != null){
 			executor.submit((new Runnable() {
 				@Override
 				public void run() {
 					try{
-						wifiDeviceIndexIncrement.sharedNetworkUpdIncrement(id, sharedNetwork_type, template);
+						wifiDeviceIndexIncrement.sharedNetworkUpdIncrement(id, sharedNetwork_type, template,sharedNetwork_turnstate);
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
+				}
+			}));
+		}
+	}
+	
+	/**
+	 * 设备的共享网络开关变更
+	 * @param id
+	 * @param sharedNetwork_turnstate
+	 */
+	public void sharedNetworkTurnStateUpdIncrement(final String id, final String sharedNetwork_turnstate){
+		ExecutorService executor = singleExecProcesser(id);
+		if(executor != null){
+			executor.submit((new Runnable() {
+				@Override
+				public void run() {
+					try{
+						wifiDeviceIndexIncrement.sharedNetworkTurnStateUpdIncrement(id, sharedNetwork_turnstate);
 					}catch(Exception ex){
 						ex.printStackTrace(System.out);
 					}

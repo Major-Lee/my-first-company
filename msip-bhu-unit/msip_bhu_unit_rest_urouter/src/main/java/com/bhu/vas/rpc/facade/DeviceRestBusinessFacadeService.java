@@ -511,22 +511,36 @@ public class DeviceRestBusinessFacadeService {
 	 * 根据t_uc_extension条件获取在线设备数量
 	 * @param uid
 	 * @param t_uc_extension
+	 * @param online
 	 * @return
 	 */
-	public long countByUCExtensionOnline(int uid, String t_uc_extension) {
+	public long countByUCExtensionOnline(int uid, String t_uc_extension, String online) {
 		try{
 			SearchConditionPack pack_must = null;
-	
-			SearchCondition sc_uc_extension = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+			
+			SearchCondition sc_uc_extension = null;
+			if(StringHelper.isEmpty(t_uc_extension)){
+				sc_uc_extension = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+						Field.T_UC_EXTENSION.getName(), SearchConditionPattern.Missing.getPattern(), null);
+			}else{
+				sc_uc_extension = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 						Field.T_UC_EXTENSION.getName(), SearchConditionPattern.StringEqual.getPattern(), t_uc_extension);
+			}
+
 			SearchCondition sc_d_uid = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 					Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(uid));
-			SearchCondition sc_d_online = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-					Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
-					WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
 			
-			pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_uc_extension, sc_d_uid, sc_d_online);
-	
+			pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_uc_extension, sc_d_uid);
+			
+			if(StringUtils.isNotEmpty(online)){
+				SearchCondition sc_d_online = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+						Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+						WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
+				pack_must.addChildSearchCondtions(sc_d_online);
+			}
+
+//			pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_uc_extension, sc_d_uid, sc_d_online);
+
 			SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
 			return wifiDeviceDataSearchService.searchCountByConditionMessage(scm);
 		}catch(Exception ex){
