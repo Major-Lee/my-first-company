@@ -48,8 +48,8 @@ public class ChargingStatisticsFacadeService {
     			DateTimeHelper.FormatPattern5);
     	List<String> ids = new ArrayList<String>();
     	//ids.add(DeviceGroupPaymentStatistics.combineid(groupid, current_date));
-    	ids.add(DeviceGroupPaymentStatistics.combineid(groupid, yesterday_date));
-    	ids.add(DeviceGroupPaymentStatistics.combineid(groupid, DeviceGroupPaymentStatistics.TOTAL_DATE_STR));
+    	ids.add(DeviceGroupPaymentStatistics.combineid(groupid, uid, yesterday_date));
+    	ids.add(DeviceGroupPaymentStatistics.combineid(groupid, uid, DeviceGroupPaymentStatistics.TOTAL_DATE_STR));
     	List<DeviceGroupPaymentStatistics> statistics_entities = deviceGroupPaymentStatisticsService.findByIds(ids, true, true);
     	DeviceGroupPaymentStatistics yesterday_statistics_entity = statistics_entities.get(0);
     	if(yesterday_statistics_entity != null){
@@ -61,7 +61,7 @@ public class ChargingStatisticsFacadeService {
     		vto.setT_incoming_amount(total_statistics_entity.getTotal_incoming_amount());
     		vto.setT_times(total_statistics_entity.getTotal_times());
     	}
-    	String current_key = DeviceGroupPaymentStatistics.combineid(groupid, current_date);
+    	String current_key = DeviceGroupPaymentStatistics.combineid(groupid, uid, current_date);
     	ShareDealDailyGroupSummaryProcedureVTO cache_entity = businessStatisticsCacheService.getDeviceGroupPaymentStatisticsDSCacheBy(current_key);
     	if(cache_entity == null){
     		cache_entity = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(uid, group_path, current_date);
@@ -86,7 +86,7 @@ public class ChargingStatisticsFacadeService {
     		groupid = DeviceGroupPaymentStatistics.DEFAULT_GROUP;
     	}
     	DeviceGroupPaymentStatistics entity = new DeviceGroupPaymentStatistics();
-    	entity.setId(DeviceGroupPaymentStatistics.combineid(groupid, date));
+    	entity.setId(DeviceGroupPaymentStatistics.combineid(groupid, uid, date));
     	entity.setUid(uid);
     	entity.setGroupid(groupid);
     	entity.setTotal_incoming_amount(total_incoming_amount);

@@ -28,10 +28,11 @@ public class DeviceGroupPaymentStatistics extends BaseStringModel{
 	 * @param groupid 分组id
 	 * @param datestr 日期格式 20160519
 	 */
-	public static String combineid(String groupid, String datestr){
+	public static String combineid(String groupid, int uid, String datestr){
 		if(StringUtils.isEmpty(groupid) || StringUtils.isEmpty(datestr)) return null;
 		StringBuffer id = new StringBuffer();
 		id.append(groupid);
+		id.append(uid);
 		id.append(datestr);
 //		this.setId(id.toString());
 		return id.toString();
