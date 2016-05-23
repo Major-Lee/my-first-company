@@ -300,4 +300,5 @@ public class WifiDeviceStatusIndexIncrementService{
 
 		wifiDeviceDataSearchService.bulkUpdate(ids, sourceMap, false, true, true);
 	}
+	
 }

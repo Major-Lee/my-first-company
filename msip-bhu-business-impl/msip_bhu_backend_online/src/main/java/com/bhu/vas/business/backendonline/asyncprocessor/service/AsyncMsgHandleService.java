@@ -1044,6 +1044,8 @@ public class AsyncMsgHandleService {
 
 		// 分发指令
 		this.wifiCmdsDownNotify(dto.getMac(), cmdPayloads);
+		
+		this.ssidModifyWithChangeDeviceName(dto.getMac());
 		logger.info(String.format("AsyncMsgBackendProcessor wifiDeviceSettingQuery message[%s] successful", message));
 	}
 

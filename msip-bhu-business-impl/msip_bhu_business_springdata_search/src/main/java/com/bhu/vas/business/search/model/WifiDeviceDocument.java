@@ -246,6 +246,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
+	private String d_snk_turnstate;//设备的共享网络是开启状态
+	
+	@Field(
+			type = FieldType.String,
+			searchAnalyzer = "whitespace",
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
 	private String d_snk_allowturnoff;//设备的共享网络是否可被关闭
 	
 	@Field(
@@ -562,6 +570,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_snk_type(String d_snk_type) {
 		this.d_snk_type = d_snk_type;
+	}
+
+	public String getD_snk_turnstate() {
+		return d_snk_turnstate;
+	}
+
+	public void setD_snk_turnstate(String d_snk_turnstate) {
+		this.d_snk_turnstate = d_snk_turnstate;
 	}
 
 	public String getD_snk_template() {

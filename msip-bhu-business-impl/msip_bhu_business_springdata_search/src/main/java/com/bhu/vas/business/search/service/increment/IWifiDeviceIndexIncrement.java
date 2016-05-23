@@ -130,5 +130,12 @@ public interface IWifiDeviceIndexIncrement {
 	 * @param template
 	 */
 	public void sharedNetworkUpdIncrement(String id, String sharedNetwork_type, String template);
+	
+	/**
+	 * 设备的共享网络开关变更
+	 * @param id
+	 * @param sharedNetwork_turnstate
+	 */
+	public void sharedNetworkTurnStateUpdIncrement(String id, String sharedNetwork_turnstate);
 
 }
