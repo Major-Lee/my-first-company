@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
@@ -233,9 +234,11 @@ public class GroupController extends BaseController{
     		GroupCountOnlineVTO vto = new GroupCountOnlineVTO();
     		vto.setGid(gid);
     		if (gid.isEmpty()) {
-    			vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, ""));
+    			vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, null, 
+    					WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
 			}else{
-	    		vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, "g_"+gid));
+	    		vto.setOnline(deviceRestRpcService.countByUCExtensionOnline(uid, "g_"+gid, 
+	    				WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
 			}
     		list.add(vto);
     	}
