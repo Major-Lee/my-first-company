@@ -41,15 +41,15 @@
             <div class="wap-pay">
                 <section>
                     <div class="mypad">
-                        请支付：<font id="totalprice"></font>
+                        请支付：<font id="totalprice">￥0.01</font>
                     </div>
                 </section>
                 <h3><div class="mypad">选择支付方式</div></h3>
-                <div id="Hee2" class="Hee2 block">uPays-汇元宝</div>
-				<div id="WapAlipay2" class="WapAlipay2 block">uPays-手机支付宝</div>
-				<div id="PcWeixin2" class="PcWeixin2 block">uPays-微信支付</div>
-				<div id="PcAlipay2" class="PcAlipay2 block">uPays-支付宝支付</div>
-				<div id="weixin2" class="weixin2 block">uPays-微信提现</div>
+                <div id="Hee2" class="Hee2 block">pay-手机汇元宝</div>
+				<div id="WapAlipay2" class="WapAlipay2 block">pay-手机支付宝</div>
+				<div id="PcWeixin2" class="PcWeixin2 block">pay-微信支付</div>
+				<div id="PcAlipay2" class="PcAlipay2 block">pay-支付宝支付</div>
+				<div id="weixin2" class="weixin2 block">pay-微信提现</div>
 				<div class="WeixinImg"><img src=" "/></div>
             </div>
 	</div>
@@ -69,9 +69,9 @@
 		
         $('#Hee2').click(function(){
            var goods_no = Date.parse(new Date());
-           var datas = 'payment_type=Midas&total_fee=0.50&goods_no='+goods_no;
+           var datas = 'payment_type=WapWeixin&total_fee=0.50&goods_no='+goods_no;
            $.ajax({
-               url:'http://upays.bhuwifi.com/api/ucloud/pay',
+               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment',
                //url:'http://localhost:8080/pay',
                type:'post',
                async: false,
@@ -88,11 +88,11 @@
            });
        });
 
-        $('#PcWeixin2').click(function(){
+        $('#WapWeixin2').click(function(){
             var goods_no = Date.parse(new Date());
-            var datas = 'payment_type=PcWeixin&total_fee=0.01&goods_no='+goods_no;
+            var datas = 'payment_type=WapWeixin&total_fee=0.01&goods_no='+goods_no;
            $.ajax({
-               url:'http://upays.bhuwifi.com/api/ucloud/pay',
+               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment',
                 type:'post',
                 async: false,
                 data: datas,
@@ -113,7 +113,7 @@
             var goods_no = Date.parse(new Date());
             var datas = 'payment_type=PcAlipay&total_fee=0.01&goods_no='+goods_no;
            $.ajax({
-               url:'http://upays.bhuwifi.com/api/ucloud/pay',
+               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment',
                 type:'post',
                 async: false,
                 data: datas,
@@ -133,7 +133,7 @@
             var goods_no = Date.parse(new Date());
             var datas = 'payment_type=WapAlipay&total_fee=0.01&goods_no='+goods_no;
            $.ajax({
-               url:'http://upays.bhuwifi.com/api/ucloud/pay',
+               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment',
                 type:'post',
                 async: false,
                 data: datas,
@@ -153,7 +153,7 @@
             var goods_no = Date.parse(new Date());
              var datas = 'withdraw_type=weixin&total_fee=0.50&withdraw_no='+goods_no;
             $.ajax({
-                url:'http://upays.bhuwifi.com/api/ucloud/withdraw',
+                url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/submitWithdrawals',
                 type:'post',
                 async: false,
                 data: datas,

@@ -44,12 +44,13 @@ public class Heepay {
 		return url;
 	}
 
-	public static String order(String billno, String price, String ip, String notifyUrl, String returnUrl) {
+	public static String order(String billno, String price, String ip, String notifyUrl, String locationUrl) {
 		agent_bill_id = billno;
 		pay_amt = price;
 		user_ip = ip.replaceAll("\\.", "_");
 		notify_url = notifyUrl;
-		return_url = returnUrl;
+		return_url = locationUrl;
+		
 
 		String url = submitOrder();
 		return url;

@@ -1,7 +1,9 @@
 package com.bhu.vas.api.test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.ibatis.reflection.wrapper.CollectionWrapper;
 
@@ -60,7 +62,12 @@ public class Test {
             System.out.println("Typename:"+roomTypeVO.getTypename());  
         }  
           
+        Set<Integer> sss = new HashSet<>();
+        sss.add(new Integer(1));
+        sss.add(new Integer(2));
+        sss.add(new Integer(3));
         
+        System.out.println(sss.size());
        /* try {
 			System.out.println(JAXBContext.newInstance(Hotel.class));
 			System.out.println(JAXBContext.newInstance(Hotel.class));
