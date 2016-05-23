@@ -545,4 +545,23 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
+	
+	/**
+	 * 设备的共享网络的变更
+	 * 变更涉及的更改索引字段是
+	 * 1) d_snk_type
+	 * @param id
+	 * @param sharedNetwork_turnstate
+	 */
+	@Override
+	public void sharedNetworkTurnStateUpdIncrement(String id, String sharedNetwork_turnstate) {
+		logger.info(String.format("sharedNetworkUpdIncrement Request id [%s] sharedNetwork_turnstate [%s]", id, sharedNetwork_turnstate));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TURNSTATE.getName(), sharedNetwork_turnstate);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(),  DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+	}
 }

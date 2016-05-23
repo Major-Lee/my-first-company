@@ -63,6 +63,7 @@ public interface BusinessIndexDefine {
 			D_INDUSTRY("d_industry", null),//设备行业信息
 			D_SHAREDNETWORK_TYPE("d_snk_type", null),//设备的共享网络类型
 			D_SHAREDNETWORK_TEMPLATE("d_snk_template", null),//设备的共享网络模板
+			D_SHAREDNETWORK_TURNSTATE("d_snk_turnstate", null),//设备的共享网络的开启状态
 			D_SHAREDNETWORK_ALLOWTURNOFF("d_snk_allowturnoff", null),//设备的访客网络是否可关闭
 			D_TAGS("d_tags", null),//设备的tags
 			//D_EXTENSION("d_extension", null),//设备业务扩展字段

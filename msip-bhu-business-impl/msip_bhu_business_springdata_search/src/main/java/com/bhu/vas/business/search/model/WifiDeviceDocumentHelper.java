@@ -9,10 +9,12 @@ import org.apache.commons.lang.StringUtils;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
+import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
@@ -187,6 +189,15 @@ public class WifiDeviceDocumentHelper {
 			}*/
 			doc.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
 			doc.setD_snk_template(wifiDeviceSharedNetwork.getTemplate());
+			
+			String d_snk_turnstate = WifiDeviceDocumentEnumType.SnkTurnStateEnum.Off.getType();
+			SharedNetworkSettingDTO sharedNetworkSettingDto = wifiDeviceSharedNetwork.getInnerModel();
+			if(sharedNetworkSettingDto != null){
+				if(sharedNetworkSettingDto.isOn()){
+					d_snk_turnstate = WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType();
+				}
+			}
+			doc.setD_snk_turnstate(d_snk_turnstate);
 		}
 		if(wifiDeviceShareConfig != null){
 			doc.setD_snk_allowturnoff(wifiDeviceShareConfig.isCanbe_turnoff() ? "1" : "0");

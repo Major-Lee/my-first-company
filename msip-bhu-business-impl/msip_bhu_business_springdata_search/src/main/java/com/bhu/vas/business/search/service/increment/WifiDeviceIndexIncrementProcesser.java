@@ -413,4 +413,25 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 		}
 	}
 	
+	/**
+	 * 设备的共享网络开关变更
+	 * @param id
+	 * @param sharedNetwork_turnstate
+	 */
+	public void sharedNetworkTurnStateUpdIncrement(final String id, final String sharedNetwork_turnstate){
+		ExecutorService executor = singleExecProcesser(id);
+		if(executor != null){
+			executor.submit((new Runnable() {
+				@Override
+				public void run() {
+					try{
+						wifiDeviceIndexIncrement.sharedNetworkTurnStateUpdIncrement(id, sharedNetwork_turnstate);
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
+				}
+			}));
+		}
+	}
+	
 }
