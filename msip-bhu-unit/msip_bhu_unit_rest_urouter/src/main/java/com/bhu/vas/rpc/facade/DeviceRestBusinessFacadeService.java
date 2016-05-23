@@ -516,9 +516,16 @@ public class DeviceRestBusinessFacadeService {
 	public long countByUCExtensionOnline(int uid, String t_uc_extension) {
 		try{
 			SearchConditionPack pack_must = null;
-	
-			SearchCondition sc_uc_extension = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+			
+			SearchCondition sc_uc_extension = null;
+			if(StringHelper.isEmpty(t_uc_extension)){
+				sc_uc_extension = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+						Field.T_UC_EXTENSION.getName(), SearchConditionPattern.Missing.getPattern(), null);
+			}else{
+				sc_uc_extension = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 						Field.T_UC_EXTENSION.getName(), SearchConditionPattern.StringEqual.getPattern(), t_uc_extension);
+			}
+
 			SearchCondition sc_d_uid = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 					Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(uid));
 			SearchCondition sc_d_online = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.

@@ -13,6 +13,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
+import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -30,6 +31,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
+import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -67,8 +69,8 @@ public class BackendBusinessService {
 	@Resource
 	private WifiDeviceModuleService wifiDeviceModuleService;
 	
-//	@Resource
-//	private TagDevicesService tagDevicesService;
+	@Resource
+	private TagDevicesService tagDevicesService;
 	
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
@@ -275,7 +277,7 @@ public class BackendBusinessService {
 					//System.out.println("2="+mac);
 					WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(mac);
 					WifiDeviceModule deviceModule = wifiDeviceModuleService.getById(mac);
-					//TagDevices tagDevices = tagDevicesService.getById(mac);
+					TagDevices tagDevices = tagDevicesService.getById(mac);
 					//AgentDeviceClaim agentDeviceClaim = agentDeviceClaimService.getById(wifiDevice.getSn());
 					String o_template = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(mac);
 					long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
@@ -296,7 +298,7 @@ public class BackendBusinessService {
 					WifiDeviceSharedealConfigs wifiDeviceShareConfig = wifiDeviceSharedealConfigsService.getById(mac);
 					String t_uc_extension = tagGroupRelationService.fetchPathWithMac(mac);
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
-							wifiDeviceGray, bindUser, bindUserDNick, null,
+							wifiDeviceGray, bindUser, bindUserDNick, tagDevices,
 							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig,t_uc_extension);
 					docs.add(doc);
 				}
