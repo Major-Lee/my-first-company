@@ -15,6 +15,7 @@ import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.statistics.BusinessStatisticsCacheService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -46,6 +47,16 @@ public class ChargingStatisticsFacadeService {
     	//昨日日期 yyyy-MM-dd
     	String yesterday_date = DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1), 
     			DateTimeHelper.FormatPattern5);
+    	
+    	String current_key = DeviceGroupPaymentStatistics.combineid(groupid, uid, current_date);
+    	ShareDealDailyGroupSummaryProcedureVTO cache_entity = businessStatisticsCacheService.getDeviceGroupPaymentStatisticsDSCacheBy(current_key);
+    	if(cache_entity == null){
+    		cache_entity = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(uid, group_path, current_date);
+    		businessStatisticsCacheService.storeDeviceGroupPaymentStatisticsDSCacheResult(current_key, cache_entity);
+    	}
+    	vto.setT_incoming_amount(String.valueOf(cache_entity.getTotal_cash()));
+    	vto.setT_times(cache_entity.getTotal_nums());
+    	
     	List<String> ids = new ArrayList<String>();
     	//ids.add(DeviceGroupPaymentStatistics.combineid(groupid, current_date));
     	ids.add(DeviceGroupPaymentStatistics.combineid(groupid, uid, yesterday_date));
@@ -58,17 +69,13 @@ public class ChargingStatisticsFacadeService {
     	}
     	DeviceGroupPaymentStatistics total_statistics_entity = statistics_entities.get(1);
     	if(total_statistics_entity != null){
-    		vto.setT_incoming_amount(total_statistics_entity.getTotal_incoming_amount());
-    		vto.setT_times(total_statistics_entity.getTotal_times());
+    		double total_incoming_amount = Double.parseDouble(total_statistics_entity.getTotal_incoming_amount());
+    		int total_times = total_statistics_entity.getTotal_times();
+    		double current_total_incoming_amount = ArithHelper.round(cache_entity.getTotal_cash() + total_incoming_amount, 2);
+    		int current_total_times = cache_entity.getTotal_nums() + total_times;
+    		vto.setT_incoming_amount(String.valueOf(current_total_incoming_amount));
+    		vto.setT_times(current_total_times);
     	}
-    	String current_key = DeviceGroupPaymentStatistics.combineid(groupid, uid, current_date);
-    	ShareDealDailyGroupSummaryProcedureVTO cache_entity = businessStatisticsCacheService.getDeviceGroupPaymentStatisticsDSCacheBy(current_key);
-    	if(cache_entity == null){
-    		cache_entity = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(uid, group_path, current_date);
-    		businessStatisticsCacheService.storeDeviceGroupPaymentStatisticsDSCacheResult(current_key, cache_entity);
-    	}
-    	vto.setT_incoming_amount(String.valueOf(cache_entity.getTotal_cash()));
-    	vto.setT_times(cache_entity.getTotal_nums());
     	return vto;
     }
     
