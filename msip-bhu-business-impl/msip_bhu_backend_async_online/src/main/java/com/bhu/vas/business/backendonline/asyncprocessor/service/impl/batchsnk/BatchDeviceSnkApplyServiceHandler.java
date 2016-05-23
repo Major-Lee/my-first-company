@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkApplyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
@@ -73,10 +74,10 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				switch(dtoType){
 					case IDTO.ACT_DELETE:
 						//移除设备的所属类型不清空sharedNetwork
-						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey(),template);
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey(),template,SnkTurnStateEnum.Off.getType());
 						break;
 					default:
-						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey(),template);
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey(),template,SnkTurnStateEnum.Off.getType());
 						break;
 				}
 				return;
