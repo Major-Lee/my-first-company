@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagName;
+import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
@@ -26,6 +27,7 @@ import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -66,6 +68,9 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private ChargingStatisticsFacadeService chargingStatisticsFacadeService;
+	
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
 	private void addTag(int uid, String tag) {
 
@@ -496,6 +501,12 @@ public class TagFacadeRpcSerivce {
 		TailPage<TagGroup> pages = tagGroupService.findModelTailPageByModelCriteria(mc);
 		List<TagGroupVTO> result = new ArrayList<TagGroupVTO>();
 		
+		if (pageNo == 1) {
+			TagGroupVTO vto = new TagGroupVTO();
+			vto.setName("默认分组");
+			vto.setDevice_count((int)wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, null));
+		}
+		
 		for (TagGroup tagGroup : pages) {
 			TagGroupVTO vto = TagGroupDetail(tagGroup);
 			result.add(vto);
@@ -562,4 +573,22 @@ public class TagFacadeRpcSerivce {
 		}
 		return list;
 	}
+	
+	public List<GroupCountOnlineVTO> groupsStatsOnline(int uid ,String gids){
+    	String[] arr = gids.split(StringHelper.COMMA_STRING_GAP);
+    	List<GroupCountOnlineVTO> list = new ArrayList<GroupCountOnlineVTO>();
+    	for(String gid : arr){
+    		GroupCountOnlineVTO vto = new GroupCountOnlineVTO();
+    		vto.setGid(gid);
+    		if (gid.isEmpty()) {
+    			vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, 
+    					WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
+			}else{
+	    		vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, "g_"+gid, 
+	    				WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
+			}
+    		list.add(vto);
+    	}
+    	return list;
+    }
 }
