@@ -10,7 +10,9 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
@@ -65,6 +67,9 @@ public class TagFacadeRpcSerivce {
 	@Resource
 	private ChargingStatisticsFacadeService chargingStatisticsFacadeService;
 
+    @Resource
+    private IDeviceRestRpcService deviceRestRpcService;
+	
 	private void addTag(int uid, String tag) {
 
 		ModelCriteria mc = new ModelCriteria();
@@ -493,6 +498,15 @@ public class TagFacadeRpcSerivce {
 		mc.setOrderByClause(" created_at desc");
 		TailPage<TagGroup> pages = tagGroupService.findModelTailPageByModelCriteria(mc);
 		List<TagGroupVTO> result = new ArrayList<TagGroupVTO>();
+		
+		//当第一页时，返回默认分组总数
+		if (pageNo == 1) {
+			TagGroupVTO vto = new TagGroupVTO();
+			vto.setName("默认分组");
+			vto.setDevice_count((int)deviceRestRpcService.countByUCExtensionOnline(uid, null, null));
+			result.add(vto);
+		}
+		
 		for (TagGroup tagGroup : pages) {
 			TagGroupVTO vto = TagGroupDetail(tagGroup);
 			result.add(vto);
