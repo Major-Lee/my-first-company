@@ -77,7 +77,7 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey(),template,SnkTurnStateEnum.Off.getType());
 						break;
 					default:
-						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey(),template,SnkTurnStateEnum.Off.getType());
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey(),template,SnkTurnStateEnum.On.getType());
 						break;
 				}
 				return;
