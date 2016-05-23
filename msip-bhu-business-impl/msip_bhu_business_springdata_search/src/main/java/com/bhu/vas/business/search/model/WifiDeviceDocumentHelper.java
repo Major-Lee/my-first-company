@@ -182,6 +182,8 @@ public class WifiDeviceDocumentHelper {
 			doc.setA_org(agentUser.getOrg());
 		}*/
 		doc.setD_hoc(hoc);
+		
+		String d_snk_turnstate = WifiDeviceDocumentEnumType.SnkTurnStateEnum.Off.getType();
 		if(wifiDeviceSharedNetwork != null){
 /*			String sharedNetwork_type = wifiDeviceSharedNetwork.getSharednetwork_type();
 			if(StringUtils.isNotEmpty(sharedNetwork_type)){
@@ -189,16 +191,18 @@ public class WifiDeviceDocumentHelper {
 			}*/
 			doc.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
 			doc.setD_snk_template(wifiDeviceSharedNetwork.getTemplate());
-			
-			String d_snk_turnstate = WifiDeviceDocumentEnumType.SnkTurnStateEnum.Off.getType();
+
 			SharedNetworkSettingDTO sharedNetworkSettingDto = wifiDeviceSharedNetwork.getInnerModel();
 			if(sharedNetworkSettingDto != null){
 				if(sharedNetworkSettingDto.isOn()){
 					d_snk_turnstate = WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType();
 				}
 			}
-			doc.setD_snk_turnstate(d_snk_turnstate);
+			//doc.setD_snk_turnstate(d_snk_turnstate);
 		}
+		doc.setD_snk_turnstate(d_snk_turnstate);
+		
+		
 		if(wifiDeviceShareConfig != null){
 			doc.setD_snk_allowturnoff(wifiDeviceShareConfig.isCanbe_turnoff() ? "1" : "0");
 		}else{
