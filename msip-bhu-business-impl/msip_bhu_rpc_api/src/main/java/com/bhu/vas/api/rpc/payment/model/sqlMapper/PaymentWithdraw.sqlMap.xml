@@ -152,7 +152,7 @@
 		</where>
 	</select>
 
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from
 		<include refid="modelTableName" />
 		where id=#{id}
@@ -213,7 +213,7 @@
 		</where>
 	</delete>
 
-	<select id="pkSelectByModelCriteria" resultType="long">
+	<select id="pkSelectByModelCriteria" resultType="string">
 		select id from
 		<include refid="modelTableName" />
 		<if test="_parameter != null">

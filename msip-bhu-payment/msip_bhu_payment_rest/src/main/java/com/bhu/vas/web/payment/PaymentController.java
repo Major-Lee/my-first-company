@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alipay.config.AlipayConfig;
 import com.alipay.util.AlipayNotify;
 import com.alipay.util.AlipaySubmit;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreateWithdrawDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.payment.model.PaymentAlipaylocation;
@@ -194,11 +195,11 @@ public class PaymentController extends BaseController{
         		return;
 			}
         	
-    		PaymentWithdraw paymentReckoning = paymentWithdrawService.findByOrderId(withdraw_no);
-        	if(paymentReckoning != null){
+    		PaymentWithdraw paymentWithdraw = paymentWithdrawService.findByOrderId(withdraw_no);
+    		if(paymentWithdraw != null){
         		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
         	}
-        	PaymentTypeVTO result = null;
+        	ResponseCreateWithdrawDTO result = null;
         	//判断请求支付类型    	
         	if(withdraw_type.equals("weixin")){ //微信支付
         		result =  doWxWithdrawals(request,response,total_fee,withdraw_no,exter_invoke_ip,userId,userName);
@@ -213,7 +214,7 @@ public class PaymentController extends BaseController{
         		return;
         	}
         	if(result != null){
-        		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+        		SpringMVCHelper.renderJson(response, result);
         	}else{
         		SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
         	}
@@ -325,9 +326,9 @@ public class PaymentController extends BaseController{
 	 * @param userName
 	 * @return
 	 */
-	private PaymentTypeVTO doWxWithdrawals(HttpServletRequest request, HttpServletResponse response, String total_fee,
+	private ResponseCreateWithdrawDTO doWxWithdrawals(HttpServletRequest request, HttpServletResponse response, String total_fee,
 			String withdraw_no, String Ip,String userId,String userName) {
-		PaymentTypeVTO result= null;
+		ResponseCreateWithdrawDTO result= null;
         String certificateUrl = PayHttpService.WITHDRAW_URL;
         String product_name="必虎提现";//订单名称
     	total_fee = BusinessHelper.getMoney(total_fee);
@@ -351,6 +352,7 @@ public class PaymentController extends BaseController{
         //收到微信的提现成功请求
         String out_trade_no = unifiedOrderResponse.getPartner_trade_no();
         String trade_no = unifiedOrderResponse.getPayment_no();
+        
         PaymentWithdraw payReckoning =  paymentWithdrawService.getById(out_trade_no);
         String isShow = "存   在  ...";
         // 1.1 如果订单不存在则返回订单不存在
@@ -370,8 +372,8 @@ public class PaymentController extends BaseController{
             	 logger.info("账单流水号："+out_trade_no+"支付成功.微信返回SUCCESS.");
  				//修改成账单状态    1:已支付 2：退款已支付 3：退款成功 4：退款失败
             	 updateWithdrawalsStatus(payReckoning, out_trade_no, trade_no);
-                 result = new PaymentTypeVTO();
-             	result.setType("weixin");
+                 result = new ResponseCreateWithdrawDTO();
+             	result.setWithdraw_type("weixin");
              	result.setUrl("");
              	return result;
             }else{
@@ -384,7 +386,6 @@ public class PaymentController extends BaseController{
 	            return null;
 		}
        
-        
 	}
     
     /**
@@ -631,6 +632,13 @@ public class PaymentController extends BaseController{
             out_trade_no = paySuccessNotifyResponse.getOut_trade_no().trim();
             thirdPartCode = paySuccessNotifyResponse.getTransaction_id().trim();
             //——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
+          //判断非空参数
+        	if (StringUtils.isBlank(out_trade_no)) {
+    			logger.error("请求参数(out_trade_no)有误,不能为空");
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    			return "error";
+    		}
             PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
             String isShow = "存   在  ...";
             // 1.1 如果订单不存在则返回订单不存在
@@ -701,7 +709,14 @@ public class PaymentController extends BaseController{
 			params.put(name, valueStr);
 		}
 		
-		//获取通知返回参数，可参考技术文档中页面跳转同步通知参数列表
+
+		String aa = request.getParameter("agent_bill_id");
+		if (StringUtils.isBlank(aa)) {
+			logger.error("请求参数(out_trade_no)有误,不能为空");
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+			return "error";
+		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("agent_bill_id").getBytes("ISO-8859-1"),"UTF-8");
 
@@ -716,7 +731,6 @@ public class PaymentController extends BaseController{
 		
 		//交易状态
 		String trade_status = new String(request.getParameter("result").getBytes("ISO-8859-1"),"UTF-8");
-		
 
 		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
 		logger.info("账单号："+out_trade_no+"修改账单，订单的支付状态。。。。");
@@ -795,9 +809,21 @@ public class PaymentController extends BaseController{
 			params.put(name, valueStr);
 		}
 		
-		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
+		String aa = request.getParameter("agent_bill_id");
+		if (StringUtils.isBlank(aa)) {
+			logger.error("请求参数(agent_bill_id)有误,不能为空");
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+			return;
+		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("agent_bill_id").getBytes("ISO-8859-1"),"UTF-8");
+		
+		if (StringUtils.isBlank(out_trade_no)) {
+			logger.error("请求参数(out_trade_no)有误,不能为空");
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+		}
 		
 		String locationUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		
@@ -842,9 +868,15 @@ public class PaymentController extends BaseController{
 		}
 		
 		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
+		String aa = request.getParameter("out_trade_no");
+		if (StringUtils.isBlank(aa)) {
+			logger.error("请求参数(out_trade_no)有误,不能为空");
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+			return;
+		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
-		
 		String locationUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		
 		if(locationUrl == null){
@@ -854,7 +886,6 @@ public class PaymentController extends BaseController{
 		}else{
 			response.sendRedirect("http://www.bhuwifi.com");
 		}
-
 	}
    	
     
@@ -888,7 +919,13 @@ public class PaymentController extends BaseController{
 			params.put(name, valueStr);
 		}
 		
-		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
+		String aa = request.getParameter("out_trade_no");
+		if (StringUtils.isBlank(aa)) {
+			logger.error("请求参数(out_trade_no)有误,不能为空");
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+			return "error";
+		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
 
@@ -899,6 +936,13 @@ public class PaymentController extends BaseController{
 		String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8");
 
 		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以上仅供参考)//
+		if (StringUtils.isBlank(out_trade_no)) {
+			logger.error("请求参数(out_trade_no)有误,不能为空");
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+			return "error";
+		}
+		
 		logger.info("账单号："+out_trade_no+"修改账单，订单的支付状态。。。。");
 		if(AlipayNotify.verify(params)){//验证成功
 			 PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);

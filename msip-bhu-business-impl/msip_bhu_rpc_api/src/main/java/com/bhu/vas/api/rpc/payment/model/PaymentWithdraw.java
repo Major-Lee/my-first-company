@@ -6,12 +6,11 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
 public class PaymentWithdraw extends BaseStringModel {
-	private String tid;
 	private String orderId;
 	private String withdrawType;
-	private float amount;
-	private float transcost;
-	private float taxcost;
+	private int amount;
+	private int transcost;
+	private int taxcost;
 	private String userId;
 	private String userName;
 	private String subject;
@@ -25,13 +24,6 @@ public class PaymentWithdraw extends BaseStringModel {
 	private Date notifiedAt;
 	private Date withdrawAt;
 
-	public String getTid() {
-		return tid;
-	}
-
-	public void setTid(String tid) {
-		this.tid = tid;
-	}
 
 	public String getOrderId() {
 		return orderId;
@@ -49,27 +41,28 @@ public class PaymentWithdraw extends BaseStringModel {
 		this.withdrawType = withdrawType;
 	}
 
-	public float getAmount() {
+
+	public int getAmount() {
 		return amount;
 	}
 
-	public void setAmount(float amount) {
+	public void setAmount(int amount) {
 		this.amount = amount;
 	}
 
-	public float getTranscost() {
+	public int getTranscost() {
 		return transcost;
 	}
 
-	public void setTranscost(float transcost) {
+	public void setTranscost(int transcost) {
 		this.transcost = transcost;
 	}
 
-	public float getTaxcost() {
+	public int getTaxcost() {
 		return taxcost;
 	}
 
-	public void setTaxcost(float taxcost) {
+	public void setTaxcost(int taxcost) {
 		this.taxcost = taxcost;
 	}
 
