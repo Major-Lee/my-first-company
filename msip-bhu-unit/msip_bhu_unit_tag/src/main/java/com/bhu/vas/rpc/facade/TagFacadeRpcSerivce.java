@@ -66,9 +66,6 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private ChargingStatisticsFacadeService chargingStatisticsFacadeService;
-
-    @Resource
-    private IDeviceRestRpcService deviceRestRpcService;
 	
 	private void addTag(int uid, String tag) {
 
@@ -498,14 +495,6 @@ public class TagFacadeRpcSerivce {
 		mc.setOrderByClause(" created_at desc");
 		TailPage<TagGroup> pages = tagGroupService.findModelTailPageByModelCriteria(mc);
 		List<TagGroupVTO> result = new ArrayList<TagGroupVTO>();
-		
-		//当第一页时，返回默认分组总数
-		if (pageNo == 1) {
-			TagGroupVTO vto = new TagGroupVTO();
-			vto.setName("默认分组");
-			vto.setDevice_count((int)deviceRestRpcService.countByUCExtensionOnline(uid, null, null));
-			result.add(vto);
-		}
 		
 		for (TagGroup tagGroup : pages) {
 			TagGroupVTO vto = TagGroupDetail(tagGroup);
