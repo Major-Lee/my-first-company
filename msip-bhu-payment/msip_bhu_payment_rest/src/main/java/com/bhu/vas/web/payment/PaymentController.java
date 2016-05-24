@@ -112,9 +112,7 @@ public class PaymentController extends BaseController{
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(payReckoningVTO));
 				return;
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.COMMON_DATA_NOTEXIST)));
-				return;
+	        	throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST,new String[]{"商品数据不存在"}); 
 			}
 		}catch(BusinessI18nCodeException i18nex){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
@@ -374,6 +372,7 @@ public class PaymentController extends BaseController{
             	 updateWithdrawalsStatus(payReckoning, out_trade_no, trade_no);
                  result = new ResponseCreateWithdrawDTO();
              	result.setWithdraw_type("weixin");
+             	result.setSuccess(true);
              	result.setUrl("");
              	return result;
             }else{
@@ -1171,6 +1170,7 @@ public class PaymentController extends BaseController{
     public static void main(String[] args) {
     	System.out.println(RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR));
     	//ResponseError.embed();
-		
+    	
+//      	SpringMVCHelper.renderJson(response, result);
     }
 }
