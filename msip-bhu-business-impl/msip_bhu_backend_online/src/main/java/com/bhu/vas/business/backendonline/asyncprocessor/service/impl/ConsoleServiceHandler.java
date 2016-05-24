@@ -274,7 +274,7 @@ public class ConsoleServiceHandler {
 	private ModelCriteria builderOrderModelCriteriaByAll(String start_date, String end_date){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
-		criteria.andColumnEqualTo("status", OrderStatus.DeliverCompleted.getKey());
+		//criteria.andColumnEqualTo("status", OrderStatus.DeliverCompleted.getKey());
 		if(StringUtils.isNotEmpty(start_date)){
 			criteria.andColumnGreaterThanOrEqualTo("created_at", start_date);
 		}
