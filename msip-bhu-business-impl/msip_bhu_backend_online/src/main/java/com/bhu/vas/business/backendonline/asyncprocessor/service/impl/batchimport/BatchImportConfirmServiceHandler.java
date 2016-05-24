@@ -100,6 +100,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 					List<String> all_dmacs = new ArrayList<String>(dmacs);
 					int total = all_dmacs.size();
 					int totalPages = PageHelper.getTotalPages(total, 100);
+					logger.info(String.format("total:%s totalPages:%s all_dmacs:%s", total,totalPages,all_dmacs));
 					for(int pageno= 1;pageno<=totalPages;pageno++){
 						List<String> pages = PageHelper.pageList(all_dmacs, pageno, 100);
 						logger.info(String.format("pageno:%s pagesize:%s pages:%s", pageno,100,pages));
@@ -157,8 +158,6 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 									wifiDevices = null;
 								}
 							}
-							
-							
 						}
 						
 						try {
@@ -169,10 +168,10 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 						} catch (Exception e) {
 							e.printStackTrace(System.out);
 						} finally{
-							if(pages != null){
+							/*if(pages != null){
 								pages.clear();
 								pages = null;
-							}
+							}*/
 						}
 					}
 				}
