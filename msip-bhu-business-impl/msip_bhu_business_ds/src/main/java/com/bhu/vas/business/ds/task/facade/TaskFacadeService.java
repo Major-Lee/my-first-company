@@ -522,7 +522,7 @@ public class TaskFacadeService {
 		
 		downTask.setContext_var(extparams);
 		//downTask.setPayload(CMDBuilder.builderCMD4Opt(opt, mac, taskid));
-		downTask.setSubopt(ods_cmd.getNo());
+		downTask.setSubopt(ods_cmd != null ? ods_cmd.getNo() : OperationDS.Empty_OperationDS);
 		downTask.setOpt(opt_cmd.getNo());
 		downTask.setMac(mac);
 		
