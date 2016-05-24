@@ -1,6 +1,9 @@
 package com.bhu.vas.api.rpc.tag.vto;
 
-public class GroupCountOnlineVTO {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class GroupCountOnlineVTO implements Serializable {
 	private String gid;
 	private long online;
 	

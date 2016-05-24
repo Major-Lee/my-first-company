@@ -505,6 +505,7 @@ public class TagFacadeRpcSerivce {
 			TagGroupVTO vto = new TagGroupVTO();
 			vto.setName("默认分组");
 			vto.setDevice_count((int)wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, null));
+			result.add(vto);
 		}
 		
 		for (TagGroup tagGroup : pages) {

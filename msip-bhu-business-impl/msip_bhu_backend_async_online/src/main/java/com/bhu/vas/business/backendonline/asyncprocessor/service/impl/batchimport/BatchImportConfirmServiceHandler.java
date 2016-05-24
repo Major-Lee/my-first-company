@@ -200,4 +200,9 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 		}
 		logger.info(String.format("process message[%s] successful", message));
 	}
+	
+	/*//如果
+	private void doForceBindDevice(int uid,String mac){
+		
+	}*/
 }

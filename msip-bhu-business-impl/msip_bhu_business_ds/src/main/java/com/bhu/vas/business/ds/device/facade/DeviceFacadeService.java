@@ -950,6 +950,22 @@ public class DeviceFacadeService{
 					JsonHelper.getJSONString(presentDto));
 		}
 	}
+	/**
+	 * 增加push redis数据关联 设备与用户push信息关联
+	 * @param uid
+	 * @param mac
+	 */
+	public void gainDeviceMobilePresentString(Integer uid, String mac){
+		if(uid == null || StringUtils.isEmpty(mac)) return;
+		
+		UserMobileDevice userMobileDevice = userMobileDeviceService.getById(uid);
+		if(userMobileDevice != null){
+			DeviceMobilePresentDTO presentDto = new DeviceMobilePresentDTO(uid, userMobileDevice.getD(), userMobileDevice.getDt(), 
+					userMobileDevice.getPt(), userMobileDevice.getDm());
+			WifiDeviceMobilePresentStringService.getInstance().setMobilePresent(mac, 
+					JsonHelper.getJSONString(presentDto));
+		}
+	}
 	
 /*	*//**
 	 * 根据用户所管理的设备 生成mobile和设备的关系信息

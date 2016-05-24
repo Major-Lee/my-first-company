@@ -29,7 +29,7 @@ public class PaymentInternalHelper {
 	public static final String CREATE_PAYMENTURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+BusinessRuntimeConfiguration.PaymentApiPayUri;
 	public static final String CREATE_PAYMENTURL_JAVA_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentJavaApiDomain+BusinessRuntimeConfiguration.PaymentJavaApiPayUri;
 	//public static final String CREATE_WITHDRAWURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/withdraw";///api/ucloud/withdrawpay";
-	public static final String CREATE_WITHDRAWURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+BusinessRuntimeConfiguration.PaymentApiWithdrawUri;
+	public static final String CREATE_WITHDRAWURL_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentJavaApiDomain+BusinessRuntimeConfiguration.PaymentApiWithdrawUri;
 	//模拟支付系统支付成功触发api
 	//public static final String SIMULATE_PAYSUCCESS_COMMUNICATION_API = BusinessRuntimeConfiguration.PaymentApiDomain+"/api/ucloud/pay-call";
 	
