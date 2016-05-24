@@ -69,7 +69,7 @@ public class ConsoleServiceHandler {
 		"末次上线时间","末次离线时间","灰度","关联模板","工作模式","在线总时长占比"};
 	
 	public static final String[] SearchOrderResultExportColumns = new String[]{"订单号","Mac","UMac","终端类型","打赏金额",
-		"分成金额","打赏方式","打赏日期"};
+		"分成金额", "打赏方式","订单状态","订单创建时间","打赏日期"};
 	
 	
 	public void exportWifiDeviceFile(String jsonmessage){
@@ -257,8 +257,8 @@ public class ConsoleServiceHandler {
 	private ModelCriteria builderOrderModelCriteriaByMac(String mac, String start_date, String end_date){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
-		criteria.andColumnEqualTo("mac", mac)
-				.andColumnEqualTo("status", OrderStatus.DeliverCompleted.getKey());
+		criteria.andColumnEqualTo("mac", mac);
+				//.andColumnEqualTo("status", OrderStatus.DeliverCompleted.getKey());
 		if(StringUtils.isNotEmpty(start_date)){
 			criteria.andColumnGreaterThanOrEqualTo("created_at", start_date);
 		}
@@ -340,7 +340,9 @@ public class ConsoleServiceHandler {
 						orderPaymentType = OrderPaymentType.Unknown;
 					}
 					bw.append(formatStr(orderPaymentType.getDesc()));
+					bw.append(formatStr(OrderStatus.fromKey(order.getStatus()).getName()));
 					bw.append(formatStr(DateTimeHelper.formatDate(order.getCreated_at(), DateTimeHelper.FormatPattern0)));
+					bw.append(formatStr(DateTimeHelper.formatDate(order.getPaymented_at(), DateTimeHelper.FormatPattern0)));
 					mac_orderlines.add(bw.toString());
 				}
 			}
