@@ -967,6 +967,14 @@ public class DeviceFacadeService{
 		}
 	}
 	
+	/**
+	 * 移除push redis数据关联 设备与用户push信息关联
+	 * @param mac
+	 */
+	public void destoryDeviceMobilePresentString(String mac){
+		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(mac);
+	}
+	
 /*	*//**
 	 * 根据用户所管理的设备 生成mobile和设备的关系信息
 	 * @param macs 用户管理的设备macs
