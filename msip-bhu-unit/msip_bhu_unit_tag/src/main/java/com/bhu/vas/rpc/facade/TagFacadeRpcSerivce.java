@@ -322,7 +322,7 @@ public class TagFacadeRpcSerivce {
 	public boolean CanSaveNode(int uid, int gid, int pid, String name) {
 		
 		if (name.isEmpty()) {
-			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_ERROR);
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_EMPTY);
 		}
 		
 		boolean flag = StringFilter(name);

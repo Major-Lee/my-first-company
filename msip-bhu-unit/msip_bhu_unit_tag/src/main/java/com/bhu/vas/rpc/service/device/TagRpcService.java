@@ -204,8 +204,8 @@ public class TagRpcService implements ITagRpcService {
 	@Override
 	public RpcResponseDTO<Boolean> batchGroupDownCmds(int uid, String message, String opt, String subopt,
 			String extparams, String channel, String channel_taskid) {
-		logger.info(String.format("batchGroupDownCmds uid[%s] message[%s] opt[%s] subopt[%s] extparams[%s]", uid,
-				message, opt, subopt, extparams));
+		logger.info(String.format("batchGroupDownCmds uid[%s] message[%s] opt[%s] subopt[%s] extparams[%s] channel[%s] channel_taskid[%s]", uid,
+				message, opt, subopt, extparams, channel, channel_taskid));
 		try {
 			tagFacadeRpcSerivce.batchGroupDownCmds(uid, message, opt, subopt, extparams,channel,channel_taskid);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);

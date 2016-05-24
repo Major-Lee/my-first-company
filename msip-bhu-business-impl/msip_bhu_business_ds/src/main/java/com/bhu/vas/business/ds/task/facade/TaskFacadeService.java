@@ -513,7 +513,9 @@ public class TaskFacadeService {
 	}
 	public WifiDeviceDownTask apiCommonTaskGenerate(int uid, String mac, OperationCMD opt_cmd, OperationDS ods_cmd, String extparams,
 			String channel, String channel_taskid,DeviceStatusExchangeDTO device_status,ITaskProcessNotifyCallback callback) throws Exception{
+		System.out.println("4444444444444444");
 		Long taskid = SequenceService.getInstance().getNextId(WifiDeviceDownTask.class.getName());
+		System.out.println("555555555555555");
 		WifiDeviceDownTask downTask = new WifiDeviceDownTask();
 		downTask.setId(taskid);
 		downTask.setUid(uid);
@@ -527,7 +529,9 @@ public class TaskFacadeService {
 		downTask.setMac(mac);
 		
 		downTask.setPayload(apiCmdGenerate(uid,mac,opt_cmd,ods_cmd,extparams,taskid,device_status,callback));
+		System.out.println("666666666666666");
 		this.taskComming(downTask);
+		System.out.println("777777777777777");
 		return downTask;
 	}
 	
