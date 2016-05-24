@@ -54,7 +54,9 @@ public class ShipmentExcelImport {
 
 	        	for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); rowNum++) {
 	        		Row row = sheet.getRow(rowNum);
-	        		String sn = row.getCell(0).getStringCellValue();
+	        		Cell cell_sn = row.getCell(0);
+	        		if(cell_sn == null) continue;
+	        		String sn = cell_sn.getStringCellValue();
 	        		if(StringUtils.isNotEmpty(sn)){
 /*	        			devicesssss.add(sn);
 	        			System.out.println(String.format(" row[%s] sn[%s] size[%s]", rowNum,sn,devicesssss.size()));*/
