@@ -92,13 +92,25 @@ public class ChargingStatisticsFacadeService {
     	if(StringUtils.isEmpty(groupid)){
     		groupid = DeviceGroupPaymentStatistics.DEFAULT_GROUP;
     	}
-    	DeviceGroupPaymentStatistics entity = new DeviceGroupPaymentStatistics();
-    	entity.setId(DeviceGroupPaymentStatistics.combineid(groupid, uid, date));
-    	entity.setUid(uid);
-    	entity.setGroupid(groupid);
-    	entity.setTotal_incoming_amount(total_incoming_amount);
-    	entity.setTotal_times(total_times);
-    	deviceGroupPaymentStatisticsService.insert(entity);
+    	String id = DeviceGroupPaymentStatistics.combineid(groupid, uid, date);
+    	DeviceGroupPaymentStatistics entity = deviceGroupPaymentStatisticsService.getById(id);
+    	if(entity == null){
+        	entity = new DeviceGroupPaymentStatistics();
+        	entity.setId(id);
+        	entity.setUid(uid);
+        	entity.setGroupid(groupid);
+        	entity.setTotal_payment_amount("0.00");
+        	entity.setTotal_incoming_amount(total_incoming_amount);
+        	entity.setTotal_times(total_times);
+        	deviceGroupPaymentStatisticsService.insert(entity);
+    	}else{
+        	entity.setUid(uid);
+        	entity.setGroupid(groupid);
+        	entity.setTotal_payment_amount("0.00");
+        	entity.setTotal_incoming_amount(total_incoming_amount);
+        	entity.setTotal_times(total_times);
+        	deviceGroupPaymentStatisticsService.update(entity);
+    	}
     }
     
     

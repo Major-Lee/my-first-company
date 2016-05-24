@@ -822,6 +822,7 @@ public class BusinessEnumType {
 		PcWeixin("PcWeixin","微信","微信"),
 		PcAlipay("PcAlipay","支付宝","支付宝"),
 		WapWeixin("WapWeixin","微信","微信"),
+		WapAlipay("WapAlipay","支付宝","支付宝"),
 		Midas("Midas","米大师","米大师"),
 		Hee("Hee","汇元宝","汇元宝"),
 		Unknown("unknown","未知支付方式", "未知支付方式"),
