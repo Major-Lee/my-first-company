@@ -35,7 +35,8 @@ public class OpenApiCnzzImpl implements IopenApiCnzz {
 		// 构造请求
 		String url = new StringBuilder("https://dplus.cnzz.com/api/segmentation?").append(openapi.generateUrl(argMap)).append("&sign=").append(openapi.generateSignature(argMap, api_secret)).toString();
 		argMap.put("type", "count");
-		argMap.put("metric", "IP");
+		argMap.put("on", "ip");
+		argMap.put("on", Base64.encodeBase64String(argMap.get("on").getBytes()));
 		String urlIP = new StringBuilder("https://dplus.cnzz.com/api/segmentation?").append(openapi.generateUrl(argMap)).append("&sign=").append(openapi.generateSignature(argMap, api_secret)).toString();
 		//String url = new StringBuilder("https://dplus.cnzz.com/api/events/names?").append(openapi.generateUrl(argMap)).append("&sign=").append(openapi.generateSignature(argMap, api_secret)).toString();
 		//String url = new StringBuilder("https://dplus.cnzz.com/api/events/properties/names?").append(openapi.generateUrl(argMap)).append("&sign=").append(openapi.generateSignature(argMap, api_secret)).toString();
@@ -44,12 +45,13 @@ public class OpenApiCnzzImpl implements IopenApiCnzz {
 		JSONObject resJson=JSONObject.fromObject(response);
 		List<Double> resList=(List<Double>) resJson.get("values");
 		JSONObject resJsonIp=JSONObject.fromObject(responseIp);
-		List<Double> resIpList=(List<Double>) resJsonIp.get("values");
+		String resIpList=resJsonIp.get("values").toString();
+		String[] ipSizeArray=resIpList.split(",");
 		
 		Map<String,Object> resMap=new HashMap<String,Object>();
-		resMap.put("pv", Double.toString(resList.get(0)));
-		resMap.put("uv", Double.toString(resList.get(1)));
-		resMap.put("ip", Double.toString(resIpList.get(0)));
+		resMap.put("pv", Double.toString(resList.get(0)).replaceAll(".0", ""));
+		resMap.put("uv", Double.toString(resList.get(1)).replaceAll(".0", ""));
+		resMap.put("ip", ipSizeArray.length);
 		resMap.put("eventName", event_name);
 		JSONObject resultJson=JSONObject.fromObject(resMap);
 		return resultJson.toString();

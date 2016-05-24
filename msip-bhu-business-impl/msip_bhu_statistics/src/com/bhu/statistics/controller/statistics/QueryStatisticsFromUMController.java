@@ -36,8 +36,8 @@ public class QueryStatisticsFromUMController extends BaseController{
 			from_date=beforeDay;
 			to_date=beforeDay;
 		}else if("3".equals(type)){
-			from_date=jsonObject.getString("from_date");
-			to_date=jsonObject.getString("to_date");
+			from_date=DataUtils.firstDay();
+			to_date=DataUtils.currDay();
 		}else{
 			from_date=jsonObject.getString("from_date");
 			to_date=jsonObject.getString("to_date");

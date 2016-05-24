@@ -102,7 +102,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   queryEventNames();
   function queryEventNames(){
 	  var orderJson = '{"event_name":"pc+赏","from_date":"2016-05-01","to_date":"2016-05-20","on_condition":"","where_condition":""}';
-	  $.post("/msip_bhu_statistics/queryEventNames.do", {
+	  $.post("/bhu_api/v1/msip_bhu_statistics/queryEventNames.do", {
 		  	"data": orderJson,
 		  }).success(function(data) {
 			  var resArray=data.split(",");
