@@ -1,6 +1,7 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ExcelElementCallback;
@@ -22,6 +25,7 @@ import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimpor
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -34,6 +38,10 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+
+	@Resource
+	private DeviceFacadeService deviceFacadeService;
+	
 	@Resource
 	private UserDeviceFacadeService userDeviceFacadeService;
 	
@@ -73,23 +81,16 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			        if(macs_fromdb.isEmpty()){
 			        	atomic_failed.incrementAndGet();
 			        	return null;
-			        }
-			        else{
+			        }else{
 			        	//WifiDevice wifiDevice = models.get(0);
 			        	//String dmac = wifiDevice.getId();
 			        	String dmac = macs_fromdb.get(0);
-			        	//chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded==null?-1:uid_willbinded.intValue(), dmac, importVto.getOwner_percent(), 
-			        	//		importVto.getRcm(), importVto.getRcp(), importVto.getAit(), importVto.isCanbeturnoff(),importVto.isEnterpriselevel(), false);
-			        	/*chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, dmac, importVto.getOwner_percent(), 
-			        			importVto.getRcm(), importVto.getRcp(), importVto.getAit(), importVto.isCanbeturnoff(),importVto.isEnterpriselevel(), false);
-			        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);*/
 			        	//TODO:增加索引更新 是否可关闭
 			        	DeviceCallbackDTO result = new DeviceCallbackDTO();
 			        	result.setMac(dmac);
 			        	//result.setOrig_swver(wifiDevice.getOrig_swver());
 			        	atomic_successed.incrementAndGet();
 			        	return result;
-			        	//return models.get(0);
 			        }
 				}
 
@@ -103,8 +104,27 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 						List<String> pages = PageHelper.pageList(all_dmacs, pageno, 100);
 						logger.info(String.format("pageno:%s pagesize:%s pages:%s", pageno,100,pages));
 						if(uid_willbinded != null && uid_willbinded.intValue() >0){
-							userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
+							//userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
 							for(String dmac:pages){
+								UserDevicePK udp = userDeviceFacadeService.deviceBinded(dmac);
+								if(udp != null){
+									if(udp.getUid() != uid_willbinded.intValue()){
+										userDeviceFacadeService.getUserDeviceService().deleteById(udp);
+										UserDevice userDevice = new UserDevice();
+							            userDevice.setId(new UserDevicePK(dmac, uid_willbinded.intValue()));
+							            userDevice.setCreated_at(new Date());
+							            userDeviceFacadeService.getUserDeviceService().insert(userDevice);
+							            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
+									}else{
+										//已经此用户绑定，不动作
+									}
+								}else{
+									UserDevice userDevice = new UserDevice();
+						            userDevice.setId(new UserDevicePK(dmac, uid_willbinded.intValue()));
+						            userDevice.setCreated_at(new Date());
+						            userDeviceFacadeService.getUserDeviceService().insert(userDevice);
+						            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
+								}
 								chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, dmac, 
 										importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
 										importVto.isCustomized(),
@@ -128,8 +148,13 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 										noActionDevices.add(device.getId());
 									}
 								}
-								if(!forceUnbindedDevices.isEmpty())
+								if(!forceUnbindedDevices.isEmpty()){
 									userDeviceFacadeService.doForceUnbindDevice(forceUnbindedDevices);
+									for(String dmac:forceUnbindedDevices){
+										deviceFacadeService.destoryDeviceMobilePresentString(dmac);
+									}
+								}
+									
 								//变更分成比例
 								for(String dmac:forceUnbindedDevices){//需要变更owner = -1
 									chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,-1, dmac, 
@@ -176,10 +201,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 						} catch (Exception e) {
 							e.printStackTrace(System.out);
 						} finally{
-							if(pages != null){
-								pages.clear();
-								pages = null;
-							}
+							
 						}
 					}
 				}
@@ -201,8 +223,13 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("process message[%s] successful", message));
 	}
 	
-	/*//如果
+	/**
+	 * 清除绑定信息
+	 * 如果不是此用户绑定的设备则 清除原有的绑定信息并且把此用户设备绑定
+	 * @param uid
+	 * @param mac
+	 */
 	private void doForceBindDevice(int uid,String mac){
 		
-	}*/
+	}
 }

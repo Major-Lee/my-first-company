@@ -104,6 +104,15 @@ public class UserDeviceFacadeService {
         }
     }*/
 
+
+    public UserDevicePK deviceBinded(String mac) {
+        ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("mac", mac);
+        List<UserDevicePK> findIdsByModelCriteria = userDeviceService.findIdsByModelCriteria(mc);
+        if(findIdsByModelCriteria == null || findIdsByModelCriteria.isEmpty()) return null;
+        return findIdsByModelCriteria.get(0);
+    }
+	
     public boolean isBinded(String mac) {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andColumnEqualTo("mac", mac);
@@ -554,4 +563,18 @@ public class UserDeviceFacadeService {
         userDeviceService.deleteByModelCriteria(mc);
         return true;
     }
+
+	public UserDeviceService getUserDeviceService() {
+		return userDeviceService;
+	}
+
+	public WifiDeviceService getWifiDeviceService() {
+		return wifiDeviceService;
+	}
+
+	public UserService getUserService() {
+		return userService;
+	}
+    
+    
 }
