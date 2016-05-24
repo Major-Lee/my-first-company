@@ -52,7 +52,8 @@ public interface ITagRpcService {
 
 	RpcResponseDTO<Boolean> CanSaveNode(int uid, int gid, int pid, String name);
 
-	RpcResponseDTO<Boolean> batchGroupDownCmds(int uid, String message, String opt, String subopt, String extparams);
+	RpcResponseDTO<Boolean> batchGroupDownCmds(int uid, String message, String opt, String subopt, String extparams, String channel, String channel_taskid);
+	
 	RpcResponseDTO<Boolean> batchGroupSnkTakeEffectNetworkConf(int uid, String message, boolean on, String snk_type,String template);
 
 	RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> groupsGainsStatistics(int uid, String gids, String paths);

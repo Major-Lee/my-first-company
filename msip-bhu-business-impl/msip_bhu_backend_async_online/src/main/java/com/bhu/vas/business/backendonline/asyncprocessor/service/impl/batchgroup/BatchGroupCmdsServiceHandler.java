@@ -15,6 +15,7 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
+import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
@@ -41,6 +42,13 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("process message[%s]", message));
 		final OperGroupDTO operGroupDto = JsonHelper.getDTO(message, OperGroupDTO.class);
 		
+		final int uid = operGroupDto.getUid();
+		final String opt = operGroupDto.getOpt();
+		final String subopt = operGroupDto.getSubopt();
+		final String extparams = operGroupDto.getExtparams();
+		final String channel = operGroupDto.getChannel();
+		final String channel_taskid = operGroupDto.getChannel_taskid();
+		
 		final List<DownCmds> downCmdsList = new ArrayList<DownCmds>();
 		
 		wifiDeviceDataSearchService.iteratorAll(operGroupDto.getMessage(),100,
@@ -49,10 +57,14 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 					public void notifyComming(Page<WifiDeviceDocument> pages) {
 						for (WifiDeviceDocument doc : pages) {
 							
-							String payload = autoGenerateCmds(operGroupDto.getUid(),doc.getD_mac(),
-									operGroupDto.getOpt(),operGroupDto.getSubopt(),operGroupDto.getExtparams(),
-									DeviceStatusExchangeDTO.build(doc.getD_workmodel(), doc.getD_origswver()));
-							downCmdsList.add(DownCmds.builderDownCmds(doc.getD_mac(),payload));
+							WifiDeviceDownTask task = null;
+							try {
+								task = autoGenerateCmds(uid,doc.getD_mac(),opt,subopt,extparams,
+										DeviceStatusExchangeDTO.build(doc.getD_workmodel(), doc.getD_origswver()),channel,channel_taskid);
+								downCmdsList.add(DownCmds.builderDownCmds(doc.getD_mac(),task.getPayload()));
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
 					    daemonRpcService.wifiMultiDevicesCmdsDown(downCmdsList.toArray(new DownCmds[0]));
 					}
@@ -68,15 +80,16 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 	 * @param extparams
 	 * @param d_status_dto
 	 * @return
+	 * @throws Exception 
 	 */
-	public String autoGenerateCmds(int uid, String mac, String opt, String subopt, String extparams,
-			DeviceStatusExchangeDTO d_status_dto) {
+	public WifiDeviceDownTask autoGenerateCmds(int uid, String mac, String opt, String subopt, String extparams,
+			DeviceStatusExchangeDTO d_status_dto,String channel,String channel_taskid) throws Exception {
 
 		OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
 		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
-		String payload = taskFacadeService.apiCmdGenerate(uid, mac, opt_cmd, ods_cmd, extparams, 0, d_status_dto, null);
+		WifiDeviceDownTask task = taskFacadeService.apiCommonTaskGenerate(uid, mac, opt_cmd, ods_cmd, extparams, channel,channel_taskid, d_status_dto, null);
 
-		return payload;
+		return task;
 	}
 
 }

@@ -20,6 +20,7 @@ import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
+import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -180,8 +181,10 @@ public class GroupController extends BaseController{
             @RequestParam(required = true) String message,
             @RequestParam(required = true) String opt,
             @RequestParam(required = false,defaultValue = "00") String subopt,
-            @RequestParam(required = false) String extparams) {
-    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.batchGroupDownCmds(uid, message, opt, subopt, extparams);
+            @RequestParam(required = false) String extparams,
+			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
+			@RequestParam(required = false) String channel_taskid) {
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.batchGroupDownCmds(uid, message, opt, subopt, extparams,channel,channel_taskid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

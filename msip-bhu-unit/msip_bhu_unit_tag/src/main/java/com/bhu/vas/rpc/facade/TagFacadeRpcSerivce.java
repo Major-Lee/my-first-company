@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
@@ -321,9 +320,16 @@ public class TagFacadeRpcSerivce {
 	 * @return
 	 */
 	public boolean CanSaveNode(int uid, int gid, int pid, String name) {
-
+		
+		if (name.isEmpty()) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_ERROR);
+		}
+		
 		boolean flag = StringFilter(name);
-
+		
+		if (!flag) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_FORMAT_ERROR);
+		}
 		// 所有节点不可重名
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("creator", uid).andColumnEqualTo("name", name);
@@ -534,13 +540,15 @@ public class TagFacadeRpcSerivce {
 	 * 
 	 * @param uid
 	 * @param message
+	 * @param channel_taskid 
+	 * @param channel 
 	 * @param cmds
 	 */
-	public void batchGroupDownCmds(int uid, String message, String opt, String subopt, String extparams) {
+	public void batchGroupDownCmds(int uid, String message, String opt, String subopt, String extparams, String channel, String channel_taskid) {
 		if (message != null && opt != null) {
 			OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
 			if (opt_cmd.equals(OperationCMD.ModifyDeviceSetting)) {
-				asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt, subopt, extparams);
+				asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt, subopt, extparams, channel, channel_taskid);
 			} else {
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 			}
