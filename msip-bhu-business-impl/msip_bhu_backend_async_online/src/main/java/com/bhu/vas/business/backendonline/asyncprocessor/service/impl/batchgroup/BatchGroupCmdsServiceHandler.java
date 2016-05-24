@@ -51,7 +51,6 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 		
 		final List<DownCmds> downCmdsList = new ArrayList<DownCmds>();
 
-		System.out.println("1111111111");
 		wifiDeviceDataSearchService.iteratorAll(operGroupDto.getMessage(),100,
 				new IteratorNotify<Page<WifiDeviceDocument>>() {
 					@Override
@@ -59,19 +58,15 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 						for (WifiDeviceDocument doc : pages) {
 							
 							WifiDeviceDownTask task = null;
-							try {
-								System.out.println("2222222222222222222");
-								task = autoGenerateCmds(uid,doc.getD_mac(),opt,subopt,extparams,
-										DeviceStatusExchangeDTO.build(doc.getD_workmodel(), doc.getD_origswver()),channel,channel_taskid);
-								System.out.println("999999999999999");
-								downCmdsList.add(DownCmds.builderDownCmds(doc.getD_mac(),task.getPayload()));
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+								try {
+									task = autoGenerateCmds(uid,doc.getD_mac(),opt,subopt,extparams,
+											DeviceStatusExchangeDTO.build(doc.getD_workmodel(), doc.getD_origswver()),channel,channel_taskid);
+									downCmdsList.add(DownCmds.builderDownCmds(doc.getD_mac(),task.getPayload()));
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 						}
-						System.out.println("101001010");
 					    daemonRpcService.wifiMultiDevicesCmdsDown(downCmdsList.toArray(new DownCmds[0]));
-					    System.out.println("qqqqqqqqqqqqqqqqq");
 					}
 		});
 		logger.info(String.format("process message[%s] successful", message));
@@ -92,9 +87,7 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 
 		OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
 		OperationDS ods_cmd = OperationDS.getOperationDSFromNo(subopt);
-		System.out.println("3333333333333");
 		WifiDeviceDownTask task = taskFacadeService.apiCommonTaskGenerate(uid, mac, opt_cmd, ods_cmd, extparams, channel,channel_taskid, d_status_dto, null);
-		System.out.println("888888888888888");
 		return task;
 	}
 
