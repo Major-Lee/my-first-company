@@ -1,10 +1,13 @@
 package com.bhu.statistics.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * 日期操作转换类
@@ -34,10 +37,45 @@ public class DateUtils {
        return list; 
 	}
 	
+	/**
+	 * 格式化时间 YY-MM-dd
+	 * @param date
+	 * @return
+	 */
+	public static String formatDate(String date){
+		String dateString = StringUtils.EMPTY;
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			Date dt=formatter.parse(date);
+			dateString = formatter.format(dt);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return dateString;
+	}
+	
+	public static long getDaySub(String startTime,String endTime){
+		Date beginDate; 
+		Date endDate; 
+		long day=0; 
+		try {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
+			beginDate = format.parse(startTime); 
+			endDate = format.parse(endTime);
+			day=(endDate.getTime()-beginDate.getTime())/(24*60*60*1000); 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return day;
+	}
 	public static void main(String[] args) {
-		List<String> list = getLastDay(30);
+		/*List<String> list = getLastDay(30);
 		for (int i = 0; i < list.size(); i++) {
 			System.out.println(list.get(i));
-		}
+		}*/
+		System.out.println(formatDate("2016-05-23 15:15"));
+		System.out.println(20160501-20160301);
+		System.out.println(getDaySub("2016-05-23 15:15","2016-05-28 15:15"));
 	}
 }

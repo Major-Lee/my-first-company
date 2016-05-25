@@ -93,7 +93,7 @@ public class UMLogicImpl implements IUMLogic{
 	}
 	
 	/**
-	 * ���ʱ�����Ͳ�ѯSSID���ͳ����Ϣ
+	 * 查询SSID统计信息
 	 * @author Jason
 	 */
 	@Override
@@ -101,109 +101,109 @@ public class UMLogicImpl implements IUMLogic{
 		//返回结果
 		String result = StringUtils.EMPTY;
 		if(StringUtils.isBlank(data)){
-			log.info("�������Ϊ��");
-			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "�������Ϊ��", true);
+			log.info("请求参数为空");
+			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "请求参数为空", true);
 			return result;
 		}
 		//uv总数
 		int totalUV = 0;
 		//pv总数
 		int totalPV = 0;
+		//时间类型
 		String dateType = StringUtils.EMPTY;
-		//当前页数
-		String pageIndex = StringUtils.EMPTY;
-		//分页条数
-		String pageSize = StringUtils.EMPTY;
+		//开始时间
+		String startTime = StringUtils.EMPTY;
+		//结束时间
+		String endTime = StringUtils.EMPTY;
 		try {
 			JSONObject object = JSONObject.fromObject(data);
 			dateType = object.getString("type");
-			pageIndex = object.getString("pn");
-			pageSize = object.getString("ps");
+			startTime = object.getString("startTime");
+			endTime = object.getString("endTime");
  		} catch (Exception e) {
-			log.info("JSON��ʽת������");
-			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON��ʽת������", true);
+			log.info("JSON格式转换错误");
+			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON格式转换错误", true);
 			return result;
 		}
-		if(StringUtils.isBlank(dateType)){
-			log.info("��ȡʱ������Ϊ��");
-			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "ʱ������Ϊ��", true);
-			return result;
-		}
-		//��װ���
+		//组装结果集
 		List<Map<String,Object>> listMap = new ArrayList<Map<String,Object>>();
 		Map<String,Object> map = null;
-		if(StringUtils.equals(dateType, "1")){
-			//��ѯ��������SSIDͳ����Ϣ
-			//��ȡ�����������
-			List<String> dateList = DateUtils.getLastDay(7);
-			String date = StringUtils.EMPTY;
-			for (int i = 0; i < dateList.size(); i++) {
-				date = dateList.get(i);
-				String dayPv = BhuCache.getInstance().getDayPV(date, "dayPV");
-				String dayUv = BhuCache.getInstance().getDayUV(date, "dayUV");
-				if(StringUtils.isNotBlank(dayPv)){
-					totalPV = Integer.parseInt(dayPv);
-				}
-				if(StringUtils.isNotBlank(dayUv)){
-					totalUV = Integer.parseInt(dayUv);
-				}
-				//TODO ��ȡ����������� 
-				map = new HashMap<String,Object>();
-				map.put("currDate", date);
-				map.put("totalUV", totalUV);
-				map.put("totalPV", totalPV);
-				listMap.add(map);
+		//查询最近七天SSID统计信息
+		//获取时间列表
+		if(StringUtils.isBlank(dateType)){
+			log.info("时间类型为空");
+			result =  NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "时间类型为空", true);
+			return result;
+		}
+		List<String> dateList = DateUtils.getLastDay(Integer.parseInt(dateType));
+		String date = StringUtils.EMPTY;
+		for (int i = 0; i < dateList.size(); i++) {
+			date = dateList.get(i);
+			String dayPv = BhuCache.getInstance().getDayPV(date, "dayPV");
+			String dayUv = BhuCache.getInstance().getDayUV(date, "dayUV");
+			if(StringUtils.isNotBlank(dayPv)){
+				totalPV = Integer.parseInt(dayPv);
 			}
-		}else if(StringUtils.equals(dateType, "2")){
-			//��ȡ�����ʮ��SSIDͳ����Ϣ
-			//��ȡ�����ʮ������
-			List<String> dateList = DateUtils.getLastDay(30);
-			String date = StringUtils.EMPTY;
-			for (int i = 0; i < dateList.size(); i++) {
-				date = dateList.get(i);
-				String dayPv = BhuCache.getInstance().getDayPV(date, "dayPV");
-				String dayUv = BhuCache.getInstance().getDayUV(date, "dayUV");
-				if(StringUtils.isNotBlank(dayPv)){
-					totalPV = Integer.parseInt(dayPv);
-				}
-				if(StringUtils.isNotBlank(dayUv)){
-					totalUV = Integer.parseInt(dayUv);
-				}
-				map = new HashMap<String,Object>();
-				map.put("currDate", date);
-				map.put("totalUV", totalUV);
-				map.put("totalPV", totalPV);
-				listMap.add(map);
+			if(StringUtils.isNotBlank(dayUv)){
+				totalUV = Integer.parseInt(dayUv);
 			}
-		}else if(StringUtils.equals(dateType, "3")){ 
-		 	//��ȡ�����ʧ��SSIDͳ����Ϣ
-			//��ȡ�����ʮ������
-			List<String> dateList = DateUtils.getLastDay(60);
-			String date = StringUtils.EMPTY;
-			for (int i = 0; i < dateList.size(); i++) {
-				date = dateList.get(i);
-				String dayPv = BhuCache.getInstance().getDayPV(date, "dayPV");
-				String dayUv = BhuCache.getInstance().getDayUV(date, "dayUV");
-				if(StringUtils.isNotBlank(dayPv)){
-					totalPV = Integer.parseInt(dayPv);
-				}
-				if(StringUtils.isNotBlank(dayUv)){
-					totalUV = Integer.parseInt(dayUv);
-				}
-				map = new HashMap<String,Object>();
-				map.put("currDate", date);
-				map.put("totalUV", totalUV);
-				map.put("totalPV", totalPV);
-				listMap.add(map);
-			}
+			map = new HashMap<String,Object>();
+			map.put("currDate", date);
+			map.put("totalUV", totalUV);
+			map.put("totalPV", totalPV);
+			listMap.add(map);
 		}
 		Map<String,Object> body = new HashMap<String,Object>();
-		for (int i = 0; i < listMap.size(); i++) {
-			
-		} 
 		body.put("ssidList", listMap);
 		result = NotifyUtil.success(body);
 		return result;
+	}
+
+	@Override
+	public String querySSIDInfoByTime(String data) {
+		//返回结果
+		String result = StringUtils.EMPTY;
+		if(StringUtils.isBlank(data)){
+			log.info("请求参数为空");
+			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "请求参数为空", true);
+			return result;
+		}
+		//uv总数
+		int totalUV = 0;
+		//pv总数
+		int totalPV = 0;
+		//开始时间
+		String startTime = StringUtils.EMPTY;
+		//结束时间
+		String endTime = StringUtils.EMPTY;
+		try {
+			JSONObject object = JSONObject.fromObject(data);
+			startTime = object.getString("startTime");
+			endTime = object.getString("endTime");
+ 		} catch (Exception e) {
+			log.info("JSON格式转换错误");
+			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON格式转换错误", true);
+			return result;
+		}
+		if(StringUtils.isBlank(startTime)){
+			log.info("开始时间为空");
+			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "开始时间为空", true);
+			return result;
+		}
+		if(StringUtils.isBlank(endTime)){
+			log.info("结束时间为空");
+			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "开始时间为空", true);
+			return result;
+		}
+		//组装结果集
+		List<Map<String,Object>> listMap = new ArrayList<Map<String,Object>>();
+		Map<String,Object> map = null;
+		//时间格式化
+		startTime = DateUtils.formatDate(startTime);
+		endTime = DateUtils.formatDate(endTime);
+		/*if(){
+			
+		}*/
 	}
 	
 }

@@ -2,31 +2,38 @@ package com.bhu.statistics.logic;
 
 public interface IUMLogic {
 	/**
-	 * 查询SSID的统计数量
+	 * 锟斤拷询SSID锟斤拷统锟斤拷锟斤拷锟斤拷
 	 * @param data
 	 * @return
 	 */
 	public String querySSIDStatistics(String data);
 	
 	/**
-	 * 查询所有的pv和uv数量
+	 * 锟斤拷询锟斤拷锟叫碉拷pv锟斤拷uv锟斤拷锟斤拷
 	 * @param data
 	 * @return
 	 */
 	public String queryAllPVAndUV(String data);
 	
 	/**
-	 * 查询每天SSID的pv和uv的数量
+	 * 锟斤拷询每锟斤拷SSID锟斤拷pv锟斤拷uv锟斤拷锟斤拷锟斤拷
 	 * @param data
 	 * @return
 	 */
 	public String queryDayPVAndUV(String data);
 	
 	/**
-	 * 根据时间类型查询SSID相关统计信息
+	 * 鏍规嵁鏃堕棿绫诲瀷鏌ヨSSID缁熻淇℃伅
 	 * @author Jason
 	 * @param data
 	 * @return
 	 */
 	public String querySSIDInfoByType(String data);
+	
+	/**
+	 * 鏍规嵁鏃堕棿闂撮殧鏌ヨSSID缁熻淇℃伅
+	 * @param data
+	 * @return
+	 */
+	public String querySSIDInfoByTime(String data);
 }
