@@ -48,7 +48,7 @@ public class QuerySSIdStatisticsController extends BaseController{
 		} 
 		if(StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)){
 			//按时间间隔查询SSID统计信息
-			
+			result = staticsService.querySSIDInfoByTime(data);
 		}else{
 			//按时间类型查询SSID统计信息
 			result=staticsService.querySSIDInfoByType(data);
