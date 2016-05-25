@@ -23,6 +23,7 @@
 	<typeAliases>
 		<typeAlias alias="paymentAlipaylocation" type="com.bhu.vas.api.rpc.payment.model.PaymentAlipaylocation" />
 		<typeAlias alias="paymentOrder" type="com.bhu.vas.api.rpc.payment.model.PaymentOrder" />
+		<typeAlias alias="paymentRecord" type="com.bhu.vas.api.rpc.payment.model.PaymentRecord" />
 		<typeAlias alias="paymentReckoning" type="com.bhu.vas.api.rpc.payment.model.PaymentReckoning" />
 		<typeAlias alias="paymentWithdraw" type="com.bhu.vas.api.rpc.payment.model.PaymentWithdraw" />
 	</typeAliases>
@@ -30,6 +31,7 @@
 	<mappers>
 		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentAlipaylocation.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentOrder.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentRecord.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentReckoning.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentWithdraw.sqlMap.xml" />
 	</mappers>
