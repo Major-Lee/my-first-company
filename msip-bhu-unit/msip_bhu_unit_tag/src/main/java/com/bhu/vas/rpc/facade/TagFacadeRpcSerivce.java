@@ -69,13 +69,13 @@ public class TagFacadeRpcSerivce {
 
 	@Resource
 	private ChargingStatisticsFacadeService chargingStatisticsFacadeService;
-	
+
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
-	
+
 	@Resource
 	private UserDeviceService userDeviceService;
-	
+
 	private void addTag(int uid, String tag) {
 
 		ModelCriteria mc = new ModelCriteria();
@@ -229,33 +229,33 @@ public class TagFacadeRpcSerivce {
 		String[] macsTemp = macs.split(StringHelper.COMMA_STRING_GAP);
 
 		List<String> macsList = ArrayHelper.toList(macsTemp);
-		
 
+		// mac绑定uid检测
+		UserValidateServiceHelper.validateUserDevices(uid, macsList, userDeviceService);
 		
 		// 验证是否能添加设备
-		CanAddDevices2Group(uid, gid, macsList);
+		if(CanAddDevices2Group(uid, gid, macsList)){
+			List<TagGroupRelation> entities = new ArrayList<TagGroupRelation>();
 
-		List<TagGroupRelation> entities = new ArrayList<TagGroupRelation>();
+			for (String mac : macsTemp) {
 
-		for (String mac : macsTemp) {
+				TagGroupRelation tagGroupRelation = new TagGroupRelation();
+				tagGroupRelation.setId(mac);
+				tagGroupRelation.setGid(gid);
+				tagGroupRelation.setUid(uid);
+				tagGroupRelation.setPath(path);
 
-			TagGroupRelation tagGroupRelation = new TagGroupRelation();
-			tagGroupRelation.setId(mac);
-			tagGroupRelation.setGid(gid);
-			tagGroupRelation.setUid(uid);
-			tagGroupRelation.setPath(path);
+				entities.add(tagGroupRelation);
+			}
 
-			entities.add(tagGroupRelation);
+			tagGroupRelationService.insertAll(entities);
+
+			changeDevicesCount(gid, macsTemp.length);
+
+			String paths = tagGroupService.getById(gid).getPath2ES();
+
+			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
 		}
-
-		tagGroupRelationService.insertAll(entities);
-
-		changeDevicesCount(gid, macsTemp.length);
-
-		String paths = tagGroupService.getById(gid).getPath2ES();
-
-		wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
-
 	}
 
 	/**
@@ -269,25 +269,27 @@ public class TagFacadeRpcSerivce {
 
 		List<TagGroupRelation> entities = tagGroupRelationService.findByIds(macsList);
 		
+		// mac绑定uid检测
+		UserValidateServiceHelper.validateUserDevices(uid, macsList, userDeviceService);
+		
 		if (newGid == 0) {
 			tagGroupRelationService.deleteAll(entities);
 			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
 		} else {
-			
-			CanAddDevices2Group(uid,newGid,macsList);	
 
-			for (TagGroupRelation tagGroupRelation : entities) {
-				if (tagGroupRelation == null) {
-					throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUPREL_DEVICE_NOEXIST);
+			if (CanAddDevices2Group(uid, newGid, macsList)) {
+				for (TagGroupRelation tagGroupRelation : entities) {
+					if (tagGroupRelation == null) {
+						throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUPREL_DEVICE_NOEXIST);
+					}
+					tagGroupRelation.setGid(newGid);
 				}
-				tagGroupRelation.setGid(newGid);
+				tagGroupRelationService.updateAll(entities);
+
+				String paths = tagGroupService.getById(newGid).getPath2ES();
+				wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
 			}
-			tagGroupRelationService.updateAll(entities);
-
-			String paths = tagGroupService.getById(newGid).getPath2ES();
-			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
 		}
-
 		changeDevicesCount(gid, -macTemp.length);
 	}
 
@@ -333,13 +335,13 @@ public class TagFacadeRpcSerivce {
 	 * @return
 	 */
 	public boolean CanSaveNode(int uid, int gid, int pid, String name) {
-		
+
 		if (name.isEmpty()) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_EMPTY);
 		}
-		
+
 		boolean flag = StringFilter(name);
-		
+
 		if (!flag) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_FORMAT_ERROR);
 		}
@@ -380,7 +382,8 @@ public class TagFacadeRpcSerivce {
 
 	/**
 	 * 当前节点能否添加设备的可行性验证
-	 * @param userDeviceService2 
+	 * 
+	 * @param userDeviceService2
 	 * 
 	 * @return
 	 */
@@ -389,15 +392,13 @@ public class TagFacadeRpcSerivce {
 		boolean flag = true;
 
 		TagGroup tagGroup = tagGroupService.getById(gid);
-		
+
 		// 当前节点是否存在
 		if (tagGroup == null) {
 			flag = false;
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_INEXISTENCE);
 		} else {
-			//mac绑定uid检测
-			UserValidateServiceHelper.validateUserDevices(uid, macList, userDeviceService);
-			
+
 			// 当前节点添加设备是否超过100台
 			if (flag && (tagGroup.getDevice_count() > 99 || (tagGroup.getDevice_count() + macList.size() > 99))) {
 				flag = false;
@@ -497,14 +498,14 @@ public class TagFacadeRpcSerivce {
 		mc.setOrderByClause(" created_at desc");
 		TailPage<TagGroup> pages = tagGroupService.findModelTailPageByModelCriteria(mc);
 		List<TagGroupVTO> result = new ArrayList<TagGroupVTO>();
-		
+
 		if (pageNo == 1 && pid == 0) {
 			TagGroupVTO vto = new TagGroupVTO();
 			vto.setName("默认分组");
-			vto.setDevice_count((int)wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, null));
+			vto.setDevice_count((int) wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, null));
 			result.add(vto);
 		}
-		
+
 		for (TagGroup tagGroup : pages) {
 			TagGroupVTO vto = TagGroupDetail(tagGroup);
 			result.add(vto);
@@ -513,8 +514,7 @@ public class TagFacadeRpcSerivce {
 		return new CommonPage<TagGroupVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(),
 				result);
 	}
-	
-	
+
 	public TagGroupVTO currentGroupDetail(int uid, int gid) {
 
 		TagGroup tagGroup = tagGroupService.getById(gid);
@@ -532,15 +532,17 @@ public class TagFacadeRpcSerivce {
 	 * 
 	 * @param uid
 	 * @param message
-	 * @param channel_taskid 
-	 * @param channel 
+	 * @param channel_taskid
+	 * @param channel
 	 * @param cmds
 	 */
-	public void batchGroupDownCmds(int uid, String message, String opt, String subopt, String extparams, String channel, String channel_taskid) {
+	public void batchGroupDownCmds(int uid, String message, String opt, String subopt, String extparams, String channel,
+			String channel_taskid) {
 		if (message != null && opt != null) {
 			OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
 			if (opt_cmd.equals(OperationCMD.ModifyDeviceSetting)) {
-				asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt, subopt, extparams, channel, channel_taskid);
+				asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt, subopt, extparams,
+						channel, channel_taskid);
 			} else {
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 			}
@@ -548,9 +550,10 @@ public class TagFacadeRpcSerivce {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
+
 	/**
 	 * 分组批量设置安全共享模板
+	 * 
 	 * @param uid
 	 * @param message
 	 * @param on
@@ -569,49 +572,52 @@ public class TagFacadeRpcSerivce {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * 获得分组收益统计
+	 * 
 	 * @param uid
 	 * @param gids
 	 * @param paths
 	 * @return
 	 */
-	public List<DeviceGroupPaymentStatisticsVTO> groupsGainsStatistics(int uid ,String gids,String paths){
-		
+	public List<DeviceGroupPaymentStatisticsVTO> groupsGainsStatistics(int uid, String gids, String paths) {
+
 		String[] gidArr = gids.split(StringHelper.COMMA_STRING_GAP);
 		String[] pathsArr = paths.split(StringHelper.COMMA_STRING_GAP);
 		List<DeviceGroupPaymentStatisticsVTO> list = new ArrayList<DeviceGroupPaymentStatisticsVTO>();
 		if (gidArr.length == pathsArr.length) {
 			for (int i = 0; i < pathsArr.length; i++) {
-				DeviceGroupPaymentStatisticsVTO vto = chargingStatisticsFacadeService.fetchDeviceGroupPaymentStatistics(uid, gidArr[i], pathsArr[i]);
+				DeviceGroupPaymentStatisticsVTO vto = chargingStatisticsFacadeService
+						.fetchDeviceGroupPaymentStatistics(uid, gidArr[i], pathsArr[i]);
 				list.add(vto);
 			}
 		}
 		return list;
 	}
-	
+
 	/**
 	 * 获得分组在线数
+	 * 
 	 * @param uid
 	 * @param gids
 	 * @return
 	 */
-	public List<GroupCountOnlineVTO> groupsStatsOnline(int uid ,String gids){
-    	String[] arr = gids.split(StringHelper.COMMA_STRING_GAP);
-    	List<GroupCountOnlineVTO> list = new ArrayList<GroupCountOnlineVTO>();
-    	for(String gid : arr){
-    		GroupCountOnlineVTO vto = new GroupCountOnlineVTO();
-    		vto.setGid(gid);
-    		if (gid.isEmpty()) {
-    			vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, 
-    					WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
-			}else{
-	    		vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, "g_"+gid, 
-	    				WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
+	public List<GroupCountOnlineVTO> groupsStatsOnline(int uid, String gids) {
+		String[] arr = gids.split(StringHelper.COMMA_STRING_GAP);
+		List<GroupCountOnlineVTO> list = new ArrayList<GroupCountOnlineVTO>();
+		for (String gid : arr) {
+			GroupCountOnlineVTO vto = new GroupCountOnlineVTO();
+			vto.setGid(gid);
+			if (gid.isEmpty()) {
+				vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, null,
+						WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
+			} else {
+				vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, "g_" + gid,
+						WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
 			}
-    		list.add(vto);
-    	}
-    	return list;
-    }
+			list.add(vto);
+		}
+		return list;
+	}
 }
