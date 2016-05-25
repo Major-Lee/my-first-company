@@ -51,11 +51,13 @@ public class Test {
     } 
 	
 	public static void main(String[] args) {
-		 try {  
-             readZipFile("E:\\test.zip");  
-         } catch (Exception e) {  
-             // TODO Auto-generated catch block  
-             e.printStackTrace();  
-         } 
+		String currDay=DataUtils.currDay();
+		System.out.println(currDay);
+//		 try {  
+//             readZipFile("E:\\test.zip");  
+//         } catch (Exception e) {  
+//             // TODO Auto-generated catch block  
+//             e.printStackTrace();  
+//         } 
 	}
 }
