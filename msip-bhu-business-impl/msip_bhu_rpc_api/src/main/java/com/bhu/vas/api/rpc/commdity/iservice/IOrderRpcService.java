@@ -4,6 +4,7 @@ import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
@@ -24,4 +25,6 @@ public interface IOrderRpcService {
 	
 	public RpcResponseDTO<TailPage<UserOrderDTO>> orderPagesByUid(Integer uid, String mac, String umac, 
 			Integer status, String dut, int pageNo, int pageSize);
+	
+	public RpcResponseDTO<OrderStatisticsVTO> orderStatisticsBetweenDate(String start_date, String end_date);
 }

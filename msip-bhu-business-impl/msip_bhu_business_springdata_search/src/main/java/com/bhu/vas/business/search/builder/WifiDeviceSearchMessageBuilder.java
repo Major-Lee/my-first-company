@@ -1,5 +1,6 @@
 package com.bhu.vas.business.search.builder;
 
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.common.lang3.StringUtils;
 import org.elasticsearch.search.sort.SortOrder;
 
@@ -134,6 +135,28 @@ public class WifiDeviceSearchMessageBuilder {
 //		pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_uc_extension, sc_d_uid, sc_d_online);
 
 		return SearchConditionMessage.builderSearchConditionMessage(pack_must);
+	}
+	
+	public static SearchConditionMessage builderSearchMessageWithDeviceStatistics(String d_snk_turnstate,
+			String d_snk_type, String d_online){
+		
+		SearchCondition sc_d_snk_turnstate = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.D_SHAREDNETWORK_TURNSTATE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+				d_snk_turnstate);
+		
+		SearchCondition sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+				d_snk_type);
+		
+		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_d_snk_turnstate, sc_d_snk_type);
+		
+		if(StringHelper.isNotEmpty(d_online)){
+			SearchCondition sc_d_online = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_online);
+			pack_must.addChildSearchCondtions(sc_d_online);
+		}
+
+		return SearchConditionMessage.builderSearchConditionMessage(SearchType.COUNT.id(), pack_must);
 	}
 	
 	public static String builderSearchMessageString(SearchConditionMessage searchConditionMessage){

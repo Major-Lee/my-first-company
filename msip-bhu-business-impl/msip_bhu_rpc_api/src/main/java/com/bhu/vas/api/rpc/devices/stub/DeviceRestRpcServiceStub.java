@@ -15,6 +15,7 @@ import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -165,10 +166,9 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 		return deviceRestRpcService.countByUCExtensionOnline(uid, t_uc_extension, online);
 	}
 
-	/*@Override
-	public Collection<GeoMapVTO> fetchGeoMap() {
-		return deviceRestRpcService.fetchGeoMap();
-	}*/
-
+	@Override
+	public RpcResponseDTO<DeviceStatisticsVTO> deviceStatistics(String d_snk_turnstate, String d_snk_type) {
+		return deviceRestRpcService.deviceStatistics(d_snk_turnstate, d_snk_type);
+	}
 
 }

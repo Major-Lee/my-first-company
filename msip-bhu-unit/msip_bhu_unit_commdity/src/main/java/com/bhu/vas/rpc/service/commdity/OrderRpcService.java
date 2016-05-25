@@ -11,6 +11,7 @@ import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
+import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.rpc.facade.OrderUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -66,6 +67,12 @@ public class OrderRpcService implements IOrderRpcService{
 		logger.info(String.format("orderPagesByUid with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, 
 				mac, umac, status, dut, pageNo, pageSize));
 		return orderUnitFacadeService.orderPagesByUid(uid, mac, umac, status, dut, pageNo, pageSize);
+	}
+	
+	@Override
+	public RpcResponseDTO<OrderStatisticsVTO> orderStatisticsBetweenDate(String start_date, String end_date) {
+		logger.info(String.format("orderStatisticsBetweenDate with start_date[%s] end_date[%s]", start_date, end_date));
+		return orderUnitFacadeService.orderStatisticsBetweenDate(start_date, end_date);
 	}
 
 }
