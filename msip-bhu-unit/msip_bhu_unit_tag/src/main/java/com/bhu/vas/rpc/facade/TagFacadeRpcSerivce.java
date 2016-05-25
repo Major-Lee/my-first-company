@@ -269,12 +269,13 @@ public class TagFacadeRpcSerivce {
 
 		List<TagGroupRelation> entities = tagGroupRelationService.findByIds(macsList);
 		
-		UserValidateServiceHelper.validateUserDevices(uid, macsList, userDeviceService);
-		
 		if (newGid == 0) {
 			tagGroupRelationService.deleteAll(entities);
 			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
 		} else {
+			
+			CanAddDevices2Group(uid,newGid,macsList);	
+
 			for (TagGroupRelation tagGroupRelation : entities) {
 				if (tagGroupRelation == null) {
 					throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUPREL_DEVICE_NOEXIST);
@@ -396,6 +397,7 @@ public class TagFacadeRpcSerivce {
 		} else {
 			//mac绑定uid检测
 			UserValidateServiceHelper.validateUserDevices(uid, macList, userDeviceService);
+			
 			// 当前节点添加设备是否超过100台
 			if (flag && (tagGroup.getDevice_count() > 99 || (tagGroup.getDevice_count() + macList.size() > 99))) {
 				flag = false;
