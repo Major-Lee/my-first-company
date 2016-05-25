@@ -1,6 +1,7 @@
 package com.bhu.vas.business.ds.charging.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -102,6 +103,7 @@ public class ChargingStatisticsFacadeService {
         	entity.setTotal_payment_amount("0.00");
         	entity.setTotal_incoming_amount(total_incoming_amount);
         	entity.setTotal_times(total_times);
+        	entity.setCreated_at(new Date());
         	deviceGroupPaymentStatisticsService.insert(entity);
     	}else{
         	entity.setUid(uid);
