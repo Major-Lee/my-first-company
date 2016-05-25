@@ -51,9 +51,11 @@ public class ShipmentExcelImport {
 	        	if(totalRowNum == 0){
 	        		continue;
 	        	}
-
+	        	System.out.println(String.format("numSheet[%s] SheetName[%s] totalRowNum[%s]",numSheet,sheet.getSheetName(),totalRowNum));
 	        	for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); rowNum++) {
+	        		System.out.println("current row:"+rowNum);
 	        		Row row = sheet.getRow(rowNum);
+	        		if(row == null) continue;
 	        		Cell cell_sn = row.getCell(0);
 	        		if(cell_sn == null) continue;
 	        		String sn = cell_sn.getStringCellValue();
@@ -94,6 +96,9 @@ public class ShipmentExcelImport {
             }
 		}
 	}
+	
+	
+	
 	public static void main(String[] argv){
 		//uRouter-20160426-双翼.xlsx
 		//uRouter-20160426-共进.xlsx
