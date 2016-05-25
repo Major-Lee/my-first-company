@@ -1,7 +1,7 @@
 package com.bhu.vas.business.ds.payment.service;
 
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.payment.model.PaymentOrder;
 import com.bhu.vas.business.ds.payment.dao.PaymentOrderDao;
-import com.smartwork.msip.business.abstractmsd.service.AbstractTagService;
+import com.smartwork.msip.business.abstractmsd.service.AbstractPaymentService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
@@ -22,8 +22,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 @Service
 @Transactional("paymentTransactionManager")
-public class PaymentOrderService extends
-		AbstractTagService<Long, PaymentOrder, PaymentOrderDao> {
+public class PaymentOrderService extends AbstractPaymentService<Long, PaymentOrder, PaymentOrderDao> {
 
 	@Resource
 	@Override

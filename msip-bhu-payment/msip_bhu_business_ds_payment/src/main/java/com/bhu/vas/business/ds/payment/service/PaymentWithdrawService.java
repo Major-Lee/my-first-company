@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
 import com.bhu.vas.business.ds.payment.dao.PaymentWithdrawDao;
-import com.smartwork.msip.business.abstractmsd.service.AbstractTagService;
+import com.smartwork.msip.business.abstractmsd.service.AbstractPaymentService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
@@ -23,7 +23,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 @Service
 @Transactional("paymentTransactionManager")
 public class PaymentWithdrawService extends
-		AbstractTagService<String, PaymentWithdraw, PaymentWithdrawDao> {
+AbstractPaymentService<String, PaymentWithdraw, PaymentWithdrawDao> {
 
 	@Resource
 	@Override
