@@ -283,11 +283,13 @@ public class TagFacadeRpcSerivce {
 						throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUPREL_DEVICE_NOEXIST);
 					}
 					tagGroupRelation.setGid(newGid);
+					tagGroupRelation.setPath(newGid+"/");
 				}
 				tagGroupRelationService.updateAll(entities);
 
 				String paths = tagGroupService.getById(newGid).getPath2ES();
 				wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
+				changeDevicesCount(newGid, macTemp.length);
 			}
 		}
 		changeDevicesCount(gid, -macTemp.length);
@@ -398,7 +400,11 @@ public class TagFacadeRpcSerivce {
 			flag = false;
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_INEXISTENCE);
 		} else {
-
+			
+			if (tagGroup.getCreator() != uid) {
+				flag = false;
+				throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_USER_PRIVILEGE_ERROR);
+			}
 			// 当前节点添加设备是否超过100台
 			if (flag && (tagGroup.getDevice_count() > 99 || (tagGroup.getDevice_count() + macList.size() > 99))) {
 				flag = false;
