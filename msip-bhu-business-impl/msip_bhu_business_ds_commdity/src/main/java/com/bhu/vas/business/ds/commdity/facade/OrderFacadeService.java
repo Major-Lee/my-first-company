@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
+import com.bhu.vas.api.dto.procedure.OrderStatisticsProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
@@ -18,6 +19,7 @@ import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
@@ -391,6 +393,19 @@ public class OrderFacadeService {
 		return false;
 	}
 	
+	
+	public OrderStatisticsVTO orderStatisticsWithProcedure(String start_date, String end_date){
+		OrderStatisticsProcedureDTO procedureDTO = new OrderStatisticsProcedureDTO();
+		procedureDTO.setStart_date(start_date);
+		procedureDTO.setEnd_date(end_date);
+		int executeRet = orderService.executeProcedure(procedureDTO);
+		if(executeRet == 0){
+			;
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
+		}
+		return procedureDTO.toVTO();
+	}
 	
 	/*************            validate             ****************/
 	

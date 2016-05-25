@@ -227,4 +227,8 @@
 	<select id="executeSql" parameterType="String" resultType="int">  
     	${value} 
 	</select> 
+	
+	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
+		${proc_call} 		
+	</select>
 </mapper>

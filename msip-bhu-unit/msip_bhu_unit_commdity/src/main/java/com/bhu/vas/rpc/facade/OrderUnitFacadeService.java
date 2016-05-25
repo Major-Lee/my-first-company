@@ -24,6 +24,7 @@ import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
+import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
@@ -273,6 +274,18 @@ public class OrderUnitFacadeService {
 			}
 			TailPage<UserOrderDTO> returnRet = new CommonPage<UserOrderDTO>(pageNo, pageSize, order_count, retDtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("OrderPagesByMac Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<OrderStatisticsVTO> orderStatisticsBetweenDate(String start_date, String end_date) {
+		try{
+			OrderStatisticsVTO vto = orderFacadeService.orderStatisticsWithProcedure(start_date, end_date);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

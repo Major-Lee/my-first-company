@@ -12,6 +12,7 @@ import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
@@ -44,4 +45,5 @@ public interface IDeviceRestRpcService {
 	public RpcResponseDTO<String> exportOrderResult(int uid, String message, int messagetype, String start_date, String end_date);
 
 	public long countByUCExtensionOnline(int uid, String t_uc_extension, String online);
+	public RpcResponseDTO<DeviceStatisticsVTO> deviceStatistics(String d_snk_turnstate, String d_snk_type);
 }

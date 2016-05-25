@@ -19,6 +19,7 @@ import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.bhu.vas.rpc.facade.DeviceRestBusinessFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -311,6 +312,18 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC exportOrderResult exception exmsg[%s]",ex.getMessage()), ex);
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	@Override
+	public RpcResponseDTO<DeviceStatisticsVTO> deviceStatistics(String d_snk_turnstate, String d_snk_type)  {
+		logger.info(String.format("DeviceRestRPC deviceStatistics invoke d_snk_turnstate [%s] d_snk_type [%s]", d_snk_turnstate, d_snk_type));
+		try{
+			return deviceRestBusinessFacadeService.deviceStatistics(d_snk_turnstate, d_snk_type);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC deviceStatistics exception exmsg[%s]",ex.getMessage()), ex);
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

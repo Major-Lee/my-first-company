@@ -12,6 +12,8 @@ import org.junit.runners.MethodSorters;
 import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
+import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.smartwork.msip.cores.helper.ArithHelper;
@@ -42,6 +44,8 @@ public class OrderServiceTest extends BaseTest{
 	private OrderService orderService;
 	@Resource
 	private CommdityService commdityService;
+	@Resource
+	private OrderFacadeService orderFacadeService;
 	
 	static String[] letters = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 	//private static Set<Integer> key_gen = new HashSet<Integer>();
@@ -98,7 +102,7 @@ public class OrderServiceTest extends BaseTest{
 		//userService.insertMulti(users);
 	}	
     
-    @Test
+    //@Test
     public void testGetById(){
     	ModelCriteria mc = new ModelCriteria();
     	mc.setSize(5);
@@ -113,5 +117,13 @@ public class OrderServiceTest extends BaseTest{
     			System.out.println(order.getId() + " - " + order.getAmount());
     		}
     	}
+    }
+    
+    @Test
+    public void testGetByProcedure(){
+    	OrderStatisticsVTO vto = orderFacadeService.orderStatisticsWithProcedure("2016-03-11 17:15:50", "2016-06-11 17:15:50");
+    	System.out.println(vto.getOcc());
+    	System.out.println(vto.getOfa());
+    	System.out.println(vto.getOfc());
     }
 }

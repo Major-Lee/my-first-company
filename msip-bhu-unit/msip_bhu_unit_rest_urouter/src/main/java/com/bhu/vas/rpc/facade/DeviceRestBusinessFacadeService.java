@@ -32,6 +32,7 @@ import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.OrderSearchResultExportFileDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
@@ -47,6 +48,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSearchConditionStateService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.builder.WifiDeviceSearchMessageBuilder;
 import com.bhu.vas.business.search.core.condition.component.SearchCondition;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionPack;
@@ -549,6 +551,22 @@ public class DeviceRestBusinessFacadeService {
 		return 0l;
 	}
 	
+	public RpcResponseDTO<DeviceStatisticsVTO> deviceStatistics(String d_snk_turnstate, String d_snk_type) {
+		DeviceStatisticsVTO vto = new DeviceStatisticsVTO();
+		try{
+			SearchConditionMessage scm_online = WifiDeviceSearchMessageBuilder.builderSearchMessageWithDeviceStatistics(d_snk_turnstate, 
+					d_snk_type, WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
+			SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithDeviceStatistics(d_snk_turnstate, 
+					d_snk_type, null);
+			long online_count = wifiDeviceDataSearchService.searchCountByConditionMessage(scm_online);
+			long count = wifiDeviceDataSearchService.searchCountByConditionMessage(scm);
+			vto.setDc(count);
+			vto.setDoc(online_count);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+	}
 	
 	public RpcResponseDTO<UserSearchConditionDTO> storeUserSearchCondition(int uid, String message, String desc){
 		UserSearchConditionState entity = userSearchConditionStateService.getById(uid);
