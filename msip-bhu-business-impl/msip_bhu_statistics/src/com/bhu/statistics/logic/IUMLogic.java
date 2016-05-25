@@ -2,31 +2,37 @@ package com.bhu.statistics.logic;
 
 public interface IUMLogic {
 	/**
-	 * ²éÑ¯SSIDµÄÍ³¼ÆÊıÁ¿
+	 * ï¿½ï¿½Ñ¯SSIDï¿½ï¿½Í³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 * @param data
 	 * @return
 	 */
 	public String querySSIDStatistics(String data);
 	
 	/**
-	 * ²éÑ¯ËùÓĞµÄpvºÍuvÊıÁ¿
+	 * ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½Ğµï¿½pvï¿½ï¿½uvï¿½ï¿½ï¿½ï¿½
 	 * @param data
 	 * @return
 	 */
 	public String queryAllPVAndUV(String data);
 	
 	/**
-	 * ²éÑ¯Ã¿ÌìSSIDµÄpvºÍuvµÄÊıÁ¿
+	 * ï¿½ï¿½Ñ¯Ã¿ï¿½ï¿½SSIDï¿½ï¿½pvï¿½ï¿½uvï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 * @param data
 	 * @return
 	 */
 	public String queryDayPVAndUV(String data);
 	
 	/**
-	 * ¸ù¾İÊ±¼äÀàĞÍ²éÑ¯SSIDÏà¹ØÍ³¼ÆĞÅÏ¢
+	 * ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Í²ï¿½Ñ¯SSIDï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½ï¿½Ï¢
 	 * @author Jason
 	 * @param data
 	 * @return
 	 */
 	public String querySSIDInfoByType(String data);
+	/**
+	 * æŸ¥è¯¢å‹ç›Ÿç»Ÿè®¡æ•°æ®
+	 * @param data
+	 * @return
+	 */
+	public String queryStatisticsByUM(String data);
 }

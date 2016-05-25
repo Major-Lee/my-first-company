@@ -5,12 +5,18 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+import org.springframework.expression.spel.ast.OpNE;
+
+import com.bhu.statistics.util.um.OpenApiCnzzImpl;
 
 public class Test {
 	
@@ -53,7 +59,31 @@ public class Test {
 	public static void main(String[] args) {
 		String currDay=DataUtils.currDay();
 		System.out.println(currDay);
-//		 try {  
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+		//String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2015-05-09", "2016-5-25", "date,os", "os in ('android','ios')",2);
+		//String mobileUvs= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2015-05-09", "2016-5-25", "date", "os in ('android','ios')",2);
+		//System.out.println(mobileUvs);
+		String str="2016-05-09";
+        String str1="2016-5-25";
+        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        try {
+            start.setTime(format.parse(str));
+            end.setTime(format.parse(str1));
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        while(start.before(end))
+        {
+            System.out.println(format.format(start.getTime()));
+            start.add(Calendar.DAY_OF_MONTH,1);
+            
+            System.out.println("---");
+        }
+
+		//		 try {  
 //             readZipFile("E:\\test.zip");  
 //         } catch (Exception e) {  
 //             // TODO Auto-generated catch block  

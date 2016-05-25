@@ -1,5 +1,6 @@
 package com.bhu.statistics.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,8 +35,30 @@ public class DateUtils {
        return list; 
 	}
 	
+	public static List<String> getDaysList(String beginTime,String endTime){
+		List<String> list = new ArrayList<String>();
+        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        list.add(beginTime);
+        try {
+            start.setTime(format.parse(beginTime));
+            end.setTime(format.parse(endTime));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        while(start.before(end))
+        {
+            System.out.println(format.format(start.getTime()));
+            list.add(format.format(start.getTime()).toString());
+            start.add(Calendar.DAY_OF_MONTH,1);
+        }
+        list.add(endTime);
+       return list; 
+	}
 	public static void main(String[] args) {
-		List<String> list = getLastDay(30);
+		//List<String> list = getLastDay(30);
+		List<String> list = getDaysList("2016-05-01","2016-05-09");
 		for (int i = 0; i < list.size(); i++) {
 			System.out.println(list.get(i));
 		}

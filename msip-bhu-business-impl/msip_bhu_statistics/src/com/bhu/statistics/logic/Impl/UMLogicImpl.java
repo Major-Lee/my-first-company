@@ -14,6 +14,8 @@ import com.bhu.statistics.util.JSONObject;
 import com.bhu.statistics.util.NotifyUtil;
 import com.bhu.statistics.util.cache.BhuCache;
 import com.bhu.statistics.util.enums.ErrorCodeEnum;
+import com.bhu.statistics.util.um.OpenApiCnzzImpl;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor;
 
 public class UMLogicImpl implements IUMLogic{
 	private static UMLogicImpl instance = null;
@@ -204,6 +206,45 @@ public class UMLogicImpl implements IUMLogic{
 		body.put("ssidList", listMap);
 		result = NotifyUtil.success(body);
 		return result;
+	}
+
+	@Override
+	public String queryStatisticsByUM(String data) {
+		String dataType=StringUtils.EMPTY;
+		String beginTime=StringUtils.EMPTY;
+		String endTime=StringUtils.EMPTY;
+		
+		String result=StringUtils.EMPTY;
+		try {
+			JSONObject object = JSONObject.fromObject(data);
+			dataType = object.getString("type");
+			beginTime = object.getString("beginTime");
+			endTime = object.getString("endTime");
+ 		} catch (Exception e) {
+			log.info("JSON转化错误");
+			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON转化错误", true);
+			return result;
+		}
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", beginTime, endTime, "date", "",1);
+		String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", beginTime, endTime, "date", "",1);
+		String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", beginTime, endTime, "date,os", "os in ('android','ios')",2);
+		String mobileClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", beginTime, endTime, "date,os", "os in ('android','ios')",2);
+		Map<String,Object> allmap=new HashMap<String,Object>();
+		JSONObject pcUvJson=JSONObject.fromObject(pcUv);
+		JSONObject pcClickJson=JSONObject.fromObject(pcClick);
+		JSONObject mobileUvJson=JSONObject.fromObject(mobileUv);
+		JSONObject mobileClickJson=JSONObject.fromObject(mobileClick);
+		
+		List<String> daysList=DateUtils.getDaysList(beginTime, endTime);
+		List<Map<String,Object>> resMaps=new ArrayList<Map<String,Object>>();
+		for(int i;i<daysList.size();i++){
+			Map<String,Object> singleMap=new HashMap<String,Object>();
+			
+		}
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("", value);
+		return null;
 	}
 	
 }
