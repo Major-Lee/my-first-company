@@ -46,6 +46,7 @@ public class ShipmentExcelImport {
 	         System.out.println(String.format("sheets size ===" + wb.getNumberOfSheets()));
 	         for (int numSheet = 0; numSheet < wb.getNumberOfSheets(); numSheet++) {
 	        	Sheet sheet = wb.getSheetAt(numSheet);
+	        	if(sheet == null) continue;
 	        	System.out.println(String.format("numSheet[%s] SheetName[%s]",numSheet,sheet.getSheetName()));
 	        	int totalRowNum = sheet.getLastRowNum();
 	        	if(totalRowNum == 0){
