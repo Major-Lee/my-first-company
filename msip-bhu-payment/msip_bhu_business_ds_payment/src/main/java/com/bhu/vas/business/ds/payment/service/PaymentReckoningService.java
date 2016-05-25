@@ -91,4 +91,11 @@ public class PaymentReckoningService extends
 		PaymentReckoning one = this.findByOrderId(gid);
 		return one == null ? false : true;
 	}
+	
+	public List<PaymentReckoning> listToday(){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnGreaterThan("created_at",
+				new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		return this.findModelByModelCriteria(mc);
+	}
 }

@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.user.dao.UserWalletWithdrawApplyDao;
-import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
+import com.smartwork.msip.cores.orm.service.EntityService;
 
 @Service
 @Transactional("coreTransactionManager")
-public class UserWalletWithdrawApplyService extends AbstractCoreService<String,UserWalletWithdrawApply, UserWalletWithdrawApplyDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
+public class UserWalletWithdrawApplyService extends EntityService<String,UserWalletWithdrawApply, UserWalletWithdrawApplyDao>{//AbstractCoreService<String,UserWalletWithdrawApply, UserWalletWithdrawApplyDao>{//EntityCacheableSpliterService<StorePurchasedItemPK,StorePurchasedItem, StorePurchasedItemDao,Integer>{//EntitySpliterService
 	@Resource
 	@Override
 	public void setEntityDao(UserWalletWithdrawApplyDao userWalletWithdrawApplyDao) {
