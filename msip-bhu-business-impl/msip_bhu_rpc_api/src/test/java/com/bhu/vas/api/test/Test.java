@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.reflection.wrapper.CollectionWrapper;
 
 import com.smartwork.msip.cores.helper.xml.jaxb.JAXBXMLHelper;
@@ -68,6 +69,9 @@ public class Test {
         sss.add(new Integer(3));
         
         System.out.println(sss.size());
+        
+        String UID = null;
+        System.out.println(StringUtils.isNotEmpty(UID));
        /* try {
 			System.out.println(JAXBContext.newInstance(Hotel.class));
 			System.out.println(JAXBContext.newInstance(Hotel.class));

@@ -386,7 +386,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	 * @return
 	 */
 	public static boolean isConsoleUser(Integer uid){
-		if(uid != null && uid.intValue() <= UserConsoleMaxIdLimit) return true;
+		if(uid != null && uid.intValue()>0 && uid.intValue() <= UserConsoleMaxIdLimit) return true;
 		return false;
 	}
 	
