@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.payment.model.PaymentAlipaylocation;
-import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
-import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
 import com.bhu.vas.business.ds.payment.dao.PaymentAlipaylocationDao;
-import com.smartwork.msip.business.abstractmsd.service.AbstractTagService;
+import com.smartwork.msip.business.abstractmsd.service.AbstractPaymentService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
@@ -24,7 +22,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 @Transactional("paymentTransactionManager")
 public class PaymentAlipaylocationService
 		extends
-		AbstractTagService<Long, PaymentAlipaylocation, PaymentAlipaylocationDao> {
+		AbstractPaymentService<Long, PaymentAlipaylocation, PaymentAlipaylocationDao> {
 
 	@Resource
 	@Override

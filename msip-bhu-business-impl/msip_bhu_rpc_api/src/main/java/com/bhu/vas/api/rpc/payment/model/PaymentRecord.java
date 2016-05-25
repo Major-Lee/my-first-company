@@ -6,17 +6,18 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
 public class PaymentRecord extends BaseStringModel{
-	private Float amount;
+	private int amount;
 	private int count;
 	private String info;
 	private Date created_at;
 	private Date updated_at;
 
-	public Float getAmount() {
+
+	public int getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Float amount) {
+	public void setAmount(int amount) {
 		this.amount = amount;
 	}
 
@@ -34,6 +35,23 @@ public class PaymentRecord extends BaseStringModel{
 
 	public void setInfo(String info) {
 		this.info = info;
+	}
+
+	
+	public Date getCreated_at() {
+		return created_at;
+	}
+
+	public void setCreated_at(Date created_at) {
+		this.created_at = created_at;
+	}
+
+	public Date getUpdated_at() {
+		return updated_at;
+	}
+
+	public void setUpdated_at(Date updated_at) {
+		this.updated_at = updated_at;
 	}
 
 	@Override

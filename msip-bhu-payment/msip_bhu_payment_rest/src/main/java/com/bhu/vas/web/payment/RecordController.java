@@ -1,6 +1,6 @@
 package com.bhu.vas.web.payment;
 
-import java.util.List;
+import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +38,15 @@ public class RecordController extends BaseController{
 	public void queryPaymentOrder(HttpServletRequest request,HttpServletResponse response){
 		System.out.println(System.currentTimeMillis());
 		//List<PaymentRecord> list = paymentRecordService.queryOrderByIdDesc(2);
+		PaymentRecord record = new PaymentRecord();
+		record.setAmount(22);
+		record.setId("45672");
+		record.setCount(11);
+		record.setInfo("test");
+		record.setUpdated_at(new Date());
+		paymentRecordService.insert(record);
+		PaymentRecord  records =paymentRecordService.getById("45672");
+		System.out.println(records.getId()+"");
 		int count = paymentRecordService.countOfToday();
 		//int count = paymentReckoningService.countOfToday();
 		System.out.println(count);
