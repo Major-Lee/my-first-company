@@ -102,9 +102,11 @@ public class PaymentInternalHelper {
 		api_params.put("total", total);
 		ResponseCreateWithdrawDTO rcp_dto = null;
 		try {
-			logger.info(String.format("CreateWithdrawUrlCommunication Start Request withdraw_no[%s] withdraw_type[%s] "
+			logger.info(String.format("CreateWithdrawUrlCommunication Start Request withdraw_no[%s] userId[%s] userName[%s] withdraw_type[%s] "
 					+ "amount[%s] transcost[%s] taxcost[%s] total[%s] ip[%s]", 
 					withdraw_no, 
+					userId,
+					userName,
 					withdraw_type, 
 					amount, 
 					transcost, 
@@ -112,8 +114,8 @@ public class PaymentInternalHelper {
 					total, 
 					requestip));
 			String response = HttpHelper.postUrlAsString(CREATE_WITHDRAWURL_COMMUNICATION_API, api_params);
-			logger.info(String.format("CreateWithdrawUrlCommunication Response withdraw_no[%s] withdraw_type[%s] "
-					+ "req[%s]", withdraw_no, withdraw_type, response));
+			logger.info(String.format("CreateWithdrawUrlCommunication [%s] Response withdraw_no[%s] withdraw_type[%s] "
+					+ "req[%s]", CREATE_WITHDRAWURL_COMMUNICATION_API,withdraw_no, withdraw_type, response));
 			if(StringUtils.isNotEmpty(response)){
 				return JsonHelper.getDTO(response, ResponseCreateWithdrawDTO.class);
 			}

@@ -10,7 +10,25 @@ public class OperGroupDTO extends AsyncDTO{
 	private String opt;
 	private String subopt;
 	private String extparams;
+	private String channel;
+	private String channel_taskid;
 	
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
+	public String getChannel_taskid() {
+		return channel_taskid;
+	}
+
+	public void setChannel_taskid(String channel_taskid) {
+		this.channel_taskid = channel_taskid;
+	}
+
 	public String getOpt() {
 		return opt;
 	}

@@ -65,13 +65,15 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sentBatchGroupCmdsActionMessage(int uid , String message ,String opt, String subopt, String extparams){
+	public void sentBatchGroupCmdsActionMessage(int uid , String message ,String opt, String subopt, String extparams, String channel, String channel_taskid){
 		OperGroupDTO dto = new OperGroupDTO();
 		dto.setUid(uid);
 		dto.setMessage(message);
 		dto.setOpt(opt);
 		dto.setSubopt(subopt);
 		dto.setExtparams(extparams);
+		dto.setChannel(channel);
+		dto.setChannel_taskid(channel_taskid);
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	

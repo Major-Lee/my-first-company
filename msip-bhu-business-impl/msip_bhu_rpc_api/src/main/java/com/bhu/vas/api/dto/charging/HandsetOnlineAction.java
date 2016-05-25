@@ -4,6 +4,8 @@ public class HandsetOnlineAction extends ChargingAction{
 	private String hmac;
 	private String hname;
 	private String hip;
+	private String vapname;
+	private String bssid;
 	public String getHmac() {
 		return hmac;
 	}
@@ -31,6 +33,22 @@ public class HandsetOnlineAction extends ChargingAction{
 	@Override
 	public String getAct() {
 		return ActionBuilder.ActionMode.HandsetOnline.getPrefix();
+	}
+
+	public String getVapname() {
+		return vapname;
+	}
+
+	public void setVapname(String vapname) {
+		this.vapname = vapname;
+	}
+
+	public String getBssid() {
+		return bssid;
+	}
+
+	public void setBssid(String bssid) {
+		this.bssid = bssid;
 	}
 	
 }

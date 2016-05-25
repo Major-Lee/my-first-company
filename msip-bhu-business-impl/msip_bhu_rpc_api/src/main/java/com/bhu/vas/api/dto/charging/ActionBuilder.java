@@ -126,12 +126,16 @@ public class ActionBuilder {
 	public static HandsetOnlineAction builderHandsetOnlineAction(String hmac,String mac,
 			//终端上线时间，终端名称，终端ip，终端mac
 			String hname,String hip,
+			//网络名称、bssid
+			String vapname,String bssid,
 			long ts){
 		HandsetOnlineAction action = new HandsetOnlineAction();
 		action.setHmac(hmac);
 		action.setMac(mac);
 		action.setHname(hname);
 		action.setHip(hip);
+		action.setVapname(vapname);
+		action.setBssid(bssid);
 		action.setTs(ts);
 		return action;
 	}
@@ -146,6 +150,8 @@ public class ActionBuilder {
 	
 	public static HandsetOfflineAction builderHandsetOfflineAction(String hmac,String mac,
 			String huptime,
+			//网络名称、bssid
+			String vapname,String bssid,
 			long tx_bytes,long rx_bytes,long ts){
 		HandsetOfflineAction action = new HandsetOfflineAction();
 		action.setHmac(hmac);

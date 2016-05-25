@@ -667,8 +667,8 @@ public class DeviceBusinessFacadeService {
 		} else {
 			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac,
 					lowercase_d_mac, dto.fetchData_rx_rate_double());
-			deliverMessageService.sendHandsetDeviceOfflineActionMessage(lowercase_mac,
-					lowercase_d_mac, dto.getUptime(), dto.getRx_bytes(), dto.getTx_bytes());
+			//暂时移除异步消息
+			//deliverMessageService.sendHandsetDeviceOfflineActionMessage(lowercase_mac,lowercase_d_mac, dto.getUptime(), dto.getRx_bytes(), dto.getTx_bytes());
 		}
 	}
 	
@@ -755,8 +755,9 @@ public class DeviceBusinessFacadeService {
 				cursor++;
 			}
 			HandsetStorageFacadeService.handsetsComming(dtos);
+			//暂时移除异步消息
 			//相关统计数据，业务日志，终端接入流水日志，访客网络不统计
-			deliverMessageService.sendHandsetDeviceSyncActionMessage(mac, defaultWlanDTOs);
+			//deliverMessageService.sendHandsetDeviceSyncActionMessage(mac, defaultWlanDTOs);
 		}
 	}
 	

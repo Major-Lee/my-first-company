@@ -573,5 +573,4 @@ public class UserUnitFacadeService {
 		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
-	
 }

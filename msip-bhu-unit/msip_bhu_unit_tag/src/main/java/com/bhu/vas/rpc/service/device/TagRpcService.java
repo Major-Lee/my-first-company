@@ -203,11 +203,11 @@ public class TagRpcService implements ITagRpcService {
 	 */
 	@Override
 	public RpcResponseDTO<Boolean> batchGroupDownCmds(int uid, String message, String opt, String subopt,
-			String extparams) {
-		logger.info(String.format("batchGroupDownCmds uid[%s] message[%s] opt[%s] subopt[%s] extparams[%s]", uid,
-				message, opt, subopt, extparams));
+			String extparams, String channel, String channel_taskid) {
+		logger.info(String.format("batchGroupDownCmds uid[%s] message[%s] opt[%s] subopt[%s] extparams[%s] channel[%s] channel_taskid[%s]", uid,
+				message, opt, subopt, extparams, channel, channel_taskid));
 		try {
-			tagFacadeRpcSerivce.batchGroupDownCmds(uid, message, opt, subopt, extparams);
+			tagFacadeRpcSerivce.batchGroupDownCmds(uid, message, opt, subopt, extparams,channel,channel_taskid);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());

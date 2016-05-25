@@ -3,6 +3,8 @@ package com.bhu.vas.api.dto.charging;
 public class HandsetOfflineAction extends ChargingAction{
 	private String hmac;
 	private String huptime;
+	private String vapname;
+	private String bssid;
 	private long tx_bytes;
 	private long rx_bytes;
 	public String getHmac() {
@@ -36,6 +38,18 @@ public class HandsetOfflineAction extends ChargingAction{
 	@Override
 	public String getAct() {
 		return ActionBuilder.ActionMode.HandsetOffline.getPrefix();
+	}
+	public String getVapname() {
+		return vapname;
+	}
+	public void setVapname(String vapname) {
+		this.vapname = vapname;
+	}
+	public String getBssid() {
+		return bssid;
+	}
+	public void setBssid(String bssid) {
+		this.bssid = bssid;
 	}
 	
 }

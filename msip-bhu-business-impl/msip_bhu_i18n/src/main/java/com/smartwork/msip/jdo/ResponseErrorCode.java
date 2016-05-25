@@ -252,7 +252,10 @@ public enum ResponseErrorCode {
 	TAG_GROUP_USER_PRIVILEGE_ERROR("1111","tagGroupUser.privilege.error"),
 	TAG_GROUP_COUNT_MAX_ERROR("1112","tagGroup.count.max.error"),
 	TAG_GROUP_INEXISTENCE("1113","tagGroup.inexistence.error"),
-	TAG_GROUP_DEVICE_COUNT_MAX("1114","tagGroup.device.count.max.error");
+	TAG_GROUP_DEVICE_COUNT_MAX("1114","tagGroup.device.count.max.error"),
+	TAG_GROUP_NAME_EMPTY("1115","tagGroupName.empty.error"),
+	TAG_GROUP_NAME_FORMAT_ERROR("1116","tagGroup.name.format.error"),
+	TAG_GROUPREL_DEVICE_NOEXIST("1117","tagGroupRel.Device.noexist");
 
     private String code;
     private String i18n;

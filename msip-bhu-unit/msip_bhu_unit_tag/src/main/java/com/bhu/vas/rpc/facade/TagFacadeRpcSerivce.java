@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
@@ -27,6 +26,8 @@ import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
+import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
+import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -71,6 +72,9 @@ public class TagFacadeRpcSerivce {
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
+	@Resource
+	private UserDeviceService userDeviceService;
 	
 	private void addTag(int uid, String tag) {
 
@@ -225,9 +229,11 @@ public class TagFacadeRpcSerivce {
 		String[] macsTemp = macs.split(StringHelper.COMMA_STRING_GAP);
 
 		List<String> macsList = ArrayHelper.toList(macsTemp);
+		
 
+		
 		// 验证是否能添加设备
-		CanAddDevices2Group(uid, gid, macsTemp.length);
+		CanAddDevices2Group(uid, gid, macsList);
 
 		List<TagGroupRelation> entities = new ArrayList<TagGroupRelation>();
 
@@ -262,12 +268,17 @@ public class TagFacadeRpcSerivce {
 		List<String> macsList = ArrayHelper.toList(macTemp);
 
 		List<TagGroupRelation> entities = tagGroupRelationService.findByIds(macsList);
-
+		
+		UserValidateServiceHelper.validateUserDevices(uid, macsList, userDeviceService);
+		
 		if (newGid == 0) {
 			tagGroupRelationService.deleteAll(entities);
 			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
 		} else {
 			for (TagGroupRelation tagGroupRelation : entities) {
+				if (tagGroupRelation == null) {
+					throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUPREL_DEVICE_NOEXIST);
+				}
 				tagGroupRelation.setGid(newGid);
 			}
 			tagGroupRelationService.updateAll(entities);
@@ -321,9 +332,16 @@ public class TagFacadeRpcSerivce {
 	 * @return
 	 */
 	public boolean CanSaveNode(int uid, int gid, int pid, String name) {
-
+		
+		if (name.isEmpty()) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_EMPTY);
+		}
+		
 		boolean flag = StringFilter(name);
-
+		
+		if (!flag) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_FORMAT_ERROR);
+		}
 		// 所有节点不可重名
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("creator", uid).andColumnEqualTo("name", name);
@@ -371,28 +389,25 @@ public class TagFacadeRpcSerivce {
 
 	/**
 	 * 当前节点能否添加设备的可行性验证
+	 * @param userDeviceService2 
 	 * 
 	 * @return
 	 */
-	private boolean CanAddDevices2Group(int uid, int gid, int tempSize) {
+	private boolean CanAddDevices2Group(int uid, int gid, List<String> macList) {
 
 		boolean flag = true;
 
 		TagGroup tagGroup = tagGroupService.getById(gid);
-
+		
 		// 当前节点是否存在
 		if (tagGroup == null) {
 			flag = false;
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_INEXISTENCE);
 		} else {
-
-			// // 当前节点是否为叶子节点
-			// if (flag && tagGroup.getChildren() != 0) {
-			// flag = false;
-			// }
-
+			//mac绑定uid检测
+			UserValidateServiceHelper.validateUserDevices(uid, macList, userDeviceService);
 			// 当前节点添加设备是否超过100台
-			if (flag && (tagGroup.getDevice_count() > 99 || (tagGroup.getDevice_count() + tempSize > 99))) {
+			if (flag && (tagGroup.getDevice_count() > 99 || (tagGroup.getDevice_count() + macList.size() > 99))) {
 				flag = false;
 				throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_DEVICE_COUNT_MAX);
 			}
@@ -534,13 +549,15 @@ public class TagFacadeRpcSerivce {
 	 * 
 	 * @param uid
 	 * @param message
+	 * @param channel_taskid 
+	 * @param channel 
 	 * @param cmds
 	 */
-	public void batchGroupDownCmds(int uid, String message, String opt, String subopt, String extparams) {
+	public void batchGroupDownCmds(int uid, String message, String opt, String subopt, String extparams, String channel, String channel_taskid) {
 		if (message != null && opt != null) {
 			OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(opt);
 			if (opt_cmd.equals(OperationCMD.ModifyDeviceSetting)) {
-				asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt, subopt, extparams);
+				asyncDeliverMessageService.sentBatchGroupCmdsActionMessage(uid, message, opt, subopt, extparams, channel, channel_taskid);
 			} else {
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 			}
