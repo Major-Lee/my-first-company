@@ -898,7 +898,7 @@ public class PaymentController extends BaseController{
      */
    	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/payment/alipayNotifySuccess")
-   	public String alipayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
+   	public void alipayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
     	
    		logger.info("/alipayNotifySuccess************接收支付宝通知*****************************"); 
 
@@ -923,7 +923,7 @@ public class PaymentController extends BaseController{
 			logger.error("请求参数(out_trade_no)有误,不能为空");
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
-			return "error";
+			return;
 		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
@@ -939,7 +939,7 @@ public class PaymentController extends BaseController{
 			logger.error("请求参数(out_trade_no)有误,不能为空");
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
-			return "error";
+			return;
 		}
 		
 		logger.info("账单号："+out_trade_no+"修改账单，订单的支付状态。。。。");
@@ -950,7 +950,7 @@ public class PaymentController extends BaseController{
 	            if (payReckoning == null) {
 	            	isShow = " 不   存   在  ...";
 	            	logger.info("查询账单流水号："+out_trade_no+isShow);
-	            	return "查询账单流水号："+out_trade_no+isShow;
+	            	return;
 	            }
 	            logger.info("查询账单流水号："+out_trade_no+isShow);
 	            
@@ -960,31 +960,34 @@ public class PaymentController extends BaseController{
 					//查询账单号对应的订单号
 					if(trade_status.equals("TRADE_FINISHED")){
 						logger.info(" TRADE_FINISHED success");	//请不要修改或删除
-						return " TRADE_FINISHED success";
+						SpringMVCHelper.renderJson(response, "success");
+						return;
 						//注意：
 						//退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
 					} else if (trade_status.equals("TRADE_SUCCESS")){
 						//支付成功
 						logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
 						updatePaymentStatus(payReckoning,out_trade_no,trade_no,"");
-						return "SUCCESS";
-						//注意：
-						//付款完成后，支付宝系统发送该交易状态通知
+						SpringMVCHelper.renderJson(response, "success");
+						return;
 					}else{
 						//支付s失败
 						logger.info("支付失败 修改订单的支付状态");
 						//1:已支付 2：退款已支付 3：退款成功 4：退款失败
 						logger.info("支付失败！");	//请不要修改或删除
-						return "SUCCESS";
+						SpringMVCHelper.renderJson(response, "fail");
+						return;
 					}
 				}
 			
-			return "SUCCESS";
+				SpringMVCHelper.renderJson(response, "success");
+				return;
 				
 		}else{//验证失败
 			logger.info("fail");
 		}
-		return "SUCCESS";
+		SpringMVCHelper.renderJson(response, "success");
+		return;
     }
     
     /**

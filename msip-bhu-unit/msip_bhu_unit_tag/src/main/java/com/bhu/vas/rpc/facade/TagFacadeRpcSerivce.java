@@ -374,16 +374,6 @@ public class TagFacadeRpcSerivce {
 
 		}
 
-		// 最多100个同级节点
-		// mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("pid",
-		// pid).andColumnEqualTo("creator", uid);
-		// List<TagGroup> tagSamePidGroups =
-		// tagGroupService.findModelByModelCriteria(mc);
-		// if (flag && tagSamePidGroups != null && tagSamePidGroups.size() >=
-		// 100) {
-		// return false;
-		// }
-
 		return flag;
 	}
 
@@ -462,16 +452,6 @@ public class TagFacadeRpcSerivce {
 
 		tagGroupRelationService.deleteByModelCriteria(mc);
 
-		// if (tagGroup.getChildren() != 0) {
-		// ModelCriteria newMc = new ModelCriteria();
-		// newMc.createCriteria().andColumnEqualTo("pid", tagGroup.getId());
-		// // TODO ? 通过冗余path去模糊删除
-		// List<TagGroup> tagchildGroups =
-		// tagGroupService.findModelByModelCriteria(newMc);
-		// for (TagGroup tagChildGroup : tagchildGroups) {
-		// delChildNodeDevices(tagChildGroup);
-		// }
-		// }
 	}
 
 	/**
