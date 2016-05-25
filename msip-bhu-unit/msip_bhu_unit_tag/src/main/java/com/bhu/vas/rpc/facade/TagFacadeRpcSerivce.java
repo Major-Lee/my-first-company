@@ -496,7 +496,7 @@ public class TagFacadeRpcSerivce {
 		TailPage<TagGroup> pages = tagGroupService.findModelTailPageByModelCriteria(mc);
 		List<TagGroupVTO> result = new ArrayList<TagGroupVTO>();
 		
-		if (pageNo == 1) {
+		if (pageNo == 1 && pid == 0) {
 			TagGroupVTO vto = new TagGroupVTO();
 			vto.setName("默认分组");
 			vto.setDevice_count((int)wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, null));

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceSharedNetworkRpcService;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
@@ -20,6 +22,8 @@ import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
+import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
@@ -49,7 +53,12 @@ public class DashboardController extends BaseController{
 	@Resource
 	private IDeviceSharedNetworkRpcService deviceSharedNetworkRpcService;
 
-    
+	@Resource
+	private IOrderRpcService orderRpcService;
+	
+    @Resource
+    private IDeviceRestRpcService deviceRestRpcService;
+	
 	private static final String DefaultSecretkey = "PzdfTFJSUEBHG0dcWFcLew==";
 	private ResponseError validate(String secretKey){
 		if(!DefaultSecretkey.equals(secretKey)){
@@ -257,4 +266,46 @@ public class DashboardController extends BaseController{
 		}else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/order/statistics",method={RequestMethod.POST})
+	public void order_statistics(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true,value="sk") String secretKey,
+			@RequestParam(required = true) String start_date,
+			@RequestParam(required = true) String end_date) {
+		ResponseError validateError = validate(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		RpcResponseDTO<OrderStatisticsVTO> rpcResult = orderRpcService.orderStatisticsBetweenDate(start_date, end_date);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/device/statistics",method={RequestMethod.POST})
+	public void device_statistics(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true, value="sk") String secretKey,
+			@RequestParam(required = false, defaultValue= "1") String d_snk_turnstate,
+			@RequestParam(required = false, defaultValue= "SafeSecure") String d_snk_type,
+			@RequestParam(required = false) String d_online) {
+		ResponseError validateError = validate(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		RpcResponseDTO<DeviceStatisticsVTO> rpcResult = deviceRestRpcService.deviceStatistics(d_snk_turnstate, d_snk_type);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	}
+	
 }
