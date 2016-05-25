@@ -467,17 +467,19 @@ public abstract class AbstractDataSearchConditionService<MODEL extends AbstractD
 		if(!StringUtils.isEmpty(message)){
 			searchConditionMessage = JsonHelper.getDTO(message, SearchConditionMessage.class);
 		}
-		
-		SearchQuery searchQuery = builderNativeSearchQueryByConditionMessage(searchConditionMessage, indices, types, 0, pageSize).build();
-
-		String scrollId = getElasticsearchTemplate().scan(searchQuery, 90000, false);
-		boolean hasRecords = true;
-		while (hasRecords) {
-			Page<MODEL> page = getElasticsearchTemplate().scroll(scrollId, 90000, entityClass);
-			if (page.hasContent()) {
-				notify.notifyComming(page);
-			} else {
-				hasRecords = false;
+		NativeSearchQueryBuilder nativeSearchQueryBuilder = builderNativeSearchQueryByConditionMessage(
+				searchConditionMessage, indices, types, 0, pageSize);
+		if(nativeSearchQueryBuilder != null){
+			SearchQuery searchQuery = nativeSearchQueryBuilder.build();
+			String scrollId = getElasticsearchTemplate().scan(searchQuery, 90000, false);
+			boolean hasRecords = true;
+			while (hasRecords) {
+				Page<MODEL> page = getElasticsearchTemplate().scroll(scrollId, 90000, entityClass);
+				if (page.hasContent()) {
+					notify.notifyComming(page);
+				} else {
+					hasRecords = false;
+				}
 			}
 		}
 	}
