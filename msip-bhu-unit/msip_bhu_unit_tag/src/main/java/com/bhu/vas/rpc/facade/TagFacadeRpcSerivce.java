@@ -513,7 +513,8 @@ public class TagFacadeRpcSerivce {
 		return new CommonPage<TagGroupVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(),
 				result);
 	}
-
+	
+	
 	public TagGroupVTO currentGroupDetail(int uid, int gid) {
 
 		TagGroup tagGroup = tagGroupService.getById(gid);
@@ -547,7 +548,16 @@ public class TagFacadeRpcSerivce {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-
+	
+	/**
+	 * 分组批量设置安全共享模板
+	 * @param uid
+	 * @param message
+	 * @param on
+	 * @param snk_type
+	 * @param template
+	 * @return
+	 */
 	public boolean batchGroupSnkTakeEffectNetworkConf(int uid, String message, boolean on, String snk_type,
 			String template) {
 		try {
@@ -559,7 +569,14 @@ public class TagFacadeRpcSerivce {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * 获得分组收益统计
+	 * @param uid
+	 * @param gids
+	 * @param paths
+	 * @return
+	 */
 	public List<DeviceGroupPaymentStatisticsVTO> groupsGainsStatistics(int uid ,String gids,String paths){
 		
 		String[] gidArr = gids.split(StringHelper.COMMA_STRING_GAP);
@@ -574,6 +591,12 @@ public class TagFacadeRpcSerivce {
 		return list;
 	}
 	
+	/**
+	 * 获得分组在线数
+	 * @param uid
+	 * @param gids
+	 * @return
+	 */
 	public List<GroupCountOnlineVTO> groupsStatsOnline(int uid ,String gids){
     	String[] arr = gids.split(StringHelper.COMMA_STRING_GAP);
     	List<GroupCountOnlineVTO> list = new ArrayList<GroupCountOnlineVTO>();
