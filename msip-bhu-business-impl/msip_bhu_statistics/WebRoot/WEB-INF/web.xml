@@ -61,6 +61,6 @@
         <session-timeout>720</session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>/statistics.html</welcome-file>
+        <welcome-file>/statistics.jsp</welcome-file>
     </welcome-file-list>
 </web-app>

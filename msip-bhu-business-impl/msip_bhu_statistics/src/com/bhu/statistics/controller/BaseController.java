@@ -5,10 +5,14 @@ import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.bhu.statistics.logic.IUMLogic;
+import com.bhu.statistics.logic.Impl.UMLogicImpl;
+
 
 public abstract class BaseController  {
+	public IUMLogic staticsService = UMLogicImpl.getInstance();
 	/**
-	 * 输出str字符串
+	 * 杈撳嚭str瀛楃涓�
 	 * 
 	 * @param response
 	 * @param str

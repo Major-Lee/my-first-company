@@ -1,6 +1,7 @@
 package com.bhu.statistics.util.cache;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.math.NumberUtils;
 
@@ -67,21 +68,65 @@ public class BhuCache {
 		jedisClient.setex(BhuCacheKeyGen.getTotalUV(typeName),value, BhuCacheKeyGen.CACHE_TIME_ONE_MONTH);
 	}
 	
-	public String getDayPV(String data){
-		return jedisClient.get(BhuCacheKeyGen.getDayPV(data));
+	public String getDayPV(String data,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getDayPV(data),filed);
 	}
 	
 	public Long setDayPV(String data,String field,String value){
 		return jedisClient.hset(BhuCacheKeyGen.getDayPV(data), field, value);
 	}
 	
-	public String getDayUV(String data){
-		return jedisClient.get(BhuCacheKeyGen.getDayUV(data));
+	public String getDayUV(String data,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getDayUV(data),filed);
 	}
 	
 	public Long setDayUV(String data,String field,String value){
-		return jedisClient.hset(BhuCacheKeyGen.getDayPV(data), field, value);
+		return jedisClient.hset(BhuCacheKeyGen.getDayUV(data), field, value);
 	}
 	
+	public String getSSID(String data,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getSSID(data),filed);
+	}
+	public Long setSSID(String data,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getSSID(data), field, value);
+	}
 	
+	public String getSSIDUV(String data){
+		return jedisClient.get(BhuCacheKeyGen.getSSIDUV(data));
+	}
+	public Long setSSIDUV(String data,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getSSIDUV(data), field, value);
+	}
+	
+	public Set<String> getSSIDFiled(String key){
+		return jedisClient.hkeys(BhuCacheKeyGen.getSSID(key));
+	}
+	
+	public Set<String> getdayPVFiled(String key){
+		return jedisClient.hkeys(BhuCacheKeyGen.getDayPV(key));
+	}
+	
+	public Set<String> getdayUVFiled(String key){
+		return jedisClient.hkeys(BhuCacheKeyGen.getDayUV(key));
+	}
+	
+	public long deleteSSIDHash(String key,String filed){
+		return jedisClient.hdel(BhuCacheKeyGen.getSSID(key), filed);
+	}
+	
+	public long deletedayPVHash(String key,String filed){
+		return jedisClient.hdel(BhuCacheKeyGen.getDayPV(key), filed);
+	}
+	
+	public long deletedayUVHash(String key,String filed){
+		return jedisClient.hdel(BhuCacheKeyGen.getDayUV(key), filed);
+	}
+	
+	public long delTotalPV(String key){
+		return jedisClient.del(BhuCacheKeyGen.getTotalPV(key));
+	}
+	
+	public long delTotalUV(String key){
+		return jedisClient.del(BhuCacheKeyGen.getTotalUV(key));
+	}
 }

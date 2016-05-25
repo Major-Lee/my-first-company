@@ -54,6 +54,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    		</tr>
 	    	</tbody>
 	    </table>
+	    
+	    <!-- SSID统计 -->
+	    <div style="padding-top:100px">
+	    	SSID:<input type="text" id="SSID" name="SSID">
+	    	<a onclick="queryStatisticsNum()">查询</a>
+		    <table style="width: 500px;height:100px;margin:auto;">
+		    	<thead>
+		    		<tr>
+		    			<td>
+		    				PV
+		    			</td>
+		    			<td>
+		    				UV
+		    			</td>
+		    		</tr>
+		    	</thead>
+		    	<tbody>
+		    		<tr>
+		    			<td class="pv1">0</td>
+		    			<td class="uv1">0</td>
+		    		</tr>
+		    	</tbody>
+		    </table>
+	    </div>
   	</div>
   	
   </body>
@@ -108,5 +132,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		  });
   }
   
+  function queryStatisticsNum(){
+	  var date=$("#startTime").val();
+	  alert(date);
+	  var ssId = $("#SSID").val();
+	  alert(ssId);
+	  var orderJson = '{"date":"'+date+'","ssId":"'+ssId+'"}';
+	  $.post("/msip_bhu_statistics/querySSIDStatist.do", {
+		  	"data": orderJson,
+		  }).success(function(data) {
+			  data=eval("(" +data+")");
+			  $('.pv1').html(data.body.pv);
+			  $('.uv1').html(data.body.uv);
+	  });
+  }
   </script>
 </html>

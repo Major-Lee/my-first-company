@@ -59,4 +59,12 @@ public class BhuCacheKeyGen {
 	public static String getDayUV(String data){
 		return PREFIX+"DAY_UV_"+data;
 	}
+	
+	public static String getSSID(String date){
+		return PREFIX+"SSID_"+date;
+	}
+	
+	public static String getSSIDUV(String date){
+		return PREFIX+"SSID_UV_"+date;
+	}
 }
