@@ -13,7 +13,6 @@ import com.bhu.vas.api.dto.procedure.DeviceGroupPaymentTotalProcedureDTO;
 import com.bhu.vas.api.rpc.charging.model.DeviceGroupPaymentStatistics;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
-import com.bhu.vas.business.bucache.local.serviceimpl.statistics.BusinessStatisticsCacheService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.smartwork.msip.cores.helper.ArithHelper;
@@ -27,8 +26,8 @@ public class ChargingStatisticsFacadeService {
     @Resource
     private DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService;
     
-    @Resource
-    private BusinessStatisticsCacheService businessStatisticsCacheService;
+    //@Resource
+    //private BusinessStatisticsCacheService businessStatisticsCacheService;
     
     @Resource
     private UserWalletFacadeService userWalletFacadeService;
@@ -50,11 +49,11 @@ public class ChargingStatisticsFacadeService {
     			DateTimeHelper.FormatPattern5);
     	
     	String current_key = DeviceGroupPaymentStatistics.combineid(groupid, uid, current_date);
-    	ShareDealDailyGroupSummaryProcedureVTO cache_entity = businessStatisticsCacheService.getDeviceGroupPaymentStatisticsDSCacheBy(current_key);
-    	if(cache_entity == null){
-    		cache_entity = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(uid, group_path, current_date);
-    		businessStatisticsCacheService.storeDeviceGroupPaymentStatisticsDSCacheResult(current_key, cache_entity);
-    	}
+    	//ShareDealDailyGroupSummaryProcedureVTO cache_entity = businessStatisticsCacheService.getDeviceGroupPaymentStatisticsDSCacheBy(current_key);
+    	//if(cache_entity == null){
+    	ShareDealDailyGroupSummaryProcedureVTO	cache_entity = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(uid, group_path, current_date);
+    		//businessStatisticsCacheService.storeDeviceGroupPaymentStatisticsDSCacheResult(current_key, cache_entity);
+    	//}
     	vto.setT_incoming_amount(String.valueOf(cache_entity.getTotal_cash()));
     	vto.setT_times(cache_entity.getTotal_nums());
     	
