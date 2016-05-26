@@ -731,11 +731,11 @@ public class DataUtils extends PropertyEditorSupport {
 		return year+"-"+month+"-"+day;
 	}
 	/**
-	 * 取得当前日
+	 * 取得明日
 	 * 
 	 * @return 2015-09-14
 	 */
-	public static String beforeDay() {		
+	public static String afterDay() {		
 		Date date=new Date();//取时间
 		 Calendar calendar = new GregorianCalendar();
 		 calendar.setTime(date);
@@ -745,11 +745,21 @@ public class DataUtils extends PropertyEditorSupport {
 		 String dateString = formatter.format(date);
 		return dateString;
 	}
+	public static String beforeDay() {		
+		Date date=new Date();//取时间
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		calendar.add(calendar.DATE,-1);//把日期往后增加一天.整数往后推,负数往前移动
+		date=calendar.getTime(); //这个时间就是日期往后推一天的结果 
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String dateString = formatter.format(date);
+		return dateString;
+	}
 
 	public static void main(String args[]) {
 		System.out.println(firstDay());
 		System.out.println(currDay());
-		System.out.println(beforeDay());
+		System.out.println(afterDay());
 	}
 
 	/**
