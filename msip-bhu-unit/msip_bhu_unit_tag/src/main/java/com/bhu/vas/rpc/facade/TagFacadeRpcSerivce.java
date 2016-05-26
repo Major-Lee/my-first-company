@@ -264,8 +264,10 @@ public class TagFacadeRpcSerivce {
 		String[] macTemp = macs.split(StringHelper.COMMA_STRING_GAP);
 
 		List<String> macsList = ArrayHelper.toList(macTemp);
-
-		List<TagGroupRelation> entities = tagGroupRelationService.findByIds(macsList);
+		
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnIn("id", macsList).andColumnEqualTo("gid", gid);	
+		List<TagGroupRelation> entities = tagGroupRelationService.findModelByModelCriteria(mc);
 		
 		// mac绑定uid检测
 		UserValidateServiceHelper.validateUserDevices(uid, macsList, userDeviceService);
@@ -274,23 +276,23 @@ public class TagFacadeRpcSerivce {
 			tagGroupRelationService.deleteAll(entities);
 			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
 		} else {
-
 			if (CanAddDevices2Group(uid, newGid, macsList)) {
+				
 				for (TagGroupRelation tagGroupRelation : entities) {
 					if (tagGroupRelation == null || tagGroupRelation.getGid() != gid) {
 						throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUPREL_DEVICE_NOEXIST);
-					}
+					}	
 					tagGroupRelation.setGid(newGid);
 					tagGroupRelation.setPath(newPath);
 				}
 				tagGroupRelationService.updateAll(entities);
-
+				
 				String paths = tagGroupService.getById(newGid).getPath2ES();
 				wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
 				changeDevicesCount(newGid, macTemp.length);
 			}
 		}
-		changeDevicesCount(gid, -macTemp.length);
+		changeDevicesCount(gid, -entities.size());
 	}
 
 	/**
@@ -310,15 +312,15 @@ public class TagFacadeRpcSerivce {
 			TagGroup group = tagGroupService.getById(gid);
 			if (group != null && group.getCreator() == uid) {
 				int pid = group.getPid();
-
 				// 先删除设备和索引，再删除节点
-				delChildNodeDevices(uid, group.getPath());
-
+				int count = delChildNodeDevices(uid, group.getPath());
+				
 				tagGroupService.removeAllByPath(group.getPath(), true);
-
+				
 				if (pid != 0) {
 					TagGroup parent_group = tagGroupService.getById(pid);
 					parent_group.setChildren(parent_group.getChildren() - 1);
+					parent_group.setDevice_count(parent_group.getDevice_count() - count);
 					tagGroupService.update(parent_group);
 				}
 			} else {
@@ -443,7 +445,7 @@ public class TagFacadeRpcSerivce {
 	 * @param uid
 	 * @param tagGroup
 	 */
-	private void delChildNodeDevices(int uid, String path) {
+	private int delChildNodeDevices(int uid, String path) {
 
 		// 模糊搜索
 		ModelCriteria mc = new ModelCriteria();
@@ -457,8 +459,9 @@ public class TagFacadeRpcSerivce {
 		// 清除所有索引信息
 		wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
 
-		tagGroupRelationService.deleteByModelCriteria(mc);
-
+		int count = tagGroupRelationService.deleteByModelCriteria(mc);
+		
+		return count;
 	}
 
 	/**
@@ -500,7 +503,10 @@ public class TagFacadeRpcSerivce {
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
 		mc.setOrderByClause(" created_at desc");
-		TailPage<TagGroup> pages = tagGroupService.findModelTailPageByModelCriteria(mc);
+		
+		int total = tagGroupService.countByCommonCriteria(mc);
+		
+		List<TagGroup> pages = tagGroupService.findModelByCommonCriteria(mc);
 		List<TagGroupVTO> result = new ArrayList<TagGroupVTO>();
 
 		if (pageNo == 1 && pid == 0) {
@@ -514,9 +520,7 @@ public class TagFacadeRpcSerivce {
 			TagGroupVTO vto = TagGroupDetail(tagGroup);
 			result.add(vto);
 		}
-
-		return new CommonPage<TagGroupVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(),
-				result);
+		return new CommonPage<TagGroupVTO>(pageNo, pageSize, total,result);
 	}
 
 	public TagGroupVTO currentGroupDetail(int uid, int gid) {
