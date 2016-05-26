@@ -1,6 +1,5 @@
 package com.bhu.vas.web.group;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -161,8 +160,9 @@ public class GroupController extends BaseController{
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) int gid,
             @RequestParam(required = false,defaultValue= "0",value = "newGid") int newGid,
+            @RequestParam(required = false,defaultValue= "0/",value = "newPath") String newPath,
             @RequestParam(required = true) String macs) {
-    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.modifyDeciceWithNode(uid, gid, newGid, macs);
+    	RpcResponseDTO<Boolean> rpcResult = tagRpcService.modifyDeciceWithNode(uid, gid, newGid,newPath, macs);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

@@ -48,7 +48,7 @@ public interface ITagRpcService {
 
 	TagGroupVTO currentGroupDetail(int uid, int gid);
 
-	RpcResponseDTO<Boolean> modifyDeciceWithNode(int uid, int gid, int newGid, String macs);
+	RpcResponseDTO<Boolean> modifyDeciceWithNode(int uid, int gid, int newGid,String newPath, String macs);
 
 	RpcResponseDTO<Boolean> CanSaveNode(int uid, int gid, int pid, String name);
 

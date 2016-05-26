@@ -40,6 +40,7 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String u_mno;//绑定的用户的手机号码
 	private String u_mcc;//绑定的用户的手机号码的区域号码
 	private String u_type;//用户类型 代理商，普通，销售等等
+	private String u_dnick;//设备别名
 	
 	private String a_id;//代理商的用户id
 	private String a_nick;//代理商的用户名称
@@ -224,6 +225,12 @@ public class WifiDeviceVTO1 implements Serializable{
 	}
 	public void setU_type(String u_type) {
 		this.u_type = u_type;
+	}
+	public String getU_dnick() {
+		return u_dnick;
+	}
+	public void setU_dnick(String u_dnick) {
+		this.u_dnick = u_dnick;
 	}
 	public String getA_id() {
 		return a_id;
