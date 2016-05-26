@@ -96,7 +96,6 @@ public class DateUtils {
 			System.out.println(list.get(i));
 		}*/
 		System.out.println(formatDate("2016-05-23 15:15"));
-		System.out.println(20160501-20160301);
-		System.out.println(getDaySub("2016-05-23 15:15","2016-05-28 15:15"));
+		System.out.println(getDaysList("2016-05-23 15:15","2016-05-28 15:15"));
 	}
 }

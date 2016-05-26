@@ -382,6 +382,10 @@ public class UMLogicImpl implements IUMLogic{
 		System.out.println(result);
 		return result;
 	}
+	/**
+	 * 根据时间间隔查询SSID统计信息
+	 * @author Jason
+	 */
 	public String querySSIDInfoByTime(String data) {
 		//返回结果
 		String result = StringUtils.EMPTY;
@@ -423,10 +427,44 @@ public class UMLogicImpl implements IUMLogic{
 		//时间格式化
 		startTime = DateUtils.formatDate(startTime);
 		endTime = DateUtils.formatDate(endTime);
-		/*if(){
-			
-		}*/
-		return null;
+		if(StringUtils.equals(startTime, endTime)){
+			String dayPv = BhuCache.getInstance().getDayPV(startTime, "dayPV");
+			String dayUv = BhuCache.getInstance().getDayUV(startTime, "dayUV");
+			if(StringUtils.isNotBlank(dayPv)){
+				totalPV = Integer.parseInt(dayPv);
+			}
+			if(StringUtils.isNotBlank(dayUv)){
+				totalUV = Integer.parseInt(dayUv);
+			}
+			map = new HashMap<String,Object>();
+			map.put("currDate", startTime);
+			map.put("totalUV", totalUV);
+			map.put("totalPV", totalPV);
+			listMap.add(map);
+		}else{
+			List<String> dateList = DateUtils.getDaysList(startTime, endTime);
+			String currDate = StringUtils.EMPTY;
+			for (int i = 0; i < dateList.size(); i++) {
+				currDate = dateList.get(i);
+				String dayPv = BhuCache.getInstance().getDayPV(currDate, "dayPV");
+				String dayUv = BhuCache.getInstance().getDayUV(currDate, "dayUV");
+				if(StringUtils.isNotBlank(dayPv)){
+					totalPV = Integer.parseInt(dayPv);
+				}
+				if(StringUtils.isNotBlank(dayUv)){
+					totalUV = Integer.parseInt(dayUv);
+				}
+				map = new HashMap<String,Object>();
+				map.put("currDate", currDate);
+				map.put("totalUV", totalUV);
+				map.put("totalPV", totalPV);
+				listMap.add(map);
+			}
+		}
+		Map<String,Object> body = new HashMap<String,Object>();
+		body.put("ssidList", listMap);
+		result = NotifyUtil.success(body);
+		return result;
 	}
 	
 }
