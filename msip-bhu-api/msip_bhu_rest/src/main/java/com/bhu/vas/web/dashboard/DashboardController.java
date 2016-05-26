@@ -294,8 +294,7 @@ public class DashboardController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true, value="sk") String secretKey,
 			@RequestParam(required = false, defaultValue= "1") String d_snk_turnstate,
-			@RequestParam(required = false, defaultValue= "SafeSecure") String d_snk_type,
-			@RequestParam(required = false) String d_online) {
+			@RequestParam(required = false, defaultValue= "SafeSecure") String d_snk_type) {
 		ResponseError validateError = validate(secretKey);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
