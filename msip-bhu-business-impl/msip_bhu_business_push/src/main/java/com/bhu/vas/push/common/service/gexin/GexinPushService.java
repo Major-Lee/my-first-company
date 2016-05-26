@@ -16,8 +16,6 @@ import com.gexin.rp.sdk.http.IGtPush;
 import com.gexin.rp.sdk.template.NotificationTemplate;
 import com.gexin.rp.sdk.template.TransmissionTemplate;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 
 
 public class GexinPushService{
@@ -92,9 +90,9 @@ public class GexinPushService{
 				template.setTransmissionType(2);
 				template.setTransmissionContent(pushMsg.getPaylod());
 				
-				String titleWithDate = pushMsg.getTitle() + WHITE6_STRING_GAP + DateTimeHelper.formatDate(DateTimeHelper.FormatPattern0);
-				template.setTitle(titleWithDate);
-				//template.setTitle(pushMsg.getTitle());
+				//String titleWithDate = pushMsg.getTitle() + WHITE6_STRING_GAP + DateTimeHelper.formatDate(DateTimeHelper.FormatPattern0);
+				//template.setTitle(titleWithDate);
+				template.setTitle(pushMsg.getTitle());
 		        template.setText(pushMsg.getText());
 	            template.setLogo(pushMsg.getLogo()); // 通知图标，需要客户端开发时嵌入
 	            //template.setIsRing(false); // 收到通知是否响铃，可选，默认响铃
