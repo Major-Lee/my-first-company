@@ -10,7 +10,9 @@ import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.charging.model.UserWithdrawCostConfigs;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
+import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.charging.facade.ChargingStatisticsFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.BaseTest;
@@ -47,7 +49,7 @@ public class ChargingFacadeServiceTest extends BaseTest{
 	}
     
     private static String Default_DMac = "84:82:f4:19:01:0c";
-    @Test
+    //@Test
 	public void test002FetchCertainDeviceSharedealConfigs(){
     	WifiDeviceSharedealConfigs  configs = chargingFacadeService.userfulWifiDeviceSharedealConfigs(Default_DMac);
     	System.out.println(JsonHelper.getJSONString(configs));

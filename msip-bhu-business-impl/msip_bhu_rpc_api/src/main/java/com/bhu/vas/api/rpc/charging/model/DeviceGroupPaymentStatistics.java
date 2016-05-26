@@ -10,7 +10,7 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 @SuppressWarnings("serial")
 public class DeviceGroupPaymentStatistics extends BaseStringModel{
 	public static final String DEFAULT_GROUP = "default";
-	public static final String TOTAL_DATE_STR = "00000000";
+	public static final String TOTAL_DATE_STR = "0000-00-00";
 	
 	private Integer uid;
 	//分组id

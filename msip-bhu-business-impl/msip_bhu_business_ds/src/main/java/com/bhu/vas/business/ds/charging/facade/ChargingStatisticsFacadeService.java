@@ -53,7 +53,7 @@ public class ChargingStatisticsFacadeService {
     	ShareDealDailyGroupSummaryProcedureVTO cache_entity = businessStatisticsCacheService.getDeviceGroupPaymentStatisticsDSCacheBy(current_key);
     	if(cache_entity == null){
     		cache_entity = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(uid, group_path, current_date);
-    		businessStatisticsCacheService.storeDeviceGroupPaymentStatisticsDSCacheResult(current_key, cache_entity);
+    		//businessStatisticsCacheService.storeDeviceGroupPaymentStatisticsDSCacheResult(current_key, cache_entity);
     	}
     	vto.setT_incoming_amount(String.valueOf(cache_entity.getTotal_cash()));
     	vto.setT_times(cache_entity.getTotal_nums());
