@@ -122,8 +122,11 @@ public class OrderServiceTest extends BaseTest{
     @Test
     public void testGetByProcedure(){
     	OrderStatisticsVTO vto = orderFacadeService.orderStatisticsWithProcedure("2016-03-11 17:15:50", "2016-06-11 17:15:50");
-    	System.out.println(vto.getOcc());
-    	System.out.println(vto.getOfa());
-    	System.out.println(vto.getOfc());
+    	System.out.println(vto.getPc_occ());
+    	System.out.println(vto.getPc_ofa());
+    	System.out.println(vto.getPc_ofc());
+    	System.out.println(vto.getMb_occ());
+    	System.out.println(vto.getMb_ofa());
+    	System.out.println(vto.getMb_ofc());
     }
 }
