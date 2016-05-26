@@ -43,7 +43,7 @@ public class QueryStatisticsFromUMController extends BaseController{
 		}
 		String on_condition=jsonObject.getString("on_condition");
 		String where_condition=jsonObject.getString("where_condition");
-		String result=apiCnzzImpl.queryCnzzStatistic(event_name, from_date, to_date, on_condition, where_condition);
+		String result=apiCnzzImpl.queryCnzzStatistic(event_name, from_date, to_date, on_condition, where_condition,1);
 		return result;
 	}
 	@ResponseBody

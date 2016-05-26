@@ -26,3 +26,7 @@ db/*.sqlite3
 **/.gitignore
 bhu-parent.ipr
 bhu-parent.iws
+msip-bhu-business-impl/msip_bhu_statistics/WebRoot/WEB-INF/classes/com/bhu/statistics/controller/statistics/QueryStatisticsFromUMController.class
+*.class
+*.class
+msip-bhu-business-impl/msip_bhu_statistics/WebRoot/WEB-INF/classes/com/bhu/statistics/controller/statistics/QueryStatisticsFromUMController.class

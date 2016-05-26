@@ -16,6 +16,8 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.springframework.expression.spel.ast.OpNE;
 
+import com.bhu.statistics.logic.IUMLogic;
+import com.bhu.statistics.logic.Impl.UMLogicImpl;
 import com.bhu.statistics.util.um.OpenApiCnzzImpl;
 
 public class Test {
@@ -57,32 +59,15 @@ public class Test {
     } 
 	
 	public static void main(String[] args) {
+		IUMLogic staticsService = UMLogicImpl.getInstance();
 		String currDay=DataUtils.currDay();
 		System.out.println(currDay);
 		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		//String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2015-05-09", "2016-5-25", "date,os", "os in ('android','ios')",2);
 		//String mobileUvs= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2015-05-09", "2016-5-25", "date", "os in ('android','ios')",2);
 		//System.out.println(mobileUvs);
-		String str="2016-05-09";
-        String str1="2016-5-25";
-        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-        Calendar start = Calendar.getInstance();
-        Calendar end = Calendar.getInstance();
-        try {
-            start.setTime(format.parse(str));
-            end.setTime(format.parse(str1));
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        while(start.before(end))
-        {
-            System.out.println(format.format(start.getTime()));
-            start.add(Calendar.DAY_OF_MONTH,1);
-            
-            System.out.println("---");
-        }
-
+		String data="{\"dataType\":\"\",\"beginTime\":\"2016-05-01\",\"endTime\":\"2016-05-29\"}";
+		staticsService.queryStatisticsByUM(data);
 		//		 try {  
 //             readZipFile("E:\\test.zip");  
 //         } catch (Exception e) {  

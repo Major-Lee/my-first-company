@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.statistics.controller.BaseController;
 @Controller
-@RequestMapping("/bhu_api/v1/msip_bhu_statistics")
+@RequestMapping("/bhu_api/v1/msip_bhu_statistics/")
 public class QueryStatisticsController extends BaseController{
 	@ResponseBody
-	@RequestMapping(value="",method = { RequestMethod.GET,
+	@RequestMapping(value="statisticsUm",method = { RequestMethod.GET,
 			RequestMethod.POST })
 	public String queryStatistics(HttpServletRequest request,HttpServletResponse response,String data){
 		
-		
+		staticsService.queryStatisticsByUM(data);
 		return "";
 	}
 }
