@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.bhu.statistics.logic.IUMLogic;
+import com.bhu.statistics.util.DataUtils;
 import com.bhu.statistics.util.DateUtils;
 import com.bhu.statistics.util.JSONObject;
 import com.bhu.statistics.util.NotifyUtil;
@@ -177,12 +178,23 @@ public class UMLogicImpl implements IUMLogic{
 			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON转化错误", true);
 			return result;
 		}
+		List<String> daysList=new ArrayList<String>();
+		if(StringUtils.isBlank(beginTime)||StringUtils.isBlank(endTime)){
+			if(StringUtils.isNotBlank(dataType)){
+				daysList=DateUtils.getLastDay(Integer.valueOf(dataType));
+				beginTime=daysList.get(0);
+				endTime=DataUtils.beforeDay();
+			}else{
+				return NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "时间参数为空!");
+			}
+		}else{
+			daysList=DateUtils.getDaysList(beginTime, endTime);
+		}
 		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", beginTime, endTime, "date", "",1);
 		String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", beginTime, endTime, "date", "",1);
 		String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", beginTime, endTime, "date,os", "os in ('android','ios')",2);
 		String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", beginTime, endTime, "date,os", "os in ('android','ios')",2);
-		Map<String,Object> allmap=new HashMap<String,Object>();
 		JSONObject pcUvJson=JSONObject.fromObject(pcUv);
 		JSONObject pcClickJson=JSONObject.fromObject(pcClick);
 		JSONObject mobileUvJson=JSONObject.fromObject(mobileUv);
@@ -246,7 +258,6 @@ public class UMLogicImpl implements IUMLogic{
 			singleMap.put("typeList", typeList);
 			mobileClickJsonStrList.add(singleMap);
 		}
-		List<String> daysList=DateUtils.getDaysList(beginTime, endTime);
 		List<Map<String,Object>> resMaps=new ArrayList<Map<String,Object>>();
 		int totalUv=0;
 		int totalClickNum=0;
@@ -345,7 +356,7 @@ public class UMLogicImpl implements IUMLogic{
 			androidMap.put("orderComplete", 0);
 			androidMap.put("orderAmount", 0);
 			androidMap.put("orderComConversion", 0);
-			singleMap.put("mobile", androidMap);
+			singleMap.put("android", androidMap);
 			
 			Map<String,Object> iosMap=new HashMap<String,Object>();
 			
@@ -358,7 +369,7 @@ public class UMLogicImpl implements IUMLogic{
 			iosMap.put("orderComplete", 0);
 			iosMap.put("orderAmount", 0);
 			iosMap.put("orderComConversion", 0);
-			singleMap.put("mobile", iosMap);
+			singleMap.put("ios", iosMap);
 			resMaps.add(singleMap);
 			totalUv+=pcUV+mobileUV;
 			totalClickNum+=pcClickNum+mobileClickNum;
