@@ -122,10 +122,10 @@ public class ChargingStatisticsFacadeService {
      * @param uid
      * @param groupid
      */
-	public void deviceGroupPaymentTotalWithProcedure(int uid, String groupid){
+	public void deviceGroupPaymentTotalWithProcedure(int uid, String gid){
 		DeviceGroupPaymentTotalProcedureDTO procedureDTO = new DeviceGroupPaymentTotalProcedureDTO();
 		procedureDTO.setUserid(uid);
-		procedureDTO.setGroupid(groupid);
+		procedureDTO.setGid(gid);
 
 		int executeRet = deviceGroupPaymentStatisticsService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
