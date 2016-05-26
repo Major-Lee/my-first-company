@@ -15,7 +15,6 @@ import com.bhu.statistics.util.NotifyUtil;
 import com.bhu.statistics.util.cache.BhuCache;
 import com.bhu.statistics.util.enums.ErrorCodeEnum;
 import com.bhu.statistics.util.um.OpenApiCnzzImpl;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor;
 
 public class UMLogicImpl implements IUMLogic{
 	private static UMLogicImpl instance = null;
@@ -182,21 +181,205 @@ public class UMLogicImpl implements IUMLogic{
 		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", beginTime, endTime, "date", "",1);
 		String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", beginTime, endTime, "date", "",1);
 		String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", beginTime, endTime, "date,os", "os in ('android','ios')",2);
-		String mobileClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", beginTime, endTime, "date,os", "os in ('android','ios')",2);
+		String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", beginTime, endTime, "date,os", "os in ('android','ios')",2);
 		Map<String,Object> allmap=new HashMap<String,Object>();
 		JSONObject pcUvJson=JSONObject.fromObject(pcUv);
 		JSONObject pcClickJson=JSONObject.fromObject(pcClick);
 		JSONObject mobileUvJson=JSONObject.fromObject(mobileUv);
 		JSONObject mobileClickJson=JSONObject.fromObject(mobileClick);
 		
+		String pcUvJsonStr=pcUvJson.getString("values");
+		pcUvJsonStr=pcUvJsonStr.substring(1, pcUvJsonStr.length()-1);
+		String[] pcUvArray=pcUvJsonStr.split("\\],");
+		List<Map<String,Object>> pcUvList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<pcUvArray.length;i++){
+			Map<String,Object> singleMap=new HashMap<String,Object>();
+			singleMap.put("date", pcUvArray[i].split("=")[0].trim());
+			singleMap.put("uv", pcUvArray[i].split("=")[1].split(",")[1].replaceAll(".0", "").trim());
+			pcUvList.add(singleMap);
+		}
+		String pcClickJsonStr=pcClickJson.getString("values");
+		pcClickJsonStr=pcClickJsonStr.substring(1, pcClickJsonStr.length()-2);
+		String[] pcClickArray=pcClickJsonStr.split("\\],");
+		List<Map<String,Object>> pcClickList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<pcClickArray.length;i++){
+			Map<String,Object> singleMap=new HashMap<String,Object>();
+			singleMap.put("date", pcClickArray[i].split("=")[0].trim());
+			singleMap.put("pv", pcClickArray[i].split("=")[1].split(",")[0].replaceAll(".0", "").substring(1).trim());
+			singleMap.put("average", pcClickArray[i].split("=")[1].split(",")[2].replaceAll(".0", "").trim());
+			pcClickList.add(singleMap);
+		}
+		String mobileUvJsonStr=mobileUvJson.getString("values");
+		mobileUvJsonStr=mobileUvJsonStr.substring(1, mobileUvJsonStr.length()-1);
+		String[] mobileUvJsonStrArray=mobileUvJsonStr.split("\\},");
+		List<Map<String,Object>> mobileUvJsonStrList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<mobileUvJsonStrArray.length;i++){
+			Map<String,Object> singleMap=new HashMap<String,Object>();
+			singleMap.put("date", mobileUvJsonStrArray[i].split("=")[0].trim());
+			List<Map<String,Object>> typeList=new ArrayList<Map<String,Object>>();
+			String[] typeArray=mobileUvJsonStrArray[i].split("=\\{")[1].split("\\],");
+			for(int j=0;j<typeArray.length;j++){
+				Map<String,Object> typeMap=new HashMap<String,Object>();
+				typeMap.put("type", typeArray[j].split("=")[0].trim());
+				typeMap.put("uv", typeArray[j].split("=")[1].split(",")[1].trim().replace(".0", "").trim());
+				typeList.add(typeMap);
+			}
+			singleMap.put("typeList", typeList);
+			mobileUvJsonStrList.add(singleMap);
+		}
+		String mobileClickJsonStr=mobileClickJson.getString("values");
+		mobileClickJsonStr=mobileClickJsonStr.substring(1, mobileClickJsonStr.length()-2);
+		String[] mobileClickJsonStrArray=mobileClickJsonStr.split("\\},");
+		List<Map<String,Object>> mobileClickJsonStrList=new ArrayList<Map<String,Object>>();
+		for(int i=0;i<mobileClickJsonStrArray.length;i++){
+			Map<String,Object> singleMap=new HashMap<String,Object>();
+			singleMap.put("date", mobileClickJsonStrArray[i].split("=")[0].trim());
+			List<Map<String,Object>> typeList=new ArrayList<Map<String,Object>>();
+			String[] typeArray=mobileClickJsonStrArray[i].split("=\\{")[1].substring(0, mobileClickJsonStrArray[i].split("=\\{")[1].length()-1).split("\\],");
+			for(int j=0;j<typeArray.length;j++){
+				Map<String,Object> typeMap=new HashMap<String,Object>();
+				typeMap.put("type", typeArray[j].split("=\\[")[0].trim());
+				typeMap.put("pv", typeArray[j].split("=\\[")[1].split(",")[0].trim().replace(".0", ""));
+				typeMap.put("average", typeArray[j].split("=\\[")[1].split(",")[2].trim().replace(".0", ""));
+				typeList.add(typeMap);
+			}
+			singleMap.put("typeList", typeList);
+			mobileClickJsonStrList.add(singleMap);
+		}
 		List<String> daysList=DateUtils.getDaysList(beginTime, endTime);
 		List<Map<String,Object>> resMaps=new ArrayList<Map<String,Object>>();
+		int totalUv=0;
+		int totalClickNum=0;
+		double totalClickAver=0;
 		for(int i=0;i<daysList.size();i++){
 			Map<String,Object> singleMap=new HashMap<String,Object>();
+			singleMap.put("date", daysList.get(i));
+			Map<String,Object> pcMap=new HashMap<String,Object>();
+			int pcUV=0;
+			for(int j=0;j<pcUvList.size();j++){
+				if(pcUvList.get(j).get("date").equals(daysList.get(i))){
+					pcUV=Integer.valueOf( pcUvList.get(j).get("uv").toString());
+				}
+			}
+			int pcClickNum=0;
+			double pcClickAver=0;
+			for(int j=0;j<pcClickList.size();j++){
+				if(pcClickList.get(j).get("date").equals(daysList.get(i))){
+					pcClickNum=Integer.valueOf(pcClickList.get(j).get("pv").toString());
+					pcClickAver=Double.valueOf( pcClickList.get(j).get("average").toString());
+				}
+			}
+			pcMap.put("uv", pcUV);
+			pcMap.put("clickNum", pcClickNum);
+			pcMap.put("clickAverNum", pcClickAver);
+			pcMap.put("orderNum", 0);
+			pcMap.put("clickConversion", 0);
+			pcMap.put("orderConversion", 0);
+			pcMap.put("orderComplete", 0);
+			pcMap.put("orderAmount", 0);
+			pcMap.put("orderComConversion", 0);
+			singleMap.put("PC", pcMap);
 			
+			Map<String,Object> mobileMap=new HashMap<String,Object>();
+			int mobileUV=0;
+			int mobileClickNum=0;
+			double mobileClickAver=0;
+			int androidUV=0;
+			int androidClickNum=0;
+			double androidClickAver=0;
+			int iosUV=0;
+			int iosClickNum=0;
+			double iosClickAver=0;
+			
+			for(int j=0;j<mobileUvJsonStrList.size();j++){
+				if(mobileUvJsonStrList.get(j).get("date").equals(daysList.get(i))){
+					List<Map<String,Object>> mobileSingleMap=new ArrayList<Map<String,Object>>();
+					mobileSingleMap=(List<Map<String, Object>>) mobileUvJsonStrList.get(j).get("typeList");
+					for(int n=0;n<mobileSingleMap.size();n++){
+						if(mobileSingleMap.get(n).get("type").equals("android")){
+							androidUV=Integer.valueOf( mobileSingleMap.get(n).get("uv").toString());
+						}else{
+							iosUV=Integer.valueOf(mobileSingleMap.get(n).get("uv").toString());
+						}
+					}
+					mobileUV=androidUV+iosUV;
+				}
+			}
+			for(int j=0;j<mobileClickJsonStrList.size();j++){
+				if(mobileClickJsonStrList.get(j).get("date").equals(daysList.get(i))){
+					List<Map<String,Object>> mobileSingleMap=new ArrayList<Map<String,Object>>();
+					mobileSingleMap=(List<Map<String, Object>>) mobileClickJsonStrList.get(j).get("typeList");
+					for(int n=0;n<mobileSingleMap.size();n++){
+						if(mobileSingleMap.get(n).get("type").equals("android")){
+							androidClickNum=Integer.valueOf(mobileSingleMap.get(n).get("pv").toString());
+							androidClickAver=Double.valueOf(mobileSingleMap.get(n).get("average").toString());
+						}else{
+							iosClickAver=Double.valueOf( mobileSingleMap.get(n).get("average").toString());
+							iosClickNum=Integer.valueOf(mobileSingleMap.get(n).get("pv").toString());
+						}
+					}
+					mobileClickNum=androidClickNum+iosClickNum;
+					mobileClickAver=(androidClickAver+iosClickAver)*0.5;
+				}
+			}
+			mobileMap.put("uv", mobileUV);
+			mobileMap.put("clickNum", mobileClickNum);
+			mobileMap.put("clickAverNum", mobileClickAver);
+			mobileMap.put("orderNum", 0);
+			mobileMap.put("clickConversion", 0);
+			mobileMap.put("orderConversion", 0);
+			mobileMap.put("orderComplete", 0);
+			mobileMap.put("orderAmount", 0);
+			mobileMap.put("orderComConversion", 0);
+			singleMap.put("mobile", mobileMap);
+			
+			
+			Map<String,Object> androidMap=new HashMap<String,Object>();
+			
+			androidMap.put("uv", androidUV);
+			androidMap.put("clickNum", androidClickNum);
+			androidMap.put("clickAverNum", androidClickAver);
+			androidMap.put("orderNum", 0);
+			androidMap.put("clickConversion", 0);
+			androidMap.put("orderConversion", 0);
+			androidMap.put("orderComplete", 0);
+			androidMap.put("orderAmount", 0);
+			androidMap.put("orderComConversion", 0);
+			singleMap.put("mobile", androidMap);
+			
+			Map<String,Object> iosMap=new HashMap<String,Object>();
+			
+			iosMap.put("uv", iosUV);
+			iosMap.put("clickNum", iosClickNum);
+			iosMap.put("clickAverNum", iosClickAver);
+			iosMap.put("orderNum", 0);
+			iosMap.put("clickConversion", 0);
+			iosMap.put("orderConversion", 0);
+			iosMap.put("orderComplete", 0);
+			iosMap.put("orderAmount", 0);
+			iosMap.put("orderComConversion", 0);
+			singleMap.put("mobile", iosMap);
+			resMaps.add(singleMap);
+			totalUv+=pcUV+mobileUV;
+			totalClickNum+=pcClickNum+mobileClickNum;
+			totalClickAver+=(pcClickAver+mobileClickAver)*0.5;
 		}
-		Map<String,Object> map=new HashMap<String,Object>();
-		map.put("", "");
+		Map<String,Object> totalMap=new HashMap<String,Object>();
+		
+		totalMap.put("uv", totalUv);
+		totalMap.put("clickNum", totalClickNum);
+		totalMap.put("clickAverNum", totalClickAver/daysList.size());
+		totalMap.put("orderNum", 0);
+		totalMap.put("clickConversion", 0);
+		totalMap.put("orderConversion", 0);
+		totalMap.put("orderComplete", 0);
+		totalMap.put("orderAmount", 0);
+		totalMap.put("orderComConversion", 0);
+		Map<String,Object> resMap=new HashMap<String,Object>();
+		resMap.put("dataList", resMaps);
+		resMap.put("total", totalMap);
+		result=NotifyUtil.success(resMap);
+		System.out.println(result);
 		return result;
 	}
 	public String querySSIDInfoByTime(String data) {
