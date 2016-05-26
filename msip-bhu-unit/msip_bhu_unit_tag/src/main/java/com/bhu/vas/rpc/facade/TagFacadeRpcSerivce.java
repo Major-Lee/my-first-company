@@ -230,10 +230,8 @@ public class TagFacadeRpcSerivce {
 
 		List<String> macsList = ArrayHelper.toList(macsTemp);
 
-		// mac绑定uid检测
 		UserValidateServiceHelper.validateUserDevices(uid, macsList, userDeviceService);
 		
-		// 验证是否能添加设备
 		if(CanAddDevices2Group(uid, gid, macsList)){
 			List<TagGroupRelation> entities = new ArrayList<TagGroupRelation>();
 
@@ -261,7 +259,7 @@ public class TagFacadeRpcSerivce {
 	/**
 	 * 修改设备分组信息
 	 */
-	public void modifyDeciceWithNode(int uid, int gid, int newGid, String macs) {
+	public void modifyDeciceWithNode(int uid, int gid, int newGid,String newPath, String macs) {
 
 		String[] macTemp = macs.split(StringHelper.COMMA_STRING_GAP);
 
@@ -279,11 +277,11 @@ public class TagFacadeRpcSerivce {
 
 			if (CanAddDevices2Group(uid, newGid, macsList)) {
 				for (TagGroupRelation tagGroupRelation : entities) {
-					if (tagGroupRelation == null) {
+					if (tagGroupRelation == null || tagGroupRelation.getGid() != gid) {
 						throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUPREL_DEVICE_NOEXIST);
 					}
 					tagGroupRelation.setGid(newGid);
-					tagGroupRelation.setPath(newGid+"/");
+					tagGroupRelation.setPath(newPath);
 				}
 				tagGroupRelationService.updateAll(entities);
 

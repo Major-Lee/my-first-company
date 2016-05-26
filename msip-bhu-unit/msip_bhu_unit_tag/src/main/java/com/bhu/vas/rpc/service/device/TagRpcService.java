@@ -145,11 +145,11 @@ public class TagRpcService implements ITagRpcService {
 	 * 修改设备分组信息
 	 */
 	@Override
-	public RpcResponseDTO<Boolean> modifyDeciceWithNode(int uid, int gid, int newGid, String macs) {
+	public RpcResponseDTO<Boolean> modifyDeciceWithNode(int uid, int gid, int newGid,String newPath, String macs) {
 		logger.info(
-				String.format("modifyDeciceWithNode uid[%s] message[%s] newGid[%s] macs[%s]", uid, gid, newGid, macs));
+				String.format("modifyDeciceWithNode uid[%s] message[%s] newGid[%s] newPath[%s] macs[%s]", uid, gid, newGid, macs));
 		try {
-			tagFacadeRpcSerivce.modifyDeciceWithNode(uid, gid, newGid, macs);
+			tagFacadeRpcSerivce.modifyDeciceWithNode(uid, gid, newGid, newPath, macs);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
