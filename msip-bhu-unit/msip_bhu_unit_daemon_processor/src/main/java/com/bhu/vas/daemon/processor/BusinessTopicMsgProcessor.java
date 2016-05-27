@@ -176,8 +176,8 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 	
 	
 	private void processCmJoinNotify(String message){
-		CmJoinNotifyDTO dto = JsonHelper.getDTO(message, CmJoinNotifyDTO.class);
-		ActiveMQConnectionsManager.getInstance().createNewProducerQueues(QueueInfo.build(dto.getHost(), dto.getPort(), dto.toString()), true);
+		//CmJoinNotifyDTO dto = JsonHelper.getDTO(message, CmJoinNotifyDTO.class);
+		//ActiveMQConnectionsManager.getInstance().createNewProducerQueues(QueueInfo.build(dto.getHost(), dto.getPort(), dto.toString()), true);
 		logger.info(String.format("processCmJoinNotify message[%s] successfully!", message));
 	}
 
