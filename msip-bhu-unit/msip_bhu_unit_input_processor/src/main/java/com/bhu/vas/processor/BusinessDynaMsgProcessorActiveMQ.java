@@ -41,13 +41,8 @@ public class BusinessDynaMsgProcessorActiveMQ implements DynaQueueMessageListene
 	private ExecutorService exec_dispatcher = Executors.newFixedThreadPool(1);
 	private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
 	private int[] hits;
-	//private int hash_prime = 50;
 	private int hash_prime = 50;
 	private int per_threads = 1;
-	//private static String Online_Prefix = "00000001";
-	/*private static final int DeviceOffline_Prefix = 3;
-	private static final int DeviceNotExist_Prefix = 4;
-	private static final int Transfer_Prefix = 5;*/
 	//@Resource
 	//private IDaemonRpcService daemonRpcService;
 
