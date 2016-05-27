@@ -79,8 +79,11 @@ public class CommdityHelper {
 	}
 	
 	public static void main(String[] args){
-		for(int i = 0;i<100;i++){
-			System.out.println(generateCommdityAmount("0.1-0.2"));
+		for(int i = 0;i<100000;i++){
+			String result = generateCommdityAmount("0.01-0.02");
+			if(Double.parseDouble(result) > 0.02d){
+				System.out.println(result);
+			}
 		}
 	}
 }

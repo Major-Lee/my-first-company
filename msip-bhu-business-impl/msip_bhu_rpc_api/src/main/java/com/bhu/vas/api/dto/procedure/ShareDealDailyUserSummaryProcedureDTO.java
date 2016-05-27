@@ -94,4 +94,9 @@ public class ShareDealDailyUserSummaryProcedureDTO extends AbstractProcedureDTO{
 		vto.setTotal_nums(this.getTotal_nums());
 		return vto;
 	}
+	
+	@Override
+	public boolean isMaster() {
+		return false;
+	}
 }
