@@ -621,7 +621,7 @@ public class TagFacadeRpcSerivce {
 		for (String gid : arr) {
 			GroupCountOnlineVTO vto = new GroupCountOnlineVTO();
 			vto.setGid(gid);
-			if (gid.isEmpty()) {
+			if (gid.isEmpty()|| gid.equals("0")) {
 				vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, null,
 						WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
 			} else {
