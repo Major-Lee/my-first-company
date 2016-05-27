@@ -78,7 +78,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetA
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
@@ -199,10 +198,11 @@ public class AsyncMsgHandleService {
 				payloads.add(CMDBuilder.builderSysinfoQuery(dto.getMac(),
 						CMDBuilder.auto_taskid_fragment.getNextSequence()));
 				// 用户登录后 给其绑定的设备mac地址发送设备使用情况
-				boolean needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(dto.getMac(),
+				//由于此部分数据没有别的地方显示，暂时注释掉 commented by EmondLee @20160526
+				/*boolean needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(dto.getMac(),
 						false);
 				if (needDeviceUsedQuery)
-					payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(dto.getMac()));
+					payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(dto.getMac()));*/
 				// 设备上线push
 				if (WifiDeviceDTO.UserCmdRebootReason.equals(dto.getJoin_reason())) {
 					pushService.push(new WifiDeviceRebootPushDTO(dto.getMac(), dto.getJoin_reason()));
@@ -1752,7 +1752,8 @@ public class AsyncMsgHandleService {
 	public void afterUserSignedonThenCmdDown(String mac) {
 		logger.info(String.format("wifiDeviceOnlineHandle afterUserSignedonThenCmdDown[%s]", mac));
 		boolean needDeviceUsedQuery = false;
-		needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(mac, true);
+		//由于此部分数据没有别的地方显示，暂时注释掉 commented by EmondLee @20160526
+		//needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(mac, true);
 		DaemonHelper.afterUserSignedon(mac, needDeviceUsedQuery, daemonRpcService);
 		/*
 		 * if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().
