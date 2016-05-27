@@ -291,59 +291,105 @@ public class UMLogicImpl implements IUMLogic{
 		pcUvJsonStr=pcUvJsonStr.substring(1, pcUvJsonStr.length()-1);
 		String[] pcUvArray=pcUvJsonStr.split("\\],");
 		List<Map<String,Object>> pcUvList=new ArrayList<Map<String,Object>>();
-		for(int i=0;i<pcUvArray.length;i++){
+		if(beginTime.equals(endTime)&&pcUvJsonStr.equals("0.0, 0.0, 0.0")){
 			Map<String,Object> singleMap=new HashMap<String,Object>();
-			singleMap.put("date", pcUvArray[i].split("=")[0].trim());
-			singleMap.put("uv", pcUvArray[i].split("=")[1].split(",")[1].replaceAll(".0", "").trim());
+			singleMap.put("date", beginTime);
+			singleMap.put("uv", 0);
 			pcUvList.add(singleMap);
+		}else{
+			for(int i=0;i<pcUvArray.length;i++){
+				Map<String,Object> singleMap=new HashMap<String,Object>();
+				singleMap.put("date", pcUvArray[i].split("=")[0].trim());
+				singleMap.put("uv", pcUvArray[i].split("=")[1].split(",")[1].replaceAll(".0", "").trim());
+				pcUvList.add(singleMap);
+			}
 		}
 		String pcClickJsonStr=pcClickJson.getString("values");
 		pcClickJsonStr=pcClickJsonStr.substring(1, pcClickJsonStr.length()-2);
 		String[] pcClickArray=pcClickJsonStr.split("\\],");
 		List<Map<String,Object>> pcClickList=new ArrayList<Map<String,Object>>();
-		for(int i=0;i<pcClickArray.length;i++){
+		
+		if(beginTime.equals(endTime)&&pcClickJsonStr.equals("0.0, 0.0, 0.0")){
 			Map<String,Object> singleMap=new HashMap<String,Object>();
-			singleMap.put("date", pcClickArray[i].split("=")[0].trim());
-			singleMap.put("pv", pcClickArray[i].split("=")[1].split(",")[0].replaceAll(".0", "").substring(1).trim());
-			singleMap.put("average", pcClickArray[i].split("=")[1].split(",")[2].replaceAll(".0", "").trim());
+			singleMap.put("date", beginTime);
+			singleMap.put("pv", 0);
 			pcClickList.add(singleMap);
+		}else{
+			for(int i=0;i<pcClickArray.length;i++){
+				Map<String,Object> singleMap=new HashMap<String,Object>();
+				singleMap.put("date", pcClickArray[i].split("=")[0].trim());
+				singleMap.put("pv", pcClickArray[i].split("=")[1].split(",")[0].replaceAll(".0", "").substring(1).trim());
+				pcClickList.add(singleMap);
+			}
 		}
+		
 		String mobileUvJsonStr=mobileUvJson.getString("values");
 		mobileUvJsonStr=mobileUvJsonStr.substring(1, mobileUvJsonStr.length()-1);
 		String[] mobileUvJsonStrArray=mobileUvJsonStr.split("\\},");
 		List<Map<String,Object>> mobileUvJsonStrList=new ArrayList<Map<String,Object>>();
-		for(int i=0;i<mobileUvJsonStrArray.length;i++){
+		if(beginTime.equals(endTime)&&mobileUvJsonStr.equals("0.0, 0.0, 0.0")){
 			Map<String,Object> singleMap=new HashMap<String,Object>();
-			singleMap.put("date", mobileUvJsonStrArray[i].split("=")[0].trim());
+			singleMap.put("date", beginTime);
 			List<Map<String,Object>> typeList=new ArrayList<Map<String,Object>>();
-			String[] typeArray=mobileUvJsonStrArray[i].split("=\\{")[1].split("\\],");
-			for(int j=0;j<typeArray.length;j++){
-				Map<String,Object> typeMap=new HashMap<String,Object>();
-				typeMap.put("type", typeArray[j].split("=")[0].trim());
-				typeMap.put("uv", typeArray[j].split("=")[1].split(",")[1].trim().replace(".0", "").trim());
-				typeList.add(typeMap);
-			}
+			Map<String,Object> typeMap=new HashMap<String,Object>();
+			Map<String,Object> typesMap=new HashMap<String,Object>();
+			typeMap.put("type", "android");
+			typeMap.put("uv", 0);
+			typeList.add(typeMap);
+			typesMap.put("type", "ios");
+			typesMap.put("uv", 0);
+			typeList.add(typesMap);
 			singleMap.put("typeList", typeList);
 			mobileUvJsonStrList.add(singleMap);
+		}else{
+			for(int i=0;i<mobileUvJsonStrArray.length;i++){
+				Map<String,Object> singleMap=new HashMap<String,Object>();
+				singleMap.put("date", mobileUvJsonStrArray[i].split("=")[0].trim());
+				List<Map<String,Object>> typeList=new ArrayList<Map<String,Object>>();
+				String[] typeArray=mobileUvJsonStrArray[i].split("=\\{")[1].split("\\],");
+				for(int j=0;j<typeArray.length;j++){
+					Map<String,Object> typeMap=new HashMap<String,Object>();
+					typeMap.put("type", typeArray[j].split("=")[0].trim());
+					typeMap.put("uv", typeArray[j].split("=")[1].split(",")[1].trim().replace(".0", "").trim());
+					typeList.add(typeMap);
+				}
+				singleMap.put("typeList", typeList);
+				mobileUvJsonStrList.add(singleMap);
+			}
 		}
 		String mobileClickJsonStr=mobileClickJson.getString("values");
 		mobileClickJsonStr=mobileClickJsonStr.substring(1, mobileClickJsonStr.length()-2);
 		String[] mobileClickJsonStrArray=mobileClickJsonStr.split("\\},");
 		List<Map<String,Object>> mobileClickJsonStrList=new ArrayList<Map<String,Object>>();
-		for(int i=0;i<mobileClickJsonStrArray.length;i++){
+		if(beginTime.equals(endTime)&&mobileClickJsonStr.equals("0.0, 0.0, 0.0")){
 			Map<String,Object> singleMap=new HashMap<String,Object>();
-			singleMap.put("date", mobileClickJsonStrArray[i].split("=")[0].trim());
+			singleMap.put("date", beginTime);
 			List<Map<String,Object>> typeList=new ArrayList<Map<String,Object>>();
-			String[] typeArray=mobileClickJsonStrArray[i].split("=\\{")[1].substring(0, mobileClickJsonStrArray[i].split("=\\{")[1].length()-1).split("\\],");
-			for(int j=0;j<typeArray.length;j++){
-				Map<String,Object> typeMap=new HashMap<String,Object>();
-				typeMap.put("type", typeArray[j].split("=\\[")[0].trim());
-				typeMap.put("pv", typeArray[j].split("=\\[")[1].split(",")[0].trim().replace(".0", ""));
-				typeMap.put("average", typeArray[j].split("=\\[")[1].split(",")[2].trim().replace(".0", ""));
-				typeList.add(typeMap);
-			}
+			Map<String,Object> typeMap=new HashMap<String,Object>();
+			Map<String,Object> typesMap=new HashMap<String,Object>();
+			typeMap.put("type", "android");
+			typeMap.put("pv", 0);
+			typeList.add(typeMap);
+			typesMap.put("type", "ios");
+			typesMap.put("pv", 0);
+			typeList.add(typesMap);
 			singleMap.put("typeList", typeList);
 			mobileClickJsonStrList.add(singleMap);
+		}else{
+			for(int i=0;i<mobileClickJsonStrArray.length;i++){
+				Map<String,Object> singleMap=new HashMap<String,Object>();
+				singleMap.put("date", mobileClickJsonStrArray[i].split("=")[0].trim());
+				List<Map<String,Object>> typeList=new ArrayList<Map<String,Object>>();
+				String[] typeArray=mobileClickJsonStrArray[i].split("=\\{")[1].substring(0, mobileClickJsonStrArray[i].split("=\\{")[1].length()-1).split("\\],");
+				for(int j=0;j<typeArray.length;j++){
+					Map<String,Object> typeMap=new HashMap<String,Object>();
+					typeMap.put("type", typeArray[j].split("=\\[")[0].trim());
+					typeMap.put("pv", typeArray[j].split("=\\[")[1].split(",")[0].trim().replace(".0", ""));
+					typeList.add(typeMap);
+				}
+				singleMap.put("typeList", typeList);
+				mobileClickJsonStrList.add(singleMap);
+			}
 		}
 		List<LinkedHashMap<String,Object>> resMaps=new ArrayList<LinkedHashMap<String,Object>>();
 		int totalUv=0;
