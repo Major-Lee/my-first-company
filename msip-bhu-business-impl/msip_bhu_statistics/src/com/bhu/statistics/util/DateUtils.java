@@ -55,7 +55,9 @@ public class DateUtils {
             list.add(format.format(start.getTime()).toString());
             start.add(Calendar.DAY_OF_MONTH,1);
         }
-        list.add(endTime);
+        if(!StringUtils.endsWith(beginTime, endTime)){
+        	list.add(endTime);
+        }
        return list; 
 	}
 	/**
