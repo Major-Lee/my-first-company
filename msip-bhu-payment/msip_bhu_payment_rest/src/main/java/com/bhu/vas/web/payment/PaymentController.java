@@ -283,11 +283,11 @@ public class PaymentController extends BaseController{
         		return;
         	}
     		
-//    		PaymentReckoning paymentReckoning = paymentReckoningService.findByOrderId(goods_no);
-//        	if(paymentReckoning != null){
-//        		logger.error(String.format(" submitPayment goods_no[%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
-//        		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
-//        	}
+    		PaymentReckoning paymentReckoning = paymentReckoningService.findByOrderId(goods_no);
+        	if(paymentReckoning != null){
+        		logger.error(String.format(" submitPayment goods_no[%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
+        		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
+        	}
         	PaymentTypeVTO result = null;
         	
         	umac = BusinessHelper.formatMac(umac);
