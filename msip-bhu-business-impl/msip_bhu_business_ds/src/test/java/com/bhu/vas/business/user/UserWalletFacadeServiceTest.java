@@ -296,16 +296,19 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
    	}
    	
+   	@Test
 	public void test011DoSharedealDailyUserDailySummary(){
 		String cdate = DateTimeHelper.formatDate(new Date(), DateTimeHelper.FormatPattern5);
-		ShareDealDailyUserSummaryProcedureVTO daily_procedureVTO   = userWalletFacadeService.sharedealDailyUserSummaryWithProcedure(1, cdate);
+		ShareDealDailyUserSummaryProcedureVTO daily_procedureVTO   = userWalletFacadeService.sharedealDailyUserSummaryWithProcedure(100153, cdate);
     	System.out.println("dddd:"+JsonHelper.getJSONString(daily_procedureVTO));
-    	ShareDealDailyUserSummaryProcedureVTO total_procedureVTO   = userWalletFacadeService.sharedealDailyUserSummaryWithProcedure(1, null);
+    	ShareDealDailyUserSummaryProcedureVTO yesterday_procedureVTO   = userWalletFacadeService.sharedealDailyUserSummaryWithProcedure(100153, "2016-05-20");
+    	System.out.println("dddd:"+JsonHelper.getJSONString(yesterday_procedureVTO));
+    	ShareDealDailyUserSummaryProcedureVTO total_procedureVTO   = userWalletFacadeService.sharedealDailyUserSummaryWithProcedure(100153, null);
     	System.out.println("dddd:"+JsonHelper.getJSONString(total_procedureVTO));
    	}
 	
 	
-	@Test
+	
    	public void test011DoSharedealGroupDailySummary(){
    		ShareDealDailyGroupSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(100245, "10009/", "2016-05-21");
     	System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
