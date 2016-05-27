@@ -563,7 +563,7 @@ public class DeviceHelper {
 		try{
 			if(source != null && target != null){
 				//合并 radio 多频设备会有多个
-				List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios());
+				List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios(), false);
 				if(m_radios != null){
 					target.setRadios(m_radios);
 				}
@@ -573,7 +573,7 @@ public class DeviceHelper {
 					ReflectionHelper.copyProperties(source.getLinkmode(), target.getLinkmode());
 				}
 				//合并 vaps
-				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps());
+				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps(), false);
 				if(m_vaps != null){
 					target.setVaps(m_vaps);
 				}
@@ -635,12 +635,12 @@ public class DeviceHelper {
 		try{
 			if(source != null && target != null){
 				//合并 radio 多频设备会有多个
-				List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios());
+				List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios(), false);
 				if(m_radios != null){
 					target.setRadios(m_radios);
 				}
 				//合并 vaps
-				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps());
+				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps(), false);
 				if(m_vaps != null){
 					target.setVaps(m_vaps);
 				}
@@ -661,6 +661,10 @@ public class DeviceHelper {
 	}
 	
 	public static <T extends DeviceSettingBuilderDTO> List<T> mergeList(List<T> source, List<T> target) throws Exception{
+		return mergeList(source, target, true);
+	}
+	
+	public static <T extends DeviceSettingBuilderDTO> List<T> mergeList(List<T> source, List<T> target, boolean addNotExist) throws Exception{
 		if(source == null) return null;
 		//如果当前为空 则直接覆盖
 		if(target == null || target.isEmpty()){
@@ -674,7 +678,9 @@ public class DeviceHelper {
 					if(index != -1){
 						ReflectionHelper.copyProperties(source_item, target.get(index));
 					}else{
-						target.add(source_item);
+						if(addNotExist){
+							target.add(source_item);
+						}
 					}
 				}
 			}
