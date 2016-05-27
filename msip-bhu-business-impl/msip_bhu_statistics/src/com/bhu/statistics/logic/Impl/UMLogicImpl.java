@@ -2,8 +2,10 @@ package com.bhu.statistics.logic.Impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -309,7 +311,7 @@ public class UMLogicImpl implements IUMLogic{
 			singleMap.put("typeList", typeList);
 			mobileClickJsonStrList.add(singleMap);
 		}
-		List<Map<String,Object>> resMaps=new ArrayList<Map<String,Object>>();
+		List<LinkedHashMap<String,Object>> resMaps=new ArrayList<LinkedHashMap<String,Object>>();
 		int totalUv=0;
 		int totalClickNum=0;
 		
@@ -327,7 +329,7 @@ public class UMLogicImpl implements IUMLogic{
 		int totalMbOrderComplete=0;
 		int totalMbOrderAmount=0;
 		for(int i=0;i<daysList.size();i++){
-			Map<String,Object> singleMap=new HashMap<String,Object>();
+			LinkedHashMap<String,Object> singleMap=new LinkedHashMap<String,Object>();
 			singleMap.put("date", daysList.get(i));
 			String pcOrderNumStr=BhuCache.getInstance().getStOrder(daysList.get(i), "pc_occ");
 			int pcOrderNum=0;
@@ -365,39 +367,7 @@ public class UMLogicImpl implements IUMLogic{
 			totalMbOrderNum+=mbOrderNum;
 			totalMbOrderComplete+=mbOrderComplete;
 			totalMbOrderAmount+=mbOrderAmount;
-			Map<String,Object> pcMap=new HashMap<String,Object>();
-			int pcUV=0;
-			for(int j=0;j<pcUvList.size();j++){
-				if(pcUvList.get(j).get("date").equals(daysList.get(i))){
-					pcUV=Integer.valueOf( pcUvList.get(j).get("uv").toString());
-				}
-			}
-			int pcClickNum=0;
-			for(int j=0;j<pcClickList.size();j++){
-				if(pcClickList.get(j).get("date").equals(daysList.get(i))){
-					pcClickNum=Integer.valueOf(pcClickList.get(j).get("pv").toString());
-				}
-			}
-			pcMap.put("uv", pcUV);
-			pcMap.put("clickNum", pcClickNum);
-			pcMap.put("clickAverNum", 0);
-			pcMap.put("orderConversion", 0);
-			pcMap.put("orderComConversion", 0);
-			if(pcUV!=0){
-				pcMap.put("clickAverNum", pcClickNum/pcUV*1.0);
-				pcMap.put("orderConversion", pcOrderNum/pcUV*1.0);
-				pcMap.put("orderComConversion", pcOrderComplete/pcUV*1.0);
-			}
-			pcMap.put("orderNum", pcOrderNum);
-			pcMap.put("clickConversion", 0);
-			if(pcClickNum!=0){
-				pcMap.put("clickConversion", pcOrderNum/pcClickNum*1.0);
-			}
-			pcMap.put("orderComplete", pcOrderComplete);
-			pcMap.put("orderAmount", pcOrderAmount);
-			singleMap.put("PC", pcMap);
 			
-			Map<String,Object> mobileMap=new HashMap<String,Object>();
 			int mobileUV=0;
 			int mobileClickNum=0;
 			int androidUV=0;
@@ -432,6 +402,60 @@ public class UMLogicImpl implements IUMLogic{
 					mobileClickNum=androidClickNum+iosClickNum;
 				}
 			}
+			int pcUV=0;
+			for(int j=0;j<pcUvList.size();j++){
+				if(pcUvList.get(j).get("date").equals(daysList.get(i))){
+					pcUV=Integer.valueOf( pcUvList.get(j).get("uv").toString());
+				}
+			}
+			int pcClickNum=0;
+			for(int j=0;j<pcClickList.size();j++){
+				if(pcClickList.get(j).get("date").equals(daysList.get(i))){
+					pcClickNum=Integer.valueOf(pcClickList.get(j).get("pv").toString());
+				}
+			}
+			Map<String,Object> totalMap=new HashMap<String,Object>();
+			
+			totalMap.put("uv", pcUV+mobileUV);
+			totalMap.put("clickNum", pcClickNum+mobileClickNum);
+			totalMap.put("clickAverNum", 0);
+			totalMap.put("orderConversion", 0);
+			totalMap.put("orderComConversion", 0);
+			if((pcUV+mobileUV)!=0){
+			}
+			totalMap.put("orderNum", pcOrderNum+mbOrderNum);
+			totalMap.put("clickConversion", 0);
+			if((pcClickNum+mobileClickNum)!=0){
+				totalMap.put("clickConversion", (pcOrderNum+mbOrderNum)/(pcClickNum+mobileClickNum)*1.0);
+			}
+			totalMap.put("orderComplete", pcOrderComplete+mbOrderComplete);
+			totalMap.put("orderAmount", pcOrderAmount+mbOrderAmount);
+			singleMap.put("total", totalMap);
+			
+			
+			Map<String,Object> pcMap=new HashMap<String,Object>();
+			
+			pcMap.put("uv", pcUV);
+			pcMap.put("clickNum", pcClickNum);
+			pcMap.put("clickAverNum", 0);
+			pcMap.put("orderConversion", 0);
+			pcMap.put("orderComConversion", 0);
+			if(pcUV!=0){
+				pcMap.put("clickAverNum", pcClickNum/pcUV*1.0);
+				pcMap.put("orderConversion", pcOrderNum/pcUV*1.0);
+				pcMap.put("orderComConversion", pcOrderComplete/pcUV*1.0);
+			}
+			pcMap.put("orderNum", pcOrderNum);
+			pcMap.put("clickConversion", 0);
+			if(pcClickNum!=0){
+				pcMap.put("clickConversion", pcOrderNum/pcClickNum*1.0);
+			}
+			pcMap.put("orderComplete", pcOrderComplete);
+			pcMap.put("orderAmount", pcOrderAmount);
+			singleMap.put("PC", pcMap);
+			
+			Map<String,Object> mobileMap=new HashMap<String,Object>();
+			
 			mobileMap.put("uv", mobileUV);
 			mobileMap.put("clickNum", mobileClickNum);
 			mobileMap.put("clickAverNum", 0);
@@ -451,6 +475,21 @@ public class UMLogicImpl implements IUMLogic{
 			mobileMap.put("orderAmount", mbOrderAmount);
 			singleMap.put("mobile", mobileMap);
 			
+			Map<String,Object> iosMap=new HashMap<String,Object>();
+			
+			iosMap.put("uv", iosUV);
+			iosMap.put("clickNum", iosClickNum);
+			iosMap.put("clickAverNum", 0);
+			if(iosUV!=0){
+				iosMap.put("clickAverNum", iosClickNum/iosUV*1.0);
+			}
+			iosMap.put("orderNum", "-");
+			iosMap.put("clickConversion", "-");
+			iosMap.put("orderConversion", "-");
+			iosMap.put("orderComplete", "-");
+			iosMap.put("orderAmount", "-");
+			iosMap.put("orderComConversion", "-");
+			singleMap.put("ios", iosMap);
 			
 			Map<String,Object> androidMap=new HashMap<String,Object>();
 			
@@ -468,40 +507,6 @@ public class UMLogicImpl implements IUMLogic{
 			androidMap.put("orderComConversion", "-");
 			singleMap.put("android", androidMap);
 			
-			Map<String,Object> iosMap=new HashMap<String,Object>();
-			
-			iosMap.put("uv", iosUV);
-			iosMap.put("clickNum", iosClickNum);
-			iosMap.put("clickAverNum", 0);
-			if(iosUV!=0){
-				iosMap.put("clickAverNum", iosClickNum/iosUV*1.0);
-			}
-			iosMap.put("orderNum", "-");
-			iosMap.put("clickConversion", "-");
-			iosMap.put("orderConversion", "-");
-			iosMap.put("orderComplete", "-");
-			iosMap.put("orderAmount", "-");
-			iosMap.put("orderComConversion", "-");
-			singleMap.put("ios", iosMap);
-			
-			Map<String,Object> totalMap=new HashMap<String,Object>();
-			
-			totalMap.put("uv", pcUV+mobileUV);
-			totalMap.put("clickNum", pcClickNum+mobileClickNum);
-			totalMap.put("clickAverNum", 0);
-			totalMap.put("orderConversion", 0);
-			totalMap.put("orderComConversion", 0);
-			if((pcUV+mobileUV)!=0){
-			}
-			totalMap.put("orderNum", pcOrderNum+mbOrderNum);
-			totalMap.put("clickConversion", 0);
-			if((pcClickNum+mobileClickNum)!=0){
-				totalMap.put("clickConversion", (pcOrderNum+mbOrderNum)/(pcClickNum+mobileClickNum)*1.0);
-			}
-			totalMap.put("orderComplete", pcOrderComplete+mbOrderComplete);
-			totalMap.put("orderAmount", pcOrderAmount+mbOrderAmount);
-			singleMap.put("total", totalMap);
-			
 			resMaps.add(singleMap);
 			totalAndroidUV+=androidUV;
 			totalAndroidClickNum+=androidClickNum;
@@ -515,7 +520,7 @@ public class UMLogicImpl implements IUMLogic{
 			totalUv+=pcUV+mobileUV;
 			totalClickNum+=pcClickNum+mobileClickNum;
 		}
-		Map<String,Object> tMaps=new HashMap<String,Object>();
+		LinkedHashMap<String,Object> tMaps=new LinkedHashMap<String,Object>();
 		Map<String,Object> totalMap=new HashMap<String,Object>();
 		totalMap.put("uv", totalUv);
 		totalMap.put("clickNum", totalClickNum);
@@ -575,6 +580,22 @@ public class UMLogicImpl implements IUMLogic{
 		mobileMap.put("orderAmount", totalMbOrderAmount);
 		tMaps.put("mobile", mobileMap);
 		
+		Map<String,Object> iosMap=new HashMap<String,Object>();
+		
+		iosMap.put("uv", totalIosUV);
+		iosMap.put("clickNum", totalIosClickNum);
+		iosMap.put("clickAverNum", 0);
+		if(totalIosUV!=0){
+			iosMap.put("clickAverNum", totalIosClickNum/totalIosUV*1.0);
+		}
+		iosMap.put("orderNum", "-");
+		iosMap.put("clickConversion", "");
+		iosMap.put("orderConversion", "-");
+		iosMap.put("orderComplete", "-");
+		iosMap.put("orderAmount", "-");
+		iosMap.put("orderComConversion", "-");
+		tMaps.put("ios", iosMap);
+		tMaps.put("date", beginTime+" - "+endTime);
 		
 		Map<String,Object> androidMap=new HashMap<String,Object>();
 		
@@ -592,22 +613,7 @@ public class UMLogicImpl implements IUMLogic{
 		androidMap.put("orderComConversion", "-");
 		tMaps.put("android", androidMap);
 		
-		Map<String,Object> iosMap=new HashMap<String,Object>();
 		
-		iosMap.put("uv", totalIosUV);
-		iosMap.put("clickNum", totalIosClickNum);
-		iosMap.put("clickAverNum", 0);
-		if(totalIosUV!=0){
-			iosMap.put("clickAverNum", totalIosClickNum/totalIosUV*1.0);
-		}
-		iosMap.put("orderNum", "-");
-		iosMap.put("clickConversion", "");
-		iosMap.put("orderConversion", "-");
-		iosMap.put("orderComplete", "-");
-		iosMap.put("orderAmount", "-");
-		iosMap.put("orderComConversion", "-");
-		tMaps.put("ios", iosMap);
-		tMaps.put("date", beginTime+" - "+endTime);
 		
 		Map<String,Object> resMap=new HashMap<String,Object>();
 		resMap.put("dataList", resMaps);
