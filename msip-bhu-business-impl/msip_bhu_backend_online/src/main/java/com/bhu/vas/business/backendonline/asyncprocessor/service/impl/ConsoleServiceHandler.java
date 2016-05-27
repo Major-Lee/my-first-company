@@ -28,11 +28,13 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.UBindedEnum;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.business.asyn.spring.model.DeviceSearchResultExportFileDTO;
 import com.bhu.vas.business.asyn.spring.model.OrderSearchResultExportFileDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
@@ -59,6 +61,9 @@ public class ConsoleServiceHandler {
 	private OrderService orderService;
 	
 	@Resource
+	private UserService userService;
+	
+	@Resource
 	private UserWalletLogService userWalletLogService;
 
 //	public static final String WifiDeviceExport = "WifiDeviceExport";
@@ -68,7 +73,7 @@ public class ConsoleServiceHandler {
 		"归属业务线","状态","是否绑定","绑定手机号","地理位置","在线总时长","首次上线时间",
 		"末次上线时间","末次离线时间","灰度","关联模板","工作模式","在线总时长占比"};
 	
-	public static final String[] SearchOrderResultExportColumns = new String[]{"订单号","Mac","UMac","终端类型","打赏金额",
+	public static final String[] SearchOrderResultExportColumns = new String[]{"订单号","Mac","UMac","终端类型","用户手机号","打赏金额",
 		"分成金额", "打赏方式","订单状态","订单创建时间","打赏日期"};
 	
 	
@@ -333,6 +338,14 @@ public class ConsoleServiceHandler {
 						orderUmacType = OrderUmacType.Unknown;
 					}
 					bw.append(formatStr(orderUmacType.getDesc()));
+					String mobileno = StringHelper.EMPTY_STRING_GAP;
+					if(order.getUid() != null){
+						User user = userService.getById(order.getUid());
+						if(user != null){
+							mobileno = user.getMobileno();
+						}
+					}
+					bw.append(formatStr(mobileno));
 					bw.append(formatStr(order.getAmount()));
 					bw.append(formatStr(userWalletLog.getCash().substring(1)));
 					OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());

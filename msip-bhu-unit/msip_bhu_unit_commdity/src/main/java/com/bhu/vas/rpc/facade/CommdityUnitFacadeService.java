@@ -22,7 +22,6 @@ import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
-import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -33,8 +32,8 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 public class CommdityUnitFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(CommdityUnitFacadeService.class);
 	
-	@Resource
-	private CommdityService commdityService;
+//	@Resource
+//	private CommdityService commdityService;
 	
 	@Resource
 	private CommdityFacadeService commdityFacadeService;

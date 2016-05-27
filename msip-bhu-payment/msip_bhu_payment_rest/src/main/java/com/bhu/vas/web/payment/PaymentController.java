@@ -95,7 +95,6 @@ public class PaymentController extends BaseController{
 	public void queryPaymentOrder(HttpServletRequest request,HttpServletResponse response,String goods_no,String exter_invoke_ip,String appid,String secret){
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		logger.info(String.format(" query_paymentorder order[%s]", goods_no));
-		
 		try{
 			PaymentReckoning order = paymentReckoningService.findByOrderId(goods_no);
 			if(order != null){
@@ -143,51 +142,49 @@ public class PaymentController extends BaseController{
 			String withdraw_type,String total_fee,String userId,String userName,
 			String withdraw_no,String exter_invoke_ip,String appid,String secret){
 		response.setHeader("Access-Control-Allow-Origin", "*");
-		logger.info(String.format(" query Withdrawals order[%s]", withdraw_no));
 		
 		try{
-			
-			
     		//判断非空参数
         	if (StringUtils.isBlank(withdraw_type)) {
-    			logger.error("请求参数(withdraw_type)有误,不能为空");
+    			logger.error(String.format(" submitWithdrawals withdraw_type[%s]", withdraw_type));
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
     			return;
     		}
         	if (StringUtils.isBlank(total_fee)) {
-        		logger.error("请求参数(total_fee)有误,不能为空");
+        		logger.error(String.format(" submitWithdrawals total_fee[%s]", total_fee));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
         	if (StringUtils.isBlank(userId)) {
-        		logger.error("请求参数(userId)有误,不能为空");
+        		logger.error(String.format(" submitWithdrawals userId[%s]", userId));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
         	if (StringUtils.isBlank(withdraw_no)) {
-        		logger.error("请求参数(withdraw_no)有误,不能为空");
+        		logger.error(String.format(" submitWithdrawals withdraw_no[%s]", withdraw_no));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
     		
         	if (StringUtils.isBlank(secret)) {
-        		logger.error("请求参数(secret)有误,不能为空");
+        		logger.error(String.format(" submitWithdrawals secret[%s]", secret));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
         	
         	if (StringUtils.isBlank(appid)) {
-        		logger.error("请求参数(appid)有误,不能为空");
+        		logger.error(String.format(" submitWithdrawals appid[%s]", appid));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
         	if(!appid.equals("1000")|| !"1F915A8DA370422582CBAC1DB6A806DD".equals(secret)){
+        		logger.error(String.format(" submitWithdrawals appid[%s] secret[%s]", appid,secret));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
         		return;
@@ -195,6 +192,7 @@ public class PaymentController extends BaseController{
         	
     		PaymentWithdraw paymentWithdraw = paymentWithdrawService.findByOrderId(withdraw_no);
     		if(paymentWithdraw != null){
+    			logger.error(String.format(" submitWithdrawals paymentWithdraw [%s]", paymentWithdraw));
         		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
         	}
         	ResponseCreateWithdrawDTO result = null;
@@ -212,15 +210,18 @@ public class PaymentController extends BaseController{
         		return;
         	}
         	if(result != null){
+        		logger.info(String.format("submitWithdrawals return result:[%s]",JsonHelper.getJSONString(result)));
         		SpringMVCHelper.renderJson(response, result);
         	}else{
+        		logger.info(String.format("submitWithdrawals return result:[%s]",ResponseError.BUSINESS_ERROR));
         		SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
         	}
         	
 		}catch(BusinessI18nCodeException i18nex){
+			logger.error(String.format("submitWithdrawals catch BusinessI18nCodeException:[%s]",ResponseError.embed(i18nex)));
 			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
 		}catch(Exception ex){
-			ex.printStackTrace();
+			logger.error(String.format("submitWithdrawals catch Exception:[%s]",ResponseError.SYSTEM_ERROR));
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}finally{
 			
@@ -258,19 +259,19 @@ public class PaymentController extends BaseController{
 		try{
     		//判断非空参数
         	if (StringUtils.isBlank(payment_type)) {
-    			logger.error("请求参数(payment_type)有误,不能为空");
+        		logger.error(String.format(" submitPayment payment_type[%s]", payment_type));
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
     			return;
     		}
         	if (StringUtils.isBlank(total_fee)) {
-        		logger.error("请求参数(total_fee)有误,不能为空");
+        		logger.error(String.format(" submitPayment total_fee[%s]", total_fee));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
         	if (StringUtils.isBlank(goods_no)) {
-        		logger.error("请求参数(goods_no)有误,不能为空");
+        		logger.error(String.format(" submitPayment goods_no[%s]", goods_no));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
@@ -278,6 +279,7 @@ public class PaymentController extends BaseController{
     		
     		PaymentReckoning paymentReckoning = paymentReckoningService.findByOrderId(goods_no);
         	if(paymentReckoning != null){
+        		logger.error(String.format(" submitPayment goods_no[%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
         		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
         	}
         	PaymentTypeVTO result = null;
@@ -293,20 +295,25 @@ public class PaymentController extends BaseController{
         	}else if(payment_type.equals("WapWeixin")){ //汇付宝
         		result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url); 
         	}else{//提示暂不支持的支付方式
+        		logger.error(String.format(" submitPayment payment_type[%s]", ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+    					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT))));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT)));
         		return;
         	}
         	if(result != null){
+        		logger.info(String.format("submitPayment return result:[%s]",PaymentResponseSuccess.embed(JsonHelper.getJSONString(result))));
         		SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
         	}else{
+        		logger.info(String.format("submitPayment return result:[%s]",ResponseError.BUSINESS_ERROR));
         		SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
         	}
         	
 		}catch(BusinessI18nCodeException i18nex){
+			logger.error(String.format("submitPayment catch BusinessI18nCodeException:[%s]",ResponseError.embed(i18nex)));
 			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
 		}catch(Exception ex){
-			ex.printStackTrace();
+			logger.error(String.format("submitPayment catch Exception:[%s]",ResponseError.SYSTEM_ERROR));
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}finally{
 			
@@ -1040,11 +1047,11 @@ public class PaymentController extends BaseController{
      * @return 提现流水号
      */
     private String createPaymentWithdraw(String out_trade_no,String total_fee,String Ip,String type,String userId){
-    	String paymentType = "weixin";
+    	String withdrawType = "weixin";
     	if(type.equalsIgnoreCase("WDWX")){
- 			paymentType = "weixin";
+    		withdrawType = "weixin";
  		}else if(type.equalsIgnoreCase("WDAL")){
- 			paymentType = "alipay";
+ 			withdrawType = "alipay";
  		}
     	
     	if(Ip == "" || Ip == null){
@@ -1056,14 +1063,16 @@ public class PaymentController extends BaseController{
  		order.setId(reckoningId);
  		order.setOrderId(out_trade_no);
  		order.setAmount(Integer.parseInt(total_fee));
- 		order.setWithdrawType(paymentType);
+ 		order.setWithdrawType(withdrawType);
  		order.setSubject("必虎提现");
  		order.setExterInvokeIp(Ip);
  		order.setUserId(userId);
  		order.setAppid("1000");
  		order.setCreatedAt(new Date());
  		paymentWithdrawService.insert(order);
- 		
+ 		logger.info(String.format("createPaymentWithdraw: reckoningId[%s] "
+				+ "orderId[%s] withdrawType[%s] total_fee[%s] Ip[%s] userId[%s]", reckoningId, out_trade_no, 
+				withdrawType, total_fee, Ip, userId));
  		return reckoningId;
     }
     
@@ -1073,7 +1082,6 @@ public class PaymentController extends BaseController{
 		updatePayStatus.setPay_status(1);
 		updatePayStatus.setPaid_at(new Date());
  		paymentReckoningService.update(updatePayStatus);//.updateByReckoningId(updatePayStatus);
- 		
  		logger.info("订单："+updatePayStatus.getOrder_id()+";支付流水号："+out_trade_no+"支付状态已修改完成.");
  		
  		//通知订单
@@ -1171,9 +1179,12 @@ public class PaymentController extends BaseController{
     	return getPayOrder;
     }*/
     public static void main(String[] args) {
-    	System.out.println(RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR));
+    	//System.out.println(RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR));
     	//ResponseError.embed();
-    	
+    	PaymentTypeVTO result = new PaymentTypeVTO();
+    	result.setType("weixin");
+    	result.setUrl("@#$%^&*(");
+    	System.out.println(JsonHelper.getJSONString(result));;
 //      	SpringMVCHelper.renderJson(response, result);
     }
 }
