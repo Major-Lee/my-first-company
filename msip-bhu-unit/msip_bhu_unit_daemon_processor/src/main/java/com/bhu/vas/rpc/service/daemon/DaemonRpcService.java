@@ -78,7 +78,7 @@ public class DaemonRpcService implements IDaemonRpcService,CmdDownListener {
 
 	@Override
 	public boolean wifiDeviceCmdDown(String ctx,String mac, String cmd) {
-		//logger.info(String.format("wifiDeviceCmdDown0 ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
+		logger.info(String.format("wifiDeviceCmdDown0 ctx[%s] mac[%s] cmd[%s]",ctx,mac,cmd));
 		if(StringUtils.isEmpty(ctx)){
 			SessionInfo sessionCtx = SessionManager.getInstance().getSession(mac);
 			if(sessionCtx != null){
