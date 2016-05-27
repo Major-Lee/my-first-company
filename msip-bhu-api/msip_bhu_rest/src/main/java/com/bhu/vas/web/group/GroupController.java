@@ -248,6 +248,4 @@ public class GroupController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
     }
-    
-    
 }

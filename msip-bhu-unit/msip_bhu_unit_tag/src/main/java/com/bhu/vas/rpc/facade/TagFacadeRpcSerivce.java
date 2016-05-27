@@ -236,14 +236,14 @@ public class TagFacadeRpcSerivce {
 			List<TagGroupRelation> entities = new ArrayList<TagGroupRelation>();
 
 			for (String mac : macsTemp) {
-
-				TagGroupRelation tagGroupRelation = new TagGroupRelation();
-				tagGroupRelation.setId(mac);
-				tagGroupRelation.setGid(gid);
-				tagGroupRelation.setUid(uid);
-				tagGroupRelation.setPath(path);
-
-				entities.add(tagGroupRelation);
+				if (mac != null) {
+					TagGroupRelation tagGroupRelation = new TagGroupRelation();
+					tagGroupRelation.setId(mac);
+					tagGroupRelation.setGid(gid);
+					tagGroupRelation.setUid(uid);
+					tagGroupRelation.setPath(path);
+					entities.add(tagGroupRelation);
+				}
 			}
 
 			tagGroupRelationService.insertAll(entities);
