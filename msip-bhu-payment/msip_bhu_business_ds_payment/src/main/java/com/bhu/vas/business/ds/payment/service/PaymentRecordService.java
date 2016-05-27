@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bhu.vas.api.dto.procedure.DeviceGroupPaymentTotalProcedureDTO;
 import com.bhu.vas.api.rpc.payment.dto.PaymentRecordInfoDTO;
 import com.bhu.vas.api.rpc.payment.model.PaymentRecord;
 import com.bhu.vas.business.ds.payment.dao.PaymentRecordDao;
@@ -85,7 +86,25 @@ public class PaymentRecordService extends AbstractPaymentService<String, Payment
 		}else{
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{recordInfoDTO.getName()});
 		}
-		int count = recordInfoDTO.count();
+		int count = recordInfoDTO.getCount();
 		System.out.println(count);
+	}
+	 /**
+     * 统计收益总额/次数
+     * 并且更新总额数据
+     * @param uid
+     * @param groupid
+     */
+	public void paymentTotalWithProcedure(int uid, String gid){
+		DeviceGroupPaymentTotalProcedureDTO procedureDTO = new DeviceGroupPaymentTotalProcedureDTO();
+		procedureDTO.setUserid(uid);
+		procedureDTO.setGid(gid);
+
+		int executeRet = this.executeProcedure(procedureDTO);
+		if(executeRet == 0){
+			;
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
+		}
 	}
 }
