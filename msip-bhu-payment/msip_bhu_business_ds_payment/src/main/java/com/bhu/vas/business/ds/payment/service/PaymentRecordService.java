@@ -9,10 +9,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bhu.vas.api.rpc.payment.dto.PaymentRecordInfoDTO;
 import com.bhu.vas.api.rpc.payment.model.PaymentRecord;
 import com.bhu.vas.business.ds.payment.dao.PaymentRecordDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractPaymentService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * @Editor Eclipse
@@ -72,5 +75,17 @@ public class PaymentRecordService extends AbstractPaymentService<String, Payment
 		mc.setOrderByClause("id");
 		mc.setLimit(limit);
 		return this.findModelByModelCriteria(mc);
+	}
+	
+	public void paymentRecordInfo(){
+		PaymentRecordInfoDTO recordInfoDTO = new PaymentRecordInfoDTO();
+		int executeRet = this.executeProcedure(recordInfoDTO);
+		if(executeRet == 0){
+			;
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{recordInfoDTO.getName()});
+		}
+		int count = recordInfoDTO.count();
+		System.out.println(count);
 	}
 }

@@ -7,15 +7,15 @@ package com.bhu.vas.api.rpc.payment.dto;
  *
  */
 public class PaymentRecordDTO {
-	private Float amount;
+	private int amount;
 	private int count;
 	private String info;
 
-	public Float getAmount() {
+	public int getAmount() {
 		return amount;
 	}
 
-	public void setAmount(Float amount) {
+	public void setAmount(int amount) {
 		this.amount = amount;
 	}
 
