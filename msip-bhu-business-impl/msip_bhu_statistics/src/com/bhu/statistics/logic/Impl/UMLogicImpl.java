@@ -122,6 +122,8 @@ public class UMLogicImpl implements IUMLogic{
 		double totalSingleOrderNum = 0;
 		//单台收益总数
 		double totalSingleGains = 0;
+		//全部设备收益总金额
+		double totalGains = 0;
 		//每天uv总数
 		int dayUV = 0 ;
 		int dayPV = 0;
@@ -197,9 +199,11 @@ public class UMLogicImpl implements IUMLogic{
 			orderStatist = BhuCache.getInstance().getStOrder(FileHandling.getNextDay(),"stOrder");
 			double singleOrderNum = 0;
 			double singleGains = 0;
+			double dayGains = 0;
 			if(StringUtils.isBlank(orderStatist)){
 				map.put("singleOrderNum", singleOrderNum);
 				map.put("singleGains", singleGains);
+				map.put("dayGains", dayGains);
 			}else{
 				JSONObject orderObj = JSONObject.fromObject(orderStatist);
 				if(orderObj.get("occ") != null && orderObj.get("ofc") != null && orderObj.get("ofa") != null){
@@ -216,14 +220,17 @@ public class UMLogicImpl implements IUMLogic{
 						singleGains = ofa/doc;
 						map.put("singleGains", singleGains);
 					}
-					
+					dayGains = orderObj.getDouble("ofa");
+					map.put("dayGains", dayGains);
 				}else{
 					map.put("singleOrderNum", singleOrderNum);
 					map.put("singleGains", singleGains);
+					map.put("dayGains", dayGains);
 				}
 			}
 			totalSingleGains += singleGains;
 			totalSingleOrderNum += singleOrderNum;
+			totalGains += dayGains;
 			listMap.add(map);
 		}
 		Map<String,Object> totalMap=new HashMap<String,Object>();
@@ -233,6 +240,7 @@ public class UMLogicImpl implements IUMLogic{
 		totalMap.put("totalDOC", totalDOC);
 		totalMap.put("totalSingleGains", totalSingleGains);
 		totalMap.put("totalSingleOrderNum", totalSingleOrderNum);
+		totalMap.put("totalGains", totalGains);
 		Map<String,Object> body = new HashMap<String,Object>();
 		body.put("ssidList", listMap);
 		body.put("totalSSID", totalMap);
@@ -672,6 +680,8 @@ public class UMLogicImpl implements IUMLogic{
 		double totalSingleOrderNum = 0;
 		//单台收益总数
 		double totalSingleGains = 0;
+		//全部设备收益总数
+		double totalGains = 0;
 		//uv总数
 		int dayUV = 0;
 		//pv总数
@@ -752,9 +762,11 @@ public class UMLogicImpl implements IUMLogic{
 			orderStatist = BhuCache.getInstance().getStOrder(startTime,"stOrder");
 			double singleOrderNum = 0;
 			double singleGains = 0;
+			double dayGains = 0;
 			if(StringUtils.isBlank(orderStatist)){
 				map.put("singleOrderNum", singleOrderNum);
 				map.put("singleGains", singleGains);
+				map.put("dayGains", dayGains);
 			}else{
 				JSONObject orderObj = JSONObject.fromObject(orderStatist);
 				if(orderObj.get("occ") != null && orderObj.get("ofc") != null && orderObj.get("ofa") != null){
@@ -771,14 +783,17 @@ public class UMLogicImpl implements IUMLogic{
 						singleGains = ofa/doc;
 						map.put("singleGains", singleGains);
 					}
-					
+					dayGains = orderObj.getDouble("ofa");;
+					map.put("dayGains", dayGains);
 				}else{
 					map.put("singleOrderNum", singleOrderNum);
 					map.put("singleGains", singleGains);
+					map.put("dayGains", dayGains);
 				}
 			}
 			totalSingleGains += singleGains;
 			totalSingleOrderNum += singleOrderNum;
+			totalGains += dayGains;
 			listMap.add(map);
 		}else{
 			List<String> dateList = DateUtils.getDaysList(startTime, endTime);
@@ -831,9 +846,11 @@ public class UMLogicImpl implements IUMLogic{
 				orderStatist = BhuCache.getInstance().getStOrder(currDate,"stOrder");
 				double singleOrderNum = 0;
 				double singleGains = 0;
+				double dayGains = 0;
 				if(StringUtils.isBlank(orderStatist)){
 					map.put("singleOrderNum", singleOrderNum);
 					map.put("singleGains", singleGains);
+					map.put("dayGains", dayGains);
 				}else{
 					JSONObject orderObj = JSONObject.fromObject(orderStatist);
 					if(orderObj.get("occ") != null && orderObj.get("ofc") != null && orderObj.get("ofa") != null){
@@ -850,14 +867,17 @@ public class UMLogicImpl implements IUMLogic{
 							singleGains = ofa/doc;
 							map.put("singleGains", singleGains);
 						}
-						
+						dayGains = orderObj.getDouble("ofa");
+						map.put("dayGains", dayGains);
 					}else{
 						map.put("singleOrderNum", singleOrderNum);
 						map.put("singleGains", singleGains);
+						map.put("dayGains", dayGains);
 					}
 				}
 				totalSingleGains += singleGains;
 				totalSingleOrderNum += singleOrderNum;
+				totalGains += dayGains;
 				listMap.add(map);
 			}
 		}
@@ -868,6 +888,7 @@ public class UMLogicImpl implements IUMLogic{
 		totalMap.put("totalDOC", totalDOC);
 		totalMap.put("totalSingleGains", totalSingleGains);
 		totalMap.put("totalSingleOrderNum", totalSingleOrderNum);
+		totalMap.put("totalGains", totalGains);
 		Map<String,Object> body = new HashMap<String,Object>();
 		body.put("ssidList", listMap);
 		body.put("totalSSID", totalMap);

@@ -2,6 +2,7 @@ package com.bhu.statistics.controller.statistics;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +44,17 @@ public class QuerySSIdStatisticsController extends BaseController{
 		String startTime = StringUtils.EMPTY;
 		//结束时间
 		String endTime = StringUtils.EMPTY;
+		//当前页数
+		String pageIndex = StringUtils.EMPTY;
+		//每页显示条数
+		String pageSize = StringUtils.EMPTY;
 		try {
 			JSONObject object = JSONObject.fromObject(data);
 			dateType = object.getString("type");
 			startTime = object.getString("startTime");
 			endTime = object.getString("endTime");
+			pageIndex = object.getString("pn");
+			pageSize = object.getString("ps");
  		} catch (Exception e) {
 			log.info("JSON格式转换错误");
 			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON格式转换错误", true);
@@ -79,11 +86,37 @@ public class QuerySSIdStatisticsController extends BaseController{
 				}
 			}
 		}
+		List<Map<String,Object>> pageMapList = new ArrayList<Map<String,Object>>();
+		//总条数
+		int totalCount = dateUmList.size();
+		//总页数
+		int pagecount=0; 
+		//每页显示总数
+		int ps = Integer.parseInt(pageSize);
+		//当前页码
+		int pn = Integer.parseInt(pageIndex);
+		
+		int m=totalCount%ps;
+		if(m>0){
+			pagecount=totalCount/ps+1; 
+		}else{
+			pagecount=totalCount/ps;  
+		}
+		//截取起始下标
+		int fromIndex = (pn - 1) * ps;
+		//截取截止下标
+		int toIndex = pn * ps;
+		if(totalCount <= ps){
+			pageMapList = dateUmList.subList(0, totalCount);
+		}else{
+			pageMapList = dateUmList.subList(fromIndex, toIndex);
+		}
 		Map<String,Object> totalMap=(Map<String, Object>) umResResult.get("total");
-		totalMap.put("ssidTotal", resResult.get("totalSSID"));;
+		totalMap.put("ssid", resResult.get("totalSSID"));;
 		Map<String,Object> resMap=new HashMap<String,Object>();
 		resMap.put("total", umResResult.get("total"));
-		resMap.put("dateList", dateUmList);
+		//resMap.put("dateList", dateUmList);
+		resMap.put("dateList", pageMapList);
 		String lastResult = NotifyUtil.success(resMap);
 		return lastResult;
 	}
