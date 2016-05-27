@@ -34,6 +34,8 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String o_template;//运营模板编号
 	private String o_graylevel;//设备的灰度定义
 	private String o_batch;//设备的导入批次
+
+	private String t_uc_extension;
 	
 	private String u_id;//绑定的用户id
 	private String u_nick;//绑定的用户名称
@@ -165,6 +167,12 @@ public class WifiDeviceVTO1 implements Serializable{
 	}
 	public void setD_uptime(String d_uptime) {
 		this.d_uptime = d_uptime;
+	}
+	public String getT_uc_extension() {
+		return t_uc_extension;
+	}
+	public void setT_uc_extension(String t_uc_extension) {
+		this.t_uc_extension = t_uc_extension;
 	}
 	public String getD_snk_type() {
 		return d_snk_type;
