@@ -18,8 +18,7 @@ import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
 import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
-import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
+import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.processor.input.DeliverMessageTopicConsumer;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -36,14 +35,17 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 	/*private static String Online_Prefix = "00000001";
 	private static String Offline_Prefix = "00000002";*/
 	@Resource
-	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
-	//@Resource
-	//private IDaemonRpcService daemonRpcService;
-	@Resource
 	private DeliverMessageTopicConsumer deliverMessageTopicConsumer;
+	
+	@Resource
+	private IDaemonRpcService daemonRpcService;
+	
+/*	@Resource
+	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
+
 	@Resource
 	private DeliverTopicMessageService deliverTopicMessageService;// =(DeliverTopicMessageService) ctx.getBean("deliverTopicMessageService");
-	
+*/	
 	//private Map<String,Set<WifiDeviceDTO>> localCaches = new HashMap<String,Set<WifiDeviceDTO>>();
 	@PostConstruct
 	public void initialize() {
@@ -81,14 +83,15 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 							for(WifiDeviceDTO dto:cmInfo.getClient()){
 								macs.add(dto.getMac());
 							}
-							//daemonRpcService.wifiDevicesOnline(ctx, macs);
-							deliverTopicMessageService.sendDevicesOnline(ctx, macs);
-							deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, cmInfo.getClient());
+							daemonRpcService.wifiDevicesOnline(ctx, macs);
+							//deliverTopicMessageService.sendDevicesOnline(ctx, macs);
+							//deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, cmInfo.getClient());
 						}
-						deliverTopicMessageService.sendCmJoinMessage(cmInfo);
+						//daemonRpcService.wi
+						//deliverTopicMessageService.sendCmJoinMessage(cmInfo);
 					}else if(ParserHeader.Offline_Prefix == type){//移除所有属于此cm的用户，并且down queue不能写入数据
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
-						deliverTopicMessageService.sendCmLeaveMessage(cmInfo);
+						//deliverTopicMessageService.sendCmLeaveMessage(cmInfo);
 					}else{
 						throw new UnsupportedOperationException(message+" message not yet implement handler process!");
 					}
