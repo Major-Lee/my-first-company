@@ -473,7 +473,7 @@ public class UMLogicImpl implements IUMLogic{
 		iosMap.put("orderAmount", 0);
 		iosMap.put("orderComConversion", 0);
 		tMaps.put("ios", iosMap);
-		
+		tMaps.put("date", beginTime+" - "+endTime);
 		
 		Map<String,Object> resMap=new HashMap<String,Object>();
 		resMap.put("dataList", resMaps);
