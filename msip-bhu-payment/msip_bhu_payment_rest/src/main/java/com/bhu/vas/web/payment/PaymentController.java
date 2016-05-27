@@ -254,7 +254,7 @@ public class PaymentController extends BaseController{
 	@RequestMapping(value={"/payment/submitPayment","/pay"},method={RequestMethod.GET,RequestMethod.POST})
     public void submitPayment(HttpServletResponse response,HttpServletRequest request,
     				String total_fee,String goods_no,String payment_type,String exter_invoke_ip,
-    				String payment_completed_url,String usermac,String appid,String secret){
+    				String payment_completed_url,String umac,String appid,String secret){
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		try{
     		//判断非空参数
@@ -270,8 +270,8 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
-        	if (StringUtils.isBlank(usermac)) {
-        		logger.error(String.format(" submitPayment usermac[%s]", usermac));
+        	if (StringUtils.isBlank(umac)) {
+        		logger.error(String.format(" submitPayment umac[%s]", umac));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
@@ -290,18 +290,18 @@ public class PaymentController extends BaseController{
         	}
         	PaymentTypeVTO result = null;
         	
-        	usermac = BusinessHelper.formatMac(usermac);
+        	umac = BusinessHelper.formatMac(umac);
         	//判断请求支付类型    	
         	if(payment_type.equals("PcWeixin")){ //PC微信支付
-        		result =  doNativeWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,usermac);
+        		result =  doNativeWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac);
         	}else if(payment_type.equals("WapAlipay")){ //Wap微信支付宝
-        		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,usermac);
+        		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac);
         	}else if(payment_type.equals("PcAlipay")){ //PC微信支付宝
-        		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,usermac);
+        		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac);
         	}else if(payment_type.equals("Midas")){ //米大师
         		result =  doMidas(response, total_fee, goods_no); //TODO：暂未对接完成。。。
         	}else if(payment_type.equals("WapWeixin")){ //汇付宝
-        		result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,usermac); 
+        		result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac); 
         	}else{//提示暂不支持的支付方式
         		logger.error(String.format(" submitPayment payment_type[%s]", ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT))));
