@@ -1,6 +1,7 @@
 package com.bhu.statistics.controller.statistics;
 
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +27,14 @@ public class QuerySSIdStatisticsController extends BaseController{
 	@ResponseBody
 	@RequestMapping(value="/querySSIDStatist", method = { RequestMethod.GET,
 			RequestMethod.POST })
-	public String querySSIDStatist(HttpServletRequest request,HttpServletResponse response,String data){
+	public String querySSIDStatist(HttpServletRequest request,HttpServletResponse response,String data) throws IOException{
 		String umRes=staticsService.queryStatisticsByUM(data);
 		//返回结果
 		String result = StringUtils.EMPTY;
 		if(StringUtils.isBlank(data)){
 			log.info("请求参数为空");
 			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "请求参数为空", true);
+			//response.getWriter().print(JSONObject.fromObject(result));
 			return result;
 		}
 		//时间类型
@@ -49,6 +51,7 @@ public class QuerySSIdStatisticsController extends BaseController{
  		} catch (Exception e) {
 			log.info("JSON格式转换错误");
 			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON格式转换错误", true);
+			//response.getWriter().print(JSONObject.fromObject(result));
 			return result;
 		} 
 		if(StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)){
@@ -80,6 +83,7 @@ public class QuerySSIdStatisticsController extends BaseController{
 		resMap.put("total", umResResult.get("total"));
 		resMap.put("dateList", dateUmList);
 		String lastResult = NotifyUtil.success(resMap);
+		//response.getWriter().print(JSONObject.fromObject(lastResult));
 		return lastResult;
 	}
 }

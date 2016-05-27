@@ -214,27 +214,26 @@ public class FileHandling {
 	} 
 	
 	public static void main(String args[]){
-		String filePath = "E:\\log\\2016-05-20";
+		/*String filePath = "E:\\log\\2016-05-20";
 		try {
 			readFile(filePath);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 		/*//获取订单统计数量
 		//开始时间
 		String startTime = StringUtils.EMPTY;
 		//结束时间
 		String endTime = StringUtils.EMPTY;
-		//startTime = getNextDay()+" 00:00:00";
-		startTime = "2016-05-16 00:00:00";
-		//endTime = getNextDay()+" 23:59:59";
-		endTime  = "2016-05-16 23:59:59";
+		startTime = getNextDay()+" 00:00:00";
+		//startTime = "2016-05-26 00:00:00";
+		endTime = getNextDay()+" 23:59:59";
+		//endTime  = "2016-05-26 23:59:59";
 		String params = "start_date="+startTime+"&end_date="+endTime+"&sk=PzdfTFJSUEBHG0dcWFcLew==";
 		String result = StringUtils.EMPTY;
 		//请求接口获取设备总数以及设备总数
 		result = RequestPostUtils.sendPost(REQUEST_URL, params);
-		System.out.println(result);
 		//订单创建数量
 		long occ = 0;
 		//订单支付数量
@@ -290,10 +289,10 @@ public class FileHandling {
 			System.out.println(str);
 		}*/
 		
-		//deleteAllData("2016-05-25");
-		String dayPvNum = BhuCache.getInstance().getDayPV("2016-05-20", "dayPV");
+		deleteAllData("2016-05-25");
+		String dayPvNum = BhuCache.getInstance().getDayPV("2016-05-12", "dayPV");
 		System.out.println("dayPvNum***************"+dayPvNum);
-		String dayUvNum = BhuCache.getInstance().getDayUV("2016-05-20", "dayUV");
+		String dayUvNum = BhuCache.getInstance().getDayUV("2016-05-12", "dayUV");
 		System.out.println("dayUvNum***************"+dayUvNum);
 	}
 	
