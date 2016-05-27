@@ -1,6 +1,7 @@
 package com.bhu.vas.business.ds.charging.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -52,7 +53,7 @@ public class ChargingStatisticsFacadeService {
     	ShareDealDailyGroupSummaryProcedureVTO cache_entity = businessStatisticsCacheService.getDeviceGroupPaymentStatisticsDSCacheBy(current_key);
     	if(cache_entity == null){
     		cache_entity = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(uid, group_path, current_date);
-    		businessStatisticsCacheService.storeDeviceGroupPaymentStatisticsDSCacheResult(current_key, cache_entity);
+    		//businessStatisticsCacheService.storeDeviceGroupPaymentStatisticsDSCacheResult(current_key, cache_entity);
     	}
     	vto.setT_incoming_amount(String.valueOf(cache_entity.getTotal_cash()));
     	vto.setT_times(cache_entity.getTotal_nums());
@@ -102,6 +103,7 @@ public class ChargingStatisticsFacadeService {
         	entity.setTotal_payment_amount("0.00");
         	entity.setTotal_incoming_amount(total_incoming_amount);
         	entity.setTotal_times(total_times);
+        	entity.setCreated_at(new Date());
         	deviceGroupPaymentStatisticsService.insert(entity);
     	}else{
         	entity.setUid(uid);
@@ -120,10 +122,10 @@ public class ChargingStatisticsFacadeService {
      * @param uid
      * @param groupid
      */
-	public void deviceGroupPaymentTotalWithProcedure(int uid, String groupid){
+	public void deviceGroupPaymentTotalWithProcedure(int uid, String gid){
 		DeviceGroupPaymentTotalProcedureDTO procedureDTO = new DeviceGroupPaymentTotalProcedureDTO();
 		procedureDTO.setUserid(uid);
-		procedureDTO.setGroupid(groupid);
+		procedureDTO.setGid(gid);
 
 		int executeRet = deviceGroupPaymentStatisticsService.executeProcedure(procedureDTO);
 		if(executeRet == 0){

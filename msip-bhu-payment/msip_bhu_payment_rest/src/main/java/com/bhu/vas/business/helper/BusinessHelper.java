@@ -752,4 +752,13 @@ public class BusinessHelper extends PropertyEditorSupport {
 	public static void main(String[] args) {
 		System.out.println(BusinessHelper.generatePaymentReckoningNoByType("pcwx"));
 	}
+
+
+	public static String formatMac(String usermac) {
+		if (usermac == null) {
+            return "";
+        }
+		usermac =usermac.replace(":", "").toUpperCase();
+		return usermac;
+	}
 }

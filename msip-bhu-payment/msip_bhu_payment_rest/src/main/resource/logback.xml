@@ -3,7 +3,7 @@
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	
-	<property name="log.base" value="/BHUData/logs/unitlogs/msip_bhu_payment_rest/${provider.port}/payment" />
+	<property name="log.base" value="/Users/zongshuai/zhongshui" />
 	<!-- 
 	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
 	 -->

@@ -10,7 +10,7 @@ public class DeviceGroupPaymentTotalProcedureDTO extends AbstractProcedureDTO{
 	@IN(jdbcType = JdbcType.INTEGER)
 	private int userid;
 	@IN(jdbcType = JdbcType.VARCHAR)
-	private String groupid;
+	private String gid;
 	
 	public int getUserid() {
 		return userid;
@@ -20,12 +20,12 @@ public class DeviceGroupPaymentTotalProcedureDTO extends AbstractProcedureDTO{
 		this.userid = userid;
 	}
 
-	public String getGroupid() {
-		return groupid;
+	public String getGid() {
+		return gid;
 	}
 
-	public void setGroupid(String groupid) {
-		this.groupid = groupid;
+	public void setGid(String gid) {
+		this.gid = gid;
 	}
 
 	@Override
