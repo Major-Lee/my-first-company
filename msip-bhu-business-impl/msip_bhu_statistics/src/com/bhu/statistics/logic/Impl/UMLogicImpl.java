@@ -235,7 +235,7 @@ public class UMLogicImpl implements IUMLogic{
 		if(StringUtils.isBlank(beginTime)||StringUtils.isBlank(endTime)){
 			if(StringUtils.isNotBlank(dataType)){
 				daysList=DateUtils.getLastDay(Integer.valueOf(dataType));
-				beginTime=daysList.get(0);
+				beginTime=daysList.get(daysList.size()-1);
 				endTime=DataUtils.beforeDay();
 			}else{
 				return NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "时间参数为空!");
