@@ -114,6 +114,17 @@ public class UMLogicImpl implements IUMLogic{
 		int totalUV = 0;
 		//pv总数
 		int totalPV = 0;
+		//设备总数
+		int totalDC = 0;
+		//设备在线总数
+		int totalDOC = 0;
+		//单台订单总数
+		double totalSingleOrderNum = 0;
+		//单台收益总数
+		double totalSingleGains = 0;
+		//每天uv总数
+		int dayUV = 0 ;
+		int dayPV = 0;
 		//时间类型
 		String dateType = StringUtils.EMPTY;
 		//开始时间
@@ -147,15 +158,17 @@ public class UMLogicImpl implements IUMLogic{
 			String dayPv = BhuCache.getInstance().getDayPV(date, "dayPV");
 			String dayUv = BhuCache.getInstance().getDayUV(date, "dayUV");
 			if(StringUtils.isNotBlank(dayPv)){
-				totalPV = Integer.parseInt(dayPv);
+				dayPV = Integer.parseInt(dayPv);
 			}
 			if(StringUtils.isNotBlank(dayUv)){
-				totalUV = Integer.parseInt(dayUv);
+				dayUV = Integer.parseInt(dayUv);
 			}
+			totalPV += dayPV;
+			totalUV += dayUV;
 			map = new HashMap<String,Object>();
 			map.put("currDate", date);
-			map.put("totalUV", totalUV);
-			map.put("totalPV", totalPV);
+			map.put("dayUV", dayUV);
+			map.put("dayPV", dayPV);
 			//获取设备总数以及设备在线数
 			String equipment = StringUtils.EMPTY;
 			equipment = BhuCache.getInstance().getEquipment(startTime, "equipment");
@@ -177,39 +190,52 @@ public class UMLogicImpl implements IUMLogic{
 					map.put("doc", doc);
 				}
 			}
-			
+			totalDC += dc;
+			totalDOC += doc;
 			//获取当天订单统计数量
 			String orderStatist = StringUtils.EMPTY; 
 			orderStatist = BhuCache.getInstance().getStOrder(FileHandling.getNextDay(),"stOrder");
+			double singleOrderNum = 0;
+			double singleGains = 0;
 			if(StringUtils.isBlank(orderStatist)){
-				map.put("singleEpuNum", 0);
-				map.put("SingleEpuMonel", 0);
+				map.put("singleOrderNum", singleOrderNum);
+				map.put("singleGains", singleGains);
 			}else{
 				JSONObject orderObj = JSONObject.fromObject(orderStatist);
 				if(orderObj.get("occ") != null && orderObj.get("ofc") != null && orderObj.get("ofa") != null){
 					//单台订单
 					int occ = (Integer)orderObj.get("occ");
 					if(doc == 0){
-						map.put("singleEpuNum", 0);
-						map.put("SingleEpuMonel", 0);
+						map.put("singleOrderNum", singleOrderNum);
+						map.put("singleGains", singleGains);
 					}else{
-						Double SingleEpuNum = (double) (occ/doc);
-						map.put("singleEpuNum", SingleEpuNum);
+						singleOrderNum = (double) (occ/doc);
+						map.put("singleOrderNum", singleOrderNum);
 						//单台收益
 						Double ofa = orderObj.getDouble("ofa");
-						Double SingleEpuMonel = ofa/doc;
-						map.put("SingleEpuMonel", SingleEpuMonel);
+						singleGains = ofa/doc;
+						map.put("singleGains", singleGains);
 					}
 					
 				}else{
-					map.put("singleEpuNum", 0);
-					map.put("SingleEpuMonel", 0);
+					map.put("singleOrderNum", singleOrderNum);
+					map.put("singleGains", singleGains);
 				}
 			}
+			totalSingleGains += singleGains;
+			totalSingleOrderNum += singleOrderNum;
 			listMap.add(map);
 		}
+		Map<String,Object> totalMap=new HashMap<String,Object>();
+		totalMap.put("totalPV", totalPV);
+		totalMap.put("totalUV", totalUV);
+		totalMap.put("totalDC", totalDC);
+		totalMap.put("totalDOC", totalDOC);
+		totalMap.put("totalSingleGains", totalSingleGains);
+		totalMap.put("totalSingleOrderNum", totalSingleOrderNum);
 		Map<String,Object> body = new HashMap<String,Object>();
 		body.put("ssidList", listMap);
+		body.put("totalSSID", totalMap);
 		result = NotifyUtil.success(body);
 		return result;
 	}
@@ -638,6 +664,18 @@ public class UMLogicImpl implements IUMLogic{
 		int totalUV = 0;
 		//pv总数
 		int totalPV = 0;
+		//设备总数
+		int totalDC = 0;
+		//设备在线总数
+		int totalDOC = 0;
+		//单台订单总数
+		double totalSingleOrderNum = 0;
+		//单台收益总数
+		double totalSingleGains = 0;
+		//uv总数
+		int dayUV = 0;
+		//pv总数
+		int dayPV = 0;
 		//开始时间
 		String startTime = StringUtils.EMPTY;
 		//结束时间
@@ -671,38 +709,76 @@ public class UMLogicImpl implements IUMLogic{
 			String dayPv = BhuCache.getInstance().getDayPV(startTime, "dayPV");
 			String dayUv = BhuCache.getInstance().getDayUV(startTime, "dayUV");
 			if(StringUtils.isNotBlank(dayPv)){
-				totalPV = Integer.parseInt(dayPv);
+				dayPV = Integer.parseInt(dayPv);
 			}
 			if(StringUtils.isNotBlank(dayUv)){
-				totalUV = Integer.parseInt(dayUv);
+				dayUV = Integer.parseInt(dayUv);
 			}
 			map = new HashMap<String,Object>();
 			map.put("currDate", startTime);
-			map.put("totalUV", totalUV);
-			map.put("totalPV", totalPV);
+			map.put("dayPV", dayPV);
+			map.put("dayUV", dayUV);
+			
+			totalPV += dayPV;
+			totalUV += dayUV;
 			//获取设备总数以及设备在线数
 			String equipment = StringUtils.EMPTY;
 			equipment = BhuCache.getInstance().getEquipment(startTime, "equipment");
 			//处理结果
 			JSONObject obj = JSONObject.fromObject(equipment);
-			map.put("dc", obj.get("dc"));
-			map.put("doc", obj.get("doc"));
+			int dc = 0;
+			int doc = 0;
+			if(StringUtils.isBlank(equipment)){
+				map.put("dc", dc);
+				map.put("doc", doc);
+			}else{
+				//处理结果
+				if(obj.get("dc") != null && obj.get("doc") != null){
+					dc = (Integer)obj.get("dc");
+					doc = (Integer)obj.get("doc");
+					map.put("dc", dc);
+					map.put("doc", doc);
+				}else{
+					map.put("dc", dc);
+					map.put("doc", doc);
+				}
+			}
+			totalDC += dc;
+			totalDOC += doc;
+			
+			//获取当天订单统计数量
 			//获取当天订单统计数量
 			String orderStatist = StringUtils.EMPTY; 
-			orderStatist = BhuCache.getInstance().getStOrder(FileHandling.getNextDay(),"stOrder");
-			JSONObject orderObj = JSONObject.fromObject(orderStatist);
-			map.put("occ", orderObj.get("occ"));
-			map.put("ofc", orderObj.get("ofc"));
-			map.put("ofa", orderObj.get("ofa"));
-			//单台订单
-			int occ = (Integer)orderObj.get("occ");
-			int doc = (Integer)obj.get("doc");
-			Double SingleEpuNum = (double) (occ/doc);
-			map.put("singleEpuNum", SingleEpuNum);
-			//单台收益
-			Double ofa = orderObj.getDouble("ofa");
-			Double SingleEpuMonel = ofa/doc;
-			map.put("SingleEpuMonel", SingleEpuMonel);
+			orderStatist = BhuCache.getInstance().getStOrder(startTime,"stOrder");
+			double singleOrderNum = 0;
+			double singleGains = 0;
+			if(StringUtils.isBlank(orderStatist)){
+				map.put("singleOrderNum", singleOrderNum);
+				map.put("singleGains", singleGains);
+			}else{
+				JSONObject orderObj = JSONObject.fromObject(orderStatist);
+				if(orderObj.get("occ") != null && orderObj.get("ofc") != null && orderObj.get("ofa") != null){
+					//单台订单
+					int occ = (Integer)orderObj.get("occ");
+					if(doc == 0){
+						map.put("singleOrderNum", singleOrderNum);
+						map.put("singleGains", singleGains);
+					}else{
+						singleOrderNum = (double) (occ/doc);
+						map.put("singleOrderNum", singleOrderNum);
+						//单台收益
+						Double ofa = orderObj.getDouble("ofa");
+						singleGains = ofa/doc;
+						map.put("singleGains", singleGains);
+					}
+					
+				}else{
+					map.put("singleOrderNum", singleOrderNum);
+					map.put("singleGains", singleGains);
+				}
+			}
+			totalSingleGains += singleGains;
+			totalSingleOrderNum += singleOrderNum;
 			listMap.add(map);
 		}else{
 			List<String> dateList = DateUtils.getDaysList(startTime, endTime);
@@ -712,44 +788,89 @@ public class UMLogicImpl implements IUMLogic{
 				String dayPv = BhuCache.getInstance().getDayPV(currDate, "dayPV");
 				String dayUv = BhuCache.getInstance().getDayUV(currDate, "dayUV");
 				if(StringUtils.isNotBlank(dayPv)){
-					totalPV = Integer.parseInt(dayPv);
+					dayPV = Integer.parseInt(dayPv);
 				}
 				if(StringUtils.isNotBlank(dayUv)){
-					totalUV = Integer.parseInt(dayUv);
+					dayUV = Integer.parseInt(dayUv);
 				}
 				map = new HashMap<String,Object>();
-				map.put("currDate", currDate);
-				map.put("totalUV", totalUV);
-				map.put("totalPV", totalPV);
+				map.put("currDate", startTime);
+				map.put("dayPV", dayPV);
+				map.put("dayUV", dayUV);
+				
+				totalPV += dayPV;
+				totalUV += dayUV;
 				//获取设备总数以及设备在线数
 				String equipment = StringUtils.EMPTY;
-				equipment = BhuCache.getInstance().getEquipment(startTime, "equipment");
+				equipment = BhuCache.getInstance().getEquipment(currDate, "equipment");
 				//处理结果
 				JSONObject obj = JSONObject.fromObject(equipment);
-				map.put("dc", obj.get("dc"));
-				map.put("doc", obj.get("doc"));
+				int dc = 0;
+				int doc = 0;
+				if(StringUtils.isBlank(equipment)){
+					map.put("dc", dc);
+					map.put("doc", doc);
+				}else{
+					//处理结果
+					if(obj.get("dc") != null && obj.get("doc") != null){
+						dc = (Integer)obj.get("dc");
+						doc = (Integer)obj.get("doc");
+						map.put("dc", dc);
+						map.put("doc", doc);
+					}else{
+						map.put("dc", dc);
+						map.put("doc", doc);
+					}
+				}
+				totalDC += dc;
+				totalDOC += doc;
+				
+				//获取当天订单统计数量
 				//获取当天订单统计数量
 				String orderStatist = StringUtils.EMPTY; 
-				orderStatist = BhuCache.getInstance().getStOrder(FileHandling.getNextDay(),"stOrder");
-				JSONObject orderObj = JSONObject.fromObject(orderStatist);
-				map.put("occ", orderObj.get("occ"));
-				map.put("ofc", orderObj.get("ofc"));
-				map.put("ofa", orderObj.get("ofa"));
-				
-				//单台订单
-				int occ = (Integer)orderObj.get("occ");
-				int doc = (Integer)obj.get("doc");
-				Double SingleEpuNum = (double) (occ/doc);
-				map.put("singleEpuNum", SingleEpuNum);
-				//单台收益
-				Double ofa = orderObj.getDouble("ofa");
-				Double SingleEpuMonel = ofa/doc;
-				map.put("SingleEpuMonel", SingleEpuMonel);
+				orderStatist = BhuCache.getInstance().getStOrder(currDate,"stOrder");
+				double singleOrderNum = 0;
+				double singleGains = 0;
+				if(StringUtils.isBlank(orderStatist)){
+					map.put("singleOrderNum", singleOrderNum);
+					map.put("singleGains", singleGains);
+				}else{
+					JSONObject orderObj = JSONObject.fromObject(orderStatist);
+					if(orderObj.get("occ") != null && orderObj.get("ofc") != null && orderObj.get("ofa") != null){
+						//单台订单
+						int occ = (Integer)orderObj.get("occ");
+						if(doc == 0){
+							map.put("singleOrderNum", singleOrderNum);
+							map.put("singleGains", singleGains);
+						}else{
+							singleOrderNum = (double) (occ/doc);
+							map.put("singleOrderNum", singleOrderNum);
+							//单台收益
+							Double ofa = orderObj.getDouble("ofa");
+							singleGains = ofa/doc;
+							map.put("singleGains", singleGains);
+						}
+						
+					}else{
+						map.put("singleOrderNum", singleOrderNum);
+						map.put("singleGains", singleGains);
+					}
+				}
+				totalSingleGains += singleGains;
+				totalSingleOrderNum += singleOrderNum;
 				listMap.add(map);
 			}
 		}
+		Map<String,Object> totalMap=new HashMap<String,Object>();
+		totalMap.put("totalPV", totalPV);
+		totalMap.put("totalUV", totalUV);
+		totalMap.put("totalDC", totalDC);
+		totalMap.put("totalDOC", totalDOC);
+		totalMap.put("totalSingleGains", totalSingleGains);
+		totalMap.put("totalSingleOrderNum", totalSingleOrderNum);
 		Map<String,Object> body = new HashMap<String,Object>();
 		body.put("ssidList", listMap);
+		body.put("totalSSID", totalMap);
 		result = NotifyUtil.success(body);
 		return result;
 	}

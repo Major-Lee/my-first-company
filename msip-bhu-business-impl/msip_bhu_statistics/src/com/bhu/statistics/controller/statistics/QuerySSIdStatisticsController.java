@@ -79,11 +79,12 @@ public class QuerySSIdStatisticsController extends BaseController{
 				}
 			}
 		}
+		Map<String,Object> totalMap=(Map<String, Object>) umResResult.get("total");
+		totalMap.put("ssidTotal", resResult.get("totalSSID"));;
 		Map<String,Object> resMap=new HashMap<String,Object>();
 		resMap.put("total", umResResult.get("total"));
 		resMap.put("dateList", dateUmList);
 		String lastResult = NotifyUtil.success(resMap);
-		//response.getWriter().print(JSONObject.fromObject(lastResult));
 		return lastResult;
 	}
 }
