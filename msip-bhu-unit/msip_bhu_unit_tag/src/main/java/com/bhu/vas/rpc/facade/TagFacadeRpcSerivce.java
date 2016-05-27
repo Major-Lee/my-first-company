@@ -265,6 +265,10 @@ public class TagFacadeRpcSerivce {
 
 		List<String> macsList = ArrayHelper.toList(macTemp);
 		
+		if (macsList.isEmpty()) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		}
+		
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnIn("id", macsList).andColumnEqualTo("gid", gid);	
 		List<TagGroupRelation> entities = tagGroupRelationService.findModelByModelCriteria(mc);
