@@ -15,6 +15,7 @@ import com.bhu.statistics.util.JSONObject;
 import com.bhu.statistics.util.NotifyUtil;
 import com.bhu.statistics.util.cache.BhuCache;
 import com.bhu.statistics.util.enums.ErrorCodeEnum;
+import com.bhu.statistics.util.file.FileHandling;
 import com.bhu.statistics.util.um.OpenApiCnzzImpl;
 
 public class UMLogicImpl implements IUMLogic{
@@ -153,6 +154,56 @@ public class UMLogicImpl implements IUMLogic{
 			map.put("currDate", date);
 			map.put("totalUV", totalUV);
 			map.put("totalPV", totalPV);
+			//获取设备总数以及设备在线数
+			String equipment = StringUtils.EMPTY;
+			equipment = BhuCache.getInstance().getEquipment(startTime, "equipment");
+			JSONObject obj = JSONObject.fromObject(equipment);
+			int dc = 0;
+			int doc = 0;
+			if(StringUtils.isBlank(equipment)){
+				map.put("dc", dc);
+				map.put("doc", doc);
+			}else{
+				//处理结果
+				if(obj.get("dc") != null && obj.get("doc") != null){
+					dc = (Integer)obj.get("dc");
+					doc = (Integer)obj.get("doc");
+					map.put("dc", dc);
+					map.put("doc", doc);
+				}else{
+					map.put("dc", dc);
+					map.put("doc", doc);
+				}
+			}
+			
+			//获取当天订单统计数量
+			String orderStatist = StringUtils.EMPTY; 
+			orderStatist = BhuCache.getInstance().getStOrder(FileHandling.getNextDay(),"stOrder");
+			if(StringUtils.isBlank(orderStatist)){
+				map.put("singleEpuNum", 0);
+				map.put("SingleEpuMonel", 0);
+			}else{
+				JSONObject orderObj = JSONObject.fromObject(orderStatist);
+				if(orderObj.get("occ") != null && orderObj.get("ofc") != null && orderObj.get("ofa") != null){
+					//单台订单
+					int occ = (Integer)orderObj.get("occ");
+					if(doc == 0){
+						map.put("singleEpuNum", 0);
+						map.put("SingleEpuMonel", 0);
+					}else{
+						Double SingleEpuNum = (double) (occ/doc);
+						map.put("singleEpuNum", SingleEpuNum);
+						//单台收益
+						Double ofa = orderObj.getDouble("ofa");
+						Double SingleEpuMonel = ofa/doc;
+						map.put("SingleEpuMonel", SingleEpuMonel);
+					}
+					
+				}else{
+					map.put("singleEpuNum", 0);
+					map.put("SingleEpuMonel", 0);
+				}
+			}
 			listMap.add(map);
 		}
 		Map<String,Object> body = new HashMap<String,Object>();
@@ -171,7 +222,7 @@ public class UMLogicImpl implements IUMLogic{
 		try {
 			JSONObject object = JSONObject.fromObject(data);
 			dataType = object.getString("type");
-			beginTime = object.getString("beginTime");
+			beginTime = object.getString("startTime");
 			endTime = object.getString("endTime");
  		} catch (Exception e) {
 			log.info("JSON转化错误");
@@ -451,6 +502,29 @@ public class UMLogicImpl implements IUMLogic{
 			map.put("currDate", startTime);
 			map.put("totalUV", totalUV);
 			map.put("totalPV", totalPV);
+			//获取设备总数以及设备在线数
+			String equipment = StringUtils.EMPTY;
+			equipment = BhuCache.getInstance().getEquipment(startTime, "equipment");
+			//处理结果
+			JSONObject obj = JSONObject.fromObject(equipment);
+			map.put("dc", obj.get("dc"));
+			map.put("doc", obj.get("doc"));
+			//获取当天订单统计数量
+			String orderStatist = StringUtils.EMPTY; 
+			orderStatist = BhuCache.getInstance().getStOrder(FileHandling.getNextDay(),"stOrder");
+			JSONObject orderObj = JSONObject.fromObject(orderStatist);
+			map.put("occ", orderObj.get("occ"));
+			map.put("ofc", orderObj.get("ofc"));
+			map.put("ofa", orderObj.get("ofa"));
+			//单台订单
+			int occ = (Integer)orderObj.get("occ");
+			int doc = (Integer)obj.get("doc");
+			Double SingleEpuNum = (double) (occ/doc);
+			map.put("singleEpuNum", SingleEpuNum);
+			//单台收益
+			Double ofa = orderObj.getDouble("ofa");
+			Double SingleEpuMonel = ofa/doc;
+			map.put("SingleEpuMonel", SingleEpuMonel);
 			listMap.add(map);
 		}else{
 			List<String> dateList = DateUtils.getDaysList(startTime, endTime);
@@ -469,6 +543,30 @@ public class UMLogicImpl implements IUMLogic{
 				map.put("currDate", currDate);
 				map.put("totalUV", totalUV);
 				map.put("totalPV", totalPV);
+				//获取设备总数以及设备在线数
+				String equipment = StringUtils.EMPTY;
+				equipment = BhuCache.getInstance().getEquipment(startTime, "equipment");
+				//处理结果
+				JSONObject obj = JSONObject.fromObject(equipment);
+				map.put("dc", obj.get("dc"));
+				map.put("doc", obj.get("doc"));
+				//获取当天订单统计数量
+				String orderStatist = StringUtils.EMPTY; 
+				orderStatist = BhuCache.getInstance().getStOrder(FileHandling.getNextDay(),"stOrder");
+				JSONObject orderObj = JSONObject.fromObject(orderStatist);
+				map.put("occ", orderObj.get("occ"));
+				map.put("ofc", orderObj.get("ofc"));
+				map.put("ofa", orderObj.get("ofa"));
+				
+				//单台订单
+				int occ = (Integer)orderObj.get("occ");
+				int doc = (Integer)obj.get("doc");
+				Double SingleEpuNum = (double) (occ/doc);
+				map.put("singleEpuNum", SingleEpuNum);
+				//单台收益
+				Double ofa = orderObj.getDouble("ofa");
+				Double SingleEpuMonel = ofa/doc;
+				map.put("SingleEpuMonel", SingleEpuMonel);
 				listMap.add(map);
 			}
 		}

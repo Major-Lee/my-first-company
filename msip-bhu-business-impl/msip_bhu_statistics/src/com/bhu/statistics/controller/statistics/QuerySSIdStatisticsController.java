@@ -1,6 +1,10 @@
 package com.bhu.statistics.controller.statistics;
 
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,6 +27,7 @@ public class QuerySSIdStatisticsController extends BaseController{
 	@RequestMapping(value="/querySSIDStatist", method = { RequestMethod.GET,
 			RequestMethod.POST })
 	public String querySSIDStatist(HttpServletRequest request,HttpServletResponse response,String data){
+		String umRes=staticsService.queryStatisticsByUM(data);
 		//返回结果
 		String result = StringUtils.EMPTY;
 		if(StringUtils.isBlank(data)){
@@ -53,6 +58,28 @@ public class QuerySSIdStatisticsController extends BaseController{
 			//按时间类型查询SSID统计信息
 			result=staticsService.querySSIDInfoByType(data);
 		}
-		return result;
+		JSONObject umResJson=JSONObject.fromObject(umRes);
+		JSONObject resJson=JSONObject.fromObject(result);
+		@SuppressWarnings("unchecked")
+		Map<String, Object> umResResult=(Map<String, Object>)umResJson.get("result");
+		@SuppressWarnings("unchecked")
+		Map<String, Object> resResult=(Map<String, Object>)resJson.get("result");
+		@SuppressWarnings("unchecked")
+		List<Map<String,Object>> dateUmList=(List<Map<String, Object>>) umResResult.get("dataList");
+		@SuppressWarnings("unchecked")
+		List<Map<String,Object>> dateSsidList=(List<Map<String, Object>>) resResult.get("ssidList");
+		for(Map<String,Object> i:dateUmList){
+			for(Map<String,Object> j:dateSsidList){
+				if(j.get("currDate").equals(i.get("date"))){
+					i.put("ssid", j);
+					break;
+				}
+			}
+		}
+		Map<String,Object> resMap=new HashMap<String,Object>();
+		resMap.put("total", umResResult.get("total"));
+		resMap.put("dateList", dateUmList);
+		String lastResult = NotifyUtil.success(resMap);
+		return lastResult;
 	}
 }

@@ -67,4 +67,12 @@ public class BhuCacheKeyGen {
 	public static String getSSIDUV(String date){
 		return PREFIX+"SSID_UV_"+date;
 	}
+	
+	public static String getEquipment(String date){
+		return PREFIX+"Equipment_"+date;
+	}
+	
+	public static String getStOrder(String date){
+		return PREFIX+"StOrder_"+date;
+	}
 }

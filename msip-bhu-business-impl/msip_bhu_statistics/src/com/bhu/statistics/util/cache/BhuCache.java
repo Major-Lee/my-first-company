@@ -129,4 +129,19 @@ public class BhuCache {
 	public long delTotalUV(String key){
 		return jedisClient.del(BhuCacheKeyGen.getTotalUV(key));
 	}
+	
+	public String getEquipment(String data,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getEquipment(data),filed);
+	}
+	public Long setEquipment(String data,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getEquipment(data), field, value);
+	}
+	
+	public String getStOrder(String data,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getStOrder(data),filed);
+	}
+	public Long setStOrder(String data,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getStOrder(data), field, value);
+	}
+	
 }
