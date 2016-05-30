@@ -991,13 +991,7 @@ public class AsyncMsgHandleService {
 		 */
 
 		if (DeviceHelper.RefreashDeviceSetting_RestoreFactory == dto.getRefresh_status()) {
-			try {
-				logger.info(String.format("start execute deviceRestoreFactory mac[%s]", dto.getMac()));
-				backendBusinessService.deviceResetFactory(dto.getMac());
-				// 解绑后需要发送指令通知设备
-				// cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
-				logger.info(String.format("successed execute deviceRestoreFactory mac[%s]", dto.getMac()));
-				
+			try{
 				//reset解绑后发送push通知
 				DeviceResetPushDTO pushDto = new DeviceResetPushDTO();
 				pushDto.setMac(mac);
@@ -1007,6 +1001,17 @@ public class AsyncMsgHandleService {
 					// businessCacheService.storeQTerminalPushNotifyCacheResult(dto.getWifiId(),
 					// dto.getMac());
 				}
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			
+			
+			try {
+				logger.info(String.format("start execute deviceRestoreFactory mac[%s]", dto.getMac()));
+				backendBusinessService.deviceResetFactory(dto.getMac());
+				// 解绑后需要发送指令通知设备
+				// cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
+				logger.info(String.format("successed execute deviceRestoreFactory mac[%s]", dto.getMac()));
 			} catch (Exception ex) {
 				// ex.printStackTrace();
 				// 清除失败后是否需要通知设备清除状态
