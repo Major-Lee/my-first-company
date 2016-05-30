@@ -147,7 +147,7 @@ public class TagRpcService implements ITagRpcService {
 	@Override
 	public RpcResponseDTO<Boolean> modifyDeciceWithNode(int uid, int gid, int newGid,String newPath, String macs) {
 		logger.info(
-				String.format("modifyDeciceWithNode uid[%s] message[%s] newGid[%s] newPath[%s] macs[%s]", uid, gid, newGid, newPath,macs));
+				String.format("modifyDeciceWithNode uid[%s] gid[%s] newGid[%s] newPath[%s] macs[%s]", uid, gid, newGid, newPath,macs));
 		try {
 			tagFacadeRpcSerivce.modifyDeciceWithNode(uid, gid, newGid, newPath, macs);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);

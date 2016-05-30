@@ -251,7 +251,7 @@ public class TagFacadeRpcSerivce {
 			changeDevicesCount(gid, macsTemp.length);
 
 			String paths = tagGroupService.getById(gid).getPath2ES();
-
+			
 			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
 		}
 	}
@@ -265,7 +265,7 @@ public class TagFacadeRpcSerivce {
 
 		List<String> macsList = ArrayHelper.toList(macTemp);
 		
-		if (macsList.isEmpty()) {
+		if (macsList.isEmpty() || gid == 0) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
 		
