@@ -251,7 +251,7 @@ public class TagFacadeRpcSerivce {
 			changeDevicesCount(gid, macsTemp.length);
 
 			String paths = tagGroupService.getById(gid).getPath2ES();
-
+			
 			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
 		}
 	}
@@ -265,7 +265,7 @@ public class TagFacadeRpcSerivce {
 
 		List<String> macsList = ArrayHelper.toList(macTemp);
 		
-		if (macsList.isEmpty()) {
+		if (macsList.isEmpty() || gid == 0) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
 		
@@ -345,7 +345,11 @@ public class TagFacadeRpcSerivce {
 		if (name.isEmpty()) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_EMPTY);
 		}
-
+		
+		if (name.equals("未分组")) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_ERROR);
+		}
+		
 		boolean flag = StringFilter(name);
 
 		if (!flag) {
@@ -515,7 +519,7 @@ public class TagFacadeRpcSerivce {
 
 		if (pageNo == 1 && pid == 0) {
 			TagGroupVTO vto = new TagGroupVTO();
-			vto.setName("默认分组");
+			vto.setName("未分组");
 			vto.setDevice_count((int) wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, null));
 			result.add(vto);
 		}
@@ -601,7 +605,7 @@ public class TagFacadeRpcSerivce {
 		if (gidArr.length == pathsArr.length) {
 			for (int i = 0; i < pathsArr.length; i++) {
 				DeviceGroupPaymentStatisticsVTO vto = chargingStatisticsFacadeService
-						.fetchDeviceGroupPaymentStatistics(uid, gidArr[i], pathsArr[i]);
+						.fetchDeviceGroupPaymentStatistics(uid, gidArr[i].equals("0") ? null :gidArr[i], pathsArr[i]);
 				list.add(vto);
 			}
 		}
