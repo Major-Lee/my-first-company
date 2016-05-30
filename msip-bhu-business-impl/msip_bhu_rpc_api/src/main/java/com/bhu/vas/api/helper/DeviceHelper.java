@@ -925,7 +925,11 @@ public class DeviceHelper {
 							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3,wlan13\" auth_mode=\"local\" block_mode=\"%s\" local_mode=\"signal\" signal_limit=\"%s\" max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+
 							"extend_memory_enable=\"disable\" guest_portal_en=\"enable\" allow_https=\"disable\" progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\" "+ 
 							"open_resource=\"%s\" forbid_management=\"enable\" "+ 
-							"redirect_url=\"%s\"/>"+ 
+							"redirect_url=\"%s\""+
+							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+
+							" drop_url=\"c-adash.m.taobao.com,dldir1.qq.com,adash.m.taobao.com,dc.51y5.net,pdata.video.qiyi.com,mmsns.qpic.cn,loc.map.baidu.com,monitor.uu.qq.com,apps.game.qq.com,usr.mb.hd.sohu.com,mmbiz.qpic.cn,wireless.mapbar.com,wx.qlogo.cn,q.qlogo.cn\" "+
+							" drop_agent=\"Apache-HttpClient/*,Dalvik/*\" " +
+							"/>"+ 
 						"</setting>"+
 					"</webportal>"+
 				"</net>"+
@@ -949,7 +953,11 @@ public class DeviceHelper {
 							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3,wlan13\" auth_mode=\"remote\" block_mode=\"%s\" local_mode=\"immediate\" signal_limit=\"%s\"  max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+ 
 							" guest_portal_en=\"disable\" allow_ip=\"\" allow_domain=\"\" tmp_pass=\"enable\" tmp_pass_duration=\"60\" manage_server=\"disable\" "+
 							" open_resource=\"%s\" forbid_management=\"enable\" allow_https=\"disable\" "+
-							" remote_auth_url=\"%s\" portal_server_url=\"%s\" dns_default_ip=\"%s\"  />"+ 
+							" remote_auth_url=\"%s\" portal_server_url=\"%s\" dns_default_ip=\"%s\"  "+
+							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+
+							" drop_url=\"c-adash.m.taobao.com,dldir1.qq.com,adash.m.taobao.com,dc.51y5.net,pdata.video.qiyi.com,mmsns.qpic.cn,loc.map.baidu.com,monitor.uu.qq.com,apps.game.qq.com,usr.mb.hd.sohu.com,mmbiz.qpic.cn,wireless.mapbar.com,wx.qlogo.cn,q.qlogo.cn\" "+
+							" drop_agent=\"Apache-HttpClient/*,Dalvik/*\" " +
+							"/>"+ 
 						"</setting>"+
 					"</webportal>"+
 				"</net>"+	
@@ -984,7 +992,11 @@ public class DeviceHelper {
 							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3\" auth_mode=\"local\" block_mode=\"%s\" local_mode=\"signal\" signal_limit=\"%s\" max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+
 							"extend_memory_enable=\"disable\" guest_portal_en=\"enable\" allow_https=\"disable\" progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\" "+ 
 							"open_resource=\"%s\" forbid_management=\"enable\" "+ 
-							"redirect_url=\"%s\"/>"+ 
+							"redirect_url=\"%s\""+
+							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+
+							" drop_url=\"c-adash.m.taobao.com,dldir1.qq.com,adash.m.taobao.com,dc.51y5.net,pdata.video.qiyi.com,mmsns.qpic.cn,loc.map.baidu.com,monitor.uu.qq.com,apps.game.qq.com,usr.mb.hd.sohu.com,mmbiz.qpic.cn,wireless.mapbar.com,wx.qlogo.cn,q.qlogo.cn\" "+
+							" drop_agent=\"Apache-HttpClient/*,Dalvik/*\" " +
+							"/>"+ 
 						"</setting>"+
 					"</webportal>"+
 				"</net>"+
@@ -1001,7 +1013,11 @@ public class DeviceHelper {
 							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3\" auth_mode=\"remote\" block_mode=\"%s\" local_mode=\"immediate\" signal_limit=\"%s\"  max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+ 
 							" guest_portal_en=\"disable\" allow_ip=\"\" allow_domain=\"\" tmp_pass=\"enable\" tmp_pass_duration=\"60\" manage_server=\"disable\" "+
 							" open_resource=\"%s\" forbid_management=\"enable\" allow_https=\"disable\" "+
-							" remote_auth_url=\"%s\" portal_server_url=\"%s\" dns_default_ip=\"%s\"  />"+ 
+							" remote_auth_url=\"%s\" portal_server_url=\"%s\" dns_default_ip=\"%s\"  "+
+							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+
+							" drop_url=\"c-adash.m.taobao.com,dldir1.qq.com,adash.m.taobao.com,dc.51y5.net,pdata.video.qiyi.com,mmsns.qpic.cn,loc.map.baidu.com,monitor.uu.qq.com,apps.game.qq.com,usr.mb.hd.sohu.com,mmbiz.qpic.cn,wireless.mapbar.com,wx.qlogo.cn,q.qlogo.cn\" "+
+							" drop_agent=\"Apache-HttpClient/*,Dalvik/*\" " +
+							"/>"+ 
 						"</setting>"+
 					"</webportal>"+
 				"</net>"+	
