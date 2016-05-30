@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
+import com.bhu.vas.api.dto.push.DeviceResetPushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
 import com.bhu.vas.api.dto.push.UserBBSsignedonPushDTO;
@@ -996,6 +997,16 @@ public class AsyncMsgHandleService {
 				// 解绑后需要发送指令通知设备
 				// cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(),CMDBuilder.AutoGen));
 				logger.info(String.format("successed execute deviceRestoreFactory mac[%s]", dto.getMac()));
+				
+				//reset解绑后发送push通知
+				DeviceResetPushDTO pushDto = new DeviceResetPushDTO();
+				pushDto.setMac(mac);
+				boolean push_successed = pushService.push(pushDto);
+				if (push_successed) {
+					logger.info(String.format("deviceRestoreFactory push mac[%s] result[%s]", mac, push_successed));
+					// businessCacheService.storeQTerminalPushNotifyCacheResult(dto.getWifiId(),
+					// dto.getMac());
+				}
 			} catch (Exception ex) {
 				// ex.printStackTrace();
 				// 清除失败后是否需要通知设备清除状态

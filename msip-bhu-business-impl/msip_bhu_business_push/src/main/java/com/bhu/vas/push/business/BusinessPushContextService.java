@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.push.DeviceResetPushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
 import com.bhu.vas.api.dto.push.SharedealNotifyPushDTO;
@@ -24,6 +25,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFaca
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.bhu.vas.push.common.context.DeviceResetContext;
 import com.bhu.vas.push.common.context.HandsetOnlineContext;
 import com.bhu.vas.push.common.context.SharedealNofityContext;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -303,6 +305,25 @@ public class BusinessPushContextService {
 			umac_type = OrderUmacType.Terminal;
 		}
 		context.setUmac_type_desc(umac_type.getDesc());
+		return context;
+	}
+	
+	
+	/**
+	 * Reset解绑上下文组成
+	 * @param pushDto
+	 * @param presentDto
+	 * @return
+	 */
+	public DeviceResetContext deviceResetContext(Integer uid, DeviceResetPushDTO deviceResetPushDto){
+		DeviceResetContext context = new DeviceResetContext();
+		
+		String deviceName = deviceFacadeService.getUserDeviceName(uid, deviceResetPushDto.getMac());
+		if(StringUtils.isNotEmpty(deviceName)){
+			context.setDeviceInfo(deviceName);
+		}else{
+			context.setDeviceInfo(deviceResetPushDto.getMac());
+		}
 		return context;
 	}
 	

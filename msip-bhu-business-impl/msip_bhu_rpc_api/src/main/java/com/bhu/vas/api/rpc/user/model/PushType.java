@@ -17,6 +17,7 @@ public enum PushType {
 	HandsetDeviceVisitorAuthorizeOnline("HDVO", "%s访客上线", "%s %s %s %s访客上线", "%s", "%s %s %s %s"), //访客网络认证
 	HandsetDeviceWSOnline("HDWSO", "周边探测%s", "%s在附近出现", null, null),//终端探测上线
 	SharedealNotify("SDN", "有人给你打赏了", "%s%s用户通过%s打赏%s元", "有人给你打赏了", "%s%s用户通过%s打赏%s元"),//打赏分成通知
+	DeviceReset("DR", "设备解绑", "[设备解绑] %s通过Reset方式解除绑定", "设备解绑", "[设备解绑] %s通过Reset方式解除绑定"),//Reset解绑设备通知
 	WifiDeviceReboot("WDR", null, null, null, null),//设备重启成功后
 	WifiDeviceSettingChanged("WDC", null, null, null, null),//设备配置变更
 	UserBBSsignedon("UBS", "论坛登录", "论坛登录", null, null),//用户bbs登录
