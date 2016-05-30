@@ -605,7 +605,7 @@ public class TagFacadeRpcSerivce {
 		if (gidArr.length == pathsArr.length) {
 			for (int i = 0; i < pathsArr.length; i++) {
 				DeviceGroupPaymentStatisticsVTO vto = chargingStatisticsFacadeService
-						.fetchDeviceGroupPaymentStatistics(uid, gidArr[i], pathsArr[i]);
+						.fetchDeviceGroupPaymentStatistics(uid, gidArr[i].equals("0") ? null :gidArr[i], pathsArr[i]);
 				list.add(vto);
 			}
 		}
