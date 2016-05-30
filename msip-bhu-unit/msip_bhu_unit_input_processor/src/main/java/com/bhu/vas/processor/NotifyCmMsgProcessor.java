@@ -19,6 +19,7 @@ import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.processor.input.DeliverMessageTopicConsumer;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -40,9 +41,9 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 	@Resource
 	private IDaemonRpcService daemonRpcService;
 	
-/*	@Resource
+	@Resource
 	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
-
+	/*
 	@Resource
 	private DeliverTopicMessageService deliverTopicMessageService;// =(DeliverTopicMessageService) ctx.getBean("deliverTopicMessageService");
 */	
@@ -85,7 +86,7 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 							}
 							daemonRpcService.wifiDevicesOnline(ctx, macs);
 							//deliverTopicMessageService.sendDevicesOnline(ctx, macs);
-							//deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, cmInfo.getClient());
+							deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, cmInfo.getClient());
 						}
 						//daemonRpcService.wi
 						//deliverTopicMessageService.sendCmJoinMessage(cmInfo);
