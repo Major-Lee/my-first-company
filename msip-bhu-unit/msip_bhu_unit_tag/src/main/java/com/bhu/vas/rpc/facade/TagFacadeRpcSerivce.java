@@ -345,7 +345,11 @@ public class TagFacadeRpcSerivce {
 		if (name.isEmpty()) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_EMPTY);
 		}
-
+		
+		if (name.equals("未分组")) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_ERROR);
+		}
+		
 		boolean flag = StringFilter(name);
 
 		if (!flag) {
