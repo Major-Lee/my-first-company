@@ -490,7 +490,7 @@ public class TagFacadeRpcSerivce {
 			TagGroup parent_group = tagGroupService.getById(tagGroup.getPid());
 			vto.setPname((parent_group != null) ? parent_group.getName() : null);
 		}
-		vto.setDevice_count(tagGroup.getDevice_count());
+//		vto.setDevice_count(tagGroup.getDevice_count());
 		vto.setParent(tagGroup.getChildren() > 0);
 		vto.setPath(tagGroup.getPath());
 		return vto;
@@ -520,7 +520,7 @@ public class TagFacadeRpcSerivce {
 		if (pageNo == 1 && pid == 0) {
 			TagGroupVTO vto = new TagGroupVTO();
 			vto.setName("未分组");
-			vto.setDevice_count((int) wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, null));
+//			vto.setDevice_count((int) wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, null));
 			result.add(vto);
 		}
 
@@ -628,10 +628,13 @@ public class TagFacadeRpcSerivce {
 			if (gid.isEmpty()|| gid.equals("0")) {
 				vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, null,
 						WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
+				vto.setCount(wifiDeviceDataSearchService.searchCountByUserGroup(uid, null,null));
 			} else {
 				vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, "g_" + gid,
 						WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
+				vto.setCount(wifiDeviceDataSearchService.searchCountByUserGroup(uid, "g_" + gid,null));
 			}
+			vto.setOffline(vto.getCount()-vto.getOnline());
 			list.add(vto);
 		}
 		return list;

@@ -8,6 +8,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.push.DeviceResetPushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceWSOnlinePushDTO;
@@ -26,6 +27,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePr
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.bhu.vas.push.common.context.DeviceResetContext;
 import com.bhu.vas.push.common.context.HandsetOnlineContext;
 import com.bhu.vas.push.common.context.SharedealNofityContext;
 import com.bhu.vas.push.common.dto.PushMsg;
@@ -88,6 +90,8 @@ public class PushService{
 					case SharedealNotify:
 						push_ret = this.pushSharedealNotify(pushDto);
 						break;
+					case DeviceReset:
+						push_ret = this.pushDeviceReset(pushDto);
 					default:
 						break;
 				}
@@ -294,6 +298,39 @@ public class PushService{
 	}
 	
 	/**
+	 * reset方式解绑设备通知
+	 * @param pushDto
+	 * @return
+	 */
+	public boolean pushDeviceReset(PushDTO pushDto){
+		boolean ret = false;
+		try{
+			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
+			//System.out.println("终端上线push2:"+presentDto);
+			if(presentDto != null){
+				DeviceResetPushDTO deviceResetPushDto = (DeviceResetPushDTO)pushDto;
+				DeviceResetContext context = businessPushContextService.deviceResetContext(presentDto.getUid(), deviceResetPushDto);
+				//由于push payload limit Allowed: 256 字节 不需要的数据就不放在payload中
+				//sharedeal_push_dto.setMac(StringHelper.EMPTY_STRING_GAP);
+				
+				PushMsg pushMsg = this.generatePushMsg(presentDto);
+				this.builderDeviceResetPushMsg(pushMsg, deviceResetPushDto, context);
+					//发送push
+				ret = pushNotification(pushMsg);
+				if(ret){
+					logger.info("PushSharedealNotify Successed " + pushMsg.toString());
+				}else{
+					logger.info("PushSharedealNotify Failed " + pushMsg.toString());
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("PushSharedealNotify exception " + ex.getMessage(), ex);
+		}
+		return ret;
+	}
+	
+	/**
 	 * 发送用户bbs登录消息
 	 * @param pushDto
 	 * @param presentDto
@@ -468,6 +505,20 @@ public class PushService{
 		notificationPushDto.setTitle(PushType.SharedealNotify.getP_title());
 		notificationPushDto.setText(String.format(PushType.SharedealNotify.getP_text(), context.getUmac_mf(), 
 				context.getUmac_type_desc(), context.getPayment_type_name(), context.getCash()));
+		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
+	}
+	
+	/**
+	 * 构建Reset解绑设备push的透传内容
+	 * @param pushMsg
+	 * @param context
+	 * @return
+	 */
+	public void builderDeviceResetPushMsg(PushMsg pushMsg, NotificationPushDTO notificationPushDto, DeviceResetContext context){
+		pushMsg.setTitle(PushType.DeviceReset.getTitle());
+		pushMsg.setText(String.format(PushType.DeviceReset.getText(), context.getDeviceInfoChop()));
+		notificationPushDto.setTitle(PushType.DeviceReset.getP_title());
+		notificationPushDto.setText(String.format(PushType.DeviceReset.getP_text(), context.getDeviceInfoChop()));
 		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 

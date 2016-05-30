@@ -3,15 +3,15 @@ package com.bhu.vas.api.rpc.charging.vto;
 @SuppressWarnings("serial")
 public class DeviceGroupPaymentStatisticsVTO implements java.io.Serializable{
 	//今日收益额
-	private String t_incoming_amount= "0";
+	private String t_incoming_amount= "0.0";
 	//今日打赏次数
 	private int t_times = 0;
 	//昨日收益额
-	private String y_incoming_amount = "0";
+	private String y_incoming_amount = "0.0";
 	//昨日打赏次数
 	private int y_times = 0;
 	//收益总额
-	private String incoming_amount = "0";
+	private String incoming_amount = "0.0";
 	//打赏总次数
 	private int times = 0;
 	
