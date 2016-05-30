@@ -12,7 +12,7 @@ public class TagGroupVTO implements Serializable {
 	private String path;
 	private int creator;
 	private boolean parent;
-	private int device_count;
+//	private int device_count;
 
 //	 private int onLine;
 //	 private int offLine;
@@ -20,13 +20,13 @@ public class TagGroupVTO implements Serializable {
 //
 
 
-	public int getDevice_count() {
-		return device_count;
-	}
-
-	public void setDevice_count(int device_count) {
-		this.device_count = device_count;
-	}
+//	public int getDevice_count() {
+//		return device_count;
+//	}
+//
+//	public void setDevice_count(int device_count) {
+//		this.device_count = device_count;
+//	}
 
 	public int getGid() {
 		return gid;
