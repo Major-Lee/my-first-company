@@ -20,9 +20,18 @@ import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.pure.kafka.business.observer.KafkaMsgObserverManager;
 import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
 import com.bhu.vas.api.dto.CmCtxInfo;
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.header.ParserHeader;
+import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
+import com.bhu.vas.processor.bulogs.DynamicLogWriter;
 import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
+import com.smartwork.msip.business.logger.BusinessDefinedLogger;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.task.TaskEngine;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -45,8 +54,8 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 	@Resource
 	private IDaemonRpcService daemonRpcService;
 
-	//@Resource
-	//private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
+	@Resource
+	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
 
 	//@Resource
 	//private DeliverTopicMessageService deliverTopicMessageService;// =(DeliverTopicMessageService) ctx.getBean("deliverTopicMessageService");
@@ -119,9 +128,9 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 											type,topic,message));
 					}
 					if(headers != null){
-						//onProcessor(topic,payload,type,headers);
-						String ctx = CmCtxInfo.parserCtxName(topic);
-						daemonRpcService.wifiDeviceCmdDown(ctx, headers.getMac(), payload);
+						onProcessor(topic,payload,type,headers);
+						//String ctx = CmCtxInfo.parserCtxName(topic);
+						//daemonRpcService.wifiDeviceCmdDown(ctx, headers.getMac(), payload);
 					}
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
@@ -131,7 +140,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 		}));
 	}
 	
-	/*public void doSpecialProcessor(final String ctx,final String payload,final int type,final ParserHeader headers){
+	public void doSpecialProcessor(final String ctx,final String payload,final int type,final ParserHeader headers){
 		//System.out.println(String.format("ctx[%s] type[%s] paylod[%s]", ctx,type,payload));
 		if(headers != null && OperationCMD.DeviceCmdPassThrough.getNo().equals(headers.getOpt())){
 			BusinessDefinedLogger.doInfoLog(String.format("ctx[%s] mac[%s] paylod[%s]", ctx,headers.getMac(),payload));
@@ -142,21 +151,21 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 						ActionBuilder.toJsonHasPrefix(
 								ActionBuilder.builderDeviceOfflineAction(headers.getMac(), System.currentTimeMillis()))
 						);
-				deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+				//deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
 				break;
 			case ParserHeader.DeviceNotExist_Prefix:
 				DynamicLogWriter.doLogger(headers.getMac(), 
 						ActionBuilder.toJsonHasPrefix(
 								ActionBuilder.builderDeviceNotExistAction(headers.getMac(), System.currentTimeMillis()))
 						);
-				deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+				//deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
 				break;
 			case ParserHeader.Transfer_Prefix:
 					if(headers.getMt() == ParserHeader.Transfer_mtype_0 && headers.getSt()==1){//设备上线
 						DynamicLogWriter.doLogger(headers.getMac(), 
 								ActionBuilder.toJsonHasPrefix(
 										ActionBuilder.builderDeviceOnlineAction(headers.getMac(), System.currentTimeMillis())));
-						deliverTopicMessageService.sendDeviceOnline(ctx, headers.getMac());
+						//deliverTopicMessageService.sendDeviceOnline(ctx, headers.getMac());
 						//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
 					}
 					if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt()==7){//终端上下线
@@ -213,7 +222,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 				deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 			}
 		}));
-	}*/
+	}
 	
 	public static void validateStep1(String msg){
 		if(StringUtils.isEmpty(msg) || msg.length()<=8) 
