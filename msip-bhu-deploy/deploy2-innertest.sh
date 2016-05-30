@@ -164,19 +164,19 @@ echo '准备发布业务组件到'$Deploy2Server
 #echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2Server
 
 echo 'deploy msip_bhu_unit_input_processor to ...@'$Deploy2ServerFranky
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/spring*.RELEASE.jar   root@$Deploy2ServerFranky:/BHUData/apps/msip_bhu_unit_input_processor/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/spring*.RELEASE.jar   root@$Deploy2ServerFranky:/BHUData/apps/msip_bhu_unit_input_processor/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/msip_*.jar    root@$Deploy2ServerFranky:/BHUData/apps/msip_bhu_unit_input_processor/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/classes/com/    root@$Deploy2ServerFranky:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
 echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2ServerFranky
 
 echo 'deploy msip_bhu_unit_input_processor to ...@'$Deploy2ServerSanji
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/spring*.RELEASE.jar   root@$Deploy2ServerSanji:/BHUData/apps/msip_bhu_unit_input_processor/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/spring*.RELEASE.jar   root@$Deploy2ServerSanji:/BHUData/apps/msip_bhu_unit_input_processor/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/msip_*.jar    root@$Deploy2ServerSanji:/BHUData/apps/msip_bhu_unit_input_processor/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/classes/com/    root@$Deploy2ServerSanji:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
 echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2ServerSanji
 
 echo 'deploy msip_bhu_unit_daemon_processor to ...@'$Deploy2ServerBrook
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/lib/spring*.RELEASE.jar	root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
+#rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/lib/spring*.RELEASE.jar	root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/lib/msip_*.jar	root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/classes/com/ 		root@$Deploy2ServerBrook:/BHUData/apps/msip_bhu_unit_daemon_processor/classes/com/
 echo 'deploy msip_bhu_unit_daemon_processor successfully @'$Deploy2ServerBrook
