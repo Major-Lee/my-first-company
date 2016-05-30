@@ -344,6 +344,18 @@ public class TaskFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
 
+		if(OperationCMD.DeviceCmdPassThrough == opt_cmd){//远端透传指令，直接下发，无需生成任务
+			WifiDeviceDownTask simulateTask = new WifiDeviceDownTask();
+			simulateTask.setId(-1l);
+			simulateTask.setChannel(channel);
+			simulateTask.setChannel_taskid(channel_taskid);
+			String passThroughCMD = CMDBuilder.builderDeviceCmdPassThrough(mac,CMDBuilder.AutoGen,extparams);
+			BusinessDefinedLogger.doInfoLog(passThroughCMD);
+			simulateTask.setPayload(passThroughCMD);
+			simulateTask.setMac(mac);
+			return simulateTask;
+		}
+		
 		//如果是管理员用户 不进行用户所属设备的验证
 		WifiDevice wifiDevice = null;
 		if(BusinessRuntimeConfiguration.isConsoleUser(uid)){
@@ -357,17 +369,7 @@ public class TaskFacadeService {
 			}*/
 		}
 		
-		if(OperationCMD.DeviceCmdPassThrough == opt_cmd){//远端透传指令，直接下发，无需生成任务
-			WifiDeviceDownTask simulateTask = new WifiDeviceDownTask();
-			simulateTask.setId(-1l);
-			simulateTask.setChannel(channel);
-			simulateTask.setChannel_taskid(channel_taskid);
-			String passThroughCMD = CMDBuilder.builderDeviceCmdPassThrough(mac,CMDBuilder.AutoGen,extparams);
-			BusinessDefinedLogger.doInfoLog(passThroughCMD);
-			simulateTask.setPayload(passThroughCMD);
-			simulateTask.setMac(mac);
-			return simulateTask;
-		}
+		
 		
 		
 		if (OperationCMD.ModifyDeviceSetting.getNo().equals(opt)) {
