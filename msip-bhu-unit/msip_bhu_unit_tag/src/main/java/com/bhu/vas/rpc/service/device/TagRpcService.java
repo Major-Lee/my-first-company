@@ -235,7 +235,7 @@ public class TagRpcService implements ITagRpcService {
 	@Override
 	public RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> groupsGainsStatistics(int uid, String gids,
 			String paths) {
-		logger.info(String.format("batchGroupSnkTakeEffectNetworkConf uid[%s] gids[%s] paths[%s]", uid, gids, paths));
+		logger.info(String.format("groupGainsStats uid[%s] gids[%s] paths[%s]", uid, gids, paths));
 		try {
 			List<DeviceGroupPaymentStatisticsVTO> ret = tagFacadeRpcSerivce.groupsGainsStatistics(uid, gids, paths);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);

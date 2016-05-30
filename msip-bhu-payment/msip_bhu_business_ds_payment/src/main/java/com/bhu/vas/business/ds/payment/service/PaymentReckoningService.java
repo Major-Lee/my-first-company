@@ -97,4 +97,15 @@ public class PaymentReckoningService extends AbstractPaymentService<String, Paym
 				new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 		return this.findModelByModelCriteria(mc);
 	}
+	
+	public int countOfAll() {
+		ModelCriteria mc = new ModelCriteria();
+		return this.countByModelCriteria(mc);
+	}
+	
+	public int countOfUser(){
+		ModelCriteria mc = new ModelCriteria();
+		
+		return this.countByModelCriteria(mc);
+	}
 }

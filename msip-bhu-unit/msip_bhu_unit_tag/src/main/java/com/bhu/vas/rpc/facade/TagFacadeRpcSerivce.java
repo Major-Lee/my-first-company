@@ -236,14 +236,14 @@ public class TagFacadeRpcSerivce {
 			List<TagGroupRelation> entities = new ArrayList<TagGroupRelation>();
 
 			for (String mac : macsTemp) {
-
-				TagGroupRelation tagGroupRelation = new TagGroupRelation();
-				tagGroupRelation.setId(mac);
-				tagGroupRelation.setGid(gid);
-				tagGroupRelation.setUid(uid);
-				tagGroupRelation.setPath(path);
-
-				entities.add(tagGroupRelation);
+				if (mac != null) {
+					TagGroupRelation tagGroupRelation = new TagGroupRelation();
+					tagGroupRelation.setId(mac);
+					tagGroupRelation.setGid(gid);
+					tagGroupRelation.setUid(uid);
+					tagGroupRelation.setPath(path);
+					entities.add(tagGroupRelation);
+				}
 			}
 
 			tagGroupRelationService.insertAll(entities);
@@ -264,6 +264,10 @@ public class TagFacadeRpcSerivce {
 		String[] macTemp = macs.split(StringHelper.COMMA_STRING_GAP);
 
 		List<String> macsList = ArrayHelper.toList(macTemp);
+		
+		if (macsList.isEmpty()) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
+		}
 		
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnIn("id", macsList).andColumnEqualTo("gid", gid);	
@@ -617,7 +621,7 @@ public class TagFacadeRpcSerivce {
 		for (String gid : arr) {
 			GroupCountOnlineVTO vto = new GroupCountOnlineVTO();
 			vto.setGid(gid);
-			if (gid.isEmpty()) {
+			if (gid.isEmpty()|| gid.equals("0")) {
 				vto.setOnline(wifiDeviceDataSearchService.searchCountByUserGroup(uid, null,
 						WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()));
 			} else {
