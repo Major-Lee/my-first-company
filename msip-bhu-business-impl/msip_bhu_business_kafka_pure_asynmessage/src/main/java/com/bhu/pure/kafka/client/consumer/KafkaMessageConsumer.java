@@ -24,6 +24,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
+import javax.annotation.PreDestroy;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -54,7 +56,9 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 	private KafkaConsumer<KEY, VALUE> consumer;
 	private List<String> subscribe_topics;
 	private final AtomicBoolean subscribe_topics_changed = new AtomicBoolean(false);
-	//private List<TopicPartition> topicPartitions;
+/*	private ZkClient zkClient = new ZkClient("192.168.66.191:2181", 15 * 1000, 10 * 1000, kafka.utils.ZKStringSerializer$.MODULE$);
+    private ZkUtils zkUtils = new ZkUtils(zkClient, new ZkConnection("192.168.66.191:2181"), false);
+*/	//private List<TopicPartition> topicPartitions;
 	
 	public KafkaMessageConsumer(){
 		this(null);
@@ -182,6 +186,12 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 	@Override
 	public void addSubscribeTopic(String topic){
 		if(!subscribe_topics.contains(topic)){
+/*			try{
+				AdminUtils.createTopic(zkUtils, topic, 10, 2, new Properties());
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}*/
+			
 			subscribe_topics.add(topic);
 			subscribe_topics_changed.set(true);
 		}
@@ -232,7 +242,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 //		consumer.subscribe(new ArrayList<String>(current_topics));
 //		return true;
 //	}
-	
+	@PreDestroy
 	@Override
 	public void shutdown(){
 		closed.set(true);
@@ -292,6 +302,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 		System.out.println("notify changed " + subscribe_topics);
 		//consumer.subscribe(Collections.singletonList("topic3"));
 		consumer.subscribe(subscribe_topics);
+		System.out.println("notify subscribe changed " + subscribe_topics);
 		subscribe_topics_changed.set(false);
 	}
 	
