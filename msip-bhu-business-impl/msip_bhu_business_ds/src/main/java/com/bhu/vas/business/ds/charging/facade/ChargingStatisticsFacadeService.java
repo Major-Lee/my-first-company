@@ -74,8 +74,8 @@ public class ChargingStatisticsFacadeService {
     		int total_times = total_statistics_entity.getTotal_times();
     		double current_total_incoming_amount = ArithHelper.round(cache_entity.getTotal_cash() + total_incoming_amount, 2);
     		int current_total_times = cache_entity.getTotal_nums() + total_times;
-    		vto.setT_incoming_amount(String.valueOf(current_total_incoming_amount));
-    		vto.setT_times(current_total_times);
+    		vto.setIncoming_amount(String.valueOf(current_total_incoming_amount));
+    		vto.setTimes(current_total_times);
     	}
     	return vto;
     }
