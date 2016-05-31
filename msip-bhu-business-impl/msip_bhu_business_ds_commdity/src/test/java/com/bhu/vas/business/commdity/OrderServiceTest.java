@@ -1,4 +1,5 @@
 package com.bhu.vas.business.commdity;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -119,7 +120,7 @@ public class OrderServiceTest extends BaseTest{
     	}
     }
     
-    @Test
+    //@Test
     public void testGetByProcedure(){
     	OrderStatisticsVTO vto = orderFacadeService.orderStatisticsWithProcedure("2016-03-11 17:15:50", "2016-06-11 17:15:50");
     	System.out.println(vto.getPc_occ());
@@ -128,5 +129,16 @@ public class OrderServiceTest extends BaseTest{
     	System.out.println(vto.getMb_occ());
     	System.out.println(vto.getMb_ofa());
     	System.out.println(vto.getMb_ofc());
+    }
+    
+    @Test
+    public void testFindByIds(){
+    	List<String> ids = new ArrayList<String>();
+    	ids.add("10012016031200000000000000000129");
+    	ids.add("-1");
+    	List<Order> orders = orderService.findByIds(ids, true, true);
+    	for(Order order : orders){
+    		System.out.println(order);
+    	}
     }
 }

@@ -519,7 +519,7 @@ public class TagFacadeRpcSerivce {
 
 		if (pageNo == 1 && pid == 0) {
 			TagGroupVTO vto = new TagGroupVTO();
-			vto.setName("未分组");
+			vto.setName(TagGroup.DefaultGroupName);
 //			vto.setDevice_count((int) wifiDeviceDataSearchService.searchCountByUserGroup(uid, null, null));
 			result.add(vto);
 		}
