@@ -7,7 +7,8 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
 
 @SuppressWarnings("serial")
 public class TagGroup extends BaseIntModel implements IRedisSequenceGenable {
-
+	public static final String DefaultGroupName = "未分组";
+	
 	/*
 	 * 父节点
 	 */

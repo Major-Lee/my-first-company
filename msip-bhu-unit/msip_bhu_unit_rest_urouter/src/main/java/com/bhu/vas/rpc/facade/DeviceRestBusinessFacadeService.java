@@ -45,6 +45,7 @@ import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.tag.facade.TagGroupFacadeService;
 import com.bhu.vas.business.ds.user.service.UserSearchConditionStateService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.BusinessIndexDefine;
@@ -53,6 +54,7 @@ import com.bhu.vas.business.search.core.condition.component.SearchCondition;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionPack;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionPattern;
+import com.bhu.vas.business.search.helper.DocumentIdsHelper;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
@@ -75,6 +77,9 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 public class DeviceRestBusinessFacadeService {
 	//private final Logger logger = LoggerFactory.getLogger(DeviceRestBusinessFacadeService.class);
 
+	@Resource
+	private TagGroupFacadeService tagGroupFacadeService;
+	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	
@@ -490,13 +495,18 @@ public class DeviceRestBusinessFacadeService {
 						vtos = Collections.emptyList();
 					}else{
 						vtos = new ArrayList<WifiDeviceVTO1>();
+						List<String> macs = DocumentIdsHelper.buildWifiDeviceDocumentIds(searchDocuments);
+						List<String> tagGroupNames = tagGroupFacadeService.findGroupNamesByMacs(macs);
 						WifiDeviceVTO1 vto = null;
 						int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
+						int cursor = 0;
 						for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
 							vto = new WifiDeviceVTO1();
+							vto.setUg_name(tagGroupNames.get(cursor));
 							vto.setIndex(++startIndex);
 							BeanUtils.copyProperties(wifiDeviceDocument, vto);
 							vtos.add(vto);
+							cursor++;
 						}
 					}
 				}

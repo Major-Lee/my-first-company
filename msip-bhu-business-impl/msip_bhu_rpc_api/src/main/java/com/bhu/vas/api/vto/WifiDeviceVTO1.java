@@ -34,6 +34,7 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String o_template;//运营模板编号
 	private String o_graylevel;//设备的灰度定义
 	private String o_batch;//设备的导入批次
+	private String ug_name;//设备所属用户分组的名称
 	
 	private String u_id;//绑定的用户id
 	private String u_nick;//绑定的用户名称
@@ -254,5 +255,11 @@ public class WifiDeviceVTO1 implements Serializable{
 		if(StringUtils.isEmpty(d_dut)) return StringHelper.MINUS_STRING_GAP;
 		if(StringUtils.isEmpty(d_type)) return StringHelper.MINUS_STRING_GAP;
 		return VapEnumType.DeviceUnitType.buildDutIndex4HdType(d_dut, d_type);
+	}
+	public String getUg_name() {
+		return ug_name;
+	}
+	public void setUg_name(String ug_name) {
+		this.ug_name = ug_name;
 	}
 }
