@@ -55,9 +55,9 @@ public class PayHttpService {
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
-    public static String NOTIFY_URL = PAY_HOST_URL+"/notify_success";
+    public static String NOTIFY_URL = PAY_HOST_URL+"/wxPayNotifySuccess";
     //web回调地址
-    public static String WEB_NOTIFY_URL = PAY_HOST_URL+"/weixinPayResult";
+    public static String WEB_NOTIFY_URL = "http://www.bhuwifi.com";
     //证书地址
     public static String WITHDRAW_URL = "/home";
 
@@ -302,7 +302,6 @@ public class PayHttpService {
         Map<String,Object> info=new LinkedHashMap<String,Object>();
         Map<String,Object> scene=new LinkedHashMap<String,Object>();
         content=URLEncoder.encode(content,"UTF-8");
-        System.out.println("QCCodeUrl :"+content);
         scene.put("scene_str",content);
         info.put("scene",scene);
         params.put("action_info", info);
@@ -310,7 +309,6 @@ public class PayHttpService {
         String postContent = JsonUtil.toJson(params);
 
 //        postContent= URLEncoder.encode(postContent,"UTF-8");
-        System.out.println("body :"+postContent);
         GenerateQCCodeUrlResponse response = HttpResponseUtil.post(url, postContent, GenerateQCCodeUrlResponse.class);
         return response;
     }
@@ -337,7 +335,6 @@ public class PayHttpService {
             }
         }
 
-        System.out.println("createSign String :"+sb.toString());
         /** 支付密钥必须参与加密，放在字符串最后面 */
         sb.append("key=" + mchKey);
         /** 记得最后一定要转换为大写 */
@@ -358,7 +355,6 @@ public class PayHttpService {
     public  String getSignature(String ticket, long timestamp, String nonceStr, String url){
         String signature=null;
         String str = "jsapi_ticket="+ticket+"&noncestr="+nonceStr+"&timestamp="+timestamp+"&url="+url;
-        System.out.println("Signature String:"+str);
         // 对string1进行sha1签名，得到signature
         try {
             MessageDigest reset = MessageDigest.getInstance("SHA-1");
@@ -389,7 +385,6 @@ public class PayHttpService {
     public  String getPrePaySignature(String appId, long timestamp, String nonceStr, String packages,String signType){
         String signature=null;
         String str = "appId="+appId+"&noncestr="+nonceStr+"&package="+packages+"&signType="+signType+"&timeStamp="+timestamp;
-        System.out.println("Signature String:"+str);
         // 对string1进行sha1签名，得到signature
         try {
             MessageDigest reset = MessageDigest.getInstance("SHA-1");
@@ -562,8 +557,6 @@ public class PayHttpService {
         /** 商品名称 */
         parameters.put("body", commodityName);
 
-        /** 当前时间 yyyyMMddHHmmss */
-        String currTime = getCurrTime();
         /** 订单号 */
         parameters.put("out_trade_no", out_trade_no);
 
@@ -635,20 +628,11 @@ public class PayHttpService {
         
         try {
         	unifiedOrderResponse = HttpResponseUtil.httpRequest(withdrawalsRequestApiBaseUrl,nOTIFY_URL, requestXML, WithDrawNotifyResponse.class);
-        	 System.out.println(unifiedOrderResponse);
 		} catch (KeyManagementException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException
 				| CertificateException | IOException e) {
-			System.out.println("提交提现请求失败");
+			log.error("提交提现请求失败");
 		}
         
-//        try {
-//        	
-//            unifiedOrderResponse = HttpResponseUtil.post(withdrawalsRequestApiBaseUrl, requestXML, UnifiedOrderResponse.class);
-//        } catch (IOException e) {
-//            unifiedOrderResponse=new UnifiedOrderResponse();
-//            unifiedOrderResponse.setResultSuccess(false);
-//            e.printStackTrace();
-//        }
         return unifiedOrderResponse;
 	}
 
