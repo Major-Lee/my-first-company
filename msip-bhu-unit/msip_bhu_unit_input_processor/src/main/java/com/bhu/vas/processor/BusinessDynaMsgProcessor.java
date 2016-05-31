@@ -151,7 +151,8 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 						ActionBuilder.toJsonHasPrefix(
 								ActionBuilder.builderDeviceOfflineAction(headers.getMac(), System.currentTimeMillis()))
 						);
-				//deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+				//deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());、
+				daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
 				break;
 			case ParserHeader.DeviceNotExist_Prefix:
 				DynamicLogWriter.doLogger(headers.getMac(), 
@@ -159,6 +160,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 								ActionBuilder.builderDeviceNotExistAction(headers.getMac(), System.currentTimeMillis()))
 						);
 				//deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+				daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());//.sendDeviceOffline(ctx, headers.getMac());
 				break;
 			case ParserHeader.Transfer_Prefix:
 					if(headers.getMt() == ParserHeader.Transfer_mtype_0 && headers.getSt()==1){//设备上线
@@ -166,7 +168,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 								ActionBuilder.toJsonHasPrefix(
 										ActionBuilder.builderDeviceOnlineAction(headers.getMac(), System.currentTimeMillis())));
 						//deliverTopicMessageService.sendDeviceOnline(ctx, headers.getMac());
-						//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
+						daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
 					}
 					if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt()==7){//终端上下线
 						//DynamicLogWriter.doLogger(headers.getMac(), payload);
