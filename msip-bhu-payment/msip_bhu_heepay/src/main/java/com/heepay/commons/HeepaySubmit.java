@@ -16,7 +16,6 @@ public class HeepaySubmit {
 		SubmitReturn submitReturn = new SubmitReturn();
 		
 		String sign = GatewayHelper.SignMd5(Config.sign_key,gatewayModel);//构建签名
-		System.out.println("构建签名:"+sign);
 		String StrUrl = GatewayHelper.GatewaySubmitUrl(sign,gatewayModel);//构建提交地址
 		
 		//此处默认为成功

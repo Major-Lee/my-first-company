@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.procedure.FincialStatisticsProdureDTO;
+import com.bhu.vas.api.dto.procedure.OrderStatisticsProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealDailyGroupSummaryProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealDailyUserSummaryProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealWalletProcedureDTO;
@@ -31,8 +33,11 @@ import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
+import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
@@ -72,6 +77,16 @@ public class UserWalletFacadeService{
 	@Resource
 	private UserOAuthFacadeService userOAuthFacadeService;
 	
+	@Resource
+	private FincialStatisticsService fincialStatisticsService;
+	
+	public FincialStatisticsService getFincialStatisticsService() {
+		return fincialStatisticsService;
+	}
+	public void setFincialStatisticsService(
+			FincialStatisticsService fincialStatisticsService) {
+		this.fincialStatisticsService = fincialStatisticsService;
+	}
 	public UserWalletDetailVTO walletDetail(int uid){
 		UserWallet userWallet = userWallet(uid);
 		UserWalletDetailVTO walletDetail = userWallet.toUserWalletDetailVTO();
@@ -811,7 +826,24 @@ public class UserWalletFacadeService{
 		return pages;
 	}
 	
-	
+	public double fincialStatisticsWithProcedure(String start_date, String end_date,int objType,String payType){
+		FincialStatisticsProdureDTO procedureDTO = new FincialStatisticsProdureDTO();
+		procedureDTO.setBeginTime(start_date);
+		procedureDTO.setEndTime(end_date);
+		procedureDTO.setObjType(objType);
+		procedureDTO.setPayType(payType);
+		int executeRet = userWalletLogService.executeProcedure(procedureDTO);
+		System.out.println(executeRet);
+		System.out.println(start_date);
+		System.out.println(end_date);
+		System.out.println(procedureDTO.toTotal());
+		if(executeRet == 0){
+			;
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
+		}
+		return procedureDTO.toTotal();
+	}
 	
 	public UserService getUserService() {
 		return userService;

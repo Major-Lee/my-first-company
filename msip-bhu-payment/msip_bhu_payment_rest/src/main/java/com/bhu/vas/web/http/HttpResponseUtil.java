@@ -166,7 +166,7 @@ public class HttpResponseUtil {
         return convertResponse(HttpContentUtil.appendQueryParams(url, params),responeClass);
     }
     static <RESPONE extends WxResponse>  RESPONE convertResponse(String content,Class<RESPONE> responeClass){
-        System.out.println("RESPONSE CONTENT "+content);
+        System.out.println("RESPONSE:"+content);
         if(content==null ){
             return null;
         }

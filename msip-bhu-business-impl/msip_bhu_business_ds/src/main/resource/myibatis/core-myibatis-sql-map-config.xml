@@ -133,6 +133,8 @@
 			type="com.bhu.vas.api.rpc.agent.model.AgentBillSummaryView" />
 		<typeAlias alias="agentDeviceMark"
 			type="com.bhu.vas.api.rpc.agent.model.AgentDeviceMark" />
+		<typeAlias alias="fincialStatistics"
+			type="com.bhu.vas.api.rpc.statistics.model.FincialStatistics" />
 
 	</typeAliases>
 
@@ -167,6 +169,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/statistics/model/sqlMapper/UserAccessStatistics.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/statistics/model/sqlMapper/UserBrandStatistics.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/statistics/model/sqlMapper/UserUrlStatistics.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/statistics/model/sqlMapper/FincialStatistics.sqlMap.xml" />
 
 		<mapper
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceStatus.sqlMap.xml" />

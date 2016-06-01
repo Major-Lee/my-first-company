@@ -248,7 +248,7 @@ public class TagFacadeRpcSerivce {
 
 			tagGroupRelationService.insertAll(entities);
 
-			changeDevicesCount(gid, macsTemp.length);
+//			changeDevicesCount(gid, macsTemp.length);
 
 			String paths = tagGroupService.getById(gid).getPath2ES();
 			
@@ -293,10 +293,10 @@ public class TagFacadeRpcSerivce {
 				
 				String paths = tagGroupService.getById(newGid).getPath2ES();
 				wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
-				changeDevicesCount(newGid, macTemp.length);
+//				changeDevicesCount(newGid, macTemp.length);
 			}
 		}
-		changeDevicesCount(gid, -entities.size());
+//		changeDevicesCount(gid, -entities.size());
 	}
 
 	/**
@@ -432,20 +432,20 @@ public class TagFacadeRpcSerivce {
 		return count;
 	}
 
-	/**
-	 * 递归修改当前节点和上层节点绑定设备数
-	 * 
-	 * @param gid
-	 * @param num
-	 */
-	private void changeDevicesCount(int gid, int num) {
-		TagGroup tagGroup = tagGroupService.getById(gid);
-		tagGroup.setDevice_count(tagGroup.getDevice_count() + num);
-		tagGroupService.update(tagGroup);
-		if (tagGroup.getPid() != 0) {
-			changeDevicesCount(tagGroup.getPid(), num);
-		}
-	}
+//	/**
+//	 * 递归修改当前节点和上层节点绑定设备数
+//	 * 
+//	 * @param gid
+//	 * @param num
+//	 */
+//	private void changeDevicesCount(int gid, int num) {
+//		TagGroup tagGroup = tagGroupService.getById(gid);
+//		tagGroup.setDevice_count(tagGroup.getDevice_count() + num);
+//		tagGroupService.update(tagGroup);
+//		if (tagGroup.getPid() != 0) {
+//			changeDevicesCount(tagGroup.getPid(), num);
+//		}
+//	}
 
 	/**
 	 * 删除当前节点和子节点设备关系 同时清除ES索引

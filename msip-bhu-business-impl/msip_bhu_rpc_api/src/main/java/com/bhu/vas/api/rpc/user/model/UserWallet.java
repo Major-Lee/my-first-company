@@ -24,9 +24,9 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	private String password;
 	private String plainpwd;
 	//虚拟币virtual_currency 充值生成（货币购买的）
-	private double vcurrency = 0.00d;
+	private long vcurrency = 0l;
 	//虚拟币virtual_currency 充值生成 绑定（系统或活动赠送的）
-	private double vcurrency_bing = 0.00d;;
+	private long vcurrency_bing = 0l;
 	//现金零钱
 	private double cash = 0.00d;;
 	//提现状态 目前处于的提现状态 申请提现后，此状态为true 提现成功后此状态置为初始false
@@ -75,16 +75,16 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	public void setPercent(double percent) {
 		this.percent = percent;
 	}*/
-	public double getVcurrency() {
+	public long getVcurrency() {
 		return vcurrency;
 	}
-	public void setVcurrency(double vcurrency) {
+	public void setVcurrency(long vcurrency) {
 		this.vcurrency = vcurrency;
 	}
-	public double getVcurrency_bing() {
+	public long getVcurrency_bing() {
 		return vcurrency_bing;
 	}
-	public void setVcurrency_bing(double vcurrency_bing) {
+	public void setVcurrency_bing(long vcurrency_bing) {
 		this.vcurrency_bing = vcurrency_bing;
 	}
 	public double getCash() {
