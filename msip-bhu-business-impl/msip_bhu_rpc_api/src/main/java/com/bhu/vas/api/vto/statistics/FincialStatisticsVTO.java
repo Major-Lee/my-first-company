@@ -11,6 +11,15 @@ public class FincialStatisticsVTO implements java.io.Serializable{
 	private double ctw;
 	private double cpw;
 	
+	private double hTotal;
+	private double hwTotal;
+	private double howTotal;
+	private double ctow;
+	private double cpow;
+	private double rwTotal;
+	private double rowTotal;
+	private double rTotal;
+	
 	private double ctTotal;
 	private double cpTotal;
 	private double mTotal;
@@ -18,6 +27,55 @@ public class FincialStatisticsVTO implements java.io.Serializable{
 	private double wTotal;
 	private double total;
 	
+	
+	public double gethTotal() {
+		return hTotal;
+	}
+	public void sethTotal(double hTotal) {
+		this.hTotal = hTotal;
+	}
+	public double getHwTotal() {
+		return hwTotal;
+	}
+	public void setHwTotal(double hwTotal) {
+		this.hwTotal = hwTotal;
+	}
+	public double getHowTotal() {
+		return howTotal;
+	}
+	public void setHowTotal(double howTotal) {
+		this.howTotal = howTotal;
+	}
+	public double getCtow() {
+		return ctow;
+	}
+	public void setCtow(double ctow) {
+		this.ctow = ctow;
+	}
+	public double getCpow() {
+		return cpow;
+	}
+	public void setCpow(double cpow) {
+		this.cpow = cpow;
+	}
+	public double getRwTotal() {
+		return rwTotal;
+	}
+	public void setRwTotal(double rwTotal) {
+		this.rwTotal = rwTotal;
+	}
+	public double getRowTotal() {
+		return rowTotal;
+	}
+	public void setRowTotal(double rowTotal) {
+		this.rowTotal = rowTotal;
+	}
+	public double getrTotal() {
+		return rTotal;
+	}
+	public void setrTotal(double rTotal) {
+		this.rTotal = rTotal;
+	}
 	public double getCtTotal() {
 		return ctTotal;
 	}

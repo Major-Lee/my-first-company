@@ -96,19 +96,19 @@
 	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> 
 			<where>
 		    	<if test="_parameter != null">
-					time = #{time}
+					id = #{id}
 				</if>
 			</where>
 	</select>
 
 	<delete id="deleteByPrimaryKey" parameterType="string">
-		delete from <include refid="modelTableName" />  where time = #{time}
+		delete from <include refid="modelTableName" />  where id = #{id}
 	</delete>
 	
 	<delete id="delete" parameterType="userBrandStatistics">
 		delete from <include refid="modelTableName" /> 
 			<if test="_parameter != null">
-					where  time = #{time}
+					where  id = #{id}
 			</if>
 	</delete>		
 	 
@@ -118,7 +118,7 @@
  
   
 	<update id="update" parameterType="userBrandStatistics">
-	    update <include refid="modelTableName" /> set  <include refid="modelUpdateValues" /> where time = #{time}
+	    update <include refid="modelTableName" /> set  <include refid="modelUpdateValues" /> where id = #{id}
 	</update>
 
 
@@ -126,7 +126,7 @@
 	<select id="selectByIds" resultMap="modelResult" parameterType="java.util.List">
 		select <include refid="modelColumns" /> from <include refid="modelTableName" />
 		<where>
-			time IN
+			id IN
 			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
 				#{item}
 			</foreach>
@@ -136,7 +136,7 @@
 	<delete id="deleteByIds" parameterType="java.util.List">
 		delete from <include refid="modelTableName" />
 		<where>
-			time IN
+			id IN
 			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
 				#{item}
 			</foreach>
@@ -144,7 +144,7 @@
 	</delete>
 	
 	<select id="pkSelectByModelCriteria" resultType="string">
-		select time from <include refid="modelTableName" />
+		select id from <include refid="modelTableName" />
 		<if test="_parameter != null"> 
 	      	<include refid="model_CRITERIA_SQL_GenCondition" />
 	      	<if test="orderByClause != null">

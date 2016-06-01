@@ -40,7 +40,7 @@ public class FincialStatisticsBuilderOp {
 			fincialStatistics.setCtw(ctw);
 			fincialStatistics.setCta(cta);
 			fincialStatistics.setCtm(ctm);
-			fincialStatistics.setTime(firstDay);
+			fincialStatistics.setId(firstDay.substring(0, 7));
 			try {
 				userWalletFacadeService.getFincialStatisticsService().insert(fincialStatistics);
 			} catch (Exception e) {
