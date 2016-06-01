@@ -13,8 +13,8 @@ import com.smartwork.msip.cores.helper.ArithHelper;
 @SuppressWarnings("serial")
 public class UserWalletDetailVTO implements java.io.Serializable {
 	private int uid;
-	private double vcurrency = 0.00d;
-	private double vcurrency_bing = 0.00d;
+	private long vcurrency = 0l;
+	private long vcurrency_bing = 0l;
 	private double cash = 0.00d;;
 	private boolean withdraw = false;
 	private boolean haspwd = false; 
@@ -34,13 +34,13 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 	public double getVcurrency() {
 		return vcurrency;
 	}
-	public void setVcurrency(double vcurrency) {
+	public void setVcurrency(long vcurrency) {
 		this.vcurrency = vcurrency;
 	}
 	public double getVcurrency_bing() {
 		return vcurrency_bing;
 	}
-	public void setVcurrency_bing(double vcurrency_bing) {
+	public void setVcurrency_bing(long vcurrency_bing) {
 		this.vcurrency_bing = vcurrency_bing;
 	}
 	public boolean isWithdraw() {
@@ -55,8 +55,8 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 	public void setHaspwd(boolean haspwd) {
 		this.haspwd = haspwd;
 	}
-	public double getVcurrency_total(){
-		return ArithHelper.add(vcurrency, vcurrency_bing);
+	public long getVcurrency_total(){
+		return (vcurrency+vcurrency_bing);
 	}
 	public List<UserOAuthStateDTO> getPayments() {
 		return payments;
