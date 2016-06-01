@@ -1180,6 +1180,12 @@ public class DeviceBusinessFacadeService {
 			entity.setId(mac);
 			entity.putInnerModel(dto);
 			wifiDeviceSettingService.insert(entity);
+			
+			if(state == DeviceHelper.RefreashDeviceSetting_RestoreFactory){
+				state = DeviceHelper.RefreashDeviceSetting_Normal;
+				logger.info(String.format("Mac[%s] Restore operation can not excute because no device setting data", mac));
+			}
+			
 		}else{
 /*			WifiDeviceSettingDTO currentDto = entity.getInnerModel();
 			if(currentDto != null){

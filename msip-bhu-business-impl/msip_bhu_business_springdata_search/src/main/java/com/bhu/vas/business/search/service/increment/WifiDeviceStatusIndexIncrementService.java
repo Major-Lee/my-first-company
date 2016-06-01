@@ -175,6 +175,7 @@ public class WifiDeviceStatusIndexIncrementService{
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_TYPE.getName(), null);
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UNOBinded.getType());
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.T_UC_EXTENSION.getName(), null);
 		}
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
@@ -218,6 +219,7 @@ public class WifiDeviceStatusIndexIncrementService{
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UNOBinded.getType());
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), null);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_INDUSTRY.getName(), null);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.T_UC_EXTENSION.getName(), null);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
