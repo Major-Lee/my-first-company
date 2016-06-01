@@ -104,24 +104,30 @@ public class UserWalletFacadeService{
 	}
 	
 	/**
-	 * 现金充值 充值零钱
+	 * 零钱充值
 	 * 入账成功需要写入UserWalletLog
+	 * 
+	 * @param orderid 可能是充值订单id，也可能是第三方相关的orderid
+	 * @param transMode 如果是现金充值零钱 transMode = RealMoneyPayment 如果是抽奖馈赠 transMode = DrawPresent
+	 * TODO:改写为存储过程进行实现
 	 */
-	public void cashToUserWallet(int uid,double cash,String orderid,String desc){
-		logger.info(String.format("现金入账|充值现金 uid[%s] orderid[%s] cash[%s] desc[%s]", uid,orderid,cash,desc));
+	public void cashToUserWallet(int uid,UWalletTransMode transMode,double cash,String orderid,String desc){
+		logger.info(String.format("%s-%s uid[%s] orderid[%s] cash[%s] desc[%s]",transMode.getName(),UWalletTransType.Recharge2C.getName(), uid,orderid,cash,desc));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
 		uwallet.setCash(uwallet.getCash()+cash);
 		userWalletService.update(uwallet);
-		this.doWalletLog(uid, orderid,UWalletTransMode.RealMoneyPayment, UWalletTransType.Recharge2C,StringUtils.EMPTY, cash, cash,0d, desc);
+		//this.doWalletLog(uid, orderid,UWalletTransMode.RealMoneyPayment, UWalletTransType.Recharge2C,StringUtils.EMPTY, cash, cash,0d, desc);
+		this.doWalletLog(uid, orderid,transMode, UWalletTransType.Recharge2C,StringUtils.EMPTY, cash, cash,0d, desc);
 	}
 	
 	/**
 	 * 虚拟币入账
 	 * 入账成功需要写入UserWalletLog
-	 * TODO:待实现TBD
+	 * TODO:改写为存储过程进行实现
 	 */
-	public void vcurrencyToUserWallet(int uid,double vcurrency,double cash,String desc){
+	public void vcurrencyToUserWallet(int uid,UWalletTransMode transMode,double vcurrency,double rmoney,String orderid,String desc){
+		logger.info(String.format("%s-%s uid[%s] orderid[%s] rmoney[%s] vcurrency[%s] desc[%s]",transMode.getName(),UWalletTransType.Recharge2V.getName(), uid,orderid,rmoney,vcurrency,desc));
 		//this.doWalletLog(uid, orderid,UWalletTransMode.RealMoneyPayment, UWalletTransType.Recharge2C, cash, cash,0d, desc);
 		//this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.Recharge2V, vcurrency, cash, desc);
 	}
