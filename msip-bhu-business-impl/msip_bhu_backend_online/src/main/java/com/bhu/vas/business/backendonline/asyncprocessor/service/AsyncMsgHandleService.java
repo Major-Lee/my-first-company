@@ -89,6 +89,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
+import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
@@ -174,6 +175,9 @@ public class AsyncMsgHandleService {
 
 	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
+	
+	@Resource
+	private TagGroupRelationService tagGroupRelationService;
 
 	/**
 	 * wifi设备上线 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理,
@@ -1626,6 +1630,7 @@ public class AsyncMsgHandleService {
 			// 给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
 			addDevices2SharedNetwork(-1, dto.getMac());
 		}
+		tagGroupRelationService.cleanDeviceGroupRel(dto.getMac());
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
 	}
 

@@ -27,6 +27,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacade
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -50,6 +51,9 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 	
 	@Resource
 	private BackendBusinessService backendBusinessService;
+	
+	@Resource
+	private TagGroupRelationService tagGroupRelationService;
 	
 	@Override
 	public void process(String message) {
@@ -110,6 +114,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 								if(udp != null){
 									if(udp.getUid() != uid_willbinded.intValue()){
 										userDeviceFacadeService.getUserDeviceService().deleteById(udp);
+										tagGroupRelationService.cleanDeviceGroupRel(dmac);
 										UserDevice userDevice = new UserDevice();
 							            userDevice.setId(new UserDevicePK(dmac, uid_willbinded.intValue()));
 							            userDevice.setCreated_at(new Date());
@@ -153,6 +158,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 									for(String dmac:forceUnbindedDevices){
 										deviceFacadeService.destoryDeviceMobilePresentString(dmac);
 									}
+									tagGroupRelationService.cleanDeviceGroupRels(forceUnbindedDevices);
 								}
 									
 								//变更分成比例

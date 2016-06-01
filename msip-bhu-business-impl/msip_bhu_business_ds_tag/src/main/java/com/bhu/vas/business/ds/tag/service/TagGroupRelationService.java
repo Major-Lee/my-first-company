@@ -1,5 +1,7 @@
 package com.bhu.vas.business.ds.tag.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -22,6 +24,10 @@ public class TagGroupRelationService extends AbstractTagService<String, TagGroup
     public int cleanDeviceGroupRel(String mac){
     	int count = this.deleteById(mac);
     	return count;
+    }
+    
+    public void cleanDeviceGroupRels(List<String> macs){
+    	this.deleteByIds(macs);
     }
     
 	public String fetchPathWithMac(String mac){
