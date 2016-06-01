@@ -454,7 +454,8 @@ public class UserWalletUnitFacadeService {
 				fincialStatisticsVTO.setCtw(fincial.getCtw());
 				fincialStatisticsVTO.setmTotal(fincial.getCpm()+fincial.getCtm());
 				fincialStatisticsVTO.setwTotal(fincial.getCpw()+fincial.getCtw());
-				fincialStatisticsVTO.setTime(fincial.getTime());
+				//fincialStatisticsVTO.setTime(fincial.getTime());
+				fincialStatisticsVTO.setId(fincial.getId());
 				fincialStatisticsVTO.setTotal(fincialStatisticsVTO.getCpTotal()+fincialStatisticsVTO.getCtTotal());
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(fincialStatisticsVTO);

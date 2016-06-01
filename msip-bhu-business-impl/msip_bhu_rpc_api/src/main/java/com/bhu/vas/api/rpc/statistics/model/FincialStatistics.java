@@ -1,24 +1,22 @@
 package com.bhu.vas.api.rpc.statistics.model;
 
-import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
-public class FincialStatistics extends BaseStringModel implements IRedisSequenceGenable{
-	private String time;
+public class FincialStatistics extends BaseStringModel{
+	//private String time;
 	private double ctm;
 	private double cpm;
 	private double cta;
 	private double cpa;
 	private double ctw;
 	private double cpw;
-	
-	public String getTime() {
+	/*public String getTime() {
 		return time;
 	}
 	public void setTime(String time) {
 		this.time = time;
-	}
+	}*/
 	public double getCtm() {
 		return ctm;
 	}
@@ -54,11 +52,6 @@ public class FincialStatistics extends BaseStringModel implements IRedisSequence
 	}
 	public void setCpw(double cpw) {
 		this.cpw = cpw;
-	}
-	@Override
-	public void setSequenceKey(Long key) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

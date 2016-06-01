@@ -5,7 +5,7 @@
 <mapper namespace="com.bhu.vas.api.rpc.statistics.model.FincialStatistics">
 
   <resultMap id="modelResult" type="fincialStatistics">
-    <id property="time" column="time"/>
+    <id property="id" column="id"/>
     <result property="ctm" column="ctm"/>
     <result property="cpm" column="cpm"/>
     <result property="cta" column="cta"/>
@@ -21,7 +21,7 @@
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
-	    	time,
+	    	id,
 	    	ctm,
 	    	cpm,
 	    	cta,
@@ -42,7 +42,7 @@
 	</sql>   
 	
 	<sql id="modelInsertValues">
-	    	#{time},
+	    	#{id},
 	    	#{ctm},
 	    	#{cpm},
 	    	#{cta},
