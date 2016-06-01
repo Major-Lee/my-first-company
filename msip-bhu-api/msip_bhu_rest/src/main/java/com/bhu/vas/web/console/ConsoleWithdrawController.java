@@ -176,7 +176,10 @@ public class ConsoleWithdrawController extends BaseController {
     
     @ResponseBody()
 	@RequestMapping(value="/fincialStatistics", method={RequestMethod.GET,RequestMethod.POST})
-	public void fincialStatistics(HttpServletResponse response, @RequestParam(required=true) String time){
+	public void fincialStatistics(
+			HttpServletResponse response, 
+			@RequestParam(required = true) int uid,
+			@RequestParam(required=true) String time){
 		try{
 			RpcResponseDTO<FincialStatisticsVTO> rpcResult = userWalletRpcService.fincialStatistics(time);
 			if(!rpcResult.hasError()){
