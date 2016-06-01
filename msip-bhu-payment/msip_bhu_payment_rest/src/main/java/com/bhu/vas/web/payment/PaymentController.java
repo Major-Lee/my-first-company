@@ -595,7 +595,7 @@ public class PaymentController extends BaseController{
     		orderLocation.setTid(reckoningId);
     		orderLocation.setLocation(return_url);
     		paymentAlipaylocationService.insert(orderLocation);
-    		logger.info(String.format("apply heepay set location reckoningId [%s] location [%s]  insert finished.",reckoningId));
+    		logger.info(String.format("apply heepay set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
     	}
     	String url = Heepay.order(reckoningId, total_fee, ip);
     	url = url.replace("¬", "&not");
