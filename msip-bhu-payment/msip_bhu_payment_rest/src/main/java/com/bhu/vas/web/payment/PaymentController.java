@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +33,7 @@ import com.alipay.util.AlipayNotify;
 import com.alipay.util.AlipaySubmit;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreateWithdrawDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.payment.model.PaymentAlipaylocation;
 import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
@@ -44,6 +47,7 @@ import com.bhu.vas.business.ds.payment.service.PaymentWithdrawService;
 import com.bhu.vas.business.helper.BusinessHelper;
 import com.bhu.vas.business.helper.XMLUtil;
 import com.bhu.vas.web.cache.BusinessCacheService;
+import com.bhu.vas.web.http.response.AppUnifiedOrderResponse;
 import com.bhu.vas.web.http.response.PaySuccessNotifyResponse;
 import com.bhu.vas.web.http.response.UnifiedOrderResponse;
 import com.bhu.vas.web.http.response.WithDrawNotifyResponse;
@@ -56,6 +60,7 @@ import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.PaymentResponseSuccess;
+import com.smartwork.msip.jdo.Response;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -211,14 +216,19 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT)));
         		return;
         	}
-        	if(result != null){
-        		logger.info(String.format("apply withdrawals return result [%s]",JsonHelper.getJSONString(result)));
+        	String type = result.getWithdraw_type();
+    		String msg = result.getUrl();
+    		if(type.equalsIgnoreCase("FAIL")){
+    			ResponsePaymentDTO respone = new ResponsePaymentDTO();
+    			respone.setSuccess(false);
+    			respone.setMsg(msg);
+    			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(respone)));
+    			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(respone));
+    		
+    		}else{
+    			logger.info(String.format("apply withdrawals return result [%s]",JsonHelper.getJSONString(result)));
         		SpringMVCHelper.renderJson(response, result);
-        	}else{
-        		logger.info(String.format("apply withdrawals return result [%s]",ResponseError.BUSINESS_ERROR));
-        		SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
-        	}
-        	
+    		}
 		}catch(BusinessI18nCodeException i18nex){
 			logger.error(String.format("submitWithdrawals catch BusinessI18nCodeException [%s]",ResponseError.embed(i18nex)));
 			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
@@ -294,14 +304,16 @@ public class PaymentController extends BaseController{
         	//判断请求支付类型    	
         	if(payment_type.equals("PcWeixin")){ //PC微信支付
         		result =  doNativeWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac);
-        	}else if(payment_type.equals("WapAlipay")){ //Wap微信支付
-        		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac);
         	}else if(payment_type.equals("PcAlipay")){ //PC支付宝
         		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac);
-        	}else if(payment_type.equals("Midas")){ //米大师
-        		result =  doMidas(response, total_fee, goods_no); //TODO：暂未对接完成。。。
-        	}else if(payment_type.equals("WapWeixin")){ //汇付宝
+        	}else if(payment_type.equals("AppWeixin")){ //App微信支付
+        		result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac);
+            }else if(payment_type.equals("AppAlipay")){ //App支付宝
+            	result =  doAppAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac);
+            }else if(payment_type.equals("WapWeixin")){ //汇付宝
         		result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac); 
+        	}else if(payment_type.equals("WapAlipay")){ //Wap微信支付
+        		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac);
         	}else{//提示暂不支持的支付方式
         		logger.info(String.format("apply payment payment_type [%s]",payment_type + ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT))));
@@ -310,8 +322,20 @@ public class PaymentController extends BaseController{
         		return;
         	}
         	if(result != null){
-        		logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(result)));
-        		SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
+        		String type = result.getType();
+        		String msg = result.getUrl();
+        		if(type.equalsIgnoreCase("FAIL")){
+        			Response respone = new Response();
+        			respone.setSuccess(false);
+        			respone.setMsg(msg);
+        			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(respone)));
+        			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(respone));
+        		
+        		}else{
+        			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(result)));
+        			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
+        		}
+        	
         	}else{
         		logger.info(String.format("apply payment return result [%s]",ResponseError.BUSINESS_ERROR));
         		SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
@@ -341,7 +365,7 @@ public class PaymentController extends BaseController{
 	 */
 	private ResponseCreateWithdrawDTO doWxWithdrawals(HttpServletRequest request, HttpServletResponse response, String total_fee,
 			String withdraw_no, String Ip,String userId,String userName) {
-		ResponseCreateWithdrawDTO result= null;
+		ResponseCreateWithdrawDTO result = new ResponseCreateWithdrawDTO();
         String certificateUrl = PayHttpService.WITHDRAW_URL;
         logger.info(String.format("apply WxWithdrawals withdraw_no [%s] total_fee [%s] Ip [%s]"
         		+ " withdraw_type [%s] userId [%s]",withdraw_no,total_fee,Ip,"WDWX",userId));
@@ -383,8 +407,7 @@ public class PaymentController extends BaseController{
             if("SUCCESS".equals(unifiedOrderResponse.getReturn_code()) && "SUCCESS".equals(unifiedOrderResponse.getResult_code())){
             	 logger.info("账单流水号："+out_trade_no+"支付成功.微信返回SUCCESS.");
  				//修改成账单状态    1:已支付 2：退款已支付 3：退款成功 4：退款失败
-            	 updateWithdrawalsStatus(payWithdraw, out_trade_no, trade_no);
-                 result = new ResponseCreateWithdrawDTO();
+            	updateWithdrawalsStatus(payWithdraw, out_trade_no, trade_no);
              	result.setWithdraw_type("weixin");
              	result.setSuccess(true);
              	result.setUrl("");
@@ -392,11 +415,16 @@ public class PaymentController extends BaseController{
             }else{
                 //支付s失败
             	logger.info("支付流水号："+out_trade_no+"支付失败 修改订单的支付状态.");
-		            return null;
+            	result.setSuccess(false);
+    	    	result.setUrl(unifiedOrderResponse.getResultMessage());
+    			return result;
             }
 		}else{
 			logger.info("账单流水号："+out_trade_no+"支付账单、订单状态状态修改成功!");
-	            return null;
+			result.setWithdraw_type("weixin");
+         	result.setSuccess(true);
+         	result.setUrl("");
+         	return result;
 		}
        
 	}
@@ -418,7 +446,7 @@ public class PaymentController extends BaseController{
      * @throws IOException
      */
 	private PaymentTypeVTO doNativeWxPayment(HttpServletRequest request, HttpServletResponse response,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac){
-		PaymentTypeVTO result= null;
+		PaymentTypeVTO result= new PaymentTypeVTO();
         String NOTIFY_URL = PayHttpService.NOTIFY_URL;
         String product_name="打赏";//订单名称
     	total_fee = BusinessHelper.getMoney(total_fee);
@@ -442,10 +470,12 @@ public class PaymentController extends BaseController{
         	String status = unifiedOrderResponse.getResultErrorCode();
 			String msg = unifiedOrderResponse.getResultMessage();
 			logger.info(String.format("apply wx payment status [%s] msg [%s]", status,msg));
+	    	result.setType(status);
+	    	result.setUrl(msg);
+			return result;
         }
         try {
         	String url= "http://qr.liantu.com/api.php?text="+ URLEncoder.encode(unifiedOrderResponse.getCode_url(), "UTF-8");
-        	result = new PaymentTypeVTO();
         	result.setType("img");
         	result.setUrl(url);
         } catch (IOException e) {
@@ -454,6 +484,67 @@ public class PaymentController extends BaseController{
         return result;
     }
     
+	/**
+     * 处理微信APP支付请求
+     * @param request
+     * @param response
+     * @param totalPrice
+     * @param goodsNo
+     * @return
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     * @throws IOException
+     */
+	private PaymentTypeVTO doAppWxPayment(HttpServletRequest request, HttpServletResponse response,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac){
+		PaymentTypeVTO result= new PaymentTypeVTO();
+        String NOTIFY_URL = PayHttpService.NOTIFY_URL;
+        String product_name="打赏";//订单名称
+    	total_fee = BusinessHelper.getMoney(total_fee);
+        //记录请求的Goods_no
+        String reckoningId = createPaymentReckoning(out_trade_no,total_fee,Ip,"APWX",usermac);
+        
+      //记录请求支付完成后返回的地址
+		if (!StringUtils.isBlank(locationUrl)) {
+			logger.info(String.format("apply App Wx Payment locationUrl [%s] ",locationUrl));
+			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
+			orderLocation.setTid(reckoningId);
+			orderLocation.setLocation(locationUrl);
+			paymentAlipaylocationService.insert(orderLocation);
+		}
+
+		logger.info(String.format("apply App wx payment reckoningId [%s] product_name [%s] total_fee [%s] ip [%s]"
+        		+ "NOTIFY_URL [%s] ",reckoningId, product_name, total_fee, request.getRemoteAddr(),NOTIFY_URL ));
+		AppUnifiedOrderResponse unifiedOrderResponse = payHttpService.unifiedorderForApp(reckoningId, product_name, total_fee, request.getRemoteAddr(), NOTIFY_URL, "");
+
+        if(!unifiedOrderResponse.isResultSuccess()){
+        	String status = unifiedOrderResponse.getResultErrorCode();
+			String msg = unifiedOrderResponse.getResultMessage();
+			logger.info(String.format("apply App wx payment status [%s] msg [%s]", status,msg));
+	    	result.setType(status);
+	    	result.setUrl(msg);
+			return result;
+        }
+        
+        String timestamp = payHttpService.getTimeStamp();//生成1970年到现在的秒数.
+        String noncestr = payHttpService.getNonceStr();//生成随机字符串
+        String prepay_id = unifiedOrderResponse.getPrepay_id();
+        SortedMap<Object, Object> params = new TreeMap<Object,Object>();
+        params.put("appId", payHttpService.getAppId());
+        params.put("partnerId", payHttpService.getMchId());
+        params.put("prepayId", prepay_id);
+        params.put("nonceStr", noncestr);
+        params.put("timeStamp",timestamp);
+        params.put("package", "Sign=WXPay");
+
+        //生成支付签名,这个签名 给 微信支付的调用使用
+        String paySign =  payHttpService.createSign(payHttpService.getMchKey(),"UTF-8", params);
+        
+        params.put("sign", paySign);
+    	String json= JsonHelper.getJSONString(params);
+    	result.setType("json");
+    	result.setUrl(json);
+        return result;
+    }
     
 	/**
 	 *  支付宝支付请求接口(支付宝2015年8月25日新版本支付请求返回有所变化，是一个文本型)
@@ -468,7 +559,7 @@ public class PaymentController extends BaseController{
     private PaymentTypeVTO doAlipay(HttpServletResponse response,HttpServletRequest request,
     		String totalPrice,String out_trade_no,String locationUrl,String ip,String type,String usermac){
     	response.setCharacterEncoding("utf-8");
-    	PaymentTypeVTO result = null;
+    	PaymentTypeVTO result = new PaymentTypeVTO();
     	
 		//服务器异步通知页面路径
 		String notify_url = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/alipayNotifySuccess";
@@ -495,7 +586,7 @@ public class PaymentController extends BaseController{
 		//数据库存的是分，此处需要把传来的支付金额转换成分，而传给支付宝的保持不变（默认元）
 		String total_fee_fen = BusinessHelper.getMoney(total_fee);
 		if(type.equals("WapAlipay")){
-			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"MOAL",usermac);
+			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"WPAL",usermac);
 			sParaTemp.put("service", "alipay.wap.create.direct.pay.by.user");
 	        sParaTemp.put("partner", AlipayConfig.partner);
 	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
@@ -548,6 +639,106 @@ public class PaymentController extends BaseController{
             result.setUrl(sHtmlText);
             return result;
         } catch (Exception e) {
+        	result.setType("FAIL");
+            result.setUrl("支付请求失败");
+            return result;
+        }
+	}
+    
+    /**
+	 *  支付宝支付请求接口(支付宝2015年8月25日新版本支付请求返回有所变化，是一个文本型)
+     * @param response
+     * @param request
+	 * @param totalPrice 支付金额
+	 * @param out_trade_no 订单号
+	 * @param locationUrl 支付完成后返回页面地址
+	 * @param ip 用户Ip
+	 * @return
+	 */
+    private PaymentTypeVTO doAppAlipay(HttpServletResponse response,HttpServletRequest request,
+    		String totalPrice,String out_trade_no,String locationUrl,String ip,String type,String usermac){
+    	response.setCharacterEncoding("utf-8");
+    	PaymentTypeVTO result = new PaymentTypeVTO();
+    	
+		//服务器异步通知页面路径
+		String notify_url = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/alipayNotifySuccess";
+		//需http://格式的完整路径，不能加?id=123这类自定义参数
+
+		//页面跳转同步通知页面路径
+		String return_url = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/alipayReturn";
+		//需http://格式的完整路径，不能加?id=123这类自定义参数，不能写成http://localhost/
+
+		//订单名称
+		String subject = "打赏";//;new String("打赏".getBytes("ISO-8859-1"), "utf-8");
+		//付款金额
+		String total_fee = totalPrice;
+
+		//订单描述
+		String body = "必虎路由器打赏服务";
+
+		//////////////////////////////////////////////////////////////////////////////////
+			
+		 //以上为正式支付前必有的订单信息，用户信息验证，接下来将用订单号生成一个支付流水号进行在线支付
+		//把请求参数打包成数组
+		Map<String, String> sParaTemp = new HashMap<String, String>();
+		String reckoningId = null;
+		//数据库存的是分，此处需要把传来的支付金额转换成分，而传给支付宝的保持不变（默认元）
+		String total_fee_fen = BusinessHelper.getMoney(total_fee);
+		if(type.equals("WapAlipay")){
+			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"WapAL",usermac);
+			sParaTemp.put("service", "alipay.wap.create.direct.pay.by.user");
+	        sParaTemp.put("partner", AlipayConfig.partner);
+	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
+	        sParaTemp.put("_input_charset", AlipayConfig.input_charset);
+			sParaTemp.put("payment_type", AlipayConfig.payment_type);
+			sParaTemp.put("notify_url", notify_url);
+			sParaTemp.put("return_url", return_url);
+			sParaTemp.put("show_url", return_url);
+			sParaTemp.put("exter_invoke_ip", ip);
+			sParaTemp.put("out_trade_no", reckoningId);
+			sParaTemp.put("subject", subject);
+			sParaTemp.put("total_fee", total_fee);
+			sParaTemp.put("body", body);
+			sParaTemp.put("it_b_pay", "600");
+		}else{
+			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"PCAL",usermac);
+			sParaTemp.put("service", AlipayConfig.service);
+	        sParaTemp.put("partner", AlipayConfig.partner);
+	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
+	        sParaTemp.put("_input_charset", AlipayConfig.input_charset);
+			sParaTemp.put("payment_type", AlipayConfig.payment_type);
+			sParaTemp.put("notify_url", notify_url);
+			sParaTemp.put("return_url", return_url);
+			sParaTemp.put("anti_phishing_key", AlipayConfig.anti_phishing_key);
+			sParaTemp.put("exter_invoke_ip", ip);
+			sParaTemp.put("out_trade_no", reckoningId);
+			sParaTemp.put("subject", subject);
+			sParaTemp.put("total_fee", total_fee);
+			sParaTemp.put("body", body);
+		}
+		
+		
+		//记录请求支付完成后返回的地址
+		if (!StringUtils.isBlank(locationUrl)) {
+			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
+			orderLocation.setTid(reckoningId);
+			orderLocation.setLocation(locationUrl);
+			paymentAlipaylocationService.insert(orderLocation);
+			logger.info(String.format("apply alipay set location reckoningId [%s] locationUrl [%s] insert finished.",reckoningId, locationUrl));
+		}
+		
+		//建立支付宝支付请求
+		
+		//建立请求
+		String sHtmlText = "";
+        try {
+            sHtmlText = AlipaySubmit.buildRequest(sParaTemp,"post","确认"); 
+            result.setType("http");
+            result.setUrl(sHtmlText);
+            return result;
+        } catch (Exception e) {
+        	result.setType("FAIL");
+            result.setUrl("支付请求失败");
             return result;
         }
 	}
@@ -575,7 +766,7 @@ public class PaymentController extends BaseController{
      * @return
      */
     private PaymentTypeVTO doHee(HttpServletResponse response, String total_fee, String out_trade_no,String ip,String return_url,String usermac) {
-    	PaymentTypeVTO result = null;
+    	PaymentTypeVTO result = new PaymentTypeVTO();
     	if(ip == "" || ip == null){
     		ip = "213.42.3.24";
     	}
@@ -587,7 +778,7 @@ public class PaymentController extends BaseController{
     		total_fee = "0.50";
     	}
     	
-    	String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"MOHE",usermac);
+    	String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"WPWX",usermac);
     	//记录请求支付完成后返回的地址
     	if (!StringUtils.isBlank(return_url)) {
     		logger.info(String.format("get heepay location [%s] ",return_url));
@@ -598,11 +789,16 @@ public class PaymentController extends BaseController{
     		logger.info(String.format("apply heepay set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
     	}
     	String url = Heepay.order(reckoningId, total_fee, ip);
-    	url = url.replace("¬", "&not");
-    	result = new PaymentTypeVTO();
-    	result.setType("http");
-    	result.setUrl(url);
-    	return result;
+    	if("error".equalsIgnoreCase(url)){
+    		result.setType("FAIL");
+        	result.setUrl("支付请求失败");
+        	return result;
+    	}else{
+    		url = url.replace("¬", "&not");
+        	result.setType("http");
+        	result.setUrl(url);
+        	return result;
+    	}
     }
     
     /**
@@ -1031,9 +1227,13 @@ public class PaymentController extends BaseController{
  			paymentType = "PcWeixin";
  		}else if(type.equalsIgnoreCase("PCAL")){
  			paymentType = "PcAlipay";
- 		}else if(type.equalsIgnoreCase("MOHE")){
+ 		}else if(type.equalsIgnoreCase("APAL")){
+ 			paymentType = "AppAlipay";
+ 		}else if(type.equalsIgnoreCase("APWX")){
+ 			paymentType = "AppWeixin";
+ 		}else if(type.equalsIgnoreCase("WPWX")){
  			paymentType = "WapWeixin";
- 		}else if(type.equalsIgnoreCase("MOAL")){
+ 		}else if(type.equalsIgnoreCase("WPAL")){
  			paymentType = "WapAlipay";
  		}
     	
@@ -1162,8 +1362,23 @@ public class PaymentController extends BaseController{
 //    	PaymentTypeVTO result = new PaymentTypeVTO();
 //    	result.setType("weixin");
 //    	result.setUrl("@#$%^&*(");
-//    	System.out.println(JsonHelper.getJSONString(result));;
+    	
+    	 SortedMap<Object, Object> params = new TreeMap<Object,Object>();
+         params.put("appId", "Assssssssssssss");
+         params.put("partnerId", "1q1qq1");
+         params.put("prepayId", "22222");
+         params.put("nonceStr", "2222");
+         params.put("timeStamp","3333333");
+         params.put("package", "Sign=WXPay");
+
+         //生成支付签名,这个签名 给 微信支付的调用使用
+         //String paySign =  payHttpService.createSign(payHttpService.getMchKey(),"UTF-8", params);
+         
+         params.put("sign", "222");
+     	String json= JsonHelper.getJSONString(params);
+    	
+    	System.out.println(json);
 //      	SpringMVCHelper.renderJson(response, result);
-    	System.out.println(BusinessHelper.formatMac("84:82:f4:28:7a:ec"));;
+    	//System.out.println(BusinessHelper.formatMac("84:82:f4:28:7a:ec"));;
     }
 }
