@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.procedure.FincialStatisticsProdureDTO;
-import com.bhu.vas.api.dto.procedure.OrderStatisticsProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealDailyGroupSummaryProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealDailyUserSummaryProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealWalletProcedureDTO;
@@ -33,8 +32,6 @@ import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
-import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
-import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
