@@ -20,7 +20,7 @@ public class FincialStatisticsService extends AbstractCommdityService<String, Fi
 	@Override
 	public FincialStatistics insert(FincialStatistics entity) {
 		//如果订单id为空 会默认生成订单id 并且扩展占位为零
-		FincialStatistics fincialStatistics=super.getById(entity.getTime());
+		FincialStatistics fincialStatistics=super.getById(entity.getId());
 		if(fincialStatistics==null){
 			return super.insert(entity);
 		}else{

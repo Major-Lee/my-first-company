@@ -2,7 +2,8 @@ package com.bhu.vas.api.vto.statistics;
 
 @SuppressWarnings("serial")
 public class FincialStatisticsVTO implements java.io.Serializable{
-	private String time;
+	//private String time;
+	private String id;
 	private double ctm;
 	private double cpm;
 	private double cta;
@@ -53,12 +54,12 @@ public class FincialStatisticsVTO implements java.io.Serializable{
 	public void setTotal(double total) {
 		this.total = total;
 	}
-	public String getTime() {
+	/*public String getTime() {
 		return time;
 	}
 	public void setTime(String time) {
 		this.time = time;
-	}
+	}*/
 	public double getCtm() {
 		return ctm;
 	}
@@ -94,6 +95,12 @@ public class FincialStatisticsVTO implements java.io.Serializable{
 	}
 	public void setCpw(double cpw) {
 		this.cpw = cpw;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	} 
 	
 	
