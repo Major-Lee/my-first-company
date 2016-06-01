@@ -166,18 +166,4 @@ public class UserWalletController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
     
-    @ResponseBody()
-	@RequestMapping(value="/wallet/fincialStatistics", method={RequestMethod.GET,RequestMethod.POST})
-	public void fincialStatistics(HttpServletResponse response, @RequestParam(required=true) String time){
-		try{
-			RpcResponseDTO<FincialStatisticsVTO> rpcResult = userWalletRpcService.fincialStatistics(time);
-			if(!rpcResult.hasError()){
-				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-			}
-		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
-		}
-	}
 }
