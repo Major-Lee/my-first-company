@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
@@ -27,7 +28,8 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacade
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
@@ -42,8 +44,14 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	
+/*	@Resource
+	private UserDeviceFacadeService userDeviceFacadeService;*/
+	
 	@Resource
-	private UserDeviceFacadeService userDeviceFacadeService;
+	private UserWifiDeviceService userWifiDeviceService;
+	
+	@Resource
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
@@ -106,23 +114,29 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 						if(uid_willbinded != null && uid_willbinded.intValue() >0){
 							//userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
 							for(String dmac:pages){
-								UserDevicePK udp = userDeviceFacadeService.deviceBinded(dmac);
-								if(udp != null){
-									if(udp.getUid() != uid_willbinded.intValue()){
-										userDeviceFacadeService.getUserDeviceService().deleteById(udp);
-										UserDevice userDevice = new UserDevice();
+								//UserDevicePK udp = userDeviceFacadeService.deviceBinded(dmac);
+								UserWifiDevice userWifiDevice = userWifiDeviceService.getById(dmac);
+								//if(udp != null){
+								if(userWifiDevice != null){
+									//if(udp.getUid() != uid_willbinded.intValue()){
+									if(userWifiDevice.getUid() != uid_willbinded.intValue()){
+										//userDeviceFacadeService.getUserDeviceService().deleteById(udp);
+										userWifiDeviceService.delete(userWifiDevice);
+/*										UserDevice userDevice = new UserDevice();
 							            userDevice.setId(new UserDevicePK(dmac, uid_willbinded.intValue()));
 							            userDevice.setCreated_at(new Date());
-							            userDeviceFacadeService.getUserDeviceService().insert(userDevice);
+							            userDeviceFacadeService.getUserDeviceService().insert(userDevice);*/
+										userWifiDeviceFacadeService.insertUserWifiDevice(dmac, uid_willbinded.intValue());
 							            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
 									}else{
 										//已经此用户绑定，不动作
 									}
 								}else{
-									UserDevice userDevice = new UserDevice();
+/*									UserDevice userDevice = new UserDevice();
 						            userDevice.setId(new UserDevicePK(dmac, uid_willbinded.intValue()));
 						            userDevice.setCreated_at(new Date());
-						            userDeviceFacadeService.getUserDeviceService().insert(userDevice);
+						            userDeviceFacadeService.getUserDeviceService().insert(userDevice);*/
+									userWifiDeviceFacadeService.insertUserWifiDevice(dmac, uid_willbinded.intValue());
 						            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
 								}
 								chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, dmac, 
