@@ -125,6 +125,8 @@ public class BackendBusinessService {
 		clearDeviceBindedRelation(mac);
 		//清除设备的搜索引擎相关数据
 		clearWifiDeviceSearchData(mac);
+		//清理设备的设备分组关系数据
+		clearDeviceGroupRelation(mac);
 	}
 	
 	
@@ -258,6 +260,18 @@ public class BackendBusinessService {
 	 */
 	public void clearWifiDeviceSearchData(String mac){
 		wifiDeviceStatusIndexIncrementService.resetUpdIncrement(mac);
+	}
+	
+	/**
+	 * 清理设备的设备分组关系数据
+	 * @param mac
+	 */
+	public void clearDeviceGroupRelation(String mac){
+		try{
+			tagGroupRelationService.cleanDeviceGroupRel(mac);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
 	}
 	
 	/**********************************     清除设备数据业务 end   *****************************************/
