@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
+import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -173,5 +174,18 @@ public class ConsoleWithdrawController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
     
-    
+    @ResponseBody()
+	@RequestMapping(value="/fincialStatistics", method={RequestMethod.GET,RequestMethod.POST})
+	public void fincialStatistics(HttpServletResponse response, @RequestParam(required=true) String time){
+		try{
+			RpcResponseDTO<FincialStatisticsVTO> rpcResult = userWalletRpcService.fincialStatistics(time);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
 }
