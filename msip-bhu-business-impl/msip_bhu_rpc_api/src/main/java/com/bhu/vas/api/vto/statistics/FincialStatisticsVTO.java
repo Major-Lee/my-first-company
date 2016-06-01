@@ -9,6 +9,50 @@ public class FincialStatisticsVTO implements java.io.Serializable{
 	private double cpa;
 	private double ctw;
 	private double cpw;
+	
+	private double ctTotal;
+	private double cpTotal;
+	private double mTotal;
+	private double aTotal;
+	private double wTotal;
+	private double total;
+	
+	public double getCtTotal() {
+		return ctTotal;
+	}
+	public void setCtTotal(double ctTotal) {
+		this.ctTotal = ctTotal;
+	}
+	public double getCpTotal() {
+		return cpTotal;
+	}
+	public void setCpTotal(double cpTotal) {
+		this.cpTotal = cpTotal;
+	}
+	public double getmTotal() {
+		return mTotal;
+	}
+	public void setmTotal(double mTotal) {
+		this.mTotal = mTotal;
+	}
+	public double getaTotal() {
+		return aTotal;
+	}
+	public void setaTotal(double aTotal) {
+		this.aTotal = aTotal;
+	}
+	public double getwTotal() {
+		return wTotal;
+	}
+	public void setwTotal(double wTotal) {
+		this.wTotal = wTotal;
+	}
+	public double getTotal() {
+		return total;
+	}
+	public void setTotal(double total) {
+		this.total = total;
+	}
 	public String getTime() {
 		return time;
 	}

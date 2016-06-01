@@ -10,6 +10,7 @@ import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
+import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
@@ -134,6 +135,11 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 			int uid) {
 		logger.info(String.format("doWithdrawNotifyFromLocal with uid[%s]",uid));
 		return userWalletUnitFacadeService.walletLogStatistics(uid);
+	}
+	@Override
+	public RpcResponseDTO<FincialStatisticsVTO> fincialStatistics(String time) {
+		logger.info(String.format("fincialStatistics with time[%s]",time));
+		return userWalletUnitFacadeService.fincialStatistics(time);
 	}
 
 }
