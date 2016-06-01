@@ -294,9 +294,9 @@ public class PaymentController extends BaseController{
         	//判断请求支付类型    	
         	if(payment_type.equals("PcWeixin")){ //PC微信支付
         		result =  doNativeWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac);
-        	}else if(payment_type.equals("WapAlipay")){ //Wap微信支付宝
+        	}else if(payment_type.equals("WapAlipay")){ //Wap微信支付
         		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac);
-        	}else if(payment_type.equals("PcAlipay")){ //PC微信支付宝
+        	}else if(payment_type.equals("PcAlipay")){ //PC支付宝
         		result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac);
         	}else if(payment_type.equals("Midas")){ //米大师
         		result =  doMidas(response, total_fee, goods_no); //TODO：暂未对接完成。。。
