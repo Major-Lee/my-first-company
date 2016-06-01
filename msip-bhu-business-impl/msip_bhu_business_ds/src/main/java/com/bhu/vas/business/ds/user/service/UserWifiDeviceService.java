@@ -1,0 +1,21 @@
+package com.bhu.vas.business.ds.user.service;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
+import com.bhu.vas.business.ds.user.dao.UserWifiDeviceDao;
+import com.smartwork.msip.cores.orm.service.EntityService;
+
+@Service
+@Transactional("coreTransactionManager")
+public class UserWifiDeviceService extends EntityService<String,UserWifiDevice, UserWifiDeviceDao>{
+	@Resource
+	@Override
+	public void setEntityDao(UserWifiDeviceDao userWifiDeviceDao) {
+		super.setEntityDao(userWifiDeviceDao);
+	}
+	
+}
