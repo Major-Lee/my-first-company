@@ -1,7 +1,6 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,9 +15,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
-import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ExcelElementCallback;
@@ -163,7 +160,8 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 									}
 								}
 								if(!forceUnbindedDevices.isEmpty()){
-									userDeviceFacadeService.doForceUnbindDevice(forceUnbindedDevices);
+									//userDeviceFacadeService.doForceUnbindDevice(forceUnbindedDevices);
+									userWifiDeviceService.deleteByIds(forceUnbindedDevices);
 									for(String dmac:forceUnbindedDevices){
 										deviceFacadeService.destoryDeviceMobilePresentString(dmac);
 									}
@@ -237,13 +235,13 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("process message[%s] successful", message));
 	}
 	
-	/**
+/*	*//**
 	 * 清除绑定信息
 	 * 如果不是此用户绑定的设备则 清除原有的绑定信息并且把此用户设备绑定
 	 * @param uid
 	 * @param mac
-	 */
+	 *//*
 	private void doForceBindDevice(int uid,String mac){
 		
-	}
+	}*/
 }

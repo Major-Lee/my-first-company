@@ -11,7 +11,6 @@ import org.springframework.util.StringUtils;
 import com.bhu.vas.api.dto.push.DeviceResetPushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceOnlinePushDTO;
 import com.bhu.vas.api.dto.push.HandsetDeviceVisitorAuthorizeOnlinePushDTO;
-import com.bhu.vas.api.dto.push.HandsetDeviceWSOnlinePushDTO;
 import com.bhu.vas.api.dto.push.NotificationPushDTO;
 import com.bhu.vas.api.dto.push.PushDTO;
 import com.bhu.vas.api.dto.push.SharedealNotifyPushDTO;
@@ -21,22 +20,17 @@ import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceWorkModeChangedDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
-import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
 import com.bhu.vas.api.rpc.user.model.PushType;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.context.DeviceResetContext;
 import com.bhu.vas.push.common.context.HandsetOnlineContext;
 import com.bhu.vas.push.common.context.SharedealNofityContext;
 import com.bhu.vas.push.common.dto.PushMsg;
 import com.bhu.vas.push.common.service.gexin.GexinPushService;
-import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.plugins.dictparser.impl.mac.DevicesSet;
-import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 
 /**
  * 业务push service
@@ -53,8 +47,8 @@ public class PushService{
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 
-	@Resource
-	private UserDeviceService userDeviceService;
+/*	@Resource
+	private UserDeviceService userDeviceService;*/
 	
 	@Resource
 	private BusinessPushContextService businessPushContextService;
@@ -214,7 +208,7 @@ public class PushService{
 	 * @param presentDto
 	 * @return
 	 */
-	public boolean pushHandsetDeviceWSOnline(PushDTO pushDto, DeviceMobilePresentDTO presentDto){
+/*	public boolean pushHandsetDeviceWSOnline(PushDTO pushDto, DeviceMobilePresentDTO presentDto){
 		boolean ret = false;
 		try{
 			HandsetDeviceWSOnlinePushDTO wspush_dto = (HandsetDeviceWSOnlinePushDTO)pushDto;
@@ -261,7 +255,7 @@ public class PushService{
 			logger.error("PushHandsetDeviceWSOnline exception " + ex.getMessage(), ex);
 		}
 		return ret;
-	}
+	}*/
 	
 	/**
 	 * 终端打赏分成push

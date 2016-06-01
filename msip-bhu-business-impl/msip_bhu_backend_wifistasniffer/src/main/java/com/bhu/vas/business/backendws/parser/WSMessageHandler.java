@@ -339,11 +339,11 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 		if(push_dtos == null || push_dtos.isEmpty()) return;
 		
 		for(HandsetDeviceWSOnlinePushDTO push_dto : push_dtos){
-			boolean push_successed = pushService.pushHandsetDeviceWSOnline(push_dto, mobile_present_dto);
+/*			boolean push_successed = pushService.pushHandsetDeviceWSOnline(push_dto, mobile_present_dto);
 			if(push_successed){
 //				logger.info(String.format("WSMessagePush Successed mac[%s] hd_mac[%s]", dto.getMac(), hd_mac));
 				businessWSCacheService.storeQWSPushNotifyCacheResult(push_dto.getMac(), push_dto.getHd_mac());
-			}
+			}*/
 		}
 	}
 }

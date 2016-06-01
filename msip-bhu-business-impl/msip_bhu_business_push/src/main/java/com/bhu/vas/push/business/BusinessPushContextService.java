@@ -1,7 +1,5 @@
 package com.bhu.vas.push.business;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,12 +16,12 @@ import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.context.DeviceResetContext;
 import com.bhu.vas.push.common.context.HandsetOnlineContext;
@@ -41,8 +39,11 @@ public class BusinessPushContextService {
 	@Resource
 	private UserSettingStateService userSettingStateService;
 	
+/*	@Resource
+	private UserDeviceService userDeviceService;*/
+	
 	@Resource
-	private UserDeviceService userDeviceService;
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
@@ -184,10 +185,14 @@ public class BusinessPushContextService {
 	 * @return
 	 */
 	protected String getHandsetAliasName(String mac, String hd_mac){
-		List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
+/*		List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
 		if (!bindDevices.isEmpty()) {
 			return WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(bindDevices.get(0).
 					getUid(), hd_mac);
+		}*/
+		Integer uid = userWifiDeviceFacadeService.findUidById(mac);
+		if(uid != null){
+			return WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid, hd_mac);
 		}
 		return null;
 	}
@@ -269,9 +274,15 @@ public class BusinessPushContextService {
 			
 			//3:组装设备信息
 			if(multi_devices){
-				String deviceName = deviceFacadeService.getUserDeviceName(uid, mac);
+/*				String deviceName = deviceFacadeService.getUserDeviceName(uid, mac);
 				if(!StringUtils.isEmpty(deviceName)){
 					context.setDeviceInfo(String.format(HandsetOnlineContext.Device_Info_Template, deviceName));
+				}*/
+				UserWifiDevice userWifiDevice = userWifiDeviceFacadeService.findUserWifiDeviceById(mac, uid);
+				if(userWifiDevice != null){
+					if(StringUtils.isNotEmpty(userWifiDevice.getDevice_name())){
+						context.setDeviceInfo(String.format(HandsetOnlineContext.Device_Info_Template, userWifiDevice.getDevice_name()));
+					}
 				}
 			}
 		}else{
@@ -318,7 +329,12 @@ public class BusinessPushContextService {
 	public DeviceResetContext deviceResetContext(Integer uid, DeviceResetPushDTO deviceResetPushDto){
 		DeviceResetContext context = new DeviceResetContext();
 		
-		String deviceName = deviceFacadeService.getUserDeviceName(uid, deviceResetPushDto.getMac());
+		//String deviceName = deviceFacadeService.getUserDeviceName(uid, deviceResetPushDto.getMac());
+		String deviceName = null;
+		UserWifiDevice userWifiDevice = userWifiDeviceFacadeService.findUserWifiDeviceById(deviceResetPushDto.getMac(), uid);
+		if(userWifiDevice != null){
+			deviceName = userWifiDevice.getDevice_name();
+		}
 		if(StringUtils.isNotEmpty(deviceName)){
 			context.setDeviceInfo(deviceName);
 		}else{

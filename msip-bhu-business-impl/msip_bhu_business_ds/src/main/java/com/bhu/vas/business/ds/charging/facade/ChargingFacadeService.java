@@ -23,7 +23,7 @@ import com.bhu.vas.business.ds.charging.service.WifiDeviceBatchImportService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -42,8 +42,11 @@ public class ChargingFacadeService {
 	@Resource
 	private UserService userService;
 	
+/*	@Resource
+	private UserDeviceService userDeviceService;*/
+	
 	@Resource
-	private UserDeviceService userDeviceService;
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private WifiDeviceBatchImportService wifiDeviceBatchImportService;
@@ -214,7 +217,8 @@ public class ChargingFacadeService {
 		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
 		if(configs == null){
 			configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
-			Integer bindUid = userDeviceService.fetchBindUid(dmac);
+			//Integer bindUid = userDeviceService.fetchBindUid(dmac);
+			Integer bindUid = userWifiDeviceFacadeService.findUidById(dmac);
 			if(bindUid == null)
 				configs.doRuntimeInit(dmac,WifiDeviceSharedealConfigs.None_Owner);
 			else
@@ -301,7 +305,8 @@ public class ChargingFacadeService {
 			}
 		}else{
 			if(insert){//获取设备owner
-				Integer bindUid = userDeviceService.fetchBindUid(dmac);
+//				Integer bindUid = userDeviceService.fetchBindUid(dmac);
+				Integer bindUid = userWifiDeviceFacadeService.findUidById(dmac);
 				if(bindUid == null || bindUid.intValue()<=0){
 					configs.setOwner(WifiDeviceSharedealConfigs.None_Owner);
 				}else{

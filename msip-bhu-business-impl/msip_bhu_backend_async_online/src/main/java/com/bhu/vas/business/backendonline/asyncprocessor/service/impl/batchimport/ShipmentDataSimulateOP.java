@@ -12,7 +12,7 @@ import com.bhu.vas.business.backendonline.BackendAsyncOnlineMain;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ExcelElementCallback;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.dto.DeviceCallbackDTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 
@@ -41,7 +41,8 @@ public class ShipmentDataSimulateOP {
 		
 		//final BatchImportConfirmServiceHandler batchImportConfirmServiceHandler = (BatchImportConfirmServiceHandler)context.getBean("batchImportConfirmServiceHandler");
 		final WifiDeviceService wifiDeviceService = (WifiDeviceService)context.getBean("wifiDeviceService");
-		final UserDeviceFacadeService userDeviceFacadeService = (UserDeviceFacadeService)context.getBean("userDeviceFacadeService");
+		//final UserDeviceFacadeService userDeviceFacadeService = (UserDeviceFacadeService)context.getBean("userDeviceFacadeService");
+		final UserWifiDeviceService userWifiDeviceService = (UserWifiDeviceService)context.getBean("userWifiDeviceService");
 		//final ChargingFacadeService chargingFacadeService = (ChargingFacadeService)context.getBean("chargingFacadeService");
 		//final BackendBusinessService backendBusinessService = (BackendBusinessService)context.getBean("backendBusinessService");;
 		final AtomicInteger atomic_failed = new AtomicInteger(0);
@@ -107,7 +108,8 @@ public class ShipmentDataSimulateOP {
 								}
 							}
 							if(!forceUnbindedDevices.isEmpty())
-								userDeviceFacadeService.doForceUnbindDevice(forceUnbindedDevices);
+								//userDeviceFacadeService.doForceUnbindDevice(forceUnbindedDevices);
+								userWifiDeviceService.deleteByIds(forceUnbindedDevices);
 							//变更分成比例
 							for(String dmac:forceUnbindedDevices){//需要变更owner = -1
 								/*chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,-1, dmac, 

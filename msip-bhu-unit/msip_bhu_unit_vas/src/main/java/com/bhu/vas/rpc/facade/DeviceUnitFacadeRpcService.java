@@ -22,7 +22,6 @@ import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.ds.device.facade.WifiDeviceGrayFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -40,8 +39,8 @@ public class DeviceUnitFacadeRpcService{
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
-	@Resource
-	private UserDeviceService userDeviceService;
+//	@Resource
+//	private UserDeviceService userDeviceService;
 	
 	@Resource
     private WifiDeviceGrayFacadeService wifiDeviceGrayFacadeService;

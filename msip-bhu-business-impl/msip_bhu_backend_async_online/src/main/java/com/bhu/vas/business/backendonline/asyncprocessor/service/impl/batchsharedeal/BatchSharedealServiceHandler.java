@@ -15,7 +15,6 @@ import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusine
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -28,8 +27,11 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 
-	@Resource
-	private UserDeviceFacadeService userDeviceFacadeService;
+//	@Resource
+//	private UserDeviceFacadeService userDeviceFacadeService;
+	
+//	@Resource
+//	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;

@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
-
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
@@ -27,8 +26,8 @@ import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -49,8 +48,11 @@ public class AsyncOrderPaymentNotifyService {
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
 	
+/*	@Resource
+	private UserDeviceFacadeService userDeviceFacadeService;*/
+	
 	@Resource
-	private UserDeviceFacadeService userDeviceFacadeService;
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private PushService pushService;
@@ -103,7 +105,8 @@ public class AsyncOrderPaymentNotifyService {
 		//订单处理逻辑 
 		Order order = orderFacadeService.validateOrderId(orderid);
 		//支付完成时进行设备的uid获取并设置订单
-		User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
+		//User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
+		User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
 		
 		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
 		

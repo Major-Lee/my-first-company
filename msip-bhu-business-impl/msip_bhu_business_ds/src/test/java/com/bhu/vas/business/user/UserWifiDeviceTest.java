@@ -40,7 +40,7 @@ public class UserWifiDeviceTest extends BaseTest{
     @Test
     public void test001Insert(){
     	UserWifiDevice entity = new UserWifiDevice();
-    	entity.setId("84:82:f4:32:2e:8c");
+    	entity.setId("84:82:f4:32:2e:8d");
     	entity.setUid(100153);
     	entity.setDevice_name("devicename");
     	entity.setDevice_name_modifyed(false);
@@ -50,7 +50,7 @@ public class UserWifiDeviceTest extends BaseTest{
     
     @Test
     public void test002GetById(){
-    	UserWifiDevice entity = userWifiDeviceService.getById("84:82:f4:32:2e:8c");
+    	UserWifiDevice entity = userWifiDeviceService.getById("84:82:f4:32:2e:8d");
     	if(entity != null){
     		System.out.println(entity.getId());
     	}

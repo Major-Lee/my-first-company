@@ -15,7 +15,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -33,8 +33,8 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -78,8 +78,8 @@ public class BackendBusinessService {
 	@Resource
 	private UserService userService;
 	
-	@Resource
-	private UserDeviceService userDeviceService;
+/*	@Resource
+	private UserDeviceService userDeviceService;*/
 	
 	@Resource
 	private WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
@@ -92,6 +92,9 @@ public class BackendBusinessService {
     
     @Resource
     private TagGroupRelationService tagGroupRelationService;
+    
+    @Resource
+    private UserWifiDeviceService userWifiDeviceService;
 
 	
 	/**********************************     清除设备数据业务 start   *****************************************/
@@ -285,10 +288,18 @@ public class BackendBusinessService {
 					User bindUser = null;
 					String bindUserDNick = null;
 					//Integer bindUserId = userDeviceService.fetchBindUid(mac);
-					UserDevice userDevice = userDeviceService.fetchBindByMac(mac);
+/*					UserDevice userDevice = userDeviceService.fetchBindByMac(mac);
 					if(userDevice != null){
 						bindUserDNick = userDevice.getDevice_name();
 						Integer bindUserId = userDevice.getId().getUid();
+						if(bindUserId != null){
+							bindUser = userService.getById(bindUserId);
+						}
+					}*/
+					UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+					if(userWifiDevice != null){
+						bindUserDNick = userWifiDevice.getDevice_name();
+						Integer bindUserId = userWifiDevice.getUid();
 						if(bindUserId != null){
 							bindUser = userService.getById(bindUserId);
 						}

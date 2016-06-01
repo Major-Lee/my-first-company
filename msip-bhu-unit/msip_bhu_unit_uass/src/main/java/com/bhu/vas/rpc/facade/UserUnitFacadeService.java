@@ -17,13 +17,12 @@ import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
@@ -50,15 +49,18 @@ public class UserUnitFacadeService {
 	@Resource
 	private UserCaptchaCodeService userCaptchaCodeService;
 	
-	@Resource
-	private UserDeviceService userDeviceService;
+//	@Resource
+//	private UserDeviceService userDeviceService;
 
 	@Resource
 	private UserMobileDeviceService userMobileDeviceService;
-	@Resource
-	private UserDeviceFacadeService userDeviceFacadeService;
+//	@Resource
+//	private UserDeviceFacadeService userDeviceFacadeService;
 	@Resource
 	private DeliverMessageService deliverMessageService;
+	
+	@Resource
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 
 	/**
 	 * 需要兼容uidParam为空的情况
@@ -150,7 +152,7 @@ public class UserUnitFacadeService {
 		
 		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserValidate(user,uToken, device, remoteIp,d_udid);
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-				userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+				userExchange,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
@@ -247,7 +249,7 @@ public class UserUnitFacadeService {
 				user,
 				uToken, reg,
 				old_uuid,d_uuid,
-				userDeviceFacadeService.fetchBindDevices(user.getId()));
+				userWifiDeviceFacadeService.fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
@@ -282,7 +284,7 @@ public class UserUnitFacadeService {
 			deliverMessageService.sendUserRegisteredActionMessage(userExchange.getUser().getId(),acc, null, device,regIp);
 			deliverMessageService.sendPortalUpdateUserChangedActionMessage(userExchange.getUser().getId(), nick, acc, userExchange.getUser().getAvatar());
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-					userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+					userExchange,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -317,7 +319,7 @@ public class UserUnitFacadeService {
 			}
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserLogin(user, device, remoteIp, null, null);
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-					userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+					userExchange,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 			deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp, device);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
@@ -485,7 +487,8 @@ public class UserUnitFacadeService {
 	 */
 	private void cleanDirtyUserData(int uid,int countrycode,String mobileno){
 		UniqueFacadeService.removeByMobileno(countrycode, mobileno);
-		this.userDeviceService.clearBindedDevices(uid);
+		//this.userDeviceService.clearBindedDevices(uid);
+		userWifiDeviceFacadeService.clearUserWifiDevices(uid);
 		System.out.println(String.format("acc[%s] 记录从redis被移除！", mobileno));
 	}
 

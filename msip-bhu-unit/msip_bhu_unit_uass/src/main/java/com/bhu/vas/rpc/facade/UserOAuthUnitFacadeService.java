@@ -17,9 +17,9 @@ import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -33,8 +33,11 @@ public class UserOAuthUnitFacadeService {
 	@Resource
 	private UserSignInOrOnFacadeService userSignInOrOnFacadeService;
 	
+//	@Resource
+//	private UserDeviceFacadeService userDeviceFacadeService;
+	
 	@Resource
-	private UserDeviceFacadeService userDeviceFacadeService;
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private UserOAuthFacadeService userOAuthFacadeService;
@@ -124,7 +127,7 @@ public class UserOAuthUnitFacadeService {
 			userOAuthFacadeService.createOrUpdateIdentifies(userExchange.getUser().getId(), identify, auid, nick, avatar);
 			userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId(),false));
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-					userExchange,userDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+					userExchange,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
