@@ -280,7 +280,7 @@ public class BusinessEnumType {
 	
 	//充值购买虎钻 充值零钱 系统/活动赠送虎钻 消费虎钻 提现(withdraw)
 	/**
-	 * 交易类型定义
+	 * 交易模式定义
 	 * 和第三方支付相关的操作
 	 * 支付、充值、提现
 	 * @author Edmond
@@ -288,6 +288,7 @@ public class BusinessEnumType {
 	 */
 	public enum UWalletTransMode{
 		RealMoneyPayment("RMP","现金支付"),//用于充值
+		DrawPresent("DWP","抽奖馈赠"),//用于充值
 		CashPayment("CAP","零钱支付"),
 		CashRollbackPayment("CRP","零钱支付（Rollback）"),
 		VCurrencyPayment("VCP","虎钻支付"),

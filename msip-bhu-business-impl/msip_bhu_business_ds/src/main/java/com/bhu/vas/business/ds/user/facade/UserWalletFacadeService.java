@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.procedure.FincialStatisticsProdureDTO;
-import com.bhu.vas.api.dto.procedure.OrderStatisticsProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealDailyGroupSummaryProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealDailyUserSummaryProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealWalletProcedureDTO;
@@ -33,8 +32,6 @@ import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
-import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
-import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
@@ -105,13 +102,12 @@ public class UserWalletFacadeService{
 			return uwallet;
 		}
 	}
+	
 	/**
 	 * 现金充值 充值零钱
 	 * 入账成功需要写入UserWalletLog
 	 */
-	public void cashToUserWallet(int uid,double cash,
-			String orderid,String desc
-			){
+	public void cashToUserWallet(int uid,double cash,String orderid,String desc){
 		logger.info(String.format("现金入账|充值现金 uid[%s] orderid[%s] cash[%s] desc[%s]", uid,orderid,cash,desc));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getOrCreateById(uid);
@@ -121,64 +117,16 @@ public class UserWalletFacadeService{
 	}
 	
 	/**
-	 * 分成现金入账
-	 * 如果mac地址没有被绑定或者设备本身不存在则 入账到指定的帐号中
-	 * @param dmac 设备mac地址 通过mac查找其被哪个用户绑定
-	 * @param cash 总收益现金
-	 * @param orderid
-	 * @param desc
+	 * 虚拟币入账
+	 * 入账成功需要写入UserWalletLog
+	 * TODO:待实现TBD
 	 */
-/*	public UserWallet sharedealCashToUserWallet(String dmac,double cash,String orderid){
-		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
-		int uid = UserWallet.Default_WalletUID_WhenUIDNotExist;
-		boolean owner = false;
-		if(StringUtils.isNotEmpty(dmac)){
-			WifiDevice wifiDevice = wifiDeviceService.getById(dmac);
-			if(wifiDevice != null){
-				User user = null;
-				Integer bindUid = userDeviceService.fetchBindUid(dmac);
-				if(bindUid != null){
-					user = userService.getById(bindUid);
-					if(user != null){
-						uid = user.getId();
-						owner = true;
-					}
-				}
-			}
-		}
-		return sharedealCashToUserWallet(uid,cash,orderid,owner);
-	}*/
-
-	/**
-	 * 分成现金入账
-	 * 如果uid为null 设置为指定的分成用户
-	 * @param bindUid  设备绑定的用户uid 可能为null
-	 * @param cash 总收益现金
-	 * @param orderid
-	 * @return
-	 */
-	/*public UserWallet sharedealCashToUserWalletWithBindUid(Integer bindUid, double cash, String orderid,String description){
-		int sharedeal_uid = UserWallet.Default_WalletUID_WhenUIDNotExist;
-		boolean owner = false;
-		if(bindUid != null){
-			sharedeal_uid = bindUid;
-			owner = true; 
-		}
-		return sharedealCashToUserWallet(sharedeal_uid, cash, orderid, owner,description);
-	}*/
+	public void vcurrencyToUserWallet(int uid,double vcurrency,double cash,String desc){
+		//this.doWalletLog(uid, orderid,UWalletTransMode.RealMoneyPayment, UWalletTransType.Recharge2C, cash, cash,0d, desc);
+		//this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.Recharge2V, vcurrency, cash, desc);
+	}
 	
-	/**
-	 * 分成现金入账
-	 * TODO:分成现金分为几部分 
-	 * 	绑定用户
-		我司
-		TODO：需要改成部分由存储过程实现
-	 * @param uid  具体的入账用户
-	 * @param cash 总收益现金
-	 * @param orderid
-	 * @param desc
-	 */
-	public UserWallet sharedealCashToUserWallet(String dmac, double cash, String orderid,String description){
+	/*public UserWallet sharedealCashToUserWallet(String dmac, double cash, String orderid,String description){
 		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
 		//UserValidateServiceHelper.validateUser(uid,this.userService);
 		//UserWalletConfigs configs = userWalletConfigsService.userfulWalletConfigs(uid);
@@ -191,7 +139,7 @@ public class UserWalletFacadeService{
 		uwallet = userWalletService.update(uwallet);
 		this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 		return uwallet;
-	}
+	}*/
 	
 	/**
 	 * 分成现金入账 存储过程实现
@@ -266,6 +214,12 @@ public class UserWalletFacadeService{
 		return executeRet;*/
 	}
 	
+	/**
+	 * 用户收益每日统计
+	 * @param uid
+	 * @param cdate
+	 * @return
+	 */
 	public ShareDealDailyUserSummaryProcedureVTO sharedealDailyUserSummaryWithProcedure(int uid,String cdate){
 		ShareDealDailyUserSummaryProcedureDTO procedureDTO = new ShareDealDailyUserSummaryProcedureDTO();
 		procedureDTO.setUserid(uid);
@@ -295,16 +249,6 @@ public class UserWalletFacadeService{
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
 		}
 		return procedureDTO.toVTO();
-	}
-	
-	/**
-	 * 虚拟币入账
-	 * 入账成功需要写入UserWalletLog
-	 * TODO:待实现TBD
-	 */
-	public void vcurrencyToUserWallet(int uid,double vcurrency,double cash,String desc){
-		//this.doWalletLog(uid, orderid,UWalletTransMode.RealMoneyPayment, UWalletTransType.Recharge2C, cash, cash,0d, desc);
-		//this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.Recharge2V, vcurrency, cash, desc);
 	}
 	
 	/**
@@ -746,6 +690,8 @@ public class UserWalletFacadeService{
 			case CashRollbackPayment://
 				wlog.setRmoney(StringHelper.MINUS_STRING_GAP.concat(String.valueOf(rmoney)));
 				wlog.setCash(StringHelper.PLUS_STRING_GAP.concat(String.valueOf(cash)));
+				break;
+			default:
 				break;
 		}
 		wlog.setMemo(memo);
