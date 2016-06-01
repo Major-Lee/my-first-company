@@ -19,6 +19,11 @@ public class TagGroupRelationService extends AbstractTagService<String, TagGroup
         super.setEntityDao(tagGroupRelationDao);
     }
 	
+    public int cleanDeviceGroupRel(String mac){
+    	int count = this.deleteById(mac);
+    	return count;
+    }
+    
 	public String fetchPathWithMac(String mac){
 		TagGroupRelation relation = this.getById(mac);
 		if(relation != null)
