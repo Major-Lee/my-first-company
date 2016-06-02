@@ -4,15 +4,11 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.exception.BusinessI18nCodeException;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class CommdityFacadeService {
@@ -55,7 +51,7 @@ public class CommdityFacadeService {
 	 * @param commdityid
 	 * @return
 	 */
-	public String commdityAmount(Integer commdityid){
+/*	public String commdityAmount(Integer commdityid){
 		//商品信息验证
 		Commdity commdity = commdityService.getById(commdityid);
 		if(commdity == null){
@@ -70,5 +66,5 @@ public class CommdityFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_ILLEGAL);
 		}
 		return amount;
-	}
+	}*/
 }
