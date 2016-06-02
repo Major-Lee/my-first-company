@@ -441,7 +441,7 @@ public class UserWalletUnitFacadeService {
 			FincialStatisticsVTO fincialStatisticsVTO=new FincialStatisticsVTO();
 			
 			if(fincial == null){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
+				return null;
 			}else{
 				fincialStatisticsVTO.setaTotal(fincial.getCpa()+fincial.getCta());
 				fincialStatisticsVTO.setCpa(fincial.getCpa());
