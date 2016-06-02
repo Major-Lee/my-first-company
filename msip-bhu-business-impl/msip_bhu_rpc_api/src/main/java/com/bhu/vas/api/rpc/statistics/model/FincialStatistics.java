@@ -5,52 +5,52 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 @SuppressWarnings("serial")
 public class FincialStatistics extends BaseStringModel{
 	//private String time;
-	private double ctm;
-	private double cpm;
-	private double cta;
-	private double cpa;
-	private double ctw;
-	private double cpw;
+	private float ctm;
+	private float cpm;
+	private float cta;
+	private float cpa;
+	private float ctw;
+	private float cpw;
 	/*public String getTime() {
 		return time;
 	}
 	public void setTime(String time) {
 		this.time = time;
 	}*/
-	public double getCtm() {
+	public float getCtm() {
 		return ctm;
 	}
-	public void setCtm(double ctm) {
+	public void setCtm(float ctm) {
 		this.ctm = ctm;
 	}
-	public double getCpm() {
+	public float getCpm() {
 		return cpm;
 	}
-	public void setCpm(double cpm) {
+	public void setCpm(float cpm) {
 		this.cpm = cpm;
 	}
-	public double getCta() {
+	public float getCta() {
 		return cta;
 	}
-	public void setCta(double cta) {
+	public void setCta(float cta) {
 		this.cta = cta;
 	}
-	public double getCpa() {
+	public float getCpa() {
 		return cpa;
 	}
-	public void setCpa(double cpa) {
+	public void setCpa(float cpa) {
 		this.cpa = cpa;
 	}
-	public double getCtw() {
+	public float getCtw() {
 		return ctw;
 	}
-	public void setCtw(double ctw) {
+	public void setCtw(float ctw) {
 		this.ctw = ctw;
 	}
-	public double getCpw() {
+	public float getCpw() {
 		return cpw;
 	}
-	public void setCpw(double cpw) {
+	public void setCpw(float cpw) {
 		this.cpw = cpw;
 	}
 	

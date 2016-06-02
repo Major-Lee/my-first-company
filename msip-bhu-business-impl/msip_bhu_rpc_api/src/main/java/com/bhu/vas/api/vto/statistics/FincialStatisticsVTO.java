@@ -4,112 +4,112 @@ package com.bhu.vas.api.vto.statistics;
 public class FincialStatisticsVTO implements java.io.Serializable{
 	//private String time;
 	private String id;
-	private double ctm;
-	private double cpm;
-	private double cta;
-	private double cpa;
-	private double ctw;
-	private double cpw;
+	private float ctm;
+	private float cpm;
+	private float cta;
+	private float cpa;
+	private float ctw;
+	private float cpw;
 	
-	private double hTotal;
-	private double hwTotal;
-	private double howTotal;
-	private double ctow;
-	private double cpow;
-	private double rwTotal;
-	private double rowTotal;
-	private double rTotal;
+	private float hTotal;
+	private float hwTotal;
+	private float howTotal;
+	private float ctow;
+	private float cpow;
+	private float rwTotal;
+	private float rowTotal;
+	private float rTotal;
 	
-	private double ctTotal;
-	private double cpTotal;
-	private double mTotal;
-	private double aTotal;
-	private double wTotal;
-	private double total;
+	private float ctTotal;
+	private float cpTotal;
+	private float mTotal;
+	private float aTotal;
+	private float wTotal;
+	private float total;
 	
 	
-	public double gethTotal() {
+	public float gethTotal() {
 		return hTotal;
 	}
-	public void sethTotal(double hTotal) {
+	public void sethTotal(float hTotal) {
 		this.hTotal = hTotal;
 	}
-	public double getHwTotal() {
+	public float getHwTotal() {
 		return hwTotal;
 	}
-	public void setHwTotal(double hwTotal) {
+	public void setHwTotal(float hwTotal) {
 		this.hwTotal = hwTotal;
 	}
-	public double getHowTotal() {
+	public float getHowTotal() {
 		return howTotal;
 	}
-	public void setHowTotal(double howTotal) {
+	public void setHowTotal(float howTotal) {
 		this.howTotal = howTotal;
 	}
-	public double getCtow() {
+	public float getCtow() {
 		return ctow;
 	}
-	public void setCtow(double ctow) {
+	public void setCtow(float ctow) {
 		this.ctow = ctow;
 	}
-	public double getCpow() {
+	public float getCpow() {
 		return cpow;
 	}
-	public void setCpow(double cpow) {
+	public void setCpow(float cpow) {
 		this.cpow = cpow;
 	}
-	public double getRwTotal() {
+	public float getRwTotal() {
 		return rwTotal;
 	}
-	public void setRwTotal(double rwTotal) {
+	public void setRwTotal(float rwTotal) {
 		this.rwTotal = rwTotal;
 	}
-	public double getRowTotal() {
+	public float getRowTotal() {
 		return rowTotal;
 	}
-	public void setRowTotal(double rowTotal) {
+	public void setRowTotal(float rowTotal) {
 		this.rowTotal = rowTotal;
 	}
-	public double getrTotal() {
+	public float getrTotal() {
 		return rTotal;
 	}
-	public void setrTotal(double rTotal) {
+	public void setrTotal(float rTotal) {
 		this.rTotal = rTotal;
 	}
-	public double getCtTotal() {
+	public float getCtTotal() {
 		return ctTotal;
 	}
-	public void setCtTotal(double ctTotal) {
+	public void setCtTotal(float ctTotal) {
 		this.ctTotal = ctTotal;
 	}
-	public double getCpTotal() {
+	public float getCpTotal() {
 		return cpTotal;
 	}
-	public void setCpTotal(double cpTotal) {
+	public void setCpTotal(float cpTotal) {
 		this.cpTotal = cpTotal;
 	}
-	public double getmTotal() {
+	public float getmTotal() {
 		return mTotal;
 	}
-	public void setmTotal(double mTotal) {
+	public void setmTotal(float mTotal) {
 		this.mTotal = mTotal;
 	}
-	public double getaTotal() {
+	public float getaTotal() {
 		return aTotal;
 	}
-	public void setaTotal(double aTotal) {
+	public void setaTotal(float aTotal) {
 		this.aTotal = aTotal;
 	}
-	public double getwTotal() {
+	public float getwTotal() {
 		return wTotal;
 	}
-	public void setwTotal(double wTotal) {
+	public void setwTotal(float wTotal) {
 		this.wTotal = wTotal;
 	}
-	public double getTotal() {
+	public float getTotal() {
 		return total;
 	}
-	public void setTotal(double total) {
+	public void setTotal(float total) {
 		this.total = total;
 	}
 	/*public String getTime() {
@@ -118,40 +118,40 @@ public class FincialStatisticsVTO implements java.io.Serializable{
 	public void setTime(String time) {
 		this.time = time;
 	}*/
-	public double getCtm() {
+	public float getCtm() {
 		return ctm;
 	}
-	public void setCtm(double ctm) {
+	public void setCtm(float ctm) {
 		this.ctm = ctm;
 	}
-	public double getCpm() {
+	public float getCpm() {
 		return cpm;
 	}
-	public void setCpm(double cpm) {
+	public void setCpm(float cpm) {
 		this.cpm = cpm;
 	}
-	public double getCta() {
+	public float getCta() {
 		return cta;
 	}
-	public void setCta(double cta) {
+	public void setCta(float cta) {
 		this.cta = cta;
 	}
-	public double getCpa() {
+	public float getCpa() {
 		return cpa;
 	}
-	public void setCpa(double cpa) {
+	public void setCpa(float cpa) {
 		this.cpa = cpa;
 	}
-	public double getCtw() {
+	public float getCtw() {
 		return ctw;
 	}
-	public void setCtw(double ctw) {
+	public void setCtw(float ctw) {
 		this.ctw = ctw;
 	}
-	public double getCpw() {
+	public float getCpw() {
 		return cpw;
 	}
-	public void setCpw(double cpw) {
+	public void setCpw(float cpw) {
 		this.cpw = cpw;
 	}
 	public String getId() {
