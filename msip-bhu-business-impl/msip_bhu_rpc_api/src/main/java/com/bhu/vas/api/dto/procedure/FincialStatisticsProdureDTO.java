@@ -17,8 +17,8 @@ public class FincialStatisticsProdureDTO extends AbstractProcedureDTO{
 	@IN(jdbcType = JdbcType.VARCHAR)
 	private String payType;
 	
-	@OUT(jdbcType = JdbcType.DOUBLE)
-	private double total;
+	@OUT(jdbcType = JdbcType.FLOAT)
+	private float total;
 	
 	@Override
 	public String getName() {
@@ -57,15 +57,15 @@ public class FincialStatisticsProdureDTO extends AbstractProcedureDTO{
 		this.payType = payType;
 	}
 
-	public double getTotal() {
+	public float getTotal() {
 		return total;
 	}
 
-	public void setTotal(double total) {
+	public void setTotal(float total) {
 		this.total = total;
 	}
 	
-	public double toTotal(){
+	public float toTotal(){
 		return this.getTotal();
 	}
 	public static void main(String[] args) {
