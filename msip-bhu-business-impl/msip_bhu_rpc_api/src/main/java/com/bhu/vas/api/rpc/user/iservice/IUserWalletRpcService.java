@@ -86,6 +86,7 @@ public interface IUserWalletRpcService {
 	 */
 	public RpcResponseDTO<UserWalletDetailVTO> walletDetail(int uid);
 	
+	public RpcResponseDTO<Boolean> directDrawPresent(int uid,String thirdparties_orderid,double cash,String desc);
 	public RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> walletLogStatistics(int uid);
 	/**
 	 * 每月财务对账信息

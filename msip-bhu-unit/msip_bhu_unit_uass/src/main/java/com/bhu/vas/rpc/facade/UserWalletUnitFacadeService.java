@@ -406,6 +406,19 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 
+	
+	public RpcResponseDTO<Boolean> directDrawPresent(int uid, String thirdparties_orderid,double cash,String desc) {
+		try{
+			int ret = userWalletFacadeService.cashToUserWallet(uid, thirdparties_orderid, UWalletTransMode.DrawPresent, 0.00d, cash, desc);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret == 0?Boolean.TRUE:Boolean.FALSE);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 	/*public RpcResponseDTO<Boolean> withdrawPwdUpd(int uid, String pwd, String npwd) {
 		try{
 			userWalletFacadeService.doChangedWithdrawPwd(uid, pwd, npwd);
@@ -482,4 +495,5 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
 }

@@ -22,27 +22,6 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	private final Logger logger = LoggerFactory.getLogger(UserWalletRpcService.class);
 	@Resource
 	private UserWalletUnitFacadeService userWalletUnitFacadeService;
-	/*@Override
-	public RpcResponseDTO<List<UserOAuthStateDTO>> fetchRegisterIdentifies(
-			Integer uid) {
-		logger.info(String.format("fetchRegisterIdentifies with uid[%s]",uid));
-		return userOAuthUnitFacadeService.fetchRegisterIdentifies(uid);
-	}
-	@Override
-	public RpcResponseDTO<Boolean> removeIdentifies(Integer uid, String identify) {
-		logger.info(String.format("removeIdentifies with uid[%s] identify[%s]",uid,identify));
-		return userOAuthUnitFacadeService.removeIdentifies(uid, identify);
-	}
-	@Override
-	public RpcResponseDTO<Map<String, Object>> createIdentifies(
-			Integer uid,
-			String identify,String auid, String nick, String avatar,
-			String device,String regIp,String deviceuuid, String ut
-			) {
-		logger.info(String.format("createIdentifies with identify[%s] auid [%s] nick[%s] avatar[%s]",identify,auid,nick,avatar));
-		return userOAuthUnitFacadeService.createOrUpdateIdentifies(uid,identify, auid, nick, avatar, 
-				device, regIp, deviceuuid, ut);
-	}*/
 
 	@Override
 	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(
@@ -140,6 +119,12 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	public RpcResponseDTO<FincialStatisticsVTO> fincialStatistics(String time) {
 		logger.info(String.format("fincialStatistics with time[%s]",time));
 		return userWalletUnitFacadeService.fincialStatistics(time);
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> directDrawPresent(int uid, String thirdparties_orderid,double cash,String desc) {
+		logger.info(String.format("directDrawPresent with uid[%s] thirdparties_orderid[%s] cash[%s] desc[%s]",uid,thirdparties_orderid,cash,desc));
+		return userWalletUnitFacadeService.directDrawPresent(uid,thirdparties_orderid,cash,desc);
 	}
 
 }
