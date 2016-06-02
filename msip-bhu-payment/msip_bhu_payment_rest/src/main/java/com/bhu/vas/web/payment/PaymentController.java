@@ -34,6 +34,7 @@ import com.alipay.util.AlipaySubmit;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreateWithdrawDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentDTO;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.payment.model.PaymentAlipaylocation;
 import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
@@ -166,9 +167,9 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
-        	if(appid.equals(BusinessChannelCode.BHU_TIP_BUSINESS.code())&&BusinessChannelCode.BHU_TIP_BUSINESS.i18n().equals(secret)){
+        	if(appid.equals(BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey())&&BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getSecret().equals(secret)){
         		logger.info(String.format("apply BHU_TIP_BUSINESS withdrawals appid[%s] secret[%s]", appid,secret));
-			}else if(appid.equals(BusinessChannelCode.BHU_PREPAID_BUSINESS.code())&&BusinessChannelCode.BHU_PREPAID_BUSINESS.i18n().equals(secret)){
+			}else if(appid.equals(BusinessEnumType.CommdityApplication.Default.getKey())&&BusinessEnumType.CommdityApplication.Default.getSecret().equals(secret)){
 				logger.info(String.format("apply BHU_PREPAID_BUSINESS withdrawals appid[%s] secret[%s]", appid,secret));
 			}else{
 				logger.error(String.format("apply withdrawals appid[%s] secret[%s]", appid,secret));
@@ -289,18 +290,17 @@ public class PaymentController extends BaseController{
     			return;
     		}
 			
-			if(appid.equals(BusinessChannelCode.BHU_TIP_BUSINESS.code())&&BusinessChannelCode.BHU_TIP_BUSINESS.i18n().equals(secret)){
-				logger.info(String.format("apply BHU_TIP_BUSINESS withdrawals appid[%s] secret[%s]", appid,secret));
-			}else if(appid.equals(BusinessChannelCode.BHU_PREPAID_BUSINESS.code())&&BusinessChannelCode.BHU_PREPAID_BUSINESS.i18n().equals(secret)){
+			if(appid.equals(BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey())&&BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getSecret().equals(secret)){
 				logger.info(String.format("apply BHU_PREPAID_BUSINESS withdrawals appid[%s] secret[%s]", appid,secret));
+			}else if(appid.equals(BusinessEnumType.CommdityApplication.Default.getKey())&&BusinessEnumType.CommdityApplication.Default.getSecret().equals(secret)){
+				logger.info(String.format("apply BHU_TIP_BUSINESS withdrawals appid[%s] secret[%s]", appid,secret));
 			}else{
-				logger.error(String.format("apply withdrawals appid[%s] secret[%s]", appid,secret));
+				logger.error(String.format("apply payment appid[%s] secret[%s]", appid,secret));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
 				return;
 			}
 			
-    		
         	if (StringUtils.isBlank(payment_type)) {
         		logger.error(String.format("apply payment payment_type [%s]", payment_type));
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
