@@ -495,7 +495,7 @@ public class PaymentController extends BaseController{
 		//数据库存的是分，此处需要把传来的支付金额转换成分，而传给支付宝的保持不变（默认元）
 		String total_fee_fen = BusinessHelper.getMoney(total_fee);
 		if(type.equals("WapAlipay")){
-			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"MOAL",usermac);
+			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"WPAL",usermac);
 			sParaTemp.put("service", "alipay.wap.create.direct.pay.by.user");
 	        sParaTemp.put("partner", AlipayConfig.partner);
 	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
@@ -587,7 +587,7 @@ public class PaymentController extends BaseController{
     		total_fee = "0.50";
     	}
     	
-    	String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"MOHE",usermac);
+    	String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"WPWX",usermac);
     	//记录请求支付完成后返回的地址
     	if (!StringUtils.isBlank(return_url)) {
     		logger.info(String.format("get heepay location [%s] ",return_url));
@@ -1000,7 +1000,7 @@ public class PaymentController extends BaseController{
     	}
     	
     	PaymentWithdraw order = new PaymentWithdraw();
- 		String reckoningId = BusinessHelper.generatePaymentReckoningNoByType(type);
+ 		String reckoningId = BusinessHelper.generatePaymentReckoningNoByType(payHttpService.getEnv().toUpperCase()+type);
  		order.setId(reckoningId);
  		order.setOrderId(out_trade_no);
  		order.setAmount(Integer.parseInt(total_fee));
@@ -1031,9 +1031,9 @@ public class PaymentController extends BaseController{
  			paymentType = "PcWeixin";
  		}else if(type.equalsIgnoreCase("PCAL")){
  			paymentType = "PcAlipay";
- 		}else if(type.equalsIgnoreCase("MOHE")){
+ 		}else if(type.equalsIgnoreCase("WPWX")){
  			paymentType = "WapWeixin";
- 		}else if(type.equalsIgnoreCase("MOAL")){
+ 		}else if(type.equalsIgnoreCase("WPAL")){
  			paymentType = "WapAlipay";
  		}
     	
@@ -1042,7 +1042,7 @@ public class PaymentController extends BaseController{
     	}
     	
     	PaymentReckoning order = new PaymentReckoning();
- 		String reckoningId = BusinessHelper.generatePaymentReckoningNoByType(type);
+ 		String reckoningId = BusinessHelper.generatePaymentReckoningNoByType(payHttpService.getEnv().toUpperCase()+type);
  		order.setId(reckoningId);
  		order.setOrder_id(out_trade_no);
  		order.setAmount(Integer.parseInt(total_fee));
