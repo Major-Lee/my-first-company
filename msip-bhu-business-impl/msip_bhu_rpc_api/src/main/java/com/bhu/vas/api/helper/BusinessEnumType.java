@@ -613,7 +613,8 @@ public class BusinessEnumType {
 	 */
 	public enum CommdityApplication{
 		Portal(1001,"3BD80FEBC9CC48E99EA2ABBE214E5957","portal id","uportal id"),
-		Default(1000,"1F915A8DA370422582CBAC1DB6A806DD","默认应用id","默认应用id"),
+		Default(1000,"1F915A8DA370422582CBAC1DB6A806DD","打赏应用id","打赏应用id"),
+		BHU_PREPAID_BUSINESS(1002,"1F915A8DA370422582CBAC1DB6A806UU","虎钻应用id","虎钻应用id"),
 		;
 		private Integer key;
 		private String secret;
