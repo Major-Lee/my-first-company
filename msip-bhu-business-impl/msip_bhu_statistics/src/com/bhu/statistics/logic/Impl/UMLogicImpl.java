@@ -504,11 +504,14 @@ public class UMLogicImpl implements IUMLogic{
 			totalMap.put("orderConversion", 0);
 			totalMap.put("orderComConversion", 0);
 			if((pcUV+mobileUV)!=0){
+				totalMap.put("clickAverNum", (float)((pcClickNum+mobileClickNum)/((pcUV+mobileUV)*1.0)));
+				totalMap.put("orderConversion", (float)((pcOrderNum+mbOrderNum)/((pcUV+mobileUV)*1.0)));
+				totalMap.put("orderComConversion", (float)((pcOrderComplete+mbOrderComplete)/((pcUV+mobileUV)*1.0)));
 			}
 			totalMap.put("orderNum", pcOrderNum+mbOrderNum);
 			totalMap.put("clickConversion", 0);
 			if((pcClickNum+mobileClickNum)!=0){
-				totalMap.put("clickConversion", (pcOrderNum+mbOrderNum)/(pcClickNum+mobileClickNum)*1.0);
+				totalMap.put("clickConversion", (float)((pcOrderNum+mbOrderNum)/((pcClickNum+mobileClickNum)*1.0)));
 			}
 			totalMap.put("orderComplete", pcOrderComplete+mbOrderComplete);
 			totalMap.put("orderAmount", pcOrderAmount+mbOrderAmount);
@@ -523,14 +526,14 @@ public class UMLogicImpl implements IUMLogic{
 			pcMap.put("orderConversion", 0);
 			pcMap.put("orderComConversion", 0);
 			if(pcUV!=0){
-				pcMap.put("clickAverNum", pcClickNum/pcUV*1.0);
-				pcMap.put("orderConversion", pcOrderNum/pcUV*1.0);
-				pcMap.put("orderComConversion", pcOrderComplete/pcUV*1.0);
+				pcMap.put("clickAverNum", (float)(pcClickNum/(pcUV*1.0)));
+				pcMap.put("orderConversion", (float)(pcOrderNum/(pcUV*1.0)));
+				pcMap.put("orderComConversion", (float)(pcOrderComplete/(pcUV*1.0)));
 			}
 			pcMap.put("orderNum", pcOrderNum);
 			pcMap.put("clickConversion", 0);
 			if(pcClickNum!=0){
-				pcMap.put("clickConversion", pcOrderNum/pcClickNum*1.0);
+				pcMap.put("clickConversion", (float)(pcOrderNum/(pcClickNum*1.0)));
 			}
 			pcMap.put("orderComplete", pcOrderComplete);
 			pcMap.put("orderAmount", pcOrderAmount);
@@ -544,14 +547,14 @@ public class UMLogicImpl implements IUMLogic{
 			mobileMap.put("orderConversion", 0);
 			mobileMap.put("orderComConversion", 0);
 			if(mobileUV!=0){
-				mobileMap.put("clickAverNum", mobileClickNum/mobileUV*1.0);
-				mobileMap.put("orderConversion", mbOrderNum/mobileUV*1.0);
-				mobileMap.put("orderComConversion", mbOrderComplete/mobileUV*1.0);
+				mobileMap.put("clickAverNum", (float)(mobileClickNum/(mobileUV*1.0)));
+				mobileMap.put("orderConversion", (float)(mbOrderNum/(mobileUV*1.0)));
+				mobileMap.put("orderComConversion", (float)(mbOrderComplete/(mobileUV*1.0)));
 			}
 			mobileMap.put("orderNum", mbOrderNum);
 			mobileMap.put("clickConversion", 0);
 			if(mobileClickNum!=0){
-				mobileMap.put("clickConversion", mbOrderNum/mobileClickNum*1.0);
+				mobileMap.put("clickConversion", (float)(mbOrderNum/(mobileClickNum*1.0)));
 			}
 			mobileMap.put("orderComplete", mbOrderComplete);
 			mobileMap.put("orderAmount", mbOrderAmount);
@@ -563,7 +566,7 @@ public class UMLogicImpl implements IUMLogic{
 			iosMap.put("clickNum", iosClickNum);
 			iosMap.put("clickAverNum", 0);
 			if(iosUV!=0){
-				iosMap.put("clickAverNum", iosClickNum/iosUV*1.0);
+				iosMap.put("clickAverNum", (float)(iosClickNum/(iosUV*1.0)));
 			}
 			iosMap.put("orderNum", "-");
 			iosMap.put("clickConversion", "-");
@@ -579,7 +582,7 @@ public class UMLogicImpl implements IUMLogic{
 			androidMap.put("clickNum", androidClickNum);
 			androidMap.put("clickAverNum", 0);
 			if(androidUV!=0){
-				androidMap.put("clickAverNum", androidClickNum/androidUV*1.0);
+				androidMap.put("clickAverNum", (float)(androidClickNum/(androidUV*1.0)));
 			}
 			androidMap.put("orderNum", "-");
 			androidMap.put("clickConversion", "-");
@@ -610,14 +613,14 @@ public class UMLogicImpl implements IUMLogic{
 		totalMap.put("orderConversion", 0);
 		totalMap.put("orderComConversion", 0);
 		if(totalUv!=0){
-			totalMap.put("clickAverNum", totalClickNum/totalUv*1.0);
-			totalMap.put("orderConversion", (totalPcOrderNum+totalMbOrderNum)/totalUv*1.0);
-			totalMap.put("orderComConversion", (totalPcOrderComplete+totalMbOrderComplete)/totalUv*1.0);
+			totalMap.put("clickAverNum", (float)(totalClickNum/(totalUv*1.0)));
+			totalMap.put("orderConversion", (float)((totalPcOrderNum+totalMbOrderNum)/(totalUv*1.0)));
+			totalMap.put("orderComConversion", (float)((totalPcOrderComplete+totalMbOrderComplete)/(totalUv*1.0)));
 		}
 		totalMap.put("orderNum", totalPcOrderNum+totalMbOrderNum);
 		totalMap.put("clickConversion", 0);
 		if(totalClickNum!=0){
-			totalMap.put("clickConversion", (totalPcOrderNum+totalMbOrderNum)/totalClickNum*1.0);
+			totalMap.put("clickConversion", (float)((totalPcOrderNum+totalMbOrderNum)/(totalClickNum*1.0)));
 		}
 		totalMap.put("orderComplete", totalPcOrderComplete+totalMbOrderComplete);
 		totalMap.put("orderAmount", totalPcOrderAmount+totalMbOrderAmount);
@@ -629,14 +632,14 @@ public class UMLogicImpl implements IUMLogic{
 		pcMap.put("orderConversion", 0);
 		pcMap.put("orderComConversion", 0);
 		if(totalPcUV!=0){
-			pcMap.put("clickAverNum", totalPcClickNum/totalPcUV*1.0);
-			pcMap.put("orderConversion", totalPcOrderNum/totalPcUV*1.0);
-			pcMap.put("orderComConversion", totalPcOrderComplete/totalPcUV*1.0);
+			pcMap.put("clickAverNum", (float)(totalPcClickNum/(totalPcUV*1.0)));
+			pcMap.put("orderConversion", (float)(totalPcOrderNum/(totalPcUV*1.0)));
+			pcMap.put("orderComConversion", (float)(totalPcOrderComplete/(totalPcUV*1.0)));
 		}
 		pcMap.put("orderNum", totalPcOrderNum);
 		pcMap.put("clickConversion", 0);
 		if(totalPcClickNum!=0){
-			pcMap.put("clickConversion", totalPcOrderNum/totalPcClickNum*1.0);
+			pcMap.put("clickConversion", (float)(totalPcOrderNum/(totalPcClickNum*1.0)));
 		}
 		pcMap.put("orderComplete", totalPcOrderComplete);
 		pcMap.put("orderAmount", totalPcOrderAmount);
@@ -649,14 +652,14 @@ public class UMLogicImpl implements IUMLogic{
 		mobileMap.put("orderConversion", 0);
 		mobileMap.put("orderComConversion", 0);
 		if((totalAndroidUV+totalIosUV)!=0){
-			mobileMap.put("clickAverNum", (totalAndroidClickNum+totalIosClickNum)/(totalAndroidUV+totalIosUV)*1.0);
-			mobileMap.put("orderConversion", totalMbOrderNum/(totalAndroidUV+totalIosUV)*1.0);
-			mobileMap.put("orderComConversion", totalMbOrderAmount/(totalAndroidUV+totalIosUV)*1.0);
+			mobileMap.put("clickAverNum", (float)((totalAndroidClickNum+totalIosClickNum)/((totalAndroidUV+totalIosUV)*1.0)));
+			mobileMap.put("orderConversion", (float)(totalMbOrderNum/((totalAndroidUV+totalIosUV)*1.0)));
+			mobileMap.put("orderComConversion", (float)(totalMbOrderAmount/((totalAndroidUV+totalIosUV)*1.0)));
 		}
 		mobileMap.put("orderNum", totalMbOrderNum);
 		mobileMap.put("clickConversion", 0);
 		if((totalAndroidClickNum+totalIosClickNum)!=0){
-			mobileMap.put("clickConversion", totalMbOrderNum/(totalAndroidClickNum+totalIosClickNum)*1.0);
+			mobileMap.put("clickConversion", (float)(totalMbOrderNum/((totalAndroidClickNum+totalIosClickNum)*1.0)));
 		}
 		mobileMap.put("orderComplete", totalMbOrderComplete);
 		mobileMap.put("orderAmount", totalMbOrderAmount);
@@ -668,7 +671,7 @@ public class UMLogicImpl implements IUMLogic{
 		iosMap.put("clickNum", totalIosClickNum);
 		iosMap.put("clickAverNum", 0);
 		if(totalIosUV!=0){
-			iosMap.put("clickAverNum", totalIosClickNum/totalIosUV*1.0);
+			iosMap.put("clickAverNum", (float)(totalIosClickNum/(totalIosUV*1.0)));
 		}
 		iosMap.put("orderNum", "-");
 		iosMap.put("clickConversion", "");
@@ -685,7 +688,7 @@ public class UMLogicImpl implements IUMLogic{
 		androidMap.put("clickNum", totalAndroidClickNum);
 		androidMap.put("clickAverNum", 0);
 		if(totalAndroidUV!=0){
-			androidMap.put("clickAverNum", totalAndroidClickNum/totalAndroidUV*1.0);
+			androidMap.put("clickAverNum", (float)(totalAndroidClickNum/(totalAndroidUV*1.0)));
 		}
 		androidMap.put("orderNum", "-");
 		androidMap.put("clickConversion", "-");
