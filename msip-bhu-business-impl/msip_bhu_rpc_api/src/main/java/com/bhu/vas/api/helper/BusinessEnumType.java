@@ -288,7 +288,7 @@ public class BusinessEnumType {
 	 */
 	public enum UWalletTransMode{
 		RealMoneyPayment("RMP","现金支付"),//用于充值
-		DrawPresent("DWP","抽奖馈赠"),//用于充值
+		DrawPresent("DWP","抽奖馈赠"),//用于抽奖
 		CashPayment("CAP","零钱支付"),
 		CashRollbackPayment("CRP","零钱支付（Rollback）"),
 		VCurrencyPayment("VCP","虎钻支付"),
