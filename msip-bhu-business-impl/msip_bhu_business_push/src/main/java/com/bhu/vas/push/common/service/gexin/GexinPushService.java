@@ -91,7 +91,7 @@ public class GexinPushService{
 				template.setTransmissionType(2);
 				template.setTransmissionContent(pushMsg.getPaylod());
 				
-				String titleWithDate = pushMsg.getTitle() + WHITE2_STRING_GAP + DateTimeHelper.formatDate(DateTimeHelper.FormatPattern8);
+				String titleWithDate = pushMsg.getTitle() + WHITE2_STRING_GAP + DateTimeHelper.formatDate("HH:mm");
 				template.setTitle(titleWithDate);
 				//template.setTitle(pushMsg.getTitle());
 		        template.setText(pushMsg.getText());
