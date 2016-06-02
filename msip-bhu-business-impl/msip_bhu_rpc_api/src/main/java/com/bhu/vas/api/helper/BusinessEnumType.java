@@ -488,6 +488,7 @@ public class BusinessEnumType {
 	 * @author tangzichao
 	 */
 	public enum CommdityCategory{
+		RechargeVCurrency(3,"充值虚拟币","充值虚拟币"),
 		InternetLimit(99,"限时上网分类","限时上网分类"),
 		;
 		private Integer category;

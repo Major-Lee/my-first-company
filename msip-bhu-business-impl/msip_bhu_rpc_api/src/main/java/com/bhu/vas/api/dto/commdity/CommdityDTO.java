@@ -18,6 +18,8 @@ public class CommdityDTO implements java.io.Serializable{
 	private Integer category;
 	//商品价格(两种方式 10.25 和 5.25-10.25)
 	private String price;
+	//商品对应的虚拟货币
+	private long vcurrency;
 	//商品状态
 	private Integer status;
 	//商品标签
@@ -57,6 +59,12 @@ public class CommdityDTO implements java.io.Serializable{
 	public void setPrice(String price) {
 		this.price = price;
 	}
+	public long getVcurrency() {
+		return vcurrency;
+	}
+	public void setVcurrency(long vcurrency) {
+		this.vcurrency = vcurrency;
+	}
 	public Integer getStatus() {
 		return status;
 	}
@@ -81,5 +89,6 @@ public class CommdityDTO implements java.io.Serializable{
 	public void setApp_deliver_detail(String app_deliver_detail) {
 		this.app_deliver_detail = app_deliver_detail;
 	}
+	
 }
 

@@ -27,6 +27,8 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	private Integer umactype;
 	//用户uid
 	private Integer uid;
+	//订单类型
+	private Integer type;
 	//支付订单id
 	//private String pay_orderid;
 	//支付方式
@@ -112,8 +114,16 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	public void setUid(Integer uid) {
 		this.uid = uid;
 	}
+	
+	public Integer getType() {
+		return type;
+	}
 
-/*	public String getPay_orderid() {
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	/*	public String getPay_orderid() {
 		return pay_orderid;
 	}
 

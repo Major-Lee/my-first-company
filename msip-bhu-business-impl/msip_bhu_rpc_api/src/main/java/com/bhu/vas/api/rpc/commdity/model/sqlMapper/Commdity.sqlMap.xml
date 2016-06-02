@@ -10,10 +10,12 @@
     <result property="description" column="description"/>
     <result property="category" column="category"/>
     <result property="price" column="price"/>
+    <result property="vcurrency" column="vcurrency"/>
     <result property="status" column="status"/>
     <result property="tags" column="tags"/>
     <result property="stock_quantity" column="stock_quantity"/>
     <result property="app_deliver_detail" column="app_deliver_detail"/> 
+    <result property="score" column="score"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -30,10 +32,12 @@
 	    	description,
 	    	category,
 	    	price,
+	    	vcurrency,
 	    	status,
 	    	tags,
 	    	stock_quantity,
 	    	app_deliver_detail,
+	    	score,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -44,10 +48,12 @@
 	    	description,
 	    	category,
 	    	price,
+	    	vcurrency,
 	    	status,
 	    	tags,
 	    	stock_quantity,
 	    	app_deliver_detail,
+	    	score,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -59,10 +65,12 @@
 			#{description},
 	    	#{category},
 	    	#{price},
+	    	#{vcurrency},
 	    	#{status},
 	    	#{tags},
 	    	#{stock_quantity},
 	    	#{app_deliver_detail},
+	    	#{score},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -72,10 +80,12 @@
 			description = #{description},
 	    	category = #{category},
 	    	price = #{price},
+	    	vcurrency = #{vcurrency},
 	    	status = #{status},
 	    	tags = #{tags},
 	    	stock_quantity = #{stock_quantity},
 	    	app_deliver_detail = #{app_deliver_detail},
+	    	score = #{score},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

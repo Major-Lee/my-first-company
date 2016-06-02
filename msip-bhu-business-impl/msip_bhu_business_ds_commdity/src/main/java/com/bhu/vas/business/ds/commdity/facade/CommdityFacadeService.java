@@ -4,15 +4,12 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.exception.BusinessI18nCodeException;
-import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 
 @Service
 public class CommdityFacadeService {
@@ -24,24 +21,33 @@ public class CommdityFacadeService {
 	 * 根据商品不同状态查询商品数量
 	 * @param status 商品状态
 	 */
-	public int countCommdityByStatus(Integer status){
+	public int countCommdityByParam(Integer status, Integer category){
 		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
 		if(status != null){
-			mc.createCriteria().andColumnEqualTo("status", status);
+			criteria.andColumnEqualTo("status", status);
+		}
+		if(category != null){
+			criteria.andColumnEqualTo("category", category);
 		}
 		return commdityService.countByModelCriteria(mc);
 	}
 	/**
 	 * 根据商品不同状态查询商品列表
 	 * @param status 商品状态
+	 * @param category 商品分类
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	public List<Commdity> findCommditysByStatus(Integer status, int pageNo, int pageSize){
+	public List<Commdity> findCommdityPageByParam(Integer status, Integer category, int pageNo, int pageSize){
 		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
 		if(status != null){
-			mc.createCriteria().andColumnEqualTo("status", status);
+			criteria.andColumnEqualTo("status", status);
+		}
+		if(category != null){
+			criteria.andColumnEqualTo("category", category);
 		}
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
@@ -55,7 +61,7 @@ public class CommdityFacadeService {
 	 * @param commdityid
 	 * @return
 	 */
-	public String commdityAmount(Integer commdityid){
+/*	public String commdityAmount(Integer commdityid){
 		//商品信息验证
 		Commdity commdity = commdityService.getById(commdityid);
 		if(commdity == null){
@@ -70,5 +76,5 @@ public class CommdityFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_ILLEGAL);
 		}
 		return amount;
-	}
+	}*/
 }
