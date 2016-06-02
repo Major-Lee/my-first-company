@@ -316,12 +316,7 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
-        	if (StringUtils.isBlank(umac)) {
-        		logger.error(String.format("apply payment umac [%s]", umac));
-        		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
-        		return;
-        	}
+        	
         	if (StringUtils.isBlank(goods_no)) {
         		logger.error(String.format("apply payment goods_no [%s]", goods_no));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
