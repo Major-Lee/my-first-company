@@ -465,12 +465,17 @@ public class PushService{
 //		String title = String.format(PushType.HandsetDeviceOnline.getTitle(), context.getStrange());
 //		String text = String.format(PushType.HandsetDeviceOnline.getText(), context.getManufactor(), 
 //				context.getHandsetName(), context.getDeviceInfo(), context.getStrange());
-		pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), context.getStrange()));
-		pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), context.getManufactor(), 
-				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
-		notificationPushDto.setTitle(String.format(PushType.HandsetDeviceOnline.getP_title(), context.getStrange()));
-		notificationPushDto.setText(String.format(PushType.HandsetDeviceOnline.getP_text(), context.getManufactor(), 
-				context.getHandsetNameChop(), context.getDeviceInfoChop(), context.getStrange()));
+		String text_prefix = StringHelper.EMPTY_STRING_GAP;
+		if(DeviceEnum.isIos(pushMsg.getD())){
+			text_prefix = HandsetOnlineContext.Ios_HandsetOnline_TextPrefix;
+		}
+		//pushMsg.setTitle(String.format(PushType.HandsetDeviceOnline.getTitle(), context.getStrange()));
+		pushMsg.setTitle(PushType.HandsetDeviceOnline.getTitle());
+		pushMsg.setText(String.format(PushType.HandsetDeviceOnline.getText(), text_prefix, 
+				context.getHandsetName(), context.getDeviceInfo()));
+		notificationPushDto.setTitle(PushType.HandsetDeviceOnline.getP_title());
+		notificationPushDto.setText(String.format(PushType.HandsetDeviceOnline.getP_text(), 
+				context.getHandsetNameChop(), context.getDeviceInfoChop()));
 		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 	/**
@@ -483,12 +488,16 @@ public class PushService{
 //		String title = String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), context.getStrange());
 //		String text = String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), context.getManufactor(), 
 //				context.getHandsetName(), context.getDeviceInfo(), context.getStrange());
-		pushMsg.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle(), context.getStrange()));
-		pushMsg.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), context.getManufactor(), 
-				context.getHandsetName(), context.getDeviceInfo(), context.getStrange()));
-		notificationPushDto.setTitle(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getP_title(), context.getStrange()));
-		notificationPushDto.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getP_text(), context.getManufactor(), 
-				context.getHandsetNameChop(), context.getDeviceInfoChop(), context.getStrange()));
+		String text_prefix = StringHelper.EMPTY_STRING_GAP;
+		if(DeviceEnum.isIos(pushMsg.getD())){
+			text_prefix = HandsetOnlineContext.Ios_VisitorOnline_TextPrefix;
+		}
+		pushMsg.setTitle(PushType.HandsetDeviceVisitorAuthorizeOnline.getTitle());
+		pushMsg.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getText(), text_prefix, 
+				context.getHandsetName(), context.getDeviceInfo()));
+		notificationPushDto.setTitle(PushType.HandsetDeviceVisitorAuthorizeOnline.getP_title());
+		notificationPushDto.setText(String.format(PushType.HandsetDeviceVisitorAuthorizeOnline.getP_text(), 
+				context.getHandsetNameChop(), context.getDeviceInfoChop()));
 		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 

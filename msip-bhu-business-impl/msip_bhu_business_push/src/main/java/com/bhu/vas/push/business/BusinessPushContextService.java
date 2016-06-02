@@ -71,8 +71,8 @@ public class BusinessPushContextService {
 					//验证终端上线时间段
 					if(validateHandsetValidTime(dto)){
 						//验证陌生终端开关
-						boolean strangerOn = validateHandsetStrangerOn(dto, hd_push_dto.isNewed(), context);
-						if(strangerOn){
+						//boolean strangerOn = validateHandsetStrangerOn(dto, hd_push_dto.isNewed(), context);
+						//if(strangerOn){
 							//验证终端昵称探测开关
 							boolean aliasOn = validateHandsetAliasOn(dto, hd_push_dto.getMac(), hd_push_dto.getHd_mac(), context);
 							if(aliasOn){
@@ -82,9 +82,9 @@ public class BusinessPushContextService {
 							}else{
 								logger.info(String.format("HandsetOnlineContext Alias stop mac[%s] hd_mac[%s]", hd_push_dto.getMac(), hd_push_dto.getHd_mac()));
 							}
-						}else{
-							logger.info(String.format("HandsetOnlineContext Stranger stop mac[%s] hd_mac[%s]", hd_push_dto.getMac(), hd_push_dto.getHd_mac()));
-						}
+						//}else{
+						//	logger.info(String.format("HandsetOnlineContext Stranger stop mac[%s] hd_mac[%s]", hd_push_dto.getMac(), hd_push_dto.getHd_mac()));
+						//}
 					}else{
 						logger.info(String.format("HandsetOnlineContext Vaildtime stop mac[%s] hd_mac[%s]", hd_push_dto.getMac(), hd_push_dto.getHd_mac()));
 					}
@@ -162,7 +162,7 @@ public class BusinessPushContextService {
 	 * @param context
 	 * @return
 	 */
-	protected boolean validateHandsetStrangerOn(UserTerminalOnlineSettingDTO dto, boolean newedHandset, 
+/*	protected boolean validateHandsetStrangerOn(UserTerminalOnlineSettingDTO dto, boolean newedHandset, 
 			HandsetOnlineContext context){
 		//第一次接入的终端算是陌生终端
 		if(newedHandset) {
@@ -176,7 +176,7 @@ public class BusinessPushContextService {
 		else{
 			return true;
 		}
-	}
+	}*/
 	
 	/**
 	 * 获取终端别名
@@ -255,17 +255,29 @@ public class BusinessPushContextService {
 				}
 				
 				//3) 如果别名和主机名都不存在 则终端显示名为未知终端
-				if(StringUtils.isEmpty(context.getHandsetName())){
+/*				if(StringUtils.isEmpty(context.getHandsetName())){
 					//context.setHandsetName(hd_mac);
+					context.setHandsetName(HandsetOnlineContext.Android_Terminal_Unkown);
+				}*/
+			}
+			//如果别名和主机名都不存在 则显示厂商名称
+			if(StringUtils.isEmpty(context.getHandsetName())){
+				//2:组装厂家名称
+				String manufactor = MacDictParserFilterHelper.prefixMactch(hd_mac,true,false);
+				if(!DevicesSet.Unknow.getScn().equals(manufactor)){
+					context.setHandsetName(manufactor);
+				}else{
+					//如果厂商名称也不存在 则终端显示名为未知终端
 					context.setHandsetName(HandsetOnlineContext.Android_Terminal_Unkown);
 				}
 			}
-			
-			//2:组装厂家名称
+
+/*			//2:组装厂家名称
 			String manufactor = MacDictParserFilterHelper.prefixMactch(hd_mac,true,false);
 			if(!DevicesSet.Unknow.getScn().equals(manufactor)){
 				context.setManufactor(manufactor);
-			}
+			}*/
+			
 			
 			//3:组装设备信息
 			if(multi_devices){
