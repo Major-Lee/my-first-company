@@ -71,6 +71,8 @@ public class PayHttpService {
     String mchId;
     @Value("#{p['pay.mchkey']}")
     String mchKey;
+    @Value("#{p['pay.env']}")
+    String env;
 
 
     String accessToken;
@@ -540,7 +542,15 @@ public class PayHttpService {
         this.mchKey = mchKey;
     }
 
-	 public UnifiedOrderResponse unifiedorder(String out_trade_no,String commodityName, String totalPrice,String localIp,String payCallUrl,String openId ) {
+	 public String getEnv() {
+		return env;
+	}
+
+	public void setEnv(String env) {
+		this.env = env;
+	}
+
+	public UnifiedOrderResponse unifiedorder(String out_trade_no,String commodityName, String totalPrice,String localIp,String payCallUrl,String openId ) {
         if("0:0:0:0:0:0:0:1".equals(localIp)){
             localIp="10.96.5.235";
         }
