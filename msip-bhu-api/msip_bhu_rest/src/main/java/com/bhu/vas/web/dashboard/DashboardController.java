@@ -20,12 +20,14 @@ import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService;
+import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -46,7 +48,9 @@ public class DashboardController extends BaseController{
 	
     //@Resource
     //private IUserDeviceRpcService userDeviceRpcService;
-    
+    @Resource
+    private IUserWalletRpcService userWalletRpcService;
+
     @Resource
     private IUserOAuthRpcService userOAuthRpcService;
     
@@ -60,12 +64,22 @@ public class DashboardController extends BaseController{
     private IDeviceRestRpcService deviceRestRpcService;
 	
 	private static final String DefaultSecretkey = "PzdfTFJSUEBHG0dcWFcLew==";
+	
+	private static final String BackendChargeSecretkey = "Li9HTFJSUEZCH0ZWXFZfIg==";
 	private ResponseError validate(String secretKey){
 		if(!DefaultSecretkey.equals(secretKey)){
 			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
 		}
 		return null;
 	}
+	
+	private ResponseError validateBackendCharge(String secretKey){
+		if(!BackendChargeSecretkey.equals(secretKey)){
+			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
+		}
+		return null;
+	}
+	
 	/**
 	 * 创建任务接口
 	 * @param request
@@ -307,4 +321,29 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
+	
+	
+	@ResponseBody()
+	@RequestMapping(value="/present/draw",method={RequestMethod.POST})
+	public void present_draw(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true, value="sk") String secretKey,
+			@RequestParam(required = false,defaultValue="BBS") String from,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String cash,
+			@RequestParam(required = true) String orderid,
+			@RequestParam(required = false) String desc
+			) {
+		ResponseError validateError = validateBackendCharge(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.directDrawPresent(uid, from.concat(StringHelper.MINUS_STRING_GAP).concat(orderid), Double.valueOf(cash), desc);//(d_snk_turnstate, d_snk_type);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	}
 }
