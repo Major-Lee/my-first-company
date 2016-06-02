@@ -91,7 +91,7 @@ public class SharedealDailyGroupSummaryBuilderOp {
 							String.valueOf(groupDailySummary.getTotal_cash()), groupDailySummary.getTotal_nums());
 					Thread.sleep(100);
 				}
-				
+				chargingStatisticsFacadeService.deviceGroupPaymentTotalWithProcedure(user.intValue(), null);
 			}
 			
 			System.out.println("数据默认分组收益更新成功，总耗时"+((System.currentTimeMillis()-t1)/1000)+"s");
