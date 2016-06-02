@@ -43,9 +43,11 @@ public class PaymentInternalHelper {
 	 * @param goods_no 订单id
 	 * @return
 	 */
-	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(String payment_type, String amount, 
-			String requestip, String umac, String orderid, String payment_completed_url){
+	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(Integer commdity_category, 
+			String payment_type, String amount, String requestip, String umac, String orderid, 
+			String payment_completed_url){
 		Map<String, String> api_params = generatePaymentApiParamMap();
+		api_params.put("commdity_category", String.valueOf(commdity_category));
 		api_params.put("payment_type", payment_type);
 		api_params.put("total_fee", amount);
 		api_params.put("exter_invoke_ip", requestip);
@@ -63,14 +65,15 @@ public class PaymentInternalHelper {
 			//logger.info(String.format(format, args)"CreatePaymentUrlCommunication Response [%s]");
 /*			System.out.println(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
 					+ "amount[%s] ip[%s] req[%s]", orderid, payment_type, amount, requestip, response));*/
-			logger.info(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] req[%s]", orderid, payment_type, amount, requestip, umac, payment_completed_url, response));
+			logger.info(String.format("CreatePaymentUrlCommunication Response orderid[%s] commdity_category[%s] payment_type[%s] "
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] req[%s]", orderid, commdity_category, payment_type, 
+					amount, requestip, umac, payment_completed_url, response));
 			if(StringUtils.isNotEmpty(response)){
 				return JsonHelper.getDTO(response, ResponseCreatePaymentUrlDTO.class);
 			}
 		} catch (Exception ex) {
-			logger.error(String.format("CreatePaymentUrlCommunication Response  orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] Exception ", orderid, payment_type, amount, requestip, umac, payment_completed_url), ex);
+			logger.error(String.format("CreatePaymentUrlCommunication Response  orderid[%s] commdity_category[%s] payment_type[%s] "
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] Exception ", orderid, commdity_category, payment_type, amount, requestip, umac, payment_completed_url), ex);
 			ex.printStackTrace(System.out);
 		}
 		return rcp_dto;

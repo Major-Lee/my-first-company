@@ -137,7 +137,7 @@ public class OrderController extends BaseController{
 			@RequestParam(required = true) String umac,
 			@RequestParam(required = false) String context,
 			@RequestParam(required = false, defaultValue = "2") Integer umactype,
-			@RequestParam(required = true) Integer commdityid,
+			@RequestParam(required = false, defaultValue = "1") Integer commdityid,
 			@RequestParam(required = true) String payment_type,
 			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
 			) {

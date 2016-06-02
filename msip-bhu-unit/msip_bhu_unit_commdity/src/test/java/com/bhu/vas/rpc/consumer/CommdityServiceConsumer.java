@@ -6,6 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
+import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
@@ -88,7 +89,7 @@ public class CommdityServiceConsumer {
 		ICommdityRpcService commdityRpcService = (ICommdityRpcService)context.getBean("commdityRpcService");
 		IOrderRpcService orderRpcService = (IOrderRpcService)context.getBean("orderRpcService");
 		
-		RpcResponseDTO<TailPage<CommdityDTO>> ret = commdityRpcService.commdityPages(CommdityStatus.OnSale.getKey(), 1, 5);
+		RpcResponseDTO<TailPage<CommdityDTO>> ret = commdityRpcService.commdityPages(CommdityStatus.OnSale.getKey(), CommdityCategory.RechargeVCurrency.getCategory(), 1, 5);
 		TailPage<CommdityDTO> page = ret.getPayload();
 		System.out.println(page.getTotalItemsCount());
 		List<CommdityDTO> items = page.getItems();
