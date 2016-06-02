@@ -24,7 +24,8 @@ public class FincialStatisticsService extends AbstractCommdityService<String, Fi
 		if(fincialStatistics==null){
 			return super.insert(entity);
 		}else{
-			return null;
+			entity.setId(fincialStatistics.getId());
+			return super.update(entity);
 		}
 	}
 }
