@@ -143,6 +143,7 @@ public class UserWalletFacadeService{
 	public int vcurrencyFromUserWallet(int uid,String orderid,UWalletTransMode transMode,long vcurrency,String desc){
 		logger.info(String.format("vcurrencyFromUserWallet %s-%s uid[%s] orderid[%s] vcurrency[%s] desc[%s]",transMode.getName(),UWalletTransType.PurchaseGoodsUsedV.getName(), uid,orderid,vcurrency,desc));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
+		//钱包虚拟币数值大小验证
 		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.PurchaseGoodsUsedV,0.00d,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
 	}
 	
