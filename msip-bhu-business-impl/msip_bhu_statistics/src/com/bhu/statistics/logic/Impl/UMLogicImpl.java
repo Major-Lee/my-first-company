@@ -300,7 +300,9 @@ public class UMLogicImpl implements IUMLogic{
 			for(int i=0;i<pcUvArray.length;i++){
 				Map<String,Object> singleMap=new HashMap<String,Object>();
 				singleMap.put("date", pcUvArray[i].split("=")[0].trim());
-				singleMap.put("uv", pcUvArray[i].split("=")[1].split(",")[1].replaceAll(".0", "").trim());
+				String[] dateArray=pcUvArray[i].split("=");
+				String[] uvArray=dateArray[1].split(",");
+				singleMap.put("uv", uvArray[1].replace(".0", "").trim());
 				pcUvList.add(singleMap);
 			}
 		}
@@ -318,7 +320,7 @@ public class UMLogicImpl implements IUMLogic{
 			for(int i=0;i<pcClickArray.length;i++){
 				Map<String,Object> singleMap=new HashMap<String,Object>();
 				singleMap.put("date", pcClickArray[i].split("=")[0].trim());
-				singleMap.put("pv", pcClickArray[i].split("=")[1].split(",")[0].replaceAll(".0", "").substring(1).trim());
+				singleMap.put("pv", pcClickArray[i].split("=")[1].split(",")[0].replace(".0", "").substring(1).trim());
 				pcClickList.add(singleMap);
 			}
 		}
@@ -941,5 +943,9 @@ public class UMLogicImpl implements IUMLogic{
 		result = NotifyUtil.success(body);
 		return result;
 	}
-	
+	public static void main(String[] args) {
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-06-01", "2016-06-01", "date", "",1);
+		System.out.println(pcUv);
+	}
 }
