@@ -15,12 +15,12 @@ public class FincialStatisticsBuilderOp {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
 		Calendar cale = Calendar.getInstance();   
         cale.set(Calendar.DAY_OF_MONTH,0);//设置为1号,当前日期既为本月第一天 
-        //String lastDay = format.format(cale.getTime());
-        String lastDay = "2016-04-30";
+        String lastDay = format.format(cale.getTime());
+        //String lastDay = "2016-04-30";
         
         cale.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天 
-        //String firstDay=format.format(cale.getTime());
-        String firstDay="2016-04-01";
+        String firstDay=format.format(cale.getTime());
+        //String firstDay="2016-04-01";
         System.out.println("-----2------lastDay:"+lastDay);
 		
         FincialStatistics fincialStatistics=new FincialStatistics();
@@ -30,12 +30,12 @@ public class FincialStatisticsBuilderOp {
 			System.out.println(1);
 			context.start();
 			UserWalletFacadeService userWalletFacadeService = context.getBean("userWalletFacadeService",UserWalletFacadeService.class);
-			double ctm=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Midas");
-			double cpm=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Midas");
-			double cta=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Alipay");
-			double cpa=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Alipay");
-			double ctw=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Weixin");
-			double cpw=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Weixin");
+			float ctm=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Midas");
+			float cpm=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Midas");
+			float cta=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Alipay");
+			float cpa=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Alipay");
+			float ctw=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Weixin");
+			float cpw=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Weixin");
 			fincialStatistics.setCpa(cpa);
 			fincialStatistics.setCpm(cpm);
 			fincialStatistics.setCpw(cpw);

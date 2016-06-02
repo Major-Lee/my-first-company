@@ -13,6 +13,7 @@ import org.junit.runners.MethodSorters;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
+import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
@@ -296,7 +297,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
    	}
    	
-   	@Test
+   	//@Test
 	public void test011DoSharedealDailyUserDailySummary(){
 		String cdate = DateTimeHelper.formatDate(new Date(), DateTimeHelper.FormatPattern5);
 		ShareDealDailyUserSummaryProcedureVTO daily_procedureVTO   = userWalletFacadeService.sharedealDailyUserSummaryWithProcedure(100153, cdate);
@@ -312,5 +313,29 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    	public void test011DoSharedealGroupDailySummary(){
    		ShareDealDailyGroupSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(100245, "10009/", "2016-05-21");
     	System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
+   	}
+   	
+   	
+   	@Test
+   	public void test012DoWalletInOrOut(){
+   		final String orderid = "10012016041100000000000000000068";
+   		userWalletFacadeService.cashToUserWallet(3, orderid, UWalletTransMode.RealMoneyPayment, 53.00d, 53.00d, "通过现金支付 零钱充值");
+   		
+   		Runnable runn = new Runnable(){
+			@Override
+			public void run() {
+				userWalletFacadeService.cashToUserWallet(3, orderid, UWalletTransMode.RealMoneyPayment, 53.00d, 53.00d, "通过现金支付 零钱充值");
+		   		userWalletFacadeService.cashToUserWallet(3, orderid, UWalletTransMode.DrawPresent, 0.00d, 23.00d, "通过抽奖馈赠 零钱充值");
+		   		userWalletFacadeService.vcurrencyToUserWallet(3, orderid, UWalletTransMode.RealMoneyPayment, 32.00d, 320, "通过现金支付 虎钻充值");
+		   		userWalletFacadeService.vcurrencyFromUserWallet(3,orderid, UWalletTransMode.VCurrencyPayment, 20, "通过虎钻支付 虚拟币购买道具");
+			}
+   		};
+   		for(int i= 0;i<10;i++){
+   			Thread t = new Thread(runn);
+   			t.start();
+   		}
+   		
+   		//ShareDealDailyGroupSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(100245, "10009/", "2016-05-21");
+    	//System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
    	}
 }

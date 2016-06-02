@@ -15,6 +15,7 @@ import com.bhu.vas.api.dto.procedure.ShareDealDailyGroupSummaryProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealDailyUserSummaryProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealWalletProcedureDTO;
 import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
+import com.bhu.vas.api.dto.procedure.WalletInOrOutProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
@@ -41,7 +42,6 @@ import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -102,11 +102,77 @@ public class UserWalletFacadeService{
 			return uwallet;
 		}
 	}
+	
+	/**
+	 * 零钱充值
+	 * 入账成功需要写入UserWalletLog
+	 * 
+	 * @param orderid 可能是充值订单id，也可能是第三方相关的orderid
+	 * @param transMode 如果是现金充值零钱 transMode = RealMoneyPayment 如果是抽奖馈赠 transMode = DrawPresent
+	 */
+	public int cashToUserWallet(int uid,String orderid,UWalletTransMode transMode,double rmoney,double cash,String desc){
+		logger.info(String.format("cashToUserWallet %s-%s uid[%s] orderid[%s] cash[%s] desc[%s]",transMode.getName(),UWalletTransType.Recharge2C.getName(), uid,orderid,cash,desc));
+		UserValidateServiceHelper.validateUser(uid,this.userService);
+		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.Recharge2C,rmoney,cash,0,desc,StringHelper.EMPTY_STRING_GAP);
+		/*UserWallet uwallet = userWalletService.getOrCreateById(uid);
+		uwallet.setCash(uwallet.getCash()+cash);
+		userWalletService.update(uwallet);
+		this.doWalletLog(uid, orderid,transMode, UWalletTransType.Recharge2C,StringUtils.EMPTY, cash, cash,0d, desc);*/
+	}
+	
+	/**
+	 * 虚拟币入账
+	 * 入账成功需要写入UserWalletLog
+	 * @param uid
+	 * @param orderid
+	 * @param transMode
+	 * @param rmoney
+	 * @param vcurrency
+	 * @param desc
+	 * @return
+	 */
+	public int vcurrencyToUserWallet(int uid,String orderid,UWalletTransMode transMode,double rmoney,long vcurrency,String desc){
+		logger.info(String.format("vcurrencyToUserWallet %s-%s uid[%s] orderid[%s] rmoney[%s] vcurrency[%s] desc[%s]",transMode.getName(),UWalletTransType.Recharge2V.getName(), uid,orderid,rmoney,vcurrency,desc));
+		UserValidateServiceHelper.validateUser(uid,this.userService);
+		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.Recharge2V,rmoney,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
+	}
+	
+	/**
+	 * 虚拟币出账
+	 * 出账成功需要写入UserWalletLog
+	 * @param uid
+	 * @param orderid
+	 * @param transMode
+	 * @param vcurrency
+	 * @param desc
+	 * @return
+	 */
+	public int vcurrencyFromUserWallet(int uid,String orderid,UWalletTransMode transMode,long vcurrency,String desc){
+		logger.info(String.format("vcurrencyFromUserWallet %s-%s uid[%s] orderid[%s] vcurrency[%s] desc[%s]",transMode.getName(),UWalletTransType.PurchaseGoodsUsedV.getName(), uid,orderid,vcurrency,desc));
+		UserValidateServiceHelper.validateUser(uid,this.userService);
+		//钱包虚拟币数值大小验证
+		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.PurchaseGoodsUsedV,0.00d,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
+	}
+	
+	private int userWalletInOutWithProcedure(int uid,String orderid,UWalletTransMode transMode,UWalletTransType transType,double rmoney,double cash,long vcurrency,String desc,String memo){
+		WalletInOrOutProcedureDTO processorDTO = WalletInOrOutProcedureDTO.build(uid, orderid, 
+				transMode, transType,
+				rmoney, cash, vcurrency, desc, memo);
+		int executeRet = userWalletService.executeProcedure(processorDTO);
+		if(executeRet == 0){
+			logger.info( String.format("钱包出入账-成功 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] vcurrency[%s] desc[%s] memo[%s]",
+					uid,orderid,cash,transMode.getName(),transType.getName(),rmoney,cash,vcurrency,desc,memo));
+		}else
+			logger.info( String.format("钱包出入账-失败 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] vcurrency[%s] desc[%s] memo[%s]",
+					uid,orderid,cash,transMode.getName(),transType.getName(),rmoney,cash,vcurrency,desc,memo));
+		return executeRet;
+	}
+	
 	/**
 	 * 现金充值 充值零钱
 	 * 入账成功需要写入UserWalletLog
 	 */
-	public void cashToUserWallet(int uid,double cash,
+	/*public void cashToUserWallet(int uid,double cash,
 			String orderid,String desc
 			){
 		logger.info(String.format("现金入账|充值现金 uid[%s] orderid[%s] cash[%s] desc[%s]", uid,orderid,cash,desc));
@@ -115,7 +181,7 @@ public class UserWalletFacadeService{
 		uwallet.setCash(uwallet.getCash()+cash);
 		userWalletService.update(uwallet);
 		this.doWalletLog(uid, orderid,UWalletTransMode.RealMoneyPayment, UWalletTransType.Recharge2C,StringUtils.EMPTY, cash, cash,0d, desc);
-	}
+	}*/
 	
 	/**
 	 * 分成现金入账
@@ -164,31 +230,16 @@ public class UserWalletFacadeService{
 		return sharedealCashToUserWallet(sharedeal_uid, cash, orderid, owner,description);
 	}*/
 	
-	/**
-	 * 分成现金入账
-	 * TODO:分成现金分为几部分 
-	 * 	绑定用户
-		我司
-		TODO：需要改成部分由存储过程实现
-	 * @param uid  具体的入账用户
-	 * @param cash 总收益现金
-	 * @param orderid
-	 * @param desc
-	 */
-	public UserWallet sharedealCashToUserWallet(String dmac, double cash, String orderid,String description){
+	/*public UserWallet sharedealCashToUserWallet(String dmac, double cash, String orderid,String description){
 		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
-		//UserValidateServiceHelper.validateUser(uid,this.userService);
-		//UserWalletConfigs configs = userWalletConfigsService.userfulWalletConfigs(uid);
-		//double realIncommingCash = ArithHelper.round(ArithHelper.mul(cash, configs.getSharedeal_percent()),2);
 		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, orderid, cash);
-		//double realIncommingCash = userWithdrawCostConfigsService.calculateSharedeal(uid, cash);
 		logger.info(String.format("分成现金入账-2 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 		UserWallet uwallet = userWalletService.getOrCreateById(sharedeal.getOwner());
 		uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
 		uwallet = userWalletService.update(uwallet);
 		this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 		return uwallet;
-	}
+	}*/
 	
 	/**
 	 * 分成现金入账 存储过程实现
@@ -295,16 +346,6 @@ public class UserWalletFacadeService{
 	}
 	
 	/**
-	 * 虚拟币入账
-	 * 入账成功需要写入UserWalletLog
-	 * TODO:待实现TBD
-	 */
-	public void vcurrencyToUserWallet(int uid,double vcurrency,double cash,String desc){
-		//this.doWalletLog(uid, orderid,UWalletTransMode.RealMoneyPayment, UWalletTransType.Recharge2C, cash, cash,0d, desc);
-		//this.doWalletLog(uid, StringUtils.EMPTY, UWalletTransType.Recharge2V, vcurrency, cash, desc);
-	}
-	
-	/**
 	 * 零钱出账 进行提现操作
 	 * 需要验证提现状态
 	 * 需要验证提取密码（密码参数不能为空并且如果没有设置密码则不允许提现）
@@ -319,7 +360,8 @@ public class UserWalletFacadeService{
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.User_WalletWithdraw_Default_Withdraw_MinLimit)});
 		}
 		UserValidateServiceHelper.validateUser(uid,this.userService);
-		UserWallet uwallet = userWalletService.getById(uid);
+		UserWallet uwallet = UserWalletValidateServiceHelper.validateUserWalletForWithdrawCash(uid, pwd, cash, this.userWalletService);
+/*		UserWallet uwallet = userWalletService.getById(uid);
 		if(uwallet == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"用户钱包"});
 		}
@@ -337,7 +379,7 @@ public class UserWalletFacadeService{
 		}
 		if(!BCryptHelper.checkpw(pwd,uwallet.getPassword())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_VALIDATEPWD_FAILED);
-		}
+		}*/
 		double wallettotal = uwallet.getCash();
 		uwallet.setCash(uwallet.getCash()-cash);
 		uwallet.setWithdraw(true);
@@ -744,6 +786,8 @@ public class UserWalletFacadeService{
 				wlog.setRmoney(StringHelper.MINUS_STRING_GAP.concat(String.valueOf(rmoney)));
 				wlog.setCash(StringHelper.PLUS_STRING_GAP.concat(String.valueOf(cash)));
 				break;
+			default:
+				break;
 		}
 		wlog.setMemo(memo);
 		userWalletLogService.insert(wlog);
@@ -823,7 +867,7 @@ public class UserWalletFacadeService{
 		return pages;
 	}
 	
-	public double fincialStatisticsWithProcedure(String start_date, String end_date,int objType,String payType){
+	public float fincialStatisticsWithProcedure(String start_date, String end_date,int objType,String payType){
 		FincialStatisticsProdureDTO procedureDTO = new FincialStatisticsProdureDTO();
 		procedureDTO.setBeginTime(start_date);
 		procedureDTO.setEndTime(end_date);

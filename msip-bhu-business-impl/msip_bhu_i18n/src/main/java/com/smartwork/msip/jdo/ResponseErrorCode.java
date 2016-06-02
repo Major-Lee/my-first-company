@@ -166,8 +166,10 @@ public enum ResponseErrorCode {
 	USER_TYPE_PARAM_VALIDATE_EMPTY("319", "user.type.param.empty"),
 	USER_TYPE_NOTMATCHED("320","user.type.notmatched"),
 	USER_TYPE_WASNOT_NORMAL("321", "user.type.wasnot.normal"),
+	
 	USER_MOBILE_ALREADY_BEUSED("322","user.mobile.already.beused"),
 	USER_MOBILE_ATTRIBUTE_NOTEXIST("323","user.mobile.attribute.notexist"),
+	
 	USER_WALLET_WITHDRAW_OPER_DOING("324", "user.wallet.withdraw.doing"),
 	USER_WALLET_CASH_LOWERTHAN_WITHDRAW_MINLIMIT("325", "user.wallet.cash.lowerthan.withdraw.minlimit"),
 	USER_WALLET_CASH_NOTREACHED_MAXLIMIT("326", "user.wallet.cash.notreached.maxlimit"),
@@ -183,7 +185,7 @@ public enum ResponseErrorCode {
 	USER_WALLET_PAYMENT_DATA_IMPERFECT("335", "user.wallet.payment.data.imperfect"),
 	USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT("336", "user.wallet.withdraw.lowerthan.minlimit"),
 	
-	
+	USER_WALLET_VCURRENCY_NOT_SUFFICIENT("337", "user.wallet.vcurrency.not.sufficient"),
 	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
 	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),
