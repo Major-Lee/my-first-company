@@ -10,15 +10,15 @@ import java.util.List;
  */
 @SuppressWarnings("serial")
 public class RecordInfoVTO implements Serializable{
-	private List<PaymentRecordVTO> info;
+	private List<PaymentRecordVTO> detail;
 	private int history_order_count;
 	private int history_order_user;
 
-	public List<PaymentRecordVTO> getInfo() {
-		return info;
+	public List<PaymentRecordVTO> getDetail() {
+		return detail;
 	}
-	public void setInfo(List<PaymentRecordVTO> info) {
-		this.info = info;
+	public void setDetail(List<PaymentRecordVTO> detail) {
+		this.detail = detail;
 	}
 	public int getHistory_order_count() {
 		return history_order_count;
@@ -41,4 +41,3 @@ public class RecordInfoVTO implements Serializable{
 	private int pay_again_user_count;
 	
 }
-

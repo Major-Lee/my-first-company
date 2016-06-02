@@ -24,6 +24,7 @@ public class WxResponse {
         String return_code = map.get("return_code").toString().toUpperCase();
         if(!return_code.equals("SUCCESS")){
             resultSuccess=false;
+            resultErrorCode=map.get("return_code").toString();
             resultMessage=map.get("return_msg").toString();
             return;
         }

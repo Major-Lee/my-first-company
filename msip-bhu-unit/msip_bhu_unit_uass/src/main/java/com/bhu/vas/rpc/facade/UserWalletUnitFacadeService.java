@@ -18,11 +18,13 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
+import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
@@ -425,6 +427,37 @@ public class UserWalletUnitFacadeService {
 				businessWalletCacheService.storeWalletLogStatisticsDSCacheResult(uid, cacheByUser);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(cacheByUser);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<FincialStatisticsVTO> fincialStatistics(String time) {
+		try{
+			FincialStatistics fincial = userWalletFacadeService.getFincialStatisticsService().getById(time);
+			FincialStatisticsVTO fincialStatisticsVTO=new FincialStatisticsVTO();
+			
+			if(fincial == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
+			}else{
+				fincialStatisticsVTO.setaTotal(fincial.getCpa()+fincial.getCta());
+				fincialStatisticsVTO.setCpa(fincial.getCpa());
+				fincialStatisticsVTO.setCpm(fincial.getCpm());
+				fincialStatisticsVTO.setCpTotal(fincial.getCpa()+fincial.getCpm()+fincial.getCpw());
+				fincialStatisticsVTO.setCpw(fincial.getCpw());
+				fincialStatisticsVTO.setCta(fincial.getCta());
+				fincialStatisticsVTO.setCtm(fincial.getCtm());
+				fincialStatisticsVTO.setCtTotal(fincial.getCta()+fincial.getCtm()+fincial.getCtw());
+				fincialStatisticsVTO.setCtw(fincial.getCtw());
+				fincialStatisticsVTO.setmTotal(fincial.getCpm()+fincial.getCtm());
+				fincialStatisticsVTO.setwTotal(fincial.getCpw()+fincial.getCtw());
+				fincialStatisticsVTO.setTime(fincial.getTime());
+				fincialStatisticsVTO.setTotal(fincialStatisticsVTO.getCpTotal()+fincialStatisticsVTO.getCtTotal());
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(fincialStatisticsVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
