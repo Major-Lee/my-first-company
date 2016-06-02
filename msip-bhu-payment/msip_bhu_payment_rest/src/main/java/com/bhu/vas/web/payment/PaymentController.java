@@ -345,7 +345,7 @@ public class PaymentController extends BaseController{
         	}else if(payment_type.equals(PaymentChannelCode.BHU_APP_WEIXIN.code())){ //App微信支付
         		result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac);
             }else if(payment_type.equals(PaymentChannelCode.BHU_APP_ALIPAY.code())){ //App支付宝
-            	result =  doAppAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac);
+            	result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac);
             }else if(payment_type.equals(PaymentChannelCode.BHU_WAP_WEIXIN.code())){ //汇付宝
         		result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac); 
         	}else if(payment_type.equals(PaymentChannelCode.BHU_WAP_ALIPAY.code())){ //Wap微信支付
@@ -637,6 +637,22 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
 			sParaTemp.put("it_b_pay", "600");
+		}else if(type.equals(PaymentChannelCode.BHU_APP_ALIPAY.code())){
+			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_APP_ALIPAY.i18n(),usermac);
+			sParaTemp.put("service", "alipay.wap.create.direct.pay.by.user");
+	        sParaTemp.put("partner", AlipayConfig.partner);
+	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
+	        sParaTemp.put("_input_charset", AlipayConfig.input_charset);
+			sParaTemp.put("payment_type", AlipayConfig.payment_type);
+			sParaTemp.put("notify_url", notify_url);
+			sParaTemp.put("return_url", return_url);
+			sParaTemp.put("show_url", return_url);
+			sParaTemp.put("exter_invoke_ip", ip);
+			sParaTemp.put("out_trade_no", reckoningId);
+			sParaTemp.put("subject", subject);
+			sParaTemp.put("total_fee", total_fee);
+			sParaTemp.put("body", body);
+			sParaTemp.put("it_b_pay", "600");
 		}else{
 			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_PC_ALIPAY.i18n(),usermac);
 			sParaTemp.put("service", AlipayConfig.service);
@@ -654,7 +670,6 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("body", body);
 		}
 		
-		
 		//记录请求支付完成后返回的地址
 		if (!StringUtils.isBlank(locationUrl)) {
 			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
@@ -665,8 +680,6 @@ public class PaymentController extends BaseController{
 		}
 		
 		//建立支付宝支付请求
-		
-		//建立请求
 		String sHtmlText = "";
         try {
             sHtmlText = AlipaySubmit.buildRequest(sParaTemp,"post","确认"); 
@@ -681,88 +694,6 @@ public class PaymentController extends BaseController{
         }
 	}
     
-    /**
-	 *  支付宝支付请求接口(支付宝2015年8月25日新版本支付请求返回有所变化，是一个文本型)
-     * @param response
-     * @param request
-	 * @param totalPrice 支付金额
-	 * @param out_trade_no 订单号
-	 * @param locationUrl 支付完成后返回页面地址
-	 * @param ip 用户Ip
-	 * @return
-	 */
-    private PaymentTypeVTO doAppAlipay(HttpServletResponse response,HttpServletRequest request,
-    		String totalPrice,String out_trade_no,String locationUrl,String ip,String type,String usermac){
-    	response.setCharacterEncoding("utf-8");
-    	PaymentTypeVTO result = new PaymentTypeVTO();
-    	
-		//服务器异步通知页面路径
-		String notify_url = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/alipayNotifySuccess";
-		//需http://格式的完整路径，不能加?id=123这类自定义参数
-
-		//页面跳转同步通知页面路径
-		String return_url = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/alipayReturn";
-		//需http://格式的完整路径，不能加?id=123这类自定义参数，不能写成http://localhost/
-
-		//订单名称
-		String subject = "打赏";//;new String("打赏".getBytes("ISO-8859-1"), "utf-8");
-		//付款金额
-		String total_fee = totalPrice;
-
-		//订单描述
-		String body = "必虎路由器打赏服务";
-
-		//////////////////////////////////////////////////////////////////////////////////
-			
-		 //以上为正式支付前必有的订单信息，用户信息验证，接下来将用订单号生成一个支付流水号进行在线支付
-		//把请求参数打包成数组
-		Map<String, String> sParaTemp = new HashMap<String, String>();
-		String reckoningId = null;
-		//数据库存的是分，此处需要把传来的支付金额转换成分，而传给支付宝的保持不变（默认元）
-		String total_fee_fen = BusinessHelper.getMoney(total_fee);
-		if(type.equals("WapAlipay")){
-			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_WAP_ALIPAY.i18n(),usermac);
-			sParaTemp.put("service", "alipay.wap.create.direct.pay.by.user");
-	        sParaTemp.put("partner", AlipayConfig.partner);
-	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
-	        sParaTemp.put("_input_charset", AlipayConfig.input_charset);
-			sParaTemp.put("payment_type", AlipayConfig.payment_type);
-			sParaTemp.put("notify_url", notify_url);
-			sParaTemp.put("return_url", return_url);
-			sParaTemp.put("show_url", return_url);
-			sParaTemp.put("exter_invoke_ip", ip);
-			sParaTemp.put("out_trade_no", reckoningId);
-			sParaTemp.put("subject", subject);
-			sParaTemp.put("total_fee", total_fee);
-			sParaTemp.put("body", body);
-			sParaTemp.put("it_b_pay", "600");
-		}
-		
-		
-		//记录请求支付完成后返回的地址
-		if (!StringUtils.isBlank(locationUrl)) {
-			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
-			orderLocation.setTid(reckoningId);
-			orderLocation.setLocation(locationUrl);
-			paymentAlipaylocationService.insert(orderLocation);
-			logger.info(String.format("apply alipay set location reckoningId [%s] locationUrl [%s] insert finished.",reckoningId, locationUrl));
-		}
-		
-		//建立支付宝支付请求
-		
-		//建立请求
-		String sHtmlText = "";
-        try {
-            sHtmlText = AlipaySubmit.buildRequest(sParaTemp,"post","确认"); 
-            result.setType("http");
-            result.setUrl(sHtmlText);
-            return result;
-        } catch (Exception e) {
-        	result.setType("FAIL");
-            result.setUrl("支付请求失败");
-            return result;
-        }
-	}
 	
     /**
      * 处理米大师支付服务请求
