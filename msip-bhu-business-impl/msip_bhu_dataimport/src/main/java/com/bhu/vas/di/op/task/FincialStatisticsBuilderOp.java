@@ -15,10 +15,12 @@ public class FincialStatisticsBuilderOp {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd"); 
 		Calendar cale = Calendar.getInstance();   
         cale.set(Calendar.DAY_OF_MONTH,0);//设置为1号,当前日期既为本月第一天 
-        String lastDay = format.format(cale.getTime());
+        //String lastDay = format.format(cale.getTime());
+        String lastDay = "2016-04-30";
         
         cale.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天 
-        String firstDay=format.format(cale.getTime());
+        //String firstDay=format.format(cale.getTime());
+        String firstDay="2016-04-01";
         System.out.println("-----2------lastDay:"+lastDay);
 		
         FincialStatistics fincialStatistics=new FincialStatistics();
