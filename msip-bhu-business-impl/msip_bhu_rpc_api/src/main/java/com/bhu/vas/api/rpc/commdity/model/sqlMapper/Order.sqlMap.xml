@@ -13,6 +13,7 @@
     <result property="umac" column="umac"/>
     <result property="umactype" column="umactype"/>
     <result property="uid" column="uid"/> 
+    <result property="type" column="type"/> 
     <result property="payment_type" column="payment_type"/>
     <result property="payment_proxy_type" column="payment_proxy_type"/>
     <result property="paymented_at" column="paymented_at"/>
@@ -39,6 +40,7 @@
 	    	umac,
 	    	umactype,
 	    	uid,
+	    	type,
 	    	payment_type,
 	    	payment_proxy_type,
 	    	paymented_at,
@@ -59,6 +61,7 @@
 	    	umac,
 	    	umactype,
 	    	uid,
+	    	type,
 	    	payment_type,
 	    	payment_proxy_type,
 	    	paymented_at,
@@ -80,6 +83,7 @@
 	    	#{umac},
 	    	#{umactype},
 	    	#{uid},
+	    	#{type},
 	    	#{payment_type},
 	    	#{payment_proxy_type},
 	    	#{paymented_at},
@@ -99,6 +103,7 @@
 	    	umac = #{umac},
 	    	umactype = #{umactype},
 	    	uid = #{uid},
+	    	type = #{type},
 	    	payment_type = #{payment_type},
 	    	payment_proxy_type = #{payment_proxy_type},
 	    	paymented_at = #{paymented_at},

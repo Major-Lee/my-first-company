@@ -489,7 +489,7 @@ public class BusinessEnumType {
 	 */
 	public enum CommdityCategory{
 		RechargeVCurrency(3,"充值虚拟币","充值虚拟币"),
-		InternetLimit(99,"限时上网分类","限时上网分类"),
+		InternetLimit(0,"限时上网分类","限时上网分类"),
 		;
 		private Integer category;
 		private String name;
@@ -520,6 +520,15 @@ public class BusinessEnumType {
 		}
 		public void setDesc(String desc) {
 			this.desc = desc;
+		}
+		
+		public static boolean correct(Integer category, CommdityCategory commdityCategory){
+			if(category == null || commdityCategory == null) return false;
+			
+			if(category.equals(commdityCategory.getCategory())){
+				return true;
+			}
+			return false;
 		}
 		
 		public static CommdityCategory fromKey(Integer category){

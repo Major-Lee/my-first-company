@@ -6,10 +6,13 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class CommdityFacadeService {
@@ -54,6 +57,22 @@ public class CommdityFacadeService {
 		return commdityService.findModelByModelCriteria(mc);
 	}
 	
+	/**
+	 * 验证商品id是否可用 是否在售
+	 * @param commdityid
+	 * @return
+	 */
+	public Commdity validateCommdity(Integer commdityid){
+		//商品信息验证
+		Commdity commdity = commdityService.getById(commdityid);
+		if(commdity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST);
+		}
+		if(!CommdityHelper.onsale(commdity.getStatus())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_NOT_ONSALE);
+		}
+		return commdity;
+	}
 	
 	/**
 	 * 如果商品是区间金额 则返回随机金额

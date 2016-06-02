@@ -14,12 +14,15 @@ import com.bhu.vas.api.dto.procedure.OrderStatisticsProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
+import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
+import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
+import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -35,8 +38,8 @@ public class OrderFacadeService {
 	@Resource
 	private OrderService orderService;
 	
-//	@Resource
-//	private CommdityService commdityService;
+	@Resource
+	private CommdityService commdityService;
 	
 	/**
 	 * 查询最近的一条满足条件的订单
@@ -232,16 +235,16 @@ public class OrderFacadeService {
 	 * @param context 业务上下文
 	 * @return
 	 */
-	public Order createOrder(Integer commdityid, Integer appid, String mac, String mac_dut, String umac, 
+	public Order createOrder(Integer uid, Integer commdityid, Integer appid, String mac, String mac_dut, String umac, 
 			Integer umactype, String payment_type, String context){
 		//商品信息验证
-/*		Commdity commdity = commdityService.getById(commdityid);
+		Commdity commdity = commdityService.getById(commdityid);
 		if(commdity == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST);
 		}
 		if(!CommdityHelper.onsale(commdity.getStatus())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_NOT_ONSALE);
-		}*/
+		}
 		//验证缓存中的商品金额
 		String amount = CommdityIntervalAmountService.getInstance().getRAmount(mac, umac, commdityid);
 		if(StringUtils.isEmpty(amount)){
@@ -256,6 +259,7 @@ public class OrderFacadeService {
 		order.setMac_dut(mac_dut);
 		order.setUmac(umac);
 		order.setUmactype(umactype);
+		order.setType(commdity.getCategory());
 		//order.setUid(uid);
 		order.setPayment_type(payment_type);
 		order.setContext(context);
@@ -441,12 +445,12 @@ public class OrderFacadeService {
 	 * @param appId
 	 * @return
 	 */
-	public Order validateOrder(String orderid, Integer appid){
+/*	public Order validateOrder(String orderid, Integer appid){
 		supportedAppId(appid);
 		Order order = validateOrderId(orderid);
 		if(!appid.equals(order.getAppid())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_APPID_INVALID);
 		}
 		return order;
-	}
+	}*/
 }
