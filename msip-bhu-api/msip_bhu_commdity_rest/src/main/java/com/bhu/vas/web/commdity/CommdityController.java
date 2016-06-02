@@ -69,10 +69,11 @@ public class CommdityController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = false, defaultValue = "1") Integer status,
+			@RequestParam(required = true) Integer category,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
 
-		RpcResponseDTO<TailPage<CommdityDTO>> rpcResult = commdityRpcService.commdityPages(status, pageNo, pageSize);
+		RpcResponseDTO<TailPage<CommdityDTO>> rpcResult = commdityRpcService.commdityPages(status, category, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
