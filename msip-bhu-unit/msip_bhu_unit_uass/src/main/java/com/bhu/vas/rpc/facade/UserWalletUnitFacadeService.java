@@ -454,9 +454,25 @@ public class UserWalletUnitFacadeService {
 				fincialStatisticsVTO.setCtw(fincial.getCtw());
 				fincialStatisticsVTO.setmTotal(fincial.getCpm()+fincial.getCtm());
 				fincialStatisticsVTO.setwTotal(fincial.getCpw()+fincial.getCtw());
-				//fincialStatisticsVTO.setTime(fincial.getTime());
 				fincialStatisticsVTO.setId(fincial.getId());
 				fincialStatisticsVTO.setTotal(fincialStatisticsVTO.getCpTotal()+fincialStatisticsVTO.getCtTotal());
+				fincialStatisticsVTO.setCpow(fincialStatisticsVTO.getCpTotal()-fincialStatisticsVTO.getCpw());
+				fincialStatisticsVTO.setCtow(fincialStatisticsVTO.getCtTotal()-fincialStatisticsVTO.getCtw());
+				List<FincialStatistics> fincialStatistics=userWalletFacadeService.getFincialStatisticsService().findAll();
+				if(fincialStatistics!=null&&fincialStatistics.size()>0){
+					int owTotal=0;
+					int wTotal=0;
+					for(FincialStatistics i:fincialStatistics){
+						wTotal+=i.getCtw()-i.getCpw();
+						owTotal+=i.getCta()-i.getCpa()+i.getCtm()-i.getCpm();
+					}
+					fincialStatisticsVTO.setrTotal(owTotal+wTotal);
+					fincialStatisticsVTO.setRwTotal(wTotal);
+					fincialStatisticsVTO.setRowTotal(owTotal);
+					fincialStatisticsVTO.sethTotal(fincialStatisticsVTO.getrTotal()+fincialStatisticsVTO.getCpTotal()-fincialStatisticsVTO.getCtTotal());
+					fincialStatisticsVTO.setHwTotal(wTotal-fincialStatisticsVTO.getCtw()+fincialStatisticsVTO.getCpw());
+					fincialStatisticsVTO.setHowTotal(fincialStatisticsVTO.gethTotal()-fincialStatisticsVTO.getHwTotal());
+				}
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(fincialStatisticsVTO);
 		}catch(BusinessI18nCodeException bex){
