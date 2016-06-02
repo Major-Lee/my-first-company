@@ -35,6 +35,8 @@ import com.bhu.statistics.util.http.RequestPostUtils;
  *
  */
 public class FileHandling {
+	//日志外网地址
+	private static final String WAIWANG_LOG="/BHUData/bulogs/copylogs/"+getNextDay();
 	//订单统计请求接口地址
 	private static final String REQUEST_URL = "http://192.168.66.7/bhu_api/v1/dashboard/order/statistics";
 	//PV【设备连接总数】前一天
@@ -69,7 +71,9 @@ public class FileHandling {
 			File file = new File(filePath);
 			//获取当前路径下所有文件以及文件夹
 			File[] FileList = file.listFiles();
+			System.out.println("当前路径为:【"+filePath+"】");
 			if(FileList == null || FileList.length<=0){
+				System.out.println("当前路径下不存在文件");
 				return null;
 			}
 			for (int i = 0; i < FileList.length; i++) {
@@ -92,12 +96,12 @@ public class FileHandling {
 		}
 		
 		//存储当日设备的连接总数
-		//BhuCache.getInstance().setDayPV(getNextDay(), "dayPV", String.valueOf(dayPVNum));
+		BhuCache.getInstance().setDayPV(getNextDay(), "dayPV", String.valueOf(dayPVNum));
 		//存储当日设备连接总人数
-		//BhuCache.getInstance().setDayUV(getNextDay(), "dayUV", String.valueOf(dayUVNum));
+		BhuCache.getInstance().setDayUV(getNextDay(), "dayUV", String.valueOf(dayUVNum));
 		
-		BhuCache.getInstance().setDayPV("2016-05-20", "dayPV", String.valueOf(dayPVNum));
-		BhuCache.getInstance().setDayUV("2016-05-20", "dayUV", String.valueOf(dayUVNum));
+		//BhuCache.getInstance().setDayPV("2016-05-20", "dayPV", String.valueOf(dayPVNum));
+		//BhuCache.getInstance().setDayUV("2016-05-20", "dayUV", String.valueOf(dayUVNum));
 		
 		//存储mac地址
 		Iterator iterator=SSIDMacList.entrySet().iterator();
@@ -107,8 +111,8 @@ public class FileHandling {
 			System.out.println("macList大小为【"+SSIDMacList.size()+"】");
 			System.out.println("macList对应的key为【"+entry.getKey()+"】");
 			System.out.println("macList对应的value为【"+entry.getValue()+"】");
-			//BhuCache.getInstance().setSSID(getNextDay(), entry.getKey().toString(), entry.getValue().toString());
-			BhuCache.getInstance().setSSID("2016-05-20", entry.getKey().toString(), entry.getValue().toString());
+			BhuCache.getInstance().setSSID(getNextDay(), entry.getKey().toString(), entry.getValue().toString());
+			//BhuCache.getInstance().setSSID("2016-05-20", entry.getKey().toString(), entry.getValue().toString());
 		}
 		return null;
 	}
@@ -214,14 +218,14 @@ public class FileHandling {
 	} 
 	
 	public static void main(String args[]){
-		/*String filePath = "E:\\log\\2016-05-20";
+		//String filePath = "E:\\log\\2016-05-20";
 		try {
-			readFile(filePath);
+			readFile(WAIWANG_LOG);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}*/
+		}
 		
-		/*//获取订单统计数量
+		//获取订单统计数量
 		//开始时间
 		String startTime = StringUtils.EMPTY;
 		//结束时间
@@ -287,12 +291,12 @@ public class FileHandling {
 			BhuCache.getInstance().setStOrder(getNextDay(), "stOrder", JSONObject.toJsonString(resultMap));
 			String str = BhuCache.getInstance().getStOrder(getNextDay(),"stOrder");
 			System.out.println(str);
-		}*/
+		}
 		
-		deleteAllData("2016-05-25");
-		String dayPvNum = BhuCache.getInstance().getDayPV("2016-05-12", "dayPV");
+		//deleteAllData("2016-05-25");
+		String dayPvNum = BhuCache.getInstance().getDayPV(getNextDay(), "dayPV");
 		System.out.println("dayPvNum***************"+dayPvNum);
-		String dayUvNum = BhuCache.getInstance().getDayUV("2016-05-12", "dayUV");
+		String dayUvNum = BhuCache.getInstance().getDayUV(getNextDay(), "dayUV");
 		System.out.println("dayUvNum***************"+dayUvNum);
 	}
 	

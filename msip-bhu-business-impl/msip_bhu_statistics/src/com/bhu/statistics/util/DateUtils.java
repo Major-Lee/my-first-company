@@ -42,7 +42,7 @@ public class DateUtils {
         SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
         Calendar start = Calendar.getInstance();
         Calendar end = Calendar.getInstance();
-        list.add(beginTime);
+        //list.add(beginTime);
         try {
             start.setTime(format.parse(beginTime));
             end.setTime(format.parse(endTime));
@@ -97,7 +97,7 @@ public class DateUtils {
 		for (int i = 0; i < list.size(); i++) {
 			System.out.println(list.get(i));
 		}*/
-		System.out.println(formatDate("2016-05-23 15:15"));
-		System.out.println(getDaysList("2016-05-23 15:15","2016-05-28 15:15"));
+		//System.out.println(formatDate("2016-05-23 15:15"));
+		System.out.println(getDaysList("2016-05-19 15:15","2016-05-21 15:15"));
 	}
 }

@@ -41,13 +41,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    	<thead>
 	    		<tr>
 	    			<td>
-	    				UMPV
+	    				UMPV1
 	    			</td>
 	    			<td>
-	    				UMUV
+	    				UMUV1
 	    			</td>
 	    			<td>
-	    				UMIP
+	    				UMIP1
 	    			</td>
 	    		</tr>
 	    	</thead>

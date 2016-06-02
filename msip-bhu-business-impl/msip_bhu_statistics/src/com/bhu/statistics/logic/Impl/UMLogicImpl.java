@@ -855,7 +855,7 @@ public class UMLogicImpl implements IUMLogic{
 					dayUV = Integer.parseInt(dayUv);
 				}
 				map = new HashMap<String,Object>();
-				map.put("currDate", startTime);
+				map.put("currDate", currDate);
 				map.put("dayPV", dayPV);
 				map.put("dayUV", dayUV);
 				
