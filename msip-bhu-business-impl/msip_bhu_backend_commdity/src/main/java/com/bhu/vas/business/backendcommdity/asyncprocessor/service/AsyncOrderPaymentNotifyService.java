@@ -8,24 +8,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
-
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.dto.push.SharedealNotifyPushDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
-import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
-import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
-import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
@@ -40,8 +36,8 @@ public class AsyncOrderPaymentNotifyService {
 	@Resource
 	private OrderService orderService;
 	
-	@Resource
-	private CommdityService commdityService;
+/*	@Resource
+	private CommdityService commdityService;*/
 	
 	@Resource
 	private OrderFacadeService orderFacadeService;
@@ -112,9 +108,9 @@ public class AsyncOrderPaymentNotifyService {
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
 			//判断是否为限时上网商品
-			Integer commdityid = order.getCommdityid();
+/*			Integer commdityid = order.getCommdityid();
 			Commdity commdity = commdityService.getById(commdityid);
-			if(commdity != null && CommdityCategory.isInternetLimit(commdity.getCategory())){
+			if(commdity != null && CommdityCategory.isInternetLimit(commdity.getCategory())){*/
 				//进行订单分成处理逻辑
 				//String dmac = order.getMac();
 				double amount = Double.parseDouble(order.getAmount());
@@ -170,7 +166,7 @@ public class AsyncOrderPaymentNotifyService {
 				/*userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
 						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
 								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
-			}
+			//}
 		}
 	}
 	
