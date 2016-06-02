@@ -823,7 +823,7 @@ public class UserWalletFacadeService{
 		return pages;
 	}
 	
-	public double fincialStatisticsWithProcedure(String start_date, String end_date,int objType,String payType){
+	public float fincialStatisticsWithProcedure(String start_date, String end_date,int objType,String payType){
 		FincialStatisticsProdureDTO procedureDTO = new FincialStatisticsProdureDTO();
 		procedureDTO.setBeginTime(start_date);
 		procedureDTO.setEndTime(end_date);
