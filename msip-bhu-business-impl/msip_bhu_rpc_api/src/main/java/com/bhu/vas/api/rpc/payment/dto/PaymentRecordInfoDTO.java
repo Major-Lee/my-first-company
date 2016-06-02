@@ -48,7 +48,7 @@ public class PaymentRecordInfoDTO extends AbstractProcedureDTO {
 
 	@Override
 	public String getName() {
-		return "payment.history_order_user";
+		return "history_order_user";
 	}
 
 }
