@@ -52,9 +52,12 @@
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	created_at = #{created_at},
-	    	updated_at = #{updated_at},
-	    	extension_content = #{extension_content}
+	    	ctm = #{ctm},
+	    	cpm = #{cpm},
+	    	cta = #{cta},
+	    	cpa = #{cpa},
+	    	ctw = #{ctw},
+	    	cpw = #{cpw}
 	</sql>
 	
 	<sql id="model_CRITERIA_SQL_GenCondition">
