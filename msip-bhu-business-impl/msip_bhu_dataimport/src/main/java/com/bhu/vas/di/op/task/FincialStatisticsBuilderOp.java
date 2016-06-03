@@ -22,7 +22,6 @@ public class FincialStatisticsBuilderOp {
         String firstDay=format.format(cale.getTime());
         //String firstDay="2016-04-01";
         System.out.println("-----2------lastDay:"+lastDay);
-		
         FincialStatistics fincialStatistics=new FincialStatistics();
 		try{
 			String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
