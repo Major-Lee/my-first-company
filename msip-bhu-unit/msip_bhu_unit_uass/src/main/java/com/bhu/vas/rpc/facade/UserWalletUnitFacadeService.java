@@ -476,8 +476,8 @@ public class UserWalletUnitFacadeService {
 					int owTotal=0;
 					int wTotal=0;
 					for(FincialStatistics i:fincialStatistics){
-						wTotal+=i.getCtw()-i.getCpw();
-						owTotal+=i.getCta()-i.getCpa()+i.getCtm()-i.getCpm();
+						wTotal+=java.lang.Math.abs(i.getCtw()-i.getCpw());
+						owTotal+=java.lang.Math.abs(i.getCta()-i.getCpa()+i.getCtm()-i.getCpm());
 					}
 					fincialStatisticsVTO.setrTotal(owTotal+wTotal);
 					fincialStatisticsVTO.setRwTotal(wTotal);
