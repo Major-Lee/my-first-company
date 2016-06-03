@@ -235,6 +235,7 @@ public class BusinessEnumType {
 		Recharge2C("R2C","零钱充值"),
 		Rollback2C("B2C","零钱返还"),
 		ReadPacketSettle2C("P2C",	 "红包打赏"),
+		Authenticate2Snk("A2S",	 "短信/微信认证网络"),
 		PurchaseGoodsUsedV("PGV","虚拟币购买道具"),
 		PurchaseGoodsUsedC("PGC","零钱购买道具"),
 		Cash2Realmoney("C2M","零钱提现"),

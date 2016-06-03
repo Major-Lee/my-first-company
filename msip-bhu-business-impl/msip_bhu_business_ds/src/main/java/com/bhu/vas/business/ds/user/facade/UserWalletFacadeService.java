@@ -33,6 +33,7 @@ import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
+import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
@@ -41,6 +42,7 @@ import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -147,11 +149,43 @@ public class UserWalletFacadeService{
 	 * @param desc
 	 * @return
 	 */
-	public int vcurrencyFromUserWallet(int uid,String orderid,UWalletTransMode transMode,long vcurrency,String desc){
+	private int vcurrencyFromUserWallet(int uid,String orderid,UWalletTransMode transMode,long vcurrency,String desc){
 		logger.info(String.format("vcurrencyFromUserWallet %s-%s uid[%s] orderid[%s] vcurrency[%s] desc[%s]",transMode.getName(),UWalletTransType.PurchaseGoodsUsedV.getName(), uid,orderid,vcurrency,desc));
-		UserValidateServiceHelper.validateUser(uid,this.userService);
-		//钱包虚拟币数值大小验证
 		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.PurchaseGoodsUsedV,0.00d,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
+	}
+	public static final int SnkAuthenticate_Failed = -1;
+	public static final int SnkAuthenticate_Successfully = 0;
+	public static final int SnkAuthenticate_Threshold_NeedCharging = 1;
+	public static final int SnkAuthenticate_Threshold_VcurrencyNotsufficient = 2;
+	/**
+	 * 
+	 * @param uid
+	 * @param orderid
+	 * @param vcurrency_cost
+	 * @param desc
+	 * @param callback
+	 * @return
+	 * 	
+	 */
+	public int vcurrencyFromUserWalletForSnkAuthenticate(int uid,String orderid,long vcurrency_cost,String desc, IWalletVCurrencySpendCallback callback){
+		UserValidateServiceHelper.validateUser(uid,this.userService);
+		UserWallet uwallet = userWalletService.getById(uid);
+		if(uwallet == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"用户钱包"});
+		}
+		double total_vcurrency = ArithHelper.add(uwallet.getVcurrency(), uwallet.getVcurrency_bing());
+		if(callback.beforeCheck(uid, vcurrency_cost,total_vcurrency)){
+			int executeRet = this.vcurrencyFromUserWallet(uid, orderid, UWalletTransMode.VCurrencyPayment, vcurrency_cost, desc);
+			if(executeRet == 0){
+				callback.after(uid);
+				return SnkAuthenticate_Successfully;
+			}else{
+				return SnkAuthenticate_Failed;
+			}
+		}else{//预检查失败
+			return SnkAuthenticate_Threshold_NeedCharging;
+		}
+		
 	}
 	
 	private int userWalletInOutWithProcedure(int uid,String orderid,UWalletTransMode transMode,UWalletTransType transType,double rmoney,double cash,long vcurrency,String desc,String memo){
