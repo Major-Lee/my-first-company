@@ -30,12 +30,12 @@ public class FincialStatisticsBuilderOp {
 			System.out.println(1);
 			context.start();
 			UserWalletFacadeService userWalletFacadeService = context.getBean("userWalletFacadeService",UserWalletFacadeService.class);
-			float ctm=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Midas");
-			float cpm=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Midas");
-			float cta=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Alipay");
-			float cpa=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Alipay");
-			float ctw=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Weixin");
-			float cpw=userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Weixin");
+			float ctm=(float)(Math.round(100*userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Midas")))/100;
+			float cpm=(float)(Math.round(100*userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Midas")))/100;
+			float cta=(float)(Math.round(100*userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Alipay")))/100;
+			float cpa=(float)(Math.round(100*userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Alipay")))/100;
+			float ctw=(float)(Math.round(100*userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",1,"Weixin")))/100;
+			float cpw=(float)(Math.round(100*userWalletFacadeService.fincialStatisticsWithProcedure(firstDay+" 00:00:00", lastDay+" 23:59:59",0,"Weixin")))/100;
 			fincialStatistics.setCpa(cpa);
 			fincialStatistics.setCpm(cpm);
 			fincialStatistics.setCpw(cpw);
