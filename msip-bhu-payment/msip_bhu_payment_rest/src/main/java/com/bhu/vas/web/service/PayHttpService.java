@@ -52,7 +52,7 @@ public class PayHttpService {
 //    public static String PAY_HOST_URL = "http://test.pay.igappy.com/payment";
 //    public static String PAY_HOST_URL = "http://upays.bhuwifi.com:8080/payment";
        
-    public static String PAY_HOST_URL = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment";
+    public static String PAY_HOST_URL = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
