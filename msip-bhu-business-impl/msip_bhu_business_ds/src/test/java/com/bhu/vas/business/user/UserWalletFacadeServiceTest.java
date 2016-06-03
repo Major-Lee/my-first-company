@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
@@ -340,14 +341,13 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    	}
    	
    	
-   	
+   	@Test
    	public void test013VcurrencyFromUserWalletForSnkAuthenticate(){
    		final String orderid = "10012016041100000000000000000069";
-   		userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(3,orderid, 20l, "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
+   		int ret = userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(3,orderid, 20l, "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
 			@Override
 			public boolean beforeCheck(int uid, double vcurrency_cost,double vcurrency_has) {
 				if(vcurrency_has < vcurrency_cost){
-					//消息提示 余额不足并返回false
 					return false;
 				}else{
 					return true;
@@ -358,10 +358,10 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 			public String after(int uid) {
 				return null;
 			}
-   			
    		});
+   		System.out.println(ret);
    		
-   		Runnable runn = new Runnable(){
+   		/*Runnable runn = new Runnable(){
 			@Override
 			public void run() {
 				userWalletFacadeService.cashToUserWallet(3, orderid, UWalletTransMode.RealMoneyPayment, 53.00d, 53.00d, "通过现金支付 零钱充值");
@@ -373,9 +373,6 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    		for(int i= 0;i<10;i++){
    			Thread t = new Thread(runn);
    			t.start();
-   		}
-   		
-   		//ShareDealDailyGroupSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(100245, "10009/", "2016-05-21");
-    	//System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
+   		}*/
    	}
 }

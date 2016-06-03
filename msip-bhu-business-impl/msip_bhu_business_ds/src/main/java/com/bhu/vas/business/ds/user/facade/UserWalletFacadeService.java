@@ -153,9 +153,10 @@ public class UserWalletFacadeService{
 		logger.info(String.format("vcurrencyFromUserWallet %s-%s uid[%s] orderid[%s] vcurrency[%s] desc[%s]",transMode.getName(),UWalletTransType.PurchaseGoodsUsedV.getName(), uid,orderid,vcurrency,desc));
 		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.PurchaseGoodsUsedV,0.00d,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
 	}
+	
 	public static final int SnkAuthenticate_Failed = -1;
 	public static final int SnkAuthenticate_Successfully = 0;
-	public static final int SnkAuthenticate_Threshold_NeedCharging = 1;
+	public static final int SnkAuthenticate_Successfully_Threshold_NeedCharging = 1;
 	public static final int SnkAuthenticate_Threshold_VcurrencyNotsufficient = 2;
 	/**
 	 * 
@@ -178,12 +179,16 @@ public class UserWalletFacadeService{
 			int executeRet = this.vcurrencyFromUserWallet(uid, orderid, UWalletTransMode.VCurrencyPayment, vcurrency_cost, desc);
 			if(executeRet == 0){
 				callback.after(uid);
-				return SnkAuthenticate_Successfully;
+				//扣款后的数值是否 <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging
+				if(total_vcurrency <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
+					return SnkAuthenticate_Successfully_Threshold_NeedCharging;
+				}else
+					return SnkAuthenticate_Successfully;
 			}else{
 				return SnkAuthenticate_Failed;
 			}
 		}else{//预检查失败
-			return SnkAuthenticate_Threshold_NeedCharging;
+			return SnkAuthenticate_Threshold_VcurrencyNotsufficient;
 		}
 		
 	}
