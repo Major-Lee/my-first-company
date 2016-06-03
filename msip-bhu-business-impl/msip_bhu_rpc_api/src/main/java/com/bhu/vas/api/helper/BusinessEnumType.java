@@ -12,6 +12,7 @@ public class BusinessEnumType {
 	public enum OAuthType{
 		Weichat("腾讯微信", "weixin",true,"提现至微信"),
 		Alipay("支付宝", "alipay",true,"提现至支付宝"),
+		Public("对公账户", "public",true,"提现至对公账户"),
 		QQ("腾讯QQ", "qq"),
 		Weibo("新浪微博", "weibo"),
 		;

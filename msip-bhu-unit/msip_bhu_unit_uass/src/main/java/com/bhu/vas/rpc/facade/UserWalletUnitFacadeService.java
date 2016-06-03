@@ -286,22 +286,10 @@ public class UserWalletUnitFacadeService {
 			if(!OAuthType.paymentSupported(payment_type)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{String.valueOf(payment_type)});
 			}
-			//payment_type为空的情况下直接取用户绑定过的第一个账户
-			/*if(StringUtils.isEmpty(payment_type)){
-				//如果没有指定则去除用户定义的第一个
-				ThirdpartiesPaymentDTO payment = userWalletFacadeService.fetchFirstThirdpartiesPayment(uid);
-				if(payment != null){
-					payment_type = payment.getType();
-				}
-			}else{
-				//不为空的情况下需要判定是否支持此参数payment_type
-				if(!ThirdpartiesPaymentType.supported(payment_type)){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED);
-				}
-			}*/
-			//User user = userWalletFacadeService.getUserService().getById(uid);
-			//User user = userWalletFacadeService.validateUser(uid);
 			User user = UserValidateServiceHelper.validateUser(uid,userWalletFacadeService.getUserService());
+			//TODO:验证用户是否存在对公账户信息，如果存在则只能对公账户提现
+			
+			
 			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,OAuthType.fromType(payment_type),uid, pwd, cash, remoteip);
 			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(uid);
 			WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(apply.getUid(),apply.getId(),apply.getCash());
