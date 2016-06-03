@@ -1,6 +1,9 @@
 package com.bhu.vas.rpc.facade;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -453,37 +456,43 @@ public class UserWalletUnitFacadeService {
 			FincialStatistics fincial = userWalletFacadeService.getFincialStatisticsService().getById(time);
 			FincialStatisticsVTO fincialStatisticsVTO=new FincialStatisticsVTO();
 			if(fincial == null){
+				fincialStatisticsVTO.setId(time);
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(fincialStatisticsVTO);
 			}else{
-				fincialStatisticsVTO.setaTotal((float)(Math.round(100*(fincial.getCpa()+fincial.getCta()))));
-				fincialStatisticsVTO.setCpa((float)(Math.round(100*fincial.getCpa())));
-				fincialStatisticsVTO.setCpm((float)(Math.round(100*fincial.getCpm())));
-				fincialStatisticsVTO.setCpTotal((float)(Math.round(100*(fincial.getCpa()+fincial.getCpm()+fincial.getCpw()))));
-				fincialStatisticsVTO.setCpw((float)(Math.round(100*fincial.getCpw())));
-				fincialStatisticsVTO.setCta((float)(Math.round(100*fincial.getCta())));
-				fincialStatisticsVTO.setCtm((float)(Math.round(100*fincial.getCtm())));
-				fincialStatisticsVTO.setCtTotal((float)(Math.round(100*(fincial.getCta()+fincial.getCtm()+fincial.getCtw()))));
-				fincialStatisticsVTO.setCtw((float)(Math.round(100*fincial.getCtw())));
-				fincialStatisticsVTO.setmTotal((float)(Math.round(100*(fincial.getCpm()+fincial.getCtm()))));
-				fincialStatisticsVTO.setwTotal((float)(Math.round(100*(fincial.getCpw()+fincial.getCtw()))));
 				fincialStatisticsVTO.setId(fincial.getId());
-				fincialStatisticsVTO.setTotal((float)(Math.round(100*(fincialStatisticsVTO.getCpTotal()+fincialStatisticsVTO.getCtTotal()))));
-				fincialStatisticsVTO.setCpow((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.getCpTotal()-fincialStatisticsVTO.getCpw())))));
-				fincialStatisticsVTO.setCtow((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.getCtTotal()-fincialStatisticsVTO.getCtw())))));
+				fincialStatisticsVTO.setaTotal((float)(Math.round(100*(fincial.getCpa()+fincial.getCta())))/100);
+				fincialStatisticsVTO.setCpa((float)(Math.round(100*fincial.getCpa())/100));
+				fincialStatisticsVTO.setCpm((float)(Math.round(100*fincial.getCpm()/100)));
+				fincialStatisticsVTO.setCpTotal((float)(Math.round(100*(fincial.getCpa()+fincial.getCpm()+fincial.getCpw()))/100));
+				fincialStatisticsVTO.setCpw((float)(Math.round(100*fincial.getCpw())/100));
+				fincialStatisticsVTO.setCta((float)(Math.round(100*fincial.getCta())/100));
+				fincialStatisticsVTO.setCtm((float)(Math.round(100*fincial.getCtm())/100));
+				fincialStatisticsVTO.setCtTotal((float)(Math.round(100*(fincial.getCta()+fincial.getCtm()+fincial.getCtw()))/100));
+				fincialStatisticsVTO.setCtw((float)(Math.round(100*fincial.getCtw())/100));
+				fincialStatisticsVTO.setmTotal((float)(Math.round(100*(fincial.getCpm()+fincial.getCtm()))/100));
+				fincialStatisticsVTO.setwTotal((float)(Math.round(100*(fincial.getCpw()+fincial.getCtw()))/100));
+				fincialStatisticsVTO.setTotal((float)(Math.round(100*(fincialStatisticsVTO.getCpTotal()+fincialStatisticsVTO.getCtTotal()))/100));
+				fincialStatisticsVTO.setCpow((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.getCpTotal()-fincialStatisticsVTO.getCpw())))/100));
+				fincialStatisticsVTO.setCtow((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.getCtTotal()-fincialStatisticsVTO.getCtw())))/100));
 				List<FincialStatistics> fincialStatistics=userWalletFacadeService.getFincialStatisticsService().findAll();
+				DateFormat df = new SimpleDateFormat("yyyy-MM");
+				Date dt1 = df.parse(time);
 				if(fincialStatistics!=null&&fincialStatistics.size()>0){
 					int owTotal=0;
 					int wTotal=0;
 					for(FincialStatistics i:fincialStatistics){
-						wTotal+=java.lang.Math.abs(i.getCtw()-i.getCpw());
-						owTotal+=java.lang.Math.abs(i.getCta()-i.getCpa()+i.getCtm()-i.getCpm());
+						Date dt2 = df.parse(i.getId());
+						if(dt1.getTime()>dt2.getTime()){
+							wTotal+=java.lang.Math.abs(i.getCtw()-i.getCpw());
+							owTotal+=java.lang.Math.abs(i.getCta()-i.getCpa()+i.getCtm()-i.getCpm());
+						}
 					}
-					fincialStatisticsVTO.setrTotal((float)(Math.round(100*(owTotal+wTotal))));
-					fincialStatisticsVTO.setRwTotal((float)(Math.round(100*(wTotal))));
-					fincialStatisticsVTO.setRowTotal((float)(Math.round(100*(owTotal))));
-					fincialStatisticsVTO.sethTotal((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.getrTotal()+fincialStatisticsVTO.getCpTotal()-fincialStatisticsVTO.getCtTotal())))));
-					fincialStatisticsVTO.setHwTotal((float)(Math.round(100*(wTotal-fincialStatisticsVTO.getCtw()+fincialStatisticsVTO.getCpw()))));
-					fincialStatisticsVTO.setHowTotal((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.gethTotal()-fincialStatisticsVTO.getHwTotal())))));
+					fincialStatisticsVTO.setrTotal((float)(Math.round(100*(owTotal+wTotal))/100));
+					fincialStatisticsVTO.setRwTotal((float)(Math.round(100*(wTotal))/100));
+					fincialStatisticsVTO.setRowTotal((float)(Math.round(100*(owTotal))/100));
+					fincialStatisticsVTO.sethTotal((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.getrTotal()+fincialStatisticsVTO.getCpTotal()-fincialStatisticsVTO.getCtTotal())))/100));
+					fincialStatisticsVTO.setHwTotal((float)(Math.round(100*(wTotal-fincialStatisticsVTO.getCtw()+fincialStatisticsVTO.getCpw()))/100));
+					fincialStatisticsVTO.setHowTotal((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.gethTotal()-fincialStatisticsVTO.getHwTotal())))/100));
 				}
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(fincialStatisticsVTO);
