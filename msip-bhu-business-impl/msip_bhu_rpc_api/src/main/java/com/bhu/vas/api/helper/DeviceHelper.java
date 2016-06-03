@@ -1039,7 +1039,9 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" real_channel=\"%s\"/>";
 	
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\" hide_ssid=\"%s\"/>";
+	public static final String DeviceSetting_MultiVapPasswordItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\" hide_ssid=\"%s\"/>";
 	public static final String DeviceSetting_VapHidessidItem = "<ITEM name=\"%s\" hide_ssid=\"%s\"/>";
+	public static final String DeviceSetting_MultiVapHidessidItem = "<ITEM name=\"%s\" radio=\"%s\" hide_ssid=\"%s\"/>";
 	//public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
 	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" />";
 	public static final String DeviceSetting_AdminPasswordItem = "<ITEM password_rsa=\"%s\" name=\"admin\" />";
@@ -1629,8 +1631,10 @@ public class DeviceHelper {
 				vap_dto.setAuth_key_rsa(JNIRsaHelper.jniRsaEncryptHexStr(auth_key));
 			}
 
-			String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
-					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
+//			String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
+//					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
+			String item = builderDeviceSettingItem(DeviceSetting_MultiVapPasswordItem, 
+					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_MultiVapPassword));
 			items.append(item);
 		}
 		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, items.toString());
@@ -1654,8 +1658,10 @@ public class DeviceHelper {
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 			}
 			
-			String item = builderDeviceSettingItem(DeviceSetting_VapHidessidItem, 
-					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapHidessid));
+//			String item = builderDeviceSettingItem(DeviceSetting_VapHidessidItem, 
+//					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapHidessid));
+			String item = builderDeviceSettingItem(DeviceSetting_MultiVapHidessidItem, 
+					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_MultiVapHidessid));
 			items.append(item);
 		}
 		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, items.toString());
