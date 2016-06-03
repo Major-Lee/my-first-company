@@ -452,21 +452,20 @@ public class UserWalletUnitFacadeService {
 		try{
 			FincialStatistics fincial = userWalletFacadeService.getFincialStatisticsService().getById(time);
 			FincialStatisticsVTO fincialStatisticsVTO=new FincialStatisticsVTO();
-			
 			if(fincial == null){
-				return null;
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(fincialStatisticsVTO);
 			}else{
-				fincialStatisticsVTO.setaTotal(fincial.getCpa()+fincial.getCta());
-				fincialStatisticsVTO.setCpa(fincial.getCpa());
-				fincialStatisticsVTO.setCpm(fincial.getCpm());
-				fincialStatisticsVTO.setCpTotal(fincial.getCpa()+fincial.getCpm()+fincial.getCpw());
-				fincialStatisticsVTO.setCpw(fincial.getCpw());
-				fincialStatisticsVTO.setCta(fincial.getCta());
-				fincialStatisticsVTO.setCtm(fincial.getCtm());
-				fincialStatisticsVTO.setCtTotal(fincial.getCta()+fincial.getCtm()+fincial.getCtw());
-				fincialStatisticsVTO.setCtw(fincial.getCtw());
-				fincialStatisticsVTO.setmTotal(fincial.getCpm()+fincial.getCtm());
-				fincialStatisticsVTO.setwTotal(fincial.getCpw()+fincial.getCtw());
+				fincialStatisticsVTO.setaTotal((float)(Math.round(100*(fincial.getCpa()+fincial.getCta()))));
+				fincialStatisticsVTO.setCpa((float)(Math.round(100*fincial.getCpa())));
+				fincialStatisticsVTO.setCpm((float)(Math.round(100*fincial.getCpm())));
+				fincialStatisticsVTO.setCpTotal((float)(Math.round(100*(fincial.getCpa()+fincial.getCpm()+fincial.getCpw()))));
+				fincialStatisticsVTO.setCpw((float)(Math.round(100*fincial.getCpw())));
+				fincialStatisticsVTO.setCta((float)(Math.round(100*fincial.getCta())));
+				fincialStatisticsVTO.setCtm((float)(Math.round(100*fincial.getCtm())));
+				fincialStatisticsVTO.setCtTotal((float)(Math.round(100*(fincial.getCta()+fincial.getCtm()+fincial.getCtw()))));
+				fincialStatisticsVTO.setCtw((float)(Math.round(100*fincial.getCtw())));
+				fincialStatisticsVTO.setmTotal((float)(Math.round(100*(fincial.getCpm()+fincial.getCtm()))));
+				fincialStatisticsVTO.setwTotal((float)(Math.round(100*(fincial.getCpw()+fincial.getCtw()))));
 				fincialStatisticsVTO.setId(fincial.getId());
 				fincialStatisticsVTO.setTotal(fincialStatisticsVTO.getCpTotal()+fincialStatisticsVTO.getCtTotal());
 				fincialStatisticsVTO.setCpow(fincialStatisticsVTO.getCpTotal()-fincialStatisticsVTO.getCpw());
