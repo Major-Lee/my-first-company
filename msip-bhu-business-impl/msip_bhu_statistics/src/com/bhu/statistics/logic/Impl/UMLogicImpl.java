@@ -674,7 +674,7 @@ public class UMLogicImpl implements IUMLogic{
 			iosMap.put("clickAverNum", (float)(totalIosClickNum/(totalIosUV*1.0)));
 		}
 		iosMap.put("orderNum", "-");
-		iosMap.put("clickConversion", "");
+		iosMap.put("clickConversion", "-");
 		iosMap.put("orderConversion", "-");
 		iosMap.put("orderComplete", "-");
 		iosMap.put("orderAmount", "-");
