@@ -585,6 +585,7 @@ public class PaymentController extends BaseController{
     	int temp = Integer.parseInt(total_fee_fen);
     	if(temp < 50){
     		total_fee = "0.50";
+    		total_fee_fen = BusinessHelper.getMoney(total_fee);
     	}
     	
     	String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,"WPWX",usermac);
