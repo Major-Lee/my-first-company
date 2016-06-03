@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.ret.setting;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 
 
@@ -94,6 +96,16 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	public String getRadio() {
 		return radio;
 	}
+	public String getSpecialRadio(){
+		if(StringUtils.isEmpty(radio)){
+			if("wlan0".equals(name)){
+				return "wifi0";
+			}else if("wlan10".equals(name)){
+				return "wifi1";
+			}
+		}
+		return radio;
+	}
 	public void setRadio(String radio) {
 		this.radio = radio;
 	}
@@ -151,8 +163,10 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	}
 	//修改vap的密码
 	public static final int BuilderType_VapPassword = 1;
+	public static final int BuilderType_MultiVapPassword = 4;
 	public static final int BuilderType_WorkModeChanged = 2;
 	public static final int BuilderType_VapHidessid = 3;
+	public static final int BuilderType_MultiVapHidessid = 5;
 	
 	@Override
 	public Object[] builderProperties(int type) {
@@ -166,6 +180,16 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 				properties[3] = auth_key;
 				properties[4] = auth_key_rsa;
 				properties[5] = hide_ssid;
+				break;
+			case BuilderType_MultiVapPassword:
+				properties = new Object[7];
+				properties[0] = name;
+				properties[1] = getSpecialRadio();
+				properties[2] = WifiDeviceHelper.xmlContentEncoder(ssid);//StringEscapeUtils.escapeXml(ssid);
+				properties[3] = auth;
+				properties[4] = auth_key;
+				properties[5] = auth_key_rsa;
+				properties[6] = hide_ssid;
 				break;
 			case BuilderType_WorkModeChanged:
 				properties = new Object[9];
@@ -184,6 +208,11 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 				properties[0] = name;
 				properties[1] = hide_ssid;
 				break;
+			case BuilderType_MultiVapHidessid:
+				properties = new Object[3];
+				properties[0] = name;
+				properties[1] = getSpecialRadio();
+				properties[2] = hide_ssid;
 			default:
 				properties = builderProperties();
 				break;
