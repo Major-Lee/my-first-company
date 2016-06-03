@@ -17,14 +17,12 @@ import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
-import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
-import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -307,12 +305,12 @@ public class OrderUnitFacadeService {
 			if(user == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_NOTEXIST);
 			}
-			//验证商品是否合法
+/*			//验证商品是否合法
 			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 			//验证商品是否合理
 			if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RechargeVCurrency)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
-			}
+			}*/
 			
 			Order order = orderFacadeService.createRechargeVCurrencyOrder(uid, commdityid, 
 					BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), payment_type);
