@@ -39,6 +39,8 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	private Date paymented_at;
 	//订单金额
 	private String amount;
+	//订单虎钻
+	private long vcurrency;
 	//业务上下文
 	private String context;
 	//订单状态
@@ -160,6 +162,14 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 
 	public void setAmount(String amount) {
 		this.amount = amount;
+	}
+
+	public long getVcurrency() {
+		return vcurrency;
+	}
+
+	public void setVcurrency(long vcurrency) {
+		this.vcurrency = vcurrency;
 	}
 
 	public String getContext() {

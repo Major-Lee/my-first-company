@@ -142,8 +142,8 @@ public class PaymentInternalHelper {
 	
 	public static Map<String, String> generateWithdrawApiParamMap(){
 		Map<String, String> api_params = new HashMap<String, String>();
-		api_params.put("appid", String.valueOf(CommdityApplication.Default.getKey()));
-		api_params.put("secret", CommdityApplication.Default.getSecret());
+		api_params.put("appid", String.valueOf(CommdityApplication.DEFAULT.getKey()));
+		api_params.put("secret", CommdityApplication.DEFAULT.getSecret());
 		return api_params;
 	}
 	

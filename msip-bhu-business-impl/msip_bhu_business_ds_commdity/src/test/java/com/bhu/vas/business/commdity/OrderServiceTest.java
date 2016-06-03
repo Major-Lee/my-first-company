@@ -122,7 +122,7 @@ public class OrderServiceTest extends BaseTest{
     
     //@Test
     public void testGetByProcedure(){
-    	OrderStatisticsVTO vto = orderFacadeService.orderStatisticsWithProcedure("2016-03-11 17:15:50", "2016-06-11 17:15:50");
+    	OrderStatisticsVTO vto = orderFacadeService.rewardOrderStatisticsWithProcedure("2016-03-11 17:15:50", "2016-06-11 17:15:50");
     	System.out.println(vto.getPc_occ());
     	System.out.println(vto.getPc_ofa());
     	System.out.println(vto.getPc_ofc());

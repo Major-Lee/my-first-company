@@ -163,12 +163,6 @@ public class OrderUnitFacadeService {
 			if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
 			}
-			//验证商品是否合法
-			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
-			//验证商品是否合理
-			if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.InternetLimit)){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
-			}
 			
 			String mac_lower = mac.toLowerCase();
 			String umac_lower = umac.toLowerCase();
@@ -179,7 +173,7 @@ public class OrderUnitFacadeService {
 			}
 			//生成订单
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
-			Order order = orderFacadeService.createOrder(null, commdityid, BusinessEnumType.CommdityApplication.Default.getKey(), 
+			Order order = orderFacadeService.createRewardOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
 					mac_lower, mac_dut, umac_lower, umactype, payment_type, context);
 			OrderDTO orderDto = new OrderDTO();
 			BeanUtils.copyProperties(order, orderDto);
@@ -288,7 +282,7 @@ public class OrderUnitFacadeService {
 	
 	public RpcResponseDTO<OrderStatisticsVTO> rewardOrderStatisticsBetweenDate(String start_date, String end_date) {
 		try{
-			OrderStatisticsVTO vto = orderFacadeService.orderStatisticsWithProcedure(start_date, end_date);
+			OrderStatisticsVTO vto = orderFacadeService.rewardOrderStatisticsWithProcedure(start_date, end_date);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -305,7 +299,8 @@ public class OrderUnitFacadeService {
 	 * @param payment_type 支付方式
 	 * @return
 	 */
-	public RpcResponseDTO<OrderRechargeVCurrencyDTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid, String payment_type){
+	public RpcResponseDTO<OrderRechargeVCurrencyDTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid,
+			String payment_type){
 		try{
 			//orderFacadeService.supportedAppId(appid);
 			User user = userService.getById(uid);
@@ -319,15 +314,16 @@ public class OrderUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
 			}
 			
-			Order order = orderFacadeService.createOrder(uid, commdityid, BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), 
-					null, null, null, null, payment_type, null);
+			Order order = orderFacadeService.createRechargeVCurrencyOrder(uid, commdityid, 
+					BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), payment_type);
 			OrderRechargeVCurrencyDTO orderDto = new OrderRechargeVCurrencyDTO();
 			BeanUtils.copyProperties(order, orderDto);
-			orderDto.setVcurrency(commdity.getVcurrency());
+			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			ex.printStackTrace();
 			logger.error("CreateOrder Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}

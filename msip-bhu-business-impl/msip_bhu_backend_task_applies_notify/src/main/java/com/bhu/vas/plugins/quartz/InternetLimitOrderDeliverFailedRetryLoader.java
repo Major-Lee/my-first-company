@@ -66,7 +66,7 @@ public class InternetLimitOrderDeliverFailedRetryLoader {
     				bindUser = userService.getById(order.getUid());
     			}
     			String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
-				boolean deliver_notify_ret = orderFacadeService.orderDeliverNotify(order, bindUser,accessInternetTime);
+				boolean deliver_notify_ret = orderFacadeService.rewardOrderDeliverNotify(order, bindUser,accessInternetTime);
 				if(deliver_notify_ret){
 					//如果通知发货成功 更新订单状态为发货完成
 					orderFacadeService.orderStatusChanged(order, OrderStatus.DeliverCompleted.getKey(),  

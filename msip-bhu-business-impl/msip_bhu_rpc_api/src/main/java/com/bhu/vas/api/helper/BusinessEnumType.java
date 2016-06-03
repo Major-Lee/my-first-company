@@ -624,7 +624,7 @@ public class BusinessEnumType {
 	 */
 	public enum CommdityApplication{
 		Portal(1001,"3BD80FEBC9CC48E99EA2ABBE214E5957","portal id","uportal id"),
-		Default(1000,"1F915A8DA370422582CBAC1DB6A806DD","打赏应用id","打赏应用id"),
+		DEFAULT(1000,"1F915A8DA370422582CBAC1DB6A806DD","打赏应用id","打赏应用id"),
 		BHU_PREPAID_BUSINESS(1002,"1F915A8DA370422582CBAC1DB6A806UU","虎钻应用id","虎钻应用id"),
 		;
 		private Integer key;
@@ -835,6 +835,8 @@ public class BusinessEnumType {
 		PcAlipay("PcAlipay","支付宝","支付宝"),
 		WapWeixin("WapWeixin","微信","微信"),
 		WapAlipay("WapAlipay","支付宝","支付宝"),
+		AppWeixin("AppWeixin","微信","微信"),
+		AppAlipay("AppAlipay","支付宝","支付宝"),
 		Midas("Midas","米大师","米大师"),
 		Hee("Hee","汇元宝","汇元宝"),
 		Unknown("unknown","未知支付方式", "未知支付方式"),
