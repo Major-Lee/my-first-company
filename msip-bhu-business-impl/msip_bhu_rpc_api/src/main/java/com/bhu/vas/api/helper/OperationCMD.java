@@ -74,7 +74,7 @@ public enum OperationCMD {
 	TriggerHttpPortalResourceUpdate("119","触发设备更新portal资源包","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"resource_upgrade\" type=\"portal\" url=\"%s\" resource_ver=\"%s\" serial=\"%s\" __notify=\"true\"/></cmd>"),
 	DeviceWifiTimerStart("125","开启wifi定时功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wifi_schedule\" enable=\"enable\" rule=\"%s-on,%s-off%s\"/></cmd>"),
 	DeviceWifiTimerStop("126","关闭wifi定时功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wifi_schedule\" enable=\"disable\"/></cmd>"),
-	DeviceWifiTimerQuery("127","查询wifi定时功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wifi_schedule\" __notify=\"true\"/></cmd>"),
+	DeviceWifiTimerQuery("127","查询wifi定时功能","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wifi_schedule\"/></cmd>"),
 
 	KickOffVisitorDeviceWifiHandset("128", "踢出访客终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"webportal_user_status\" arg=\"kickoff\" sid=\"%s\"/></cmd>"),
 	//<dev><net><ad><ITEM  bhu_enable=\"enable/disable\"  bhu_ad_url=\"广告url\" id=\"xxxx\" /></ad></net></dev>
