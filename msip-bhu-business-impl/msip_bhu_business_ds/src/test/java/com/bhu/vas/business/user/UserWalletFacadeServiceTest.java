@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
@@ -22,6 +21,7 @@ import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
+import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
@@ -316,7 +316,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    	}
    	
    	
-   	@Test
+   	//@Test
    	public void test012DoWalletInOrOut(){
    		final String orderid = "10012016041100000000000000000068";
    		userWalletFacadeService.cashToUserWallet(3, orderid, UWalletTransMode.RealMoneyPayment, 53.00d, 53.00d, "通过现金支付 零钱充值");
@@ -327,7 +327,50 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 				userWalletFacadeService.cashToUserWallet(3, orderid, UWalletTransMode.RealMoneyPayment, 53.00d, 53.00d, "通过现金支付 零钱充值");
 		   		userWalletFacadeService.cashToUserWallet(3, orderid, UWalletTransMode.DrawPresent, 0.00d, 23.00d, "通过抽奖馈赠 零钱充值");
 		   		userWalletFacadeService.vcurrencyToUserWallet(3, orderid, UWalletTransMode.RealMoneyPayment, 32.00d, 320, "通过现金支付 虎钻充值");
-		   		userWalletFacadeService.vcurrencyFromUserWallet(3,orderid, UWalletTransMode.VCurrencyPayment, 20, "通过虎钻支付 虚拟币购买道具");
+		   		//userWalletFacadeService.vcurrencyFromUserWallet(3,orderid, UWalletTransMode.VCurrencyPayment, 20, "通过虎钻支付 虚拟币购买道具");
+			}
+   		};
+   		for(int i= 0;i<10;i++){
+   			Thread t = new Thread(runn);
+   			t.start();
+   		}
+   		
+   		//ShareDealDailyGroupSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealDailyGroupSummaryWithProcedure(100245, "10009/", "2016-05-21");
+    	//System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
+   	}
+   	
+   	
+   	
+   	public void test013VcurrencyFromUserWalletForSnkAuthenticate(){
+   		final String orderid = "10012016041100000000000000000069";
+   		userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(3,orderid, 20l, "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
+			@Override
+			public boolean beforeCheck(int uid, double vcurrency_cost,
+					double vcurrency_has) {
+				if(vcurrency_has < vcurrency_cost){
+					//消息提示 余额不足并返回false
+					return false;
+				}else{
+					
+				}
+				return false;
+			}
+
+			@Override
+			public String after(int uid) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+   			
+   		});
+   		
+   		Runnable runn = new Runnable(){
+			@Override
+			public void run() {
+				userWalletFacadeService.cashToUserWallet(3, orderid, UWalletTransMode.RealMoneyPayment, 53.00d, 53.00d, "通过现金支付 零钱充值");
+		   		userWalletFacadeService.cashToUserWallet(3, orderid, UWalletTransMode.DrawPresent, 0.00d, 23.00d, "通过抽奖馈赠 零钱充值");
+		   		userWalletFacadeService.vcurrencyToUserWallet(3, orderid, UWalletTransMode.RealMoneyPayment, 32.00d, 320, "通过现金支付 虎钻充值");
+		   		//userWalletFacadeService.vcurrencyFromUserWallet(3,orderid, UWalletTransMode.VCurrencyPayment, 20, "通过虎钻支付 虚拟币购买道具");
 			}
    		};
    		for(int i= 0;i<10;i++){

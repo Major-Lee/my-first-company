@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.helper.NumberValidateHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
@@ -28,6 +29,7 @@ import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -340,10 +342,22 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.directDrawPresent(uid, from.concat(StringHelper.MINUS_STRING_GAP).concat(orderid), Double.valueOf(cash), desc);//(d_snk_turnstate, d_snk_type);
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		try{
+			if(NumberValidateHelper.isValidNumberCharacter(cash)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{cash});
+			}
+			RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.directDrawPresent(uid, from.concat(StringHelper.MINUS_STRING_GAP).concat(orderid), Double.valueOf(cash), desc);//(d_snk_turnstate, d_snk_type);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}finally{
+			
+		}
 	}
 }
