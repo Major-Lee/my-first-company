@@ -4,6 +4,11 @@ import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 
+/**
+ * 对公账户接口定义
+ * @author Jason
+ *
+ */
 public interface IUserRpcService {
 	/**
 	 * 创建用户
