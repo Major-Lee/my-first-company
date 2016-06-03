@@ -345,20 +345,17 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    		final String orderid = "10012016041100000000000000000069";
    		userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(3,orderid, 20l, "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
 			@Override
-			public boolean beforeCheck(int uid, double vcurrency_cost,
-					double vcurrency_has) {
+			public boolean beforeCheck(int uid, double vcurrency_cost,double vcurrency_has) {
 				if(vcurrency_has < vcurrency_cost){
 					//消息提示 余额不足并返回false
 					return false;
 				}else{
-					
+					return true;
 				}
-				return false;
 			}
 
 			@Override
 			public String after(int uid) {
-				// TODO Auto-generated method stub
 				return null;
 			}
    			
