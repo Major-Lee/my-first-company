@@ -343,7 +343,7 @@ public class DashboardController extends BaseController{
 			return;
 		}
 		try{
-			if(NumberValidateHelper.isValidNumberCharacter(cash)){
+			if(!NumberValidateHelper.isValidNumberCharacter(cash)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{cash});
 			}
 			RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.directDrawPresent(uid, from.concat(StringHelper.MINUS_STRING_GAP).concat(orderid), Double.valueOf(cash), desc);//(d_snk_turnstate, d_snk_type);
