@@ -121,7 +121,11 @@ public class QuerySSIdStatisticsController extends BaseController{
 		if(totalCount <= ps){
 			pageMapList = dateUmList.subList(0, totalCount);
 		}else{
-			pageMapList = dateUmList.subList(fromIndex, toIndex);
+			if(totalCount<toIndex){
+				pageMapList = dateUmList.subList(fromIndex, totalCount);
+			}else{
+				pageMapList = dateUmList.subList(fromIndex, toIndex);
+			}
 		}
 		Map<String,Object> totalMap=(Map<String, Object>) umResResult.get("total");
 		totalMap.put("ssid", resResult.get("totalSSID"));;
