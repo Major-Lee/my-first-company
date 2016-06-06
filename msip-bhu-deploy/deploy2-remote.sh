@@ -80,12 +80,15 @@ cp ../../msip-bhu-unit/msip_bhu_unit_agent/target/msip_bhu_unit_agent-bin.zip ./
 #cp ../../msip-bhu-business-impl/msip_bhu_spark_task/target/msip_bhu_spark_task-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_backend_online-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_online/target/msip_bhu_backend_online-bin.zip ./$CuDateDir
+echo '拷贝文件 msip_bhu_backend_async_online-bin.zip到'$CuDateDir
+cp ../../msip-bhu-business-impl/msip_bhu_backend_async_online/target/msip_bhu_backend_async_online-bin.zip ./$CuDateDir
+
 echo '拷贝文件 msip_bhu_backend_task-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_task/target/msip_bhu_backend_task-bin.zip ./$CuDateDir
-echo '拷贝文件 msip_bhu_backend_wifistasniffer-bin.zip到'$CuDateDir
-cp ../../msip-bhu-business-impl/msip_bhu_backend_wifistasniffer/target/msip_bhu_backend_wifistasniffer-bin.zip ./$CuDateDir
-echo '拷贝文件 msip_bhu_backend_modulestat-bin.zip到'$CuDateDir
-cp ../../msip-bhu-business-impl/msip_bhu_backend_modulestat/target/msip_bhu_backend_modulestat-bin.zip ./$CuDateDir
+#echo '拷贝文件 msip_bhu_backend_wifistasniffer-bin.zip到'$CuDateDir
+#cp ../../msip-bhu-business-impl/msip_bhu_backend_wifistasniffer/target/msip_bhu_backend_wifistasniffer-bin.zip ./$CuDateDir
+#echo '拷贝文件 msip_bhu_backend_modulestat-bin.zip到'$CuDateDir
+#cp ../../msip-bhu-business-impl/msip_bhu_backend_modulestat/target/msip_bhu_backend_modulestat-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_dataimport-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_dataimport/target/msip_bhu_dataimport-bin.zip ./$CuDateDir
 
@@ -135,15 +138,17 @@ unzip -qo msip_bhu_unit_agent/bin/msip_bhu_unit_agent.jar -d msip_bhu_unit_agent
 
 unzip -q msip_bhu_backend_online-bin.zip
 unzip -qo msip_bhu_backend_online/bin/msip_bhu_backend_online.jar -d msip_bhu_backend_online/classes/
+unzip -q msip_bhu_backend_async_online-bin.zip
+unzip -qo msip_bhu_backend_async_online/bin/msip_bhu_backend_async_online.jar -d msip_bhu_backend_async_online/classes/
 
 unzip -q msip_bhu_backend_task-bin.zip
 unzip -qo msip_bhu_backend_task/bin/msip_bhu_backend_task.jar -d msip_bhu_backend_task/classes/
 
-unzip -q msip_bhu_backend_wifistasniffer-bin.zip
-unzip -qo msip_bhu_backend_wifistasniffer/bin/msip_bhu_backend_wifistasniffer.jar -d msip_bhu_backend_wifistasniffer/classes/
+#unzip -q msip_bhu_backend_wifistasniffer-bin.zip
+#unzip -qo msip_bhu_backend_wifistasniffer/bin/msip_bhu_backend_wifistasniffer.jar -d msip_bhu_backend_wifistasniffer/classes/
 
-unzip -q msip_bhu_backend_modulestat-bin.zip
-unzip -qo msip_bhu_backend_modulestat/bin/msip_bhu_backend_modulestat.jar -d msip_bhu_backend_modulestat/classes/
+#unzip -q msip_bhu_backend_modulestat-bin.zip
+#unzip -qo msip_bhu_backend_modulestat/bin/msip_bhu_backend_modulestat.jar -d msip_bhu_backend_modulestat/classes/
 
 unzip -q msip_bhu_dataimport-bin.zip
 unzip -qo msip_bhu_dataimport/bin/msip_bhu_dataimport.jar -d msip_bhu_dataimport/classes/
@@ -264,6 +269,12 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_online/lib/msip_*.jar
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_online/classes/com/ 		root@$Deploy2ComponentServerBrook:/BHUData/apps/msip_bhu_backend_online/bin/com/
 echo 'deploy msip_bhu_backend_online successfully @'$Deploy2ComponentServerBrook
 
+echo 'deploy msip_bhu_backend_async_online to ...@'$Deploy2ComponentServerBrook
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_async_online/lib/spring*.RELEASE.jar    root@$Deploy2ComponentServerBrook:/BHUData/apps/msip_bhu_backend_async_online/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_async_online/lib/msip_*.jar   root@$Deploy2ComponentServerBrook:/BHUData/apps/msip_bhu_backend_async_online/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_async_online/classes/com/   root@$Deploy2ComponentServerBrook:/BHUData/apps/msip_bhu_backend_async_online/bin/com/
+echo 'deploy msip_bhu_backend_async_online successfully @'$Deploy2ComponentServerBrook
+
 echo 'deploy msip_bhu_backend_task to ...@'$Deploy2ComponentServerBrook
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task/lib/spring*.RELEASE.jar		root@$Deploy2ComponentServerBrook:/BHUData/apps/msip_bhu_backend_task/libs/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task/lib/msip_*.jar		root@$Deploy2ComponentServerBrook:/BHUData/apps/msip_bhu_backend_task/libs/
@@ -326,11 +337,11 @@ echo '准备发布其他服务到'$Deploy2ComponentServerUsoop
 #rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_wifistasniffer/classes/com/     root@$Deploy2ComponentServerUsoop:/BHUData/apps/msip_bhu_backend_wifistasniffer/bin/com/
 #echo 'deploy msip_bhu_backend_wifistasniffer successfully @'$Deploy2ComponentServerUsoop
 
-echo 'deploy msip_bhu_backend_modulestat to ...@'$Deploy2ComponentServerUsoop
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_modulestat/lib/spring*.RELEASE.jar    root@$Deploy2ComponentServerUsoop:/BHUData/apps/msip_bhu_backend_modulestat/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_modulestat/lib/msip_*.jar   root@$Deploy2ComponentServerUsoop:/BHUData/apps/msip_bhu_backend_modulestat/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_modulestat/classes/com/     root@$Deploy2ComponentServerUsoop:/BHUData/apps/msip_bhu_backend_modulestat/bin/com/
-echo 'deploy msip_bhu_backend_modulestat successfully @'$Deploy2ComponentServerUsoop
+#echo 'deploy msip_bhu_backend_modulestat to ...@'$Deploy2ComponentServerUsoop
+#rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_modulestat/lib/spring*.RELEASE.jar    root@$Deploy2ComponentServerUsoop:/BHUData/apps/msip_bhu_backend_modulestat/libs/
+#rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_modulestat/lib/msip_*.jar   root@$Deploy2ComponentServerUsoop:/BHUData/apps/msip_bhu_backend_modulestat/libs/
+#rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_modulestat/classes/com/     root@$Deploy2ComponentServerUsoop:/BHUData/apps/msip_bhu_backend_modulestat/bin/com/
+#echo 'deploy msip_bhu_backend_modulestat successfully @'$Deploy2ComponentServerUsoop
 
 echo '发布其他服务成功'$Deploy2ComponentServerUsoop
 
