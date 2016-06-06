@@ -203,6 +203,14 @@ public class PaymentController extends BaseController{
         		return;
         	}
         	
+        	int temp = Integer.parseInt(total_fee);
+        	if(temp < 100){
+        		logger.error(String.format("apply withdrawals total_fee[%s] ", total_fee));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+    					ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT)));
+        		return;
+        	}
+        	
     		PaymentWithdraw paymentWithdraw = paymentWithdrawService.findByOrderId(withdraw_no);
     		if(paymentWithdraw != null){
     			logger.error(String.format("apply withdrawals paymentWithdraw [%s]", paymentWithdraw));
