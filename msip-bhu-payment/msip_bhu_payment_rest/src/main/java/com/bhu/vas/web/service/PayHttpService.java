@@ -690,7 +690,7 @@ public class PayHttpService {
         WithDrawNotifyResponse unifiedOrderResponse = new WithDrawNotifyResponse();
         
         try {
-        	unifiedOrderResponse = HttpResponseUtil.httpRequest(withdrawalsRequestApiBaseUrl,nOTIFY_URL, requestXML, WithDrawNotifyResponse.class);
+        	unifiedOrderResponse = HttpResponseUtil.httpRequest(mchId,withdrawalsRequestApiBaseUrl,nOTIFY_URL, requestXML, WithDrawNotifyResponse.class);
 		} catch (KeyManagementException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException
 				| CertificateException | IOException e) {
 			unifiedOrderResponse.setResultSuccess(false);
