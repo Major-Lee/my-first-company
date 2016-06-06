@@ -106,7 +106,6 @@ public class ShareDealDailyGroupSummaryProcedureDTO extends AbstractProcedureDTO
 		return vto;
 	}
 
-	@Override
 	public boolean isMaster() {
 		return false;
 	}

@@ -63,7 +63,6 @@ public class UniqueFacadeServiceTest extends BaseTest{
 		}
 		RecordInfoVTO recordInfo = new RecordInfoVTO();
 		
-		recordInfo.setInfo(infos);
 		recordInfo.setHistory_order_count(paymentReckoningService.countOfAll());
 		recordInfo.setHistory_order_user(paymentReckoningService.countOfUser());
 		recordInfo.setPay_again_user_count(3432);
