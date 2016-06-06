@@ -169,7 +169,7 @@ public class PaymentController extends BaseController{
         	}
         	if(appid.equals(BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey())&&BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getSecret().equals(secret)){
         		logger.info(String.format("apply BHU_TIP_BUSINESS withdrawals appid[%s] secret[%s]", appid,secret));
-			}else if(appid.equals(BusinessEnumType.CommdityApplication.Default.getKey())&&BusinessEnumType.CommdityApplication.Default.getSecret().equals(secret)){
+			}else if(appid.equals(BusinessEnumType.CommdityApplication.DEFAULT.getKey())&&BusinessEnumType.CommdityApplication.DEFAULT.getSecret().equals(secret)){
 				logger.info(String.format("apply BHU_PREPAID_BUSINESS withdrawals appid[%s] secret[%s]", appid,secret));
 			}else{
 				logger.error(String.format("apply withdrawals appid[%s] secret[%s]", appid,secret));
@@ -293,7 +293,7 @@ public class PaymentController extends BaseController{
 			if(appid.equals(BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey()+"")&&BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getSecret().equals(secret)){
 				logger.info(String.format("apply BHU_PREPAID_BUSINESS withdrawals appid[%s] secret[%s]", appid,secret));
 				paymentName = "虎钻";
-			}else if(appid.equals(BusinessEnumType.CommdityApplication.Default.getKey()+"")&&BusinessEnumType.CommdityApplication.Default.getSecret().equals(secret)){
+			}else if(appid.equals(BusinessEnumType.CommdityApplication.DEFAULT.getKey()+"")&&BusinessEnumType.CommdityApplication.DEFAULT.getSecret().equals(secret)){
 				logger.info(String.format("apply BHU_TIP_BUSINESS withdrawals appid[%s] secret[%s]", appid,secret));
 				paymentName = "打赏";
 			}else{
@@ -1309,7 +1309,7 @@ public class PaymentController extends BaseController{
     	System.out.println(BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getSecret().equals("1F915A8DA370422582CBAC1DB6A806UU"));
     	if("1002".equals(BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey())&&BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getSecret().equals("1F915A8DA370422582CBAC1DB6A806UU")){
 			System.out.println("虎钻"); ;
-		}else if("1001".equals(BusinessEnumType.CommdityApplication.Default.getKey())&&BusinessEnumType.CommdityApplication.Default.getSecret().equals("1F915A8DA370422582CBAC1DB6A806DD")){
+		}else if("1001".equals(BusinessEnumType.CommdityApplication.DEFAULT.getKey())&&BusinessEnumType.CommdityApplication.DEFAULT.getSecret().equals("1F915A8DA370422582CBAC1DB6A806DD")){
 			System.out.println("打赏"); ;
 		}else{
 			System.out.println("err"); ;
