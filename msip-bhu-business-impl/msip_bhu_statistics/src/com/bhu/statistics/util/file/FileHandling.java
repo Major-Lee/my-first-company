@@ -38,7 +38,7 @@ public class FileHandling {
 	//日志外网地址
 	private static final String WAIWANG_LOG="/BHUData/bulogs/copylogs/"+getNextDay();
 	//订单统计请求接口地址
-	private static final String REQUEST_URL = "http://192.168.66.7/bhu_api/v1/dashboard/order/statistics";
+	private static final String REQUEST_URL = "http://10.171.90.208/bhu_api/v1/dashboard/order/statistics";
 	//PV【设备连接总数】前一天
 	private static long dayPVNum = 0;
 	//UV【设备连接总人数】前一天

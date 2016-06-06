@@ -173,7 +173,7 @@ public class UMLogicImpl implements IUMLogic{
 			map.put("dayPV", dayPV);
 			//获取设备总数以及设备在线数
 			String equipment = StringUtils.EMPTY;
-			equipment = BhuCache.getInstance().getEquipment(startTime, "equipment");
+			equipment = BhuCache.getInstance().getEquipment(date, "equipment");
 			JSONObject obj = JSONObject.fromObject(equipment);
 			int dc = 0;
 			int doc = 0;
@@ -196,7 +196,7 @@ public class UMLogicImpl implements IUMLogic{
 			totalDOC += doc;
 			//获取当天订单统计数量
 			String orderStatist = StringUtils.EMPTY; 
-			orderStatist = BhuCache.getInstance().getStOrder(FileHandling.getNextDay(),"stOrder");
+			orderStatist = BhuCache.getInstance().getStOrder(date,"stOrder");
 			double singleOrderNum = 0;
 			double singleGains = 0;
 			double dayGains = 0;

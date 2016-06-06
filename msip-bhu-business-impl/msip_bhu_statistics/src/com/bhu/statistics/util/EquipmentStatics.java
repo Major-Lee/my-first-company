@@ -15,7 +15,7 @@ import com.bhu.statistics.util.http.RequestPostUtils;
  *
  */
 public class EquipmentStatics {
-	private static final String REQUEST_URL = "http://192.168.66.7/bhu_api/v1/dashboard/device/statistics";
+	private static final String REQUEST_URL = "http://10.171.90.208/bhu_api/v1/dashboard/device/statistics";
 	
 	public static void main(String[] args) {
 		//共享网络开启状态  1 为开启 0为关闭
