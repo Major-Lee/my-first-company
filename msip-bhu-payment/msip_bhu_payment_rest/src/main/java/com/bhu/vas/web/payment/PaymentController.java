@@ -203,7 +203,8 @@ public class PaymentController extends BaseController{
         		return;
         	}
         	
-        	int temp = Integer.parseInt(total_fee);
+        	String total_fee_fen = BusinessHelper.getMoney(total_fee);
+        	int temp = Integer.parseInt(total_fee_fen);
         	if(temp < 100){
         		logger.error(String.format("apply withdrawals total_fee[%s] ", total_fee));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -420,6 +421,10 @@ public class PaymentController extends BaseController{
         	String status = unifiedOrderResponse.getResultErrorCode();
 			String msg = unifiedOrderResponse.getResultMessage();
 			logger.info(String.format("apply payment status [%s] msg [%s]", status,msg));
+			result.setWithdraw_type("FAIL");
+         	result.setSuccess(false);
+         	result.setUrl(msg);
+         	return result;
         }
         
         //收到微信的提现成功请求
@@ -439,8 +444,7 @@ public class PaymentController extends BaseController{
 		int withdrawStatus = payWithdraw.getWithdrawStatus();
 		if(withdrawStatus == 0){ //0未支付;1支付成功
             if("SUCCESS".equals(unifiedOrderResponse.getReturn_code()) && "SUCCESS".equals(unifiedOrderResponse.getResult_code())){
-            	 logger.info("账单流水号："+out_trade_no+"支付成功.微信返回SUCCESS.");
- 				//修改成账单状态    1:已支付 2：退款已支付 3：退款成功 4：退款失败
+ 				//修改成账单状态  1：提现成功 0：提现失败
             	updateWithdrawalsStatus(payWithdraw, out_trade_no, trade_no);
              	result.setWithdraw_type("weixin");
              	result.setSuccess(true);
@@ -448,13 +452,11 @@ public class PaymentController extends BaseController{
              	return result;
             }else{
                 //支付s失败
-            	logger.info("支付流水号："+out_trade_no+"支付失败 修改订单的支付状态.");
             	result.setSuccess(false);
     	    	result.setUrl(unifiedOrderResponse.getResultMessage());
     			return result;
             }
 		}else{
-			logger.info("账单流水号："+out_trade_no+"支付账单、订单状态状态修改成功!");
 			result.setWithdraw_type("weixin");
          	result.setSuccess(true);
          	result.setUrl("");

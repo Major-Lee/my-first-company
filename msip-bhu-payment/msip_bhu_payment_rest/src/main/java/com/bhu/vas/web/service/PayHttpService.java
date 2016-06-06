@@ -687,12 +687,15 @@ public class PayHttpService {
         String requestXML = getRequestXml(parameters);
         log.info("requestXML：" + requestXML);
 
-        WithDrawNotifyResponse unifiedOrderResponse = null;
+        WithDrawNotifyResponse unifiedOrderResponse = new WithDrawNotifyResponse();
         
         try {
         	unifiedOrderResponse = HttpResponseUtil.httpRequest(withdrawalsRequestApiBaseUrl,nOTIFY_URL, requestXML, WithDrawNotifyResponse.class);
 		} catch (KeyManagementException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException
 				| CertificateException | IOException e) {
+			unifiedOrderResponse.setResultSuccess(false);
+			unifiedOrderResponse.setResultErrorCode("FAIL");
+			unifiedOrderResponse.setResultMessage("微信请求接口捕获异常证书路径有误");
 			log.error("提交提现请求失败");
 		}
         
