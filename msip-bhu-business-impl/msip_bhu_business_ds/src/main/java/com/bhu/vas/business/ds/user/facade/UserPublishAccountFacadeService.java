@@ -1,5 +1,7 @@
 package com.bhu.vas.business.ds.user.facade;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -115,8 +117,11 @@ public class UserPublishAccountFacadeService{
 		entity.setOpening_bank(opening_bank);
 		entity.setCity(city);
 		entity.setBank_branch_name(bank_branch_name);
-		entity.setCreateTime(new Date().toString());
-		entity.setUpdateTime(new Date().toString());
+		Date date=new Date();
+		DateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String time=format.format(date);
+		entity.setCreateTime(time);
+		entity.setUpdateTime(time);
 		entity.setStatus(0);
 		return userPublishAccountService.insert(entity);
 	}

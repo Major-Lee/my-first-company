@@ -136,7 +136,10 @@
 			type="com.bhu.vas.api.rpc.agent.model.AgentDeviceMark" />
 		<typeAlias alias="fincialStatistics"
 			type="com.bhu.vas.api.rpc.statistics.model.FincialStatistics" />
-
+		
+		<!--对公账号 add by dongrui 20160606 start -->
+		<typeAlias alias="userPublishAccount" type="com.bhu.vas.api.rpc.user.model.UserPublishAccount" />
+		<!--对公账号 add by dongrui 20160606 E N D -->
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin"> 
@@ -244,6 +247,10 @@
 			resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentBillSummaryView.sqlMap.xml" />
 		<mapper
 			resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceMark.sqlMap.xml" />
+		
+		<!--对公账号 add by dongrui 20160606 start -->
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserPublishAccount.sqlMap.xml" />
+		<!--对公账号 add by dongrui 20160606 E N D -->
 	</mappers>
 
 </configuration>
