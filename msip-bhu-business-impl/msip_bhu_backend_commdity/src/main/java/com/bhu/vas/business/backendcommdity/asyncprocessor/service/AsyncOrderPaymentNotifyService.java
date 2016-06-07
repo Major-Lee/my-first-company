@@ -17,6 +17,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
+import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -217,6 +218,21 @@ public class AsyncOrderPaymentNotifyService {
 	 * @param rpcn_dto
 	 */
 	public void rechargeVCurrencyOrderReceiptHandle(Order order, ResponsePaymentCompletedNotifyDTO rpcn_dto){
+		//String orderid = rpcn_dto.getOrderid();
+		boolean success = rpcn_dto.isSuccess();
+		String paymented_ds = rpcn_dto.getPaymented_ds();
+		String payment_type = rpcn_dto.getPayment_type();
+		String payment_proxy_type = rpcn_dto.getPayment_proxy_type();
+		
+		order = orderFacadeService.rechargeVCurrencyOrderPaymentCompletedNotify(success, order, paymented_ds, 
+				payment_type, payment_proxy_type);
+		
+		Integer order_status = order.getStatus();
+		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
+//			userWalletFacadeService.vcurrencyToUserWallet(order.getUid(), order.getId(), UWalletTransMode.RealMoneyPayment, 
+//					rmoney, vcurrency, desc);
+		}
+		
 		
 	}
 	

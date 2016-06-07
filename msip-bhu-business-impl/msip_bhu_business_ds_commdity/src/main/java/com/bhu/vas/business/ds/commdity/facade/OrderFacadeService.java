@@ -342,6 +342,7 @@ public class OrderFacadeService {
 		long vcurrency = commdity.getVcurrency();
 		//订单生成
 		Order order = new Order();
+		order.setUid(uid);
 		order.setCommdityid(commdityid);
 		order.setAppid(appid);
 		order.setType(commdity.getCategory());
