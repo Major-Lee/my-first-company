@@ -16,7 +16,9 @@ import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
+import com.bhu.vas.api.dto.commdity.UserRechargeVCurrencyOrderDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
+import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -209,7 +211,7 @@ public class OrderUnitFacadeService {
 	}
 	
 	/**
-	 * 根据设备mac查询订单分页列表
+	 * 根据设备mac查询打赏订单分页列表
 	 * @param uid 用户id
 	 * @param mac 用户绑定的设备mac
 	 * @param umac 订单支付用户的终端mac
@@ -223,10 +225,10 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, int pageNo, int pageSize) {
 		try{
 			List<UserOrderDTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut);
+			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, CommdityCategory.InternetLimit.getCategory());
 			if(order_count > 0){
-				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut,
-						pageNo, pageSize);
+				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
+						CommdityCategory.InternetLimit.getCategory(), pageNo, pageSize);
 				
 				if(orderList != null && !orderList.isEmpty()){
 					List<String> orderids = new ArrayList<String>();
@@ -327,6 +329,82 @@ public class OrderUnitFacadeService {
 		}
 	}
 	
+	/**
+	 * 根据设备条件查询充值虎钻订单分页列表
+	 * @param uid 用户id
+	 * @param status 订单状态
+	 * @param type 订单类型
+	 * @param pageNo 页码
+	 * @param pageSize 分页数量
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserRechargeVCurrencyOrderDTO>> rechargeVCurrencyOrderPagesByUid(Integer uid, 
+			Integer status,  int pageNo, int pageSize) {
+		try{
+			List<UserRechargeVCurrencyOrderDTO> retDtos = Collections.emptyList();
+			int order_count = orderFacadeService.countOrderByParams(uid, null, null, status, null, CommdityCategory.RechargeVCurrency.getCategory());
+			if(order_count > 0){
+				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, null, null, status, null,
+						CommdityCategory.RechargeVCurrency.getCategory(), pageNo, pageSize);
+				
+				if(orderList != null && !orderList.isEmpty()){
+					retDtos = new ArrayList<UserRechargeVCurrencyOrderDTO>();
+					UserRechargeVCurrencyOrderDTO userOrderDto = null;
+					for(Order order : orderList){
+						userOrderDto = new UserRechargeVCurrencyOrderDTO();
+						userOrderDto.setId(order.getId());
+						userOrderDto.setUid(order.getUid());
+						userOrderDto.setUmactype(order.getUmactype());
+						userOrderDto.setAmount(order.getAmount());
+						userOrderDto.setPayment_type(order.getPayment_type());
+						OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+						if(orderPaymentType != null){
+							userOrderDto.setPayment_type_name(orderPaymentType.getDesc());
+						}
+						userOrderDto.setVcurrency(order.getVcurrency());
+						if(order.getCreated_at() != null){
+							userOrderDto.setCreated_ts(order.getCreated_at().getTime());
+						}
+						if(order.getPaymented_at() != null){
+							userOrderDto.setPaymented_ts(order.getPaymented_at().getTime());
+						}
+						retDtos.add(userOrderDto);
+					}
+				}
+			}
+			TailPage<UserRechargeVCurrencyOrderDTO> returnRet = new CommonPage<UserRechargeVCurrencyOrderDTO>(pageNo, pageSize, order_count, retDtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("OrderPagesByMac Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 根据用户id地址进行订单的状态查询
+	 * @param uid 用户id
+	 * @param orderId 订单id
+	 * @return
+	 */
+	public RpcResponseDTO<OrderStatusDTO> rechargeVCurrencyOrderStatusByUmac(Integer uid, String orderid) {
+		try{
+			Order order = orderFacadeService.validateOrderId(orderid);
+			
+			if(!uid.equals(order.getUid())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_INVALID);
+			}
+			
+			OrderStatusDTO orderStatusDto = OrderHelper.buildOrderStatusDTO(order);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderStatusDto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("OrderStatusByUmac Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 	
 	private String distillOwnercash(String orderid,List<UserWalletLog> walletLogs){
 		if(walletLogs != null && !walletLogs.isEmpty()){
