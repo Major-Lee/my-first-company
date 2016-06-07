@@ -241,7 +241,10 @@ public class UMLogicImpl implements IUMLogic{
 		Map<String,Object> totalMap=new HashMap<String,Object>();
 		totalMap.put("totalPV", totalPV);
 		totalMap.put("totalUV", totalUV);
+		//计算设备在线数/总数的平均值
+		totalDC = totalDC/Integer.parseInt(dateType);
 		totalMap.put("totalDC", totalDC);
+		totalDOC = totalDOC/Integer.parseInt(dateType);
 		totalMap.put("totalDOC", totalDOC);
 		BigDecimal b = new BigDecimal(totalSingleGains);
 		totalSingleGains =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
@@ -954,7 +957,10 @@ public class UMLogicImpl implements IUMLogic{
 		Map<String,Object> totalMap=new HashMap<String,Object>();
 		totalMap.put("totalPV", totalPV);
 		totalMap.put("totalUV", totalUV);
+		List<String> list = DateUtils.getDaysList(startTime, endTime);
+		totalDC = totalDC/list.size();
 		totalMap.put("totalDC", totalDC);
+		totalDOC = totalDOC/list.size();
 		totalMap.put("totalDOC", totalDOC);
 		BigDecimal b = new BigDecimal(totalSingleGains);
 		totalSingleGains =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
