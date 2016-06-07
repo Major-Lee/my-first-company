@@ -307,7 +307,8 @@ public class OrderUnitFacadeService {
 				}
 			}
 		}
-		return StringHelper.MINUS_STRING_GAP;
+		//return StringHelper.MINUS_STRING_GAP;
+		return "0";
 	}
 	
 	/*public static void main(String[] argv){
