@@ -219,7 +219,7 @@ public enum ResponseErrorCode {
 	VALIDATE_APPID_INVALID("414","validate.appid.invalid"),
 	VALIDATE_ORDER_APPID_INVALID("415","validate.order.appid.invalid"),
 	VALIDATE_ORDER_UMAC_INVALID("416","validate.order.umac.invalid"),
-	
+	VALIDATE_ORDER_UID_INVALID("417","validate.order.uid.invalid"),
 	
 	VALIDATE_COMMDITY_DATA_NOTEXIST("450","validate.commdity.data.notexist"),
 	VALIDATE_COMMDITY_NOT_ONSALE("451","validate.commdity.not.onsale"),

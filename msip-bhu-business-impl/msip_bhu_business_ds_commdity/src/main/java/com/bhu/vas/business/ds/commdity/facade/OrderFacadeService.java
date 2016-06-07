@@ -78,8 +78,9 @@ public class OrderFacadeService {
 	 * @param umac 支付订单的用户mac
 	 * @param status 订单状态
 	 * @param dut 业务线
+	 * @param type 订单类型
 	 */
-	public int countOrderByParams(Integer uid, String mac, String umac, Integer status, String dut){
+	public int countOrderByParams(Integer uid, String mac, String umac, Integer status, String dut, Integer type){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		criteria
@@ -94,8 +95,12 @@ public class OrderFacadeService {
 		if(StringUtils.isNotEmpty(dut)){
 			criteria.andColumnEqualTo("mac_dut", dut);
 		}
+		if(type != null){
+			criteria.andColumnEqualTo("type", type);
+		}
 		return orderService.countByModelCriteria(mc);
 	}
+	
 	
 	/**
 	 * 根据订单参数进行查询订单分页列表
@@ -104,12 +109,13 @@ public class OrderFacadeService {
 	 * @param umac 支付订单的用户mac
 	 * @param status 订单状态
 	 * @param dut 订单业务线
+	 * @param type 订单类型
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
 	public List<Order> findOrdersByParams(Integer uid, String mac, String umac, Integer status, String dut, 
-			int pageNo, int pageSize){
+			Integer type, int pageNo, int pageSize){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		criteria
@@ -123,6 +129,9 @@ public class OrderFacadeService {
 		}
 		if(StringUtils.isNotEmpty(dut)){
 			criteria.andColumnEqualTo("mac_dut", dut);
+		}
+		if(type != null){
+			criteria.andColumnEqualTo("type", type);
 		}
 		mc.setOrderByClause("created_at desc");
 		mc.setPageNumber(pageNo);

@@ -10,6 +10,7 @@ import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
+import com.bhu.vas.api.dto.commdity.UserRechargeVCurrencyOrderDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
@@ -83,5 +84,21 @@ public class OrderRpcService implements IOrderRpcService{
 				commdityid, payment_type, umactype));
 		return orderUnitFacadeService.createRechargeVCurrencyOrder(uid, commdityid, payment_type, umactype);
 	}
+
+	@Override
+	public RpcResponseDTO<TailPage<UserRechargeVCurrencyOrderDTO>> rechargeVCurrencyOrderPagesByUid(
+			Integer uid, Integer status, int pageNo, int pageSize) {
+		logger.info(String.format("rechargeVCurrencyOrderPagesByUid with uid[%s] status[%s] pageNo[%s] pageSize[%s]", uid, 
+				status, pageNo, pageSize));
+		return orderUnitFacadeService.rechargeVCurrencyOrderPagesByUid(uid, status, pageNo, pageSize);
+	}
+
+	@Override
+	public RpcResponseDTO<OrderStatusDTO> rechargeVCurrencyOrderStatusByUmac(Integer uid, String orderid) {
+		logger.info(String.format("rechargeVCurrencyOrderStatusByUmac with uid[%s] orderid[%s]", uid, orderid));
+		return orderUnitFacadeService.rechargeVCurrencyOrderStatusByUmac(uid, orderid);
+	}
+	
+	
 
 }

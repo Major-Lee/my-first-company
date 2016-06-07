@@ -17,6 +17,7 @@ import com.bhu.vas.api.dto.commdity.OrderPaymentUrlDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
+import com.bhu.vas.api.dto.commdity.UserRechargeVCurrencyOrderDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -216,5 +217,59 @@ public class OrderController extends BaseController{
 		retDto.setId(order_dto.getId());
 		retDto.setThird_payinfo(rcp_dto.getParams());
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
+	}
+	
+	/**
+	 * 根据订单参数查询充值虎钻订单分页列表
+	 * @param request
+	 * @param response
+	 * @param uid 用户id
+	 * @param status 订单状态 默认发货完成
+	 * @param pageNo 页码
+	 * @param pageSize 每页数量
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/query/vcurrency/pages",method={RequestMethod.GET,RequestMethod.POST})
+	public void query_vcurrency_pages(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false, defaultValue = "10") Integer status,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+			) {
+
+		RpcResponseDTO<TailPage<UserRechargeVCurrencyOrderDTO>> rpcResult = orderRpcService.rechargeVCurrencyOrderPagesByUid(uid, 
+				status, pageNo, pageSize);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	/**
+	 * 根据umac查询打赏订单状态
+	 * @param request
+	 * @param response
+	 * @param umac 用户mac
+	 * @param orderId 订单id
+	 * @param appId 应用id
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/query/vcurrency/status",method={RequestMethod.GET,RequestMethod.POST})
+	public void query_vcurrency_status(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String orderid
+			) {
+
+		RpcResponseDTO<OrderStatusDTO> rpcResult = orderRpcService.rechargeVCurrencyOrderStatusByUmac(uid, orderid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
 	}
 }
