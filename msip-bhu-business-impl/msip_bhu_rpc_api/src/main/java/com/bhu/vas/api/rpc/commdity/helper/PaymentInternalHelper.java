@@ -43,9 +43,16 @@ public class PaymentInternalHelper {
 	 * @param goods_no 订单id
 	 * @return
 	 */
-	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(String payment_type, String amount, 
-			String requestip, String umac, String orderid, String payment_completed_url){
-		Map<String, String> api_params = generatePaymentApiParamMap();
+	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(Integer appid, String payment_type, 
+			String amount, String requestip, String umac, String orderid, String payment_completed_url){
+		Map<String, String> api_params = generatePaymentApiParamMap(appid);
+		if(api_params == null){
+			logger.info(String.format("CreatePaymentUrlCommunication generate params error orderid[%s] payment_type[%s] "
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s]", orderid, payment_type, 
+					amount, requestip, umac, payment_completed_url, appid));
+			return null;
+		}
+		
 		api_params.put("payment_type", payment_type);
 		api_params.put("total_fee", amount);
 		api_params.put("exter_invoke_ip", requestip);
@@ -64,25 +71,32 @@ public class PaymentInternalHelper {
 /*			System.out.println(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
 					+ "amount[%s] ip[%s] req[%s]", orderid, payment_type, amount, requestip, response));*/
 			logger.info(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] req[%s]", orderid, payment_type, amount, requestip, umac, payment_completed_url, response));
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s] req[%s]", orderid, payment_type, 
+					amount, requestip, umac, payment_completed_url, appid, response));
 			if(StringUtils.isNotEmpty(response)){
 				return JsonHelper.getDTO(response, ResponseCreatePaymentUrlDTO.class);
 			}
 		} catch (Exception ex) {
 			logger.error(String.format("CreatePaymentUrlCommunication Response  orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] Exception ", orderid, payment_type, amount, requestip, umac, payment_completed_url), ex);
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s] Exception ", orderid, payment_type, 
+					amount, requestip, umac, payment_completed_url, appid), ex);
 			ex.printStackTrace(System.out);
 		}
 		return rcp_dto;
 	}
 	
-	public static Map<String, String> generatePaymentApiParamMap(){
-		Map<String, String> api_params = new HashMap<String, String>();
-		api_params.put("appid", String.valueOf(CommdityApplication.Default.getKey()));
-		api_params.put("secret", CommdityApplication.Default.getSecret());
+	public static Map<String, String> generatePaymentApiParamMap(Integer appid){
+		Map<String, String> api_params = null;
+		
+		CommdityApplication commdityApplication = CommdityApplication.fromKey(appid);
+		if(commdityApplication != null){
+			api_params = new HashMap<String, String>();
+			//api_params.put("appid", String.valueOf(CommdityApplication.Default.getKey()));
+			api_params.put("appid", String.valueOf(commdityApplication.getKey()));
+			api_params.put("secret", commdityApplication.getSecret());
+		}
 		return api_params;
 	}
-	
 	
 	
 	public static ResponseCreateWithdrawDTO createWithdrawUrlCommunication(
@@ -128,8 +142,8 @@ public class PaymentInternalHelper {
 	
 	public static Map<String, String> generateWithdrawApiParamMap(){
 		Map<String, String> api_params = new HashMap<String, String>();
-		api_params.put("appid", String.valueOf(CommdityApplication.Default.getKey()));
-		api_params.put("secret", CommdityApplication.Default.getSecret());
+		api_params.put("appid", String.valueOf(CommdityApplication.DEFAULT.getKey()));
+		api_params.put("secret", CommdityApplication.DEFAULT.getSecret());
 		return api_params;
 	}
 	
@@ -138,7 +152,7 @@ public class PaymentInternalHelper {
 	 * 模拟支付系统支付成功触发api
 	 * @param orderid
 	 */
-	public static void simulatePaysuccessCommunication(String orderid){
+/*	public static void simulatePaysuccessCommunication(String orderid){
 		Map<String, String> api_params = generatePaymentApiParamMap();
 		api_params.put("goods_no", orderid);
 		api_params.put("status", "success");
@@ -149,10 +163,10 @@ public class PaymentInternalHelper {
 		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
 		}
-	}
+	}*/
 	
 	public static void simulateWithdrawSuccessCommunication(String orderid){
-		Map<String, String> api_params = generatePaymentApiParamMap();
+		Map<String, String> api_params = generateWithdrawApiParamMap();
 		api_params.put("wid", orderid);
 		api_params.put("status", "success");
 		try {

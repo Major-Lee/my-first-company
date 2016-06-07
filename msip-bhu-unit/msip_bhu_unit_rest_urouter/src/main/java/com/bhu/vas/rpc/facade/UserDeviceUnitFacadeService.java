@@ -2,7 +2,6 @@ package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -33,8 +32,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceCloudDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
-import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.api.vto.device.DeviceBaseVTO;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceOperationVTO;
@@ -46,7 +44,6 @@ import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
@@ -56,10 +53,10 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.bhu.vas.business.search.builder.WifiDeviceTCSearchMessageBuilder;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
@@ -69,7 +66,6 @@ import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrem
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -84,11 +80,17 @@ public class UserDeviceUnitFacadeService {
     private UserService userService;
 	@Resource
 	private WifiDeviceService wifiDeviceService;
-    @Resource
+/*    @Resource
     private UserDeviceService userDeviceService;
     
     @Resource
-    private UserDeviceFacadeService userDeviceFacadeService;
+    private UserDeviceFacadeService userDeviceFacadeService;*/
+	
+	@Resource
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
+	
+	@Resource
+	private UserWifiDeviceService userWifiDeviceService;
     
     @Resource
     private DeviceFacadeService deviceFacadeService;
@@ -136,17 +138,19 @@ public class UserDeviceUnitFacadeService {
     	if(user == null)
     		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
     	
-        UserDevice userDevice;
+/*        UserDevice userDevice;
         UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
-        userDevice = userDeviceService.getById(userDevicePK);
-        if (userDevice != null) {
+        userDevice = userDeviceService.getById(userDevicePK);*/
+    	UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+        if (userWifiDevice != null) {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED);
         } else {
-            userDevice = new UserDevice();
+/*            userDevice = new UserDevice();
             userDevice.setId(new UserDevicePK(mac, uid));
             userDevice.setCreated_at(new Date());
             userDevice.setDevice_name(deviceName);
-            userDeviceService.insert(userDevice);
+            userDeviceService.insert(userDevice);*/
+        	userWifiDeviceFacadeService.insertUserWifiDevice(mac, uid, deviceName);
             
             deviceFacadeService.updateDeviceIndustry(mac, null);
             
@@ -163,16 +167,22 @@ public class UserDeviceUnitFacadeService {
     
     public RpcResponseDTO<Boolean> unBindDevice(String mac, int uid) {
         //TODO(bluesand):有没有被其他用户绑定，现在一台设备只能被一个客户端绑定。
-        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
+/*        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
         for (UserDevice bindDevice : bindDevices) {
             if (bindDevice.getUid() != uid) {
                 return RpcResponseDTOBuilder.builderErrorRpcResponse(
                         ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER,Boolean.FALSE);
             }
-        }
+        }*/
+    	UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+    	if(userWifiDevice != null && !userWifiDevice.getUid().equals(uid)){
+            return RpcResponseDTOBuilder.builderErrorRpcResponse(
+                    ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER,Boolean.FALSE);
+    	}
 
-        UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
-        if (userDeviceService.deleteById(userDevicePK) > 0)  {
+/*        UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+        if (userDeviceService.deleteById(userDevicePK) > 0)  {*/
+    	if(userWifiDeviceService.deleteById(mac) > 0){
         	
         	deviceFacadeService.updateDeviceIndustry(mac, null);
             
@@ -185,24 +195,28 @@ public class UserDeviceUnitFacadeService {
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
     }
 
-    public boolean isBinded(String mac) {
+/*    public boolean isBinded(String mac) {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andColumnEqualTo("mac", mac);
         return  userDeviceService.countByCommonCriteria(mc) > 0 ? true : false;
-    }
+    }*/
 
-    public int countBindDevices(int uid) {
+/*    public int countBindDevices(int uid) {
         ModelCriteria mc = new ModelCriteria();
         mc.createCriteria().andColumnEqualTo("uid", uid);
         return userDeviceService.countByModelCriteria(mc);
-    }
+    }*/
 
     public RpcResponseDTO<UserDTO> fetchBindDeviceUser(String mac) {
         UserDTO userDTO = new UserDTO();
-        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
+/*        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
         if (!bindDevices.isEmpty()) {
             int uid = bindDevices.get(0).getUid();
-            User user = userService.getById(uid);
+            User user = userService.getById(uid);*/
+        UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+        if(userWifiDevice != null){
+        	int uid = userWifiDevice.getUid();
+        	User user = userService.getById(uid);
             userDTO.setId(uid);
             if (user != null) {
                 userDTO.setCountrycode(user.getCountrycode());
@@ -219,15 +233,24 @@ public class UserDeviceUnitFacadeService {
 
     public boolean modifyUserDeviceName(String mac, int uid, String deviceName) {
         try {
-            UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+/*            UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
             UserDevice userDevice = userDeviceService.getById(userDevicePK);
             if (userDevice == null) {
                 return false;
+            }*/
+            UserWifiDevice userWifiDevice = userWifiDeviceFacadeService.findUserWifiDeviceById(mac, uid);
+            if(userWifiDevice == null){
+            	return false;
             }
-            userDevice.setId(new UserDevicePK(mac, uid));
+            
+/*            userDevice.setId(new UserDevicePK(mac, uid));
             userDevice.setDevice_name(deviceName);
             userDevice.setDevice_name_modifyed(true);
-            userDeviceService.update(userDevice);
+            userDeviceService.update(userDevice);*/
+            
+            userWifiDevice.setDevice_name(deviceName);
+            userWifiDevice.setDevice_name_modifyed(true);
+            userWifiDeviceService.update(userWifiDevice);
             
             wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, deviceName);
             return true;
@@ -238,9 +261,10 @@ public class UserDeviceUnitFacadeService {
     }
 
     public RpcResponseDTO<Boolean> forceDeviceUpdate(int uid, String mac){
-    	UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
-    	UserDevice userDevice = userDeviceService.getById(userDevicePK);
-        if (userDevice == null) {
+    	//UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+    	//UserDevice userDevice = userDeviceService.getById(userDevicePK);
+    	UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+        if (userWifiDevice == null) {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
         } else {
         	WifiDevice wifiDevice = wifiDeviceService.getById(mac);
@@ -289,9 +313,10 @@ public class UserDeviceUnitFacadeService {
     		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
     	}
     	String handset_device = user.getLastlogindevice();
-    	UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
-    	UserDevice userDevice = userDeviceService.getById(userDevicePK);
-        if (userDevice == null) {
+//    	UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+//    	UserDevice userDevice = userDeviceService.getById(userDevicePK);
+    	UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+        if (userWifiDevice == null) {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED);
         } else {
         	WifiDevice wifiDevice = wifiDeviceService.getById(mac);
@@ -591,7 +616,7 @@ public class UserDeviceUnitFacadeService {
 	 * @param acc
 	 * @return
 	 */
-	public RpcResponseDTO<List<UserDeviceDTO>>  fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
+/*	public RpcResponseDTO<List<UserDeviceDTO>>  fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
 		if(uid <=0 && StringUtils.isEmpty(acc))
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		if(uid <=0){
@@ -603,7 +628,7 @@ public class UserDeviceUnitFacadeService {
 		}
 		List<UserDeviceDTO> fetchBindDevices = userDeviceFacadeService.fetchBindDevices(uid);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(fetchBindDevices);
-	}
+	}*/
 	
 	
 	
@@ -613,7 +638,7 @@ public class UserDeviceUnitFacadeService {
 	 * @param acc
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
+/*	public RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
 		if(uid <=0 && StringUtils.isEmpty(acc))
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		if(uid <=0){
@@ -631,11 +656,11 @@ public class UserDeviceUnitFacadeService {
 	        }
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-	}
+	}*/
 	
-	public final static int WIFI_DEVICE_BIND_LIMIT_NUM = 10;
+//	public final static int WIFI_DEVICE_BIND_LIMIT_NUM = 10;
 	
-	public RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int operationUid,int countrycode,String acc,int tid){
+/*	public RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int operationUid,int countrycode,String acc,int tid){
 		if(tid <=0 && StringUtils.isEmpty(acc))
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		if(tid <=0){
@@ -654,7 +679,7 @@ public class UserDeviceUnitFacadeService {
 				resultVTOs.add(vto.getPayload());
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(resultVTOs);
-	}
+	}*/
 	
 	public RpcResponseDTO<DeviceDetailVTO> deviceDetail(int operationUid,String mac){
 		try{
@@ -664,7 +689,8 @@ public class UserDeviceUnitFacadeService {
 			}
 			WifiDeviceModule wifiDeviceModule = wifiDeviceModuleService.getById(mac);
 			User user = null;
-			Integer bindUid = userDeviceService.fetchBindUid(mac);
+			//Integer bindUid = userDeviceService.fetchBindUid(mac);
+			Integer bindUid = userWifiDeviceFacadeService.findUidById(mac);
 			if(bindUid != null){
 				user = userService.getById(bindUid);
 			}

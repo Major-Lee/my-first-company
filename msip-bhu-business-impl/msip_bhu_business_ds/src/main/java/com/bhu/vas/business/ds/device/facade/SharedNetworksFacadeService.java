@@ -25,7 +25,6 @@ import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.business.ds.device.service.UserDevicesSharedNetworksService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -45,8 +44,8 @@ public class SharedNetworksFacadeService {
 	@Resource
 	private UserDevicesSharedNetworksService userDevicesSharedNetworksService;
 
-    @Resource
-    private UserDeviceService userDeviceService;
+/*    @Resource
+    private UserDeviceService userDeviceService;*/
 	
     private static final String FormatTemplete = "%04d";
     //如果为DefaultCreateTemplate 则代表新建一个模板
@@ -596,9 +595,9 @@ public class SharedNetworksFacadeService {
 		return userDevicesSharedNetworksService;
 	}
 
-	public UserDeviceService getUserDeviceService() {
+/*	public UserDeviceService getUserDeviceService() {
 		return userDeviceService;
-	}
+	}*/
 	
 	
 }

@@ -7,7 +7,7 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
 public interface ICommdityRpcService {
-	public RpcResponseDTO<TailPage<CommdityDTO>> commdityPages(Integer status, int pageNo, int pageSize);
+	public RpcResponseDTO<TailPage<CommdityDTO>> commdityPages(Integer status, Integer category, int pageNo, int pageSize);
 	
 	public RpcResponseDTO<CommdityAmountDTO> intervalAMount(Integer commdityid, Integer appid, 
 			String mac, String umac, Integer umactype);

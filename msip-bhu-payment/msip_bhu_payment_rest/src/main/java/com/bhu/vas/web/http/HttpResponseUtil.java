@@ -194,20 +194,21 @@ public class HttpResponseUtil {
         return response;
     }
     
-    public static  <RESPONE extends WxResponse> RESPONE httpRequest(String url,String nOTIFY_URL,String data, Class<RESPONE> responeClass) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, KeyManagementException, UnrecoverableKeyException{
+    public static  <RESPONE extends WxResponse> RESPONE httpRequest(String mchId, String url,String nOTIFY_URL,String data, Class<RESPONE> responeClass) throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, KeyManagementException, UnrecoverableKeyException{
 		 KeyStore keyStore  = KeyStore.getInstance("PKCS12");
-		 String pathFile = nOTIFY_URL+"/payment/1260112001.p12";
+		 String pathFile = nOTIFY_URL+"/payment/"+mchId+".p12";
 		 //String pathFile = "E://payment//1260112001.p12";
+		//String pathFile = "E:/paymenttest/"+mchId+".p12";
 	        FileInputStream instream = new FileInputStream(new File(pathFile));
 	        System.out.println(pathFile);
 	        try {
-	            keyStore.load(instream, "1260112001".toCharArray());
+	            keyStore.load(instream, mchId.toCharArray());
 	        } finally {
 	            instream.close();
 	        }
 
 	        // Trust own CA and all self-signed certs
-	        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, "1260112001".toCharArray()).build();
+	        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, mchId.toCharArray()).build();
 	        // Allow TLSv1 protocol only
 	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext, new String[] { "TLSv1" }, null,
 	                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);

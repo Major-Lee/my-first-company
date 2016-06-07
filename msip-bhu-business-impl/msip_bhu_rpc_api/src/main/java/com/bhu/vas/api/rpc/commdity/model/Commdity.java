@@ -18,6 +18,8 @@ public class Commdity extends BaseIntModel{
 	private Integer category;
 	//商品价格(两种方式 10.25 和 5.25-10.25)
 	private String price;
+	//商品兑换的虚拟币
+	private long vcurrency;
 	//商品状态（上架）
 	private Integer status;
 	//商品标签
@@ -28,6 +30,8 @@ public class Commdity extends BaseIntModel{
 	private String app_deliver_detail;
 	//用于存储系统针对不同商品的订单处理细节 json
 	//private String item_order_detail;
+	//用于商品打分排序字段 默认和商品id一样 可以随时修改
+	private int score;
 	//商品创建时间
 	private Date created_at;
 	
@@ -73,6 +77,14 @@ public class Commdity extends BaseIntModel{
 	public void setPrice(String price) {
 		this.price = price;
 	}
+	
+	public long getVcurrency() {
+		return vcurrency;
+	}
+
+	public void setVcurrency(long vcurrency) {
+		this.vcurrency = vcurrency;
+	}
 
 	public Integer getStatus() {
 		return status;
@@ -104,6 +116,14 @@ public class Commdity extends BaseIntModel{
 
 	public void setTags(String tags) {
 		this.tags = tags;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
 	}
 
 	public Date getCreated_at() {

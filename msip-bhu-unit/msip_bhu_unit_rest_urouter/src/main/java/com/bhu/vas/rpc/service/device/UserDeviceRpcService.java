@@ -20,7 +20,7 @@ import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.rpc.facade.UserDeviceUnitFacadeService;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -37,8 +37,11 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
     @Resource
     private UserDeviceUnitFacadeService userDeviceUnitFacadeService;
     
+/*    @Resource
+    private UserDeviceFacadeService userDeviceFacadeService;*/
+    
     @Resource
-    private UserDeviceFacadeService userDeviceFacadeService;
+    private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
     
     @Resource
     private DeviceFacadeService deviceFacadeService;
@@ -100,7 +103,8 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         logger.info(String.format("validateDeviceStatusIsOnlineAndBinded with mac[%s]",mac));
         int retStatus = deviceFacadeService.getWifiDeviceOnlineStatus(mac);
         if (retStatus == DeviceFacadeService.WIFI_DEVICE_STATUS_ONLINE) {
-            if (userDeviceFacadeService.isBinded(mac)) {
+            //if (userDeviceFacadeService.isBinded(mac)) {
+        	if(userWifiDeviceFacadeService.isUserWifiDevice(mac)){
                 retStatus = WIFI_DEVICE_STATUS_BINDED;
             } else {
                 retStatus = WIFI_DEVICE_STATUS_UNBINDED;
@@ -109,11 +113,11 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         return retStatus;
     }
 
-    @Override
+/*    @Override
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid) {
         logger.info(String.format("fetchBindDevices with uid[%s]", uid));
         return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceFacadeService.fetchBindDevices(uid));
-    }
+    }*/
 
     @Override
     public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid, String dut, int pageNo, int pageSize) {
@@ -144,11 +148,11 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         return userUnitFacadeService.fetchBindDevicesByAccOrUid(countrycode,acc,uid);
     }*/
     
-    @Override
+/*    @Override
     public RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid){
     	logger.info(String.format("unBindDevicesByAccOrUid with uid[%s]", uid));
         return userDeviceUnitFacadeService.unBindDevicesByAccOrUid(countrycode,acc,uid);
-    }
+    }*/
     @Override
     public RpcResponseDTO<UserDeviceStatusDTO> validateDeviceStatus(String mac) {
         logger.info(String.format("validateDeviceStatus with mac[%s]", mac));
@@ -209,11 +213,11 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 		return userDeviceUnitFacadeService.deviceDetail(uid, mac);
 	}
 	
-    @Override
+/*    @Override
     public RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid) {
         logger.info(String.format("userDetail with uid[%s] countrycode[%s] acc[%s] tid[%s]", uid,countrycode,acc,tid));
         return userDeviceUnitFacadeService.userDetail(uid,countrycode,acc,tid);
-    }
+    }*/
     
     /*@Override
 	public RpcResponseDTO<DeviceProfileVTO> portalDeviceProfile(String mac){

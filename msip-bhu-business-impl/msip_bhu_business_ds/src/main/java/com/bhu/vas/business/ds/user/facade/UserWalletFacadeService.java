@@ -36,6 +36,7 @@ import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
@@ -78,6 +79,9 @@ public class UserWalletFacadeService{
 	
 	@Resource
 	private FincialStatisticsService fincialStatisticsService;
+	
+	@Resource
+	private DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService;
 	
 	public FincialStatisticsService getFincialStatisticsService() {
 		return fincialStatisticsService;
@@ -210,65 +214,35 @@ public class UserWalletFacadeService{
 	}
 	
 	/**
-	 * 现金充值 充值零钱
+	 * 虚拟币入账
 	 * 入账成功需要写入UserWalletLog
 	 */
-	/*public void cashToUserWallet(int uid,double cash,
-			String orderid,String desc
-			){
-		logger.info(String.format("现金入账|充值现金 uid[%s] orderid[%s] cash[%s] desc[%s]", uid,orderid,cash,desc));
+	/*
+	public int vcurrencyToUserWallet(int uid,String orderid,UWalletTransMode transMode,double rmoney,long vcurrency,String desc){
+		logger.info(String.format("vcurrencyToUserWallet %s-%s uid[%s] orderid[%s] rmoney[%s] vcurrency[%s] desc[%s]",transMode.getName(),UWalletTransType.Recharge2V.getName(), uid,orderid,rmoney,vcurrency,desc));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
-		UserWallet uwallet = userWalletService.getOrCreateById(uid);
-		uwallet.setCash(uwallet.getCash()+cash);
-		userWalletService.update(uwallet);
-		this.doWalletLog(uid, orderid,UWalletTransMode.RealMoneyPayment, UWalletTransType.Recharge2C,StringUtils.EMPTY, cash, cash,0d, desc);
-	}*/
+		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.Recharge2V,rmoney,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
+	}
 	
-	/**
-	 * 分成现金入账
-	 * 如果mac地址没有被绑定或者设备本身不存在则 入账到指定的帐号中
-	 * @param dmac 设备mac地址 通过mac查找其被哪个用户绑定
-	 * @param cash 总收益现金
-	 * @param orderid
-	 * @param desc
-	 */
-/*	public UserWallet sharedealCashToUserWallet(String dmac,double cash,String orderid){
-		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
-		int uid = UserWallet.Default_WalletUID_WhenUIDNotExist;
-		boolean owner = false;
-		if(StringUtils.isNotEmpty(dmac)){
-			WifiDevice wifiDevice = wifiDeviceService.getById(dmac);
-			if(wifiDevice != null){
-				User user = null;
-				Integer bindUid = userDeviceService.fetchBindUid(dmac);
-				if(bindUid != null){
-					user = userService.getById(bindUid);
-					if(user != null){
-						uid = user.getId();
-						owner = true;
-					}
-				}
-			}
-		}
-		return sharedealCashToUserWallet(uid,cash,orderid,owner);
-	}*/
-
-	/**
-	 * 分成现金入账
-	 * 如果uid为null 设置为指定的分成用户
-	 * @param bindUid  设备绑定的用户uid 可能为null
-	 * @param cash 总收益现金
-	 * @param orderid
-	 * @return
-	 */
-	/*public UserWallet sharedealCashToUserWalletWithBindUid(Integer bindUid, double cash, String orderid,String description){
-		int sharedeal_uid = UserWallet.Default_WalletUID_WhenUIDNotExist;
-		boolean owner = false;
-		if(bindUid != null){
-			sharedeal_uid = bindUid;
-			owner = true; 
-		}
-		return sharedealCashToUserWallet(sharedeal_uid, cash, orderid, owner,description);
+	public int vcurrencyFromUserWallet(int uid,String orderid,UWalletTransMode transMode,long vcurrency,String desc){
+		logger.info(String.format("vcurrencyFromUserWallet %s-%s uid[%s] orderid[%s] vcurrency[%s] desc[%s]",transMode.getName(),UWalletTransType.PurchaseGoodsUsedV.getName(), uid,orderid,vcurrency,desc));
+		UserValidateServiceHelper.validateUser(uid,this.userService);
+		//钱包虚拟币数值大小验证
+		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.PurchaseGoodsUsedV,0.00d,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
+	}
+	
+	private int userWalletInOutWithProcedure(int uid,String orderid,UWalletTransMode transMode,UWalletTransType transType,double rmoney,double cash,long vcurrency,String desc,String memo){
+		WalletInOrOutProcedureDTO processorDTO = WalletInOrOutProcedureDTO.build(uid, orderid, 
+				transMode, transType,
+				rmoney, cash, vcurrency, desc, memo);
+		int executeRet = userWalletService.executeProcedure(processorDTO);
+		if(executeRet == 0){
+			logger.info( String.format("钱包出入账-成功 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] vcurrency[%s] desc[%s] memo[%s]",
+					uid,orderid,cash,transMode.getName(),transType.getName(),rmoney,cash,vcurrency,desc,memo));
+		}else
+			logger.info( String.format("钱包出失败-成功 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] vcurrency[%s] desc[%s] memo[%s]",
+					uid,orderid,cash,transMode.getName(),transType.getName(),rmoney,cash,vcurrency,desc,memo));
+		return executeRet;
 	}*/
 	
 	/*public UserWallet sharedealCashToUserWallet(String dmac, double cash, String orderid,String description){
@@ -355,6 +329,12 @@ public class UserWalletFacadeService{
 		return executeRet;*/
 	}
 	
+	/**
+	 * 用户收益每日统计
+	 * @param uid
+	 * @param cdate
+	 * @return
+	 */
 	public ShareDealDailyUserSummaryProcedureVTO sharedealDailyUserSummaryWithProcedure(int uid,String cdate){
 		ShareDealDailyUserSummaryProcedureDTO procedureDTO = new ShareDealDailyUserSummaryProcedureDTO();
 		procedureDTO.setUserid(uid);
@@ -926,7 +906,6 @@ public class UserWalletFacadeService{
 		}
 		return procedureDTO.toTotal();
 	}
-	
 	public UserService getUserService() {
 		return userService;
 	}
@@ -947,6 +926,13 @@ public class UserWalletFacadeService{
 	}
 	public ChargingFacadeService getChargingFacadeService() {
 		return chargingFacadeService;
+	}
+	public DeviceGroupPaymentStatisticsService getDeviceGroupPaymentStatisticsService() {
+		return deviceGroupPaymentStatisticsService;
+	}
+	public void setDeviceGroupPaymentStatisticsService(
+			DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService) {
+		this.deviceGroupPaymentStatisticsService = deviceGroupPaymentStatisticsService;
 	}
 
 	/*public UserThirdpartiesPaymentService getUserThirdpartiesPaymentService() {

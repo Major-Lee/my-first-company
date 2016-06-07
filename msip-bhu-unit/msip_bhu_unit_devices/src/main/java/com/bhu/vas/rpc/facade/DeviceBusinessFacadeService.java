@@ -54,9 +54,7 @@ import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
-import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocationSerialTaskService;
@@ -77,7 +75,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -133,11 +131,14 @@ public class DeviceBusinessFacadeService {
 	@Resource
 	private UserSettingStateService userSettingStateService;
 	
-	@Resource
-	private UserDeviceService userDeviceService;
+/*	@Resource
+	private UserDeviceService userDeviceService;*/
 	
 	//@Resource
 	//private UserService userService;
+	
+	@Resource
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private UserFacadeService userFacadeService;
@@ -376,11 +377,12 @@ public class DeviceBusinessFacadeService {
 								if(user != null){
 									String bindDeviceName = deviceFacadeService.getBindDeviceName(mac);
 									
-						    		UserDevice userDevice = new UserDevice();
+/*						    		UserDevice userDevice = new UserDevice();
 							        userDevice.setId(new UserDevicePK(mac, user.getId()));
 							        userDevice.setDevice_name(bindDeviceName);
 							        userDevice.setCreated_at(new Date());
-							        userDeviceService.insert(userDevice);
+							        userDeviceService.insert(userDevice);*/
+									userWifiDeviceFacadeService.insertUserWifiDevice(mac, user.getId(), bindDeviceName);
 							        
 						    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 						    		if(wifiDevice != null){

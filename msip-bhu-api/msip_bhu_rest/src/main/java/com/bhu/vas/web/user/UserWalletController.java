@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
+import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
@@ -165,4 +167,33 @@ public class UserWalletController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
     
+    @ResponseBody()
+	@RequestMapping(value="/wallet/fincialStatistics", method={RequestMethod.GET,RequestMethod.POST})
+	public void fincialStatistics(HttpServletResponse response, @RequestParam(required=true) String time){
+		try{
+			RpcResponseDTO<FincialStatisticsVTO> rpcResult = userWalletRpcService.fincialStatistics(time);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
+    
+    @ResponseBody()
+    @RequestMapping(value="/wallet/rankingList", method={RequestMethod.GET,RequestMethod.POST})
+    public void rankingList(HttpServletResponse response, @RequestParam(required = true) int uid){
+    	try{
+    		RpcResponseDTO<RankingListVTO> rpcResult = userWalletRpcService.rankingList(uid);
+    		if(!rpcResult.hasError()){
+    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    		}else{
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		}
+    	}catch(Exception ex){
+    		SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+    	}
+    }
 }

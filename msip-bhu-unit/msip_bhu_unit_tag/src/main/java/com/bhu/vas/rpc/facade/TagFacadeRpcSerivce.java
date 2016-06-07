@@ -27,7 +27,7 @@ import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -73,8 +73,11 @@ public class TagFacadeRpcSerivce {
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 
+//	@Resource
+//	private UserDeviceService userDeviceService;
+	
 	@Resource
-	private UserDeviceService userDeviceService;
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 
 	private void addTag(int uid, String tag) {
 
@@ -235,7 +238,7 @@ public class TagFacadeRpcSerivce {
 
 		List<String> macsList = ArrayHelper.toList(macsTemp);
 
-		UserValidateServiceHelper.validateUserDevices(uid, macsList, userDeviceService);
+		UserValidateServiceHelper.validateUserDevices(uid, macsList, userWifiDeviceFacadeService);
 		
 		if(CanAddDevices2Group(uid, gid, macsList)){
 			List<TagGroupRelation> entities = new ArrayList<TagGroupRelation>();
@@ -279,7 +282,7 @@ public class TagFacadeRpcSerivce {
 		List<TagGroupRelation> entities = tagGroupRelationService.findModelByModelCriteria(mc);
 		
 		// mac绑定uid检测
-		UserValidateServiceHelper.validateUserDevices(uid, macsList, userDeviceService);
+		UserValidateServiceHelper.validateUserDevices(uid, macsList, userWifiDeviceFacadeService);
 		
 		if (newGid == 0) {
 			tagGroupRelationService.deleteAll(entities);

@@ -15,7 +15,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceGrayService;
@@ -25,8 +25,8 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -49,7 +49,8 @@ public class BuilderWifiDeviceIndexOp {
 	private static UserService userService;
 	private static WifiDeviceService wifiDeviceService;
 	private static WifiDeviceModuleService wifiDeviceModuleService;
-	private static UserDeviceService userDeviceService;
+//	private static UserDeviceService userDeviceService;
+	private static UserWifiDeviceService userWifiDeviceService;
 	private static TagDevicesService tagDevicesService;
 	private static WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
 	private static WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
@@ -71,7 +72,8 @@ public class BuilderWifiDeviceIndexOp {
 			
 			wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
 			wifiDeviceModuleService= (WifiDeviceModuleService)ctx.getBean("wifiDeviceModuleService");
-			userDeviceService = (UserDeviceService)ctx.getBean("userDeviceService");
+			//userDeviceService = (UserDeviceService)ctx.getBean("userDeviceService");
+			userWifiDeviceService = (UserWifiDeviceService)ctx.getBean("userWifiDeviceService");
 			tagDevicesService = (TagDevicesService)ctx.getBean("tagDevicesService");
 			wifiDeviceSharedNetworkService = (WifiDeviceSharedNetworkService)ctx.getBean("wifiDeviceSharedNetworkService");
 			wifiDeviceSharedealConfigsService = (WifiDeviceSharedealConfigsService)ctx.getBean("wifiDeviceSharedealConfigsService");
@@ -180,10 +182,11 @@ public class BuilderWifiDeviceIndexOp {
 					User bindUser = null;
 					String bindUserDNick = null;
 					//Integer bindUserId = userDeviceService.fetchBindUid(mac);
-					UserDevice userDevice = userDeviceService.fetchBindByMac(mac);
-					if(userDevice != null){
-						bindUserDNick = userDevice.getDevice_name();
-						Integer bindUserId = userDevice.getId().getUid();
+					//UserDevice userDevice = userDeviceService.fetchBindByMac(mac);
+					UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+					if(userWifiDevice != null){
+						bindUserDNick = userWifiDevice.getDevice_name();
+						Integer bindUserId = userWifiDevice.getUid();
 						if(bindUserId != null){
 							bindUser = userService.getById(bindUserId);
 						}

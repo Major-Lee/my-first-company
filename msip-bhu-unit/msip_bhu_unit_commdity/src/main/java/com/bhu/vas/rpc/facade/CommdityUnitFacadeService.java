@@ -43,16 +43,17 @@ public class CommdityUnitFacadeService {
 	/**
 	 * 获取商品列表
 	 * @param status 商品状态
+	 * @param category 商品分类
 	 * @param pageNo 页码
 	 * @param pageSize 每页数量
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<CommdityDTO>> commdityPages(Integer status, int pageNo, int pageSize){
+	public RpcResponseDTO<TailPage<CommdityDTO>> commdityPages(Integer status, Integer category, int pageNo, int pageSize){
 		try{
 			List<CommdityDTO> retDtos = Collections.emptyList();
-			int commdity_count = commdityFacadeService.countCommdityByStatus(status);
+			int commdity_count = commdityFacadeService.countCommdityByParam(status, category);
 			if(commdity_count > 0){
-				List<Commdity> commdityList = commdityFacadeService.findCommditysByStatus(status, pageNo, pageSize);
+				List<Commdity> commdityList = commdityFacadeService.findCommdityPageByParam(status, category, pageNo, pageSize);
 				if(commdityList != null && !commdityList.isEmpty()){
 					retDtos = new ArrayList<CommdityDTO>();
 					CommdityDTO commdityDto = null;

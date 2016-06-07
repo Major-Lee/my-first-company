@@ -48,8 +48,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
-import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
 import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAliasDTO;
@@ -92,8 +91,9 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
@@ -110,7 +110,6 @@ import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 import com.smartwork.msip.cores.helper.ip.IpLookup;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 @Service
 public class AsyncMsgHandleService {
@@ -155,9 +154,15 @@ public class AsyncMsgHandleService {
 	@Resource
 	private AgentDeviceClaimService agentDeviceClaimService;
 
-	@Resource
-	private UserDeviceService userDeviceService;
+/*	@Resource
+	private UserDeviceService userDeviceService;*/
 
+	@Resource
+	private UserWifiDeviceService userWifiDeviceService;
+	
+	@Resource
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
+	
 	@Resource
 	private UserService userService;
 
@@ -1199,7 +1204,7 @@ public class AsyncMsgHandleService {
 	 * @param mac
 	 */
 	public void ssidModifyWithChangeDeviceName(String mac) {
-		ModelCriteria mc = new ModelCriteria();
+/*		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("mac", mac);
 		List<UserDevice> userDevices = userDeviceService.findModelByModelCriteria(mc);
 		if (!userDevices.isEmpty()) {
@@ -1209,6 +1214,18 @@ public class AsyncMsgHandleService {
 				if (StringUtils.isNotEmpty(ssid) && !ssid.equals(userDevice.getDevice_name())) {
 					userDevice.setDevice_name(ssid);
 					userDeviceService.update(userDevice);
+
+					wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, ssid);
+				}
+			}
+		}*/
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+		if(userWifiDevice != null){
+			if (!userWifiDevice.isDevice_name_modifyed()) {
+				String ssid = deviceFacadeService.getUrouterSSID(mac);
+				if (StringUtils.isNotEmpty(ssid) && !ssid.equals(userWifiDevice.getDevice_name())) {
+					userWifiDevice.setDevice_name(ssid);
+					userWifiDeviceService.update(userWifiDevice);
 
 					wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, ssid);
 				}
@@ -1704,12 +1721,20 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s]", message));
 		UserSignedonDTO dto = JsonHelper.getDTO(message, UserSignedonDTO.class);
 		// 获取用户已经绑定的设备
-		List<UserDevicePK> userDevicePks = deviceFacadeService.getUserDevices(dto.getUid());
+/*		List<UserDevicePK> userDevicePks = deviceFacadeService.getUserDevices(dto.getUid());
 		if (!userDevicePks.isEmpty()) {
 			// List<String> macs = new ArrayList<String>();
 			for (UserDevicePK userDevicePk : userDevicePks) {
 				// macs.add(UserDevicePk.getMac());
 				afterUserSignedonThenCmdDown(userDevicePk.getMac());
+			}
+		}*/
+		List<String> macs = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(dto.getUid());
+		if (!macs.isEmpty()) {
+			// List<String> macs = new ArrayList<String>();
+			for (String mac : macs) {
+				// macs.add(UserDevicePk.getMac());
+				afterUserSignedonThenCmdDown(mac);
 			}
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userSignedon message[%s] successful", message));

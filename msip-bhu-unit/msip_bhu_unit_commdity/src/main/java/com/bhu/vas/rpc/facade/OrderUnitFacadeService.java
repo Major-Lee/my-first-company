@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -23,11 +25,14 @@ import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
+import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -40,29 +45,21 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 public class OrderUnitFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(OrderUnitFacadeService.class);
 	
-	//@Resource
-	//private OrderService orderService;
-	
-	//@Resource
-	//private CommdityService commdityService;
+	@Resource
+	private UserService userService;
 	
 	@Resource
 	private OrderFacadeService orderFacadeService;
 	
-	//@Resource
-	//private CommdityMessageService commdityMessageService;
-	
-	//@Resource
-	//private UserDeviceFacadeService userDeviceFacadeService;
+	@Resource
+	private CommdityFacadeService commdityFacadeService;
 	
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
-	//@Resource
-	//private UserWalletConfigsService userWalletConfigsService;
-	//@Resource
-	//private ChargingFacadeService chargingFacadeService;
+
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
 /*	*//**
 	 * 生成订单
 	 * @param commdityid
@@ -144,7 +141,7 @@ public class OrderUnitFacadeService {
 	*/
 	
 	/**
-	 * 生成订单
+	 * 生成打赏订单
 	 * @param commdityid 商品id
 	 * @param appid 应用id
 	 * @param mac 设备mac
@@ -153,11 +150,10 @@ public class OrderUnitFacadeService {
 	 * @param context 业务上下文
 	 * @return
 	 */
-	public RpcResponseDTO<OrderDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
+	public RpcResponseDTO<OrderDTO> createRewardOrder(Integer commdityid, String mac, String umac, 
 			Integer umactype, String payment_type, String context){
 		try{
-			orderFacadeService.supportedAppId(appid);
-			
+			//orderFacadeService.supportedAppId(appid);
 			//验证mac umac
 			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
@@ -175,7 +171,8 @@ public class OrderUnitFacadeService {
 			}
 			//生成订单
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
-			Order order = orderFacadeService.createOrder(commdityid, appid, mac_lower, mac_dut, umac_lower, umactype, payment_type, context);
+			Order order = orderFacadeService.createRewardOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
+					mac_lower, mac_dut, umac_lower, umactype, payment_type, context);
 			OrderDTO orderDto = new OrderDTO();
 			BeanUtils.copyProperties(order, orderDto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
@@ -191,12 +188,11 @@ public class OrderUnitFacadeService {
 	 * 根据用户终端mac地址进行订单的状态查询
 	 * @param umac 用户mac
 	 * @param orderId 订单id
-	 * @param appId 应用id
 	 * @return
 	 */
-	public RpcResponseDTO<OrderStatusDTO> orderStatusByUmac(String umac, String orderid, Integer appid) {
+	public RpcResponseDTO<OrderStatusDTO> rewardOrderStatusByUmac(String umac, String orderid) {
 		try{
-			Order order = orderFacadeService.validateOrder(orderid, appid);
+			Order order = orderFacadeService.validateOrderId(orderid);
 			
 			if(!umac.equals(order.getUmac())){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_INVALID);
@@ -223,7 +219,7 @@ public class OrderUnitFacadeService {
 	 * @param pageSize 分页数量
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<UserOrderDTO>> orderPagesByUid(Integer uid, String mac, String umac, 
+	public RpcResponseDTO<TailPage<UserOrderDTO>> rewardOrderPagesByUid(Integer uid, String mac, String umac, 
 			Integer status, String dut, int pageNo, int pageSize) {
 		try{
 			List<UserOrderDTO> retDtos = Collections.emptyList();
@@ -282,14 +278,51 @@ public class OrderUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<OrderStatisticsVTO> orderStatisticsBetweenDate(String start_date, String end_date) {
+	public RpcResponseDTO<OrderStatisticsVTO> rewardOrderStatisticsBetweenDate(String start_date, String end_date) {
 		try{
-			OrderStatisticsVTO vto = orderFacadeService.orderStatisticsWithProcedure(start_date, end_date);
+			OrderStatisticsVTO vto = orderFacadeService.rewardOrderStatisticsWithProcedure(start_date, end_date);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			logger.error("OrderPagesByMac Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 生成充值虎钻订单
+	 * @param uid 用户id
+	 * @param commdityid 商品id
+	 * @param payment_type 支付方式
+	 * @return
+	 */
+	public RpcResponseDTO<OrderRechargeVCurrencyDTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid,
+			String payment_type){
+		try{
+			//orderFacadeService.supportedAppId(appid);
+			User user = userService.getById(uid);
+			if(user == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_NOTEXIST);
+			}
+/*			//验证商品是否合法
+			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+			//验证商品是否合理
+			if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RechargeVCurrency)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
+			}*/
+			
+			Order order = orderFacadeService.createRechargeVCurrencyOrder(uid, commdityid, 
+					BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), payment_type);
+			OrderRechargeVCurrencyDTO orderDto = new OrderRechargeVCurrencyDTO();
+			BeanUtils.copyProperties(order, orderDto);
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("CreateOrder Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

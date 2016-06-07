@@ -21,7 +21,6 @@ import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.business.ds.device.service.UserDevicesSharedNetworkService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -41,8 +40,8 @@ public class SharedNetworkFacadeService {
 	@Resource
 	private UserDevicesSharedNetworkService userDevicesSharedNetworkService;
 
-    @Resource
-    private UserDeviceService userDeviceService;
+/*    @Resource
+    private UserDeviceService userDeviceService;*/
 	
 	/**
 	 * 接受页面传递的参数，
