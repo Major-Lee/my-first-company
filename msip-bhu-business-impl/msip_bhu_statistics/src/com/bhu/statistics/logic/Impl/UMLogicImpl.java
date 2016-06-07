@@ -515,14 +515,14 @@ public class UMLogicImpl implements IUMLogic{
 			totalMap.put("orderConversion", 0);
 			totalMap.put("orderComConversion", 0);
 			if((pcUV+mobileUV)!=0){
-				totalMap.put("clickAverNum", (float)(Math.round(100*(pcClickNum+mobileClickNum)/(pcUV+mobileUV)))/100);
-				totalMap.put("orderConversion", (float)(Math.round(100*(pcOrderNum+mbOrderNum)/(pcUV+mobileUV)))/100);
-				totalMap.put("orderComConversion", (float)(Math.round(100*(pcOrderComplete+mbOrderComplete)/(pcUV+mobileUV)))/100);
+				totalMap.put("clickAverNum", round((pcClickNum+mobileClickNum)*1.00/(pcUV+mobileUV),2));
+				totalMap.put("orderConversion", round((pcOrderNum+mbOrderNum)*1.00/(pcUV+mobileUV),2));
+				totalMap.put("orderComConversion", round((pcOrderComplete+mbOrderComplete)*1.00/(pcUV+mobileUV),2));
 			}
 			totalMap.put("orderNum", pcOrderNum+mbOrderNum);
 			totalMap.put("clickConversion", 0);
 			if((pcClickNum+mobileClickNum)!=0){
-				totalMap.put("clickConversion", (float)(Math.round(100*(pcOrderNum+mbOrderNum)/(pcClickNum+mobileClickNum)))/100);
+				totalMap.put("clickConversion", round((pcOrderNum+mbOrderNum)*1.00/(pcClickNum+mobileClickNum),2));
 			}
 			totalMap.put("orderComplete", pcOrderComplete+mbOrderComplete);
 			totalMap.put("orderAmount", pcOrderAmount+mbOrderAmount);
@@ -537,14 +537,14 @@ public class UMLogicImpl implements IUMLogic{
 			pcMap.put("orderConversion", 0);
 			pcMap.put("orderComConversion", 0);
 			if(pcUV!=0){
-				pcMap.put("clickAverNum", (float)(Math.round(100*pcClickNum/pcUV))/100);
-				pcMap.put("orderConversion", (float)(Math.round(100*pcOrderNum/pcUV))/100);
-				pcMap.put("orderComConversion", (float)(Math.round(100*pcOrderComplete/pcUV))/100);
+				pcMap.put("clickAverNum", round(pcClickNum*1.00/pcUV,2));
+				pcMap.put("orderConversion", round(pcOrderNum*1.00/pcUV,2));
+				pcMap.put("orderComConversion", round(pcOrderComplete*1.00/pcUV,2));
 			}
 			pcMap.put("orderNum", pcOrderNum);
 			pcMap.put("clickConversion", 0);
 			if(pcClickNum!=0){
-				pcMap.put("clickConversion", (float)(Math.round(100*pcOrderNum/pcClickNum))/100);
+				pcMap.put("clickConversion", round(pcOrderNum*1.00/pcClickNum,2));
 			}
 			pcMap.put("orderComplete", pcOrderComplete);
 			pcMap.put("orderAmount", pcOrderAmount);
@@ -558,14 +558,14 @@ public class UMLogicImpl implements IUMLogic{
 			mobileMap.put("orderConversion", 0);
 			mobileMap.put("orderComConversion", 0);
 			if(mobileUV!=0){
-				mobileMap.put("clickAverNum", (float)(Math.round(100*mobileClickNum/mobileUV))/100);
-				mobileMap.put("orderConversion", (float)(Math.round(100*mbOrderNum/mobileUV))/100);
-				mobileMap.put("orderComConversion", (float)(Math.round(100*mbOrderComplete/mobileUV))/100);
+				mobileMap.put("clickAverNum", round(mobileClickNum*1.00/mobileUV,2));
+				mobileMap.put("orderConversion", round(mbOrderNum*1.00/mobileUV,2));
+				mobileMap.put("orderComConversion", round(mbOrderComplete*1.00/mobileUV,2));
 			}
 			mobileMap.put("orderNum", mbOrderNum);
 			mobileMap.put("clickConversion", 0);
 			if(mobileClickNum!=0){
-				mobileMap.put("clickConversion", (float)(Math.round(100*mbOrderNum/mobileClickNum))/100);
+				mobileMap.put("clickConversion", round(mbOrderNum*1.00/mobileClickNum,2));
 			}
 			mobileMap.put("orderComplete", mbOrderComplete);
 			mobileMap.put("orderAmount", mbOrderAmount);
@@ -577,7 +577,7 @@ public class UMLogicImpl implements IUMLogic{
 			iosMap.put("clickNum", iosClickNum);
 			iosMap.put("clickAverNum", 0);
 			if(iosUV!=0){
-				iosMap.put("clickAverNum", (float)(Math.round(100*iosClickNum/iosUV))/100);
+				iosMap.put("clickAverNum", round(iosClickNum*1.00/iosUV,2));
 			}
 			iosMap.put("orderNum", "-");
 			iosMap.put("clickConversion", "-");
@@ -593,7 +593,7 @@ public class UMLogicImpl implements IUMLogic{
 			androidMap.put("clickNum", androidClickNum);
 			androidMap.put("clickAverNum", 0);
 			if(androidUV!=0){
-				androidMap.put("clickAverNum", (float)(Math.round(100*androidClickNum/androidUV))/100);
+				androidMap.put("clickAverNum", round(androidClickNum*1.00/androidUV,2));
 			}
 			androidMap.put("orderNum", "-");
 			androidMap.put("clickConversion", "-");
@@ -624,14 +624,14 @@ public class UMLogicImpl implements IUMLogic{
 		totalMap.put("orderConversion", 0);
 		totalMap.put("orderComConversion", 0);
 		if(totalUv!=0){
-			totalMap.put("clickAverNum", (float)(Math.round(100*totalClickNum/totalUv))/100);
-			totalMap.put("orderConversion", (float)(Math.round(100*(totalPcOrderNum+totalMbOrderNum)/totalUv))/100);
-			totalMap.put("orderComConversion", (float)(Math.round(100*(totalPcOrderComplete+totalMbOrderComplete)/totalUv))/100);
+			totalMap.put("clickAverNum", round(totalClickNum*1.00/totalUv,2));
+			totalMap.put("orderConversion", round((totalPcOrderNum+totalMbOrderNum)*1.00/totalUv,2));
+			totalMap.put("orderComConversion", round((totalPcOrderComplete+totalMbOrderComplete)*1.00/totalUv,2));
 		}
 		totalMap.put("orderNum", totalPcOrderNum+totalMbOrderNum);
 		totalMap.put("clickConversion", 0);
 		if(totalClickNum!=0){
-			totalMap.put("clickConversion", (float)(Math.round(100*(totalPcOrderNum+totalMbOrderNum)/totalClickNum))/100);
+			totalMap.put("clickConversion", round((totalPcOrderNum+totalMbOrderNum)*1.00/totalClickNum,2));
 		}
 		totalMap.put("orderComplete", totalPcOrderComplete+totalMbOrderComplete);
 		totalMap.put("orderAmount", totalPcOrderAmount+totalMbOrderAmount);
@@ -643,14 +643,14 @@ public class UMLogicImpl implements IUMLogic{
 		pcMap.put("orderConversion", 0);
 		pcMap.put("orderComConversion", 0);
 		if(totalPcUV!=0){
-			pcMap.put("clickAverNum", (float)(Math.round(100*totalPcClickNum/totalPcUV))/100);
-			pcMap.put("orderConversion", (float)(Math.round(100*totalPcOrderNum/totalPcUV))/100);
-			pcMap.put("orderComConversion", (float)(Math.round(100*totalPcOrderComplete/totalPcUV))/100);
+			pcMap.put("clickAverNum", round(totalPcClickNum*1.00/totalPcUV,2));
+			pcMap.put("orderConversion", round(totalPcOrderNum*1.00/totalPcUV,2));
+			pcMap.put("orderComConversion", round(totalPcOrderComplete*1.00/totalPcUV,2));
 		}
 		pcMap.put("orderNum", totalPcOrderNum);
 		pcMap.put("clickConversion", 0);
 		if(totalPcClickNum!=0){
-			pcMap.put("clickConversion", (float)(Math.round(100*totalPcOrderNum/totalPcClickNum))/100);
+			pcMap.put("clickConversion", round(totalPcOrderNum*1.00/totalPcClickNum,2));
 		}
 		pcMap.put("orderComplete", totalPcOrderComplete);
 		pcMap.put("orderAmount", totalPcOrderAmount);
@@ -663,14 +663,14 @@ public class UMLogicImpl implements IUMLogic{
 		mobileMap.put("orderConversion", 0);
 		mobileMap.put("orderComConversion", 0);
 		if((totalAndroidUV+totalIosUV)!=0){
-			mobileMap.put("clickAverNum", (float)(Math.round(100*(totalAndroidClickNum+totalIosClickNum)/(totalAndroidUV+totalIosUV)))/100);
-			mobileMap.put("orderConversion", (float)(Math.round(100*totalMbOrderNum/(totalAndroidUV+totalIosUV)))/100);
-			mobileMap.put("orderComConversion", (float)(Math.round(100*totalMbOrderAmount/(totalAndroidUV+totalIosUV)))/100);
+			mobileMap.put("clickAverNum", round((totalAndroidClickNum+totalIosClickNum)*1.00/(totalAndroidUV+totalIosUV),2));
+			mobileMap.put("orderConversion", round(totalMbOrderNum*1.00/(totalAndroidUV+totalIosUV),2));
+			mobileMap.put("orderComConversion", round(totalMbOrderAmount*1.00/(totalAndroidUV+totalIosUV),2));
 		}
 		mobileMap.put("orderNum", totalMbOrderNum);
 		mobileMap.put("clickConversion", 0);
 		if((totalAndroidClickNum+totalIosClickNum)!=0){
-			mobileMap.put("clickConversion", (float)(Math.round(100*totalMbOrderNum/(totalAndroidClickNum+totalIosClickNum)))/100);
+			mobileMap.put("clickConversion", round(totalMbOrderNum*1.00/(totalAndroidClickNum+totalIosClickNum),2));
 		}
 		mobileMap.put("orderComplete", totalMbOrderComplete);
 		mobileMap.put("orderAmount", totalMbOrderAmount);
@@ -682,7 +682,7 @@ public class UMLogicImpl implements IUMLogic{
 		iosMap.put("clickNum", totalIosClickNum);
 		iosMap.put("clickAverNum", 0);
 		if(totalIosUV!=0){
-			iosMap.put("clickAverNum", (float)(Math.round(100*totalIosClickNum/totalIosUV))/100);
+			iosMap.put("clickAverNum", round(totalIosClickNum*1.00/totalIosUV,2));
 		}
 		iosMap.put("orderNum", "-");
 		iosMap.put("clickConversion", "-");
@@ -699,7 +699,7 @@ public class UMLogicImpl implements IUMLogic{
 		androidMap.put("clickNum", totalAndroidClickNum);
 		androidMap.put("clickAverNum", 0);
 		if(totalAndroidUV!=0){
-			androidMap.put("clickAverNum", (float)(Math.round(100*totalAndroidClickNum/totalAndroidUV))/100);
+			androidMap.put("clickAverNum", round(totalAndroidClickNum*1.00/totalAndroidUV,2));
 		}
 		androidMap.put("orderNum", "-");
 		androidMap.put("clickConversion", "-");
@@ -971,7 +971,29 @@ public class UMLogicImpl implements IUMLogic{
 		/*OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-06-01", "2016-06-01", "date", "",1);
 		System.out.println(pcUv);*/
-		BhuCache.getInstance().setEquipment("2016-06-05", "equipment", "{\"dc\":10020,\"doc\":7998}");
-		BhuCache.getInstance().setStOrder("2016-06-05", "stOrder", "{\"mb_ofc\":833,\"mb_ofa\":\"594\",\"pc_ofc\":26,\"pc_ofa\":\"65\",\"pc_occ\":188,\"ofc\":859,\"mb_occ\":4210,\"ofa\":659.0,\"occ\":4398}");
+		//System.out.println(new java.text.DecimalFormat("0.00").format(4.025)); 
+		//System.out.println(Math.round(4.024*100 + 0.5)/100.0); 
+		double s=3*1.00/2;
+		 BigDecimal b = new BigDecimal(Double.toString(s));         
+		 BigDecimal one = new BigDecimal("1");         
+		 System.out.println(b.divide(one,2,BigDecimal.ROUND_HALF_UP).doubleValue());        
+
+		//BhuCache.getInstance().setEquipment("2016-06-05", "equipment", "{\"dc\":10020,\"doc\":7998}");
+		//BhuCache.getInstance().setStOrder("2016-06-05", "stOrder", "{\"mb_ofc\":833,\"mb_ofa\":\"594\",\"pc_ofc\":26,\"pc_ofa\":\"65\",\"pc_occ\":188,\"ofc\":859,\"mb_occ\":4210,\"ofa\":659.0,\"occ\":4398}");
 	}
+	/**      
+	    * 提供精确的小数位四舍五入处理。      
+	     * @param v 需要四舍五入的数字      
+	     * @param scale 小数点后保留几位      
+	     * @return 四舍五入后的结果      
+	    */         
+	public static double round(double v,int scale){         
+		if(scale<0){         
+	           throw new IllegalArgumentException("The scale must be a positive integer or zero");         
+	    }         
+	    BigDecimal b = new BigDecimal(Double.toString(v));         
+	    BigDecimal one = new BigDecimal("1");         
+	    return b.divide(one,scale,BigDecimal.ROUND_HALF_UP).doubleValue();         
+	}         
+
 }
