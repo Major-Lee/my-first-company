@@ -1,5 +1,6 @@
 package com.bhu.statistics.logic.Impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -213,11 +214,15 @@ public class UMLogicImpl implements IUMLogic{
 						map.put("singleOrderNum", singleOrderNum);
 						map.put("singleGains", singleGains);
 					}else{
-						singleOrderNum = (double) (occ/doc);
+						singleOrderNum = (double) occ/doc;
+						BigDecimal b = new BigDecimal(singleOrderNum);
+						singleOrderNum =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
 						map.put("singleOrderNum", singleOrderNum);
 						//单台收益
 						Double ofa = orderObj.getDouble("ofa");
 						singleGains = ofa/doc;
+						BigDecimal b1 = new BigDecimal(singleGains);
+						singleGains =  b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
 						map.put("singleGains", singleGains);
 					}
 					dayGains = orderObj.getDouble("ofa");
@@ -827,11 +832,15 @@ public class UMLogicImpl implements IUMLogic{
 						map.put("singleOrderNum", singleOrderNum);
 						map.put("singleGains", singleGains);
 					}else{
-						singleOrderNum = (double) (occ/doc);
+						singleOrderNum = (double) occ/doc;
+						BigDecimal b = new BigDecimal(singleOrderNum);
+						singleOrderNum =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
 						map.put("singleOrderNum", singleOrderNum);
 						//单台收益
 						Double ofa = orderObj.getDouble("ofa");
 						singleGains = ofa/doc;
+						BigDecimal b1 = new BigDecimal(singleGains);
+						singleGains =  b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
 						map.put("singleGains", singleGains);
 					}
 					dayGains = orderObj.getDouble("ofa");;
@@ -911,11 +920,15 @@ public class UMLogicImpl implements IUMLogic{
 							map.put("singleOrderNum", singleOrderNum);
 							map.put("singleGains", singleGains);
 						}else{
-							singleOrderNum = (double) (occ/doc);
+							singleOrderNum = (double) occ/doc;
+							BigDecimal b = new BigDecimal(singleOrderNum);
+							singleOrderNum =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
 							map.put("singleOrderNum", singleOrderNum);
 							//单台收益
 							Double ofa = orderObj.getDouble("ofa");
 							singleGains = ofa/doc;
+							BigDecimal b1 = new BigDecimal(singleGains);
+							singleGains =  b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
 							map.put("singleGains", singleGains);
 						}
 						dayGains = orderObj.getDouble("ofa");
@@ -947,8 +960,10 @@ public class UMLogicImpl implements IUMLogic{
 		return result;
 	}
 	public static void main(String[] args) {
-		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+		/*OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-06-01", "2016-06-01", "date", "",1);
-		System.out.println(pcUv);
+		System.out.println(pcUv);*/
+		BhuCache.getInstance().setEquipment("2016-06-05", "equipment", "{\"dc\":10020,\"doc\":7998}");
+		BhuCache.getInstance().setStOrder("2016-06-05", "stOrder", "{\"mb_ofc\":833,\"mb_ofa\":\"594\",\"pc_ofc\":26,\"pc_ofa\":\"65\",\"pc_occ\":188,\"ofc\":859,\"mb_occ\":4210,\"ofa\":659.0,\"occ\":4398}");
 	}
 }
