@@ -1,7 +1,6 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,8 +15,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
-import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ExcelElementCallback;
@@ -28,7 +26,8 @@ import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
@@ -43,8 +42,14 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
 	
+/*	@Resource
+	private UserDeviceFacadeService userDeviceFacadeService;*/
+	
 	@Resource
-	private UserDeviceFacadeService userDeviceFacadeService;
+	private UserWifiDeviceService userWifiDeviceService;
+	
+	@Resource
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
@@ -110,24 +115,25 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 						if(uid_willbinded != null && uid_willbinded.intValue() >0){
 							//userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
 							for(String dmac:pages){
-								UserDevicePK udp = userDeviceFacadeService.deviceBinded(dmac);
-								if(udp != null){
-									if(udp.getUid() != uid_willbinded.intValue()){
-										userDeviceFacadeService.getUserDeviceService().deleteById(udp);
-										tagGroupRelationService.cleanDeviceGroupRel(dmac);
-										UserDevice userDevice = new UserDevice();
-							            userDevice.setId(new UserDevicePK(dmac, uid_willbinded.intValue()));
-							            userDevice.setCreated_at(new Date());
-							            userDeviceFacadeService.getUserDeviceService().insert(userDevice);
+								//UserDevicePK udp = userDeviceFacadeService.deviceBinded(dmac);
+								UserWifiDevice userWifiDevice = userWifiDeviceService.getById(dmac);
+								//if(udp != null){
+								if(userWifiDevice != null){
+									//if(udp.getUid() != uid_willbinded.intValue()){
+									if(userWifiDevice.getUid() != uid_willbinded.intValue()){
+										//userDeviceFacadeService.getUserDeviceService().deleteById(udp);
+										userWifiDeviceService.delete(userWifiDevice);
+										userWifiDeviceFacadeService.insertUserWifiDevice(dmac, uid_willbinded.intValue());
 							            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
 									}else{
 										//已经此用户绑定，不动作
 									}
 								}else{
-									UserDevice userDevice = new UserDevice();
+/*									UserDevice userDevice = new UserDevice();
 						            userDevice.setId(new UserDevicePK(dmac, uid_willbinded.intValue()));
 						            userDevice.setCreated_at(new Date());
-						            userDeviceFacadeService.getUserDeviceService().insert(userDevice);
+						            userDeviceFacadeService.getUserDeviceService().insert(userDevice);*/
+									userWifiDeviceFacadeService.insertUserWifiDevice(dmac, uid_willbinded.intValue());
 						            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
 								}
 								chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, dmac, 
@@ -154,7 +160,8 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 									}
 								}
 								if(!forceUnbindedDevices.isEmpty()){
-									userDeviceFacadeService.doForceUnbindDevice(forceUnbindedDevices);
+									//userDeviceFacadeService.doForceUnbindDevice(forceUnbindedDevices);
+									userWifiDeviceService.deleteByIds(forceUnbindedDevices);
 									for(String dmac:forceUnbindedDevices){
 										deviceFacadeService.destoryDeviceMobilePresentString(dmac);
 									}
@@ -229,13 +236,13 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("process message[%s] successful", message));
 	}
 	
-	/**
+/*	*//**
 	 * 清除绑定信息
 	 * 如果不是此用户绑定的设备则 清除原有的绑定信息并且把此用户设备绑定
 	 * @param uid
 	 * @param mac
-	 */
+	 *//*
 	private void doForceBindDevice(int uid,String mac){
 		
-	}
+	}*/
 }

@@ -31,7 +31,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetP
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -54,8 +54,11 @@ public class DeviceSharedNetworkUnitFacadeService {
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
 	
+/*	@Resource
+	private UserDeviceService userDeviceService;*/
+	
 	@Resource
-	private UserDeviceService userDeviceService;
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
@@ -79,7 +82,8 @@ public class DeviceSharedNetworkUnitFacadeService {
 				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{"mac"});
 			}
 			User user = null;
-			Integer bindUid = sharedNetworksFacadeService.getUserDeviceService().fetchBindUid(mac);
+			//Integer bindUid = sharedNetworksFacadeService.getUserDeviceService().fetchBindUid(mac);
+			Integer bindUid = userWifiDeviceFacadeService.findUidById(mac);
 			if(bindUid != null){
 				user = sharedNetworksFacadeService.getUserService().getById(bindUid);
 			}
@@ -221,7 +225,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 					}
 				}
 			}
-			UserValidateServiceHelper.validateUserDevices(uid, dmacs, userDeviceService);
+			UserValidateServiceHelper.validateUserDevices(uid, dmacs, userWifiDeviceFacadeService);
 			//template 不为空并且 是无效的template格式,如果为空或者是有效的格式 则传递后续处理
 			if(StringUtils.isNotEmpty(template) && !SharedNetworksFacadeService.validTemplateFormat(template)){
 				template = SharedNetworksFacadeService.DefaultTemplate;
@@ -300,7 +304,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 	
 	public RpcResponseDTO<SharedNetworkSettingDTO> fetchDeviceNetworkConf(int uid, String mac) {
 		try{
-			UserValidateServiceHelper.validateUserDevice(uid, mac, userDeviceService);
+			UserValidateServiceHelper.validateUserDevice(uid, mac, userWifiDeviceFacadeService);
 			/*SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;

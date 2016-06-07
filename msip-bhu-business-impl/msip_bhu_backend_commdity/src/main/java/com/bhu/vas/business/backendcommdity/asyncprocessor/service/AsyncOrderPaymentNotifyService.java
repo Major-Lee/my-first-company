@@ -13,9 +13,11 @@ import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.dto.push.SharedealNotifyPushDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
+import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
+import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -23,11 +25,13 @@ import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
-import com.bhu.vas.business.ds.user.facade.UserDeviceFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class AsyncOrderPaymentNotifyService {
@@ -45,8 +49,11 @@ public class AsyncOrderPaymentNotifyService {
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
 	
+/*	@Resource
+	private UserDeviceFacadeService userDeviceFacadeService;*/
+	
 	@Resource
-	private UserDeviceFacadeService userDeviceFacadeService;
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private PushService pushService;
@@ -86,24 +93,58 @@ public class AsyncOrderPaymentNotifyService {
 		}
 	}
 	
+	
+	/********************          Receipt           ********************/
+	
+	
 	/**
 	 * 支付模式为收入模式(商品订单支付 如出现其他情况可扩展下一位业务占位)
 	 * @param rpcn_dto
 	 */
 	public void orderPaymentNotifyPaymodeReceiptHandle(ResponsePaymentCompletedNotifyDTO rpcn_dto){
 		String orderid = rpcn_dto.getOrderid();
+		//验证订单 
+		Order order = orderFacadeService.validateOrderId(orderid);
+		//验证订单合理
+		if(!OrderHelper.lte_notpay(order.getStatus())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{orderid, String.valueOf(order.getStatus())});
+		}
+		//验证appid
+		CommdityApplication commdityApplication = OrderHelper.supportedAppId(order.getAppid());
+		switch(commdityApplication){
+			case DEFAULT:
+				rewardOrderReceiptHandle(order, rpcn_dto);
+				break;
+			case BHU_PREPAID_BUSINESS:
+				rechargeVCurrencyOrderReceiptHandle(order, rpcn_dto);
+				break;
+			default:
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+		}
+	}
+	
+	
+	/**
+	 * 打赏订单支付结束处理
+	 * @param order
+	 * @param rpcn_dto
+	 */
+	public void rewardOrderReceiptHandle(Order order, ResponsePaymentCompletedNotifyDTO rpcn_dto){
+		String orderid = rpcn_dto.getOrderid();
 		boolean success = rpcn_dto.isSuccess();
 		String paymented_ds = rpcn_dto.getPaymented_ds();
 		String payment_type = rpcn_dto.getPayment_type();
 		String payment_proxy_type = rpcn_dto.getPayment_proxy_type();
 		//订单处理逻辑 
-		Order order = orderFacadeService.validateOrderId(orderid);
+		//Order order = orderFacadeService.validateOrderId(orderid);
 		//支付完成时进行设备的uid获取并设置订单
-		User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
+		//User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
+		User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
 		
 		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
 		
-		order = orderFacadeService.orderPaymentCompletedNotify(success, order, bindUser, paymented_ds, payment_type, payment_proxy_type,accessInternetTime);
+		order = orderFacadeService.rewardOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
+				payment_type, payment_proxy_type, accessInternetTime);
 		//判断订单状态为支付成功或发货成功
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
@@ -169,6 +210,19 @@ public class AsyncOrderPaymentNotifyService {
 			//}
 		}
 	}
+	
+	/**
+	 * 充值虎钻订单支付结束处理
+	 * @param order
+	 * @param rpcn_dto
+	 */
+	public void rechargeVCurrencyOrderReceiptHandle(Order order, ResponsePaymentCompletedNotifyDTO rpcn_dto){
+		
+	}
+	
+	
+	/********************          Expend           ********************/
+	
 	
 	/**
 	 * 支付模式为支出模式(提现 如出现其他情况可扩展下一位业务占位)

@@ -213,7 +213,7 @@ public class ConsoleController extends BaseController {
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
     }
 
-    @ResponseBody()
+/*    @ResponseBody()
     @RequestMapping(value="/un_bindedbyaccortid",method={RequestMethod.POST})
     public void unBindedByAccOrTid(HttpServletResponse response,
 					    		@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
@@ -228,7 +228,7 @@ public class ConsoleController extends BaseController {
 		}
         //RpcResponseDTO<List<UserDeviceDTO>> userDeviceResult = userDeviceRpcService.fetchBindDevices(uid);
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
-    }
+    }*/
     
     /**
      * 获取地图设备数据

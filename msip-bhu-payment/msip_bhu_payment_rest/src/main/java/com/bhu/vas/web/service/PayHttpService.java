@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.business.helper.JsonUtil;
 import com.bhu.vas.business.helper.MD5Util;
 import com.bhu.vas.web.http.HttpResponseUtil;
+import com.bhu.vas.web.http.response.AppUnifiedOrderResponse;
 import com.bhu.vas.web.http.response.GenerateQCCodeUrlResponse;
 import com.bhu.vas.web.http.response.GetAccessTokenResponse;
 import com.bhu.vas.web.http.response.GetJsapiTicketResponse;
@@ -51,7 +52,7 @@ public class PayHttpService {
 //    public static String PAY_HOST_URL = "http://test.pay.igappy.com/payment";
 //    public static String PAY_HOST_URL = "http://upays.bhuwifi.com:8080/payment";
        
-    public static String PAY_HOST_URL = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment";
+    public static String PAY_HOST_URL = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
@@ -600,6 +601,58 @@ public class PayHttpService {
         return unifiedOrderResponse;
     }
 
+	 public AppUnifiedOrderResponse unifiedorderForApp(String out_trade_no,String commodityName, String totalPrice,String localIp,String payCallUrl,String openId ) {
+	        if("0:0:0:0:0:0:0:1".equals(localIp)){
+	            localIp="10.96.5.235";
+	        }
+	        /** 总金额(分为单位) */
+	        //totalPrice;
+
+	        SortedMap<Object, Object> parameters = new TreeMap<Object, Object>();
+	        /** 公众号APPID */
+	        parameters.put("appid", appId);
+	        /** 商户号 */
+	        parameters.put("attach", "bhu_app");
+	        /** 商户号 */
+	        parameters.put("mch_id", mchId);
+	        /** 随机字符串 */
+	        parameters.put("nonce_str", getNonceStr());
+	        /** 商品名称 */
+	        parameters.put("body", commodityName);
+
+	        /** 订单号 */
+	        parameters.put("out_trade_no", out_trade_no);
+
+	        /** 订单金额以分为单位，只能为整数 */
+	        parameters.put("total_fee", totalPrice);
+	        /** 客户端本地ip */
+	        parameters.put("spbill_create_ip", localIp);
+	        /** 支付回调地址 */
+	        parameters.put("notify_url", payCallUrl);
+	        /** 支付方式为JSAPI支付 */
+	        parameters.put("trade_type", "APP");
+	        /** 用户微信的openid，当trade_type为JSAPI的时候，该属性字段必须设置 */
+	        parameters.put("openid", openId);
+
+	        /** MD5进行签名，必须为UTF-8编码，注意上面几个参数名称的大小写 */
+	        String sign = createSign(mchKey, "UTF-8", parameters);
+	        parameters.put("sign", sign);
+
+	        /** 生成xml结构的数据，用于统一下单接口的请求 */
+	        String requestXML = getRequestXml(parameters);
+	        log.info("requestXML：" + requestXML);
+	        
+	        AppUnifiedOrderResponse unifiedOrderResponse=null;
+	        try {
+	        	unifiedOrderResponse = HttpResponseUtil.post(payRequestBaseUrl + "/pay/unifiedorder", requestXML, AppUnifiedOrderResponse.class);
+	        } catch (IOException e) {
+	            unifiedOrderResponse= new AppUnifiedOrderResponse();
+	            unifiedOrderResponse.setResultSuccess(false);
+	            e.printStackTrace();
+	        }
+	        return unifiedOrderResponse;
+	    }
+	 
 	public WithDrawNotifyResponse sendWithdraw(String out_trade_no, String commodityName, String totalPrice,
 			String localIp, String nOTIFY_URL, String openid, String userName) {
 		if("0:0:0:0:0:0:0:1".equals(localIp)){
@@ -634,12 +687,15 @@ public class PayHttpService {
         String requestXML = getRequestXml(parameters);
         log.info("requestXML：" + requestXML);
 
-        WithDrawNotifyResponse unifiedOrderResponse = null;
+        WithDrawNotifyResponse unifiedOrderResponse = new WithDrawNotifyResponse();
         
         try {
-        	unifiedOrderResponse = HttpResponseUtil.httpRequest(withdrawalsRequestApiBaseUrl,nOTIFY_URL, requestXML, WithDrawNotifyResponse.class);
+        	unifiedOrderResponse = HttpResponseUtil.httpRequest(mchId,withdrawalsRequestApiBaseUrl,nOTIFY_URL, requestXML, WithDrawNotifyResponse.class);
 		} catch (KeyManagementException | UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException
 				| CertificateException | IOException e) {
+			unifiedOrderResponse.setResultSuccess(false);
+			unifiedOrderResponse.setResultErrorCode("FAIL");
+			unifiedOrderResponse.setResultMessage("微信请求接口捕获异常证书路径有误");
 			log.error("提交提现请求失败");
 		}
         

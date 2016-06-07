@@ -28,7 +28,7 @@ public class Heepay {
 									// 127_127_12_12。因为近期我司发现用户在提交数据时，user_ip在网络层被篡改，导致签名错误，所以我们规定使用这种格式。
 	private static String agent_bill_time; // 提交单据的时间yyyyMMddHHmmss
 											// 如：20100225102000该参数共计14位，当时不满14位时，在后面加0补足14位
-	private static String goods_name = "打赏认证"; // 商品名称, 长度最长50字符，不能为空（不参加签名）
+	private static String goods_name = "打赏"; // 商品名称, 长度最长50字符，不能为空（不参加签名）
 	private static String goods_num = "1"; // 产品数量,长度最长20字符（不参加签名）
 	private static String remark = ""; // 商户自定义 原样返回,长度最长50字符，可以为空。（不参加签名）
 	// private static String is_test = "1";

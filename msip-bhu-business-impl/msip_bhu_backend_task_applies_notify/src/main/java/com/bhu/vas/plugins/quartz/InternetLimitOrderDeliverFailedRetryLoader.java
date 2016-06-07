@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 //import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 //import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
-
-
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
@@ -18,7 +16,6 @@ import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
-import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -37,8 +34,8 @@ public class InternetLimitOrderDeliverFailedRetryLoader {
 	@Resource
 	private OrderService orderService;
 	
-	@Resource
-	private CommdityService commdityService;
+//	@Resource
+//	private CommdityService commdityService;
 	
 	@Resource
 	private OrderFacadeService orderFacadeService;
@@ -69,7 +66,7 @@ public class InternetLimitOrderDeliverFailedRetryLoader {
     				bindUser = userService.getById(order.getUid());
     			}
     			String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
-				boolean deliver_notify_ret = orderFacadeService.orderDeliverNotify(order, bindUser,accessInternetTime);
+				boolean deliver_notify_ret = orderFacadeService.rewardOrderDeliverNotify(order, bindUser,accessInternetTime);
 				if(deliver_notify_ret){
 					//如果通知发货成功 更新订单状态为发货完成
 					orderFacadeService.orderStatusChanged(order, OrderStatus.DeliverCompleted.getKey(),  

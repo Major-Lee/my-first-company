@@ -283,6 +283,14 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
+	/**
+	 * 打赏订单统计接口
+	 * @param request
+	 * @param response
+	 * @param secretKey
+	 * @param start_date
+	 * @param end_date
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/order/statistics",method={RequestMethod.POST})
 	public void order_statistics(
@@ -296,7 +304,7 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<OrderStatisticsVTO> rpcResult = orderRpcService.orderStatisticsBetweenDate(start_date, end_date);
+		RpcResponseDTO<OrderStatisticsVTO> rpcResult = orderRpcService.rewardOrderStatisticsBetweenDate(start_date, end_date);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else

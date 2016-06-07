@@ -12,14 +12,17 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
 import com.bhu.vas.api.dto.procedure.OrderStatisticsProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
+import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
+import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
+import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -35,8 +38,11 @@ public class OrderFacadeService {
 	@Resource
 	private OrderService orderService;
 	
-//	@Resource
-//	private CommdityService commdityService;
+	@Resource
+	private CommdityService commdityService;
+	
+	@Resource
+	private CommdityFacadeService commdityFacadeService;
 	
 	/**
 	 * 查询最近的一条满足条件的订单
@@ -137,91 +143,14 @@ public class OrderFacadeService {
 			orderService.update(order);
 		}
 	}
+
 	
-	/*************            status             ****************/
-/*	*//**
-	 * 生成订单
-	 * @param commdity 商品实体
-	 * @param appid 应用id
-	 * @param mac 设备mac
-	 * @param umac 用户mac
-	 * @param uid 用户id
-	 * @param context 业务上下文
-	 * @return
-	 *//*
-	public Order createOrder(Integer commdityid, Integer appid, String mac, String umac, Integer uid, String context){
-		//商品信息验证
-		Commdity commdity = commdityService.getById(commdityid);
-		if(commdity == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST);
-		}
-		if(!CommdityHelper.onsale(commdity.getStatus())){
-			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_NOT_ONSALE);
-		}
-		//订单金额处理
-		String amount = CommdityHelper.generateCommdityAmount(commdity.getPrice());
-		if(StringUtils.isEmpty(amount)){
-			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_INVALID);
-		}
-		
-		Order order = null;
-		//如果商品分类是限时上网 防止商品金额重新随机 检测是否有旧的未支付订单存在
-		Integer commdity_category = commdity.getCategory();
-		if(CommdityCategory.InternetLimit.getCategory().equals(commdity_category)){
-			order = recentNotpayOrderByUmac(commdity.getId(), appid, mac, umac);
-		}
-		
-		if(order == null){
-			//订单生成
-			order = new Order();
-			order.setCommdityid(commdity.getId());
-			order.setAppid(appid);
-			order.setMac(mac);
-			order.setUmac(umac);
-			order.setUid(uid);
-			order.setContext(context);
-			order.setStatus(OrderStatus.Pending.getKey());
-			order.setProcess_status(OrderProcessStatus.Pending.getKey());
-			order.setAmount(amount);
-			orderService.insert(order);
-		}
-		return order;
-	}*/
+	/*************            打赏             ****************/
 	
-/*	*//**
-	 * 调用支付系统获取支付url信息完成后的订单处理逻辑
-	 * 
-	 * @param orderId 订单id
-	 * @param rcp_dto 支付系统返回的支付url信息DTO
-	 * @return
-	 *//*
-	public String orderPaymentUrlCreated(String orderid, ResponseCreatePaymentUrlDTO rcp_dto) {
-		Integer changed_status = OrderStatus.NotPay.getKey();
-		Integer changed_process_status = OrderProcessStatus.NotPay.getKey();
-		Order order = null;
-		try{
-			if(!rcp_dto.isSuccess()){
-				String errorcode = rcp_dto.getErrorcode();
-				//如果订单已经支付成功 则返回订单已经支付的状态码
-				if(PaymentInternalHelper.ERRORCODE_PAYMENT_STATUS_PAYSUCCESSED.equals(errorcode)){
-					throw new BusinessI18nCodeException(ResponseErrorCode.ORDER_PAYMENT_STATUS_PAYSUCCESSED);
-				}
-				throw new BusinessI18nCodeException(ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE, new String[]{rcp_dto.getMsg()});
-			}
-		
-			order = validateOrderId(orderid);
-			
-			changed_process_status = OrderProcessStatus.Paying.getKey();
-			return rcp_dto.getParams();
-		}catch(Exception ex){
-			throw ex;
-		}finally{
-			orderStatusChanged(order, changed_status, changed_process_status);
-		}
-	}*/
+
 	
 	/**
-	 * 生成订单
+	 * 生成打赏订单
 	 * @param commdity 商品实体
 	 * @param appid 应用id
 	 * @param mac 设备mac
@@ -232,16 +161,16 @@ public class OrderFacadeService {
 	 * @param context 业务上下文
 	 * @return
 	 */
-	public Order createOrder(Integer commdityid, Integer appid, String mac, String mac_dut, String umac, 
+	public Order createRewardOrder(Integer commdityid, Integer appid, String mac, String mac_dut, String umac, 
 			Integer umactype, String payment_type, String context){
 		//商品信息验证
-/*		Commdity commdity = commdityService.getById(commdityid);
-		if(commdity == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST);
+		//验证商品是否合法
+		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+		//验证商品是否合理
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.InternetLimit)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
 		}
-		if(!CommdityHelper.onsale(commdity.getStatus())){
-			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_NOT_ONSALE);
-		}*/
+		
 		//验证缓存中的商品金额
 		String amount = CommdityIntervalAmountService.getInstance().getRAmount(mac, umac, commdityid);
 		if(StringUtils.isEmpty(amount)){
@@ -256,11 +185,10 @@ public class OrderFacadeService {
 		order.setMac_dut(mac_dut);
 		order.setUmac(umac);
 		order.setUmactype(umactype);
-		//order.setUid(uid);
+		order.setType(commdity.getCategory());
 		order.setPayment_type(payment_type);
 		order.setContext(context);
 		order.setStatus(OrderStatus.NotPay.getKey());
-		
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setAmount(amount);
 		orderService.insert(order);
@@ -268,7 +196,7 @@ public class OrderFacadeService {
 	}
 	
 	/**
-	 * 支付系统支付完成的订单处理逻辑
+	 * 打赏支付系统支付完成的订单处理逻辑
 	 * 更新订单状态为支付成功
 	 * 通知应用发货成功以后 更新支付状态为发货完成
 	 * @param success 支付是否成功
@@ -278,16 +206,16 @@ public class OrderFacadeService {
 	 * @param payment_type 支付方式
 	 * @param payment_proxy_type 支付代理方式
 	 */
-	public Order orderPaymentCompletedNotify(boolean success, Order order, User bindUser, String paymented_ds,
+	public Order rewardOrderPaymentCompletedNotify(boolean success, Order order, User bindUser, String paymented_ds,
 			String payment_type, String payment_proxy_type,String ait_time){
 		Integer changed_status = null;
 		Integer changed_process_status = null;
 		try{
 			String orderid = order.getId();
-			Integer order_status = order.getStatus();
+/*			Integer order_status = order.getStatus();
 			if(!OrderHelper.lte_notpay(order_status)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{orderid, String.valueOf(order_status)});
-			}
+			}*/
 			
 			if(StringUtils.isNotEmpty(paymented_ds)){
 				order.setPayment_type(payment_type);
@@ -304,16 +232,16 @@ public class OrderFacadeService {
 				changed_status = OrderStatus.PaySuccessed.getKey();
 				changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
 
-				logger.info(String.format("OrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
+				logger.info(String.format("RewardOrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
 				//进行发货通知
-				boolean deliver_notify_ret = orderDeliverNotify(order, bindUser,ait_time);
+				boolean deliver_notify_ret = rewardOrderDeliverNotify(order, bindUser,ait_time);
 				//判断通知发货成功 更新订单状态
 				if(deliver_notify_ret){
 					changed_status = OrderStatus.DeliverCompleted.getKey();
 					changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
-					logger.info(String.format("OrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+					logger.info(String.format("RewardOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
 				}else{
-					logger.info(String.format("OrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
+					logger.info(String.format("RewardOrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
 				}
 				//清除缓存中的随机金额
 				CommdityIntervalAmountService.getInstance().removeRAmount(order.getMac(), order.getUmac(), order.getCommdityid());
@@ -330,7 +258,7 @@ public class OrderFacadeService {
 	}
 	
 	/**
-	 * 支付系统支付完成的订单处理逻辑
+	 * 打赏支付系统支付完成的订单处理逻辑
 	 * 更新订单状态为支付成功
 	 * 通知应用发货成功以后 更新支付状态为发货完成
 	 * @param success 支付是否成功
@@ -341,57 +269,44 @@ public class OrderFacadeService {
 	 * @param payment_proxy_type 支付代理方式
 	 * @return
 	 */
-	public Order orderPaymentCompletedNotify(boolean success, String orderid, User bindUser, String paymented_ds,
+	public Order rewardOrderPaymentCompletedNotify(boolean success, String orderid, User bindUser, String paymented_ds,
 			String payment_type, String payment_proxy_type,String ait_time){
 		Order order = validateOrderId(orderid);
-		return orderPaymentCompletedNotify(success, order, bindUser, paymented_ds, payment_type, payment_proxy_type,ait_time);
+		return rewardOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, payment_type, payment_proxy_type,ait_time);
 	}
 	
 	/**
-	 * 通知应用发货，按照约定的redis写入
+	 * 打赏通知应用发货，按照约定的redis写入
 	 * @param order 订单实体
 	 * @param bindUser 设备绑定的用户实体
 	 * @return
 	 */
-	public boolean orderDeliverNotify(Order order, User bindUser,String ait_time){
+	public boolean rewardOrderDeliverNotify(Order order, User bindUser,String ait_time){
 		try{
 			if(order == null) {
-				logger.error("orderDeliverNotify order data not exist");
+				logger.error("rewardOrderDeliverNotify order data not exist");
 				return false;
 			}
-/*			Integer commdityid = order.getCommdityid();
-			Commdity commdity = commdityService.getById(commdityid);
-			if(commdity == null){
-				logger.error("orderDeliverNotify order commdity data not exist");
-				return false;
-			}*/
-			//RequestDeliverNotifyDTO requestDeliverNotifyDto = RequestDeliverNotifyDTO.from(order, commdity, bindUser);
+			
 			RequestDeliverNotifyDTO requestDeliverNotifyDto = RequestDeliverNotifyDTO.from(order, ait_time, bindUser);
 			if(requestDeliverNotifyDto != null){
 				String requestDeliverNotifyMessage = JsonHelper.getJSONString(requestDeliverNotifyDto);
 				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(requestDeliverNotifyMessage);
 				//判断通知发货成功
 				if(notify_ret != null && notify_ret > 0){
-					logger.info(String.format("OrderDeliverNotify success deliver notify: message[%s] rpush_ret[%s]", requestDeliverNotifyMessage, notify_ret));
+					logger.info(String.format("RewardOrderDeliverNotify success deliver notify: message[%s] rpush_ret[%s]", requestDeliverNotifyMessage, notify_ret));
 					return true;
 				}
-/*				List<Object> notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotifyTransaction(requestDeliverNotifyMessage);
-				//判断通知发货成功
-				if(notify_ret != null && notify_ret.size() == 3){
-					logger.info(String.format("OrderDeliverNotify success deliver notify: message[%s] slen[%s] rpush_ret[%s] elen[%s]", 
-							requestDeliverNotifyMessage, notify_ret.get(0), notify_ret.get(1), notify_ret.get(2)));
-					return true;
-				}*/
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error("orderDeliverNotify exception", ex);
+			logger.error("RewardOrderDeliverNotify exception", ex);
 		}
 		return false;
 	}
 	
 	
-	public OrderStatisticsVTO orderStatisticsWithProcedure(String start_date, String end_date){
+	public OrderStatisticsVTO rewardOrderStatisticsWithProcedure(String start_date, String end_date){
 		OrderStatisticsProcedureDTO procedureDTO = new OrderStatisticsProcedureDTO();
 		procedureDTO.setStart_date(start_date);
 		procedureDTO.setEnd_date(end_date);
@@ -402,6 +317,86 @@ public class OrderFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
 		}
 		return procedureDTO.toVTO();
+	}
+	
+	/*************            充值虎钻             ****************/
+	
+	
+	/**
+	 * 生成充值虎钻订单
+	 * @param uid
+	 * @param commdity 商品实体
+	 * @param appid 应用id
+	 * @param payment_type 支付方式
+	 * @return
+	 */
+	public Order createRechargeVCurrencyOrder(Integer uid, Integer commdityid, Integer appid, String payment_type){
+		//商品信息验证
+		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+		//验证商品是否合理
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RechargeVCurrency)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
+		}
+		
+		String amount = commdity.getPrice();
+		long vcurrency = commdity.getVcurrency();
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdityid);
+		order.setAppid(appid);
+		order.setType(commdity.getCategory());
+		order.setPayment_type(payment_type);
+		order.setStatus(OrderStatus.NotPay.getKey());
+		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
+		order.setAmount(amount);
+		order.setVcurrency(vcurrency);
+		orderService.insert(order);
+		return order;
+	}
+	
+	
+	/**
+	 * 充值虎钻支付系统支付完成的订单处理逻辑
+	 * 更新订单状态为支付成功
+	 * 通知应用发货成功以后 更新支付状态为发货完成
+	 * @param success 支付是否成功
+	 * @param order 订单实体
+	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
+	 * @param payment_type 支付方式
+	 * @param payment_proxy_type 支付代理方式
+	 */
+	public Order rechargeVCurrencyOrderPaymentCompletedNotify(boolean success, Order order, String paymented_ds,
+			String payment_type, String payment_proxy_type){
+		Integer changed_status = null;
+		Integer changed_process_status = null;
+		try{
+			String orderid = order.getId();
+			Integer order_status = order.getStatus();
+			if(!OrderHelper.lte_notpay(order_status)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{orderid, String.valueOf(order_status)});
+			}
+			
+			if(StringUtils.isNotEmpty(paymented_ds)){
+				order.setPayment_type(payment_type);
+				order.setPayment_proxy_type(payment_proxy_type);
+				order.setPaymented_at(DateTimeHelper.parseDate(paymented_ds, DateTimeHelper.DefalutFormatPattern));
+			}
+
+			//支付成功
+			if(success){
+				changed_status = OrderStatus.DeliverCompleted.getKey();
+				changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
+				logger.info(String.format("RechargeVCurrencyOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+			}else{
+				changed_status = OrderStatus.PayFailured.getKey();
+				changed_process_status = OrderProcessStatus.PayFailured.getKey();
+			}
+		}catch(Exception ex){
+			throw ex; 
+		}finally{
+			orderStatusChanged(order, changed_status, changed_process_status);
+		}
+		return order;
 	}
 	
 	/*************            validate             ****************/
@@ -441,12 +436,12 @@ public class OrderFacadeService {
 	 * @param appId
 	 * @return
 	 */
-	public Order validateOrder(String orderid, Integer appid){
+/*	public Order validateOrder(String orderid, Integer appid){
 		supportedAppId(appid);
 		Order order = validateOrderId(orderid);
 		if(!appid.equals(order.getAppid())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_APPID_INVALID);
 		}
 		return order;
-	}
+	}*/
 }

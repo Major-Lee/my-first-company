@@ -11,12 +11,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
-import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
@@ -38,7 +37,7 @@ public class WifiDeviceMobilePresentRepairOp {
 		
 		long t0 = System.currentTimeMillis();
 		
-		UserDeviceService userDeviceService = (UserDeviceService)actx.getBean("userDeviceService");
+		UserWifiDeviceService userWifiDeviceService = (UserWifiDeviceService)actx.getBean("userWifiDeviceService");
 		UserMobileDeviceService userMobileDeviceService = (UserMobileDeviceService)actx.getBean("userMobileDeviceService");
 		
 		ModelCriteria mc = new ModelCriteria();
@@ -46,13 +45,13 @@ public class WifiDeviceMobilePresentRepairOp {
 		mc.setOrderByClause("uid");
 		mc.setPageNumber(1);
     	mc.setPageSize(200);
-		EntityIterator<UserDevicePK, UserDevice> it = new KeyBasedEntityBatchIterator<UserDevicePK,UserDevice>(UserDevicePK.class
-				,UserDevice.class, userDeviceService.getEntityDao(), mc);
+		EntityIterator<String, UserWifiDevice> it = new KeyBasedEntityBatchIterator<String,UserWifiDevice>(String.class
+				,UserWifiDevice.class, userWifiDeviceService.getEntityDao(), mc);
 		while(it.hasNext()){
-			List<UserDevicePK> pks = it.nextKeys();
+			List<UserWifiDevice> userWifiDevices = it.next();
 			Set<Integer> uids = new HashSet<Integer>();
-			for(UserDevicePK userDevicePk : pks){
-				uids.add(userDevicePk.getUid());
+			for(UserWifiDevice userWifiDevice : userWifiDevices){
+				uids.add(userWifiDevice.getUid());
 			}
 			List<UserMobileDevice> userMobileDevices = userMobileDeviceService.findByIds(new ArrayList<Integer>(uids));
 			Map<Integer, UserMobileDevice> userMobileDevicesMap = new HashMap<Integer, UserMobileDevice>();
@@ -62,12 +61,12 @@ public class WifiDeviceMobilePresentRepairOp {
 			
 			DeviceMobilePresentDTO presentDto = null;
 			UserMobileDevice userMobileDevice = null;
-			for(UserDevicePK userDevicePk : pks){
-				userMobileDevice = userMobileDevicesMap.get(userDevicePk.getUid());
+			for(UserWifiDevice userWifiDevice : userWifiDevices){
+				userMobileDevice = userMobileDevicesMap.get(userWifiDevice.getUid());
 				if(userMobileDevice != null){
-					presentDto  = new DeviceMobilePresentDTO(userDevicePk.getUid(), userMobileDevice.getD(), userMobileDevice.getDt(), 
+					presentDto  = new DeviceMobilePresentDTO(userWifiDevice.getUid(), userMobileDevice.getD(), userMobileDevice.getDt(), 
 							userMobileDevice.getPt(), userMobileDevice.getDm());
-					WifiDeviceMobilePresentStringService.getInstance().setMobilePresent(userDevicePk.getMac(), 
+					WifiDeviceMobilePresentStringService.getInstance().setMobilePresent(userWifiDevice.getId(), 
 							JsonHelper.getJSONString(presentDto));
 				}
 

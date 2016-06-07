@@ -1,6 +1,6 @@
 package com.bhu.vas.api.dto.commdity;
 /**
- * 订单dto
+ * 打赏订单dto
  * @author tangzichao
  *
  */
@@ -20,6 +20,8 @@ public class OrderDTO implements java.io.Serializable{
 	private String umac;
 	//用户uid
 	private Integer uid;
+	//订单类型
+	private Integer type;
 	//支付订单id
 	//private String pay_orderid;
 	//订单金额
@@ -74,6 +76,12 @@ public class OrderDTO implements java.io.Serializable{
 	}
 	public void setUid(Integer uid) {
 		this.uid = uid;
+	}
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
 	}
 	public String getAmount() {
 		return amount;

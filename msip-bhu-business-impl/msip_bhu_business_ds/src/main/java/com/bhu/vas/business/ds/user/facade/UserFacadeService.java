@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceStateService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 @Service
@@ -28,8 +28,11 @@ public class UserFacadeService {
 	@Resource
 	private UserTokenService userTokenService;
 	
+/*	@Resource
+	private UserDeviceService userDeviceService;*/
+	
 	@Resource
-	private UserDeviceService userDeviceService;
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private UserMobileDeviceService userMobileDeviceService;
@@ -49,7 +52,7 @@ public class UserFacadeService {
 			return false;
 		}
 		userTokenService.deleteById(uid);
-		List<String> bindedMacs = new ArrayList<String>();
+/*		List<String> bindedMacs = new ArrayList<String>();
 		List<UserDevice> bindedDevices = userDeviceService.fetchBindDevicesWithLimit(uid, 100);
 		if(bindedDevices!= null && !bindedDevices.isEmpty()){
 			for(UserDevice device:bindedDevices){
@@ -58,8 +61,20 @@ public class UserFacadeService {
 		}
 		if(!bindedMacs.isEmpty()){
 			WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(bindedMacs);
-		}
-		userDeviceService.clearBindedDevices(uid);
+		}*/
+		userWifiDeviceFacadeService.iteratorByUid(uid, new IteratorNotify<List<UserWifiDevice>>() {
+		    @Override
+		    public void notifyComming(List<UserWifiDevice> userWifiDevices) {
+		    	List<String> bindedMacs = new ArrayList<String>();
+		    	for (UserWifiDevice userWifiDevice : userWifiDevices) {
+		    		bindedMacs.add(userWifiDevice.getId());
+		    	}
+		    	WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(bindedMacs);
+		    }
+		});
+		
+		//userDeviceService.clearBindedDevices(uid);
+		userWifiDeviceFacadeService.clearUserWifiDevices(uid);
 		userMobileDeviceService.deleteById(uid);
 		userMobileDeviceStateService.deleteById(uid);
 		return true;

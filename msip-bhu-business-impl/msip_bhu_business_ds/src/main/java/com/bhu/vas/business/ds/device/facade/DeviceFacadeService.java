@@ -27,9 +27,8 @@ import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
-import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
@@ -39,10 +38,11 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatistics
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceStateService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -50,7 +50,6 @@ import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingResultDTO;
-import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -74,8 +73,11 @@ public class DeviceFacadeService{
 	@Resource
 	private WifiDeviceSettingService wifiDeviceSettingService;
 	
+/*	@Resource
+	private UserDeviceService userDeviceService;*/
+	
 	@Resource
-	private UserDeviceService userDeviceService;
+	private UserWifiDeviceService userWifiDeviceService;
 	
 	@Resource
 	private UserMobileDeviceService userMobileDeviceService;
@@ -85,6 +87,9 @@ public class DeviceFacadeService{
 
 	@Resource
 	private UserSettingStateService userSettingStateService;
+	
+	@Resource
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	//@Resource
 	//private UserService userService;
@@ -477,10 +482,11 @@ public class DeviceFacadeService{
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
 		}
 		//验证用户是否管理设备
-		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
+/*		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
 		if(userdevice_entity == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_YOURBINDED,new String[]{mac});
-		}
+		}*/
+		userWifiDeviceFacadeService.validateUserWifiDevice(mac, uid);
 		return device_entity;
 	}
 	
@@ -498,10 +504,11 @@ public class DeviceFacadeService{
 		//验证设备
 		WifiDevice device_entity = validateDevice(mac);
 		//验证用户是否管理设备
-		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
+/*		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
 		if(userdevice_entity == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_YOURBINDED,new String[]{mac});
-		}
+		}*/
+		userWifiDeviceFacadeService.validateUserWifiDevice(mac, uid);
 		return device_entity;
 	}
 	
@@ -572,23 +579,23 @@ public class DeviceFacadeService{
 	 * @param uid
 	 * @return
 	 */
-	public List<UserDevicePK> getUserDevices(Integer uid){
+/*	public List<UserDevicePK> getUserDevices(Integer uid){
 		CommonCriteria mc = new CommonCriteria();
 		mc.createCriteria().andColumnEqualTo("uid", uid);
 		return userDeviceService.findIdsByCommonCriteria(mc);
-	}
+	}*/
 	
-	public UserDevice getUserDevice(Integer uid, String mac){
+/*	public UserDevice getUserDevice(Integer uid, String mac){
 		return userDeviceService.getById(new UserDevicePK(mac, uid));
-	}
+	}*/
 	
-	public String getUserDeviceName(Integer uid, String mac){
+/*	public String getUserDeviceName(Integer uid, String mac){
 		UserDevice entity = this.getUserDevice(uid, mac);
 		if(entity != null){
 			return entity.getDevice_name();
 		}
 		return null;
-	}
+	}*/
 	
 	/**
 	 * 更新设备的mode状态信息
@@ -749,7 +756,7 @@ public class DeviceFacadeService{
 	 * @param mac
 	 * @return
 	 */
-	public String queryDeviceName(Integer uid, String mac){
+/*	public String queryDeviceName(Integer uid, String mac){
 		UserDevice userDevice = userDeviceService.getById(new UserDevicePK(mac, uid));
 		if(userDevice != null){
 			if(!StringUtils.isEmpty(userDevice.getDevice_name())){
@@ -757,7 +764,7 @@ public class DeviceFacadeService{
 			}
 		}
 		return null;
-	}
+	}*/
 	/**
 	 * 用户注册app移动设备信息
 	 * 1:当前用户使用app移动设备数据
@@ -832,31 +839,58 @@ public class DeviceFacadeService{
 	public void deviceResetDestory(String mac){
 		System.out.println("~~~~~~~~~~1:设备重置解除绑定操作："+mac);
 		//现在一台设备只能被一个客户端绑定。此处考虑冗余兼容可能出现的多个用户绑定单个设备的情况
-		List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
-		List<Integer> uids = new ArrayList<Integer>();
-        for (UserDevice bindDevice : bindDevices) {
-        	uids.add(bindDevice.getUid());
-        }
-        System.out.println("~~~~~~~~~~2:设备绑定用户："+uids);
-        for(Integer uid :uids){
-        	UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
-        	System.out.println("~~~~~~~~~~21:设备绑定用户清除："+uid);
-        	userDeviceService.deleteById(userDevicePK);
-        	System.out.println("~~~~~~~~~~22:设备状态清除："+uid);
-        	/*String present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
-        	System.out.println("~~~~~~~~~~221:清除前：present:"+present);*/
-        	this.removeMobilePresent(uid, mac);
-        	/*present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
-        	System.out.println("~~~~~~~~~~221:清除后：present:"+present);*/
-        	System.out.println("~~~~~~~~~~23:设备插件状态清除："+uid);
-			userSettingStateService.deleteById(mac);
-			//System.out.println("~~~~~~~~~~24:设备插件状态清除："+uid);
-			/*//如果没有绑定其他设备，删除别名
-			int count = userDeviceService.countBindDevices(uid);
-			if(count == 0 ){
-				WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(uid, mac);
-			}*/
-        }
+//		List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
+//		List<Integer> uids = new ArrayList<Integer>();
+//        for (UserDevice bindDevice : bindDevices) {
+//        	uids.add(bindDevice.getUid());
+//        }
+//        System.out.println("~~~~~~~~~~2:设备绑定用户："+uids);
+//        for(Integer uid :uids){
+//        	//UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+//        	System.out.println("~~~~~~~~~~21:设备绑定用户清除："+uid);
+//        	//userDeviceService.deleteById(userDevicePK);
+//        	userWifiDeviceService.deleteById(mac);
+//        	System.out.println("~~~~~~~~~~22:设备状态清除："+uid);
+//        	/*String present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
+//        	System.out.println("~~~~~~~~~~221:清除前：present:"+present);*/
+//        	this.removeMobilePresent(uid, mac);
+//        	/*present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
+//        	System.out.println("~~~~~~~~~~221:清除后：present:"+present);*/
+//        	System.out.println("~~~~~~~~~~23:设备插件状态清除："+uid);
+//			userSettingStateService.deleteById(mac);
+//			//System.out.println("~~~~~~~~~~24:设备插件状态清除："+uid);
+//			/*//如果没有绑定其他设备，删除别名
+//			int count = userDeviceService.countBindDevices(uid);
+//			if(count == 0 ){
+//				WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(uid, mac);
+//			}*/
+//        }
+		
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+		if(userWifiDevice != null){
+			Integer uid = userWifiDevice.getUid();
+			if(uid != null){
+	        	//UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+	        	System.out.println("~~~~~~~~~~21:设备绑定用户清除："+uid);
+	        	//userDeviceService.deleteById(userDevicePK);
+	        	userWifiDeviceService.deleteById(mac);
+	        	System.out.println("~~~~~~~~~~22:设备状态清除："+uid);
+	        	/*String present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
+	        	System.out.println("~~~~~~~~~~221:清除前：present:"+present);*/
+	        	this.removeMobilePresent(uid, mac);
+	        	/*present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
+	        	System.out.println("~~~~~~~~~~221:清除后：present:"+present);*/
+	        	System.out.println("~~~~~~~~~~23:设备插件状态清除："+uid);
+				userSettingStateService.deleteById(mac);
+				//System.out.println("~~~~~~~~~~24:设备插件状态清除："+uid);
+				/*//如果没有绑定其他设备，删除别名
+				int count = userDeviceService.countBindDevices(uid);
+				if(count == 0 ){
+					WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(uid, mac);
+				}*/
+			}
+		}
+	
         //清除设备的行业信息
         WifiDevice wifiDevice = wifiDeviceService.getById(mac);
         if(wifiDevice != null){
@@ -923,14 +957,15 @@ public class DeviceFacadeService{
 		}
 		
 		if(presentDto != null){
-			List<UserDevicePK> userDevices = this.getUserDevices(uid);
+/*			List<UserDevicePK> userDevices = this.getUserDevices(uid);
 			if(userDevices == null || userDevices.isEmpty()){
 				return;
 			}
 			List<String> macs = new ArrayList<String>();
 			for(UserDevicePK pk : userDevices){
 				macs.add(pk.getMac());
-			}
+			}*/
+			List<String> macs = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(uid);
 			//处理业务action
 			if(StringUtils.isNotEmpty(action_mac) && action != null){
 				//防止主从数据库同步问题的处理
@@ -1011,13 +1046,16 @@ public class DeviceFacadeService{
 	public void clearDeviceMobilePresents(Integer uid){
 		if(uid == null) return;
 		
-		List<UserDevicePK> userDevices = this.getUserDevices(uid);
+/*		List<UserDevicePK> userDevices = this.getUserDevices(uid);
 		if(userDevices.isEmpty()) return;
 		
 		List<String> macs = new ArrayList<String>();
 		for(UserDevicePK pk : userDevices){
 			macs.add(pk.getMac());
-		}
+		}*/
+		List<String> macs = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(uid);
+		if(macs.isEmpty()) return;
+		
 		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(macs);
 	}
 

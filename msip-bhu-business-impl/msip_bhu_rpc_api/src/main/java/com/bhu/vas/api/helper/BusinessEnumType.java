@@ -12,6 +12,7 @@ public class BusinessEnumType {
 	public enum OAuthType{
 		Weichat("腾讯微信", "weixin",true,"提现至微信"),
 		Alipay("支付宝", "alipay",true,"提现至支付宝"),
+		Public("对公账户", "public",true,"提现至对公账户"),
 		QQ("腾讯QQ", "qq"),
 		Weibo("新浪微博", "weibo"),
 		;
@@ -281,7 +282,7 @@ public class BusinessEnumType {
 	
 	//充值购买虎钻 充值零钱 系统/活动赠送虎钻 消费虎钻 提现(withdraw)
 	/**
-	 * 交易类型定义
+	 * 交易模式定义
 	 * 和第三方支付相关的操作
 	 * 支付、充值、提现
 	 * @author Edmond
@@ -489,7 +490,8 @@ public class BusinessEnumType {
 	 * @author tangzichao
 	 */
 	public enum CommdityCategory{
-		InternetLimit(99,"限时上网分类","限时上网分类"),
+		RechargeVCurrency(3,"充值虚拟币","充值虚拟币"),
+		InternetLimit(0,"限时上网分类","限时上网分类"),
 		;
 		private Integer category;
 		private String name;
@@ -520,6 +522,15 @@ public class BusinessEnumType {
 		}
 		public void setDesc(String desc) {
 			this.desc = desc;
+		}
+		
+		public static boolean correct(Integer category, CommdityCategory commdityCategory){
+			if(category == null || commdityCategory == null) return false;
+			
+			if(category.equals(commdityCategory.getCategory())){
+				return true;
+			}
+			return false;
 		}
 		
 		public static CommdityCategory fromKey(Integer category){
@@ -615,7 +626,8 @@ public class BusinessEnumType {
 	 */
 	public enum CommdityApplication{
 		Portal(1001,"3BD80FEBC9CC48E99EA2ABBE214E5957","portal id","uportal id"),
-		Default(1000,"1F915A8DA370422582CBAC1DB6A806DD","默认应用id","默认应用id"),
+		DEFAULT(1000,"1F915A8DA370422582CBAC1DB6A806DD","打赏应用id","打赏应用id"),
+		BHU_PREPAID_BUSINESS(1002,"1F915A8DA370422582CBAC1DB6A806UU","虎钻应用id","虎钻应用id"),
 		;
 		private Integer key;
 		private String secret;
@@ -825,6 +837,8 @@ public class BusinessEnumType {
 		PcAlipay("PcAlipay","支付宝","支付宝"),
 		WapWeixin("WapWeixin","微信","微信"),
 		WapAlipay("WapAlipay","支付宝","支付宝"),
+		AppWeixin("AppWeixin","微信","微信"),
+		AppAlipay("AppAlipay","支付宝","支付宝"),
 		Midas("Midas","米大师","米大师"),
 		Hee("Hee","汇元宝","汇元宝"),
 		Unknown("unknown","未知支付方式", "未知支付方式"),

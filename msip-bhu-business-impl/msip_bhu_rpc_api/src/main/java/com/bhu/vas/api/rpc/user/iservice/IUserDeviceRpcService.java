@@ -32,8 +32,8 @@ public interface IUserDeviceRpcService {
 
     RpcResponseDTO<Boolean> unBindDevice(String mac, int uid);
 
-    @Deprecated
-    RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid);
+/*    @Deprecated
+    RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid);*/
 
     RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid, String dut, int pageNo, int pageSize);
     RpcResponseDTO<TailPage<UserDeviceDTO>> fetchPageBindDevices(int uid, String dut, int pageNo, int pageSize);
@@ -46,7 +46,7 @@ public interface IUserDeviceRpcService {
 
 
     //RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid);
-    RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid);
+//    RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid);
     //int validateDeviceStatusIsOnlineAndBinded(String mac);
 
     RpcResponseDTO<UserDeviceStatusDTO> validateDeviceStatus(String mac);
@@ -60,7 +60,7 @@ public interface IUserDeviceRpcService {
     
 	RpcResponseDTO<DeviceDetailVTO> deviceDetail(int uid,String mac);
 	
-    RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid);
+//    RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid);
     
     //RpcResponseDTO<DeviceProfileVTO> portalDeviceProfile(String mac);
     

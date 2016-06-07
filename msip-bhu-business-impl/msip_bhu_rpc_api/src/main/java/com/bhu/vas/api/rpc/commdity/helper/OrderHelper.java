@@ -59,10 +59,15 @@ public class OrderHelper {
 	}
 	
 	
-	public static void supportedAppId(Integer appid){
-		//认证appid
-		if(!CommdityApplication.supported(appid)){
+	public static CommdityApplication supportedAppId(Integer appid){
+		CommdityApplication commdityApplication = CommdityApplication.fromKey(appid);
+		if(commdityApplication == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_APPID_INVALID, new String[]{String.valueOf(appid)});
 		}
+		return commdityApplication;
+		//认证appid
+/*		if(!CommdityApplication.supported(appid)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_APPID_INVALID, new String[]{String.valueOf(appid)});
+		}*/
 	}
 }

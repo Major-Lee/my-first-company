@@ -1,5 +1,8 @@
 package com.bhu.vas.business.ds.charging.service;
 
+
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -17,5 +20,8 @@ public class DeviceGroupPaymentStatisticsService extends AbstractCoreService<Str
 	public void setEntityDao(DeviceGroupPaymentStatisticsDao deviceGroupPaymentStatisticsDao) {
 		super.setEntityDao(deviceGroupPaymentStatisticsDao);
 	}
-
+	
+	public List<DeviceGroupPaymentStatistics> getRankingList(){
+		return super.entityDao.rankingList();
+	}
 }

@@ -65,7 +65,7 @@ public class ConsoleDeviceController extends BaseController {
      * @param tid 目标用户id
      * @param uid
      */
-    @ResponseBody()
+/*    @ResponseBody()
     @RequestMapping(value="/userdetail",method={RequestMethod.POST})
     public void userdetail(HttpServletResponse response,
 					    		@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
@@ -78,7 +78,7 @@ public class ConsoleDeviceController extends BaseController {
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
-    }
+    }*/
     
     /**
      * 给指定设备进行升级，包括固件和组件
