@@ -204,10 +204,10 @@ public class UserWalletFacadeService{
 		int executeRet = userWalletService.executeProcedure(processorDTO);
 		if(executeRet == 0){
 			logger.info( String.format("钱包出入账-成功 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] vcurrency[%s] desc[%s] memo[%s]",
-					uid,orderid,cash,transMode.getName(),transType.getName(),rmoney,cash,vcurrency,desc,memo));
+					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,vcurrency,desc,memo));
 		}else{
 			logger.info( String.format("钱包出入账-失败 uid[%s] orderid[%s] transMode[%s] transType[%s] rmoney[%s] cash[%s] vcurrency[%s] desc[%s] memo[%s]",
-					uid,orderid,cash,transMode.getName(),transType.getName(),rmoney,cash,vcurrency,desc,memo));
+					uid,orderid,transMode.getName(),transType.getName(),rmoney,cash,vcurrency,desc,memo));
 			//throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
 		}
 		return executeRet;
