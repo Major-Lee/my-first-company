@@ -38,6 +38,7 @@ import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsServ
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -60,6 +61,9 @@ public class UserWalletUnitFacadeService {
 	
 	@Resource
 	private DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService;
+	
+	@Resource
+	private UserService userService;
 	
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
@@ -500,9 +504,15 @@ public class UserWalletUnitFacadeService {
 	public RpcResponseDTO<RankingListVTO> rankingList() {
 		try{
 			RankingListVTO rankingListVTO=new RankingListVTO();
+			List<User> users=new ArrayList<User>();
 			List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList();
-			if(paymentStatistics == null){
+			if(paymentStatistics != null){
+				for(DeviceGroupPaymentStatistics i:paymentStatistics){
+					User user=userService.getById(i.getUid());
+					users.add(user);
+				}
 			}
+			rankingListVTO.setRankingList(users);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rankingListVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
