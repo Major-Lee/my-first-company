@@ -243,6 +243,8 @@ public class UMLogicImpl implements IUMLogic{
 		totalMap.put("totalUV", totalUV);
 		totalMap.put("totalDC", totalDC);
 		totalMap.put("totalDOC", totalDOC);
+		BigDecimal b = new BigDecimal(totalSingleGains);
+		totalSingleGains =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
 		totalMap.put("totalSingleGains", totalSingleGains);
 		totalMap.put("totalSingleOrderNum", totalSingleOrderNum);
 		totalMap.put("totalGains", totalGains);
@@ -954,6 +956,8 @@ public class UMLogicImpl implements IUMLogic{
 		totalMap.put("totalUV", totalUV);
 		totalMap.put("totalDC", totalDC);
 		totalMap.put("totalDOC", totalDOC);
+		BigDecimal b = new BigDecimal(totalSingleGains);
+		totalSingleGains =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
 		totalMap.put("totalSingleGains", totalSingleGains);
 		totalMap.put("totalSingleOrderNum", totalSingleOrderNum);
 		totalMap.put("totalGains", totalGains);
