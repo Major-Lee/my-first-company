@@ -236,7 +236,8 @@ public class AsyncOrderPaymentNotifyService {
 			}
 			String desc = String.format(BusinessEnumType.templateReChargingRealmoney2VCurrencyPaymentDesc, uMacType.getDesc(), 
 					orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP);
-			userWalletFacadeService.vcurrencyToUserWallet(order.getUid(), order.getId(), UWalletTransMode.RealMoneyPayment, rmoney, vcurrency, desc);
+			userWalletFacadeService.vcurrencyToUserWallet(order.getUid(), order.getId(), UWalletTransMode.RealMoneyPayment,
+					Double.parseDouble(order.getAmount()), order.getVcurrency(), desc);
 		}
 		
 		

@@ -298,7 +298,7 @@ public class OrderUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<OrderRechargeVCurrencyDTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid,
-			String payment_type){
+			String payment_type, Integer umactype){
 		try{
 			//orderFacadeService.supportedAppId(appid);
 			User user = userService.getById(uid);
@@ -313,7 +313,7 @@ public class OrderUnitFacadeService {
 			}*/
 			
 			Order order = orderFacadeService.createRechargeVCurrencyOrder(uid, commdityid, 
-					BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), payment_type);
+					BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), payment_type, umactype);
 			OrderRechargeVCurrencyDTO orderDto = new OrderRechargeVCurrencyDTO();
 			BeanUtils.copyProperties(order, orderDto);
 			
