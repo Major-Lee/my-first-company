@@ -21,6 +21,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.charging.model.DeviceGroupPaymentStatistics;
 import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
@@ -28,10 +29,12 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
+import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
@@ -54,6 +57,9 @@ public class UserWalletUnitFacadeService {
 	
 	@Resource
 	private BusinessWalletCacheService businessWalletCacheService;
+	
+	@Resource
+	private DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService;
 	
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
@@ -491,5 +497,18 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
+	public RpcResponseDTO<RankingListVTO> rankingList() {
+		try{
+			RankingListVTO rankingListVTO=new RankingListVTO();
+			List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList();
+			if(paymentStatistics == null){
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rankingListVTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

@@ -186,7 +186,7 @@ public class UserWalletController extends BaseController{
     @RequestMapping(value="/wallet/rankingList", method={RequestMethod.GET,RequestMethod.POST})
     public void rankingList(HttpServletResponse response, @RequestParam(required = true) int uid){
     	try{
-    		RpcResponseDTO<RankingListVTO> rpcResult = userWalletRpcService.rankingList(uid);
+    		RpcResponseDTO<RankingListVTO> rpcResult = userWalletRpcService.rankingList();
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{

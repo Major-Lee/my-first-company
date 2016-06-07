@@ -4,6 +4,7 @@ import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
@@ -93,6 +94,11 @@ public interface IUserWalletRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<FincialStatisticsVTO> fincialStatistics(String time);
+	/**
+	 * 昨日用户收益排行
+	 * @return
+	 */
+	public RpcResponseDTO<RankingListVTO> rankingList();
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

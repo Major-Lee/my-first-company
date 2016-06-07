@@ -11,6 +11,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
@@ -125,6 +126,11 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	public RpcResponseDTO<Boolean> directDrawPresent(int uid, String thirdparties_orderid,double cash,String desc) {
 		logger.info(String.format("directDrawPresent with uid[%s] thirdparties_orderid[%s] cash[%s] desc[%s]",uid,thirdparties_orderid,cash,desc));
 		return userWalletUnitFacadeService.directDrawPresent(uid,thirdparties_orderid,cash,desc);
+	}
+
+	@Override
+	public RpcResponseDTO<RankingListVTO> rankingList() {
+		return userWalletUnitFacadeService.rankingList();
 	}
 
 }
