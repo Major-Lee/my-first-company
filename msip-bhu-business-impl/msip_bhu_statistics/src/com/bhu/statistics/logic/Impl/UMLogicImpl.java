@@ -449,7 +449,7 @@ public class UMLogicImpl implements IUMLogic{
 				}
 				String mbOrderAmountStr=orderJson.getString("mb_ofa");
 				if(StringUtils.isNotBlank(mbOrderAmountStr)){
-					mbOrderComplete=Integer.valueOf(mbOrderAmountStr);
+					mbOrderAmount=Integer.valueOf(mbOrderAmountStr);
 				}
 			}
 			totalPcOrderNum+=pcOrderNum;
@@ -513,8 +513,8 @@ public class UMLogicImpl implements IUMLogic{
 			totalMap.put("orderConversion", 0);
 			totalMap.put("orderComConversion", 0);
 			if((pcUV+mobileUV)!=0){
-				totalMap.put("clickAverNum", (float)(Math.round(100*((pcClickNum+mobileClickNum)/(pcUV+mobileUV))))/100);
-				totalMap.put("orderConversion", (float)(Math.round(100*((pcOrderNum+mbOrderNum)/(pcUV+mobileUV))))/100);
+				totalMap.put("clickAverNum", (float)(Math.round(100*(pcClickNum+mobileClickNum)/(pcUV+mobileUV)))/100);
+				totalMap.put("orderConversion", (float)(Math.round(100*(pcOrderNum+mbOrderNum)/(pcUV+mobileUV)))/100);
 				totalMap.put("orderComConversion", (float)(Math.round(100*(pcOrderComplete+mbOrderComplete)/(pcUV+mobileUV)))/100);
 			}
 			totalMap.put("orderNum", pcOrderNum+mbOrderNum);
