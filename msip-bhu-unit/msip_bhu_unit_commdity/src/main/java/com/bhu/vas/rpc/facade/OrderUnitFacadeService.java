@@ -192,7 +192,7 @@ public class OrderUnitFacadeService {
 	 * @param orderId 订单id
 	 * @return
 	 */
-	public RpcResponseDTO<OrderStatusDTO> rewardOrderStatusByUmac(String umac, String orderid) {
+	public RpcResponseDTO<OrderStatusDTO> orderStatusByUmac(String umac, String orderid) {
 		try{
 			Order order = orderFacadeService.validateOrderId(orderid);
 			
@@ -388,7 +388,7 @@ public class OrderUnitFacadeService {
 	 * @param orderId 订单id
 	 * @return
 	 */
-	public RpcResponseDTO<OrderStatusDTO> rechargeVCurrencyOrderStatusByUmac(Integer uid, String orderid) {
+	public RpcResponseDTO<OrderStatusDTO> orderStatusByUid(Integer uid, String orderid) {
 		try{
 			Order order = orderFacadeService.validateOrderId(orderid);
 			

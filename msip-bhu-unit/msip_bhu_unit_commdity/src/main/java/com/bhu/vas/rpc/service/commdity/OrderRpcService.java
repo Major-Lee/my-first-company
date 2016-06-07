@@ -58,9 +58,9 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<OrderStatusDTO> rewardOrderStatusByUmac(String umac, String orderid) {
-		logger.info(String.format("rewardOrderStatusByUmac with umac[%s] orderid[%s]", umac, orderid));
-		return orderUnitFacadeService.rewardOrderStatusByUmac(umac, orderid);
+	public RpcResponseDTO<OrderStatusDTO> orderStatusByUmac(String umac, String orderid) {
+		logger.info(String.format("orderStatusByUmac with umac[%s] orderid[%s]", umac, orderid));
+		return orderUnitFacadeService.orderStatusByUmac(umac, orderid);
 	}
 	
 	@Override
@@ -94,9 +94,9 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<OrderStatusDTO> rechargeVCurrencyOrderStatusByUmac(Integer uid, String orderid) {
-		logger.info(String.format("rechargeVCurrencyOrderStatusByUmac with uid[%s] orderid[%s]", uid, orderid));
-		return orderUnitFacadeService.rechargeVCurrencyOrderStatusByUmac(uid, orderid);
+	public RpcResponseDTO<OrderStatusDTO> orderStatusByUid(Integer uid, String orderid) {
+		logger.info(String.format("orderStatusByUid with uid[%s] orderid[%s]", uid, orderid));
+		return orderUnitFacadeService.orderStatusByUid(uid, orderid);
 	}
 	
 	

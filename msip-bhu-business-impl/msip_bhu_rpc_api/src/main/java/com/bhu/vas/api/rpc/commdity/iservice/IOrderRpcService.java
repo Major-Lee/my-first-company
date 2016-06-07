@@ -15,7 +15,7 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<OrderDTO> createRewardOrder(Integer commdityid, String mac, String umac, 
 			Integer umactype, String payment_type, String context);
 	
-	public RpcResponseDTO<OrderStatusDTO> rewardOrderStatusByUmac(String umac, String orderid);
+	public RpcResponseDTO<OrderStatusDTO> orderStatusByUmac(String umac, String orderid);
 	
 	public RpcResponseDTO<TailPage<UserOrderDTO>> rewardOrderPagesByUid(Integer uid, String mac, String umac, 
 			Integer status, String dut, int pageNo, int pageSize);
@@ -27,5 +27,5 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<TailPage<UserRechargeVCurrencyOrderDTO>> rechargeVCurrencyOrderPagesByUid(Integer uid, 
 			Integer status, int pageNo, int pageSize);
 	
-	public RpcResponseDTO<OrderStatusDTO> rechargeVCurrencyOrderStatusByUmac(Integer uid, String orderid);
+	public RpcResponseDTO<OrderStatusDTO> orderStatusByUid(Integer uid, String orderid);
 }

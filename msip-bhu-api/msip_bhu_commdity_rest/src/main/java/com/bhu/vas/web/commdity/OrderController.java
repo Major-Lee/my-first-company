@@ -100,7 +100,7 @@ public class OrderController extends BaseController{
 	}
 	
 	/**
-	 * 根据umac查询打赏订单状态
+	 * 根据umac查询订单状态
 	 * @param request
 	 * @param response
 	 * @param umac 用户mac
@@ -116,7 +116,7 @@ public class OrderController extends BaseController{
 			@RequestParam(required = true) String orderid
 			) {
 
-		RpcResponseDTO<OrderStatusDTO> rpcResult = orderRpcService.rewardOrderStatusByUmac(umac, orderid);
+		RpcResponseDTO<OrderStatusDTO> rpcResult = orderRpcService.orderStatusByUmac(umac, orderid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -249,7 +249,7 @@ public class OrderController extends BaseController{
 	}
 	
 	/**
-	 * 根据umac查询打赏订单状态
+	 * 根据uid查询订单状态
 	 * @param request
 	 * @param response
 	 * @param umac 用户mac
@@ -257,15 +257,15 @@ public class OrderController extends BaseController{
 	 * @param appId 应用id
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/query/vcurrency/status",method={RequestMethod.GET,RequestMethod.POST})
-	public void query_vcurrency_status(
+	@RequestMapping(value="/query/uid/status",method={RequestMethod.GET,RequestMethod.POST})
+	public void query_uid_status(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String orderid
 			) {
 
-		RpcResponseDTO<OrderStatusDTO> rpcResult = orderRpcService.rechargeVCurrencyOrderStatusByUmac(uid, orderid);
+		RpcResponseDTO<OrderStatusDTO> rpcResult = orderRpcService.orderStatusByUid(uid, orderid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
