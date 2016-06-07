@@ -419,36 +419,38 @@ public class UMLogicImpl implements IUMLogic{
 			LinkedHashMap<String,Object> singleMap=new LinkedHashMap<String,Object>();
 			singleMap.put("date", daysList.get(i));
 			String orderRedius=BhuCache.getInstance().getStOrder(daysList.get(i), "stOrder");
-			JSONObject orderJson=JSONObject.fromObject(orderRedius);
-			String pcOrderNumStr=orderJson.getString("pc_occ");
-			int pcOrderNum=0;
-			if(StringUtils.isNotBlank(pcOrderNumStr)){
-				pcOrderNum=Integer.valueOf(pcOrderNumStr);
-			}
-			String pcOrderCompleteStr=orderJson.getString("pc_ofc");
 			int pcOrderComplete=0;
-			if(StringUtils.isNotBlank(pcOrderCompleteStr)){
-				pcOrderComplete=Integer.valueOf(pcOrderCompleteStr);
-			}
-			String pcOrderAmountStr=orderJson.getString("pc_ofa");
+			int pcOrderNum=0;
 			int pcOrderAmount=0;
-			if(StringUtils.isNotBlank(pcOrderAmountStr)){
-				pcOrderAmount=Integer.valueOf(pcOrderAmountStr);
-			}
-			String mbOrderNumStr=orderJson.getString("mb_occ");
-			int mbOrderNum=0;
-			if(StringUtils.isNotBlank(mbOrderNumStr)){
-				mbOrderNum=Integer.valueOf(mbOrderNumStr);
-			}
-			String mbOrderCompleteStr=orderJson.getString("mb_ofc");
 			int mbOrderComplete=0;
-			if(StringUtils.isNotBlank(mbOrderCompleteStr)){
-				mbOrderComplete=Integer.valueOf(mbOrderCompleteStr);
-			}
-			String mbOrderAmountStr=orderJson.getString("mb_ofa");
 			int mbOrderAmount=0;
-			if(StringUtils.isNotBlank(mbOrderAmountStr)){
-				mbOrderComplete=Integer.valueOf(mbOrderAmountStr);
+			int mbOrderNum=0;
+			if(StringUtils.isNotBlank(orderRedius)){
+				JSONObject orderJson=JSONObject.fromObject(orderRedius);
+				String pcOrderNumStr=orderJson.getString("pc_occ");
+				if(StringUtils.isNotBlank(pcOrderNumStr)){
+					pcOrderNum=Integer.valueOf(pcOrderNumStr);
+				}
+				String pcOrderCompleteStr=orderJson.getString("pc_ofc");
+				if(StringUtils.isNotBlank(pcOrderCompleteStr)){
+					pcOrderComplete=Integer.valueOf(pcOrderCompleteStr);
+				}
+				String pcOrderAmountStr=orderJson.getString("pc_ofa");
+				if(StringUtils.isNotBlank(pcOrderAmountStr)){
+					pcOrderAmount=Integer.valueOf(pcOrderAmountStr);
+				}
+				String mbOrderNumStr=orderJson.getString("mb_occ");
+				if(StringUtils.isNotBlank(mbOrderNumStr)){
+					mbOrderNum=Integer.valueOf(mbOrderNumStr);
+				}
+				String mbOrderCompleteStr=orderJson.getString("mb_ofc");
+				if(StringUtils.isNotBlank(mbOrderCompleteStr)){
+					mbOrderComplete=Integer.valueOf(mbOrderCompleteStr);
+				}
+				String mbOrderAmountStr=orderJson.getString("mb_ofa");
+				if(StringUtils.isNotBlank(mbOrderAmountStr)){
+					mbOrderComplete=Integer.valueOf(mbOrderAmountStr);
+				}
 			}
 			totalPcOrderNum+=pcOrderNum;
 			totalPcOrderComplete+=pcOrderComplete;
