@@ -1,6 +1,7 @@
 package com.bhu.vas.business.ds.user.facade;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -21,6 +22,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
+import com.bhu.vas.api.rpc.charging.model.DeviceGroupPaymentStatistics;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
@@ -35,6 +37,7 @@ import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
@@ -77,6 +80,9 @@ public class UserWalletFacadeService{
 	
 	@Resource
 	private FincialStatisticsService fincialStatisticsService;
+	
+	@Resource
+	private DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService;
 	
 	public FincialStatisticsService getFincialStatisticsService() {
 		return fincialStatisticsService;
@@ -825,7 +831,6 @@ public class UserWalletFacadeService{
 		}
 		return procedureDTO.toTotal();
 	}
-	
 	public UserService getUserService() {
 		return userService;
 	}
@@ -846,6 +851,13 @@ public class UserWalletFacadeService{
 	}
 	public ChargingFacadeService getChargingFacadeService() {
 		return chargingFacadeService;
+	}
+	public DeviceGroupPaymentStatisticsService getDeviceGroupPaymentStatisticsService() {
+		return deviceGroupPaymentStatisticsService;
+	}
+	public void setDeviceGroupPaymentStatisticsService(
+			DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService) {
+		this.deviceGroupPaymentStatisticsService = deviceGroupPaymentStatisticsService;
 	}
 
 	/*public UserThirdpartiesPaymentService getUserThirdpartiesPaymentService() {

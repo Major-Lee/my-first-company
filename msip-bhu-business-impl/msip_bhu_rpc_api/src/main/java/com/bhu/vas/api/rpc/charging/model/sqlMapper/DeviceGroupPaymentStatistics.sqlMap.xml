@@ -14,7 +14,6 @@
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
-  
   	<sql id="modelTableName">
 	    <![CDATA[
 	    	t_charging_devicegroup_payment_statistics
@@ -110,6 +109,10 @@
 				 -->
 			</if>
 		</where>
+	</select>
+	
+	<select id="rankingList" resultMap="modelResult" parameterType="java.util.List">
+	   select * from (select id,uid,groupid,SUM(total_payment_amount) as total_payment_amount,SUM(total_incoming_amount) as total_incoming_amount,total_times,created_at,updated_at from <include refid="modelTableName" />  WHERE id LIKE'%2016-06-05' GROUP BY uid) as s ORDER BY s.total_incoming_amount LIMIT 100
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
