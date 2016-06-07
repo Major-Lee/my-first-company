@@ -418,32 +418,34 @@ public class UMLogicImpl implements IUMLogic{
 		for(int i=0;i<daysList.size();i++){
 			LinkedHashMap<String,Object> singleMap=new LinkedHashMap<String,Object>();
 			singleMap.put("date", daysList.get(i));
-			String pcOrderNumStr=BhuCache.getInstance().getStOrder(daysList.get(i), "pc_occ");
+			String orderRedius=BhuCache.getInstance().getStOrder(daysList.get(i), "stOrder");
+			JSONObject orderJson=JSONObject.fromObject(orderRedius);
+			String pcOrderNumStr=orderJson.getString("pc_occ");
 			int pcOrderNum=0;
 			if(StringUtils.isNotBlank(pcOrderNumStr)){
 				pcOrderNum=Integer.valueOf(pcOrderNumStr);
 			}
-			String pcOrderCompleteStr=BhuCache.getInstance().getStOrder(daysList.get(i), "pc_ofc");
+			String pcOrderCompleteStr=orderJson.getString("pc_ofc");
 			int pcOrderComplete=0;
 			if(StringUtils.isNotBlank(pcOrderCompleteStr)){
 				pcOrderComplete=Integer.valueOf(pcOrderCompleteStr);
 			}
-			String pcOrderAmountStr=BhuCache.getInstance().getStOrder(daysList.get(i), "pc_ofa");
+			String pcOrderAmountStr=orderJson.getString("pc_ofa");
 			int pcOrderAmount=0;
 			if(StringUtils.isNotBlank(pcOrderAmountStr)){
 				pcOrderAmount=Integer.valueOf(pcOrderAmountStr);
 			}
-			String mbOrderNumStr=BhuCache.getInstance().getStOrder(daysList.get(i), "mb_occ");
+			String mbOrderNumStr=orderJson.getString("mb_occ");
 			int mbOrderNum=0;
 			if(StringUtils.isNotBlank(mbOrderNumStr)){
 				mbOrderNum=Integer.valueOf(mbOrderNumStr);
 			}
-			String mbOrderCompleteStr=BhuCache.getInstance().getStOrder(daysList.get(i), "mb_ofc");
+			String mbOrderCompleteStr=orderJson.getString("mb_ofc");
 			int mbOrderComplete=0;
 			if(StringUtils.isNotBlank(mbOrderCompleteStr)){
 				mbOrderComplete=Integer.valueOf(mbOrderCompleteStr);
 			}
-			String mbOrderAmountStr=BhuCache.getInstance().getStOrder(daysList.get(i), "mb_ofa");
+			String mbOrderAmountStr=orderJson.getString("mb_ofa");
 			int mbOrderAmount=0;
 			if(StringUtils.isNotBlank(mbOrderAmountStr)){
 				mbOrderComplete=Integer.valueOf(mbOrderAmountStr);
