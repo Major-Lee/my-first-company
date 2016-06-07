@@ -330,7 +330,7 @@ public class OrderFacadeService {
 	 * @param payment_type 支付方式
 	 * @return
 	 */
-	public Order createRechargeVCurrencyOrder(Integer uid, Integer commdityid, Integer appid, String payment_type){
+	public Order createRechargeVCurrencyOrder(Integer uid, Integer commdityid, Integer appid, String payment_type, Integer umactype){
 		//商品信息验证
 		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 		//验证商品是否合理
@@ -350,6 +350,7 @@ public class OrderFacadeService {
 		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setAmount(amount);
+		order.setUmactype(umactype);
 		order.setVcurrency(vcurrency);
 		orderService.insert(order);
 		return order;

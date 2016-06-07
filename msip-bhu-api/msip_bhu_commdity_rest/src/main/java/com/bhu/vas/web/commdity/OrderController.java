@@ -178,12 +178,13 @@ public class OrderController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) Integer commdityid,
 			@RequestParam(required = true) String payment_type,
+			@RequestParam(required = false, defaultValue = "2") Integer umactype,
 			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
 			) {
 		long start = System.currentTimeMillis();
 		
 		//1:生成订单
-		RpcResponseDTO<OrderRechargeVCurrencyDTO> rpcResult = orderRpcService.createRechargeVCurrencyOrder(uid, commdityid, payment_type);
+		RpcResponseDTO<OrderRechargeVCurrencyDTO> rpcResult = orderRpcService.createRechargeVCurrencyOrder(uid, commdityid, payment_type, umactype);
 		if(rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			return;

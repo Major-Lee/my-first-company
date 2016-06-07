@@ -77,10 +77,11 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<OrderRechargeVCurrencyDTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid, String payment_type) {
-		logger.info(String.format("createRechargeVCurrencyOrder with uid[%s] commdityid[%s] payment_type[%s]", uid, 
-				commdityid, payment_type));
-		return orderUnitFacadeService.createRechargeVCurrencyOrder(uid, commdityid, payment_type);
+	public RpcResponseDTO<OrderRechargeVCurrencyDTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid, 
+			String payment_type, Integer umactype) {
+		logger.info(String.format("createRechargeVCurrencyOrder with uid[%s] commdityid[%s] payment_type[%s] umactype[%s]", uid, 
+				commdityid, payment_type, umactype));
+		return orderUnitFacadeService.createRechargeVCurrencyOrder(uid, commdityid, payment_type, umactype);
 	}
 
 }
