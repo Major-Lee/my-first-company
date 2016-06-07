@@ -98,7 +98,7 @@ public interface IUserWalletRpcService {
 	 * 昨日用户收益排行
 	 * @return
 	 */
-	public RpcResponseDTO<RankingListVTO> rankingList();
+	public RpcResponseDTO<RankingListVTO> rankingList(int uid);
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

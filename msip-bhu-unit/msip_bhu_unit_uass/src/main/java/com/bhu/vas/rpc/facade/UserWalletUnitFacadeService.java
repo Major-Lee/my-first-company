@@ -481,15 +481,19 @@ public class UserWalletUnitFacadeService {
 					for(FincialStatistics i:fincialStatistics){
 						Date dt2 = df.parse(i.getId());
 						if(dt1.getTime()>dt2.getTime()){
-							wTotal+=java.lang.Math.abs(i.getCtw()-i.getCpw());
-							owTotal+=java.lang.Math.abs(i.getCta()-i.getCpa()+i.getCtm()-i.getCpm());
+							if(i.getCtw()>i.getCpw()){
+								wTotal+=i.getCtw()-i.getCpw();
+							}
+							if((i.getCta()-i.getCpa())>(i.getCtm()-i.getCpm())){
+								owTotal+=i.getCta()-i.getCpa()+i.getCtm()-i.getCpm();
+							}
 						}
 					}
-					fincialStatisticsVTO.setrTotal((float)(Math.round(100*(owTotal+wTotal)))/100);
+					fincialStatisticsVTO.setrTotal((float)(Math.round(100*(wTotal+owTotal)))/100);
 					fincialStatisticsVTO.setRwTotal((float)(Math.round(100*(wTotal)))/100);
 					fincialStatisticsVTO.setRowTotal((float)(Math.round(100*(owTotal)))/100);
 					fincialStatisticsVTO.sethTotal((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.getrTotal()+fincialStatisticsVTO.getCpTotal()-fincialStatisticsVTO.getCtTotal()))))/100);
-					fincialStatisticsVTO.setHwTotal((float)(Math.round(100*(wTotal-fincialStatisticsVTO.getCtw()+fincialStatisticsVTO.getCpw())))/100);
+					fincialStatisticsVTO.setHwTotal((float)(Math.round(100*(fincialStatisticsVTO.getRwTotal()+fincialStatisticsVTO.getCpTotal()-fincialStatisticsVTO.getCtTotal())))/100);
 					fincialStatisticsVTO.setHowTotal((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.gethTotal()-fincialStatisticsVTO.getHwTotal()))))/100);
 				}
 			}
@@ -501,16 +505,29 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	public RpcResponseDTO<RankingListVTO> rankingList() {
+	public RpcResponseDTO<RankingListVTO> rankingList(int uid) {
 		try{
 			RankingListVTO rankingListVTO=new RankingListVTO();
 			List<User> users=new ArrayList<User>();
 			List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList();
 			if(paymentStatistics != null){
-				for(DeviceGroupPaymentStatistics i:paymentStatistics){
-					User user=userService.getById(i.getUid());
-					users.add(user);
+				rankingListVTO.setRankNum(0);
+				rankingListVTO.setDisparity(0);
+				for(int i=0;i<paymentStatistics.size();i++){
+					DeviceGroupPaymentStatistics deviceGroupPaymentStatistics=paymentStatistics.get(i);
+					User user=userService.getById(deviceGroupPaymentStatistics.getUid());
+					if(i+1<=100){
+						if(uid==deviceGroupPaymentStatistics.getUid()){
+							rankingListVTO.setRankNum(i+1);
+						}
+						users.add(user);
+					}else{
+						if(uid==deviceGroupPaymentStatistics.getUid()){
+							rankingListVTO.setDisparity(Double.valueOf(paymentStatistics.get(99).getTotal_incoming_amount())-Double.valueOf(paymentStatistics.get(i).getTotal_incoming_amount()));
+						}
+					}
 				}
+				
 			}
 			rankingListVTO.setRankingList(users);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rankingListVTO);
