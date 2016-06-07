@@ -142,7 +142,7 @@ public class UserWifiDeviceFacadeService {
 	 */
 	public int countByUidAndMacsParam(Integer uid, List<String> macs){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnIn("mac", macs);
+		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnIn("id", macs);
 		return userWifiDeviceService.countByModelCriteria(mc);
 	}
 
