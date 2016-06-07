@@ -34,29 +34,27 @@ public class UserSharedNetworksRepairEnvOp {
 	public static void main(String[] argv){
 		long t0 = System.currentTimeMillis();
 		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
-		
 		/**
+		//由于用户可能存在定制的authurl，所有把123.56.227.18 replace ucloud.bhuwifi.com
+		http://123.56.227.18:9158/portal/default/reward/index_before.html
 		sharednetworkwifi.default.remote.authurl = http://ucloud.bhuwifi.com:9158/portal/default/reward/index_before.html
 		sharednetworkwifi.default.openresource = isdspeed.qq.com,pay.qq.com,weixin.qq.com,jspay.qq.com,bhuwifi.com,bhunetworks.com,midas.gtimg.cn,alipay.com,123.57.26.170,hao.bhuwifi.com,api.unipay.qq.com,cnzz.com
 		sharednetworkwifi.default.remote.protalserverurl = uportal.bhuwifi.com:18085
 		user.portal.update.uportalapi = http://ucloud.bhuwifi.com:9158/portal/set/recreate
 		 */
-		
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserSharedNetworksRepairEnvOp.class);
 		ctx.start();
+		System.out.println("Remote_auth_url:"+BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_auth_url);
 		System.out.println("Uplink:"+BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Uplink_Open_resource);
 		System.out.println("SafeSecure:"+BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);
+		System.out.println("SafeSecure:"+BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
 		WifiDeviceService wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
 		DeviceCMDGenFacadeService deviceCMDGenFacadeService = (DeviceCMDGenFacadeService)ctx.getBean("deviceCMDGenFacadeService");
 		SharedNetworksFacadeService sharedNetworksFacadeService = (SharedNetworksFacadeService)ctx.getBean("sharedNetworksFacadeService");
-		//SharedNetworkFacadeService sharedNetworkFacadeService = (SharedNetworkFacadeService)ctx.getBean("sharedNetworkFacadeService");
 		IDaemonRpcService daemonRpcService =  (IDaemonRpcService)ctx.getBean("daemonRpcService");
-		//UserSettingStateService userSettingStateService = (UserSettingStateService)ctx.getBean("userSettingStateService");
-		//WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService= (WifiDeviceIndexIncrementService)ctx.getBean("wifiDeviceIndexIncrementService");
-		//DaemonHelper.daemonCmdDown("84:82:f4:19:01:0c", "hello world", daemonRpcService);
 		
 		ModelCriteria mc_udsnk = new ModelCriteria();
-		mc_udsnk.createCriteria().andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
+		mc_udsnk.createCriteria().andColumnEqualTo("id", 3).andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
 		mc_udsnk.setOrderByClause("id desc");
 		mc_udsnk.setPageNumber(1);
 		mc_udsnk.setPageSize(200);
@@ -67,6 +65,7 @@ public class UserSharedNetworksRepairEnvOp {
 				List<ParamSharedNetworkDTO> safesecure_configs = snks.get(SharedNetworkType.SafeSecure.getKey());
 				if(safesecure_configs != null && !safesecure_configs.isEmpty()){
 					for(ParamSharedNetworkDTO dto:safesecure_configs){
+						dto.setRemote_auth_url(dto.getRemote_auth_url().replace("123.56.227.18", "ucloud.bhuwifi.com"));
 						dto.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
 						dto.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);
 					}
@@ -85,7 +84,7 @@ public class UserSharedNetworksRepairEnvOp {
 		
 		ModelCriteria mc_wdsnk = new ModelCriteria();
 		//.andColumnEqualTo("sharednetwork_type", SharedNetworkType.SafeSecure.getKey())
-		mc_wdsnk.createCriteria().andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
+		mc_wdsnk.createCriteria().andColumnEqualTo("id", "84:82:f4:19:01:0c").andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
 		mc_wdsnk.setOrderByClause("id desc");
 		mc_wdsnk.setPageNumber(1);
 		mc_wdsnk.setPageSize(200);
@@ -101,6 +100,7 @@ public class UserSharedNetworksRepairEnvOp {
 						if(snkDTO != null && snkDTO.getPsn() != null){
 							ParamSharedNetworkDTO psn = snkDTO.getPsn();
 							if(SharedNetworkType.SafeSecure == snktype){
+								psn.setRemote_auth_url(psn.getRemote_auth_url().replace("123.56.227.18", "ucloud.bhuwifi.com"));
 								psn.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
 								psn.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);
 							}else{

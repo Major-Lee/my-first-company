@@ -229,8 +229,14 @@ public class AsyncOrderPaymentNotifyService {
 		
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
-//			userWalletFacadeService.vcurrencyToUserWallet(order.getUid(), order.getId(), UWalletTransMode.RealMoneyPayment, 
-//					rmoney, vcurrency, desc);
+			OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+			OrderUmacType uMacType = OrderUmacType.fromKey(order.getUmactype());
+			if(uMacType == null){
+				uMacType = OrderUmacType.Terminal;
+			}
+			String desc = String.format(BusinessEnumType.templateReChargingRealmoney2VCurrencyPaymentDesc, uMacType.getDesc(), 
+					orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP);
+			userWalletFacadeService.vcurrencyToUserWallet(order.getUid(), order.getId(), UWalletTransMode.RealMoneyPayment, rmoney, vcurrency, desc);
 		}
 		
 		

@@ -765,6 +765,7 @@ public class BusinessEnumType {
 	
 	public static String unknownPaymentType = "未知支付";
 	public static String templateRedpacketPaymentDesc = "通过%s%s打赏";
+	public static String templateReChargingRealmoney2VCurrencyPaymentDesc = "通过%s%s虎钻充值";
 	/**
 	 * 订单的用户持有的设备类型
 	 * @author tangzichao
