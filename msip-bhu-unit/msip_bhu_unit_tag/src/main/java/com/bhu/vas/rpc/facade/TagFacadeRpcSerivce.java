@@ -184,10 +184,12 @@ public class TagFacadeRpcSerivce {
 	 * @return
 	 */
 	public TagGroupVTO saveTreeNode(int uid, int gid, int pid, String name) {
-
+		long t0 = System.currentTimeMillis();
+		System.out.println("saveTreeNode start----");
 		// 验证是否能新建分组
 		CanSaveNode(uid, gid, pid, name);
-
+		long t1 = System.currentTimeMillis();
+		System.out.println("saveTreeNode start----step1 cost:"+(t1-t0));
 		TagGroup tagGroup = null;
 		boolean needParentChildrenInr = false;
 		if (gid == 0) {
@@ -204,7 +206,8 @@ public class TagFacadeRpcSerivce {
 			tagGroup.setUpdator(uid);
 			tagGroupService.update(tagGroup);
 		}
-
+		long t2 = System.currentTimeMillis();
+		System.out.println("saveTreeNode start----step2 cost:"+(t2-t1));
 		// 更新父节点child参数，其parent节点的haschild = true
 		if (pid > 0 && needParentChildrenInr) {
 			TagGroup parent_group = tagGroupService.getById(pid);
@@ -213,6 +216,8 @@ public class TagFacadeRpcSerivce {
 				tagGroupService.update(parent_group);
 			}
 		}
+		long t3 = System.currentTimeMillis();
+		System.out.println("saveTreeNode start----step2 cost:"+(t3-t2));
 		return TagGroupDetail(tagGroup);
 	}
 

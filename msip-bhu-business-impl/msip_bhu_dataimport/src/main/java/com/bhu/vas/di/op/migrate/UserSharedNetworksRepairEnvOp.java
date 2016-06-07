@@ -34,6 +34,14 @@ public class UserSharedNetworksRepairEnvOp {
 	public static void main(String[] argv){
 		long t0 = System.currentTimeMillis();
 		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
+		
+		/**
+		sharednetworkwifi.default.remote.authurl = http://ucloud.bhuwifi.com:9158/portal/default/reward/index_before.html
+		sharednetworkwifi.default.openresource = isdspeed.qq.com,pay.qq.com,weixin.qq.com,jspay.qq.com,bhuwifi.com,bhunetworks.com,midas.gtimg.cn,alipay.com,123.57.26.170,hao.bhuwifi.com,api.unipay.qq.com,cnzz.com
+		sharednetworkwifi.default.remote.protalserverurl = uportal.bhuwifi.com:18085
+		user.portal.update.uportalapi = http://ucloud.bhuwifi.com:9158/portal/set/recreate
+		 */
+		
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserSharedNetworksRepairEnvOp.class);
 		ctx.start();
 		System.out.println("Uplink:"+BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Uplink_Open_resource);
