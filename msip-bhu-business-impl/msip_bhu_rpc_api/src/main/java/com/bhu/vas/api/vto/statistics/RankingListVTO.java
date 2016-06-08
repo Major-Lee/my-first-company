@@ -9,8 +9,8 @@ public class RankingListVTO {
 	private List<User> rankingList;
 	//用户个人排名
 	private int rankNum;
-	//未进入排名距100名相差多少
-	private double disparity;
+	//用户昨日收益
+	private String userIncome;
 	public List<User> getRankingList() {
 		return rankingList;
 	}
@@ -27,12 +27,11 @@ public class RankingListVTO {
 		this.rankNum = rankNum;
 	}
 
-	public double getDisparity() {
-		return disparity;
+	public String getUserIncome() {
+		return userIncome;
 	}
 
-	public void setDisparity(double disparity) {
-		this.disparity = disparity;
+	public void setUserIncome(String userIncome) {
+		this.userIncome = userIncome;
 	}
-	
 }
