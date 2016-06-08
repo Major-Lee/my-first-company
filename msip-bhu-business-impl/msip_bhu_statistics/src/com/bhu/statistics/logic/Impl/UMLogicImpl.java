@@ -288,121 +288,7 @@ public class UMLogicImpl implements IUMLogic{
 			daysList=DateUtils.getDaysList(beginTime, endTime);
 		}
 		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
-		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", beginTime, endTime, "date", "",1);
-		String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", beginTime, endTime, "date", "",1);
-		String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", beginTime, endTime, "date,os", "os in ('android','ios')",2);
-		String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", beginTime, endTime, "date,os", "os in ('android','ios')",2);
-		JSONObject pcUvJson=JSONObject.fromObject(pcUv);
-		JSONObject pcClickJson=JSONObject.fromObject(pcClick);
-		JSONObject mobileUvJson=JSONObject.fromObject(mobileUv);
-		JSONObject mobileClickJson=JSONObject.fromObject(mobileClick);
 		
-		String pcUvJsonStr=pcUvJson.getString("values");
-		pcUvJsonStr=pcUvJsonStr.substring(1, pcUvJsonStr.length()-1);
-		String[] pcUvArray=pcUvJsonStr.split("\\],");
-		List<Map<String,Object>> pcUvList=new ArrayList<Map<String,Object>>();
-		if(beginTime.equals(endTime)&&pcUvJsonStr.equals("0.0, 0.0, 0.0")){
-			Map<String,Object> singleMap=new HashMap<String,Object>();
-			singleMap.put("date", beginTime);
-			singleMap.put("uv", 0);
-			pcUvList.add(singleMap);
-		}else{
-			for(int i=0;i<pcUvArray.length;i++){
-				Map<String,Object> singleMap=new HashMap<String,Object>();
-				singleMap.put("date", pcUvArray[i].split("=")[0].trim());
-				String[] dateArray=pcUvArray[i].split("=");
-				String[] uvArray=dateArray[1].split(",");
-				singleMap.put("uv", uvArray[1].replace(".0", "").trim());
-				pcUvList.add(singleMap);
-			}
-		}
-		String pcClickJsonStr=pcClickJson.getString("values");
-		pcClickJsonStr=pcClickJsonStr.substring(1, pcClickJsonStr.length()-2);
-		String[] pcClickArray=pcClickJsonStr.split("\\],");
-		List<Map<String,Object>> pcClickList=new ArrayList<Map<String,Object>>();
-		
-		if(beginTime.equals(endTime)&&pcClickJsonStr.equals("0.0, 0.0, 0.0")){
-			Map<String,Object> singleMap=new HashMap<String,Object>();
-			singleMap.put("date", beginTime);
-			singleMap.put("pv", 0);
-			pcClickList.add(singleMap);
-		}else{
-			for(int i=0;i<pcClickArray.length;i++){
-				Map<String,Object> singleMap=new HashMap<String,Object>();
-				singleMap.put("date", pcClickArray[i].split("=")[0].trim());
-				singleMap.put("pv", pcClickArray[i].split("=")[1].split(",")[0].replace(".0", "").substring(1).trim());
-				pcClickList.add(singleMap);
-			}
-		}
-		
-		String mobileUvJsonStr=mobileUvJson.getString("values");
-		mobileUvJsonStr=mobileUvJsonStr.substring(1, mobileUvJsonStr.length()-1);
-		String[] mobileUvJsonStrArray=mobileUvJsonStr.split("\\},");
-		List<Map<String,Object>> mobileUvJsonStrList=new ArrayList<Map<String,Object>>();
-		if(beginTime.equals(endTime)&&mobileUvJsonStr.equals("0.0, 0.0, 0.0")){
-			Map<String,Object> singleMap=new HashMap<String,Object>();
-			singleMap.put("date", beginTime);
-			List<Map<String,Object>> typeList=new ArrayList<Map<String,Object>>();
-			Map<String,Object> typeMap=new HashMap<String,Object>();
-			Map<String,Object> typesMap=new HashMap<String,Object>();
-			typeMap.put("type", "android");
-			typeMap.put("uv", 0);
-			typeList.add(typeMap);
-			typesMap.put("type", "ios");
-			typesMap.put("uv", 0);
-			typeList.add(typesMap);
-			singleMap.put("typeList", typeList);
-			mobileUvJsonStrList.add(singleMap);
-		}else{
-			for(int i=0;i<mobileUvJsonStrArray.length;i++){
-				Map<String,Object> singleMap=new HashMap<String,Object>();
-				singleMap.put("date", mobileUvJsonStrArray[i].split("=")[0].trim());
-				List<Map<String,Object>> typeList=new ArrayList<Map<String,Object>>();
-				String[] typeArray=mobileUvJsonStrArray[i].split("=\\{")[1].split("\\],");
-				for(int j=0;j<typeArray.length;j++){
-					Map<String,Object> typeMap=new HashMap<String,Object>();
-					typeMap.put("type", typeArray[j].split("=")[0].trim());
-					typeMap.put("uv", typeArray[j].split("=")[1].split(",")[1].trim().replace(".0", "").trim());
-					typeList.add(typeMap);
-				}
-				singleMap.put("typeList", typeList);
-				mobileUvJsonStrList.add(singleMap);
-			}
-		}
-		String mobileClickJsonStr=mobileClickJson.getString("values");
-		mobileClickJsonStr=mobileClickJsonStr.substring(1, mobileClickJsonStr.length()-2);
-		String[] mobileClickJsonStrArray=mobileClickJsonStr.split("\\},");
-		List<Map<String,Object>> mobileClickJsonStrList=new ArrayList<Map<String,Object>>();
-		if(beginTime.equals(endTime)&&mobileClickJsonStr.equals("0.0, 0.0, 0.0")){
-			Map<String,Object> singleMap=new HashMap<String,Object>();
-			singleMap.put("date", beginTime);
-			List<Map<String,Object>> typeList=new ArrayList<Map<String,Object>>();
-			Map<String,Object> typeMap=new HashMap<String,Object>();
-			Map<String,Object> typesMap=new HashMap<String,Object>();
-			typeMap.put("type", "android");
-			typeMap.put("pv", 0);
-			typeList.add(typeMap);
-			typesMap.put("type", "ios");
-			typesMap.put("pv", 0);
-			typeList.add(typesMap);
-			singleMap.put("typeList", typeList);
-			mobileClickJsonStrList.add(singleMap);
-		}else{
-			for(int i=0;i<mobileClickJsonStrArray.length;i++){
-				Map<String,Object> singleMap=new HashMap<String,Object>();
-				singleMap.put("date", mobileClickJsonStrArray[i].split("=")[0].trim());
-				List<Map<String,Object>> typeList=new ArrayList<Map<String,Object>>();
-				String[] typeArray=mobileClickJsonStrArray[i].split("=\\{")[1].substring(0, mobileClickJsonStrArray[i].split("=\\{")[1].length()-1).split("\\],");
-				for(int j=0;j<typeArray.length;j++){
-					Map<String,Object> typeMap=new HashMap<String,Object>();
-					typeMap.put("type", typeArray[j].split("=\\[")[0].trim());
-					typeMap.put("pv", typeArray[j].split("=\\[")[1].split(",")[0].trim().replace(".0", ""));
-					typeList.add(typeMap);
-				}
-				singleMap.put("typeList", typeList);
-				mobileClickJsonStrList.add(singleMap);
-			}
-		}
 		List<LinkedHashMap<String,Object>> resMaps=new ArrayList<LinkedHashMap<String,Object>>();
 		int totalUv=0;
 		int totalClickNum=0;
@@ -413,6 +299,8 @@ public class UMLogicImpl implements IUMLogic{
 		int totalIosClickNum=0;
 		int totalPcUV=0;
 		int totalPcClickNum=0;
+		int totalMobileUV=0;
+		int totalMobileClickNum=0;
 		
 		int totalPcOrderNum=0;
 		int totalPcOrderComplete=0;
@@ -421,6 +309,64 @@ public class UMLogicImpl implements IUMLogic{
 		int totalMbOrderComplete=0;
 		int totalMbOrderAmount=0;
 		for(int i=0;i<daysList.size();i++){
+			//获取每日PC端uv数据
+			String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", daysList.get(i), daysList.get(i), "", "",1);
+			JSONObject pcUvJson=JSONObject.fromObject(pcUv);
+			String pcUvJsonStr=pcUvJson.getString("values");
+			pcUvJsonStr=pcUvJsonStr.substring(1);
+			pcUvJsonStr=pcUvJsonStr.substring(0, pcUvJsonStr.length()-1);
+			int pcUV=Integer.valueOf(pcUvJsonStr.split(",")[1].replace(".0", "").trim());
+			
+			//获取PC端点击事件发生数
+			String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", daysList.get(i), daysList.get(i), "", "",1);
+			JSONObject pcClickJson=JSONObject.fromObject(pcClick);
+			String pcClickJsonStr=pcClickJson.getString("values");
+			pcClickJsonStr=pcClickJsonStr.substring(1);
+			pcClickJsonStr=pcClickJsonStr.substring(0, pcClickJsonStr.length()-1);
+			int pcClickNum=Integer.valueOf(pcClickJsonStr.split(",")[0].replace(".0", "").trim());
+			//获取手机端uv
+			String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", daysList.get(i), daysList.get(i), "", "",2);
+			JSONObject mobileUvJson=JSONObject.fromObject(mobileUv);
+			String mobileUvJsonStr=mobileUvJson.getString("values");
+			mobileUvJsonStr=mobileUvJsonStr.substring(1);
+			mobileUvJsonStr=mobileUvJsonStr.substring(0, mobileUvJsonStr.length()-1);
+			int mobileUV=Integer.valueOf(mobileUvJsonStr.split(",")[1].replace(".0", "").trim());
+			//获取手机ios端uv
+			String iosUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", daysList.get(i), daysList.get(i), "", "os = 'ios'",2);
+			JSONObject iosUvJson=JSONObject.fromObject(iosUv);
+			String iosUvJsonStr=iosUvJson.getString("values");
+			iosUvJsonStr=iosUvJsonStr.substring(1);
+			iosUvJsonStr=iosUvJsonStr.substring(0, iosUvJsonStr.length()-1);
+			int iosUV=Integer.valueOf(iosUvJsonStr.split(",")[1].replace(".0", "").trim());
+			//获取手机android端uv
+			String androidUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", daysList.get(i), daysList.get(i), "", "os = 'android'",2);
+			JSONObject androidUvJson=JSONObject.fromObject(androidUv);
+			String androidUvJsonStr=androidUvJson.getString("values");
+			androidUvJsonStr=androidUvJsonStr.substring(1);
+			androidUvJsonStr=androidUvJsonStr.substring(0, androidUvJsonStr.length()-1);
+			int androidUV=Integer.valueOf(androidUvJsonStr.split(",")[1].replace(".0", "").trim());
+			//获取手机端点击数
+			String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", daysList.get(i), daysList.get(i), "", "",2);
+			JSONObject mobileClickJson=JSONObject.fromObject(mobileClick);
+			String mobileClickJsonStr=mobileClickJson.getString("values");
+			mobileClickJsonStr=mobileClickJsonStr.substring(1);
+			mobileClickJsonStr=mobileClickJsonStr.substring(0, mobileClickJsonStr.length()-1);
+			int mobileClickNum=Integer.valueOf(mobileClickJsonStr.split(",")[0].replace(".0", "").trim());
+			//获取手机ios端点击数
+			String iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", daysList.get(i), daysList.get(i), "", "os = 'ios'",2);
+			JSONObject iosClickJson=JSONObject.fromObject(iosClick);
+			String iosClickJsonStr=iosClickJson.getString("values");
+			iosClickJsonStr=iosClickJsonStr.substring(1);
+			iosClickJsonStr=iosClickJsonStr.substring(0, iosClickJsonStr.length()-1);
+			int iosClickNum=Integer.valueOf(iosClickJsonStr.split(",")[0].replace(".0", "").trim());
+			//获取手机android端点击数
+			String androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", daysList.get(i), daysList.get(i), "", "os = 'android'",2);
+			JSONObject androidClickJson=JSONObject.fromObject(androidClick);
+			String androidClickJsonStr=androidClickJson.getString("values");
+			androidClickJsonStr=androidClickJsonStr.substring(1);
+			androidClickJsonStr=androidClickJsonStr.substring(0, androidClickJsonStr.length()-1);
+			int androidClickNum=Integer.valueOf(androidClickJsonStr.split(",")[0].replace(".0", "").trim());
+			
 			LinkedHashMap<String,Object> singleMap=new LinkedHashMap<String,Object>();
 			singleMap.put("date", daysList.get(i));
 			String orderRedius=BhuCache.getInstance().getStOrder(daysList.get(i), "stOrder");
@@ -464,53 +410,6 @@ public class UMLogicImpl implements IUMLogic{
 			totalMbOrderComplete+=mbOrderComplete;
 			totalMbOrderAmount+=mbOrderAmount;
 			
-			int mobileUV=0;
-			int mobileClickNum=0;
-			int androidUV=0;
-			int androidClickNum=0;
-			int iosUV=0;
-			int iosClickNum=0;
-			
-			for(int j=0;j<mobileUvJsonStrList.size();j++){
-				if(mobileUvJsonStrList.get(j).get("date").equals(daysList.get(i))){
-					List<Map<String,Object>> mobileSingleMap=new ArrayList<Map<String,Object>>();
-					mobileSingleMap=(List<Map<String, Object>>) mobileUvJsonStrList.get(j).get("typeList");
-					for(int n=0;n<mobileSingleMap.size();n++){
-						if(mobileSingleMap.get(n).get("type").equals("android")){
-							androidUV=Integer.valueOf( mobileSingleMap.get(n).get("uv").toString());
-						}else{
-							iosUV=Integer.valueOf(mobileSingleMap.get(n).get("uv").toString());
-						}
-					}
-					mobileUV=androidUV+iosUV;
-				}
-			}
-			for(int j=0;j<mobileClickJsonStrList.size();j++){
-				if(mobileClickJsonStrList.get(j).get("date").equals(daysList.get(i))){
-					List<Map<String,Object>> mobileSingleMap=new ArrayList<Map<String,Object>>();
-					mobileSingleMap=(List<Map<String, Object>>) mobileClickJsonStrList.get(j).get("typeList");
-					for(int n=0;n<mobileSingleMap.size();n++){
-						if(mobileSingleMap.get(n).get("type").equals("android")){
-							androidClickNum=Integer.valueOf(mobileSingleMap.get(n).get("pv").toString());
-						}else{
-							iosClickNum=Integer.valueOf(mobileSingleMap.get(n).get("pv").toString());
-						}
-					}
-					mobileClickNum=androidClickNum+iosClickNum;
-				}
-			}
-			int pcUV=0;
-			for(int j=0;j<pcUvList.size();j++){
-				if(pcUvList.get(j).get("date").equals(daysList.get(i))){
-					pcUV=Integer.valueOf( pcUvList.get(j).get("uv").toString());
-				}
-			}
-			int pcClickNum=0;
-			for(int j=0;j<pcClickList.size();j++){
-				if(pcClickList.get(j).get("date").equals(daysList.get(i))){
-					pcClickNum=Integer.valueOf(pcClickList.get(j).get("pv").toString());
-				}
-			}
 			Map<String,Object> totalMap=new HashMap<String,Object>();
 			
 			totalMap.put("uv", pcUV+mobileUV);
@@ -607,6 +506,22 @@ public class UMLogicImpl implements IUMLogic{
 			androidMap.put("orderComConversion", "-");
 			singleMap.put("android", androidMap);
 			
+			Map<String,Object> otherMap=new HashMap<String,Object>();
+			
+			otherMap.put("uv", mobileUV-iosUV-androidUV);
+			otherMap.put("clickNum", mobileClickNum-iosClickNum-androidClickNum);
+			otherMap.put("clickAverNum", 0);
+			if((mobileUV-iosUV-androidUV)!=0){
+				otherMap.put("clickAverNum", round((mobileClickNum-androidClickNum-iosClickNum)*1.00/(mobileUV-iosUV-androidUV),2));
+			}
+			otherMap.put("orderNum", "-");
+			otherMap.put("clickConversion", "-");
+			otherMap.put("orderConversion", "-");
+			otherMap.put("orderComplete", "-");
+			otherMap.put("orderAmount", "-");
+			otherMap.put("orderComConversion", "-");
+			singleMap.put("other", otherMap);
+			
 			resMaps.add(singleMap);
 			totalAndroidUV+=androidUV;
 			totalAndroidClickNum+=androidClickNum;
@@ -616,6 +531,9 @@ public class UMLogicImpl implements IUMLogic{
 			
 			totalPcUV+=pcUV;
 			totalPcClickNum+=pcClickNum;
+			
+			totalMobileUV+=mobileUV;
+			totalMobileClickNum+=mobileClickNum;
 			
 			totalUv+=pcUV+mobileUV;
 			totalClickNum+=pcClickNum+mobileClickNum;
@@ -661,20 +579,20 @@ public class UMLogicImpl implements IUMLogic{
 		tMaps.put("PC", pcMap);
 		
 		Map<String,Object> mobileMap=new HashMap<String,Object>();
-		mobileMap.put("uv", totalAndroidUV+totalIosUV);
-		mobileMap.put("clickNum", totalAndroidClickNum+totalIosClickNum);
+		mobileMap.put("uv", totalMobileUV);
+		mobileMap.put("clickNum", totalMobileClickNum);
 		mobileMap.put("clickAverNum", 0);
 		mobileMap.put("orderConversion", 0);
 		mobileMap.put("orderComConversion", 0);
 		if((totalAndroidUV+totalIosUV)!=0){
-			mobileMap.put("clickAverNum", round((totalAndroidClickNum+totalIosClickNum)*1.00/(totalAndroidUV+totalIosUV),2));
-			mobileMap.put("orderConversion", round(totalMbOrderNum*1.00/(totalAndroidUV+totalIosUV),2));
-			mobileMap.put("orderComConversion", round(totalMbOrderAmount*1.00/(totalAndroidUV+totalIosUV),2));
+			mobileMap.put("clickAverNum", round(totalMobileClickNum*1.00/totalMobileUV,2));
+			mobileMap.put("orderConversion", round(totalMbOrderNum*1.00/totalMobileUV,2));
+			mobileMap.put("orderComConversion", round(totalMbOrderAmount*1.00/totalMobileUV,2));
 		}
 		mobileMap.put("orderNum", totalMbOrderNum);
 		mobileMap.put("clickConversion", 0);
-		if((totalAndroidClickNum+totalIosClickNum)!=0){
-			mobileMap.put("clickConversion", round(totalMbOrderNum*1.00/(totalAndroidClickNum+totalIosClickNum),2));
+		if(totalMobileClickNum!=0){
+			mobileMap.put("clickConversion", round(totalMbOrderNum*1.00/totalMobileClickNum,2));
 		}
 		mobileMap.put("orderComplete", totalMbOrderComplete);
 		mobileMap.put("orderAmount", totalMbOrderAmount);
@@ -712,8 +630,6 @@ public class UMLogicImpl implements IUMLogic{
 		androidMap.put("orderAmount", "-");
 		androidMap.put("orderComConversion", "-");
 		tMaps.put("android", androidMap);
-		
-		
 		
 		Map<String,Object> resMap=new HashMap<String,Object>();
 		resMap.put("dataList", resMaps);
@@ -975,16 +891,25 @@ public class UMLogicImpl implements IUMLogic{
 		return result;
 	}
 	public static void main(String[] args) {
-		/*OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
-		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-06-01", "2016-06-01", "date", "",1);
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+		/*String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-06-01", "2016-06-01", "date", "",1);
 		System.out.println(pcUv);*/
 		//System.out.println(new java.text.DecimalFormat("0.00").format(4.025)); 
 		//System.out.println(Math.round(4.024*100 + 0.5)/100.0); 
-		double s=3*1.00/2;
-		 BigDecimal b = new BigDecimal(Double.toString(s));         
-		 BigDecimal one = new BigDecimal("1");         
-		 System.out.println(b.divide(one,2,BigDecimal.ROUND_HALF_UP).doubleValue());        
-
+//		double s=3*1.00/2;
+//		 BigDecimal b = new BigDecimal(Double.toString(s));         
+//		 BigDecimal one = new BigDecimal("1");         
+//		 System.out.println(b.divide(one,2,BigDecimal.ROUND_HALF_UP).doubleValue());        
+		 String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2016-06-07", "2016-06-07", "", " ",2);
+		 //String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
+			//String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
+			System.out.println(mobileUv);
+			JSONObject jsonObject=JSONObject.fromObject(mobileUv);
+			String ss=jsonObject.get("values").toString();
+			ss=ss.substring(1);
+			ss=ss.substring(0, ss.length()-1);
+			System.out.println(ss);
+			//System.out.println(mobileClick);
 		//BhuCache.getInstance().setEquipment("2016-06-05", "equipment", "{\"dc\":10020,\"doc\":7998}");
 		//BhuCache.getInstance().setStOrder("2016-06-05", "stOrder", "{\"mb_ofc\":833,\"mb_ofa\":\"594\",\"pc_ofc\":26,\"pc_ofa\":\"65\",\"pc_occ\":188,\"ofc\":859,\"mb_occ\":4210,\"ofa\":659.0,\"occ\":4398}");
 	}
@@ -1002,5 +927,4 @@ public class UMLogicImpl implements IUMLogic{
 	    BigDecimal one = new BigDecimal("1");         
 	    return b.divide(one,scale,BigDecimal.ROUND_HALF_UP).doubleValue();         
 	}         
-
 }

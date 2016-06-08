@@ -41,7 +41,8 @@ public class OpenApiCnzzImpl implements IopenApiCnzz {
 		OpenApi openapi = OpenApi.getInstance();
 		// 构造请求
 		String url = new StringBuilder("https://dplus.cnzz.com/api/segmentation?").append(openapi.generateUrl(argMap)).append("&sign=").append(openapi.generateSignature(argMap, rapi_secret)).toString();
-//		argMap.put("type", "count");
+		System.out.println("---------------------------------"+url);
+		//		argMap.put("type", "count");
 //		argMap.put("on", "ip");
 //		argMap.put("on", Base64.encodeBase64String(argMap.get("on").getBytes()));
 //		String urlIP = new StringBuilder("https://dplus.cnzz.com/api/segmentation?").append(openapi.generateUrl(argMap)).append("&sign=").append(openapi.generateSignature(argMap, api_secret)).toString();
