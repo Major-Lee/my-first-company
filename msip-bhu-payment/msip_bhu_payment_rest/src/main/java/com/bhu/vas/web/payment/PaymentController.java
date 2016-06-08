@@ -1079,11 +1079,10 @@ public class PaymentController extends BaseController{
 		}
 		
 		String aa = request.getParameter("agent_bill_id");
+		
+		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
 		if (StringUtils.isBlank(aa)) {
-			logger.error("请求参数(agent_bill_id)有误,不能为空");
-			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
-			return;
+			response.sendRedirect(locationUrl);
 		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("agent_bill_id").getBytes("ISO-8859-1"),"UTF-8");
@@ -1094,7 +1093,6 @@ public class PaymentController extends BaseController{
 					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
 		}
 		
-		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
 		String returnUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		if(StringUtils.isNotBlank(returnUrl)){
 			if(returnUrl.startsWith("http")){
@@ -1138,15 +1136,12 @@ public class PaymentController extends BaseController{
 		
 		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
 		String isNull = request.getParameter("out_trade_no");
+		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
 		if (StringUtils.isBlank(isNull)) {
-			logger.error(String.format("get alipayReturn out_trade_no [%s]", isNull));
-			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
-			return;
+			response.sendRedirect(locationUrl);
 		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
-		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
 		String returnUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		if(StringUtils.isNotBlank(returnUrl)){
 			if(returnUrl.startsWith("http")){
