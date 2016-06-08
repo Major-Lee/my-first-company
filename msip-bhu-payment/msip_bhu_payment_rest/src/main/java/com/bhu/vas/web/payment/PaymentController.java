@@ -1078,11 +1078,13 @@ public class PaymentController extends BaseController{
 			params.put(name, valueStr);
 		}
 		
-		String aa = request.getParameter("agent_bill_id");
+		String isNull = request.getParameter("agent_bill_id");
 		
 		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
-		if (StringUtils.isBlank(aa)) {
+		if (StringUtils.isBlank(isNull)) {
+			logger.info(String.format("get heepay return notify and go to out_trade_no [%s] ,user canceled this pay.", isNull));
 			response.sendRedirect(locationUrl);
+			return;
 		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("agent_bill_id").getBytes("ISO-8859-1"),"UTF-8");
@@ -1138,7 +1140,9 @@ public class PaymentController extends BaseController{
 		String isNull = request.getParameter("out_trade_no");
 		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
 		if (StringUtils.isBlank(isNull)) {
+			logger.info(String.format("get alipay return notify and go to out_trade_no [%s] ,user canceled this pay.", isNull));
 			response.sendRedirect(locationUrl);
+			return;
 		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
