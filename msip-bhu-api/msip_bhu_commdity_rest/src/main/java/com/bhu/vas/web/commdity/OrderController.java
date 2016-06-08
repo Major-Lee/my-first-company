@@ -100,7 +100,7 @@ public class OrderController extends BaseController{
 		
 		//special dispose
 		/******************   注释掉此段代码为不包含代理的支付url   start *****************/
-		String third_payinfo_json = rcp_dto.getParams();
+/*		String third_payinfo_json = rcp_dto.getParams();
 		Map<String, Object> third_payinfo_json_map = JsonHelper.getMapFromJson(third_payinfo_json);
 		String third_pay_url = (String)third_payinfo_json_map.get("url");
 		String proxy_third_pay_url = null;
@@ -111,13 +111,13 @@ public class OrderController extends BaseController{
 			proxy_third_pay_url = third_pay_url;
 		}
 		third_payinfo_json_map.put("url", proxy_third_pay_url);
-		String params = JsonHelper.getJSONString(third_payinfo_json_map);
+		String params = JsonHelper.getJSONString(third_payinfo_json_map);*/
 		/******************   注释掉此段代码为不包含代理的支付url   end *****************/
 		
 		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
 		retDto.setId(order_dto.getId());
-		retDto.setThird_payinfo(params);
-		//retDto.setThird_payinfo(rcp_dto.getParams());
+		//retDto.setThird_payinfo(params);
+		retDto.setThird_payinfo(rcp_dto.getParams());
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
 	}
 	
