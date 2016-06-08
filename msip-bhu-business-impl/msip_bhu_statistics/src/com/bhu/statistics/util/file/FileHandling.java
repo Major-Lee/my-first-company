@@ -151,6 +151,11 @@ public class FileHandling {
 		                    		String[] array = line.split(" - ");
 										String s = array[1].substring(2);
 										JSONObject obj = JSONObject.fromObject(s);
+										//获取vapname
+										String vapname = obj.getString("vapname");
+										if(!StringUtils.equals(vapname, "wlan3")){
+											continue;
+										}
 										//取出当前设备的mac地址
 										String mac = obj.getString("mac");
 										System.out.println("mac:【"+mac+"】,当前是第【"+l+"】个mac");
