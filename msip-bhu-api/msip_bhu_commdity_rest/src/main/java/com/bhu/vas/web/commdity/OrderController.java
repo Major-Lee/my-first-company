@@ -1,5 +1,9 @@
 package com.bhu.vas.web.commdity;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +27,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.web.mvc.WebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
@@ -93,9 +98,24 @@ public class OrderController extends BaseController{
 				+ "ip[%s] mac[%s] umac[%s] rep_time[%s]", orderid, payment_type, commdityid, requestIp, mac, umac,
 				(System.currentTimeMillis() - start)+"ms"));
 		
+		//special dispose
+		String third_payinfo_json = rcp_dto.getParams();
+		Map<String, Object> third_payinfo_json_map = JsonHelper.getMapFromJson(third_payinfo_json);
+		String third_pay_url = (String)third_payinfo_json_map.get("url");
+		String proxy_third_pay_url = null;
+		try {
+			proxy_third_pay_url = "http://192.168.66.7/test/proxy_pay.html?param="+URLEncoder.encode(third_pay_url, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			proxy_third_pay_url = third_pay_url;
+		}
+		third_payinfo_json_map.put("url", proxy_third_pay_url);
+		String params = JsonHelper.getJSONString(third_payinfo_json_map);
+		
 		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
 		retDto.setId(order_dto.getId());
-		retDto.setThird_payinfo(rcp_dto.getParams());
+		retDto.setThird_payinfo(params);
+		//retDto.setThird_payinfo(rcp_dto.getParams());
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
 	}
 	
