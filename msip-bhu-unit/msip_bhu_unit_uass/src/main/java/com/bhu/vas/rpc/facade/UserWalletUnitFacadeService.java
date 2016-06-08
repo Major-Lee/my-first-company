@@ -1,6 +1,9 @@
 package com.bhu.vas.rpc.facade;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -18,18 +21,28 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.charging.model.DeviceGroupPaymentStatistics;
+import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserOAuthState;
+import com.bhu.vas.api.rpc.user.model.UserPublishAccount;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
+import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
+import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
+import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.bhu.vas.business.ds.user.service.UserPublishAccountService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -49,6 +62,18 @@ public class UserWalletUnitFacadeService {
 	
 	@Resource
 	private BusinessWalletCacheService businessWalletCacheService;
+	
+	@Resource
+	private DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService;
+	
+	@Resource
+	private UserService userService;
+	
+	@Resource
+	private UserPublishAccountService userPublishAccountService;
+	
+	@Resource
+	private UserOAuthFacadeService userOAuthFacadeService;
 	
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
@@ -284,22 +309,29 @@ public class UserWalletUnitFacadeService {
 			if(!OAuthType.paymentSupported(payment_type)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{String.valueOf(payment_type)});
 			}
-			//payment_type为空的情况下直接取用户绑定过的第一个账户
-			/*if(StringUtils.isEmpty(payment_type)){
-				//如果没有指定则去除用户定义的第一个
-				ThirdpartiesPaymentDTO payment = userWalletFacadeService.fetchFirstThirdpartiesPayment(uid);
-				if(payment != null){
-					payment_type = payment.getType();
-				}
-			}else{
-				//不为空的情况下需要判定是否支持此参数payment_type
-				if(!ThirdpartiesPaymentType.supported(payment_type)){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED);
-				}
-			}*/
-			//User user = userWalletFacadeService.getUserService().getById(uid);
-			//User user = userWalletFacadeService.validateUser(uid);
 			User user = UserValidateServiceHelper.validateUser(uid,userWalletFacadeService.getUserService());
+			//TODO:验证 用户是否存在对公账户信息，如果存在则只能对公账户提现
+			
+			//add by Jason 2016-06-07 start
+			//根据uid查询当前用户是否存在对公账号
+			UserPublishAccount userPublishAccount = userPublishAccountService.getById(uid);
+			if(StringUtils.equals(payment_type, "weixin")){
+				if(userPublishAccount != null){
+					//返回错误码 提示当前用户已绑定对公行号 在app端进行对公账号提现
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST);
+				}
+			}else if(StringUtils.equals(payment_type, "public")){
+				if(userPublishAccount == null){
+					//查询当前用户是否已绑定微信账号
+					UserOAuthStateDTO userOAuthStateDTO = userOAuthFacadeService.fetchRegisterIndetify(uid, OAuthType.fromType("weixin"), true);
+					if(userOAuthStateDTO != null){
+						//提示当前用户已绑定微信
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_WECHAT_HAS_BEEN_BOUND);
+					}
+				}
+			}
+			//add by Jason 2016-06-07 E N D
+			
 			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,OAuthType.fromType(payment_type),uid, pwd, cash, remoteip);
 			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(uid);
 			WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(apply.getUid(),apply.getId(),apply.getCash());
@@ -404,6 +436,19 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 
+	
+	public RpcResponseDTO<Boolean> directDrawPresent(int uid, String thirdparties_orderid,double cash,String desc) {
+		try{
+			int ret = userWalletFacadeService.cashToUserWallet(uid, thirdparties_orderid, UWalletTransMode.DrawPresent, 0.00d, cash, desc);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret == 0?Boolean.TRUE:Boolean.FALSE);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 	/*public RpcResponseDTO<Boolean> withdrawPwdUpd(int uid, String pwd, String npwd) {
 		try{
 			userWalletFacadeService.doChangedWithdrawPwd(uid, pwd, npwd);
@@ -425,6 +470,79 @@ public class UserWalletUnitFacadeService {
 				businessWalletCacheService.storeWalletLogStatisticsDSCacheResult(uid, cacheByUser);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(cacheByUser);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<FincialStatisticsVTO> fincialStatistics(String time) {
+		try{
+			FincialStatistics fincial = userWalletFacadeService.getFincialStatisticsService().getById(time);
+			FincialStatisticsVTO fincialStatisticsVTO=new FincialStatisticsVTO();
+			if(fincial == null){
+				fincialStatisticsVTO.setId(time);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(fincialStatisticsVTO);
+			}else{
+				fincialStatisticsVTO.setId(fincial.getId());
+				fincialStatisticsVTO.setaTotal((float)(Math.round(100*(fincial.getCpa()+fincial.getCta())))/100);
+				fincialStatisticsVTO.setCpa((float)(Math.round(100*fincial.getCpa()))/100);
+				fincialStatisticsVTO.setCpm((float)(Math.round(100*fincial.getCpm()))/100);
+				fincialStatisticsVTO.setCpTotal((float)(Math.round(100*(fincial.getCpa()+fincial.getCpm()+fincial.getCpw())))/100);
+				fincialStatisticsVTO.setCpw((float)(Math.round(100*fincial.getCpw()))/100);
+				fincialStatisticsVTO.setCta((float)(Math.round(100*fincial.getCta()))/100);
+				fincialStatisticsVTO.setCtm((float)(Math.round(100*fincial.getCtm()))/100);
+				fincialStatisticsVTO.setCtTotal((float)(Math.round(100*(fincial.getCta()+fincial.getCtm()+fincial.getCtw())))/100);
+				fincialStatisticsVTO.setCtw((float)(Math.round(100*fincial.getCtw()))/100);
+				fincialStatisticsVTO.setmTotal((float)(Math.round(100*(fincial.getCpm()+fincial.getCtm())))/100);
+				fincialStatisticsVTO.setwTotal((float)(Math.round(100*(fincial.getCpw()+fincial.getCtw())))/100);
+				fincialStatisticsVTO.setTotal((float)(Math.round(100*(fincialStatisticsVTO.getCpTotal()+fincialStatisticsVTO.getCtTotal())))/100);
+				fincialStatisticsVTO.setCpow((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.getCpTotal()-fincialStatisticsVTO.getCpw()))))/100);
+				fincialStatisticsVTO.setCtow((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.getCtTotal()-fincialStatisticsVTO.getCtw()))))/100);
+				List<FincialStatistics> fincialStatistics=userWalletFacadeService.getFincialStatisticsService().findAll();
+				DateFormat df = new SimpleDateFormat("yyyy-MM");
+				Date dt1 = df.parse(time);
+				if(fincialStatistics!=null&&fincialStatistics.size()>0){
+					int owTotal=0;
+					int wTotal=0;
+					for(FincialStatistics i:fincialStatistics){
+						Date dt2 = df.parse(i.getId());
+						if(dt1.getTime()>dt2.getTime()){
+							wTotal+=java.lang.Math.abs(i.getCtw()-i.getCpw());
+							owTotal+=java.lang.Math.abs(i.getCta()-i.getCpa()+i.getCtm()-i.getCpm());
+						}
+					}
+					fincialStatisticsVTO.setrTotal((float)(Math.round(100*(owTotal+wTotal)))/100);
+					fincialStatisticsVTO.setRwTotal((float)(Math.round(100*(wTotal)))/100);
+					fincialStatisticsVTO.setRowTotal((float)(Math.round(100*(owTotal)))/100);
+					fincialStatisticsVTO.sethTotal((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.getrTotal()+fincialStatisticsVTO.getCpTotal()-fincialStatisticsVTO.getCtTotal()))))/100);
+					fincialStatisticsVTO.setHwTotal((float)(Math.round(100*(wTotal-fincialStatisticsVTO.getCtw()+fincialStatisticsVTO.getCpw())))/100);
+					fincialStatisticsVTO.setHowTotal((float)(Math.round(100*(java.lang.Math.abs(fincialStatisticsVTO.gethTotal()-fincialStatisticsVTO.getHwTotal()))))/100);
+				}
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(fincialStatisticsVTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	public RpcResponseDTO<RankingListVTO> rankingList() {
+		try{
+			RankingListVTO rankingListVTO=new RankingListVTO();
+			List<User> users=new ArrayList<User>();
+			List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList();
+			if(paymentStatistics != null){
+				for(DeviceGroupPaymentStatistics i:paymentStatistics){
+					User user=userService.getById(i.getUid());
+					users.add(user);
+				}
+			}
+			rankingListVTO.setRankingList(users);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rankingListVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
