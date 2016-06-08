@@ -99,6 +99,7 @@ public class OrderController extends BaseController{
 				(System.currentTimeMillis() - start)+"ms"));
 		
 		//special dispose
+		/******************   注释掉此段代码为不包含代理的支付url   start *****************/
 		String third_payinfo_json = rcp_dto.getParams();
 		Map<String, Object> third_payinfo_json_map = JsonHelper.getMapFromJson(third_payinfo_json);
 		String third_pay_url = (String)third_payinfo_json_map.get("url");
@@ -111,6 +112,7 @@ public class OrderController extends BaseController{
 		}
 		third_payinfo_json_map.put("url", proxy_third_pay_url);
 		String params = JsonHelper.getJSONString(third_payinfo_json_map);
+		/******************   注释掉此段代码为不包含代理的支付url   end *****************/
 		
 		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
 		retDto.setId(order_dto.getId());
