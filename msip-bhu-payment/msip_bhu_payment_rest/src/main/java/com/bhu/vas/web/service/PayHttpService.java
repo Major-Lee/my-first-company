@@ -48,7 +48,7 @@ public class PayHttpService {
     static String  withdrawalsRequestApiBaseUrl = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
 
     //重定向地址
-    public static String PAY_HOST_URL = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment";
+    public static String PAY_HOST_URL = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
