@@ -492,6 +492,7 @@ public class UMLogicImpl implements IUMLogic{
 					for(int n=0;n<mobileSingleMap.size();n++){
 						if(mobileSingleMap.get(n).get("type").equals("android")){
 							androidClickNum=Integer.valueOf(mobileSingleMap.get(n).get("pv").toString());
+						}else{
 							iosClickNum=Integer.valueOf(mobileSingleMap.get(n).get("pv").toString());
 						}
 					}
