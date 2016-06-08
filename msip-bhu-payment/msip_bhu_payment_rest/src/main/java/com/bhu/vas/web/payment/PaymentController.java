@@ -624,11 +624,11 @@ public class PaymentController extends BaseController{
     	PaymentTypeVTO result = new PaymentTypeVTO();
     	
 		//服务器异步通知页面路径
-		String notify_url = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment/alipayNotifySuccess";
+		String notify_url = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/alipayNotifySuccess";
 		//需http://格式的完整路径，不能加?id=123这类自定义参数
 
 		//页面跳转同步通知页面路径
-		String return_url = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment/alipayReturn";
+		String return_url = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/alipayReturn";
 		//需http://格式的完整路径，不能加?id=123这类自定义参数，不能写成http://localhost/
 
 		//订单名称
