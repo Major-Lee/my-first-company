@@ -512,7 +512,7 @@ public class UserWalletUnitFacadeService {
 			List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList();
 			if(paymentStatistics != null){
 				rankingListVTO.setRankNum(0);
-				rankingListVTO.setDisparity(0);
+				rankingListVTO.setUserIncome("0");
 				for(int i=0;i<paymentStatistics.size();i++){
 					DeviceGroupPaymentStatistics deviceGroupPaymentStatistics=paymentStatistics.get(i);
 					User user=userService.getById(deviceGroupPaymentStatistics.getUid());
@@ -523,7 +523,7 @@ public class UserWalletUnitFacadeService {
 						users.add(user);
 					}else{
 						if(uid==deviceGroupPaymentStatistics.getUid()){
-							rankingListVTO.setDisparity(Double.valueOf(paymentStatistics.get(99).getTotal_incoming_amount())-Double.valueOf(paymentStatistics.get(i).getTotal_incoming_amount()));
+							rankingListVTO.setUserIncome(deviceGroupPaymentStatistics.getTotal_incoming_amount());
 						}
 					}
 				}
