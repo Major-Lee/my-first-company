@@ -69,18 +69,19 @@
 		
         $('#Hee2').click(function(){
            var goods_no = Date.parse(new Date());
-           var datas = 'payment_type=WapWeixin&total_fee=0.50&goods_no='+goods_no;
+           var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=WapWeixin&total_fee=0.50&goods_no='+goods_no;
            $.ajax({
-               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment',
-               //url:'http://localhost:8080/pay',
+               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/pay',
+               //url:'http://pay.bhuwifi.com/pay',
                type:'post',
                async: false,
                data: datas,
                success:function(json){
-                   console.log(json.result);
+                   console.log(json.params);
                    
                     if(json.success){
-                        location.href = json.result.url;
+                    	var params = $.parseJSON(json.params);
+                        location.href = params.url;
                     }else{
                         alert(json.msg);
                     }
@@ -88,19 +89,19 @@
            });
        });
 
-        $('#WapWeixin2').click(function(){
+        $('#PcWeixin2').click(function(){
             var goods_no = Date.parse(new Date());
-            var datas = 'payment_type=WapWeixin&total_fee=0.01&goods_no='+goods_no;
+            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=PcWeixin&total_fee=0.01&goods_no='+goods_no;
            $.ajax({
-               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment',
+               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/pay',
                 type:'post',
                 async: false,
                 data: datas,
                 success:function(json){
                     if(json.success){
-                        console.log(json.result);
-                        
-                        $('.WeixinImg').find('img').eq(0).attr('src',json.result.url);
+                        console.log(json.params);
+                        var params = $.parseJSON(json.params);
+                        $('.WeixinImg').find('img').eq(0).attr('src',params.url);
                         $('.WeixinImg').show();
                     }else{
                         alert(json.msg);
@@ -111,17 +112,17 @@
 
         $('#PcAlipay2').click(function(){
             var goods_no = Date.parse(new Date());
-            var datas = 'payment_type=PcAlipay&total_fee=0.01&goods_no='+goods_no;
+            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=PcAlipay&total_fee=0.01&goods_no='+goods_no;
            $.ajax({
-               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment',
+               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/pay',
                 type:'post',
                 async: false,
                 data: datas,
                 success:function(json){
                     if(json.success){
-                        console.log(json.result);
-                        
-                        location.href = json.result.url;
+                        console.log(json.params);
+                        var params = $.parseJSON(json.params);
+                        location.href = params.url;
                     }else{
                         alert(json.msg);
                     }
@@ -131,17 +132,17 @@
 
         $('#WapAlipay2').click(function(){
             var goods_no = Date.parse(new Date());
-            var datas = 'payment_type=WapAlipay&total_fee=0.01&goods_no='+goods_no;
+            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=WapAlipay&total_fee=0.01&goods_no='+goods_no;
            $.ajax({
-               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment',
+               url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/pay',
                 type:'post',
                 async: false,
                 data: datas,
                 success:function(json){
                     if(json.success){
-                        console.log(json.result);
-                        
-                        location.href = json.result.url;
+                        console.log(json.params);
+                        var params = $.parseJSON(json.params);
+                        location.href = params.url;
                     }else{
                         alert(json.msg);
                     }
@@ -151,20 +152,8 @@
 
         $('#weixin2').click(function(){
             var goods_no = Date.parse(new Date());
-             var datas = 'withdraw_type=weixin&total_fee=0.50&withdraw_no='+goods_no;
-            $.ajax({
-                url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/payment/submitWithdrawals',
-                type:'post',
-                async: false,
-                data: datas,
-                success:function(json){
-                    if(json.success){
-                        console.log(json);
-                    }else{
-                        alert(json.msg);
-                    }
-                }
-            });
+          	alert("操作提现已禁止！");
+             
         });
 
 </script>

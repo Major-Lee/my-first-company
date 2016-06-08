@@ -664,7 +664,6 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("subject", subject);
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
-			sParaTemp.put("it_b_pay", "600");
 			break;
 		case BHU_APP_ALIPAY:
 			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_APP_ALIPAY.i18n(),usermac,paymentName);
@@ -681,7 +680,6 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("subject", subject);
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
-			sParaTemp.put("it_b_pay", "600");			
 			break;
 			
 		case BHU_PC_ALIPAY:
