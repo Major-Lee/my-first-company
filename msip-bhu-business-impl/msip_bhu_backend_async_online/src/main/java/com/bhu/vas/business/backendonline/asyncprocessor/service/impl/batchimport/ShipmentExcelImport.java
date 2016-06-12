@@ -60,7 +60,8 @@ public class ShipmentExcelImport {
 	        		Cell cell_sn = row.getCell(0);
 	        		if(cell_sn == null) continue;
 	        		String sn = cell_sn.getStringCellValue();
-	        		if(StringUtils.isNotEmpty(sn)){
+	        		if(StringUtils.isNotEmpty(sn) && StringUtils.isNotEmpty(sn.trim())){
+	        			sn = sn.trim();
 /*	        			devicesssss.add(sn);
 	        			System.out.println(String.format(" row[%s] sn[%s] size[%s]", rowNum,sn,devicesssss.size()));*/
 	        			DeviceCallbackDTO dcDTO = callback.elementDeviceInfoFetch(sn);
