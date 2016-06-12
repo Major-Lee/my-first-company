@@ -36,10 +36,10 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Resource
 	private IMsgHandlerService wifiDeviceGroupServiceHandler;
-	@Resource
-	private IMsgHandlerService userDeviceSharedNetworkApplyServiceHandler;
-	@Resource
-	private IMsgHandlerService batchImportConfirmServiceHandler;
+//	@Resource
+//	private IMsgHandlerService userDeviceSharedNetworkApplyServiceHandler;
+//	@Resource
+//	private IMsgHandlerService batchImportConfirmServiceHandler;
 	//@Resource
 	//private BatchSharedealServiceHandler batchSharedealServiceHandler;
 	@Resource
