@@ -34,14 +34,12 @@ public class UserSharedNetworksRepairEnvOp {
 	public static void main(String[] argv){
 		long t0 = System.currentTimeMillis();
 		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
-		/**
 		//由于用户可能存在定制的authurl，所有把123.56.227.18 replace ucloud.bhuwifi.com
-		http://123.56.227.18:9158/portal/default/reward/index_before.html
-		sharednetworkwifi.default.remote.authurl = http://ucloud.bhuwifi.com:9158/portal/default/reward/index_before.html
-		sharednetworkwifi.default.openresource = isdspeed.qq.com,pay.qq.com,weixin.qq.com,jspay.qq.com,bhuwifi.com,bhunetworks.com,midas.gtimg.cn,alipay.com,123.57.26.170,hao.bhuwifi.com,api.unipay.qq.com,cnzz.com
-		sharednetworkwifi.default.remote.protalserverurl = uportal.bhuwifi.com:18085
-		user.portal.update.uportalapi = http://ucloud.bhuwifi.com:9158/portal/set/recreate
-		 */
+		//http://123.56.227.18:9158/portal/default/reward/index_before.html
+		//sharednetworkwifi.default.remote.authurl = http://ucloud.bhuwifi.com:9158/portal/default/reward/index_before.html
+		//sharednetworkwifi.default.openresource = isdspeed.qq.com,pay.qq.com,weixin.qq.com,jspay.qq.com,bhuwifi.com,bhunetworks.com,midas.gtimg.cn,alipay.com,123.57.26.170,hao.bhuwifi.com,api.unipay.qq.com,cnzz.com
+		//sharednetworkwifi.default.remote.protalserverurl = uportal.bhuwifi.com:18085
+		//user.portal.update.uportalapi = http://ucloud.bhuwifi.com:9158/portal/set/recreate
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserSharedNetworksRepairEnvOp.class);
 		ctx.start();
 		System.out.println("Remote_auth_url:"+BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_auth_url);
