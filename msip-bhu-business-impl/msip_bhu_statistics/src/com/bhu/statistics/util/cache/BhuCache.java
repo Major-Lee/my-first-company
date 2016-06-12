@@ -1,9 +1,7 @@
 package com.bhu.statistics.util.cache;
 
-import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.math.NumberUtils;
 
 import com.bhu.statistics.util.redis.IJedisClient;
 import com.bhu.statistics.util.redis.JedisClientImpl;
@@ -51,7 +49,7 @@ public class BhuCache {
 	}
 	
 	public void setTotalPV(String typeName,String value){
-		jedisClient.setex(BhuCacheKeyGen.getTotalPV(typeName),value, BhuCacheKeyGen.CACHE_TIME_ONE_MONTH);
+		jedisClient.set(BhuCacheKeyGen.getTotalPV(typeName),value);
 	}
 	
 	/**
@@ -65,7 +63,7 @@ public class BhuCache {
 	}
 	
 	public void setTotalUV(String typeName,String value){
-		jedisClient.setex(BhuCacheKeyGen.getTotalUV(typeName),value, BhuCacheKeyGen.CACHE_TIME_ONE_MONTH);
+		jedisClient.set(BhuCacheKeyGen.getTotalUV(typeName),value);
 	}
 	
 	public String getDayPV(String data,String filed){

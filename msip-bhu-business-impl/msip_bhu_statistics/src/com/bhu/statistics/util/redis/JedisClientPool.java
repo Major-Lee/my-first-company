@@ -41,12 +41,14 @@ public class JedisClientPool {
 		
 		String host = ConfigManager.instance().getProperty(propertyFile, "redis.master.server.ip");
 		int port = ConfigManager.instance().getIntProperty(propertyFile, "redis.master.server.port");
-		JedisPool jedisPool_master = new JedisPool(jedisPoolConfig, host, port, timeOut);
+		String masterPwd = ConfigManager.instance().getProperty(propertyFile,"redis.master.server.pwd");
+		JedisPool jedisPool_master = new JedisPool(jedisPoolConfig, host, port, timeOut,masterPwd);
 		jpoolMap.put("redis_m", jedisPool_master);
 		
 		String _host = ConfigManager.instance().getProperty(propertyFile, "redis.slave.server.ip");
 		int _port = ConfigManager.instance().getIntProperty(propertyFile, "redis.slave.server.port");
-		JedisPool jedisPool_slave = new JedisPool(jedisPoolConfig, _host, _port, timeOut);
+		String slavePwd = ConfigManager.instance().getProperty(propertyFile,"redis.slave.server.pwd");
+		JedisPool jedisPool_slave = new JedisPool(jedisPoolConfig, _host, _port, timeOut,slavePwd);
 		jpoolMap.put("redis_s", jedisPool_slave);
 	}
 

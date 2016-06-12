@@ -125,9 +125,6 @@ public class UMLogicImpl implements IUMLogic{
 		double totalSingleGains = 0;
 		//全部设备收益总金额
 		double totalGains = 0;
-		//每天uv总数
-		int dayUV = 0 ;
-		int dayPV = 0;
 		//时间类型
 		String dateType = StringUtils.EMPTY;
 		//开始时间
@@ -157,6 +154,9 @@ public class UMLogicImpl implements IUMLogic{
 		List<String> dateList = DateUtils.getLastDay(Integer.parseInt(dateType));
 		String date = StringUtils.EMPTY;
 		for (int i = 0; i < dateList.size(); i++) {
+			//每天uv总数
+			int dayUV = 0 ;
+			int dayPV = 0;
 			date = dateList.get(i);
 			String dayPv = BhuCache.getInstance().getDayPV(date, "dayPV");
 			String dayUv = BhuCache.getInstance().getDayUV(date, "dayUV");
@@ -664,10 +664,6 @@ public class UMLogicImpl implements IUMLogic{
 		double totalSingleGains = 0;
 		//全部设备收益总数
 		double totalGains = 0;
-		//uv总数
-		int dayUV = 0;
-		//pv总数
-		int dayPV = 0;
 		//开始时间
 		String startTime = StringUtils.EMPTY;
 		//结束时间
@@ -698,6 +694,10 @@ public class UMLogicImpl implements IUMLogic{
 		startTime = DateUtils.formatDate(startTime);
 		endTime = DateUtils.formatDate(endTime);
 		if(StringUtils.equals(startTime, endTime)){
+			//uv总数
+			int dayUV = 0;
+			//pv总数
+			int dayPV = 0;
 			String dayPv = BhuCache.getInstance().getDayPV(startTime, "dayPV");
 			String dayUv = BhuCache.getInstance().getDayUV(startTime, "dayUV");
 			if(StringUtils.isNotBlank(dayPv)){
@@ -782,6 +782,10 @@ public class UMLogicImpl implements IUMLogic{
 			totalGains += dayGains;
 			listMap.add(map);
 		}else{
+			//uv总数
+			int dayUV = 0;
+			//pv总数
+			int dayPV = 0;
 			List<String> dateList = DateUtils.getDaysList(startTime, endTime);
 			String currDate = StringUtils.EMPTY;
 			for (int i = 0; i < dateList.size(); i++) {

@@ -23,7 +23,6 @@ public class JedisClientImpl implements IJedisClient {
 	private Logger log = new Logger(JedisClientImpl.class);
 	protected JedisPool pool;
 	private JedisClientPool jedisClientPool = JedisClientPool.getInstance();
-
 	public JedisClientImpl(String poolKey) {
 		if (jedisClientPool != null)
 			pool = jedisClientPool.getJpoolMap().get(poolKey);
