@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.SharedNetworksHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
@@ -161,10 +162,9 @@ public class DeviceSharedNetworkUnitFacadeService {
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
-			
 			//template 不为空并且 是无效的template格式,如果为空或者是有效的格式 则传递后续处理
-			if(StringUtils.isNotEmpty(template) && !SharedNetworksFacadeService.validTemplateFormat(template)){
-				template = SharedNetworksFacadeService.DefaultTemplate;
+			if(StringUtils.isNotEmpty(template) && !SharedNetworksHelper.validTemplateFormat(template)){
+				template = SharedNetworksHelper.DefaultTemplate;
 			}
 			
 			ParamSharedNetworkDTO sharednetwork_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
@@ -227,8 +227,8 @@ public class DeviceSharedNetworkUnitFacadeService {
 			}
 			UserValidateServiceHelper.validateUserDevices(uid, dmacs, userWifiDeviceFacadeService);
 			//template 不为空并且 是无效的template格式,如果为空或者是有效的格式 则传递后续处理
-			if(StringUtils.isNotEmpty(template) && !SharedNetworksFacadeService.validTemplateFormat(template)){
-				template = SharedNetworksFacadeService.DefaultTemplate;
+			if(StringUtils.isNotEmpty(template) && !SharedNetworksHelper.validTemplateFormat(template)){
+				template = SharedNetworksHelper.DefaultTemplate;
 			}
 			//TODO：等设备版本升级上来后可以去掉此条件约束
 			if(dmacs!= null && !dmacs.isEmpty() && on && SharedNetworkType.SafeSecure.getKey().equals(sharedNetwork.getKey())){
@@ -289,8 +289,8 @@ public class DeviceSharedNetworkUnitFacadeService {
 				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
 			//template 不为空并且 是无效的template格式,如果为空或者是有效的格式 则传递后续处理
-			if(StringUtils.isNotEmpty(template) && !SharedNetworksFacadeService.validTemplateFormat(template)){
-				template = SharedNetworksFacadeService.DefaultTemplate;
+			if(StringUtils.isNotEmpty(template) && !SharedNetworksHelper.validTemplateFormat(template)){
+				template = SharedNetworksHelper.DefaultTemplate;
 			}
 			ParamSharedNetworkDTO sharedNetworkConf = sharedNetworksFacadeService.fetchUserSharedNetworkConf(uid, sharedNetwork,template);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(sharedNetworkConf);
