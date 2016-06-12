@@ -1,25 +1,5 @@
 package com.bhu.vas.di.op.migrate;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.bhu.vas.api.helper.VapEnumType;
-import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
-import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
-import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
-import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
-import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetwork;
-import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetworks;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
-import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
-import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
-import com.bhu.vas.business.ds.user.service.UserService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
-import com.smartwork.msip.cores.orm.iterator.EntityIterator;
-import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
  * 用户unique 
@@ -29,7 +9,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
  *
  */
 public class UserSharedNetworksMigrateEnvOp {
-	public static void main(String[] argv){
+	/*public static void main(String[] argv){
 		long t0 = System.currentTimeMillis();
 		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserSharedNetworksMigrateEnvOp.class);
@@ -115,5 +95,5 @@ public class UserSharedNetworksMigrateEnvOp {
 		ctx.stop();
 		ctx.close();
 		System.exit(1);
-	}
+	}*/
 }
