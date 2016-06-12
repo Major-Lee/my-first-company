@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.devices.iservice;
 
 import java.util.List;
+import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
@@ -24,7 +25,7 @@ public interface IDeviceSharedNetworkRpcService {
 	RpcResponseDTO<ParamSharedNetworkDTO> fetchUserNetworkConf(int uid, String sharenetwork_type,String template);
 	
 	RpcResponseDTO<List<ParamSharedNetworkDTO>> fetchUserNetworksConf(int uid, String sharenetwork_type);
-	
+	RpcResponseDTO<Map<String, List<ParamSharedNetworkDTO>>> fetchAllUserNetworksConf(int uid);
 	RpcResponseDTO<SharedNetworkSettingDTO> fetchDeviceNetworkConf(int uid, String mac);
 	/**
 	 * 指定用户的指定共享网络类型的配置更新及应用到所有此sharenetwork_type相关设备

@@ -2,6 +2,7 @@ package com.bhu.vas.web.device;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -100,6 +101,20 @@ public class DeviceSharedNetworkController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type) {
 		RpcResponseDTO<List<ParamSharedNetworkDTO>> rpcResult = deviceSharedNetworkRpcService.fetchUserNetworksConf(uid, sharenetwork_type);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/fetch_user_snks",method={RequestMethod.POST})
+	public void fetch_user_snks(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid) {
+		RpcResponseDTO<Map<String,List<ParamSharedNetworkDTO>>> rpcResult = deviceSharedNetworkRpcService.fetchAllUserNetworksConf(uid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
