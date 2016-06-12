@@ -506,21 +506,21 @@ public class UMLogicImpl implements IUMLogic{
 			androidMap.put("orderComConversion", "-");
 			singleMap.put("android", androidMap);
 			
-			Map<String,Object> otherMap=new HashMap<String,Object>();
-			
-			otherMap.put("uv", mobileUV-iosUV-androidUV);
-			otherMap.put("clickNum", mobileClickNum-iosClickNum-androidClickNum);
-			otherMap.put("clickAverNum", 0);
-			if((mobileUV-iosUV-androidUV)!=0){
-				otherMap.put("clickAverNum", round((mobileClickNum-androidClickNum-iosClickNum)*1.00/(mobileUV-iosUV-androidUV),2));
-			}
-			otherMap.put("orderNum", "-");
-			otherMap.put("clickConversion", "-");
-			otherMap.put("orderConversion", "-");
-			otherMap.put("orderComplete", "-");
-			otherMap.put("orderAmount", "-");
-			otherMap.put("orderComConversion", "-");
-			singleMap.put("other", otherMap);
+//			Map<String,Object> otherMap=new HashMap<String,Object>();
+//			
+//			otherMap.put("uv", mobileUV-iosUV-androidUV);
+//			otherMap.put("clickNum", mobileClickNum-iosClickNum-androidClickNum);
+//			otherMap.put("clickAverNum", 0);
+//			if((mobileUV-iosUV-androidUV)!=0){
+//				otherMap.put("clickAverNum", round((mobileClickNum-androidClickNum-iosClickNum)*1.00/(mobileUV-iosUV-androidUV),2));
+//			}
+//			otherMap.put("orderNum", "-");
+//			otherMap.put("clickConversion", "-");
+//			otherMap.put("orderConversion", "-");
+//			otherMap.put("orderComplete", "-");
+//			otherMap.put("orderAmount", "-");
+//			otherMap.put("orderComConversion", "-");
+//			singleMap.put("other", otherMap);
 			
 			resMaps.add(singleMap);
 			totalAndroidUV+=androidUV;
