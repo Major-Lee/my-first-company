@@ -187,6 +187,11 @@ public enum ResponseErrorCode {
 	
 	USER_WALLET_VCURRENCY_NOT_SUFFICIENT("337", "user.wallet.vcurrency.not.sufficient"),
 	
+	//add by Jason 2016-06-08 start
+	USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST("338","user.wallet.withdraw.publishAccount.exist"),
+	USER_WALLET_WITHDRAW_WECHAT_HAS_BEEN_BOUND("339","user.wallet.withdraw.wechat.has.been.bound"),
+	//add by Jason 2016-06-08 E N D
+	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
 	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),
 	DEVICE_ALREADY_BEBINDED("342","device.already.bebinded"),

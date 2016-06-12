@@ -897,5 +897,6 @@ public class BusinessEnumType {
 	public static void main(String [] args){
 		OrderPaymentType payment_type = OrderPaymentType.fromKey("Alipay");
 		System.out.println(payment_type.getDesc());
+		System.out.println(OAuthType.fromType("腾讯微信"));
 	}
 }

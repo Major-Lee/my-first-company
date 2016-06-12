@@ -26,6 +26,8 @@ import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserOAuthState;
+import com.bhu.vas.api.rpc.user.model.UserPublishAccount;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
@@ -35,9 +37,11 @@ import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
+import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.bhu.vas.business.ds.user.service.UserPublishAccountService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -64,6 +68,12 @@ public class UserWalletUnitFacadeService {
 	
 	@Resource
 	private UserService userService;
+	
+	@Resource
+	private UserPublishAccountService userPublishAccountService;
+	
+	@Resource
+	private UserOAuthFacadeService userOAuthFacadeService;
 	
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
@@ -300,8 +310,27 @@ public class UserWalletUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{String.valueOf(payment_type)});
 			}
 			User user = UserValidateServiceHelper.validateUser(uid,userWalletFacadeService.getUserService());
-			//TODO:验证用户是否存在对公账户信息，如果存在则只能对公账户提现
+			//TODO:验证 用户是否存在对公账户信息，如果存在则只能对公账户提现
 			
+			//add by Jason 2016-06-07 start
+			//根据uid查询当前用户是否存在对公账号
+			UserPublishAccount userPublishAccount = userPublishAccountService.getById(uid);
+			if(StringUtils.equals(payment_type, "weixin")){
+				if(userPublishAccount != null){
+					//返回错误码 提示当前用户已绑定对公行号 在app端进行对公账号提现
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST);
+				}
+			}else if(StringUtils.equals(payment_type, "public")){
+				if(userPublishAccount == null){
+					//查询当前用户是否已绑定微信账号
+					UserOAuthStateDTO userOAuthStateDTO = userOAuthFacadeService.fetchRegisterIndetify(uid, OAuthType.fromType("weixin"), true);
+					if(userOAuthStateDTO != null){
+						//提示当前用户已绑定微信
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_WECHAT_HAS_BEEN_BOUND);
+					}
+				}
+			}
+			//add by Jason 2016-06-07 E N D
 			
 			UserWalletWithdrawApply apply = userWalletFacadeService.doWithdrawApply(appid,OAuthType.fromType(payment_type),uid, pwd, cash, remoteip);
 			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(uid);
