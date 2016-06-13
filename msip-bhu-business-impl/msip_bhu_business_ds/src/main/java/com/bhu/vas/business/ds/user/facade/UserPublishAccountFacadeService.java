@@ -94,8 +94,6 @@ public class UserPublishAccountFacadeService{
 			String address,
 			String mobile,
 			String business_license_pic,
-			String legal_person,
-			String legal_person_certificate,
 			String account_name,
 			String publish_account_number,
 			String opening_bank,
@@ -110,8 +108,8 @@ public class UserPublishAccountFacadeService{
 		entity.setAddress(address);
 		entity.setMobile(mobile);
 		entity.setBusiness_license_pic(business_license_pic);
-		entity.setLegal_person(legal_person_certificate);
-		entity.setLegal_person_certificate(legal_person_certificate);
+		entity.setLegal_person("");
+		entity.setLegal_person_certificate("");
 		entity.setAccount_name(account_name);
 		entity.setPublish_account_number(publish_account_number);
 		entity.setOpening_bank(opening_bank);

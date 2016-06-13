@@ -23,13 +23,12 @@ public class UserPublishAccountRpcService implements IUserPublishAccountRpcServi
 	public RpcResponseDTO<UserPublishAccountDetailVTO> createUserPublishAccount(
 			int uid, String companyName, String business_license_number,
 			String business_license_address, String address, String mobile,
-			String business_license_pic, String legal_person,
-			String legal_person_certificate, String account_name,
+			String business_license_pic, String account_name,
 			String publish_account_number, String opening_bank, String city,
 			String bank_branch_name) {
-		logger.info(String.format("addUserPublishAccount with uid[%s] companyName[%s] business_license_number[%s] business_license_address[%s] address[%s] mobile[%s] business_license_pic[%s] legal_person[%s] legal_person_certificate[%s] account_name[%s] publish_account_number[%s] opening_bank[%s] city[%s] bank_branch_name[%s]",
-				uid,companyName,uid,business_license_number,business_license_address,address,mobile,business_license_pic,legal_person,legal_person_certificate,account_name,publish_account_number,opening_bank,city,bank_branch_name));
-		return userPublishAccountUnitFacadeService.addUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, legal_person, legal_person_certificate, account_name, publish_account_number, opening_bank, city, bank_branch_name);
+		logger.info(String.format("addUserPublishAccount with uid[%s] companyName[%s] business_license_number[%s] business_license_address[%s] address[%s] mobile[%s] business_license_pic[%s]  account_name[%s] publish_account_number[%s] opening_bank[%s] city[%s] bank_branch_name[%s]",
+				uid,companyName,uid,business_license_number,business_license_address,address,mobile,business_license_pic,account_name,publish_account_number,opening_bank,city,bank_branch_name));
+		return userPublishAccountUnitFacadeService.addUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic,account_name, publish_account_number, opening_bank, city, bank_branch_name);
 	}
 
 	@Override

@@ -35,8 +35,6 @@ public interface IUserPublishAccountRpcService {
 			String address,
 			String mobile,
 			String business_license_pic,
-			String legal_person,
-			String legal_person_certificate,
 			String account_name,
 			String publish_account_number,
 			String opening_bank,

@@ -84,12 +84,11 @@ public class UserPublishAccountUnitFacadeService {
 	
 	public RpcResponseDTO<UserPublishAccountDetailVTO> addUserPublishAccount(int uid, String companyName, String business_license_number,
 			String business_license_address, String address, String mobile,
-			String business_license_pic, String legal_person,
-			String legal_person_certificate, String account_name,
+			String business_license_pic, String account_name,
 			String publish_account_number, String opening_bank, String city,
 			String bank_branch_name){
 		try {
-			UserPublishAccount userPublishAccount = userPublishAccountFacadeService.insertUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, legal_person, legal_person_certificate, account_name, publish_account_number, opening_bank, city, bank_branch_name);
+			UserPublishAccount userPublishAccount = userPublishAccountFacadeService.insertUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, account_name, publish_account_number, opening_bank, city, bank_branch_name);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userPublishAccount.toUserPulishAccountDetailVTO());
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
