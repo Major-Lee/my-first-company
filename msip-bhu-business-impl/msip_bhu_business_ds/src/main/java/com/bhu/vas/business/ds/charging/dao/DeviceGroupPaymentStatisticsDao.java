@@ -10,7 +10,7 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 @Repository
 public class DeviceGroupPaymentStatisticsDao extends AbstractCoreDao<String, DeviceGroupPaymentStatistics>{
 
-	public List<DeviceGroupPaymentStatistics> rankingList() {
-		return super.getSqlSessionMasterTemplate().selectList(DeviceGroupPaymentStatistics.class.getName()+".rankingList");
+	public List<DeviceGroupPaymentStatistics> rankingList(String time) {
+		return super.getSqlSessionMasterTemplate().selectList(DeviceGroupPaymentStatistics.class.getName()+".rankingList",time);
 	}
 }

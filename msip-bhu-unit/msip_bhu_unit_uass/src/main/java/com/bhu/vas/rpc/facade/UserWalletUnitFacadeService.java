@@ -535,10 +535,13 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	public RpcResponseDTO<RankingListVTO> rankingList(int uid) {
+		//'%2016-06-05'
+		String time=StringUtils.EMPTY;
 		try{
 			RankingListVTO rankingListVTO=new RankingListVTO();
 			List<RankSingle> rankList=new ArrayList<RankSingle>();
-			List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList();
+			
+			List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList(time);
 			if(paymentStatistics != null){
 				rankingListVTO.setRankNum(0);
 				rankingListVTO.setUserIncome("0");
