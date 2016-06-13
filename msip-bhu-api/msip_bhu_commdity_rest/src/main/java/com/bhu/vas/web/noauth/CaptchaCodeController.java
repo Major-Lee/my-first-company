@@ -1,5 +1,8 @@
 package com.bhu.vas.web.noauth;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.helper.BusinessEnumType.CaptchaCodeActType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
@@ -60,7 +64,7 @@ public class CaptchaCodeController extends BaseController{
 		}
 	}
 	
-	
+	private ExecutorService exec_aftervalidate = Executors.newFixedThreadPool(30);
 	/**
 	 * 请求获取验证码接口
 	 * @param response
@@ -82,6 +86,17 @@ public class CaptchaCodeController extends BaseController{
 			ValidateService.validateMobilenoRegx(countrycode,acc);
 			RpcResponseDTO<Boolean> rpcResult = userCaptchaCodeRpcService.validateCaptchaCode(countrycode, acc,captcha,act);
 			if(!rpcResult.hasError()){
+				final CaptchaCodeActType fromType = CaptchaCodeActType.fromType(act);
+				if(fromType == CaptchaCodeActType.SnkAuth){
+					exec_aftervalidate.execute((new Runnable() {
+						@Override
+						public void run() {
+							//生成成功扣虚拟币款订单
+							//设备绑定用户扣虚拟币款
+							//设备放行
+						}
+					}));
+				}
 				SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 			}else{
 				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));

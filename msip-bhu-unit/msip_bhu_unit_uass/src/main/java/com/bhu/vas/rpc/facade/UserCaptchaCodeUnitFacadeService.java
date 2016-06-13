@@ -32,7 +32,7 @@ public class UserCaptchaCodeUnitFacadeService {
 	
 	//内部线程池，用于调用sms接口
 	private ExecutorService exec_send = Executors.newFixedThreadPool(30);
-	private ExecutorService exec_aftervalidate = Executors.newFixedThreadPool(30);
+	//private ExecutorService exec_aftervalidate = Executors.newFixedThreadPool(30);
 	//@Resource
 	//private DeliverMessageService deliverMessageService;
 	/*private static final String FetchCaptchaCode_RegisterOrLogin_Act = "R";
@@ -121,8 +121,7 @@ public class UserCaptchaCodeUnitFacadeService {
 					}
 				}
 			}
-			
-			final CaptchaCodeActType fromType = CaptchaCodeActType.fromType(act);
+			/*final CaptchaCodeActType fromType = CaptchaCodeActType.fromType(act);
 			if(fromType == CaptchaCodeActType.SnkAuth){
 				exec_aftervalidate.execute((new Runnable() {
 					@Override
@@ -131,7 +130,7 @@ public class UserCaptchaCodeUnitFacadeService {
 						//设备放行
 					}
 				}));
-			}
+			}*/
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException ex){
 			System.out.println("cc:"+countrycode +" acc:"+acc);
