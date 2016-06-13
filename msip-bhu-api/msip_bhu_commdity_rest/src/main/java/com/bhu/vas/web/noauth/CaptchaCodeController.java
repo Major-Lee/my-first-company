@@ -57,7 +57,7 @@ public class CaptchaCodeController extends BaseController{
 		}catch(BusinessI18nCodeException i18nex){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
 		}catch(Exception ex){
-			ex.printStackTrace();
+			ex.printStackTrace(System.out);
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}finally{
 			
@@ -91,7 +91,7 @@ public class CaptchaCodeController extends BaseController{
 					exec_aftervalidate.execute((new Runnable() {
 						@Override
 						public void run() {
-							//生成成功扣虚拟币款订单
+							//通知商品中心组件生成成功扣虚拟币款订单
 							//设备绑定用户扣虚拟币款
 							//设备放行
 						}
@@ -104,7 +104,7 @@ public class CaptchaCodeController extends BaseController{
 		}catch(BusinessI18nCodeException i18nex){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
 		}catch(Exception ex){
-			ex.printStackTrace();
+			ex.printStackTrace(System.out);
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}finally{
 			
