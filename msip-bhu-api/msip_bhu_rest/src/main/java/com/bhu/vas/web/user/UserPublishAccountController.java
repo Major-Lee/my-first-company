@@ -41,8 +41,6 @@ public class UserPublishAccountController extends BaseController{
 			@RequestParam(required = true) String address,
 			@RequestParam(required = true) String mobile,
 			@RequestParam(required = true) String business_license_pic,
-			@RequestParam(required = true) String legal_person,
-			@RequestParam(required = true) String legal_person_certificate,
 			@RequestParam(required = true) String account_name,
 			@RequestParam(required = true) String publish_account_number,
 			@RequestParam(required = true) String opening_bank,
@@ -50,10 +48,11 @@ public class UserPublishAccountController extends BaseController{
 			@RequestParam(required = true) String bank_branch_name
 			){
 		log.info(String.format(
-                "addPublishAccount uid[%s] companyName[%s] business_license_number[%s] business_license_address[%s] address[%s] mobile[%s] business_license_pic[%s] legal_person[%s] legal_person_certificate[%s] account_name[%s] publish_account_number[%s] opening_bank[%s] city[%s] bank_branch_name[%s]",
-                uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, legal_person, legal_person_certificate, account_name, publish_account_number, opening_bank, city, bank_branch_name));
+                "addPublishAccount uid[%s] companyName[%s] business_license_number[%s] business_license_address[%s] address[%s] mobile[%s] business_license_pic[%s]  account_name[%s] publish_account_number[%s] opening_bank[%s] city[%s] bank_branch_name[%s]",
+                uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic,account_name, publish_account_number, opening_bank, city, bank_branch_name));
 		try{
-			RpcResponseDTO<Map<String, Object>> rpcResult = userPublishAccountRpcService.createUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, legal_person, legal_person_certificate, account_name, publish_account_number, opening_bank, city, bank_branch_name);
+			RpcResponseDTO<UserPublishAccountDetailVTO> rpcResult = userPublishAccountRpcService.createUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, account_name, publish_account_number, opening_bank, city, bank_branch_name);
+					
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

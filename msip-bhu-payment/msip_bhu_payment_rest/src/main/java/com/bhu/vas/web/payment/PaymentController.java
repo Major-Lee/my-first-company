@@ -58,6 +58,7 @@ import com.bhu.vas.web.service.PayHttpService;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.heepay.api.Heepay;
+import com.midas.api.MidasUtils;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -361,22 +362,25 @@ public class PaymentController extends BaseController{
         	PaymentChannelCode paymentChannel = PaymentChannelCode.getPaymentChannelCodeByCode(payment_type);
     		switch(paymentChannel){
     			case BHU_PC_WEIXIN: //PC微信支付
-    				result =  doNativeWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName);
+    				result =  doNativeWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
     				break;
     			case BHU_PC_ALIPAY: //PC支付宝
-    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName);
+    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
     	        	break;
     			case BHU_APP_WEIXIN: //App微信支付
-    				result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName);
+    				result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
     	            break;
     			case BHU_APP_ALIPAY: //App支付宝
-    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName);
+    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
     	            break;
     			case BHU_WAP_WEIXIN: //汇付宝
-            		result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName); 
+            		result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+                	break;
+    			case BHU_MIDAS_WEIXIN: //米大师
+            		result =  doMidas(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
                 	break;
     			case BHU_WAP_ALIPAY: //Wap微信支付
-    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName);
+    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
     	        	break;
     			default:
     				logger.info(String.format("apply payment payment_type [%s]",payment_type + ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -506,13 +510,13 @@ public class PaymentController extends BaseController{
      * @throws JsonMappingException
      * @throws IOException
      */
-	private PaymentTypeVTO doNativeWxPayment(HttpServletRequest request, HttpServletResponse response,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac,String paymentName){
+	private PaymentTypeVTO doNativeWxPayment(HttpServletRequest request, HttpServletResponse response,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac,String paymentName,String appId){
 		PaymentTypeVTO result= new PaymentTypeVTO();
         String NOTIFY_URL = PayHttpService.NOTIFY_URL;
         String product_name= paymentName;//订单名称
     	total_fee = BusinessHelper.getMoney(total_fee);
         //记录请求的Goods_no
-        String reckoningId = createPaymentReckoning(out_trade_no,total_fee,Ip,PaymentChannelCode.BHU_PC_WEIXIN.i18n(),usermac,paymentName);
+        String reckoningId = createPaymentReckoning(out_trade_no,total_fee,Ip,PaymentChannelCode.BHU_PC_WEIXIN.i18n(),usermac,paymentName,appId);
         
       //记录请求支付完成后返回的地址
 		if (!StringUtils.isBlank(locationUrl)) {
@@ -556,13 +560,13 @@ public class PaymentController extends BaseController{
      * @throws JsonMappingException
      * @throws IOException
      */
-	private PaymentTypeVTO doAppWxPayment(HttpServletRequest request, HttpServletResponse response,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac,String paymentName){
+	private PaymentTypeVTO doAppWxPayment(HttpServletRequest request, HttpServletResponse response,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac,String paymentName,String appid){
 		PaymentTypeVTO result= new PaymentTypeVTO();
         String NOTIFY_URL = PayHttpService.NOTIFY_URL;
         String product_name= paymentName;//订单名称
     	total_fee = BusinessHelper.getMoney(total_fee);
         //记录请求的Goods_no
-        String reckoningId = createPaymentReckoning(out_trade_no,total_fee,Ip,PaymentChannelCode.BHU_APP_WEIXIN.i18n(),usermac,paymentName);
+        String reckoningId = createPaymentReckoning(out_trade_no,total_fee,Ip,PaymentChannelCode.BHU_APP_WEIXIN.i18n(),usermac,paymentName,appid);
         
       //记录请求支付完成后返回的地址
 		if (!StringUtils.isBlank(locationUrl)) {
@@ -619,7 +623,7 @@ public class PaymentController extends BaseController{
 	 * @return
 	 */
     private PaymentTypeVTO doAlipay(HttpServletResponse response,HttpServletRequest request,
-    		String totalPrice,String out_trade_no,String locationUrl,String ip,String type,String usermac,String paymentName){
+    		String totalPrice,String out_trade_no,String locationUrl,String ip,String type,String usermac,String paymentName,String appid){
     	response.setCharacterEncoding("utf-8");
     	PaymentTypeVTO result = new PaymentTypeVTO();
     	
@@ -650,7 +654,7 @@ public class PaymentController extends BaseController{
 		PaymentChannelCode payChannel =PaymentChannelCode.getPaymentChannelCodeByCode(type);
 		switch (payChannel) {
 		case BHU_WAP_ALIPAY:
-			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_WAP_ALIPAY.i18n(),usermac,paymentName);
+			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_WAP_ALIPAY.i18n(),usermac,paymentName,appid);
 			sParaTemp.put("service", "alipay.wap.create.direct.pay.by.user");
 	        sParaTemp.put("partner", AlipayConfig.partner);
 	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
@@ -664,9 +668,10 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("subject", subject);
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
+			sParaTemp.put("it_b_pay", "600");
 			break;
 		case BHU_APP_ALIPAY:
-			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_APP_ALIPAY.i18n(),usermac,paymentName);
+			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_APP_ALIPAY.i18n(),usermac,paymentName,appid);
 			sParaTemp.put("service", "alipay.wap.create.direct.pay.by.user");
 	        sParaTemp.put("partner", AlipayConfig.partner);
 	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
@@ -680,10 +685,11 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("subject", subject);
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
+			sParaTemp.put("it_b_pay", "600");
 			break;
 			
 		case BHU_PC_ALIPAY:
-			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_PC_ALIPAY.i18n(),usermac,paymentName);
+			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_PC_ALIPAY.i18n(),usermac,paymentName,appid);
 			sParaTemp.put("service", AlipayConfig.service);
 	        sParaTemp.put("partner", AlipayConfig.partner);
 	        sParaTemp.put("seller_id", AlipayConfig.seller_id);
@@ -733,14 +739,49 @@ public class PaymentController extends BaseController{
      * @param response
      * @param total_fee
      * @param goods_no
+     * @param paymentName 
+     * @param umac 
+     * @param payment_completed_url 
+     * @param exter_invoke_ip 
      * @return
      */
-//    private PaymentTypeVTO doMidas(HttpServletResponse response, String total_fee, String goods_no) {
-//    	throw new BusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT,new String[]{"Midas"}); 
-//    	//SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-//		//		ResponseErrorCode.RPC_MESSAGE_UNSUPPORT)));
-//    	//return "";
-//	}
+    private PaymentTypeVTO doMidas(HttpServletResponse response, String total_fee, String out_trade_no, String ip, String return_url, String usermac, String paymentName,String appid) {
+    	//throw new BusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT,new String[]{"Midas"}); 
+    	PaymentTypeVTO result = new PaymentTypeVTO();
+    	if(ip == "" || ip == null){
+    		ip = "213.42.3.24";
+    	}
+    	
+    	String total_fee_fen = BusinessHelper.getMoney(total_fee);
+    	int temp = Integer.parseInt(total_fee_fen);
+    	if(temp < 10){ 
+    		total_fee = "0.10";
+    		total_fee_fen = BusinessHelper.getMoney(total_fee);
+    	}
+    	
+    	String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n(),usermac,paymentName,appid);
+    	//记录请求支付完成后返回的地址
+    	if (!StringUtils.isBlank(return_url)) {
+    		logger.info(String.format("get midas location [%s] ",return_url));
+    		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
+    		orderLocation.setTid(reckoningId);
+    		orderLocation.setLocation(return_url);
+    		paymentAlipaylocationService.insert(orderLocation);
+    		logger.info(String.format("apply midas set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
+    	}
+    	//TODO：》》》》》》》》》》》》》》》》》》》》》》》》
+    	String url = "";MidasUtils.submitOrder(reckoningId, total_fee, ip,paymentName,usermac);
+    	if("error".equalsIgnoreCase(url)){
+    		result.setType("FAIL");
+        	result.setUrl("支付请求失败");
+        	return result;
+    	}else{
+    		url = url.replace("¬", "&not");
+        	result.setType("json");
+        	result.setUrl(url);
+        	return result;
+    	}
+	}
    
     /**
      * 处理汇付宝支付服务请求
@@ -750,7 +791,7 @@ public class PaymentController extends BaseController{
      * @param ip
      * @return
      */
-    private PaymentTypeVTO doHee(HttpServletResponse response, String total_fee, String out_trade_no,String ip,String return_url,String usermac,String paymentName) {
+    private PaymentTypeVTO doHee(HttpServletResponse response, String total_fee, String out_trade_no,String ip,String return_url,String usermac,String paymentName,String appid) {
     	PaymentTypeVTO result = new PaymentTypeVTO();
     	if(ip == "" || ip == null){
     		ip = "213.42.3.24";
@@ -763,7 +804,7 @@ public class PaymentController extends BaseController{
     		total_fee_fen = BusinessHelper.getMoney(total_fee);
     	}
     	
-    	String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName);
+    	String reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName,appid);
     	//记录请求支付完成后返回的地址
     	if (!StringUtils.isBlank(return_url)) {
     		logger.info(String.format("get heepay location [%s] ",return_url));
@@ -785,6 +826,8 @@ public class PaymentController extends BaseController{
         	return result;
     	}
     }
+    
+    
     
     /**
      * 支付宝通知接口
@@ -854,7 +897,7 @@ public class PaymentController extends BaseController{
 					} else if (trade_status.equals("TRADE_SUCCESS")){
 						//支付成功
 						logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
-						updatePaymentStatus(payReckoning,out_trade_no,trade_no,"");
+						updatePaymentStatus(payReckoning,out_trade_no,trade_no,"","");
 						SpringMVCHelper.renderJson(response, "success");
 						return;
 					}else{
@@ -936,7 +979,7 @@ public class PaymentController extends BaseController{
 	            if("SUCCESS".equals(paySuccessNotifyResponse.getReturn_code()) && "SUCCESS".equals(paySuccessNotifyResponse.getResult_code())){
 	            	 logger.info("账单流水号："+out_trade_no+"支付成功.微信返回SUCCESS.");
 	 				//修改成账单状态    1:已支付 2：退款已支付 3：退款成功 4：退款失败
-	            	 updatePaymentStatus(payReckoning,out_trade_no,thirdPartCode,"");
+	            	 updatePaymentStatus(payReckoning,out_trade_no,thirdPartCode,"","");
 					return "success";
 	            }else{
 	                //支付s失败
@@ -957,15 +1000,16 @@ public class PaymentController extends BaseController{
 
     /********END************微信接口*********END********************/
     
-    @SuppressWarnings("rawtypes")
-	/**
-     * 支付宝通知接口
+	
+    /**
+     * 汇元宝通知接口
      * @param mv
      * @param request
      * @param response
      * @throws IOException
      * @throws JDOMException
      */
+    @SuppressWarnings("rawtypes")
    	@RequestMapping(value = "/payment/heepayNotifySuccess", method = { RequestMethod.GET,RequestMethod.POST })
    	public String heepayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
     	logger.info(String.format("******[%s]********[%s]*******[%s]********","汇元宝通知",BusinessHelper.gettimestamp(),"Starting"));
@@ -1027,7 +1071,7 @@ public class PaymentController extends BaseController{
 					 if (trade_status.equals("1")){
 						//支付成功
 						logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
-						updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Hee");
+						updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Hee","");
 						return "ok";
 					}else{
 						//1:已支付 2：退款已支付 3：退款成功 4：退款失败
@@ -1039,6 +1083,96 @@ public class PaymentController extends BaseController{
 				
 		}else{//验证失败
 			logger.info(String.format("get heepay notify  mysign [%s] sign [%s] sign verify fail",mySign, sign));
+			return "error";
+		}
+    	
+    }
+    
+    /***************************Hee end**************************************/
+    
+    /**
+     * 米大师通知接口
+     * @param mv
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws JDOMException
+     */
+    @SuppressWarnings("rawtypes")
+   	@RequestMapping(value = "/payment/midasNotifySuccess", method = { RequestMethod.GET,RequestMethod.POST })
+   	public String midasNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
+    	logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师通知",BusinessHelper.gettimestamp(),"Starting"));
+    	///api/ucloud/midas-callback?amt=89&appid=1450006135&appmeta=*wechat*st_dummy&
+    	//billno=-APPDJ53227-20160612-1453006240
+    	//&cftid=4002772001201606127152100353&channel_id=2001-html5-2011-bhuwifi-st_dummy&clientver=html5
+    	//&openid=BHUWIFIUSERMAC80BE05587186&payamt_coins=0&payitem=PA16061202525758433911505*8.9*1
+    	//&providetype=5&pubacct_payamt_coins=&tbazinga=1&token=CD044842BFFC9ADA438B3C0BAAFAFDBC14961&ts=1465714407
+    	//&version=v3&zoneid=1&sig=%2BjZT%2B%2F1BmjX4PWLbwyDigFCStDA%3D
+    	//获取POST过来反馈信息
+    	HashMap<String,String> params = new HashMap<String,String>();
+		Map requestParams = request.getParameterMap();
+		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+			String name = (String) iter.next();
+			String[] values = (String[]) requestParams.get(name);
+			String valueStr = "";
+			for (int i = 0; i < values.length; i++) {
+				valueStr = (i == values.length - 1) ? valueStr + values[i]
+						: valueStr + values[i] + ",";
+			}
+			//乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
+			//valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
+			params.put(name, valueStr);
+		}
+		
+
+		String goods_no = request.getParameter("payitem");
+		if (StringUtils.isBlank(goods_no)) {
+			logger.error(String.format("get heepay notify goods_no [%s]", goods_no));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+			return "error";
+		}
+		//商户订单号
+		String out_trade_no = new String(request.getParameter("payitem").getBytes("ISO-8859-1"),"UTF-8");
+
+		//交易号 (米大师给的微信流水号)
+		String trade_no = new String(request.getParameter("cftid").getBytes("ISO-8859-1"),"UTF-8");
+
+		//交易号(米大师流水号)
+		String billno = new String(request.getParameter("billno").getBytes("ISO-8859-1"),"UTF-8");
+		
+		//交易金额
+		String pay_amt = new String(request.getParameter("amt").getBytes("ISO-8859-1"),"UTF-8");
+		
+		//交易签名
+		String sign = new String(request.getParameter("sig").getBytes("ISO-8859-1"),"UTF-8");
+		
+		//交易状态
+		//String trade_status = new String(request.getParameter("result").getBytes("ISO-8859-1"),"UTF-8");
+
+		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
+		if (payReckoning == null) {
+        	logger.info("get midas notice payReckoning " +payReckoning);
+        	return "error";
+        }
+		String orderId = payReckoning.getOrder_id();
+        logger.info(String.format("get midas notify reckoningId [%s] trade_no [%s] orderId [%s] billno [%s]",out_trade_no, trade_no,orderId,billno));
+        
+		boolean verifySig = MidasUtils.verifySig(params,sign);
+		logger.info(String.format("get midas notify to create verifySig[%s]",verifySig));
+		if(verifySig){//验证成功
+	            //判断当前账单的实际状态，如果是以支付状态就不做处理了
+				int payStatus = payReckoning.getPay_status();
+				if(payStatus == 0){ //0未支付;1支付成功
+					//支付成功
+					logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
+					updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
+					return "OK";
+				}
+				return "OK";
+				
+		}else{//验证失败
+			logger.info(String.format("get midas notifysign [%s] verify fail", sign));
 			return "error";
 		}
     	
@@ -1138,9 +1272,11 @@ public class PaymentController extends BaseController{
 		
 		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
 		String isNull = request.getParameter("out_trade_no");
-		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
+		//String locationUrl = PayHttpService.WEB_NOTIFY_URL;
+		String locationUrl = "http://192.168.66.157:9158/portal/default/reward/index.html?wlanusermac=3c:a3:48:b3:91:&wlanapmac=84:82:f4:31:3d:&wlanssid=+%C3%A5%C2%BF%C2%85%C3%A8%C2%99%C2%8E%C3%A5%C2%AE%C2%89%C3%A5%C2%85%C2%A8%C3%A5%C2%85%C2%B1%C3%A4%C2%BA%C2%ABWiFi&company=vivo";
 		if (StringUtils.isBlank(isNull)) {
 			logger.info(String.format("get alipay return notify and go to out_trade_no [%s] ,user canceled this pay.", isNull));
+			//response.sendRedirect(locationUrl);
 			response.sendRedirect(locationUrl);
 			return;
 		}
@@ -1206,7 +1342,9 @@ public class PaymentController extends BaseController{
      * @param type 支付方式
      * @return 支付流水号
      */
-    private String createPaymentReckoning(String out_trade_no,String total_fee,String Ip,String type,String usermac,String paymentName){
+    private String createPaymentReckoning(String out_trade_no,String total_fee,String Ip,String type,String usermac,String paymentName,String appId){
+    	
+    	String channelType = "";
     	//判断请求支付类型
     	String paymentType = PaymentChannelCode.BHU_PC_WEIXIN.code();
     	if(type.equals(PaymentChannelCode.BHU_PC_WEIXIN.i18n())){
@@ -1218,9 +1356,13 @@ public class PaymentController extends BaseController{
  		}else if(type.equals(PaymentChannelCode.BHU_APP_WEIXIN.i18n())){
  			paymentType = PaymentChannelCode.BHU_APP_WEIXIN.code();
  		}else if(type.equals(PaymentChannelCode.BHU_WAP_WEIXIN.i18n())){
+ 			channelType = PaymentChannelCode.BHU_HEEPAY_WEIXIN.code();
  			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
  		}else if(type.equals(PaymentChannelCode.BHU_WAP_ALIPAY.i18n())){
  			paymentType = PaymentChannelCode.BHU_WAP_ALIPAY.code();
+ 		}else if(type.equals(PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n())){
+ 			channelType = PaymentChannelCode.BHU_MIDAS_WEIXIN.code();
+ 			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
  		}
     	
     	if(Ip == "" || Ip == null){
@@ -1233,10 +1375,11 @@ public class PaymentController extends BaseController{
  		order.setOrder_id(out_trade_no);
  		order.setAmount(Integer.parseInt(total_fee));
  		order.setPayment_type(paymentType);
+ 		order.setChannel_type(channelType);
  		order.setOpenid("BHUUSERMAC"+usermac);
  		order.setSubject(paymentName);
  		order.setExter_invoke_ip(Ip);
- 		order.setAppid("1000");
+ 		order.setAppid(appId);
  		String token = RandomPicker.randString(BusinessHelper.letters, 10);
  		order.setToken(token);
  		paymentReckoningService.insert(order);
@@ -1246,10 +1389,14 @@ public class PaymentController extends BaseController{
  		return reckoningId;
     }
     
-    private void updatePaymentStatus(PaymentReckoning updatePayStatus,String out_trade_no,String thirdPartCode,String thridType){
+    private void updatePaymentStatus(PaymentReckoning updatePayStatus,String out_trade_no,String thirdPartCode,
+    		String thridType,String billo){
 		updatePayStatus.setThird_party_code(thirdPartCode);
 		updatePayStatus.setPay_status(1);
 		updatePayStatus.setPaid_at(new Date());
+		if(thridType != null){
+			updatePayStatus.setRemark(billo);
+		}
  		paymentReckoningService.update(updatePayStatus);
  		logger.info(String.format("update out_trade_no [%s] payment status finished.",out_trade_no));
  		

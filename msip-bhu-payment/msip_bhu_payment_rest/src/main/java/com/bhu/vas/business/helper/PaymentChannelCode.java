@@ -14,8 +14,8 @@ public enum PaymentChannelCode {
 	BHU_WAP_ALIPAY("WapAlipay", "WPAL"),
 	BHU_APP_ALIPAY("AppAlipay", "APAL"),
 	BHU_PC_ALIPAY("PcAlipay", "PCAL"),
-	BHU_HEEPAY_WEIXIN("HeeWeixin", "HEWX"),
-	BHU_MIDAS_WEIXIN("MidasWeixin", "MDWX");
+	BHU_HEEPAY_WEIXIN("Hee", "HEWX"),
+	BHU_MIDAS_WEIXIN("Midas", "MDWX");
 	
 	
 	

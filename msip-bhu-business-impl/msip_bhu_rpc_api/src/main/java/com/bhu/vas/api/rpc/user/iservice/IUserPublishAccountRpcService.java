@@ -1,6 +1,5 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
-import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
@@ -28,7 +27,7 @@ public interface IUserPublishAccountRpcService {
 	 * @param status
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> createUserPublishAccount(
+	public RpcResponseDTO<UserPublishAccountDetailVTO> createUserPublishAccount(
 			int uid,
 			String companyName,
 			String business_license_number,
@@ -36,8 +35,6 @@ public interface IUserPublishAccountRpcService {
 			String address,
 			String mobile,
 			String business_license_pic,
-			String legal_person,
-			String legal_person_certificate,
 			String account_name,
 			String publish_account_number,
 			String opening_bank,
