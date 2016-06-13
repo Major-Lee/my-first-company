@@ -295,7 +295,7 @@ public class FileHandling {
 		String dayUvNum = BhuCache.getInstance().getDayUV(getNextDay(), "dayUV");
 		System.out.println("dayUvNum***************"+dayUvNum);
 		
-		
+		UmStorage();
 		
 	}
 	
@@ -308,7 +308,7 @@ public class FileHandling {
 		pcUvJsonStr=pcUvJsonStr.substring(1);
 		pcUvJsonStr=pcUvJsonStr.substring(0, pcUvJsonStr.length()-1);
 		int pcUV=Integer.valueOf(pcUvJsonStr.split(",")[1].replace(".0", "").trim());
-		
+		BhuCache.getInstance().setPCUV(getNextDay(), "pcUv", String.valueOf(pcUV));
 		//获取PC端点击事件发生数
 		String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", getNextDay(), getNextDay(), "", "",1);
 		JSONObject pcClickJson=JSONObject.fromObject(pcClick);
@@ -316,6 +316,7 @@ public class FileHandling {
 		pcClickJsonStr=pcClickJsonStr.substring(1);
 		pcClickJsonStr=pcClickJsonStr.substring(0, pcClickJsonStr.length()-1);
 		int pcClickNum=Integer.valueOf(pcClickJsonStr.split(",")[0].replace(".0", "").trim());
+		BhuCache.getInstance().setPcClickNum(getNextDay(), "pcClickNum", String.valueOf(pcClickNum));
 		//获取手机端uv
 		String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "",2);
 		JSONObject mobileUvJson=JSONObject.fromObject(mobileUv);
@@ -323,6 +324,7 @@ public class FileHandling {
 		mobileUvJsonStr=mobileUvJsonStr.substring(1);
 		mobileUvJsonStr=mobileUvJsonStr.substring(0, mobileUvJsonStr.length()-1);
 		int mobileUV=Integer.valueOf(mobileUvJsonStr.split(",")[1].replace(".0", "").trim());
+		BhuCache.getInstance().setMobileUv(getNextDay(), "mobileUv", String.valueOf(mobileUV));
 		//获取手机ios端uv
 		String iosUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "os = 'ios'",2);
 		JSONObject iosUvJson=JSONObject.fromObject(iosUv);
@@ -330,6 +332,7 @@ public class FileHandling {
 		iosUvJsonStr=iosUvJsonStr.substring(1);
 		iosUvJsonStr=iosUvJsonStr.substring(0, iosUvJsonStr.length()-1);
 		int iosUV=Integer.valueOf(iosUvJsonStr.split(",")[1].replace(".0", "").trim());
+		BhuCache.getInstance().setIosUv(getNextDay(), "iosUv", String.valueOf(iosUV));
 		//获取手机android端uv
 		String androidUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "os = 'android'",2);
 		JSONObject androidUvJson=JSONObject.fromObject(androidUv);
@@ -337,6 +340,7 @@ public class FileHandling {
 		androidUvJsonStr=androidUvJsonStr.substring(1);
 		androidUvJsonStr=androidUvJsonStr.substring(0, androidUvJsonStr.length()-1);
 		int androidUV=Integer.valueOf(androidUvJsonStr.split(",")[1].replace(".0", "").trim());
+		BhuCache.getInstance().setAndroidUv(getNextDay(), "androidUv", String.valueOf(androidUV));
 		//获取手机端点击数
 		String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "",2);
 		JSONObject mobileClickJson=JSONObject.fromObject(mobileClick);
@@ -344,6 +348,7 @@ public class FileHandling {
 		mobileClickJsonStr=mobileClickJsonStr.substring(1);
 		mobileClickJsonStr=mobileClickJsonStr.substring(0, mobileClickJsonStr.length()-1);
 		int mobileClickNum=Integer.valueOf(mobileClickJsonStr.split(",")[0].replace(".0", "").trim());
+		BhuCache.getInstance().setMobileClickNum(getNextDay(), "mobileClickNum", String.valueOf(mobileClickNum));
 		//获取手机ios端点击数
 		String iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "os = 'ios'",2);
 		JSONObject iosClickJson=JSONObject.fromObject(iosClick);
@@ -351,6 +356,7 @@ public class FileHandling {
 		iosClickJsonStr=iosClickJsonStr.substring(1);
 		iosClickJsonStr=iosClickJsonStr.substring(0, iosClickJsonStr.length()-1);
 		int iosClickNum=Integer.valueOf(iosClickJsonStr.split(",")[0].replace(".0", "").trim());
+		BhuCache.getInstance().setIosClickNum(getNextDay(), "iosClickNum", String.valueOf(iosClickNum));
 		//获取手机android端点击数
 		String androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "os = 'android'",2);
 		JSONObject androidClickJson=JSONObject.fromObject(androidClick);
@@ -358,6 +364,7 @@ public class FileHandling {
 		androidClickJsonStr=androidClickJsonStr.substring(1);
 		androidClickJsonStr=androidClickJsonStr.substring(0, androidClickJsonStr.length()-1);
 		int androidClickNum=Integer.valueOf(androidClickJsonStr.split(",")[0].replace(".0", "").trim());
+		BhuCache.getInstance().setAndroidClickNum(getNextDay(), "androidClickNum", String.valueOf(androidClickNum));
 	}
 	
 	/**

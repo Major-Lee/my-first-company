@@ -310,60 +310,117 @@ public class UMLogicImpl implements IUMLogic{
 		int totalMbOrderAmount=0;
 		for(int i=0;i<daysList.size();i++){
 			//获取每日PC端uv数据
-			String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", daysList.get(i), daysList.get(i), "", "",1);
-			JSONObject pcUvJson=JSONObject.fromObject(pcUv);
-			String pcUvJsonStr=pcUvJson.getString("values");
-			pcUvJsonStr=pcUvJsonStr.substring(1);
-			pcUvJsonStr=pcUvJsonStr.substring(0, pcUvJsonStr.length()-1);
-			int pcUV=Integer.valueOf(pcUvJsonStr.split(",")[1].replace(".0", "").trim());
-			
+			String pcUv= BhuCache.getInstance().getPCUV(daysList.get(i), "pcUv");
+			int pcUV=0;
+			if(StringUtils.isNotBlank(pcUv)){
+				pcUV=Integer.valueOf(pcUv);
+			}else{
+				pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", daysList.get(i), daysList.get(i), "", "",1);
+				JSONObject pcUvJson=JSONObject.fromObject(pcUv);
+				String pcUvJsonStr=pcUvJson.getString("values");
+				pcUvJsonStr=pcUvJsonStr.substring(1);
+				pcUvJsonStr=pcUvJsonStr.substring(0, pcUvJsonStr.length()-1);
+				pcUV=Integer.valueOf(pcUvJsonStr.split(",")[1].replace(".0", "").trim());
+				BhuCache.getInstance().setPCUV(daysList.get(i), "pcUv", String.valueOf(pcUV));
+			}
 			//获取PC端点击事件发生数
-			String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", daysList.get(i), daysList.get(i), "", "",1);
-			JSONObject pcClickJson=JSONObject.fromObject(pcClick);
-			String pcClickJsonStr=pcClickJson.getString("values");
-			pcClickJsonStr=pcClickJsonStr.substring(1);
-			pcClickJsonStr=pcClickJsonStr.substring(0, pcClickJsonStr.length()-1);
-			int pcClickNum=Integer.valueOf(pcClickJsonStr.split(",")[0].replace(".0", "").trim());
+			String pcClick=BhuCache.getInstance().getPcClickNum(daysList.get(i), "pcClickNum");
+			int pcClickNum=0;
+			if(StringUtils.isNotBlank(pcClick)){
+				pcClickNum=Integer.valueOf(pcClick);
+			}else{
+				pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", daysList.get(i), daysList.get(i), "", "",1);
+				JSONObject pcClickJson=JSONObject.fromObject(pcClick);
+				String pcClickJsonStr=pcClickJson.getString("values");
+				pcClickJsonStr=pcClickJsonStr.substring(1);
+				pcClickJsonStr=pcClickJsonStr.substring(0, pcClickJsonStr.length()-1);
+				pcClickNum=Integer.valueOf(pcClickJsonStr.split(",")[0].replace(".0", "").trim());
+				BhuCache.getInstance().setPcClickNum(daysList.get(i), "pcClickNum", String.valueOf(pcClickNum));
+			}
 			//获取手机端uv
-			String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", daysList.get(i), daysList.get(i), "", "",2);
-			JSONObject mobileUvJson=JSONObject.fromObject(mobileUv);
-			String mobileUvJsonStr=mobileUvJson.getString("values");
-			mobileUvJsonStr=mobileUvJsonStr.substring(1);
-			mobileUvJsonStr=mobileUvJsonStr.substring(0, mobileUvJsonStr.length()-1);
-			int mobileUV=Integer.valueOf(mobileUvJsonStr.split(",")[1].replace(".0", "").trim());
+			String mobileUv= BhuCache.getInstance().getMobileUv(daysList.get(i), "mobileUv");
+			int mobileUV=0;
+			if(StringUtils.isNotBlank(mobileUv)){
+				mobileUV=Integer.valueOf(mobileUv);
+			}else{
+				mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", daysList.get(i), daysList.get(i), "", "",2);
+				JSONObject mobileUvJson=JSONObject.fromObject(mobileUv);
+				String mobileUvJsonStr=mobileUvJson.getString("values");
+				mobileUvJsonStr=mobileUvJsonStr.substring(1);
+				mobileUvJsonStr=mobileUvJsonStr.substring(0, mobileUvJsonStr.length()-1);
+				mobileUV=Integer.valueOf(mobileUvJsonStr.split(",")[1].replace(".0", "").trim());
+				BhuCache.getInstance().setMobileUv(daysList.get(i), "mobileUv", String.valueOf(mobileUV));
+			}
 			//获取手机ios端uv
-			String iosUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", daysList.get(i), daysList.get(i), "", "os = 'ios'",2);
-			JSONObject iosUvJson=JSONObject.fromObject(iosUv);
-			String iosUvJsonStr=iosUvJson.getString("values");
-			iosUvJsonStr=iosUvJsonStr.substring(1);
-			iosUvJsonStr=iosUvJsonStr.substring(0, iosUvJsonStr.length()-1);
-			int iosUV=Integer.valueOf(iosUvJsonStr.split(",")[1].replace(".0", "").trim());
+			String iosUv= BhuCache.getInstance().getIosUv(daysList.get(i), "iosUv");
+			int iosUV=0;
+			if(StringUtils.isNotBlank(iosUv)){
+				iosUV=Integer.valueOf(iosUv);
+			}else{
+				iosUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", daysList.get(i), daysList.get(i), "", "os = 'ios'",2);
+				JSONObject iosUvJson=JSONObject.fromObject(iosUv);
+				String iosUvJsonStr=iosUvJson.getString("values");
+				iosUvJsonStr=iosUvJsonStr.substring(1);
+				iosUvJsonStr=iosUvJsonStr.substring(0, iosUvJsonStr.length()-1);
+				iosUV=Integer.valueOf(iosUvJsonStr.split(",")[1].replace(".0", "").trim());
+				BhuCache.getInstance().setIosUv(daysList.get(i), "iosUv", String.valueOf(iosUV));
+			}
 			//获取手机android端uv
-			String androidUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", daysList.get(i), daysList.get(i), "", "os = 'android'",2);
-			JSONObject androidUvJson=JSONObject.fromObject(androidUv);
-			String androidUvJsonStr=androidUvJson.getString("values");
-			androidUvJsonStr=androidUvJsonStr.substring(1);
-			androidUvJsonStr=androidUvJsonStr.substring(0, androidUvJsonStr.length()-1);
-			int androidUV=Integer.valueOf(androidUvJsonStr.split(",")[1].replace(".0", "").trim());
+			String androidUv= BhuCache.getInstance().getAndroidUv(daysList.get(i), "androidUv");
+			int androidUV=0;
+			if(StringUtils.isNotBlank(androidUv)){
+				androidUV=Integer.valueOf(androidUv);
+			}else{
+				androidUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", daysList.get(i), daysList.get(i), "", "os = 'android'",2);
+				JSONObject androidUvJson=JSONObject.fromObject(androidUv);
+				String androidUvJsonStr=androidUvJson.getString("values");
+				androidUvJsonStr=androidUvJsonStr.substring(1);
+				androidUvJsonStr=androidUvJsonStr.substring(0, androidUvJsonStr.length()-1);
+				androidUV=Integer.valueOf(androidUvJsonStr.split(",")[1].replace(".0", "").trim());
+				BhuCache.getInstance().setAndroidUv(daysList.get(i), "androidUv", String.valueOf(androidUV));
+			}
 			//获取手机端点击数
-			String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", daysList.get(i), daysList.get(i), "", "",2);
-			JSONObject mobileClickJson=JSONObject.fromObject(mobileClick);
-			String mobileClickJsonStr=mobileClickJson.getString("values");
-			mobileClickJsonStr=mobileClickJsonStr.substring(1);
-			mobileClickJsonStr=mobileClickJsonStr.substring(0, mobileClickJsonStr.length()-1);
-			int mobileClickNum=Integer.valueOf(mobileClickJsonStr.split(",")[0].replace(".0", "").trim());
+			String mobileClick=BhuCache.getInstance().getMobileClickNum(daysList.get(i), "mobileClickNum");
+			int mobileClickNum=0;
+			if(StringUtils.isNotBlank(mobileClick)){
+				mobileClickNum=Integer.valueOf(mobileClick);
+			}else{
+				mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", daysList.get(i), daysList.get(i), "", "",2);
+				JSONObject mobileClickJson=JSONObject.fromObject(mobileClick);
+				String mobileClickJsonStr=mobileClickJson.getString("values");
+				mobileClickJsonStr=mobileClickJsonStr.substring(1);
+				mobileClickJsonStr=mobileClickJsonStr.substring(0, mobileClickJsonStr.length()-1);
+				mobileClickNum=Integer.valueOf(mobileClickJsonStr.split(",")[0].replace(".0", "").trim());
+				BhuCache.getInstance().setMobileClickNum(daysList.get(i), "mobileClickNum", String.valueOf(mobileClickNum));
+			}
 			//获取手机ios端点击数
-			String iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", daysList.get(i), daysList.get(i), "", "os = 'ios'",2);
-			JSONObject iosClickJson=JSONObject.fromObject(iosClick);
-			String iosClickJsonStr=iosClickJson.getString("values");
-			iosClickJsonStr=iosClickJsonStr.substring(1);
-			iosClickJsonStr=iosClickJsonStr.substring(0, iosClickJsonStr.length()-1);
-			int iosClickNum=Integer.valueOf(iosClickJsonStr.split(",")[0].replace(".0", "").trim());
+			String iosClick=BhuCache.getInstance().getIosClickNum(daysList.get(i), "iosClickNum");
+			int iosClickNum=0;
+			if(StringUtils.isNotBlank(iosClick)){
+				iosClickNum=Integer.valueOf(iosClick);
+			}else{
+				iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", daysList.get(i), daysList.get(i), "", "os = 'ios'",2);
+				JSONObject iosClickJson=JSONObject.fromObject(iosClick);
+				String iosClickJsonStr=iosClickJson.getString("values");
+				iosClickJsonStr=iosClickJsonStr.substring(1);
+				iosClickJsonStr=iosClickJsonStr.substring(0, iosClickJsonStr.length()-1);
+				iosClickNum=Integer.valueOf(iosClickJsonStr.split(",")[0].replace(".0", "").trim());
+				BhuCache.getInstance().setIosClickNum(daysList.get(i), "iosClickNum", String.valueOf(iosClickNum));
+			}
+			
 			//获取手机android端点击数
 			int androidClickNum=0;
-			String androidClick=BhuCache.getInstance().getStOrder(daysList.get(i), "androidClickNum");
+			String androidClick=BhuCache.getInstance().getAndroidClickNum(daysList.get(i), "androidClickNum");
 			if(StringUtils.isNotBlank(androidClick)){
 				androidClickNum=Integer.valueOf(androidClick);
+			}else{
+				androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", daysList.get(i), daysList.get(i), "", "os = 'android'",2);
+				JSONObject androidClickJson=JSONObject.fromObject(androidClick);
+				String androidClickJsonStr=androidClickJson.getString("values");
+				androidClickJsonStr=androidClickJsonStr.substring(1);
+				androidClickJsonStr=androidClickJsonStr.substring(0, androidClickJsonStr.length()-1);
+				androidClickNum=Integer.valueOf(androidClickJsonStr.split(",")[0].replace(".0", "").trim());
+				BhuCache.getInstance().setAndroidClickNum(daysList.get(i), "androidClickNum", String.valueOf(androidClickNum));
 			}
 			
 			LinkedHashMap<String,Object> singleMap=new LinkedHashMap<String,Object>();
