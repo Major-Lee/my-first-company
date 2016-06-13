@@ -70,6 +70,7 @@ public interface BusinessIndexDefine {
 			/**** 运营信息 operate ****/
 			O_TEMPLATE("o_template",null),//运营模板编号
 			O_GRAYLEVEL("o_graylevel", null),//设备的灰度定义
+			O_SCALELEVEL("o_scalelevel", null),//设备规模级别
 			O_BATCH("o_batch", null),//设备的导入批次
 			O_OPERATE("o_operate", null),//是否是可运营设备
 			
