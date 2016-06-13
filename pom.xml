@@ -72,6 +72,7 @@
         <module>msip-bhu-api/msip_bhu_social_rest</module>
         <module>msip-bhu-payment/msip_bhu_heepay</module>
         <module>msip-bhu-payment/msip_bhu_alipay</module>
+		<module>msip-bhu-payment/msip_bhu_midas</module>
         <module>msip-bhu-payment/msip_bhu_business_ds_payment</module>
         <module>msip-bhu-payment/msip_bhu_payment_rest</module>
         <module>msip-bhu-unit/msip_bhu_unit_restful_payment</module>
@@ -189,6 +190,11 @@
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_alipay</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+			<dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_midas</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
