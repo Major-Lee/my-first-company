@@ -43,4 +43,5 @@
     <import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-userdevice-reference.xml"/>
     <import resource="classpath*:com/bhu/vas/api/rpc/devicegroup/spring/dubbo-bhu-devicegroup-reference.xml"/>
     <import resource="classpath*:com/bhu/vas/api/rpc/vap/spring/dubbo-bhu-vap-reference.xml"/>
+    <import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-publicAccount-reference.xml"/>
 </beans>

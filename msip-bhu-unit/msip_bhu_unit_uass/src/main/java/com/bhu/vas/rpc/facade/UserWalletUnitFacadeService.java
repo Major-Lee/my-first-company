@@ -543,10 +543,10 @@ public class UserWalletUnitFacadeService {
         date = calendar.getTime();  
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
         String time = "%"+sdf.format(date); 
+        time="%2016-06-02";
 		try{
 			RankingListVTO rankingListVTO=new RankingListVTO();
 			List<RankSingle> rankList=new ArrayList<RankSingle>();
-			
 			List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList(time);
 			if(paymentStatistics != null){
 				rankingListVTO.setRankNum(0);

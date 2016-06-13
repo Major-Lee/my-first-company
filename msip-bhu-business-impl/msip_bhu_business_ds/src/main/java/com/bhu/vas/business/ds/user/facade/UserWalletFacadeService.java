@@ -18,6 +18,7 @@ import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.dto.procedure.WalletInOrOutProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
+import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
@@ -43,7 +44,6 @@ import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
-import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -162,8 +162,9 @@ public class UserWalletFacadeService{
 	public static final int SnkAuthenticate_Successfully = 0;
 	public static final int SnkAuthenticate_Successfully_Threshold_NeedCharging = 1;
 	public static final int SnkAuthenticate_Threshold_VcurrencyNotsufficient = 2;
+	
 	/**
-	 * 
+	 * 共享网络 短信认证 虚拟币扣款 
 	 * @param uid
 	 * @param orderid
 	 * @param vcurrency_cost
@@ -172,27 +173,33 @@ public class UserWalletFacadeService{
 	 * @return
 	 * 	
 	 */
-	public int vcurrencyFromUserWalletForSnkAuthenticate(int uid,String orderid,long vcurrency_cost,String desc, IWalletVCurrencySpendCallback callback){
+	public SnkAuthenticateResultType vcurrencyFromUserWalletForSnkAuthenticate(int uid,String orderid,long vcurrency_cost,String desc, IWalletVCurrencySpendCallback callback){
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getById(uid);
 		if(uwallet == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"用户钱包"});
 		}
-		double total_vcurrency = ArithHelper.add(uwallet.getVcurrency(), uwallet.getVcurrency_bing());
+		long total_vcurrency = (uwallet.getVcurrency()+uwallet.getVcurrency_bing());
 		if(callback.beforeCheck(uid, vcurrency_cost,total_vcurrency)){
 			int executeRet = this.vcurrencyFromUserWallet(uid, orderid, UWalletTransMode.VCurrencyPayment, vcurrency_cost, desc);
 			if(executeRet == 0){
-				callback.after(uid);
+				callback.after(uid,total_vcurrency-vcurrency_cost);
 				//扣款后的数值是否 <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging
-				if(total_vcurrency <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
-					return SnkAuthenticate_Successfully_Threshold_NeedCharging;
-				}else
-					return SnkAuthenticate_Successfully;
+				if(total_vcurrency < BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient){
+					return SnkAuthenticateResultType.FailedThresholdVcurrencyNotsufficient;
+				}else if(total_vcurrency <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
+					return SnkAuthenticateResultType.SuccessButThresholdNeedCharging;
+				}else{
+					return SnkAuthenticateResultType.Success;
+				}
+					//return SnkAuthenticate_Successfully;
 			}else{
-				return SnkAuthenticate_Failed;
+				return SnkAuthenticateResultType.Failed;
+				//return SnkAuthenticate_Failed;
 			}
 		}else{//预检查失败
-			return SnkAuthenticate_Threshold_VcurrencyNotsufficient;
+			//return SnkAuthenticate_Threshold_VcurrencyNotsufficient;
+			return SnkAuthenticateResultType.FailedThresholdVcurrencyNotsufficient;
 		}
 		
 	}

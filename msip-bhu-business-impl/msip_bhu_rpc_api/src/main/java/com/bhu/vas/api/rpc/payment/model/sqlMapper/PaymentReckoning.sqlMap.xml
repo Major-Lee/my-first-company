@@ -27,6 +27,7 @@
 		<result property="balance" column="balance" />
 		<result property="tradeday" column="tradeday" />
 		<result property="remark" column="remark" />
+		<result property="channel_type" column="channel_type" />
 		
 		
 	</resultMap>
@@ -59,7 +60,8 @@
 			tax,
 			balance,
 			tradeday,
-			remark			
+			remark,
+			channel_type			
 	    ]]>
 	</sql>
 	<sql id="modelWithoutPKColumns">
@@ -84,7 +86,8 @@
 			tax,
 			balance,
 			tradeday,
-			remark
+			remark,
+			channel_type
 	    ]]>
 	</sql>
 
@@ -110,7 +113,8 @@
 		#{tax},
 		#{balance},
 		#{tradeday},
-		#{remark}
+		#{remark},
+		#{channel_type}
 	</sql>
 
 	<sql id="modelUpdateValues">
@@ -119,7 +123,8 @@
 		pay_status = #{pay_status},
 		notify_status = #{notify_status},
 		notify_at = #{notify_at},
-		paid_at = #{paid_at}
+		paid_at = #{paid_at},
+		channel_type = #{channel_type}
 	</sql>
 	
 	<sql id="model_CRITERIA_SQL_GenCondition">

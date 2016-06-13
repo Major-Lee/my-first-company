@@ -4,10 +4,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BusinessEnumType {
+	/**
+	 * 申请验证码动作类别定义
+	 * @author Edmond Lee
+	 *	
+	public static final int SnkAuthenticate_Failed = -1;
+	public static final int SnkAuthenticate_Successfully = 0;
+	public static final int SnkAuthenticate_Successfully_Threshold_NeedCharging = 1;
+	public static final int SnkAuthenticate_Threshold_VcurrencyNotsufficient = 2;
+	 */
+	public enum SnkAuthenticateResultType{
+		Failed,
+		Success,
+		SuccessButThresholdNeedCharging,
+		FailedThresholdVcurrencyNotsufficient,
+	}
 	
 	/**
 	 * 申请验证码动作类别定义
-	 * @author lawliet
+	 * @author Edmond Lee
 	 *	private static final String FetchCaptchaCode_RegisterOrLogin_Act = "R";
 		private static final String FetchCaptchaCode_PwdReset_Act = "P";
 		private static final String FetchCaptchaCode_SnkAuth_Act = "S";
