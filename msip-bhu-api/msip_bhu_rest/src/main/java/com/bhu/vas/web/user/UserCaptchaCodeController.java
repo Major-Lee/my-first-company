@@ -40,38 +40,17 @@ public class UserCaptchaCodeController extends BaseController{
 			@RequestParam(required = true) String acc,
 			@RequestParam(required = false,defaultValue="R") String act
 			) {
-		/*int charlen = acc.length();
-		if(charlen < 6 || charlen > 16){
-			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_LENGTH,new String[]{"6","16"});//renderHtml(response, html, headers)
-		}
-		
-		if(!StringHelper.isValidMobilenoCharacter(mobileno)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_FORMAT);//renderHtml(response, html, headers)
-		}*/
 		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
+		
 		RpcResponseDTO<UserCaptchaCodeDTO> rpcResult = userCaptchaCodeRpcService.fetchCaptchaCode(countrycode, acc,act);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
-		
-		/*try{
-			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-			CaptchaCode code = captchaCodeService.doGenerateCaptchaCode(accWithCountryCode);
-			deliverMessageService.sendUserCaptchaCodeFetchActionMessage(DeliverMessageType.AC.getPrefix(), countrycode, acc, code.getCaptcha());//sendUserSignedonActionMessage(DeliverMessageType.AC.getPrefix(), user.getId(), remoteIp, from_device);
-			SpringMVCHelper.renderJson(response, Response.SUCCESS);
-		}catch(BusinessI18nCodeException ex){
-			System.out.println("cc:"+countrycode +" acc:"+acc);
-			ex.printStackTrace(System.out);
-			SpringMVCHelper.renderJson(response, ResponseError.embed(ex.getErrorCode()));
-		}catch(Exception ex){
-			ex.printStackTrace(System.out);
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
-		}*/
 	}
 }

@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.facade;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -26,11 +27,11 @@ import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.api.rpc.user.model.UserPublishAccount;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RankSingle;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
@@ -535,21 +536,34 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	public RpcResponseDTO<RankingListVTO> rankingList(int uid) {
+		Date date = new Date();  
+        Calendar calendar = Calendar.getInstance();  
+        calendar.setTime(date);  
+        calendar.add(Calendar.DAY_OF_MONTH, -1);  
+        date = calendar.getTime();  
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+        String time = "%"+sdf.format(date); 
 		try{
 			RankingListVTO rankingListVTO=new RankingListVTO();
-			List<User> users=new ArrayList<User>();
-			List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList();
+			List<RankSingle> rankList=new ArrayList<RankSingle>();
+			
+			List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList(time);
 			if(paymentStatistics != null){
 				rankingListVTO.setRankNum(0);
 				rankingListVTO.setUserIncome("0");
 				for(int i=0;i<paymentStatistics.size();i++){
+					RankSingle rankSingle=new RankSingle();
 					DeviceGroupPaymentStatistics deviceGroupPaymentStatistics=paymentStatistics.get(i);
 					User user=userService.getById(deviceGroupPaymentStatistics.getUid());
+					rankSingle.setRankNum(i+1);
+					rankSingle.setUserIncome(deviceGroupPaymentStatistics.getTotal_incoming_amount());
+					rankSingle.setUserName(user.getNick());
+					rankSingle.setAvatar(user.getAvatar());
 					if(i+1<=100){
 						if(uid==deviceGroupPaymentStatistics.getUid()){
 							rankingListVTO.setRankNum(i+1);
 						}
-						users.add(user);
+						rankList.add(rankSingle);
 					}else{
 						if(uid==deviceGroupPaymentStatistics.getUid()){
 							rankingListVTO.setUserIncome(deviceGroupPaymentStatistics.getTotal_incoming_amount());
@@ -558,7 +572,7 @@ public class UserWalletUnitFacadeService {
 				}
 				
 			}
-			rankingListVTO.setRankingList(users);
+			rankingListVTO.setRankingList(rankList);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rankingListVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

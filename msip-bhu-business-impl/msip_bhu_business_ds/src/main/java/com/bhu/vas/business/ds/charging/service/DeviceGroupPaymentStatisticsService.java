@@ -21,7 +21,7 @@ public class DeviceGroupPaymentStatisticsService extends AbstractCoreService<Str
 		super.setEntityDao(deviceGroupPaymentStatisticsDao);
 	}
 	
-	public List<DeviceGroupPaymentStatistics> getRankingList(){
-		return super.entityDao.rankingList();
+	public List<DeviceGroupPaymentStatistics> getRankingList(String time){
+		return super.entityDao.rankingList(time);
 	}
 }
