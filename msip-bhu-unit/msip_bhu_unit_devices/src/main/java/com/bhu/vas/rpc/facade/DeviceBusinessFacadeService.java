@@ -55,6 +55,7 @@ import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTaskCompleted;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocationSerialTaskService;
@@ -366,32 +367,40 @@ public class DeviceBusinessFacadeService {
 			    	User user = userService.getById(uid);*/
 					WifiDeviceDocument wifiDeviceDoc = wifiDeviceDataSearchService.searchById(mac);
 					if(wifiDeviceDoc != null){
-						String exist_uid = wifiDeviceDoc.getU_id();
-						if(StringUtils.isNotEmpty(exist_uid)){
-			    			keynum = wifiDeviceDoc.getU_mno();
-			    			industry = wifiDeviceDoc.getD_industry();
-			    			keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
+						if(dto.isForceBind()){
+							User user = userFacadeService.getUserByMobileno(keynum);
+							if(user != null){
+								UserWifiDevice userWifiDevice = userWifiDeviceFacadeService.forceAddUserWifiDevice(mac, 
+										user.getId(), industry, false);
+						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, 
+						        		userWifiDevice.getDevice_name(), industry);
+							}
 						}else{
-							if(StringUtils.isNotEmpty(keynum)){
-								User user = userFacadeService.getUserByMobileno(keynum);
-								if(user != null){
-									String bindDeviceName = deviceFacadeService.getBindDeviceName(mac);
+							String exist_uid = wifiDeviceDoc.getU_id();
+							if(StringUtils.isNotEmpty(exist_uid)){
+				    			keynum = wifiDeviceDoc.getU_mno();
+				    			industry = wifiDeviceDoc.getD_industry();
+				    			keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
+							}else{
+								if(StringUtils.isNotEmpty(keynum)){
+									User user = userFacadeService.getUserByMobileno(keynum);
+									if(user != null){
+										UserWifiDevice userWifiDevice = userWifiDeviceFacadeService.forceAddUserWifiDevice(mac, 
+												user.getId(), industry, false);
+	/*									String bindDeviceName = deviceFacadeService.getBindDeviceName(mac);
 									
-/*						    		UserDevice userDevice = new UserDevice();
-							        userDevice.setId(new UserDevicePK(mac, user.getId()));
-							        userDevice.setDevice_name(bindDeviceName);
-							        userDevice.setCreated_at(new Date());
-							        userDeviceService.insert(userDevice);*/
-									userWifiDeviceFacadeService.insertUserWifiDevice(mac, user.getId(), bindDeviceName);
-							        
-						    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-						    		if(wifiDevice != null){
-								        wifiDevice.setIndustry(industry);
-								        wifiDeviceService.update(wifiDevice);
-						    		}
-						    		chargingFacadeService.wifiDeviceBindedNotify(mac, user.getId());
-							        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, bindDeviceName, industry);
-									keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
+										userWifiDeviceFacadeService.insertUserWifiDevice(mac, user.getId(), bindDeviceName);
+								        
+							    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+							    		if(wifiDevice != null){
+									        wifiDevice.setIndustry(industry);
+									        wifiDeviceService.update(wifiDevice);
+							    		}
+							    		chargingFacadeService.wifiDeviceBindedNotify(mac, user.getId());*/
+								        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, 
+								        		userWifiDevice.getDevice_name(), industry);
+										keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
+									}
 								}
 							}
 						}
@@ -402,7 +411,7 @@ public class DeviceBusinessFacadeService {
 			ex.printStackTrace();
 			keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_FAILED;
 		}finally{
-			if(dto != null && StringUtils.isNotEmpty(keynum)){
+			if(dto != null && !dto.isForceBind() && StringUtils.isNotEmpty(keynum)){
 				dto.setKeynum(keynum);
 				dto.setKeystatus(keystatus);
 				dto.setIndustry(industry);
