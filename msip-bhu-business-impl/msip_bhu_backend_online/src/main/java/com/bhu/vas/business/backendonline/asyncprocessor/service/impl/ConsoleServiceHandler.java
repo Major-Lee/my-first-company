@@ -155,17 +155,26 @@ public class ConsoleServiceHandler {
 		try {
 			FileHelper.makeDirectory(export_filepath);
 			File file = new File(export_filepath);
-			fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")); // 指定编码格式，以免读取时中文字符异常
 			
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(0xEF);
+			fos.write(0xBB);
+			fos.write(0xBF);
+			fos.flush();
+			
+			fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8")); // 指定编码格式，以免读取时中文字符异常
 			//输出文件
 			//System.out.println(ret);
 			//输出列
 			int columns_length = columns.length;
 			for(int i = 0;i<columns_length;i++){
 				if((i+1) == columns_length){
-					fw.append(formatStr(columns[i], false));
+					//fw.append(formatStr(columns[i], false));
+					fw.append(columns[i]);
+					fw.append(StringHelper.COMMA_STRING_GAP);
 				}else{
-					fw.append(formatStr(columns[i]));
+					//fw.append(formatStr(columns[i]));
+					fw.append(columns[i]);
 				}
 			}
 //			for(String columns : SearchResultExportColumns){
