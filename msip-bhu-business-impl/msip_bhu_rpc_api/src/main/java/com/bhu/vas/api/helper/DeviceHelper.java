@@ -903,6 +903,18 @@ public class DeviceHelper {
 	
 	
 	
+	//TODO
+	//wlan0 wlan10 ,取消限速则是rate值为0
+	public static final String DeviceSetting_MasterWifi_Limit =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<net>"+
+					"<interface>"
+					+ "<ITEM name=\"wlan0\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/>"
+					+ "<ITEM name=\"wlan10\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/>"
+					+ "</interface>"
+			    +"</net>"+
+			"</dev>";
+	
 	
 	
 	

@@ -358,6 +358,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 				return null;
 			}
    		});
+   		//都放行
    		System.out.println(ret);
    		switch(ret){
    			case Success:
@@ -375,7 +376,6 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    			case Failed:
    				//扣款失败，原因不明，依然通知uportal可以放行
    				break;
-   				
    		}
    		
    		
