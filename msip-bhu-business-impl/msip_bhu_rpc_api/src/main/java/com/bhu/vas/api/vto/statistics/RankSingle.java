@@ -1,6 +1,7 @@
 package com.bhu.vas.api.vto.statistics;
 
-public class RankSingle {
+@SuppressWarnings("serial")
+public class RankSingle implements java.io.Serializable{
 	private String userName;
 	//用户昨日收益
 	private String userIncome;

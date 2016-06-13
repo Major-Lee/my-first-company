@@ -59,7 +59,8 @@ public class UserPublishAccountController extends BaseController{
 				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			//SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ex.getMessage());
 		}
 	}
 	
