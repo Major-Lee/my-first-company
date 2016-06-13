@@ -16,6 +16,8 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
@@ -39,9 +41,12 @@ public class UserWifiDeviceFacadeService {
 	
 	@Resource
 	private UserService userService;
+    
+	@Resource
+	private DeviceFacadeService deviceFacadeService;
 	
-    @Resource
-    private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
+	@Resource
+	private ChargingFacadeService chargingFacadeService;
     
 	/**
 	 * 新增用户设备关系数据
@@ -68,6 +73,43 @@ public class UserWifiDeviceFacadeService {
 		entity.setDevice_name(device_name);
 		entity.setCreated_at(new Date());
 		return userWifiDeviceService.insert(entity);
+	}
+	
+	/**
+	 * 强制绑定用户设备
+	 * @param mac
+	 * @param uid
+	 * @param industry
+	 * @param useOldDeviceName 是否使用原来的设备昵称
+	 * @return
+	 */
+	public UserWifiDevice forceAddUserWifiDevice(String mac, Integer uid, String industry, boolean useOldDeviceName){
+		String bindDeviceName = null;
+		
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+		if(userWifiDevice == null){
+			bindDeviceName = deviceFacadeService.getBindDeviceName(mac);
+			userWifiDevice = insertUserWifiDevice(mac, uid, bindDeviceName);
+		}else{
+			if(useOldDeviceName){
+				bindDeviceName = userWifiDevice.getDevice_name();
+			}else{
+				bindDeviceName = deviceFacadeService.getBindDeviceName(mac);
+			}
+			userWifiDeviceService.deleteById(mac);
+			deviceFacadeService.removeMobilePresent(userWifiDevice.getUid(), mac);
+			
+			userWifiDevice = insertUserWifiDevice(mac, uid, bindDeviceName);
+			deviceFacadeService.gainDeviceMobilePresentString(uid, mac);
+		}
+
+		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+		if(wifiDevice != null){
+	        wifiDevice.setIndustry(industry);
+	        wifiDeviceService.update(wifiDevice);
+		}
+		chargingFacadeService.wifiDeviceBindedNotify(mac, uid);
+		return userWifiDevice;
 	}
 	
 	/**
