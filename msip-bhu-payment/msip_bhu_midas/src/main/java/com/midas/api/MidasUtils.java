@@ -8,19 +8,16 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.http.client.utils.DateUtils;
-
-import com.midas.commons.Config;
-import com.midas.model.MidasResponse;
 import com.midas.util.OpensnsException;
 import com.midas.util.SnsSigCheck;
+//import org.apache.http.client.utils.DateUtils;
+import com.midas.commons.Config;
 
 /* *
  *类名：MidasUtils
