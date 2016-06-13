@@ -687,7 +687,8 @@ public class DeviceRestBusinessFacadeService {
 	}
 	
 	public String[] generateExportFileInfo(int uid){
-		String exportFileName = String.valueOf(uid).concat(StringHelper.MINUS_STRING_GAP).concat(DateTimeHelper.getDateTime());
+		String exportFileName = String.valueOf(uid).concat(StringHelper.MINUS_STRING_GAP)
+				.concat(DateTimeHelper.getDateTime()).concat(".csv");
 		String exportFilePath = BusinessRuntimeConfiguration.Search_Result_Export_Dir.concat(String.valueOf(uid))
 				.concat(File.separator).concat(exportFileName);
 		String exportFileUrl = BusinessRuntimeConfiguration.Search_Result_Export_Uri.concat(String.valueOf(uid))
