@@ -9,8 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
-import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OScaleLevelEnum;
 import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
@@ -202,8 +202,11 @@ public class WifiDeviceDocumentHelper {
 		}
 		doc.setD_snk_turnstate(d_snk_turnstate);
 		
-		
+		doc.setO_scalelevel(OScaleLevelEnum.NORMAL.getType());
 		if(wifiDeviceShareConfig != null){
+			if(wifiDeviceShareConfig.isEnterpriselevel()){
+				doc.setO_scalelevel(OScaleLevelEnum.ENTERPRISE.getType());
+			}
 			doc.setD_snk_allowturnoff(wifiDeviceShareConfig.isCanbe_turnoff() ? "1" : "0");
 		}else{
 			doc.setD_snk_allowturnoff("1");

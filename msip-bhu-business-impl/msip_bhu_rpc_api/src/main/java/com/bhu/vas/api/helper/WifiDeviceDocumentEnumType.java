@@ -214,4 +214,45 @@ public class WifiDeviceDocumentEnumType {
 			return allOperationSnkturnStates.get(type);
 		}
 	}
+	
+	public enum OScaleLevelEnum{
+		NORMAL("1","正常级别"),
+		ENTERPRISE("2","企业级别");
+		
+		String type;
+		String name;
+		
+		OScaleLevelEnum(String type, String name){
+			this.type = type;
+			this.name = name;
+		}
+		static Map<String, OScaleLevelEnum> allOperationOScaleLevels;
+		
+		static {
+			allOperationOScaleLevels = new HashMap<String,OScaleLevelEnum>();
+			OScaleLevelEnum[] types = values();
+			for (OScaleLevelEnum type : types)
+				allOperationOScaleLevels.put(type.getType(), type);
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public static OScaleLevelEnum getOScaleLevelEnumFromType(String type) {
+			return allOperationOScaleLevels.get(type);
+		}
+	}
 }

@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.bhu.vas.api.rpc.user.model.User;
 
-public class RankingListVTO {
+@SuppressWarnings("serial")
+public class RankingListVTO implements java.io.Serializable{
 	//收益前一百用户排名
 	private List<User> rankingList;
 	//用户个人排名
