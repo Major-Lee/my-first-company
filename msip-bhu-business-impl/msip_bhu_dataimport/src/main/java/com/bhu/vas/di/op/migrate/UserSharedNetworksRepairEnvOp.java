@@ -1,5 +1,6 @@
 package com.bhu.vas.di.op.migrate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -50,9 +51,18 @@ public class UserSharedNetworksRepairEnvOp {
 		DeviceCMDGenFacadeService deviceCMDGenFacadeService = (DeviceCMDGenFacadeService)ctx.getBean("deviceCMDGenFacadeService");
 		SharedNetworksFacadeService sharedNetworksFacadeService = (SharedNetworksFacadeService)ctx.getBean("sharedNetworksFacadeService");
 		IDaemonRpcService daemonRpcService =  (IDaemonRpcService)ctx.getBean("daemonRpcService");
-		
+		//设备mac，84:82:f4:32:3b:dc   uid 10
+		//106493  84:82:F4:1A:96:11
+		/*List<Integer> users = new ArrayList<Integer>();
+		users.add(10);
+		users.add(106493);
+		//.andColumnIn("id", users)
+		//.andColumnIn("id", macs)
+		List<String> macs = new ArrayList<String>();
+		macs.add("84:82:f4:32:3b:dc");
+		macs.add("84:82:f4:1a:96:11");*/
 		ModelCriteria mc_udsnk = new ModelCriteria();
-		mc_udsnk.createCriteria().andColumnEqualTo("id", 3).andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
+		mc_udsnk.createCriteria().andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
 		mc_udsnk.setOrderByClause("id desc");
 		mc_udsnk.setPageNumber(1);
 		mc_udsnk.setPageSize(200);
@@ -79,10 +89,9 @@ public class UserSharedNetworksRepairEnvOp {
 				sharedNetworksFacadeService.getUserDevicesSharedNetworksService().update(snks);
 			}
 		}
-		
 		ModelCriteria mc_wdsnk = new ModelCriteria();
 		//.andColumnEqualTo("sharednetwork_type", SharedNetworkType.SafeSecure.getKey())
-		mc_wdsnk.createCriteria().andColumnEqualTo("id", "84:82:f4:19:01:0c").andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
+		mc_wdsnk.createCriteria().andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
 		mc_wdsnk.setOrderByClause("id desc");
 		mc_wdsnk.setPageNumber(1);
 		mc_wdsnk.setPageSize(200);

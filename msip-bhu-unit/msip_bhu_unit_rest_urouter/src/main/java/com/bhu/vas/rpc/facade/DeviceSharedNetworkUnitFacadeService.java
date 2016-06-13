@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -274,6 +275,29 @@ public class DeviceSharedNetworkUnitFacadeService {
 		        });
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(sharedNetworkConfs);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<Map<String, List<ParamSharedNetworkDTO>>> fetchAllUserNetworksConf(int uid) {
+		try{
+			Map<String, List<ParamSharedNetworkDTO>> allUserSharedNetworksConf = sharedNetworksFacadeService.fetchAllUserSharedNetworksConf(uid);
+			/*if(!sharedNetworkConfs.isEmpty()){
+				Collections.sort(sharedNetworkConfs, new Comparator<ParamSharedNetworkDTO>() {
+		            public int compare(ParamSharedNetworkDTO a, ParamSharedNetworkDTO b) {
+		            	ParamSharedNetworkDTO d1=(ParamSharedNetworkDTO)a;
+		            	ParamSharedNetworkDTO d2=(ParamSharedNetworkDTO)b;
+		            	if(d1.getTs() == d2.getTs()) return 0;
+		            	else if(d1.getTs() < d2.getTs()) return 1;
+		            	else return -1;
+		            }
+		        });
+			}*/
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(allUserSharedNetworksConf);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

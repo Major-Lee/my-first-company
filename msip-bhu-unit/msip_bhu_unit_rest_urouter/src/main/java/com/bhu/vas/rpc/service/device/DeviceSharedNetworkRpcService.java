@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.service.device;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -40,6 +41,12 @@ public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcSer
 	public RpcResponseDTO<List<ParamSharedNetworkDTO>> fetchUserNetworksConf(int uid, String sharenetwork_type) {
 		logger.info(String.format("fetchUserNetworksConf with uid[%s] sharenetwork_type[%s]", uid,sharenetwork_type));
 		return deviceSharedNetworkUnitFacadeService.fetchAllUserNetworkConf(uid, sharenetwork_type);
+	}
+	
+	@Override
+	public RpcResponseDTO<Map<String, List<ParamSharedNetworkDTO>>> fetchAllUserNetworksConf(int uid) {
+		logger.info(String.format("fetchAllUserNetworksConf with uid[%s]", uid));
+		return deviceSharedNetworkUnitFacadeService.fetchAllUserNetworksConf(uid);
 	}
 	
 	@Override

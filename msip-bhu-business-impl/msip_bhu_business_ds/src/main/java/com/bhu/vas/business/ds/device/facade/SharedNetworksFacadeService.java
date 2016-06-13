@@ -1,7 +1,9 @@
 package com.bhu.vas.business.ds.device.facade;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -83,9 +85,18 @@ public class SharedNetworksFacadeService {
 			userDevicesSharedNetworksService.insert(configs);
 			configChanged = true;
 		}else{
-			
 			List<ParamSharedNetworkDTO> models_fromdb = configs.get(paramDto.getNtype(),new ArrayList<ParamSharedNetworkDTO>(),true);
-			if(VapEnumType.SharedNetworkType.SafeSecure.getKey().equals(paramDto.getNtype())){
+			
+			if(VapEnumType.SharedNetworkType.Uplink.getKey().equals(paramDto.getNtype())){
+				paramDto.setTemplate(SharedNetworksHelper.DefaultTemplate);
+				if(StringUtils.isEmpty(paramDto.getTemplate_name()))
+					paramDto.setTemplate_name(SharedNetworksHelper.buildTemplateName(sharedNetwork, SharedNetworksHelper.DefaultTemplate));//sharedNetwork.getName().concat(DefaultTemplate));
+				paramDto.setTs(System.currentTimeMillis());
+				models_fromdb.clear();
+				models_fromdb.add(paramDto);
+				userDevicesSharedNetworksService.update(configs);
+				configChanged = true;
+			}else{//SafeSecure & SmsSecure
 				//验证models_fromdb 是否存在 template编号,如果存在则替换，否则增加
 				int index = models_fromdb.indexOf(paramDto);
 				if(index != -1){
@@ -98,21 +109,36 @@ public class SharedNetworksFacadeService {
 					}
 					models_fromdb.set(index, paramDto);
 					userDevicesSharedNetworksService.update(configs);
-					/*if(ParamSharedNetworkDTO.wasConfigChanged(dto_fromdb, paramDto)){
+				}else{
+					//SafeSecure网络需要限制模板数量
+					if(models_fromdb.size() >= BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit){
+						throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_TEMPLATES_MAXLIMIT,new String[]{String.valueOf(BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit)});
+					}
+					String template = SharedNetworksHelper.fetchValidTemplate(models_fromdb);
+					paramDto.setTemplate(template);
+					paramDto.setTs(System.currentTimeMillis());
+					if(StringUtils.isEmpty(paramDto.getTemplate_name()))
+						paramDto.setTemplate_name(SharedNetworksHelper.buildTemplateName(sharedNetwork, template));//sharedNetwork.getName().concat(template));
+					models_fromdb.add(paramDto);
+					userDevicesSharedNetworksService.update(configs);
+					//当前不可能有新设备应用新模板，所以返回false
+					configChanged = false;
+				}
+			}
+			
+			/*if(VapEnumType.SharedNetworkType.SafeSecure.getKey().equals(paramDto.getNtype())){
+				//验证models_fromdb 是否存在 template编号,如果存在则替换，否则增加
+				int index = models_fromdb.indexOf(paramDto);
+				if(index != -1){
+					ParamSharedNetworkDTO dto_fromdb = models_fromdb.get(index);
+					if(StringUtils.isEmpty(paramDto.getTemplate_name()))
+						paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
+					paramDto.setTs(System.currentTimeMillis());
+					if(ParamSharedNetworkDTO.wasConfigChanged( paramDto,dto_fromdb) || ParamSharedNetworkDTO.wasTemplateNameChanged(paramDto,dto_fromdb)){
 						configChanged = true;
-						models_fromdb.set(index, paramDto);
-						userDevicesSharedNetworksService.update(configs);
-					}else if(ParamSharedNetworkDTO.wasTemplateNameChanged(dto_fromdb, paramDto)){
-						models_fromdb.set(index, paramDto);
-						userDevicesSharedNetworksService.update(configs);
-					}*/
-					/*if(dto_fromdb == null || ParamSharedNetworkDTO.wasChanged(dto_fromdb, paramDto)){
-						configChanged = true;
-						models_fromdb.set(index, paramDto);
-						userDevicesSharedNetworksService.update(configs);
-					}else if(){
-						//System.out.println("0hhhh:"+paramDto.getTemplate());
-					}*/
+					}
+					models_fromdb.set(index, paramDto);
+					userDevicesSharedNetworksService.update(configs);
 				}else{
 					//SafeSecure网络需要限制模板数量
 					if(models_fromdb.size() >= BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit){
@@ -137,14 +163,14 @@ public class SharedNetworksFacadeService {
 				models_fromdb.add(paramDto);
 				userDevicesSharedNetworksService.update(configs);
 				configChanged = true;
-			}
+			}*/
 		}
 		return configChanged;
 	}
 	
 	
 	/**
-	 * 获取用户关于共享网络的配置
+	 * 获取用户关于特定的共享网络的配置内容
 	 * 如果为空则采用缺省值构建
 	 * @param uid
 	 * @param sharednetwork_type
@@ -172,6 +198,25 @@ public class SharedNetworksFacadeService {
 			}
 		}
 		return configs.get(sharedNetwork.getKey());
+	}
+	
+	public Map<String,List<ParamSharedNetworkDTO>> fetchAllUserSharedNetworksConf(int uid){
+		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
+		//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
+		if(configs == null){
+			configs = SharedNetworksHelper.buildDefaultUserDevicesSharedNetworks(uid, SharedNetworkType.SafeSecure, SharedNetworksHelper.DefaultTemplate);
+			userDevicesSharedNetworksService.insert(configs);
+		}
+		Map<String,List<ParamSharedNetworkDTO>> result = new LinkedHashMap<>();
+		SharedNetworkType[] snks = SharedNetworkType.values();
+		for(SharedNetworkType snk:snks){
+			List<ParamSharedNetworkDTO> list_snk = configs.get(snk.getKey());
+			if(list_snk == null)
+				list_snk = new ArrayList<>();
+			result.put(snk.getKey(), list_snk);
+		}
+		return result;
+		//return configs.get(sharedNetwork.getKey());
 	}
 	
 	/**

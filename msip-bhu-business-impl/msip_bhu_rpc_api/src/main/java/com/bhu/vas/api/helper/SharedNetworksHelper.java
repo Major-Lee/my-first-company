@@ -100,7 +100,7 @@ public class SharedNetworksHelper {
 		configs.setId(uid);
 		if(StringUtils.isEmpty(paramDto.getTemplate_name())){
 			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(paramDto.getNtype());
-			paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
+			paramDto.setTemplate_name(buildTemplateName(sharedNetwork,paramDto.getTemplate()));//sharedNetwork.getName().concat(paramDto.getTemplate()));
 		}
 		paramDto.setTs(System.currentTimeMillis());
 		List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
@@ -116,7 +116,7 @@ public class SharedNetworksHelper {
 		ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
 		dto.setTs(System.currentTimeMillis());
 		dto.setTemplate(template);
-		dto.setTemplate_name(sharedNetwork.getName().concat(template));
+		dto.setTemplate_name(buildTemplateName(sharedNetwork,template));//sharedNetwork.getName().concat(template));
 		sharedNetworkType_models.add(dto);
 		configs.put(sharedNetwork.getKey(), sharedNetworkType_models);
 		return configs;
