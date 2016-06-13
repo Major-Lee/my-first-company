@@ -45,16 +45,15 @@ public class ResumedLogData {
 	private static long dayUVNum = 0;
 	
 	//存储当日hmac列表
-	private static List<String> hmacList = new ArrayList<String>();
+	private static List<String> hmacList = null;
 	//存储当日mac列表
-	private static Map<String,Object> macMap = new HashMap<String,Object>();
+	private static Map<String,Object> macMap = null;
 	//存储当期mac与uv的个数
-	private static Map<String,Object> macUVNumMap = new HashMap<String,Object>();
+	private static Map<String,Object> macUVNumMap = null;
 	//存储当前mac的PV数量
-	private static Map<String,Object> macPVMap = new HashMap<String,Object>();
+	private static Map<String,Object> macPVMap = null;
 	//存储所有设备SSID地址列表
-	private static Map<String,Object> SSIDMacList = new HashMap<String,Object>();
-	private static int l = 0;
+	private static Map<String,Object> SSIDMacList = null;
 	/**
 	 * 读取文件
 	 * @author Jason
@@ -62,6 +61,13 @@ public class ResumedLogData {
 	 * @return
 	 */
 	public static String readFile(String filePath,String currDate) {
+		dayPVNum = 0;
+		dayUVNum = 0;
+		hmacList = new ArrayList<String>();
+		macMap = new HashMap<String,Object>();
+		macUVNumMap = new HashMap<String,Object>();
+		macPVMap = new HashMap<String,Object>();
+		SSIDMacList = new HashMap<String,Object>();
 		if(StringUtils.isBlank(filePath) || StringUtils.isEmpty(filePath)){
 			System.out.println("文件路径为空");
 			return null;
@@ -214,7 +220,7 @@ public class ResumedLogData {
 	} 
 	
 	public static void main(String args[]){
-		List<String> dateList = DateUtils.getLastDay(Integer.parseInt("10"));
+		List<String> dateList = DateUtils.getLastDay(Integer.parseInt("15"));
 		for (int i = 0; i < dateList.size(); i++) {
 			String currDate = dateList.get(i);
 			try {

@@ -41,7 +41,7 @@ public class QuerySSIdStatisticsController extends BaseController{
 	@RequestMapping(value="/querySSIDStatist", method = { RequestMethod.GET,
 			RequestMethod.POST })
 	public String querySSIDStatist(HttpServletRequest request,HttpServletResponse response,String data) throws IOException{
-		String umRes=staticsService.queryStatisticsByUM(data);
+	String umRes=staticsService.queryStatisticsByUM(data);
 		//返回结果
 		String result = StringUtils.EMPTY;
 		if(StringUtils.isBlank(data)){
