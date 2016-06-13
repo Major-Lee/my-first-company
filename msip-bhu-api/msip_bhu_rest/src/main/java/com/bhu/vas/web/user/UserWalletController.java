@@ -169,7 +169,7 @@ public class UserWalletController extends BaseController{
     
     @ResponseBody()
     @RequestMapping(value="/wallet/rankingList", method={RequestMethod.GET,RequestMethod.POST})
-    public void rankingList(HttpServletResponse response, @RequestParam(required = true) int uid){
+    public void rankingList(HttpServletResponse response, @RequestParam(required = true) Integer uid){
     	try{
     		RpcResponseDTO<RankingListVTO> rpcResult = userWalletRpcService.rankingList(uid);
     		if(!rpcResult.hasError()){
