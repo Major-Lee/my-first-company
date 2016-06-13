@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.commdity.iservice;
 
 import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyDTO;
+import com.bhu.vas.api.dto.commdity.OrderSMSDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.dto.commdity.UserRechargeVCurrencyOrderDTO;
@@ -28,4 +29,6 @@ public interface IOrderRpcService {
 			Integer status, int pageNo, int pageSize);
 	
 	public RpcResponseDTO<OrderStatusDTO> orderStatusByUid(Integer uid, String orderid);
+	
+	public RpcResponseDTO<OrderSMSDTO> createSMSOrder(String mac, String umac, Integer umactype, String context);
 }

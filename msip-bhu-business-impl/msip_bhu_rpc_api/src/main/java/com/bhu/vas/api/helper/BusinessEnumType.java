@@ -541,7 +541,8 @@ public class BusinessEnumType {
 	 */
 	public enum CommdityCategory{
 		RechargeVCurrency(3,"充值虚拟币","充值虚拟币"),
-		InternetLimit(0,"限时上网分类","限时上网分类"),
+		SMSInternetLimit(10,"短信认证上网","短信认证上网"),
+		RewardInternetLimit(0,"打赏上网","打赏上网"),
 		;
 		private Integer category;
 		private String name;
@@ -592,9 +593,9 @@ public class BusinessEnumType {
 			return allCommdityCategoryTypes.containsKey(category);
 		}
 		
-		public static boolean isInternetLimit(Integer category){
+		public static boolean isRewardInternetLimit(Integer category){
 			if(category == null) return false;
-			if(InternetLimit.getCategory().equals(category)) return true;
+			if(RewardInternetLimit.getCategory().equals(category)) return true;
 			return false;
 		}
 		

@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.commdity.internal.pay;
 
+import com.bhu.vas.api.helper.PaymentNotifyType;
+
 
 /**
  * 支付系统支付完成的消息DTO
@@ -7,7 +9,7 @@ package com.bhu.vas.api.dto.commdity.internal.pay;
  *
  */
 @SuppressWarnings("serial")
-public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO{
+public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO implements ResponsePaymentNotifyType{
 	//订单id
 	private String orderid;
 	//订单支付成功时间 yyyy-MM-dd HH:mm:ss
@@ -40,6 +42,10 @@ public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO{
 	}
 	public void setPayment_proxy_type(String payment_proxy_type) {
 		this.payment_proxy_type = payment_proxy_type;
+	}
+	@Override
+	public String getPaymentNotifyType() {
+		return PaymentNotifyType.NormalPaymentNotify.getPrefix();
 	}
 }
 
