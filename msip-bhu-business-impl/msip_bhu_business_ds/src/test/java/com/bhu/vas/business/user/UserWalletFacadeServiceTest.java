@@ -1,6 +1,7 @@
 package com.bhu.vas.business.user;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Resource;
 
@@ -28,8 +29,10 @@ import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -342,9 +345,10 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    	@Test
    	public void test013VcurrencyFromUserWalletForSnkAuthenticate(){
    		final String orderid = "10012016041100000000000000000069";
+   		final AtomicLong vcurrency_current_leave = new AtomicLong(0l);
    		SnkAuthenticateResultType ret = userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(3,orderid, 20l, "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
 			@Override
-			public boolean beforeCheck(int uid, double vcurrency_cost,double vcurrency_has) {
+			public boolean beforeCheck(int uid, long vcurrency_cost,long vcurrency_has) {
 				//业务需求 如果短信验证通过则直接扣款，负数也扣款
 				/*if(vcurrency_has < vcurrency_cost){
 					return false;
@@ -354,7 +358,8 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 				return true;
 			}
 			@Override
-			public String after(int uid) {
+			public String after(int uid,long vcurrency_leave) {
+				vcurrency_current_leave.addAndGet(vcurrency_leave);
 				return null;
 			}
    		});
@@ -367,11 +372,22 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    			case SuccessButThresholdNeedCharging:
    				//通知uportal可以放行
    				//判定是否存在标记位 进行短消息充值提醒通知
+   				;
+   				String acc1 = "";
+   				String smsg_snk_needcharging = String.format(BusinessRuntimeConfiguration.Internal_SNK_NeedCharging_Template,DateTimeHelper.formatDate(DateTimeHelper.FormatPattern13), vcurrency_current_leave);
+   				String response_snk_needcharging = SmsSenderFactory.buildSender(
+						BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_needcharging, acc1);
+				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc1,smsg_snk_needcharging,response_snk_needcharging));
    				break;
    			case FailedThresholdVcurrencyNotsufficient:
    				//通知uportal可以放行
-   				//判定是否存在标记位 进行短消息关闭通知
    				//远程通知uportal 静态页 关闭访客网络
+   				//判定是否存在标记位 进行短消息关闭通知
+   				String acc2 = "";
+   				String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_SNK_Stop_Template,DateTimeHelper.formatDate(DateTimeHelper.FormatPattern13), vcurrency_current_leave);
+   				String response_snk_stop = SmsSenderFactory.buildSender(
+						BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc2);
+				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc2,smsg_snk_stop,response_snk_stop));
    				break;
    			case Failed:
    				//扣款失败，原因不明，依然通知uportal可以放行
