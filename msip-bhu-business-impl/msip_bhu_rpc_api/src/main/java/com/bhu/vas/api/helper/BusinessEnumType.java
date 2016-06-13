@@ -4,6 +4,56 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BusinessEnumType {
+	
+	/**
+	 * 申请验证码动作类别定义
+	 * @author lawliet
+	 *	private static final String FetchCaptchaCode_RegisterOrLogin_Act = "R";
+		private static final String FetchCaptchaCode_PwdReset_Act = "P";
+		private static final String FetchCaptchaCode_SnkAuth_Act = "S";
+	 */
+	public enum CaptchaCodeActType{
+		RegisterOrLogin("注册或登录", "R"),
+		PwdReset("密码充值", "P"),
+		SnkAuth("共享网络短信认证", "S"),
+		;
+		private String name;
+		private String type;
+		static Map<String, CaptchaCodeActType> allCaptchaCodeActTypes;
+		private CaptchaCodeActType(String name, String type){
+			this.name = name;
+			this.type = type;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getType() {
+			return type;
+		}
+		public void setType(String type) {
+			this.type = type;
+		}
+		
+		public static CaptchaCodeActType fromType(String type){
+			CaptchaCodeActType captchaCodeActType = allCaptchaCodeActTypes.get(type);
+			if(captchaCodeActType == null) captchaCodeActType = RegisterOrLogin;
+			return captchaCodeActType;
+		}
+		public static boolean supported(String type){
+			return allCaptchaCodeActTypes.containsKey(type);
+		}
+		static {
+			allCaptchaCodeActTypes = new HashMap<String, CaptchaCodeActType>();
+			CaptchaCodeActType[] types = values();
+			for (CaptchaCodeActType type : types){
+				allCaptchaCodeActTypes.put(type.getType(), type);
+			}
+		}
+	}
+	
 	/**
 	 * sns 类别定义
 	 * @author lawliet

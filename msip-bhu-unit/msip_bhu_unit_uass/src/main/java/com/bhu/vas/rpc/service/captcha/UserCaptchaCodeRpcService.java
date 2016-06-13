@@ -22,5 +22,12 @@ public class UserCaptchaCodeRpcService implements IUserCaptchaCodeRpcService{
 		logger.info(String.format("fetchCaptchaCode with countrycode[%s] acc[%s] act[%s]", countrycode,acc,act));
 		return userCaptchaCodeUnitFacadeService.fetchCaptchaCode(countrycode, acc,act);
 	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> validateCaptchaCode(int countrycode,
+			String acc, String captcha,String act) {
+		logger.info(String.format("validateCaptchaCode with countrycode[%s] acc[%s] captcha[%s] act[%s]", countrycode,acc,captcha,act));
+		return userCaptchaCodeUnitFacadeService.validateCaptchaCode(countrycode, acc,captcha,act);
+	}
 
 }

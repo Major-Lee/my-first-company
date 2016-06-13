@@ -1,4 +1,4 @@
-package com.bhu.vas.validate;
+package com.smartwork.msip.cores.web.business.validate;
 
 //import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import org.apache.commons.lang.StringUtils;
@@ -9,10 +9,9 @@ import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.plugins.reservedwordfilter.ReservedWordFilterHelper;
 import com.smartwork.msip.cores.plugins.wordfilter.WordFilterHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 //import com.smartwork.msip.cores.plugins.reservedwordfilter.ReservedWordFilterHelper;
 //import com.smartwork.msip.cores.plugins.wordfilter.WordFilterHelper;
-import com.smartwork.msip.jdo.ResponseError;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 
 //@Service
 public class ValidateService {
@@ -21,58 +20,32 @@ public class ValidateService {
 	public static final int ValidateType_Mobileno = 1;
 	public static final int ValidateType_Nick = 2;
 	
-	/*private static boolean isCmbtNameExist(String name){
-		if(name == null) return true;
-		name = name.trim();
-		if(StringUtils.isEmpty(name)) return true;
-		String simple = JChineseConvertor.convertToZhs(name);//.getInstance().t2s(name);
-		return BlurCmbtParserFilterHelper.filterMatchedTagsSimpleFullText(simple);
-	}*/
-	
-	/*public static boolean checkEmailExist(String email){
-		ResponseError error = validateEmail(email);
-		if(error == null) return false;
-		else return true;
-	}
-	
-	public static boolean checkNickExist(String nick){
-		ResponseError error = validateNick(nick);
-		if(error == null) return false;
-		else return true;
-	}*/
-	
-	public static ResponseError validateParamValueEmpty(String paramName,String paramValue){
+	public static void validateParamValueEmpty(String paramName,String paramValue){
 		if(StringUtils.isEmpty(paramValue)){
-			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{paramName.concat(paramValue)});
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{paramName.concat(paramValue)});//
+			//return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{paramName.concat(paramValue)});
 		}
-		return null;
 	}
 	
-	public static ResponseError validatePageSize(int pageSize){
+	public static void validatePageSize(int pageSize){
 		if(pageSize >50){
-			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"pageSize:".concat(String.valueOf(pageSize))});
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"pageSize:".concat(String.valueOf(pageSize))});
 		}
-		return null;
 	}
 	
-	public static boolean validateUserTypeApiGen(UserType ut){
+	public static void validateUserTypeApiGen(UserType ut){
 		if(!ut.isApiGen()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_PARAM_USERTYPE_APIGEN_FORBIDDEN, new String[]{ut.getSname()});
 		}
-		return true;
 	}
 	
 	
-	public static boolean checkNickValidate(String nick){
-		ResponseError error = validateNick(nick);
-		if(error == null) return false;
-		else return true;
+	public static void checkNickValidate(String nick){
+		validateNick(nick);
 	}
 	
-	public static boolean checkMobilenoValidate(int countryCode,String mobileno){
-		ResponseError error = validateMobileno(countryCode,mobileno);
-		if(error == null) return false;
-		else return true;
+	public static void checkMobilenoValidate(int countryCode,String mobileno){
+		validateMobileno(countryCode,mobileno);
 	}
 	
 	/*public static ResponseError validateEmail(String email){//,UserService userService){
@@ -107,21 +80,21 @@ public class ValidateService {
 	}*/
 
 	//只对nick进行非法字符串的验证，不进行唯一性的验证
-	public static ResponseError validateNick(String nickname){//,UserService userService){
+	public static void validateNick(String nickname){//,UserService userService){
 		int charlen = nickname.length();//StringHelper.realStringCharlength(nickname);
 		if(charlen < 2 || charlen > 14){
-			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_INVALID_LENGTH,new String[]{"2","14"});//renderHtml(response, html, headers)
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_NICKNAME_INVALID_LENGTH,new String[]{"2","14"});//renderHtml(response, html, headers)
 		}
 		
 		if(!StringHelper.isValidNicknameCharacter(nickname)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_INVALID_FORMAT,new String[]{nickname});//renderHtml(response, html, headers)
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_NICKNAME_INVALID_FORMAT,new String[]{nickname});//renderHtml(response, html, headers)
 		}
 		String tmpnick = StringHelper.replaceBlankAndLowercase(nickname);
 		if(ReservedWordFilterHelper.isWordAllMatch(tmpnick)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
 		}
 		if(WordFilterHelper.isFilterHtmlHits(tmpnick)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);//,new String[]{nickname}));//renderHtml(response, html, headers)
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);//,new String[]{nickname}));//renderHtml(response, html, headers)
 		}
 		/*if(isCmbtNameExist(nickname)){
 			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);//,new String[]{nickname}));//renderHtml(response, html, headers)
@@ -129,24 +102,22 @@ public class ValidateService {
 		if(UniqueFacadeService.checkNickExist(nickname)){//userService.isNicknameExist(nickname)){
 			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);//, new String[]{nickname}));
 		}*/
-		return null;
 	}
 	
-	public static ResponseError validateMobileno(int countryCode,String mobileno){
-		return validateMobileno(countryCode,mobileno,null);
+	public static void validateMobileno(int countryCode,String mobileno){
+		validateMobileno(countryCode,mobileno,null);
 	}
 	
-	public static ResponseError validateMobilenoRegx(int countryCode,String mobileno){
+	public static void validateMobilenoRegx(int countryCode,String mobileno){
 		int charlen = mobileno.length();
 		if(charlen < 6 || charlen > 16){
-			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_LENGTH,new String[]{"6","16"});//renderHtml(response, html, headers)
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_MOBILENO_INVALID_LENGTH,new String[]{"6","16"});//renderHtml(response, html, headers)
 		}
 		
 		//if(!StringHelper.isValidMobilenoCharacter(mobileno)){
 		if(!PhoneHelper.isValidPhoneCharacter(countryCode, mobileno)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_FORMAT);//renderHtml(response, html, headers)
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_MOBILENO_INVALID_FORMAT);//renderHtml(response, html, headers)
 		}
-		return null;
 	}
 	
 	/*public static boolean validateValidMobilenoRegx(int countryCode,String mobileno){
@@ -163,7 +134,7 @@ public class ValidateService {
 		return true;
 	}*/
 	
-	public static ResponseError validateMobileno(int countryCode,String mobileno,String oldmobileno){//,UserService userService){
+	public static void validateMobileno(int countryCode,String mobileno,String oldmobileno){//,UserService userService){
 		/*//判断已经修改过一次,就不能修改
 		if(StringUtils.isNotEmpty(oldmobileno)){
 			if(oldmobileno.equals(mobileno)){
@@ -171,8 +142,7 @@ public class ValidateService {
 			}
 		}*/
 		
-		ResponseError error = validateMobilenoRegx(countryCode,mobileno);
-		if(error != null) return error;
+		validateMobilenoRegx(countryCode,mobileno);
 		/*int charlen = mobileno.length();
 		if(charlen < 6 || charlen > 16){
 			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_LENGTH,new String[]{"6","16"});//renderHtml(response, html, headers)
@@ -185,7 +155,6 @@ public class ValidateService {
 		/*if(UniqueFacadeService.checkMobilenoExist(countryCode,mobileno)){//userService.isPermalinkExist(permalink)){
 			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_DATA_EXIST);
 		}*/
-		return null;
 	}
 	
 	/**
@@ -194,33 +163,31 @@ public class ValidateService {
 	 * @return
 	 */
 	
-	public static ResponseError validateDeviceUUID(String duuid){
+	public static void validateDeviceUUID(String duuid){
 		String lowuuid = duuid.toLowerCase();
 		int charlen = lowuuid.length();
 		if(charlen < 32 || charlen > 40){
-			return ResponseError.embed(ResponseErrorCode.AUTH_UUID_INVALID_LENGTH,new String[]{"32","40"});//renderHtml(response, html, headers)
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_UUID_INVALID_LENGTH,new String[]{"32","40"});//renderHtml(response, html, headers)
 		}
 		
 		/*if(!StringHelper.isValidUUIDCharacter(lowuuid)){
 			return ResponseError.embed(ResponseErrorCode.AUTH_UUID_INVALID_FORMAT,new String[]{lowuuid});//renderHtml(response, html, headers)
 		}*/
-		return null;
 	}
 	
-	public static ResponseError validateDeviceMac(String mac){
+	public static void validateDeviceMac(String mac){
 		if(mac == null){
 			;
 		}
 		String lowmac = mac.toLowerCase();
 		int charlen = lowmac.length();
 		if(charlen != 17 || !StringHelper.isValidMac(lowmac)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT,new String[]{mac});//renderHtml(response, html, headers)
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT,new String[]{mac});//renderHtml(response, html, headers)
 		}
 		
 		/*if(!StringHelper.isValidUUIDCharacter(lowuuid)){
 			return ResponseError.embed(ResponseErrorCode.AUTH_UUID_INVALID_FORMAT,new String[]{lowuuid});//renderHtml(response, html, headers)
 		}*/
-		return null;
 	}
 	
 /*	public boolean isEmailExist(String email){
