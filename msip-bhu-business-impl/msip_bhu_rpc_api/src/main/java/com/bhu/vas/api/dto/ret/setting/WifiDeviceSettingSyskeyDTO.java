@@ -22,12 +22,16 @@ public class WifiDeviceSettingSyskeyDTO implements Serializable, DeviceSettingBu
 	public static final String KEY_STATUS_FAILED = "2";
 	public static final String KEY_STATUS_VALIDATE_FAILED = "1";
 	public static final String KEY_STATUS_NOBIND = "-1";
+	
+	public static final String FORCEBIND_ENABLE = "enable";
 	//uid
 	private String keynum;
 	//status
 	private String keystatus;
 	//industry
 	private String industry;
+	//是否强行绑定
+	private String forcebind;
 	
 	public WifiDeviceSettingSyskeyDTO(){
 		
@@ -58,6 +62,19 @@ public class WifiDeviceSettingSyskeyDTO implements Serializable, DeviceSettingBu
 
 	public void setIndustry(String industry) {
 		this.industry = industry;
+	}
+	
+	public String getForcebind() {
+		return forcebind;
+	}
+
+	public void setForcebind(String forcebind) {
+		this.forcebind = forcebind;
+	}
+
+	public boolean isForceBind(){
+		if(FORCEBIND_ENABLE.equals(forcebind)) return true;
+		return false;
 	}
 	
 	public boolean isSuccessedStatus(){
