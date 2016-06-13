@@ -360,12 +360,11 @@ public class UMLogicImpl implements IUMLogic{
 			iosClickJsonStr=iosClickJsonStr.substring(0, iosClickJsonStr.length()-1);
 			int iosClickNum=Integer.valueOf(iosClickJsonStr.split(",")[0].replace(".0", "").trim());
 			//获取手机android端点击数
-			String androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", daysList.get(i), daysList.get(i), "", "os = 'android'",2);
-			JSONObject androidClickJson=JSONObject.fromObject(androidClick);
-			String androidClickJsonStr=androidClickJson.getString("values");
-			androidClickJsonStr=androidClickJsonStr.substring(1);
-			androidClickJsonStr=androidClickJsonStr.substring(0, androidClickJsonStr.length()-1);
-			int androidClickNum=Integer.valueOf(androidClickJsonStr.split(",")[0].replace(".0", "").trim());
+			int androidClickNum=0;
+			String androidClick=BhuCache.getInstance().getStOrder(daysList.get(i), "androidClickNum");
+			if(StringUtils.isNotBlank(androidClick)){
+				androidClickNum=Integer.valueOf(androidClick);
+			}
 			
 			LinkedHashMap<String,Object> singleMap=new LinkedHashMap<String,Object>();
 			singleMap.put("date", daysList.get(i));
