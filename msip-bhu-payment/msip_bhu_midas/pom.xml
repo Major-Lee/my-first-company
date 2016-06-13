@@ -43,5 +43,17 @@
         <filters>
             <filter>src/main/filters/filters-${env}.properties</filter>
         </filters>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resource</directory>
+            </resource>
+        </resources>           
+       
     </build>
 </project>
