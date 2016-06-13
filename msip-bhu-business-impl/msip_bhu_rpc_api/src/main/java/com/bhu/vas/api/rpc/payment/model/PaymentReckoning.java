@@ -26,6 +26,7 @@ public class PaymentReckoning  extends BaseStringModel{
 	private int balance; 
 	private int tradeday; 
 	private String remark; 
+	private String channel_type;
 	private Date created_at;
 	private Date notify_at; 
 	private Date paid_at;  
@@ -139,6 +140,12 @@ public class PaymentReckoning  extends BaseStringModel{
 		this.remark = remark; 
 	}
 	
+	public String getChannel_type() {
+		return channel_type;
+	}
+	public void setChannel_type(String channel_type) {
+		this.channel_type = channel_type;
+	}
 	public Date getCreated_at() {
 		return created_at;
 	}
