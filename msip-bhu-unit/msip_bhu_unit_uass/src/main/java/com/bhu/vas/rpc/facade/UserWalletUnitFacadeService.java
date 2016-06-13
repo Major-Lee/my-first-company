@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.facade;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -535,8 +536,13 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	public RpcResponseDTO<RankingListVTO> rankingList(int uid) {
-		//'%2016-06-05'
-		String time=StringUtils.EMPTY;
+		Date date = new Date();  
+        Calendar calendar = Calendar.getInstance();  
+        calendar.setTime(date);  
+        calendar.add(Calendar.DAY_OF_MONTH, -1);  
+        date = calendar.getTime();  
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+        String time = "%"+sdf.format(date); 
 		try{
 			RankingListVTO rankingListVTO=new RankingListVTO();
 			List<RankSingle> rankList=new ArrayList<RankSingle>();
