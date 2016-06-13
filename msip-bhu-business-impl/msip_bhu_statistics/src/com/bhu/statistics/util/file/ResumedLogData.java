@@ -78,7 +78,7 @@ public class ResumedLogData {
 			//获取当前路径下所有文件以及文件夹
 			File[] FileList = file.listFiles();
 			if(FileList == null || FileList.length<=0){
-				System.out.println("当前路径下不存在文件");
+				System.out.println( "当前路径下不存在文件");
 				return null;
 			}
 			for (int i = 0; i < FileList.length; i++) {
@@ -223,7 +223,8 @@ public class ResumedLogData {
 		List<String> dateList = DateUtils.getLastDay(Integer.parseInt("15"));
 		for (int i = 0; i < dateList.size(); i++) {
 			String currDate = dateList.get(i);
-			try {
+			System.out.println(currDate);
+			/*try {
 				readFile(WAIWANG_LOG+currDate,currDate);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -292,7 +293,7 @@ public class ResumedLogData {
 				resultMap.put("mb_ofc", mb_ofc);
 				resultMap.put("mb_ofa", mb_ofa);
 				BhuCache.getInstance().setStOrder(currDate, "stOrder", JSONObject.toJsonString(resultMap));
-			}
+			}*/
 		}
 	}
 	

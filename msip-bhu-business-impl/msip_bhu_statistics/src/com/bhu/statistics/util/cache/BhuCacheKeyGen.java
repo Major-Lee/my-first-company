@@ -75,4 +75,36 @@ public class BhuCacheKeyGen {
 	public static String getStOrder(String date){
 		return PREFIX+"StOrder_"+date;
 	}
+	
+	public static String getPCUV(String date){
+		return PREFIX+"PCUV_"+date;
+	}
+	
+	public static String getPcClickNum(String date){
+		return PREFIX+"PcClickNum_"+date;
+	}
+	
+	public static String getMobileUv(String date){
+		return PREFIX+"MobileUv_"+date;
+	}
+	
+	public static String getMobileClickNum(String date){
+		return PREFIX+"MobileClickNum_"+date;
+	}
+	
+	public static String getIosUv(String date){
+		return PREFIX+"IosUv_"+date;
+	}
+	
+	public static String getIosClickNum(String date){
+		return PREFIX+"IosClickNum_"+date;
+	}
+	
+	public static String getAndroidUv(String date){
+		return PREFIX+"AndroidUv_"+date;
+	}
+	
+	public static String getAndroidClickNum(String date){
+		return PREFIX+"AndroidClickNum_"+date;
+	}
 }

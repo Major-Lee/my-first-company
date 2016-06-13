@@ -142,4 +142,59 @@ public class BhuCache {
 		return jedisClient.hset(BhuCacheKeyGen.getStOrder(data), field, value);
 	}
 	
+	public String getPCUV(String date,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getPCUV(date),filed);
+	}
+	public Long setPCUV(String date,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getPCUV(date), field, value);
+	}
+	
+	public String getPcClickNum(String date,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getPcClickNum(date),filed);
+	}
+	public Long setPcClickNum(String date,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getPcClickNum(date), field, value);
+	}
+	
+	public String getMobileUv(String date,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getMobileUv(date),filed);
+	}
+	public Long setMobileUv(String date,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getMobileUv(date), field, value);
+	}
+	
+	public String getMobileClickNum(String date,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getMobileClickNum(date),filed);
+	}
+	public Long setMobileClickNum(String date,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getMobileClickNum(date), field, value);
+	}
+	
+	public String getIosUv(String date,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getIosUv(date),filed);
+	}
+	public Long setIosUv(String date,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getIosUv(date), field, value);
+	}
+	
+	public String getIosClickNum(String date,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getIosClickNum(date),filed);
+	}
+	public Long setIosClickNum(String date,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getIosClickNum(date), field, value);
+	}
+	
+	public String getAndroidUv(String date,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getAndroidUv(date),filed);
+	}
+	public Long setAndroidUv(String date,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getAndroidUv(date), field, value);
+	}
+	
+	public String getAndroidClickNum(String date,String filed){
+		return jedisClient.hget(BhuCacheKeyGen.getAndroidClickNum(date),filed);
+	}
+	public Long setAndroidClickNum(String date,String field,String value){
+		return jedisClient.hset(BhuCacheKeyGen.getAndroidClickNum(date), field, value);
+	}
 }
