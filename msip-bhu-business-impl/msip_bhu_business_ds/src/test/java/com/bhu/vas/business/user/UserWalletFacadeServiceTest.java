@@ -13,6 +13,7 @@ import org.junit.runners.MethodSorters;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
+import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
@@ -341,23 +342,41 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    	@Test
    	public void test013VcurrencyFromUserWalletForSnkAuthenticate(){
    		final String orderid = "10012016041100000000000000000069";
-   		int ret = userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(3,orderid, 20l, "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
+   		SnkAuthenticateResultType ret = userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(3,orderid, 20l, "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
 			@Override
 			public boolean beforeCheck(int uid, double vcurrency_cost,double vcurrency_has) {
-				if(vcurrency_has < vcurrency_cost){
+				//业务需求 如果短信验证通过则直接扣款，负数也扣款
+				/*if(vcurrency_has < vcurrency_cost){
 					return false;
 				}else{
 					return true;
-				}
+				}*/
+				return true;
 			}
-
 			@Override
 			public String after(int uid) {
 				return null;
 			}
    		});
    		System.out.println(ret);
-   		
+   		switch(ret){
+   			case Success:
+   				//通知uportal可以放行
+   				break;
+   			case SuccessButThresholdNeedCharging:
+   				//通知uportal可以放行
+   				//判定是否存在标记位 进行短消息充值提醒通知
+   				break;
+   			case FailedThresholdVcurrencyNotsufficient:
+   				//通知uportal可以放行
+   				//判定是否存在标记位 进行短消息关闭通知
+   				//远程通知uportal 静态页 关闭访客网络
+   				break;
+   			case Failed:
+   				//扣款失败，原因不明，依然通知uportal可以放行
+   				break;
+   				
+   		}
    		
    		
    		/*Runnable runn = new Runnable(){

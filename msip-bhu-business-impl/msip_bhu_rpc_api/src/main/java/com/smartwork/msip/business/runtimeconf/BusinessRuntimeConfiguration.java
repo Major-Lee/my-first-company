@@ -285,6 +285,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static int Device_Firmware_ForceUpdateImmediately_GrayPublishedDays = 1;
 	public static int Device_Firmware_ForceUpdateImmediately_AfterDays = 2;
 	
+	public static long Sharednetwork_Auth_Threshold_Notsufficient = 20l;
 	public static long Sharednetwork_Auth_Threshold_NeedCharging = 200l;
 	
 	public static boolean isSystemNoneedCaptchaValidAcc(String acc){

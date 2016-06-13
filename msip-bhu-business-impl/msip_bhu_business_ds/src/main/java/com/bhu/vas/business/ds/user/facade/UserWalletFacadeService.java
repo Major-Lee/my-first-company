@@ -186,9 +186,10 @@ public class UserWalletFacadeService{
 			if(executeRet == 0){
 				callback.after(uid);
 				//扣款后的数值是否 <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging
-				if(total_vcurrency <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
+				if(total_vcurrency < BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient){
+					return SnkAuthenticateResultType.FailedThresholdVcurrencyNotsufficient;
+				}else if(total_vcurrency <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
 					return SnkAuthenticateResultType.SuccessButThresholdNeedCharging;
-					//return SnkAuthenticate_Successfully_Threshold_NeedCharging;
 				}else{
 					return SnkAuthenticateResultType.Success;
 				}
