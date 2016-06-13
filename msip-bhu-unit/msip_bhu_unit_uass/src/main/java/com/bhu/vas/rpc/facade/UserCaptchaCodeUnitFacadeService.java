@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.helper.BusinessEnumType.CaptchaCodeActType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
@@ -30,12 +31,13 @@ public class UserCaptchaCodeUnitFacadeService {
 	private UserCaptchaCodeService userCaptchaCodeService;
 	
 	//内部线程池，用于调用sms接口
-	private ExecutorService exec = Executors.newFixedThreadPool(30);
+	private ExecutorService exec_send = Executors.newFixedThreadPool(30);
+	//private ExecutorService exec_aftervalidate = Executors.newFixedThreadPool(30);
 	//@Resource
 	//private DeliverMessageService deliverMessageService;
-	
-	private static final String FetchCaptchaCode_RegisterOrLogin_Act = "R";
+	/*private static final String FetchCaptchaCode_RegisterOrLogin_Act = "R";
 	private static final String FetchCaptchaCode_PwdReset_Act = "P";
+	private static final String FetchCaptchaCode_SnkAuth_Act = "S";*/
 	
 	public RpcResponseDTO<UserCaptchaCodeDTO> fetchCaptchaCode(int countrycode,
 			final String acc,final String act) {
@@ -54,15 +56,31 @@ public class UserCaptchaCodeUnitFacadeService {
 			if(!RuntimeConfiguration.SecretInnerTest){
 				if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
 					if(countrycode == PhoneHelper.Default_CountryCode_Int){
-						
-						exec.submit((new Runnable() {
+						exec_send.submit((new Runnable() {
 							@Override
 							public void run() {
 								String smsg = null;
-								if(FetchCaptchaCode_RegisterOrLogin_Act.equals(act))
+								CaptchaCodeActType fromType = CaptchaCodeActType.fromType(act);
+								switch(fromType){
+									case RegisterOrLogin:
+										smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Template, payload.getCaptcha());
+										break;
+									case PwdReset:
+										smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodePwdResetSMS_Template, payload.getCaptcha());
+										break;
+									case SnkAuth:
+										smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSnkAuthSMS_Template, payload.getCaptcha());
+										break;
+									default:
+										smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Template, payload.getCaptcha());
+										break;
+								}
+								/*if(FetchCaptchaCode_RegisterOrLogin_Act.equals(act))
 									smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Template, payload.getCaptcha());
 								if(FetchCaptchaCode_PwdReset_Act.equals(act))
 									smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodePwdResetSMS_Template, payload.getCaptcha());
+								if(FetchCaptchaCode_SnkAuth_Act.equals(act))
+									smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSnkAuthSMS_Template, payload.getCaptcha());*/
 								if(StringUtils.isNotEmpty(smsg)){
 									String response = SmsSenderFactory.buildSender(
 										BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
@@ -90,18 +108,54 @@ public class UserCaptchaCodeUnitFacadeService {
 		//return result;
 	}
 	
+	
+	public RpcResponseDTO<Boolean> validateCaptchaCode(final int countrycode,
+			final String acc, final String captcha,final String act) {
+		try{
+			if(!RuntimeConfiguration.SecretInnerTest){
+				String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+				if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
+					ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
+					if(errorCode != null){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
+					}
+				}
+			}
+			/*final CaptchaCodeActType fromType = CaptchaCodeActType.fromType(act);
+			if(fromType == CaptchaCodeActType.SnkAuth){
+				exec_aftervalidate.execute((new Runnable() {
+					@Override
+					public void run() {
+						//设备绑定用户扣款
+						//设备放行
+					}
+				}));
+			}*/
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException ex){
+			System.out.println("cc:"+countrycode +" acc:"+acc);
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ex.getErrorCode(), ex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR);
+		}
+		//logger.info(String.format("validateCaptchaCode with countrycode[%s] acc[%s] captcha[%s]", countrycode,acc,captcha));
+		//return userCaptchaCodeUnitFacadeService.validateCaptchaCode(countrycode, acc,captcha);
+	}
+	
 	@PreDestroy
 	public void destory(){
 		String simplename = this.getClass().getSimpleName();
-		if(exec != null){
+		if(exec_send != null){
 			System.out.println(simplename+" exec正在shutdown");
-			exec.shutdown();
+			exec_send.shutdown();
 			System.out.println(simplename+" exec正在shutdown成功");
 			while(true){
 				System.out.println(simplename+" 正在判断exec是否执行完毕");
-				if(exec.isTerminated()){
+				if(exec_send.isTerminated()){
 					System.out.println(simplename+" exec是否执行完毕,终止exec...");
-					exec.shutdownNow();
+					exec_send.shutdownNow();
 					System.out.println(simplename+" exec是否执行完毕,终止exec成功");
 					break;
 				}else{

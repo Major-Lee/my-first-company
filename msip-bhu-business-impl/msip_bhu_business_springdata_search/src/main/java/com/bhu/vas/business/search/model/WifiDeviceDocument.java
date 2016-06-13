@@ -324,6 +324,13 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
+	private String o_scalelevel;//设备的规模级别
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
 	private String u_id;//绑定的用户id
 	
 	@Field(
@@ -634,6 +641,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setO_batch(String o_batch) {
 		this.o_batch = o_batch;
+	}
+	
+	public String getO_scalelevel() {
+		return o_scalelevel;
+	}
+
+	public void setO_scalelevel(String o_scalelevel) {
+		this.o_scalelevel = o_scalelevel;
 	}
 
 	public String getO_operate() {
