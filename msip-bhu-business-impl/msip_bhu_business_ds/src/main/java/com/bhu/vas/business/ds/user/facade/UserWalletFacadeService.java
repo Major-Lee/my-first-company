@@ -18,6 +18,7 @@ import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.dto.procedure.WalletInOrOutProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
+import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
@@ -162,8 +163,9 @@ public class UserWalletFacadeService{
 	public static final int SnkAuthenticate_Successfully = 0;
 	public static final int SnkAuthenticate_Successfully_Threshold_NeedCharging = 1;
 	public static final int SnkAuthenticate_Threshold_VcurrencyNotsufficient = 2;
+	
 	/**
-	 * 
+	 * 共享网络 短信认证 虚拟币扣款 
 	 * @param uid
 	 * @param orderid
 	 * @param vcurrency_cost
@@ -172,7 +174,7 @@ public class UserWalletFacadeService{
 	 * @return
 	 * 	
 	 */
-	public int vcurrencyFromUserWalletForSnkAuthenticate(int uid,String orderid,long vcurrency_cost,String desc, IWalletVCurrencySpendCallback callback){
+	public SnkAuthenticateResultType vcurrencyFromUserWalletForSnkAuthenticate(int uid,String orderid,long vcurrency_cost,String desc, IWalletVCurrencySpendCallback callback){
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getById(uid);
 		if(uwallet == null){
@@ -184,15 +186,21 @@ public class UserWalletFacadeService{
 			if(executeRet == 0){
 				callback.after(uid);
 				//扣款后的数值是否 <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging
-				if(total_vcurrency <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
-					return SnkAuthenticate_Successfully_Threshold_NeedCharging;
-				}else
-					return SnkAuthenticate_Successfully;
+				if(total_vcurrency < BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient){
+					return SnkAuthenticateResultType.FailedThresholdVcurrencyNotsufficient;
+				}else if(total_vcurrency <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
+					return SnkAuthenticateResultType.SuccessButThresholdNeedCharging;
+				}else{
+					return SnkAuthenticateResultType.Success;
+				}
+					//return SnkAuthenticate_Successfully;
 			}else{
-				return SnkAuthenticate_Failed;
+				return SnkAuthenticateResultType.Failed;
+				//return SnkAuthenticate_Failed;
 			}
 		}else{//预检查失败
-			return SnkAuthenticate_Threshold_VcurrencyNotsufficient;
+			//return SnkAuthenticate_Threshold_VcurrencyNotsufficient;
+			return SnkAuthenticateResultType.FailedThresholdVcurrencyNotsufficient;
 		}
 		
 	}
