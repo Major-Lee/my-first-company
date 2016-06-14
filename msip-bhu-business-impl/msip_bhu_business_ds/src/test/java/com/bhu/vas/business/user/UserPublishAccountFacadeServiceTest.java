@@ -58,6 +58,6 @@ public class UserPublishAccountFacadeServiceTest extends BaseTest{
 		 String city = "北京";
 		//开户银行支行名称
 		 String bank_branch_name = "北京支行";
-		userPublicAccountService.insertUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, legal_person, legal_person_certificate, account_name, publish_account_number, opening_bank, city, bank_branch_name);
+		userPublicAccountService.insertUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, account_name, publish_account_number, opening_bank, city, bank_branch_name);
 	}
 }

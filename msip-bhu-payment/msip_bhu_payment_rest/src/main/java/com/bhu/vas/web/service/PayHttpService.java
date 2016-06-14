@@ -54,7 +54,7 @@ public class PayHttpService {
     //异步回调地址
     public static String NOTIFY_URL = PAY_HOST_URL+"/wxPayNotifySuccess";
     //web回调地址
-    public static String WEB_NOTIFY_URL = "http://www.bhuwifi.com";
+    public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/unsuccess";
     //证书地址
     public static String WITHDRAW_URL = "/home";
 

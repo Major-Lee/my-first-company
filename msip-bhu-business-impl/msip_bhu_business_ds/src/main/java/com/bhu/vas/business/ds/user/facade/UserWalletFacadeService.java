@@ -44,7 +44,6 @@ import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
-import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -180,11 +179,11 @@ public class UserWalletFacadeService{
 		if(uwallet == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"用户钱包"});
 		}
-		double total_vcurrency = ArithHelper.add(uwallet.getVcurrency(), uwallet.getVcurrency_bing());
+		long total_vcurrency = (uwallet.getVcurrency()+uwallet.getVcurrency_bing());
 		if(callback.beforeCheck(uid, vcurrency_cost,total_vcurrency)){
 			int executeRet = this.vcurrencyFromUserWallet(uid, orderid, UWalletTransMode.VCurrencyPayment, vcurrency_cost, desc);
 			if(executeRet == 0){
-				callback.after(uid);
+				callback.after(uid,total_vcurrency-vcurrency_cost);
 				//扣款后的数值是否 <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging
 				if(total_vcurrency < BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient){
 					return SnkAuthenticateResultType.FailedThresholdVcurrencyNotsufficient;

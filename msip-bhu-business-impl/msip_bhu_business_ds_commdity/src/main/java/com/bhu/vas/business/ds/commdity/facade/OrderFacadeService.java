@@ -1,5 +1,6 @@
 package com.bhu.vas.business.ds.commdity.facade;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -9,12 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
 import com.bhu.vas.api.dto.procedure.OrderStatisticsProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
+import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -176,7 +179,7 @@ public class OrderFacadeService {
 		//验证商品是否合法
 		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 		//验证商品是否合理
-		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.InternetLimit)){
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardInternetLimit)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
 		}
 		
@@ -407,6 +410,48 @@ public class OrderFacadeService {
 		}finally{
 			orderStatusChanged(order, changed_status, changed_process_status);
 		}
+		return order;
+	}
+	
+	/*************            短信认证             ****************/
+	
+	public static final int SMS_VALIDATE_COMMDITY_ID = 9;
+	/**
+	 * 生成短信认证订单
+	 * @param mac 设备mac
+	 * @param umac 用户终端mac
+	 * @param umactype 用户终端类型
+	 * @param context 验证的手机号
+	 * @return
+	 */
+	public Order createSMSOrder(String mac, String umac, Integer umactype, String context){
+		//商品信息验证
+		Commdity commdity = commdityFacadeService.validateCommdity(SMS_VALIDATE_COMMDITY_ID);
+		//验证商品是否合理
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.SMSInternetLimit)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
+		}
+		
+		long vcurrency = commdity.getVcurrency();
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdity.getId());
+		order.setAppid(CommdityApplication.DEFAULT.getKey());
+		order.setType(commdity.getCategory());
+		order.setStatus(OrderStatus.PaySuccessed.getKey());
+		order.setProcess_status(OrderProcessStatus.PaySuccessed.getKey());
+		order.setMac(umac);
+		order.setUmac(umac);
+		order.setUmactype(umactype);
+		order.setVcurrency(vcurrency);
+		order.setContext(context);
+		order.setPaymented_at(new Date());
+		orderService.insert(order);
+		
+		//短信认证订单生成时候已经验证通过 直接进行放行数据通知
+		String notify_message = PaymentNotifyFactoryBuilder.toJsonHasPrefix(ResponseSMSValidateCompletedNotifyDTO.
+				builder(order));
+		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
 		return order;
 	}
 	

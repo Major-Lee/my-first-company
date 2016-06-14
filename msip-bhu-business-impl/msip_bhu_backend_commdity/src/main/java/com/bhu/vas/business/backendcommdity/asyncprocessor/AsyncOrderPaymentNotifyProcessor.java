@@ -74,7 +74,7 @@ public class AsyncOrderPaymentNotifyProcessor{
 			@Override
 			public void run() {
 				try{
-					asyncOrderPaymentNotifyService.orderPaymentNotifyCompletedHandle(message);
+					asyncOrderPaymentNotifyService.notifyHandle(message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("AsyncOrderPaymentNotifyProcessor onProcessor", ex);

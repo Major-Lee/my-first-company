@@ -8,6 +8,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyDTO;
+import com.bhu.vas.api.dto.commdity.OrderSMSDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.dto.commdity.UserRechargeVCurrencyOrderDTO;
@@ -99,6 +100,13 @@ public class OrderRpcService implements IOrderRpcService{
 		return orderUnitFacadeService.orderStatusByUid(uid, orderid);
 	}
 	
+	@Override
+	public RpcResponseDTO<OrderSMSDTO> createSMSOrder(String mac, String umac, Integer umactype, String context){
+		logger.info(String.format("createSMSOrder with mac[%s] umac[%s] umactype[%s] context[%s]",
+				mac, umac, umactype, context));
+		//return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context);
+		return null;
+	}
 	
 
 }

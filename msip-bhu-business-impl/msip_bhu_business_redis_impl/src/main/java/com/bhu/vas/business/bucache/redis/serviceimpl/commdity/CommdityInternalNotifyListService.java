@@ -15,7 +15,6 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationListCache;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.localunit.RandomData;
 
 /**
  * 用于存放支付系统支付成功的通知消息

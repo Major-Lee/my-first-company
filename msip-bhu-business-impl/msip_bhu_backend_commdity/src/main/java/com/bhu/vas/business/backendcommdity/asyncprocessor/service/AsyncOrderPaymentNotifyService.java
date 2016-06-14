@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.push.SharedealNotifyPushDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
@@ -18,6 +19,8 @@ import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
+import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
+import com.bhu.vas.api.helper.PaymentNotifyType;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -29,7 +32,6 @@ import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.push.business.PushService;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -62,38 +64,73 @@ public class AsyncOrderPaymentNotifyService {
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
 	/**
-	 * 支付系统支付完成的通知处理
+	 * 支付完成的通知处理
+	 * 1) 支付系统支付的成功通知
+	 * 2) 应用内部的成功通知
 	 * @param message
 	 */
-	public void orderPaymentNotifyCompletedHandle(String message){
-		logger.info(String.format("AsyncOrderPaymentNotifyProcessor orderPaymentNotifyHandle: message[%s]", message));
+	public void notifyHandle(String message){
+		logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyHandle: message[%s]", message));
 		try{
-			ResponsePaymentCompletedNotifyDTO rpcn_dto = JsonHelper.getDTO(message, ResponsePaymentCompletedNotifyDTO.class);
-			if(rpcn_dto != null){
-				String orderid = rpcn_dto.getOrderid();
-
-				if(StringUtils.isEmpty(orderid)){
-					throw new RuntimeException(String.format("AsyncOrderPaymentNotifyProcessor orderPaymentNotifyHandle "
-							+ "param illegal orderid[%s]", orderid));
-				}
-				StructuredId structuredId = StructuredIdHelper.generateStructuredId(orderid);
-				StructuredExtSegment structuredExtSegment = structuredId.getExtSegment();
-				//判断支付模式为收入模式(商品订单支付 如出现其他情况可扩展下一位业务占位)
-				if(StructuredIdHelper.isPaymodeReceipt(structuredExtSegment)){
-					orderPaymentNotifyPaymodeReceiptHandle(rpcn_dto);
-				}
-				//判断支付模式为支出模式(提现 如出现其他情况可扩展下一位业务占位)
-				else if(StructuredIdHelper.isPaymodeExpend(structuredExtSegment)){
-					orderPaymentNotifyPaymodeExpendHandle(rpcn_dto);
-				}
+			PaymentNotifyType paymentNotifyType = PaymentNotifyFactoryBuilder.determineActionType(message);
+			if(paymentNotifyType == null){
+				throw new RuntimeException(String.format("PaymentNotifyType unsupport message[%s]", message));
 			}
-			logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyOrderPaymentHandle: message[%s] successful", message));
+			
+			switch(paymentNotifyType){
+				case NormalPaymentNotify:
+					orderPaymentNotifyCompletedHandle(message);
+					break;
+				case SMSPaymentNotify:
+					orderSMSNotifyCompletedHandle(message);
+					break;
+				default:
+					throw new RuntimeException(String.format("PaymentNotifyType unsupport message[%s]", message));
+			}
+
+			logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyHandle: message[%s] successful", message));
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error("AsyncOrderPaymentNotifyProcessor orderPaymentNotifyHandle Exception", ex);
+			logger.error("AsyncOrderPaymentNotifyProcessor notifyHandle Exception", ex);
 		}
 	}
 	
+	/**
+	 * 订单通过支付系统通知
+	 * @param message
+	 */
+	public void orderPaymentNotifyCompletedHandle(String message){
+		ResponsePaymentCompletedNotifyDTO rpcn_dto = PaymentNotifyFactoryBuilder.fromJson(message, ResponsePaymentCompletedNotifyDTO.class);
+		//ResponsePaymentCompletedNotifyDTO rpcn_dto = JsonHelper.getDTO(message, ResponsePaymentCompletedNotifyDTO.class);
+		if(rpcn_dto != null){
+			String orderid = rpcn_dto.getOrderid();
+
+			if(StringUtils.isEmpty(orderid)){
+				throw new RuntimeException(String.format("AsyncOrderPaymentNotifyProcessor orderPaymentNotifyCompletedHandle "
+						+ "param illegal orderid[%s]", orderid));
+			}
+			StructuredId structuredId = StructuredIdHelper.generateStructuredId(orderid);
+			StructuredExtSegment structuredExtSegment = structuredId.getExtSegment();
+			//判断支付模式为收入模式(商品订单支付 如出现其他情况可扩展下一位业务占位)
+			if(StructuredIdHelper.isPaymodeReceipt(structuredExtSegment)){
+				orderPaymentNotifyPaymodeReceiptHandle(rpcn_dto);
+			}
+			//判断支付模式为支出模式(提现 如出现其他情况可扩展下一位业务占位)
+			else if(StructuredIdHelper.isPaymodeExpend(structuredExtSegment)){
+				orderPaymentNotifyPaymodeExpendHandle(rpcn_dto);
+			}
+		}
+	}
+	
+	/**
+	 * 短信认证通过通知
+	 * @param message
+	 */
+	public void orderSMSNotifyCompletedHandle(String message){
+		ResponseSMSValidateCompletedNotifyDTO smsv_dto = PaymentNotifyFactoryBuilder.fromJson(message, ResponseSMSValidateCompletedNotifyDTO.class);
+		//扣除虎钻
+		//通知放行
+	}
 	
 	/********************          Receipt           ********************/
 	

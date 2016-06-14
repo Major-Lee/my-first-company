@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.commdity.internal.pay;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -10,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  *
  */
 @SuppressWarnings("serial")
-public class ResponsePaymentDTO implements java.io.Serializable{
+public class ResponsePaymentDTO implements Serializable{
 	//支付是否成功
 	private boolean success;
 	//失败错误码
