@@ -19,7 +19,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
-import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -99,16 +99,16 @@ public class CommdityUnitFacadeService {
 			}
 			
 			//获取此上下文的缓存金额数据
-			String amount = CommdityIntervalAmountService.getInstance().getRAmount(mac, umac, commdityid);
+			String amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid);
 			if(StringUtils.isEmpty(amount)){
 				//处理商品金额
 				amount = CommdityHelper.generateCommdityAmount(chargingFacadeService.fetchAmountRange(mac, umactype));
 				//amount = commdityFacadeService.commdityAmount(commdityid);
 				//CommdityIntervalAmountService.getInstance().addRAmount(mac, umac, commdityid, amount);
-				Long addnx_ret = CommdityIntervalAmountService.getInstance().addNx_RAmount(mac, umac, commdityid, amount);
+				Long addnx_ret = RewardOrderAmountHashService.getInstance().addNx_RAmount(mac, umac, commdityid, amount);
 				if(addnx_ret == null || addnx_ret <= 0){
 					//如果多线程问题，同一个key,setnx有可能未设置成功，则获取目前存在的金额
-					amount = CommdityIntervalAmountService.getInstance().getRAmount(mac, umac, commdityid);
+					amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid);
 				}
 			}
 			logger.info(String.format("intervalAMount success commdityid[%s] appid[%s] mac[%s] umac[%s] amount[%s]", commdityid, appid, mac, umac, amount));
