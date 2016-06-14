@@ -47,6 +47,7 @@ public class ShipmentDataSimulateOP {
 		//final BackendBusinessService backendBusinessService = (BackendBusinessService)context.getBean("backendBusinessService");;
 		final AtomicInteger atomic_failed = new AtomicInteger(0);
 		final AtomicInteger atomic_successed = new AtomicInteger(0);
+		@SuppressWarnings("unused")
 		final String batchno = "20160523-00000008";
 		final Integer uid_willbinded = 3;
 		ShipmentExcelImport.excelImport("/Users/Edmond/gospace/20160523-00000008.xlsx","/Users/Edmond/gospace/20160523-00000008-out.xlsx", new ExcelElementCallback(){
@@ -83,7 +84,7 @@ public class ShipmentDataSimulateOP {
 					System.out.println(String.format("pageno:%s pagesize:%s pages:%s", pageno,100,pages));
 					if(uid_willbinded != null && uid_willbinded.intValue() >0){
 						//userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
-						for(String dmac:pages){
+						for(@SuppressWarnings("unused") String dmac:pages){
 							/*chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, dmac, 
 									importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
 									importVto.isCustomized(),
@@ -111,7 +112,7 @@ public class ShipmentDataSimulateOP {
 								//userDeviceFacadeService.doForceUnbindDevice(forceUnbindedDevices);
 								userWifiDeviceService.deleteByIds(forceUnbindedDevices);
 							//变更分成比例
-							for(String dmac:forceUnbindedDevices){//需要变更owner = -1
+							for(@SuppressWarnings("unused") String dmac:forceUnbindedDevices){//需要变更owner = -1
 								/*chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,-1, dmac, 
 										importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
 										importVto.isCustomized(),
@@ -119,7 +120,7 @@ public class ShipmentDataSimulateOP {
 					        			importVto.getRcm(), importVto.getRcp(), importVto.getAit(), false);
 					        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);*/
 							}
-							for(String dmac:noActionDevices){//不需要变更owner 
+							for(@SuppressWarnings("unused") String dmac:noActionDevices){//不需要变更owner 
 								/*chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,null, dmac,
 										importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
 										importVto.isCustomized(),
@@ -164,7 +165,7 @@ public class ShipmentDataSimulateOP {
 				}
 			}
 		});
-		
+		context.close();
 		
 		System.out.println(String.format("filepath[%s] import successfully! successed[%s] failed[%s]", "/Users/Edmond/gospace/20160523-00000008.xlsx",atomic_successed.get(),atomic_failed.get()));
 	}

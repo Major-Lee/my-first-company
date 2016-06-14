@@ -76,15 +76,18 @@ public class BusinessKeyDefine {
 		
 		public static final String Sequence = "SEQ";
 	}
-
-	public static class WifiStasniffer{
+	
+	public static class Marker{
+		public static final String SnkCharging = "SnkC.";
+	}
+	/*public static class WifiStasniffer{
 		public static final String TerminalRecent = "WSTR";
 		public static final String TerminalHot = "WSTH";
 		public static final String TerminalDetailRecent = "WSTDR";
 		public static final String TerminalDeviceTypeCount = "WSDTC";
 		public static final String TerminalLastTime = "WSLT";
 		public static final String UserTerminalFocus = "WSUTF";
-	}
+	}*/
 	public static class VapMode {
 		public static final String VapModeCount = "VM.";
 	}

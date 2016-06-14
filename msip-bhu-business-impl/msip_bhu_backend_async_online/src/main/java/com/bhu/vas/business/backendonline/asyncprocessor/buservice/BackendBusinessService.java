@@ -2,7 +2,6 @@ package com.bhu.vas.business.backendonline.asyncprocessor.buservice;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -19,10 +18,6 @@ import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -112,7 +107,7 @@ public class BackendBusinessService {
 	 */
 	public void deviceResetFactory(String mac){
 		//1:周边探测数据
-		clearWifistasnifferData(mac);
+		//clearWifistasnifferData(mac);
 		//2:周边探测开关是否恢复初始 3:终端上线通知开关是否恢复初始 4:定时开关恢复初始
 		//initUserSettingData(mac);
 		//5:设备测速数据清除
@@ -194,7 +189,7 @@ public class BackendBusinessService {
 	/**
 	 * 清除周边探测收集的相关数据
 	 * @param mac
-	 */
+	 *//*
 	public void clearWifistasnifferData(String mac){
 		try{
 			int start = 0;
@@ -226,7 +221,7 @@ public class BackendBusinessService {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}
-	}
+	}*/
 	
 	/**
 	 * 清除设备的测速数据和实时速率残留数据
