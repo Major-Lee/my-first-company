@@ -23,13 +23,18 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	private final Logger logger = LoggerFactory.getLogger(UserWalletRpcService.class);
 	@Resource
 	private UserWalletUnitFacadeService userWalletUnitFacadeService;
-
+	
+	/**
+	 * update by dongrui 2016-06-14 start
+	 * 接口增加参数payment_type 提现类型【微信&对公账号】
+	 * update by dongtui 2016-06-14 E N D
+	 */
 	@Override
 	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(
-			int reckoner, int tuid, String withdraw_status, int pageNo, int pageSize) {
-		logger.info(String.format("pageWithdrawApplies with reckoner[%s] tuid [%s] withdraw_status[%s] pn[%s] ps[%s]",
-				reckoner,tuid,withdraw_status,pageNo,pageSize));
-		return userWalletUnitFacadeService.pageWithdrawApplies(reckoner, tuid, withdraw_status, pageNo, pageSize);
+			int reckoner, int tuid, String withdraw_status,String payment_type,int pageNo, int pageSize) {
+		logger.info(String.format("pageWithdrawApplies with reckoner[%s] tuid [%s] withdraw_status[%s] payment_type[%s] pn[%s] ps[%s]",
+				reckoner,tuid,withdraw_status,payment_type,pageNo,pageSize));
+		return userWalletUnitFacadeService.pageWithdrawApplies(reckoner, tuid, withdraw_status,payment_type,pageNo, pageSize);
 	}
 
 	@Override
