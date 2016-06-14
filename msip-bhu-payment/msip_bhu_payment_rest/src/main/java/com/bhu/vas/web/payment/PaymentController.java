@@ -306,7 +306,7 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
     			return;
     		}
-			int appId = org.apache.commons.lang.math.NumberUtils.toInt(appid);
+			int appId = Integer.parseInt(appid);
 			logger.info(String.format("apply payment bussiness appid[%s] secret[%s]", appid,secret));
 			boolean isAllowedBusiness = BusinessEnumType.CommdityApplication.verifyed(appId, secret);
 			if(isAllowedBusiness){
@@ -1272,8 +1272,8 @@ public class PaymentController extends BaseController{
 		
 		//获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表(以下仅供参考)//
 		String isNull = request.getParameter("out_trade_no");
-		//String locationUrl = PayHttpService.WEB_NOTIFY_URL;
-		String locationUrl = "http://192.168.66.157:9158/portal/default/reward/index.html?wlanusermac=3c:a3:48:b3:91:&wlanapmac=84:82:f4:31:3d:&wlanssid=+%C3%A5%C2%BF%C2%85%C3%A8%C2%99%C2%8E%C3%A5%C2%AE%C2%89%C3%A5%C2%85%C2%A8%C3%A5%C2%85%C2%B1%C3%A4%C2%BA%C2%ABWiFi&company=vivo";
+		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
+		//String locationUrl = "http://192.168.66.157:9158/portal/default/reward/index.html?wlanusermac=3c:a3:48:b3:91:&wlanapmac=84:82:f4:31:3d:&wlanssid=+%C3%A5%C2%BF%C2%85%C3%A8%C2%99%C2%8E%C3%A5%C2%AE%C2%89%C3%A5%C2%85%C2%A8%C3%A5%C2%85%C2%B1%C3%A4%C2%BA%C2%ABWiFi&company=vivo";
 		if (StringUtils.isBlank(isNull)) {
 			logger.info(String.format("get alipay return notify and go to out_trade_no [%s] ,user canceled this pay.", isNull));
 			//response.sendRedirect(locationUrl);
