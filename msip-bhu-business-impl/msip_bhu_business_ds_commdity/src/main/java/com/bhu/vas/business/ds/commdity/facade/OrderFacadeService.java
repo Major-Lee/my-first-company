@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.procedure.OrderStatisticsProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
@@ -454,6 +455,83 @@ public class OrderFacadeService {
 				builder(order));
 		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
 		return order;
+	}
+	
+	/**
+	 * 短信认证完成的订单处理逻辑
+	 * 更新订单状态为支付成功
+	 * 通知应用发货成功以后 更新支付状态为发货完成
+	 * @param success 支付是否成功
+	 * @param order 订单实体
+	 * @param bindUser 设备绑定的用户实体
+	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
+	 */
+	public Order smsOrderPaymentCompletedNotify(boolean success, Order order, User bindUser, Date paymented_ds,
+			String ait_time){
+		Integer changed_status = null;
+		Integer changed_process_status = null;
+		try{
+			String orderid = order.getId();
+			order.setPaymented_at(paymented_ds);
+
+			if(bindUser != null){
+				order.setUid(bindUser.getId());
+			}
+			
+			//支付成功
+			if(success){
+				logger.info(String.format("SmsOrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
+				//进行发货通知
+				boolean deliver_notify_ret = smsOrderPermissionNotify(order, bindUser, ait_time);
+				//判断通知发货成功 更新订单状态
+				if(deliver_notify_ret){
+					changed_status = OrderStatus.DeliverCompleted.getKey();
+					changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
+					logger.info(String.format("SmsOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+				}else{
+					logger.info(String.format("SmsOrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
+				}
+			}else{
+				changed_status = OrderStatus.PayFailured.getKey();
+				changed_process_status = OrderProcessStatus.PayFailured.getKey();
+			}
+		}catch(Exception ex){
+			throw ex; 
+		}finally{
+			orderStatusChanged(order, changed_status, changed_process_status);
+		}
+		return order;
+	}
+	
+	/**
+	 * 短信认证通知应用发货，按照约定的redis写入
+	 * @param order 订单实体
+	 * @param bindUser 设备绑定的用户实体
+	 * @return
+	 */
+	public boolean smsOrderPermissionNotify(Order order, User bindUser, String ait_time){
+		try{
+			if(order == null) {
+				logger.error("smsOrderPermissionNotify order data not exist");
+				return false;
+			}
+			
+			SMSPermissionThroughNotifyDTO smsPermissionNotifyDto = SMSPermissionThroughNotifyDTO.from(order, ait_time, bindUser);
+			if(smsPermissionNotifyDto != null){
+				//String requestDeliverNotifyMessage = JsonHelper.getJSONString(rewardPermissionNotifyDto);
+				String smsPermissionNotifyMessage = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(smsPermissionNotifyDto);
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(smsPermissionNotifyMessage);
+				//判断通知发货成功
+				if(notify_ret != null && notify_ret > 0){
+					logger.info(String.format("smsOrderPermissionNotify success deliver notify: message[%s] rpush_ret[%s]", smsPermissionNotifyMessage, notify_ret));
+					return true;
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error("smsOrderPermissionNotify exception", ex);
+		}
+		return false;
 	}
 	
 	/*************            validate             ****************/
