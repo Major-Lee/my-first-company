@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
-import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -34,7 +34,7 @@ public class TestRedisRpushOp {
 	    	for(int i = 1;i<count+1;i++){
 				String umac = umac_prefix.concat(String.format("%02d", RandomData.intNumber(99)));
 				String orderid = orderid_prefix.concat(String.format("%012d", order_sequence));
-	    		RequestDeliverNotifyDTO requestDeliverNotifyDto = new RequestDeliverNotifyDTO();
+	    		RewardPermissionThroughNotifyDTO requestDeliverNotifyDto = new RewardPermissionThroughNotifyDTO();
 	    		requestDeliverNotifyDto.setOrderid(orderid);
 	    		requestDeliverNotifyDto.setAmount("0.1");
 	    		requestDeliverNotifyDto.setApp_deliver_detail("14400");
