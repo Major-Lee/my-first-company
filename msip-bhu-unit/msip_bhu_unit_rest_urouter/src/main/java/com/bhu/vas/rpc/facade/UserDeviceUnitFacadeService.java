@@ -432,6 +432,7 @@ public class UserDeviceUnitFacadeService {
 							userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 							userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
 							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
+							userDeviceDTO.setO_scalelevel(wifiDeviceDocument.getO_scalelevel());
 							if(wifiDeviceDocument.getD_snk_allowturnoff() != null){
 								userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
 							}else{
