@@ -54,6 +54,7 @@ import com.bhu.vas.web.http.response.AppUnifiedOrderResponse;
 import com.bhu.vas.web.http.response.PaySuccessNotifyResponse;
 import com.bhu.vas.web.http.response.UnifiedOrderResponse;
 import com.bhu.vas.web.http.response.WithDrawNotifyResponse;
+import com.bhu.vas.web.model.MidasRespone;
 import com.bhu.vas.web.service.PayHttpService;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -397,13 +398,10 @@ public class PaymentController extends BaseController{
     			respone.setMsg(msg);
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(respone)));
     			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(respone));
-    		
     		}else if(type.equalsIgnoreCase("Midas")){
-    			Map<String,Object> midassuccessResult = new HashMap<String,Object>();
-    			midassuccessResult.put("id", goods_no);
-    			midassuccessResult.put("third_payinfo", msg);
-    			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(midassuccessResult)));
-    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
+    			MidasRespone midasResponeModel = new MidasRespone(goods_no,msg);
+    			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(midasResponeModel)));
+    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(midasResponeModel)));
     		}else{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(result)));
     			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
@@ -777,6 +775,7 @@ public class PaymentController extends BaseController{
     	}
     	//TODO：》》》》》》》》》》》》》》》》》》》》》》》》
     	String results = MidasUtils.submitOrder(reckoningId, total_fee, ip,paymentName,usermac);
+    	System.out.println("results********:"+results);
     	if("error".equalsIgnoreCase(results)){
     		result.setType("FAIL");
         	result.setUrl("支付请求失败");

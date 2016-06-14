@@ -71,17 +71,15 @@ public class MidasUtils {
 
         String results = SendGET(Config.token_url+Config.url_path,prestr+"&sig="+Config.sig);
         //{"ret":0,"token":"0A666C05BB76758931A7A3112771F0E815342","url_params":"/v1/m29/1450006356/mobile_goods_info?token_id=0A666C05BB76758931A7A3112771F0E815342","attach":""}
-        JSONObject aa = new JSONObject();
         try {
-			aa.getJSONObject(results);
-			
-			Integer ret = (Integer) aa.get("ret");
+        	JSONObject json = new JSONObject(results);
+			Integer ret = (Integer) json.get("ret");
 			if(ret != 0){
 				System.out.println(results);
 				return "error";
 			}
 			
-			Config.url_params = (String) aa.get("url_params");
+			Config.url_params = (String) json.get("url_params");
 			SortedMap<Object, Object> params = new TreeMap<Object, Object>();
 			params.put("goodstokenurl", Config.url_params);
         	params.put("type", "goods");
@@ -192,5 +190,19 @@ public class MidasUtils {
     public static String getTimeStamp() {
         return String.valueOf(System.currentTimeMillis() / 1000);
     }
+    
+    public static void main(String[] args) {
+    	String results = "{'ret':0,'token':'0A666C05BB76758931A7A3112771F0E815342','url_params':'/v1/m29/1450006356/mobile_goods_info?token_id=0A666C05BB76758931A7A3112771F0E815342','attach':''}";
+        JSONObject aa;
+		try {
+			aa = new JSONObject(results);
+			Integer ret = (Integer) aa.get("ret");
+			System.out.println(ret);
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+			
+	}
 }
 
