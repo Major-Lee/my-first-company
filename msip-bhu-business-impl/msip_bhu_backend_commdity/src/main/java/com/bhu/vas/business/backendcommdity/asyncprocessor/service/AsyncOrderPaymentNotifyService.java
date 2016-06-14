@@ -78,13 +78,14 @@ public class AsyncOrderPaymentNotifyService {
 			if(paymentNotifyType == null){
 				throw new RuntimeException(String.format("PaymentNotifyType unsupport message[%s]", message));
 			}
+			String messageNoPrefix = PaymentNotifyFactoryBuilder.determineActionMessage(message);
 			
 			switch(paymentNotifyType){
 				case NormalPaymentNotify:
-					orderPaymentNotifyCompletedHandle(message);
+					orderPaymentNotifyCompletedHandle(messageNoPrefix);
 					break;
 				case SMSPaymentNotify:
-					orderSMSNotifyCompletedHandle(message);
+					orderSMSNotifyCompletedHandle(messageNoPrefix);
 					break;
 				default:
 					throw new RuntimeException(String.format("PaymentNotifyType unsupport message[%s]", message));
