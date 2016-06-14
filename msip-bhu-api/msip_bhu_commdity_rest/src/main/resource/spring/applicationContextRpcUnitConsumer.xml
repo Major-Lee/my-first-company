@@ -30,6 +30,8 @@
  	<!--taokeeper-monitor https://github.com/alibaba/taokeeper -->
  	<dubbo:registry protocol="zookeeper" address="${zookeeper}" />
  	<dubbo:monitor protocol="registry"></dubbo:monitor>
-
+	
+	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-reference.xml"/>
     <import resource="classpath*:com/bhu/vas/api/rpc/commdity/spring/dubbo-bhu-commdity-reference.xml"/>
+    <import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-usercaptchacode-reference.xml"/>
 </beans>
