@@ -67,7 +67,7 @@ public class CommdityServiceTest extends BaseTest{
 		//int count = 10;
 		for(int i=0;i<batch_create_size;i++){
 			Commdity commdity = new Commdity();
-			commdity.setCategory(CommdityCategory.InternetLimit.getCategory());
+			commdity.setCategory(CommdityCategory.RewardInternetLimit.getCategory());
 			commdity.setPrice("0.25-10.25");
 			commdity.setStatus(CommdityStatus.OnSale.getKey());
 			commdity.setTags("tags"+i);

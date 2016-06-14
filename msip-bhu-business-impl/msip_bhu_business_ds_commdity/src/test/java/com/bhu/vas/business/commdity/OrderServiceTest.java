@@ -10,7 +10,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
@@ -113,7 +113,7 @@ public class OrderServiceTest extends BaseTest{
     			System.out.println(orderid);
     			Order order = orderService.getById(orderid);
     			Commdity commdity = commdityService.getById(order.getCommdityid());
-    			RequestDeliverNotifyDTO dto = RequestDeliverNotifyDTO.from(order, commdity, null);
+    			RewardPermissionThroughNotifyDTO dto = RewardPermissionThroughNotifyDTO.from(order, commdity, null);
     			System.out.println(JsonHelper.getJSONString(dto));
     			System.out.println(order.getId() + " - " + order.getAmount());
     		}

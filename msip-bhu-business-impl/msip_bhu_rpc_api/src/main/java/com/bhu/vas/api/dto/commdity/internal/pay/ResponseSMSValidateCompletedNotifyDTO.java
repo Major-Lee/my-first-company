@@ -12,7 +12,7 @@ import com.bhu.vas.api.rpc.commdity.model.Order;
  *
  */
 @SuppressWarnings("serial")
-public class ResponseSMSValidateCompletedNotifyDTO extends ResponsePaymentDTO implements ResponsePaymentNotifyType{
+public class ResponseSMSValidateCompletedNotifyDTO extends ResponsePaymentDTO implements ResponsePaymentNotifyTypeDTO{
 	//订单id
 	private String orderid;
 	//订单支付成功时间 

@@ -3,17 +3,17 @@ package com.bhu.vas.api.helper;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum PaymentNotifyType {
+public enum PermissionThroughNotifyType {
 	
-	NormalPaymentNotify("支付系统支付成功通知","normal payment notify","NLN"),
-	SMSPaymentNotify("短信认证成功通知","sms payment notify","SMN"),
+	RewardPermissionNotify("打赏许可放行通知","reward permission","RDN"),
+	SMSPermissionNotify("短信认证许可放行通知","sms permission","SSN"),
 	;
 	
-	static Map<String, PaymentNotifyType> allActionMessageTypes;
+	static Map<String, PermissionThroughNotifyType> allActionMessageTypes;
 	private String cname;
 	private String name;
 	private String prefix;
-	private PaymentNotifyType(String cname,String name, String prefix){
+	private PermissionThroughNotifyType(String cname,String name, String prefix){
 		this.cname = cname;
 		this.name = name;
 		this.prefix = prefix;
@@ -38,14 +38,14 @@ public enum PaymentNotifyType {
 		this.prefix = prefix;
 	}
 
-	public static PaymentNotifyType fromPrefix(String prefix){
+	public static PermissionThroughNotifyType fromPrefix(String prefix){
 		return allActionMessageTypes.get(prefix);
 	}
 	
 	static {
-		allActionMessageTypes = new HashMap<String,PaymentNotifyType>();
-		PaymentNotifyType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
-		for (PaymentNotifyType type : types){
+		allActionMessageTypes = new HashMap<String,PermissionThroughNotifyType>();
+		PermissionThroughNotifyType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+		for (PermissionThroughNotifyType type : types){
 			allActionMessageTypes.put(type.getPrefix(), type);
 		}
 	}

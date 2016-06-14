@@ -8,6 +8,9 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.reflection.wrapper.CollectionWrapper;
 
+import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
+import com.bhu.vas.api.helper.PermissionThroughNotifyFactoryBuilder;
 import com.smartwork.msip.cores.helper.xml.jaxb.JAXBXMLHelper;
 
 
@@ -79,5 +82,8 @@ public class Test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-    }  
+        
+        System.out.println(PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(new RewardPermissionThroughNotifyDTO()));
+        System.out.println(PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(new SMSPermissionThroughNotifyDTO()));
+	}  
 }
