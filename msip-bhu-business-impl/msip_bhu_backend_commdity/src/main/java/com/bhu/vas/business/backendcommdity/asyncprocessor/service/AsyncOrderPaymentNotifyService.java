@@ -1,5 +1,7 @@
 package com.bhu.vas.business.backendcommdity.asyncprocessor.service;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -122,15 +124,6 @@ public class AsyncOrderPaymentNotifyService {
 		}
 	}
 	
-	/**
-	 * 短信认证通过通知
-	 * @param message
-	 */
-	public void orderSMSNotifyCompletedHandle(String message){
-		ResponseSMSValidateCompletedNotifyDTO smsv_dto = PaymentNotifyFactoryBuilder.fromJson(message, ResponseSMSValidateCompletedNotifyDTO.class);
-		//扣除虎钻
-		//通知放行
-	}
 	
 	/********************          Receipt           ********************/
 	
@@ -294,4 +287,25 @@ public class AsyncOrderPaymentNotifyService {
 		userWalletFacadeService.doWithdrawNotifyFromRemote(orderId, successed);
 	}
 	
+	
+	/********************          非支付系统handle           ********************/
+	
+	/**
+	 * 短信认证通过通知
+	 * @param message
+	 */
+	public void orderSMSNotifyCompletedHandle(String message){
+		ResponseSMSValidateCompletedNotifyDTO smsv_dto = PaymentNotifyFactoryBuilder.fromJson(message, ResponseSMSValidateCompletedNotifyDTO.class);
+		String orderid = smsv_dto.getOrderid();
+		boolean success = smsv_dto.isSuccess();
+		Date paymented_ds = smsv_dto.getPaymented_ds();
+		//扣除虎钻
+		
+		//订单处理逻辑 
+		Order order = orderFacadeService.validateOrderId(orderid);
+		User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
+		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+		
+		orderFacadeService.smsOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
+	}
 }
