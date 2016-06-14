@@ -37,6 +37,9 @@ public class TokenValidateControllerInterceptor extends AbstractTokenValidateCon
 		ignoreTokensValidateUrlSet.add("/commdity/interval/amount");
 		ignoreTokensValidateUrlSet.add("/order/query/umac/paymenturl");
 		ignoreTokensValidateUrlSet.add("/order/query/umac/status");
+		ignoreTokensValidateUrlSet.add("/order/sms/fetch_captcha");
+		ignoreTokensValidateUrlSet.add("/order/sms/validate_captcha");
+		
 		//ignoreTokensValidateUrlSet.add("/order/query/umac/status");
 	}
 	

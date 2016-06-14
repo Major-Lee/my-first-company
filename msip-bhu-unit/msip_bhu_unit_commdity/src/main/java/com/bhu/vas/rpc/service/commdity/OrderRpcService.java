@@ -105,7 +105,7 @@ public class OrderRpcService implements IOrderRpcService{
 		logger.info(String.format("createSMSOrder with mac[%s] umac[%s] umactype[%s] context[%s]",
 				mac, umac, umactype, context));
 		//return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context);
-		return null;
+		return orderUnitFacadeService.createSMSOrder(mac, umac, umactype, context);
 	}
 	
 

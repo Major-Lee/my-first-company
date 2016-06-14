@@ -114,10 +114,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 //    	while(true){
 //    		simulateUpayDrawPaymentCompletedNotify(true);
 //    	}
-    	//simulateDeliverNotify();
+    	simulateDeliverNotify();
     	//simulateMultiDeliverNotify();
-    	//simulateResponsePaymentCompletedNotify("10022016061400000000000000001006", true);
-    	simulateResponseSMSPaymentCompletedNotify("10022016060500000000000000001008", true);
+    	//simulateResponsePaymentCompletedNotify("10002016061400000000000000001023", true);
+    	//simulateResponseSMSPaymentCompletedNotify("10022016060500000000000000001008", true);
     }
     
     /*************           test           **************/
@@ -172,8 +172,9 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 		requestDeliverNotifyDto.setPaymented_ds(DateTimeHelper.getDateTime());
 		requestDeliverNotifyDto.setCommdityid(1);
 		requestDeliverNotifyDto.setContext("aaa");
-		//String notify_message = JsonHelper.getJSONString(requestDeliverNotifyDto);
-		String notify_message = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(requestDeliverNotifyDto);
+		String notify_message = JsonHelper.getJSONString(requestDeliverNotifyDto);
+		System.out.println(notify_message);
+		//String notify_message = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(requestDeliverNotifyDto);
 		//for(int i = 0;i<1000;i++){
 		System.out.println("ok1");
 		CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(notify_message);

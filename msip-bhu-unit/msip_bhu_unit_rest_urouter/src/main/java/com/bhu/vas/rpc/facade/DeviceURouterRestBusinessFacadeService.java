@@ -31,8 +31,6 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
-import com.bhu.vas.api.dto.wifistasniffer.UserTerminalFocusDTO;
-import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
@@ -80,13 +78,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorS
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.UserTerminalFocusHashService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
-import com.bhu.vas.business.ds.builder.WifiStasnifferHelper;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -95,7 +87,6 @@ import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
@@ -1552,7 +1543,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	public RpcResponseDTO<Map<String, Object>> urouterWSRecent(Integer uid, String mac, int start, int size){
 		try{
 			//System.out.println("step1");
-			if(StringUtils.isEmpty(mac)){
+			/*if(StringUtils.isEmpty(mac)){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 			}
 			
@@ -1580,8 +1571,10 @@ public class DeviceURouterRestBusinessFacadeService {
 				vto.setLast_snifftime(Double.valueOf(tuple.getScore()).longValue());
 				vto.setTt(MacDictParserFilterHelper.prefixMactch(tuple.getElement(),true,false));
 				vto_list.add(vto);
-			}
+			}*/
 			//System.out.println("step4:"+vto_list.size());
+			List<URouterWSRecentVTO> vto_list = new ArrayList<>();
+			long count = 0l;
 			Map<String, Object> payload = PageHelper.partialAllList(vto_list, count, start, size);
 			//System.out.println("step5:"+payload);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
@@ -1600,7 +1593,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<Map<String, Object>> urouterWSNeighbour(Integer uid, String mac, int start, int size){
 		try{
-			if(StringUtils.isEmpty(mac)){
+			/*if(StringUtils.isEmpty(mac)){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 			}
 
@@ -1629,13 +1622,11 @@ public class DeviceURouterRestBusinessFacadeService {
 					vto.setNick(focus_dto.getNick());
 					vto.setFocus(focus_dto.isFocus());
 				}
-/*				String last_time = last_time_strings.get(cursor);
-				if(!StringUtils.isEmpty(last_time)){
-					vto.setLast_snifftime(Long.parseLong(last_time));
-				}*/
 				vto_list.add(vto);
 				cursor++;
-			}
+			}*/
+			List<URouterWSHotVTO> vto_list = new ArrayList<URouterWSHotVTO>();
+			long count = 0l;
 			Map<String, Object> payload = PageHelper.partialAllList(vto_list, count, start, size);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
@@ -1652,7 +1643,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<Boolean> urouterWSFocus(Integer uid, String hd_mac, boolean focus){
 		try{
-			UserTerminalFocusHashService.getInstance().setFocusValue(uid, hd_mac, focus);
+			//UserTerminalFocusHashService.getInstance().setFocusValue(uid, hd_mac, focus);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -1668,7 +1659,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<Boolean> urouterWSNick(Integer uid, String hd_mac, String nick){
 		try{
-			UserTerminalFocusHashService.getInstance().setNickValue(uid, hd_mac, nick);
+			//UserTerminalFocusHashService.getInstance().setNickValue(uid, hd_mac, nick);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -1686,7 +1677,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<Map<String,Object>> urouterWSDetails(Integer uid, String mac, String hd_mac, int start, int size) {
 		try{
-			deviceFacadeService.validateUserDevice(uid, mac);
+			/*deviceFacadeService.validateUserDevice(uid, mac);
 			
 			long count = TerminalDetailRecentSortedSetService.getInstance().terminalDetailRecentSize(mac, hd_mac);
 			if(count == 0){
@@ -1719,7 +1710,9 @@ public class DeviceURouterRestBusinessFacadeService {
 					dtos.add(dto);
 				}
 				index++;
-			}
+			}*/
+			List<TerminalDetailDTO> dtos = new ArrayList<TerminalDetailDTO>();
+			long count = 0l;
 			Map<String, Object> payload = PageHelper.partialAllList(dtos, count, start, size);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
@@ -1735,14 +1728,15 @@ public class DeviceURouterRestBusinessFacadeService {
 	 */
 	public RpcResponseDTO<URouterWSCommunityVTO> urouterWSCommunity(Integer uid, String mac) {
 		try{
-			deviceFacadeService.validateUserDevice(uid, mac);
+			/*deviceFacadeService.validateUserDevice(uid, mac);
 			
 			Map<String, String> communityCountByTypes = TerminalDeviceTypeCountHashService.getInstance().getAll(mac);
 			if(communityCountByTypes == null || communityCountByTypes.isEmpty()){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 			}
 			URouterWSCommunityVTO vto = WifiStasnifferHelper.communityType(communityCountByTypes);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);*/
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}

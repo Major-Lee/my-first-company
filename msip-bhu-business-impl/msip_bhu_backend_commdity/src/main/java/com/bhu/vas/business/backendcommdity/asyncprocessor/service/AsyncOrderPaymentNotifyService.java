@@ -1,6 +1,7 @@
 package com.bhu.vas.business.backendcommdity.asyncprocessor.service;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Resource;
 
@@ -9,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
+
+
+
 
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
@@ -20,6 +24,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
+import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.PaymentNotifyType;
@@ -28,13 +33,18 @@ import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
+import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
+import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.push.business.PushService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -301,12 +311,63 @@ public class AsyncOrderPaymentNotifyService {
 		boolean success = smsv_dto.isSuccess();
 		Date paymented_ds = smsv_dto.getPaymented_ds();
 		//扣除虎钻
-		
+		final AtomicLong vcurrency_current_leave = new AtomicLong(0l);
 		//订单处理逻辑 
 		Order order = orderFacadeService.validateOrderId(orderid);
 		User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
+		if(bindUser != null && bindUser.getId().intValue() >0){
+			int uid = bindUser.getId().intValue();
+			String mobileno = bindUser.getMobileno();
+			SnkAuthenticateResultType ret = userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(uid,orderid, order.getVcurrency(), "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
+				@Override
+				public boolean beforeCheck(int uid, long vcurrency_cost,long vcurrency_has) {
+					//业务需求 如果短信验证通过则直接扣款，负数也扣款
+					/*if(vcurrency_has < vcurrency_cost){
+						return false;
+					}else{
+						return true;
+					}*/
+					return true;
+				}
+				@Override
+				public String after(int uid,long vcurrency_leave) {
+					vcurrency_current_leave.addAndGet(vcurrency_leave);
+					return null;
+				}
+	   		});
+	   		//都放行
+	   		System.out.println(ret);
+	   		switch(ret){
+	   			case Success:
+	   				//通知uportal可以放行
+	   				break;
+	   			case SuccessButThresholdNeedCharging:
+	   				//通知uportal可以放行
+	   				//判定是否存在标记位 进行短消息充值提醒通知
+	   				if(SnkChargingMarkerService.getInstance().level1marker(uid) == 1 && StringUtils.isNotEmpty(mobileno)){
+		   				String smsg_snk_needcharging = String.format(BusinessRuntimeConfiguration.Internal_SNK_NeedCharging_Template,DateTimeHelper.formatDate(DateTimeHelper.FormatPattern13), vcurrency_current_leave);
+		   				String response_snk_needcharging = SmsSenderFactory.buildSender(
+								BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_needcharging, mobileno);
+						logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",mobileno,smsg_snk_needcharging,response_snk_needcharging));
+	   				}
+	   				break;
+	   			case FailedThresholdVcurrencyNotsufficient:
+	   				//通知uportal可以放行
+	   				//远程通知uportal 静态页 关闭访客网络
+	   				//判定是否存在标记位 进行短消息关闭通知
+	   				if(SnkChargingMarkerService.getInstance().level2marker(uid) == 1 && StringUtils.isNotEmpty(mobileno)){
+		   				String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_SNK_Stop_Template,DateTimeHelper.formatDate(DateTimeHelper.FormatPattern13), vcurrency_current_leave);
+		   				String response_snk_stop = SmsSenderFactory.buildSender(
+								BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, mobileno);
+						logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",mobileno,smsg_snk_stop,response_snk_stop));
+	   				}
+	   				break;
+	   			case Failed:
+	   				//扣款失败，原因不明，依然通知uportal可以放行
+	   				break;
+	   		}
+		}
 		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
-		
 		orderFacadeService.smsOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
 	}
 }
