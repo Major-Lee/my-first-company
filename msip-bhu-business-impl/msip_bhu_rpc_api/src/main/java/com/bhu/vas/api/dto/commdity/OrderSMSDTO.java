@@ -17,7 +17,8 @@ public class OrderSMSDTO implements java.io.Serializable{
 	//订单类型
 	private Integer type;
 	//订单金额
-	private String amount;
+	//private String amount;
+	private String context;
 	//虚拟币
 	private long vcurrency;
 	//订单状态
@@ -57,11 +58,11 @@ public class OrderSMSDTO implements java.io.Serializable{
 	public void setType(Integer type) {
 		this.type = type;
 	}
-	public String getAmount() {
-		return amount;
+	public String getContext() {
+		return context;
 	}
-	public void setAmount(String amount) {
-		this.amount = amount;
+	public void setContext(String context) {
+		this.context = context;
 	}
 	public long getVcurrency() {
 		return vcurrency;

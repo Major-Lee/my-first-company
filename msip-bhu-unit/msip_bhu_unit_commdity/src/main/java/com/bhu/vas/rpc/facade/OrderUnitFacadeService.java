@@ -14,6 +14,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyDTO;
+import com.bhu.vas.api.dto.commdity.OrderSMSDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.dto.commdity.UserRechargeVCurrencyOrderDTO;
@@ -405,6 +406,48 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	/**
+	 * 生成短信认证订单
+	 * @param mac 设备mac
+	 * @param umac 用户mac
+	 * @param umactype 用户终端类型
+	 * @param context 验证的手机号
+	 * @return
+	 */
+	public RpcResponseDTO<OrderSMSDTO> createSMSOrder(String mac, String umac, Integer umactype,  String context){
+		try{
+			//orderFacadeService.supportedAppId(appid);
+			//验证mac umac
+			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+			}
+			
+			String mac_lower = mac.toLowerCase();
+			String umac_lower = umac.toLowerCase();
+			//检查设备是否接入过
+			WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
+			if(wifiDevice == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+			}
+			//生成订单
+			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
+			Order order = orderFacadeService.createSMSOrder(mac_dut, mac_dut, umac_lower, umactype, context);
+			
+			OrderSMSDTO orderDto = new OrderSMSDTO();
+			BeanUtils.copyProperties(order, orderDto);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("CreateOrder Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 	
 	private String distillOwnercash(String orderid,List<UserWalletLog> walletLogs){
 		if(walletLogs != null && !walletLogs.isEmpty()){
