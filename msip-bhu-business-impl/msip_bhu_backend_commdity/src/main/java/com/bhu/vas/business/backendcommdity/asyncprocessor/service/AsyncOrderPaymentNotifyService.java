@@ -279,6 +279,11 @@ public class AsyncOrderPaymentNotifyService {
 					orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP);
 			userWalletFacadeService.vcurrencyToUserWallet(order.getUid(), order.getId(), UWalletTransMode.RealMoneyPayment,
 					Double.parseDouble(order.getAmount()), order.getVcurrency(), desc);
+			if(BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient < order.getVcurrency()){
+				//清除标记
+				SnkChargingMarkerService.getInstance().clear(order.getUid());
+				//通知uportal清除标记位
+			}
 		}
 		
 		
