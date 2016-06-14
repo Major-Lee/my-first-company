@@ -306,7 +306,7 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
     			return;
     		}
-			int appId = org.apache.commons.lang.math.NumberUtils.toInt(appid);
+			int appId = Integer.parseInt(appid);
 			logger.info(String.format("apply payment bussiness appid[%s] secret[%s]", appid,secret));
 			boolean isAllowedBusiness = BusinessEnumType.CommdityApplication.verifyed(appId, secret);
 			if(isAllowedBusiness){
