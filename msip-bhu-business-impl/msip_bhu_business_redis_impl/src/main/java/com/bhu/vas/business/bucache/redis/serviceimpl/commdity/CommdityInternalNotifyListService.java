@@ -8,7 +8,7 @@ import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
-import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
@@ -139,7 +139,7 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     }
     
     public static void simulateDeliverNotify(){
-		RequestDeliverNotifyDTO requestDeliverNotifyDto = new RequestDeliverNotifyDTO();
+		RewardPermissionThroughNotifyDTO requestDeliverNotifyDto = new RewardPermissionThroughNotifyDTO();
 		requestDeliverNotifyDto.setOrderid("10012016031800000000000000000030");
 		requestDeliverNotifyDto.setAmount("0.1");
 		requestDeliverNotifyDto.setApp_deliver_detail("14400");

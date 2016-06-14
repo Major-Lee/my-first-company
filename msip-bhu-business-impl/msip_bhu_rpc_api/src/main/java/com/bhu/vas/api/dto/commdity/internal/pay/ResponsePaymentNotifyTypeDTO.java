@@ -7,7 +7,7 @@ package com.bhu.vas.api.dto.commdity.internal.pay;
  * @author tangzichao
  *
  */
-public interface ResponsePaymentNotifyType{
+public interface ResponsePaymentNotifyTypeDTO{
 	public String getPaymentNotifyType();
 }
 

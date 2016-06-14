@@ -11,13 +11,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
-import com.bhu.vas.api.dto.commdity.internal.portal.RequestDeliverNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.procedure.OrderStatisticsProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
+import com.bhu.vas.api.helper.PermissionThroughNotifyFactoryBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -28,7 +29,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalA
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -246,7 +246,7 @@ public class OrderFacadeService {
 
 				logger.info(String.format("RewardOrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
 				//进行发货通知
-				boolean deliver_notify_ret = rewardOrderDeliverNotify(order, bindUser,ait_time);
+				boolean deliver_notify_ret = rewardOrderPermissionNotify(order, bindUser,ait_time);
 				//判断通知发货成功 更新订单状态
 				if(deliver_notify_ret){
 					changed_status = OrderStatus.DeliverCompleted.getKey();
@@ -293,26 +293,27 @@ public class OrderFacadeService {
 	 * @param bindUser 设备绑定的用户实体
 	 * @return
 	 */
-	public boolean rewardOrderDeliverNotify(Order order, User bindUser,String ait_time){
+	public boolean rewardOrderPermissionNotify(Order order, User bindUser,String ait_time){
 		try{
 			if(order == null) {
-				logger.error("rewardOrderDeliverNotify order data not exist");
+				logger.error("rewardOrderPermissionNotify order data not exist");
 				return false;
 			}
 			
-			RequestDeliverNotifyDTO requestDeliverNotifyDto = RequestDeliverNotifyDTO.from(order, ait_time, bindUser);
-			if(requestDeliverNotifyDto != null){
-				String requestDeliverNotifyMessage = JsonHelper.getJSONString(requestDeliverNotifyDto);
-				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(requestDeliverNotifyMessage);
+			RewardPermissionThroughNotifyDTO rewardPermissionNotifyDto = RewardPermissionThroughNotifyDTO.from(order, ait_time, bindUser);
+			if(rewardPermissionNotifyDto != null){
+				//String requestDeliverNotifyMessage = JsonHelper.getJSONString(rewardPermissionNotifyDto);
+				String rewardPermissionNotifyMessage = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(rewardPermissionNotifyDto);
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(rewardPermissionNotifyMessage);
 				//判断通知发货成功
 				if(notify_ret != null && notify_ret > 0){
-					logger.info(String.format("RewardOrderDeliverNotify success deliver notify: message[%s] rpush_ret[%s]", requestDeliverNotifyMessage, notify_ret));
+					logger.info(String.format("rewardOrderPermissionNotify success deliver notify: message[%s] rpush_ret[%s]", rewardPermissionNotifyMessage, notify_ret));
 					return true;
 				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error("RewardOrderDeliverNotify exception", ex);
+			logger.error("rewardOrderPermissionNotify exception", ex);
 		}
 		return false;
 	}

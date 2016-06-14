@@ -2,7 +2,7 @@ package com.bhu.vas.api.helper;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentNotifyType;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentNotifyTypeDTO;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -22,16 +22,16 @@ public class PaymentNotifyFactoryBuilder {
 			return messagejsonHasPrefix;
     	return messagejsonHasPrefix.substring(3);
 	}
-	public static <T extends ResponsePaymentNotifyType> T fromJson(String messagejson,Class<T> classz){
+	public static <T extends ResponsePaymentNotifyTypeDTO> T fromJson(String messagejson,Class<T> classz){
 		if(StringUtils.isEmpty(messagejson)) return null;
 		return JsonHelper.getDTO(messagejson, classz);
 	}
-	public static String toJsonHasPrefix(ResponsePaymentNotifyType message){
+	public static String toJsonHasPrefix(ResponsePaymentNotifyTypeDTO message){
 		StringBuilder sb = new StringBuilder();
 		sb.append(message.getPaymentNotifyType()).append(toJson(message));
 		return sb.toString();
 	}
-	public static String toJson(ResponsePaymentNotifyType message){
+	public static String toJson(ResponsePaymentNotifyTypeDTO message){
 		return JsonHelper.getJSONString(message,false);
 	}
 }

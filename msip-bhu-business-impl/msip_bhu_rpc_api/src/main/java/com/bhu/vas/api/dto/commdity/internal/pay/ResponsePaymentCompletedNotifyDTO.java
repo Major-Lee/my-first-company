@@ -9,7 +9,7 @@ import com.bhu.vas.api.helper.PaymentNotifyType;
  *
  */
 @SuppressWarnings("serial")
-public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO implements ResponsePaymentNotifyType{
+public class ResponsePaymentCompletedNotifyDTO extends ResponsePaymentDTO implements ResponsePaymentNotifyTypeDTO{
 	//订单id
 	private String orderid;
 	//订单支付成功时间 yyyy-MM-dd HH:mm:ss
