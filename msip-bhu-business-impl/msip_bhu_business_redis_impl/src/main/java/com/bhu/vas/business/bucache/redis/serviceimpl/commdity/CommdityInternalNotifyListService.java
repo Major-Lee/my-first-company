@@ -1,5 +1,6 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.commdity;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -8,7 +9,11 @@ import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
+import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
+import com.bhu.vas.api.helper.PermissionThroughNotifyFactoryBuilder;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
@@ -109,9 +114,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 //    	while(true){
 //    		simulateUpayDrawPaymentCompletedNotify(true);
 //    	}
-    	//simulateDeliverNotify();
+    	simulateDeliverNotify();
     	//simulateMultiDeliverNotify();
-    	simulateResponsePaymentCompletedNotify("10012016031800000000000000000030", true);
+    	//simulateResponsePaymentCompletedNotify("10002016061400000000000000001023", true);
+    	//simulateResponseSMSPaymentCompletedNotify("10022016060500000000000000001008", true);
     }
     
     /*************           test           **************/
@@ -126,7 +132,24 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     		opn_dto.setErrorcode("001");
     		opn_dto.setMsg("simulate error msg");
     	}
-    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(JsonHelper.getJSONString(opn_dto));
+    	//String json = JsonHelper.getJSONString(opn_dto);
+    	String json = PaymentNotifyFactoryBuilder.toJson(opn_dto);
+    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(json);
+    }
+    
+    public static void simulateResponseSMSPaymentCompletedNotify(String orderid, boolean success){
+    	ResponseSMSValidateCompletedNotifyDTO opn_dto = new ResponseSMSValidateCompletedNotifyDTO();
+    	opn_dto.setSuccess(success);
+    	opn_dto.setOrderid(orderid);
+    	//opn_dto.setPaymented_ts(System.currentTimeMillis());
+    	opn_dto.setPaymented_ds(new Date());
+    	if(!success){
+    		opn_dto.setErrorcode("001");
+    		opn_dto.setMsg("simulate error msg");
+    	}
+    	//String json = JsonHelper.getJSONString(opn_dto);
+    	String json = PaymentNotifyFactoryBuilder.toJsonHasPrefix(opn_dto);
+    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(json);
     }
 
     public static void simulateUpayDrawPaymentCompletedNotify(boolean success){
@@ -150,6 +173,28 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 		requestDeliverNotifyDto.setCommdityid(1);
 		requestDeliverNotifyDto.setContext("aaa");
 		String notify_message = JsonHelper.getJSONString(requestDeliverNotifyDto);
+		System.out.println(notify_message);
+		//String notify_message = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(requestDeliverNotifyDto);
+		//for(int i = 0;i<1000;i++){
+		System.out.println("ok1");
+		CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(notify_message);
+		//}
+		System.out.println("ok");
+    }
+    
+    public static void simulateSMSDeliverNotify(){
+    	SMSPermissionThroughNotifyDTO requestDeliverNotifyDto = new SMSPermissionThroughNotifyDTO();
+		requestDeliverNotifyDto.setOrderid("10012016031800000000000000000030");
+		requestDeliverNotifyDto.setVcurrency(20);
+		requestDeliverNotifyDto.setApp_deliver_detail("14400");
+		requestDeliverNotifyDto.setBu_mobileno("18673117874");
+		requestDeliverNotifyDto.setMac("84:82:f4:09:54:27");
+		requestDeliverNotifyDto.setUmac("38:bc:1a:2f:7e:2a");
+		requestDeliverNotifyDto.setPaymented_ds(DateTimeHelper.getDateTime());
+		requestDeliverNotifyDto.setCommdityid(9);
+		requestDeliverNotifyDto.setContext("aaa");
+		//String notify_message = JsonHelper.getJSONString(requestDeliverNotifyDto);
+		String notify_message = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(requestDeliverNotifyDto);
 		//for(int i = 0;i<1000;i++){
 		System.out.println("ok1");
 		CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(notify_message);
@@ -159,7 +204,7 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     
     public static void simulateMultiDeliverNotify(){
     	
-    	simulateResponsePaymentCompletedNotify("10012016031800000000000000000030", true);
+    	simulateResponsePaymentCompletedNotify("10002016061400000000000000000988", true);
 /*    	String umac_prefix = "38:bc:1a:2f:7e:";
     	String orderid_prefix = "10012016010100000000";
     	//System.out.println(umac_prefix.concat(String.format("%02d", RandomData.intNumber(99))));

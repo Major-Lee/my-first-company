@@ -426,7 +426,7 @@ public class OrderFacadeService {
 	 * @param context 验证的手机号
 	 * @return
 	 */
-	public Order createSMSOrder(String mac, String umac, Integer umactype, String context){
+	public Order createSMSOrder(String mac, String mac_dut, String umac, Integer umactype, String context){
 		//商品信息验证
 		Commdity commdity = commdityFacadeService.validateCommdity(SMS_VALIDATE_COMMDITY_ID);
 		//验证商品是否合理
@@ -443,6 +443,7 @@ public class OrderFacadeService {
 		order.setStatus(OrderStatus.PaySuccessed.getKey());
 		order.setProcess_status(OrderProcessStatus.PaySuccessed.getKey());
 		order.setMac(umac);
+		order.setMac_dut(mac_dut);
 		order.setUmac(umac);
 		order.setUmactype(umactype);
 		order.setVcurrency(vcurrency);
