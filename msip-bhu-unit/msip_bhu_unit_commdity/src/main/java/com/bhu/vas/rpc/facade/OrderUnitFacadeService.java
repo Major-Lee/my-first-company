@@ -435,7 +435,7 @@ public class OrderUnitFacadeService {
 			}
 			//生成订单
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
-			Order order = orderFacadeService.createSMSOrder(mac_dut, mac_dut, umac_lower, umactype, context);
+			Order order = orderFacadeService.createSMSOrder(mac_lower, mac_dut, umac_lower, umactype, context);
 			
 			OrderSMSDTO orderDto = new OrderSMSDTO();
 			BeanUtils.copyProperties(order, orderDto);
