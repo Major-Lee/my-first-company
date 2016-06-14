@@ -442,7 +442,7 @@ public class OrderFacadeService {
 		order.setType(commdity.getCategory());
 		order.setStatus(OrderStatus.PaySuccessed.getKey());
 		order.setProcess_status(OrderProcessStatus.PaySuccessed.getKey());
-		order.setMac(umac);
+		order.setMac(mac);
 		order.setMac_dut(mac_dut);
 		order.setUmac(umac);
 		order.setUmactype(umactype);
