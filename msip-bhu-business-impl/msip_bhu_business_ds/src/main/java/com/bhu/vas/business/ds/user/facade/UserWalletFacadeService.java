@@ -1,6 +1,8 @@
 package com.bhu.vas.business.ds.user.facade;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -35,6 +37,7 @@ import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
+import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
@@ -86,6 +89,9 @@ public class UserWalletFacadeService{
 	public FincialStatisticsService getFincialStatisticsService() {
 		return fincialStatisticsService;
 	}
+	
+	@Resource
+	private UserPublishAccountFacadeService userPublishAccountFacadeService;
 	public void setFincialStatisticsService(
 			FincialStatisticsService fincialStatisticsService) {
 		this.fincialStatisticsService = fincialStatisticsService;
@@ -93,7 +99,21 @@ public class UserWalletFacadeService{
 	public UserWalletDetailVTO walletDetail(int uid){
 		UserWallet userWallet = userWallet(uid);
 		UserWalletDetailVTO walletDetail = userWallet.toUserWalletDetailVTO();
-		walletDetail.setPayments(userOAuthFacadeService.fetchRegisterIdentifies(uid,true));
+		//add by dongrui 2016-06-14 start
+		//根据uid查询对公账号是否存在
+		UserPublishAccountDetailVTO publicAccountDetail = userPublishAccountFacadeService.publicAccountDetail(uid);
+		if(publicAccountDetail == null){
+			walletDetail.setPayments(userOAuthFacadeService.fetchRegisterIdentifies(uid,true));
+		}else{
+			UserOAuthStateDTO userOAuthStateDTO = new UserOAuthStateDTO();
+			userOAuthStateDTO.setAuid(String.valueOf(publicAccountDetail.getUid()));
+			userOAuthStateDTO.setNick(publicAccountDetail.getAccount_name());
+			userOAuthStateDTO.setIdentify("public");
+			List<UserOAuthStateDTO> userOAuthStateList = new ArrayList<UserOAuthStateDTO>();
+			userOAuthStateList.add(userOAuthStateDTO);	
+			walletDetail.setPayments(userOAuthStateList);
+		}
+		//add by dongrui 2016-06-14 E N D
 		return walletDetail;
 	}
 	/**
@@ -604,7 +624,7 @@ public class UserWalletFacadeService{
 	 * @param pageSize
 	 * @return
 	 */
-	public TailPage<UserWalletWithdrawApply> pageWithdrawApplies(Integer uid,BusinessEnumType.UWithdrawStatus status,int pageNo,int pageSize){
+	public TailPage<UserWalletWithdrawApply> pageWithdrawApplies(Integer uid,BusinessEnumType.UWithdrawStatus status,String payment_type,int pageNo,int pageSize){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
 		if(uid != null && uid.intValue()>0){
@@ -612,6 +632,11 @@ public class UserWalletFacadeService{
 		}
 		if(status != null)
 			createCriteria.andColumnEqualTo("withdraw_oper", status.getKey());
+		//add by dongrui 2016-06-14 start
+		if(StringUtils.isNotBlank(payment_type)){
+			createCriteria.andColumnEqualTo("payment_type", payment_type);
+		}
+		//add by dongrui 2016-06-14 E N D
 		createCriteria.andSimpleCaulse(" 1=1 ");
     	mc.setPageNumber(pageNo);
     	mc.setPageSize(pageSize);

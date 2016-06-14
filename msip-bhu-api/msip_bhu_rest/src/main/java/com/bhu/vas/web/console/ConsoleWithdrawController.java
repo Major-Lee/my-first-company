@@ -43,6 +43,11 @@ public class ConsoleWithdrawController extends BaseController {
 	 * @param withdraw_status 指定提现申请的状态
 	 * @param pageNo 分页no
 	 * @param pageSize 分页size
+	 * 
+	 * /**
+	 * update by dongrui 2016-06-14 start
+	 * 接口增加参数payment_type 提现类型【微信&对公账号】
+	 * update by dongtui 2016-06-14 E N D
 	 */
     @ResponseBody()
     @RequestMapping(value = "/fetch_applies", method = {RequestMethod.POST})
@@ -52,6 +57,7 @@ public class ConsoleWithdrawController extends BaseController {
             @RequestParam(required = true) int uid,
             @RequestParam(required = false,defaultValue = "0", value = "tuid") int tuid,
             @RequestParam(required = false,defaultValue = "", value = "status") String withdraw_status,
+            @RequestParam(required = false, defaultValue = "weixin", value = "payment_type") String payment_type,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		) {
@@ -60,7 +66,7 @@ public class ConsoleWithdrawController extends BaseController {
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pageWithdrawApplies(uid, tuid, withdraw_status, pageNo, pageSize);
+		RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pageWithdrawApplies(uid, tuid, withdraw_status,payment_type,pageNo, pageSize);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
