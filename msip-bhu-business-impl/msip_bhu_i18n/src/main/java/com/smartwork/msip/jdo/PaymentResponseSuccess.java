@@ -12,7 +12,7 @@ public class PaymentResponseSuccess extends Response{
 	private String code;
     private String codemsg;
     @JsonInclude(Include.NON_NULL)
-    Object params;
+    Object result;
 	public PaymentResponseSuccess() {
 		super();
 		this.setSuccess(true);
@@ -35,14 +35,14 @@ public class PaymentResponseSuccess extends Response{
         this.code = responseSuccessCode.code();
         Assert.notNull(this.code, "msgcode must be set!");
         this.codemsg = LocalI18NMessageSource.getInstance().getMessage(responseSuccessCode.i18n(),txts);
-        this.params = result;
+        this.result = result;
     }
 	
-	public Object getParams() {
-		return params;
+	public Object getresult() {
+		return result;
 	}
-	public void setParams(Object params) {
-		this.params = params;
+	public void setresult(Object result) {
+		this.result = result;
 	}
 	public static PaymentResponseSuccess embed(Object result){
 		PaymentResponseSuccess re = new PaymentResponseSuccess(PaymentResponseSuccess.SUCCESS.getMsg(),
