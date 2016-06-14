@@ -80,7 +80,6 @@ public class SnkChargingMarkerService extends AbstractRelationHashCache{
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.MARKER);
 	}
 	
-	
 	public static void main(String[] argv){
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.UserMarkPrefixKey);
 		sb.append(33).append(12);
