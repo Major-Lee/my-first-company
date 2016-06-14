@@ -1,4 +1,4 @@
-package com.bhu.vas.business.bucache.redis.serviceimpl.commdity;
+/*package com.bhu.vas.business.bucache.redis.serviceimpl.commdity;
 
 import redis.clients.jedis.JedisPool;
 
@@ -7,13 +7,13 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationStringCache;
 import com.smartwork.msip.cores.helper.StringHelper;
-/**
+*//**
  * 用于存储限时上网商品类似的区间金额
  * 当用户支付成功订单 会清除相应记录
  * 每天会统一清除所有随进金额缓存
  * @author tangzichao
  *
- */
+ *//*
 public class CommdityIntervalAmountService extends AbstractRelationStringCache{
 	
 	private static class ServiceHolder{ 
@@ -64,3 +64,4 @@ public class CommdityIntervalAmountService extends AbstractRelationStringCache{
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.COMMDITYRAMOUNT);
 	}
 }
+*/
