@@ -225,10 +225,10 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, int pageNo, int pageSize) {
 		try{
 			List<UserOrderDTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, CommdityCategory.InternetLimit.getCategory());
+			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory());
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
-						CommdityCategory.InternetLimit.getCategory(), pageNo, pageSize);
+						CommdityCategory.RewardInternetLimit.getCategory(), pageNo, pageSize);
 				
 				if(orderList != null && !orderList.isEmpty()){
 					List<String> orderids = new ArrayList<String>();
