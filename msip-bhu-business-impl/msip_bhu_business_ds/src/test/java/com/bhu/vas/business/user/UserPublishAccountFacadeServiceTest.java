@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.rpc.user.model.UserPublishAccount;
+import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
 import com.bhu.vas.business.ds.user.facade.UserPublishAccountFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.localunit.BaseTest;
@@ -30,7 +31,7 @@ public class UserPublishAccountFacadeServiceTest extends BaseTest{
 	
 	@Test
 	public void insertUserPublishAccount(){
-		//用户Id
+		/*//用户Id
 		 int uid = 1;
 		//公司名称
 		 String companyName = "北京必虎科技公司";
@@ -58,6 +59,13 @@ public class UserPublishAccountFacadeServiceTest extends BaseTest{
 		 String city = "北京";
 		//开户银行支行名称
 		 String bank_branch_name = "北京支行";
-		userPublicAccountService.insertUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, account_name, publish_account_number, opening_bank, city, bank_branch_name);
+		userPublicAccountService.insertUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, account_name, publish_account_number, opening_bank, city, bank_branch_name);*/
+	}
+	
+	@Test
+	public void queryUserPublishAccountDetail(){
+		UserPublishAccountDetailVTO userPublishAccountDetailVTO = userPublicAccountService.publicAccountDetail(101006);
+		System.out.println(userPublishAccountDetailVTO.getUid());
+		System.out.println(userPublishAccountDetailVTO.getAccount_name());
 	}
 }

@@ -551,11 +551,24 @@ public class UserWalletUnitFacadeService {
 			if(paymentStatistics != null){
 				rankingListVTO.setRankNum(0);
 				rankingListVTO.setUserIncome("0");
+				String beforeIncome="0";
+				int beforeRankNum=0;
 				for(int i=0;i<paymentStatistics.size();i++){
 					RankSingle rankSingle=new RankSingle();
 					DeviceGroupPaymentStatistics deviceGroupPaymentStatistics=paymentStatistics.get(i);
 					User user=userService.getById(deviceGroupPaymentStatistics.getUid());
-					rankSingle.setRankNum(i+1);
+					if(i==0){
+						beforeRankNum=1;
+						beforeIncome=deviceGroupPaymentStatistics.getTotal_incoming_amount();
+					}else{
+						if(StringUtils.endsWith(beforeIncome, deviceGroupPaymentStatistics.getTotal_incoming_amount())){
+							rankSingle.setRankNum(beforeRankNum);
+						}else{
+							rankSingle.setRankNum(i+1);
+							beforeRankNum=i+1;
+							beforeIncome=deviceGroupPaymentStatistics.getTotal_incoming_amount();
+						}
+					}
 					rankSingle.setUserIncome(deviceGroupPaymentStatistics.getTotal_incoming_amount());
 					rankSingle.setUserName(user.getNick());
 					rankSingle.setAvatar(user.getAvatar());

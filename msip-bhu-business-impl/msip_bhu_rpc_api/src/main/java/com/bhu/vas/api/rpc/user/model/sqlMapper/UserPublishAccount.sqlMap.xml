@@ -5,7 +5,7 @@
 <mapper namespace="com.bhu.vas.api.rpc.user.model.UserPublishAccount">
 
   <resultMap id="modelResult" type="userPublishAccount">
-    <id property="id" column="id"/>
+    <id property="uid" column="id"/>
     <result property="companyName" column="companyName"/>
     <result property="business_license_number" column="business_license_number"/>
     <result property="business_license_address" column="business_license_address"/>
@@ -13,15 +13,15 @@
     <result property="mobile" column="mobile"/>
     <result property="business_license_pic" column="business_license_pic"/>
     <result property="legal_person" column="legal_person"/>
-    <result property="legal_person" column="legal_person_certificate"/>
-    <result property="legal_person" column="account_name"/>
-    <result property="legal_person" column="publish_account_number"/>
-    <result property="legal_person" column="opening_bank"/>
-    <result property="legal_person" column="city"/>
-    <result property="legal_person" column="bank_branch_name"/>
-    <result property="legal_person" column="createTime"/>
-    <result property="legal_person" column="updateTime"/>
-    <result property="legal_person" column="status"/>
+    <result property="legal_person_certificate" column="legal_person_certificate"/>
+    <result property="account_name" column="account_name"/>
+    <result property="publish_account_number" column="publish_account_number"/>
+    <result property="opening_bank" column="opening_bank"/>
+    <result property="city" column="city"/>
+    <result property="bank_branch_name" column="bank_branch_name"/>
+    <result property="createTime" column="createTime"/>
+    <result property="updateTime" column="updateTime"/>
+    <result property="status" column="status"/>
   </resultMap>  
   
   	<sql id="modelTableName">
