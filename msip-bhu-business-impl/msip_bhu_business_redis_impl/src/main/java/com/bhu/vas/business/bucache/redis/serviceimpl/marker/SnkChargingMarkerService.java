@@ -1,5 +1,7 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.marker;
 
+import java.util.Map;
+
 import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessFieldDefine;
@@ -55,8 +57,22 @@ public class SnkChargingMarkerService extends AbstractRelationHashCache{
 		return this.marker(uid, BusinessFieldDefine.SnkChargingLevel2NotifyFiled);
 	}
 	
+	/**
+	 * needcharging
+	 * @param uid
+	 * @return
+	 */
 	public long level1marker(int uid){
 		return this.marker(uid, BusinessFieldDefine.SnkChargingLevel1NotifyFiled);
+	}
+	
+	/**
+	 * insufficient
+	 * @param uid
+	 * @return
+	 */
+	public Map<String,String> markerValues(int uid){
+		return this.hgetall(generateMarkPrefixKey(uid));
 	}
 	
 	/**
@@ -84,5 +100,7 @@ public class SnkChargingMarkerService extends AbstractRelationHashCache{
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.UserMarkPrefixKey);
 		sb.append(33).append(12);
 		System.out.println(sb.toString());
+		System.out.println(SnkChargingMarkerService.getInstance().markerValues(100153));
+		SnkChargingMarkerService.getInstance().clear(100153);
 	}
 }
