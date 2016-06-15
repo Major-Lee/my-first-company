@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
-import com.bhu.vas.business.backendonline.plugins.hook.DaemonExecRunnable;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
+import com.smartwork.msip.plugins.hook.AbstractDaemonExecDestory;
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -24,7 +24,7 @@ import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
  *
  */
 @Service
-public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
+public class AsyncMsgBackendProcessor extends AbstractDaemonExecDestory implements SpringQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(AsyncMsgBackendProcessor.class);
 	private ExecutorService exec = Executors.newFixedThreadPool(100);
 	
@@ -54,8 +54,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	@PreDestroy
 	public void destory(){
 		logger.info("AsyncMsgBackendProcessor destory...");
-		Thread desstoryThread = new Thread(new DaemonExecRunnable(exec));
-		desstoryThread.start();
+		this.destory(exec, "AsyncMsgBackendProcessor");
+		//Thread desstoryThread = new Thread(new DaemonExecRunnable(exec));
+		//desstoryThread.start();
 	}
 	
 	@Override

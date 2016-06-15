@@ -1,18 +1,20 @@
 package com.bhu.vas.business.backendcommdity;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.business.backendcommdity.plugins.hook.ShutdownHookThread;
+import com.smartwork.msip.plugins.hook.ShutdownHookThread;
 
 public class BackendCommdityMain {
 	public static void main(String[] args) throws InterruptedException {
 		//String[] locations = {"classpath*:/springtest/testCtx.xml"};//,"classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-consumer.xml"};
-		String[] locations = {"classpath*:/spring/appCtxBackend.xml"};
-		ApplicationContext ctx = new FileSystemXmlApplicationContext(locations);//("classpath*:/springtest/testCtx.xml");//"classpath*:springfeed/applicationContext-activemq-consumer.xml");//"classpath:springtest/testCtx.xml");
-		
+		//String[] locations = {"classpath*:/spring/appCtxBackend.xml"};
+		//ApplicationContext ctx = new FileSystemXmlApplicationContext(locations);//("classpath*:/springtest/testCtx.xml");//"classpath*:springfeed/applicationContext-activemq-consumer.xml");//"classpath:springtest/testCtx.xml");
+		String[] CONFIG = {"/spring/appCtxBackend.xml"};
+		final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(CONFIG, BackendCommdityMain.class);
+		context.start();
+		Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(context,"BackendCommdityMain Server"));
 //		AsyncMsgBackendProcessor service = (AsyncMsgBackendProcessor)ctx.getBean("asyncMsgBackendProcessor");
-		Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(ctx));
+		//Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(ctx));
 //		Thread.sleep(5000);
 //		Object obj = ctx.getBean("remoteCommandServer");
 //		System.out.println(obj);

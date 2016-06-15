@@ -1,6 +1,8 @@
 package com.bhu.vas.business.backendcommdity.asyncprocessor.service;
 
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Resource;
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
+
 
 
 
@@ -373,4 +376,9 @@ public class AsyncOrderPaymentNotifyService {
 		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
 		orderFacadeService.smsOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
 	}
+	
+	private ExecutorService exec = Executors.newFixedThreadPool(10);
+	
+	
+	
 }
