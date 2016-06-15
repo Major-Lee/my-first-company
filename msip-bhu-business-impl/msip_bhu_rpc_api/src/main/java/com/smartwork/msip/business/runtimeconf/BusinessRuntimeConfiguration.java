@@ -387,7 +387,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	//钱包中有多少零钱之后才能开始提现
 	public static double User_WalletWithdraw_Default_Remainer_MinLimit = 0.10d;//10.00d;
 	//每次最小提现金额
-	public static double User_WalletWithdraw_Default_Withdraw_MinLimit = 1.00d;//10.00d;
+	//public static double User_WalletWithdraw_Default_Withdraw_MinLimit = 1.00d;//10.00d;
+	public static double User_WalletWithdraw_Default_Withdraw_MinLimit = 0.10d;//10.00d;
 	public static boolean Device_SharedNetwork_Default_Start = false;
 	public static String Device_SharedNetwork_DUT = "TU";
 	public static String Device_SharedNetwork_Top_Version = "1.5.6";
