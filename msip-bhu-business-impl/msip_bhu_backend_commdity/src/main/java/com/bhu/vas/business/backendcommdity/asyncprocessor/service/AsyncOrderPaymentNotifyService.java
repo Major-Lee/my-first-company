@@ -285,8 +285,6 @@ public class AsyncOrderPaymentNotifyService {
 				//通知uportal清除标记位
 			}
 		}
-		
-		
 	}
 	
 	
