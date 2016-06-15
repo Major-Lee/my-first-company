@@ -68,6 +68,7 @@ public class RewardOrderAmountHashService extends AbstractRelationHashCache{
 	}
 	
 	public void removeAllRAmountByMacs(String... macs){
+		if(macs == null || macs.length == 0) return;
 		super.del(generateKeys(macs));
 	}
 
