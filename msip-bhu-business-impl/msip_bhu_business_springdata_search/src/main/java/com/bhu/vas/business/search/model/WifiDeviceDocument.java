@@ -371,7 +371,10 @@ public class WifiDeviceDocument extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
-			index = FieldIndex.not_analyzed,
+			//index = FieldIndex.not_analyzed,
+			searchAnalyzer = "lowercase_whitespace",
+			indexAnalyzer = "lowercase_whitespace",
+			index = FieldIndex.analyzed,
 			store = true
 	)
 	private String u_dnick;//用户绑定的设备的昵称

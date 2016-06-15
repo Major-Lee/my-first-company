@@ -82,7 +82,7 @@ public class ManufacturerDeviceDataImportOP {
 									sb_error.append(String.format("mac[%s] sn[%s] dbsn[%s] matched[%s] file[%s]", mac,sn,wifiDevice.getSn(),false,targetfile.getName())).append("\n");
 								}
 							}else{
-								System.err.println(String.format("mac[%s] sn[%s] dbsn[%s] matched[%s] already existed! ", mac,sn,wifiDevice.getSn(),false));
+								System.err.println(String.format("mac[%s] sn[%s] dbsn[%s] dbsn empty! ", mac,sn,wifiDevice.getSn()));
 							}
 							atomic_failed.incrementAndGet();
 							return;
@@ -106,9 +106,10 @@ public class ManufacturerDeviceDataImportOP {
 						wifiDevice.setLast_logout_at(null);
 						wifiDeviceService.insert(wifiDevice);
 						atomic_successed.incrementAndGet();
-						System.out.println(String.format("mac[%s] sn[%s] insert successfully! ", mac,sn));
+						//System.out.println(String.format("mac[%s] sn[%s] insert successfully! ", mac,sn));
 					}else{
-						System.err.println("undefined sn device！");
+						System.out.println(String.format("mac[%s] sn[%s] undefined sn device！", mac,sn));
+						//System.err.println("undefined sn device！");
 					}
 				}
 			});
