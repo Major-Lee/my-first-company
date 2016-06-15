@@ -14,6 +14,8 @@ import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.elasticsearch.ElasticsearchIllegalArgumentException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.Tuple;
@@ -34,12 +36,14 @@ import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
@@ -84,13 +88,17 @@ import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -137,6 +145,10 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
+	
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
 	/**
 	 * urouter 主入口界面数据
 	 *  hd_list接口需要终端的所有数据
@@ -1962,4 +1974,69 @@ public class DeviceURouterRestBusinessFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 
+	/***
+	 * urouter专用搜索接口 返回app特定的DTO
+	 * @param uid
+	 * @param message
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Integer uid, String message, 
+			int pageNo, int pageSize){
+		try{
+			List<UserDeviceDTO> vtos = null;
+			
+			int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(
+					message, searchPageNo, pageSize);
+			
+			int total = 0;
+			if(search_result != null){
+				total = (int)search_result.getTotalElements();//.getTotal();
+				if(total == 0){
+					vtos = Collections.emptyList();
+				}else{
+					List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+					if(searchDocuments.isEmpty()) {
+						vtos = Collections.emptyList();
+					}else{
+						vtos = new ArrayList<UserDeviceDTO>();
+						for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
+							UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
+							userDeviceDTO.setMac(wifiDeviceDocument.getD_mac());
+							userDeviceDTO.setUid(Integer.parseInt(wifiDeviceDocument.getU_id()));
+							userDeviceDTO.setDevice_name(wifiDeviceDocument.getU_dnick());
+							userDeviceDTO.setWork_mode(wifiDeviceDocument.getD_workmodel());
+							userDeviceDTO.setOrig_model(wifiDeviceDocument.getD_origmodel());
+							userDeviceDTO.setAdd(wifiDeviceDocument.getD_address());
+							userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
+							userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
+							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
+							userDeviceDTO.setO_scalelevel(wifiDeviceDocument.getO_scalelevel());
+							if(wifiDeviceDocument.getD_snk_allowturnoff() != null){
+								userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
+							}else{
+								userDeviceDTO.setD_snk_allowturnoff(1);
+							}
+							if (OnlineEnum.Online.getType().equals(wifiDeviceDocument.getD_online())) {
+								userDeviceDTO.setOnline(true);
+								userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+										.presentOnlineSize(wifiDeviceDocument.getD_mac()));
+							}
+							userDeviceDTO.setD_online(wifiDeviceDocument.getD_online());
+							userDeviceDTO.setVer(wifiDeviceDocument.getD_origswver());
+							vtos.add(userDeviceDTO);
+						}
+					}
+				}
+			}else{
+				vtos = Collections.emptyList();
+			}
+			TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		}catch(ElasticsearchIllegalArgumentException eiaex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SEARCH_CONDITION_TYPE_NOTEXIST);
+		}
+	}
 }
