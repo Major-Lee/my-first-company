@@ -163,6 +163,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	Search_Result_Export_Dir = PropertiesHelper.getString("search.result.export.dir", paramProperties, Search_Result_Export_Dir);
         	Search_Result_Export_Uri = PropertiesHelper.getString("search.result.export.uri", paramProperties, Search_Result_Export_Uri);
         	UserPortalUpdate2UPortalApi = PropertiesHelper.getString("user.portal.update.uportalapi", paramProperties, UserPortalUpdate2UPortalApi);
+        	UserPortalChargingNotify2UPortalApi = PropertiesHelper.getString("user.portal.chargingnotify.uportalapi", paramProperties, UserPortalChargingNotify2UPortalApi);
         	Unicorn_Http_Res_UrlPrefix = PropertiesHelper.getString("unicorn.http.res.urlprefix", paramProperties, Unicorn_Http_Res_UrlPrefix);
         	
         	
@@ -397,6 +398,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static int SharedNetworksTemplateMaxLimit = 50;
 	
 	public static String UserPortalUpdate2UPortalApi = "http://ucloud.bhuwifi.com:9157/portal/set/recreate";
+	public static String UserPortalChargingNotify2UPortalApi = "http://ucloud.bhuwifi.com:9157/common/api/save-status";
 	/**
 	 * 判断是否是console用户
 	 * @param uid

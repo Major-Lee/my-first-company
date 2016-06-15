@@ -1,10 +1,11 @@
 package com.bhu.vas.business.backendcommdity.asyncprocessor.service;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,10 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
-
-
-
-
 
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
@@ -31,6 +28,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.PaymentNotifyType;
+import com.bhu.vas.api.helper.UPortalHttpHelper;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -50,11 +48,12 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 @Service
-public class AsyncOrderPaymentNotifyService {
+public class AsyncOrderPaymentNotifyService{
 	private final Logger logger = LoggerFactory.getLogger(AsyncOrderPaymentNotifyService.class);
-	
+	private ExecutorService exec_remote_portalexchange = null;//Executors.newFixedThreadPool(10);
 	@Resource
 	private OrderService orderService;
 	
@@ -78,6 +77,14 @@ public class AsyncOrderPaymentNotifyService {
 	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
+	
+	@PostConstruct
+	public void initialize() {
+		logger.info("AsyncOrderPaymentNotifyService initialize...");
+		//exec_remote_portalexchange = (ThreadPoolExecutor)ExecObserverManager.buildExecutorService(this.getClass(),"AsyncOrderPaymentNotify processes消息处理",ProcessesThreadCount);
+		exec_remote_portalexchange = ExecObserverManager.buildExecutorService(this.getClass(),"uPortalRemoteNotify消息处理",10);
+	}
+	
 	/**
 	 * 支付完成的通知处理
 	 * 1) 支付系统支付的成功通知
@@ -286,6 +293,7 @@ public class AsyncOrderPaymentNotifyService {
 				//清除标记
 				SnkChargingMarkerService.getInstance().clear(order.getUid());
 				//通知uportal清除标记位
+				uPortalChargingStatusNotify(order.getUid().intValue(),ServiceOK);
 			}
 		}
 	}
@@ -355,6 +363,7 @@ public class AsyncOrderPaymentNotifyService {
 		   				String response_snk_needcharging = SmsSenderFactory.buildSender(
 								BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_needcharging, mobileno);
 						logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",mobileno,smsg_snk_needcharging,response_snk_needcharging));
+						uPortalChargingStatusNotify(uid,ServiceNeedCharging);
 	   				}
 	   				break;
 	   			case FailedThresholdVcurrencyNotsufficient:
@@ -366,6 +375,7 @@ public class AsyncOrderPaymentNotifyService {
 		   				String response_snk_stop = SmsSenderFactory.buildSender(
 								BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, mobileno);
 						logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",mobileno,smsg_snk_stop,response_snk_stop));
+						uPortalChargingStatusNotify(uid,ServiceInsufficient);
 	   				}
 	   				break;
 	   			case Failed:
@@ -377,8 +387,25 @@ public class AsyncOrderPaymentNotifyService {
 		orderFacadeService.smsOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
 	}
 	
-	private ExecutorService exec = Executors.newFixedThreadPool(10);
+	private static final int ServiceOK = 0;
+	private static final int ServiceNeedCharging = 2;
+	private static final int ServiceInsufficient = 1;
 	
-	
+	private void uPortalChargingStatusNotify(final int uid,final int status){
+		exec_remote_portalexchange.submit((new Runnable() {
+			@Override
+			public void run() {
+				try{
+					Map<String, String> api_params = UPortalHttpHelper.generateCommonApiParamMap(String.valueOf(uid));
+					api_params.put("status", String.valueOf(status));
+					logger.info(String.format("UserPortalChargingNotify2UPortalApi request url[%s] params[%s]", BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params));
+					String response = UPortalHttpHelper.doPost(BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params);
+					logger.info(String.format("UserPortalUpdate2UPortalApi Response url[%s] params[%s] response[%s]", BusinessRuntimeConfiguration.UserPortalUpdate2UPortalApi, api_params, response));
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
+				}
+			}
+		}));
+	}
 	
 }
