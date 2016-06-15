@@ -2005,7 +2005,8 @@ public class DeviceURouterRestBusinessFacadeService {
 						for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
 							UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
 							userDeviceDTO.setMac(wifiDeviceDocument.getD_mac());
-							userDeviceDTO.setUid(Integer.parseInt(wifiDeviceDocument.getU_id()));
+							if(StringUtils.isNotEmpty(wifiDeviceDocument.getU_id()))
+								userDeviceDTO.setUid(Integer.parseInt(wifiDeviceDocument.getU_id()));
 							userDeviceDTO.setDevice_name(wifiDeviceDocument.getU_dnick());
 							userDeviceDTO.setWork_mode(wifiDeviceDocument.getD_workmodel());
 							userDeviceDTO.setOrig_model(wifiDeviceDocument.getD_origmodel());
