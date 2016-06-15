@@ -753,7 +753,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	//@Test
 	public void test0013SearchIteratorAll(){
 		String message = "{\"search_t\":1,\"search_cs\":[{\"logic\":\"must\",\"cps\":null,\"cs\":[{\"logic\":\"must\",\"key\":\"d_dut\",\"pattern\":\"seq\",\"payload\":\"TU \"}]}]}";
-		wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, 
+		wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, 
 				BusinessIndexDefine.WifiDevice.Type, message, new IteratorNotify<Page<WifiDeviceDocument>>(){
 			@Override
 			public void notifyComming(Page<WifiDeviceDocument> pages) {

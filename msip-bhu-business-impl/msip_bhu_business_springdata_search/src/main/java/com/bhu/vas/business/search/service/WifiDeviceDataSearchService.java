@@ -116,7 +116,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		
 		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithSharedNetwork(u_id, sharedNetwork_type,d_snk_template, d_dut);
 		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
-		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, BusinessIndexDefine.WifiDevice.Type, 
+		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
 				message, pageSize, notify);
 	}
 	
@@ -126,7 +126,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param notify
 	 */
 	public void iteratorAll(String message, IteratorNotify<Page<WifiDeviceDocument>> notify){
-		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, BusinessIndexDefine.WifiDevice.Type, 
+		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
 				message, notify);
 	}
 	
@@ -136,7 +136,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param notify
 	 */
 	public void iteratorAll(String message, int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
-		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexNameNew, BusinessIndexDefine.WifiDevice.Type, 
+		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
 				message, pageSize, notify);
 	}
 }
