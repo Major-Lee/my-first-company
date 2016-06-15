@@ -2,7 +2,7 @@ package com.bhu.vas.business.backendonline;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.bhu.vas.business.backendonline.plugins.hook.ShutdownHookThread;
+import com.smartwork.msip.plugins.hook.ShutdownHookThread;
 
 public class BackendAsyncOnlineMain {
 	public static void main(String[] args) throws InterruptedException {
@@ -13,6 +13,6 @@ public class BackendAsyncOnlineMain {
 		String[] CONFIG = {"/spring/appCtxBackend.xml"};
 		final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(CONFIG, BackendAsyncOnlineMain.class);
 		context.start();
-		Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(context));
+		Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(context,"BackendAsyncOnlineMain Server"));
 	}
 }

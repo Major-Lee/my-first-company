@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.backendcommdity.asyncprocessor.service.AsyncOrderPaymentNotifyService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
+import com.smartwork.msip.plugins.hook.AbstractDaemonExecDestory;
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -21,7 +23,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalN
  *
  */
 @Service
-public class AsyncOrderPaymentNotifyProcessor{
+public class AsyncOrderPaymentNotifyProcessor extends AbstractDaemonExecDestory{
 	public static final int ProcessesThreadCount = 10;
 	
 	private final Logger logger = LoggerFactory.getLogger(AsyncOrderPaymentNotifyProcessor.class);
@@ -35,6 +37,16 @@ public class AsyncOrderPaymentNotifyProcessor{
 		logger.info("AsyncOrderPaymentNotifyProcessor initialize...");
 		runDispatcherExecutor();
 	}
+	
+	@PreDestroy
+	public void destory(){
+		logger.info("AsyncOrderPaymentNotifyProcessor destory...");
+		this.destory(exec_dispatcher, "AsyncOrderPaymentNotifyProcessor exec_dispatcher");
+		this.destory(exec_processes, "AsyncOrderPaymentNotifyProcessor exec_processes");
+		//Thread desstoryThread = new Thread(new DaemonExecRunnable(exec));
+		//desstoryThread.start();
+	}
+	
 	/**
 	 * 启动运行分发线程
 	 */
