@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import com.bhu.vas.business.asyn.spring.builder.ActionCommdityMessageType;
 import com.bhu.vas.business.backendcommdity.asyncprocessor.service.AsyncMsgHandleCommdityService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
+import com.smartwork.msip.plugins.hook.AbstractDaemonExecDestory;
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -22,7 +24,7 @@ import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
  *
  */
 @Service
-public class AsyncMsgBackendCommdityProcessor implements SpringQueueMessageListener{
+public class AsyncMsgBackendCommdityProcessor extends AbstractDaemonExecDestory implements SpringQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(AsyncMsgBackendCommdityProcessor.class);
 	private ExecutorService exec = Executors.newFixedThreadPool(100);
 	
@@ -35,6 +37,13 @@ public class AsyncMsgBackendCommdityProcessor implements SpringQueueMessageListe
 		QueueMsgObserverManager.SpringQueueMessageObserver.addSpringQueueMessageListener(this);
 	}
 	
+	@PreDestroy
+	public void destory(){
+		logger.info("AsyncMsgBackendCommdityProcessor destory...");
+		this.destory(exec, "AsyncMsgBackendCommdityProcessor exec");
+		//Thread desstoryThread = new Thread(new DaemonExecRunnable(exec));
+		//desstoryThread.start();
+	}
 	@Override
 	public void onMessage(final String messagejsonHasPrefix){
 		//logger.info(String.format("AnsyncMsgBackendProcessor receive message[%s]", messagejsonHasPrefix));
