@@ -1,11 +1,9 @@
 package com.bhu.vas.business.backendcommdity.asyncprocessor;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.backendcommdity.asyncprocessor.service.AsyncOrderPaymentNotifyService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
-import com.smartwork.msip.plugins.hook.AbstractDaemonExecDestory;
+import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -23,29 +21,30 @@ import com.smartwork.msip.plugins.hook.AbstractDaemonExecDestory;
  *
  */
 @Service
-public class AsyncOrderPaymentNotifyProcessor extends AbstractDaemonExecDestory{
+public class AsyncOrderPaymentNotifyProcessor{
 	public static final int ProcessesThreadCount = 10;
-	
 	private final Logger logger = LoggerFactory.getLogger(AsyncOrderPaymentNotifyProcessor.class);
-	private ThreadPoolExecutor exec_processes = (ThreadPoolExecutor)Executors.newFixedThreadPool(ProcessesThreadCount);
-	private ExecutorService exec_dispatcher = Executors.newSingleThreadExecutor();
+	private ThreadPoolExecutor exec_processes = null;//(ThreadPoolExecutor)Executors.newFixedThreadPool(ProcessesThreadCount);
+	private ExecutorService exec_dispatcher = null;//Executors.newSingleThreadExecutor();
 	@Resource
 	private AsyncOrderPaymentNotifyService asyncOrderPaymentNotifyService;
 	
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncOrderPaymentNotifyProcessor initialize...");
+		exec_processes = (ThreadPoolExecutor)ExecObserverManager.buildExecutorService(this.getClass(),"AsyncOrderPaymentNotify processes消息处理",ProcessesThreadCount);
+		exec_dispatcher = ExecObserverManager.buildExecutorService(this.getClass(),"AsyncOrderPaymentNotify dispatcher消息处理",1);
 		runDispatcherExecutor();
 	}
 	
-	@PreDestroy
+	/*@PreDestroy
 	public void destory(){
 		logger.info("AsyncOrderPaymentNotifyProcessor destory...");
 		this.destory(exec_dispatcher, "AsyncOrderPaymentNotifyProcessor exec_dispatcher");
 		this.destory(exec_processes, "AsyncOrderPaymentNotifyProcessor exec_processes");
 		//Thread desstoryThread = new Thread(new DaemonExecRunnable(exec));
 		//desstoryThread.start();
-	}
+	}*/
 	
 	/**
 	 * 启动运行分发线程

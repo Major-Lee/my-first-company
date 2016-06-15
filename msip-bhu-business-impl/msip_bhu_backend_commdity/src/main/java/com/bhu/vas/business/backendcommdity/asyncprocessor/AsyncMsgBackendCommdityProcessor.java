@@ -1,10 +1,8 @@
 package com.bhu.vas.business.backendcommdity.asyncprocessor;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -16,7 +14,7 @@ import com.bhu.vas.business.asyn.spring.builder.ActionCommdityMessageType;
 import com.bhu.vas.business.backendcommdity.asyncprocessor.service.AsyncMsgHandleCommdityService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
-import com.smartwork.msip.plugins.hook.AbstractDaemonExecDestory;
+import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -24,9 +22,9 @@ import com.smartwork.msip.plugins.hook.AbstractDaemonExecDestory;
  *
  */
 @Service
-public class AsyncMsgBackendCommdityProcessor extends AbstractDaemonExecDestory implements SpringQueueMessageListener{
+public class AsyncMsgBackendCommdityProcessor implements SpringQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(AsyncMsgBackendCommdityProcessor.class);
-	private ExecutorService exec = Executors.newFixedThreadPool(100);
+	private ExecutorService exec = null;//Executors.newFixedThreadPool(100);
 	
 	@Resource
 	private AsyncMsgHandleCommdityService asyncMsgHandleCommdityService;
@@ -34,16 +32,17 @@ public class AsyncMsgBackendCommdityProcessor extends AbstractDaemonExecDestory 
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncMsgBackendCommdityProcessor initialize...");
+		exec = ExecObserverManager.buildExecutorService(this.getClass(),"AsyncMsgBackendCommdityProcessor 消息处理",100);
 		QueueMsgObserverManager.SpringQueueMessageObserver.addSpringQueueMessageListener(this);
 	}
-	
-	@PreDestroy
+	/*@PreDestroy
 	public void destory(){
 		logger.info("AsyncMsgBackendCommdityProcessor destory...");
-		this.destory(exec, "AsyncMsgBackendCommdityProcessor exec");
+		
+		//this.destory(exec, "AsyncMsgBackendCommdityProcessor exec");
 		//Thread desstoryThread = new Thread(new DaemonExecRunnable(exec));
 		//desstoryThread.start();
-	}
+	}*/
 	@Override
 	public void onMessage(final String messagejsonHasPrefix){
 		//logger.info(String.format("AnsyncMsgBackendProcessor receive message[%s]", messagejsonHasPrefix));

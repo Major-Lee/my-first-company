@@ -1,10 +1,8 @@
 package com.bhu.vas.business.backendonline.asyncprocessor;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -16,7 +14,7 @@ import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
-import com.smartwork.msip.plugins.hook.AbstractDaemonExecDestory;
+import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -24,10 +22,9 @@ import com.smartwork.msip.plugins.hook.AbstractDaemonExecDestory;
  *
  */
 @Service
-public class AsyncMsgBackendProcessor extends AbstractDaemonExecDestory implements SpringQueueMessageListener{
+public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(AsyncMsgBackendProcessor.class);
-	private ExecutorService exec = Executors.newFixedThreadPool(100);
-	
+	private ExecutorService exec;// = Executors.newFixedThreadPool(100);
 	@Resource
 	private IMsgHandlerService batchImportConfirmServiceHandler;
 	
@@ -48,16 +45,18 @@ public class AsyncMsgBackendProcessor extends AbstractDaemonExecDestory implemen
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncMsgBackendProcessor initialize...");
+		exec = ExecObserverManager.buildExecutorService(this.getClass(),"AsyncBackend消息处理",100);
 		QueueMsgObserverManager.SpringQueueAsyncMessageObserver.addSpringQueueMessageListener(this);
+		
 	}
 	
-	@PreDestroy
+	/*@PreDestroy
 	public void destory(){
 		logger.info("AsyncMsgBackendProcessor destory...");
 		this.destory(exec, "AsyncMsgBackendProcessor");
 		//Thread desstoryThread = new Thread(new DaemonExecRunnable(exec));
 		//desstoryThread.start();
-	}
+	}*/
 	
 	@Override
 	public void onMessage(final String messagejsonHasPrefix){
