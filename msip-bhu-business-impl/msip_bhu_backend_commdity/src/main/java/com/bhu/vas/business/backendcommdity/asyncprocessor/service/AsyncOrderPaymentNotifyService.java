@@ -400,7 +400,7 @@ public class AsyncOrderPaymentNotifyService{
 					api_params.put("status", String.valueOf(status));
 					logger.info(String.format("UserPortalChargingNotify2UPortalApi request url[%s] params[%s]", BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params));
 					String response = UPortalHttpHelper.doPost(BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params);
-					logger.info(String.format("UserPortalUpdate2UPortalApi Response url[%s] params[%s] response[%s]", BusinessRuntimeConfiguration.UserPortalUpdate2UPortalApi, api_params, response));
+					logger.info(String.format("UserPortalChargingNotify2UPortalApi Response url[%s] params[%s] response[%s]", BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params, response));
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}
