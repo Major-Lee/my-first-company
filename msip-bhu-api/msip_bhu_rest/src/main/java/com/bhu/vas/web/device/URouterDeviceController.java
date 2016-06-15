@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
@@ -31,6 +32,7 @@ import com.bhu.vas.api.vto.config.URouterDeviceConfigMutilVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
@@ -505,5 +507,30 @@ public class URouterDeviceController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
+	
+	
+    /**
+     * 多条件组合搜索接口(APP专用的返回值)
+     * @param uid
+     * @param conditions
+     * @param pageNo
+     * @param pageSize
+     * @param request
+     * @param response
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/fetch_by_condition_message", method = {RequestMethod.POST})
+    public void fetch_by_condition_message(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = false) Integer uid,
+            @RequestParam(required = false) String message,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
+
+        RpcResponseDTO<TailPage<UserDeviceDTO>> vtos = deviceURouterRestRpcService.urouterFetchBySearchConditionMessage(
+        		uid, message, pageNo, pageSize);
+        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
+    }
 	
 }

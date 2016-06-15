@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
 import com.bhu.vas.api.vto.URouterHdDetailVTO;
@@ -27,6 +28,7 @@ import com.bhu.vas.api.vto.config.URouterDeviceConfigMutilVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.bhu.vas.rpc.facade.DeviceURouterRestBusinessFacadeService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -635,6 +637,14 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		logger.info(String.format("DeviceURouterRestRPC urouterVisitorRemoveHandset invoke uid[%s] mac[%s] hd_mac[%s]",
 				uid, mac, hd_mac));
 		return deviceURouterRestBusinessFacadeService.urouterVisitorRemoveHandset(uid, mac, hd_mac);
+	}
+	
+	@Override
+	public RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Integer uid, String message, 
+			int pageNo, int pageSize) {
+		logger.info(String.format("DeviceURouterRestRPC fetchBySearchConditionMessage invoke uid[%s] message[%s] pageNo[%s] pageSize[%s]",
+				uid, message, pageNo, pageSize));
+		return deviceURouterRestBusinessFacadeService.urouterFetchBySearchConditionMessage(uid, message, pageNo, pageSize);
 	}
 
 }
