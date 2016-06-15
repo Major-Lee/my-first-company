@@ -1,5 +1,6 @@
 package com.bhu.vas.business.ds.commdity.facade;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -138,6 +139,28 @@ public class OrderFacadeService {
 		}
 	}
 	
+	/**
+	 * 根据日期查询订单数量
+	 * @param status
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public int countOrderByDateParams(Integer status, Integer type, Date startDate, Date endDate){
+		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		criteria.andColumnEqualTo("status", status);
+		if(type != null){
+			criteria.andColumnEqualTo("type", type);
+		}
+		if(startDate != null){
+			criteria.andColumnGreaterThanOrEqualTo("created_at", startDate);
+		}
+		if(endDate != null){
+			criteria.andColumnLessThanOrEqualTo("created_at", endDate);
+		}
+		return orderService.countByModelCriteria(mc);
+	}
 	/*************            status             ****************/
 /*	*//**
 	 * 生成订单

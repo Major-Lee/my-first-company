@@ -283,6 +283,14 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
+	/**
+	 * 统计网站需要的统计订单相关信息的接口
+	 * @param request
+	 * @param response
+	 * @param secretKey
+	 * @param start_date
+	 * @param end_date
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/order/statistics",method={RequestMethod.POST})
 	public void order_statistics(
@@ -303,6 +311,14 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
+	/**
+	 * 统计网站需要的统计设备相关信息的接口
+	 * @param request
+	 * @param response
+	 * @param secretKey
+	 * @param d_snk_turnstate
+	 * @param d_snk_type
+	 */
 	@ResponseBody()
 	@RequestMapping(value="/device/statistics",method={RequestMethod.POST})
 	public void device_statistics(
@@ -323,6 +339,31 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
+	/**
+	 * 官网服务需要的统计订单在时间区间内的完成数量的接口
+	 * @param request
+	 * @param response
+	 * @param secretKey
+	 * @param start_date
+	 * @param end_date
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/reward_order/finish/count",method={RequestMethod.POST})
+	public void order_finish_count(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true,value="sk") String secretKey) {
+		ResponseError validateError = validate(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		RpcResponseDTO<Integer> rpcResult = orderRpcService.rewardOrderFinishCountRecent7Days();
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	}
 	
 	
 	@ResponseBody()

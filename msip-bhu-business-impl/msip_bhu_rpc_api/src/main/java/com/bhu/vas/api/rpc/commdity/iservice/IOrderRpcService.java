@@ -27,4 +27,6 @@ public interface IOrderRpcService {
 			Integer status, String dut, int pageNo, int pageSize);
 	
 	public RpcResponseDTO<OrderStatisticsVTO> orderStatisticsBetweenDate(String start_date, String end_date);
+	
+	public RpcResponseDTO<Integer> rewardOrderFinishCountRecent7Days();
 }

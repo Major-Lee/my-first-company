@@ -75,4 +75,10 @@ public class OrderRpcService implements IOrderRpcService{
 		return orderUnitFacadeService.orderStatisticsBetweenDate(start_date, end_date);
 	}
 
+	@Override
+	public RpcResponseDTO<Integer> rewardOrderFinishCountRecent7Days() {
+		logger.info("rewardOrderFinishCountRecent7Days with no params");
+		return orderUnitFacadeService.rewardOrderFinishCountRecent7Days();
+	}
+
 }
