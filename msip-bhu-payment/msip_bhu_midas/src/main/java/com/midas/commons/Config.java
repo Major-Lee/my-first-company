@@ -15,7 +15,7 @@ public class Config {
 	
 	public static String url_path = "/v1/r/"+appid+"/open_buy_goods";
     public static String pay_url =  "http://pay.qq.com/h5sdk/proxy.shtml";//米大师支付跳转链接
-    public static String token_url = "http://sandbox.api.unipay.qq.com";//下单通知地址
+    public static String token_url = "http://api.unipay.qq.com";//下单通知地址
     public static String session_id = "hy_gameid";
     public static String session_type = "st_dummy";
     public static String openid = "BHUWIFIUSERMAC000000000000";

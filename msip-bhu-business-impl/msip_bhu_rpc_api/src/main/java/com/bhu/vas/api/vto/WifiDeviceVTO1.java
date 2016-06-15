@@ -31,9 +31,11 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String d_uptime;//设备在线总时长 单位秒
 	private String d_snk_type;//设备的共享网络类型
 	private String d_snk_turnstate;//设备的共享网络开启状态
+	private String d_snk_allowturnoff;//设备的共享网络是否可被关闭
 	private String o_template;//运营模板编号
 	private String o_graylevel;//设备的灰度定义
 	private String o_batch;//设备的导入批次
+	private String o_scalelevel;//设备的规模级别
 	private String ug_name;//设备所属用户分组的名称
 	
 	private String u_id;//绑定的用户id
@@ -261,5 +263,17 @@ public class WifiDeviceVTO1 implements Serializable{
 	}
 	public void setUg_name(String ug_name) {
 		this.ug_name = ug_name;
+	}
+	public String getD_snk_allowturnoff() {
+		return d_snk_allowturnoff;
+	}
+	public void setD_snk_allowturnoff(String d_snk_allowturnoff) {
+		this.d_snk_allowturnoff = d_snk_allowturnoff;
+	}
+	public String getO_scalelevel() {
+		return o_scalelevel;
+	}
+	public void setO_scalelevel(String o_scalelevel) {
+		this.o_scalelevel = o_scalelevel;
 	}
 }

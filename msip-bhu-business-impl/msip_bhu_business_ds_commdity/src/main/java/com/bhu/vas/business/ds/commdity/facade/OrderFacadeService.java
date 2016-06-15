@@ -26,7 +26,7 @@ import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityIntervalAmountService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -185,7 +185,7 @@ public class OrderFacadeService {
 		}
 		
 		//验证缓存中的商品金额
-		String amount = CommdityIntervalAmountService.getInstance().getRAmount(mac, umac, commdityid);
+		String amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid);
 		if(StringUtils.isEmpty(amount)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_INVALID);
 		}
@@ -257,7 +257,7 @@ public class OrderFacadeService {
 					logger.info(String.format("RewardOrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
 				}
 				//清除缓存中的随机金额
-				CommdityIntervalAmountService.getInstance().removeRAmount(order.getMac(), order.getUmac(), order.getCommdityid());
+				RewardOrderAmountHashService.getInstance().removeRAmount(order.getMac(), order.getUmac(), order.getCommdityid());
 			}else{
 				changed_status = OrderStatus.PayFailured.getKey();
 				changed_process_status = OrderProcessStatus.PayFailured.getKey();
@@ -331,6 +331,14 @@ public class OrderFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
 		}
 		return procedureDTO.toVTO();
+	}
+	
+	/**
+	 * 清除某个或多个设备中的所有终端产生的打赏随机金额记录
+	 * @param macs
+	 */
+	public void clearRewardAMounts(String... macs){
+		RewardOrderAmountHashService.getInstance().removeAllRAmountByMacs(macs);
 	}
 	
 	/*************            充值虎钻             ****************/

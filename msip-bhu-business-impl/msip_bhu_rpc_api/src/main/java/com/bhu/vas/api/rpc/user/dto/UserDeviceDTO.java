@@ -22,6 +22,8 @@ public class UserDeviceDTO implements Serializable {
     private String d_sn;
     private String d_address;
     private int d_snk_allowturnoff;
+    //设备的规模级别
+    private String o_scalelevel;
 	//设备的固件版本号
     private String ver;
 
@@ -139,5 +141,13 @@ public class UserDeviceDTO implements Serializable {
 
 	public void setD_online(String d_online) {
 		this.d_online = d_online;
+	}
+
+	public String getO_scalelevel() {
+		return o_scalelevel;
+	}
+
+	public void setO_scalelevel(String o_scalelevel) {
+		this.o_scalelevel = o_scalelevel;
 	}
 }

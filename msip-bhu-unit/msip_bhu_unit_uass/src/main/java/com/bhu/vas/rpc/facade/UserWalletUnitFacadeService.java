@@ -143,7 +143,7 @@ public class UserWalletUnitFacadeService {
 	 * @param pageSize
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(int reckoner, int tuid, String withdraw_status, int pageNo, int pageSize) {
+	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(int reckoner, int tuid, String withdraw_status,String payment_type, int pageNo, int pageSize) {
 		try{
 			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
 			if(validateUser.getUtype() != UserType.AgentFinance.getIndex()){
@@ -153,7 +153,7 @@ public class UserWalletUnitFacadeService {
 			if(StringUtils.isNotEmpty(withdraw_status)){
 				status = UWithdrawStatus.fromKey(withdraw_status);
 			}
-			TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(tuid, status, pageNo, pageSize);
+			TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(tuid, status,payment_type,pageNo, pageSize);
 			TailPage<UserWithdrawApplyVTO> result_pages = null;
 			List<UserWithdrawApplyVTO> vtos = new ArrayList<>();
 			if(!pages.isEmpty()){

@@ -54,6 +54,7 @@ import com.bhu.vas.web.http.response.AppUnifiedOrderResponse;
 import com.bhu.vas.web.http.response.PaySuccessNotifyResponse;
 import com.bhu.vas.web.http.response.UnifiedOrderResponse;
 import com.bhu.vas.web.http.response.WithDrawNotifyResponse;
+import com.bhu.vas.web.model.MidasRespone;
 import com.bhu.vas.web.service.PayHttpService;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -306,13 +307,13 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
     			return;
     		}
-			int appId = Integer.parseInt(appid);
 			logger.info(String.format("apply payment bussiness appid[%s] secret[%s]", appid,secret));
+			int appId = Integer.parseInt(appid);
 			boolean isAllowedBusiness = BusinessEnumType.CommdityApplication.verifyed(appId, secret);
 			if(isAllowedBusiness){
 				CommdityApplication app = BusinessEnumType.CommdityApplication.fromKey(appId);
 				switch(app){
-    			case BHU_PREPAID_BUSINESS: 
+    			case BHU_PREPAID_BUSINESS:
     				paymentName = "虎钻";
     				break;
     			case DEFAULT: 
@@ -348,7 +349,6 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
-        	
     		PaymentReckoning paymentReckoning = paymentReckoningService.findByOrderId(goods_no);
         	if(paymentReckoning != null){
         		logger.error(String.format("apply payment goods_no [%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
@@ -398,7 +398,10 @@ public class PaymentController extends BaseController{
     			respone.setMsg(msg);
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(respone)));
     			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(respone));
-    		
+    		}else if(type.equalsIgnoreCase("Midas")){
+    			MidasRespone midasResponeModel = new MidasRespone(goods_no,msg);
+    			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(midasResponeModel)));
+    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(midasResponeModel)));
     		}else{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(result)));
     			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
@@ -668,7 +671,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("subject", subject);
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
-			sParaTemp.put("it_b_pay", "600");
+			sParaTemp.put("it_b_pay", "10m");
 			break;
 		case BHU_APP_ALIPAY:
 			reckoningId = createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_APP_ALIPAY.i18n(),usermac,paymentName,appid);
@@ -685,7 +688,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("subject", subject);
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
-			sParaTemp.put("it_b_pay", "600");
+			sParaTemp.put("it_b_pay", "10m");
 			break;
 			
 		case BHU_PC_ALIPAY:
@@ -702,7 +705,8 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("out_trade_no", reckoningId);
 			sParaTemp.put("subject", subject);
 			sParaTemp.put("total_fee", total_fee);
-			sParaTemp.put("body", body);			
+			sParaTemp.put("body", body);
+			sParaTemp.put("it_b_pay", "10m");
 			break;
 
 		default:
@@ -770,15 +774,15 @@ public class PaymentController extends BaseController{
     		logger.info(String.format("apply midas set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
     	}
     	//TODO：》》》》》》》》》》》》》》》》》》》》》》》》
-    	String url = "";MidasUtils.submitOrder(reckoningId, total_fee, ip,paymentName,usermac);
-    	if("error".equalsIgnoreCase(url)){
+    	String results = MidasUtils.submitOrder(reckoningId, total_fee, ip,paymentName,usermac);
+    	System.out.println("results********:"+results);
+    	if("error".equalsIgnoreCase(results)){
     		result.setType("FAIL");
         	result.setUrl("支付请求失败");
         	return result;
     	}else{
-    		url = url.replace("¬", "&not");
-        	result.setType("json");
-        	result.setUrl(url);
+        	result.setType("Midas");
+        	result.setUrl(results);
         	return result;
     	}
 	}
