@@ -567,10 +567,13 @@ public class UserWalletFacadeService{
 	public UserWalletWithdrawApply doWithdrawApply(int appid,OAuthType type,int uid, String pwd,double cash,String remoteip){
 		//modify by dongrui 2016-06-15 Start
 		//validateOAuthPaymentType(uid,type);
+		logger.info("提现验证====>当前提现类型为【"+type+"】");
 		if(type.getType().equals("weixin")){
+			logger.info("微信提现======>type【"+type.getType()+"】");
 			validateOAuthPaymentType(uid,type);
 		}else if(type.getType().equals("public")){
 			//TODO 校验对公账号信息
+			logger.info("对公账号提现======>type【"+type.getType()+"】");
 		}
 		//modify by dongrui 2016-06-15 E N D
 		/*logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
