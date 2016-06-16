@@ -44,7 +44,7 @@ public interface IUserWalletRpcService {
 	 * 接口增加参数payment_type 提现类型【微信&对公账号】
 	 * update by dongrui 2016-06-14 E N D
 	 */
-	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> 	pageWithdrawApplies(int reckoner,int tuid,String withdraw_status,String payment_type,int pageNo,int pageSize);
+	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> 	pageWithdrawApplies(int reckoner,int tuid,String withdraw_status,String payment_type,String startTime,String endTime,int pageNo,int pageSize);
 	
 	public RpcResponseDTO<String> withdrawApplyStatus(int reckoner,String applyid);
 	/**

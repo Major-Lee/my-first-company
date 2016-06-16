@@ -107,7 +107,8 @@ public class UserWalletFacadeService{
 		}else{
 			UserOAuthStateDTO userOAuthStateDTO = new UserOAuthStateDTO();
 			userOAuthStateDTO.setAuid(String.valueOf(publicAccountDetail.getUid()));
-			userOAuthStateDTO.setNick(publicAccountDetail.getAccount_name());
+			userOAuthStateDTO.setNick(publicAccountDetail.getCompanyName());
+			userOAuthStateDTO.setOpenid(publicAccountDetail.getPublish_account_number());
 			userOAuthStateDTO.setIdentify("public");
 			List<UserOAuthStateDTO> userOAuthStateList = new ArrayList<UserOAuthStateDTO>();
 			userOAuthStateList.add(userOAuthStateDTO);	
@@ -634,7 +635,7 @@ public class UserWalletFacadeService{
 	 * @param pageSize
 	 * @return
 	 */
-	public TailPage<UserWalletWithdrawApply> pageWithdrawApplies(Integer uid,BusinessEnumType.UWithdrawStatus status,String payment_type,int pageNo,int pageSize){
+	public TailPage<UserWalletWithdrawApply> pageWithdrawApplies(Integer uid,BusinessEnumType.UWithdrawStatus status,String payment_type,String startTime,String endTime,int pageNo,int pageSize){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
 		if(uid != null && uid.intValue()>0){
@@ -646,11 +647,18 @@ public class UserWalletFacadeService{
 		if(StringUtils.isNotBlank(payment_type)){
 			createCriteria.andColumnEqualTo("payment_type", payment_type);
 		}
+		if(StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)){
+			createCriteria.andColumnBetween("created_at", startTime, endTime);
+		}
 		//add by dongrui 2016-06-14 E N D
 		createCriteria.andSimpleCaulse(" 1=1 ");
     	mc.setPageNumber(pageNo);
     	mc.setPageSize(pageSize);
-    	mc.setOrderByClause(" created_at desc ");
+    	//modify by dongrui 2016-06-15 start
+    	//mc.setOrderByClause(" created_at desc ");
+    	//默认按提现金额降序排列
+    	mc.setOrderByClause(" cash desc ");
+    	//modify by dongrui 2016-06-15 E N D
 		TailPage<UserWalletWithdrawApply> pages = userWalletWithdrawApplyService.findModelTailPageByModelCriteria(mc);
 		return pages;
 	}

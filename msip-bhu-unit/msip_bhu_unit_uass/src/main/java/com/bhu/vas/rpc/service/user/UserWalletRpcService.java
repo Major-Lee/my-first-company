@@ -31,10 +31,10 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	 */
 	@Override
 	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(
-			int reckoner, int tuid, String withdraw_status,String payment_type,int pageNo, int pageSize) {
+			int reckoner, int tuid, String withdraw_status,String payment_type,String startTime,String endTime,int pageNo, int pageSize) {
 		logger.info(String.format("pageWithdrawApplies with reckoner[%s] tuid [%s] withdraw_status[%s] payment_type[%s] pn[%s] ps[%s]",
 				reckoner,tuid,withdraw_status,payment_type,pageNo,pageSize));
-		return userWalletUnitFacadeService.pageWithdrawApplies(reckoner, tuid, withdraw_status,payment_type,pageNo, pageSize);
+		return userWalletUnitFacadeService.pageWithdrawApplies(reckoner, tuid, withdraw_status,payment_type,startTime,endTime,pageNo, pageSize);
 	}
 
 	@Override
