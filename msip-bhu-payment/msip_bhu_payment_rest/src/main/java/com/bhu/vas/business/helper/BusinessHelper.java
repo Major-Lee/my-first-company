@@ -14,6 +14,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.smartwork.msip.localunit.RandomPicker;
 
 /**
@@ -750,9 +752,22 @@ public class BusinessHelper extends PropertyEditorSupport {
     }
 	
 	public static void main(String[] args) {
-		System.out.println(BusinessHelper.generatePaymentReckoningNoByType("pcwx"));
+		//System.out.println(BusinessHelper.generatePaymentReckoningNoByType("pcwx"));
+		System.out.println(BusinessHelper.formatPayItem("test","TESTMDWX1466048432305ypyx*0.10*1"));
 	}
 
+	public static String formatPayItem(String env,String payItem) {
+		String item = "";
+		env =env.toUpperCase();
+		if (StringUtils.isBlank(payItem)) {
+            return "";
+        }else if(!payItem.startsWith(env)){
+        	return "";
+        }
+		payItem = payItem.trim();
+		item = payItem.split("\\*")[0];
+		return item;
+	}
 
 	public static String formatMac(String usermac) {
 		if (usermac == null) {

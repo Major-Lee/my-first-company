@@ -12,41 +12,41 @@ public class PaymentResponseSuccess extends Response{
 	private String code;
     private String codemsg;
     @JsonInclude(Include.NON_NULL)
-    Object result;
+    Object params;
 	public PaymentResponseSuccess() {
 		super();
 		this.setSuccess(true);
 	}
-	/*public ResponseSuccess(Object result) {
+	/*public ResponseSuccess(Object params) {
 		this();
-		this.setResult(result);
+		this.setparams(params);
 	}*/
     public PaymentResponseSuccess(String message, ResponseSuccessCode responseSuccessCode) {
     	this(message, responseSuccessCode, null, null);
     }
     
-    public PaymentResponseSuccess(String message, ResponseSuccessCode responseSuccessCode, Object result) {
-    	this(message, responseSuccessCode, result, null);
+    public PaymentResponseSuccess(String message, ResponseSuccessCode responseSuccessCode, Object params) {
+    	this(message, responseSuccessCode, params, null);
     }
 
-    public PaymentResponseSuccess(String message, ResponseSuccessCode responseSuccessCode, Object result, Object[] txts) {
+    public PaymentResponseSuccess(String message, ResponseSuccessCode responseSuccessCode, Object params, Object[] txts) {
     	this();
     	this.setMsg(message);
         this.code = responseSuccessCode.code();
         Assert.notNull(this.code, "msgcode must be set!");
         this.codemsg = LocalI18NMessageSource.getInstance().getMessage(responseSuccessCode.i18n(),txts);
-        this.result = result;
+        this.params = params;
     }
 	
-	public Object getresult() {
-		return result;
+	public Object getparams() {
+		return params;
 	}
-	public void setresult(Object result) {
-		this.result = result;
+	public void setparams(Object params) {
+		this.params = params;
 	}
-	public static PaymentResponseSuccess embed(Object result){
+	public static PaymentResponseSuccess embed(Object params){
 		PaymentResponseSuccess re = new PaymentResponseSuccess(PaymentResponseSuccess.SUCCESS.getMsg(),
-				ResponseSuccessCode.COMMON_BUSINESS_SUCCESS,result);
+				ResponseSuccessCode.COMMON_BUSINESS_SUCCESS,params);
 		return re;
 	}
 	
@@ -55,12 +55,12 @@ public class PaymentResponseSuccess extends Response{
 		return re;
 	}
 	
-	public static PaymentResponseSuccess embed(ResponseSuccessCode code, Object result){
-		PaymentResponseSuccess re = new PaymentResponseSuccess(PaymentResponseSuccess.SUCCESS.getMsg(),code, result);
+	public static PaymentResponseSuccess embed(ResponseSuccessCode code, Object params){
+		PaymentResponseSuccess re = new PaymentResponseSuccess(PaymentResponseSuccess.SUCCESS.getMsg(),code, params);
 		return re;
 	}
-	public static PaymentResponseSuccess embed(ResponseSuccessCode code, Object result, String[] txts){
-		PaymentResponseSuccess re = new PaymentResponseSuccess(PaymentResponseSuccess.SUCCESS.getMsg(),code, result, txts);
+	public static PaymentResponseSuccess embed(ResponseSuccessCode code, Object params, String[] txts){
+		PaymentResponseSuccess re = new PaymentResponseSuccess(PaymentResponseSuccess.SUCCESS.getMsg(),code, params, txts);
 		return re;
 	}
 	

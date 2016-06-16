@@ -32,12 +32,14 @@ public class Config {
     public static String price = "";//单价(单位:元)
     public static int pay_num = 1;//数量
     public static String goodsmeta = "";//道具名称*描述
+    
+    public static String method = "GET";//请求方法
 	
 	// 支付后返回的商户处理页面，URL参数是以http://或https://开头的完整URL地址(后台处理)// 提交的url地址必须外网能访问到,否则无法通知商户。值可以为空，但不可以为null。
-	public static String notify_url = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment/midasNotifySuccess"; 
+	public static String notify_url = "https://pays.bhuwifi.com/msip_bhu_payment_rest/payment/midasNotifySuccess"; 
 	
 	// 支付后返回的商户显示页面，URL参数是以http:// 或https://开头的完整URL地址(前台显示)，原则上：该参数与notify_url提交的参数不一致。值可以为空，但不可以为null。
-	public static String return_url = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment/midasReturn"; 
+	public static String return_url = "https://pays.bhuwifi.com/msip_bhu_payment_rest/payment/midasReturn"; 
 
 	
 }

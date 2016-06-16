@@ -560,16 +560,13 @@ public class UserWalletUnitFacadeService {
 					if(i==0){
 						beforeRankNum=1;
 						beforeIncome=deviceGroupPaymentStatistics.getTotal_incoming_amount();
-						rankSingle.setRankNum(beforeRankNum);
 					}else{
-						if(StringUtils.endsWith(beforeIncome, deviceGroupPaymentStatistics.getTotal_incoming_amount())){
-							rankSingle.setRankNum(beforeRankNum);
-						}else{
-							rankSingle.setRankNum(i+1);
+						if(!StringUtils.equals(beforeIncome, deviceGroupPaymentStatistics.getTotal_incoming_amount())){
 							beforeRankNum=i+1;
 							beforeIncome=deviceGroupPaymentStatistics.getTotal_incoming_amount();
 						}
 					}
+					rankSingle.setRankNum(beforeRankNum);
 					rankSingle.setUserIncome(deviceGroupPaymentStatistics.getTotal_incoming_amount());
 					rankSingle.setUserName(user.getNick());
 					rankSingle.setAvatar(user.getAvatar());
@@ -579,7 +576,6 @@ public class UserWalletUnitFacadeService {
 					}
 					rankList.add(rankSingle);
 				}
-				
 			}
 			rankingListVTO.setRankingList(rankList);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rankingListVTO);

@@ -108,7 +108,7 @@ public class MidasUtils {
 	 */
 	public static boolean verifySig(HashMap<String,String> params, String sig) {
 		boolean result = false;
-		String method = "";
+		String method = Config.method;
 		String url_path = Config.url_path;
 		try {
 			result = SnsSigCheck.verifySig(method, url_path, params, Config.secret, sig);
