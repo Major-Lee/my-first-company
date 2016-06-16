@@ -116,6 +116,7 @@ public class UserWalletFacadeService{
 				int accountLength = accountNum.length();
 				accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
 			}
+			logger.debug("***************accountNum的值为【"+accountNum+"】");
 			userOAuthStateDTO.setOpenid(accountNum);
 			userOAuthStateDTO.setIdentify("public");
 			List<UserOAuthStateDTO> userOAuthStateList = new ArrayList<UserOAuthStateDTO>();
