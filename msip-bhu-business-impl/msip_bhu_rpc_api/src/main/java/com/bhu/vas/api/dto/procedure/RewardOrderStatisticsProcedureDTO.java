@@ -2,13 +2,13 @@ package com.bhu.vas.api.dto.procedure;
 
 import org.apache.ibatis.type.JdbcType;
 
-import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.smartwork.msip.cores.orm.logic.procedure.AbstractProcedureDTO;
 import com.smartwork.msip.cores.orm.logic.procedure.IN;
 import com.smartwork.msip.cores.orm.logic.procedure.OUT;
 
 @SuppressWarnings("serial")
-public class OrderStatisticsProcedureDTO extends AbstractProcedureDTO{
+public class RewardOrderStatisticsProcedureDTO extends AbstractProcedureDTO{
 	@IN(jdbcType = JdbcType.VARCHAR)
 	private String start_date;
 	@IN(jdbcType = JdbcType.VARCHAR)
@@ -29,7 +29,7 @@ public class OrderStatisticsProcedureDTO extends AbstractProcedureDTO{
 	
 	@Override
 	public String getName() {
-		return "msip_bhu_commdity.order_statistics";
+		return "msip_bhu_commdity.reward_order_statistics";
 	}
 	
 	public String getStart_date() {
@@ -96,8 +96,8 @@ public class OrderStatisticsProcedureDTO extends AbstractProcedureDTO{
 		this.mb_order_finish_amount = mb_order_finish_amount;
 	}
 
-	public OrderStatisticsVTO toVTO(){
-		OrderStatisticsVTO vto = new OrderStatisticsVTO();
+	public RewardOrderStatisticsVTO toVTO(){
+		RewardOrderStatisticsVTO vto = new RewardOrderStatisticsVTO();
 		vto.setPc_occ(this.getPc_order_created_count());
 		vto.setPc_ofc(this.getPc_order_finish_count());
 		vto.setPc_ofa(this.getPc_order_finish_amount());

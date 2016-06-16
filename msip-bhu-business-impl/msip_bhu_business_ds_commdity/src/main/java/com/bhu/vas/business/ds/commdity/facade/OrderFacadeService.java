@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
-import com.bhu.vas.api.dto.procedure.OrderStatisticsProcedureDTO;
+import com.bhu.vas.api.dto.procedure.RewardOrderStatisticsProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
@@ -24,7 +24,7 @@ import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
@@ -343,8 +343,8 @@ public class OrderFacadeService {
 	}
 	
 	
-	public OrderStatisticsVTO rewardOrderStatisticsWithProcedure(String start_date, String end_date){
-		OrderStatisticsProcedureDTO procedureDTO = new OrderStatisticsProcedureDTO();
+	public RewardOrderStatisticsVTO rewardOrderStatisticsWithProcedure(String start_date, String end_date){
+		RewardOrderStatisticsProcedureDTO procedureDTO = new RewardOrderStatisticsProcedureDTO();
 		procedureDTO.setStart_date(start_date);
 		procedureDTO.setEnd_date(end_date);
 		int executeRet = orderService.executeProcedure(procedureDTO);

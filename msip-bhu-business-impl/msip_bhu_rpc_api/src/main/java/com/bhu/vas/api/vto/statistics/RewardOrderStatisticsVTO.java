@@ -1,13 +1,13 @@
 package com.bhu.vas.api.vto.statistics;
 
 /**
- * 订单统计数据模型
+ * 打赏订单统计数据模型
  * 时间段内的订单创建数，订单完成数，完成订单的金额
  * @author tangzichao
  *
  */
 @SuppressWarnings("serial")
-public class OrderStatisticsVTO implements java.io.Serializable{
+public class RewardOrderStatisticsVTO implements java.io.Serializable{
 	//pc order created count
 	private int pc_occ = 0;
 	//pc order finish count
