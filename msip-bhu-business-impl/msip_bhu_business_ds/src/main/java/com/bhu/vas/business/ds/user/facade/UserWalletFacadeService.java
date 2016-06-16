@@ -108,6 +108,14 @@ public class UserWalletFacadeService{
 			UserOAuthStateDTO userOAuthStateDTO = new UserOAuthStateDTO();
 			userOAuthStateDTO.setAuid(String.valueOf(publicAccountDetail.getUid()));
 			userOAuthStateDTO.setNick(publicAccountDetail.getCompanyName());
+			//对公账号特殊处理
+			String accountNum = StringUtils.EMPTY;
+			accountNum = publicAccountDetail.getPublish_account_number();
+			if(StringUtils.isNotBlank(accountNum)){
+				//卡号前四位显示 后四位显示 中间*******代替
+				int accountLength = accountNum.length();
+				accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
+			}
 			userOAuthStateDTO.setOpenid(publicAccountDetail.getPublish_account_number());
 			userOAuthStateDTO.setIdentify("public");
 			List<UserOAuthStateDTO> userOAuthStateList = new ArrayList<UserOAuthStateDTO>();
@@ -988,5 +996,4 @@ public class UserWalletFacadeService{
 	/*public UserThirdpartiesPaymentService getUserThirdpartiesPaymentService() {
 		return userThirdpartiesPaymentService;
 	}*/
-	
 }
