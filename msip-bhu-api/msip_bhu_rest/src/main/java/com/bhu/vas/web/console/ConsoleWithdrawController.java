@@ -138,6 +138,7 @@ public class ConsoleWithdrawController extends BaseController {
 		System.out.println("**rpcResult.getPayload的value=====>*****"+rpcResult.getPayload()+"******");
 		System.out.println("**requestWithdrawNotifyDTO.getWithdraw的value=====>*****"+requestWithdrawNotifyDTO.getWithdraw()+"******");
 		System.out.println("**payment_type的value=====>*****"+userWithdrawApplyVTO.getPayment_type()+"******");
+		System.out.println("**Applyid的value=====>*****"+userWithdrawApplyVTO.getApplyid()+"******");
 		if(userWithdrawApplyVTO.getPayment_type().equals("public")){
 			RpcResponseDTO<UserWithdrawApplyVTO> rpcResponseDTO = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, true);
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponseDTO));
