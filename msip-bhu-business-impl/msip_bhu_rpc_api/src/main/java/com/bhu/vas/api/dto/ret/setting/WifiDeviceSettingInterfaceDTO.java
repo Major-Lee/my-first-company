@@ -1,6 +1,7 @@
 package com.bhu.vas.api.dto.ret.setting;
 
 
+
 /**
  * 设备配置信息的interface
  * @author tangzichao
@@ -18,10 +19,10 @@ public class WifiDeviceSettingInterfaceDTO implements DeviceSettingBuilderDTO{
 	private String if_tx_rate;
 	//接口接收速率(kbps)
 	private String if_rx_rate;
-	//单用户发送速率(kbps)
-	private String users_tx_rate;
-	//单用户接收速率(kbps)
-	private String users_rx_rate;
+	//单用户发送速率(kbps) 终端下行限速
+	private int users_tx_rate;
+	//单用户接收速率(kbps) 终端上行限速
+	private int users_rx_rate;
 
 	public String getName() {
 		return name;
@@ -47,16 +48,16 @@ public class WifiDeviceSettingInterfaceDTO implements DeviceSettingBuilderDTO{
 	public void setIf_rx_rate(String if_rx_rate) {
 		this.if_rx_rate = if_rx_rate;
 	}
-	public String getUsers_tx_rate() {
+	public int getUsers_tx_rate() {
 		return users_tx_rate;
 	}
-	public void setUsers_tx_rate(String users_tx_rate) {
+	public void setUsers_tx_rate(int users_tx_rate) {
 		this.users_tx_rate = users_tx_rate;
 	}
-	public String getUsers_rx_rate() {
+	public int getUsers_rx_rate() {
 		return users_rx_rate;
 	}
-	public void setUsers_rx_rate(String users_rx_rate) {
+	public void setUsers_rx_rate(int users_rx_rate) {
 		this.users_rx_rate = users_rx_rate;
 	}
 	
@@ -81,9 +82,31 @@ public class WifiDeviceSettingInterfaceDTO implements DeviceSettingBuilderDTO{
 		return null;
 	}
 	
+	//修改主网络开关
+	public static final int BuilderType_InterfaceMasterSwitch = 1;
+	//修改主网络统一限速
+	public static final int BuilderType_InterfaceMasterLimit = 2;
+	
 	@Override
 	public Object[] builderProperties(int type) {
-		return builderProperties();
+		Object[] properties = null;
+		switch(type){
+			case BuilderType_InterfaceMasterSwitch:
+				properties = new Object[2];
+				properties[0] = name;
+				properties[1] = enable;
+				break;
+			case BuilderType_InterfaceMasterLimit:
+				properties = new Object[3];
+				properties[0] = name;
+				properties[1] = users_tx_rate * 8;//KBps 转成 kbps
+				properties[2] = users_rx_rate * 8;//KBps 转成 kbps
+				break;
+			default:
+				properties = builderProperties();
+				break;
+		}
+		return properties;
 	}
 	
 	@Override

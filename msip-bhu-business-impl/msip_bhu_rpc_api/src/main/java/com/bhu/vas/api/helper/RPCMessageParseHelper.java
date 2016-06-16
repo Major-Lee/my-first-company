@@ -551,8 +551,8 @@ public class RPCMessageParseHelper {
 					interface_dto.setEnable(interface_item.attributeValue("enable"));
 					interface_dto.setIf_tx_rate(interface_item.attributeValue("if_tx_rate"));
 					interface_dto.setIf_rx_rate(interface_item.attributeValue("if_rx_rate"));
-					interface_dto.setUsers_tx_rate(interface_item.attributeValue("users_tx_rate"));
-					interface_dto.setUsers_rx_rate(interface_item.attributeValue("users_rx_rate"));
+					interface_dto.setUsers_tx_rate(Integer.parseInt(interface_item.attributeValue("users_tx_rate")));
+					interface_dto.setUsers_rx_rate(Integer.parseInt(interface_item.attributeValue("users_rx_rate")));
 					interface_dtos.add(interface_dto);
 				}
 				dto.setInterfaces(interface_dtos);
