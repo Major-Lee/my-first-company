@@ -12,7 +12,7 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 /**
  * 打赏订单支付成功后,数据写入约定的redis中进行发货通知
- * @author tangzichao
+ * @author tangzichao  
  *
  */
 @SuppressWarnings("serial")
