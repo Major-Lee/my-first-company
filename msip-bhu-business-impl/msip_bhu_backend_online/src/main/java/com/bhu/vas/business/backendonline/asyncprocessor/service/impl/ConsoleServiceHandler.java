@@ -171,12 +171,9 @@ public class ConsoleServiceHandler {
 			int columns_length = columns.length;
 			for(int i = 0;i<columns_length;i++){
 				if((i+1) == columns_length){
-					//fw.append(formatStr(columns[i], false));
-					fw.append(columns[i]);
-					fw.append(StringHelper.COMMA_STRING_GAP);
+					fw.append(formatStr(columns[i], false));
 				}else{
-					//fw.append(formatStr(columns[i]));
-					fw.append(columns[i]);
+					fw.append(formatStr(columns[i]));
 				}
 			}
 //			for(String columns : SearchResultExportColumns){
@@ -366,7 +363,7 @@ public class ConsoleServiceHandler {
 					bw.append(formatStr(orderPaymentType.getDesc()));
 					bw.append(formatStr(OrderStatus.fromKey(order.getStatus()).getName()));
 					bw.append(formatStr(DateTimeHelper.formatDate(order.getCreated_at(), DateTimeHelper.FormatPattern0)));
-					bw.append(formatStr(DateTimeHelper.formatDate(order.getPaymented_at(), DateTimeHelper.FormatPattern0)));
+					bw.append(formatStr(DateTimeHelper.formatDate(order.getPaymented_at(), DateTimeHelper.FormatPattern0), false));
 					mac_orderlines.add(bw.toString());
 				}
 			}
@@ -384,6 +381,8 @@ public class ConsoleServiceHandler {
 		if(str == null) str = StringHelper.EMPTY_STRING_GAP;
 		
 		StringBuffer formatStr = new StringBuffer();
+		formatStr.append(str);
+/*		StringBuffer formatStr = new StringBuffer();
 		formatStr.append(StringHelper.WHITESPACE_STRING_GAP);
 		formatStr.append(str);
 		int strLen = formatStr.toString().getBytes().length;
@@ -393,7 +392,7 @@ public class ConsoleServiceHandler {
 				//str += StringHelper.WHITESPACE_STRING_GAP;
 				formatStr.append(StringHelper.WHITESPACE_STRING_GAP);
 			}
-		}
+		}*/
 		if(split)
 			formatStr.append(StringHelper.COMMA_STRING_GAP);
 		return formatStr.toString();

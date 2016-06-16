@@ -75,7 +75,7 @@ public class CommdityUnitFacadeService {
 	}
 	
 	/**
-	 * 针对商品的价格区间
+	 * 打赏针对商品的价格区间
 	 * 根据设备mac 用户mac 商品id随机金额
 	 * 缓存在redis中 以保证金额不变
 	 * @param commdityid 商品id
@@ -85,10 +85,11 @@ public class CommdityUnitFacadeService {
 	 * @param umactype 终端类型
 	 * @return
 	 */
-	public RpcResponseDTO<CommdityAmountDTO> intervalAMount(Integer commdityid, Integer appid, String mac, 
+	public RpcResponseDTO<CommdityAmountDTO> rewardIntervalAMount(Integer commdityid, String mac, 
 			String umac, Integer umactype){
 		try{
-			OrderHelper.supportedAppId(appid);
+			//OrderHelper.supportedAppId(appid);
+			OrderHelper.supportedUMacType(umactype);
 			
 			//验证用户mac umac
 			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
@@ -99,19 +100,19 @@ public class CommdityUnitFacadeService {
 			}
 			
 			//获取此上下文的缓存金额数据
-			String amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid);
+			String amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid, umactype);
 			if(StringUtils.isEmpty(amount)){
 				//处理商品金额
 				amount = CommdityHelper.generateCommdityAmount(chargingFacadeService.fetchAmountRange(mac, umactype));
 				//amount = commdityFacadeService.commdityAmount(commdityid);
 				//CommdityIntervalAmountService.getInstance().addRAmount(mac, umac, commdityid, amount);
-				Long addnx_ret = RewardOrderAmountHashService.getInstance().addNx_RAmount(mac, umac, commdityid, amount);
+				Long addnx_ret = RewardOrderAmountHashService.getInstance().addNx_RAmount(mac, umac, commdityid, umactype, amount);
 				if(addnx_ret == null || addnx_ret <= 0){
 					//如果多线程问题，同一个key,setnx有可能未设置成功，则获取目前存在的金额
-					amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid);
+					amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid, umactype);
 				}
 			}
-			logger.info(String.format("intervalAMount success commdityid[%s] appid[%s] mac[%s] umac[%s] amount[%s]", commdityid, appid, mac, umac, amount));
+			logger.info(String.format("intervalAMount success commdityid[%s] mac[%s] umac[%s] umactype[%s] amount[%s]", commdityid, mac, umac, umactype, amount));
 			CommdityAmountDTO commdityAmountDto = new CommdityAmountDTO();
 			commdityAmountDto.setAmount(amount);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityAmountDto);

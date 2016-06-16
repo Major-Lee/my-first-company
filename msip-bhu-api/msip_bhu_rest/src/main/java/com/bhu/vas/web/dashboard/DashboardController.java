@@ -25,7 +25,7 @@ import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
-import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -305,7 +305,7 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<OrderStatisticsVTO> rpcResult = orderRpcService.rewardOrderStatisticsBetweenDate(start_date, end_date);
+		RpcResponseDTO<RewardOrderStatisticsVTO> rpcResult = orderRpcService.rewardOrderStatisticsBetweenDate(start_date, end_date);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else

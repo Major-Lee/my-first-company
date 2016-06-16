@@ -26,10 +26,10 @@ public class CommdityRpcService implements ICommdityRpcService{
 		return commdityUnitFacadeService.commdityPages(status, category, pageNo, pageSize);
 	}
 	
-	public RpcResponseDTO<CommdityAmountDTO> intervalAMount(Integer commdityid, Integer appid, 
-			String mac, String umac, Integer umactype){
-		logger.info(String.format("intervalAMount with commdityid[%s] appid[%s] mac[%s] umac[%s] umactype[%s]", commdityid, 
-				appid, mac, umac, umactype));
-		return commdityUnitFacadeService.intervalAMount(commdityid, appid, mac, umac, umactype);
+	public RpcResponseDTO<CommdityAmountDTO> rewardIntervalAMount(Integer commdityid, String mac, String umac, 
+			Integer umactype){
+		logger.info(String.format("rewardIntervalAMount with commdityid[%s] mac[%s] umac[%s] umactype[%s]", commdityid, 
+				 mac, umac, umactype));
+		return commdityUnitFacadeService.rewardIntervalAMount(commdityid, mac, umac, umactype);
 	}
 }

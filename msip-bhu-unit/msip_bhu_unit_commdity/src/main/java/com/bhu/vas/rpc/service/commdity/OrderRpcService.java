@@ -14,7 +14,7 @@ import com.bhu.vas.api.dto.commdity.UserOrderDTO;
 import com.bhu.vas.api.dto.commdity.UserRechargeVCurrencyOrderDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
-import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.rpc.facade.OrderUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -73,7 +73,7 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<OrderStatisticsVTO> rewardOrderStatisticsBetweenDate(String start_date, String end_date) {
+	public RpcResponseDTO<RewardOrderStatisticsVTO> rewardOrderStatisticsBetweenDate(String start_date, String end_date) {
 		logger.info(String.format("rewardOrderStatisticsBetweenDate with start_date[%s] end_date[%s]", start_date, end_date));
 		return orderUnitFacadeService.rewardOrderStatisticsBetweenDate(start_date, end_date);
 	}
