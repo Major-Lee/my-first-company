@@ -58,6 +58,8 @@ public class ConsoleWithdrawController extends BaseController {
             @RequestParam(required = false,defaultValue = "0", value = "tuid") int tuid,
             @RequestParam(required = false,defaultValue = "", value = "status") String withdraw_status,
             @RequestParam(required = false, defaultValue = "weixin", value = "payment_type") String payment_type,
+            @RequestParam(required = false, defaultValue = "", value = "startTime") String startTime,
+            @RequestParam(required = false, defaultValue = "", value = "endTime") String endTime,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		) {
@@ -66,7 +68,7 @@ public class ConsoleWithdrawController extends BaseController {
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pageWithdrawApplies(uid, tuid, withdraw_status,payment_type,pageNo, pageSize);
+		RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pageWithdrawApplies(uid, tuid, withdraw_status,payment_type,startTime,endTime,pageNo, pageSize);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
@@ -129,6 +131,16 @@ public class ConsoleWithdrawController extends BaseController {
             @RequestParam(required = true) String applyid
     		) {
 		RpcResponseDTO<RequestWithdrawNotifyDTO> rpcResult = userWalletRpcService.doStartPaymentWithdrawApply(uid, applyid);
+		
+		//add by dongrui 2016-06-15 start
+		RequestWithdrawNotifyDTO requestWithdrawNotifyDTO = rpcResult.getPayload();
+		UserWithdrawApplyVTO userWithdrawApplyVTO = requestWithdrawNotifyDTO.getWithdraw();
+		if(userWithdrawApplyVTO.getPayment_type().equals("weixin")){
+			RpcResponseDTO<UserWithdrawApplyVTO> rpcResponseDTO = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, true);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponseDTO));
+		}
+		//add by dongrui 2016-06-15 E N D 
+		
 		if(!rpcResult.hasError()){
 			RequestWithdrawNotifyDTO withdrawNotify = rpcResult.getPayload();
 			/*if(!withdrawNotify.validate()){
