@@ -573,16 +573,11 @@ public class UserWalletUnitFacadeService {
 					rankSingle.setUserIncome(deviceGroupPaymentStatistics.getTotal_incoming_amount());
 					rankSingle.setUserName(user.getNick());
 					rankSingle.setAvatar(user.getAvatar());
-					if(i+1<=100){
-						if(uid==deviceGroupPaymentStatistics.getUid()){
-							rankingListVTO.setRankNum(i+1);
-						}
-						rankList.add(rankSingle);
-					}else{
-						if(uid==deviceGroupPaymentStatistics.getUid()){
-							rankingListVTO.setUserIncome(deviceGroupPaymentStatistics.getTotal_incoming_amount());
-						}
+					if(uid==deviceGroupPaymentStatistics.getUid()){
+						rankingListVTO.setRankNum(beforeRankNum);
+						rankingListVTO.setUserIncome(deviceGroupPaymentStatistics.getTotal_incoming_amount());
 					}
+					rankList.add(rankSingle);
 				}
 				
 			}
