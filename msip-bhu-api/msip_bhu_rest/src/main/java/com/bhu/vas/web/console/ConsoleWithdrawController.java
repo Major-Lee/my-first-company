@@ -135,7 +135,7 @@ public class ConsoleWithdrawController extends BaseController {
 		//add by dongrui 2016-06-15 start
 		RequestWithdrawNotifyDTO requestWithdrawNotifyDTO = rpcResult.getPayload();
 		UserWithdrawApplyVTO userWithdrawApplyVTO = requestWithdrawNotifyDTO.getWithdraw();
-		if(userWithdrawApplyVTO.getPayment_type().equals("weixin")){
+		if(userWithdrawApplyVTO.getPayment_type().equals("public")){
 			RpcResponseDTO<UserWithdrawApplyVTO> rpcResponseDTO = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, true);
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponseDTO));
 		}
