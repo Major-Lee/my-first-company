@@ -560,6 +560,7 @@ public class UserWalletUnitFacadeService {
 					if(i==0){
 						beforeRankNum=1;
 						beforeIncome=deviceGroupPaymentStatistics.getTotal_incoming_amount();
+						rankSingle.setRankNum(beforeRankNum);
 					}else{
 						if(StringUtils.endsWith(beforeIncome, deviceGroupPaymentStatistics.getTotal_incoming_amount())){
 							rankSingle.setRankNum(beforeRankNum);
