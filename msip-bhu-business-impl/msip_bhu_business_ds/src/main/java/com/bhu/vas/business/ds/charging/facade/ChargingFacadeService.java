@@ -249,6 +249,7 @@ public class ChargingFacadeService {
 		vto.setId(configs.getId());
 		vto.setOwner_percent(configs.getOwner_percent());
 		vto.setManufacturer_percent(configs.getManufacturer_percent());
+		vto.setDistributor_percent(configs.getDistributor_percent());
 		vto.setRcm(configs.getRange_cash_mobile());
 		vto.setRcp(configs.getRange_cash_pc());
 		vto.setAit(configs.getAit_mobile());

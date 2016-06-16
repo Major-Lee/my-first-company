@@ -904,8 +904,8 @@ public class DeviceHelper {
 	
 	
 	//TODO
-	//wlan0 wlan10 ,取消限速则是rate值为0
-	public static final String DeviceSetting_MasterWifi_Limit =
+	//开启并限速主网络wlan0 wlan10 ,取消限速则是rate值为0
+	public static final String DeviceSetting_Start_MasterWifi_Dual =
 			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
 				"<net>"+
 					"<interface>"

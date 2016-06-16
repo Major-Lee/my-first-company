@@ -27,14 +27,17 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	public static final String Default_Range_Cash_PC = "1.5-3.5";
 	public static final String Default_Range_Cash_Mobile = "0.5-0.9";
 	public static final String Default_AIT = "14400";
+	
 	public static final double Default_Owner_Percent = 0.70d;
 	public static final double Default_Manufacturer_Percent = 0.30d;
+	public static final double Default_Distributor_Percent = 0.00d;
+	
 	//如果owner字段为<=0则采用此值为缺省分成用户
 	public static final int Default_Owner = 1;
-	
 	public static final int None_Owner = -1;
 	//如果manufacturer<=0字段为空则采用此值为缺省分成用户
 	public static final int Default_Manufacturer = 110;
+	public static final int None_Distributor = -1;
 	//设备批次号（导入批次号-一般库房进行编号）格式为 yyyyMMdd-longsequence
 	private String batchno;
 	//绑定用户 <=0 代表未绑定的设备（此数据为冗余数据，解绑和绑定、重置操作都需要操作此值）
@@ -42,10 +45,12 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	private int owner = 0;
 	//厂商用户  必须>零 目前值为定值
 	private int manufacturer = 0;
+	private int distributor = -1;
 	private boolean customized = false;
 	//约定的收益分成比例 最多小数点保留后两位 70%-30%开，总值为1；
 	private double owner_percent = Default_Owner_Percent;
 	private double manufacturer_percent = Default_Manufacturer_Percent;
+	private double distributor_percent = Default_Distributor_Percent;
 	//pc端和移动端的打赏金额范围及相关时长
 	private String range_cash_pc = Default_Range_Cash_PC;
 	private String range_cash_mobile = Default_Range_Cash_Mobile;
@@ -152,6 +157,19 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	}
 	public void setCustomized(boolean customized) {
 		this.customized = customized;
+	}
+	
+	public int getDistributor() {
+		return distributor;
+	}
+	public void setDistributor(int distributor) {
+		this.distributor = distributor;
+	}
+	public double getDistributor_percent() {
+		return distributor_percent;
+	}
+	public void setDistributor_percent(double distributor_percent) {
+		this.distributor_percent = distributor_percent;
 	}
 	@Override
 	public void preInsert() {
