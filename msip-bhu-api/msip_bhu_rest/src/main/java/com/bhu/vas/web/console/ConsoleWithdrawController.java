@@ -131,7 +131,8 @@ public class ConsoleWithdrawController extends BaseController {
             @RequestParam(required = true) String applyid
     		) {
 		RpcResponseDTO<RequestWithdrawNotifyDTO> rpcResult = userWalletRpcService.doStartPaymentWithdrawApply(uid, applyid);
-		
+		System.out.println(rpcResult);
+		System.out.println(rpcResult.hasError());
 		//add by dongrui 2016-06-15 start
 		if(!rpcResult.hasError()){
 			RequestWithdrawNotifyDTO requestWithdrawNotifyDTO = rpcResult.getPayload();
