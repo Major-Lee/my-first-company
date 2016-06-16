@@ -2,8 +2,8 @@ package com.bhu.vas.business.backendonline.asyncprocessor.service.impl;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,16 +18,23 @@ import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 @Service
 public class UserPortalUpdateServiceHandler implements IMsgHandlerService {
 	private final Logger logger = LoggerFactory.getLogger(UserPortalUpdateServiceHandler.class);
-	private ExecutorService exec = Executors.newFixedThreadPool(10);
+	private ExecutorService exec = null;//Executors.newFixedThreadPool(10);
 	@Resource
 	private UserService userService;
 	
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
+	
+	@PostConstruct
+	public void initialize() {
+		logger.info("UserPortalUpdateServiceHandler initialize...");
+		exec = ExecObserverManager.buildExecutorService(this.getClass(),"UserPortalUpdate",10);
+	}
 	
 /*	private static Map<String,String> Common_Headers = new HashMap<String,String>();
 	static{

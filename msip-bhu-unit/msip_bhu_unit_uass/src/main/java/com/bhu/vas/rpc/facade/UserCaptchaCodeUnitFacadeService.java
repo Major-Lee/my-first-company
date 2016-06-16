@@ -1,9 +1,8 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import javax.annotation.PreDestroy;
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +22,7 @@ import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 @Service
 public class UserCaptchaCodeUnitFacadeService {
@@ -31,7 +31,14 @@ public class UserCaptchaCodeUnitFacadeService {
 	private UserCaptchaCodeService userCaptchaCodeService;
 	
 	//内部线程池，用于调用sms接口
-	private ExecutorService exec_send = Executors.newFixedThreadPool(30);
+	private ExecutorService exec_send = null;//Executors.newFixedThreadPool(30);
+	@PostConstruct
+	public void initialize() {
+		logger.info("UserCaptchaCodeUnitFacadeService initialize...");
+		//exec_remote_portalexchange = (ThreadPoolExecutor)ExecObserverManager.buildExecutorService(this.getClass(),"AsyncOrderPaymentNotify processes消息处理",ProcessesThreadCount);
+		exec_send = ExecObserverManager.buildExecutorService(this.getClass(),"SMS消息发送处理",30);
+	}
+	//newSingleThreadExecutor
 	//private ExecutorService exec_aftervalidate = Executors.newFixedThreadPool(30);
 	//@Resource
 	//private DeliverMessageService deliverMessageService;
@@ -144,7 +151,7 @@ public class UserCaptchaCodeUnitFacadeService {
 		//return userCaptchaCodeUnitFacadeService.validateCaptchaCode(countrycode, acc,captcha);
 	}
 	
-	@PreDestroy
+	/*@PreDestroy
 	public void destory(){
 		String simplename = this.getClass().getSimpleName();
 		if(exec_send != null){
@@ -168,5 +175,5 @@ public class UserCaptchaCodeUnitFacadeService {
 				}
 			}
 		}
-	}
+	}*/
 }
