@@ -336,7 +336,8 @@ public class OrderUnitFacadeService {
 	public RpcResponseDTO<Integer> rewardOrderFinishCountRecent7Days() {
 		try{
 			Date Ago7Date = DateTimeHelper.getDateDaysAgo(7);
-			int count = orderFacadeService.countOrderByDateParams(OrderStatus.DeliverCompleted.getKey(), null, Ago7Date, null);
+			int count = orderFacadeService.countOrderByDateParams(OrderStatus.DeliverCompleted.getKey(), 
+					CommdityCategory.RewardInternetLimit.getCategory(), Ago7Date, null);
 			RewardOrderFinishCountStringService.getInstance().refreshRecent7daysValue(count);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(count);
 		}catch(BusinessI18nCodeException bex){
