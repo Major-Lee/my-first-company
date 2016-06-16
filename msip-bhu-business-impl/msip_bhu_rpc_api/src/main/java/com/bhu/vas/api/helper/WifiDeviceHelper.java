@@ -164,6 +164,15 @@ public class WifiDeviceHelper {
 		if(StringUtils.isEmpty(work_mode)) return true;
 		return WorkMode_Router.equals(work_mode);
 	}
+	
+	public static boolean isLegalSwitch(String value){
+		if(StringUtils.isNotEmpty(value)){
+			if(Enable.equals(value) || Disable.equals(value)){
+				return true;
+			}
+		}
+		return false;
+	}
 	//act 0代表bridge to router 1反之
 	public static DeviceStatusExchangeDTO deviceWorkModeNeedChanged(DeviceStatusExchangeDTO d_staus,int act, String linkmode_value){
 		if(act <0 || act >1)

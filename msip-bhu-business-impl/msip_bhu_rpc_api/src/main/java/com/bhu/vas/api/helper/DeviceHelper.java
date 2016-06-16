@@ -583,7 +583,7 @@ public class DeviceHelper {
 					target.setAcls(m_acls);
 				}
 				//合并接口速率控制
-				List<WifiDeviceSettingInterfaceDTO> m_interfaces = mergeList(source.getInterfaces(), target.getInterfaces());
+				List<WifiDeviceSettingInterfaceDTO> m_interfaces = mergeList(source.getInterfaces(), target.getInterfaces(), false);
 				if(m_interfaces != null){
 					target.setInterfaces(m_interfaces);
 				}
@@ -707,6 +707,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RatecontrolOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><rate_control>%s</rate_control></net></dev>");
 	public static final String DeviceSetting_AdminPasswordOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><users>%s</users></sys></dev>");
 	public static final String DeviceSetting_KeyStatusOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><syskey>%s</syskey></sys></dev>");
+	public static final String DeviceSetting_InterfaceOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><interface>%s</interface></net></dev>");
 
 	public static final String DeviceSetting_MMOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><mac_management>%s</mac_management></net></dev>");
 	public static final String DeviceSetting_LinkModeOuter ="<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<mod><basic><wan>%s</wan></basic></mod></dev>");
@@ -903,7 +904,7 @@ public class DeviceHelper {
 	
 	
 	
-	//TODO
+/*	//TODO
 	//wlan0 wlan10 ,取消限速则是rate值为0
 	public static final String DeviceSetting_MasterWifi_Limit =
 			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
@@ -913,9 +914,11 @@ public class DeviceHelper {
 					+ "<ITEM name=\"wlan10\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/>"
 					+ "</interface>"
 			    +"</net>"+
-			"</dev>";
-	
-	
+			"</dev>";*/
+	//主网络开关
+	public static final String DeviceSetting_Master_Switch = "<ITEM name=\"%s\" enable=\"%s\" />";
+	//主网络统一限速
+	public static final String DeviceSetting_Master_Limit = "<ITEM name=\"%s\" users_tx_rate=\"%s\" users_rx_rate=\"%s\" />";
 	
 	
 	///complete_isolate_ports 区分 工作模式和单双频
@@ -1973,6 +1976,62 @@ public class DeviceHelper {
 	public static String builderDSKeyStatusOuter(DeviceSettingBuilderDTO dto){
 		String item = builderDeviceSettingItem(DeviceSetting_KeyStatusItem, dto.builderProperties());
 		return builderDeviceSettingOuter(DeviceSetting_KeyStatusOuter, Common_Config_Sequence, item);
+	}
+	
+	/**
+	 * 构建主网络开关修改配置multi
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return 
+	 */
+	public static String builderDSInterfaceMasterSwitchMultiOuter(String config_sequence, String extparams){
+		List<WifiDeviceSettingInterfaceDTO> interface_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingInterfaceDTO.class);
+		if(interface_dtos == null || interface_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+	
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingInterfaceDTO interface_dto : interface_dtos){
+			if(StringUtils.isEmpty(interface_dto.getName()) || !WifiDeviceHelper.isLegalSwitch(interface_dto.getEnable())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+
+			String item = builderDeviceSettingItem(DeviceSetting_Master_Switch, 
+					interface_dto.builderProperties(WifiDeviceSettingInterfaceDTO.BuilderType_InterfaceMasterSwitch));
+			items.append(item);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_InterfaceOuter, config_sequence, items.toString());
+	}
+	
+	/**
+	 * 构建主网络统一限速配置multi
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return 
+	 */
+	public static String builderDSInterfaceMasterLimitMultiOuter(String config_sequence, String extparams){
+		List<WifiDeviceSettingInterfaceDTO> interface_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingInterfaceDTO.class);
+		if(interface_dtos == null || interface_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+	
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingInterfaceDTO interface_dto : interface_dtos){
+			if(StringUtils.isEmpty(interface_dto.getName())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			
+			if(interface_dto.getUsers_tx_rate() < 0 || interface_dto.getUsers_rx_rate() < 0){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+
+			String item = builderDeviceSettingItem(DeviceSetting_Master_Limit, 
+					interface_dto.builderProperties(WifiDeviceSettingInterfaceDTO.BuilderType_InterfaceMasterLimit));
+			items.append(item);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_InterfaceOuter, config_sequence, items.toString());
 	}
 	
 	/**
