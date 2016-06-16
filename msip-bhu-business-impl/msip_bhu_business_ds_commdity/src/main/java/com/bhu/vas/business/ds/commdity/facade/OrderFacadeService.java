@@ -208,7 +208,7 @@ public class OrderFacadeService {
 		}
 		
 		//验证缓存中的商品金额
-		String amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid);
+		String amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid, umactype);
 		if(StringUtils.isEmpty(amount)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_INVALID);
 		}
@@ -280,7 +280,7 @@ public class OrderFacadeService {
 					logger.info(String.format("RewardOrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
 				}
 				//清除缓存中的随机金额
-				RewardOrderAmountHashService.getInstance().removeRAmount(order.getMac(), order.getUmac(), order.getCommdityid());
+				RewardOrderAmountHashService.getInstance().removeRAmount(order.getMac(), order.getUmac(), order.getCommdityid(), order.getUmactype());
 			}else{
 				changed_status = OrderStatus.PayFailured.getKey();
 				changed_process_status = OrderProcessStatus.PayFailured.getKey();
