@@ -110,6 +110,8 @@ public class BusinessKeyDefine {
 		public static final String OrderDeliverNotifyKey = "ODN_KEY";
 		
 		public static final String WithdrawAppliesRequestNotifyKey = "WAR_KEY";
+		
+		public static final String RewardOrderRecent7DaysKey = "ROR7D_KEY";
 	}
 	
 	public static class CommdityRAmount {

@@ -144,6 +144,29 @@ public class OrderFacadeService {
 	}
 	
 	/**
+	 * 根据日期查询订单数量
+	 * @param status
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public int countOrderByDateParams(Integer status, Integer type, Date startDate, Date endDate){
+		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		criteria.andColumnEqualTo("status", status);
+		if(type != null){
+			criteria.andColumnEqualTo("type", type);
+		}
+		if(startDate != null){
+			criteria.andColumnGreaterThanOrEqualTo("created_at", startDate);
+		}
+		if(endDate != null){
+			criteria.andColumnLessThanOrEqualTo("created_at", endDate);
+		}
+		return orderService.countByModelCriteria(mc);
+	}
+	
+	/**
 	 * 更新订单的状态和流程状态
 	 * @param order 订单实体
 	 * @param status 订单状态
@@ -158,8 +181,8 @@ public class OrderFacadeService {
 	}
 
 	
+
 	/*************            打赏             ****************/
-	
 
 	
 	/**
