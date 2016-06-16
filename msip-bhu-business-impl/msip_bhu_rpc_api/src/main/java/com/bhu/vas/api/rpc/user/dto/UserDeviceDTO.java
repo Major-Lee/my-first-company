@@ -2,6 +2,10 @@ package com.bhu.vas.api.rpc.user.dto;
 
 import java.io.Serializable;
 
+import org.springframework.util.StringUtils;
+
+import com.smartwork.msip.cores.helper.StringHelper;
+
 /**
  * Created by bluesand on 15/4/10.
  */
@@ -72,6 +76,7 @@ public class UserDeviceDTO implements Serializable {
     }
 
     public String getVer() {
+    	if(StringUtils.isEmpty(ver)) return StringHelper.EMPTY_STRING_GAP;
         return ver;
     }
 
@@ -80,6 +85,7 @@ public class UserDeviceDTO implements Serializable {
     }
 
     public String getWork_mode() {
+    	if(StringUtils.isEmpty(work_mode)) return StringHelper.EMPTY_STRING_GAP;
         return work_mode;
     }
 

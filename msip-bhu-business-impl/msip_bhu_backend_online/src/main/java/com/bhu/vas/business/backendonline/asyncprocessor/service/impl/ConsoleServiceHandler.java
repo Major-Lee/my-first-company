@@ -85,7 +85,8 @@ public class ConsoleServiceHandler {
 		final List<String> lines = new ArrayList<String>();
 		
 		wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, 
-				BusinessIndexDefine.WifiDevice.Type, dto.getMessage(), new IteratorNotify<Page<WifiDeviceDocument>>(){
+				BusinessIndexDefine.WifiDevice.Type, dto.getMessage(), 20, new IteratorNotify<Page<WifiDeviceDocument>>(){
+
 			@Override
 			public void notifyComming(Page<WifiDeviceDocument> pages) {
 				for(WifiDeviceDocument doc : pages){
@@ -110,7 +111,8 @@ public class ConsoleServiceHandler {
 		int messagetype = dto.getMessagetype();
 		if(OrderSearchResultExportFileDTO.SearchCondition_MessageType == messagetype){
 			wifiDeviceDataSearchService.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, 
-					BusinessIndexDefine.WifiDevice.Type, message, new IteratorNotify<Page<WifiDeviceDocument>>(){
+					BusinessIndexDefine.WifiDevice.Type, message, 20, new IteratorNotify<Page<WifiDeviceDocument>>(){
+
 				@Override
 				public void notifyComming(Page<WifiDeviceDocument> pages) {
 					for(WifiDeviceDocument doc : pages){

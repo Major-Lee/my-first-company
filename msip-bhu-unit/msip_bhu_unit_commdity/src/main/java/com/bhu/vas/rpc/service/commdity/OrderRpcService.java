@@ -77,6 +77,12 @@ public class OrderRpcService implements IOrderRpcService{
 		logger.info(String.format("rewardOrderStatisticsBetweenDate with start_date[%s] end_date[%s]", start_date, end_date));
 		return orderUnitFacadeService.rewardOrderStatisticsBetweenDate(start_date, end_date);
 	}
+	
+	@Override
+	public RpcResponseDTO<Integer> rewardOrderFinishCountRecent7Days() {
+		logger.info("rewardOrderFinishCountRecent7Days with no params");
+		return orderUnitFacadeService.rewardOrderFinishCountRecent7Days();
+	}
 
 	@Override
 	public RpcResponseDTO<OrderRechargeVCurrencyDTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid, 
@@ -108,5 +114,6 @@ public class OrderRpcService implements IOrderRpcService{
 		return orderUnitFacadeService.createSMSOrder(mac, umac, umactype, context);
 	}
 	
+
 
 }

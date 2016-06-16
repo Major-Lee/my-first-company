@@ -23,6 +23,8 @@ public interface IOrderRpcService {
 	
 	public RpcResponseDTO<OrderStatisticsVTO> rewardOrderStatisticsBetweenDate(String start_date, String end_date);
 	
+	public RpcResponseDTO<Integer> rewardOrderFinishCountRecent7Days();
+	
 	public RpcResponseDTO<OrderRechargeVCurrencyDTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid, String payment_type, Integer umactype);
 
 	public RpcResponseDTO<TailPage<UserRechargeVCurrencyOrderDTO>> rechargeVCurrencyOrderPagesByUid(Integer uid, 
@@ -31,4 +33,7 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<OrderStatusDTO> orderStatusByUid(Integer uid, String orderid);
 	
 	public RpcResponseDTO<OrderSMSDTO> createSMSOrder(String mac, String umac, Integer umactype, String context);
+
+	
+
 }
