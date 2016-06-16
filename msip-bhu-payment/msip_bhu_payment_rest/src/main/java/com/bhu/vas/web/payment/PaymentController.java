@@ -756,6 +756,10 @@ public class PaymentController extends BaseController{
     		ip = "213.42.3.24";
     	}
     	
+    	if(usermac.equals("")){
+    		usermac = RandomPicker.randString(BusinessHelper.letters, 8);
+    	}
+    	
     	String total_fee_fen = BusinessHelper.getMoney(total_fee);
     	int temp = Integer.parseInt(total_fee_fen);
     	if(temp < 10){ 
@@ -1113,6 +1117,7 @@ public class PaymentController extends BaseController{
     	//&providetype=5&pubacct_payamt_coins=&tbazinga=1&token=CD044842BFFC9ADA438B3C0BAAFAFDBC14961&ts=1465714407
     	//&version=v3&zoneid=1&sig=%2BjZT%2B%2F1BmjX4PWLbwyDigFCStDA%3D
     	//获取POST过来反馈信息
+    	String result = "{'ret':1,'msg':'通知订单信息无效'}";
     	HashMap<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
 		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
@@ -1125,19 +1130,20 @@ public class PaymentController extends BaseController{
 			}
 			//乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
 			//valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
+			System.out.println("name:"+name+"   valueStr:"+valueStr);
 			params.put(name, valueStr);
 		}
 		
-
 		String goods_no = request.getParameter("payitem");
-		if (StringUtils.isBlank(goods_no)) {
-			logger.error(String.format("get heepay notify goods_no [%s]", goods_no));
-			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
-			return "error";
+		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
+		int pay_amt = Integer.parseInt(BusinessHelper.getMoney(request.getParameter("amt")));
+		if(pay_amt < 10){ //订单支付金额小于10分 视作支付失败
+			logger.info(String.format("get midas return notify.user canceled this pay and go to locationUrl [%s] goods_no[%s]", locationUrl,goods_no));
+			response.sendRedirect(locationUrl);
+			return result;
 		}
 		//商户订单号
-		String out_trade_no = new String(request.getParameter("payitem").getBytes("ISO-8859-1"),"UTF-8");
+		String out_trade_no = BusinessHelper.formatPayItem(payHttpService.getEnv(), goods_no) ;
 
 		//交易号 (米大师给的微信流水号)
 		String trade_no = new String(request.getParameter("cftid").getBytes("ISO-8859-1"),"UTF-8");
@@ -1145,19 +1151,17 @@ public class PaymentController extends BaseController{
 		//交易号(米大师流水号)
 		String billno = new String(request.getParameter("billno").getBytes("ISO-8859-1"),"UTF-8");
 		
-		//交易金额
-		String pay_amt = new String(request.getParameter("amt").getBytes("ISO-8859-1"),"UTF-8");
-		
 		//交易签名
 		String sign = new String(request.getParameter("sig").getBytes("ISO-8859-1"),"UTF-8");
 		
 		//交易状态
 		//String trade_status = new String(request.getParameter("result").getBytes("ISO-8859-1"),"UTF-8");
+		
 
 		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
 		if (payReckoning == null) {
         	logger.info("get midas notice payReckoning " +payReckoning);
-        	return "error";
+        	return result;
         }
 		String orderId = payReckoning.getOrder_id();
         logger.info(String.format("get midas notify reckoningId [%s] trade_no [%s] orderId [%s] billno [%s]",out_trade_no, trade_no,orderId,billno));
@@ -1171,13 +1175,16 @@ public class PaymentController extends BaseController{
 					//支付成功
 					logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
 					updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
-					return "OK";
+					result = "{'ret':0,'msg':'OK'}";
+					return result;
 				}
-				return "OK";
+				result = "{'ret':0,'msg':'OK'}";
+				return result;
 				
 		}else{//验证失败
 			logger.info(String.format("get midas notifysign [%s] verify fail", sign));
-			return "error";
+			result = "{'ret':2,'msg':'请求参数错误：（sig）'}";
+			return result;
 		}
     	
     }
@@ -1212,15 +1219,17 @@ public class PaymentController extends BaseController{
 						: valueStr + values[i] + ",";
 			}
 			//乱码解决，这段代码在出现乱码时使用。如果mysign和sign不相等也可以使用这段代码转化
-			//valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
+			valueStr = new String(valueStr.getBytes("ISO-8859-1"), "gbk");
 			params.put(name, valueStr);
 		}
 		
-		String isNull = request.getParameter("agent_bill_id");
-		
 		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
-		if (StringUtils.isBlank(isNull)) {
-			logger.info(String.format("get heepay return notify and go to out_trade_no [%s] ,user canceled this pay.", isNull));
+		String pay_amt = request.getParameter("pay_amt");
+		String result = request.getParameter("result");
+		String fbtn = request.getParameter("fbtn");
+		if(pay_amt.equals("0.00")||result.equals("0") || fbtn.equals("goback")){
+			String pay_message = request.getParameter("pay_message");
+			logger.info(String.format("get heepay return notify.user canceled this pay and go to locationUrl [%s] pay_message[%s]", locationUrl,pay_message));
 			response.sendRedirect(locationUrl);
 			return;
 		}
@@ -1239,7 +1248,6 @@ public class PaymentController extends BaseController{
 				locationUrl = returnUrl;
 			}
 		}
-		logger.info(String.format("get heepay return notify and go to locationUrl [%s]", locationUrl));
 		response.sendRedirect(locationUrl);
 
 	}
