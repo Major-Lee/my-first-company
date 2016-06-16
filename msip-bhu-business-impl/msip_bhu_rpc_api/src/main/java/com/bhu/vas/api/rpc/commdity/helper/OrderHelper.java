@@ -8,6 +8,7 @@ import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -62,12 +63,20 @@ public class OrderHelper {
 	public static CommdityApplication supportedAppId(Integer appid){
 		CommdityApplication commdityApplication = CommdityApplication.fromKey(appid);
 		if(commdityApplication == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_APPID_INVALID, new String[]{String.valueOf(appid)});
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_APPID_INVALID);
 		}
 		return commdityApplication;
 		//认证appid
 /*		if(!CommdityApplication.supported(appid)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_APPID_INVALID, new String[]{String.valueOf(appid)});
 		}*/
+	}
+	
+	public static OrderUmacType supportedUMacType(Integer appid){
+		OrderUmacType orderUmacType = OrderUmacType.fromKey(appid);
+		if(orderUmacType == null || OrderUmacType.Unknown.getKey().equals(orderUmacType.getKey())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_UMACTYPE_INVALID);
+		}
+		return orderUmacType;
 	}
 }

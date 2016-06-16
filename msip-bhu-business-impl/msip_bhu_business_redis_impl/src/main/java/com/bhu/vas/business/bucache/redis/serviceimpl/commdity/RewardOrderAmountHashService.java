@@ -42,9 +42,10 @@ public class RewardOrderAmountHashService extends AbstractRelationHashCache{
 		return keys;
 	}
 	
-	public String generateField(String umac, Integer commdityid){
+	public String generateField(String umac, Integer commdityid, Integer umactype){
 		StringBuilder sb = new StringBuilder();
 		sb.append(umac).append(StringHelper.POINT_CHAR_GAP).append(commdityid);
+		sb.append(StringHelper.POINT_CHAR_GAP).append(umactype);
 		return sb.toString();
 	}
 	
@@ -52,19 +53,19 @@ public class RewardOrderAmountHashService extends AbstractRelationHashCache{
 		super.set(generateKey(mac, umac, commdityid), amount);
 	}*/
 	
-	public Long addNx_RAmount(String mac, String umac, Integer commdityid, String amount){
+	public Long addNx_RAmount(String mac, String umac, Integer commdityid, Integer umactype, String amount){
 		//return super.setnx(generateKey(mac, umac, commdityid), amount);
-		return super.hsetnx(generateKey(mac), generateField(umac, commdityid), amount);
+		return super.hsetnx(generateKey(mac), generateField(umac, commdityid, umactype), amount);
 	}
 	
-	public String getRAmount(String mac, String umac, Integer commdityid){
+	public String getRAmount(String mac, String umac, Integer commdityid, Integer umactype){
 		//return super.get(generateKey(mac, umac, commdityid));
-		return super.hget(generateKey(mac), generateField(umac, commdityid));
+		return super.hget(generateKey(mac), generateField(umac, commdityid, umactype));
 	}
 
-	public void removeRAmount(String mac, String umac, Integer commdityid){
+	public void removeRAmount(String mac, String umac, Integer commdityid, Integer umactype){
 		//super.del(generateKey(mac, umac, commdityid));
-		super.hdel(generateKey(mac), generateField(umac, commdityid));
+		super.hdel(generateKey(mac), generateField(umac, commdityid, umactype));
 	}
 	
 	public void removeAllRAmountByMacs(String... macs){
