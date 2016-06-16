@@ -179,7 +179,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     //@Test
     public void test005PageWithdrawApplies(){
-    	TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(testUserId, BusinessEnumType.UWithdrawStatus.VerifyPassed,"", 1, 10);
+    	TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(testUserId, BusinessEnumType.UWithdrawStatus.VerifyPassed,"","","", 1, 10);
     	System.out.println(pages.getItems().size());
 		System.out.println(pages.isFirstPage());
 		System.out.println(pages.isLastPage());
@@ -209,7 +209,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     //@Test
     public void test007PageWithdrawApplies(){
-    	TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(testUserId, BusinessEnumType.UWithdrawStatus.VerifyFailed,"", 1, 10);
+    	TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(testUserId, BusinessEnumType.UWithdrawStatus.VerifyFailed,"","","", 1, 10);
     	System.out.println(pages.getItems().size());
 		System.out.println(pages.isFirstPage());
 		System.out.println(pages.isLastPage());
@@ -344,17 +344,17 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    	
    	@Test
    	public void test013VcurrencyFromUserWalletForSnkAuthenticate(){
-   		final String orderid = "10012016041100000000000000000069";
+   		/*final String orderid = "10012016041100000000000000000069";
    		final AtomicLong vcurrency_current_leave = new AtomicLong(0l);
    		SnkAuthenticateResultType ret = userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(3,orderid, 20l, "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
 			@Override
 			public boolean beforeCheck(int uid, long vcurrency_cost,long vcurrency_has) {
 				//业务需求 如果短信验证通过则直接扣款，负数也扣款
-				/*if(vcurrency_has < vcurrency_cost){
+				if(vcurrency_has < vcurrency_cost){
 					return false;
 				}else{
 					return true;
-				}*/
+				}
 				return true;
 			}
 			@Override
@@ -392,7 +392,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    			case Failed:
    				//扣款失败，原因不明，依然通知uportal可以放行
    				break;
-   		}
+   		}*/
    		
    		
    		/*Runnable runn = new Runnable(){
