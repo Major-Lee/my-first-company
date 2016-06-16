@@ -518,7 +518,7 @@ public class OrderFacadeService {
 				//判断通知发货成功 更新订单状态
 				if(deliver_notify_ret){
 					changed_status = OrderStatus.DeliverCompleted.getKey();
-					changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
+					changed_process_status = OrderProcessStatus.SharedealCompleted.getKey();
 					logger.info(String.format("SmsOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
 				}else{
 					logger.info(String.format("SmsOrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
