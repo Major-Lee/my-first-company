@@ -116,7 +116,7 @@ public class UserWalletFacadeService{
 				int accountLength = accountNum.length();
 				accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
 			}
-			userOAuthStateDTO.setOpenid(publicAccountDetail.getPublish_account_number());
+			userOAuthStateDTO.setOpenid(accountNum);
 			userOAuthStateDTO.setIdentify("public");
 			List<UserOAuthStateDTO> userOAuthStateList = new ArrayList<UserOAuthStateDTO>();
 			userOAuthStateList.add(userOAuthStateDTO);	
