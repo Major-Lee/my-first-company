@@ -38,8 +38,8 @@ public class EquipmentStatics {
 			Map<String,Object> resultMap = new HashMap<String,Object>();
 			resultMap.put("dc", dc);
 			resultMap.put("doc", doc);
-			BhuCache.getInstance().setEquipment(FileHandling.getNextDay(), "equipment", JSONObject.toJsonString(resultMap));
-			String str = BhuCache.getInstance().getEquipment(FileHandling.getNextDay(), "equipment");
+			BhuCache.getInstance().setEquipment(DataUtils.currDay(), "equipment", JSONObject.toJsonString(resultMap));
+			String str = BhuCache.getInstance().getEquipment(DataUtils.currDay(), "equipment");
 			System.out.println(str);
 		}
 	}
