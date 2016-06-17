@@ -316,7 +316,7 @@ public class OrderUnitFacadeService {
 			Order order = orderFacadeService.validateOrderId(orderid);
 			
 			if(!uid.equals(order.getUid())){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_INVALID);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UID_INVALID);
 			}
 			
 			OrderStatusDTO orderStatusDto = OrderHelper.buildOrderStatusDTO(order);
