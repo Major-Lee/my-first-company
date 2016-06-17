@@ -47,14 +47,40 @@ public class PayHttpService {
     static String payRequestApiBaseUrl="https://api.weixin.qq.com/cgi-bin";
     static String  withdrawalsRequestApiBaseUrl = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
 
+    
+    
     //重定向地址
     public static String PAY_HOST_URL = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
-    public static String NOTIFY_URL = PAY_HOST_URL+"/wxPayNotifySuccess";
-    //web回调地址
+    public static String WEIXIN_NOTIFY_URL = PAY_HOST_URL+"/wxPayNotifySuccess";
+    
+    public static String HEE_NOTIFY_URL = PAY_HOST_URL+"/heepayNotifySuccess";
+    
+    public static String ALIPAY_NOTIFY_URL = PAY_HOST_URL+"/alipayNotifySuccess";
+    
+    public static String MIDAS_NOTIFY_URL = "/msip_bhu_payment_rest/payment/midasNotifySuccess";
+    
+	//打赏页面跳转同步通知页面路径
+    public static String ALIPAY_RETURN_URL = PAY_HOST_URL+"/alipayReturn";
+	//充值页面跳转同步通知页面路径
+    public static String ALIPAY_PREPAID_RETURN_URL = PAY_HOST_URL+"/alipayPrepaidReturn";
+    
+	//打赏页面跳转同步通知页面路径
+    public static String HEE_RETURN_URL = PAY_HOST_URL+"/heeReturn";
+	//充值页面跳转同步通知页面路径
+    public static String HEE_PREPAID_RETURN_URL = PAY_HOST_URL+"/heePrepaidReturn";
+    
+    //打赏页面跳转同步通知页面路径
+    public static String MIDAS_RETURN_URL = "/msip_bhu_payment_rest/payment/midasReturn";
+	//充值页面跳转同步通知页面路径
+    //public static String MIDAS_PREPAID_RETURN_URL = PAY_HOST_URL+"/midasPrepaidReturn";
+    
+    //打赏失败web回调地址
     public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/unsuccess";
+    //充值失败web回调地址
+    public static String PREPAID_NOTIFY_URL = "http://www.bhuwifi.com";
     //证书地址
     public static String WITHDRAW_URL = "/home";
 

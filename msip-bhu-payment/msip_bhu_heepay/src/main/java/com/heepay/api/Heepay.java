@@ -50,8 +50,6 @@ public class Heepay {
 		user_ip = ip.replaceAll("\\.", "_");
 		notify_url = notifyUrl;
 		return_url = locationUrl;
-		
-
 		String url = submitOrder();
 		return url;
 	}
