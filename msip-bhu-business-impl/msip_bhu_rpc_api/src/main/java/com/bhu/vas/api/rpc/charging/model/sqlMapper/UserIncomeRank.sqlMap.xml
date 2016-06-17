@@ -85,7 +85,7 @@
 			</if>
 		</where>
 	</select>
-	<select id="findByLimit" resultMap="modelResult">
+	<select id="findByLimit" resultMap="modelResult" parameterType="java.util.List">
 	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> limit #{num}
 	</select>
 	
