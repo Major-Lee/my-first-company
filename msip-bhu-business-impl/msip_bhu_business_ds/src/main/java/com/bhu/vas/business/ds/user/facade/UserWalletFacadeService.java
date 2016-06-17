@@ -1,6 +1,9 @@
 package com.bhu.vas.business.ds.user.facade;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +26,17 @@ import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
+import com.bhu.vas.api.rpc.charging.model.DeviceGroupPaymentStatistics;
+import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
@@ -38,10 +46,13 @@ import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
+import com.bhu.vas.api.vto.statistics.RankSingle;
+import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
+import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
@@ -85,7 +96,15 @@ public class UserWalletFacadeService{
 	
 	@Resource
 	private DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService;
+	@Resource
+	private UserIncomeRankService userIncomeRankService;
 	
+	public UserIncomeRankService getUserIncomeRankService() {
+		return userIncomeRankService;
+	}
+	public void setUserIncomeRankService(UserIncomeRankService userIncomeRankService) {
+		this.userIncomeRankService = userIncomeRankService;
+	}
 	public FincialStatisticsService getFincialStatisticsService() {
 		return fincialStatisticsService;
 	}
@@ -988,5 +1007,37 @@ public class UserWalletFacadeService{
 	/*public UserThirdpartiesPaymentService getUserThirdpartiesPaymentService() {
 		return userThirdpartiesPaymentService;
 	}*/
-	
+	public void rankingList() {
+		Date date = new Date();  
+        Calendar calendar = Calendar.getInstance();  
+        calendar.setTime(date);  
+        calendar.add(Calendar.DAY_OF_MONTH, -1);  
+        date = calendar.getTime();  
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+        String time = "%"+sdf.format(date); 
+        time="%2016-06-02";
+        userIncomeRankService.deleteAllRank();
+		List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList(time);
+		if(paymentStatistics != null){
+			String beforeIncome="0";
+			int beforeRankNum=0;
+			for(int i=0;i<paymentStatistics.size();i++){
+				UserIncomeRank userIncomeRank=new UserIncomeRank();
+				DeviceGroupPaymentStatistics deviceGroupPaymentStatistics=paymentStatistics.get(i);
+				if(i==0){
+					beforeRankNum=1;
+					beforeIncome=deviceGroupPaymentStatistics.getTotal_incoming_amount();
+				}else{
+					if(!StringUtils.equals(beforeIncome, deviceGroupPaymentStatistics.getTotal_incoming_amount())){
+						beforeRankNum=i+1;
+						beforeIncome=deviceGroupPaymentStatistics.getTotal_incoming_amount();
+					}
+				}
+				userIncomeRank.setRank(beforeRankNum);
+				userIncomeRank.setIncome(deviceGroupPaymentStatistics.getTotal_incoming_amount());
+				userIncomeRank.setId(deviceGroupPaymentStatistics.getUid().toString());
+				userIncomeRankService.insert(userIncomeRank);
+			}
+		}
+	}
 }
