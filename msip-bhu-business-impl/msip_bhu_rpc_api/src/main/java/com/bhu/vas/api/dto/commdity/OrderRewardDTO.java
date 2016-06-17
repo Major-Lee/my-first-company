@@ -1,25 +1,33 @@
 //package com.bhu.vas.api.dto.commdity;
 ///**
-// * 充值虚拟币订单dto
+// * 打赏订单dto
 // * @author tangzichao
 // *
 // */
 //@SuppressWarnings("serial")
-//public class OrderRechargeVCurrencyDTO implements java.io.Serializable{
+//public class OrderRewardDTO implements java.io.Serializable{
 //	//订单id
 //	private String id;
 //	//商品id
 //	private Integer commdityid;
 //	//应用id
 //	private Integer appid;
+//	//设备mac
+//	private String mac;
+//	//设备业务线
+//	private String mac_dut;
+//	//用户mac
+//	private String umac;
 //	//用户uid
 //	private Integer uid;
 //	//订单类型
 //	private Integer type;
+//	//支付订单id
+//	//private String pay_orderid;
 //	//订单金额
 //	private String amount;
-//	//虚拟币
-//	private long vcurrency;
+//	//业务上下文
+//	private String context;
 //	//订单状态
 //	private Integer status;
 //	//订单创建时间
@@ -45,6 +53,24 @@
 //	public void setAppid(Integer appid) {
 //		this.appid = appid;
 //	}
+//	public String getMac() {
+//		return mac;
+//	}
+//	public void setMac(String mac) {
+//		this.mac = mac;
+//	}
+//	public String getMac_dut() {
+//		return mac_dut;
+//	}
+//	public void setMac_dut(String mac_dut) {
+//		this.mac_dut = mac_dut;
+//	}
+//	public String getUmac() {
+//		return umac;
+//	}
+//	public void setUmac(String umac) {
+//		this.umac = umac;
+//	}
 //	public Integer getUid() {
 //		return uid;
 //	}
@@ -63,11 +89,11 @@
 //	public void setAmount(String amount) {
 //		this.amount = amount;
 //	}
-//	public long getVcurrency() {
-//		return vcurrency;
+//	public String getContext() {
+//		return context;
 //	}
-//	public void setVcurrency(long vcurrency) {
-//		this.vcurrency = vcurrency;
+//	public void setContext(String context) {
+//		this.context = context;
 //	}
 //	public Integer getStatus() {
 //		return status;

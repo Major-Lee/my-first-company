@@ -720,7 +720,7 @@ public class UserWalletFacadeService{
 	}
 
 	
-	public UserWalletWithdrawApply doStartPaymentWithdrawApply(int reckoner,String applyid){
+	public UserWalletWithdrawApply doStartPaymentWithdrawApply(int reckoner,String applyid,String note){
 		if(StringUtils.isEmpty(applyid)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"applyid:".concat(String.valueOf(applyid))});
 		}
@@ -734,6 +734,12 @@ public class UserWalletFacadeService{
 			apply.setLast_reckoner(reckoner);
 			BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
 			apply.setWithdraw_oper(current.getKey());
+			//add by dongrui 2016-06-17 start
+			//增加审核人
+			apply.setVerify_reckoner(reckoner);
+			//审核信息
+			apply.setNote(note);
+			//add by dongrui 2016-06-17 E N D
 			apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
 			apply = userWalletWithdrawApplyService.update(apply);
 		}else{
@@ -774,7 +780,7 @@ public class UserWalletFacadeService{
 			logger.info(String.format("提现审核操作-失败 applyid[%s] 返现并解锁钱包状态", applyid));
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
-		apply.setVerify_reckoner(reckoner);
+		apply.setOperate_reckoner(reckoner);
 		apply = userWalletWithdrawApplyService.update(apply);
 		return apply;
 	}
@@ -788,9 +794,6 @@ public class UserWalletFacadeService{
 	 * 对于审核通过的申请，远程uPay支付完成后进行此步骤,成功后会callback 消息，执行此函数
 	 * 考虑成功和失败，失败则金额返还到钱包
 	 * 
-	 * update by dongrui 2016-06-17 start
-	 * 增加参数uid【最后操作人】
-	 * update by dongrui 2016-06-17 E N D
 	 */
 	public UserWalletWithdrawApply doWithdrawNotifyFromRemote(String applyid,boolean successed){//,String customer_desc
 		logger.info(String.format("提现操作 applyid[%s] successed[%s]", applyid,successed));

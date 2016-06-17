@@ -174,6 +174,7 @@ public class BuilderWifiDeviceIndexMultiThreadOp {
 						e.printStackTrace();
 					}
 				}
+				wifiDeviceDataSearchService.refresh(true);
 				System.out.println(String.format("数据全量导入总数据[%s] 总耗时[%s]秒", totalCompletedCount, ((System.currentTimeMillis()-t0)/1000)));
 				System.exit(1);
 			}

@@ -12,12 +12,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.OrderPaymentUrlDTO;
-import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyDTO;
+import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
+import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
+import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
-import com.bhu.vas.api.dto.commdity.UserOrderDTO;
-import com.bhu.vas.api.dto.commdity.UserRechargeVCurrencyOrderDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -64,18 +63,18 @@ public class OrderController extends BaseController{
 		long start = System.currentTimeMillis();
 		
 		//1:生成订单
-		RpcResponseDTO<OrderDTO> rpcResult = orderRpcService.createRewardOrder(commdityid, mac, umac, umactype,
+		RpcResponseDTO<OrderRewardVTO> rpcResult = orderRpcService.createRewardOrder(commdityid, mac, umac, umactype,
 				payment_type, context);
 		if(rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			return;
 		}
 		//2:请求支付系统返回支付url
-		OrderDTO order_dto = rpcResult.getPayload();
-		String orderid = order_dto.getId();
-		String order_amount = order_dto.getAmount();
+		OrderRewardVTO order_vto = rpcResult.getPayload();
+		String orderid = order_vto.getId();
+		String order_amount = order_vto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
-		Integer appid = order_dto.getAppid();
+		Integer appid = order_vto.getAppid();
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
 				order_amount, requestIp, umac, orderid, payment_completed_url);
 		if(rcp_dto == null){
@@ -110,7 +109,7 @@ public class OrderController extends BaseController{
 		/******************   注释掉此段代码为不包含代理的支付url   end *****************/
 		
 		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
-		retDto.setId(order_dto.getId());
+		retDto.setId(order_vto.getId());
 		//retDto.setThird_payinfo(params);
 		retDto.setThird_payinfo(rcp_dto.getParams());
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
@@ -152,6 +151,7 @@ public class OrderController extends BaseController{
 	 * @param pageNo 页码
 	 * @param pageSize 每页数量
 	 */
+	@Deprecated
 	@ResponseBody()
 	@RequestMapping(value="/query/uid/pages",method={RequestMethod.GET,RequestMethod.POST})
 	public void query_uid_pages(
@@ -166,7 +166,41 @@ public class OrderController extends BaseController{
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 
-		RpcResponseDTO<TailPage<UserOrderDTO>> rpcResult = orderRpcService.rewardOrderPagesByUid(uid, mac, umac, 
+		RpcResponseDTO<TailPage<OrderRewardVTO>> rpcResult = orderRpcService.rewardOrderPages(uid, mac, umac, 
+				status, dut, pageNo, pageSize);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	/**
+	 * 根据订单参数查询打赏订单分页列表
+	 * @param request
+	 * @param response
+	 * @param uid 用户id
+	 * @param mac 设备mac
+	 * @param umac 支付订单的用户mac
+	 * @param status 订单状态 默认发货完成
+	 * @param pageNo 页码
+	 * @param pageSize 每页数量
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/reward/query/pages",method={RequestMethod.GET,RequestMethod.POST})
+	public void reward_query_pages(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false) String mac,
+			@RequestParam(required = false) String umac,
+			@RequestParam(required = false, defaultValue = "10") Integer status,
+			@RequestParam(required = false) String dut,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+			) {
+
+		RpcResponseDTO<TailPage<OrderRewardVTO>> rpcResult = orderRpcService.rewardOrderPages(uid, mac, umac, 
 				status, dut, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -202,17 +236,17 @@ public class OrderController extends BaseController{
 		long start = System.currentTimeMillis();
 		
 		//1:生成订单
-		RpcResponseDTO<OrderRechargeVCurrencyDTO> rpcResult = orderRpcService.createRechargeVCurrencyOrder(uid, commdityid, payment_type, umactype);
+		RpcResponseDTO<OrderRechargeVCurrencyVTO> rpcResult = orderRpcService.createRechargeVCurrencyOrder(uid, commdityid, payment_type, umactype);
 		if(rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			return;
 		}
 		//2:请求支付系统返回支付url
-		OrderRechargeVCurrencyDTO order_dto = rpcResult.getPayload();
-		String orderid = order_dto.getId();
-		String order_amount = order_dto.getAmount();
+		OrderRechargeVCurrencyVTO order_vto = rpcResult.getPayload();
+		String orderid = order_vto.getId();
+		String order_amount = order_vto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
-		Integer appid = order_dto.getAppid();
+		Integer appid = order_vto.getAppid();
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
 				order_amount, requestIp, null, orderid, payment_completed_url);
 		if(rcp_dto == null){
@@ -231,7 +265,7 @@ public class OrderController extends BaseController{
 				(System.currentTimeMillis() - start)+"ms"));
 		
 		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
-		retDto.setId(order_dto.getId());
+		retDto.setId(order_vto.getId());
 		retDto.setThird_payinfo(rcp_dto.getParams());
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
 	}
@@ -246,8 +280,8 @@ public class OrderController extends BaseController{
 	 * @param pageSize 每页数量
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/query/vcurrency/pages",method={RequestMethod.GET,RequestMethod.POST})
-	public void query_vcurrency_pages(
+	@RequestMapping(value="/vcurrency/query/pages",method={RequestMethod.GET,RequestMethod.POST})
+	public void vcurrency_query_pages(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
@@ -256,7 +290,7 @@ public class OrderController extends BaseController{
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 
-		RpcResponseDTO<TailPage<UserRechargeVCurrencyOrderDTO>> rpcResult = orderRpcService.rechargeVCurrencyOrderPagesByUid(uid, 
+		RpcResponseDTO<TailPage<OrderRechargeVCurrencyVTO>> rpcResult = orderRpcService.rechargeVCurrencyOrderPages(uid, 
 				status, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -283,6 +317,41 @@ public class OrderController extends BaseController{
 			) {
 
 		RpcResponseDTO<OrderStatusDTO> rpcResult = orderRpcService.orderStatusByUid(uid, orderid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	
+	/**
+	 * 根据订单参数查询打赏订单分页列表
+	 * @param request
+	 * @param response
+	 * @param uid 用户id
+	 * @param mac 设备mac
+	 * @param umac 支付订单的用户mac
+	 * @param status 订单状态 默认发货完成
+	 * @param pageNo 页码
+	 * @param pageSize 每页数量
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/sms/query/pages",method={RequestMethod.GET,RequestMethod.POST})
+	public void sms_query_pages(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false) String mac,
+			@RequestParam(required = false) String umac,
+			@RequestParam(required = false, defaultValue = "10") Integer status,
+			@RequestParam(required = false) String dut,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+			) {
+
+		RpcResponseDTO<TailPage<OrderSMSVTO>> rpcResult = orderRpcService.smsOrderPages(uid, mac, umac, 
+				status, dut, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

@@ -103,15 +103,15 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<RequestWithdrawNotifyDTO> doStartPaymentWithdrawApply(int reckoner,String applyid) {
+	public RpcResponseDTO<RequestWithdrawNotifyDTO> doStartPaymentWithdrawApply(int reckoner,String applyid,String note) {
 		logger.info(String.format("doStartPaymentWithdrawApply with reckoner[%s] applyid[%s]",reckoner,applyid));
-		return userWalletUnitFacadeService.doStartPaymentWithdrawApply(reckoner,applyid);
+		return userWalletUnitFacadeService.doStartPaymentWithdrawApply(reckoner,applyid,note);
 	}
 	
 	@Override
-	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed,String note){
-		logger.info(String.format("doWithdrawNotifyFromLocal with reckoner[%s] applyid[%s] successed[%s] note[%s]",reckoner,applyid,successed,note));
-		return userWalletUnitFacadeService.doWithdrawNotifyFromLocal(reckoner,applyid,successed,note);
+	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed){
+		logger.info(String.format("doWithdrawNotifyFromLocal with reckoner[%s] applyid[%s] successed[%s] ",reckoner,applyid,successed));
+		return userWalletUnitFacadeService.doWithdrawNotifyFromLocal(reckoner,applyid,successed);
 	}
 
 	@Override
