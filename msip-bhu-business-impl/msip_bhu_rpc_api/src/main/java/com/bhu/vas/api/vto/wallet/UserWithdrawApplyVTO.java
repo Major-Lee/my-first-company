@@ -24,6 +24,14 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	//交易税费
 	private double taxcost;
 	
+	//add by dongrui 2016-06-17 start
+	//审核人
+	private int verify_reckoner;
+	//操作人
+	private int operate_reckoner;
+	//对公账号备注
+	private String note;
+	//add by dongrui 2016-06-17 E N D
 	public int getUid() {
 		return uid;
 	}
@@ -102,4 +110,23 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 			this.setTranscost(ArithHelper.round(ArithHelper.mul(cash, withdraw_trancost_percent),2));
 		}
 	}*/
+	public int getVerify_reckoner() {
+		return verify_reckoner;
+	}
+	public void setVerify_reckoner(int verify_reckoner) {
+		this.verify_reckoner = verify_reckoner;
+	}
+	public int getOperate_reckoner() {
+		return operate_reckoner;
+	}
+	public void setOperate_reckoner(int operate_reckoner) {
+		this.operate_reckoner = operate_reckoner;
+	}
+	public String getNote() {
+		return note;
+	}
+	public void setNote(String note) {
+		this.note = note;
+	}
+	
 }

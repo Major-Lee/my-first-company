@@ -232,7 +232,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	mc.setOrderByClause(" created_at desc ");
     	List<UserWalletWithdrawApply> applies = userWalletFacadeService.getUserWalletWithdrawApplyService().findModelByModelCriteria(mc);
     	for(UserWalletWithdrawApply apply:applies){
-    		UserWalletWithdrawApply applynow = userWalletFacadeService.doWithdrawNotifyFromRemote(apply.getId(), false);
+    		UserWalletWithdrawApply applynow = userWalletFacadeService.doWithdrawNotifyFromRemote(testUserId,apply.getId(), false,"");
         	System.out.println("RemoteNotifyFailed:"+applynow);
     	}
     	//userWalletFacadeService.getUserWalletService().executeProcedure(pdto)

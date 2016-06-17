@@ -98,7 +98,7 @@ public class ConsoleWithdrawController extends BaseController {
      * @param uid
      * @param applies applyids 逗号分割
      */
-/*    @ResponseBody()
+    @ResponseBody()
     @RequestMapping(value = "/verify_applies", method = {RequestMethod.POST})
     public void verify_applies(
             HttpServletRequest request,
@@ -112,7 +112,7 @@ public class ConsoleWithdrawController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-    }*/
+    }
     
     /**
      * 微信是直接调用远端uPay url进行支付成功或失败
@@ -128,7 +128,8 @@ public class ConsoleWithdrawController extends BaseController {
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
-            @RequestParam(required = true) String applyid
+            @RequestParam(required = true) String applyid,
+            @RequestParam(required = false,defaultValue = "", value = "note") String note
     		) {
     	System.out.println("###########uid为："+uid);
     	System.out.println("###########applyid为："+applyid);
@@ -141,7 +142,7 @@ public class ConsoleWithdrawController extends BaseController {
 			System.out.println("*****提现类型*****payment_type【"+requestWithdrawNotifyDTO.getWithdraw().getPayment_type()+"】");
 			System.out.println("*****提现状态*****Withdraw_status【"+requestWithdrawNotifyDTO.getWithdraw().getWithdraw_oper()+"】");
 			if(requestWithdrawNotifyDTO.getWithdraw().getPayment_type().equals("public")){
-				RpcResponseDTO<UserWithdrawApplyVTO> rpcResponseDTO = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, true);
+				RpcResponseDTO<UserWithdrawApplyVTO> rpcResponseDTO = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, true,note);
 				if(!rpcResponseDTO.hasError()){
 					System.out.println("******level2**********"+rpcResponseDTO.hasError());
 					SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponseDTO));
