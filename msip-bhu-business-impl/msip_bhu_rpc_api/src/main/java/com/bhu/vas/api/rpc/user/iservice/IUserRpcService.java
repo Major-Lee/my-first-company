@@ -3,6 +3,8 @@ package com.bhu.vas.api.rpc.user.iservice;
 import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * 对公账户接口定义
@@ -151,4 +153,5 @@ public interface IUserRpcService {
 	 */
 	public RpcResponseDTO<Boolean> authentication(int uid,int countrycode, String acc,String captcha);
 	public RpcResponseDTO<Boolean> userBBSsignedon(int countrycode, String acc, String secretkey);
+	public RpcResponseDTO<TailPage<UserDTO>> pageUsers(int uid,String ut,int pageno,int pagesize);
 }
