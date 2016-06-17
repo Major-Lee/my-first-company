@@ -266,11 +266,37 @@ public class UserWalletUnitFacadeService {
 			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
 			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
 					calculateApplyCost);
-			UserOAuthStateDTO paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(withdrawApply.getUid(),OAuthType.fromType(withdrawApply.getPayment_type()),true);
-			//ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
+			
+			//modify by dongrui 2016-06-17 start
+			UserOAuthStateDTO paymentDTO = null;
+			if(withdrawApply.getPayment_type().equals("public")){
+				paymentDTO = new UserOAuthStateDTO();
+				//根据uid查询对公账号信息
+				UserPublishAccount userPublicAccount = userPublishAccountService.getById(withdrawApply.getUid());
+				if(userPublicAccount == null){
+					throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST);
+				}
+				paymentDTO.setAuid(String.valueOf(userPublicAccount.getId()));
+				paymentDTO.setAvatar("");
+				paymentDTO.setIdentify("public");
+				paymentDTO.setNick(userPublicAccount.getCompanyName());
+				paymentDTO.setOpenid(userPublicAccount.getPublish_account_number());
+			}else{
+				 paymentDTO = new UserOAuthStateDTO();
+				 paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(withdrawApply.getUid(),OAuthType.fromType(withdrawApply.getPayment_type()),true);
+			}
 			if(paymentDTO == null){
 				throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_WASEMPTY);
 			}
+			
+			/*UserOAuthStateDTO paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(withdrawApply.getUid(),OAuthType.fromType(withdrawApply.getPayment_type()),true);
+			//ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
+			if(paymentDTO == null){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_WASEMPTY);
+			}*/
+			//modify by dongrui 2016-06-17 E N D
+			
+			
 			RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
 			String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 			System.out.println("prepare JsonData:"+jsonNotify);

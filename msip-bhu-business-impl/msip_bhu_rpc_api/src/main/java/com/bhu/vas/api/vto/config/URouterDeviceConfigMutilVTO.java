@@ -24,6 +24,8 @@ public class URouterDeviceConfigMutilVTO implements Serializable{
 	private List<URouterDeviceConfigRateControlVTO> rcs;
 	//终端别名列表
 	private List<URouterDeviceConfigMMVTO> mms;
+	//interface列表
+	private List<URouterDeviceConfigInterfaceVTO> ifs;
 	//上网方式
 	private URouterModeVTO linkmode;
 	
@@ -99,5 +101,11 @@ public class URouterDeviceConfigMutilVTO implements Serializable{
 	}
 	public void setInfo(URouterInfoVTO info) {
 		this.info = info;
+	}
+	public List<URouterDeviceConfigInterfaceVTO> getIfs() {
+		return ifs;
+	}
+	public void setIfs(List<URouterDeviceConfigInterfaceVTO> ifs) {
+		this.ifs = ifs;
 	}
 }

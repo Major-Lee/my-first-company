@@ -105,6 +105,11 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSHDAliasOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_Multi_Combine:
 				return DeviceHelper.builderDSMultiCombineOuter(config_sequence, extparams);
+			case DS_InterfaceMasterSwitch_multi:
+				return DeviceHelper.builderDSInterfaceMasterSwitchMultiOuter(config_sequence, extparams);
+			case DS_InterfaceMasterLimit_multi:
+				return DeviceHelper.builderDSInterfaceMasterLimitMultiOuter(config_sequence, extparams);
+				
 //			case DS_VapGuest:
 //				return DeviceHelper.builderDSVapGuestOuter(config_sequence, extparams, ds_dto);
 			default:

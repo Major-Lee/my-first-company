@@ -13,7 +13,7 @@ import org.junit.runners.MethodSorters;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
-import com.bhu.vas.api.vto.statistics.OrderStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
@@ -122,7 +122,7 @@ public class OrderServiceTest extends BaseTest{
     
     //@Test
     public void testGetByProcedure(){
-    	OrderStatisticsVTO vto = orderFacadeService.rewardOrderStatisticsWithProcedure("2016-03-11 17:15:50", "2016-06-11 17:15:50");
+    	RewardOrderStatisticsVTO vto = orderFacadeService.rewardOrderStatisticsWithProcedure("2016-03-11 17:15:50", "2016-06-11 17:15:50");
     	System.out.println(vto.getPc_occ());
     	System.out.println(vto.getPc_ofa());
     	System.out.println(vto.getPc_ofc());

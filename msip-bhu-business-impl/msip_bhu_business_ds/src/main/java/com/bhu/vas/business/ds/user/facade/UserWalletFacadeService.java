@@ -127,7 +127,17 @@ public class UserWalletFacadeService{
 			UserOAuthStateDTO userOAuthStateDTO = new UserOAuthStateDTO();
 			userOAuthStateDTO.setAuid(String.valueOf(publicAccountDetail.getUid()));
 			userOAuthStateDTO.setNick(publicAccountDetail.getCompanyName());
-			userOAuthStateDTO.setOpenid(publicAccountDetail.getPublish_account_number());
+			//对公账号特殊处理
+			String accountNum = StringUtils.EMPTY;
+			accountNum = publicAccountDetail.getPublish_account_number();
+			if(StringUtils.isNotBlank(accountNum)){
+				//卡号前四位显示 后四位显示 中间*******代替
+				int accountLength = accountNum.length();
+				accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
+			}
+			System.out.println("***************accountNum的值为【"+accountNum+"】");
+			logger.info("***************accountNum的值为【"+accountNum+"】");
+			userOAuthStateDTO.setOpenid(accountNum);
 			userOAuthStateDTO.setIdentify("public");
 			List<UserOAuthStateDTO> userOAuthStateList = new ArrayList<UserOAuthStateDTO>();
 			userOAuthStateList.add(userOAuthStateDTO);	
@@ -223,11 +233,12 @@ public class UserWalletFacadeService{
 		if(callback.beforeCheck(uid, vcurrency_cost,total_vcurrency)){
 			int executeRet = this.vcurrencyFromUserWallet(uid, orderid, UWalletTransMode.VCurrencyPayment, vcurrency_cost, desc);
 			if(executeRet == 0){
-				callback.after(uid,total_vcurrency-vcurrency_cost);
+				long total_vcurrency_leave = total_vcurrency-vcurrency_cost;
+				callback.after(uid,total_vcurrency_leave);
 				//扣款后的数值是否 <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging
-				if(total_vcurrency < BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient){
+				if(total_vcurrency_leave < BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient){
 					return SnkAuthenticateResultType.FailedThresholdVcurrencyNotsufficient;
-				}else if(total_vcurrency <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
+				}else if(total_vcurrency_leave <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
 					return SnkAuthenticateResultType.SuccessButThresholdNeedCharging;
 				}else{
 					return SnkAuthenticateResultType.Success;

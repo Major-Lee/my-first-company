@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import com.bhu.vas.api.dto.commdity.OrderDTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -56,6 +57,10 @@ public class OrderHelper {
 		
 		OrderStatusDTO orderStatusDto = new OrderStatusDTO();
 		BeanUtils.copyProperties(order, orderStatusDto);
+		OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+		if(orderPaymentType != null){
+			orderStatusDto.setPayment_type_name(orderPaymentType.getDesc());
+		}
 		return orderStatusDto;
 	}
 	
