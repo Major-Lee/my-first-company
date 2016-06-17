@@ -306,6 +306,7 @@ public class UserWalletFacadeService{
 		procedureDTO.setDescription(description);
 		procedureDTO.setOwner_memo(String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		procedureDTO.setManufacturer_memo(String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getManufacturer_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		procedureDTO.setDistributor_memo(String.format("Total:%s Incomming:%s distributor:%s mac:%s", cash,sharedeal.getDistributor_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
 			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));

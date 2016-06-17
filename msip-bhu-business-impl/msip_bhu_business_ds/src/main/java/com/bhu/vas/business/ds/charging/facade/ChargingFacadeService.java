@@ -470,7 +470,7 @@ public class ChargingFacadeService {
 	 */
 	public SharedealInfo calculateSharedeal(String dmac,String orderid,double cash){
 		WifiDeviceSharedealConfigs configs = this.userfulWifiDeviceSharedealConfigs(dmac);
-		SharedealInfo result =  SharedealInfo.calculate(dmac, orderid, cash, configs.getOwner_percent(), configs.getManufacturer_percent());
+		SharedealInfo result =  SharedealInfo.calculate(dmac, orderid, cash, configs.getOwner_percent(), configs.getManufacturer_percent(),configs.getDistributor_percent());
 		if(configs.getOwner()>0){
 			result.setOwner(configs.getOwner());
 			result.setBelong(true);
@@ -479,6 +479,7 @@ public class ChargingFacadeService {
 			result.setBelong(false);
 		}
 		result.setManufacturer(configs.getManufacturer());
+		result.setDistributor(configs.getDistributor());
 		return result;
 	}
 	

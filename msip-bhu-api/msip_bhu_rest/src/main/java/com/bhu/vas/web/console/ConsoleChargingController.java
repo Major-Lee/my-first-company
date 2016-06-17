@@ -137,7 +137,7 @@ public class ConsoleChargingController extends BaseController {
      */
     @ResponseBody()
     @RequestMapping(value="/shipment/upload",method={RequestMethod.POST})
-    public void uploadClaimAgentDevice(
+    public void uploadShipmentDevice(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam("file") CommonsMultipartFile file,
@@ -223,7 +223,7 @@ public class ConsoleChargingController extends BaseController {
     
     @ResponseBody()
     @RequestMapping(value="/shipment/confirm",method={RequestMethod.POST})
-    public void uploadClaimAgentDevice(
+    public void confirmShipment(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
