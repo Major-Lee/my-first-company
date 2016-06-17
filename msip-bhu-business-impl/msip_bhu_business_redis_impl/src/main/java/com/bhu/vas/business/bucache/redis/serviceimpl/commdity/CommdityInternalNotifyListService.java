@@ -114,7 +114,10 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 //    	while(true){
 //    		simulateUpayDrawPaymentCompletedNotify(true);
 //    	}
-    	simulateDeliverNotify();
+    	for(int i = 0;i<1000;i++){
+    		simulateDeliverNotify();
+    	}
+    	
     	//simulateMultiDeliverNotify();
     	//simulateResponsePaymentCompletedNotify("10002016061400000000000000001023", true);
     	//simulateResponseSMSPaymentCompletedNotify("10022016060500000000000000001008", true);
