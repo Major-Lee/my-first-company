@@ -64,7 +64,7 @@ public interface IUserWalletRpcService {
      * @param reckoner
      * @param applies applyids 逗号分割
      */
-	//public RpcResponseDTO<Boolean> verifyApplies(int reckoner,String applyid,boolean passed);
+	public RpcResponseDTO<Boolean> verifyApplies(int reckoner,String applyid,boolean passed);
 	
 	
 	/**
@@ -74,7 +74,16 @@ public interface IUserWalletRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<RequestWithdrawNotifyDTO> doStartPaymentWithdrawApply(int reckoner,String applyid);
-	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed);
+	
+	/**
+	 * 
+	 * @param reckoner
+	 * @param applyid
+	 * @param successed
+	 * @param note
+	 * @return
+	 */
+	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed,String note);
 	/**
 	 * 提现操作api
 	 * @param uid
