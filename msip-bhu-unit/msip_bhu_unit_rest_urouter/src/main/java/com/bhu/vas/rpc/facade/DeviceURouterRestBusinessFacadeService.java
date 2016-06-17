@@ -1504,8 +1504,8 @@ public class DeviceURouterRestBusinessFacadeService {
 							interface_vto = new URouterDeviceConfigInterfaceVTO();
 							interface_vto.setName(interface_dto.getName());
 							interface_vto.setEnable(interface_dto.getEnable());
-							interface_vto.setUsers_tx_rate(interface_dto.getUsers_tx_rate());
-							interface_vto.setUsers_rx_rate(interface_dto.getUsers_rx_rate());
+							interface_vto.setUsers_tx_rate(interface_dto.getUsers_tx_rate()/8);//Kbps转KBps
+							interface_vto.setUsers_rx_rate(interface_dto.getUsers_rx_rate()/8);//Kbps转KBps
 							interface_vtos.add(interface_vto);
 						}
 					}
