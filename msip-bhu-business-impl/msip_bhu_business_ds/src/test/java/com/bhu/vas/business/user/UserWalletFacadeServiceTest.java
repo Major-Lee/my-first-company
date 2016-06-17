@@ -179,7 +179,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     //@Test
     public void test005PageWithdrawApplies(){
-    	TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(testUserId, BusinessEnumType.UWithdrawStatus.VerifyPassed,"", 1, 10);
+    	TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(testUserId, BusinessEnumType.UWithdrawStatus.VerifyPassed,"","","", 1, 10);
     	System.out.println(pages.getItems().size());
 		System.out.println(pages.isFirstPage());
 		System.out.println(pages.isLastPage());
@@ -209,7 +209,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     //@Test
     public void test007PageWithdrawApplies(){
-    	TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(testUserId, BusinessEnumType.UWithdrawStatus.VerifyFailed,"", 1, 10);
+    	TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService.pageWithdrawApplies(testUserId, BusinessEnumType.UWithdrawStatus.VerifyFailed,"","","", 1, 10);
     	System.out.println(pages.getItems().size());
 		System.out.println(pages.isFirstPage());
 		System.out.println(pages.isLastPage());
