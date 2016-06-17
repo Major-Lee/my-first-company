@@ -78,6 +78,7 @@ public class BuilderWifiDeviceIndexMultiThreadIteratorOp {
 
 						@Override
 						public void notifyCompleted(long totalCompletedCount) {
+							wifiDeviceDataSearchService.refresh(true);
 							System.exit(1);
 						}
 					});

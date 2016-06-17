@@ -6,12 +6,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.dto.commdity.OrderDTO;
-import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyDTO;
-import com.bhu.vas.api.dto.commdity.OrderSMSDTO;
+import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
+import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
+import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
-import com.bhu.vas.api.dto.commdity.UserOrderDTO;
-import com.bhu.vas.api.dto.commdity.UserRechargeVCurrencyOrderDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
@@ -25,33 +23,8 @@ public class OrderRpcService implements IOrderRpcService{
 	@Resource
 	private OrderUnitFacadeService orderUnitFacadeService;
 	
-/*	@Override
-	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, 
-			String mac, String umac, Integer uid, String context) {
-		logger.info(String.format("createNewOrder with commdityid[%s] appid[%s] mac[%s] umac[%s] uid[%s] context[%s]",
-				commdityid, appid, mac, umac, uid, context));
-		return orderUnitFacadeService.createOrder(commdityid, appid, mac, umac, uid, context);
-	}*/
-	
-/*	@Override
-	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderid, ResponseCreatePaymentUrlDTO rcp_dto) {
-		logger.info(String.format("orderPaymentUrlCreated with orderid[%s] rcp_dto[%s]", orderid, rcp_dto));
-		return orderUnitFacadeService.orderPaymentUrlCreated(orderid, rcp_dto);
-	}*/
-	
-/*	@Override
-	public RpcResponseDTO<Boolean> notifyOrderPaymentSuccessed(String orderid) {
-		logger.info(String.format("notifyOrderPaymentSuccessed with orderid[%s]", orderid));
-		return orderUnitFacadeService.notifyOrderPaymentSuccessed(orderid);
-	}*/
-	
-/*	@Override
-	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid, Integer appid) {
-		logger.info(String.format("validateOrderPaymentUrl with orderid[%s] appid[%s]", orderid, appid));
-		return orderUnitFacadeService.validateOrderPaymentUrl(orderid, appid);
-	}*/
 	@Override
-	public RpcResponseDTO<OrderDTO> createRewardOrder(Integer commdityid, String mac, String umac, 
+	public RpcResponseDTO<OrderRewardVTO> createRewardOrder(Integer commdityid, String mac, String umac, 
 			Integer umactype, String payment_type, String context){
 		logger.info(String.format("createRewardOrder with commdityid[%s] mac[%s] umac[%s] umactype[%s] payment_type[%s] context[%s]",
 				commdityid, mac, umac, umactype, payment_type, context));
@@ -65,11 +38,11 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<TailPage<UserOrderDTO>> rewardOrderPagesByUid(Integer uid, String mac, String umac, 
+	public RpcResponseDTO<TailPage<OrderRewardVTO>> rewardOrderPages(Integer uid, String mac, String umac, 
 			Integer status, String dut, int pageNo, int pageSize) {
-		logger.info(String.format("rewardOrderPagesByUid with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, 
+		logger.info(String.format("rewardOrderPages with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, 
 				mac, umac, status, dut, pageNo, pageSize));
-		return orderUnitFacadeService.rewardOrderPagesByUid(uid, mac, umac, status, dut, pageNo, pageSize);
+		return orderUnitFacadeService.rewardOrderPages(uid, mac, umac, status, dut, pageNo, pageSize);
 	}
 	
 	@Override
@@ -85,7 +58,7 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<OrderRechargeVCurrencyDTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid, 
+	public RpcResponseDTO<OrderRechargeVCurrencyVTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid, 
 			String payment_type, Integer umactype) {
 		logger.info(String.format("createRechargeVCurrencyOrder with uid[%s] commdityid[%s] payment_type[%s] umactype[%s]", uid, 
 				commdityid, payment_type, umactype));
@@ -93,11 +66,11 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<UserRechargeVCurrencyOrderDTO>> rechargeVCurrencyOrderPagesByUid(
+	public RpcResponseDTO<TailPage<OrderRechargeVCurrencyVTO>> rechargeVCurrencyOrderPages(
 			Integer uid, Integer status, int pageNo, int pageSize) {
-		logger.info(String.format("rechargeVCurrencyOrderPagesByUid with uid[%s] status[%s] pageNo[%s] pageSize[%s]", uid, 
+		logger.info(String.format("rechargeVCurrencyOrderPages with uid[%s] status[%s] pageNo[%s] pageSize[%s]", uid, 
 				status, pageNo, pageSize));
-		return orderUnitFacadeService.rechargeVCurrencyOrderPagesByUid(uid, status, pageNo, pageSize);
+		return orderUnitFacadeService.rechargeVCurrencyOrderPages(uid, status, pageNo, pageSize);
 	}
 
 	@Override
@@ -107,11 +80,20 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<OrderSMSDTO> createSMSOrder(String mac, String umac, Integer umactype, String context){
+	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype, String context){
 		logger.info(String.format("createSMSOrder with mac[%s] umac[%s] umactype[%s] context[%s]",
 				mac, umac, umactype, context));
 		//return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context);
 		return orderUnitFacadeService.createSMSOrder(mac, umac, umactype, context);
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<OrderSMSVTO>> smsOrderPages(Integer uid,
+			String mac, String umac, Integer status, String dut, int pageNo,int pageSize) {
+		logger.info(String.format("smsOrderPages with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, 
+				mac, umac, status, dut, pageNo, pageSize));
+		//return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context);
+		return orderUnitFacadeService.smsOrderPages(uid, mac, umac, status, dut, pageNo, pageSize);
 	}
 	
 
