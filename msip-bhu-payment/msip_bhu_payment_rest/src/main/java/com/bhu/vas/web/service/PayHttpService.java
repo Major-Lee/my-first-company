@@ -50,7 +50,7 @@ public class PayHttpService {
     
     
     //重定向地址
-    public static String PAY_HOST_URL = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment";
+    public static String PAY_HOST_URL = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
@@ -78,7 +78,7 @@ public class PayHttpService {
     //public static String MIDAS_PREPAID_RETURN_URL = PAY_HOST_URL+"/midasPrepaidReturn";
     
     //打赏失败web回调地址
-    public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/unsuccess";
+    public static String WEB_NOTIFY_URL = "https://ucloud.bhuwifi.com/unsuccess";
     //充值失败web回调地址
     public static String PREPAID_NOTIFY_URL = "http://www.bhuwifi.com";
     //证书地址

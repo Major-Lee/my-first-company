@@ -244,6 +244,8 @@ public enum ResponseErrorCode {
 	INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_INVALID("496","internal.communication.withdrawurl.response.invalid"),
 	INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE("497","internal.communication.withdrawurl.response.false"),
 	
+	/******************    payment    ******************/
+	USER_APPID_UNSUPPORT("461","internal.user.appid.invalid"),
 	
 	
 	REQUEST_404_ERROR("404","404.pagerequest.error"),
