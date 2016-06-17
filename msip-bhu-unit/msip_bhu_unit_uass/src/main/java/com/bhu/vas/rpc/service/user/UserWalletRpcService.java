@@ -42,13 +42,13 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 		return userWalletUnitFacadeService.withdrawApplyStatus(reckoner, applyid);
 	}
 	
-/*	@Override
+	@Override
 	public RpcResponseDTO<Boolean> verifyApplies(int reckoner, String applyid,
 			boolean passed) {
 		logger.info(String.format("verifyApplies with reckoner[%s] applyid [%s] passed[%s]",
 				reckoner,applyid,passed));
 		return userWalletUnitFacadeService.verifyApplies(reckoner, applyid, passed);
-	}*/
+	}
 
 	@Override
 	public RpcResponseDTO<UserWithdrawApplyVTO> withdrawOper(int appid,String payment_type,int uid,String pwd, double cash,String remoteip) {
@@ -109,9 +109,9 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed){
-		logger.info(String.format("doWithdrawNotifyFromLocal with reckoner[%s] applyid[%s] successed[%s]",reckoner,applyid,successed));
-		return userWalletUnitFacadeService.doWithdrawNotifyFromLocal(reckoner,applyid,successed);
+	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed,String note){
+		logger.info(String.format("doWithdrawNotifyFromLocal with reckoner[%s] applyid[%s] successed[%s] note[%s]",reckoner,applyid,successed,note));
+		return userWalletUnitFacadeService.doWithdrawNotifyFromLocal(reckoner,applyid,successed,note);
 	}
 
 	@Override

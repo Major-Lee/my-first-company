@@ -26,8 +26,6 @@ import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.charging.model.DeviceGroupPaymentStatistics;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
@@ -36,7 +34,6 @@ import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
-import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
@@ -46,8 +43,6 @@ import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
-import com.bhu.vas.api.vto.statistics.RankSingle;
-import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
@@ -336,6 +331,7 @@ public class UserWalletFacadeService{
 		procedureDTO.setDescription(description);
 		procedureDTO.setOwner_memo(String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		procedureDTO.setManufacturer_memo(String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getManufacturer_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		procedureDTO.setDistributor_memo(String.format("Total:%s Incomming:%s distributor:%s mac:%s", cash,sharedeal.getDistributor_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
 			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
@@ -732,8 +728,8 @@ public class UserWalletFacadeService{
 		if(apply == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请支付",String.valueOf(applyid)});
 		}
-		//如果状态不是 Apply|WithdrawDoing则抛出错误码
-		if(BusinessEnumType.UWithdrawStatus.Apply.getKey().equals(apply.getWithdraw_oper()) 
+		//如果状态不是 WithdrawVerify|WithdrawDoing则抛出错误码
+		if(BusinessEnumType.UWithdrawStatus.WithdrawVerify.getKey().equals(apply.getWithdraw_oper()) 
 				|| BusinessEnumType.UWithdrawStatus.WithdrawDoing.getKey().equals(apply.getWithdraw_oper())){
 			apply.setLast_reckoner(reckoner);
 			BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
@@ -752,6 +748,38 @@ public class UserWalletFacadeService{
 		return apply;
 	}
 	
+	public UserWalletWithdrawApply verifyApplies(int reckoner, String applyid,boolean passed){
+		logger.info(String.format("提现审核操作 applyid[%s] passed[%s]", applyid,passed));
+		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
+		if(apply == null){
+			logger.error(String.format("提现审核操作-失败 不存在此提现申请 applyid[%s]", applyid));
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请通知",String.valueOf(applyid)});
+		}
+		//状态必须是uPay待提现
+		if(!BusinessEnumType.UWithdrawStatus.Apply.getKey().equals(apply.getWithdraw_oper())){
+			logger.error(String.format("提现审核操作-失败 此提现申请 applyid[%s] 状态不匹配", applyid));
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_APPLY_STATUS_NOTMATCHED,new String[]{String.valueOf(applyid),"current:".concat(apply.getWithdraw_oper()),"should:".concat(BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey())});
+		}
+		BusinessEnumType.UWithdrawStatus current = null;
+		if(passed){
+			current = BusinessEnumType.UWithdrawStatus.WithdrawVerify;
+			apply.setWithdraw_oper(current.getKey());
+			//解锁钱包提现状态
+			//unlockWalletWithdrawStatusWhenSuccessed(apply.getUid());
+			logger.info(String.format("提现审核操作-成功 applyid[%s] 并解锁钱包状态", applyid));
+		}else{
+			current = BusinessEnumType.UWithdrawStatus.WithdrawFailed;
+			apply.setWithdraw_oper(current.getKey());
+			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getCash(),current.getName());
+			logger.info(String.format("提现审核操作-失败 applyid[%s] 返现并解锁钱包状态", applyid));
+		}
+		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
+		apply.setVerify_reckoner(reckoner);
+		apply = userWalletWithdrawApplyService.update(apply);
+		return apply;
+	}
+	
+	
 	public UserWalletWithdrawApply doWithdrawNotifyFromLocal(String applyid,boolean successed){
 		return doWithdrawNotifyFromRemote(applyid,successed);
 	}
@@ -759,6 +787,10 @@ public class UserWalletFacadeService{
 	/**
 	 * 对于审核通过的申请，远程uPay支付完成后进行此步骤,成功后会callback 消息，执行此函数
 	 * 考虑成功和失败，失败则金额返还到钱包
+	 * 
+	 * update by dongrui 2016-06-17 start
+	 * 增加参数uid【最后操作人】
+	 * update by dongrui 2016-06-17 E N D
 	 */
 	public UserWalletWithdrawApply doWithdrawNotifyFromRemote(String applyid,boolean successed){//,String customer_desc
 		logger.info(String.format("提现操作 applyid[%s] successed[%s]", applyid,successed));

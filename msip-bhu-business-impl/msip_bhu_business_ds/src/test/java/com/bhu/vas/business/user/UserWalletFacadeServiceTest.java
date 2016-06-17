@@ -1,7 +1,6 @@
 package com.bhu.vas.business.user;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Resource;
 
@@ -14,7 +13,6 @@ import org.junit.runners.MethodSorters;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
-import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
@@ -24,15 +22,12 @@ import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
-import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
-import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -278,20 +273,19 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 		}
     }
     
-    //@Test
+    @Test
    	public void test010DoSharedeal(){
-    	double cashIncomming = 1.39d;
+    	double cashIncomming = 1.00d;
     	//String dmac = "84:82:f4:19:01:0c";
     	String dmac = "84:82:f4:32:3a:90";
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
     	//System.out.println(JsonHelper.getJSONString(wallet));
-    	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!",null);
+    	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10012016031100000000000000000074", "hello world!",null);
     	System.out.println("dddd:"+ret);
    	}
     
     //@Test
    	public void test011DoSharedealSummary(){
-    	
     	//double cashIncomming = 108.39d;
     	//String dmac = "84:82:f4:23:06:e8";
     	
@@ -342,7 +336,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    	}
    	
    	
-   	@Test
+   	//@Test
    	public void test013VcurrencyFromUserWalletForSnkAuthenticate(){
    		/*final String orderid = "10012016041100000000000000000069";
    		final AtomicLong vcurrency_current_leave = new AtomicLong(0l);

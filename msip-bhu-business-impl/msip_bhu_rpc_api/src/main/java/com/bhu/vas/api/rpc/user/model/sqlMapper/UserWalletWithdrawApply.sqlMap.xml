@@ -18,6 +18,12 @@
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
     <result property="extension_content" column="extension_content"/>
+    
+    <!-- add by dongrui 2016-06-17 start -->
+    <result property="verify_reckoner" column="verify_uid"/>
+    <result property="operate_reckoner" column="operate_uid"/>
+    <result property="note" column="note"/>
+    <!-- add by dongrui 2016-06-17 start -->
   </resultMap>  
   
   	<sql id="modelTableName">
@@ -37,7 +43,10 @@
 	    	remoteip,
 	    	extension_content,
 	    	created_at,
-	    	updated_at
+	    	updated_at,
+	    	verify_uid,
+	    	operate_uid,
+	    	note
 	    ]]>
 	</sql>  
 		
@@ -52,7 +61,10 @@
 	    	remoteip,
 	    	extension_content,
 	    	created_at,
-	    	updated_at
+	    	updated_at,
+	    	verify_uid,
+	    	operate_uid,
+	    	note
 	    ]]>
 	</sql>	
 	<sql id="modelInsertValues">
@@ -66,7 +78,10 @@
 	    	#{remoteip},
 	    	#{extension_content},
 	    	#{created_at},
-	    	#{updated_at}
+	    	#{updated_at},
+	    	#{verify_uid},
+	    	#{operate_uid},
+	    	#{note}
 	</sql>
 	<sql id="modelUpdateValues">
 			appid = #{appid},
@@ -78,7 +93,10 @@
 	    	remoteip = #{remoteip},
 	    	extension_content = #{extension_content},
 	    	created_at = #{created_at},
-	    	updated_at = #{updated_at}
+	    	updated_at = #{updated_at},
+	    	verify_uid = #{verify_uid},
+	    	operate_uid = #{operate_uid},
+	    	note = #{note}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
 		<!--
