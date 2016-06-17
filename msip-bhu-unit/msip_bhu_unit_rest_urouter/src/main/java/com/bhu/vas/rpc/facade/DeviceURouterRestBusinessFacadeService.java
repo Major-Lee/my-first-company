@@ -26,6 +26,7 @@ import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
@@ -66,6 +67,7 @@ import com.bhu.vas.api.vto.URouterWSCommunityVTO;
 import com.bhu.vas.api.vto.URouterWSHotVTO;
 import com.bhu.vas.api.vto.URouterWSRecentVTO;
 import com.bhu.vas.api.vto.WifiSinfferSettingVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigInterfaceVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMMVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMutilVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigNVTO;
@@ -1468,6 +1470,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 				vto.setRadios(radios_vto);
 			}
+			
 //			String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
 //			vto.setPower(Integer.parseInt(powerAndRealChannel[0]));
 //			vto.setReal_channel(Integer.parseInt(powerAndRealChannel[1]));
@@ -1489,6 +1492,22 @@ public class DeviceURouterRestBusinessFacadeService {
 				link_vto.setDns(mode_dto.getDns());
 				vto.setLinkmode(link_vto);
 			}
+			//主网络开关和统一限速
+			List<WifiDeviceSettingInterfaceDTO> interface_dtos = setting_dto.getInterfaces();
+			if(interface_dtos != null && !interface_dtos.isEmpty()){
+				List<URouterDeviceConfigInterfaceVTO> interface_vtos = new ArrayList<URouterDeviceConfigInterfaceVTO>();
+				URouterDeviceConfigInterfaceVTO interface_vto = null; 
+				for(WifiDeviceSettingInterfaceDTO interface_dto : interface_dtos){
+					interface_vto = new URouterDeviceConfigInterfaceVTO();
+					interface_vto.setName(interface_dto.getName());
+					interface_vto.setEnable(interface_dto.getEnable());
+					interface_vto.setUsers_tx_rate(interface_dto.getUsers_tx_rate());
+					interface_vto.setUsers_rx_rate(interface_dto.getUsers_rx_rate());
+					interface_vtos.add(interface_vto);
+				}
+				vto.setIfs(interface_vtos);
+			}
+			
 			//设备基本信息
 			URouterInfoVTO info_vto = new URouterInfoVTO();
 			info_vto.setWan_ip(device_entity.getWan_ip());
