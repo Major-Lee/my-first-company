@@ -280,7 +280,7 @@ public class UserWalletUnitFacadeService {
 			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
 			if(validateUser.getUtype() != UserType.PaymentFinance.getIndex()){
 				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.PaymentFinance.getSname()}); 
-			}
+			} 
 			UserWalletWithdrawApply withdrawApply = userWalletFacadeService.doStartPaymentWithdrawApply(reckoner, applyid,note);
 			User user = UserValidateServiceHelper.validateUser(withdrawApply.getUid(),userWalletFacadeService.getUserService());
 			WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(withdrawApply.getUid(),withdrawApply.getId(),withdrawApply.getCash());

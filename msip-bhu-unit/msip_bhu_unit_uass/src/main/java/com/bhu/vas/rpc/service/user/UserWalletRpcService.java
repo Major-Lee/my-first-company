@@ -105,7 +105,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	@Override
 	public RpcResponseDTO<RequestWithdrawNotifyDTO> doStartPaymentWithdrawApply(int reckoner,String applyid,String note) {
 		logger.info(String.format("doStartPaymentWithdrawApply with reckoner[%s] applyid[%s]",reckoner,applyid));
-		return userWalletUnitFacadeService.doStartPaymentWithdrawApply(reckoner,applyid,note);
+		return userWalletUnitFacadeService.doStartPaymentWithdrawApply(reckoner,applyid,note); 
 	}
 	
 	@Override

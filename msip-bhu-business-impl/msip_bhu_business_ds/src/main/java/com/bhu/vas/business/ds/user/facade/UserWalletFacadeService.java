@@ -728,7 +728,7 @@ public class UserWalletFacadeService{
 		if(apply == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请支付",String.valueOf(applyid)});
 		}
-		//如果状态不是 WithdrawVerify|WithdrawDoing则抛出错误码
+		//如果状态不是 WithdrawVerify|WithdrawDoing则抛出错误码 
 		if(BusinessEnumType.UWithdrawStatus.WithdrawVerify.getKey().equals(apply.getWithdraw_oper()) 
 				|| BusinessEnumType.UWithdrawStatus.WithdrawDoing.getKey().equals(apply.getWithdraw_oper())){
 			apply.setLast_reckoner(reckoner);
