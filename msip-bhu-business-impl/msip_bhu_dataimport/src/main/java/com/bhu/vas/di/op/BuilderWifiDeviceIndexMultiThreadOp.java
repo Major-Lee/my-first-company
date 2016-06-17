@@ -154,6 +154,7 @@ public class BuilderWifiDeviceIndexMultiThreadOp {
 		for(int i = 1;i<totalPageCount+1;i++){
 			pageQueue.offer(i);
 		}
+		System.out.println(String.format("GeneratePageQueue WifiDevice Count[%s] pageNum[%s]", count, totalPageCount));
 	}
 	
 	public static void monitor(){
