@@ -573,8 +573,13 @@ public class UserWalletUnitFacadeService {
 			List<UserIncomeRank> userIncomeRanks=userIncomeRankService.findByLimit(100);
 			if(userIncomeRanks != null){
 				UserIncomeRank incomeRank=userIncomeRankService.getById(String.valueOf(uid));
-				rankingListVTO.setRankNum(incomeRank.getRank());
-				rankingListVTO.setUserIncome(incomeRank.getIncome());
+				if(incomeRank==null){
+					rankingListVTO.setRankNum(0);
+					rankingListVTO.setUserIncome("0");
+				}else{
+					rankingListVTO.setRankNum(incomeRank.getRank());
+					rankingListVTO.setUserIncome(incomeRank.getIncome());
+				}
 				for(int i=0;i<userIncomeRanks.size();i++){
 					RankSingle rankSingle=new RankSingle();
 					UserIncomeRank userIncomeRank=userIncomeRanks.get(i);
