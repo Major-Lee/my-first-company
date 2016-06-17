@@ -77,7 +77,7 @@ public class ChargingRpcService  implements IChargingRpcService{
 			String range_cash_mobile, String range_cash_pc,
 			String access_internet_time) {
 		logger.info(String.format("doBatchSharedealModify uid:%s message:%s canbeturnoff:%s enterpriselevel:%s customized:%s owner_percent:%s range_cash_mobile:%s range_cash_pc:%s",uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,range_cash_pc, range_cash_pc,access_internet_time));
-		return chargingUnitFacadeService.doBatchSharedealModify(uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,range_cash_mobile, range_cash_pc,access_internet_time);
+		return chargingUnitFacadeService.doBatchSharedealModify(uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,manufacturer_percent,distributor_percent,range_cash_mobile, range_cash_pc,access_internet_time);
 	}
 
 	@Override
