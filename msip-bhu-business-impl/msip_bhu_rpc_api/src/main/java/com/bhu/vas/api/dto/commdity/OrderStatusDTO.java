@@ -22,6 +22,8 @@ public class OrderStatusDTO implements java.io.Serializable{
 	private long vcurrency;
 	//支付方式
 	private String payment_type;
+	//支付方式名称
+	private String payment_type_name;
 	//订单支付成功时间
 	private Date paymented_at;
 	
@@ -60,6 +62,12 @@ public class OrderStatusDTO implements java.io.Serializable{
 	}
 	public void setPayment_type(String payment_type) {
 		this.payment_type = payment_type;
+	}
+	public String getPayment_type_name() {
+		return payment_type_name;
+	}
+	public void setPayment_type_name(String payment_type_name) {
+		this.payment_type_name = payment_type_name;
 	}
 	public Date getPaymented_at() {
 		return paymented_at;
