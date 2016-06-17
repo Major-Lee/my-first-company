@@ -551,8 +551,15 @@ public class RPCMessageParseHelper {
 					interface_dto.setEnable(interface_item.attributeValue("enable"));
 					interface_dto.setIf_tx_rate(interface_item.attributeValue("if_tx_rate"));
 					interface_dto.setIf_rx_rate(interface_item.attributeValue("if_rx_rate"));
-					interface_dto.setUsers_tx_rate(Integer.parseInt(interface_item.attributeValue("users_tx_rate")));
-					interface_dto.setUsers_rx_rate(Integer.parseInt(interface_item.attributeValue("users_rx_rate")));
+					
+					String users_tx_rate = interface_item.attributeValue("users_tx_rate");
+					if(StringUtils.isNotEmpty(users_tx_rate)){
+						interface_dto.setUsers_tx_rate(Integer.parseInt(users_tx_rate));
+					}
+					String users_rx_rate = interface_item.attributeValue("users_rx_rate");
+					if(StringUtils.isNotEmpty(users_rx_rate)){
+						interface_dto.setUsers_rx_rate(Integer.parseInt(users_rx_rate));
+					}
 					interface_dtos.add(interface_dto);
 				}
 				dto.setInterfaces(interface_dtos);
@@ -774,12 +781,12 @@ public class RPCMessageParseHelper {
 		System.out.println(dto.getSequence());*/
 		
         
-		String text = "<ITEM serial=\"0200000002\" cmd=\"netspeed_test\" statue=\"doing\"><download><SUB time_cost=\"3333\" rx_bytes=\"1111\" last=\"true\"/></download><upload><SUB time_cost=\"4444\" tx_bytes=\"1113\" /></upload></ITEM>";
+/*		String text = "<ITEM serial=\"0200000002\" cmd=\"netspeed_test\" statue=\"doing\"><download><SUB time_cost=\"3333\" rx_bytes=\"1111\" last=\"true\"/></download><upload><SUB time_cost=\"4444\" tx_bytes=\"1113\" /></upload></ITEM>";
 		Document doc = RPCMessageParseHelper.parserMessage(text);
 		WifiDevicePeakSectionDTO obj = generateDTOFromQuerySpeedTest(doc);
         System.out.println(obj.toString());
         
-        /*String text1 = "<register>"+
+        String text1 = "<register>"+
 							"<login>"+
 							    "<ITEM mac=\"62:68:75:aa:00:00\" version=\"1.2.15M23\" />"+
 							"</login>"+
@@ -792,8 +799,8 @@ public class RPCMessageParseHelper {
 							        "<ITEM enable=\"disable\" />"+
 							    "</redirect>"+
 							"</bhu_module>"+
-						"</register>";*/
-        /*String text1 = 
+						"</register>";
+        String text1 = 
 				"<bhu_module>"+
 				    "<http404>"+
 				        "<ITEM enable=\"enable\" codes=\"404,50*\" url=\"vap.bhunetworks.com/urlwrite\" ver=\"style001-00.00.03\" />"+
@@ -802,7 +809,7 @@ public class RPCMessageParseHelper {
 				        //"<ITEM enable=\"enable\" rule=\"**(TBD)\" ver=\"style001-00.00.03\" />"+
 				        "<ITEM enable=\"disable\" />"+
 				    "</redirect>"+
-				"</bhu_module>";*/
+				"</bhu_module>";
         //Document doc = RPCMessageParseHelper.parserMessage(payload);
 		//WifiDeviceVapReturnDTO vapDTO = RPCMessageParseHelper.generateVapDTOFromMessage(doc);
         
@@ -825,9 +832,9 @@ public class RPCMessageParseHelper {
         System.out.println(generateVapDTOFromMessage);
         
         
-        /*String text2 = "<return>\n"+
+        String text2 = "<return>\n"+
 			"<ITEM result=\"ok\" config_sequence=\"241\" />"+
-		"</return>";*/
+		"</return>";
         
         String payload = "000010018482F42306E81510001003151000100000001"+
         		"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"
@@ -843,13 +850,20 @@ public class RPCMessageParseHelper {
         		+ "</dev>";
         String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
         System.out.println(cmdWithoutHeader);
-        /*if(!StringUtils.isEmpty(cmdWithoutHeader)){
+        if(!StringUtils.isEmpty(cmdWithoutHeader)){
 			WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(cmdWithoutHeader);
-        }*/
-        /*for(int i=0;i<100;i++){
+        }
+        for(int i=0;i<100;i++){
         	 ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage(text2, ModifyDeviceSettingDTO.class);
              System.out.println(dto.getConfig_sequence());
         }*/
-       
+       String payload = "000010018482F419010C1510001002029000100000001<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><net><interface><ITEM name=\"wlan0\" enable=\"disable\" /></interface></net></dev>";
+		String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
+
+		WifiDeviceSettingDTO setting_dto = new WifiDeviceSettingDTO();
+		WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(cmdWithoutHeader);
+		DeviceHelper.mergeDS(modify_setting_dto, setting_dto);
+        
+        System.out.println(setting_dto);
 	}
 }

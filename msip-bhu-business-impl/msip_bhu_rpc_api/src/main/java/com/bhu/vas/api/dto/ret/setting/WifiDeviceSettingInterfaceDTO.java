@@ -20,9 +20,9 @@ public class WifiDeviceSettingInterfaceDTO implements DeviceSettingBuilderDTO{
 	//接口接收速率(kbps)
 	private String if_rx_rate;
 	//单用户发送速率(kbps) 终端下行限速
-	private int users_tx_rate;
+	private int users_tx_rate = 0;
 	//单用户接收速率(kbps) 终端上行限速
-	private int users_rx_rate;
+	private int users_rx_rate = 0;
 
 	public String getName() {
 		return name;
