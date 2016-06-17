@@ -148,7 +148,7 @@ public class AgentFacadeService {
     public AgentDeviceVTO pageClaimedAgentDeviceByUid(int uid, int status, int pageNo, int pageSize) {
 
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.AgentNormal.getSname());
+        //UserTypeValidateService.validUserType(operUser, UserType.AgentNormal.getSname());
 
         ModelCriteria totalmc = new ModelCriteria();
         totalmc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("agentuser", uid).andColumnIn("hdtype", VapEnumType.DeviceUnitType.getAllMassAPHdTypes());
@@ -798,7 +798,7 @@ public class AgentFacadeService {
     		}
     		double amount = Double.parseDouble(settlementAmount);
 	    	User operUser = userService.getById(uid);
-	    	UserTypeValidateService.validUserType(operUser, UserType.AgentFinance.getSname());
+	    	UserTypeValidateService.validUserType(operUser, UserType.PaymentFinance.getSname());
 	    	User agentUser = userService.getById(aid);
 	    	UserTypeValidateService.validUserType(agentUser, UserType.AgentNormal.getSname());
 	    	String result = agentBillFacadeService.iterateSettleBills(uid,operUser.getNick(), aid, amount);
@@ -837,7 +837,7 @@ public class AgentFacadeService {
     public TailPage<AgentFinancialSettlementVTO> pageAgentFinancialSettlementVTO(int uid, int pageNo, int pageSize) {
 
         User operUser = userService.getById(uid);
-        UserTypeValidateService.validUserType(operUser, UserType.AgentFinance.getSname());
+        UserTypeValidateService.validUserType(operUser, UserType.PaymentFinance.getSname());
 
         ModelCriteria mc = new ModelCriteria();
         mc.setOrderByClause("updated_at desc");

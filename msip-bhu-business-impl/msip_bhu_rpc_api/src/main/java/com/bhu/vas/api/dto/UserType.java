@@ -7,12 +7,15 @@ public enum UserType {
 	//管理员账户 系统创建
 	Admin(0,"A","管理员用户",false),
 	Normal(1,"N","普通用户"),
-	AgentNormal(10,"A","分销商用户"),
-	AgentFinance(15,"F","财务用户"),
 	
-	AgentWarehouseManager(20,"W","仓储用户"),
-	AgentSellor(30,"S","销售用户"),
 	
+	AgentNormal(10,"AN","仓储用户"),
+	AgentWarehouseManager(20,"AW","仓储用户"),
+	AgentSellor(30,"AS","销售用户"),
+	
+	DistributorNormal(10,"DN","分销商用户"),
+	VerifyFinance(14,"VF","财务支付用户"),
+	PaymentFinance(15,"PF","财务支付用户"),
 	
 	//商业 wifi 管理帐号 系统创建
 	BusinessAdmin(40,"BA","商业 wifi 管理员",false),
