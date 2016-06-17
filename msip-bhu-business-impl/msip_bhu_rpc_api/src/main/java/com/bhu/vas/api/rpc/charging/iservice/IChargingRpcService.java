@@ -12,16 +12,14 @@ public interface IChargingRpcService {
 			Boolean canbeturnoff,
 			Boolean enterpriselevel,
 			boolean customized,
-			String owner_percent,
+			String owner_percent,String manufacturer_percent,String distributor_percent,
 			String range_cash_mobile,String range_cash_pc,String access_internet_time);
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,
-			int countrycode,String bmobileno,
-			String sellor,
-            String partner,
-            boolean canbeturnoff,
-			boolean enterpriselevel,
+			int countrycode,String bmobileno,int distributor_uid,
+			String sellor,String partner,
+            boolean canbeturnoff,boolean enterpriselevel,
             boolean customized,
-			String sharedeal_owner_percent,
+			String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent,
 			String range_cash_mobile,String range_cash_pc,String access_internet_time,
             String remark);
 	public RpcResponseDTO<BatchImportVTO> doCancelDeviceRecord(int uid,String batchno);

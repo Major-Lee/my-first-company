@@ -34,24 +34,24 @@ public class ChargingUnitFacadeService {
 	private ChargingFacadeService chargingFacadeService;
 	
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,int countrycode,
-			String mobileno, 
+			String mobileno,int distributor_uid, 
 			String sellor,String partner,
 			boolean canbeturnoff,
 			boolean enterpriselevel,
 			boolean customized,
-			String sharedeal_owner_percent, 
+			String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
 			String range_cash_mobile,String range_cash_pc,String access_internet_time,
 			String remark) {
 		try{
 			User operUser = chargingFacadeService.getUserService().getById(uid);
 			UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(
-					chargingFacadeService.doBatchImportCreate(uid, countrycode, mobileno,
+					chargingFacadeService.doBatchImportCreate(uid, countrycode, mobileno,distributor_uid,
 							sellor,partner,
 							canbeturnoff, 
 							enterpriselevel,
 							customized,
-							sharedeal_owner_percent,
+							sharedeal_owner_percent,sharedeal_manufacturer_percent,sharedeal_distributor_percent,
 							range_cash_mobile, range_cash_pc, access_internet_time,
 							remark));
 		}catch(BusinessI18nCodeException bex){
@@ -65,13 +65,14 @@ public class ChargingUnitFacadeService {
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid,
 			String message, Boolean canbeturnoff,Boolean enterpriselevel,
 			boolean customized,
-			String owner_percent,
+			String owner_percent,String manufacturer_percent,String distributor_percent,
 			String range_cash_mobile, String range_cash_pc,
 			String access_internet_time) {
 		try{
 			//User operUser = chargingFacadeService.getUserService().getById(uid);
 			//UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
-			asyncDeliverMessageService.sendBatchSharedealModifyActionMessage(uid, message, canbeturnoff,enterpriselevel,customized, owner_percent, range_cash_mobile, range_cash_pc, access_internet_time);
+			asyncDeliverMessageService.sendBatchSharedealModifyActionMessage(uid, message, canbeturnoff,enterpriselevel,customized, 
+					owner_percent,manufacturer_percent,distributor_percent, range_cash_mobile, range_cash_pc, access_internet_time);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
