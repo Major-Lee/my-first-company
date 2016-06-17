@@ -1498,12 +1498,17 @@ public class DeviceURouterRestBusinessFacadeService {
 				List<URouterDeviceConfigInterfaceVTO> interface_vtos = new ArrayList<URouterDeviceConfigInterfaceVTO>();
 				URouterDeviceConfigInterfaceVTO interface_vto = null; 
 				for(WifiDeviceSettingInterfaceDTO interface_dto : interface_dtos){
-					interface_vto = new URouterDeviceConfigInterfaceVTO();
-					interface_vto.setName(interface_dto.getName());
-					interface_vto.setEnable(interface_dto.getEnable());
-					interface_vto.setUsers_tx_rate(interface_dto.getUsers_tx_rate());
-					interface_vto.setUsers_rx_rate(interface_dto.getUsers_rx_rate());
-					interface_vtos.add(interface_vto);
+					String interface_name = interface_dto.getName();
+					if(StringUtils.isNotEmpty(interface_name)){
+						if(interface_name.startsWith("wlan")){
+							interface_vto = new URouterDeviceConfigInterfaceVTO();
+							interface_vto.setName(interface_dto.getName());
+							interface_vto.setEnable(interface_dto.getEnable());
+							interface_vto.setUsers_tx_rate(interface_dto.getUsers_tx_rate());
+							interface_vto.setUsers_rx_rate(interface_dto.getUsers_rx_rate());
+							interface_vtos.add(interface_vto);
+						}
+					}
 				}
 				vto.setIfs(interface_vtos);
 			}
