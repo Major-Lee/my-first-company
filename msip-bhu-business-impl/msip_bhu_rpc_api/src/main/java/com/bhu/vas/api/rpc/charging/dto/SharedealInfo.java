@@ -23,6 +23,9 @@ public class SharedealInfo {
 	//厂商用户分成金额
 	private double manufacturer_cash;
 	
+	private int distributor;
+	private double distributor_cash;
+	
 	public SharedealInfo(String mac,String orderid,double cash) {
 		super();
 		this.mac = mac;
@@ -71,14 +74,18 @@ public class SharedealInfo {
 	public static SharedealInfo calculate(String mac,String orderid,
 			double cash,
 			double owner_percent,
-			//double agent_percent,
-			double manufacturer_percent
+			double manufacturer_percent,
+			double distributor_percent
 			){
 		SharedealInfo info = new SharedealInfo(mac,orderid,cash);
 		if(cash > 0){
-			info.setOwner_cash(ArithHelper.round(ArithHelper.mul(cash, owner_percent),2));
+			double owner_cash = ArithHelper.round(ArithHelper.mul(cash, owner_percent),2);
+			double manufacturer_cash = ArithHelper.round(ArithHelper.mul(cash, manufacturer_percent),2);
+			info.setOwner_cash(owner_cash);
+			info.setManufacturer_cash(manufacturer_cash);
+			info.setDistributor_cash(ArithHelper.sub(cash,ArithHelper.add(owner_cash,manufacturer_cash)));
 			//info.setAgent_cash(ArithHelper.round(ArithHelper.mul(cash, agent_percent),2));
-			info.setManufacturer_cash(ArithHelper.sub(cash,info.getOwner_cash()));
+			//info.setManufacturer_cash(ArithHelper.sub(cash,info.getOwner_cash()));
 		}
 		return info;
 	}
@@ -99,6 +106,18 @@ public class SharedealInfo {
 	}
 	public void setBelong(boolean belong) {
 		this.belong = belong;
+	}
+	public int getDistributor() {
+		return distributor;
+	}
+	public void setDistributor(int distributor) {
+		this.distributor = distributor;
+	}
+	public double getDistributor_cash() {
+		return distributor_cash;
+	}
+	public void setDistributor_cash(double distributor_cash) {
+		this.distributor_cash = distributor_cash;
 	}
 	
 }

@@ -901,20 +901,6 @@ public class DeviceHelper {
 				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
 			"</dev>";
 
-	
-	
-	
-/*	//TODO
-	//wlan0 wlan10 ,取消限速则是rate值为0
-	public static final String DeviceSetting_MasterWifi_Limit =
-			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
-				"<net>"+
-					"<interface>"
-					+ "<ITEM name=\"wlan0\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/>"
-					+ "<ITEM name=\"wlan10\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/>"
-					+ "</interface>"
-			    +"</net>"+
-			"</dev>";*/
 	//主网络开关
 	public static final String DeviceSetting_Master_Switch = "<ITEM name=\"%s\" enable=\"%s\" />";
 	//主网络统一限速

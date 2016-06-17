@@ -10,13 +10,15 @@
 	  <result property="status" column="status"/>
 	  <result property="importor" column="importor"/>
 	  <result property="mobileno" column="mobileno"/>
+	  <result property="distributor" column="distributor"/>
 	  <result property="sellor" column="sellor"/>
 	  <result property="partner" column="partner"/>
 	  <result property="canbeturnoff" column="canbeturnoff"/>
 	  <result property="enterpriselevel" column="enterpriselevel"/>
 	  <result property="customized" column="customized"/>
 	  <result property="owner_percent" column="owner_percent"/>
-	  
+	  <result property="manufacturer_percent" column="manufacturer_percent"/>
+      <result property="distributor_percent" column="distributor_percent"/>
 	  <result property="range_cash_mobile" column="range_cash_mobile"/>
 	  <result property="range_cash_pc" column="range_cash_pc"/>
 	  <result property="access_internet_time" column="access_internet_time"/>
@@ -39,12 +41,15 @@
 	    	status,
 	    	importor,
 	    	mobileno,
+	    	distributor,
 	    	sellor,
 	    	partner,
 	    	canbeturnoff,
 	    	enterpriselevel,
 	    	customized,
 	    	owner_percent,
+	    	manufacturer_percent,
+	    	distributor_percent,
 	    	range_cash_mobile,
 	    	range_cash_pc,
 	    	access_internet_time,
@@ -61,12 +66,15 @@
 	    	status,
 	    	importor,
 	    	mobileno,
+	    	distributor,
 	    	sellor,
 	    	partner,
 	    	canbeturnoff,
 	    	enterpriselevel,
 	    	customized,
 	    	owner_percent,
+	    	manufacturer_percent,
+	    	distributor_percent,
 	    	range_cash_mobile,
 	    	range_cash_pc,
 	    	access_internet_time,
@@ -84,12 +92,15 @@
 			#{status},
 			#{importor},
 			#{mobileno},
+			#{distributor},
 			#{sellor},
 			#{partner},
 			#{canbeturnoff},
 			#{enterpriselevel},
 			#{customized},
 			#{owner_percent},
+			#{manufacturer_percent},
+	    	#{distributor_percent},
 			#{range_cash_mobile},
 	    	#{range_cash_pc},
 	    	#{access_internet_time},
@@ -105,12 +116,15 @@
 	    	status = #{status},
 	    	importor = #{importor},
 	    	mobileno = #{mobileno},
+	    	distributor = #{distributor},
 	    	sellor = #{sellor},
 	    	partner = #{partner},
 	    	canbeturnoff = #{canbeturnoff},
 	    	enterpriselevel = #{enterpriselevel},
 	    	customized = #{customized},
 	    	owner_percent = #{owner_percent},
+	    	manufacturer_percent = #{manufacturer_percent},
+	    	distributor_percent = #{distributor_percent},
 	    	range_cash_mobile = #{range_cash_mobile},
 	    	range_cash_pc = #{range_cash_pc},
 	    	access_internet_time = #{access_internet_time},

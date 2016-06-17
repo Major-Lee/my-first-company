@@ -278,20 +278,19 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 		}
     }
     
-    //@Test
+    @Test
    	public void test010DoSharedeal(){
-    	double cashIncomming = 1.39d;
+    	double cashIncomming = 1.00d;
     	//String dmac = "84:82:f4:19:01:0c";
     	String dmac = "84:82:f4:32:3a:90";
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
     	//System.out.println(JsonHelper.getJSONString(wallet));
-    	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!",null);
+    	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10012016031100000000000000000074", "hello world!",null);
     	System.out.println("dddd:"+ret);
    	}
     
     //@Test
    	public void test011DoSharedealSummary(){
-    	
     	//double cashIncomming = 108.39d;
     	//String dmac = "84:82:f4:23:06:e8";
     	
@@ -342,7 +341,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
    	}
    	
    	
-   	@Test
+   	//@Test
    	public void test013VcurrencyFromUserWalletForSnkAuthenticate(){
    		/*final String orderid = "10012016041100000000000000000069";
    		final AtomicLong vcurrency_current_leave = new AtomicLong(0l);

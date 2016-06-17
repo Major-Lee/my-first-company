@@ -9,8 +9,10 @@
     <result property="batchno" column="batchno"/>
     <result property="owner" column="owner"/>
     <result property="manufacturer" column="manufacturer"/>
+    <result property="distributor" column="distributor"/>
     <result property="owner_percent" column="owner_percent"/>
     <result property="manufacturer_percent" column="manufacturer_percent"/>
+    <result property="distributor_percent" column="distributor_percent"/>
     <result property="range_cash_pc" column="range_cash_pc"/>
     <result property="range_cash_mobile" column="range_cash_mobile"/>
     <result property="ait_pc" column="ait_pc"/>
@@ -19,7 +21,6 @@
     <result property="enterpriselevel" column="enterpriselevel"/>
     <result property="customized" column="customized"/>
     <result property="runtime_applydefault" column="runtime_applydefault"/>
-    
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -35,8 +36,10 @@
 	    	batchno,
 	    	owner,
 	    	manufacturer,
+	    	distributor,
 	    	owner_percent,
 	    	manufacturer_percent,
+	    	distributor_percent,
 	    	range_cash_pc,
 	    	range_cash_mobile,
 	    	ait_pc,
@@ -54,8 +57,10 @@
 			batchno,
 	    	owner,
 	    	manufacturer,
+	    	distributor,
 	    	owner_percent,
 	    	manufacturer_percent,
+	    	distributor_percent,
 	    	range_cash_pc,
 	    	range_cash_mobile,
 	    	ait_pc,
@@ -74,8 +79,10 @@
 	    	#{batchno},
 	    	#{owner},
 	    	#{manufacturer},
+	    	#{distributor},
 	    	#{owner_percent},
 	    	#{manufacturer_percent},
+	    	#{distributor_percent},
 	    	#{range_cash_pc},
 	    	#{range_cash_mobile},
 	    	#{ait_pc},
@@ -92,8 +99,10 @@
 	    	batchno = #{batchno},
 	    	owner = #{owner},
 	    	manufacturer = #{manufacturer},
+	    	distributor = #{distributor},
 	    	owner_percent = #{owner_percent},
 	    	manufacturer_percent = #{manufacturer_percent},
+	    	distributor_percent = #{distributor_percent},
 	    	range_cash_pc = #{range_cash_pc},
 	    	range_cash_mobile = #{range_cash_mobile},
 	    	ait_pc = #{ait_pc},

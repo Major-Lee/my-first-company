@@ -6,6 +6,7 @@ public class SharedealDefaultVTO implements java.io.Serializable{
 	private String id;
 	private double owner_percent;
 	private double manufacturer_percent;
+	private double distributor_percent;
 	private String rcp;
 	private String rcm;
 	private String ait;
@@ -26,6 +27,12 @@ public class SharedealDefaultVTO implements java.io.Serializable{
 	}
 	public void setManufacturer_percent(double manufacturer_percent) {
 		this.manufacturer_percent = manufacturer_percent;
+	}
+	public double getDistributor_percent() {
+		return distributor_percent;
+	}
+	public void setDistributor_percent(double distributor_percent) {
+		this.distributor_percent = distributor_percent;
 	}
 	public String getRcp() {
 		return rcp;
