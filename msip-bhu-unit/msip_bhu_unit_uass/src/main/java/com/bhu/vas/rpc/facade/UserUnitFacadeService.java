@@ -606,6 +606,7 @@ public class UserUnitFacadeService {
 			/*if(keywords!=null && StringUtils.isNotEmpty(keywords.trim())){
 				cri.andColumnLike("org", "%"+keywords+"%");
 			}*/
+			cri.andSimpleCaulse(" 1=1 ");
 			mc.setOrderByClause(" id desc ");
 			mc.setPageNumber(pageno);
 			mc.setPageSize(pagesize);
