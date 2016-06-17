@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.springframework.context.ApplicationContext;
@@ -54,6 +55,7 @@ public class BuilderWifiDeviceIndexMultiThreadOp {
 	private static WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
 	private static TagGroupRelationService tagGroupRelationService;
 	private static ThreadPoolExecutor exec_processes;
+	private static ExecutorService exec_monitor;
 	private static int processesThreadCount = 5;
 	private static ConcurrentLinkedQueue<Integer> pageQueue = null;
 	private static int pageSize = 500;
@@ -65,9 +67,6 @@ public class BuilderWifiDeviceIndexMultiThreadOp {
 			if(argv != null && argv.length == 1){
 				processesThreadCount = Integer.parseInt(argv[0]);
 			}
-
-			
-			
 			//long t0 = System.currentTimeMillis();
 			initialize();
 			generatePageQueue();
@@ -158,18 +157,26 @@ public class BuilderWifiDeviceIndexMultiThreadOp {
 	}
 	
 	public static void monitor(){
-		long t0 = System.currentTimeMillis();
-		while(true){
-			if(pageQueue.isEmpty() && exec_processes.getActiveCount() == 0){
-				break;
+		exec_monitor = ExecObserverManager.buildExecutorService(BuilderWifiDeviceIndexMultiThreadOp.class, 
+				"BuilderWifiDeviceIndexMultiThreadOp monitor",1);
+		exec_monitor.submit((new Runnable() {
+			@Override
+			public void run() {
+				long t0 = System.currentTimeMillis();
+				while(true){
+					if(pageQueue.isEmpty() && exec_processes.getActiveCount() == 0){
+						break;
+					}
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				System.out.println(String.format("数据全量导入总数据[%s] 总耗时[%s]秒", totalCompletedCount, ((System.currentTimeMillis()-t0)/1000)));
+				System.exit(1);
 			}
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		System.out.println(String.format("数据全量导入总数据[%s] 总耗时[%s]秒", totalCompletedCount, ((System.currentTimeMillis()-t0)/1000)));
+		}));
 	}
 	
 	/**
