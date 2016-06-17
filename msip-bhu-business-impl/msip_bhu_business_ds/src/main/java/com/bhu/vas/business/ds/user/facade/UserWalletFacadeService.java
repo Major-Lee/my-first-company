@@ -785,8 +785,8 @@ public class UserWalletFacadeService{
 	}
 	
 	
-	public UserWalletWithdrawApply doWithdrawNotifyFromLocal(int uid,String applyid,boolean successed,String note){
-		return doWithdrawNotifyFromRemote(uid,applyid,successed,note);
+	public UserWalletWithdrawApply doWithdrawNotifyFromLocal(String applyid,boolean successed){
+		return doWithdrawNotifyFromRemote(applyid,successed);
 	}
 	
 	/**
@@ -797,7 +797,7 @@ public class UserWalletFacadeService{
 	 * 增加参数uid【最后操作人】
 	 * update by dongrui 2016-06-17 E N D
 	 */
-	public UserWalletWithdrawApply doWithdrawNotifyFromRemote(int uid,String applyid,boolean successed,String note){//,String customer_desc
+	public UserWalletWithdrawApply doWithdrawNotifyFromRemote(String applyid,boolean successed){//,String customer_desc
 		logger.info(String.format("提现操作 applyid[%s] successed[%s]", applyid,successed));
 		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
 		if(apply == null){
@@ -823,10 +823,6 @@ public class UserWalletFacadeService{
 			logger.info(String.format("提现操作-失败 applyid[%s] 返现并解锁钱包状态", applyid));
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
-		//add by dongrui 2016-06-17 start
-		apply.setNote(note);
-		apply.setOperate_reckoner(uid);
-		//add by dongrui 2016-06-17 E N D
 		apply = userWalletWithdrawApplyService.update(apply);
 		return apply;
 	}
