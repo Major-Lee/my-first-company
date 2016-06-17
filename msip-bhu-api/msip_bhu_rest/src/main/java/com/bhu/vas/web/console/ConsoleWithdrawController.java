@@ -132,8 +132,8 @@ public class ConsoleWithdrawController extends BaseController {
             @RequestParam(required = false,defaultValue = "", value = "note") String note
     		) {
     	System.out.println("###########uid为："+uid);
-    	System.out.println("###########applyid为："+applyid);
-		RpcResponseDTO<RequestWithdrawNotifyDTO> rpcResult = userWalletRpcService.doStartPaymentWithdrawApply(uid, applyid);
+    	System.out.println("###########applyid为："+applyid); 
+		RpcResponseDTO<RequestWithdrawNotifyDTO> rpcResult = userWalletRpcService.doStartPaymentWithdrawApply(uid, applyid,note);
 		System.out.println("******rpcResult**********"+rpcResult);
 		System.out.println("******level1**********"+rpcResult.hasError());
 		//add by dongrui 2016-06-15 start
@@ -142,7 +142,7 @@ public class ConsoleWithdrawController extends BaseController {
 			System.out.println("*****提现类型*****payment_type【"+requestWithdrawNotifyDTO.getWithdraw().getPayment_type()+"】");
 			System.out.println("*****提现状态*****Withdraw_status【"+requestWithdrawNotifyDTO.getWithdraw().getWithdraw_oper()+"】");
 			if(requestWithdrawNotifyDTO.getWithdraw().getPayment_type().equals("public")){
-				RpcResponseDTO<UserWithdrawApplyVTO> rpcResponseDTO = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, true,note);
+				RpcResponseDTO<UserWithdrawApplyVTO> rpcResponseDTO = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, true);
 				if(!rpcResponseDTO.hasError()){
 					System.out.println("******level2**********"+rpcResponseDTO.hasError());
 					SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponseDTO));

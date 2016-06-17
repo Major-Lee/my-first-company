@@ -73,7 +73,7 @@ public interface IUserWalletRpcService {
 	 * @param applyid
 	 * @return
 	 */
-	public RpcResponseDTO<RequestWithdrawNotifyDTO> doStartPaymentWithdrawApply(int reckoner,String applyid);
+	public RpcResponseDTO<RequestWithdrawNotifyDTO> doStartPaymentWithdrawApply(int reckoner,String applyid,String note);
 	
 	/**
 	 * 
@@ -83,7 +83,7 @@ public interface IUserWalletRpcService {
 	 * @param note
 	 * @return
 	 */
-	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed,String note);
+	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed);
 	/**
 	 * 提现操作api
 	 * @param uid

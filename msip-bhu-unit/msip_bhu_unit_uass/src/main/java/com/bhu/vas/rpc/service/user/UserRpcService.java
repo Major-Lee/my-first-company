@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.rpc.facade.UserUnitFacadeService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 @Service("userRpcService")
 public class UserRpcService implements IUserRpcService{
@@ -115,5 +118,9 @@ public class UserRpcService implements IUserRpcService{
 		return userUnitFacadeService.authentication(uid,countrycode, acc, captcha);
 	}
 
-	
+	@Override
+	public RpcResponseDTO<TailPage<UserDTO>> pageUsers(int uid,String ut,int pageno,int pagesize){
+		logger.info(String.format("pageUsers with uid[%s] ut[%s] pageno[%s] pagesize[%s]",uid,ut,pageno,pagesize));
+		return userUnitFacadeService.pageUsers(uid, UserType.getBySName(ut), pageno, pagesize);
+	}
 }

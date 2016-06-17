@@ -3,7 +3,6 @@ package com.bhu.vas.rpc.facade;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
-import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
@@ -23,12 +21,10 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
-import com.bhu.vas.api.rpc.charging.model.DeviceGroupPaymentStatistics;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
-import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserPublishAccount;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
@@ -51,6 +47,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -142,7 +139,7 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	/**
-	 * 需要判定用户是否是财务用户
+	 * 需要判定用户是否是财务用户 财务审核、采用支付用户
 	 * @param uid
 	 * @param tuid
 	 * @param withdraw_status
@@ -153,8 +150,9 @@ public class UserWalletUnitFacadeService {
 	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(int reckoner, int tuid, String withdraw_status,String payment_type,String startTime,String endTime,int pageNo, int pageSize) {
 		try{
 			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
-			if(validateUser.getUtype() != UserType.AgentFinance.getIndex()){
-				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.AgentFinance.getSname()}); 
+			if(validateUser.getUtype() != UserType.PaymentFinance.getIndex()
+					&&  validateUser.getUtype() != UserType.VerifyFinance.getIndex()){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.PaymentFinance.getSname().concat(StringHelper.MINUS_STRING_GAP).concat(UserType.VerifyFinance.getSname())}); 
 			}
 			UWithdrawStatus status = null;
 			if(StringUtils.isNotEmpty(withdraw_status)){
@@ -201,8 +199,8 @@ public class UserWalletUnitFacadeService {
 	public RpcResponseDTO<String> withdrawApplyStatus(int reckoner, String applyid){
 		try{
 			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
-			if(validateUser.getUtype() != UserType.AgentFinance.getIndex()){
-				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.AgentFinance.getSname()}); 
+			if(validateUser.getUtype() != UserType.PaymentFinance.getIndex()){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.PaymentFinance.getSname()}); 
 			}
 			UserWalletWithdrawApply apply = userWalletFacadeService.getUserWalletWithdrawApplyService().getById(applyid);
 			if(apply == null){
@@ -227,8 +225,8 @@ public class UserWalletUnitFacadeService {
 	public RpcResponseDTO<Boolean> verifyApplies(int reckoner, String applyid,boolean passed) {
 		try{
 			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
-			if(validateUser.getUtype() != UserType.AgentFinance.getIndex()){
-				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.AgentFinance.getSname()}); 
+			if(validateUser.getUtype() != UserType.VerifyFinance.getIndex()){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.VerifyFinance.getSname()}); 
 			}
 			
 			//modify by dongrui 2016-06-17 start
@@ -277,13 +275,13 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<RequestWithdrawNotifyDTO> doStartPaymentWithdrawApply(int reckoner,String applyid){
+	public RpcResponseDTO<RequestWithdrawNotifyDTO> doStartPaymentWithdrawApply(int reckoner,String applyid,String note){
 		try{
 			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
-			if(validateUser.getUtype() != UserType.AgentFinance.getIndex()){
-				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.AgentFinance.getSname()}); 
-			}
-			UserWalletWithdrawApply withdrawApply = userWalletFacadeService.doStartPaymentWithdrawApply(reckoner, applyid);
+			if(validateUser.getUtype() != UserType.PaymentFinance.getIndex()){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.PaymentFinance.getSname()}); 
+			} 
+			UserWalletWithdrawApply withdrawApply = userWalletFacadeService.doStartPaymentWithdrawApply(reckoner, applyid,note);
 			User user = UserValidateServiceHelper.validateUser(withdrawApply.getUid(),userWalletFacadeService.getUserService());
 			WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(withdrawApply.getUid(),withdrawApply.getId(),withdrawApply.getCash());
 			//ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(), withdrawApply.getCash());
@@ -333,11 +331,11 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed,String note){
+	public RpcResponseDTO<UserWithdrawApplyVTO> doWithdrawNotifyFromLocal(int reckoner,String applyid,boolean successed){
 		try{
 			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
-			if(validateUser.getUtype() != UserType.AgentFinance.getIndex()){
-				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.AgentFinance.getSname()}); 
+			if(validateUser.getUtype() != UserType.PaymentFinance.getIndex()){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.PaymentFinance.getSname()}); 
 			}
 			UserWalletWithdrawApply withdrawApply = userWalletFacadeService.doWithdrawNotifyFromLocal(applyid, successed);
 			User user = UserValidateServiceHelper.validateUser(withdrawApply.getUid(),userWalletFacadeService.getUserService());
