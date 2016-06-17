@@ -1047,6 +1047,8 @@ public class UserWalletFacadeService{
 				userIncomeRank.setRank(beforeRankNum);
 				userIncomeRank.setIncome(deviceGroupPaymentStatistics.getTotal_incoming_amount());
 				userIncomeRank.setId(deviceGroupPaymentStatistics.getUid().toString());
+				userIncomeRank.setUpdated_at(date);
+				userIncomeRank.setCreated_at(date);
 				userIncomeRankService.insert(userIncomeRank);
 			}
 		}

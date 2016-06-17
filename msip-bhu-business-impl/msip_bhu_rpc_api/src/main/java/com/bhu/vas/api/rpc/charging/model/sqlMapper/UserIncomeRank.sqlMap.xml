@@ -8,6 +8,8 @@
     <id property="id" column="id"/>
     <result property="rank" column="rank"/>
     <result property="income" column="income"/>
+    <result property="created_at" column="created_at"/>
+    <result property="updated_at" column="updated_at"/>
   </resultMap>  
   	<sql id="modelTableName">
 	    <![CDATA[
@@ -18,25 +20,33 @@
 	    <![CDATA[
 	    	id,
 	    	rank,
-	    	income
+	    	income,
+	    	created_at,
+	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	rank,
-	    	income
+	    	income,
+	    	created_at,
+	    	updated_at
 	    ]]>
 	</sql>   
 	
 	<sql id="modelInsertValues">
 			#{id},
 	    	#{rank},
-	    	#{income}
+	    	#{income},
+	    	#{created_at},
+	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
 	    	rank = #{rank},
-	    	income = #{income}
+	    	income = #{income},
+	    	created_at = #{created_at},
+	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
 		<!--
