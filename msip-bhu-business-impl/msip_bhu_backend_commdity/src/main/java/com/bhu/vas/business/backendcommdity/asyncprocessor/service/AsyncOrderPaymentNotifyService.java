@@ -382,6 +382,8 @@ public class AsyncOrderPaymentNotifyService{
 	   				//扣款失败，原因不明，依然通知uportal可以放行
 	   				break;
 	   		}
+		}else{
+			logger.info(String.format("order[%s] mac[%s] devices unbinded",order.getId(),order.getMac()));
 		}
 		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
 		orderFacadeService.smsOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
