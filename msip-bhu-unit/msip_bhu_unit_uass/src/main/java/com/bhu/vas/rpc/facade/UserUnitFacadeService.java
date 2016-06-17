@@ -1,5 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -27,11 +30,16 @@ import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
+import com.bhu.vas.validate.UserTypeValidateService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -575,5 +583,48 @@ public class UserUnitFacadeService {
 		deliverMessageService.sendUserBBSsignedonMessage(uid, entity.getDt(), entity.getD(), countrycode, acc, secretkey);
 		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
+	
+	
+	/**
+	 * 用户列表
+	 * @param uid
+	 * @param keywords
+	 * @param pageno
+	 * @param pagesize
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserDTO>> pageUsers(int uid,UserType ut,int pageno,int pagesize){
+		try{
+			//UserTypeValidateService.validConsoleUser(uid);
+			User user  = userService.getById(uid);
+			UserTypeValidateService.validNotNormalUser(user);
+			ModelCriteria mc = new ModelCriteria();
+			Criteria cri = mc.createCriteria();
+			if(ut != null)
+				cri.andColumnEqualTo("utype", ut.getIndex());
+			/*if(keywords!=null && StringUtils.isNotEmpty(keywords.trim())){
+				cri.andColumnLike("org", "%"+keywords+"%");
+			}*/
+			mc.setOrderByClause(" id desc ");
+			mc.setPageNumber(pageno);
+			mc.setPageSize(pagesize);
+			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
+			List<UserDTO> vtos = new ArrayList<>();
+			for(User _user:tailusers.getItems()){
+				vtos.add(RpcResponseDTOBuilder.builderUserDTOFromUser(_user, false));
+			}
+			TailPage<UserDTO> pages = new CommonPage<UserDTO>(tailusers.getPageNumber(), pagesize, tailusers.getTotalItemsCount(), vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+		}
+
 	}
 }
