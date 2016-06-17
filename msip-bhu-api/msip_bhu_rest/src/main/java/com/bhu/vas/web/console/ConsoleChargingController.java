@@ -144,7 +144,7 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = false,value = "cc",defaultValue="86") int countrycode,
             @RequestParam(required = false,value = "mobileno") String mobileno_needbinded,
-            @RequestParam(required = false,defaultValue = "-1") int distributor_uid,
+            @RequestParam(required = false,defaultValue = "-1") int distributor,
             @RequestParam(required = false) String sellor,
             @RequestParam(required = false) String partner,
             @RequestParam(required = false,value = "cbto",defaultValue="true") boolean canbeturnoff,
@@ -193,7 +193,7 @@ public class ConsoleChargingController extends BaseController {
         			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
         		}
         	}
-        	RpcResponseDTO<BatchImportVTO> rpcResult = chargingRpcService.doInputDeviceRecord(uid, countrycode, mobileno_needbinded,distributor_uid, 
+        	RpcResponseDTO<BatchImportVTO> rpcResult = chargingRpcService.doInputDeviceRecord(uid, countrycode, mobileno_needbinded,distributor, 
         			sellor,
         			partner,
         			canbeturnoff,

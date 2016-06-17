@@ -71,7 +71,8 @@ public class ChargingUnitFacadeService {
 		try{
 			//User operUser = chargingFacadeService.getUserService().getById(uid);
 			//UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
-			asyncDeliverMessageService.sendBatchSharedealModifyActionMessage(uid, message, canbeturnoff,enterpriselevel,customized, owner_percent, range_cash_mobile, range_cash_pc, access_internet_time);
+			asyncDeliverMessageService.sendBatchSharedealModifyActionMessage(uid, message, canbeturnoff,enterpriselevel,customized, 
+					owner_percent,manufacturer_percent,distributor_percent, range_cash_mobile, range_cash_pc, access_internet_time);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

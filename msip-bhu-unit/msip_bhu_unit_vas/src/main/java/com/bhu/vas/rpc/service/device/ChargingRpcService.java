@@ -60,12 +60,14 @@ public class ChargingRpcService  implements IChargingRpcService{
 			String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent,
 			String range_cash_mobile,String range_cash_pc,String access_internet_time,
 			String remark) {
-		logger.info(String.format("doInputDeviceRecord uid:%s countrycode:%s bmobileno:%s sellor:%s partner:%s canbeturnoff:%s enterpriselevel:%s customized:%s sharedeal_owner_percent:%s range_cash_mobile:%s range_cash_pc:%s access_internet_time:%s remark:%s",
-				uid,countrycode, bmobileno,sellor,partner,canbeturnoff,enterpriselevel,customized,sharedeal_owner_percent, range_cash_mobile, range_cash_pc, access_internet_time, remark));
-		return chargingUnitFacadeService.doInputDeviceRecord(uid,countrycode, bmobileno,sellor,partner,
+		logger.info(String.format("doInputDeviceRecord uid:%s countrycode:%s bmobileno:%s sellor:%s partner:%s canbeturnoff:%s enterpriselevel:%s customized:%s sharedeal_owner_percent:%s sharedeal_manufacturer_percent:%s sharedeal_distributor_percent:%s range_cash_mobile:%s range_cash_pc:%s access_internet_time:%s remark:%s",
+				uid,countrycode, bmobileno,sellor,partner,canbeturnoff,enterpriselevel,customized,sharedeal_owner_percent,sharedeal_manufacturer_percent, sharedeal_distributor_percent, range_cash_mobile, range_cash_pc, access_internet_time, remark));
+		return chargingUnitFacadeService.doInputDeviceRecord(uid,countrycode, bmobileno,distributor_uid,
+				sellor,partner,
 				canbeturnoff,enterpriselevel,
 				customized,
-				sharedeal_owner_percent, range_cash_mobile, range_cash_pc, access_internet_time, remark);
+				sharedeal_owner_percent, sharedeal_manufacturer_percent,sharedeal_distributor_percent,
+				range_cash_mobile, range_cash_pc, access_internet_time, remark);
 
 	}
 
@@ -76,7 +78,8 @@ public class ChargingRpcService  implements IChargingRpcService{
 			String owner_percent,String manufacturer_percent,String distributor_percent,
 			String range_cash_mobile, String range_cash_pc,
 			String access_internet_time) {
-		logger.info(String.format("doBatchSharedealModify uid:%s message:%s canbeturnoff:%s enterpriselevel:%s customized:%s owner_percent:%s range_cash_mobile:%s range_cash_pc:%s",uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,range_cash_pc, range_cash_pc,access_internet_time));
+		logger.info(String.format("doBatchSharedealModify uid:%s message:%s canbeturnoff:%s enterpriselevel:%s customized:%s owner_percent:%s manufacturer_percent:%s distributor_percent:%s range_cash_mobile:%s range_cash_pc:%s",
+				uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,manufacturer_percent,distributor_percent,range_cash_pc, range_cash_pc,access_internet_time));
 		return chargingUnitFacadeService.doBatchSharedealModify(uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,manufacturer_percent,distributor_percent,range_cash_mobile, range_cash_pc,access_internet_time);
 	}
 
