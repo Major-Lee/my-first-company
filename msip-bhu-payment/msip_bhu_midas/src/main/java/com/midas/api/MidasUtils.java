@@ -106,12 +106,13 @@ public class MidasUtils {
 	 * @param sig
 	 * @return
 	 */
-	public static boolean verifySig(HashMap<String,String> params, String sig) {
+	public static boolean verifySig(HashMap<String,String> params,String notify_url, String sig) {
 		boolean result = false;
 		String method = Config.method;
-		String url_path = Config.url_path;
+		String url_path = notify_url;
+		String appKey =  Config.secret+ "&";
 		try {
-			result = SnsSigCheck.verifySig(method, url_path, params, Config.secret, sig);
+			result = SnsSigCheck.verifySig(method, url_path, params, appKey, sig);
 		} catch (OpensnsException e) {
 			e.printStackTrace();
 		}
