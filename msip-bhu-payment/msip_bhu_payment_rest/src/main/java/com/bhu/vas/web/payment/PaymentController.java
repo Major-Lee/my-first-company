@@ -563,9 +563,9 @@ public class PaymentController extends BaseController{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(respone)));
     			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(respone));
     		}else if(type.equalsIgnoreCase("Midas")){
-    			MidasRespone midasResponeModel = new MidasRespone(goods_no,msg);
-    			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(midasResponeModel)));
-    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(midasResponeModel)));
+    			//MidasRespone midasResponeModel = new MidasRespone(goods_no,msg);
+    			logger.info(String.format("apply payment return result [%s]",msg));
+    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(msg));
     		}else{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(result)));
     			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));

@@ -79,6 +79,7 @@ public class PayHttpService {
     
     //打赏失败web回调地址
     public static String WEB_NOTIFY_URL = "https://ucloud.bhuwifi.com/unsuccess";
+    //public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/unsuccess";
     //充值失败web回调地址
     public static String PREPAID_NOTIFY_URL = "http://www.bhuwifi.com";
     //证书地址
