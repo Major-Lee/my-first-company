@@ -26,8 +26,6 @@ import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.charging.model.DeviceGroupPaymentStatistics;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
@@ -36,7 +34,6 @@ import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
-import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
@@ -46,8 +43,6 @@ import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
-import com.bhu.vas.api.vto.statistics.RankSingle;
-import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
@@ -785,8 +780,8 @@ public class UserWalletFacadeService{
 	}
 	
 	
-	public UserWalletWithdrawApply doWithdrawNotifyFromLocal(int uid,String applyid,boolean successed,String note){
-		return doWithdrawNotifyFromRemote(uid,applyid,successed,note);
+	public UserWalletWithdrawApply doWithdrawNotifyFromLocal(String applyid,boolean successed){
+		return doWithdrawNotifyFromRemote(applyid,successed);
 	}
 	
 	/**
@@ -797,7 +792,7 @@ public class UserWalletFacadeService{
 	 * 增加参数uid【最后操作人】
 	 * update by dongrui 2016-06-17 E N D
 	 */
-	public UserWalletWithdrawApply doWithdrawNotifyFromRemote(int uid,String applyid,boolean successed,String note){//,String customer_desc
+	public UserWalletWithdrawApply doWithdrawNotifyFromRemote(String applyid,boolean successed){//,String customer_desc
 		logger.info(String.format("提现操作 applyid[%s] successed[%s]", applyid,successed));
 		UserWalletWithdrawApply apply = userWalletWithdrawApplyService.getById(applyid);
 		if(apply == null){
@@ -823,10 +818,6 @@ public class UserWalletFacadeService{
 			logger.info(String.format("提现操作-失败 applyid[%s] 返现并解锁钱包状态", applyid));
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
-		//add by dongrui 2016-06-17 start
-		apply.setNote(note);
-		apply.setOperate_reckoner(uid);
-		//add by dongrui 2016-06-17 E N D
 		apply = userWalletWithdrawApplyService.update(apply);
 		return apply;
 	}
