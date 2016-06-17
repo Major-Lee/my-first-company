@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.springframework.beans.BeanUtils;
 
-import com.bhu.vas.api.dto.commdity.OrderDTO;
+import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
@@ -31,10 +31,10 @@ public class OrderHelper {
 	 * @param order
 	 * @return
 	 */
-	public static OrderDTO buildOrderDTO(Order order){
+	public static OrderRewardVTO buildOrderDTO(Order order){
 		if(order == null) return null;
 		
-		OrderDTO orderDto = new OrderDTO();
+		OrderRewardVTO orderDto = new OrderRewardVTO();
 		BeanUtils.copyProperties(order, orderDto);
 		
 		Date createdAt = order.getCreated_at();

@@ -1,15 +1,23 @@
 package com.bhu.vas.api.dto.commdity;
 /**
- * 用于展示用户的设备的订单支付记录实体DTO
+ * 用于展示用户的设备的打赏订单支付记录实体DTO
  * @author tangzichao
  *
  */
 @SuppressWarnings("serial")
-public class UserOrderDTO implements java.io.Serializable{
+public class OrderRewardVTO implements java.io.Serializable{
 	//订单id
 	private String id;
+	//商品id
+	private Integer commdityid;
+	//应用id
+	private Integer appid;
+	//订单类型
+	private Integer type;
 	//设备mac
 	private String mac;
+	//设备业务线
+	private String mac_dut;
 	//用户mac
 	private String umac;
 	//用户终端厂商
@@ -26,6 +34,8 @@ public class UserOrderDTO implements java.io.Serializable{
 	private String payment_type;
 	//支付方式名称
 	private String payment_type_name;
+	//订单状态
+	private Integer status;
 	//订单创建时间
 	private long created_ts;
 	//订单支付时间
@@ -102,5 +112,35 @@ public class UserOrderDTO implements java.io.Serializable{
 	}
 	public void setPaymented_ts(long paymented_ts) {
 		this.paymented_ts = paymented_ts;
+	}
+	public Integer getCommdityid() {
+		return commdityid;
+	}
+	public void setCommdityid(Integer commdityid) {
+		this.commdityid = commdityid;
+	}
+	public Integer getAppid() {
+		return appid;
+	}
+	public void setAppid(Integer appid) {
+		this.appid = appid;
+	}
+	public Integer getType() {
+		return type;
+	}
+	public void setType(Integer type) {
+		this.type = type;
+	}
+	public String getMac_dut() {
+		return mac_dut;
+	}
+	public void setMac_dut(String mac_dut) {
+		this.mac_dut = mac_dut;
+	}
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 }

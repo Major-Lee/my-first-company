@@ -13,12 +13,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.dto.commdity.OrderDTO;
-import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyDTO;
-import com.bhu.vas.api.dto.commdity.OrderSMSDTO;
+import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
+import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
+import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
-import com.bhu.vas.api.dto.commdity.UserOrderDTO;
-import com.bhu.vas.api.dto.commdity.UserRechargeVCurrencyOrderDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
@@ -67,86 +65,6 @@ public class OrderUnitFacadeService {
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
-/*	*//**
-	 * 生成订单
-	 * @param commdityid
-	 * @param appid
-	 * @param mac
-	 * @param umac
-	 * @param uid
-	 * @param context
-	 * @return
-	 *//*
-	public RpcResponseDTO<OrderCreatedRetDTO> createOrder(Integer commdityid, Integer appid, String mac, String umac, 
-			Integer uid, String context){
-		try{
-			orderFacadeService.supportedAppId(appid);
-			
-			//验证用户mac和uid同时为空
-			if(uid == null && StringUtils.isEmpty(umac)){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_UID_ILLEGAL);
-			}
-
-			//生成订单
-			Order order = orderFacadeService.createOrder(commdityid, appid, mac, umac, uid, context);
-			OrderCreatedRetDTO orderCreatedRetDto = new OrderCreatedRetDTO();
-			orderCreatedRetDto.setId(order.getId());
-			orderCreatedRetDto.setAmount(order.getAmount());
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderCreatedRetDto);
-		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
-		}catch(Exception ex){
-			logger.error("CreateOrder Exception:", ex);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
-	}
-	
-	*//**
-	 * 生成订单支付url之前的订单验证
-	 * @param orderId
-	 * @param appId
-	 * @param appSecret
-	 * @return
-	 *//*
-	public RpcResponseDTO<OrderDTO> validateOrderPaymentUrl(String orderid, Integer appid) {
-		try{
-			Order order = orderFacadeService.validateOrder(orderid, appid);
-			//验证订单状态是否小于等于未支付
-			Integer order_status = order.getStatus();
-			if(!OrderHelper.lte_notpay(order_status)){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{orderid, String.valueOf(order_status)});
-			}
-			
-			OrderDTO orderDto = OrderHelper.buildOrderDTO(order);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
-		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
-		}catch(Exception ex){
-			logger.error("ValidateOrderPaymentUrl Exception:", ex);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
-	}
-	
-	*//**
-	 * 调用支付系统获取订单支付url之后
-	 * @param orderId 订单id
-	 * @param rcp_dto 支付系统返回的数据dto
-	 * @return
-	 *//*
-	public RpcResponseDTO<String> orderPaymentUrlCreated(String orderid, ResponseCreatePaymentUrlDTO rcp_dto) {
-		try{
-			//ResponseCreatePaymentUrlDTO rcp_dto = JsonHelper.getDTO(create_payment_url_response, ResponseCreatePaymentUrlDTO.class);
-			String paymentUrlInfo = orderFacadeService.orderPaymentUrlCreated(orderid, rcp_dto);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(paymentUrlInfo);
-		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
-		}catch(Exception ex){
-			logger.error("OrderPaymentUrlCreated Exception:", ex);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
-	}
-	*/
-	
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -157,7 +75,7 @@ public class OrderUnitFacadeService {
 	 * @param context 业务上下文
 	 * @return
 	 */
-	public RpcResponseDTO<OrderDTO> createRewardOrder(Integer commdityid, String mac, String umac, 
+	public RpcResponseDTO<OrderRewardVTO> createRewardOrder(Integer commdityid, String mac, String umac, 
 			Integer umactype, String payment_type, String context){
 		try{
 			//orderFacadeService.supportedAppId(appid);
@@ -180,9 +98,9 @@ public class OrderUnitFacadeService {
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createRewardOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
 					mac_lower, mac_dut, umac_lower, umactype, payment_type, context);
-			OrderDTO orderDto = new OrderDTO();
-			BeanUtils.copyProperties(order, orderDto);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
+			OrderRewardVTO orderVto = new OrderRewardVTO();
+			BeanUtils.copyProperties(order, orderVto);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
@@ -226,10 +144,10 @@ public class OrderUnitFacadeService {
 	 * @param pageSize 分页数量
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<UserOrderDTO>> rewardOrderPagesByUid(Integer uid, String mac, String umac, 
+	public RpcResponseDTO<TailPage<OrderRewardVTO>> rewardOrderPages(Integer uid, String mac, String umac, 
 			Integer status, String dut, int pageNo, int pageSize) {
 		try{
-			List<UserOrderDTO> retDtos = Collections.emptyList();
+			List<OrderRewardVTO> retDtos = Collections.emptyList();
 			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory());
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
@@ -246,36 +164,28 @@ public class OrderUnitFacadeService {
 						mc_wallet_log.createCriteria().andColumnNotEqualTo("uid", WifiDeviceSharedealConfigs.Default_Manufacturer).andColumnIn("orderid", orderids).andSimpleCaulse(" 1=1 ");
 						walletLogs = userWalletFacadeService.getUserWalletLogService().findModelByModelCriteria(mc_wallet_log);
 					}
-					retDtos = new ArrayList<UserOrderDTO>();
-					UserOrderDTO userOrderDto = null;
+					retDtos = new ArrayList<OrderRewardVTO>();
+					OrderRewardVTO orderRewardVto = null;
 					for(Order order : orderList){
-						userOrderDto = new UserOrderDTO();
-						userOrderDto.setId(order.getId());
-						userOrderDto.setMac(order.getMac());
-						userOrderDto.setUmac(order.getUmac());
-						userOrderDto.setUid(order.getUid());
-						userOrderDto.setUmactype(order.getUmactype());
-						userOrderDto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
-						userOrderDto.setAmount(order.getAmount());
-						userOrderDto.setPayment_type(order.getPayment_type());
+						orderRewardVto = new OrderRewardVTO();
+						BeanUtils.copyProperties(order, orderRewardVto);
+						orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
 						OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
 						if(orderPaymentType != null){
-							userOrderDto.setPayment_type_name(orderPaymentType.getDesc());
+							orderRewardVto.setPayment_type_name(orderPaymentType.getDesc());
 						}
-						//SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(order.getMac(), order.getId(), Double.parseDouble(order.getAmount()));
-						//userOrderDto.setShare_amount(String.valueOf(sharedeal.getOwner_cash()));
-						userOrderDto.setShare_amount(distillOwnercash(order.getId(),walletLogs));
+						orderRewardVto.setShare_amount(distillOwnercash(order.getId(),walletLogs));
 						if(order.getCreated_at() != null){
-							userOrderDto.setCreated_ts(order.getCreated_at().getTime());
+							orderRewardVto.setCreated_ts(order.getCreated_at().getTime());
 						}
 						if(order.getPaymented_at() != null){
-							userOrderDto.setPaymented_ts(order.getPaymented_at().getTime());
+							orderRewardVto.setPaymented_ts(order.getPaymented_at().getTime());
 						}
-						retDtos.add(userOrderDto);
+						retDtos.add(orderRewardVto);
 					}
 				}
 			}
-			TailPage<UserOrderDTO> returnRet = new CommonPage<UserOrderDTO>(pageNo, pageSize, order_count, retDtos);
+			TailPage<OrderRewardVTO> returnRet = new CommonPage<OrderRewardVTO>(pageNo, pageSize, order_count, retDtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -304,7 +214,7 @@ public class OrderUnitFacadeService {
 	 * @param payment_type 支付方式
 	 * @return
 	 */
-	public RpcResponseDTO<OrderRechargeVCurrencyDTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid,
+	public RpcResponseDTO<OrderRechargeVCurrencyVTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid,
 			String payment_type, Integer umactype){
 		try{
 			//orderFacadeService.supportedAppId(appid);
@@ -321,10 +231,9 @@ public class OrderUnitFacadeService {
 			
 			Order order = orderFacadeService.createRechargeVCurrencyOrder(uid, commdityid, 
 					BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), payment_type, umactype);
-			OrderRechargeVCurrencyDTO orderDto = new OrderRechargeVCurrencyDTO();
-			BeanUtils.copyProperties(order, orderDto);
-			
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
+			OrderRechargeVCurrencyVTO orderVto = new OrderRechargeVCurrencyVTO();
+			BeanUtils.copyProperties(order, orderVto);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
@@ -357,41 +266,36 @@ public class OrderUnitFacadeService {
 	 * @param pageSize 分页数量
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<UserRechargeVCurrencyOrderDTO>> rechargeVCurrencyOrderPagesByUid(Integer uid, 
+	public RpcResponseDTO<TailPage<OrderRechargeVCurrencyVTO>> rechargeVCurrencyOrderPages(Integer uid, 
 			Integer status,  int pageNo, int pageSize) {
 		try{
-			List<UserRechargeVCurrencyOrderDTO> retDtos = Collections.emptyList();
+			List<OrderRechargeVCurrencyVTO> retDtos = Collections.emptyList();
 			int order_count = orderFacadeService.countOrderByParams(uid, null, null, status, null, CommdityCategory.RechargeVCurrency.getCategory());
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, null, null, status, null,
 						CommdityCategory.RechargeVCurrency.getCategory(), pageNo, pageSize);
 				
 				if(orderList != null && !orderList.isEmpty()){
-					retDtos = new ArrayList<UserRechargeVCurrencyOrderDTO>();
-					UserRechargeVCurrencyOrderDTO userOrderDto = null;
+					retDtos = new ArrayList<OrderRechargeVCurrencyVTO>();
+					OrderRechargeVCurrencyVTO rvOrderVto = null;
 					for(Order order : orderList){
-						userOrderDto = new UserRechargeVCurrencyOrderDTO();
-						userOrderDto.setId(order.getId());
-						userOrderDto.setUid(order.getUid());
-						userOrderDto.setUmactype(order.getUmactype());
-						userOrderDto.setAmount(order.getAmount());
-						userOrderDto.setPayment_type(order.getPayment_type());
+						rvOrderVto = new OrderRechargeVCurrencyVTO();
+						BeanUtils.copyProperties(order, rvOrderVto);
 						OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
 						if(orderPaymentType != null){
-							userOrderDto.setPayment_type_name(orderPaymentType.getDesc());
+							rvOrderVto.setPayment_type_name(orderPaymentType.getDesc());
 						}
-						userOrderDto.setVcurrency(order.getVcurrency());
 						if(order.getCreated_at() != null){
-							userOrderDto.setCreated_ts(order.getCreated_at().getTime());
+							rvOrderVto.setCreated_ts(order.getCreated_at().getTime());
 						}
 						if(order.getPaymented_at() != null){
-							userOrderDto.setPaymented_ts(order.getPaymented_at().getTime());
+							rvOrderVto.setPaymented_ts(order.getPaymented_at().getTime());
 						}
-						retDtos.add(userOrderDto);
+						retDtos.add(rvOrderVto);
 					}
 				}
 			}
-			TailPage<UserRechargeVCurrencyOrderDTO> returnRet = new CommonPage<UserRechargeVCurrencyOrderDTO>(pageNo, pageSize, order_count, retDtos);
+			TailPage<OrderRechargeVCurrencyVTO> returnRet = new CommonPage<OrderRechargeVCurrencyVTO>(pageNo, pageSize, order_count, retDtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -433,7 +337,7 @@ public class OrderUnitFacadeService {
 	 * @param context 验证的手机号
 	 * @return
 	 */
-	public RpcResponseDTO<OrderSMSDTO> createSMSOrder(String mac, String umac, Integer umactype,  String context){
+	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype,  String context){
 		try{
 			//orderFacadeService.supportedAppId(appid);
 			//验证mac umac
@@ -455,13 +359,60 @@ public class OrderUnitFacadeService {
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createSMSOrder(mac_lower, mac_dut, umac_lower, umactype, context);
 			
-			OrderSMSDTO orderDto = new OrderSMSDTO();
-			BeanUtils.copyProperties(order, orderDto);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderDto);
+			OrderSMSVTO orderVto = new OrderSMSVTO();
+			BeanUtils.copyProperties(order, orderVto);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			logger.error("CreateSMSOrder Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 根据设备mac查询打赏订单分页列表
+	 * @param uid 用户id
+	 * @param mac 用户绑定的设备mac
+	 * @param umac 订单支付用户的终端mac
+	 * @param status 订单状态
+	 * @param dut 设备业务线
+	 * @param pageNo 页码
+	 * @param pageSize 分页数量
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<OrderSMSVTO>> smsOrderPages(Integer uid, String mac, String umac, 
+			Integer status, String dut, int pageNo, int pageSize) {
+		try{
+			List<OrderSMSVTO> retDtos = Collections.emptyList();
+			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, CommdityCategory.SMSInternetLimit.getCategory());
+			if(order_count > 0){
+				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
+						CommdityCategory.SMSInternetLimit.getCategory(), pageNo, pageSize);
+				
+				if(orderList != null && !orderList.isEmpty()){
+					retDtos = new ArrayList<OrderSMSVTO>();
+					OrderSMSVTO orderSMSVto = null;
+					for(Order order : orderList){
+						orderSMSVto = new OrderSMSVTO();
+						BeanUtils.copyProperties(order, orderSMSVto);
+						orderSMSVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
+						if(order.getCreated_at() != null){
+							orderSMSVto.setCreated_ts(order.getCreated_at().getTime());
+						}
+						if(order.getPaymented_at() != null){
+							orderSMSVto.setPaymented_ts(order.getPaymented_at().getTime());
+						}
+						retDtos.add(orderSMSVto);
+					}
+				}
+			}
+			TailPage<OrderSMSVTO> returnRet = new CommonPage<OrderSMSVTO>(pageNo, pageSize, order_count, retDtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("RewardOrderPagesByUid Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

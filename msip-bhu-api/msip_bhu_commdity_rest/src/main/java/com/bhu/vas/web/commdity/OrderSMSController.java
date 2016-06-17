@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.commdity.OrderSMSDTO;
+import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CaptchaCodeActType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
@@ -94,7 +94,7 @@ public class OrderSMSController extends BaseController{
 				final CaptchaCodeActType fromType = CaptchaCodeActType.fromType(act);
 				if(fromType == CaptchaCodeActType.SnkAuth){
 					String context = String.valueOf(countrycode).concat(StringHelper.WHITESPACE_STRING_GAP).concat(acc);
-					RpcResponseDTO<OrderSMSDTO> orderRpcResult = orderRpcService.createSMSOrder(mac, umac, umactype, context);
+					RpcResponseDTO<OrderSMSVTO> orderRpcResult = orderRpcService.createSMSOrder(mac, umac, umactype, context);
 					if(!orderRpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 						return;
