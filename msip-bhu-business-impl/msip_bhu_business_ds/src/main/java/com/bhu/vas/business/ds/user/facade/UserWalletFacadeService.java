@@ -214,11 +214,12 @@ public class UserWalletFacadeService{
 		if(callback.beforeCheck(uid, vcurrency_cost,total_vcurrency)){
 			int executeRet = this.vcurrencyFromUserWallet(uid, orderid, UWalletTransMode.VCurrencyPayment, vcurrency_cost, desc);
 			if(executeRet == 0){
-				callback.after(uid,total_vcurrency-vcurrency_cost);
+				long total_vcurrency_leave = total_vcurrency-vcurrency_cost;
+				callback.after(uid,total_vcurrency_leave);
 				//扣款后的数值是否 <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging
-				if(total_vcurrency < BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient){
+				if(total_vcurrency_leave < BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient){
 					return SnkAuthenticateResultType.FailedThresholdVcurrencyNotsufficient;
-				}else if(total_vcurrency <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
+				}else if(total_vcurrency_leave <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
 					return SnkAuthenticateResultType.SuccessButThresholdNeedCharging;
 				}else{
 					return SnkAuthenticateResultType.Success;
