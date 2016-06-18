@@ -85,6 +85,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case BatchGroupDeviceSnkApply:
 							batchGroupDeviceSnkApplyServiceHandler.process(message);
+							break;
 						case BatchDeviceSnkApply:
 							batchDeviceSnkApplyServiceHandler.process(message);
 							break;	
