@@ -945,7 +945,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	
 	@Test
 	public void test0020SearchTest(){
-		SearchConditionPack pack_must = null;
+		/*SearchConditionPack pack_must = null;
 
 		SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 					Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), "TU");
@@ -962,7 +962,11 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	System.out.println("test0020SearchTest" + searchDocuments.size());
 		for(WifiDeviceDocument doc : searchDocuments){
     	    System.out.println("test0020SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
-    	}
+    	}*/
+		
+		String message = "{\"search_t\":1,\"search_cs\":[{\"cs\":[{\"key\":\"t_uc_extension\",\"pattern\":\"seq\",\"payload\":\"g_120068\"}]}]}";
+		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchByConditionMessage(message, 1, 100);
+		System.out.println(result.getTotalElements());
 	}
 	
 }

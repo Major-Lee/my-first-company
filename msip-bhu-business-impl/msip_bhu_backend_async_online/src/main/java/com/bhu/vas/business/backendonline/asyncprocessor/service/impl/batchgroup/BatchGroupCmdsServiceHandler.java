@@ -55,6 +55,7 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 				new IteratorNotify<Page<WifiDeviceDocument>>() {
 					@Override
 					public void notifyComming(Page<WifiDeviceDocument> pages) {
+						logger.info(String.format("process notifyComming count[%s]", pages.getTotalElements()));
 						for (WifiDeviceDocument doc : pages) {
 							
 							WifiDeviceDownTask task = null;
