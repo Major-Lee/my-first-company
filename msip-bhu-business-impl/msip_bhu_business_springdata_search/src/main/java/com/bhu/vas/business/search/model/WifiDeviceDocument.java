@@ -10,7 +10,7 @@ import org.springframework.data.elasticsearch.annotations.GeoPointField;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 
-@Document(	indexName = BusinessIndexDefine.WifiDevice.IndexNameNew, 
+@Document(	indexName = BusinessIndexDefine.WifiDevice.IndexName, 
 			type = BusinessIndexDefine.WifiDevice.Type, 
 			shards = BusinessIndexDefine.WifiDevice.Shards, 
 			replicas = BusinessIndexDefine.WifiDevice.replicas,
