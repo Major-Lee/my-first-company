@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -88,13 +89,13 @@ public class ConsoleChargingController extends BaseController {
     		range_cash_pc = StringHelper.MINUS_STRING_GAP;
     		access_internet_time = StringHelper.MINUS_STRING_GAP;
     	}else{
-    		if(!NumberValidateHelper.isValidNumberCharacter(owner_percent)){
+    		if(StringUtils.isEmpty(owner_percent) || !NumberValidateHelper.isValidNumberCharacter(owner_percent)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{owner_percent});
 			}
-    		if(!NumberValidateHelper.isValidNumberCharacter(manufacturer_percent)){
+    		if(StringUtils.isEmpty(manufacturer_percent) || !NumberValidateHelper.isValidNumberCharacter(manufacturer_percent)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{manufacturer_percent});
 			}
-    		if(!NumberValidateHelper.isValidNumberCharacter(distributor_percent)){
+    		if(StringUtils.isEmpty(distributor_percent) || !NumberValidateHelper.isValidNumberCharacter(distributor_percent)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{distributor_percent});
 			}
     		
@@ -178,13 +179,13 @@ public class ConsoleChargingController extends BaseController {
         		range_cash_pc = StringHelper.MINUS_STRING_GAP;
         		access_internet_time = StringHelper.MINUS_STRING_GAP;
         	}else{
-        		if(!NumberValidateHelper.isValidNumberCharacter(owner_percent)){
+        		if(StringUtils.isEmpty(owner_percent) || !NumberValidateHelper.isValidNumberCharacter(owner_percent)){
     				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{owner_percent});
     			}
-        		if(!NumberValidateHelper.isValidNumberCharacter(manufacturer_percent)){
+        		if(StringUtils.isEmpty(manufacturer_percent) || !NumberValidateHelper.isValidNumberCharacter(manufacturer_percent)){
     				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{manufacturer_percent});
     			}
-        		if(!NumberValidateHelper.isValidNumberCharacter(distributor_percent)){
+        		if(StringUtils.isEmpty(distributor_percent) || !NumberValidateHelper.isValidNumberCharacter(distributor_percent)){
     				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{distributor_percent});
     			}
         		
