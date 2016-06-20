@@ -6,10 +6,6 @@ import java.util.concurrent.Executors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-/*import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;*/
-import org.springframework.stereotype.Service;
-
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
@@ -23,6 +19,8 @@ import com.bhu.vas.business.observer.listener.SpringTopicMessageListener;
 import com.bhu.vas.daemon.SessionInfo;
 import com.bhu.vas.daemon.SessionManager;
 import com.smartwork.msip.cores.helper.JsonHelper;
+/*import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;*/
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -30,7 +28,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  * 由于此部分notify消息涉及的都是内存操作，因此目前以单线程执行实现，保证消息次序问题
  * 如果此部分存在性能问题，则分发消息 以 mac hash策略 到n个ExecutorService ，每个ExecutorService保证一个线程，这样就是 n线程消息处理
  */
-@Service
+//@Service
 public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessTopicMsgProcessor.class);
 	private ExecutorService exec_dispatcher = null;//Executors.newFixedThreadPool(1);
