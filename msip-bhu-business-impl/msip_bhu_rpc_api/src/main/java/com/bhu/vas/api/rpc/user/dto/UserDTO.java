@@ -1,5 +1,9 @@
 package com.bhu.vas.api.rpc.user.dto;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.smartwork.msip.cores.helper.StringHelper;
+
 @SuppressWarnings("serial")
 public class UserDTO implements java.io.Serializable{
 	private int id;
@@ -85,8 +89,8 @@ public class UserDTO implements java.io.Serializable{
 		super();
 		this.id = id;
 		this.countrycode = countrycode;
-		this.mobileno = mobileno;
-		this.nick = nick;
+		this.mobileno = StringUtils.isEmpty(mobileno)?StringHelper.EMPTY_STRING_GAP:mobileno;
+		this.nick = StringUtils.isEmpty(nick)?StringHelper.EMPTY_STRING_GAP:nick;
 		this.utype = utype;
 		this.reg = reg;
 	}
