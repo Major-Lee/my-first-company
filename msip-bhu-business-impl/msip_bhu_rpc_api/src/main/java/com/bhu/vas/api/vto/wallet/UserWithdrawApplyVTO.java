@@ -35,6 +35,8 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	private String verify_name;
 	//操作人名称
 	private String operate_name;
+	//申请时间
+	private String create_time;
 	//add by dongrui 2016-06-17 E N D
 	public int getUid() {
 		return uid;
@@ -143,6 +145,12 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	}
 	public void setOperate_name(String operate_name) {
 		this.operate_name = operate_name;
+	}
+	public String getCreate_time() {
+		return create_time;
+	}
+	public void setCreate_time(String create_time) {
+		this.create_time = create_time;
 	}
 	
 }
