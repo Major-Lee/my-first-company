@@ -34,7 +34,7 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 	//00010000{"name":"cm001","thread":"3","ip":"192.168.0.101"}
 	/*private static String Online_Prefix = "00000001";
 	private static String Offline_Prefix = "00000002";*/
-	//@Resource
+	@Resource
 	private DeliverMessageTopicConsumer deliverMessageTopicConsumer;
 	
 	//@Resource
