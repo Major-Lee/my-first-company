@@ -36,9 +36,9 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 	
 	//add by dongrui 2016-06-17 start
 	//审核人
-	private int verify_reckoner;
+	private int verify_uid;
 	//操作人
-	private int operate_reckoner;
+	private int operate_uid;
 	//对公账号备注
 	private String note;
 	//add by dongrui 2016-06-17 E N D
@@ -134,8 +134,8 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		vto.setWithdraw_oper(withdraw_oper);
 		vto.setWithdraw_oper_desc(BusinessEnumType.UWithdrawStatus.fromKey(withdraw_oper).getName());
 		//vto.calculate(withdraw_tax_percent, withdraw_trancost_percent);
-		vto.setVerify_reckoner(verify_reckoner);
-		vto.setOperate_reckoner(operate_reckoner);
+		vto.setVerify_reckoner(verify_uid);
+		vto.setOperate_reckoner(operate_uid);
 		vto.setNote(note);
 		return vto;
 	}
@@ -154,20 +154,20 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		return 20;
 	}
 
-	public int getVerify_reckoner() {
-		return verify_reckoner;
+	public int getVerify_uid() {
+		return verify_uid;
 	}
 
-	public void setVerify_reckoner(int verify_reckoner) {
-		this.verify_reckoner = verify_reckoner;
+	public void setVerify_uid(int verify_uid) {
+		this.verify_uid = verify_uid;
 	}
 
-	public int getOperate_reckoner() {
-		return operate_reckoner;
+	public int getOperate_uid() {
+		return operate_uid;
 	}
 
-	public void setOperate_reckoner(int operate_reckoner) {
-		this.operate_reckoner = operate_reckoner;
+	public void setOperate_uid(int operate_uid) {
+		this.operate_uid = operate_uid;
 	}
 
 	public String getNote() {

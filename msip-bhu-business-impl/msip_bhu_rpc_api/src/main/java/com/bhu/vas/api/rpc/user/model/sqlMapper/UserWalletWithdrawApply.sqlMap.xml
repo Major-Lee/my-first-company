@@ -20,8 +20,8 @@
     <result property="extension_content" column="extension_content"/>
     
     <!-- add by dongrui 2016-06-17 start -->
-    <result property="verify_reckoner" column="verify_uid"/>
-    <result property="operate_reckoner" column="operate_uid"/>
+    <result property="verify_uid" column="verify_uid"/>
+    <result property="operate_uid" column="operate_uid"/>
     <result property="note" column="note"/>
     <!-- add by dongrui 2016-06-17 start -->
   </resultMap>  
