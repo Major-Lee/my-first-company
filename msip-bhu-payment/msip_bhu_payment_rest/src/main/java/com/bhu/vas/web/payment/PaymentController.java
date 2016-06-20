@@ -173,12 +173,15 @@ public class PaymentController extends BaseController{
 			}
 			
 			PaymentReckoning order = paymentReckoningService.findByOrderId(goods_no);
-			
+			if(order == null){
+				logger.info(String.format("query payment order status error result [%s]", ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST));
+	        	throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST,new String[]{"商品数据不存在"}); 
+			}
 			String paymentSubjectType  = order.getSubject();
 			if(!paymentSubjectType.equals("打赏")){
 				logger.info(String.format("apply payment Subject [%s]",paymentSubjectType));
 	    		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.RPC_MESSAGE_UNSUPPORT)));
+						ResponseErrorCode.INVALID_COMMDITY_ORDERID_UNSUPPORT)));
 				return;
 			}
 			
@@ -257,12 +260,16 @@ public class PaymentController extends BaseController{
 			}
 			
 			PaymentReckoning order = paymentReckoningService.findByOrderId(goods_no);
+			if(order == null){
+				logger.info(String.format("query payment order status error result [%s]", ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST));
+	        	throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST,new String[]{"商品数据不存在"}); 
+			}
 			
 			String paymentSubjectType  = order.getSubject();
 			if(!paymentSubjectType.equals("虎钻")){
 				logger.info(String.format("apply payment Subject [%s]",paymentSubjectType));
 	    		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.RPC_MESSAGE_UNSUPPORT)));
+						ResponseErrorCode.INVALID_COMMDITY_ORDERID_UNSUPPORT)));
 				return;
 			}
 			
@@ -710,7 +717,7 @@ public class PaymentController extends BaseController{
 			e.printStackTrace();
 		}
     	base64CodeUrl = base64CodeUrl.replace("\r\n", "");
-    			
+    	base64CodeUrl = base64CodeUrl.replace("\n", "");	
     	System.out.println(base64CodeUrl);
     	result.setType("img");
     	result.setUrl(base64CodeUrl);
@@ -762,15 +769,15 @@ public class PaymentController extends BaseController{
         String noncestr = payHttpService.getNonceStr();//生成随机字符串
         String prepay_id = unifiedOrderResponse.getPrepay_id();
         SortedMap<Object, Object> params = new TreeMap<Object,Object>();
-        params.put("appId", payHttpService.getAppId());
-        params.put("partnerId", payHttpService.getMchId());
+        params.put("appId", payHttpService.getAppAppId());
+        params.put("partnerId", payHttpService.getAppMchId());
         params.put("prepayId", prepay_id);
         params.put("nonceStr", noncestr);
         params.put("timeStamp",timestamp);
         params.put("package", "Sign=WXPay");
 
         //生成支付签名,这个签名 给 微信支付的调用使用
-        String paySign =  payHttpService.createSign(payHttpService.getMchKey(),"UTF-8", params);
+        String paySign =  payHttpService.createSign(payHttpService.getAppMchKey(),"UTF-8", params);
         
         params.put("sign", paySign);
     	String json= JsonHelper.getJSONString(params);
