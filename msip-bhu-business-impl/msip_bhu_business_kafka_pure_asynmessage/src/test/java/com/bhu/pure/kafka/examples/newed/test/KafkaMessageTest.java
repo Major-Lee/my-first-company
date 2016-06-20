@@ -1,6 +1,8 @@
 package com.bhu.pure.kafka.examples.newed.test;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -309,10 +311,12 @@ public class KafkaMessageTest {
 				}
 			}
 		});
-		
+		*/
 		//consumer c2
-		StringKafkaMessageConsumer consumer_c2 = new StringKafkaMessageConsumer("c2");
-		consumer_c2.doSubscribeTopics(new PollIteratorNotify<ConsumerRecords<String, String>>(){
+		StringKafkaMessageConsumer consumer_c2 = new StringKafkaMessageConsumer("biz");
+		List<String> topics = new ArrayList<String>();
+		topics.add("up_ursidsdebug_0");
+		consumer_c2.doSubscribeTopics(topics, new PollIteratorNotify<ConsumerRecords<String, String>>(){
 			@Override
 			public void notifyComming(String consumerId, ConsumerRecords<String, String> records) {
 				for(ConsumerRecord<String, String> record : records){
@@ -323,7 +327,7 @@ public class KafkaMessageTest {
 									record.offset()));
 				}
 			}
-		});*/
+		});
 		
 		Thread.sleep(2000l);
 		//producer
