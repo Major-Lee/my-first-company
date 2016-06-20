@@ -13,7 +13,7 @@ public enum UserType {
 	AgentWarehouseManager(20,"AW","仓储用户"),
 	AgentSellor(30,"AS","销售用户"),
 	
-	DistributorNormal(10,"DN","分销商用户"),
+	DistributorNormal(13,"DN","分销商用户"),
 	VerifyFinance(14,"VF","财务支付用户"),
 	PaymentFinance(15,"PF","财务支付用户"),
 	
