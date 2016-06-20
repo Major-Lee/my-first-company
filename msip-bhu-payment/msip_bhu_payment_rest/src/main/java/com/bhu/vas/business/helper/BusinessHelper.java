@@ -1,7 +1,15 @@
 package com.bhu.vas.business.helper;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyEditorSupport;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -10,13 +18,26 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.localunit.RandomPicker;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 /**
  * 
@@ -776,4 +797,71 @@ public class BusinessHelper extends PropertyEditorSupport {
 		usermac =usermac.replace(":", "").toUpperCase();
 		return usermac;
 	}
+	
+	
+	public static String GetBase64ImageStr(String content) throws WriterException, IOException  {//将图片文件转化为字节数组字符串，并对其进行Base64编码处理
+		 byte[] result = null;
+		 ByteArrayOutputStream output = null;
+		 BufferedImage bufferImgage = null;
+	        try {
+	        	
+	        	int width = 200; // 图像宽度
+				int height = 200; // 图像高度
+				Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+				hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+				BitMatrix bitMatrix = new MultiFormatWriter().encode(content,BarcodeFormat.QR_CODE, width, height, hints);// 生成矩阵
+				bufferImgage =MatrixToImageWriter.toBufferedImage(bitMatrix);
+	            output = new ByteArrayOutputStream();
+	            ImageIO.write(bufferImgage, "png", output);
+	            result = output.toByteArray();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }finally {
+	        	try {
+	        		bufferImgage.flush();
+					output.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		 
+		//对字节数组Base64编码
+        BASE64Encoder encoder = new BASE64Encoder();
+        return "data:image/png;base64,"+encoder.encode(result);//返回Base64编码过的字节数组字符串
+    }
+	
+	/**
+	 * Base64解码并生成图片
+	 * @param imgStr Base64解码
+	 * @param newFilePath 新生成的图片
+	 * @return
+	 */
+    public static boolean GenerateImage(String imgStr,String newFilePath)
+    {//对字节数组字符串进行Base64解码并生成图片
+        if (imgStr == null) //图像数据为空
+            return false;
+        BASE64Decoder decoder = new BASE64Decoder();
+        try 
+        {
+            //Base64解码
+            byte[] b = decoder.decodeBuffer(imgStr);
+            for(int i=0;i<b.length;++i)
+            {
+                if(b[i]<0)
+                {//调整异常数据
+                    b[i]+=256;
+                }
+            }
+            //生成jpeg图片
+            OutputStream out = new FileOutputStream(newFilePath);    
+            out.write(b);
+            out.flush();
+            out.close();
+            return true;
+        } 
+        catch (Exception e) 
+        {
+            return false;
+        }
+    }
 }

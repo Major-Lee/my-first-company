@@ -101,12 +101,9 @@
 	               async: false,
 	               data: datas,
 	               success:function(json){
-	                   var result=eval("("+json.params+")");
-	                    if(json.success){
 	                    	console.log(json.params);
-	 	                   console.log(result.id);
-	 	                   console.log(result.third_payinfo);
-						var params = $.parseJSON(result.third_payinfo);
+	                    if(json.success){
+						var params = $.parseJSON(json.params);
 	                        loc(params);
 	                    }else{
 	                        alert(json.msg);
@@ -125,7 +122,7 @@
                async: false,
                data: datas,
                success:function(json){
-                   console.log(json.result);
+                   console.log(json.params);
                    
                     if(json.success){
                     	var params = $.parseJSON(json.params);

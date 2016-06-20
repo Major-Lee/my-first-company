@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,11 +49,11 @@ import com.bhu.vas.web.http.response.AppUnifiedOrderResponse;
 import com.bhu.vas.web.http.response.PaySuccessNotifyResponse;
 import com.bhu.vas.web.http.response.UnifiedOrderResponse;
 import com.bhu.vas.web.http.response.WithDrawNotifyResponse;
-import com.bhu.vas.web.model.MidasRespone;
 import com.bhu.vas.web.service.PayHttpService;
 import com.bhu.vas.web.service.PayLogicService;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.zxing.WriterException;
 import com.heepay.api.Heepay;
 import com.midas.api.MidasUtils;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -69,7 +68,7 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 import com.smartwork.msip.localunit.RandomPicker;
 
 /**
- * Pay支付控制层+业务逻辑层
+ * Pay支付控制层
  * @author Pengyu
  *
  */
@@ -701,13 +700,20 @@ public class PaymentController extends BaseController{
 	    	result.setUrl(msg);
 			return result;
         }
-        try {
-        	String url= "http://qr.liantu.com/api.php?text="+ URLEncoder.encode(unifiedOrderResponse.getCode_url(), "UTF-8");
-        	result.setType("img");
-        	result.setUrl(url);
-        } catch (IOException e) {
-        	logger.error(String.format("apply wx payment e.getCause [%s]", e.getCause()));
-        }
+        //String url= "http://qr.liantu.com/api.php?text="+ URLEncoder.encode(unifiedOrderResponse.getCode_url(), "UTF-8");
+    	String codeUrl = unifiedOrderResponse.getCode_url();
+    	String base64CodeUrl = "";
+		try {
+			base64CodeUrl = BusinessHelper.GetBase64ImageStr(codeUrl);
+		} catch (WriterException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	base64CodeUrl = base64CodeUrl.replace("\r\n", "");
+    			
+    	System.out.println(base64CodeUrl);
+    	result.setType("img");
+    	result.setUrl(base64CodeUrl);
         return result;
     }
     
@@ -923,11 +929,6 @@ public class PaymentController extends BaseController{
     	}
     	
     	String total_fee_fen = BusinessHelper.getMoney(total_fee);
-    	int temp = Integer.parseInt(total_fee_fen);
-    	if(temp < 10){ 
-    		total_fee = "0.10";
-    		total_fee_fen = BusinessHelper.getMoney(total_fee);
-    	}
     	
     	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n(),usermac,paymentName,appid);
     	//记录请求支付完成后返回的地址
@@ -939,7 +940,10 @@ public class PaymentController extends BaseController{
     		paymentAlipaylocationService.insert(orderLocation);
     		logger.info(String.format("apply midas set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
     	}
-    	String results = MidasUtils.submitOrder(reckoningId, total_fee, ip,paymentName,usermac);
+
+    	double fenTemp = Double.parseDouble(total_fee_fen);
+    	double jiaoTemp =fenTemp/10;
+    	String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac);
     	logger.info(String.format("apply midas results [%s]",results));
     	if("error".equalsIgnoreCase(results)){
     		result.setType("FAIL");
@@ -1486,6 +1490,7 @@ public class PaymentController extends BaseController{
 				valueStr = (i == values.length - 1) ? valueStr + values[i]
 						: valueStr + values[i] + ",";
 			}
+			System.out.println("N:"+name+"V:"+valueStr);
 			params.put(name, valueStr);
 		}
 		String isNull = request.getParameter("out_trade_no");
