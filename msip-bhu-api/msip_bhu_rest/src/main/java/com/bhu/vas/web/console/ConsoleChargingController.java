@@ -83,38 +83,45 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = false,value = "rcp") String range_cash_pc,
             @RequestParam(required = false,value = "ait") String access_internet_time
             ) {
-    	if(!customized){
-    		owner_percent = StringHelper.MINUS_STRING_GAP;
-    		range_cash_mobile = StringHelper.MINUS_STRING_GAP;
-    		range_cash_pc = StringHelper.MINUS_STRING_GAP;
-    		access_internet_time = StringHelper.MINUS_STRING_GAP;
-    	}else{
-    		if(StringUtils.isEmpty(owner_percent) || !NumberValidateHelper.isValidNumberCharacter(owner_percent)){
-				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{owner_percent});
-			}
-    		if(StringUtils.isEmpty(manufacturer_percent) || !NumberValidateHelper.isValidNumberCharacter(manufacturer_percent)){
-				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{manufacturer_percent});
-			}
-    		if(StringUtils.isEmpty(distributor_percent) || !NumberValidateHelper.isValidNumberCharacter(distributor_percent)){
-				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{distributor_percent});
-			}
-    		
-    		double sum = ArithHelper.add(Double.valueOf(owner_percent), Double.valueOf(manufacturer_percent),Double.valueOf(distributor_percent));
-    		if(sum == 1){
-    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
+    	try{
+    		if(!customized){
+        		owner_percent = StringHelper.MINUS_STRING_GAP;
+        		range_cash_mobile = StringHelper.MINUS_STRING_GAP;
+        		range_cash_pc = StringHelper.MINUS_STRING_GAP;
+        		access_internet_time = StringHelper.MINUS_STRING_GAP;
+        	}else{
+        		if(StringUtils.isEmpty(owner_percent) || !NumberValidateHelper.isValidNumberCharacter(owner_percent)){
+    				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{owner_percent});
+    			}
+        		if(StringUtils.isEmpty(manufacturer_percent) || !NumberValidateHelper.isValidNumberCharacter(manufacturer_percent)){
+    				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{manufacturer_percent});
+    			}
+        		if(StringUtils.isEmpty(distributor_percent) || !NumberValidateHelper.isValidNumberCharacter(distributor_percent)){
+    				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{distributor_percent});
+    			}
+        		
+        		double sum = ArithHelper.add(Double.valueOf(owner_percent), Double.valueOf(manufacturer_percent),Double.valueOf(distributor_percent));
+        		if(sum == 1){
+        			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
+        		}
+        	}
+        	
+        	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, message, 
+        			canbeturnoff,enterpriselevel,
+        			customized,
+        			owner_percent,manufacturer_percent,distributor_percent,
+        			range_cash_mobile,range_cash_pc,access_internet_time);
+    		if(!rpcResult.hasError()){
+    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    		}else{
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     		}
-    	}
-    	
-    	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, message, 
-    			canbeturnoff,enterpriselevel,
-    			customized,
-    			owner_percent,manufacturer_percent,distributor_percent,
-    			range_cash_mobile,range_cash_pc,access_internet_time);
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    	}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
+    	
     }  
     
     /**
@@ -213,6 +220,8 @@ public class ConsoleChargingController extends BaseController {
 				//FileHelper.copyFileTo(file, rpcResult.getPayload().toAbsoluteFilePath());
 				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
 		}catch(Exception ex){
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
