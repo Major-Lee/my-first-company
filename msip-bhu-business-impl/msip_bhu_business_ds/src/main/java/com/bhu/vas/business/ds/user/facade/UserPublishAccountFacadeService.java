@@ -131,6 +131,9 @@ public class UserPublishAccountFacadeService{
 	 */
 	public UserPublishAccountDetailVTO publicAccountDetail(int uid){
 		UserPublishAccount userPublishAccount = userPublishAccount(uid);
+		if(userPublishAccount == null){
+			return null;
+		}
 		UserPublishAccountDetailVTO userPublishAccountDetail = userPublishAccount.toUserPulishAccountDetailVTO();
 		return userPublishAccountDetail;
 	}
@@ -143,6 +146,9 @@ public class UserPublishAccountFacadeService{
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		synchronized(lockObjectFetch(uid)){
 			UserPublishAccount userPublishAccount = userPublishAccountService.getById(uid);
+			if(userPublishAccount == null){
+				return null;
+			}
 			return userPublishAccount;
 		}
 	}
