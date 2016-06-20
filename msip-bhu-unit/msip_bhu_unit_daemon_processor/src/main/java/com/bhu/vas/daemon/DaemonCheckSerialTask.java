@@ -1,4 +1,4 @@
-package com.bhu.vas.daemon;
+/*package com.bhu.vas.daemon;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -45,3 +45,4 @@ public class DaemonCheckSerialTask extends TimerTask{
     	System.out.println(String.format("DaemonCheckSerialTask ended! Total[%s] Sended[%s] UnSended[%s] notExistMac[%s]",i,sended,unsended,notExistMac));
 	}
 }
+*/

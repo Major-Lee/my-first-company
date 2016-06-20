@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.smartwork.msip.cores.cache.entitycache.impl.local.DefaultCacheImpl;
 
+
 public class SessionManager {
 	private static class SessionCacheFacadeHolder{ 
 		private static SessionManager instance =new SessionManager(); 
@@ -26,10 +27,12 @@ public class SessionManager {
 		return SessionCacheFacadeHolder.instance; 
 	}
 	
+	
 	//wifi mac --> sessioninfo  caches
 	private DefaultCacheImpl<SessionInfo> sessions = new DefaultCacheImpl<SessionInfo>(60,10);
 	
 	private Map<String,SerialTask> serialTaskmap = new ConcurrentHashMap<String,SerialTask>();
+	
 	public SessionInfo getSession(String wifi_mac) {
 		SessionInfo ret = sessions.get(wifi_mac);
 		if(ret == null){
