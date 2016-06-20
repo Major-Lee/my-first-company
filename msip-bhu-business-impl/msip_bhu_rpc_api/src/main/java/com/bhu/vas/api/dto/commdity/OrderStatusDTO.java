@@ -18,6 +18,10 @@ public class OrderStatusDTO implements java.io.Serializable{
 	private Integer type;
 	//订单金额
 	private String amount;
+	//订单的商品id
+	private Integer commdityid;
+	//订单的商品名称
+	private String commdityname;
 	//订单虎钻
 	private long vcurrency;
 	//支付方式
@@ -75,5 +79,18 @@ public class OrderStatusDTO implements java.io.Serializable{
 	public void setPaymented_at(Date paymented_at) {
 		this.paymented_at = paymented_at;
 	}
+	public Integer getCommdityid() {
+		return commdityid;
+	}
+	public void setCommdityid(Integer commdityid) {
+		this.commdityid = commdityid;
+	}
+	public String getCommdityname() {
+		return commdityname;
+	}
+	public void setCommdityname(String commdityname) {
+		this.commdityname = commdityname;
+	}
+
 }
 

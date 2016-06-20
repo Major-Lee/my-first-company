@@ -26,6 +26,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
+import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -117,13 +118,15 @@ public class OrderUnitFacadeService {
 	 */
 	public RpcResponseDTO<OrderStatusDTO> orderStatusByUmac(String umac, String orderid) {
 		try{
+			//验证订单是否合法
 			Order order = orderFacadeService.validateOrderId(orderid);
-			
 			if(!umac.equals(order.getUmac())){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UMAC_INVALID);
 			}
+			//验证商品是否合法
+			Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
 			
-			OrderStatusDTO orderStatusDto = OrderHelper.buildOrderStatusDTO(order);
+			OrderStatusDTO orderStatusDto = OrderHelper.buildOrderStatusDTO(order, commdity);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderStatusDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -318,8 +321,10 @@ public class OrderUnitFacadeService {
 			if(!uid.equals(order.getUid())){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UID_INVALID);
 			}
+			//验证商品是否合法
+			Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
 			
-			OrderStatusDTO orderStatusDto = OrderHelper.buildOrderStatusDTO(order);
+			OrderStatusDTO orderStatusDto = OrderHelper.buildOrderStatusDTO(order, commdity);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderStatusDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

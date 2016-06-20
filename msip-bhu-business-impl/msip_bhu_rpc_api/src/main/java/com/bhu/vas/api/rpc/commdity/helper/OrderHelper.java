@@ -10,6 +10,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
+import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -52,8 +53,8 @@ public class OrderHelper {
 	 * @param order
 	 * @return
 	 */
-	public static OrderStatusDTO buildOrderStatusDTO(Order order){
-		if(order == null) return null;
+	public static OrderStatusDTO buildOrderStatusDTO(Order order, Commdity commdity){
+		if(order == null || commdity == null) return null;
 		
 		OrderStatusDTO orderStatusDto = new OrderStatusDTO();
 		BeanUtils.copyProperties(order, orderStatusDto);
@@ -61,6 +62,7 @@ public class OrderHelper {
 		if(orderPaymentType != null){
 			orderStatusDto.setPayment_type_name(orderPaymentType.getDesc());
 		}
+		orderStatusDto.setCommdityname(commdity.getName());
 		return orderStatusDto;
 	}
 	
