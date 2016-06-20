@@ -11,6 +11,8 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import ch.qos.logback.classic.Logger;
+
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
@@ -243,6 +245,7 @@ public class UserWalletUnitFacadeService {
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.FALSE);
 			}
 			//modify by dongrui 2016-06-17 E N D
+			
 			//UserWalletWithdrawApply withdrawApply = userWalletFacadeService.doWithdrawVerify(reckoner, applyid, passed);
 			/*if(passed){//需要写入uPay数据队列
 				BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
@@ -270,6 +273,7 @@ public class UserWalletUnitFacadeService {
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			System.out.println(ex.getMessage());
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}

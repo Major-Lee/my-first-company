@@ -96,7 +96,7 @@ public class ConsoleWithdrawController extends BaseController {
      * @param request
      * @param response
      * @param uid
-     * @param applies applyids 逗号分割
+     * @param applies 
      */
     @ResponseBody()
     @RequestMapping(value = "/verify_applies", method = {RequestMethod.POST})
