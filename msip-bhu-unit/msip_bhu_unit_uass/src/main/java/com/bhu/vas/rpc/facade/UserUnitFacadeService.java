@@ -598,7 +598,7 @@ public class UserUnitFacadeService {
 		try{
 			//UserTypeValidateService.validConsoleUser(uid);
 			User user  = userService.getById(uid);
-			UserTypeValidateService.validNotNormalUser(user);
+			UserTypeValidateService.validConsoleUser(user);
 			ModelCriteria mc = new ModelCriteria();
 			Criteria cri = mc.createCriteria();
 			if(ut != null)
