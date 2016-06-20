@@ -273,7 +273,6 @@ public class UserWalletUnitFacadeService {
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
-			System.out.println(ex.getMessage());
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
