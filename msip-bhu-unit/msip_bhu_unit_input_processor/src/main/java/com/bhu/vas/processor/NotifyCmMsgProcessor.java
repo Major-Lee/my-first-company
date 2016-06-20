@@ -6,7 +6,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -18,10 +17,10 @@ import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
 import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.header.ParserHeader;
-import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.processor.input.DeliverMessageTopicConsumer;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -35,11 +34,11 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 	//00010000{"name":"cm001","thread":"3","ip":"192.168.0.101"}
 	/*private static String Online_Prefix = "00000001";
 	private static String Offline_Prefix = "00000002";*/
-	@Resource
+	//@Resource
 	private DeliverMessageTopicConsumer deliverMessageTopicConsumer;
 	
-	@Resource
-	private IDaemonRpcService daemonRpcService;
+	//@Resource
+	//private IDaemonRpcService daemonRpcService;
 	
 	@Resource
 	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
@@ -50,8 +49,8 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 	//private Map<String,Set<WifiDeviceDTO>> localCaches = new HashMap<String,Set<WifiDeviceDTO>>();
 	@PostConstruct
 	public void initialize() {
-		System.out.println("NotifyCmMsgProcessor initialize...");
 		logger.info("NotifyCmMsgProcessor initialize...");
+		exec = ExecObserverManager.buildExecutorService(this.getClass(),"NotifyCmMsg 消息处理",5);
 		KafkaMsgObserverManager.CMNotifyCommingObserver.addMsgCommingListener(this);
 	}
 	
@@ -84,11 +83,9 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 							for(WifiDeviceDTO dto:cmInfo.getClient()){
 								macs.add(dto.getMac());
 							}
-							daemonRpcService.wifiDevicesOnline(ctx, macs);
-							//deliverTopicMessageService.sendDevicesOnline(ctx, macs);
+							//daemonRpcService.wifiDevicesOnline(ctx, macs);
 							deviceMessageDispatchRpcService.cmupWithWifiDeviceOnlines(ctx, cmInfo.getClient());
 						}
-						//daemonRpcService.wi
 						//deliverTopicMessageService.sendCmJoinMessage(cmInfo);
 					}else if(ParserHeader.Offline_Prefix == type){//移除所有属于此cm的用户，并且down queue不能写入数据
 						cmInfo = JsonHelper.getDTO(payload, CmCtxInfo.class);
@@ -116,7 +113,7 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 		}
 	}*/
 	
-	@PreDestroy
+/*	@PreDestroy
 	public void destory(){
 		if(exec != null){
 			String simplename = this.getClass().getSimpleName();
@@ -140,6 +137,6 @@ public class NotifyCmMsgProcessor implements DynaMessageListener{
 				}
 			}
 		}
-	}
+	}*/
 	
 }
