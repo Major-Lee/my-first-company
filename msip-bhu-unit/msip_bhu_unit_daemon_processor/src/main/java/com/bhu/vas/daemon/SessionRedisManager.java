@@ -28,9 +28,9 @@ public class SessionRedisManager {
 		String present_ctx = WifiDevicePresentCtxService.getInstance().getPresent(wifi_mac);
 		if(present_ctx != null){
 			//ret = addSession(wifi_mac, present_ctx);
-			System.out.println(String.format("SessionManager 未发现【%s】状态，但 RedisPresent存在此状态【%s】 更新SessionManager成功！", wifi_mac,present_ctx));
+			System.out.println(String.format("【%s】RedisPresent存在此状态【%s】！", wifi_mac,present_ctx));
 		}else{
-			System.out.println(String.format("SessionManager 和 RedisPresent 未发现【%s】状态", wifi_mac));
+			System.out.println(String.format("【%s】RedisPresent未发现状态", wifi_mac));
 		}
 		return present_ctx;
 		/*}
