@@ -120,7 +120,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		return String.format("WalletWithdrawApply id[%s] appid[%s] payment_type[%s] uid[%s] cash[%s] withdraw_oper[%s] last_reckoner[%s]", id,appid,payment_type,uid,cash,withdraw_oper,last_reckoner);
 	}
 	
-	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick,WithdrawCostInfo applyCost){
+	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick,String verify_name,String operate_name,WithdrawCostInfo applyCost){
 		UserWithdrawApplyVTO vto = new UserWithdrawApplyVTO();
 		vto.setApplyid(id);
 		vto.setUid(uid);
@@ -136,6 +136,8 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		//vto.calculate(withdraw_tax_percent, withdraw_trancost_percent);
 		vto.setVerify_reckoner(verify_uid);
 		vto.setOperate_reckoner(operate_uid);
+		vto.setOperate_name(operate_name);
+		vto.setVerify_name(verify_name);
 		vto.setNote(note);
 		return vto;
 	}

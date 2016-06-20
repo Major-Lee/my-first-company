@@ -63,6 +63,9 @@ public class CommdityFacadeService {
 	 * @return
 	 */
 	public Commdity validateCommdity(Integer commdityid){
+		if(commdityid == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST);
+		}
 		//商品信息验证
 		Commdity commdity = commdityService.getById(commdityid);
 		if(commdity == null){

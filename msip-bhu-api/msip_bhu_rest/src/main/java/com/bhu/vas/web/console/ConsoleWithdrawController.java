@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -131,78 +132,137 @@ public class ConsoleWithdrawController extends BaseController {
             @RequestParam(required = true) String applyid,
             @RequestParam(required = false,defaultValue = "", value = "note") String note
     		) {
-    	System.out.println("###########uid为："+uid);
-    	System.out.println("###########applyid为："+applyid); 
-		RpcResponseDTO<RequestWithdrawNotifyDTO> rpcResult = userWalletRpcService.doStartPaymentWithdrawApply(uid, applyid,note);
-		System.out.println("******rpcResult**********"+rpcResult);
-		System.out.println("******level1**********"+rpcResult.hasError());
-		//add by dongrui 2016-06-15 start
-		if(!rpcResult.hasError()){
-			RequestWithdrawNotifyDTO requestWithdrawNotifyDTO = rpcResult.getPayload();
-			System.out.println("*****提现类型*****payment_type【"+requestWithdrawNotifyDTO.getWithdraw().getPayment_type()+"】");
-			System.out.println("*****提现状态*****Withdraw_status【"+requestWithdrawNotifyDTO.getWithdraw().getWithdraw_oper()+"】");
-			if(requestWithdrawNotifyDTO.getWithdraw().getPayment_type().equals("public")){
-				RpcResponseDTO<UserWithdrawApplyVTO> rpcResponseDTO = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, true);
-				if(!rpcResponseDTO.hasError()){
-					System.out.println("******level2**********"+rpcResponseDTO.hasError());
-					SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponseDTO));
-				}else{
-					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-				}
-				return;
-			}
+    	//批量处理提现支付操作
+    	String currAppylyId = StringUtils.EMPTY;
+    	String[] array = applyid.split(",");
+    	RpcResponseDTO<RequestWithdrawNotifyDTO> rpcResult = null;
+    	for (int i = 0; i < array.length; i++) {
+    		currAppylyId = array[i];
+    		rpcResult = userWalletRpcService.doStartPaymentWithdrawApply(uid, currAppylyId,note);
+    		//add by dongrui 2016-06-15 start
+    		if(!rpcResult.hasError()){
+    			RequestWithdrawNotifyDTO requestWithdrawNotifyDTO = rpcResult.getPayload();
+    			if(requestWithdrawNotifyDTO.getWithdraw().getPayment_type().equals("public")){
+    				RpcResponseDTO<UserWithdrawApplyVTO> rpcResponseDTO = userWalletRpcService.doWithdrawNotifyFromLocal(uid, currAppylyId, true);
+    				if(!rpcResponseDTO.hasError()){
+    					SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponseDTO));
+    				}else{
+    					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    				}
+    				//return;
+    				continue;
+    			}else{
+    				RequestWithdrawNotifyDTO withdrawNotify = rpcResult.getPayload();
+        			/*if(!withdrawNotify.validate()){
+        				//TODO:log info
+        				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR));
+        				return;
+        			}*/
+        			String orderid = withdrawNotify.getOrderid();
+        			String order_amount = String.valueOf(withdrawNotify.getWithdraw().getRealCash());
+        			String order_transcost = String.valueOf(withdrawNotify.getWithdraw().getTranscost());
+        			String order_taxcost = String.valueOf(withdrawNotify.getWithdraw().getTaxcost());
+        			String order_totalamount = String.valueOf(withdrawNotify.getWithdraw().getCash());
+        			String requestIp = WebHelper.getRemoteAddr(request);
+        			ResponseCreateWithdrawDTO rcp_dto = PaymentInternalHelper.createWithdrawUrlCommunication(
+        					withdrawNotify.getAccount().getIdentify(),//.getType(), 
+        					orderid,
+        					OAuthType.Weichat.getType().equals(withdrawNotify.getAccount().getIdentify())?
+        							withdrawNotify.getAccount().getOpenid():withdrawNotify.getAccount().getAuid(),
+        					withdrawNotify.getAccount().getNick(),
+        					requestIp,
+        					order_amount, order_transcost, order_taxcost,order_totalamount);
+        			System.out.println("apply_payment step 1:"+JsonHelper.getJSONString(rcp_dto));
+        			if(rcp_dto == null){
+        				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+        						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_INVALID)));
+        				//return;
+        				continue;
+        			}
+        			if(!rcp_dto.isSuccess()){
+        				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+        						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE,new String[]{new String(rcp_dto.getMsg())})));
+        				//return;
+        				continue;
+        			}
+        			System.out.println("apply_payment step 2 from uPay: successed"+JsonHelper.getJSONString(rcp_dto));
+        			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto));
+        			/*if(ThirdpartiesPaymentType.Weichat.getType().equals(withdrawNotify.getAccount().getType())){
+        				//TODO:直接url访问uPay进行支付并得到成功和失败的结果,rpc写入数据结果并返回结果集
+        				RpcResponseDTO<UserWithdrawApplyVTO> rpcInnerResult = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, rcp_dto.isSuccess());
+        				if(!rpcInnerResult.hasError()){
+        					SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcInnerResult));
+        				}else{
+        					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcInnerResult));
+        				}
+        			}else{
+        				//TODO:直接url访问uPay获取支付连接返回给客户端进行支付，客户端支付成功后，支付宝会进行callback
+        				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto.getParams()));
+        			}*/
+        			System.out.println("apply_payment step 3: done!");
+    			}
+    		}else{
+    			continue;
+    		}
+    		//add by dongrui 2016-06-15 E N D 
+    		
+    		/*if(!rpcResult.hasError()){
+    			RequestWithdrawNotifyDTO withdrawNotify = rpcResult.getPayload();
+    			if(!withdrawNotify.validate()){
+    				//TODO:log info
+    				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR));
+    				return;
+    			}
+    			String orderid = withdrawNotify.getOrderid();
+    			String order_amount = String.valueOf(withdrawNotify.getWithdraw().getRealCash());
+    			String order_transcost = String.valueOf(withdrawNotify.getWithdraw().getTranscost());
+    			String order_taxcost = String.valueOf(withdrawNotify.getWithdraw().getTaxcost());
+    			String order_totalamount = String.valueOf(withdrawNotify.getWithdraw().getCash());
+    			String requestIp = WebHelper.getRemoteAddr(request);
+    			ResponseCreateWithdrawDTO rcp_dto = PaymentInternalHelper.createWithdrawUrlCommunication(
+    					withdrawNotify.getAccount().getIdentify(),//.getType(), 
+    					orderid,
+    					OAuthType.Weichat.getType().equals(withdrawNotify.getAccount().getIdentify())?
+    							withdrawNotify.getAccount().getOpenid():withdrawNotify.getAccount().getAuid(),
+    					withdrawNotify.getAccount().getNick(),
+    					requestIp,
+    					order_amount, order_transcost, order_taxcost,order_totalamount);
+    			System.out.println("apply_payment step 1:"+JsonHelper.getJSONString(rcp_dto));
+    			if(rcp_dto == null){
+    				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+    						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_INVALID)));
+    				return;
+    			}
+    			if(!rcp_dto.isSuccess()){
+    				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+    						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE,new String[]{new String(rcp_dto.getMsg())})));
+    				return;
+    			}
+    			System.out.println("apply_payment step 2 from uPay: successed"+JsonHelper.getJSONString(rcp_dto));
+    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto));
+    			if(ThirdpartiesPaymentType.Weichat.getType().equals(withdrawNotify.getAccount().getType())){
+    				//TODO:直接url访问uPay进行支付并得到成功和失败的结果,rpc写入数据结果并返回结果集
+    				RpcResponseDTO<UserWithdrawApplyVTO> rpcInnerResult = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, rcp_dto.isSuccess());
+    				if(!rpcInnerResult.hasError()){
+    					SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcInnerResult));
+    				}else{
+    					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcInnerResult));
+    				}
+    			}else{
+    				//TODO:直接url访问uPay获取支付连接返回给客户端进行支付，客户端支付成功后，支付宝会进行callback
+    				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto.getParams()));
+    			}
+    			System.out.println("apply_payment step 3: done!");
+    		}else{
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		}*/
 		}
-		//add by dongrui 2016-06-15 E N D 
-		
-		if(!rpcResult.hasError()){
-			RequestWithdrawNotifyDTO withdrawNotify = rpcResult.getPayload();
-			/*if(!withdrawNotify.validate()){
-				//TODO:log info
-				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR));
-				return;
-			}*/
-			String orderid = withdrawNotify.getOrderid();
-			String order_amount = String.valueOf(withdrawNotify.getWithdraw().getRealCash());
-			String order_transcost = String.valueOf(withdrawNotify.getWithdraw().getTranscost());
-			String order_taxcost = String.valueOf(withdrawNotify.getWithdraw().getTaxcost());
-			String order_totalamount = String.valueOf(withdrawNotify.getWithdraw().getCash());
-			String requestIp = WebHelper.getRemoteAddr(request);
-			ResponseCreateWithdrawDTO rcp_dto = PaymentInternalHelper.createWithdrawUrlCommunication(
-					withdrawNotify.getAccount().getIdentify(),//.getType(), 
-					orderid,
-					OAuthType.Weichat.getType().equals(withdrawNotify.getAccount().getIdentify())?
-							withdrawNotify.getAccount().getOpenid():withdrawNotify.getAccount().getAuid(),
-					withdrawNotify.getAccount().getNick(),
-					requestIp,
-					order_amount, order_transcost, order_taxcost,order_totalamount);
-			System.out.println("apply_payment step 1:"+JsonHelper.getJSONString(rcp_dto));
-			if(rcp_dto == null){
-				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_INVALID)));
-				return;
-			}
-			if(!rcp_dto.isSuccess()){
-				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE,new String[]{new String(rcp_dto.getMsg())})));
-				return;
-			}
-			System.out.println("apply_payment step 2 from uPay: successed"+JsonHelper.getJSONString(rcp_dto));
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto));
-			/*if(ThirdpartiesPaymentType.Weichat.getType().equals(withdrawNotify.getAccount().getType())){
-				//TODO:直接url访问uPay进行支付并得到成功和失败的结果,rpc写入数据结果并返回结果集
-				RpcResponseDTO<UserWithdrawApplyVTO> rpcInnerResult = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, rcp_dto.isSuccess());
-				if(!rpcInnerResult.hasError()){
-					SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcInnerResult));
-				}else{
-					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcInnerResult));
-				}
-			}else{
-				//TODO:直接url访问uPay获取支付连接返回给客户端进行支付，客户端支付成功后，支付宝会进行callback
-				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto.getParams()));
-			}*/
-			System.out.println("apply_payment step 3: done!");
-		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    	if(!rpcResult.hasError()){
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    	}else{
+    		SpringMVCHelper.renderJson(response, ResponseError.SUCCESS);
+    	}
+    	return;
     }
     
     @ResponseBody()
