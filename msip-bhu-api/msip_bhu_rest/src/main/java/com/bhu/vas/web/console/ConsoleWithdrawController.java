@@ -159,11 +159,17 @@ public class ConsoleWithdrawController extends BaseController {
         				return;
         			}*/
         			String orderid = withdrawNotify.getOrderid();
+        			System.out.println("*****微信支付：**orderId******"+orderid);
         			String order_amount = String.valueOf(withdrawNotify.getWithdraw().getRealCash());
+        			System.out.println("*****微信支付：**order_amount******"+orderid);
         			String order_transcost = String.valueOf(withdrawNotify.getWithdraw().getTranscost());
+        			System.out.println("*****微信支付：**order_transcost******"+orderid);
         			String order_taxcost = String.valueOf(withdrawNotify.getWithdraw().getTaxcost());
+        			System.out.println("*****微信支付：**order_taxcost******"+orderid);
         			String order_totalamount = String.valueOf(withdrawNotify.getWithdraw().getCash());
+        			System.out.println("*****微信支付：**order_totalamount******"+orderid);
         			String requestIp = WebHelper.getRemoteAddr(request);
+        			System.out.println("*****微信支付：**requestIp******"+orderid);
         			ResponseCreateWithdrawDTO rcp_dto = PaymentInternalHelper.createWithdrawUrlCommunication(
         					withdrawNotify.getAccount().getIdentify(),//.getType(), 
         					orderid,

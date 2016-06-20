@@ -142,7 +142,7 @@ public class UserPublishAccountFacadeService{
 	private UserPublishAccount userPublishAccount(int uid){
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		synchronized(lockObjectFetch(uid)){
-			UserPublishAccount userPublishAccount = userPublishAccountService.getOrCreateById(uid);
+			UserPublishAccount userPublishAccount = userPublishAccountService.getById(uid);
 			return userPublishAccount;
 		}
 	}

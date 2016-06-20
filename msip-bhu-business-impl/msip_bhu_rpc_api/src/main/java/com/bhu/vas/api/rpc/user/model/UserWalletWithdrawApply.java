@@ -139,6 +139,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		vto.setOperate_name(operate_name);
 		vto.setVerify_name(verify_name);
 		vto.setNote(note);
+		vto.setCreate_time(created_at.toString());
 		return vto;
 	}
 
