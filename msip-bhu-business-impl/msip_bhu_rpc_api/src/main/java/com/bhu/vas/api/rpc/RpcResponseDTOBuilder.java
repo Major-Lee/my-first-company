@@ -13,6 +13,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.business.token.UserTokenDTO;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 
@@ -131,10 +132,10 @@ public class RpcResponseDTOBuilder {
 	
 	public static UserDTO builderUserDTOFromUser(User user,boolean isReg){
 		UserDTO ret = new UserDTO(user.getId(), user.getCountrycode(), user.getMobileno(), user.getNick(),user.getUtype(),isReg);
-		ret.setAvatar(user.getAvatar());
-		ret.setSex(user.getSex());
-		ret.setOrg(user.getOrg());
-		ret.setMemo(user.getMemo());
+		ret.setAvatar(StringUtils.isEmpty(user.getAvatar())?StringHelper.EMPTY_STRING_GAP:user.getAvatar());
+		ret.setSex(StringUtils.isEmpty(user.getSex())?StringHelper.EMPTY_STRING_GAP:user.getSex());
+		ret.setOrg(StringUtils.isEmpty(user.getOrg())?StringHelper.EMPTY_STRING_GAP:user.getOrg());
+		ret.setMemo(StringUtils.isEmpty(user.getMemo())?StringHelper.EMPTY_STRING_GAP:user.getMemo());
 		return ret;
 	}
 	
