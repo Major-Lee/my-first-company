@@ -12,11 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.business.asyn.normal.activemq.model.QueueInfo;
-import com.bhu.vas.business.asyn.normal.activemq.multi.ActiveMQConnectionsManager;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
-import com.bhu.vas.business.asyn.spring.model.topic.CmJoinNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.topic.CmLeaveNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.topic.DeviceOfflineNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.topic.DeviceOnlineNotifyDTO;
@@ -176,8 +173,8 @@ public class BusinessTopicMsgProcessor implements SpringTopicMessageListener{
 	
 	
 	private void processCmJoinNotify(String message){
-		CmJoinNotifyDTO dto = JsonHelper.getDTO(message, CmJoinNotifyDTO.class);
-		ActiveMQConnectionsManager.getInstance().createNewProducerQueues(QueueInfo.build(dto.getHost(), dto.getPort(), dto.toString()), true);
+		//CmJoinNotifyDTO dto = JsonHelper.getDTO(message, CmJoinNotifyDTO.class);
+		//ActiveMQConnectionsManager.getInstance().createNewProducerQueues(QueueInfo.build(dto.getHost(), dto.getPort(), dto.toString()), true);
 		logger.info(String.format("processCmJoinNotify message[%s] successfully!", message));
 	}
 

@@ -24,6 +24,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
+import javax.annotation.PreDestroy;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -54,7 +56,9 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 	private KafkaConsumer<KEY, VALUE> consumer;
 	private List<String> subscribe_topics;
 	private final AtomicBoolean subscribe_topics_changed = new AtomicBoolean(false);
-	//private List<TopicPartition> topicPartitions;
+/*	private ZkClient zkClient = new ZkClient("192.168.66.191:2181", 15 * 1000, 10 * 1000, kafka.utils.ZKStringSerializer$.MODULE$);
+    private ZkUtils zkUtils = new ZkUtils(zkClient, new ZkConnection("192.168.66.191:2181"), false);
+*/	//private List<TopicPartition> topicPartitions;
 	
 	public KafkaMessageConsumer(){
 		this(null);
@@ -74,16 +78,17 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 		}
 		consumerProperties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, keyDeserializer());
 		consumerProperties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeserializer());
-		consumer = new KafkaConsumer<KEY, VALUE>(consumerProperties);
+		loadConsumerIdProperties();
 		
-		parseConsumerTopics();
+		consumer = new KafkaConsumer<KEY, VALUE>(consumerProperties);
 		//parseConsumerClientConfig(clientProperties);
 	}
 	
-	public void parseConsumerTopics(){
+	public void loadConsumerIdProperties(){
+		//load consumer subscribe topics
 		subscribe_topics = new ArrayList<String>();
 		
-		String consumerSubscribeTopics = consumerProperties.getProperty(ClientConfig.builderConsumerSubscribeTopicsWithId(getConsumerId()));
+		String consumerSubscribeTopics = consumerProperties.getProperty(ClientConfig.builderSubscribeTopicsWithId(consumerId));
 		if(StringUtils.isNotEmpty(consumerSubscribeTopics)){
 			String[] topics_array = consumerSubscribeTopics.split(StringHelper.COMMA_STRING_GAP);
 			for(String topic : topics_array){
@@ -91,6 +96,18 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 					subscribe_topics.add(topic);
 				}
 			}
+		}
+		
+		//load consumer bootstrap.servers
+		String consumerBootstrapServers = consumerProperties.getProperty(ClientConfig.builderBootstrapServersWithId(consumerId));
+		if(StringUtils.isNotEmpty(consumerBootstrapServers)){
+			consumerProperties.setProperty(ClientConfig.BOOTSTRAP_SERVERS, consumerBootstrapServers);
+		}
+		
+		//load consumer group id
+		String consumerGroupId = consumerProperties.getProperty(ClientConfig.builderGroupIdWithId(consumerId));
+		if(StringUtils.isNotEmpty(consumerGroupId)){
+			consumerProperties.setProperty(ClientConfig.GROUP_ID, consumerGroupId);
 		}
 	}
 	
@@ -169,6 +186,12 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 	@Override
 	public void addSubscribeTopic(String topic){
 		if(!subscribe_topics.contains(topic)){
+/*			try{
+				AdminUtils.createTopic(zkUtils, topic, 10, 2, new Properties());
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}*/
+			
 			subscribe_topics.add(topic);
 			subscribe_topics_changed.set(true);
 		}
@@ -176,7 +199,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 	
 	@Override
 	public boolean doSubscribeTopics(final PollIteratorNotify<ConsumerRecords<KEY, VALUE>> notify){
-		if(subscribe_topics.isEmpty()) return false;
+		//if(subscribe_topics.isEmpty()) return false;
 		return doSubscribe(new TopicSubscriber(subscribe_topics), notify);
 	}
 	
@@ -219,7 +242,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 //		consumer.subscribe(new ArrayList<String>(current_topics));
 //		return true;
 //	}
-	
+	@PreDestroy
 	@Override
 	public void shutdown(){
 		closed.set(true);
@@ -248,11 +271,15 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 			public void run() {
 				try{
 					while(!closed.get()){
+						if(subscribe_topics.isEmpty()){
+							Thread.sleep(1000);
+						}
 						if(subscribe_topics_changed.get()){
 							subscribeTopicsChangedNotify();
 						}
-						System.out.println("start consumer poll");
-						ConsumerRecords<KEY, VALUE> records = consumer.poll(pollSize());
+						//System.out.println("start consumer poll");
+						ConsumerRecords<KEY, VALUE> records = consumer.poll(10000);
+						//System.out.println("end consumer poll");
 						notify.notifyComming(consumerId, records);
 					}
 				}catch (WakeupException e) {
@@ -275,6 +302,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 		System.out.println("notify changed " + subscribe_topics);
 		//consumer.subscribe(Collections.singletonList("topic3"));
 		consumer.subscribe(subscribe_topics);
+		System.out.println("notify subscribe changed " + subscribe_topics);
 		subscribe_topics_changed.set(false);
 	}
 	
@@ -311,10 +339,10 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 		}));
 	}
 	
-	@Override
-	public long pollSize() {
-		return DEFAULT_POLLSIZE;
-	}
+//	@Override
+//	public long pollSize() {
+//		return DEFAULT_POLLSIZE;
+//	}
 	
 	public String getConsumerId() {
 		return consumerId;
@@ -322,10 +350,9 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 
 	public void setConsumerId(String consumerId) {
 		this.consumerId = consumerId;
-		parseConsumerTopics();
+		initialize();
 	}
 
 	public abstract String keyDeserializer();
 	public abstract String valueDeserializer();
-
 }
