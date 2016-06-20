@@ -31,6 +31,10 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	private int operate_reckoner;
 	//对公账号备注
 	private String note;
+	//审核人名称
+	private String verify_name;
+	//操作人名称
+	private String operate_name;
 	//add by dongrui 2016-06-17 E N D
 	public int getUid() {
 		return uid;
@@ -127,6 +131,18 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	}
 	public void setNote(String note) {
 		this.note = note;
+	}
+	public String getVerify_name() {
+		return verify_name;
+	}
+	public void setVerify_name(String verify_name) {
+		this.verify_name = verify_name;
+	}
+	public String getOperate_name() {
+		return operate_name;
+	}
+	public void setOperate_name(String operate_name) {
+		this.operate_name = operate_name;
 	}
 	
 }

@@ -175,9 +175,24 @@ public class UserWalletUnitFacadeService {
 					WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(apply.getUid(),apply.getId(),apply.getCash());
 					//ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(apply.getUid(), apply.getCash());
 					//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(user.getId());
+					//add by dongrui 2016-06-20 Start
+					//查询操作人和审核人信息
+					User verifyUser = null;
+					if(apply.getVerify_uid() != 0 ){
+						verifyUser = new User();
+						verifyUser = userService.getById(apply.getVerify_uid());
+					}
+					User operateUser = null;
+					if(apply.getOperate_uid() != 0){
+						operateUser = new User();
+						operateUser = userService.getById(apply.getOperate_uid());
+					}
+					//add by dongrui 2016-06-20 E N D
 					vtos.add(apply.toUserWithdrawApplyVTO(
 							user!=null?user.getMobileno():StringUtils.EMPTY,
 							user!=null?user.getNick():StringUtils.EMPTY,
+							verifyUser!=null?verifyUser.getNick():StringUtils.EMPTY,
+							operateUser!=null?operateUser.getNick():StringUtils.EMPTY,
 									calculateApplyCost));
 					index++;
 				}
@@ -226,19 +241,27 @@ public class UserWalletUnitFacadeService {
 	 */
 	public RpcResponseDTO<Boolean> verifyApplies(int reckoner, String applyid,boolean passed) {
 		try{
-			User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
-			if(validateUser.getUtype() != UserType.VerifyFinance.getIndex()){
-				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.VerifyFinance.getSname()}); 
-			}
-			
-			//modify by dongrui 2016-06-17 start
-			UserWalletWithdrawApply withdrawApply = userWalletFacadeService.verifyApplies(reckoner,applyid, passed);
-			User user = UserValidateServiceHelper.validateUser(withdrawApply.getUid(),userWalletFacadeService.getUserService());
-			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
-			WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(withdrawApply.getUid(),withdrawApply.getId(),withdrawApply.getCash());
-			//ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(), withdrawApply.getCash());
-			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
-					calculateApplyCost);
+			//modify by dongrui 2016-06-20 start
+			//批量操作提现审核
+			String currApplyId = StringUtils.EMPTY;
+			String[] array = applyid.split(",");
+			UserWithdrawApplyVTO withdrawApplyVTO = null;
+			for (int i = 0; i < array.length; i++) {
+				currApplyId = array[i];
+				User validateUser = UserValidateServiceHelper.validateUser(reckoner,userWalletFacadeService.getUserService());
+				if(validateUser.getUtype() != UserType.VerifyFinance.getIndex()){
+					throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{UserType.VerifyFinance.getSname()});
+				}
+				//modify by dongrui 2016-06-17 start
+				UserWalletWithdrawApply withdrawApply = userWalletFacadeService.verifyApplies(reckoner,currApplyId, passed);
+				User user = UserValidateServiceHelper.validateUser(withdrawApply.getUid(),userWalletFacadeService.getUserService());
+				//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
+				WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(withdrawApply.getUid(),withdrawApply.getId(),withdrawApply.getCash());
+				//ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(), withdrawApply.getCash());
+				 withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(),user.getNick(),"",
+						calculateApplyCost);
+				}
+				//modify by dongrui 2016-06-20 E N D
 			if(withdrawApplyVTO != null){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 			}else{
@@ -289,7 +312,7 @@ public class UserWalletUnitFacadeService {
 			WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(withdrawApply.getUid(),withdrawApply.getId(),withdrawApply.getCash());
 			//ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(), withdrawApply.getCash());
 			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
-			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
+			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(),"","", 
 					calculateApplyCost);
 			
 			//modify by dongrui 2016-06-17 start
@@ -345,7 +368,7 @@ public class UserWalletUnitFacadeService {
 			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
 			WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(withdrawApply.getUid(),withdrawApply.getId(),withdrawApply.getCash());
 			//ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(), withdrawApply.getCash());
-			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(), 
+			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(),"","", 
 					calculateApplyCost);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(withdrawApplyVTO);
 		}catch(BusinessI18nCodeException bex){
@@ -397,6 +420,8 @@ public class UserWalletUnitFacadeService {
 					apply.toUserWithdrawApplyVTO(
 							user.getMobileno(), 
 							user.getNick(),
+							"",
+							"",
 							calculateApplyCost));
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
