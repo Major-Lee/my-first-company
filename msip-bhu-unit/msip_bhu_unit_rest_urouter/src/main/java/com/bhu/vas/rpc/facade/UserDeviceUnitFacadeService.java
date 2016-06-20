@@ -763,6 +763,7 @@ public class UserDeviceUnitFacadeService {
 			dsv.setBatchno(configs.getBatchno());
 			dsv.setOwner_percent(configs.getOwner_percent());
 			dsv.setManufacturer_percent(configs.getManufacturer_percent());
+			dsv.setDistributor_percent(configs.getDistributor_percent());
 			dsv.setRcm(configs.getRange_cash_mobile());
 			dsv.setRcp(configs.getRange_cash_pc());
 			dsv.setAitm(configs.getAit_mobile());

@@ -12,6 +12,7 @@ public class DeviceSharedealVTO implements java.io.Serializable{
 	private String batchno;
 	private double owner_percent;
 	private double manufacturer_percent;
+	private double distributor_percent;
 	private boolean canbeturnoff;
 	private boolean runtime_applydefault;
 	private boolean customized;
@@ -92,4 +93,11 @@ public class DeviceSharedealVTO implements java.io.Serializable{
 	public void setCustomized(boolean customized) {
 		this.customized = customized;
 	}
+	public double getDistributor_percent() {
+		return distributor_percent;
+	}
+	public void setDistributor_percent(double distributor_percent) {
+		this.distributor_percent = distributor_percent;
+	}
+	
 }
