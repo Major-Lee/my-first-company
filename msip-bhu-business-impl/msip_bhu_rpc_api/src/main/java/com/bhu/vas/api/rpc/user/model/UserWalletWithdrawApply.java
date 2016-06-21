@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.user.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
@@ -139,7 +140,8 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		vto.setOperate_name(operate_name);
 		vto.setVerify_name(verify_name);
 		vto.setNote(note);
-		vto.setCreate_time(created_at.toString());
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		vto.setCreate_time(sdf.format(created_at));
 		return vto;
 	}
 
