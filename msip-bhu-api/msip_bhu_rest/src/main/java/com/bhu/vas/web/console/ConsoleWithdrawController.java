@@ -175,28 +175,17 @@ public class ConsoleWithdrawController extends BaseController {
         			if(rcp_dto == null){
         				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
         						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_INVALID)));
-        				return;
-        				//continue;
+        				//return;
+        				continue;
         			}
         			if(!rcp_dto.isSuccess()){
         				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
         						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE,new String[]{new String(rcp_dto.getMsg())})));
-        				return;
+        				//return;
+        				continue;
         			}
         			System.out.println("apply_payment step 2 from uPay: successed"+JsonHelper.getJSONString(rcp_dto));
         			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto));
-        			/*if(ThirdpartiesPaymentType.Weichat.getType().equals(withdrawNotify.getAccount().getType())){
-        				//TODO:直接url访问uPay进行支付并得到成功和失败的结果,rpc写入数据结果并返回结果集
-        				RpcResponseDTO<UserWithdrawApplyVTO> rpcInnerResult = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, rcp_dto.isSuccess());
-        				if(!rpcInnerResult.hasError()){
-        					SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcInnerResult));
-        				}else{
-        					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcInnerResult));
-        				}
-        			}else{
-        				//TODO:直接url访问uPay获取支付连接返回给客户端进行支付，客户端支付成功后，支付宝会进行callback
-        				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto.getParams()));
-        			}*/
         			System.out.println("apply_payment step 3: done!");
     			}
     		}else{
