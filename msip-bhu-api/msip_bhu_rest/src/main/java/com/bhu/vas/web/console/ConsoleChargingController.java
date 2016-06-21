@@ -101,7 +101,7 @@ public class ConsoleChargingController extends BaseController {
     			}
         		
         		double sum = ArithHelper.add(Double.valueOf(owner_percent), Double.valueOf(manufacturer_percent),Double.valueOf(distributor_percent));
-        		if(sum == 1){
+        		if(sum < 1 || sum >1){
         			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
         		}
         	}
