@@ -149,7 +149,6 @@ public class ConsoleWithdrawController extends BaseController {
     				}else{
     					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     				}
-    				//return;
     				continue;
     			}else{
     				RequestWithdrawNotifyDTO withdrawNotify = rpcResult.getPayload();
@@ -159,17 +158,11 @@ public class ConsoleWithdrawController extends BaseController {
         				return;
         			}*/
         			String orderid = withdrawNotify.getOrderid();
-        			System.out.println("*****微信支付：**orderId******"+orderid);
         			String order_amount = String.valueOf(withdrawNotify.getWithdraw().getRealCash());
-        			System.out.println("*****微信支付：**order_amount******"+orderid);
         			String order_transcost = String.valueOf(withdrawNotify.getWithdraw().getTranscost());
-        			System.out.println("*****微信支付：**order_transcost******"+orderid);
         			String order_taxcost = String.valueOf(withdrawNotify.getWithdraw().getTaxcost());
-        			System.out.println("*****微信支付：**order_taxcost******"+orderid);
         			String order_totalamount = String.valueOf(withdrawNotify.getWithdraw().getCash());
-        			System.out.println("*****微信支付：**order_totalamount******"+orderid);
         			String requestIp = WebHelper.getRemoteAddr(request);
-        			System.out.println("*****微信支付：**requestIp******"+orderid);
         			ResponseCreateWithdrawDTO rcp_dto = PaymentInternalHelper.createWithdrawUrlCommunication(
         					withdrawNotify.getAccount().getIdentify(),//.getType(), 
         					orderid,
@@ -193,18 +186,6 @@ public class ConsoleWithdrawController extends BaseController {
         			}
         			System.out.println("apply_payment step 2 from uPay: successed"+JsonHelper.getJSONString(rcp_dto));
         			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto));
-        			/*if(ThirdpartiesPaymentType.Weichat.getType().equals(withdrawNotify.getAccount().getType())){
-        				//TODO:直接url访问uPay进行支付并得到成功和失败的结果,rpc写入数据结果并返回结果集
-        				RpcResponseDTO<UserWithdrawApplyVTO> rpcInnerResult = userWalletRpcService.doWithdrawNotifyFromLocal(uid, applyid, rcp_dto.isSuccess());
-        				if(!rpcInnerResult.hasError()){
-        					SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcInnerResult));
-        				}else{
-        					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcInnerResult));
-        				}
-        			}else{
-        				//TODO:直接url访问uPay获取支付连接返回给客户端进行支付，客户端支付成功后，支付宝会进行callback
-        				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rcp_dto.getParams()));
-        			}*/
         			System.out.println("apply_payment step 3: done!");
     			}
     		}else{
@@ -264,9 +245,9 @@ public class ConsoleWithdrawController extends BaseController {
     		}*/
 		}
     	if(!rpcResult.hasError()){
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-    	}else{
     		SpringMVCHelper.renderJson(response, ResponseError.SUCCESS);
+    	}else{
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     	}
     	return;
     }
