@@ -643,7 +643,7 @@ public class UMLogicImpl implements IUMLogic{
 		if((totalAndroidUV+totalIosUV)!=0){
 			mobileMap.put("clickAverNum", round(totalMobileClickNum*1.00/totalMobileUV,2));
 			mobileMap.put("orderConversion", round(totalMbOrderNum*1.00/totalMobileUV,2));
-			mobileMap.put("orderComConversion", round(totalMbOrderAmount*1.00/totalMobileUV,2));
+			mobileMap.put("orderComConversion", round(totalMbOrderComplete*1.00/totalMobileUV,2));
 		}
 		mobileMap.put("orderNum", totalMbOrderNum);
 		mobileMap.put("clickConversion", 0);
