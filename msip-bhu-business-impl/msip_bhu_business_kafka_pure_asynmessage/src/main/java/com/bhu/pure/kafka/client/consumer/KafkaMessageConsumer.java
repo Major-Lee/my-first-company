@@ -315,18 +315,18 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 			@Override
 			public void run() {
 				while(closed.get()){
-					System.out.println("exec正在shutdown");
+					System.out.println("KafkaMessageConsumer正在shutdown");
 					consumerExecutorService.shutdown();
-					System.out.println("exec正在shutdown成功");
+					System.out.println("KafkaMessageConsumer正在shutdown成功");
 					while(true){
-						System.out.println("正在判断exec是否执行完毕");
+						System.out.println("正在判断KafkaMessageConsumer是否执行完毕");
 						if(consumerExecutorService.isTerminated()){
-							System.out.println("exec是否执行完毕,终止exec...");
+							System.out.println("KafkaMessageConsumer是否执行完毕,终止exec...");
 							consumerExecutorService.shutdownNow();
-							System.out.println("exec是否执行完毕,终止exec成功");
+							System.out.println("KafkaMessageConsumer是否执行完毕,终止exec成功");
 							break;
 						}else{
-							System.out.println("exec未执行完毕...");
+							System.out.println("KafkaMessageConsumer未执行完毕...");
 							try {
 								Thread.sleep(2*1000);
 							} catch (InterruptedException e) {
