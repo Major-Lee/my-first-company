@@ -52,6 +52,7 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	id,
 	    	companyName,
 	    	business_license_number,
 	    	business_license_address,
