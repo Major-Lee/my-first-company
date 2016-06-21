@@ -208,7 +208,7 @@ public class UserDeviceUnitFacadeService {
     }*/
 
     public RpcResponseDTO<UserDTO> fetchBindDeviceUser(String mac) {
-        UserDTO userDTO = new UserDTO();
+        //UserDTO userDTO = new UserDTO();
 /*        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
         if (!bindDevices.isEmpty()) {
             int uid = bindDevices.get(0).getUid();
@@ -217,11 +217,16 @@ public class UserDeviceUnitFacadeService {
         if(userWifiDevice != null){
         	int uid = userWifiDevice.getUid();
         	User user = userService.getById(uid);
-            userDTO.setId(uid);
+            //userDTO.setId(uid);
             if (user != null) {
-                userDTO.setCountrycode(user.getCountrycode());
-                userDTO.setMobileno(String.format("%s********",
+            	UserDTO userDTO = RpcResponseDTOBuilder.builderUserDTOFromUser(user, false);
+            	if(StringUtils.isNotEmpty(userDTO.getMobileno())){
+            		userDTO.setMobileno(String.format("%s********",
                         user.getMobileno().isEmpty() ? "***" : user.getMobileno().substring(0,3)));
+            	}
+                /*userDTO.setCountrycode(user.getCountrycode());
+                userDTO.setMobileno(String.format("%s********",
+                        user.getMobileno().isEmpty() ? "***" : user.getMobileno().substring(0,3)));*/
                 return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDTO);
             } else {
                 return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
