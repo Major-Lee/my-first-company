@@ -402,12 +402,7 @@ public class UserWalletUnitFacadeService {
 				}
 			}else if(StringUtils.equals(payment_type, "public")){
 				if(userPublishAccount == null){
-					//查询当前用户是否已绑定微信账号
-					UserOAuthStateDTO userOAuthStateDTO = userOAuthFacadeService.fetchRegisterIndetify(uid, OAuthType.fromType("weixin"), true);
-					if(userOAuthStateDTO != null){
-						//提示当前用户已绑定微信
-						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_WECHAT_HAS_BEEN_BOUND);
-					}
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST);
 				}
 			}
 			//add by Jason 2016-06-07 E N D

@@ -189,7 +189,7 @@ public enum ResponseErrorCode {
 	
 	//add by Jason 2016-06-08 start
 	USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST("338","user.wallet.withdraw.publishAccount.exist"),
-	USER_WALLET_WITHDRAW_WECHAT_HAS_BEEN_BOUND("339","user.wallet.withdraw.wechat.has.been.bound"),
+	USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST("339","user.wallet.withdraw.publishAccount.notExist"),
 	//add by Jason 2016-06-08 E N D
 	
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),

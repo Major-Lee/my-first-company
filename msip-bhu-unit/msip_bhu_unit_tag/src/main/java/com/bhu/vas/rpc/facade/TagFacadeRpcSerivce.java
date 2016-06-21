@@ -39,7 +39,6 @@ import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
- * 
  * @author xiaowei by 16/04/12
  */
 @Service
@@ -354,7 +353,7 @@ public class TagFacadeRpcSerivce {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_EMPTY);
 		}
 		
-		if (name.equals("未分组")) {
+		if (name.equals(TagGroup.DefaultGroupName)) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NAME_ERROR);
 		}
 		
