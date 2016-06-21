@@ -215,9 +215,16 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 		exec_processes.get(hash).submit((new Runnable() {
 			@Override
 			public void run() {
-				String ctx = CmCtxInfo.parserCtxName(topic);
-				doSpecialProcessor(ctx,payload,type,headers);
-				deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
+				try{
+					//doSpecialProcessor(ctx,payload,type,headers);
+					//deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
+					String ctx = CmCtxInfo.parserCtxName(topic);
+					doSpecialProcessor(ctx,payload,type,headers);
+					deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
+					logger.error("BusinessDynaMsgProcessor onProcessor", ex);
+				}
 			}
 		}));
 	}
