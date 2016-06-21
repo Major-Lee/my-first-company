@@ -139,7 +139,9 @@ public class UserWalletFacadeService{
 			if(StringUtils.isNotBlank(accountNum)){
 				//卡号前四位显示 后四位显示 中间*******代替
 				int accountLength = accountNum.length();
-				accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
+				if(accountLength >= 16){
+					accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
+				}
 			}
 			userOAuthStateDTO.setOpenid(accountNum);
 			userOAuthStateDTO.setIdentify("public");
