@@ -89,6 +89,9 @@ public class UserPublishAccountUnitFacadeService {
 			String bank_branch_name){
 		try {
 			UserPublishAccount userPublishAccount = userPublishAccountFacadeService.insertUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, account_name, publish_account_number, opening_bank, city, bank_branch_name);
+			if(userPublishAccount == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST);
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userPublishAccount.toUserPulishAccountDetailVTO());
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);

@@ -390,7 +390,6 @@ public class UserWalletUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_COMMON_DATA_PARAM_NOTSUPPORTED,new String[]{String.valueOf(payment_type)});
 			}
 			User user = UserValidateServiceHelper.validateUser(uid,userWalletFacadeService.getUserService());
-			//TODO:验证 用户是否存在对公账户信息，如果存在则只能对公账户提现
 			
 			//add by Jason 2016-06-07 start
 			//根据uid查询当前用户是否存在对公账号
