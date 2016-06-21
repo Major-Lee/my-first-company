@@ -49,6 +49,7 @@ import com.bhu.vas.web.http.response.AppUnifiedOrderResponse;
 import com.bhu.vas.web.http.response.PaySuccessNotifyResponse;
 import com.bhu.vas.web.http.response.UnifiedOrderResponse;
 import com.bhu.vas.web.http.response.WithDrawNotifyResponse;
+import com.bhu.vas.web.model.MidasRespone;
 import com.bhu.vas.web.service.PayHttpService;
 import com.bhu.vas.web.service.PayLogicService;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -1283,14 +1284,21 @@ public class PaymentController extends BaseController{
      * @throws IOException
      * @throws JDOMException
      */
-    @SuppressWarnings("rawtypes")
    	@RequestMapping(value = "/payment/midasNotifySuccess", method = { RequestMethod.GET,RequestMethod.POST })
-   	public String midasNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
+   	public void midasNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
     	logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师通知",BusinessHelper.gettimestamp(),"Starting"));
     	//获取POST过来反馈信息
-    	String result = "{'ret':1,'msg':'通知订单信息无效'}";
+    	MidasRespone result = null;
+   		result = new MidasRespone(1,"通知订单信息无效");
+    	
     	HashMap<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
+		if(requestParams.isEmpty()){
+			result.setMsg("通知参数为空");
+			result.setRet(4);
+			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+			return;
+		}
 		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
 			String name = (String) iter.next();
 			String[] values = (String[]) requestParams.get(name);
@@ -1303,7 +1311,8 @@ public class PaymentController extends BaseController{
 		}
 		
 		String goods_no = request.getParameter("payitem");
-		String notifyUrl = PayHttpService.MIDAS_NOTIFY_URL;
+		String notify_url = PayHttpService.MIDAS_RETURN_URL;
+		
 		//商户订单号
 		String out_trade_no = BusinessHelper.formatPayItem(payHttpService.getEnv(), goods_no) ;
 
@@ -1315,34 +1324,37 @@ public class PaymentController extends BaseController{
 		
 		//交易签名
 		String sign = new String(request.getParameter("sig").getBytes("ISO-8859-1"),"UTF-8");
-		
+
 		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
 		if (payReckoning == null) {
         	logger.info("get midas notice payReckoning " +payReckoning);
-        	return result;
+        	SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+			return;
         }
 		String orderId = payReckoning.getOrder_id();
         logger.info(String.format("get midas notify reckoningId [%s] trade_no [%s] orderId [%s] billno [%s]",out_trade_no, trade_no,orderId,billno));
         
-		boolean verifySig = MidasUtils.verifySig(params,notifyUrl,sign);
+		boolean verifySig = MidasUtils.verifySig(params,notify_url,sign);
 		logger.info(String.format("get midas notify to create verifySig[%s]",verifySig));
 		if(verifySig){//验证成功
-	            //判断当前账单的实际状态，如果是以支付状态就不做处理了
-				int payStatus = payReckoning.getPay_status();
-				if(payStatus == 0){ //0未支付;1支付成功
-					//支付成功
-					logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
-					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
-					result = "{'ret':0,'msg':'OK'}";
-					return result;
-				}
-				result = "{'ret':0,'msg':'OK'}";
-				return result;
+            //判断当前账单的实际状态，如果是以支付状态就不做处理了
+			int payStatus = payReckoning.getPay_status();
+			if(payStatus == 0){ //0未支付;1支付成功
+				//支付成功
+				logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
+				payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
+			}
+			result.setMsg("OK");
+			result.setRet(0);
+			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+			return;
 				
 		}else{//验证失败
 			logger.info(String.format("get midas notifysign [%s] verify fail", sign));
-			result = "{'ret':2,'msg':'请求参数错误：（sig）'}";
-			return result;
+			result.setMsg("请求参数错误：（sig）");
+			result.setRet(2);
+			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+			return;
 		}
     	
     }
@@ -1573,14 +1585,21 @@ public class PaymentController extends BaseController{
      * @throws IOException
      * @throws JDOMException
      */
-   	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/payment/midasReturn" , method = { RequestMethod.GET,RequestMethod.POST })
-   	public String midasReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
+   	public void midasReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师备用通知",BusinessHelper.gettimestamp(),"Starting"));
     	//获取POST过来反馈信息
-    	String result = "{'ret':1,'msg':'通知订单信息无效'}";
+   		MidasRespone result = null;
+   		result = new MidasRespone(1,"通知订单信息无效");
+    	
     	HashMap<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
+		if(requestParams.isEmpty()){
+			result.setMsg("通知参数为空");
+			result.setRet(4);
+			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+			return;
+		}
 		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
 			String name = (String) iter.next();
 			String[] values = (String[]) requestParams.get(name);
@@ -1610,7 +1629,8 @@ public class PaymentController extends BaseController{
 		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
 		if (payReckoning == null) {
         	logger.info("get midas notice payReckoning " +payReckoning);
-        	return result;
+        	SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+			return;
         }
 		String orderId = payReckoning.getOrder_id();
         logger.info(String.format("get midas notify reckoningId [%s] trade_no [%s] orderId [%s] billno [%s]",out_trade_no, trade_no,orderId,billno));
@@ -1624,16 +1644,18 @@ public class PaymentController extends BaseController{
 				//支付成功
 				logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
 				payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
-				result = "{'ret':0,'msg':'OK'}";
-				return result;
 			}
-			result = "{'ret':0,'msg':'OK'}";
-			return result;
+			result.setMsg("OK");
+			result.setRet(0);
+			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+			return;
 				
 		}else{//验证失败
 			logger.info(String.format("get midas notifysign [%s] verify fail", sign));
-			result = "{'ret':2,'msg':'请求参数错误：（sig）'}";
-			return result;
+			result.setMsg("请求参数错误：（sig）");
+			result.setRet(2);
+			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+			return;
 		}
 	}
    
