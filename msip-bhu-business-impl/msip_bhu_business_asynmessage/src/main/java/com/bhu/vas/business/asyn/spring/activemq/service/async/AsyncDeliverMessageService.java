@@ -33,7 +33,7 @@ public class AsyncDeliverMessageService {
 	
 	public void sendBatchSharedealModifyActionMessage(int uid,String message,
 			Boolean cbto,Boolean el,boolean customized,String owner_percent,String manufacturer_percent,String distributor_percent,
-			String rcm,String rcp,String ait){
+			String rcm,String rcp,String ait,boolean needCheckBinding){
 		BatchSharedealModifyDTO dto = new BatchSharedealModifyDTO();
 		dto.setUid(uid);
 		dto.setMessage(message);
@@ -46,6 +46,7 @@ public class AsyncDeliverMessageService {
 		dto.setRcm(rcm);
 		dto.setRcp(rcp);
 		dto.setAit(ait);
+		dto.setNeedCheckBinding(needCheckBinding);
 		dto.setTs(System.currentTimeMillis());
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
