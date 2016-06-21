@@ -314,7 +314,7 @@ public abstract class KafkaMessageConsumer<KEY, VALUE> extends KafkaMessageClien
 		Executors.newSingleThreadExecutor().submit((new Runnable() {
 			@Override
 			public void run() {
-				while(closed.get()){
+				if(closed.get()){
 					System.out.println("KafkaMessageConsumer正在shutdown");
 					consumerExecutorService.shutdown();
 					System.out.println("KafkaMessageConsumer正在shutdown成功");
