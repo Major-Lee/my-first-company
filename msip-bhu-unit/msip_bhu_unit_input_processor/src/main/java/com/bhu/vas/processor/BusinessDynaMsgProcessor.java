@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -60,6 +61,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 	@PostConstruct
 	public void initialize(){
 		//System.out.println("BusinessDynaMsgProcessor initialize...");
+		System.out.println("BusinessDynaMsgProcessor Init");
 		logger.info("BusinessDynaMsgProcessor initialize...");
 		/*exec_dispatcher = ExecObserverManager.buildExecutorService(this.getClass(),"DynaMsg dispatcher消息处理",per_threads);
 		for(int i=0;i<hash_prime;i++){
