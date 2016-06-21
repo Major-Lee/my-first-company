@@ -47,7 +47,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 	private int[] hits;
 	//private int hash_prime = 50;
 	private int hash_prime = 50;
-	private int per_threads = 1;
+	//private int per_threads = 1;
 	//@Resource
 	//private IDaemonRpcService daemonRpcService;
 
@@ -61,11 +61,17 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 	public void initialize(){
 		//System.out.println("BusinessDynaMsgProcessor initialize...");
 		logger.info("BusinessDynaMsgProcessor initialize...");
-		exec_dispatcher = ExecObserverManager.buildExecutorService(this.getClass(),"DynaMsg dispatcher消息处理",per_threads);
+		/*exec_dispatcher = ExecObserverManager.buildExecutorService(this.getClass(),"DynaMsg dispatcher消息处理",per_threads);
 		for(int i=0;i<hash_prime;i++){
 			ExecutorService exec_process = ExecObserverManager.buildExecutorService(this.getClass(),"DynaMsg process消息处理".concat(String.valueOf(i)),per_threads);
 			exec_processes.add(exec_process);//Executors.newFixedThreadPool(per_threads));
+		}*/
+		exec_dispatcher = ExecObserverManager.buildSingleThreadExecutor(this.getClass(),"DynaMsg dispatcher消息处理");
+		for(int i=0;i<hash_prime;i++){
+			ExecutorService exec_process = ExecObserverManager.buildSingleThreadExecutor(this.getClass(),"DynaMsg process消息处理".concat(String.valueOf(i)));
+			exec_processes.add(exec_process);//Executors.newFixedThreadPool(per_threads));
 		}
+		
 		hits = new int[hash_prime];
 		TaskEngine.getInstance().schedule(new DaemonProcessesStatusTask(this), 30*60*1000,60*60*1000);
 		KafkaMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
