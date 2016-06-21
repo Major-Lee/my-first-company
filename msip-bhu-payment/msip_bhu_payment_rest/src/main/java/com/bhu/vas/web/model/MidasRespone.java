@@ -2,22 +2,22 @@ package com.bhu.vas.web.model;
 
 public class MidasRespone {
 
-	private String id;
-	private String third_payinfo;
-	public MidasRespone(String id,String third_payinfo){
-		this.id = id;
-		this.third_payinfo = third_payinfo;
+	private int ret;
+	private String msg;
+	public MidasRespone(int ret,String msg){
+		this.ret = ret;
+		this.msg = msg;
 	}
-	public String getId() {
-		return id;
+	public int getRet() {
+		return ret;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setRet(int ret) {
+		this.ret = ret;
 	}
-	public String getThird_payinfo() {
-		return third_payinfo;
+	public String getMsg() {
+		return msg;
 	}
-	public void setThird_payinfo(String third_payinfo) {
-		this.third_payinfo = third_payinfo;
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 }

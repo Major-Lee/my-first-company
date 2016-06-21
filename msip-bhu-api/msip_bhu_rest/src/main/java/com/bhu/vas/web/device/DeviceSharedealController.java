@@ -57,7 +57,7 @@ public class DeviceSharedealController extends BaseController{
         			null,null,
         			true,
         			null,null,null,
-        			range_cash_mobile,range_cash_pc,access_internet_time);
+        			range_cash_mobile,range_cash_pc,access_internet_time,true);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{

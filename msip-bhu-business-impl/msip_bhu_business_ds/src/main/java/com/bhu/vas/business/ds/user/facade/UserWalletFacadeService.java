@@ -751,7 +751,7 @@ public class UserWalletFacadeService{
 					new String[]{String.valueOf(applyid),
 					"current:".concat(apply.getWithdraw_oper()),
 					String.format("should [%s|%s]", 
-							BusinessEnumType.UWithdrawStatus.Apply.getKey(),
+							BusinessEnumType.UWithdrawStatus.WithdrawVerify.getKey(),
 							BusinessEnumType.UWithdrawStatus.WithdrawDoing.getKey())
 					});
 		}

@@ -14,7 +14,7 @@ public class BatchSharedealModifyDTO extends AsyncDTO {
 	private String rcm;
 	private String rcp;
 	private String ait;
-
+	private boolean needCheckBinding;
 	public String getMessage() {
 		return message;
 	}
@@ -93,6 +93,13 @@ public class BatchSharedealModifyDTO extends AsyncDTO {
 
 	public void setDistributor_percent(String distributor_percent) {
 		this.distributor_percent = distributor_percent;
+	}
+	public boolean isNeedCheckBinding() {
+		return needCheckBinding;
+	}
+
+	public void setNeedCheckBinding(boolean needCheckBinding) {
+		this.needCheckBinding = needCheckBinding;
 	}
 
 	@Override

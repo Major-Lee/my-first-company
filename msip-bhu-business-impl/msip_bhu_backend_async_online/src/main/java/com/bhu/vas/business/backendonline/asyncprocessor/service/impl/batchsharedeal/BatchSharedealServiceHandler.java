@@ -52,13 +52,21 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
 		final BatchSharedealModifyDTO sharedealDTO = JsonHelper.getDTO(message, BatchSharedealModifyDTO.class);
+		final String operUser = String.valueOf(sharedealDTO.getUid());
+		final boolean needCheckBinding = sharedealDTO.isNeedCheckBinding();
 		wifiDeviceDataSearchService.iteratorAll(sharedealDTO.getMessage(),100,
 				new IteratorNotify<Page<WifiDeviceDocument>>() {
 					@Override
 					public void notifyComming(Page<WifiDeviceDocument> pages) {
-						List<String> macList = new ArrayList<String>();
+						List<String> macList = new ArrayList<>();
 						for (WifiDeviceDocument doc : pages) {
-							macList.add(doc.getD_mac());
+							if(needCheckBinding){
+								if(operUser.equals(doc.getU_id())){//需要检测绑定的情况下，判断索引中用户id是否和参数相等
+									macList.add(doc.getD_mac());
+								}
+							}else{
+								macList.add(doc.getD_mac());
+							}
 						}
 						logger.info(String.format("pagesize:%s pages:%s",100,macList));
 						for(String dmac:macList){
@@ -71,7 +79,7 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 						try {
 							RewardOrderAmountHashService.getInstance().removeAllRAmountByMacs(macList.toArray(new String[0]));
 							backendBusinessService.blukIndexs(macList);
-							Thread.sleep(500);
+							Thread.sleep(300);
 						} catch (InterruptedException e) {
 							e.printStackTrace(System.out);
 						} catch (Exception e) {

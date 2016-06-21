@@ -110,7 +110,7 @@ public class ConsoleChargingController extends BaseController {
         			canbeturnoff,enterpriselevel,
         			customized,
         			owner_percent,manufacturer_percent,distributor_percent,
-        			range_cash_mobile,range_cash_pc,access_internet_time);
+        			range_cash_mobile,range_cash_pc,access_internet_time,false);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{

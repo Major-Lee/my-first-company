@@ -13,7 +13,7 @@ public interface IChargingRpcService {
 			Boolean enterpriselevel,
 			boolean customized,
 			String owner_percent,String manufacturer_percent,String distributor_percent,
-			String range_cash_mobile,String range_cash_pc,String access_internet_time);
+			String range_cash_mobile,String range_cash_pc,String access_internet_time,boolean needCheckBinding);
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,
 			int countrycode,String bmobileno,int distributor_uid,
 			String sellor,String partner,
