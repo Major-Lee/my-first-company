@@ -1,6 +1,5 @@
 package com.bhu.vas.di.op.migrate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -43,7 +42,7 @@ public class UserSharedNetworksRepairEnvOp {
 		//user.portal.update.uportalapi = http://ucloud.bhuwifi.com:9158/portal/set/recreate
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserSharedNetworksRepairEnvOp.class);
 		ctx.start();
-		System.out.println("Remote_auth_url:"+BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_auth_url);
+		System.out.println("Remote_auth_url:"+BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Remote_auth_url);
 		System.out.println("Uplink:"+BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Uplink_Open_resource);
 		System.out.println("SafeSecure:"+BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);
 		System.out.println("SafeSecure:"+BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);

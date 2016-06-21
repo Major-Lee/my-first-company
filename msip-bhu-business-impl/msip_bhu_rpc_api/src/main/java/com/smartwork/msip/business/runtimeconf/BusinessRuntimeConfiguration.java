@@ -155,7 +155,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	SharedNetworkWifi_Default_SafeSecure_Open_resource 	= PropertiesHelper.getString("sharednetworkwifi.default.safesecure.openresource", paramProperties, SharedNetworkWifi_Default_SafeSecure_Open_resource);
         	SharedNetworkWifi_Default_Uplink_Open_resource 	= PropertiesHelper.getString("sharednetworkwifi.default.uplink.openresource", paramProperties, SharedNetworkWifi_Default_Uplink_Open_resource);
         	SharedNetworkWifi_Default_Redirect_url 		= PropertiesHelper.getString("sharednetworkwifi.default.redirecturl", paramProperties, SharedNetworkWifi_Default_Redirect_url);
-        	SharedNetworkWifi_Default_Remote_auth_url 	= PropertiesHelper.getString("sharednetworkwifi.default.remote.authurl", paramProperties, SharedNetworkWifi_Default_Remote_auth_url);
+        	SharedNetworkWifi_Default_SafeSecure_Remote_auth_url 	= PropertiesHelper.getString("sharednetworkwifi.default.safesecure.remote.authurl", paramProperties, SharedNetworkWifi_Default_SafeSecure_Remote_auth_url);
+        	SharedNetworkWifi_Default_SmsSecure_Remote_auth_url 	= PropertiesHelper.getString("sharednetworkwifi.default.smssecure.remote.authurl", paramProperties, SharedNetworkWifi_Default_SmsSecure_Remote_auth_url);
         	SharedNetworkWifi_Default_Remote_portal_server_url = PropertiesHelper.getString("sharednetworkwifi.default.remote.protalserverurl", paramProperties, SharedNetworkWifi_Default_Remote_portal_server_url);
         	SharedNetworkWifi_Default_Remote_Dns_default_ip = PropertiesHelper.getString("sharednetworkwifi.default.dns.default.ip", paramProperties, SharedNetworkWifi_Default_Remote_Dns_default_ip);
         	SharedNetworksTemplateMaxLimit = PropertiesHelper.getInt("sharednetwork.template.max.limit", paramProperties, SharedNetworksTemplateMaxLimit);
@@ -174,7 +175,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String SharedNetworkWifi_Default_SafeSecure_Open_resource ="isdspeed.qq.com,pay.qq.com,weixin.qq.com,jspay.qq.com,bhuwifi.com,bhunetworks.com,midas.gtimg.cn,alipay.com,123.57.26.170,hao.bhuwifi.com,api.unipay.qq.com,un.winasdaq.com,cnzz.com";
 	public static String SharedNetworkWifi_Default_Uplink_Open_resource = "bhuwifi.com,bhunetworks.com";
 	public static String SharedNetworkWifi_Default_Redirect_url = "www.bhuwifi.com";
-	public static String SharedNetworkWifi_Default_Remote_auth_url = "http://ucloud.bhuwifi.com:9158/portal/default/reward/index_before.html";
+	public static String SharedNetworkWifi_Default_SafeSecure_Remote_auth_url = "http://ucloud.bhuwifi.com:9158/portal/default/reward/index_before.html";
+	public static String SharedNetworkWifi_Default_SmsSecure_Remote_auth_url = "http://ucloud.bhuwifi.com:9158/portal/default/reward/index_sms_before.html";
 	public static String SharedNetworkWifi_Default_Remote_portal_server_url = "uportal.bhuwifi.com:18085";//192.168.66.157:18085
 	public static String SharedNetworkWifi_Default_Remote_Dns_default_ip = "123.57.26.170";
 	
