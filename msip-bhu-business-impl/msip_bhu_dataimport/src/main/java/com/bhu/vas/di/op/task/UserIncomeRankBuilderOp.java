@@ -1,5 +1,7 @@
 package com.bhu.vas.di.op.task;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.bhu.vas.business.ds.user.facade.UserPublishAccountFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 
 public class UserIncomeRankBuilderOp {
