@@ -17,6 +17,7 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 	private double cash = 0.00d;;
 	private boolean withdraw = false;
 	private boolean haspwd = false; 
+	private String mobileNo;
 	private List<UserOAuthStateDTO> payments;
 	public int getUid() {
 		return uid;
@@ -62,6 +63,12 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 	}
 	public void setPayments(List<UserOAuthStateDTO> payments) {
 		this.payments = payments;
+	}
+	public String getMobileNo() {
+		return mobileNo;
+	}
+	public void setMobileNo(String mobileNo) {
+		this.mobileNo = mobileNo;
 	}
 	
 }

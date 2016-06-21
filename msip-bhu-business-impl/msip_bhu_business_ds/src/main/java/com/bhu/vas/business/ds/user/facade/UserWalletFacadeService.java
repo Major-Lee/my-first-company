@@ -120,6 +120,11 @@ public class UserWalletFacadeService{
 		UserWallet userWallet = userWallet(uid);
 		UserWalletDetailVTO walletDetail = userWallet.toUserWalletDetailVTO();
 		//add by dongrui 2016-06-14 start
+		//根据uid查询user信息
+		User user =userService.getById(uid);
+		if(user != null){
+			walletDetail.setMobileNo(user.getMobileno());
+		}
 		//根据uid查询对公账号是否存在
 		UserPublishAccountDetailVTO publicAccountDetail = userPublishAccountFacadeService.publicAccountDetail(uid);
 		if(publicAccountDetail == null){
@@ -134,8 +139,10 @@ public class UserWalletFacadeService{
 			if(StringUtils.isNotBlank(accountNum)){
 				//卡号前四位显示 后四位显示 中间*******代替
 				int accountLength = accountNum.length();
-				accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
-			}
+				if(accountLength >= 16){
+					accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
+				}
+			} 
 			userOAuthStateDTO.setOpenid(accountNum);
 			userOAuthStateDTO.setIdentify("public");
 			List<UserOAuthStateDTO> userOAuthStateList = new ArrayList<UserOAuthStateDTO>();
@@ -732,8 +739,8 @@ public class UserWalletFacadeService{
 		if(apply == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"提现申请支付",String.valueOf(applyid)});
 		}
-		//如果状态不是 WithdrawVerify|WithdrawDoing则抛出错误码 
-		if(BusinessEnumType.UWithdrawStatus.WithdrawVerify.getKey().equals(apply.getWithdraw_oper()) 
+		//如果状态不是 VerifyPassed|WithdrawDoing则抛出错误码 
+		if(BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey().equals(apply.getWithdraw_oper()) 
 				|| BusinessEnumType.UWithdrawStatus.WithdrawDoing.getKey().equals(apply.getWithdraw_oper())){
 			apply.setLast_reckoner(reckoner);
 			BusinessEnumType.UWithdrawStatus current = BusinessEnumType.UWithdrawStatus.WithdrawDoing;
@@ -751,7 +758,7 @@ public class UserWalletFacadeService{
 					new String[]{String.valueOf(applyid),
 					"current:".concat(apply.getWithdraw_oper()),
 					String.format("should [%s|%s]", 
-							BusinessEnumType.UWithdrawStatus.WithdrawVerify.getKey(),
+							BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey(),
 							BusinessEnumType.UWithdrawStatus.WithdrawDoing.getKey())
 					});
 		}
@@ -768,17 +775,17 @@ public class UserWalletFacadeService{
 		//状态必须是uPay待提现
 		if(!BusinessEnumType.UWithdrawStatus.Apply.getKey().equals(apply.getWithdraw_oper())){
 			logger.error(String.format("提现审核操作-失败 此提现申请 applyid[%s] 状态不匹配", applyid));
-			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_APPLY_STATUS_NOTMATCHED,new String[]{String.valueOf(applyid),"current:".concat(apply.getWithdraw_oper()),"should:".concat(BusinessEnumType.UWithdrawStatus.VerifyPassed.getKey())});
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_APPLY_STATUS_NOTMATCHED,new String[]{String.valueOf(applyid),"current:".concat(apply.getWithdraw_oper()),"should:".concat(BusinessEnumType.UWithdrawStatus.Apply.getKey())});
 		}
 		BusinessEnumType.UWithdrawStatus current = null;
 		if(passed){
-			current = BusinessEnumType.UWithdrawStatus.WithdrawVerify;
+			current = BusinessEnumType.UWithdrawStatus.VerifyPassed;
 			apply.setWithdraw_oper(current.getKey());
 			//解锁钱包提现状态
 			//unlockWalletWithdrawStatusWhenSuccessed(apply.getUid());
 			logger.info(String.format("提现审核操作-成功 applyid[%s] 并解锁钱包状态", applyid));
 		}else{
-			current = BusinessEnumType.UWithdrawStatus.WithdrawFailed;
+			current = BusinessEnumType.UWithdrawStatus.VerifyFailed;
 			apply.setWithdraw_oper(current.getKey());
 			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getCash(),current.getName());
 			logger.info(String.format("提现审核操作-失败 applyid[%s] 返现并解锁钱包状态", applyid));

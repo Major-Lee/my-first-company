@@ -5,7 +5,7 @@
 <mapper namespace="com.bhu.vas.api.rpc.user.model.UserPublishAccount">
 
   <resultMap id="modelResult" type="userPublishAccount">
-    <id property="uid" column="id"/>
+    <id property="id" column="id"/>
     <result property="companyName" column="companyName"/>
     <result property="business_license_number" column="business_license_number"/>
     <result property="business_license_address" column="business_license_address"/>

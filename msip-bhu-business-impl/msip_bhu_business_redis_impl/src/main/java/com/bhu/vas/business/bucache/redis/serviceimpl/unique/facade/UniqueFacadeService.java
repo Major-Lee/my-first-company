@@ -148,4 +148,10 @@ public class UniqueFacadeService {
 		UniqueEmailHashService.getInstance().registerOrUpdate(email, uid, pwd);
 		UniqueNickHashService.getInstance().registerOrUpdate(email, uid, pwd);
 	}*/
+	
+	
+	public static void main(String[] argv){
+		Integer uid_willbinded = UniqueFacadeService.fetchUidByMobileno(86,"18612272825");
+		System.out.println(uid_willbinded);
+	}
 }

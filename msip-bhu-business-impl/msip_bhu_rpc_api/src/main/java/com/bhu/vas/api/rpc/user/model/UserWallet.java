@@ -34,7 +34,8 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	
 	//约定的收益分成比例 最多小数点保留后两位
 	//private double percent = 0.00d;
-	private Date created_at;
+	private Date created_at; 
+	public String mobileNo;
 	@Override
 	public void preInsert() {
 		if (this.created_at == null)
@@ -114,4 +115,13 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 		detail.setHaspwd(StringUtils.isNotEmpty(password));
 		return detail;
 	}
+
+	public String getMobileNo() {
+		return mobileNo;
+	}
+
+	public void setMobileNo(String mobileNo) {
+		this.mobileNo = mobileNo;
+	}
+	
 }

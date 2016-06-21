@@ -100,6 +100,11 @@ public class UserPublishAccountFacadeService{
 			String city,
 			String bank_branch_name
 			){
+		//根据用户Id判断当前用户是否已绑定对公账号
+		UserPublishAccount currUserPAccount = userPublishAccountService.getById(uid);
+		if(currUserPAccount != null){
+			return null;
+		}
 		UserPublishAccount entity = new UserPublishAccount();
 		entity.setId(uid);
 		entity.setCompanyName(companyName);

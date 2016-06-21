@@ -18,7 +18,7 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
 public class UserPublishAccount extends BaseIntModel{
 	
 	//用户Id
-	private int uid;
+	private Integer id;
 	//公司名称
 	private String companyName;
 	//营业执照号
@@ -52,16 +52,15 @@ public class UserPublishAccount extends BaseIntModel{
 	//状态
 	private int status;
 	
-	
-	
-	public int getUid() {
-		return uid;
+
+	public Integer getId() {
+		return id;
 	}
 
 
 
-	public void setUid(int uid) {
-		this.uid = uid;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 
@@ -260,7 +259,7 @@ public class UserPublishAccount extends BaseIntModel{
 
 	public UserPublishAccountDetailVTO toUserPulishAccountDetailVTO(){
 		UserPublishAccountDetailVTO detail = new UserPublishAccountDetailVTO();
-		detail.setUid(uid);
+		detail.setUid(id);
 		detail.setCompanyName(companyName);
 		detail.setBusiness_license_number(business_license_number);
 		detail.setBusiness_license_address(business_license_address);

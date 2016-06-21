@@ -50,7 +50,6 @@ public class UserPublishAccountController extends BaseController{
                 uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic,account_name, publish_account_number, opening_bank, city, bank_branch_name));
 		try{
 			RpcResponseDTO<UserPublishAccountDetailVTO> rpcResult = userPublishAccountRpcService.createUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, account_name, publish_account_number, opening_bank, city, bank_branch_name);
-					
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
