@@ -805,8 +805,8 @@ public class BusinessHelper extends PropertyEditorSupport {
 		 BufferedImage bufferImgage = null;
 	        try {
 	        	
-	        	int width = 200; // 图像宽度
-				int height = 200; // 图像高度
+	        	int width = 130; // 图像宽度
+				int height = 130; // 图像高度
 				Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
 				hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
 				BitMatrix bitMatrix = new MultiFormatWriter().encode(content,BarcodeFormat.QR_CODE, width, height, hints);// 生成矩阵

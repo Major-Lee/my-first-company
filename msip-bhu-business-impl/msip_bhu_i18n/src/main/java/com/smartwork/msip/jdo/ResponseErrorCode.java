@@ -246,6 +246,7 @@ public enum ResponseErrorCode {
 	
 	/******************    payment    ******************/
 	USER_APPID_UNSUPPORT("461","internal.user.appid.invalid"),
+	INVALID_COMMDITY_ORDERID_UNSUPPORT("462","internal.commdity.orderId.invalid"),
 	
 	
 	REQUEST_404_ERROR("404","404.pagerequest.error"),

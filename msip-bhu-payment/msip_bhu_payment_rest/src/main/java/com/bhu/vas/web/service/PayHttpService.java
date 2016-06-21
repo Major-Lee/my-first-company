@@ -50,7 +50,7 @@ public class PayHttpService {
     
     
     //重定向地址
-    public static String PAY_HOST_URL = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment";
+    public static String PAY_HOST_URL = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
@@ -78,8 +78,8 @@ public class PayHttpService {
     //public static String MIDAS_PREPAID_RETURN_URL = PAY_HOST_URL+"/midasPrepaidReturn";
     
     //打赏失败web回调地址
-    public static String WEB_NOTIFY_URL = "https://ucloud.bhuwifi.com/unsuccess";
-    //public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/unsuccess";
+    //public static String WEB_NOTIFY_URL = "https://ucloud.bhuwifi.com/unsuccess";
+    public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/unsuccess";
     //充值失败web回调地址
     public static String PREPAID_NOTIFY_URL = "http://www.bhuwifi.com";
     //证书地址
@@ -95,16 +95,45 @@ public class PayHttpService {
     String mchId;
     @Value("#{p['pay.mchkey']}")
     String mchKey;
+    @Value("#{p['pay.testAppId']}")
+    String testAppId;
+    @Value("#{p['pay.testAppSecret']}")
+    String testAppSecret;
+    @Value("#{p['pay.testMchId']}")
+    String testMchId;
+    @Value("#{p['pay.testMchKey']}")
+    String testMchKey;
+    @Value("#{p['pay.appAppId']}")
+    String appAppId;
+    @Value("#{p['pay.appAppSecret']}")
+    String appAppSecret;
+    @Value("#{p['pay.appMchId']}")
+    String appMchId;
+    @Value("#{p['pay.appMchKey']}")
+    String appMchKey;
+    
     @Value("#{p['pay.env']}")
     String env;
 
 
     String accessToken;
     String ticket;
-
-
+    
+    public void initPayHttpService(){
+    	String env = this.env;
+    	if(env.equalsIgnoreCase("test")){
+    		this.appId = this.testAppId;
+    		this.appSecret = this.testAppSecret;
+    		this.mchId = this.testMchId;
+    		this.mchKey = this.testMchKey;
+    	}
+    	System.out.println("app:"+appAppId+appAppSecret+appMchId+appMchKey);
+    	System.out.println(appId+appSecret+mchId+mchKey);
+    }
+    
     public UnifiedOrderResponse unifiedorder(String orderId,String commodityName, double totalPrice,String localIp,String payCallUrl,String openId ) {
-        if("0:0:0:0:0:0:0:1".equals(localIp)){
+    	initPayHttpService();
+    	if("0:0:0:0:0:0:0:1".equals(localIp)){
             localIp="10.96.5.235";
         }
         /** 总金额(分为单位) */
@@ -160,7 +189,8 @@ public class PayHttpService {
     }
     
     public UnifiedOrderResponse unifiedorder(String trade_type,String orderId,String commodityName, int totalPrice,String localIp,String payCallUrl,String openId ) {
-        if("0:0:0:0:0:0:0:1".equals(localIp)){
+    	initPayHttpService();
+    	if("0:0:0:0:0:0:0:1".equals(localIp)){
             localIp="182.92.83.59";
         }
         /** 总金额(分为单位) */
@@ -222,7 +252,8 @@ public class PayHttpService {
     }
     
     public JSAPIUnifiedOrderResponse unifiedorderJSAPI(String orderId,String commodityName, String totalPrice,String localIp,String payCallUrl,String openId ) {
-        if("0:0:0:0:0:0:0:1".equals(localIp)){
+    	initPayHttpService();
+    	if("0:0:0:0:0:0:0:1".equals(localIp)){
             localIp="10.96.5.235";
         }
         /** 总金额(分为单位) */
@@ -280,7 +311,8 @@ public class PayHttpService {
         return getAccessToken(false);
     }
     public GetAccessTokenResponse getAccessToken(boolean forced) throws IOException {
-        GetAccessTokenResponse response;
+    	initPayHttpService();
+    	GetAccessTokenResponse response;
         if(accessToken!=null && !"".equals(forced)){
             if(!forced){
                 response=new GetAccessTokenResponse();
@@ -295,6 +327,7 @@ public class PayHttpService {
     }
 
     public GetOpenIdResponse getOpenId(String code) throws IOException {
+    	initPayHttpService();
         GetOpenIdResponse response;
 
         // 根据用户code 拿到用户openId,下面就到了获取openid,这个代表用户id.
@@ -309,7 +342,7 @@ public class PayHttpService {
     }
 
     public GetJsapiTicketResponse GetJsapiTicket() throws IOException {
-        getAccessToken();
+    	getAccessToken();
         //https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=7uGxXoZbaujOAboHGNR5BIIbI2JOOjURexWlhzp3oHU0QEYeNAauuFCsuJBKqBPa3K6qTUMZxVNQ9ajTsNe_yLJ0Su7VN-E3gWWWDZRlsMw&type=jsapi
         String url =payRequestApiBaseUrl+ "/ticket/getticket?access_token="+accessToken+"&&type=jsapi";
         GetJsapiTicketResponse response = HttpResponseUtil.get(url, GetJsapiTicketResponse.class);
@@ -318,7 +351,7 @@ public class PayHttpService {
     }
 
     public GenerateQCCodeUrlResponse generateQCCodeUrl(String content) throws IOException {
-        getAccessToken();
+    	getAccessToken();
         //https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=TOKEN
         String url =payRequestApiBaseUrl+ "/qrcode/create?access_token="+accessToken;
 
@@ -348,7 +381,7 @@ public class PayHttpService {
      * @return
      */
     public  String createSign(String mchKey, String characterEncoding, SortedMap<Object, Object> parameters) {
-        StringBuffer sb = new StringBuffer();
+    	StringBuffer sb = new StringBuffer();
         Set<Map.Entry<Object, Object>> es = parameters.entrySet();
         Iterator<Map.Entry<Object, Object>> it = es.iterator();
         while (it.hasNext()) {
@@ -379,7 +412,8 @@ public class PayHttpService {
      * @return
      */
     public  String getSignature(String ticket, long timestamp, String nonceStr, String url){
-        String signature=null;
+    	initPayHttpService();
+    	String signature=null;
         String str = "jsapi_ticket="+ticket+"&noncestr="+nonceStr+"&timestamp="+timestamp+"&url="+url;
         // 对string1进行sha1签名，得到signature
         try {
@@ -393,10 +427,8 @@ public class PayHttpService {
             signature = formatter.toString();
             formatter.close();
         } catch (NoSuchAlgorithmException e) {
-// TODO Auto-generated catch block
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
-// TODO Auto-generated catch block
             e.printStackTrace();
         }
         return signature;
@@ -409,7 +441,8 @@ public class PayHttpService {
      * @return
      */
     public  String getPrePaySignature(String appId, long timestamp, String nonceStr, String packages,String signType){
-        String signature=null;
+    	initPayHttpService();
+    	String signature=null;
         String str = "appId="+appId+"&noncestr="+nonceStr+"&package="+packages+"&signType="+signType+"&timeStamp="+timestamp;
         // 对string1进行sha1签名，得到signature
         try {
@@ -423,10 +456,8 @@ public class PayHttpService {
             signature = formatter.toString();
             formatter.close();
         } catch (NoSuchAlgorithmException e) {
-// TODO Auto-generated catch block
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
-// TODO Auto-generated catch block
             e.printStackTrace();
         }
         return signature;
@@ -565,8 +596,72 @@ public class PayHttpService {
     public void setMchKey(String mchKey) {
         this.mchKey = mchKey;
     }
+    
+	 public String getTestAppId() {
+		return testAppId;
+	}
 
-	 public String getEnv() {
+	public void setTestAppId(String testAppId) {
+		this.testAppId = testAppId;
+	}
+
+	public String getTestAppSecret() {
+		return testAppSecret;
+	}
+
+	public void setTestAppSecret(String testAppSecret) {
+		this.testAppSecret = testAppSecret;
+	}
+
+	public String getTestMchId() {
+		return testMchId;
+	}
+
+	public void setTestMchId(String testMchId) {
+		this.testMchId = testMchId;
+	}
+
+	public String getTestMchKey() {
+		return testMchKey;
+	}
+
+	public void setTestMchKey(String testMchKey) {
+		this.testMchKey = testMchKey;
+	}
+
+	public String getAppAppId() {
+		return appAppId;
+	}
+
+	public void setAppAppId(String appAppId) {
+		this.appAppId = appAppId;
+	}
+
+	public String getAppAppSecret() {
+		return appAppSecret;
+	}
+
+	public void setAppAppSecret(String appAppSecret) {
+		this.appAppSecret = appAppSecret;
+	}
+
+	public String getAppMchId() {
+		return appMchId;
+	}
+
+	public void setAppMchId(String appMchId) {
+		this.appMchId = appMchId;
+	}
+
+	public String getAppMchKey() {
+		return appMchKey;
+	}
+
+	public void setAppMchKey(String appMchKey) {
+		this.appMchKey = appMchKey;
+	}
+
+	public String getEnv() {
 		return env;
 	}
 
@@ -574,8 +669,10 @@ public class PayHttpService {
 		this.env = env;
 	}
 
+	
 	public UnifiedOrderResponse unifiedorder(String out_trade_no,String commodityName, String totalPrice,String localIp,String payCallUrl,String openId ) {
-        if("0:0:0:0:0:0:0:1".equals(localIp)){
+		initPayHttpService();
+		if("0:0:0:0:0:0:0:1".equals(localIp)){
             localIp="10.96.5.235";
         }
         /** 总金额(分为单位) */
@@ -625,19 +722,19 @@ public class PayHttpService {
     }
 
 	 public AppUnifiedOrderResponse unifiedorderForApp(String out_trade_no,String commodityName, String totalPrice,String localIp,String payCallUrl,String openId ) {
-	        if("0:0:0:0:0:0:0:1".equals(localIp)){
+		 initPayHttpService();  
+		 if("0:0:0:0:0:0:0:1".equals(localIp)){
 	            localIp="10.96.5.235";
 	        }
 	        /** 总金额(分为单位) */
 	        //totalPrice;
-
 	        SortedMap<Object, Object> parameters = new TreeMap<Object, Object>();
 	        /** 公众号APPID */
-	        parameters.put("appid", appId);
+	        parameters.put("appid", appAppId);
 	        /** 商户号 */
 	        parameters.put("attach", "bhu_app");
 	        /** 商户号 */
-	        parameters.put("mch_id", mchId);
+	        parameters.put("mch_id", appMchId);
 	        /** 随机字符串 */
 	        parameters.put("nonce_str", getNonceStr());
 	        /** 商品名称 */
@@ -658,7 +755,7 @@ public class PayHttpService {
 	        parameters.put("openid", openId);
 
 	        /** MD5进行签名，必须为UTF-8编码，注意上面几个参数名称的大小写 */
-	        String sign = createSign(mchKey, "UTF-8", parameters);
+	        String sign = createSign(appMchKey, "UTF-8", parameters);
 	        parameters.put("sign", sign);
 
 	        /** 生成xml结构的数据，用于统一下单接口的请求 */
@@ -678,6 +775,7 @@ public class PayHttpService {
 	 
 	public WithDrawNotifyResponse sendWithdraw(String out_trade_no, String commodityName, String totalPrice,
 			String localIp, String nOTIFY_URL, String openid, String userName) {
+		initPayHttpService();
 		if("0:0:0:0:0:0:0:1".equals(localIp)){
 			localIp="123.57.52.205";
         }
