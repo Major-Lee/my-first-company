@@ -107,14 +107,14 @@ public class ChargingFacadeService {
     			batch_import.setOwner_percent(sharedeal_owner_percent);
     		}
     		if(StringUtils.isEmpty(sharedeal_manufacturer_percent) || StringHelper.MINUS_STRING_GAP.equals(sharedeal_manufacturer_percent)){
-    			batch_import.setOwner_percent(String.valueOf(configs.getManufacturer_percent()));
+    			batch_import.setManufacturer_percent(String.valueOf(configs.getManufacturer_percent()));
     		}else{
-    			batch_import.setOwner_percent(sharedeal_manufacturer_percent);
+    			batch_import.setManufacturer_percent(sharedeal_manufacturer_percent);
     		}
     		if(StringUtils.isEmpty(sharedeal_distributor_percent) || StringHelper.MINUS_STRING_GAP.equals(sharedeal_distributor_percent)){
-    			batch_import.setOwner_percent(String.valueOf(configs.getDistributor_percent()));
+    			batch_import.setDistributor_percent(String.valueOf(configs.getDistributor_percent()));
     		}else{
-    			batch_import.setOwner_percent(sharedeal_distributor_percent);
+    			batch_import.setDistributor_percent(sharedeal_distributor_percent);
     		}
     		
     		
@@ -271,6 +271,13 @@ public class ChargingFacadeService {
 		return vto;
 	}
 	
+	public void doWifiDeviceSharedealConfigsUpdate(Integer owner,String dmac,
+			String range_cash_mobile,String range_cash_pc, String access_internet_time){
+		this.doWifiDeviceSharedealConfigsUpdate(null, owner, null, dmac,
+				null, null, true, null, null, null, 
+				range_cash_mobile, range_cash_pc, access_internet_time, false);
+	}
+	
 	/**
 	 * 
 	 * @param batchno
@@ -296,12 +303,13 @@ public class ChargingFacadeService {
 		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
 		if(configs == null){
 			insert = true;
+			//先用缺省值进行填充
 			configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
 			configs.setId(dmac);
 			configs.setCreated_at(null);
 			configs.setUpdated_at(null);
 		}else{
-			if(!customized){//填充缺省值
+			if(!customized){//填充分成比例、打赏金额和上网时长的缺省值 
 				WifiDeviceSharedealConfigs defaultConfigs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
 				configs.setAit_mobile(defaultConfigs.getAit_mobile());
 				configs.setAit_pc(defaultConfigs.getAit_pc());
@@ -343,20 +351,22 @@ public class ChargingFacadeService {
 			configs.setDistributor(WifiDeviceSharedealConfigs.None_Distributor);
 		}*/
 		if(customized){
-			try{
-				double custom_owner_percent = Double.valueOf(owner_percent);
-				double custom_manufacturer_percent = Double.valueOf(manufacturer_percent);
-				double custom_distributor_percent = ArithHelper.round(ArithHelper.sub(1, ArithHelper.add(custom_owner_percent,custom_manufacturer_percent)), 2);
-				configs.setOwner_percent(custom_owner_percent);
-				configs.setManufacturer_percent(custom_manufacturer_percent);
-				configs.setDistributor_percent(custom_distributor_percent);
-			}catch(Exception ex){
-				ex.printStackTrace(System.out);
+			if(StringUtils.isEmpty(owner_percent) || StringUtils.isEmpty(manufacturer_percent)){
+				;//以前是啥值就是什么值
+			}else{
+				try{
+					double custom_owner_percent = Double.valueOf(owner_percent);
+					double custom_manufacturer_percent = Double.valueOf(manufacturer_percent);
+					double custom_distributor_percent = ArithHelper.round(ArithHelper.sub(1, ArithHelper.add(custom_owner_percent,custom_manufacturer_percent)), 2);
+					configs.setOwner_percent(custom_owner_percent);
+					configs.setManufacturer_percent(custom_manufacturer_percent);
+					configs.setDistributor_percent(custom_distributor_percent);
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
+				}
 			}
-			/*if(owner_percent >=0 && owner_percent <=1){
-				configs.setOwner_percent(owner_percent);
-				configs.setManufacturer_percent(ArithHelper.round(ArithHelper.sub(1, owner_percent), 2));
-			}*/
+			
+			
 			if(StringUtils.isNotEmpty(range_cash_mobile)){
 				configs.setRange_cash_mobile(range_cash_mobile);
 			}
