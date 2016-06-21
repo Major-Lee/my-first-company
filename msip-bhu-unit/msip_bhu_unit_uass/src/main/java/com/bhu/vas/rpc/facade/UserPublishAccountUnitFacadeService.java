@@ -90,7 +90,7 @@ public class UserPublishAccountUnitFacadeService {
 		try {
 			UserPublishAccount userPublishAccount = userPublishAccountFacadeService.insertUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, account_name, publish_account_number, opening_bank, city, bank_branch_name);
 			if(userPublishAccount == null){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST);
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST,new String[]{"绑定对公账号",String.valueOf(uid)});
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userPublishAccount.toUserPulishAccountDetailVTO());
 		}catch(BusinessI18nCodeException bex){
