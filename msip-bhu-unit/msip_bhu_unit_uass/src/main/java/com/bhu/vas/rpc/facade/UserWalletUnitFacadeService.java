@@ -11,8 +11,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import ch.qos.logback.classic.Logger;
-
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
