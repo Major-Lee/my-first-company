@@ -127,6 +127,7 @@ public class PaymentInternalHelper {
 					total, 
 					requestip));
 			String response = HttpHelper.postUrlAsString(CREATE_WITHDRAWURL_COMMUNICATION_API, api_params);
+			System.out.println("*********微信支付提交返回值：【"+response+"】*******");
 			logger.info(String.format("CreateWithdrawUrlCommunication [%s] Response withdraw_no[%s] withdraw_type[%s] "
 					+ "req[%s]", CREATE_WITHDRAWURL_COMMUNICATION_API,withdraw_no, withdraw_type, response));
 			if(StringUtils.isNotEmpty(response)){
