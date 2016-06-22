@@ -29,7 +29,7 @@ public class ValidateService {
 	
 	public static void validatePageSize(int pageSize){
 		if(pageSize >50){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"pageSize:".concat(String.valueOf(pageSize))});
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"pageSize:".concat(String.valueOf(pageSize)),String.valueOf(1),String.valueOf(50)});
 		}
 	}
 	
@@ -47,6 +47,9 @@ public class ValidateService {
 	public static void checkMobilenoValidate(int countryCode,String mobileno){
 		validateMobileno(countryCode,mobileno);
 	}
+	
+	
+	
 	
 	/*public static ResponseError validateEmail(String email){//,UserService userService){
 		if(StringUtils.isEmpty(email)){

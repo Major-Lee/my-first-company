@@ -4,6 +4,7 @@ package com.bhu.vas.validate;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.helper.NumberValidateHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.plugins.reservedwordfilter.ReservedWordFilterHelper;
@@ -50,7 +51,7 @@ public class ValidateService {
 	
 	public static ResponseError validatePageSize(int pageSize){
 		if(pageSize >50){
-			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"pageSize:".concat(String.valueOf(pageSize))});
+			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"pageSize:".concat(String.valueOf(pageSize)),String.valueOf(1),String.valueOf(50)});
 		}
 		return null;
 	}
@@ -62,6 +63,21 @@ public class ValidateService {
 		return true;
 	}
 	
+	public static boolean validAmountRange(String param,double minValue, double maxValue){
+		boolean ret = NumberValidateHelper.validAmountRange(param, minValue, maxValue);
+		if(!ret){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"amount:".concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
+		}
+		return ret;
+	}
+	
+	public static boolean validAitRange(String param,int minValue, int maxValue){
+		boolean ret = NumberValidateHelper.validAitRange(param, minValue, maxValue);
+		if(!ret){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"ait:".concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
+		}
+		return ret;
+	}
 	
 	public static boolean checkNickValidate(String nick){
 		ResponseError error = validateNick(nick);
@@ -74,6 +90,8 @@ public class ValidateService {
 		if(error == null) return false;
 		else return true;
 	}
+	
+	
 	
 	/*public static ResponseError validateEmail(String email){//,UserService userService){
 		if(StringUtils.isEmpty(email)){
