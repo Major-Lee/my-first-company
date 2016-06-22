@@ -215,7 +215,8 @@ public class BusinessPushContextService {
 		}*/
 		String alias = getHandsetAliasName(mac, hd_mac);
 		if(!StringUtils.isEmpty(alias)){
-			context.setHandsetName(alias);
+			//context.setHandsetName(alias);
+			context.setHandsetName(StringHelper.chopMiddleString(alias, 8, StringHelper.ELLIPSIS_STRING_GAP));
 		}
 		//验证终端昵称探测开关
 		if (dto.isAlias_on()) { //开启陌生人终端和昵称

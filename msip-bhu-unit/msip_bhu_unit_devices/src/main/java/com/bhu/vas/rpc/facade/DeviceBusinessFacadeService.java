@@ -351,6 +351,7 @@ public class DeviceBusinessFacadeService {
 	 * @param payload
 	 */
 	public void wifiDeviceDirectBind(String ctx, String payload, ParserHeader parserHeader){
+		logger.info(String.format("WifiDeviceDirectBind payload[%s]", payload));
 		String mac = parserHeader.getMac().toLowerCase();
 		String keynum = StringHelper.EMPTY_STRING_GAP;
 		String keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_VALIDATE_FAILED;
@@ -370,6 +371,7 @@ public class DeviceBusinessFacadeService {
 						if(dto.isForceBind()){
 							User user = userFacadeService.getUserByMobileno(keynum);
 							if(user != null){
+								logger.info(String.format("WifiDeviceDirectBind forceBind mac[%s] uid[%s] olduid[%s]", mac, user.getId(), wifiDeviceDoc.getU_id()));
 								UserWifiDevice userWifiDevice = userWifiDeviceFacadeService.forceAddUserWifiDevice(mac, 
 										user.getId(), industry, false);
 						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, 
@@ -378,6 +380,7 @@ public class DeviceBusinessFacadeService {
 						}else{
 							String exist_uid = wifiDeviceDoc.getU_id();
 							if(StringUtils.isNotEmpty(exist_uid)){
+								logger.info(String.format("WifiDeviceDirectBind normalBind exist mac[%s] uid[%s]", mac, exist_uid));
 				    			keynum = wifiDeviceDoc.getU_mno();
 				    			industry = wifiDeviceDoc.getD_industry();
 				    			keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
@@ -385,18 +388,10 @@ public class DeviceBusinessFacadeService {
 								if(StringUtils.isNotEmpty(keynum)){
 									User user = userFacadeService.getUserByMobileno(keynum);
 									if(user != null){
+										logger.info(String.format("WifiDeviceDirectBind normalBind notexist mac[%s] uid[%s]", mac, user.getId()));
 										UserWifiDevice userWifiDevice = userWifiDeviceFacadeService.forceAddUserWifiDevice(mac, 
 												user.getId(), industry, false);
-	/*									String bindDeviceName = deviceFacadeService.getBindDeviceName(mac);
-									
-										userWifiDeviceFacadeService.insertUserWifiDevice(mac, user.getId(), bindDeviceName);
-								        
-							    		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-							    		if(wifiDevice != null){
-									        wifiDevice.setIndustry(industry);
-									        wifiDeviceService.update(wifiDevice);
-							    		}
-							    		chargingFacadeService.wifiDeviceBindedNotify(mac, user.getId());*/
+
 								        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, 
 								        		userWifiDevice.getDevice_name(), industry);
 										keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
