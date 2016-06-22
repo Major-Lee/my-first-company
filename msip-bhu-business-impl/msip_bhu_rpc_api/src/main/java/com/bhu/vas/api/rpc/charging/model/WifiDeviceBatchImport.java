@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.charging.model;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
@@ -152,7 +153,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		return ToStringBuilder.reflectionToString(this);
 	}
 	
-	public BatchImportVTO toBatchImportVTO(String importor_nick,String importor_mobileno){
+	public BatchImportVTO toBatchImportVTO(String importor_nick,String importor_mobileno,String distributor_nick){
 		BatchImportVTO vto = new BatchImportVTO();
 		vto.setId(this.getId());
 		vto.setImportor(this.getImportor());
@@ -160,6 +161,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		vto.setImportor_mobileno(importor_mobileno);
 		vto.setMobileno(this.getMobileno());
 		vto.setDistributor(this.getDistributor());
+		vto.setDistributor_nick(StringUtils.isNotEmpty(distributor_nick)?distributor_nick:StringHelper.EMPTY_STRING_GAP);
 		vto.setSellor(this.getSellor());
 		vto.setPartner(this.getPartner());
 		vto.setOwner_percent(this.getOwner_percent());
