@@ -136,5 +136,4 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	public RpcResponseDTO<RankingListVTO> rankingList(int uid) {
 		return userWalletUnitFacadeService.rankingList(uid);
 	}
-
 }
