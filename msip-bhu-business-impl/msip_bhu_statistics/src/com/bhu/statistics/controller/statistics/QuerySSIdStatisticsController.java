@@ -299,7 +299,7 @@ public class QuerySSIdStatisticsController extends BaseController{
 			e.printStackTrace();
 		}
 		Map<String,Object> body = new HashMap<String,Object>();
-		String responseUrl = "http://123.57.70.183:8080/msip_bhu_statistics/export/";
+		String responseUrl = "http://101.200.151.189:8080/msip_bhu_statistics/export/";
 		body.put("path", responseUrl+downFileName);
 		String responseStr = NotifyUtil.success(body);
 		log.info("下载文件地址为："+responseStr);
