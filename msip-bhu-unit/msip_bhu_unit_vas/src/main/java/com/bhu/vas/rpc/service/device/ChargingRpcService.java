@@ -10,6 +10,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
+import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.bhu.vas.rpc.facade.ChargingUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -90,8 +91,10 @@ public class ChargingRpcService  implements IChargingRpcService{
 		return chargingUnitFacadeService.doFetchDefaultSharedeal(uid);
 	}
 
-
-
-
+	@Override
+	public RpcResponseDTO<DeviceSharedealVTO> sharedealDetail(int uid,String mac) {
+		logger.info(String.format("sharedealDetail uid:%s mac[%s]",uid,mac));
+		return chargingUnitFacadeService.sharedealDetail(uid, mac);
+	}
 
 }
