@@ -12,6 +12,7 @@ import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
+import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
@@ -169,6 +170,12 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public RpcResponseDTO<DeviceStatisticsVTO> deviceStatistics(String d_snk_turnstate, String d_snk_type) {
 		return deviceRestRpcService.deviceStatistics(d_snk_turnstate, d_snk_type);
+	}
+
+	@Override
+	public RpcResponseDTO<List<WifiDevicePresentVTO>> fetchDevicesPresent(
+			List<String> dmacs) {
+		return deviceRestRpcService.fetchDevicesPresent(dmacs);
 	}
 
 }
