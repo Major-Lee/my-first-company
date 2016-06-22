@@ -89,6 +89,7 @@ public class UserPublishAccountUnitFacadeService {
 			String bank_branch_name){
 		try {
 			UserPublishAccount userPublishAccount = userPublishAccountFacadeService.insertUserPublishAccount(uid, companyName, business_license_number, business_license_address, address, mobile, business_license_pic, account_name, publish_account_number, opening_bank, city, bank_branch_name);
+			System.out.println("#######userPublishAccount【"+userPublishAccount+"】#######");
 			if(userPublishAccount == null){
 				throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST,new String[]{"绑定对公账号",String.valueOf(uid)});
 			}

@@ -160,11 +160,19 @@ public class ConsoleWithdrawController extends BaseController {
         				return;
         			}*/
         			String orderid = withdrawNotify.getOrderid();
+        			System.out.println("*********orderid【"+orderid+"】*************");
         			String order_amount = String.valueOf(withdrawNotify.getWithdraw().getRealCash());
+        			System.out.println("*********order_amount【"+order_amount+"】*************");
         			String order_transcost = String.valueOf(withdrawNotify.getWithdraw().getTranscost());
+        			System.out.println("*********order_transcost【"+order_transcost+"】*************");
         			String order_taxcost = String.valueOf(withdrawNotify.getWithdraw().getTaxcost());
+        			System.out.println("*********order_taxcost【"+order_taxcost+"】*************");
         			String order_totalamount = String.valueOf(withdrawNotify.getWithdraw().getCash());
+        			System.out.println("*********order_totalamount【"+order_totalamount+"】*************");
         			String requestIp = WebHelper.getRemoteAddr(request);
+        			System.out.println("*********requestIp【"+requestIp+"】*************");
+        			System.out.println("*********OAuthType【"+withdrawNotify.getAccount().getIdentify()+"】*************");
+        			rcp_dto = new ResponseCreateWithdrawDTO();
         			rcp_dto = PaymentInternalHelper.createWithdrawUrlCommunication(
         					withdrawNotify.getAccount().getIdentify(),//.getType(), 
         					orderid,

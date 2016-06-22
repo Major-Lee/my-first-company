@@ -322,7 +322,7 @@ public class UserWalletUnitFacadeService {
 				//根据uid查询对公账号信息
 				UserPublishAccount userPublicAccount = userPublishAccountService.getById(withdrawApply.getUid());
 				if(userPublicAccount == null){
-					throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST);
+					throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST);
 				}
 				paymentDTO.setAuid(String.valueOf(userPublicAccount.getId()));
 				paymentDTO.setAvatar("");
