@@ -176,7 +176,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String SharedNetworkWifi_Default_Uplink_Open_resource = "bhuwifi.com,bhunetworks.com";
 	public static String SharedNetworkWifi_Default_Redirect_url = "www.bhuwifi.com";
 	public static String SharedNetworkWifi_Default_SafeSecure_Remote_auth_url = "http://ucloud.bhuwifi.com:9158/portal/default/reward/index_before.html";
-	public static String SharedNetworkWifi_Default_SmsSecure_Remote_auth_url = "http://ucloud.bhuwifi.com:9158/portal/default/reward/index_sms_before.html";
+	public static String SharedNetworkWifi_Default_SmsSecure_Remote_auth_url = "http://ucloud.bhuwifi.com:9158/portal/default/message/index_before.html";
 	public static String SharedNetworkWifi_Default_Remote_portal_server_url = "uportal.bhuwifi.com:18085";//192.168.66.157:18085
 	public static String SharedNetworkWifi_Default_Remote_Dns_default_ip = "123.57.26.170";
 	
