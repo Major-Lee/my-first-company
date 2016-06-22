@@ -47,7 +47,6 @@ public class ChargingFacadeService {
 	
 	@Resource
 	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
-	
 	@Resource
 	private WifiDeviceBatchImportService wifiDeviceBatchImportService;
 
@@ -521,4 +520,10 @@ public class ChargingFacadeService {
 	public UserService getUserService() {
 		return userService;
 	}
+
+	public UserWifiDeviceFacadeService getUserWifiDeviceFacadeService() {
+		return userWifiDeviceFacadeService;
+	}
+	
+	
 }

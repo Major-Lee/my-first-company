@@ -10,11 +10,11 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.validate.UserTypeValidateService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -89,10 +89,12 @@ public class ChargingUnitFacadeService {
 	
 	public RpcResponseDTO<DeviceSharedealVTO> sharedealDetail(int uid,String mac){
 		try{
-			WifiDevice wifiDevice = chargingFacadeService.getWifiDeviceService().getById(mac);
+			/*WifiDevice wifiDevice = chargingFacadeService.getWifiDeviceService().getById(mac);
 			if(wifiDevice == null){
 				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{"mac"});
-			}
+			}*/
+			UserValidateServiceHelper.validateUser(uid, chargingFacadeService.getUserService());
+			UserValidateServiceHelper.validateUserDevice(uid, mac, chargingFacadeService.getUserWifiDeviceFacadeService());
 			//分成详情
 			WifiDeviceSharedealConfigs configs = chargingFacadeService.userfulWifiDeviceSharedealConfigsJust4View(mac);
 			DeviceSharedealVTO dsv = new DeviceSharedealVTO();
