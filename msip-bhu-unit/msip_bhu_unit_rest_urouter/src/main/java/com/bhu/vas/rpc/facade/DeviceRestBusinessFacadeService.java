@@ -30,6 +30,7 @@ import com.bhu.vas.api.rpc.user.model.UserSearchConditionState;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
+import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
@@ -475,6 +476,30 @@ public class DeviceRestBusinessFacadeService {
 	}
 
 
+	public RpcResponseDTO<List<WifiDevicePresentVTO>> fetchDevicesPresent(List<String> dmacs) {
+		try{
+			List<WifiDevicePresentVTO> result = null;
+			if(dmacs == null || dmacs.isEmpty()){
+				result = Collections.emptyList();
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+			}
+			result = new ArrayList<>();
+			List<Object> presents = WifiDevicePresentCtxService.getInstance().getPresents(dmacs);
+			int index  = 0;
+			WifiDevicePresentVTO vto = null;
+			for(Object present:presents){
+				//if(present != null){
+				vto = new WifiDevicePresentVTO();
+				vto.setMac(dmacs.get(index));
+				vto.setOl(present != null?1:0);
+				result.add(vto);
+				index ++;
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
 
 	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize){
 		try{

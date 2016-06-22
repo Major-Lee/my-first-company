@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
+import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -24,6 +25,7 @@ public class DeviceSharedealController extends BaseController{
 	
     @Resource
     private IChargingRpcService chargingRpcService;
+    
 	/**
      * 
      * @param request
@@ -69,4 +71,25 @@ public class DeviceSharedealController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
     }  
+    
+    @ResponseBody()
+    @RequestMapping(value = "/sharedeal/detail", method = {RequestMethod.POST})
+    public void detail(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) String mac
+    		) {
+    	try{
+			RpcResponseDTO<DeviceSharedealVTO> rpcResult = chargingRpcService.sharedealDetail(uid, mac.toLowerCase());
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	    }catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+    }
 }

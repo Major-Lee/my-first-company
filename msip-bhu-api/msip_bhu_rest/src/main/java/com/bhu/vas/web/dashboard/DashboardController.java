@@ -1,5 +1,8 @@
 package com.bhu.vas.web.dashboard;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +25,7 @@ import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
+import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
@@ -68,6 +72,9 @@ public class DashboardController extends BaseController{
 	private static final String DefaultSecretkey = "PzdfTFJSUEBHG0dcWFcLew==";
 	
 	private static final String BackendChargeSecretkey = "Li9HTFJSUEZCH0ZWXFZfIg==";
+	
+	private static final String ThirdpartiesFetchSecretkey = "NzdHUFNSUEARTUcKXwRfdg==";
+	
 	private ResponseError validate(String secretKey){
 		if(!DefaultSecretkey.equals(secretKey)){
 			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
@@ -77,6 +84,13 @@ public class DashboardController extends BaseController{
 	
 	private ResponseError validateBackendCharge(String secretKey){
 		if(!BackendChargeSecretkey.equals(secretKey)){
+			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
+		}
+		return null;
+	}
+	
+	private ResponseError validateThirdpartiesFetch(String secretKey){
+		if(!ThirdpartiesFetchSecretkey.equals(secretKey)){
 			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
 		}
 		return null;
@@ -389,6 +403,42 @@ public class DashboardController extends BaseController{
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{cash});
 			}
 			RpcResponseDTO<Boolean> rpcResult = userWalletRpcService.directDrawPresent(uid, from.concat(StringHelper.MINUS_STRING_GAP).concat(orderid), Double.valueOf(cash), desc);//(d_snk_turnstate, d_snk_type);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}finally{
+			
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/device/status",method={RequestMethod.POST})
+	public void device_status(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true, value="sk") String secretKey,
+			@RequestParam(required = false,defaultValue="feifan") String from,
+			@RequestParam(required = true) String macs
+			) {
+		ResponseError validateError = validateThirdpartiesFetch(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		String[] macarray = StringHelper.split(macs.toLowerCase(), StringHelper.COMMA_STRING_GAP);
+    	List<String> masList = Arrays.asList(macarray);
+    	if(!StringHelper.isValidMacs(masList)){
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"}));
+    		return;
+    	}
+		try{
+			RpcResponseDTO<List<WifiDevicePresentVTO>> rpcResult = deviceRestRpcService.fetchDevicesPresent(masList);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else

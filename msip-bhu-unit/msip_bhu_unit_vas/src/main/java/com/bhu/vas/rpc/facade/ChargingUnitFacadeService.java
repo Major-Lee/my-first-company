@@ -7,9 +7,12 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.validate.UserTypeValidateService;
@@ -78,6 +81,37 @@ public class ChargingUnitFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<DeviceSharedealVTO> sharedealDetail(int uid,String mac){
+		try{
+			WifiDevice wifiDevice = chargingFacadeService.getWifiDeviceService().getById(mac);
+			if(wifiDevice == null){
+				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{"mac"});
+			}
+			//分成详情
+			WifiDeviceSharedealConfigs configs = chargingFacadeService.userfulWifiDeviceSharedealConfigsJust4View(mac);
+			DeviceSharedealVTO dsv = new DeviceSharedealVTO();
+			dsv.setMac(configs.getId());
+			dsv.setBatchno(configs.getBatchno());
+			dsv.setOwner_percent(configs.getOwner_percent());
+			dsv.setManufacturer_percent(configs.getManufacturer_percent());
+			dsv.setDistributor_percent(configs.getDistributor_percent());
+			dsv.setRcm(configs.getRange_cash_mobile());
+			dsv.setRcp(configs.getRange_cash_pc());
+			dsv.setAitm(configs.getAit_mobile());
+			dsv.setAitp(configs.getAit_pc());
+			dsv.setCanbeturnoff(configs.isCanbe_turnoff());
+			dsv.setRuntime_applydefault(configs.isRuntime_applydefault());
+			dsv.setCustomized(configs.isCustomized());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dsv);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
