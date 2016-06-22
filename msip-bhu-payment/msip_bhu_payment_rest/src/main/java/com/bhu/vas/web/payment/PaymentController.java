@@ -770,12 +770,12 @@ public class PaymentController extends BaseController{
         String noncestr = payHttpService.getNonceStr();//生成随机字符串
         String prepay_id = unifiedOrderResponse.getPrepay_id();
         SortedMap<Object, Object> params = new TreeMap<Object,Object>();
-        params.put("appId", payHttpService.getAppAppId());
-        params.put("partnerId", payHttpService.getAppMchId());
-        params.put("prepayId", prepay_id);
-        params.put("nonceStr", noncestr);
-        params.put("timeStamp",timestamp);
+        params.put("appid", payHttpService.getAppAppId());
+        params.put("partnerid", payHttpService.getAppMchId());
+        params.put("prepayid", prepay_id);
         params.put("package", "Sign=WXPay");
+        params.put("noncestr", noncestr);
+        params.put("timestamp",timestamp);
 
         //生成支付签名,这个签名 给 微信支付的调用使用
         String paySign =  payHttpService.createSign(payHttpService.getAppMchKey(),"UTF-8", params);
