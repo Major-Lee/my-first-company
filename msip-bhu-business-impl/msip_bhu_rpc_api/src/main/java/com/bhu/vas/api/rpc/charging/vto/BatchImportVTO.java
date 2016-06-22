@@ -13,6 +13,7 @@ public class BatchImportVTO implements java.io.Serializable{
 	private String mobileno;
 	
 	private int distributor;
+	private String distributor_nick;
 	private String sellor;
 	private String partner;
 	private String owner_percent;
@@ -203,5 +204,10 @@ public class BatchImportVTO implements java.io.Serializable{
 	public void setDistributor_percent(String distributor_percent) {
 		this.distributor_percent = distributor_percent;
 	}
-	
+	public String getDistributor_nick() {
+		return distributor_nick;
+	}
+	public void setDistributor_nick(String distributor_nick) {
+		this.distributor_nick = distributor_nick;
+	}
 }

@@ -73,12 +73,18 @@ public class ChargingFacadeService {
     		String range_cash_mobile,String range_cash_pc,String access_internet_time,
     		String remark){
     	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
+    	
     	if(StringUtils.isNotEmpty(mobileno)){
     		boolean exist = UniqueFacadeService.checkMobilenoExist(countrycode,mobileno);
         	if(!exist){
         		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"mobileno",mobileno});
         	}
     	}
+    	User distributor_user = null;
+    	if(distributor_uid >0){
+    		distributor_user = UserValidateServiceHelper.validateUser(distributor_uid,this.userService);
+    	}
+    	
     	WifiDeviceBatchImport batch_import = new WifiDeviceBatchImport();
     	batch_import.setImportor(uid);
     	batch_import.setMobileno(mobileno);
@@ -137,7 +143,7 @@ public class ChargingFacadeService {
     	batch_import.setRemark(remark);
     	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTED_FILE);
     	wifiDeviceBatchImportService.insert(batch_import);
-    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno());
+    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP);
     }
     
     public BatchImportVTO doCancelDeviceRecord(int uid,String import_id) {
@@ -149,7 +155,12 @@ public class ChargingFacadeService {
     	batch_import.setImportor(uid);
     	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTING_CANCEL);
     	wifiDeviceBatchImportService.update(batch_import);
-    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno());
+    	
+    	User distributor_user = null;
+    	if(batch_import.getDistributor() >0){
+    		distributor_user = userService.getById(batch_import.getDistributor());
+    	}
+    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP);
     }
     
     public BatchImportVTO doConfirmDeviceRecord(int uid,String import_id) {
@@ -160,7 +171,12 @@ public class ChargingFacadeService {
     	}
     	batch_import.setStatus(WifiDeviceBatchImport.STATUS_CONFIRMED_DOING);
     	wifiDeviceBatchImportService.update(batch_import);
-    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno());
+    	
+    	User distributor_user = null;
+    	if(batch_import.getDistributor() >0){
+    		distributor_user = userService.getById(batch_import.getDistributor());
+    	}
+    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP);
     }
     public TailPage<BatchImportVTO> pagesBatchImport(int uid,int status, int pageNo, int pageSize){
     	TailPage<BatchImportVTO> result_pages = null;
@@ -184,7 +200,11 @@ public class ChargingFacadeService {
 			int index = 0;
 			for(WifiDeviceBatchImport batchimport:pages.getItems()){
 				User user = users.get(index);
-				vtos_result.add(batchimport.toBatchImportVTO(user.getNick(), user.getMobileno()));
+				User distributor_user = null;
+		    	if(batchimport.getDistributor() >0){
+		    		distributor_user = userService.getById(batchimport.getDistributor());
+		    	}
+				vtos_result.add(batchimport.toBatchImportVTO(user.getNick(), user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP));
 				index++;
 			}
 		}

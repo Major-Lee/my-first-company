@@ -79,7 +79,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			final AtomicInteger atomic_successed = new AtomicInteger(0);
 			//String filepath = "/Users/Edmond/gospace/库房出库清单-20160426-0001.xlsx";
 			//String mobileno = batchImport.getMobileno();
-			final BatchImportVTO importVto = batchImport.toBatchImportVTO(null, null);
+			final BatchImportVTO importVto = batchImport.toBatchImportVTO(null, null,null);
 			//final String mobileno = batchImport.getMobileno();
 			final Integer uid_willbinded = UniqueFacadeService.fetchUidByMobileno(86,batchImport.getMobileno());
 			ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), new ExcelElementCallback(){
