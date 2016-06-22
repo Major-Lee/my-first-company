@@ -326,7 +326,7 @@ public class OrderController extends BaseController{
 	
 	
 	/**
-	 * 根据订单参数查询打赏订单分页列表
+	 * 根据订单参数查询短信认证订单分页列表
 	 * @param request
 	 * @param response
 	 * @param uid 用户id
