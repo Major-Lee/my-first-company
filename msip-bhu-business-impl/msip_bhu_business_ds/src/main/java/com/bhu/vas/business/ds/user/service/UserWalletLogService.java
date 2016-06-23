@@ -36,4 +36,11 @@ public class UserWalletLogService extends AbstractCoreService<Long,UserWalletLog
 		mc.createCriteria().andColumnIn("orderid", orderids);
     	return super.findModelByModelCriteria(mc);
 	}
+	public List<UserWalletLog> findListByTime(String time){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("transmode", "SDP");
+		mc.createCriteria().andColumnEqualTo("transtype", "P2C");
+		mc.createCriteria().andColumnLike("updated_at", time+"%");
+		return super.findModelByModelCriteria(mc);
+	}
 }

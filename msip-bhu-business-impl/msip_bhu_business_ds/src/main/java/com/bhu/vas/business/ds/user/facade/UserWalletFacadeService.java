@@ -49,6 +49,7 @@ import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
+import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
@@ -94,7 +95,15 @@ public class UserWalletFacadeService{
 	private DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService;
 	@Resource
 	private UserIncomeRankService userIncomeRankService;
+	@Resource
+	private UserIncomeService userIncomeService;
 	
+	public UserIncomeService getUserIncomeService() {
+		return userIncomeService;
+	}
+	public void setUserIncomeService(UserIncomeService userIncomeService) {
+		this.userIncomeService = userIncomeService;
+	}
 	public UserIncomeRankService getUserIncomeRankService() {
 		return userIncomeRankService;
 	}
@@ -1094,5 +1103,4 @@ public class UserWalletFacadeService{
 			}
 		}
 	}
-	
 }
