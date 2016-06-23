@@ -91,6 +91,10 @@ public class UserWifiDeviceFacadeService {
 			bindDeviceName = deviceFacadeService.getBindDeviceName(mac);
 			userWifiDevice = insertUserWifiDevice(mac, uid, bindDeviceName);
 		}else{
+			if(uid.equals(userWifiDevice.getUid())){
+				return userWifiDevice;
+			}
+			
 			if(useOldDeviceName){
 				bindDeviceName = userWifiDevice.getDevice_name();
 			}else{

@@ -20,6 +20,7 @@ import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -54,9 +55,19 @@ public class ConsoleSearchController extends BaseController {
     	for(SearchCondition searchCondition : scm.getSearchConditions()){
     		System.out.println("for:"+ searchCondition.getKey() + "=" + searchCondition.getPattern() + "=" + searchCondition.getPayload());
     	}*/
-        RpcResponseDTO<TailPage<WifiDeviceVTO1>> vtos = deviceRestRpcService.fetchBySearchConditionMessage(
-        		message, pageNo, pageSize);
-        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
+        RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> rpcResult = deviceRestRpcService.fetchBySearchConditionMessages(
+        		pageNo, pageSize, message);
+		if(!rpcResult.hasError()){
+			//兼容老的界面和接口
+			List<TailPage<WifiDeviceVTO1>> rpcResultPayload = rpcResult.getPayload();
+			if(rpcResultPayload != null && !rpcResultPayload.isEmpty()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResultPayload.get(0)));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(null));
+			}
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
     }
     
     /**

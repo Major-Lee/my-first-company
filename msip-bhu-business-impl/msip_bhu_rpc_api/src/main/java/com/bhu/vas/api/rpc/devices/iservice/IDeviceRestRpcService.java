@@ -33,7 +33,7 @@ public interface IDeviceRestRpcService {
 	
 	public RpcResponseDTO<List<PersistenceCMDDetailDTO>> fetchDevicePersistenceDetailCMD(String wifiId);
 	public RpcResponseDTO<String> fetchDevicePresent(String wifiId);
-	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize);
+	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(int pageNo, int pageSize, String... messages);
 
 	//public Collection<GeoMapVTO> fetchGeoMap();
 	
