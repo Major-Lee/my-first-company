@@ -138,7 +138,8 @@ public class UserPublishAccountFacadeService{
 	public UserPublishAccountDetailVTO publicAccountDetail(int uid){
 		UserPublishAccount userPublishAccount = userPublishAccount(uid);
 		if(userPublishAccount == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST);
+			//throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST);
+			return null;
 		}
 		UserPublishAccountDetailVTO userPublishAccountDetail = userPublishAccount.toUserPulishAccountDetailVTO();
 		return userPublishAccountDetail;
