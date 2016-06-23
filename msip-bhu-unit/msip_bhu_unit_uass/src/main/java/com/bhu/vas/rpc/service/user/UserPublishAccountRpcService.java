@@ -36,5 +36,13 @@ public class UserPublishAccountRpcService implements IUserPublishAccountRpcServi
 			int uid) {
 		return userPublishAccountUnitFacadeService.queryUserPublishAccount(uid);
 	}
+	
+	/**
+	 * 解绑对公账号信息
+	 */
+	@Override
+	public RpcResponseDTO<Boolean> deletePublicAccount(int uid) {
+		return userPublishAccountUnitFacadeService.deletePublicAccount(uid);
+	}
 
 }
