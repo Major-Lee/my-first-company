@@ -241,17 +241,17 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_rest_urouter/lib/msip_*.
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_rest_urouter/classes/com/             root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_rest_urouter/classes/com/
 echo 'deploy msip_bhu_unit_rest_urouter successfully @'$Deploy2ComponentServerSanji
 
-echo 'deploy msip_bhu_backend_online to ...@'$Deploy2ComponentServerSanji
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_online/lib/spring*.RELEASE.jar    root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_online/lib/msip_*.jar   root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_online/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_online/classes/com/     root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_online/bin/com/
-echo 'deploy msip_bhu_backend_online successfully @'$Deploy2ComponentServerSanji
+#echo 'deploy msip_bhu_backend_online to ...@'$Deploy2ComponentServerSanji
+#rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_online/lib/spring*.RELEASE.jar    root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_online/libs/
+#rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_online/lib/msip_*.jar   root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_online/libs/
+#rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_online/classes/com/     root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_online/bin/com/
+#echo 'deploy msip_bhu_backend_online successfully @'$Deploy2ComponentServerSanji
 
-echo 'deploy msip_bhu_dataimport to ...@'$Deploy2ComponentServerSanji
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/lib/spring*.RELEASE.jar      root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_dataimport/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/lib/msip_*.jar               root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_dataimport/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/classes/com/                 root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_dataimport/bin/com/
-echo 'deploy msip_bhu_dataimport successfully @'$Deploy2ComponentServerSanji
+#echo 'deploy msip_bhu_dataimport to ...@'$Deploy2ComponentServerSanji
+#rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/lib/spring*.RELEASE.jar      root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_dataimport/libs/
+#rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/lib/msip_*.jar               root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_dataimport/libs/
+#rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/classes/com/                 root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_dataimport/bin/com/
+#echo 'deploy msip_bhu_dataimport successfully @'$Deploy2ComponentServerSanji
 
 echo 'deploy msip_bhu_unit_tag to ...@'$Deploy2ComponentServerSanji
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_tag/lib/spring*.RELEASE.jar  root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_tag/libs/
