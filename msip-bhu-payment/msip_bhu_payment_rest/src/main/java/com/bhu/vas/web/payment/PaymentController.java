@@ -386,10 +386,10 @@ public class PaymentController extends BaseController{
         	
         	String total_fee_fen = BusinessHelper.getMoney(total_fee);
         	int temp = Integer.parseInt(total_fee_fen);
-        	if(temp < 100){
+        	if(temp < 1000){
         		logger.error(String.format("apply withdrawals total_fee[%s] ", total_fee));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT)));
+    					ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT,new String[]{"10元"})));
         		return;
         	}
         	
