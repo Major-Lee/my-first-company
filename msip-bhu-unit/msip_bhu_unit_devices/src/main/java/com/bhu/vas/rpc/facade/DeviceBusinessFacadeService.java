@@ -166,10 +166,14 @@ public class DeviceBusinessFacadeService {
 	 * 5:统计增量 wifi设备的daily启动次数增量(backend)
 	 */
 	public void wifiDeviceOnline(String ctx, String payload) {
+		
 		WifiDeviceDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, WifiDeviceDTO.class);
 		
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+		
+		long ts = System.currentTimeMillis();
+		System.out.println(String.format("#####################################wifiDeviceOnline start[%s] mac[%s]", ts, dto.getMac()));
 		//wifi设备是否是新设备
 		boolean newWifi = false;
 		boolean wanIpChanged = false;
@@ -216,21 +220,29 @@ public class DeviceBusinessFacadeService {
 		wifi_device_module.setOnline(true);
 		wifi_device_module.setLast_module_reged_at(reged_at);
 		wifiDeviceModuleService.update(wifi_device_module);
+		long db_ts = System.currentTimeMillis();
+		System.out.println(String.format("#####################################wifiDeviceOnline db finish[%s] mac[%s]", db_ts - ts, dto.getMac()));
 		//设备上线增量索引
 		wifiDeviceStatusIndexIncrementService.onlineUpsertIncrement(wifi_device_entity, newWifi);
+		long index_ts = System.currentTimeMillis();
+		System.out.println(String.format("#####################################wifiDeviceOnline index finish[%s] mac[%s]", index_ts - db_ts, dto.getMac()));
 		//本次wifi设备登录时间
 		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
 		boolean needLocationQuery = false;
 		if(wanIpChanged || StringUtils.isEmpty(wifi_device_entity.getLat()) || StringUtils.isEmpty(wifi_device_entity.getLon())){
 			needLocationQuery = true;
 		}
+		
 		/*
 		 * 3:wifi设备对应handset在线列表redis初始化 根据设备上线时间作为阀值来进行列表清理, 防止多线程情况下清除有效移动设备 (backend)
 		 * 4:统计增量 wifi设备的daily新增设备或活跃设备增量 (backend)
 		 * 5:统计增量 wifi设备的daily启动次数增量(backend)
 		 */
+		
 		deliverMessageService.sendWifiDeviceOnlineActionMessage(wifi_device_entity.getId(), dto.getJoin_reason(),
 				this_login_at, last_login_at, newWifi,wanIpChanged,needLocationQuery/*, workModeChanged*/,oldWorkmode,dto.getWork_mode());
+		long queue_ts = System.currentTimeMillis();
+		System.out.println(String.format("#####################################wifiDeviceOnline queue finish[%s] mac[%s]", queue_ts - index_ts, dto.getMac()));
 	}
 	
 	/**
