@@ -82,4 +82,27 @@ public class UserPublishAccountController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
 	}
+	
+	/**
+	 * 解绑对公账号信息【既删除】
+	 * @param response
+	 * @param uid
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/DelPublicAccount", method={RequestMethod.GET,RequestMethod.POST})
+	public void DelPublicAccount(
+			HttpServletResponse response, 
+			@RequestParam(required=true) Integer uid){
+		log.info(String.format("publicAccountdetail uid[%s] ",uid));
+		try{
+			RpcResponseDTO<Boolean> rpcResult = userPublishAccountRpcService.deletePublicAccount(uid);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
 }

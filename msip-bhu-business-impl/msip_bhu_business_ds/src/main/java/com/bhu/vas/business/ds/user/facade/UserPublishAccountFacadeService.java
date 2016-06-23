@@ -23,6 +23,7 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
@@ -137,7 +138,7 @@ public class UserPublishAccountFacadeService{
 	public UserPublishAccountDetailVTO publicAccountDetail(int uid){
 		UserPublishAccount userPublishAccount = userPublishAccount(uid);
 		if(userPublishAccount == null){
-			return null;
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST);
 		}
 		UserPublishAccountDetailVTO userPublishAccountDetail = userPublishAccount.toUserPulishAccountDetailVTO();
 		return userPublishAccountDetail;
@@ -170,5 +171,17 @@ public class UserPublishAccountFacadeService{
 		}
 	}
 	
-	
+	/**
+	 * 解绑对公账号
+	 * @param uid
+	 */
+	public void deletePublicAccount(int uid){
+		UserPublishAccount userPublishAccount = userPublishAccount(uid);
+		if(userPublishAccount == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST);
+		}
+		ModelCriteria mc = new ModelCriteria();
+        mc.createCriteria().andColumnEqualTo("uid", uid);
+        userPublishAccountService.deleteById(uid);
+	}
 }

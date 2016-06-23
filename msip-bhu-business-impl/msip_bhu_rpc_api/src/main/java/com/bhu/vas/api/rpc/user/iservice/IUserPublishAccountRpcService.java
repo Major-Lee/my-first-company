@@ -48,5 +48,11 @@ public interface IUserPublishAccountRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<UserPublishAccountDetailVTO> queryUserPublishAccountDetail(int uid);
-
+	
+	/**
+	 * 解绑对公账号
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> deletePublicAccount(int uid);
 }
