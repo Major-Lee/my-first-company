@@ -52,12 +52,15 @@ public class NumberValidateHelper {
 		String[] array = param.split(StringHelper.MINUS_STRING_GAP);
 		if(array.length != 2) return false;
 		try{
-			double start = Double.parseDouble(array[0]);
-			double end = Double.parseDouble(array[1]);
-			if(start > end)	return false;
-			boolean ret1 = amountInRange(start,minValue,maxValue);
-			boolean ret2 = amountInRange(end,minValue,maxValue);
-			if(ret1 && ret2) return true;
+			//正数或0，并且小数位数不超过2位
+			if(isValidNumberCharacter(array[0]) && isValidNumberCharacter(array[1])){
+				double start = Double.parseDouble(array[0]);
+				double end = Double.parseDouble(array[1]);
+				if(start > end)	return false;
+				boolean ret1 = amountInRange(start,minValue,maxValue);
+				boolean ret2 = amountInRange(end,minValue,maxValue);
+				if(ret1 && ret2) return true;
+			}
 		}catch(NumberFormatException nfe){
 			nfe.printStackTrace(System.out);
 		}
