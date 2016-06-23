@@ -105,7 +105,11 @@ public class UserPublishAccountUnitFacadeService {
 	
 	public RpcResponseDTO<UserPublishAccountDetailVTO> queryUserPublishAccount(int uid){
 		try{
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userPublishAccountFacadeService.publicAccountDetail(uid));
+			UserPublishAccountDetailVTO vto = userPublishAccountFacadeService.publicAccountDetail(uid);
+			if(vto == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST);
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
