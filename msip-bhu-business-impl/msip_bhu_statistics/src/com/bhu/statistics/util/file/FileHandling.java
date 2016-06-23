@@ -25,6 +25,7 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
+import com.bhu.statistics.util.DataUtils;
 import com.bhu.statistics.util.JSONObject;
 import com.bhu.statistics.util.cache.BhuCache;
 import com.bhu.statistics.util.http.RequestPostUtils;
@@ -186,12 +187,9 @@ public class FileHandling {
 											}
 											String currHMac = (String) macMap.get(mac);
 											if(StringUtils.equals(currHMac, hmac)){
-													System.out.println("=======HMAC已存在======");
 													macUVNumMap.put(mac, String.valueOf(uvNum));
 											}else{
-												System.out.println("=======HMAC不存在======");
 												macUVNumMap.put(mac, String.valueOf(uvNum+1));
-												System.out.println("**********"+macUVNumMap.get(mac)+"********");
 											}
 										}
 										macMap.put(mac, hmac);
@@ -287,9 +285,11 @@ public class FileHandling {
 			resultMap.put("mb_ofa", mb_ofa);
 			BhuCache.getInstance().setStOrder(getNextDay(), "stOrder", JSONObject.toJsonString(resultMap));
 			String str = BhuCache.getInstance().getStOrder(getNextDay(),"stOrder");
-			System.out.println(str);
+			System.out.println("**【"+DataUtils.getTimestamp().toString()+"】*********请求获取订单数据参数startTime：【"+startTime+"】*************************");
+			System.out.println("**【"+DataUtils.getTimestamp().toString()+"】*********请求获取订单数据参数endTime：【"+endTime+"】*************************");
+			System.out.println("**【"+DataUtils.getTimestamp().toString()+"】*********请求获取订单数据参数params：【"+params+"】*************************");
+			System.out.println("**【"+DataUtils.getTimestamp().toString()+"】*********请求获取订单数据返回结果：【"+str+"】*************************");
 		}
-		
 		String dayPvNum = BhuCache.getInstance().getDayPV(getNextDay(), "dayPV");
 		System.out.println("dayPvNum***************"+dayPvNum);
 		String dayUvNum = BhuCache.getInstance().getDayUV(getNextDay(), "dayUV");
