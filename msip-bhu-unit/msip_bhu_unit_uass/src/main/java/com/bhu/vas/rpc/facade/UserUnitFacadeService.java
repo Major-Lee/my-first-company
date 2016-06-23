@@ -14,6 +14,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
+import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
@@ -627,5 +628,59 @@ public class UserUnitFacadeService {
 			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
 		}
 
+	}
+	
+	/**
+	 * 根据条件查询用户列表
+	 * @param map
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserManageDTO>> pageUserQueryList(Map<String,Object> map){
+		try {
+			ModelCriteria mc = new ModelCriteria();
+			Criteria cri = mc.createCriteria();
+			//电话
+			String mobileNo = StringUtils.EMPTY;
+			String userType = StringUtils.EMPTY;
+			String terminalType = StringUtils.EMPTY;
+			String regdevice = StringUtils.EMPTY;
+			String startTime = StringUtils.EMPTY;
+			String endTime = StringUtils.EMPTY;
+			String isCashBack = StringUtils.EMPTY;
+			String pageNo = StringUtils.EMPTY;
+			String pageSize = StringUtils.EMPTY;
+			if(StringUtils.isNotBlank(mobileNo)){
+				cri.andColumnEqualTo("mobileno", mobileNo);
+			}
+			if(StringUtils.isNotBlank(userType)){
+				UserType ut = UserType.getBySName(userType);
+				cri.andColumnEqualTo("utype", ut.getIndex());
+			}
+			if(StringUtils.isNotBlank(regdevice)){
+				cri.andColumnEqualTo("regdevice", regdevice);
+			}
+			if(StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)){
+				cri.andColumnBetween("created_at", startTime, endTime);
+			}
+			cri.andSimpleCaulse(" 1=1 ");
+			mc.setOrderByClause(" id desc ");
+			mc.setPageNumber(Integer.parseInt(pageNo));
+			mc.setPageSize(Integer.parseInt(pageNo));
+			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
+			List<UserManageDTO> vtos = new ArrayList<>();
+			for(User _user:tailusers.getItems()){
+				//vtos.add(RpcResponseDTOBuilder.builderUserDTOFromUser(_user, false));
+			}
+			TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(tailusers.getPageNumber(), Integer.parseInt(pageSize), tailusers.getTotalItemsCount(), vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+		}
 	}
 }
