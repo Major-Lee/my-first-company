@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
@@ -62,7 +63,8 @@ public class ConsoleSearchController extends BaseController {
 			//兼容老的界面和接口
 			List<TailPage<WifiDeviceVTO1>> rpcResultPayload = rpcResult.getPayload();
 			if(rpcResultPayload != null && !rpcResultPayload.isEmpty()){
-				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResultPayload.get(0)));
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.
+						builderSuccessRpcResponse(rpcResultPayload.get(0))));
 			}else{
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(null));
 			}
@@ -93,7 +95,7 @@ public class ConsoleSearchController extends BaseController {
         RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> rpcResult = deviceRestRpcService.fetchBySearchConditionMessages(
         		pageNo, pageSize, messages);
 		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
