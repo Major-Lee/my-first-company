@@ -957,14 +957,6 @@ public class DeviceFacadeService{
 		}
 		
 		if(presentDto != null){
-/*			List<UserDevicePK> userDevices = this.getUserDevices(uid);
-			if(userDevices == null || userDevices.isEmpty()){
-				return;
-			}
-			List<String> macs = new ArrayList<String>();
-			for(UserDevicePK pk : userDevices){
-				macs.add(pk.getMac());
-			}*/
 			List<String> macs = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(uid);
 			//处理业务action
 			if(StringUtils.isNotEmpty(action_mac) && action != null){
@@ -980,9 +972,11 @@ public class DeviceFacadeService{
 			}
 			
 			int bindmac_size = macs.size();
-			presentDto.setMulti(bindmac_size > 1 ? true : false);
-			WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
-					JsonHelper.getJSONString(presentDto));
+			if(bindmac_size > 0){
+				presentDto.setMulti(bindmac_size > 1 ? true : false);
+				WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
+						JsonHelper.getJSONString(presentDto));
+			}
 		}
 	}
 	/**

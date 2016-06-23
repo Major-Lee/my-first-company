@@ -501,45 +501,55 @@ public class DeviceRestBusinessFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize){
+	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(int pageNo, int pageSize, String... messages){
 		try{
-			List<WifiDeviceVTO1> vtos = null;
-			
-			int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
-			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(
-					message, searchPageNo, pageSize);
-			
-			int total = 0;
-			if(search_result != null){
-				total = (int)search_result.getTotalElements();//.getTotal();
-				if(total == 0){
-					vtos = Collections.emptyList();
-				}else{
-					List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
-					if(searchDocuments.isEmpty()) {
-						vtos = Collections.emptyList();
-					}else{
-						vtos = new ArrayList<WifiDeviceVTO1>();
-						List<String> macs = DocumentIdsHelper.buildWifiDeviceDocumentIds(searchDocuments);
-						List<String> tagGroupNames = tagGroupFacadeService.findGroupNamesByMacs(macs);
-						WifiDeviceVTO1 vto = null;
-						int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
-						int cursor = 0;
-						for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
-							vto = new WifiDeviceVTO1();
-							vto.setUg_name(tagGroupNames.get(cursor));
-							vto.setIndex(++startIndex);
-							BeanUtils.copyProperties(wifiDeviceDocument, vto);
-							vtos.add(vto);
-							cursor++;
-						}
-					}
-				}
+			List<TailPage<WifiDeviceVTO1>> resultList = null;
+			if(messages == null || messages.length == 0){
+				resultList = Collections.emptyList();
 			}else{
-				vtos = Collections.emptyList();
+				resultList = new ArrayList<TailPage<WifiDeviceVTO1>>();
+				int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+				for(String message : messages){
+					List<WifiDeviceVTO1> vtos = null;
+					Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(
+							message, searchPageNo, pageSize);
+					
+					int total = 0;
+					if(search_result != null){
+						total = (int)search_result.getTotalElements();//.getTotal();
+						if(total == 0){
+							vtos = Collections.emptyList();
+						}else{
+							List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+							if(searchDocuments.isEmpty()) {
+								vtos = Collections.emptyList();
+							}else{
+								vtos = new ArrayList<WifiDeviceVTO1>();
+								List<String> macs = DocumentIdsHelper.buildWifiDeviceDocumentIds(searchDocuments);
+								List<String> tagGroupNames = tagGroupFacadeService.findGroupNamesByMacs(macs);
+								WifiDeviceVTO1 vto = null;
+								int startIndex = PageHelper.getStartIndexOfPage(pageNo, pageSize);
+								int cursor = 0;
+								for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
+									vto = new WifiDeviceVTO1();
+									vto.setUg_name(tagGroupNames.get(cursor));
+									vto.setIndex(++startIndex);
+									BeanUtils.copyProperties(wifiDeviceDocument, vto);
+									vtos.add(vto);
+									cursor++;
+								}
+							}
+						}
+					}else{
+						vtos = Collections.emptyList();
+					}
+					TailPage<WifiDeviceVTO1> returnRet = new CommonPage<WifiDeviceVTO1>(pageNo, pageSize, total, vtos);
+					resultList.add(returnRet);
+				}
 			}
-			TailPage<WifiDeviceVTO1> returnRet = new CommonPage<WifiDeviceVTO1>(pageNo, pageSize, total, vtos);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+
+			//TailPage<WifiDeviceVTO1> returnRet = new CommonPage<WifiDeviceVTO1>(pageNo, pageSize, total, vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(resultList);
 		}catch(ElasticsearchIllegalArgumentException eiaex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SEARCH_CONDITION_TYPE_NOTEXIST);
 		}
@@ -584,6 +594,21 @@ public class DeviceRestBusinessFacadeService {
 			ex.printStackTrace();
 		}
 		return 0l;
+	}
+	
+	/**
+	 * 多个独立搜索条件进行数量搜索
+	 * @param messages
+	 * @return
+	 */
+	public List<Long> countBySearchConditionMessages(List<String> messages) {
+		if(messages == null || messages.isEmpty()) return Collections.emptyList();
+		
+		List<Long> searchCountResults = new ArrayList<Long>();
+		for(String message : messages){
+			searchCountResults.add(wifiDeviceDataSearchService.searchCountByConditionMessage(message));
+		}
+		return searchCountResults;
 	}
 	
 	public RpcResponseDTO<DeviceStatisticsVTO> deviceStatistics(String d_snk_turnstate, String d_snk_type) {
