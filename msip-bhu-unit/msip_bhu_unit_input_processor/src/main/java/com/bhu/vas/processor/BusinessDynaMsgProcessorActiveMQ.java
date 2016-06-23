@@ -1,4 +1,4 @@
-package com.bhu.vas.processor;
+/*package com.bhu.vas.processor;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,14 +27,12 @@ import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
-/*import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;*/
 
-/**
+*//**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
  * @author Edmond
  *
- */
+ *//*
 //@Service
 public class BusinessDynaMsgProcessorActiveMQ implements DynaQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessDynaMsgProcessorActiveMQ.class);
@@ -182,14 +180,14 @@ public class BusinessDynaMsgProcessorActiveMQ implements DynaQueueMessageListene
 							}
 						}
 					}
-					/*if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串 由 deviceMessageDispatchRpcService 处理
+					if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串 由 deviceMessageDispatchRpcService 处理
 						OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
 						if(cmd_opt != null){
 							if(cmd_opt == OperationCMD.QueryDeviceLocationNotify){
 								daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);
 							}
 						}
-					}*/
+					}
 				break;
 		}
 	}
@@ -203,7 +201,7 @@ public class BusinessDynaMsgProcessorActiveMQ implements DynaQueueMessageListene
 			@Override
 			public void run() {
 				doSpecialProcessor(ctx,payload,type,headers);
-				/*if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
+				if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
 					DynamicLogWriter.doLogger(headers.getMac(), 
 							ActionBuilder.toJsonHasPrefix(
 									ActionBuilder.builderDeviceOfflineAction(headers.getMac(), System.currentTimeMillis()))
@@ -248,7 +246,7 @@ public class BusinessDynaMsgProcessorActiveMQ implements DynaQueueMessageListene
 							}
 						}
 					}
-				}*/
+				}
 				deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 			}
 		}));
@@ -322,3 +320,4 @@ public class BusinessDynaMsgProcessorActiveMQ implements DynaQueueMessageListene
 	}
 	
 }
+*/
