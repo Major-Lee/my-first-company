@@ -43,4 +43,23 @@ public class ConsoleUserController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
     }
+    
+    
+    @ResponseBody()
+    @RequestMapping(value = "/queryUserList", method = {RequestMethod.POST})
+    public void queryUserList(
+    		 HttpServletRequest request,
+             HttpServletResponse response,
+             @RequestParam(required = false) String mobileNo,
+             @RequestParam(required = false) String userType,
+             @RequestParam(required = false) String regdevice,
+ 			 @RequestParam(required = false) String boundEquNum,
+ 			 @RequestParam(required  = false) String createTime,
+ 			 @RequestParam(required  = false) String isCashBack,
+ 			 @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+			 @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
+    		){
+    	
+    	
+    }
 }
