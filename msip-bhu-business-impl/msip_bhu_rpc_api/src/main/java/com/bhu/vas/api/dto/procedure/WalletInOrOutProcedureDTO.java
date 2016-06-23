@@ -204,6 +204,9 @@ public class WalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 				if(UWalletTransType.PurchaseGoodsUsedC.equals(transType)){
 					;//日志里不体现具体道具
 				}
+				if(UWalletTransType.PurchaseInternetServiceUsedV.equals(transType)){
+					;//日志里不体现具体什么上网服务
+				}
 				if(UWalletTransType.Cash2Realmoney.equals(transType)){
 					dto.setPrmoney(StringHelper.PLUS_STRING_GAP.concat(String.valueOf(rmoney)));
 				}
