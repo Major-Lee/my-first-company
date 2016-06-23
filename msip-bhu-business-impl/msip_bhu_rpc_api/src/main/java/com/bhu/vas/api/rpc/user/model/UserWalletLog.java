@@ -143,7 +143,9 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 		vto.setCash(cash);
 		vto.setRmoney(rmoney);
 		vto.setVcurrency(vcurrency);
+		vto.setTransmode(transmode);
 		vto.setTransmode_desc(transmode_desc);
+		vto.setTranstype(transtype);
 		vto.setTranstype_desc(transtype_desc);
 		vto.setDescription(description);
 		//vto.setPayment_type(payment_type);
