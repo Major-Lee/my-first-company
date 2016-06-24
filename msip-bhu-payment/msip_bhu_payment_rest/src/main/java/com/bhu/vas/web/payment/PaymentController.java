@@ -387,7 +387,9 @@ public class PaymentController extends BaseController{
         	String total_fee_fen = BusinessHelper.getMoney(total_fee);
         	int temp = Integer.parseInt(total_fee_fen);
         	if(temp < 1000){
-        		logger.error(String.format("apply withdrawals total_fee[%s] ", total_fee));
+        		logger.error(String.format("apply withdrawals total_fee[%s] errorMsg:[%s] , [%s]", total_fee,ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT.i18n(),"10元"));
+        		//通知商品中心提现失败
+        		payLogicService.updateWithdrawalsStatus(null, withdraw_no, withdraw_type,false);
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT,new String[]{"10元"})));
         		return;
@@ -615,14 +617,25 @@ public class PaymentController extends BaseController{
         		+ "certificateUrl [%s] userId [%s] userName [%s]",reckoningId, product_name, total_fee, request.getRemoteAddr(), certificateUrl, userId,userName));
         WithDrawNotifyResponse unifiedOrderResponse = payHttpService.sendWithdraw(reckoningId, product_name, total_fee, request.getRemoteAddr(), certificateUrl, userId,userName);
         
+        PaymentWithdraw payWithdraw =  paymentWithdrawService.getById(reckoningId);
+        // 1.1 如果订单不存在则返回订单不存在
+        if (payWithdraw == null) {
+        	logger.error(String.format("get WxWithdrawals payWithdraw [%s] is null",payWithdraw));
+        	payLogicService.updateWithdrawalsStatus(null, reckoningId, "weixin",false);
+        	return null;
+        }
+        String orderId = payWithdraw.getOrderId();
+        
         if(unifiedOrderResponse == null){
         	logger.error(String.format("apply payment unifiedOrderResponse [%s]", unifiedOrderResponse));
+        	payLogicService.updateWithdrawalsStatus(null, reckoningId, "weixin",false);
         	return result;
         }
 
         if(!unifiedOrderResponse.isResultSuccess()){
         	String status = unifiedOrderResponse.getResultErrorCode();
 			String msg = unifiedOrderResponse.getResultMessage();
+			payLogicService.updateWithdrawalsStatus(null, reckoningId, "weixin",false);
 			logger.info(String.format("apply payment status [%s] msg [%s]", status,msg));
 			result.setWithdraw_type("FAIL");
          	result.setSuccess(false);
@@ -634,13 +647,6 @@ public class PaymentController extends BaseController{
         String out_trade_no = unifiedOrderResponse.getPartner_trade_no();
         String trade_no = unifiedOrderResponse.getPayment_no();
         
-        PaymentWithdraw payWithdraw =  paymentWithdrawService.getById(out_trade_no);
-        // 1.1 如果订单不存在则返回订单不存在
-        if (payWithdraw == null) {
-        	logger.error(String.format("get WxWithdrawals payWithdraw [%s] ",payWithdraw));
-        	return null;
-        }
-        String orderId = payWithdraw.getOrderId();
         logger.info(String.format("return WxWithdrawals reckoningId [%s] trade_no [%s] orderId [%s]",out_trade_no, trade_no,orderId));
         
         //判断当前账单的实际状态，如果是以支付状态就不做处理了
@@ -648,7 +654,7 @@ public class PaymentController extends BaseController{
 		if(withdrawStatus == 0){ //0未支付;1支付成功
             if("SUCCESS".equals(unifiedOrderResponse.getReturn_code()) && "SUCCESS".equals(unifiedOrderResponse.getResult_code())){
  				//修改成账单状态  1：提现成功 0：提现失败
-            	payLogicService.updateWithdrawalsStatus(payWithdraw, out_trade_no, trade_no);
+            	payLogicService.updateWithdrawalsStatus(payWithdraw, out_trade_no, trade_no,true);
              	result.setWithdraw_type("weixin");
              	result.setSuccess(true);
              	result.setUrl("");

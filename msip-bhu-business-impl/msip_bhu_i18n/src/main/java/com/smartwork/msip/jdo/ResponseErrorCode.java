@@ -247,7 +247,8 @@ public enum ResponseErrorCode {
 	/******************    payment    ******************/
 	USER_APPID_UNSUPPORT("461","internal.user.appid.invalid"),
 	INVALID_COMMDITY_ORDERID_UNSUPPORT("462","internal.commdity.orderId.invalid"),
-	
+	INVALID_CREATE_RECKONINGID_FAILED("463","internal.create.reckoningId.failed"),
+	GET_WEIXIN_WITHDRAW_RETURN_FAILED("464","get.weixin.withdraw.return.failded"),
 	
 	REQUEST_404_ERROR("404","404.pagerequest.error"),
 	REQUEST_403_ERROR("403","403.pagerequest.error"),
