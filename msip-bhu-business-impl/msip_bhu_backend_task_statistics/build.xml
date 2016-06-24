@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<project name="msip_s_backend_task" default="compile" basedir=".">  
+    <property name="product" value="msip_backendtaskapp"/>  
+    <property name="version" value="1.0"/>  
+    <property name="src.dir" value="${basedir}/src"/>  
+
+	<property name="build.jars.dir" value="../../deploy/build.jars"/>
+	<property name="lib.jars.dir" value="../../deploy/lib.jars"/>
+	<property name="deploy.dir" value="../../deploy/${product}"/>
+    <property name="lib.dir" value="${basedir}/libs"/>  
+ 
+	<property name="deploy.conf.lib.dir" value="../../ling-deploy"/>  
+
+    <path id="classpath">  
+		<fileset dir="${build.jars.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+		<fileset dir="${lib.jars.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+        <fileset dir="${lib.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+     </path>  
+  
+    <target name="clean">  
+        <echo>clean build dir</echo>  
+        <delete dir="${deploy.dir}" quiet="true"/>
+    </target>  
+  
+    <target name="init" depends="clean">  
+        <mkdir dir="${deploy.dir}"/> 
+		<mkdir dir="${deploy.dir}/bin"/> 
+    </target>  
+
+    <target name="compile" depends="init">  
+        <echo>compile the source</echo>  
+        <javac srcdir="${src.dir}/main/java:${src.dir}/main/resource" destdir="${deploy.dir}/bin" encoding="UTF-8" debug="on" source="1.6" target="1.6">  
+            <include name="**/*.*"/>  
+            <classpath refid="classpath"/>  
+			<compilerarg value="-Xlint:unchecked"/>
+			<compilerarg value="-Xlint:deprecation"/>
+        </javac>  
+		<copy todir="${deploy.dir}/bin" overwrite="true" preservelastmodified="true">
+			<fileset dir="${src.dir}/main/java" excludes="**/*.java, .svn/**"/>
+            <fileset dir="${src.dir}/main/resource" excludes="**/*.java, .svn/**"/>
+        </copy>
+		<copy todir="${deploy.dir}/libs" overwrite="true" preservelastmodified="true">
+			<fileset dir="${lib.dir}" includes="**/*.jar"/>
+			<fileset dir="${build.jars.dir}" includes="**/*.jar" excludes="**/*nocacheconf*.jar,**/*rpc*.jar"/>
+            <fileset dir="${lib.jars.dir}" includes="**/*.jar"/>
+        </copy>
+    </target>  
+
+	<target name="local" depends="compile" description="overwrite the local conf file">
+        <copy todir="${deploy.dir}/bin" overwrite="true" preservelastmodified="true">
+            <fileset dir="${deploy.conf.lib.dir}/local" excludes="*.java, .svn/**"/>
+        </copy>
+    </target>
+
+    <target name="integration" depends="compile" description="overwrite the integration conf file">
+        <copy todir="${deploy.dir}/bin" overwrite="true" preservelastmodified="true">
+            <fileset dir="${deploy.conf.lib.dir}/integration/backendtaskapp" excludes="*.java, .svn/**"/>
+        </copy>
+    </target>
+
+
+    <target name="production" depends="compile" description="overwrite the production conf file">
+        <copy todir="${deploy.dir}/bin" overwrite="true" preservelastmodified="true">
+            <fileset dir="${deploy.conf.lib.dir}/production/backendtaskapp" excludes="*.java, .svn/**"/>
+        </copy>
+    </target>
+</project>
