@@ -95,6 +95,7 @@ public class BatchSnkApplyService {
 								wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.Off.getType());
 							}
 						});
+					 //TODO:如果为SmsSecure 则需要判定此用户id当前是否还存在此类型的网络处于开启状态，如果都关闭了，则需要重置通知开关并通知portal服务器
 					break;
 				default:
 					throw new UnsupportedOperationException(String.format("snk act type not supported"));
