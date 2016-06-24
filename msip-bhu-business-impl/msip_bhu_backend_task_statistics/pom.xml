@@ -13,7 +13,7 @@
         </repository>
     </repositories>
 
-    <artifactId>msip_bhu_backend_task</artifactId>
+    <artifactId>msip_bhu_backend_task_statistics</artifactId>
 
     <dependencies>
         <dependency>
