@@ -121,4 +121,28 @@ public class SharedNetworksHelper {
 		configs.put(sharedNetwork.getKey(), sharedNetworkType_models);
 		return configs;
 	}
+	
+	
+	
+	/*public static UserDevicesSharedNetworks buildDefaultUserDevicesSharedNetworksWhenIsNullOrEmpty(int uid,UserDevicesSharedNetworks configs){
+		if(configs == null){
+			configs = new UserDevicesSharedNetworks();
+			configs.setId(uid);
+		}
+		SharedNetworkType[] snks = SharedNetworkType.values();
+		for(SharedNetworkType snk:snks){
+			List<ParamSharedNetworkDTO> sharedNetworkType_models = configs.get(snk.getKey(),new ArrayList<ParamSharedNetworkDTO>(),true);
+			if(sharedNetworkType_models == null || sharedNetworkType_models.isEmpty()){
+				ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(snk.getKey());
+				dto.setTs(System.currentTimeMillis());
+				dto.setTemplate(SharedNetworksHelper.DefaultTemplate);
+				dto.setTemplate_name(buildTemplateName(snk,SharedNetworksHelper.DefaultTemplate));//sharedNetwork.getName().concat(template));
+				//List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
+				sharedNetworkType_models.add(dto);
+				configs.put(snk.getKey(), sharedNetworkType_models);
+			}
+		}
+		return configs;
+	}*/
+	
 }
