@@ -201,13 +201,50 @@ public class SharedNetworksFacadeService {
 	}
 	
 	public Map<String,List<ParamSharedNetworkDTO>> fetchAllUserSharedNetworksConf(int uid){
-		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
-		//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
-		if(configs == null){
-			configs = SharedNetworksHelper.buildDefaultUserDevicesSharedNetworks(uid, SharedNetworkType.SafeSecure, SharedNetworksHelper.DefaultTemplate);
-			userDevicesSharedNetworksService.insert(configs);
-		}
 		Map<String,List<ParamSharedNetworkDTO>> result = new LinkedHashMap<>();
+		
+		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
+		boolean needInsert = false;
+		boolean changed = false;
+		if(configs == null){
+			configs = new UserDevicesSharedNetworks();
+			configs.setId(uid);
+			needInsert = true;
+			changed = true;
+		}
+		SharedNetworkType[] snks = SharedNetworkType.values();
+		for(SharedNetworkType snk:snks){
+			List<ParamSharedNetworkDTO> sharedNetworkType_models = configs.get(snk.getKey(),new ArrayList<ParamSharedNetworkDTO>(),true);
+			if(sharedNetworkType_models.isEmpty()){
+				ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(snk.getKey());
+				dto.setTs(System.currentTimeMillis());
+				dto.setTemplate(SharedNetworksHelper.DefaultTemplate);
+				dto.setTemplate_name(SharedNetworksHelper.buildTemplateName(snk,SharedNetworksHelper.DefaultTemplate));//sharedNetwork.getName().concat(template));
+				//List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
+				sharedNetworkType_models.add(dto);
+				configs.put(snk.getKey(), sharedNetworkType_models);
+				changed = true;
+			}
+			result.put(snk.getKey(), sharedNetworkType_models);
+		}
+		if(needInsert){
+			userDevicesSharedNetworksService.insert(configs);
+		}else{
+			if(changed){
+				userDevicesSharedNetworksService.update(configs);
+			}
+		}
+		return result;
+		/*//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
+		if(configs == null){
+			//configs = SharedNetworksHelper.buildDefaultUserDevicesSharedNetworks(uid, SharedNetworkType.SafeSecure, SharedNetworksHelper.DefaultTemplate);
+			configs = SharedNetworksHelper.buildDefaultUserDevicesSharedNetworksWhenIsNullOrEmpty(uid,configs);
+			userDevicesSharedNetworksService.insert(configs);
+		}else{
+			
+			userDevicesSharedNetworksService.update(configs);
+		}*/
+		/*Map<String,List<ParamSharedNetworkDTO>> result = new LinkedHashMap<>();
 		SharedNetworkType[] snks = SharedNetworkType.values();
 		for(SharedNetworkType snk:snks){
 			List<ParamSharedNetworkDTO> list_snk = configs.get(snk.getKey());
@@ -215,7 +252,7 @@ public class SharedNetworksFacadeService {
 				list_snk = new ArrayList<>();
 			result.put(snk.getKey(), list_snk);
 		}
-		return result;
+		return result;*/
 		//return configs.get(sharedNetwork.getKey());
 	}
 	
