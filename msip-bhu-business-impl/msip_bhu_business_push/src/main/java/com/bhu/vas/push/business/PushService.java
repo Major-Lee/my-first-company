@@ -230,7 +230,7 @@ public class PushService{
 						}else{
 							//如果没有昵称 匹配mac短名称
 							String scn = MacDictParserFilterHelper.prefixMactch(wspush_dto.getHd_mac(),true,false);
-							if(!DevicesSet.Unknow.getScn().equals(scn)){
+							if(!DevicesSet.Unknown.getScn().equals(scn)){
 								name = scn;
 							}
 						}
