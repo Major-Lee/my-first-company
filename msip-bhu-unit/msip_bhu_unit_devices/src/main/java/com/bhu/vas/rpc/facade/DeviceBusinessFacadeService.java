@@ -206,6 +206,9 @@ public class DeviceBusinessFacadeService {
 			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
 			BeanUtils.copyProperties(dto, wifi_device_entity);
 			wifi_device_entity.setLast_reged_at(reged_at);
+			if(wifi_device_entity.getFirst_reged_at() == null){//批量导入的数据的设备上线了
+				wifi_device_entity.setFirst_reged_at(reged_at);
+			}
 			wifi_device_entity.setOnline(true);
 			wifiDeviceService.update(wifi_device_entity);
 			if(StringUtils.isNotEmpty(wifi_device_entity.getWan_ip()) && !wifi_device_entity.getWan_ip().equals(oldWanIp)){
