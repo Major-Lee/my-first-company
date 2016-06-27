@@ -129,6 +129,7 @@ public class UserWalletFacadeService{
 			UserOAuthStateVTO userOAuthStateVTO = new UserOAuthStateVTO();
 			userOAuthStateVTO.setAuid(String.valueOf(publicAccountDetail.getUid()));
 			userOAuthStateVTO.setNick(publicAccountDetail.getCompanyName());
+			userOAuthStateVTO.setAvatar(publicAccountDetail.getOpening_bank());
 			//对公账号特殊处理
 			String accountNum = StringUtils.EMPTY;
 			accountNum = publicAccountDetail.getPublish_account_number();
