@@ -132,7 +132,6 @@ public class UserRpcService implements IUserRpcService{
 	@Override
 	public RpcResponseDTO<TailPage<UserManageDTO>> pageQueryUserList(
 			Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		return null;
+		return userUnitFacadeService.pageUserQueryList(map);
 	}
 }

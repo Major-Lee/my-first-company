@@ -1,9 +1,13 @@
 package com.bhu.vas.web.console;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -54,12 +59,42 @@ public class ConsoleUserController extends BaseController {
              @RequestParam(required = false) String userType,
              @RequestParam(required = false) String regdevice,
  			 @RequestParam(required = false) String boundEquNum,
- 			 @RequestParam(required  = false) String createTime,
+ 			 @RequestParam(required  = false) String createStartTime,
+ 			 @RequestParam(required  = false) String createEndTime,
  			 @RequestParam(required  = false) String isCashBack,
  			 @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 			 @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		){
-    	
-    	
+    	Map<String,Object> map = new HashMap<String,Object>();
+    	if(StringUtils.isNotBlank(mobileNo)){
+    		map.put("mobileNo", mobileNo);
+    	}
+    	if(StringUtils.isNotBlank(userType)){
+    		map.put("userType", userType);
+    	}
+    	if(StringUtils.isNotBlank(regdevice)){
+    		map.put("regdevice", regdevice);
+    	}
+    	if(StringUtils.isNotBlank(boundEquNum)){
+    		map.put("boundEquNum", boundEquNum);
+    	}
+    	if(StringUtils.isNotBlank(boundEquNum)){
+    		map.put("boundEquNum", boundEquNum);
+    	}
+    	if(StringUtils.isNotBlank(createStartTime) && StringUtils.isNotBlank(createEndTime)){
+    		map.put("createStartTime", createStartTime);
+    		map.put("createEndTime", createEndTime);
+    	}
+    	if(StringUtils.isNotBlank(isCashBack)){
+    		map.put("isCashBack", isCashBack);
+    	}
+    	map.put("pageNo", pageNo);
+    	map.put("pageSize", pageSize);
+    	RpcResponseDTO<TailPage<UserManageDTO>> rpcResult = userRpcService.pageQueryUserList(map);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
     }
 }
