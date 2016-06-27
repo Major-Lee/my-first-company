@@ -476,7 +476,7 @@ public class UserWalletFacadeService{
 	 * @param uid
 	 * @param cash
 	 */
-	private void cashWithdrawRollback2UserWalletWhenVerifyFailed(int uid, double cash,String description){
+	private void cashWithdrawRollback2UserWalletWhenVerifyFailed(int uid,String applyid, double cash,String description){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -485,7 +485,7 @@ public class UserWalletFacadeService{
 		uwallet.setCash(uwallet.getCash()+cash);
 		uwallet.setWithdraw(false);
 		userWalletService.update(uwallet);
-		this.doWalletLog(uid, StringUtils.EMPTY,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
+		this.doWalletLog(uid, applyid,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
 	}
 	
 	/**
@@ -495,7 +495,7 @@ public class UserWalletFacadeService{
 	 * @param uid
 	 * @param cash
 	 */
-	private void cashWithdrawRollback2UserWalletWhenRemoteFailed(int uid, double cash,String description){
+	private void cashWithdrawRollback2UserWalletWhenRemoteFailed(int uid,String applyid, double cash,String description){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -504,7 +504,7 @@ public class UserWalletFacadeService{
 		uwallet.setCash(uwallet.getCash()+cash);
 		uwallet.setWithdraw(false);
 		userWalletService.update(uwallet);
-		this.doWalletLog(uid, StringUtils.EMPTY,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
+		this.doWalletLog(uid, applyid,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
 	}
 	
 	/**
@@ -719,7 +719,7 @@ public class UserWalletFacadeService{
 			current = BusinessEnumType.UWithdrawStatus.VerifyFailed;
 			apply.setWithdraw_oper(current.getKey());
 			//返还金额到用户钱包
-			this.cashWithdrawRollback2UserWalletWhenVerifyFailed(apply.getUid(), apply.getCash(),current.getName());
+			this.cashWithdrawRollback2UserWalletWhenVerifyFailed(apply.getUid(),applyid, apply.getCash(),current.getName());
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
 		apply = userWalletWithdrawApplyService.update(apply);
