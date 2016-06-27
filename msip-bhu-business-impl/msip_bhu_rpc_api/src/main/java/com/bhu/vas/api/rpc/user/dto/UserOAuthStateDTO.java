@@ -60,7 +60,6 @@ public class UserOAuthStateDTO implements java.io.Serializable{
 			vto.setNick(new String(Base64Helper.decode(nick)));
 		}else
 			vto.setNick(nick);
-		vto.setNick(nick);
 		vto.setOpenid(openid);
 		return vto;
 	}
