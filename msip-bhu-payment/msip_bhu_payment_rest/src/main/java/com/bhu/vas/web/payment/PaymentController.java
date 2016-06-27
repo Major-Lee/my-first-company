@@ -628,14 +628,17 @@ public class PaymentController extends BaseController{
         
         if(unifiedOrderResponse == null){
         	logger.error(String.format("apply payment unifiedOrderResponse [%s]", unifiedOrderResponse));
-        	payLogicService.updateWithdrawalsStatus(null, reckoningId, "weixin",false);
+        	result.setWithdraw_type("FAIL");
+         	result.setSuccess(false);
+         	result.setUrl("");
+        	payLogicService.updateWithdrawalsStatus(null, withdraw_no, "weixin",false);
         	return result;
         }
 
         if(!unifiedOrderResponse.isResultSuccess()){
         	String status = unifiedOrderResponse.getResultErrorCode();
 			String msg = unifiedOrderResponse.getResultMessage();
-			payLogicService.updateWithdrawalsStatus(null, reckoningId, "weixin",false);
+			payLogicService.updateWithdrawalsStatus(null, withdraw_no, "weixin",false);
 			logger.info(String.format("apply payment status [%s] msg [%s]", status,msg));
 			result.setWithdraw_type("FAIL");
          	result.setSuccess(false);
