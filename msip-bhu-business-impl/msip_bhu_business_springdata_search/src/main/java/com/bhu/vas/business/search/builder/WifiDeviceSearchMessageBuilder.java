@@ -159,6 +159,18 @@ public class WifiDeviceSearchMessageBuilder {
 		return SearchConditionMessage.builderSearchConditionMessage(SearchType.COUNT.id(), pack_must);
 	}
 	
+	public static SearchConditionMessage builderSearchMessageWithSnkType(Integer u_id, String d_snk_type){
+		SearchCondition sc_d_uid = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
+		
+		SearchCondition sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_snk_type);
+
+		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_d_uid, sc_d_snk_type);
+
+		return SearchConditionMessage.builderSearchConditionMessage(SearchType.COUNT.id(), pack_must);
+	}
+	
 	public static String builderSearchMessageString(SearchConditionMessage searchConditionMessage){
 		if(searchConditionMessage == null) return null;
 		return JsonHelper.getJSONString(searchConditionMessage);
