@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
@@ -47,7 +48,7 @@ public class UserOAuthUnitFacadeService {
 	 * @param uid
 	 * @return
 	 */
-	public RpcResponseDTO<List<UserOAuthStateDTO>> fetchRegisterIdentifies(Integer uid,boolean payment){
+	public RpcResponseDTO<List<UserOAuthStateVTO>> fetchRegisterIdentifies(Integer uid,boolean payment){
 		try{
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userOAuthFacadeService.fetchRegisterIdentifies(uid,payment));
 		}catch(BusinessI18nCodeException bex){

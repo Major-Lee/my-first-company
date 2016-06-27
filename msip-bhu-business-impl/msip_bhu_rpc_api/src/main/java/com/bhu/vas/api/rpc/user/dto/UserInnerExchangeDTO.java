@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.user.dto;
 
 import java.util.List;
 
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.smartwork.msip.business.token.UserTokenDTO;
 
@@ -10,7 +11,7 @@ public class UserInnerExchangeDTO implements java.io.Serializable{
 	private UserDTO user;
 	private UserTokenDTO token;
 	private UserWalletDetailVTO wallet;
-	private List<UserOAuthStateDTO> oauths;
+	private List<UserOAuthStateVTO> oauths;
 	
 	public UserDTO getUser() {
 		return user;
@@ -24,10 +25,10 @@ public class UserInnerExchangeDTO implements java.io.Serializable{
 	public void setToken(UserTokenDTO token) {
 		this.token = token;
 	}
-	public List<UserOAuthStateDTO> getOauths() {
+	public List<UserOAuthStateVTO> getOauths() {
 		return oauths;
 	}
-	public void setOauths(List<UserOAuthStateDTO> oauths) {
+	public void setOauths(List<UserOAuthStateVTO> oauths) {
 		this.oauths = oauths;
 	}
 	
