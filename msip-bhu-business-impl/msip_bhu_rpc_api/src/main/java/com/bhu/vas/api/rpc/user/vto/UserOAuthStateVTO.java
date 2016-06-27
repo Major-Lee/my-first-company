@@ -1,9 +1,5 @@
-package com.bhu.vas.api.rpc.user.dto;
+package com.bhu.vas.api.rpc.user.vto;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
-import com.smartwork.msip.cores.helper.encrypt.Base64Helper;
 
 /**
  * OAuth用户数据DTO
@@ -11,7 +7,7 @@ import com.smartwork.msip.cores.helper.encrypt.Base64Helper;
  *
  */
 @SuppressWarnings("serial")
-public class UserOAuthStateDTO implements java.io.Serializable{
+public class UserOAuthStateVTO implements java.io.Serializable{
 	//如果是微信 则代表unionid
 	private String auid;
 	//如果是微信 则代表openid 如果值支付宝 则和auid值相等
@@ -31,6 +27,10 @@ public class UserOAuthStateDTO implements java.io.Serializable{
 	}
 	public void setNick(String nick) {
 		this.nick = nick;
+		/*if(StringUtils.isNotEmpty(nick)){
+			this.nick = new String(Base64Helper.decode(nick));
+		}else
+			this.nick = nick;*/
 	}
 	public String getAvatar() {
 		return avatar;
@@ -49,19 +49,5 @@ public class UserOAuthStateDTO implements java.io.Serializable{
 	}
 	public void setOpenid(String openid) {
 		this.openid = openid;
-	}
-	
-	public UserOAuthStateVTO toVTO(){
-		UserOAuthStateVTO vto = new UserOAuthStateVTO();
-		vto.setAuid(auid);
-		vto.setAvatar(avatar);
-		vto.setIdentify(identify);
-		if(StringUtils.isNotEmpty(nick)){
-			vto.setNick(new String(Base64Helper.decode(nick)));
-		}else
-			vto.setNick(nick);
-		vto.setNick(nick);
-		vto.setOpenid(openid);
-		return vto;
 	}
 }

@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -39,7 +39,7 @@ public class UserOAuthController extends BaseController{
 			@RequestParam(required=true) Integer uid,
 			@RequestParam(required=false, defaultValue="false") boolean payment){
 		try{
-			RpcResponseDTO<List<UserOAuthStateDTO>> rpcResult = userOAuthRpcService.fetchRegisterIdentifies(uid,payment);
+			RpcResponseDTO<List<UserOAuthStateVTO>> rpcResult = userOAuthRpcService.fetchRegisterIdentifies(uid,payment);
 			if(!rpcResult.hasError()){
 				//UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 				//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));

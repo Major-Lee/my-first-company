@@ -43,6 +43,7 @@ import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
@@ -125,9 +126,9 @@ public class UserWalletFacadeService{
 		if(publicAccountDetail == null){
 			walletDetail.setPayments(userOAuthFacadeService.fetchRegisterIdentifies(uid,true));
 		}else{
-			UserOAuthStateDTO userOAuthStateDTO = new UserOAuthStateDTO();
-			userOAuthStateDTO.setAuid(String.valueOf(publicAccountDetail.getUid()));
-			userOAuthStateDTO.setNick(publicAccountDetail.getCompanyName());
+			UserOAuthStateVTO userOAuthStateVTO = new UserOAuthStateVTO();
+			userOAuthStateVTO.setAuid(String.valueOf(publicAccountDetail.getUid()));
+			userOAuthStateVTO.setNick(publicAccountDetail.getCompanyName());
 			//对公账号特殊处理
 			String accountNum = StringUtils.EMPTY;
 			accountNum = publicAccountDetail.getPublish_account_number();
@@ -138,10 +139,10 @@ public class UserWalletFacadeService{
 					accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
 				}
 			} 
-			userOAuthStateDTO.setOpenid(accountNum);
-			userOAuthStateDTO.setIdentify("public");
-			List<UserOAuthStateDTO> userOAuthStateList = new ArrayList<UserOAuthStateDTO>();
-			userOAuthStateList.add(userOAuthStateDTO);	
+			userOAuthStateVTO.setOpenid(accountNum);
+			userOAuthStateVTO.setIdentify("public");
+			List<UserOAuthStateVTO> userOAuthStateList = new ArrayList<UserOAuthStateVTO>();
+			userOAuthStateList.add(userOAuthStateVTO);	
 			walletDetail.setPayments(userOAuthStateList);
 		}
 		//add by dongrui 2016-06-14 E N D
