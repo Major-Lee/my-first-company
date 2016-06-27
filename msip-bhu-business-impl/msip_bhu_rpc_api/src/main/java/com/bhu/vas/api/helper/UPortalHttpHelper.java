@@ -2,11 +2,14 @@ package com.bhu.vas.api.helper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HttpHelper;
+import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 public class UPortalHttpHelper {
 	private static final Logger logger = LoggerFactory.getLogger(UPortalHttpHelper.class);
@@ -38,4 +41,28 @@ public class UPortalHttpHelper {
 			return null;
 		}
 	}
+	
+	public static final int NoService = -1;
+	public static final int ServiceOK = 0;
+	public static final int ServiceNeedCharging = 2;
+	public static final int ServiceInsufficient = 1;
+	
+	private static ExecutorService exec_remote_portalexchange = ExecObserverManager.buildExecutorService(UPortalHttpHelper.class,"uPortalRemoteNotify消息处理",10);
+	public static void uPortalChargingStatusNotify(final int uid,final int status){
+		exec_remote_portalexchange.submit((new Runnable() {
+			@Override
+			public void run() {
+				try{
+					Map<String, String> api_params = UPortalHttpHelper.generateCommonApiParamMap(String.valueOf(uid));
+					api_params.put("status", String.valueOf(status));
+					logger.info(String.format("UserPortalChargingNotify2UPortalApi request url[%s] params[%s]", BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params));
+					String response = UPortalHttpHelper.doPost(BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params);
+					logger.info(String.format("UserPortalChargingNotify2UPortalApi Response url[%s] params[%s] response[%s]", BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params, response));
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
+				}
+			}
+		}));
+	}
+	
 }
