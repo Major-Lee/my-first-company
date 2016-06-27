@@ -55,7 +55,7 @@ public class UserWalletController extends BaseController{
 						""}));
 				return;
 			}
-			ValidateService.validAmountRange(String.valueOf(cash),NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
+			//ValidateService.validAmountRange(String.valueOf(cash),NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
 			String remoteIp = WebHelper.getRemoteAddr(request);
 			RpcResponseDTO<UserWithdrawApplyVTO> rpcResult = userWalletRpcService.withdrawOper(appid,payment_type,uid, pwd, cash, remoteIp);
 			if(!rpcResult.hasError()){

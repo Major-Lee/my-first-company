@@ -206,6 +206,7 @@ public class DeviceBusinessFacadeService {
 			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
 			BeanUtils.copyProperties(dto, wifi_device_entity);
 			wifi_device_entity.setLast_reged_at(reged_at);
+			//特殊处理 批量导入的设备数据 first_reged_at == null，需要设置为第一次登录时间
 			if(wifi_device_entity.getFirst_reged_at() == null){//批量导入的数据的设备上线了
 				wifi_device_entity.setFirst_reged_at(reged_at);
 			}
