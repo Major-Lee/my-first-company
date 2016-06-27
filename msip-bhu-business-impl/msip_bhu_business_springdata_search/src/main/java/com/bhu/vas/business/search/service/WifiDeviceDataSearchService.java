@@ -101,6 +101,19 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		return super.searchCountByConditionMessage(scm);
 	}
 	
+	/**
+	 * 根据snk查询设备数量
+	 * @param u_id
+	 * @param d_snk_type
+	 * @return
+	 */
+	public long searchCountBySnkType(Integer u_id, String d_snk_type){
+		if(u_id == null) return 0;
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithSnkType(u_id, d_snk_type);
+		return super.searchCountByConditionMessage(scm);
+	}
+	
 	
 	/**
 	 * 根据设备共享网络类型进行scan的iterator

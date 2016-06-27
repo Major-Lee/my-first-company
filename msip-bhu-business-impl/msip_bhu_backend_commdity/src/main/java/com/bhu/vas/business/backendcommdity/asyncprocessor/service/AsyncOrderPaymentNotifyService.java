@@ -1,8 +1,6 @@
 package com.bhu.vas.business.backendcommdity.asyncprocessor.service;
 
 import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.PostConstruct;
@@ -48,12 +46,11 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
-import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 @Service
 public class AsyncOrderPaymentNotifyService{
 	private final Logger logger = LoggerFactory.getLogger(AsyncOrderPaymentNotifyService.class);
-	private ExecutorService exec_remote_portalexchange = null;//Executors.newFixedThreadPool(10);
+	//private ExecutorService exec_remote_portalexchange = null;//Executors.newFixedThreadPool(10);
 	@Resource
 	private OrderService orderService;
 	
@@ -82,7 +79,7 @@ public class AsyncOrderPaymentNotifyService{
 	public void initialize() {
 		logger.info("AsyncOrderPaymentNotifyService initialize...");
 		//exec_remote_portalexchange = (ThreadPoolExecutor)ExecObserverManager.buildExecutorService(this.getClass(),"AsyncOrderPaymentNotify processes消息处理",ProcessesThreadCount);
-		exec_remote_portalexchange = ExecObserverManager.buildExecutorService(this.getClass(),"uPortalRemoteNotify消息处理",10);
+		//exec_remote_portalexchange = ExecObserverManager.buildExecutorService(this.getClass(),"uPortalRemoteNotify消息处理",10);
 	}
 	
 	/**
@@ -293,7 +290,7 @@ public class AsyncOrderPaymentNotifyService{
 				//清除标记
 				SnkChargingMarkerService.getInstance().clear(order.getUid());
 				//通知uportal清除标记位
-				uPortalChargingStatusNotify(order.getUid().intValue(),ServiceOK);
+				UPortalHttpHelper.uPortalChargingStatusNotify(order.getUid().intValue(),UPortalHttpHelper.ServiceOK);
 			}
 		}
 	}
@@ -363,7 +360,7 @@ public class AsyncOrderPaymentNotifyService{
 		   				String response_snk_needcharging = SmsSenderFactory.buildSender(
 								BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_needcharging, mobileno);
 						logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",mobileno,smsg_snk_needcharging,response_snk_needcharging));
-						uPortalChargingStatusNotify(uid,ServiceNeedCharging);
+						UPortalHttpHelper.uPortalChargingStatusNotify(uid,UPortalHttpHelper.ServiceNeedCharging);
 	   				}
 	   				break;
 	   			case FailedThresholdVcurrencyNotsufficient:
@@ -375,7 +372,7 @@ public class AsyncOrderPaymentNotifyService{
 		   				String response_snk_stop = SmsSenderFactory.buildSender(
 								BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, mobileno);
 						logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",mobileno,smsg_snk_stop,response_snk_stop));
-						uPortalChargingStatusNotify(uid,ServiceInsufficient);
+						UPortalHttpHelper.uPortalChargingStatusNotify(uid,UPortalHttpHelper.ServiceInsufficient);
 	   				}
 	   				break;
 	   			case Failed:
@@ -387,27 +384,6 @@ public class AsyncOrderPaymentNotifyService{
 		}
 		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
 		orderFacadeService.smsOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
-	}
-	
-	private static final int ServiceOK = 0;
-	private static final int ServiceNeedCharging = 2;
-	private static final int ServiceInsufficient = 1;
-	
-	private void uPortalChargingStatusNotify(final int uid,final int status){
-		exec_remote_portalexchange.submit((new Runnable() {
-			@Override
-			public void run() {
-				try{
-					Map<String, String> api_params = UPortalHttpHelper.generateCommonApiParamMap(String.valueOf(uid));
-					api_params.put("status", String.valueOf(status));
-					logger.info(String.format("UserPortalChargingNotify2UPortalApi request url[%s] params[%s]", BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params));
-					String response = UPortalHttpHelper.doPost(BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params);
-					logger.info(String.format("UserPortalChargingNotify2UPortalApi Response url[%s] params[%s] response[%s]", BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params, response));
-				}catch(Exception ex){
-					ex.printStackTrace(System.out);
-				}
-			}
-		}));
 	}
 	
 }
