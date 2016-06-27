@@ -784,7 +784,7 @@ public class UserWalletFacadeService{
 		}else{
 			current = BusinessEnumType.UWithdrawStatus.VerifyFailed;
 			apply.setWithdraw_oper(current.getKey());
-			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getCash(),current.getName());
+			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getId(),apply.getCash(),current.getName());
 			logger.info(String.format("提现审核操作-失败 applyid[%s] 返现并解锁钱包状态", applyid));
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
@@ -825,7 +825,7 @@ public class UserWalletFacadeService{
 		}else{
 			current = BusinessEnumType.UWithdrawStatus.WithdrawFailed;
 			apply.setWithdraw_oper(current.getKey());
-			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getCash(),current.getName());
+			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getId(),apply.getCash(),current.getName());
 			logger.info(String.format("提现操作-失败 applyid[%s] 返现并解锁钱包状态", applyid));
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
