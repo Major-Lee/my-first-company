@@ -18,6 +18,8 @@ import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
+import com.bhu.vas.api.rpc.user.model.UserWallet;
+import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
@@ -641,13 +643,19 @@ public class UserUnitFacadeService {
 			Criteria cri = mc.createCriteria();
 			//电话
 			String mobileNo = StringUtils.EMPTY;
+			//用户类型
 			String userType = StringUtils.EMPTY;
-			String terminalType = StringUtils.EMPTY;
+			//终端类型
 			String regdevice = StringUtils.EMPTY;
-			String startTime = StringUtils.EMPTY;
-			String endTime = StringUtils.EMPTY;
+			//开始时间
+			String createStartTime = StringUtils.EMPTY;
+			//结束时间
+			String createEndTime = StringUtils.EMPTY;
+			//是否返现
 			String isCashBack = StringUtils.EMPTY;
+			//当前页
 			String pageNo = StringUtils.EMPTY;
+			//每页分页条数
 			String pageSize = StringUtils.EMPTY;
 			if(StringUtils.isNotBlank(mobileNo)){
 				cri.andColumnEqualTo("mobileno", mobileNo);
@@ -659,8 +667,8 @@ public class UserUnitFacadeService {
 			if(StringUtils.isNotBlank(regdevice)){
 				cri.andColumnEqualTo("regdevice", regdevice);
 			}
-			if(StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)){
-				cri.andColumnBetween("created_at", startTime, endTime);
+			if(StringUtils.isNotBlank(createStartTime) && StringUtils.isNotBlank(createEndTime)){
+				cri.andColumnBetween("created_at", createStartTime, createEndTime);
 			}
 			cri.andSimpleCaulse(" 1=1 ");
 			mc.setOrderByClause(" id desc ");
@@ -668,8 +676,31 @@ public class UserUnitFacadeService {
 			mc.setPageSize(Integer.parseInt(pageNo));
 			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
 			List<UserManageDTO> vtos = new ArrayList<>();
+			UserManageDTO userManageDTO = null;
 			for(User _user:tailusers.getItems()){
-				//vtos.add(RpcResponseDTOBuilder.builderUserDTOFromUser(_user, false));
+				if(_user == null){
+					continue;
+				}
+				userManageDTO = new UserManageDTO();
+				userManageDTO.setUid(_user.getId());
+				userManageDTO.setUserType(String.valueOf(_user.getUtype()));
+				userManageDTO.setMobileNo(_user.getMobileno());
+				userManageDTO.setRegdevice(_user.getRegdevice());
+				userManageDTO.setUserLabel("");
+				userManageDTO.setCreateTime(_user.getCreated_at().toString());
+				userManageDTO.setRewardStyle("");
+				userManageDTO.setIsCashBack("");
+				userManageDTO.setUserNum(tailusers.getTotalItemsCount());
+				//根据uid查询用户钱包信息
+				UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(_user.getId());
+				if(userWallet != null){
+					userManageDTO.setVcurrency(String.valueOf(userWallet.getVcurrency()));
+					userManageDTO.setWalletMoney(String.valueOf(userWallet.getCash()));
+				}else{
+					userManageDTO.setVcurrency("0");
+					userManageDTO.setWalletMoney("0.00");
+				}
+				vtos.add(userManageDTO);
 			}
 			TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(tailusers.getPageNumber(), Integer.parseInt(pageSize), tailusers.getTotalItemsCount(), vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
