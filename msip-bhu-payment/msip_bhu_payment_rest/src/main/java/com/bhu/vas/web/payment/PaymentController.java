@@ -628,14 +628,17 @@ public class PaymentController extends BaseController{
         
         if(unifiedOrderResponse == null){
         	logger.error(String.format("apply payment unifiedOrderResponse [%s]", unifiedOrderResponse));
-        	payLogicService.updateWithdrawalsStatus(null, reckoningId, "weixin",false);
+        	result.setWithdraw_type("FAIL");
+         	result.setSuccess(false);
+         	result.setUrl("");
+        	payLogicService.updateWithdrawalsStatus(null, withdraw_no, "weixin",false);
         	return result;
         }
 
         if(!unifiedOrderResponse.isResultSuccess()){
         	String status = unifiedOrderResponse.getResultErrorCode();
 			String msg = unifiedOrderResponse.getResultMessage();
-			payLogicService.updateWithdrawalsStatus(null, reckoningId, "weixin",false);
+			payLogicService.updateWithdrawalsStatus(null, withdraw_no, "weixin",false);
 			logger.info(String.format("apply payment status [%s] msg [%s]", status,msg));
 			result.setWithdraw_type("FAIL");
          	result.setSuccess(false);
@@ -1294,7 +1297,7 @@ public class PaymentController extends BaseController{
    	public void midasNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
     	logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师通知",BusinessHelper.gettimestamp(),"Starting"));
     	//获取POST过来反馈信息
-    	MidasRespone result = null;
+   		MidasRespone result = null;
    		result = new MidasRespone(1,"通知订单信息无效");
     	
     	HashMap<String,String> params = new HashMap<String,String>();
@@ -1317,7 +1320,7 @@ public class PaymentController extends BaseController{
 		}
 		
 		String goods_no = request.getParameter("payitem");
-		String notify_url = PayHttpService.MIDAS_RETURN_URL;
+		String notify_url = PayHttpService.MIDAS_NOTIFY_URL;
 		
 		//商户订单号
 		String out_trade_no = BusinessHelper.formatPayItem(payHttpService.getEnv(), goods_no) ;

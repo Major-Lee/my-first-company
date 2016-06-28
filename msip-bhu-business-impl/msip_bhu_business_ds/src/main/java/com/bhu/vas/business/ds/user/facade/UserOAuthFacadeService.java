@@ -5,15 +5,17 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.business.ds.user.service.UserOAuthStateService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.cores.helper.encrypt.Base64Helper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -32,19 +34,19 @@ public class UserOAuthFacadeService {
 	 * @param payment true 返回带支付帐号属性的相关数据， false 全部返回
 	 * @return
 	 */
-	public List<UserOAuthStateDTO> fetchRegisterIdentifies(Integer uid, boolean payment){
+	public List<UserOAuthStateVTO> fetchRegisterIdentifies(Integer uid, boolean payment){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("uid", uid);
 		List<UserOAuthState> models = userOAuthStateService.findModelByModelCriteria(mc);
-		List<UserOAuthStateDTO> dtos = new ArrayList<UserOAuthStateDTO>();
+		List<UserOAuthStateVTO> dtos = new ArrayList<UserOAuthStateVTO>();
 		if(!models.isEmpty()){
 			for(UserOAuthState model : models){
 				if(payment){
 					if(OAuthType.paymentSupported(model.getIdentify())){
-						dtos.add(model.getInnerModel());
+						dtos.add(model.getInnerModel().toVTO());
 					}
 				}else{
-					dtos.add(model.getInnerModel());
+					dtos.add(model.getInnerModel().toVTO());
 				}
 			}
 		}
@@ -63,14 +65,14 @@ public class UserOAuthFacadeService {
 		return dtos;
 	}*/
 	
-	public UserOAuthStateDTO fetchRegisterIndetify(int uid,OAuthType type,boolean validatePayment){
+	public UserOAuthStateVTO fetchRegisterIndetify(int uid,OAuthType type,boolean validatePayment){
 		if(validatePayment){
 			if(!type.isPayment()) return null;
 		}
 		UserOAuthStatePK pk = new UserOAuthStatePK(uid,type.getType());
 		UserOAuthState state = userOAuthStateService.getById(pk);
 		if(state != null){
-			return state.getInnerModel();
+			return state.getInnerModel().toVTO();
 		}
 		return null;
 	}
@@ -91,7 +93,7 @@ public class UserOAuthFacadeService {
 	 * @param avatar
 	 * @return
 	 */
-	public UserOAuthStateDTO createOrUpdateIdentifies(Integer uid,String identify,String auid,String nick,String avatar){
+	public UserOAuthStateVTO createOrUpdateIdentifies(Integer uid,String identify,String auid,String nick,String avatar){
 		if(uid == null || uid.intValue() == 0 || StringUtils.isEmpty(identify))
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"uid|identify"});
 		UserOAuthStatePK pk = new UserOAuthStatePK(uid,identify);
@@ -101,7 +103,8 @@ public class UserOAuthFacadeService {
 			dto = new UserOAuthStateDTO();
 			dto.setIdentify(identify);
 			dto.setAuid(auid);
-			dto.setNick(nick);
+			if(StringUtils.isNotEmpty(nick))
+				dto.setNick(new String(Base64Helper.encode(nick.getBytes())));
 			dto.setAvatar(avatar);
 			oauthState.putInnerModel(dto);
 			userOAuthStateService.update(oauthState);
@@ -112,12 +115,13 @@ public class UserOAuthFacadeService {
 			dto = new UserOAuthStateDTO();
 			dto.setIdentify(identify);
 			dto.setAuid(auid);
-			dto.setNick(nick);
+			if(StringUtils.isNotEmpty(nick))
+				dto.setNick(new String(Base64Helper.encode(nick.getBytes())));
 			dto.setAvatar(avatar);
 			oauthState.putInnerModel(dto);
 			userOAuthStateService.insert(oauthState);
 		}
-		return dto;
+		return dto.toVTO();
 	}
 
 	public UserOAuthStateService getUserOAuthStateService() {

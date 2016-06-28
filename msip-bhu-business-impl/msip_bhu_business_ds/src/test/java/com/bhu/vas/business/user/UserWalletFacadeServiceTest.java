@@ -11,17 +11,17 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
-import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
-import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
@@ -157,7 +157,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 			UserWithdrawApplyVTO withdrawApplyVTO = applynow.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(),"","", 
 					calculateApplyCost);
 			//ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(applynow.getUid(), ThirdpartiesPaymentType.fromType(applynow.getPayment_type()));
-			UserOAuthStateDTO paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(applynow.getUid(),OAuthType.fromType(applynow.getPayment_type()),true);
+			UserOAuthStateVTO paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(applynow.getUid(),OAuthType.fromType(applynow.getPayment_type()),true);
 			RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
 			String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 			System.out.println("to Redis prepare:"+jsonNotify);
@@ -258,7 +258,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(),"","", 
 						calculateApplyCost);
 				
-				UserOAuthStateDTO paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(withdrawApply.getUid(),OAuthType.fromType(withdrawApply.getPayment_type()),true);//.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
+				UserOAuthStateVTO paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(withdrawApply.getUid(),OAuthType.fromType(withdrawApply.getPayment_type()),true);//.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
 				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
 				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 				System.out.println(String.format("to Redis prepare[%s]:%s",withdrawApply.getId(), jsonNotify));
@@ -273,7 +273,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 		}
     }
     
-    @Test
+    //@Test
    	public void test010DoSharedeal(){
     	double cashIncomming = 1.00d;
     	//String dmac = "84:82:f4:19:01:0c";
@@ -282,9 +282,12 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	//System.out.println(JsonHelper.getJSONString(wallet));
     	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10012016031100000000000000000074", "hello world!",null);
     	System.out.println("dddd:"+ret);
+    	
+    	
+    	
    	}
     
-    //@Test
+    @Test
    	public void test011DoSharedealSummary(){
     	//double cashIncomming = 108.39d;
     	//String dmac = "84:82:f4:23:06:e8";
@@ -292,8 +295,19 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
     	//System.out.println(JsonHelper.getJSONString(wallet));
     	
-    	ShareDealWalletSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(1);
-    	System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
+    	//ShareDealWalletSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(1);
+    	//System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
+    	
+    	ShareDealWalletSummaryProcedureDTO procedureDTO = new ShareDealWalletSummaryProcedureDTO();
+		procedureDTO.setUserid(1);
+		procedureDTO.setTotal_cash(13133.7099999996d);
+    	
+   		/*ShareDealWalletSummaryProcedureVTO procedureDTO = new ShareDealWalletSummaryProcedureVTO();
+   		
+   		procedureDTO.setUserid(1);
+   		procedureDTO.setTotal_cash(13133.7099999996d);*/
+   		
+   		System.out.println(JsonHelper.getJSONString(procedureDTO.toVTO()));
    	}
    	
    	//@Test

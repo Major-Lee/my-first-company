@@ -24,11 +24,11 @@ import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
-import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserPublishAccount;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RankSingle;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
@@ -314,24 +314,24 @@ public class UserWalletUnitFacadeService {
 					calculateApplyCost);
 			
 			//modify by dongrui 2016-06-17 start
-			UserOAuthStateDTO paymentDTO = null;
+			UserOAuthStateVTO paymentVTO = null;
 			if(withdrawApply.getPayment_type().equals("public")){
-				paymentDTO = new UserOAuthStateDTO();
+				paymentVTO = new UserOAuthStateVTO();
 				//根据uid查询对公账号信息
 				UserPublishAccount userPublicAccount = userPublishAccountService.getById(withdrawApply.getUid());
 				if(userPublicAccount == null){
 					throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST);
 				}
-				paymentDTO.setAuid(String.valueOf(userPublicAccount.getId()));
-				paymentDTO.setAvatar("");
-				paymentDTO.setIdentify("public");
-				paymentDTO.setNick(userPublicAccount.getCompanyName());
-				paymentDTO.setOpenid(userPublicAccount.getPublish_account_number());
+				paymentVTO.setAuid(String.valueOf(userPublicAccount.getId()));
+				paymentVTO.setAvatar("");
+				paymentVTO.setIdentify("public");
+				paymentVTO.setNick(userPublicAccount.getCompanyName());
+				paymentVTO.setOpenid(userPublicAccount.getPublish_account_number());
 			}else{
-				 paymentDTO = new UserOAuthStateDTO();
-				 paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(withdrawApply.getUid(),OAuthType.fromType(withdrawApply.getPayment_type()),true);
+				 //paymentDTO = new UserOAuthStateDTO();
+				paymentVTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(withdrawApply.getUid(),OAuthType.fromType(withdrawApply.getPayment_type()),true);
 			}
-			if(paymentDTO == null){
+			if(paymentVTO == null){
 				throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_PAYMENT_WASEMPTY);
 			}
 			
@@ -343,7 +343,7 @@ public class UserWalletUnitFacadeService {
 			//modify by dongrui 2016-06-17 E N D
 			
 			
-			RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
+			RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentVTO, System.currentTimeMillis());
 			String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
 			System.out.println("prepare JsonData:"+jsonNotify);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(withdrawNotify);

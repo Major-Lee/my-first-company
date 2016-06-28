@@ -1310,7 +1310,7 @@ public class DeviceHelper {
 	}
 	public static String builderDSStartSharedNetworkWifiOuter(ParamSharedNetworkDTO psn_dto,DeviceStatusExchangeDTO device_status){
 		String startShareNetworkTemplate = null;
-		if(SharedNetworkType.SafeSecure.getKey().equals(psn_dto.getNtype())){
+		if(SharedNetworkType.SafeSecure.getKey().equals(psn_dto.getNtype()) || SharedNetworkType.SmsSecure.getKey().equals(psn_dto.getNtype())){
 			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
 				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Dual;
 			}else{

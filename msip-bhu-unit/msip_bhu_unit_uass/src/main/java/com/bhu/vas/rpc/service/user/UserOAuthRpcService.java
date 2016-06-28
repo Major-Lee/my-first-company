@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService;
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.rpc.facade.UserOAuthUnitFacadeService;
 
 @Service("userOAuthRpcService")
@@ -20,7 +20,7 @@ public class UserOAuthRpcService implements IUserOAuthRpcService{
 	@Resource
 	private UserOAuthUnitFacadeService userOAuthUnitFacadeService;
 	@Override
-	public RpcResponseDTO<List<UserOAuthStateDTO>> fetchRegisterIdentifies(
+	public RpcResponseDTO<List<UserOAuthStateVTO>> fetchRegisterIdentifies(
 			Integer uid,boolean payment) {
 		logger.info(String.format("fetchRegisterIdentifies with uid[%s]",uid));
 		return userOAuthUnitFacadeService.fetchRegisterIdentifies(uid,payment);

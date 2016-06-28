@@ -43,6 +43,7 @@ import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
@@ -125,9 +126,10 @@ public class UserWalletFacadeService{
 		if(publicAccountDetail == null){
 			walletDetail.setPayments(userOAuthFacadeService.fetchRegisterIdentifies(uid,true));
 		}else{
-			UserOAuthStateDTO userOAuthStateDTO = new UserOAuthStateDTO();
-			userOAuthStateDTO.setAuid(String.valueOf(publicAccountDetail.getUid()));
-			userOAuthStateDTO.setNick(publicAccountDetail.getCompanyName());
+			UserOAuthStateVTO userOAuthStateVTO = new UserOAuthStateVTO();
+			userOAuthStateVTO.setAuid(String.valueOf(publicAccountDetail.getUid()));
+			userOAuthStateVTO.setNick(publicAccountDetail.getCompanyName());
+			userOAuthStateVTO.setAvatar(publicAccountDetail.getOpening_bank());
 			//对公账号特殊处理
 			String accountNum = StringUtils.EMPTY;
 			accountNum = publicAccountDetail.getPublish_account_number();
@@ -138,10 +140,10 @@ public class UserWalletFacadeService{
 					accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
 				}
 			} 
-			userOAuthStateDTO.setOpenid(accountNum);
-			userOAuthStateDTO.setIdentify("public");
-			List<UserOAuthStateDTO> userOAuthStateList = new ArrayList<UserOAuthStateDTO>();
-			userOAuthStateList.add(userOAuthStateDTO);	
+			userOAuthStateVTO.setOpenid(accountNum);
+			userOAuthStateVTO.setIdentify("public");
+			List<UserOAuthStateVTO> userOAuthStateList = new ArrayList<UserOAuthStateVTO>();
+			userOAuthStateList.add(userOAuthStateVTO);	
 			walletDetail.setPayments(userOAuthStateList);
 		}
 		//add by dongrui 2016-06-14 E N D
@@ -206,7 +208,7 @@ public class UserWalletFacadeService{
 	 */
 	private int vcurrencyFromUserWallet(int uid,String orderid,UWalletTransMode transMode,long vcurrency,String desc){
 		logger.info(String.format("vcurrencyFromUserWallet %s-%s uid[%s] orderid[%s] vcurrency[%s] desc[%s]",transMode.getName(),UWalletTransType.PurchaseGoodsUsedV.getName(), uid,orderid,vcurrency,desc));
-		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.PurchaseGoodsUsedV,0.00d,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
+		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.PurchaseInternetServiceUsedV,0.00d,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
 	}
 	
 	public static final int SnkAuthenticate_Failed = -1;
@@ -475,7 +477,7 @@ public class UserWalletFacadeService{
 	 * @param uid
 	 * @param cash
 	 */
-	private void cashWithdrawRollback2UserWalletWhenVerifyFailed(int uid, double cash,String description){
+	private void cashWithdrawRollback2UserWalletWhenVerifyFailed(int uid,String applyid, double cash,String description){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -484,7 +486,7 @@ public class UserWalletFacadeService{
 		uwallet.setCash(uwallet.getCash()+cash);
 		uwallet.setWithdraw(false);
 		userWalletService.update(uwallet);
-		this.doWalletLog(uid, StringUtils.EMPTY,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
+		this.doWalletLog(uid, applyid,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
 	}
 	
 	/**
@@ -494,7 +496,7 @@ public class UserWalletFacadeService{
 	 * @param uid
 	 * @param cash
 	 */
-	private void cashWithdrawRollback2UserWalletWhenRemoteFailed(int uid, double cash,String description){
+	private void cashWithdrawRollback2UserWalletWhenRemoteFailed(int uid,String applyid, double cash,String description){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -503,7 +505,7 @@ public class UserWalletFacadeService{
 		uwallet.setCash(uwallet.getCash()+cash);
 		uwallet.setWithdraw(false);
 		userWalletService.update(uwallet);
-		this.doWalletLog(uid, StringUtils.EMPTY,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
+		this.doWalletLog(uid, applyid,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
 	}
 	
 	/**
@@ -718,7 +720,7 @@ public class UserWalletFacadeService{
 			current = BusinessEnumType.UWithdrawStatus.VerifyFailed;
 			apply.setWithdraw_oper(current.getKey());
 			//返还金额到用户钱包
-			this.cashWithdrawRollback2UserWalletWhenVerifyFailed(apply.getUid(), apply.getCash(),current.getName());
+			this.cashWithdrawRollback2UserWalletWhenVerifyFailed(apply.getUid(),applyid, apply.getCash(),current.getName());
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
 		apply = userWalletWithdrawApplyService.update(apply);
@@ -782,7 +784,7 @@ public class UserWalletFacadeService{
 		}else{
 			current = BusinessEnumType.UWithdrawStatus.VerifyFailed;
 			apply.setWithdraw_oper(current.getKey());
-			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getCash(),current.getName());
+			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getId(),apply.getCash(),current.getName());
 			logger.info(String.format("提现审核操作-失败 applyid[%s] 返现并解锁钱包状态", applyid));
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
@@ -823,7 +825,7 @@ public class UserWalletFacadeService{
 		}else{
 			current = BusinessEnumType.UWithdrawStatus.WithdrawFailed;
 			apply.setWithdraw_oper(current.getKey());
-			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getCash(),current.getName());
+			cashWithdrawRollback2UserWalletWhenRemoteFailed(apply.getUid(),apply.getId(),apply.getCash(),current.getName());
 			logger.info(String.format("提现操作-失败 applyid[%s] 返现并解锁钱包状态", applyid));
 		}
 		apply.addResponseDTO(WithdrawRemoteResponseDTO.build(current.getKey(), current.getName()));
