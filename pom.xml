@@ -104,7 +104,7 @@
         <logback.version>[1.1.2,)</logback.version>
         <slf4j.version>[1.7.7,)</slf4j.version>
         <zookeeper.version>3.4.6</zookeeper.version>
-        <zkclient.version>0.1</zkclient.version>        
+        <zkclient.version>0.9</zkclient.version>        
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -687,6 +687,7 @@
                     </exclusion>                                
                 </exclusions>                
             </dependency>
+            <!--
             <dependency>
                 <groupId>com.github.sgroschupf</groupId>
                 <artifactId>zkclient</artifactId>
@@ -697,7 +698,12 @@
                         <groupId>org.jboss.netty</groupId>
                     </exclusion>
                 </exclusions>                 
-            </dependency>     
+            </dependency>-->
+            <dependency>
+                <groupId>com.101tec</groupId>
+                <artifactId>zkclient</artifactId>
+                <version>${zkclient.version}</version>
+            </dependency>                 
             <!--
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>

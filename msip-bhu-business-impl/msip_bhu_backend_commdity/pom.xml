@@ -41,10 +41,12 @@
             <artifactId>msip_bhu_business_push</artifactId>
         </dependency>
         
+<!--             
         <dependency>
             <groupId>com.github.sgroschupf</groupId>
             <artifactId>zkclient</artifactId>
         </dependency>  
+            --> 
            
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
