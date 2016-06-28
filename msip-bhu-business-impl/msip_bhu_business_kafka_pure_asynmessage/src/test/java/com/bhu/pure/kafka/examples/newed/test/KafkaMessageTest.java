@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 import com.bhu.pure.kafka.assigner.Assigner;
@@ -312,10 +313,48 @@ public class KafkaMessageTest {
 			}
 		});
 		*/
+		
+		/*
+		 *             <queues>choper_cm3_0</queues>
+            <queues>choper_cm1_0</queues>
+            <queues>choper_cm2_0</queues>
+            <queues>choper_cm3_1</queues>
+            <queues>choper_cm2_1</queues>
+            <queues>choper_cm1_1</queues>
+        </server>
+        <server host="activemq.input.i1.inner.bhunetworks.com" port="61616" url="failover:(tcp://activemq.input.i1.inner.bhunetworks.com:61616?tcpNoDelay=true)">
+            <queues>shanks_cm2_0</queues>
+            <queues>shanks_cm3_0</queues>
+            <queues>shanks_cm1_1</queues>
+            <queues>shanks_cm3_1</queues>
+            <queues>shanks_cm2_1</queues>
+            <queues>shanks_cm1_0</queues>
+		 */
+		
+		List<String> names = new ArrayList<String>();
+		names.add("choper_cm3_0");
+		names.add("choper_cm1_0");
+		names.add("choper_cm2_0");
+		names.add("choper_cm3_1");
+		names.add("choper_cm2_1");
+		names.add("choper_cm1_1");
+		names.add("shanks_cm2_0");
+		names.add("shanks_cm3_0");
+		names.add("shanks_cm1_1");
+		names.add("shanks_cm3_1");
+		names.add("shanks_cm2_1");
+		names.add("shanks_cm1_0");
+		
 		//consumer c2
 		StringKafkaMessageConsumer consumer_c2 = new StringKafkaMessageConsumer("biz");
 		List<String> topics = new ArrayList<String>();
-		topics.add("up_ursidsdebug_0");
+		for(String name : names){
+			topics.add("up_"+name);
+			topics.add("down_"+name);
+		}
+		topics.add("mng_queue");
+		topics.add("up_ursids1_0");
+		topics.add("up_ursids1_1");
 		consumer_c2.doSubscribeTopics(topics, new PollIteratorNotify<ConsumerRecords<String, String>>(){
 			@Override
 			public void notifyComming(String consumerId, ConsumerRecords<String, String> records) {
@@ -335,11 +374,11 @@ public class KafkaMessageTest {
 		StringKafkaMessageProducer producer2 = new StringKafkaMessageProducer("mng");
 		int key = 0;
 		//while(true){
-/*			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
-			RecordMetadata ret = producer.send(record);
-			if(ret != null){
-				System.out.println("successed");
-			}*/
+//			ProducerRecord<Integer, String> record = new ProducerRecord<Integer, String>(TOPIC, key, "msg"+key);
+//			RecordMetadata ret = producer.send(record);
+//			if(ret != null){
+//				System.out.println("successed");
+//			}
 			System.out.println("send message " + key);
 //			producer.send("up_ursids1_0", null, key+"", "msg"+key+"-happy yetao");
 //			producer.send("down_ursids1_1", null, key+"", "msg"+key+"-happy yetao");
@@ -356,10 +395,16 @@ public class KafkaMessageTest {
 //			producer.send("up_ursids2_0", null, key+"", "msg"+key+"-happy yetao");
 //			producer.send("up_ursids2_1", null, key+"", "msg"+key+"-happy yetao");
 			//producer1.send("up_ursids3_0", "8482f423070c", "000000058482f423070c000000000000000000000000001<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H106\" orig_model=\"uRouter\" orig_hdver=\"Z01\" orig_swver=\"AP106P06V1.5.2Build9396_TU\" oem_vendor=\"BHU\" oem_model=\"Urouter\" oem_hdver=\"Z01\" oem_swver=\"AP106P06V1.5.2Build9396_TU\" sn=\"BN207DE100080AA\" mac=\"84:82:f4:23:07:0c\" ip=\"192.168.66.161\" build_info=\"2016-02-19-13:31 Revision: 9396\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"60\" join_reason=\"3\" wan_ip=\"192.168.66.161\" /></join_req>");
-			producer1.sendAsync("up_ursidsdebug_0", null, "8482f423070c", "000000058482f423070c0000000000000000000000001<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H106\" orig_model=\"uRouter\" orig_hdver=\"Z01\" orig_swver=\"AP106P06V1.5.2Build9396_TU\" oem_vendor=\"BHU\" oem_model=\"Urouter\" oem_hdver=\"Z01\" oem_swver=\"AP106P06V1.5.2Build9396_TU\" sn=\"BN207DE100080AA\" mac=\"84:82:f4:23:07:0c\" ip=\"192.168.66.161\" build_info=\"2016-02-19-13:31 Revision: 9396\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"60\" join_reason=\"3\" wan_ip=\"192.168.66.161\" /></join_req>", null);
+//			for(String name : names){
+//				producer1.sendAsync("up_"+name, null, "8482f423070c", "000000058482f423070c0000000000000000000000001<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H106\" orig_model=\"uRouter\" orig_hdver=\"Z01\" orig_swver=\"AP106P06V1.5.2Build9396_TU\" oem_vendor=\"BHU\" oem_model=\"Urouter\" oem_hdver=\"Z01\" oem_swver=\"AP106P06V1.5.2Build9396_TU\" sn=\"BN207DE100080AA\" mac=\"84:82:f4:23:07:0c\" ip=\"192.168.66.161\" build_info=\"2016-02-19-13:31 Revision: 9396\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"60\" join_reason=\"3\" wan_ip=\"192.168.66.161\" /></join_req>", null);
+//				producer1.sendAsync("down_"+name, null, "8482f423070c", "000000058482f423070c0000000000000000000000001<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H106\" orig_model=\"uRouter\" orig_hdver=\"Z01\" orig_swver=\"AP106P06V1.5.2Build9396_TU\" oem_vendor=\"BHU\" oem_model=\"Urouter\" oem_hdver=\"Z01\" oem_swver=\"AP106P06V1.5.2Build9396_TU\" sn=\"BN207DE100080AA\" mac=\"84:82:f4:23:07:0c\" ip=\"192.168.66.161\" build_info=\"2016-02-19-13:31 Revision: 9396\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"60\" join_reason=\"3\" wan_ip=\"192.168.66.161\" /></join_req>", null);
+//			}
+			
+			producer1.sendAsync("down_ursids1_0", null, "8482f423070c", "000000058482f423070c0000000000000000000000001<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H106\" orig_model=\"uRouter\" orig_hdver=\"Z01\" orig_swver=\"AP106P06V1.5.2Build9396_TU\" oem_vendor=\"BHU\" oem_model=\"Urouter\" oem_hdver=\"Z01\" oem_swver=\"AP106P06V1.5.2Build9396_TU\" sn=\"BN207DE100080AA\" mac=\"84:82:f4:23:07:0c\" ip=\"192.168.66.161\" build_info=\"2016-02-19-13:31 Revision: 9396\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"60\" join_reason=\"3\" wan_ip=\"192.168.66.161\" /></join_req>", null);
+			producer1.sendAsync("down_ursids1_1", null, "8482f423070c", "000000058482f423070c0000000000000000000000001<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H106\" orig_model=\"uRouter\" orig_hdver=\"Z01\" orig_swver=\"AP106P06V1.5.2Build9396_TU\" oem_vendor=\"BHU\" oem_model=\"Urouter\" oem_hdver=\"Z01\" oem_swver=\"AP106P06V1.5.2Build9396_TU\" sn=\"BN207DE100080AA\" mac=\"84:82:f4:23:07:0c\" ip=\"192.168.66.161\" build_info=\"2016-02-19-13:31 Revision: 9396\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"60\" join_reason=\"3\" wan_ip=\"192.168.66.161\" /></join_req>", null);
 			//producer1.sendAsync("up_ursids18_1", null, "8482f423070c", "000000058482f423070c0000000000000000000000001<join_req><ITEM orig_vendor=\"BHU\" hdtype=\"H106\" orig_model=\"uRouter\" orig_hdver=\"Z01\" orig_swver=\"AP106P06V1.5.2Build9396_TU\" oem_vendor=\"BHU\" oem_model=\"Urouter\" oem_hdver=\"Z01\" oem_swver=\"AP106P06V1.5.2Build9396_TU\" sn=\"BN207DE100080AA\" mac=\"84:82:f4:23:07:0c\" ip=\"192.168.66.161\" build_info=\"2016-02-19-13:31 Revision: 9396\" config_model_ver=\"V3\" config_mode=\"basic\" work_mode=\"router-ap\" config_sequence=\"60\" join_reason=\"3\" wan_ip=\"192.168.66.161\" /></join_req>", null);
 			//producer1.send("up_ursids3_0", key+"","msg"+key+"-happy yetao");
-			//producer2.send("mng_queue", key+"", "msg"+key+"-happy yetao");
+			//producer2.sendAsync("mng_queue", null, key+"", "msg"+key+"-happy yetao", null);
 //			producer.send("up_ursids3_1", null, key+"", "msg"+key+"-happy yetao");
 //			producer.send("up_ursids4_0", null, key+"", "msg"+key+"-happy yetao");
 //			producer.send("up_ursids4_1", null, key+"", "msg"+key+"-happy yetao");
@@ -373,7 +418,7 @@ public class KafkaMessageTest {
 			
 //			producer.send("down_ursids9_0", null, key+"", "msg"+key+"-happy yetao");
 //			producer.send("down_ursids9_1", null, key+"", "msg"+key+"-happy yetao");
-			Thread.sleep(2000l);
+			//Thread.sleep(2000l);
 			System.out.println("send message end " + key);
 			key++;
 		//}
