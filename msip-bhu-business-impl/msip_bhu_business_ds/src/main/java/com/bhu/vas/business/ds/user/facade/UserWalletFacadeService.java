@@ -208,7 +208,7 @@ public class UserWalletFacadeService{
 	 */
 	private int vcurrencyFromUserWallet(int uid,String orderid,UWalletTransMode transMode,long vcurrency,String desc){
 		logger.info(String.format("vcurrencyFromUserWallet %s-%s uid[%s] orderid[%s] vcurrency[%s] desc[%s]",transMode.getName(),UWalletTransType.PurchaseGoodsUsedV.getName(), uid,orderid,vcurrency,desc));
-		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.PurchaseGoodsUsedV,0.00d,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
+		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.PurchaseInternetServiceUsedV,0.00d,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
 	}
 	
 	public static final int SnkAuthenticate_Failed = -1;
