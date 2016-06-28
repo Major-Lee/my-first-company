@@ -57,7 +57,11 @@ public class UserOAuthStateDTO implements java.io.Serializable{
 		vto.setAvatar(avatar);
 		vto.setIdentify(identify);
 		if(StringUtils.isNotEmpty(nick)){
-			vto.setNick(new String(Base64Helper.decode(nick)));
+			try{
+				vto.setNick(new String(Base64Helper.decode(nick)));
+			}catch(Exception ex){
+				vto.setNick(nick);
+			}
 		}else
 			vto.setNick(nick);
 		vto.setOpenid(openid);
