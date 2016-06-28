@@ -10,7 +10,7 @@
 		<property name="triggers">
 			<list>
 			
-				<!-- 每隔5分钟执行一次 -->
+				<!-- 每隔30分钟执行一次 -->
 				<ref bean="statisticsBackendTaskLoaderCronTrigger" />		
 				
 			</list>
@@ -26,8 +26,8 @@
 		<!-- Cron式Trigger定义 -->
 	<bean id="statisticsBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="statisticsBackendTaskLoaderCronJobDetail" />
-		<!-- 每隔5分钟执行一次   0 0/5 * * * ?  -->
-		<property name="cronExpression" value="0 0/1 * * * ?" />
+		<!-- 每隔30分钟执行一次   0 0/30 * * * ?  -->
+		<property name="cronExpression" value="0 0/30 * * * ?" />
 	</bean>
 	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
 	<bean id="statisticsBackendTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
