@@ -38,6 +38,7 @@ public enum ResponseErrorCode {
 	COMMON_DATA_OPERATION_CANNOT_EXECUTE("989", "common.data.operation.cannot.execute"),
 	COMMON_DATA_PARAM_RANGE_ERROR("988", "common.data.param.range.error"),
 	COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR("987", "common.data.param.float.decimal.part.error"),
+	COMMON_DATA_PARAM_PLUSFLOAT_DECIMAL_PART_ERROR("986", "common.data.param.plusfloat.decimal.part.error"),
 	
 	COMMON_DATA_EXECUTE_PROCEDURE_ERROR("901", "common.data.execute.procedure.error"),
 	COMMON_DATA_VALIDATE_LENGTH_ILEGAL("900","common.data.validate.length.ilegal"),
