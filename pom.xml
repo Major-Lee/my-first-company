@@ -680,7 +680,11 @@
                     <exclusion>
                         <artifactId>spring</artifactId>
                         <groupId>org.springframework</groupId>
-                    </exclusion>                   
+                    </exclusion>       
+                    <exclusion>
+                          <artifactId>netty</artifactId>
+                          <groupId>org.jboss.netty</groupId>
+                    </exclusion>                                
                 </exclusions>                
             </dependency>
             <dependency>
