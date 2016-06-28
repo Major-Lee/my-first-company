@@ -101,6 +101,6 @@ public class SnkChargingMarkerService extends AbstractRelationHashCache{
 		sb.append(33).append(12);
 		System.out.println(sb.toString());
 		System.out.println(SnkChargingMarkerService.getInstance().markerValues(100153));
-		SnkChargingMarkerService.getInstance().clear(100153);
+		//SnkChargingMarkerService.getInstance().clear(100153);
 	}
 }
