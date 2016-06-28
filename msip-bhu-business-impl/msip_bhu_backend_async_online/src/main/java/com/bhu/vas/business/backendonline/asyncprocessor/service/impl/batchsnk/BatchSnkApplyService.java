@@ -15,6 +15,7 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.UPortalHttpHelper;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
@@ -102,7 +103,7 @@ public class BatchSnkApplyService {
 					 logger.info(String.format("准备开始判定当前信息共享网络状态类型 "));
 					 if(SharedNetworkType.SmsSecure == sharedNetwork){
 						 logger.info(String.format("准备开始判定当前信息共享网络状态类型【%s】【%s】",userid,sharedNetwork.getKey()));
-						 long count = wifiDeviceDataSearchService.searchCountBySnkType(userid,sharedNetwork.getKey());
+						 long count = wifiDeviceDataSearchService.searchCountBySnkType(userid,sharedNetwork.getKey(),WifiDeviceDocumentEnumType.SnkTurnStateEnum.Off.getType());
 						 logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】",userid,sharedNetwork.getKey(),count));
 						 if(count <= 0){//不提供sms认证服务
 							 	logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】开始清除标记",userid,sharedNetwork.getKey(),count));
@@ -113,7 +114,6 @@ public class BatchSnkApplyService {
 								logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】开始清除标记成功",userid,sharedNetwork.getKey(),count));
 						 }
 					 }
-					 
 					break;
 				default:
 					throw new UnsupportedOperationException(String.format("snk act type not supported"));
