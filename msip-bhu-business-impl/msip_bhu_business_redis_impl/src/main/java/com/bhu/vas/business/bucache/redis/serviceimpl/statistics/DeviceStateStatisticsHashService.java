@@ -60,7 +60,7 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 				BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey, 
 				fragments.get(DateTimeExtHelper.HH), dto);
 
-		if (dailyValue.isEmpty() || dailyValue == null) {
+		if (dailyValue != null) {
 			update(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 					BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey, fragments.get(DateTimeExtHelper.HH), dto,
 					dailyValue);
@@ -71,7 +71,7 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 				BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey,
 				fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), dto);
 		
-		if (weekilyValue.isEmpty() || weekilyValue == null) {
+		if (weekilyValue != null) {
 			update(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 					BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey,
 					fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), dto,
@@ -83,7 +83,7 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 				BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey, 
 				fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),dto);
 		
-		if (monthlyValue.isEmpty() || monthlyValue == null) {
+		if (monthlyValue != null) {
 			update(fragments.get(DateTimeExtHelper.YEAR_MONTH),
 					BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey, 
 					fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),dto,
