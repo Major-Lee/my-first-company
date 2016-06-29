@@ -52,6 +52,9 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 		return value;
 	}
 	
+	public String fetchStatistics(String fragment, String buPrefixKey, String field){
+		return this.hget(generateKey(fragment, buPrefixKey), field);
+	}
 	
 	public void timeIntervalAllSet(List<String> fragments, DeviceStateStatisticsDTO dto) {
 		
@@ -65,7 +68,6 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 					BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey, fragments.get(DateTimeExtHelper.HH), dto,
 					dailyValue);
 		}
-		
 		//每周
 		String weekilyValue = setOrGetValue(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 				BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey,

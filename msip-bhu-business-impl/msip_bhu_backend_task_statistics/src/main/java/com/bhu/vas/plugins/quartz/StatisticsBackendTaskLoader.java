@@ -30,13 +30,10 @@ public class StatisticsBackendTaskLoader {
 	public void execute() {
 		logger.info("StatisticsBackendTaskLoader start...");
 		
-		System.out.println("1111111111111111111111111111");
 		Calendar cal = Calendar.getInstance();
 		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 		DeviceStateStatisticsDTO dto= fetchStatistics(fragments);
-		System.out.println("2222222222222222222222222222");
 		DeviceStateStatisticsHashService.getInstance().timeIntervalAllSet(fragments, dto);
-		System.out.println("3333333333333333333333333333");
 		
 		logger.info("StatisticsBackendTaskLoader end...");
 	}
