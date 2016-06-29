@@ -31,8 +31,10 @@ import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
+import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
@@ -286,12 +288,26 @@ public class AsyncOrderPaymentNotifyService{
 					orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP);
 			userWalletFacadeService.vcurrencyToUserWallet(order.getUid(), order.getId(), UWalletTransMode.RealMoneyPayment,
 					Double.parseDouble(order.getAmount()), order.getVcurrency(), desc);
-			if(BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient < order.getVcurrency()){
-				//清除标记
-				SnkChargingMarkerService.getInstance().clear(order.getUid());
-				//通知uportal清除标记位
-				UPortalHttpHelper.uPortalChargingStatusNotify(order.getUid().intValue(),UPortalHttpHelper.ServiceOK);
+			{
+				UserWallet uwallet = userWalletFacadeService.getUserWalletService().getById(order.getUid());
+				if(uwallet != null){
+					UserWalletDetailVTO walletDetail = uwallet.toUserWalletDetailVTO();
+					if(walletDetail.getVcurrency_total() >= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient){
+						logger.info(String.format("rechargeVCurrency user[%s] vcurrency_total[%s]",order.getUid(),walletDetail.getVcurrency_total()));
+						//清除标记
+						SnkChargingMarkerService.getInstance().clear(order.getUid());
+						//通知uportal清除标记位
+						UPortalHttpHelper.uPortalChargingStatusNotify(order.getUid().intValue(),UPortalHttpHelper.ServiceOK);
+					}
+				}
+				/*if(BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_Notsufficient < order.getVcurrency()){
+					//清除标记
+					SnkChargingMarkerService.getInstance().clear(order.getUid());
+					//通知uportal清除标记位
+					UPortalHttpHelper.uPortalChargingStatusNotify(order.getUid().intValue(),UPortalHttpHelper.ServiceOK);
+				}*/
 			}
+			
 		}
 	}
 	
