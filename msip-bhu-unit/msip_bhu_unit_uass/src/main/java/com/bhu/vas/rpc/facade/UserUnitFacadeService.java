@@ -1,6 +1,9 @@
 package com.bhu.vas.rpc.facade;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,14 +15,17 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserActivity;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
+import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
@@ -719,7 +725,19 @@ public class UserUnitFacadeService {
 		}
 	}
 	public RpcResponseDTO<UserActivityVTO> activity(Integer uid) {
-		// TODO Auto-generated method stub
-		return null;
+		try{
+			UserActivityVTO userActivityVTO=new UserActivityVTO();
+			UserActivity userActivity=userActivityService.getById(uid);
+			userActivityVTO.setBind_num(userActivity.getBind_num());
+			userActivityVTO.setIncome(userActivity.getIncome());
+			userActivityVTO.setRate(userActivity.getRate());
+			userActivityVTO.setStatus(userActivity.getStatus());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userActivityVTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 }
