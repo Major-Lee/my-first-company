@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.dto.statistics.DeviceStateStatisticsDTO;
+import com.bhu.vas.api.dto.statistics.UserStateStatisticsDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
@@ -19,10 +20,10 @@ import redis.clients.jedis.JedisPool;
  * @author xiaowei
  *
  */
-public class DeviceStateStatisticsHashService extends AbstractRelationHashCache {
+public class UserStateStatisticsHashService extends AbstractRelationHashCache {
 
 	private static class ServiceHolder {
-		private static DeviceStateStatisticsHashService instance = new DeviceStateStatisticsHashService();
+		private static UserStateStatisticsHashService instance = new UserStateStatisticsHashService();
 	}
 
 	/**
@@ -30,18 +31,18 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 	 * 
 	 * @return
 	 */
-	public static DeviceStateStatisticsHashService getInstance() {
+	public static UserStateStatisticsHashService getInstance() {
 		return ServiceHolder.instance;
 	}
 	
 	private static String generateKey(String fragment, String buPrefixKey) {
-		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.DeviceStateStatistics);
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Statistics.UserStateStatistics);
 		sb.append(buPrefixKey).append(fragment);
 		return sb.toString();
 	}
 	
 	//当前时段统计信息不存在则新建，否则返回已存在数据进行比较更新
-	public String setOrGetValue(String fragment, String buPrefixKey, String field, DeviceStateStatisticsDTO dto) {
+	public String setOrGetValue(String fragment, String buPrefixKey, String field, UserStateStatisticsDTO dto) {
 
 		String value = null;
 		boolean flag = this.hexists(generateKey(fragment, buPrefixKey), field);
@@ -61,7 +62,7 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 		return this.hgetall(generateKey(fragment, buPrefixKey));
 	}
 	
-	public void timeIntervalAllSet(List<String> fragments, DeviceStateStatisticsDTO dto) {
+	public void timeIntervalAllSet(List<String> fragments, UserStateStatisticsDTO dto) {
 		
 		//每日
 		String dailyValue = setOrGetValue(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
@@ -100,20 +101,20 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 	}
 	
 	//更新当前时段信息
-	public void update(String fragment, String buPrefixKey, String field, DeviceStateStatisticsDTO dto, String value) {
-		DeviceStateStatisticsDTO oldDto = JsonHelper.getDTO(value, DeviceStateStatisticsDTO.class);
-		DeviceStateStatisticsDTO newDto = upDateStatisticsDto(dto, oldDto);
+	public void update(String fragment, String buPrefixKey, String field, UserStateStatisticsDTO dto, String value) {
+		UserStateStatisticsDTO oldDto = JsonHelper.getDTO(value, UserStateStatisticsDTO.class);
+		UserStateStatisticsDTO newDto = upDateStatisticsDto(dto, oldDto);
 		// update
 		this.hset(generateKey(fragment, buPrefixKey), field, JsonHelper.getJSONString(newDto));
 	}
 	
 	//对比信息，返回各个值较大的信息dto
-	public DeviceStateStatisticsDTO upDateStatisticsDto(DeviceStateStatisticsDTO dto, DeviceStateStatisticsDTO oldDto) {
-		DeviceStateStatisticsDTO newDto = new DeviceStateStatisticsDTO();
-		newDto.setCountsDevices(dto.getCountsDevices() > oldDto.getCountsDevices() ? dto.getCountsDevices(): oldDto.getCountsDevices());
+	public UserStateStatisticsDTO upDateStatisticsDto(UserStateStatisticsDTO dto, UserStateStatisticsDTO oldDto) {
+		UserStateStatisticsDTO newDto = new UserStateStatisticsDTO();
+		newDto.setCountsUser(dto.getCountsUser() > oldDto.getCountsUser() ? dto.getCountsUser(): oldDto.getCountsUser());
 		newDto.setOnline(dto.getOnline() > oldDto.getOnline() ? dto.getOnline() : dto.getOnline());
 		newDto.setNewInc(dto.getNewInc() > oldDto.getNewInc() ? dto.getNewInc() : dto.getNewInc());
-		newDto.setLiveness(dto.getLiveness() > oldDto.getLiveness() ? dto.getLiveness() : dto.getLiveness());
+		newDto.setCurrentUser(dto.getCurrentUser() > oldDto.getCurrentUser() ? dto.getCurrentUser() : dto.getCurrentUser());
 		newDto.setOnline_max(
 				dto.getOnline_max() > oldDto.getOnline_max() ? dto.getOnline_max() : oldDto.getOnline_max());
 		return newDto;

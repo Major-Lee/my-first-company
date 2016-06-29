@@ -10,8 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.api.dto.statistics.DeviceStateStatisticsDTO;
+import com.bhu.vas.api.dto.statistics.UserStateStatisticsDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStateStatisticsHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UserStateStatisticsHashService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
@@ -26,19 +29,28 @@ public class StatisticsBackendTaskLoader {
 
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+
+    @Resource
+    private UserService userService;
 	
 	public void execute() {
 		logger.info("StatisticsBackendTaskLoader start...");
 		
 		Calendar cal = Calendar.getInstance();
 		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
-		DeviceStateStatisticsDTO dto= fetchStatistics(fragments);
-		DeviceStateStatisticsHashService.getInstance().timeIntervalAllSet(fragments, dto);
+		
+		logger.info("Statistics DevicesState...");
+		DeviceStateStatisticsDTO deviceDto = fetchDetivcStateStatistics(fragments);
+		DeviceStateStatisticsHashService.getInstance().timeIntervalAllSet(fragments, deviceDto);
+		
+		logger.info("Statistics UserState...");
+		UserStateStatisticsDTO userDto = fetchUserStateStatistics(fragments);
+		UserStateStatisticsHashService.getInstance().timeIntervalAllSet(fragments, userDto);
 		
 		logger.info("StatisticsBackendTaskLoader end...");
 	}
 	
-	public DeviceStateStatisticsDTO fetchStatistics(List<String> fragments){
+	public DeviceStateStatisticsDTO fetchDetivcStateStatistics(List<String> fragments){
 		
 		DeviceStateStatisticsDTO dto = new DeviceStateStatisticsDTO();
 		
@@ -52,6 +64,28 @@ public class StatisticsBackendTaskLoader {
 		ModelCriteria newMc = new ModelCriteria();
 		newMc.createCriteria().andColumnLike("updated_at",fragments.get(DateTimeExtHelper.YEAR_MONTH_DD)+"%");
 		dto.setLiveness(wifiDeviceService.countByModelCriteria(newMc));
+		
+		dto.setOnline_max(dto.getOnline());
+		
+		return dto;
+	}
+	
+	public UserStateStatisticsDTO fetchUserStateStatistics(List<String> fragments){
+		
+		UserStateStatisticsDTO dto = new UserStateStatisticsDTO();
+		dto.setCountsUser(userService.count());
+		
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnLike("created_at",fragments.get(DateTimeExtHelper.YEAR_MONTH_DD)+"%");
+		dto.setNewInc(userService.countByModelCriteria(mc));
+		
+		ModelCriteria newMc = new ModelCriteria();
+		newMc.createCriteria().andColumnLike("updated_at",fragments.get(DateTimeExtHelper.YEAR_MONTH_DD)+"%");
+		dto.setCurrentUser(userService.countByModelCriteria(newMc));
+		
+		ModelCriteria newMc2 = new ModelCriteria();
+		newMc2.createCriteria().andColumnLike("updated_at",fragments.get(DateTimeExtHelper.YEAR_MONTH_DD_HH)+"%");
+		dto.setOnline(userService.countByModelCriteria(newMc2));
 		
 		dto.setOnline_max(dto.getOnline());
 		

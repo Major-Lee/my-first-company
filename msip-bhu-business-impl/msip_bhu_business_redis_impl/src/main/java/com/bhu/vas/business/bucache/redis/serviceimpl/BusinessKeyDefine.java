@@ -66,6 +66,7 @@ public class BusinessKeyDefine {
 		public static final String WifiDeviceStatistics_HDRateWaiting 		= "HDRWG";
 		
 		public static final String DeviceStateStatistics	="DDS.";
+		public static final String UserStateStatistics	="UDS.";
 	}
 	public static class Unique{
 		public static final String EmailCheck = "WUEC";
