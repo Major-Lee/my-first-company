@@ -13,6 +13,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
+import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.bhu.vas.rpc.facade.UserUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -133,5 +134,11 @@ public class UserRpcService implements IUserRpcService{
 	public RpcResponseDTO<TailPage<UserManageDTO>> pageQueryUserList(
 			Map<String, Object> map) {
 		return userUnitFacadeService.pageUserQueryList(map);
+	}
+
+	@Override
+	public RpcResponseDTO<UserActivityVTO> activity(Integer uid) {
+		logger.info(String.format("activity with uid[%s] ",uid));
+		return userUnitFacadeService.activity(uid);
 	}
 }
