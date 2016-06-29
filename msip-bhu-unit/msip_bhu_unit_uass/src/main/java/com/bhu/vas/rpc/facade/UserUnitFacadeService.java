@@ -19,6 +19,7 @@ import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
+import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
@@ -28,6 +29,7 @@ import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserActivityService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -72,6 +74,8 @@ public class UserUnitFacadeService {
 	
 	@Resource
 	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
+	@Resource
+	private UserActivityService userActivityService;
 
 	/**
 	 * 需要兼容uidParam为空的情况
@@ -713,5 +717,9 @@ public class UserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
 		}
+	}
+	public RpcResponseDTO<UserActivityVTO> activity(Integer uid) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
