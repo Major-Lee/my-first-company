@@ -99,7 +99,7 @@
     </dependencies>
 
     <build>
-        <finalName>msip_bhu_backend_task</finalName>
+        <finalName>msip_bhu_backend_task_statistics</finalName>
         <plugins>
             <!-- The configuration of maven-assembly-plugin -->
             <plugin>
@@ -142,7 +142,7 @@
                             -->
                             <classpathPrefix>../lib/</classpathPrefix>
                             <!-- Specifies the main class of the application -->
-                            <mainClass>com.bhu.vas.business.BackendTaskMain</mainClass>
+                            <mainClass>com.bhu.vas.business.BackendTaskStatisticsMain</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>../conf/</Class-Path>

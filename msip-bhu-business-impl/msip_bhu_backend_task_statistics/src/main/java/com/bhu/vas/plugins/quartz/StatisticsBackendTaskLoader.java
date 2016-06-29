@@ -27,16 +27,17 @@ public class StatisticsBackendTaskLoader {
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
-	public void execute() throws InterruptedException {
+	public void execute() {
 		logger.info("StatisticsBackendTaskLoader start...");
 		
 	
-		Calendar cal = Calendar.getInstance();
-		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
-		DeviceStateStatisticsDTO dto= fetchStatistics(fragments);
-		//
-		DeviceStateStatisticsHashService.getInstance().timeIntervalAllSet(fragments, dto);
-		
+//		Calendar cal = Calendar.getInstance();
+//		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
+//		DeviceStateStatisticsDTO dto= fetchStatistics(fragments);
+//		DeviceStateStatisticsHashService.getInstance().timeIntervalAllSet(fragments, dto);
+		for (int i = 0; i < 10; i++) {
+			System.out.println(i);
+		}
 	}
 	
 	public DeviceStateStatisticsDTO fetchStatistics(List<String> fragments){
