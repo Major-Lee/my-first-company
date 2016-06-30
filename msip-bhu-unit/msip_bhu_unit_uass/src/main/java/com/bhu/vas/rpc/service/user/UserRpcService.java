@@ -98,6 +98,12 @@ public class UserRpcService implements IUserRpcService{
 	}
 
 	@Override
+	public RpcResponseDTO<Map<String, Object>> fetchUser(int countrycode, String acc) {
+		logger.info(String.format("fetchUser with countrycode[%s] acc[%s]",countrycode,acc));
+		return userUnitFacadeService.fetchUser(countrycode, acc);
+	}
+	
+	@Override
 	public RpcResponseDTO<Map<String, Object>> userResetPwd(int countrycode,
 			String acc, String pwd, String device, String resetIp,
 			String captcha) {

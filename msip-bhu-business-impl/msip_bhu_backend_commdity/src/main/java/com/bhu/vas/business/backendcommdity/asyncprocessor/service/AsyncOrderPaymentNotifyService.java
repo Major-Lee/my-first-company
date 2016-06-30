@@ -41,6 +41,7 @@ import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -76,6 +77,9 @@ public class AsyncOrderPaymentNotifyService{
 	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
+	
+	@Resource
+	private UserService userService;
 	
 	@PostConstruct
 	public void initialize() {
@@ -190,7 +194,11 @@ public class AsyncOrderPaymentNotifyService{
 		//Order order = orderFacadeService.validateOrderId(orderid);
 		//支付完成时进行设备的uid获取并设置订单
 		//User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
-		User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
+		//User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
+		User bindUser = null;
+		if(order.getUid() != null){
+			bindUser = userService.getById(order.getUid());
+		}
 		
 		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
 		

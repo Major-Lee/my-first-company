@@ -20,6 +20,7 @@
     <result property="amount" column="amount"/>
     <result property="vcurrency" column="vcurrency"/>
     <result property="context" column="context"/>
+    <result property="user_agent" column="user_agent"/>
     <result property="status" column="status"/>
     <result property="process_status" column="process_status"/>
     <result property="created_at" column="created_at"/>
@@ -48,6 +49,7 @@
 	    	amount,
 	    	vcurrency,
 	    	context,
+	    	user_agent,
 	    	status,
 	    	process_status,
 	    	created_at,
@@ -70,6 +72,7 @@
 	    	amount,
 	    	vcurrency,
 	    	context,
+	    	user_agent,
 	    	status,
 	    	process_status,
 	    	created_at,
@@ -93,6 +96,7 @@
 	    	#{amount},
 	    	#{vcurrency},
 	    	#{context},
+	    	#{user_agent},
 	    	#{status},
 	    	#{process_status},
 	    	#{created_at},
@@ -114,6 +118,7 @@
 	    	amount = #{amount},
 	    	vcurrency = #{vcurrency},
 	    	context = #{context},
+	    	user_agent = #{user_agent},
 	    	status = #{status},
 	    	process_status = #{process_status},
 	    	created_at = #{created_at},

@@ -43,6 +43,8 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	private long vcurrency;
 	//业务上下文
 	private String context;
+	//user agent sources content
+	private String user_agent;
 	//订单状态
 	private Integer status;
 	//订单流程状态
@@ -178,6 +180,14 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 
 	public void setContext(String context) {
 		this.context = context;
+	}
+
+	public String getUser_agent() {
+		return user_agent;
+	}
+
+	public void setUser_agent(String user_agent) {
+		this.user_agent = user_agent;
 	}
 
 	public Integer getStatus() {
