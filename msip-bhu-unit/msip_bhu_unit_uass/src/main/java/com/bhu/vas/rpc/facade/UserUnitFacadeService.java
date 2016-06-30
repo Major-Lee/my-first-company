@@ -155,6 +155,7 @@ public class UserUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
+	private static final String Implication_SessionCreate_Captchacode = "hello_bbs_486732";
 	/**
 	 * uRouter APP 登录或注册接口
 	 * 验证码登录和注册都会进行token重置
@@ -168,17 +169,19 @@ public class UserUnitFacadeService {
 	 */
 	public RpcResponseDTO<Map<String, Object>> userCreateOrLogin(int countrycode,
 			String acc, String captcha, String device, String remoteIp,String d_uuid) {
-		//step 2.生产环境下的手机号验证码验证
-		if(!RuntimeConfiguration.SecretInnerTest){
-			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-			if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
-				ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
-				if(errorCode != null){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
-				}
-			}else{
-				if(!BusinessRuntimeConfiguration.DefaultCaptchaCode.equals(captcha)){//和系统定义的缺省码进行匹配
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_CAPTCHA_DATA_NOTEXIST);
+		if(!Implication_SessionCreate_Captchacode.equals(captcha)){
+			//step 2.生产环境下的手机号验证码验证
+			if(!RuntimeConfiguration.SecretInnerTest){
+				String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+				if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
+					ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
+					if(errorCode != null){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
+					}
+				}else{
+					if(!BusinessRuntimeConfiguration.DefaultCaptchaCode.equals(captcha)){//和系统定义的缺省码进行匹配
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_CAPTCHA_DATA_NOTEXIST);
+					}
 				}
 			}
 		}
