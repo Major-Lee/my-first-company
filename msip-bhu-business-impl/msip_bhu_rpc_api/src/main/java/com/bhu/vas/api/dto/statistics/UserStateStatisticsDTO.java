@@ -1,7 +1,7 @@
 package com.bhu.vas.api.dto.statistics;
 
 public class UserStateStatisticsDTO {
-	//总设备数
+	//总用户数
 	private long countsUser;
 	//当前在线数
 	private long online;
@@ -9,7 +9,7 @@ public class UserStateStatisticsDTO {
 	private long newInc;
 	//昨日新增
 //	private long yestInc;
-	//今日活跃度
+	//当日用户数
 	private long currentUser;
 	//最大在线数
 	private long online_max;

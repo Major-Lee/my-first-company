@@ -9,4 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UnifyStatisticsFacadeRpcSerivce {
 	
+	public void stateStat(){
+		
+	}
 }
