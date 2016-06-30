@@ -1958,13 +1958,15 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
-				String hostname = handsetIds.get(cursor);
 
+				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
+				
+				String hostname = handsetIds.get(cursor);
 				if (StringUtils.isEmpty(hostname)) {
-					HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
 					hostname = handsetDeviceDTO.getDhcp_name();
-					detailVTO.setIp(handsetDeviceDTO.getIp());
 				}
+				
+				detailVTO.setIp(handsetDeviceDTO.getIp());
 				detailVTO.setN(hostname);
 
 				Object score =  handsetScores.get(cursor);
