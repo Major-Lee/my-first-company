@@ -547,11 +547,25 @@ public class PaymentController extends BaseController{
     				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
     	            break;
     			case BHU_WAP_WEIXIN: //汇付宝
-            		result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+    				String agentMerchant = payLogicService.findWapWeixinMerchantServiceByName();
+    				if(agentMerchant.equals("Midas")){
+    					result =  doMidas(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+    				}else if(agentMerchant.equals("Hee")){
+    					result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+    				}else{
+    					result =  doMidas(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+    				}
                 	break;
     			case BHU_MIDAS_WEIXIN: //米大师
-            		result =  doMidas(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
-                	break;
+    				String agentMerchants = payLogicService.findWapWeixinMerchantServiceByName();
+    				if(agentMerchants.equals("Midas")){
+    					result =  doMidas(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+    				}else if(agentMerchants.equals("Hee")){
+    					result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+    				}else{
+    					result =  doMidas(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+    				}
+            		break;
     			case BHU_WAP_ALIPAY: //Wap微信支付
     				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
     	        	break;
@@ -572,9 +586,9 @@ public class PaymentController extends BaseController{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(respone)));
     			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(respone));
     		}else if(type.equalsIgnoreCase("Midas")){
-    			//MidasRespone midasResponeModel = new MidasRespone(goods_no,msg);
-    			logger.info(String.format("apply payment return result [%s]",msg));
-    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(msg));
+    			result.setType("json");
+    			logger.info(String.format("apply payment return result [%s]",result));
+    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(result));
     		}else{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(result)));
     			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));

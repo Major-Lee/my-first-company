@@ -1879,7 +1879,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	}
 
 
-
+	//访客网络在线列表
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String wifiId, int start, int size) {
 
 		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
@@ -1950,7 +1950,7 @@ public class DeviceURouterRestBusinessFacadeService {
 			List<String> handsetIds = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, hd_macs);
 			List<Object> handsetScores = WifiDeviceVisitorService.getInstance().pipelineAllPresentScores(wifiId, hd_macs_array);
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hd_macs);
-
+			
 			vto.setOhd_count(presents.size());
 			URouterVisitorDetailVTO detailVTO = null;
 			int cursor = 0;
@@ -1958,14 +1958,16 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
-				String hostname = handsetIds.get(cursor);
 
+				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
+				
+				String hostname = handsetIds.get(cursor);
 				if (StringUtils.isEmpty(hostname)) {
-					HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
 					hostname = handsetDeviceDTO.getDhcp_name();
 				}
+				
+				detailVTO.setIp(handsetDeviceDTO.getIp());
 				detailVTO.setN(hostname);
-
 
 				Object score =  handsetScores.get(cursor);
 				if (score!=null) {

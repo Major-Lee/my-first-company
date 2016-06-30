@@ -11,12 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponseWithdrawCompletedNotifyDTO;
+import com.bhu.vas.api.rpc.payment.model.PaymentParameter;
 import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
 import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
 import com.bhu.vas.api.rpc.payment.vto.PaymentReckoningVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.payment.service.PaymentAlipaylocationService;
+import com.bhu.vas.business.ds.payment.service.PaymentParameterService;
 import com.bhu.vas.business.ds.payment.service.PaymentReckoningService;
 import com.bhu.vas.business.ds.payment.service.PaymentWithdrawService;
 import com.bhu.vas.business.helper.BusinessHelper;
@@ -24,7 +25,6 @@ import com.bhu.vas.business.helper.PaymentChannelCode;
 import com.bhu.vas.web.cache.BusinessCacheService;
 import com.midas.api.MidasUtils;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.localunit.RandomPicker;
 
 /**
@@ -33,6 +33,8 @@ import com.smartwork.msip.localunit.RandomPicker;
  */
 @Service
 public class PayLogicService {
+	@Resource
+	PaymentParameterService paymentParameterService;
 	@Resource
 	PaymentReckoningService paymentReckoningService;
 	@Resource
@@ -46,6 +48,24 @@ public class PayLogicService {
 	@Autowired
 	BusinessCacheService businessCacheService;
     private  Logger logger = LoggerFactory.getLogger(PayLogicService.class);
+    
+    
+    public String findWapWeixinMerchantServiceByName(){
+    	String result = null;
+    	String cacheMerchName = businessCacheService.getWapWeixinMerchantNameFromCache();
+    	if(cacheMerchName != null ){
+    		result = cacheMerchName;
+    		return result;
+    	}
+    	PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
+    	if(paymentParameter == null){
+    		result = "Midas";
+    		return result;
+    	}
+    	result = paymentParameter.getValue();
+    	businessCacheService.storePaymentWapWeixinMerchantCacheResult(result);    	
+    	return result;
+    }
 
 	public PaymentReckoningVTO findPayStatusByOrderId(String goods_no) {
 		logger.info(String.format("query payment order status [%s]", goods_no));
