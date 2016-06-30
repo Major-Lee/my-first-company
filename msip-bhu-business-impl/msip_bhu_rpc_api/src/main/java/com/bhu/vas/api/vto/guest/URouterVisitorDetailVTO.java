@@ -21,11 +21,24 @@ public class URouterVisitorDetailVTO implements Serializable {
      * 终端状态: online:0, authonline: 时间戳 , authoffline:1,
      */
     private String s;
-
-    public String getAlias() {
-		return alias;
+    
+    /**
+     * ip
+     */
+    private String ip;
+    
+    public String getIp() {
+		return ip;
 	}
 
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public String getAlias() {
+		return alias;
+	}
+    
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
