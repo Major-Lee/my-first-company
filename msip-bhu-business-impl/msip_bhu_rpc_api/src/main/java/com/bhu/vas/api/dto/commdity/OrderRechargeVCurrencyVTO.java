@@ -5,15 +5,7 @@ package com.bhu.vas.api.dto.commdity;
  *
  */
 @SuppressWarnings("serial")
-public class OrderRechargeVCurrencyVTO implements java.io.Serializable{
-	//订单id
-	private String id;
-	//商品id
-	private Integer commdityid;
-	//应用id
-	private Integer appid;
-	//订单类型
-	private Integer type;
+public class OrderRechargeVCurrencyVTO extends OrderVTO{
 	//用户终端类型
 	private Integer umactype;
 	//用户uid
@@ -26,19 +18,7 @@ public class OrderRechargeVCurrencyVTO implements java.io.Serializable{
 	private String payment_type;
 	//支付方式名称
 	private String payment_type_name;
-	//订单状态
-	private Integer status;
-	//订单创建时间
-	private long created_ts;
-	//订单支付时间
-	private long paymented_ts;
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
 	public Integer getUmactype() {
 		return umactype;
 	}
@@ -74,41 +54,5 @@ public class OrderRechargeVCurrencyVTO implements java.io.Serializable{
 	}
 	public void setPayment_type_name(String payment_type_name) {
 		this.payment_type_name = payment_type_name;
-	}
-	public long getCreated_ts() {
-		return created_ts;
-	}
-	public void setCreated_ts(long created_ts) {
-		this.created_ts = created_ts;
-	}
-	public long getPaymented_ts() {
-		return paymented_ts;
-	}
-	public void setPaymented_ts(long paymented_ts) {
-		this.paymented_ts = paymented_ts;
-	}
-	public Integer getCommdityid() {
-		return commdityid;
-	}
-	public void setCommdityid(Integer commdityid) {
-		this.commdityid = commdityid;
-	}
-	public Integer getAppid() {
-		return appid;
-	}
-	public void setAppid(Integer appid) {
-		this.appid = appid;
-	}
-	public Integer getType() {
-		return type;
-	}
-	public void setType(Integer type) {
-		this.type = type;
-	}
-	public Integer getStatus() {
-		return status;
-	}
-	public void setStatus(Integer status) {
-		this.status = status;
 	}
 }
