@@ -1,6 +1,7 @@
 package com.bhu.vas.web.commdity;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
@@ -76,7 +77,7 @@ public class OrderSMSController extends BaseController{
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/validate_captcha",method={RequestMethod.POST})
-	public void validate_captcha(
+	public void validate_captcha(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
 			@RequestParam(required = true) String acc,
@@ -93,8 +94,10 @@ public class OrderSMSController extends BaseController{
 			if(!rpcResult.hasError()){
 				final CaptchaCodeActType fromType = CaptchaCodeActType.fromType(act);
 				if(fromType == CaptchaCodeActType.SnkAuth){
+					String user_agent = request.getHeader("User-Agent");
 					String context = String.valueOf(countrycode).concat(StringHelper.WHITESPACE_STRING_GAP).concat(acc);
-					RpcResponseDTO<OrderSMSVTO> orderRpcResult = orderRpcService.createSMSOrder(mac, umac, umactype, context);
+					RpcResponseDTO<OrderSMSVTO> orderRpcResult = orderRpcService.createSMSOrder(mac, umac, 
+							umactype, context, user_agent);
 					if(!orderRpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 						return;
