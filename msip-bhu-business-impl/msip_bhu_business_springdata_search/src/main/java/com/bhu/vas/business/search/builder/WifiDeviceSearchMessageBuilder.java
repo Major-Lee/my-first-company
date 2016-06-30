@@ -22,6 +22,23 @@ import com.smartwork.msip.cores.helper.StringHelper;
  */
 public class WifiDeviceSearchMessageBuilder {
 	
+	public static SearchConditionMessage builderSearchMessageCommon(Integer u_id){
+		SearchConditionPack pack_must = null;
+		
+		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
+		
+		pack_must = SearchConditionPack.builderSearchConditionPackWithConditions(sc_u_id);
+		
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		
+		SearchConditionSort sc_sortByOnine = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.WifiDevice.
+				Field.D_ONLINE.getName(), SearchConditionSortPattern.Sort.getPattern(),
+				SortOrder.DESC, null);
+		scm.addSorts(sc_sortByOnine);
+		return scm;
+	}
+	
 	/**
 	 * 根据uid和设备业务线构建搜索message对象
 	 * @param u_id 用户uid
