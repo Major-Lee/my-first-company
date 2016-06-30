@@ -141,4 +141,10 @@ public class UserRpcService implements IUserRpcService{
 		logger.info(String.format("activity with uid[%s] ",uid));
 		return userUnitFacadeService.activity(uid);
 	}
+
+	@Override
+	public RpcResponseDTO<Boolean> activitySet(Integer uid) {
+		logger.info(String.format("activity with uid[%s] ",uid));
+		return userUnitFacadeService.activitySet(uid);
+	}
 }

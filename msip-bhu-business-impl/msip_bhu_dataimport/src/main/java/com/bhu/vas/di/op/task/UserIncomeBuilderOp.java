@@ -27,6 +27,7 @@ public class UserIncomeBuilderOp {
 	        date = calendar.getTime();  
 	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
 	        String time = sdf.format(date); 
+	        time="2016-06-24";
 			UserWalletFacadeService userWalletFacadeService = context.getBean("userWalletFacadeService",UserWalletFacadeService.class);
 			
 			List<UserWalletLog> userWalletLogs= userWalletFacadeService.getUserWalletLogService().findListByTime(time);

@@ -18,6 +18,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
+import com.bhu.vas.api.rpc.user.model.UserActivity;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.business.helper.BusinessWebHelper;
@@ -302,11 +303,31 @@ public class UserController extends BaseController{
 	}
 	@ResponseBody()
     @RequestMapping(value="/activity", method={RequestMethod.GET,RequestMethod.POST})
-    public void rankingList(HttpServletResponse response, @RequestParam(required = true) Integer uid){
+    public void activity(HttpServletResponse response, @RequestParam(required = true) Integer uid){
     	
     	RpcResponseDTO<UserActivityVTO> rpcResult = userRpcService.activity(uid);
     	if(!rpcResult.hasError()){
     		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    	}else{
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    	}
+    }
+	@ResponseBody()
+    @RequestMapping(value="/activitySet", method={RequestMethod.GET,RequestMethod.POST})
+    public void activitySet(HttpServletResponse response, @RequestParam(required = true) Integer uid,@RequestParam(required = false) Integer bind_num,
+            @RequestParam(required = false) Integer income,
+            @RequestParam(required = false) String rate,
+            @RequestParam(required = true) Integer status){
+		UserActivity userActivity=new UserActivity();
+		userActivity.setId(uid);
+		userActivity.setBind_num(bind_num);
+		userActivity.setIncome(income);
+		userActivity.setRate(rate);
+		userActivity.setStatus(status);
+		//userActivity.setCreated_at(created_at);
+    	RpcResponseDTO<Boolean> rpcResult = userRpcService.activitySet(uid);
+    	if(!rpcResult.hasError()){
+    		SpringMVCHelper.renderJson(response, Response.SUCCESS);
     	}else{
     		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     	}

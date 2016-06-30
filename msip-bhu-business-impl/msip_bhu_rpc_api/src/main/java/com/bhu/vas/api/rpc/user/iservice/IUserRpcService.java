@@ -169,4 +169,10 @@ public interface IUserRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<UserActivityVTO> activity(Integer uid);
+	/**
+	 * 更改活动返现设置
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> activitySet(Integer uid);
 }
