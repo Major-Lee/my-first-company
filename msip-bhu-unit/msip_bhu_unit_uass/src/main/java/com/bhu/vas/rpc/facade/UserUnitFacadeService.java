@@ -338,6 +338,8 @@ public class UserUnitFacadeService {
 		}
 	}
 	
+
+	
 	/**
 	 * 根据验证码进行密码重置操作
 	 * 此操作需要进行token重置
@@ -475,6 +477,30 @@ public class UserUnitFacadeService {
 			//UserWallet uwallet = userWalletFacadeService.userWallet(user.getId());
 			userExchange.setWallet(userWalletFacadeService.walletDetail(uid));
 			userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId(),false));
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 通过手机号或nick进行判定 返回简单用户数据
+	 * @param countrycode
+	 * @param acc
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> fetchUser(int countrycode, String acc) {
+		try{
+			Integer uid = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
+			if(uid == null || uid.intValue() == 0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			User user = UserValidateServiceHelper.validateUser(uid,this.userService);
+			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){

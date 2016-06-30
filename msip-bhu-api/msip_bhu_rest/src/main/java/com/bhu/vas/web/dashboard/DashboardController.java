@@ -2,11 +2,13 @@ package com.bhu.vas.web.dashboard;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +26,7 @@ import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService;
+import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
@@ -50,8 +53,10 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 @RequestMapping("/dashboard")
 public class DashboardController extends BaseController{
 	@Resource
-	private ITaskRpcService taskRpcService;
+	private IUserRpcService userRpcService;
 	
+	@Resource
+	private ITaskRpcService taskRpcService;
     //@Resource
     //private IUserDeviceRpcService userDeviceRpcService;
     @Resource
@@ -450,6 +455,43 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}finally{
 			
+		}
+	}
+	
+	/**
+	 * 获取用户简单信息
+	 * @param request
+	 * @param response
+	 * @param secretKey
+	 * @param countrycode
+	 * @param acc 手机号码或者nick
+	 * @param jsonpcallback
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/user/fetch",method={RequestMethod.POST})
+	public void fetch_user(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true,value="sk") String secretKey,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = false) String jsonpcallback){
+		ResponseError validateError = validateThirdpartiesFetch(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.fetchUser(countrycode, acc);
+		if(!rpcResult.hasError()){
+			if(StringUtils.isEmpty(jsonpcallback))
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			if(StringUtils.isEmpty(jsonpcallback))
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			else
+				SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(rpcResult));
 		}
 	}
 }
