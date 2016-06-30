@@ -20,6 +20,7 @@ import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -51,7 +52,7 @@ public class ConsoleUserController extends BaseController {
     
     
     @ResponseBody()
-    @RequestMapping(value = "/queryUserList", method = {RequestMethod.POST})
+    @RequestMapping(value = "/userManage/queryUserList", method = {RequestMethod.POST})
     public void queryUserList(
     		 HttpServletRequest request,
              HttpServletResponse response,
@@ -96,5 +97,40 @@ public class ConsoleUserController extends BaseController {
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
+    }
+    
+    /**
+     * 
+     * @param request
+     * @param response
+     * @param uid 用户Id
+     * @param incomeType 收益类型  1：提现记录  2：充值记录  3：返现记录
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/userManage/queryUserIncomeDetail", method = {RequestMethod.POST})
+    public void queryUserDetail(
+    		HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = false,defaultValue = "") String transmode,
+            @RequestParam(required = false,defaultValue = "") String transtype,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
+            ){
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value = "/userManage/queryUserDeviceInfo", method = {RequestMethod.POST})
+    public void queryUserDeviceInfo(
+    		HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) String uid
+            ){
+    	
     }
 }

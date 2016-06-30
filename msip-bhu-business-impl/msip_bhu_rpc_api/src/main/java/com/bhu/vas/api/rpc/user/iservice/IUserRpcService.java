@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserIncomeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -169,4 +170,11 @@ public interface IUserRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<UserActivityVTO> activity(Integer uid);
+	
+	/**
+	 * 根据uid查询用户提现充值记录列表
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<UserIncomeDTO> queryUserIncomeDetail(int uid);
 }
