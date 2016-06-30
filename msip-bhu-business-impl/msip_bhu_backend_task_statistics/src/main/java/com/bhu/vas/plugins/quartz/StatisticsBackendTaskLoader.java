@@ -37,21 +37,21 @@ public class StatisticsBackendTaskLoader {
 		logger.info("StatisticsBackendTaskLoader start...");
 		
 		Calendar cal = Calendar.getInstance();
-		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
+		
 		
 		logger.info("Statistics DevicesState...");
-		DeviceStateStatisticsDTO deviceDto = fetchDetivcStateStatistics(fragments);
-		DeviceStateStatisticsHashService.getInstance().timeIntervalAllSet(fragments, deviceDto);
+		DeviceStateStatisticsDTO deviceDto = fetchDetivcStateStatistics(cal.getTime());
+		DeviceStateStatisticsHashService.getInstance().timeIntervalAllSet(cal.getTime(), deviceDto);
 		
 		logger.info("Statistics UserState...");
-		UserStateStatisticsDTO userDto = fetchUserStateStatistics(fragments);
-		UserStateStatisticsHashService.getInstance().timeIntervalAllSet(fragments, userDto);
+		UserStateStatisticsDTO userDto = fetchUserStateStatistics(cal.getTime());
+		UserStateStatisticsHashService.getInstance().timeIntervalAllSet(cal.getTime(), userDto);
 		
 		logger.info("StatisticsBackendTaskLoader end...");
 	}
 	
-	public DeviceStateStatisticsDTO fetchDetivcStateStatistics(List<String> fragments){
-		
+	public DeviceStateStatisticsDTO fetchDetivcStateStatistics(Date date){
+		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(date);
 		DeviceStateStatisticsDTO dto = new DeviceStateStatisticsDTO();
 		
 		dto.setCountsDevices(wifiDeviceService.count());
@@ -70,7 +70,9 @@ public class StatisticsBackendTaskLoader {
 		return dto;
 	}
 	
-	public UserStateStatisticsDTO fetchUserStateStatistics(List<String> fragments){
+	public UserStateStatisticsDTO fetchUserStateStatistics(Date date){
+		
+		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(date);
 		
 		UserStateStatisticsDTO dto = new UserStateStatisticsDTO();
 		dto.setCountsUser(userService.count());

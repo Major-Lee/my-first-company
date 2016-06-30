@@ -1,5 +1,6 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.statistics;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -61,8 +62,9 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 		return this.hgetall(generateKey(fragment, buPrefixKey));
 	}
 	
-	public void timeIntervalAllSet(List<String> fragments, DeviceStateStatisticsDTO dto) {
+	public void timeIntervalAllSet(Date date, DeviceStateStatisticsDTO dto) {
 		
+		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(date);
 		//每日
 		String dailyValue = setOrGetValue(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 				BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey, 
@@ -76,12 +78,12 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 		//每周
 		String weekilyValue = setOrGetValue(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 				BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey,
-				fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), dto);
+				DateTimeExtHelper.getWeekDay(date)+"", dto);
 		
 		if (weekilyValue != null) {
 			update(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 					BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey,
-					fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), dto,
+					DateTimeExtHelper.getWeekDay(date)+"", dto,
 					dailyValue);
 		}
 		
