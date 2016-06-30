@@ -11,6 +11,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserIncomeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
@@ -140,5 +141,11 @@ public class UserRpcService implements IUserRpcService{
 	public RpcResponseDTO<UserActivityVTO> activity(Integer uid) {
 		logger.info(String.format("activity with uid[%s] ",uid));
 		return userUnitFacadeService.activity(uid);
+	}
+
+	@Override
+	public RpcResponseDTO<UserIncomeDTO> queryUserIncomeDetail(int uid) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
