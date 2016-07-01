@@ -1,7 +1,6 @@
 package com.bhu.vas.rpc.service.device;
 
 import com.bhu.vas.api.rpc.unifyStatistics.iservice.IUnifyStatisticsRpcService;
-
 import org.springframework.stereotype.Service;
 
 /**

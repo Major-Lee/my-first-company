@@ -2,12 +2,15 @@ package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.statistics.DeviceStateStatisticsDTO;
 import com.bhu.vas.api.dto.statistics.UserStateStatisticsDTO;
+import com.bhu.vas.api.vto.statistics.OnlineStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.StateStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStateStatisticsHashService;
@@ -20,7 +23,44 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  */
 @Service
 public class UnifyStatisticsFacadeRpcSerivce {
-
+	// ********************author shibo************************
+	private  Map<String,String> map;
+	private  Map<String,Long> vmap;
+	public  OnlineStatisticsVTO onlineStatistics(String queryParam){
+		  OnlineStatisticsVTO vto = null;
+		  map = new HashMap<String,String>();
+		  vto = queryStatistics(queryParam);
+		  
+		  return vto;
+	} 
+	
+	private OnlineStatisticsVTO queryStatistics(String queryParam) {
+		Calendar cal = Calendar.getInstance();
+		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
+		OnlineStatisticsVTO vto = new OnlineStatisticsVTO();
+		vto.setName("Devices");
+		switch (queryParam) {
+		case "D":
+			map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+			break;
+		case "W":
+			map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK), BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+			break;
+		case "M":
+			map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH), BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+			break;
+		default:
+			return null;
+		}
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			DeviceStateStatisticsDTO dto = JsonHelper.getDTO(entry.getValue(),DeviceStateStatisticsDTO.class);
+			vmap.put(entry.getKey(), dto.getOnline_max());
+		}
+		vto.setMap(vmap);
+		return vto;
+	}
+	// ********************author shibo************************
+	
 	public StateStatisticsVTO stateStat() {
 		Calendar cal = Calendar.getInstance();
 		StateStatisticsVTO vto = buildStateStatisticsVTO(cal);
