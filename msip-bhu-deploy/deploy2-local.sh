@@ -192,7 +192,7 @@ unzip -qo msip_bhu_unit_tag/bin/msip_bhu_unit_tag.jar -d msip_bhu_unit_tag/class
 unzip -q msip_bhu_unit_unifyStatistics-bin.zip
 unzip -qo msip_bhu_unit_unifyStatistics/bin/msip_bhu_unit_unifyStatistics.jar -d msip_bhu_unit_unifyStatistics/classes/
 
-unzip -q msip_bhu_backend_task_statistics-bin.zip-bin.zip
+unzip -q msip_bhu_backend_task_statistics-bin.zip
 unzip -qo msip_bhu_backend_task_statistics-bin.zip/bin/msip_bhu_backend_task_statistics-bin.zip.jar -d msip_bhu_backend_task_statistics-bin.zip/classes/
 
 
