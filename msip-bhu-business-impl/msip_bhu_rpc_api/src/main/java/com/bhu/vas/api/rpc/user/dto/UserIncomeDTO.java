@@ -1,52 +1,87 @@
 package com.bhu.vas.api.rpc.user.dto;
 
 public class UserIncomeDTO {
-	//用户Id
-	private int uid;
-	//交易时间
-	private String transTime;
-	//交易类型
-	private String transType;
-	//交易单号
-	private String transNo;
-	//终端Mac
-	private String terminalMac;
-	//打赏设备Mac
-	private String deciveMac;
-	public int getUid() {
-		return uid;
+	
+	//钱包余额
+	private String walletMoney;
+	//虎钻
+	private String vcurrency;
+	//活动返现
+	private String activityBackCash;
+	//历史总收益
+	private String totalIncome;
+	//提现信息
+	private String withdraw;
+	//打赏页面uv
+	private String rewardUV;
+	//订单数
+	private String totalOrderNum;
+	//打赏成功数
+	private String rewardSuccessNum;
+	//订单成功率
+	private String orderSuccessRate;
+	//用户交易信息
+	private UserTransInfoDTO userTransInfoDTO;
+	public String getWalletMoney() {
+		return walletMoney;
 	}
-	public void setUid(int uid) {
-		this.uid = uid;
+	public void setWalletMoney(String walletMoney) {
+		this.walletMoney = walletMoney;
 	}
-	public String getTransTime() {
-		return transTime;
+	public String getVcurrency() {
+		return vcurrency;
 	}
-	public void setTransTime(String transTime) {
-		this.transTime = transTime;
+	public void setVcurrency(String vcurrency) {
+		this.vcurrency = vcurrency;
 	}
-	public String getTransType() {
-		return transType;
+	public String getActivityBackCash() {
+		return activityBackCash;
 	}
-	public void setTransType(String transType) {
-		this.transType = transType;
+	public void setActivityBackCash(String activityBackCash) {
+		this.activityBackCash = activityBackCash;
 	}
-	public String getTransNo() {
-		return transNo;
+	public String getTotalIncome() {
+		return totalIncome;
 	}
-	public void setTransNo(String transNo) {
-		this.transNo = transNo;
+	public void setTotalIncome(String totalIncome) {
+		this.totalIncome = totalIncome;
 	}
-	public String getTerminalMac() {
-		return terminalMac;
+	public String getWithdraw() {
+		return withdraw;
 	}
-	public void setTerminalMac(String terminalMac) {
-		this.terminalMac = terminalMac;
+	public void setWithdraw(String withdraw) {
+		this.withdraw = withdraw;
 	}
-	public String getDeciveMac() {
-		return deciveMac;
+	public String getRewardUV() {
+		return rewardUV;
 	}
-	public void setDeciveMac(String deciveMac) {
-		this.deciveMac = deciveMac;
+	public void setRewardUV(String rewardUV) {
+		this.rewardUV = rewardUV;
 	}
+	public String getTotalOrderNum() {
+		return totalOrderNum;
+	}
+	public void setTotalOrderNum(String totalOrderNum) {
+		this.totalOrderNum = totalOrderNum;
+	}
+	public String getRewardSuccessNum() {
+		return rewardSuccessNum;
+	}
+	public void setRewardSuccessNum(String rewardSuccessNum) {
+		this.rewardSuccessNum = rewardSuccessNum;
+	}
+	public String getOrderSuccessRate() {
+		return orderSuccessRate;
+	}
+	public void setOrderSuccessRate(String orderSuccessRate) {
+		this.orderSuccessRate = orderSuccessRate;
+	}
+	public UserTransInfoDTO getUserTransInfoDTO() {
+		return userTransInfoDTO;
+	}
+	public void setUserTransInfoDTO(UserTransInfoDTO userTransInfoDTO) {
+		this.userTransInfoDTO = userTransInfoDTO;
+	}
+	
+	
 }
