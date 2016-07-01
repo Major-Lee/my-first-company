@@ -108,9 +108,10 @@ public class ConsoleUserController extends BaseController {
      */
     @ResponseBody()
     @RequestMapping(value = "/userManage/queryUserIncomeDetail", method = {RequestMethod.POST})
-    public void queryUserDetail(
+    public void queryUserIncomeDetail(
     		HttpServletRequest request,
             HttpServletResponse response,
+            @RequestParam(required = true) int uid,
             @RequestParam(required = false,defaultValue = "") String transmode,
             @RequestParam(required = false,defaultValue = "") String transtype,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
@@ -129,7 +130,19 @@ public class ConsoleUserController extends BaseController {
     public void queryUserDeviceInfo(
     		HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required = true) String uid
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
+            ){
+    	
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value = "/userManage/queryUserDetail", method = {RequestMethod.POST})
+    public void queryUserDetail(
+    		HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid
             ){
     	
     }

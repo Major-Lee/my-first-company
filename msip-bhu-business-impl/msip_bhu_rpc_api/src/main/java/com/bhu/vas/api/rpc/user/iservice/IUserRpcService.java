@@ -185,4 +185,11 @@ public interface IUserRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<TailPage<UserManageDeviceDTO>> queryUserDeviceInfo(int uid);
+	
+	/**
+	 * 查询用户详细信息
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<UserManageDTO> queryUserDetail(int uid);
 }

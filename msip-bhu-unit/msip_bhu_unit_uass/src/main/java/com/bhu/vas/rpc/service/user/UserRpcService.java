@@ -155,4 +155,9 @@ public class UserRpcService implements IUserRpcService{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public RpcResponseDTO<UserManageDTO> queryUserDetail(int uid) {
+		return userUnitFacadeService.queryUserDetail(uid);
+	}
 }
