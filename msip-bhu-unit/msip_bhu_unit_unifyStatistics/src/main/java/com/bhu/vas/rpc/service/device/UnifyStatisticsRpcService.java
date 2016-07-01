@@ -2,6 +2,7 @@ package com.bhu.vas.rpc.service.device;
 
 import com.bhu.vas.api.rpc.unifyStatistics.iservice.IUnifyStatisticsRpcService;
 import com.bhu.vas.api.vto.statistics.OnlineStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.StateStatisticsVTO;
 import com.bhu.vas.rpc.facade.UnifyStatisticsFacadeRpcSerivce;
 
 import javax.annotation.Resource;
@@ -18,6 +19,11 @@ public class UnifyStatisticsRpcService implements IUnifyStatisticsRpcService {
 	@Override
 	public OnlineStatisticsVTO onlineStatistics(String queryParam) {
 		OnlineStatisticsVTO vto = unifyStatisticsFacadeRpcSerivce.onlineStatistics(queryParam);
+		return vto;
+	}
+	@Override
+	public StateStatisticsVTO stateStat() {
+		StateStatisticsVTO vto = unifyStatisticsFacadeRpcSerivce.stateStat();
 		return vto;
 	}
 	

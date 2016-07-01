@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.unifyStatistics.iservice.IUnifyStatisticsRpcService;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.statistics.OnlineStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.StateStatisticsVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
@@ -26,11 +27,20 @@ public class ConsoleStatisticsController {
 	
 	@ResponseBody()
 	@RequestMapping(value = "/statistics/fetch_online_data", method = {RequestMethod.POST})
-	public void fetch_max_busy_devices(
+	public void fetch_online_data(
 	            HttpServletRequest request,
 	            HttpServletResponse response,
 	            @RequestParam(required = true) String queryParam){
 			OnlineStatisticsVTO vto = unifyStatisticsRpcService.onlineStatistics(queryParam);
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
-	    }
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value = "/statistics/fetch_statestat", method = {RequestMethod.POST})
+	public void fetch_statestat(
+	            HttpServletRequest request,
+	            HttpServletResponse response){
+		StateStatisticsVTO vto = unifyStatisticsRpcService.stateStat();
+	    SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vto));
+	}
 }
