@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.user.dto;
 
+import java.util.List;
+
 public class UserIncomeDTO {
 	
 	//钱包余额
@@ -21,7 +23,7 @@ public class UserIncomeDTO {
 	//订单成功率
 	private String orderSuccessRate;
 	//用户交易信息
-	private UserTransInfoDTO userTransInfoDTO;
+	private List<UserTransInfoDTO> userTransInfoList;
 	public String getWalletMoney() {
 		return walletMoney;
 	}
@@ -76,12 +78,11 @@ public class UserIncomeDTO {
 	public void setOrderSuccessRate(String orderSuccessRate) {
 		this.orderSuccessRate = orderSuccessRate;
 	}
-	public UserTransInfoDTO getUserTransInfoDTO() {
-		return userTransInfoDTO;
+	public List<UserTransInfoDTO> getUserTransInfoList() {
+		return userTransInfoList;
 	}
-	public void setUserTransInfoDTO(UserTransInfoDTO userTransInfoDTO) {
-		this.userTransInfoDTO = userTransInfoDTO;
+	public void setUserTransInfoList(List<UserTransInfoDTO> userTransInfoList) {
+		this.userTransInfoList = userTransInfoList;
 	}
-	
 	
 }

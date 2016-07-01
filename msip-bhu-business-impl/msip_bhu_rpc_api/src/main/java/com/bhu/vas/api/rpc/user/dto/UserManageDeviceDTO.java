@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.user.dto;
 
+import java.util.List;
+
 /**
  * 用户管理---设备信息
  * @author Jason
@@ -15,7 +17,7 @@ public class UserManageDeviceDTO {
 	private String rewardDeviceNum;
 	
 	//设备详细信息
-	private UserDeviceInfoDTO userDeviceInfoDTO;
+	private List<UserDeviceInfoDTO> userDeviceInfoList;
 
 	public String getDeviceNum() {
 		return deviceNum;
@@ -41,13 +43,14 @@ public class UserManageDeviceDTO {
 		this.rewardDeviceNum = rewardDeviceNum;
 	}
 
-	public UserDeviceInfoDTO getUserDeviceInfoDTO() {
-		return userDeviceInfoDTO;
+	public List<UserDeviceInfoDTO> getUserDeviceInfoList() {
+		return userDeviceInfoList;
 	}
 
-	public void setUserDeviceInfoDTO(UserDeviceInfoDTO userDeviceInfoDTO) {
-		this.userDeviceInfoDTO = userDeviceInfoDTO;
+	public void setUserDeviceInfoList(List<UserDeviceInfoDTO> userDeviceInfoList) {
+		this.userDeviceInfoList = userDeviceInfoList;
 	}
+
 	
 	
 }

@@ -788,11 +788,23 @@ public class UserUnitFacadeService {
 	 * @param uid
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid,String transtype,int pageno,int pagesize){
+	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid,String transtype,String transmode,int pageno,int pagesize){
 		try{
-			//UserTypeValidateService.validConsoleUser(uid);
 			User user  = userService.getById(uid);
 			UserTypeValidateService.validConsoleUser(user);
+			//查询用户钱包信息
+			UserIncomeDTO userIncomeDTO = new UserIncomeDTO();
+			UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(uid);
+			if(userWallet == null){
+				userIncomeDTO.setWithdraw("0.00");
+				userIncomeDTO.setVcurrency("0");
+				userIncomeDTO.setWalletMoney("");
+			}else{
+				userIncomeDTO.setWalletMoney(String.valueOf(userWallet.getCash()));
+				userIncomeDTO.setVcurrency(String.valueOf(userWallet.getVcurrency_total()));
+				userIncomeDTO.setWithdraw(userWallet.getPayments().get(0).getNick());
+			}
+			//根据uid查询用户交易信息
 			
 			//TailPage<UserDTO> pages = new CommonPage<UserDTO>(tailusers.getPageNumber(), pagesize, tailusers.getTotalItemsCount(), vtos);
 			//return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
@@ -815,7 +827,6 @@ public class UserUnitFacadeService {
 	 */
 	public RpcResponseDTO<TailPage<UserManageDeviceDTO>> queryUserDeviceInfo(int uid,int pageno,int pagesize){
 		try{
-			//UserTypeValidateService.validConsoleUser(uid);
 			User user  = userService.getById(uid);
 			UserTypeValidateService.validConsoleUser(user);
 			

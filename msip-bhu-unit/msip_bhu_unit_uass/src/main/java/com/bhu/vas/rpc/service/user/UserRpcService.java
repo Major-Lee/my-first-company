@@ -145,9 +145,9 @@ public class UserRpcService implements IUserRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid,String transtype,int pageno,int pagesize) {
+	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid,String transtype,String transmode,int pageno,int pagesize) {
 		logger.info(String.format("queryUserIncomeDetail with uid[%s] transtype[%s] pageno[%s] pagesize[%s] ",uid,transtype,pageno,pagesize));
-		return userUnitFacadeService.queryUserIncomeDetail(uid,transtype,pageno,pagesize);
+		return userUnitFacadeService.queryUserIncomeDetail(uid,transtype,transmode,pageno,pagesize);
 	}
 
 	@Override

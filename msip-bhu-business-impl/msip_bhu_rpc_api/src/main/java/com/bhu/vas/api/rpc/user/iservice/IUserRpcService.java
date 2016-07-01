@@ -177,7 +177,7 @@ public interface IUserRpcService {
 	 * @param uid
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid,String transtype,int pageno,int pagesize);
+	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid,String transtype,String transmode,int pageno,int pagesize);
 	
 	/**
 	 * 查询用户设备信息

@@ -127,7 +127,7 @@ public class ConsoleUserController extends BaseController {
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<TailPage<UserIncomeDTO>> rpcResult = userRpcService.queryUserIncomeDetail(uid,transtype,pageNo,pageSize);
+		RpcResponseDTO<TailPage<UserIncomeDTO>> rpcResult = userRpcService.queryUserIncomeDetail(uid,transtype,transmode,pageNo,pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
