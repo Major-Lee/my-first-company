@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserIncomeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
+import com.bhu.vas.api.rpc.user.dto.UserManageDeviceDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -100,11 +102,14 @@ public class ConsoleUserController extends BaseController {
     }
     
     /**
-     * 
+     * 查询用户交易信息【用户管理功能】
      * @param request
      * @param response
-     * @param uid 用户Id
-     * @param incomeType 收益类型  1：提现记录  2：充值记录  3：返现记录
+     * @param uid
+     * @param transmode
+     * @param transtype
+     * @param pageNo
+     * @param pageSize
      */
     @ResponseBody()
     @RequestMapping(value = "/userManage/queryUserIncomeDetail", method = {RequestMethod.POST})
@@ -122,9 +127,22 @@ public class ConsoleUserController extends BaseController {
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		
+		RpcResponseDTO<TailPage<UserIncomeDTO>> rpcResult = userRpcService.queryUserIncomeDetail(uid,transtype,pageNo,pageSize);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
     }
     
+    /**
+     * 查询用户设备信息【用户管理功能】
+     * @param request
+     * @param response
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     */
     @ResponseBody()
     @RequestMapping(value = "/userManage/queryUserDeviceInfo", method = {RequestMethod.POST})
     public void queryUserDeviceInfo(
@@ -134,9 +152,27 @@ public class ConsoleUserController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
             ){
-    	
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+    	RpcResponseDTO<TailPage<UserManageDeviceDTO>> rpcResult = userRpcService.queryUserDeviceInfo(uid,pageNo,pageSize);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
     }
     
+    /**
+     * 查询用户详细信息【用户管理功能】
+     * @param request
+     * @param response
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     */
     @ResponseBody()
     @RequestMapping(value = "/userManage/queryUserDetail", method = {RequestMethod.POST})
     public void queryUserDetail(
@@ -144,6 +180,11 @@ public class ConsoleUserController extends BaseController {
             HttpServletResponse response,
             @RequestParam(required = true) int uid
             ){
-    	
+    	RpcResponseDTO<UserManageDTO> rpcResult = userRpcService.queryUserDetail(uid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
     }
 }

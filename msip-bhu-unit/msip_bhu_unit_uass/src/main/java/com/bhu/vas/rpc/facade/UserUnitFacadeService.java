@@ -17,8 +17,10 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserIncomeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
+import com.bhu.vas.api.rpc.user.dto.UserManageDeviceDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserActivity;
@@ -770,6 +772,56 @@ public class UserUnitFacadeService {
 				userManageDTO.setWalletMoney("0.00");
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userManageDTO);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+		}
+	}
+	
+	/**
+	 * 查询用户交易信息
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid,String transtype,int pageno,int pagesize){
+		try{
+			//UserTypeValidateService.validConsoleUser(uid);
+			User user  = userService.getById(uid);
+			UserTypeValidateService.validConsoleUser(user);
+			
+			//TailPage<UserDTO> pages = new CommonPage<UserDTO>(tailusers.getPageNumber(), pagesize, tailusers.getTotalItemsCount(), vtos);
+			//return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
+			return null;
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+		}
+	}
+	
+	/**
+	 * 查询用户设备信息
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserManageDeviceDTO>> queryUserDeviceInfo(int uid,int pageno,int pagesize){
+		try{
+			//UserTypeValidateService.validConsoleUser(uid);
+			User user  = userService.getById(uid);
+			UserTypeValidateService.validConsoleUser(user);
+			
+			//TailPage<UserDTO> pages = new CommonPage<UserDTO>(tailusers.getPageNumber(), pagesize, tailusers.getTotalItemsCount(), vtos);
+			//return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
+			return null;
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
