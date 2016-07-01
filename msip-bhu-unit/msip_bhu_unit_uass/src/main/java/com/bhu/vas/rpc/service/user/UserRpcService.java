@@ -145,13 +145,13 @@ public class UserRpcService implements IUserRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<UserIncomeDTO> queryUserIncomeDetail(int uid) {
+	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public RpcResponseDTO<UserManageDeviceDTO> queryUserDeviceInfo(int uid) {
+	public RpcResponseDTO<TailPage<UserManageDeviceDTO>> queryUserDeviceInfo(int uid) {
 		// TODO Auto-generated method stub
 		return null;
 	}

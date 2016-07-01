@@ -177,12 +177,12 @@ public interface IUserRpcService {
 	 * @param uid
 	 * @return
 	 */
-	public RpcResponseDTO<UserIncomeDTO> queryUserIncomeDetail(int uid);
+	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid);
 	
 	/**
 	 * 查询用户设备信息
 	 * @param uid
 	 * @return
 	 */
-	public RpcResponseDTO<UserManageDeviceDTO> queryUserDeviceInfo(int uid);
+	public RpcResponseDTO<TailPage<UserManageDeviceDTO>> queryUserDeviceInfo(int uid);
 }
