@@ -60,13 +60,18 @@ public class PayHttpService {
     
     public static String ALIPAY_NOTIFY_URL = PAY_HOST_URL+"/alipayNotifySuccess";
     
+    public static String NOWIPAY_NOTIFY_URL = PAY_HOST_URL+"/nowpayNotifySuccess";
+    
     public static String MIDAS_NOTIFY_URL = "/msip_bhu_payment_rest/payment/midasNotifySuccess";
     
 	//打赏页面跳转同步通知页面路径
     public static String ALIPAY_RETURN_URL = PAY_HOST_URL+"/alipayReturn";
+  //打赏页面跳转同步通知页面路径
+    public static String NOWPAY_RETURN_URL = PAY_HOST_URL+"/nowpayReturn";
 	//充值页面跳转同步通知页面路径
     public static String ALIPAY_PREPAID_RETURN_URL = PAY_HOST_URL+"/alipayPrepaidReturn";
-    
+  //充值页面跳转同步通知页面路径
+    public static String NOWPAY_PREPAID_RETURN_URL = PAY_HOST_URL+"/nowpayPrepaidReturn";
 	//打赏页面跳转同步通知页面路径
     public static String HEE_RETURN_URL = PAY_HOST_URL+"/heeReturn";
 	//充值页面跳转同步通知页面路径

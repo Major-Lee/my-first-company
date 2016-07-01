@@ -101,12 +101,12 @@
 	               data: datas,
 	               success:function(json){
 	                    if(json.success){
-							var callbackType = json.params.type;
-							if(callbackType=='json'){
-								var params = $.parseJSON(json.params.url);
-		                        loc(params);
-							}else{
 								var params = $.parseJSON(json.params);
+							var callbackType = params.type;
+							if(callbackType=='json'){
+								var url = $.parseJSON(params.url);
+		                        loc(url);
+							}else{
 			                    location.href = params.url;
 							}
 	                    }else{
