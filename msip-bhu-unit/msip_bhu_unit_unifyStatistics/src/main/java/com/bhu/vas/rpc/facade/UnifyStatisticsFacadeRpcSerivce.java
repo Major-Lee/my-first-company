@@ -139,6 +139,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 		vto.setD_monthlive(statLivelyCount(30,cal));
 		return vto;
 	}
+	
 	/**
 	 * 活跃度统计
 	 * @param day
