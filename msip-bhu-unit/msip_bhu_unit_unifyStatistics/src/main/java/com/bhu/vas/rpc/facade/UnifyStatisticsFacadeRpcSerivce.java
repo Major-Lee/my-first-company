@@ -61,12 +61,14 @@ public class UnifyStatisticsFacadeRpcSerivce {
 	}
 	// ********************author shibo************************
 	
+	
+	
 	public StateStatisticsVTO stateStat() {
 		Calendar cal = Calendar.getInstance();
 		StateStatisticsVTO vto = buildStateStatisticsVTO(cal);
 		return vto;
 	}
-
+	
 	private StateStatisticsVTO buildStateStatisticsVTO(Calendar cal) {
 
 		StateStatisticsVTO vto = new StateStatisticsVTO();
@@ -137,12 +139,18 @@ public class UnifyStatisticsFacadeRpcSerivce {
 		vto.setD_monthlive(statLivelyCount(30,cal));
 		return vto;
 	}
-	
+	/**
+	 * 活跃度统计
+	 * @param day
+	 * @param cal
+	 * @return
+	 */
 	private int statLivelyCount(int day,Calendar cal){
 		int count = 0;
+		
 		List<String> fragments = new ArrayList<String>();
 		for (int i = 0; i < day; i++) {
-			cal.add(Calendar.DATE, -1);
+			cal.add(Calendar.DATE, -(i == 0 ? i : 1));
 			List<String> lastDayDeviceFrag = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 			fragments.add(lastDayDeviceFrag.get(DateTimeExtHelper.YEAR_MONTH_DD));
 		}
