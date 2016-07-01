@@ -109,6 +109,14 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 		this.hset(generateKey(fragment, buPrefixKey), field, JsonHelper.getJSONString(newDto));
 	}
 	
+	public List<Object> batchFetchValue(List<String> fragments, String buPrefixKey, String field){
+		String  keys[] = new String[30];
+		for (int i = 0; i < fragments.size(); i++) {
+			keys[i] = generateKey(fragments.get(i), buPrefixKey);
+		}
+		return this.pipelineHGet_diffKeyWithSameField(keys, field);
+	}
+	
 	//对比信息，返回各个值较大的信息dto
 	public DeviceStateStatisticsDTO upDateStatisticsDto(DeviceStateStatisticsDTO dto, DeviceStateStatisticsDTO oldDto) {
 		DeviceStateStatisticsDTO newDto = new DeviceStateStatisticsDTO();
