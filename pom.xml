@@ -48,6 +48,7 @@
         <module>msip-bhu-unit/msip_bhu_unit_commdity</module>
         <module>msip-bhu-unit/msip_bhu_unit_social</module>
         <module>msip-bhu-unit/msip_bhu_unit_tag</module>
+        <module>msip-bhu-unit/msip_bhu_unit_unifyStatistics</module>
         <!--
         <module>msip-bhu-unit/msip_bhu_unit_index</module>
         
@@ -61,6 +62,7 @@
         <module>msip-bhu-business-impl/msip_bhu_backend_modulestat</module>
     -->
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
+        <module>msip-bhu-business-impl/msip_bhu_backend_task_statistics</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task_applies_notify</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_commdity</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_social</module>

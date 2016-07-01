@@ -31,6 +31,7 @@ import com.bhu.vas.business.ds.social.service.WifiCommentService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -445,7 +446,6 @@ public class SocialFacadeRpcService {
         for (String visitor : visitors) {
             ids.add(Integer.parseInt(visitor));
         }
-
         List<User> users = userService.findByIds(ids);
 
         for (User user : users) {
@@ -492,7 +492,6 @@ public class SocialFacadeRpcService {
         Wifi wifi = wifiService.getById(bssid);
 
         SocialStatisManufatorDTO old = JsonHelper.getDTO(wifi.getManufacturer(), SocialStatisManufatorDTO.class);
-
 
         /**
          * 两个for循环,客户端目前只定义10-15个厂商
