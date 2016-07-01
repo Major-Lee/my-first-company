@@ -231,6 +231,9 @@ public class FileHandling {
 		//endTime  = "2016-05-26 23:59:59";
 		String params = "start_date="+startTime+"&end_date="+endTime+"&sk=PzdfTFJSUEBHG0dcWFcLew==";
 		String result = StringUtils.EMPTY;
+		System.out.println("**【"+DataUtils.getTimestamp().toString()+"】*********请求获取订单数据参数startTime：【"+startTime+"】*************************");
+		System.out.println("**【"+DataUtils.getTimestamp().toString()+"】*********请求获取订单数据参数endTime：【"+endTime+"】*************************");
+		System.out.println("**【"+DataUtils.getTimestamp().toString()+"】*********请求获取订单数据参数params：【"+params+"】*************************");
 		//请求接口获取设备总数以及设备总数
 		result = RequestPostUtils.sendPost(REQUEST_URL, params);
 		//订单创建数量
