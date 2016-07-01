@@ -6,6 +6,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserIncomeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
+import com.bhu.vas.api.rpc.user.dto.UserManageDeviceDTO;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -177,4 +178,11 @@ public interface IUserRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<UserIncomeDTO> queryUserIncomeDetail(int uid);
+	
+	/**
+	 * 查询用户设备信息
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<UserManageDeviceDTO> queryUserDeviceInfo(int uid);
 }

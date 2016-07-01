@@ -13,6 +13,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserIncomeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
+import com.bhu.vas.api.rpc.user.dto.UserManageDeviceDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.bhu.vas.rpc.facade.UserUnitFacadeService;
@@ -145,6 +146,12 @@ public class UserRpcService implements IUserRpcService{
 
 	@Override
 	public RpcResponseDTO<UserIncomeDTO> queryUserIncomeDetail(int uid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RpcResponseDTO<UserManageDeviceDTO> queryUserDeviceInfo(int uid) {
 		// TODO Auto-generated method stub
 		return null;
 	}
