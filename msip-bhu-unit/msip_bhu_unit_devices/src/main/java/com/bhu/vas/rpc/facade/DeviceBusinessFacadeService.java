@@ -576,7 +576,7 @@ public class DeviceBusinessFacadeService {
 		//1:移动设备基础信息更新
 		String wifiId_lowerCase = wifiId.toLowerCase();
 		//System.out.println("message:"+JsonHelper.getJSONString(dto));
-		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(dto.getMac().toLowerCase());
+		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(wifiId_lowerCase,dto.getMac().toLowerCase());
 		long this_login_at = System.currentTimeMillis();
 		//HandsetDevice handset_device_entity = handsetDeviceService.getById(dto.getMac().toLowerCase());
 		if(handset == null){
@@ -658,7 +658,7 @@ public class DeviceBusinessFacadeService {
 		String lowercase_mac = wifiId.toLowerCase();
 		String lowercase_d_mac = dto.getMac().toLowerCase();
 		//1:更新移动设备的online状态为false
-		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
+		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_mac,lowercase_d_mac);
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 0" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
 		if(handset != null) {
 			//dto.setVapname(handset.getVapname());
@@ -694,9 +694,10 @@ public class DeviceBusinessFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		if(StringUtils.isEmpty(dto.getMac()) /*|| StringUtils.isEmpty(dto.getDhcp_name())*/ || StringUtils.isEmpty(ctx))
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+		String lowercase_mac = wifiId.toLowerCase();
 		String lowercase_d_mac = dto.getMac().toLowerCase();
 		//1:更新终端的hostname
-		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_d_mac);
+		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_mac,lowercase_d_mac);
 		if(handset != null){
 			handset.setAction(HandsetDeviceDTO.Action_Online);
 			handset.setDhcp_name(dto.getDhcp_name());
@@ -740,7 +741,7 @@ public class DeviceBusinessFacadeService {
 				}
 			}
 			//1
-			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(allIds);
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(mac,allIds);
 			int cursor = 0;
 			for(HandsetDeviceDTO handset : handsets){
 				HandsetDeviceDTO dto = dtos.get(cursor);

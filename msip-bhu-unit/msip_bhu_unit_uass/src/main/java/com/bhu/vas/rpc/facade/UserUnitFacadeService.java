@@ -1,9 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
@@ -23,9 +19,7 @@ import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserActivity;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
-import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
-import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
@@ -173,7 +167,7 @@ public class UserUnitFacadeService {
 		
 		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserValidate(user,uToken, device, remoteIp,d_udid);
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-				userExchange,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+				userExchange);//,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
@@ -273,8 +267,7 @@ public class UserUnitFacadeService {
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				user,
 				uToken, reg,
-				old_uuid,d_uuid,
-				userWifiDeviceFacadeService.fetchBindDevices(user.getId()));
+				old_uuid,d_uuid);//,userWifiDeviceFacadeService.fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
@@ -308,8 +301,7 @@ public class UserUnitFacadeService {
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserCreate(countrycode, acc, nick, pwd, sex, device, regIp, deviceuuid, userType, org);
 			deliverMessageService.sendUserRegisteredActionMessage(userExchange.getUser().getId(),acc, null, device,regIp);
 			deliverMessageService.sendPortalUpdateUserChangedActionMessage(userExchange.getUser().getId(), nick, acc, userExchange.getUser().getAvatar());
-			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-					userExchange,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);//,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -344,7 +336,7 @@ public class UserUnitFacadeService {
 			}
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserLogin(user, device, remoteIp, null, null);
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-					userExchange,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+					userExchange);//,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 			deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp, device);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){

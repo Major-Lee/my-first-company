@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetOldStorageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
@@ -59,10 +60,28 @@ public class HandsetRedisDataRepairOp {
 		System.out.println("开始统计redis记录条数 all:"+all);
 		*/
 		
-		
 		final AtomicLong total = new AtomicLong(0);
 		final AtomicLong online = new AtomicLong(0);
-		HandsetStorageFacadeService.iteratorAll(new IteratorNotify<Map<String,String>>(){
+		
+		HandsetOldStorageService.getInstance().iteratorAll(new IteratorNotify<Map<String,String>>(){
+			@Override
+			public void notifyComming(Map<String, String> t) {
+				Iterator<Entry<String, String>> iter = t.entrySet().iterator();
+				while(iter.hasNext()){
+					Entry<String, String> next = iter.next();
+					String value = next.getValue();//value
+					if(StringUtils.isNotEmpty(value)){
+						if(!value.contains(HandsetDeviceDTO.Action_Offline)){
+							online.incrementAndGet();
+						}
+						total.incrementAndGet();
+					}
+				}
+			}
+		});
+		System.out.println("数据 total:"+total.get()+" online:"+online.get());
+		
+		/*HandsetStorageFacadeService.iteratorAll(new IteratorNotify<Map<String,String>>(){
 			@Override
 			public void notifyComming(Map<String, String> t) {
 				Iterator<Entry<String, String>> iter = t.entrySet().iterator();
@@ -80,6 +99,6 @@ public class HandsetRedisDataRepairOp {
 		});
 		HandsetStorageFacadeService.statisticsSet(online.get(),total.get());
 		
-		System.out.println("数据 total:"+total.get()+" online:"+online.get());
+		System.out.println("数据 total:"+total.get()+" online:"+online.get());*/
 	}
 }

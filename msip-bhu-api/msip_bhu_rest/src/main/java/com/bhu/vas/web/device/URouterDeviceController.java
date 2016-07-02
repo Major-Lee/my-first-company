@@ -456,9 +456,10 @@ public class URouterDeviceController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) String macs) {
+			@RequestParam(required = true) String dmac,
+			@RequestParam(required = true) String hmacs) {
 		
-		RpcResponseDTO<List<URouterHdHostNameVTO>> rpcResult = deviceURouterRestRpcService.terminalHostnames(uid, macs.toLowerCase());
+		RpcResponseDTO<List<URouterHdHostNameVTO>> rpcResult = deviceURouterRestRpcService.terminalHostnames(uid,dmac.toLowerCase(), hmacs.toLowerCase());
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

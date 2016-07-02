@@ -111,7 +111,7 @@ public class DeviceFacadeService{
 		long current = System.currentTimeMillis();
 		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
 		if(onlinePresents != null && !onlinePresents.isEmpty()){
-			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(onlinePresents);
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId.toLowerCase(),onlinePresents);
 			List<HandsetDeviceDTO> do_offline_handsets = new ArrayList<HandsetDeviceDTO>();
 			for(HandsetDeviceDTO dto:handsets){
 				if(dto != null){
