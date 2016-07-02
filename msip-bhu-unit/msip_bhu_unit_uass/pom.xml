@@ -38,7 +38,15 @@
         <dependency>
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_asynmessage</artifactId>
-        </dependency>        
+        </dependency>
+        
+        <!-- add by Jason 2016-07-01  Start-->
+        <dependency>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_ds_commdity</artifactId>
+        </dependency>
+         <!-- add by Jason 2016-07-01  E N D-->
+                 
        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
