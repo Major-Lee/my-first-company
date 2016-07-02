@@ -16,6 +16,7 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRela
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
@@ -42,22 +43,46 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 	//暫時假定2千萬设备，保證每個hashkey中存儲的不超過1000條數據，遵循redis 對於hash結構在不超過1000條數據的情況下壓縮及性能最優
 	public static final int hasPrimeValue = 20000;
 	
-	private static String generateKey(String mac){
-		int hashvalue = HashAlgorithmsHelper.additiveHash(mac, hasPrimeValue);
-		StringBuilder sb = new StringBuilder(BusinessKeyDefine.HandsetPresent.PresentPrefixKey);
+	private static String join(String dmac,String hmac){
+		String macJoin = StringHelper.join(StringHelper.MINUS_STRING_GAP, new String[]{dmac,hmac});
+		return macJoin;
+	}
+	
+	private static String join(HandsetDeviceDTO dto){
+		String dmac = dto.getLast_wifi_id();
+		String hmac = dto.getMac();
+		String macJoin = StringHelper.join(StringHelper.MINUS_STRING_GAP, new String[]{dmac,hmac});
+		return macJoin;
+	}
+	
+	private static String generateKey(String macJoin){//String dmac,String hmac){
+		//String macJoin = join(dmac,hmac);
+		int hashvalue = HashAlgorithmsHelper.additiveHash(macJoin, hasPrimeValue);
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.HandsetPresent.EntityPresentPrefixKey);
 		sb.append(String.format("%05d", hashvalue));
 		return sb.toString();
 	}
 	
 	private static String generateKeyByHashValue(int hashvalue){
-		StringBuilder sb = new StringBuilder(BusinessKeyDefine.HandsetPresent.PresentPrefixKey);
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.HandsetPresent.EntityPresentPrefixKey);
 		sb.append(String.format("%05d", hashvalue));
 		return sb.toString();
 	}
 	
 	public Long handsetComming(HandsetDeviceDTO dto){
-		String mac = dto.getMac();
-		return this.hset(generateKey(mac), mac, JsonHelper.getJSONString(dto));
+		String macJoin = join(dto);
+		return this.hset(generateKey(macJoin), macJoin, JsonHelper.getJSONString(dto));
+	}
+	
+
+	
+	public HandsetDeviceDTO handset(String dmac,String hmac){
+		String macJoin = join(dmac,hmac);
+		String value = this.hget(generateKey(macJoin),macJoin);
+		if(StringUtils.isEmpty(value)){
+			return null;//
+		}
+		return JsonHelper.getDTO(value,HandsetDeviceDTO.class);
 	}
 	
 	public List<Object> handsetsComming(List<HandsetDeviceDTO> dtos){
@@ -65,16 +90,9 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 		return this.pipelineHSet_diffKeyWithDiffFieldValue(keyAndFields[0], keyAndFields[1], keyAndFields[2]);
 	}
 	
-	public HandsetDeviceDTO handset(String mac){
-		String value = this.hget(generateKey(mac),mac);
-		if(StringUtils.isEmpty(value)){
-			return null;//
-		}
-		return JsonHelper.getDTO(value,HandsetDeviceDTO.class);
-	}
 	
-	public List<HandsetDeviceDTO> handsets(List<String> macs){
-		String[][] keyAndFields = generateKeyAndFields(macs);
+	public List<HandsetDeviceDTO> handsets(String dmac,List<String> hmacs){
+		String[][] keyAndFields = generateKeyAndFields(dmac,hmacs);
 		List<Object> values = null;
 		List<HandsetDeviceDTO> result = new ArrayList<HandsetDeviceDTO>();
 		try{
@@ -154,16 +172,17 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 		}
 	}
 	
-	private String[][] generateKeyAndFields(List<String> macs){
+	private String[][] generateKeyAndFields(String dmac,List<String> macs){
 		if(macs == null || macs.isEmpty()) return null;
 		int size = macs.size();
 		String[][] result = new String[2][size];
 		String[] keys = new String[size];
 		String[] fields = new String[size];
 		int cursor = 0;
-		for(String mac : macs){
-			keys[cursor] = generateKey(mac);
-			fields[cursor] = mac;
+		for(String hmac : macs){
+			String macJoin = join(dmac,hmac);
+			keys[cursor] = generateKey(macJoin);
+			fields[cursor] = macJoin;
 			cursor++;
 		}
 		result[0] = keys;
@@ -181,8 +200,9 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 		String[] values = new String[size];
 		int cursor = 0;
 		for(HandsetDeviceDTO dto : dtos){
-			keys[cursor] = generateKey(dto.getMac());
-			fields[cursor] = dto.getMac();
+			String macJoin = join(dto);
+			keys[cursor] = generateKey(macJoin);
+			fields[cursor] = macJoin;
 			values[cursor] = JsonHelper.getJSONString(dto);
 			cursor++;
 		}
@@ -207,18 +227,12 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 	}
 	
 	public static void main(String[] argv){
-
-		System.out.println(HandsetStorageService.generateKey("6c:72:e7:70:fd:76"));
+		/*System.out.println(HandsetStorageService.generateKey("6c:72:e7:70:fd:76"));
 		System.out.println(HandsetStorageService.generateKey("f0:25:b7:07:d3:0e"));
 		System.out.println(HandsetStorageService.generateKey("18:00:2d:91:57:8b"));
 		System.out.println(HandsetStorageService.generateKey("f0:25:b7:93:d9:e9"));
 		System.out.println(HandsetStorageService.generateKey("60:f8:1d:a2:b2:a7"));
-
-
-
-		System.out.println(HandsetStorageService.getInstance().handset("18:00:2d:91:57:8b").getDhcp_name());
-
-
+		System.out.println(HandsetStorageService.getInstance().handset("18:00:2d:91:57:8b").getDhcp_name());*/
 //		List<String> macs = new ArrayList<String>();
 //		macs.add("aa");
 //		macs.add("ab");

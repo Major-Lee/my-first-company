@@ -48,6 +48,7 @@
         <module>msip-bhu-unit/msip_bhu_unit_commdity</module>
         <module>msip-bhu-unit/msip_bhu_unit_social</module>
         <module>msip-bhu-unit/msip_bhu_unit_tag</module>
+        <module>msip-bhu-unit/msip_bhu_unit_unifyStatistics</module>
         <!--
         <module>msip-bhu-unit/msip_bhu_unit_index</module>
         
@@ -61,6 +62,7 @@
         <module>msip-bhu-business-impl/msip_bhu_backend_modulestat</module>
     -->
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
+        <module>msip-bhu-business-impl/msip_bhu_backend_task_statistics</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task_applies_notify</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_commdity</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_social</module>
@@ -72,6 +74,7 @@
         <module>msip-bhu-api/msip_bhu_social_rest</module>
         <module>msip-bhu-payment/msip_bhu_heepay</module>
         <module>msip-bhu-payment/msip_bhu_alipay</module>
+		<module>msip-bhu-payment/msip_bhu_nowpay</module>
 		<module>msip-bhu-payment/msip_bhu_midas</module>
         <module>msip-bhu-payment/msip_bhu_business_ds_payment</module>
         <module>msip-bhu-payment/msip_bhu_payment_rest</module>
@@ -190,6 +193,11 @@
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_alipay</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+			<dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_nowpay</artifactId>
                 <version>${project.version}</version>
             </dependency>
 			<dependency>

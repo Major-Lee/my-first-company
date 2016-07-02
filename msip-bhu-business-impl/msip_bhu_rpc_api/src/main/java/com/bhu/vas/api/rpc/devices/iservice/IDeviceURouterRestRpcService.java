@@ -58,7 +58,7 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String mac);
 	public RpcResponseDTO<URouterDeviceConfigMutilVTO> urouterConfigsSupportMulti(Integer uid, String mac);
 	
-	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs);
+	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid,String dmac, String hmacs);
 
 	RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId);
 

@@ -291,7 +291,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static int Device_Firmware_ForceUpdateImmediately_GrayPublishedDays = 1;
 	public static int Device_Firmware_ForceUpdateImmediately_AfterDays = 2;
-	
+	//抽奖馈赠最大值
+	public static double Present_Draw_Max = 20.00d;
 	public static long Sharednetwork_Auth_Threshold_Notsufficient = 20l;
 	public static long Sharednetwork_Auth_Threshold_NeedCharging = 200l;
 	

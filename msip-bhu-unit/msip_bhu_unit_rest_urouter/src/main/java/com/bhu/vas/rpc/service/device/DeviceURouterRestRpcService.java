@@ -447,21 +447,21 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 
 	@Override
-	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs) {
-		logger.info(String.format("DeviceURouterRestRPC terminalHostnames invoke uid [%s] macs [%s]", 
-				uid, macs));
+	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid,String dmac, String hmacs) {
+		logger.info(String.format("DeviceURouterRestRPC terminalHostnames invoke uid[%s] dmac[%s] hmacs[%s]", 
+				uid,dmac, hmacs));
 		
 		try{
-			return deviceURouterRestBusinessFacadeService.terminalHostnames(uid, macs);
+			return deviceURouterRestBusinessFacadeService.terminalHostnames(uid, dmac,hmacs);
 		}catch(BusinessI18nCodeException ex){
-			logger.info(String.format("DeviceURouterRestRPC terminalHostnames failed uid [%s] macs [%s]",
-					uid, macs));
+			logger.info(String.format("DeviceURouterRestRPC terminalHostnames failed uid [%s] dmac[%s] hmacs[%s]",
+					uid, dmac, hmacs));
 			throw ex;
 		}
 		catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceURouterRestRPC terminalHostnames exception uid [%s] macs [%s] exmsg[%s]",
-					uid, macs, ex.getMessage()), ex);
+			logger.error(String.format("DeviceURouterRestRPC terminalHostnames exception uid [%s] dmac[%s] hmacs[%s] exmsg[%s]",
+					uid, dmac,hmacs, ex.getMessage()), ex);
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

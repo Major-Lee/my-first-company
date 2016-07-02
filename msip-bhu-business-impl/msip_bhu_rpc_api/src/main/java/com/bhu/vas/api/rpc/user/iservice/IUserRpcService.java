@@ -4,6 +4,8 @@ import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
+import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -155,4 +157,17 @@ public interface IUserRpcService {
 	public RpcResponseDTO<Boolean> authentication(int uid,int countrycode, String acc,String captcha);
 	public RpcResponseDTO<Boolean> userBBSsignedon(int countrycode, String acc, String secretkey);
 	public RpcResponseDTO<TailPage<UserDTO>> pageUsers(int uid,String ut,int pageno,int pagesize);
+	
+	/**
+	 * 根据条件查询用户列表
+	 * @param map
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserManageDTO>> pageQueryUserList(Map<String,Object> map);
+	/**
+	 * 根据用户id查询活动返现设置
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<UserActivityVTO> activity(Integer uid);
 }

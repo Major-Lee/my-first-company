@@ -39,12 +39,12 @@ public class HandsetStorageFacadeService{
 		return HandsetStorageService.getInstance().handsetsComming(dtos);
 	}
 	
-	public static HandsetDeviceDTO handset(String mac){
-		return HandsetStorageService.getInstance().handset(mac);
+	public static HandsetDeviceDTO handset(String dmac,String hmac){
+		return HandsetStorageService.getInstance().handset(dmac,hmac);
 	}
 	
-	public static List<HandsetDeviceDTO> handsets(List<String> macs){
-		return HandsetStorageService.getInstance().handsets(macs);
+	public static List<HandsetDeviceDTO> handsets(String dmac,List<String> hmacs){
+		return HandsetStorageService.getInstance().handsets(dmac,hmacs);
 	}
 	
 /*	public void handsetLeave(String mac){

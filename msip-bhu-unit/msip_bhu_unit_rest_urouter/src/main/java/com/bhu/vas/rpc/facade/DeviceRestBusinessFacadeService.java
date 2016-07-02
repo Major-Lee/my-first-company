@@ -429,7 +429,7 @@ public class DeviceRestBusinessFacadeService {
 			
 			if(!hd_macs.isEmpty()){
 				vtos = new ArrayList<HandsetDeviceVTO>();
-				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hd_macs);
+				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId,hd_macs);
 				int cursor = 0;
 				HandsetDeviceVTO vto = null;
 				for(Tuple tuple : tuples){

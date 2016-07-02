@@ -18,6 +18,8 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
+import com.bhu.vas.api.vto.agent.UserActivityVTO;
+import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -298,4 +300,15 @@ public class UserController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}*/
 	}
+	@ResponseBody()
+    @RequestMapping(value="/activity", method={RequestMethod.GET,RequestMethod.POST})
+    public void rankingList(HttpServletResponse response, @RequestParam(required = true) Integer uid){
+    	
+    	RpcResponseDTO<UserActivityVTO> rpcResult = userRpcService.activity(uid);
+    	if(!rpcResult.hasError()){
+    		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    	}else{
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    	}
+    }
 }

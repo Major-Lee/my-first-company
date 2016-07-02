@@ -14,9 +14,13 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
+import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserActivity;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
+import com.bhu.vas.api.vto.agent.UserActivityVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
@@ -25,6 +29,7 @@ import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserActivityService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -69,6 +74,8 @@ public class UserUnitFacadeService {
 	
 	@Resource
 	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
+	@Resource
+	private UserActivityService userActivityService;
 
 	/**
 	 * 需要兼容uidParam为空的情况
@@ -160,7 +167,7 @@ public class UserUnitFacadeService {
 		
 		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserValidate(user,uToken, device, remoteIp,d_udid);
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-				userExchange,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+				userExchange);//,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
@@ -260,8 +267,7 @@ public class UserUnitFacadeService {
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				user,
 				uToken, reg,
-				old_uuid,d_uuid,
-				userWifiDeviceFacadeService.fetchBindDevices(user.getId()));
+				old_uuid,d_uuid);//,userWifiDeviceFacadeService.fetchBindDevices(user.getId()));
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
 	
@@ -295,8 +301,7 @@ public class UserUnitFacadeService {
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserCreate(countrycode, acc, nick, pwd, sex, device, regIp, deviceuuid, userType, org);
 			deliverMessageService.sendUserRegisteredActionMessage(userExchange.getUser().getId(),acc, null, device,regIp);
 			deliverMessageService.sendPortalUpdateUserChangedActionMessage(userExchange.getUser().getId(), nick, acc, userExchange.getUser().getAvatar());
-			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-					userExchange,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);//,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -331,7 +336,7 @@ public class UserUnitFacadeService {
 			}
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserLogin(user, device, remoteIp, null, null);
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
-					userExchange,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+					userExchange);//,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
 			deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp, device);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
@@ -657,5 +662,104 @@ public class UserUnitFacadeService {
 			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
 		}
 
+	}
+	
+	/**
+	 * 根据条件查询用户列表
+	 * @param map
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserManageDTO>> pageUserQueryList(Map<String,Object> map){
+		try {
+			ModelCriteria mc = new ModelCriteria();
+			Criteria cri = mc.createCriteria();
+			//电话
+			String mobileNo = StringUtils.EMPTY;
+			//用户类型
+			String userType = StringUtils.EMPTY;
+			//终端类型
+			String regdevice = StringUtils.EMPTY;
+			//开始时间
+			String createStartTime = StringUtils.EMPTY;
+			//结束时间
+			String createEndTime = StringUtils.EMPTY;
+			//是否返现
+			String isCashBack = StringUtils.EMPTY;
+			//当前页
+			String pageNo = StringUtils.EMPTY;
+			//每页分页条数
+			String pageSize = StringUtils.EMPTY;
+			if(StringUtils.isNotBlank(mobileNo)){
+				cri.andColumnEqualTo("mobileno", mobileNo);
+			}
+			if(StringUtils.isNotBlank(userType)){
+				UserType ut = UserType.getBySName(userType);
+				cri.andColumnEqualTo("utype", ut.getIndex());
+			}
+			if(StringUtils.isNotBlank(regdevice)){
+				cri.andColumnEqualTo("regdevice", regdevice);
+			}
+			if(StringUtils.isNotBlank(createStartTime) && StringUtils.isNotBlank(createEndTime)){
+				cri.andColumnBetween("created_at", createStartTime, createEndTime);
+			}
+			cri.andSimpleCaulse(" 1=1 ");
+			mc.setOrderByClause(" id desc ");
+			mc.setPageNumber(Integer.parseInt(pageNo));
+			mc.setPageSize(Integer.parseInt(pageNo));
+			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
+			List<UserManageDTO> vtos = new ArrayList<>();
+			UserManageDTO userManageDTO = null;
+			for(User _user:tailusers.getItems()){
+				if(_user == null){
+					continue;
+				}
+				userManageDTO = new UserManageDTO();
+				userManageDTO.setUid(_user.getId());
+				userManageDTO.setUserType(String.valueOf(_user.getUtype()));
+				userManageDTO.setMobileNo(_user.getMobileno());
+				userManageDTO.setRegdevice(_user.getRegdevice());
+				userManageDTO.setUserLabel("");
+				userManageDTO.setCreateTime(_user.getCreated_at().toString());
+				userManageDTO.setRewardStyle("");
+				userManageDTO.setIsCashBack("");
+				userManageDTO.setUserNum(tailusers.getTotalItemsCount());
+				//根据uid查询用户钱包信息
+				UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(_user.getId());
+				if(userWallet != null){
+					userManageDTO.setVcurrency(String.valueOf(userWallet.getVcurrency()));
+					userManageDTO.setWalletMoney(String.valueOf(userWallet.getCash()));
+				}else{
+					userManageDTO.setVcurrency("0");
+					userManageDTO.setWalletMoney("0.00");
+				}
+				vtos.add(userManageDTO);
+			}
+			TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(tailusers.getPageNumber(), Integer.parseInt(pageSize), tailusers.getTotalItemsCount(), vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+		}
+	}
+	public RpcResponseDTO<UserActivityVTO> activity(Integer uid) {
+		try{
+			UserActivityVTO userActivityVTO=new UserActivityVTO();
+			UserActivity userActivity=userActivityService.getById(uid);
+			userActivityVTO.setBind_num(userActivity.getBind_num());
+			userActivityVTO.setIncome(userActivity.getIncome());
+			userActivityVTO.setRate(userActivity.getRate());
+			userActivityVTO.setStatus(userActivity.getStatus());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userActivityVTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 }

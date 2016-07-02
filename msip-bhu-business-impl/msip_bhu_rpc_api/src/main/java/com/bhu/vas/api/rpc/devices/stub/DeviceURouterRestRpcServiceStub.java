@@ -201,11 +201,11 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	}
 	
 	@Override
-	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs) {
-		if(uid == null || StringUtils.isEmpty(macs)) 
+	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String dmac,String hmacs) {
+		if(uid == null || StringUtils.isEmpty(dmac) || StringUtils.isEmpty(hmacs)) 
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
-		return deviceURouterRestRpcService.terminalHostnames(uid, macs);
+		return deviceURouterRestRpcService.terminalHostnames(uid,dmac, hmacs);
 	}
 	
 	@Override

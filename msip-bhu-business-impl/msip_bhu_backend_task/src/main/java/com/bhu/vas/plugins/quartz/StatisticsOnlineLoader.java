@@ -37,6 +37,7 @@ public class StatisticsOnlineLoader {
 	 * modified by Edmond Lee for handset storage
 	 */
 	public void execute() {
+		
 		logger.info("StatisticsOnlineUserLoader starting...");
 		Date current = new Date();
 		/*ModelCriteria mc = new ModelCriteria();

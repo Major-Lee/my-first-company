@@ -245,7 +245,7 @@ public class BusinessPushContextService {
 			//1) 如果终端存在别名 终端显示名为别名
 			if(StringUtils.isEmpty(context.getHandsetName())){
 				//2)如果不存在别名,终端显示名为主机名
-				HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(hd_mac);
+				HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(mac,hd_mac);
 				if(handset != null){
 					String hostname = handset.getDhcp_name();
 					if(!StringUtils.isEmpty(hostname)){

@@ -27,7 +27,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
-import com.bhu.vas.api.rpc.charging.model.DeviceGroupPaymentStatistics;
+import com.bhu.vas.api.rpc.charging.model.UserIncome;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
@@ -50,6 +50,7 @@ import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
+import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
@@ -95,7 +96,15 @@ public class UserWalletFacadeService{
 	private DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService;
 	@Resource
 	private UserIncomeRankService userIncomeRankService;
+	@Resource
+	private UserIncomeService userIncomeService;
 	
+	public UserIncomeService getUserIncomeService() {
+		return userIncomeService;
+	}
+	public void setUserIncomeService(UserIncomeService userIncomeService) {
+		this.userIncomeService = userIncomeService;
+	}
 	public UserIncomeRankService getUserIncomeRankService() {
 		return userIncomeRankService;
 	}
@@ -1068,33 +1077,36 @@ public class UserWalletFacadeService{
         calendar.add(Calendar.DAY_OF_MONTH, -1);  
         date = calendar.getTime();  
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
-        String time = "%"+sdf.format(date); 
-        time="%2016-06-02";
+        String time =sdf.format(date); 
         userIncomeRankService.deleteAllRank();
-		List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList(time);
-		if(paymentStatistics != null){
+		//List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList(time);
+//		ModelCriteria mc = new ModelCriteria();
+//		mc.createCriteria().andColumnEqualTo("time", time);
+//		mc.createCriteria().andColumnEqualTo("type", "uid");
+		//mc.setOrderByClause("income");
+		List<UserIncome> userIncomes=this.getUserIncomeService().findListByTime(time);
+		if(userIncomes != null){
 			String beforeIncome="0";
 			int beforeRankNum=0;
-			for(int i=0;i<paymentStatistics.size();i++){
+			for(int i=0;i<userIncomes.size();i++){
 				UserIncomeRank userIncomeRank=new UserIncomeRank();
-				DeviceGroupPaymentStatistics deviceGroupPaymentStatistics=paymentStatistics.get(i);
+				UserIncome userIncome=userIncomes.get(i);
 				if(i==0){
 					beforeRankNum=1;
-					beforeIncome=deviceGroupPaymentStatistics.getTotal_incoming_amount();
+					beforeIncome=userIncome.getIncome();
 				}else{
-					if(!StringUtils.equals(beforeIncome, deviceGroupPaymentStatistics.getTotal_incoming_amount())){
+					if(!StringUtils.equals(beforeIncome, userIncome.getIncome())){
 						beforeRankNum=i+1;
-						beforeIncome=deviceGroupPaymentStatistics.getTotal_incoming_amount();
+						beforeIncome=userIncome.getIncome();
 					}
 				}
 				userIncomeRank.setRank(beforeRankNum);
-				userIncomeRank.setIncome(deviceGroupPaymentStatistics.getTotal_incoming_amount());
-				userIncomeRank.setId(deviceGroupPaymentStatistics.getUid().toString());
+				userIncomeRank.setIncome(userIncome.getIncome());
+				userIncomeRank.setId(userIncome.getId().replace(time+"-", "").trim());
 				userIncomeRank.setUpdated_at(date);
 				userIncomeRank.setCreated_at(date);
 				userIncomeRankService.insert(userIncomeRank);
 			}
 		}
 	}
-	
 }

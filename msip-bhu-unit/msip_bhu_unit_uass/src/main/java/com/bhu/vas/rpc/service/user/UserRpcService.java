@@ -11,7 +11,9 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
+import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.bhu.vas.rpc.facade.UserUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -128,5 +130,21 @@ public class UserRpcService implements IUserRpcService{
 	public RpcResponseDTO<TailPage<UserDTO>> pageUsers(int uid,String ut,int pageno,int pagesize){
 		logger.info(String.format("pageUsers with uid[%s] ut[%s] pageno[%s] pagesize[%s]",uid,ut,pageno,pagesize));
 		return userUnitFacadeService.pageUsers(uid, UserType.getBySName(ut), pageno, pagesize);
+	}
+	
+	/**
+	 * 根据条件查询用户列表信息
+	 * @author Jason
+	 */
+	@Override
+	public RpcResponseDTO<TailPage<UserManageDTO>> pageQueryUserList(
+			Map<String, Object> map) {
+		return userUnitFacadeService.pageUserQueryList(map);
+	}
+
+	@Override
+	public RpcResponseDTO<UserActivityVTO> activity(Integer uid) {
+		logger.info(String.format("activity with uid[%s] ",uid));
+		return userUnitFacadeService.activity(uid);
 	}
 }

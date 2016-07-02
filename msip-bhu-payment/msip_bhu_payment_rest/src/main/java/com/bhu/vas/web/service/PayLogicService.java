@@ -168,6 +168,9 @@ public class PayLogicService {
  		}else if(type.equals(PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n())){
  			channelType = PaymentChannelCode.BHU_MIDAS_WEIXIN.code();
  			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
+ 		}else if(type.equals(PaymentChannelCode.BHU_NOW_WEIXIN.i18n())){
+ 			channelType = PaymentChannelCode.BHU_NOW_WEIXIN.code();
+ 			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
  		}
     	
     	if(Ip == "" || Ip == null){
