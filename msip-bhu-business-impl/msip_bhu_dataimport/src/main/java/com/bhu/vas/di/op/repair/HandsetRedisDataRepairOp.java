@@ -12,6 +12,8 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetOldStorageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 /**
@@ -69,7 +71,15 @@ public class HandsetRedisDataRepairOp {
 				Iterator<Entry<String, String>> iter = t.entrySet().iterator();
 				while(iter.hasNext()){
 					Entry<String, String> next = iter.next();
+					String key = next.getKey();
 					String value = next.getValue();//value
+					System.out.println(String.format("key[%s] value[%s]", key,value));
+					
+					if(StringUtils.isNotEmpty(key) && StringUtils.isNotEmpty(value)){
+						HandsetDeviceDTO hdevice = JsonHelper.getDTO(value, HandsetDeviceDTO.class);
+						HandsetStorageService.getInstance().handsetComming(hdevice);
+					}
+					
 					if(StringUtils.isNotEmpty(value)){
 						if(!value.contains(HandsetDeviceDTO.Action_Offline)){
 							online.incrementAndGet();
@@ -79,7 +89,33 @@ public class HandsetRedisDataRepairOp {
 				}
 			}
 		});
-		System.out.println("数据 total:"+total.get()+" online:"+online.get());
+		System.out.println("旧数据 total:"+total.get()+" online:"+online.get());
+		HandsetOldStorageService.getInstance().clearOrResetAll();
+		System.out.println("旧数据 清除成功");
+		total.set(0l);
+		online.set(0l);
+		
+		HandsetStorageService.getInstance().iteratorAll(new IteratorNotify<Map<String,String>>(){
+			@Override
+			public void notifyComming(Map<String, String> t) {
+				Iterator<Entry<String, String>> iter = t.entrySet().iterator();
+				while(iter.hasNext()){
+					Entry<String, String> next = iter.next();
+					String key = next.getKey();
+					String value = next.getValue();//value
+					System.out.println(String.format("key[%s] value[%s]", key,value));
+					if(StringUtils.isNotEmpty(value)){
+						if(!value.contains(HandsetDeviceDTO.Action_Offline)){
+							online.incrementAndGet();
+						}
+						total.incrementAndGet();
+					}
+				}
+			}
+		});
+		System.out.println("新数据 total:"+total.get()+" online:"+online.get());
+		
+		
 		
 		/*HandsetStorageFacadeService.iteratorAll(new IteratorNotify<Map<String,String>>(){
 			@Override
