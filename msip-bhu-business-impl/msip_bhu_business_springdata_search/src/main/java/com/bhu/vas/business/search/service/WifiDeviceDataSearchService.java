@@ -43,16 +43,16 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	}
 	
 	public long searchCountByCommon(Integer u_id, String sharedNetwork_type, 
-			String d_dut, String t_uc_extension, String d_online){
+			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate){
 		
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online, d_snk_turnstate);
 		return super.searchCountByConditionMessage(scm);
 	}
 	
 	public Page<WifiDeviceDocument> searchPageByCommon(Integer u_id, String sharedNetwork_type, 
-			String d_dut, String t_uc_extension, String d_online, int pageNo, int pageSize){
+			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate, int pageNo, int pageSize){
 
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online, d_snk_turnstate);
 		return super.searchByConditionMessage(scm, pageNo, pageSize);
 	}
 	
