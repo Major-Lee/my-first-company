@@ -3,7 +3,7 @@
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	
-	<property name="log.base" value="/BHUData/logs/unitlogs/msip_bhu_payment_rest" />
+	<property name="log.base" value="/BHUData/logs/weblogs/{Dtomcat.instanceno}/msip_bhu_payment_rest" />
 	<!-- 
 	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
 	 -->
@@ -19,7 +19,7 @@
 	<appender name="service" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<File>${log.base}.service.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>${log.base}.%d{yyyy-MM-dd_HH}.payment.zip</FileNamePattern>
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd_HH}.service.zip</FileNamePattern>
 		</rollingPolicy>
 		<encoder>
 			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>

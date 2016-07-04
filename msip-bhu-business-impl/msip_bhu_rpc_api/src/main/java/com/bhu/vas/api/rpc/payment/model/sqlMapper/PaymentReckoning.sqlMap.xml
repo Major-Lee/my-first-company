@@ -124,6 +124,7 @@
 		notify_status = #{notify_status},
 		notify_at = #{notify_at},
 		paid_at = #{paid_at},
+		remark = #{remark},
 		channel_type = #{channel_type}
 	</sql>
 	
