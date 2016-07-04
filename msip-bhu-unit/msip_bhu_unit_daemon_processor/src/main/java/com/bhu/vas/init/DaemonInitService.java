@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.daemon.SessionManager;
@@ -22,7 +21,7 @@ import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
  * @author Edmond
  *
  */
-@Service
+//@Service
 public class DaemonInitService {
 	private final Logger logger = LoggerFactory.getLogger(DaemonInitService.class);
 	//@Resource

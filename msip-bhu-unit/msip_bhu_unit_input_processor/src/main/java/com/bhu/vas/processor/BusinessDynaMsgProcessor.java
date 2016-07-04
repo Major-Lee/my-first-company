@@ -1,14 +1,12 @@
 package com.bhu.vas.processor;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
+
 
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
@@ -17,15 +15,15 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
+import com.bhu.pure.kafka.business.observer.KafkaMsgObserverManager;
+import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
+import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
-import com.bhu.vas.business.asyn.spring.activemq.topic.service.DeliverTopicMessageService;
-import com.bhu.vas.business.observer.QueueMsgObserverManager;
-import com.bhu.vas.business.observer.listener.DynaQueueMessageListener;
 import com.bhu.vas.processor.bulogs.DynamicLogWriter;
 import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
 import com.smartwork.msip.business.logger.BusinessDefinedLogger;
@@ -35,6 +33,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.task.TaskEngine;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -42,51 +41,68 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  *
  */
 @Service
-public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
+public class BusinessDynaMsgProcessor implements DynaMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(BusinessDynaMsgProcessor.class);
-	private ExecutorService exec_dispatcher = Executors.newFixedThreadPool(1);
+	private ExecutorService exec_dispatcher = null;//Executors.newFixedThreadPool(1);
 	private List<ExecutorService> exec_processes = new ArrayList<ExecutorService>();//Executors.newFixedThreadPool(1);
 	private int[] hits;
 	//private int hash_prime = 50;
 	private int hash_prime = 50;
-	private int per_threads = 1;
-	//private static String Online_Prefix = "00000001";
-	/*private static final int DeviceOffline_Prefix = 3;
-	private static final int DeviceNotExist_Prefix = 4;
-	private static final int Transfer_Prefix = 5;*/
+	//private int per_threads = 1;
 	//@Resource
 	//private IDaemonRpcService daemonRpcService;
 
 	@Resource
 	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
 
-	@Resource
-	private DeliverTopicMessageService deliverTopicMessageService;// =(DeliverTopicMessageService) ctx.getBean("deliverTopicMessageService");
+	//@Resource
+	//private DeliverTopicMessageService deliverTopicMessageService;// =(DeliverTopicMessageService) ctx.getBean("deliverTopicMessageService");
 
 	@PostConstruct
 	public void initialize(){
+		//System.out.println("BusinessDynaMsgProcessor initialize...");
+		System.out.println("BusinessDynaMsgProcessor Init");
 		logger.info("BusinessDynaMsgProcessor initialize...");
-		
+		/*exec_dispatcher = ExecObserverManager.buildExecutorService(this.getClass(),"DynaMsg dispatcher消息处理",per_threads);
 		for(int i=0;i<hash_prime;i++){
-			exec_processes.add(Executors.newFixedThreadPool(per_threads));
+			ExecutorService exec_process = ExecObserverManager.buildExecutorService(this.getClass(),"DynaMsg process消息处理".concat(String.valueOf(i)),per_threads);
+			exec_processes.add(exec_process);//Executors.newFixedThreadPool(per_threads));
+		}*/
+		exec_dispatcher = ExecObserverManager.buildSingleThreadExecutor(this.getClass(),"DynaMsg dispatcher消息处理");
+		for(int i=0;i<hash_prime;i++){
+			ExecutorService exec_process = ExecObserverManager.buildSingleThreadExecutor(this.getClass(),"DynaMsg process消息处理".concat(String.valueOf(i)));
+			exec_processes.add(exec_process);//Executors.newFixedThreadPool(per_threads));
 		}
+		
 		hits = new int[hash_prime];
 		TaskEngine.getInstance().schedule(new DaemonProcessesStatusTask(this), 30*60*1000,60*60*1000);
-		QueueMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
+		KafkaMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
 		//初始化ActiveMQConnectionManager
 		//ActiveMQConnectionManager.getInstance().initConsumerQueues();
 	}
 
 	@Override
-	public void onMessage(final String ctx,final String message) {
-		//logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
+	public void onMessage(final String topic,final int partition,final String key,final String message,final long offset,final String consumerId) {
+/*		logger.info(String.format("BusinessDynaMsgProcessor Received message: topic[%s] partition[%s] key[%s] message[%s] offset[%s] consumerId[%s]",
+						topic, partition,
+						key, message,
+						offset, consumerId));*/
+
 		validateStep1(message);
 		exec_dispatcher.submit((new Runnable() {
 			@Override
 			public void run() {
-				logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
+				//logger.info(String.format("BusinessDynaMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
 				try{
+					/*System.out.println(String.format("Dyna Received message: topic[%s] partition[%s] key[%s] message[%s] offset[%s] consumerId[%s]",
+							topic, partition,
+							key, message,
+							offset, consumerId));*/
 					//System.out.println(String.format("BusinessNotifyMsgProcessor receive:ctx[%s] message[%s]", ctx,message));
+					logger.info(String.format("Dyna Received message: topic[%s] partition[%s] key[%s] message[%s] offset[%s] consumerId[%s]",
+							topic, partition,
+							key, message,
+							offset, consumerId));					
 					int type = Integer.parseInt(message.substring(0, 8));
 					ParserHeader headers = null;
 					String payload = null;
@@ -115,14 +131,14 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							break;
 						default:
 							throw new UnsupportedOperationException(
-									String.format( "MessageType[%s] not yet implement handler process!full ctx[%s] message[%s]",
-											type,ctx,message));
+									String.format( "MessageType[%s] not yet implement handler process!full topic[%s] message[%s]",
+											type,topic,message));
 					}
 					if(headers != null){
-						onProcessor(ctx,payload,type,headers);
-						//deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
+						onProcessor(topic,payload,type,headers);
+						//String ctx = CmCtxInfo.parserCtxName(topic);
+						//daemonRpcService.wifiDeviceCmdDown(ctx, headers.getMac(), payload);
 					}
-					//System.out.println("BusinessNotifyMsgProcessor receive type:"+type+" message:"+message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("BusinessDynaMsgProcessor", ex);
@@ -142,21 +158,20 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 						ActionBuilder.toJsonHasPrefix(
 								ActionBuilder.builderDeviceOfflineAction(headers.getMac(), System.currentTimeMillis()))
 						);
-				deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+				//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
 				break;
 			case ParserHeader.DeviceNotExist_Prefix:
 				DynamicLogWriter.doLogger(headers.getMac(), 
 						ActionBuilder.toJsonHasPrefix(
 								ActionBuilder.builderDeviceNotExistAction(headers.getMac(), System.currentTimeMillis()))
 						);
-				deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
+				//daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());//.sendDeviceOffline(ctx, headers.getMac());
 				break;
 			case ParserHeader.Transfer_Prefix:
 					if(headers.getMt() == ParserHeader.Transfer_mtype_0 && headers.getSt()==1){//设备上线
 						DynamicLogWriter.doLogger(headers.getMac(), 
 								ActionBuilder.toJsonHasPrefix(
 										ActionBuilder.builderDeviceOnlineAction(headers.getMac(), System.currentTimeMillis())));
-						deliverTopicMessageService.sendDeviceOnline(ctx, headers.getMac());
 						//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
 					}
 					if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt()==7){//终端上下线
@@ -196,19 +211,11 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 							}
 						}
 					}
-					/*if(headers.getMt() == 1 && headers.getSt()==2){//CMD xml返回串 由 deviceMessageDispatchRpcService 处理
-						OperationCMD cmd_opt = OperationCMD.getOperationCMDFromNo(headers.getOpt());
-						if(cmd_opt != null){
-							if(cmd_opt == OperationCMD.QueryDeviceLocationNotify){
-								daemonRpcService.wifiDeviceSerialTaskComming(ctx,payload, headers);
-							}
-						}
-					}*/
 				break;
 		}
 	}
 	
-	public void onProcessor(final String ctx,final String payload,final int type,final ParserHeader headers) {
+	public void onProcessor(final String topic,final String payload,final int type,final ParserHeader headers) {
 		String mac = headers.getMac();
 		if(mac.startsWith(BusinessRuntimeConfiguration.DeviceTesting_Mac_Prefix)) return;
 		int hash = HashAlgorithmsHelper.rotatingHash(mac, hash_prime);
@@ -216,54 +223,16 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 		exec_processes.get(hash).submit((new Runnable() {
 			@Override
 			public void run() {
-				doSpecialProcessor(ctx,payload,type,headers);
-				/*if(ParserHeader.DeviceOffline_Prefix == type || ParserHeader.DeviceNotExist_Prefix == type){//设备下线||设备不存在
-					DynamicLogWriter.doLogger(headers.getMac(), 
-							ActionBuilder.toJsonHasPrefix(
-									ActionBuilder.builderDeviceOfflineAction(headers.getMac(), System.currentTimeMillis()))
-							);
-					deliverTopicMessageService.sendDeviceOffline(ctx, headers.getMac());
-					//daemonRpcService.wifiDeviceOffline(ctx, headers.getMac());
+				try{
+					//doSpecialProcessor(ctx,payload,type,headers);
+					//deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
+					String ctx = CmCtxInfo.parserCtxName(topic);
+					doSpecialProcessor(ctx,payload,type,headers);
+					deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
+				}catch(Exception ex){
+					ex.printStackTrace(System.out);
+					logger.error("BusinessDynaMsgProcessor onProcessor", ex);
 				}
-				if(ParserHeader.Transfer_Prefix == type){
-					if(headers.getMt() == ParserHeader.Transfer_mtype_0 && headers.getSt()==1){//设备上线
-						DynamicLogWriter.doLogger(headers.getMac(), 
-								ActionBuilder.toJsonHasPrefix(
-										ActionBuilder.builderDeviceOnlineAction(headers.getMac(), System.currentTimeMillis())));
-						deliverTopicMessageService.sendDeviceOnline(ctx, headers.getMac());
-						//daemonRpcService.wifiDeviceOnline(ctx, headers.getMac());
-					}
-					if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt()==7){//终端上下线
-						//DynamicLogWriter.doLogger(headers.getMac(), payload);
-						List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload, 
-								HandsetDeviceDTO.class);
-						if(dtos != null && !dtos.isEmpty()){
-							HandsetDeviceDTO fristDto = dtos.get(0);
-							if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
-								DynamicLogWriter.doLogger(headers.getMac(), 
-										ActionBuilder.toJsonHasPrefix(
-												ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),headers.getMac(), System.currentTimeMillis())));
-							}
-							else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
-								DynamicLogWriter.doLogger(headers.getMac(), 
-										ActionBuilder.toJsonHasPrefix(
-												ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),headers.getMac(), System.currentTimeMillis())));
-							}
-							else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
-								List<String> hmacs = new ArrayList<String>();
-								for(HandsetDeviceDTO dto:dtos){
-									hmacs.add(dto.getMac());
-								}
-								DynamicLogWriter.doLogger(headers.getMac(), 
-										ActionBuilder.toJsonHasPrefix(
-												ActionBuilder.builderHandsetSyncAction(hmacs,headers.getMac(), System.currentTimeMillis())));
-								hmacs.clear();
-								hmacs = null;
-							}
-						}
-					}
-				}*/
-				deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 			}
 		}));
 	}
@@ -273,7 +242,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
 	}
 	
-	@PreDestroy
+	/*@PreDestroy
 	public void destory(){
 		String simplename = this.getClass().getSimpleName();
 		if(exec_dispatcher != null){
@@ -325,7 +294,7 @@ public class BusinessDynaMsgProcessor implements DynaQueueMessageListener{
 			}
 		}
 		
-	}
+	}*/
 
 	public int[] getHits() {
 		return hits;

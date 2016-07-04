@@ -18,6 +18,7 @@ import com.bhu.vas.daemon.observer.DaemonObserverManager;
  * @author Edmond
  *
  */
+@Deprecated
 public class DaemonSimulateCmdTask extends TimerTask{
 	@Override
 	public void run() {
