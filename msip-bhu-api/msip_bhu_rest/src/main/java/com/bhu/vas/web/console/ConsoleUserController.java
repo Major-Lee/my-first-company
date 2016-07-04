@@ -19,6 +19,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserIncomeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDeviceDTO;
+import com.bhu.vas.api.rpc.user.iservice.IUserManageRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -33,6 +34,9 @@ public class ConsoleUserController extends BaseController {
 
 	@Resource
 	private IUserRpcService userRpcService;
+	
+	@Resource
+	private IUserManageRpcService userMangeRpcService;
     
     @ResponseBody()
     @RequestMapping(value = "/pages", method = {RequestMethod.POST})
@@ -127,7 +131,7 @@ public class ConsoleUserController extends BaseController {
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<TailPage<UserIncomeDTO>> rpcResult = userRpcService.queryUserIncomeDetail(uid,transtype,transmode,pageNo,pageSize);
+		RpcResponseDTO<TailPage<UserIncomeDTO>> rpcResult = userMangeRpcService.queryUserIncomeDetail(uid,transtype,transmode,pageNo,pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -157,7 +161,7 @@ public class ConsoleUserController extends BaseController {
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-    	RpcResponseDTO<TailPage<UserManageDeviceDTO>> rpcResult = userRpcService.queryUserDeviceInfo(uid,pageNo,pageSize);
+    	RpcResponseDTO<TailPage<UserManageDeviceDTO>> rpcResult = userMangeRpcService.queryUserDeviceInfo(uid,pageNo,pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

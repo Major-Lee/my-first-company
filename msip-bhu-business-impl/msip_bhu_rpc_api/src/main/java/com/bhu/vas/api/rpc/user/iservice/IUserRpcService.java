@@ -173,20 +173,6 @@ public interface IUserRpcService {
 	public RpcResponseDTO<UserActivityVTO> activity(Integer uid);
 	
 	/**
-	 * 根据uid查询用户提现充值记录列表
-	 * @param uid
-	 * @return
-	 */
-	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid,String transtype,String transmode,int pageno,int pagesize);
-	
-	/**
-	 * 查询用户设备信息
-	 * @param uid
-	 * @return
-	 */
-	public RpcResponseDTO<TailPage<UserManageDeviceDTO>> queryUserDeviceInfo(int uid,int pageno,int pagesize);
-	
-	/**
 	 * 查询用户详细信息
 	 * @param uid
 	 * @return

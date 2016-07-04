@@ -1,25 +1,28 @@
 package com.bhu.vas.rpc.facade;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
+import com.bhu.vas.api.rpc.tag.model.TagGroup;
+import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceInfoDTO;
 import com.bhu.vas.api.rpc.user.dto.UserIncomeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
@@ -37,7 +40,6 @@ import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
-import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
@@ -91,8 +93,6 @@ public class UserUnitFacadeService {
 	@Resource
 	private UserActivityService userActivityService;
 	
-	@Resource
-	private OrderService orderService;
 	/**
 	 * 需要兼容uidParam为空的情况
 	 * @param uidParam
@@ -791,102 +791,4 @@ public class UserUnitFacadeService {
 		}
 	}
 	
-	/**
-	 * 查询用户交易信息
-	 * @param uid
-	 * @return
-	 */
-	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid,String transtype,String transmode,int pageno,int pagesize){
-		try{
-			User user  = userService.getById(uid);
-			UserTypeValidateService.validConsoleUser(user);
-			//查询用户钱包信息
-			UserIncomeDTO userIncomeDTO = new UserIncomeDTO();
-			UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(uid);
-			if(userWallet == null){
-				userIncomeDTO.setWithdraw("0.00");
-				userIncomeDTO.setVcurrency("0");
-				userIncomeDTO.setWalletMoney("");
-			}else{
-				userIncomeDTO.setWalletMoney(String.valueOf(userWallet.getCash()));
-				userIncomeDTO.setVcurrency(String.valueOf(userWallet.getVcurrency_total()));
-				userIncomeDTO.setWithdraw(userWallet.getPayments().get(0).getNick());
-			}
-			
-			//TODO 获取历史总收益 订单数 打赏成功数信息
-			
-			//根据uid查询用户交易信息
-			UWalletTransMode tmode = null;
-			if(StringUtils.isNotEmpty(transmode)){
-				tmode = UWalletTransMode.fromKey(transmode);
-			}
-			
-			UWalletTransType ttype = null;
-			if(StringUtils.isNotEmpty(transtype)){
-				ttype = UWalletTransType.fromKey(transtype);
-			}
-			List<UserIncomeDTO> vtos = new ArrayList<UserIncomeDTO>();
-			TailPage<UserWalletLog> walletPages = userWalletFacadeService.pageUserWalletlogs(uid, tmode, ttype, pageno, pagesize);
-			List<UserTransInfoDTO> userTransList = new ArrayList<UserTransInfoDTO>();
-			UserTransInfoDTO userTransInfoDTO = null;
-			if(walletPages != null){
-				userTransInfoDTO = new UserTransInfoDTO();
-				for (UserWalletLog log:walletPages.getItems()) {
-					if(log == null){
-						continue;
-					}
-					userTransInfoDTO.setUid(uid);
-					userTransInfoDTO.setTransType(log.getTranstype());
-					userTransInfoDTO.setTransNo(log.getOrderid());
-					userTransInfoDTO.setTransTime(log.getUpdated_at().toString());
-					
-					//根据订单Id获取mac和终端mac信息
-					Order orders = orderService.getById(log.getOrderid());
-					if(orders == null){
-						userTransInfoDTO.setDeciveMac("");
-						userTransInfoDTO.setTerminalMac("");
-					}else{
-						userTransInfoDTO.setDeciveMac(orders.getMac());
-						userTransInfoDTO.setTerminalMac(orders.getUmac());
-					}
-					userTransList.add(userTransInfoDTO);
-				}
-				
-			}
-			userIncomeDTO.setUserTransInfoList(userTransList);
-			vtos.add(userIncomeDTO);
-			TailPage<UserIncomeDTO> pages = new CommonPage<UserIncomeDTO>(walletPages.getPageNumber(), pagesize, walletPages.getTotalItemsCount(), vtos);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
-		}catch(BusinessI18nCodeException bex){
-			bex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
-		}catch(Exception ex){
-			ex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
-	}
-	
-	/**
-	 * 查询用户设备信息
-	 * @param uid
-	 * @return
-	 */
-	public RpcResponseDTO<TailPage<UserManageDeviceDTO>> queryUserDeviceInfo(int uid,int pageno,int pagesize){
-		try{
-			User user  = userService.getById(uid);
-			UserTypeValidateService.validConsoleUser(user);
-			
-			//TailPage<UserDTO> pages = new CommonPage<UserDTO>(tailusers.getPageNumber(), pagesize, tailusers.getTotalItemsCount(), vtos);
-			//return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
-			return null;
-		}catch(BusinessI18nCodeException bex){
-			bex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
-			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
-		}catch(Exception ex){
-			ex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
-		}
-	}
 }
