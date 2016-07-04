@@ -77,8 +77,10 @@
 		<module>msip-bhu-payment/msip_bhu_nowpay</module>
 		<module>msip-bhu-payment/msip_bhu_midas</module>
         <module>msip-bhu-payment/msip_bhu_business_ds_payment</module>
+        <!--
         <module>msip-bhu-payment/msip_bhu_payment_rest</module>
         <module>msip-bhu-unit/msip_bhu_unit_restful_payment</module>
+    -->
         <module>msip-bhu-business-impl/msip_bhu_dataimport</module>
     </modules>
     <properties>
@@ -105,7 +107,7 @@
         <logback.version>[1.1.2,)</logback.version>
         <slf4j.version>[1.7.7,)</slf4j.version>
         <zookeeper.version>3.4.6</zookeeper.version>
-        <zkclient.version>0.1</zkclient.version>        
+        <zkclient.version>0.9</zkclient.version>        
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -195,7 +197,7 @@
                 <artifactId>msip_bhu_alipay</artifactId>
                 <version>${project.version}</version>
             </dependency>
-			<dependency>
+            <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_nowpay</artifactId>
                 <version>${project.version}</version>
@@ -224,6 +226,11 @@
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_kafka_asynmessage</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_kafka_pure_asynmessage</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -387,18 +394,8 @@
                 <artifactId>commons-httpclient</artifactId>
                 <version>3.1</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.3.6</version>
-            </dependency>
-<!--
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.3.6</version>
-        </dependency>
--->
+
+
             <dependency>
                 <groupId>commons-dbcp</groupId>
                 <artifactId>commons-dbcp</artifactId>
@@ -445,6 +442,12 @@
                 <groupId>net.sf.ezmorph</groupId>
                 <artifactId>ezmorph</artifactId>
                 <version>1.0.6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.1.1</version>
             </dependency>
 
             <dependency>
@@ -685,9 +688,14 @@
                     <exclusion>
                         <artifactId>spring</artifactId>
                         <groupId>org.springframework</groupId>
-                    </exclusion>                   
+                    </exclusion>       
+                    <exclusion>
+                          <artifactId>netty</artifactId>
+                          <groupId>org.jboss.netty</groupId>
+                    </exclusion>                                
                 </exclusions>                
             </dependency>
+            <!--
             <dependency>
                 <groupId>com.github.sgroschupf</groupId>
                 <artifactId>zkclient</artifactId>
@@ -698,7 +706,12 @@
                         <groupId>org.jboss.netty</groupId>
                     </exclusion>
                 </exclusions>                 
-            </dependency>     
+            </dependency>-->
+            <dependency>
+                <groupId>com.101tec</groupId>
+                <artifactId>zkclient</artifactId>
+                <version>${zkclient.version}</version>
+            </dependency>                 
             <!--
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>

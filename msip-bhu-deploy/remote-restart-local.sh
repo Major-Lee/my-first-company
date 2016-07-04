@@ -38,7 +38,6 @@ ssh -p 22 root@192.168.66.147 '/BHUData/appsh/start.sh'
 echo "restart 192.168.66.123 input components"
 ssh -p 22 root@192.168.66.123 '/BHUData/appsh/start.sh'
 
-
 sleep 5
 echo "restart 192.168.66.7 web"
 ssh -p 22 root@192.168.66.7 '/usr/local/tomcats/stop_tomcats.sh'

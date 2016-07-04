@@ -24,34 +24,51 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 @Service
 public class UnifyStatisticsFacadeRpcSerivce {
 	// ********************author shibo************************
-	private  Map<String,String> map;
-	private  Map<String,Long> vmap;
-	public  OnlineStatisticsVTO onlineStatistics(String queryParam){
+	public  OnlineStatisticsVTO onlineStatistics(String category,String queryParam){
 		  OnlineStatisticsVTO vto = null;
-		  map = new HashMap<String,String>();
-		  vto = queryStatistics(queryParam);
+		  vto = queryStatistics(category,queryParam);
 		  
 		  return vto;
 	} 
 	
-	private OnlineStatisticsVTO queryStatistics(String queryParam) {
+	private OnlineStatisticsVTO queryStatistics(String category,String queryParam) {
 		Calendar cal = Calendar.getInstance();
 		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 		OnlineStatisticsVTO vto = new OnlineStatisticsVTO();
-		vto.setName("Devices");
-		switch (queryParam) {
-		case "D":
-			map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
-			break;
-		case "W":
-			map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK), BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
-			break;
-		case "M":
-			map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH), BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
-			break;
-		default:
-			return null;
+		Map<String,String> map = new HashMap<String,String>();
+		Map<String,Long> vmap = new HashMap<String,Long>();
+		if(category.equals("device")){
+			vto.setName(category);
+			switch (queryParam) {
+			case "D":
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+				break;
+			case "W":
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK), BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+				break;
+			case "M":
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH), BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+				break;
+			default:
+				return null;
+			}
+		}else if (category.equals("user")){
+			vto.setName(category);
+			switch (queryParam) {
+			case "D":
+				map = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+				break;
+			case "W":
+				map = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK), BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+				break;
+			case "M":
+				map = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH), BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+				break;
+			default:
+				return null;
+			}
 		}
+		
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			DeviceStateStatisticsDTO dto = JsonHelper.getDTO(entry.getValue(),DeviceStateStatisticsDTO.class);
 			vmap.put(entry.getKey(), dto.getOnline_max());

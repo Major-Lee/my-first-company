@@ -20,10 +20,6 @@ public class SimpleKafkaMessageConsumer extends KafkaMessageConsumer<Integer, St
 		return props;
 	}*/
 
-	@Override
-	public long pollSize() {
-		return DEFAULT_POLLSIZE;
-	}
 
 	@Override
 	public String keyDeserializer() {
