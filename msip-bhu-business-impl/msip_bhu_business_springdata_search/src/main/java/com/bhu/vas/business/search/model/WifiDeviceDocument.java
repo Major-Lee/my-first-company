@@ -373,7 +373,8 @@ public class WifiDeviceDocument extends AbstractDocument{
 			type = FieldType.String,
 			//index = FieldIndex.not_analyzed,
 			searchAnalyzer = "lowercase_whitespace",
-			indexAnalyzer = "lowercase_whitespace",
+			//indexAnalyzer = "lowercase_whitespace",
+			indexAnalyzer = "ngram_1_to_20_analyzer",
 			index = FieldIndex.analyzed,
 			store = true
 	)
