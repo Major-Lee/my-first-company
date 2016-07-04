@@ -76,8 +76,6 @@
         <module>msip-bhu-payment/msip_bhu_alipay</module>
 		<module>msip-bhu-payment/msip_bhu_nowpay</module>
 		<module>msip-bhu-payment/msip_bhu_midas</module>
-        <module>msip-bhu-payment/msip_bhu_midas</module>
-
         <module>msip-bhu-payment/msip_bhu_business_ds_payment</module>
         <!--
         <module>msip-bhu-payment/msip_bhu_payment_rest</module>
