@@ -8,6 +8,7 @@ import com.bhu.vas.business.search.core.field.FieldDefine;
 public interface BusinessIndexDefine {
 	
 	interface WifiDevice{
+		public static final int IndexUniqueId = 1;
 		//public static final String IndexName	= "wifi_device_index3";
 		public static final String IndexNameNew	= "wifi_device_index_new";
 		public static final String IndexName	= "wifi_device_index_v2";

@@ -33,10 +33,9 @@ public class HashPartitioner implements Partitioner {
 	@Override
 	public int partition(String topic, Object key, byte[] keyBytes, Object value, 
 			byte[] valueBytes, Cluster cluster) {
-        List<PartitionInfo> partitions = cluster.partitionsForTopic(topic);
-        int numPartitions = partitions.size();
-        if (keyBytes != null) {
-        	//return Math.abs(key.hashCode() % numPartitions);
+		if(keyBytes != null) {
+			List<PartitionInfo> partitions = cluster.partitionsForTopic(topic);
+			int numPartitions = partitions.size();
         	return rotatingHash(String.valueOf(key), numPartitions);
         }
 		return 0;
