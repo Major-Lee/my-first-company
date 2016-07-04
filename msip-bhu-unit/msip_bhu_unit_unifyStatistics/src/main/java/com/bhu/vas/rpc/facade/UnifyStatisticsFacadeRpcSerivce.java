@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.bag.SynchronizedSortedBag;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.statistics.DeviceStateStatisticsDTO;
 import com.bhu.vas.api.dto.statistics.UserStateStatisticsDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.vto.statistics.OnlineStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.StateStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
@@ -17,6 +19,8 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStateStat
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UserStateStatisticsHashService;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * @author xiaowei by 16/04/12
@@ -24,68 +28,77 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 @Service
 public class UnifyStatisticsFacadeRpcSerivce {
 	// ********************author shibo************************
-	public  OnlineStatisticsVTO onlineStatistics(String category,String queryParam){
-		  OnlineStatisticsVTO vto = null;
-		  vto = queryStatistics(category,queryParam);
-		  
-		  return vto;
-	} 
-	
-	private OnlineStatisticsVTO queryStatistics(String category,String queryParam) {
+	public OnlineStatisticsVTO onlineStatistics(String category, String queryParam) {
+		OnlineStatisticsVTO vto = null;
+		vto = queryStatistics(category, queryParam);
+
+		return vto;
+	}
+
+	private OnlineStatisticsVTO queryStatistics(String category, String queryParam) {
 		Calendar cal = Calendar.getInstance();
 		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 		OnlineStatisticsVTO vto = new OnlineStatisticsVTO();
-		Map<String,String> map = new HashMap<String,String>();
-		Map<String,Long> vmap = new HashMap<String,Long>();
-		if(category.equals("device")){
+		Map<String, String> map = new HashMap<String, String>();
+		Map<String, Long> vmap = new HashMap<String, Long>();
+		if (category.equals("device")) {
 			vto.setName(category);
 			switch (queryParam) {
 			case "D":
-				map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
+						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
 				break;
 			case "W":
-				map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK), BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
+						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
 				break;
 			case "M":
-				map = DeviceStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH), BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_MONTH),
+						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
 				break;
 			default:
 				return null;
 			}
-		}else if (category.equals("user")){
+		} else if (category.equals("user")) {
 			vto.setName(category);
 			switch (queryParam) {
 			case "D":
-				map = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH_DD), BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+				map = UserStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
+						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
 				break;
 			case "W":
-				map = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK), BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+				map = UserStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
+						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
 				break;
 			case "M":
-				map = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH), BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+				map = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH),
+						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
 				break;
 			default:
 				return null;
 			}
 		}
-		
+
 		for (Map.Entry<String, String> entry : map.entrySet()) {
-			DeviceStateStatisticsDTO dto = JsonHelper.getDTO(entry.getValue(),DeviceStateStatisticsDTO.class);
+			DeviceStateStatisticsDTO dto = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
 			vmap.put(entry.getKey(), dto.getOnline_max());
 		}
 		vto.setMap(vmap);
 		return vto;
 	}
 	// ********************author shibo************************
-	
-	
-	
+
 	public StateStatisticsVTO stateStat() {
 		Calendar cal = Calendar.getInstance();
 		StateStatisticsVTO vto = buildStateStatisticsVTO(cal);
 		return vto;
 	}
-	
+
 	private StateStatisticsVTO buildStateStatisticsVTO(Calendar cal) {
 
 		StateStatisticsVTO vto = new StateStatisticsVTO();
@@ -152,37 +165,42 @@ public class UnifyStatisticsFacadeRpcSerivce {
 		vto.setD_yestInc(lastDayDeviceDto != null ? lastDayDeviceDto.getNewInc() : null);
 
 		// 获取7日活跃率和30日活跃率
-		vto.setD_weeklive(statLivelyCount(7,cal));
-		vto.setD_monthlive(statLivelyCount(30,cal));
+		vto.setD_weeklive(statLivelyCount(7, cal));
+		vto.setD_monthlive(statLivelyCount(30, cal));
 		return vto;
 	}
-	
+
 	/**
 	 * 活跃度统计
+	 * 
 	 * @param day
 	 * @param cal
 	 * @return
 	 */
-	private int statLivelyCount(int day,Calendar cal){
+	private int statLivelyCount(int day, Calendar cal) {
 		int count = 0;
-		
+
 		List<String> fragments = new ArrayList<String>();
 		for (int i = 0; i < day; i++) {
 			cal.add(Calendar.DATE, -(i == 0 ? i : 1));
 			List<String> lastDayDeviceFrag = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 			fragments.add(lastDayDeviceFrag.get(DateTimeExtHelper.YEAR_MONTH_DD));
 		}
-		
-		List<Object> dtoList=  DeviceStateStatisticsHashService.getInstance().batchFetchValue(fragments,
-				BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey, "23");
-		
+		List<Object> dtoList = null;
+		try {
+			dtoList = DeviceStateStatisticsHashService.getInstance().batchFetchValue(fragments,
+					BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey, "23");
+		} catch (Exception e) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+
 		for (Object obj : dtoList) {
 			String str = String.valueOf(obj);
 			if (str != null) {
-				count += JsonHelper.getDTO(str,DeviceStateStatisticsDTO.class).getLiveness();
+				count += JsonHelper.getDTO(str, DeviceStateStatisticsDTO.class).getLiveness();
 			}
 		}
-		cal.add(Calendar.DATE, day-1);
+		cal.add(Calendar.DATE, day - 1);
 		return count;
 	}
 }

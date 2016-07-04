@@ -31,17 +31,32 @@
  	<dubbo:registry protocol="zookeeper" address="${zookeeper}" />
  	<dubbo:monitor protocol="registry"></dubbo:monitor>
 	<!-- 
-	<import resource="classpath*:com/smartwork/rpc/api/token/spring/dubbo-smartwork-token-reference.xml"/> -->
-	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-reference.xml"/>
-	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-oauth-reference.xml"/>
-	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-wallet-reference.xml"/>
+	<import resource="classpath*:com/smartwork/rpc/api/token/spring/dubbo-smartwork-token-reference.xml"/> 
+	<import resource="classpath*:com/bhu/vas/api/rpc/devices/spring/dubbo-bhu-devices-reference.xml"/>
+	<import resource="classpath*:com/bhu/vas/api/rpc/devices/spring/dubbo-bhu-devicegroup-reference.xml"/>
 	<import resource="classpath*:com/bhu/vas/api/rpc/task/spring/dubbo-bhu-task-reference.xml"/>
+	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-reference.xml"/>
 	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-usercaptchacode-reference.xml"/>
+  <import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-userdevice-reference.xml"/>
+	<import resource="classpath*:com/bhu/vas/api/rpc/statistics/spring/dubbo-bhu-statistics-reference.xml"/>
+  <import resource="classpath*:com/bhu/vas/api/rpc/vap/spring/dubbo-bhu-vap-reference.xml"/>
+-->
+  	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-reference.xml"/>
+  	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-oauth-reference.xml"/>
+	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-wallet-reference.xml"/>
+	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-usercaptchacode-reference.xml"/>
+	
+	<import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-userdevice-reference.xml"/>
+	
+	<import resource="classpath*:com/bhu/vas/api/rpc/task/spring/dubbo-bhu-task-reference.xml"/>
+	<import resource="classpath*:com/bhu/vas/api/rpc/charging/spring/dubbo-bhu-charging-reference.xml"/>
 	<import resource="classpath*:com/bhu/vas/api/rpc/devices/spring/dubbo-bhu-devices-resturouter-reference.xml"/>
 	<import resource="classpath*:com/bhu/vas/api/rpc/devices/spring/dubbo-bhu-devices-sharednetwork-reference.xml"/>
 	<import resource="classpath*:com/bhu/vas/api/rpc/statistics/spring/dubbo-bhu-statistics-reference.xml"/>
-    <import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-userdevice-reference.xml"/>
+    <import resource="classpath*:com/bhu/vas/api/rpc/tag/spring/dubbo-bhu-tag-reference.xml"/>
     <import resource="classpath*:com/bhu/vas/api/rpc/devicegroup/spring/dubbo-bhu-devicegroup-reference.xml"/>
     <import resource="classpath*:com/bhu/vas/api/rpc/vap/spring/dubbo-bhu-vap-reference.xml"/>
+    <import resource="classpath*:com/bhu/vas/api/rpc/commdity/spring/dubbo-bhu-commdity-reference.xml"/>
     <import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-publicAccount-reference.xml"/>
+    <import resource="classpath*:com/bhu/vas/api/rpc/unifyStatistics/spring/dubbo-bhu-unifyStatistics-reference.xml"/>	
 </beans>
