@@ -1,8 +1,10 @@
 package com.bhu.vas.api.vto.statistics;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class OnlineStatisticsVTO {
+@SuppressWarnings("serial")
+public class OnlineStatisticsVTO implements Serializable{
 	private String name;
 	private Map<String,Long> map;
 	
