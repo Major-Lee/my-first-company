@@ -197,7 +197,10 @@ public class UnifyStatisticsFacadeRpcSerivce {
 		for (Object obj : dtoList) {
 			String str = String.valueOf(obj);
 			if (str != null) {
-				count += JsonHelper.getDTO(str, DeviceStateStatisticsDTO.class).getLiveness();
+				DeviceStateStatisticsDTO dto =JsonHelper.getDTO(str, DeviceStateStatisticsDTO.class);
+				if (dto != null) {
+					count += dto.getLiveness();
+				}
 			}
 		}
 		cal.add(Calendar.DATE, day - 1);
