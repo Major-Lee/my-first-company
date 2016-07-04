@@ -1,6 +1,5 @@
 package com.bhu.vas.web.console;
 
-import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.iservice.IUnifyStatisticsRpcService;
-import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.statistics.OnlineStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.StateStatisticsVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -23,16 +21,16 @@ import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-@RequestMapping("/console")
+@RequestMapping("/console/statistics")
 public class ConsoleStatisticsController extends BaseController{
 	@Resource
     private IUnifyStatisticsRpcService unifyStatisticsRpcService;
 	
 	@ResponseBody()
-	@RequestMapping(value = "/statistics/fetch_online_data", method = {RequestMethod.POST})
+	@RequestMapping(value = "/fetch_online_data", method = {RequestMethod.POST})
 	public void fetch_online_data(
-	            HttpServletRequest request,
-	            HttpServletResponse response,
+            HttpServletRequest request,
+            HttpServletResponse response,
 	            @RequestParam(required = true) String uid,
 	            @RequestParam(required = true) String category,
 	            @RequestParam(required = true) String queryParam){
@@ -46,10 +44,10 @@ public class ConsoleStatisticsController extends BaseController{
 	}
 	
 	@ResponseBody()
-	@RequestMapping(value = "/statistics/fetch_statestat", method = {RequestMethod.POST})
+	@RequestMapping(value = "/fetch_statestat", method = {RequestMethod.POST})
 	public void fetch_statestat(
-	            HttpServletRequest request,
-	            HttpServletResponse response,
+            HttpServletRequest request,
+            HttpServletResponse response,
 	            @RequestParam(required = true) String uid){
 		
 		RpcResponseDTO<StateStatisticsVTO>  rpcResult = unifyStatisticsRpcService.stateStat();
