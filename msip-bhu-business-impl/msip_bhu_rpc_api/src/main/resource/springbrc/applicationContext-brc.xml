@@ -15,6 +15,7 @@
         	<list>
 				<value>classpath*:runtimeconf/brc.properties</value>
 				<value>classpath*:deploy/runtimeconf/brc.properties</value>
+				<value>file:/BHUData/apps/deploy/runtimeconf/brc.properties</value>
 			</list>
         </property>  
     </bean>
