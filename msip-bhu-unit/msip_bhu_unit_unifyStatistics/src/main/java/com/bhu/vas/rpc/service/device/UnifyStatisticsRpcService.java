@@ -21,8 +21,8 @@ public class UnifyStatisticsRpcService implements IUnifyStatisticsRpcService {
 	private UnifyStatisticsFacadeRpcSerivce unifyStatisticsFacadeRpcSerivce;
 	@Override
 	public RpcResponseDTO<OnlineStatisticsVTO> onlineStatistics(String category,String queryParam) {
-		OnlineStatisticsVTO vto = unifyStatisticsFacadeRpcSerivce.onlineStatistics(category,queryParam);
 		try {
+			OnlineStatisticsVTO vto = unifyStatisticsFacadeRpcSerivce.onlineStatistics(category,queryParam);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
@@ -30,8 +30,8 @@ public class UnifyStatisticsRpcService implements IUnifyStatisticsRpcService {
 	}
 	@Override
 	public RpcResponseDTO<StateStatisticsVTO> stateStat() {
-		StateStatisticsVTO vto = unifyStatisticsFacadeRpcSerivce.stateStat();
 		try {
+			StateStatisticsVTO vto = unifyStatisticsFacadeRpcSerivce.stateStat();
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
