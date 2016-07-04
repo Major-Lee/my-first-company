@@ -1,9 +1,12 @@
 package com.bhu.vas.rpc.service.device;
 
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.unifyStatistics.iservice.IUnifyStatisticsRpcService;
 import com.bhu.vas.api.vto.statistics.OnlineStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.StateStatisticsVTO;
 import com.bhu.vas.rpc.facade.UnifyStatisticsFacadeRpcSerivce;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 import javax.annotation.Resource;
 
@@ -17,14 +20,21 @@ public class UnifyStatisticsRpcService implements IUnifyStatisticsRpcService {
 	@Resource
 	private UnifyStatisticsFacadeRpcSerivce unifyStatisticsFacadeRpcSerivce;
 	@Override
-	public OnlineStatisticsVTO onlineStatistics(String queryParam) {
-		OnlineStatisticsVTO vto = unifyStatisticsFacadeRpcSerivce.onlineStatistics(queryParam);
-		return vto;
+	public RpcResponseDTO<OnlineStatisticsVTO> onlineStatistics(String category,String queryParam) {
+		OnlineStatisticsVTO vto = unifyStatisticsFacadeRpcSerivce.onlineStatistics(category,queryParam);
+		try {
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		} catch (BusinessI18nCodeException i18nex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		}
 	}
 	@Override
-	public StateStatisticsVTO stateStat() {
+	public RpcResponseDTO<StateStatisticsVTO> stateStat() {
 		StateStatisticsVTO vto = unifyStatisticsFacadeRpcSerivce.stateStat();
-		return vto;
+		try {
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		} catch (BusinessI18nCodeException i18nex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		}
 	}
-	
 }
