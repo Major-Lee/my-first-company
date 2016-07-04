@@ -210,7 +210,7 @@ public class PayLogicService {
 		updatePayStatus.setThird_party_code(thirdPartCode);
 		updatePayStatus.setPay_status(1);
 		updatePayStatus.setPaid_at(new Date());
-		if(!thridType.isEmpty()){
+		if(thridType != null){
 			updatePayStatus.setRemark(billo);
 		}
  		paymentReckoningService.update(updatePayStatus);

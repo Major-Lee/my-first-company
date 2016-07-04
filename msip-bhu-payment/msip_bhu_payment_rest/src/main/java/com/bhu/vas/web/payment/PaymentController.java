@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alipay.config.AlipayConfig;
 import com.alipay.util.AlipayNotify;
+import com.alipay.util.AlipaySubmit;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreateWithdrawDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
@@ -936,7 +937,7 @@ public class PaymentController extends BaseController{
 		//建立支付宝支付请求
 		String sHtmlText = "";
         try {
-            sHtmlText = NowpaySubmit.buildRequest(sParaTemp,"post","确认"); 
+            sHtmlText = AlipaySubmit.buildRequest(sParaTemp,"post","确认"); 
             result = new PaymentTypeVTO();
             result.setType("http");
             result.setUrl(sHtmlText);
@@ -1065,7 +1066,9 @@ public class PaymentController extends BaseController{
     	
     	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n(),usermac,paymentName,appid);
     	//记录请求支付完成后返回的地址
-    	if (!StringUtils.isBlank(return_url)) {
+    	if (StringUtils.isBlank(return_url)) {
+    		return_url = "http://www.bhuwifi.com";
+    	}else{
     		logger.info(String.format("get midas location [%s] ",return_url));
     		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
     		orderLocation.setTid(reckoningId);
@@ -1076,7 +1079,7 @@ public class PaymentController extends BaseController{
 
     	double fenTemp = Double.parseDouble(total_fee_fen);
     	double jiaoTemp =fenTemp/10;
-    	String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac);
+    	String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
     	logger.info(String.format("apply midas results [%s]",results));
     	if("error".equalsIgnoreCase(results)){
     		result.setType("FAIL");
@@ -1084,6 +1087,7 @@ public class PaymentController extends BaseController{
         	return result;
     	}else{
         	result.setType("Midas");
+        	//result.setType("http");
         	result.setUrl(results);
         	return result;
     	}
@@ -1241,10 +1245,11 @@ public class PaymentController extends BaseController{
      * @throws JDOMException
      */
 	@RequestMapping(value = "/payment/nowpayNotifySuccess")
-   	public void nowpayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
+   	public void nowpayNotifySuccess(HttpServletRequest request,
+   			HttpServletResponse response) throws IOException, JDOMException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","现在订单支付通知",BusinessHelper.gettimestamp(),"Starting"));
 
-   		//获取通知数据需要从body中流式读取
+   	//获取通知数据需要从body中流式读取
 		BufferedReader reader = request.getReader();
 		StringBuilder reportBuilder = new StringBuilder();
 		String tempStr = "";
@@ -1271,17 +1276,22 @@ public class PaymentController extends BaseController{
         
         //商户订单号
 		String out_trade_no = dataMap.get("mhtOrderNo");
-
+		
+		//现在支付订单号
+		String trade_no = dataMap.get("nowPayOrderNo");
+		
+		//现在支付渠道订单号
+		String channelOrderNo = dataMap.get("channelOrderNo");
 		//交易状态
 		String trade_status =dataMap.get("tradeStatus");
 		
 		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
 		if (payReckoning == null) {
-        	logger.info("get alipay notice payReckoning " +payReckoning);
+        	logger.info("get nowpay notice payReckoning " +payReckoning);
         	return;
         }
 		String orderId = payReckoning.getOrder_id();
-        logger.info(String.format("get nowpay notify reckoningId [%s] trade_no [%s] orderId [%s] trade_status [%s]",out_trade_no, signature,orderId,trade_status));
+        logger.info(String.format("get nowpay notify reckoningId [%s] trade_no [%s] channelOrderNo [%s] orderId [%s] trade_status [%s]",out_trade_no, trade_no, channelOrderNo, orderId,trade_status));
         
         if(isValidSignature){
         	//验证成功
@@ -1291,7 +1301,7 @@ public class PaymentController extends BaseController{
 				 if (trade_status.equals("A001")){
 					//支付成功
 					logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
-					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,signature,"Now","");
+					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,channelOrderNo,"Now",trade_no);
 					response.getOutputStream().write("success=Y".getBytes());
 					return;
 				}else{

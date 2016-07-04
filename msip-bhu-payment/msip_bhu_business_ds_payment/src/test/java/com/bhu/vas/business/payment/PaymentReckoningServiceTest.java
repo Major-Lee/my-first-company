@@ -1,5 +1,7 @@
 package com.bhu.vas.business.payment;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.junit.FixMethodOrder;
@@ -21,7 +23,7 @@ public class PaymentReckoningServiceTest extends BaseTest {
 			"j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
 			"w", "x", "y", "z" };
 
-	@Test
+	/*@Test
 	public void test001BatchCreateOrder() {
 		for (int i = 1; i < 2; i++) {
 			PaymentReckoning order = new PaymentReckoning();
@@ -37,6 +39,16 @@ public class PaymentReckoningServiceTest extends BaseTest {
 			order.setToken(RandomPicker.randString(letters, 10));
 			paymentReckoningService.insert(order);
 		}
+	}*/
+	
+	@Test
+	public void test002update() {
+		PaymentReckoning updatePayStatus = paymentReckoningService.getById("PROPCWX1466992205468nkwk");
+		updatePayStatus.setThird_party_code("11");
+		updatePayStatus.setPay_status(1);
+		updatePayStatus.setPaid_at(new Date());
+			updatePayStatus.setRemark("ssss");
+ 		paymentReckoningService.update(updatePayStatus);
 	}
 
 //	@Test
