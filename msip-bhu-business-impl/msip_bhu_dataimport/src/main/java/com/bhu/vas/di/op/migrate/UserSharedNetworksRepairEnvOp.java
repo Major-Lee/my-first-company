@@ -85,6 +85,13 @@ public class UserSharedNetworksRepairEnvOp {
 					}
 					snks.put(SharedNetworkType.Uplink.getKey(), uplink_configs);
 				}
+				List<ParamSharedNetworkDTO> sms_configs = snks.get(SharedNetworkType.SmsSecure.getKey());
+				if(sms_configs != null && !sms_configs.isEmpty()){
+					for(ParamSharedNetworkDTO dto:sms_configs){
+						dto.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);
+					}
+					snks.put(SharedNetworkType.SmsSecure.getKey(), sms_configs);
+				}
 				sharedNetworksFacadeService.getUserDevicesSharedNetworksService().update(snks);
 			}
 		}
@@ -109,6 +116,10 @@ public class UserSharedNetworksRepairEnvOp {
 								psn.setRemote_auth_url(psn.getRemote_auth_url().replace("123.56.227.18", "ucloud.bhuwifi.com"));
 								psn.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
 								psn.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);
+							}else if(SharedNetworkType.SmsSecure == snktype){
+								psn.setRemote_auth_url(psn.getRemote_auth_url().replace("123.56.227.18", "ucloud.bhuwifi.com"));
+								psn.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
+								psn.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);								
 							}else{
 								psn.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Uplink_Open_resource);
 							}
