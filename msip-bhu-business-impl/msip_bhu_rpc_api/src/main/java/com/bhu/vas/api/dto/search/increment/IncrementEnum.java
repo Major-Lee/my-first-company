@@ -5,6 +5,9 @@ import java.util.Map;
 
 public class IncrementEnum {
 	
+	public static final String KafkaReceiveTopicName = "increment_receive";
+	public static final String KafkaPerformReceiveTopicName = "increment_perform_receive";
+	
 	public enum IncrementActionEnum{
 		WD_FullCreate("WD_FCT","设备索引完整创建数据"),
 		;

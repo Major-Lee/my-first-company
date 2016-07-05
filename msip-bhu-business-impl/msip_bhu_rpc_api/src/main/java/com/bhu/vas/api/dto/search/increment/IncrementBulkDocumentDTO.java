@@ -2,6 +2,8 @@ package com.bhu.vas.api.dto.search.increment;
 
 import java.util.List;
 
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
+
 
 
 @SuppressWarnings("serial")
@@ -18,7 +20,7 @@ public class IncrementBulkDocumentDTO extends IncrementDocumentDTO{
 	
 	@Override
 	public String getPrefix() {
-		return IncrementConstant.IncrementDtoBulkPrefix;
+		return IncrementEnum.IncrementPrefixEnum.BulkPrefix.getKey();
 	}
 	
 	public static IncrementBulkDocumentDTO builder(List<String> ids, IncrementActionEnum action, int uniqueid){

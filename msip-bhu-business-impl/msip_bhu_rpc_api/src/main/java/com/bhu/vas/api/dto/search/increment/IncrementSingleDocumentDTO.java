@@ -2,6 +2,8 @@ package com.bhu.vas.api.dto.search.increment;
 
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
+
 
 
 @SuppressWarnings("serial")
@@ -18,7 +20,7 @@ public class IncrementSingleDocumentDTO extends IncrementDocumentDTO{
 
 	@Override
 	public String getPrefix() {
-		return IncrementConstant.IncrementDtoSinglePrefix;
+		return IncrementEnum.IncrementPrefixEnum.SinglePrefix.getKey();
 	}
 	
 	public static IncrementSingleDocumentDTO builder(String id, IncrementActionEnum action, int uniqueid){

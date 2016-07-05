@@ -49,9 +49,9 @@
         <module>msip-bhu-unit/msip_bhu_unit_social</module>
         <module>msip-bhu-unit/msip_bhu_unit_tag</module>
         <module>msip-bhu-unit/msip_bhu_unit_unifyStatistics</module>
-        <!--
-        <module>msip-bhu-unit/msip_bhu_unit_index</module>
         
+        <module>msip-bhu-unit/msip_bhu_unit_index</module>
+        <!--
         <module>msip-bhu-unit/msip_bhu_unit_agent</module>
     -->
         <module>msip-bhu-business-impl/msip_bhu_business_push</module>

@@ -47,9 +47,10 @@
         </dependency>
 		
 		<dependency>
-                <groupId>com.bhu</groupId>
-                <artifactId>msip_bhu_business_springdata_search</artifactId>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_springdata_search</artifactId>
         </dependency>
+      	
 		<!-- 
 		<dependency>
             <groupId>com.bhu</groupId>
@@ -79,10 +80,12 @@
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
         </dependency>
+        <!-- 
         <dependency>
             <groupId>com.github.sgroschupf</groupId>
             <artifactId>zkclient</artifactId>
-        </dependency>     
+        </dependency>  
+         -->   
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
