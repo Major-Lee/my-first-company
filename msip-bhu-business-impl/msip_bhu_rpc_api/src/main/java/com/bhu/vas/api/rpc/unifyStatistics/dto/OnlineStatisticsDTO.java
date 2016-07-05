@@ -1,8 +1,10 @@
 package com.bhu.vas.api.rpc.unifyStatistics.dto;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class OnlineStatisticsDTO {
+@SuppressWarnings("serial")
+public class OnlineStatisticsDTO implements Serializable{
 	private String name;
 	private Map<String,Long> map;
 	public String getName() {
