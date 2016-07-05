@@ -419,11 +419,11 @@ public class SharedNetworksFacadeService {
 			VapEnumType.SharedNetworkType sharednetwork_type,String template,
 			boolean sharednetworkMatched,
 			List<String> macs,ISharedNetworkNotifyCallback callback){
-		if(sharednetwork_type == null){
-			sharednetwork_type = SharedNetworkType.SafeSecure;
-		}
 		if(macs == null || macs.isEmpty()){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY,new String[]{"macs"});
+		}
+		if(sharednetwork_type == null){
+			sharednetwork_type = SharedNetworkType.SafeSecure;
 		}
 		List<String> result = new ArrayList<String>();
 		//TODO：验证设备是否真实绑定,假定设备macs param 里面的数据真实存在
