@@ -14,6 +14,11 @@ ssh -p 22 root@192.168.66.147 '/BHUData/appsh/stop.sh'
 echo "stop 192.168.66.123 input components"
 ssh -p 22 root@192.168.66.123 '/BHUData/appsh/stop.sh'
 
+echo "restart 192.168.66.191 daemon components"
+ssh -p 22 root@192.168.66.191 '/BHUData/appsh/restart.sh'
+sleep 5
+
+
 echo "restart 192.168.66.162 components"
 ssh -p 22 root@192.168.66.162 '/BHUData/appsh/restart.sh'
 sleep 5
