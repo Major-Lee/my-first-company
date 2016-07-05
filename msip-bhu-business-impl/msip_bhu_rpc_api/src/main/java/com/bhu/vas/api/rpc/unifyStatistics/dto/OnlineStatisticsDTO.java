@@ -1,13 +1,10 @@
-package com.bhu.vas.api.vto.statistics;
+package com.bhu.vas.api.rpc.unifyStatistics.dto;
 
-import java.io.Serializable;
 import java.util.Map;
 
-@SuppressWarnings("serial")
-public class OnlineStatisticsVTO implements Serializable{
+public class OnlineStatisticsDTO {
 	private String name;
 	private Map<String,Long> map;
-	
 	public String getName() {
 		return name;
 	}
@@ -19,6 +16,5 @@ public class OnlineStatisticsVTO implements Serializable{
 	}
 	public void setMap(Map<String, Long> map) {
 		this.map = map;
-	}		
-	
+	}
 }

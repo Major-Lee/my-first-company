@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.iservice.IUnifyStatisticsRpcService;
-import com.bhu.vas.api.vto.statistics.OnlineStatisticsVTO;
-import com.bhu.vas.api.vto.statistics.StateStatisticsVTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.OnlineStatisticsVTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.StateStatisticsVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
