@@ -762,4 +762,45 @@ public class UserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	/**
+	 * 查询用户详细信息
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<UserManageDTO> queryUserDetail(int uid){
+		try {
+			User user = this.userService.getById(uid);
+			UserTypeValidateService.validConsoleUser(user);
+			UserManageDTO userManageDTO = new UserManageDTO();
+			userManageDTO.setUid(user.getId());
+			userManageDTO.setUserType(String.valueOf(user.getUtype()));
+			userManageDTO.setMobileNo(user.getMobileno());
+			userManageDTO.setRegdevice(user.getRegdevice());
+			userManageDTO.setUserLabel("");
+			userManageDTO.setCreateTime(user.getCreated_at().toString());
+			userManageDTO.setRewardStyle("");
+			userManageDTO.setIsCashBack("");
+			userManageDTO.setUserNum(1);
+			//根据uid查询用户钱包信息
+			UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(user.getId());
+			if(userWallet != null){
+				userManageDTO.setVcurrency(String.valueOf(userWallet.getVcurrency()));
+				userManageDTO.setWalletMoney(String.valueOf(userWallet.getCash()));
+			}else{
+				userManageDTO.setVcurrency("0");
+				userManageDTO.setWalletMoney("0.00");
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userManageDTO);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+		}
+	}
+	
 }

@@ -18,7 +18,7 @@ public class UserIncomeRankBuilderOp {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}finally{
-
+ 
 		}
 		System.exit(1);
 	}
