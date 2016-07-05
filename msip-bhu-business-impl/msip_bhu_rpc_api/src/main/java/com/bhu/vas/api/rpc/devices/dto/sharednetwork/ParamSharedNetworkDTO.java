@@ -334,6 +334,9 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			if(SharedNetworkType.SafeSecure.getKey().equals(param.getNtype())){
 				param.setSsid(SharedNetworkType.SafeSecure.getDefaultSsid());
 				param.setRemote_auth_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Remote_auth_url);
+			}else if(SharedNetworkType.WeichatSecure.getKey().equals(param.getNtype())){
+				param.setSsid(SharedNetworkType.WeichatSecure.getDefaultSsid());
+				param.setRemote_auth_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_WeiSecure_Remote_auth_url);
 			}else{
 				param.setSsid(SharedNetworkType.SmsSecure.getDefaultSsid());
 				param.setRemote_auth_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SmsSecure_Remote_auth_url);
@@ -382,6 +385,13 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				}
 				if(StringUtils.isEmpty(param.getRemote_auth_url())){
 					param.setRemote_auth_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Remote_auth_url);
+				}
+			}else if(SharedNetworkType.WeichatSecure.getKey().equals(param.getNtype())){
+				if(StringUtils.isEmpty(param.getSsid())){
+					param.setSsid(SharedNetworkType.WeichatSecure.getDefaultSsid());
+				}
+				if(StringUtils.isEmpty(param.getRemote_auth_url())){
+					param.setRemote_auth_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_WeiSecure_Remote_auth_url);
 				}
 			}else{
 				if(StringUtils.isEmpty(param.getSsid())){

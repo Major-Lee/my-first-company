@@ -1310,7 +1310,20 @@ public class DeviceHelper {
 	}
 	public static String builderDSStartSharedNetworkWifiOuter(ParamSharedNetworkDTO psn_dto,DeviceStatusExchangeDTO device_status){
 		String startShareNetworkTemplate = null;
-		if(SharedNetworkType.SafeSecure.getKey().equals(psn_dto.getNtype()) || SharedNetworkType.SmsSecure.getKey().equals(psn_dto.getNtype())){
+		if(SharedNetworkType.Uplink.getKey().equals(psn_dto.getNtype())){
+			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_Uplink_Dual;
+			}else{
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_Uplink_Single;
+			}
+		}else{
+			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Dual;
+			}else{
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Single;
+			}
+		}
+		/*if(SharedNetworkType.SafeSecure.getKey().equals(psn_dto.getNtype()) || SharedNetworkType.SmsSecure.getKey().equals(psn_dto.getNtype())){
 			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
 				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Dual;
 			}else{
@@ -1322,7 +1335,7 @@ public class DeviceHelper {
 			}else{
 				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_Uplink_Single;
 			}
-		}
+		}*/
 		return builderDeviceSettingItem(startShareNetworkTemplate,psn_dto.builderProperties(device_status));
 	}
 	
