@@ -3,8 +3,8 @@ package com.bhu.vas.rpc.service.device;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.unifyStatistics.iservice.IUnifyStatisticsRpcService;
-import com.bhu.vas.api.vto.statistics.OnlineStatisticsVTO;
-import com.bhu.vas.api.vto.statistics.StateStatisticsVTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.OnlineStatisticsVTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.StateStatisticsVTO;
 import com.bhu.vas.rpc.facade.UnifyStatisticsFacadeRpcSerivce;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 

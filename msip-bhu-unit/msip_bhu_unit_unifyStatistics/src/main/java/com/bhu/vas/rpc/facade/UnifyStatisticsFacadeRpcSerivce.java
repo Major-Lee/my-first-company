@@ -12,8 +12,9 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.statistics.DeviceStateStatisticsDTO;
 import com.bhu.vas.api.dto.statistics.UserStateStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.vto.statistics.OnlineStatisticsVTO;
-import com.bhu.vas.api.vto.statistics.StateStatisticsVTO;
+import com.bhu.vas.api.rpc.unifyStatistics.dto.OnlineStatisticsDTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.OnlineStatisticsVTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.StateStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStateStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UserStateStatisticsHashService;
@@ -39,25 +40,108 @@ public class UnifyStatisticsFacadeRpcSerivce {
 		Calendar cal = Calendar.getInstance();
 		List<String> fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 		OnlineStatisticsVTO vto = new OnlineStatisticsVTO();
+		OnlineStatisticsDTO dto = new OnlineStatisticsDTO();
 		Map<String, String> map = new HashMap<String, String>();
 		Map<String, Long> vmap = new HashMap<String, Long>();
 		if (category.equals("device")) {
 			vto.setName(category);
 			switch (queryParam) {
 			case "D":
+				//读取今天在线设备数据
 				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+				dto.setName("0");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取昨天在线设备数据
+				cal.add(Calendar.DAY_OF_YEAR, -1);
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
+						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+				dto.setName("1");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取前天在线设备数据
+				cal.add(Calendar.DAY_OF_YEAR, -1);
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
+						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+				dto.setName("2");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				cal.add(Calendar.DAY_OF_YEAR, 2);
 				break;
 			case "W":
+				//读取本周在线设备数据
 				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+				dto.setName("0");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取上周在线设备数据
+				cal.add(Calendar.WEEK_OF_YEAR, -1);
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
+						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+				dto.setName("1");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取上上周的在线设备数据
+				cal.add(Calendar.WEEK_OF_YEAR, -1);
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
+						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+				dto.setName("2");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				cal.add(Calendar.WEEK_OF_YEAR, 2);
+				
 				break;
 			case "M":
+				//读取当月在线设备数据
 				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH),
 						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+				dto.setName("0");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取前一月在线设备数据
+				cal.add(Calendar.MONTH, -1);
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_MONTH),
+						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+				dto.setName("1");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取前二月在线设备数据
+				cal.add(Calendar.MONTH, -1);
+				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_MONTH),
+						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+				dto.setName("2");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				cal.add(Calendar.MONTH, 2);
 				break;
 			default:
 				return null;
@@ -66,29 +150,103 @@ public class UnifyStatisticsFacadeRpcSerivce {
 			vto.setName(category);
 			switch (queryParam) {
 			case "D":
+				//读取今天在线用户数据
 				map = UserStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+				dto.setName("0");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取昨天在线用户数据
+				cal.add(Calendar.DAY_OF_YEAR, -1);
+				map = UserStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
+						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+				dto.setName("1");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取前天在线用户数据
+				cal.add(Calendar.DAY_OF_YEAR, -1);
+				map = UserStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
+						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
+				dto.setName("2");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				cal.add(Calendar.DAY_OF_YEAR, 2);
 				break;
 			case "W":
+				//读取本周在线用户数据
 				map = UserStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+				dto.setName("0");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取上周在线用户数据
+				cal.add(Calendar.WEEK_OF_YEAR, -1);
+				map = UserStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
+						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+				dto.setName("1");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取前周在线用户数据
+				cal.add(Calendar.WEEK_OF_YEAR, -1);
+				map = UserStateStatisticsHashService.getInstance().fetchAll(
+						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
+						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
+				dto.setName("2");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				cal.add(Calendar.WEEK_OF_YEAR, 2);
 				break;
 			case "M":
+				//读取本月在线用户数据
 				map = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH),
 						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+				dto.setName("0");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取上月在线用户数据
+				cal.add(Calendar.MONTH, -1);
+				map = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH),
+						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+				dto.setName("1");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				//读取上上月在线用户数据
+				cal.add(Calendar.MONTH, -1);
+				map = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH),
+						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
+				dto.setName("2");
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
+					vmap.put(entry.getKey(), data.getOnline_max());
+				}
+				cal.add(Calendar.MONTH, 2);
 				break;
 			default:
 				return null;
 			}
 		}
-
-		for (Map.Entry<String, String> entry : map.entrySet()) {
-			DeviceStateStatisticsDTO dto = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
-			vmap.put(entry.getKey(), dto.getOnline_max());
-		}
-		vto.setMap(vmap);
+		vto.getList().add(dto);
 		return vto;
 	}
 	// ********************author shibo************************
