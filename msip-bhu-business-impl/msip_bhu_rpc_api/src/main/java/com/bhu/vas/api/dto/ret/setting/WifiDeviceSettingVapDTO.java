@@ -177,7 +177,7 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 				properties[0] = name;
 				properties[1] = WifiDeviceHelper.xmlContentEncoder(ssid);//StringEscapeUtils.escapeXml(ssid);
 				properties[2] = auth;
-				properties[3] = auth_key;
+				properties[3] = WifiDeviceHelper.xmlContentEncoder(auth_key);
 				properties[4] = auth_key_rsa;
 				properties[5] = hide_ssid;
 				break;
@@ -187,7 +187,7 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 				properties[1] = getSpecialRadio();
 				properties[2] = WifiDeviceHelper.xmlContentEncoder(ssid);//StringEscapeUtils.escapeXml(ssid);
 				properties[3] = auth;
-				properties[4] = auth_key;
+				properties[4] = WifiDeviceHelper.xmlContentEncoder(auth_key);
 				properties[5] = auth_key_rsa;
 				properties[6] = hide_ssid;
 				break;
