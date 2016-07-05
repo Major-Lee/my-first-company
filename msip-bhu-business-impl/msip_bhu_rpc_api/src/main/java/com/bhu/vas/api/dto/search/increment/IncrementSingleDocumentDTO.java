@@ -23,13 +23,20 @@ public class IncrementSingleDocumentDTO extends IncrementDocumentDTO{
 		return IncrementEnum.IncrementPrefixEnum.SinglePrefix.getKey();
 	}
 	
-	public static IncrementSingleDocumentDTO builder(String id, IncrementActionEnum action, int uniqueid){
-		if(StringUtils.isEmpty(id) || action == null){
+	public static IncrementSingleDocumentDTO builder(String id, IncrementActionEnum incrementActionEnum, int uniqueid){
+		if(incrementActionEnum == null){
+			throw new RuntimeException("IncrementBulkDocumentDTO Builder Params Illegal");
+		}
+		return builder(id, incrementActionEnum.getKey(), uniqueid);
+	}
+	
+	public static IncrementSingleDocumentDTO builder(String id, String action, int uniqueid){
+		if(StringUtils.isEmpty(id) || StringUtils.isEmpty(action)){
 			throw new RuntimeException("IncrementBulkDocumentDTO Builder Params Illegal");
 		}
 		IncrementSingleDocumentDTO dto = new IncrementSingleDocumentDTO();
 		dto.setId(id);
-		dto.setAction(action.getKey());
+		dto.setAction(action);
 		dto.setUniqueid(uniqueid);
 		return dto;
 	}
