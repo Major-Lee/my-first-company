@@ -19,7 +19,7 @@ public class SharedNetworksHelper {
     //如果为DefaultCreateTemplate 则代表新建一个模板
     public static final String DefaultCreateTemplate = "0000";
     public static final String DefaultTemplate = "0001";
-    public static final String DefaultSafeSecureName = "默认模板";
+    //public static final String DefaultSafeSecureName = "默认模板";
     
     
     private static final List<String> TemplateSequences = new ArrayList<>();
@@ -31,15 +31,16 @@ public class SharedNetworksHelper {
     
 	public static String buildTemplateName(SharedNetworkType sharedNetwork,String template){
 		StringBuilder sb = new StringBuilder();
-		if(SharedNetworkType.SafeSecure == sharedNetwork){
+		sb.append(sharedNetwork.getName()).append(template);
+		/*if(SharedNetworkType.SafeSecure == sharedNetwork){
 			if(DefaultTemplate.equals(template)){
 				sb.append(DefaultSafeSecureName);
 			}else{
 				sb.append(sharedNetwork.getName()).append(template);
 			}
 		}else{//uplink
-			sb.append(sharedNetwork.getName()).append(template);
-		}
+			
+		}*/
 		return sb.toString();
 	}
 	

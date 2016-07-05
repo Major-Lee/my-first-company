@@ -426,9 +426,6 @@ public class SharedNetworksFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY,new String[]{"macs"});
 		}
 		List<String> result = new ArrayList<String>();
-		ParamSharedNetworkDTO configDto = fetchUserSharedNetworkConf(uid,sharednetwork_type,template);
-		//如果template不存在则返回的dto中是列表的第一个值
-		template = configDto.getTemplate();
 		//TODO：验证设备是否真实绑定,假定设备macs param 里面的数据真实存在
 		//TODO：等设备版本升级上来后可以去掉此条件约束
 		if(SharedNetworkType.SafeSecure.getKey().equals(sharednetwork_type.getKey())){
@@ -440,7 +437,9 @@ public class SharedNetworksFacadeService {
 				}
 			}
 		}
-		
+		ParamSharedNetworkDTO configDto = fetchUserSharedNetworkConf(uid,sharednetwork_type,template);
+		//如果template不存在则返回的dto中是列表的第一个值
+		template = configDto.getTemplate();
 		for(String mac:macs){
 			String mac_lowercase = mac.toLowerCase();
 			WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
