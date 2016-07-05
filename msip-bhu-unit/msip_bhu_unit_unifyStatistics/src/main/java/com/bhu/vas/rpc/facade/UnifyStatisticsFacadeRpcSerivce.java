@@ -57,7 +57,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 					vmap.put(entry.getKey(), data.getOnline_max());
 				}
 				//读取昨天在线设备数据
-				cal.add(Calendar.DAY_OF_YEAR, -1);
+				cal.add(Calendar.DATE, -1);
 				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
@@ -67,7 +67,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 					vmap.put(entry.getKey(), data.getOnline_max());
 				}
 				//读取前天在线设备数据
-				cal.add(Calendar.DAY_OF_YEAR, -1);
+				cal.add(Calendar.DATE, -1);
 				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
@@ -76,7 +76,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 					DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
 					vmap.put(entry.getKey(), data.getOnline_max());
 				}
-				cal.add(Calendar.DAY_OF_YEAR, 2);
+				cal.add(Calendar.DATE, 2);
 				break;
 			case "W":
 				//读取本周在线设备数据
@@ -89,7 +89,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 					vmap.put(entry.getKey(), data.getOnline_max());
 				}
 				//读取上周在线设备数据
-				cal.add(Calendar.WEEK_OF_YEAR, -1);
+				cal.add(Calendar.DATE, -1);
 				map = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
