@@ -972,9 +972,9 @@ public class DeviceURouterRestBusinessFacadeService {
 					
 //					List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
 					//List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(block_hd_macs, true, true);
-					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId,block_hd_macs);
-					List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, block_hd_macs);
 					if(!block_hd_macs.isEmpty()){
+						List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId,block_hd_macs);
+						List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, block_hd_macs);
 						vtos = new ArrayList<URouterHdVTO>();
 //						List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
 						WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
