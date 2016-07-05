@@ -246,6 +246,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 				return null;
 			}
 		}
+		dto.setMap(vmap);
 		vto.getList().add(dto);
 		return vto;
 	}
