@@ -42,6 +42,20 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		return this.getRepository().findOne(id);
 	}
 	
+	public long searchCountByCommon(Integer u_id, String sharedNetwork_type, 
+			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate){
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online, d_snk_turnstate);
+		return super.searchCountByConditionMessage(scm);
+	}
+	
+	public Page<WifiDeviceDocument> searchPageByCommon(Integer u_id, String sharedNetwork_type, 
+			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate, int pageNo, int pageSize){
+
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online, d_snk_turnstate);
+		return super.searchByConditionMessage(scm, pageNo, pageSize);
+	}
+	
 	/**
 	 * 根据条件搜索数据分页
 	 * 绑定设备的用户id

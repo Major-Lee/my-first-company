@@ -170,4 +170,11 @@ public interface IUserRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<UserActivityVTO> activity(Integer uid);
+	
+	/**
+	 * 查询用户详细信息
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<UserManageDTO> queryUserDetail(int uid);
 }
