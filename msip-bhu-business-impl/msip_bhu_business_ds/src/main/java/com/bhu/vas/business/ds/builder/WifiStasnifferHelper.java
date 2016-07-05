@@ -37,11 +37,11 @@ public class WifiStasnifferHelper implements Serializable{
 				total = total + Long.parseLong(value);
 			}
 			//排序过程排除unknow数据
-			String unknow_count = communityCountByTypes.get(DevicesSet.Unknow.getScn());
+			String unknow_count = communityCountByTypes.get(DevicesSet.Unknown.getScn());
 			if(StringUtils.isEmpty(unknow_count)){
 				unknow_count = "0";
 			}else{
-				communityCountByTypes.remove(DevicesSet.Unknow.getScn());
+				communityCountByTypes.remove(DevicesSet.Unknown.getScn());
 			}
 
 			//进行排序
@@ -67,7 +67,7 @@ public class WifiStasnifferHelper implements Serializable{
 	        }
 	        //加入unknow数据在列表最后
         	URouterWSCommunityHDVTO unknow_hdt_vto = new URouterWSCommunityHDVTO();
-        	unknow_hdt_vto.setHd_tn(DevicesSet.Unknow.getScn());
+        	unknow_hdt_vto.setHd_tn(DevicesSet.Unknown.getScn());
         	long unknow_hd_tc = Long.parseLong(unknow_count);
         	unknow_hdt_vto.setHd_tc(unknow_hd_tc);
         	unknow_hdt_vto.setHd_tr(ArithHelper.percent(unknow_hd_tc, total, 0));

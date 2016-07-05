@@ -62,6 +62,10 @@
         <dependency>
 			<groupId>com.bhu</groupId>
 			<artifactId>msip_bhu_alipay</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.bhu</groupId>
+			<artifactId>msip_bhu_nowpay</artifactId>
 		</dependency>		
         <dependency>
 			<groupId>com.bhu</groupId>
@@ -92,7 +96,7 @@
 		    <artifactId>gson</artifactId>
 		    <version>2.2.2</version>
 		</dependency>
-            <dependency>
+        <dependency>
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
         </dependency>

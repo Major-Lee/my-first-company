@@ -7,8 +7,10 @@ public class UserWalletLogVTO implements java.io.Serializable {
 	private String nick;
 	private String mobileno;
 	private String orderid;
+	private String transmode;
 	//transmode_desc 描述 用于查看方便的冗余字段 
 	private String transmode_desc;
+	private String transtype;
 	//transtype_desc 描述 用于查看方便的冗余字段 
 	private String transtype_desc;
 	//交易现金相关 
@@ -102,4 +104,17 @@ public class UserWalletLogVTO implements java.io.Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public String getTransmode() {
+		return transmode;
+	}
+	public void setTransmode(String transmode) {
+		this.transmode = transmode;
+	}
+	public String getTranstype() {
+		return transtype;
+	}
+	public void setTranstype(String transtype) {
+		this.transtype = transtype;
+	}
+	
 }

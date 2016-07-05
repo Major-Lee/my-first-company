@@ -8,6 +8,10 @@ Deploy2Server0=192.168.66.162
 Deploy2Server1=192.168.66.188
 Deploy2Server2=192.168.66.155
 Deploy2ServerWeb=192.168.66.7
+
+Deploy2ServerInput1=192.168.66.123
+Deploy2ServerInput2=192.168.66.147
+Deploy2ServerDaemon=192.168.66.191
 ##if read -t 5 -p "Confirm to deploy 2 $Deploy2Server(Local Test):(yes/no)"
 #then
 #  echo "hello $REPLY, welcome to come back here"
@@ -115,6 +119,12 @@ cp ../../msip-bhu-api/msip_bhu_commdity_rest/target/msip_bhu_commdity_rest.war .
 echo '拷贝文件 msip_bhu_unit_tag-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_tag/target/msip_bhu_unit_tag-bin.zip ./$CuDateDir
 
+#statistics
+echo '拷贝文件 msip_bhu_unit_unifyStatistics-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_unifyStatistics/target/msip_bhu_unit_unifyStatistics-bin.zip ./$CuDateDir
+
+echo '拷贝文件 msip_bhu_backend_task_statistics-bin.zip到'$CuDateDir
+cp ../../msip-bhu-business-impl/msip_bhu_backend_task_statistics/target/msip_bhu_backend_task_statistics-bin.zip ./$CuDateDir
 
 
 cd $CuDateDir
@@ -182,6 +192,14 @@ unzip -qo msip_bhu_commdity_rest.war -d msip_bhu_commdity_rest
 unzip -q msip_bhu_unit_tag-bin.zip
 unzip -qo msip_bhu_unit_tag/bin/msip_bhu_unit_tag.jar -d msip_bhu_unit_tag/classes/
 
+#statistics
+unzip -q msip_bhu_unit_unifyStatistics-bin.zip
+unzip -qo msip_bhu_unit_unifyStatistics/bin/msip_bhu_unit_unifyStatistics.jar -d msip_bhu_unit_unifyStatistics/classes/
+
+unzip -q msip_bhu_backend_task_statistics-bin.zip
+unzip -qo msip_bhu_backend_task_statistics/bin/msip_bhu_backend_task_statistics.jar -d msip_bhu_backend_task_statistics/classes/
+
+
 
 echo '文件解压过程成功'
 
@@ -193,23 +211,23 @@ echo '准备发布业务组件到'$Deploy2Server
 #rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/classes/com/    root@$Deploy2Server:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
 #echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2Server
 
-echo 'deploy msip_bhu_unit_input_processor to ...@'$Deploy2Server1
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/spring*.RELEASE.jar   root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_input_processor/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/msip_*.jar    root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_input_processor/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/classes/com/    root@$Deploy2Server1:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
-echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2Server1
+echo 'deploy msip_bhu_unit_input_processor to ...@'$Deploy2ServerInput1
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/spring*.RELEASE.jar   root@$Deploy2ServerInput1:/BHUData/apps/msip_bhu_unit_input_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/msip_*.jar    root@$Deploy2ServerInput1:/BHUData/apps/msip_bhu_unit_input_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/classes/com/    root@$Deploy2ServerInput1:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
+echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2ServerInput1
 
-echo 'deploy msip_bhu_unit_input_processor to ...@'$Deploy2Server2
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/spring*.RELEASE.jar   root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_processor/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/msip_*.jar    root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_processor/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/classes/com/    root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
-echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2Server2
+echo 'deploy msip_bhu_unit_input_processor to ...@'$Deploy2ServerInput2
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/spring*.RELEASE.jar   root@$Deploy2ServerInput2:/BHUData/apps/msip_bhu_unit_input_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/msip_*.jar    root@$Deploy2ServerInput2:/BHUData/apps/msip_bhu_unit_input_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/classes/com/    root@$Deploy2ServerInput2:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
+echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2ServerInput2
 
-echo 'deploy msip_bhu_unit_daemon_processor to ...@'$Deploy2Server0
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/lib/spring*.RELEASE.jar root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/lib/msip_*.jar  root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
-rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/classes/com/    root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_daemon_processor/classes/com/
-echo 'deploy msip_bhu_unit_daemon_processor successfully @'$Deploy2Server0
+echo 'deploy msip_bhu_unit_daemon_processor to ...@'$Deploy2ServerDaemon
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/lib/spring*.RELEASE.jar root@$Deploy2ServerDaemon:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/lib/msip_*.jar  root@$Deploy2ServerDaemon:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/classes/com/    root@$Deploy2ServerDaemon:/BHUData/apps/msip_bhu_unit_daemon_processor/classes/com/
+echo 'deploy msip_bhu_unit_daemon_processor successfully @'$Deploy2ServerDaemon
 
 echo 'deploy msip_bhu_unit_devices to ...@'$Deploy2Server0
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_devices/lib/spring*.RELEASE.jar        root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_devices/libs/
@@ -253,6 +271,12 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/lib/spring*.RELEASE.jar
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/lib/msip_*.jar           root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_tag/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_tag/classes/com/             root@$Deploy2Server0:/BHUData/apps/msip_bhu_unit_tag/classes/com/
 echo 'deploy msip_bhu_unit_tag successfully @'$Deploy2Server0
+
+echo 'deploy msip_bhu_unit_unifyStatistics to ...@'$Deploy2Server2
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_unifyStatistics/lib/spring*.RELEASE.jar  root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_unifyStatistics/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_unifyStatistics/lib/msip_*.jar           root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_unifyStatistics/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_unifyStatistics/classes/com/             root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_unifyStatistics/classes/com/
+echo 'deploy msip_bhu_unit_unifyStatistics successfully @'$Deploy2Server2
 
 echo '发布业务组件成功'
 
@@ -311,6 +335,12 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task_applies_notify/lib/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task_applies_notify/lib/msip_*.jar   root@$Deploy2Server1:/BHUData/apps/msip_bhu_backend_task_applies_notify/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task_applies_notify/classes/com/     root@$Deploy2Server1:/BHUData/apps/msip_bhu_backend_task_applies_notify/bin/com/
 echo 'deploy msip_bhu_backend_task_applies_notify successfully @'$Deploy2Server1
+
+echo 'deploy msip_bhu_backend_task_statistics to ...@'$Deploy2Server2
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task_statistics/lib/spring*.RELEASE.jar      root@$Deploy2Server2:/BHUData/apps/msip_bhu_backend_task_statistics/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task_statistics/lib/msip_*.jar     root@$Deploy2Server2:/BHUData/apps/msip_bhu_backend_task_statistics/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_backend_task_statistics/classes/com/     root@$Deploy2Server2:/BHUData/apps/msip_bhu_backend_task_statistics/bin/com/
+echo 'deploy msip_bhu_backend_task_statistics successfully @'$Deploy2Server2
 
 #echo 'deploy msip_bhu_spark_task successfully @'$Deploy2Server0
 echo '发布其他服务成功'

@@ -189,16 +189,18 @@ public class OrderFacadeService {
 	 * 生成打赏订单
 	 * @param commdity 商品实体
 	 * @param appid 应用id
+	 * @param bindUser 
 	 * @param mac 设备mac
 	 * @param mac_dut 设备业务线
 	 * @param umac 用户mac
 	 * @param umactype 终端类型
 	 * @param payment_type 支付方式
 	 * @param context 业务上下文
+	 * @param user_agent 
 	 * @return
 	 */
-	public Order createRewardOrder(Integer commdityid, Integer appid, String mac, String mac_dut, String umac, 
-			Integer umactype, String payment_type, String context){
+	public Order createRewardOrder(Integer commdityid, Integer appid, User bindUser, String mac, 
+			String mac_dut, String umac, Integer umactype, String payment_type, String context, String user_agent){
 		//商品信息验证
 		//验证商品是否合法
 		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
@@ -217,6 +219,9 @@ public class OrderFacadeService {
 		Order order = new Order();
 		order.setCommdityid(commdityid);
 		order.setAppid(appid);
+		if(bindUser != null){
+			order.setUid(bindUser.getId());
+		}
 		order.setMac(mac);
 		order.setMac_dut(mac_dut);
 		order.setUmac(umac);
@@ -224,6 +229,7 @@ public class OrderFacadeService {
 		order.setType(commdity.getCategory());
 		order.setPayment_type(payment_type);
 		order.setContext(context);
+		order.setUser_agent(user_agent);
 		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setAmount(amount);
@@ -259,9 +265,9 @@ public class OrderFacadeService {
 				order.setPaymented_at(DateTimeHelper.parseDate(paymented_ds, DateTimeHelper.DefalutFormatPattern));
 			}
 			
-			if(bindUser != null){
+/*			if(bindUser != null){
 				order.setUid(bindUser.getId());
-			}
+			}*/
 			
 			//支付成功
 			if(success){
@@ -270,7 +276,7 @@ public class OrderFacadeService {
 
 				logger.info(String.format("RewardOrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
 				//进行发货通知
-				boolean deliver_notify_ret = rewardOrderPermissionNotify(order, bindUser,ait_time);
+				boolean deliver_notify_ret = rewardOrderPermissionNotify(order, bindUser, ait_time);
 				//判断通知发货成功 更新订单状态
 				if(deliver_notify_ret){
 					changed_status = OrderStatus.DeliverCompleted.getKey();
@@ -317,7 +323,7 @@ public class OrderFacadeService {
 	 * @param bindUser 设备绑定的用户实体
 	 * @return
 	 */
-	public boolean rewardOrderPermissionNotify(Order order, User bindUser,String ait_time){
+	public boolean rewardOrderPermissionNotify(Order order, User bindUser, String ait_time){
 		try{
 			if(order == null) {
 				logger.error("rewardOrderPermissionNotify order data not exist");
@@ -373,9 +379,11 @@ public class OrderFacadeService {
 	 * @param commdity 商品实体
 	 * @param appid 应用id
 	 * @param payment_type 支付方式
+	 * @param user_agent
 	 * @return
 	 */
-	public Order createRechargeVCurrencyOrder(Integer uid, Integer commdityid, Integer appid, String payment_type, Integer umactype){
+	public Order createRechargeVCurrencyOrder(Integer uid, Integer commdityid, Integer appid, 
+			String payment_type, Integer umactype, String user_agent){
 		//商品信息验证
 		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 		//验证商品是否合理
@@ -392,6 +400,7 @@ public class OrderFacadeService {
 		order.setAppid(appid);
 		order.setType(commdity.getCategory());
 		order.setPayment_type(payment_type);
+		order.setUser_agent(user_agent);
 		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setAmount(amount);
@@ -457,7 +466,7 @@ public class OrderFacadeService {
 	 * @param context 验证的手机号
 	 * @return
 	 */
-	public Order createSMSOrder(String mac, String mac_dut, String umac, Integer umactype, String context){
+	public Order createSMSOrder(String mac, String mac_dut, String umac, Integer umactype, String context, String user_agent){
 		//商品信息验证
 		Commdity commdity = commdityFacadeService.validateCommdity(SMS_VALIDATE_COMMDITY_ID);
 		//验证商品是否合理
@@ -479,6 +488,7 @@ public class OrderFacadeService {
 		order.setUmactype(umactype);
 		order.setVcurrency(vcurrency);
 		order.setContext(context);
+		order.setUser_agent(user_agent);
 		order.setPaymented_at(new Date());
 		orderService.insert(order);
 		

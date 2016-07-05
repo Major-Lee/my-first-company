@@ -1,5 +1,6 @@
 package com.bhu.pure.kafka.client;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -23,6 +24,15 @@ public class KafkaMessageClient implements IKafkaMessageClient{
 			}catch(Exception ex){
 				logger.error("init loading /deploy/conf/kafka.properties or /conf/kafka.properties failed!", e);
 				e.printStackTrace();
+			}
+		}finally{
+			if(in != null){
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace(System.out);
+				}
+				in = null;
 			}
 		}
 	    return properties;

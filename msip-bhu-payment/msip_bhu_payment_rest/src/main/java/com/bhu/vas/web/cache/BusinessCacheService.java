@@ -61,6 +61,25 @@ public class BusinessCacheService {
 		return PaymentReckoningVTO.class.cast(cacheObj);
 	}
 	
+	
+	public String generateWapWeixinMerchantCacheKeyBy(){
+		StringBuilder sb = new StringBuilder();
+		sb.append(UPAYMENTCachePrefixKey).append("WapWeixinMerchant");
+		return sb.toString();
+	}
+	
+	public void storePaymentWapWeixinMerchantCacheResult(String result){
+		String key = generateWapWeixinMerchantCacheKeyBy();
+		this.entityCache.remove(key);
+		this.entityCache.put(key, result,1*300);//分钟
+	}
+	
+	public String getWapWeixinMerchantNameFromCache(){
+		Object cacheObj = this.entityCache.get(generateWapWeixinMerchantCacheKeyBy());
+		if(cacheObj == null) return null;
+		return cacheObj.toString();
+	}
+	
 //	public AgentDeviceStatisticsVTO getAgentDSCacheByUser(int agentuser){
 //		Object cacheObj = this.entityCache.get(generateAgentDSCacheKeyBy(agentuser));
 //		if(cacheObj == null) return null;

@@ -1,4 +1,10 @@
 package com.bhu.vas.api.rpc.user.dto;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
+import com.smartwork.msip.cores.helper.encrypt.Base64Helper;
+
 /**
  * OAuth用户数据DTO
  * @author Edmond Lee
@@ -43,5 +49,22 @@ public class UserOAuthStateDTO implements java.io.Serializable{
 	}
 	public void setOpenid(String openid) {
 		this.openid = openid;
+	}
+	
+	public UserOAuthStateVTO toVTO(){
+		UserOAuthStateVTO vto = new UserOAuthStateVTO();
+		vto.setAuid(auid);
+		vto.setAvatar(avatar);
+		vto.setIdentify(identify);
+		if(StringUtils.isNotEmpty(nick)){
+			try{
+				vto.setNick(new String(Base64Helper.decode(nick)));
+			}catch(Exception ex){
+				vto.setNick(nick);
+			}
+		}else
+			vto.setNick(nick);
+		vto.setOpenid(openid);
+		return vto;
 	}
 }

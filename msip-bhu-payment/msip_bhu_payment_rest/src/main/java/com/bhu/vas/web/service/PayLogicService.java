@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.rpc.payment.model.PaymentParameter;
 import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
 import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
 import com.bhu.vas.api.rpc.payment.vto.PaymentReckoningVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.payment.service.PaymentAlipaylocationService;
+import com.bhu.vas.business.ds.payment.service.PaymentParameterService;
 import com.bhu.vas.business.ds.payment.service.PaymentReckoningService;
 import com.bhu.vas.business.ds.payment.service.PaymentWithdrawService;
 import com.bhu.vas.business.helper.BusinessHelper;
@@ -32,6 +34,8 @@ import com.smartwork.msip.localunit.RandomPicker;
 @Service
 public class PayLogicService {
 	@Resource
+	PaymentParameterService paymentParameterService;
+	@Resource
 	PaymentReckoningService paymentReckoningService;
 	@Resource
 	PaymentWithdrawService paymentWithdrawService;
@@ -44,6 +48,24 @@ public class PayLogicService {
 	@Autowired
 	BusinessCacheService businessCacheService;
     private  Logger logger = LoggerFactory.getLogger(PayLogicService.class);
+    
+    
+    public String findWapWeixinMerchantServiceByName(){
+    	String result = null;
+    	String cacheMerchName = businessCacheService.getWapWeixinMerchantNameFromCache();
+    	if(cacheMerchName != null ){
+    		result = cacheMerchName;
+    		return result;
+    	}
+    	PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
+    	if(paymentParameter == null){
+    		result = "Midas";
+    		return result;
+    	}
+    	result = paymentParameter.getValue();
+    	businessCacheService.storePaymentWapWeixinMerchantCacheResult(result);    	
+    	return result;
+    }
 
 	public PaymentReckoningVTO findPayStatusByOrderId(String goods_no) {
 		logger.info(String.format("query payment order status [%s]", goods_no));
@@ -146,6 +168,9 @@ public class PayLogicService {
  		}else if(type.equals(PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n())){
  			channelType = PaymentChannelCode.BHU_MIDAS_WEIXIN.code();
  			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
+ 		}else if(type.equals(PaymentChannelCode.BHU_NOW_WEIXIN.i18n())){
+ 			channelType = PaymentChannelCode.BHU_NOW_WEIXIN.code();
+ 			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
  		}
     	
     	if(Ip == "" || Ip == null){
@@ -185,7 +210,7 @@ public class PayLogicService {
 		updatePayStatus.setThird_party_code(thirdPartCode);
 		updatePayStatus.setPay_status(1);
 		updatePayStatus.setPaid_at(new Date());
-		if(!thridType.isEmpty()){
+		if(thridType != null){
 			updatePayStatus.setRemark(billo);
 		}
  		paymentReckoningService.update(updatePayStatus);
@@ -225,40 +250,56 @@ public class PayLogicService {
      * @param updatePayStatus
      * @param out_trade_no
      * @param thirdPartCode
+     * @param invalidCreateReckoningidFailed 
      */
-    public void updateWithdrawalsStatus(PaymentWithdraw updateWithdrawStatus,String out_trade_no,String thirdPartCode){
-    	updateWithdrawStatus.setThirdPartCode(thirdPartCode);
-    	updateWithdrawStatus.setWithdrawStatus(1);
-    	updateWithdrawStatus.setWithdrawAt(new Date());
-		paymentWithdrawService.update(updateWithdrawStatus);
-		logger.info(String.format("update out_trade_no [%s] withdrawals status finished.",out_trade_no));
- 		
- 		//通知订单
- 		PaymentWithdraw payNotice =  paymentWithdrawService.getById(out_trade_no);
- 		ResponsePaymentCompletedNotifyDTO rpcn_dto = new ResponsePaymentCompletedNotifyDTO();
- 		rpcn_dto.setSuccess(true);
- 		rpcn_dto.setOrderid(payNotice.getOrderId());
- 		rpcn_dto.setPayment_type(payNotice.getWithdrawType());
- 		String fmtDate = BusinessHelper.formatDate(payNotice.getWithdrawAt(), "yyyy-MM-dd HH:mm:ss");
- 		rpcn_dto.setPaymented_ds(fmtDate);
- 		String notify_message = JsonHelper.getJSONString(rpcn_dto);
-        
- 		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
- 		logger.info(String.format("notify out_trade_no [%s] payment status to redis: [%s]",out_trade_no,notify_message));
- 		
- 		//修改订单的通知状态
- 		updateWithdrawStatus.setNotifyStatus(1);
- 		updateWithdrawStatus.setNotifiedAt(new Date());
- 		paymentWithdrawService.update(updateWithdrawStatus);
- 		
- 		logger.info(String.format("update out_trade_no [%s] notify status finished.",out_trade_no));
- 		
- 		PaymentReckoningVTO payOrderCache = updatePaymentCache(payNotice.getOrderId(),out_trade_no);
-		
-		if(payOrderCache != null){
-			logger.info(String.format("write out_trade_no [%s] order_id [%s] to cache finished.",out_trade_no,payNotice.getOrderId()));
-		}
-		logger.info("success");
+    public void updateWithdrawalsStatus(PaymentWithdraw updateWithdrawStatus,String out_trade_no,String thirdPartCode,boolean result){
+    	if(result){
+    		updateWithdrawStatus.setThirdPartCode(thirdPartCode);
+        	updateWithdrawStatus.setWithdrawStatus(1);
+        	updateWithdrawStatus.setWithdrawAt(new Date());
+    		paymentWithdrawService.update(updateWithdrawStatus);
+    		logger.info(String.format("update out_trade_no [%s] withdrawals status finished.",out_trade_no));
+     		
+     		//通知订单
+     		PaymentWithdraw payNotice =  paymentWithdrawService.getById(out_trade_no);
+     		ResponsePaymentCompletedNotifyDTO rpcn_dto = new ResponsePaymentCompletedNotifyDTO();
+     		rpcn_dto.setSuccess(true);
+     		rpcn_dto.setOrderid(payNotice.getOrderId());
+     		rpcn_dto.setPayment_type(payNotice.getWithdrawType());
+     		String fmtDate = BusinessHelper.formatDate(payNotice.getWithdrawAt(), "yyyy-MM-dd HH:mm:ss");
+     		rpcn_dto.setPaymented_ds(fmtDate);
+     		String notify_message = JsonHelper.getJSONString(rpcn_dto);
+            
+     		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+     		logger.info(String.format("notify out_trade_no [%s] payment status to redis: [%s]",out_trade_no,notify_message));
+     		
+     		//修改订单的通知状态
+     		updateWithdrawStatus.setNotifyStatus(1);
+     		updateWithdrawStatus.setNotifiedAt(new Date());
+     		paymentWithdrawService.update(updateWithdrawStatus);
+     		
+     		logger.info(String.format("update out_trade_no [%s] notify status finished.",out_trade_no));
+     		
+     		PaymentReckoningVTO payOrderCache = updatePaymentCache(payNotice.getOrderId(),out_trade_no);
+    		
+    		if(payOrderCache != null){
+    			logger.info(String.format("write out_trade_no [%s] order_id [%s] to cache finished.",out_trade_no,payNotice.getOrderId()));
+    		}
+    		logger.info("success");	
+    	}else{
+    		ResponsePaymentCompletedNotifyDTO rpcn_dto = new ResponsePaymentCompletedNotifyDTO();
+    		rpcn_dto.setSuccess(false);
+     		rpcn_dto.setOrderid(out_trade_no);
+     		rpcn_dto.setPayment_type(thirdPartCode);
+     		rpcn_dto.setPaymented_ds("");
+     		String notify_message = JsonHelper.getJSONString(rpcn_dto);
+            
+     		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+     		logger.info(String.format("notify out_trade_no [%s] payment status to redis: [%s]",out_trade_no,notify_message));
+     		
+     		logger.info("end");	
+    	}
+    	
     }
     
     private PaymentReckoningVTO updatePaymentCache(String orderId,String tId){

@@ -13,6 +13,7 @@ public class BusinessKeyDefine {
 	public static class HandsetPresent{
 		public static final String StatisticsPrefixKey 			= "HPS.";
 		public static final String PresentPrefixKey 			= "HPP.";
+		public static final String EntityPresentPrefixKey 		= "HEP.";
 		public static final String PresentLogKey 				= "HPL.";
 		public static final String PresentRelationKey 			= "HPR.";
 		public static final String StatisticsTRBKey 			= "HPT.";
@@ -64,6 +65,9 @@ public class BusinessKeyDefine {
 		public static final String WifiDeviceStatistics_PeakSectionRate 		= "PSR";
 		//public static final String WifiDeviceStatistics_PeakRateWaiting 		= "PRWG";
 		public static final String WifiDeviceStatistics_HDRateWaiting 		= "HDRWG";
+		
+		public static final String DeviceStateStatistics	="DDS.";
+		public static final String UserStateStatistics	="UDS.";
 	}
 	public static class Unique{
 		public static final String EmailCheck = "WUEC";

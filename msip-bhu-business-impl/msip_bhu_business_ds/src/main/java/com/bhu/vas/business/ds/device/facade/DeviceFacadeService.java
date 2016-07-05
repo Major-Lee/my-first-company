@@ -111,7 +111,7 @@ public class DeviceFacadeService{
 		long current = System.currentTimeMillis();
 		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
 		if(onlinePresents != null && !onlinePresents.isEmpty()){
-			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(onlinePresents);
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId.toLowerCase(),onlinePresents);
 			List<HandsetDeviceDTO> do_offline_handsets = new ArrayList<HandsetDeviceDTO>();
 			for(HandsetDeviceDTO dto:handsets){
 				if(dto != null){
@@ -957,14 +957,6 @@ public class DeviceFacadeService{
 		}
 		
 		if(presentDto != null){
-/*			List<UserDevicePK> userDevices = this.getUserDevices(uid);
-			if(userDevices == null || userDevices.isEmpty()){
-				return;
-			}
-			List<String> macs = new ArrayList<String>();
-			for(UserDevicePK pk : userDevices){
-				macs.add(pk.getMac());
-			}*/
 			List<String> macs = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(uid);
 			//处理业务action
 			if(StringUtils.isNotEmpty(action_mac) && action != null){
@@ -980,9 +972,11 @@ public class DeviceFacadeService{
 			}
 			
 			int bindmac_size = macs.size();
-			presentDto.setMulti(bindmac_size > 1 ? true : false);
-			WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
-					JsonHelper.getJSONString(presentDto));
+			if(bindmac_size > 0){
+				presentDto.setMulti(bindmac_size > 1 ? true : false);
+				WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
+						JsonHelper.getJSONString(presentDto));
+			}
 		}
 	}
 	/**

@@ -23,6 +23,7 @@ import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -53,6 +54,7 @@ public class UserWalletController extends BaseController{
 						""}));
 				return;
 			}
+			//ValidateService.validAmountRange(String.valueOf(cash),NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
 			String remoteIp = WebHelper.getRemoteAddr(request);
 			RpcResponseDTO<UserWithdrawApplyVTO> rpcResult = userWalletRpcService.withdrawOper(appid,payment_type,uid, pwd, cash, remoteIp);
 			if(!rpcResult.hasError()){
@@ -60,6 +62,8 @@ public class UserWalletController extends BaseController{
 			}else{
 				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
 		}catch(Exception ex){
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}

@@ -122,4 +122,8 @@ public class UserService extends AbstractCoreService<Integer,User, UserDao>{//En
 		//TailPage<User> page =this.findModelTailPageByModelCriteria(mc);//findTail(null, null, pageno, pagesize);
 		//return page;
 	}*/
+	
+	public long count(){
+		return super.countByModelCriteria(new ModelCriteria());
+	}
 }

@@ -36,8 +36,27 @@ public class HashPartitioner implements Partitioner {
         List<PartitionInfo> partitions = cluster.partitionsForTopic(topic);
         int numPartitions = partitions.size();
         if (keyBytes != null) {
-        	return key.hashCode() % numPartitions;
+        	//return Math.abs(key.hashCode() % numPartitions);
+        	return rotatingHash(String.valueOf(key), numPartitions);
         }
 		return 0;
+	}
+	
+	/**
+	 * 旋转hash 保证正数
+	 * 
+	 * @param key 输入字符串
+	 * @param prime 质数
+	 * @return hash值
+	 */
+	public int rotatingHash(String key, int prime) {
+		int hash, i;
+		for (hash = key.length(), i = 0; i < key.length(); ++i)
+			hash = (hash << 4) ^ (hash >> 28) ^ key.charAt(i);
+		int value = (hash % prime);
+		if(value < 0){
+			return Math.abs(value);
+		}
+		return value;
 	}
 }

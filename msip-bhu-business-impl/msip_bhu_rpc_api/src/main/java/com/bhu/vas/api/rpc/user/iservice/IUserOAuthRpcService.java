@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 
 public interface IUserOAuthRpcService {
 	/**
@@ -12,7 +12,7 @@ public interface IUserOAuthRpcService {
 	 * @param uid
 	 * @return
 	 */
-	public RpcResponseDTO<List<UserOAuthStateDTO>> fetchRegisterIdentifies(Integer uid,boolean payment);
+	public RpcResponseDTO<List<UserOAuthStateVTO>> fetchRegisterIdentifies(Integer uid,boolean payment);
 	
 	/**
 	 * 移除相关第三方的帐号绑定

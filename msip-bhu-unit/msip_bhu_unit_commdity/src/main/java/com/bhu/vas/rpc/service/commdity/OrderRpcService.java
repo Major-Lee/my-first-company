@@ -25,10 +25,10 @@ public class OrderRpcService implements IOrderRpcService{
 	
 	@Override
 	public RpcResponseDTO<OrderRewardVTO> createRewardOrder(Integer commdityid, String mac, String umac, 
-			Integer umactype, String payment_type, String context){
-		logger.info(String.format("createRewardOrder with commdityid[%s] mac[%s] umac[%s] umactype[%s] payment_type[%s] context[%s]",
-				commdityid, mac, umac, umactype, payment_type, context));
-		return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context);
+			Integer umactype, String payment_type, String context, String user_agent){
+		logger.info(String.format("createRewardOrder with commdityid[%s] mac[%s] umac[%s] umactype[%s] payment_type[%s] context[%s] user_agent[%s]",
+				commdityid, mac, umac, umactype, payment_type, context, user_agent));
+		return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context, user_agent);
 	}
 	
 	@Override
@@ -59,10 +59,10 @@ public class OrderRpcService implements IOrderRpcService{
 
 	@Override
 	public RpcResponseDTO<OrderRechargeVCurrencyVTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid, 
-			String payment_type, Integer umactype) {
-		logger.info(String.format("createRechargeVCurrencyOrder with uid[%s] commdityid[%s] payment_type[%s] umactype[%s]", uid, 
-				commdityid, payment_type, umactype));
-		return orderUnitFacadeService.createRechargeVCurrencyOrder(uid, commdityid, payment_type, umactype);
+			String payment_type, Integer umactype, String user_agent) {
+		logger.info(String.format("createRechargeVCurrencyOrder with uid[%s] commdityid[%s] payment_type[%s] umactype[%s] user_agent[%s]", uid, 
+				commdityid, payment_type, umactype, user_agent));
+		return orderUnitFacadeService.createRechargeVCurrencyOrder(uid, commdityid, payment_type, umactype, user_agent);
 	}
 
 	@Override
@@ -80,11 +80,11 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype, String context){
-		logger.info(String.format("createSMSOrder with mac[%s] umac[%s] umactype[%s] context[%s]",
-				mac, umac, umactype, context));
+	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype, String context, String user_agent){
+		logger.info(String.format("createSMSOrder with mac[%s] umac[%s] umactype[%s] context[%s] user_agent[%s]",
+				mac, umac, umactype, context, user_agent));
 		//return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context);
-		return orderUnitFacadeService.createSMSOrder(mac, umac, umactype, context);
+		return orderUnitFacadeService.createSMSOrder(mac, umac, umactype, context, user_agent);
 	}
 
 	@Override

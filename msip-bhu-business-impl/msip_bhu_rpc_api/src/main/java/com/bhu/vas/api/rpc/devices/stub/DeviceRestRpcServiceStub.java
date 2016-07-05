@@ -113,11 +113,11 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<WifiDeviceVTO1>> fetchBySearchConditionMessage(String message, int pageNo, int pageSize) {
+	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(int pageNo, int pageSize, String... messages) {
 		if(pageNo < 0 || pageSize < 0) 
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
-		return deviceRestRpcService.fetchBySearchConditionMessage(message, pageNo, pageSize);
+		return deviceRestRpcService.fetchBySearchConditionMessages(pageNo, pageSize, messages);
 
 	}
 

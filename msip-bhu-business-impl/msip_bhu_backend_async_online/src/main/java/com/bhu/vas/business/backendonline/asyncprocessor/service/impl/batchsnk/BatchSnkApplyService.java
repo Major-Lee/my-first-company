@@ -13,7 +13,9 @@ import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.helper.UPortalHttpHelper;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
@@ -21,9 +23,11 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -39,8 +43,8 @@ public class BatchSnkApplyService {
 	@Resource
 	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
 	
-	//@Resource
-	//private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
 	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
@@ -95,6 +99,22 @@ public class BatchSnkApplyService {
 								wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.Off.getType());
 							}
 						});
+					 //TODO:如果为SmsSecure 则需要判定此用户id当前是否还存在此类型的网络处于开启状态，如果都关闭了，则需要重置通知开关并通知portal服务器
+					 logger.info(String.format("准备开始判定当前信息共享网络状态类型 "));
+					 if(SharedNetworkType.SmsSecure == sharedNetwork){
+						 logger.info(String.format("准备开始判定当前信息共享网络状态类型【%s】【%s】",userid,sharedNetwork.getKey()));
+						 long count = wifiDeviceDataSearchService.searchCountBySnkType(userid,sharedNetwork.getKey(),
+								 WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType());
+						 logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】",userid,sharedNetwork.getKey(),count));
+						 if(count <= 0){//不提供sms认证服务
+							 	logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】开始清除标记",userid,sharedNetwork.getKey(),count));
+							 	//清除标记
+								SnkChargingMarkerService.getInstance().clear(userid);
+								//通知uportal清除标记位
+								UPortalHttpHelper.uPortalChargingStatusNotify(userid,UPortalHttpHelper.NoService);
+								logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】开始清除标记成功",userid,sharedNetwork.getKey(),count));
+						 }
+					 }
 					break;
 				default:
 					throw new UnsupportedOperationException(String.format("snk act type not supported"));

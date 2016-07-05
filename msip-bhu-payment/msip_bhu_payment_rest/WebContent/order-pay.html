@@ -45,8 +45,7 @@
                     </div>
                 </section>
                 <h3><div class="mypad">选择支付方式</div></h3>
-                <div id="Midas2" class="Midas2 block">upays-手机米大师</div>
-                <div id="Hee2" class="Hee2 block">pay-手机汇元宝</div>
+                <div id="WapWeixin2" class="WapWeixin2 block">pay-手机微信</div>
 				<div id="WapAlipay2" class="WapAlipay2 block">pay-手机支付宝</div>
 				<div id="PcWeixin2" class="PcWeixin2 block">pay-微信支付</div>
 				<div id="PcAlipay2" class="PcAlipay2 block">pay-支付宝支付</div>
@@ -92,19 +91,24 @@
 		    location.href = data.payUrl + "?payParams=" + payparams;
 		}
 		
-		$('#Midas2').click(function(){
+		$('#WapWeixin2').click(function(){
 	           var goods_no = Date.parse(new Date());
-	            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=Midas&total_fee=0.01&goods_no='+goods_no;
+	            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=WapWeixin&total_fee=0.01&goods_no='+goods_no;
 	           $.ajax({
 	               url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
 	               type:'post',
 	               async: false,
 	               data: datas,
 	               success:function(json){
-	                    	console.log(json.params);
 	                    if(json.success){
-						var params = $.parseJSON(json.params);
-	                        loc(params);
+								var params = $.parseJSON(json.params);
+							var callbackType = params.type;
+							if(callbackType=='json'){
+								var url = $.parseJSON(params.url);
+		                        loc(url);
+							}else{
+			                    location.href = params.url;
+							}
 	                    }else{
 	                        alert(json.msg);
 	                    }
@@ -112,28 +116,6 @@
 	           });
 	       });
 		
-        $('#Hee2').click(function(){
-           var goods_no = Date.parse(new Date());
-           var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=WapWeixin&total_fee=0.50&goods_no='+goods_no;
-           $.ajax({
-               url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
-               //url:'http://pays.bhuwifi.com/pay',
-               type:'post',
-               async: false,
-               data: datas,
-               success:function(json){
-                   console.log(json.params);
-                   
-                    if(json.success){
-                    	var params = $.parseJSON(json.params);
-                        location.href = params.url;
-                    }else{
-                        alert(json.msg);
-                    }
-               }
-           });
-       });
-
         $('#PcWeixin2').click(function(){
             var goods_no = Date.parse(new Date());
             var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=PcWeixin&total_fee=0.01&goods_no='+goods_no;

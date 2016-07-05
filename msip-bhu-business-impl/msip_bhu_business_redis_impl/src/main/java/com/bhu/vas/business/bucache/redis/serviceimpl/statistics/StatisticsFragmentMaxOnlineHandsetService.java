@@ -124,7 +124,7 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
 	 * 当前数值需要写入当前时间对应的 日，周，月，季度，年对应的field中
 	 * 日 key yyyy-MM-dd 	field  yyyy-MM-dd HH	 Value count
 	 * 周 key yyyy-w		 	field  yyyy-MM-dd		 Value count
-	 * 月 key yyyy-MM	 	field  yyyy-MM-dd		 Value count
+	 * 月 key yyyy-MM	 	 		 Value count
 	 * 季度 key yyyy-QQ	 	field  yyyy-w		 Value count
 	 * 年 key yyyy	 		field  yyyy-MM		 	 Value count
 	 * @param count
@@ -223,7 +223,9 @@ public class StatisticsFragmentMaxOnlineHandsetService extends AbstractRelationH
         sortMap.putAll(map);  
         return sortMap;  
     } */
-	
+	public static void main(String[] args) {
+		
+	}
 }
 /*class MapKeyComparator implements Comparator<String>{  
     public int compare(String str1, String str2) {  

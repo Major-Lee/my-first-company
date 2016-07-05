@@ -70,7 +70,7 @@ public class RpcResponseDTOBuilder {
 	 * @param userDeviceDTOList
 	 * @return
 	 */
-	public static Map<String,Object> builderUserRpcPayload(User user,UserTokenDTO token, boolean isReg,String old_uuid,String new_uuid,List<UserDeviceDTO> userDeviceDTOList){
+	public static Map<String,Object> builderUserRpcPayload(User user,UserTokenDTO token, boolean isReg,String old_uuid,String new_uuid){//,List<UserDeviceDTO> userDeviceDTOList){
 		Map<String,Object> ret = new HashMap<String,Object>();
 		ret.put(Key_User, builderUserDTOFromUser(user,isReg));
 		if(token != null)
@@ -82,8 +82,8 @@ public class RpcResponseDTOBuilder {
 			//可能登录客户端变动了
 			ret.put(Key_Handset_Changed, ResponseErrorCode.AUTH_UUID_VALID_SELFCURRENT_HANDSET_CHANGED.code());
 		}
-		if(userDeviceDTOList != null && !userDeviceDTOList.isEmpty())
-			ret.put(Key_Devices, userDeviceDTOList);
+		/*if(userDeviceDTOList != null && !userDeviceDTOList.isEmpty())
+			ret.put(Key_Devices, userDeviceDTOList);*/
 		return ret;
 	}
 	
@@ -99,21 +99,10 @@ public class RpcResponseDTOBuilder {
 		return ret;
 	}
 
-	public static Map<String,Object> builderUserRpcPayload(UserInnerExchangeDTO exchangeDTO){
+	/*public static Map<String,Object> builderUserRpcPayload(UserInnerExchangeDTO exchangeDTO){
 		return builderUserRpcPayload(exchangeDTO, null);
-		/*Map<String,Object> ret = new HashMap<String,Object>();
-		ret.put(Key_User, exchangeDTO.getUser());
-		if(exchangeDTO.getToken() != null)
-			ret.put(Key_UserToken,exchangeDTO.getToken());
-		ret.put(Key_UserToken_BBS, ExchangeBBSHelper.bbsPwdGen(exchangeDTO.getUser().getMobileno()));
-		ret.put(Key_Cm, "60");
-		if(exchangeDTO.getOauths() != null && !exchangeDTO.getOauths().isEmpty())
-			ret.put(Key_UserOAuth, exchangeDTO.getOauths());
-		if(userDeviceDTOList != null && !userDeviceDTOList.isEmpty())
-			ret.put(Key_Devices, userDeviceDTOList);
-		return ret;*/
-	}
-	public static Map<String,Object> builderUserRpcPayload(UserInnerExchangeDTO exchangeDTO,List<UserDeviceDTO> userDeviceDTOList){
+	}*/
+	public static Map<String,Object> builderUserRpcPayload(UserInnerExchangeDTO exchangeDTO){//,List<UserDeviceDTO> userDeviceDTOList){
 		Map<String,Object> ret = new HashMap<String,Object>();
 		ret.put(Key_User, exchangeDTO.getUser());
 		if(exchangeDTO.getToken() != null)
@@ -125,8 +114,8 @@ public class RpcResponseDTOBuilder {
 		ret.put(Key_Cm, "60");
 		if(exchangeDTO.getOauths() != null && !exchangeDTO.getOauths().isEmpty())
 			ret.put(Key_UserOAuth, exchangeDTO.getOauths());
-		if(userDeviceDTOList != null && !userDeviceDTOList.isEmpty())
-			ret.put(Key_Devices, userDeviceDTOList);
+		/*if(userDeviceDTOList != null && !userDeviceDTOList.isEmpty())
+			ret.put(Key_Devices, userDeviceDTOList);*/
 		return ret;
 	}
 	

@@ -105,7 +105,29 @@ public class UserPublishAccountUnitFacadeService {
 	
 	public RpcResponseDTO<UserPublishAccountDetailVTO> queryUserPublishAccount(int uid){
 		try{
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userPublishAccountFacadeService.publicAccountDetail(uid));
+			UserPublishAccountDetailVTO vto = userPublishAccountFacadeService.publicAccountDetail(uid);
+			if(vto == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST);
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 删除对公账号信息
+	 * @author Jason
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> deletePublicAccount(int uid){
+		try{
+			userPublishAccountFacadeService.deletePublicAccount(uid);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

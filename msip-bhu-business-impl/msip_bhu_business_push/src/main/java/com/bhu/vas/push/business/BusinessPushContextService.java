@@ -245,7 +245,7 @@ public class BusinessPushContextService {
 			//1) 如果终端存在别名 终端显示名为别名
 			if(StringUtils.isEmpty(context.getHandsetName())){
 				//2)如果不存在别名,终端显示名为主机名
-				HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(hd_mac);
+				HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(mac,hd_mac);
 				if(handset != null){
 					String hostname = handset.getDhcp_name();
 					if(!StringUtils.isEmpty(hostname)){
@@ -270,7 +270,7 @@ public class BusinessPushContextService {
 			if(StringUtils.isEmpty(context.getHandsetName())){
 				//2:组装厂家名称
 				String manufactor = MacDictParserFilterHelper.prefixMactch(hd_mac,true,false);
-				if(!DevicesSet.Unknow.getScn().equals(manufactor)){
+				if(!DevicesSet.Unknown.getScn().equals(manufactor)){
 					context.setHandsetName(manufactor);
 				}else{
 					//如果厂商名称也不存在 则终端显示名为未知终端
@@ -320,7 +320,7 @@ public class BusinessPushContextService {
 		context.setCash(sharedeal_push_dto.getCash());
 		
 		String umac_mf = MacDictParserFilterHelper.prefixMactch(sharedeal_push_dto.getHd_mac(),true,false);
-		if(StringUtils.isNotEmpty(umac_mf) && !umac_mf.equals(DevicesSet.Unknow.getScn())){
+		if(StringUtils.isNotEmpty(umac_mf) && !umac_mf.equals(DevicesSet.Unknown.getScn())){
 			context.setUmac_mf(umac_mf);
 		}
 		

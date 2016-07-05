@@ -54,12 +54,12 @@
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_springdata_search</artifactId>
         </dependency>
-        
+        <!-- 
         <dependency>
             <groupId>com.github.sgroschupf</groupId>
             <artifactId>zkclient</artifactId>
         </dependency>  
-           
+            -->
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>

@@ -259,7 +259,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				for(Tuple tuple : presents){
 					hd_macs.add(tuple.getElement());
 				}
-				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hd_macs);
+				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId,hd_macs);
 				List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, hd_macs);
 				//List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(hd_macs, true, true);
 				//List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
@@ -972,7 +972,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					
 //					List<WifiHandsetDeviceMarkPK> mark_pks = BusinessModelBuilder.toWifiHandsetDeviceMarkPKs(wifiId, block_hd_macs);
 					//List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(block_hd_macs, true, true);
-					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(block_hd_macs);
+					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId,block_hd_macs);
 					List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, block_hd_macs);
 					if(!block_hd_macs.isEmpty()){
 						vtos = new ArrayList<URouterHdVTO>();
@@ -1263,10 +1263,10 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param mac
 	 * @return
 	 */
-	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String mac) {
+	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String dmac) {
 		try{
-			WifiDevice device_entity = deviceFacadeService.validateUserDevice(uid, mac);
-			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(mac);
+			WifiDevice device_entity = deviceFacadeService.validateUserDevice(uid, dmac);
+			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(dmac);
 			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 			
 			URouterDeviceConfigVTO vto = new URouterDeviceConfigVTO();
@@ -1282,19 +1282,19 @@ public class DeviceURouterRestBusinessFacadeService {
 			//黑名单列表
 			WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(setting_dto);
 			if(acl_dto != null){
-				List<String> macs = acl_dto.getMacs();
+				List<String> hmacs = acl_dto.getMacs();
 				
-				if(macs != null && !macs.isEmpty()){
+				if(hmacs != null && !hmacs.isEmpty()){
 					//老版本app的返回值
-					vto.setBlock_macs(macs);
+					vto.setBlock_macs(hmacs);
 					//新版本app的返回值
 					List<URouterDeviceConfigNVTO> block_with_names = new ArrayList<URouterDeviceConfigNVTO>();
 					int i = 0;
-					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(macs);
-					List<String> handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, macs);
-					for (String dto_mac: macs) {
+					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(dmac,hmacs);
+					List<String> handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, hmacs);
+					for (String dto_hmac: hmacs) {
 						URouterDeviceConfigNVTO nvto = new URouterDeviceConfigNVTO();
-						nvto.setMac(dto_mac);
+						nvto.setMac(dto_hmac);
 /*						HandsetDeviceDTO dto = handsets.get(i);
 						if (dto != null) {
 							nvto.setN(dto.getDhcp_name());
@@ -1349,7 +1349,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				vto.setAdmin_pwd(JNIRsaHelper.jniRsaDecryptHexStr(admin_user_dto.getPassword_rsa()));
 			}
 			//上网方式
-			WifiDeviceSettingLinkModeDTO mode_dto = deviceFacadeService.getDeviceModeStatus(mac);
+			WifiDeviceSettingLinkModeDTO mode_dto = deviceFacadeService.getDeviceModeStatus(dmac);
 			if(mode_dto != null){
 				URouterModeVTO link_vto = new URouterModeVTO();
 				link_vto.setIp(mode_dto.getIp());
@@ -1376,10 +1376,10 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<URouterDeviceConfigMutilVTO> urouterConfigsSupportMulti(Integer uid, String mac) {
+	public RpcResponseDTO<URouterDeviceConfigMutilVTO> urouterConfigsSupportMulti(Integer uid, String dmac) {
 		try{
-			WifiDevice device_entity = deviceFacadeService.validateUserDevice(uid, mac);
-			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(mac);
+			WifiDevice device_entity = deviceFacadeService.validateUserDevice(uid, dmac);
+			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(dmac);
 			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 			
 			URouterDeviceConfigMutilVTO vto = new URouterDeviceConfigMutilVTO();
@@ -1413,7 +1413,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					//新版本app的返回值
 					List<URouterDeviceConfigNVTO> block_with_names = new ArrayList<URouterDeviceConfigNVTO>();
 					int i = 0;
-					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(macs);
+					List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(dmac,macs);
 					for (String dto_mac: macs) {
 						URouterDeviceConfigNVTO nvto = new URouterDeviceConfigNVTO();
 						nvto.setMac(dto_mac);
@@ -1480,7 +1480,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				vto.setAdmin_pwd(JNIRsaHelper.jniRsaDecryptHexStr(admin_user_dto.getPassword_rsa()));
 			}
 			//上网方式
-			WifiDeviceSettingLinkModeDTO mode_dto = deviceFacadeService.getDeviceModeStatus(mac);
+			WifiDeviceSettingLinkModeDTO mode_dto = deviceFacadeService.getDeviceModeStatus(dmac);
 			if(mode_dto != null){
 				URouterModeVTO link_vto = new URouterModeVTO();
 				link_vto.setIp(mode_dto.getIp());
@@ -1536,17 +1536,17 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * 
 	 * modified by Edmond Lee for handset storage
 	 */
-	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String macs) {
+	public RpcResponseDTO<List<URouterHdHostNameVTO>> terminalHostnames(Integer uid, String dmac,String hmacs) {
 		try{
 			List<URouterHdHostNameVTO> vto_list = null;
-			if(StringUtils.isEmpty(macs)){
+			if(StringUtils.isEmpty(hmacs)){
 				vto_list = Collections.emptyList();
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto_list);
 			}
 
-			String[] macs_array = macs.split(StringHelper.COMMA_STRING_GAP);
+			String[] macs_array = hmacs.split(StringHelper.COMMA_STRING_GAP);
 			vto_list = new ArrayList<URouterHdHostNameVTO>(macs_array.length);
-			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(ArrayHelper.toList(macs_array));
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(dmac,ArrayHelper.toList(macs_array));
 			//List<HandsetDevice> entitys = handsetDeviceService.findByIds(ArrayHelper.toList(macs_array), true, true);
 			int cursor = 0;
 			//for(HandsetDevice entity : entitys){
@@ -1879,7 +1879,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	}
 
 
-
+	//访客网络在线列表
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String wifiId, int start, int size) {
 
 		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
@@ -1949,8 +1949,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			List<URouterVisitorDetailVTO> vtos = new ArrayList<URouterVisitorDetailVTO>();
 			List<String> handsetIds = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, hd_macs);
 			List<Object> handsetScores = WifiDeviceVisitorService.getInstance().pipelineAllPresentScores(wifiId, hd_macs_array);
-			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hd_macs);
-
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId,hd_macs);
+			
 			vto.setOhd_count(presents.size());
 			URouterVisitorDetailVTO detailVTO = null;
 			int cursor = 0;
@@ -1958,14 +1958,16 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
-				String hostname = handsetIds.get(cursor);
 
+				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
+				
+				String hostname = handsetIds.get(cursor);
 				if (StringUtils.isEmpty(hostname)) {
-					HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
 					hostname = handsetDeviceDTO.getDhcp_name();
 				}
+				
+				detailVTO.setIp(handsetDeviceDTO.getIp());
 				detailVTO.setN(hostname);
-
 
 				Object score =  handsetScores.get(cursor);
 				if (score!=null) {

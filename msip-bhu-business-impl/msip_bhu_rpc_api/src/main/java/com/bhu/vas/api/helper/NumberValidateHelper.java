@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class NumberValidateHelper {
 	//正数|0并且小数点不超过2位
@@ -52,6 +54,13 @@ public class NumberValidateHelper {
 		String[] array = param.split(StringHelper.MINUS_STRING_GAP);
 		if(array.length != 2) return false;
 		try{
+			//正数或0，并且小数位数不超过2位
+			//COMMON_DATA_PARAM_PLUSFLOAT_DECIMAL_PART_ERROR
+			//if(isValidNumberCharacter(array[0]) && isValidNumberCharacter(array[1])){
+			if(!isValidNumberCharacter(array[0]))
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_PLUSFLOAT_DECIMAL_PART_ERROR,new String[]{array[0]});
+			if(!isValidNumberCharacter(array[1]))
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_PLUSFLOAT_DECIMAL_PART_ERROR,new String[]{array[1]});
 			double start = Double.parseDouble(array[0]);
 			double end = Double.parseDouble(array[1]);
 			if(start > end)	return false;

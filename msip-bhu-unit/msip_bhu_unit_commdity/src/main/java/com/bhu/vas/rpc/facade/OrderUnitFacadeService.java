@@ -37,6 +37,7 @@ import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -62,6 +63,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
+	
+	@Resource
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 
 	@Resource
 	private WifiDeviceService wifiDeviceService;
@@ -74,10 +78,11 @@ public class OrderUnitFacadeService {
 	 * @param umac 用户mac
 	 * @param payment_type 支付方式
 	 * @param context 业务上下文
+	 * @param user_agent
 	 * @return
 	 */
 	public RpcResponseDTO<OrderRewardVTO> createRewardOrder(Integer commdityid, String mac, String umac, 
-			Integer umactype, String payment_type, String context){
+			Integer umactype, String payment_type, String context, String user_agent){
 		try{
 			//orderFacadeService.supportedAppId(appid);
 			//验证mac umac
@@ -95,10 +100,13 @@ public class OrderUnitFacadeService {
 			if(wifiDevice == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
 			}
+			
+			User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
+			
 			//生成订单
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createRewardOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
-					mac_lower, mac_dut, umac_lower, umactype, payment_type, context);
+					bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent);
 			OrderRewardVTO orderVto = new OrderRewardVTO();
 			BeanUtils.copyProperties(order, orderVto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
@@ -215,10 +223,12 @@ public class OrderUnitFacadeService {
 	 * @param uid 用户id
 	 * @param commdityid 商品id
 	 * @param payment_type 支付方式
+	 * @param umactype
+	 * @param user_agent
 	 * @return
 	 */
 	public RpcResponseDTO<OrderRechargeVCurrencyVTO> createRechargeVCurrencyOrder(Integer uid, Integer commdityid,
-			String payment_type, Integer umactype){
+			String payment_type, Integer umactype, String user_agent){
 		try{
 			//orderFacadeService.supportedAppId(appid);
 			User user = userService.getById(uid);
@@ -233,7 +243,7 @@ public class OrderUnitFacadeService {
 			}*/
 			
 			Order order = orderFacadeService.createRechargeVCurrencyOrder(uid, commdityid, 
-					BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), payment_type, umactype);
+					BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), payment_type, umactype, user_agent);
 			OrderRechargeVCurrencyVTO orderVto = new OrderRechargeVCurrencyVTO();
 			BeanUtils.copyProperties(order, orderVto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
@@ -340,9 +350,10 @@ public class OrderUnitFacadeService {
 	 * @param umac 用户mac
 	 * @param umactype 用户终端类型
 	 * @param context 验证的手机号
+	 * @param user_agent
 	 * @return
 	 */
-	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype,  String context){
+	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype, String context, String user_agent){
 		try{
 			//orderFacadeService.supportedAppId(appid);
 			//验证mac umac
@@ -362,7 +373,7 @@ public class OrderUnitFacadeService {
 			}
 			//生成订单
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
-			Order order = orderFacadeService.createSMSOrder(mac_lower, mac_dut, umac_lower, umactype, context);
+			Order order = orderFacadeService.createSMSOrder(mac_lower, mac_dut, umac_lower, umactype, context, user_agent);
 			
 			OrderSMSVTO orderVto = new OrderSMSVTO();
 			BeanUtils.copyProperties(order, orderVto);

@@ -62,9 +62,10 @@ public class OrderController extends BaseController{
 			) {
 		long start = System.currentTimeMillis();
 		
+		String user_agent = request.getHeader("User-Agent");
 		//1:生成订单
 		RpcResponseDTO<OrderRewardVTO> rpcResult = orderRpcService.createRewardOrder(commdityid, mac, umac, umactype,
-				payment_type, context);
+				payment_type, context, user_agent);
 		if(rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			return;
@@ -235,8 +236,10 @@ public class OrderController extends BaseController{
 			) {
 		long start = System.currentTimeMillis();
 		
+		String user_agent = request.getHeader("User-Agent");
 		//1:生成订单
-		RpcResponseDTO<OrderRechargeVCurrencyVTO> rpcResult = orderRpcService.createRechargeVCurrencyOrder(uid, commdityid, payment_type, umactype);
+		RpcResponseDTO<OrderRechargeVCurrencyVTO> rpcResult = orderRpcService.createRechargeVCurrencyOrder(uid, 
+				commdityid, payment_type, umactype, user_agent);
 		if(rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			return;

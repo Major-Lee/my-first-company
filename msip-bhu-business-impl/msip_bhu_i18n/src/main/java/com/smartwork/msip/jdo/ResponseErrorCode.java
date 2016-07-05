@@ -38,6 +38,7 @@ public enum ResponseErrorCode {
 	COMMON_DATA_OPERATION_CANNOT_EXECUTE("989", "common.data.operation.cannot.execute"),
 	COMMON_DATA_PARAM_RANGE_ERROR("988", "common.data.param.range.error"),
 	COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR("987", "common.data.param.float.decimal.part.error"),
+	COMMON_DATA_PARAM_PLUSFLOAT_DECIMAL_PART_ERROR("986", "common.data.param.plusfloat.decimal.part.error"),
 	
 	COMMON_DATA_EXECUTE_PROCEDURE_ERROR("901", "common.data.execute.procedure.error"),
 	COMMON_DATA_VALIDATE_LENGTH_ILEGAL("900","common.data.validate.length.ilegal"),
@@ -247,7 +248,8 @@ public enum ResponseErrorCode {
 	/******************    payment    ******************/
 	USER_APPID_UNSUPPORT("461","internal.user.appid.invalid"),
 	INVALID_COMMDITY_ORDERID_UNSUPPORT("462","internal.commdity.orderId.invalid"),
-	
+	INVALID_CREATE_RECKONINGID_FAILED("463","internal.create.reckoningId.failed"),
+	GET_WEIXIN_WITHDRAW_RETURN_FAILED("464","get.weixin.withdraw.return.failded"),
 	
 	REQUEST_404_ERROR("404","404.pagerequest.error"),
 	REQUEST_403_ERROR("403","403.pagerequest.error"),

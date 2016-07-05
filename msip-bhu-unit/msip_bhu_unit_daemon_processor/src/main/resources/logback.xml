@@ -3,9 +3,6 @@
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-daemon/${provider.port}/daemon" />
-	<!-- 
-	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
-	 -->
 	<jmxConfigurator />
 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
@@ -50,7 +47,7 @@
 	<logger name="com.bhu.vas.rpc.service" additivity="false" level="INFO">
 		<appender-ref ref="unitrequestfile" />
 	</logger>
-	<logger name="com.bhu.vas.business.asyn.normal.activemq" additivity="false" level="INFO">
+	<logger name="com.bhu.pure.kafka.client.producer" additivity="false" level="INFO">
 		<appender-ref ref="stdout" />
 	</logger>
 	<logger name="com.bhu.vas.daemon.processor" additivity="false" level="INFO">
