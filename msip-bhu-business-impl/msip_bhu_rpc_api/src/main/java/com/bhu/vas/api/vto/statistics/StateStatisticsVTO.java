@@ -1,6 +1,9 @@
 package com.bhu.vas.api.vto.statistics;
 
-public class StateStatisticsVTO {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class StateStatisticsVTO implements Serializable{
 	
 	//总设备数
 	private long d_counts;

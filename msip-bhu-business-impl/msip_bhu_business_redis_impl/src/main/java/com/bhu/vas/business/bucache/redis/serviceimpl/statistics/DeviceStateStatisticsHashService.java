@@ -11,6 +11,7 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
 import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 import redis.clients.jedis.JedisPool;
 
@@ -110,7 +111,7 @@ public class DeviceStateStatisticsHashService extends AbstractRelationHashCache 
 	}
 	
 	public List<Object> batchFetchValue(List<String> fragments, String buPrefixKey, String field){
-		String  keys[] = new String[30];
+		String  keys[] = new String[fragments.size()];
 		for (int i = 0; i < fragments.size(); i++) {
 			keys[i] = generateKey(fragments.get(i), buPrefixKey);
 		}
