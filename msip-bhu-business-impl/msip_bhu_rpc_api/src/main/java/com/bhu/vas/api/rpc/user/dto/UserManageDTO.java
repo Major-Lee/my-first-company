@@ -19,9 +19,9 @@ public class UserManageDTO implements java.io.Serializable{
 	//标签
 	private String userLabel;
 	//零钱
-	private String walletMoney;
+	private double walletMoney = 0.00d;;
 	//虎钻
-	private String vcurrency;
+	private double vcurrency = 0l;
 	//设备在线数
 	private int doc;
 	//设备总数
@@ -65,16 +65,17 @@ public class UserManageDTO implements java.io.Serializable{
 	public void setUserLabel(String userLabel) {
 		this.userLabel = userLabel;
 	}
-	public String getWalletMoney() {
+	
+	public double getWalletMoney() {
 		return walletMoney;
 	}
-	public void setWalletMoney(String walletMoney) {
+	public void setWalletMoney(double walletMoney) {
 		this.walletMoney = walletMoney;
 	}
-	public String getVcurrency() {
+	public double getVcurrency() {
 		return vcurrency;
 	}
-	public void setVcurrency(String vcurrency) {
+	public void setVcurrency(double vcurrency) {
 		this.vcurrency = vcurrency;
 	}
 	public int getDoc() {

@@ -727,7 +727,7 @@ public class UserUnitFacadeService {
 			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
 			System.out.println("******获取用户总条数【"+tailusers.getTotalItemsCount()+"】");
 			System.out.println("******获取用户总条数【"+tailusers.getItems()+"】");
-			List<UserManageDTO> vtos = new ArrayList<>();
+			List<UserManageDTO> vtos = new ArrayList<UserManageDTO>();
 			UserManageDTO userManageDTO = null;
 			for(User _user:tailusers.getItems()){
 				if(_user == null){
@@ -746,11 +746,11 @@ public class UserUnitFacadeService {
 				//根据uid查询用户钱包信息
 				UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(_user.getId());
 				if(userWallet != null){
-					userManageDTO.setVcurrency(String.valueOf(userWallet.getVcurrency()));
-					userManageDTO.setWalletMoney(String.valueOf(userWallet.getCash()));
+					userManageDTO.setVcurrency(userWallet.getVcurrency());
+					userManageDTO.setWalletMoney(userWallet.getCash());
 				}else{
-					userManageDTO.setVcurrency("0");
-					userManageDTO.setWalletMoney("0.00");
+					userManageDTO.setVcurrency(0);
+					userManageDTO.setWalletMoney(0.00);
 				}
 				vtos.add(userManageDTO);
 			}
@@ -809,11 +809,11 @@ public class UserUnitFacadeService {
 			//根据uid查询用户钱包信息
 			UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(user.getId());
 			if(userWallet != null){
-				userManageDTO.setVcurrency(String.valueOf(userWallet.getVcurrency()));
-				userManageDTO.setWalletMoney(String.valueOf(userWallet.getCash()));
+				userManageDTO.setVcurrency(userWallet.getVcurrency());
+				userManageDTO.setWalletMoney(userWallet.getCash());
 			}else{
-				userManageDTO.setVcurrency("0");
-				userManageDTO.setWalletMoney("0.00");
+				userManageDTO.setVcurrency(0);
+				userManageDTO.setWalletMoney(0.00);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userManageDTO);
 		}catch(BusinessI18nCodeException bex){
