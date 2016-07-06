@@ -678,20 +678,34 @@ public class UserUnitFacadeService {
 			Criteria cri = mc.createCriteria();
 			//电话
 			String mobileNo = StringUtils.EMPTY;
+			mobileNo = (String) map.get("mobileNo");
+			System.out.println("****mobileNo【"+mobileNo+"】****");
 			//用户类型
 			String userType = StringUtils.EMPTY;
+			userType = (String) map.get("userType");
+			System.out.println("****userType【"+userType+"】****");
 			//终端类型
 			String regdevice = StringUtils.EMPTY;
+			regdevice = (String) map.get("regdevice");
+			System.out.println("****regdevice【"+regdevice+"】****");
 			//开始时间
 			String createStartTime = StringUtils.EMPTY;
+			createStartTime = (String) map.get("createStartTime");
+			System.out.println("****createStartTime【"+createStartTime+"】****");
 			//结束时间
 			String createEndTime = StringUtils.EMPTY;
+			createEndTime = (String) map.get("createEndTime");
+			System.out.println("****createEndTime【"+createEndTime+"】****");
 			//是否返现
-			String isCashBack = StringUtils.EMPTY;
+			//String isCashBack = StringUtils.EMPTY;
 			//当前页
 			String pageNo = StringUtils.EMPTY;
+			pageNo = (String) map.get("pageNo");
+			System.out.println("****pageNo【"+pageNo+"】****");
 			//每页分页条数
 			String pageSize = StringUtils.EMPTY;
+			pageSize = (String) map.get("pageSize");
+			System.out.println("****pageSize【"+pageSize+"】****");
 			if(StringUtils.isNotBlank(mobileNo)){
 				cri.andColumnEqualTo("mobileno", mobileNo);
 			}
@@ -710,6 +724,8 @@ public class UserUnitFacadeService {
 			mc.setPageNumber(Integer.parseInt(pageNo));
 			mc.setPageSize(Integer.parseInt(pageNo));
 			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
+			System.out.println("******获取用户总条数【"+tailusers.getTotalItemsCount()+"】");
+			System.out.println("******获取用户总条数【"+tailusers.getItems()+"】");
 			List<UserManageDTO> vtos = new ArrayList<>();
 			UserManageDTO userManageDTO = null;
 			for(User _user:tailusers.getItems()){
@@ -737,6 +753,7 @@ public class UserUnitFacadeService {
 				}
 				vtos.add(userManageDTO);
 			}
+			System.out.println("******返回用户总条数【"+vtos.size()+"】");
 			TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(tailusers.getPageNumber(), Integer.parseInt(pageSize), tailusers.getTotalItemsCount(), vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
 		}catch(BusinessI18nCodeException bex){
