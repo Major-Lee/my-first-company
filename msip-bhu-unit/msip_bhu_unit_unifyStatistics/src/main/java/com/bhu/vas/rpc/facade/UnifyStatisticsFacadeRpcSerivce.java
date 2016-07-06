@@ -2,6 +2,8 @@ package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,20 @@ public class UnifyStatisticsFacadeRpcSerivce {
 		OnlineStatisticsDTO dto1 = new OnlineStatisticsDTO();
 		OnlineStatisticsDTO dto2 = new OnlineStatisticsDTO();
 		
+		List<String> key0 = new ArrayList<String>();
+		dto0.setKey(key0);
+		List<Long> val0 = new ArrayList<Long>();
+		dto0.setVal(val0);
+		List<String> key1 = new ArrayList<String>();
+		dto1.setKey(key1);
+		List<Long> val1 = new ArrayList<Long>();
+		dto1.setVal(val1);
+		List<String> key2 = new ArrayList<String>();
+		dto2.setKey(key2);
+		List<Long> val2 = new ArrayList<Long>();
+		dto2.setVal(val2);
+		
+		
 		Map<String, String> map0 = new HashMap<String, String>();
 		Map<String, String> map1 = new HashMap<String, String>();
 		Map<String, String> map2 = new HashMap<String, String>();
@@ -59,6 +75,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 			switch (queryParam) {
 			case "D":
 				//读取今天在线设备数据
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map0 = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
@@ -68,12 +85,13 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
 						vmap0.put(entry.getKey(), data.getOnline_max());
 					}
-					dto0.setMap(vmap0);
+					dto0.sortMaptoList(vmap0);
 					vto.getList().add(dto0);
 				}
 				
 				//读取昨天在线设备数据
 				cal.add(Calendar.DATE, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map1 = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
@@ -83,11 +101,12 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
 						vmap1.put(entry.getKey(), data.getOnline_max());
 					}
-					dto1.setMap(vmap1);
+					dto1.sortMaptoList(vmap1);
 					vto.getList().add(dto1);
 				}
 				//读取前天在线设备数据
 				cal.add(Calendar.DATE, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map2 = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
@@ -97,13 +116,14 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
 						vmap2.put(entry.getKey(), data.getOnline_max());
 					}
-					dto2.setMap(vmap2);
+					dto2.sortMaptoList(vmap2);
 					vto.getList().add(dto2);
 				}
 				cal.add(Calendar.DATE, 2);
 				break;
 			case "W":
 				//读取本周在线设备数据
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map0 = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
@@ -113,11 +133,12 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
 						vmap0.put(entry.getKey(), data.getOnline_max());
 					}
-					dto0.setMap(vmap0);
+					dto0.sortMaptoList(vmap0);
 					vto.getList().add(dto0);
 				}
 				//读取上周在线设备数据
-				cal.add(Calendar.DATE, -1);
+				cal.add(Calendar.WEEK_OF_YEAR, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map1 = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
@@ -127,11 +148,12 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
 						vmap1.put(entry.getKey(), data.getOnline_max());
 					}
-					dto1.setMap(vmap1);
+					dto1.sortMaptoList(vmap1);
 					vto.getList().add(dto1);
 				}
 				//读取上上周的在线设备数据
 				cal.add(Calendar.WEEK_OF_YEAR, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map2= DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
@@ -141,7 +163,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
 						vmap2.put(entry.getKey(), data.getOnline_max());
 					}
-					dto2.setMap(vmap2);
+					dto2.sortMaptoList(vmap2);
 					vto.getList().add(dto2);
 				}
 				cal.add(Calendar.WEEK_OF_YEAR, 2);
@@ -149,6 +171,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 				break;
 			case "M":
 				//读取当月在线设备数据
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map0 = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH),
 						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
@@ -158,11 +181,12 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
 						vmap0.put(entry.getKey(), data.getOnline_max());
 					}
-					dto0.setMap(vmap0);
+					dto0.sortMaptoList(vmap0);
 					vto.getList().add(dto0);
 				}
 				//读取前一月在线设备数据
 				cal.add(Calendar.MONTH, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map1 = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH),
 						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
@@ -172,11 +196,12 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
 						vmap1.put(entry.getKey(), data.getOnline_max());
 					}
-					dto1.setMap(vmap1);
+					dto1.sortMaptoList(vmap1);
 					vto.getList().add(dto1);
 				}
 				//读取前二月在线设备数据
 				cal.add(Calendar.MONTH, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map2 = DeviceStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH),
 						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
@@ -186,7 +211,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						DeviceStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), DeviceStateStatisticsDTO.class);
 						vmap2.put(entry.getKey(), data.getOnline_max());
 					}
-					dto2.setMap(vmap2);
+					dto2.sortMaptoList(vmap2);
 					vto.getList().add(dto2);
 				}
 				cal.add(Calendar.MONTH, 2);
@@ -199,6 +224,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 			switch (queryParam) {
 			case "D":
 				//读取今天在线用户数据
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map0 = UserStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
@@ -208,11 +234,12 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
 						vmap0.put(entry.getKey(), data.getOnline_max());
 					}
-					dto0.setMap(vmap0);
+					dto0.sortMaptoList(vmap0);
 					vto.getList().add(dto0);
 				}
 				//读取昨天在线用户数据
-				cal.add(Calendar.DAY_OF_YEAR, -1);
+				cal.add(Calendar.DATE, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map1 = UserStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 						BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
@@ -222,11 +249,12 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
 						vmap1.put(entry.getKey(), data.getOnline_max());
 					}
-					dto1.setMap(vmap1);
+					dto1.sortMaptoList(vmap1);
 					vto.getList().add(dto1);
 				}
 				//读取前天在线用户数据
-				cal.add(Calendar.DAY_OF_YEAR, -1);
+				cal.add(Calendar.DATE, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map2 = UserStateStatisticsHashService.getInstance().fetchAll(
 							fragments.get(DateTimeExtHelper.YEAR_MONTH_DD),
 							BusinessKeyDefine.Statistics.FragmentOnlineDailySuffixKey);
@@ -236,13 +264,14 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
 						vmap2.put(entry.getKey(), data.getOnline_max());
 					}
-					dto2.setMap(vmap2);
+					dto2.sortMaptoList(vmap2);
 					vto.getList().add(dto2);
 				}
-				cal.add(Calendar.DAY_OF_YEAR, 2);
+				cal.add(Calendar.DATE, 2);
 				break;
 			case "W":
 				//读取本周在线用户数据
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map0 = UserStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
@@ -252,11 +281,12 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
 						vmap0.put(entry.getKey(), data.getOnline_max());
 					}
-					dto0.setMap(vmap0);
+					dto0.sortMaptoList(vmap0);
 					vto.getList().add(dto0);
 				}
 				//读取上周在线用户数据
 				cal.add(Calendar.WEEK_OF_YEAR, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map1 = UserStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
@@ -266,11 +296,12 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
 						vmap1.put(entry.getKey(), data.getOnline_max());
 					}
-					dto1.setMap(vmap1);
+					dto1.sortMaptoList(vmap1);
 					vto.getList().add(dto1);
 				}
 				//读取前周在线用户数据
 				cal.add(Calendar.WEEK_OF_YEAR, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map2 = UserStateStatisticsHashService.getInstance().fetchAll(
 						fragments.get(DateTimeExtHelper.YEAR_WHICH_WEEK),
 						BusinessKeyDefine.Statistics.FragmentOnlineWeeklySuffixKey);
@@ -280,13 +311,14 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
 						vmap2.put(entry.getKey(), data.getOnline_max());
 					}
-					dto2.setMap(vmap2);
+					dto2.sortMaptoList(vmap2);
 					vto.getList().add(dto2);
 				}
 				cal.add(Calendar.WEEK_OF_YEAR, 2);
 				break;
 			case "M":
 				//读取本月在线用户数据
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map0 = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH),
 						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
 				if (!map0.isEmpty() || map0 != null){	
@@ -295,11 +327,12 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
 						vmap0.put(entry.getKey(), data.getOnline_max());
 					}
-					dto0.setMap(vmap0);
+					dto0.sortMaptoList(vmap0);
 					vto.getList().add(dto0);
 				}
 				//读取上月在线用户数据
 				cal.add(Calendar.MONTH, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map1 = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH),
 						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
 				if (!map1.isEmpty() || map1 != null){	
@@ -308,11 +341,12 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
 						vmap1.put(entry.getKey(), data.getOnline_max());
 					}
-					dto1.setMap(vmap1);
+					dto1.sortMaptoList(vmap1);
 					vto.getList().add(dto1);
 				}
 				//读取上上月在线用户数据
 				cal.add(Calendar.MONTH, -1);
+				fragments = DateTimeExtHelper.generateServalDateFormat(cal.getTime());
 				map2 = UserStateStatisticsHashService.getInstance().fetchAll(fragments.get(DateTimeExtHelper.YEAR_MONTH),
 						BusinessKeyDefine.Statistics.FragmentOnlineMonthlySuffixKey);
 				if (!map2.isEmpty() || map2 != null){	
@@ -321,7 +355,7 @@ public class UnifyStatisticsFacadeRpcSerivce {
 						UserStateStatisticsDTO data = JsonHelper.getDTO(entry.getValue(), UserStateStatisticsDTO.class);
 						vmap2.put(entry.getKey(), data.getOnline_max());
 					}
-					dto2.setMap(vmap2);
+					dto2.sortMaptoList(vmap2);
 					vto.getList().add(dto2);
 				}
 				cal.add(Calendar.MONTH, 2);
@@ -447,4 +481,5 @@ public class UnifyStatisticsFacadeRpcSerivce {
 		cal.add(Calendar.DATE, day - 1);
 		return count;
 	}
+	
 }
