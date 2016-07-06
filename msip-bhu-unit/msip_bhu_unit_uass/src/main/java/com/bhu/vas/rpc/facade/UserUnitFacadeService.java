@@ -700,12 +700,12 @@ public class UserUnitFacadeService {
 			//是否返现
 			//String isCashBack = StringUtils.EMPTY;
 			//当前页
-			String pageNo = StringUtils.EMPTY;
-			pageNo = (String) map.get("pageNo");
+			int pageNo = 1;
+			pageNo =  (int) map.get("pageNo");
 			System.out.println("****pageNo【"+pageNo+"】****");
 			//每页分页条数
-			String pageSize = StringUtils.EMPTY;
-			pageSize = (String) map.get("pageSize");
+			int pageSize = 10;
+			pageSize = (int) map.get("pageSize");
 			System.out.println("****pageSize【"+pageSize+"】****");
 			if(StringUtils.isNotBlank(mobileNo)){
 				cri.andColumnEqualTo("mobileno", mobileNo);
