@@ -177,4 +177,7 @@ public interface IUserRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<UserManageDTO> queryUserDetail(int uid);
+	
+	public RpcResponseDTO<Boolean> activitySet(Integer uid,
+			Integer bind_num, Double income, String rate,Integer status);
 }

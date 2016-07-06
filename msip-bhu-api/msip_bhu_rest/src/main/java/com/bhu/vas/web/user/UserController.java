@@ -311,4 +311,19 @@ public class UserController extends BaseController{
     		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     	}
     }
+	
+	@ResponseBody()
+    @RequestMapping(value="/activitySet", method={RequestMethod.GET,RequestMethod.POST})
+    public void activitySet(HttpServletResponse response, @RequestParam(required = true) Integer uid,
+    		@RequestParam(required = false) Integer bind_num,
+    		@RequestParam(required = false) Double income,
+    		@RequestParam(required = false) String rate,
+    		@RequestParam(required = true) Integer status){
+    	RpcResponseDTO<Boolean> rpcResult = userRpcService.activitySet(uid,bind_num,income,rate,status);
+    	if(!rpcResult.hasError()){
+    		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    	}else{
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    	}
+    }
 }
