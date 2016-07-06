@@ -99,26 +99,32 @@ public class BatchSnkApplyService {
 								wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.Off.getType());
 							}
 						});
-					 //TODO:如果为SmsSecure 则需要判定此用户id当前是否还存在此类型的网络处于开启状态，如果都关闭了，则需要重置通知开关并通知portal服务器
-					 logger.info(String.format("准备开始判定当前信息共享网络状态类型 "));
-					 if(SharedNetworkType.SmsSecure == sharedNetwork){
-						 logger.info(String.format("准备开始判定当前信息共享网络状态类型【%s】【%s】",userid,sharedNetwork.getKey()));
-						 long count = wifiDeviceDataSearchService.searchCountBySnkType(userid,sharedNetwork.getKey(),
-								 WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType());
-						 logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】",userid,sharedNetwork.getKey(),count));
-						 if(count <= 0){//不提供sms认证服务
-							 	logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】开始清除标记",userid,sharedNetwork.getKey(),count));
-							 	//清除标记
-								SnkChargingMarkerService.getInstance().clear(userid);
-								//通知uportal清除标记位
-								UPortalHttpHelper.uPortalChargingStatusNotify(userid,UPortalHttpHelper.NoService);
-								logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】开始清除标记成功",userid,sharedNetwork.getKey(),count));
-						 }
-					 }
+					 
 					break;
 				default:
 					throw new UnsupportedOperationException(String.format("snk act type not supported"));
 			}
+			try{
+				//TODO:如果为SmsSecure 则需要判定此用户id当前是否还存在此类型的网络处于开启状态，如果都关闭了，则需要重置通知开关并通知portal服务器
+				 //logger.info(String.format("准备开始判定当前信息 共享网络状态类型 "));
+				 //if(SharedNetworkType.SmsSecure == sharedNetwork){
+				 //}
+				logger.info(String.format("准备开始判定当前用户信息共享网络状态类型【%s】【%s】",userid,SharedNetworkType.SmsSecure.getKey()));
+				long count = wifiDeviceDataSearchService.searchCountBySnkType(userid,SharedNetworkType.SmsSecure.getKey(),
+						 WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType());
+				logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】",userid,SharedNetworkType.SmsSecure.getKey(),count));
+				if(count <= 0){//不提供sms认证服务
+				 	logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】开始清除标记",userid,SharedNetworkType.SmsSecure.getKey(),count));
+				 	//清除标记
+					SnkChargingMarkerService.getInstance().clear(userid);
+					//通知uportal清除标记位
+					UPortalHttpHelper.uPortalChargingStatusNotify(userid,UPortalHttpHelper.NoService);
+					logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】开始清除标记成功",userid,SharedNetworkType.SmsSecure.getKey(),count));
+				}
+			}catch(Exception ex){
+				ex.printStackTrace(System.out);
+			}
+			
 			if(!downCmds.isEmpty()){
 				daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
 				downCmds.clear();
