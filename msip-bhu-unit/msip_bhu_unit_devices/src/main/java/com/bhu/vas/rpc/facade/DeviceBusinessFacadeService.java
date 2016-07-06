@@ -602,6 +602,9 @@ public class DeviceBusinessFacadeService {
 			handset.setSnr(dto.getSnr());
 			handset.setEthernet(dto.getEthernet());
 			handset.setAuthorized(dto.getAuthorized());
+			//TODO 实体信息中加入速率
+			handset.setData_rx_rate(dto.getData_rx_rate());
+			
 			//在终端上线后需要清除掉以前dhcpname和ip,由于上线消息中没有dhcpname和ip，所以这些值在上线时都是空，直接用
 			if(!StringUtils.isEmpty(dto.getDhcp_name())){
 				handset.setDhcp_name(dto.getDhcp_name());
@@ -618,7 +621,7 @@ public class DeviceBusinessFacadeService {
 			isNew4This = true;
 		if(isVisitorWifi(ctx, dto)) { //访客网络
 			handsetDeviceVisitorOnline(ctx, dto, wifiId);
-		} else {
+		} else { 
 			//2:wifi设备对应handset在线列表redis添加
 			WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId_lowerCase, dto.getMac(),
 					dto.fetchData_rx_rate_double());

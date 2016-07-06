@@ -21,7 +21,7 @@ import com.smartwork.msip.cores.orm.support.page.PageHelper;
  *  wifi设备对应的在线移动设备列表
  *  ZSET 
  *  	key：wifiId 
- *  	score 在线状态基础数值(在线是100亿，100,0000,0000 离线是0) + 终端下行速率(百兆每秒速率是亿级别)
+ *  	score 在线状态基础数值(在线是100亿，100,0000,0000,离线是0) + 终端下行速率(百兆每秒速率是亿级别)
  *  	value 移动设备的mac
  *  
  * 1：移动设备上线新增，下线删除，sync更新数据
