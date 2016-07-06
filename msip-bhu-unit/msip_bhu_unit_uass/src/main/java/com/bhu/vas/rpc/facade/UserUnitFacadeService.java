@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
-import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
@@ -39,7 +37,7 @@ import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+//import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.bhu.vas.validate.UserTypeValidateService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
