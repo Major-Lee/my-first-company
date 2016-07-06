@@ -7,7 +7,8 @@ import java.util.List;
  * @author Jason
  *
  */
-public class UserManageDeviceDTO {
+@SuppressWarnings("serial")
+public class UserManageDeviceDTO implements java.io.Serializable {
 	
 	//设备数量
 	private String deviceNum;

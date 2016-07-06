@@ -782,6 +782,9 @@ public class UserUnitFacadeService {
 			userManageDTO.setRewardStyle("");
 			userManageDTO.setIsCashBack("");
 			userManageDTO.setUserNum(1);
+			userManageDTO.setNickName(user.getNick());
+			userManageDTO.setSex(user.getSex());
+			userManageDTO.setSignature(user.getMemo());
 			//根据uid查询用户钱包信息
 			UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(user.getId());
 			if(userWallet != null){

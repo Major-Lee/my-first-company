@@ -1,8 +1,8 @@
 package com.bhu.vas.api.rpc.user.dto;
 
 import java.util.List;
-
-public class UserIncomeDTO {
+@SuppressWarnings("serial")
+public class UserIncomeDTO implements java.io.Serializable{
 	
 	//钱包余额
 	private String walletMoney;

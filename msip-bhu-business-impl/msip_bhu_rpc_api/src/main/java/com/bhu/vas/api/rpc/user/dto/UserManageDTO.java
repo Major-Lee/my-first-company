@@ -4,6 +4,12 @@ package com.bhu.vas.api.rpc.user.dto;
 public class UserManageDTO implements java.io.Serializable{
 	//必虎Id
 	private int uid;
+	//昵称
+	private String nickName;
+	//性别
+	private String sex;
+	//签名
+	private String signature; 
 	//用户类型
 	private String userType;
 	//手机号
@@ -107,5 +113,22 @@ public class UserManageDTO implements java.io.Serializable{
 	public void setUserNum(int userNum) {
 		this.userNum = userNum;
 	}
-	
+	public String getNickName() {
+		return nickName;
+	}
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+	public String getSex() {
+		return sex;
+	}
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+	public String getSignature() {
+		return signature;
+	}
+	public void setSignature(String signature) {
+		this.signature = signature;
+	}
 }
