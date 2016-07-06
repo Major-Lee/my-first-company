@@ -12,6 +12,13 @@ public class IncrementEnum {
 		WD_FullCreate("WD_FCT","设备索引完整创建数据"),
 		WD_OnlineStatus("WD_OLS","设备在线状态更新数据"),
 		WD_ModuleOnlineStatus("WD_MOLS","设备模块在线状态更新数据"),
+		WD_BindUserStatus("WD_BUS","设备的用户绑定状态更新数据"),
+		WD_DTagsChanged("WD_TGC","设备的标签更新数据"),
+		WD_UCExtensionChanged("WD_UEC","设备的ucloud业务扩展更新数据"),
+		WD_LocationChanged("WD_LNC","设备的地理位置更新数据"),
+		WD_TemplateChanged("WD_TLC","设备的模板更新数据"),
+		WD_GraylevelChanged("WD_GLC","设备的灰度更新数据"),
+		WD_SharedNetworkChanged("WD_SNC","设备的访客网络更新数据"),
 		;
 		static Map<String, IncrementActionEnum> incrementActions;
 		String key;

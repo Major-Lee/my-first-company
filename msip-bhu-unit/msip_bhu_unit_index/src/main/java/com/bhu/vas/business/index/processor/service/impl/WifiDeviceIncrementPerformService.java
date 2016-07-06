@@ -12,11 +12,12 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
 import com.bhu.vas.api.helper.VapEnumType;
-import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
@@ -91,6 +92,28 @@ public class WifiDeviceIncrementPerformService extends IncrementPerformActionSer
 				break;
 			case WD_OnlineStatus:
 				incrementDocumentByOnlineStatus(id);
+				break;
+			case WD_BindUserStatus:
+				incrementDocumentByOnlineStatus(id);
+				break;
+			case WD_DTagsChanged:
+				incrementDocumentByDTagsChanged(id);
+				break;
+			case WD_UCExtensionChanged:
+				incrementDocumentByUCExtensionChanged(id);
+				break;
+			case WD_LocationChanged:
+				incrementDocumentByLocationChanged(id);
+				break;
+			case WD_TemplateChanged:
+				incrementDocumentByTemplateChanged(id);
+				break;
+			case WD_GraylevelChanged:
+				incrementDocumentByGraylevelChanged(id);
+				break;
+			case WD_SharedNetworkChanged:
+				incrementDocumentBySharedNetworkChanged(id);
+				break;
 			default:
 				break;
 		}
@@ -166,16 +189,9 @@ public class WifiDeviceIncrementPerformService extends IncrementPerformActionSer
 	
 	
 	/**
-	 * 设备发生变更
+	 * 设备模块在线状态发生变更
 	 * 变更涉及的更改索引字段是
-	 * 1) d_online
-	 * 2) d_monline
-	 * 3) d_uptime
-	 * 4) d_lastlogoutat
-	 * 5) d_hoc
 	 * @param id 设备mac
-	 * @param d_uptime 设备运行总时长
-	 * @param d_lastlogoutat 设备的最后下线的时间
 	 */
 	public void incrementDocumentByOnlineStatus(String id){
 		logger.info(String.format("incrementDocumentByOnlineStatus Request id [%s]", id));
@@ -236,4 +252,204 @@ public class WifiDeviceIncrementPerformService extends IncrementPerformActionSer
 		logger.info(String.format("incrementDocumentByOnlineStatus Request id [%s] Successful", id));
 	}
 
+	
+	/**
+	 * 设备绑定或解绑的变更
+	 * 变更涉及的更改索引字段是
+	 * 1) u_id
+	 * 2) u_nick
+	 * 3) u_mno
+	 * 4) u_mcc
+	 * 5) u_type
+	 * 6) u_binded
+	 * 7) u_dnick
+	 * 8) d_industry 
+	 * @param id 设备mac
+	 */
+	public void incrementDocumentByBindUserStatus(String id){
+		logger.info(String.format("IncrementDocumentByBindUserStatus Request id [%s]", id));
+		if(StringUtils.isEmpty(id)) return;
+		
+		WifiDevice wifiDevice = wifiDeviceService.getById(id);
+		if(wifiDevice != null){
+			Map<String, Object> sourceMap = new HashMap<String, Object>();
+			UserWifiDevice userWifiDevice = userWifiDeviceService.getById(id);
+			if(userWifiDevice != null){
+				User bindUser = userService.getById(userWifiDevice.getUid());
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), bindUser.getId());
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_NICK.getName(), bindUser.getNick());
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILENO.getName(), bindUser.getMobileno());
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILECOUNTRYCODE.getName(), bindUser.getCountrycode());
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_TYPE.getName(), bindUser.getUtype());
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UBinded.getType());
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), userWifiDevice.getDevice_name());
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_INDUSTRY.getName(), wifiDevice.getIndustry());
+			}else{
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_ID.getName(), null);
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_NICK.getName(), null);
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILENO.getName(), null);
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_MOBILECOUNTRYCODE.getName(), null);
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_TYPE.getName(), null);
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_BINDED.getName(), WifiDeviceDocumentEnumType.UBindedEnum.UNOBinded.getType());
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), null);
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.T_UC_EXTENSION.getName(), null);
+			}
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
+
+			wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+		}
+		logger.info(String.format("IncrementDocumentByBindUserStatus Request id [%s] Successful", id));
+	}
+	
+	
+	/**
+	 * 设置绑定的设备的tags
+	 * 变更涉及的更改索引字段是
+	 * 1) d_tags
+	 * @param id 设备mac
+	 * */
+	public void incrementDocumentByDTagsChanged(String id){
+		logger.info(String.format("IncrementDocumentByDTagsChanged Request id [%s]", id));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		
+		TagDevices tagDevices = tagDevicesService.getById(id);
+		if(tagDevices != null){
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TAGS.getName(), tagDevices.getTag2ES());
+		}else{
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TAGS.getName(), null);
+		}		
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+		logger.info(String.format("IncrementDocumentByDTagsChanged Request id [%s] Successful", id));
+	}
+	
+	
+	/**
+	 * 设备的ucloud业务搜索字段的变更
+	 * 变更涉及的更改索引字段是
+	 * 1) t_uc_extension
+	 * @param id
+	 */
+	public void incrementDocumentByUCExtensionChanged(String id) {
+		logger.info(String.format("IncrementDocumentByUCExtension Request id [%s]", id));
+		if(StringUtils.isEmpty(id)) return;
+		
+		String t_uc_extension = tagGroupRelationService.fetchPathWithMac(id);
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.T_UC_EXTENSION.getName(), t_uc_extension);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(),  DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+		
+		logger.info(String.format("IncrementDocumentByUCExtension Request id [%s] Successful", id));
+	}
+	
+	/**
+	 * 设备位置发生变更
+	 * 变更涉及的更改索引字段是
+	 * 1) d_address
+	 * 2) d_geopoint
+	 * @param id 设备mac
+	 */
+	public void incrementDocumentByLocationChanged(String id){
+		logger.info(String.format("IncrementDocumentByLocation Request id [%s]", id));
+		if(StringUtils.isEmpty(id)) return;
+		
+		WifiDevice wifiDevice = wifiDeviceService.getById(id);
+		if(wifiDevice != null){
+			if(StringUtils.isNotEmpty(wifiDevice.getLat()) && StringUtils.isNotEmpty(wifiDevice.getLon())){
+				double lat = Double.parseDouble(wifiDevice.getLat());
+				double lon = Double.parseDouble(wifiDevice.getLon());
+				Map<String, Object> sourceMap = new HashMap<String, Object>();
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_GEOPOINT.getName(), new double[]{lon, lat});
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_ADDRESS.getName(), wifiDevice.getFormatted_address());
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
+				wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+			}
+		}
+		logger.info(String.format("IncrementDocumentByLocation Request id [%s] Successful", id));
+	}
+	
+	/**
+	 * 设备运营模板的变更
+	 * 变更涉及的更改索引字段是
+	 * 1) o_template
+	 * @param id
+	 */
+	public void incrementDocumentByTemplateChanged(String id){
+		logger.info(String.format("IncrementDocumentByTemplateChanged Request id [%s]", id));
+		if(StringUtils.isEmpty(id)) return;
+		
+		String o_template = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(id);
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_TEMPLATE.getName(), o_template);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+		logger.info(String.format("IncrementDocumentByTemplateChanged Request id [%s] Successful", id));
+	}
+	
+	/**
+	 * 设备运营灰度级别的变更
+	 * 变更涉及的更改索引字段是
+	 * 1) o_graylevel
+	 * @param id
+	 */
+	public void incrementDocumentByGraylevelChanged(String id){
+		logger.info(String.format("IncrementDocumentByGraylevelChanged Request id [%s]", id));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		
+		WifiDeviceGray wifiDeviceGray = wifiDeviceGrayService.getById(id);
+		if(wifiDeviceGray != null){
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_GRAYLEVEL.getName(), String.valueOf(wifiDeviceGray.getGl()));
+		}else{
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_GRAYLEVEL.getName(), String.valueOf(GrayLevel.Other.getIndex()));
+		}
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+		logger.info(String.format("IncrementDocumentByGraylevelChanged Request id [%s] Successful", id));
+	}
+	
+	/**
+	 * 设备的共享网络的变更
+	 * 变更涉及的更改索引字段是
+	 * 1) d_snk_type
+	 * 2) d_snk_template
+	 * 3) d_snk_turnstate
+	 */
+	public void incrementDocumentBySharedNetworkChanged(String id) {
+		logger.info(String.format("IncrementDocumentBysharedNetworkChanged Request id [%s]", id));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		
+		String d_snk_turnstate = WifiDeviceDocumentEnumType.SnkTurnStateEnum.Off.getType();
+		WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(id);
+		if(wifiDeviceSharedNetwork != null){
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TYPE.getName(), wifiDeviceSharedNetwork.getSharednetwork_type());
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TEMPLATE.getName(), wifiDeviceSharedNetwork.getTemplate());
+			SharedNetworkSettingDTO sharedNetworkSettingDto = wifiDeviceSharedNetwork.getInnerModel();
+			if(sharedNetworkSettingDto != null){
+				if(sharedNetworkSettingDto.isOn()){
+					d_snk_turnstate = WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType();
+				}
+			}
+		}else{
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TYPE.getName(), null);
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TEMPLATE.getName(), null);
+		}
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TURNSTATE.getName(), d_snk_turnstate);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(),  DateTimeHelper.getDateTime());
+
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+		logger.info(String.format("IncrementDocumentBysharedNetworkChanged Request id [%s] Successful", id));
+	}
 }
