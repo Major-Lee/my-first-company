@@ -17,6 +17,7 @@ import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
+import com.bhu.vas.api.dto.commdity.OrderWechatVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -354,6 +355,40 @@ public class OrderController extends BaseController{
 			) {
 
 		RpcResponseDTO<TailPage<OrderSMSVTO>> rpcResult = orderRpcService.smsOrderPages(uid, mac, umac, 
+				status, dut, pageNo, pageSize);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	/**
+	 * 根据订单参数查询短信认证订单分页列表
+	 * @param request
+	 * @param response
+	 * @param uid 用户id
+	 * @param mac 设备mac
+	 * @param umac 支付订单的用户mac
+	 * @param status 订单状态 默认发货完成
+	 * @param pageNo 页码
+	 * @param pageSize 每页数量
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/wechat/query/pages",method={RequestMethod.GET,RequestMethod.POST})
+	public void wechat_query_pages(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false) String mac,
+			@RequestParam(required = false) String umac,
+			@RequestParam(required = false, defaultValue = "10") Integer status,
+			@RequestParam(required = false) String dut,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+			) {
+
+		RpcResponseDTO<TailPage<OrderWechatVTO>> rpcResult = orderRpcService.wechatOrderPages(uid, mac, umac, 
 				status, dut, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

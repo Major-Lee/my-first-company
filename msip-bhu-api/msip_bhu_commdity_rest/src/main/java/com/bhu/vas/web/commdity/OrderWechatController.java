@@ -10,19 +10,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
-import com.bhu.vas.api.helper.BusinessEnumType.CaptchaCodeActType;
+import com.bhu.vas.api.dto.commdity.OrderWechatVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
-import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.web.business.validate.ValidateService;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -53,8 +49,8 @@ public class OrderWechatController extends BaseController{
 		try{
 			ValidateService.validateDeviceMac(mac);
 			String user_agent = request.getHeader("User-Agent");
-			RpcResponseDTO<OrderSMSVTO> orderRpcResult = orderRpcService.createSMSOrder(mac, umac, 
-					umactype, context, user_agent);
+			RpcResponseDTO<OrderWechatVTO> rpcResult = orderRpcService.createWechatOrder(mac, umac, 
+					umactype, auid, user_agent);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 			}else{
