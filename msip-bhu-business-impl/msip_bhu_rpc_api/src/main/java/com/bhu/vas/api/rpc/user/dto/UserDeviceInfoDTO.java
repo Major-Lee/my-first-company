@@ -5,7 +5,8 @@ package com.bhu.vas.api.rpc.user.dto;
  * @author Jason
  *
  */
-public class UserDeviceInfoDTO {
+@SuppressWarnings("serial")
+public class UserDeviceInfoDTO implements java.io.Serializable{
 	
 	//设备型号
 	private String deviceType;

@@ -5,7 +5,8 @@ package com.bhu.vas.api.rpc.user.dto;
  * @author Jason
  *
  */
-public class UserTransInfoDTO {
+@SuppressWarnings("serial")
+public class UserTransInfoDTO implements java.io.Serializable {
 	//用户Id
 	private int uid;
 	//交易时间
