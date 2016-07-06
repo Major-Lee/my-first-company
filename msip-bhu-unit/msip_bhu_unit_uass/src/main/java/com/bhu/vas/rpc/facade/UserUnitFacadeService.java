@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -722,7 +723,7 @@ public class UserUnitFacadeService {
 			cri.andSimpleCaulse(" 1=1 ");
 			mc.setOrderByClause(" id desc ");
 			mc.setPageNumber(Integer.parseInt(pageNo));
-			mc.setPageSize(Integer.parseInt(pageNo));
+			mc.setPageSize(Integer.parseInt(pageSize));
 			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
 			System.out.println("******获取用户总条数【"+tailusers.getTotalItemsCount()+"】");
 			System.out.println("******获取用户总条数【"+tailusers.getItems()+"】");
@@ -851,6 +852,5 @@ public class UserUnitFacadeService {
         String time =sdf.format(date); 
         System.out.println(time);
         System.out.println(date.toString());
-      
 	}
 }
