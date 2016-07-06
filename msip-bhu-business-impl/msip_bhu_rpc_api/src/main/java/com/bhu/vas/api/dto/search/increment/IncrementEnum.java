@@ -10,6 +10,8 @@ public class IncrementEnum {
 	
 	public enum IncrementActionEnum{
 		WD_FullCreate("WD_FCT","设备索引完整创建数据"),
+		WD_OnlineStatus("WD_OLS","设备在线状态更新数据"),
+		WD_ModuleOnlineStatus("WD_MOLS","设备模块在线状态更新数据"),
 		;
 		static Map<String, IncrementActionEnum> incrementActions;
 		String key;

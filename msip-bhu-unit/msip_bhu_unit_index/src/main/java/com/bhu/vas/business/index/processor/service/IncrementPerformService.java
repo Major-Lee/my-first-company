@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.search.increment.IncrementSingleDocumentDTO;
-import com.bhu.vas.business.index.processor.service.impl.WifiDeviceIncrementPerformService;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.smartwork.msip.cores.helper.JsonHelper;
 

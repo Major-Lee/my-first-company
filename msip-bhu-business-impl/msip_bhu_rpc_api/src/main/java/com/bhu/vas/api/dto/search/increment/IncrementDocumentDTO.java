@@ -6,6 +6,8 @@ public abstract class IncrementDocumentDTO implements java.io.Serializable{
 	private String action;
 	//索引库唯一id
 	private int uniqueid;
+	//业务上下文参数
+	private String context;
 	
 	public String getAction() {
 		return action;

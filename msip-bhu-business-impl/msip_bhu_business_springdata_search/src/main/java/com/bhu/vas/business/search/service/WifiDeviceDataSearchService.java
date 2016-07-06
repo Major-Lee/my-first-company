@@ -42,6 +42,11 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		return this.getRepository().findOne(id);
 	}
 	
+	public void save(WifiDeviceDocument doc){
+		this.getRepository().save(doc);
+		this.refresh(true);
+	}
+	
 	/**
 	 * 根据条件搜索数据分页
 	 * 绑定设备的用户id
