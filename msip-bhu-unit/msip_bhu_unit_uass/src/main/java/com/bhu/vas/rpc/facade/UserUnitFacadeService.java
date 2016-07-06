@@ -81,8 +81,8 @@ public class UserUnitFacadeService {
 	@Resource
 	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
-	@Resource
-	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	//@Resource
+	//private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
 	@Resource
 	private UserActivityService userActivityService;
@@ -761,14 +761,14 @@ public class UserUnitFacadeService {
 					userManageDTO.setVcurrency(0);
 					userManageDTO.setWalletMoney(0.00);
 				}
-				//根据用户Id查询设备离线数量
+				/*//根据用户Id查询设备离线数量
 				long deviceNum = 0;
 				deviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Offline.getType(), "");
 				//根据用户Id查询在线设备数量
 				long onLinedeviceNum = 0;
 				onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "");
 				userManageDTO.setDc(onLinedeviceNum+deviceNum);
-				userManageDTO.setDoc(onLinedeviceNum);
+				userManageDTO.setDoc(onLinedeviceNum);*/
 				vtos.add(userManageDTO);
 			}
 			System.out.println("******返回用户总条数【"+vtos.size()+"】");
