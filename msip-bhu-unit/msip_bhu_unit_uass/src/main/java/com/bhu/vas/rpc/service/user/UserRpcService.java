@@ -152,4 +152,10 @@ public class UserRpcService implements IUserRpcService{
 	public RpcResponseDTO<UserManageDTO> queryUserDetail(int uid) {
 		return userUnitFacadeService.queryUserDetail(uid);
 	}
+
+	@Override
+	public RpcResponseDTO<Boolean> activitySet(Integer uid, Integer bind_num,
+			Double income, String rate,Integer status) {
+		return userUnitFacadeService.activitySet(uid,bind_num,income,rate,status);
+	}
 }

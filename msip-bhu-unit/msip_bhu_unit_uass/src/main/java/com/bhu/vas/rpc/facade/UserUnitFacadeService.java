@@ -1,6 +1,9 @@
 package com.bhu.vas.rpc.facade;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -805,5 +808,32 @@ public class UserUnitFacadeService {
 			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
 		}
 	}
-	
+	public RpcResponseDTO<Boolean> activitySet(Integer uid, Integer bind_num,
+			Double income, String rate,Integer status) {
+		UserActivity userActivity=new UserActivity();
+		userActivity.setBind_num(bind_num);
+		userActivity.setId(uid);
+		userActivity.setIncome(income);
+		userActivity.setRate(rate);
+		userActivity.setStatus(status);
+		UserActivity activity=userActivityService.getById(uid);
+		if(activity!=null){
+			userActivityService.update(userActivity);
+		}else{
+			userActivityService.insert(userActivity);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
+	public static void main(String[] args) {
+		Date date = new Date();  
+        Calendar calendar = Calendar.getInstance();  
+        calendar.setTime(date);  
+        calendar.add(Calendar.DAY_OF_MONTH, 0);  
+        date = calendar.getTime();  
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+        String time =sdf.format(date); 
+        System.out.println(time);
+        System.out.println(date.toString());
+      
+	}
 }
