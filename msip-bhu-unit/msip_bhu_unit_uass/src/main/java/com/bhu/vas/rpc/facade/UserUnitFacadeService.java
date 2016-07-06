@@ -722,8 +722,8 @@ public class UserUnitFacadeService {
 			}
 			cri.andSimpleCaulse(" 1=1 ");
 			mc.setOrderByClause(" id desc ");
-			mc.setPageNumber(Integer.parseInt(pageNo));
-			mc.setPageSize(Integer.parseInt(pageSize));
+			mc.setPageNumber(pageNo);
+			mc.setPageSize(pageSize);
 			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
 			System.out.println("******获取用户总条数【"+tailusers.getTotalItemsCount()+"】");
 			System.out.println("******获取用户总条数【"+tailusers.getItems()+"】");
@@ -755,7 +755,7 @@ public class UserUnitFacadeService {
 				vtos.add(userManageDTO);
 			}
 			System.out.println("******返回用户总条数【"+vtos.size()+"】");
-			TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(tailusers.getPageNumber(), Integer.parseInt(pageSize), tailusers.getTotalItemsCount(), vtos);
+			TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(tailusers.getPageNumber(), pageSize, tailusers.getTotalItemsCount(), vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
 		}catch(BusinessI18nCodeException bex){
 			bex.printStackTrace(System.out);
