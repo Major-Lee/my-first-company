@@ -2,24 +2,26 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.charging.model.UserIncome">
+<mapper namespace="com.bhu.vas.api.rpc.charging.model.MacIncome">
 
-  <resultMap id="modelResult" type="userIncome">
+  <resultMap id="modelResult" type="macIncome">
     <id property="id" column="id"/>
     <id property="uid" column="uid"/>
+    <id property="mac" column="mac"/>
     <result property="time" column="time"/>
     <result property="income" column="income"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_users_income
+	    	t_mac_income
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
 	    	uid,
+	    	mac,
 	    	time,
 	    	income,
 	    	updated_at
@@ -29,6 +31,7 @@
 	    <![CDATA[
 	    	uid,
 	    	time,
+	    	mac,
 	    	income,
 	    	updated_at
 	    ]]>
@@ -39,11 +42,13 @@
 			#{uid},
 	    	#{time},
 	    	#{income},
+	    	#{mac},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-			uid  = #{uid},
+			uid = #{uid},
+			mac = #{mac},
 	    	time = #{time},
 	    	income = #{income},
 	    	updated_at = #{updated_at}
@@ -99,11 +104,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="deleteAllRank"  parameterType="userIncome">
-	   delete from <include refid="modelTableName" />
-	</delete>
-	
-	<delete id="delete" parameterType="userIncome">
+	<delete id="delete" parameterType="macIncome">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -111,11 +112,11 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="userIncome">
+	<insert id="insert" parameterType="macIncome">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="userIncome">
+	<update id="update" parameterType="macIncome">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		

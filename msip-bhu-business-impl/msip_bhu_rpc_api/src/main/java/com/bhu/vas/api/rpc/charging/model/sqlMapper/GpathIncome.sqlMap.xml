@@ -2,24 +2,24 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.charging.model.UserIncome">
+<mapper namespace="com.bhu.vas.api.rpc.charging.model.GpathIncome">
 
-  <resultMap id="modelResult" type="userIncome">
+  <resultMap id="modelResult" type="gpathIncome">
     <id property="id" column="id"/>
-    <id property="uid" column="uid"/>
+    <id property="gpath" column="gpath"/>
     <result property="time" column="time"/>
     <result property="income" column="income"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_users_income
+	    	t_gpath_income
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	uid,
+	    	gpath,
 	    	time,
 	    	income,
 	    	updated_at
@@ -27,8 +27,8 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	uid,
 	    	time,
+	    	gpath,
 	    	income,
 	    	updated_at
 	    ]]>
@@ -36,14 +36,14 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-			#{uid},
 	    	#{time},
 	    	#{income},
+	    	#{gpath},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-			uid  = #{uid},
+			gpath = #{gpath},
 	    	time = #{time},
 	    	income = #{income},
 	    	updated_at = #{updated_at}
@@ -99,11 +99,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="deleteAllRank"  parameterType="userIncome">
-	   delete from <include refid="modelTableName" />
-	</delete>
-	
-	<delete id="delete" parameterType="userIncome">
+	<delete id="delete" parameterType="gpathIncome">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -111,11 +107,11 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="userIncome">
+	<insert id="insert" parameterType="gpathIncome">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="userIncome">
+	<update id="update" parameterType="gpathIncome">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
