@@ -72,7 +72,10 @@ public class UserManageFacadeService {
 	public RpcResponseDTO<TailPage<UserIncomeDTO>> queryUserIncomeDetail(int uid,String transtype,String transmode,int pageno,int pagesize){
 		try{
 			User user  = userService.getById(uid);
-			UserTypeValidateService.validConsoleUser(user);
+			if(user == null ){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
+			}
+			//UserTypeValidateService.validConsoleUser(user);
 			//查询用户钱包信息
 			UserIncomeDTO userIncomeDTO = new UserIncomeDTO();
 			UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(uid);
@@ -83,7 +86,11 @@ public class UserManageFacadeService {
 			}else{
 				userIncomeDTO.setWalletMoney(String.valueOf(userWallet.getCash()));
 				userIncomeDTO.setVcurrency(String.valueOf(userWallet.getVcurrency_total()));
-				userIncomeDTO.setWithdraw(userWallet.getPayments().get(0).getNick());
+				if(userWallet.getPayments() != null && userWallet.getPayments().size()>0){
+					userIncomeDTO.setWithdraw(userWallet.getPayments().get(0).getNick());
+				}else{
+					userIncomeDTO.setWithdraw("");
+				}
 			}
 			
 			//TODO 获取历史总收益 订单数 打赏成功数信息
@@ -147,7 +154,10 @@ public class UserManageFacadeService {
 	public RpcResponseDTO<TailPage<UserManageDeviceDTO>> queryUserDeviceInfo(int uid,int pageno,int pagesize){
 		try{
 			User user  = userService.getById(uid);
-			UserTypeValidateService.validConsoleUser(user);
+			//UserTypeValidateService.validConsoleUser(user);
+			if(user == null ){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
+			}
 			
 			UserManageDeviceDTO userManageDeviceDTO = new UserManageDeviceDTO();
 			//根据用户Id查询设备数量

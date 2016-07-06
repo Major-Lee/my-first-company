@@ -23,9 +23,9 @@ public class UserManageDTO implements java.io.Serializable{
 	//虎钻
 	private double vcurrency = 0l;
 	//设备在线数
-	private int doc;
+	private long doc;
 	//设备总数
-	private int dc;
+	private long dc;
 	//注册时间
 	private String createTime;
 	//打赏样式
@@ -78,16 +78,17 @@ public class UserManageDTO implements java.io.Serializable{
 	public void setVcurrency(double vcurrency) {
 		this.vcurrency = vcurrency;
 	}
-	public int getDoc() {
+	
+	public long getDoc() {
 		return doc;
 	}
-	public void setDoc(int doc) {
+	public void setDoc(long doc) {
 		this.doc = doc;
 	}
-	public int getDc() {
+	public long getDc() {
 		return dc;
 	}
-	public void setDc(int dc) {
+	public void setDc(long dc) {
 		this.dc = dc;
 	}
 	public String getCreateTime() {
