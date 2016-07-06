@@ -97,6 +97,7 @@ public class ConsoleUserController extends BaseController {
     	}
     	map.put("pageNo", pageNo);
     	map.put("pageSize", pageSize);
+    	System.out.println("****map的值为：【"+map.size()+"】****");
     	RpcResponseDTO<TailPage<UserManageDTO>> rpcResult = userRpcService.pageQueryUserList(map);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
