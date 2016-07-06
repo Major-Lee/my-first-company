@@ -41,15 +41,15 @@
         </dependency>
         
         <!--add By Jason 2016-07-06 start  -->
-        <dependency>
+        <!-- <dependency>
         	<groupId>com.bhu</groupId>
         	<artifactId>msip_bhu_business_springdata_search</artifactId>
-      	</dependency>
+      	</dependency> -->
         <!--add By Jason 2016-07-06 E N D  --> 
-        <!-- <dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
-         </dependency> -->
+         </dependency>
         <!-- 
         <dependency>
             <groupId>com.github.sgroschupf</groupId>
