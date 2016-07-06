@@ -17,6 +17,7 @@ import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
+import com.bhu.vas.api.dto.commdity.OrderWechatVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
@@ -387,7 +388,7 @@ public class OrderUnitFacadeService {
 	}
 	
 	/**
-	 * 根据设备mac查询打赏订单分页列表
+	 * 根据设备mac查询短信认证订单分页列表
 	 * @param uid 用户id
 	 * @param mac 用户绑定的设备mac
 	 * @param umac 订单支付用户的终端mac
@@ -433,6 +434,94 @@ public class OrderUnitFacadeService {
 		}
 	}
 	
+	/**
+	 * 生成微信认证订单
+	 * @param mac 设备mac
+	 * @param umac 用户mac
+	 * @param umactype 用户终端类型
+	 * @param context 微信的第三方信息
+	 * @param user_agent
+	 * @return
+	 */
+	public RpcResponseDTO<OrderWechatVTO> createWechatOrder(String mac, String umac, Integer umactype, String context, String user_agent){
+		try{
+			//验证mac umac
+			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+			}
+			
+			String mac_lower = mac.toLowerCase();
+			String umac_lower = umac.toLowerCase();
+			//检查设备是否接入过
+			WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
+			if(wifiDevice == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+			}
+			//生成订单
+			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
+			Order order = orderFacadeService.createWechatOrder(mac_lower, mac_dut, umac_lower, umactype, context, user_agent);
+			
+			OrderWechatVTO orderVto = new OrderWechatVTO();
+			BeanUtils.copyProperties(order, orderVto);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("CreateSMSOrder Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	
+	/**
+	 * 根据设备mac查询微信认证订单分页列表
+	 * @param uid 用户id
+	 * @param mac 用户绑定的设备mac
+	 * @param umac 订单支付用户的终端mac
+	 * @param status 订单状态
+	 * @param dut 设备业务线
+	 * @param pageNo 页码
+	 * @param pageSize 分页数量
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<OrderWechatVTO>> wechatOrderPages(Integer uid, String mac, String umac, 
+			Integer status, String dut, int pageNo, int pageSize) {
+		try{
+			List<OrderWechatVTO> retDtos = Collections.emptyList();
+			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, CommdityCategory.WechatInternetLimit.getCategory());
+			if(order_count > 0){
+				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
+						CommdityCategory.WechatInternetLimit.getCategory(), pageNo, pageSize);
+				
+				if(orderList != null && !orderList.isEmpty()){
+					retDtos = new ArrayList<OrderWechatVTO>();
+					OrderWechatVTO orderWechatVto = null;
+					for(Order order : orderList){
+						orderWechatVto = new OrderWechatVTO();
+						BeanUtils.copyProperties(order, orderWechatVto);
+						orderWechatVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
+						if(order.getCreated_at() != null){
+							orderWechatVto.setCreated_ts(order.getCreated_at().getTime());
+						}
+						if(order.getPaymented_at() != null){
+							orderWechatVto.setPaymented_ts(order.getPaymented_at().getTime());
+						}
+						retDtos.add(orderWechatVto);
+					}
+				}
+			}
+			TailPage<OrderWechatVTO> returnRet = new CommonPage<OrderWechatVTO>(pageNo, pageSize, order_count, retDtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("RewardOrderPagesByUid Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 	
 	private String distillOwnercash(String orderid,List<UserWalletLog> walletLogs){
 		if(walletLogs != null && !walletLogs.isEmpty()){

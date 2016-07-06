@@ -110,6 +110,9 @@ public class AsyncOrderPaymentNotifyService{
 				case SMSPaymentNotify:
 					orderSMSNotifyCompletedHandle(messageNoPrefix);
 					break;
+				case WechatPaymentNotify:
+					orderWechatNotifyCompletedHandle(messageNoPrefix);
+					break;
 				default:
 					throw new RuntimeException(String.format("PaymentNotifyType unsupport message[%s]", message));
 			}
@@ -408,6 +411,80 @@ public class AsyncOrderPaymentNotifyService{
 		}
 		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
 		orderFacadeService.smsOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
+	}
+	
+	/**
+	 * 微信认证通过通知
+	 * @param message
+	 */
+	public void orderWechatNotifyCompletedHandle(String message){
+		ResponseSMSValidateCompletedNotifyDTO smsv_dto = PaymentNotifyFactoryBuilder.fromJson(message, ResponseSMSValidateCompletedNotifyDTO.class);
+		String orderid = smsv_dto.getOrderid();
+		boolean success = smsv_dto.isSuccess();
+		Date paymented_ds = smsv_dto.getPaymented_ds();
+		//扣除虎钻
+		//final AtomicLong vcurrency_current_leave = new AtomicLong(0l);
+		//订单处理逻辑 
+		Order order = orderFacadeService.validateOrderId(orderid);
+		User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
+		if(bindUser != null && bindUser.getId().intValue() >0){
+/*			int uid = bindUser.getId().intValue();
+			String mobileno = bindUser.getMobileno();
+			SnkAuthenticateResultType ret = userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(uid,orderid, order.getVcurrency(), "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
+				@Override
+				public boolean beforeCheck(int uid, long vcurrency_cost,long vcurrency_has) {
+					//业务需求 如果短信验证通过则直接扣款，负数也扣款
+					if(vcurrency_has < vcurrency_cost){
+						return false;
+					}else{
+						return true;
+					}
+					return true;
+				}
+				@Override
+				public String after(int uid,long vcurrency_leave) {
+					vcurrency_current_leave.addAndGet(vcurrency_leave);
+					return null;
+				}
+	   		});
+	   		//都放行
+	   		System.out.println(ret);
+	   		switch(ret){
+	   			case Success:
+	   				//通知uportal可以放行
+	   				break;
+	   			case SuccessButThresholdNeedCharging:
+	   				//通知uportal可以放行
+	   				//判定是否存在标记位 进行短消息充值提醒通知
+	   				if(SnkChargingMarkerService.getInstance().level1marker(uid) == 1 && StringUtils.isNotEmpty(mobileno)){
+		   				String smsg_snk_needcharging = String.format(BusinessRuntimeConfiguration.Internal_SNK_NeedCharging_Template,DateTimeHelper.formatDate(DateTimeHelper.FormatPattern13), vcurrency_current_leave);
+		   				String response_snk_needcharging = SmsSenderFactory.buildSender(
+								BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_needcharging, mobileno);
+						logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",mobileno,smsg_snk_needcharging,response_snk_needcharging));
+						UPortalHttpHelper.uPortalChargingStatusNotify(uid,UPortalHttpHelper.ServiceNeedCharging);
+	   				}
+	   				break;
+	   			case FailedThresholdVcurrencyNotsufficient:
+	   				//通知uportal可以放行
+	   				//远程通知uportal 静态页 关闭访客网络
+	   				//判定是否存在标记位 进行短消息关闭通知
+	   				if(SnkChargingMarkerService.getInstance().level2marker(uid) == 1 && StringUtils.isNotEmpty(mobileno)){
+		   				String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_SNK_Stop_Template,DateTimeHelper.formatDate(DateTimeHelper.FormatPattern13), vcurrency_current_leave);
+		   				String response_snk_stop = SmsSenderFactory.buildSender(
+								BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, mobileno);
+						logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",mobileno,smsg_snk_stop,response_snk_stop));
+						UPortalHttpHelper.uPortalChargingStatusNotify(uid,UPortalHttpHelper.ServiceInsufficient);
+	   				}
+	   				break;
+	   			case Failed:
+	   				//扣款失败，原因不明，依然通知uportal可以放行
+	   				break;
+	   		}*/
+		}else{
+			logger.info(String.format("order[%s] mac[%s] devices unbinded",order.getId(),order.getMac()));
+		}
+		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+		orderFacadeService.wechatOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
 	}
 	
 }

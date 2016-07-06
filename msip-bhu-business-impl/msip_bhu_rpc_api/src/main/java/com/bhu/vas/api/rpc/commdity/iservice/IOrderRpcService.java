@@ -4,6 +4,7 @@ import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
+import com.bhu.vas.api.dto.commdity.OrderWechatVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -36,6 +37,8 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<TailPage<OrderSMSVTO>> smsOrderPages(Integer uid, String mac, String umac, 
 			Integer status, String dut, int pageNo, int pageSize);
 
-	
+	public RpcResponseDTO<OrderWechatVTO> createWechatOrder(String mac, String umac, Integer umactype, String context, String user_agent);
 
+	public RpcResponseDTO<TailPage<OrderWechatVTO>> wechatOrderPages(Integer uid, String mac, String umac, 
+			Integer status, String dut, int pageNo, int pageSize);
 }

@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseWechatValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.WechatPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.procedure.RewardOrderStatisticsProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
@@ -575,6 +577,129 @@ public class OrderFacadeService {
 		}
 		return false;
 	}
+	
+	
+	/*************            微信认证             ****************/
+	
+	public static final int WECHAT_VALIDATE_COMMDITY_ID = 11;
+	
+	/**
+	 * 生成微信认证订单
+	 * @param mac 设备mac
+	 * @param umac 用户终端mac
+	 * @param umactype 用户终端类型
+	 * @param context 微信第三方信息
+	 * @return
+	 */
+	public Order createWechatOrder(String mac, String mac_dut, String umac, Integer umactype, String context, String user_agent){
+		//商品信息验证
+		Commdity commdity = commdityFacadeService.validateCommdity(WECHAT_VALIDATE_COMMDITY_ID);
+		//验证商品是否合理
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.WechatInternetLimit)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
+		}
+		
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdity.getId());
+		order.setAppid(CommdityApplication.DEFAULT.getKey());
+		order.setType(commdity.getCategory());
+		order.setStatus(OrderStatus.PaySuccessed.getKey());
+		order.setProcess_status(OrderProcessStatus.PaySuccessed.getKey());
+		order.setMac(mac);
+		order.setMac_dut(mac_dut);
+		order.setUmac(umac);
+		order.setUmactype(umactype);
+		//order.setVcurrency(vcurrency);
+		order.setContext(context);
+		order.setUser_agent(user_agent);
+		order.setPaymented_at(new Date());
+		orderService.insert(order);
+		
+		//微信认证订单生成时候已经验证通过 直接进行放行数据通知
+		String notify_message = PaymentNotifyFactoryBuilder.toJsonHasPrefix(ResponseWechatValidateCompletedNotifyDTO.
+				builder(order));
+		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+		return order;
+	}
+	
+	/**
+	 * 微信认证完成的订单处理逻辑
+	 * 更新订单状态为支付成功
+	 * 通知应用发货成功以后 更新支付状态为发货完成
+	 * @param success 支付是否成功
+	 * @param order 订单实体
+	 * @param bindUser 设备绑定的用户实体
+	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
+	 */
+	public Order wechatOrderPaymentCompletedNotify(boolean success, Order order, User bindUser, Date paymented_ds,
+			String ait_time){
+		Integer changed_status = null;
+		Integer changed_process_status = null;
+		try{
+			String orderid = order.getId();
+			order.setPaymented_at(paymented_ds);
+
+			if(bindUser != null){
+				order.setUid(bindUser.getId());
+			}
+			
+			//支付成功
+			if(success){
+				logger.info(String.format("WechatOrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
+				//进行发货通知
+				boolean deliver_notify_ret = wechatOrderPermissionNotify(order, bindUser, ait_time);
+				//判断通知发货成功 更新订单状态
+				if(deliver_notify_ret){
+					changed_status = OrderStatus.DeliverCompleted.getKey();
+					changed_process_status = OrderProcessStatus.SharedealCompleted.getKey();
+					logger.info(String.format("WechatOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+				}else{
+					logger.info(String.format("WechatOrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
+				}
+			}else{
+				changed_status = OrderStatus.PayFailured.getKey();
+				changed_process_status = OrderProcessStatus.PayFailured.getKey();
+			}
+		}catch(Exception ex){
+			throw ex; 
+		}finally{
+			orderStatusChanged(order, changed_status, changed_process_status);
+		}
+		return order;
+	}
+	
+	/**
+	 * 微信认证通知应用发货，按照约定的redis写入
+	 * @param order 订单实体
+	 * @param bindUser 设备绑定的用户实体
+	 * @return
+	 */
+	public boolean wechatOrderPermissionNotify(Order order, User bindUser, String ait_time){
+		try{
+			if(order == null) {
+				logger.error("WechatOrderPermissionNotify order data not exist");
+				return false;
+			}
+			
+			WechatPermissionThroughNotifyDTO wechatPermissionNotifyDto = WechatPermissionThroughNotifyDTO.from(order, ait_time, bindUser);
+			if(wechatPermissionNotifyDto != null){
+				//String requestDeliverNotifyMessage = JsonHelper.getJSONString(rewardPermissionNotifyDto);
+				String wechatPermissionNotifyMessage = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(wechatPermissionNotifyDto);
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(wechatPermissionNotifyMessage);
+				//判断通知发货成功
+				if(notify_ret != null && notify_ret > 0){
+					logger.info(String.format("WechatOrderPermissionNotify success deliver notify: message[%s] rpush_ret[%s]", wechatPermissionNotifyMessage, notify_ret));
+					return true;
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error("WechatOrderPermissionNotify exception", ex);
+		}
+		return false;
+	}
+	
 	
 	/*************            validate             ****************/
 	
