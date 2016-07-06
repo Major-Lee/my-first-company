@@ -49,6 +49,8 @@ import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
+import com.bhu.vas.business.ds.statistics.service.GpathIncomeService;
+import com.bhu.vas.business.ds.statistics.service.MacIncomeService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -98,7 +100,23 @@ public class UserWalletFacadeService{
 	private UserIncomeRankService userIncomeRankService;
 	@Resource
 	private UserIncomeService userIncomeService;
+	@Resource
+	private MacIncomeService macIncomeService;
+	@Resource
+	private GpathIncomeService gpathIncomeService;
 	
+	public GpathIncomeService getGpathIncomeService() {
+		return gpathIncomeService;
+	}
+	public void setGpathIncomeService(GpathIncomeService gpathIncomeService) {
+		this.gpathIncomeService = gpathIncomeService;
+	}
+	public MacIncomeService getMacIncomeService() {
+		return macIncomeService;
+	}
+	public void setMacIncomeService(MacIncomeService macIncomeService) {
+		this.macIncomeService = macIncomeService;
+	}
 	public UserIncomeService getUserIncomeService() {
 		return userIncomeService;
 	}
@@ -1085,7 +1103,7 @@ public class UserWalletFacadeService{
 //		mc.createCriteria().andColumnEqualTo("type", "uid");
 		//mc.setOrderByClause("income");
 		List<UserIncome> userIncomes=this.getUserIncomeService().findListByTime(time);
-		if(userIncomes != null){
+		if(userIncomes != null&&userIncomes.size()>0){
 			String beforeIncome="0";
 			int beforeRankNum=0;
 			for(int i=0;i<userIncomes.size();i++){
@@ -1102,7 +1120,7 @@ public class UserWalletFacadeService{
 				}
 				userIncomeRank.setRank(beforeRankNum);
 				userIncomeRank.setIncome(userIncome.getIncome());
-				userIncomeRank.setId(userIncome.getId().replace(time+"-", "").trim());
+				userIncomeRank.setId(String.valueOf(userIncome.getUid()));
 				userIncomeRank.setUpdated_at(date);
 				userIncomeRank.setCreated_at(date);
 				userIncomeRankService.insert(userIncomeRank);

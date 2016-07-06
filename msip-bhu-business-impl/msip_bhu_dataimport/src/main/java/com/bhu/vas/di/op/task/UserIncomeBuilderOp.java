@@ -8,10 +8,12 @@ import java.util.List;
 import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.bhu.vas.api.rpc.charging.model.GpathIncome;
+import com.bhu.vas.api.rpc.charging.model.MacIncome;
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
-import com.smartwork.msip.cores.helper.ArithHelper;
+
 
 public class UserIncomeBuilderOp {
 	public static void main(String[] args) {
@@ -35,36 +37,41 @@ public class UserIncomeBuilderOp {
 			for(UserWalletLog i:userWalletLogs){
 				UserIncome userIncome=new UserIncome();
 				userIncome.setTime(time);
+				userIncome.setUid(i.getUid());
 				userIncome.setIncome(i.getCash().substring(1));
-				userIncome.setType("uid");
-				userIncome.setId(time+"-"+i.getUid());
-				UserIncome income=userWalletFacadeService.getUserIncomeService().getById(userIncome.getId());
-				if(income==null){
+				List<UserIncome> income=userWalletFacadeService.getUserIncomeService().findListByUid(i.getUid(), time);
+				if(income==null||income.size()<1){
 					userWalletFacadeService.getUserIncomeService().insert(userIncome);
 				}else{
 					//ArithHelper.round(v, scale);
-					userIncome.setIncome(String.valueOf(round(Double.valueOf(income.getIncome())+Double.valueOf(userIncome.getIncome()),2)));
+					userIncome.setIncome(String.valueOf(round(Double.valueOf(income.get(0).getIncome())+Double.valueOf(userIncome.getIncome()),2)));
 					userWalletFacadeService.getUserIncomeService().update(userIncome);
 				}
 				if(StringUtils.isNoneBlank(i.getMac())&&!StringUtils.equals("-", i.getMac())){
-					userIncome.setId(time+"-"+i.getMac());
-					userIncome.setType("mac");
-					income=userWalletFacadeService.getUserIncomeService().getById(userIncome.getId());
-					if(income==null){
-						userWalletFacadeService.getUserIncomeService().insert(userIncome);
+					MacIncome macIncome=new MacIncome();
+					macIncome.setTime(time);
+					macIncome.setMac(i.getMac());
+					macIncome.setUid(i.getUid());
+					macIncome.setIncome(i.getCash().substring(1));
+					List<MacIncome> macIncomes=userWalletFacadeService.getMacIncomeService().findListByMac(i.getMac(), time);
+					if(macIncomes==null||macIncomes.size()<1){
+						userWalletFacadeService.getMacIncomeService().insert(macIncome);
 					}else{
-						userIncome.setIncome(String.valueOf(round(Double.valueOf(income.getIncome())+Double.valueOf(userIncome.getIncome()),2)));
-						userWalletFacadeService.getUserIncomeService().update(userIncome);
+						macIncome.setIncome(String.valueOf(round(Double.valueOf(macIncomes.get(0).getIncome())+Double.valueOf(macIncome.getIncome()),2)));
+						userWalletFacadeService.getMacIncomeService().update(macIncome);
 					}
-				}else if(StringUtils.isNoneBlank(i.getCurrent_gpath())&&!StringUtils.equals("-", i.getCurrent_gpath())){
-					userIncome.setId(time+"-"+i.getCurrent_gpath());
-					userIncome.setType("gpath");
-					income=userWalletFacadeService.getUserIncomeService().getById(userIncome.getId());
-					if(income==null){
-						userWalletFacadeService.getUserIncomeService().insert(userIncome);
+				}
+				if(StringUtils.isNoneBlank(i.getCurrent_gpath())&&!StringUtils.equals("-", i.getCurrent_gpath())){
+					GpathIncome gpathIncome=new GpathIncome();
+					gpathIncome.setGpath(i.getCurrent_gpath());
+					gpathIncome.setTime(time);
+					gpathIncome.setIncome(i.getCash().substring(1));
+					List<GpathIncome> gpathIncomes=userWalletFacadeService.getGpathIncomeService().findListByGpath(i.getCurrent_gpath(), time);
+					if(gpathIncomes==null||gpathIncomes.size()<1){
+						userWalletFacadeService.getGpathIncomeService().insert(gpathIncome);
 					}else{
-						userIncome.setIncome(String.valueOf(round(Double.valueOf(income.getIncome())+Double.valueOf(userIncome.getIncome()),2)));
-						userWalletFacadeService.getUserIncomeService().update(userIncome);
+						userIncome.setIncome(String.valueOf(round(Double.valueOf(gpathIncomes.get(0).getIncome())+Double.valueOf(gpathIncome.getIncome()),2)));
+						userWalletFacadeService.getGpathIncomeService().update(gpathIncome);
 					}
 				}
 			}

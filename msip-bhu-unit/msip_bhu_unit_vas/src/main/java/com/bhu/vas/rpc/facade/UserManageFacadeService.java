@@ -154,7 +154,6 @@ public class UserManageFacadeService {
 	public RpcResponseDTO<TailPage<UserManageDeviceDTO>> queryUserDeviceInfo(int uid,int pageno,int pagesize){
 		try{
 			User user  = userService.getById(uid);
-			//UserTypeValidateService.validConsoleUser(user);
 			if(user == null ){
 				throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
 			}

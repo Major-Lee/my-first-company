@@ -121,7 +121,7 @@ public class ConsoleUserController extends BaseController {
     public void queryUserIncomeDetail(
     		HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int userid,
             @RequestParam(required = false,defaultValue = "") String transmode,
             @RequestParam(required = false,defaultValue = "") String transtype,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
@@ -132,7 +132,7 @@ public class ConsoleUserController extends BaseController {
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<TailPage<UserIncomeDTO>> rpcResult = userMangeRpcService.queryUserIncomeDetail(uid,transtype,transmode,pageNo,pageSize);
+		RpcResponseDTO<TailPage<UserIncomeDTO>> rpcResult = userMangeRpcService.queryUserIncomeDetail(userid,transtype,transmode,pageNo,pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -153,7 +153,7 @@ public class ConsoleUserController extends BaseController {
     public void queryUserDeviceInfo(
     		HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int userid,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
             ){
@@ -162,7 +162,7 @@ public class ConsoleUserController extends BaseController {
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-    	RpcResponseDTO<TailPage<UserManageDeviceDTO>> rpcResult = userMangeRpcService.queryUserDeviceInfo(uid,pageNo,pageSize);
+    	RpcResponseDTO<TailPage<UserManageDeviceDTO>> rpcResult = userMangeRpcService.queryUserDeviceInfo(userid,pageNo,pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -183,9 +183,9 @@ public class ConsoleUserController extends BaseController {
     public void queryUserDetail(
     		HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(required = true) int uid
+            @RequestParam(required = true) int userid
             ){
-    	RpcResponseDTO<UserManageDTO> rpcResult = userRpcService.queryUserDetail(uid);
+    	RpcResponseDTO<UserManageDTO> rpcResult = userRpcService.queryUserDetail(userid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

@@ -144,6 +144,14 @@
 		<typeAlias alias="userIncome"
 			type="com.bhu.vas.api.rpc.charging.model.UserIncome" />
 		<!-- 收益统计 -->
+		<!-- mac收益统计 -->
+		<typeAlias alias="macIncome"
+			type="com.bhu.vas.api.rpc.charging.model.MacIncome" />
+		<!-- mac收益统计 -->
+		<!-- gpath收益统计 -->
+		<typeAlias alias="gpathIncome"
+			type="com.bhu.vas.api.rpc.charging.model.GpathIncome" />
+		<!-- gpath收益统计 -->
 		<!--对公账号 add by dongrui 20160606 start -->
 		<typeAlias alias="userPublishAccount" type="com.bhu.vas.api.rpc.user.model.UserPublishAccount" />
 		<!--对公账号 add by dongrui 20160606 E N D -->
@@ -263,6 +271,12 @@
 		<!-- 收益统计 -->
 		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/UserIncome.sqlMap.xml" />
 		<!-- 收益统计 -->
+		<!-- mac收益统计 -->
+		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/MacIncome.sqlMap.xml" />
+		<!-- mac收益统计 -->
+		<!-- gpath收益统计 -->
+		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/GpathIncome.sqlMap.xml" />
+		<!-- gpath收益统计 -->
 		<!--对公账号 add by dongrui 20160606 start -->
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserPublishAccount.sqlMap.xml" />
 		<!--对公账号 add by dongrui 20160606 E N D -->

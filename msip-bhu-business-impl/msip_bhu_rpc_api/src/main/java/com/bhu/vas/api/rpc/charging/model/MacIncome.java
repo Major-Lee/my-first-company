@@ -3,9 +3,10 @@ package com.bhu.vas.api.rpc.charging.model;
 import com.smartwork.msip.cores.orm.model.BaseIntModel;
 
 @SuppressWarnings("serial")
-public class UserIncome extends BaseIntModel{
+public class MacIncome extends BaseIntModel{
 	private int uid;
 	private String time;
+	private String mac;
 	private String income;
 	public String getTime() {
 		return time;
@@ -24,6 +25,12 @@ public class UserIncome extends BaseIntModel{
 	}
 	public void setUid(int uid) {
 		this.uid = uid;
+	}
+	public String getMac() {
+		return mac;
+	}
+	public void setMac(String mac) {
+		this.mac = mac;
 	}
 	
 	
