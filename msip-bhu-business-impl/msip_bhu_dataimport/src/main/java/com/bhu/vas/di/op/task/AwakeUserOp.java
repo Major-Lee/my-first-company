@@ -10,7 +10,9 @@ import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.di.op.userreg.UserUniqueRegisterEnvOp;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -41,7 +43,10 @@ public class AwakeUserOp {
 				if(wallet != null && wallet.getCash() > 0 ){
 					String smsUserName = StringUtils.isEmpty(user.getNick())?DefaultUserName:user.getNick();
 					String smsCash =String.valueOf(ArithHelper.round(wallet.getCash(), 2));
-					String.format(AwakeSMS_Template, smsUserName,smsCash,DefaultLink);
+					String smsg = String.format(AwakeSMS_Template, smsUserName,smsCash,DefaultLink);
+					String response = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway)
+							.send(smsg, user.getMobileno());
+					System.out.println(String.format("sendAwakeNotify acc[%s] msg[%s] response[%s]",user.getMobileno(),smsg,response));
 				}
 			}
 		}
