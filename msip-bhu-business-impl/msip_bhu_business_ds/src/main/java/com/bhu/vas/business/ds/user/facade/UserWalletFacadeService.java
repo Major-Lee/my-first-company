@@ -215,9 +215,9 @@ public class UserWalletFacadeService{
 	 * @param desc
 	 * @return
 	 */
-	private int vcurrencyFromUserWallet(int uid,String orderid,UWalletTransMode transMode,long vcurrency,String desc){
+	private int vcurrencyFromUserWallet(int uid,String orderid,UWalletTransMode transMode,UWalletTransType transtype,long vcurrency,String desc){
 		logger.info(String.format("vcurrencyFromUserWallet %s-%s uid[%s] orderid[%s] vcurrency[%s] desc[%s]",transMode.getName(),UWalletTransType.PurchaseGoodsUsedV.getName(), uid,orderid,vcurrency,desc));
-		return userWalletInOutWithProcedure(uid,orderid,transMode,UWalletTransType.PurchaseInternetServiceUsedV,0.00d,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
+		return userWalletInOutWithProcedure(uid,orderid,transMode,transtype,0.00d,0.00d,vcurrency,desc,StringHelper.EMPTY_STRING_GAP);
 	}
 	
 	public static final int SnkAuthenticate_Failed = -1;
@@ -235,7 +235,7 @@ public class UserWalletFacadeService{
 	 * @return
 	 * 	
 	 */
-	public SnkAuthenticateResultType vcurrencyFromUserWalletForSnkAuthenticate(int uid,String orderid,long vcurrency_cost,String desc, IWalletVCurrencySpendCallback callback){
+	public SnkAuthenticateResultType vcurrencyFromUserWalletForSnkAuthenticate(int uid,String orderid,UWalletTransType transtype,long vcurrency_cost,String desc, IWalletVCurrencySpendCallback callback){
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		UserWallet uwallet = userWalletService.getById(uid);
 		if(uwallet == null){
@@ -243,7 +243,7 @@ public class UserWalletFacadeService{
 		}
 		long total_vcurrency = (uwallet.getVcurrency()+uwallet.getVcurrency_bing());
 		if(callback.beforeCheck(uid, vcurrency_cost,total_vcurrency)){
-			int executeRet = this.vcurrencyFromUserWallet(uid, orderid, UWalletTransMode.VCurrencyPayment, vcurrency_cost, desc);
+			int executeRet = this.vcurrencyFromUserWallet(uid, orderid, UWalletTransMode.VCurrencyPayment,transtype, vcurrency_cost, desc);
 			if(executeRet == 0){
 				long total_vcurrency_leave = total_vcurrency-vcurrency_cost;
 				callback.after(uid,total_vcurrency_leave);

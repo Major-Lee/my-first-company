@@ -101,7 +101,7 @@ public class BatchSnkApplyService {
 						});
 					 //TODO:如果为SmsSecure 则需要判定此用户id当前是否还存在此类型的网络处于开启状态，如果都关闭了，则需要重置通知开关并通知portal服务器
 					 logger.info(String.format("准备开始判定当前信息共享网络状态类型 "));
-					 if(SharedNetworkType.SmsSecure == sharedNetwork || SharedNetworkType.WeichatSecure == sharedNetwork){
+					 if(SharedNetworkType.SmsSecure == sharedNetwork || SharedNetworkType.WechatSecure == sharedNetwork){
 						 logger.info(String.format("准备开始判定当前信息共享网络状态类型【%s】【%s】",userid,sharedNetwork.getKey()));
 						 long count = wifiDeviceDataSearchService.searchCountBySnkType(userid,sharedNetwork.getKey(),
 								 WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType());

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
+
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
@@ -24,6 +25,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
+import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.PaymentNotifyType;
 import com.bhu.vas.api.helper.UPortalHttpHelper;
@@ -348,23 +350,18 @@ public class AsyncOrderPaymentNotifyService{
 		String orderid = smsv_dto.getOrderid();
 		boolean success = smsv_dto.isSuccess();
 		Date paymented_ds = smsv_dto.getPaymented_ds();
-		//扣除虎钻
-		final AtomicLong vcurrency_current_leave = new AtomicLong(0l);
 		//订单处理逻辑 
 		Order order = orderFacadeService.validateOrderId(orderid);
 		User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
+		//剩余虎钻
+		final AtomicLong vcurrency_current_leave = new AtomicLong(0l);
 		if(bindUser != null && bindUser.getId().intValue() >0){
 			int uid = bindUser.getId().intValue();
 			String mobileno = bindUser.getMobileno();
-			SnkAuthenticateResultType ret = userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(uid,orderid, order.getVcurrency(), "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
+			SnkAuthenticateResultType ret = userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(uid,orderid,UWalletTransType.PurchaseInternetServiceUsedVForSMS, order.getVcurrency(), "短信认证 虎钻购买上网时间",new IWalletVCurrencySpendCallback(){
 				@Override
 				public boolean beforeCheck(int uid, long vcurrency_cost,long vcurrency_has) {
 					//业务需求 如果短信验证通过则直接扣款，负数也扣款
-					/*if(vcurrency_has < vcurrency_cost){
-						return false;
-					}else{
-						return true;
-					}*/
 					return true;
 				}
 				@Override
@@ -427,18 +424,15 @@ public class AsyncOrderPaymentNotifyService{
 		//订单处理逻辑 
 		Order order = orderFacadeService.validateOrderId(orderid);
 		User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
+		//剩余虎钻
+		final AtomicLong vcurrency_current_leave = new AtomicLong(0l);
 		if(bindUser != null && bindUser.getId().intValue() >0){
-/*			int uid = bindUser.getId().intValue();
+			int uid = bindUser.getId().intValue();
 			String mobileno = bindUser.getMobileno();
-			SnkAuthenticateResultType ret = userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(uid,orderid, order.getVcurrency(), "通过虎钻支付 虚拟币购买道具",new IWalletVCurrencySpendCallback(){
+			SnkAuthenticateResultType ret = userWalletFacadeService.vcurrencyFromUserWalletForSnkAuthenticate(uid,orderid,UWalletTransType.PurchaseInternetServiceUsedVForWechat, order.getVcurrency(), "微信认证 虎钻购买上网时间",new IWalletVCurrencySpendCallback(){
 				@Override
 				public boolean beforeCheck(int uid, long vcurrency_cost,long vcurrency_has) {
 					//业务需求 如果短信验证通过则直接扣款，负数也扣款
-					if(vcurrency_has < vcurrency_cost){
-						return false;
-					}else{
-						return true;
-					}
 					return true;
 				}
 				@Override
@@ -479,7 +473,7 @@ public class AsyncOrderPaymentNotifyService{
 	   			case Failed:
 	   				//扣款失败，原因不明，依然通知uportal可以放行
 	   				break;
-	   		}*/
+	   		}
 		}else{
 			logger.info(String.format("order[%s] mac[%s] devices unbinded",order.getId(),order.getMac()));
 		}

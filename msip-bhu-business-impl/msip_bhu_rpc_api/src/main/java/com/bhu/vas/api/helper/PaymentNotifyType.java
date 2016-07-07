@@ -7,7 +7,7 @@ public enum PaymentNotifyType {
 	
 	NormalPaymentNotify("支付系统支付成功通知","normal payment notify","NLN"),
 	SMSPaymentNotify("短信认证成功通知","sms payment notify","SMN"),
-	WechatPaymentNotify("微信认证成功通知","wechat payment notify","WCN"),
+	WechatPaymentNotify("微信认证成功通知","weichat payment notify","WCN"),
 	;
 	
 	static Map<String, PaymentNotifyType> allActionMessageTypes;

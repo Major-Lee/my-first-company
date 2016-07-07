@@ -120,7 +120,7 @@ public class UserSharedNetworksRepairEnvOp {
 								psn.setRemote_auth_url(psn.getRemote_auth_url().replace("123.56.227.18", "ucloud.bhuwifi.com"));
 								psn.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
 								psn.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);								
-							}else if(SharedNetworkType.WeichatSecure == snktype){
+							}else if(SharedNetworkType.WechatSecure == snktype){
 								psn.setRemote_auth_url(psn.getRemote_auth_url().replace("123.56.227.18", "ucloud.bhuwifi.com"));
 								psn.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
 								psn.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);								

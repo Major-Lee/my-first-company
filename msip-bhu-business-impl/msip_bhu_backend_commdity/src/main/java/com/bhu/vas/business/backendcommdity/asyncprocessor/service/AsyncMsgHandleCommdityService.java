@@ -1,24 +1,17 @@
 package com.bhu.vas.business.backendcommdity.asyncprocessor.service;
 
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
-import com.bhu.vas.business.ds.commdity.service.OrderService;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
 @Service
 public class AsyncMsgHandleCommdityService {
-	private final Logger logger = LoggerFactory.getLogger(AsyncMsgHandleCommdityService.class);
+	//private final Logger logger = LoggerFactory.getLogger(AsyncMsgHandleCommdityService.class);
 	
-	@Resource
+	/*@Resource
 	private OrderService orderService;
 	
 	@Resource
-	private OrderFacadeService orderFacadeService;
+	private OrderFacadeService orderFacadeService;*/
 	
 	/**
 	 * 订单支付成功后续处理
