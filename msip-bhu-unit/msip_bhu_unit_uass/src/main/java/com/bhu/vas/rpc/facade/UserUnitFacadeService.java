@@ -749,7 +749,11 @@ public class UserUnitFacadeService {
 				userManageDTO.setSignature(_user.getMemo());
 				userManageDTO.setRegdevice(_user.getRegdevice());
 				userManageDTO.setUserLabel("");
-				userManageDTO.setCreateTime(_user.getCreated_at().toString());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
+		        if(_user.getCreated_at() != null){
+		        	String time =sdf.format(_user.getCreated_at()); 
+					userManageDTO.setCreateTime(time);
+		        }
 				userManageDTO.setRewardStyle("");
 				userManageDTO.setIsCashBack("");
 				userManageDTO.setUserNum(tailusers.getTotalItemsCount());
@@ -830,7 +834,12 @@ public class UserUnitFacadeService {
 			userManageDTO.setMobileNo(user.getMobileno());
 			userManageDTO.setRegdevice(user.getRegdevice());
 			userManageDTO.setUserLabel("");
-			userManageDTO.setCreateTime(user.getCreated_at().toString());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
+	        if(user.getCreated_at() != null){
+	        	String time =sdf.format(user.getCreated_at()); 
+				userManageDTO.setCreateTime(time);
+	        }
+			//userManageDTO.setCreateTime(user.getCreated_at().toString());
 			userManageDTO.setRewardStyle("");
 			userManageDTO.setIsCashBack("");
 			userManageDTO.setUserNum(1);
