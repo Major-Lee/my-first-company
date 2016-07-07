@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.charging.model.UserIncome;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
@@ -27,6 +28,7 @@ import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
+import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserSignInOrOnFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
@@ -83,6 +85,8 @@ public class UserUnitFacadeService {
 	
 	@Resource
 	private UserActivityService userActivityService;
+	@Resource
+	private UserIncomeService userIncomeService;
 
 	/**
 	 * 需要兼容uidParam为空的情况
@@ -789,6 +793,19 @@ public class UserUnitFacadeService {
 			userActivityVTO.setIncome(userActivity.getIncome());
 			userActivityVTO.setRate(userActivity.getRate());
 			userActivityVTO.setStatus(userActivity.getStatus());
+			Date date = new Date();  
+	        Calendar calendar = Calendar.getInstance();  
+	        calendar.setTime(date);  
+	        calendar.add(Calendar.DAY_OF_MONTH, -1);  
+	        date = calendar.getTime();  
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+	        String time = sdf.format(date); 
+			List<UserIncome> userIncome=userIncomeService.findListByUid(uid, time);
+			if(userIncome!=null&&userIncome.size()>0){
+				userActivityVTO.setUserIncome(Double.valueOf(userIncome.get(0).getIncome()));
+			}else{
+				userActivityVTO.setUserIncome(0);
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userActivityVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

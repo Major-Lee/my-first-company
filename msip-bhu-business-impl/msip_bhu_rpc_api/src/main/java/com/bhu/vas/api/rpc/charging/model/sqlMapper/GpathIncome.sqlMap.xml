@@ -6,7 +6,7 @@
 
   <resultMap id="modelResult" type="gpathIncome">
     <id property="id" column="id"/>
-    <id property="gpath" column="gpath"/>
+    <result property="gpath" column="gpath"/>
     <result property="time" column="time"/>
     <result property="income" column="income"/>
     <result property="updated_at" column="updated_at"/>
