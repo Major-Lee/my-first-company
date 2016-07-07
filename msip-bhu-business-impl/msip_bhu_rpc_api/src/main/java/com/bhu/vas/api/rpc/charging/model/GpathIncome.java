@@ -1,9 +1,9 @@
 package com.bhu.vas.api.rpc.charging.model;
 
-import com.smartwork.msip.cores.orm.model.BaseIntModel;
+import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
-public class GpathIncome extends BaseIntModel{
+public class GpathIncome extends BaseStringModel{
 	private String time;
 	private String gpath;
 	private String income;

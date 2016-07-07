@@ -6,7 +6,7 @@
 
   <resultMap id="modelResult" type="userIncome">
     <id property="id" column="id"/>
-    <id property="uid" column="uid"/>
+    <result property="uid" column="uid"/>
     <result property="time" column="time"/>
     <result property="income" column="income"/>
     <result property="updated_at" column="updated_at"/>
@@ -165,7 +165,9 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
-	
+	<select id="countIncome" resultType="Double" parameterType="int">
+	    select sum(income) from <include refid="modelTableName" /> where uid=#{uid}
+	</select>
 	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
 		${proc_call} 		
 	</select>
