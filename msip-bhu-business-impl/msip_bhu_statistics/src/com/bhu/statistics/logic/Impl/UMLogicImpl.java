@@ -986,5 +986,78 @@ public class UMLogicImpl implements IUMLogic{
 	    BigDecimal b = new BigDecimal(Double.toString(v));         
 	    BigDecimal one = new BigDecimal("1");         
 	    return b.divide(one,scale,BigDecimal.ROUND_HALF_UP).doubleValue();         
-	}         
+	}
+
+	@Override
+	public String queryLineChart(String data) {
+		String dataType=StringUtils.EMPTY;
+		String beginTime=StringUtils.EMPTY;
+		String endTime=StringUtils.EMPTY;
+		
+		String result=StringUtils.EMPTY;
+		try {
+			JSONObject object = JSONObject.fromObject(data);
+			dataType = object.getString("type");
+			beginTime = object.getString("startTime");
+			endTime = object.getString("endTime");
+ 		} catch (Exception e) {
+			log.info("JSON转化错误");
+			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON转化错误", true);
+			return result;
+		}
+		List<String> daysList=new ArrayList<String>();
+		daysList=DateUtils.getLastDay(60);
+		beginTime=daysList.get(daysList.size()-1);
+		endTime=DataUtils.beforeDay();
+		
+		List<List<Object>> sevenDay=new ArrayList<List<Object>>(); 
+		List<List<Object>> thirtyDay=new ArrayList<List<Object>>(); 
+		List<List<Object>> sixtyDay=new ArrayList<List<Object>>(); 
+		Map<String,Object> equipmentMap=new HashMap<String,Object>();
+		Map<String,Object> orderMap=new HashMap<String,Object>();
+		Map<String,Object> priceMap=new HashMap<String,Object>();
+		
+		for(int i=0;i<daysList.size();i++){
+			List<Object> days=new ArrayList<Object>();
+			days.add(daysList.get(i));
+			if(i==6){
+				sevenDay.add(days);
+			}else if(i==29){
+				thirtyDay.add(days);
+			}else if(i==59){
+				sixtyDay.add(days);
+			}
+			String equipment = StringUtils.EMPTY;
+			equipment = BhuCache.getInstance().getEquipment(daysList.get(i), "equipment");
+			JSONObject obj = JSONObject.fromObject(equipment);
+			int dc = 0;
+			int doc = 0;
+			if(StringUtils.isBlank(equipment)){
+				map.put("dc", dc);
+				map.put("doc", doc);
+			}else{
+				//处理结果
+				if(obj.get("dc") != null && obj.get("doc") != null){
+					dc = (Integer)obj.get("dc");
+					doc = (Integer)obj.get("doc");
+					map.put("dc", dc);
+					map.put("doc", doc);
+				}else{
+					map.put("dc", dc);
+					map.put("doc", doc);
+				}
+			}
+			
+		}
+		equipmentMap.put("",sevenDay);
+		
+		Map<String,Object> resMap=new HashMap<String,Object>();
+		resMap.put("7", sevenDay);
+		resMap.put("30", thirtyDay);
+		resMap.put("60", sixtyDay);
+		
+		result=NotifyUtil.success(resMap);
+		System.out.println(result);
+		return result;
+	}
 }
