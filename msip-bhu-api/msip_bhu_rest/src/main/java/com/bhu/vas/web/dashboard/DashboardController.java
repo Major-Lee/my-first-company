@@ -235,13 +235,14 @@ public class DashboardController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true,value="sk") String secretKey,
+			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
 			@RequestParam(required = true) int uid) {
 		ResponseError validateError = validate(secretKey);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<UserSnkPortalVTO> rpcResult = deviceSharedNetworkRpcService.fetchUserSnks4Portal(uid);
+		RpcResponseDTO<UserSnkPortalVTO> rpcResult = deviceSharedNetworkRpcService.fetchUserSnks4Portal(uid,sharenetwork_type);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else

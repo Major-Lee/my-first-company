@@ -122,10 +122,14 @@ public class DeviceSharedNetworkUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	public RpcResponseDTO<UserSnkPortalVTO> fetchUserSnks4Portal(int uid) {
+	public RpcResponseDTO<UserSnkPortalVTO> fetchUserSnks4Portal(int uid,String sharenetwork_type) {
 		User user = UserValidateServiceHelper.validateUser(uid,sharedNetworksFacadeService.getUserService());
 		try{
-			List<ParamSharedNetworkDTO> snks = sharedNetworksFacadeService.fetchAllUserSharedNetworkConf(uid, SharedNetworkType.SafeSecure);
+			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
+			if(sharedNetwork == null){
+				sharedNetwork = SharedNetworkType.SafeSecure;
+			}
+			List<ParamSharedNetworkDTO> snks = sharedNetworksFacadeService.fetchAllUserSharedNetworkConf(uid, sharedNetwork);
 			UserSnkPortalVTO vto = new UserSnkPortalVTO();
 			vto.setId(user.getId());
 			vto.setNick(user.getNick());
