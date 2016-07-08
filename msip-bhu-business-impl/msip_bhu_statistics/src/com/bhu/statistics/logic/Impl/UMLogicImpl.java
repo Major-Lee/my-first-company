@@ -990,139 +990,81 @@ public class UMLogicImpl implements IUMLogic{
 
 	@Override
 	public String queryLineChart(String data) {
-		
-		String result=StringUtils.EMPTY;
-		List<String> daysList=new ArrayList<String>();
-		daysList=DateUtils.getLastDay(60);
-		
-		Map<String,Object> equipmentMap=new HashMap<String,Object>();
-		Map<String,Object> orderMap=new HashMap<String,Object>();
-		Map<String,Object> priceMap=new HashMap<String,Object>();
-		
-		List<String> sevenOnlineEquipmentNums=new ArrayList<String>();
-		List<String> sevenOrderTotalNums=new ArrayList<String>();
-		List<String> sevenOrderComNums=new ArrayList<String>();
-		List<String> sevenOrderPrices=new ArrayList<String>();
-		List<String> thirtyOnlineEquipmentNums=new ArrayList<String>();
-		List<String> thirtyOrderTotalNums=new ArrayList<String>();
-		List<String> thirtyOrderComNums=new ArrayList<String>();
-		List<String> thirtyOrderPrices=new ArrayList<String>();
-		List<String> sixtyOnlineEquipmentNums=new ArrayList<String>();
-		List<String> sixtyOrderTotalNums=new ArrayList<String>();
-		List<String> sixtyOrderComNums=new ArrayList<String>();
-		List<String> sixtyOrderPrices=new ArrayList<String>();
-		
-		
-		
-		List<List<String>> thirtyEquipment=new ArrayList<List<String>>();
-		List<List<String>> thirtyOrder=new ArrayList<List<String>>();
-		List<List<String>> thirtyPrice=new ArrayList<List<String>>();
-		List<List<String>> sevenEquipment=new ArrayList<List<String>>();
-		List<List<String>> sevenOrder=new ArrayList<List<String>>();
-		List<List<String>> sevenPrice=new ArrayList<List<String>>();
-		List<List<String>> sixtyEquipment=new ArrayList<List<String>>();
-		List<List<String>> sixtyOrder=new ArrayList<List<String>>();
-		List<List<String>> sixtyPrice=new ArrayList<List<String>>();
-
-		List<String> sevenDays=new ArrayList<String>();
-		List<String> thirtyDays=new ArrayList<String>();
-		List<String> sixtyDays=new ArrayList<String>();
- 		for(int i=0;i<daysList.size();i++){
-			String equipmentString = StringUtils.EMPTY;
-			equipmentString = BhuCache.getInstance().getEquipment(daysList.get(i), "equipment");
-			JSONObject obj = JSONObject.fromObject(equipmentString);
-			int doc = 0;
-			if(StringUtils.isNotBlank(equipmentString)){
-				//处理结果
-				if(obj.get("doc") != null){
-					doc = (Integer)obj.get("doc");
-				}
-			}
-			String orderStatist = StringUtils.EMPTY; 
-			orderStatist = BhuCache.getInstance().getStOrder(daysList.get(i),"stOrder");
-			
-			int orderNums=0;
-			int orderCompNums=0;
-			double orderPrice=0;
-			if(StringUtils.isNotBlank(orderStatist)){
-				JSONObject orderObj = JSONObject.fromObject(orderStatist);
-				if( orderObj.get("occ") != null ){
-					//单台订单
-					orderNums = (Integer)orderObj.get("occ");
-				}
-				if(orderObj.get("ofc") != null){
-					orderCompNums = (Integer)orderObj.get("ofc");
-				}
-				if(orderObj.get("ofa") != null){
-					orderPrice = orderObj.getDouble("ofa");
-				}
-			}
-			if(i<=6){
-				sevenDays.add(daysList.get(i));
-				sevenOnlineEquipmentNums.add(String.valueOf(doc));
-				sevenOrderTotalNums.add(String.valueOf(orderNums));
-				sevenOrderComNums.add(String.valueOf(orderCompNums));
-				sevenOrderPrices.add(String.valueOf(orderPrice));
-			}
-			if(i<=29){
-				thirtyDays.add(daysList.get(i));
-				thirtyOnlineEquipmentNums.add(String.valueOf(doc));
-				thirtyOrderTotalNums.add(String.valueOf(orderNums));
-				thirtyOrderComNums.add(String.valueOf(orderCompNums));
-				thirtyOrderPrices.add(String.valueOf(orderPrice));
-			}
-			if(i<=59){
-				sixtyDays.add(daysList.get(i));
-				sixtyOnlineEquipmentNums.add(String.valueOf(doc));
-				sixtyOrderTotalNums.add(String.valueOf(orderNums));
-				sixtyOrderComNums.add(String.valueOf(orderCompNums));
-				sixtyOrderPrices.add(String.valueOf(orderPrice));
-			}
-			
-			if(i==6){
-				sevenOrder.add(sevenDays);
-				sevenOrder.add(sevenOrderTotalNums);
-				sevenOrder.add(sevenOrderComNums);
-				sevenEquipment.add(sevenDays);
-				sevenEquipment.add(sevenOnlineEquipmentNums);
-				sevenPrice.add(sevenDays);
-				sevenPrice.add(sevenOrderPrices);
-			}
-			if(i==29){
-				thirtyEquipment.add(sevenDays);
-				thirtyEquipment.add(thirtyOnlineEquipmentNums);
-				thirtyOrder.add(sevenDays);
-				thirtyOrder.add(sevenOrderTotalNums);
-				thirtyOrder.add(sevenOrderComNums);
-				thirtyPrice.add(thirtyDays);
-				thirtyPrice.add(thirtyOrderPrices);
-			}
-			if(i==59){
-				sixtyEquipment.add(sevenDays);
-				sixtyEquipment.add(sixtyOnlineEquipmentNums);
-				sixtyOrder.add(sixtyDays);
-				sixtyOrder.add(sixtyOrderTotalNums);
-				sixtyOrder.add(sixtyOrderComNums);
-				sixtyPrice.add(sixtyDays);
-				sixtyPrice.add(sixtyOrderPrices);
-			}
+		String result = StringUtils.EMPTY;
+		if(StringUtils.isBlank(data)){
+			log.info("请求参数为空");
+			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "请求参数为空", true);
+			return result;
 		}
- 		equipmentMap.put("seven", sevenEquipment);
- 		orderMap.put("seven", sevenOrder);
- 		priceMap.put("seven", sevenPrice);
- 		equipmentMap.put("thirty", thirtyEquipment);
- 		orderMap.put("thirty", thirtyOrder);
- 		priceMap.put("thirty", thirtyPrice);
- 		equipmentMap.put("sixty", sixtyEquipment);
- 		orderMap.put("sixty", sixtyOrder);
- 		priceMap.put("sixty", sixtyPrice);
+		int type=7;
+		String choseTable=StringUtils.EMPTY;
+		try {
+			JSONObject object = JSONObject.fromObject(data);
+			type = object.getInt("type");
+			choseTable=object.getString("choseTable");
+ 		} catch (Exception e) {
+			log.info("JSON转化错误");
+			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON转化错误", true);
+			return result;
+		}
 		
-		Map<String,Object> resMap=new HashMap<String,Object>();
-		resMap.put("equipment", equipmentMap);
-		resMap.put("order", orderMap);
-		resMap.put("price", priceMap);
+		List<String> daysList=new ArrayList<String>();
+		daysList=DateUtils.getLastDay(type);
 		
-		result=NotifyUtil.success(resMap);
+		List<List<Object>> first=new ArrayList<List<Object>>();
+		
+		List<Object> second=new ArrayList<Object>();
+		List<Object> third=new ArrayList<Object>();
+
+		List<Object> days=new ArrayList<Object>();
+ 		for(int i=0;i<daysList.size();i++){
+ 			if(choseTable.equals("equipment")){
+ 				String equipmentString = StringUtils.EMPTY;
+ 				equipmentString = BhuCache.getInstance().getEquipment(daysList.get(i), "equipment");
+ 				JSONObject obj = JSONObject.fromObject(equipmentString);
+ 				int doc = 0;
+ 				if(StringUtils.isNotBlank(equipmentString)){
+ 					//处理结果
+ 					if(obj.get("doc") != null){
+ 						doc = (Integer)obj.get("doc");
+ 					}
+ 				}
+ 				second.add(doc);
+ 			}
+ 			if(choseTable.equals("price")||choseTable.equals("order")){
+ 				String orderStatist = StringUtils.EMPTY; 
+ 				orderStatist = BhuCache.getInstance().getStOrder(daysList.get(i),"stOrder");
+ 				int orderNums=0;
+ 				int orderCompNums=0;
+ 				double orderPrice=0;
+ 				if(StringUtils.isNotBlank(orderStatist)){
+ 					JSONObject orderObj = JSONObject.fromObject(orderStatist);
+ 					if( orderObj.get("occ") != null ){
+ 						//单台订单
+ 						orderNums = (Integer)orderObj.get("occ");
+ 					}
+ 					if(orderObj.get("ofc") != null){
+ 						orderCompNums = (Integer)orderObj.get("ofc");
+ 					}
+ 					if(orderObj.get("ofa") != null){
+ 						orderPrice = orderObj.getDouble("ofa");
+ 					}
+ 				}
+ 				if(choseTable.equals("price")){
+ 					second.add(orderPrice);
+ 				}else{
+ 					second.add(orderNums);
+ 					third.add(orderCompNums);
+ 				}
+ 			}
+			days.add(daysList.get(i));
+		}
+ 		first.add(days);
+		first.add(second);
+ 		if(choseTable.equals("order")){
+ 			first.add(third);
+ 		}
+		result=NotifyUtil.success(first);
 		System.out.println(result);
 		return result;
 	}
