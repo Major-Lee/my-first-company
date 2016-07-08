@@ -7,6 +7,12 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 @Repository
 public class MacIncomeDao extends AbstractCoreDao<Integer, MacIncome>{
 	public double countIncome(String mac) {
-		return super.getSqlSessionMasterTemplate().selectOne(MacIncome.class.getName()+".countIncome",mac);
+		double income=0;
+		try {
+			income=super.getSqlSessionMasterTemplate().selectOne(MacIncome.class.getName()+".countIncome",mac);
+		} catch (Exception e) {
+			return income;
+		}
+		return income;
 	}
 }
