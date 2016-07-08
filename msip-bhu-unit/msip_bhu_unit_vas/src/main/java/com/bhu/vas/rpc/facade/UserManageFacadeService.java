@@ -27,6 +27,8 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.statistics.service.MacIncomeService;
+import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
@@ -63,6 +65,12 @@ public class UserManageFacadeService {
 	
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
+	
+	@Resource
+	private UserIncomeService userIncomeService;
+	
+	@Resource
+	private MacIncomeService macIncomeService;
 	/**
 	 * 查询用户交易信息
 	 * @param uid
@@ -92,7 +100,11 @@ public class UserManageFacadeService {
 				}
 			}
 			
-			//TODO 获取历史总收益 订单数 打赏成功数信息
+			//TODO  订单数 打赏成功数信息 订单成功率【1.0版本暂时不添加】
+			//历史总收益
+			double totalIncome = 0.00;
+			totalIncome = userIncomeService.getEntityDao().countIncome(uid);
+			userIncomeDTO.setTotalIncome(totalIncome);
 			
 			//根据uid查询用户交易信息
 			UWalletTransMode tmode = null;
@@ -172,7 +184,8 @@ public class UserManageFacadeService {
 			userManageDeviceDTO.setRewardDeviceNum(String.valueOf(rewardDeviceNum));
 			//根据用户Id查询获取设备详细信息 
 			List<UserDeviceInfoDTO> deviceList = new ArrayList<UserDeviceInfoDTO>();
-			Page<WifiDeviceDocument> devicePages = wifiDeviceDataSearchService.searchPageByCommon(uid, "", "", "", "", "", pageno, pagesize);
+			int searchPageNo = pageno>=1?(pageno-1):pageno;
+			Page<WifiDeviceDocument> devicePages = wifiDeviceDataSearchService.searchPageByCommon(uid, "", "", "", "", "", searchPageNo, pagesize);
 			List<UserManageDeviceDTO> vtos = new ArrayList<UserManageDeviceDTO>();
 			int total = 0;
 			if(devicePages != null){
@@ -196,8 +209,10 @@ public class UserManageFacadeService {
 							userDeviceInfoDTO.setAccNetType(wifiDeviceDocument.getD_snk_type());
 							//用户分成比例 TODO
 							//userDeviceInfoDTO.setUserGainsharing(userGainsharing);
-							//收益  TODO
-							//userDeviceInfoDTO.setIncome(income);
+							//收益  
+							double income = 0.00;
+							income = macIncomeService.getEntityDao().countIncome(wifiDeviceDocument.getD_mac());
+							userDeviceInfoDTO.setIncome(income);
 							//状态
 							userDeviceInfoDTO.setDeviceStatus(wifiDeviceDocument.getD_online());
 							//所属分组
