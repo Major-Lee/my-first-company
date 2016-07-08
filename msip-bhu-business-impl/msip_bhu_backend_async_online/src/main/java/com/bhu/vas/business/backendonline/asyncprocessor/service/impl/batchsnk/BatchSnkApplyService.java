@@ -10,13 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.DownCmds;
+import com.bhu.vas.api.dto.search.increment.IncrementBulkDocumentDTO;
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.UPortalHttpHelper;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
-import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
@@ -27,8 +28,9 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerSe
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 @Service
@@ -40,8 +42,11 @@ public class BatchSnkApplyService {
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
 	
+//	@Resource
+//	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+	
 	@Resource
-	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+	private KafkaMessageIncrementProducer incrementMessageTopicProducer;
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
@@ -76,7 +81,9 @@ public class BatchSnkApplyService {
 												DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
 										downCmds.add(DownCmds.builderDownCmds(mac, cmd));
 									}
-									wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.On.getType());
+									//wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.On.getType());
+									incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(rdmacs, 
+											IncrementActionEnum.WD_SharedNetworkChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 								}
 							});
 					break;
@@ -96,7 +103,9 @@ public class BatchSnkApplyService {
 											DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
 									downCmds.add(DownCmds.builderDownCmds(mac, cmd));
 								}
-								wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.Off.getType());
+								//wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.Off.getType());
+								incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(rdmacs, 
+										IncrementActionEnum.WD_SharedNetworkChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 							}
 						});
 					 //TODO:如果为SmsSecure 则需要判定此用户id当前是否还存在此类型的网络处于开启状态，如果都关闭了，则需要重置通知开关并通知portal服务器

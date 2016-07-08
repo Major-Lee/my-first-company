@@ -11,7 +11,6 @@ import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
 
 /**
  * Created by bluesand on 9/8/15.
@@ -36,8 +35,8 @@ public class AgentDeviceClaimServiceHandler {
     @Resource
     private UserService userService;
 
-	@Resource
-	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
+//	@Resource
+//	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
 
     /**
      * 导入代理商设备

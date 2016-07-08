@@ -29,6 +29,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
+import com.bhu.vas.api.dto.search.increment.IncrementBulkDocumentDTO;
 import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
 import com.bhu.vas.api.dto.search.increment.IncrementSingleDocumentDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
@@ -37,7 +38,6 @@ import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
-import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
@@ -100,8 +100,6 @@ import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
-import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -139,8 +137,8 @@ public class AsyncMsgHandleService {
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 
-	@Resource
-	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
+//	@Resource
+//	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
 
 	@Resource
 	private IDaemonRpcService daemonRpcService;
@@ -172,8 +170,8 @@ public class AsyncMsgHandleService {
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
 
-	@Resource
-	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
+//	@Resource
+//	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
 
 //	@Resource
 //	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
@@ -277,8 +275,10 @@ public class AsyncMsgHandleService {
 								logger.info(
 										String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
 								// 更新索引，下发指令
-								wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),
-										psn.getTemplate(),SnkTurnStateEnum.On.getType());
+//								wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),
+//										psn.getTemplate(),SnkTurnStateEnum.On.getType());
+								incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(dto.getMac(), 
+										IncrementActionEnum.WD_SharedNetworkChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 								// psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
 								// 生成下发指令
 								String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(
@@ -508,7 +508,9 @@ public class AsyncMsgHandleService {
 		}
 		// 5:增量索引
 		// wifiDeviceIndexIncrementService.cmupWithWifiDeviceOnlinesIndexIncrement(entitys);
-		wifiDeviceIndexIncrementProcesser.onlineMultiUpsertIncrement(entitys);
+		//wifiDeviceIndexIncrementProcesser.onlineMultiUpsertIncrement(entitys);
+		incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(ids, 
+				IncrementActionEnum.WD_OnlineStatus, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 		// 设备统计
 		deviceFacadeService.deviceStatisticsOnlines(ds, DeviceStatistics.Statis_Device_Type);
 	}
@@ -1114,9 +1116,12 @@ public class AsyncMsgHandleService {
 			String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,
 					DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
 			daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);*/
-			wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(mac,sharednetwork.getSharednetwork_type(),sharednetwork.getTemplate(),SnkTurnStateEnum.Off.getType());
+			//wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(mac,sharednetwork.getSharednetwork_type(),sharednetwork.getTemplate(),SnkTurnStateEnum.Off.getType());
 			logger.info(String.format("Device[%s] SharedNetwork Clear Successfully!",mac));
 			sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().deleteById(mac);
+			
+			incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(mac, 
+					IncrementActionEnum.WD_SharedNetworkChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 		}
 	}
 	/**
@@ -1161,7 +1166,9 @@ public class AsyncMsgHandleService {
 										deviceCMDGenFacadeService);
 								daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 							}
-							wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.On.getType());
+							//wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.On.getType());
+							incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(rdmacs, 
+									IncrementActionEnum.WD_SharedNetworkChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 						}
 					});
 		} finally {
@@ -1296,8 +1303,11 @@ public class AsyncMsgHandleService {
 			wifiDeviceService.update(entity);
 			// 3:增量索引
 			// wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
-			wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(entity.getId(), Double.parseDouble(entity.getLat()),
-					Double.parseDouble(entity.getLon()), entity.getFormatted_address());
+//			wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(entity.getId(), Double.parseDouble(entity.getLat()),
+//					Double.parseDouble(entity.getLon()), entity.getFormatted_address());
+			
+			incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(entity.getId(), 
+					IncrementActionEnum.WD_LocationChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 		}
 		logger.info(
 				String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
@@ -1606,14 +1616,18 @@ public class AsyncMsgHandleService {
 	public void wifiDevicesGrayChanged(String message) {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesGrayChanged message[%s]", message));
 		WifiDevicesGrayChangedDTO dto = JsonHelper.getDTO(message, WifiDevicesGrayChangedDTO.class);
-		this.wifiDeviceIndexIncrementProcesser.graylevelMultiUpdIncrement(dto.getMacs(), String.valueOf(dto.getGl()));
+		//this.wifiDeviceIndexIncrementProcesser.graylevelMultiUpdIncrement(dto.getMacs(), String.valueOf(dto.getGl()));
+		incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(dto.getMacs(), 
+				IncrementActionEnum.WD_GraylevelChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesGrayChanged message[%s] successful", message));
 	}
 
 	public void wifiDevicesModuleStyleChanged(String message) {
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesModuleStyleChanged message[%s]", message));
 		WifiDevicesModuleStyleChangedDTO dto = JsonHelper.getDTO(message, WifiDevicesModuleStyleChangedDTO.class);
-		this.wifiDeviceIndexIncrementProcesser.templateMultiUpdIncrement(dto.getMacs(), dto.getStyle());
+		//this.wifiDeviceIndexIncrementProcesser.templateMultiUpdIncrement(dto.getMacs(), dto.getStyle());
+		incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(dto.getMacs(), 
+				IncrementActionEnum.WD_TemplateChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDevicesModuleStyleChanged message[%s] successful",
 				message));
 	}

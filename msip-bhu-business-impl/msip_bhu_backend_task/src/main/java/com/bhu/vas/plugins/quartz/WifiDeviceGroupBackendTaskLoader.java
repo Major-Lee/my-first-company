@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 
 import com.bhu.vas.api.dto.DownCmds;
+import com.bhu.vas.api.dto.search.increment.IncrementBulkDocumentDTO;
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
 import com.bhu.vas.api.helper.IGenerateDeviceSetting;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
@@ -30,10 +32,10 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 import com.bhu.vas.business.ds.devicegroup.facade.WifiDeviceGroupFacadeService;
 import com.bhu.vas.business.ds.devicegroup.service.WifiDeviceBackendTaskService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -71,8 +73,11 @@ public class WifiDeviceGroupBackendTaskLoader {
     @Resource
     private TaskFacadeService taskFacadeService;
 
-    @Resource
-    private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
+//    @Resource
+//    private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
+    
+	@Resource
+	private KafkaMessageIncrementProducer incrementMessageTopicProducer;
 
     public void execute() throws InterruptedException {
 	logger.info("WifiDeviceGroupBackendTaskLoader starting...");
@@ -250,9 +255,11 @@ public class WifiDeviceGroupBackendTaskLoader {
 	    
 	    String extparams = task.getContext_var();
 	    try {
-		wifiDeviceIndexIncrementProcesser
-		    .templateMultiUpdIncrement(
-			    ids,JsonHelper.getString(extparams, "style"));
+//		wifiDeviceIndexIncrementProcesser
+//		    .templateMultiUpdIncrement(
+//			    ids,JsonHelper.getString(extparams, "style"));
+			incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(ids, 
+					IncrementActionEnum.WD_TemplateChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
