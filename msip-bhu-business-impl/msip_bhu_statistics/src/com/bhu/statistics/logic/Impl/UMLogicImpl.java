@@ -825,7 +825,7 @@ public class UMLogicImpl implements IUMLogic{
 						singleGains =  b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
 						map.put("singleGains", singleGains);
 					}
-					dayGains = orderObj.getDouble("ofa");;
+					dayGains = orderObj.getDouble("ofa");
 					map.put("dayGains", dayGains);
 				}else{
 					map.put("singleOrderNum", singleOrderNum);
@@ -990,71 +990,137 @@ public class UMLogicImpl implements IUMLogic{
 
 	@Override
 	public String queryLineChart(String data) {
-		String dataType=StringUtils.EMPTY;
-		String beginTime=StringUtils.EMPTY;
-		String endTime=StringUtils.EMPTY;
 		
 		String result=StringUtils.EMPTY;
-		try {
-			JSONObject object = JSONObject.fromObject(data);
-			dataType = object.getString("type");
-			beginTime = object.getString("startTime");
-			endTime = object.getString("endTime");
- 		} catch (Exception e) {
-			log.info("JSON转化错误");
-			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON转化错误", true);
-			return result;
-		}
 		List<String> daysList=new ArrayList<String>();
 		daysList=DateUtils.getLastDay(60);
-		beginTime=daysList.get(daysList.size()-1);
-		endTime=DataUtils.beforeDay();
 		
-		List<List<Object>> sevenDay=new ArrayList<List<Object>>(); 
-		List<List<Object>> thirtyDay=new ArrayList<List<Object>>(); 
-		List<List<Object>> sixtyDay=new ArrayList<List<Object>>(); 
 		Map<String,Object> equipmentMap=new HashMap<String,Object>();
 		Map<String,Object> orderMap=new HashMap<String,Object>();
 		Map<String,Object> priceMap=new HashMap<String,Object>();
 		
-		for(int i=0;i<daysList.size();i++){
-			List<Object> days=new ArrayList<Object>();
-			days.add(daysList.get(i));
-			if(i==6){
-				sevenDay.add(days);
-			}else if(i==29){
-				thirtyDay.add(days);
-			}else if(i==59){
-				sixtyDay.add(days);
-			}
-			String equipment = StringUtils.EMPTY;
-			equipment = BhuCache.getInstance().getEquipment(daysList.get(i), "equipment");
-			JSONObject obj = JSONObject.fromObject(equipment);
-			int dc = 0;
+		List<String> sevenOnlineEquipmentNums=new ArrayList<String>();
+		List<String> sevenOrderTotalNums=new ArrayList<String>();
+		List<String> sevenOrderComNums=new ArrayList<String>();
+		List<String> sevenOrderPrices=new ArrayList<String>();
+		List<String> thirtyOnlineEquipmentNums=new ArrayList<String>();
+		List<String> thirtyOrderTotalNums=new ArrayList<String>();
+		List<String> thirtyOrderComNums=new ArrayList<String>();
+		List<String> thirtyOrderPrices=new ArrayList<String>();
+		List<String> sixtyOnlineEquipmentNums=new ArrayList<String>();
+		List<String> sixtyOrderTotalNums=new ArrayList<String>();
+		List<String> sixtyOrderComNums=new ArrayList<String>();
+		List<String> sixtyOrderPrices=new ArrayList<String>();
+		
+		
+		
+		List<List<String>> thirtyEquipment=new ArrayList<List<String>>();
+		List<List<String>> thirtyOrder=new ArrayList<List<String>>();
+		List<List<String>> thirtyPrice=new ArrayList<List<String>>();
+		List<List<String>> sevenEquipment=new ArrayList<List<String>>();
+		List<List<String>> sevenOrder=new ArrayList<List<String>>();
+		List<List<String>> sevenPrice=new ArrayList<List<String>>();
+		List<List<String>> sixtyEquipment=new ArrayList<List<String>>();
+		List<List<String>> sixtyOrder=new ArrayList<List<String>>();
+		List<List<String>> sixtyPrice=new ArrayList<List<String>>();
+
+		List<String> sevenDays=new ArrayList<String>();
+		List<String> thirtyDays=new ArrayList<String>();
+		List<String> sixtyDays=new ArrayList<String>();
+ 		for(int i=0;i<daysList.size();i++){
+			String equipmentString = StringUtils.EMPTY;
+			equipmentString = BhuCache.getInstance().getEquipment(daysList.get(i), "equipment");
+			JSONObject obj = JSONObject.fromObject(equipmentString);
 			int doc = 0;
-			if(StringUtils.isBlank(equipment)){
-				map.put("dc", dc);
-				map.put("doc", doc);
-			}else{
+			if(StringUtils.isNotBlank(equipmentString)){
 				//处理结果
-				if(obj.get("dc") != null && obj.get("doc") != null){
-					dc = (Integer)obj.get("dc");
+				if(obj.get("doc") != null){
 					doc = (Integer)obj.get("doc");
-					map.put("dc", dc);
-					map.put("doc", doc);
-				}else{
-					map.put("dc", dc);
-					map.put("doc", doc);
 				}
 			}
+			String orderStatist = StringUtils.EMPTY; 
+			orderStatist = BhuCache.getInstance().getStOrder(daysList.get(i),"stOrder");
 			
+			int orderNums=0;
+			int orderCompNums=0;
+			double orderPrice=0;
+			if(StringUtils.isNotBlank(orderStatist)){
+				JSONObject orderObj = JSONObject.fromObject(orderStatist);
+				if( orderObj.get("occ") != null ){
+					//单台订单
+					orderNums = (Integer)orderObj.get("occ");
+				}
+				if(orderObj.get("ofc") != null){
+					orderCompNums = (Integer)orderObj.get("ofc");
+				}
+				if(orderObj.get("ofa") != null){
+					orderPrice = orderObj.getDouble("ofa");
+				}
+			}
+			if(i<=6){
+				sevenDays.add(daysList.get(i));
+				sevenOnlineEquipmentNums.add(String.valueOf(doc));
+				sevenOrderTotalNums.add(String.valueOf(orderNums));
+				sevenOrderComNums.add(String.valueOf(orderCompNums));
+				sevenOrderPrices.add(String.valueOf(orderPrice));
+			}
+			if(i<=29){
+				thirtyDays.add(daysList.get(i));
+				thirtyOnlineEquipmentNums.add(String.valueOf(doc));
+				thirtyOrderTotalNums.add(String.valueOf(orderNums));
+				thirtyOrderComNums.add(String.valueOf(orderCompNums));
+				thirtyOrderPrices.add(String.valueOf(orderPrice));
+			}
+			if(i<=59){
+				sixtyDays.add(daysList.get(i));
+				sixtyOnlineEquipmentNums.add(String.valueOf(doc));
+				sixtyOrderTotalNums.add(String.valueOf(orderNums));
+				sixtyOrderComNums.add(String.valueOf(orderCompNums));
+				sixtyOrderPrices.add(String.valueOf(orderPrice));
+			}
+			
+			if(i==6){
+				sevenOrder.add(sevenDays);
+				sevenOrder.add(sevenOrderTotalNums);
+				sevenOrder.add(sevenOrderComNums);
+				sevenEquipment.add(sevenDays);
+				sevenEquipment.add(sevenOnlineEquipmentNums);
+				sevenPrice.add(sevenDays);
+				sevenPrice.add(sevenOrderPrices);
+			}
+			if(i==29){
+				thirtyEquipment.add(sevenDays);
+				thirtyEquipment.add(thirtyOnlineEquipmentNums);
+				thirtyOrder.add(sevenDays);
+				thirtyOrder.add(sevenOrderTotalNums);
+				thirtyOrder.add(sevenOrderComNums);
+				thirtyPrice.add(thirtyDays);
+				thirtyPrice.add(thirtyOrderPrices);
+			}
+			if(i==59){
+				sixtyEquipment.add(sevenDays);
+				sixtyEquipment.add(sixtyOnlineEquipmentNums);
+				sixtyOrder.add(sixtyDays);
+				sixtyOrder.add(sixtyOrderTotalNums);
+				sixtyOrder.add(sixtyOrderComNums);
+				sixtyPrice.add(sixtyDays);
+				sixtyPrice.add(sixtyOrderPrices);
+			}
 		}
-		equipmentMap.put("",sevenDay);
+ 		equipmentMap.put("seven", sevenEquipment);
+ 		orderMap.put("seven", sevenOrder);
+ 		priceMap.put("seven", sevenPrice);
+ 		equipmentMap.put("thirty", thirtyEquipment);
+ 		orderMap.put("thirty", thirtyOrder);
+ 		priceMap.put("thirty", thirtyPrice);
+ 		equipmentMap.put("sixty", sixtyEquipment);
+ 		orderMap.put("sixty", sixtyOrder);
+ 		priceMap.put("sixty", sixtyPrice);
 		
 		Map<String,Object> resMap=new HashMap<String,Object>();
-		resMap.put("7", sevenDay);
-		resMap.put("30", thirtyDay);
-		resMap.put("60", sixtyDay);
+		resMap.put("equipment", equipmentMap);
+		resMap.put("order", orderMap);
+		resMap.put("price", priceMap);
 		
 		result=NotifyUtil.success(resMap);
 		System.out.println(result);

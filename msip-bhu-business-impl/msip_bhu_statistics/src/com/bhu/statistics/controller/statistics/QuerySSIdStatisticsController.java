@@ -144,37 +144,7 @@ public class QuerySSIdStatisticsController extends BaseController{
 	public String queryLineChart(HttpServletRequest request,HttpServletResponse response,String data) throws IOException{
 		//返回结果
 		String result = StringUtils.EMPTY;
-		if(StringUtils.isBlank(data)){
-			log.info("请求参数为空");
-			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "请求参数为空", true);
-			//response.getWriter().print(JSONObject.fromObject(result));
-			return result;
-		}
-		//时间类型
-		String dateType = StringUtils.EMPTY;
-		//开始时间
-		String startTime = StringUtils.EMPTY;
-		//结束时间
-		String endTime = StringUtils.EMPTY;
-		try {
-			JSONObject object = JSONObject.fromObject(data);
-			dateType = object.getString("type");
-			startTime = object.getString("startTime");
-			endTime = object.getString("endTime");
-		} catch (Exception e) {
-			log.info("JSON格式转换错误");
-			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON格式转换错误", true);
-			//response.getWriter().print(JSONObject.fromObject(result));
-			return result;
-		} 
 		result=staticsService.queryLineChart(data);
-		if(StringUtils.isNotBlank(startTime) && StringUtils.isNotBlank(endTime)){
-			//按时间间隔查询SSID统计信息
-			result = staticsService.querySSIDInfoByTime(data);
-		}else{
-			//按时间类型查询SSID统计信息
-			result=staticsService.querySSIDInfoByType(data);
-		}
 		return result;
 	}
 	

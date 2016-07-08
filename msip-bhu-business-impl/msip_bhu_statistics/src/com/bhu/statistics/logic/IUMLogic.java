@@ -45,4 +45,6 @@ public interface IUMLogic {
 	 */
 	public String querySSIDInfoByTime(String data);
 
+	public String queryLineChart(String data);
+
 }
