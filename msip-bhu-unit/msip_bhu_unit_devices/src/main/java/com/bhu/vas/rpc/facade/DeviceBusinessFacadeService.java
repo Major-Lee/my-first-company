@@ -39,6 +39,8 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
+import com.bhu.vas.api.dto.search.increment.IncrementSingleDocumentDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -78,9 +80,10 @@ import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -153,9 +156,11 @@ public class DeviceBusinessFacadeService {
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
 
+	//@Resource
+	//private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 	
 	@Resource
-	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+	private KafkaMessageIncrementProducer incrementMessageTopicProducer;
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
@@ -223,7 +228,9 @@ public class DeviceBusinessFacadeService {
 		wifi_device_module.setLast_module_reged_at(reged_at);
 		wifiDeviceModuleService.update(wifi_device_module);
 		//设备上线增量索引
-		wifiDeviceStatusIndexIncrementService.onlineUpsertIncrement(wifi_device_entity, newWifi);
+		//wifiDeviceStatusIndexIncrementService.onlineUpsertIncrement(wifi_device_entity, newWifi);
+		incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(wifi_device_entity.getId(), 
+				IncrementActionEnum.WD_OnlineStatus, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 		//本次wifi设备登录时间
 		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
 		boolean needLocationQuery = false;
@@ -301,8 +308,10 @@ public class DeviceBusinessFacadeService {
 				//2:wifi设备在线状态redis移除 TODO:多线程情况可能下，设备先离线再上线，两条消息并发处理，如果上线消息先完成，可能会清除掉有效数据
 				WifiDevicePresentCtxService.getInstance().removePresent(lowercase_wifi_id);
 				//设备离线增量索引
-				wifiDeviceStatusIndexIncrementService.offlineUpdIncrement(wifiId, exist_wifi_device_entity.getUptime(), 
-						exist_wifi_device_entity.getLast_logout_at().getTime());
+//				wifiDeviceStatusIndexIncrementService.offlineUpdIncrement(wifiId, exist_wifi_device_entity.getUptime(), 
+//						exist_wifi_device_entity.getLast_logout_at().getTime());
+				incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(wifiId, 
+						IncrementActionEnum.WD_OnlineStatus, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 				/*
 				 * 3:wifi上的移动设备基础信息表的在线状态更新 (backend)
 				 * 4:wifi设备对应handset在线列表redis清除 (backend)
@@ -378,8 +387,10 @@ public class DeviceBusinessFacadeService {
 								logger.info(String.format("WifiDeviceDirectBind forceBind mac[%s] uid[%s] olduid[%s]", mac, user.getId(), wifiDeviceDoc.getU_id()));
 								UserWifiDevice userWifiDevice = userWifiDeviceFacadeService.forceAddUserWifiDevice(mac, 
 										user.getId(), industry, false);
-						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, 
-						        		userWifiDevice.getDevice_name(), industry);
+//						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, 
+//						        		userWifiDevice.getDevice_name(), industry);
+								incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(mac, 
+										IncrementActionEnum.WD_BindUserStatus, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 							}
 						}else{
 							String exist_uid = wifiDeviceDoc.getU_id();
@@ -393,11 +404,12 @@ public class DeviceBusinessFacadeService {
 									User user = userFacadeService.getUserByMobileno(keynum);
 									if(user != null){
 										logger.info(String.format("WifiDeviceDirectBind normalBind notexist mac[%s] uid[%s]", mac, user.getId()));
-										UserWifiDevice userWifiDevice = userWifiDeviceFacadeService.forceAddUserWifiDevice(mac, 
-												user.getId(), industry, false);
+										userWifiDeviceFacadeService.forceAddUserWifiDevice(mac, user.getId(), industry, false);
 
-								        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, 
-								        		userWifiDevice.getDevice_name(), industry);
+//								        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, 
+//								        		userWifiDevice.getDevice_name(), industry);
+										incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(mac, 
+												IncrementActionEnum.WD_BindUserStatus, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 										keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
 									}
 								}
@@ -1483,7 +1495,9 @@ public class DeviceBusinessFacadeService {
 					wifiDeviceModuleService.update(wifiDeviceModule);
 					//}
 					//模块上线增量索引
-					wifiDeviceStatusIndexIncrementService.moduleOnlineUpdIncrement(mac, wifiDeviceModule.getOrig_vap_module());
+					//wifiDeviceStatusIndexIncrementService.moduleOnlineUpdIncrement(mac, wifiDeviceModule.getOrig_vap_module());
+					incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(mac, 
+							IncrementActionEnum.WD_ModuleOnlineStatus, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 				}
 				cmdPayloads.add(CMDBuilder.builderVapModuleRegisterResponse(mac));
 				if(vapDTO.getModules() != null && !vapDTO.getModules().isEmpty()){

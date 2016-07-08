@@ -18,6 +18,8 @@
 	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/>
 	<!-- -->
 	<import resource="classpath*:springmq/applicationContext-activemq-async-deliver-consumer.xml"/> 
+	
+	<import resource="classpath*:springincrement/applicationContext-kafka-increment-producer.xml"/>
 	<!-- 
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-producer.xml"/> -->
 </beans>

@@ -10,14 +10,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.search.increment.IncrementBulkDocumentDTO;
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.tag.OperTagDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
@@ -41,8 +44,10 @@ public class BatchDeviceTagServiceHandler implements IMsgHandlerService {
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
+//	@Resource
+//	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 	@Resource
-	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+	private KafkaMessageIncrementProducer incrementMessageTopicProducer;
 	
 	@Resource
 	private TagDevicesService tagDevicesService;
@@ -98,7 +103,9 @@ public class BatchDeviceTagServiceHandler implements IMsgHandlerService {
 							tagDevicesService.insertAll(insertList);
 							tagDevicesService.updateAll(upDateList);
 
-							wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, tagNameList);
+							//wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, tagNameList);
+							incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(macList, 
+									IncrementActionEnum.WD_DTagsChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 						}
 					});
 		}else{
@@ -112,7 +119,10 @@ public class BatchDeviceTagServiceHandler implements IMsgHandlerService {
 							}
 							List<TagDevices> entities = tagDevicesService.findByIds(macList, true, true);
 							tagDevicesService.deleteAll(entities);
-							wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, "");
+							//wifiDeviceStatusIndexIncrementService.bindDTagsMultiUpdIncrement(macList, "");
+							
+							incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(macList, 
+									IncrementActionEnum.WD_DTagsChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 						}
 					});
 		}

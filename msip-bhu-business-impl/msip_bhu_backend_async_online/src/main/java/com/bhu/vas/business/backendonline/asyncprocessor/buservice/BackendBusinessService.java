@@ -7,6 +7,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
+import com.bhu.vas.api.dto.search.increment.IncrementSingleDocumentDTO;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
@@ -30,10 +32,11 @@ import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 
 /**
  * backend专属业务service
@@ -46,8 +49,11 @@ public class BackendBusinessService {
 	//@Resource
 	//private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
 	
+//	@Resource
+//	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+	
 	@Resource
-	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+	private KafkaMessageIncrementProducer incrementMessageTopicProducer;
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
@@ -254,7 +260,9 @@ public class BackendBusinessService {
 	 * @param mac
 	 */
 	public void clearWifiDeviceSearchData(String mac){
-		wifiDeviceStatusIndexIncrementService.resetUpdIncrement(mac);
+		//wifiDeviceStatusIndexIncrementService.resetUpdIncrement(mac);
+		incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(mac, 
+				IncrementActionEnum.WD_BindUserStatus, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 	}
 	
 	/**********************************     清除设备数据业务 end   *****************************************/

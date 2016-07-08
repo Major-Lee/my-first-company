@@ -20,6 +20,8 @@
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-consumer.xml"/> 
 	
 	<import resource="classpath*:springmongo/applicationContext-mongo.xml"/>
+	
+	<import resource="classpath*:springincrement/applicationContext-kafka-increment-producer.xml"/>
 	<!-- 
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-producer.xml"/> -->
 </beans>

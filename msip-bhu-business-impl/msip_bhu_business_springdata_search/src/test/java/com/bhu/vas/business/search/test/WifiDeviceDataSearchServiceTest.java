@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.common.lang3.StringUtils;
 import org.elasticsearch.search.sort.SortOrder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.Page;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
-import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.core.condition.component.SearchCondition;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionLogicEnumType;
@@ -34,7 +32,6 @@ import com.bhu.vas.business.search.core.condition.component.payload.SearchCondit
 import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionRangePayload;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -46,8 +43,8 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
-	@Resource
-	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+//	@Resource
+//	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 	
 	@BeforeClass
     public static void setUp() throws Exception {
@@ -894,7 +891,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.U_DNICK.getName(), null);
 	 */
 	//@Test
-	public void test001IncrementSearchTest(){
+/*	public void test001IncrementSearchTest(){
 		String mac = "84:82:f4:28:8f:ac";
 		for(int i = 1;i<101;i++){
 			User bindUser = new User();
@@ -925,7 +922,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 			System.out.println(same + "-"+i);
 		}
 		
-	}
+	}*/
 	
 	//@Test
 	public void test0019SearchTest(){

@@ -29,6 +29,8 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
+import com.bhu.vas.api.dto.search.increment.IncrementSingleDocumentDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -94,11 +96,12 @@ import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
@@ -172,9 +175,12 @@ public class AsyncMsgHandleService {
 	@Resource
 	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
 
-	@Resource
-	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+//	@Resource
+//	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 
+	@Resource
+	private KafkaMessageIncrementProducer incrementMessageTopicProducer;
+	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
 
@@ -1227,7 +1233,9 @@ public class AsyncMsgHandleService {
 					userWifiDevice.setDevice_name(ssid);
 					userWifiDeviceService.update(userWifiDevice);
 
-					wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, ssid);
+					//wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, ssid);
+					incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(mac, 
+							IncrementActionEnum.WD_BindUserStatus, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 				}
 			}
 		}

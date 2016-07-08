@@ -9,6 +9,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.search.increment.IncrementBulkDocumentDTO;
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
+import com.bhu.vas.api.dto.search.increment.IncrementSingleDocumentDTO;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
@@ -28,8 +31,9 @@ import com.bhu.vas.business.ds.tag.service.TagGroupService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -50,8 +54,11 @@ public class TagFacadeRpcSerivce {
 	@Resource
 	private TagDevicesService tagDevicesService;
 
+//	@Resource
+//	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+	
 	@Resource
-	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+	private KafkaMessageIncrementProducer incrementMessageTopicProducer;
 
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
@@ -107,7 +114,9 @@ public class TagFacadeRpcSerivce {
 			}
 			tagDevices.replaceInnerModels(ArrayHelper.toSet(arrTemp));
 			tagDevicesService.update(tagDevices);
-			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tagDevices.getTag2ES());
+			//wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, tagDevices.getTag2ES());
+			incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(mac, 
+					IncrementActionEnum.WD_DTagsChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 		} else {
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
@@ -116,8 +125,10 @@ public class TagFacadeRpcSerivce {
 	public void delTag(int uid, String mac) throws Exception {
 		TagDevices tagDevices = tagDevicesService.getById(mac);
 		if (tagDevices != null) {
-			wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, "");
+			//wifiDeviceStatusIndexIncrementService.bindDTagsUpdIncrement(mac, "");
 			tagDevicesService.deleteById(mac);
+			incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(mac, 
+					IncrementActionEnum.WD_DTagsChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 		} else {
 			throw new Exception();
 		}
@@ -257,9 +268,11 @@ public class TagFacadeRpcSerivce {
 
 //			changeDevicesCount(gid, macsTemp.length);
 
-			String paths = tagGroupService.getById(gid).getPath2ES();
+			//String paths = tagGroupService.getById(gid).getPath2ES();
 			
-			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
+			//wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
+			incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(macsList, 
+					IncrementActionEnum.WD_UCExtensionChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 		}
 	}
 
@@ -285,7 +298,9 @@ public class TagFacadeRpcSerivce {
 		
 		if (newGid == 0) {
 			tagGroupRelationService.deleteAll(entities);
-			wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
+			//wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
+			incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(macsList, 
+					IncrementActionEnum.WD_UCExtensionChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 		} else {
 			if (CanAddDevices2Group(uid, newGid, macsList)) {
 				
@@ -298,8 +313,10 @@ public class TagFacadeRpcSerivce {
 				}
 				tagGroupRelationService.updateAll(entities);
 				
-				String paths = tagGroupService.getById(newGid).getPath2ES();
-				wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
+				//String paths = tagGroupService.getById(newGid).getPath2ES();
+				//wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, paths);
+				incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(macsList, 
+						IncrementActionEnum.WD_UCExtensionChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 //				changeDevicesCount(newGid, macTemp.length);
 			}
 		}
@@ -472,10 +489,11 @@ public class TagFacadeRpcSerivce {
 			macsList.add(tagGroupRelation.getId());
 		}
 		// 清除所有索引信息
-		wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
-
+		//wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
 		int count = tagGroupRelationService.deleteByModelCriteria(mc);
 		
+		incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(macsList, 
+				IncrementActionEnum.WD_UCExtensionChanged, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 		return count;
 	}
 

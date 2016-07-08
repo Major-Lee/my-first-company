@@ -12,11 +12,7 @@
        default-lazy-init="true">
 
 	<!-- SpringContext Holder-->
-	<bean id="incrementReceiveMessageTopicConsumer" class="com.bhu.vas.business.index.consumer.IncrementReceiveMessageTopicConsumer" lazy-init="false" init-method="init">
-		<property name="consumerId" value="increment_r"/>
-	</bean>
-	
-	<bean id="incrementReceivePerformMessageTopicConsumer" class="com.bhu.vas.business.index.consumer.IncrementReceivePerformMessageTopicConsumer" lazy-init="false" init-method="init">
-		<property name="consumerId" value="increment_p"/>
+	<bean id="incrementMessageTopicProducer" class="com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer" lazy-init="false" >
+		<property name="producerId" value="increment"/>
 	</bean>
 </beans>

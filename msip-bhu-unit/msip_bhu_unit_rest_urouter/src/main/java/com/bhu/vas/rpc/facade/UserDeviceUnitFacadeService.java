@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
+import com.bhu.vas.api.dto.search.increment.IncrementSingleDocumentDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
@@ -57,12 +59,13 @@ import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
+import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.builder.WifiDeviceTCSearchMessageBuilder;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
+import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -104,9 +107,12 @@ public class UserDeviceUnitFacadeService {
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
-	@Resource
-	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
+//	@Resource
+//	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 
+	@Resource
+	private KafkaMessageIncrementProducer incrementMessageTopicProducer;
+	
 	@Resource
 	private WifiDeviceSettingService wifiDeviceSettingService;
 
@@ -154,7 +160,9 @@ public class UserDeviceUnitFacadeService {
             
             deviceFacadeService.updateDeviceIndustry(mac, null);
             
-            wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, deviceName, null);
+            //wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, deviceName, null);
+			incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(mac, 
+					IncrementActionEnum.WD_BindUserStatus, BusinessIndexDefine.WifiDevice.IndexUniqueId));
             
             deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac);
             UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
@@ -186,7 +194,9 @@ public class UserDeviceUnitFacadeService {
         	
         	deviceFacadeService.updateDeviceIndustry(mac, null);
             
-        	wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null, null);
+        	//wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null, null);
+			incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(mac, 
+					IncrementActionEnum.WD_BindUserStatus, BusinessIndexDefine.WifiDevice.IndexUniqueId));
         	deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
         } /*else {
             return RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -257,7 +267,9 @@ public class UserDeviceUnitFacadeService {
             userWifiDevice.setDevice_name_modifyed(true);
             userWifiDeviceService.update(userWifiDevice);
             
-            wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, deviceName);
+            //wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, deviceName);
+			incrementMessageTopicProducer.incrementDocument(IncrementSingleDocumentDTO.builder(mac, 
+					IncrementActionEnum.WD_BindUserStatus, BusinessIndexDefine.WifiDevice.IndexUniqueId));
             return true;
         } catch (Exception e) {
             return false;
