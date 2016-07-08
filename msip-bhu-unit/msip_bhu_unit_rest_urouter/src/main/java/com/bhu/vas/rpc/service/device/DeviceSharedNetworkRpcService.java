@@ -84,8 +84,8 @@ public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcSer
 	}
 
 	@Override
-	public RpcResponseDTO<UserSnkPortalVTO> fetchUserSnks4Portal(int uid) {
-		logger.info(String.format("fetchUserSnks4Portal with uid[%s]", uid));
+	public RpcResponseDTO<UserSnkPortalVTO> fetchUserSnks4Portal(int uid,String sharenetwork_type) {
+		logger.info(String.format("fetchUserSnks4Portal with uid[%s] snk_type[sharenetwork_type]", uid,sharenetwork_type));
 		return deviceSharedNetworkUnitFacadeService.fetchUserSnks4Portal(uid);
 	}
 

@@ -14,7 +14,7 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 public interface IDeviceSharedNetworkRpcService {
 	
 	
-	RpcResponseDTO<UserSnkPortalVTO> fetchUserSnks4Portal(int uid);
+	RpcResponseDTO<UserSnkPortalVTO> fetchUserSnks4Portal(int uid,String sharenetwork_type);
 	RpcResponseDTO<DeviceProfileVTO> fetchDeviceSnks4Portal(String mac);
 	/**
 	 * 获取指定用户的指定共享网络类型的配置
