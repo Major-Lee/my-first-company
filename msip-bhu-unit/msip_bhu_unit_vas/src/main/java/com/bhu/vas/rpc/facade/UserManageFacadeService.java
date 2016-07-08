@@ -184,7 +184,8 @@ public class UserManageFacadeService {
 			userManageDeviceDTO.setRewardDeviceNum(String.valueOf(rewardDeviceNum));
 			//根据用户Id查询获取设备详细信息 
 			List<UserDeviceInfoDTO> deviceList = new ArrayList<UserDeviceInfoDTO>();
-			Page<WifiDeviceDocument> devicePages = wifiDeviceDataSearchService.searchPageByCommon(uid, "", "", "", "", "", pageno, pagesize);
+			int searchPageNo = pageno>=1?(pageno-1):pageno;
+			Page<WifiDeviceDocument> devicePages = wifiDeviceDataSearchService.searchPageByCommon(uid, "", "", "", "", "", searchPageNo, pagesize);
 			List<UserManageDeviceDTO> vtos = new ArrayList<UserManageDeviceDTO>();
 			int total = 0;
 			if(devicePages != null){
