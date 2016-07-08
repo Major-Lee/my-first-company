@@ -14,4 +14,5 @@
 	<!-- -->
 	<import resource="classpath*:springmq/applicationContext-activemq-server.xml"/> 
 	<import resource="classpath*:springmq/applicationContext-activemq-deliver-producer.xml"/> 
+	<import resource="classpath*:springsearch/applicationContext-Search-Service.xml"/>
 </beans>

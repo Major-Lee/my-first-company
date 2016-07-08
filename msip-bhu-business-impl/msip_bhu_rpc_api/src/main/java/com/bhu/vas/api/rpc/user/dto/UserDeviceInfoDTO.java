@@ -19,7 +19,7 @@ public class UserDeviceInfoDTO implements java.io.Serializable{
 	//用户分成比例
 	private String userGainsharing;
 	//收益
-	private String income;
+	private double income;
 	//状态
 	private String deviceStatus;
 	//所属分组
@@ -54,10 +54,11 @@ public class UserDeviceInfoDTO implements java.io.Serializable{
 	public void setUserGainsharing(String userGainsharing) {
 		this.userGainsharing = userGainsharing;
 	}
-	public String getIncome() {
+	
+	public double getIncome() {
 		return income;
 	}
-	public void setIncome(String income) {
+	public void setIncome(double income) {
 		this.income = income;
 	}
 	public String getDeviceStatus() {

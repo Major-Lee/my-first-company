@@ -166,7 +166,9 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
-	
+	<select id="countIncome" resultType="Double" parameterType="String">
+	    select sum(income) from <include refid="modelTableName" /> where mac=#{mac}
+	</select>
 	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
 		${proc_call} 		
 	</select>
