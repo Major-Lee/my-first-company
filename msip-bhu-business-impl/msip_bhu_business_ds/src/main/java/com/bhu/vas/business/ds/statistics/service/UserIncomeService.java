@@ -15,7 +15,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 @Service
 @Transactional("coreTransactionManager")
-public class UserIncomeService extends AbstractCoreService<Integer, UserIncome, UserIncomeDao>{
+public class UserIncomeService extends AbstractCoreService<String, UserIncome, UserIncomeDao>{
 	@Resource
 	@Override
 	public void setEntityDao(UserIncomeDao userIncomeDao) {
@@ -26,7 +26,7 @@ public class UserIncomeService extends AbstractCoreService<Integer, UserIncome, 
 		mc.createCriteria()
 		.andColumnEqualTo("time", time);
 		mc.setOrderByClause("income");
-		return this.findModelByModelCriteria(mc);
+		return super.findModelByModelCriteria(mc);
 	}
 	public List<UserIncome> findListByUid(int uid,String time){
 		ModelCriteria mc = new ModelCriteria();
@@ -34,6 +34,6 @@ public class UserIncomeService extends AbstractCoreService<Integer, UserIncome, 
 		.andColumnEqualTo("uid", uid)
 		.andColumnEqualTo("time", time);
 		mc.setOrderByClause("income");
-		return this.findModelByModelCriteria(mc);
+		return super.findModelByModelCriteria(mc);
 	}
 }

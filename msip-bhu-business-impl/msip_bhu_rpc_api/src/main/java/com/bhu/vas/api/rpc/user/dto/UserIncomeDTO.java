@@ -11,7 +11,7 @@ public class UserIncomeDTO implements java.io.Serializable{
 	//活动返现
 	private String activityBackCash;
 	//历史总收益
-	private String totalIncome;
+	private double totalIncome;
 	//提现信息
 	private String withdraw;
 	//打赏页面uv
@@ -42,10 +42,11 @@ public class UserIncomeDTO implements java.io.Serializable{
 	public void setActivityBackCash(String activityBackCash) {
 		this.activityBackCash = activityBackCash;
 	}
-	public String getTotalIncome() {
+	
+	public double getTotalIncome() {
 		return totalIncome;
 	}
-	public void setTotalIncome(String totalIncome) {
+	public void setTotalIncome(double totalIncome) {
 		this.totalIncome = totalIncome;
 	}
 	public String getWithdraw() {

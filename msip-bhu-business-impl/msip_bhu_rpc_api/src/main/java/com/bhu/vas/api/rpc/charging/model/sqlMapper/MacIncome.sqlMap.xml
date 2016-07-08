@@ -6,9 +6,9 @@
 
   <resultMap id="modelResult" type="macIncome">
     <id property="id" column="id"/>
-    <id property="uid" column="uid"/>
-    <id property="mac" column="mac"/>
+    <result property="uid" column="uid"/>
     <result property="time" column="time"/>
+    <result property="mac" column="mac"/>
     <result property="income" column="income"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -21,8 +21,8 @@
 	    <![CDATA[
 	    	id,
 	    	uid,
-	    	mac,
 	    	time,
+	    	mac,
 	    	income,
 	    	updated_at
 	    ]]>
@@ -41,15 +41,15 @@
 			#{id},
 			#{uid},
 	    	#{time},
-	    	#{income},
 	    	#{mac},
+	    	#{income},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
 			uid = #{uid},
-			mac = #{mac},
 	    	time = #{time},
+			mac = #{mac},
 	    	income = #{income},
 	    	updated_at = #{updated_at}
 	</sql>
@@ -166,7 +166,9 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
-	
+	<select id="countIncome" resultType="Double" parameterType="String">
+	    select sum(income) from <include refid="modelTableName" /> where mac=#{mac}
+	</select>
 	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
 		${proc_call} 		
 	</select>

@@ -1,9 +1,9 @@
 package com.bhu.vas.api.rpc.charging.model;
 
-import com.smartwork.msip.cores.orm.model.BaseIntModel;
+import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
-public class UserIncome extends BaseIntModel{
+public class UserIncome extends BaseStringModel{
 	private int uid;
 	private String time;
 	private String income;

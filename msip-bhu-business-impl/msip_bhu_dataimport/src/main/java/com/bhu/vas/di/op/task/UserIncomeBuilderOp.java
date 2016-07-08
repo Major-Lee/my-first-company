@@ -39,12 +39,13 @@ public class UserIncomeBuilderOp {
 				userIncome.setTime(time);
 				userIncome.setUid(i.getUid());
 				userIncome.setIncome(i.getCash().substring(1));
-				List<UserIncome> income=userWalletFacadeService.getUserIncomeService().findListByUid(i.getUid(), time);
+				List<UserIncome> income=userWalletFacadeService.getUserIncomeService().findListByUid(userIncome.getUid(), time);
 				if(income==null||income.size()<1){
 					userWalletFacadeService.getUserIncomeService().insert(userIncome);
 				}else{
 					//ArithHelper.round(v, scale);
 					userIncome.setIncome(String.valueOf(round(Double.valueOf(income.get(0).getIncome())+Double.valueOf(userIncome.getIncome()),2)));
+					userIncome.setId(income.get(0).getId());
 					userWalletFacadeService.getUserIncomeService().update(userIncome);
 				}
 				if(StringUtils.isNoneBlank(i.getMac())&&!StringUtils.equals("-", i.getMac())){
@@ -57,6 +58,7 @@ public class UserIncomeBuilderOp {
 					if(macIncomes==null||macIncomes.size()<1){
 						userWalletFacadeService.getMacIncomeService().insert(macIncome);
 					}else{
+						macIncome.setId(macIncomes.get(0).getId());
 						macIncome.setIncome(String.valueOf(round(Double.valueOf(macIncomes.get(0).getIncome())+Double.valueOf(macIncome.getIncome()),2)));
 						userWalletFacadeService.getMacIncomeService().update(macIncome);
 					}
@@ -70,7 +72,8 @@ public class UserIncomeBuilderOp {
 					if(gpathIncomes==null||gpathIncomes.size()<1){
 						userWalletFacadeService.getGpathIncomeService().insert(gpathIncome);
 					}else{
-						userIncome.setIncome(String.valueOf(round(Double.valueOf(gpathIncomes.get(0).getIncome())+Double.valueOf(gpathIncome.getIncome()),2)));
+						gpathIncome.setId(gpathIncomes.get(0).getId());
+						gpathIncome.setIncome(String.valueOf(round(Double.valueOf(gpathIncomes.get(0).getIncome())+Double.valueOf(gpathIncome.getIncome()),2)));
 						userWalletFacadeService.getGpathIncomeService().update(gpathIncome);
 					}
 				}

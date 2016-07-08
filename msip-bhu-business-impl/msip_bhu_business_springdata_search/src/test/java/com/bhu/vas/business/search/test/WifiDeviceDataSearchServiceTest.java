@@ -943,7 +943,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
     	}
 	}
 	
-	@Test
+	//@Test
 	public void test0020SearchTest(){
 		/*SearchConditionPack pack_must = null;
 
@@ -967,6 +967,18 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		String message = "{\"search_t\":1,\"search_cs\":[{\"cs\":[{\"key\":\"t_uc_extension\",\"pattern\":\"seq\",\"payload\":\"g_120068\"}]}]}";
 		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchByConditionMessage(message, 1, 100);
 		System.out.println(result.getTotalElements());
+	}
+	
+	
+	@Test
+	public void test0021SearchTest(){
+		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchPageByCommon(101143, "", "", "", "", "", 0, 10);
+		//List<WifiDeviceDocument> wifiDeviceDocumentList = result.getContent();
+		System.out.println(result.getTotalElements());
+		//System.out.println(wifiDeviceDocumentList.size());
+		for(WifiDeviceDocument doc : result){
+    	    System.out.println("test0019SearchTest:"+ doc.getId() + " = " + doc.getD_lastregedat());
+    	}
 	}
 	
 }

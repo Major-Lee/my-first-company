@@ -19,6 +19,7 @@
 	<import resource="classpath*:springcache/applicationContextCore-cache.xml"/> 
 	<import resource="classpath*:springservice/applicationContext-bhu-vas-service.xml"/>	
 	<!-- -->
+	<import resource="classpath*:springsearch/applicationContext-Search-Service.xml"/>
 	<import resource="classpath*:springunit/applicationContextRpcUnitProvider.xml"/> 
 	
 	<!-- 

@@ -466,14 +466,15 @@ public class DeviceBusinessFacadeService {
 	/**
 	 * 是否访客网络
 	 * @param dto
+	 * 添加5G频段访客网络判断(wlan13)
 	 * @return
 	 */
 	private boolean isVisitorWifi(String ctx, HandsetDeviceDTO dto) {
-		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
+		return (HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) || HandsetDeviceDTO.VAPNAME_WLAN13.equals(dto.getVapname())) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
 	}
 
 	private boolean isVisitorWifi(WifiDeviceTerminalDTO dto) {
-		return HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
+		return (HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) || HandsetDeviceDTO.VAPNAME_WLAN13.equals(dto.getVapname())) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
 	}
 
 	/**
