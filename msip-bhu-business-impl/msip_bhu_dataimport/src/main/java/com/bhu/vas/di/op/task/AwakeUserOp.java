@@ -34,7 +34,7 @@ public class AwakeUserOp {
 		mc.createCriteria().andColumnIsNotNull("mobileno").andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
 		mc.setOrderByClause("id desc");
     	mc.setPageNumber(1);
-    	mc.setPageSize(1000);
+    	mc.setPageSize(200);
     	EntityIterator<Integer, User> itit = new KeyBasedEntityBatchIterator<Integer, User>(Integer.class, User.class, userService.getEntityDao(), mc);
 		while(itit.hasNext()){
 			List<User> list = itit.next();
