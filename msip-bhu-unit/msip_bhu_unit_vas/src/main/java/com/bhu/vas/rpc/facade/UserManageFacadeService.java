@@ -121,11 +121,11 @@ public class UserManageFacadeService {
 			List<UserTransInfoDTO> userTransList = new ArrayList<UserTransInfoDTO>();
 			UserTransInfoDTO userTransInfoDTO = null;
 			if(walletPages != null){
-				userTransInfoDTO = new UserTransInfoDTO();
 				for (UserWalletLog log:walletPages.getItems()) {
 					if(log == null){
 						continue;
 					}
+					userTransInfoDTO = new UserTransInfoDTO();
 					userTransInfoDTO.setUid(uid);
 					userTransInfoDTO.setTransType(log.getTranstype());
 					userTransInfoDTO.setTransNo(log.getOrderid());
