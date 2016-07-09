@@ -720,13 +720,22 @@ public class UserUnitFacadeService {
 				cri.andColumnEqualTo("mobileno", mobileNo);
 			}
 			if(StringUtils.isNotBlank(userType)){
-				UserType ut = UserType.getBySName(userType);
-				cri.andColumnEqualTo("utype", ut.getIndex());
+				if(StringUtils.equals(userType, "other")){
+					List<Integer> utypeList = new ArrayList<Integer>();
+					utypeList.add(1);
+					utypeList.add(41);
+					cri.andColumnNotIn("utype", utypeList);
+				}else{
+					UserType ut = UserType.getBySName(userType);
+					cri.andColumnEqualTo("utype", ut.getIndex());
+				}
 			}
 			if(StringUtils.isNotBlank(regdevice)){
 				cri.andColumnEqualTo("regdevice", regdevice);
 			}
 			if(StringUtils.isNotBlank(createStartTime) && StringUtils.isNotBlank(createEndTime)){
+				createStartTime = createStartTime+" 00:00:00";
+				createEndTime = createEndTime+" 23:59:59";
 				cri.andColumnBetween("created_at", createStartTime, createEndTime);
 			}
 			cri.andSimpleCaulse(" 1=1 ");
@@ -734,8 +743,6 @@ public class UserUnitFacadeService {
 			mc.setPageNumber(pageNo);
 			mc.setPageSize(pageSize);
 			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
-			System.out.println("******获取用户总条数【"+tailusers.getTotalItemsCount()+"】");
-			System.out.println("******获取用户总条数【"+tailusers.getItems()+"】");
 			List<UserManageDTO> vtos = new ArrayList<UserManageDTO>();
 			UserManageDTO userManageDTO = null;
 			for(User _user:tailusers.getItems()){
@@ -774,13 +781,10 @@ public class UserUnitFacadeService {
 				//根据用户Id查询在线设备数量
 				long onLinedeviceNum = 0;
 				onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "");
-				System.out.println("*******设备总数【"+onLinedeviceNum+deviceNum+"】");
-				System.out.println("*******设备在线总数【"+onLinedeviceNum+"】");
 				userManageDTO.setDc(onLinedeviceNum+deviceNum);
 				userManageDTO.setDoc(onLinedeviceNum);
 				vtos.add(userManageDTO);
 			}
-			System.out.println("******返回用户总条数【"+vtos.size()+"】");
 			TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(tailusers.getPageNumber(), pageSize, tailusers.getTotalItemsCount(), vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
 		}catch(BusinessI18nCodeException bex){
@@ -831,7 +835,7 @@ public class UserUnitFacadeService {
 	public RpcResponseDTO<UserManageDTO> queryUserDetail(int uid){
 		try {
 			User user = this.userService.getById(uid);
-			UserTypeValidateService.validConsoleUser(user);
+			//UserTypeValidateService.validConsoleUser(user);
 			UserManageDTO userManageDTO = new UserManageDTO();
 			userManageDTO.setUid(user.getId());
 			userManageDTO.setUserType(String.valueOf(user.getUtype()));
