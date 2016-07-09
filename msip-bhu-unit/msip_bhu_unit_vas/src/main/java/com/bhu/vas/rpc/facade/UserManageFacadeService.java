@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -128,8 +129,13 @@ public class UserManageFacadeService {
 					userTransInfoDTO = new UserTransInfoDTO();
 					userTransInfoDTO.setUid(uid);
 					userTransInfoDTO.setTransType(log.getTranstype());
+					System.out.println("***当前交易信息id为【"+log.getOrderid()+"】****");
 					userTransInfoDTO.setTransNo(log.getOrderid());
-					userTransInfoDTO.setTransTime(log.getUpdated_at().toString());
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
+			        if(log.getUpdated_at() != null){
+			        	String time =sdf.format(log.getUpdated_at()); 
+			        	userTransInfoDTO.setTransTime(time);
+			        }
 					
 					//根据订单Id获取mac和终端mac信息
 					Order orders = orderService.getById(log.getOrderid());
