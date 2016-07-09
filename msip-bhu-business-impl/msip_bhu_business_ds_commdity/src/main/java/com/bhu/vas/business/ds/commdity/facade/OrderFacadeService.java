@@ -463,10 +463,13 @@ public class OrderFacadeService {
 	 * @param mac 设备mac
 	 * @param umac 用户终端mac
 	 * @param umactype 用户终端类型
+	 * @param bindUser
 	 * @param context 验证的手机号
+	 * @param spendvcurrency 是否花费虎钻
 	 * @return
 	 */
-	public Order createSMSOrder(String mac, String mac_dut, String umac, Integer umactype, String context, String user_agent){
+	public Order createSMSOrder(String mac, String mac_dut, String umac, Integer umactype, User bindUser,
+			String context, String user_agent, boolean spendvcurrency){
 		//商品信息验证
 		Commdity commdity = commdityFacadeService.validateCommdity(SMS_VALIDATE_COMMDITY_ID);
 		//验证商品是否合理
@@ -474,7 +477,7 @@ public class OrderFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
 		}
 		
-		long vcurrency = commdity.getVcurrency();
+		long vcurrency = 0l;
 		//订单生成
 		Order order = new Order();
 		order.setCommdityid(commdity.getId());
@@ -486,7 +489,13 @@ public class OrderFacadeService {
 		order.setMac_dut(mac_dut);
 		order.setUmac(umac);
 		order.setUmactype(umactype);
+		if(spendvcurrency){
+			vcurrency = commdity.getVcurrency();
+		}
 		order.setVcurrency(vcurrency);
+		if(bindUser != null){
+			order.setUid(bindUser.getId());
+		}
 		order.setContext(context);
 		order.setUser_agent(user_agent);
 		order.setPaymented_at(new Date());
@@ -516,9 +525,9 @@ public class OrderFacadeService {
 			String orderid = order.getId();
 			order.setPaymented_at(paymented_ds);
 
-			if(bindUser != null){
-				order.setUid(bindUser.getId());
-			}
+//			if(bindUser != null){
+//				order.setUid(bindUser.getId());
+//			}
 			
 			//支付成功
 			if(success){
