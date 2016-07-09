@@ -351,9 +351,11 @@ public class OrderUnitFacadeService {
 	 * @param umactype 用户终端类型
 	 * @param context 验证的手机号
 	 * @param user_agent
+	 * @param spendvcurrency 是否花费虎钻
 	 * @return
 	 */
-	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype, String context, String user_agent){
+	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype, 
+			String context, String user_agent, boolean spendvcurrency){
 		try{
 			//orderFacadeService.supportedAppId(appid);
 			//验证mac umac
@@ -371,9 +373,11 @@ public class OrderUnitFacadeService {
 			if(wifiDevice == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
 			}
+			User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
 			//生成订单
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
-			Order order = orderFacadeService.createSMSOrder(mac_lower, mac_dut, umac_lower, umactype, context, user_agent);
+			Order order = orderFacadeService.createSMSOrder(mac_lower, mac_dut, umac_lower, umactype, bindUser,
+					context, user_agent, spendvcurrency);
 			
 			OrderSMSVTO orderVto = new OrderSMSVTO();
 			BeanUtils.copyProperties(order, orderVto);

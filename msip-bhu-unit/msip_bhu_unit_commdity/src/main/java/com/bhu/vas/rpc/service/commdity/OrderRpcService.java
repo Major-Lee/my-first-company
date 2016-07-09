@@ -80,11 +80,12 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype, String context, String user_agent){
-		logger.info(String.format("createSMSOrder with mac[%s] umac[%s] umactype[%s] context[%s] user_agent[%s]",
-				mac, umac, umactype, context, user_agent));
+	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype, 
+			String context, String user_agent, boolean spendvcurrency){
+		logger.info(String.format("createSMSOrder with mac[%s] umac[%s] umactype[%s] context[%s] user_agent[%s] spendvcurrency[%s]",
+				mac, umac, umactype, context, user_agent, spendvcurrency));
 		//return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context);
-		return orderUnitFacadeService.createSMSOrder(mac, umac, umactype, context, user_agent);
+		return orderUnitFacadeService.createSMSOrder(mac, umac, umactype, context, user_agent, spendvcurrency);
 	}
 
 	@Override

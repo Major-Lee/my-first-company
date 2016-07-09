@@ -85,7 +85,8 @@ public class OrderSMSController extends BaseController{
 			@RequestParam(required = true) String act,
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) String umac,
-			@RequestParam(required = false, defaultValue = "2") Integer umactype
+			@RequestParam(required = false, defaultValue = "2") Integer umactype,
+			@RequestParam(required = false, value="sv", defaultValue = "true") boolean spendvcurrency
 			) {
 		try{
 			ValidateService.validateDeviceMac(mac);
@@ -97,7 +98,7 @@ public class OrderSMSController extends BaseController{
 					String user_agent = request.getHeader("User-Agent");
 					String context = String.valueOf(countrycode).concat(StringHelper.WHITESPACE_STRING_GAP).concat(acc);
 					RpcResponseDTO<OrderSMSVTO> orderRpcResult = orderRpcService.createSMSOrder(mac, umac, 
-							umactype, context, user_agent);
+							umactype, context, user_agent, spendvcurrency);
 					if(!orderRpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 						return;
