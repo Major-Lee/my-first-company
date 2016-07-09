@@ -996,12 +996,17 @@ public class UMLogicImpl implements IUMLogic{
 			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "请求参数为空", true);
 			return result;
 		}
-		int type=7;
+		int type=0;
+		
 		String choseTable=StringUtils.EMPTY;
+		String beginTime=StringUtils.EMPTY;
+		String endTime=StringUtils.EMPTY;
 		try {
 			JSONObject object = JSONObject.fromObject(data);
 			type = object.getInt("type");
 			choseTable=object.getString("choseTable");
+			beginTime = object.getString("startTime");
+			endTime = object.getString("endTime");
  		} catch (Exception e) {
 			log.info("JSON转化错误");
 			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "JSON转化错误", true);
@@ -1009,7 +1014,15 @@ public class UMLogicImpl implements IUMLogic{
 		}
 		
 		List<String> daysList=new ArrayList<String>();
-		daysList=DateUtils.getLastDay(type);
+		if(StringUtils.isBlank(beginTime)||StringUtils.isBlank(endTime)){
+			if(type!=0){
+				daysList=DateUtils.getLastDay(Integer.valueOf(type));
+			}else{
+				return NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "时间参数为空!");
+			}
+		}else{
+			daysList=DateUtils.getDaysList(beginTime, endTime);
+		}
 		
 		List<List<Object>> first=new ArrayList<List<Object>>();
 		
