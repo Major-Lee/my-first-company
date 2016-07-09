@@ -835,7 +835,7 @@ public class UserUnitFacadeService {
 	public RpcResponseDTO<UserManageDTO> queryUserDetail(int uid){
 		try {
 			User user = this.userService.getById(uid);
-			UserTypeValidateService.validConsoleUser(user);
+			//UserTypeValidateService.validConsoleUser(user);
 			UserManageDTO userManageDTO = new UserManageDTO();
 			userManageDTO.setUid(user.getId());
 			userManageDTO.setUserType(String.valueOf(user.getUtype()));
