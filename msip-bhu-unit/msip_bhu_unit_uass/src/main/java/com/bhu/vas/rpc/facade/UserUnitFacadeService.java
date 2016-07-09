@@ -774,6 +774,8 @@ public class UserUnitFacadeService {
 				//根据用户Id查询在线设备数量
 				long onLinedeviceNum = 0;
 				onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "");
+				System.out.println("*******设备总数【"+onLinedeviceNum+deviceNum+"】");
+				System.out.println("*******设备在线总数【"+onLinedeviceNum+"】");
 				userManageDTO.setDc(onLinedeviceNum+deviceNum);
 				userManageDTO.setDoc(onLinedeviceNum);
 				vtos.add(userManageDTO);

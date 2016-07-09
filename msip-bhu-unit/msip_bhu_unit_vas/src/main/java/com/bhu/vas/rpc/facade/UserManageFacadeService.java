@@ -129,6 +129,7 @@ public class UserManageFacadeService {
 					userTransInfoDTO = new UserTransInfoDTO();
 					userTransInfoDTO.setUid(uid);
 					userTransInfoDTO.setTransType(log.getTranstype());
+					System.out.println("***当前交易信息id为【"+log.getOrderid()+"】****");
 					userTransInfoDTO.setTransNo(log.getOrderid());
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
 			        if(log.getUpdated_at() != null){
