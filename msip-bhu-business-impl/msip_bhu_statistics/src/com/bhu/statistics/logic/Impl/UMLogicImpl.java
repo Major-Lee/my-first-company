@@ -997,7 +997,6 @@ public class UMLogicImpl implements IUMLogic{
 			return result;
 		}
 		int type=0;
-		
 		String choseTable=StringUtils.EMPTY;
 		String beginTime=StringUtils.EMPTY;
 		String endTime=StringUtils.EMPTY;
@@ -1016,12 +1015,12 @@ public class UMLogicImpl implements IUMLogic{
 		List<String> daysList=new ArrayList<String>();
 		if(StringUtils.isBlank(beginTime)||StringUtils.isBlank(endTime)){
 			if(type!=0){
-				daysList=DateUtils.getLastDay(Integer.valueOf(type));
+				daysList=DateUtils.getLastDayAsc(Integer.valueOf(type));
 			}else{
 				return NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "时间参数为空!");
 			}
 		}else{
-			daysList=DateUtils.getDaysList(beginTime, endTime);
+			daysList=DateUtils.getDaysListAsc(beginTime, endTime);
 		}
 		
 		List<List<Object>> first=new ArrayList<List<Object>>();
