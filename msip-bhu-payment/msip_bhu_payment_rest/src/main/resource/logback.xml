@@ -3,7 +3,7 @@
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	
-	<property name="log.base" value="/BHUData/logs/weblogs/{Dtomcat.instanceno}/msip_bhu_payment_rest" />
+	<property name="log.base" value="/BHUData/logs/weblogs/${Dtomcat.instanceno}/msip_bhu_payment_rest" />
 	<!-- 
 	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
 	 -->

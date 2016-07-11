@@ -20,7 +20,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 public class AwakeUserOp {
 	//（必虎昵称，没有昵称的为：必虎用户）
 	//金额为0的不发
-	public static String AwakeSMS_Template = "亲爱的%s,你可能还不知道有%s元正静静地躺在钱包里等着你提现呢！详情点击%s";
+	public static String AwakeSMS_Template = "亲爱的%s,你可能还不知道有%s元正静静地躺在钱包里等着你提现呢！详情点击%s 【必虎路由】";
 	public static String DefaultUserName = "必虎用户";
 	public static String DefaultLink = "http://aaa/s2234.shtml";
 	public static void main(String[] argv){
@@ -39,6 +39,7 @@ public class AwakeUserOp {
 		while(itit.hasNext()){
 			List<User> list = itit.next();
 			for(User user:list){
+				//User user = userService.getById(101767);
 				UserWallet wallet = userWalletService.getById(user.getId());
 				if(wallet != null && wallet.getCash() > 0 ){
 					String smsUserName = StringUtils.isEmpty(user.getNick())?DefaultUserName:user.getNick();

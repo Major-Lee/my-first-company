@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
@@ -39,6 +40,7 @@ import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.bhu.vas.validate.UserTypeValidateService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -80,8 +82,8 @@ public class UserUnitFacadeService {
 	@Resource
 	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
-	/*@Resource
-	private WifiDeviceDataSearchService wifiDeviceDataSearchService;*/
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
 	@Resource
 	private UserActivityService userActivityService;
@@ -718,13 +720,22 @@ public class UserUnitFacadeService {
 				cri.andColumnEqualTo("mobileno", mobileNo);
 			}
 			if(StringUtils.isNotBlank(userType)){
-				UserType ut = UserType.getBySName(userType);
-				cri.andColumnEqualTo("utype", ut.getIndex());
+				if(StringUtils.equals(userType, "other")){
+					List<Integer> utypeList = new ArrayList<Integer>();
+					utypeList.add(1);
+					utypeList.add(41);
+					cri.andColumnNotIn("utype", utypeList);
+				}else{
+					UserType ut = UserType.getBySName(userType);
+					cri.andColumnEqualTo("utype", ut.getIndex());
+				}
 			}
 			if(StringUtils.isNotBlank(regdevice)){
 				cri.andColumnEqualTo("regdevice", regdevice);
 			}
 			if(StringUtils.isNotBlank(createStartTime) && StringUtils.isNotBlank(createEndTime)){
+				createStartTime = createStartTime+" 00:00:00";
+				createEndTime = createEndTime+" 23:59:59";
 				cri.andColumnBetween("created_at", createStartTime, createEndTime);
 			}
 			cri.andSimpleCaulse(" 1=1 ");
@@ -732,8 +743,6 @@ public class UserUnitFacadeService {
 			mc.setPageNumber(pageNo);
 			mc.setPageSize(pageSize);
 			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
-			System.out.println("******获取用户总条数【"+tailusers.getTotalItemsCount()+"】");
-			System.out.println("******获取用户总条数【"+tailusers.getItems()+"】");
 			List<UserManageDTO> vtos = new ArrayList<UserManageDTO>();
 			UserManageDTO userManageDTO = null;
 			for(User _user:tailusers.getItems()){
@@ -766,17 +775,16 @@ public class UserUnitFacadeService {
 					userManageDTO.setVcurrency(0);
 					userManageDTO.setWalletMoney(0.00);
 				}
-				/*//根据用户Id查询设备离线数量
+				//根据用户Id查询设备离线数量
 				long deviceNum = 0;
 				deviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Offline.getType(), "");
 				//根据用户Id查询在线设备数量
 				long onLinedeviceNum = 0;
 				onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "");
 				userManageDTO.setDc(onLinedeviceNum+deviceNum);
-				userManageDTO.setDoc(onLinedeviceNum);*/
+				userManageDTO.setDoc(onLinedeviceNum);
 				vtos.add(userManageDTO);
 			}
-			System.out.println("******返回用户总条数【"+vtos.size()+"】");
 			TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(tailusers.getPageNumber(), pageSize, tailusers.getTotalItemsCount(), vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
 		}catch(BusinessI18nCodeException bex){
@@ -827,7 +835,7 @@ public class UserUnitFacadeService {
 	public RpcResponseDTO<UserManageDTO> queryUserDetail(int uid){
 		try {
 			User user = this.userService.getById(uid);
-			UserTypeValidateService.validConsoleUser(user);
+			//UserTypeValidateService.validConsoleUser(user);
 			UserManageDTO userManageDTO = new UserManageDTO();
 			userManageDTO.setUid(user.getId());
 			userManageDTO.setUserType(String.valueOf(user.getUtype()));
