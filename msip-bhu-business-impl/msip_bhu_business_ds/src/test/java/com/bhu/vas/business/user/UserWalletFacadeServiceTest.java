@@ -273,21 +273,21 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 		}
     }
     
-    //@Test
+    @Test
    	public void test010DoSharedeal(){
     	double cashIncomming = 1.00d;
     	//String dmac = "84:82:f4:19:01:0c";
     	String dmac = "84:82:f4:32:3a:90";
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
     	//System.out.println(JsonHelper.getJSONString(wallet));
-    	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10012016031100000000000000000074", "hello world!",null);
+    	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10002016071100000000000000009163", "hello world!",null);
     	System.out.println("dddd:"+ret);
     	
     	
     	
    	}
     
-    @Test
+    //@Test
    	public void test011DoSharedealSummary(){
     	//double cashIncomming = 108.39d;
     	//String dmac = "84:82:f4:23:06:e8";
