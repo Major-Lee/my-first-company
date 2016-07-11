@@ -996,13 +996,13 @@ public class UMLogicImpl implements IUMLogic{
 			result = NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "请求参数为空", true);
 			return result;
 		}
-		int type=0;
+		String type=StringUtils.EMPTY;
 		String choseTable=StringUtils.EMPTY;
 		String beginTime=StringUtils.EMPTY;
 		String endTime=StringUtils.EMPTY;
 		try {
 			JSONObject object = JSONObject.fromObject(data);
-			type = object.getInt("type");
+			type = object.getString("type");
 			choseTable=object.getString("choseTable");
 			beginTime = object.getString("startTime");
 			endTime = object.getString("endTime");
@@ -1014,7 +1014,7 @@ public class UMLogicImpl implements IUMLogic{
 		
 		List<String> daysList=new ArrayList<String>();
 		if(StringUtils.isBlank(beginTime)||StringUtils.isBlank(endTime)){
-			if(type!=0){
+			if(StringUtils.isNotBlank(type)){
 				daysList=DateUtils.getLastDayAsc(Integer.valueOf(type));
 			}else{
 				return NotifyUtil.error(ErrorCodeEnum.NULLPARAM, "时间参数为空!");
