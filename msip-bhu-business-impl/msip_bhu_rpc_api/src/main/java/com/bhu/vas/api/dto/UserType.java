@@ -23,7 +23,10 @@ public enum UserType {
 	BusinessNormal(41,"BN","商业 wifi 小型运营商客户"),
 	//自运营的商户
 	BusinessSelfor(42,"BS","自运营的商户"),
-	
+	//add by Jason 2016-07-11 start
+	//城市运营商
+	URBANOPERATORS(43,"UP","城市运营商"),
+	//add by Jason 2016-07-11 start
 	//Comprehensive management department
 	SelfCmdUser(50,"S","我司综合管理部门用户"),
 	;

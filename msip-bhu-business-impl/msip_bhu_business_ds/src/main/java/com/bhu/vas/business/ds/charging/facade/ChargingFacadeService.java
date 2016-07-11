@@ -507,7 +507,18 @@ public class ChargingFacadeService {
 			result.setOwner(WifiDeviceSharedealConfigs.Default_Owner);
 			result.setBelong(false);
 		}
-		result.setManufacturer(configs.getManufacturer());
+		
+		if(configs.getManufacturer()>0){
+			result.setManufacturer(configs.getManufacturer());
+		}else{
+			result.setManufacturer(WifiDeviceSharedealConfigs.Default_Manufacturer);
+		}
+		//不存在的 Distributor 分成进入Default_Owner
+		if(configs.getDistributor()>0){
+			result.setDistributor(configs.getDistributor());
+		}else{
+			result.setDistributor(WifiDeviceSharedealConfigs.Default_Owner);
+		}
 		result.setDistributor(configs.getDistributor());
 		return result;
 	}
