@@ -519,7 +519,7 @@ public class ChargingFacadeService {
 		}else{
 			result.setDistributor(WifiDeviceSharedealConfigs.Default_Owner);
 		}
-		result.setDistributor(configs.getDistributor());
+		//result.setDistributor(configs.getDistributor());
 		return result;
 	}
 	
