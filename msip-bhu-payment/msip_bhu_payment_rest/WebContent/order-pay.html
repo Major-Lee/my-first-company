@@ -86,6 +86,7 @@
 		        opt:{sandbox:false,https:false},
 		        callback_url:encodeURIComponent(url)//回调url
 		    }
+		    console.log(payparams);
 		    payparams = JSON.stringify(payparams);
 		    payparams = encodeURIComponent(payparams);
 		    location.href = data.payUrl + "?payParams=" + payparams;
@@ -100,7 +101,7 @@
 	               async: false,
 	               data: datas,
 	               success:function(json){
-	                    if(json.success){
+	                     if(json.success){
 								var params = $.parseJSON(json.params);
 							var callbackType = params.type;
 							if(callbackType=='json'){
@@ -111,7 +112,13 @@
 							}
 	                    }else{
 	                        alert(json.msg);
-	                    }
+	                    } 
+	            	  /*  if(json.success){
+							var params = $.parseJSON(json.params);
+							loc(params);
+	                   }else{
+	                       alert(json.msg);
+	                   } */
 	               }
 	           });
 	       });
