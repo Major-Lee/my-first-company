@@ -35,7 +35,7 @@ public class OrderSharedealRepairOp {
 		OrderService orderService = (OrderService)actx.getBean("orderService");
 		//select * from t_commdity_orders where status = 10 and process_status = 10 and created_at > '2016-06-06 00:00:00'
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("status", 10).andColumnEqualTo("process_status", 10).andColumnGreaterThan("created_at", "2016-06-06 00:00:00").andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
+		mc.createCriteria().andColumnEqualTo("status", 10).andColumnEqualTo("process_status", 10).andColumnGreaterThan("created_at", "2016-07-11 15:20:28").andSimpleCaulse(" 1=1 ");//.andColumnIsNotNull("lat").andColumnIsNotNull("lon");//.andColumnEqualTo("online", 1);
 		mc.setOrderByClause("uid");
 		mc.setPageNumber(1);
     	mc.setPageSize(200);
@@ -61,8 +61,8 @@ public class OrderSharedealRepairOp {
 						orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP);
 				
 				int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), amount, order.getId(), description, null);//sharedealCashToUserWalletWithProcedure
-				
 				System.out.println(order.getId()+"----"+ret);
+				System.out.println(order.getId());
 			}
 			System.out.println(orders.size());
 		}
