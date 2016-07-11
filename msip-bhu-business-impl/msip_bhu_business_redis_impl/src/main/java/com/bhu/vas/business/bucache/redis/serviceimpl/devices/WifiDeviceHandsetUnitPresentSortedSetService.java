@@ -43,6 +43,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	//在线初始score数值 100亿 
 	public static final double OnlineBaseScore = 10000000000d;
+	public static final double VisitorOnlineBaseScore = 0d;
 	public static final String OnlineDatePattern = "yyMMddHHmm";
 	
 	private WifiDeviceHandsetUnitPresentSortedSetService(){
@@ -57,15 +58,15 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	//生成score值，为当前终端上线时间  年月日时分
 	private static double generateScore(long login_at){
 		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern);
-		return Double.parseDouble(sdf.format(new Date(System.currentTimeMillis())));
+		return Double.parseDouble(sdf.format(new Date(login_at)));
 	}
 	
 	public long addOnlinePresent(String wifiId, String handsetId, long this_login_at){
-		return super.zadd(generateKey(wifiId), OnlineBaseScore+generateScore(this_login_at), handsetId);
+		return super.zadd(generateKey(wifiId), this_login_at == 0 ? VisitorOnlineBaseScore: (OnlineBaseScore+generateScore(this_login_at)), handsetId);
 	}
 	
-	public long addOfflinePresent(String wifiId, String handsetId, long last_login_at){
-		return super.zadd(generateKey(wifiId), generateScore(last_login_at), handsetId);
+	public long removeUnauthHandset(String wifiId, String handsetId, long last_login_at){
+		return super.zremrangeByScore(generateKey(wifiId), VisitorOnlineBaseScore, VisitorOnlineBaseScore);
 	}
 	
 	/**
@@ -77,12 +78,30 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return super.zcount(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE);
 	}
 	/**
+	 * 获取该设备的离线终端数量
+	 * @param wifiId
+	 * @return
+	 */
+	public Long presentOfflineSize(String wifiId){
+		return super.zcount(generateKey(wifiId), 1L, (OnlineBaseScore-1));
+	}
+	
+	/**
 	 * 获取该设备的所有在线设备
 	 * @param wifiId
 	 * @return
 	 */
 	public Set<String> fetchAllOnlinePresent(String wifiId){
 		return super.zrangeByScore(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE);
+	}
+	
+	public Set<Tuple> fetchPresents(String wifiId,int start,int size){
+		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+		return super.zrevrangeWithScores(generateKey(wifiId), start, (start+size-1));
+	}
+	
+	public Long presentSize(String wifiId){
+		return super.zcard(generateKey(wifiId));
 	}
 	
     /**
@@ -108,6 +127,11 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 			for(Tuple tuple : result){
 				addOfflinePresent(wifiId, tuple.getElement(), (tuple.getScore() - OnlineBaseScore));
 			}
+			//移除访客网络未认证终端
+			Set<Tuple> VistorOnlineResult = fetchVisitorOnlinePresent(wifiId, 0 ,size);
+			for(Tuple tuple : VistorOnlineResult){
+				removePresent(wifiId, tuple.getElement());
+			}
 		}
 	}
 	
@@ -130,9 +154,25 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return result;
 	}
 	
+	public boolean isOnline(double score){
+		if(score >= OnlineBaseScore){
+			return true;
+		}
+		return false;
+	}
+	
 	public Set<Tuple> fetchOnlinePresentWithScores(String wifiId,int start,int size){
 		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
 		return super.zrevrangeByScoreWithScores(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE, start, size);
+	}
+	
+	public Set<Tuple> fetchVisitorOnlinePresent(String wifiId,int start,int size){
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), VisitorOnlineBaseScore, VisitorOnlineBaseScore, start, size);
+	}
+	
+	public Set<Tuple> fetchOfflinePresentWithScores(String wifiId,int start,int size){
+		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 1L, (OnlineBaseScore-1), start, size);
 	}
 	
 	public long  addOfflinePresent(String wifiId, String handsetId, double rx_rate){
