@@ -87,7 +87,10 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 	
 	public List<Object> handsetsComming(List<HandsetDeviceDTO> dtos){
 		String[][] keyAndFields = generateKeyAndFieldsAndValues(dtos);
-		return this.pipelineHSet_diffKeyWithDiffFieldValue(keyAndFields[0], keyAndFields[1], keyAndFields[2]);
+		if(keyAndFields != null)
+			return this.pipelineHSet_diffKeyWithDiffFieldValue(keyAndFields[0], keyAndFields[1], keyAndFields[2]);
+		else
+			return null;
 	}
 	
 	
