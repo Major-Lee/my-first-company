@@ -723,7 +723,7 @@ public class UserUnitFacadeService {
 				if(StringUtils.equals(userType, "other")){
 					List<Integer> utypeList = new ArrayList<Integer>();
 					utypeList.add(1);
-					utypeList.add(41);
+					utypeList.add(43);
 					cri.andColumnNotIn("utype", utypeList);
 				}else{
 					UserType ut = UserType.getBySName(userType);
