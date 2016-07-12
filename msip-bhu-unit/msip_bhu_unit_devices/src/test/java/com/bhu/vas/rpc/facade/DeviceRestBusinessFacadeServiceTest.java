@@ -48,7 +48,7 @@ public class DeviceRestBusinessFacadeServiceTest extends BaseTest{
 	public void testOnlineProcesser(){
 		HandsetDeviceDTO dto = new HandsetDeviceDTO();
 		dto.setAction("online");
-		dto.setVapname("wlan0");
+		dto.setVapname("wlan3");
 		dto.setChannel("11");
 		dto.setSsid("晓玮啊测试");
 		dto.setPhy_rate("0M");
@@ -59,6 +59,8 @@ public class DeviceRestBusinessFacadeServiceTest extends BaseTest{
 		dto.setIp("192.168.78.111");
 		dto.setMac("aa:aa:aa:aa:aa:aa");
 		dto.setBssid("64:68:75:00:00:00");
+		dto.setAuthorized("false");
+		dto.setPortal("remote");
 		
 		deviceBusinessFacadeService.handsetDeviceOnline("0000000564687500005c0000000000000000100000007",dto,"84:82:f4:2f:3a:50");
 		System.out.println("111");
