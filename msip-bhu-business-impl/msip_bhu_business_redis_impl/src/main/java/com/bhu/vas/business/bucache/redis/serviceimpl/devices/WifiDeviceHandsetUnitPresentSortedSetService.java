@@ -125,7 +125,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		for(int i=0;i<page;i++){
 			Set<Tuple> result = fetchOnlinePresentWithScores(wifiId, 0, size);
 			for(Tuple tuple : result){
-				addOfflinePresent(wifiId, tuple.getElement(), (tuple.getScore() - OnlineBaseScore));
+				addOfflinePresent(wifiId, tuple.getElement(), (long)(tuple.getScore() - OnlineBaseScore));
 			}
 			//移除访客网络未认证终端
 			Set<Tuple> VistorOnlineResult = fetchVisitorOnlinePresent(wifiId, 0 ,size);
@@ -175,8 +175,8 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 1L, (OnlineBaseScore-1), start, size);
 	}
 	
-	public long  addOfflinePresent(String wifiId, String handsetId, double rx_rate){
-		return super.zadd(generateKey(wifiId), rx_rate, handsetId);
+	public long  addOfflinePresent(String wifiId, String handsetId, long last_login_at){
+		return super.zadd(generateKey(wifiId), generateScore(last_login_at), handsetId);
 	}
 	
 	@Override
