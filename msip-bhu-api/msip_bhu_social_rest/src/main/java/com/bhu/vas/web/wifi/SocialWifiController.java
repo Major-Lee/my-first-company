@@ -33,7 +33,7 @@ public class SocialWifiController extends BaseController {
 
 
     /**
-     * 评论wifi
+     * wifi详情
      * @param response
      * @param bssid
      * @param uid

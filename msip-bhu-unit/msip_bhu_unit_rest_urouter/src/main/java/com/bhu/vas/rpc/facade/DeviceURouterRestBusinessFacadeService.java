@@ -80,6 +80,7 @@ import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
@@ -150,6 +151,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
 	
 	/**
 	 * urouter 主入口界面数据
@@ -239,16 +241,16 @@ public class DeviceURouterRestBusinessFacadeService {
 			Set<Tuple> presents = null;
 			switch(status){
 				case HDList_Online_Status:
-					presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, start, size);
-					total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId);
+					presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, start, size);
+//					total = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSize(wifiId);
 					break;
 				case HDList_Offline_Status:
-					presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchOfflinePresentWithScores(wifiId, start, size);
-					total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOfflineSize(wifiId);
+					presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchOfflinePresentWithScores(wifiId, start, size);
+//					total = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOfflineSize(wifiId);
 					break;
 				default:
-					presents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchPresents(wifiId, start, size);
-					total = WifiDeviceHandsetPresentSortedSetService.getInstance().presentSize(wifiId);
+					presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchPresents(wifiId, start, size);
+//					total = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentSize(wifiId);
 			}
 			//System.out.println("###################presents.size():"+presents.size());
 
@@ -271,9 +273,14 @@ public class DeviceURouterRestBusinessFacadeService {
 					WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 					for(Tuple tuple : presents){
 						hd_entity = handsets.get(cursor);
+						//过滤访客的终端
+						if (!isMainNetwork(hd_entity)) {
+							cursor++;
+							continue;
+						}
 						alia = handsetAlias.get(cursor);
-						boolean online = WifiDeviceHandsetPresentSortedSetService.getInstance().isOnline(tuple.getScore());
-						double rx_rate = WifiDeviceHandsetPresentSortedSetService.getInstance().get_rx_rate(tuple.getScore());
+						boolean online = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().isOnline(tuple.getScore());
+						double rx_rate = Double.parseDouble(hd_entity.getData_rx_rate());
 						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, tuple.getElement(), online, rx_rate, hd_entity, setting_dto,alia);
 						vtos.add(vto);
 						cursor++;
@@ -292,13 +299,26 @@ public class DeviceURouterRestBusinessFacadeService {
 			if(vtos == null)
 				vtos = Collections.emptyList();
 			
-			Map<String, Object> payload = PageHelper.partialAllList(vtos, total, start, size);
+			Map<String, Object> payload = PageHelper.partialAllList(vtos, vtos.size(), start, size);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
-
+	
+	/**
+	 * 是否是主网络终端
+	 * @param vapName
+	 * @return
+	 */
+	public static boolean isMainNetwork(HandsetDeviceDTO dto){
+		boolean flag = false;
+		String vapName = dto.getVapname();
+		if (vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN0) || vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN10)) {
+			flag = true;
+		}
+		return flag;
+	}
 	
 	/*public static int daysOfTwo(Date fDate, Date oDate) {
        Calendar aCalendar = Calendar.getInstance();
@@ -1886,35 +1906,42 @@ public class DeviceURouterRestBusinessFacadeService {
 	//访客网络在线列表
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorList(Integer uid, String wifiId, int start, int size) {
 
-		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAuthOnlinePresent(wifiId, start, size);
+		Set<Tuple> presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, start, size);
 
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId));
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId, AuthOnline));
 	}
-
+	
+	//认证离线
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListOffline(Integer uid, String wifiId, int start, int size) {
 
-		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchOfflinePresent(wifiId, start, size);
+		Set<Tuple> presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchOfflinePresentWithScores(wifiId, start, size);
 
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId));
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId, AuthOffline));
 	}
-
+	
+	//访客网络未认证仅连接上线的列表
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListOnline(Integer uid, String wifiId, int start, int size) {
 
-		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchOnlinePresent(wifiId, start, size);
+		Set<Tuple> presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchVisitorOnlinePresent(wifiId, start, size);
 
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId));
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId, Online));
 	}
 
-
+	//未认证 认证 认证离线
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListAll(Integer uid, String wifiId, int start, int size) {
 
-		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAllPresent(wifiId, start, size);
-
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId));
+		Set<Tuple> allPresents = WifiDeviceVisitorService.getInstance().fetchAllPresent(wifiId, start, size);
+		Set<Tuple> presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchVisitorOnlinePresent(wifiId, start, size);
+		allPresents.addAll(presents);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(allPresents, uid, wifiId, null));
 	}
 
-
-	private URouterVisitorListVTO builderURouterVisitorListVTO(Set<Tuple> presents, Integer uid, String wifiId) {
+	private static final String AuthOnline = "authonline";
+	private static final String AuthOffline = "authoffline";
+	private static final String Online = "online";
+	
+	//type: all(未认证 认证 认证离线) authOnline(认证在线) authOffline(认证离线) online(未认证)
+	private URouterVisitorListVTO builderURouterVisitorListVTO(Set<Tuple> presents, Integer uid, String wifiId, String type) {
 		URouterVisitorListVTO vto = new URouterVisitorListVTO();
 		vto.setMac(wifiId);
 
@@ -1952,18 +1979,24 @@ public class DeviceURouterRestBusinessFacadeService {
 
 			List<URouterVisitorDetailVTO> vtos = new ArrayList<URouterVisitorDetailVTO>();
 			List<String> handsetIds = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, hd_macs);
-			List<Object> handsetScores = WifiDeviceVisitorService.getInstance().pipelineAllPresentScores(wifiId, hd_macs_array);
+//			List<Object> handsetScores = WifiDeviceVisitorService.getInstance().pipelineAllPresentScores(wifiId, hd_macs_array);
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId,hd_macs);
 			
 			vto.setOhd_count(presents.size());
 			URouterVisitorDetailVTO detailVTO = null;
 			int cursor = 0;
 			for (Tuple tuple : presents) {
+
+				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
+				//如果是主网络，跳过
+				if (isMainNetwork(handsetDeviceDTO)) {
+					cursor++;
+					continue;
+				}
+				
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
-
-				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
 				
 				String hostname = handsetIds.get(cursor);
 				if (StringUtils.isEmpty(hostname)) {
@@ -1973,20 +2006,39 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO.setIp(handsetDeviceDTO.getIp());
 				detailVTO.setN(hostname);
 
-				Object score =  handsetScores.get(cursor);
-				if (score!=null) {
-					Double s = Double.parseDouble(score.toString());
-					if (s == 0) {
-						detailVTO.setS("online");
-					}
-					if (s == 1) {
-						detailVTO.setS("authoffline");
-					}
-					if (s > 1) {
+//				Object score =  handsetScores.get(cursor);
+//				if (score!=null) {
+//					Double s = Double.parseDouble(score.toString());
+//					if (s == 0) {
+//						detailVTO.setS("online");
+//					}
+//					if (s == 1) {
+//						detailVTO.setS("authoffline");
+//					}
+//					if (s > 1) {
+//						detailVTO.setS("authonline");
+//					}
+//				}
+
+				if (handsetDeviceDTO.getAction().equals(HandsetDeviceDTO.Action_Online)) {
+					if (StringHelper.TRUE.equals(handsetDeviceDTO.getAuthorized())) {
 						detailVTO.setS("authonline");
 					}
+					if (StringHelper.FALSE.equals(handsetDeviceDTO.getAuthorized())) {
+						detailVTO.setS("online");
+					}
 				}
-
+				if (handsetDeviceDTO.getAction().equals(HandsetDeviceDTO.Action_Offline)) {
+					if (StringHelper.TRUE.equals(handsetDeviceDTO.getAuthorized())) {
+						detailVTO.setS("authoffline");
+					}
+				} 
+				
+				if (!type.isEmpty() && !detailVTO.getS().equals(type)) {
+					cursor++;
+					continue;
+				}
+				
 				vtos.add(detailVTO);
 				cursor++;
 			}

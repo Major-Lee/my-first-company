@@ -19,6 +19,7 @@ public class HandsetDeviceDTO implements Serializable{
 	public static final String Action_Authorize = "authorize";
 
 	public static final String VAPNAME_WLAN0 = "wlan0";
+	public static final String VAPNAME_WLAN10 = "wlan10";
 	public static final String VAPNAME_WLAN3 = "wlan3";
 	public static final String VAPNAME_WLAN13 = "wlan13";
 

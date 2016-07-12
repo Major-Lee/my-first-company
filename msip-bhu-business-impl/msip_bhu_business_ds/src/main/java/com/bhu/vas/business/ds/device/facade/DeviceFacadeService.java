@@ -117,7 +117,6 @@ public class DeviceFacadeService{
 				if(dto != null){
 					dto.setAction(HandsetDeviceDTO.Action_Offline);
 					do_offline_handsets.add(dto);
-
 				}
 				//dto.setAction(HandsetDeviceDTO.Action_Offline);
 			}
