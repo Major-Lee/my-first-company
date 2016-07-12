@@ -1930,8 +1930,10 @@ public class DeviceURouterRestBusinessFacadeService {
 	//未认证 认证 认证离线
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListAll(Integer uid, String wifiId, int start, int size) {
 
-		Set<Tuple> presents = WifiDeviceVisitorService.getInstance().fetchAllPresent(wifiId, start, size);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId, null));
+		Set<Tuple> allPresents = WifiDeviceVisitorService.getInstance().fetchAllPresent(wifiId, start, size);
+		Set<Tuple> presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchVisitorOnlinePresent(wifiId, start, size);
+		allPresents.addAll(presents);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(allPresents, uid, wifiId, null));
 	}
 
 	private static final String AuthOnline = "authonline";
