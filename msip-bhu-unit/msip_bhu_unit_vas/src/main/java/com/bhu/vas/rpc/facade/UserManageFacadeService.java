@@ -130,12 +130,13 @@ public class UserManageFacadeService {
 					userTransInfoDTO.setUid(uid);
 					userTransInfoDTO.setTransType(log.getTranstype());
 					userTransInfoDTO.setTransNo(log.getOrderid());
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");  
 			        if(log.getUpdated_at() != null){
 			        	String time =sdf.format(log.getUpdated_at()); 
 			        	userTransInfoDTO.setTransTime(time);
 			        }
-					
+			        userTransInfoDTO.setTransMoney(log.getCash());
+			        userTransInfoDTO.setTransVcurrency(log.getVcurrency());
 					//根据订单Id获取mac和终端mac信息
 					Order orders = orderService.getById(log.getOrderid());
 					if(orders == null){

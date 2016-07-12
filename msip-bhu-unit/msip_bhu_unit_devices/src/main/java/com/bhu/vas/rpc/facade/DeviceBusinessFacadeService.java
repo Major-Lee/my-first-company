@@ -202,7 +202,7 @@ public class DeviceBusinessFacadeService {
 		}else{
 			String oldWanIp = wifi_device_entity.getWan_ip();
 			oldWorkmode = wifi_device_entity.getWork_mode();
-			oldWorkmode = wifi_device_entity.getWork_mode();
+			//oldWorkmode = wifi_device_entity.getWork_mode();
 			//wifi_device_entity.setCreated_at(exist_wifi_device_entity.getCreated_at());
 			BeanUtils.copyProperties(dto, wifi_device_entity);
 			wifi_device_entity.setLast_reged_at(reged_at);
