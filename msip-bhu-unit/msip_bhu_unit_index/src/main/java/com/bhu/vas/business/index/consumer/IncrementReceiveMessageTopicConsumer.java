@@ -23,7 +23,7 @@ public class IncrementReceiveMessageTopicConsumer extends StringKafkaMessageCons
 		delay_exec.schedule(new Runnable() {
 			@Override
 			public void run() {
-				//System.out.println("IncrementReceiveMessageTopicConsumer Init");
+				System.out.println("IncrementReceiveMessageTopicConsumer Init");
 				
 				doSubscribeTopics(new PollIteratorNotify<ConsumerRecords<String,String>>(){
 					@Override
@@ -39,7 +39,7 @@ public class IncrementReceiveMessageTopicConsumer extends StringKafkaMessageCons
 						}
 					}
 				});
-				//System.out.println("DeliverMessageTopicConsumer Init End");
+				System.out.println("DeliverMessageTopicConsumer Init End");
 			}}, 5, TimeUnit.SECONDS);
 	}
 }

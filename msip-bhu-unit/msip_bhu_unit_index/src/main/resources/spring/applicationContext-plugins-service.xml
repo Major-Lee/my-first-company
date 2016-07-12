@@ -9,8 +9,9 @@
 	
 	<import resource="classpath*:com/et/plugins/quartz/applicationContext-quartz.xml"/>
 	 -->
-	<context:component-scan base-package="com.bhu.vas.rpc"/>
-	<import resource="classpath*:springkafka/applicationContext-kafka-input-consumer.xml"/>								  
+	<context:component-scan base-package="com.bhu.vas.business.index"/>
+	<import resource="classpath*:springkafka/applicationContext-kafka-index-producer.xml"/>	
+	<import resource="classpath*:springkafka/applicationContext-kafka-index-consumer.xml"/>								  
 	<import resource="classpath*:springbrc/applicationContext-brc.xml"/>
 	<import resource="classpath*:springcache/applicationContextCore-cache.xml"/> 	
 	<import resource="classpath*:springsearch/applicationContext-Search-Service.xml"/>	

@@ -33,7 +33,8 @@ public class KafkaMessageTest {
 //		TestDTO();
 //		TestStringKafkaMessage();
 //		TestAddSubscribeTopics();
-		TestConsumerSubscriberGroup();
+//		TestConsumerSubscriberGroup();
+		TestProducerIndexGroup();
 	}
 	
 	/**
@@ -422,6 +423,13 @@ public class KafkaMessageTest {
 			System.out.println("send message end " + key);
 			key++;
 		//}
+	}
+	
+	
+	public static void TestProducerIndexGroup() throws Exception{
+		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
+		producer.send("increment_receive", null, "8482f423070c", "0000000");
+		System.out.println("send message end ");
 	}
 	
 }
