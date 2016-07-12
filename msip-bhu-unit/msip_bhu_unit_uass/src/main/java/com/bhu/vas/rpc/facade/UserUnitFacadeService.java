@@ -767,7 +767,7 @@ public class UserUnitFacadeService {
 				userManageDTO.setIsCashBack("");
 				userManageDTO.setUserNum(tailusers.getTotalItemsCount());
 				//根据uid查询用户钱包信息
-				UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(_user.getId());
+				UserWalletDetailVTO userWallet = userWalletFacadeService.walletSimpleDetail(_user.getId());
 				if(userWallet != null){
 					userManageDTO.setVcurrency(userWallet.getVcurrency());
 					userManageDTO.setWalletMoney(userWallet.getCash());
@@ -855,7 +855,7 @@ public class UserUnitFacadeService {
 			userManageDTO.setSex(user.getSex());
 			userManageDTO.setSignature(user.getMemo());
 			//根据uid查询用户钱包信息
-			UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(user.getId());
+			UserWalletDetailVTO userWallet = userWalletFacadeService.walletSimpleDetail(user.getId());
 			if(userWallet != null){
 				userManageDTO.setVcurrency(userWallet.getVcurrency());
 				userManageDTO.setWalletMoney(userWallet.getCash());
