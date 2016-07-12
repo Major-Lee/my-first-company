@@ -1005,7 +1005,6 @@ public class DeviceBusinessFacadeService {
 					handset.setData_tx_rate(terminal.getData_tx_rate());
 					handset.setData_rx_rate(terminal.getData_rx_rate());
 				}
-<<<<<<< HEAD
 				//1:更新被管理的终端的上下行速率和ssid bssid
 				int cursor = 0;
 				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(hdIds);
