@@ -1,5 +1,7 @@
 package com.bhu.vas.di.op.task;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.elasticsearch.common.lang3.StringUtils;
@@ -29,6 +31,8 @@ public class AwakeUserOp {
 		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserUniqueRegisterEnvOp.class);
 		ctx.start();
+		
+		List<User> users = new ArrayList<User>();
 		UserService userService = (UserService)ctx.getBean("userService");
 		UserWalletService userWalletService = (UserWalletService)ctx.getBean("userWalletService");
 		ModelCriteria mc = new ModelCriteria();
@@ -47,16 +51,40 @@ public class AwakeUserOp {
 				UserWallet wallet = userWalletService.getById(user.getId());
 				if(wallet != null && wallet.getCash() > 0 ){
 					//count++;
-					String smsUserName = StringUtils.isEmpty(user.getNick())?DefaultUserName:user.getNick();
+					users.add(user);
+/*					String smsUserName = StringUtils.isEmpty(user.getNick())?DefaultUserName:user.getNick();
 					String smsCash =String.valueOf(ArithHelper.round(wallet.getCash(), 2));
 					String smsg = String.format(AwakeSMS_Template, smsUserName,smsCash,DefaultLink);
 					String response = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway)
 							.send(smsg, user.getMobileno());
 					System.out.println(String.format("sendAwakeNotify acc[%s] msg[%s] response[%s]",user.getMobileno(),smsg,response));					
-				}
+*/				}
 			}
 		}
-		//System.out.println(count);
+		
+		List<User> randomusers = null;
+		if(users.size() > 100){
+			Collections.shuffle(users);
+			randomusers = users.subList(0, 100);
+		}else{
+			randomusers = users;
+		}
+		
+		StringBuffer output_users = new StringBuffer();
+		for(User user : randomusers){
+			UserWallet wallet = userWalletService.getById(user.getId());
+			if(wallet != null && wallet.getCash() > 0 ){
+				output_users.append(user.getId() + "-" + user.getMobileno()+",");
+				String smsUserName = StringUtils.isEmpty(user.getNick())?DefaultUserName:user.getNick();
+				String smsCash =String.valueOf(ArithHelper.round(wallet.getCash(), 2));
+				String smsg = String.format(AwakeSMS_Template, smsUserName,smsCash,DefaultLink);
+				String response = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway)
+						.send(smsg, user.getMobileno());
+				System.out.println(String.format("sendAwakeNotify acc[%s] msg[%s] response[%s]",user.getMobileno(),smsg,response));					
+			}
+		}
+		
+		System.out.println("随机用户数据:"+output_users.toString());
 		System.out.println("数据增量导入，共耗时"+((System.currentTimeMillis()-t0)/1000)+"s");
 		ctx.stop();
 		ctx.close();
