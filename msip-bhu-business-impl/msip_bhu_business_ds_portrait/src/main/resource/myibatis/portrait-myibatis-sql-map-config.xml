@@ -21,7 +21,7 @@
 		<setting name="logPrefix" value="mybatisDaoLogger." />
 	</settings>
 	<typeAliases>
-		<typeAlias alias="sequence" 	type="com.bhu.vas.api.rpc.portrait.model.HandsetPortrait" />
+		<typeAlias alias="handsetPortrait" 	type="com.bhu.vas.api.rpc.portrait.model.HandsetPortrait" />
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin"> 

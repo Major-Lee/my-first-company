@@ -45,7 +45,7 @@
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
         </dependency>   
-
+        
         <dependency>
                 <groupId>dom4j</groupId>
                 <artifactId>dom4j</artifactId>
@@ -55,6 +55,12 @@
                 <groupId>jaxen</groupId>
                 <artifactId>jaxen</artifactId>
          </dependency>
+         
+         <dependency>
+		   <groupId>eu.bitwalker</groupId>
+		   <artifactId>UserAgentUtils</artifactId>
+		   <version>1.20</version>
+		</dependency>
     </dependencies>
 
     <build>

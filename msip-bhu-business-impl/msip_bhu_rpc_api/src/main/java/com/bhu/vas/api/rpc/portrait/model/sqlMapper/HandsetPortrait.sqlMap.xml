@@ -5,10 +5,15 @@
 <mapper namespace="com.bhu.vas.api.rpc.portrait.model.HandsetPortrait">
 
   <resultMap id="modelResult" type="handsetPortrait">
-    <id property="id" column="id"/>
-    <result property="mobileno" column="mobileno"/>
-    <result property="os" column="os"/>
-    <result property="updated_at" column="updated_at"/>
+    <id property="id" column="id" />
+	<result property="mobile" column="mobile" />
+	<result property="browserVersion" column="browserVersion" />
+	<result property="browserType" column="browserType" />
+	<result property="browserManufacturer" column="browserManufacturer" />
+	<result property="osType" column="osType" />
+	<result property="osManufacturer" column="osManufacturer" />
+	<result property="type" column="type" />
+	<result property="created_at" column="created_at" />
   </resultMap>  
   
   	<sql id="modelTableName">
@@ -19,30 +24,51 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	mobileno,
-	    	os,
-	    	updated_at
+			mobile,			
+			browserVersion,
+			browserType,
+			browserManufacturer,
+			osType,
+			osManufacturer,
+			type,
+			created_at
+						
 	    ]]>
-	</sql>  
+	</sql>
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	mobileno,
-	    	os,
-	    	updated_at
+			mobile,			
+			browserVersion,
+			browserType,
+			browserManufacturer,
+			osType,
+			osManufacturer,
+			type,
+			created_at			
 	    ]]>
-	</sql>   
-	
+	</sql>
+
 	<sql id="modelInsertValues">
-			#{id},
-	    	#{os},
-	    	#{mobileno},
-	    	#{updated_at}
-	</sql> 
-	
+		#{id},
+		#{mobile},			
+		#{browserVersion},
+		#{browserType},
+		#{browserManufacturer},
+		#{osType},
+		#{osManufacturer},
+		#{type},
+		#{created_at}
+	</sql>
+
 	<sql id="modelUpdateValues">
-	    	os = #{os},
-	    	mobileno = #{mobileno},
-	    	updated_at = #{updated_at}
+		id = #{id},
+		mobile = #{mobile},
+		browserVersion = #{browserVersion},
+		browserType = #{browserType},
+		browserManufacturer = #{browserManufacturer},
+		osType = #{osType},
+		osManufacturer = #{osManufacturer},
+		created_at = #{created_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
 		<!--
