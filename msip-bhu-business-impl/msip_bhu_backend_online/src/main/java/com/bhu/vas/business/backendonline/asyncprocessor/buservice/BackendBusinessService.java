@@ -1,22 +1,11 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.buservice;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
 import com.bhu.vas.api.dto.search.increment.IncrementSingleDocumentDTO;
-import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
-import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
-import com.bhu.vas.api.rpc.tag.model.TagDevices;
-import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.BusinessMarkerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -34,9 +23,6 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 
 /**
  * backend专属业务service
@@ -85,8 +71,8 @@ public class BackendBusinessService {
 	@Resource
 	private WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
 	
-	@Resource
-	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+//	@Resource
+//	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
     @Resource
     private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
@@ -285,7 +271,7 @@ public class BackendBusinessService {
 	
 	/**********************************     设备全量索引数据业务 start   *****************************************/
 	
-	public void blukIndexs(List<String> macs){
+/*	public void blukIndexs(List<String> macs){
 		if(macs != null && !macs.isEmpty()){
 			List<WifiDevice> wifiDevices = wifiDeviceService.findByIds(macs);
 			if(wifiDevices != null && !wifiDevices.isEmpty()){
@@ -305,14 +291,14 @@ public class BackendBusinessService {
 					User bindUser = null;
 					String bindUserDNick = null;
 					//Integer bindUserId = userDeviceService.fetchBindUid(mac);
-/*					UserDevice userDevice = userDeviceService.fetchBindByMac(mac);
+					UserDevice userDevice = userDeviceService.fetchBindByMac(mac);
 					if(userDevice != null){
 						bindUserDNick = userDevice.getDevice_name();
 						Integer bindUserId = userDevice.getId().getUid();
 						if(bindUserId != null){
 							bindUser = userService.getById(bindUserId);
 						}
-					}*/
+					}
 					UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
 					if(userWifiDevice != null){
 						bindUserDNick = userWifiDevice.getDevice_name();
@@ -336,7 +322,7 @@ public class BackendBusinessService {
 				}
 			}
 		}
-	}
+	}*/
 	
 	/**********************************     设备全量索引数据业务 end   *****************************************/
 }

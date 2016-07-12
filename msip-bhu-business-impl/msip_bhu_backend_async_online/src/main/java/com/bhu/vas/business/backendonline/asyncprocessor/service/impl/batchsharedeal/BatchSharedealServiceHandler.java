@@ -10,12 +10,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.search.increment.IncrementBulkDocumentDTO;
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
-import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -43,8 +46,11 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
+//	@Resource
+//	private BackendBusinessService backendBusinessService;
+	
 	@Resource
-	private BackendBusinessService backendBusinessService;
+	private KafkaMessageIncrementProducer incrementMessageTopicProducer;
 	/*@Resource
 	private IDaemonRpcService daemonRpcService;*/
 
@@ -78,7 +84,9 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 						}
 						try {
 							RewardOrderAmountHashService.getInstance().removeAllRAmountByMacs(macList.toArray(new String[0]));
-							backendBusinessService.blukIndexs(macList);
+							//backendBusinessService.blukIndexs(macList);
+							incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(macList, 
+									IncrementActionEnum.WD_FullCreate, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 							Thread.sleep(300);
 						} catch (InterruptedException e) {
 							e.printStackTrace(System.out);

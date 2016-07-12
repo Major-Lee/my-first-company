@@ -25,14 +25,16 @@ public class IncrementSingleDocumentDTO extends IncrementDocumentDTO{
 	
 	public static IncrementSingleDocumentDTO builder(String id, IncrementActionEnum incrementActionEnum, int uniqueid){
 		if(incrementActionEnum == null){
-			throw new RuntimeException("IncrementBulkDocumentDTO Builder Params Illegal");
+			//throw new RuntimeException("IncrementBulkDocumentDTO Builder Params Illegal");
+			return null;
 		}
 		return builder(id, incrementActionEnum.getKey(), uniqueid);
 	}
 	
 	public static IncrementSingleDocumentDTO builder(String id, String action, int uniqueid){
 		if(StringUtils.isEmpty(id) || StringUtils.isEmpty(action)){
-			throw new RuntimeException("IncrementBulkDocumentDTO Builder Params Illegal");
+			//throw new RuntimeException("IncrementBulkDocumentDTO Builder Params Illegal");
+			return null;
 		}
 		IncrementSingleDocumentDTO dto = new IncrementSingleDocumentDTO();
 		dto.setId(id);

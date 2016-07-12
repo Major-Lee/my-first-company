@@ -12,12 +12,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.search.increment.IncrementBulkDocumentDTO;
+import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
-import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ExcelElementCallback;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.dto.DeviceCallbackDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
@@ -29,6 +30,8 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
+import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.increment.KafkaMessageIncrementProducer;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
@@ -55,11 +58,14 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
 	
-	@Resource
-	private BackendBusinessService backendBusinessService;
+//	@Resource
+//	private BackendBusinessService backendBusinessService;
 	
 	@Resource
 	private TagGroupRelationService tagGroupRelationService;
+	
+	@Resource
+	private KafkaMessageIncrementProducer incrementMessageTopicProducer;
 	
 	@Override
 	public void process(String message) {
@@ -210,7 +216,9 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 						
 						try {
 							RewardOrderAmountHashService.getInstance().removeAllRAmountByMacs(pages.toArray(new String[0]));
-							backendBusinessService.blukIndexs(pages);
+							//backendBusinessService.blukIndexs(pages);
+							incrementMessageTopicProducer.incrementDocument(IncrementBulkDocumentDTO.builder(pages, 
+									IncrementActionEnum.WD_FullCreate, BusinessIndexDefine.WifiDevice.IndexUniqueId));
 							Thread.sleep(500);
 						} catch (InterruptedException e) {
 							e.printStackTrace(System.out);

@@ -25,7 +25,8 @@ public class IncrementBulkDocumentDTO extends IncrementDocumentDTO{
 	
 	public static IncrementBulkDocumentDTO builder(List<String> ids, IncrementActionEnum action, int uniqueid){
 		if(ids == null || ids.isEmpty() || action == null){
-			throw new RuntimeException("IncrementBulkDocumentDTO Builder Params Illegal");
+			//throw new RuntimeException("IncrementBulkDocumentDTO Builder Params Illegal");
+			return null;
 		}
 		IncrementBulkDocumentDTO dto = new IncrementBulkDocumentDTO();
 		dto.setIds(ids);
