@@ -19,6 +19,10 @@ public class UserTransInfoDTO implements java.io.Serializable {
 	private String terminalMac;
 	//打赏设备Mac
 	private String deciveMac;
+	//零钱
+	private String transMoney;
+	//虎钻
+	private String transVcurrency;
 	public int getUid() {
 		return uid;
 	}
@@ -54,5 +58,17 @@ public class UserTransInfoDTO implements java.io.Serializable {
 	}
 	public void setDeciveMac(String deciveMac) {
 		this.deciveMac = deciveMac;
+	}
+	public String getTransMoney() {
+		return transMoney;
+	}
+	public void setTransMoney(String transMoney) {
+		this.transMoney = transMoney;
+	}
+	public String getTransVcurrency() {
+		return transVcurrency;
+	}
+	public void setTransVcurrency(String transVcurrency) {
+		this.transVcurrency = transVcurrency;
 	}
 }

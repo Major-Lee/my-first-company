@@ -758,7 +758,7 @@ public class UserUnitFacadeService {
 				userManageDTO.setSignature(_user.getMemo());
 				userManageDTO.setRegdevice(_user.getRegdevice());
 				userManageDTO.setUserLabel("");
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 		        if(_user.getCreated_at() != null){
 		        	String time =sdf.format(_user.getCreated_at()); 
 					userManageDTO.setCreateTime(time);
