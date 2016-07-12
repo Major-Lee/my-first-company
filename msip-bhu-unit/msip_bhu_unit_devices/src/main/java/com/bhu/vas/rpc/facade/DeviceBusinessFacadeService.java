@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -58,6 +59,7 @@ import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocationSerialTaskService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
@@ -473,26 +475,38 @@ public class DeviceBusinessFacadeService {
 		return (HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) || HandsetDeviceDTO.VAPNAME_WLAN13.equals(dto.getVapname())) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
 	}
 
+
 	private boolean isVisitorWifi(WifiDeviceTerminalDTO dto) {
 		return (HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) || HandsetDeviceDTO.VAPNAME_WLAN13.equals(dto.getVapname())) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
 	}
 
-	/**
-	 * 访客网络终端上线
-	 * @param ctx
-	 * @param dto
-	 * @param wifiId
-	 */
-	private void handsetDeviceVisitorOnline(String ctx, HandsetDeviceDTO dto, String wifiId) {
 
-		String wifiId_lowerCase = wifiId.toLowerCase();
-		//System.out.println("handsetDeviceVisitorOnline HandsetDeviceDTO isAuthorized handset[" + dto.getMac() + "],wifiId[" + wifiId + "],==" + dto.getAuthorized());
-		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
-			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
-		} else {
-			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
-		}
+	/**
+	 * 是否是访客上线未认证
+	 * @param dto
+	 * @return
+	 */
+	private boolean isVisitorWithOutAuth(HandsetDeviceDTO dto){
+		return (HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) || HandsetDeviceDTO.VAPNAME_WLAN13.equals(dto.getVapname())) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal()) && !StringHelper.TRUE.equals(dto.getAuthorized());
 	}
+
+
+//	/**
+//	 * 访客网络终端上线
+//	 * @param ctx
+//	 * @param dto
+//	 * @param wifiId
+//	 */
+//	private void handsetDeviceVisitorOnline(String ctx, HandsetDeviceDTO dto, String wifiId) {
+//
+//		String wifiId_lowerCase = wifiId.toLowerCase();
+//		//System.out.println("handsetDeviceVisitorOnline HandsetDeviceDTO isAuthorized handset[" + dto.getMac() + "],wifiId[" + wifiId + "],==" + dto.getAuthorized());
+//		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
+//			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
+//		} else {
+//			WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
+//		}
+//	}
 
 	private void handsetDeviceVisitorOnline(String ctx, WifiDeviceTerminalDTO dto, String wifiId) {
 		String wifiId_lowerCase = wifiId.toLowerCase();
@@ -514,16 +528,16 @@ public class DeviceBusinessFacadeService {
 	 * @param dto
 	 * @param wifiId
 	 */
-	private void handsetDeviceVisitorOffline(String ctx, HandsetDeviceDTO dto, String wifiId) {
-		String wifiId_lowerCase = wifiId.toLowerCase();
-//		System.out.println("handsetDeviceVisitorOffline WifiDeviceTerminalDTO isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
-		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
-			WifiDeviceVisitorService.getInstance().addVisitorOfflinePresent(wifiId_lowerCase, dto.getMac());
-		} else {
-			WifiDeviceVisitorService.getInstance().removePresent(wifiId_lowerCase, dto.getMac());
-		}
-
-	}
+//	private void handsetDeviceVisitorOffline(String ctx, HandsetDeviceDTO dto, String wifiId) {
+//		String wifiId_lowerCase = wifiId.toLowerCase();
+////		System.out.println("handsetDeviceVisitorOffline WifiDeviceTerminalDTO isAuthorized handset["+ dto.getMac() +"],wifiId[" +wifiId + "],=="+ dto.getAuthorized());
+//		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
+//			WifiDeviceVisitorService.getInstance().addVisitorOfflinePresent(wifiId_lowerCase, dto.getMac());
+//		} else {
+//			WifiDeviceVisitorService.getInstance().removePresent(wifiId_lowerCase, dto.getMac());
+//		}
+//
+//	}
 
 	/**
 	 * 清除访客网络列表
@@ -533,6 +547,44 @@ public class DeviceBusinessFacadeService {
 		String wifiId_lowerCase = wifiId.toLowerCase();
 		WifiDeviceVisitorService.getInstance().clearPresent(wifiId_lowerCase);
 	}
+	
+	/**
+	 * 清除wifi设备对应handset统一在线列表redis
+	 * @param wifiId
+	 * @return 
+	 */
+	private List<HandsetDeviceDTO> clearDeviceHandsetUnitList(String wifiId) {
+		long current = System.currentTimeMillis();
+//		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
+		List<String> onlinePresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
+		if(onlinePresents != null && !onlinePresents.isEmpty()){
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId.toLowerCase(),onlinePresents);
+			List<HandsetDeviceDTO> do_offline_handsets = new ArrayList<HandsetDeviceDTO>();
+			for(HandsetDeviceDTO dto:handsets){
+				if(dto != null){
+					dto.setAction(HandsetDeviceDTO.Action_Offline);
+					do_offline_handsets.add(dto);
+				}
+				//dto.setAction(HandsetDeviceDTO.Action_Offline);
+			}
+			HandsetStorageFacadeService.handsetsComming(do_offline_handsets);
+			//修改为redis实现终端上下线日志 2015-12-11
+			HandsetStorageFacadeService.wifiDeviceHandsetsOffline(wifiId, onlinePresents, current);
+			//清除设备在线终端列表
+//			WifiDeviceHandsetPresentSortedSetService.getInstance().changeOnlinePresentsToOffline(wifiId);
+			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().changeOnlinePresentsToOffline(wifiId);;
+			return handsets;
+		}
+		/*List<HandsetDevice> handset_devices_online_entitys = handsetDeviceService.findModelByWifiIdAndOnline(wifiId);
+		if(!handset_devices_online_entitys.isEmpty()){
+			for(HandsetDevice handset_devices_online_entity : handset_devices_online_entitys){
+				handset_devices_online_entity.setOnline(false);
+			}
+			handsetDeviceService.updateAll(handset_devices_online_entitys);
+		}*/
+		return null;
+	}
+	
 
 	private void handsetDeviceVisitorAuthorize(String ctx, HandsetDeviceDTO dto, String wifiId) {
 		if(dto == null)
@@ -543,11 +595,14 @@ public class DeviceBusinessFacadeService {
 		String wifiId_lowerCase = wifiId.toLowerCase();
 //		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + StringHelper.TRUE.equals(dto.getAuthorized()));
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
-			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
+//			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
+			//认证通过后添加至统一在线列表
+			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent(wifiId_lowerCase, dto.getMac(), System.currentTimeMillis());
 			deliverMessageService.sendHandsetDeviceVisitorAuthorizeOnlineMessage(wifiId_lowerCase, dto.getMac(), dto.getTs());
 		} else { //踢掉
 			//WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
-			WifiDeviceVisitorService.getInstance().removePresent(wifiId_lowerCase, dto.getMac());
+//			WifiDeviceVisitorService.getInstance().removePresent(wifiId_lowerCase, dto.getMac());
+			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().removePresent(wifiId_lowerCase, dto.getMac());
 		}
 	}
 
@@ -619,23 +674,32 @@ public class DeviceBusinessFacadeService {
 		int result_status = HandsetStorageFacadeService.wifiDeviceHandsetOnline(wifiId_lowerCase, dto.getMac(), this_login_at);//wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
 		if(result_status == HandsetLogDTO.Element_NewHandset)
 			isNew4This = true;
-		if(isVisitorWifi(ctx, dto)) { //访客网络
-			handsetDeviceVisitorOnline(ctx, dto, wifiId);
-		} else { 
-			//2:wifi设备对应handset在线列表redis添加
-			WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId_lowerCase, dto.getMac(),
-					dto.fetchData_rx_rate_double());
-		/*
-		 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
-		 * 4:移动设备连接wifi设备的流水log (backend)
-		 * 5:wifi设备接入移动设备的接入数量 (backend)
-		 * 6:统计增量 移动设备的daily新增用户或活跃用户增量
-		 * 7:统计增量 移动设备的daily启动次数增量(backend)
-		 */
-			deliverMessageService.sendHandsetDeviceOnlineActionMessage(wifiId_lowerCase, dto.getMac(),
-					this_login_at, last_login_at, newHandset,isNew4This);
+		
+//		if(isVisitorWifi(ctx, dto)) { //访客网络
+//			handsetDeviceVisitorOnline(ctx, dto, wifiId);
+//		} else { 
+//			//2:wifi设备对应handset在线列表redis添加
+//			WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId_lowerCase, dto.getMac(),
+//					dto.fetchData_rx_rate_double());
+//		/*
+//		 * 3:移动设备连接wifi设备的接入记录(非流水) (backend)
+//		 * 4:移动设备连接wifi设备的流水log (backend)
+//		 * 5:wifi设备接入移动设备的接入数量 (backend)
+//		 * 6:统计增量 移动设备的daily新增用户或活跃用户增量
+//		 * 7:统计增量 移动设备的daily启动次数增量(backend)
+//		 */
+//			deliverMessageService.sendHandsetDeviceOnlineActionMessage(wifiId_lowerCase, dto.getMac(),
+//					this_login_at, last_login_at, newHandset,isNew4This);
+//		}
+		
+		//排除访客上线未认证情况，保留主网络上线和访客网络认证上线
+		if(!isVisitorWithOutAuth(dto)){
+			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent(wifiId_lowerCase, dto.getMac(), this_login_at);
+			if (!isVisitorWifi(ctx, dto)) {
+				deliverMessageService.sendHandsetDeviceOnlineActionMessage(wifiId_lowerCase, dto.getMac(),
+						this_login_at, last_login_at, newHandset,isNew4This);
+			}
 		}
-
 	}
 
 	/**
@@ -676,13 +740,18 @@ public class DeviceBusinessFacadeService {
 		//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121
 		HandsetStorageFacadeService.wifiDeviceHandsetOffline(lowercase_mac, lowercase_d_mac, dto.getTx_bytes(), dto.getTs());
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 2" + JsonHelper.getJSONString(dto)  + "===" + isVisitorWifi(ctx, dto));
-		if(isVisitorWifi(ctx, dto)) { //访客网络
-			handsetDeviceVisitorOffline(ctx, dto, wifiId);
-		} else {
-			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac,
-					lowercase_d_mac, dto.fetchData_rx_rate_double());
-			//暂时移除异步消息
-			//deliverMessageService.sendHandsetDeviceOfflineActionMessage(lowercase_mac,lowercase_d_mac, dto.getUptime(), dto.getRx_bytes(), dto.getTx_bytes());
+
+//		if(isVisitorWifi(ctx, dto)) { //访客网络
+//			handsetDeviceVisitorOffline(ctx, dto, wifiId);
+//		} else {
+//			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac,
+//					lowercase_d_mac, dto.fetchData_rx_rate_double());
+//			//暂时移除异步消息
+//			//deliverMessageService.sendHandsetDeviceOfflineActionMessage(lowercase_mac,lowercase_d_mac, dto.getUptime(), dto.getRx_bytes(), dto.getTx_bytes());
+//		}
+		
+		if (!isVisitorWithOutAuth(dto)) {
+			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, lowercase_d_mac, dto.getTs());
 		}
 	}
 	
@@ -729,10 +798,13 @@ public class DeviceBusinessFacadeService {
 		if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(ctx))
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		//deliverMessageService.sendHandsetDeviceSyncActionMessage(wifiId.toLowerCase(), dtos);
-		//1:清除wifi设备对应handset在线列表redis
-		deviceFacadeService.allHandsetDoOfflines(mac);
-		//清除访客网络列表
-		clearDeviceVisitorList(mac);
+//		//1:清除wifi设备对应handset在线列表redis
+//		deviceFacadeService.allHandsetDoOfflines(mac);
+//		//清除访客网络列表
+//		clearDeviceVisitorList(mac);
+		//清除wifi设备对应handset统一在线列表redis
+		clearDeviceHandsetUnitList(mac);
+		
 		if(dtos != null && !dtos.isEmpty()){
 			List<String> allIds = new ArrayList<String>();
 			//过滤访客网络，默认网络下的终端
@@ -759,11 +831,15 @@ public class DeviceBusinessFacadeService {
 				//1:wifi设备对应handset在线列表redis 重新写入
 				//WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, data_rx_rate);
 
-				if(isVisitorWifi(ctx, dto)) { //访客网络
-					handsetDeviceVisitorOnline(ctx, dto, mac);
-				} else {
-					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac,
-							handsetId, dto.fetchData_rx_rate_double());
+//				if(isVisitorWifi(ctx, dto)) { //访客网络
+//					handsetDeviceVisitorOnline(ctx, dto, mac);
+//				} else {
+//					WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(mac,
+//							handsetId, dto.fetchData_rx_rate_double());
+//				}
+				//
+				if (!isVisitorWithOutAuth(dto)) {
+					WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, System.currentTimeMillis());
 				}
 				//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121
 				HandsetStorageFacadeService.wifiDeviceHandsetOnline(mac, dto.getMac(), dto.getTs());//wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));

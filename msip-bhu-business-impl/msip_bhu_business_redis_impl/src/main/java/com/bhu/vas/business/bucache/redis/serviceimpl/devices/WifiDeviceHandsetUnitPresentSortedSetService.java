@@ -1,12 +1,23 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.util.StringUtils;
+
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.ibm.icu.text.SimpleDateFormat;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.support.page.PageHelper;
 
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Tuple;
 /**
  * 统一主网络和访客网络上下线设备
  *  *  	key：wifiId 
@@ -32,6 +43,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	//在线初始score数值 100亿 
 	public static final double OnlineBaseScore = 10000000000d;
+	public static final String OnlineDatePattern = "yyMMddHHmm";
 	
 	private WifiDeviceHandsetUnitPresentSortedSetService(){
 	}
@@ -40,6 +52,91 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.WifiDeviceHandsetUnitPresentPrefixKey);
 		sb.append(StringHelper.POINT_CHAR_GAP).append(wifiId);
 		return sb.toString();
+	}
+	
+	//生成score值，为当前终端上线时间  年月日时分
+	private static double generateScore(long login_at){
+		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern);
+		return Double.parseDouble(sdf.format(new Date(System.currentTimeMillis())));
+	}
+	
+	public long addOnlinePresent(String wifiId, String handsetId, long this_login_at){
+		return super.zadd(generateKey(wifiId), OnlineBaseScore+generateScore(this_login_at), handsetId);
+	}
+	
+	public long addOfflinePresent(String wifiId, String handsetId, long last_login_at){
+		return super.zadd(generateKey(wifiId), generateScore(last_login_at), handsetId);
+	}
+	
+	/**
+	 * 获取该设备的在线终端数量
+	 * @param wifiId
+	 * @return
+	 */
+	public Long presentOnlineSize(String wifiId){
+		return super.zcount(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE);
+	}
+	/**
+	 * 获取该设备的所有在线设备
+	 * @param wifiId
+	 * @return
+	 */
+	public Set<String> fetchAllOnlinePresent(String wifiId){
+		return super.zrangeByScore(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE);
+	}
+	
+    /**
+     * 访客网络终端认证取消下线
+     * @param wifiId
+     * @param handsetId
+     * @return
+     */
+    public long removePresent(String wifiId, String handsetId) {
+        return super.zrem(generateKey(wifiId), handsetId);
+    }
+    
+	/**
+	 * 把设备的在线终端变成离线状态
+	 * @param wifiId
+	 */
+	public void changeOnlinePresentsToOffline(String wifiId){
+		int size = 50;
+		long count = presentOnlineSize(wifiId);
+		int page = PageHelper.getTotalPages((int)count, size);
+		for(int i=0;i<page;i++){
+			Set<Tuple> result = fetchOnlinePresentWithScores(wifiId, 0, size);
+			for(Tuple tuple : result){
+				addOfflinePresent(wifiId, tuple.getElement(), (tuple.getScore() - OnlineBaseScore));
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * @param wifiId
+	 * @return
+	 */
+	public List<String> fetchAllOnlinePresents(String wifiId){
+		List<String> result = new ArrayList<String>();
+		int size = 100;
+		long count = presentOnlineSize(wifiId);
+		int page = PageHelper.getTotalPages((int)count, size);
+		for(int i=1;i<=page;i++){
+			Set<Tuple> tuple_result = fetchOnlinePresentWithScores(wifiId, PageHelper.getStartIndexOfPage(i, size), size);
+			for(Tuple tuple : tuple_result){
+				result.add(tuple.getElement());
+			}
+		}
+		return result;
+	}
+	
+	public Set<Tuple> fetchOnlinePresentWithScores(String wifiId,int start,int size){
+		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE, start, size);
+	}
+	
+	public long  addOfflinePresent(String wifiId, String handsetId, double rx_rate){
+		return super.zadd(generateKey(wifiId), rx_rate, handsetId);
 	}
 	
 	@Override
@@ -57,7 +154,8 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
 	}
-	public static void main(String[] args) {
-		
+
+	public void clearPresent(String wifiId_lowerCase) {
+		super.zremrangeByScore(generateKey(wifiId_lowerCase), 0, -1);
 	}
 }
