@@ -3,56 +3,16 @@ package com.bhu.vas.business.ds.user.facade;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.procedure.FincialStatisticsProdureDTO;
-import com.bhu.vas.api.dto.procedure.ShareDealDailyGroupSummaryProcedureDTO;
-import com.bhu.vas.api.dto.procedure.ShareDealDailyUserSummaryProcedureDTO;
-import com.bhu.vas.api.dto.procedure.ShareDealWalletProcedureDTO;
-import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
-import com.bhu.vas.api.dto.procedure.WalletInOrOutProcedureDTO;
-import com.bhu.vas.api.helper.BusinessEnumType;
-import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
-import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
-import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
-import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
-import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
-import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
-import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
-import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
-import com.bhu.vas.api.rpc.user.model.UserOAuthState;
 import com.bhu.vas.api.rpc.user.model.UserPublishAccount;
-import com.bhu.vas.api.rpc.user.model.UserWallet;
-import com.bhu.vas.api.rpc.user.model.UserWalletLog;
-import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
-import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
-import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
-import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
-import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
-import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
-import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
 import com.bhu.vas.business.ds.user.service.UserPublishAccountService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.bhu.vas.business.ds.user.service.UserWalletLogService;
-import com.bhu.vas.business.ds.user.service.UserWalletService;
-import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
-import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
-import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -62,7 +22,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 @Service
 public class UserPublishAccountFacadeService{
-	private static final Logger logger = LoggerFactory.getLogger(UserPublishAccountFacadeService.class);
+	//private static final Logger logger = LoggerFactory.getLogger(UserPublishAccountFacadeService.class);
 	
 	@Resource
 	private UserService userService;
@@ -150,17 +110,19 @@ public class UserPublishAccountFacadeService{
 	 * @return
 	 */
 	private UserPublishAccount userPublishAccount(int uid){
-		UserValidateServiceHelper.validateUser(uid,this.userService);
+		UserPublishAccount userPublishAccount = userPublishAccountService.getById(uid);
+		return userPublishAccount;
+		/*UserValidateServiceHelper.validateUser(uid,this.userService);
 		synchronized(lockObjectFetch(uid)){
 			UserPublishAccount userPublishAccount = userPublishAccountService.getById(uid);
 			if(userPublishAccount == null){
 				return null;
 			}
 			return userPublishAccount;
-		}
+		}*/
 	}
 	
-	private Map<String,String> lockWithdrawMap = new HashMap<>();
+	/*private Map<String,String> lockWithdrawMap = new HashMap<>();
 	//给每个用户维护一个锁定key，没有就创建一个
 	private synchronized String lockObjectFetch(int uid){
 		String lockKey = String.valueOf(uid);
@@ -170,7 +132,7 @@ public class UserPublishAccountFacadeService{
 		}else{
 			return lockWithdrawMap.get(lockKey);
 		}
-	}
+	}*/
 	
 	/**
 	 * 解绑对公账号

@@ -497,8 +497,8 @@ public class UserUnitFacadeService {
 			User user = UserValidateServiceHelper.validateUser(uid,this.userService);
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
 			//UserWallet uwallet = userWalletFacadeService.userWallet(user.getId());
-			userExchange.setWallet(userWalletFacadeService.walletDetail(uid));
-			userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId(),false));
+			//userExchange.setWallet(userWalletFacadeService.walletDetail(uid));
+			//userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId(),false));
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
