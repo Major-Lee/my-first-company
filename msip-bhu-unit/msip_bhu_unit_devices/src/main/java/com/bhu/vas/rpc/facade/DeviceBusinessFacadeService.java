@@ -476,9 +476,9 @@ public class DeviceBusinessFacadeService {
 	}
 
 
-	private boolean isVisitorWifi(WifiDeviceTerminalDTO dto) {
-		return (HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) || HandsetDeviceDTO.VAPNAME_WLAN13.equals(dto.getVapname())) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
-	}
+//	private boolean isVisitorWifi(WifiDeviceTerminalDTO dto) {
+//		return (HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) || HandsetDeviceDTO.VAPNAME_WLAN13.equals(dto.getVapname())) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
+//	}
 
 	/**
 	 * 是否是访客上线未认证
@@ -657,10 +657,6 @@ public class DeviceBusinessFacadeService {
 			handset.setEthernet(dto.getEthernet());
 			handset.setAuthorized(dto.getAuthorized());
 			
-			if (!StringUtils.isEmpty(dto.getData_tx_rate())) {
-				handset.setData_tx_rate(dto.getData_tx_rate());
-			}
-			
 			//在终端上线后需要清除掉以前dhcpname和ip,由于上线消息中没有dhcpname和ip，所以这些值在上线时都是空，直接用
 			if(!StringUtils.isEmpty(dto.getDhcp_name())){
 				handset.setDhcp_name(dto.getDhcp_name());
@@ -754,7 +750,7 @@ public class DeviceBusinessFacadeService {
 //		}
 		
 		if (!isVisitorWithOutAuth(dto)) {
-			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, lowercase_d_mac, dto.getTs());
+			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, lowercase_d_mac, handset.getTs());
 		}else{
 			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().removePresent(lowercase_mac, lowercase_d_mac);
 		}

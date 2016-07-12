@@ -273,20 +273,20 @@ public class DeviceURouterRestBusinessFacadeService {
 					WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 					for(Tuple tuple : presents){
 						hd_entity = handsets.get(cursor);
-						//过滤访客的终端
-						if (!isMainNetwork(hd_entity)) {
-							cursor++;
-							continue;
-						}
+
+//						if (!isMainNetwork(hd_entity)) {
+//							cursor++;
+//							continue;
+//						}
 						alia = handsetAlias.get(cursor);
 						boolean online = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().isOnline(tuple.getScore());
-						double rx_rate = Double.parseDouble(hd_entity.getData_rx_rate());
+						double rx_rate = Double.parseDouble(hd_entity.getData_rx_rate() == null ? "0": hd_entity.getData_rx_rate());
 						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, tuple.getElement(), online, rx_rate, hd_entity, setting_dto,alia);
 						vtos.add(vto);
 						cursor++;
 					}
-					{//根据参数过滤掉有线终端业务
-						if(filterWiredHandset){
+					{//根据参数过滤掉有线终端业务和访客网络终端
+						if(filterWiredHandset || !isMainNetwork(hd_entity)){
 							Iterator<URouterHdVTO> iter = vtos.iterator();
 							while(iter.hasNext()){
 								URouterHdVTO rv = iter.next();
