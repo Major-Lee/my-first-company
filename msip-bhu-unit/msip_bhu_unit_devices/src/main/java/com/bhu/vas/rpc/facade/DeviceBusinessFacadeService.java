@@ -125,8 +125,8 @@ public class DeviceBusinessFacadeService {
 	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
 	
-	@Resource
-	private DeliverMessageService deliverMessageService;
+	//@Resource
+	private  DeliverMessageService deliverMessageService;
 	
 	@Resource
 	private TaskFacadeService taskFacadeService;
@@ -471,7 +471,7 @@ public class DeviceBusinessFacadeService {
 	 * 添加5G频段访客网络判断(wlan13)
 	 * @return
 	 */
-	private boolean isVisitorWifi(String ctx, HandsetDeviceDTO dto) {
+	private static boolean isVisitorWifi(String ctx, HandsetDeviceDTO dto) {
 		return (HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) || HandsetDeviceDTO.VAPNAME_WLAN13.equals(dto.getVapname())) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
 	}
 
@@ -489,7 +489,7 @@ public class DeviceBusinessFacadeService {
 	 * @param dto
 	 * @return
 	 */
-	private boolean isVisitorWithOutAuth(HandsetDeviceDTO dto){
+	private  boolean isVisitorWithOutAuth(HandsetDeviceDTO dto){
 		return (HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) || HandsetDeviceDTO.VAPNAME_WLAN13.equals(dto.getVapname())) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal()) && !StringHelper.TRUE.equals(dto.getAuthorized());
 	}
 
@@ -623,7 +623,7 @@ public class DeviceBusinessFacadeService {
 	 * 7:统计增量 移动设备的daily启动次数增量(backend)
 	 * modified by Edmond Lee for handset storage
 	 */
-	private void handsetDeviceOnline(String ctx, HandsetDeviceDTO dto, String wifiId){
+	public  void handsetDeviceOnline(String ctx, HandsetDeviceDTO dto, String wifiId){
 		if(dto == null) 
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
