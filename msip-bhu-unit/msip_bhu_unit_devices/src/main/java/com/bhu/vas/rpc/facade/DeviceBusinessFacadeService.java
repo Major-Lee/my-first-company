@@ -723,7 +723,7 @@ public class DeviceBusinessFacadeService {
 	 * @param dto
 	 * modified by Edmond Lee for handset storage
 	 */
-	private void handsetDeviceOffline(String ctx, HandsetDeviceDTO dto, String wifiId){
+	void handsetDeviceOffline(String ctx, HandsetDeviceDTO dto, String wifiId){
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline" + wifiId);
 		if(dto == null) 
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
