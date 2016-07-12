@@ -480,10 +480,6 @@ public class DeviceBusinessFacadeService {
 		return (HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) || HandsetDeviceDTO.VAPNAME_WLAN13.equals(dto.getVapname())) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
 	}
 
-//	private boolean isVisitorWifi(WifiDeviceTerminalDTO dto) {
-//		return (HandsetDeviceDTO.VAPNAME_WLAN3.equals(dto.getVapname()) || HandsetDeviceDTO.VAPNAME_WLAN13.equals(dto.getVapname())) && !HandsetDeviceDTO.PROTAL_NONE.equals(dto.getPortal());
-//	}
-
 	/**
 	 * 是否是访客上线未认证
 	 * @param dto
