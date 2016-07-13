@@ -124,7 +124,7 @@ public class DeviceBusinessFacadeService {
 	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
 	
-	//@Resource
+	@Resource
 	private  DeliverMessageService deliverMessageService;
 	
 	@Resource
