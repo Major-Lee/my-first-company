@@ -128,6 +128,7 @@ public class ActionBuilder {
 			String hname,String hip,
 			//网络名称、bssid
 			String vapname,String bssid,
+			String rssi,String snr,String authorized,String ethernet,
 			long ts){
 		HandsetOnlineAction action = new HandsetOnlineAction();
 		action.setHmac(hmac);
@@ -136,6 +137,10 @@ public class ActionBuilder {
 		action.setHip(hip);
 		action.setVapname(vapname);
 		action.setBssid(bssid);
+		action.setRssi(rssi);
+		action.setSnr(snr);
+		action.setAuthorized(authorized);
+		action.setEthernet(ethernet);
 		action.setTs(ts);
 		return action;
 	}
@@ -152,11 +157,20 @@ public class ActionBuilder {
 			String huptime,
 			//网络名称、bssid
 			String vapname,String bssid,
+			String rssi,String snr,String authorized,String ethernet,
 			long tx_bytes,long rx_bytes,long ts){
 		HandsetOfflineAction action = new HandsetOfflineAction();
 		action.setHmac(hmac);
 		action.setMac(mac);
 		action.setHuptime(huptime);
+		
+		action.setVapname(vapname);
+		action.setBssid(bssid);
+		action.setRssi(rssi);
+		action.setSnr(snr);
+		action.setAuthorized(authorized);
+		action.setEthernet(ethernet);
+		
 		action.setTx_bytes(tx_bytes);
 		action.setRx_bytes(rx_bytes);
 		action.setTs(ts);
