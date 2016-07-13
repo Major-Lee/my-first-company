@@ -185,6 +185,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 												ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),headers.getMac(),
 														fristDto.getDhcp_name(),fristDto.getIp(),
 														fristDto.getVapname(),fristDto.getBssid(),
+														fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
 														System.currentTimeMillis())));
 							}
 							else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
@@ -193,6 +194,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 												ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),headers.getMac(),
 														fristDto.getUptime(),
 														fristDto.getVapname(),fristDto.getBssid(),
+														fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
 														Long.parseLong(fristDto.getTx_bytes()),Long.parseLong(fristDto.getRx_bytes()), System.currentTimeMillis())));
 							}
 							else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){

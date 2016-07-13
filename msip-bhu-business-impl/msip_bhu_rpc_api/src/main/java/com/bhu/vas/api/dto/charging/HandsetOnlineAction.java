@@ -7,6 +7,7 @@ public class HandsetOnlineAction extends ChargingAction{
 	private String hip;
 	private String vapname;
 	private String bssid;
+	
 	private String rssi;
 	private String snr;
 	private String authorized;

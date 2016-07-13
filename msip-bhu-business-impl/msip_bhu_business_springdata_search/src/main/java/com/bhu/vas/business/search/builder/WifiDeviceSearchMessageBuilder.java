@@ -220,7 +220,8 @@ public class WifiDeviceSearchMessageBuilder {
 		return SearchConditionMessage.builderSearchConditionMessage(SearchType.COUNT.id(), pack_must);
 	}
 	
-	public static SearchConditionMessage builderSearchMessageWithSnkType(Integer u_id, String d_snk_type, String d_snk_turnstate){
+	public static SearchConditionMessage builderSearchMessageWithSnkType(Integer u_id, 
+			String d_snk_type, String d_snk_turnstate, String d_snk_template){
 		SearchCondition sc_d_uid = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
 		
@@ -233,6 +234,12 @@ public class WifiDeviceSearchMessageBuilder {
 			SearchCondition sc_d_snk_turnstate = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 					Field.D_SHAREDNETWORK_TURNSTATE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_snk_turnstate);
 			pack_must.addChildSearchCondtions(sc_d_snk_turnstate);
+		}
+		
+		if(StringUtils.isNotEmpty(d_snk_template)){
+			SearchCondition sc_d_snk_template = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_SHAREDNETWORK_TEMPLATE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_snk_template);
+			pack_must.addChildSearchCondtions(sc_d_snk_template);
 		}
 		return SearchConditionMessage.builderSearchConditionMessage(SearchType.COUNT.id(), pack_must);
 	}

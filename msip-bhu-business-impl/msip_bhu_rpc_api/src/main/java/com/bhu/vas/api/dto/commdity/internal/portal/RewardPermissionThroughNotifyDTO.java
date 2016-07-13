@@ -8,6 +8,7 @@ import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 
 
 /**
@@ -134,6 +135,11 @@ public class RewardPermissionThroughNotifyDTO implements PermissionThroughNotify
 			requestDeliverNotifyDto.setBu_mobileno(bindUser.getMobileno());
 		}
 		return requestDeliverNotifyDto;
+	}
+	
+	public static void main(String[] args){
+		RewardPermissionThroughNotifyDTO dto = new RewardPermissionThroughNotifyDTO();
+		System.out.println(JsonHelper.getJSONString(dto));
 	}
 
 }

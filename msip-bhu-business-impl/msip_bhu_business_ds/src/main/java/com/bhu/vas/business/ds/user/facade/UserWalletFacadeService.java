@@ -139,6 +139,12 @@ public class UserWalletFacadeService{
 			FincialStatisticsService fincialStatisticsService) {
 		this.fincialStatisticsService = fincialStatisticsService;
 	}
+	
+	public UserWalletDetailVTO walletSimpleDetail(int uid){
+		UserWallet userWallet = userWallet(uid);
+		UserWalletDetailVTO walletDetail = userWallet.toUserWalletDetailVTO();
+		return walletDetail;
+	}
 	public UserWalletDetailVTO walletDetail(int uid){
 		UserWallet userWallet = userWallet(uid);
 		UserWalletDetailVTO walletDetail = userWallet.toUserWalletDetailVTO();

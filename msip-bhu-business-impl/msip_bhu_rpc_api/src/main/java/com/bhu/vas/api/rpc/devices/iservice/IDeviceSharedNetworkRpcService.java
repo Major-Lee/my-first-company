@@ -35,6 +35,7 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @return
 	 */
 	RpcResponseDTO<ParamSharedNetworkDTO> applyNetworkConf(int uid, String sharenetwork_type,String template, String extparams,boolean fromclient);
+	RpcResponseDTO<Boolean> clearNetworkConf(int uid, String sharenetwork_type,String template);
 	
 	/**
 	 * 具体某个设备生效用户的指定共享网络类型配置

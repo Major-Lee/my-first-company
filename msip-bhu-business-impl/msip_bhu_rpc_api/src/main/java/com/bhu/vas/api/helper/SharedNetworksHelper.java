@@ -48,15 +48,19 @@ public class SharedNetworksHelper {
     	return DefaultCreateTemplate.equals(template);
     }
     
+	public static boolean wasDefaultTemplate(String template){
+		return DefaultTemplate.equals(template);
+	}
+	
     public static boolean validTemplateFormat(String template){
     	if(StringUtils.isEmpty(template)) return false;
     	if(template.length() != 4) return false;
     	try{
-    		Integer.parseInt(template);
+    		int tpl = Integer.parseInt(template);
+    		return tpl >0&& tpl<=BusinessRuntimeConfiguration.SharedNetworksTemplateMaxLimit;
     	}catch(NumberFormatException ex){
     		return false;
     	}
-    	return true;
     }
     
 	@SuppressWarnings("unchecked")

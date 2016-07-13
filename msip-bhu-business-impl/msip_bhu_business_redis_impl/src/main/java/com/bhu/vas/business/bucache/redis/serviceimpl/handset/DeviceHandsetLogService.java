@@ -2,13 +2,17 @@ package com.bhu.vas.business.bucache.redis.serviceimpl.handset;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import org.springframework.format.datetime.joda.MillisecondInstantPrinter;
 
 import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.ibm.icu.text.SimpleDateFormat;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationListCache;
@@ -341,17 +345,6 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 	
 	}
 	
-	public static void main(String[] argv){
-		String dmac = "aaaaa";
-		String hmac = "bbbbb";
-		DeviceHandsetLogService.getInstance().testbuinsess(dmac, hmac);
-		DeviceHandsetLogService.getInstance().testClear(dmac, hmac);
-		
-		/*long total = 40*1000;
-		//按10w设备 每设备接入20终端
-		8000w K
-		System.out.println(speedByteFormat(total));*/
-	}
 	
 	/*public void userTickerMusicLove_lpush_pipeline_samevalue(Set<String> uids,String value){
 		if(uids == null || uids.isEmpty()) return;

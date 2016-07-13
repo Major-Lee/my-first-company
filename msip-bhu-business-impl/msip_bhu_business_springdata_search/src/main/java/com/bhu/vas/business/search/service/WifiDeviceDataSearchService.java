@@ -120,12 +120,13 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param u_id
 	 * @param d_snk_type
 	 * @param d_snk_turnstate
+	 * @param d_snk_template
 	 * @return
 	 */
-	public long searchCountBySnkType(Integer u_id, String d_snk_type, String d_snk_turnstate){
+	public long searchCountBySnkType(Integer u_id, String d_snk_type, String d_snk_turnstate, String d_snk_template){
 		if(u_id == null || StringUtils.isEmpty(d_snk_type)) return 0;
 		
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithSnkType(u_id, d_snk_type, d_snk_turnstate);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithSnkType(u_id, d_snk_type, d_snk_turnstate, d_snk_template);
 		return super.searchCountByConditionMessage(scm);
 	}
 	
