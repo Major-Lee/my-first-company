@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.SharedNetworksHelper;
 import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -190,6 +191,44 @@ public class DeviceSharedNetworkUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	/**
+	 * 	条件1：用户只能删除自己创见的模板。
+		条件2：此模板未关联设备（开启状态）。
+		如果认证网络是关闭状态，可以删除模板，模板删除后对应的设备会自动关联相同类型的默认模板（原来是打赏的就关联打赏默认，原来是短信的就关联短信默认）。
+		如果认证网络是开启状态？则需提示需要解除模板关联的所有设备
+	 * @param uid
+	 * @param sharenetwork_type
+	 * @param template
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> clearNetworkConf(int uid, String sharenetwork_type,String template) {
+		try{
+			SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
+			if(sharedNetwork == null || SharedNetworksHelper.wasDefaultTemplate(template) || !SharedNetworksHelper.validTemplateFormat(template)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,
+						new String[]{sharenetwork_type,template});
+			}
+			UserValidateServiceHelper.validateUser(uid, sharedNetworksFacadeService.getUserService());
+			//验证此模板是否有设备使用  搜索引擎count 有则返回错误，没有异步消息进行处理并返回成功
+			long count = wifiDeviceDataSearchService.searchCountBySnkType(uid,sharedNetwork.getKey(),template,
+					 WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType());
+			if(count >0){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_TEMPLATE_CLEAR_NOTALLOW,
+						new String[]{sharenetwork_type,template,String.valueOf(count)});
+			}else{
+				//异步消息进行处理
+				asyncDeliverMessageService.sendBatchDeviceSnkTemplateClearActionMessage(uid, sharenetwork_type, template);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+			}
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 	
 	/**
 	 * 指定的设备应用用户的具体指定配置

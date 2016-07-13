@@ -216,6 +216,7 @@ public enum ResponseErrorCode {
 	
 	USER_DEVICE_SHAREDNETWORK_TEMPLATES_MAXLIMIT("380", "user.device.sharednetwork.templates.maxlimit"),
 	USER_DEVICE_SHAREDNETWORK_SAFESECURE_CANNOT_BETURNOFF("381", "user.device.sharednetwork.safesecure.cannot.beturnoff"),
+	USER_DEVICE_SHAREDNETWORK_TEMPLATE_CLEAR_NOTALLOW("382", "user.device.sharednetwork.template.clear.notallow"),
 	
 	/******************    Commdity    ******************/
 	VALIDATE_ORDER_UMAC_UID_ILLEGAL("410","validate.order.umac.uid.illegal"),

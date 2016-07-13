@@ -64,6 +64,12 @@ public class DeviceSharedNetworkRpcService implements IDeviceSharedNetworkRpcSer
 	}
 
 	@Override
+	public RpcResponseDTO<Boolean> clearNetworkConf(int uid,String sharenetwork_type, String template) {
+		logger.info(String.format("clearNetworkConf with uid[%s] sharenetwork_type[%s] template[%s]", uid,sharenetwork_type,template));
+		return deviceSharedNetworkUnitFacadeService.clearNetworkConf(uid, sharenetwork_type,template);
+	}
+	
+	@Override
 	public RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,boolean on,
 			String sharenetwork_type,String template, List<String> macs) {
 		logger.info(String.format("takeEffectNetworkConf with uid[%s] on[%s] sharenetwork_type[%s] template[%s] macs[%s]", uid,on,sharenetwork_type,template,macs));
