@@ -200,7 +200,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	}
 	public static void main(String[] args) {
 //		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", System.currentTimeMillis());
-		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", 1607121523);
-	
+//		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", 1607121523);
+		System.out.println(generateScore(System.currentTimeMillis()));
 	}
 }

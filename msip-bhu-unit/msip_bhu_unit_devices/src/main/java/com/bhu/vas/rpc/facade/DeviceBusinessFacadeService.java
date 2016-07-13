@@ -4,7 +4,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -595,8 +594,15 @@ public class DeviceBusinessFacadeService {
 //		System.out.println("handsetDeviceVisitorAuthorize isAuthorized" + StringHelper.TRUE.equals(dto.getAuthorized()));
 		if (StringHelper.TRUE.equals(dto.getAuthorized())) {
 //			WifiDeviceVisitorService.getInstance().addAuthOnlinePresent(wifiId_lowerCase, System.currentTimeMillis(), dto.getMac());
+			
+			//更新实体信息认证状态
+			HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(wifiId_lowerCase,dto.getMac().toLowerCase());
+			handset.setAuthorized(StringHelper.TRUE);
+			HandsetStorageFacadeService.handsetComming(dto);
+			
 			//认证通过后添加至统一在线列表
 			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent(wifiId_lowerCase, dto.getMac(), System.currentTimeMillis());
+			//发送push
 			deliverMessageService.sendHandsetDeviceVisitorAuthorizeOnlineMessage(wifiId_lowerCase, dto.getMac(), dto.getTs());
 		} else { //踢掉
 			//WifiDeviceVisitorService.getInstance().addVisitorOnlinePresent(wifiId_lowerCase, dto.getMac());
@@ -729,10 +735,8 @@ public class DeviceBusinessFacadeService {
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 0" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
 		if(handset != null) {
 			//dto.setVapname(handset.getVapname());
-			dto.setIp(handset.getIp());
-			dto.setDhcp_name(handset.getDhcp_name());
-			dto.setData_tx_rate(handset.getData_tx_rate());
-			dto.setData_rx_rate(handset.getData_rx_rate());
+			dto.setIp(handset.getIp().isEmpty() ? "0.0.0.0" : handset.getIp());
+			dto.setData_tx_rate(handset.getData_tx_rate().isEmpty() ? 0+"":handset.getData_tx_rate());
 		}
 		HandsetStorageFacadeService.handsetComming(dto);
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 1" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
@@ -823,10 +827,9 @@ public class DeviceBusinessFacadeService {
 			for(HandsetDeviceDTO handset : handsets){
 				HandsetDeviceDTO dto = dtos.get(cursor);
 				if(handset != null){
-					//dto.setDhcp_name(handset.getDhcp_name());
-					//dto.setIp(handset.getIp());
-					dto.setData_tx_rate(handset.getData_tx_rate());
-					dto.setData_rx_rate(handset.getData_rx_rate());
+					dto.setDhcp_name(handset.getDhcp_name());
+					dto.setIp(handset.getIp().isEmpty() ? "0.0.0.0" : handset.getIp());
+					dto.setData_tx_rate(handset.getData_tx_rate().isEmpty() ? 0+"":handset.getData_tx_rate());
 				}
 				String handsetId = dto.getMac().toLowerCase();
 				//1:wifi设备对应handset在线列表redis 重新写入
@@ -1048,8 +1051,9 @@ public class DeviceBusinessFacadeService {
 				if ( handset!= null && handset.getMac().equals(terminal.getMac())) {
 					handset.setRx_bytes(terminal.getRx_bytes());
 					handset.setTx_bytes(terminal.getTx_bytes());
+					handset.setData_tx_rate(terminal.getData_tx_rate().isEmpty() ? 0+"":terminal.getData_tx_rate());
+					handset.setData_rx_rate(terminal.getData_rx_rate().isEmpty() ? 0+"":terminal.getData_rx_rate());
 				}
-				
 				//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121 很频繁
 				//HandsetStorageFacadeService.wifiDeviceHandsetOnline(wifiId, terminal.getMac(), this_login_at);
 				//cursor++;
