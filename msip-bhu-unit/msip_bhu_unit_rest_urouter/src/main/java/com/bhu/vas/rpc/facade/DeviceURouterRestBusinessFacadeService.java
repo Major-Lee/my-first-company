@@ -237,7 +237,6 @@ public class DeviceURouterRestBusinessFacadeService {
 				deliverMessageService.sendDeviceHDRateFetchActionMessage(wifiId);
 			}
 			List<URouterHdVTO> vtos = null;
-			long total = 0;
 			Set<Tuple> presents = null;
 			switch(status){
 				case HDList_Online_Status:
