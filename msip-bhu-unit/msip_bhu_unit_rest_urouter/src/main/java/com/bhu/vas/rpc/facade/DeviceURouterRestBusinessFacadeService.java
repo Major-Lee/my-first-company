@@ -273,10 +273,10 @@ public class DeviceURouterRestBusinessFacadeService {
 					for(Tuple tuple : presents){
 						hd_entity = handsets.get(cursor);
 
-//						if (!isMainNetwork(hd_entity)) {
-//							cursor++;
-//							continue;
-//						}
+						if (!isMainNetwork(hd_entity)) {
+							cursor++;
+							continue;
+						}
 						alia = handsetAlias.get(cursor);
 						boolean online = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().isOnline(tuple.getScore());
 						double rx_rate = Double.parseDouble(hd_entity.getData_rx_rate() == null ? "0": hd_entity.getData_rx_rate());
@@ -285,7 +285,7 @@ public class DeviceURouterRestBusinessFacadeService {
 						cursor++;
 					}
 					{//根据参数过滤掉有线终端业务和访客网络终端
-						if(filterWiredHandset || !isMainNetwork(hd_entity)){
+						if(filterWiredHandset){
 							Iterator<URouterHdVTO> iter = vtos.iterator();
 							while(iter.hasNext()){
 								URouterHdVTO rv = iter.next();
