@@ -3,6 +3,7 @@ package com.bhu.vas.api.dto.search.increment;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
+import com.smartwork.msip.cores.helper.JsonHelper;
 
 
 
@@ -41,5 +42,13 @@ public class IncrementSingleDocumentDTO extends IncrementDocumentDTO{
 		dto.setAction(action);
 		dto.setUniqueid(uniqueid);
 		return dto;
+	}
+	
+	public static void main(String [] args){
+		IncrementSingleDocumentDTO dto = IncrementSingleDocumentDTO.builder("84:82:f4:19:01:0c", 
+				IncrementActionEnum.WD_OnlineStatus, 1);
+		String incrementMessageWithoutPrefix = JsonHelper.getJSONString(dto);
+		String incrementMessage = dto.getPrefix().concat(incrementMessageWithoutPrefix);
+		System.out.println(incrementMessage);
 	}
 }

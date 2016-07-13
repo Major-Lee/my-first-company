@@ -7,12 +7,12 @@ import java.util.concurrent.ExecutorService;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
 
-import com.alibaba.dubbo.common.logger.Logger;
-import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.pure.kafka.business.observer.KafkaMsgIndexManager;
 import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
@@ -95,6 +95,7 @@ public class BusinessIncrementReceivePerformMessageProcessor implements DynaMess
 			@Override
 			public void run() {
 				try{
+					//logger.info(String.format("BusinessIncrementReceivePerformMessageProcessor onProcessor: message[%s] ", message));
 					incrementPerformService.incrementDocument(message);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);

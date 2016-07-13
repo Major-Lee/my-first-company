@@ -5,11 +5,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.alibaba.dubbo.common.logger.Logger;
-import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.pure.kafka.business.observer.KafkaMsgIndexManager;
-import com.bhu.pure.kafka.business.observer.KafkaMsgObserverManager;
 import com.bhu.pure.kafka.client.consumer.StringKafkaMessageConsumer;
 import com.bhu.pure.kafka.client.consumer.callback.PollIteratorNotify;
 import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;

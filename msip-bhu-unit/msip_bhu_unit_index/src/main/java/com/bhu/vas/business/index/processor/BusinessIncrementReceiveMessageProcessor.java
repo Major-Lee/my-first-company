@@ -6,23 +6,18 @@ import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-
-
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
-
-import com.alibaba.dubbo.common.logger.Logger;
-import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.alibaba.dubbo.common.utils.StringUtils;
 import com.bhu.pure.kafka.business.observer.KafkaMsgIndexManager;
-import com.bhu.pure.kafka.business.observer.KafkaMsgObserverManager;
 import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
 import com.bhu.vas.api.dto.search.increment.IncrementBulkDocumentDTO;
 import com.bhu.vas.api.dto.search.increment.IncrementEnum;
-import com.bhu.vas.api.dto.search.increment.IncrementSingleDocumentDTO;
 import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementPrefixEnum;
+import com.bhu.vas.api.dto.search.increment.IncrementSingleDocumentDTO;
 import com.bhu.vas.business.index.producer.KafkaMessagePerformIncrementProducer;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;

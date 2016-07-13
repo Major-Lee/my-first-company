@@ -1,8 +1,10 @@
 package com.bhu.vas.api.dto.search.increment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
+import com.smartwork.msip.cores.helper.JsonHelper;
 
 
 
@@ -33,5 +35,17 @@ public class IncrementBulkDocumentDTO extends IncrementDocumentDTO{
 		dto.setAction(action.getKey());
 		dto.setUniqueid(uniqueid);
 		return dto;
+	}
+	
+	public static void main(String [] args){
+		List<String> macs = new ArrayList<String>();
+		macs.add("84:82:f4:19:01:0c");
+		macs.add("84:82:f4:28:7a:ec");
+		
+		IncrementBulkDocumentDTO dto = IncrementBulkDocumentDTO.builder(macs, 
+				IncrementActionEnum.WD_OnlineStatus, 1);
+		String incrementMessageWithoutPrefix = JsonHelper.getJSONString(dto);
+		String incrementMessage = dto.getPrefix().concat(incrementMessageWithoutPrefix);
+		System.out.println(incrementMessage);
 	}
 }

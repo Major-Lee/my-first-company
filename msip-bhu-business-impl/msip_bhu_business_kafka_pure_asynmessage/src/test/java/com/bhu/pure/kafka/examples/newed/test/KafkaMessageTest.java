@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
 import com.bhu.pure.kafka.assigner.Assigner;
@@ -428,7 +427,11 @@ public class KafkaMessageTest {
 	
 	public static void TestProducerIndexGroup() throws Exception{
 		StringKafkaMessageProducer producer = new StringKafkaMessageProducer();
-		producer.send("increment_receive", null, "8482f423070c", "0000000");
+		//producer.send("increment_receive", null, "8482f423070c", "0000000");
+		//System.out.println("send message end ");8482f419010c
+		
+		//producer.send("increment_receive", "84:82:f4:19:01:0c", "SGP{\"action\":\"WD_OLS\",\"uniqueid\":1,\"id\":\"84:82:f4:19:01:0c\",\"prefix\":\"SGP\"}");
+		producer.send("increment_receive", null, "BKP{\"action\":\"WD_OLS\",\"uniqueid\":1,\"ids\":[\"84:82:f4:19:01:0c\",\"84:82:f4:28:7a:ec\"],\"prefix\":\"BKP\"}");
 		System.out.println("send message end ");
 	}
 	

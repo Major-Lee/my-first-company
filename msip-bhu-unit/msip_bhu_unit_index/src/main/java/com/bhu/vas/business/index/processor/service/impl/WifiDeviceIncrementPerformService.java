@@ -6,10 +6,10 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.elasticsearch.common.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.dubbo.common.logger.Logger;
-import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.search.increment.IncrementEnum.IncrementActionEnum;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
