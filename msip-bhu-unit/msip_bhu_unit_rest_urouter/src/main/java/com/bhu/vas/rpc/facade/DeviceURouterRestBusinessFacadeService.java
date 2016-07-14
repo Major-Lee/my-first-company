@@ -2028,7 +2028,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				//如果不是获取所有类型终端，判断需要的类型
 				if (detailVTO != null) {
 					if (!type.equals(All)) {
-						if (detailVTO.getS().isEmpty() || !detailVTO.getS().equals(type)) {
+						if (detailVTO.getS() == null || !detailVTO.getS().equals(type)) {
 							cursor++;
 							continue;
 						}
