@@ -809,7 +809,7 @@ public class DeviceBusinessFacadeService {
 		//清除wifi设备对应handset统一在线列表redis
 		clearDeviceHandsetUnitList(mac);
 		
-		if((dtos != null && !dtos.isEmpty()) || (!dtos.get(0).getMac().isEmpty() && dtos.get(0).getMac() != null)){
+		if((dtos != null && !dtos.isEmpty()) || dtos.get(0).getMac() != null){
 			List<String> allIds = new ArrayList<String>();
 			//过滤访客网络，默认网络下的终端
 			List<HandsetDeviceDTO> defaultWlanDTOs = new ArrayList<HandsetDeviceDTO>();
