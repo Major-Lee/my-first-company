@@ -8,6 +8,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
@@ -135,5 +136,11 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	@Override
 	public RpcResponseDTO<RankingListVTO> rankingList(int uid) {
 		return userWalletUnitFacadeService.rankingList(uid);
+	}
+
+	@Override
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics() {
+		logger.info(String.format("richStatistics"));
+		return userWalletUnitFacadeService.richStatistics();
 	}
 }
