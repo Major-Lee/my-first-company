@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.user.iservice;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
@@ -114,6 +115,11 @@ public interface IUserWalletRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<RankingListVTO> rankingList(int uid);
+	/**
+	 * 丰富统计信息
+	 * @return
+	 */
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics();
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

@@ -1929,12 +1929,9 @@ public class DeviceURouterRestBusinessFacadeService {
 	//未认证 认证 认证离线
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListAll(Integer uid, String wifiId, int start, int size) {
 
-		Set<Tuple> onlinePresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, start, size);
-		Set<Tuple> unAuthPresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchVisitorOnlinePresent(wifiId, start, size);
-		if (!unAuthPresents.isEmpty()) {
-			onlinePresents.addAll(unAuthPresents);
-		}
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(onlinePresents, uid, wifiId, All));
+		Set<Tuple> allPresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchAllPresentWithScores(wifiId, start, size);
+		
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(allPresents, uid, wifiId, All));
 	}
 
 	private static final String AuthOnline = "authonline";
@@ -1989,8 +1986,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			for (Tuple tuple : presents) {
 
 				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
-				//如果是主网络，跳过
-				if (isMainNetwork(handsetDeviceDTO)) {
+				//如果是主网络或者为空，跳过
+				if (handsetDeviceDTO == null | isMainNetwork(handsetDeviceDTO)) {
 					cursor++;
 					continue;
 				}
@@ -2036,14 +2033,15 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 				
 				//如果不是获取所有类型终端，判断需要的类型
-				if (!type.equals(All)) {
-					if (detailVTO.getS().isEmpty() || !detailVTO.getS().equals(type)) {
-						cursor++;
-						continue;
+				if (detailVTO != null) {
+					if (!type.equals(All)) {
+						if (detailVTO.getS().isEmpty()  || !detailVTO.getS().equals(type)) {
+							cursor++;
+							continue;
+						}
 					}
+					vtos.add(detailVTO);
 				}
-
-				vtos.add(detailVTO);
 				cursor++;
 			}
 			vto.setItems(vtos);
