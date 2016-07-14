@@ -83,8 +83,8 @@ public class DeviceSharedNetworkController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) String sharenetwork_type,
-			@RequestParam(required = true) String template) {
+			@RequestParam(required = true,value="snk_type") String sharenetwork_type,
+			@RequestParam(required = true,value="tpl") String template) {
 		RpcResponseDTO<Boolean> rpcResult = deviceSharedNetworkRpcService.clearNetworkConf(uid, sharenetwork_type, template);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
