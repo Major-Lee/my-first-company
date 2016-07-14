@@ -598,7 +598,7 @@ public class DeviceBusinessFacadeService {
 			//更新实体信息认证状态
 			HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(wifiId_lowerCase,dto.getMac().toLowerCase());
 			handset.setAuthorized(StringHelper.TRUE);
-			HandsetStorageFacadeService.handsetComming(dto);
+			HandsetStorageFacadeService.handsetComming(handset);
 			
 			//认证通过后添加至统一在线列表
 			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent(wifiId_lowerCase, dto.getMac(), System.currentTimeMillis());

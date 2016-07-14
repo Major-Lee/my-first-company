@@ -1929,7 +1929,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	//未认证 认证 认证离线
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListAll(Integer uid, String wifiId, int start, int size) {
 
-		Set<Tuple> onlinePresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchVisitorOnlinePresent(wifiId, start, size);
+		Set<Tuple> onlinePresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, start, size);
 		Set<Tuple> unAuthPresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchVisitorOnlinePresent(wifiId, start, size);
 		if (!unAuthPresents.isEmpty()) {
 			onlinePresents.addAll(unAuthPresents);
@@ -1984,7 +1984,6 @@ public class DeviceURouterRestBusinessFacadeService {
 //			List<Object> handsetScores = WifiDeviceVisitorService.getInstance().pipelineAllPresentScores(wifiId, hd_macs_array);
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId,hd_macs);
 			
-			vto.setOhd_count(presents.size());
 			URouterVisitorDetailVTO detailVTO = null;
 			int cursor = 0;
 			for (Tuple tuple : presents) {
@@ -2024,30 +2023,31 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				if (handsetDeviceDTO.getAction().equals(HandsetDeviceDTO.Action_Online)) {
 					if (StringHelper.TRUE.equals(handsetDeviceDTO.getAuthorized())) {
-						detailVTO.setS("authonline");
+						detailVTO.setS(AuthOnline);
 					}
 					if (StringHelper.FALSE.equals(handsetDeviceDTO.getAuthorized())) {
-						detailVTO.setS("online");
+						detailVTO.setS(Online);
 					}
 				}
 				if (handsetDeviceDTO.getAction().equals(HandsetDeviceDTO.Action_Offline)) {
 					if (StringHelper.TRUE.equals(handsetDeviceDTO.getAuthorized())) {
-						detailVTO.setS("authoffline");
+						detailVTO.setS(AuthOffline);
 					}
-				} 
+				}
 				
 				//如果不是获取所有类型终端，判断需要的类型
 				if (!type.equals(All)) {
-					if (!type.isEmpty() && !detailVTO.getS().equals(type)) {
+					if (detailVTO.getS().isEmpty() || !detailVTO.getS().equals(type)) {
 						cursor++;
 						continue;
 					}
 				}
-				
+
 				vtos.add(detailVTO);
 				cursor++;
 			}
 			vto.setItems(vtos);
+			vto.setOhd_count(vtos.size());
 		}
 		return vto;
 	}
