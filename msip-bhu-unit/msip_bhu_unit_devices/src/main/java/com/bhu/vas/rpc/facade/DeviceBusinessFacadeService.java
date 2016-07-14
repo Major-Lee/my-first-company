@@ -809,16 +809,16 @@ public class DeviceBusinessFacadeService {
 		//清除wifi设备对应handset统一在线列表redis
 		clearDeviceHandsetUnitList(mac);
 		
-		if(dtos != null && !dtos.isEmpty()){
+		if((dtos != null && !dtos.isEmpty()) || (!dtos.get(0).getMac().isEmpty() && dtos.get(0).getMac() != null)){
 			List<String> allIds = new ArrayList<String>();
 			//过滤访客网络，默认网络下的终端
 			List<HandsetDeviceDTO> defaultWlanDTOs = new ArrayList<HandsetDeviceDTO>();
 			for(HandsetDeviceDTO dto : dtos){
-				String lowerCaseMac = dto.getMac().toLowerCase();
-				allIds.add(lowerCaseMac);
-				if(!isVisitorWifi(ctx, dto)) {
-					defaultWlanDTOs.add(dto);
-				}
+					String lowerCaseMac = dto.getMac().toLowerCase();
+					allIds.add(lowerCaseMac);
+					if(!isVisitorWifi(ctx, dto)) {
+						defaultWlanDTOs.add(dto);
+					}
 			}
 			//1
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(mac,allIds);

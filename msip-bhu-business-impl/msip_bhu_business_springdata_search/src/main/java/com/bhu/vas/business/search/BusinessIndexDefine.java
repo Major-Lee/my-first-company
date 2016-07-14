@@ -55,6 +55,7 @@ public interface BusinessIndexDefine {
 //			D_GROUPS("d_groups", null),//设备所属群组
 //			D_NVD("d_nvd", null),//是否是新版本设备
 			D_HANDSETONLINECOUNT("d_hoc", null),//设备终端在线数量
+			D_FIRSTREGEDAT("d_firstregedat", null),//设备的首次的上线时间
 			D_LASTREGEDAT("d_lastregedat", null),//设备的最新的上线时间
 			D_LASTLOGOUTAT("d_lastlogoutat", null),//设备的最新的下线时间
 			D_CREATEDAT("d_createdat", null),//设备的接入时间(入库时间)
