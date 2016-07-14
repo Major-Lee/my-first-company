@@ -1986,8 +1986,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			for (Tuple tuple : presents) {
 
 				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
-				//如果是主网络，跳过
-				if (isMainNetwork(handsetDeviceDTO)) {
+				//如果是主网络或者为空，跳过
+				if (handsetDeviceDTO == null | isMainNetwork(handsetDeviceDTO)) {
 					cursor++;
 					continue;
 				}
