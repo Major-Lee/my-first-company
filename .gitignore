@@ -15,6 +15,7 @@ db/*.sqlite3
 **/bin/*
 **/build/*
 **/build.jar/*
+**/classes/*
 **/.settings/*
 **/.classpath
 **/.project

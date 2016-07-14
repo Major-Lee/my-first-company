@@ -124,7 +124,7 @@ public class DeviceBusinessFacadeService {
 	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
 	
-	//@Resource
+	@Resource
 	private  DeliverMessageService deliverMessageService;
 	
 	@Resource
@@ -734,9 +734,8 @@ public class DeviceBusinessFacadeService {
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(lowercase_mac,lowercase_d_mac);
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 0" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
 		if(handset != null) {
-			//dto.setVapname(handset.getVapname());
+			dto.setVapname(handset.getVapname());
 			dto.setIp(handset.getIp().isEmpty() ? "0.0.0.0" : handset.getIp());
-			dto.setData_tx_rate(handset.getData_tx_rate().isEmpty() ? 0+"":handset.getData_tx_rate());
 		}
 		HandsetStorageFacadeService.handsetComming(dto);
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 1" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
@@ -983,7 +982,6 @@ public class DeviceBusinessFacadeService {
 			//for(HandsetDeviceDTO handset : handsets){
 			
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId, hdIds);
-			
 			for(int cursor = 0; cursor<terminals.size();cursor++){
 				WifiDeviceTerminalDTO terminal = terminals.get(cursor);
 				//判断是否在黑名单中
