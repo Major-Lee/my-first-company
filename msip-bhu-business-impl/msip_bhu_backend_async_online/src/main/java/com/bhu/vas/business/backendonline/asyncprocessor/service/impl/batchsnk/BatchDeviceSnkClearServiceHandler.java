@@ -16,6 +16,7 @@ import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetworks;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkClearDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
@@ -78,6 +79,18 @@ public class BatchDeviceSnkClearServiceHandler implements IMsgHandlerService {
 							});
 			    }
 			});
+			logger.info(String.format("start clear uid[%s] snk[%s] tpl[%s]", userid,snk_type,template));
+			UserDevicesSharedNetworks configs = sharedNetworksFacadeService.getUserDevicesSharedNetworksService().getById(userid);
+			List<ParamSharedNetworkDTO> models = configs.get(snk_type,new ArrayList<ParamSharedNetworkDTO>(),true);
+			if(!models.isEmpty()){
+				ParamSharedNetworkDTO temp = new ParamSharedNetworkDTO();
+				temp.setTemplate(template);
+				models.remove(temp);
+				configs.put(snk_type, models);
+				sharedNetworksFacadeService.getUserDevicesSharedNetworksService().update(configs);
+				logger.info(String.format("clear ok uid[%s] snk[%s] tpl[%s]", userid,snk_type,template));
+			}
+			
 		}finally{
 		}
 		logger.info(String.format("process message[%s] successful", message));
