@@ -1964,14 +1964,16 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO.setHd_mac(hd_mac);
 
 				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
-				
-				String hostname = handsetIds.get(cursor);
-				if (StringUtils.isEmpty(hostname)) {
-					hostname = handsetDeviceDTO.getDhcp_name();
+				if(handsetDeviceDTO != null){
+					String hostname = handsetIds.get(cursor);
+					if (StringUtils.isEmpty(hostname)) {
+						hostname = handsetDeviceDTO.getDhcp_name();
+					}
+					
+					detailVTO.setIp(handsetDeviceDTO.getIp());
+					detailVTO.setN(hostname);
 				}
-				
-				detailVTO.setIp(handsetDeviceDTO.getIp());
-				detailVTO.setN(hostname);
+
 
 				Object score =  handsetScores.get(cursor);
 				if (score!=null) {
