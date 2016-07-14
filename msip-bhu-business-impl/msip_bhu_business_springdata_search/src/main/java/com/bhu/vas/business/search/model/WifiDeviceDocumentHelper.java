@@ -114,6 +114,9 @@ public class WifiDeviceDocumentHelper {
 						: WifiDeviceDocumentEnumType.OnlineEnum.Offline.getType());
 			}
 
+			if(wifiDevice.getFirst_reged_at() != null){
+				doc.setD_firstregedat(wifiDevice.getFirst_reged_at().getTime());
+			}
 			if(wifiDevice.getLast_reged_at() != null){
 				doc.setD_lastregedat(wifiDevice.getLast_reged_at().getTime());
 			}

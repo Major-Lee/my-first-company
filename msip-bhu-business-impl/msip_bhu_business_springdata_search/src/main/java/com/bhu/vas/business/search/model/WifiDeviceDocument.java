@@ -171,6 +171,13 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
+	private long d_firstregedat;//设备的首次的上线时间
+	
+	@Field(
+			type = FieldType.Long,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
 	private long d_lastregedat;//设备的最新的上线时间
 	
 	@Field(
@@ -185,7 +192,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private long d_createdat;//设备的接入时间(入库时间)
+	private long d_createdat;//设备数据创建时间(入库时间)
 	
 	@Field(
 			type = FieldType.String,
@@ -518,6 +525,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 	public void setD_hoc(int d_hoc) {
 		this.d_hoc = d_hoc;
 	}
+	
+	public long getD_firstregedat() {
+		return d_firstregedat;
+	}
+
+	public void setD_firstregedat(long d_firstregedat) {
+		this.d_firstregedat = d_firstregedat;
+	}
 
 	public long getD_lastregedat() {
 		return d_lastregedat;
@@ -754,5 +769,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 	public void setT_uc_extension(String t_uc_extension) {
 		this.t_uc_extension = t_uc_extension;
 	}
+	
+	
 
 }

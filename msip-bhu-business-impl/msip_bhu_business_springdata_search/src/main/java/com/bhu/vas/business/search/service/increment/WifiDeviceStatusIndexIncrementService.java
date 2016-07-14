@@ -118,6 +118,9 @@ public class WifiDeviceStatusIndexIncrementService{
 		if(newWifi)
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.O_GRAYLEVEL.getName(), VapEnumType.GrayLevel.Other.getIndex());
 		
+		if(entity.getFirst_reged_at() != null)
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_FIRSTREGEDAT.getName(), entity.getFirst_reged_at().getTime());
+
 		if(entity.getLast_reged_at() != null)
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_LASTREGEDAT.getName(), entity.getLast_reged_at().getTime());
 		
