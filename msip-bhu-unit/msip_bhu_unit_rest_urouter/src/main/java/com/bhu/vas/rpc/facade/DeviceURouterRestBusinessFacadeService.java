@@ -2033,14 +2033,15 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 				
 				//如果不是获取所有类型终端，判断需要的类型
-				if (!type.equals(All)) {
-					if (detailVTO.getS().isEmpty() || !detailVTO.getS().equals(type)) {
-						cursor++;
-						continue;
+				if (detailVTO != null) {
+					if (!type.equals(All)) {
+						if (detailVTO.getS().isEmpty()  || !detailVTO.getS().equals(type)) {
+							cursor++;
+							continue;
+						}
 					}
+					vtos.add(detailVTO);
 				}
-
-				vtos.add(detailVTO);
 				cursor++;
 			}
 			vto.setItems(vtos);
