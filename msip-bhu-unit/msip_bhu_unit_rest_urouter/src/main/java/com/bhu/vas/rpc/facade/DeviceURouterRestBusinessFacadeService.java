@@ -1929,18 +1929,9 @@ public class DeviceURouterRestBusinessFacadeService {
 	//未认证 认证 认证离线
 	public RpcResponseDTO<URouterVisitorListVTO> urouterVisitorListAll(Integer uid, String wifiId, int start, int size) {
 
-		Set<Tuple> onlinePresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, start, size);
-		Set<Tuple> unAuthPresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchVisitorOnlinePresent(wifiId, start, size);
+		Set<Tuple> allPresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchAllPresentWithScores(wifiId, start, size);
 		
-		if (!unAuthPresents.isEmpty()) {
-			for(Tuple tuple  : unAuthPresents){
-				if (tuple != null) {
-					onlinePresents.add(tuple);
-				}
-			}
-		}
-		
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(onlinePresents, uid, wifiId, All));
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(allPresents, uid, wifiId, All));
 	}
 
 	private static final String AuthOnline = "authonline";

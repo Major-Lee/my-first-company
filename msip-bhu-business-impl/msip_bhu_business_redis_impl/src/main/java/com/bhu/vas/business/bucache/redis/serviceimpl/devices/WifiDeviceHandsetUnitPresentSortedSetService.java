@@ -166,6 +166,11 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return super.zrevrangeByScoreWithScores(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE, start, size);
 	}
 	
+	public Set<Tuple> fetchAllPresentWithScores(String wifiId,int start,int size){
+		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), VisitorOnlineBaseScore, Long.MAX_VALUE, start, size);
+	}
+	
 	public Set<Tuple> fetchVisitorOnlinePresent(String wifiId,int start,int size){
 		return super.zrevrangeByScoreWithScores(generateKey(wifiId), VisitorOnlineBaseScore, VisitorOnlineBaseScore, start, size);
 	}
