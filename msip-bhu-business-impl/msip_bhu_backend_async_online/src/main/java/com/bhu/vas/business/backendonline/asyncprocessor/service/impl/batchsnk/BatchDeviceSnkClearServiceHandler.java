@@ -64,7 +64,7 @@ public class BatchDeviceSnkClearServiceHandler implements IMsgHandlerService {
 			    		dmacs.add(mac);
 			    	}
 			    	if(dmacs.isEmpty()) return;
-			    	
+			    	logger.info(String.format("clear uid[%s] dmacs[%s] snk[%s] from tpl[%s] to tpl[%s]", userid,dmacs,snk_type,template,SharedNetworksHelper.DefaultTemplate));
 			    	sharedNetworksFacadeService.closeAndApplyDevicesFromSharedNetwork(userid,sharedNetworkType,SharedNetworksHelper.DefaultTemplate,dmacs,
 							new ISharedNetworkNotifyCallback(){
 								@Override

@@ -279,7 +279,7 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 //			}
 //		});*/
 //		//WifiDevicePresentCtxService.getInstance().clearOrResetAll();
-		String join = join("84:82:f4:32:2f:50", "68:3e:34:48:b7:35");
+		String join = join("84:82:f4:19:01:0c", "68:3e:34:48:b7:35");
 		System.err.println(generateKey(join));
 	}
 }
