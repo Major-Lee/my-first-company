@@ -273,16 +273,19 @@ public class DeviceURouterRestBusinessFacadeService {
 					for(Tuple tuple : presents){
 						hd_entity = handsets.get(cursor);
 
-						if (!isMainNetwork(hd_entity)) {
+						if (hd_entity != null) {
+							if (!isMainNetwork(hd_entity)) {
+								cursor++;
+								continue;
+							}
+							alia = handsetAlias.get(cursor);
+							boolean online = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().isOnline(tuple.getScore());
+							double rx_rate = Double.parseDouble(hd_entity.getData_rx_rate() == null ? "0": hd_entity.getData_rx_rate());
+							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, tuple.getElement(), online, rx_rate, hd_entity, setting_dto,alia);
+							vtos.add(vto);
 							cursor++;
-							continue;
 						}
-						alia = handsetAlias.get(cursor);
-						boolean online = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().isOnline(tuple.getScore());
-						double rx_rate = Double.parseDouble(hd_entity.getData_rx_rate() == null ? "0": hd_entity.getData_rx_rate());
-						URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, tuple.getElement(), online, rx_rate, hd_entity, setting_dto,alia);
-						vtos.add(vto);
-						cursor++;
+						
 					}
 					{//根据参数过滤掉有线终端业务和访客网络终端
 						if(filterWiredHandset){
@@ -313,8 +316,10 @@ public class DeviceURouterRestBusinessFacadeService {
 	public static boolean isMainNetwork(HandsetDeviceDTO dto){
 		boolean flag = false;
 		String vapName = dto.getVapname();
-		if (vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN0) || vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN10)) {
-			flag = true;
+		if (vapName !=null) {
+			if (vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN0) || vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN10)) {
+				flag = true;
+			}
 		}
 		return flag;
 	}
@@ -1985,27 +1990,11 @@ public class DeviceURouterRestBusinessFacadeService {
 			int cursor = 0;
 			for (Tuple tuple : presents) {
 
-				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
-				//如果是主网络或者为空，跳过
-				if (handsetDeviceDTO == null || isMainNetwork(handsetDeviceDTO)) {
-					cursor++;
-					continue;
-				}
-				
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
-
 				
-				String hostname = handsetIds.get(cursor);
-				if (StringUtils.isEmpty(hostname)) {
-					hostname = handsetDeviceDTO.getDhcp_name();
-				}
-				
-				detailVTO.setIp(handsetDeviceDTO.getIp());
-				detailVTO.setN(hostname);
-
-/*				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
+				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
 				if(handsetDeviceDTO != null){
 					String hostname = handsetIds.get(cursor);
 					if (StringUtils.isEmpty(hostname)) {
@@ -2014,42 +2003,32 @@ public class DeviceURouterRestBusinessFacadeService {
 					
 					detailVTO.setIp(handsetDeviceDTO.getIp());
 					detailVTO.setN(hostname);
->>>>>>> release20160712_hotfix
-				}*/
-
-
-//				Object score =  handsetScores.get(cursor);
-//				if (score!=null) {
-//					Double s = Double.parseDouble(score.toString());
-//					if (s == 0) {
-//						detailVTO.setS("online");
-//					}
-//					if (s == 1) {
-//						detailVTO.setS("authoffline");
-//					}
-//					if (s > 1) {
-//						detailVTO.setS("authonline");
-//					}
-//				}
-
-				if (handsetDeviceDTO.getAction().equals(HandsetDeviceDTO.Action_Online)) {
-					if (StringHelper.TRUE.equals(handsetDeviceDTO.getAuthorized())) {
-						detailVTO.setS(AuthOnline);
+					
+					//如果是主网络或者为空，跳过
+					if (isMainNetwork(handsetDeviceDTO)) {
+						cursor++;
+						continue;
 					}
-					if (StringHelper.FALSE.equals(handsetDeviceDTO.getAuthorized())) {
-						detailVTO.setS(Online);
+					
+					if (handsetDeviceDTO.getAction().equals(HandsetDeviceDTO.Action_Online)) {
+						if (StringHelper.TRUE.equals(handsetDeviceDTO.getAuthorized())) {
+							detailVTO.setS(AuthOnline);
+						}
+						if (StringHelper.FALSE.equals(handsetDeviceDTO.getAuthorized())) {
+							detailVTO.setS(Online);
+						}
 					}
-				}
-				if (handsetDeviceDTO.getAction().equals(HandsetDeviceDTO.Action_Offline)) {
-					if (StringHelper.TRUE.equals(handsetDeviceDTO.getAuthorized())) {
-						detailVTO.setS(AuthOffline);
+					if (handsetDeviceDTO.getAction().equals(HandsetDeviceDTO.Action_Offline)) {
+						if (StringHelper.TRUE.equals(handsetDeviceDTO.getAuthorized())) {
+							detailVTO.setS(AuthOffline);
+						}
 					}
 				}
 				
 				//如果不是获取所有类型终端，判断需要的类型
 				if (detailVTO != null) {
 					if (!type.equals(All)) {
-						if (detailVTO.getS().isEmpty()  || !detailVTO.getS().equals(type)) {
+						if (!detailVTO.getS().isEmpty()  || !detailVTO.getS().equals(type)) {
 							cursor++;
 							continue;
 						}
