@@ -56,9 +56,9 @@ public class AsyncMsgBackendCommdityProcessor implements SpringQueueMessageListe
 						throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
 					switch(type){
-/*						case OrderPaySuccessed:
-							asyncMsgHandleCommdityService.orderPaySuccessedHandle(message);
-							break;*/
+						case OrderCreated:
+							asyncMsgHandleCommdityService.orderCreatedHandle(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

@@ -4,11 +4,11 @@ import com.bhu.vas.business.asyn.spring.builder.ActionCommdityDTO;
 import com.bhu.vas.business.asyn.spring.builder.ActionCommdityMessageType;
 
 /**
- * 订单支付成功
+ * 订单创建成功
  * @author tangzichao
  *
  */
-public class OrderPaySuccessedDTO extends ActionCommdityDTO {
+public class OrderCreatedDTO extends ActionCommdityDTO {
 	//订单id
 	private String orderid;
 
@@ -22,6 +22,6 @@ public class OrderPaySuccessedDTO extends ActionCommdityDTO {
 
 	@Override
     public String getActionType() {
-        return ActionCommdityMessageType.OrderPaySuccessed.getPrefix();
+        return ActionCommdityMessageType.OrderCreated.getPrefix();
     }
 }

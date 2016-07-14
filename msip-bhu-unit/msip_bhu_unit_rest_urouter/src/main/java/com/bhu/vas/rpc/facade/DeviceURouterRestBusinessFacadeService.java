@@ -1987,7 +1987,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
 				//如果是主网络或者为空，跳过
-				if (handsetDeviceDTO == null | isMainNetwork(handsetDeviceDTO)) {
+				if (handsetDeviceDTO == null || isMainNetwork(handsetDeviceDTO)) {
 					cursor++;
 					continue;
 				}
@@ -1995,6 +1995,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
+
 				
 				String hostname = handsetIds.get(cursor);
 				if (StringUtils.isEmpty(hostname)) {
@@ -2003,6 +2004,19 @@ public class DeviceURouterRestBusinessFacadeService {
 				
 				detailVTO.setIp(handsetDeviceDTO.getIp());
 				detailVTO.setN(hostname);
+
+/*				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
+				if(handsetDeviceDTO != null){
+					String hostname = handsetIds.get(cursor);
+					if (StringUtils.isEmpty(hostname)) {
+						hostname = handsetDeviceDTO.getDhcp_name();
+					}
+					
+					detailVTO.setIp(handsetDeviceDTO.getIp());
+					detailVTO.setN(hostname);
+>>>>>>> release20160712_hotfix
+				}*/
+
 
 //				Object score =  handsetScores.get(cursor);
 //				if (score!=null) {
