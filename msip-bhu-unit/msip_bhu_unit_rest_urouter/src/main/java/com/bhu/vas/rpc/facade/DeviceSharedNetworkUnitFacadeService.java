@@ -169,8 +169,11 @@ public class DeviceSharedNetworkUnitFacadeService {
 				sharedNetwork = SharedNetworkType.SafeSecure;
 			}
 			//template 不为空并且 是无效的template格式,如果为空或者是有效的格式 则传递后续处理
-			if(StringUtils.isNotEmpty(template) && !SharedNetworksHelper.validTemplateFormat(template)){
-				template = SharedNetworksHelper.DefaultTemplate;
+			
+			if(!SharedNetworksHelper.validDefaultCreateTemplateFormat(template)){
+				if(StringUtils.isNotEmpty(template) && !SharedNetworksHelper.validTemplateFormat(template)){
+					template = SharedNetworksHelper.DefaultTemplate;
+				}
 			}
 			
 			ParamSharedNetworkDTO sharednetwork_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
