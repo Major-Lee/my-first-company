@@ -1931,9 +1931,15 @@ public class DeviceURouterRestBusinessFacadeService {
 
 		Set<Tuple> onlinePresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchOnlinePresentWithScores(wifiId, start, size);
 		Set<Tuple> unAuthPresents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchVisitorOnlinePresent(wifiId, start, size);
+		
 		if (!unAuthPresents.isEmpty()) {
-			onlinePresents.addAll(unAuthPresents);
+			for(Tuple tuple  : unAuthPresents){
+				if (tuple != null) {
+					onlinePresents.add(tuple);
+				}
+			}
 		}
+		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(builderURouterVisitorListVTO(onlinePresents, uid, wifiId, All));
 	}
 
