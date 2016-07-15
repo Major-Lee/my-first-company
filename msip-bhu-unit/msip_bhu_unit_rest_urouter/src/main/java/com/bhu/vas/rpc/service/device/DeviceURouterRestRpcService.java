@@ -686,5 +686,12 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 				uid, message, pageNo, pageSize));
 		return deviceURouterRestBusinessFacadeService.urouterFetchBySearchConditionMessage(uid, message, pageNo, pageSize);
 	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> urouterUpdNotifyReward(Integer uid, boolean on) {
+		logger.info(String.format("DeviceURouterRestRPC urouterUpdNotifyReward invoke uid[%s] on[%s]", uid, on));
+		return deviceURouterRestBusinessFacadeService.urouterUpdNotifyReward(uid, on);
+
+	}
 
 }

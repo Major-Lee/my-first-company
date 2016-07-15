@@ -431,6 +431,23 @@ public class URouterDeviceController extends BaseController{
 	}
 	
 	@ResponseBody()
+	@RequestMapping(value="/upd_notify_reward",method={RequestMethod.POST})
+	public void upd_notify_reward(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) boolean on) {
+		
+		RpcResponseDTO<Boolean> rpcResult = deviceURouterRestRpcService.urouterUpdNotifyReward(uid, on);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	
+	@ResponseBody()
 	@RequestMapping(value="/device_query_used_status",method={RequestMethod.POST})
 	public void device_query_used_status(
 			HttpServletRequest request,
