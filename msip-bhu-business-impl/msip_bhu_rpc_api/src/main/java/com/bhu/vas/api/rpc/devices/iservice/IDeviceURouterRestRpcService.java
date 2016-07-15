@@ -89,6 +89,7 @@ public interface IDeviceURouterRestRpcService {
 
 	RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Integer uid, String message, int pageNo, int pageSize);
 
+	RpcResponseDTO<Integer> countOnlineByTimestamp(Integer uid, String mac, Long timestamp);
 
 
 }

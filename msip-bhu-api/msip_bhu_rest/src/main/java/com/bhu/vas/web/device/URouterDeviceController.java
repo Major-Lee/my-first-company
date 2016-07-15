@@ -156,6 +156,24 @@ public class URouterDeviceController extends BaseController{
 		}
 	}
 	
+	@ResponseBody()
+	@RequestMapping(value="/count_hd",method={RequestMethod.POST})
+	public void count_hd(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) Long timestamp
+			) {
+		
+		RpcResponseDTO<Integer> rpcResult = 
+				deviceURouterRestRpcService.countOnlineByTimestamp(uid, mac, timestamp);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
 	
 	@ResponseBody()
 	@RequestMapping(value="/hd_detail",method={RequestMethod.POST})

@@ -86,6 +86,10 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return super.zcount(generateKey(wifiId), 1L, (OnlineBaseScore-1));
 	}
 	
+	public Long presentOnlineSizeWithScore(String wifiId,long timestamp){
+		return super.zcount(generateKey(wifiId), OnlineBaseScore+generateScore(timestamp), Long.MAX_VALUE);
+	}
+	
 	/**
 	 * 获取该设备的所有在线设备
 	 * @param wifiId

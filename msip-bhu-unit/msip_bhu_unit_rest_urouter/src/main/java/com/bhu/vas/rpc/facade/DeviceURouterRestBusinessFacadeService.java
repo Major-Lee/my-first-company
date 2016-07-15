@@ -384,6 +384,22 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 	
+	/**
+	 * 根据时间戳返回之后的在线终端数
+	 * @param wifiId
+	 * @param timestamp
+	 * @return
+	 */
+	public RpcResponseDTO<Integer> countOnlineByTimestamp(Integer uid, String wifiId, Long timestamp){
+		
+		try {
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			Long count = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSizeWithScore(wifiId, timestamp);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(count.intValue());
+		} catch (BusinessI18nCodeException bex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}
+	}
 	
 	/**
 	 * 是否是主网络终端

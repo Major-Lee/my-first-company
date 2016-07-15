@@ -325,4 +325,10 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 			Boolean filterWiredHandset) {
 		return deviceURouterRestRpcService.urouterAllHdList(uid, wifiId, start, size, filterWiredHandset);
 	}
+
+	@Override
+	public RpcResponseDTO<Integer> countOnlineByTimestamp(Integer uid, String mac, Long timestamp) {
+
+		return deviceURouterRestRpcService.countOnlineByTimestamp(uid, mac, timestamp);
+	}
 }
