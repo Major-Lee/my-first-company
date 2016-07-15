@@ -57,7 +57,6 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocationSerialTaskService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;

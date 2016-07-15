@@ -54,8 +54,8 @@ public enum OperationCMD {
 			//dev.sys.users		登陆密码
 	//cmd="wlanstatus" interface="wlan0"
 	//QueryDeviceTerminals("104","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wlanstatus\" interface=\"%s\"/></cmd>"),
-	QueryDeviceTerminals("104","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wlanstatus\" period=\"%s\" duration=\"%s\" __notify=\"true\"  serial=\"%s\"/></cmd>"),
-			
+	//QueryDeviceTerminals("104","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wlanstatus\" period=\"%s\" duration=\"%s\" __notify=\"true\"  serial=\"%s\"/></cmd>"),
+	QueryDeviceTerminals("104","查询设备终端","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"wlanstatus\"/></cmd>"),		
 	//QueryDeviceSpeedNotify("105","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"net_speed_test\" max_test_time=\"%s\" combine=\"1\" __notify=\"true\"  serial=\"%s\" url=\"http://vap.bhunetworks.com/speedtest/speedtest.tar.gz\"/></cmd>"),
 	
 	QueryDeviceSpeedNotify("105","查询设备网速","","00001001%s%s%s"+"000100000001"+"<cmd><ITEM cmd=\"net_speed_test\" download=\"%s\" upload=\"%s\" __notify=\"enable\"  period=\"%s\"  duration=\"%s\" serial=\"%s\" /></cmd>"),

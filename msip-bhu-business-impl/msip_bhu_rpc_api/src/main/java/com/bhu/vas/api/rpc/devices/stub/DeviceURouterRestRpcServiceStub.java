@@ -319,4 +319,10 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 			Integer uid, String message, int pageNo, int pageSize) {
 		return deviceURouterRestRpcService.urouterFetchBySearchConditionMessage(uid, message, pageNo, pageSize);
 	}
+
+	@Override
+	public RpcResponseDTO<Map<String, Object>> urouterAllHdList(Integer uid, String wifiId, int start, int size,
+			Boolean filterWiredHandset) {
+		return deviceURouterRestRpcService.urouterAllHdList(uid, wifiId, start, size, filterWiredHandset);
+	}
 }

@@ -109,6 +109,28 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 
 	@Override
+	public RpcResponseDTO<Map<String,Object>> urouterAllHdList(Integer uid, String wifiId,
+			int start, int size,Boolean filterWiredHandset) {
+		logger.info(String.format("DeviceURouterRestRPC urouterHdOnlineList invoke uid [%s] mac [%s] st [%s] ps [%s] filterWiredHandset[%s]", 
+				uid, wifiId, start, size,filterWiredHandset));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterAllHdList(uid, wifiId.toLowerCase(), start, size,filterWiredHandset);
+		}
+		catch(BusinessI18nCodeException ex){
+			logger.info(String.format("DeviceMessageRPC urouterHdOnlineList failed uid [%s] mac [%s] st [%s] ps [%s]",
+					uid, wifiId, start, size));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterHdOnlineList exception uid [%s] mac [%s] st [%s] ps [%s] exmsg[%s]",
+					uid, wifiId, start, size, ex.getMessage()), ex);
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	@Override
 	public RpcResponseDTO<URouterHdDetailVTO> urouterHdDetail(Integer uid, String wifiId, String hd_mac) {
 		logger.info(String.format("DeviceURouterRestRPC urouterHdDetail invoke uid [%s] wifi_mac [%s] hd_mac [%s]",
 				uid, wifiId, hd_mac));
