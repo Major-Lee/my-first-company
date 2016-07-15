@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
+import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
@@ -31,6 +33,7 @@ import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
@@ -40,6 +43,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -73,6 +77,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private CommdityMessageService commdityMessageService;
+	
+	@Resource
+	private UserWifiDeviceService userWifiDeviceService;
 	
 	/**
 	 * 生成打赏订单
@@ -225,6 +232,7 @@ public class OrderUnitFacadeService {
 		}
 	}
 
+	
 	/**
 	 * 生成充值虎钻订单
 	 * @param uid 用户id
@@ -355,6 +363,32 @@ public class OrderUnitFacadeService {
 	}
 	
 	/**
+	 * 根据用户id地址进行订单的细节
+	 * @param uid
+	 * @param orderid
+	 * @return
+	 */
+	public RpcResponseDTO<OrderDetailDTO> orderDetailByUid(Integer uid, String orderid) {
+		try{
+			Order order = orderFacadeService.validateOrderId(orderid);
+			
+			if(!uid.equals(order.getUid())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UID_INVALID);
+			}
+			//验证商品是否合法
+			Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
+			UserWifiDevice userWifiDevice = userWifiDeviceService.getById(order.getMac());
+			OrderDetailDTO orderStatusDto = OrderHelper.buildOrderDetailDTO(order, commdity, userWifiDevice);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderStatusDto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("OrderStatusByUmac Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
 	 * 生成短信认证订单
 	 * @param mac 设备mac
 	 * @param umac 用户mac
@@ -450,15 +484,18 @@ public class OrderUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<Long> countTimeByUid(Integer uid, Integer status, long start_created_ts) {
+	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid, long start_created_ts) {
 		try{
-			if(start_created_ts <= 0){
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(0l);
+			OrderRewardNewlyDataVTO vto = null;
+			if(start_created_ts > 0){
+				vto = orderFacadeService.rewardOrderNewlyDataWithProcedure(uid, new Date(start_created_ts));
+			}else{
+				vto = new OrderRewardNewlyDataVTO();
 			}
-			int count = orderFacadeService.countOrderByParams(uid, null, null, status, 
-					null, CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts);
+//			int count = orderFacadeService.countOrderByParams(uid, null, null, status, 
+//					null, CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts);
 			
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse((long)count);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

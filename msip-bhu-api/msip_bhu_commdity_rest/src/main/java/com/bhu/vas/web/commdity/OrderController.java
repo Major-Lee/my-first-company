@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderPaymentUrlDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
+import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
@@ -327,6 +329,30 @@ public class OrderController extends BaseController{
 		}
 	}
 	
+	/**
+	 * 返回订单的详细信息
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param orderid
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/query/uid/detail",method={RequestMethod.GET,RequestMethod.POST})
+	public void query_uid_detail(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String orderid
+			) {
+
+		RpcResponseDTO<OrderDetailDTO> rpcResult = orderRpcService.orderDetailByUid(uid, orderid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
 	
 	/**
 	 * 根据订单参数查询短信认证订单分页列表
@@ -364,16 +390,15 @@ public class OrderController extends BaseController{
 	
 	
 	@ResponseBody()
-	@RequestMapping(value="/count/time",method={RequestMethod.GET,RequestMethod.POST})
-	public void count_time(
+	@RequestMapping(value="/reward/newly/data",method={RequestMethod.GET,RequestMethod.POST})
+	public void reward_newly_data(
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false, defaultValue = "10") Integer status,
 			@RequestParam(required = true) long start_created_ts
 			) {
 
-		RpcResponseDTO<Long> rpcResult = orderRpcService.countTimeByUid(uid, status, start_created_ts);
+		RpcResponseDTO<OrderRewardNewlyDataVTO> rpcResult = orderRpcService.rewardOrderNewlyDataByUid(uid, start_created_ts);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
