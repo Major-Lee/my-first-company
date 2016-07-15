@@ -106,4 +106,9 @@ public class RewardOrderStatisticsProcedureDTO extends AbstractProcedureDTO{
 		vto.setMb_ofa(this.getMb_order_finish_amount());
 		return vto;
 	}
+	
+	@Override
+	public boolean isMaster(){
+		return false;
+	}
 }
