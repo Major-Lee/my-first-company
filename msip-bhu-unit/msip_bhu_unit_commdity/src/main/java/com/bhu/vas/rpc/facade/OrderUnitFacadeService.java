@@ -165,7 +165,8 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, int pageNo, int pageSize) {
 		try{
 			List<OrderRewardVTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory());
+			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, 
+					CommdityCategory.RewardInternetLimit.getCategory(), 0);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
 						CommdityCategory.RewardInternetLimit.getCategory(), pageNo, pageSize);
@@ -291,7 +292,8 @@ public class OrderUnitFacadeService {
 			Integer status,  int pageNo, int pageSize) {
 		try{
 			List<OrderRechargeVCurrencyVTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, null, null, status, null, CommdityCategory.RechargeVCurrency.getCategory());
+			int order_count = orderFacadeService.countOrderByParams(uid, null, null, status, 
+					null, CommdityCategory.RechargeVCurrency.getCategory(), 0);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, null, null, status, null,
 						CommdityCategory.RechargeVCurrency.getCategory(), pageNo, pageSize);
@@ -415,7 +417,8 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, int pageNo, int pageSize) {
 		try{
 			List<OrderSMSVTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, CommdityCategory.SMSInternetLimit.getCategory());
+			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, 
+					dut, CommdityCategory.SMSInternetLimit.getCategory(), 0);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
 						CommdityCategory.SMSInternetLimit.getCategory(), pageNo, pageSize);
@@ -447,6 +450,22 @@ public class OrderUnitFacadeService {
 		}
 	}
 	
+	public RpcResponseDTO<Long> countTimeByUid(Integer uid, Integer status, long start_created_ts) {
+		try{
+			if(start_created_ts <= 0){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(0l);
+			}
+			int count = orderFacadeService.countOrderByParams(uid, null, null, status, 
+					null, CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts);
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse((long)count);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("OrderStatusByUmac Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 	
 	private String distillOwnercash(String orderid,List<UserWalletLog> walletLogs){
 		if(walletLogs != null && !walletLogs.isEmpty()){

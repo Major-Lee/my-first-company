@@ -361,4 +361,23 @@ public class OrderController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
+	
+	
+	@ResponseBody()
+	@RequestMapping(value="/count/time",method={RequestMethod.GET,RequestMethod.POST})
+	public void count_time(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false, defaultValue = "10") Integer status,
+			@RequestParam(required = true) long start_created_ts
+			) {
+
+		RpcResponseDTO<Long> rpcResult = orderRpcService.countTimeByUid(uid, status, start_created_ts);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
 }
