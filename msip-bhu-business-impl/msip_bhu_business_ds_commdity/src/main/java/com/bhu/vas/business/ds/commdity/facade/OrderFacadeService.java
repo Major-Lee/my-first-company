@@ -84,7 +84,8 @@ public class OrderFacadeService {
 	 * @param dut 业务线
 	 * @param type 订单类型
 	 */
-	public int countOrderByParams(Integer uid, String mac, String umac, Integer status, String dut, Integer type){
+	public int countOrderByParams(Integer uid, String mac, String umac, Integer status, String dut, 
+			Integer type, long start_created_ts){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		criteria
@@ -101,6 +102,9 @@ public class OrderFacadeService {
 		}
 		if(type != null){
 			criteria.andColumnEqualTo("type", type);
+		}
+		if(start_created_ts > 0){
+			criteria.andColumnGreaterThanOrEqualTo("created_at", new Date(start_created_ts));
 		}
 		return orderService.countByModelCriteria(mc);
 	}

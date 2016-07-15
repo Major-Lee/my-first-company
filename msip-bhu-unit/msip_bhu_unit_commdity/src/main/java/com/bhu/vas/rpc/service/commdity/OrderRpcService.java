@@ -80,6 +80,12 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
+	public RpcResponseDTO<Long> countTimeByUid(Integer uid, Integer status, long start_created_ts) {
+		logger.info(String.format("countTimeByUid with uid[%s] status[%s] start_created_ts[%s]", uid, status, start_created_ts));
+		return orderUnitFacadeService.countTimeByUid(uid, status, start_created_ts);
+	}
+	
+	@Override
 	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype, 
 			String context, String user_agent, boolean spendvcurrency){
 		logger.info(String.format("createSMSOrder with mac[%s] umac[%s] umactype[%s] context[%s] user_agent[%s] spendvcurrency[%s]",
