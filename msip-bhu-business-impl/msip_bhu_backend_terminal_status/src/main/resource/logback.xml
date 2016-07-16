@@ -6,7 +6,7 @@
 	<!-- <property name="log.base" 		value="/BHUData/logs/backendonline/backendonline" />
 	<Property name="datalog.base" 	value="/BHUData/bulogs/actionlogs/business-data-action" /> -->
 	<!-- <Property name="flowlog.base" 	value="/BHUData/bulogs/flowlogs/business-data-flow" /> -->
-	<Property name="status.base" 	value="/BHUData/ualogs/" />
+	<Property name="status.base" 	value="/BHUData/bulogs/reportinglogs" />
 	
 	<jmxConfigurator />
 

@@ -22,11 +22,15 @@ public class BackendTerminalStatusMain {
 		
 		String path1 = "/BHUData/bulogs/reportinglogsnew/i1";
 		String path2 = "/BHUData/bulogs/reportinglogsnew/i2";
-//		String path1 = "E:/onORoff";
+
+//		String path1 = "/BHUData/bulogs/reportinglogsnew/i1";
+//		String path2 = "/BHUData/bulogs/reportinglogsnew/i2";
+////		String path1 = "E:/onORoff";
 //		String path2 = "E:/onORoff/i2";
 		
-		String date = BusinessHelper.getCurrentPreviousMinuteString(1);
+		String date = BusinessHelper.getCurrentPreviousMinuteString(3);
 		
+		step00ReadSimulateLogService.parser(date, path1);
 		step00ReadSimulateLogService.parser(date, path2);
 		
 		//OnlineOfflineDataParserOp op = new OnlineOfflineDataParserOp();

@@ -133,7 +133,7 @@ public class Step00ReadSimulateLogService {
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
-		if(!newAddFields.isEmpty()){
+		if(newAddFields != null){
 			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
 			dto.setWan(addMsg.getWan_ip());
 			dto.setInternet(addMsg.getIp());
@@ -160,19 +160,20 @@ public class Step00ReadSimulateLogService {
 	
 	private void processHandsetOffline(String message){
 		HandsetOfflineAction dto = JsonHelper.getDTO(message, HandsetOfflineAction.class);
-		System.out.println("mac :"+dto.getMac());
-		long endTs = dto.getTs();
+		System.out.println("mac :"+dto.getHmac());
 		String handsetOnline = businessCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
-		HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
-		dto.setEndTs(endTs);
-		dto.setTs(onlineDto.getTs());
-		dto.setHip(onlineDto.getHip());
-		dto.setHname(onlineDto.getHname());
+		if(handsetOnline != null || handsetOnline != ""){
+			HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
+			dto.setTs(onlineDto.getTs());
+			dto.setHip(onlineDto.getHip());
+			dto.setHname(onlineDto.getHname());
+		}
 		
+		dto.setEndTs(dto.getTs());
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
-		if(!newAddFields.isEmpty()){
+		if(newAddFields != null){
 			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
 			dto.setWan(addMsg.getWan_ip());
 			dto.setInternet(addMsg.getIp());
