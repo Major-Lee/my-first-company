@@ -46,7 +46,7 @@ public class UserOrderDetailsHashService extends AbstractRelationHashCache{
 
 	@Override
 	public JedisPool getRedisPool() {
-		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.CLUSTEREXT);
+		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.USERAGENT);
 	}
 	
 }
