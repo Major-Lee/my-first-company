@@ -18,9 +18,11 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
+import com.bhu.vas.api.dto.commdity.internal.useragent.OrderUserAgentDTO;
 import com.bhu.vas.api.dto.handset.HandsetOfflineAction;
 import com.bhu.vas.api.dto.handset.HandsetOnlineAction;
 import com.bhu.vas.business.backend.terminalstatus.logger.TerminalStatusNotifyLogger;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserOrderDetailsHashService;
 import com.bhu.vas.business.portrait.ds.hportrait.service.BusinessCacheService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 @Service
@@ -128,9 +130,31 @@ public class Step00ReadSimulateLogService {
 		//获取远程磁盘文件上的数据，读入缓存，
 		//从缓存中根据Mac 取对应的终端上线信息，
 		//
+		String mac = dto.getMac();
+		String hdMac = dto.getHmac();
+		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
+		if(!newAddFields.isEmpty()){
+			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
+			dto.setWan(addMsg.getWan_ip());
+			dto.setInternet(addMsg.getIp());
+			int vipType = addMsg.getType();
+			switch (vipType) {
+			case 0:
+				dto.setViptype("WX");
+				break;
+			case 10:
+				dto.setViptype("DX");
+				dto.setVipacc(addMsg.getUmac_mobileno());
+				break;
+
+			default:
+				break;
+			}
+		}
+		
 		message =  JsonHelper.getJSONString(dto);
 		TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
-		businessCacheService.storePortraitCacheResult(dto.getHmac(), message);
+		businessCacheService.storePortraitCacheResult(hdMac, message);
 		
 	}
 	
@@ -144,6 +168,29 @@ public class Step00ReadSimulateLogService {
 		dto.setTs(onlineDto.getTs());
 		dto.setHip(onlineDto.getHip());
 		dto.setHname(onlineDto.getHname());
+		
+		String mac = dto.getMac();
+		String hdMac = dto.getHmac();
+		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
+		if(!newAddFields.isEmpty()){
+			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
+			dto.setWan(addMsg.getWan_ip());
+			dto.setInternet(addMsg.getIp());
+			int vipType = addMsg.getType();
+			switch (vipType) {
+			case 0:
+				dto.setViptype("WX");
+				break;
+			case 10:
+				dto.setViptype("DX");
+				dto.setVipAcc(addMsg.getUmac_mobileno());
+				break;
+
+			default:
+				break;
+			}
+		}
+		
 		message =  JsonHelper.getJSONString(dto);
 		TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOffline.getPrefix()+message);
 	}
