@@ -19,6 +19,8 @@ import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceWorkModeChangedDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
+import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
+import com.bhu.vas.api.rpc.user.dto.UserConfigsStateDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushType;
 import com.bhu.vas.api.rpc.user.model.UserConfigsState;
@@ -274,6 +276,13 @@ public class PushService{
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			//System.out.println("终端上线push2:"+presentDto);
 			if(presentDto != null){
+				
+				UserConfigsState userConfigsState = userConfigsStateService.getById(presentDto.getUid());
+				UserConfigsStateDTO dto = JsonHelper.getDTO(userConfigsState.getExtension_content(), UserConfigsStateDTO.class);
+				
+				if (!dto.isRn_on()) {
+					return ret;
+				}
 				
 				SharedealNotifyPushDTO sharedeal_push_dto = (SharedealNotifyPushDTO)pushDto;
 				SharedealNofityContext context = businessPushContextService.sharedealNotifyContext(sharedeal_push_dto);

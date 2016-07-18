@@ -377,7 +377,11 @@ public class OrderUnitFacadeService {
 			}
 			//验证商品是否合法
 			Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
-			UserWifiDevice userWifiDevice = userWifiDeviceService.getById(order.getMac());
+			
+			UserWifiDevice userWifiDevice= null;
+			if (order.getMac() != null) {
+				 userWifiDevice = userWifiDeviceService.getById(order.getMac());
+			}
 			OrderDetailDTO orderStatusDto = OrderHelper.buildOrderDetailDTO(order, commdity, userWifiDevice);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderStatusDto);
 		}catch(BusinessI18nCodeException bex){
