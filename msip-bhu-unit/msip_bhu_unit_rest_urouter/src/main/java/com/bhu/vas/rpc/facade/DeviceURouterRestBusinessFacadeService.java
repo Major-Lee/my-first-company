@@ -44,11 +44,13 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.user.dto.UserConfigsStateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
+import com.bhu.vas.api.rpc.user.model.UserConfigsState;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
@@ -1224,19 +1226,16 @@ public class DeviceURouterRestBusinessFacadeService {
 	
 	public RpcResponseDTO<Boolean> urouterUpdNotifyReward(Integer uid, boolean on) {
 		try{
-			
-/*			UserSettingState user_setting_entity = userConfigsState.getById(wifiId);
-			
-			UserTerminalOnlineSettingDTO uto_dto = new UserTerminalOnlineSettingDTO();
-			uto_dto.setOn(on);
-			uto_dto.setStranger_on(stranger_on);
-			uto_dto.setAlias_on(alias_on);
-			uto_dto.setTimeslot(timeslot);
-			uto_dto.setTimeslot_mode(timeslot_mode);
-			
-			user_setting_entity.putUserSetting(uto_dto);
-			userSettingStateService.update(user_setting_entity);*/
-			
+			UserConfigsState entity = userConfigsStateService.getOrCreateById(uid);
+			UserConfigsStateDTO dto = entity.getInnerModel();
+			if(dto != null){
+				dto.setRn_on(on);
+			}else{
+				dto = new UserConfigsStateDTO();
+				dto.setRn_on(on);
+			}
+			entity.putInnerModel(dto);
+			userConfigsStateService.update(entity);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
