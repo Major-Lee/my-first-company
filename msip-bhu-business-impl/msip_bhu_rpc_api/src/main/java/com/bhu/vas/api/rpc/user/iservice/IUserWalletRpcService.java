@@ -119,7 +119,7 @@ public interface IUserWalletRpcService {
 	 * 丰富统计信息
 	 * @return
 	 */
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics();
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int type);
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

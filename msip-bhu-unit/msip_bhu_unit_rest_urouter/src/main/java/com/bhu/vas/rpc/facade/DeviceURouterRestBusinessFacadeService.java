@@ -44,11 +44,13 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.user.dto.UserConfigsStateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserVistorWifiSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiSinfferSettingDTO;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
+import com.bhu.vas.api.rpc.user.model.UserConfigsState;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
 import com.bhu.vas.api.vto.URouterEnterVTO;
@@ -90,6 +92,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
+import com.bhu.vas.business.ds.user.service.UserConfigsStateService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -124,6 +127,9 @@ public class DeviceURouterRestBusinessFacadeService {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private UserConfigsStateService userConfigsStateService;
 	
 	@Resource
 	private WifiDeviceSettingService wifiDeviceSettingService;
@@ -304,6 +310,99 @@ public class DeviceURouterRestBusinessFacadeService {
 			Map<String, Object> payload = PageHelper.partialAllList(vtos, vtos.size(), start, size);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}
+	}
+	
+	/**
+	 * urouter设备所有终端列表（访客网络主网络统一）
+	 * @param uid
+	 * @param wifiId
+	 * @param start
+	 * @param size
+	 * @param filterWiredHandset 是否过滤掉有线的终端设备 由于有分页机制，按分页提取的数据如果移除部分元素可能导致分页的相关参数和结果集不符合，但是客户端由于没有传递分页，所以可以忽略
+	 * //@param wireless wireless null 不区分有线无线  true 无线  false 有线
+	 * @return
+	 * modified by Edmond Lee for handset storage
+	 */
+	public RpcResponseDTO<Map<String,Object>> urouterAllHdList(Integer uid, String wifiId,  int start, int size,Boolean filterWiredHandset){
+		try{
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(wifiId);
+			
+			//用户访问终端列表时 判断上报timeout进行获取
+			if(!WifiDeviceRealtimeRateStatisticsStringService.getInstance().isHDRateWaiting(wifiId)){
+				deliverMessageService.sendDeviceHDRateFetchActionMessage(wifiId);
+			}
+			List<URouterHdVTO> vtos = null;
+			Set<Tuple> presents = null;
+			
+			presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchPresentWithScores(wifiId, start, size);
+
+			//客户端现在获取实时速率会5秒一次请求。
+			if(!presents.isEmpty()){
+				List<String> hd_macs = new ArrayList<String>();
+				for(Tuple tuple : presents){
+					hd_macs.add(tuple.getElement());
+				}
+				List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId,hd_macs);
+				List<String>   handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(uid, hd_macs);
+				//List<HandsetDevice> hd_entitys = handsetDeviceService.findByIds(hd_macs, true, true);
+				//List<WifiHandsetDeviceMark> mark_entitys = wifiHandsetDeviceMarkService.findByIds(mark_pks, true, true);
+				if(!handsets.isEmpty()){
+					vtos = new ArrayList<URouterHdVTO>();
+					int cursor = 0;
+					HandsetDeviceDTO hd_entity = null;
+					String alia = null;
+					WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+					for(Tuple tuple : presents){
+						hd_entity = handsets.get(cursor);
+
+						if (hd_entity != null) {
+	
+							alia = handsetAlias.get(cursor);
+							boolean online = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().isOnline(tuple.getScore());
+							double rx_rate = Double.parseDouble(hd_entity.getData_rx_rate() == null ? "0": hd_entity.getData_rx_rate());
+							URouterHdVTO vto = BusinessModelBuilder.toURouterHdVTO(uid, tuple.getElement(), online, rx_rate, hd_entity, setting_dto,alia);
+							vtos.add(vto);
+							cursor++;
+						}
+						
+					}
+					{//根据参数过滤掉有线终端业务和访客网络终端
+						if(filterWiredHandset){
+							Iterator<URouterHdVTO> iter = vtos.iterator();
+							while(iter.hasNext()){
+								URouterHdVTO rv = iter.next();
+								if(rv.isEthernet()) iter.remove();
+							}
+						}
+					}
+				}
+			}
+			if(vtos == null)
+				vtos = Collections.emptyList();
+			
+			Map<String, Object> payload = PageHelper.partialAllList(vtos, vtos.size(), start, size);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}
+	}
+	
+	/**
+	 * 根据时间戳返回之后的在线终端数
+	 * @param wifiId
+	 * @param timestamp
+	 * @return
+	 */
+	public RpcResponseDTO<Integer> countOnlineByTimestamp(Integer uid, String wifiId, Long timestamp){
+		
+		try {
+			deviceFacadeService.validateUserDevice(uid, wifiId);
+			Long count = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSizeWithScore(wifiId, timestamp);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(count.intValue());
+		} catch (BusinessI18nCodeException bex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
@@ -1119,6 +1218,24 @@ public class DeviceURouterRestBusinessFacadeService {
 			user_setting_entity.putUserSetting(uto_dto);
 			userSettingStateService.update(user_setting_entity);
 			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}
+	}
+	
+	public RpcResponseDTO<Boolean> urouterUpdNotifyReward(Integer uid, boolean on) {
+		try{
+			UserConfigsState entity = userConfigsStateService.getOrCreateById(uid);
+			UserConfigsStateDTO dto = entity.getInnerModel();
+			if(dto != null){
+				dto.setRn_on(on);
+			}else{
+				dto = new UserConfigsStateDTO();
+				dto.setRn_on(on);
+			}
+			entity.putInnerModel(dto);
+			userConfigsStateService.update(entity);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -2028,7 +2145,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				//如果不是获取所有类型终端，判断需要的类型
 				if (detailVTO != null) {
 					if (!type.equals(All)) {
-						if (detailVTO.getS().isEmpty() || !detailVTO.getS().equals(type)) {
+						if (detailVTO.getS() == null || !detailVTO.getS().equals(type)) {
 							cursor++;
 							continue;
 						}

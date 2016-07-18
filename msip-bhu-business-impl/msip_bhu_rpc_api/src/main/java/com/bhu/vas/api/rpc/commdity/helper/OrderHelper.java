@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.beans.BeanUtils;
 
+import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
@@ -12,6 +13,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -64,6 +66,22 @@ public class OrderHelper {
 		}
 		orderStatusDto.setCommdityname(commdity.getName());
 		return orderStatusDto;
+	}
+	
+	public static OrderDetailDTO buildOrderDetailDTO(Order order, Commdity commdity, UserWifiDevice userWifiDevice){
+		if(order == null || commdity == null) return null;
+		
+		OrderDetailDTO orderDetailDto = new OrderDetailDTO();
+		BeanUtils.copyProperties(order, orderDetailDto);
+		OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+		if(orderPaymentType != null){
+			orderDetailDto.setPayment_type_name(orderPaymentType.getDesc());
+		}
+		orderDetailDto.setCommdityname(commdity.getName());
+		if(userWifiDevice != null){
+			orderDetailDto.setMac_name(userWifiDevice.getDevice_name());
+		}
+		return orderDetailDto;
 	}
 	
 	

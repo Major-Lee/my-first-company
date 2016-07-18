@@ -23,6 +23,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatistic;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -643,11 +644,18 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics() {
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int type) {
 		UcloudMacStatisticsVTO ucloudMacStatisticsVTO=new UcloudMacStatisticsVTO();
+		List<UcloudMacStatistic> ucloudMacStatistics=new ArrayList<UcloudMacStatistic>();
 		try{
-			
-			
+			List<UserWalletLog> userWalletLogs= userWalletFacadeService.getUserWalletLogService().findListByTimeField(startTime, endTime);
+			if(userWalletLogs!=null&&userWalletLogs.size()>0){
+				for(UserWalletLog i:userWalletLogs){
+					UcloudMacStatistic ucloudMacStatistic=new UcloudMacStatistic();
+					ucloudMacStatistic.setIncome("0");
+					ucloudMacStatistic.setMac("");
+ 				}
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ucloudMacStatisticsVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

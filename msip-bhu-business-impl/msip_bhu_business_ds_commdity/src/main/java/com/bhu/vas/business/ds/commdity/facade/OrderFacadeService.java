@@ -10,9 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
+import com.bhu.vas.api.dto.procedure.RewardOrderNewlyDataProcedureDTO;
 import com.bhu.vas.api.dto.procedure.RewardOrderStatisticsProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
@@ -84,7 +86,8 @@ public class OrderFacadeService {
 	 * @param dut 业务线
 	 * @param type 订单类型
 	 */
-	public int countOrderByParams(Integer uid, String mac, String umac, Integer status, String dut, Integer type){
+	public int countOrderByParams(Integer uid, String mac, String umac, Integer status, String dut, 
+			Integer type, long start_created_ts){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		criteria
@@ -101,6 +104,9 @@ public class OrderFacadeService {
 		}
 		if(type != null){
 			criteria.andColumnEqualTo("type", type);
+		}
+		if(start_created_ts > 0){
+			criteria.andColumnGreaterThanOrEqualTo("created_at", new Date(start_created_ts));
 		}
 		return orderService.countByModelCriteria(mc);
 	}
@@ -353,6 +359,19 @@ public class OrderFacadeService {
 		RewardOrderStatisticsProcedureDTO procedureDTO = new RewardOrderStatisticsProcedureDTO();
 		procedureDTO.setStart_date(start_date);
 		procedureDTO.setEnd_date(end_date);
+		int executeRet = orderService.executeProcedure(procedureDTO);
+		if(executeRet == 0){
+			;
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
+		}
+		return procedureDTO.toVTO();
+	}
+	
+	public OrderRewardNewlyDataVTO rewardOrderNewlyDataWithProcedure(Integer uid, Date date){
+		RewardOrderNewlyDataProcedureDTO procedureDTO = new RewardOrderNewlyDataProcedureDTO();
+		procedureDTO.setUid(uid);
+		procedureDTO.setStart_date(DateTimeHelper.formatDate(date, DateTimeHelper.DefalutFormatPattern));
 		int executeRet = orderService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
 			;

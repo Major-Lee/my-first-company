@@ -141,14 +141,15 @@ public class DaemonHelper {
 	}
 	
 	public static void deviceTerminalsRateQuery(String mac,IDaemonRpcService daemonRpcService){
-		deviceTerminalsRateQuery(mac, DeviceRateQuery_Period, DeviceRateQuery_Duration, daemonRpcService);
-	}
-	
-	public static void deviceTerminalsRateQuery(String mac,int period, int duration, IDaemonRpcService daemonRpcService){
-		String cmd = CMDBuilder.builderDeviceTerminalsQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), 
-				period, duration);
+		String cmd = CMDBuilder.builderDeviceTerminalsQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence());
 		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
+	
+//	public static void deviceTerminalsRateQuery(String mac,int period, int duration, IDaemonRpcService daemonRpcService){
+//		String cmd = CMDBuilder.builderDeviceTerminalsQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), 
+//				period, duration);
+//		daemonCmdDown(mac, cmd, daemonRpcService);
+//	}	
 	
 	/**
 	 * 获取设备的系统信息

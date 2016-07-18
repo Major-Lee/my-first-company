@@ -48,7 +48,7 @@ public class MessageDaemonPerformanceConsumer {
 				"{\"style\":\"style000\"}"));
 
 		//查询终端速率
-		payloads.add(CMDBuilder.builderDeviceTerminalsQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10));
+		//payloads.add(CMDBuilder.builderDeviceTerminalsQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10));
 		//查询设备网速
 		payloads.add(CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10, "", ""));
 		//查询设备实时速率

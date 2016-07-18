@@ -27,7 +27,7 @@ public interface IDeviceURouterRestRpcService {
 	public RpcResponseDTO<URouterEnterVTO> urouterEnter(Integer uid, String wifiId);
 	RpcResponseDTO<URouterMainEnterVTO> urouterMainEnter(Integer uid, String wifiId);
 	public RpcResponseDTO<Map<String,Object>> urouterHdList(Integer uid, String wifiId, int status, int start, int size,Boolean filterWiredHandset);
-
+	public RpcResponseDTO<Map<String, Object>> urouterAllHdList(Integer uid, String wifiId, int start, int size,Boolean filterWiredHandset);
 	RpcResponseDTO<URouterHdDetailVTO> urouterHdDetail(Integer uid, String wifiId, String hd_mac);
 
 	RpcResponseDTO<Long> urouterHdModifyAlias(Integer uid, String wifiId, String hd_mac, String alias);
@@ -53,6 +53,9 @@ public interface IDeviceURouterRestRpcService {
 	
 	public RpcResponseDTO<Boolean> urouterUpdPluginTerminalOnline(Integer uid, String wifiId, boolean on, 
 			boolean stranger_on, boolean alias_on, String timeslot, int timeslot_mode);
+	
+	public RpcResponseDTO<Boolean> urouterUpdNotifyReward(Integer uid, boolean on);
+
 	public RpcResponseDTO<Boolean> urouterUpdPluginWifisniffer(Integer uid,String wifiId, boolean on);
 	public RpcResponseDTO<DeviceUsedStatisticsDTO> urouterDeviceUsedStatusQuery(Integer uid,String wifiId);
 	public RpcResponseDTO<URouterDeviceConfigVTO> urouterConfigs(Integer uid, String mac);
@@ -88,6 +91,8 @@ public interface IDeviceURouterRestRpcService {
 	RpcResponseDTO<Boolean> urouterVisitorRemoveHandset(Integer uid, String mac, String hd_mac);
 
 	RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Integer uid, String message, int pageNo, int pageSize);
+
+	RpcResponseDTO<Integer> countOnlineByTimestamp(Integer uid, String mac, Long timestamp);
 
 
 }

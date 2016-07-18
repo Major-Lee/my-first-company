@@ -21,6 +21,7 @@
         <module>msip-bhu-business-impl/msip_bhu_rpc_api</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds_commdity</module>
+		<module>msip-bhu-business-impl/msip_bhu_business_ds_portrait</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds_social</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds_tag</module>
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
@@ -65,6 +66,7 @@
         <module>msip-bhu-business-impl/msip_bhu_backend_task_statistics</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task_applies_notify</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_commdity</module>
+		<module>msip-bhu-business-impl/msip_bhu_backend_terminal_status</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_social</module>
         <module>msip-bhu-api/msip_bhu_rest</module>
         <module>msip-bhu-api/msip_bhu_commdity_rest</module>
@@ -179,6 +181,11 @@
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_ds_commdity</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+			 <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_ds_portrait</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

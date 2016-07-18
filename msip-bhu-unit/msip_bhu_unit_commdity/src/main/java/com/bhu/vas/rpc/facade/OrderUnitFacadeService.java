@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
+import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
@@ -31,6 +33,7 @@ import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
@@ -40,6 +43,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -73,6 +77,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private CommdityMessageService commdityMessageService;
+	
+	@Resource
+	private UserWifiDeviceService userWifiDeviceService;
 	
 	/**
 	 * 生成打赏订单
@@ -165,7 +172,8 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, int pageNo, int pageSize) {
 		try{
 			List<OrderRewardVTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory());
+			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, 
+					CommdityCategory.RewardInternetLimit.getCategory(), 0);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
 						CommdityCategory.RewardInternetLimit.getCategory(), pageNo, pageSize);
@@ -224,6 +232,7 @@ public class OrderUnitFacadeService {
 		}
 	}
 
+	
 	/**
 	 * 生成充值虎钻订单
 	 * @param uid 用户id
@@ -291,7 +300,8 @@ public class OrderUnitFacadeService {
 			Integer status,  int pageNo, int pageSize) {
 		try{
 			List<OrderRechargeVCurrencyVTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, null, null, status, null, CommdityCategory.RechargeVCurrency.getCategory());
+			int order_count = orderFacadeService.countOrderByParams(uid, null, null, status, 
+					null, CommdityCategory.RechargeVCurrency.getCategory(), 0);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, null, null, status, null,
 						CommdityCategory.RechargeVCurrency.getCategory(), pageNo, pageSize);
@@ -343,6 +353,32 @@ public class OrderUnitFacadeService {
 			Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
 			
 			OrderStatusDTO orderStatusDto = OrderHelper.buildOrderStatusDTO(order, commdity);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderStatusDto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("OrderStatusByUmac Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 根据用户id地址进行订单的细节
+	 * @param uid
+	 * @param orderid
+	 * @return
+	 */
+	public RpcResponseDTO<OrderDetailDTO> orderDetailByUid(Integer uid, String orderid) {
+		try{
+			Order order = orderFacadeService.validateOrderId(orderid);
+			
+			if(!uid.equals(order.getUid())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UID_INVALID);
+			}
+			//验证商品是否合法
+			Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
+			UserWifiDevice userWifiDevice = userWifiDeviceService.getById(order.getMac());
+			OrderDetailDTO orderStatusDto = OrderHelper.buildOrderDetailDTO(order, commdity, userWifiDevice);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderStatusDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -415,7 +451,8 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, int pageNo, int pageSize) {
 		try{
 			List<OrderSMSVTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, CommdityCategory.SMSInternetLimit.getCategory());
+			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, 
+					dut, CommdityCategory.SMSInternetLimit.getCategory(), 0);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
 						CommdityCategory.SMSInternetLimit.getCategory(), pageNo, pageSize);
@@ -447,6 +484,25 @@ public class OrderUnitFacadeService {
 		}
 	}
 	
+	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid, long start_created_ts) {
+		try{
+			OrderRewardNewlyDataVTO vto = null;
+			if(start_created_ts > 0){
+				vto = orderFacadeService.rewardOrderNewlyDataWithProcedure(uid, new Date(start_created_ts));
+			}else{
+				vto = new OrderRewardNewlyDataVTO();
+			}
+//			int count = orderFacadeService.countOrderByParams(uid, null, null, status, 
+//					null, CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts);
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("OrderStatusByUmac Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 	
 	private String distillOwnercash(String orderid,List<UserWalletLog> walletLogs){
 		if(walletLogs != null && !walletLogs.isEmpty()){

@@ -1,6 +1,8 @@
 package com.bhu.vas.api.rpc.commdity.iservice;
 
+import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
+import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
@@ -31,12 +33,14 @@ public interface IOrderRpcService {
 	
 	public RpcResponseDTO<OrderStatusDTO> orderStatusByUid(Integer uid, String orderid);
 	
+	public RpcResponseDTO<OrderDetailDTO> orderDetailByUid(Integer uid, String orderid);
+	
 	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype, 
 			String context, String user_agent, boolean spendvcurrency);
 	
 	public RpcResponseDTO<TailPage<OrderSMSVTO>> smsOrderPages(Integer uid, String mac, String umac, 
 			Integer status, String dut, int pageNo, int pageSize);
 
-	
+	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid, long start_created_ts);
 
 }

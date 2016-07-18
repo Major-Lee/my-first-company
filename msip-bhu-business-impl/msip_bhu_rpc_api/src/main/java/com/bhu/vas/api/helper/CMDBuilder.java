@@ -231,15 +231,24 @@ public class CMDBuilder {
 //		}
 //		return result;
 //	}
-	public static String builderDeviceTerminalsQuery(String wifi_mac, long taskid, 
-			int period,int duration){
+//	public static String builderDeviceTerminalsQuery(String wifi_mac, long taskid, 
+//			int period,int duration){
+//		String opt = OperationCMD.QueryDeviceTerminals.getNo();
+//		String taskid_format = builderTaskidFormat(taskid);
+//		
+//		return String.format(OperationCMD.QueryDeviceTerminals.getCmdtpl(),
+//				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, period, duration, 
+//				builderCMDSerial(opt, taskid_format));
+//	}
+	
+	public static String builderDeviceTerminalsQuery(String wifi_mac, long taskid){
 		String opt = OperationCMD.QueryDeviceTerminals.getNo();
 		String taskid_format = builderTaskidFormat(taskid);
 		
 		return String.format(OperationCMD.QueryDeviceTerminals.getCmdtpl(),
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, period, duration, 
-				builderCMDSerial(opt, taskid_format));
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format);
 	}
+	
 	
 	public static String builderQuerySyncDeviceOnlineTerminalsQuery(String wifi_mac){
 		return String.format(OperationCMD.ParamQuerySyncDeviceOnlineTeminals.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac));

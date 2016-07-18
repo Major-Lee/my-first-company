@@ -124,7 +124,57 @@ public class URouterDeviceController extends BaseController{
 		}
 	}
 
-
+	/**
+	 * 获取设备的终端列表 (主网络访客网络统一)
+	 * 默认按照终端的速率倒序排序 在线排序
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 * @param start
+	 * @param size
+	 * @param filterWiredHandset true 结果集中过滤了有线终端  false不过滤
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/hd_unit_list",method={RequestMethod.POST})
+	public void hd_list_all(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = false, defaultValue="0", value = "st") int start,
+			@RequestParam(required = false, defaultValue="5", value = "ps") int size,
+			@RequestParam(required = false, defaultValue="true", value = "fw") boolean filterWiredHandset
+			) {
+		
+		RpcResponseDTO<Map<String,Object>> rpcResult = 
+				deviceURouterRestRpcService.urouterAllHdList(uid, mac.toLowerCase(), start, size,filterWiredHandset?Boolean.TRUE:Boolean.FALSE);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/count_hd",method={RequestMethod.POST})
+	public void count_hd(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) Long timestamp
+			) {
+		
+		RpcResponseDTO<Integer> rpcResult = 
+				deviceURouterRestRpcService.countOnlineByTimestamp(uid, mac, timestamp);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
 	@ResponseBody()
 	@RequestMapping(value="/hd_detail",method={RequestMethod.POST})
 	public void hd_detail(
@@ -379,6 +429,23 @@ public class URouterDeviceController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/upd_notify_reward",method={RequestMethod.POST})
+	public void upd_notify_reward(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) boolean on) {
+		
+		RpcResponseDTO<Boolean> rpcResult = deviceURouterRestRpcService.urouterUpdNotifyReward(uid, on);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
 	
 	@ResponseBody()
 	@RequestMapping(value="/device_query_used_status",method={RequestMethod.POST})

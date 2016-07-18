@@ -57,7 +57,6 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocationSerialTaskService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
@@ -809,7 +808,7 @@ public class DeviceBusinessFacadeService {
 		//清除wifi设备对应handset统一在线列表redis
 		clearDeviceHandsetUnitList(mac);
 		
-		if((dtos != null && !dtos.isEmpty()) || (!dtos.get(0).getMac().isEmpty() && dtos.get(0).getMac() != null)){
+		if((dtos != null && !dtos.isEmpty()) || dtos.get(0).getMac() != null){
 			List<String> allIds = new ArrayList<String>();
 			//过滤访客网络，默认网络下的终端
 			List<HandsetDeviceDTO> defaultWlanDTOs = new ArrayList<HandsetDeviceDTO>();

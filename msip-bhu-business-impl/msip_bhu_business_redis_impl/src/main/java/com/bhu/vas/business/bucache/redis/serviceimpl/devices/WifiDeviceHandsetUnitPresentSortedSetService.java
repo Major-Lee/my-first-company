@@ -1,6 +1,7 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -84,6 +85,10 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	 */
 	public Long presentOfflineSize(String wifiId){
 		return super.zcount(generateKey(wifiId), 1L, (OnlineBaseScore-1));
+	}
+	
+	public Long presentOnlineSizeWithScore(String wifiId,long timestamp){
+		return super.zcount(generateKey(wifiId), OnlineBaseScore+generateScore(timestamp), Long.MAX_VALUE);
 	}
 	
 	/**
@@ -171,6 +176,12 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return super.zrevrangeByScoreWithScores(generateKey(wifiId), VisitorOnlineBaseScore, Long.MAX_VALUE, start, size);
 	}
 	
+	public Set<Tuple> fetchPresentWithScores(String wifiId,int start,int size){
+		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 1L, Long.MAX_VALUE, start, size);
+	}
+	
+	
 	public Set<Tuple> fetchVisitorOnlinePresent(String wifiId,int start,int size){
 		return super.zrevrangeByScoreWithScores(generateKey(wifiId), VisitorOnlineBaseScore, VisitorOnlineBaseScore, start, size);
 	}
@@ -206,6 +217,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	public static void main(String[] args) {
 //		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", System.currentTimeMillis());
 //		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", 1607121523);
-		System.out.println(generateScore(System.currentTimeMillis()));
+		System.out.println(Calendar.getInstance().getTimeInMillis());
+		System.out.println(WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSizeWithScore("84:82:f4:19:01:0c", 1168537632319L));
 	}
 }

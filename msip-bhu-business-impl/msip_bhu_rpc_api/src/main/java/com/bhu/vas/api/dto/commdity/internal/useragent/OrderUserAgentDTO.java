@@ -28,8 +28,26 @@ public class OrderUserAgentDTO {
 	private String user_agent;
 	//订单创建时间
 	private Date created_at;
+	private String wan_ip;
+	private String ip;
+	
+    public String getWan_ip() {
+		return wan_ip;
+	}
 
-    public String getOrderid() {
+	public void setWan_ip(String wan_ip) {
+		this.wan_ip = wan_ip;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public String getOrderid() {
 		return orderid;
 	}
 
@@ -133,7 +151,7 @@ public class OrderUserAgentDTO {
 	 * */
 	public static OrderUserAgentDTO builder(String orderid, String umac, Integer umactype, 
 			Integer umac_uid, String umac_mobileno, Integer type, String mac, Integer uid, String user_agent,
-			Date created_at){
+			Date created_at, String wan_ip , String ip){
 		OrderUserAgentDTO userAgentDto = new OrderUserAgentDTO();
 		userAgentDto.setOrderid(orderid);
 		userAgentDto.setUmac(umac_mobileno);
@@ -144,6 +162,8 @@ public class OrderUserAgentDTO {
 		userAgentDto.setUid(uid);
 		userAgentDto.setUser_agent(user_agent);
 		userAgentDto.setCreated_at(created_at);
+		userAgentDto.setWan_ip(wan_ip);
+		userAgentDto.setIp(ip);
 		return userAgentDto;
 	}
 }
