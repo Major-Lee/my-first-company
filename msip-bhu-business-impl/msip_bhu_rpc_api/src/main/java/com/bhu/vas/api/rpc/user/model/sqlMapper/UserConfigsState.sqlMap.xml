@@ -5,7 +5,7 @@
 <mapper namespace="com.bhu.vas.api.rpc.user.model.UserConfigsState">
 
   <resultMap id="modelResult" type="userConfigsState">
-    <id property="id" column="id"/>
+    <result property="id" column="id"/>
     <result property="updated_at" column="updated_at"/>
     <result property="extension_content" column="extension_content"/>
   </resultMap>  
