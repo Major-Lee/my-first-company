@@ -139,8 +139,8 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics() {
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int type) {
 		logger.info(String.format("richStatistics"));
-		return userWalletUnitFacadeService.richStatistics();
+		return userWalletUnitFacadeService.richStatistics(startTime,endTime,type);
 	}
 }
