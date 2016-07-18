@@ -19,7 +19,7 @@ public class UserConfigsState extends DtoJsonExtPKModel<Integer,UserConfigsState
 	@Override
 	protected Class<Integer> getPKClass() {
 		// TODO Auto-generated method stub
-		return null;
+		return Integer.class;
 	}
 
 }
