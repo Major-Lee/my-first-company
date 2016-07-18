@@ -46,7 +46,8 @@ public class HandsetPortraitServiceTest extends BaseTest{
 	public void test001BatchCreateWithdraw() {
 //		String userAgents = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36";
 //		String userAgents = "User-Agent: Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1";
-		String userAgents = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0); 360Spider";
+//		String userAgents = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0); 360Spider";
+    	String userAgents ="Mozilla/5.0 (Linux; Android 5.0.2; SAMSUNG SM-A5000 Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.3 Chrome/38.0.2125.102 Mobile Safari/537.36";
 		UserAgent userAgent = UserAgent.parseUserAgentString(userAgents);  
 		Browser browser = userAgent.getBrowser(); 
 		Version browserVersion = userAgent.getBrowserVersion();

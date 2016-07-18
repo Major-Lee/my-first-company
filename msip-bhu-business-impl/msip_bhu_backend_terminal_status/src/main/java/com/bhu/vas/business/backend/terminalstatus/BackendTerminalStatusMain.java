@@ -20,12 +20,10 @@ public class BackendTerminalStatusMain {
 		//BusinessCacheService businessCacheService = (BusinessCacheService)context.getBean("businessCacheService");
 		Step00ReadSimulateLogService step00ReadSimulateLogService = (Step00ReadSimulateLogService)context.getBean("step00ReadSimulateLogService");
 		
+
 		String path1 = "/BHUData/bulogs/reportinglogsnew/i1";
 		String path2 = "/BHUData/bulogs/reportinglogsnew/i2";
-
-//		String path1 = "/BHUData/bulogs/reportinglogsnew/i1";
-//		String path2 = "/BHUData/bulogs/reportinglogsnew/i2";
-////		String path1 = "E:/onORoff";
+//		String path1 = "E:/onORoff/i1";
 //		String path2 = "E:/onORoff/i2";
 		
 		String date = BusinessHelper.getCurrentPreviousMinuteString(1);
