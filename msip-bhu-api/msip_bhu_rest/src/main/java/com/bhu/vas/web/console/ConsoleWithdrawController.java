@@ -211,9 +211,13 @@ public class ConsoleWithdrawController extends BaseController {
     @RequestMapping(value="/richStatistics", method={RequestMethod.GET,RequestMethod.POST})
     public void richStatistics(
     		HttpServletResponse response, 
-    		@RequestParam(required = true) int uid){
+    		@RequestParam(required = true) int uid,
+    		@RequestParam(required = false) String startTime,
+    		@RequestParam(required = false) String endTime,
+    		@RequestParam(required = false) int type
+    		){
     	try{
-    		RpcResponseDTO<UcloudMacStatisticsVTO> rpcResult = userWalletRpcService.richStatistics();
+    		RpcResponseDTO<UcloudMacStatisticsVTO> rpcResult = userWalletRpcService.richStatistics(startTime,endTime,type);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
