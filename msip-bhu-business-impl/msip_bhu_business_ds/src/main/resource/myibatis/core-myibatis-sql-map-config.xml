@@ -105,10 +105,10 @@
 			type="com.bhu.vas.api.rpc.user.model.UserMobileDeviceState" />
 		<typeAlias alias="userMobileDevice"
 			type="com.bhu.vas.api.rpc.user.model.UserMobileDevice" />
-			<!--  
+			 
 		<typeAlias alias="userConfigsState"
 			type="com.bhu.vas.api.rpc.user.model.UserConfigsState" />
-			-->
+			
 		<typeAlias alias="WifiDeviceBackendTask"
 			type="com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceBackendTask" />
 		<typeAlias alias="wifiDeviceGroup"
@@ -240,10 +240,10 @@
 			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserMobileDevice.sqlMap.xml" />
 		<mapper
 			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSettingState.sqlMap.xml" />
-		<!--  
+		
 		<mapper
 			resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserConfigsState.sqlMap.xml" />
--->
+
 		<mapper
 			resource="com/bhu/vas/api/rpc/devicegroup/model/sqlMapper/WifiDeviceBackendTask.sqlMap.xml" />
 		<mapper
