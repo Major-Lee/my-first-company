@@ -21,5 +21,9 @@ public class UserConfigsState extends DtoJsonExtPKModel<Integer,UserConfigsState
 		// TODO Auto-generated method stub
 		return Integer.class;
 	}
-
+	
+	@Override
+	public Integer getId() {
+		return super.getId();
+	}
 }
