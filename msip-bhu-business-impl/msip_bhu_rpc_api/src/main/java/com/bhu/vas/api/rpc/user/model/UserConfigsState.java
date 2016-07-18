@@ -26,4 +26,9 @@ public class UserConfigsState extends DtoJsonExtPKModel<Integer,UserConfigsState
 	public Integer getId() {
 		return super.getId();
 	}
+	
+	@Override
+	public void setId(Integer id) {
+		super.setId(id);
+	}
 }
