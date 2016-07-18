@@ -99,6 +99,7 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
@@ -408,7 +409,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	}
 	
 	/**
-	 * 是否是主网络终端
+	 * 是否是访客网络终端
 	 * @param vapName
 	 * @return
 	 */
@@ -416,7 +417,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		boolean flag = false;
 		String vapName = dto.getVapname();
 		if (vapName !=null) {
-			if (vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN0) || vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN10)) {
+			if (!vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN3) || !vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN13)) {
 				flag = true;
 			}
 		}

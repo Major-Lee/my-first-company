@@ -21,8 +21,10 @@ import com.bhu.vas.api.dto.push.WifiDeviceWorkModeChangedDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushType;
+import com.bhu.vas.api.rpc.user.model.UserConfigsState;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserConfigsStateService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.context.DeviceResetContext;
 import com.bhu.vas.push.common.context.HandsetOnlineContext;
@@ -55,6 +57,9 @@ public class PushService{
 	
 	//@Resource
 	//private HandsetDeviceService handsetDeviceService;
+	
+	@Resource
+	private UserConfigsStateService userConfigsStateService;
 	
 	/**
 	 * 业务逻辑发送push消息统一接口
@@ -269,6 +274,7 @@ public class PushService{
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			//System.out.println("终端上线push2:"+presentDto);
 			if(presentDto != null){
+				
 				SharedealNotifyPushDTO sharedeal_push_dto = (SharedealNotifyPushDTO)pushDto;
 				SharedealNofityContext context = businessPushContextService.sharedealNotifyContext(sharedeal_push_dto);
 				//由于push payload limit Allowed: 256 字节 不需要的数据就不放在payload中
