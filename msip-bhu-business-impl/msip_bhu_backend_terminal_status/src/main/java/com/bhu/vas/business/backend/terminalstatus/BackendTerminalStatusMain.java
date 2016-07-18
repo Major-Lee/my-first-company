@@ -28,7 +28,7 @@ public class BackendTerminalStatusMain {
 ////		String path1 = "E:/onORoff";
 //		String path2 = "E:/onORoff/i2";
 		
-		String date = BusinessHelper.getCurrentPreviousMinuteString(3);
+		String date = BusinessHelper.getCurrentPreviousMinuteString(1);
 		
 		step00ReadSimulateLogService.parser(date, path1);
 		step00ReadSimulateLogService.parser(date, path2);

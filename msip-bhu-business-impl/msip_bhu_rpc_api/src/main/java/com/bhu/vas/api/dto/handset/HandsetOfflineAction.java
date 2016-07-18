@@ -10,7 +10,7 @@ public class HandsetOfflineAction extends TerminalAction{
 	private long tx_bytes;
 	private long rx_bytes;
 	//新增终端下线
-	private long endTs;
+	private long end_ts;
 	private String hname;
 	private String hip;
 	private String rssi;
@@ -64,12 +64,6 @@ public class HandsetOfflineAction extends TerminalAction{
 		this.bssid = bssid;
 	}
 	
-	public long getEndTs() {
-		return endTs;
-	}
-	public void setEndTs(long endTs) {
-		this.endTs = endTs;
-	}
 	public String getHname() {
 		return hname;
 	}
@@ -106,10 +100,16 @@ public class HandsetOfflineAction extends TerminalAction{
 	public void setViptype(String viptype) {
 		this.viptype = viptype;
 	}
-	public String getVipAcc() {
+	public long getEnd_ts() {
+		return end_ts;
+	}
+	public void setEnd_ts(long end_ts) {
+		this.end_ts = end_ts;
+	}
+	public String getVipacc() {
 		return vipacc;
 	}
-	public void setVipAcc(String vipacc) {
+	public void setVipacc(String vipacc) {
 		this.vipacc = vipacc;
 	}
 }

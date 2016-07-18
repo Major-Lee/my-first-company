@@ -91,7 +91,6 @@ public class Step00ReadSimulateLogService {
 					}
 				}
 			}
-			System.out.println(index);
 		}
 	}
 	
@@ -160,7 +159,6 @@ public class Step00ReadSimulateLogService {
 	
 	private void processHandsetOffline(String message){
 		HandsetOfflineAction dto = JsonHelper.getDTO(message, HandsetOfflineAction.class);
-		System.out.println("mac :"+dto.getHmac());
 		String handsetOnline = businessCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
 		if(handsetOnline != null || handsetOnline != ""){
 			HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
@@ -169,7 +167,7 @@ public class Step00ReadSimulateLogService {
 			dto.setHname(onlineDto.getHname());
 		}
 		
-		dto.setEndTs(dto.getTs());
+		dto.setEnd_ts(dto.getTs());
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
@@ -184,7 +182,7 @@ public class Step00ReadSimulateLogService {
 				break;
 			case 10:
 				dto.setViptype("DX");
-				dto.setVipAcc(addMsg.getUmac_mobileno());
+				dto.setVipacc(addMsg.getUmac_mobileno());
 				break;
 
 			default:
