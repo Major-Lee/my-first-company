@@ -260,7 +260,7 @@ public class OrderUnitFacadeService {
 			Order order = orderFacadeService.createRechargeVCurrencyOrder(uid, commdityid, 
 					BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), payment_type, umactype, user_agent);
 			
-			commdityMessageService.sendOrderCreatedMessage(order.getId());
+			//commdityMessageService.sendOrderCreatedMessage(order.getId());
 			OrderRechargeVCurrencyVTO orderVto = new OrderRechargeVCurrencyVTO();
 			BeanUtils.copyProperties(order, orderVto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
