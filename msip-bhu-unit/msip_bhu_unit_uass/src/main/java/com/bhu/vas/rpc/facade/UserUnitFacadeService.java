@@ -516,9 +516,9 @@ public class UserUnitFacadeService {
 				UserConfigsStateDTO dto = JsonHelper.getDTO(userConfigsState.getExtension_content(), UserConfigsStateDTO.class);
 				if (dto!= null) {
 					rpcPayload.put("rn_on", dto.isRn_on());
-				}else{
-					rpcPayload.put("rn_on", Boolean.TRUE);
 				}
+			}else{
+				rpcPayload.put("rn_on", Boolean.TRUE);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
