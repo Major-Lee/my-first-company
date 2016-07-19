@@ -1038,6 +1038,32 @@ public class UserWalletFacadeService{
 		return pages;
 	}
 	
+	public TailPage<UserWalletLog> pageUserWalletlogs(Integer uid,
+			BusinessEnumType.UWalletTransMode transmode,
+			BusinessEnumType.UWalletTransType transtype,
+			Date start_date, Date end_date,
+			int pageNo,int pageSize){
+		ModelCriteria mc = new ModelCriteria();
+		Criteria createCriteria = mc.createCriteria();
+		if(uid != null && uid.intValue()>0){
+			createCriteria.andColumnEqualTo("uid", uid);
+		}
+		if(transmode != null)
+			createCriteria.andColumnEqualTo("transmode", transmode.getKey());
+		if(transtype != null)
+			createCriteria.andColumnEqualTo("transtype", transtype.getKey());
+		if(start_date != null)
+			createCriteria.andColumnGreaterThanOrEqualTo("updated_at", start_date);
+		if(end_date != null)
+			createCriteria.andColumnLessThanOrEqualTo("updated_at", end_date);
+		createCriteria.andSimpleCaulse(" 1=1 ");
+    	mc.setPageNumber(pageNo);
+    	mc.setPageSize(pageSize);
+    	mc.setOrderByClause(" updated_at desc ");
+		TailPage<UserWalletLog> pages = userWalletLogService.findModelTailPageByModelCriteria(mc);
+		return pages;
+	}
+	
 	public float fincialStatisticsWithProcedure(String start_date, String end_date,int objType,String payType){
 		FincialStatisticsProdureDTO procedureDTO = new FincialStatisticsProdureDTO();
 		procedureDTO.setBeginTime(start_date);
