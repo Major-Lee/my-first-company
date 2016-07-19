@@ -503,6 +503,7 @@ public class UserDeviceUnitFacadeService {
 									userDeviceDTO.setCity(wifiDevice.getCity());
 									userDeviceDTO.setDistrict(wifiDevice.getDistrict());
 									result.add(userDeviceDTO);
+									index++;
 								}
 							}
 						}
