@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.springframework.util.StringUtils;
@@ -72,7 +73,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	//生成score值，为当前终端上线时间  年月日时分
 	private static double generateScore(long login_at){
-		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern);
+		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern,new Locale("zh","CN"));
 		return Double.parseDouble(sdf.format(new Date(login_at)));
 	}
 	
@@ -229,9 +230,8 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		super.zremrangeByScore(generateKey(wifiId_lowerCase), 0, -1);
 	}
 	public static void main(String[] args) {
-//		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", System.currentTimeMillis());
+//		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent("84:82:f4:19:01:0c", "11:11:11:11:11:11", System.currentTimeMillis());
 //		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", 1607121523);
-//		System.out.println(generateScore(1468893600000L));
 //		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern);
 //		String str  = sdf.format(new Date(1468893600000L));
 //		int a = Integer.parseInt(str);
