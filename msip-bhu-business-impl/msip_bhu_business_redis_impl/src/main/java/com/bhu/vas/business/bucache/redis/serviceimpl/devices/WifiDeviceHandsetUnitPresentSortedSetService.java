@@ -79,8 +79,8 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	public long addOnlinePresent(String wifiId, String handsetId, long this_login_at){
 		System.out.println("----------------------");
-		System.out.println(generateScore(this_login_at));
-		System.out.println(generateScore(this_login_at));
+		System.out.println(this_login_at);
+		System.out.println(this_login_at);
 		System.out.println(generateScore(this_login_at));
 		System.out.println(generateScore(this_login_at));
 		System.out.println("=========================");
@@ -109,6 +109,12 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	}
 	
 	public List<Object> presentOnlineSizeWithScore(String[] wifiIds,long timestamp){
+		System.out.println("********************");
+		System.out.println(timestamp);
+		System.out.println(timestamp);
+		System.out.println(generateScore(timestamp));
+		System.out.println(generateScore(timestamp));
+		System.out.println("********************");
 		return super.pipelineZCount_diffKeyWithSameScore(generateKey(wifiIds), OnlineBaseScore+generateScore(timestamp), Long.MAX_VALUE);
 	}
 	
