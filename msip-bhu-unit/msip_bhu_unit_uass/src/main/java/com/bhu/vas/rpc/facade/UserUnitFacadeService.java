@@ -16,13 +16,16 @@ import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.UserSettingStateService;
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
+import com.bhu.vas.api.rpc.user.dto.UserConfigsStateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserActivity;
+import com.bhu.vas.api.rpc.user.model.UserConfigsState;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
@@ -37,6 +40,7 @@ import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserActivityService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.bhu.vas.business.ds.user.service.UserConfigsStateService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
@@ -46,6 +50,7 @@ import com.bhu.vas.validate.UserTypeValidateService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.business.token.UserTokenDTO;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -89,6 +94,11 @@ public class UserUnitFacadeService {
 	private UserActivityService userActivityService;
 	@Resource
 	private UserIncomeService userIncomeService;
+	
+	
+	@Resource
+	private UserConfigsStateService userConfigsStateService;
+	
 
 	/**
 	 * 需要兼容uidParam为空的情况
@@ -181,6 +191,18 @@ public class UserUnitFacadeService {
 		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserValidate(user,uToken, device, remoteIp,d_udid);
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				userExchange);//,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+		//add by fengshibo for push switch
+		UserConfigsState userConfigsState = userConfigsStateService.getById(userExchange.getUser().getId());
+		if (userConfigsState != null){
+			UserConfigsStateDTO dto = JsonHelper.getDTO(userConfigsState.getExtension_content(), UserConfigsStateDTO.class);
+			if (dto!= null) {
+				rpcPayload.put("rn_on", dto.isRn_on());
+			}else{
+				rpcPayload.put("rn_on", Boolean.TRUE);
+			}
+		}
+		
+		
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
