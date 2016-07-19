@@ -278,10 +278,12 @@ public class PushService{
 			if(presentDto != null){
 				
 				UserConfigsState userConfigsState = userConfigsStateService.getById(presentDto.getUid());
-				UserConfigsStateDTO dto = JsonHelper.getDTO(userConfigsState.getExtension_content(), UserConfigsStateDTO.class);
 				
-				if (!dto.isRn_on()) {
-					return ret;
+				if (userConfigsState != null) {
+					UserConfigsStateDTO dto = JsonHelper.getDTO(userConfigsState.getExtension_content(), UserConfigsStateDTO.class);
+					if (dto!= null && !dto.isRn_on()) {
+						return ret;
+					}
 				}
 				
 				SharedealNotifyPushDTO sharedeal_push_dto = (SharedealNotifyPushDTO)pushDto;

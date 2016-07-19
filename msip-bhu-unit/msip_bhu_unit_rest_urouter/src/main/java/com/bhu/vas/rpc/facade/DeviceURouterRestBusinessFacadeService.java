@@ -96,6 +96,7 @@ import com.bhu.vas.business.ds.user.service.UserConfigsStateService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.ibm.icu.text.SimpleDateFormat;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -2107,7 +2108,6 @@ public class DeviceURouterRestBusinessFacadeService {
 			URouterVisitorDetailVTO detailVTO = null;
 			int cursor = 0;
 			for (Tuple tuple : presents) {
-
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);

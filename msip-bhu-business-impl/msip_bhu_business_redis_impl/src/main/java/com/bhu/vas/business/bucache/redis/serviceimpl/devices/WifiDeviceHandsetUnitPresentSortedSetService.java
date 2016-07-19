@@ -1,5 +1,6 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -45,7 +46,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	//在线初始score数值 100亿 
 	public static final double OnlineBaseScore = 10000000000d;
 	public static final double VisitorOnlineBaseScore = 0d;
-	public static final String OnlineDatePattern = "yyMMddHHmm";
+	public static final String OnlineDatePattern = "MMddHHmm";
 	
 	private WifiDeviceHandsetUnitPresentSortedSetService(){
 	}
@@ -217,7 +218,11 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	public static void main(String[] args) {
 //		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", System.currentTimeMillis());
 //		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", 1607121523);
-		System.out.println(Calendar.getInstance().getTimeInMillis());
-		System.out.println(WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSizeWithScore("84:82:f4:19:01:0c", 1168537632319L));
+//		System.out.println(generateScore(1468893600000L));
+//		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern);
+//		String str  = sdf.format(new Date(1468893600000L));
+//		int a = Integer.parseInt(str);
+//		System.out.println();
+//		System.out.println(sdf.format(new Date(1468893600000L)));
 	}
 }
