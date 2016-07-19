@@ -47,8 +47,8 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	//在线初始score数值 100亿 
 	public static final double OnlineBaseScore = 10000000000d;
 	public static final double VisitorOnlineBaseScore = 0d;
-	public static final String OnlineDatePattern = "MMddHHmm";
 	
+	public static final String OnlineDatePattern = "MMddHHmm";
 	private WifiDeviceHandsetUnitPresentSortedSetService(){
 	}
 	
@@ -78,6 +78,12 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	}
 	
 	public long addOnlinePresent(String wifiId, String handsetId, long this_login_at){
+		System.out.println("----------------------");
+		System.out.println(generateScore(this_login_at));
+		System.out.println(generateScore(this_login_at));
+		System.out.println(generateScore(this_login_at));
+		System.out.println(generateScore(this_login_at));
+		System.out.println("=========================");
 		return super.zadd(generateKey(wifiId), this_login_at == 0 ? VisitorOnlineBaseScore: (OnlineBaseScore+generateScore(this_login_at)), handsetId);
 	}
 	
@@ -237,5 +243,6 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 //		int a = Integer.parseInt(str);
 //		System.out.println();
 //		System.out.println(sdf.format(new Date(1468893600000L)));
+		System.out.println(generateScore(1468920755248L));
 	}
 }
