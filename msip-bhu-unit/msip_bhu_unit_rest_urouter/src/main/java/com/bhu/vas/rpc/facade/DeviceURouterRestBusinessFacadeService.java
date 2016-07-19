@@ -398,12 +398,20 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param timestamp
 	 * @return
 	 */
-	public RpcResponseDTO<Integer> countOnlineByTimestamp(Integer uid, String wifiId, Long timestamp){
+	public RpcResponseDTO<Map<String, String>> countOnlineByTimestamp(Integer uid, String wifiId, Long timestamp){
 		
 		try {
-			deviceFacadeService.validateUserDevice(uid, wifiId);
-			Long count = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSizeWithScore(wifiId, timestamp);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(count.intValue());
+			String[] wifiIds = wifiId.split(StringHelper.COMMA_STRING_GAP);
+			List<Object> counts = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSizeWithScore(wifiIds, timestamp);
+			Map<String,String> result = new HashMap<String,String>();
+			
+			int index = 0;
+			for (Object count : counts) {
+				result.put(wifiIds[index], count.toString());
+				index++;
+			}
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		} catch (BusinessI18nCodeException bex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}

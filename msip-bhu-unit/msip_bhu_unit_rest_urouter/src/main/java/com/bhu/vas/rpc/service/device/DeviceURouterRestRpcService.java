@@ -131,7 +131,7 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 	
 	@Override
-	public RpcResponseDTO<Integer> countOnlineByTimestamp(Integer uid,String wifiId, Long timestamp) {
+	public RpcResponseDTO<Map<String, String>> countOnlineByTimestamp(Integer uid,String wifiId, Long timestamp) {
 		logger.info(String.format("DeviceURouterRestRPC fetchOnlineByTimestamp invoke uid [%s] mac [%s] time [%s]", uid, wifiId ,timestamp));
 		
 		try{

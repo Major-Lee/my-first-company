@@ -57,6 +57,19 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return sb.toString();
 	}
 	
+	private static String[] generateKey(String[] wifiIds){
+		
+		String[] macs = new String [wifiIds.length];
+		int index = 0;
+		for (String wifiId : wifiIds) {
+			StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.WifiDeviceHandsetUnitPresentPrefixKey);
+			sb.append(StringHelper.POINT_CHAR_GAP).append(wifiId);
+			macs[index] = sb.toString();
+			index++;
+		}
+		return macs;
+	}
+	
 	//生成score值，为当前终端上线时间  年月日时分
 	private static double generateScore(long login_at){
 		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern);
@@ -88,8 +101,8 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return super.zcount(generateKey(wifiId), 1L, (OnlineBaseScore-1));
 	}
 	
-	public Long presentOnlineSizeWithScore(String wifiId,long timestamp){
-		return super.zcount(generateKey(wifiId), OnlineBaseScore+generateScore(timestamp), Long.MAX_VALUE);
+	public List<Object> presentOnlineSizeWithScore(String[] wifiIds,long timestamp){
+		return super.pipelineZCount_diffKeyWithSameScore(generateKey(wifiIds), OnlineBaseScore+generateScore(timestamp), Long.MAX_VALUE);
 	}
 	
 	/**

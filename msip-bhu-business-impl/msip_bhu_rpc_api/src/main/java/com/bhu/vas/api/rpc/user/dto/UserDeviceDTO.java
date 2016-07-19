@@ -35,6 +35,12 @@ public class UserDeviceDTO implements Serializable {
 
     private String ip;
 
+    private String province;
+    
+    private String city;
+    
+    private String district;
+    
     public String getMac() {
         return mac;
     }
@@ -156,4 +162,29 @@ public class UserDeviceDTO implements Serializable {
 	public void setO_scalelevel(String o_scalelevel) {
 		this.o_scalelevel = o_scalelevel;
 	}
+
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+	
 }
