@@ -418,7 +418,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		boolean flag = false;
 		String vapName = dto.getVapname();
 		if (vapName !=null) {
-			if (!vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN3) || !vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN13)) {
+			if (!vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN3) && !vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN13)) {
 				flag = true;
 			}
 		}
