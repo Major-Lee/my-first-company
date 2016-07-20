@@ -84,7 +84,17 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		System.out.println(generateScore(this_login_at));
 		System.out.println(generateScore(this_login_at));
 		System.out.println("=========================");
-		return super.zadd(generateKey(wifiId), this_login_at == 0 ? VisitorOnlineBaseScore: (OnlineBaseScore+generateScore(this_login_at)), handsetId);
+		return super.zadd(generateKey(wifiId), OnlineBaseScore+generateScore(this_login_at), handsetId);
+	}
+	
+	public List<Object> presentOnlineSizeWithScore(String[] wifiIds,long timestamp){
+		System.out.println("********************");
+		System.out.println(timestamp);
+		System.out.println(timestamp);
+		System.out.println(generateScore(timestamp));
+		System.out.println(generateScore(timestamp));
+		System.out.println("********************");
+		return super.pipelineZCount_diffKeyWithSameScore(generateKey(wifiIds), OnlineBaseScore+generateScore(timestamp), Long.MAX_VALUE);
 	}
 	
 	public long removeUnauthHandset(String wifiId, String handsetId, long last_login_at){
@@ -106,16 +116,6 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	 */
 	public Long presentOfflineSize(String wifiId){
 		return super.zcount(generateKey(wifiId), 1L, (OnlineBaseScore-1));
-	}
-	
-	public List<Object> presentOnlineSizeWithScore(String[] wifiIds,long timestamp){
-		System.out.println("********************");
-		System.out.println(timestamp);
-		System.out.println(timestamp);
-		System.out.println(generateScore(timestamp));
-		System.out.println(generateScore(timestamp));
-		System.out.println("********************");
-		return super.pipelineZCount_diffKeyWithSameScore(generateKey(wifiIds), OnlineBaseScore+generateScore(timestamp), Long.MAX_VALUE);
 	}
 	
 	/**
@@ -249,6 +249,6 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 //		int a = Integer.parseInt(str);
 //		System.out.println();
 //		System.out.println(sdf.format(new Date(1468893600000L)));
-		System.out.println(generateScore(1468920755248L));
+		System.out.println(generateScore(1468925162702L));
 	}
 }
