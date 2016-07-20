@@ -73,7 +73,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	//生成score值，为当前终端上线时间  年月日时分
 	private static double generateScore(long login_at){
-		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern,new Locale("zh","CN"));
+		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern,Locale.getDefault(Locale.Category.FORMAT));
 		return Double.parseDouble(sdf.format(new Date(login_at)));
 	}
 	
