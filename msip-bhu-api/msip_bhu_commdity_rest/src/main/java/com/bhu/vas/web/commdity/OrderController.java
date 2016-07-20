@@ -170,7 +170,7 @@ public class OrderController extends BaseController{
 			) {
 
 		RpcResponseDTO<TailPage<OrderRewardVTO>> rpcResult = orderRpcService.rewardOrderPages(uid, mac, umac, 
-				status, dut, pageNo, pageSize);
+				status, dut, 0, 0, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -199,12 +199,14 @@ public class OrderController extends BaseController{
 			@RequestParam(required = false) String umac,
 			@RequestParam(required = false, defaultValue = "10") Integer status,
 			@RequestParam(required = false) String dut,
+			@RequestParam(required = false) long start_created_ts,
+			@RequestParam(required = false) long end_created_ts,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 
 		RpcResponseDTO<TailPage<OrderRewardVTO>> rpcResult = orderRpcService.rewardOrderPages(uid, mac, umac, 
-				status, dut, pageNo, pageSize);
+				status, dut, start_created_ts, end_created_ts, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

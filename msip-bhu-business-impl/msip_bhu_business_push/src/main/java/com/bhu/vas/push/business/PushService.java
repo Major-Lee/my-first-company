@@ -329,14 +329,14 @@ public class PushService{
 					//发送push
 				ret = pushNotification(pushMsg);
 				if(ret){
-					logger.info("PushSharedealNotify Successed " + pushMsg.toString());
+					logger.info("PushDeviceResetNotify Successed " + pushMsg.toString());
 				}else{
-					logger.info("PushSharedealNotify Failed " + pushMsg.toString());
+					logger.info("PushDeviceResetNotify Failed " + pushMsg.toString());
 				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
-			logger.error("PushSharedealNotify exception " + ex.getMessage(), ex);
+			logger.error("PushDeviceResetNotify exception " + ex.getMessage(), ex);
 		}
 		return ret;
 	}

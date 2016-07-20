@@ -169,14 +169,15 @@ public class OrderUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<TailPage<OrderRewardVTO>> rewardOrderPages(Integer uid, String mac, String umac, 
-			Integer status, String dut, int pageNo, int pageSize) {
+			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize) {
 		try{
 			List<OrderRewardVTO> retDtos = Collections.emptyList();
 			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, 
-					CommdityCategory.RewardInternetLimit.getCategory(), 0);
+					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
-						CommdityCategory.RewardInternetLimit.getCategory(), pageNo, pageSize);
+						CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
+						pageNo, pageSize);
 				
 				if(orderList != null && !orderList.isEmpty()){
 					List<String> orderids = new ArrayList<String>();
@@ -301,10 +302,10 @@ public class OrderUnitFacadeService {
 		try{
 			List<OrderRechargeVCurrencyVTO> retDtos = Collections.emptyList();
 			int order_count = orderFacadeService.countOrderByParams(uid, null, null, status, 
-					null, CommdityCategory.RechargeVCurrency.getCategory(), 0);
+					null, CommdityCategory.RechargeVCurrency.getCategory(), 0,0);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, null, null, status, null,
-						CommdityCategory.RechargeVCurrency.getCategory(), pageNo, pageSize);
+						CommdityCategory.RechargeVCurrency.getCategory(), 0,0, pageNo, pageSize);
 				
 				if(orderList != null && !orderList.isEmpty()){
 					retDtos = new ArrayList<OrderRechargeVCurrencyVTO>();
@@ -456,10 +457,10 @@ public class OrderUnitFacadeService {
 		try{
 			List<OrderSMSVTO> retDtos = Collections.emptyList();
 			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, 
-					dut, CommdityCategory.SMSInternetLimit.getCategory(), 0);
+					dut, CommdityCategory.SMSInternetLimit.getCategory(), 0,0);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
-						CommdityCategory.SMSInternetLimit.getCategory(), pageNo, pageSize);
+						CommdityCategory.SMSInternetLimit.getCategory(), 0,0, pageNo, pageSize);
 				
 				if(orderList != null && !orderList.isEmpty()){
 					retDtos = new ArrayList<OrderSMSVTO>();
