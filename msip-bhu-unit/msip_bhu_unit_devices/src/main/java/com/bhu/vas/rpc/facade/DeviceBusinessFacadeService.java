@@ -955,6 +955,7 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceTerminalsNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
 			String wifiId, long taskid){
+		System.out.println("******************wlan_status**********************");
 		List<WifiDeviceTerminalDTO> terminals = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
 		/*if(CMDBuilder.auto_special_query_commercial_terminals_taskid_fragment.wasInFragment(taskid)){
 			//TODO:特殊处理商业wifi终端在线列表
