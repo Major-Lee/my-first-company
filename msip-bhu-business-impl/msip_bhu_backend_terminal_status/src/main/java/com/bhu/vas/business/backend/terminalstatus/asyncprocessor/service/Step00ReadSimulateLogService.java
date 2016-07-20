@@ -16,6 +16,10 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.springframework.stereotype.Service;
 
+import com.alisoft.xplatform.asf.cache.ICacheManager;
+import com.alisoft.xplatform.asf.cache.IMemcachedCache;
+import com.alisoft.xplatform.asf.cache.memcached.CacheUtil;
+import com.alisoft.xplatform.asf.cache.memcached.MemcachedCacheManager;
 import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
 import com.bhu.vas.api.dto.commdity.internal.useragent.OrderUserAgentDTO;
@@ -23,13 +27,15 @@ import com.bhu.vas.api.dto.handset.HandsetOfflineAction;
 import com.bhu.vas.api.dto.handset.HandsetOnlineAction;
 import com.bhu.vas.business.backend.terminalstatus.logger.TerminalStatusNotifyLogger;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserOrderDetailsHashService;
-import com.bhu.vas.business.portrait.ds.hportrait.service.BusinessCacheService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 @Service
 public class Step00ReadSimulateLogService {
 	
+//	@Resource
+//	private BusinessCacheService businessCacheService;
+	
 	@Resource
-	private BusinessCacheService businessCacheService;
+	private PortraitMemcachedCacheService portraitMemcachedCacheService;
 	
 	private static String hashFileMatchTemplate = "%s.business-reporting.zip";
 	@SuppressWarnings("unchecked")
@@ -44,8 +50,7 @@ public class Step00ReadSimulateLogService {
                     public boolean accept(File file) {
                         return true;
                     }
-                });//("/BHUData/bulogs/charginglogs/",new WildcardFileFilter("*.???"), null);
-		long index = 0l;
+                });
 		
 		for(File file : listFiles){
 			ZipFile zf = null;
@@ -150,13 +155,13 @@ public class Step00ReadSimulateLogService {
 		
 		message =  JsonHelper.getJSONString(dto);
 		TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
-		businessCacheService.storePortraitCacheResult(hdMac, message);
+		portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
 		
 	}
 	
 	private void processHandsetOffline(String message){
 		HandsetOfflineAction dto = JsonHelper.getDTO(message, HandsetOfflineAction.class);
-		String handsetOnline = businessCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
+		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
 		if(handsetOnline != null || handsetOnline != ""){
 			HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
 			dto.setTs(onlineDto.getTs());
@@ -206,5 +211,50 @@ public class Step00ReadSimulateLogService {
 	private void processHandsetSync(String message){
 		//this.currentDate = DateTimeHelper.parseDate(, );
 		TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetSync.getPrefix()+message);
+	}
+	
+	public static void main(String[] args) {
+//		String mac = "84:82:f4:19:01:0c";
+//		String hdMac = "68:3e:34:48:b7:35";
+//		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
+//		if(newAddFields.isEmpty()){
+//			System.out.println(newAddFields);
+//		}
+//		OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
+//		System.out.println(JsonHelper.getJSONString(addMsg));
+//		System.out.println(addMsg.getWan_ip());
+//		System.out.println(addMsg.getIp());
+		
+		
+		ICacheManager<IMemcachedCache> manager;  
+        manager = CacheUtil.getCacheManager(IMemcachedCache.class,  
+                MemcachedCacheManager.class.getName());  
+        manager.setConfigFile("memcached.xml");  
+        manager.start();  
+        try {  
+            IMemcachedCache cache = manager.getCache("default.memcached");  
+            cache.put("String", "Hekko");
+            String beanClient=(String)cache.get("String");  
+            System.out.println(beanClient);  
+            
+//            TestBean bean=new TestBean();  
+//            bean.setName("name1");  
+//            bean.setAge(25);  
+//            cache.put("bean", bean);  
+//            TestBean beanClient=(TestBean)cache.get("bean");  
+//            System.out.println(beanClient.getName());  
+//              
+//            List<TestBean> list=new ArrayList<TestBean>();  
+//            list.add(bean);  
+//            cache.put("beanList", list);  
+//            List<TestBean> listClient=(List<TestBean>)cache.get("beanList");  
+//            if(listClient.size()>0){  
+//                TestBean bean4List=listClient.get(0);  
+//                System.out.println(bean4List.getName());  
+//            }  
+        } finally {  
+            manager.stop();  
+        }  
+		
 	}
 }
