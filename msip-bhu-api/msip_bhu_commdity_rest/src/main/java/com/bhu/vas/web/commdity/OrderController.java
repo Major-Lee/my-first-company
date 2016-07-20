@@ -199,8 +199,8 @@ public class OrderController extends BaseController{
 			@RequestParam(required = false) String umac,
 			@RequestParam(required = false, defaultValue = "10") Integer status,
 			@RequestParam(required = false) String dut,
-			@RequestParam(required = false) long start_created_ts,
-			@RequestParam(required = false) long end_created_ts,
+			@RequestParam(required = false, defaultValue = "0") long start_created_ts,
+			@RequestParam(required = false, defaultValue = "0") long end_created_ts,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
