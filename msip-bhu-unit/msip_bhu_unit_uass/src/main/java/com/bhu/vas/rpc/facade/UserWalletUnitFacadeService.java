@@ -22,6 +22,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
+import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -38,6 +39,7 @@ import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
+import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
@@ -80,6 +82,9 @@ public class UserWalletUnitFacadeService {
 	
 	@Resource
 	private UserIncomeRankService userIncomeRankService;
+	
+	@Resource
+	private OrderService orderService;
 	
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
@@ -157,16 +162,19 @@ public class UserWalletUnitFacadeService {
 			TailPage<UserWalletLogFFVTO> result_pages = null;
 			List<UserWalletLogFFVTO> vtos = new ArrayList<UserWalletLogFFVTO>();
 			if(!pages.isEmpty()){
-				List<Integer> uids = new ArrayList<>();
+				List<String> orderids = new ArrayList<String>();
 				for(UserWalletLog log:pages.getItems()){
-					uids.add(log.getUid());
+					orderids.add(log.getOrderid());
 				}
+				List<Order> orders = orderService.findByIds(orderids, true, true);
 				//List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
-				//int index = 0;
+				int index = 0;
 				for(UserWalletLog log:pages.getItems()){
-					//User user = users.get(index);
-					vtos.add(log.toUserWalletLogFFVTO());
-					//index++;
+					Order order = orders.get(index);
+					vtos.add(log.toUserWalletLogFFVTO(
+							order!=null?order.getAmount():StringUtils.EMPTY,
+							order!=null?order.getMac():StringUtils.EMPTY));
+					index++;
 				}
 			}
 			result_pages = new CommonPage<UserWalletLogFFVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos);

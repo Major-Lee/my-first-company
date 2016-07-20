@@ -155,12 +155,14 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 		return vto;
 	}
 	
-	public UserWalletLogFFVTO toUserWalletLogFFVTO(){
+	public UserWalletLogFFVTO toUserWalletLogFFVTO(String amount, String mac){
 		UserWalletLogFFVTO vto = new UserWalletLogFFVTO();
 		vto.setId(id);
 		vto.setUid(uid);
+		vto.setMac(mac);
 		vto.setOrderid(orderid);
 		vto.setCash(cash);
+		vto.setAmount(amount);
 		vto.setRmoney(rmoney);
 		vto.setVcurrency(vcurrency);
 		vto.setTransmode(transmode);
