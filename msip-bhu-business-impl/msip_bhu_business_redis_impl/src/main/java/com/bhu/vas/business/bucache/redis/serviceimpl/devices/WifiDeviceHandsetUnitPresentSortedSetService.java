@@ -74,19 +74,15 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	//生成score值，为当前终端上线时间  年月日时分
 	private static double generateScore(long login_at){
-//		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern,Locale.getDefault(Locale.Category.FORMAT));
 		return Double.parseDouble(DateTimeHelper.formatDate(new Date(login_at),OnlineDatePattern));
 	}
 	
 	public long addOnlinePresent(String wifiId, String handsetId, long this_login_at){
-		System.out.println("----------------------");
-		System.out.println(this_login_at);
-		System.out.println(this_login_at);
-		System.out.println(generateScore(this_login_at));
-		System.out.println(generateScore(this_login_at));
-		System.out.println(Locale.getDefault(Locale.Category.FORMAT));
-		System.out.println("=========================");
 		return super.zadd(generateKey(wifiId), OnlineBaseScore+generateScore(this_login_at), handsetId);
+	}
+	
+	public long addVistorOnlinePresent(String wifiId, String handsetId){
+		return super.zadd(generateKey(wifiId), VisitorOnlineBaseScore, handsetId);
 	}
 	
 	public List<Object> presentOnlineSizeWithScore(String[] wifiIds,long timestamp){
