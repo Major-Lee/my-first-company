@@ -981,6 +981,7 @@ public class DeviceBusinessFacadeService {
 			//for(HandsetDeviceDTO handset : handsets){
 			
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId, hdIds);
+			System.out.println("-------------------------wlanstatus----------------------");
 			for(int cursor = 0; cursor<terminals.size();cursor++){
 				WifiDeviceTerminalDTO terminal = terminals.get(cursor);
 				//判断是否在黑名单中
@@ -1050,7 +1051,9 @@ public class DeviceBusinessFacadeService {
 					handset.setTx_bytes(terminal.getTx_bytes());
 					handset.setData_tx_rate(terminal.getData_tx_rate() == null ? 0+"":terminal.getData_tx_rate());
 					handset.setData_rx_rate(terminal.getData_rx_rate() == null ? 0+"":terminal.getData_rx_rate());
-					handsets.add(cursor, handset);
+					System.out.println(terminal.getData_tx_rate());
+					System.out.println(terminal.getData_rx_rate());
+					System.out.println("**************************");
 				}
 				//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121 很频繁
 				//HandsetStorageFacadeService.wifiDeviceHandsetOnline(wifiId, terminal.getMac(), this_login_at);
