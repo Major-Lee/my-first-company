@@ -220,6 +220,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 						break;
 					case QueryDeviceTerminals:
 						deviceBusinessFacadeService.taskQueryDeviceTerminals(ctx, payload, mac, taskid);
+						break;
 					default:
 						deviceBusinessFacadeService.taskCommonProcessor(ctx, payload, mac, taskid);
 						//messageDispatchUnsupport(ctx, payload, parserHeader);
