@@ -1048,8 +1048,9 @@ public class DeviceBusinessFacadeService {
 				if ( handset!= null && handset.getMac().equals(terminal.getMac())) {
 					handset.setRx_bytes(terminal.getRx_bytes());
 					handset.setTx_bytes(terminal.getTx_bytes());
-					handset.setData_tx_rate(terminal.getData_tx_rate().isEmpty() ? 0+"":terminal.getData_tx_rate());
-					handset.setData_rx_rate(terminal.getData_rx_rate().isEmpty() ? 0+"":terminal.getData_rx_rate());
+					handset.setData_tx_rate(terminal.getData_tx_rate() == null ? 0+"":terminal.getData_tx_rate());
+					handset.setData_rx_rate(terminal.getData_rx_rate() == null ? 0+"":terminal.getData_rx_rate());
+					handsets.add(cursor, handset);
 				}
 				//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121 很频繁
 				//HandsetStorageFacadeService.wifiDeviceHandsetOnline(wifiId, terminal.getMac(), this_login_at);
