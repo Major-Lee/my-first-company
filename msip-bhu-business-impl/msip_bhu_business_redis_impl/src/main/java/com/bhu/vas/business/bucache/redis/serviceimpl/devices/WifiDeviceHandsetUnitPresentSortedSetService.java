@@ -16,6 +16,7 @@ import com.ibm.icu.text.SimpleDateFormat;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 
@@ -73,8 +74,8 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	//生成score值，为当前终端上线时间  年月日时分
 	private static double generateScore(long login_at){
-		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern,Locale.getDefault(Locale.Category.FORMAT));
-		return Double.parseDouble(sdf.format(new Date(login_at)));
+//		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern,Locale.getDefault(Locale.Category.FORMAT));
+		return Double.parseDouble(DateTimeHelper.formatDate(new Date(login_at),OnlineDatePattern));
 	}
 	
 	public long addOnlinePresent(String wifiId, String handsetId, long this_login_at){
