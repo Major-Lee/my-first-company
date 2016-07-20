@@ -35,6 +35,7 @@ import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RankSingle;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
@@ -140,6 +141,46 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	public RpcResponseDTO<TailPage<UserWalletLogFFVTO>> pageUserWalletlogsByFeifan(int uid, String transmode,
+			String transtype, Date start_date, Date end_date, int pageNo, int pageSize) {
+		try{
+			UWalletTransMode tmode = null;
+			if(StringUtils.isNotEmpty(transmode)){
+				tmode = UWalletTransMode.fromKey(transmode);
+			}
+			
+			UWalletTransType ttype = null;
+			if(StringUtils.isNotEmpty(transtype)){
+				ttype = UWalletTransType.fromKey(transtype);
+			}
+			TailPage<UserWalletLog> pages = userWalletFacadeService.pageUserWalletlogs(uid, tmode, ttype, 
+					start_date, end_date, pageNo, pageSize);
+			TailPage<UserWalletLogFFVTO> result_pages = null;
+			List<UserWalletLogFFVTO> vtos = new ArrayList<UserWalletLogFFVTO>();
+			if(!pages.isEmpty()){
+				List<Integer> uids = new ArrayList<>();
+				for(UserWalletLog log:pages.getItems()){
+					uids.add(log.getUid());
+				}
+				//List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
+				//int index = 0;
+				for(UserWalletLog log:pages.getItems()){
+					//User user = users.get(index);
+					vtos.add(log.toUserWalletLogFFVTO());
+					//index++;
+				}
+			}
+			result_pages = new CommonPage<UserWalletLogFFVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 	/**
 	 * 需要判定用户是否是财务用户 财务审核、采用支付用户
 	 * @param uid

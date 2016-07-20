@@ -1,10 +1,12 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.springframework.util.StringUtils;
@@ -14,6 +16,7 @@ import com.ibm.icu.text.SimpleDateFormat;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 
@@ -45,8 +48,8 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	//在线初始score数值 100亿 
 	public static final double OnlineBaseScore = 10000000000d;
 	public static final double VisitorOnlineBaseScore = 0d;
-	public static final String OnlineDatePattern = "yyMMddHHmm";
 	
+	public static final String OnlineDatePattern = "MMddHHmm";
 	private WifiDeviceHandsetUnitPresentSortedSetService(){
 	}
 	
@@ -56,14 +59,41 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return sb.toString();
 	}
 	
+	private static String[] generateKey(String[] wifiIds){
+		
+		String[] macs = new String [wifiIds.length];
+		int index = 0;
+		for (String wifiId : wifiIds) {
+			StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.WifiDeviceHandsetUnitPresentPrefixKey);
+			sb.append(StringHelper.POINT_CHAR_GAP).append(wifiId);
+			macs[index] = sb.toString();
+			index++;
+		}
+		return macs;
+	}
+	
 	//生成score值，为当前终端上线时间  年月日时分
 	private static double generateScore(long login_at){
-		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern);
-		return Double.parseDouble(sdf.format(new Date(login_at)));
+		return Double.parseDouble(DateTimeHelper.formatDate(new Date(login_at),OnlineDatePattern));
 	}
 	
 	public long addOnlinePresent(String wifiId, String handsetId, long this_login_at){
-		return super.zadd(generateKey(wifiId), this_login_at == 0 ? VisitorOnlineBaseScore: (OnlineBaseScore+generateScore(this_login_at)), handsetId);
+		return super.zadd(generateKey(wifiId), OnlineBaseScore+generateScore(this_login_at), handsetId);
+	}
+	
+	public long addVistorOnlinePresent(String wifiId, String handsetId){
+		return super.zadd(generateKey(wifiId), VisitorOnlineBaseScore, handsetId);
+	}
+	
+	public List<Object> presentOnlineSizeWithScore(String[] wifiIds,long timestamp){
+		System.out.println("********************");
+		System.out.println(timestamp);
+		System.out.println(timestamp);
+		System.out.println(generateScore(timestamp));
+		System.out.println(generateScore(timestamp));
+		System.out.println(Locale.getDefault(Locale.Category.FORMAT));
+		System.out.println("********************");
+		return super.pipelineZCount_diffKeyWithSameScore(generateKey(wifiIds), OnlineBaseScore+generateScore(timestamp), Long.MAX_VALUE);
 	}
 	
 	public long removeUnauthHandset(String wifiId, String handsetId, long last_login_at){
@@ -85,10 +115,6 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	 */
 	public Long presentOfflineSize(String wifiId){
 		return super.zcount(generateKey(wifiId), 1L, (OnlineBaseScore-1));
-	}
-	
-	public Long presentOnlineSizeWithScore(String wifiId,long timestamp){
-		return super.zcount(generateKey(wifiId), OnlineBaseScore+generateScore(timestamp), Long.MAX_VALUE);
 	}
 	
 	/**
@@ -215,9 +241,13 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		super.zremrangeByScore(generateKey(wifiId_lowerCase), 0, -1);
 	}
 	public static void main(String[] args) {
-//		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", System.currentTimeMillis());
+//		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent("84:82:f4:19:01:0c", "11:11:11:11:11:11", System.currentTimeMillis());
 //		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", 1607121523);
-		System.out.println(Calendar.getInstance().getTimeInMillis());
-		System.out.println(WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSizeWithScore("84:82:f4:19:01:0c", 1168537632319L));
+//		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern);
+//		String str  = sdf.format(new Date(1468893600000L));
+//		int a = Integer.parseInt(str);
+//		System.out.println();
+//		System.out.println(sdf.format(new Date(1468893600000L)));
+		System.out.println(generateScore(1468925162702L));
 	}
 }

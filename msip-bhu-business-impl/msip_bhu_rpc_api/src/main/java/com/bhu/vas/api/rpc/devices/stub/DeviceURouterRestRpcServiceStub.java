@@ -327,7 +327,7 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	}
 
 	@Override
-	public RpcResponseDTO<Integer> countOnlineByTimestamp(Integer uid, String mac, Long timestamp) {
+	public RpcResponseDTO<Map<String, String>> countOnlineByTimestamp(Integer uid, String mac, Long timestamp) {
 		return deviceURouterRestRpcService.countOnlineByTimestamp(uid, mac, timestamp);
 	}
 

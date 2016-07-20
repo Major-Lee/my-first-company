@@ -96,9 +96,11 @@ import com.bhu.vas.business.ds.user.service.UserConfigsStateService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.ibm.icu.text.SimpleDateFormat;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
@@ -396,19 +398,27 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param timestamp
 	 * @return
 	 */
-	public RpcResponseDTO<Integer> countOnlineByTimestamp(Integer uid, String wifiId, Long timestamp){
+	public RpcResponseDTO<Map<String, String>> countOnlineByTimestamp(Integer uid, String wifiId, Long timestamp){
 		
 		try {
-			deviceFacadeService.validateUserDevice(uid, wifiId);
-			Long count = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSizeWithScore(wifiId, timestamp);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(count.intValue());
+			String[] wifiIds = wifiId.split(StringHelper.COMMA_STRING_GAP);
+			List<Object> counts = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSizeWithScore(wifiIds, timestamp);
+			Map<String,String> result = new HashMap<String,String>();
+			
+			int index = 0;
+			for (Object count : counts) {
+				result.put(wifiIds[index], count.toString());
+				index++;
+			}
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		} catch (BusinessI18nCodeException bex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}
 	}
 	
 	/**
-	 * 是否是主网络终端
+	 * 是否是访客网络终端
 	 * @param vapName
 	 * @return
 	 */
@@ -416,7 +426,7 @@ public class DeviceURouterRestBusinessFacadeService {
 		boolean flag = false;
 		String vapName = dto.getVapname();
 		if (vapName !=null) {
-			if (vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN0) || vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN10)) {
+			if (!vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN3) && !vapName.equals(HandsetDeviceDTO.VAPNAME_WLAN13)) {
 				flag = true;
 			}
 		}
@@ -2106,7 +2116,6 @@ public class DeviceURouterRestBusinessFacadeService {
 			URouterVisitorDetailVTO detailVTO = null;
 			int cursor = 0;
 			for (Tuple tuple : presents) {
-
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);

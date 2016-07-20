@@ -35,7 +35,11 @@
             <artifactId>zkclient</artifactId>
         </dependency>  
             --> 
-           
+           <dependency>
+			    <groupId>org.slf4j</groupId>
+			    <artifactId>slf4j-api</artifactId>
+			    <version>1.7.6</version>
+			</dependency>
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
@@ -86,7 +90,7 @@
                             -->
                             <classpathPrefix>../lib/</classpathPrefix>
                             <!-- Specifies the main class of the application -->
-                            <mainClass>com.bhu.business.BackendCommdityMain</mainClass>
+                            <mainClass>com.bhu.vas.business.backend.terminalstatus.BackendTerminalStatusMain</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>../conf/</Class-Path>

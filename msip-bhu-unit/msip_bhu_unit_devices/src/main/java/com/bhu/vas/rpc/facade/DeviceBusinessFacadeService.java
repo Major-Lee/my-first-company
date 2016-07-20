@@ -702,7 +702,7 @@ public class DeviceBusinessFacadeService {
 						this_login_at, last_login_at, newHandset,isNew4This);
 			}
 		}else{//访客网络未认证上线
-			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent(wifiId_lowerCase, dto.getMac(), 0L);
+			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addVistorOnlinePresent(wifiId, dto.getMac());
 		}
 	}
 

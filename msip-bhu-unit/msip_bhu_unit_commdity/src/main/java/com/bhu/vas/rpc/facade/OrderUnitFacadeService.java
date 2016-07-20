@@ -260,7 +260,7 @@ public class OrderUnitFacadeService {
 			Order order = orderFacadeService.createRechargeVCurrencyOrder(uid, commdityid, 
 					BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), payment_type, umactype, user_agent);
 			
-			commdityMessageService.sendOrderCreatedMessage(order.getId());
+			//commdityMessageService.sendOrderCreatedMessage(order.getId());
 			OrderRechargeVCurrencyVTO orderVto = new OrderRechargeVCurrencyVTO();
 			BeanUtils.copyProperties(order, orderVto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
@@ -377,7 +377,11 @@ public class OrderUnitFacadeService {
 			}
 			//验证商品是否合法
 			Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
-			UserWifiDevice userWifiDevice = userWifiDeviceService.getById(order.getMac());
+			
+			UserWifiDevice userWifiDevice= null;
+			if (order.getMac() != null) {
+				 userWifiDevice = userWifiDeviceService.getById(order.getMac());
+			}
 			OrderDetailDTO orderStatusDto = OrderHelper.buildOrderDetailDTO(order, commdity, userWifiDevice);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderStatusDto);
 		}catch(BusinessI18nCodeException bex){

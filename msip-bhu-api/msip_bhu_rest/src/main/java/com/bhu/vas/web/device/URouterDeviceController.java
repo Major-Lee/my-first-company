@@ -162,12 +162,12 @@ public class URouterDeviceController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) String macs,
 			@RequestParam(required = true) Long timestamp
 			) {
 		
-		RpcResponseDTO<Integer> rpcResult = 
-				deviceURouterRestRpcService.countOnlineByTimestamp(uid, mac, timestamp);
+		RpcResponseDTO<Map<String, String>> rpcResult = 
+				deviceURouterRestRpcService.countOnlineByTimestamp(uid, macs, timestamp);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

@@ -1,6 +1,7 @@
 package com.bhu.vas.web.dashboard;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,10 +34,13 @@ import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -464,6 +468,54 @@ public class DashboardController extends BaseController{
 		}finally{
 			
 		}
+	}
+	
+	/**
+	 * 非凡联盟获取交易流水
+	 * @param request
+	 * @param response
+	 * @param secretKey
+	 * @param from
+	 * @param uid
+	 * @param transmode
+	 * @param transtype
+	 * @param start_ts
+	 * @param end_ts
+	 * @param pageNo
+	 * @param pageSize
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/wallet/logs/fetch",method={RequestMethod.POST})
+	public void wallet_logs_fetch(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true, value="sk") String secretKey,
+			@RequestParam(required = false,defaultValue="feifan") String from,
+			@RequestParam(required = true) Integer uid,
+            @RequestParam(required = false,defaultValue = "SDP") String transmode,
+            @RequestParam(required = false,defaultValue = "P2C") String transtype,
+            @RequestParam(required = true) Long start_ts,
+            @RequestParam(required = true) Long end_ts,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
+    		) {
+		
+		ResponseError validateError = validateThirdpartiesFetch(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+    	validateError = ValidateService.validatePageSize(pageSize);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		RpcResponseDTO<TailPage<UserWalletLogFFVTO>> rpcResult = userWalletRpcService.pageUserWalletlogsByFeifan(uid,
+				transmode, transtype, new Date(start_ts), new Date(end_ts), pageNo, pageSize);
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 	}
 	
 	/**

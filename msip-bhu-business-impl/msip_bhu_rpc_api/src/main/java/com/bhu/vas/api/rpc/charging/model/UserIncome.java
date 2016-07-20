@@ -6,6 +6,7 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 public class UserIncome extends BaseStringModel{
 	private int uid;
 	private String time;
+	private int times;
 	private String income;
 	public String getTime() {
 		return time;
@@ -24,6 +25,12 @@ public class UserIncome extends BaseStringModel{
 	}
 	public void setUid(int uid) {
 		this.uid = uid;
+	}
+	public int getTimes() {
+		return times;
+	}
+	public void setTimes(int times) {
+		this.times = times;
 	}
 	
 	

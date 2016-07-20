@@ -34,10 +34,8 @@ public class Step00ReadSimulateLogService {
 	private static String hashFileMatchTemplate = "%s.business-reporting.zip";
 	@SuppressWarnings("unchecked")
 	public void parser(String date,String logpath){
-		//String date = "2015-10-17";
 		String wildcard = String.format(hashFileMatchTemplate,date);
-		//System.out.println(String.format("%04d", i));
-		Collection<File> listFiles = FileUtils.listFiles(new File(logpath),//"/BHUData/bulogs/charginglogs-a/"), 
+		Collection<File> listFiles = FileUtils.listFiles(new File(logpath),
 				new WildcardFileFilter(wildcard), 
 		        new IOFileFilter() {
                     public boolean accept(File file, String s) {
@@ -50,7 +48,6 @@ public class Step00ReadSimulateLogService {
 		long index = 0l;
 		
 		for(File file : listFiles){
-			System.out.println("log file :" + file.getAbsolutePath() + " start");
 			ZipFile zf = null;
 			try{
 				if(file.getName().indexOf("business-reporting") == -1) continue;
@@ -91,12 +88,10 @@ public class Step00ReadSimulateLogService {
 					}
 				}
 			}
-			System.out.println(index);
 		}
 	}
 	
 	public void processBackendActionMessage(String messagejsonHasPrefix) throws Exception{
-		//System.out.println(messagejsonHasPrefix);
 		ActionMode actionType = ActionBuilder.determineActionType(messagejsonHasPrefix);
 	    if(actionType == null)
 	    	throw new UnsupportedOperationException(messagejsonHasPrefix+" message can not be parsed!");
@@ -122,6 +117,7 @@ public class Step00ReadSimulateLogService {
 	    		processHandsetSync(message);
 	    		break;	
 	    	default:
+	    		System.out.println("default");
 	    		//throw new UnsupportedOperationException(actType.getCname()+" message not yet implement handler process!");
 	    }
 	}
@@ -160,7 +156,6 @@ public class Step00ReadSimulateLogService {
 	
 	private void processHandsetOffline(String message){
 		HandsetOfflineAction dto = JsonHelper.getDTO(message, HandsetOfflineAction.class);
-		System.out.println("mac :"+dto.getHmac());
 		String handsetOnline = businessCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
 		if(handsetOnline != null || handsetOnline != ""){
 			HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
@@ -169,7 +164,7 @@ public class Step00ReadSimulateLogService {
 			dto.setHname(onlineDto.getHname());
 		}
 		
-		dto.setEndTs(dto.getTs());
+		dto.setEnd_ts(dto.getTs());
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
@@ -184,7 +179,7 @@ public class Step00ReadSimulateLogService {
 				break;
 			case 10:
 				dto.setViptype("DX");
-				dto.setVipAcc(addMsg.getUmac_mobileno());
+				dto.setVipacc(addMsg.getUmac_mobileno());
 				break;
 
 			default:
