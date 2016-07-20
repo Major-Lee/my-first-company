@@ -807,17 +807,17 @@ public class DeviceBusinessFacadeService {
 //		clearDeviceVisitorList(mac);
 		//清除wifi设备对应handset统一在线列表redis
 		clearDeviceHandsetUnitList(mac);
-		
-		if((dtos != null && !dtos.isEmpty()) || dtos.get(0).getMac() != null){
+		System.out.println("**************clean all****************");
+		if((dtos != null && !dtos.isEmpty()) && dtos.get(0).getMac() != null){
 			List<String> allIds = new ArrayList<String>();
 			//过滤访客网络，默认网络下的终端
-			List<HandsetDeviceDTO> defaultWlanDTOs = new ArrayList<HandsetDeviceDTO>();
+//			List<HandsetDeviceDTO> defaultWlanDTOs = new ArrayList<HandsetDeviceDTO>();
 			for(HandsetDeviceDTO dto : dtos){
 					String lowerCaseMac = dto.getMac().toLowerCase();
 					allIds.add(lowerCaseMac);
-					if(!isVisitorWifi(ctx, dto)) {
-						defaultWlanDTOs.add(dto);
-					}
+//					if(!isVisitorWifi(ctx, dto)) {
+//						defaultWlanDTOs.add(dto);
+//					}
 			}
 			//1
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(mac,allIds);
@@ -956,7 +956,6 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void taskQueryDeviceTerminalsNotify(String ctx, Document doc, QuerySerialReturnDTO serialDto, 
 			String wifiId, long taskid){
-		System.out.println("******************wlan_status**********************");
 		List<WifiDeviceTerminalDTO> terminals = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
 		/*if(CMDBuilder.auto_special_query_commercial_terminals_taskid_fragment.wasInFragment(taskid)){
 			//TODO:特殊处理商业wifi终端在线列表
@@ -983,7 +982,6 @@ public class DeviceBusinessFacadeService {
 			//for(HandsetDeviceDTO handset : handsets){
 			
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId, hdIds);
-			System.out.println("-------------------------wlanstatus----------------------");
 			for(int cursor = 0; cursor<terminals.size();cursor++){
 				WifiDeviceTerminalDTO terminal = terminals.get(cursor);
 				//判断是否在黑名单中
@@ -1053,9 +1051,6 @@ public class DeviceBusinessFacadeService {
 					handset.setTx_bytes(terminal.getTx_bytes());
 					handset.setData_tx_rate(terminal.getData_tx_rate() == null ? 0+"":terminal.getData_tx_rate());
 					handset.setData_rx_rate(terminal.getData_rx_rate() == null ? 0+"":terminal.getData_rx_rate());
-					System.out.println(terminal.getData_tx_rate());
-					System.out.println(terminal.getData_rx_rate());
-					System.out.println("**************************");
 				}
 				//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121 很频繁
 				//HandsetStorageFacadeService.wifiDeviceHandsetOnline(wifiId, terminal.getMac(), this_login_at);
@@ -1074,7 +1069,6 @@ public class DeviceBusinessFacadeService {
 	 * @param taskid
 	 */
 	public void taskQueryDeviceTerminals(String ctx, String response, String wifiId, long taskid){
-		System.out.println("******************wlan_status**********************");
 		Document doc = RPCMessageParseHelper.parserMessage(response);
 		List<WifiDeviceTerminalDTO> terminals = RPCMessageParseHelper.generateDTOFromQueryDeviceTerminals(doc);
 		/*if(CMDBuilder.auto_special_query_commercial_terminals_taskid_fragment.wasInFragment(taskid)){
@@ -1102,7 +1096,6 @@ public class DeviceBusinessFacadeService {
 			//for(HandsetDeviceDTO handset : handsets){
 			
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId, hdIds);
-			System.out.println("-------------------------wlanstatus----------------------");
 			for(int cursor = 0; cursor<terminals.size();cursor++){
 				WifiDeviceTerminalDTO terminal = terminals.get(cursor);
 				//判断是否在黑名单中
@@ -1172,9 +1165,6 @@ public class DeviceBusinessFacadeService {
 					handset.setTx_bytes(terminal.getTx_bytes());
 					handset.setData_tx_rate(terminal.getData_tx_rate() == null ? 0+"":terminal.getData_tx_rate());
 					handset.setData_rx_rate(terminal.getData_rx_rate() == null ? 0+"":terminal.getData_rx_rate());
-					System.out.println(terminal.getData_tx_rate());
-					System.out.println(terminal.getData_rx_rate());
-					System.out.println("**************************");
 				}
 				//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121 很频繁
 				//HandsetStorageFacadeService.wifiDeviceHandsetOnline(wifiId, terminal.getMac(), this_login_at);
