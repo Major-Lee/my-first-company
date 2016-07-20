@@ -811,14 +811,14 @@ public class DeviceBusinessFacadeService {
 		if((dtos != null && !dtos.isEmpty()) || dtos.get(0).getMac() != null){
 			List<String> allIds = new ArrayList<String>();
 			//过滤访客网络，默认网络下的终端
-//			List<HandsetDeviceDTO> defaultWlanDTOs = new ArrayList<HandsetDeviceDTO>();
-//			for(HandsetDeviceDTO dto : dtos){
-//					String lowerCaseMac = dto.getMac().toLowerCase();
-//					allIds.add(lowerCaseMac);
-//					if(!isVisitorWifi(ctx, dto)) {
-//						defaultWlanDTOs.add(dto);
-//					}
-//			}
+			List<HandsetDeviceDTO> defaultWlanDTOs = new ArrayList<HandsetDeviceDTO>();
+			for(HandsetDeviceDTO dto : dtos){
+					String lowerCaseMac = dto.getMac().toLowerCase();
+					allIds.add(lowerCaseMac);
+					if(!isVisitorWifi(ctx, dto)) {
+						defaultWlanDTOs.add(dto);
+					}
+			}
 			//1
 			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(mac,allIds);
 			int cursor = 0;
