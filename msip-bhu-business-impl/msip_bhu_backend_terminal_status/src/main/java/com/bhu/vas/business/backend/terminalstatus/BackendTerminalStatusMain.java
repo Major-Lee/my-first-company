@@ -3,7 +3,6 @@ package com.bhu.vas.business.backend.terminalstatus;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.business.backend.terminalstatus.asyncprocessor.service.BusinessHelper;
-import com.bhu.vas.business.backend.terminalstatus.asyncprocessor.service.PortraitMemcachedCacheService;
 import com.bhu.vas.business.backend.terminalstatus.asyncprocessor.service.Step00ReadSimulateLogService;
 import com.smartwork.msip.plugins.hook.ShutdownHookThread;
 
@@ -17,27 +16,26 @@ public class BackendTerminalStatusMain {
 		context.start();
 		Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(context,"BackendTerminalStatusMain Server"));
 		
-		
-		PortraitMemcachedCacheService portraitMemcachedCacheService = (PortraitMemcachedCacheService)context.getBean("portraitMemcachedCacheService");
+		    
+//		PortraitMemcachedCacheService portraitMemcachedCacheService = (PortraitMemcachedCacheService)context.getBean("portraitMemcachedCacheService");
 		Step00ReadSimulateLogService step00ReadSimulateLogService = (Step00ReadSimulateLogService)context.getBean("step00ReadSimulateLogService");
 		
 
-		//upays
+		//upays   
 //		String path1 = "/BHUData/bulogs/reportinglogsnew/i1";
-//		String path2 = "/BHUData/bulogs/reportinglogsnew/i2";
+//		String path2 = "/BHUData/bulogs/reportinglogsnew/i2";    
 //		String path1 = "E:/onORoff/i1";
 //		String path2 = "E:/onORoff/i2";
-		
+//		
 //		Vivi_portrait
 		String path1 = "/BHUData/bulogs/reporterlogsnew/i1";
 		String path2 = "/BHUData/bulogs/reporterlogsnew/i2";
 		
 		String date = BusinessHelper.getCurrentPreviousMinuteString(2);
-		portraitMemcachedCacheService.storePortraitCacheResult("dddddddddddd", path1);
-		String ddddddddddd = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId("dddddddddddd");
-		System.out.println(ddddddddddd);
 		step00ReadSimulateLogService.parser(date, path1);
+		System.err.println(date+"path1 parser log ending ......");
 		step00ReadSimulateLogService.parser(date, path2);
+		System.err.println(date+"path2 parser log ending ,need kill this progress......");
 		System.exit(0);
 	}
 }

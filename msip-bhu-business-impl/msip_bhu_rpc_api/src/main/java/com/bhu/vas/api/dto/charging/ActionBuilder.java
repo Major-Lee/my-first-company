@@ -19,7 +19,7 @@ public class ActionBuilder {
 		ElementDownLose("DLO","缺失down，补齐"),
 		HandsetInSyncSoForceOnline("HIS","在sync列表中，强制上线"),
 		HandsetNotInSyncSoForceOffline("HNS","不在sync列表中，强制下线"),
-		;
+		;   
 		static Map<String, Hint> allHint;
 		private String key;
 		private String desc;
