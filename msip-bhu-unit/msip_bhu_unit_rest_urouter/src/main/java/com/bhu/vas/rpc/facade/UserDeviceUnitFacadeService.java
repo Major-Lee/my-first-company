@@ -43,6 +43,7 @@ import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -424,7 +425,7 @@ public class UserDeviceUnitFacadeService {
 
 				if ("1".equals(wifiDeviceDocument.getD_online())) {
 					userDeviceDTO.setOnline(true);
-					userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+					userDeviceDTO.setOhd_count(WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
 							.presentOnlineSize(wifiDeviceDocument.getD_mac()));
 				}
 				userDeviceDTO.setD_online(wifiDeviceDocument.getD_online());

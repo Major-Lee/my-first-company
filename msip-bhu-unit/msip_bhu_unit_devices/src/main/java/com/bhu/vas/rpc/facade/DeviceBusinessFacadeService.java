@@ -840,10 +840,11 @@ public class DeviceBusinessFacadeService {
 //							handsetId, dto.fetchData_rx_rate_double());
 //				}
 				//
+				System.out.println("**************sync****************");
 				if (!isVisitorWithOutAuth(dto)) {
 					WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, System.currentTimeMillis());
 				}else{
-					WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, 0L);
+					WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addVistorOnlinePresent(mac, handsetId);
 				}
 				//修改为redis实现终端上下线日志 2015-12-11 从backend 移植过来 20160121
 				HandsetStorageFacadeService.wifiDeviceHandsetOnline(mac, dto.getMac(), dto.getTs());//wifiHandsetDeviceRelationMService.addRelation(dto.getWifiId(), dto.getMac(),new Date(dto.getLogin_ts()));
