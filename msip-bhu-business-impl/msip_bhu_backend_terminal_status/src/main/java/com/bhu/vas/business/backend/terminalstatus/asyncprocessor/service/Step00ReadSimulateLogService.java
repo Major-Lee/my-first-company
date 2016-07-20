@@ -36,7 +36,7 @@ public class Step00ReadSimulateLogService {
 	
 	@Resource
 	private PortraitMemcachedCacheService portraitMemcachedCacheService;
-	
+	   
 	private static String hashFileMatchTemplate = "%s.business-reporting.zip";
 	@SuppressWarnings("unchecked")
 	public void parser(String date,String logpath){
@@ -46,7 +46,7 @@ public class Step00ReadSimulateLogService {
 		        new IOFileFilter() {
                     public boolean accept(File file, String s) {
                         return true;
-                    }
+                    }    
                     public boolean accept(File file) {
                         return true;
                     }
@@ -54,7 +54,7 @@ public class Step00ReadSimulateLogService {
 		
 		for(File file : listFiles){
 			ZipFile zf = null;
-			try{
+			try{   
 				if(file.getName().indexOf("business-reporting") == -1) continue;
 				zf = new ZipFile(new File(file.getAbsolutePath()), ZipFile.OPEN_READ);
 				// 返回 ZIP file entries的枚举.
@@ -85,7 +85,7 @@ public class Step00ReadSimulateLogService {
 			}finally{
 				if(zf != null){
 					try {
-						zf.close();
+						zf.close();     
 						zf = null;
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -225,36 +225,48 @@ public class Step00ReadSimulateLogService {
 //		System.out.println(addMsg.getWan_ip());
 //		System.out.println(addMsg.getIp());
 		
-		
 		ICacheManager<IMemcachedCache> manager;  
-        manager = CacheUtil.getCacheManager(IMemcachedCache.class,  
-                MemcachedCacheManager.class.getName());  
+        manager = CacheUtil.getCacheManager(IMemcachedCache.class, MemcachedCacheManager.class.getName());  
         manager.setConfigFile("memcached.xml");  
         manager.start();  
         try {  
             IMemcachedCache cache = manager.getCache("default.memcached");  
-            cache.put("String", "Hekko");
-            String beanClient=(String)cache.get("String");  
-            System.out.println(beanClient);  
-            
-//            TestBean bean=new TestBean();  
-//            bean.setName("name1");  
-//            bean.setAge(25);  
-//            cache.put("bean", bean);  
-//            TestBean beanClient=(TestBean)cache.get("bean");  
-//            System.out.println(beanClient.getName());  
-//              
-//            List<TestBean> list=new ArrayList<TestBean>();  
-//            list.add(bean);  
-//            cache.put("beanList", list);  
-//            List<TestBean> listClient=(List<TestBean>)cache.get("beanList");  
-//            if(listClient.size()>0){  
-//                TestBean bean4List=listClient.get(0);  
-//                System.out.println(bean4List.getName());  
-//            }  
+            cache.put("key", "value");  
+            System.out.println(cache.get("key"));  
         } finally {  
             manager.stop();  
         }  
+		
+		
+//		ICacheManager<IMemcachedCache> manager;  
+//        manager = CacheUtil.getCacheManager(IMemcachedCache.class,  
+//                MemcachedCacheManager.class.getName());  
+//        manager.setConfigFile("memcached.xml");
+//        manager.start();  
+//        try {  
+//            IMemcachedCache cache = manager.getCache("default.memcached");  
+//            cache.put("String", "Hekko");
+//            String beanClient=(String)cache.get("String");  
+//            System.out.println(beanClient);  
+//            
+////            TestBean bean=new TestBean();  
+////            bean.setName("name1");  
+////            bean.setAge(25);  
+////            cache.put("bean", bean);  
+////            TestBean beanClient=(TestBean)cache.get("bean");  
+////            System.out.println(beanClient.getName());  
+////              
+////            List<TestBean> list=new ArrayList<TestBean>();  
+////            list.add(bean);  
+////            cache.put("beanList", list);  
+////            List<TestBean> listClient=(List<TestBean>)cache.get("beanList");  
+////            if(listClient.size()>0){  
+////                TestBean bean4List=listClient.get(0);  
+////                System.out.println(bean4List.getName());  
+////            }  
+//        } finally {  
+//            manager.stop();  
+//        }  
 		
 	}
 }
