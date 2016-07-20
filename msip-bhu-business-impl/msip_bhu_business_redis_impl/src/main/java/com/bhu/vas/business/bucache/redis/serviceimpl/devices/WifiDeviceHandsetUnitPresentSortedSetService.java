@@ -83,6 +83,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		System.out.println(this_login_at);
 		System.out.println(generateScore(this_login_at));
 		System.out.println(generateScore(this_login_at));
+		System.out.println(Locale.getDefault(Locale.Category.FORMAT));
 		System.out.println("=========================");
 		return super.zadd(generateKey(wifiId), OnlineBaseScore+generateScore(this_login_at), handsetId);
 	}
@@ -93,6 +94,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		System.out.println(timestamp);
 		System.out.println(generateScore(timestamp));
 		System.out.println(generateScore(timestamp));
+		System.out.println(Locale.getDefault(Locale.Category.FORMAT));
 		System.out.println("********************");
 		return super.pipelineZCount_diffKeyWithSameScore(generateKey(wifiIds), OnlineBaseScore+generateScore(timestamp), Long.MAX_VALUE);
 	}
