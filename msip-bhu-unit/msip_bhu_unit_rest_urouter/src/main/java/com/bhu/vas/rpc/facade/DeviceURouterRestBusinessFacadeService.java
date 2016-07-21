@@ -2103,9 +2103,6 @@ public class DeviceURouterRestBusinessFacadeService {
 			int i =0 ;
 			for(Tuple tuple : presents){
 				String mac = tuple.getElement();
-				if (mac.equals("38:bc:1a:2f:7e:2a")) {
-					System.out.println("***********get*********");
-				}
 				hd_macs.add(mac);
 				hd_macs_array[i] =mac;
 				i++;
@@ -2122,11 +2119,6 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
-				
-				if (hd_mac.equals("38:bc:1a:2f:7e:2a")) {
-					System.out.println("************so  get*************");
-				}
-				
 				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
 				if(handsetDeviceDTO != null){
 					String hostname = handsetIds.get(cursor);
@@ -2137,8 +2129,13 @@ public class DeviceURouterRestBusinessFacadeService {
 					detailVTO.setIp(handsetDeviceDTO.getIp());
 					detailVTO.setN(hostname);
 					
+					System.out.println(handsetDeviceDTO.getMac()+"************");
 					//如果是主网络或者为空，跳过
 					if (isMainNetwork(handsetDeviceDTO)) {
+						System.out.println(handsetDeviceDTO.getMac());
+						System.out.println(handsetDeviceDTO.getAction());
+						System.out.println(handsetDeviceDTO.getDhcp_name());
+						System.out.println(handsetDeviceDTO.getAuthorized());
 						cursor++;
 						continue;
 					}
@@ -2167,13 +2164,6 @@ public class DeviceURouterRestBusinessFacadeService {
 						}
 					}
 					vtos.add(detailVTO);
-					if (hd_mac.equals("38:bc:1a:2f:7e:2a")) {
-						System.out.println("**************************");
-						System.out.println(detailVTO.getHd_mac());
-						System.out.println(detailVTO.getS());
-						System.out.println(handsetDeviceDTO.getAction());
-						System.out.println(handsetDeviceDTO.getAuthorized());
-					}
 				}
 				cursor++;
 			}
