@@ -156,8 +156,10 @@
 		<typeAlias alias="userPublishAccount" type="com.bhu.vas.api.rpc.user.model.UserPublishAccount" />
 		<!--对公账号 add by dongrui 20160606 E N D -->
 		<!-- 活动运营 -->
-		<typeAlias alias="userActivity" 				type="com.bhu.vas.api.rpc.user.model.UserActivity" />
-		<!-- 活动运营 -->
+		<typeAlias alias="userActivity" 	type="com.bhu.vas.api.rpc.user.model.UserActivity" />
+		
+		<typeAlias alias="userSharedealDistributorView" 	type="com.bhu.vas.api.rpc.user.model.UserSharedealDistributorView" />
+		
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin"> 
@@ -282,7 +284,9 @@
 		<!--对公账号 add by dongrui 20160606 E N D -->
 		<!-- 活动运营 -->
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserActivity.sqlMap.xml" />
-		<!-- 活动运营 -->
+		
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSharedealDistributorView.sqlMap.xml" />
+		
 	</mappers>
 
 </configuration>
