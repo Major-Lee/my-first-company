@@ -32,6 +32,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
+import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
@@ -70,6 +71,8 @@ public class OrderUnitFacadeService {
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	
+	@Resource
+	private CommdityMessageService commdityMessageService;
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -107,6 +110,8 @@ public class OrderUnitFacadeService {
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createRewardOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
 					bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent);
+			commdityMessageService.sendOrderCreatedMessage(order.getId());
+			
 			OrderRewardVTO orderVto = new OrderRewardVTO();
 			BeanUtils.copyProperties(order, orderVto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
@@ -378,6 +383,8 @@ public class OrderUnitFacadeService {
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createSMSOrder(mac_lower, mac_dut, umac_lower, umactype, bindUser,
 					context, user_agent, spendvcurrency);
+			
+			commdityMessageService.sendOrderCreatedMessage(order.getId());
 			
 			OrderSMSVTO orderVto = new OrderSMSVTO();
 			BeanUtils.copyProperties(order, orderVto);
