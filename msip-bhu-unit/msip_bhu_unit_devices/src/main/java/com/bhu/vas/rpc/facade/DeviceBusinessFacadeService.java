@@ -807,7 +807,6 @@ public class DeviceBusinessFacadeService {
 //		clearDeviceVisitorList(mac);
 		//清除wifi设备对应handset统一在线列表redis
 		clearDeviceHandsetUnitList(mac);
-		System.out.println("**************clean all****************");
 		if((dtos != null && !dtos.isEmpty()) && dtos.get(0).getMac() != null){
 			List<String> allIds = new ArrayList<String>();
 			//过滤访客网络，默认网络下的终端
@@ -840,7 +839,6 @@ public class DeviceBusinessFacadeService {
 //							handsetId, dto.fetchData_rx_rate_double());
 //				}
 				//
-				System.out.println("**************sync****************");
 				if (!isVisitorWithOutAuth(dto)) {
 					WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent(mac, handsetId, System.currentTimeMillis());
 				}else{

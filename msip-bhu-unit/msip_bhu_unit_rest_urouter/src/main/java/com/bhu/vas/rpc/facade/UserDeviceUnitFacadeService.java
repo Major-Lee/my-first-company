@@ -485,7 +485,7 @@ public class UserDeviceUnitFacadeService {
 							}
 							if ("1".equals(wifiDeviceDocument.getD_online())) {
 								userDeviceDTO.setOnline(true);
-								userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+								userDeviceDTO.setOhd_count(WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
 										.presentOnlineSize(wifiDeviceDocument.getD_mac()));
 							}
 							userDeviceDTO.setD_online(wifiDeviceDocument.getD_online());
@@ -880,7 +880,7 @@ public class UserDeviceUnitFacadeService {
 						vtos = Collections.emptyList();
 					} else {
 						List<String> macs = WifiDeviceDocumentHelper.generateDocumentIds(searchDocuments);
-						List<Object> ohd_counts = WifiDeviceHandsetPresentSortedSetService.getInstance()
+						List<Object> ohd_counts = WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
 								.presentOnlineSizes(macs);
 						List<String> d_linkmodes = WifiDeviceModeStatusService.getInstance().getPresents(macs);
 						UserDeviceCloudDTO vto = null;

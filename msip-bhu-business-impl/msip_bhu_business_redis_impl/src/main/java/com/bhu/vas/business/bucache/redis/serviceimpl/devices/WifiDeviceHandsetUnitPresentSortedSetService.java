@@ -1,8 +1,6 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +10,6 @@ import java.util.Set;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
-import com.ibm.icu.text.SimpleDateFormat;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
@@ -72,6 +69,18 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return macs;
 	}
 	
+	private static String[] generateKeys(List<String> wifiIds){
+		if(wifiIds == null || wifiIds.isEmpty()) return null;
+		String[] keys = new String[wifiIds.size()];
+		int cursor = 0;
+		for(String wifiId : wifiIds){
+			keys[cursor] = generateKey(wifiId);
+			cursor++;
+		}
+		return keys;
+	}
+	
+	
 	//生成score值，为当前终端上线时间  年月日时分
 	private static double generateScore(long login_at){
 		return Double.parseDouble(DateTimeHelper.formatDate(new Date(login_at),OnlineDatePattern));
@@ -86,13 +95,6 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	}
 	
 	public List<Object> presentOnlineSizeWithScore(String[] wifiIds,long timestamp){
-		System.out.println("********************");
-		System.out.println(timestamp);
-		System.out.println(timestamp);
-		System.out.println(generateScore(timestamp));
-		System.out.println(generateScore(timestamp));
-		System.out.println(Locale.getDefault(Locale.Category.FORMAT));
-		System.out.println("********************");
 		return super.pipelineZCount_diffKeyWithSameScore(generateKey(wifiIds), OnlineBaseScore+generateScore(timestamp), Long.MAX_VALUE);
 	}
 	
@@ -107,6 +109,11 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	 */
 	public Long presentOnlineSize(String wifiId){
 		return super.zcount(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE);
+	}
+	
+	public List<Object> presentOnlineSizes(List<String> wifiIds){
+		if(wifiIds == null || wifiIds.isEmpty()) return null;
+		return super.pipelineZCount_diffKeyWithSameScore(generateKeys(wifiIds), OnlineBaseScore, Long.MAX_VALUE);
 	}
 	/**
 	 * 获取该设备的离线终端数量

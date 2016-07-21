@@ -207,7 +207,7 @@ public class DeviceURouterRestBusinessFacadeService {
 //			if(!StringUtils.isEmpty(power)){
 //				vto.setPower(Integer.parseInt(power));
 //			}
-			vto.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId));
+			vto.setOhd_count(WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSize(wifiId));
 			//vto.setWd_date_rx_rate(device_entity.getData_rx_rate());
 			//vto.setData_rx_rate_peak(device_entity.getData_rx_rate());
 			
@@ -2226,7 +2226,7 @@ public class DeviceURouterRestBusinessFacadeService {
 							}
 							if (OnlineEnum.Online.getType().equals(wifiDeviceDocument.getD_online())) {
 								userDeviceDTO.setOnline(true);
-								userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+								userDeviceDTO.setOhd_count(WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
 										.presentOnlineSize(wifiDeviceDocument.getD_mac()));
 							}
 							userDeviceDTO.setD_online(wifiDeviceDocument.getD_online());
