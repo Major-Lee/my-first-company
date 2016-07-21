@@ -19,7 +19,7 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<OrderStatusDTO> orderStatusByUmac(String umac, String orderid);
 	
 	public RpcResponseDTO<TailPage<OrderRewardVTO>> rewardOrderPages(Integer uid, String mac, String umac, 
-			Integer status, String dut, int pageNo, int pageSize);
+			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize);
 	
 	public RpcResponseDTO<RewardOrderStatisticsVTO> rewardOrderStatisticsBetweenDate(String start_date, String end_date);
 	
@@ -41,6 +41,6 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<TailPage<OrderSMSVTO>> smsOrderPages(Integer uid, String mac, String umac, 
 			Integer status, String dut, int pageNo, int pageSize);
 
-	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid, long start_created_ts);
+	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid);
 
 }

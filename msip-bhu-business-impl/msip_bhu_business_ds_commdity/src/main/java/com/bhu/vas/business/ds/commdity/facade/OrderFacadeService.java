@@ -89,7 +89,7 @@ public class OrderFacadeService {
 	 * @param type 订单类型
 	 */
 	public int countOrderByParams(Integer uid, String mac, String umac, Integer status, String dut, 
-			Integer type, long start_created_ts){
+			Integer type, long start_created_ts, long end_created_ts){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		criteria
@@ -110,6 +110,9 @@ public class OrderFacadeService {
 		if(start_created_ts > 0){
 			criteria.andColumnGreaterThanOrEqualTo("created_at", new Date(start_created_ts));
 		}
+		if(end_created_ts > 0){
+			criteria.andColumnLessThanOrEqualTo("created_at", new Date(end_created_ts));
+		}
 		return orderService.countByModelCriteria(mc);
 	}
 	
@@ -127,7 +130,7 @@ public class OrderFacadeService {
 	 * @return
 	 */
 	public List<Order> findOrdersByParams(Integer uid, String mac, String umac, Integer status, String dut, 
-			Integer type, int pageNo, int pageSize){
+			Integer type, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		criteria
@@ -144,6 +147,12 @@ public class OrderFacadeService {
 		}
 		if(type != null){
 			criteria.andColumnEqualTo("type", type);
+		}
+		if(start_created_ts > 0){
+			criteria.andColumnGreaterThanOrEqualTo("created_at", new Date(start_created_ts));
+		}
+		if(end_created_ts > 0){
+			criteria.andColumnLessThanOrEqualTo("created_at", new Date(end_created_ts));
 		}
 		mc.setOrderByClause("created_at desc");
 		mc.setPageNumber(pageNo);

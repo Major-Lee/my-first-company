@@ -31,6 +31,7 @@ import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
@@ -413,7 +414,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 					}else{
 						List<String> macs = WifiDeviceDocumentHelper.generateDocumentIds(searchDocuments);
 						List<WifiDeviceSharedNetwork> deviceConfs = sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().findByIds(macs, true, true);
-						List<Object> ohd_counts = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSizes(macs);
+						List<Object> ohd_counts = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSizes(macs);
 						
 						vtos = new ArrayList<SharedNetworkDeviceDTO>();
 						SharedNetworkDeviceDTO vto = null;

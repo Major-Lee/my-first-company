@@ -1,8 +1,6 @@
 package com.bhu.vas.business.backend.terminalstatus.asyncprocessor.service;
 
 import java.beans.PropertyEditorSupport;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -16,8 +14,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import com.smartwork.msip.localunit.RandomPicker;
-
-import sun.misc.BASE64Decoder;
 
 /**
  * 
@@ -36,10 +32,10 @@ public class BusinessHelper extends PropertyEditorSupport {
 	private static SimpleDateFormat yyyy = new SimpleDateFormat("yyyy");
 	// 各种时间格式
 	public static final SimpleDateFormat date_sdf = new SimpleDateFormat(
-			"yyyy-MM-dd");
-	// 各种时间格式
+			"yyyy-MM-dd");        
+	// 各种时间格式       
 	public static final SimpleDateFormat yyyyMMdd = new SimpleDateFormat(
-			"yyyyMMdd");
+			"yyyyMMdd");   
 	// 各种时间格式
 	public static final SimpleDateFormat date_sdf_wz = new SimpleDateFormat(
 			"yyyy年MM月dd日");

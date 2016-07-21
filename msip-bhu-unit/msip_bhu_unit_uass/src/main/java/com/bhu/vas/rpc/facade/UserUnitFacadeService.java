@@ -520,6 +520,7 @@ public class UserUnitFacadeService {
 			}else{
 				rpcPayload.put("rn_on", Boolean.TRUE);
 			}
+			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

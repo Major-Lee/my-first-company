@@ -1,4 +1,4 @@
-package com.bhu.vas.rpc.facade;
+﻿package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -207,7 +207,7 @@ public class DeviceURouterRestBusinessFacadeService {
 //			if(!StringUtils.isEmpty(power)){
 //				vto.setPower(Integer.parseInt(power));
 //			}
-			vto.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiId));
+			vto.setOhd_count(WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOnlineSize(wifiId));
 			//vto.setWd_date_rx_rate(device_entity.getData_rx_rate());
 			//vto.setData_rx_rate_peak(device_entity.getData_rx_rate());
 			
@@ -418,7 +418,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	}
 	
 	/**
-	 * 是否是访客网络终端
+	 * 是否是主网络终端
 	 * @param vapName
 	 * @return
 	 */
@@ -2103,6 +2103,9 @@ public class DeviceURouterRestBusinessFacadeService {
 			int i =0 ;
 			for(Tuple tuple : presents){
 				String mac = tuple.getElement();
+				if (mac.equals("38:bc:1a:2f:7e:2a")) {
+					System.out.println("***********get*********");
+				}
 				hd_macs.add(mac);
 				hd_macs_array[i] =mac;
 				i++;
@@ -2119,6 +2122,10 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO = new URouterVisitorDetailVTO();
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
+				
+				if (hd_mac.equals("38:bc:1a:2f:7e:2a")) {
+					System.out.println("************so  get*************");
+				}
 				
 				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
 				if(handsetDeviceDTO != null){
@@ -2139,8 +2146,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					if (handsetDeviceDTO.getAction().equals(HandsetDeviceDTO.Action_Online)) {
 						if (StringHelper.TRUE.equals(handsetDeviceDTO.getAuthorized())) {
 							detailVTO.setS(AuthOnline);
-						}
-						if (StringHelper.FALSE.equals(handsetDeviceDTO.getAuthorized())) {
+						}else{
 							detailVTO.setS(Online);
 						}
 					}
@@ -2151,8 +2157,13 @@ public class DeviceURouterRestBusinessFacadeService {
 					}
 				}
 				
-				//如果不是获取所有类型终端，判断需要的类型
+
 				if (detailVTO != null) {
+
+					if (!type.equals(All)) {
+						if (detailVTO.getS() == null || !detailVTO.getS().equals(type)) {
+
+					//如果不是获取所有类型终端，判断需要的类型
 					if (!type.equals(All)) {
 						if (detailVTO.getS() == null || !detailVTO.getS().equals(type)) {
 							cursor++;
@@ -2160,6 +2171,13 @@ public class DeviceURouterRestBusinessFacadeService {
 						}
 					}
 					vtos.add(detailVTO);
+					if (hd_mac.equals("38:bc:1a:2f:7e:2a")) {
+						System.out.println("**************************");
+						System.out.println(detailVTO.getHd_mac());
+						System.out.println(detailVTO.getS());
+						System.out.println(handsetDeviceDTO.getAction());
+						System.out.println(handsetDeviceDTO.getAuthorized());
+					}
 				}
 				cursor++;
 			}
@@ -2226,7 +2244,7 @@ public class DeviceURouterRestBusinessFacadeService {
 							}
 							if (OnlineEnum.Online.getType().equals(wifiDeviceDocument.getD_online())) {
 								userDeviceDTO.setOnline(true);
-								userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+								userDeviceDTO.setOhd_count(WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
 										.presentOnlineSize(wifiDeviceDocument.getD_mac()));
 							}
 							userDeviceDTO.setD_online(wifiDeviceDocument.getD_online());
