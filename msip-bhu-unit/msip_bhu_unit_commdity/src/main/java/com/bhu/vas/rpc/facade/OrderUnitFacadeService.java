@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +38,7 @@ import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserQueryDateHashService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -489,16 +491,29 @@ public class OrderUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid, long start_created_ts) {
+	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid) {
 		try{
+			
+			String str = UserQueryDateHashService.getInstance().fetchLastQueryData(uid);
+			long timestamp = 0L;
+			if (str != null) {
+				timestamp = Long.parseLong(str);
+			}
+			
+			if (timestamp == 0) {
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.DATE, -1);
+				timestamp = cal.getTimeInMillis();
+			}
+			
 			OrderRewardNewlyDataVTO vto = null;
-			if(start_created_ts > 0){
-				vto = orderFacadeService.rewardOrderNewlyDataWithProcedure(uid, new Date(start_created_ts));
+			if(timestamp > 0){
+				vto = orderFacadeService.rewardOrderNewlyDataWithProcedure(uid, new Date(timestamp));
 			}else{
 				vto = new OrderRewardNewlyDataVTO();
 			}
-//			int count = orderFacadeService.countOrderByParams(uid, null, null, status, 
-//					null, CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts);
+			
+			UserQueryDateHashService.getInstance().addQueryData(uid, System.currentTimeMillis());
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){

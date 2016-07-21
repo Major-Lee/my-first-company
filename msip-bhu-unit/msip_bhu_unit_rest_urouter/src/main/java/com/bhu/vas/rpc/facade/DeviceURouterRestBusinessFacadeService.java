@@ -418,7 +418,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	}
 	
 	/**
-	 * 是否是访客网络终端
+	 * 是否是主网络终端
 	 * @param vapName
 	 * @return
 	 */
@@ -2139,8 +2139,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					if (handsetDeviceDTO.getAction().equals(HandsetDeviceDTO.Action_Online)) {
 						if (StringHelper.TRUE.equals(handsetDeviceDTO.getAuthorized())) {
 							detailVTO.setS(AuthOnline);
-						}
-						if (StringHelper.FALSE.equals(handsetDeviceDTO.getAuthorized())) {
+						}else{
 							detailVTO.setS(Online);
 						}
 					}
@@ -2151,8 +2150,9 @@ public class DeviceURouterRestBusinessFacadeService {
 					}
 				}
 				
-				//如果不是获取所有类型终端，判断需要的类型
+
 				if (detailVTO != null) {
+					//如果不是获取所有类型终端，判断需要的类型
 					if (!type.equals(All)) {
 						if (detailVTO.getS() == null || !detailVTO.getS().equals(type)) {
 							cursor++;

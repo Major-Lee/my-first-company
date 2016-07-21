@@ -41,6 +41,6 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<TailPage<OrderSMSVTO>> smsOrderPages(Integer uid, String mac, String umac, 
 			Integer status, String dut, int pageNo, int pageSize);
 
-	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid, long start_created_ts);
+	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid);
 
 }

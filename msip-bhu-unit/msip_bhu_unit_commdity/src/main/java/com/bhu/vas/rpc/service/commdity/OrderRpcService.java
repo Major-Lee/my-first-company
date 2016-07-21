@@ -82,9 +82,9 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid, long start_created_ts) {
-		logger.info(String.format("rewardCountTimeByUid with uid[%s] start_created_ts[%s]", uid, start_created_ts));
-		return orderUnitFacadeService.rewardOrderNewlyDataByUid(uid, start_created_ts);
+	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid) {
+		logger.info(String.format("rewardCountTimeByUid with uid[%s]", uid));
+		return orderUnitFacadeService.rewardOrderNewlyDataByUid(uid);
 	}
 	
 	@Override
@@ -110,6 +110,4 @@ public class OrderRpcService implements IOrderRpcService{
 		logger.info(String.format("orderDetailByUid with uid[%s] orderid[%s]", uid, orderid));
 		return orderUnitFacadeService.orderDetailByUid(uid, orderid);
 	}
-	
-
 }

@@ -396,11 +396,10 @@ public class OrderController extends BaseController{
 	public void reward_newly_data(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) long start_created_ts
+			@RequestParam(required = true) Integer uid
 			) {
 
-		RpcResponseDTO<OrderRewardNewlyDataVTO> rpcResult = orderRpcService.rewardOrderNewlyDataByUid(uid, start_created_ts);
+		RpcResponseDTO<OrderRewardNewlyDataVTO> rpcResult = orderRpcService.rewardOrderNewlyDataByUid(uid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
