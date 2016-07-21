@@ -15,7 +15,7 @@ public class TerminalStatusNotifyLogger {
 	}
 	
 	
-	public static void main(String[] argv){
+	public static void main(String[] argv){   
 	     
 		TerminalStatusNotifyLogger.doTerminalStatusMessageLog("qqqqqqqqqqqqqqq");
 		//BusinessStatisticsLogger.doSignedLog(100097, System.currentTimeMillis(), System.currentTimeMillis());

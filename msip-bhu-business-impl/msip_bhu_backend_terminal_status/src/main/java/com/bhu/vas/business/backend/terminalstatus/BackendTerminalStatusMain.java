@@ -4,6 +4,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.business.backend.terminalstatus.asyncprocessor.service.BusinessHelper;
 import com.bhu.vas.business.backend.terminalstatus.asyncprocessor.service.Step00ReadSimulateLogService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.plugins.hook.ShutdownHookThread;
 
 public class BackendTerminalStatusMain {
@@ -32,10 +33,18 @@ public class BackendTerminalStatusMain {
 		String path2 = "/BHUData/bulogs/reporterlogsnew/i2";
 		
 		String date = BusinessHelper.getCurrentPreviousMinuteString(2);
+		System.out.println(DateTimeHelper.getDateTime()+"do   "+date+"   path1 parser log starting ......");
+		 long starTime=System.currentTimeMillis();
 		step00ReadSimulateLogService.parser(date, path1);
-		System.err.println(date+"path1 parser log ending ......");
+		long endTime=System.currentTimeMillis();
+		long Time=endTime-starTime;
+		System.out.println(Time+"second do "+date+"  path1 parser log ending ......");
+		System.out.println(DateTimeHelper.getDateTime()+"do   "+date+"   path2 parser log starting ......");
+		starTime=System.currentTimeMillis();
 		step00ReadSimulateLogService.parser(date, path2);
-		System.err.println(date+"path2 parser log ending ,need kill this progress......");
+		endTime=System.currentTimeMillis();
+		Time=endTime-starTime;
+		System.out.println(Time+"second do "+date+"  path2 parser log ending.....");
 		System.exit(0);
 	}
 }

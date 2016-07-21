@@ -8,7 +8,8 @@
 	<!-- <Property name="status.base" 	value="E:/logs/" />
 	<Property name="final.base" 	value="E:/log/" /> -->
 	<jmxConfigurator />
-	  
+	<timestamp key="curTime" datePattern="yyyyMMddHHmmss"/>
+	
 	<!-- 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
@@ -16,9 +17,9 @@
 		</layout>
 	</appender> -->
 
-		<timestamp key="bySecond" datePattern="yyyyMMddHHmmss"/> 
+	 
 	<appender name="logfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<File>${status.base}${bySecond}.business-reporting</File>
+		<File>${status.base}${curTime}.business-reporting</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<FileNamePattern>${final.base}business-reporting.%d{yyyyMMddHHmmss}</FileNamePattern>
 			<MaxHistory>60</MaxHistory>

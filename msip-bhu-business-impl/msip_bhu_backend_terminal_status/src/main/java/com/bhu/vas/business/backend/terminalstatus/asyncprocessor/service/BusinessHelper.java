@@ -33,7 +33,7 @@ public class BusinessHelper extends PropertyEditorSupport {
 	// 各种时间格式
 	public static final SimpleDateFormat date_sdf = new SimpleDateFormat(
 			"yyyy-MM-dd");        
-	// 各种时间格式    
+	// 各种时间格式       
 	public static final SimpleDateFormat yyyyMMdd = new SimpleDateFormat(
 			"yyyyMMdd");   
 	// 各种时间格式

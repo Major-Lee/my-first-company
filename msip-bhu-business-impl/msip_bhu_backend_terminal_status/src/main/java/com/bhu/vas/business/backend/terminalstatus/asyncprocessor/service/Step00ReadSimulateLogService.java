@@ -88,7 +88,6 @@ public class Step00ReadSimulateLogService {
 						zf.close();     
 						zf = null;
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -236,37 +235,5 @@ public class Step00ReadSimulateLogService {
         } finally {  
             manager.stop();  
         }  
-		
-		
-//		ICacheManager<IMemcachedCache> manager;  
-//        manager = CacheUtil.getCacheManager(IMemcachedCache.class,  
-//                MemcachedCacheManager.class.getName());  
-//        manager.setConfigFile("memcached.xml");
-//        manager.start();  
-//        try {  
-//            IMemcachedCache cache = manager.getCache("default.memcached");  
-//            cache.put("String", "Hekko");
-//            String beanClient=(String)cache.get("String");  
-//            System.out.println(beanClient);  
-//            
-////            TestBean bean=new TestBean();  
-////            bean.setName("name1");  
-////            bean.setAge(25);  
-////            cache.put("bean", bean);  
-////            TestBean beanClient=(TestBean)cache.get("bean");  
-////            System.out.println(beanClient.getName());  
-////              
-////            List<TestBean> list=new ArrayList<TestBean>();  
-////            list.add(bean);  
-////            cache.put("beanList", list);  
-////            List<TestBean> listClient=(List<TestBean>)cache.get("beanList");  
-////            if(listClient.size()>0){  
-////                TestBean bean4List=listClient.get(0);  
-////                System.out.println(bean4List.getName());  
-////            }  
-//        } finally {  
-//            manager.stop();  
-//        }  
-		
 	}
 }
