@@ -2129,13 +2129,8 @@ public class DeviceURouterRestBusinessFacadeService {
 					detailVTO.setIp(handsetDeviceDTO.getIp());
 					detailVTO.setN(hostname);
 					
-					System.out.println(handsetDeviceDTO.getMac()+"************");
 					//如果是主网络或者为空，跳过
 					if (isMainNetwork(handsetDeviceDTO)) {
-						System.out.println(handsetDeviceDTO.getMac());
-						System.out.println(handsetDeviceDTO.getAction());
-						System.out.println(handsetDeviceDTO.getDhcp_name());
-						System.out.println(handsetDeviceDTO.getAuthorized());
 						cursor++;
 						continue;
 					}
