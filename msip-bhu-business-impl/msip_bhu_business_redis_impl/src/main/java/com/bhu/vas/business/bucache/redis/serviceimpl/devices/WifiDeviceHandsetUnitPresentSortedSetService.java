@@ -44,7 +44,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	//在线初始score数值 100亿 
 	public static final double OnlineBaseScore = 10000000000d;
-	public static final double VisitorOnlineBaseScore = 0d;
+	public static final double VisitorOnlineBaseScore = 0L;
 	
 	public static final String OnlineDatePattern = "MMddHHmm";
 	private WifiDeviceHandsetUnitPresentSortedSetService(){
@@ -206,7 +206,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	public Set<Tuple> fetchAllPresentWithScores(String wifiId,int start,int size){
 		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
-		return super.zrevrangeByScoreWithScores(generateKey(wifiId), VisitorOnlineBaseScore, Long.MAX_VALUE, start, size);
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 0L, Long.MAX_VALUE, start, size);
 	}
 	
 	public Set<Tuple> fetchPresentWithScores(String wifiId,int start,int size){

@@ -2103,6 +2103,9 @@ public class DeviceURouterRestBusinessFacadeService {
 			int i =0 ;
 			for(Tuple tuple : presents){
 				String mac = tuple.getElement();
+				if (mac.equals("38:bc:1a:2f:7e:2a")) {
+					System.out.println("***********get*********");
+				}
 				hd_macs.add(mac);
 				hd_macs_array[i] =mac;
 				i++;
@@ -2121,7 +2124,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				detailVTO.setHd_mac(hd_mac);
 				
 				if (hd_mac.equals("38:bc:1a:2f:7e:2a")) {
-					System.out.println("**************************");
+					System.out.println("************so  get*************");
 				}
 				
 				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
