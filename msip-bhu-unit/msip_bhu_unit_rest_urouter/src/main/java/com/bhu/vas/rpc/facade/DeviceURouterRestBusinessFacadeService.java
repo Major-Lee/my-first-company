@@ -2120,6 +2120,10 @@ public class DeviceURouterRestBusinessFacadeService {
 				String hd_mac = tuple.getElement();
 				detailVTO.setHd_mac(hd_mac);
 				
+				if (hd_mac.equals("38:bc:1a:2f:7e:2a")) {
+					System.out.println("**************************");
+				}
+				
 				HandsetDeviceDTO handsetDeviceDTO = handsets.get(cursor);
 				if(handsetDeviceDTO != null){
 					String hostname = handsetIds.get(cursor);
@@ -2160,6 +2164,13 @@ public class DeviceURouterRestBusinessFacadeService {
 						}
 					}
 					vtos.add(detailVTO);
+					if (hd_mac.equals("38:bc:1a:2f:7e:2a")) {
+						System.out.println("**************************");
+						System.out.println(detailVTO.getHd_mac());
+						System.out.println(detailVTO.getS());
+						System.out.println(handsetDeviceDTO.getAction());
+						System.out.println(handsetDeviceDTO.getAuthorized());
+					}
 				}
 				cursor++;
 			}
