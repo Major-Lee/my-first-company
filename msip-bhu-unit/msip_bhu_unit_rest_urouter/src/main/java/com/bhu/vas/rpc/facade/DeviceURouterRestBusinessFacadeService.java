@@ -2106,6 +2106,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				hd_macs.add(mac);
 				hd_macs_array[i] =mac;
 				i++;
+				System.out.println("******** "+mac+" *******");
 			}
 
 			List<URouterVisitorDetailVTO> vtos = new ArrayList<URouterVisitorDetailVTO>();

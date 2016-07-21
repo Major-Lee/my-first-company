@@ -44,7 +44,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	//在线初始score数值 100亿 
 	public static final double OnlineBaseScore = 10000000000d;
-	public static final double VisitorOnlineBaseScore = 0L;
+	public static final double VisitorOnlineBaseScore = 0d;
 	
 	public static final String OnlineDatePattern = "MMddHHmm";
 	private WifiDeviceHandsetUnitPresentSortedSetService(){
