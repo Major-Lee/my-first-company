@@ -8,6 +8,7 @@ package com.bhu.vas.api.vto.wallet;
 public class UserWalletLogFFVTO implements java.io.Serializable {
 	private long id;
 	private int uid;
+	private String mac;//设备mac
 	private String orderid;
 	private String transmode;
 	//transmode_desc 描述 用于查看方便的冗余字段 
@@ -19,6 +20,8 @@ public class UserWalletLogFFVTO implements java.io.Serializable {
 	private String rmoney;
 	//交易零钱相关（正负数字 充值购买虎钻 充值现金 提现(withdraw)） 
 	private String cash;
+	//打赏金额
+	private String amount;
 	//交易虚拟币相关
 	private String vcurrency;
 	//交易内容描述
@@ -106,5 +109,16 @@ public class UserWalletLogFFVTO implements java.io.Serializable {
 	public void setTranstype(String transtype) {
 		this.transtype = transtype;
 	}
-	
+	public String getMac() {
+		return mac;
+	}
+	public void setMac(String mac) {
+		this.mac = mac;
+	}
+	public String getAmount() {
+		return amount;
+	}
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
 }

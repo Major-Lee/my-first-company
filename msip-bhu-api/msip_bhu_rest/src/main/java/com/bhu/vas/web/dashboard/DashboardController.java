@@ -494,8 +494,8 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = true) Integer uid,
             @RequestParam(required = false,defaultValue = "SDP") String transmode,
             @RequestParam(required = false,defaultValue = "P2C") String transtype,
-            @RequestParam(required = true) Long start_ts,
-            @RequestParam(required = true) Long end_ts,
+            @RequestParam(required = false, defaultValue = "0") long start_ts,
+            @RequestParam(required = false, defaultValue = "0") long end_ts,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		) {
@@ -510,8 +510,17 @@ public class DashboardController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
+		Date startd = null;
+		if(start_ts > 0){
+			startd = new Date(start_ts);
+		}
+		Date endd = null;
+		if(end_ts > 0){
+			endd = new Date(end_ts);
+		}
+		
 		RpcResponseDTO<TailPage<UserWalletLogFFVTO>> rpcResult = userWalletRpcService.pageUserWalletlogsByFeifan(uid,
-				transmode, transtype, new Date(start_ts), new Date(end_ts), pageNo, pageSize);
+				transmode, transtype, startd, endd, pageNo, pageSize);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else

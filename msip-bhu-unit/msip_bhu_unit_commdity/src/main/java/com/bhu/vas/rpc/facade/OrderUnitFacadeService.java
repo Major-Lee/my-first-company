@@ -79,10 +79,10 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private CommdityMessageService commdityMessageService;
-	
+
 	@Resource
 	private UserWifiDeviceService userWifiDeviceService;
-	
+
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -120,8 +120,9 @@ public class OrderUnitFacadeService {
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createRewardOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
 					bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent);
-			
+
 			commdityMessageService.sendOrderCreatedMessage(order.getId());
+
 			OrderRewardVTO orderVto = new OrderRewardVTO();
 			BeanUtils.copyProperties(order, orderVto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
