@@ -32,7 +32,7 @@ public class PortraitMemcachedCacheService {
 	public String generatePortraitCacheKeyBy(String mac){
 		StringBuilder sb = new StringBuilder();   
 		sb.append(PORTRAITCachePrefixKey).append(mac);
-		return sb.toString();
+		return sb.toString();   
 	}
 	
 	public void storePortraitCacheResult(String mac,String result){
