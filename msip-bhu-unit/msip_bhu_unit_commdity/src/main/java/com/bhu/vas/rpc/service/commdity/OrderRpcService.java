@@ -27,10 +27,10 @@ public class OrderRpcService implements IOrderRpcService{
 	
 	@Override
 	public RpcResponseDTO<OrderRewardVTO> createRewardOrder(Integer commdityid, String mac, String umac, 
-			Integer umactype, String payment_type, String context, String user_agent){
-		logger.info(String.format("createRewardOrder with commdityid[%s] mac[%s] umac[%s] umactype[%s] payment_type[%s] context[%s] user_agent[%s]",
-				commdityid, mac, umac, umactype, payment_type, context, user_agent));
-		return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context, user_agent);
+			Integer umactype, String payment_type, String context, String user_agent, Integer channel){
+		logger.info(String.format("createRewardOrder with commdityid[%s] mac[%s] umac[%s] umactype[%s] payment_type[%s] context[%s] user_agent[%s] channel[%s]",
+				commdityid, mac, umac, umactype, payment_type, context, user_agent, channel));
+		return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context, user_agent, channel);
 	}
 	
 	@Override
