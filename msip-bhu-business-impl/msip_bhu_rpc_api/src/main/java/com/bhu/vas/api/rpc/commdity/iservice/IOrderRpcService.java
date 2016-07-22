@@ -14,7 +14,7 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 public interface IOrderRpcService {
 	
 	public RpcResponseDTO<OrderRewardVTO> createRewardOrder(Integer commdityid, String mac, String umac, 
-			Integer umactype, String payment_type, String context, String user_agent);
+			Integer umactype, String payment_type, String context, String user_agent, Integer channel);
 	
 	public RpcResponseDTO<OrderStatusDTO> orderStatusByUmac(String umac, String orderid);
 	

@@ -1,6 +1,5 @@
 package com.bhu.vas.business.ds.commdity.facade;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +31,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalN
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
-import com.ibm.icu.text.SimpleDateFormat;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -217,7 +215,8 @@ public class OrderFacadeService {
 	 * @return
 	 */
 	public Order createRewardOrder(Integer commdityid, Integer appid, User bindUser, String mac, 
-			String mac_dut, String umac, Integer umactype, String payment_type, String context, String user_agent){
+			String mac_dut, String umac, Integer umactype, String payment_type, String context, String user_agent,
+			Integer channel){
 		//商品信息验证
 		//验证商品是否合法
 		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
@@ -239,6 +238,7 @@ public class OrderFacadeService {
 		if(bindUser != null){
 			order.setUid(bindUser.getId());
 		}
+		order.setChannel(channel);
 		order.setMac(mac);
 		order.setMac_dut(mac_dut);
 		order.setUmac(umac);
