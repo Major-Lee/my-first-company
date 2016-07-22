@@ -270,7 +270,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				// WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentOfflineSize(wifiId);
 				break;
 			default:
-				presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchPresents(wifiId, start,
+				presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchAllPresentWithScores(wifiId, start,
 						size);
 				// total =
 				// WifiDeviceHandsetUnitPresentSortedSetService.getInstance().presentSize(wifiId);
@@ -2024,7 +2024,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				.fetchOnlinePresentWithScores(wifiId, start, size);
 
 		return RpcResponseDTOBuilder
-				.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId, AuthOnline));
+				.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId, AuthOnline,start,size));
 	}
 
 	// 认证离线
@@ -2035,7 +2035,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				.fetchOfflinePresentWithScores(wifiId, start, size);
 
 		return RpcResponseDTOBuilder
-				.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId, AuthOffline));
+				.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId, AuthOffline,start,size));
 	}
 
 	// 访客网络未认证仅连接上线的列表
@@ -2046,7 +2046,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				.fetchVisitorOnlinePresent(wifiId, start, size);
 
 		return RpcResponseDTOBuilder
-				.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId, Online));
+				.builderSuccessRpcResponse(builderURouterVisitorListVTO(presents, uid, wifiId, Online,start,size));
 	}
 
 	// 未认证 认证 认证离线
@@ -2057,7 +2057,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				.fetchAllPresentWithScores(wifiId, start, size);
 
 		return RpcResponseDTOBuilder
-				.builderSuccessRpcResponse(builderURouterVisitorListVTO(allPresents, uid, wifiId, All));
+				.builderSuccessRpcResponse(builderURouterVisitorListVTO(allPresents, uid, wifiId, All,start,size));
 	}
 
 	private static final String AuthOnline = "authonline";
@@ -2067,7 +2067,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	// type: all(未认证 认证 认证离线) authOnline(认证在线) authOffline(认证离线) online(未认证)
 	private URouterVisitorListVTO builderURouterVisitorListVTO(Set<Tuple> presents, Integer uid, String wifiId,
-			String type) {
+			String type,int start,int size) {
 		URouterVisitorListVTO vto = new URouterVisitorListVTO();
 		vto.setMac(wifiId);
 
@@ -2156,8 +2156,10 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 				cursor++;
 			}
-			vto.setItems(vtos);
-			vto.setOhd_count(vtos.size());
+			
+			List<URouterVisitorDetailVTO> result = PageHelper.partialList(vtos, start, size);
+			vto.setItems(result);
+			vto.setOhd_count(result.size());
 		}
 		return vto;
 	}

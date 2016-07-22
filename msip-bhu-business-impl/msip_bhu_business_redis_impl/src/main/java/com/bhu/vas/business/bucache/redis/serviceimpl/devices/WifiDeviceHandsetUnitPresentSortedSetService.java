@@ -45,7 +45,8 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	//在线初始score数值 100亿 
 	public static final double OnlineBaseScore = 10000000000d;
 	public static final double VisitorOnlineBaseScore = 0d;
-	
+	public static final int PageMax = 1000;
+	public static final int PageStart = 0;
 	public static final String OnlineDatePattern = "MMddHHmm";
 	private WifiDeviceHandsetUnitPresentSortedSetService(){
 	}
@@ -133,10 +134,10 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return super.zrangeByScore(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE);
 	}
 	
-	public Set<Tuple> fetchPresents(String wifiId,int start,int size){
-		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
-		return super.zrevrangeWithScores(generateKey(wifiId), start, (start+size-1));
-	}
+//	public Set<Tuple> fetchPresents(String wifiId,int start,int size){
+//		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+//		return super.zrevrangeWithScores(generateKey(wifiId), start, (start+size-1));
+//	}
 	
 	public Long presentSize(String wifiId){
 		return super.zcard(generateKey(wifiId));
@@ -201,26 +202,26 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	public Set<Tuple> fetchOnlinePresentWithScores(String wifiId,int start,int size){
 		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
-		return super.zrevrangeByScoreWithScores(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE, start, size);
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE, PageStart, PageMax);
 	}
 	
 	public Set<Tuple> fetchAllPresentWithScores(String wifiId,int start,int size){
 		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
-		return super.zrevrangeByScoreWithScores(generateKey(wifiId), VisitorOnlineBaseScore, Long.MAX_VALUE, start, size);
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), VisitorOnlineBaseScore, Long.MAX_VALUE, PageStart, PageMax);
 	}
 	
 	public Set<Tuple> fetchPresentWithScores(String wifiId,int start,int size){
 		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
-		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 1L, Long.MAX_VALUE, start, size);
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 1L, Long.MAX_VALUE, PageStart, PageMax);
 	}
 	
 	public Set<Tuple> fetchVisitorOnlinePresent(String wifiId,int start,int size){
-		return super.zrevrangeByScoreWithScores(generateKey(wifiId), VisitorOnlineBaseScore, VisitorOnlineBaseScore, start, size);
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), VisitorOnlineBaseScore, VisitorOnlineBaseScore, PageStart, PageMax);
 	}
 	
 	public Set<Tuple> fetchOfflinePresentWithScores(String wifiId,int start,int size){
 		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
-		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 1L, (OnlineBaseScore-1), start, size);
+		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 1L, (OnlineBaseScore-1), PageStart, PageMax);
 	}
 	
 	public long  addOfflinePresent(String wifiId, String handsetId, long last_login_at){
