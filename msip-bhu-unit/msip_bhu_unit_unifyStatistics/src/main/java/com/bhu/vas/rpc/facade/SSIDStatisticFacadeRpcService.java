@@ -89,8 +89,9 @@ public class SSIDStatisticFacadeRpcService {
 			timeList = getLastDayAsc(Integer.parseInt(type));
 		}
 		for (int i = 0; i < timeList.size(); i++) {
-			if(macList == null && macList.size()<=0){
+			if(macList == null || macList.size()<=0){
 				//查询全部设备信息
+				
 			}else{
 				//根据mac地址查询设备统计信息
 			}
