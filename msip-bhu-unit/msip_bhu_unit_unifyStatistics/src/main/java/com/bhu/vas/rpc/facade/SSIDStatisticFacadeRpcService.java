@@ -1,6 +1,10 @@
 package com.bhu.vas.rpc.facade;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +80,29 @@ public class SSIDStatisticFacadeRpcService {
 			//根据设备标签查询
 			macList = new ArrayList<String>();
 		}
-		return null;
+		if(StringUtils.isNotBlank(startTime)&&StringUtils.isNotBlank(endTime)){
+			//根据时间间隔查询设备统计信息
+			List<String> timeList = getDaysListAsc(startTime,endTime);
+			for (int i = 0; i < timeList.size(); i++) {
+				if(macList == null && macList.size()<=0){
+					//查询全部设备信息
+				}else{
+					//根据mac地址查询设备统计信息
+				}
+			}
+		}else{
+			//根据天数查询设备统计信息
+			List<String> timeList = getLastDayAsc(Integer.parseInt(type));
+			for (int i = 0; i < timeList.size(); i++) {
+				if(macList == null && macList.size()<=0){
+					//查询全部设备信息
+				}else{
+					//根据mac地址查询设备统计信息
+				}
+			}
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -128,5 +154,47 @@ public class SSIDStatisticFacadeRpcService {
 	public List<String> queryMacListByDLabel(String deviceLabel){
 		List<String> macList = new ArrayList<String>();
 		return macList;
+	}
+	
+	/**
+	 * 时间升序排列
+	 * @param dateNum
+	 * @return
+	 */
+	public static List<String> getLastDayAsc(int dateNum){
+		List<String> list = new ArrayList<String>();
+		//获取当前日期
+		for (int i = 1; i <= dateNum; i++) {
+			Date date = new Date();  
+			Calendar calendar = Calendar.getInstance();  
+			calendar.setTime(date); 
+			calendar.add(Calendar.DAY_OF_MONTH, -(dateNum-i));
+			date = calendar.getTime();  
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+			String dateNowStr = sdf.format(date); 
+			list.add(dateNowStr);
+		}
+		return list; 
+	}
+	
+	public static List<String> getDaysListAsc(String beginTime,String endTime){
+		List<String> list = new ArrayList<String>();
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		Calendar start = Calendar.getInstance();
+		Calendar end = Calendar.getInstance();
+		list.add(beginTime);
+		try {
+			start.setTime(format.parse(beginTime));
+			end.setTime(format.parse(endTime));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		while(end.after(start))
+		{
+			System.out.println(format.format(start.getTime()));
+			start.add(Calendar.DAY_OF_MONTH,1);
+			list.add(format.format(start.getTime()).toString());
+		}
+		return list; 
 	}
 }

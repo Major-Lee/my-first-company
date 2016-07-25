@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
+import com.bhu.vas.api.dto.procedure.DeviceOrderStatisticsProduceDTO;
 import com.bhu.vas.api.dto.procedure.RewardOrderStatisticsProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
@@ -24,6 +25,7 @@ import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
@@ -630,4 +632,20 @@ public class OrderFacadeService {
 		}
 		return order;
 	}*/
+	
+	//add by Jason 2016-07-22 Start
+	public DeviceOrderStatisticsVTO deviceOrderStatisticsWithProcedure(String start_date, String end_date,String device_mac){
+		DeviceOrderStatisticsProduceDTO procedureDTO = new DeviceOrderStatisticsProduceDTO();
+		procedureDTO.setStart_date(start_date);
+		procedureDTO.setEnd_date(end_date);
+		procedureDTO.setDevice_mac(device_mac);
+		int executeRet = orderService.executeProcedure(procedureDTO);
+		if(executeRet == 0){
+			;
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
+		}
+		return procedureDTO.toVTO();
+	}
+	//add by Jason 2016-07-22 E N D
 }
