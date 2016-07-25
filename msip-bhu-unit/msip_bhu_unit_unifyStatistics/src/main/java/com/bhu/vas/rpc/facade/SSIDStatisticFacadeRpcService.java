@@ -80,25 +80,19 @@ public class SSIDStatisticFacadeRpcService {
 			//根据设备标签查询
 			macList = new ArrayList<String>();
 		}
+		List<String> timeList = new ArrayList<String>();
 		if(StringUtils.isNotBlank(startTime)&&StringUtils.isNotBlank(endTime)){
 			//根据时间间隔查询设备统计信息
-			List<String> timeList = getDaysListAsc(startTime,endTime);
-			for (int i = 0; i < timeList.size(); i++) {
-				if(macList == null && macList.size()<=0){
-					//查询全部设备信息
-				}else{
-					//根据mac地址查询设备统计信息
-				}
-			}
+			timeList = getDaysListAsc(startTime,endTime);
 		}else{
 			//根据天数查询设备统计信息
-			List<String> timeList = getLastDayAsc(Integer.parseInt(type));
-			for (int i = 0; i < timeList.size(); i++) {
-				if(macList == null && macList.size()<=0){
-					//查询全部设备信息
-				}else{
-					//根据mac地址查询设备统计信息
-				}
+			timeList = getLastDayAsc(Integer.parseInt(type));
+		}
+		for (int i = 0; i < timeList.size(); i++) {
+			if(macList == null && macList.size()<=0){
+				//查询全部设备信息
+			}else{
+				//根据mac地址查询设备统计信息
 			}
 		}
 		
