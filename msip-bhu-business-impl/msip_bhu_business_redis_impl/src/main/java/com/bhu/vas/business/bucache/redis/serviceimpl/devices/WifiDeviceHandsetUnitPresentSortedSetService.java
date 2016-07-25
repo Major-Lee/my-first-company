@@ -47,7 +47,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	public static final double VisitorOnlineBaseScore = 0d;
 	public static final int PageMax = 1000;
 	public static final int PageStart = 0;
-	public static final String OnlineDatePattern = "MMddHHmm";
+	public static final String OnlineDatePattern = "MMddHHmmss";
 	private WifiDeviceHandsetUnitPresentSortedSetService(){
 	}
 	
