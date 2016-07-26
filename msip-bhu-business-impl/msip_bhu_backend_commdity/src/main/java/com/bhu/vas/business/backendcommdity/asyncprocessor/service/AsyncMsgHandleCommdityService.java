@@ -11,7 +11,10 @@ import com.bhu.vas.api.dto.commdity.internal.useragent.OrderUserAgentDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+<<<<<<< cdaad4e46937d39993fa1777ef7051d2daede7a6
 import com.bhu.vas.api.rpc.user.model.User;
+=======
+>>>>>>> added
 import com.bhu.vas.business.asyn.spring.model.commdity.OrderCreatedDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserOrderDetailsHashService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
@@ -79,6 +82,7 @@ public class AsyncMsgHandleCommdityService {
 				}
 			}
 		}
+>>>>>>> added
 		logger.info(String.format("AsyncMsgHandleCommdityService orderCreatedHandle message[%s] successful", message));
 	}
 }
