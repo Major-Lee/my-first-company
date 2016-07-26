@@ -811,6 +811,34 @@ public class UserWalletUnitFacadeService {
 			// 获取累计打赏收益
 			double totalIncome = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalIncome();
 			ucloudMacStatisticsVTO.setTotalIncome(String.valueOf(totalIncome));
+			
+			// 折线图信息
+			// 天数的计算
+			int betweenDays = daysBetween(startTime, endTime);
+			String lineChartDate = StringUtils.EMPTY;
+			List<String> lineChartDateInfo = new ArrayList<String>();
+			// 折线图Y轴（收益）
+			List<String> lineChartIncomeInfo = new ArrayList<String>();
+			// 折线图Y轴（用户数）
+			List<String> lineChartUserNumInfo = new ArrayList<String>();
+			
+			for (int i = 0; i <= betweenDays; i ++) {
+				// 折线图X轴（日期）
+				lineChartDateInfo.add(getNewDay(startTime, i));
+				double lineChartIncome = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalIncomeByDay(getNewDay(startTime, i));
+				// 折线图Y轴（收益）
+				lineChartIncomeInfo.add(String.valueOf(lineChartIncome));
+				double lineChartUserNum = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalUserNumByDay(getNewDay(startTime, i));
+				// 折线图Y轴（用户数）
+				lineChartUserNumInfo.add(String.valueOf(lineChartUserNum));
+			}
+			
+			// 折线图X轴（日期）
+			ucloudMacStatisticsVTO.setLineChartDateInfo(lineChartDateInfo);
+			// 折线图Y轴（收益）
+			ucloudMacStatisticsVTO.setLineChartIncomeInfo(lineChartIncomeInfo);
+			// 折线图Y轴（用户数）
+			ucloudMacStatisticsVTO.setLineChartUserNumInfo(lineChartUserNumInfo);
 
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ucloudMacStatisticsVTO);
 		}catch(BusinessI18nCodeException bex){
@@ -843,6 +871,40 @@ public class UserWalletUnitFacadeService {
 	    SimpleDateFormat sdf = new SimpleDateFormat(simpleDateFormat);
 	    retDate = sdf.format(dBefore);
 	    return retDate;
-	} 
+	}
+	
+	/** 
+	 *字符串的日期格式的计算 
+	 */  
+    public int daysBetween(String startTime, String endTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(sdf.parse(startTime));
+        long time1 = cal.getTimeInMillis();
+        cal.setTime(sdf.parse(endTime));
+        long time2 = cal.getTimeInMillis();
+        long betweenDays = (time2-time1)/(1000*3600*24);
+            
+       return Integer.parseInt(String.valueOf(betweenDays));
+    }  
+	
+	/** 
+	 * 字符串的日期格式的计算(根据一个日期和天数获取新的日期) 
+	 */  
+    public String getNewDay(String inputValue, int days) {
+		// 返回日期
+	    String retDate = StringUtils.EMPTY;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(sdf.parse(inputValue));
+      
+	    // 新的日期
+	    calendar.add(Calendar.DAY_OF_MONTH, days);
+	    // 得到新的日期
+	    Date newDay = calendar.getTime();
+	    
+	    retDate = sdf.format(newDay);
+	    return retDate;
+    }  
 
 }

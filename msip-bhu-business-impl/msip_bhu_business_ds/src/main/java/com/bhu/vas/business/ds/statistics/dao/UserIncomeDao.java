@@ -17,13 +17,31 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 		return income;
 	}
 	public double countTotalIncome() {
-		double income=0;
+		double income = 0;
 		try {
-			income=super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncome");
+			income = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncome");
 		} catch (Exception e) {
 			return income;
 		}
 		return income;
+	}
+	public double countTotalIncomeByDay(String time) {
+		double income = 0;
+		try {
+			income = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncomeByDay", time);
+		} catch (Exception e) {
+			return income;
+		}
+		return income;
+	}
+	public double countTotalUserNumByDay(String time) {
+		double userNum = 0;
+		try {
+			userNum = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalUserNumByDay", time);
+		} catch (Exception e) {
+			return userNum;
+		}
+		return userNum;
 	}
 	public Order selectOrdersInfo(String orderid) {
 		Order order = null;
