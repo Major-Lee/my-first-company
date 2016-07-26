@@ -196,6 +196,7 @@ public class BuilderWifiDeviceIndexMultiThreadOp {
 				String o_template = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(mac);
 				long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
 				User bindUser = null;
+				User distributor = null;
 				String bindUserDNick = null;
 				UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
 				if(userWifiDevice != null){
@@ -210,9 +211,15 @@ public class BuilderWifiDeviceIndexMultiThreadOp {
 				WifiDeviceSharedealConfigs wifiDeviceShareConfig = wifiDeviceSharedealConfigsService.getById(mac);
 				String t_uc_extension = tagGroupRelationService.fetchPathWithMac(mac);
 				
+				if(wifiDeviceShareConfig != null){
+					if (wifiDeviceShareConfig.getDistributor() > 0) {
+						distributor = userService.getById(wifiDeviceShareConfig.getDistributor());
+					}
+				}
+				
 				doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
 						wifiDeviceGray, bindUser, bindUserDNick, tagDevices,
-						o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig, t_uc_extension);
+						o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig, t_uc_extension, distributor);
 				
 /*					//构建设备索引的扩展字段
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);

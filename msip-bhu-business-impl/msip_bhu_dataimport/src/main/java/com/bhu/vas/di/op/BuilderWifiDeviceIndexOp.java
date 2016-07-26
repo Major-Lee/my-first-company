@@ -180,6 +180,7 @@ public class BuilderWifiDeviceIndexOp {
 					}*/
 					
 					User bindUser = null;
+					User distributor = null;
 					String bindUserDNick = null;
 					//Integer bindUserId = userDeviceService.fetchBindUid(mac);
 					//UserDevice userDevice = userDeviceService.fetchBindByMac(mac);
@@ -196,9 +197,15 @@ public class BuilderWifiDeviceIndexOp {
 					WifiDeviceSharedealConfigs wifiDeviceShareConfig = wifiDeviceSharedealConfigsService.getById(mac);
 					String t_uc_extension = tagGroupRelationService.fetchPathWithMac(mac);
 					
+					if(wifiDeviceShareConfig != null){
+						if (wifiDeviceShareConfig.getDistributor() > 0) {
+							distributor = userService.getById(wifiDeviceShareConfig.getDistributor());
+						}
+					}
+					
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
 							wifiDeviceGray, bindUser, bindUserDNick, tagDevices,
-							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig, t_uc_extension);
+							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig, t_uc_extension, distributor);
 					
 /*					//构建设备索引的扩展字段
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
