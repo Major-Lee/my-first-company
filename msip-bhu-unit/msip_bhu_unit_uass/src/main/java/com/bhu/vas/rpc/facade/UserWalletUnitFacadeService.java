@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -875,8 +876,9 @@ public class UserWalletUnitFacadeService {
 	
 	/** 
 	 *字符串的日期格式的计算 
+	 * @throws ParseException 
 	 */  
-    public int daysBetween(String startTime, String endTime) {
+    public int daysBetween(String startTime, String endTime) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
         cal.setTime(sdf.parse(startTime));
@@ -884,14 +886,14 @@ public class UserWalletUnitFacadeService {
         cal.setTime(sdf.parse(endTime));
         long time2 = cal.getTimeInMillis();
         long betweenDays = (time2-time1)/(1000*3600*24);
-            
        return Integer.parseInt(String.valueOf(betweenDays));
     }  
 	
 	/** 
 	 * 字符串的日期格式的计算(根据一个日期和天数获取新的日期) 
+	 * @throws ParseException 
 	 */  
-    public String getNewDay(String inputValue, int days) {
+    public String getNewDay(String inputValue, int days) throws ParseException {
 		// 返回日期
 	    String retDate = StringUtils.EMPTY;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
