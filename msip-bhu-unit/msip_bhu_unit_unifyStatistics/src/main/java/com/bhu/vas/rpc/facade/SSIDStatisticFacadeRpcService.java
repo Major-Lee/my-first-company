@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.rpc.util.JSONObject;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -105,10 +107,15 @@ public class SSIDStatisticFacadeRpcService {
 		double totalSingleGains = 0;
 		//全部设备收益总金额
 		double totalGains = 0;
-		for (int i = 0; i < timeList.size(); i++) {
-			String date = StringUtils.EMPTY;
-			if(macList == null && macList.size()<=0){
-				//查询全部设备信息
+		
+		//组装结果集
+		List<Map<String,Object>> listMap = new ArrayList<Map<String,Object>>();
+		Map<String,Object> singleMap = null;
+		String date = StringUtils.EMPTY;
+		if(macList == null || macList.size()<=0){
+			for (int i = 0; i < timeList.size(); i++) {
+				
+				
 				//每天uv总数
 				int dayUV = 0 ;
 				int dayPV = 0;
@@ -123,29 +130,29 @@ public class SSIDStatisticFacadeRpcService {
 				}
 				totalPV += dayPV;
 				totalUV += dayUV;
-				//map = new HashMap<String,Object>();
-				//map.put("currDate", date);
-				//map.put("dayUV", dayUV);
-				//map.put("dayPV", dayPV);
+				singleMap = new HashMap<String,Object>();
+				singleMap.put("currDate", date);
+				singleMap.put("dayUV", dayUV);
+				singleMap.put("dayPV", dayPV);
 				//获取设备总数以及设备在线数
 				String equipment = StringUtils.EMPTY;
-				equipment =DeviceStatisticsHashService.getInstance().deviceMacHget(date, "equipment");
-				Map<String,Object> equMap= JsonHelper.getMapFromJson(equipment);
+				equipment = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "equipment");
+				JSONObject obj = JSONObject.fromObject(equipment);
 				int dc = 0;
 				int doc = 0;
 				if(StringUtils.isBlank(equipment)){
-					//map.put("dc", dc);
-					//map.put("doc", doc);
+					singleMap.put("dc", dc);
+					singleMap.put("doc", doc);
 				}else{
 					//处理结果
-					if(equMap.get("dc") != null && equMap.get("doc") != null){
-						dc = (Integer)equMap.get("dc");
-						doc = (Integer)equMap.get("doc");
-						//map.put("dc", dc);
-						//map.put("doc", doc);
+					if(obj.get("dc") != null && obj.get("doc") != null){
+						dc = (Integer)obj.get("dc");
+						doc = (Integer)obj.get("doc");
+						singleMap.put("dc", dc);
+						singleMap.put("doc", doc);
 					}else{
-						//map.put("dc", dc);
-						//map.put("doc", doc);
+						singleMap.put("dc", dc);
+						singleMap.put("doc", doc);
 					}
 				}
 				totalDC += dc;
@@ -157,143 +164,62 @@ public class SSIDStatisticFacadeRpcService {
 				double singleGains = 0;
 				double dayGains = 0;
 				if(StringUtils.isBlank(orderStatist)){
-					//map.put("singleOrderNum", singleOrderNum);
-					//map.put("singleGains", singleGains);
-					//map.put("dayGains", dayGains);
+					singleMap.put("singleOrderNum", singleOrderNum);
+					singleMap.put("singleGains", singleGains);
+					singleMap.put("dayGains", dayGains);
 				}else{
-					Map<String,Object> orderMap = JsonHelper.getMapFromJson(orderStatist);
-					if(orderMap.get("occ") != null && orderMap.get("ofc") != null && orderMap.get("ofa") != null){
+					JSONObject orderObj = JSONObject.fromObject(orderStatist);
+					if(orderObj.get("occ") != null && orderObj.get("ofc") != null && orderObj.get("ofa") != null){
 						//单台订单
-						int occ = (Integer)orderMap.get("occ");
+						int occ = (Integer)orderObj.get("occ");
 						if(doc == 0){
-							//map.put("singleOrderNum", singleOrderNum);
-							//map.put("singleGains", singleGains);
+							singleMap.put("singleOrderNum", singleOrderNum);
+							singleMap.put("singleGains", singleGains);
 						}else{
 							singleOrderNum = (double) occ/doc;
 							BigDecimal b = new BigDecimal(singleOrderNum);
 							singleOrderNum =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
-							//map.put("singleOrderNum", singleOrderNum);
+							singleMap.put("singleOrderNum", singleOrderNum);
 							//单台收益
-							Double ofa = (Double) orderMap.get("ofa");
+							Double ofa = orderObj.getDouble("ofa");
 							singleGains = ofa/doc;
 							BigDecimal b1 = new BigDecimal(singleGains);
 							singleGains =  b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
-							//map.put("singleGains", singleGains);
+							singleMap.put("singleGains", singleGains);
 						}
-						dayGains = (Double) orderMap.get("ofa");
-						//map.put("dayGains", dayGains);
+						dayGains = orderObj.getDouble("ofa");
+						singleMap.put("dayGains", dayGains);
 					}else{
-						//map.put("singleOrderNum", singleOrderNum);
-						//map.put("singleGains", singleGains);
-						//map.put("dayGains", dayGains);
+						singleMap.put("singleOrderNum", singleOrderNum);
+						singleMap.put("singleGains", singleGains);
+						singleMap.put("dayGains", dayGains);
 					}
 				}
 				totalSingleGains += singleGains;
 				totalSingleOrderNum += singleOrderNum;
 				totalGains += dayGains;
-				//listMap.add(map);
-			}else{
-				//根据mac地址查询设备统计信息
-				date = timeList.get(i);
-				String currMac = StringUtils.EMPTY;
-				for (int j = 0; j < macList.size(); j++) {
-					currMac = macList.get(j);
-					//根据mac地址查询缓存中的mac数据
-					if(StringUtils.isNotBlank(currMac)){
-						String macJson = DeviceStatisticsHashService.getInstance().deviceMacHget(date,currMac);
-						if(StringUtils.isNotBlank(macJson)){
-							Map<String,Object> macMap = JsonHelper.getMapFromJson(macJson);
-							//查询全部设备信息
-							//每天uv总数
-							int dayUV = 0 ;
-							int dayPV = 0;
-							date = timeList.get(i);
-							String dayPv = (String) macMap.get("pv");
-							String dayUv = (String) macMap.get("uv");
-							if(StringUtils.isNotBlank(dayPv)){
-								dayPV = Integer.parseInt(dayPv);
-							}
-							if(StringUtils.isNotBlank(dayUv)){
-								dayUV = Integer.parseInt(dayUv);
-							}
-							totalPV += dayPV;
-							totalUV += dayUV;
-							//map = new HashMap<String,Object>();
-							//map.put("currDate", date);
-							//map.put("dayUV", dayUV);
-							//map.put("dayPV", dayPV);
-							//获取设备总数以及设备在线数  TODO  待处理 需要查询Service获取当前mac状态
-							String equipment = StringUtils.EMPTY;
-							equipment =DeviceStatisticsHashService.getInstance().deviceMacHget(date, "equipment");
-							Map<String,Object> equMap= JsonHelper.getMapFromJson(equipment);
-							int dc = 0;
-							int doc = 0;
-							if(StringUtils.isBlank(equipment)){
-								//map.put("dc", dc);
-								//map.put("doc", doc);
-							}else{
-								//处理结果
-								if(equMap.get("dc") != null && equMap.get("doc") != null){
-									dc = (Integer)equMap.get("dc");
-									doc = (Integer)equMap.get("doc");
-									//map.put("dc", dc);
-									//map.put("doc", doc);
-								}else{
-									//map.put("dc", dc);
-									//map.put("doc", doc);
-								}
-							}
-							totalDC += dc;
-							totalDOC += doc;
-							//获取当天订单统计数量
-							String orderStatist = StringUtils.EMPTY; 
-							orderStatist = DeviceStatisticsHashService.getInstance().deviceMacHget(date,"stOrder");
-							double singleOrderNum = 0;
-							double singleGains = 0;
-							double dayGains = 0;
-							if(StringUtils.isBlank(orderStatist)){
-								//map.put("singleOrderNum", singleOrderNum);
-								//map.put("singleGains", singleGains);
-								//map.put("dayGains", dayGains);
-							}else{
-								//Map<String,Object> orderMap = JsonHelper.getMapFromJson(orderStatist);
-								if(macMap.get("occ") != null && macMap.get("ofc") != null && macMap.get("ofa") != null){
-									//单台订单
-									int occ = (Integer)macMap.get("occ");
-									if(doc == 0){
-										//map.put("singleOrderNum", singleOrderNum);
-										//map.put("singleGains", singleGains);
-									}else{
-										singleOrderNum = (double) occ/doc;
-										BigDecimal b = new BigDecimal(singleOrderNum);
-										singleOrderNum =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
-										//map.put("singleOrderNum", singleOrderNum);
-										//单台收益
-										Double ofa = (Double) macMap.get("ofa");
-										singleGains = ofa/doc;
-										BigDecimal b1 = new BigDecimal(singleGains);
-										singleGains =  b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
-										//map.put("singleGains", singleGains);
-									}
-									dayGains = (Double) macMap.get("ofa");
-									//map.put("dayGains", dayGains);
-								}else{
-									//map.put("singleOrderNum", singleOrderNum);
-									//map.put("singleGains", singleGains);
-									//map.put("dayGains", dayGains);
-								}
-							}
-							totalSingleGains += singleGains;
-							totalSingleOrderNum += singleOrderNum;
-							totalGains += dayGains;
-						}
-					}
-					
-					
-				}
+				listMap.add(singleMap);
 			}
+			totalDC = totalDC/Integer.parseInt(type);
+			totalDOC = totalDOC/Integer.parseInt(type);
+		}else{
+			
 		}
 		
+		Map<String,Object> totalMap=new HashMap<String,Object>();
+		totalMap.put("totalPV", totalPV);
+		totalMap.put("totalUV", totalUV);
+		//计算设备在线数/总数的平均值
+		totalMap.put("totalDC", totalDC);
+		totalMap.put("totalDOC", totalDOC);
+		BigDecimal b = new BigDecimal(totalSingleGains);
+		totalSingleGains =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
+		totalMap.put("totalSingleGains", totalSingleGains);
+		totalMap.put("totalSingleOrderNum", totalSingleOrderNum);
+		totalMap.put("totalGains", totalGains);
+		Map<String,Object> body = new HashMap<String,Object>();
+		body.put("ssidList", listMap);
+		body.put("totalSSID", totalMap);
 		return result;
 	}
 	
