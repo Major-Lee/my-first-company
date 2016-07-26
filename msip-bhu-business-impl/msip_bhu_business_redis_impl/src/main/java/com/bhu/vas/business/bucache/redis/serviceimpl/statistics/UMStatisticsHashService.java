@@ -42,11 +42,11 @@ public class UMStatisticsHashService extends AbstractRelationHashCache{
 		return sb.toString();
 	}
 	
-	public long deviceMacHset(String key,String field,String value){
+	public long umHset(String key,String field,String value){
 		Long n = this.hset(generatePrefixKey(key), field, value);
 		return n;
 	}
-	public String deviceMacHget(String key,String field){
+	public String umHget(String key,String field){
 		String result = StringUtils.EMPTY;
 		result = this.hget(generatePrefixKey(key), field);
 		return result;
