@@ -816,7 +816,6 @@ public class UserWalletUnitFacadeService {
 			// 折线图信息
 			// 天数的计算
 			int betweenDays = daysBetween(startTime, endTime);
-			String lineChartDate = StringUtils.EMPTY;
 			List<String> lineChartDateInfo = new ArrayList<String>();
 			// 折线图Y轴（收益）
 			List<String> lineChartIncomeInfo = new ArrayList<String>();
