@@ -280,6 +280,7 @@ public class BackendBusinessService {
 					long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
 
 					User bindUser = null;
+					User distributor = null;
 					String bindUserDNick = null;
 					//Integer bindUserId = userDeviceService.fetchBindUid(mac);
 /*					UserDevice userDevice = userDeviceService.fetchBindByMac(mac);
@@ -306,10 +307,13 @@ public class BackendBusinessService {
 					
 					if(wifiDeviceShareConfig != null){
 						System.out.println("~~~~~~~~~~~~~~~~~~~~Canbe_turnoff:"+wifiDeviceShareConfig.isCanbe_turnoff());
+						if (wifiDeviceShareConfig.getDistributor() > 0) {
+							distributor = userService.getById(wifiDeviceShareConfig.getDistributor());
+						}
 					}
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
 							wifiDeviceGray, bindUser, bindUserDNick, tagDevices,
-							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig,t_uc_extension);
+							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig, t_uc_extension, distributor);
 					docs.add(doc);
 				}
 				
