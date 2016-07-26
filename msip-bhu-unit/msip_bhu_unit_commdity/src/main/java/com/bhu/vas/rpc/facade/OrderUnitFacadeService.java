@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +38,7 @@ import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserQueryDateHashService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -77,10 +79,10 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private CommdityMessageService commdityMessageService;
-	
+
 	@Resource
 	private UserWifiDeviceService userWifiDeviceService;
-	
+
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -93,7 +95,7 @@ public class OrderUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<OrderRewardVTO> createRewardOrder(Integer commdityid, String mac, String umac, 
-			Integer umactype, String payment_type, String context, String user_agent){
+			Integer umactype, String payment_type, String context, String user_agent, Integer channel){
 		try{
 			//orderFacadeService.supportedAppId(appid);
 			//验证mac umac
@@ -117,9 +119,10 @@ public class OrderUnitFacadeService {
 			//生成订单
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createRewardOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
-					bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent);
-			
+					bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent, channel);
+
 			commdityMessageService.sendOrderCreatedMessage(order.getId());
+
 			OrderRewardVTO orderVto = new OrderRewardVTO();
 			BeanUtils.copyProperties(order, orderVto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
@@ -169,14 +172,15 @@ public class OrderUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<TailPage<OrderRewardVTO>> rewardOrderPages(Integer uid, String mac, String umac, 
-			Integer status, String dut, int pageNo, int pageSize) {
+			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize) {
 		try{
 			List<OrderRewardVTO> retDtos = Collections.emptyList();
 			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, 
-					CommdityCategory.RewardInternetLimit.getCategory(), 0);
+					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
-						CommdityCategory.RewardInternetLimit.getCategory(), pageNo, pageSize);
+						CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
+						pageNo, pageSize);
 				
 				if(orderList != null && !orderList.isEmpty()){
 					List<String> orderids = new ArrayList<String>();
@@ -260,7 +264,7 @@ public class OrderUnitFacadeService {
 			Order order = orderFacadeService.createRechargeVCurrencyOrder(uid, commdityid, 
 					BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey(), payment_type, umactype, user_agent);
 			
-			commdityMessageService.sendOrderCreatedMessage(order.getId());
+			//commdityMessageService.sendOrderCreatedMessage(order.getId());
 			OrderRechargeVCurrencyVTO orderVto = new OrderRechargeVCurrencyVTO();
 			BeanUtils.copyProperties(order, orderVto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
@@ -301,10 +305,10 @@ public class OrderUnitFacadeService {
 		try{
 			List<OrderRechargeVCurrencyVTO> retDtos = Collections.emptyList();
 			int order_count = orderFacadeService.countOrderByParams(uid, null, null, status, 
-					null, CommdityCategory.RechargeVCurrency.getCategory(), 0);
+					null, CommdityCategory.RechargeVCurrency.getCategory(), 0,0);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, null, null, status, null,
-						CommdityCategory.RechargeVCurrency.getCategory(), pageNo, pageSize);
+						CommdityCategory.RechargeVCurrency.getCategory(), 0,0, pageNo, pageSize);
 				
 				if(orderList != null && !orderList.isEmpty()){
 					retDtos = new ArrayList<OrderRechargeVCurrencyVTO>();
@@ -456,10 +460,10 @@ public class OrderUnitFacadeService {
 		try{
 			List<OrderSMSVTO> retDtos = Collections.emptyList();
 			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, 
-					dut, CommdityCategory.SMSInternetLimit.getCategory(), 0);
+					dut, CommdityCategory.SMSInternetLimit.getCategory(), 0,0);
 			if(order_count > 0){
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
-						CommdityCategory.SMSInternetLimit.getCategory(), pageNo, pageSize);
+						CommdityCategory.SMSInternetLimit.getCategory(), 0,0, pageNo, pageSize);
 				
 				if(orderList != null && !orderList.isEmpty()){
 					retDtos = new ArrayList<OrderSMSVTO>();
@@ -488,16 +492,29 @@ public class OrderUnitFacadeService {
 		}
 	}
 	
-	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid, long start_created_ts) {
+	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid) {
 		try{
+			
+			String str = UserQueryDateHashService.getInstance().fetchLastQueryData(uid);
+			long timestamp = 0L;
+			if (str != null) {
+				timestamp = Long.parseLong(str);
+			}
+			
+			if (timestamp == 0) {
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.DATE, -1);
+				timestamp = cal.getTimeInMillis();
+			}
+			
 			OrderRewardNewlyDataVTO vto = null;
-			if(start_created_ts > 0){
-				vto = orderFacadeService.rewardOrderNewlyDataWithProcedure(uid, new Date(start_created_ts));
+			if(timestamp > 0){
+				vto = orderFacadeService.rewardOrderNewlyDataWithProcedure(uid, new Date(timestamp));
 			}else{
 				vto = new OrderRewardNewlyDataVTO();
 			}
-//			int count = orderFacadeService.countOrderByParams(uid, null, null, status, 
-//					null, CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts);
+			
+			UserQueryDateHashService.getInstance().addQueryData(uid, System.currentTimeMillis());
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){

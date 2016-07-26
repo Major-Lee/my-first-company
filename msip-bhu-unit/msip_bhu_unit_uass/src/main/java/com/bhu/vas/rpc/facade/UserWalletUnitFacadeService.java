@@ -31,6 +31,7 @@ import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserPublishAccount;
+import com.bhu.vas.api.rpc.user.model.UserSharedealDistributorView;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
@@ -43,6 +44,7 @@ import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
+import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
 import com.bhu.vas.business.ds.user.facade.UserOAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
@@ -50,11 +52,14 @@ import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserPublishAccountService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserSharedealDistributorViewService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -86,9 +91,11 @@ public class UserWalletUnitFacadeService {
 	@Resource
 	private UserIncomeRankService userIncomeRankService;
 	
-	// 订单服务
-//	@Resource
-//	private Order
+	@Resource
+	private OrderService orderService;
+	
+	@Resource
+	private UserSharedealDistributorViewService userSharedealDistributorViewService;
 	
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
@@ -161,24 +168,65 @@ public class UserWalletUnitFacadeService {
 			if(StringUtils.isNotEmpty(transtype)){
 				ttype = UWalletTransType.fromKey(transtype);
 			}
-			TailPage<UserWalletLog> pages = userWalletFacadeService.pageUserWalletlogs(uid, tmode, ttype, 
+			
+			TailPage<UserWalletLogFFVTO> result_pages = null;
+			List<UserWalletLogFFVTO> vtos = new ArrayList<UserWalletLogFFVTO>();
+			
+			ModelCriteria mc = new ModelCriteria();
+			Criteria createCriteria = mc.createCriteria();
+			createCriteria.andColumnEqualTo("uid", uid);
+			if(transmode != null)
+				createCriteria.andColumnEqualTo("transmode", tmode.getKey());
+			if(transtype != null)
+				createCriteria.andColumnEqualTo("transtype", ttype.getKey());
+			if(start_date != null)
+				createCriteria.andColumnGreaterThanOrEqualTo("updated_at", start_date);
+			if(end_date != null)
+				createCriteria.andColumnLessThanOrEqualTo("updated_at", end_date);
+	    	mc.setPageNumber(pageNo);
+	    	mc.setPageSize(pageSize);
+	    	mc.setOrderByClause(" updated_at desc ");
+	    	int count = userSharedealDistributorViewService.countByModelCriteria(mc);
+	    	if(count > 0){
+				List<UserSharedealDistributorView> list = userSharedealDistributorViewService.findModelByCommonCriteria(mc);
+				if(list != null && !list.isEmpty()){
+					List<String> orderids = new ArrayList<String>();
+					for(UserSharedealDistributorView view : list){
+						orderids.add(view.getOrderid());
+					}
+					List<Order> orders = orderService.findByIds(orderids, true, true);
+					int index = 0;
+					for(UserSharedealDistributorView view : list){
+						Order order = orders.get(index);
+						vtos.add(view.toUserWalletLogFFVTO(
+								order!=null?order.getAmount():StringUtils.EMPTY,
+								order!=null?order.getMac():StringUtils.EMPTY));
+						index++;
+					}
+				}
+	    	}
+			
+/*			TailPage<UserWalletLog> pages = userWalletFacadeService.pageUserWalletlogs(uid, tmode, ttype, 
 					start_date, end_date, pageNo, pageSize);
 			TailPage<UserWalletLogFFVTO> result_pages = null;
 			List<UserWalletLogFFVTO> vtos = new ArrayList<UserWalletLogFFVTO>();
 			if(!pages.isEmpty()){
-				List<Integer> uids = new ArrayList<>();
+				List<String> orderids = new ArrayList<String>();
 				for(UserWalletLog log:pages.getItems()){
-					uids.add(log.getUid());
+					orderids.add(log.getOrderid());
 				}
+				List<Order> orders = orderService.findByIds(orderids, true, true);
 				//List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
-				//int index = 0;
+				int index = 0;
 				for(UserWalletLog log:pages.getItems()){
-					//User user = users.get(index);
-					vtos.add(log.toUserWalletLogFFVTO());
-					//index++;
+					Order order = orders.get(index);
+					vtos.add(log.toUserWalletLogFFVTO(
+							order!=null?order.getAmount():StringUtils.EMPTY,
+							order!=null?order.getMac():StringUtils.EMPTY));
+					index++;
 				}
-			}
-			result_pages = new CommonPage<UserWalletLogFFVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos);
+			}*/
+			result_pages = new CommonPage<UserWalletLogFFVTO>(pageNo, pageSize, count, vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

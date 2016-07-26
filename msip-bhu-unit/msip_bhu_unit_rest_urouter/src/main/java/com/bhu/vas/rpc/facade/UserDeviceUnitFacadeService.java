@@ -43,6 +43,7 @@ import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -424,7 +425,7 @@ public class UserDeviceUnitFacadeService {
 
 				if ("1".equals(wifiDeviceDocument.getD_online())) {
 					userDeviceDTO.setOnline(true);
-					userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+					userDeviceDTO.setOhd_count(WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
 							.presentOnlineSize(wifiDeviceDocument.getD_mac()));
 				}
 				userDeviceDTO.setD_online(wifiDeviceDocument.getD_online());
@@ -450,6 +451,7 @@ public class UserDeviceUnitFacadeService {
 					searchPageNo, pageSize);
 
 			List<UserDeviceDTO> vtos = null;
+			List<UserDeviceDTO> result = new ArrayList<UserDeviceDTO>();
 			List<String> macs = null;
 			int total = 0;
 			if (search_result != null) {
@@ -483,7 +485,7 @@ public class UserDeviceUnitFacadeService {
 							}
 							if ("1".equals(wifiDeviceDocument.getD_online())) {
 								userDeviceDTO.setOnline(true);
-								userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+								userDeviceDTO.setOhd_count(WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
 										.presentOnlineSize(wifiDeviceDocument.getD_mac()));
 							}
 							userDeviceDTO.setD_online(wifiDeviceDocument.getD_online());
@@ -494,12 +496,15 @@ public class UserDeviceUnitFacadeService {
 						if (macs !=null) {
 							List<WifiDevice> devices = wifiDeviceService.findByIds(macs);
 							if (devices != null) {
+								
 								int index = 0;
 								for (WifiDevice wifiDevice : devices) {
 									UserDeviceDTO userDeviceDTO = vtos.get(index);
 									userDeviceDTO.setProvince(wifiDevice.getProvince());
 									userDeviceDTO.setCity(wifiDevice.getCity());
 									userDeviceDTO.setDistrict(wifiDevice.getDistrict());
+									result.add(userDeviceDTO);
+									index++;
 								}
 							}
 						}
@@ -508,7 +513,7 @@ public class UserDeviceUnitFacadeService {
 			} else {
 				vtos = Collections.emptyList();
 			}
-			TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, vtos);
+			TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, result);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 		} catch (BusinessI18nCodeException i18nex) {
 			i18nex.printStackTrace(System.out);
@@ -875,7 +880,7 @@ public class UserDeviceUnitFacadeService {
 						vtos = Collections.emptyList();
 					} else {
 						List<String> macs = WifiDeviceDocumentHelper.generateDocumentIds(searchDocuments);
-						List<Object> ohd_counts = WifiDeviceHandsetPresentSortedSetService.getInstance()
+						List<Object> ohd_counts = WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
 								.presentOnlineSizes(macs);
 						List<String> d_linkmodes = WifiDeviceModeStatusService.getInstance().getPresents(macs);
 						UserDeviceCloudDTO vto = null;

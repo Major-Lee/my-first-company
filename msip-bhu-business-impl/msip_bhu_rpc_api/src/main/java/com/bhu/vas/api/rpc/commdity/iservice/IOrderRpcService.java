@@ -14,12 +14,12 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 public interface IOrderRpcService {
 	
 	public RpcResponseDTO<OrderRewardVTO> createRewardOrder(Integer commdityid, String mac, String umac, 
-			Integer umactype, String payment_type, String context, String user_agent);
+			Integer umactype, String payment_type, String context, String user_agent, Integer channel);
 	
 	public RpcResponseDTO<OrderStatusDTO> orderStatusByUmac(String umac, String orderid);
 	
 	public RpcResponseDTO<TailPage<OrderRewardVTO>> rewardOrderPages(Integer uid, String mac, String umac, 
-			Integer status, String dut, int pageNo, int pageSize);
+			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize);
 	
 	public RpcResponseDTO<RewardOrderStatisticsVTO> rewardOrderStatisticsBetweenDate(String start_date, String end_date);
 	
@@ -41,6 +41,6 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<TailPage<OrderSMSVTO>> smsOrderPages(Integer uid, String mac, String umac, 
 			Integer status, String dut, int pageNo, int pageSize);
 
-	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid, long start_created_ts);
+	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid);
 
 }

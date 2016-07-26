@@ -3,27 +3,38 @@
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	
-	<Property name="status.base" 	value="/BHUData/bulogs/reportinglogs/" />
-	<!-- <Property name="status.base" 	value="E:/logs/" /> -->
+	<Property name="status.base" 	value="/BHUData/bulogs/reid/" />
+	<Property name="final.base" 	value="/BHUData/pa_portal/" />
+	<!-- <Property name="status.base" 	value="E:/logs/" />
+	<Property name="final.base" 	value="E:/log/" /> -->
 	<jmxConfigurator />
-	<timestamp key="bySecond" datePattern="yyyyMMddHHmmss"/>   
+	<timestamp key="curTime" datePattern="yyyyMMddHHmmss"/>
 	
+	<!-- 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
 		</layout>
-	</appender>
+	</appender> -->
 
+	 
 	<appender name="logfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<File>${status.base}${bySecond}.business-reporting</File>
+		<File>${status.base}${curTime}.business-reporting</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>${status.base}%d{yyyyMMddHHmmss}.business-reporting.zip</FileNamePattern>
-			<MaxHistory>60</MaxHistory>
+			<FileNamePattern>${final.base}business-reporting.%d{yyyyMMddHHmmss}</FileNamePattern>
+			<!--<MaxHistory>60</MaxHistory>  -->
 		</rollingPolicy>
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<pattern>%date - %msg%n</pattern>
 		</layout>
 	</appender>
+	
+	<!-- <appender name="logfile" class="ch.qos.logback.core.FileAppender">  
+	    <file>${status.base}${bySecond}.business-reporting</file>  
+	    <encoder>
+	        <pattern>%date - %msg%n</pattern>  
+	    </encoder>  
+	</appender> -->
 	
 	<logger name="com.bhu.vas.business.backend.terminalstatus.logger.TerminalStatusNotifyLogger" additivity="false">
 		<level value="INFO"/>
@@ -33,7 +44,7 @@
 	<root>
 		<level value="INFO" />
 		<appender-ref ref="stdout" />
-		<appender-ref ref="logfile" />
+		<!-- <appender-ref ref="logfile" /> -->
 	</root>
 </configuration>
 

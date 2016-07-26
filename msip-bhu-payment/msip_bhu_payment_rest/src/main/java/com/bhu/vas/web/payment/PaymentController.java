@@ -1079,8 +1079,8 @@ public class PaymentController extends BaseController{
 
     	double fenTemp = Double.parseDouble(total_fee_fen);
     	double jiaoTemp =fenTemp/10;
-    	//String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
-    	String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac);
+    	String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
+    	//String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac);
     	logger.info(String.format("apply midas results [%s]",results));
     	if("error".equalsIgnoreCase(results)){
     		result.setType("FAIL");

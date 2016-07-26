@@ -190,17 +190,6 @@ public class UserUnitFacadeService {
 		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserValidate(user,uToken, device, remoteIp,d_udid);
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				userExchange);//,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
-		//add by fengshibo for push switch
-		UserConfigsState userConfigsState = userConfigsStateService.getById(userExchange.getUser().getId());
-		if (userConfigsState != null){
-			UserConfigsStateDTO dto = JsonHelper.getDTO(userConfigsState.getExtension_content(), UserConfigsStateDTO.class);
-			if (dto!= null) {
-				rpcPayload.put("rn_on", dto.isRn_on());
-			}else{
-				rpcPayload.put("rn_on", Boolean.TRUE);
-			}
-		}
-		
 		
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
@@ -521,6 +510,17 @@ public class UserUnitFacadeService {
 			//userExchange.setWallet(userWalletFacadeService.walletDetail(uid));
 			//userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId(),false));
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
+			//add by fengshibo for push switch
+			UserConfigsState userConfigsState = userConfigsStateService.getById(userExchange.getUser().getId());
+			if (userConfigsState != null){
+				UserConfigsStateDTO dto = JsonHelper.getDTO(userConfigsState.getExtension_content(), UserConfigsStateDTO.class);
+				if (dto!= null) {
+					rpcPayload.put("rn_on", dto.isRn_on());
+				}
+			}else{
+				rpcPayload.put("rn_on", Boolean.TRUE);
+			}
+			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

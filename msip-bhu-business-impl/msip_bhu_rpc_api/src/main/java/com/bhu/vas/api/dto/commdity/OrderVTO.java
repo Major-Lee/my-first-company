@@ -14,6 +14,8 @@ public class OrderVTO implements java.io.Serializable{
 	private Integer appid;
 	//订单类型
 	private Integer type;
+	//订单渠道
+	private Integer channel;
 	//user agent sources count
 	private String user_agent;
 	//业务上下文
@@ -48,6 +50,12 @@ public class OrderVTO implements java.io.Serializable{
 	}
 	public void setType(Integer type) {
 		this.type = type;
+	}
+	public Integer getChannel() {
+		return channel;
+	}
+	public void setChannel(Integer channel) {
+		this.channel = channel;
 	}
 	public String getUser_agent() {
 		return user_agent;
