@@ -629,6 +629,8 @@ public class SSIDStatisticFacadeRpcService {
 		Map<String,Object> resMap=new HashMap<String,Object>();
 		resMap.put("dataList", resMaps);
 		resMap.put("total", tMaps);
+		
+		result=success(resMap);
 		return result;
 	}
 	
@@ -762,5 +764,30 @@ public class SSIDStatisticFacadeRpcService {
 			//System.out.println(mobileClick);
 		//BhuCache.getInstance().setEquipment("2016-06-05", "equipment", "{\"dc\":10020,\"doc\":7998}");
 		//BhuCache.getInstance().setStOrder("2016-06-05", "stOrder", "{\"mb_ofc\":833,\"mb_ofa\":\"594\",\"pc_ofc\":26,\"pc_ofa\":\"65\",\"pc_occ\":188,\"ofc\":859,\"mb_occ\":4210,\"ofa\":659.0,\"occ\":4398}");
+	}
+	/**
+	 * 返回成功结果集
+	 * @Title success 
+	 * @Description 返回成功结果集
+	 * @author Alan
+	 * @date 2015年9月5日 上午10:22:28
+	 * @updateTime 2015年9月5日 上午10:22:28
+	 * @udpateAuthor  Alan
+	 * @param body 返回值中body参数结果 Object 
+	 * @return String   {"code":"0","msg":"success","body":[{"id":"1","name":"测试"}]}
+	 */
+	public static String success(Object body){
+		Map<String, Object> map=new HashMap<String, Object>();
+		String code="0";
+		String message="success";
+		map.put("code", code);
+		map.put("msg", message);
+		map.put("success", true);
+		if(body==null){
+			body="{}";
+		}
+		map.put("result", body);
+		String result=JSONObject.toJsonString(map);
+		return result;
 	}
 }
