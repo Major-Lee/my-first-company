@@ -29,11 +29,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
-import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
-import com.bhu.vas.business.ds.user.service.UserService;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.di.op.repair.UserOAuthStateSpecialNickRepairEnvOp;
+import com.bhu.vas.di.op.umUtil.OpenApiCnzzImpl;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 
@@ -142,7 +140,72 @@ public class DeviceOrderStatitics {
 			String json = JsonHelper.getJSONString(resultMap);
 			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-"+getNextDay(), entry.getKey().toString(), json);
 		}
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		
+		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "", "",1);
+		String pcMacUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "wlanusermac", "",1);
+		Map<String,Object> pcUvJson=JsonHelper.getMapFromJson(pcUv);
+		String pcUvJsonStr=(String) pcUvJson.get("values");
+		pcUvJsonStr=pcUvJsonStr.substring(1);
+		pcUvJsonStr=pcUvJsonStr.substring(0, pcUvJsonStr.length()-1);
+		int pcUV=Integer.valueOf(pcUvJsonStr.split(",")[1].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "pcUv", String.valueOf(pcUV));
+		
+		String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", getNextDay(), getNextDay(), "", "",1);
+		Map<String,Object> pcClickJson=JsonHelper.getMapFromJson(pcClick);
+		String pcClickJsonStr=(String) pcClickJson.get("values");
+		pcClickJsonStr=pcClickJsonStr.substring(1);
+		pcClickJsonStr=pcClickJsonStr.substring(0, pcClickJsonStr.length()-1);
+		int pcClickNum=Integer.valueOf(pcClickJsonStr.split(",")[0].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "pcClickNum", String.valueOf(pcClickNum));
+		
+		String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "",2);
+		Map<String,Object> mobileUvJson=JsonHelper.getMapFromJson(mobileUv);
+		String mobileUvJsonStr=(String) mobileUvJson.get("values");
+		mobileUvJsonStr=mobileUvJsonStr.substring(1);
+		mobileUvJsonStr=mobileUvJsonStr.substring(0, mobileUvJsonStr.length()-1);
+		int mobileUV=Integer.valueOf(mobileUvJsonStr.split(",")[1].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "mobileUv", String.valueOf(mobileUV));
+		
+		String iosUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "os = 'ios'",2);
+		Map<String,Object> iosUvJson=JsonHelper.getMapFromJson(iosUv);
+		String iosUvJsonStr=(String) iosUvJson.get("values");
+		iosUvJsonStr=iosUvJsonStr.substring(1);
+		iosUvJsonStr=iosUvJsonStr.substring(0, iosUvJsonStr.length()-1);
+		int iosUV=Integer.valueOf(iosUvJsonStr.split(",")[1].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "iosUv", String.valueOf(iosUV));
+		
+		String androidUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "os = 'android'",2);
+		Map<String,Object> androidUvJson=JsonHelper.getMapFromJson(androidUv);
+		String androidUvJsonStr=(String) androidUvJson.get("values");
+		androidUvJsonStr=androidUvJsonStr.substring(1);
+		androidUvJsonStr=androidUvJsonStr.substring(0, androidUvJsonStr.length()-1);
+		int androidUV=Integer.valueOf(androidUvJsonStr.split(",")[1].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "androidUv", String.valueOf(androidUV));
+	
+		String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "",2);
+		Map<String,Object> mobileClickJson=JsonHelper.getMapFromJson(mobileClick);
+		String mobileClickJsonStr=(String) mobileClickJson.get("values");
+		mobileClickJsonStr=mobileClickJsonStr.substring(1);
+		mobileClickJsonStr=mobileClickJsonStr.substring(0, mobileClickJsonStr.length()-1);
+		int mobileClickNum=Integer.valueOf(mobileClickJsonStr.split(",")[0].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "mobileClickNum", String.valueOf(mobileClickNum));
+	
+		String iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "os = 'ios'",2);
+		Map<String,Object> iosClickJson=JsonHelper.getMapFromJson(iosClick);
+		String iosClickJsonStr=(String) iosClickJson.get("values");
+		iosClickJsonStr=iosClickJsonStr.substring(1);
+		iosClickJsonStr=iosClickJsonStr.substring(0, iosClickJsonStr.length()-1);
+		int iosClickNum=Integer.valueOf(iosClickJsonStr.split(",")[0].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "iosClickNum", String.valueOf(iosClickNum));
+	
+		String androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "os = 'android'",2);
+		Map<String,Object> androidClickJson=JsonHelper.getMapFromJson(androidClick);
+		String androidClickJsonStr=(String) androidClickJson.get("values");
+		androidClickJsonStr=androidClickJsonStr.substring(1);
+		androidClickJsonStr=androidClickJsonStr.substring(0, androidClickJsonStr.length()-1);
+		int androidClickNum=Integer.valueOf(androidClickJsonStr.split(",")[0].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "androidClickNum", String.valueOf(androidClickNum));
 	} 
 	
 	/**
