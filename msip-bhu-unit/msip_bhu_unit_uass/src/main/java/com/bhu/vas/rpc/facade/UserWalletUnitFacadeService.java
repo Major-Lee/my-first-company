@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.facade;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,9 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.charging.model.UserIncome;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
+import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatistic;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
@@ -82,6 +85,10 @@ public class UserWalletUnitFacadeService {
 	
 	@Resource
 	private UserIncomeRankService userIncomeRankService;
+	
+	// 订单服务
+//	@Resource
+//	private Order
 	
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
@@ -685,18 +692,78 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int type) {
-		UcloudMacStatisticsVTO ucloudMacStatisticsVTO=new UcloudMacStatisticsVTO();
-		List<UcloudMacStatistic> ucloudMacStatistics=new ArrayList<UcloudMacStatistic>();
+	
+	/**
+	 * 丰富统计信息
+	 */
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int type,int pageIndex,int pageSize) {
+		UcloudMacStatisticsVTO ucloudMacStatisticsVTO = new UcloudMacStatisticsVTO();
+		List<UcloudMacStatistic> ucloudMacStatistics = new ArrayList<UcloudMacStatistic>();
 		try{
-			List<UserWalletLog> userWalletLogs= userWalletFacadeService.getUserWalletLogService().findListByTimeField(startTime, endTime);
-			if(userWalletLogs!=null&&userWalletLogs.size()>0){
-				for(UserWalletLog i:userWalletLogs){
-					UcloudMacStatistic ucloudMacStatistic=new UcloudMacStatistic();
-					ucloudMacStatistic.setIncome("0");
-					ucloudMacStatistic.setMac("");
+			List<UserWalletLog> userWalletLogs = userWalletFacadeService.getUserWalletLogService().findListByTimeField(startTime, endTime,pageIndex,pageSize);
+			UcloudMacStatistic ucloudMacStatistic = null;
+			if (userWalletLogs != null && userWalletLogs.size() > 0) {
+				for(UserWalletLog item : userWalletLogs){
+					ucloudMacStatistic = new UcloudMacStatistic();
+					// 打赏收益（元）
+					ucloudMacStatistic.setIncome(item.getCash());
+					// 打赏方式
+					ucloudMacStatistic.setMethod(item.getDescription());
+					// 终端MAC
+					ucloudMacStatistic.setTime(item.getUpdated_at().toString());
+					// 订单表里获取打赏设备和终端MAC
+					Order order = userWalletFacadeService.getUserIncomeService().getEntityDao().selectOrdersInfo(item.getOrderid());
+					if (null == order) {
+						// 打赏设备
+						ucloudMacStatistic.setuMac("");
+						// 终端MAC
+						ucloudMacStatistic.setMac("");
+					} else {
+						// 打赏设备
+						ucloudMacStatistic.setuMac(order.getUmac());
+						// 终端MAC
+						ucloudMacStatistic.setMac(order.getMac());
+					}
+					// 厂家
+					ucloudMacStatistic.setVender("");
+					ucloudMacStatistics.add(ucloudMacStatistic);
  				}
+				// 收益设备信息列表
+				ucloudMacStatisticsVTO.setMacsInfo(ucloudMacStatistics);
 			}
+			
+			// 收益设备信息合计
+			// 获取今日打赏收益和今日打赏用户数
+			List<UserIncome> todayUserIncomes = userWalletFacadeService.getUserIncomeService().findListByTime(GetDateTime("yyyy-MM-dd", 0));
+			if (todayUserIncomes != null && todayUserIncomes.size() > 0) {
+				// 今日打赏收益
+				ucloudMacStatisticsVTO.setTodayIncome(todayUserIncomes.get(0).getIncome());
+				// 今日打赏用户数
+				ucloudMacStatisticsVTO.setTodayUserNum(String.valueOf(todayUserIncomes.get(0).getTimes()));
+			} else {
+				// 今日打赏收益
+				ucloudMacStatisticsVTO.setTodayIncome("0");
+				// 今日打赏用户数
+				ucloudMacStatisticsVTO.setTodayUserNum("0");
+			}
+			
+			// 获取昨日打赏收益和昨日打赏用户数
+			List<UserIncome> yesTerdayUserIncomes = userWalletFacadeService.getUserIncomeService().findListByTime(GetDateTime("yyyy-MM-dd", -1));
+			if (yesTerdayUserIncomes != null && yesTerdayUserIncomes.size() > 0) {
+				// 昨日打赏收益
+				ucloudMacStatisticsVTO.setYesterdayIncome(yesTerdayUserIncomes.get(0).getIncome());
+				// 昨日打赏用户数
+				ucloudMacStatisticsVTO.setYesterdayUserNum(String.valueOf(yesTerdayUserIncomes.get(0).getTimes()));
+			} else {
+				// 昨日打赏收益
+				ucloudMacStatisticsVTO.setYesterdayIncome("0");
+				// 昨日打赏用户数
+				ucloudMacStatisticsVTO.setYesterdayUserNum("0");
+			}
+			// 获取累计打赏收益
+			double totalIncome = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalIncome();
+			ucloudMacStatisticsVTO.setTotalIncome(String.valueOf(totalIncome));
+
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ucloudMacStatisticsVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -705,4 +772,29 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	/**
+	 * 获取日期
+	 * @param simpleDateFormat 日期的格式
+	 * @param days 取得那天日期  如：0：今天
+	 */
+	public String GetDateTime(String simpleDateFormat, int days) {
+		// 返回日期
+	    String retDate = StringUtils.EMPTY;
+	    // 当前时间
+	    Date dt = new Date();
+	    // 得到日历
+	    Calendar calendar = Calendar.getInstance();
+	    // 把当前时间赋给日历
+	    calendar.setTime(dt);
+	    // 设置为前一天
+	    calendar.add(Calendar.DAY_OF_MONTH, days);
+	    // 得到前一天的时间
+	    Date dBefore = calendar.getTime();
+	    
+	    SimpleDateFormat sdf = new SimpleDateFormat(simpleDateFormat);
+	    retDate = sdf.format(dBefore);
+	    return retDate;
+	} 
+
 }

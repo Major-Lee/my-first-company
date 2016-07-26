@@ -16,7 +16,6 @@ import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.UserSettingStateService;
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
 import com.bhu.vas.api.rpc.user.dto.UserConfigsStateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;

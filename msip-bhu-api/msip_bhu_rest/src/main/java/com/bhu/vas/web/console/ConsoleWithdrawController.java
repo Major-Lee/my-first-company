@@ -214,10 +214,12 @@ public class ConsoleWithdrawController extends BaseController {
     		@RequestParam(required = true) int uid,
     		@RequestParam(required = false) String startTime,
     		@RequestParam(required = false) String endTime,
-    		@RequestParam(required = false) int type
+    		@RequestParam(required = false) int type,
+    		@RequestParam(required = false) int pageIndex,
+    		@RequestParam(required = false) int pageSize
     		){
     	try{
-    		RpcResponseDTO<UcloudMacStatisticsVTO> rpcResult = userWalletRpcService.richStatistics(startTime,endTime,type);
+    		RpcResponseDTO<UcloudMacStatisticsVTO> rpcResult = userWalletRpcService.richStatistics(startTime,endTime,type,pageIndex,pageSize);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{

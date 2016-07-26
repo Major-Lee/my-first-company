@@ -36,4 +36,5 @@ public class UserIncomeService extends AbstractCoreService<String, UserIncome, U
 		mc.setOrderByClause("income");
 		return super.findModelByModelCriteria(mc);
 	}
+
 }
