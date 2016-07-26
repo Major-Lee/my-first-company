@@ -140,7 +140,7 @@ public class DeviceOrderStatitics {
 			resultMap.put("pv", map.get("pv"));
 			resultMap.put("uv", map.get("uv"));
 			String json = JsonHelper.getJSONString(resultMap);
-			DeviceStatisticsHashService.getInstance().deviceMacHset(getNextDay(), entry.getKey().toString(), json);
+			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-"+getNextDay(), entry.getKey().toString(), json);
 		}
 		
 	} 

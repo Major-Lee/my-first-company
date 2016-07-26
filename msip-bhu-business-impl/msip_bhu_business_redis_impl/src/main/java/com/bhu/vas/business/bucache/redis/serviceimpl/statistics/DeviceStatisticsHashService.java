@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Map;
 
 import redis.clients.jedis.JedisPool;
 
@@ -51,6 +52,11 @@ public class DeviceStatisticsHashService extends AbstractRelationHashCache{
 		result = this.hget(generatePrefixKey(key), field);
 		return result;
 	}
+	
+	public Map<String, String> getDeviceMacByKey(String key){
+		return this.hgetall(key);
+	}
+	
 	@Override
 	public String getName() {
 		return DeviceStatisticsHashService.class.getName();

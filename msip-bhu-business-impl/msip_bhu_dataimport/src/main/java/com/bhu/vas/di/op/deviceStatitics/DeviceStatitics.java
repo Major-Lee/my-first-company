@@ -11,14 +11,26 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
+import com.bhu.vas.business.search.builder.WifiDeviceSearchMessageBuilder;
+import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class DeviceStatitics {
 	private static final String REQUEST_URL = "http://vap.bhunetworks.com/bhu_api/v1/dashboard/device/statistics";
+	private static WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	private static UserWifiDeviceService userWifiDeviceService;
 	public static void main(String[] args) {
 		//共享网络开启状态  1 为开启 0为关闭
 		String params = "d_snk_turnstate=1&d_snk_type=SafeSecure&sk=PzdfTFJSUEBHG0dcWFcLew==";
@@ -38,19 +50,41 @@ public class DeviceStatitics {
 			Map<String,Object> map = (Map<String, Object>) helper.get("result");
 			dc = (Integer) map.get("dc");
 			doc = (Integer) map.get("doc");
-			System.out.println(dc);
-			System.out.println(doc);
 			//存储当前日期的设备数以及在线设备数至redis
 			Map<String,Object> resultMap = new HashMap<String,Object>();
-			resultMap.put("dc", dc);
+			resultMap.put("dc ", dc);
 			resultMap.put("doc", doc);
-			System.out.println(currDay());
 			DeviceStatisticsHashService.getInstance().deviceMacHset(currDay(), "equipment", JsonHelper.getJSONString(resultMap));
 			//String str = BhuCache.getInstance().getEquipment(DataUtils.currDay(), "equipment");
 		}
 		
 	}
 	
+	/**
+	 * 查询mac在线状态
+	 */
+	public static String queryMacStatus(){
+		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
+		wifiDeviceDataSearchService = (WifiDeviceDataSearchService)ctx.getBean("wifiDeviceDataSearchService");
+		userWifiDeviceService = (UserWifiDeviceService)ctx.getBean("userWifiDeviceService");
+		String result = StringUtils.EMPTY;
+		/*if(StringUtils.isBlank(mac)){
+			return result;
+		}*/
+		//获取在线Mac集合
+		
+		//获取缓存所有mac 
+		Map<String,String> macMap = DeviceStatisticsHashService.getInstance().getDeviceMacByKey("MAC-"+currDay());
+		if(macMap != null && macMap.size()>0){
+			for (Entry<String, String> entry : macMap.entrySet()) {
+				//根据mac查询当前mac在线状态
+				WifiDeviceDocument wifiDeviceDocument = wifiDeviceDataSearchService.searchById(entry.getKey());
+				Map<String,Object> map = JsonHelper.getMapFromJson(entry.getValue());
+				
+	        }  
+		}
+		return result;
+	}
 	public static String sendPost(String url, String param) {
 		 PrintWriter out = null;
 			BufferedReader in = null;
