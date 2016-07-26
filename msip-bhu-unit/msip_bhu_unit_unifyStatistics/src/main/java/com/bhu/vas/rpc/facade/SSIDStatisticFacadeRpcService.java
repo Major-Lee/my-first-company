@@ -23,6 +23,7 @@ import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.rpc.util.DataUtils;
 import com.bhu.vas.rpc.util.JSONObject;
 import com.bhu.vas.rpc.util.um.OpenApiCnzzImpl;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -95,6 +96,8 @@ public class SSIDStatisticFacadeRpcService {
 		}else{
 			//根据天数查询设备统计信息
 			timeList = getLastDayAsc(Integer.parseInt(type));
+			startTime=timeList.get(timeList.size()-1);
+			endTime=DataUtils.beforeDay();
 		}
 		//uv总数
 		int totalUV = 0;
@@ -135,10 +138,11 @@ public class SSIDStatisticFacadeRpcService {
 		
 		//组装结果集
 		List<LinkedHashMap<String,Object>> listMap = new ArrayList<LinkedHashMap<String,Object>>();
-		LinkedHashMap<String,Object> singleMap = null;
+		LinkedHashMap<String,Object> ssidMap = null;
 		String date = StringUtils.EMPTY;
 		if(macList == null || macList.size()<=0){
 			for (int i = 0; i < timeList.size(); i++) {
+				LinkedHashMap<String,Object> singleMap=new LinkedHashMap<String,Object>();
 				//===================设备==============================
 				//每天uv总数
 				int dayUV = 0 ;
@@ -154,10 +158,10 @@ public class SSIDStatisticFacadeRpcService {
 				}
 				totalPV += dayPV;
 				totalUV += dayUV;
-				singleMap = new LinkedHashMap<String,Object>();
-				singleMap.put("currDate", date);
-				singleMap.put("dayUV", dayUV);
-				singleMap.put("dayPV", dayPV);
+				ssidMap = new LinkedHashMap<String,Object>();
+				ssidMap.put("currDate", date);
+				ssidMap.put("dayUV", dayUV);
+				ssidMap.put("dayPV", dayPV);
 				//获取设备总数以及设备在线数
 				String equipment = StringUtils.EMPTY;
 				equipment = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "equipment");
@@ -165,18 +169,18 @@ public class SSIDStatisticFacadeRpcService {
 				int dc = 0;
 				int doc = 0;
 				if(StringUtils.isBlank(equipment)){
-					singleMap.put("dc", dc);
-					singleMap.put("doc", doc);
+					ssidMap.put("dc", dc);
+					ssidMap.put("doc", doc);
 				}else{
 					//处理结果
 					if(obj.get("dc") != null && obj.get("doc") != null){
 						dc = (Integer)obj.get("dc");
 						doc = (Integer)obj.get("doc");
-						singleMap.put("dc", dc);
-						singleMap.put("doc", doc);
+						ssidMap.put("dc", dc);
+						ssidMap.put("doc", doc);
 					}else{
-						singleMap.put("dc", dc);
-						singleMap.put("doc", doc);
+						ssidMap.put("dc", dc);
+						ssidMap.put("doc", doc);
 					}
 				}
 				totalDC += dc;
@@ -188,41 +192,43 @@ public class SSIDStatisticFacadeRpcService {
 				double singleGains = 0;
 				double dayGains = 0;
 				if(StringUtils.isBlank(orderStatist)){
-					singleMap.put("singleOrderNum", singleOrderNum);
-					singleMap.put("singleGains", singleGains);
-					singleMap.put("dayGains", dayGains);
+					ssidMap.put("singleOrderNum", singleOrderNum);
+					ssidMap.put("singleGains", singleGains);
+					ssidMap.put("dayGains", dayGains);
 				}else{
 					JSONObject orderObj = JSONObject.fromObject(orderStatist);
 					if(orderObj.get("occ") != null && orderObj.get("ofc") != null && orderObj.get("ofa") != null){
 						//单台订单
 						int occ = (Integer)orderObj.get("occ");
 						if(doc == 0){
-							singleMap.put("singleOrderNum", singleOrderNum);
-							singleMap.put("singleGains", singleGains);
+							ssidMap.put("singleOrderNum", singleOrderNum);
+							ssidMap.put("singleGains", singleGains);
 						}else{
 							singleOrderNum = (double) occ/doc;
 							BigDecimal b = new BigDecimal(singleOrderNum);
 							singleOrderNum =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
-							singleMap.put("singleOrderNum", singleOrderNum);
+							ssidMap.put("singleOrderNum", singleOrderNum);
 							//单台收益
 							Double ofa = orderObj.getDouble("ofa");
 							singleGains = ofa/doc;
 							BigDecimal b1 = new BigDecimal(singleGains);
 							singleGains =  b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
-							singleMap.put("singleGains", singleGains);
+							ssidMap.put("singleGains", singleGains);
 						}
 						dayGains = orderObj.getDouble("ofa");
-						singleMap.put("dayGains", dayGains);
+						ssidMap.put("dayGains", dayGains);
 					}else{
-						singleMap.put("singleOrderNum", singleOrderNum);
-						singleMap.put("singleGains", singleGains);
-						singleMap.put("dayGains", dayGains);
+						ssidMap.put("singleOrderNum", singleOrderNum);
+						ssidMap.put("singleGains", singleGains);
+						ssidMap.put("dayGains", dayGains);
 					}
 				}
+				singleMap.put("ssid", ssidMap);
+				
 				totalSingleGains += singleGains;
 				totalSingleOrderNum += singleOrderNum;
 				totalGains += dayGains;
-				listMap.add(singleMap);
+				
 				//===================友盟==================================
 				//获取每日PC端uv数据
 				String pcUv= UMStatisticsHashService.getInstance().umHget(timeList.get(i), "pcUv");
@@ -514,6 +520,7 @@ public class SSIDStatisticFacadeRpcService {
 			
 		}
 		
+		LinkedHashMap<String,Object> tMaps=new LinkedHashMap<String,Object>();
 		Map<String,Object> totalMap=new HashMap<String,Object>();
 		totalMap.put("totalPV", totalPV);
 		totalMap.put("totalUV", totalUV);
@@ -525,9 +532,103 @@ public class SSIDStatisticFacadeRpcService {
 		totalMap.put("totalSingleGains", totalSingleGains);
 		totalMap.put("totalSingleOrderNum", totalSingleOrderNum);
 		totalMap.put("totalGains", totalGains);
-		Map<String,Object> body = new HashMap<String,Object>();
-		body.put("ssidList", listMap);
-		body.put("totalSSID", totalMap);
+		tMaps.put("ssid", totalMap);
+		
+		Map<String,Object> totalUmMap=new HashMap<String,Object>();
+		totalUmMap.put("uv", totalUv);
+		totalUmMap.put("clickNum", totalClickNum);
+		totalUmMap.put("clickAverNum", 0);
+		totalUmMap.put("orderConversion", 0);
+		totalUmMap.put("orderComConversion", 0);
+		if(totalUv!=0){
+			totalUmMap.put("clickAverNum", round(totalClickNum*1.00/totalUv*100,2)+"%");
+			totalUmMap.put("orderConversion", round((totalPcOrderNum+totalMbOrderNum)*1.00/totalUv*100,2)+"%");
+			totalUmMap.put("orderComConversion", round((totalPcOrderComplete+totalMbOrderComplete)*1.00/totalUv*100,2)+"%");
+		}
+		totalUmMap.put("orderNum", totalPcOrderNum+totalMbOrderNum);
+		totalUmMap.put("clickConversion", 0);
+		if(totalClickNum!=0){
+			totalUmMap.put("clickConversion", round((totalPcOrderNum+totalMbOrderNum)*1.00/totalClickNum*100,2)+"%");
+		}
+		totalUmMap.put("orderComplete", totalPcOrderComplete+totalMbOrderComplete);
+		totalUmMap.put("orderAmount", totalPcOrderAmount+totalMbOrderAmount);
+		tMaps.put("total",totalUmMap);
+		Map<String,Object> pcMap=new HashMap<String,Object>();
+		pcMap.put("uv", totalPcUV);
+		pcMap.put("clickNum", totalPcClickNum);
+		pcMap.put("clickAverNum", 0);
+		pcMap.put("orderConversion", 0);
+		pcMap.put("orderComConversion", 0);
+		if(totalPcUV!=0){
+			pcMap.put("clickAverNum", round(totalPcClickNum*1.00/totalPcUV*100,2)+"%");
+			pcMap.put("orderConversion", round(totalPcOrderNum*1.00/totalPcUV*100,2)+"%");
+			pcMap.put("orderComConversion", round(totalPcOrderComplete*1.00/totalPcUV*100,2)+"%");
+		}
+		pcMap.put("orderNum", totalPcOrderNum);
+		pcMap.put("clickConversion", 0);
+		if(totalPcClickNum!=0){
+			pcMap.put("clickConversion", round(totalPcOrderNum*1.00/totalPcClickNum*100,2)+"%");
+		}
+		pcMap.put("orderComplete", totalPcOrderComplete);
+		pcMap.put("orderAmount", totalPcOrderAmount);
+		tMaps.put("PC", pcMap);
+		
+		Map<String,Object> mobileMap=new HashMap<String,Object>();
+		mobileMap.put("uv", totalMobileUV);
+		mobileMap.put("clickNum", totalMobileClickNum);
+		mobileMap.put("clickAverNum", 0);
+		mobileMap.put("orderConversion", 0);
+		mobileMap.put("orderComConversion", 0);
+		if((totalAndroidUV+totalIosUV)!=0){
+			mobileMap.put("clickAverNum", round(totalMobileClickNum*1.00/totalMobileUV*100,2)+"%");
+			mobileMap.put("orderConversion", round(totalMbOrderNum*1.00/totalMobileUV*100,2)+"%");
+			mobileMap.put("orderComConversion", round(totalMbOrderComplete*1.00/totalMobileUV*100,2)+"%");
+		}
+		mobileMap.put("orderNum", totalMbOrderNum);
+		mobileMap.put("clickConversion", 0);
+		if(totalMobileClickNum!=0){
+			mobileMap.put("clickConversion", round(totalMbOrderNum*1.00/totalMobileClickNum*100,2)+"%");
+		}
+		mobileMap.put("orderComplete", totalMbOrderComplete);
+		mobileMap.put("orderAmount", totalMbOrderAmount);
+		tMaps.put("mobile", mobileMap);
+		
+		Map<String,Object> iosMap=new HashMap<String,Object>();
+		
+		iosMap.put("uv", totalIosUV);
+		iosMap.put("clickNum", totalIosClickNum);
+		iosMap.put("clickAverNum", 0);
+		if(totalIosUV!=0){
+			iosMap.put("clickAverNum", round(totalIosClickNum*1.00/totalIosUV*100,2)+"%");
+		}
+		iosMap.put("orderNum", "-");
+		iosMap.put("clickConversion", "-");
+		iosMap.put("orderConversion", "-");
+		iosMap.put("orderComplete", "-");
+		iosMap.put("orderAmount", "-");
+		iosMap.put("orderComConversion", "-");
+		tMaps.put("ios", iosMap);
+		tMaps.put("date", startTime+" - "+endTime);
+		
+		Map<String,Object> androidMap=new HashMap<String,Object>();
+		
+		androidMap.put("uv", totalAndroidUV);
+		androidMap.put("clickNum", totalAndroidClickNum);
+		androidMap.put("clickAverNum", 0);
+		if(totalAndroidUV!=0){
+			androidMap.put("clickAverNum", round(totalAndroidClickNum*1.00/totalAndroidUV*100,2)+"%");
+		}
+		androidMap.put("orderNum", "-");
+		androidMap.put("clickConversion", "-");
+		androidMap.put("orderConversion", "-");
+		androidMap.put("orderComplete", "-");
+		androidMap.put("orderAmount", "-");
+		androidMap.put("orderComConversion", "-");
+		tMaps.put("android", androidMap);
+		
+		Map<String,Object> resMap=new HashMap<String,Object>();
+		resMap.put("dataList", resMaps);
+		resMap.put("total", tMaps);
 		return result;
 	}
 	
@@ -637,5 +738,29 @@ public class SSIDStatisticFacadeRpcService {
 	    BigDecimal b = new BigDecimal(Double.toString(v));         
 	    BigDecimal one = new BigDecimal("1");         
 	    return b.divide(one,scale,BigDecimal.ROUND_HALF_UP).doubleValue();         
+	}
+	
+	public static void main(String[] args) {
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+		/*String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-06-01", "2016-06-01", "date", "",1);
+		System.out.println(pcUv);*/
+		//System.out.println(new java.text.DecimalFormat("0.00").format(4.025)); 
+		//System.out.println(Math.round(4.024*100 + 0.5)/100.0); 
+//		double s=3*1.00/2;
+//		 BigDecimal b = new BigDecimal(Double.toString(s));         
+//		 BigDecimal one = new BigDecimal("1");         
+//		 System.out.println(b.divide(one,2,BigDecimal.ROUND_HALF_UP).doubleValue());        
+		 String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2016-06-07", "2016-06-07", "", " ",2);
+		 //String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
+			//String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
+			System.out.println(mobileUv);
+			JSONObject jsonObject=JSONObject.fromObject(mobileUv);
+			String ss=jsonObject.get("values").toString();
+			ss=ss.substring(1);
+			ss=ss.substring(0, ss.length()-1);
+			System.out.println(ss);
+			//System.out.println(mobileClick);
+		//BhuCache.getInstance().setEquipment("2016-06-05", "equipment", "{\"dc\":10020,\"doc\":7998}");
+		//BhuCache.getInstance().setStOrder("2016-06-05", "stOrder", "{\"mb_ofc\":833,\"mb_ofa\":\"594\",\"pc_ofc\":26,\"pc_ofa\":\"65\",\"pc_occ\":188,\"ofc\":859,\"mb_occ\":4210,\"ofa\":659.0,\"occ\":4398}");
 	}
 }
