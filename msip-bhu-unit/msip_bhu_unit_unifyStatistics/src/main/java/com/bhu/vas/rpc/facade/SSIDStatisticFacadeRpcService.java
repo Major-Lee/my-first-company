@@ -517,6 +517,384 @@ public class SSIDStatisticFacadeRpcService {
 			totalDC = totalDC/Integer.parseInt(type);
 			totalDOC = totalDOC/Integer.parseInt(type);
 		}else{
+			for (int i = 0; i < timeList.size(); i++) {
+				LinkedHashMap<String,Object> singleMap=new LinkedHashMap<String,Object>();
+				//===================设备==============================
+				//每天uv总数
+				int dayUV = 0 ;
+				int dayPV = 0;
+				date = timeList.get(i);
+				String dayPv = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "dayPV");
+				String dayUv = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "dayUV");
+				if(StringUtils.isNotBlank(dayPv)){
+					dayPV = Integer.parseInt(dayPv);
+				}
+				if(StringUtils.isNotBlank(dayUv)){
+					dayUV = Integer.parseInt(dayUv);
+				}
+				totalPV += dayPV;
+				totalUV += dayUV;
+				ssidMap = new LinkedHashMap<String,Object>();
+				ssidMap.put("currDate", date);
+				ssidMap.put("dayUV", dayUV);
+				ssidMap.put("dayPV", dayPV);
+				//获取设备总数以及设备在线数
+				String equipment = StringUtils.EMPTY;
+				equipment = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "equipment");
+				JSONObject obj = JSONObject.fromObject(equipment);
+				int dc = 0;
+				int doc = 0;
+				if(StringUtils.isBlank(equipment)){
+					ssidMap.put("dc", dc);
+					ssidMap.put("doc", doc);
+				}else{
+					//处理结果
+					if(obj.get("dc") != null && obj.get("doc") != null){
+						dc = (Integer)obj.get("dc");
+						doc = (Integer)obj.get("doc");
+						ssidMap.put("dc", dc);
+						ssidMap.put("doc", doc);
+					}else{
+						ssidMap.put("dc", dc);
+						ssidMap.put("doc", doc);
+					}
+				}
+				totalDC += dc;
+				totalDOC += doc;
+				//获取当天订单统计数量
+				String orderStatist = StringUtils.EMPTY; 
+				orderStatist = DeviceStatisticsHashService.getInstance().deviceMacHget(date,"stOrder");
+				double singleOrderNum = 0;
+				double singleGains = 0;
+				double dayGains = 0;
+				if(StringUtils.isBlank(orderStatist)){
+					ssidMap.put("singleOrderNum", singleOrderNum);
+					ssidMap.put("singleGains", singleGains);
+					ssidMap.put("dayGains", dayGains);
+				}else{
+					JSONObject orderObj = JSONObject.fromObject(orderStatist);
+					if(orderObj.get("occ") != null && orderObj.get("ofc") != null && orderObj.get("ofa") != null){
+						//单台订单
+						int occ = (Integer)orderObj.get("occ");
+						if(doc == 0){
+							ssidMap.put("singleOrderNum", singleOrderNum);
+							ssidMap.put("singleGains", singleGains);
+						}else{
+							singleOrderNum = (double) occ/doc;
+							BigDecimal b = new BigDecimal(singleOrderNum);
+							singleOrderNum =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
+							ssidMap.put("singleOrderNum", singleOrderNum);
+							//单台收益
+							Double ofa = orderObj.getDouble("ofa");
+							singleGains = ofa/doc;
+							BigDecimal b1 = new BigDecimal(singleGains);
+							singleGains =  b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
+							ssidMap.put("singleGains", singleGains);
+						}
+						dayGains = orderObj.getDouble("ofa");
+						ssidMap.put("dayGains", dayGains);
+					}else{
+						ssidMap.put("singleOrderNum", singleOrderNum);
+						ssidMap.put("singleGains", singleGains);
+						ssidMap.put("dayGains", dayGains);
+					}
+				}
+				singleMap.put("ssid", ssidMap);
+				
+				totalSingleGains += singleGains;
+				totalSingleOrderNum += singleOrderNum;
+				totalGains += dayGains;
+				
+				//===================友盟==================================
+				//获取每日PC端uv数据
+				String pcUv= UMStatisticsHashService.getInstance().umHget(timeList.get(i), "pcUv");
+				int pcUV=0;
+				if(StringUtils.isNotBlank(pcUv)){
+					pcUV=Integer.valueOf(pcUv);
+				}else{
+					pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", timeList.get(i), timeList.get(i), "", "",1);
+					JSONObject pcUvJson=JSONObject.fromObject(pcUv);
+					String pcUvJsonStr=pcUvJson.getString("values");
+					pcUvJsonStr=pcUvJsonStr.substring(1);
+					pcUvJsonStr=pcUvJsonStr.substring(0, pcUvJsonStr.length()-1);
+					pcUV=Integer.valueOf(pcUvJsonStr.split(",")[1].replace(".0", "").trim());
+					UMStatisticsHashService.getInstance().umHset(timeList.get(i), "pcUv", String.valueOf(pcUV));
+				}
+				//获取PC端点击事件发生数
+				String pcClick=UMStatisticsHashService.getInstance().umHget(timeList.get(i), "pcClickNum");
+				int pcClickNum=0;
+				if(StringUtils.isNotBlank(pcClick)){
+					pcClickNum=Integer.valueOf(pcClick);
+				}else{
+					pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", timeList.get(i), timeList.get(i), "", "",1);
+					JSONObject pcClickJson=JSONObject.fromObject(pcClick);
+					String pcClickJsonStr=pcClickJson.getString("values");
+					pcClickJsonStr=pcClickJsonStr.substring(1);
+					pcClickJsonStr=pcClickJsonStr.substring(0, pcClickJsonStr.length()-1);
+					pcClickNum=Integer.valueOf(pcClickJsonStr.split(",")[0].replace(".0", "").trim());
+					UMStatisticsHashService.getInstance().umHset(timeList.get(i), "pcClickNum", String.valueOf(pcClickNum));
+				}
+				//获取手机端uv
+				String mobileUv= UMStatisticsHashService.getInstance().umHget(timeList.get(i), "mobileUv");
+				int mobileUV=0;
+				if(StringUtils.isNotBlank(mobileUv)){
+					mobileUV=Integer.valueOf(mobileUv);
+				}else{
+					mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", timeList.get(i), timeList.get(i), "", "",2);
+					JSONObject mobileUvJson=JSONObject.fromObject(mobileUv);
+					String mobileUvJsonStr=mobileUvJson.getString("values");
+					mobileUvJsonStr=mobileUvJsonStr.substring(1);
+					mobileUvJsonStr=mobileUvJsonStr.substring(0, mobileUvJsonStr.length()-1);
+					mobileUV=Integer.valueOf(mobileUvJsonStr.split(",")[1].replace(".0", "").trim());
+					UMStatisticsHashService.getInstance().umHset(timeList.get(i), "mobileUv", String.valueOf(mobileUV));
+				}
+				//获取手机ios端uv
+				String iosUv= UMStatisticsHashService.getInstance().umHget(timeList.get(i), "iosUv");
+				int iosUV=0;
+				if(StringUtils.isNotBlank(iosUv)){
+					iosUV=Integer.valueOf(iosUv);
+				}else{
+					iosUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", timeList.get(i), timeList.get(i), "", "os = 'ios'",2);
+					JSONObject iosUvJson=JSONObject.fromObject(iosUv);
+					String iosUvJsonStr=iosUvJson.getString("values");
+					iosUvJsonStr=iosUvJsonStr.substring(1);
+					iosUvJsonStr=iosUvJsonStr.substring(0, iosUvJsonStr.length()-1);
+					iosUV=Integer.valueOf(iosUvJsonStr.split(",")[1].replace(".0", "").trim());
+					UMStatisticsHashService.getInstance().umHset(timeList.get(i), "iosUv", String.valueOf(iosUV));
+				}
+				//获取手机android端uv
+				String androidUv= UMStatisticsHashService.getInstance().umHget(timeList.get(i), "androidUv");
+				int androidUV=0;
+				if(StringUtils.isNotBlank(androidUv)){
+					androidUV=Integer.valueOf(androidUv);
+				}else{
+					androidUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", timeList.get(i), timeList.get(i), "", "os = 'android'",2);
+					JSONObject androidUvJson=JSONObject.fromObject(androidUv);
+					String androidUvJsonStr=androidUvJson.getString("values");
+					androidUvJsonStr=androidUvJsonStr.substring(1);
+					androidUvJsonStr=androidUvJsonStr.substring(0, androidUvJsonStr.length()-1);
+					androidUV=Integer.valueOf(androidUvJsonStr.split(",")[1].replace(".0", "").trim());
+					UMStatisticsHashService.getInstance().umHset(timeList.get(i), "androidUv", String.valueOf(androidUV));
+				}
+				//获取手机端点击数
+				String mobileClick=UMStatisticsHashService.getInstance().umHget(timeList.get(i), "mobileClickNum");
+				int mobileClickNum=0;
+				if(StringUtils.isNotBlank(mobileClick)){
+					mobileClickNum=Integer.valueOf(mobileClick);
+				}else{
+					mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", timeList.get(i), timeList.get(i), "", "",2);
+					JSONObject mobileClickJson=JSONObject.fromObject(mobileClick);
+					String mobileClickJsonStr=mobileClickJson.getString("values");
+					mobileClickJsonStr=mobileClickJsonStr.substring(1);
+					mobileClickJsonStr=mobileClickJsonStr.substring(0, mobileClickJsonStr.length()-1);
+					mobileClickNum=Integer.valueOf(mobileClickJsonStr.split(",")[0].replace(".0", "").trim());
+					UMStatisticsHashService.getInstance().umHset(timeList.get(i), "mobileClickNum", String.valueOf(mobileClickNum));
+				}
+				//获取手机ios端点击数
+				String iosClick=UMStatisticsHashService.getInstance().umHget(timeList.get(i), "iosClickNum");
+				int iosClickNum=0;
+				if(StringUtils.isNotBlank(iosClick)){
+					iosClickNum=Integer.valueOf(iosClick);
+				}else{
+					iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", timeList.get(i), timeList.get(i), "", "os = 'ios'",2);
+					JSONObject iosClickJson=JSONObject.fromObject(iosClick);
+					String iosClickJsonStr=iosClickJson.getString("values");
+					iosClickJsonStr=iosClickJsonStr.substring(1);
+					iosClickJsonStr=iosClickJsonStr.substring(0, iosClickJsonStr.length()-1);
+					iosClickNum=Integer.valueOf(iosClickJsonStr.split(",")[0].replace(".0", "").trim());
+					UMStatisticsHashService.getInstance().umHset(timeList.get(i), "iosClickNum", String.valueOf(iosClickNum));
+				}
+				
+				//获取手机android端点击数
+				int androidClickNum=0;
+				String androidClick=UMStatisticsHashService.getInstance().umHget(timeList.get(i), "androidClickNum");
+				if(StringUtils.isNotBlank(androidClick)){
+					androidClickNum=Integer.valueOf(androidClick);
+				}else{
+					androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", timeList.get(i), timeList.get(i), "", "os = 'android'",2);
+					JSONObject androidClickJson=JSONObject.fromObject(androidClick);
+					String androidClickJsonStr=androidClickJson.getString("values");
+					androidClickJsonStr=androidClickJsonStr.substring(1);
+					androidClickJsonStr=androidClickJsonStr.substring(0, androidClickJsonStr.length()-1);
+					androidClickNum=Integer.valueOf(androidClickJsonStr.split(",")[0].replace(".0", "").trim());
+					UMStatisticsHashService.getInstance().umHset(timeList.get(i), "androidClickNum", String.valueOf(androidClickNum));
+				}
+				
+				singleMap.put("date", timeList.get(i));
+				String orderRedius=DeviceStatisticsHashService.getInstance().deviceMacHget(timeList.get(i), "stOrder");
+				int pcOrderComplete=0;
+				int pcOrderNum=0;
+				double pcOrderAmount=0;
+				int mbOrderComplete=0;
+				double mbOrderAmount=0;
+				int mbOrderNum=0;
+				if(StringUtils.isNotBlank(orderRedius)){
+					JSONObject orderJson=JSONObject.fromObject(orderRedius);
+					String pcOrderNumStr=orderJson.getString("pc_occ");
+					if(StringUtils.isNotBlank(pcOrderNumStr)){
+						pcOrderNum=Integer.valueOf(pcOrderNumStr);
+					}
+					String pcOrderCompleteStr=orderJson.getString("pc_ofc");
+					if(StringUtils.isNotBlank(pcOrderCompleteStr)){
+						pcOrderComplete=Integer.valueOf(pcOrderCompleteStr);
+					}
+					String pcOrderAmountStr=orderJson.getString("pc_ofa");
+					if(StringUtils.isNotBlank(pcOrderAmountStr)){
+						pcOrderAmount=Double.valueOf(pcOrderAmountStr);
+					}
+					String mbOrderNumStr=orderJson.getString("mb_occ");
+					if(StringUtils.isNotBlank(mbOrderNumStr)){
+						mbOrderNum=Integer.valueOf(mbOrderNumStr);
+					}
+					String mbOrderCompleteStr=orderJson.getString("mb_ofc");
+					if(StringUtils.isNotBlank(mbOrderCompleteStr)){
+						mbOrderComplete=Integer.valueOf(mbOrderCompleteStr);
+					}
+					String mbOrderAmountStr=orderJson.getString("mb_ofa");
+					if(StringUtils.isNotBlank(mbOrderAmountStr)){
+						mbOrderAmount=Double.valueOf(mbOrderAmountStr);
+					}
+				}
+				totalPcOrderNum+=pcOrderNum;
+				totalPcOrderComplete+=pcOrderComplete;
+				totalPcOrderAmount+=pcOrderAmount;
+				totalMbOrderNum+=mbOrderNum;
+				totalMbOrderComplete+=mbOrderComplete;
+				totalMbOrderAmount+=mbOrderAmount;
+				
+				Map<String,Object> totalMap=new HashMap<String,Object>();
+				
+				totalMap.put("uv", pcUV+mobileUV);
+				totalMap.put("clickNum", pcClickNum+mobileClickNum);
+				totalMap.put("clickAverNum", 0);
+				totalMap.put("orderConversion", 0);
+				totalMap.put("orderComConversion", 0);
+				if((pcUV+mobileUV)!=0){
+					totalMap.put("clickAverNum", round((pcClickNum+mobileClickNum)*1.00/(pcUV+mobileUV)*100,2)+"%");
+					totalMap.put("orderConversion", round((pcOrderNum+mbOrderNum)*1.00/(pcUV+mobileUV)*100,2)+"%");
+					totalMap.put("orderComConversion", round((pcOrderComplete+mbOrderComplete)*1.00/(pcUV+mobileUV)*100,2)+"%");
+				}
+				totalMap.put("orderNum", pcOrderNum+mbOrderNum);
+				totalMap.put("clickConversion", 0);
+				if((pcClickNum+mobileClickNum)!=0){
+					totalMap.put("clickConversion", round((pcOrderNum+mbOrderNum)*1.00/(pcClickNum+mobileClickNum)*100,2)+"%");
+				}
+				totalMap.put("orderComplete", pcOrderComplete+mbOrderComplete);
+				totalMap.put("orderAmount", pcOrderAmount+mbOrderAmount);
+				singleMap.put("total", totalMap);
+				
+				
+				Map<String,Object> pcMap=new HashMap<String,Object>();
+				
+				pcMap.put("uv", pcUV);
+				pcMap.put("clickNum", pcClickNum);
+				pcMap.put("clickAverNum", 0);
+				pcMap.put("orderConversion", 0);
+				pcMap.put("orderComConversion", 0);
+				if(pcUV!=0){
+					pcMap.put("clickAverNum", round(pcClickNum*1.00/pcUV*100,2)+"%");
+					pcMap.put("orderConversion", round(pcOrderNum*1.00/pcUV*100,2)+"%");
+					pcMap.put("orderComConversion", round(pcOrderComplete*1.00/pcUV*100,2)+"%");
+				}
+				pcMap.put("orderNum", pcOrderNum);
+				pcMap.put("clickConversion", 0);
+				if(pcClickNum!=0){
+					pcMap.put("clickConversion", round(pcOrderNum*1.00/pcClickNum*100,2)+"%");
+				}
+				pcMap.put("orderComplete", pcOrderComplete);
+				pcMap.put("orderAmount", pcOrderAmount);
+				singleMap.put("PC", pcMap);
+				
+				Map<String,Object> mobileMap=new HashMap<String,Object>();
+				
+				mobileMap.put("uv", mobileUV);
+				mobileMap.put("clickNum", mobileClickNum);
+				mobileMap.put("clickAverNum", 0);
+				mobileMap.put("orderConversion", 0);
+				mobileMap.put("orderComConversion", 0);
+				if(mobileUV!=0){
+					mobileMap.put("clickAverNum", round(mobileClickNum*1.00/mobileUV*100,2)+"%");
+					mobileMap.put("orderConversion", round(mbOrderNum*1.00/mobileUV*100,2)+"%");
+					mobileMap.put("orderComConversion", round(mbOrderComplete*1.00/mobileUV*100,2)+"%");
+				}
+				mobileMap.put("orderNum", mbOrderNum);
+				mobileMap.put("clickConversion", 0);
+				if(mobileClickNum!=0){
+					mobileMap.put("clickConversion", round(mbOrderNum*1.00/mobileClickNum*100,2)+"%");
+				}
+				mobileMap.put("orderComplete", mbOrderComplete);
+				mobileMap.put("orderAmount", mbOrderAmount);
+				singleMap.put("mobile", mobileMap);
+				
+				Map<String,Object> iosMap=new HashMap<String,Object>();
+				
+				iosMap.put("uv", iosUV);
+				iosMap.put("clickNum", iosClickNum);
+				iosMap.put("clickAverNum", 0);
+				if(iosUV!=0){
+					iosMap.put("clickAverNum", round(iosClickNum*1.00/iosUV*100,2)+"%");
+				}
+				iosMap.put("orderNum", "-");
+				iosMap.put("clickConversion", "-");
+				iosMap.put("orderConversion", "-");
+				iosMap.put("orderComplete", "-");
+				iosMap.put("orderAmount", "-");
+				iosMap.put("orderComConversion", "-");
+				singleMap.put("ios", iosMap);
+				
+				Map<String,Object> androidMap=new HashMap<String,Object>();
+				
+				androidMap.put("uv", androidUV);
+				androidMap.put("clickNum", androidClickNum);
+				androidMap.put("clickAverNum", 0);
+				if(androidUV!=0){
+					androidMap.put("clickAverNum", round(androidClickNum*1.00/androidUV*100,2)+"%");
+				}
+				androidMap.put("orderNum", "-");
+				androidMap.put("clickConversion", "-");
+				androidMap.put("orderConversion", "-");
+				androidMap.put("orderComplete", "-");
+				androidMap.put("orderAmount", "-");
+				androidMap.put("orderComConversion", "-");
+				singleMap.put("android", androidMap);
+				
+//				Map<String,Object> otherMap=new HashMap<String,Object>();
+//				
+//				otherMap.put("uv", mobileUV-iosUV-androidUV);
+//				otherMap.put("clickNum", mobileClickNum-iosClickNum-androidClickNum);
+//				otherMap.put("clickAverNum", 0);
+//				if((mobileUV-iosUV-androidUV)!=0){
+//					otherMap.put("clickAverNum", round((mobileClickNum-androidClickNum-iosClickNum)*1.00/(mobileUV-iosUV-androidUV),2));
+//				}
+//				otherMap.put("orderNum", "-");
+//				otherMap.put("clickConversion", "-");
+//				otherMap.put("orderConversion", "-");
+//				otherMap.put("orderComplete", "-");
+//				otherMap.put("orderAmount", "-");
+//				otherMap.put("orderComConversion", "-");
+//				singleMap.put("other", otherMap);
+				
+				resMaps.add(singleMap);
+				totalAndroidUV+=androidUV;
+				totalAndroidClickNum+=androidClickNum;
+				
+				totalIosUV+=iosUV;
+				totalIosClickNum+=iosClickNum;
+				
+				totalPcUV+=pcUV;
+				totalPcClickNum+=pcClickNum;
+				
+				totalMobileUV+=mobileUV;
+				totalMobileClickNum+=mobileClickNum;
+				
+				totalUv+=pcUV+mobileUV;
+				totalClickNum+=pcClickNum+mobileClickNum;
+			}
+			totalDC = totalDC/Integer.parseInt(type);
+			totalDOC = totalDOC/Integer.parseInt(type);
+			
+			
+			
 			
 		}
 		
