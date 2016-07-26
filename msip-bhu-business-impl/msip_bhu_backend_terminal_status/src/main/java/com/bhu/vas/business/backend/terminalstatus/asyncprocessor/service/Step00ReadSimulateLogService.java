@@ -16,10 +16,6 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.springframework.stereotype.Service;
 
-import com.alisoft.xplatform.asf.cache.ICacheManager;
-import com.alisoft.xplatform.asf.cache.IMemcachedCache;
-import com.alisoft.xplatform.asf.cache.memcached.CacheUtil;
-import com.alisoft.xplatform.asf.cache.memcached.MemcachedCacheManager;
 import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
 import com.bhu.vas.api.dto.commdity.internal.useragent.OrderUserAgentDTO;
@@ -36,7 +32,7 @@ public class Step00ReadSimulateLogService {
 	
 	@Resource
 	private PortraitMemcachedCacheService portraitMemcachedCacheService;
-	   
+	       
 	private static String hashFileMatchTemplate = "%s.business-reporting.zip";
 	@SuppressWarnings("unchecked")
 	public void parser(String date,String logpath){
@@ -45,14 +41,14 @@ public class Step00ReadSimulateLogService {
 				new WildcardFileFilter(wildcard), 
 		        new IOFileFilter() {
                     public boolean accept(File file, String s) {
-                        return true;
+                        return true;   
                     }    
                     public boolean accept(File file) {
                         return true;
                     }
-                });
+                });    
 		
-		for(File file : listFiles){
+		for(File file : listFiles){         
 			ZipFile zf = null;
 			try{   
 				if(file.getName().indexOf("business-reporting") == -1) continue;
@@ -103,13 +99,13 @@ public class Step00ReadSimulateLogService {
 		//ActionBuilder.fromJson(messagejson, classz);
 	    switch(actionType){
 	    	case DeviceOnline:
-	    		processDeviceOnline(message);
+	    		//processDeviceOnline(message);
 	    		break;
 	    	case DeviceOffline:
-	    		processDeviceOffline(message);
+	    		//processDeviceOffline(message);
 	    		break;
 	    	case DeviceNotExist:
-	    		processDeviceNotExist(message);
+	    		//processDeviceNotExist(message);
 	    		break;
 	    	case HandsetOnline:
 	    		processHandsetOnline(message);
@@ -118,7 +114,7 @@ public class Step00ReadSimulateLogService {
 	    		processHandsetOffline(message);
 	    		break;
 	    	case HandsetSync:
-	    		processHandsetSync(message);
+	    		//processHandsetSync(message);
 	    		break;	
 	    	default:
 	    		System.out.println("default");
@@ -127,9 +123,6 @@ public class Step00ReadSimulateLogService {
 	}
 	private void processHandsetOnline(String message){
 		HandsetOnlineAction dto = JsonHelper.getDTO(message, HandsetOnlineAction.class);
-		//获取远程磁盘文件上的数据，读入缓存，
-		//从缓存中根据Mac 取对应的终端上线信息，
-		//
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
@@ -150,12 +143,10 @@ public class Step00ReadSimulateLogService {
 			default:
 				break;
 			}
+			message =  JsonHelper.getJSONString(dto);
+			TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
+			portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
 		}
-		
-		message =  JsonHelper.getJSONString(dto);
-		TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
-		portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
-		
 	}
 	
 	private void processHandsetOffline(String message){
@@ -189,10 +180,9 @@ public class Step00ReadSimulateLogService {
 			default:
 				break;
 			}
+			message =  JsonHelper.getJSONString(dto);
+			TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOffline.getPrefix()+message);
 		}
-		
-		message =  JsonHelper.getJSONString(dto);
-		TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOffline.getPrefix()+message);
 	}
 	
 	
@@ -216,24 +206,24 @@ public class Step00ReadSimulateLogService {
 //		String mac = "84:82:f4:19:01:0c";
 //		String hdMac = "68:3e:34:48:b7:35";
 //		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
-//		if(newAddFields.isEmpty()){
-//			System.out.println(newAddFields);
+//		if(newAddFields != null){
+//			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
+//			System.out.println(JsonHelper.getJSONString(addMsg));
+//			System.out.println(addMsg.getWan_ip());
+//			System.out.println(addMsg.getIp());
 //		}
-//		OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
-//		System.out.println(JsonHelper.getJSONString(addMsg));
-//		System.out.println(addMsg.getWan_ip());
-//		System.out.println(addMsg.getIp());
+//		System.out.println(newAddFields);
 		
-		ICacheManager<IMemcachedCache> manager;  
-        manager = CacheUtil.getCacheManager(IMemcachedCache.class, MemcachedCacheManager.class.getName());  
-        manager.setConfigFile("memcached.xml");  
-        manager.start();  
-        try {  
-            IMemcachedCache cache = manager.getCache("default.memcached");  
-            cache.put("key", "value");  
-            System.out.println(cache.get("key"));  
-        } finally {  
-            manager.stop();  
-        }  
+//		ICacheManager<IMemcachedCache> manager;  
+//        manager = CacheUtil.getCacheManager(IMemcachedCache.class, MemcachedCacheManager.class.getName());  
+//        manager.setConfigFile("memcached.xml");  
+//        manager.start();  
+//        try {  
+//            IMemcachedCache cache = manager.getCache("default.memcached");  
+//            cache.put("key", "value");  
+//            System.out.println(cache.get("key"));  
+//        } finally {  
+//            manager.stop();  
+//        }  
 	}
 }

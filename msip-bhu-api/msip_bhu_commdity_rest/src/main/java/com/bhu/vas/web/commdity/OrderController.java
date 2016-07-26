@@ -59,6 +59,7 @@ public class OrderController extends BaseController{
 			@RequestParam(required = false) String context,
 			@RequestParam(required = false, defaultValue = "2") Integer umactype,
 			@RequestParam(required = false, defaultValue = "1") Integer commdityid,
+			@RequestParam(required = false, defaultValue = "0") Integer channel,
 			@RequestParam(required = true) String payment_type,
 			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
 			) {
@@ -67,7 +68,7 @@ public class OrderController extends BaseController{
 		String user_agent = request.getHeader("User-Agent");
 		//1:生成订单
 		RpcResponseDTO<OrderRewardVTO> rpcResult = orderRpcService.createRewardOrder(commdityid, mac, umac, umactype,
-				payment_type, context, user_agent);
+				payment_type, context, user_agent, channel);
 		if(rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			return;

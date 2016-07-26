@@ -83,10 +83,12 @@ public class PayHttpService {
     //public static String MIDAS_PREPAID_RETURN_URL = PAY_HOST_URL+"/midasPrepaidReturn";
     
     //打赏失败web回调地址
-    public static String WEB_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
+    //public static String WEB_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
+    public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
     //public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/unsuccess";
     //充值失败web回调地址
-    public static String PREPAID_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
+   // public static String PREPAID_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
+    public static String PREPAID_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
     //证书地址
     public static String WITHDRAW_URL = "/home";
 

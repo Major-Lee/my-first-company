@@ -35,7 +35,7 @@ import com.midas.util.SnsSigCheck;
 
 public class MidasUtils {
 
-	public static String submitOrder(String reckoningId, String total_fee, String ip,String subject,String openId)  {
+	public static String submitOrder(String reckoningId, String total_fee, String ip,String subject,String openId,String return_url)  {
 		String result = "";
 		Config.price = total_fee;
         Config.SerialNumber = reckoningId;

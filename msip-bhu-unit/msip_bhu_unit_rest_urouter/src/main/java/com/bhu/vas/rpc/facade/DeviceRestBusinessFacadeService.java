@@ -615,9 +615,9 @@ public class DeviceRestBusinessFacadeService {
 		DeviceStatisticsVTO vto = new DeviceStatisticsVTO();
 		try{
 			SearchConditionMessage scm_online = WifiDeviceSearchMessageBuilder.builderSearchMessageWithDeviceStatistics(d_snk_turnstate, 
-					d_snk_type, WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
+					d_snk_type, WifiDeviceDocumentEnumType.OnlineEnum.Online.getType(), null, null);
 			SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithDeviceStatistics(d_snk_turnstate, 
-					d_snk_type, null);
+					d_snk_type, null, null, null);
 			long online_count = wifiDeviceDataSearchService.searchCountByConditionMessage(scm_online);
 			long count = wifiDeviceDataSearchService.searchCountByConditionMessage(scm);
 			vto.setDc(count);

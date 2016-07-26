@@ -119,11 +119,9 @@ public class BusinessKeyDefine {
 		public static final String RewardOrderRecent7DaysKey = "ROR7D_KEY";
 		
 		public static final String UserAgentPrefixKey = "UA";
-<<<<<<< cdaad4e46937d39993fa1777ef7051d2daede7a6
 		
 		public static final String UserQueryDataPrefixKey = "UQD";
-=======
->>>>>>> added
+
 	}
 	
 	public static class CommdityRAmount {

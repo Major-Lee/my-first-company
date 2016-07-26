@@ -24,7 +24,7 @@ import com.smartwork.msip.localunit.RandomPicker;
  * @version 1.0
  */
 public class BusinessHelper extends PropertyEditorSupport {
-	
+	 
 	public static String[] letters = { "a", "b", "c", "d", "e", "f", "g", "h", "i",
 			"j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
 			"w", "x", "y", "z" };
@@ -32,10 +32,10 @@ public class BusinessHelper extends PropertyEditorSupport {
 	private static SimpleDateFormat yyyy = new SimpleDateFormat("yyyy");
 	// 各种时间格式
 	public static final SimpleDateFormat date_sdf = new SimpleDateFormat(
-			"yyyy-MM-dd");        
+			"yyyy-MM-dd");   
 	// 各种时间格式       
 	public static final SimpleDateFormat yyyyMMdd = new SimpleDateFormat(
-			"yyyyMMdd");   
+			"yyyyMMdd"); 
 	// 各种时间格式
 	public static final SimpleDateFormat date_sdf_wz = new SimpleDateFormat(
 			"yyyy年MM月dd日");

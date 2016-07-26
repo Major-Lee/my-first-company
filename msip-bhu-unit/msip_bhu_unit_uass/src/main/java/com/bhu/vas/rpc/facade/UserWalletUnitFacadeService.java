@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.facade;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.charging.model.UserIncome;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
@@ -29,6 +31,7 @@ import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserPublishAccount;
+import com.bhu.vas.api.rpc.user.model.UserSharedealDistributorView;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
@@ -49,11 +52,14 @@ import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserPublishAccountService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserSharedealDistributorViewService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -87,6 +93,9 @@ public class UserWalletUnitFacadeService {
 	
 	@Resource
 	private OrderService orderService;
+	
+	@Resource
+	private UserSharedealDistributorViewService userSharedealDistributorViewService;
 	
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
@@ -159,7 +168,45 @@ public class UserWalletUnitFacadeService {
 			if(StringUtils.isNotEmpty(transtype)){
 				ttype = UWalletTransType.fromKey(transtype);
 			}
-			TailPage<UserWalletLog> pages = userWalletFacadeService.pageUserWalletlogs(uid, tmode, ttype, 
+			
+			TailPage<UserWalletLogFFVTO> result_pages = null;
+			List<UserWalletLogFFVTO> vtos = new ArrayList<UserWalletLogFFVTO>();
+			
+			ModelCriteria mc = new ModelCriteria();
+			Criteria createCriteria = mc.createCriteria();
+			createCriteria.andColumnEqualTo("uid", uid);
+			if(transmode != null)
+				createCriteria.andColumnEqualTo("transmode", tmode.getKey());
+			if(transtype != null)
+				createCriteria.andColumnEqualTo("transtype", ttype.getKey());
+			if(start_date != null)
+				createCriteria.andColumnGreaterThanOrEqualTo("updated_at", start_date);
+			if(end_date != null)
+				createCriteria.andColumnLessThanOrEqualTo("updated_at", end_date);
+	    	mc.setPageNumber(pageNo);
+	    	mc.setPageSize(pageSize);
+	    	mc.setOrderByClause(" updated_at desc ");
+	    	int count = userSharedealDistributorViewService.countByModelCriteria(mc);
+	    	if(count > 0){
+				List<UserSharedealDistributorView> list = userSharedealDistributorViewService.findModelByCommonCriteria(mc);
+				if(list != null && !list.isEmpty()){
+					List<String> orderids = new ArrayList<String>();
+					for(UserSharedealDistributorView view : list){
+						orderids.add(view.getOrderid());
+					}
+					List<Order> orders = orderService.findByIds(orderids, true, true);
+					int index = 0;
+					for(UserSharedealDistributorView view : list){
+						Order order = orders.get(index);
+						vtos.add(view.toUserWalletLogFFVTO(
+								order!=null?order.getAmount():StringUtils.EMPTY,
+								order!=null?order.getMac():StringUtils.EMPTY));
+						index++;
+					}
+				}
+	    	}
+			
+/*			TailPage<UserWalletLog> pages = userWalletFacadeService.pageUserWalletlogs(uid, tmode, ttype, 
 					start_date, end_date, pageNo, pageSize);
 			TailPage<UserWalletLogFFVTO> result_pages = null;
 			List<UserWalletLogFFVTO> vtos = new ArrayList<UserWalletLogFFVTO>();
@@ -178,8 +225,8 @@ public class UserWalletUnitFacadeService {
 							order!=null?order.getMac():StringUtils.EMPTY));
 					index++;
 				}
-			}
-			result_pages = new CommonPage<UserWalletLogFFVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos);
+			}*/
+			result_pages = new CommonPage<UserWalletLogFFVTO>(pageNo, pageSize, count, vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -693,18 +740,78 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int type) {
-		UcloudMacStatisticsVTO ucloudMacStatisticsVTO=new UcloudMacStatisticsVTO();
-		List<UcloudMacStatistic> ucloudMacStatistics=new ArrayList<UcloudMacStatistic>();
+	
+	/**
+	 * 丰富统计信息
+	 */
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int type,int pageIndex,int pageSize) {
+		UcloudMacStatisticsVTO ucloudMacStatisticsVTO = new UcloudMacStatisticsVTO();
+		List<UcloudMacStatistic> ucloudMacStatistics = new ArrayList<UcloudMacStatistic>();
 		try{
-			List<UserWalletLog> userWalletLogs= userWalletFacadeService.getUserWalletLogService().findListByTimeField(startTime, endTime);
-			if(userWalletLogs!=null&&userWalletLogs.size()>0){
-				for(UserWalletLog i:userWalletLogs){
-					UcloudMacStatistic ucloudMacStatistic=new UcloudMacStatistic();
-					ucloudMacStatistic.setIncome("0");
-					ucloudMacStatistic.setMac("");
+			List<UserWalletLog> userWalletLogs = userWalletFacadeService.getUserWalletLogService().findListByTimeField(startTime, endTime,pageIndex,pageSize);
+			UcloudMacStatistic ucloudMacStatistic = null;
+			if (userWalletLogs != null && userWalletLogs.size() > 0) {
+				for(UserWalletLog item : userWalletLogs){
+					ucloudMacStatistic = new UcloudMacStatistic();
+					// 打赏收益（元）
+					ucloudMacStatistic.setIncome(item.getCash());
+					// 打赏方式
+					ucloudMacStatistic.setMethod(item.getDescription());
+					// 终端MAC
+					ucloudMacStatistic.setTime(item.getUpdated_at().toString());
+					// 订单表里获取打赏设备和终端MAC
+					Order order = userWalletFacadeService.getUserIncomeService().getEntityDao().selectOrdersInfo(item.getOrderid());
+					if (null == order) {
+						// 打赏设备
+						ucloudMacStatistic.setuMac("");
+						// 终端MAC
+						ucloudMacStatistic.setMac("");
+					} else {
+						// 打赏设备
+						ucloudMacStatistic.setuMac(order.getUmac());
+						// 终端MAC
+						ucloudMacStatistic.setMac(order.getMac());
+					}
+					// 厂家
+					ucloudMacStatistic.setVender("");
+					ucloudMacStatistics.add(ucloudMacStatistic);
  				}
+				// 收益设备信息列表
+				ucloudMacStatisticsVTO.setMacsInfo(ucloudMacStatistics);
 			}
+			
+			// 收益设备信息合计
+			// 获取今日打赏收益和今日打赏用户数
+			List<UserIncome> todayUserIncomes = userWalletFacadeService.getUserIncomeService().findListByTime(GetDateTime("yyyy-MM-dd", 0));
+			if (todayUserIncomes != null && todayUserIncomes.size() > 0) {
+				// 今日打赏收益
+				ucloudMacStatisticsVTO.setTodayIncome(todayUserIncomes.get(0).getIncome());
+				// 今日打赏用户数
+				ucloudMacStatisticsVTO.setTodayUserNum(String.valueOf(todayUserIncomes.get(0).getTimes()));
+			} else {
+				// 今日打赏收益
+				ucloudMacStatisticsVTO.setTodayIncome("0");
+				// 今日打赏用户数
+				ucloudMacStatisticsVTO.setTodayUserNum("0");
+			}
+			
+			// 获取昨日打赏收益和昨日打赏用户数
+			List<UserIncome> yesTerdayUserIncomes = userWalletFacadeService.getUserIncomeService().findListByTime(GetDateTime("yyyy-MM-dd", -1));
+			if (yesTerdayUserIncomes != null && yesTerdayUserIncomes.size() > 0) {
+				// 昨日打赏收益
+				ucloudMacStatisticsVTO.setYesterdayIncome(yesTerdayUserIncomes.get(0).getIncome());
+				// 昨日打赏用户数
+				ucloudMacStatisticsVTO.setYesterdayUserNum(String.valueOf(yesTerdayUserIncomes.get(0).getTimes()));
+			} else {
+				// 昨日打赏收益
+				ucloudMacStatisticsVTO.setYesterdayIncome("0");
+				// 昨日打赏用户数
+				ucloudMacStatisticsVTO.setYesterdayUserNum("0");
+			}
+			// 获取累计打赏收益
+			double totalIncome = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalIncome();
+			ucloudMacStatisticsVTO.setTotalIncome(String.valueOf(totalIncome));
+
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ucloudMacStatisticsVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -713,4 +820,29 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	/**
+	 * 获取日期
+	 * @param simpleDateFormat 日期的格式
+	 * @param days 取得那天日期  如：0：今天
+	 */
+	public String GetDateTime(String simpleDateFormat, int days) {
+		// 返回日期
+	    String retDate = StringUtils.EMPTY;
+	    // 当前时间
+	    Date dt = new Date();
+	    // 得到日历
+	    Calendar calendar = Calendar.getInstance();
+	    // 把当前时间赋给日历
+	    calendar.setTime(dt);
+	    // 设置为前一天
+	    calendar.add(Calendar.DAY_OF_MONTH, days);
+	    // 得到前一天的时间
+	    Date dBefore = calendar.getTime();
+	    
+	    SimpleDateFormat sdf = new SimpleDateFormat(simpleDateFormat);
+	    retDate = sdf.format(dBefore);
+	    return retDate;
+	} 
+
 }

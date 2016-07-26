@@ -45,6 +45,8 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	private String context;
 	//user agent sources content
 	private String user_agent;
+	//订单渠道
+	private Integer channel;
 	//订单状态
 	private Integer status;
 	//订单流程状态
@@ -188,6 +190,14 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 
 	public void setUser_agent(String user_agent) {
 		this.user_agent = user_agent;
+	}
+	
+	public Integer getChannel() {
+		return channel;
+	}
+
+	public void setChannel(Integer channel) {
+		this.channel = channel;
 	}
 
 	public Integer getStatus() {

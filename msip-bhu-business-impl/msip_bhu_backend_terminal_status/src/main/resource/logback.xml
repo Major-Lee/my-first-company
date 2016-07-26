@@ -22,7 +22,7 @@
 		<File>${status.base}${curTime}.business-reporting</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<FileNamePattern>${final.base}business-reporting.%d{yyyyMMddHHmmss}</FileNamePattern>
-			<MaxHistory>60</MaxHistory>
+			<!--<MaxHistory>60</MaxHistory>  -->
 		</rollingPolicy>
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<pattern>%date - %msg%n</pattern>
