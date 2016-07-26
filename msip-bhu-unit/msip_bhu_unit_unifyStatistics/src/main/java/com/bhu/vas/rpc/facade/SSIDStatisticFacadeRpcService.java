@@ -1130,7 +1130,7 @@ public class SSIDStatisticFacadeRpcService {
 //		 BigDecimal b = new BigDecimal(Double.toString(s));         
 //		 BigDecimal one = new BigDecimal("1");         
 //		 System.out.println(b.divide(one,2,BigDecimal.ROUND_HALF_UP).doubleValue());        
-		 String mobileUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-07-25", "2016-07-25", "", "wlanusermac=60%3Ad8%3A19%3Ad2%3A33%3Aef",1);
+		 String mobileUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-07-25", "2016-07-25", "wlanusermac", "",1);
 		 //String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
 			//String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
 			System.out.println(mobileUv);
