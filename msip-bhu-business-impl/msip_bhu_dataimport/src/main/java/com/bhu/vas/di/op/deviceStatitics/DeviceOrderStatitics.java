@@ -64,7 +64,7 @@ public class DeviceOrderStatitics {
 		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, DeviceOrderStatitics.class);
 		ctx.start();
-		OrderFacadeService orderUnitFacadeService = (OrderFacadeService) ctx.getBean("orderUnitFacadeService");
+		OrderFacadeService orderUnitFacadeService = (OrderFacadeService) ctx.getBean("orderFacadeService",OrderFacadeService.class);
 		try {
 			readFile(WAIWANG_LOG);
 		} catch (Exception e) {
