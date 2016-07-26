@@ -32,11 +32,11 @@ public class OpenApiCnzzImpl implements IopenApiCnzz {
 		argMap.put("type", "all");
 		if(!on_condition.equals("")){
 			argMap.put("on", on_condition);
-			argMap.put("on", Base64.encodeBase64String(argMap.get("on").getBytes()));
+			argMap.put("on", Base64.encodeBase64(argMap.get("on").getBytes()).toString());
 		}
 		if(!where_condition.equals("")){
 			argMap.put("where", where_condition);
-			argMap.put("where",Base64.encodeBase64String(argMap.get("where").getBytes()));
+			argMap.put("where",Base64.encodeBase64(argMap.get("where").getBytes()).toString());
 		}
 		// 得到openapi
 		OpenApi openapi = OpenApi.getInstance();
