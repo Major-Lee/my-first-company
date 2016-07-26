@@ -228,6 +228,15 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return super.zadd(generateKey(wifiId), generateScore(last_login_at), handsetId);
 	}
 	
+	public void clearPresent(String wifiId_lowerCase) {
+		super.zremrangeByScore(generateKey(wifiId_lowerCase), 0, -1);
+	}
+
+	public void removePresents(String wifiId, List<String> handsetIds){
+		if(handsetIds == null || handsetIds.isEmpty()) return;
+		super.pipelineZRem_sameKeyWithDiffMember(generateKey(wifiId), handsetIds.toArray(new String[]{}));
+	}
+	
 	@Override
 	public String getName() {
 		return WifiDeviceHandsetUnitPresentSortedSetService.class.getName();
@@ -244,17 +253,4 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
 	}
 
-	public void clearPresent(String wifiId_lowerCase) {
-		super.zremrangeByScore(generateKey(wifiId_lowerCase), 0, -1);
-	}
-	public static void main(String[] args) {
-//		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOnlinePresent("84:82:f4:19:01:0c", "11:11:11:11:11:11", System.currentTimeMillis());
-//		WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent("84:82:f4:2f:3a:50", "68:3e:34:48:b7:35", 1607121523);
-//		SimpleDateFormat sdf = new SimpleDateFormat(OnlineDatePattern);
-//		String str  = sdf.format(new Date(1468893600000L));
-//		int a = Integer.parseInt(str);
-//		System.out.println();
-//		System.out.println(sdf.format(new Date(1468893600000L)));
-		System.out.println(generateScore(1468925162702L));
-	}
 }

@@ -76,6 +76,7 @@ import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusine
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -1485,7 +1486,7 @@ public class AsyncMsgHandleService {
 				WifiDeviceSettingDTO setting_dto = setting_entity.getInnerModel();
 				WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(setting_dto);
 				if (acl_dto != null) {
-					WifiDeviceHandsetPresentSortedSetService.getInstance().removePresents(mac, acl_dto.getMacs());
+					WifiDeviceHandsetUnitPresentSortedSetService.getInstance().removePresents(mac, acl_dto.getMacs());
 				}
 			}
 		}
