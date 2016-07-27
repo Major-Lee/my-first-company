@@ -508,7 +508,6 @@ public class PaymentController extends BaseController{
 			logger.info(String.format("apply payment bussiness appid[%s] secret[%s]", appid,secret));
 			int appId = Integer.parseInt(appid);
 			boolean isAllowedBusiness = BusinessEnumType.CommdityApplication.verifyed(appId, secret);
-			System.out.println("Bug 1   "+isAllowedBusiness);
 			if(isAllowedBusiness){
 				CommdityApplication app = BusinessEnumType.CommdityApplication.fromKey(appId);
 				switch(app){
@@ -549,7 +548,6 @@ public class PaymentController extends BaseController{
         		return;
         	}
     		PaymentReckoning paymentReckoning = paymentReckoningService.findByOrderId(goods_no);
-    		System.out.println("Bug 2  "+paymentReckoning.getId());
         	if(paymentReckoning != null){
         		logger.error(String.format("apply payment goods_no [%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
         		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
@@ -561,7 +559,6 @@ public class PaymentController extends BaseController{
         	PaymentChannelCode paymentChannel = PaymentChannelCode.getPaymentChannelCodeByCode(payment_type);
     		switch(paymentChannel){
     			case BHU_PC_WEIXIN: //PC微信支付
-    				System.out.println("Bug 3  ");
     				result =  doNativeWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
     				break;
     			case BHU_PC_ALIPAY: //PC支付宝
@@ -905,7 +902,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
 			sParaTemp.put("it_b_pay", "10m");
-			sParaTemp.put("app_pay", "Y");
+			//sParaTemp.put("app_pay", "Y");
 			break;
 		case BHU_APP_ALIPAY:
 			reckoningId = payLogicService.createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_APP_ALIPAY.i18n(),usermac,paymentName,appid);
@@ -923,7 +920,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
 			sParaTemp.put("it_b_pay", "10m");
-			sParaTemp.put("app_pay", "Y");
+			//sParaTemp.put("app_pay", "Y");
 			break;
 			
 		case BHU_PC_ALIPAY:
@@ -942,7 +939,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
 			sParaTemp.put("it_b_pay", "10m");
-			sParaTemp.put("app_pay", "Y");
+			//sParaTemp.put("app_pay", "Y");
 			break;
 
 		default:
@@ -1112,8 +1109,8 @@ public class PaymentController extends BaseController{
         	result.setUrl("支付请求失败");
         	return result;
     	}else{
-        	//result.setType("Midas");
-        	result.setType("http");
+        	result.setType("Midas");
+        	//result.setType("http");
         	result.setUrl(results);
         	return result;
     	}
