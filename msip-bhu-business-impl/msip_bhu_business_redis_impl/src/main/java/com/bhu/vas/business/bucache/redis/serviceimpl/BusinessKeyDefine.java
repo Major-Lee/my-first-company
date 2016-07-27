@@ -33,6 +33,7 @@ public class BusinessKeyDefine {
 		public static final String WifiDeviceModeStatusPrefixKey 			= "WDMS";
 		public static final String WifiDeviceMobilePresentPrefixKey 			= "WDMP";
 		public static final String UserSearchCondition = "SUSC";
+		public static final String WifiDeviceHandsetUnitPresentPrefixKey	="WDHUP";
 	}
 	
 	public static class Statistics{
@@ -123,6 +124,11 @@ public class BusinessKeyDefine {
 		public static final String WithdrawAppliesRequestNotifyKey = "WAR_KEY";
 		
 		public static final String RewardOrderRecent7DaysKey = "ROR7D_KEY";
+		
+		public static final String UserAgentPrefixKey = "UA";
+
+		public static final String UserQueryDataPrefixKey = "UQD";
+
 	}
 	
 	public static class CommdityRAmount {

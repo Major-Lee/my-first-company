@@ -39,10 +39,13 @@ public class UserIncomeBuilderOp {
 				userIncome.setTime(time);
 				userIncome.setUid(i.getUid());
 				userIncome.setIncome(i.getCash().substring(1));
+				userIncome.setTimes(1);
 				List<UserIncome> income=userWalletFacadeService.getUserIncomeService().findListByUid(userIncome.getUid(), time);
 				if(income==null||income.size()<1){
 					userWalletFacadeService.getUserIncomeService().insert(userIncome);
 				}else{
+					int num=income.get(0).getTimes();
+					userIncome.setTimes(num++);
 					//ArithHelper.round(v, scale);
 					userIncome.setIncome(String.valueOf(round(Double.valueOf(income.get(0).getIncome())+Double.valueOf(userIncome.getIncome()),2)));
 					userIncome.setId(income.get(0).getId());

@@ -1,6 +1,7 @@
 package com.bhu.vas.business.ds.charging.facade;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -212,6 +213,59 @@ public class ChargingFacadeService {
 		return result_pages;
     }
     
+    /**
+     * 第一次访问时 upact = true lastrowid = Integer.MaxValue ps = 20
+     * TODO：是否需要返回count？
+     * @param uid
+     * @param status
+     * @param upact
+     * @param lastrowid
+     * @param ps
+     * @return
+     */
+    public List<BatchImportVTO> pagesStartRowBatchImport(int uid,int status, boolean upact, int lastrowid, int ps){
+    	List<BatchImportVTO> vtos_result = new ArrayList<>();
+    	ModelCriteria mc = new ModelCriteria();
+		Criteria createCriteria = mc.createCriteria();
+		if(status != 0){
+			createCriteria.andColumnEqualTo("status", status);
+		}
+		boolean needReverse = false;
+		if(upact){//上滑
+			createCriteria.andColumnLessThan("id", lastrowid);
+			mc.setOrderByClause(" id desc ");
+		}else{//下拉 down
+			createCriteria.andColumnGreaterThan("id", lastrowid);
+			mc.setOrderByClause(" id asc ");
+			needReverse = true;
+			//取完数据后reverse
+		}
+		createCriteria.andSimpleCaulse(" 1=1 ");
+		mc.setStartRow(0);
+		mc.setSize(ps);
+		List<WifiDeviceBatchImport> pages = wifiDeviceBatchImportService.findModelByModelCriteria(mc);
+		if(!pages.isEmpty()){
+			if(needReverse) Collections.reverse(pages);
+			List<Integer> uids = new ArrayList<>();
+			for(WifiDeviceBatchImport batchimport:pages){
+				uids.add(batchimport.getImportor());
+			}
+			List<User> users = userService.findByIds(uids, true, true);
+			int index = 0;
+			for(WifiDeviceBatchImport batchimport:pages){
+				User user = users.get(index);
+				User distributor_user = null;
+		    	if(batchimport.getDistributor() >0){
+		    		distributor_user = userService.getById(batchimport.getDistributor());
+		    	}
+				vtos_result.add(batchimport.toBatchImportVTO(user.getNick(), user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP));
+				index++;
+			}
+		}
+		return vtos_result;
+		//result_pages = new CommonPage<BatchImportVTO>(pages.getPageNumber(), pages.getPageSize(), pages.getTotalItemsCount(), vtos_result);
+		//return result_pages;
+    }
     
     
 	public void wifiDeviceBindedNotify(String dmac,int uid){

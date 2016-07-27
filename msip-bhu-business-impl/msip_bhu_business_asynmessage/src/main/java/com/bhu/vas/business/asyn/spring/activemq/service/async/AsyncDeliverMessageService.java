@@ -12,6 +12,7 @@ import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkApplyDTO;
+import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkClearDTO;
 import com.bhu.vas.business.asyn.spring.model.async.tag.OperTagDTO;
 
 
@@ -105,6 +106,15 @@ public class AsyncDeliverMessageService {
 		dto.setMacs(dmacs);
 		dto.setOnlyindexupdate(onlyindexupdate);
 		dto.setDtoType(dtoType);
+		dto.setTs(System.currentTimeMillis());
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendBatchDeviceSnkTemplateClearActionMessage(int uid,String snk_type,String template){
+		BatchDeviceSnkClearDTO dto = new BatchDeviceSnkClearDTO();
+		dto.setUid(uid);
+		dto.setSnk_type(snk_type);
+		dto.setTemplate(template);
 		dto.setTs(System.currentTimeMillis());
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}

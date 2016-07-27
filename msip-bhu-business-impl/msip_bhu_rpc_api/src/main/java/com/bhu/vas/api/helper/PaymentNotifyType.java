@@ -7,6 +7,7 @@ public enum PaymentNotifyType {
 	
 	NormalPaymentNotify("支付系统支付成功通知","normal payment notify","NLN"),
 	SMSPaymentNotify("短信认证成功通知","sms payment notify","SMN"),
+	AdvertiseNotify("广告认证成功通知","advertise notify","ADN"),
 	;
 	
 	static Map<String, PaymentNotifyType> allActionMessageTypes;

@@ -3,6 +3,7 @@ package com.bhu.vas.business.ds.statistics.dao;
 import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
+import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 @Repository
 public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
@@ -14,5 +15,41 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 			return income;
 		}
 		return income;
+	}
+	public double countTotalIncome() {
+		double income = 0;
+		try {
+			income = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncome");
+		} catch (Exception e) {
+			return income;
+		}
+		return income;
+	}
+	public double countTotalIncomeByDay(String time) {
+		double income = 0;
+		try {
+			income = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncomeByDay", time);
+		} catch (Exception e) {
+			return income;
+		}
+		return income;
+	}
+	public double countTotalUserNumByDay(String time) {
+		double userNum = 0;
+		try {
+			userNum = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalUserNumByDay", time);
+		} catch (Exception e) {
+			return userNum;
+		}
+		return userNum;
+	}
+	public Order selectOrdersInfo(String orderid) {
+		Order order = null;
+		try {
+			order=super.getSqlSessionMasterTemplate().selectOne(Order.class.getName()+".selectOrdersInfo", orderid);
+		} catch (Exception e) {
+			return order;
+		}
+		return order;
 	}
 }

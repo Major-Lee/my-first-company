@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.user.model;
 
+import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.model.BaseLongModel;
@@ -141,6 +142,27 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 		vto.setNick(nick);
 		vto.setMobileno(mobileno);
 		vto.setCash(cash);
+		vto.setRmoney(rmoney);
+		vto.setVcurrency(vcurrency);
+		vto.setTransmode(transmode);
+		vto.setTransmode_desc(transmode_desc);
+		vto.setTranstype(transtype);
+		vto.setTranstype_desc(transtype_desc);
+		vto.setDescription(description);
+		//vto.setPayment_type(payment_type);
+		vto.setMemo(memo);
+		vto.setOperdate(DateTimeHelper.formatDate(this.updated_at, DateTimeHelper.FormatPattern0));
+		return vto;
+	}
+	
+	public UserWalletLogFFVTO toUserWalletLogFFVTO(String amount, String mac){
+		UserWalletLogFFVTO vto = new UserWalletLogFFVTO();
+		vto.setId(id);
+		vto.setUid(uid);
+		vto.setMac(mac);
+		vto.setOrderid(orderid);
+		vto.setCash(cash);
+		vto.setAmount(amount);
 		vto.setRmoney(rmoney);
 		vto.setVcurrency(vcurrency);
 		vto.setTransmode(transmode);

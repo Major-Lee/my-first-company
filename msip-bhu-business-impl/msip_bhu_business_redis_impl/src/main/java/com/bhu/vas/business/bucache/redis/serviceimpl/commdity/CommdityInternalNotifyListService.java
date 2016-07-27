@@ -114,10 +114,15 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 //    	while(true){
 //    		simulateUpayDrawPaymentCompletedNotify(true);
 //    	}
-    	for(int i = 0;i<1000;i++){
-    		simulateDeliverNotify();
-    	}
-    	
+//    	for(int i = 0;i<1000;i++){
+//    		simulateDeliverNotify();
+//    	}
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459500", true);
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459501", true);
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459502", true);
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459503", true);
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459504", true);
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459505", true);
     	//simulateMultiDeliverNotify();
     	//simulateResponsePaymentCompletedNotify("10002016061400000000000000001023", true);
     	//simulateResponseSMSPaymentCompletedNotify("10022016060500000000000000001008", true);
@@ -129,6 +134,7 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
         ResponsePaymentCompletedNotifyDTO opn_dto = new ResponsePaymentCompletedNotifyDTO();
     	opn_dto.setSuccess(success);
     	opn_dto.setOrderid(orderid);
+    	opn_dto.setPayment_type("WapWeixin");
     	//opn_dto.setPaymented_ts(System.currentTimeMillis());
     	opn_dto.setPaymented_ds(DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern));
     	if(!success){
@@ -207,7 +213,7 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
     
     public static void simulateMultiDeliverNotify(){
     	
-    	simulateResponsePaymentCompletedNotify("10002016061400000000000000000988", true);
+    	simulateResponsePaymentCompletedNotify("10022016071400000000000000459284", true);
 /*    	String umac_prefix = "38:bc:1a:2f:7e:";
     	String orderid_prefix = "10012016010100000000";
     	//System.out.println(umac_prefix.concat(String.format("%02d", RandomData.intNumber(99))));

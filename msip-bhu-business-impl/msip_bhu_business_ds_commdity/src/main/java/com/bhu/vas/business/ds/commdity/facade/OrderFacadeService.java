@@ -10,10 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.procedure.DeviceOrderStatisticsProduceDTO;
+import com.bhu.vas.api.dto.procedure.RewardOrderNewlyDataProcedureDTO;
 import com.bhu.vas.api.dto.procedure.RewardOrderStatisticsProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
@@ -86,7 +88,8 @@ public class OrderFacadeService {
 	 * @param dut 业务线
 	 * @param type 订单类型
 	 */
-	public int countOrderByParams(Integer uid, String mac, String umac, Integer status, String dut, Integer type){
+	public int countOrderByParams(Integer uid, String mac, String umac, Integer status, String dut, 
+			Integer type, long start_created_ts, long end_created_ts){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		criteria
@@ -103,6 +106,12 @@ public class OrderFacadeService {
 		}
 		if(type != null){
 			criteria.andColumnEqualTo("type", type);
+		}
+		if(start_created_ts > 0){
+			criteria.andColumnGreaterThanOrEqualTo("created_at", new Date(start_created_ts));
+		}
+		if(end_created_ts > 0){
+			criteria.andColumnLessThanOrEqualTo("created_at", new Date(end_created_ts));
 		}
 		return orderService.countByModelCriteria(mc);
 	}
@@ -121,7 +130,7 @@ public class OrderFacadeService {
 	 * @return
 	 */
 	public List<Order> findOrdersByParams(Integer uid, String mac, String umac, Integer status, String dut, 
-			Integer type, int pageNo, int pageSize){
+			Integer type, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
 		criteria
@@ -138,6 +147,12 @@ public class OrderFacadeService {
 		}
 		if(type != null){
 			criteria.andColumnEqualTo("type", type);
+		}
+		if(start_created_ts > 0){
+			criteria.andColumnGreaterThanOrEqualTo("created_at", new Date(start_created_ts));
+		}
+		if(end_created_ts > 0){
+			criteria.andColumnLessThanOrEqualTo("created_at", new Date(end_created_ts));
 		}
 		mc.setOrderByClause("created_at desc");
 		mc.setPageNumber(pageNo);
@@ -202,7 +217,8 @@ public class OrderFacadeService {
 	 * @return
 	 */
 	public Order createRewardOrder(Integer commdityid, Integer appid, User bindUser, String mac, 
-			String mac_dut, String umac, Integer umactype, String payment_type, String context, String user_agent){
+			String mac_dut, String umac, Integer umactype, String payment_type, String context, String user_agent,
+			Integer channel){
 		//商品信息验证
 		//验证商品是否合法
 		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
@@ -224,6 +240,7 @@ public class OrderFacadeService {
 		if(bindUser != null){
 			order.setUid(bindUser.getId());
 		}
+		order.setChannel(channel);
 		order.setMac(mac);
 		order.setMac_dut(mac_dut);
 		order.setUmac(umac);
@@ -355,6 +372,19 @@ public class OrderFacadeService {
 		RewardOrderStatisticsProcedureDTO procedureDTO = new RewardOrderStatisticsProcedureDTO();
 		procedureDTO.setStart_date(start_date);
 		procedureDTO.setEnd_date(end_date);
+		int executeRet = orderService.executeProcedure(procedureDTO);
+		if(executeRet == 0){
+			;
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
+		}
+		return procedureDTO.toVTO();
+	}
+	
+	public OrderRewardNewlyDataVTO rewardOrderNewlyDataWithProcedure(Integer uid, Date date){
+		RewardOrderNewlyDataProcedureDTO procedureDTO = new RewardOrderNewlyDataProcedureDTO();
+		procedureDTO.setUid(uid);
+		procedureDTO.setStart_date(DateTimeHelper.formatDate(date, DateTimeHelper.DefalutFormatPattern));
 		int executeRet = orderService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
 			;

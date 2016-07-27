@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderPaymentUrlDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
+import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
@@ -57,6 +59,7 @@ public class OrderController extends BaseController{
 			@RequestParam(required = false) String context,
 			@RequestParam(required = false, defaultValue = "2") Integer umactype,
 			@RequestParam(required = false, defaultValue = "1") Integer commdityid,
+			@RequestParam(required = false, defaultValue = "0") Integer channel,
 			@RequestParam(required = true) String payment_type,
 			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
 			) {
@@ -65,7 +68,7 @@ public class OrderController extends BaseController{
 		String user_agent = request.getHeader("User-Agent");
 		//1:生成订单
 		RpcResponseDTO<OrderRewardVTO> rpcResult = orderRpcService.createRewardOrder(commdityid, mac, umac, umactype,
-				payment_type, context, user_agent);
+				payment_type, context, user_agent, channel);
 		if(rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			return;
@@ -168,7 +171,7 @@ public class OrderController extends BaseController{
 			) {
 
 		RpcResponseDTO<TailPage<OrderRewardVTO>> rpcResult = orderRpcService.rewardOrderPages(uid, mac, umac, 
-				status, dut, pageNo, pageSize);
+				status, dut, 0, 0, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -197,12 +200,14 @@ public class OrderController extends BaseController{
 			@RequestParam(required = false) String umac,
 			@RequestParam(required = false, defaultValue = "10") Integer status,
 			@RequestParam(required = false) String dut,
+			@RequestParam(required = false, defaultValue = "0") long start_created_ts,
+			@RequestParam(required = false, defaultValue = "0") long end_created_ts,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 
 		RpcResponseDTO<TailPage<OrderRewardVTO>> rpcResult = orderRpcService.rewardOrderPages(uid, mac, umac, 
-				status, dut, pageNo, pageSize);
+				status, dut, start_created_ts, end_created_ts, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -327,6 +332,30 @@ public class OrderController extends BaseController{
 		}
 	}
 	
+	/**
+	 * 返回订单的详细信息
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param orderid
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/query/uid/detail",method={RequestMethod.GET,RequestMethod.POST})
+	public void query_uid_detail(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String orderid
+			) {
+
+		RpcResponseDTO<OrderDetailDTO> rpcResult = orderRpcService.orderDetailByUid(uid, orderid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
 	
 	/**
 	 * 根据订单参数查询短信认证订单分页列表
@@ -355,6 +384,23 @@ public class OrderController extends BaseController{
 
 		RpcResponseDTO<TailPage<OrderSMSVTO>> rpcResult = orderRpcService.smsOrderPages(uid, mac, umac, 
 				status, dut, pageNo, pageSize);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	
+	@ResponseBody()
+	@RequestMapping(value="/reward/newly/data",method={RequestMethod.GET,RequestMethod.POST})
+	public void reward_newly_data(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid
+			) {
+
+		RpcResponseDTO<OrderRewardNewlyDataVTO> rpcResult = orderRpcService.rewardOrderNewlyDataByUid(uid);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

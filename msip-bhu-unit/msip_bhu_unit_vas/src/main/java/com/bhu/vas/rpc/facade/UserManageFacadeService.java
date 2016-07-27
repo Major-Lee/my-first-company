@@ -130,12 +130,13 @@ public class UserManageFacadeService {
 					userTransInfoDTO.setUid(uid);
 					userTransInfoDTO.setTransType(log.getTranstype());
 					userTransInfoDTO.setTransNo(log.getOrderid());
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");  
 			        if(log.getUpdated_at() != null){
 			        	String time =sdf.format(log.getUpdated_at()); 
 			        	userTransInfoDTO.setTransTime(time);
 			        }
-					
+			        userTransInfoDTO.setTransMoney(log.getCash());
+			        userTransInfoDTO.setTransVcurrency(log.getVcurrency());
 					//根据订单Id获取mac和终端mac信息
 					Order orders = orderService.getById(log.getOrderid());
 					if(orders == null){
@@ -177,20 +178,20 @@ public class UserManageFacadeService {
 			UserManageDeviceDTO userManageDeviceDTO = new UserManageDeviceDTO();
 			//根据用户Id查询设备数量
 			long deviceNum = 0;
-			deviceNum = wifiDeviceDataSearchService.searchCountByCommon(uid, "", "", "", OnlineEnum.Offline.getType(), "");
+			deviceNum = wifiDeviceDataSearchService.searchCountByCommon(uid, "", "", "", OnlineEnum.Offline.getType(), "","");
 			userManageDeviceDTO.setDeviceNum(String.valueOf(deviceNum));
 			//根据用户Id查询在线设备数量
 			long onLinedeviceNum = 0;
-			onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(uid, "", "", "", OnlineEnum.Online.getType(), "");
+			onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(uid, "", "", "", OnlineEnum.Online.getType(), "", "");
 			userManageDeviceDTO.setDeviceOnlineNum(String.valueOf(onLinedeviceNum));
 			//根据用户Id查询开启打赏设备数量
 			long rewardDeviceNum = 0;
-			rewardDeviceNum = wifiDeviceDataSearchService.searchCountByCommon(uid, "", "", "", "", SnkTurnStateEnum.On.getType());
+			rewardDeviceNum = wifiDeviceDataSearchService.searchCountByCommon(uid, "", "", "", "", SnkTurnStateEnum.On.getType(), "");
 			userManageDeviceDTO.setRewardDeviceNum(String.valueOf(rewardDeviceNum));
 			//根据用户Id查询获取设备详细信息 
 			List<UserDeviceInfoDTO> deviceList = new ArrayList<UserDeviceInfoDTO>();
 			int searchPageNo = pageno>=1?(pageno-1):pageno;
-			Page<WifiDeviceDocument> devicePages = wifiDeviceDataSearchService.searchPageByCommon(uid, "", "", "", "", "", searchPageNo, pagesize);
+			Page<WifiDeviceDocument> devicePages = wifiDeviceDataSearchService.searchPageByCommon(uid, "", "", "", "", "", "",searchPageNo, pagesize);
 			List<UserManageDeviceDTO> vtos = new ArrayList<UserManageDeviceDTO>();
 			int total = 0;
 			if(devicePages != null){

@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
+import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
@@ -25,10 +27,10 @@ public class OrderRpcService implements IOrderRpcService{
 	
 	@Override
 	public RpcResponseDTO<OrderRewardVTO> createRewardOrder(Integer commdityid, String mac, String umac, 
-			Integer umactype, String payment_type, String context, String user_agent){
-		logger.info(String.format("createRewardOrder with commdityid[%s] mac[%s] umac[%s] umactype[%s] payment_type[%s] context[%s] user_agent[%s]",
-				commdityid, mac, umac, umactype, payment_type, context, user_agent));
-		return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context, user_agent);
+			Integer umactype, String payment_type, String context, String user_agent, Integer channel){
+		logger.info(String.format("createRewardOrder with commdityid[%s] mac[%s] umac[%s] umactype[%s] payment_type[%s] context[%s] user_agent[%s] channel[%s]",
+				commdityid, mac, umac, umactype, payment_type, context, user_agent, channel));
+		return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context, user_agent, channel);
 	}
 	
 	@Override
@@ -39,10 +41,10 @@ public class OrderRpcService implements IOrderRpcService{
 	
 	@Override
 	public RpcResponseDTO<TailPage<OrderRewardVTO>> rewardOrderPages(Integer uid, String mac, String umac, 
-			Integer status, String dut, int pageNo, int pageSize) {
-		logger.info(String.format("rewardOrderPages with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, 
-				mac, umac, status, dut, pageNo, pageSize));
-		return orderUnitFacadeService.rewardOrderPages(uid, mac, umac, status, dut, pageNo, pageSize);
+			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize) {
+		logger.info(String.format("rewardOrderPages with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] start_created_ts[%s] end_created_ts[%s] pageNo[%s] pageSize[%s]", uid, 
+				mac, umac, status, dut, start_created_ts, end_created_ts, pageNo, pageSize));
+		return orderUnitFacadeService.rewardOrderPages(uid, mac, umac, status, dut, start_created_ts, end_created_ts, pageNo, pageSize);
 	}
 	
 	@Override
@@ -80,6 +82,12 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	@Override
+	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid) {
+		logger.info(String.format("rewardCountTimeByUid with uid[%s]", uid));
+		return orderUnitFacadeService.rewardOrderNewlyDataByUid(uid);
+	}
+	
+	@Override
 	public RpcResponseDTO<OrderSMSVTO> createSMSOrder(String mac, String umac, Integer umactype, 
 			String context, String user_agent, boolean spendvcurrency){
 		logger.info(String.format("createSMSOrder with mac[%s] umac[%s] umactype[%s] context[%s] user_agent[%s] spendvcurrency[%s]",
@@ -96,7 +104,10 @@ public class OrderRpcService implements IOrderRpcService{
 		//return orderUnitFacadeService.createRewardOrder(commdityid, mac, umac, umactype, payment_type, context);
 		return orderUnitFacadeService.smsOrderPages(uid, mac, umac, status, dut, pageNo, pageSize);
 	}
-	
 
-
+	@Override
+	public RpcResponseDTO<OrderDetailDTO> orderDetailByUid(Integer uid, String orderid) {
+		logger.info(String.format("orderDetailByUid with uid[%s] orderid[%s]", uid, orderid));
+		return orderUnitFacadeService.orderDetailByUid(uid, orderid);
+	}
 }

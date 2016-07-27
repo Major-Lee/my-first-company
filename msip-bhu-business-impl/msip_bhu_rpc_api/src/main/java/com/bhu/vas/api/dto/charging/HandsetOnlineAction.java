@@ -2,10 +2,21 @@ package com.bhu.vas.api.dto.charging;
 
 public class HandsetOnlineAction extends ChargingAction{
 	private String hmac;
+	//dhcp name
 	private String hname;
 	private String hip;
 	private String vapname;
 	private String bssid;
+	
+	private String rssi;
+	private String snr;
+	private String authorized;
+	private String ethernet;
+	
+	//设备wan口地址，
+	//设备internet地址， 
+	//终端认证类型 微信、短信、必虎安全
+	//终端认证账号 手机号
 	public String getHmac() {
 		return hmac;
 	}
@@ -49,6 +60,38 @@ public class HandsetOnlineAction extends ChargingAction{
 
 	public void setBssid(String bssid) {
 		this.bssid = bssid;
+	}
+
+	public String getRssi() {
+		return rssi;
+	}
+
+	public void setRssi(String rssi) {
+		this.rssi = rssi;
+	}
+
+	public String getSnr() {
+		return snr;
+	}
+
+	public void setSnr(String snr) {
+		this.snr = snr;
+	}
+
+	public String getAuthorized() {
+		return authorized;
+	}
+
+	public void setAuthorized(String authorized) {
+		this.authorized = authorized;
+	}
+
+	public String getEthernet() {
+		return ethernet;
+	}
+
+	public void setEthernet(String ethernet) {
+		this.ethernet = ethernet;
 	}
 	
 }

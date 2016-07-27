@@ -295,8 +295,8 @@ public class BusinessModelBuilder {
 			//vto.setTx_rate(hd_entity.getData_rx_rate());
 			//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
 			//vto.setRx_rate(hd_entity.getData_tx_rate());
-			if(!StringUtils.isEmpty(hd_entity.getVapname()))
-				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
+//			if(!StringUtils.isEmpty(hd_entity.getVapname()))
+//				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
 
 			vto.setRx_bytes(hd_entity.getTx_bytes());
 			vto.setTx_bytes(hd_entity.getRx_bytes());

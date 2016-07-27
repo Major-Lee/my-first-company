@@ -1,11 +1,15 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
+import java.util.Date;
+
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -58,7 +62,7 @@ public interface IUserWalletRpcService {
 	 * @param pageSize
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<UserWalletLogVTO>> 		pageUserWalletlogs(int uid,String transmode,String transtype,int pageNo,int pageSize);
+	public RpcResponseDTO<TailPage<UserWalletLogVTO>> 	pageUserWalletlogs(int uid,String transmode,String transtype,int pageNo,int pageSize);
     /**
      * 审核提现申请，只有状态为VP的申请可以被审核，业务实现考虑验证此状态
      * @param reckoner
@@ -114,6 +118,14 @@ public interface IUserWalletRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<RankingListVTO> rankingList(int uid);
+	/**
+	 * 丰富统计信息
+	 * @return
+	 */
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int type,int pageIndex,int pageSize);
+	
+	public RpcResponseDTO<TailPage<UserWalletLogFFVTO>> pageUserWalletlogsByFeifan(int uid, String transmode,String transtype, 
+			Date start_date, Date end_date, int pageNo, int pageSize);
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

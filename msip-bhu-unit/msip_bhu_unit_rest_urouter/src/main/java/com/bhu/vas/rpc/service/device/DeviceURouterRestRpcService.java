@@ -109,6 +109,46 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 
 	@Override
+	public RpcResponseDTO<Map<String,Object>> urouterAllHdList(Integer uid, String wifiId,
+			int start, int size,Boolean filterWiredHandset) {
+		logger.info(String.format("DeviceURouterRestRPC urouterAllHdList invoke uid [%s] mac [%s] st [%s] ps [%s] filterWiredHandset[%s]", 
+				uid, wifiId, start, size,filterWiredHandset));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterAllHdList(uid, wifiId.toLowerCase(), start, size,filterWiredHandset);
+		}
+		catch(BusinessI18nCodeException ex){
+			logger.info(String.format("DeviceMessageRPC urouterAllHdList failed uid [%s] mac [%s] st [%s] ps [%s]",
+					uid, wifiId, start, size));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterAllHdList exception uid [%s] mac [%s] st [%s] ps [%s] exmsg[%s]",
+					uid, wifiId, start, size, ex.getMessage()), ex);
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	@Override
+	public RpcResponseDTO<Map<String, String>> countOnlineByTimestamp(Integer uid,String wifiId, Long timestamp) {
+		logger.info(String.format("DeviceURouterRestRPC fetchOnlineByTimestamp invoke uid [%s] mac [%s] time [%s]", uid, wifiId ,timestamp));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.countOnlineByTimestamp(uid,wifiId.toLowerCase(), timestamp);
+		}
+		catch(BusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC fetchOnlineByTimestamp failed uid [%s] mac [%s] time [%s]",uid, wifiId ,timestamp));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.info(String.format("DeviceURouterRestRPC fetchOnlineByTimestamp exception uid [%s] mac [%s] time [%s]",uid, wifiId ,timestamp));
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	@Override
 	public RpcResponseDTO<URouterHdDetailVTO> urouterHdDetail(Integer uid, String wifiId, String hd_mac) {
 		logger.info(String.format("DeviceURouterRestRPC urouterHdDetail invoke uid [%s] wifi_mac [%s] hd_mac [%s]",
 				uid, wifiId, hd_mac));
@@ -645,6 +685,13 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		logger.info(String.format("DeviceURouterRestRPC fetchBySearchConditionMessage invoke uid[%s] message[%s] pageNo[%s] pageSize[%s]",
 				uid, message, pageNo, pageSize));
 		return deviceURouterRestBusinessFacadeService.urouterFetchBySearchConditionMessage(uid, message, pageNo, pageSize);
+	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> urouterUpdNotifyReward(Integer uid, boolean on) {
+		logger.info(String.format("DeviceURouterRestRPC urouterUpdNotifyReward invoke uid[%s] on[%s]", uid, on));
+		return deviceURouterRestBusinessFacadeService.urouterUpdNotifyReward(uid, on);
+
 	}
 
 }

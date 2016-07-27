@@ -43,6 +43,7 @@ import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -76,34 +77,34 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 @Service
 public class UserDeviceUnitFacadeService {
-    @Resource
-    private UserService userService;
+	@Resource
+	private UserService userService;
 	@Resource
 	private WifiDeviceService wifiDeviceService;
-/*    @Resource
-    private UserDeviceService userDeviceService;
-    
-    @Resource
-    private UserDeviceFacadeService userDeviceFacadeService;*/
-	
+	/*
+	 * @Resource private UserDeviceService userDeviceService;
+	 * 
+	 * @Resource private UserDeviceFacadeService userDeviceFacadeService;
+	 */
+
 	@Resource
 	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
-	
+
 	@Resource
 	private UserWifiDeviceService userWifiDeviceService;
-    
-    @Resource
-    private DeviceFacadeService deviceFacadeService;
 
-    @Resource
+	@Resource
+	private DeviceFacadeService deviceFacadeService;
+
+	@Resource
 	private UserSettingStateService userSettingStateService;
-    
-    @Resource
+
+	@Resource
 	private DeviceUpgradeFacadeService deviceUpgradeFacadeService;
-	
+
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
-	
+
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 
@@ -111,265 +112,298 @@ public class UserDeviceUnitFacadeService {
 	private WifiDeviceSettingService wifiDeviceSettingService;
 
 	@Resource
-    private WifiDeviceGrayFacadeService wifiDeviceGrayFacadeService;
-	
+	private WifiDeviceGrayFacadeService wifiDeviceGrayFacadeService;
+
 	@Resource
 	private WifiDeviceModuleService wifiDeviceModuleService;
-	
+
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
-	//@Resource
-	//private TagDevicesService tagDevicesService;
-	
+	// @Resource
+	// private TagDevicesService tagDevicesService;
+
 	@Resource
 	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
-    
+
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
-	
+
 	@Resource
 	private DeliverMessageService deliverMessageService;
-	
-    //TODO：重复插入异常
-    //1、首先得判定UserDevicePK(mac, uid) 是否存在
-    //2、存在返回错误，不存在进行insert
-    public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName) {
-    	User user = userService.getById(uid);
-    	if(user == null)
-    		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
-    	
-/*        UserDevice userDevice;
-        UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
-        userDevice = userDeviceService.getById(userDevicePK);*/
-    	UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
-        if (userWifiDevice != null) {
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED);
-        } else {
-/*            userDevice = new UserDevice();
-            userDevice.setId(new UserDevicePK(mac, uid));
-            userDevice.setCreated_at(new Date());
-            userDevice.setDevice_name(deviceName);
-            userDeviceService.insert(userDevice);*/
-        	userWifiDeviceFacadeService.insertUserWifiDevice(mac, uid, deviceName);
-            
-            deviceFacadeService.updateDeviceIndustry(mac, null);
-            
-            wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, deviceName, null);
-            
-            deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac);
-            UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
-            userDeviceDTO.setMac(mac);
-            userDeviceDTO.setUid(uid);
-            userDeviceDTO.setDevice_name(deviceName);
-            return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceDTO);
-        }
-    }
-    
-    public RpcResponseDTO<Boolean> unBindDevice(String mac, int uid) {
-        //TODO(bluesand):有没有被其他用户绑定，现在一台设备只能被一个客户端绑定。
-/*        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
-        for (UserDevice bindDevice : bindDevices) {
-            if (bindDevice.getUid() != uid) {
-                return RpcResponseDTOBuilder.builderErrorRpcResponse(
-                        ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER,Boolean.FALSE);
-            }
-        }*/
-    	UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
-    	if(userWifiDevice != null && !userWifiDevice.getUid().equals(uid)){
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(
-                    ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER,Boolean.FALSE);
-    	}
 
-/*        UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
-        if (userDeviceService.deleteById(userDevicePK) > 0)  {*/
-    	if(userWifiDeviceService.deleteById(mac) > 0){
-        	
-        	deviceFacadeService.updateDeviceIndustry(mac, null);
-            
-        	wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null, null);
-        	deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
-        } /*else {
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(
-                    ResponseErrorCode.RPC_MESSAGE_UNSUPPORT, Boolean.FALSE);
-        }*/
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-    }
+	// TODO：重复插入异常
+	// 1、首先得判定UserDevicePK(mac, uid) 是否存在
+	// 2、存在返回错误，不存在进行insert
+	public RpcResponseDTO<UserDeviceDTO> bindDevice(String mac, int uid, String deviceName) {
+		User user = userService.getById(uid);
+		if (user == null)
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
 
-/*    public boolean isBinded(String mac) {
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andColumnEqualTo("mac", mac);
-        return  userDeviceService.countByCommonCriteria(mc) > 0 ? true : false;
-    }*/
+		/*
+		 * UserDevice userDevice; UserDevicePK userDevicePK = new
+		 * UserDevicePK(mac, uid); userDevice =
+		 * userDeviceService.getById(userDevicePK);
+		 */
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+		if (userWifiDevice != null) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED);
+		} else {
+			/*
+			 * userDevice = new UserDevice(); userDevice.setId(new
+			 * UserDevicePK(mac, uid)); userDevice.setCreated_at(new Date());
+			 * userDevice.setDevice_name(deviceName);
+			 * userDeviceService.insert(userDevice);
+			 */
+			userWifiDeviceFacadeService.insertUserWifiDevice(mac, uid, deviceName);
 
-/*    public int countBindDevices(int uid) {
-        ModelCriteria mc = new ModelCriteria();
-        mc.createCriteria().andColumnEqualTo("uid", uid);
-        return userDeviceService.countByModelCriteria(mc);
-    }*/
+			deviceFacadeService.updateDeviceIndustry(mac, null);
 
-    public RpcResponseDTO<UserDTO> fetchBindDeviceUser(String mac) {
-        //UserDTO userDTO = new UserDTO();
-/*        List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
-        if (!bindDevices.isEmpty()) {
-            int uid = bindDevices.get(0).getUid();
-            User user = userService.getById(uid);*/
-        UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
-        if(userWifiDevice != null){
-        	int uid = userWifiDevice.getUid();
-        	User user = userService.getById(uid);
-            //userDTO.setId(uid);
-            if (user != null) {
-            	UserDTO userDTO = RpcResponseDTOBuilder.builderUserDTOFromUser(user, false);
-            	if(StringUtils.isNotEmpty(userDTO.getMobileno())){
-            		userDTO.setMobileno(String.format("%s********",
-                        user.getMobileno().isEmpty() ? "***" : user.getMobileno().substring(0,3)));
-            	}
-                /*userDTO.setCountrycode(user.getCountrycode());
-                userDTO.setMobileno(String.format("%s********",
-                        user.getMobileno().isEmpty() ? "***" : user.getMobileno().substring(0,3)));*/
-                return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDTO);
-            } else {
-                return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
-            }
-        } else {
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
-        }
-    }
+			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, deviceName, null);
 
-    public boolean modifyUserDeviceName(String mac, int uid, String deviceName) {
-        try {
-/*            UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
-            UserDevice userDevice = userDeviceService.getById(userDevicePK);
-            if (userDevice == null) {
-                return false;
-            }*/
-            UserWifiDevice userWifiDevice = userWifiDeviceFacadeService.findUserWifiDeviceById(mac, uid);
-            if(userWifiDevice == null){
-            	return false;
-            }
-            
-/*            userDevice.setId(new UserDevicePK(mac, uid));
-            userDevice.setDevice_name(deviceName);
-            userDevice.setDevice_name_modifyed(true);
-            userDeviceService.update(userDevice);*/
-            
-            userWifiDevice.setDevice_name(deviceName);
-            userWifiDevice.setDevice_name_modifyed(true);
-            userWifiDeviceService.update(userWifiDevice);
-            
-            wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, deviceName);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+			deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac);
+			UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
+			userDeviceDTO.setMac(mac);
+			userDeviceDTO.setUid(uid);
+			userDeviceDTO.setDevice_name(deviceName);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDeviceDTO);
+		}
+	}
 
-    }
+	public RpcResponseDTO<Boolean> unBindDevice(String mac, int uid) {
+		// TODO(bluesand):有没有被其他用户绑定，现在一台设备只能被一个客户端绑定。
+		/*
+		 * List<UserDevice> bindDevices =
+		 * userDeviceService.fetchBindDevicesUsers(mac); for (UserDevice
+		 * bindDevice : bindDevices) { if (bindDevice.getUid() != uid) { return
+		 * RpcResponseDTOBuilder.builderErrorRpcResponse(
+		 * ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER,Boolean.FALSE); } }
+		 */
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+		if (userWifiDevice != null && !userWifiDevice.getUid().equals(uid)) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER,
+					Boolean.FALSE);
+		}
 
-    public RpcResponseDTO<Boolean> forceDeviceUpdate(int uid, String mac){
-    	//UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
-    	//UserDevice userDevice = userDeviceService.getById(userDevicePK);
-    	UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
-        if (userWifiDevice == null) {
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,new String[]{mac});
-        } else {
-        	WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-        	if(wifiDevice == null){
-        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
-        	}
-        	if(!wifiDevice.isOnline()){
-        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
-        	}
-        	//发送异步Device升级指令，指定立刻升级
-        	{
-        		String cmdPayload = deviceUpgradeFacadeService.clientForceDeviceUpgrade(mac, wifiDevice.getOrig_swver());
-        		if(StringUtils.isNotEmpty(cmdPayload)){
-        			deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayload);
-        		}
-        		//boolean isFirstGray = wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
-        		/*UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
-        		//UpgradeDTO upgrade = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, wifiDevice);
-	        	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
-	        		//long new_taskid = CMDBuilder.auto_taskid_fragment.getNextSequence();
-	        		//String cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid, StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING, upgrade.getUpgradeurl());
-	        		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP);
-	        		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
-	        	}*/
-        	}
-        	return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-        }   	
-    }
-    
-    /**
-     * 客户端接口响应
-     * 期望目标：只有固件固化版本才考虑给客户端提示升级，其他版本由于有灰度的存在，升级还是很及时的
-     * 规则
-     * 		配置文件中定义固件固化版本定义在配置中并加载配置
-     * 		如果发现设备版本不是固件固化版本则直接false
-     * 		如果发现设备版本是固件固化版本则直接走检测升级流程
-     * 		
-     * @param uid
-     * @param mac
-     * @param appver
-     * @return
-     */
-    public RpcResponseDTO<UserDeviceCheckUpdateDTO> checkDeviceUpdate(int uid, String mac, String appver){
-    	User user = userService.getById(uid);
-    	if(user == null){
-    		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
-    	}
-    	String handset_device = user.getLastlogindevice();
-//    	UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
-//    	UserDevice userDevice = userDeviceService.getById(userDevicePK);
-    	UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
-        if (userWifiDevice == null) {
-            return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED);
-        } else {
-        	WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-        	if(wifiDevice == null){
-        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
-        	}
-        	if(!wifiDevice.isOnline()){
-        		return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
-        	}
-        	UserDeviceCheckUpdateDTO clientCheckDeviceUpgrade = deviceUpgradeFacadeService.clientCheckDeviceUpgrade(mac, wifiDevice, handset_device, appver);
-        	/*UpgradeDTO upgrade = null;
-        	if(!BusinessRuntimeConfiguration.isInitialDeviceFirmwareVersion(wifiDevice.getOrig_swver())){
-        		//非固件固化定义的版本，直接返回不需要强制升级
-        		System.out.println(String.format("not initial device firmware version:[%s] for[%s]", wifiDevice.getOrig_swver(),wifiDevice.getId()));
-        	}else{
-            	upgrade = deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac, wifiDevice,handset_device,appver);
-            	app检测设备是否需要升级的时候不进行定时升级指令的操作
-            	if(upgrade != null && upgrade.isForceDeviceUpgrade()){
-            		String cmdPayload = upgrade.buildUpgradeCMD(mac, 0, WifiDeviceHelper.Upgrade_Default_BeginTime, WifiDeviceHelper.Upgrade_Default_EndTime);
-            		deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload);
-            	}
-        	}
-        	UserDeviceCheckUpdateDTO retDTO = new UserDeviceCheckUpdateDTO();
-        	retDTO.setMac(mac);
-        	retDTO.setUid(uid);
-        	retDTO.setOnline(wifiDevice.isOnline());
-        	retDTO.setDut(upgrade!=null?upgrade.getDut():StringHelper.MINUS_STRING_GAP);
-        	retDTO.setGray(upgrade!=null?upgrade.getGl():0);
-        	retDTO.setForceDeviceUpdate(upgrade!=null?upgrade.isForceDeviceUpgrade():false);
-        	retDTO.setForceAppUpdate(upgrade!=null?upgrade.isForceAppUpgrade():false);
-        	retDTO.setCurrentDVB(wifiDevice.getOrig_swver());
-        	retDTO.setCurrentAVB(upgrade!=null?upgrade.getCurrentAVB():null);*/
-        	return RpcResponseDTOBuilder.builderSuccessRpcResponse(clientCheckDeviceUpgrade);
-        }
-    }
-    
-    
+		/*
+		 * UserDevicePK userDevicePK = new UserDevicePK(mac, uid); if
+		 * (userDeviceService.deleteById(userDevicePK) > 0) {
+		 */
+		if (userWifiDeviceService.deleteById(mac) > 0) {
+
+			deviceFacadeService.updateDeviceIndustry(mac, null);
+
+			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null, null);
+			deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
+		} /*
+			 * else { return RpcResponseDTOBuilder.builderErrorRpcResponse(
+			 * ResponseErrorCode.RPC_MESSAGE_UNSUPPORT, Boolean.FALSE); }
+			 */
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+	}
+
+	/*
+	 * public boolean isBinded(String mac) { ModelCriteria mc = new
+	 * ModelCriteria(); mc.createCriteria().andColumnEqualTo("mac", mac); return
+	 * userDeviceService.countByCommonCriteria(mc) > 0 ? true : false; }
+	 */
+
+	/*
+	 * public int countBindDevices(int uid) { ModelCriteria mc = new
+	 * ModelCriteria(); mc.createCriteria().andColumnEqualTo("uid", uid); return
+	 * userDeviceService.countByModelCriteria(mc); }
+	 */
+
+	public RpcResponseDTO<UserDTO> fetchBindDeviceUser(String mac) {
+		// UserDTO userDTO = new UserDTO();
+		/*
+		 * List<UserDevice> bindDevices =
+		 * userDeviceService.fetchBindDevicesUsers(mac); if
+		 * (!bindDevices.isEmpty()) { int uid = bindDevices.get(0).getUid();
+		 * User user = userService.getById(uid);
+		 */
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+		if (userWifiDevice != null) {
+			int uid = userWifiDevice.getUid();
+			User user = userService.getById(uid);
+			// userDTO.setId(uid);
+			if (user != null) {
+				UserDTO userDTO = RpcResponseDTOBuilder.builderUserDTOFromUser(user, false);
+				if (StringUtils.isNotEmpty(userDTO.getMobileno())) {
+					userDTO.setMobileno(String.format("%s********",
+							user.getMobileno().isEmpty() ? "***" : user.getMobileno().substring(0, 3)));
+				}
+				/*
+				 * userDTO.setCountrycode(user.getCountrycode());
+				 * userDTO.setMobileno(String.format("%s********",
+				 * user.getMobileno().isEmpty() ? "***" :
+				 * user.getMobileno().substring(0,3)));
+				 */
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(userDTO);
+			} else {
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,
+						new String[] { mac });
+			}
+		} else {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,
+					new String[] { mac });
+		}
+	}
+
+	public boolean modifyUserDeviceName(String mac, int uid, String deviceName) {
+		try {
+			/*
+			 * UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+			 * UserDevice userDevice = userDeviceService.getById(userDevicePK);
+			 * if (userDevice == null) { return false; }
+			 */
+			UserWifiDevice userWifiDevice = userWifiDeviceFacadeService.findUserWifiDeviceById(mac, uid);
+			if (userWifiDevice == null) {
+				return false;
+			}
+
+			/*
+			 * userDevice.setId(new UserDevicePK(mac, uid));
+			 * userDevice.setDevice_name(deviceName);
+			 * userDevice.setDevice_name_modifyed(true);
+			 * userDeviceService.update(userDevice);
+			 */
+
+			userWifiDevice.setDevice_name(deviceName);
+			userWifiDevice.setDevice_name_modifyed(true);
+			userWifiDeviceService.update(userWifiDevice);
+
+			wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, deviceName);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+
+	}
+
+	public RpcResponseDTO<Boolean> forceDeviceUpdate(int uid, String mac) {
+		// UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+		// UserDevice userDevice = userDeviceService.getById(userDevicePK);
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+		if (userWifiDevice == null) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED,
+					new String[] { mac });
+		} else {
+			WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+			if (wifiDevice == null) {
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,
+						new String[] { mac });
+			}
+			if (!wifiDevice.isOnline()) {
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,
+						new String[] { mac });
+			}
+			// 发送异步Device升级指令，指定立刻升级
+			{
+				String cmdPayload = deviceUpgradeFacadeService.clientForceDeviceUpgrade(mac,
+						wifiDevice.getOrig_swver());
+				if (StringUtils.isNotEmpty(cmdPayload)) {
+					deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac, cmdPayload);
+				}
+				// boolean isFirstGray =
+				// wifiDeviceGroupFacadeService.isDeviceInGrayGroup(mac);
+				/*
+				 * UpgradeDTO upgrade =
+				 * deviceUpgradeFacadeService.checkDeviceUpgrade(mac,
+				 * wifiDevice); //UpgradeDTO upgrade =
+				 * deviceUpgradeFacadeService.checkDeviceUpgrade(mac,
+				 * wifiDevice); if(upgrade != null &&
+				 * upgrade.isForceDeviceUpgrade()){ //long new_taskid =
+				 * CMDBuilder.auto_taskid_fragment.getNextSequence(); //String
+				 * cmdPayload = CMDBuilder.builderDeviceUpgrade(mac, new_taskid,
+				 * StringHelper.EMPTY_STRING, StringHelper.EMPTY_STRING,
+				 * upgrade.getUpgradeurl()); String cmdPayload =
+				 * upgrade.buildUpgradeCMD(mac, 0,
+				 * StringHelper.EMPTY_STRING_GAP,
+				 * StringHelper.EMPTY_STRING_GAP);
+				 * deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac,
+				 * new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload); }
+				 */
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}
+	}
+
+	/**
+	 * 客户端接口响应 期望目标：只有固件固化版本才考虑给客户端提示升级，其他版本由于有灰度的存在，升级还是很及时的 规则
+	 * 配置文件中定义固件固化版本定义在配置中并加载配置 如果发现设备版本不是固件固化版本则直接false
+	 * 如果发现设备版本是固件固化版本则直接走检测升级流程
+	 * 
+	 * @param uid
+	 * @param mac
+	 * @param appver
+	 * @return
+	 */
+	public RpcResponseDTO<UserDeviceCheckUpdateDTO> checkDeviceUpdate(int uid, String mac, String appver) {
+		User user = userService.getById(uid);
+		if (user == null) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_DATA_NOT_EXIST);
+		}
+		String handset_device = user.getLastlogindevice();
+		// UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+		// UserDevice userDevice = userDeviceService.getById(userDevicePK);
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+		if (userWifiDevice == null) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_BINDED);
+		} else {
+			WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+			if (wifiDevice == null) {
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,
+						new String[] { mac });
+			}
+			if (!wifiDevice.isOnline()) {
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,
+						new String[] { mac });
+			}
+			UserDeviceCheckUpdateDTO clientCheckDeviceUpgrade = deviceUpgradeFacadeService.clientCheckDeviceUpgrade(mac,
+					wifiDevice, handset_device, appver);
+			/*
+			 * UpgradeDTO upgrade = null;
+			 * if(!BusinessRuntimeConfiguration.isInitialDeviceFirmwareVersion(
+			 * wifiDevice.getOrig_swver())){ //非固件固化定义的版本，直接返回不需要强制升级
+			 * System.out.println(String.format(
+			 * "not initial device firmware version:[%s] for[%s]",
+			 * wifiDevice.getOrig_swver(),wifiDevice.getId())); }else{ upgrade =
+			 * deviceUpgradeFacadeService.checkDeviceUpgradeWithClientVer(mac,
+			 * wifiDevice,handset_device,appver); app检测设备是否需要升级的时候不进行定时升级指令的操作
+			 * if(upgrade != null && upgrade.isForceDeviceUpgrade()){ String
+			 * cmdPayload = upgrade.buildUpgradeCMD(mac, 0,
+			 * WifiDeviceHelper.Upgrade_Default_BeginTime,
+			 * WifiDeviceHelper.Upgrade_Default_EndTime);
+			 * deliverMessageService.sendWifiCmdsCommingNotifyMessage(mac,
+			 * new_taskid,OperationCMD.DeviceUpgrade.getNo(), cmdPayload); } }
+			 * UserDeviceCheckUpdateDTO retDTO = new UserDeviceCheckUpdateDTO();
+			 * retDTO.setMac(mac); retDTO.setUid(uid);
+			 * retDTO.setOnline(wifiDevice.isOnline());
+			 * retDTO.setDut(upgrade!=null?upgrade.getDut():StringHelper.
+			 * MINUS_STRING_GAP);
+			 * retDTO.setGray(upgrade!=null?upgrade.getGl():0);
+			 * retDTO.setForceDeviceUpdate(upgrade!=null?upgrade.
+			 * isForceDeviceUpgrade():false);
+			 * retDTO.setForceAppUpdate(upgrade!=null?upgrade.isForceAppUpgrade(
+			 * ):false); retDTO.setCurrentDVB(wifiDevice.getOrig_swver());
+			 * retDTO.setCurrentAVB(upgrade!=null?upgrade.getCurrentAVB():null);
+			 */
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(clientCheckDeviceUpgrade);
+		}
+	}
 
 	/**
 	 * 获取用户绑定的设备，设备状态只有在线和不在线(兼容旧版app的接口)
+	 * 
 	 * @param uid
 	 * @param dut
 	 * @return
 	 */
-	public List<UserDeviceDTO>  fetchBindDevices(int uid, String dut, int pageNo, int pageSize) {
-		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+	public List<UserDeviceDTO> fetchBindDevices(int uid, String dut, int pageNo, int pageSize) {
+		int searchPageNo = pageNo >= 1 ? (pageNo - 1) : pageNo;
 		List<UserDeviceDTO> dtos = new ArrayList<UserDeviceDTO>();
-		List<WifiDeviceDocument> searchDocuments = wifiDeviceDataSearchService.searchListByUidAndDut(uid, dut, searchPageNo, pageSize);
+		List<WifiDeviceDocument> searchDocuments = wifiDeviceDataSearchService.searchListByUidAndDut(uid, dut,
+				searchPageNo, pageSize);
 
 		if (searchDocuments != null && !searchDocuments.isEmpty()) {
 			for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
@@ -383,15 +417,15 @@ public class UserDeviceUnitFacadeService {
 				userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 				userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
 				userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
-				if(wifiDeviceDocument.getD_snk_allowturnoff() != null){
+				if (wifiDeviceDocument.getD_snk_allowturnoff() != null) {
 					userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
-				}else{
+				} else {
 					userDeviceDTO.setD_snk_allowturnoff(1);
 				}
-				
+
 				if ("1".equals(wifiDeviceDocument.getD_online())) {
 					userDeviceDTO.setOnline(true);
-					userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+					userDeviceDTO.setOhd_count(WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
 							.presentOnlineSize(wifiDeviceDocument.getD_mac()));
 				}
 				userDeviceDTO.setD_online(wifiDeviceDocument.getD_online());
@@ -402,30 +436,35 @@ public class UserDeviceUnitFacadeService {
 
 		return dtos;
 	}
-	
+
 	/**
 	 * 获取用户绑定的设备，设备状态只有在线和不在线
+	 * 
 	 * @param uid
 	 * @param dut
 	 * @return
 	 */
 	public RpcResponseDTO<TailPage<UserDeviceDTO>> fetchPageBindDevices(int uid, String dut, int pageNo, int pageSize) {
-		try{
-			int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
-			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut, searchPageNo, pageSize);
-			
+		try {
+			int searchPageNo = pageNo >= 1 ? (pageNo - 1) : pageNo;
+			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut,
+					searchPageNo, pageSize);
+
 			List<UserDeviceDTO> vtos = null;
+			List<UserDeviceDTO> result = new ArrayList<UserDeviceDTO>();
+			List<String> macs = null;
 			int total = 0;
-			if(search_result != null){
-				total = (int)search_result.getTotalElements();//.getTotal();
-				if(total == 0){
+			if (search_result != null) {
+				total = (int) search_result.getTotalElements();// .getTotal();
+				if (total == 0) {
 					vtos = Collections.emptyList();
-				}else{
-					List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
-					if(searchDocuments.isEmpty()) {
+				} else {
+					List<WifiDeviceDocument> searchDocuments = search_result.getContent();// .getResult();
+					if (searchDocuments.isEmpty()) {
 						vtos = Collections.emptyList();
-					}else{
+					} else {
 						vtos = new ArrayList<UserDeviceDTO>();
+						macs = new ArrayList<String>();
 						for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
 							UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
 							userDeviceDTO.setMac(wifiDeviceDocument.getD_mac());
@@ -438,47 +477,63 @@ public class UserDeviceUnitFacadeService {
 							userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
 							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
 							userDeviceDTO.setO_scalelevel(wifiDeviceDocument.getO_scalelevel());
-							if(wifiDeviceDocument.getD_snk_allowturnoff() != null){
-								userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
-							}else{
+							if (wifiDeviceDocument.getD_snk_allowturnoff() != null) {
+								userDeviceDTO.setD_snk_allowturnoff(
+										Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
+							} else {
 								userDeviceDTO.setD_snk_allowturnoff(1);
 							}
 							if ("1".equals(wifiDeviceDocument.getD_online())) {
 								userDeviceDTO.setOnline(true);
-								userDeviceDTO.setOhd_count(WifiDeviceHandsetPresentSortedSetService.getInstance()
+								userDeviceDTO.setOhd_count(WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
 										.presentOnlineSize(wifiDeviceDocument.getD_mac()));
 							}
 							userDeviceDTO.setD_online(wifiDeviceDocument.getD_online());
 							userDeviceDTO.setVer(wifiDeviceDocument.getD_origswver());
+							macs.add(wifiDeviceDocument.getD_mac());
 							vtos.add(userDeviceDTO);
+						}
+						if (macs !=null) {
+							List<WifiDevice> devices = wifiDeviceService.findByIds(macs);
+							if (devices != null) {
+								
+								int index = 0;
+								for (WifiDevice wifiDevice : devices) {
+									UserDeviceDTO userDeviceDTO = vtos.get(index);
+									userDeviceDTO.setProvince(wifiDevice.getProvince());
+									userDeviceDTO.setCity(wifiDevice.getCity());
+									userDeviceDTO.setDistrict(wifiDevice.getDistrict());
+									result.add(userDeviceDTO);
+									index++;
+								}
+							}
 						}
 					}
 				}
-			}else{
+			} else {
 				vtos = Collections.emptyList();
 			}
-			TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, vtos);
+			TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, result);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
-		}catch(BusinessI18nCodeException i18nex){
+		} catch (BusinessI18nCodeException i18nex) {
 			i18nex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
-		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
-
-
 	private List<UserDeviceVTO> builderUserDeviceVTOs(Page<WifiDeviceDocument> search_result) {
 		List<UserDeviceVTO> vtos = null;
-		List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
-		if(searchDocuments.isEmpty()) {
+		List<WifiDeviceDocument> searchDocuments = search_result.getContent();// .getResult();
+		if (searchDocuments.isEmpty()) {
 			vtos = Collections.emptyList();
-		}else {
+		} else {
 			vtos = new ArrayList<UserDeviceVTO>();
-			//WifiDeviceVTO1 vto = null;
-			//int startIndex = PageHelper.getStartIndexOfPage(searchPageNo, pageSize);
+			// WifiDeviceVTO1 vto = null;
+			// int startIndex = PageHelper.getStartIndexOfPage(searchPageNo,
+			// pageSize);
 
 			List<String> macs = new ArrayList<String>();
 
@@ -508,7 +563,7 @@ public class UserDeviceUnitFacadeService {
 					WifiDeviceSetting wifiDeviceSetting = wifiDeviceSettings.get(i);
 					if (wifiDeviceSetting != null) {
 						WifiDeviceSettingDTO setting_dto = wifiDeviceSetting.getInnerModel();
-						//信号强度和当前信道
+						// 信号强度和当前信道
 						String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
 						UserDeviceVTO userDeviceVTO = vtos.get(index);
 						userDeviceVTO.setD_power(powerAndRealChannel[0]);
@@ -521,23 +576,24 @@ public class UserDeviceUnitFacadeService {
 		return vtos;
 	}
 
+	public List<UserDeviceVTO> fetchBindDevicesFromIndex(Integer uid, Integer u_id, String d_online, String s_content,
+			int pageNo, int pageSize) {
 
-	public List<UserDeviceVTO> fetchBindDevicesFromIndex(Integer uid, Integer u_id,
-												   String d_online, String s_content, int pageNo, int pageSize){
-
-		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+		int searchPageNo = pageNo >= 1 ? (pageNo - 1) : pageNo;
 		SearchConditionMessage sm = WifiDeviceTCSearchMessageBuilder.builderSearchTCMessage(u_id, d_online, s_content);
-		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(sm,searchPageNo,pageSize);
-		//System.out.println("fetchBindDevicesFromIndex === " +  search_result);
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(sm, searchPageNo,
+				pageSize);
+		// System.out.println("fetchBindDevicesFromIndex === " + search_result);
 
 		List<UserDeviceVTO> vtos = null;
 		int total = 0;
-		if(search_result != null){
-			total = (int)search_result.getTotalElements();//.getTotal();
-			if(total == 0){
+		if (search_result != null) {
+			total = (int) search_result.getTotalElements();// .getTotal();
+			if (total == 0) {
 				vtos = Collections.emptyList();
-			}else {
-				//List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
+			} else {
+				// List<WifiDeviceDocument> searchDocuments =
+				// search_result.getContent();//.getResult();
 				vtos = builderUserDeviceVTOs(search_result);
 			}
 		}
@@ -546,222 +602,223 @@ public class UserDeviceUnitFacadeService {
 
 	}
 
-
 	/**
 	 * 通过搜索引擎获取用户绑定的设备
+	 * 
 	 * @param uid
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
-     */
-	public UserDeviceTCPageVTO fetchBindDevicesFromIndexCustom(Integer uid, Integer u_id,
-			String d_online, String s_content, int pageNo, int pageSize) {
+	 */
+	public UserDeviceTCPageVTO fetchBindDevicesFromIndexCustom(Integer uid, Integer u_id, String d_online,
+			String s_content, int pageNo, int pageSize) {
 
-		int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
+		int searchPageNo = pageNo >= 1 ? (pageNo - 1) : pageNo;
 		SearchConditionMessage sm = WifiDeviceTCSearchMessageBuilder.builderSearchTCMessage(u_id, d_online, s_content);
-		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(sm,searchPageNo,pageSize);
-		//System.out.println("fetchBindDevicesFromIndex === " +  search_result);
-		
+		Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(sm, searchPageNo,
+				pageSize);
+		// System.out.println("fetchBindDevicesFromIndex === " + search_result);
+
 		List<UserDeviceVTO> vtos = null;
 		int total = 0;
-		if(search_result != null){
-			total = (int)search_result.getTotalElements();//.getTotal();
-			if(total == 0){
+		if (search_result != null) {
+			total = (int) search_result.getTotalElements();// .getTotal();
+			if (total == 0) {
 				vtos = Collections.emptyList();
-			}else {
-				//List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
- 				vtos = builderUserDeviceVTOs(search_result);
+			} else {
+				// List<WifiDeviceDocument> searchDocuments =
+				// search_result.getContent();//.getResult();
+				vtos = builderUserDeviceVTOs(search_result);
 			}
 		}
 		TailPage<UserDeviceVTO> pages = new CommonPage<UserDeviceVTO>(pageNo, pageSize, total, vtos);
 
-		//获取3种在线状态的数量，在线，离线，全部
+		// 获取3种在线状态的数量，在线，离线，全部
 		UserDeviceStatisticsVTO statistics = new UserDeviceStatisticsVTO();
 		OnlineEnum onlineEnum = WifiDeviceDocumentEnumType.OnlineEnum.getOnlineEnumFromType(d_online);
-		//当前搜索条件为全部，则查询在线和离线数量
+		// 当前搜索条件为全部，则查询在线和离线数量
 		long to = 0l;
 		long on = 0l;
 		long of = 0l;
-		if(onlineEnum == null){
+		if (onlineEnum == null) {
 			to = total;
-			on = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
-					.builderSearchTCMessage(u_id, OnlineEnum.Online.getType(), null));
-			of = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
-					.builderSearchTCMessage(u_id, OnlineEnum.Offline.getType(), null));
+			on = wifiDeviceDataSearchService.searchCountByConditionMessage(
+					WifiDeviceTCSearchMessageBuilder.builderSearchTCMessage(u_id, OnlineEnum.Online.getType(), null));
+			of = wifiDeviceDataSearchService.searchCountByConditionMessage(
+					WifiDeviceTCSearchMessageBuilder.builderSearchTCMessage(u_id, OnlineEnum.Offline.getType(), null));
 		}
-		//当前搜索条件为在线，则查询全部和离线数量
-		else if(onlineEnum.getType().equals(OnlineEnum.Online.getType())){
+		// 当前搜索条件为在线，则查询全部和离线数量
+		else if (onlineEnum.getType().equals(OnlineEnum.Online.getType())) {
 			on = total;
-			to = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
-					.builderSearchTCMessage(u_id, null, null));
-			of = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
-					.builderSearchTCMessage(u_id, OnlineEnum.Offline.getType(), null));
+			to = wifiDeviceDataSearchService.searchCountByConditionMessage(
+					WifiDeviceTCSearchMessageBuilder.builderSearchTCMessage(u_id, null, null));
+			of = wifiDeviceDataSearchService.searchCountByConditionMessage(
+					WifiDeviceTCSearchMessageBuilder.builderSearchTCMessage(u_id, OnlineEnum.Offline.getType(), null));
 		}
-		//当前搜索条件为离线，则查询全部和在线数量
-		else if(onlineEnum.getType().equals(OnlineEnum.Offline.getType())){
+		// 当前搜索条件为离线，则查询全部和在线数量
+		else if (onlineEnum.getType().equals(OnlineEnum.Offline.getType())) {
 			of = total;
-			to = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
-					.builderSearchTCMessage(u_id, null, null));
-			on = wifiDeviceDataSearchService.searchCountByConditionMessage(WifiDeviceTCSearchMessageBuilder
-					.builderSearchTCMessage(u_id, OnlineEnum.Online.getType(), null));
+			to = wifiDeviceDataSearchService.searchCountByConditionMessage(
+					WifiDeviceTCSearchMessageBuilder.builderSearchTCMessage(u_id, null, null));
+			on = wifiDeviceDataSearchService.searchCountByConditionMessage(
+					WifiDeviceTCSearchMessageBuilder.builderSearchTCMessage(u_id, OnlineEnum.Online.getType(), null));
 		}
 		statistics.setTo(to);
 		statistics.setOn(on);
 		statistics.setOf(of);
-		
+
 		UserDeviceTCPageVTO vto = new UserDeviceTCPageVTO();
 		vto.setPages(pages);
 		vto.setStatistics(statistics);
 		return vto;
 	}
-		
 
 	/**
 	 * 通过用户手机号或者指定用户的uid得到其绑定的设备
+	 * 
 	 * @param countrycode
 	 * @param acc
 	 * @return
 	 */
-/*	public RpcResponseDTO<List<UserDeviceDTO>>  fetchBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
-		if(uid <=0 && StringUtils.isEmpty(acc))
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
-		if(uid <=0){
-			Integer ret_uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
-			if(ret_uid == null || ret_uid.intValue() == 0){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
-			}
-			uid = ret_uid.intValue();
-		}
-		List<UserDeviceDTO> fetchBindDevices = userDeviceFacadeService.fetchBindDevices(uid);
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(fetchBindDevices);
-	}*/
-	
-	
-	
+	/*
+	 * public RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevicesByAccOrUid(int
+	 * countrycode,String acc,int uid) { if(uid <=0 && StringUtils.isEmpty(acc))
+	 * return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.
+	 * COMMON_DATA_PARAM_ERROR); if(uid <=0){ Integer ret_uid =
+	 * UniqueFacadeService.fetchUidByMobileno(countrycode,acc); if(ret_uid ==
+	 * null || ret_uid.intValue() == 0){ return
+	 * RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.
+	 * LOGIN_USER_DATA_NOTEXIST); } uid = ret_uid.intValue(); }
+	 * List<UserDeviceDTO> fetchBindDevices =
+	 * userDeviceFacadeService.fetchBindDevices(uid); return
+	 * RpcResponseDTOBuilder.builderSuccessRpcResponse(fetchBindDevices); }
+	 */
+
 	/**
 	 * 通过用户手机号或者指定用户的uid得到其绑定的设备
+	 * 
 	 * @param countrycode
 	 * @param acc
 	 * @return
 	 */
-/*	public RpcResponseDTO<Boolean>  unBindDevicesByAccOrUid(int countrycode,String acc,int uid) {
-		if(uid <=0 && StringUtils.isEmpty(acc))
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
-		if(uid <=0){
-			Integer ret_uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
-			if(ret_uid == null || ret_uid.intValue() == 0){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
-			}
-			uid = ret_uid.intValue();
-		}
-		List<UserDevice> userDeviceList = userDeviceService.fetchBindDevicesWithLimit(uid, WIFI_DEVICE_BIND_LIMIT_NUM);
-		for(UserDevice ud:userDeviceList){
-			UserDevicePK userDevicePK = ud.getId();
-	        if (userDeviceService.deleteById(userDevicePK) > 0)  {
-	        	deliverMessageService.sendUserDeviceDestoryActionMessage(uid, userDevicePK.getMac());
-	        }
-		}
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-	}*/
-	
-//	public final static int WIFI_DEVICE_BIND_LIMIT_NUM = 10;
-	
-/*	public RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int operationUid,int countrycode,String acc,int tid){
-		if(tid <=0 && StringUtils.isEmpty(acc))
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
-		if(tid <=0){
-			Integer ret_uid = UniqueFacadeService.fetchUidByMobileno(countrycode,acc);
-			if(ret_uid == null || ret_uid.intValue() == 0){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
-			}
-			tid = ret_uid.intValue();
-		}
-		List<UserDevice> userDevices = userDeviceService.fetchBindDevicesWithLimit(tid, UserDeviceFacadeService.WIFI_DEVICE_BIND_LIMIT_NUM);
-		
-		List<DeviceDetailVTO> resultVTOs = new ArrayList<>();
-		for(UserDevice udevice:userDevices){
-			RpcResponseDTO<DeviceDetailVTO> vto = this.deviceDetail(operationUid, udevice.getMac());
-			if(!vto.hasError())
-				resultVTOs.add(vto.getPayload());
-		}
-		return RpcResponseDTOBuilder.builderSuccessRpcResponse(resultVTOs);
-	}*/
-	
-	public RpcResponseDTO<DeviceDetailVTO> deviceDetail(int operationUid,String mac){
-		try{
+	/*
+	 * public RpcResponseDTO<Boolean> unBindDevicesByAccOrUid(int
+	 * countrycode,String acc,int uid) { if(uid <=0 && StringUtils.isEmpty(acc))
+	 * return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.
+	 * COMMON_DATA_PARAM_ERROR); if(uid <=0){ Integer ret_uid =
+	 * UniqueFacadeService.fetchUidByMobileno(countrycode,acc); if(ret_uid ==
+	 * null || ret_uid.intValue() == 0){ return
+	 * RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.
+	 * LOGIN_USER_DATA_NOTEXIST); } uid = ret_uid.intValue(); } List<UserDevice>
+	 * userDeviceList = userDeviceService.fetchBindDevicesWithLimit(uid,
+	 * WIFI_DEVICE_BIND_LIMIT_NUM); for(UserDevice ud:userDeviceList){
+	 * UserDevicePK userDevicePK = ud.getId(); if
+	 * (userDeviceService.deleteById(userDevicePK) > 0) {
+	 * deliverMessageService.sendUserDeviceDestoryActionMessage(uid,
+	 * userDevicePK.getMac()); } } return
+	 * RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE); }
+	 */
+
+	// public final static int WIFI_DEVICE_BIND_LIMIT_NUM = 10;
+
+	/*
+	 * public RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int
+	 * operationUid,int countrycode,String acc,int tid){ if(tid <=0 &&
+	 * StringUtils.isEmpty(acc)) return
+	 * RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.
+	 * COMMON_DATA_PARAM_ERROR); if(tid <=0){ Integer ret_uid =
+	 * UniqueFacadeService.fetchUidByMobileno(countrycode,acc); if(ret_uid ==
+	 * null || ret_uid.intValue() == 0){ return
+	 * RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.
+	 * LOGIN_USER_DATA_NOTEXIST); } tid = ret_uid.intValue(); } List<UserDevice>
+	 * userDevices = userDeviceService.fetchBindDevicesWithLimit(tid,
+	 * UserDeviceFacadeService.WIFI_DEVICE_BIND_LIMIT_NUM);
+	 * 
+	 * List<DeviceDetailVTO> resultVTOs = new ArrayList<>(); for(UserDevice
+	 * udevice:userDevices){ RpcResponseDTO<DeviceDetailVTO> vto =
+	 * this.deviceDetail(operationUid, udevice.getMac()); if(!vto.hasError())
+	 * resultVTOs.add(vto.getPayload()); } return
+	 * RpcResponseDTOBuilder.builderSuccessRpcResponse(resultVTOs); }
+	 */
+
+	public RpcResponseDTO<DeviceDetailVTO> deviceDetail(int operationUid, String mac) {
+		try {
 			WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-			if(wifiDevice == null){
-				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{"mac"});
+			if (wifiDevice == null) {
+				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST, new String[] { "mac" });
 			}
 			WifiDeviceModule wifiDeviceModule = wifiDeviceModuleService.getById(mac);
 			User user = null;
-			//Integer bindUid = userDeviceService.fetchBindUid(mac);
+			// Integer bindUid = userDeviceService.fetchBindUid(mac);
 			Integer bindUid = userWifiDeviceFacadeService.findUidById(mac);
-			if(bindUid != null){
+			if (bindUid != null) {
 				user = userService.getById(bindUid);
 			}
-			
+
 			WifiDeviceSharedNetwork wifiDeviceSharedNetwork = sharedNetworksFacadeService.fetchDeviceSharedNetwork(mac);
-			//基础信息
+			// 基础信息
 			DeviceBaseVTO dbv = new DeviceBaseVTO();
 			dbv.setMac(wifiDevice.getId());
 			dbv.setSn(wifiDevice.getSn());
 			dbv.setOrig_swver(wifiDevice.getOrig_swver());
-			dbv.setVap_module(wifiDeviceModule != null?wifiDeviceModule.getOrig_vap_module():StringUtils.EMPTY);
+			dbv.setVap_module(wifiDeviceModule != null ? wifiDeviceModule.getOrig_vap_module() : StringUtils.EMPTY);
 			dbv.setOrig_model(wifiDevice.getOrig_model());
 			dbv.setOrig_hdver(wifiDevice.getOrig_hdver());
 			dbv.setWork_mode(wifiDevice.getWork_mode());
 			dbv.setHdtype(wifiDevice.getHdtype());
 			DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
-			//String dut = parser.toDeviceUnitTypeIndex();
+			// String dut = parser.toDeviceUnitTypeIndex();
 			dbv.setDut(parser.getDut());
 			DeviceUnitType unitType = DeviceUnitType.fromIndex(parser.getDut());
-			dbv.setDutn(unitType != null ?unitType.getName():StringHelper.MINUS_STRING_GAP);
-			if(wifiDeviceSharedNetwork != null){
+			dbv.setDutn(unitType != null ? unitType.getName() : StringHelper.MINUS_STRING_GAP);
+			if (wifiDeviceSharedNetwork != null) {
 				dbv.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
 			}
-			//状态信息
+			// 状态信息
 			DevicePresentVTO dpv = new DevicePresentVTO();
 			dpv.setMac(wifiDevice.getId());
-			dpv.setUid(user != null?user.getId():0);
-			dpv.setMobileno(user != null ? user.getMobileno():StringUtils.EMPTY);
-			if(user != null){
+			dpv.setUid(user != null ? user.getId() : 0);
+			dpv.setMobileno(user != null ? user.getMobileno() : StringUtils.EMPTY);
+			if (user != null) {
 				dpv.setHandsettype(user.getLastlogindevice());
 				dpv.setHandsetn(DeviceEnum.getBySName(user.getLastlogindevice()).getName());
-			}else{
+			} else {
 				dpv.setHandsettype(StringHelper.MINUS_STRING_GAP);
 				dpv.setHandsetn(StringHelper.MINUS_STRING_GAP);
 			}
-			
+
 			dpv.setAddress(wifiDevice.getFormatted_address());
 			dpv.setOnline(wifiDevice.isOnline());
-			dpv.setMonline(wifiDeviceModule != null?wifiDeviceModule.isModule_online():false);
-			if(wifiDevice.getFirst_reged_at() == null){
+			dpv.setMonline(wifiDeviceModule != null ? wifiDeviceModule.isModule_online() : false);
+			if (wifiDevice.getFirst_reged_at() == null) {
 				dpv.setFirst_reg_at(StringHelper.MINUS_STRING_GAP);
-			}else{
-				dpv.setFirst_reg_at(DateTimeHelper.formatDate(wifiDevice.getFirst_reged_at(), DateTimeHelper.FormatPattern0));
+			} else {
+				dpv.setFirst_reg_at(
+						DateTimeHelper.formatDate(wifiDevice.getFirst_reged_at(), DateTimeHelper.FormatPattern0));
 			}
-			
-			if(wifiDevice.getLast_reged_at() != null)
-				dpv.setLast_reg_at(DateTimeHelper.formatDate(wifiDevice.getLast_reged_at(), DateTimeHelper.FormatPattern0));
-			if(wifiDevice.getLast_logout_at() != null)
-				dpv.setLast_logout_at(DateTimeHelper.formatDate(wifiDevice.getLast_logout_at(), DateTimeHelper.FormatPattern0));
+
+			if (wifiDevice.getLast_reged_at() != null)
+				dpv.setLast_reg_at(
+						DateTimeHelper.formatDate(wifiDevice.getLast_reged_at(), DateTimeHelper.FormatPattern0));
+			if (wifiDevice.getLast_logout_at() != null)
+				dpv.setLast_logout_at(
+						DateTimeHelper.formatDate(wifiDevice.getLast_logout_at(), DateTimeHelper.FormatPattern0));
 			dpv.setDod(wifiDevice.getUptime());
-			
-			//运营状态信息 灰度、模板
+
+			// 运营状态信息 灰度、模板
 			DeviceOperationVTO dov = new DeviceOperationVTO();
-			WifiDeviceGrayVersionPK deviceGray = wifiDeviceGrayFacadeService.determineDeviceGray(wifiDevice.getId(), wifiDevice.getOrig_swver());
+			WifiDeviceGrayVersionPK deviceGray = wifiDeviceGrayFacadeService.determineDeviceGray(wifiDevice.getId(),
+					wifiDevice.getOrig_swver());
 			dov.setDut(deviceGray.getDut());
 			dov.setGl(deviceGray.getGl());
 			dov.setGln(VapEnumType.GrayLevel.fromIndex(deviceGray.getGl()).getName());
 			String mstyle = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(wifiDevice.getId());
-			if(StringUtils.isNotEmpty(mstyle))
+			if (StringUtils.isNotEmpty(mstyle))
 				dov.setMstyle(mstyle);
 			else
 				dov.setMstyle(StringHelper.MINUS_STRING_GAP);
-			
-			
-			//分成详情
+
+			// 分成详情
 			WifiDeviceSharedealConfigs configs = chargingFacadeService.userfulWifiDeviceSharedealConfigsJust4View(mac);
 			DeviceSharedealVTO dsv = new DeviceSharedealVTO();
 			dsv.setMac(configs.getId());
@@ -782,46 +839,54 @@ public class UserDeviceUnitFacadeService {
 			dvto.setDov(dov);
 			dvto.setDsv(dsv);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dvto);
-		}catch(BusinessI18nCodeException i18nex){
+		} catch (BusinessI18nCodeException i18nex) {
 			i18nex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
-		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
+
 	/**
 	 * 根据用户uid获取绑定的设备分页数据
-	 * @param uid 用户uid
-	 * @param dut 设备业务线
-	 * @param pageNo 页码
-	 * @param pageSize 每页数量
+	 * 
+	 * @param uid
+	 *            用户uid
+	 * @param dut
+	 *            设备业务线
+	 * @param pageNo
+	 *            页码
+	 * @param pageSize
+	 *            每页数量
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<UserDeviceCloudDTO>> devicePagesByUid(Integer uid, String dut, int pageNo, int pageSize){
-		try{
-			int searchPageNo = pageNo>=1?(pageNo-1):pageNo;
-			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut, searchPageNo, pageSize);
-			
+	public RpcResponseDTO<TailPage<UserDeviceCloudDTO>> devicePagesByUid(Integer uid, String dut, int pageNo,
+			int pageSize) {
+		try {
+			int searchPageNo = pageNo >= 1 ? (pageNo - 1) : pageNo;
+			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut,
+					searchPageNo, pageSize);
+
 			List<UserDeviceCloudDTO> vtos = null;
 			int total = 0;
-			if(search_result != null){
-				total = (int)search_result.getTotalElements();//.getTotal();
-				if(total == 0){
+			if (search_result != null) {
+				total = (int) search_result.getTotalElements();// .getTotal();
+				if (total == 0) {
 					vtos = Collections.emptyList();
-				}else{
-					List<WifiDeviceDocument> searchDocuments = search_result.getContent();//.getResult();
-					if(searchDocuments.isEmpty()) {
+				} else {
+					List<WifiDeviceDocument> searchDocuments = search_result.getContent();// .getResult();
+					if (searchDocuments.isEmpty()) {
 						vtos = Collections.emptyList();
-					}else{
+					} else {
 						List<String> macs = WifiDeviceDocumentHelper.generateDocumentIds(searchDocuments);
-						List<Object> ohd_counts = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSizes(macs);
+						List<Object> ohd_counts = WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
+								.presentOnlineSizes(macs);
 						List<String> d_linkmodes = WifiDeviceModeStatusService.getInstance().getPresents(macs);
 						UserDeviceCloudDTO vto = null;
 						vtos = new ArrayList<UserDeviceCloudDTO>();
 						int cursor = 0;
-						for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
+						for (WifiDeviceDocument wifiDeviceDocument : searchDocuments) {
 							vto = new UserDeviceCloudDTO();
 							vto.setD_mac(wifiDeviceDocument.getId());
 							vto.setD_name(wifiDeviceDocument.getU_dnick());
@@ -834,27 +899,29 @@ public class UserDeviceUnitFacadeService {
 							vto.setD_snk_type(wifiDeviceDocument.getD_snk_type());
 							vto.setD_sn(wifiDeviceDocument.getD_sn());
 							vto.setD_address(wifiDeviceDocument.getD_address());
-							if(wifiDeviceDocument.getD_snk_allowturnoff() != null){
+							if (wifiDeviceDocument.getD_snk_allowturnoff() != null) {
 								vto.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
-							}else{
+							} else {
 								vto.setD_snk_allowturnoff(1);
 							}
 							String u_id = wifiDeviceDocument.getU_id();
-							if(StringUtils.isNotEmpty(u_id)){
+							if (StringUtils.isNotEmpty(u_id)) {
 								vto.setUid(Integer.parseInt(u_id));
 							}
-							//long ohd_count = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDeviceDocument.getId());
-							if(ohd_counts != null){
+							// long ohd_count =
+							// WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(wifiDeviceDocument.getId());
+							if (ohd_counts != null) {
 								Object ohd_count_obj = ohd_counts.get(cursor);
-								if(ohd_count_obj != null){
-									vto.setOhd_count((Long)ohd_count_obj);
+								if (ohd_count_obj != null) {
+									vto.setOhd_count((Long) ohd_count_obj);
 								}
 							}
-							if(d_linkmodes != null){
+							if (d_linkmodes != null) {
 								String d_linkmode = d_linkmodes.get(cursor);
-								if(StringUtils.isNotEmpty(d_linkmode)){
-									WifiDeviceSettingLinkModeDTO mode_dto = JsonHelper.getDTO(d_linkmode, WifiDeviceSettingLinkModeDTO.class);
-									if(mode_dto != null){
+								if (StringUtils.isNotEmpty(d_linkmode)) {
+									WifiDeviceSettingLinkModeDTO mode_dto = JsonHelper.getDTO(d_linkmode,
+											WifiDeviceSettingLinkModeDTO.class);
+									if (mode_dto != null) {
 										vto.setLink_mode_type(DeviceHelper.getDeviceMode(mode_dto.getModel()));
 									}
 								}
@@ -864,15 +931,15 @@ public class UserDeviceUnitFacadeService {
 						}
 					}
 				}
-			}else{
+			} else {
 				vtos = Collections.emptyList();
 			}
 			TailPage<UserDeviceCloudDTO> returnRet = new CommonPage<UserDeviceCloudDTO>(pageNo, pageSize, total, vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
-		}catch(BusinessI18nCodeException i18nex){
+		} catch (BusinessI18nCodeException i18nex) {
 			i18nex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
-		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}

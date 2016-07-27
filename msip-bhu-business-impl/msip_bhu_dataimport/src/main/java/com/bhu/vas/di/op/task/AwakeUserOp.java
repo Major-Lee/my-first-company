@@ -1,5 +1,7 @@
 package com.bhu.vas.di.op.task;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.elasticsearch.common.lang3.StringUtils;
@@ -20,18 +22,24 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 public class AwakeUserOp {
 	//（必虎昵称，没有昵称的为：必虎用户）
 	//金额为0的不发
-	public static String AwakeSMS_Template = "亲爱的%s,你可能还不知道有%s元正静静地躺在钱包里等着你提现呢！详情点击%s 【必虎路由】";
+	public static String AwakeSMS_Template = "亲爱的%s,你可能还不知道有%s元正躺在钱包里等着你提现呢！详情点击%s 【必虎路由】";
 	public static String DefaultUserName = "必虎用户";
-	public static String DefaultLink = "http://aaa/s2234.shtml";
+	public static String DefaultLink = "http://t.cn/R5rKtSK";
 	public static void main(String[] argv){
 		long t0 = System.currentTimeMillis();
+		//int count = 0;
 		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserUniqueRegisterEnvOp.class);
 		ctx.start();
+		
+		List<User> users = new ArrayList<User>();
 		UserService userService = (UserService)ctx.getBean("userService");
 		UserWalletService userWalletService = (UserWalletService)ctx.getBean("userWalletService");
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnIsNotNull("mobileno").andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
+		mc.createCriteria()
+			.andColumnIsNotNull("mobileno")
+			.andColumnLessThan("updated_at", "2016-07-05 00:00:00")
+			.andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
 		mc.setOrderByClause("id desc");
     	mc.setPageNumber(1);
     	mc.setPageSize(200);
@@ -39,18 +47,44 @@ public class AwakeUserOp {
 		while(itit.hasNext()){
 			List<User> list = itit.next();
 			for(User user:list){
-				//User user = userService.getById(101767);
+				//User user = userService.getById(11);
 				UserWallet wallet = userWalletService.getById(user.getId());
 				if(wallet != null && wallet.getCash() > 0 ){
-					String smsUserName = StringUtils.isEmpty(user.getNick())?DefaultUserName:user.getNick();
+					//count++;
+					users.add(user);
+/*					String smsUserName = StringUtils.isEmpty(user.getNick())?DefaultUserName:user.getNick();
 					String smsCash =String.valueOf(ArithHelper.round(wallet.getCash(), 2));
 					String smsg = String.format(AwakeSMS_Template, smsUserName,smsCash,DefaultLink);
 					String response = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway)
 							.send(smsg, user.getMobileno());
-					System.out.println(String.format("sendAwakeNotify acc[%s] msg[%s] response[%s]",user.getMobileno(),smsg,response));
-				}
+					System.out.println(String.format("sendAwakeNotify acc[%s] msg[%s] response[%s]",user.getMobileno(),smsg,response));					
+*/				}
 			}
 		}
+		
+		List<User> randomusers = null;
+		if(users.size() > 100){
+			Collections.shuffle(users);
+			randomusers = users.subList(0, 100);
+		}else{
+			randomusers = users;
+		}
+		
+		StringBuffer output_users = new StringBuffer();
+		for(User user : randomusers){
+			UserWallet wallet = userWalletService.getById(user.getId());
+			if(wallet != null && wallet.getCash() > 0 ){
+				output_users.append(user.getId() + "-" + user.getMobileno()+",");
+				String smsUserName = StringUtils.isEmpty(user.getNick())?DefaultUserName:user.getNick();
+				String smsCash =String.valueOf(ArithHelper.round(wallet.getCash(), 2));
+				String smsg = String.format(AwakeSMS_Template, smsUserName,smsCash,DefaultLink);
+				String response = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway)
+						.send(smsg, user.getMobileno());
+				System.out.println(String.format("sendAwakeNotify acc[%s] msg[%s] response[%s]",user.getMobileno(),smsg,response));					
+			}
+		}
+		
+		System.out.println("随机用户数据:"+output_users.toString());
 		System.out.println("数据增量导入，共耗时"+((System.currentTimeMillis()-t0)/1000)+"s");
 		ctx.stop();
 		ctx.close();

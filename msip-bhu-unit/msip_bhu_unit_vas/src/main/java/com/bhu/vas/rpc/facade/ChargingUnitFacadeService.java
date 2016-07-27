@@ -166,6 +166,21 @@ public class ChargingUnitFacadeService {
 		}
 	}
 	
+	public RpcResponseDTO<TailPage<BatchImportVTO>> doStatRowPages(int uid,int status, boolean upact, int lastrowid, int start, int ps) {
+		try{
+			User operUser = chargingFacadeService.getUserService().getById(uid);
+			UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
+			
+			//TailPage<BatchImportVTO> vtos = chargingFacadeService.pagesBatchImport(uid, status,pageNo,pageSize);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(null);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 	public RpcResponseDTO<SharedealDefaultVTO> doFetchDefaultSharedeal(int uid){
 		try{
 			//User operUser = chargingFacadeService.getUserService().getById(uid);

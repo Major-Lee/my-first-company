@@ -1,5 +1,7 @@
 package com.bhu.vas.rpc.service.user;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -8,11 +10,13 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.rpc.facade.UserWalletUnitFacadeService;
@@ -135,5 +139,20 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	@Override
 	public RpcResponseDTO<RankingListVTO> rankingList(int uid) {
 		return userWalletUnitFacadeService.rankingList(uid);
+	}
+
+	@Override
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int type,int pageIndex,int pageSize) {
+		logger.info(String.format("richStatistics"));
+		return userWalletUnitFacadeService.richStatistics(startTime,endTime,type,pageIndex,pageSize);
+
+	}
+	
+	@Override
+	public RpcResponseDTO<TailPage<UserWalletLogFFVTO>> pageUserWalletlogsByFeifan(int uid, String transmode,String transtype, 
+			Date start_date, Date end_date, int pageNo, int pageSize) {
+		logger.info(String.format("pageUserWalletlogsByFeifan with uid[%s] transmode[%s] transtype[%s] start_date[%s] end_date[%s] pn[%s] ps[%s]",
+				uid, transmode, transtype, start_date, end_date, pageNo, pageSize));
+		return userWalletUnitFacadeService.pageUserWalletlogsByFeifan(uid, transmode, transtype, start_date, end_date, pageNo, pageSize);
 	}
 }

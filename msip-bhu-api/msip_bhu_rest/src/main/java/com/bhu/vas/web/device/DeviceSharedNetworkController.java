@@ -70,6 +70,31 @@ public class DeviceSharedNetworkController extends BaseController{
 	}
 	
 	/**
+	 * 清除指定共享网络类型的指定模板
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param sharenetwork_type
+	 * @param template
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/clear",method={RequestMethod.POST})
+	public void clear(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true,value="snk_type") String sharenetwork_type,
+			@RequestParam(required = true,value="tpl") String template) {
+		RpcResponseDTO<Boolean> rpcResult = deviceSharedNetworkRpcService.clearNetworkConf(uid, sharenetwork_type, template);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	
+	/**
 	 * 获取用户共享网络配置并应用接口
 	 * @param request
 	 * @param response

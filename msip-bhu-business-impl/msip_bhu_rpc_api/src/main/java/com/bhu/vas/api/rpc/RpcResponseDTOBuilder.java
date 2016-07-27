@@ -8,11 +8,14 @@ import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.helper.ExchangeBBSHelper;
 import com.bhu.vas.api.rpc.agent.vto.AgentUserDetailVTO;
+import com.bhu.vas.api.rpc.user.dto.UserConfigsStateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserConfigsState;
 import com.smartwork.msip.business.token.UserTokenDTO;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -116,6 +119,7 @@ public class RpcResponseDTOBuilder {
 			ret.put(Key_UserOAuth, exchangeDTO.getOauths());
 		/*if(userDeviceDTOList != null && !userDeviceDTOList.isEmpty())
 			ret.put(Key_Devices, userDeviceDTOList);*/
+		
 		return ret;
 	}
 	

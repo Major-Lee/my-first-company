@@ -110,7 +110,7 @@ public class BatchSnkApplyService {
 				 //if(SharedNetworkType.SmsSecure == sharedNetwork){
 				 //}
 				logger.info(String.format("准备开始判定当前用户信息共享网络状态类型【%s】【%s】",userid,SharedNetworkType.SmsSecure.getKey()));
-				long count = wifiDeviceDataSearchService.searchCountBySnkType(userid,SharedNetworkType.SmsSecure.getKey(),
+				long count = wifiDeviceDataSearchService.searchCountBySnkType(userid,SharedNetworkType.SmsSecure.getKey(),null,
 						 WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType());
 				logger.info(String.format("当前用户信息共享网络状态类型【%s】【%s】 【%s】",userid,SharedNetworkType.SmsSecure.getKey(),count));
 				if(count <= 0){//不提供sms认证服务

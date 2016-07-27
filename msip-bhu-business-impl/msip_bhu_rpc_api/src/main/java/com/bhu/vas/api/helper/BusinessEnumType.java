@@ -626,6 +626,72 @@ public class BusinessEnumType {
 			}
 		}
 	}
+	/**
+	 * 订单创建渠道
+	 * @author tangzichao
+	 *
+	 */
+	public enum OrderChannel{
+		ScanReward(1,"扫码打赏","扫码打赏"),
+		;
+		private Integer channel;
+		private String name;
+		private String desc;
+		
+		static Map<Integer, OrderChannel> allOrderChannelTypes;
+		
+		private OrderChannel(Integer channel,String name,String desc){
+			this.channel = channel;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		public Integer getChannel() {
+			return channel;
+		}
+		public void setChannel(Integer channel) {
+			this.channel = channel;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public static boolean correct(Integer channel, OrderChannel orderChannel){
+			if(channel == null || orderChannel == null) return false;
+			
+			if(channel.equals(orderChannel.getChannel())){
+				return true;
+			}
+			return false;
+		}
+		
+		public static OrderChannel fromKey(Integer channel){
+			if(channel == null) return null;
+			return allOrderChannelTypes.get(channel);
+		}
+		
+		public static boolean supported(Integer category){
+			return allOrderChannelTypes.containsKey(category);
+		}
+		
+		
+		static {
+			allOrderChannelTypes = new HashMap<Integer, OrderChannel>();
+			OrderChannel[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (OrderChannel type : types){
+				allOrderChannelTypes.put(type.getChannel(), type);
+			}
+		}
+	}
 	
 	/**
 	 * 商品状态

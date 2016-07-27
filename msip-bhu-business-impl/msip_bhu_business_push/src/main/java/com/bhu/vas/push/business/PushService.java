@@ -19,10 +19,14 @@ import com.bhu.vas.api.dto.push.WifiDeviceRebootPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceSettingChangedPushDTO;
 import com.bhu.vas.api.dto.push.WifiDeviceWorkModeChangedDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
+import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
+import com.bhu.vas.api.rpc.user.dto.UserConfigsStateDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushType;
+import com.bhu.vas.api.rpc.user.model.UserConfigsState;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserConfigsStateService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.push.common.context.DeviceResetContext;
 import com.bhu.vas.push.common.context.HandsetOnlineContext;
@@ -55,6 +59,9 @@ public class PushService{
 	
 	//@Resource
 	//private HandsetDeviceService handsetDeviceService;
+	
+	@Resource
+	private UserConfigsStateService userConfigsStateService;
 	
 	/**
 	 * 业务逻辑发送push消息统一接口
@@ -269,6 +276,16 @@ public class PushService{
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
 			//System.out.println("终端上线push2:"+presentDto);
 			if(presentDto != null){
+				
+				UserConfigsState userConfigsState = userConfigsStateService.getById(presentDto.getUid());
+				
+				if (userConfigsState != null) {
+					UserConfigsStateDTO dto = JsonHelper.getDTO(userConfigsState.getExtension_content(), UserConfigsStateDTO.class);
+					if (dto!= null && !dto.isRn_on()) {
+						return ret;
+					}
+				}
+				
 				SharedealNotifyPushDTO sharedeal_push_dto = (SharedealNotifyPushDTO)pushDto;
 				SharedealNofityContext context = businessPushContextService.sharedealNotifyContext(sharedeal_push_dto);
 				//由于push payload limit Allowed: 256 字节 不需要的数据就不放在payload中
@@ -312,14 +329,14 @@ public class PushService{
 					//发送push
 				ret = pushNotification(pushMsg);
 				if(ret){
-					logger.info("PushSharedealNotify Successed " + pushMsg.toString());
+					logger.info("PushDeviceResetNotify Successed " + pushMsg.toString());
 				}else{
-					logger.info("PushSharedealNotify Failed " + pushMsg.toString());
+					logger.info("PushDeviceResetNotify Failed " + pushMsg.toString());
 				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
-			logger.error("PushSharedealNotify exception " + ex.getMessage(), ex);
+			logger.error("PushDeviceResetNotify exception " + ex.getMessage(), ex);
 		}
 		return ret;
 	}

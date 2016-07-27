@@ -43,4 +43,11 @@ public class UserWalletLogService extends AbstractCoreService<Long,UserWalletLog
 		//mc.createCriteria().andColumnLike("updated_at", time+"%");
 		return super.findModelByModelCriteria(mc);
 	}
+	public List<UserWalletLog> findListByTimeField(String startTime,String endTime,int pageIndex,int pageSize){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("transmode", "SDP").andColumnEqualTo("transtype", "P2C").andColumnBetween("updated_at", startTime, endTime);
+		mc.setLimit(pageSize);
+		mc.setStart(pageIndex);
+		return super.findModelByModelCriteria(mc);
+	}
 }

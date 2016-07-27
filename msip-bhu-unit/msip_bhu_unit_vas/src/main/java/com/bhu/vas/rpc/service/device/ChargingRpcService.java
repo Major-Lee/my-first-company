@@ -51,7 +51,11 @@ public class ChargingRpcService  implements IChargingRpcService{
 		logger.info(String.format("doPages uid:%s status:%s pageNo:%s pageSize:%s",uid, status,pageNo,pageSize));
 		return chargingUnitFacadeService.doPages(uid,status,pageNo,pageSize);
 	}
-	
+	@Override
+	public RpcResponseDTO<TailPage<BatchImportVTO>> doStatRowPages(int uid,int status, boolean upact, int lastrowid, int start, int ps) {
+		logger.info(String.format("doStatRowPages uid:%s status:%s upact:%s  lastrowid:%s start:%s ps:%s",uid, status,upact,lastrowid,start,ps));
+		return chargingUnitFacadeService.doStatRowPages(uid,status,upact,lastrowid,start,ps);
+	}
 	@Override
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,
 			int countrycode, String bmobileno,int distributor_uid,

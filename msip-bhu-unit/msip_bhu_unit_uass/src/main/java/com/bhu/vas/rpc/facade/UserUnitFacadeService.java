@@ -17,12 +17,14 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
+import com.bhu.vas.api.rpc.user.dto.UserConfigsStateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserActivity;
+import com.bhu.vas.api.rpc.user.model.UserConfigsState;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
@@ -37,6 +39,7 @@ import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserActivityService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.bhu.vas.business.ds.user.service.UserConfigsStateService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
@@ -46,6 +49,7 @@ import com.bhu.vas.validate.UserTypeValidateService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.business.token.UserTokenDTO;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -89,6 +93,11 @@ public class UserUnitFacadeService {
 	private UserActivityService userActivityService;
 	@Resource
 	private UserIncomeService userIncomeService;
+	
+	
+	@Resource
+	private UserConfigsStateService userConfigsStateService;
+	
 
 	/**
 	 * 需要兼容uidParam为空的情况
@@ -181,6 +190,7 @@ public class UserUnitFacadeService {
 		UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserValidate(user,uToken, device, remoteIp,d_udid);
 		Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
 				userExchange);//,userWifiDeviceFacadeService.fetchBindDevices(userExchange.getUser().getId()));
+		
 		deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp,device);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 	}
@@ -500,6 +510,17 @@ public class UserUnitFacadeService {
 			//userExchange.setWallet(userWalletFacadeService.walletDetail(uid));
 			//userExchange.setOauths(userOAuthFacadeService.fetchRegisterIdentifies(userExchange.getUser().getId(),false));
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
+			//add by fengshibo for push switch
+			UserConfigsState userConfigsState = userConfigsStateService.getById(userExchange.getUser().getId());
+			if (userConfigsState != null){
+				UserConfigsStateDTO dto = JsonHelper.getDTO(userConfigsState.getExtension_content(), UserConfigsStateDTO.class);
+				if (dto!= null) {
+					rpcPayload.put("rn_on", dto.isRn_on());
+				}
+			}else{
+				rpcPayload.put("rn_on", Boolean.TRUE);
+			}
+			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -758,7 +779,7 @@ public class UserUnitFacadeService {
 				userManageDTO.setSignature(_user.getMemo());
 				userManageDTO.setRegdevice(_user.getRegdevice());
 				userManageDTO.setUserLabel("");
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 		        if(_user.getCreated_at() != null){
 		        	String time =sdf.format(_user.getCreated_at()); 
 					userManageDTO.setCreateTime(time);
@@ -767,7 +788,7 @@ public class UserUnitFacadeService {
 				userManageDTO.setIsCashBack("");
 				userManageDTO.setUserNum(tailusers.getTotalItemsCount());
 				//根据uid查询用户钱包信息
-				UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(_user.getId());
+				UserWalletDetailVTO userWallet = userWalletFacadeService.walletSimpleDetail(_user.getId());
 				if(userWallet != null){
 					userManageDTO.setVcurrency(userWallet.getVcurrency());
 					userManageDTO.setWalletMoney(userWallet.getCash());
@@ -777,10 +798,10 @@ public class UserUnitFacadeService {
 				}
 				//根据用户Id查询设备离线数量
 				long deviceNum = 0;
-				deviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Offline.getType(), "");
+				deviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Offline.getType(), "","");
 				//根据用户Id查询在线设备数量
 				long onLinedeviceNum = 0;
-				onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "");
+				onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "","");
 				userManageDTO.setDc(onLinedeviceNum+deviceNum);
 				userManageDTO.setDoc(onLinedeviceNum);
 				vtos.add(userManageDTO);
@@ -855,7 +876,7 @@ public class UserUnitFacadeService {
 			userManageDTO.setSex(user.getSex());
 			userManageDTO.setSignature(user.getMemo());
 			//根据uid查询用户钱包信息
-			UserWalletDetailVTO userWallet = userWalletFacadeService.walletDetail(user.getId());
+			UserWalletDetailVTO userWallet = userWalletFacadeService.walletSimpleDetail(user.getId());
 			if(userWallet != null){
 				userManageDTO.setVcurrency(userWallet.getVcurrency());
 				userManageDTO.setWalletMoney(userWallet.getCash());

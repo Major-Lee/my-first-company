@@ -293,4 +293,44 @@ public class ConsoleChargingController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
 	}
+	
+	
+	/**
+	 * 分页列表
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param status
+	 * @param upact 手势上滑或下拉 true上滑 false下拉 
+	 * @param lastrowid
+	 * @param start
+	 * @param size
+	 */
+	@ResponseBody()
+	@RequestMapping(value = "/shipment/_pages", method = { RequestMethod.POST })
+	public void _pagesdv(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(required = true) int uid,
+			@RequestParam(required = true,defaultValue = "0") int status,
+			@RequestParam(required = false, defaultValue = "true") boolean upact,
+			@RequestParam(required = false, defaultValue = "0", value = "lri") int lastrowid,
+			@RequestParam(required = false, defaultValue = "0", value = "st") int start,
+			@RequestParam(required = false, defaultValue = "10", value = "ps") int size) {
+		
+		ResponseError validateError = ValidateService.validatePageSize(size);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		try{
+			RpcResponseDTO<TailPage<BatchImportVTO>> rpcResult = chargingRpcService.doStatRowPages(uid, status, upact, lastrowid, start, size);//(uid, status, pageNo, pageSize);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
+	
 }
