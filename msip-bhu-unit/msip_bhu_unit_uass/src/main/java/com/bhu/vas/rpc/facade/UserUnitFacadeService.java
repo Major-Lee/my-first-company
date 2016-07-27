@@ -798,10 +798,10 @@ public class UserUnitFacadeService {
 				}
 				//根据用户Id查询设备离线数量
 				long deviceNum = 0;
-				deviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Offline.getType(), "");
+				deviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Offline.getType(), "","");
 				//根据用户Id查询在线设备数量
 				long onLinedeviceNum = 0;
-				onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "");
+				onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "","");
 				userManageDTO.setDc(onLinedeviceNum+deviceNum);
 				userManageDTO.setDoc(onLinedeviceNum);
 				vtos.add(userManageDTO);

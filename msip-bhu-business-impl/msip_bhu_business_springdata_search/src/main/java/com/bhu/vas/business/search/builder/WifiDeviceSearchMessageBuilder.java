@@ -33,7 +33,7 @@ public class WifiDeviceSearchMessageBuilder {
 	 * @return
 	 */
 	public static SearchConditionMessage builderSearchMessageCommon(Integer u_id, String sharedNetwork_type, 
-			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate){
+			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate ,String d_tags){
 		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionMustPack();
 		
 		if(u_id != null){
@@ -73,6 +73,13 @@ public class WifiDeviceSearchMessageBuilder {
 			pack_must.addChildSearchCondtions(sc_d_snk_turnstate);
 		}
 
+		if(StringUtils.isNotEmpty(d_tags)){
+			SearchCondition sc_d_snk_turnstate = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_TAGS.getName(), SearchConditionPattern.StringEqual.getPattern(), 
+					d_snk_turnstate);
+			pack_must.addChildSearchCondtions(sc_d_snk_turnstate);
+		}
+		
 		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
 		
