@@ -164,7 +164,6 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	public void iteratorAllByCommon(Integer u_id, String sharedNetwork_type, 
 			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate, String d_tags,
 			 int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
-		if(u_id == null) return;
 		
 		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online, d_snk_turnstate, d_tags);
 		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
