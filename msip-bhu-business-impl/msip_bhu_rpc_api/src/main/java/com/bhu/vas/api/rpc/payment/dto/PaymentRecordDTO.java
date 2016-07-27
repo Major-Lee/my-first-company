@@ -9,6 +9,7 @@ package com.bhu.vas.api.rpc.payment.dto;
 public class PaymentRecordDTO {
 	private int amount;
 	private int count;
+	private int dx_count;
 	private String info;
 
 	public int getAmount() {
@@ -21,6 +22,14 @@ public class PaymentRecordDTO {
 
 	public int getCount() {
 		return count;
+	}
+	
+	public int getDx_count() {
+		return dx_count;
+	}
+
+	public void setDx_count(int dx_count) {
+		this.dx_count = dx_count;
 	}
 
 	public void setCount(int count) {
