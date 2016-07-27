@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alipay.config.AlipayConfig;
@@ -315,9 +316,17 @@ public class PaymentController extends BaseController{
 	 */
 	@ResponseBody()
 	@RequestMapping(value={"/payment/submitWithdrawals","/withdraw"},method={RequestMethod.GET,RequestMethod.POST})
-	public void submitWithdrawals(HttpServletRequest request,HttpServletResponse response,
-			String withdraw_type,String total_fee,String userId,String userName,
-			String withdraw_no,String exter_invoke_ip,String appid,String secret){
+	public void submitWithdrawals(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) String appid,
+			@RequestParam(required = true) String secret,
+			@RequestParam(required = true) String withdraw_type,
+			@RequestParam(required = true) String total_fee,
+			@RequestParam(required = true) String userId,
+			@RequestParam(required = true) String withdraw_no,
+			@RequestParam(required = false, value = "") String userName,
+			@RequestParam(required = false, value = "") String exter_invoke_ip){
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		logger.info(String.format("apply withdrawals withdraw_no [%s]", withdraw_no));
 		try{
@@ -466,9 +475,18 @@ public class PaymentController extends BaseController{
 	 */
 	@ResponseBody
 	@RequestMapping(value={"/payment/submitPayment","/pay"},method={RequestMethod.GET,RequestMethod.POST})
-    public void submitPayment(HttpServletResponse response,HttpServletRequest request,
-    				String total_fee,String goods_no,String payment_type,String exter_invoke_ip,
-    				String payment_completed_url,String umac,String appid,String secret,String paymentName){
+    public void submitPayment(
+    		HttpServletResponse response,
+    		HttpServletRequest request,
+    		@RequestParam(required = true) String appid,
+    		@RequestParam(required = true) String secret,
+    		@RequestParam(required = true) String goods_no,
+    		@RequestParam(required = true) String umac,
+    		@RequestParam(required = true) String total_fee,
+    		@RequestParam(required = true) String payment_type,
+    		@RequestParam(required = false, value = "") String exter_invoke_ip,
+    		@RequestParam(required = false, value = "") String payment_completed_url,
+    		@RequestParam(required = false, value = "") String paymentName){ 
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		logger.info(String.format("apply payment goods_no [%s]", goods_no));
 		
@@ -490,6 +508,7 @@ public class PaymentController extends BaseController{
 			logger.info(String.format("apply payment bussiness appid[%s] secret[%s]", appid,secret));
 			int appId = Integer.parseInt(appid);
 			boolean isAllowedBusiness = BusinessEnumType.CommdityApplication.verifyed(appId, secret);
+			System.out.println("Bug 1   "+isAllowedBusiness);
 			if(isAllowedBusiness){
 				CommdityApplication app = BusinessEnumType.CommdityApplication.fromKey(appId);
 				switch(app){
@@ -530,6 +549,7 @@ public class PaymentController extends BaseController{
         		return;
         	}
     		PaymentReckoning paymentReckoning = paymentReckoningService.findByOrderId(goods_no);
+    		System.out.println("Bug 2  "+paymentReckoning.getId());
         	if(paymentReckoning != null){
         		logger.error(String.format("apply payment goods_no [%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
         		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
@@ -541,6 +561,7 @@ public class PaymentController extends BaseController{
         	PaymentChannelCode paymentChannel = PaymentChannelCode.getPaymentChannelCodeByCode(payment_type);
     		switch(paymentChannel){
     			case BHU_PC_WEIXIN: //PC微信支付
+    				System.out.println("Bug 3  ");
     				result =  doNativeWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
     				break;
     			case BHU_PC_ALIPAY: //PC支付宝
@@ -884,6 +905,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
 			sParaTemp.put("it_b_pay", "10m");
+			sParaTemp.put("app_pay", "Y");
 			break;
 		case BHU_APP_ALIPAY:
 			reckoningId = payLogicService.createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_APP_ALIPAY.i18n(),usermac,paymentName,appid);
@@ -901,6 +923,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
 			sParaTemp.put("it_b_pay", "10m");
+			sParaTemp.put("app_pay", "Y");
 			break;
 			
 		case BHU_PC_ALIPAY:
@@ -919,6 +942,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
 			sParaTemp.put("it_b_pay", "10m");
+			sParaTemp.put("app_pay", "Y");
 			break;
 
 		default:
@@ -1067,7 +1091,8 @@ public class PaymentController extends BaseController{
     	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,total_fee_fen,ip,PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n(),usermac,paymentName,appid);
     	//记录请求支付完成后返回的地址
     	if (StringUtils.isBlank(return_url)) {
-    		return_url = "http://www.bhuwifi.com";
+    		return_url = PayHttpService.WEB_NOTIFY_URL;
+    		logger.info(String.format(" midas  return_url location is null so we set default value %s ",return_url));
     	}else{
     		logger.info(String.format("get midas location [%s] ",return_url));
     		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
@@ -1087,8 +1112,8 @@ public class PaymentController extends BaseController{
         	result.setUrl("支付请求失败");
         	return result;
     	}else{
-        	result.setType("Midas");
-        	//result.setType("http");
+        	//result.setType("Midas");
+        	result.setType("http");
         	result.setUrl(results);
         	return result;
     	}

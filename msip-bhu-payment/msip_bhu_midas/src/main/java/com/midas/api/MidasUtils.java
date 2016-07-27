@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,6 +71,7 @@ public class MidasUtils {
         String prestr = createLinkString(parameters);
 
         String results = SendGET(Config.token_url+Config.url_path,prestr+"&sig="+Config.sig);
+        //String results = "{'ret':0,'url_params':'/v1/m29/1450006356/mobile_goods_info?token_id=0A666C05BB76758931A7A3112771F0E815342'}";
         //{"ret":0,"token":"0A666C05BB76758931A7A3112771F0E815342","url_params":"/v1/m29/1450006356/mobile_goods_info?token_id=0A666C05BB76758931A7A3112771F0E815342","attach":""}
         try {
         	JSONObject json = new JSONObject(results);
@@ -79,22 +81,58 @@ public class MidasUtils {
 				return "error";
 			}
 			
-			Config.url_params = (String) json.get("url_params");
-			SortedMap<Object, Object> params = new TreeMap<Object, Object>();
-			params.put("goodstokenurl", Config.url_params);
-        	params.put("type", "goods");
-        	params.put("appid", Config.appid);
-        	params.put("zoneid", Config.zoneid);
-        	params.put("pf", Config.pf);
-        	params.put("pfkey", Config.pfkey);
-        	params.put("session_id", Config.session_id);
-        	params.put("session_type", Config.session_type);
-        	params.put("openid", Config.openid);
-        	params.put("openkey", Config.openkey);
-        	params.put("payUrl", Config.pay_url);
-        	params.put("money", Config.price);
-			result = JSONObject.valueToString(params);
-		} catch (JSONException e) {
+//			Config.url_params = (String) json.get("url_params");
+//			SortedMap<Object, Object> params = new TreeMap<Object, Object>();
+//			params.put("goodstokenurl", Config.url_params);
+//        	params.put("type", "goods");
+//        	params.put("appid", Config.appid);
+//        	params.put("zoneid", Config.zoneid);
+//        	params.put("pf", Config.pf);
+//        	params.put("pfkey", Config.pfkey);
+//        	params.put("session_id", Config.session_id);
+//        	params.put("session_type", Config.session_type);
+//        	params.put("openid", Config.openid);
+//        	params.put("openkey", Config.openkey);
+//        	params.put("payUrl", Config.pay_url);
+//        	params.put("money", Config.price);
+//			result = JSONObject.valueToString(params);
+			
+			SortedMap<Object, Object> payparams = new TreeMap<Object, Object>();
+			
+			SortedMap<Object, Object> buyInfo = new TreeMap<Object, Object>();
+			SortedMap<Object, Object> opt = new TreeMap<Object, Object>();
+			
+			SortedMap<Object, Object> extend = new TreeMap<Object, Object>();
+			
+			
+			buyInfo.put("type", "goods");
+			buyInfo.put("appid", Config.appid);
+			buyInfo.put("from_h5", 1);
+			buyInfo.put("zoneid", Config.zoneid);
+			buyInfo.put("pf", Config.pf);
+			buyInfo.put("pfkey", Config.pfkey);
+			buyInfo.put("session_id", Config.session_id);
+			buyInfo.put("session_type", Config.session_type);
+			buyInfo.put("openid", Config.openid);
+			buyInfo.put("openkey", Config.openkey);
+			
+			extend.put("showSingleAmt", 0);
+			extend.put("amtCanChange", 0);
+			buyInfo.put("extend", extend);
+			
+			buyInfo.put("goodstokenurl", Config.url_params);
+			buyInfo.put("buy_quantity", 1);
+			payparams.put("buyInfo", buyInfo);
+			opt.put("sandbox", false);
+			opt.put("https", false);
+			payparams.put("opt", opt);
+			return_url = URLEncoder.encode(return_url, "UTF-8");
+			payparams.put("callback_url", return_url);
+			
+		    String s = URLEncoder.encode(JSONObject.valueToString(payparams), "UTF-8");
+			result = Config.pay_url+"?payParams="+s;
+			
+		} catch (JSONException | UnsupportedEncodingException e) {
 			System.out.println("midas error:"+e.getMessage());
 		}
        return result;

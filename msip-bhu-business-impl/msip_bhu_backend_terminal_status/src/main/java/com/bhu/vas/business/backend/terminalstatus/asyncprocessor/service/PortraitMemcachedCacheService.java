@@ -19,7 +19,7 @@ public class PortraitMemcachedCacheService {
 	//记录设备对于某终端的上线通知时间记录
 	private final String PORTRAITCachePrefixKey = "PORTRAITCacheKey.";
 	    
-	@Resource(name="coreCacheService")
+	@Resource(name="coreCacheService")  
 	CacheService cacheService;
 	Cache entityCache;
 	
