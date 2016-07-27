@@ -189,16 +189,10 @@ public class UserWalletController extends BaseController{
     
     @ResponseBody()
     @RequestMapping(value="/richStatistics", method={RequestMethod.GET,RequestMethod.POST})
-    public void richStatistics(
-    		HttpServletResponse response, 
-    		@RequestParam(required = true) int uid,
-    		@RequestParam(required = false) String startTime,
-    		@RequestParam(required = false) String endTime,
-    		 @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
-    		){
+    public void richStatistics( HttpServletResponse response, 
+    		@RequestParam(required = true) int uid){
     	try{
-    		RpcResponseDTO<UcloudMacStatisticsVTO> rpcResult = userWalletRpcService.richStatistics(startTime,endTime,pageNo,pageSize);
+    		RpcResponseDTO<UcloudMacStatisticsVTO> rpcResult = userWalletRpcService.richStatistics();
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{

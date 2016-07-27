@@ -743,7 +743,7 @@ public class UserWalletUnitFacadeService {
 	/**
 	 * 丰富统计信息
 	 */
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int pageIndex,int pageSize) {
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics() {
 		UcloudMacStatisticsVTO ucloudMacStatisticsVTO = new UcloudMacStatisticsVTO();
 		try{
 			// 折线图信息
@@ -754,7 +754,7 @@ public class UserWalletUnitFacadeService {
 			// 折线图Y轴（用户数）
 			List<String> lineChartUserNumInfo = new ArrayList<String>();
 			// 获取当前日期
-			startTime = GetDateTime("yyyy-MM-dd", 0);
+			String startTime = GetDateTime("yyyy-MM-dd", 0);
 			for (int i = 0; i < 30; i ++) {
 				// 折线图X轴（日期）
 				lineChartDateInfo.add(getNewDay(startTime, i-30));
