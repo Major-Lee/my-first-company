@@ -23,11 +23,9 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
-import com.bhu.vas.api.rpc.charging.model.UserIncome;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.statistics.model.FincialStatistics;
-import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatistic;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -759,11 +757,11 @@ public class UserWalletUnitFacadeService {
 			startTime = GetDateTime("yyyy-MM-dd", 0);
 			for (int i = 0; i < 30; i ++) {
 				// 折线图X轴（日期）
-				lineChartDateInfo.add(getNewDay(startTime, i));
-				double lineChartIncome = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalIncomeByDay(getNewDay(startTime, i));
+				lineChartDateInfo.add(getNewDay(startTime, i-30));
+				double lineChartIncome = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalIncomeByDay(getNewDay(startTime, i-30));
 				// 折线图Y轴（收益）
 				lineChartIncomeInfo.add(String.valueOf(lineChartIncome));
-				double lineChartUserNum = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalUserNumByDay(getNewDay(startTime, i));
+				double lineChartUserNum = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalUserNumByDay(getNewDay(startTime, i-30));
 				// 折线图Y轴（用户数）
 				lineChartUserNumInfo.add(String.valueOf(lineChartUserNum));
 			}
@@ -827,5 +825,4 @@ public class UserWalletUnitFacadeService {
 	    retDate = sdf.format(newDay);
 	    return retDate;
     }  
-
 }
