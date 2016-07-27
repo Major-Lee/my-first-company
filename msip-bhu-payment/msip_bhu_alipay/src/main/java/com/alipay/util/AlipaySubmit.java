@@ -1,7 +1,6 @@
 package com.alipay.util;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ public class AlipaySubmit {
     /**
      * midas提供给商户的服务接入网关URL(新)
      */
-    private static final String MIDAS_GATEWAY_NEW = "http://pay.qq.com/h5sdk/proxy.shtml?";
+	private static final String ALIPAY_GATEWAY_NEW = "https://mapi.alipay.com/gateway.do?";
 	
     /**
      * 生成签名结果
@@ -79,7 +78,7 @@ public class AlipaySubmit {
         Map<String, String> sPara = buildRequestPara(sParaTemp);
         List<String> keys = new ArrayList<String>(sPara.keySet());
 
-        result = MIDAS_GATEWAY_NEW+ "_input_charset=" + AlipayConfig.input_charset;
+        result = ALIPAY_GATEWAY_NEW+ "_input_charset=" + AlipayConfig.input_charset;
         for (int i = 0; i < keys.size(); i++) {
             String name = (String) keys.get(i);
             String value = (String) sPara.get(name);
@@ -103,7 +102,7 @@ public class AlipaySubmit {
                                                         DocumentException, IOException {
 
         //构造访问query_timestamp接口的URL串
-        String strUrl = MIDAS_GATEWAY_NEW + "service=query_timestamp&partner=" + AlipayConfig.partner + "&_input_charset" +AlipayConfig.input_charset;
+        String strUrl = ALIPAY_GATEWAY_NEW + "service=query_timestamp&partner=" + AlipayConfig.partner + "&_input_charset" +AlipayConfig.input_charset;
         StringBuffer result = new StringBuffer();
 
         SAXReader reader = new SAXReader();

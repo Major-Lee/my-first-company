@@ -1,19 +1,11 @@
 package com.bhu.vas.business.payment;
 
-import java.util.Date;
-
 import javax.annotation.Resource;
 
 import org.junit.FixMethodOrder;
-import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.bhu.vas.api.rpc.payment.model.PaymentRecord;
-import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
 import com.bhu.vas.business.ds.payment.service.PaymentRecordService;
-import com.bhu.vas.business.payment.help.BusinessHelper;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.localunit.BaseTest;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -33,6 +25,7 @@ public class PaymentRecordServiceTest extends BaseTest {
 //			record.setAmount(22);
 //			record.setId("45678");
 //			record.setCount(11);
+//			record.setDx_count(233333333);
 //			record.setInfo("test");
 //			record.setUpdated_at(new Date());
 //			paymentRecordService.insert(record);
@@ -109,10 +102,10 @@ public class PaymentRecordServiceTest extends BaseTest {
 //		boolean one2 = paymentOrderService.isExistByGid("bucunzai");
 //		System.out.println(one2);
 //	}
-	@Test
-	public void test011DoSharedealDailyUserDailySummary(){
-		String cdate = DateTimeHelper.formatDate(new Date(), DateTimeHelper.FormatPattern5);
-		 paymentRecordService.paymentRecordInfo();
-    	System.out.println("dddd:");
-   	}
+//	@Test
+//	public void test011DoSharedealDailyUserDailySummary(){
+//		String cdate = DateTimeHelper.formatDate(new Date(), DateTimeHelper.FormatPattern5);
+//		 paymentRecordService.paymentRecordInfo();
+//    	System.out.println("dddd:");
+//   	}
 }
