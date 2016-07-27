@@ -3,7 +3,6 @@ package com.bhu.vas.business.backend.terminalstatus;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.business.backend.terminalstatus.asyncprocessor.service.BusinessHelper;
-import com.bhu.vas.business.backend.terminalstatus.asyncprocessor.service.PortraitMemcachedCacheService;
 import com.bhu.vas.business.backend.terminalstatus.asyncprocessor.service.Step00ReadSimulateLogService;
 import com.smartwork.msip.plugins.hook.ShutdownHookThread;
 
@@ -12,7 +11,6 @@ public class BackendTerminalStatusMain {
 		//String[] locations = {"classpath*:/springtest/testCtx.xml"};//,"classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-consumer.xml"};
 		//String[] locations = {"classpath*:/spring/appCtxBackend.xml"};
 		//ApplicationContext ctx = new FileSystemXmlApplicationContext(locations);//("classpath*:/springtest/testCtx.xml");//"classpath*:springfeed/applicationContext-activemq-consumer.xml");//"classpath:springtest/testCtx.xml");
-		
 //		String mac = "84:82:f4:28:87:94";
 //		String hdMac = "0c:77:1a:5c:b2:c2";
 //		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);

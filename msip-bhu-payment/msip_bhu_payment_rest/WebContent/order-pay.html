@@ -62,7 +62,7 @@
 		</div>
 
 <script type='text/javascript'> 
-		function loc(data){
+		/* function loc(data){
 		    var url = 'http://www.jd.com';//支付完成后跳转的页面
 		    var payparams = {
 		        buyInfo:{
@@ -88,37 +88,37 @@
 		    }
 		    console.log(payparams);
 		    payparams = JSON.stringify(payparams);
-		    payparams = encodeURIComponent(payparams);
-		    location.href = data.payUrl + "?payParams=" + payparams;
-		}
+		    //payparams = encodeURIComponent(payparams);
+		    var reqUrl = data.payUrl + "?payParams=" + payparams;
+		    location.href = reqUrl;
+		} */
 		
 		$('#WapWeixin2').click(function(){
 	           var goods_no = Date.parse(new Date());
-	            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=WapWeixin&total_fee=0.01&goods_no='+goods_no;
-	           $.ajax({
-	               url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
+	            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=Midas&total_fee=0.01&goods_no='+goods_no;
+	          alert(datas);
+	            $.ajax({
+	            	url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay/',
+	               //url:'http://localhost:8080/msip_bhu_payment_rest/pay',
 	               type:'post',
 	               async: false,
 	               data: datas,
 	               success:function(json){
-	                     if(json.success){
-								var params = $.parseJSON(json.params);
-							var callbackType = params.type;
-							if(callbackType=='json'){
-								var url = $.parseJSON(params.url);
-		                        loc(url);
-							}else{
-			                    location.href = params.url;
-							}
-	                    }else{
-	                        alert(json.msg);
-	                    } 
-	            	  /*  if(json.success){
+	            	   
+	            	   if(json.success){
 							var params = $.parseJSON(json.params);
-							loc(params);
+						var callbackType = params.type;
+						if(callbackType=='json'){
+							var url = $.parseJSON(params.url);
+	                        //loc(url);
+						}else{
+		                    location.href = params.url;
+						}
 	                   }else{
 	                       alert(json.msg);
-	                   } */
+	                   } 
+	            	   
+	            	 
 	               }
 	           });
 	       });
@@ -166,10 +166,13 @@
 
         $('#WapAlipay2').click(function(){
             var goods_no = Date.parse(new Date());
+            
             var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=WapAlipay&total_fee=0.01&goods_no='+goods_no;
-           $.ajax({
-               url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
-                type:'post',
+          alert(datas);
+            $.ajax({
+              // url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
+               url:'http://localhost:8080/msip_bhu_payment_rest/pay',
+                type:'get',
                 async: false,
                 data: datas,
                 success:function(json){

@@ -128,8 +128,10 @@ public class Step00ReadSimulateLogService {
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
 		if(newAddFields != null){
 			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
-			dto.setWan(addMsg.getWan_ip());
-			dto.setInternet(addMsg.getIp());
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
+			dto.setWan(addMsg.getIp());
+			dto.setInternet(addMsg.getWan_ip());
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
 			int vipType = addMsg.getType();
 			switch (vipType) {
 			case 0:
@@ -152,6 +154,7 @@ public class Step00ReadSimulateLogService {
 	private void processHandsetOffline(String message){
 		HandsetOfflineAction dto = JsonHelper.getDTO(message, HandsetOfflineAction.class);
 		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
+		long end_ts = dto.getTs();
 		if(handsetOnline != null || handsetOnline != ""){
 			HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
 			dto.setTs(onlineDto.getTs());
@@ -159,14 +162,16 @@ public class Step00ReadSimulateLogService {
 			dto.setHname(onlineDto.getHname());
 		}
 		
-		dto.setEnd_ts(dto.getTs());
+		dto.setEnd_ts(end_ts);
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
 		if(newAddFields != null){
 			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
-			dto.setWan(addMsg.getWan_ip());
-			dto.setInternet(addMsg.getIp());
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
+			dto.setWan(addMsg.getIp());
+			dto.setInternet(addMsg.getWan_ip());
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
 			int vipType = addMsg.getType();
 			switch (vipType) {
 			case 0:

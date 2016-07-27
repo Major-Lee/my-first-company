@@ -13,7 +13,7 @@ public class TerminalStatusNotifyLogger {
 	public static void doTerminalStatusMessageLog(String messagejson){
 		logger.info(String.format(Terminal_Status_Notify_Logger_Template, messagejson));
 	}  
-	
+	  
 	
 	public static void main(String[] argv){       
 	        
