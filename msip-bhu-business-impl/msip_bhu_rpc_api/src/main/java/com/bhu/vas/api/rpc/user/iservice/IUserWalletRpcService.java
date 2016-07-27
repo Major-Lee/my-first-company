@@ -122,7 +122,7 @@ public interface IUserWalletRpcService {
 	 * 丰富统计信息
 	 * @return
 	 */
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int type,int pageIndex,int pageSize);
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int pageIndex,int pageSize);
 	
 	public RpcResponseDTO<TailPage<UserWalletLogFFVTO>> pageUserWalletlogsByFeifan(int uid, String transmode,String transtype, 
 			Date start_date, Date end_date, int pageNo, int pageSize);
