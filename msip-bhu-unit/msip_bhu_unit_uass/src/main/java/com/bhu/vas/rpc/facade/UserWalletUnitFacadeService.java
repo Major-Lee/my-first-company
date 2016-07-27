@@ -745,7 +745,7 @@ public class UserWalletUnitFacadeService {
 	/**
 	 * 丰富统计信息
 	 */
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int type,int pageIndex,int pageSize) {
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(String startTime,String endTime,int pageIndex,int pageSize) {
 		UcloudMacStatisticsVTO ucloudMacStatisticsVTO = new UcloudMacStatisticsVTO();
 		List<UcloudMacStatistic> ucloudMacStatistics = new ArrayList<UcloudMacStatistic>();
 		try{

@@ -17,6 +17,7 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
@@ -27,6 +28,7 @@ import com.bhu.vas.api.rpc.user.dto.UserTransInfoDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.statistics.service.MacIncomeService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
@@ -72,6 +74,9 @@ public class UserManageFacadeService {
 	
 	@Resource
 	private MacIncomeService macIncomeService;
+	
+	@Resource
+	private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
 	/**
 	 * 查询用户交易信息
 	 * @param uid
@@ -176,14 +181,15 @@ public class UserManageFacadeService {
 			}
 			
 			UserManageDeviceDTO userManageDeviceDTO = new UserManageDeviceDTO();
-			//根据用户Id查询设备数量
-			long deviceNum = 0;
-			deviceNum = wifiDeviceDataSearchService.searchCountByCommon(uid, "", "", "", OnlineEnum.Offline.getType(), "");
-			userManageDeviceDTO.setDeviceNum(String.valueOf(deviceNum));
 			//根据用户Id查询在线设备数量
 			long onLinedeviceNum = 0;
 			onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(uid, "", "", "", OnlineEnum.Online.getType(), "");
 			userManageDeviceDTO.setDeviceOnlineNum(String.valueOf(onLinedeviceNum));
+			//根据用户Id查询离线设备数量
+			long offLinedeviceNum = 0;
+			offLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(uid, "", "", "", OnlineEnum.Offline.getType(), "");
+			userManageDeviceDTO.setDeviceNum(String.valueOf(onLinedeviceNum+offLinedeviceNum));
+			
 			//根据用户Id查询开启打赏设备数量
 			long rewardDeviceNum = 0;
 			rewardDeviceNum = wifiDeviceDataSearchService.searchCountByCommon(uid, "", "", "", "", SnkTurnStateEnum.On.getType());
@@ -209,11 +215,21 @@ public class UserManageFacadeService {
 								continue;
 							}
 							userDeviceInfoDTO = new UserDeviceInfoDTO();
-							userDeviceInfoDTO.setDeviceType(wifiDeviceDocument.getD_type());
+							userDeviceInfoDTO.setDeviceType(wifiDeviceDocument.getD_origmodel());
 							userDeviceInfoDTO.setDeviceMac(wifiDeviceDocument.getD_mac());
 							userDeviceInfoDTO.setDeviceSN(wifiDeviceDocument.getD_sn());
 							userDeviceInfoDTO.setAccNetType(wifiDeviceDocument.getD_snk_type());
-							//用户分成比例 TODO
+							//用户分成比例 
+							WifiDeviceSharedealConfigs wifiDeviceSharedealConfigs = wifiDeviceSharedealConfigsService.getById(wifiDeviceDocument.getD_mac());
+							if(wifiDeviceSharedealConfigs != null){
+								//用户分成
+								double ower_percent = wifiDeviceSharedealConfigs.getOwner_percent();
+								//bhu分成
+								double manufacturer_percent = wifiDeviceSharedealConfigs.getManufacturer_percent();
+								String userGainsharing = StringUtils.EMPTY;
+								userGainsharing = String.valueOf(manufacturer_percent)+"/"+String.valueOf(ower_percent);
+								userDeviceInfoDTO.setUserGainsharing(userGainsharing);
+							}
 							//userDeviceInfoDTO.setUserGainsharing(userGainsharing);
 							//收益  
 							double income = 0.00;
