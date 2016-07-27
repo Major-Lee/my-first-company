@@ -524,13 +524,15 @@ public class SSIDStatisticFacadeRpcService {
 				int dayUV = 0 ;
 				int dayPV = 0;
 				date = timeList.get(i);
-				String dayPv = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "dayPV");
-				String dayUv = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "dayUV");
-				if(StringUtils.isNotBlank(dayPv)){
-					dayPV = Integer.parseInt(dayPv);
-				}
-				if(StringUtils.isNotBlank(dayUv)){
-					dayUV = Integer.parseInt(dayUv);
+				for(String j:macList){
+					String dayPv = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
+					String dayUv = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
+					if(StringUtils.isNotBlank(dayPv)){
+						dayPV += Integer.parseInt(dayPv);
+					}
+					if(StringUtils.isNotBlank(dayUv)){
+						dayUV += Integer.parseInt(dayUv);
+					}
 				}
 				totalPV += dayPV;
 				totalUV += dayUV;
