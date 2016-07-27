@@ -45,8 +45,9 @@ public class CommdityController extends BaseController{
 			@RequestParam(required = true) String umac,
 			@RequestParam(required = true) Integer commdityid,
 			@RequestParam(required = false, defaultValue = "2") Integer umactype) {
-
-		RpcResponseDTO<CommdityAmountDTO> rpcResult = commdityRpcService.rewardIntervalAMount(commdityid, mac, umac, umactype);
+		String mac_lower = mac.toLowerCase();
+		String umac_lower = umac.toLowerCase();
+		RpcResponseDTO<CommdityAmountDTO> rpcResult = commdityRpcService.rewardIntervalAMount(commdityid, mac_lower, umac_lower, umactype);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
