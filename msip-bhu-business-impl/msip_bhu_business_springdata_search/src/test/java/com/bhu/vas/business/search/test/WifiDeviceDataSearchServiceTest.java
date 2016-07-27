@@ -972,7 +972,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 	
 	@Test
 	public void test0021SearchTest(){
-		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchPageByCommon(101143, "", "", "", "", "", 0, 10);
+		Page<WifiDeviceDocument> result = wifiDeviceDataSearchService.searchPageByCommon(101143, "", "", "", "", "","", 0, 10);
 		//List<WifiDeviceDocument> wifiDeviceDocumentList = result.getContent();
 		System.out.println(result.getTotalElements());
 		//System.out.println(wifiDeviceDocumentList.size());
