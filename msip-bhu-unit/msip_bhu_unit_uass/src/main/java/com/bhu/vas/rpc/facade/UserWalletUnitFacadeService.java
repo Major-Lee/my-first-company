@@ -750,9 +750,9 @@ public class UserWalletUnitFacadeService {
 			// 天数的计算
 			List<String> lineChartDateInfo = new ArrayList<String>();
 			// 折线图Y轴（收益）
-			List<String> lineChartIncomeInfo = new ArrayList<String>();
+			List<Double> lineChartIncomeInfo = new ArrayList<Double>();
 			// 折线图Y轴（用户数）
-			List<String> lineChartUserNumInfo = new ArrayList<String>();
+			List<Double> lineChartUserNumInfo = new ArrayList<Double>();
 			// 获取当前日期
 			String startTime = GetDateTime("yyyy-MM-dd", 0);
 			for (int i = 0; i < 30; i ++) {
@@ -760,10 +760,10 @@ public class UserWalletUnitFacadeService {
 				lineChartDateInfo.add(getNewDay(startTime, i-30));
 				double lineChartIncome = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalIncomeByDay(getNewDay(startTime, i-30));
 				// 折线图Y轴（收益）
-				lineChartIncomeInfo.add(String.valueOf(lineChartIncome));
+				lineChartIncomeInfo.add(lineChartIncome);
 				double lineChartUserNum = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalUserNumByDay(getNewDay(startTime, i-30));
 				// 折线图Y轴（用户数）
-				lineChartUserNumInfo.add(String.valueOf(lineChartUserNum));
+				lineChartUserNumInfo.add(lineChartUserNum);
 			}
 			
 			// 折线图X轴（日期）

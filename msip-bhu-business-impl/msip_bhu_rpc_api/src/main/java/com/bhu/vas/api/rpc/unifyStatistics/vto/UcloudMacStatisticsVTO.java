@@ -18,9 +18,9 @@ public class UcloudMacStatisticsVTO implements Serializable{
 	// 折线图X轴（日期）
 	private List<String> lineChartDateInfo;
 	// 折线图Y轴（收益）
-	private List<String> lineChartIncomeInfo;
+	private List<Double> lineChartIncomeInfo;
 	// 折线图Y轴（用户数）
-	private List<String> lineChartUserNumInfo;
+	private List<Double> lineChartUserNumInfo;
 	
 	public List<UcloudMacStatistic> getMacsInfo() {
 		return macsInfo;
@@ -28,10 +28,10 @@ public class UcloudMacStatisticsVTO implements Serializable{
 	public List<String> getLineChartDateInfo() {
 		return lineChartDateInfo;
 	}
-	public List<String> getLineChartIncomeInfo() {
+	public List<Double> getLineChartIncomeInfo() {
 		return lineChartIncomeInfo;
 	}
-	public List<String> getLineChartUserNumInfo() {
+	public List<Double> getLineChartUserNumInfo() {
 		return lineChartUserNumInfo;
 	}
 	public void setMacsInfo(List<UcloudMacStatistic> macsInfo) {
@@ -40,10 +40,10 @@ public class UcloudMacStatisticsVTO implements Serializable{
 	public void setLineChartDateInfo(List<String> lineChartDateInfo) {
 		this.lineChartDateInfo = lineChartDateInfo;
 	}
-	public void setLineChartIncomeInfo(List<String> lineChartIncomeInfo) {
+	public void setLineChartIncomeInfo(List<Double> lineChartIncomeInfo) {
 		this.lineChartIncomeInfo = lineChartIncomeInfo;
 	}
-	public void setLineChartUserNumInfo(List<String> lineChartUserNumInfo) {
+	public void setLineChartUserNumInfo(List<Double> lineChartUserNumInfo) {
 		this.lineChartUserNumInfo = lineChartUserNumInfo;
 	}
 	public int getPageIndex() {
