@@ -13,7 +13,7 @@ import redis.clients.jedis.Tuple;
 public class HandsetPersentFixedOp {
 	public static void main(String[] args) {
 		System.out.println("HandsetPersentFixedOp start...");
-		Date date = DateTimeHelper.getDateDaysAgo(1);
+		Date date = DateTimeHelper.getDateDaysAgo(3);
 		long lastDate = date.getTime();
 		double score = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().generateScore(lastDate);
 		int amount = 0;
