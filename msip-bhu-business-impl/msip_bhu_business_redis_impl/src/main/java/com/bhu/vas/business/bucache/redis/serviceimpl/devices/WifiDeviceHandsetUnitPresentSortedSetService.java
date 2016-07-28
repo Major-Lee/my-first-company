@@ -255,13 +255,12 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	public void removePresentsWithKey(String key, List<String> handsetIds){
 		if(handsetIds == null || handsetIds.isEmpty()) return;
-		super.pipelineZRem_sameKeyWithDiffMember(generateKey(key), handsetIds.toArray(new String[]{}));
+		super.pipelineZRem_sameKeyWithDiffMember(key, handsetIds.toArray(new String[]{}));
 	}
 	
 	@Override
 	public String getName() {
 		return WifiDeviceHandsetUnitPresentSortedSetService.class.getName();
-
 	}
 
 	@Override

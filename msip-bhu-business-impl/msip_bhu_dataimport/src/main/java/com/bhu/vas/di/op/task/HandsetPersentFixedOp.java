@@ -29,6 +29,7 @@ public class HandsetPersentFixedOp {
 					}
 				}
 			 	WifiDeviceHandsetUnitPresentSortedSetService.getInstance().removePresentsWithKey(key, wasteData);
+			 	System.out.println(String.format("HandsetPersentFixedOp  cleaned  wasteData key[%s] count[%s]",key, wasteData.size()));
 				amount += wasteData.size();
 			}
 		}
