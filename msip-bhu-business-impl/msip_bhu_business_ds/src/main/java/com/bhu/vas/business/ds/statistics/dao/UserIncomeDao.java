@@ -1,5 +1,6 @@
 package com.bhu.vas.business.ds.statistics.dao;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
@@ -26,18 +27,24 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 		return income;
 	}
 	public double countTotalIncomeByDay(String time) {
-		double income = 0;
+		Double income = 0.0;
 		try {
-			income = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncomeByDay", time);
+			income = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncomeByDay",time);
+		    if (null == income || StringUtils.isBlank(String.valueOf(income))) {
+		    	return 0.0;
+		    }
 		} catch (Exception e) {
 			return income;
-		}
+		}	
 		return income;
 	}
 	public double countTotalUserNumByDay(String time) {
-		double userNum = 0;
+		Double userNum = 0.0;
 		try {
-			userNum = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalUserNumByDay", time);
+			userNum = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalUserNumByDay",time);
+			if (null == userNum || StringUtils.isBlank(String.valueOf(userNum))) {
+		    	return 0.0;
+		    }
 		} catch (Exception e) {
 			return userNum;
 		}
