@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.service.device;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -45,9 +46,9 @@ public class UnifyStatisticsRpcService implements IUnifyStatisticsRpcService {
 		}
 	}
 	@Override
-	public String querySSIDStatisticsInfo(Map<String,Object> map) {
+	public Map<String,Object> querySSIDStatisticsInfo(Map<String,Object> map) {
 		//返回结果
-		String result = StringUtils.EMPTY;
+		Map<String,Object> result = new HashMap<String,Object>();
 		result = statisticFacadeRpcService.querySSIDStatisticInfo(map);
 		return result;
 	}

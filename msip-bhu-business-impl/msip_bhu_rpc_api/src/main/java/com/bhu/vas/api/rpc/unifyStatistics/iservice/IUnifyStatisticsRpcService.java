@@ -12,6 +12,6 @@ public interface IUnifyStatisticsRpcService {
 	
 	//add By Jason 2016-07-18 Start
 	//查询SSID统计信息
-	public String querySSIDStatisticsInfo(Map<String,Object> map);
+	public Map<String,Object> querySSIDStatisticsInfo(Map<String,Object> map);
 	//add By Jason 2016-07-18 E N D
 }

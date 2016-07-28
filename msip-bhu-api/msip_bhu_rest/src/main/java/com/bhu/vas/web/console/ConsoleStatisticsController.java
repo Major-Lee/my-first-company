@@ -65,7 +65,9 @@ public class ConsoleStatisticsController extends BaseController{
 	
 	@ResponseBody()
 	@RequestMapping(value = "/querySSIDStatisticInfo", method = {RequestMethod.POST})
-	public String querySSIDStatisticInfo(
+	public void querySSIDStatisticInfo(
+			HttpServletRequest request,
+            HttpServletResponse response,
 			@RequestParam(required = false,defaultValue = "7",value = "type") String type,
             @RequestParam(required = false) String deliveryChannel,
             @RequestParam(required = false) String deviceLabel,
@@ -76,7 +78,7 @@ public class ConsoleStatisticsController extends BaseController{
 			@RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
 			){
 		//返回结果
-		String result = StringUtils.EMPTY;
+		Map<String,Object> result = new HashMap<String,Object>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("type", type);
 		map.put("deliveryChannel", deliveryChannel);
@@ -87,6 +89,6 @@ public class ConsoleStatisticsController extends BaseController{
 		map.put("pn", pageNo);
 		map.put("ps", pageSize);
 		result = unifyStatisticsRpcService.querySSIDStatisticsInfo(map);
-		return result;
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 }

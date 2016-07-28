@@ -47,8 +47,8 @@ public class SSIDStatisticFacadeRpcService {
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
 	private static Logger log = Logger.getLogger(SSIDStatisticFacadeRpcService.class);
-	public String querySSIDStatisticInfo(Map<String,Object> map){
-		String result = StringUtils.EMPTY;
+	public Map<String,Object> querySSIDStatisticInfo(Map<String,Object> map){
+		Map<String,Object> result = new HashMap<String,Object>();
 		//查询日期类型
 		String type = StringUtils.EMPTY;
 		//出货渠道
@@ -858,7 +858,7 @@ public class SSIDStatisticFacadeRpcService {
 	 * @param body 返回值中body参数结果 Object 
 	 * @return String   {"code":"0","msg":"success","body":[{"id":"1","name":"测试"}]}
 	 */
-	public static String success(Object body){
+	public static Map<String, Object> success(Object body){
 		Map<String, Object> map=new HashMap<String, Object>();
 		String code="0";
 		String message="success";
@@ -869,7 +869,6 @@ public class SSIDStatisticFacadeRpcService {
 			body="{}";
 		}
 		map.put("result", body);
-		String result=JSONObject.toJsonString(map);
-		return result;
+		return map;
 	}
 }
