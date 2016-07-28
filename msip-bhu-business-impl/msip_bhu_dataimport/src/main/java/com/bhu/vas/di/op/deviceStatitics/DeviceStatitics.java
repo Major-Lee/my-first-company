@@ -16,8 +16,10 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.data.domain.Page;
 
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
@@ -26,11 +28,11 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionMessa
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 public class DeviceStatitics {
 	private static final String REQUEST_URL = "http://vap.bhunetworks.com/bhu_api/v1/dashboard/device/statistics";
 	private static WifiDeviceDataSearchService wifiDeviceDataSearchService;
-	private static UserWifiDeviceService userWifiDeviceService;
 	public static void main(String[] args) {
 		//共享网络开启状态  1 为开启 0为关闭
 		String params = "d_snk_turnstate=1&d_snk_type=SafeSecure&sk=PzdfTFJSUEBHG0dcWFcLew==";
@@ -56,6 +58,7 @@ public class DeviceStatitics {
 			resultMap.put("doc", doc);
 			DeviceStatisticsHashService.getInstance().deviceMacHset(currDay(), "equipment", JsonHelper.getJSONString(resultMap));
 			//String str = BhuCache.getInstance().getEquipment(DataUtils.currDay(), "equipment");
+			queryMacStatus();
 		}
 		
 	}
@@ -65,14 +68,36 @@ public class DeviceStatitics {
 	 */
 	public static String queryMacStatus(){
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
-		wifiDeviceDataSearchService = (WifiDeviceDataSearchService)ctx.getBean("wifiDeviceDataSearchService");
-		userWifiDeviceService = (UserWifiDeviceService)ctx.getBean("userWifiDeviceService");
 		String result = StringUtils.EMPTY;
-		/*if(StringUtils.isBlank(mac)){
-			return result;
-		}*/
+		wifiDeviceDataSearchService = (WifiDeviceDataSearchService)ctx.getBean("wifiDeviceDataSearchService");
 		//获取在线Mac集合
+		wifiDeviceDataSearchService.iteratorAllByCommon(null, "", 
+				"", "",  OnlineEnum.Online.getType(),"", "",
+			 100, new IteratorNotify<Page<WifiDeviceDocument>>() {
+		    @Override
+		    public void notifyComming(Page<WifiDeviceDocument> pages) {
+		    	for (WifiDeviceDocument doc : pages) {
+		    		String mac = doc.getD_mac();
+		    		DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-DOC"+currDay(), mac, "1");
+		    	}
+		    }
+		});
+		/*wifiDeviceDataSearchService.iteratorAllByCommon(null, null, null, null, null, null, null, 0, 
+				new IteratorNotify<Page<WifiDeviceDocument>>() {
+			@Override
+			public void notifyComming(Page<WifiDeviceDocument> pages) {
+				for (WifiDeviceDocument doc : pages) {
+
+				}
+			}
+			});*/
+		/*for (WifiDeviceDocument doc : pages) {
+    		String mac = doc.getD_mac();
+    		DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-DOC"+currDay(), mac, "1");
+    	}*/
 		
+		//null, "", "", "", OnlineEnum.Online.getType(), "", "", 100
+		//wifiDeviceDataSearchService.iteratorAllByCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online, d_snk_turnstate, d_tags, pageSize, notify);
 		//获取缓存所有mac 
 		Map<String,String> macMap = DeviceStatisticsHashService.getInstance().getDeviceMacByKey("MAC-"+currDay());
 		if(macMap != null && macMap.size()>0){
