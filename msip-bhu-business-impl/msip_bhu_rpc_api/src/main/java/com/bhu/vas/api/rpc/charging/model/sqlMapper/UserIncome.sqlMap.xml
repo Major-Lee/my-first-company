@@ -173,11 +173,11 @@
 	<select id="countIncome" resultType="Double" parameterType="int">
 	    select sum(income) from <include refid="modelTableName" /> where uid=#{uid}
 	</select>
-	<select id="countTotalIncomeByDay" resultType="Double" parameterType="String">
-	    select sum(income) from <include refid="modelTableName" /> where time=#{time}
+	<select id="countTotalIncomeByDay" resultType="Double" parameterType="Map">
+	    select sum(income) from <include refid="modelTableName" /> where time=#{time} and uid=#{uid}
 	</select>
-	<select id="countTotalUserNumByDay" resultType="Double" parameterType="String">
-	    select sum(times) from <include refid="modelTableName" /> where time=#{time}
+	<select id="countTotalUserNumByDay" resultType="Double" parameterType="Map">
+	    select sum(times) from <include refid="modelTableName" /> where time=#{time} and uid=#{uid}
 	</select>
 	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
 		${proc_call} 		

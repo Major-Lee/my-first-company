@@ -743,7 +743,7 @@ public class UserWalletUnitFacadeService {
 	/**
 	 * 丰富统计信息
 	 */
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics() {
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(int uid) {
 		UcloudMacStatisticsVTO ucloudMacStatisticsVTO = new UcloudMacStatisticsVTO();
 		try{
 			// 折线图信息
@@ -758,10 +758,10 @@ public class UserWalletUnitFacadeService {
 			for (int i = 0; i < 30; i ++) {
 				// 折线图X轴（日期）
 				lineChartDateInfo.add(getNewDay(startTime, i-30));
-				double lineChartIncome = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalIncomeByDay(getNewDay(startTime, i-30));
+				double lineChartIncome = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalIncomeByDay(uid, getNewDay(startTime, i-30));
 				// 折线图Y轴（收益）
 				lineChartIncomeInfo.add(lineChartIncome);
-				double lineChartUserNum = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalUserNumByDay(getNewDay(startTime, i-30));
+				double lineChartUserNum = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalUserNumByDay(uid, getNewDay(startTime, i-30));
 				// 折线图Y轴（用户数）
 				lineChartUserNumInfo.add(lineChartUserNum);
 			}
