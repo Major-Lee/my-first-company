@@ -30,21 +30,21 @@ public class BackendTerminalStatusMain {
 //		PortraitMemcachedCacheService portraitMemcachedCacheService = (PortraitMemcachedCacheService)context.getBean("portraitMemcachedCacheService");
 		Step00ReadSimulateLogService step00ReadSimulateLogService = (Step00ReadSimulateLogService)context.getBean("step00ReadSimulateLogService");
 //		System.out.println(portraitMemcachedCacheService.getPortraitOrderCacheByOrderId("Hello"));
-		//upays   
-//		String path1 = "/BHUData/bulogs/reportinglogsnew/i1";
+		//123 147   
+		//String path1 = "/BHUData/bulogs/reportinglogs";
 //		String path2 = "/BHUData/bulogs/reportinglogsnew/i2";    
 //		String path1 = "E:/onORoff/i1";
-//		String path2 = "E:/onORoff/i2";
+		String path2 = "E:/onORoff/i2";
 //		
 //		Vivi_portrait
-		String path1 = "/BHUData/bulogs/reporterlogsnew/i1";
-		String path2 = "/BHUData/bulogs/reporterlogsnew/i2";
+//		String path1 = "/BHUData/bulogs/reporterlogsnew/i1";
+//		String path2 = "/BHUData/bulogs/reporterlogsnew/i2";
 		
 //		SimpleDateFormat formatter = new SimpleDateFormat("ss");//初始化Formatter的转换格式。  
-		String date = BusinessHelper.getCurrentPreviousMinuteString(2);
+		String date = BusinessHelper.getCurrentPreviousMinuteString(1);
 //		System.out.println(DateTimeHelper.getDateTime()+"   do   "+date+"   path1 parser log starting ......");
 //		 long starTime=System.currentTimeMillis();
-		step00ReadSimulateLogService.parser(date, path1);
+		//step00ReadSimulateLogService.parser(date, path1);
 //		long endTime=System.currentTimeMillis();
 //		long Time=endTime-starTime;
 //		String hms = formatter.format(Time); 
@@ -58,5 +58,6 @@ public class BackendTerminalStatusMain {
 //		hms = formatter.format(Time); 
 //		System.out.println(hms+"  do "+date+"  path2 parser log ending.....");
 		System.exit(0);
+		//context.close();
 	}
 }

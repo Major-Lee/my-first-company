@@ -9,6 +9,7 @@ public class HandsetOfflineAction extends TerminalAction{
 	private String bssid;
 	private long tx_bytes;
 	private long rx_bytes;
+	private String authorized;
 	//新增终端下线
 	private long end_ts;
 	private String hname;
@@ -75,6 +76,13 @@ public class HandsetOfflineAction extends TerminalAction{
 	}
 	public void setHip(String hip) {
 		this.hip = hip;
+	}
+	
+	public String getAuthorized() {
+		return authorized;
+	}
+	public void setAuthorized(String authorized) {
+		this.authorized = authorized;
 	}
 	public String getRssi() {
 		return rssi;

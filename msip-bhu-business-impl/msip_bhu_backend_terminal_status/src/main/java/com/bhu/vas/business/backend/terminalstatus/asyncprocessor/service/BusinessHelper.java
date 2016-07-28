@@ -30,9 +30,9 @@ public class BusinessHelper extends PropertyEditorSupport {
 			"w", "x", "y", "z" };  
 	
 	private static SimpleDateFormat yyyy = new SimpleDateFormat("yyyy");
-	// 各种时间格式
+	// 各种时间格式  
 	public static final SimpleDateFormat date_sdf = new SimpleDateFormat(
-			"yyyy-MM-dd");   
+			"yyyy-MM-dd");
 	// 各种时间格式       
 	public static final SimpleDateFormat yyyyMMdd = new SimpleDateFormat(
 			"yyyyMMdd"); 
