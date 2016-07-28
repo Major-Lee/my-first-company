@@ -62,17 +62,17 @@ public class SSIDStatisticFacadeRpcService {
 		//查询结束时间
 		String endTime = StringUtils.EMPTY;
 		//当前页数
-		String pn = StringUtils.EMPTY;
+		int pn = 1;
 		//每页显示条数
-		String ps = StringUtils.EMPTY;
+		int ps = 5;
 		type = (String) map.get("type");
 		deliveryChannel = (String) map.get("deliveryChannel");
 		mobileNo = (String) map.get("mobileNo");
 		deviceLable = (String) map.get("deviceLable");
 		startTime = (String) map.get("startTime");
 		endTime = (String) map.get("endTime");
-		pn = (String) map.get("pn");
-		ps = (String) map.get("ps");
+		pn = (Integer) map.get("pn");
+		ps = (Integer) map.get("ps");
 		//mac List
 		List<String> macList = null;
 		if(StringUtils.isNotBlank(deliveryChannel)){
@@ -137,7 +137,6 @@ public class SSIDStatisticFacadeRpcService {
 		double totalMbOrderAmount=0;
 		
 		//组装结果集
-		List<LinkedHashMap<String,Object>> listMap = new ArrayList<LinkedHashMap<String,Object>>();
 		LinkedHashMap<String,Object> ssidMap = null;
 		String date = StringUtils.EMPTY;
 			for (int i = 0; i < timeList.size(); i++) {
@@ -696,7 +695,21 @@ public class SSIDStatisticFacadeRpcService {
 		tMaps.put("android", androidMap);
 		
 		Map<String,Object> resMap=new HashMap<String,Object>();
-		resMap.put("dataList", resMaps);
+		
+		List<LinkedHashMap<String,Object>> pageResMaps=new ArrayList<LinkedHashMap<String,Object>>();
+		int num=resMaps.size();
+		if(num<(pn-1)*ps){
+			
+		}else if(num>(pn-1)*ps&&num<pn*ps){
+			for(int i=(pn-1)*ps;i<=num;i++){
+				pageResMaps.add(resMaps.get(i));
+			}
+		}else{
+			for(int i=(pn-1)*ps;i<=pn*ps;i++){
+				pageResMaps.add(resMaps.get(i));
+			}
+		}
+		resMap.put("dataList", pageResMaps);
 		resMap.put("total", tMaps);
 		
 		result=success(resMap);
