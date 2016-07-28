@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -507,10 +508,12 @@ public class OrderUnitFacadeService {
 			
 			OrderRewardNewlyDataVTO vto = null;
 			if(timestamp > 0){
-				vto = orderFacadeService.rewardOrderNewlyDataWithProcedure(uid, new Date(timestamp));
+				vto = orderFacadeService.rewardOrderNewlyDataWithProcedure(uid,new Date(timestamp));
 			}else{
 				vto = new OrderRewardNewlyDataVTO();
 			}
+			logger.info("start_time:["+timestamp+"]");
+			logger.info("date: "+DateTimeHelper.formatDate((new Date(timestamp)), DateTimeHelper.DefalutFormatPattern));
 			
 			UserQueryDateHashService.getInstance().addQueryData(uid, System.currentTimeMillis());
 			
@@ -539,6 +542,4 @@ public class OrderUnitFacadeService {
 		return "0";
 	}
 	
-//	public static void main(String[] argv){
-//	}
 }
