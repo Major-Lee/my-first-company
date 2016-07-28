@@ -209,7 +209,11 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 								hmacs = null;
 							}
 							else if(HandsetDeviceDTO.Action_Authorize.equals(fristDto.getAction())) {
-
+								DynamicLogWriter.doLogger(headers.getMac(), 
+										ActionBuilder.toJsonHasPrefix(
+												ActionBuilder.builderHandsetAuthorizeAction(fristDto.getMac(),headers.getMac(),
+														fristDto.getVapname() ,fristDto.getAuthorized(), System.currentTimeMillis())));
+							
 							}
 						}
 					}

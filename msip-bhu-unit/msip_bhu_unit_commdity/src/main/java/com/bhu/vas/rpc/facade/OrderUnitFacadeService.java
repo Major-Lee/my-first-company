@@ -502,9 +502,7 @@ public class OrderUnitFacadeService {
 			}
 			
 			if (timestamp == 0) {
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.DATE, -1);
-				timestamp = cal.getTimeInMillis();
+				timestamp = DateTimeHelper.getDateDaysAgo(1).getTime();
 			}
 			
 			OrderRewardNewlyDataVTO vto = null;
@@ -541,7 +539,6 @@ public class OrderUnitFacadeService {
 		return "0";
 	}
 	
-	/*public static void main(String[] argv){
-		System.out.println("+0.84".substring(1));
-	}*/
+//	public static void main(String[] argv){
+//	}
 }

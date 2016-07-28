@@ -63,6 +63,7 @@ public class ActionBuilder {
 		DeviceNotExist("DE"),
 		HandsetOnline("HO"),
 		HandsetOffline("HF"),
+		HandsetAuthorize("HA"),
 		HandsetSync("HS"),
 		;
 		static Map<String, ActionMode> allActionMode;
@@ -173,6 +174,19 @@ public class ActionBuilder {
 		
 		action.setTx_bytes(tx_bytes);
 		action.setRx_bytes(rx_bytes);
+		action.setTs(ts);
+		return action;
+	}
+	
+	public static HandsetAuthorizeAction builderHandsetAuthorizeAction(String hmac,String mac,
+			String vapname,
+			String authorized,
+			long ts){
+		HandsetAuthorizeAction action = new HandsetAuthorizeAction();
+		action.setHmac(hmac);
+		action.setMac(mac);
+		action.setVapname(vapname);
+		action.setAuthorized(authorized);
 		action.setTs(ts);
 		return action;
 	}
