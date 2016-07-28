@@ -15,18 +15,17 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.elasticsearch.common.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.util.DataUtils;
 import com.bhu.vas.rpc.util.JSONObject;
 import com.bhu.vas.rpc.util.um.OpenApiCnzzImpl;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 
@@ -36,6 +35,7 @@ import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
  * @author Jason
  *
  */
+@Service
 public class SSIDStatisticFacadeRpcService {
 	@Resource
 	private UserService userService;
