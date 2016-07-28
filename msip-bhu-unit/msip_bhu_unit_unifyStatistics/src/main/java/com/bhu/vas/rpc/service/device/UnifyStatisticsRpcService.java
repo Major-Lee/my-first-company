@@ -1,15 +1,19 @@
 package com.bhu.vas.rpc.service.device;
 
+import java.util.Map;
+
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.unifyStatistics.iservice.IUnifyStatisticsRpcService;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.OnlineStatisticsVTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.StateStatisticsVTO;
+import com.bhu.vas.rpc.facade.SSIDStatisticFacadeRpcService;
 import com.bhu.vas.rpc.facade.UnifyStatisticsFacadeRpcSerivce;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,6 +23,9 @@ import org.springframework.stereotype.Service;
 public class UnifyStatisticsRpcService implements IUnifyStatisticsRpcService {
 	@Resource
 	private UnifyStatisticsFacadeRpcSerivce unifyStatisticsFacadeRpcSerivce;
+	
+	@Resource
+	private SSIDStatisticFacadeRpcService  statisticFacadeRpcService;
 	@Override
 	public RpcResponseDTO<OnlineStatisticsVTO> onlineStatistics(String category,String queryParam) {
 		try {
@@ -36,5 +43,12 @@ public class UnifyStatisticsRpcService implements IUnifyStatisticsRpcService {
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
 		}
+	}
+	@Override
+	public String querySSIDStatisticsInfo(Map<String,Object> map) {
+		//返回结果
+		String result = StringUtils.EMPTY;
+		result = statisticFacadeRpcService.querySSIDStatisticInfo(map);
+		return result;
 	}
 }

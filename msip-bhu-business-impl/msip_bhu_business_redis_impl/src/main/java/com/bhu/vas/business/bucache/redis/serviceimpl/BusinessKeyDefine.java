@@ -69,6 +69,13 @@ public class BusinessKeyDefine {
 		
 		public static final String DeviceStateStatistics	="DDS.";
 		public static final String UserStateStatistics	="UDS.";
+		
+		//add By Jason 2016-07-18 Start
+		public static final String UserDeviceStatistics = "UDVS.";
+		//add By Jason 2016-07-18 E N D
+		//add By Lapaus 2016-07-25 Start
+		public static final String UMStatistics = "UMVS.";
+		//add By Lapaus 2016-07-25 E N D
 	}
 	public static class Unique{
 		public static final String EmailCheck = "WUEC";
