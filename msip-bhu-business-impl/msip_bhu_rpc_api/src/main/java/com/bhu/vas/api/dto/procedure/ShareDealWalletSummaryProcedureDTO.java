@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.procedure;
 
+import java.math.BigDecimal;
+
 import org.apache.ibatis.type.JdbcType;
 
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
@@ -152,7 +154,10 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 		vto.setUserid(this.getUserid());
 		vto.setOds(this.getOds());
 		vto.setToday_date(this.getToday_date());
-		vto.setToday_cash(this.getToday_cash());
+		
+        BigDecimal bg = new BigDecimal(this.getToday_cash());  
+        double f1 = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();  
+		vto.setToday_cash(f1);
 		vto.setToday_nums(this.getToday_nums());
 		vto.setYesterday_date(this.getYesterday_date());
 		vto.setYesterday_cash(this.getYesterday_cash());
