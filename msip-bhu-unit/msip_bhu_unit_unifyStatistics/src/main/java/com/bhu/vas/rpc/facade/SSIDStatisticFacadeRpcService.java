@@ -40,8 +40,8 @@ public class SSIDStatisticFacadeRpcService {
 	@Resource
 	private UserService userService;
 	
-	@Resource
-	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
+//	@Resource
+//	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
@@ -750,7 +750,7 @@ public class SSIDStatisticFacadeRpcService {
 				return macList;
 			}
 			//根据用户Id查询mac列表
-			macList = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(userList.get(0).getId());
+			//macList = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(userList.get(0).getId());
 		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
 		}
