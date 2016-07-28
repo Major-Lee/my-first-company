@@ -57,6 +57,12 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return sb.toString();
 	}
 	
+	private static String generatePrefixKey(){
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.WifiDeviceHandsetUnitPresentPrefixKey);
+		sb.append(StringHelper.POINT_CHAR_GAP).append("*");
+		return sb.toString();
+	}
+	
 	private static String[] generateKey(String[] wifiIds){
 		
 		String[] macs = new String [wifiIds.length];
@@ -83,7 +89,7 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	
 	
 	//生成score值，为当前终端上线时间  年月日时分
-	private static double generateScore(long login_at){
+	public  double generateScore(long login_at){
 		return Double.parseDouble(DateTimeHelper.formatDate(new Date(login_at),OnlineDatePattern));
 	}
 	
@@ -110,6 +116,11 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	 */
 	public Long presentOnlineSize(String wifiId){
 		return super.zcount(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE);
+	}
+	
+	public Set<String> keySet(){
+		Set<String> set = this.keys(generatePrefixKey());
+		return set;
 	}
 	
 	public List<Object> presentOnlineSizes(List<String> wifiIds){
@@ -224,6 +235,11 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 		return super.zrevrangeByScoreWithScores(generateKey(wifiId), 1L, (OnlineBaseScore-1), PageStart, PageMax);
 	}
 	
+	public Set<Tuple> fetchOfflinePresentWithScores(String wifiId){
+		if(StringUtils.isEmpty(wifiId)) return Collections.emptySet();
+		return super.zrevrangeByScoreWithScores(wifiId, 1L, (OnlineBaseScore-1), PageStart, PageMax);
+	}
+	
 	public long  addOfflinePresent(String wifiId, String handsetId, long last_login_at){
 		return super.zadd(generateKey(wifiId), generateScore(last_login_at), handsetId);
 	}
@@ -235,6 +251,11 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	public void removePresents(String wifiId, List<String> handsetIds){
 		if(handsetIds == null || handsetIds.isEmpty()) return;
 		super.pipelineZRem_sameKeyWithDiffMember(generateKey(wifiId), handsetIds.toArray(new String[]{}));
+	}
+	
+	public void removePresentsWithKey(String key, List<String> handsetIds){
+		if(handsetIds == null || handsetIds.isEmpty()) return;
+		super.pipelineZRem_sameKeyWithDiffMember(generateKey(key), handsetIds.toArray(new String[]{}));
 	}
 	
 	@Override
@@ -252,5 +273,11 @@ public class WifiDeviceHandsetUnitPresentSortedSetService extends AbstractRelati
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PRESENT);
 	}
-
+	
+	public static void main(String[] args) {
+		Set<String> macs = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().keySet();
+		for (int i = 0; i < macs.size(); i++) {
+			System.out.println(i);
+		}
+	}
 }
