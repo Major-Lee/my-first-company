@@ -753,18 +753,21 @@ public class SSIDStatisticFacadeRpcService {
 			if(userList == null || userList.size()<=0){
 				return macList;
 			}
-			//获取在线Mac集合
-			wifiDeviceDataSearchService.iteratorAllByCommon(null, "", 
-					"", "",  OnlineEnum.Online.getType(),"", "",
-				 100, new IteratorNotify<Page<WifiDeviceDocument>>() {
-			    @Override
-			    public void notifyComming(Page<WifiDeviceDocument> pages) {
-			    	for (WifiDeviceDocument doc : pages) {
-			    		String mac = doc.getD_mac();
-			    		macList.add(mac);
-			    	}
-			    }
-			});
+			for(User i:userList){
+				//获取在线Mac集合
+				wifiDeviceDataSearchService.iteratorAllByCommon(i.getId(), "", 
+						"", "",  "","", "",
+					 100, new IteratorNotify<Page<WifiDeviceDocument>>() {
+				    @Override
+				    public void notifyComming(Page<WifiDeviceDocument> pages) {
+				    	for (WifiDeviceDocument doc : pages) {
+				    		String mac = doc.getD_mac();
+				    		macList.add(mac);
+				    	}
+				    }
+				});
+			}
+			
 			//根据用户Id查询mac列表
 			//macList = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(userList.get(0).getId());
 		} catch (Exception ex) {
