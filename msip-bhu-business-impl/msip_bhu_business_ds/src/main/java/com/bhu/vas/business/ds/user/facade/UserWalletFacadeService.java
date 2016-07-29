@@ -1138,16 +1138,18 @@ public class UserWalletFacadeService{
 		if(userIncomes != null&&userIncomes.size()>0){
 			String beforeIncome="0";
 			int beforeRankNum=0;
+			int n=1;
 			for(int i=userIncomes.size()-1;i>=0;i--){
 				UserIncomeRank userIncomeRank=new UserIncomeRank();
 				UserIncome userIncome=userIncomes.get(i);
-				if(i==0){
-					beforeRankNum=1;
+				if(i==userIncomes.size()-1){
+					beforeRankNum=n;
 					beforeIncome=userIncome.getIncome();
 				}else{
 					if(!StringUtils.equals(beforeIncome, userIncome.getIncome())){
-						beforeRankNum=i+1;
+						beforeRankNum=n+1;
 						beforeIncome=userIncome.getIncome();
+						n++;
 					}
 				}
 				userIncomeRank.setRank(beforeRankNum);
