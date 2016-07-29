@@ -82,16 +82,15 @@ public class SSIDStatisticFacadeRpcService {
 		if(StringUtils.isNotBlank(deliveryChannel)){
 			//根据出货渠道查询
 			macList = new ArrayList<String>();
+			macList=queryMacListByDLabel(deliveryChannel);
 		}else if(StringUtils.isNotBlank(mobileNo)){
 			//根据手机号查询
 			macList = new ArrayList<String>();
 			macList = queryMacListByMobileNo(mobileNo);
-			if(macList == null || macList.size()<=0){
-				
-			}
 		}else if(StringUtils.isNotBlank(deviceLable)){
 			//根据设备标签查询
 			macList = new ArrayList<String>();
+			macList=queryMacListByDLabel(deviceLable);
 		}
 		List<String> timeList = new ArrayList<String>();
 		if(StringUtils.isNotBlank(startTime)&&StringUtils.isNotBlank(endTime)){
@@ -780,7 +779,30 @@ public class SSIDStatisticFacadeRpcService {
 	 * @return
 	 */
 	public List<String> queryMacListByDLabel(String deviceLabel){
-		List<String> macList = new ArrayList<String>();
+		final List<String> macList = new ArrayList<String>();
+		if(StringUtils.isBlank(deviceLabel)){
+			log.info("电话号码为空");
+			return macList;
+		}
+		try {
+				//获取在线Mac集合
+				wifiDeviceDataSearchService.iteratorAllByCommon(null, "", 
+						"", "",  "","", deviceLabel,
+					 100, new IteratorNotify<Page<WifiDeviceDocument>>() {
+				    @Override
+				    public void notifyComming(Page<WifiDeviceDocument> pages) {
+				    	for (WifiDeviceDocument doc : pages) {
+				    		String mac = doc.getD_mac();
+				    		macList.add(mac);
+				    	}
+				    }
+				});
+			
+			//根据用户Id查询mac列表
+			//macList = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(userList.get(0).getId());
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+		}
 		return macList;
 	}
 	
