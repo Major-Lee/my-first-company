@@ -702,9 +702,7 @@ public class SSIDStatisticFacadeRpcService {
 		
 		List<LinkedHashMap<String,Object>> pageResMaps=new ArrayList<LinkedHashMap<String,Object>>();
 		int num=resMaps.size();
-		if(num<(pn-1)*ps){
-			
-		}else if(num>(pn-1)*ps&&num<pn*ps){
+		if(num>(pn-1)*ps&&num<pn*ps){
 			for(int i=(pn-1)*ps;i<=num;i++){
 				pageResMaps.add(resMaps.get(i));
 			}
