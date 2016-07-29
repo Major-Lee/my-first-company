@@ -1138,7 +1138,7 @@ public class UserWalletFacadeService{
 		if(userIncomes != null&&userIncomes.size()>0){
 			String beforeIncome="0";
 			int beforeRankNum=0;
-			for(int i=0;i<userIncomes.size();i++){
+			for(int i=userIncomes.size()-1;i>=0;i--){
 				UserIncomeRank userIncomeRank=new UserIncomeRank();
 				UserIncome userIncome=userIncomes.get(i);
 				if(i==0){

@@ -15,17 +15,21 @@ import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.elasticsearch.common.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.util.DataUtils;
 import com.bhu.vas.rpc.util.JSONObject;
 import com.bhu.vas.rpc.util.um.OpenApiCnzzImpl;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 
@@ -749,6 +753,18 @@ public class SSIDStatisticFacadeRpcService {
 			if(userList == null || userList.size()<=0){
 				return macList;
 			}
+			//获取在线Mac集合
+			wifiDeviceDataSearchService.iteratorAllByCommon(null, "", 
+					"", "",  OnlineEnum.Online.getType(),"", "",
+				 100, new IteratorNotify<Page<WifiDeviceDocument>>() {
+			    @Override
+			    public void notifyComming(Page<WifiDeviceDocument> pages) {
+			    	for (WifiDeviceDocument doc : pages) {
+			    		String mac = doc.getD_mac();
+			    		macList.add(mac);
+			    	}
+			    }
+			});
 			//根据用户Id查询mac列表
 			//macList = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(userList.get(0).getId());
 		} catch (Exception ex) {
