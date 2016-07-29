@@ -736,7 +736,7 @@ public class SSIDStatisticFacadeRpcService {
 	 * @return
 	 */
 	public List<String> queryMacListByMobileNo(String mobileNo){
-		List<String> macList = new ArrayList<String>();
+		final List<String> macList = new ArrayList<String>();
 		if(StringUtils.isBlank(mobileNo)){
 			log.info("电话号码为空");
 			return macList;
