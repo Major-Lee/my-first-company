@@ -512,8 +512,6 @@ public class OrderUnitFacadeService {
 			}else{
 				vto = new OrderRewardNewlyDataVTO();
 			}
-			logger.info("start_time:["+timestamp+"]");
-			logger.info("date: "+DateTimeHelper.formatDate((new Date(timestamp)), DateTimeHelper.DefalutFormatPattern));
 			
 			UserQueryDateHashService.getInstance().addQueryData(uid, System.currentTimeMillis());
 			
