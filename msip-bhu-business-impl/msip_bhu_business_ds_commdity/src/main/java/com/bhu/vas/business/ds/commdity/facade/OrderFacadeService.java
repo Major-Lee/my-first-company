@@ -386,8 +386,11 @@ public class OrderFacadeService {
 		procedureDTO.setUid(uid);
 		procedureDTO.setStart_date(DateTimeHelper.formatDate(date, DateTimeHelper.DefalutFormatPattern));
 		int executeRet = orderService.executeProcedure(procedureDTO);
+		logger.info("uid: "+procedureDTO.getUid()+",format date:"+DateTimeHelper.formatDate(date, DateTimeHelper.DefalutFormatPattern));
+		logger.info("get_start_date: "+procedureDTO.getStart_date());
 		if(executeRet == 0){
-			;
+			logger.info("newcount: "+procedureDTO.getNewly_count());
+			logger.info("newamount_count: "+procedureDTO.getNewly_amount_count());
 		}else{
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR,new String[]{procedureDTO.getName()});
 		}
