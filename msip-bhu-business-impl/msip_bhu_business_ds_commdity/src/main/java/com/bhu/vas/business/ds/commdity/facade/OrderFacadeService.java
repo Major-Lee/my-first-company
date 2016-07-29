@@ -367,7 +367,6 @@ public class OrderFacadeService {
 		return false;
 	}
 	
-	
 	public RewardOrderStatisticsVTO rewardOrderStatisticsWithProcedure(String start_date, String end_date){
 		RewardOrderStatisticsProcedureDTO procedureDTO = new RewardOrderStatisticsProcedureDTO();
 		procedureDTO.setStart_date(start_date);
