@@ -104,6 +104,7 @@ public class BackendBusinessService {
 		6:终端列表清除离线终端数据
 		7:流量统计数据清除
 		8:终端详情数据清除
+		9：设备分组信息清除
 	 * @param mac
 	 */
 	public void deviceResetFactory(String mac){
