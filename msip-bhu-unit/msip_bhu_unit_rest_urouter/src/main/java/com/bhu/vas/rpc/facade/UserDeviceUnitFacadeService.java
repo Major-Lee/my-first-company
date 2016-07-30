@@ -196,7 +196,6 @@ public class UserDeviceUnitFacadeService {
 		if (userWifiDeviceService.deleteById(mac) > 0) {
 
 			deviceFacadeService.updateDeviceIndustry(mac, null);
-			tagGroupRelationService.deleteById(mac);
 			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null, null);
 			deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
 		} /*
