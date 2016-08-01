@@ -388,6 +388,9 @@ public class OrderUnitFacadeService {
 				 userWifiDevice = userWifiDeviceService.getById(order.getMac());
 			}
 			OrderDetailDTO orderStatusDto = OrderHelper.buildOrderDetailDTO(order, commdity, userWifiDevice);
+			if (order.getUmac() != null) {
+				orderStatusDto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderStatusDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

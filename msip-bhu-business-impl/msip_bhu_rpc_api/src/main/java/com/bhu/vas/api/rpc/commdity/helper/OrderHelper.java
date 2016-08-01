@@ -81,6 +81,7 @@ public class OrderHelper {
 		if(userWifiDevice != null){
 			orderDetailDto.setMac_name(userWifiDevice.getDevice_name());
 		}
+		
 		return orderDetailDto;
 	}
 	
