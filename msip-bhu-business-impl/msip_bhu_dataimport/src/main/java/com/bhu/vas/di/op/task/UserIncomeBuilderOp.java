@@ -44,7 +44,8 @@ public class UserIncomeBuilderOp {
  					userWalletFacadeService.getUserIncomeService().insert(userIncome);
  				}else{
  					int num=income.get(0).getTimes();
- 					userIncome.setTimes(num++);
+ 					num++;
+ 					userIncome.setTimes(num);
  					//ArithHelper.round(v, scale);
  					userIncome.setIncome(String.valueOf(round(Double.valueOf(income.get(0).getIncome())+Double.valueOf(userIncome.getIncome()),2)));
  					userIncome.setId(income.get(0).getId());
