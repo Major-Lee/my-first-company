@@ -77,20 +77,24 @@ public class SSIDStatisticFacadeRpcService {
 		endTime = (String) map.get("endTime");
 		pn = (Integer) map.get("pn");
 		ps = (Integer) map.get("ps");
+		boolean flag=true;
 		//mac List
 		List<String> macList = null;
 		if(StringUtils.isNotBlank(deliveryChannel)){
 			//根据出货渠道查询
 			macList = new ArrayList<String>();
 			macList=queryMacListByDLabel(deliveryChannel);
+			flag=false;
 		}else if(StringUtils.isNotBlank(mobileNo)){
 			//根据手机号查询
 			macList = new ArrayList<String>();
 			macList = queryMacListByMobileNo(mobileNo);
+			flag=false;
 		}else if(StringUtils.isNotBlank(deviceLable)){
 			//根据设备标签查询
 			macList = new ArrayList<String>();
 			macList=queryMacListByDLabel(deviceLable);
+			flag=false;
 		}
 		List<String> timeList = new ArrayList<String>();
 		if(StringUtils.isNotBlank(startTime)&&StringUtils.isNotBlank(endTime)){
@@ -181,7 +185,7 @@ public class SSIDStatisticFacadeRpcService {
 				double mbOrderAmount=0;
 				int mbOrderNum=0;
 				date = timeList.get(i);
-				if(macList == null || macList.size()<=0){
+				if(flag){
 					String dayPv = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "dayPV");
 					String dayUv = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "dayUV");
 					if(StringUtils.isNotBlank(dayPv)){
@@ -335,7 +339,7 @@ public class SSIDStatisticFacadeRpcService {
 						androidClickNum=Integer.valueOf(androidClickJsonStr.split(",")[0].replace(".0", "").trim());
 						UMStatisticsHashService.getInstance().umHset(timeList.get(i), "androidClickNum", String.valueOf(androidClickNum));
 					}
-				}else{
+				}else if(!flag&&macList != null &&macList.size()>0){
 					for(String j:macList){
 						String dayPv = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
 						String dayUv = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
@@ -588,8 +592,8 @@ public class SSIDStatisticFacadeRpcService {
 				totalUv+=pcUV+mobileUV;
 				totalClickNum+=pcClickNum+mobileClickNum;
 			}
-			totalDC = totalDC/Integer.parseInt(type);
-			totalDOC = totalDOC/Integer.parseInt(type);
+			totalDC = totalDC/timeList.size();
+			totalDOC = totalDOC/timeList.size();
 			
 		LinkedHashMap<String,Object> tMaps=new LinkedHashMap<String,Object>();
 		Map<String,Object> totalMap=new HashMap<String,Object>();
@@ -700,13 +704,13 @@ public class SSIDStatisticFacadeRpcService {
 		Map<String,Object> resMap=new HashMap<String,Object>();
 		
 		List<LinkedHashMap<String,Object>> pageResMaps=new ArrayList<LinkedHashMap<String,Object>>();
-		int num=resMaps.size();
+		int num=timeList.size();
 		if(num>(pn-1)*ps&&num<pn*ps){
-			for(int i=(pn-1)*ps;i<=num;i++){
+			for(int i=(pn-1)*ps-1;i<=num-1;i++){
 				pageResMaps.add(resMaps.get(i));
 			}
-		}else{
-			for(int i=(pn-1)*ps;i<=pn*ps;i++){
+		}else if(num>pn*ps){
+			for(int i=(pn-1)*ps-1;i<=pn*ps-1;i++){
 				pageResMaps.add(resMaps.get(i));
 			}
 		}
