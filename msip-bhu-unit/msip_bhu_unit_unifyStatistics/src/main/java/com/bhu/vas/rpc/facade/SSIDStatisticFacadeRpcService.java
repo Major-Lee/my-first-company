@@ -747,7 +747,7 @@ public class SSIDStatisticFacadeRpcService {
 		resMap.put("total", tMaps);
 		
 		equipments.add(time);
-		equipmentNums.add(equipmentNums);
+		equipments.add(equipmentNums);
 		
 		resMap.put("equipment", equipments);
 		
