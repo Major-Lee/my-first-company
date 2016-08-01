@@ -112,6 +112,14 @@ cp ../../msip-bhu-api/msip_bhu_commdity_rest/target/msip_bhu_commdity_rest.war .
 echo '拷贝文件 msip_bhu_unit_tag_bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_tag/target/msip_bhu_unit_tag-bin.zip ./$CuDateDir
 
+#statistics
+echo '拷贝文件 msip_bhu_unit_unifyStatistics-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_unifyStatistics/target/msip_bhu_unit_unifyStatistics-bin.zip ./$CuDateDir
+
+echo '拷贝文件 msip_bhu_backend_task_statistics-bin.zip到'$CuDateDir
+cp ../../msip-bhu-business-impl/msip_bhu_backend_task_statistics/target/msip_bhu_backend_task_statistics-bin.zip ./$CuDateDir
+
+
 cd $CuDateDir
 echo '进行文件解压过程'
 unzip -q msip_bhu_unit_input_processor-bin.zip
@@ -171,6 +179,14 @@ unzip -qo msip_bhu_commdity_rest.war -d msip_bhu_commdity_rest
 unzip -q msip_bhu_unit_tag-bin.zip
 unzip -qo msip_bhu_unit_tag/bin/msip_bhu_unit_tag.jar -d msip_bhu_unit_tag/classes/
 
+#statistics
+unzip -q msip_bhu_unit_unifyStatistics-bin.zip
+unzip -qo msip_bhu_unit_unifyStatistics/bin/msip_bhu_unit_unifyStatistics.jar -d msip_bhu_unit_unifyStatistics/classes/
+
+unzip -q msip_bhu_backend_task_statistics-bin.zip
+unzip -qo msip_bhu_backend_task_statistics/bin/msip_bhu_backend_task_statistics.jar -d msip_bhu_backend_task_statistics/classes/
+
+
 echo '文件解压过程成功'
 
 
@@ -224,6 +240,12 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_devices/lib/msip_*.jar  
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_devices/classes/com/     root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_devices/classes/com/
 echo 'deploy msip_bhu_unit_devices successfully @'$Deploy2ComponentServerSanji
 
+echo 'deploy msip_bhu_unit_unifyStatistics to ...@'$Deploy2ComponentServerSanji
+rsync -avz -progress -e 'ssh -p 65008' ./msip_bhu_unit_unifyStatistics/lib/spring*.RELEASE.jar  root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_unifyStatistics/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_unifyStatistics/lib/msip_*.jar           root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_unifyStatistics/libs/
+rsync -avz -progress -e 'ssh -p 65008'   ./msip_bhu_unit_unifyStatistics/classes/com/             root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_unifyStatistics/classes/com/
+echo 'deploy msip_bhu_unit_unifyStatistics successfully @'$Deploy2ComponentServerSanji
+
 #echo 'deploy msip_bhu_unit_captchacode to ...@'$Deploy2ComponentServerSanji
 #rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_captchacode/lib/spring*.RELEASE.jar  root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_captchacode/libs/
 #rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_captchacode/lib/msip_*.jar           root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_captchacode/libs/
@@ -258,6 +280,12 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_tag/lib/spring*.RELEASE.
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_tag/lib/msip_*.jar           root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_tag/libs/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_tag/classes/com/             root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_tag/classes/com/
 echo 'deploy msip_bhu_unit_tag successfully @'$Deploy2ComponentServerSanji
+
+echo 'deploy msip_bhu_backend_task_statistics to ...@'$Deploy2ComponentServerSanji
+rsync -avz -progress -e 'ssh -p 65008'   ./msip_bhu_backend_task_statistics/lib/spring*.RELEASE.jar      root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_task_statistics/libs/
+rsync -avz -progress -e 'ssh -p 65008'   ./msip_bhu_backend_task_statistics/lib/msip_*.jar     root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_task_statistics/libs/
+rsync -avz -progress -e 'ssh -p 65008'   ./msip_bhu_backend_task_statistics/classes/com/     root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_task_statistics/bin/com/
+echo 'deploy msip_bhu_backend_task_statistics successfully @'$Deploy2ComponentServerSanji
 
 echo '发布业务组件成功'$Deploy2ComponentServerSanji
 
