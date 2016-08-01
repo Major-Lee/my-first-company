@@ -1,5 +1,9 @@
 package com.bhu.vas.business.ds.statistics.dao;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
@@ -17,13 +21,43 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 		return income;
 	}
 	public double countTotalIncome() {
-		double income=0;
+		double income = 0;
 		try {
-			income=super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncome");
+			income = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncome");
 		} catch (Exception e) {
 			return income;
 		}
 		return income;
+	}
+	public double countTotalIncomeByDay(int uid,String time) {
+		Double income = 0.0;
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("uid", uid);
+		map.put("time", time);
+		try {
+			income = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncomeByDay",map);
+		    if (null == income || StringUtils.isBlank(String.valueOf(income))) {
+		    	return 0.0;
+		    }
+		} catch (Exception e) {
+			return income;
+		}	
+		return income;
+	}
+	public double countTotalUserNumByDay(int uid,String time) {
+		Double userNum = 0.0;
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("uid", uid);
+		map.put("time", time);
+		try {
+			userNum = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalUserNumByDay",map);
+			if (null == userNum || StringUtils.isBlank(String.valueOf(userNum))) {
+		    	return 0.0;
+		    }
+		} catch (Exception e) {
+			return userNum;
+		}
+		return userNum;
 	}
 	public Order selectOrdersInfo(String orderid) {
 		Order order = null;

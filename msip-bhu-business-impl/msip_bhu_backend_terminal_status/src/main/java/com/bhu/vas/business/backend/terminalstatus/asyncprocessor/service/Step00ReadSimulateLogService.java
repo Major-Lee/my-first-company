@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
 import com.bhu.vas.api.dto.commdity.internal.useragent.OrderUserAgentDTO;
+import com.bhu.vas.api.dto.handset.HandsetAuthorizeHAction;
 import com.bhu.vas.api.dto.handset.HandsetOfflineAction;
 import com.bhu.vas.api.dto.handset.HandsetOnlineAction;
 import com.bhu.vas.business.backend.terminalstatus.logger.TerminalStatusNotifyLogger;
@@ -35,7 +36,7 @@ public class Step00ReadSimulateLogService {
 	       
 	private static String hashFileMatchTemplate = "%s.business-reporting.zip";
 	@SuppressWarnings("unchecked")
-	public void parser(String date,String logpath){
+	public void parser(String date,String logpath){  
 		String wildcard = String.format(hashFileMatchTemplate,date);
 		Collection<File> listFiles = FileUtils.listFiles(new File(logpath),
 				new WildcardFileFilter(wildcard), 
@@ -115,7 +116,11 @@ public class Step00ReadSimulateLogService {
 	    		break;
 	    	case HandsetSync:
 	    		//processHandsetSync(message);
-	    		break;	
+	    		break;
+	    	case HandsetAuthorize:
+	    		processHandsetAuthorize(message);
+	    		break;
+	    		
 	    	default:
 	    		System.out.println("default");
 	    		//throw new UnsupportedOperationException(actType.getCname()+" message not yet implement handler process!");
@@ -123,13 +128,21 @@ public class Step00ReadSimulateLogService {
 	}
 	private void processHandsetOnline(String message){
 		HandsetOnlineAction dto = JsonHelper.getDTO(message, HandsetOnlineAction.class);
+		//2016-07-28增加终端上线判断终端是否认证，若认证，发送认证消息给网安
+		String authorize = dto.getAuthorized();
+		if(authorize != null && authorize.equalsIgnoreCase("true")){
+			processHandsetAuthorize(message);
+		}
+		
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
 		if(newAddFields != null){
 			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
-			dto.setWan(addMsg.getWan_ip());
-			dto.setInternet(addMsg.getIp());
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
+			dto.setWan(addMsg.getIp());
+			dto.setInternet(addMsg.getWan_ip());
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
 			int vipType = addMsg.getType();
 			switch (vipType) {
 			case 0:
@@ -151,7 +164,14 @@ public class Step00ReadSimulateLogService {
 	
 	private void processHandsetOffline(String message){
 		HandsetOfflineAction dto = JsonHelper.getDTO(message, HandsetOfflineAction.class);
+		//2016-07-28增加终端上线判断终端是否认证，若认证，发送认证消息给网安
+		String authorize = dto.getAuthorized();
+		if(authorize != null && authorize.equalsIgnoreCase("true")){
+			processHandsetAuthorize(message);
+		}
+		
 		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
+		long end_ts = dto.getTs();
 		if(handsetOnline != null || handsetOnline != ""){
 			HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
 			dto.setTs(onlineDto.getTs());
@@ -159,14 +179,16 @@ public class Step00ReadSimulateLogService {
 			dto.setHname(onlineDto.getHname());
 		}
 		
-		dto.setEnd_ts(dto.getTs());
+		dto.setEnd_ts(end_ts);
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
 		if(newAddFields != null){
 			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
-			dto.setWan(addMsg.getWan_ip());
-			dto.setInternet(addMsg.getIp());
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
+			dto.setWan(addMsg.getIp());
+			dto.setInternet(addMsg.getWan_ip());
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
 			int vipType = addMsg.getType();
 			switch (vipType) {
 			case 0:
@@ -182,6 +204,42 @@ public class Step00ReadSimulateLogService {
 			}
 			message =  JsonHelper.getJSONString(dto);
 			TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOffline.getPrefix()+message);
+		}
+	}
+	private void processHandsetAuthorize(String message){
+		HandsetAuthorizeHAction dto = JsonHelper.getDTO(message, HandsetAuthorizeHAction.class);
+		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
+		if(handsetOnline != null || handsetOnline != ""){
+			HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
+			dto.setTs(onlineDto.getTs());
+			dto.setHip(onlineDto.getHip());
+			dto.setHname(onlineDto.getHname());
+		}
+		
+		String mac = dto.getMac();
+		String hdMac = dto.getHmac();
+		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
+		if(newAddFields != null){
+			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
+			dto.setWan(addMsg.getIp());
+			dto.setInternet(addMsg.getWan_ip());
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
+			int vipType = addMsg.getType();
+			switch (vipType) {
+			case 0:
+				dto.setViptype("WX");
+				break;
+			case 10:
+				dto.setViptype("DX");
+				dto.setVipacc(addMsg.getUmac_mobileno());
+				break;
+				
+			default:
+				break;
+			}
+			message =  JsonHelper.getJSONString(dto);
+			TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetAuthorize.getPrefix()+message);
 		}
 	}
 	

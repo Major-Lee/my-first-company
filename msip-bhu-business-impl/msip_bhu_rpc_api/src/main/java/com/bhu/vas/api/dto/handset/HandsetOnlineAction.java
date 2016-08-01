@@ -8,6 +8,7 @@ public class HandsetOnlineAction extends TerminalAction{
 	private String hip;
 	private String vapname;
 	private String bssid;
+	private String authorized;
 	//新增终端下线
 	private String rssi;
 	private String wan;
@@ -37,6 +38,14 @@ public class HandsetOnlineAction extends TerminalAction{
 
 	public void setHip(String hip) {
 		this.hip = hip;
+	}
+
+	public String getAuthorized() {
+		return authorized;
+	}
+
+	public void setAuthorized(String authorized) {
+		this.authorized = authorized;
 	}
 
 	@Override

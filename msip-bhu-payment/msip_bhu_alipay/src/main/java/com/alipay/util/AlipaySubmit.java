@@ -1,7 +1,6 @@
 package com.alipay.util;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -30,9 +29,9 @@ import com.alipay.sign.MD5;
 public class AlipaySubmit {
     
     /**
-     * 支付宝提供给商户的服务接入网关URL(新)
+     * midas提供给商户的服务接入网关URL(新)
      */
-    private static final String ALIPAY_GATEWAY_NEW = "https://mapi.alipay.com/gateway.do?";
+	private static final String ALIPAY_GATEWAY_NEW = "https://mapi.alipay.com/gateway.do?";
 	
     /**
      * 生成签名结果

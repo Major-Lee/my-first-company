@@ -19,8 +19,8 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	gpath,
 	    	time,
+	    	gpath,
 	    	income,
 	    	updated_at
 	    ]]>
@@ -37,14 +37,14 @@
 	<sql id="modelInsertValues">
 			#{id},
 	    	#{time},
-	    	#{income},
 	    	#{gpath},
+	    	#{income},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-			gpath = #{gpath},
 	    	time = #{time},
+			gpath = #{gpath},
 	    	income = #{income},
 	    	updated_at = #{updated_at}
 	</sql>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
@@ -185,4 +186,19 @@ public class UserWalletController extends BaseController{
     		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     	}
     }
-}
+    
+    @ResponseBody()
+    @RequestMapping(value="/richStatistics", method={RequestMethod.GET,RequestMethod.POST})
+    public void richStatistics( HttpServletResponse response, 
+    		@RequestParam(required = true) int uid){
+    	try{
+    		RpcResponseDTO<UcloudMacStatisticsVTO> rpcResult = userWalletRpcService.richStatistics(uid);
+    		if(!rpcResult.hasError()){
+    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    		}else{
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		}
+    	}catch(Exception ex){
+    		SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+    	}
+    }}

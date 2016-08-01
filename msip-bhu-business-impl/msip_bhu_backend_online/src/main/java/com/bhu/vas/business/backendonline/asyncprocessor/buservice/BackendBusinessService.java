@@ -104,6 +104,7 @@ public class BackendBusinessService {
 		6:终端列表清除离线终端数据
 		7:流量统计数据清除
 		8:终端详情数据清除
+		9：设备分组信息清除
 	 * @param mac
 	 */
 	public void deviceResetFactory(String mac){
@@ -295,6 +296,7 @@ public class BackendBusinessService {
 					long hoc = WifiDeviceHandsetPresentSortedSetService.getInstance().presentOnlineSize(mac);
 
 					User bindUser = null;
+					User distributor = null;
 					String bindUserDNick = null;
 					//Integer bindUserId = userDeviceService.fetchBindUid(mac);
 /*					UserDevice userDevice = userDeviceService.fetchBindByMac(mac);
@@ -316,10 +318,15 @@ public class BackendBusinessService {
 					
 					WifiDeviceSharedNetwork wifiDeviceSharedNetwork = wifiDeviceSharedNetworkService.getById(mac);
 					WifiDeviceSharedealConfigs wifiDeviceShareConfig = wifiDeviceSharedealConfigsService.getById(mac);
+					if(wifiDeviceShareConfig != null){
+						if (wifiDeviceShareConfig.getDistributor() > 0) {
+							distributor = userService.getById(wifiDeviceShareConfig.getDistributor());
+						}
+					}
 					String t_uc_extension = tagGroupRelationService.fetchPathWithMac(mac);
 					doc = WifiDeviceDocumentHelper.fromNormalWifiDevice(wifiDevice, deviceModule, 
 							wifiDeviceGray, bindUser, bindUserDNick, tagDevices,
-							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig,t_uc_extension);
+							o_template, (int)hoc, wifiDeviceSharedNetwork, wifiDeviceShareConfig,t_uc_extension, distributor);
 					docs.add(doc);
 				}
 				

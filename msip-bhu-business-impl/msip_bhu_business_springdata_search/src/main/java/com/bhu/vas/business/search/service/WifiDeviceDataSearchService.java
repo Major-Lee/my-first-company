@@ -43,16 +43,16 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	}
 	
 	public long searchCountByCommon(Integer u_id, String sharedNetwork_type, 
-			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate){
+			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate, String d_tags){
 		
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online, d_snk_turnstate);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online, d_snk_turnstate, d_tags);
 		return super.searchCountByConditionMessage(scm);
 	}
 	
 	public Page<WifiDeviceDocument> searchPageByCommon(Integer u_id, String sharedNetwork_type, 
-			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate, int pageNo, int pageSize){
+			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate, String d_tags, int pageNo, int pageSize){
 
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online, d_snk_turnstate);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online, d_snk_turnstate, d_tags);
 		return super.searchByConditionMessage(scm, pageNo, pageSize);
 	}
 	
@@ -144,6 +144,28 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		if(u_id == null) return;
 		
 		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithSharedNetwork(u_id, sharedNetwork_type,d_snk_template, d_dut);
+		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
+		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
+				message, pageSize, notify);
+	}
+	
+	/**
+	 * 根据通用条件进行scan的iterator
+	 * @param u_id
+	 * @param sharedNetwork_type
+	 * @param d_dut
+	 * @param t_uc_extension
+	 * @param d_online
+	 * @param d_snk_turnstate
+	 * @param d_tags
+	 * @param pageSize
+	 * @param notify
+	 */
+	public void iteratorAllByCommon(Integer u_id, String sharedNetwork_type, 
+			String d_dut, String t_uc_extension, String d_online, String d_snk_turnstate, String d_tags,
+			 int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageCommon(u_id, sharedNetwork_type, d_dut, t_uc_extension, d_online, d_snk_turnstate, d_tags);
 		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
 		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
 				message, pageSize, notify);

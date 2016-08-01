@@ -1,10 +1,14 @@
 package com.bhu.vas.web.console;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,5 +61,34 @@ public class ConsoleStatisticsController extends BaseController{
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value = "/querySSIDStatisticInfo", method = {RequestMethod.POST})
+	public void querySSIDStatisticInfo(
+			HttpServletRequest request,
+            HttpServletResponse response,
+			@RequestParam(required = false,defaultValue = "7",value = "type") String type,
+            @RequestParam(required = false) String deliveryChannel,
+            @RequestParam(required = false) String deviceLabel,
+            @RequestParam(required = false) String mobileNo,
+            @RequestParam(required = false) String startTime,
+            @RequestParam(required = false) String endTime,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
+			){
+		//返回结果
+		Map<String,Object> result = new HashMap<String,Object>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("type", type);
+		map.put("deliveryChannel", deliveryChannel);
+		map.put("deviceLabel", deviceLabel);
+		map.put("mobileNo", mobileNo);
+		map.put("startTime", startTime);
+		map.put("endTime", endTime);
+		map.put("pn", pageNo);
+		map.put("ps", pageSize);
+		result = unifyStatisticsRpcService.querySSIDStatisticsInfo(map);
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
 	}
 }

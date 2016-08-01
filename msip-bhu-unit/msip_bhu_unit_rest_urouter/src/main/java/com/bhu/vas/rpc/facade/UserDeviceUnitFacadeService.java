@@ -54,6 +54,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceModuleService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
+import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
@@ -79,6 +80,10 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 public class UserDeviceUnitFacadeService {
 	@Resource
 	private UserService userService;
+	
+	@Resource
+	private TagGroupRelationService tagGroupRelationService;
+	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
 	/*
@@ -191,7 +196,6 @@ public class UserDeviceUnitFacadeService {
 		if (userWifiDeviceService.deleteById(mac) > 0) {
 
 			deviceFacadeService.updateDeviceIndustry(mac, null);
-
 			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null, null);
 			deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
 		} /*

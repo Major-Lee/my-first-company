@@ -8,6 +8,7 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 public class PaymentRecord extends BaseStringModel{
 	private int amount;
 	private int count;
+	private int dx_count;
 	private String info;
 	private Date created_at;
 	private Date updated_at;
@@ -52,6 +53,14 @@ public class PaymentRecord extends BaseStringModel{
 
 	public void setUpdated_at(Date updated_at) {
 		this.updated_at = updated_at;
+	}
+	
+	public int getDx_count() {
+		return dx_count;
+	}
+
+	public void setDx_count(int dx_count) {
+		this.dx_count = dx_count;
 	}
 
 	@Override

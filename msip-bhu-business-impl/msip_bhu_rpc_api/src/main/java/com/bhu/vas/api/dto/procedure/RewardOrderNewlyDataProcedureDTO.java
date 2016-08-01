@@ -10,7 +10,7 @@ import com.smartwork.msip.cores.orm.logic.procedure.OUT;
 @SuppressWarnings("serial")
 public class RewardOrderNewlyDataProcedureDTO extends AbstractProcedureDTO{
 	@IN(jdbcType = JdbcType.INTEGER)
-	private Integer uid;
+	private Integer userid;
 	@IN(jdbcType = JdbcType.VARCHAR)
 	private String start_date;
 
@@ -25,11 +25,11 @@ public class RewardOrderNewlyDataProcedureDTO extends AbstractProcedureDTO{
 	}
 
 	public Integer getUid() {
-		return uid;
+		return userid;
 	}
 
-	public void setUid(Integer uid) {
-		this.uid = uid;
+	public void setUid(Integer userid) {
+		this.userid = userid;
 	}
 
 	public String getStart_date() {

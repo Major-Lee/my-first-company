@@ -580,7 +580,7 @@ public class AsyncMsgHandleService {
 
 	/**
 	 * wifi设备下线 3:wifi上的移动设备基础信息表的在线状态更新 (backend) 4:wifi设备对应handset在线列表redis清除
-	 * (backend) 5:统计增量 wifi设备的daily访问时长增量 (backend) 6:增量索引 7:清除已经下发给设备的未完成的任务状态
+	 * (backend) 5:统计增量 wifi设备的daily访问时长增量 (backend) 6:增量索引 7:清除已经下发给设备的未完成的任务状态8:将设备终端列表重置为离线
 	 * 
 	 * @param message
 	 * @throws Exception
@@ -617,7 +617,7 @@ public class AsyncMsgHandleService {
 			 * entity.setUptime(bi.toString());
 			 * wifiDeviceService.update(entity); } }
 			 */
-
+			
 			// 7:清除已经下发给设备的未完成的任务状态
 			taskFacadeService.taskStateFailByDevice(dto.getMac());
 
@@ -625,7 +625,8 @@ public class AsyncMsgHandleService {
 			// wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
 			// wifiDeviceIndexIncrementProcesser.offlineUpdIncrement(wifiId,
 			// entity.getUptime(), entity.getLast_logout_at().getTime());
-
+			//8.将设备终端列表重置为离线
+			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().changeOnlinePresentsToOffline(dto.getMac());
 		}
 
 		logger.info(String.format("AnsyncMsgBackendProcessor wifiDeviceOfflineHandle message[%s] successful", message));

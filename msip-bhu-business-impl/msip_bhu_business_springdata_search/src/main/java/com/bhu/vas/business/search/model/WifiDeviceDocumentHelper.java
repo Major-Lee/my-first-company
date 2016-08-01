@@ -86,7 +86,7 @@ public class WifiDeviceDocumentHelper {
 	public static WifiDeviceDocument fromNormalWifiDevice(WifiDevice wifiDevice, WifiDeviceModule deviceModule,
 			WifiDeviceGray wifiDeviceGray, User bindUser, String bindUserDNick, 
 			TagDevices tagDevices, String o_template, int hoc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork,
-			WifiDeviceSharedealConfigs wifiDeviceShareConfig, String t_uc_extension){
+			WifiDeviceSharedealConfigs wifiDeviceShareConfig, String t_uc_extension,User distributor){
 		if(wifiDevice == null) return null;
 		
 		WifiDeviceDocument doc = new WifiDeviceDocument();
@@ -194,7 +194,6 @@ public class WifiDeviceDocumentHelper {
 			}*/
 			doc.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
 			doc.setD_snk_template(wifiDeviceSharedNetwork.getTemplate());
-
 			SharedNetworkSettingDTO sharedNetworkSettingDto = wifiDeviceSharedNetwork.getInnerModel();
 			if(sharedNetworkSettingDto != null){
 				if(sharedNetworkSettingDto.isOn()){
@@ -211,6 +210,7 @@ public class WifiDeviceDocumentHelper {
 				doc.setO_scalelevel(OScaleLevelEnum.ENTERPRISE.getType());
 			}
 			doc.setD_snk_allowturnoff(wifiDeviceShareConfig.isCanbe_turnoff() ? "1" : "0");
+			doc.setO_batch(wifiDeviceShareConfig.getBatchno());
 		}else{
 			doc.setD_snk_allowturnoff("1");
 		}
@@ -218,6 +218,10 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_tags(tagDevices.getTag2ES());
 		}
 		doc.setUpdatedat(DateTimeHelper.getDateTime());
+		
+		if (distributor != null) {
+			doc.setA_id(distributor.getMobileno());
+		}
 		return doc;
 	}
 	

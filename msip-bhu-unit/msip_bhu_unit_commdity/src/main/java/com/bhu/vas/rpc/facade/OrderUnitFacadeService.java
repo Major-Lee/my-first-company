@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -387,6 +388,9 @@ public class OrderUnitFacadeService {
 				 userWifiDevice = userWifiDeviceService.getById(order.getMac());
 			}
 			OrderDetailDTO orderStatusDto = OrderHelper.buildOrderDetailDTO(order, commdity, userWifiDevice);
+			if (order.getUmac() != null) {
+				orderStatusDto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderStatusDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -502,14 +506,12 @@ public class OrderUnitFacadeService {
 			}
 			
 			if (timestamp == 0) {
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.DATE, -1);
-				timestamp = cal.getTimeInMillis();
+				timestamp = DateTimeHelper.getDateDaysAgo(1).getTime();
 			}
 			
 			OrderRewardNewlyDataVTO vto = null;
 			if(timestamp > 0){
-				vto = orderFacadeService.rewardOrderNewlyDataWithProcedure(uid, new Date(timestamp));
+				vto = orderFacadeService.rewardOrderNewlyDataWithProcedure(uid,new Date(timestamp));
 			}else{
 				vto = new OrderRewardNewlyDataVTO();
 			}
@@ -541,7 +543,4 @@ public class OrderUnitFacadeService {
 		return "0";
 	}
 	
-	/*public static void main(String[] argv){
-		System.out.println("+0.84".substring(1));
-	}*/
 }
