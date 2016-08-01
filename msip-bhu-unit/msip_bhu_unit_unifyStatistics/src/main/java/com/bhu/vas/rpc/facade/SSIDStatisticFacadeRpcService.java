@@ -143,6 +143,18 @@ public class SSIDStatisticFacadeRpcService {
 		int totalMbOrderComplete=0;
 		double totalMbOrderAmount=0;
 		
+		//折线图组装数据
+		List<Object> time=new ArrayList<Object>();
+		List<List<Object>> equipments=new ArrayList<List<Object>>();
+		List<Object> equipmentNums=new ArrayList<Object>();
+		
+		List<List<Object>> orders=new ArrayList<List<Object>>();
+		List<Object> orderNums=new ArrayList<Object>();
+		List<Object> orderComNums=new ArrayList<Object>();
+		
+		List<List<Object>> price=new ArrayList<List<Object>>();
+		List<Object> totalPrice=new ArrayList<Object>();
+		
 		//组装结果集
 		LinkedHashMap<String,Object> ssidMap = null;
 		String date = StringUtils.EMPTY;
@@ -184,6 +196,7 @@ public class SSIDStatisticFacadeRpcService {
 				int mbOrderComplete=0;
 				double mbOrderAmount=0;
 				int mbOrderNum=0;
+				int ofc=0;
 				date = timeList.get(i);
 				if(flag){
 					String dayPv = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "dayPV");
@@ -217,6 +230,10 @@ public class SSIDStatisticFacadeRpcService {
 							//单台收益
 							ofa = orderObj.getDouble("ofa");
 							dayGains = orderObj.getDouble("ofa");
+						}
+						if(orderObj.get("ofc") != null){
+							//完成订单数
+							ofc = (Integer)orderObj.get("ofc");
 						}
 						String pcOrderNumStr=orderObj.getString("pc_occ");
 						if(StringUtils.isNotBlank(pcOrderNumStr)){
@@ -367,6 +384,10 @@ public class SSIDStatisticFacadeRpcService {
 							//单台收益
 							ofa += orderObj.getDouble("ofa");
 							dayGains += orderObj.getDouble("ofa");
+						}
+						if(orderObj.get("ofc") != null){
+							//完成订单数
+							ofc += (Integer)orderObj.get("ofc");
 						}
 						String pcOrderNumStr=orderObj.getString("pc_occ");
 						if(StringUtils.isNotBlank(pcOrderNumStr)){
@@ -591,6 +612,13 @@ public class SSIDStatisticFacadeRpcService {
 				
 				totalUv+=pcUV+mobileUV;
 				totalClickNum+=pcClickNum+mobileClickNum;
+				
+				equipmentNums.add(doc);
+				
+				orderNums.add(occ);
+				orderComNums.add(ofc);
+				
+				totalPrice.add(ofa);
 			}
 			totalDC = totalDC/timeList.size();
 			totalDOC = totalDOC/timeList.size();
@@ -716,6 +744,20 @@ public class SSIDStatisticFacadeRpcService {
 		}
 		resMap.put("dataList", pageResMaps);
 		resMap.put("total", tMaps);
+		
+		equipments.add(time);
+		equipmentNums.add(equipmentNums);
+		
+		resMap.put("equipment", equipments);
+		
+		orders.add(time);
+		orders.add(orderNums);
+		orders.add(orderComNums);
+		resMap.put("order", orders);
+		
+		price.add(time);
+		price.add(totalPrice);
+		resMap.put("price", price);
 		
 		result=success(resMap);
 		return result;
