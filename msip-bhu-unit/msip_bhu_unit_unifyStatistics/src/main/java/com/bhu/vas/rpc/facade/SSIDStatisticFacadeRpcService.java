@@ -619,6 +619,7 @@ public class SSIDStatisticFacadeRpcService {
 				orderComNums.add(ofc);
 				
 				totalPrice.add(ofa);
+				time.add(date);
 			}
 			totalDC = totalDC/timeList.size();
 			totalDOC = totalDOC/timeList.size();
@@ -734,11 +735,11 @@ public class SSIDStatisticFacadeRpcService {
 		List<LinkedHashMap<String,Object>> pageResMaps=new ArrayList<LinkedHashMap<String,Object>>();
 		int num=timeList.size();
 		if(num>(pn-1)*ps&&num<pn*ps){
-			for(int i=(pn-1)*ps-1;i<=num-1;i++){
+			for(int i=(pn-1)*ps;i<=num-1;i++){
 				pageResMaps.add(resMaps.get(i));
 			}
 		}else if(num>pn*ps){
-			for(int i=(pn-1)*ps-1;i<=pn*ps-1;i++){
+			for(int i=(pn-1)*ps;i<=pn*ps;i++){
 				pageResMaps.add(resMaps.get(i));
 			}
 		}
