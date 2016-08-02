@@ -826,7 +826,7 @@ public class DeviceBusinessFacadeService {
 				if(handset != null){
 					dto.setDhcp_name(handset.getDhcp_name());
 					dto.setIp(handset.getIp().isEmpty() ? "0.0.0.0" : handset.getIp());
-					dto.setData_tx_rate(handset.getData_tx_rate().isEmpty() ? 0+"":handset.getData_tx_rate());
+					dto.setData_tx_rate(handset.getData_tx_rate() == null ? 0+"":handset.getData_tx_rate());
 				}
 				String handsetId = dto.getMac().toLowerCase();
 				//1:wifi设备对应handset在线列表redis 重新写入
