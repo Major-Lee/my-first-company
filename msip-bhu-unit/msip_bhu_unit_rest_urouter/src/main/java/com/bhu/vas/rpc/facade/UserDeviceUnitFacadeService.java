@@ -817,7 +817,7 @@ public class UserDeviceUnitFacadeService {
 
             if(wifiDeviceShareConfig != null){
                 if (wifiDeviceShareConfig.getDistributor() > 0) {
-                	dpv.setDistributor(userService.getById(wifiDeviceShareConfig.getDistributor()).getMobileno());
+                	dpv.setA_id((userService.getById(wifiDeviceShareConfig.getDistributor()).getMobileno()));
                 }
             }
 

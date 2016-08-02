@@ -15,7 +15,7 @@ public class DevicePresentVTO implements java.io.Serializable{
 	//绑定的手持设备类型 iOS、Adr
 	private String handsettype;
 	private String handsetn;
-	private String distributor;
+	private String a_id;
 	//地理位置
 	private String address;
 	//首次上线时间
@@ -98,11 +98,10 @@ public class DevicePresentVTO implements java.io.Serializable{
 	public void setHandsetn(String handsetn) {
 		this.handsetn = handsetn;
 	}
-	public String getDistributor() {
-		return distributor;
+	public String getA_id() {
+		return a_id;
 	}
-	public void setDistributor(String distributor) {
-		this.distributor = distributor;
+	public void setA_id(String a_id) {
+		this.a_id = a_id;
 	}
-	
 }
