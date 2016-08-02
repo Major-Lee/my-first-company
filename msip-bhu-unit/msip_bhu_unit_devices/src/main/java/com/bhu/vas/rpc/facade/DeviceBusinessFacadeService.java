@@ -734,7 +734,7 @@ public class DeviceBusinessFacadeService {
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 0" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
 		if(handset != null) {
 			dto.setVapname(handset.getVapname());
-			dto.setIp(handset.getIp().isEmpty() ? "0.0.0.0" : handset.getIp());
+			dto.setIp(handset.getIp()== null ? "0.0.0.0" : handset.getIp());
 		}
 		HandsetStorageFacadeService.handsetComming(dto);
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 1" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
@@ -825,8 +825,8 @@ public class DeviceBusinessFacadeService {
 				HandsetDeviceDTO dto = dtos.get(cursor);
 				if(handset != null){
 					dto.setDhcp_name(handset.getDhcp_name());
-					dto.setIp(handset.getIp().isEmpty() ? "0.0.0.0" : handset.getIp());
-					dto.setData_tx_rate(handset.getData_tx_rate().isEmpty() ? 0+"":handset.getData_tx_rate());
+					dto.setIp(handset.getIp() == null ||handset.getIp().isEmpty() ? "0.0.0.0" : handset.getIp());
+					dto.setData_tx_rate(handset.getData_tx_rate() == null || handset.getData_tx_rate().isEmpty() ? 0+"":handset.getData_tx_rate());
 				}
 				String handsetId = dto.getMac().toLowerCase();
 				//1:wifi设备对应handset在线列表redis 重新写入
