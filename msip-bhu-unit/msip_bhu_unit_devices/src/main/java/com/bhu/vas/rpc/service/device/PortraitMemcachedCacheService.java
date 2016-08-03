@@ -25,13 +25,13 @@ public class PortraitMemcachedCacheService {
 	  
 	@PostConstruct   
 	protected void init() {  
-		entityCache = cacheService.addCache(this.getClass().getName(),10*10000,2*3600);//2小时
+		entityCache = cacheService.addCache(this.getClass().getName(),10*10000,2*24*3600);//2小时
     }    
 	
 	public String generatePortraitCacheKeyBy(String mac){
 		StringBuilder sb = new StringBuilder();   
 		sb.append(PORTRAITCachePrefixKey).append(mac);
-		return sb.toString();   
+		return sb.toString();
 	}
 	
 	public void storePortraitCacheResult(String mac,String result){

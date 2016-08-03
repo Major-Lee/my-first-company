@@ -89,6 +89,7 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.bhu.vas.rpc.log.TerminalStatusNotifyLogger;
 import com.bhu.vas.rpc.service.device.PortraitMemcachedCacheService;
+import com.smartwork.msip.business.logger.BusinessDefinedLogger;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -486,31 +487,39 @@ public class DeviceBusinessFacadeService {
 	 */
 	public void doWangAnProcessor(String ctx, String payload, ParserHeader parserHeader) {
 		try {
+			if(parserHeader != null && OperationCMD.DeviceCmdPassThrough.getNo().equals(parserHeader.getOpt())){
+				logger.info(String.format("ctx[%s] mac[%s] paylod[%s]", ctx,parserHeader.getMac(),payload));
+			}
 			//HandsetDeviceDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, HandsetDeviceDTO.class);
 			List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload, 
 					HandsetDeviceDTO.class);
 			if(dtos == null || dtos.isEmpty()) return;
 			for(HandsetDeviceDTO dto:dtos){
+				logger.info("do WangAn Processor" + dto.getAction());
 				dto.setLast_wifi_id(parserHeader.getMac().toLowerCase());
 				dto.setTs(System.currentTimeMillis());
 			}
 			HandsetDeviceDTO fristDto = dtos.get(0);
 			if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
+				logger.info("do WangAn Processor" + fristDto.getAction());
 				String onlineMsg = ActionBuilder.toJsonHasPrefix(
-						ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),parserHeader.getMac(),
+						ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),parserHeader.getMac().toLowerCase(),
 								fristDto.getDhcp_name(),fristDto.getIp(),
 								fristDto.getVapname(),fristDto.getBssid(),
 								fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
 								System.currentTimeMillis()));
+				logger.info("do WangAn Processor device online msg " + onlineMsg);
 				processHandsetOnline(onlineMsg);
 			}
 			else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
+				logger.info("do WangAn Processor "+ fristDto.getAction());
 				String offlineMsg = ActionBuilder.toJsonHasPrefix(
-						ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),parserHeader.getMac(),
+						ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),parserHeader.getMac().toLowerCase(),
 								fristDto.getUptime(),
 								fristDto.getVapname(),fristDto.getBssid(),
 								fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
 								Long.parseLong(fristDto.getTx_bytes()),Long.parseLong(fristDto.getRx_bytes()), System.currentTimeMillis()));
+				logger.info("do WangAn Processor device offline msg " + offlineMsg);
 				processHandsetOffline(offlineMsg);
 			}
 			/*else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
@@ -520,9 +529,11 @@ public class DeviceBusinessFacadeService {
 				handsetDeviceUpdate(ctx, fristDto, parserHeader.getMac());
 			}*/
 			else if(HandsetDeviceDTO.Action_Authorize.equals(fristDto.getAction())){
+				logger.info("do WangAn Processor "+ fristDto.getAction());
 				String AuthorizeMsg = ActionBuilder.toJsonHasPrefix(
-						ActionBuilder.builderHandsetAuthorizeAction(fristDto.getMac(),parserHeader.getMac(),
+						ActionBuilder.builderHandsetAuthorizeAction(fristDto.getMac(),parserHeader.getMac().toLowerCase(),
 								fristDto.getVapname() ,fristDto.getAuthorized(), System.currentTimeMillis()));
+				logger.info("do WangAn Processor device Authorize msg " + AuthorizeMsg);
 				processHandsetAuthorize(AuthorizeMsg);
 			}
 		} catch (Exception e) {
@@ -535,11 +546,13 @@ public class DeviceBusinessFacadeService {
 	
 	private void processHandsetOnline(String message){
 		HandsetOnlineAction dto = JsonHelper.getDTO(message, HandsetOnlineAction.class);
+		logger.info("do WangAn Processor" + dto.getMac());
 		//2016-07-28增加终端上线判断终端是否认证，若认证，发送认证消息给网安
 		String authorize = dto.getAuthorized();
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
 		if(authorize != null && authorize.equalsIgnoreCase("true")){
+			logger.info("do WangAn Processor  authorize is true" + dto.getMac());
 			String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
 			if(newAddFields != null){
 				OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
@@ -564,6 +577,8 @@ public class DeviceBusinessFacadeService {
 				TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
 		}
 			portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
+		}else{
+			logger.info("do WangAn Processor  authorize is false or null" + dto.getMac());
 		}
 	}
 	
