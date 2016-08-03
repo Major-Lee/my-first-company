@@ -24,6 +24,7 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
+import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserSearchConditionState;
@@ -533,7 +534,7 @@ public class DeviceRestBusinessFacadeService {
 								for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
 									vto = new WifiDeviceVTO1();
 									vto.setUg_name(wifiDeviceDocument.getT_uc_extension() == null 
-											||wifiDeviceDocument.getT_uc_extension().isEmpty()? "未分组" : wifiDeviceDocument.getT_uc_extension());
+											|| wifiDeviceDocument.getT_uc_extension().isEmpty()? TagGroup.DefaultGroupName : tagGroupNames.get(cursor));
 									vto.setIndex(++startIndex);
 									BeanUtils.copyProperties(wifiDeviceDocument, vto);
 									vtos.add(vto);
