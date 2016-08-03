@@ -125,6 +125,11 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					break;
 				case 7://3.4.16	WLAN用户上下线消息
 					deviceBusinessFacadeService.handsetDeviceConnectState(ctx, payload, parserHeader);
+					try{
+						deviceBusinessFacadeService.doWangAnProcessor(ctx, payload, parserHeader);
+					}catch(Exception e){
+						System.out.println("doWangAnProcessor is error:"+e.getMessage());
+					}
 					break;
 //				case 8://3.4.17	应用隧道消息
 //					break;
