@@ -19,6 +19,7 @@ import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
+import com.bhu.vas.api.dto.charging.HandsetAuthorizeAction;
 import com.bhu.vas.api.dto.commdity.internal.useragent.OrderUserAgentDTO;
 import com.bhu.vas.api.dto.handset.HandsetOfflineAction;
 import com.bhu.vas.api.dto.handset.HandsetOnlineAction;
@@ -89,7 +90,6 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.bhu.vas.rpc.log.TerminalStatusNotifyLogger;
 import com.bhu.vas.rpc.service.device.PortraitMemcachedCacheService;
-import com.smartwork.msip.business.logger.BusinessDefinedLogger;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -502,25 +502,25 @@ public class DeviceBusinessFacadeService {
 			HandsetDeviceDTO fristDto = dtos.get(0);
 			if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
 				logger.info("do WangAn Processor" + fristDto.getAction());
-				String onlineMsg = ActionBuilder.toJsonHasPrefix(
-						ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),parserHeader.getMac().toLowerCase(),
-								fristDto.getDhcp_name(),fristDto.getIp(),
-								fristDto.getVapname(),fristDto.getBssid(),
-								fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
-								System.currentTimeMillis()));
-				logger.info("do WangAn Processor device online msg " + onlineMsg);
-				processHandsetOnline(onlineMsg);
+				
+				com.bhu.vas.api.dto.charging.HandsetOnlineAction onlineMsg = ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),parserHeader.getMac().toLowerCase(),
+						fristDto.getDhcp_name(),fristDto.getIp(),
+						fristDto.getVapname(),fristDto.getBssid(),
+						fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
+						System.currentTimeMillis());
+				logger.info("do WangAn Processor device online msg " + JsonHelper.getJSONString(onlineMsg));
+				processHandsetOnline(JsonHelper.getJSONString(onlineMsg));
 			}
 			else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
 				logger.info("do WangAn Processor "+ fristDto.getAction());
-				String offlineMsg = ActionBuilder.toJsonHasPrefix(
-						ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),parserHeader.getMac().toLowerCase(),
-								fristDto.getUptime(),
-								fristDto.getVapname(),fristDto.getBssid(),
-								fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
-								Long.parseLong(fristDto.getTx_bytes()),Long.parseLong(fristDto.getRx_bytes()), System.currentTimeMillis()));
-				logger.info("do WangAn Processor device offline msg " + offlineMsg);
-				processHandsetOffline(offlineMsg);
+				
+				com.bhu.vas.api.dto.charging.HandsetOfflineAction offlineMsg = ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),parserHeader.getMac().toLowerCase(),
+						fristDto.getUptime(),
+						fristDto.getVapname(),fristDto.getBssid(),
+						fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
+						Long.parseLong(fristDto.getTx_bytes()),Long.parseLong(fristDto.getRx_bytes()), System.currentTimeMillis());
+				logger.info("do WangAn Processor device offline msg " + JsonHelper.getJSONString(offlineMsg));
+				processHandsetOffline(JsonHelper.getJSONString(offlineMsg));
 			}
 			/*else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
 				handsetDeviceSync(ctx, parserHeader.getMac(), dtos);
@@ -530,11 +530,11 @@ public class DeviceBusinessFacadeService {
 			}*/
 			else if(HandsetDeviceDTO.Action_Authorize.equals(fristDto.getAction())){
 				logger.info("do WangAn Processor "+ fristDto.getAction());
-				String AuthorizeMsg = ActionBuilder.toJsonHasPrefix(
-						ActionBuilder.builderHandsetAuthorizeAction(fristDto.getMac(),parserHeader.getMac().toLowerCase(),
-								fristDto.getVapname() ,fristDto.getAuthorized(), System.currentTimeMillis()));
-				logger.info("do WangAn Processor device Authorize msg " + AuthorizeMsg);
-				processHandsetAuthorize(AuthorizeMsg);
+				
+				HandsetAuthorizeAction AuthorizeMsg =	ActionBuilder.builderHandsetAuthorizeAction(fristDto.getMac(),parserHeader.getMac().toLowerCase(),
+						fristDto.getVapname() ,fristDto.getAuthorized(), System.currentTimeMillis());
+				logger.info("do WangAn Processor device Authorize msg " + JsonHelper.getJSONString(AuthorizeMsg));
+				processHandsetAuthorize(JsonHelper.getJSONString(AuthorizeMsg));
 			}
 		} catch (Exception e) {
 			System.out.println("doWangAnProcessor error .....");
