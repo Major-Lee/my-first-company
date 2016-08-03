@@ -471,8 +471,10 @@ public class TagFacadeRpcSerivce {
 		for (TagGroupRelation tagGroupRelation : entities) {
 			macsList.add(tagGroupRelation.getId());
 		}
+		System.out.println("00000000000000");
 		// 清除所有索引信息
 		wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(macsList, null);
+		System.out.println("11111111111");
 
 		int count = tagGroupRelationService.deleteByModelCriteria(mc);
 		
