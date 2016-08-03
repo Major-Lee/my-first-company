@@ -324,8 +324,9 @@ public class TagFacadeRpcSerivce {
 			if (group != null && group.getCreator() == uid) {
 				int pid = group.getPid();
 				// 先删除设备和索引，再删除节点
+				System.out.println("delchildnode.........");
 				int count = delChildNodeDevices(uid, group.getPath());
-				
+				System.out.println("delchildnode end .........");
 				tagGroupService.removeAllByPath(group.getPath(), true);
 				
 				if (pid != 0) {
@@ -466,10 +467,11 @@ public class TagFacadeRpcSerivce {
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnLike("path", path + "%");
 		List<TagGroupRelation> entities = tagGroupRelationService.findModelByModelCriteria(mc);
-
+		
 		List<String> macsList = new ArrayList<String>();
 		for (TagGroupRelation tagGroupRelation : entities) {
 			macsList.add(tagGroupRelation.getId());
+			System.out.println(tagGroupRelation.getId());
 		}
 		System.out.println("00000000000000");
 		// 清除所有索引信息
