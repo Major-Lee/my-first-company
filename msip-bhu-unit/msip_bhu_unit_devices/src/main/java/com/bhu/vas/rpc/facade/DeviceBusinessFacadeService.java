@@ -485,47 +485,48 @@ public class DeviceBusinessFacadeService {
 	 * modified by PengYu Zhang for handset storage
 	 */
 	public void doWangAnProcessor(String ctx, String payload, ParserHeader parserHeader) {
-		//HandsetDeviceDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, HandsetDeviceDTO.class);
-		List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload, 
-				HandsetDeviceDTO.class);
-		if(dtos == null || dtos.isEmpty()) return;
-		for(HandsetDeviceDTO dto:dtos){
-			dto.setLast_wifi_id(parserHeader.getMac().toLowerCase());
-			dto.setTs(System.currentTimeMillis());
-		}
-		HandsetDeviceDTO fristDto = dtos.get(0);
-		if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
-			String onlineMsg = ActionBuilder.toJsonHasPrefix(
-					ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),parserHeader.getMac(),
-							fristDto.getDhcp_name(),fristDto.getIp(),
-							fristDto.getVapname(),fristDto.getBssid(),
-							fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
-							System.currentTimeMillis()));
-			processHandsetOnline(onlineMsg);
-		}
-		else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
-			String offlineMsg = ActionBuilder.toJsonHasPrefix(
-					ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),parserHeader.getMac(),
-							fristDto.getUptime(),
-							fristDto.getVapname(),fristDto.getBssid(),
-							fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
-							Long.parseLong(fristDto.getTx_bytes()),Long.parseLong(fristDto.getRx_bytes()), System.currentTimeMillis()));
-			processHandsetOffline(offlineMsg);
-		}
-		/*else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
-			handsetDeviceSync(ctx, parserHeader.getMac(), dtos);
-		}
-		else if(HandsetDeviceDTO.Action_Update.equals(fristDto.getAction())){
-			handsetDeviceUpdate(ctx, fristDto, parserHeader.getMac());
-		}*/
-		else if(HandsetDeviceDTO.Action_Authorize.equals(fristDto.getAction())){
-			String AuthorizeMsg = ActionBuilder.toJsonHasPrefix(
-					ActionBuilder.builderHandsetAuthorizeAction(fristDto.getMac(),parserHeader.getMac(),
-							fristDto.getVapname() ,fristDto.getAuthorized(), System.currentTimeMillis()));
-			processHandsetAuthorize(AuthorizeMsg);
-		}
-		else{
-			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_MESSAGE_UNSUPPORT);
+		try {
+			//HandsetDeviceDTO dto = RPCMessageParseHelper.generateDTOFromMessage(payload, HandsetDeviceDTO.class);
+			List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage(payload, 
+					HandsetDeviceDTO.class);
+			if(dtos == null || dtos.isEmpty()) return;
+			for(HandsetDeviceDTO dto:dtos){
+				dto.setLast_wifi_id(parserHeader.getMac().toLowerCase());
+				dto.setTs(System.currentTimeMillis());
+			}
+			HandsetDeviceDTO fristDto = dtos.get(0);
+			if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
+				String onlineMsg = ActionBuilder.toJsonHasPrefix(
+						ActionBuilder.builderHandsetOnlineAction(fristDto.getMac(),parserHeader.getMac(),
+								fristDto.getDhcp_name(),fristDto.getIp(),
+								fristDto.getVapname(),fristDto.getBssid(),
+								fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
+								System.currentTimeMillis()));
+				processHandsetOnline(onlineMsg);
+			}
+			else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
+				String offlineMsg = ActionBuilder.toJsonHasPrefix(
+						ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),parserHeader.getMac(),
+								fristDto.getUptime(),
+								fristDto.getVapname(),fristDto.getBssid(),
+								fristDto.getRssi(),fristDto.getSnr(),fristDto.getAuthorized(),fristDto.getEthernet(),
+								Long.parseLong(fristDto.getTx_bytes()),Long.parseLong(fristDto.getRx_bytes()), System.currentTimeMillis()));
+				processHandsetOffline(offlineMsg);
+			}
+			/*else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
+				handsetDeviceSync(ctx, parserHeader.getMac(), dtos);
+			}
+			else if(HandsetDeviceDTO.Action_Update.equals(fristDto.getAction())){
+				handsetDeviceUpdate(ctx, fristDto, parserHeader.getMac());
+			}*/
+			else if(HandsetDeviceDTO.Action_Authorize.equals(fristDto.getAction())){
+				String AuthorizeMsg = ActionBuilder.toJsonHasPrefix(
+						ActionBuilder.builderHandsetAuthorizeAction(fristDto.getMac(),parserHeader.getMac(),
+								fristDto.getVapname() ,fristDto.getAuthorized(), System.currentTimeMillis()));
+				processHandsetAuthorize(AuthorizeMsg);
+			}
+		} catch (Exception e) {
+			System.out.println("doWangAnProcessor error .....");
 		}
 	}
 	
