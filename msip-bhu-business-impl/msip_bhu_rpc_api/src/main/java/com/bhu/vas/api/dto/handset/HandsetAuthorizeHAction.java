@@ -12,6 +12,8 @@ public class HandsetAuthorizeHAction extends TerminalAction{
 	private String internet;
 	private String viptype;
 	private String vipacc;
+	private String act;
+	private String authorized;
 	
 	public String getHmac() {
 		return hmac;
@@ -63,6 +65,17 @@ public class HandsetAuthorizeHAction extends TerminalAction{
 	public void setVipacc(String vipacc) {
 		this.vipacc = vipacc;
 	}
+	
+	public String getAuthorized() {
+		return authorized;
+	}
+	public void setAuthorized(String authorized) {
+		this.authorized = authorized;
+	}
+	public void setAct(String act) {
+		this.act = act;
+	}
+	
 	@Override
 	public String getAct() {
 		return ActionBuilder.ActionMode.HandsetAuthorize.getPrefix();

@@ -46,6 +46,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetP
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
@@ -135,6 +136,9 @@ public class UserDeviceUnitFacadeService {
 
 	@Resource
 	private DeliverMessageService deliverMessageService;
+	
+	@Resource
+	private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
 
 	// TODO：重复插入异常
 	// 1、首先得判定UserDevicePK(mac, uid) 是否存在
@@ -808,6 +812,14 @@ public class UserDeviceUnitFacadeService {
 				dpv.setLast_logout_at(
 						DateTimeHelper.formatDate(wifiDevice.getLast_logout_at(), DateTimeHelper.FormatPattern0));
 			dpv.setDod(wifiDevice.getUptime());
+			
+			WifiDeviceSharedealConfigs wifiDeviceShareConfig = wifiDeviceSharedealConfigsService.getById(mac);
+
+            if(wifiDeviceShareConfig != null){
+                if (wifiDeviceShareConfig.getDistributor() > 0) {
+                	dpv.setA_id((userService.getById(wifiDeviceShareConfig.getDistributor()).getMobileno()));
+                }
+            }
 
 			// 运营状态信息 灰度、模板
 			DeviceOperationVTO dov = new DeviceOperationVTO();

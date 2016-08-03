@@ -532,7 +532,8 @@ public class DeviceRestBusinessFacadeService {
 								int cursor = 0;
 								for(WifiDeviceDocument wifiDeviceDocument : searchDocuments){
 									vto = new WifiDeviceVTO1();
-									vto.setUg_name(tagGroupNames.get(cursor));
+									vto.setUg_name(wifiDeviceDocument.getT_uc_extension() == null 
+											||wifiDeviceDocument.getT_uc_extension().isEmpty()? "未分组" : wifiDeviceDocument.getT_uc_extension());
 									vto.setIndex(++startIndex);
 									BeanUtils.copyProperties(wifiDeviceDocument, vto);
 									vtos.add(vto);

@@ -3,7 +3,11 @@
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-devices/${provider.port}/devices" />
+	<Property name="wangan.reporting.status.base" 	value="/BHUData/bulogs/reid/" />
+	<!-- <Property name="wangan.reporting.final.base" 	value="/BHUData/pa_portal/" /> -->
+	<Property name="wangan.reporting.final.base" 	value="/BHUData/bulogs/reid/" />
 	<jmxConfigurator />
+	<timestamp key="curTime" datePattern="yyyyMMddHHmmss"/>
 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -39,6 +43,35 @@
 			<charset>UTF-8</charset>
 		</encoder>
 	</appender>	
+	
+	<appender name="wanganlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${wangan.reporting.status.base}${curTime}.business-reporting</File>
+		
+	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- rollover daily -->
+      <fileNamePattern>${wangan.reporting.final.base}business-reporting.%d{yyyyMMddHHmmss}%i</fileNamePattern>
+      
+      <timeBasedFileNamingAndTriggeringPolicy
+            class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- or whenever the file size reaches 100MB -->
+        <maxFileSize>1KB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+      
+    </rollingPolicy>
+		
+		<!-- <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            日志文件输出的文件名
+            <FileNamePattern>${final.base}business-reporting.%d{yyyyMMddHHmmss}</FileNamePattern>
+			日志文件最大的大小          
+            <timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>1KB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy> -->
+		
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date - %msg%n</pattern>
+		</layout>
+	</appender>
 
 	<logger name="com.bhu.vas.rpc.service" additivity="false" level="INFO">
 		<appender-ref ref="unitrequestfile" />
@@ -56,6 +89,10 @@
 	<logger name="com.bhu.vas.business.search.warmup" additivity="false" level="INFO">
 		<appender-ref ref="stdout" />
 		<appender-ref ref="unitrequestfile" />
+	</logger>	
+	
+	<logger name="com.bhu.vas.rpc.log.TerminalStatusNotifyLogger" additivity="false" level="INFO">
+		<appender-ref ref="wanganlogfile" />
 	</logger>	
 	
 	<root level="WARN">
