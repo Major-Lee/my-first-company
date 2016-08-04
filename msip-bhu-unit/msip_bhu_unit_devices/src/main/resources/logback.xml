@@ -3,9 +3,9 @@
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
 	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-devices/${provider.port}/devices" />
-	<Property name="wangan.reporting.status.base" 	value="/BHUData/bulogs/reid/" />
+	<Property name="wangan.reporting.status.base" 	value="/BHUData/bulogs/ualogs/" />
 	<!-- <Property name="wangan.reporting.final.base" 	value="/BHUData/pa_portal/" /> -->
-	<Property name="wangan.reporting.final.base" 	value="/BHUData/bulogs/reid/" />
+	<Property name="wangan.reporting.final.base" 	value="/BHUData/bulogs/ualogs/" />
 	<jmxConfigurator />
 	<timestamp key="curTime" datePattern="yyyyMMddHHmmss"/>
 
@@ -58,16 +58,7 @@
       </timeBasedFileNamingAndTriggeringPolicy>
       
     </rollingPolicy>
-		
-		<!-- <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            日志文件输出的文件名
-            <FileNamePattern>${final.base}business-reporting.%d{yyyyMMddHHmmss}</FileNamePattern>
-			日志文件最大的大小          
-            <timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>1KB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy> -->
-		
+    		
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<pattern>%date - %msg%n</pattern>
 		</layout>

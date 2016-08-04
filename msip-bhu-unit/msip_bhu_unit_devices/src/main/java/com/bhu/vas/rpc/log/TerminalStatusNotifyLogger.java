@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 public class TerminalStatusNotifyLogger {
 	private static final Logger logger = LoggerFactory.getLogger(TerminalStatusNotifyLogger.class);
 	private static final String Terminal_Status_Notify_Logger_Template = "%s";
+
 	public static void doTerminalStatusMessageLog(String messagejson){
 		logger.info(String.format(Terminal_Status_Notify_Logger_Template, messagejson));
 	}

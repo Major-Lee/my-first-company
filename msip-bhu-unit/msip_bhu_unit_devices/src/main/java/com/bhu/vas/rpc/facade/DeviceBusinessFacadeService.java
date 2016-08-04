@@ -88,7 +88,7 @@ import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
-import com.bhu.vas.rpc.log.TerminalStatusNotifyLogger;
+import com.bhu.vas.rpc.log.WriterThread;
 import com.bhu.vas.rpc.service.device.PortraitMemcachedCacheService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -574,10 +574,12 @@ public class DeviceBusinessFacadeService {
 					break;
 				}
 				message =  JsonHelper.getJSONString(dto);
-				TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
+				String curTime =WriterThread.getCurrentTime();
+				WriterThread.writeLog(curTime +" - "+ActionMode.HandsetOnline.getPrefix()+message);
+				//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
 		}
 			portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
-		}else{
+		}else{   
 			logger.info("do WangAn Processor  authorize is false or null" + dto.getMac());
 		}
 	}
@@ -587,14 +589,50 @@ public class DeviceBusinessFacadeService {
 		//2016-07-28增加终端上线判断终端是否认证，若认证，发送认证消息给网安
 		String authorize = dto.getAuthorized();
 		if(authorize != null && authorize.equalsIgnoreCase("true")){
+			logger.info("do WangAn Processor  offline is true" + message);
 			String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
 			long end_ts = dto.getTs();
 			if(handsetOnline != null || handsetOnline != ""){
 				HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
-				dto.setTs(onlineDto.getTs());
-				dto.setHip(onlineDto.getHip());
-				dto.setHname(onlineDto.getHname());
-				dto.setRssi(onlineDto.getRssi());
+				long ts = onlineDto.getTs();
+				if( ts != 0){
+					dto.setTs(ts);
+				}
+				
+				String Hip = onlineDto.getHip();
+				String Hname = onlineDto.getHname();
+				HandsetDeviceDTO handsetDeviceDTO =	HandsetStorageFacadeService.handset(dto.getMac(),dto.getHmac());
+				if(handsetDeviceDTO != null){
+					if(Hip != null && Hip != "" && !Hip.equals("0.0.0.0")){
+						dto.setHip(Hip);
+					}else{
+						if(!handsetDeviceDTO.equals("0.0.0.0")){
+							dto.setHip(handsetDeviceDTO.getIp());
+						}
+					}
+					
+					if(Hname != null && Hname != ""){
+						dto.setHname(Hname);
+					}else{
+						if(!Hname.equals("")){
+							dto.setHname(handsetDeviceDTO.getDhcp_name());
+						}
+					}
+				}else{
+					if(Hip != null && Hip != "" && !Hip.equals("0.0.0.0")){
+						dto.setHip(Hip);
+					}
+					
+					if(Hname != null && Hname != ""){
+						dto.setHname(Hname);
+					}
+				}
+				
+				String rssi = onlineDto.getRssi();
+				if(rssi != null && rssi !=""){
+					System.out.println("do offline rssi "+rssi);
+					dto.setRssi(onlineDto.getRssi());
+				}
 			}
 			
 			dto.setEnd_ts(end_ts);
@@ -621,22 +659,58 @@ public class DeviceBusinessFacadeService {
 					break;
 				}
 				message =  JsonHelper.getJSONString(dto);
-				TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOffline.getPrefix()+message);
+				String curTime =WriterThread.getCurrentTime();
+				WriterThread.writeLog(curTime +" - "+ActionMode.HandsetOffline.getPrefix()+message);
+				//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOffline.getPrefix()+message);
 		}
 		
 		}
 	}
 	private void processHandsetAuthorize(String message){
+		logger.info("do WangAn Processor  Authorize is true" + message);
 		HandsetOnlineAction dto = JsonHelper.getDTO(message, HandsetOnlineAction.class);
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
 		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(hdMac);
 		if(handsetOnline != null || handsetOnline != ""){
 			HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
-			dto.setTs(onlineDto.getTs());
-			dto.setHip(onlineDto.getHip());
-			dto.setHname(onlineDto.getHname());
-			dto.setRssi(onlineDto.getRssi());
+			long ts = onlineDto.getTs();
+			if( ts != 0){
+				dto.setTs(ts);
+			}
+			String Hip = onlineDto.getHip();
+			String Hname = onlineDto.getHname();
+			HandsetDeviceDTO handsetDeviceDTO =	HandsetStorageFacadeService.handset(dto.getMac(),dto.getHmac());
+			if(handsetDeviceDTO != null){
+				if(Hip != null && Hip != "" && !Hip.equals("0.0.0.0")){
+					dto.setHip(Hip);
+				}else{
+					if(!handsetDeviceDTO.equals("0.0.0.0")){
+						dto.setHip(handsetDeviceDTO.getIp());
+					}
+				}
+				
+				if(Hname != null && Hname != ""){
+					dto.setHname(Hname);
+				}else{
+					if(!Hname.equals("")){
+						dto.setHname(handsetDeviceDTO.getDhcp_name());
+					}
+				}
+			}else{
+				if(Hip != null && Hip != "" && !Hip.equals("0.0.0.0")){
+					dto.setHip(Hip);
+				}
+				
+				if(Hname != null && Hname != ""){
+					dto.setHname(Hname);
+				}
+			}
+			String rssi = onlineDto.getRssi();
+			if(rssi != null && rssi !=""){
+				System.out.println("do Authorize rssi "+rssi);
+				dto.setRssi(onlineDto.getRssi());
+			}
 		}
 		
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
@@ -661,7 +735,9 @@ public class DeviceBusinessFacadeService {
 			}
 			dto.setAct("HO");
 			message =  JsonHelper.getJSONString(dto);
-			TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
+			String curTime =WriterThread.getCurrentTime();
+			WriterThread.writeLog(curTime +" - "+ActionMode.HandsetOnline.getPrefix()+message);
+			//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
 		}
 	}
 	
