@@ -25,7 +25,7 @@ public class UserIncomeService extends AbstractCoreService<String, UserIncome, U
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria()
 		.andColumnEqualTo("time", time);
-		mc.setOrderByClause("income");
+		mc.setOrderByClause("income*1");
 		return super.findModelByModelCriteria(mc);
 	}
 	public List<UserIncome> findListByUid(int uid,String time){
