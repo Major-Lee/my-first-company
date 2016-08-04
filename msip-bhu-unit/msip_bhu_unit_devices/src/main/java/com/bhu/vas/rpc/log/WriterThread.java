@@ -23,7 +23,7 @@ public class WriterThread extends Thread {
 		 WriterThread th = new WriterThread();
 		 quit = false;
 		 logFile = "/BHUData/bulogs/ualog/police.business-reporting";
-		 archiveFile = "/BHUData/bulogs/ualogs/business-reporting";
+		 archiveFile = "/BHUData/bulogs/ualogs/";
 		 openLogFile();
 		 th.start();
 	 }
@@ -72,7 +72,7 @@ public class WriterThread extends Thread {
         try {  
             File afile = new File(logFile);
             String suffix =  getCurrentString();
-            afile.renameTo(new File(archiveFile + "."+suffix));
+            afile.renameTo(new File(archiveFile+suffix + "."+"business-reporting"));
         } catch (Exception e) {  
             e.printStackTrace();  
         }  
