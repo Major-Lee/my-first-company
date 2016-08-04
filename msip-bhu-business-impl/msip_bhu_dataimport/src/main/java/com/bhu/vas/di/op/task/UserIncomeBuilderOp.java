@@ -33,7 +33,7 @@ public class UserIncomeBuilderOp {
 	        String time = sdf.format(date); 
 	        UserWalletFacadeService userWalletFacadeService = context.getBean("userWalletFacadeService",UserWalletFacadeService.class);
         	List<UserWalletLog> userWalletLogs= userWalletFacadeService.getUserWalletLogService().findListByTime(time);
- 			for(UserWalletLog i:userWalletLogs){
+        	for(UserWalletLog i:userWalletLogs){
  				UserIncome userIncome=new UserIncome();
  				userIncome.setTime(time);
  				userIncome.setUid(i.getUid());
@@ -75,14 +75,14 @@ public class UserIncomeBuilderOp {
  					gpathIncome.setGpath(i.getCurrent_gpath());
  					gpathIncome.setTime(time);
  					gpathIncome.setIncome(i.getCash().substring(1));
- 					gpathIncome.setTimes(1);
+ 					//gpathIncome.setTimes(1);
  					List<GpathIncome> gpathIncomes=userWalletFacadeService.getGpathIncomeService().findListByGpath(i.getCurrent_gpath(), time);
  					if(gpathIncomes==null||gpathIncomes.size()<1){
  						userWalletFacadeService.getGpathIncomeService().insert(gpathIncome);
  					}else{
- 						int num=gpathIncomes.get(0).getTimes();
- 	 					num++;
- 	 					gpathIncome.setTimes(num);
+ 						//int num=gpathIncomes.get(0).getTimes();
+ 	 					//num++;
+ 	 					//gpathIncome.setTimes(num);
  						gpathIncome.setId(gpathIncomes.get(0).getId());
  						gpathIncome.setIncome(String.valueOf(round(Double.valueOf(gpathIncomes.get(0).getIncome())+Double.valueOf(gpathIncome.getIncome()),2)));
  						userWalletFacadeService.getGpathIncomeService().update(gpathIncome);
