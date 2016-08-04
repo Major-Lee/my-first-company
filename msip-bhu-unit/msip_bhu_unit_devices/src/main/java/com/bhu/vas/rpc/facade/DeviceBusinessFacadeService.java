@@ -17,6 +17,12 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
+import com.bhu.vas.api.dto.charging.ActionBuilder;
+import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
+import com.bhu.vas.api.dto.charging.HandsetAuthorizeAction;
+import com.bhu.vas.api.dto.commdity.internal.useragent.OrderUserAgentDTO;
+import com.bhu.vas.api.dto.handset.HandsetOfflineAction;
+import com.bhu.vas.api.dto.handset.HandsetOnlineAction;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.redis.SerialTaskDTO;
 import com.bhu.vas.api.dto.ret.LocationDTO;
@@ -57,6 +63,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserOrderDetailsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceLocationSerialTaskService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
@@ -161,6 +168,9 @@ public class DeviceBusinessFacadeService {
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
+	@Resource
+	private PortraitMemcachedCacheService portraitMemcachedCacheService;
 	/**
 	 * wifi设备上线
 	 * 1：wifi设备基础信息更新
@@ -465,6 +475,7 @@ public class DeviceBusinessFacadeService {
 		}
 	}
 	
+	/********************************/
 	/********************************/
 	/**
 	 * 移动设备连接状态请求生成，网安终端上线消息
