@@ -538,7 +538,7 @@ public class DeviceBusinessFacadeService {
 				processHandsetAuthorize(JsonHelper.getJSONString(AuthorizeMsg));
 			}
 		} catch (Exception e) {
-			System.out.println("doWangAnProcessor error .....");
+			logger.error("doWangAnProcessor error",e);
 		}
 	}
 	
@@ -580,6 +580,7 @@ public class DeviceBusinessFacadeService {
 				//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
 		}
 			portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
+			System.out.println("do WangAn store CacheResult"+message);
 		}else{   
 			logger.info("do WangAn Processor  authorize is false or null" + dto.getMac());
 		}
@@ -592,6 +593,7 @@ public class DeviceBusinessFacadeService {
 		if(authorize != null && authorize.equalsIgnoreCase("true")){
 			logger.info("do WangAn Processor  offline is true" + message);
 			String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
+			System.out.println("do WangAn offline handsetOnline" + handsetOnline);
 			long end_ts = dto.getTs();
 			if(handsetOnline != null || handsetOnline != ""){
 				HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
@@ -603,24 +605,19 @@ public class DeviceBusinessFacadeService {
 				String Hip = onlineDto.getHip();
 				String Hname = onlineDto.getHname();
 				HandsetDeviceDTO handsetDeviceDTO =	HandsetStorageFacadeService.handset(dto.getMac(),dto.getHmac());
+				System.out.println("do WangAn offline handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
 				if(handsetDeviceDTO != null){
-					if(Hip != null && Hip != "" && !Hip.equals("0.0.0.0")){
+					String hip = handsetDeviceDTO.getIp();
+					if(hip != null && hip != ""){
 						dto.setHip(Hip);
-					}else{
-						if(!handsetDeviceDTO.equals("0.0.0.0")){
-							dto.setHip(handsetDeviceDTO.getIp());
-						}
 					}
 					
-					if(Hname != null && Hname != ""){
-						dto.setHname(Hname);
-					}else{
-						if(!Hname.equals("")){
-							dto.setHname(handsetDeviceDTO.getDhcp_name());
-						}
+					String hName =  handsetDeviceDTO.getDhcp_name();
+					if(hName != null && hName != ""){
+						dto.setHname(hName);
 					}
 				}else{
-					if(Hip != null && Hip != "" && !Hip.equals("0.0.0.0")){
+					if(Hip != null && Hip != ""){
 						dto.setHip(Hip);
 					}
 					
@@ -640,6 +637,7 @@ public class DeviceBusinessFacadeService {
 			String mac = dto.getMac();
 			String hdMac = dto.getHmac();
 			String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
+			System.out.println("do WangAn offline newAddFields" + newAddFields);
 			if(newAddFields != null){
 				OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
 				//2016-07-22 fixed 数据库wan_id 和终端ip写反了
@@ -673,6 +671,7 @@ public class DeviceBusinessFacadeService {
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
 		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(hdMac);
+		System.out.println("do WangAn Authorize handsetOnline" + handsetOnline);
 		if(handsetOnline != null || handsetOnline != ""){
 			HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
 			long ts = onlineDto.getTs();
@@ -682,21 +681,16 @@ public class DeviceBusinessFacadeService {
 			String Hip = onlineDto.getHip();
 			String Hname = onlineDto.getHname();
 			HandsetDeviceDTO handsetDeviceDTO =	HandsetStorageFacadeService.handset(dto.getMac(),dto.getHmac());
+			System.out.println("do WangAn Authorize handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
 			if(handsetDeviceDTO != null){
-				if(Hip != null && Hip != "" && !Hip.equals("0.0.0.0")){
+				String hip = handsetDeviceDTO.getIp();
+				if(hip != null && hip != ""){
 					dto.setHip(Hip);
-				}else{
-					if(!handsetDeviceDTO.equals("0.0.0.0")){
-						dto.setHip(handsetDeviceDTO.getIp());
-					}
 				}
 				
-				if(Hname != null && Hname != ""){
-					dto.setHname(Hname);
-				}else{
-					if(!Hname.equals("")){
-						dto.setHname(handsetDeviceDTO.getDhcp_name());
-					}
+				String hName =  handsetDeviceDTO.getDhcp_name();
+				if(hName != null && hName != ""){
+					dto.setHname(hName);
 				}
 			}else{
 				if(Hip != null && Hip != "" && !Hip.equals("0.0.0.0")){
@@ -715,6 +709,7 @@ public class DeviceBusinessFacadeService {
 		}
 		
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
+		System.out.println("do WangAn authoize newAddFields" + newAddFields);
 		if(newAddFields != null){
 			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
 			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
