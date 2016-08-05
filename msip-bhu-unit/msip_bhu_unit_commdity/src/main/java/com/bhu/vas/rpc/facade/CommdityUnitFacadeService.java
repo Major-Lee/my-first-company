@@ -115,6 +115,7 @@ public class CommdityUnitFacadeService {
 			logger.info(String.format("intervalAMount success commdityid[%s] mac[%s] umac[%s] umactype[%s] amount[%s]", commdityid, mac, umac, umactype, amount));
 			CommdityAmountDTO commdityAmountDto = new CommdityAmountDTO();
 			commdityAmountDto.setAmount(amount);
+			commdityAmountDto.setForceTime(chargingFacadeService.fetchForceTime(mac,umactype));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityAmountDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

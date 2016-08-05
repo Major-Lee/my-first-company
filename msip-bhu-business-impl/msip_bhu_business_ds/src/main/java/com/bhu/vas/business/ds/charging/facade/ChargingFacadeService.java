@@ -528,6 +528,24 @@ public class ChargingFacadeService {
 		}
 		
 	}
+	//add by fengshibo 2016-08-05 start
+	public String fetchForceTime(String dmac,Integer umactype){
+		try{
+			WifiDeviceSharedealConfigs configs = userfulWifiDeviceSharedealConfigs(dmac);
+			String forceTime = null;
+			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
+				forceTime = configs.getAit_pc();
+			}else{
+				forceTime = configs.getAit_mobile();
+			}
+			return forceTime;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return WifiDeviceSharedealConfigs.Default_AIT;
+		}
+		
+	}
+	//add by fengshibo 2016-08-05 end
 	
 	public String fetchAccessInternetTime(String dmac,Integer umactype){
 		try{
