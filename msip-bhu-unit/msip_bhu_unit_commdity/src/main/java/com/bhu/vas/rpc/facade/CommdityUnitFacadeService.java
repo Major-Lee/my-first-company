@@ -112,10 +112,11 @@ public class CommdityUnitFacadeService {
 					amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid, umactype);
 				}
 			}
-			logger.info(String.format("intervalAMount success commdityid[%s] mac[%s] umac[%s] umactype[%s] amount[%s]", commdityid, mac, umac, umactype, amount));
 			CommdityAmountDTO commdityAmountDto = new CommdityAmountDTO();
 			commdityAmountDto.setAmount(amount);
 			commdityAmountDto.setForceTime(chargingFacadeService.fetchForceTime(mac,umactype));
+			logger.info(String.format("intervalAMount success commdityid[%s] mac[%s] umac[%s] umactype[%s] amount[%s] force_time[%s]", 
+					commdityid, mac, umac, umactype, amount,commdityAmountDto.getForceTime()));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityAmountDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
