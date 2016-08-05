@@ -9,6 +9,7 @@ public class PaymentRecord extends BaseStringModel{
 	private int amount;
 	private int count;
 	private int dx_count;
+	private int video_count;
 	private String info;
 	private Date created_at;
 	private Date updated_at;
@@ -28,6 +29,14 @@ public class PaymentRecord extends BaseStringModel{
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public int getVideo_count() {
+		return video_count;
+	}
+
+	public void setVideo_count(int video_count) {
+		this.video_count = video_count;
 	}
 
 	public String getInfo() {

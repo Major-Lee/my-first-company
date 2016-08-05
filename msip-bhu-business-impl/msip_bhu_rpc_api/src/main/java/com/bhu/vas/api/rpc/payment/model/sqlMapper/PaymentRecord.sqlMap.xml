@@ -9,6 +9,7 @@
 		<result property="amount" column="amount" />
 		<result property="count" column="count" />
 		<result property="dx_count" column="dx_count" />
+		<result property="video_count" column="video_count" />
 		<result property="info" column="info" />
 		<result property="created_at" column="created_at" />
 		<result property="updated_at" column="updated_at" />
@@ -25,6 +26,7 @@
 			amount,
 			count,
 			dx_count,
+			video_count,
 			info,
 			created_at,
 			updated_at
@@ -35,6 +37,7 @@
 			amount,
 			count,
 			dx_count,
+			video_count,
 			info,
 			created_at,
 			updated_at
@@ -46,6 +49,7 @@
 		#{amount},
 		#{count},
 		#{dx_count},
+		#{video_count},
 		#{info},
 		#{created_at},
 		#{updated_at}
@@ -56,6 +60,7 @@
 		amount = #{amount},
 		count = #{count},
 		dx_count = #{dx_count},
+		video_count = #{video_count},
 		info = #{info},
 		updated_at = #{updated_at}
 	</sql>
