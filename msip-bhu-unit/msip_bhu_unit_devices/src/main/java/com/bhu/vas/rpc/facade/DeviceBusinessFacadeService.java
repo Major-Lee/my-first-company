@@ -693,7 +693,7 @@ public class DeviceBusinessFacadeService {
 					dto.setHname(hName);
 				}
 			}else{
-				if(Hip != null && Hip != "" && !Hip.equals("0.0.0.0")){
+				if(Hip != null && Hip != ""){
 					dto.setHip(Hip);
 				}
 				
