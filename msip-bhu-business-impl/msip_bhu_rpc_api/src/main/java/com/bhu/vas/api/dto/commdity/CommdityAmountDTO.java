@@ -10,7 +10,15 @@ package com.bhu.vas.api.dto.commdity;
 public class CommdityAmountDTO implements java.io.Serializable{
 	//随机金额
 	private String amount;
+	//设备的上网时间 add by fengshibo
+	private String forceTime;
 	
+	public String getForceTime() {
+		return forceTime;
+	}
+	public void setForceTime(String forceTime) {
+		this.forceTime = forceTime;
+	}
 	public String getAmount() {
 		return amount;
 	}
