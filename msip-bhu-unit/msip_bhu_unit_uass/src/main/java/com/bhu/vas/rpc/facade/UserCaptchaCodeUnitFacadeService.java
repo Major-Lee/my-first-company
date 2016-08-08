@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import sun.nio.cs.ext.MacCentralEurope;
+
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.helper.BusinessEnumType.CaptchaCodeActType;
@@ -15,11 +17,15 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.model.UserCaptchaCode;
+import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
@@ -29,6 +35,8 @@ public class UserCaptchaCodeUnitFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(UserCaptchaCodeUnitFacadeService.class);
 	@Resource
 	private UserCaptchaCodeService userCaptchaCodeService;
+	@Resource
+	private UserIdentityAuthService userIdentityAuthService;
 	
 	//内部线程池，用于调用sms接口
 	private ExecutorService exec_send = null;//Executors.newFixedThreadPool(30);
@@ -150,6 +158,52 @@ public class UserCaptchaCodeUnitFacadeService {
 		//logger.info(String.format("validateCaptchaCode with countrycode[%s] acc[%s] captcha[%s]", countrycode,acc,captcha));
 		//return userCaptchaCodeUnitFacadeService.validateCaptchaCode(countrycode, acc,captcha);
 	}
+	/**
+	 * 
+	 * @param countrycode
+	 * @param acc
+	 * @param hdmac
+	 * @return
+	 */
+	public RpcResponseDTO<UserCaptchaCodeDTO> identityAuth(int countrycode,
+			 String acc,String hdmac){
+		try {
+			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+			UserCaptchaCode code = userCaptchaCodeService.doGenerateCaptchaCode(accWithCountryCode);
+			UserCaptchaCodeDTO payload = new UserCaptchaCodeDTO();
+			payload.setAcc(acc);
+			payload.setCountrycode(countrycode);
+			payload.setCaptcha(code.getCaptcha());
+			
+			String smsg = String.format(BusinessRuntimeConfiguration.Internal_Portal_Template, payload.getCaptcha());
+			if(StringUtils.isNotEmpty(smsg)){
+				String response = SmsSenderFactory.buildSender(
+					BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,response));
+			}
+			
+			userIdentityAuthService.generateIdentityAuth(countrycode, acc, hdmac);
+			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
+		} catch (BusinessI18nCodeException ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ex.getErrorCode(), ex.getPayload());
+		} catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<Boolean> validateIdentity(int countrycode,
+			 String acc,String hdmac){
+		String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo(accWithCountryCode, "id").andColumnEqualTo(hdmac, "hdmac");
+		if (userIdentityAuthService.countByModelCriteria(mc) != 0) {
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}else{
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+		}
+	}
+	
 	
 	/*@PreDestroy
 	public void destory(){

@@ -53,4 +53,49 @@ public class UserCaptchaCodeController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
+	
+
+	@ResponseBody()
+	@RequestMapping(value="/identity_auth",method={RequestMethod.POST})
+	public void identity_auth(
+			HttpServletResponse response,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = true) String hdmac
+			) {
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		
+		RpcResponseDTO<UserCaptchaCodeDTO> rpcResult = userCaptchaCodeRpcService.identityAuth(countrycode, acc, hdmac);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/validate_id",method={RequestMethod.POST})
+	public void check_identity(
+			HttpServletResponse response,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = true) String hdmac
+			) {
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		
+		RpcResponseDTO<Boolean> rpcResult = userCaptchaCodeRpcService.validateIdentity(countrycode, acc, hdmac);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
 }

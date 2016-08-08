@@ -23,4 +23,8 @@ public interface IUserCaptchaCodeRpcService {
 			String channel_taskid
 			);*/
 	//public boolean taskCompleted(String taskid);
+	public RpcResponseDTO<UserCaptchaCodeDTO> identityAuth(int countrycode,
+			String acc, String hdmac);
+	public RpcResponseDTO<Boolean> validateIdentity(int countrycode, String acc,
+			String hdmac);
 }

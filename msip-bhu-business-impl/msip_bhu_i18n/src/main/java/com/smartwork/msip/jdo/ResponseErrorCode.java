@@ -139,6 +139,7 @@ public enum ResponseErrorCode {
 	AUTH_CAPTCHA_DATA_EXPIRED("277","auth.captcha.data.expired"),
 	AUTH_CAPTCHA_TIMES_NOENOUGH("278","auth.captcha.times.noenough"),
 	AUTH_CAPTCHA_PATIENT_WAITING("279","auth.captcha.patient.waiting"),
+	AUTH_CAPTCHA_IDENTITY_EXIST("280","auth.captcha.identity.exist"),
 	
 	AUTH_NICKNAME_INVALID_FORMAT("281","auth.nickname.format.invalid"),
 	AUTH_NICKNAME_DATA_EXIST("282","auth.nickname.data.exist"),

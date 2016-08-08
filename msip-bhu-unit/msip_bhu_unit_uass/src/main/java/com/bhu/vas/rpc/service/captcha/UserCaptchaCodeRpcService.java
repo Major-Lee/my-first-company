@@ -29,5 +29,18 @@ public class UserCaptchaCodeRpcService implements IUserCaptchaCodeRpcService{
 		logger.info(String.format("validateCaptchaCode with countrycode[%s] acc[%s] captcha[%s] act[%s]", countrycode,acc,captcha,act));
 		return userCaptchaCodeUnitFacadeService.validateCaptchaCode(countrycode, acc,captcha,act);
 	}
-
+	
+	@Override
+	public RpcResponseDTO<UserCaptchaCodeDTO> identityAuth(int countrycode,
+			String acc,String hdmac) {
+		logger.info(String.format("identityAuth with countrycode[%s] acc[%s] act[%s]", countrycode,acc,hdmac));
+		return userCaptchaCodeUnitFacadeService.identityAuth(countrycode, acc, hdmac);
+	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> validateIdentity(int countrycode,
+			String acc,String hdmac) {
+		logger.info(String.format(" countrycode[%s] acc[%s] act[%s]", countrycode,acc,hdmac));
+		return userCaptchaCodeUnitFacadeService.validateIdentity(countrycode, acc, hdmac);
+	}
 }

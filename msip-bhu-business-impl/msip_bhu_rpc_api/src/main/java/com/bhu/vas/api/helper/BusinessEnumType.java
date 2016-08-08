@@ -29,7 +29,7 @@ public class BusinessEnumType {
 	 */
 	public enum CaptchaCodeActType{
 		RegisterOrLogin("注册或登录", "R"),
-		PwdReset("密码充值", "P"),
+		PwdReset("密码重置", "P"),
 		SnkAuth("共享网络短信认证", "S"),
 		;
 		private String name;
