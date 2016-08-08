@@ -486,12 +486,14 @@ public class PaymentController extends BaseController{
     		@RequestParam(required = true) String payment_type,
     		@RequestParam(required = false, value = "") String exter_invoke_ip,
     		@RequestParam(required = false, value = "") String payment_completed_url,
-    		@RequestParam(required = false, value = "") String paymentName,
-    		@RequestParam(required = false, value = "") String type){ 
+    		@RequestParam(required = false, value = "") String paymentName){ 
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		logger.info(String.format("apply payment goods_no [%s]", goods_no));
-		
 		try{
+			String type = request.getParameter("channel");
+			if(type == null){
+				type = "0";
+			}
 			//判断非空参数
 			if (StringUtils.isBlank(appid)) {
         		logger.error(String.format("apply payment appid [%s]", appid));
@@ -572,19 +574,19 @@ public class PaymentController extends BaseController{
     				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
     	            break;
     			case BHU_WAP_WEIXIN: //汇付宝
-    				if(type == "1"){
+    				if(type.equals("2")){
     					result =  doNativeWxPayment(request,response,type,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
         				
     				}else{
     					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByName();
         				if(agentMerchant.equals("Midas")){
-        					result =  doMidas(response,"2", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					result =  doMidas(response,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}else if(agentMerchant.equals("Hee")){
         					result =  doHee(response,"3", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}else if(agentMerchant.equals("Now")){
         					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}else{
-        					result =  doMidas(response,"2", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					result =  doMidas(response,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}
     				}
                 	break;
@@ -743,18 +745,19 @@ public class PaymentController extends BaseController{
      * @throws JsonMappingException
      * @throws IOException
      */
-	private PaymentTypeVTO doNativeWxPayment(HttpServletRequest request, HttpServletResponse response,String type,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac,String paymentName,String appId){
+	private PaymentTypeVTO doNativeWxPayment(HttpServletRequest request, HttpServletResponse response,String channel_type,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac,String paymentName,String appId){
 		PaymentTypeVTO result= new PaymentTypeVTO();
         String NOTIFY_URL = PayHttpService.WEIXIN_NOTIFY_URL;
         String product_name= paymentName;//订单名称
     	total_fee = BusinessHelper.getMoney(total_fee);
-    	if(type == "0"){
+    	String type = "";
+    	if(channel_type.equals("0")){
     		type = PaymentChannelCode.BHU_PC_WEIXIN.i18n();
-    	}else if(type == "1"){
+    	}else if(channel_type.equals("2")){
     		type = PaymentChannelCode.BHU_WAP_WEIXIN.i18n();
     	}
         //记录请求的Goods_no
-        String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,type,total_fee,Ip,type,usermac,paymentName,appId);
+        String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,channel_type,total_fee,Ip,type,usermac,paymentName,appId);
         
       //记录请求支付完成后返回的地址
 		if (!StringUtils.isBlank(locationUrl)) {
