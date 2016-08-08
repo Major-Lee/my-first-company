@@ -578,12 +578,12 @@ public class DeviceBusinessFacadeService {
 				String curTime =WriterThread.getCurrentTime();
 				WriterThread.writeLog(curTime +" - "+ActionMode.HandsetOnline.getPrefix()+message);
 				//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
-		}
-			portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
-			System.out.println("do WangAn store CacheResult"+message);
+			}
 		}else{   
 			logger.info("do WangAn Processor  authorize is false or null" + dto.getMac());
 		}
+		portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
+		System.out.println("do WangAn store CacheResult"+message);
 	}
 	
 	private void processHandsetOffline(String message){
