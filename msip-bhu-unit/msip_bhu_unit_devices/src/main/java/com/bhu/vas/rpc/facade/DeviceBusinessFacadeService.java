@@ -602,27 +602,26 @@ public class DeviceBusinessFacadeService {
 					dto.setTs(ts);
 				}
 				
-				String Hip = onlineDto.getHip();
-				String Hname = onlineDto.getHname();
 				HandsetDeviceDTO handsetDeviceDTO =	HandsetStorageFacadeService.handset(dto.getMac(),dto.getHmac());
 				System.out.println("do WangAn offline handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
-				if(handsetDeviceDTO != null){
+				
+				String Hip = onlineDto.getHip();
+				if(Hip != null && Hip != ""){
+					dto.setHip(Hip);
+				}else if(handsetDeviceDTO != null){
 					String hip = handsetDeviceDTO.getIp();
 					if(hip != null && hip != ""){
-						dto.setHip(Hip);
+						dto.setHip(hip);
 					}
-					
+				}
+				
+				String Hname = onlineDto.getHname();
+				if(Hname != null && Hname != ""){
+					dto.setHname(Hname);
+				}else if(handsetDeviceDTO != null ){
 					String hName =  handsetDeviceDTO.getDhcp_name();
 					if(hName != null && hName != ""){
 						dto.setHname(hName);
-					}
-				}else{
-					if(Hip != null && Hip != ""){
-						dto.setHip(Hip);
-					}
-					
-					if(Hname != null && Hname != ""){
-						dto.setHname(Hname);
 					}
 				}
 				
@@ -678,27 +677,27 @@ public class DeviceBusinessFacadeService {
 			if( ts != 0){
 				dto.setTs(ts);
 			}
-			String Hip = onlineDto.getHip();
-			String Hname = onlineDto.getHname();
+			
 			HandsetDeviceDTO handsetDeviceDTO =	HandsetStorageFacadeService.handset(dto.getMac(),dto.getHmac());
-			System.out.println("do WangAn Authorize handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
-			if(handsetDeviceDTO != null){
+			System.out.println("do WangAn Authouize handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
+			
+			String Hip = onlineDto.getHip();
+			if(Hip != null && Hip != ""){
+				dto.setHip(Hip);
+			}else if(handsetDeviceDTO != null){
 				String hip = handsetDeviceDTO.getIp();
 				if(hip != null && hip != ""){
-					dto.setHip(Hip);
+					dto.setHip(hip);
 				}
-				
+			}
+			
+			String Hname = onlineDto.getHname();
+			if(Hname != null && Hname != ""){
+				dto.setHname(Hname);
+			}else if(handsetDeviceDTO != null){
 				String hName =  handsetDeviceDTO.getDhcp_name();
 				if(hName != null && hName != ""){
 					dto.setHname(hName);
-				}
-			}else{
-				if(Hip != null && Hip != ""){
-					dto.setHip(Hip);
-				}
-				
-				if(Hname != null && Hname != ""){
-					dto.setHname(Hname);
 				}
 			}
 			String rssi = onlineDto.getRssi();
