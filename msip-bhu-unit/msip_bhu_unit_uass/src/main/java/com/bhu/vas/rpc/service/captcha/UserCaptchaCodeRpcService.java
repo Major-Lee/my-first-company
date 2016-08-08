@@ -33,14 +33,14 @@ public class UserCaptchaCodeRpcService implements IUserCaptchaCodeRpcService{
 	@Override
 	public RpcResponseDTO<UserCaptchaCodeDTO> identityAuth(int countrycode,
 			String acc,String hdmac) {
-		logger.info(String.format("identityAuth with countrycode[%s] acc[%s] act[%s]", countrycode,acc,hdmac));
+		logger.info(String.format("identityAuth with countrycode[%s] acc[%s] hdmac[%s]", countrycode,acc,hdmac));
 		return userCaptchaCodeUnitFacadeService.identityAuth(countrycode, acc, hdmac);
 	}
 	
 	@Override
 	public RpcResponseDTO<Boolean> validateIdentity(int countrycode,
 			String acc,String hdmac) {
-		logger.info(String.format(" countrycode[%s] acc[%s] act[%s]", countrycode,acc,hdmac));
+		logger.info(String.format("validateIdentity countrycode[%s] acc[%s] hdmac[%s]", countrycode,acc,hdmac));
 		return userCaptchaCodeUnitFacadeService.validateIdentity(countrycode, acc, hdmac);
 	}
 }

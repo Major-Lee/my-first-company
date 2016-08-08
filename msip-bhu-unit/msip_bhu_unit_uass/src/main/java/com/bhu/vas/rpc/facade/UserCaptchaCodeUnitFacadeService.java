@@ -199,9 +199,9 @@ public class UserCaptchaCodeUnitFacadeService {
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo(accWithCountryCode, "id").andColumnEqualTo(hdmac, "hdmac");
 		if (userIdentityAuthService.countByModelCriteria(mc) != 0) {
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}else{
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.FALSE);
 		}
 	}
 	
