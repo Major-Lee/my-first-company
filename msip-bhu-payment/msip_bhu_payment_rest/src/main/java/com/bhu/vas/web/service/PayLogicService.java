@@ -147,7 +147,7 @@ public class PayLogicService {
      * @param type 支付方式
      * @return 支付流水号
      */
-    public String createPaymentReckoning(String out_trade_no,String total_fee,String Ip,String type,String usermac,String paymentName,String appId){
+    public String createPaymentReckoning(String out_trade_no,String channel_type,String total_fee,String Ip,String type,String usermac,String paymentName,String appId){
     	
     	String channelType = "";
     	//判断请求支付类型
@@ -161,16 +161,18 @@ public class PayLogicService {
  		}else if(type.equals(PaymentChannelCode.BHU_APP_WEIXIN.i18n())){
  			paymentType = PaymentChannelCode.BHU_APP_WEIXIN.code();
  		}else if(type.equals(PaymentChannelCode.BHU_WAP_WEIXIN.i18n())){
- 			channelType = PaymentChannelCode.BHU_HEEPAY_WEIXIN.code();
+ 			 if(channel_type == "1"){
+  				channelType = PaymentChannelCode.BHU_QRCODE_WEIXIN.code();
+  			}else if(channel_type == "2"){
+ 				channelType = PaymentChannelCode.BHU_MIDAS_WEIXIN.code();
+ 			}else if(channel_type == "3"){
+ 				channelType = PaymentChannelCode.BHU_HEEPAY_WEIXIN.code();
+ 			}else if(channel_type == "4"){
+ 				channelType = PaymentChannelCode.BHU_NOW_WEIXIN.code();
+ 	 		}
  			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
  		}else if(type.equals(PaymentChannelCode.BHU_WAP_ALIPAY.i18n())){
  			paymentType = PaymentChannelCode.BHU_WAP_ALIPAY.code();
- 		}else if(type.equals(PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n())){
- 			channelType = PaymentChannelCode.BHU_MIDAS_WEIXIN.code();
- 			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
- 		}else if(type.equals(PaymentChannelCode.BHU_NOW_WEIXIN.i18n())){
- 			channelType = PaymentChannelCode.BHU_NOW_WEIXIN.code();
- 			paymentType = PaymentChannelCode.BHU_WAP_WEIXIN.code();
  		}
     	
     	if(Ip == "" || Ip == null){
