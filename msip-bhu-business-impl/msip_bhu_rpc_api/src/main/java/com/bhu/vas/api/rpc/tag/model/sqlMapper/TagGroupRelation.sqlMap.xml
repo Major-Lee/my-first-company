@@ -101,7 +101,7 @@
 		where id=#{id}
 	</delete>
 
-	<delete id="delete" parameterType="tagGroup">
+	<delete id="delete" parameterType="tagGroupRelation">
 		delete from
 		<include refid="modelTableName" />
 		<where>

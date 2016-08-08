@@ -37,7 +37,7 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 			userId = new UserIdentityAuth();
 			userId.setId(accWithCountryCode);
 			userId.setHdmac(hdmac);
-			userId.setCreate_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5));
+			userId.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5));
 		    this.insert(userId);
 		}else{
 			if (userId.getHdmac() != hdmac) {
