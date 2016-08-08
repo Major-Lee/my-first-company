@@ -6,7 +6,7 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 @SuppressWarnings("serial")
 public class UserIdentityAuth extends BaseStringModel {
 	private String hdmac;
-	private String create_at;
+	private String created_at;
 	
 
 	public String getHdmac() {
@@ -16,13 +16,14 @@ public class UserIdentityAuth extends BaseStringModel {
 	public void setHdmac(String hdmac) {
 		this.hdmac = hdmac;
 	}
-	
-	public String getCreate_at() {
-		return create_at;
+
+
+	public String getCreated_at() {
+		return created_at;
 	}
 
-	public void setCreate_at(String create_at) {
-		this.create_at = create_at;
+	public void setCreated_at(String created_at) {
+		this.created_at = created_at;
 	}
 
 	@Override

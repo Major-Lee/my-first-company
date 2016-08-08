@@ -175,14 +175,15 @@ public class UserCaptchaCodeUnitFacadeService {
 			payload.setCountrycode(countrycode);
 			payload.setCaptcha(code.getCaptcha());
 			
+			userIdentityAuthService.generateIdentityAuth(countrycode, acc, hdmac);
+			
 			String smsg = String.format(BusinessRuntimeConfiguration.Internal_Portal_Template, payload.getCaptcha());
 			if(StringUtils.isNotEmpty(smsg)){
 				String response = SmsSenderFactory.buildSender(
 					BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
 				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,response));
 			}
-			
-			userIdentityAuthService.generateIdentityAuth(countrycode, acc, hdmac);
+
 			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
 		} catch (BusinessI18nCodeException ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ex.getErrorCode(), ex.getPayload());

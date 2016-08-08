@@ -162,10 +162,11 @@
 		<typeAlias alias="userActivity" 	type="com.bhu.vas.api.rpc.user.model.UserActivity" />
 		
 		<typeAlias alias="userSharedealDistributorView" 	type="com.bhu.vas.api.rpc.user.model.UserSharedealDistributorView" />
-		
+		<!-- portal 身份认证 -->
+		<typeAlias alias="userIdentityAuth" 	type="com.bhu.vas.api.rpc.user.model.UserIdentityAuth" />
 	</typeAliases>
 
-	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin"> 
+	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.pluginu.ShardPlugin"> 
 		<property name="shardingConfig" value="myibatis/shard_ucenter_config.xml"/> 
 		</plugin> </plugins> -->
 
@@ -292,7 +293,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserActivity.sqlMap.xml" />
 		
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSharedealDistributorView.sqlMap.xml" />
-		
+		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserIdentityAuth.sqlMap.xml" />
 	</mappers>
 
 </configuration>
