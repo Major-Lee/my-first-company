@@ -52,14 +52,20 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 	}
 	
 	public UserIdentityAuth validateIdentity(String hdmac){
-		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("hdmac", hdmac.trim());
-		List<UserIdentityAuth> auth = this.findModelByModelCriteria(mc);
-		
-		if (auth == null || !auth.get(0).getHdmac().equals(hdmac)) {
+		try {
+			
+			List<UserIdentityAuth> auth = null;
+			ModelCriteria mc = new ModelCriteria();
+			mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("hdmac", hdmac.trim());
+			auth = this.findModelByModelCriteria(mc);
+			
+			if (auth != null) {
+				return auth.get(0);
+			}else{
+				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_NOT_EXIST);
+			}
+		} catch (Exception e) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_NOT_EXIST);
-		}else{
-			return auth.get(0);
 		}
 	}
 	
