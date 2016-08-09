@@ -197,7 +197,7 @@ public class UserCaptchaCodeUnitFacadeService {
 			 String acc,String hdmac){
 		String accWithCountryCode = PhoneHelper.format(countrycode, acc);
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo(accWithCountryCode, "id").andColumnEqualTo(hdmac, "hdmac");
+		mc.createCriteria().andColumnEqualTo("id",accWithCountryCode).andColumnEqualTo("hdmac",hdmac);
 		if (userIdentityAuthService.countByModelCriteria(mc) != 0) {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}else{

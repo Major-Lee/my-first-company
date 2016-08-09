@@ -86,6 +86,12 @@ public class UserCaptchaCodeController extends BaseController{
 			@RequestParam(required = true) String hdmac
 			) {
 		
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		
 		RpcResponseDTO<Boolean> rpcResult = userCaptchaCodeRpcService.validateIdentity(countrycode, acc, hdmac);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
