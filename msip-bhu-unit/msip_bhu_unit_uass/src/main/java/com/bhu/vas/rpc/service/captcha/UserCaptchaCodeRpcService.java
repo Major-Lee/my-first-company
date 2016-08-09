@@ -9,6 +9,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
+import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.rpc.facade.UserCaptchaCodeUnitFacadeService;
 
 @Service("userCaptchaCodeRpcService")
@@ -38,9 +39,8 @@ public class UserCaptchaCodeRpcService implements IUserCaptchaCodeRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<Boolean> validateIdentity(int countrycode,
-			String acc,String hdmac) {
-		logger.info(String.format("IdentityAuth countrycode[%s] acc[%s] hdmac[%s]", countrycode,acc,hdmac));
-		return userCaptchaCodeUnitFacadeService.validateIdentity(countrycode, acc, hdmac);
+	public RpcResponseDTO<UserIdentityAuth> validateIdentity(String hdmac) {
+		logger.info(String.format("IdentityAuth hdmac[%s]", hdmac));
+		return userCaptchaCodeUnitFacadeService.validateIdentity(hdmac);
 	}
 }

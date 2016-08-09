@@ -51,10 +51,15 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 		}
 	}
 	
-	public void validateIdentity(String accWithCountryCode, String hdmac){
-		UserIdentityAuth auth = this.getById(accWithCountryCode);
-		if (auth == null || !auth.getHdmac().equals(hdmac)) {
+	public UserIdentityAuth validateIdentity(String hdmac){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("hdmac", hdmac.trim());
+		List<UserIdentityAuth> auth = this.findModelByModelCriteria(mc);
+		
+		if (auth == null || !auth.get(0).getHdmac().equals(hdmac)) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_NOT_EXIST);
+		}else{
+			return auth.get(0);
 		}
 	}
 	
