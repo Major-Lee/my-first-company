@@ -1,5 +1,7 @@
 package com.bhu.vas.business.ds.user.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -30,7 +32,6 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 	 * @param acc 手机号
 	 * @param hdmac 终端mac
 	 */
-	@SuppressWarnings("unused")
 	public void generateIdentityAuth(int countrycode ,String acc,String hdmac){	
 		String accWithCountryCode = PhoneHelper.format(countrycode, acc);
 		UserIdentityAuth userId = this.getById(accWithCountryCode);
@@ -38,7 +39,7 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 			userId = new UserIdentityAuth();
 			userId.setId(accWithCountryCode);
 			userId.setHdmac(hdmac);
-			userId.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5));
+			userId.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
 		    this.insert(userId);
 		}else{
 			if (userId.getHdmac() != hdmac) {
@@ -51,10 +52,8 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 	}
 	
 	public void validateIdentity(String accWithCountryCode, String hdmac){
-		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("id",accWithCountryCode).andColumnEqualTo("hdmac",hdmac);
-		int result = this.countByModelCriteria(mc);
-		if (result == 0) {
+		UserIdentityAuth auth = this.getById(accWithCountryCode);
+		if (auth == null || !auth.getHdmac().equals(hdmac)) {
 			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_NOT_EXIST);
 		}
 	}
