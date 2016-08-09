@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
+import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -60,20 +61,12 @@ public class UserCaptchaCodeController extends BaseController{
 	@RequestMapping(value="/identity_auth",method={RequestMethod.POST})
 	public void check_identity(
 			HttpServletResponse response,
-			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
-			@RequestParam(required = true) String acc,
 			@RequestParam(required = true) String hdmac
 			) {
 		
-		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
-		if(validateError != null){
-			SpringMVCHelper.renderJson(response, validateError);
-			return;
-		}
-		
-		RpcResponseDTO<Boolean> rpcResult = userCaptchaCodeRpcService.validateIdentity(countrycode, acc, hdmac);
+		RpcResponseDTO<UserIdentityAuth> rpcResult = userCaptchaCodeRpcService.validateIdentity(hdmac.toLowerCase());
 		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
@@ -97,7 +90,7 @@ public class UserCaptchaCodeController extends BaseController{
 		
 		RpcResponseDTO<Boolean> rpcResult = userCaptchaCodeRpcService.validateIdentityCode(countrycode, acc, hdmac, captcha);
 		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}

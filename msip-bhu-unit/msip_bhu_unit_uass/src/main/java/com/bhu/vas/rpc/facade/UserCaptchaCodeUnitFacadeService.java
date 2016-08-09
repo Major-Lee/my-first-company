@@ -175,12 +175,10 @@ public class UserCaptchaCodeUnitFacadeService {
 	}
 	
 	
-	public RpcResponseDTO<Boolean> validateIdentity(int countrycode,
-			 String acc,String hdmac){
-		String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+	public RpcResponseDTO<UserIdentityAuth> validateIdentity(String hdmac){
 		try {
-			userIdentityAuthService.validateIdentity(accWithCountryCode, hdmac);
-			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+			UserIdentityAuth auth = userIdentityAuthService.validateIdentity(hdmac);
+			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(auth);
 		} catch (BusinessI18nCodeException ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ex.getErrorCode(), ex.getPayload());
 		} 
