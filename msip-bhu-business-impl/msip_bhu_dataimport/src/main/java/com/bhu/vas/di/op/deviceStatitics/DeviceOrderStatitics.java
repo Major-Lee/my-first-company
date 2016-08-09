@@ -160,9 +160,6 @@ public class DeviceOrderStatitics {
 			String[] pcMacDataArray=pcMacData.split("],");
 			if(pcMacDataArray.length>0){
 				for(String i:pcMacDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
 					UMStatisticsHashService.getInstance().umHset("MacPcUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
 				}
 			}
@@ -185,9 +182,6 @@ public class DeviceOrderStatitics {
 			String[] pcMacClickDataArray=pcMacClickData.split("],");
 			if(pcMacClickDataArray.length>0){
 				for(String i:pcMacClickDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
 					UMStatisticsHashService.getInstance().umHset("MacPcClickNum"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
 				}
 			}
@@ -210,9 +204,6 @@ public class DeviceOrderStatitics {
 			String[] mobileMacUvDataArray=mobileMacUvData.split("],");
 			if(mobileMacUvDataArray.length>0){
 				for(String i:mobileMacUvDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
 					UMStatisticsHashService.getInstance().umHset("MacMobileUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
 				}
 			}
@@ -235,9 +226,6 @@ public class DeviceOrderStatitics {
 			String[] iosMacUvDataArray=iosMacUvData.split("],");
 			if(iosMacUvDataArray.length>0){
 				for(String i:iosMacUvDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
 					UMStatisticsHashService.getInstance().umHset("MacIosUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
 				}
 			}
@@ -260,9 +248,6 @@ public class DeviceOrderStatitics {
 			String[] androidMacUvDataArray=androidMacUvData.split("],");
 			if(androidMacUvDataArray.length>0){
 				for(String i:androidMacUvDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
 					UMStatisticsHashService.getInstance().umHset("MacAndroidUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
 				}
 			}
@@ -286,9 +271,6 @@ public class DeviceOrderStatitics {
 			String[] mobileMacClickDataArray=mobileMacClickData.split("],");
 			if(mobileMacClickDataArray.length>0){
 				for(String i:mobileMacClickDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
 					UMStatisticsHashService.getInstance().umHset("MacMobileClick"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
 				}
 			}
@@ -311,9 +293,6 @@ public class DeviceOrderStatitics {
 			String[] iosMacClickDataArray=iosMacClickData.split("],");
 			if(iosMacClickDataArray.length>0){
 				for(String i:iosMacClickDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
 					UMStatisticsHashService.getInstance().umHset("MacIosClick"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
 				}
 			}
@@ -336,9 +315,6 @@ public class DeviceOrderStatitics {
 			String[] androidMacClickDataArray=androidMacClickData.split("],");
 			if(androidMacClickDataArray.length>0){
 				for(String i:androidMacClickDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
 					UMStatisticsHashService.getInstance().umHset("MacAndroidClick"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
 				}
 			}
