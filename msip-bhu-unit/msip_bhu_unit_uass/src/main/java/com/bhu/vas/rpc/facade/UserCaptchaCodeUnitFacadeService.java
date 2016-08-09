@@ -78,6 +78,9 @@ public class UserCaptchaCodeUnitFacadeService {
 									case SnkAuth:
 										smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSnkAuthSMS_Template, payload.getCaptcha());
 										break;
+									case Portal:
+										smsg = String.format(BusinessRuntimeConfiguration.Internal_Portal_Template, payload.getCaptcha());
+										break;
 									default:
 										smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Template, payload.getCaptcha());
 										break;
@@ -150,40 +153,23 @@ public class UserCaptchaCodeUnitFacadeService {
 		//logger.info(String.format("validateCaptchaCode with countrycode[%s] acc[%s] captcha[%s]", countrycode,acc,captcha));
 		//return userCaptchaCodeUnitFacadeService.validateCaptchaCode(countrycode, acc,captcha);
 	}
-	/**
-	 * 
-	 * @param countrycode
-	 * @param acc
-	 * @param hdmac
-	 * @return
-	 */
-	public RpcResponseDTO<UserCaptchaCodeDTO> identityAuth(int countrycode,
-			 String acc,String hdmac){
+	
+	
+	public RpcResponseDTO<Boolean> validateIdentityCode(int countrycode,
+			 String acc,String hdmac,String captcha){
 		try {
 			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-			UserCaptchaCode code = userCaptchaCodeService.doGenerateCaptchaCode(accWithCountryCode);
-			UserCaptchaCodeDTO payload = new UserCaptchaCodeDTO();
-			payload.setAcc(acc);
-			payload.setCountrycode(countrycode);
-			payload.setCaptcha(code.getCaptcha());
-			
-			userIdentityAuthService.generateIdentityAuth(countrycode, acc, hdmac);
-			
-			String smsg = String.format(BusinessRuntimeConfiguration.Internal_Portal_Template, payload.getCaptcha());
-			if(StringUtils.isNotEmpty(smsg)){
-				String response = SmsSenderFactory.buildSender(
-					BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,response));
+			ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
+			if(errorCode != null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
 			}
-
-			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(payload);
+			userIdentityAuthService.generateIdentityAuth(countrycode, acc, hdmac);
+			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		} catch (BusinessI18nCodeException ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ex.getErrorCode(), ex.getPayload());
-		} catch(Exception ex){
-			ex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR);
-		}
+		} 
 	}
+	
 	
 	public RpcResponseDTO<Boolean> validateIdentity(int countrycode,
 			 String acc,String hdmac){
@@ -193,10 +179,7 @@ public class UserCaptchaCodeUnitFacadeService {
 			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		} catch (BusinessI18nCodeException ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ex.getErrorCode(), ex.getPayload());
-		} catch(Exception ex){
-			ex.printStackTrace(System.out);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR);
-		}
+		} 
 	}
 	
 	

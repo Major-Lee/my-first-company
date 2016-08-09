@@ -31,6 +31,7 @@ public class BusinessEnumType {
 		RegisterOrLogin("注册或登录", "R"),
 		PwdReset("密码充值", "P"),
 		SnkAuth("共享网络短信认证", "S"),
+		Portal("portal身份认证", "I"),
 		;
 		private String name;
 		private String type;
