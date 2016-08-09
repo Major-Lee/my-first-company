@@ -2,102 +2,46 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.user.model.UserWalletLog">
+<mapper namespace="com.bhu.vas.api.rpc.user.model.UserIdentityAuth">
 
-  <resultMap id="modelResult" type="userWalletLog">
+  <resultMap id="modelResult" type="userIdentityAuth">
     <id property="id" column="id"/>
-    <result property="uid" column="uid"/>
-    <result property="orderid" column="orderid"/>
-    <result property="transmode" column="transmode"/>
-    <result property="transtype" column="transtype"/>
-    <result property="transmode_desc" column="transmode_desc"/>
-    <result property="transtype_desc" column="transtype_desc"/>    
-    <result property="rmoney" column="rmoney"/>
-    <result property="cash" column="cash"/>
-    <result property="vcurrency" column="vcurrency"/>
-    <result property="mac" column="mac"/>
-    <result property="current_gpath" column="current_gpath"/>
-    <result property="memo" column="memo"/>
-    <result property="description" column="description"/>
-    
+    <result property="hdmac" column="hdmac"/>
+    <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_vas_users_wallet_log
+	    	t_vas_users_portal_auth
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	uid,
-	    	orderid,
-	    	transmode,
-	    	transtype,
-	    	transmode_desc,
-	    	transtype_desc,
-	    	rmoney,
-	    	cash,
-	    	vcurrency,
-	    	mac,
-	    	current_gpath,
-	    	memo,
-	    	description,
+	    	hdmac,
+	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	uid,
-	    	orderid,
-	    	transmode,
-	    	transtype,
-	    	transmode_desc,
-	    	transtype_desc,
-	    	rmoney,
-	    	cash,
-	    	vcurrency,
-	    	mac,
-	    	current_gpath,
-	    	memo,
-	    	description,
+	    	hdmac,
+	    	created_at,
 	    	updated_at
 	    ]]>
-	</sql> 	
+	</sql>   
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{uid},
-	    	#{orderid},
-	    	#{transmode},
-	    	#{transtype},
-	    	#{transmode_desc},
-	    	#{transtype_desc},	    	
-	    	#{rmoney},
-	    	#{cash},
-	    	#{vcurrency},
-	    	#{mac},
-	    	#{current_gpath},
-	    	#{memo},
-	    	#{description},
+			#{hdmac},
+			#{created_at},
 	    	#{updated_at}
-	</sql>
-		
+	</sql> 
+	
 	<sql id="modelUpdateValues">
-	    	uid = #{uid},
-	    	orderid = #{orderid},
-	    	transmode = #{transmode},
-	    	transtype = #{transtype},
-	    	transmode_desc = #{transmode_desc},
-	    	transtype_desc = #{transtype_desc},
-	    	rmoney = #{rmoney},
-	    	cash = #{cash},
-	    	vcurrency = #{vcurrency},
-	    	mac = #{mac},
-	    	current_gpath = #{current_gpath},
-	    	memo = #{memo},
-	    	description = #{description},
+			hdmac =	#{hdmac},
+			created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
@@ -148,24 +92,11 @@
 		</where>
 	</select>
 	
-	<select id="countAndsum" resultType="hashmap">
-	    select sum(cash),count(1) from <include refid="modelTableName" />
-	    <where>
-	    	uid = #{uid}
-	    	AND transtype = 'P2C'
-	    	AND updated_at &gt;= #{start_time}
-	    	AND updated_at &lt;= #{end_time}
-	    	<if test="mac != null">
-	    		AND	mac = #{mac}
-	    	</if>
-	    </where> 
-	</select>
-	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="userWalletLog">
+	<delete id="delete" parameterType="userIdentityAuth">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -173,14 +104,12 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="userWalletLog">
+	
+	<insert id="insert" parameterType="userIdentityAuth">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
-		<selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
-			select last_insert_id(); 
-		</selectKey>
 	</insert>
  
-	<update id="update" parameterType="userWalletLog">
+	<update id="update" parameterType="userIdentityAuth">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
@@ -204,10 +133,10 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="long">
+	<select id="pkSelectByModelCriteria" resultType="string">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
-	     	<include refid="model_CRITERIA_SQL_GenCondition" />
+	      	<include refid="model_CRITERIA_SQL_GenCondition" />
 	      	<if test="orderByClause != null">
 				order by ${orderByClause}
 	    	</if>
@@ -230,7 +159,4 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
-	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
-		${proc_call} 		
-	</select>
 </mapper>

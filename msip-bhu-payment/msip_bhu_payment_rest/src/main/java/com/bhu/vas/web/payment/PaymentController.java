@@ -624,15 +624,17 @@ public class PaymentController extends BaseController{
     			respone.setMsg(msg);
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(respone)));
     			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(respone));
-    		}else if(type.equalsIgnoreCase("Midas")){
-//    			PaymentTypeVTO results = new PaymentTypeVTO();
-//    			results.setType("json");
-//    			results.setUrl(msg);
-//    			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(results)));
-//    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(results)));
-    			logger.info(String.format("apply payment return result [%s]",msg));
-    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(msg));
-    		}else{
+    		}
+//    		else if(type.equalsIgnoreCase("Midas")){
+////    			PaymentTypeVTO results = new PaymentTypeVTO();
+////    			results.setType("json");
+////    			results.setUrl(msg);
+////    			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(results)));
+////    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(results)));
+//    			logger.info(String.format("apply payment return result [%s]",msg));
+//    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(msg));
+//    		}
+    		else{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(result)));
     			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
     		}
@@ -746,8 +748,12 @@ public class PaymentController extends BaseController{
      * @throws IOException
      */
 	private PaymentTypeVTO doNativeWxPayment(HttpServletRequest request, HttpServletResponse response,String channel_type,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac,String paymentName,String appId){
+		
+		
 		PaymentTypeVTO result= new PaymentTypeVTO();
         String NOTIFY_URL = PayHttpService.WEIXIN_NOTIFY_URL;
+        String PRUE_LOGO_URL = PayHttpService.PRUE_LOGO_URL;
+        String QR_CODE_URL = PayHttpService.QR_CODE_URL;
         String product_name= paymentName;//订单名称
     	total_fee = BusinessHelper.getMoney(total_fee);
     	String type = "";
@@ -784,7 +790,7 @@ public class PaymentController extends BaseController{
     	String codeUrl = unifiedOrderResponse.getCode_url();
     	String base64CodeUrl = "";
 		try {
-			base64CodeUrl = BusinessHelper.GetBase64ImageStr(codeUrl);
+			base64CodeUrl = BusinessHelper.GetBase64ImageStr(codeUrl,QR_CODE_URL,PRUE_LOGO_URL);
 		} catch (WriterException | IOException e) {
 			logger.error(String.format("return pc weixin catch WriterException "+e.getCause()));
 		}
@@ -1126,8 +1132,7 @@ public class PaymentController extends BaseController{
         	result.setUrl("支付请求失败");
         	return result;
     	}else{
-        	result.setType("Midas");
-        	//result.setType("http");
+        	result.setType("http");
         	result.setUrl(results);
         	return result;
     	}
@@ -1810,9 +1815,10 @@ public class PaymentController extends BaseController{
 		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
 		String isNull = request.getParameter("mhtOrderNo");
 		if (StringUtils.isBlank(isNull)) {
-			logger.error(String.format("get nowpay return notify out_trade_no [%s]", isNull));
-			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+			logger.info(String.format("get nowpay return notify out_trade_no [%s]", isNull));
+//			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+//					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+			response.sendRedirect(locationUrl);
 			return;
 		}
 		String transStatus = request.getParameter("transStatus");

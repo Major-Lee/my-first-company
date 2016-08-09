@@ -40,15 +40,16 @@ public class PaymentInternalHelper {
 	 * @param total_fee 支付金额
 	 * @param exter_invoke_ip 客户端ip
 	 * @param goods_no 订单id
+	 * @param channel 订单渠道默认为0,1为名片打赏,2为他人代付
 	 * @return
 	 */
 	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(Integer appid, String payment_type, 
-			String amount, String requestip, String umac, String orderid, String payment_completed_url){
+			String amount, String requestip, String umac, String orderid, String payment_completed_url,String channel){
 		Map<String, String> api_params = generatePaymentApiParamMap(appid);
 		if(api_params == null){
 			logger.info(String.format("CreatePaymentUrlCommunication generate params error orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s]", orderid, payment_type, 
-					amount, requestip, umac, payment_completed_url, appid));
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s] channel[%s]", orderid, payment_type, 
+					amount, requestip, umac, payment_completed_url, appid,channel));
 			return null;
 		}
 		
@@ -58,6 +59,7 @@ public class PaymentInternalHelper {
 		api_params.put("umac", umac);
 		api_params.put("goods_no", orderid);
 		api_params.put("payment_completed_url", payment_completed_url);
+		api_params.put("channel", channel);
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = null;
 		try {
@@ -70,15 +72,15 @@ public class PaymentInternalHelper {
 /*			System.out.println(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
 					+ "amount[%s] ip[%s] req[%s]", orderid, payment_type, amount, requestip, response));*/
 			logger.info(String.format("CreatePaymentUrlCommunication Response orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s] req[%s]", orderid, payment_type, 
-					amount, requestip, umac, payment_completed_url, appid, response));
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s] channel[%s] req[%s]", orderid, payment_type, 
+					amount, requestip, umac, payment_completed_url, appid, channel,response));
 			if(StringUtils.isNotEmpty(response)){
 				return JsonHelper.getDTO(response, ResponseCreatePaymentUrlDTO.class);
 			}
 		} catch (Exception ex) {
 			logger.error(String.format("CreatePaymentUrlCommunication Response  orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s] Exception ", orderid, payment_type, 
-					amount, requestip, umac, payment_completed_url, appid), ex);
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s] channel[%s] Exception ", orderid, payment_type, 
+					amount, requestip, umac, payment_completed_url, appid,channel), ex);
 			ex.printStackTrace(System.out);
 		}
 		return rcp_dto;

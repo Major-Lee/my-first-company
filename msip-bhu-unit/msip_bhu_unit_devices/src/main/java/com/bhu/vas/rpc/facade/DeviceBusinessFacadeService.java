@@ -1018,7 +1018,8 @@ public class DeviceBusinessFacadeService {
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 0" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
 		if(handset != null) {
 			dto.setVapname(handset.getVapname());
-			dto.setIp(handset.getIp() == null ||handset.getIp().isEmpty()  ? "0.0.0.0" : handset.getIp());
+			dto.setDhcp_name(handset.getDhcp_name() == null ? null : handset.getDhcp_name());
+			dto.setIp(handset.getIp() == null ? "0.0.0.0" : handset.getIp());
 		}
 		HandsetStorageFacadeService.handsetComming(dto);
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 1" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
