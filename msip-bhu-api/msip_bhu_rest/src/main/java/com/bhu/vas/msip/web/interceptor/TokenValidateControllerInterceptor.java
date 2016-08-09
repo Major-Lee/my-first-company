@@ -64,7 +64,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		//请求验证码
 		ignoreTokensValidateUriSet.add("/user/captcha/fetch_captcha");
 		ignoreTokensValidateUriSet.add("/user/captcha/identity_auth");
-		ignoreTokensValidateUriSet.add("/user/captcha/validate_id");
+		ignoreTokensValidateUriSet.add("/user/captcha/validate_captcha");
 		ignoreTokensValidateUriSet.add("/console/sessions/create");
 		ignoreTokensValidateUriSet.add("/console/sessions/validates");
 		//ignoreTokensValidateUriSet.add("/console/search/fetch_by_condition_message");
