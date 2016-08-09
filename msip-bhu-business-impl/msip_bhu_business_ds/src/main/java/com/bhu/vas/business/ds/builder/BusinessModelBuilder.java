@@ -21,6 +21,7 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
@@ -187,7 +188,8 @@ public class BusinessModelBuilder {
 			vto.setOesv(entity.getOem_swver());
 			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
 			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
-			vto.setIpgen(entity.isIpgen());
+			vto.setLoc_method(entity.getLoc_method());
+			vto.setIpgen((entity.getLoc_method() == WifiDeviceHelper.Device_Location_By_WanIp));
 			vto.setSn(entity.getSn());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){
@@ -221,7 +223,8 @@ public class BusinessModelBuilder {
 			vto.setOesv(entity.getOem_swver());
 			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
 			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
-			vto.setIpgen(entity.isIpgen());
+			vto.setLoc_method(entity.getLoc_method());
+			vto.setIpgen((entity.getLoc_method() == WifiDeviceHelper.Device_Location_By_WanIp));
 			vto.setSn(entity.getSn());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){

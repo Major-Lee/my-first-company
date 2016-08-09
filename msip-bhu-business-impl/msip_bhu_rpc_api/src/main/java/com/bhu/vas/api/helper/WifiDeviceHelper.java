@@ -56,6 +56,10 @@ public class WifiDeviceHelper {
 	
 	public final static String Default_Dual_Suffix = "-5G";
 	
+	public final static int Device_Location_By_Wifi = 0;	//设备自己根据wifi定位
+	public final static int Device_Location_By_WanIp = 1;	//服务器根据设备wan口ip定位
+	public final static int Device_Location_By_APP = 2;		//必虎app定位数组
+	
 	public static final int Boot_On_Reset_Happen = 1;
 	public static final int Boot_On_Reset_NotHappen = 0;
 	//private static Set<String> URouter_HdTypes = new HashSet<String>();

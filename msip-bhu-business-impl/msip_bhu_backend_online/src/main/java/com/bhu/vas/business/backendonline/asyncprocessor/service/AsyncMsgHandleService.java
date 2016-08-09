@@ -313,7 +313,7 @@ public class AsyncMsgHandleService {
 				}
 			}
 
-			afterDeviceOnlineThenCmdDown(dto.getMac(), dto.isNeedLocationQuery(), payloads);
+			afterDeviceOnlineThenCmdDown(dto.getMac(), (WifiDeviceHelper.Device_Location_By_APP == wifiDevice.getLoc_method())?false:dto.isNeedLocationQuery(), payloads);
 
 			boolean needUpdate = false;
 			// boolean needClaim = wifiDevice.needClaim();
@@ -1249,11 +1249,14 @@ public class AsyncMsgHandleService {
 		// 1:记录wifi设备的坐标 (backend)
 		WifiDevice entity = wifiDeviceService.getById(dto.getMac());
 		if (entity != null) {
+			//app定位的地址优先级最高，不允许覆盖
+			if(WifiDeviceHelper.Device_Location_By_APP == entity.getLoc_method())
+				return;
 			// 如果经纬度和记录的一样(如果经纬度有波动,可以考虑按误差值来判定), 并且地理信息已经提取, 就不再进行提取了
 			if (dto.getLat().equals(entity.getLat()) && dto.getLon().equals(entity.getLon())) {
 				return;
 			}
-
+			
 			entity.setLat(dto.getLat());
 			entity.setLon(dto.getLon());
 			// 2:根据坐标提取地理位置详细信息
@@ -1278,7 +1281,8 @@ public class AsyncMsgHandleService {
 						response = GeocodingHelper.geoPoiUpdate(params);
 						entity.setBdid(String.valueOf(response.getId()));
 					}
-					entity.setIpgen(false);
+//					entity.setIpgen(false);
+					entity.setLoc_method(WifiDeviceHelper.Device_Location_By_Wifi);
 					logger.info(String.format(
 							"AnsyncMsgBackendProcessor wifiDeviceLocationHandle baidu geoid[%s] %s successful",
 							response.getId(), StringUtils.isEmpty(bdid) ? "Create" : "Update"));

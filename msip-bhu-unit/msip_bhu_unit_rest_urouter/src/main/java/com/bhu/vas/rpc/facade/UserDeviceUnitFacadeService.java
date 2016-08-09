@@ -17,6 +17,7 @@ import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
@@ -484,6 +485,10 @@ public class UserDeviceUnitFacadeService {
 							userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 							userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
 							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
+							if(wifiDeviceDocument.getD_geopoint() != null && wifiDeviceDocument.getD_geopoint().length == 2){
+								userDeviceDTO.setLon(String.valueOf(wifiDeviceDocument.getD_geopoint()[0]));;
+								userDeviceDTO.setLat(String.valueOf(wifiDeviceDocument.getD_geopoint()[1]));;
+							}
 							userDeviceDTO.setO_scalelevel(wifiDeviceDocument.getO_scalelevel());
 							if (wifiDeviceDocument.getD_snk_allowturnoff() != null) {
 								userDeviceDTO.setD_snk_allowturnoff(
@@ -960,4 +965,34 @@ public class UserDeviceUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+
+    public RpcResponseDTO<Boolean> updateDeviceLocation(int uid, String mac, String country, String province, String city, 
+    		String district, String street, String faddress, String lon, String lat){
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+		if (userWifiDevice != null && !userWifiDevice.getUid().equals(uid)) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER,
+					Boolean.FALSE);
+		}
+		
+		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+		if(wifiDevice == null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,
+					Boolean.FALSE);
+		}
+
+		wifiDevice.setCountry(country);
+		wifiDevice.setProvince(province);
+		wifiDevice.setCity(city);
+		wifiDevice.setDistrict(district);
+		wifiDevice.setStreet(street);
+		wifiDevice.setFormatted_address(faddress);
+		wifiDevice.setLon(lon);
+		wifiDevice.setLat(lat);
+		wifiDevice.setLoc_method(WifiDeviceHelper.Device_Location_By_APP);
+		wifiDeviceService.update(wifiDevice);
+		
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+	}
+
+	
 }

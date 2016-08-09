@@ -2214,6 +2214,10 @@ public class DeviceURouterRestBusinessFacadeService {
 							userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 							userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
 							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
+							if(wifiDeviceDocument.getD_geopoint() != null && wifiDeviceDocument.getD_geopoint().length == 2){
+								userDeviceDTO.setLon(String.valueOf(wifiDeviceDocument.getD_geopoint()[0]));;
+								userDeviceDTO.setLat(String.valueOf(wifiDeviceDocument.getD_geopoint()[1]));;
+							}
 							userDeviceDTO.setO_scalelevel(wifiDeviceDocument.getO_scalelevel());
 							if (wifiDeviceDocument.getD_snk_allowturnoff() != null) {
 								userDeviceDTO.setD_snk_allowturnoff(

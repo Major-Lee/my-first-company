@@ -239,7 +239,8 @@ public class DeviceBusinessFacadeService {
 		//本次wifi设备登录时间
 		long this_login_at = wifi_device_entity.getLast_reged_at().getTime();
 		boolean needLocationQuery = false;
-		if(wanIpChanged || StringUtils.isEmpty(wifi_device_entity.getLat()) || StringUtils.isEmpty(wifi_device_entity.getLon())){
+		if(WifiDeviceHelper.Device_Location_By_APP != wifi_device_entity.getLoc_method() && 
+				(wanIpChanged || StringUtils.isEmpty(wifi_device_entity.getLat()) || StringUtils.isEmpty(wifi_device_entity.getLon()))){
 			needLocationQuery = true;
 		}
 		/*
