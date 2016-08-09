@@ -10,6 +10,7 @@ import com.bhu.vas.business.ds.user.dao.UserIdentityAuthDao;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.service.EntityService;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -46,6 +47,15 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 			}else{
 				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_EXIST);
 			}
+		}
+	}
+	
+	public void validateIdentity(String accWithCountryCode, String hdmac){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("id",accWithCountryCode).andColumnEqualTo("hdmac",hdmac);
+		int result = this.countByModelCriteria(mc);
+		if (result == 0) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_NOT_EXIST);
 		}
 	}
 	

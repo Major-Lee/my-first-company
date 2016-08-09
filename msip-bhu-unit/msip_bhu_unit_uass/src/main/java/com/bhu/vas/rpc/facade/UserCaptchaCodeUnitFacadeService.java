@@ -196,12 +196,14 @@ public class UserCaptchaCodeUnitFacadeService {
 	public RpcResponseDTO<Boolean> validateIdentity(int countrycode,
 			 String acc,String hdmac){
 		String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("id",accWithCountryCode).andColumnEqualTo("hdmac",hdmac);
-		if (userIdentityAuthService.countByModelCriteria(mc) != 0) {
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
-		}else{
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.FALSE);
+		try {
+			userIdentityAuthService.validateIdentity(accWithCountryCode, hdmac);
+			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		} catch (BusinessI18nCodeException ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ex.getErrorCode(), ex.getPayload());
+		} catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR);
 		}
 	}
 	
