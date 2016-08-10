@@ -66,6 +66,7 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionMessa
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -111,6 +112,9 @@ public class UserDeviceUnitFacadeService {
 
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+
+	@Resource
+	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
 
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
@@ -989,8 +993,10 @@ public class UserDeviceUnitFacadeService {
 		wifiDevice.setLon(lon);
 		wifiDevice.setLat(lat);
 		wifiDevice.setLoc_method(WifiDeviceHelper.Device_Location_By_APP);
-		wifiDeviceService.update(wifiDevice);
 		
+		wifiDeviceService.update(wifiDevice);
+		wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(mac, Double.parseDouble(lat),
+				Double.parseDouble(lon), faddress);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 
