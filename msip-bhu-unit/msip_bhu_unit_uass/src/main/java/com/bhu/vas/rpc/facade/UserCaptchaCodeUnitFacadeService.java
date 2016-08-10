@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.model.UserCaptchaCode;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
@@ -29,6 +30,9 @@ public class UserCaptchaCodeUnitFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(UserCaptchaCodeUnitFacadeService.class);
 	@Resource
 	private UserCaptchaCodeService userCaptchaCodeService;
+	
+	@Resource
+	private UserIdentityAuthService userIdentityAuthService;
 	
 	//内部线程池，用于调用sms接口
 	private ExecutorService exec_send = null;//Executors.newFixedThreadPool(30);
