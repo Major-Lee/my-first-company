@@ -48,7 +48,7 @@ public class SSIDStatisticFacadeRpcService {
 //	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	@Resource
-	private static WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
 	private static Logger log = Logger.getLogger(SSIDStatisticFacadeRpcService.class);
 	public Map<String,Object> querySSIDStatisticInfo(Map<String,Object> map){
@@ -911,17 +911,27 @@ public class SSIDStatisticFacadeRpcService {
 	}
 	
 	public static void main(String[] args) {
-		wifiDeviceDataSearchService.iteratorAllByCommon(null, "", 
-				"", "",  "","", "WA",
-			 100, new IteratorNotify<Page<WifiDeviceDocument>>() {
-		    @Override
-		    public void notifyComming(Page<WifiDeviceDocument> pages) {
-		    	for (WifiDeviceDocument doc : pages) {
-		    		//String mac = doc.getD_mac();
-		    		//System.out.println(mac);
-		    	}
-		    }
-		});
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+		/*String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-06-01", "2016-06-01", "date", "",1);
+		System.out.println(pcUv);*/
+		//System.out.println(new java.text.DecimalFormat("0.00").format(4.025)); 
+		//System.out.println(Math.round(4.024*100 + 0.5)/100.0); 
+//		double s=3*1.00/2;
+//		 BigDecimal b = new BigDecimal(Double.toString(s));         
+//		 BigDecimal one = new BigDecimal("1");         
+//		 System.out.println(b.divide(one,2,BigDecimal.ROUND_HALF_UP).doubleValue());        
+		 String mobileUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-07-25", "2016-07-25", "wlanusermac", "",1);
+		 //String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
+			//String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
+			System.out.println(mobileUv);
+			JSONObject jsonObject=JSONObject.fromObject(mobileUv);
+			String ss=jsonObject.get("values").toString();
+			ss=ss.substring(1);
+			ss=ss.substring(0, ss.length()-1);
+			System.out.println(ss);
+			//System.out.println(mobileClick);
+		//BhuCache.getInstance().setEquipment("2016-06-05", "equipment", "{\"dc\":10020,\"doc\":7998}");
+		//BhuCache.getInstance().setStOrder("2016-06-05", "stOrder", "{\"mb_ofc\":833,\"mb_ofa\":\"594\",\"pc_ofc\":26,\"pc_ofa\":\"65\",\"pc_occ\":188,\"ofc\":859,\"mb_occ\":4210,\"ofa\":659.0,\"occ\":4398}");
 	}
 	/**
 	 * 返回成功结果集
