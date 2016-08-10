@@ -552,8 +552,8 @@ public class OrderUnitFacadeService {
 			String dut, long start_created_ts, long end_created_ts){
 		try{
 			RewardIncomeStatisticsVTO vto = new RewardIncomeStatisticsVTO();
-			String start_time = DateTimeHelper.formatLongToTimeStr(start_created_ts, DateTimeHelper.DefalutFormatPattern);
-			String end_time = DateTimeHelper.formatLongToTimeStr(end_created_ts, DateTimeHelper.DefalutFormatPattern);;
+			String start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
+			String end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
 			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac);
 			vto.setCashSum((String)map.get("sum(cash)"));
 			vto.setCount((String)map.get("count(1)"));
