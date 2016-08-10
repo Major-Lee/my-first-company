@@ -6,6 +6,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
+import com.bhu.vas.api.dto.commdity.RewardIncomeStatisticsVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -20,6 +21,9 @@ public interface IOrderRpcService {
 	
 	public RpcResponseDTO<TailPage<OrderRewardVTO>> rewardOrderPages(Integer uid, String mac, String umac, 
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize);
+	
+	public RpcResponseDTO<RewardIncomeStatisticsVTO> rewardIncomeStatisticsBetweenDate(Integer uid, String mac, 
+			String dut, long start_created_ts, long end_created_ts);
 	
 	public RpcResponseDTO<RewardOrderStatisticsVTO> rewardOrderStatisticsBetweenDate(String start_date, String end_date);
 	

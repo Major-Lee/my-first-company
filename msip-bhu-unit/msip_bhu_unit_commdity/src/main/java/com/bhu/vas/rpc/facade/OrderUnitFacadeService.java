@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -21,6 +22,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
+import com.bhu.vas.api.dto.commdity.RewardIncomeStatisticsVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
@@ -46,6 +48,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -83,6 +86,8 @@ public class OrderUnitFacadeService {
 
 	@Resource
 	private UserWifiDeviceService userWifiDeviceService;
+	@Resource
+	private UserWalletLogService userWalletLogService;
 
 	/**
 	 * 生成打赏订单
@@ -541,6 +546,25 @@ public class OrderUnitFacadeService {
 		}
 		//return StringHelper.MINUS_STRING_GAP;
 		return "0";
+	}
+	
+	public RpcResponseDTO<RewardIncomeStatisticsVTO> rewardIncomeStatisticsBetweenDate(Integer uid, String mac,
+			String dut, long start_created_ts, long end_created_ts){
+		try{
+			RewardIncomeStatisticsVTO vto = new RewardIncomeStatisticsVTO();
+			String start_time = DateTimeHelper.formatLongToTimeStr(start_created_ts, DateTimeHelper.DefalutFormatPattern);
+			String end_time = DateTimeHelper.formatLongToTimeStr(end_created_ts, DateTimeHelper.DefalutFormatPattern);;
+			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac);
+			vto.setCashSum((String)map.get("sum(cash)"));
+			vto.setCount((String)map.get("count(1)"));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+			
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("rewardIncomeStatisticsBetweenDate Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 	
 }

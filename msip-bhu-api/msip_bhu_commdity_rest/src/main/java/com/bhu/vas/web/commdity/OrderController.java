@@ -19,6 +19,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
+import com.bhu.vas.api.dto.commdity.RewardIncomeStatisticsVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -216,6 +217,7 @@ public class OrderController extends BaseController{
 	}
 	
 	
+	
 	/**
 	 * 获取充值虎钻订单的支付url
 	 * 1:生成订单
@@ -401,6 +403,37 @@ public class OrderController extends BaseController{
 			) {
 
 		RpcResponseDTO<OrderRewardNewlyDataVTO> rpcResult = orderRpcService.rewardOrderNewlyDataByUid(uid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	/**
+	 * 根据根据uid查询时间段内打赏分成金额和订单数
+	 * @param request
+	 * @param response
+	 * @param uid 用户id
+	 * @param mac 设备mac
+	 * @param dut 业务线
+	 * @param start_created_ts 查询起始时间
+	 * @param end_created_ts 查询结束时间
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/reward/query/fetchIncomeData",method={RequestMethod.GET,RequestMethod.POST})
+	public void reward_query_pages(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false,defaultValue = "") String mac,
+			@RequestParam(required = false) String dut,
+			@RequestParam(required = true) long start_created_ts,
+			@RequestParam(required = true) long end_created_ts
+			) {
+		RpcResponseDTO<RewardIncomeStatisticsVTO> rpcResult = orderRpcService.rewardIncomeStatisticsBetweenDate(uid, mac , 
+				dut, start_created_ts, end_created_ts);
+		
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
