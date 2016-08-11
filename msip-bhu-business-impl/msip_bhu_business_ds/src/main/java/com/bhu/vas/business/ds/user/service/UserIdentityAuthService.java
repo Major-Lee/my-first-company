@@ -38,6 +38,7 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 		UserIdentityAuth auth = this.getById(hdmac);
 		
 		if (auth == null) {
+			auth = new UserIdentityAuth();
 			auth.setId(hdmac);
 			auth.setMobileno(accWithCountryCode);
 			auth.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
