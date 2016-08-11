@@ -6,7 +6,7 @@
 
   <resultMap id="modelResult" type="userIdentityAuth">
     <id property="id" column="id"/>
-    <result property="mobileno" column=mobileno/>
+    <result property="mobileno" column="mobileno"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
