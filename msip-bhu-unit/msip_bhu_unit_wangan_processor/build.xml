@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<project name="msip_unit_store" default="compile" basedir=".">  
+    <property name="product" value="msip_unit_store"/>  
+    <property name="version" value="1.0"/>  
+    <property name="src.dir" value="${basedir}/src"/>  
+	
+	<property name="lib-apache-common.dir" value="../../ling-core/lib-apache-common/libs"/>
+	<property name="lib-slf4j.dir" value="../lib-slf4j/libs"/>
+	<property name="lib-spring.dir" value="../lib-spring/libs"/>
+	<property name="lib-dubbo.dir" value="../lib-dubbo/libs"/>
+	<property name="lib-jdbc.dir" value="../lib-jdbc/libs"/>
+	<property name="lib-ibatis.dir" value="../lib-ibatis/libs"/>
+	
+	
+	<property name="msip_core.jar.dir" value="../msip_core/build.jar"/>
+	<property name="msip_et_i18n.jar.dir" value="../msip_et_i18n/build.jar"/>
+	<property name="msip_core_cachedext.jar.dir" value="../msip_core_cachedext/build.jar"/>
+	<property name="msip_rpc_api.jar.dir" value="../msip_rpc_api/build.jar"/>
+	<property name="msip_business_store.jar.dir" value="../msip_business_store/build.jar"/>
+	<property name="unit.deploy.dir" value="../../deploy/${product}"/>
+    <property name="lib.dir" value="${basedir}/libs"/>  
+ 
+	<property name="deploy.conf.lib.dir" value="../../ling-deploy"/>  
+
+    <path id="classpath">  
+    	<fileset dir="${lib-apache-common.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+		<fileset dir="${lib-slf4j.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+		<fileset dir="${lib-spring.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	<fileset dir="${lib-dubbo.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	<fileset dir="${lib-jdbc.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	<fileset dir="${lib-ibatis.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	
+    	<fileset dir="${msip_core.jar.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	<fileset dir="${msip_et_i18n.jar.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	<fileset dir="${msip_core_cachedext.jar.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	<fileset dir="${msip_rpc_api.jar.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	<fileset dir="${msip_business_store.jar.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	<!--
+        <fileset dir="${lib.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+    	-->
+    </path>  
+  
+    <target name="clean">  
+        <echo>clean build dir</echo>  
+        <delete dir="${unit.deploy.dir}" quiet="true"/>
+    </target>  
+  
+    <target name="init" depends="clean">  
+        <mkdir dir="${unit.deploy.dir}"/>
+		<mkdir dir="${unit.deploy.dir}/libs"/> 
+		<mkdir dir="${unit.deploy.dir}/classes"/> 
+    </target>  
+    <!--
+	<target name="buildunit" depends="init" description="copy unit content">
+        <copy todir="${rest.deploy.dir}" preservelastmodified="true" description="copy unit content">
+            <fileset dir="${basedir}/WebContent" includes="**/*" excludes=".svn/**"/>
+        </copy>
+    </target>
+	-->
+    <target name="compile" depends="init">  
+        <echo>compile the source</echo>  
+        <javac srcdir="${src.dir}/main/java:${src.dir}/main/resource" destdir="${unit.deploy.dir}/classes" encoding="UTF-8" debug="on" source="1.6" target="1.6">  
+            <include name="**/*.*"/>  
+            <classpath refid="classpath"/>  
+			<compilerarg value="-Xlint:unchecked"/>
+			<compilerarg value="-Xlint:deprecation"/>
+        </javac>
+		<!--copy src resource files-->
+		<copy todir="${unit.deploy.dir}/classes" overwrite="true" preservelastmodified="true">
+			<fileset dir="${src.dir}/main/java" excludes="**/*.java, .svn/**"/>
+            <fileset dir="${src.dir}/main/resource" excludes="**/*.java, .svn/**"/>
+        </copy>
+		<!--copy lib jar files-->
+		<copy todir="${unit.deploy.dir}/libs" overwrite="true" preservelastmodified="true">
+			<fileset dir="${lib-apache-common.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+			<fileset dir="${lib-slf4j.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+			<fileset dir="${lib-spring.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+			<fileset dir="${lib-dubbo.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+	    	<fileset dir="${lib-jdbc.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+	    	<fileset dir="${lib-ibatis.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+	    	
+	    	<fileset dir="${msip_core.jar.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+	    	<fileset dir="${msip_et_i18n.jar.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+	    	<fileset dir="${msip_core_cachedext.jar.dir}" includes="**/*.jar" excludes="**/*nocacheconf*.jar,_conflict/**, _legacy/**"/>
+	    	<fileset dir="${msip_rpc_api.jar.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+	    	<fileset dir="${msip_business_store.jar.dir}" includes="**/*.jar" excludes="_conflict/**, _legacy/**"/>
+        </copy>
+    </target>  
+
+    <target name="production" depends="compile" description="overwrite the production conf file">
+    </target>
+    
+</project>
