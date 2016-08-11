@@ -22,6 +22,10 @@
     
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
+  <resultMap id="mapcountAndsum" type="hashmap">
+    <result property="cashSum" column="sum(cash)"/>
+    <result property="count" column="count(1)"/>
+  </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
@@ -148,7 +152,7 @@
 		</where>
 	</select>
 	
-	<select id="countAndsum" resultType="hashmap">
+	<select id="countAndsum" resultMap="mapcountAndsum">
 	    select sum(cash),count(1) from <include refid="modelTableName" />
 	    <where>
 	    	uid = #{uid}
