@@ -555,8 +555,8 @@ public class OrderUnitFacadeService {
 			String start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
 			String end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
 			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac);
-			vto.setCashSum((String)map.get("sum(cash)"));
-			vto.setCount((String)map.get("count(1)"));
+			vto.setCashSum(String.valueOf(map.get("sum(cash)")));
+			vto.setCount(String.valueOf(map.get("count(1)")));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 			
 		}catch(BusinessI18nCodeException bex){
@@ -566,5 +566,4 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
 }
