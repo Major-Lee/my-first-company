@@ -553,10 +553,9 @@ public class OrderUnitFacadeService {
 		try{
 			RewardIncomeStatisticsVTO vto = new RewardIncomeStatisticsVTO();
 			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac);
-			vto.setCashSum(String.valueOf(map.get("sum(cash)")));
-			vto.setCount(String.valueOf(map.get("count(1)")));
-			logger.info("sum:"+String.valueOf(map.get("sum(cash)")+"vto sum:"+vto.getCashSum()));
-			logger.info("cnt:"+String.valueOf(map.get("count(1)")+"vto cnt:"+vto.getCount()));
+			vto.setCashSum((Double)map.get("sum(cash)"));
+			vto.setCount((Long)map.get("count(1)"));
+			logger.info("CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 			
 		}catch(BusinessI18nCodeException bex){

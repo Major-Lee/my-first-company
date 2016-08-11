@@ -3,19 +3,20 @@ package com.bhu.vas.api.dto.commdity;
 @SuppressWarnings("serial")
 public class RewardIncomeStatisticsVTO implements java.io.Serializable{
 	//收益统计结果数
-	private String count;
+	private Long count;
 	//收益统计金额总和
-	private String cashSum;
-	public String getCount() {
+	private Double cashSum;
+	
+	public Long getCount() {
 		return count;
 	}
-	public void setCount(String count) {
+	public void setCount(Long count) {
 		this.count = count;
 	}
-	public String getCashSum() {
+	public Double getCashSum() {
 		return cashSum;
 	}
-	public void setCashSum(String cashSum) {
+	public void setCashSum(Double cashSum) {
 		this.cashSum = cashSum;
 	}
 	
