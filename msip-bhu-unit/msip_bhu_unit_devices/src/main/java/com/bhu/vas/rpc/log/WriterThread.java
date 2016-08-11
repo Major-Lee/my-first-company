@@ -117,7 +117,7 @@ public class WriterThread extends Thread {
 				}
 
 				if(WriterThread.count.longValue() > 0){
-					if((System.currentTimeMillis() - WriterThread.startTime > 1000*5)/* ||
+					if((System.currentTimeMillis() - WriterThread.startTime > 1000*1)/* ||
 							this.count.longValue() > 100*/){
 						flushLogFile();
 						openLogFile();
