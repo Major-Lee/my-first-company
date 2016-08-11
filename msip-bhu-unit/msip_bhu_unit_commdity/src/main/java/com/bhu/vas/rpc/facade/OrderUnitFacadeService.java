@@ -552,9 +552,10 @@ public class OrderUnitFacadeService {
 			String dut, String start_time, String end_time){
 		try{
 			RewardIncomeStatisticsVTO vto = new RewardIncomeStatisticsVTO();
+			logger.info("uid: "+uid+" start: "+start_time+" end:"+end_time);
 			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac);
-			vto.setCashSum((Double)map.get("sum(cash)"));
-			vto.setCount((Long)map.get("count(1)"));
+			vto.setCashSum((Double)map.get("cashSum"));
+			vto.setCount((Long)map.get("count"));
 			logger.info("CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 			

@@ -33,7 +33,7 @@ public class UserWalletlogFacadeServiceTest extends BaseTest{
 		String start_time = "2015-08-01 00:00:00";
 		String end_time = "2016-08-11 23:59:59";
 		Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(100299, start_time,end_time,"");
-		System.out.println(map.get("sum(cash)").getClass());
-		System.out.println(map.get("count(1)").getClass());
+		System.out.println(map.get("cashSum"));
+		System.out.println(map.get("count"));
 	}
 }
