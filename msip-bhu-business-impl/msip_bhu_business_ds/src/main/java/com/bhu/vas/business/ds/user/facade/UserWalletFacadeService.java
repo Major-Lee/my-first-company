@@ -1139,6 +1139,7 @@ public class UserWalletFacadeService{
 			String beforeIncome="0";
 			int beforeRankNum=0;
 			int n=1;
+			int m=1;
 			for(int i=userIncomes.size()-1;i>=0;i--){
 				UserIncomeRank userIncomeRank=new UserIncomeRank();
 				UserIncome userIncome=userIncomes.get(i);
@@ -1147,9 +1148,9 @@ public class UserWalletFacadeService{
 					beforeIncome=userIncome.getIncome();
 				}else{
 					if(!StringUtils.equals(beforeIncome, userIncome.getIncome())){
-						beforeRankNum=n+1;
+						beforeRankNum=m;
 						beforeIncome=userIncome.getIncome();
-						n++;
+						n=m;
 					}
 				}
 				userIncomeRank.setRank(beforeRankNum);
@@ -1158,6 +1159,7 @@ public class UserWalletFacadeService{
 				userIncomeRank.setUpdated_at(date);
 				userIncomeRank.setCreated_at(date);
 				userIncomeRankService.insert(userIncomeRank);
+				m++;
 			}
 		}
 	}

@@ -1227,6 +1227,7 @@ public class AsyncMsgHandleService {
 				String ssid = deviceFacadeService.getUrouterSSID(mac);
 				if (StringUtils.isNotEmpty(ssid) && !ssid.equals(userWifiDevice.getDevice_name())) {
 					userWifiDevice.setDevice_name(ssid);
+					userWifiDevice.setDevice_name_modifyed(true);
 					userWifiDeviceService.update(userWifiDevice);
 
 					wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, ssid);
