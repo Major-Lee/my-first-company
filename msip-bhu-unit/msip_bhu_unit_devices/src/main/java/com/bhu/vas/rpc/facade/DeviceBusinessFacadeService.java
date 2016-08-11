@@ -595,7 +595,7 @@ public class DeviceBusinessFacadeService {
 			String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
 			System.out.println("do WangAn offline handsetOnline" + handsetOnline);
 			long end_ts = dto.getTs();
-			if(handsetOnline != null || handsetOnline != ""){
+			if(handsetOnline != null || !"".equals(handsetOnline)){
 				HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
 				long ts = onlineDto.getTs();
 				if( ts != 0){
@@ -606,27 +606,27 @@ public class DeviceBusinessFacadeService {
 				System.out.println("do WangAn offline handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
 				
 				String Hip = onlineDto.getHip();
-				if(Hip != null && Hip != ""){
+				if(Hip != null && !"".equals(Hip)){
 					dto.setHip(Hip);
 				}else if(handsetDeviceDTO != null){
 					String hip = handsetDeviceDTO.getIp();
-					if(hip != null && hip != ""){
+					if(hip != null && !"".equals(hip)){
 						dto.setHip(hip);
 					}
 				}
 				
 				String Hname = onlineDto.getHname();
-				if(Hname != null && Hname != ""){
+				if(Hname != null && !"".equals(Hname)){
 					dto.setHname(Hname);
 				}else if(handsetDeviceDTO != null ){
 					String hName =  handsetDeviceDTO.getDhcp_name();
-					if(hName != null && hName != ""){
+					if(hName != null && !"".equals(hName)){
 						dto.setHname(hName);
 					}
 				}
 				
 				String rssi = onlineDto.getRssi();
-				if(rssi != null && rssi !=""){
+				if(rssi != null && !"".equals(rssi)){
 					System.out.println("do offline rssi "+rssi);
 					dto.setRssi(onlineDto.getRssi());
 				}
@@ -671,7 +671,7 @@ public class DeviceBusinessFacadeService {
 		String hdMac = dto.getHmac();
 		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(hdMac);
 		System.out.println("do WangAn Authorize handsetOnline" + handsetOnline);
-		if(handsetOnline != null || handsetOnline != ""){
+		if(handsetOnline != null || !"".equals(handsetOnline)){
 			HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
 			long ts = onlineDto.getTs();
 			if( ts != 0){
@@ -682,26 +682,26 @@ public class DeviceBusinessFacadeService {
 			System.out.println("do WangAn Authouize handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
 			
 			String Hip = onlineDto.getHip();
-			if(Hip != null && Hip != ""){
+			if(Hip != null && !"".equals(Hip)){
 				dto.setHip(Hip);
 			}else if(handsetDeviceDTO != null){
 				String hip = handsetDeviceDTO.getIp();
-				if(hip != null && hip != ""){
+				if(hip != null && !"".equals("hip")){
 					dto.setHip(hip);
 				}
 			}
 			
 			String Hname = onlineDto.getHname();
-			if(Hname != null && Hname != ""){
+			if(Hname != null && !"".equals(Hname)){
 				dto.setHname(Hname);
 			}else if(handsetDeviceDTO != null){
 				String hName =  handsetDeviceDTO.getDhcp_name();
-				if(hName != null && hName != ""){
+				if(hName != null && !"".equals(hName)){
 					dto.setHname(hName);
 				}
 			}
 			String rssi = onlineDto.getRssi();
-			if(rssi != null && rssi !=""){
+			if(rssi != null && !"".equals(rssi)){
 				System.out.println("do Authorize rssi "+rssi);
 				dto.setRssi(onlineDto.getRssi());
 			}
@@ -728,10 +728,13 @@ public class DeviceBusinessFacadeService {
 			default:
 				break;
 			}
-			dto.setAct("HO");
+			if(dto.getAuthorized() != null && dto.getAuthorized().equals("true"))
+				dto.setAct(ActionMode.HandsetOnline.getPrefix());
+			else 
+				dto.setAct(ActionMode.HandsetOffline.getPrefix());
 			message =  JsonHelper.getJSONString(dto);
 			String curTime =WriterThread.getCurrentTime();
-			WriterThread.writeLog(curTime +" - "+ActionMode.HandsetOnline.getPrefix()+message);
+			WriterThread.writeLog(curTime +" - "+dto.getAct()+message);
 			//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
 		}
 	}
