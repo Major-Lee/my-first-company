@@ -5,18 +5,16 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
 public class UserIdentityAuth extends BaseStringModel {
-	private String hdmac;
+	private String mobileno;
 	private String created_at;
 	
-
-	public String getHdmac() {
-		return hdmac;
+	public String getMobileno() {
+		return mobileno;
 	}
 
-	public void setHdmac(String hdmac) {
-		this.hdmac = hdmac;
+	public void setMobileno(String mobileno) {
+		this.mobileno = mobileno;
 	}
-
 
 	public String getCreated_at() {
 		return created_at;

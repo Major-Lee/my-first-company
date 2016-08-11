@@ -20,7 +20,7 @@ public class BuilderIdentityAuthOp {
 	private static OrderService orderService;
 	private static UserIdentityAuthService userIdentityAuthService;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		initialize();
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("type", 10);
@@ -31,12 +31,13 @@ public class BuilderIdentityAuthOp {
 		for(Order order : orders){
 			UserIdentityAuth auth = new UserIdentityAuth();
 			auth.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
-			auth.setHdmac(order.getUmac());
-			auth.setId(order.getContext());
+			auth.setId(order.getUmac());
+			auth.setMobileno(order.getContext());
 			if(userIdentityAuthService.getById(auth.getId()) == null){
 				userIdentityAuthService.insert(auth);
 				if (i % 10 == 0) {
 					System.out.println("now: " + i +" count :" + orders.size());
+					Thread.sleep(1000);
 				}
 			}
 			i++;
