@@ -26,20 +26,22 @@ public class BuilderIdentityAuthOp {
 		mc.createCriteria().andColumnEqualTo("type", 10);
 		List<Order> orders  = orderService.findModelByModelCriteria(mc);
 		
-		List<UserIdentityAuth> ids = new ArrayList<UserIdentityAuth>();
 		int i = 0;
+		System.out.println("insert start...");
 		for(Order order : orders){
 			UserIdentityAuth auth = new UserIdentityAuth();
 			auth.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
 			auth.setHdmac(order.getUmac());
 			auth.setId(order.getContext());
-			ids.add(auth);
-			System.out.println("now: " + i +"count :" + orders.size());
+			if(userIdentityAuthService.getById(auth.getId()) == null){
+				userIdentityAuthService.insert(auth);
+				if (i % 10 == 0) {
+					System.out.println("now: " + i +" count :" + orders.size());
+				}
+			}
 			i++;
 		}
-		System.out.println("insertAll start...");
-		userIdentityAuthService.insertAll(ids);
-		System.out.println("insertAall end...");
+		System.out.println("insert end... now: " + i +" count :" + orders.size());
 		
 	}
 	
