@@ -728,13 +728,37 @@ public class DeviceBusinessFacadeService {
 			default:
 				break;
 			}
-			if(dto.getAuthorized() != null && dto.getAuthorized().equals("true"))
+			
+			logger.info("Yetao: " + dto.getAuthorized());
+			String act = "";
+			if(dto.getAuthorized() != null && dto.getAuthorized().equals("true")){
+				act = ActionMode.HandsetOnline.getPrefix();
 				dto.setAct(ActionMode.HandsetOnline.getPrefix());
-			else 
+				message =  JsonHelper.getJSONString(dto);
+			} else { 
+				act = ActionMode.HandsetOffline.getPrefix();
 				dto.setAct(ActionMode.HandsetOffline.getPrefix());
-			message =  JsonHelper.getJSONString(dto);
+				HandsetOfflineAction offdto = new HandsetOfflineAction();
+				logger.info("handle offline ");
+				offdto.setAct(act);
+				offdto.setAuthorized(dto.getAuthorized());
+				offdto.setBssid(dto.getBssid());
+				offdto.setHip(dto.getHip());
+				offdto.setHmac(dto.getHmac());
+				offdto.setHname(dto.getHname());
+				offdto.setInternet(dto.getInternet());
+				offdto.setMac(dto.getMac());
+				offdto.setRssi(dto.getRssi());
+				offdto.setTs(dto.getTs());
+				offdto.setVapname(dto.getVapname());
+				offdto.setVipacc(dto.getVipacc());
+				offdto.setViptype(dto.getViptype());
+				offdto.setWan(dto.getWan());
+				offdto.setEnd_ts(System.currentTimeMillis());
+				message =  JsonHelper.getJSONString(offdto);
+			}
 			String curTime =WriterThread.getCurrentTime();
-			WriterThread.writeLog(curTime +" - "+dto.getAct()+message);
+			WriterThread.writeLog(curTime +" - "+act+message);
 			//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
 		}
 	}
