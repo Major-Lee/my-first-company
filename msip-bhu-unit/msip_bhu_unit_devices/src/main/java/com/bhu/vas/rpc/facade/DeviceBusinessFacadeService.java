@@ -576,7 +576,7 @@ public class DeviceBusinessFacadeService {
 				}
 				message =  JsonHelper.getJSONString(dto);
 				String curTime =WriterThread.getCurrentTime();
-				WriterThread.writeLog(curTime +" - "+ActionMode.HandsetOnline.getPrefix()+message);
+				//WriterThread.writeLog(curTime +" - "+ActionMode.HandsetOnline.getPrefix()+message);
 				//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
 			}
 		}else{   
@@ -658,7 +658,7 @@ public class DeviceBusinessFacadeService {
 				}
 				message =  JsonHelper.getJSONString(dto);
 				String curTime =WriterThread.getCurrentTime();
-				WriterThread.writeLog(curTime +" - "+ActionMode.HandsetOffline.getPrefix()+message);
+				//WriterThread.writeLog(curTime +" - "+ActionMode.HandsetOffline.getPrefix()+message);
 				//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOffline.getPrefix()+message);
 		}
 		
