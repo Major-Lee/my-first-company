@@ -121,7 +121,7 @@ public class OrderRpcService implements IOrderRpcService{
 		String start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
 		String end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
 		logger.info(String.format("rewardIncomeStatisticsBetweenDate with uid[%s] mac[%s] dut[%s] start_created_ts[%s] start_time[%s] end_created_ts[%s] end_time[%s]",
-				uid, mac,dut,start_created_ts,start_time,end_time,end_created_ts));
+				uid, mac,dut,start_created_ts,start_time,end_created_ts,end_time));
 		return orderUnitFacadeService.rewardIncomeStatisticsBetweenDate(uid, mac,
 				dut, start_time, end_time);
 	}
