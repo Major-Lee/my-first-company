@@ -6,7 +6,7 @@
 
   <resultMap id="modelResult" type="userIdentityAuth">
     <id property="id" column="id"/>
-    <result property="hdmac" column="hdmac"/>
+    <result property="mobileno" column=mobileno/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -19,14 +19,14 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	hdmac,
+	    	mobileno,
 	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	hdmac,
+	    	mobileno,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -34,13 +34,13 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-			#{hdmac},
+			#{mobileno},
 			#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-			hdmac =	#{hdmac},
+			mobileno =	#{mobileno},
 			created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

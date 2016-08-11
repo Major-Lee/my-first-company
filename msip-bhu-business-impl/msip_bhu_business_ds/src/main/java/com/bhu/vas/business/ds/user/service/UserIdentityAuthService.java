@@ -34,17 +34,18 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 	 */
 	public void generateIdentityAuth(int countrycode ,String acc,String hdmac){	
 		String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-		UserIdentityAuth userId = this.getById(accWithCountryCode);
-		if (userId == null) {
-			userId = new UserIdentityAuth();
-			userId.setId(accWithCountryCode);
-			userId.setHdmac(hdmac);
-			userId.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
-		    this.insert(userId);
+		
+		UserIdentityAuth auth = this.getById(hdmac);
+		
+		if (auth == null) {
+			auth.setId(hdmac);
+			auth.setMobileno(accWithCountryCode);
+			auth.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
+		    this.insert(auth);
 		}else{
-			if (userId.getHdmac() != hdmac) {
-				userId.setHdmac(hdmac);
-				this.update(userId);
+			if (auth.getMobileno() != accWithCountryCode) {
+				auth.setMobileno(accWithCountryCode);
+				this.update(auth);
 			}else{
 				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_EXIST);
 			}
@@ -54,13 +55,10 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 	public UserIdentityAuth validateIdentity(String hdmac){
 		try {
 			
-			List<UserIdentityAuth> auth = null;
-			ModelCriteria mc = new ModelCriteria();
-			mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("hdmac", hdmac.trim());
-			auth = this.findModelByModelCriteria(mc);
+			UserIdentityAuth auth = this.getById(hdmac);
 			
 			if (auth != null) {
-				return auth.get(0);
+				return auth;
 			}else{
 				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_NOT_EXIST);
 			}
