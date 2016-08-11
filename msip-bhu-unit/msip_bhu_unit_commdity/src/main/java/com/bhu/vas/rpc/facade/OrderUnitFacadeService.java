@@ -549,11 +549,9 @@ public class OrderUnitFacadeService {
 	}
 	
 	public RpcResponseDTO<RewardIncomeStatisticsVTO> rewardIncomeStatisticsBetweenDate(Integer uid, String mac,
-			String dut, long start_created_ts, long end_created_ts){
+			String dut, String start_time, String end_time){
 		try{
 			RewardIncomeStatisticsVTO vto = new RewardIncomeStatisticsVTO();
-			String start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
-			String end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
 			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac);
 			vto.setCashSum(String.valueOf(map.get("sum(cash)")));
 			vto.setCount(String.valueOf(map.get("count(1)")));
