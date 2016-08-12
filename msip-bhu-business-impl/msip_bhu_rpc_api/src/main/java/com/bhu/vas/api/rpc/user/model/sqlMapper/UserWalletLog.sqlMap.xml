@@ -155,10 +155,16 @@
 	<select id="countAndsum" resultMap="mapcountAndsum">
 	    select sum(cash),count(1) from <include refid="modelTableName" />
 	    <where>
-	    	uid = #{uid}
-	    	AND transtype = 'P2C'
-	    	AND updated_at &gt;= #{start_time}
-	    	AND updated_at &lt;= #{end_time}
+	    	<if test="uid != null">
+	    		uid = #{uid}
+	    	</if>
+	    		AND transtype = 'P2C'
+	    	<if test="start_time != null">
+	    		AND updated_at &gt;= #{start_time}
+	    	</if>
+	    	<if test="end_time != null">
+	    		AND updated_at &lt;= #{end_time}
+	    	</if>
 	    	<if test="mac != null">
 	    		AND	mac = #{mac}
 	    	</if>
