@@ -673,7 +673,7 @@ public class DeviceBusinessFacadeService {
 				String curTime =WriterThread.getCurrentTime();
 				//WriterThread.writeLog(curTime +" - "+ActionMode.HandsetOffline.getPrefix()+message);
 				//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOffline.getPrefix()+message);
-		}
+			}
 		
 		}
 	}
@@ -686,37 +686,19 @@ public class DeviceBusinessFacadeService {
 		System.out.println("do WangAn Authorize handsetOnline" + handsetOnline);
 		HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
 		if(handsetOnline != null || !"".equals(handsetOnline)){
-//			long ts = onlineDto.getTs();
-//			if( ts != 0){
-//				dto.setTs(ts);
-//			}
-			
 			HandsetDeviceDTO handsetDeviceDTO =	HandsetStorageFacadeService.handset(dto.getMac(),dto.getHmac());
 			System.out.println("do WangAn Authouize handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
 			
-			String Hip = onlineDto.getHip();
-			if(Hip != null && !"".equals(Hip)){
-				dto.setHip(Hip);
-			}else if(handsetDeviceDTO != null){
-				String hip = handsetDeviceDTO.getIp();
-				if(hip != null && !"".equals("hip")){
-					dto.setHip(hip);
-				}
+			if(StringUtils.isEmpty(dto.getHip())){
+				dto.setHip(StringUtils.isEmpty(handsetDeviceDTO.getIp())?onlineDto.getHip():handsetDeviceDTO.getIp());
 			}
 			
-			String Hname = onlineDto.getHname();
-			if(Hname != null && !"".equals(Hname)){
-				dto.setHname(Hname);
-			}else if(handsetDeviceDTO != null){
-				String hName =  handsetDeviceDTO.getDhcp_name();
-				if(hName != null && !"".equals(hName)){
-					dto.setHname(hName);
-				}
+			if(StringUtils.isEmpty(dto.getHname())){
+				dto.setHname(StringUtils.isEmpty(handsetDeviceDTO.getDhcp_name())?onlineDto.getHname():handsetDeviceDTO.getDhcp_name());
 			}
-			String rssi = onlineDto.getRssi();
-			if(rssi != null && !"".equals(rssi)){
-				System.out.println("do Authorize rssi "+rssi);
-				dto.setRssi(onlineDto.getRssi());
+			
+			if(StringUtils.isEmpty(dto.getRssi())){
+				dto.setRssi(StringUtils.isEmpty(handsetDeviceDTO.getRssi())?onlineDto.getRssi():handsetDeviceDTO.getRssi());
 			}
 		}
 		
