@@ -6,7 +6,7 @@ public class CommdityServiceProvider {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("appname", "BHUCommditySP");
 		System.setProperty("provider.port", "20990");
-		System.setProperty("deploy.conf.dir", "/Users/tangzichao/work/bhuspace/msip_bhu_business/msip-bhu-unit/msip_bhu_unit_commdity/deploy/conf/");
+		System.setProperty("deploy.conf.dir", "D:/bhu/msip_bhu_business/msip-bhu-unit/msip_bhu_unit_commdity/deploy/conf/");
 		//Class<?> classz = Class.forName("com.alibaba.dubbo.container.Main");
 		//ReflectionHelper.invokeStaticMethod("com.alibaba.dubbo.container.Main", "main", args);
 		System.out.println("CommdityServiceProvider~~~~~~~~~~~~~:"+System.getProperty("provider.port"));

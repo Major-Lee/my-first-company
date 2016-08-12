@@ -79,8 +79,8 @@ public class SharedealInfo {
 			){
 		SharedealInfo info = new SharedealInfo(mac,orderid,cash);
 		if(cash > 0){
-			double owner_cash = ArithHelper.round(ArithHelper.mul(cash, owner_percent),2);
-			double manufacturer_cash = ArithHelper.round(ArithHelper.mul(cash, manufacturer_percent),2);
+			double owner_cash = ArithHelper.round(ArithHelper.mul(cash, owner_percent), 4);
+			double manufacturer_cash = ArithHelper.round(ArithHelper.mul(cash, manufacturer_percent), 4);
 			info.setOwner_cash(owner_cash);
 			info.setManufacturer_cash(manufacturer_cash);
 			info.setDistributor_cash(ArithHelper.sub(cash,ArithHelper.add(owner_cash,manufacturer_cash)));
@@ -89,6 +89,13 @@ public class SharedealInfo {
 		}
 		return info;
 	}
+	
+	public static void main(String[] args) {
+		//System.out.println(ArithHelper.round(ArithHelper.mul(2.1212, 2), 2));
+		double ss = ArithHelper.add(2.12, 2.1355);
+		System.out.println(ss);
+	}
+	
 	public int getOwner() {
 		return owner;
 	}

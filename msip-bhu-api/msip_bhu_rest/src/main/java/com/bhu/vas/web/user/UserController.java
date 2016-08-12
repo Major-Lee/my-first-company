@@ -59,19 +59,19 @@ public class UserController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/create",method={RequestMethod.GET,RequestMethod.POST})
 	public void create(HttpServletRequest request,
-			HttpServletResponse response, 
-			@RequestParam(required = false, value="du") String deviceuuid,
-			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
-			@RequestParam(required = true) String acc,
-			@RequestParam(required = true) String captcha,
-			@RequestParam(required = false) String nick,
-			@RequestParam(required = false) String pwd,
-			@RequestParam(required = false,defaultValue="男") String sex,
-			@RequestParam(required = false) String org,
-			@RequestParam(required = false,defaultValue="N") String ut,//用户类型标识 UserType
-			@RequestParam(required = false, value="d",defaultValue="R") String device//,
-			) {
-		//step 1.deviceuuid 验证
+					   HttpServletResponse response, 
+					   @RequestParam(required = false, value="du") String deviceuuid,
+					   @RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+					   @RequestParam(required = true) String acc,
+					   @RequestParam(required = true) String captcha,
+					   @RequestParam(required = false) String nick,
+					   @RequestParam(required = false) String pwd,
+					   @RequestParam(required = false,defaultValue="男") String sex,
+					   @RequestParam(required = false) String org,
+					   @RequestParam(required = false,defaultValue="N") String ut,//用户类型标识 UserType
+					   @RequestParam(required = false, value="d",defaultValue="R") String device) {
+		
+		// step 1.deviceuuid 验证
 		ResponseError validateError = null;
 		if(StringUtils.isNotEmpty(deviceuuid)){
 			validateError = ValidateService.validateDeviceUUID(deviceuuid);//, userService);
@@ -91,6 +91,7 @@ public class UserController extends BaseController{
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
 			}
+			
 			if(StringUtils.isNotEmpty(nick)){
 				validateError = ValidateService.validateNick(nick);
 				if(validateError != null){
@@ -99,9 +100,8 @@ public class UserController extends BaseController{
 				}
 			}
 			
-			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.createNewUser(countrycode, acc, nick,pwd, captcha,
-					sex,from_device, remoteIp, 
-					deviceuuid, ut, org);
+			RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.createNewUser
+			    (countrycode, acc, nick, pwd, captcha, sex, from_device, remoteIp, deviceuuid, ut, org);
 			if(!rpcResult.hasError()){
 				UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 				//String bbspwd = String.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken_BBS));

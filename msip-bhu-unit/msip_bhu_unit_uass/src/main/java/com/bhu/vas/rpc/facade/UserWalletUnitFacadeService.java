@@ -174,57 +174,45 @@ public class UserWalletUnitFacadeService {
 			ModelCriteria mc = new ModelCriteria();
 			Criteria createCriteria = mc.createCriteria();
 			createCriteria.andColumnEqualTo("uid", uid);
+			
 			if(transmode != null)
 				createCriteria.andColumnEqualTo("transmode", tmode.getKey());
+			
 			if(transtype != null)
 				createCriteria.andColumnEqualTo("transtype", ttype.getKey());
+			
 			if(start_date != null)
 				createCriteria.andColumnGreaterThanOrEqualTo("updated_at", start_date);
+			
 			if(end_date != null)
 				createCriteria.andColumnLessThanOrEqualTo("updated_at", end_date);
+			
 	    	mc.setPageNumber(pageNo);
 	    	mc.setPageSize(pageSize);
 	    	mc.setOrderByClause(" updated_at desc ");
+	    	
 	    	int count = userSharedealDistributorViewService.countByModelCriteria(mc);
 	    	if(count > 0){
-				List<UserSharedealDistributorView> list = userSharedealDistributorViewService.findModelByCommonCriteria(mc);
+				List<UserSharedealDistributorView> list = userSharedealDistributorViewService
+				    .findModelByCommonCriteria(mc);
 				if(list != null && !list.isEmpty()){
 					List<String> orderids = new ArrayList<String>();
 					for(UserSharedealDistributorView view : list){
 						orderids.add(view.getOrderid());
 					}
+					
 					List<Order> orders = orderService.findByIds(orderids, true, true);
 					int index = 0;
 					for(UserSharedealDistributorView view : list){
 						Order order = orders.get(index);
-						vtos.add(view.toUserWalletLogFFVTO(
-								order!=null?order.getAmount():StringUtils.EMPTY,
-								order!=null?order.getMac():StringUtils.EMPTY));
+						vtos.add(view.toUserWalletLogFFVTO
+								    (order != null ? order.getAmount() : StringUtils.EMPTY,
+								     order != null ? order.getMac() : StringUtils.EMPTY));
 						index++;
 					}
 				}
 	    	}
-			
-/*			TailPage<UserWalletLog> pages = userWalletFacadeService.pageUserWalletlogs(uid, tmode, ttype, 
-					start_date, end_date, pageNo, pageSize);
-			TailPage<UserWalletLogFFVTO> result_pages = null;
-			List<UserWalletLogFFVTO> vtos = new ArrayList<UserWalletLogFFVTO>();
-			if(!pages.isEmpty()){
-				List<String> orderids = new ArrayList<String>();
-				for(UserWalletLog log:pages.getItems()){
-					orderids.add(log.getOrderid());
-				}
-				List<Order> orders = orderService.findByIds(orderids, true, true);
-				//List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
-				int index = 0;
-				for(UserWalletLog log:pages.getItems()){
-					Order order = orders.get(index);
-					vtos.add(log.toUserWalletLogFFVTO(
-							order!=null?order.getAmount():StringUtils.EMPTY,
-							order!=null?order.getMac():StringUtils.EMPTY));
-					index++;
-				}
-			}*/
+
 			result_pages = new CommonPage<UserWalletLogFFVTO>(pageNo, pageSize, count, vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
 		}catch(BusinessI18nCodeException bex){
