@@ -215,8 +215,8 @@ public class DeviceSharedNetworkUnitFacadeService {
 			}
 			UserValidateServiceHelper.validateUser(uid, sharedNetworksFacadeService.getUserService());
 			//验证此模板是否有设备使用  搜索引擎count 有则返回错误，没有异步消息进行处理并返回成功
-			long count = wifiDeviceDataSearchService.searchCountBySnkType(uid,sharedNetwork.getKey(),template,
-					 WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType());
+			long count = wifiDeviceDataSearchService.searchCountBySnkType(uid,sharedNetwork.getKey(), 
+					WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType(), template);
 			if(count >0){
 				throw new BusinessI18nCodeException(ResponseErrorCode.USER_DEVICE_SHAREDNETWORK_TEMPLATE_CLEAR_NOTALLOW,
 						new String[]{sharenetwork_type,template,String.valueOf(count)});
