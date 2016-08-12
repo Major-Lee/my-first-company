@@ -498,7 +498,7 @@ public class DeviceBusinessFacadeService {
 			for(HandsetDeviceDTO dto:dtos){
 				logger.info("do WangAn Processor" + dto.getAction());
 				dto.setLast_wifi_id(parserHeader.getMac().toLowerCase());
-				dto.setTs(System.currentTimeMillis());
+//				dto.setTs(System.currentTimeMillis());
 			}
 			HandsetDeviceDTO fristDto = dtos.get(0);
 			if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
@@ -582,6 +582,19 @@ public class DeviceBusinessFacadeService {
 		}else{   
 			logger.info("do WangAn Processor  authorize is false or null" + dto.getMac());
 		}
+		String memHandsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
+		if(memHandsetOnline != null){
+			HandsetOnlineAction memDto = JsonHelper.getDTO(memHandsetOnline, HandsetOnlineAction.class);
+			dto.setTs(memDto.getTs());
+			if(StringUtils.isEmpty(dto.getHname()))
+				dto.setHmac(memDto.getHname());
+			if(StringUtils.isEmpty(dto.getHip()))
+				dto.setHip(memDto.getHip());
+			if(StringUtils.isEmpty(dto.getRssi()))
+				dto.setRssi(memDto.getRssi());
+			message =  JsonHelper.getJSONString(dto);
+		}
+
 		portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
 		System.out.println("do WangAn store CacheResult"+message);
 	}
@@ -671,12 +684,12 @@ public class DeviceBusinessFacadeService {
 		String hdMac = dto.getHmac();
 		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(hdMac);
 		System.out.println("do WangAn Authorize handsetOnline" + handsetOnline);
+		HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
 		if(handsetOnline != null || !"".equals(handsetOnline)){
-			HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
-			long ts = onlineDto.getTs();
-			if( ts != 0){
-				dto.setTs(ts);
-			}
+//			long ts = onlineDto.getTs();
+//			if( ts != 0){
+//				dto.setTs(ts);
+//			}
 			
 			HandsetDeviceDTO handsetDeviceDTO =	HandsetStorageFacadeService.handset(dto.getMac(),dto.getHmac());
 			System.out.println("do WangAn Authouize handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
@@ -734,7 +747,10 @@ public class DeviceBusinessFacadeService {
 			if(dto.getAuthorized() != null && dto.getAuthorized().equals("true")){
 				act = ActionMode.HandsetOnline.getPrefix();
 				dto.setAct(ActionMode.HandsetOnline.getPrefix());
+				dto.setTs(System.currentTimeMillis()); //设置上线时间为当前时间，并需要存入memcache
 				message =  JsonHelper.getJSONString(dto);
+
+				portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
 			} else { 
 				act = ActionMode.HandsetOffline.getPrefix();
 				dto.setAct(ActionMode.HandsetOffline.getPrefix());
@@ -749,7 +765,7 @@ public class DeviceBusinessFacadeService {
 				offdto.setInternet(dto.getInternet());
 				offdto.setMac(dto.getMac());
 				offdto.setRssi(dto.getRssi());
-				offdto.setTs(dto.getTs());
+				offdto.setTs(onlineDto.getTs()); //从memcache中记录的ts获取上线时间
 				offdto.setVapname(dto.getVapname());
 				offdto.setVipacc(dto.getVipacc());
 				offdto.setViptype(dto.getViptype());
