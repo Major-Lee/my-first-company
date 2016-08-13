@@ -582,7 +582,12 @@ public class DeviceBusinessFacadeService {
 		}else{   
 			logger.info("do WangAn Processor  authorize is false or null" + dto.getMac());
 		}
-		String memHandsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
+		
+		String memHandsetOnline = null;
+		memHandsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getMac()+dto.getHmac()); //从新格式key中取
+		if(StringUtils.isEmpty(memHandsetOnline))
+			memHandsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac()); //尝试从旧格式中获取
+		
 		if(memHandsetOnline != null){
 			HandsetOnlineAction memDto = JsonHelper.getDTO(memHandsetOnline, HandsetOnlineAction.class);
 			dto.setTs(memDto.getTs());
@@ -595,7 +600,7 @@ public class DeviceBusinessFacadeService {
 			message =  JsonHelper.getJSONString(dto);
 		}
 
-		portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
+		portraitMemcachedCacheService.storePortraitCacheResult(dto.getMac()+hdMac, message);
 		System.out.println("do WangAn store CacheResult"+message);
 	}
 	
@@ -605,7 +610,10 @@ public class DeviceBusinessFacadeService {
 		String authorize = dto.getAuthorized();
 		if(authorize != null && authorize.equalsIgnoreCase("true")){
 			logger.info("do WangAn Processor  offline is true" + message);
-			String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
+			String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getMac()+dto.getHmac());
+			if(StringUtils.isEmpty(handsetOnline))
+				handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
+				
 			System.out.println("do WangAn offline handsetOnline" + handsetOnline);
 			long end_ts = dto.getTs();
 			if(handsetOnline != null || !"".equals(handsetOnline)){
@@ -682,7 +690,9 @@ public class DeviceBusinessFacadeService {
 		HandsetOnlineAction dto = JsonHelper.getDTO(message, HandsetOnlineAction.class);
 		String mac = dto.getMac();
 		String hdMac = dto.getHmac();
-		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(hdMac);
+		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(mac + hdMac); //从新格式key中取
+		if(StringUtils.isEmpty(handsetOnline))
+			handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(hdMac); //尝试从旧格式key中取
 		System.out.println("do WangAn Authorize handsetOnline" + handsetOnline);
 		HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
 		if(handsetOnline != null || !"".equals(handsetOnline)){
@@ -732,7 +742,7 @@ public class DeviceBusinessFacadeService {
 				dto.setTs(System.currentTimeMillis()); //设置上线时间为当前时间，并需要存入memcache
 				message =  JsonHelper.getJSONString(dto);
 
-				portraitMemcachedCacheService.storePortraitCacheResult(hdMac, message);
+				portraitMemcachedCacheService.storePortraitCacheResult(mac+hdMac, message);
 			} else { 
 				act = ActionMode.HandsetOffline.getPrefix();
 				dto.setAct(ActionMode.HandsetOffline.getPrefix());
