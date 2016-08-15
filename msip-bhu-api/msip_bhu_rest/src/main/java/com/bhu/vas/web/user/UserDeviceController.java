@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -193,6 +194,12 @@ public class UserDeviceController extends BaseController {
                 @RequestParam(required = false, value = "faddress") String faddress,
                 @RequestParam(required = false, value = "lon") String lon,
                 @RequestParam(required = false, value = "lat") String lat){
+    	
+    	if(StringUtils.isEmpty(lon) || StringUtils.isEmpty(lat)){
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY));
+            return;
+    	}
+
     	RpcResponseDTO<Boolean> rpcResult = userDeviceRpcService.updateDeviceLocation(uid, mac, country, province, city, district, street, faddress, lon, lat);
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
