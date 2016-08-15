@@ -44,12 +44,12 @@ public class PaymentInternalHelper {
 	 * @return
 	 */
 	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(Integer appid, String payment_type, 
-			String amount, String requestip, String umac, String orderid, String payment_completed_url,String channel){
+			String amount, String requestip, String umac, String orderid, String payment_completed_url,String channel,String version){
 		Map<String, String> api_params = generatePaymentApiParamMap(appid);
 		if(api_params == null){
 			logger.info(String.format("CreatePaymentUrlCommunication generate params error orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s] channel[%s]", orderid, payment_type, 
-					amount, requestip, umac, payment_completed_url, appid,channel));
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s] channel[%s] version[%s]", orderid, payment_type, 
+					amount, requestip, umac, payment_completed_url, appid,channel,version));
 			return null;
 		}
 		
@@ -60,6 +60,7 @@ public class PaymentInternalHelper {
 		api_params.put("goods_no", orderid);
 		api_params.put("payment_completed_url", payment_completed_url);
 		api_params.put("channel", channel);
+		api_params.put("version", version);
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = null;
 		try {
@@ -79,8 +80,8 @@ public class PaymentInternalHelper {
 			}
 		} catch (Exception ex) {
 			logger.error(String.format("CreatePaymentUrlCommunication Response  orderid[%s] payment_type[%s] "
-					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s] channel[%s] Exception ", orderid, payment_type, 
-					amount, requestip, umac, payment_completed_url, appid,channel), ex);
+					+ "amount[%s] ip[%s] umac[%s] pcd_url[%s] appid[%s] channel[%s] version[%s] Exception ", orderid, payment_type, 
+					amount, requestip, umac, payment_completed_url, appid,channel,version), ex);
 			ex.printStackTrace(System.out);
 		}
 		return rcp_dto;
