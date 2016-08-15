@@ -106,8 +106,8 @@ public class UserWalletFacadeService{
 	@Resource
 	private GpathIncomeService gpathIncomeService;
 	
-	@Resource
-	private BusinessWalletCacheService businessWalletCacheService;
+	//@Resource
+	//private BusinessWalletCacheService businessWalletCacheService;
 	
 	public GpathIncomeService getGpathIncomeService() {
 		return gpathIncomeService;
@@ -384,7 +384,7 @@ public class UserWalletFacadeService{
 				callback.notifyCashSharedealOper(sharedeal.getOwner(),sharedeal.getOwner_cash());
 			}
 			// 分成成功后清除用户钱包日志统计缓存数据,再次查询时就是最新的数据
-			businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getOwner());
+			//businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getOwner());
 		}else
 			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
