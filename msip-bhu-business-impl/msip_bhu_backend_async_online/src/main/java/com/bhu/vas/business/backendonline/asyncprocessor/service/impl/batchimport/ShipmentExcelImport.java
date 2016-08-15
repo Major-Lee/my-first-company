@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -99,9 +100,10 @@ public class ShipmentExcelImport {
 		}
 	}
 	
-	public static void excelPreCheck(String fileinputpath,String fileoutpath,ExcelElementCallback callback){
+	public static int excelPreCheck(String fileinputpath,String fileoutpath,ExcelElementCallback callback){
 		System.out.println("input file:"+fileinputpath);
 		System.out.println("output file:"+fileoutpath);
+		final AtomicInteger atomic_failed = new AtomicInteger(0);
         InputStream is = null;
         //HSSFWorkbook hssfWorkbook = null;//new HSSFWorkbook(is);
         //Workbook workbook = null;
@@ -133,7 +135,15 @@ public class ShipmentExcelImport {
 	        			int duplicated = -1;
 	        			sn = sn.trim();
 	        			for(int dr = 1; dr < rowNum; dr ++){
-	        				
+	    	        		Row check_row = sheet.getRow(dr);
+	    	        		if(check_row == null)continue;
+	    	        		Cell check_cell_sn = check_row.getCell(0);
+	    	        		if(check_cell_sn == null) continue;
+	    	        		String check_sn = check_cell_sn.getStringCellValue();
+	    	        		if(!StringUtils.isEmpty(check_sn) && sn.equals(check_sn.trim())){
+	    	        			duplicated = dr;
+	    	        			break;
+	    	        		}
 	        			}
 	        			Cell cell_msg = row.getCell(1);
         				if(cell_msg == null){
@@ -141,15 +151,19 @@ public class ShipmentExcelImport {
         				}
 	        			if(duplicated != -1){
 	        				cell_msg.setCellValue(String.format("和第%d行重复", duplicated));
+				        	atomic_failed.incrementAndGet();
 	        			} else {
 		        			DeviceCallbackDTO dcDTO = callback.elementDeviceInfoFetch(sn);
 		        			if(dcDTO == null){
 		        				row.getCell(1).setCellValue("不存在");
+					        	atomic_failed.incrementAndGet();
 		        			}else{
-		        				if(!StringUtils.isEmpty(dcDTO.getLast_batchno()))
+		        				if(!StringUtils.isEmpty(dcDTO.getLast_batchno())){
 			        				cell_msg.setCellValue(String.format("%s, 批次[%s]已导入", dcDTO.getMac(), dcDTO.getLast_batchno()));
-		        				else
+						        	atomic_failed.incrementAndGet();
+		        				} else {
 		        					cell_msg.setCellValue(dcDTO.getMac());//"84:82:f4:32:3c:80");
+		        				}
 		        			}
 	        			}
 	        		}
@@ -173,6 +187,7 @@ public class ShipmentExcelImport {
                 is = null;
             }
 		}
+        return atomic_failed.intValue();
 	}
 	
 	

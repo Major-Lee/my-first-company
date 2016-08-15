@@ -73,17 +73,14 @@ public class BatchImportPreCheckServiceHandler implements IMsgHandlerService {
 			}
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_PRE_CHECK);
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
-			final AtomicInteger atomic_failed = new AtomicInteger(0);
-			final AtomicInteger atomic_successed = new AtomicInteger(0);
 			final BatchImportVTO importVto = batchImport.toBatchImportVTO(null, null,null);
-			ShipmentExcelImport.excelPreCheck(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), new ExcelElementCallback(){
+			int failed = ShipmentExcelImport.excelPreCheck(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), new ExcelElementCallback(){
 				@Override
 				public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
 					ModelCriteria mc = new ModelCriteria();
 			        mc.createCriteria().andSimpleCaulse("1=1").andColumnEqualTo("sn", sn);
 			        List<String> macs_fromdb = wifiDeviceService.findIdsByModelCriteria(mc);//.findModelByModelCriteria(mc);
 			        if(macs_fromdb.isEmpty()){
-			        	atomic_failed.incrementAndGet();
 			        	return null;
 			        }else{
 			        	String dmac = macs_fromdb.get(0);
@@ -92,7 +89,6 @@ public class BatchImportPreCheckServiceHandler implements IMsgHandlerService {
 			        	WifiDeviceBatchDetail batch_detail = chargingFacadeService.getWifiDeviceBatchDetailService().getById(dmac);
 			        	if(batch_detail != null)
 			        		result.setLast_batchno(batch_detail.getLast_batchno());
-			        	atomic_successed.incrementAndGet();
 			        	return result;
 			        }
 				}
@@ -102,8 +98,8 @@ public class BatchImportPreCheckServiceHandler implements IMsgHandlerService {
 				}
 			});
 			
-			batchImport.setSucceed(atomic_successed.get());
-			batchImport.setFailed(atomic_failed.get());
+			batchImport.setSucceed(0);
+			batchImport.setFailed(failed);
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_PRE_CHECK_DONE);
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
 		}finally{
