@@ -16,7 +16,7 @@
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_fincial_statistics
+	    	t_statistic_fincial_statistics
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
