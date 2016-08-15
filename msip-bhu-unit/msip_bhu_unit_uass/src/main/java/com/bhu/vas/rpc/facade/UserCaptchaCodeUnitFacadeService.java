@@ -15,6 +15,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.model.UserCaptchaCode;
+import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
