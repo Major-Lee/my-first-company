@@ -24,6 +24,15 @@ public class AsyncDeliverMessageService {
 	public void sendPureText(String message){
 		asyncDeliverMessageQueueProducer.sendPureText(message);
 	}
+
+	public void sendBatchImportPreCheckMessage(int uid,String batchno){
+		BatchImportConfirmDTO dto = new BatchImportConfirmDTO();
+		dto.setUid(uid);
+		dto.setBatchno(batchno);
+		dto.setTs(System.currentTimeMillis());
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+
 	public void sendBatchImportConfirmActionMessage(int uid,String batchno){
 		BatchImportConfirmDTO dto = new BatchImportConfirmDTO();
 		dto.setUid(uid);

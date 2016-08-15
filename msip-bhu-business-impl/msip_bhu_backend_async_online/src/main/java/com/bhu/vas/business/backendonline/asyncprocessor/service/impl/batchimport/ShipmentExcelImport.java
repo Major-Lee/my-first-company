@@ -99,6 +99,81 @@ public class ShipmentExcelImport {
 		}
 	}
 	
+	public static void excelPreCheck(String fileinputpath,String fileoutpath,ExcelElementCallback callback){
+		System.out.println("input file:"+fileinputpath);
+		System.out.println("output file:"+fileoutpath);
+        InputStream is = null;
+        //HSSFWorkbook hssfWorkbook = null;//new HSSFWorkbook(is);
+        //Workbook workbook = null;
+        Workbook wb = null;
+		try{//XSSFWorkbook wb2 = (XSSFWorkbook)
+			 is = new FileInputStream(fileinputpath);
+			 wb = WorkbookFactory.create(is);//.openSampleWorkbook("CustomXMLMappings.xlsx");
+			 //new XSSFWorkbook(new FileInputStream(args[0]));
+	         //workbook = new XSSFWorkbook(is);
+	         System.out.println(String.format("sheets size ===" + wb.getNumberOfSheets()));
+	         for (int numSheet = 0; numSheet < wb.getNumberOfSheets(); numSheet++) {
+	        	Sheet sheet = wb.getSheetAt(numSheet);
+	        	if(sheet == null) continue;
+	        	System.out.println(String.format("numSheet[%s] SheetName[%s]",numSheet,sheet.getSheetName()));
+	        	int totalRowNum = sheet.getLastRowNum();
+	        	if(totalRowNum == 0){
+	        		continue;
+	        	}
+	        	System.out.println(String.format("numSheet[%s] SheetName[%s] totalRowNum[%s]",numSheet,sheet.getSheetName(),totalRowNum));
+	        	for (int rowNum = 1; rowNum <= sheet.getLastRowNum(); rowNum++) {
+	        		System.out.println("current row:"+rowNum);
+	        		Row row = sheet.getRow(rowNum);
+	        		if(row == null) continue;
+	        		Cell cell_sn = row.getCell(0);
+	        		if(cell_sn == null) continue;
+	        		String sn = cell_sn.getStringCellValue();
+	        		if(StringUtils.isNotEmpty(sn) && StringUtils.isNotEmpty(sn.trim())){
+	        			//check whether duplicated in excel
+	        			int duplicated = -1;
+	        			sn = sn.trim();
+	        			for(int dr = 1; dr < rowNum; dr ++){
+	        				
+	        			}
+	        			Cell cell_msg = row.getCell(1);
+        				if(cell_msg == null){
+        					cell_msg = row.createCell(1);
+        				}
+	        			if(duplicated != -1){
+	        				cell_msg.setCellValue(String.format("和第%d行重复", duplicated));
+	        			} else {
+		        			DeviceCallbackDTO dcDTO = callback.elementDeviceInfoFetch(sn);
+		        			if(dcDTO == null){
+		        				row.getCell(1).setCellValue("不存在");
+		        			}else{
+		        				if(!StringUtils.isEmpty(dcDTO.getLast_batchno()))
+			        				cell_msg.setCellValue(String.format("%s, 批次[%s]已导入", dcDTO.getMac(), dcDTO.getLast_batchno()));
+		        				else
+		        					cell_msg.setCellValue(dcDTO.getMac());//"84:82:f4:32:3c:80");
+		        			}
+	        			}
+	        		}
+	        	}
+	         }
+	         File targetFile = new File(fileoutpath);
+			 targetFile.getParentFile().mkdirs();
+	         FileOutputStream fileOut = new FileOutputStream(targetFile);
+	         wb.write(fileOut);
+	         fileOut.close();
+		}catch(Exception ex){
+			System.out.println("~~~~~~~~~~~~~~~~~~~~exception");
+			ex.printStackTrace(System.out);
+		}finally{
+            if(is != null){
+                try {
+					is.close();
+				} catch (IOException e) {
+					e.printStackTrace(System.out);
+				}
+                is = null;
+            }
+		}
+	}
 	
 	
 	public static void main(String[] argv){
