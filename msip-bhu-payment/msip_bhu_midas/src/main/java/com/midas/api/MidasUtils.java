@@ -36,7 +36,7 @@ import com.midas.util.SnsSigCheck;
 
 public class MidasUtils {
 
-	public static String submitOrder(String reckoningId, String total_fee, String ip,String subject,String openId,String return_url)  {
+	public static String submitOrder(String version ,String reckoningId, String total_fee, String ip,String subject,String openId,String return_url)  {
 		String result = "";
         try {
         	Config.price = total_fee;
@@ -92,41 +92,45 @@ public class MidasUtils {
         	params.put("money", Config.price);
 			result = JSONObject.valueToString(params);
 			
-			SortedMap<Object, Object> payparams = new TreeMap<Object, Object>();
-			
-			SortedMap<Object, Object> buyInfo = new TreeMap<Object, Object>();
-			SortedMap<Object, Object> opt = new TreeMap<Object, Object>();
-			
-			SortedMap<Object, Object> extend = new TreeMap<Object, Object>();
-			
-			
-			buyInfo.put("type", "goods");
-			buyInfo.put("appid", Config.appid);
-			buyInfo.put("from_h5", 1);
-			buyInfo.put("zoneid", Config.zoneid);
-			buyInfo.put("pf", Config.pf);
-			buyInfo.put("pfkey", Config.pfkey);
-			buyInfo.put("session_id", Config.session_id);
-			buyInfo.put("session_type", Config.session_type);
-			buyInfo.put("openid", Config.openid);
-			buyInfo.put("openkey", Config.openkey);
-			
-			extend.put("showSingleAmt", 0);
-			extend.put("amtCanChange", 0);
-			buyInfo.put("extend", extend);
-			
-			buyInfo.put("goodstokenurl", Config.url_params);
-			buyInfo.put("buy_quantity", 1);
-			payparams.put("buyInfo", buyInfo);
-			opt.put("sandbox", false);
-			opt.put("https", false);
-			payparams.put("opt", opt);
-			return_url = URLEncoder.encode(return_url, "UTF-8");
-			payparams.put("callback_url", return_url);
-			
-		    String s = URLEncoder.encode(JSONObject.valueToString(payparams), "UTF-8");
-			result = Config.pay_url+"?payParams="+s;
-			
+			//兼容旧版
+			if(version.equals("0")){
+				return result;
+			}else if(version.equals("v1")){
+				SortedMap<Object, Object> payparams = new TreeMap<Object, Object>();
+				
+				SortedMap<Object, Object> buyInfo = new TreeMap<Object, Object>();
+				SortedMap<Object, Object> opt = new TreeMap<Object, Object>();
+				
+				SortedMap<Object, Object> extend = new TreeMap<Object, Object>();
+				
+				
+				buyInfo.put("type", "goods");
+				buyInfo.put("appid", Config.appid);
+				buyInfo.put("from_h5", 1);
+				buyInfo.put("zoneid", Config.zoneid);
+				buyInfo.put("pf", Config.pf);
+				buyInfo.put("pfkey", Config.pfkey);
+				buyInfo.put("session_id", Config.session_id);
+				buyInfo.put("session_type", Config.session_type);
+				buyInfo.put("openid", Config.openid);
+				buyInfo.put("openkey", Config.openkey);
+				
+				extend.put("showSingleAmt", 0);
+				extend.put("amtCanChange", 0);
+				buyInfo.put("extend", extend);
+				
+				buyInfo.put("goodstokenurl", Config.url_params);
+				buyInfo.put("buy_quantity", 1);
+				payparams.put("buyInfo", buyInfo);
+				opt.put("sandbox", false);
+				opt.put("https", false);
+				payparams.put("opt", opt);
+				return_url = URLEncoder.encode(return_url, "UTF-8");
+				payparams.put("callback_url", return_url);
+				
+			    String s = URLEncoder.encode(JSONObject.valueToString(payparams), "UTF-8");
+				result = Config.pay_url+"?payParams="+s;
+			}
 		} catch (JSONException e) {
 			System.out.println("midas JSONException error:"+e.getMessage());
 		} catch (UnsupportedEncodingException e) {

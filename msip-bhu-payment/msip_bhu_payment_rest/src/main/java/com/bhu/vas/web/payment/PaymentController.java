@@ -494,6 +494,11 @@ public class PaymentController extends BaseController{
 			if(type == null){
 				type = "0";
 			}
+			
+			String version = request.getParameter("version");
+			if(version == null){
+				version = "0";
+			}
 			//判断非空参数
 			if (StringUtils.isBlank(appid)) {
         		logger.error(String.format("apply payment appid [%s]", appid));
@@ -580,20 +585,18 @@ public class PaymentController extends BaseController{
     				}else{
     					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByName();
         				if(agentMerchant.equals("Midas")){
-        					result =  doMidas(response,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}else if(agentMerchant.equals("Hee")){
         					result =  doHee(response,"3", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}else if(agentMerchant.equals("Now")){
         					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}else{
-        					result =  doMidas(response,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}
     				}
                 	break;
     			case BHU_MIDAS_WEIXIN: //米大师
     				System.out.println("apply payment payment_type is old midas ...........");
-    				logger.info(String.format("apply payment payment_type [%s]",payment_type + ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-        					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT))));
 //    				String agentMerchants = payLogicService.findWapWeixinMerchantServiceByName();
 //    				if(agentMerchants.equals("Midas")){
 //    					result =  doMidas(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
@@ -604,6 +607,7 @@ public class PaymentController extends BaseController{
 //    				}else{
 //    					result =  doMidas(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
 //    				}
+    				result =  doMidas(response,"0","1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
             		break;
     			case BHU_WAP_ALIPAY: //Wap微信支付
     				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
@@ -625,15 +629,15 @@ public class PaymentController extends BaseController{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(respone)));
     			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(respone));
     		}
-//    		else if(type.equalsIgnoreCase("Midas")){
-////    			PaymentTypeVTO results = new PaymentTypeVTO();
-////    			results.setType("json");
-////    			results.setUrl(msg);
-////    			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(results)));
-////    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(results)));
-//    			logger.info(String.format("apply payment return result [%s]",msg));
-//    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(msg));
-//    		}
+    		else if(types.equalsIgnoreCase("Midas")){
+//    			PaymentTypeVTO results = new PaymentTypeVTO();
+//    			results.setType("json");
+//    			results.setUrl(msg);
+//    			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(results)));
+//    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(results)));
+    			logger.info(String.format("apply payment return result [%s]",msg));
+    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(msg));
+    		}
     		else{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(result)));
     			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
@@ -1096,7 +1100,7 @@ public class PaymentController extends BaseController{
      * @param exter_invoke_ip 
      * @return
      */
-    private PaymentTypeVTO doMidas(HttpServletResponse response, String type,String total_fee, String out_trade_no, String ip, String return_url, String usermac, String paymentName,String appid) {
+    private PaymentTypeVTO doMidas(HttpServletResponse response,String version, String type,String total_fee, String out_trade_no, String ip, String return_url, String usermac, String paymentName,String appid) {
     	PaymentTypeVTO result = new PaymentTypeVTO();
     	if(ip == "" || ip == null){
     		ip = "213.42.3.24";
@@ -1109,34 +1113,131 @@ public class PaymentController extends BaseController{
     	String total_fee_fen = BusinessHelper.getMoney(total_fee);
     	
     	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,type,total_fee_fen,ip,PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n(),usermac,paymentName,appid);
-    	//记录请求支付完成后返回的地址
-    	if (StringUtils.isBlank(return_url)) {
-    		return_url = PayHttpService.WEB_NOTIFY_URL;
-    		logger.info(String.format(" midas  return_url location is null so we set default value %s ",return_url));
-    	}else{
-    		logger.info(String.format("get midas location [%s] ",return_url));
-    		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
-    		orderLocation.setTid(reckoningId);
-    		orderLocation.setLocation(return_url);
-    		paymentAlipaylocationService.insert(orderLocation);
-    		logger.info(String.format("apply midas set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
-    	}
+    	if(version.equals("0")){
+    		
+    		//记录请求支付完成后返回的地址
+        	if (StringUtils.isBlank(return_url)) {
+        		return_url = PayHttpService.WEB_NOTIFY_URL;
+        		logger.info(String.format(" midas  return_url location is null so we set default value %s ",return_url));
+        	}else{
+        		logger.info(String.format("get midas location [%s] ",return_url));
+        		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
+        		orderLocation.setTid(reckoningId);
+        		orderLocation.setLocation(return_url);
+        		paymentAlipaylocationService.insert(orderLocation);
+        		logger.info(String.format("apply midas set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
+        	}
 
-    	double fenTemp = Double.parseDouble(total_fee_fen);
-    	double jiaoTemp =fenTemp/10;
-    	String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
-    	//String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac);
-    	logger.info(String.format("apply midas results [%s]",results));
-    	if("error".equalsIgnoreCase(results)){
-    		result.setType("FAIL");
-        	result.setUrl("支付请求失败");
-        	return result;
-    	}else{
-        	result.setType("http");
-        	result.setUrl(results);
-        	return result;
+        	double fenTemp = Double.parseDouble(total_fee_fen);
+        	double jiaoTemp =fenTemp/10;
+        	String results = MidasUtils.submitOrder("0",reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
+        	logger.info(String.format("apply midas results [%s]",results));
+        	if("error".equalsIgnoreCase(results)){
+        		result.setType("FAIL");
+            	result.setUrl("支付请求失败");
+            	return result;
+        	}else{
+            	result.setType("Midas");
+            	result.setUrl(results);
+            	return result;
+        	}
+    		
+    	}else if(version.equals("v1")){
+    		//记录请求支付完成后返回的地址
+        	if (StringUtils.isBlank(return_url)) {
+        		return_url = PayHttpService.WEB_NOTIFY_URL;
+        		logger.info(String.format(" midas  return_url location is null so we set default value %s ",return_url));
+        	}else{
+        		logger.info(String.format("get midas location [%s] ",return_url));
+        		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
+        		orderLocation.setTid(reckoningId);
+        		orderLocation.setLocation(return_url);
+        		paymentAlipaylocationService.insert(orderLocation);
+        		logger.info(String.format("apply midas set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
+        		if(return_url.contains("payokurl=")){
+        			String[] Str =return_url.split("payokurl=");
+        			if( Str.length > 0){
+        				return_url = Str[1];
+        			}
+        		}
+        	}
+
+        	double fenTemp = Double.parseDouble(total_fee_fen);
+        	double jiaoTemp =fenTemp/10;
+        	String results = MidasUtils.submitOrder("v1",reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
+        	//String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac);
+        	logger.info(String.format("apply midas results [%s]",results));
+        	if("error".equalsIgnoreCase(results)){
+        		result.setType("FAIL");
+            	result.setUrl("支付请求失败");
+            	return result;
+        	}else{
+            	result.setType("http");
+            	result.setUrl(results);
+            	return result;
+        	}
     	}
+    	return result;
+    	
 	}
+//    /**
+//     * 处理米大师支付服务请求
+//     * @param response
+//     * @param total_fee
+//     * @param goods_no
+//     * @param paymentName 
+//     * @param umac 
+//     * @param payment_completed_url 
+//     * @param exter_invoke_ip 
+//     * @return
+//     */
+//    private PaymentTypeVTO doMidas_v1(HttpServletResponse response, String type,String total_fee, String out_trade_no, String ip, String return_url, String usermac, String paymentName,String appid) {
+//    	PaymentTypeVTO result = new PaymentTypeVTO();
+//    	if(ip == "" || ip == null){
+//    		ip = "213.42.3.24";
+//    	}
+//    	
+//    	if(usermac.equals("")){
+//    		usermac = RandomPicker.randString(BusinessHelper.letters, 8);
+//    	}
+//    	
+//    	String total_fee_fen = BusinessHelper.getMoney(total_fee);
+//    	
+//    	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,type,total_fee_fen,ip,PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n(),usermac,paymentName,appid);
+//    	//记录请求支付完成后返回的地址
+//    	if (StringUtils.isBlank(return_url)) {
+//    		return_url = PayHttpService.WEB_NOTIFY_URL;
+//    		logger.info(String.format(" midas  return_url location is null so we set default value %s ",return_url));
+//    	}else{
+//    		logger.info(String.format("get midas location [%s] ",return_url));
+//    		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
+//    		orderLocation.setTid(reckoningId);
+//    		orderLocation.setLocation(return_url);
+//    		paymentAlipaylocationService.insert(orderLocation);
+//    		logger.info(String.format("apply midas set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
+//    		if(return_url.contains("payokurl=")){
+//    			String[] Str =return_url.split("payokurl=");
+//    			if( Str.length > 0){
+//    				return_url = Str[1];
+//    			}
+//    		}
+//    	}
+//    	
+//    	double fenTemp = Double.parseDouble(total_fee_fen);
+//    	double jiaoTemp =fenTemp/10;
+//    	String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
+//    	//String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac);
+//    	logger.info(String.format("apply midas results [%s]",results));
+//    	if("error".equalsIgnoreCase(results)){
+//    		result.setType("FAIL");
+//    		result.setUrl("支付请求失败");
+//    		return result;
+//    	}else{
+//    		result.setType("http");
+//    		result.setUrl(results);
+//    		return result;
+//    	}
+//    }
    
     /**
      * 处理汇付宝支付服务请求
