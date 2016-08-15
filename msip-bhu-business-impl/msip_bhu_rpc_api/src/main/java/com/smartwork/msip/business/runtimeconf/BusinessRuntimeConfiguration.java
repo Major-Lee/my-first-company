@@ -405,7 +405,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static int SharedNetworksTemplateMaxLimit = 50;
 	
 	public static String UserPortalUpdate2UPortalApi = "http://ucloud.bhuwifi.com:9157/portal/set/recreate";
-	public static String UserPortalChargingNotify2UPortalApi = "http://ucloud.bhuwifi.com:9157/common/api/save-status";
+	public static String UserPortalChargingNotify2UPortalApi = "http://ucloud.bhuwifi.com:9158/common/api/save-status";
 	/**
 	 * 判断是否是console用户
 	 * @param uid
