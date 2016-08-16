@@ -70,6 +70,7 @@ public class ShipmentExcelImport {
         				if(cell_mac == null){
         					cell_mac = row.createCell(1);
         				}
+        				cell_mac.setCellValue(""); //初始化为空
 	        			if(dcDTO == null){
 	        				row.getCell(1).setCellValue("不存在");
 	        			}else{
@@ -149,6 +150,7 @@ public class ShipmentExcelImport {
         				if(cell_msg == null){
         					cell_msg = row.createCell(1);
         				}
+        				cell_msg.setCellValue(""); //初始化为空
 	        			if(duplicated != -1){
 	        				cell_msg.setCellValue(String.format("和第%d行重复", duplicated));
 				        	atomic_failed.incrementAndGet();

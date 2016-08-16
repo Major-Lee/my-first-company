@@ -102,8 +102,10 @@ public class BatchImportPreCheckServiceHandler implements IMsgHandlerService {
 			batchImport.setFailed(failed);
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_PRE_CHECK_DONE);
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
-		}finally{
+			logger.info(String.format("process message[%s] successful", message));
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error("error when import precheck check");
 		}
-		logger.info(String.format("process message[%s] successful", message));
 	}	
 }
