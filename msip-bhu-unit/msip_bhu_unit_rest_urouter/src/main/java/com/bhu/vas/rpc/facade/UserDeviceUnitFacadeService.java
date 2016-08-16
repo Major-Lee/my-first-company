@@ -996,7 +996,7 @@ public class UserDeviceUnitFacadeService {
 		
 		wifiDeviceService.update(wifiDevice);
 		wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(mac, Double.parseDouble(lat),
-				Double.parseDouble(lon), faddress);
+				Double.parseDouble(lon), faddress ,province ,city ,district);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 

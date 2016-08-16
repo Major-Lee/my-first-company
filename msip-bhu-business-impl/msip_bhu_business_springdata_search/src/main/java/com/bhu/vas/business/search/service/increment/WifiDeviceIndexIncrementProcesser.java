@@ -66,16 +66,19 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * @param lat 纬度
 	 * @param lon 经度
 	 * @param d_address 详细地址
+	 * @param district 
+	 * @param city 
+	 * @param province 
 	 */
 	@Override
-	public void locaitionUpdIncrement(final String id, final double lat, final double lon, final String d_address){
+	public void locaitionUpdIncrement(final String id, final double lat, final double lon, final String d_address, final String province, final String city, final String district){
 		ExecutorService executor = singleExecProcesser(id);
 		if(executor != null){
 			executor.submit((new Runnable() {
 				@Override
 				public void run() {
 					try{
-						wifiDeviceIndexIncrement.locaitionUpdIncrement(id, lat, lon, d_address);
+						wifiDeviceIndexIncrement.locaitionUpdIncrement(id, lat, lon, d_address, province, city, district);
 					}catch(Exception ex){
 						ex.printStackTrace(System.out);
 					}

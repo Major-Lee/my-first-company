@@ -18,6 +18,7 @@
     <result property="memo" column="memo"/>
     <result property="description" column="description"/>
     <result property="updated_at" column="updated_at"/>
+    <result property="umac" column="umac"/>
   </resultMap>  
   
   	<sql id="modelTableName">
@@ -39,7 +40,8 @@
 	    	vcurrency,
 	    	memo,
 	    	description,
-	    	updated_at
+	    	updated_at,
+	    	umac
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
@@ -55,7 +57,8 @@
 	    	vcurrency,
 	    	memo,
 	    	description,
-	    	updated_at
+	    	updated_at,
+	    	umac
 	    ]]>
 	</sql>   
 	
@@ -71,8 +74,8 @@
 	    	#{vcurrency},
 	    	#{memo},
 	    	#{description},
-	    	#{updated_at}
-	    	
+	    	#{updated_at},
+	    	#{umac}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
@@ -87,7 +90,8 @@
 	    	vcurrency=#{vcurrency},
 			memo=#{memo},
 	    	description=#{description},
-	    	updated_at=#{updated_at}
+	    	updated_at=#{updated_at},
+	    	umac=#{umac}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
 		<!--

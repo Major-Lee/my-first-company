@@ -126,6 +126,11 @@ public class WifiDeviceDocumentHelper {
 			if(wifiDevice.getCreated_at() != null){
 				doc.setD_createdat(wifiDevice.getCreated_at().getTime());
 			}
+			//增加省市区三个字段
+			doc.setD_province(wifiDevice.getProvince());
+			doc.setD_city(wifiDevice.getCity());
+			doc.setD_district(wifiDevice.getDistrict());
+			
 			DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
 			if(parser != null){
 				String dut = parser.getDut();

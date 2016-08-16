@@ -57,7 +57,7 @@ public class ChargingFacadeServiceTest extends BaseTest{
     
     //@Test
 	public void test003CalculateSharedeal(){
-    	SharedealInfo calculateSharedeal = chargingFacadeService.calculateSharedeal(Default_DMac, "test00012", 789.03d);
+    	SharedealInfo calculateSharedeal = chargingFacadeService.calculateSharedeal(Default_DMac, "", "test00012", 789.03d);
     	System.out.println(JsonHelper.getJSONString(calculateSharedeal));
     }
 }

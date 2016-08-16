@@ -276,6 +276,27 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
+	private String d_province;//省
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_city;//市
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_district;//区
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
 	private String updatedat;//索引记录的更新时间
 	
 	/*@Field(
@@ -409,6 +430,8 @@ public class WifiDeviceDocument extends AbstractDocument{
 	)
 	private String a_org;//代理商的公司名称
 
+	
+	
 	@Override
 	public String getId() {
 		return id;
@@ -628,6 +651,31 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_tags(String d_tags) {
 		this.d_tags = d_tags;
+	}
+	
+
+	public String getD_province() {
+		return d_province;
+	}
+
+	public void setD_province(String d_province) {
+		this.d_province = d_province;
+	}
+
+	public String getD_city() {
+		return d_city;
+	}
+
+	public void setD_city(String d_city) {
+		this.d_city = d_city;
+	}
+
+	public String getD_district() {
+		return d_district;
+	}
+
+	public void setD_district(String d_district) {
+		this.d_district = d_district;
 	}
 
 	public String getUpdatedat() {
