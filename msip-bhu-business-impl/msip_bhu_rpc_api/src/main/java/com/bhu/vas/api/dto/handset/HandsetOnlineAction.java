@@ -114,8 +114,4 @@ public class HandsetOnlineAction extends TerminalAction{
 		this.vipacc = vipacc;
 	}
 
-	public void setAct(String act) {
-		this.act = act;
-	}
-	
 }
