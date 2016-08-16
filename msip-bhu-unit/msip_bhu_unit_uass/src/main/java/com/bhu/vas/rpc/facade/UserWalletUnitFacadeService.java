@@ -206,7 +206,7 @@ public class UserWalletUnitFacadeService {
 					for(UserSharedealDistributorView view : list){
 						Order order = orders.get(index);
 						vtos.add(view.toUserWalletLogFFVTO
-								    (order != null ? order.getAmount() : StringUtils.EMPTY,
+						            (order != null ? order.getAmount() : StringUtils.EMPTY,
 								     order != null ? order.getMac() : StringUtils.EMPTY));
 						index++;
 					}
