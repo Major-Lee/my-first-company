@@ -99,10 +99,10 @@ public class SSIDStatisticFacadeRpcService {
 		List<String> timeList = new ArrayList<String>();
 		if(StringUtils.isNotBlank(startTime)&&StringUtils.isNotBlank(endTime)){
 			//根据时间间隔查询设备统计信息
-			timeList = getDaysListAsc(startTime,endTime);
+			timeList = getDaysList(startTime,endTime);
 		}else{
 			//根据天数查询设备统计信息
-			timeList = getLastDayAsc(Integer.parseInt(type));
+			timeList = getLastDay(Integer.parseInt(type));
 			startTime=timeList.get(timeList.size()-1);
 			endTime=DataUtils.beforeDay();
 		}
@@ -209,11 +209,13 @@ public class SSIDStatisticFacadeRpcService {
 					}
 					String equipment = StringUtils.EMPTY;
 					equipment = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "equipment");
-					JSONObject obj = JSONObject.fromObject(equipment);
 					if(StringUtils.isNotBlank(equipment)){
+						JSONObject obj = JSONObject.fromObject(equipment);
 						//处理结果
-						if(obj.get("dc") != null && obj.get("doc") != null){
-							dc = (Integer)obj.get("dc");
+						if(obj.get("dc ") != null){
+							dc = (Integer)obj.get("dc ");
+						}
+						if( obj.get("doc") != null){
 							doc = (Integer)obj.get("doc");
 						}
 					}
@@ -746,20 +748,44 @@ public class SSIDStatisticFacadeRpcService {
 		resMap.put("dataList", pageResMaps);
 		resMap.put("total", tMaps);
 		
-		equipments.add(time);
-		equipments.add(equipmentNums);
+		//折线图组装数据
+		List<Object> astime=new ArrayList<Object>();
+		List<Object> asequipmentNums=new ArrayList<Object>();
+		
+		List<Object> asorderNums=new ArrayList<Object>();
+		List<Object> asorderComNums=new ArrayList<Object>();
+		
+		List<Object> astotalPrice=new ArrayList<Object>();
+		
+		for(int i=time.size()-1;i>=0;i--){
+			astime.add(time.get(i));
+			asequipmentNums.add(equipmentNums.get(i));
+			asorderNums.add(orderNums.get(i));
+			asorderComNums.add(orderComNums.get(i));
+			astotalPrice.add(totalPrice.get(i));
+		}
+		equipments.add(astime);
+		equipments.add(asequipmentNums);
 		
 		resMap.put("equipment", equipments);
 		
-		orders.add(time);
-		orders.add(orderNums);
-		orders.add(orderComNums);
+		orders.add(astime);
+		orders.add(asorderNums);
+		orders.add(asorderComNums);
 		resMap.put("order", orders);
 		
-		price.add(time);
-		price.add(totalPrice);
+		price.add(astime);
+		price.add(astotalPrice);
 		resMap.put("price", price);
 		
+		resMap.put("pn", pn);
+		int totalPage=1;
+		if(timeList.size()%ps==0){
+			totalPage=timeList.size()/ps;
+		}else{
+			totalPage=timeList.size()/ps+1;
+		}
+		resMap.put("totalpage", totalPage);
 		result=success(resMap);
 		return result;
 	}
@@ -858,14 +884,14 @@ public class SSIDStatisticFacadeRpcService {
 	 * @param dateNum
 	 * @return
 	 */
-	public static List<String> getLastDayAsc(int dateNum){
+	public static List<String> getLastDay(int dateNum){
 		List<String> list = new ArrayList<String>();
 		//获取当前日期
 		for (int i = 1; i <= dateNum; i++) {
 			Date date = new Date();  
 			Calendar calendar = Calendar.getInstance();  
 			calendar.setTime(date); 
-			calendar.add(Calendar.DAY_OF_MONTH, -(dateNum-i));
+			calendar.add(Calendar.DAY_OF_MONTH, -i);
 			date = calendar.getTime();  
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
 			String dateNowStr = sdf.format(date); 
@@ -874,19 +900,19 @@ public class SSIDStatisticFacadeRpcService {
 		return list; 
 	}
 	
-	public static List<String> getDaysListAsc(String beginTime,String endTime){
+	public static List<String> getDaysList(String beginTime,String endTime){
 		List<String> list = new ArrayList<String>();
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
 		Calendar start = Calendar.getInstance();
 		Calendar end = Calendar.getInstance();
-		list.add(beginTime);
+		list.add(endTime);
 		try {
 			start.setTime(format.parse(beginTime));
 			end.setTime(format.parse(endTime));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		while(end.after(start))
+		while(start.before(end))
 		{
 			System.out.println(format.format(start.getTime()));
 			start.add(Calendar.DAY_OF_MONTH,1);
