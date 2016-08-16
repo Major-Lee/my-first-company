@@ -103,7 +103,7 @@ public class SSIDStatisticFacadeRpcService {
 		}else{
 			//根据天数查询设备统计信息
 			timeList = getLastDayAsc(Integer.parseInt(type));
-			startTime=timeList.get(0);
+			startTime=timeList.get(timeList.size()-1);
 			endTime=DataUtils.beforeDay();
 		}
 		//uv总数
