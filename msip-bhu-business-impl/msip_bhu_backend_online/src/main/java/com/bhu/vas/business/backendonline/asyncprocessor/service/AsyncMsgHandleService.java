@@ -1043,6 +1043,13 @@ public class AsyncMsgHandleService {
 				closeDevices2SharedNetworksWhenDeviceReset(dto.getMac());
 				addDevices2SharedNetwork(-1, dto.getMac());
 			}
+			
+			UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+			if(userWifiDevice != null){
+						userWifiDevice.setDevice_name_modifyed(false);
+						userWifiDeviceService.update(userWifiDevice);
+			}
+			
 		} else {
 			// 检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
 			WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
