@@ -1296,7 +1296,7 @@ public class AsyncMsgHandleService {
 			// 3:增量索引
 			// wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
 			wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(entity.getId(), Double.parseDouble(entity.getLat()),
-					Double.parseDouble(entity.getLon()), entity.getFormatted_address());
+					Double.parseDouble(entity.getLon()), entity.getFormatted_address(),entity.getProvince(),entity.getCity(),entity.getDistrict());
 		}
 		logger.info(
 				String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
