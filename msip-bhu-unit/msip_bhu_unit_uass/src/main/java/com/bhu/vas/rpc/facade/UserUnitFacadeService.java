@@ -316,7 +316,7 @@ public class UserUnitFacadeService {
 			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
 			// 內部验证码, 内部用户注册输入此验证码就直接通过
 			final String innerCaptcha = "999999111111";
-			if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode) ||
+			if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode) &&
 			   !innerCaptcha.equals(captcha)){
 				ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
 				if(errorCode != null){
