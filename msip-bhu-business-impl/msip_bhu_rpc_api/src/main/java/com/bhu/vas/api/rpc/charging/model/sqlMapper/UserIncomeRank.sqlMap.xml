@@ -96,7 +96,7 @@
 		</where>
 	</select>
 	<select id="findByLimit" resultMap="modelResult" parameterType="java.util.List">
-	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> order by rank limit #{num}
+	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> limit order by rank #{num}
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">

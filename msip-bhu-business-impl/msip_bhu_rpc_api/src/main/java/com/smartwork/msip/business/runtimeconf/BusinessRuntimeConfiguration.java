@@ -240,6 +240,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static final String Internal_SNK_NeedCharging_Template = "温馨提示：截止%s，您当前的虎钻剩余%s颗，虎钻用完后，使用短信认证服务的网络将被停止认证服务，请及时充值。【必虎路由】";
 	public static final String Internal_SNK_Stop_Template = "重要通知：截止%s，您当前的虎钻剩余%s颗，使用短信认证服务的网络已被停止认证服务，请及时充值。【必虎路由】";
+	public static final String Internal_Portal_Template = "验证码：%s，用于认证上网操作，请勿将验证码泄露给他人！【必虎路由】";
 	
 	public static final String Internal_Portal_Template = "验证码：%s，用于认证上网操作，请勿将验证码泄露给他人！【必虎路由】";
 	
