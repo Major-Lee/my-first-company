@@ -370,50 +370,52 @@ public class SSIDStatisticFacadeRpcService {
 						}
 						String dC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+date, j);
 						String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DC"+date, j);
-						if(StringUtils.isNoneBlank(dC)){
+						if(StringUtils.isNotBlank(dC)){
 							dc+=Integer.parseInt(dC);
 						}
-						if(StringUtils.isNoneBlank(dC)){
+						if(StringUtils.isNotBlank(doC)){
 							doc+=Integer.parseInt(doC);
 						}
 						String orderStatist=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
-						JSONObject orderObj = JSONObject.fromObject(orderStatist);
-						if(orderObj.get("occ") != null){
-							//单台订单
-							occ += (Integer)orderObj.get("occ");
-						}
-						if(orderObj.get("ofa") != null){
-							//单台收益
-							ofa += orderObj.getDouble("ofa");
-							dayGains += orderObj.getDouble("ofa");
-						}
-						if(orderObj.get("ofc") != null){
-							//完成订单数
-							ofc += (Integer)orderObj.get("ofc");
-						}
-						String pcOrderNumStr=orderObj.getString("pc_occ");
-						if(StringUtils.isNotBlank(pcOrderNumStr)){
-							pcOrderNum+=Integer.valueOf(pcOrderNumStr);
-						}
-						String pcOrderCompleteStr=orderObj.getString("pc_ofc");
-						if(StringUtils.isNotBlank(pcOrderCompleteStr)){
-							pcOrderComplete+=Integer.valueOf(pcOrderCompleteStr);
-						}
-						String pcOrderAmountStr=orderObj.getString("pc_ofa");
-						if(StringUtils.isNotBlank(pcOrderAmountStr)){
-							pcOrderAmount+=Double.valueOf(pcOrderAmountStr);
-						}
-						String mbOrderNumStr=orderObj.getString("mb_occ");
-						if(StringUtils.isNotBlank(mbOrderNumStr)){
-							mbOrderNum+=Integer.valueOf(mbOrderNumStr);
-						}
-						String mbOrderCompleteStr=orderObj.getString("mb_ofc");
-						if(StringUtils.isNotBlank(mbOrderCompleteStr)){
-							mbOrderComplete+=Integer.valueOf(mbOrderCompleteStr);
-						}
-						String mbOrderAmountStr=orderObj.getString("mb_ofa");
-						if(StringUtils.isNotBlank(mbOrderAmountStr)){
-							mbOrderAmount+=Double.valueOf(mbOrderAmountStr);
+						if(StringUtils.isNotBlank(orderStatist)){
+							JSONObject orderObj = JSONObject.fromObject(orderStatist);
+							if(orderObj.get("occ") != null){
+								//单台订单
+								occ += (Integer)orderObj.get("occ");
+							}
+							if(orderObj.get("ofa") != null){
+								//单台收益
+								ofa += orderObj.getDouble("ofa");
+								dayGains += orderObj.getDouble("ofa");
+							}
+							if(orderObj.get("ofc") != null){
+								//完成订单数
+								ofc += (Integer)orderObj.get("ofc");
+							}
+							String pcOrderNumStr=orderObj.getString("pc_occ");
+							if(StringUtils.isNotBlank(pcOrderNumStr)){
+								pcOrderNum+=Integer.valueOf(pcOrderNumStr);
+							}
+							String pcOrderCompleteStr=orderObj.getString("pc_ofc");
+							if(StringUtils.isNotBlank(pcOrderCompleteStr)){
+								pcOrderComplete+=Integer.valueOf(pcOrderCompleteStr);
+							}
+							String pcOrderAmountStr=orderObj.getString("pc_ofa");
+							if(StringUtils.isNotBlank(pcOrderAmountStr)){
+								pcOrderAmount+=Double.valueOf(pcOrderAmountStr);
+							}
+							String mbOrderNumStr=orderObj.getString("mb_occ");
+							if(StringUtils.isNotBlank(mbOrderNumStr)){
+								mbOrderNum+=Integer.valueOf(mbOrderNumStr);
+							}
+							String mbOrderCompleteStr=orderObj.getString("mb_ofc");
+							if(StringUtils.isNotBlank(mbOrderCompleteStr)){
+								mbOrderComplete+=Integer.valueOf(mbOrderCompleteStr);
+							}
+							String mbOrderAmountStr=orderObj.getString("mb_ofa");
+							if(StringUtils.isNotBlank(mbOrderAmountStr)){
+								mbOrderAmount+=Double.valueOf(mbOrderAmountStr);
+							}
 						}
 						String pcUv= UMStatisticsHashService.getInstance().umHget("MacPcUv"+timeList.get(i), j);
 						if(StringUtils.isNotBlank(pcUv)){
