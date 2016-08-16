@@ -34,9 +34,6 @@ public class UserCaptchaCodeUnitFacadeService {
 	@Resource
 	private UserIdentityAuthService userIdentityAuthService;
 	
-	@Resource
-	private UserIdentityAuthService userIdentityAuthService;
-	
 	//内部线程池，用于调用sms接口
 	private ExecutorService exec_send = null;//Executors.newFixedThreadPool(30);
 	@PostConstruct
