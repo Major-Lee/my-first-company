@@ -93,17 +93,17 @@ public class DeviceHandsetLogService extends AbstractRelationListCache{
 			}*/
 			current = HandsetLogDTO.buildOnline(ts);
 			
-			{//清除超过七天的数据
-				List<String> allPrevious = this.lrange(key, 0, -1);
-				if (allPrevious != null) {
-					for(String log  : allPrevious){
-						HandsetLogDTO dto = JsonHelper.getDTO(log, HandsetLogDTO.class);
-						if(ts - dto.getF() > (long)7*86400000){
-							this.lrem(key, 1, log);
-						}
-					}
-				}
-			}
+//			{//清除超过七天的数据
+//				List<String> allPrevious = this.lrange(key, 0, -1);
+//				if (allPrevious != null) {
+//					for(String log  : allPrevious){
+//						HandsetLogDTO dto = JsonHelper.getDTO(log, HandsetLogDTO.class);
+//						if(ts - dto.getF() > (long)7*86400000){
+//							this.lrem(key, 1, log);
+//						}
+//					}
+//				}
+//			}
 			
 			this.rpush(key, JsonHelper.getJSONString(current));
 		}else{//offline
