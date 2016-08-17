@@ -112,7 +112,8 @@ public class VapEnumType {
 		
 		uRouterTU_106("TU_H106",	"AP106","BN207","Z01",DUT_uRouter,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		uRouterPlusTU_112("TU_H112","AP112","BN209","Z03",DUT_uRouter,"uRouter Plus","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
-		uRouterAcTU_401("TU_H401",	"AP401","BN210","Z02",DUT_uRouter,"uRouter AC","uRouter","2.4GHz 5GHz 家用AP","64M内存、TF卡版本、9531芯片"),
+		uRouterAcTU_401("TU_H401",	"AP401","BN210","Z02",DUT_uRouter,"uRouter AC","uRouter","2.4GHz 5GHz 家用AP","64M内存、TF卡版本、9531+9887芯片"),
+		uRouterAcPlusTU_403("TU_H403",	"AP403","BN403","Z05",DUT_uRouter,"uRouter AC Plus","uRouter","2.4GHz 5GHz 家用AP","128M内存、TF卡版本、9531+9887芯片"),
 		uRouterMiniTU_901("TU_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter mini","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		
 		MassAP_2_103("TS_H103",		"AP103",DUT_soc,"MassAP 2 H103","MassAP 2","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
@@ -316,7 +317,8 @@ public class VapEnumType {
 		public static boolean isURouter(String prefix,String dut) {
 			if(StringUtils.isEmpty(prefix) || StringUtils.isEmpty(dut)) return false;
 			if((prefix.equals(uRouterTU_106.getPrefix()) || prefix.equals(uRouterPlusTU_112.getPrefix()) 
-					|| prefix.equals(uRouterAcTU_401.getPrefix()) || prefix.equals(uRouterMiniTU_901.getPrefix())) && dut.equals(uRouterRoot.getIndex())){
+					|| prefix.equals(uRouterAcTU_401.getPrefix()) || prefix.equals(uRouterAcPlusTU_403.getPrefix()) 
+					|| prefix.equals(uRouterMiniTU_901.getPrefix())) && dut.equals(uRouterRoot.getIndex())){
 				return true;
 			}
 			return false;
@@ -331,6 +333,7 @@ public class VapEnumType {
 		public static boolean isDualBandByVersionPrefix(String prefix){
 			if(StringUtils.isEmpty(prefix)) return false;
 			if(uRouterAcTU_401.getPrefix().equals(prefix)
+					|| uRouterAcPlusTU_403.getPrefix().equals(prefix)
 					|| MassAP_Pro_201.getPrefix().equals(prefix)
 					|| MassAP_Pro_303.getPrefix().equals(prefix)
 					|| MassAP_AC_Pro_305.getPrefix().equals(prefix)){
@@ -341,6 +344,7 @@ public class VapEnumType {
 		public static boolean isDualBandByOrigSwver(String orig_swver){
 			if(StringUtils.isEmpty(orig_swver)) return false;
 			if(orig_swver.startsWith(uRouterAcTU_401.getPrefix())
+					|| orig_swver.startsWith(uRouterAcPlusTU_403.getPrefix())
 					|| orig_swver.startsWith(MassAP_Pro_201.getPrefix())
 					|| orig_swver.startsWith(MassAP_Pro_303.getPrefix())
 					|| orig_swver.startsWith(MassAP_AC_Pro_305.getPrefix())
