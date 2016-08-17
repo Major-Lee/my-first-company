@@ -574,7 +574,7 @@ public class OrderUnitFacadeService {
 			RewardQueryPagesDetailVTO vto = new RewardQueryPagesDetailVTO();
 			String start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
 			String end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
-			
+			logger.info("rewardOrderPagesDetail uid: "+uid+" start_time: "+start_time+" end_time: "+end_time+" mac: "+mac);
 			String cashSum = userWalletLogService.getEntityDao().fetchCashSumByUid(uid, start_time, end_time, mac);
 			String count = userWalletLogService.getEntityDao().fetchCountRewardByUid(uid, start_time, end_time, mac);
 			vto.setCashSum(cashSum);

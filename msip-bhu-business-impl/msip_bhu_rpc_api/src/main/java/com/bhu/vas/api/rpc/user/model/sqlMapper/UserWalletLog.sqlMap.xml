@@ -152,7 +152,7 @@
 		</where>
 	</select>
 	
-	<select id="countAndsum" resultMap="mapcountAndsum">
+	<select id="countAndsum" resultMap="mapcountAndsum" parameterType="Map">
 	    select sum(cash),count(1) from <include refid="modelTableName" />
 	    <where>
 	    	uid = #{uid}
@@ -165,7 +165,7 @@
 	    </where> 
 	</select>
 	
-	<select id="cashSum" resultType="String">
+	<select id="cashSum" resultType="String" parameterType="Map">
 	    select sum(cash) from <include refid="modelTableName" />
 	    <where>
 	    	uid = #{uid}
@@ -178,7 +178,7 @@
 	    </where> 
 	</select>
 	
-	<select id="countReward" resultType="String">
+	<select id="countReward" resultType="String" parameterType="Map">
 	  select count(*) from <include refid="modelTableName" />
 	    <where>
 	    	uid = #{uid}
