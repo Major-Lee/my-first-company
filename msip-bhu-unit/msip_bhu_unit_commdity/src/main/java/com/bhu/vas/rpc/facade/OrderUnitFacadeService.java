@@ -571,12 +571,14 @@ public class OrderUnitFacadeService {
 	public RpcResponseDTO<RewardQueryPagesDetailVTO> rewardOrderPagesDetail(Integer uid, String mac, String umac,
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
+			RewardQueryPagesDetailVTO vto = new RewardQueryPagesDetailVTO();
 			String start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
 			String end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
-			RewardQueryPagesDetailVTO vto = new RewardQueryPagesDetailVTO();
-			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac);
-			vto.setCashSum((Double)map.get("cashSum"));
-			vto.setCount((Long)map.get("count"));
+			
+			String cashSum = userWalletLogService.getEntityDao().fetchCashSumByUid(uid, start_time, end_time, mac);
+			String count = userWalletLogService.getEntityDao().fetchCountRewardByUid(uid, start_time, end_time, mac);
+			vto.setCashSum(cashSum);
+			vto.setCount(count);
 			logger.info("rewardOrderPagesDetail CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
 			
 			List<OrderRewardVTO> retDtos = Collections.emptyList();
