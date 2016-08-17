@@ -61,6 +61,7 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 						List<String> macList = new ArrayList<>();
 						for (WifiDeviceDocument doc : pages) {
 							if(needCheckBinding){
+								logger.info(String.format("******** operUser:%s   uid:%s",operUser,doc.getU_id()));
 								if(operUser.equals(doc.getU_id())){//需要检测绑定的情况下，判断索引中用户id是否和参数相等
 									macList.add(doc.getD_mac());
 								}
