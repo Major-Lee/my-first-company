@@ -5,9 +5,9 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 @SuppressWarnings("serial")
 public class RewardQueryPagesDetailVTO implements java.io.Serializable{
 	//订单个数
-	private String count;
+	private int count;
 	//订单总金额
-	private String cashSum;
+	private Double cashSum;
 	
 	private TailPage<OrderRewardVTO> tailPages;
 	
@@ -17,16 +17,16 @@ public class RewardQueryPagesDetailVTO implements java.io.Serializable{
 	public void setTailPages(TailPage<OrderRewardVTO> tailPages) {
 		this.tailPages = tailPages;
 	}
-	public String getCount() {
+	public int getCount() {
 		return count;
 	}
-	public void setCount(String count) {
+	public void setCount(int count) {
 		this.count = count;
 	}
-	public String getCashSum() {
+	public Double getCashSum() {
 		return cashSum;
 	}
-	public void setCashSum(String cashSum) {
+	public void setCashSum(Double cashSum) {
 		this.cashSum = cashSum;
 	}
 	

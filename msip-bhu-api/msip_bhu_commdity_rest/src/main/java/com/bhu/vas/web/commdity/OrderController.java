@@ -428,7 +428,7 @@ public class OrderController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false,defaultValue = "") String mac,
+			@RequestParam(required = false) String mac,
 			@RequestParam(required = false) String dut,
 			@RequestParam(required = true) long start_created_ts,
 			@RequestParam(required = true) long end_created_ts

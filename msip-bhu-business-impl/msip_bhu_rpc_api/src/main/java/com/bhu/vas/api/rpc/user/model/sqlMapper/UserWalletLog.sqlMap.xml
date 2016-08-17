@@ -165,7 +165,7 @@
 	    </where> 
 	</select>
 	
-	<select id="cashSum" resultType="String" parameterType="Map">
+	<select id="cashSum" resultType="java.lang.Double" parameterType="Map">
 	    select sum(cash) from <include refid="modelTableName" />
 	    <where>
 	    	uid = #{uid}
@@ -178,8 +178,8 @@
 	    </where> 
 	</select>
 	
-	<select id="countReward" resultType="String" parameterType="Map">
-	  select count(*) from <include refid="modelTableName" />
+	<select id="countReward" resultType="int" parameterType="Map">
+	  select count(1) from <include refid="modelTableName" />
 	    <where>
 	    	uid = #{uid}
 	    	AND transtype = 'P2C'
