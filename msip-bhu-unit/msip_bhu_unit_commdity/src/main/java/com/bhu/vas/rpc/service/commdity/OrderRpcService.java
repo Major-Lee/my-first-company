@@ -15,6 +15,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.RewardIncomeStatisticsVTO;
+import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
@@ -133,5 +134,12 @@ public class OrderRpcService implements IOrderRpcService{
 		logger.info(String.format("rewardOrderPages with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] start_created_ts[%s] end_created_ts[%s] pageNo[%s] pageSize[%s]", uid, 
 				mac, umac, status, dut, start_created_ts, end_created_ts, pageNo, pageSize));
 		return orderUnitFacadeService.rewardOrderPagesDetail(uid,mac,umac,status,dut,start_created_ts,end_created_ts,pageNo,pageSize);
+	}
+	
+	public RpcResponseDTO<RewardQueryExportRecordVTO> rewardQueryExportRecord(Integer uid, String mac, String umac, 
+			Integer status, String dut, long start_created_ts, long end_created_ts){
+		logger.info(String.format("rewardOrderPages with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] start_created_ts[%s] end_created_ts[%s] pageNo[%s] pageSize[%s]", uid,
+				mac, umac, status, dut, start_created_ts, end_created_ts));
+		return orderUnitFacadeService.rewardQueryExportRecord(uid,mac,umac,status,dut,start_created_ts,end_created_ts);
 	}
 }

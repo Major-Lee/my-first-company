@@ -20,6 +20,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.RewardIncomeStatisticsVTO;
+import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -476,6 +477,41 @@ public void reward_query_pages_detail(
 	
 		RpcResponseDTO<RewardQueryPagesDetailVTO> rpcResult = orderRpcService.rewardOrderPagesDetail(uid, mac, umac, 
 				status, dut, start_created_ts, end_created_ts, pageNo, pageSize);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+
+
+/**
+ * 根据筛选条件导出数据
+ * @param request
+ * @param response
+ * @param uid 用户id
+ * @param mac 设备mac
+ * @param umac 支付订单的用户mac
+ * @param status 订单状态 默认发货完成
+ * @param start_created_ts 起始时间戳
+ * @param end_created_ts 结束时间戳
+ */
+@ResponseBody()
+@RequestMapping(value="/reward/query/exportrecord",method={RequestMethod.GET,RequestMethod.POST})
+public void reward_query_pages_detail(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		@RequestParam(required = true) Integer uid,
+		@RequestParam(required = false) String mac,
+		@RequestParam(required = false) String umac,
+		@RequestParam(required = false, defaultValue = "10") Integer status,
+		@RequestParam(required = false) String dut,
+		@RequestParam(required = false, defaultValue = "0") long start_created_ts,
+		@RequestParam(required = false, defaultValue = "0") long end_created_ts
+		) {
+	
+		RpcResponseDTO<RewardQueryExportRecordVTO> rpcResult = orderRpcService.rewardQueryExportRecord(uid, mac, umac, 
+				status, dut, start_created_ts, end_created_ts);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

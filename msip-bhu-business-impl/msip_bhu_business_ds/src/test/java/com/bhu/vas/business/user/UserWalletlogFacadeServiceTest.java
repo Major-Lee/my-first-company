@@ -15,35 +15,28 @@ import com.smartwork.msip.localunit.BaseTest;
 public class UserWalletlogFacadeServiceTest extends BaseTest{
 	@Resource
 	UserWalletLogService userWalletLogService;
-	//@Test
+	@Test
 	public void test() {
 		String start_time = "2015-08-01 00:00:00";
 		String end_time = "2016-08-11 23:59:59";
-		Integer uid = 100299;
+		Integer uid = 100153;
 		String mac = "";
-		Map<String, Object> sum= userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac);
+		String umac = "44:00:10:80:1f:6c";
+		Map<String, Object> sum= userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, null,umac);
 		Iterator<Map.Entry<String, Object>> it = sum.entrySet().iterator();
 		while (it.hasNext()) {
 			   Map.Entry<String, Object> entry = it.next();
 			   System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
 		}
 	}
+	
 	@Test
 	public void test002(){
 		String start_time = "2015-08-01 00:00:00";
 		String end_time = "2016-08-11 23:59:59";
-		Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(100299, start_time,end_time,"");
-		System.out.println(map.get("cashSum"));
-		System.out.println(map.get("count"));
-	}
-	
-	@Test
-	public void test003(){
-		String start_time = "2015-08-01 00:00:00";
-		String end_time = "2016-08-11 23:59:59";
-		String ret = userWalletLogService.getEntityDao().fetchCashSumByUid(100299, start_time,end_time,"");
+		Double ret = userWalletLogService.getEntityDao().fetchCashSumByUid(100299, start_time,end_time,null);
 		System.out.println(ret);
-		String ret2 = userWalletLogService.getEntityDao().fetchCountRewardByUid(100299, start_time,end_time,"");
+		int ret2 = userWalletLogService.getEntityDao().fetchCountRewardByUid(100299, start_time,end_time,null);
 		System.out.println(ret2);
 	}
 }

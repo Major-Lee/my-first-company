@@ -23,6 +23,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.RewardIncomeStatisticsVTO;
+import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
@@ -554,7 +555,7 @@ public class OrderUnitFacadeService {
 		try{
 			RewardIncomeStatisticsVTO vto = new RewardIncomeStatisticsVTO();
 			logger.info("uid: "+uid+" start: "+start_time+" end:"+end_time);
-			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac);
+			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,null);
 			vto.setCashSum((Double)map.get("cashSum"));
 			vto.setCount((Long)map.get("count"));
 			logger.info("CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
@@ -575,10 +576,9 @@ public class OrderUnitFacadeService {
 			String start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
 			String end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
 			logger.info("rewardOrderPagesDetail uid: "+uid+" start_time: "+start_time+" end_time: "+end_time+" mac: "+mac);
-			Double cashSum = userWalletLogService.getEntityDao().fetchCashSumByUid(uid, start_time, end_time, mac);
-			int count = userWalletLogService.getEntityDao().fetchCountRewardByUid(uid, start_time, end_time, mac);
-			vto.setCashSum(cashSum);
-			vto.setCount(count);
+			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,umac);
+			vto.setCashSum((Double)map.get("cashSum"));
+			vto.setCount((Long)map.get("count"));
 			logger.info("rewardOrderPagesDetail CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
 			
 			List<OrderRewardVTO> retDtos = Collections.emptyList();
@@ -629,6 +629,61 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			logger.error("rewardOrderPagesDetail Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public	RpcResponseDTO<RewardQueryExportRecordVTO> rewardQueryExportRecord(Integer uid, String mac, String umac, 
+			Integer status, String dut, long start_created_ts, long end_created_ts){
+		try{
+			int pageNo = 1,pageSize = 50;
+			RewardQueryExportRecordVTO vto = new RewardQueryExportRecordVTO();
+			List<OrderRewardVTO> retDtos = Collections.emptyList();
+			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, 
+					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts);
+			if(order_count > 0){
+				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
+						CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
+						pageNo, pageSize);
+				
+				if(orderList != null && !orderList.isEmpty()){
+					List<String> orderids = new ArrayList<String>();
+					for(Order order : orderList){
+						orderids.add(order.getId());
+					}
+					List<UserWalletLog> walletLogs = null;
+					{
+						ModelCriteria mc_wallet_log = new ModelCriteria();
+						mc_wallet_log.createCriteria().andColumnNotEqualTo("uid", WifiDeviceSharedealConfigs.Default_Manufacturer).andColumnIn("orderid", orderids).andSimpleCaulse(" 1=1 ");
+						walletLogs = userWalletFacadeService.getUserWalletLogService().findModelByModelCriteria(mc_wallet_log);
+					}
+					retDtos = new ArrayList<OrderRewardVTO>();
+					OrderRewardVTO orderRewardVto = null;
+					for(Order order : orderList){
+						orderRewardVto = new OrderRewardVTO();
+						BeanUtils.copyProperties(order, orderRewardVto);
+						orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
+						OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+						if(orderPaymentType != null){
+							orderRewardVto.setPayment_type_name(orderPaymentType.getDesc());
+						}
+						orderRewardVto.setShare_amount(distillOwnercash(order.getId(),walletLogs));
+						if(order.getCreated_at() != null){
+							orderRewardVto.setCreated_ts(order.getCreated_at().getTime());
+						}
+						if(order.getPaymented_at() != null){
+							orderRewardVto.setPaymented_ts(order.getPaymented_at().getTime());
+						}
+						retDtos.add(orderRewardVto);
+					}
+				}
+			}
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("rewardQueryExportRecord Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
