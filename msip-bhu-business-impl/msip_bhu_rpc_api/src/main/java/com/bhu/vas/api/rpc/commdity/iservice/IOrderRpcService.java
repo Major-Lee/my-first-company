@@ -51,5 +51,5 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<RewardQueryPagesDetailVTO> rewardOrderPagesDetail(Integer uid, String mac, String umac, 
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize);
 	public RpcResponseDTO<RewardQueryExportRecordVTO> rewardQueryExportRecord(Integer uid, String mac, String umac, 
-			Integer status, String dut, long start_created_ts, long end_created_ts);
+			Integer status, String dut, long start_created_ts, long end_created_ts,int pageNo, int pageSize);
 }

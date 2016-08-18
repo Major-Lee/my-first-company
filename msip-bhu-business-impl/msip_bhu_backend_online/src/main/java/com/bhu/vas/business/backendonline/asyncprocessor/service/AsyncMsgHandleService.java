@@ -1632,14 +1632,19 @@ public class AsyncMsgHandleService {
 	public void userDeviceRegister(String message) {
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s]", message));
 		UserDeviceRegisterDTO dto = JsonHelper.getDTO(message, UserDeviceRegisterDTO.class);
-		deviceFacadeService.addMobilePresent(dto.getUid(), dto.getMac());
-		afterUserSignedonThenCmdDown(dto.getMac());
+		if(dto.isFromApp()){
+			deviceFacadeService.addMobilePresent(dto.getUid(), dto.getMac());
+			afterUserSignedonThenCmdDown(dto.getMac());
 
-		userDeviceBindOperateSyskeySync(dto.getMac(), dto.getUid());
-		{
-			// 进行分成owner字段重置
-			chargingFacadeService.wifiDeviceBindedNotify(dto.getMac(), dto.getUid());
-			// 给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
+			userDeviceBindOperateSyskeySync(dto.getMac(), dto.getUid());
+			{
+				// 进行分成owner字段重置
+				chargingFacadeService.wifiDeviceBindedNotify(dto.getMac(), dto.getUid());
+				// 给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
+				addDevices2SharedNetwork(dto.getUid(), dto.getMac());
+			}
+		} else {
+			//分成配置等已经在syskey消息中处理完成，此处只需要下发共享网络配置
 			addDevices2SharedNetwork(dto.getUid(), dto.getMac());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s] successful", message));

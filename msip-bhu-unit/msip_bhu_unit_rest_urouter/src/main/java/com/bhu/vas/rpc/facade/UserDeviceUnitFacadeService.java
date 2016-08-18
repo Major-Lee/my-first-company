@@ -174,7 +174,7 @@ public class UserDeviceUnitFacadeService {
 
 			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, deviceName, null);
 
-			deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac);
+			deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac, true);
 			UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
 			userDeviceDTO.setMac(mac);
 			userDeviceDTO.setUid(uid);

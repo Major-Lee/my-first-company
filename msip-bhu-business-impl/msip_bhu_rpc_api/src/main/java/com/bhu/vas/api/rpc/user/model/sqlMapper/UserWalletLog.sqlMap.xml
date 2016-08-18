@@ -23,8 +23,8 @@
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   <resultMap id="mapcountAndsum" type="hashmap">
-    <result property="cashSum" column="sum(t_walletlog.cash)"/>
-    <result property="count" column="count(*)"/>
+    <result property="cashSum" column="cashSum" javaType="java.lang.Double"/>
+    <result property="count" column="count" javaType="java.lang.Long"/>
   </resultMap>  
   
   	<sql id="modelTableName">
@@ -153,7 +153,7 @@
 	</select>
 	
 	<select id="countAndsum" resultMap="mapcountAndsum" parameterType="Map">
-	    select sum(t_walletlog.cash),count(*) from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
+	    select format(sum(t_walletlog.cash),2) as cashSum,count(*) as count from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
 	    <where>
 	    	t_walletlog.uid = #{uid}
 	    	AND t_walletlog.transtype = 'P2C'
@@ -183,7 +183,7 @@
 	</select>
 	
 	<select id="cashSum" resultType="java.lang.Double" parameterType="Map">
-	    select sum(cash) from <include refid="modelTableName" /> 
+	    select format(sum(cash),2) from <include refid="modelTableName" /> 
 	    <where>
 	    	uid = #{uid}
 	    	AND transtype = 'P2C'
