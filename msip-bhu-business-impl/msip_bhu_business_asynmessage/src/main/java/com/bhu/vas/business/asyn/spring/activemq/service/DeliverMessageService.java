@@ -268,10 +268,11 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
-	public void sendUserDeviceRegisterActionMessage(int uid, String mac){
+	public void sendUserDeviceRegisterActionMessage(int uid, String mac, boolean fromApp){
 		UserDeviceRegisterDTO dto = new UserDeviceRegisterDTO();
 		dto.setUid(uid);
 		dto.setMac(mac);
+		dto.setFromApp(fromApp);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));

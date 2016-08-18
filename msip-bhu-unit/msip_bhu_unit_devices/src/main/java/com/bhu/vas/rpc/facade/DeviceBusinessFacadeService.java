@@ -393,6 +393,7 @@ public class DeviceBusinessFacadeService {
 										user.getId(), industry, false);
 						        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, 
 						        		userWifiDevice.getDevice_name(), industry);
+								deliverMessageService.sendUserDeviceRegisterActionMessage(user.getId(), mac, false);
 							}
 						}else{
 							String exist_uid = wifiDeviceDoc.getU_id();
@@ -411,6 +412,7 @@ public class DeviceBusinessFacadeService {
 
 								        wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, 
 								        		userWifiDevice.getDevice_name(), industry);
+										deliverMessageService.sendUserDeviceRegisterActionMessage(user.getId(), mac, false);
 										keystatus = WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED;
 									}
 								}
