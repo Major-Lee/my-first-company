@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.apache.ibatis.type.JdbcType;
 
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.orm.logic.procedure.AbstractProcedureDTO;
 import com.smartwork.msip.cores.orm.logic.procedure.IN;
 import com.smartwork.msip.cores.orm.logic.procedure.OUT;
@@ -155,15 +156,13 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 		vto.setUserid(this.getUserid());
 		vto.setOds(this.getOds());
 		vto.setToday_date(this.getToday_date());
-		
-        BigDecimal bg = new BigDecimal(this.getToday_cash());  
-        double f1 = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();  
-		vto.setToday_cash(f1);
+	
+		vto.setToday_cash((float)ArithHelper.round(this.getToday_cash(),2));
 		vto.setToday_nums(this.getToday_nums());
 		vto.setYesterday_date(this.getYesterday_date());
-		vto.setYesterday_cash(this.getYesterday_cash());
+		vto.setYesterday_cash((float)ArithHelper.round(this.getYesterday_cash(),2));
 		vto.setYesterday_nums(this.getYesterday_nums());
-		vto.setTotal_cash(this.getTotal_cash());
+		vto.setTotal_cash((float)ArithHelper.round(this.getTotal_cash(),2));
 		vto.setTotal_nums(this.getTotal_nums());
 		return vto;
 	}
