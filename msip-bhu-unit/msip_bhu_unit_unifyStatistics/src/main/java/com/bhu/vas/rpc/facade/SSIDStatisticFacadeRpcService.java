@@ -359,25 +359,20 @@ public class SSIDStatisticFacadeRpcService {
 						UMStatisticsHashService.getInstance().umHset(timeList.get(i), "androidClickNum", String.valueOf(androidClickNum));
 					}
 				}else if(!flag&&macList != null &&macList.size()>0){
+					dc=macList.size();
 					for(String j:macList){
-						String dayPv = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
-						String dayUv = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
-						if(StringUtils.isNotBlank(dayPv)){
-							dayPV += Integer.parseInt(dayPv);
-						}
-						if(StringUtils.isNotBlank(dayUv)){
-							dayUV += Integer.parseInt(dayUv);
-						}
-						String dC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+date, j);
-						String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DC"+date, j);
-						if(StringUtils.isNoneBlank(dC)){
-							dc+=Integer.parseInt(dC);
-						}
-						if(StringUtils.isNoneBlank(dC)){
+						String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+date, j);
+						if(StringUtils.isNoneBlank(doC)){
 							doc+=Integer.parseInt(doC);
 						}
 						String orderStatist=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
 						JSONObject orderObj = JSONObject.fromObject(orderStatist);
+						if(orderObj.get("pv")!=null){
+							dayPV += (Integer)orderObj.get("pv");
+						}
+						if(orderObj.get("uv")!=null){
+							dayUV += (Integer)orderObj.get("uv");
+						}
 						if(orderObj.get("occ") != null){
 							//单台订单
 							occ += (Integer)orderObj.get("occ");
@@ -912,11 +907,11 @@ public class SSIDStatisticFacadeRpcService {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		while(start.before(end))
+		while(end.after(start))
 		{
-			System.out.println(format.format(start.getTime()));
-			start.add(Calendar.DAY_OF_MONTH,1);
-			list.add(format.format(start.getTime()).toString());
+			//System.out.println(format.format(start.getTime()));
+			end.add(Calendar.DAY_OF_MONTH,-1);
+			list.add(format.format(end.getTime()).toString());
 		}
 		return list; 
 	}
@@ -937,27 +932,11 @@ public class SSIDStatisticFacadeRpcService {
 	}
 	
 	public static void main(String[] args) {
-		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
-		/*String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-06-01", "2016-06-01", "date", "",1);
-		System.out.println(pcUv);*/
-		//System.out.println(new java.text.DecimalFormat("0.00").format(4.025)); 
-		//System.out.println(Math.round(4.024*100 + 0.5)/100.0); 
-//		double s=3*1.00/2;
-//		 BigDecimal b = new BigDecimal(Double.toString(s));         
-//		 BigDecimal one = new BigDecimal("1");         
-//		 System.out.println(b.divide(one,2,BigDecimal.ROUND_HALF_UP).doubleValue());        
-		 String mobileUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-07-25", "2016-07-25", "wlanusermac", "",1);
-		 //String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
-			//String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
-			System.out.println(mobileUv);
-			JSONObject jsonObject=JSONObject.fromObject(mobileUv);
-			String ss=jsonObject.get("values").toString();
-			ss=ss.substring(1);
-			ss=ss.substring(0, ss.length()-1);
-			System.out.println(ss);
-			//System.out.println(mobileClick);
-		//BhuCache.getInstance().setEquipment("2016-06-05", "equipment", "{\"dc\":10020,\"doc\":7998}");
-		//BhuCache.getInstance().setStOrder("2016-06-05", "stOrder", "{\"mb_ofc\":833,\"mb_ofa\":\"594\",\"pc_ofc\":26,\"pc_ofa\":\"65\",\"pc_occ\":188,\"ofc\":859,\"mb_occ\":4210,\"ofa\":659.0,\"occ\":4398}");
+		List<String> timeList=getDaysList("2016-08-11","2016-08-17");
+		//List<String> timeList=getLastDay(7);
+		for(String i:timeList){
+			System.out.println(i);
+		}
 	}
 	/**
 	 * 返回成功结果集
