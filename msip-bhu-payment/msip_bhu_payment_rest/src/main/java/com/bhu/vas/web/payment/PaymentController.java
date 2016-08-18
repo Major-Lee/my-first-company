@@ -491,12 +491,12 @@ public class PaymentController extends BaseController{
 		logger.info(String.format("apply payment goods_no [%s]", goods_no));
 		try{
 			String type = request.getParameter("channel");
-			if(type == null){
+			if(StringUtils.isBlank(type)){
 				type = "0";
 			}
 			
 			String version = request.getParameter("version");
-			if(version == null){
+			if(StringUtils.isBlank(version)){
 				version = "0";
 			}
 			//判断非空参数
