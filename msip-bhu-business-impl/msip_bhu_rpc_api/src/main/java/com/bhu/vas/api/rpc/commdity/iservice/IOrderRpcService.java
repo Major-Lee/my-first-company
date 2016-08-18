@@ -7,6 +7,8 @@ import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.RewardIncomeStatisticsVTO;
+import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
+import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -46,5 +48,8 @@ public interface IOrderRpcService {
 			Integer status, String dut, int pageNo, int pageSize);
 
 	public RpcResponseDTO<OrderRewardNewlyDataVTO> rewardOrderNewlyDataByUid(Integer uid);
-
+	public RpcResponseDTO<RewardQueryPagesDetailVTO> rewardOrderPagesDetail(Integer uid, String mac, String umac, 
+			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize);
+	public RpcResponseDTO<RewardQueryExportRecordVTO> rewardQueryExportRecord(Integer uid, String mac, String umac, 
+			Integer status, String dut, long start_created_ts, long end_created_ts);
 }

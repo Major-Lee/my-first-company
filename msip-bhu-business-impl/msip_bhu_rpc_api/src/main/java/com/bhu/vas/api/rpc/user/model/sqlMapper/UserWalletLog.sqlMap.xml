@@ -23,8 +23,8 @@
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   <resultMap id="mapcountAndsum" type="hashmap">
-    <result property="cashSum" column="sum(cash)"/>
-    <result property="count" column="count(1)"/>
+    <result property="cashSum" column="sum(t_walletlog.cash)"/>
+    <result property="count" column="count(*)"/>
   </resultMap>  
   
   	<sql id="modelTableName">
@@ -152,8 +152,38 @@
 		</where>
 	</select>
 	
-	<select id="countAndsum" resultMap="mapcountAndsum">
-	    select sum(cash),count(1) from <include refid="modelTableName" />
+	<select id="countAndsum" resultMap="mapcountAndsum" parameterType="Map">
+	    select sum(t_walletlog.cash),count(*) from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
+	    <where>
+	    	t_walletlog.uid = #{uid}
+	    	AND t_walletlog.transtype = 'P2C'
+	    	AND t_walletlog.updated_at &gt;= #{start_time}
+	    	AND t_walletlog.updated_at &lt;= #{end_time}
+	    	AND t_walletlog.orderid = t_orders.id
+	    	<if test="mac != null">
+	    		AND	t_walletlog.mac = #{mac}
+	    	</if>
+	    	<if test="umac != null">
+	    		AND	t_orders.umac = #{umac}
+	    	</if>
+	    </where> 
+	</select>
+	
+	<select id="countReward" resultType="int" parameterType="Map">
+	    select count(*) from <include refid="modelTableName" /> 
+	    <where>
+	    	uid = #{uid}
+	    	AND transtype = 'P2C'
+	    	AND updated_at &gt;= #{start_time}
+	    	AND updated_at &lt;= #{end_time}
+	    	<if test="mac != null">
+	    		AND	mac = #{mac}
+	    	</if>
+	    </where> 
+	</select>
+	
+	<select id="cashSum" resultType="java.lang.Double" parameterType="Map">
+	    select sum(cash) from <include refid="modelTableName" /> 
 	    <where>
 	    	uid = #{uid}
 	    	AND transtype = 'P2C'
