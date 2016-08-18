@@ -63,7 +63,7 @@ public class OrderController extends BaseController{
 			@RequestParam(required = false, defaultValue = "2") Integer umactype,
 			@RequestParam(required = false, defaultValue = "1") Integer commdityid,
 			@RequestParam(required = false, defaultValue = "0") Integer channel,
-			@RequestParam(required = false, defaultValue = "") String version,
+			@RequestParam(required = false, defaultValue = "0") String version,
 			@RequestParam(required = true) String payment_type,
 			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
 			) {
@@ -261,7 +261,7 @@ public class OrderController extends BaseController{
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, null, orderid, payment_completed_url,"0","");
+				order_amount, requestIp, null, orderid, payment_completed_url,"0","0");
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID)));
@@ -495,10 +495,13 @@ public void reward_query_pages_detail(
  * @param status 订单状态 默认发货完成
  * @param start_created_ts 起始时间戳
  * @param end_created_ts 结束时间戳
+ * @param pageNo 页码
+ * @param pageSize 每页数量
+ * 
  */
 @ResponseBody()
 @RequestMapping(value="/reward/query/exportrecord",method={RequestMethod.GET,RequestMethod.POST})
-public void reward_query_pages_detail(
+public void reward_query_export_record(
 		HttpServletRequest request,
 		HttpServletResponse response,
 		@RequestParam(required = true) Integer uid,
@@ -507,11 +510,13 @@ public void reward_query_pages_detail(
 		@RequestParam(required = false, defaultValue = "10") Integer status,
 		@RequestParam(required = false) String dut,
 		@RequestParam(required = false, defaultValue = "0") long start_created_ts,
-		@RequestParam(required = false, defaultValue = "0") long end_created_ts
+		@RequestParam(required = false, defaultValue = "0") long end_created_ts,
+		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+        @RequestParam(required = false, defaultValue = "50", value = "ps") int pageSize
 		) {
 	
 		RpcResponseDTO<RewardQueryExportRecordVTO> rpcResult = orderRpcService.rewardQueryExportRecord(uid, mac, umac, 
-				status, dut, start_created_ts, end_created_ts);
+				status, dut, start_created_ts, end_created_ts,pageNo,pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
