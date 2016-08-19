@@ -125,7 +125,7 @@ public class OrderRpcService implements IOrderRpcService{
 	public RpcResponseDTO<RewardQueryExportRecordVTO> rewardQueryExportRecord(Integer uid, String mac, String umac, 
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		logger.info(String.format("rewardQueryExportRecord with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] start_created_ts[%s] end_created_ts[%s] pageNo[%s] pageSize[%s]", uid,
-				mac, umac, status, dut, start_created_ts, end_created_ts));
+				mac, umac, status, dut, start_created_ts, end_created_ts, pageNo,pageSize));
 		return orderUnitFacadeService.rewardQueryExportRecord(uid,mac,umac,status,dut,start_created_ts,end_created_ts,pageNo,pageSize);
 	}
 }
