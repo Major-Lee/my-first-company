@@ -1,6 +1,6 @@
 package com.bhu.vas.api.dto.commdity;
 
-public class RewardQueryExportRecordVTO {
+public class RewardQueryExportRecordVTO implements java.io.Serializable{
 	//下载地址
 	private String url;
 	private String filename;
