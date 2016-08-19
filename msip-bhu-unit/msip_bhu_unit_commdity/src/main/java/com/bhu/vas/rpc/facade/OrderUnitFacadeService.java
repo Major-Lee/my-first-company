@@ -1,7 +1,9 @@
 package com.bhu.vas.rpc.facade;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -55,7 +57,6 @@ import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
-import com.bhu.vas.business.yun.iservice.IYunUploadService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -97,8 +98,6 @@ public class OrderUnitFacadeService {
 	@Resource
 	private UserWalletLogService userWalletLogService;
 	
-	@Resource
-	private IYunUploadService yunOperateService;
 
 	/**
 	 * 生成打赏订单
@@ -627,7 +626,6 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
 			RewardQueryExportRecordVTO vto = new RewardQueryExportRecordVTO();
-			long start = System.currentTimeMillis();
 			List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
 					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
 					pageNo, pageSize);
@@ -635,10 +633,11 @@ public class OrderUnitFacadeService {
 			if(orderList != null && !orderList.isEmpty()){
 				recordList = outputOrderStringByItem(orderList);
 			}
-			String url = searchResultExportFile(uid,RewardOrderResultExportColumns,recordList);
-			vto.setUrl(url);
-			logger.info("rewardQueryExportRecord download url:"+url+"spend time: "+(System.currentTimeMillis()-start)+"ms");
-			
+			String filename = String.format("%s%s.csv",System.currentTimeMillis(),uid);
+			vto.setFilename(filename);
+			File file = searchResultExportFile(uid,filename,RewardOrderResultExportColumns,recordList);
+			byte[] bs = getFileBytes(file);
+			vto.setBs(bs);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -647,22 +646,18 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	public String searchResultExportFile(Integer uid,String[] columns, List<String> lines) {
-		String down = null;
-		String filename = String.format("%s%s.csv",uid,System.currentTimeMillis());
+	public File searchResultExportFile(Integer uid,String filename,String[] columns, List<String> lines) {
 		String export_filepath = String.format("/%s/%s/%s/%s", "BHUData","rewardexport",uid,filename);
-		byte[] record = new byte[1000];
 		BufferedWriter fw = null;
+		FileHelper.makeDirectory(export_filepath);
+		File file = new File(export_filepath);
 		try {
-			FileHelper.makeDirectory(export_filepath);
-			File file = new File(export_filepath);
 			
 			FileOutputStream fos = new FileOutputStream(file);
 			fos.write(0xEF);
 			fos.write(0xBB);
 			fos.write(0xBF);
 			fos.flush();
-			
 			fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8")); // 指定编码格式，以免读取时中文字符异常
 			int columns_length = columns.length;
 			for(int i = 0;i<columns_length;i++){
@@ -678,10 +673,7 @@ public class OrderUnitFacadeService {
 				fw.newLine();
 			}
 			fw.flush(); // 全部写入缓存中的内容
-			record = fos.toString().getBytes();
-			down = yunOperateService.getURL(filename);
-			yunOperateService.uploadYun(record,down);
-			return down;
+			return file;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -693,7 +685,7 @@ public class OrderUnitFacadeService {
 				}
 			}
 		}
-		return down;
+		return file;
 	}
 	
 	private List<String> outputOrderStringByItem(List<Order> orderList){
@@ -746,4 +738,22 @@ public class OrderUnitFacadeService {
 	}
 	public static final String[] RewardOrderResultExportColumns = new String[]{"订单号","Mac","UMac","终端类型","打赏金额",
 			"打赏方式","订单创建时间","打赏日期"};
+	public byte[] getFileBytes(File file){
+		byte[] buffer = null;
+		try{
+			FileInputStream fis = new FileInputStream(file);  
+	        ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);  
+	        byte[] b = new byte[1000];  
+	        int n;  
+	        while ((n = fis.read(b)) != -1) {  
+	            bos.write(b, 0, n);  
+	        }  
+	        fis.close();  
+	        bos.close();  
+	        buffer = bos.toByteArray();  
+		} catch (IOException e) {  
+			e.printStackTrace();  
+		}  
+    	return buffer;  
+	}
 }

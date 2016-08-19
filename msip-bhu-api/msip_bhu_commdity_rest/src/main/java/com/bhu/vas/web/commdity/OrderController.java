@@ -26,6 +26,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
+import com.bhu.vas.business.yun.iservice.IYunUploadService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.web.mvc.WebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
@@ -41,6 +42,8 @@ public class OrderController extends BaseController{
 	
 	@Resource
 	private IOrderRpcService orderRpcService;
+	@Resource
+	private IYunUploadService yunOperateService;
 
 	/**
 	 * 获取打赏订单的支付url
@@ -487,6 +490,9 @@ public void reward_query_export_record(
 		RpcResponseDTO<RewardQueryExportRecordVTO> rpcResult = orderRpcService.rewardQueryExportRecord(uid, mac, umac, 
 				status, dut, start_created_ts, end_created_ts,pageNo,pageSize);
 		if(!rpcResult.hasError()){
+			byte[] bs = rpcResult.getPayload().getBs();
+			String url = yunOperateService.getURL(rpcResult.getPayload().getFilename());
+			yunOperateService.uploadYun(bs, url);
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
