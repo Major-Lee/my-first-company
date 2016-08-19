@@ -170,32 +170,6 @@
 	    </where> 
 	</select>
 	
-	<select id="countReward" resultType="int" parameterType="Map">
-	    select count(*) from <include refid="modelTableName" /> 
-	    <where>
-	    	uid = #{uid}
-	    	AND transtype = 'P2C'
-	    	AND updated_at &gt;= #{start_time}
-	    	AND updated_at &lt;= #{end_time}
-	    	<if test="mac != null">
-	    		AND	mac = #{mac}
-	    	</if>
-	    </where> 
-	</select>
-	
-	<select id="cashSum" resultType="java.lang.Double" parameterType="Map">
-	    select format(sum(cash),2) from <include refid="modelTableName" /> 
-	    <where>
-	    	uid = #{uid}
-	    	AND transtype = 'P2C'
-	    	AND updated_at &gt;= #{start_time}
-	    	AND updated_at &lt;= #{end_time}
-	    	<if test="mac != null">
-	    		AND	mac = #{mac}
-	    	</if>
-	    </where> 
-	</select>
-	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
