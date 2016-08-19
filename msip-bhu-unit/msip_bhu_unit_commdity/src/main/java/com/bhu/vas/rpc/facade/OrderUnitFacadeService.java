@@ -33,7 +33,6 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
-import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -633,7 +632,7 @@ public class OrderUnitFacadeService {
 			if(orderList != null && !orderList.isEmpty()){
 				recordList = outputOrderStringByItem(orderList);
 			}
-			String filename = String.format("%s_%s.csv",DateTimeHelper.formatDate(System.currentTimeMillis(), "yyyy-MM-dd_HH_mm_ss"),uid);
+			String filename = String.format("%s_%s.csv",DateTimeHelper.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd_HH_mm_ss"),uid);
 			vto.setFilename(filename);
 			String url = String.format("%s%s",EXPORT_REWARD_RECORD_URL,filename);
 			vto.setUrl(url);
