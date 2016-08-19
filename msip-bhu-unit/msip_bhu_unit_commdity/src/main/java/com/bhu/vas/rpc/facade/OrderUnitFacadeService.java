@@ -633,8 +633,10 @@ public class OrderUnitFacadeService {
 			if(orderList != null && !orderList.isEmpty()){
 				recordList = outputOrderStringByItem(orderList);
 			}
-			String filename = String.format("%s%s.csv",System.currentTimeMillis(),uid);
+			String filename = String.format("%s_%s.csv",DateTimeHelper.formatDate(System.currentTimeMillis(), "yyyy-MM-dd_HH_mm_ss"),uid);
 			vto.setFilename(filename);
+			String url = String.format("%s%s",EXPORT_REWARD_RECORD_URL,filename);
+			vto.setUrl(url);
 			File file = searchResultExportFile(uid,filename,RewardOrderResultExportColumns,recordList);
 			byte[] bs = getFileBytes(file);
 			vto.setBs(bs);
@@ -702,22 +704,22 @@ public class OrderUnitFacadeService {
 		}
 		for(Order order : orderList){
 			StringBuffer bw = new StringBuffer();
-			bw.append(formatStr(order.getId()));
-			bw.append(formatStr(order.getMac()));
-			bw.append(formatStr(order.getUmac()));
-			OrderUmacType orderUmacType = OrderUmacType.fromKey(order.getUmactype());
-			if(orderUmacType == null){
-				orderUmacType = OrderUmacType.Unknown;
-			}
-			bw.append(formatStr(orderUmacType.getDesc()));
+			//厂家
+			bw.append(formatStr(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false)));
+			//打赏时间
+			bw.append(formatStr(DateTimeHelper.formatDate(order.getPaymented_at(), DateTimeHelper.FormatPattern0), false));
+			//打赏收益
 			bw.append(formatStr(distillOwnercash(order.getId(),walletLogs)));
+			//打赏方式
 			OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
 			if(orderPaymentType == null){
 				orderPaymentType = OrderPaymentType.Unknown;
 			}
 			bw.append(formatStr(orderPaymentType.getDesc()));
-			bw.append(formatStr(DateTimeHelper.formatDate(order.getCreated_at(), DateTimeHelper.FormatPattern0)));
-			bw.append(formatStr(DateTimeHelper.formatDate(order.getPaymented_at(), DateTimeHelper.FormatPattern0), false));
+			//设备mac
+			bw.append(formatStr(order.getMac()));
+			//终端mac
+			bw.append(formatStr(order.getUmac()));
 			recordList.add(bw.toString());
 		}
 		return recordList;
@@ -736,8 +738,7 @@ public class OrderUnitFacadeService {
 	private static String formatStr(String str) {
 		return formatStr(str, true);
 	}
-	public static final String[] RewardOrderResultExportColumns = new String[]{"订单号","Mac","UMac","终端类型","打赏金额",
-			"打赏方式","订单创建时间","打赏日期"};
+	public static final String[] RewardOrderResultExportColumns = new String[]{"终端品牌","打赏时间","打赏收益(元)","打赏设备","终端MAC"};
 	public byte[] getFileBytes(File file){
 		byte[] buffer = null;
 		try{
@@ -756,4 +757,5 @@ public class OrderUnitFacadeService {
 		}  
     	return buffer;  
 	}
+	public static final String EXPORT_REWARD_RECORD_URL = "http://obklbhh9z.bkt.clouddn.com/"; 
 }

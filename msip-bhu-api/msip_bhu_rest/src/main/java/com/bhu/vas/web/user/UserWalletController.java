@@ -244,8 +244,8 @@ public class UserWalletController extends BaseController{
     				status, dut, start_created_ts, end_created_ts,pageNo,pageSize);
     		if(!rpcResult.hasError()){
     			byte[] bs = rpcResult.getPayload().getBs();
-    			String url = yunOperateService.getURL(rpcResult.getPayload().getFilename());
-    			yunOperateService.uploadYun(bs, url);
+    			String filename = rpcResult.getPayload().getFilename();
+    			yunOperateService.uploadYun(bs, filename);
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
     			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
