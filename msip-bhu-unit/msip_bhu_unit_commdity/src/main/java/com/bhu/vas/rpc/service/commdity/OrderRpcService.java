@@ -1,7 +1,5 @@
 package com.bhu.vas.rpc.service.commdity;
 
-import java.util.Date;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -14,14 +12,12 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
-import com.bhu.vas.api.dto.commdity.RewardIncomeStatisticsVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.rpc.facade.OrderUnitFacadeService;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 @Service("orderRpcService")
@@ -117,16 +113,6 @@ public class OrderRpcService implements IOrderRpcService{
 		return orderUnitFacadeService.orderDetailByUid(uid, orderid);
 	}
 
-	@Override
-	public RpcResponseDTO<RewardIncomeStatisticsVTO> rewardIncomeStatisticsBetweenDate(Integer uid, String mac,
-			String dut, long start_created_ts, long end_created_ts) {
-		String start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
-		String end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
-		logger.info(String.format("rewardIncomeStatisticsBetweenDate with uid[%s] mac[%s] dut[%s] start_created_ts[%s] start_time[%s] end_created_ts[%s] end_time[%s]",
-				uid, mac,dut,start_created_ts,start_time,end_created_ts,end_time));
-		return orderUnitFacadeService.rewardIncomeStatisticsBetweenDate(uid, mac,
-				dut, start_time, end_time);
-	}
 
 	@Override
 	public RpcResponseDTO<RewardQueryPagesDetailVTO> rewardOrderPagesDetail(Integer uid, String mac, String umac,

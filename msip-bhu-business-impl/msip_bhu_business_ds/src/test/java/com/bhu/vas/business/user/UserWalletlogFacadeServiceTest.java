@@ -22,7 +22,7 @@ public class UserWalletlogFacadeServiceTest extends BaseTest{
 		Integer uid = 100153;
 		String mac = "";
 		String umac = "44:00:10:80:1f:6c";
-		Map<String, Object> sum= userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, null,umac,"1");
+		Map<String, Object> sum= userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, null,umac,10);
 		Iterator<Map.Entry<String, Object>> it = sum.entrySet().iterator();
 		while (it.hasNext()) {
 			   Map.Entry<String, Object> entry = it.next();

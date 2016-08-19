@@ -11,7 +11,7 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 
 @Repository
 public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
-	public Map<String,Object> fetchCashSumAndCountByUid(Integer uid,String start_time,String end_time,String mac,String umac,String status){
+	public Map<String,Object> fetchCashSumAndCountByUid(Integer uid,String start_time,String end_time,String mac,String umac,Integer status){
 		Map<String,Object> result = new HashMap<String,Object>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		try{
