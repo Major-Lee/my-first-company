@@ -22,7 +22,7 @@ public class UserWalletlogFacadeServiceTest extends BaseTest{
 		Integer uid = 100153;
 		String mac = "";
 		String umac = "44:00:10:80:1f:6c";
-		Map<String, Object> sum= userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, null,umac);
+		Map<String, Object> sum= userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, null,umac,"1");
 		Iterator<Map.Entry<String, Object>> it = sum.entrySet().iterator();
 		while (it.hasNext()) {
 			   Map.Entry<String, Object> entry = it.next();
@@ -30,13 +30,4 @@ public class UserWalletlogFacadeServiceTest extends BaseTest{
 		}
 	}
 	
-	@Test
-	public void test002(){
-		String start_time = "2015-08-01 00:00:00";
-		String end_time = "2016-08-11 23:59:59";
-		Double ret = userWalletLogService.getEntityDao().fetchCashSumByUid(100299, start_time,end_time,null);
-		System.out.println(ret);
-		int ret2 = userWalletLogService.getEntityDao().fetchCountRewardByUid(100299, start_time,end_time,null);
-		System.out.println(ret2);
-	}
 }

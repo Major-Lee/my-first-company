@@ -166,6 +166,7 @@
 	    	<if test="umac != null">
 	    		AND	t_orders.umac = #{umac}
 	    	</if>
+	    	AND t_orders.status = #{status}
 	    </where> 
 	</select>
 	

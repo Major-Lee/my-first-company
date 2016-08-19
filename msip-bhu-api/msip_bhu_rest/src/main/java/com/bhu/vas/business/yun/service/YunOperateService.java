@@ -226,4 +226,48 @@ public class YunOperateService implements IYunUploadService {
 			}
 		}));
 	}
+	/**
+	 * add by fengshibo 
+	 */
+	@Override
+	public void uploadYun(final byte[] bs,final String filepath) {
+		exec.submit((new Runnable() {
+			@Override
+			public void run() {
+				try {
+					// 七牛云
+					uploadFile2QN(bs,filepath);
+
+				} catch (Exception e) {
+					System.out.println("uploadYun:fail");
+					e.printStackTrace();
+				}
+			}
+		}));
+	}
+	
+	/**
+	 * 七牛云上传
+	 * 
+	 * @param file
+	 * @param remoteName
+	 *            上传到七牛云之后的文件名称
+	 * @param bucketName
+	 *            库名字
+	 * @throws QiniuException
+	 */
+	public void uploadFile2QN(byte[] bs,String filepath) throws Exception {
+
+		Auth auth = Auth.create(YunConstant.QN_ACCESS_KEY, YunConstant.QN_SECRET_KEY);
+		UploadManager uploadManager = new UploadManager();
+		uploadManager.put(bs, filepath,
+				auth.uploadToken(YunConstant.QN_BUCKET_NAME_EXPORT_REWARD_RECORD));
+		System.out.println("七牛云上传成功。");
+	}
+	
+	public String getURL(String filename) {
+		String QNurl = null;
+		QNurl = String.format("%s%s", YunConstant.QN_BUCKET_URL_EXPORT_REWARD_RECORD,filename);
+		return QNurl;
+	}
 }

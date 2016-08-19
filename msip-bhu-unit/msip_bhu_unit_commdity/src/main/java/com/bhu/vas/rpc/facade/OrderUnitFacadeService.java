@@ -56,6 +56,7 @@ import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
+import com.bhu.vas.business.yun.iservice.IYunUploadService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -93,8 +94,12 @@ public class OrderUnitFacadeService {
 
 	@Resource
 	private UserWifiDeviceService userWifiDeviceService;
+	
 	@Resource
 	private UserWalletLogService userWalletLogService;
+	
+	@Resource
+	private IYunUploadService yunOperateService;
 
 	/**
 	 * 生成打赏订单
@@ -555,25 +560,6 @@ public class OrderUnitFacadeService {
 		return "0";
 	}
 	
-	public RpcResponseDTO<RewardIncomeStatisticsVTO> rewardIncomeStatisticsBetweenDate(Integer uid, String mac,
-			String dut, String start_time, String end_time){
-		try{
-			RewardIncomeStatisticsVTO vto = new RewardIncomeStatisticsVTO();
-			logger.info("uid: "+uid+" start: "+start_time+" end:"+end_time);
-			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,null);
-			vto.setCashSum((Double)map.get("cashSum"));
-			vto.setCount((Long)map.get("count"));
-			logger.info("CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
-			
-		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
-		}catch(Exception ex){
-			logger.error("rewardIncomeStatisticsBetweenDate Exception:", ex);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
-	}
-	
 	public RpcResponseDTO<RewardQueryPagesDetailVTO> rewardOrderPagesDetail(Integer uid, String mac, String umac,
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
@@ -581,7 +567,7 @@ public class OrderUnitFacadeService {
 			String start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
 			String end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
 			logger.info("rewardOrderPagesDetail uid: "+uid+" start_time: "+start_time+" end_time: "+end_time+" mac: "+mac);
-			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,umac);
+			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,umac,status);
 			vto.setCashSum((Double)map.get("cashSum"));
 			vto.setCount((Long)map.get("count"));
 			logger.info("rewardOrderPagesDetail CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
@@ -642,6 +628,7 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
 			RewardQueryExportRecordVTO vto = new RewardQueryExportRecordVTO();
+			long start = System.currentTimeMillis();
 			List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
 					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
 					pageNo, pageSize);
@@ -649,7 +636,10 @@ public class OrderUnitFacadeService {
 			if(orderList != null && !orderList.isEmpty()){
 				recordList = outputOrderStringByItem(orderList);
 			}
-			searchResultExportFile("/BHUData/rewardexport/"+System.currentTimeMillis()+".csv",RewardOrderResultExportColumns,recordList);
+			String url = searchResultExportFile(uid,RewardOrderResultExportColumns,recordList);
+			vto.setUrl(url);
+			logger.info("rewardQueryExportRecord download url:"+url+"spend time: "+(System.currentTimeMillis()-start)+"ms");
+			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -658,8 +648,11 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	public void searchResultExportFile(String export_filepath,String[] columns, List<String> lines) {
-		
+	public String searchResultExportFile(Integer uid,String[] columns, List<String> lines) {
+		String down = null;
+		String filename = String.format("%s%s.csv",uid,System.currentTimeMillis());
+		String export_filepath = String.format("/%s/%s/%s/%s", "BHUData","rewardexport",uid,filename);
+		byte[] record = new byte[1000];
 		BufferedWriter fw = null;
 		try {
 			FileHelper.makeDirectory(export_filepath);
@@ -681,12 +674,15 @@ public class OrderUnitFacadeService {
 				}
 			}
 			fw.newLine();
-			logger.info("lines:"+lines.size());
 			for(String item : lines){
 				fw.append(item);
 				fw.newLine();
 			}
 			fw.flush(); // 全部写入缓存中的内容
+			record = fos.toString().getBytes();
+			down = yunOperateService.getURL(filename);
+			yunOperateService.uploadYun(record,down);
+			return down;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -698,6 +694,7 @@ public class OrderUnitFacadeService {
 				}
 			}
 		}
+		return down;
 	}
 	
 	private List<String> outputOrderStringByItem(List<Order> orderList){

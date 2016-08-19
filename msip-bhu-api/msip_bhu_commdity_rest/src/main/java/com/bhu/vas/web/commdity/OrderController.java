@@ -19,7 +19,6 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
-import com.bhu.vas.api.dto.commdity.RewardIncomeStatisticsVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
@@ -413,36 +412,6 @@ public class OrderController extends BaseController{
 		}
 	}
 	
-	/**
-	 * 根据根据uid查询时间段内打赏分成金额和订单数
-	 * @param request
-	 * @param response
-	 * @param uid 用户id
-	 * @param mac 设备mac
-	 * @param dut 业务线
-	 * @param start_created_ts 查询起始时间
-	 * @param end_created_ts 查询结束时间
-	 */
-	@ResponseBody()
-	@RequestMapping(value="/reward/query/fetchIncomeData",method={RequestMethod.GET,RequestMethod.POST})
-	public void reward_query_pages(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = false) String mac,
-			@RequestParam(required = false) String dut,
-			@RequestParam(required = true) long start_created_ts,
-			@RequestParam(required = true) long end_created_ts
-			) {
-		RpcResponseDTO<RewardIncomeStatisticsVTO> rpcResult = orderRpcService.rewardIncomeStatisticsBetweenDate(uid, mac , 
-				dut, start_created_ts, end_created_ts);
-		
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}
-	}
 
 
 
