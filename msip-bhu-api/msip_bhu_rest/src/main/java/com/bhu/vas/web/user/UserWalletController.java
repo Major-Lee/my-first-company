@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
@@ -18,6 +20,7 @@ import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
+import com.bhu.vas.business.yun.iservice.IYunUploadService;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -35,6 +38,10 @@ public class UserWalletController extends BaseController{
 	
 	@Resource
 	private IUserWalletRpcService userWalletRpcService;
+	@Resource
+	private IOrderRpcService orderRpcService;
+	@Resource
+	private IYunUploadService yunOperateService;
 
 	@ResponseBody()
 	@RequestMapping(value="/wallet/withdraw", method={RequestMethod.GET,RequestMethod.POST})
@@ -201,4 +208,47 @@ public class UserWalletController extends BaseController{
     	}catch(Exception ex){
     		SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
     	}
-    }}
+    }
+    
+    /**
+     * 根据筛选条件导出数据
+     * @param request
+     * @param response
+     * @param uid 用户id
+     * @param mac 设备mac
+     * @param umac 支付订单的用户mac
+     * @param status 订单状态 默认发货完成
+     * @param start_created_ts 起始时间戳
+     * @param end_created_ts 结束时间戳
+     * @param pageNo 页码
+     * @param pageSize 每页数量
+     * 
+     */
+    @ResponseBody()
+    @RequestMapping(value="/reward/query/exportrecord",method={RequestMethod.GET,RequestMethod.POST})
+    public void reward_query_export_record(
+    		HttpServletRequest request,
+    		HttpServletResponse response,
+    		@RequestParam(required = true) Integer uid,
+    		@RequestParam(required = false) String mac,
+    		@RequestParam(required = false) String umac,
+    		@RequestParam(required = false, defaultValue = "10") Integer status,
+    		@RequestParam(required = false) String dut,
+    		@RequestParam(required = false, defaultValue = "0") long start_created_ts,
+    		@RequestParam(required = false, defaultValue = "0") long end_created_ts,
+    		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "50", value = "ps") int pageSize
+    		) {
+    	
+    		RpcResponseDTO<RewardQueryExportRecordVTO> rpcResult = orderRpcService.rewardQueryExportRecord(uid, mac, umac, 
+    				status, dut, start_created_ts, end_created_ts,pageNo,pageSize);
+    		if(!rpcResult.hasError()){
+    			byte[] bs = rpcResult.getPayload().getBs();
+    			String url = yunOperateService.getURL(rpcResult.getPayload().getFilename());
+    			yunOperateService.uploadYun(bs, url);
+    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    		}else{
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		}
+    	}
+}

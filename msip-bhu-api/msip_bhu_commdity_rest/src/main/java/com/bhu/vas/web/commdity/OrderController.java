@@ -19,14 +19,12 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
-import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
-import com.bhu.vas.business.yun.iservice.IYunUploadService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.web.mvc.WebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
@@ -42,8 +40,6 @@ public class OrderController extends BaseController{
 	
 	@Resource
 	private IOrderRpcService orderRpcService;
-	@Resource
-	private IYunUploadService yunOperateService;
 
 	/**
 	 * 获取打赏订单的支付url
@@ -450,49 +446,6 @@ public void reward_query_pages_detail(
 		RpcResponseDTO<RewardQueryPagesDetailVTO> rpcResult = orderRpcService.rewardOrderPagesDetail(uid, mac, umac, 
 				status, dut, start_created_ts, end_created_ts, pageNo, pageSize);
 		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}
-	}
-
-
-/**
- * 根据筛选条件导出数据
- * @param request
- * @param response
- * @param uid 用户id
- * @param mac 设备mac
- * @param umac 支付订单的用户mac
- * @param status 订单状态 默认发货完成
- * @param start_created_ts 起始时间戳
- * @param end_created_ts 结束时间戳
- * @param pageNo 页码
- * @param pageSize 每页数量
- * 
- */
-@ResponseBody()
-@RequestMapping(value="/reward/query/exportrecord",method={RequestMethod.GET,RequestMethod.POST})
-public void reward_query_export_record(
-		HttpServletRequest request,
-		HttpServletResponse response,
-		@RequestParam(required = true) Integer uid,
-		@RequestParam(required = false) String mac,
-		@RequestParam(required = false) String umac,
-		@RequestParam(required = false, defaultValue = "10") Integer status,
-		@RequestParam(required = false) String dut,
-		@RequestParam(required = false, defaultValue = "0") long start_created_ts,
-		@RequestParam(required = false, defaultValue = "0") long end_created_ts,
-		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
-        @RequestParam(required = false, defaultValue = "50", value = "ps") int pageSize
-		) {
-	
-		RpcResponseDTO<RewardQueryExportRecordVTO> rpcResult = orderRpcService.rewardQueryExportRecord(uid, mac, umac, 
-				status, dut, start_created_ts, end_created_ts,pageNo,pageSize);
-		if(!rpcResult.hasError()){
-			byte[] bs = rpcResult.getPayload().getBs();
-			String url = yunOperateService.getURL(rpcResult.getPayload().getFilename());
-			yunOperateService.uploadYun(bs, url);
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
