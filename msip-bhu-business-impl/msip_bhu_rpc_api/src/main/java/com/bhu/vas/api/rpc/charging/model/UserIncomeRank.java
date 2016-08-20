@@ -10,6 +10,11 @@ public class UserIncomeRank extends BaseStringModel{
 	private int rank;
 	//用户收入
 	private String income;
+	//用户前日排名
+	private int beforeRank;
+	//用户前日收入
+	private String beforeIncome;
+	
 	private Date created_at;
 	
 	public Date getCreated_at() {
@@ -29,6 +34,18 @@ public class UserIncomeRank extends BaseStringModel{
 	}
 	public void setIncome(String income) {
 		this.income = income;
+	}
+	public int getBeforeRank() {
+		return beforeRank;
+	}
+	public void setBeforeRank(int beforeRank) {
+		this.beforeRank = beforeRank;
+	}
+	public String getBeforeIncome() {
+		return beforeIncome;
+	}
+	public void setBeforeIncome(String beforeIncome) {
+		this.beforeIncome = beforeIncome;
 	}
 	
 }

@@ -1161,6 +1161,9 @@ public class UserWalletFacadeService{
 				}
 				userIncomeRank.setRank(beforeRankNum);
 				userIncomeRank.setIncome(userIncome.getIncome());
+				UserIncomeRank incomeRank=userIncomeRankService.getById(String.valueOf(userIncome.getUid()));
+				
+				
 				userIncomeRank.setId(String.valueOf(userIncome.getUid()));
 				userIncomeRank.setUpdated_at(date);
 				userIncomeRank.setCreated_at(date);

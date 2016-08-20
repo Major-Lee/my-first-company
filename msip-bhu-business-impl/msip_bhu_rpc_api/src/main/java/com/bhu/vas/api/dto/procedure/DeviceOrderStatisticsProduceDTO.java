@@ -117,5 +117,7 @@ public class DeviceOrderStatisticsProduceDTO extends AbstractProcedureDTO{
 		vto.setMb_ofa(this.getMb_order_finish_amount());
 		return vto;
 	}
-
+	public boolean isMaster() {
+		return false;
+	}
 }
