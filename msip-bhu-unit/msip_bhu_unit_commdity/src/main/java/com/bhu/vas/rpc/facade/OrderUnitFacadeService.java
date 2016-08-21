@@ -706,7 +706,7 @@ public class OrderUnitFacadeService {
 			//厂家
 			bw.append(formatStr(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false)));
 			//打赏时间
-			bw.append(formatStr(DateTimeHelper.formatDate(order.getPaymented_at(), DateTimeHelper.FormatPattern0), false));
+			bw.append(formatStr(DateTimeHelper.formatDate(order.getPaymented_at(), DateTimeHelper.FormatPattern0)));
 			//打赏收益
 			bw.append(formatStr(distillOwnercash(order.getId(),walletLogs)));
 			//打赏方式
@@ -718,7 +718,7 @@ public class OrderUnitFacadeService {
 			//设备mac
 			bw.append(formatStr(order.getMac()));
 			//终端mac
-			bw.append(formatStr(order.getUmac()));
+			bw.append(formatStr(order.getUmac(),false));
 			recordList.add(bw.toString());
 		}
 		return recordList;
@@ -737,7 +737,7 @@ public class OrderUnitFacadeService {
 	private static String formatStr(String str) {
 		return formatStr(str, true);
 	}
-	public static final String[] RewardOrderResultExportColumns = new String[]{"终端品牌","打赏时间","打赏收益(元)","打赏设备","终端MAC"};
+	public static final String[] RewardOrderResultExportColumns = new String[]{"厂家","打赏时间","打赏收益(元)","打赏方式","打赏设备","终端MAC"};
 	public byte[] getFileBytes(File file){
 		byte[] buffer = null;
 		try{
