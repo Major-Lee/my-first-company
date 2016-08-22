@@ -20,6 +20,7 @@ import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -115,8 +116,9 @@ public class CommdityUnitFacadeService {
 			CommdityAmountDTO commdityAmountDto = new CommdityAmountDTO();
 			commdityAmountDto.setAmount(amount);
 			commdityAmountDto.setForceTime(chargingFacadeService.fetchForceTime(mac,umactype));
-			logger.info(String.format("intervalAMount success commdityid[%s] mac[%s] umac[%s] umactype[%s] amount[%s] force_time[%s]", 
-					commdityid, mac, umac, umactype, amount,commdityAmountDto.getForceTime()));
+			commdityAmountDto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
+			logger.info(String.format("intervalAMount success commdityid[%s] mac[%s] umac[%s] umactype[%s] amount[%s] force_time[%s] 7dusers[%s]", 
+					commdityid, mac, umac, umactype, amount,commdityAmountDto.getForceTime(),commdityAmountDto.getUser7d()));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityAmountDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

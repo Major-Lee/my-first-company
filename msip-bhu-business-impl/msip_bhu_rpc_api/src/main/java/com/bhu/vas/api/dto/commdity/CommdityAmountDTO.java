@@ -12,7 +12,14 @@ public class CommdityAmountDTO implements java.io.Serializable{
 	private String amount;
 	//设备的上网时间 add by fengshibo
 	private String forceTime;
-	
+	//本周用户数
+	private String user7d;
+	public String getUser7d() {
+		return user7d;
+	}
+	public void setUser7d(String user7d) {
+		this.user7d = user7d;
+	}
 	public String getForceTime() {
 		return forceTime;
 	}
