@@ -27,6 +27,7 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
@@ -260,73 +261,132 @@ public class DeviceOrderStatitics {
 		DeviceStatisticsHashService.getInstance().deviceMacHset(getNextDay(), "dayPV", String.valueOf(dayPVNum));
 		//存储当日设备连接总人数
 		DeviceStatisticsHashService.getInstance().deviceMacHset(getNextDay(), "dayUV", String.valueOf(dayUVNum));
-		getDeviceOrder();
+		List<Order> orders=orderUnitFacadeService.findOrdersByTime(getNextDay()+" 00:00:00", getNextDay()+" 23:59:59");
+		
+		//订单创建数量
+		long occ = 0;
+		//订单支付数量
+		long ofc = 0;
+		//pc端订单创建数量
+		long pc_occ = 0;
+		//pc端订单支付数量
+		long pc_ofc = 0;
+		//移动端订单创建数量
+		long mb_occ = 0;
+		//移动端订单支付数量
+		long mb_ofc = 0;
+		
+		float ofaF=0;
+		float pc_ofaF=0;
+		float mb_ofaF=0;
+		List<String> macList=new ArrayList<String>();
+		if(orders!=null&&orders.size()>0){
+			for(int i=0;i<orders.size();i++){
+				if(orders.get(i).getStatus()==10){
+					ofaF+=Float.valueOf(orders.get(i).getAmount());
+					ofc++;
+					if(orders.get(i).getUmactype()==1){
+						pc_ofaF+=Float.valueOf(orders.get(i).getAmount());
+						pc_ofc++;
+					}else{
+						mb_ofaF+=Float.valueOf(orders.get(i).getAmount());
+						mb_ofc++;
+					}
+				}else{
+					if(orders.get(i).getUmactype()==1){
+						pc_occ++;
+					}else{
+						mb_occ++;
+					}
+				}
+				occ++;
+				if(macList!=null&&macList.size()>0){
+					if(!macList.contains(orders.get(i).getMac())){  
+						macList.add(orders.get(i).getMac());  
+						//System.out.println(orders.get(i).getMac());
+					}  
+				}else{
+					macList.add(orders.get(i).getMac());
+				}
+			}
+		}
+		for(int i=0;i<macList.size();i++){
+			//订单创建数量
+			long socc = 0;
+			//订单支付数量
+			long sofc = 0;
+			//pc端订单创建数量
+			long spc_occ = 0;
+			//pc端订单支付数量
+			long spc_ofc = 0;
+			//移动端订单创建数量
+			long smb_occ = 0;
+			//移动端订单支付数量
+			long smb_ofc = 0;
+			
+			float sofaF=0;
+			float spc_ofaF=0;
+			float smb_ofaF=0;
+			Map<String,Map<String,Object>> singleMapF=new HashMap<String,Map<String,Object>>();
+			Map<String,Object> singleMapS=new HashMap<String,Object>();
+			for(int j=0;j<orders.size();j++){
+				if(macList.get(i)!=null){
+					if(macList.get(i).equals(orders.get(j).getMac())){
+						if(orders.get(j).getStatus()==10){
+							sofc++;
+							sofaF+=(float)(Math.round(Float.valueOf(orders.get(j).getAmount())*100/100));
+							if(orders.get(j).getUmactype()==1){
+								spc_ofaF+=(float)(Math.round(Float.valueOf(orders.get(j).getAmount())*100/100));
+								spc_ofc++;
+							}else{
+								smb_ofaF+=(float)(Math.round(Float.valueOf(orders.get(j).getAmount())*100/100));
+								smb_ofc++;
+							}
+						}else{
+							if(orders.get(j).getUmactype()==1){
+								spc_occ++;
+							}else{
+								smb_occ++;
+							}
+						}
+						socc++;
+					}
+				}
+			}
+			singleMapS.put("occ", socc);
+			singleMapS.put("ofc", sofc);
+			singleMapS.put("ofa", sofaF);
+			singleMapS.put("pc_occ", spc_occ);
+			singleMapS.put("pc_ofc", spc_ofc);
+			singleMapS.put("pc_ofa", spc_ofaF);
+			singleMapS.put("mb_occ", smb_occ);
+			singleMapS.put("mb_ofc", smb_ofc);
+			singleMapS.put("mb_ofa", smb_ofaF);
+			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-"+getNextDay(), macList.get(i), JsonHelper.getJSONString(singleMapS));
+		}
+		//存储到redis缓存
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		resultMap.put("occ", occ);
+		resultMap.put("ofc", ofc);
+		resultMap.put("ofa", ofaF);
+		resultMap.put("pc_occ", pc_occ);
+		resultMap.put("pc_ofc", pc_ofc);
+		resultMap.put("pc_ofa", pc_ofaF);
+		resultMap.put("mb_occ", mb_occ);
+		resultMap.put("mb_ofc", mb_ofc);
+		resultMap.put("mb_ofa", mb_ofaF);
+		DeviceStatisticsHashService.getInstance().deviceMacHset(getNextDay(), "stOrder",JsonHelper.getJSONString(resultMap));
+		//getDeviceOrder();
 		//存储mac地址
 		Iterator iterator=SSIDMacList.entrySet().iterator();
 		//循环获取map的key和value
 		while(iterator.hasNext()){//只遍历一次,速度快
 			Entry entry=(Entry)iterator.next();
-			//根据mac查询当前设备订单信息
-			String startTime = StringUtils.EMPTY;
-			String endTime = StringUtils.EMPTY;
-			startTime = getNextDay()+" 00:00:00";
-			endTime = getNextDay()+" 23:59:59";
-			//订单创建数量
-			long occ = 0;
-			//订单支付数量
-			long ofc = 0;
-			//订单支付总金额
-			String ofa = StringUtils.EMPTY;
-			//pc端订单创建数量
-			long pc_occ = 0;
-			//pc端订单支付数量
-			long pc_ofc = 0;
-			//pc端订单支付总金额
-			String pc_ofa = StringUtils.EMPTY;
-			//移动端订单创建数量
-			long mb_occ = 0;
-			//移动端订单支付数量
-			long mb_ofc = 0;
-			//移动端订单支付总金额
-			String mb_ofa = StringUtils.EMPTY;
-			DeviceOrderStatisticsVTO deviceOrderStatisticsVTO = orderUnitFacadeService.deviceOrderStatisticsWithProcedure(startTime, endTime, entry.getKey().toString());
-			pc_occ = deviceOrderStatisticsVTO.getMb_occ();
-			pc_ofc = deviceOrderStatisticsVTO.getPc_ofc();
-			pc_ofa = deviceOrderStatisticsVTO.getPc_ofa();
-			
-			mb_occ = deviceOrderStatisticsVTO.getMb_occ();
-			mb_ofc = deviceOrderStatisticsVTO.getMb_ofc();
-			mb_ofa = deviceOrderStatisticsVTO.getMb_ofa();
-			double pc_ofa_money = 0;
-			double mb_ofa_money = 0;
-			if(StringUtils.isNotBlank(mb_ofa)){
-				mb_ofa_money = Double.parseDouble(mb_ofa);
-			}
-			if(StringUtils.isNotBlank(pc_ofa)){
-				pc_ofa_money = Double.parseDouble(pc_ofa);
-			}
-			occ = pc_occ+mb_occ;
-			ofc = pc_ofc+mb_ofc;
-			//存储到redis缓存
 			String currJson =  entry.getValue().toString();
 			Map<String, Object> map = JsonHelper.getMapFromJson(currJson);
-			//JSONObject jsonobejct = JSONObject.fromObject(currJson);
-			Map<String,Object> resultMap = new HashMap<String,Object>();
-			resultMap.put("occ", pc_occ+mb_occ);
-			resultMap.put("ofc", pc_ofc+mb_ofc);
-			resultMap.put("ofa", pc_ofa_money+mb_ofa_money);
-			resultMap.put("pc_occ", pc_occ);
-			resultMap.put("pc_ofc", pc_ofc);
-			resultMap.put("pc_ofa", pc_ofa);
-			resultMap.put("mb_occ", mb_occ);
-			resultMap.put("mb_ofc", mb_ofc);
-			resultMap.put("mb_ofa", mb_ofa);
-			resultMap.put("pv", map.get("pv"));
-			resultMap.put("uv", map.get("uv"));
-			String json = JsonHelper.getJSONString(resultMap);
-			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-"+getNextDay(), entry.getKey().toString(), json);
+			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-PV-"+getNextDay(), entry.getKey().toString(),map.get("pv").toString());
+			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-UV-"+getNextDay(), entry.getKey().toString(), map.get("uv").toString());
 		}
-		
 	}
 //	public static void main(String[] args) {
 //		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
@@ -496,7 +556,8 @@ public class DeviceOrderStatitics {
         date = calendar.getTime();  
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
         String dateNowStr = sdf.format(date); 
-        return dateNowStr;
+        //return dateNowStr;
+        return "2016-08-01";
     }
 	
 	public static void getDeviceOrder(){

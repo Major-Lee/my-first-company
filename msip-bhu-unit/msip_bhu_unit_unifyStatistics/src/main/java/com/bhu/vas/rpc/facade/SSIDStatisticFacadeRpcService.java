@@ -366,17 +366,17 @@ public class SSIDStatisticFacadeRpcService {
 						if(StringUtils.isNoneBlank(doC)){
 							doc+=Integer.parseInt(doC);
 						}
+						String dayPv=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-PV-"+date, j);
+						if(dayPv!=null){
+							dayPV += Integer.valueOf(dayPv);
+						}
+						String dayUv=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-UV-"+date, j);
+						if(dayUv!=null){
+							dayUV += Integer.valueOf(dayUv);
+						}
 						String orderStatist=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
 						if(StringUtils.isNotBlank(orderStatist)){
 							JSONObject orderObj = JSONObject.fromObject(orderStatist);
-							if(orderObj.get("pv")!=null){
-								String sinPv=(String) orderObj.get("pv");
-								dayPV += Integer.valueOf(sinPv);
-							}
-							if(orderObj.get("uv")!=null){
-								String sinUv=(String) orderObj.get("uv");
-								dayUV += Integer.valueOf(sinUv);
-							}
 							if(orderObj.get("occ") != null){
 								//单台订单
 								occ += (Integer)orderObj.get("occ");
