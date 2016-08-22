@@ -73,7 +73,7 @@ public class DeviceOrderStatitics {
 		pcUvJsonStr=pcUvJsonStr.substring(1);
 		pcUvJsonStr=pcUvJsonStr.substring(0, pcUvJsonStr.length()-1);
 		int pcUV=Integer.valueOf(pcUvJsonStr.split(",")[1].replace(".0", "").trim());
-		//UMStatisticsHashService.getInstance().umHset(getNextDay(), "pcUv", String.valueOf(pcUV));
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "pcUv", String.valueOf(pcUV));
 		
 		String pcMacUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "wlanapmac", "",1);
 		JSONObject pcMac=JSONObject.fromObject(pcMacUv);
@@ -513,6 +513,8 @@ public class DeviceOrderStatitics {
 		String result = StringUtils.EMPTY;
 		//请求接口获取设备总数以及设备总数
 		result = sendPost(REQUEST_URL, params);
+		//result="{\"code\":\"200\",\"result\":{\"pc_occ\":294,\"pc_ofc\":127,\"pc_ofa\":\"296\",\"mb_occ\":10108,\"mb_ofc\":3931,\"mb_ofa\":\"1955\"}}";
+		System.out.println(result);
 		//订单创建数量
 		long occ = 0;
 		//订单支付数量
@@ -533,7 +535,6 @@ public class DeviceOrderStatitics {
 		String mb_ofa = StringUtils.EMPTY;
 		//解析参数
 		Map<String,Object> helper = JsonHelper.getMapFromJson(result);
-		//JSONObject object = JSONObject.fromObject(result);
 		if(StringUtils.equals((String) helper.get("code"), "200")){
 			@SuppressWarnings("unchecked")
 			Map<String,Object> map = (Map<String, Object>) helper.get("result");
@@ -564,6 +565,7 @@ public class DeviceOrderStatitics {
 			resultMap.put("mb_occ", mb_occ);
 			resultMap.put("mb_ofc", mb_ofc);
 			resultMap.put("mb_ofa", mb_ofa);
+			//System.out.println(resultMap.toString());
 			DeviceStatisticsHashService.getInstance().deviceMacHset(getNextDay(), "stOrder",JsonHelper.getJSONString(resultMap));
 		}
 	}
