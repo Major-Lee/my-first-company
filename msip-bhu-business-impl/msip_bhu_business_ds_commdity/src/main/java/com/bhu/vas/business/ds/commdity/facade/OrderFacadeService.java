@@ -168,6 +168,7 @@ public class OrderFacadeService {
 	public List<Order> findOrdersByTime(String startTime, String endTime){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
+		criteria.andColumnEqualTo("type", 0);
 		criteria.andColumnBetween("created_at", startTime, endTime);
 		return orderService.findModelByModelCriteria(mc);
 	}
