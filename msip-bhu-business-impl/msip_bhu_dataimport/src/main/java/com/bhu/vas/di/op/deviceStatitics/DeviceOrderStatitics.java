@@ -65,6 +65,191 @@ public class DeviceOrderStatitics {
 		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
 		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, DeviceOrderStatitics.class);
 		ctx.start();
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+		
+		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "", "",1);
+		JSONObject pcUvJson=JSONObject.fromObject(pcUv);
+		String pcUvJsonStr=pcUvJson.getString("values");
+		pcUvJsonStr=pcUvJsonStr.substring(1);
+		pcUvJsonStr=pcUvJsonStr.substring(0, pcUvJsonStr.length()-1);
+		int pcUV=Integer.valueOf(pcUvJsonStr.split(",")[1].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "pcUv", String.valueOf(pcUV));
+		
+		String pcMacUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "wlanapmac", "",1);
+		JSONObject pcMac=JSONObject.fromObject(pcMacUv);
+		String pcMacData=pcMac.getString("values");
+		pcMacData=pcMacData.substring(1);
+		pcMacData=pcMacData.substring(0,pcMacData.length()-1);
+		if(!pcMacData.equals("0,0,0")){
+			String[] pcMacDataArray=pcMacData.split("],");
+			if(pcMacDataArray.length>0){
+				for(String i:pcMacDataArray){
+					UMStatisticsHashService.getInstance().umHset("MacPcUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
+				}
+			}
+		}
+		
+		String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", getNextDay(), getNextDay(), "", "",1);
+		JSONObject pcClickJson=JSONObject.fromObject(pcClick);
+		String pcClickJsonStr=pcClickJson.getString("values");
+		pcClickJsonStr=pcClickJsonStr.substring(1);
+		pcClickJsonStr=pcClickJsonStr.substring(0, pcClickJsonStr.length()-1);
+		int pcClickNum=Integer.valueOf(pcClickJsonStr.split(",")[0].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "pcClickNum", String.valueOf(pcClickNum));
+
+		
+		String pcMacClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", getNextDay(), getNextDay(), "wlanapmac", "",1);
+		JSONObject pcMacClickJson=JSONObject.fromObject(pcMacClick);
+		String pcMacClickData=pcMacClickJson.getString("values");
+		pcMacClickData=pcMacClickData.substring(1);
+		pcMacClickData=pcMacClickData.substring(0,pcMacClickData.length()-1);
+		if(!pcMacClickData.equals("0,0,0")){
+			String[] pcMacClickDataArray=pcMacClickData.split("],");
+			if(pcMacClickDataArray.length>0){
+				for(String i:pcMacClickDataArray){
+					UMStatisticsHashService.getInstance().umHset("MacPcClickNum"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
+				}
+			}
+		}
+		
+		String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "",2);
+		JSONObject mobileUvJson=JSONObject.fromObject(mobileUv);
+		String mobileUvJsonStr=mobileUvJson.getString("values");
+		mobileUvJsonStr=mobileUvJsonStr.substring(1);
+		mobileUvJsonStr=mobileUvJsonStr.substring(0, mobileUvJsonStr.length()-1);
+		int mobileUV=Integer.valueOf(mobileUvJsonStr.split(",")[1].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "mobileUv", String.valueOf(mobileUV));
+
+		
+		String mobileMacUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "",2);
+		JSONObject mobileMacUvJson=JSONObject.fromObject(mobileMacUv);
+		String mobileMacUvData=mobileMacUvJson.getString("values");
+		mobileMacUvData=mobileMacUvData.substring(1);
+		mobileMacUvData=mobileMacUvData.substring(0,mobileMacUvData.length()-1);
+		if(!mobileMacUvData.equals("0,0,0")){
+			String[] mobileMacUvDataArray=mobileMacUvData.split("],");
+			if(mobileMacUvDataArray.length>0){
+				for(String i:mobileMacUvDataArray){
+					UMStatisticsHashService.getInstance().umHset("MacMobileUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
+				}
+			}
+		}
+		
+		String iosUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "os = 'ios'",2);
+		JSONObject iosUvJson=JSONObject.fromObject(iosUv);
+		String iosUvJsonStr=iosUvJson.getString("values");
+		iosUvJsonStr=iosUvJsonStr.substring(1);
+		iosUvJsonStr=iosUvJsonStr.substring(0, iosUvJsonStr.length()-1);
+		int iosUV=Integer.valueOf(iosUvJsonStr.split(",")[1].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "iosUv", String.valueOf(iosUV));
+
+		
+		String iosMacUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "wlanapmac", "os = 'ios'",2);
+		JSONObject iosMacUvJson=JSONObject.fromObject(iosMacUv);
+		String iosMacUvData=iosMacUvJson.getString("values");
+		iosMacUvData=iosMacUvData.substring(1);
+		iosMacUvData=iosMacUvData.substring(0,iosMacUvData.length()-1);
+		if(!iosMacUvData.equals("0,0,0")){
+			String[] iosMacUvDataArray=iosMacUvData.split("],");
+			if(iosMacUvDataArray.length>0){
+				for(String i:iosMacUvDataArray){
+					UMStatisticsHashService.getInstance().umHset("MacIosUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
+				}
+			}
+		}
+		
+		String androidUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "os = 'android'",2);
+		JSONObject androidUvJson=JSONObject.fromObject(androidUv);
+		String androidUvJsonStr=androidUvJson.getString("values");
+		androidUvJsonStr=androidUvJsonStr.substring(1);
+		androidUvJsonStr=androidUvJsonStr.substring(0, androidUvJsonStr.length()-1);
+		int androidUV=Integer.valueOf(androidUvJsonStr.split(",")[1].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "androidUv", String.valueOf(androidUV));
+
+	
+		String androidMacUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "wlanapmac", "os = 'android'",2);
+		JSONObject androidMacUvJson=JSONObject.fromObject(androidMacUv);
+		String androidMacUvData=androidMacUvJson.getString("values");
+		androidMacUvData=androidMacUvData.substring(1);
+		androidMacUvData=androidMacUvData.substring(0,androidMacUvData.length()-1);
+		if(!androidMacUvData.equals("0,0,0")){
+			String[] androidMacUvDataArray=androidMacUvData.split("],");
+			if(androidMacUvDataArray.length>0){
+				for(String i:androidMacUvDataArray){
+					UMStatisticsHashService.getInstance().umHset("MacAndroidUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
+				}
+			}
+		}
+		
+		
+		String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "",2);
+		JSONObject mobileClickJson=JSONObject.fromObject(mobileClick);
+		String mobileClickJsonStr=mobileClickJson.getString("values");
+		mobileClickJsonStr=mobileClickJsonStr.substring(1);
+		mobileClickJsonStr=mobileClickJsonStr.substring(0, mobileClickJsonStr.length()-1);
+		int mobileClickNum=Integer.valueOf(mobileClickJsonStr.split(",")[0].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "mobileClickNum", String.valueOf(mobileClickNum));
+
+		
+		String mobileMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "wlanapmac", "",2);
+		JSONObject mobileMacClickJson=JSONObject.fromObject(mobileMacClick);
+		String mobileMacClickData=mobileMacClickJson.getString("values");
+		mobileMacClickData=mobileMacClickData.substring(1);
+		mobileMacClickData=mobileMacClickData.substring(0,mobileMacClickData.length()-1);
+		if(!mobileMacClickData.equals("0,0,0")){
+			String[] mobileMacClickDataArray=mobileMacClickData.split("],");
+			if(mobileMacClickDataArray.length>0){
+				for(String i:mobileMacClickDataArray){
+					UMStatisticsHashService.getInstance().umHset("MacMobileClick"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
+				}
+			}
+		}
+		
+		String iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "os = 'ios'",2);
+		JSONObject iosClickJson=JSONObject.fromObject(iosClick);
+		String iosClickJsonStr=iosClickJson.getString("values");
+		iosClickJsonStr=iosClickJsonStr.substring(1);
+		iosClickJsonStr=iosClickJsonStr.substring(0, iosClickJsonStr.length()-1);
+		int iosClickNum=Integer.valueOf(iosClickJsonStr.split(",")[0].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "iosClickNum", String.valueOf(iosClickNum));
+
+	
+		String iosMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "wlanapmac", "os = 'ios'",2);
+		JSONObject iosMacClickJson=JSONObject.fromObject(iosMacClick);
+		String iosMacClickData=iosMacClickJson.getString("values");
+		iosMacClickData=iosMacClickData.substring(1);
+		iosMacClickData=iosMacClickData.substring(0,iosMacClickData.length()-1);
+		if(!iosMacClickData.equals("0,0,0")){
+			String[] iosMacClickDataArray=iosMacClickData.split("],");
+			if(iosMacClickDataArray.length>0){
+				for(String i:iosMacClickDataArray){
+					UMStatisticsHashService.getInstance().umHset("MacIosClick"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
+				}
+			}
+		}
+		
+		String androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "os = 'android'",2);
+		JSONObject androidClickJson=JSONObject.fromObject(androidClick);
+		String androidClickJsonStr=androidClickJson.getString("values");
+		androidClickJsonStr=androidClickJsonStr.substring(1);
+		androidClickJsonStr=androidClickJsonStr.substring(0, androidClickJsonStr.length()-1);
+		int androidClickNum=Integer.valueOf(androidClickJsonStr.split(",")[0].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "androidClickNum", String.valueOf(androidClickNum));
+
+	
+		String androidMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "wlanapmac", "os = 'android'",2);
+		JSONObject androidMacClickJson=JSONObject.fromObject(androidMacClick);
+		String androidMacClickData=androidMacClickJson.getString("values");
+		androidMacClickData=androidMacClickData.substring(1);
+		androidMacClickData=androidMacClickData.substring(0,androidMacClickData.length()-1);
+		if(!androidMacClickData.equals("0,0,0")){
+			String[] androidMacClickDataArray=androidMacClickData.split("],");
+			if(androidMacClickDataArray.length>0){
+				for(String i:androidMacClickDataArray){
+					UMStatisticsHashService.getInstance().umHset("MacAndroidClick"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
+				}
+			}
+		}
 		OrderFacadeService orderUnitFacadeService = (OrderFacadeService) ctx.getBean("orderFacadeService",OrderFacadeService.class);
 		try {
 			readFile(WAIWANG_LOG);
@@ -141,208 +326,7 @@ public class DeviceOrderStatitics {
 			String json = JsonHelper.getJSONString(resultMap);
 			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-"+getNextDay(), entry.getKey().toString(), json);
 		}
-		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		
-		String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "", "",1);
-		Map<String,Object> pcUvJson=JsonHelper.getMapFromJson(pcUv);
-		String pcUvJsonStr=(String) pcUvJson.get("values");
-		pcUvJsonStr=pcUvJsonStr.substring(1);
-		pcUvJsonStr=pcUvJsonStr.substring(0, pcUvJsonStr.length()-1);
-		int pcUV=Integer.valueOf(pcUvJsonStr.split(",")[1].replace(".0", "").trim());
-		UMStatisticsHashService.getInstance().umHset(getNextDay(), "pcUv", String.valueOf(pcUV));
-		
-		String pcMacUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "wlanapmac", "",1);
-		JSONObject pcMac=JSONObject.fromObject(pcMacUv);
-		String pcMacData=pcMac.getString("values");
-		pcMacData=pcMacData.substring(1);
-		pcMacData=pcMacData.substring(0,pcMacData.length()-1);
-		if(!pcMacData.equals("0,0,0")){
-			String[] pcMacDataArray=pcMacData.split("],");
-			if(pcMacDataArray.length>0){
-				for(String i:pcMacDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
-					UMStatisticsHashService.getInstance().umHset("MacPcUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
-				}
-			}
-		}
-		
-		String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", getNextDay(), getNextDay(), "", "",1);
-		Map<String,Object> pcClickJson=JsonHelper.getMapFromJson(pcClick);
-		String pcClickJsonStr=(String) pcClickJson.get("values");
-		pcClickJsonStr=pcClickJsonStr.substring(1);
-		pcClickJsonStr=pcClickJsonStr.substring(0, pcClickJsonStr.length()-1);
-		int pcClickNum=Integer.valueOf(pcClickJsonStr.split(",")[0].replace(".0", "").trim());
-		UMStatisticsHashService.getInstance().umHset(getNextDay(), "pcClickNum", String.valueOf(pcClickNum));
-		
-		String pcMacClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", getNextDay(), getNextDay(), "wlanapmac", "",1);
-		JSONObject pcMacClickJson=JSONObject.fromObject(pcMacClick);
-		String pcMacClickData=pcMacClickJson.getString("values");
-		pcMacClickData=pcMacClickData.substring(1);
-		pcMacClickData=pcMacClickData.substring(0,pcMacClickData.length()-1);
-		if(!pcMacClickData.equals("0,0,0")){
-			String[] pcMacClickDataArray=pcMacClickData.split("],");
-			if(pcMacClickDataArray.length>0){
-				for(String i:pcMacClickDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
-					UMStatisticsHashService.getInstance().umHset("MacPcClickNum"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
-				}
-			}
-		}
-		
-		String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "wlanapmac", "",2);
-		Map<String,Object> mobileUvJson=JsonHelper.getMapFromJson(mobileUv);
-		String mobileUvJsonStr=(String) mobileUvJson.get("values");
-		mobileUvJsonStr=mobileUvJsonStr.substring(1);
-		mobileUvJsonStr=mobileUvJsonStr.substring(0, mobileUvJsonStr.length()-1);
-		int mobileUV=Integer.valueOf(mobileUvJsonStr.split(",")[1].replace(".0", "").trim());
-		UMStatisticsHashService.getInstance().umHset(getNextDay(), "mobileUv", String.valueOf(mobileUV));
-		
-		String mobileMacUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "",2);
-		JSONObject mobileMacUvJson=JSONObject.fromObject(mobileMacUv);
-		String mobileMacUvData=mobileMacUvJson.getString("values");
-		mobileMacUvData=mobileMacUvData.substring(1);
-		mobileMacUvData=mobileMacUvData.substring(0,mobileMacUvData.length()-1);
-		if(!mobileMacUvData.equals("0,0,0")){
-			String[] mobileMacUvDataArray=mobileMacUvData.split("],");
-			if(mobileMacUvDataArray.length>0){
-				for(String i:mobileMacUvDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
-					UMStatisticsHashService.getInstance().umHset("MacMobileUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
-				}
-			}
-		}
-		
-		String iosUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "os = 'ios'",2);
-		Map<String,Object> iosUvJson=JsonHelper.getMapFromJson(iosUv);
-		String iosUvJsonStr=(String) iosUvJson.get("values");
-		iosUvJsonStr=iosUvJsonStr.substring(1);
-		iosUvJsonStr=iosUvJsonStr.substring(0, iosUvJsonStr.length()-1);
-		int iosUV=Integer.valueOf(iosUvJsonStr.split(",")[1].replace(".0", "").trim());
-		UMStatisticsHashService.getInstance().umHset(getNextDay(), "iosUv", String.valueOf(iosUV));
-		
-		String iosMacUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "wlanapmac", "os = 'ios'",2);
-		JSONObject iosMacUvJson=JSONObject.fromObject(iosMacUv);
-		String iosMacUvData=iosMacUvJson.getString("values");
-		iosMacUvData=iosMacUvData.substring(1);
-		iosMacUvData=iosMacUvData.substring(0,iosMacUvData.length()-1);
-		if(!iosMacUvData.equals("0,0,0")){
-			String[] iosMacUvDataArray=iosMacUvData.split("],");
-			if(iosMacUvDataArray.length>0){
-				for(String i:iosMacUvDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
-					UMStatisticsHashService.getInstance().umHset("MacIosUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
-				}
-			}
-		}
-		
-		String androidUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "os = 'android'",2);
-		Map<String,Object> androidUvJson=JsonHelper.getMapFromJson(androidUv);
-		String androidUvJsonStr=(String) androidUvJson.get("values");
-		androidUvJsonStr=androidUvJsonStr.substring(1);
-		androidUvJsonStr=androidUvJsonStr.substring(0, androidUvJsonStr.length()-1);
-		int androidUV=Integer.valueOf(androidUvJsonStr.split(",")[1].replace(".0", "").trim());
-		UMStatisticsHashService.getInstance().umHset(getNextDay(), "androidUv", String.valueOf(androidUV));
-	
-		String androidMacUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "wlanapmac", "os = 'android'",2);
-		JSONObject androidMacUvJson=JSONObject.fromObject(androidMacUv);
-		String androidMacUvData=androidMacUvJson.getString("values");
-		androidMacUvData=androidMacUvData.substring(1);
-		androidMacUvData=androidMacUvData.substring(0,androidMacUvData.length()-1);
-		if(!androidMacUvData.equals("0,0,0")){
-			String[] androidMacUvDataArray=androidMacUvData.split("],");
-			if(androidMacUvDataArray.length>0){
-				for(String i:androidMacUvDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
-					UMStatisticsHashService.getInstance().umHset("MacAndroidUv"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
-				}
-			}
-		}
-		
-		
-		String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "",2);
-		Map<String,Object> mobileClickJson=JsonHelper.getMapFromJson(mobileClick);
-		String mobileClickJsonStr=(String) mobileClickJson.get("values");
-		mobileClickJsonStr=mobileClickJsonStr.substring(1);
-		mobileClickJsonStr=mobileClickJsonStr.substring(0, mobileClickJsonStr.length()-1);
-		int mobileClickNum=Integer.valueOf(mobileClickJsonStr.split(",")[0].replace(".0", "").trim());
-		UMStatisticsHashService.getInstance().umHset(getNextDay(), "mobileClickNum", String.valueOf(mobileClickNum));
-		
-		String mobileMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "wlanapmac", "",2);
-		JSONObject mobileMacClickJson=JSONObject.fromObject(mobileMacClick);
-		String mobileMacClickData=mobileMacClickJson.getString("values");
-		mobileMacClickData=mobileMacClickData.substring(1);
-		mobileMacClickData=mobileMacClickData.substring(0,mobileMacClickData.length()-1);
-		if(!mobileMacClickData.equals("0,0,0")){
-			String[] mobileMacClickDataArray=mobileMacClickData.split("],");
-			if(mobileMacClickDataArray.length>0){
-				for(String i:mobileMacClickDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
-					UMStatisticsHashService.getInstance().umHset("MacMobileClick"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
-				}
-			}
-		}
-		
-		String iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "os = 'ios'",2);
-		Map<String,Object> iosClickJson=JsonHelper.getMapFromJson(iosClick);
-		String iosClickJsonStr=(String) iosClickJson.get("values");
-		iosClickJsonStr=iosClickJsonStr.substring(1);
-		iosClickJsonStr=iosClickJsonStr.substring(0, iosClickJsonStr.length()-1);
-		int iosClickNum=Integer.valueOf(iosClickJsonStr.split(",")[0].replace(".0", "").trim());
-		UMStatisticsHashService.getInstance().umHset(getNextDay(), "iosClickNum", String.valueOf(iosClickNum));
-	
-		String iosMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "wlanapmac", "os = 'ios'",2);
-		JSONObject iosMacClickJson=JSONObject.fromObject(iosMacClick);
-		String iosMacClickData=iosMacClickJson.getString("values");
-		iosMacClickData=iosMacClickData.substring(1);
-		iosMacClickData=iosMacClickData.substring(0,iosMacClickData.length()-1);
-		if(!iosMacClickData.equals("0,0,0")){
-			String[] iosMacClickDataArray=iosMacClickData.split("],");
-			if(iosMacClickDataArray.length>0){
-				for(String i:iosMacClickDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
-					UMStatisticsHashService.getInstance().umHset("MacIosClick"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
-				}
-			}
-		}
-		
-		String androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "os = 'android'",2);
-		Map<String,Object> androidClickJson=JsonHelper.getMapFromJson(androidClick);
-		String androidClickJsonStr=(String) androidClickJson.get("values");
-		androidClickJsonStr=androidClickJsonStr.substring(1);
-		androidClickJsonStr=androidClickJsonStr.substring(0, androidClickJsonStr.length()-1);
-		int androidClickNum=Integer.valueOf(androidClickJsonStr.split(",")[0].replace(".0", "").trim());
-		UMStatisticsHashService.getInstance().umHset(getNextDay(), "androidClickNum", String.valueOf(androidClickNum));
-	
-		String androidMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "wlanapmac", "os = 'android'",2);
-		JSONObject androidMacClickJson=JSONObject.fromObject(androidMacClick);
-		String androidMacClickData=androidMacClickJson.getString("values");
-		androidMacClickData=androidMacClickData.substring(1);
-		androidMacClickData=androidMacClickData.substring(0,androidMacClickData.length()-1);
-		if(!androidMacClickData.equals("0,0,0")){
-			String[] androidMacClickDataArray=androidMacClickData.split("],");
-			if(androidMacClickDataArray.length>0){
-				for(String i:androidMacClickDataArray){
-	//				System.out.println(i);
-	//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-	//				System.out.println(i.split("=")[0].replace("%", ":").trim());
-					UMStatisticsHashService.getInstance().umHset("MacAndroidClick"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
-				}
-			}
-		}
 	}
 //	public static void main(String[] args) {
 //		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
@@ -529,6 +513,8 @@ public class DeviceOrderStatitics {
 		String result = StringUtils.EMPTY;
 		//请求接口获取设备总数以及设备总数
 		result = sendPost(REQUEST_URL, params);
+		//result="{\"code\":\"200\",\"result\":{\"pc_occ\":294,\"pc_ofc\":127,\"pc_ofa\":\"296\",\"mb_occ\":10108,\"mb_ofc\":3931,\"mb_ofa\":\"1955\"}}";
+		System.out.println(result);
 		//订单创建数量
 		long occ = 0;
 		//订单支付数量
@@ -549,7 +535,6 @@ public class DeviceOrderStatitics {
 		String mb_ofa = StringUtils.EMPTY;
 		//解析参数
 		Map<String,Object> helper = JsonHelper.getMapFromJson(result);
-		//JSONObject object = JSONObject.fromObject(result);
 		if(StringUtils.equals((String) helper.get("code"), "200")){
 			@SuppressWarnings("unchecked")
 			Map<String,Object> map = (Map<String, Object>) helper.get("result");
@@ -580,6 +565,7 @@ public class DeviceOrderStatitics {
 			resultMap.put("mb_occ", mb_occ);
 			resultMap.put("mb_ofc", mb_ofc);
 			resultMap.put("mb_ofa", mb_ofa);
+			//System.out.println(resultMap.toString());
 			DeviceStatisticsHashService.getInstance().deviceMacHset(getNextDay(), "stOrder",JsonHelper.getJSONString(resultMap));
 		}
 	}

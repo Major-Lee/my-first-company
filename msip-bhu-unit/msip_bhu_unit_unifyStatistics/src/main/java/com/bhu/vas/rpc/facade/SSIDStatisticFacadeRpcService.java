@@ -72,7 +72,7 @@ public class SSIDStatisticFacadeRpcService {
 		type = (String) map.get("type");
 		deliveryChannel = (String) map.get("deliveryChannel");
 		mobileNo = (String) map.get("mobileNo");
-		deviceLable = (String) map.get("deviceLable");
+		deviceLable = (String) map.get("deviceLabel");
 		startTime = (String) map.get("startTime");
 		endTime = (String) map.get("endTime");
 		pn = (Integer) map.get("pn");
