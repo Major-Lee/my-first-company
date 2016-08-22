@@ -159,7 +159,18 @@ public class OrderFacadeService {
 		mc.setPageSize(pageSize);
 		return orderService.findModelByModelCriteria(mc);
 	}
-	
+	/**
+	 * 查询时间段内所有订单
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	public List<Order> findOrdersByTime(String startTime, String endTime){
+		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		criteria.andColumnBetween("created_at", startTime, endTime);
+		return orderService.findModelByModelCriteria(mc);
+	}
 	/**
 	 * 根据日期查询订单数量
 	 * @param status
