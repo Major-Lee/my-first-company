@@ -384,8 +384,16 @@ public class DeviceOrderStatitics {
 			Entry entry=(Entry)iterator.next();
 			String currJson =  entry.getValue().toString();
 			Map<String, Object> map = JsonHelper.getMapFromJson(currJson);
-			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-PV-"+getNextDay(), entry.getKey().toString(),map.get("pv").toString());
-			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-UV-"+getNextDay(), entry.getKey().toString(), map.get("uv").toString());
+			String pv="0";
+			String uv="0";
+			if(map.get("pv")!=null){
+				pv=(String) map.get("pv");
+			}
+			if(map.get("uv")!=null){
+				uv=(String) map.get("uv");
+			}
+			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-PV-"+getNextDay(), entry.getKey().toString(),pv);
+			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-UV-"+getNextDay(), entry.getKey().toString(), uv);
 		}
 	}
 //	public static void main(String[] args) {

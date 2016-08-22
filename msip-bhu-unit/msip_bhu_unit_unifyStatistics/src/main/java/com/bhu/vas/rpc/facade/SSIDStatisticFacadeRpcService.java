@@ -452,10 +452,10 @@ public class SSIDStatisticFacadeRpcService {
 				if(doc != 0){
 					singleOrderNum = (double) occ/doc;
 					BigDecimal b = new BigDecimal(singleOrderNum);
-					singleOrderNum =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
+					singleOrderNum =  round(b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue(),2);  
 					singleGains = ofa/doc;
 					BigDecimal b1 = new BigDecimal(singleGains);
-					singleGains =  b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
+					singleGains =  round(b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue(),2);  
 				}
 				totalPV += dayPV;
 				totalUV += dayUV;
@@ -467,8 +467,8 @@ public class SSIDStatisticFacadeRpcService {
 				ssidMap.put("dc", dc);
 				ssidMap.put("doc", doc);
 				ssidMap.put("singleOrderNum", singleOrderNum);
-				ssidMap.put("singleGains", singleGains);
-				ssidMap.put("dayGains", dayGains);
+				ssidMap.put("singleGains", round(singleGains,2));
+				ssidMap.put("dayGains", round(dayGains,2));
 				totalDC += dc;
 				totalDOC += doc;
 				
@@ -505,7 +505,7 @@ public class SSIDStatisticFacadeRpcService {
 					totalMap.put("clickConversion", round((pcOrderNum+mbOrderNum)*1.00/(pcClickNum+mobileClickNum)*100,2)+"%");
 				}
 				totalMap.put("orderComplete", pcOrderComplete+mbOrderComplete);
-				totalMap.put("orderAmount", pcOrderAmount+mbOrderAmount);
+				totalMap.put("orderAmount", round(pcOrderAmount+mbOrderAmount,2));
 				singleMap.put("total", totalMap);
 				
 				
@@ -527,7 +527,7 @@ public class SSIDStatisticFacadeRpcService {
 					pcMap.put("clickConversion", round(pcOrderNum*1.00/pcClickNum*100,2)+"%");
 				}
 				pcMap.put("orderComplete", pcOrderComplete);
-				pcMap.put("orderAmount", pcOrderAmount);
+				pcMap.put("orderAmount", round(pcOrderAmount,2));
 				singleMap.put("PC", pcMap);
 				
 				Map<String,Object> mobileMap=new HashMap<String,Object>();
@@ -548,7 +548,7 @@ public class SSIDStatisticFacadeRpcService {
 					mobileMap.put("clickConversion", round(mbOrderNum*1.00/mobileClickNum*100,2)+"%");
 				}
 				mobileMap.put("orderComplete", mbOrderComplete);
-				mobileMap.put("orderAmount", mbOrderAmount);
+				mobileMap.put("orderAmount", round(mbOrderAmount,2));
 				singleMap.put("mobile", mobileMap);
 				
 				Map<String,Object> iosMap=new HashMap<String,Object>();
@@ -635,9 +635,9 @@ public class SSIDStatisticFacadeRpcService {
 		totalMap.put("totalDOC", totalDOC);
 		BigDecimal b = new BigDecimal(totalSingleGains);
 		totalSingleGains =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
-		totalMap.put("totalSingleGains", totalSingleGains);
+		totalMap.put("totalSingleGains", round(totalSingleGains,2));
 		totalMap.put("totalSingleOrderNum", totalSingleOrderNum);
-		totalMap.put("totalGains", totalGains);
+		totalMap.put("totalGains", round(totalGains,2));
 		tMaps.put("ssid", totalMap);
 		
 		Map<String,Object> totalUmMap=new HashMap<String,Object>();
@@ -657,7 +657,7 @@ public class SSIDStatisticFacadeRpcService {
 			totalUmMap.put("clickConversion", round((totalPcOrderNum+totalMbOrderNum)*1.00/totalClickNum*100,2)+"%");
 		}
 		totalUmMap.put("orderComplete", totalPcOrderComplete+totalMbOrderComplete);
-		totalUmMap.put("orderAmount", totalPcOrderAmount+totalMbOrderAmount);
+		totalUmMap.put("orderAmount", round(totalPcOrderAmount+totalMbOrderAmount,2));
 		tMaps.put("total",totalUmMap);
 		Map<String,Object> pcMap=new HashMap<String,Object>();
 		pcMap.put("uv", totalPcUV);
@@ -676,7 +676,7 @@ public class SSIDStatisticFacadeRpcService {
 			pcMap.put("clickConversion", round(totalPcOrderNum*1.00/totalPcClickNum*100,2)+"%");
 		}
 		pcMap.put("orderComplete", totalPcOrderComplete);
-		pcMap.put("orderAmount", totalPcOrderAmount);
+		pcMap.put("orderAmount", round(totalPcOrderAmount,2));
 		tMaps.put("PC", pcMap);
 		
 		Map<String,Object> mobileMap=new HashMap<String,Object>();
@@ -696,7 +696,7 @@ public class SSIDStatisticFacadeRpcService {
 			mobileMap.put("clickConversion", round(totalMbOrderNum*1.00/totalMobileClickNum*100,2)+"%");
 		}
 		mobileMap.put("orderComplete", totalMbOrderComplete);
-		mobileMap.put("orderAmount", totalMbOrderAmount);
+		mobileMap.put("orderAmount", round(totalMbOrderAmount,2));
 		tMaps.put("mobile", mobileMap);
 		
 		Map<String,Object> iosMap=new HashMap<String,Object>();
