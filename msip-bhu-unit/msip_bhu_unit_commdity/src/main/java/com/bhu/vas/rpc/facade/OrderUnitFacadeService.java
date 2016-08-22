@@ -625,6 +625,14 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
 			RewardQueryExportRecordVTO vto = new RewardQueryExportRecordVTO();
+			if (start_created_ts == 0 || end_created_ts == 0){
+				Date dateYesterday = DateTimeHelper.getDateDaysAgo(1);
+				String yesterdayStr = DateTimeHelper.formatDate(dateYesterday, "yyyy-MM-dd 00:00:00");
+				Date parse = DateTimeHelper.longDateFormat.parse(yesterdayStr);
+				start_created_ts = parse.getTime();
+				end_created_ts = System.currentTimeMillis();
+				logger.info(String.format("rewardQueryExportRecord default time start_ts[%s] end_ts[%s]", start_created_ts,end_created_ts));
+			}
 			List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
 					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
 					pageNo, pageSize);
@@ -756,5 +764,5 @@ public class OrderUnitFacadeService {
 		}  
     	return buffer;  
 	}
-	public static final String EXPORT_REWARD_RECORD_URL = "http://obklbhh9z.bkt.clouddn.com/"; 
+	public static final String EXPORT_REWARD_RECORD_URL = "http://obklbhh9z.bkt.clouddn.com/";
 }
