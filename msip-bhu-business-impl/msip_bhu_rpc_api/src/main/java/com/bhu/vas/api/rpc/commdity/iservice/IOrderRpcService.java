@@ -6,6 +6,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
+import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -48,4 +49,7 @@ public interface IOrderRpcService {
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize);
 	public RpcResponseDTO<RewardQueryExportRecordVTO> rewardQueryExportRecord(Integer uid, String mac, String umac, 
 			Integer status, String dut, long start_created_ts, long end_created_ts,int pageNo, int pageSize);
+	
+	public RpcResponseDTO<OrderVideoVTO> createVideoOrder(String mac, String umac, Integer umactype, 
+			String context, String user_agent);
 }

@@ -16,6 +16,7 @@ import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseVideoValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.push.SharedealNotifyPushDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
@@ -109,6 +110,9 @@ public class AsyncOrderPaymentNotifyService{
 					break;
 				case SMSPaymentNotify:
 					orderSMSNotifyCompletedHandle(messageNoPrefix);
+					break;
+				case AdvertiseNotify:
+					orderVideoNotifyCompletedHandle(messageNoPrefix);
 					break;
 				default:
 					throw new RuntimeException(String.format("PaymentNotifyType unsupport message[%s]", message));
@@ -419,4 +423,24 @@ public class AsyncOrderPaymentNotifyService{
 		orderFacadeService.smsOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
 	}
 	
+	
+	/**
+	 * 视频上网通过通知
+	 * @param message
+	 */
+	public void orderVideoNotifyCompletedHandle(String message){
+		ResponseVideoValidateCompletedNotifyDTO smsv_dto = PaymentNotifyFactoryBuilder.fromJson(message, ResponseVideoValidateCompletedNotifyDTO.class);
+		String orderid = smsv_dto.getOrderid();
+		boolean success = smsv_dto.isSuccess();
+		Date paymented_ds = smsv_dto.getPaymented_ds();
+		
+		//订单处理逻辑 
+		Order order = orderFacadeService.validateOrderId(orderid);
+		User bindUser = null;
+		if(order.getUid() != null){
+			bindUser = userService.getById(order.getUid());
+		}
+		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+		orderFacadeService.videoOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
+	}
 }
