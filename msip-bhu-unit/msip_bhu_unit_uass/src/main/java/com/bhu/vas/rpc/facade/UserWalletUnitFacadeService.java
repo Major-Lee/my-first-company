@@ -722,13 +722,13 @@ public class UserWalletUnitFacadeService {
 					UserIncomeRank userIncomeRank=userIncomeRanks.get(i);
 					User singleUser=userService.getById(Integer.valueOf(userIncomeRank.getId()));
 					rankSingle.setRankNum(userIncomeRank.getRank());
-					rankSingle.setUserIncome(String.valueOf(round(Float.valueOf(incomeRank.getIncome()),2)));
+					rankSingle.setUserIncome(String.valueOf(round(Float.valueOf(userIncomeRank.getIncome()),2)));
 					rankSingle.setUserName(singleUser.getNick());
 					rankSingle.setAvatar(singleUser.getAvatar());
 					rankSingle.setMemo(singleUser.getMemo());
-					if(incomeRank.getRank()==incomeRank.getBeforeRank()){
+					if(userIncomeRank.getRank()==userIncomeRank.getBeforeRank()){
 						rankSingle.setChangeFlag(1);
-					}else if(incomeRank.getRank()>incomeRank.getBeforeRank()){
+					}else if(userIncomeRank.getRank()>userIncomeRank.getBeforeRank()){
 						rankSingle.setChangeFlag(2);
 					}else{
 						rankSingle.setChangeFlag(0);
