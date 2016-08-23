@@ -129,7 +129,7 @@ public class OrderRpcService implements IOrderRpcService{
 				mac, umac, status, dut, start_created_ts, end_created_ts, pageNo,pageSize));
 		return orderUnitFacadeService.rewardQueryExportRecord(uid,mac,umac,status,dut,start_created_ts,end_created_ts,pageNo,pageSize);
 	}
-	@Override
+	
 	public RpcResponseDTO<OrderVideoVTO> createVideoOrder(String mac, String umac, Integer umactype, 
 			String context, String user_agent){
 		logger.info(String.format("createVideoOrder with mac[%s] umac[%s] umactype[%s] context[%s] user_agent[%s]",
