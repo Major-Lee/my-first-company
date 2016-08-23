@@ -1134,12 +1134,7 @@ public class UserWalletFacadeService{
         date = calendar.getTime();  
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
         String time =sdf.format(date); 
-        userIncomeRankService.deleteAllRank();
-		//List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList(time);
-//		ModelCriteria mc = new ModelCriteria();
-//		mc.createCriteria().andColumnEqualTo("time", time);
-//		mc.createCriteria().andColumnEqualTo("type", "uid");
-		//mc.setOrderByClause("income");
+        //userIncomeRankService.deleteAllRank();
 		List<UserIncome> userIncomes=this.getUserIncomeService().findListByTime(time);
 		if(userIncomes != null&&userIncomes.size()>0){
 			String beforeIncome="0";
@@ -1162,8 +1157,10 @@ public class UserWalletFacadeService{
 				userIncomeRank.setRank(beforeRankNum);
 				userIncomeRank.setIncome(userIncome.getIncome());
 				UserIncomeRank incomeRank=userIncomeRankService.getById(String.valueOf(userIncome.getUid()));
-				
-				
+				if(incomeRank!=null){
+					userIncomeRank.setBeforeIncome(incomeRank.getIncome());
+					userIncomeRank.setBeforeRank(incomeRank.getRank());
+				}
 				userIncomeRank.setId(String.valueOf(userIncome.getUid()));
 				userIncomeRank.setUpdated_at(date);
 				userIncomeRank.setCreated_at(date);
