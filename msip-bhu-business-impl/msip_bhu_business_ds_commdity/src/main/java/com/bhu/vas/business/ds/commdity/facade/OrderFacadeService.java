@@ -172,7 +172,6 @@ public class OrderFacadeService {
 		criteria.andColumnBetween("created_at", startTime, endTime);
 		return orderService.findModelByModelCriteria(mc);
 	}
-	
 	/**
 	 * 根据日期查询订单数量
 	 * @param status

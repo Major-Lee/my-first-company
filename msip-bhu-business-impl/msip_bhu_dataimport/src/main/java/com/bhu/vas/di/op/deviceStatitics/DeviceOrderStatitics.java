@@ -28,6 +28,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.commdity.model.Order;
+
+import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
+
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
