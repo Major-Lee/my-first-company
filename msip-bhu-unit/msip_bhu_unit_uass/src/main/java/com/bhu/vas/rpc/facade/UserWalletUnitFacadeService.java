@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -700,21 +701,38 @@ public class UserWalletUnitFacadeService {
 			List<UserIncomeRank> userIncomeRanks=userIncomeRankService.findByLimit(100);
 			if(userIncomeRanks != null){
 				UserIncomeRank incomeRank=userIncomeRankService.getById(String.valueOf(uid));
+				User user=userService.getById(uid);
 				if(incomeRank==null){
 					rankingListVTO.setRankNum(0);
 					rankingListVTO.setUserIncome("0");
 				}else{
+					if(incomeRank.getRank()==incomeRank.getBeforeRank()){
+						rankingListVTO.setChangeFlag(1);
+					}else if(incomeRank.getRank()>incomeRank.getBeforeRank()){
+						rankingListVTO.setChangeFlag(2);
+					}else{
+						rankingListVTO.setChangeFlag(0);
+					}
+					rankingListVTO.setMemo(user.getMemo());
 					rankingListVTO.setRankNum(incomeRank.getRank());
-					rankingListVTO.setUserIncome(incomeRank.getIncome());
+					rankingListVTO.setUserIncome(String.valueOf(round(Float.valueOf(incomeRank.getIncome()),2)));
 				}
 				for(int i=0;i<userIncomeRanks.size();i++){
 					RankSingle rankSingle=new RankSingle();
 					UserIncomeRank userIncomeRank=userIncomeRanks.get(i);
-					User user=userService.getById(Integer.valueOf(userIncomeRank.getId()));
+					User singleUser=userService.getById(Integer.valueOf(userIncomeRank.getId()));
 					rankSingle.setRankNum(userIncomeRank.getRank());
-					rankSingle.setUserIncome(userIncomeRank.getIncome());
-					rankSingle.setUserName(user.getNick());
-					rankSingle.setAvatar(user.getAvatar());
+					rankSingle.setUserIncome(String.valueOf(round(Float.valueOf(userIncomeRank.getIncome()),2)));
+					rankSingle.setUserName(singleUser.getNick());
+					rankSingle.setAvatar(singleUser.getAvatar());
+					rankSingle.setMemo(singleUser.getMemo());
+					if(userIncomeRank.getRank()==userIncomeRank.getBeforeRank()){
+						rankSingle.setChangeFlag(1);
+					}else if(userIncomeRank.getRank()>userIncomeRank.getBeforeRank()){
+						rankSingle.setChangeFlag(2);
+					}else{
+						rankSingle.setChangeFlag(0);
+					}
 					rankList.add(rankSingle);
 				}
 			}
@@ -813,4 +831,18 @@ public class UserWalletUnitFacadeService {
 	    retDate = sdf.format(newDay);
 	    return retDate;
     }  
+    /**      
+     * 提供精确的小数位四舍五入处理。      
+     * @param v 需要四舍五入的数字      
+     * @param scale 小数点后保留几位      
+     * @return 四舍五入后的结果      
+     */         
+    public static double round(double v,int scale){         
+		if(scale<0){         
+	           throw new IllegalArgumentException("The scale must be a positive integer or zero");         
+	    }         
+	    BigDecimal b = new BigDecimal(Double.toString(v));         
+	    BigDecimal one = new BigDecimal("1");         
+	    return b.divide(one,scale,BigDecimal.ROUND_HALF_UP).doubleValue();         
+    } 
 }

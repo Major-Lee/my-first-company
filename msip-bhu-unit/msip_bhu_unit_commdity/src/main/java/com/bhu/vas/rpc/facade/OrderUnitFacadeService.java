@@ -714,7 +714,10 @@ public class OrderUnitFacadeService {
 			//厂家
 			bw.append(formatStr(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false)));
 			//打赏时间
-			bw.append(formatStr(DateTimeHelper.formatDate(order.getPaymented_at(), DateTimeHelper.FormatPattern0)));
+			if (order.getPaymented_at() != null)
+				bw.append(formatStr(DateTimeHelper.formatDate(order.getPaymented_at(), DateTimeHelper.FormatPattern0)));
+			else
+				bw.append(formatStr(""));
 			//打赏收益
 			bw.append(formatStr(distillOwnercash(order.getId(),walletLogs)));
 			//打赏方式
