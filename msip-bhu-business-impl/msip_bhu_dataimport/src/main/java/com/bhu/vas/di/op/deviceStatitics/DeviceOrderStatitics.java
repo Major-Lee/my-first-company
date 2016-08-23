@@ -28,7 +28,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.commdity.model.Order;
-import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
@@ -384,8 +383,16 @@ public class DeviceOrderStatitics {
 			Entry entry=(Entry)iterator.next();
 			String currJson =  entry.getValue().toString();
 			Map<String, Object> map = JsonHelper.getMapFromJson(currJson);
-			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-PV-"+getNextDay(), entry.getKey().toString(),map.get("pv").toString());
-			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-UV-"+getNextDay(), entry.getKey().toString(), map.get("uv").toString());
+			String pv="0";
+			String uv="0";
+			if(map.get("pv")!=null){
+				pv=(String) map.get("pv");
+			}
+			if(map.get("uv")!=null){
+				uv=(String) map.get("uv");
+			}
+			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-PV-"+getNextDay(), entry.getKey().toString(),pv);
+			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-UV-"+getNextDay(), entry.getKey().toString(), uv);
 		}
 	}
 //	public static void main(String[] args) {
@@ -556,8 +563,7 @@ public class DeviceOrderStatitics {
         date = calendar.getTime();  
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
         String dateNowStr = sdf.format(date); 
-        //return dateNowStr;
-        return "2016-08-01";
+        return dateNowStr;
     }
 	
 	public static void getDeviceOrder(){
