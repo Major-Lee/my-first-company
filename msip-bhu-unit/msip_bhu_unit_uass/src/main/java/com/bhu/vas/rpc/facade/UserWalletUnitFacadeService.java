@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -717,14 +718,14 @@ public class UserWalletUnitFacadeService {
 					rankingListVTO.setUserIncome("0");
 				}else{
 					rankingListVTO.setRankNum(incomeRank.getRank());
-					rankingListVTO.setUserIncome(incomeRank.getIncome());
+					rankingListVTO.setUserIncome(String.valueOf(round(Float.valueOf(incomeRank.getIncome()),2)));
 				}
 				for(int i=0;i<userIncomeRanks.size();i++){
 					RankSingle rankSingle=new RankSingle();
 					UserIncomeRank userIncomeRank=userIncomeRanks.get(i);
 					User user=userService.getById(Integer.valueOf(userIncomeRank.getId()));
 					rankSingle.setRankNum(userIncomeRank.getRank());
-					rankSingle.setUserIncome(userIncomeRank.getIncome());
+					rankSingle.setUserIncome(String.valueOf(round(Float.valueOf(userIncomeRank.getIncome()),2)));
 					rankSingle.setUserName(user.getNick());
 					rankSingle.setAvatar(user.getAvatar());
 					rankList.add(rankSingle);
@@ -825,4 +826,18 @@ public class UserWalletUnitFacadeService {
 	    retDate = sdf.format(newDay);
 	    return retDate;
     }  
+    /**      
+     * 提供精确的小数位四舍五入处理。      
+     * @param v 需要四舍五入的数字      
+     * @param scale 小数点后保留几位      
+     * @return 四舍五入后的结果      
+     */         
+	public static double round(double v,int scale){         
+		if(scale<0){         
+	           throw new IllegalArgumentException("The scale must be a positive integer or zero");         
+	    }         
+	    BigDecimal b = new BigDecimal(Double.toString(v));         
+	    BigDecimal one = new BigDecimal("1");         
+	    return b.divide(one,scale,BigDecimal.ROUND_HALF_UP).doubleValue();         
+	} 
 }
