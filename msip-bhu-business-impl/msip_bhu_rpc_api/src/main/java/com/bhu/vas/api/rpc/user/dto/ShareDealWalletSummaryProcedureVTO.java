@@ -27,11 +27,10 @@ public class ShareDealWalletSummaryProcedureVTO implements java.io.Serializable{
 
 	public float getToday_cash() {
 		if(today_cash > 0.00f){
-			return formatFloat(yesterday_cash);
+			return formatFloat(today_cash);
 		}else{
 			return 0.00f;
 		}
-		//return today_cash;
 	}
 
 	public void setToday_cash(float today_cash) {
@@ -117,6 +116,14 @@ public class ShareDealWalletSummaryProcedureVTO implements java.io.Serializable{
 	    BigDecimal one = new BigDecimal("1");
 		
 		return b.divide(one,2,BigDecimal.ROUND_HALF_UP).floatValue();
+	}
+	
+	public static void main(String[] args) {
+		BigDecimal b = new BigDecimal(0.1455d);
+		 BigDecimal one = new BigDecimal("1");
+		 
+		float f = b.divide(one,2,BigDecimal.ROUND_HALF_UP).floatValue();
+		System.out.println(f);
 	}
 	
 }

@@ -176,10 +176,11 @@ public class UserWalletController extends BaseController{
             @RequestParam(required = true) int uid
     		) {
 		RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> rpcResult = userWalletRpcService.walletLogStatistics(uid);
-		if(!rpcResult.hasError())
+		if(!rpcResult.hasError()) {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		else
+		} else {
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
     }
     
     @ResponseBody()

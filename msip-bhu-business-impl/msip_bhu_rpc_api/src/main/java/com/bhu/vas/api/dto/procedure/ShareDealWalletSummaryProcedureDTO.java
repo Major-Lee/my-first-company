@@ -157,7 +157,7 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 		vto.setOds(this.getOds());
 		vto.setToday_date(this.getToday_date());
 	
-		vto.setToday_cash((float)ArithHelper.round(this.getToday_cash(),2));
+		vto.setToday_cash((float)ArithHelper.round(this.getToday_cash(), 2));
 		vto.setToday_nums(this.getToday_nums());
 		vto.setYesterday_date(this.getYesterday_date());
 		vto.setYesterday_cash((float)ArithHelper.round(this.getYesterday_cash(),2));

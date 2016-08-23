@@ -11,13 +11,13 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
-import com.bhu.vas.api.dto.procedure.ShareDealWalletSummaryProcedureDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
+import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
@@ -278,14 +278,17 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	double cashIncomming = 1.00d;
     	//String dmac = "84:82:f4:19:01:0c";
     	String dmac = "64:68:75:00:00:7c";
+    	String umac = "7c:c3:a1:b4:f2:5c";
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
     	//System.out.println(JsonHelper.getJSONString(wallet));
-    	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, cashIncomming, "10002016071300000000000000009163", "hello world!",null);
+    	int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(dmac, umac, cashIncomming, 
+    			                                                                  "10002016082300000000000000000862", 
+    			                                                                  "hello world!", null);
     	System.out.println("dddd:"+ret);
     	
    	}
     
-    //@Test
+    @Test
    	public void test011DoSharedealSummary(){
     	//double cashIncomming = 108.39d;
     	//String dmac = "84:82:f4:23:06:e8";
@@ -293,19 +296,21 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     	//UserWallet wallet = userWalletFacadeService.sharedealCashToUserWallet(dmac, cashIncomming, "10012016031100000000000000000068", "hello world!");
     	//System.out.println(JsonHelper.getJSONString(wallet));
     	
-    	//ShareDealWalletSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(1);
-    	//System.out.println("dddd:"+JsonHelper.getJSONString(procedureDTO));
+    	ShareDealWalletSummaryProcedureVTO procedureDTO   = userWalletFacadeService.sharedealSummaryWithProcedure(101113);
+    	//ShareDealWalletSummaryProcedureVTO vto = new ShareDealWalletSummaryProcedureVTO();
+    	//vto.setToday_cash(0.1455f);
+    	System.out.println("dddd:" + JsonHelper.getJSONString(procedureDTO));
     	
-    	ShareDealWalletSummaryProcedureDTO procedureDTO = new ShareDealWalletSummaryProcedureDTO();
-		procedureDTO.setUserid(1);
-		procedureDTO.setTotal_cash(13133.7099999996d);
+//    	ShareDealWalletSummaryProcedureDTO procedureDTO = new ShareDealWalletSummaryProcedureDTO();
+//		procedureDTO.setUserid(1);
+//		procedureDTO.setTotal_cash(13133.7099999996d);
     	
    		/*ShareDealWalletSummaryProcedureVTO procedureDTO = new ShareDealWalletSummaryProcedureVTO();
    		
    		procedureDTO.setUserid(1);
    		procedureDTO.setTotal_cash(13133.7099999996d);*/
    		
-   		System.out.println(JsonHelper.getJSONString(procedureDTO.toVTO()));
+   		//System.out.println(JsonHelper.getJSONString(procedureDTO));
    	}
    	
    	//@Test
