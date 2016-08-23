@@ -25,6 +25,7 @@
         <module>msip-bhu-business-impl/msip_bhu_business_ds_social</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds_tag</module>
         <module>msip-bhu-business-impl/msip_bhu_business_redis_impl</module>
+        <module>msip-bhu-business-impl/msip_bhu_business_mongo_impl</module>
         <module>msip-bhu-business-impl/msip_bhu_business_asynmessage</module>
         <!---->
         <module>msip-bhu-business-impl/msip_bhu_business_kafka_asynmessage</module>
