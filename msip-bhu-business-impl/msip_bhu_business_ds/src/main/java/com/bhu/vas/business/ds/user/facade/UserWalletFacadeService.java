@@ -1157,14 +1157,24 @@ public class UserWalletFacadeService{
 				userIncomeRank.setRank(beforeRankNum);
 				userIncomeRank.setIncome(userIncome.getIncome());
 				UserIncomeRank incomeRank=userIncomeRankService.getById(String.valueOf(userIncome.getUid()));
+				userIncomeRank.setId(String.valueOf(userIncome.getUid()));
 				if(incomeRank!=null){
 					userIncomeRank.setBeforeIncome(incomeRank.getIncome());
 					userIncomeRank.setBeforeRank(incomeRank.getRank());
+					Date dateNow = new Date();  
+			        Calendar calendarNow = Calendar.getInstance();  
+			        calendarNow.setTime(dateNow);  
+			        calendarNow.add(Calendar.DAY_OF_MONTH, 0);  
+			        dateNow = calendar.getTime();  
+					userIncomeRank.setUpdated_at(dateNow);
+					userIncomeRank.setCreated_at(incomeRank.getCreated_at());
+					userIncomeRankService.update(userIncomeRank);
+				}else{
+					userIncomeRank.setCreated_at(date);
+					userIncomeRank.setBeforeIncome(userIncomeRank.getIncome());
+					userIncomeRank.setBeforeRank(9999999);
+					userIncomeRankService.insert(userIncomeRank);
 				}
-				userIncomeRank.setId(String.valueOf(userIncome.getUid()));
-				userIncomeRank.setUpdated_at(date);
-				userIncomeRank.setCreated_at(date);
-				userIncomeRankService.insert(userIncomeRank);
 				m++;
 			}
 		}
