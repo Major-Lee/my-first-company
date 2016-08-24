@@ -104,7 +104,7 @@
 		</where>
 	</select>
 	<select id="findByLimit" resultMap="modelResult" parameterType="java.util.List">
-	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> where updated_at like {time} order by rank limit 100
+	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> where updated_at like #{time} order by rank limit 100
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
