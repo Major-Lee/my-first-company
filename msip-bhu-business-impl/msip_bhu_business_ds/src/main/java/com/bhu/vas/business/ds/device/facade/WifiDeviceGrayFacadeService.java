@@ -320,6 +320,14 @@ public class WifiDeviceGrayFacadeService {
     		versionom.setDut(dut.getIndex());
     		versionom.setUpgrade_url(upgrade_url);
     		versionom.setUpgrade_slaver_urls(upgrade_slaver_urls);
+    		
+    		if (creator != null) {
+    			versionom.setCreator(creator);
+			}
+    		if(context !=null){
+    			versionom.setContext(context);
+    		}
+    		
     		versionom = wifiDeviceVersionOMService.insert(versionom);
     		return versionom.toVersionVTO();
     	}

@@ -12,6 +12,8 @@
     
     <result property="dut" column="dut"/>
     <result property="related" column="related"/>
+    <result property="context" column="context"/>
+    <result property="creator" column="creator"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -29,6 +31,8 @@
 	    	upgrade_slaver_urls,
 	    	dut,
 	    	related,
+	    	creator,
+	    	context,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -40,6 +44,8 @@
 	    	upgrade_slaver_urls,
 	    	dut,
 	    	related,
+	    	creator,
+	    	context,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -52,6 +58,8 @@
 	    	#{upgrade_slaver_urls},
 	    	#{dut},
 	    	#{related},
+	    	#{creator},
+	    	#{context},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -62,6 +70,8 @@
 	    	upgrade_slaver_urls = #{upgrade_slaver_urls},
 	    	dut= #{dut},
 	    	related = #{related},
+	    	creator = #{creator},
+	    	context = #{context},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">
