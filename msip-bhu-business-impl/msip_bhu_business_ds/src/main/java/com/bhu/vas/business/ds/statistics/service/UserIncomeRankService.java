@@ -24,7 +24,7 @@ public class UserIncomeRankService extends AbstractCommdityService<String, UserI
 		super.entityDao.deleteAllRank();
 	}
 	
-	public List<UserIncomeRank> findByLimit(int num){
-		return super.entityDao.findByLimit(num);
+	public List<UserIncomeRank> findByLimit(String time){
+		return super.entityDao.findByLimit(time);
 	}
 }
