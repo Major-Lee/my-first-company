@@ -493,8 +493,7 @@ public class PaymentController extends BaseController{
 			String type = request.getParameter("channel");
 			if(StringUtils.isBlank(type)){
 				type = "0";
-			}
-			
+			}			
 			String version = request.getParameter("version");
 			if(StringUtils.isBlank(version)){
 				version = "0";

@@ -11,5 +11,5 @@ public interface IYunUploadService {
 	
 	void uploadYun(final byte[] bs, final int uid, final String dut, final boolean fw,
 			final String versionId, final IVapRpcService rpcService);
-	void uploadYun(final byte[] bs,String filepath);
+	boolean uploadYun(final byte[] bs,String filepath);
 }

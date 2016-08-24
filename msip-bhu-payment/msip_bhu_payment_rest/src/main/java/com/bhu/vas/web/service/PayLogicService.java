@@ -215,6 +215,7 @@ public class PayLogicService {
 		updatePayStatus.setPaid_at(new Date());
 		if(thridType != null){
 			updatePayStatus.setRemark(billo);
+			updatePayStatus.setChannel_type(thridType);
 		}
  		paymentReckoningService.update(updatePayStatus);
  		logger.info(String.format("update out_trade_no [%s] payment status finished.",out_trade_no));

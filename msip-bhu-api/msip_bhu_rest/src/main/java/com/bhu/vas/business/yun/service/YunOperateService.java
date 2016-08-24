@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 import com.bhu.vas.business.yun.YunConstant;
 import com.bhu.vas.business.yun.iservice.IYunUploadService;
 import com.qiniu.common.QiniuException;
+import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
@@ -230,20 +231,15 @@ public class YunOperateService implements IYunUploadService {
 	 * add by fengshibo 
 	 */
 	@Override
-	public void uploadYun(final byte[] bs,final String filepath) {
-		exec.submit((new Runnable() {
-			@Override
-			public void run() {
-				try {
-					// 七牛云
-					uploadFile2QN(bs,filepath);
+	public boolean uploadYun(final byte[] bs,final String filepath) {
+		try {
+			return uploadFile2QN(bs,filepath);
 
-				} catch (Exception e) {
-					System.out.println("uploadYun:fail");
-					e.printStackTrace();
-				}
-			}
-		}));
+		} catch (Exception e) {
+			System.out.println("uploadYun:fail");
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	/**
@@ -256,13 +252,13 @@ public class YunOperateService implements IYunUploadService {
 	 *            库名字
 	 * @throws QiniuException
 	 */
-	public void uploadFile2QN(byte[] bs,String filepath) throws Exception {
+	public boolean uploadFile2QN(byte[] bs,String filepath) throws Exception {
 
 		Auth auth = Auth.create(YunConstant.QN_ACCESS_KEY, YunConstant.QN_SECRET_KEY);
 		UploadManager uploadManager = new UploadManager();
-		uploadManager.put(bs, filepath,
+		Response r = uploadManager.put(bs, filepath,
 				auth.uploadToken(YunConstant.QN_BUCKET_NAME_EXPORT_REWARD_RECORD));
-		System.out.println("七牛云上传成功。");
+		return r.isOK();
 	}
 	
 	public String getURL(String filename) {

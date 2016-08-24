@@ -97,6 +97,7 @@ public class OrderController extends BaseController{
 		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
 				+ "ip[%s] mac[%s] umac[%s] rep_time[%s]", orderid, payment_type, commdityid, requestIp, mac, umac,
 				(System.currentTimeMillis() - start)+"ms"));
+		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
 		
 		//special dispose
 		/******************   注释掉此段代码为不包含代理的支付url   start *****************/
