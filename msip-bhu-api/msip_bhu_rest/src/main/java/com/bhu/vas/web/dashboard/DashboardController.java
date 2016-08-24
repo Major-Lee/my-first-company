@@ -317,25 +317,25 @@ public class DashboardController extends BaseController{
 	 * @param start_date
 	 * @param end_date
 	 */
-	@ResponseBody()
-	@RequestMapping(value="/order/statistics",method={RequestMethod.POST})
-	public void order_statistics(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = true,value="sk") String secretKey,
-			@RequestParam(required = true) String start_date,
-			@RequestParam(required = true) String end_date) {
-		ResponseError validateError = validate(secretKey);
-		if(validateError != null){
-			SpringMVCHelper.renderJson(response, validateError);
-			return;
-		}
-		RpcResponseDTO<RewardOrderStatisticsVTO> rpcResult = orderRpcService.rewardOrderStatisticsBetweenDate(start_date, end_date);
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-	}
+//	@ResponseBody()
+//	@RequestMapping(value="/order/statistics",method={RequestMethod.POST})
+//	public void order_statistics(
+//			HttpServletRequest request,
+//			HttpServletResponse response,
+//			@RequestParam(required = true,value="sk") String secretKey,
+//			@RequestParam(required = true) String start_date,
+//			@RequestParam(required = true) String end_date) {
+//		ResponseError validateError = validate(secretKey);
+//		if(validateError != null){
+//			SpringMVCHelper.renderJson(response, validateError);
+//			return;
+//		}
+//		RpcResponseDTO<RewardOrderStatisticsVTO> rpcResult = orderRpcService.rewardOrderStatisticsBetweenDate(start_date, end_date);
+//		if(!rpcResult.hasError()){
+//			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+//		}else
+//			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+//	}
 	
 	/**
 	 * 统计网站需要的统计设备相关信息的接口
