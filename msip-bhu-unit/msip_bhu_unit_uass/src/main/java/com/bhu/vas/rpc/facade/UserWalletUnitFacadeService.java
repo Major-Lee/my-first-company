@@ -698,7 +698,8 @@ public class UserWalletUnitFacadeService {
 		try{
 			RankingListVTO rankingListVTO=new RankingListVTO();
 			List<RankSingle> rankList=new ArrayList<RankSingle>();
-			List<UserIncomeRank> userIncomeRanks=userIncomeRankService.findByLimit(100);
+			String currentDay=GetDateTime("yyyy-MM-dd",0);
+			List<UserIncomeRank> userIncomeRanks=userIncomeRankService.findByLimit(currentDay+"%");
 			if(userIncomeRanks != null){
 				UserIncomeRank incomeRank=userIncomeRankService.getById(String.valueOf(uid));
 				User user=userService.getById(uid);
