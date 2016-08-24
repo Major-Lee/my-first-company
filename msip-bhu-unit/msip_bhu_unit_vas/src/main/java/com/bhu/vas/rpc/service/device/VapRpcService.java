@@ -83,6 +83,7 @@ public class VapRpcService  implements IVapRpcService{
 	
 	@Override
 	public RpcResponseDTO<VersionVTO> addDeviceVersionUploadFailCallback(int uid,boolean fw,String versionid) {
+		logger.info(String.format("~~~~~addDeviceVersionUploadFailCallback~~~~~~~~~ uid[%s] fw[%s] fileName[%s]",uid,fw,versionid));
 		return deviceUnitFacadeRpcService.addDeviceVersionUploadFailCallback(uid,fw, versionid);
 	}
 	@Override
