@@ -704,8 +704,9 @@ public class UserWalletUnitFacadeService {
 				UserIncomeRank incomeRank=userIncomeRankService.getById(String.valueOf(uid));
 				User user=userService.getById(uid);
 				if(incomeRank==null){
-					rankingListVTO.setRankNum(0);
+					rankingListVTO.setRankNum(9999999);
 					rankingListVTO.setUserIncome("0");
+					rankingListVTO.setChangeFlag(1);
 				}else{
 					if(incomeRank.getRank()==incomeRank.getBeforeRank()){
 						rankingListVTO.setChangeFlag(1);
