@@ -146,7 +146,7 @@ public class PayLogicService {
      * @return 支付流水号
      */
     public String createPaymentReckoning(String out_trade_no,String channel_type,String total_fee,String Ip,String type,String usermac,String paymentName,String appId){
-    	
+
     	String channelType = "";
     	//判断请求支付类型
     	String paymentType = PaymentChannelCode.BHU_PC_WEIXIN.code();

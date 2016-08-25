@@ -75,10 +75,7 @@ public class MD5Facade {
             toMD5StringBuilder.append(securityKeyMD5);
 
             String toMD5String = toMD5StringBuilder.toString();
-            System.out.println("待MD5签名字符串：" + toMD5String);
-
             String lastMD5Result = MD5.md5(toMD5String,charset);
-            System.out.println("MD5签名后字符串:" + lastMD5Result);
 
             return lastMD5Result;
         }catch (Exception ex){
