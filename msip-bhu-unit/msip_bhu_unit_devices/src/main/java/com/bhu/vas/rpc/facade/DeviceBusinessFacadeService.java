@@ -1049,6 +1049,9 @@ public class DeviceBusinessFacadeService {
 //		System.out.println("HandsetStorageFacadeService.wifiDeviceHandsetOffline 0" + JsonHelper.getJSONString(dto) + "===" + isVisitorWifi(ctx, dto));
 		if(handset != null) {
 			dto.setVapname(handset.getVapname());
+			if (handset.getDhcp_name() != null) {
+				dto.setDhcp_name(handset.getDhcp_name());
+			}
 			dto.setIp(handset.getIp()== null ? "0.0.0.0" : handset.getIp());
 		}
 		HandsetStorageFacadeService.handsetComming(dto);
