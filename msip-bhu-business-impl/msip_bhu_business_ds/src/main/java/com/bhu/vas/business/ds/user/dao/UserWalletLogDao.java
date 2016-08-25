@@ -11,7 +11,7 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 
 @Repository
 public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
-	public Map<String,Object> fetchCashSumAndCountByUid(Integer uid,String start_time,String end_time,String mac,String umac,Integer status){
+	public Map<String,Object> fetchCashSumAndCountByUid(Integer uid,String start_time,String end_time,String mac,String umac,Integer status,String dut){
 		Map<String,Object> result = new HashMap<String,Object>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		try{
@@ -24,6 +24,8 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 				map.put("umac", umac);
 			if (status != null)
 				map.put("status", status);
+			if (dut != null && !dut.isEmpty())
+				map.put("dut", dut);
 			result = super.getSqlSessionMasterTemplate().selectOne(UserWalletLog.class.getName()+".countAndsum", map);
 		}catch (Exception e) {
 			return result;
