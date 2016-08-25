@@ -28,7 +28,29 @@ public class OrderVideoController extends BaseController{
 	@Resource
 	private IOrderRpcService orderRpcService;
 	
-	
+	/**
+	 * 获取视频认证订单id
+	 * 
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/get_orderid",method={RequestMethod.POST})
+	public void video_get_orderid(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = false, defaultValue = "12") Integer commdityid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) String umac,
+			@RequestParam(required = false) String context,
+			@RequestParam(required = false, defaultValue = "2") Integer umactype
+			) {
+		String user_agent = request.getHeader("User-Agent");
+		RpcResponseDTO<OrderVideoVTO> orderRpcResult = orderRpcService.createVideoOrder(commdityid,mac, umac, 
+					umactype, context, user_agent);
+		if(!orderRpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(orderRpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(orderRpcResult));
+		}
+	}
 	/**
 	 * 视频放行接口
 	 * @param response
@@ -37,21 +59,18 @@ public class OrderVideoController extends BaseController{
 	 * @param umactype 用户类型
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/validate_video",method={RequestMethod.POST})
-	public void validate_video(HttpServletRequest request,
+	@RequestMapping(value="/authorize",method={RequestMethod.POST})
+	public void video_authorize(HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = true) String mac,
-			@RequestParam(required = true) String umac,
-			@RequestParam(required = false) String context,
-			@RequestParam(required = false, defaultValue = "2") Integer umactype
+			@RequestParam(required = true) String token,
+			@RequestParam(required = false) String context
 			) {
-		String user_agent = request.getHeader("User-Agent");
-		RpcResponseDTO<OrderVideoVTO> orderRpcResult = orderRpcService.createVideoOrder(mac, umac, 
-					umactype, context, user_agent);
-		if(!orderRpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(orderRpcResult.getPayload()));
+		RpcResponseDTO<Boolean> RpcResult = orderRpcService.authorizeVideoOrder(token,context);
+		
+		if(!RpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(orderRpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResult));
 		}
 	}
 }

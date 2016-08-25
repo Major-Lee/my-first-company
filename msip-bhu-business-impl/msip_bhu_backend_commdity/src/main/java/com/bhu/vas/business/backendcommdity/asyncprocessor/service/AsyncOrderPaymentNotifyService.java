@@ -429,10 +429,10 @@ public class AsyncOrderPaymentNotifyService{
 	 * @param message
 	 */
 	public void orderVideoNotifyCompletedHandle(String message){
-		ResponseVideoValidateCompletedNotifyDTO smsv_dto = PaymentNotifyFactoryBuilder.fromJson(message, ResponseVideoValidateCompletedNotifyDTO.class);
-		String orderid = smsv_dto.getOrderid();
-		boolean success = smsv_dto.isSuccess();
-		Date paymented_ds = smsv_dto.getPaymented_ds();
+		ResponseVideoValidateCompletedNotifyDTO videov_dto = PaymentNotifyFactoryBuilder.fromJson(message, ResponseVideoValidateCompletedNotifyDTO.class);
+		String orderid = videov_dto.getOrderid();
+		boolean success = videov_dto.isSuccess();
+		Date paymented_ds = videov_dto.getPaymented_ds();
 		
 		//订单处理逻辑 
 		Order order = orderFacadeService.validateOrderId(orderid);

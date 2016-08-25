@@ -130,10 +130,14 @@ public class OrderRpcService implements IOrderRpcService{
 		return orderUnitFacadeService.rewardQueryExportRecord(uid,mac,umac,status,dut,start_created_ts,end_created_ts,pageNo,pageSize);
 	}
 	
-	public RpcResponseDTO<OrderVideoVTO> createVideoOrder(String mac, String umac, Integer umactype, 
+	public RpcResponseDTO<OrderVideoVTO> createVideoOrder(Integer commdityid,String mac, String umac, Integer umactype, 
 			String context, String user_agent){
-		logger.info(String.format("createVideoOrder with mac[%s] umac[%s] umactype[%s] context[%s] user_agent[%s]",
-				mac, umac, umactype, context, user_agent));
-		return orderUnitFacadeService.createVideoOrder(mac, umac, umactype, context, user_agent);
+		logger.info(String.format("createVideoOrder with commdityid[%s] mac[%s] umac[%s] umactype[%s] context[%s] user_agent[%s]",
+				commdityid,mac, umac, umactype, context, user_agent));
+		return orderUnitFacadeService.createVideoOrder(commdityid,mac, umac, umactype, context, user_agent);
+	}
+	public RpcResponseDTO<Boolean> authorizeVideoOrder(String token, String context){
+		logger.info(String.format("authorizeVideoOrder with token[%s] context[%s]",token,context));
+		return orderUnitFacadeService.authorizeVideoOrder(token,context);
 	}
 }

@@ -25,7 +25,6 @@ public interface IOrderRpcService {
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize);
 	
 	public RpcResponseDTO<RewardOrderStatisticsVTO> rewardOrderStatisticsBetweenDate(String start_date, String end_date);
-	
 	public RpcResponseDTO<Integer> rewardOrderFinishCountRecent7Days();
 	
 	public RpcResponseDTO<OrderRechargeVCurrencyVTO> createRechargeVCurrencyOrder(Integer uid, 
@@ -50,6 +49,8 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<RewardQueryExportRecordVTO> rewardQueryExportRecord(Integer uid, String mac, String umac, 
 			Integer status, String dut, long start_created_ts, long end_created_ts,int pageNo, int pageSize);
 	
-	public RpcResponseDTO<OrderVideoVTO> createVideoOrder(String mac, String umac, Integer umactype, 
+	public RpcResponseDTO<OrderVideoVTO> createVideoOrder(Integer commdityid,String mac, String umac, Integer umactype, 
 			String context, String user_agent);
+
+	public RpcResponseDTO<Boolean> authorizeVideoOrder(String token, String context);
 }

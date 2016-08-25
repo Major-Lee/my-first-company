@@ -697,9 +697,8 @@ public class OrderFacadeService {
 	
 /*************            视频放行             ****************/
 	
-	public static final int VIDEO_VALIDATE_COMMDITY_ID = 12;
 	/**
-	 * 生成视频放行订单
+	 * 生成视频认证订单
 	 * @param mac 设备mac
 	 * @param umac 用户终端mac
 	 * @param umactype 用户终端类型
@@ -707,10 +706,10 @@ public class OrderFacadeService {
 	 * @param context 
 	 * @return
 	 */
-	public Order createVideoOrder(String mac, String mac_dut, String umac, Integer umactype, User bindUser,
+	public Order createVideoOrder(Integer commdityid,String mac, String mac_dut, String umac, Integer umactype, User bindUser,
 			String context, String user_agent){
 		//商品信息验证
-		Commdity commdity = commdityFacadeService.validateCommdity(VIDEO_VALIDATE_COMMDITY_ID);
+		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 		//验证商品是否合理
 		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.VideoInternetLimit)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
@@ -721,8 +720,8 @@ public class OrderFacadeService {
 		order.setCommdityid(commdity.getId());
 		order.setAppid(CommdityApplication.DEFAULT.getKey());
 		order.setType(commdity.getCategory());
-		order.setStatus(OrderStatus.PaySuccessed.getKey());
-		order.setProcess_status(OrderProcessStatus.PaySuccessed.getKey());
+		order.setStatus(OrderStatus.NotPay.getKey());
+		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setMac(mac);
 		order.setMac_dut(mac_dut);
 		order.setUmac(umac);
@@ -732,13 +731,8 @@ public class OrderFacadeService {
 		}
 		order.setContext(context);
 		order.setUser_agent(user_agent);
-		order.setPaymented_at(new Date());
 		orderService.insert(order);
 		
-		//短信认证订单生成时候已经验证通过 直接进行放行数据通知
-		String notify_message = PaymentNotifyFactoryBuilder.toJsonHasPrefix(ResponseVideoValidateCompletedNotifyDTO.
-				builder(order));
-		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
 		return order;
 	}
 	
@@ -763,7 +757,7 @@ public class OrderFacadeService {
 			if(success){
 				logger.info(String.format("VideoOrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
 				//进行发货通知
-				boolean deliver_notify_ret = smsOrderPermissionNotify(order, bindUser, ait_time);
+				boolean deliver_notify_ret = videoOrderPermissionNotify(order, bindUser, ait_time);
 				//判断通知发货成功 更新订单状态
 				if(deliver_notify_ret){
 					changed_status = OrderStatus.DeliverCompleted.getKey();
