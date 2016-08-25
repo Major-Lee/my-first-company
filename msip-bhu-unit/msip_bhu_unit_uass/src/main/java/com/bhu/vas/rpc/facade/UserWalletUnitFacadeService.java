@@ -767,6 +767,7 @@ public class UserWalletUnitFacadeService {
 				// 折线图X轴（日期）
 				lineChartDateInfo.add(getNewDay(startTime, i-30));
 				double lineChartIncome = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalIncomeByDay(uid, getNewDay(startTime, i-30));
+				lineChartIncome=round(lineChartIncome,2);
 				// 折线图Y轴（收益）
 				lineChartIncomeInfo.add(lineChartIncome);
 				double lineChartUserNum = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalUserNumByDay(uid, getNewDay(startTime, i-30));
