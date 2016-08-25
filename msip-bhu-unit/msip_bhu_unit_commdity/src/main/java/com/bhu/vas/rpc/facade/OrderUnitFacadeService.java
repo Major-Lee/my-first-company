@@ -548,7 +548,23 @@ public class OrderUnitFacadeService {
 				if(orderid.equals(log.getOrderid())){
 					String cash = log.getCash();
 					if(StringUtils.isNotEmpty(cash) && cash.startsWith(StringHelper.PLUS_STRING_GAP) && cash.length()>=1){
-						return cash.substring(1);
+						String init = cash.substring(1);
+						String pafter = null;
+						String cash_sub = null;
+						int index = init.indexOf('.');
+						if(index == -1){
+							cash_sub = init.concat(".00");
+						}else{
+							pafter = init.substring(index+1);
+							int len = pafter.length();
+							if(len > 0){
+								if (len == 1)
+									cash_sub = init.concat("0");
+								else
+									cash_sub = init.substring(0, index+3);
+							}
+						}
+						return cash_sub;
 					}else
 						return log.getCash();
 				}
