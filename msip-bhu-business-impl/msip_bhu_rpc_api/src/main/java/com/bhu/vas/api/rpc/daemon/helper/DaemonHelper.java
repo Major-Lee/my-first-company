@@ -120,7 +120,7 @@ public class DaemonHelper {
 	public static final int DeviceRateQuery_Period = 1;
 	//上报时长5分钟
 //	public static final int DeviceRateQuery_Duration = 300;
-	public static final int DeviceRateQuery_Duration = 1;
+	public static final int DeviceRateQuery_Duration = 2;
 	//wan口的实时速率
 	public static final String Wan_Interface_Name = "wan";
 	
