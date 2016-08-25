@@ -225,6 +225,12 @@
                 <artifactId>msip_bhu_business_redis_impl</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_mongo_impl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>com.bhu</groupId>
