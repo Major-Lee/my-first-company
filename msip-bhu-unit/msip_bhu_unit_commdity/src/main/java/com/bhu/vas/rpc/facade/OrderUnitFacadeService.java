@@ -555,23 +555,7 @@ public class OrderUnitFacadeService {
 				if(orderid.equals(log.getOrderid())){
 					String cash = log.getCash();
 					if(StringUtils.isNotEmpty(cash) && cash.startsWith(StringHelper.PLUS_STRING_GAP) && cash.length()>=1){
-						String init = cash.substring(1);
-						String pafter = null;
-						String cash_sub = null;
-						int index = init.indexOf('.');
-						if(index == -1){
-							cash_sub = init.concat(".00");
-						}else{
-							pafter = init.substring(index+1);
-							int len = pafter.length();
-							if(len > 0){
-								if (len == 1)
-									cash_sub = init.concat("0");
-								else
-									cash_sub = init.substring(0, index+3);
-							}
-						}
-						return cash_sub;
+						return cashFormat2DecimalPoint(cash.substring(1));
 					}else
 						return log.getCash();
 				}
@@ -580,7 +564,24 @@ public class OrderUnitFacadeService {
 		//return StringHelper.MINUS_STRING_GAP;
 		return "0";
 	}
-	
+	private String cashFormat2DecimalPoint(String cash){
+		String pafter = null;
+		String cash_sub = null;
+		int index = cash.indexOf('.');
+		if(index == -1){
+			cash_sub = cash.concat(".00");
+		}else{
+			pafter = cash.substring(index+1);
+			int len = pafter.length();
+			if(len > 0){
+				if (len == 1)
+					cash_sub = cash.concat("0");
+				else
+					cash_sub = cash.substring(0, index+3);
+			}
+		}
+		return cash_sub;
+	}
 	public RpcResponseDTO<RewardQueryPagesDetailVTO> rewardOrderPagesDetail(Integer uid, String mac, String umac,
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
