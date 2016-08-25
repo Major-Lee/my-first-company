@@ -165,6 +165,7 @@
 	    	</if>
 	    	<if test="umac != null">
 	    		AND	t_orders.umac = #{umac}
+	    	</if>
 	    	<if test="dut != null">
 	    		AND	t_orders.mac_dut = #{dut}
 	    	</if>
