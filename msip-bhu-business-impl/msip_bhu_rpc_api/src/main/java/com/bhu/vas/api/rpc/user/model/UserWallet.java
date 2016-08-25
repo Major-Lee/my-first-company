@@ -36,6 +36,10 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	//private double percent = 0.00d;
 	private Date created_at; 
 	public String mobileNo;
+	
+	// 今日收益
+	private double today_cash_sum = 0.0000d;
+	
 	@Override
 	public void preInsert() {
 		if (this.created_at == null)
@@ -122,6 +126,14 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 
 	public void setMobileNo(String mobileNo) {
 		this.mobileNo = mobileNo;
+	}
+
+	public double getToday_cash_sum() {
+		return today_cash_sum;
+	}
+
+	public void setToday_cash_sum(double today_cash_sum) {
+		this.today_cash_sum = today_cash_sum;
 	}
 	
 }
