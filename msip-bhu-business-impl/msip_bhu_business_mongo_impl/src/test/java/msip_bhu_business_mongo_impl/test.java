@@ -13,7 +13,7 @@ import com.smartwork.msip.localunit.BaseTest;
 
 public class test extends BaseTest{
 	
-	@Test
+	//@Test
 	public void test001() throws Exception{
 		DBObject query = new BasicDBObject(MongoConstantDefine.Defalut_Mongo_PrimaryKey, 111 );
 		HandsetLogMongoDTO result = WifiDeviceHandsetLogService.getInstance().getByQuery(query);
@@ -21,5 +21,17 @@ public class test extends BaseTest{
 		
 		HandsetLogMongoDTO dto = WifiDeviceHandsetLogService.getInstance().getById("111");
 		System.out.println(JsonHelper.getJSONString(dto));
+	}
+	@Test
+	public void test002() throws Exception{
+		HandsetLogMongoDTO dto = new HandsetLogMongoDTO();
+		
+		for(int a = 1;; a++){
+			dto.setId(a);
+			dto.setSex("man");
+			dto.setName(a+"");
+			WifiDeviceHandsetLogService.getInstance().save(dto);
+			System.out.println(a);
+		}
 	}
 }

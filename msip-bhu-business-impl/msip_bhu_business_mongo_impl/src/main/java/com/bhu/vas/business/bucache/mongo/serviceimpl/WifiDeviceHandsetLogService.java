@@ -31,4 +31,8 @@ public class WifiDeviceHandsetLogService extends AbstarctDTOService<HandsetLogMo
 	public String dbName() {
 		return MongoConstantDefine.DB.WhisperMongo;
 	}
+	
+	public static void main(String[] args) throws Exception {
+		System.out.println("111111");
+	}
 }
