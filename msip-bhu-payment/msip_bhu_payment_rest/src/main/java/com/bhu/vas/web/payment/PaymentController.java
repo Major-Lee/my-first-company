@@ -1040,7 +1040,7 @@ public class PaymentController extends BaseController{
 		if(CommdityApplication.BHU_PREPAID_BUSINESS.getKey().equals(Integer.parseInt(appid))){
 			return_url = PayHttpService.ALIPAY_PREPAID_RETURN_URL;
 		}
-		reckoningId = payLogicService.createPaymentReckoning(out_trade_no,"4",total_fee_fen,ip,PaymentChannelCode.BHU_NOW_WEIXIN.i18n(),usermac,paymentName,appid);
+		reckoningId = payLogicService.createPaymentReckoning(out_trade_no,"4",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName,appid);
 		//做MD5签名
 		dataMap.put("appId", NowpayConfig.appId);
 		dataMap.put("mhtOrderNo", reckoningId);
@@ -1075,9 +1075,9 @@ public class PaymentController extends BaseController{
 		//建立支付宝支付请求
 		String sHtmlText = "";
         try {
-            sHtmlText = NowpaySubmit.buildRequest(dataMap,"post","确认"); 
-            System.out.println(sHtmlText);
+            sHtmlText = NowpaySubmit.buildRequest(dataMap,"post","确认");
             result = new PaymentTypeVTO();
+            result.setChannel("Now");
             result.setType("http");
             result.setUrl(sHtmlText);
             return result;
@@ -1111,7 +1111,7 @@ public class PaymentController extends BaseController{
     	
     	String total_fee_fen = BusinessHelper.getMoney(total_fee);
     	
-    	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,type,total_fee_fen,ip,PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n(),usermac,paymentName,appid);
+    	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,type,total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName,appid);
     	if(version.equals("0")){
     		
     		//记录请求支付完成后返回的地址
@@ -1413,8 +1413,6 @@ public class PaymentController extends BaseController{
         String isNull = dataMap.get("mhtOrderNo");
         if (StringUtils.isBlank(isNull)) {
 			logger.error(String.format("get nowpay notify out_trade_no  [%s]", isNull));
-			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
 			response.getOutputStream().write("success=N".getBytes());
 			return;
 		}
@@ -2017,8 +2015,8 @@ public class PaymentController extends BaseController{
 		String isNull = request.getParameter("mhtOrderNo");
 		if (StringUtils.isBlank(isNull)) {
 			logger.error(String.format("get nowpay return notify out_trade_no [%s]", isNull));
-			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+//			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+//					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
 			return;
 		}
 		String transStatus = request.getParameter("transStatus");

@@ -20,7 +20,7 @@ public class NowpayConfig {
 	public static String mhtOrderType = "01";
 	public static String mhtCharset = "UTF-8";
 	public static String deviceType = "06";
-	public static String payChannelType = "13";
+	public static String payChannelType = "1301";
 	public static String mhtReserved = "";
 	public static String mhtSignType = "MD5";
 	

@@ -1,11 +1,14 @@
 package com.nowpay.core;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.nowpay.config.NowpayConfig;
 import com.nowpay.sign.MD5Facade;
+import com.nowpay.util.PostRequestUtil;
 
 
 /* *
@@ -24,7 +27,7 @@ public class NowpaySubmit {
     /**
      * 支付宝提供给商户的服务接入网关URL(新)
      */
-    private static final String NOWPAY_GATEWAY_NEW = "http://api.ipaynow.cn/?";
+    private static final String NOWPAY_GATEWAY_NEW = "http://api.ipaynow.cn/";
 	
     /**
      * 生成签名结果
@@ -77,8 +80,15 @@ public class NowpaySubmit {
             String value = (String) sParaTemp.get(name);
             result += "&"+name+"="+value;
         }
-        System.out.println();
-        result = NOWPAY_GATEWAY_NEW+result.substring(1, result.length());
+       String s =  result.substring(1, result.length());
+       s =  PostRequestUtil.sendPost(NOWPAY_GATEWAY_NEW, s);
+       if(s.contains("responseCode=A001&tn=")){
+    	   result = s.substring(21, s.length());
+    	  try {
+    		  result = URLDecoder.decode(result, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+		}
+       }
         return result;
         
     }

@@ -10,6 +10,7 @@ public class PaymentTypeVTO implements java.io.Serializable{
 	
 	private String url;
 	private String type;
+	private String channel;
 	public String getUrl() {
 		return url;
 	}
@@ -21,5 +22,11 @@ public class PaymentTypeVTO implements java.io.Serializable{
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getChannel() {
+		return channel;
+	}
+	public void setChannel(String channel) {
+		this.channel = channel;
 	}
 }

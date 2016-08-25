@@ -195,9 +195,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case BatchSharedealModify:
 							batchSharedealServiceHandler.process(message);
 							break;*/
-						case UserPortalUpdate:
+						/*case UserPortalUpdate:
 							userPortalUpdateServiceHandler.process(message);
-							break;
+							break;*/
 						/*case DeviceBatchBindTag:
 							asyncMsgHandleService.deviceBatchBindTag(message);
 							break;
