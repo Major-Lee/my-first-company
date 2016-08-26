@@ -821,7 +821,7 @@ public class OrderUnitFacadeService {
 			commdityMessageService.sendOrderCreatedMessage(order.getId());
 			
 			OrderVideoVTO orderVto = new OrderVideoVTO();
-			BeanUtils.copyProperties(order, orderVto);
+			orderVto.setId(order.getId());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
