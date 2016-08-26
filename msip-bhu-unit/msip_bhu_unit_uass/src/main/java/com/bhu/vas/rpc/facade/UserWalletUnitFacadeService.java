@@ -97,8 +97,6 @@ public class UserWalletUnitFacadeService {
 	@Resource
 	private UserSharedealDistributorViewService userSharedealDistributorViewService;
 	
-	@Resource
-	private UserSharedealDistributorViewService userSharedealDistributorViewService;
 	
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
