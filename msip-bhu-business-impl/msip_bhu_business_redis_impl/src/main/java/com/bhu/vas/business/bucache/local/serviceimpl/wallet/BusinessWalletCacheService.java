@@ -38,7 +38,7 @@ public class BusinessWalletCacheService {
 	public void storeWalletLogStatisticsDSCacheResult(int userId, ShareDealWalletSummaryProcedureVTO result){
 		String key = generateWalletLogStatisticsDSCacheKeyBy(userId);
 		this.entityCache.remove(key);
-		this.entityCache.put(key, result, 1800);//1小时
+		this.entityCache.put(key, result, 300);//
 	}
 	
 	public ShareDealWalletSummaryProcedureVTO getWalletLogStatisticsDSCacheByUser(int userId){
