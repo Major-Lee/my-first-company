@@ -119,6 +119,15 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 	public void setYesterday_date(String yesterday_date) {
 		this.yesterday_date = yesterday_date;
 	}
+    
+	
+	public Date getLast_update_cash_datetime() {
+		return last_update_cash_datetime;
+	}
+
+	public void setLast_update_cash_datetime(Date last_update_cash_datetime) {
+		this.last_update_cash_datetime = last_update_cash_datetime;
+	}
 
 	@Override
 	public String getName() {
@@ -162,7 +171,7 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 		vto.setOds(this.getOds());
 		vto.setToday_date(this.getToday_date());
 	    
-		boolean isTheToday = DateTimeHelper.isSameDay(last_update_cash_datetime, new Date());
+		boolean isTheToday = DateTimeHelper.isSameDay(this.getLast_update_cash_datetime(), new Date());
 		vto.setToday_cash(isTheToday ? (float)ArithHelper.round(this.getToday_cash(), 2) : 0);
 		
 		vto.setToday_nums(this.getToday_nums());
