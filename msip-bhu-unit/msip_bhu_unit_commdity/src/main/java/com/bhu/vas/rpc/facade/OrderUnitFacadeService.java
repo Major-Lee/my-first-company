@@ -30,7 +30,6 @@ import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
-import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseVideoValidateCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
@@ -105,7 +104,8 @@ public class OrderUnitFacadeService {
 	@Resource
 	private UserWalletLogService userWalletLogService;
 	
-
+	@Resource
+	private OrderService orderService;
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -835,7 +835,8 @@ public class OrderUnitFacadeService {
 		try{
 			boolean result = false;
 			String orderid = JNIRsaHelper.jniRsaDecryptHexStr(token);
-			Order order = orderFacadeService.validateOrderId(orderid);
+			logger.info(String.format("authorizeVideoOrder Decrypt orderid[%s]", orderid));
+			Order order = orderService.getById(orderid);
 			if (order == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
 			}
@@ -850,6 +851,8 @@ public class OrderUnitFacadeService {
 			String notify_message = PaymentNotifyFactoryBuilder.toJsonHasPrefix(ResponseVideoValidateCompletedNotifyDTO.
 					builder(order));
 			CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+			result = true;
+			logger.info(String.format("authorizeVideoOrder successful orderid[%s]", orderid));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(Exception ex){
 			logger.error("authorizeVideoOrder Exception:", ex);
