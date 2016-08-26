@@ -839,6 +839,11 @@ public class OrderUnitFacadeService {
 			if (order == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
 			}
+			long isExpire = System.currentTimeMillis() - order.getCreated_at().getTime();
+			//默认视频最短时间15秒
+			if (isExpire < 15){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID);
+			}
 			order.setStatus(OrderStatus.PaySuccessed.getKey());
 			order.setProcess_status(OrderProcessStatus.PaySuccessed.getKey());
 			order.setPaymented_at(new Date());
