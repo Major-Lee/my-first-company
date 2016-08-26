@@ -33,7 +33,7 @@ ssh -p 65008 root@$Deploy2ComponentServerElasticsearch '/BHUData/appsh/restart.s
 sleep 5
 
 echo "restart $Deploy2ComponentServerRedis input components"
-ssh -p 65008 root@$Deploy2ComponentServerRedis'/BHUData/appsh/start.sh'
+ssh -p 65008 root@$Deploy2ComponentServerRedis '/BHUData/appsh/start.sh'
 
 
 sleep 5
