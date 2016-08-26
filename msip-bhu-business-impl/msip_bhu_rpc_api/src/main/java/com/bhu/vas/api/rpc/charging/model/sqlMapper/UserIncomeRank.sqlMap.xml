@@ -8,6 +8,8 @@
     <id property="id" column="id"/>
     <result property="rank" column="rank"/>
     <result property="income" column="income"/>
+    <result property="beforeRank" column="beforeRank"/>
+    <result property="beforeIncome" column="beforeIncome"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -129,6 +131,9 @@
  
 	<update id="update" parameterType="userIncomeRank">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
+	</update>
+	<update id="updateByTime" parameterType="userIncomeRank">
+	    update <include refid="modelTableName" /> SET beforeRank='9999999' , beforeIncome='0' WHERE updated_at NOT LIKE #{time}
 	</update>
 		
 	<select id="selectByIds" resultMap="modelResult" parameterType="java.util.List">

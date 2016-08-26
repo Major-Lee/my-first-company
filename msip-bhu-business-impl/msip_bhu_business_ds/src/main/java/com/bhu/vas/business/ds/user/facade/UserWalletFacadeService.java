@@ -1134,6 +1134,14 @@ public class UserWalletFacadeService{
         date = calendar.getTime();  
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
         String time =sdf.format(date); 
+        
+        Date dateNow = new Date();  
+        Calendar calendarNow = Calendar.getInstance();  
+        calendarNow.setTime(dateNow);  
+        calendarNow.add(Calendar.DAY_OF_MONTH, 0);  
+        dateNow = calendarNow.getTime();  
+        SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd");  
+        String timeNow =sdfNow.format(dateNow); 
         //userIncomeRankService.deleteAllRank();
 		List<UserIncome> userIncomes=this.getUserIncomeService().findListByTime(time);
 		if(userIncomes != null&&userIncomes.size()>0){
@@ -1161,11 +1169,6 @@ public class UserWalletFacadeService{
 				if(incomeRank!=null){
 					userIncomeRank.setBeforeIncome(incomeRank.getIncome());
 					userIncomeRank.setBeforeRank(incomeRank.getRank());
-					Date dateNow = new Date();  
-			        Calendar calendarNow = Calendar.getInstance();  
-			        calendarNow.setTime(dateNow);  
-			        calendarNow.add(Calendar.DAY_OF_MONTH, 0);  
-			        dateNow = calendar.getTime();  
 					userIncomeRank.setUpdated_at(dateNow);
 					userIncomeRank.setCreated_at(incomeRank.getCreated_at());
 					userIncomeRankService.update(userIncomeRank);
@@ -1178,5 +1181,7 @@ public class UserWalletFacadeService{
 				m++;
 			}
 		}
+		//System.out.println(timeNow);
+		userIncomeRankService.updateBytime(timeNow+"%");
 	}
 }
