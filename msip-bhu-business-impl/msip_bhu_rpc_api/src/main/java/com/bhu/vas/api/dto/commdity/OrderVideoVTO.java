@@ -5,7 +5,7 @@ package com.bhu.vas.api.dto.commdity;
  *
  */
 @SuppressWarnings("serial")
-public class OrderVideoVTO extends OrderVTO {
+public class OrderVideoVTO implements java.io.Serializable {
 	//订单id
 	private String id;
 	
