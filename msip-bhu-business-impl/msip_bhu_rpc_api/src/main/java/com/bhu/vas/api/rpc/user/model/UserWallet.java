@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.model.BaseIntModel;
 
@@ -38,7 +39,11 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	public String mobileNo;
 	
 	// 今日收益
-	private double today_cash_sum = 0.0000d;
+	private double today_cash_sum = 0.00d;
+	// 更新时间
+	private Date last_update_cash_time;
+	// 累计收益
+	private double total_cash_sum;
 	
 	@Override
 	public void preInsert() {
@@ -129,11 +134,19 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	}
 
 	public double getToday_cash_sum() {
+		// 判断时间是否是今日收益, 如果不是现实的时候显示为0
+		if (!DateTimeHelper.isSameDay(last_update_cash_time, new Date())) {
+			today_cash_sum = 0.00d;
+		}
 		return today_cash_sum;
 	}
 
-	public void setToday_cash_sum(double today_cash_sum) {
-		this.today_cash_sum = today_cash_sum;
+	public Date getLast_update_cash_time() {
+		return last_update_cash_time;
 	}
-	
+
+	public double getTotal_cash_sum() {
+		return total_cash_sum;
+	}
+    
 }
