@@ -142,7 +142,9 @@ public class ConsoleVersionController extends BaseController {
 			@RequestParam(required = true) int uid,
 			@RequestParam(required = true) String dut, 
 			@RequestParam(required = false) String minid,
-			@RequestParam(required = true) boolean fw) {
+			@RequestParam(required = true) boolean fw,
+			@RequestParam(required = false) String  context,
+			@RequestParam(required = false) String  creator) {
 
 		byte[] bs = new byte[1000];
 		bs = file.getBytes();
@@ -150,7 +152,7 @@ public class ConsoleVersionController extends BaseController {
 		String url[] = yunOperateService.getURL(fw, versionId, dut);
 		String QNurl = url[0];
 		String ALurl = url[1];
-		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut,minid, fw, versionId, QNurl, ALurl);
+		RpcResponseDTO<VersionVTO> rpcResult = vapRpcService.addDeviceVersion(uid, dut,minid, fw, versionId, QNurl, ALurl ,context ,creator);
 		if (!rpcResult.hasError()){
 			yunOperateService.uploadYun(bs,  uid,  dut,  fw, versionId, vapRpcService);
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

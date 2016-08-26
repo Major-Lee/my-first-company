@@ -10,6 +10,19 @@ public class RankingListVTO implements java.io.Serializable{
 	private int rankNum;
 	//用户昨日收益
 	private String userIncome;
+	//名次变化标识 0：上升   1：持平  2：下降
+	private int changeFlag;
+	//用户签名
+	private String memo;
+	
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
 	public List<RankSingle> getRankingList() {
 		return rankingList;
 	}
@@ -33,4 +46,13 @@ public class RankingListVTO implements java.io.Serializable{
 	public void setUserIncome(String userIncome) {
 		this.userIncome = userIncome;
 	}
+
+	public int getChangeFlag() {
+		return changeFlag;
+	}
+
+	public void setChangeFlag(int changeFlag) {
+		this.changeFlag = changeFlag;
+	}
+	
 }

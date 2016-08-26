@@ -22,6 +22,10 @@
     
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
+  <resultMap id="mapcountAndsum" type="hashmap">
+    <result property="cashSum" column="cashSum" javaType="java.lang.Double"/>
+    <result property="count" column="count" javaType="java.lang.Long"/>
+  </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
@@ -146,6 +150,27 @@
 				 -->
 			</if>
 		</where>
+	</select>
+	
+	<select id="countAndsum" resultMap="mapcountAndsum" parameterType="Map">
+	    select format(sum(t_walletlog.cash),2) as cashSum,count(*) as count from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
+	    <where>
+	    	t_walletlog.uid = #{uid}
+	    	AND t_walletlog.transtype = 'P2C'
+	    	AND t_walletlog.updated_at &gt;= #{start_time}
+	    	AND t_walletlog.updated_at &lt;= #{end_time}
+	    	AND t_walletlog.orderid = t_orders.id
+	    	<if test="mac != null">
+	    		AND	t_walletlog.mac = #{mac}
+	    	</if>
+	    	<if test="umac != null">
+	    		AND	t_orders.umac = #{umac}
+	    	</if>
+	    	<if test="dut != null">
+	    		AND	t_orders.mac_dut = #{dut}
+	    	</if>
+	    	AND t_orders.status = #{status}
+	    </where> 
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

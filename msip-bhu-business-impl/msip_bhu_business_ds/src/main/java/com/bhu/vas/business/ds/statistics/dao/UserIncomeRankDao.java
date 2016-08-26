@@ -12,7 +12,7 @@ public class UserIncomeRankDao extends AbstractCoreDao<String, UserIncomeRank>{
 	public void deleteAllRank() {
 		super.getSqlSessionMasterTemplate().delete(UserIncomeRank.class.getName()+".deleteAllRank");
 	}
-	public List<UserIncomeRank> findByLimit(int num) {
-		return super.getSqlSessionMasterTemplate().selectList(UserIncomeRank.class.getName()+".findByLimit",num);
+	public List<UserIncomeRank> findByLimit(String time) {
+		return super.getSqlSessionMasterTemplate().selectList(UserIncomeRank.class.getName()+".findByLimit",time);
 	}
 }

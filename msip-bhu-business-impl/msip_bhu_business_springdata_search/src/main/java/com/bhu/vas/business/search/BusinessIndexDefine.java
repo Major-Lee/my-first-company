@@ -10,7 +10,7 @@ public interface BusinessIndexDefine {
 	interface WifiDevice{
 		//public static final String IndexName	= "wifi_device_index3";
 		public static final String IndexNameNew	= "wifi_device_index_new";
-		public static final String IndexName	= "wifi_device_index_v2";
+		public static final String IndexName	= "wifi_device_index_v3";
 		public static final String Type 		= "wifiDevice";
 		public static final int Shards		    = 5;
 		public static final int replicas 		= 1;
@@ -68,6 +68,11 @@ public interface BusinessIndexDefine {
 			D_SHAREDNETWORK_TURNSTATE("d_snk_turnstate", null),//设备的共享网络的开启状态
 			D_SHAREDNETWORK_ALLOWTURNOFF("d_snk_allowturnoff", null),//设备的访客网络是否可关闭
 			D_TAGS("d_tags", null),//设备的tags
+			D_PROVINCE("d_province", null),//设备的地址位置-省
+			D_CITY("d_city", null),//设备的地址位置-市
+			D_DISTRICT("d_district",null),//设备的地址位置-区
+			
+			
 			//D_EXTENSION("d_extension", null),//设备业务扩展字段
 			/**** 运营信息 operate ****/
 			O_TEMPLATE("o_template",null),//运营模板编号

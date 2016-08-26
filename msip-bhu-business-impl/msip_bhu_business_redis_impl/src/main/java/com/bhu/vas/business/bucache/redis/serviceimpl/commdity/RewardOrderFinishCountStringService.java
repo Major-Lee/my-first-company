@@ -50,5 +50,9 @@ public class RewardOrderFinishCountStringService extends AbstractRelationStringC
     public JedisPool getRedisPool() {
         return RedisPoolManager.getInstance().getPool(RedisKeyEnum.COMMDITY);
     }
+    
+    public String getRecent7daysValue(){
+    	return super.get(generateRecent7DaysKey());
+    }
 
 }

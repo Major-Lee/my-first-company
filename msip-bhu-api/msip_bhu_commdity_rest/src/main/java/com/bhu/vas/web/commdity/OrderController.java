@@ -19,6 +19,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
+import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -60,6 +61,7 @@ public class OrderController extends BaseController{
 			@RequestParam(required = false, defaultValue = "2") Integer umactype,
 			@RequestParam(required = false, defaultValue = "1") Integer commdityid,
 			@RequestParam(required = false, defaultValue = "0") Integer channel,
+			@RequestParam(required = false, defaultValue = "0") String version,
 			@RequestParam(required = true) String payment_type,
 			@RequestParam(required = false, value = "pcd_url") String payment_completed_url
 			) {
@@ -80,7 +82,7 @@ public class OrderController extends BaseController{
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, umac, orderid, payment_completed_url);
+				order_amount, requestIp, umac, orderid, payment_completed_url,channel+"",version);
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID)));
@@ -95,6 +97,7 @@ public class OrderController extends BaseController{
 		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
 				+ "ip[%s] mac[%s] umac[%s] rep_time[%s]", orderid, payment_type, commdityid, requestIp, mac, umac,
 				(System.currentTimeMillis() - start)+"ms"));
+		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
 		
 		//special dispose
 		/******************   注释掉此段代码为不包含代理的支付url   start *****************/
@@ -216,6 +219,7 @@ public class OrderController extends BaseController{
 	}
 	
 	
+	
 	/**
 	 * 获取充值虎钻订单的支付url
 	 * 1:生成订单
@@ -256,7 +260,7 @@ public class OrderController extends BaseController{
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, null, orderid, payment_completed_url);
+				order_amount, requestIp, null, orderid, payment_completed_url,"0","0");
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID)));
@@ -401,6 +405,47 @@ public class OrderController extends BaseController{
 			) {
 
 		RpcResponseDTO<OrderRewardNewlyDataVTO> rpcResult = orderRpcService.rewardOrderNewlyDataByUid(uid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+
+
+
+/**
+ * 根据筛选条件返回打赏订单数据
+ * @param request
+ * @param response
+ * @param uid 用户id
+ * @param mac 设备mac
+ * @param umac 支付订单的用户mac
+ * @param status 订单状态 默认发货完成
+ * @param pageNo 页码
+ * @param pageSize 每页数量
+ * @param start_created_ts 起始时间戳
+ * @param end_created_ts 结束时间戳
+ */
+@ResponseBody()
+@RequestMapping(value="/reward/query/pagesdetail",method={RequestMethod.GET,RequestMethod.POST})
+public void reward_query_pages_detail(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		@RequestParam(required = true) Integer uid,
+		@RequestParam(required = false) String mac,
+		@RequestParam(required = false) String umac,
+		@RequestParam(required = false, defaultValue = "10") Integer status,
+		@RequestParam(required = false) String dut,
+		@RequestParam(required = false, defaultValue = "0") long start_created_ts,
+		@RequestParam(required = false, defaultValue = "0") long end_created_ts,
+        @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+        @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+		) {
+	
+		RpcResponseDTO<RewardQueryPagesDetailVTO> rpcResult = orderRpcService.rewardOrderPagesDetail(uid, mac, umac, 
+				status, dut, start_created_ts, end_created_ts, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

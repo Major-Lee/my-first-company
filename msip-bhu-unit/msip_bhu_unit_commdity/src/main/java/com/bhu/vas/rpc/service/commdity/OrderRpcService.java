@@ -12,6 +12,9 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
+import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
+import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
+import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
@@ -109,5 +112,28 @@ public class OrderRpcService implements IOrderRpcService{
 	public RpcResponseDTO<OrderDetailDTO> orderDetailByUid(Integer uid, String orderid) {
 		logger.info(String.format("orderDetailByUid with uid[%s] orderid[%s]", uid, orderid));
 		return orderUnitFacadeService.orderDetailByUid(uid, orderid);
+	}
+
+
+	@Override
+	public RpcResponseDTO<RewardQueryPagesDetailVTO> rewardOrderPagesDetail(Integer uid, String mac, String umac,
+			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize) {
+		logger.info(String.format("rewardOrderPagesDetail with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] start_created_ts[%s] end_created_ts[%s] pageNo[%s] pageSize[%s]", uid, 
+				mac, umac, status, dut, start_created_ts, end_created_ts, pageNo, pageSize));
+		return orderUnitFacadeService.rewardOrderPagesDetail(uid,mac,umac,status,dut,start_created_ts,end_created_ts,pageNo,pageSize);
+	}
+	@Override
+	public RpcResponseDTO<RewardQueryExportRecordVTO> rewardQueryExportRecord(Integer uid, String mac, String umac, 
+			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
+		logger.info(String.format("rewardQueryExportRecord with uid[%s] mac[%s] umac[%s] status[%s] dut[%s] start_created_ts[%s] end_created_ts[%s] pageNo[%s] pageSize[%s]", uid,
+				mac, umac, status, dut, start_created_ts, end_created_ts, pageNo,pageSize));
+		return orderUnitFacadeService.rewardQueryExportRecord(uid,mac,umac,status,dut,start_created_ts,end_created_ts,pageNo,pageSize);
+	}
+	
+	public RpcResponseDTO<OrderVideoVTO> createVideoOrder(String mac, String umac, Integer umactype, 
+			String context, String user_agent){
+		logger.info(String.format("createVideoOrder with mac[%s] umac[%s] umactype[%s] context[%s] user_agent[%s]",
+				mac, umac, umactype, context, user_agent));
+		return orderUnitFacadeService.createVideoOrder(mac, umac, umactype, context, user_agent);
 	}
 }

@@ -308,12 +308,16 @@ public class UserUnitFacadeService {
 	 * @param captcha
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
-			String nick,String pwd, String captcha, String sex, String device,String regIp,String deviceuuid, String ut,String org) {
+	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc, String nick, String pwd, 
+			                                                 String captcha, String sex, String device, String regIp, 
+			                                                 String deviceuuid, String ut,String org) {
 		UserType userType = UserType.getBySName(ut);
 		if(!RuntimeConfiguration.SecretInnerTest){
 			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-			if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode)){
+			// 內部验证码, 内部用户注册输入此验证码就直接通过
+			final String innerCaptcha = "999999111111";
+			if(!BusinessRuntimeConfiguration.isSystemNoneedCaptchaValidAcc(accWithCountryCode) &&
+			   !innerCaptcha.equals(captcha)){
 				ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
 				if(errorCode != null){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);

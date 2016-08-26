@@ -7,6 +7,14 @@ public class GpathIncome extends BaseStringModel{
 	private String time;
 	private String gpath;
 	private String income;
+	private int times;
+	
+	public int getTimes() {
+		return times;
+	}
+	public void setTimes(int times) {
+		this.times = times;
+	}
 	public String getTime() {
 		return time;
 	}

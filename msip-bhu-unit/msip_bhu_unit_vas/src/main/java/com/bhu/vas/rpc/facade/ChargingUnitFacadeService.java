@@ -48,7 +48,8 @@ public class ChargingUnitFacadeService {
 		try{
 			User operUser = chargingFacadeService.getUserService().getById(uid);
 			UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(
+			
+			BatchImportVTO ret = 
 					chargingFacadeService.doBatchImportCreate(uid, countrycode, mobileno,distributor_uid,
 							sellor,partner,
 							canbeturnoff, 
@@ -56,7 +57,9 @@ public class ChargingUnitFacadeService {
 							customized,
 							sharedeal_owner_percent,sharedeal_manufacturer_percent,sharedeal_distributor_percent,
 							range_cash_mobile, range_cash_pc, access_internet_time,
-							remark));
+							remark);
+			asyncDeliverMessageService.sendBatchImportPreCheckMessage(uid, ret.getId());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

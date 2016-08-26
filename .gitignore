@@ -27,3 +27,4 @@ db/*.sqlite3
 **/.gitignore
 bhu-parent.ipr
 bhu-parent.iws
+msip-bhu-api/msip_bhu_agent_rest/src/main/java/com/bhu/vas/web/user/LoginSessionController.java

@@ -5,12 +5,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.rpc.devicegroup.model.WifiDeviceGroup;
-import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.tag.dao.TagGroupDao;
-import com.smartwork.msip.business.abstractmsd.service.AbstractTagService;
+import com.smartwork.msip.cores.orm.service.EntityService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.localunit.RandomData;
@@ -23,7 +21,7 @@ import com.smartwork.msip.localunit.RandomData;
 
 @Service
 @Transactional("tagTransactionManager")
-public class TagGroupService extends AbstractTagService<Integer, TagGroup, TagGroupDao>{
+public class TagGroupService extends EntityService<Integer, TagGroup, TagGroupDao>{
 
     @Resource
     @Override

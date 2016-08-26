@@ -8,29 +8,34 @@ package com.bhu.vas.api.vto.wallet;
 public class UserWalletLogFFVTO implements java.io.Serializable {
 	private long id;
 	private int uid;
-	private String mac;//设备mac
+	// 设备mac
+	private String mac;
+	// 终端mac
+	private String umac;
 	private String orderid;
 	private String transmode;
-	//transmode_desc 描述 用于查看方便的冗余字段 
+	// transmode_desc 描述 用于查看方便的冗余字段 
 	private String transmode_desc;
 	private String transtype;
-	//transtype_desc 描述 用于查看方便的冗余字段 
+	// transtype_desc 描述 用于查看方便的冗余字段 
 	private String transtype_desc;
-	//交易现金相关 
+	// 交易现金相关 
 	private String rmoney;
-	//交易零钱相关（正负数字 充值购买虎钻 充值现金 提现(withdraw)） 
+	// 交易零钱相关（正负数字 充值购买虎钻 充值现金 提现(withdraw)） 
 	private String cash;
-	//打赏金额
+	// 打赏金额
 	private String amount;
-	//交易虚拟币相关
+	// 交易虚拟币相关
 	private String vcurrency;
-	//交易内容描述
+	// 交易内容描述
 	private String memo;
 	private String description;
 	//private String payment_type;
 	//private String withdrawdate;
+	
 	//日志时间
 	private String operdate;
+	
 	public int getUid() {
 		return uid;
 	}
@@ -121,4 +126,11 @@ public class UserWalletLogFFVTO implements java.io.Serializable {
 	public void setAmount(String amount) {
 		this.amount = amount;
 	}
+	public String getUmac() {
+		return umac;
+	}
+	public void setUmac(String umac) {
+		this.umac = umac;
+	}
+	
 }

@@ -8,6 +8,7 @@ import com.bhu.vas.business.asyn.spring.activemq.queue.producer.async.AsyncDeliv
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
+import com.bhu.vas.business.asyn.spring.model.async.BatchImportPreCheckDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
@@ -24,6 +25,15 @@ public class AsyncDeliverMessageService {
 	public void sendPureText(String message){
 		asyncDeliverMessageQueueProducer.sendPureText(message);
 	}
+
+	public void sendBatchImportPreCheckMessage(int uid,String batchno){
+		BatchImportPreCheckDTO dto = new BatchImportPreCheckDTO();
+		dto.setUid(uid);
+		dto.setBatchno(batchno);
+		dto.setTs(System.currentTimeMillis());
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+
 	public void sendBatchImportConfirmActionMessage(int uid,String batchno){
 		BatchImportConfirmDTO dto = new BatchImportConfirmDTO();
 		dto.setUid(uid);

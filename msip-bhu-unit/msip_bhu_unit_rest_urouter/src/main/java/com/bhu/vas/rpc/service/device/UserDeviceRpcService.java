@@ -236,5 +236,15 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 		logger.info(String.format("fetchPageBindDevices with uid[%s] dut[%s] pageNo[%s] pageSize[%s]", uid, dut, pageNo, pageSize));
 		return userDeviceUnitFacadeService.fetchPageBindDevices(uid, dut, pageNo, pageSize);
 	}
+	
+	
+	@Override
+    public RpcResponseDTO<Boolean> updateDeviceLocation(int uid, String mac, String country, String province, String city, 
+    		String district, String street, String faddress, String lon, String lat){
+		logger.info(String.format("updateDeviceLocation with uid[%s] mac[%s] country[%s] province[%s] city[%s] district[%s] street[%s] faddress[%s] lon[%s] lat[%s]",
+				uid, mac, country, province, city, district, street, faddress, lon, lat));
+		return userDeviceUnitFacadeService.updateDeviceLocation(uid, mac, country, province, city, district, street, faddress, lon, lat);
+	}
+
     
 }

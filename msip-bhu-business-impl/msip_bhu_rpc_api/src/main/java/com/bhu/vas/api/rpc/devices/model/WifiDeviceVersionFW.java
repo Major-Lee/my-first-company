@@ -29,6 +29,12 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 	//最小版本号，在设备当前版本号<=最小版本号的情况下，有给app的提示会存在立刻升级的特性
 	private String minid;
 	//当前灰度中被引用
+	
+	//版本描述
+	private String context;
+	//上传者
+	private String creator;
+	
 	private boolean related;
 	private Date created_at;
 	
@@ -62,6 +68,22 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 
 	public void setRelated(boolean related) {
 		this.related = related;
+	}
+
+	public String getContext() {
+		return context;
+	}
+
+	public void setContext(String context) {
+		this.context = context;
+	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
 	}
 
 	@Override
@@ -100,6 +122,8 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 		vto.setR(related);
 		vto.setT(VersionVTO.VersionType_FW);
 		vto.setD(DateTimeHelper.formatDate(created_at, DateTimeHelper.FormatPattern1));
+		vto.setContext(context);
+		vto.setCreator(creator);
 		return vto;
 	}
 	

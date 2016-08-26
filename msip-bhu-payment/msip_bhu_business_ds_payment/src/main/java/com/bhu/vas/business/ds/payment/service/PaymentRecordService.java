@@ -9,11 +9,9 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.dto.procedure.DeviceGroupPaymentTotalProcedureDTO;
 import com.bhu.vas.api.rpc.payment.dto.PaymentRecordInfoDTO;
 import com.bhu.vas.api.rpc.payment.model.PaymentRecord;
 import com.bhu.vas.business.ds.payment.dao.PaymentRecordDao;
-import com.smartwork.msip.business.abstractmsd.service.AbstractPaymentService;
 import com.smartwork.msip.cores.orm.service.EntityService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;

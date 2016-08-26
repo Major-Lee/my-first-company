@@ -17,6 +17,7 @@ import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
@@ -46,6 +47,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetP
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
@@ -64,6 +66,7 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionMessa
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -111,6 +114,9 @@ public class UserDeviceUnitFacadeService {
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 
 	@Resource
+	private WifiDeviceIndexIncrementProcesser wifiDeviceIndexIncrementProcesser;
+
+	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 
 	@Resource
@@ -135,6 +141,9 @@ public class UserDeviceUnitFacadeService {
 
 	@Resource
 	private DeliverMessageService deliverMessageService;
+	
+	@Resource
+	private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
 
 	// TODO：重复插入异常
 	// 1、首先得判定UserDevicePK(mac, uid) 是否存在
@@ -165,7 +174,7 @@ public class UserDeviceUnitFacadeService {
 
 			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, deviceName, null);
 
-			deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac);
+			deliverMessageService.sendUserDeviceRegisterActionMessage(uid, mac, true);
 			UserDeviceDTO userDeviceDTO = new UserDeviceDTO();
 			userDeviceDTO.setMac(mac);
 			userDeviceDTO.setUid(uid);
@@ -455,7 +464,6 @@ public class UserDeviceUnitFacadeService {
 					searchPageNo, pageSize);
 
 			List<UserDeviceDTO> vtos = null;
-			List<UserDeviceDTO> result = new ArrayList<UserDeviceDTO>();
 			List<String> macs = null;
 			int total = 0;
 			if (search_result != null) {
@@ -480,6 +488,10 @@ public class UserDeviceUnitFacadeService {
 							userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 							userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
 							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
+							if(wifiDeviceDocument.getD_geopoint() != null && wifiDeviceDocument.getD_geopoint().length == 2){
+								userDeviceDTO.setLon(String.valueOf(wifiDeviceDocument.getD_geopoint()[0]));;
+								userDeviceDTO.setLat(String.valueOf(wifiDeviceDocument.getD_geopoint()[1]));;
+							}
 							userDeviceDTO.setO_scalelevel(wifiDeviceDocument.getO_scalelevel());
 							if (wifiDeviceDocument.getD_snk_allowturnoff() != null) {
 								userDeviceDTO.setD_snk_allowturnoff(
@@ -494,30 +506,18 @@ public class UserDeviceUnitFacadeService {
 							}
 							userDeviceDTO.setD_online(wifiDeviceDocument.getD_online());
 							userDeviceDTO.setVer(wifiDeviceDocument.getD_origswver());
+							userDeviceDTO.setProvince(wifiDeviceDocument.getD_province());
+							userDeviceDTO.setCity(wifiDeviceDocument.getD_city());
+							userDeviceDTO.setDistrict(wifiDeviceDocument.getD_district());
 							macs.add(wifiDeviceDocument.getD_mac());
 							vtos.add(userDeviceDTO);
-						}
-						if (macs !=null) {
-							List<WifiDevice> devices = wifiDeviceService.findByIds(macs);
-							if (devices != null) {
-								
-								int index = 0;
-								for (WifiDevice wifiDevice : devices) {
-									UserDeviceDTO userDeviceDTO = vtos.get(index);
-									userDeviceDTO.setProvince(wifiDevice.getProvince());
-									userDeviceDTO.setCity(wifiDevice.getCity());
-									userDeviceDTO.setDistrict(wifiDevice.getDistrict());
-									result.add(userDeviceDTO);
-									index++;
-								}
-							}
 						}
 					}
 				}
 			} else {
 				vtos = Collections.emptyList();
 			}
-			TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, result);
+			TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 		} catch (BusinessI18nCodeException i18nex) {
 			i18nex.printStackTrace(System.out);
@@ -808,6 +808,14 @@ public class UserDeviceUnitFacadeService {
 				dpv.setLast_logout_at(
 						DateTimeHelper.formatDate(wifiDevice.getLast_logout_at(), DateTimeHelper.FormatPattern0));
 			dpv.setDod(wifiDevice.getUptime());
+			
+			WifiDeviceSharedealConfigs wifiDeviceShareConfig = wifiDeviceSharedealConfigsService.getById(mac);
+
+            if(wifiDeviceShareConfig != null){
+                if (wifiDeviceShareConfig.getDistributor() > 0) {
+                	dpv.setA_id((userService.getById(wifiDeviceShareConfig.getDistributor()).getMobileno()));
+                }
+            }
 
 			// 运营状态信息 灰度、模板
 			DeviceOperationVTO dov = new DeviceOperationVTO();
@@ -948,4 +956,36 @@ public class UserDeviceUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+
+    public RpcResponseDTO<Boolean> updateDeviceLocation(int uid, String mac, String country, String province, String city, 
+    		String district, String street, String faddress, String lon, String lat){
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+		if (userWifiDevice != null && !userWifiDevice.getUid().equals(uid)) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_ALREADY_BEBINDED_OTHER,
+					Boolean.FALSE);
+		}
+		
+		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+		if(wifiDevice == null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,
+					Boolean.FALSE);
+		}
+
+		wifiDevice.setCountry(country);
+		wifiDevice.setProvince(province);
+		wifiDevice.setCity(city);
+		wifiDevice.setDistrict(district);
+		wifiDevice.setStreet(street);
+		wifiDevice.setFormatted_address(faddress);
+		wifiDevice.setLon(lon);
+		wifiDevice.setLat(lat);
+		wifiDevice.setLoc_method(WifiDeviceHelper.Device_Location_By_APP);
+		
+		wifiDeviceService.update(wifiDevice);
+		wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(mac, Double.parseDouble(lat),
+				Double.parseDouble(lon), faddress ,province ,city ,district);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+	}
+
+	
 }

@@ -16,9 +16,8 @@ import com.smartwork.msip.cores.cache.entitycache.CacheService;
  */
 @Service
 public class BusinessWalletCacheService {
-	//记录代理商设备状态缓存
+	// 记录代理商设备状态缓存
 	private final String QWalletLogStatisticsCachePrefixKey = "QWalletDSKey.";
-	
 	
 	@Resource(name="coreCacheService")
 	CacheService cacheService;
@@ -26,25 +25,30 @@ public class BusinessWalletCacheService {
 	
 	@PostConstruct
 	protected void init() {
-		entityCache = cacheService.addCache(this.getClass().getName(),10*20000,1800);//0.5小时
+		entityCache = cacheService.addCache(this.getClass().getName(), 10 * 20000, 1800);//0.5小时
     }
 	
 	
-	public String generateWalletLogStatisticsDSCacheKeyBy(int user){
+	public String generateWalletLogStatisticsDSCacheKeyBy(int userId){
 		StringBuilder sb = new StringBuilder();
-		sb.append(QWalletLogStatisticsCachePrefixKey).append(user);
+		sb.append(QWalletLogStatisticsCachePrefixKey).append(userId);
 		return sb.toString();
 	}
 	
-	public void storeWalletLogStatisticsDSCacheResult(int user,ShareDealWalletSummaryProcedureVTO result){
-		String key = generateWalletLogStatisticsDSCacheKeyBy(user);
+	public void storeWalletLogStatisticsDSCacheResult(int userId, ShareDealWalletSummaryProcedureVTO result){
+		String key = generateWalletLogStatisticsDSCacheKeyBy(userId);
 		this.entityCache.remove(key);
-		this.entityCache.put(key, result,1800);//1小时
+		this.entityCache.put(key, result, 1800);//1小时
 	}
 	
-	public ShareDealWalletSummaryProcedureVTO getWalletLogStatisticsDSCacheByUser(int user){
-		Object cacheObj = this.entityCache.get(generateWalletLogStatisticsDSCacheKeyBy(user));
+	public ShareDealWalletSummaryProcedureVTO getWalletLogStatisticsDSCacheByUser(int userId){
+		Object cacheObj = this.entityCache.get(generateWalletLogStatisticsDSCacheKeyBy(userId));
 		if(cacheObj == null) return null;
 		return ShareDealWalletSummaryProcedureVTO.class.cast(cacheObj);
+	}
+	
+	public void removeWalletLogStatisticsDSCacheResult(int userId) {
+		String key = generateWalletLogStatisticsDSCacheKeyBy(userId);
+		this.entityCache.remove(key);
 	}
 }

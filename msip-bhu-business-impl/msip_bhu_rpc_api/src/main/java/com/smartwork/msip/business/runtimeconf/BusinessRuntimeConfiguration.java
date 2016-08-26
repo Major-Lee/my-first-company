@@ -175,7 +175,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         }  
     }  
 	
-	public static String SharedNetworkWifi_Default_SafeSecure_Open_resource ="isdspeed.qq.com,pay.qq.com,weixin.qq.com,jspay.qq.com,bhuwifi.com,bhunetworks.com,midas.gtimg.cn,alipay.com,123.57.26.170,hao.bhuwifi.com,api.unipay.qq.com,un.winasdaq.com,cnzz.com";
+	public static String SharedNetworkWifi_Default_SafeSecure_Open_resource = "bhuwifi.com,bhunetworks.com,cnzz.com,qiniucdn.com"; //"isdspeed.qq.com,pay.qq.com,weixin.qq.com,jspay.qq.com,bhuwifi.com,bhunetworks.com,midas.gtimg.cn,alipay.com,123.57.26.170,hao.bhuwifi.com,api.unipay.qq.com,un.winasdaq.com,cnzz.com";
 	public static String SharedNetworkWifi_Default_Uplink_Open_resource = "bhuwifi.com,bhunetworks.com";
 	public static String SharedNetworkWifi_Default_Redirect_url = "www.bhuwifi.com";
 	public static String SharedNetworkWifi_Default_SafeSecure_Remote_auth_url = "http://ucloud.bhuwifi.com:9158/portal/default/reward/index_before.html";
@@ -240,6 +240,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static final String Internal_SNK_NeedCharging_Template = "温馨提示：截止%s，您当前的虎钻剩余%s颗，虎钻用完后，使用短信认证服务的网络将被停止认证服务，请及时充值。【必虎路由】";
 	public static final String Internal_SNK_Stop_Template = "重要通知：截止%s，您当前的虎钻剩余%s颗，使用短信认证服务的网络已被停止认证服务，请及时充值。【必虎路由】";
+	public static final String Internal_Portal_Template = "验证码：%s，用于认证上网操作，请勿将验证码泄露给他人！【必虎路由】";
 	
 	//public static final String InternalCaptchaCodeSMS_Template = "[uRouter]验证码:%s,欢迎使用uRouter智能路由器！";//【华信联创】
 	//public static final String WillExpiredPush_Template = "【快看】你有%s条消息将于1小时候后过期销毁，赶快过来看看吧!";
@@ -404,8 +405,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static int SharedNetworksTemplateMaxLimit = 50;
 	
-	public static String UserPortalUpdate2UPortalApi = "http://ucloud.bhuwifi.com:9157/portal/set/recreate";
-	public static String UserPortalChargingNotify2UPortalApi = "http://ucloud.bhuwifi.com:9157/common/api/save-status";
+	public static String UserPortalUpdate2UPortalApi = "http://ucloud.bhuwifi.com:9158/portal/set/recreate";
+	public static String UserPortalChargingNotify2UPortalApi = "http://ucloud.bhuwifi.com:9158/common/api/save-status";
 	/**
 	 * 判断是否是console用户
 	 * @param uid

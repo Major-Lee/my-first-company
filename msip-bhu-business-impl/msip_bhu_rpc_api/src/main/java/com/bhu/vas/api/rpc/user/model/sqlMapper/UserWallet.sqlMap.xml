@@ -14,6 +14,7 @@
     <result property="withdraw" column="withdraw"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
+    <result property="today_cash_sum" column="today_cash_sum"/>
   </resultMap>  
   
   	<sql id="modelTableName">
@@ -30,7 +31,8 @@
 	    	cash,
 	    	withdraw,
 	    	created_at,
-	    	updated_at
+	    	updated_at,
+	    	today_cash_sum
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
@@ -41,7 +43,8 @@
 	    	cash,
 	    	withdraw,
 	    	created_at,
-	    	updated_at
+	    	updated_at,
+	    	today_cash_sum
 	    ]]>
 	</sql>   
 	

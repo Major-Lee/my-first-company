@@ -12,6 +12,7 @@ public class PaymentRecordVTO implements java.io.Serializable {
 	private int amount;
 	private int count;
 	private int dx_count;
+	private int video_count;
 	private String info;
 	public String getTimeD() {
 		return timeD;
@@ -43,5 +44,10 @@ public class PaymentRecordVTO implements java.io.Serializable {
 	public void setDx_count(int dx_count) {
 		this.dx_count = dx_count;
 	}
-	
+	public int getVideo_count() {
+		return video_count;
+	}
+	public void setVideo_count(int video_count) {
+		this.video_count = video_count;
+	}
 }

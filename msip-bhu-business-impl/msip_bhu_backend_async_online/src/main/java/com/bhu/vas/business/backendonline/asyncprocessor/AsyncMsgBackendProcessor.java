@@ -28,6 +28,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	private ExecutorService exec;// = Executors.newFixedThreadPool(100);
 	@Resource
 	private IMsgHandlerService batchImportConfirmServiceHandler;
+
+	@Resource
+	private IMsgHandlerService batchImportPreCheckServiceHandler;
 	
 	@Resource
 	private IMsgHandlerService batchSharedealServiceHandler;
@@ -75,6 +78,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
 					switch(type){
+						case BatchImportPreCheck:
+							batchImportPreCheckServiceHandler.process(message);
+							break;
 						case BatchImportConfirm:
 							batchImportConfirmServiceHandler.process(message);
 							break;

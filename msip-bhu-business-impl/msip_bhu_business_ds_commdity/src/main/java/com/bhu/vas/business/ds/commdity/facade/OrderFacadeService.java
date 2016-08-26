@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseVideoValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.VideoPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.procedure.DeviceOrderStatisticsProduceDTO;
 import com.bhu.vas.api.dto.procedure.RewardOrderNewlyDataProcedureDTO;
 import com.bhu.vas.api.dto.procedure.RewardOrderStatisticsProcedureDTO;
@@ -159,7 +161,19 @@ public class OrderFacadeService {
 		mc.setPageSize(pageSize);
 		return orderService.findModelByModelCriteria(mc);
 	}
-	
+	/**
+	 * 查询时间段内所有订单
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	public List<Order> findOrdersByTime(String startTime, String endTime){
+		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		criteria.andColumnEqualTo("type", 0);
+		criteria.andColumnBetween("created_at", startTime, endTime);
+		return orderService.findModelByModelCriteria(mc);
+	}
 	/**
 	 * 根据日期查询订单数量
 	 * @param status
@@ -679,4 +693,124 @@ public class OrderFacadeService {
 		return procedureDTO.toVTO();
 	}
 	//add by Jason 2016-07-22 E N D
+	
+	
+/*************            视频放行             ****************/
+	
+	public static final int VIDEO_VALIDATE_COMMDITY_ID = 12;
+	/**
+	 * 生成视频放行订单
+	 * @param mac 设备mac
+	 * @param umac 用户终端mac
+	 * @param umactype 用户终端类型
+	 * @param bindUser
+	 * @param context 
+	 * @return
+	 */
+	public Order createVideoOrder(String mac, String mac_dut, String umac, Integer umactype, User bindUser,
+			String context, String user_agent){
+		//商品信息验证
+		Commdity commdity = commdityFacadeService.validateCommdity(VIDEO_VALIDATE_COMMDITY_ID);
+		//验证商品是否合理
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.VideoInternetLimit)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
+		}
+		
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdity.getId());
+		order.setAppid(CommdityApplication.DEFAULT.getKey());
+		order.setType(commdity.getCategory());
+		order.setStatus(OrderStatus.PaySuccessed.getKey());
+		order.setProcess_status(OrderProcessStatus.PaySuccessed.getKey());
+		order.setMac(mac);
+		order.setMac_dut(mac_dut);
+		order.setUmac(umac);
+		order.setUmactype(umactype);
+		if(bindUser != null){
+			order.setUid(bindUser.getId());
+		}
+		order.setContext(context);
+		order.setUser_agent(user_agent);
+		order.setPaymented_at(new Date());
+		orderService.insert(order);
+		
+		//短信认证订单生成时候已经验证通过 直接进行放行数据通知
+		String notify_message = PaymentNotifyFactoryBuilder.toJsonHasPrefix(ResponseVideoValidateCompletedNotifyDTO.
+				builder(order));
+		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+		return order;
+	}
+	
+	/**
+	 * 视频上网完成的订单处理逻辑
+	 * 更新订单状态为支付成功
+	 * 通知应用发货成功以后 更新支付状态为发货完成
+	 * @param success 支付是否成功
+	 * @param order 订单实体
+	 * @param bindUser 设备绑定的用户实体
+	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
+	 */
+	public Order videoOrderPaymentCompletedNotify(boolean success, Order order, User bindUser, Date paymented_ds,
+			String ait_time){
+		Integer changed_status = null;
+		Integer changed_process_status = null;
+		try{
+			String orderid = order.getId();
+			order.setPaymented_at(paymented_ds);
+
+			//支付成功
+			if(success){
+				logger.info(String.format("VideoOrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
+				//进行发货通知
+				boolean deliver_notify_ret = smsOrderPermissionNotify(order, bindUser, ait_time);
+				//判断通知发货成功 更新订单状态
+				if(deliver_notify_ret){
+					changed_status = OrderStatus.DeliverCompleted.getKey();
+					changed_process_status = OrderProcessStatus.SharedealCompleted.getKey();
+					logger.info(String.format("VideoOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+				}else{
+					logger.info(String.format("VideoOrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
+				}
+			}else{
+				changed_status = OrderStatus.PayFailured.getKey();
+				changed_process_status = OrderProcessStatus.PayFailured.getKey();
+			}
+		}catch(Exception ex){
+			throw ex; 
+		}finally{
+			orderStatusChanged(order, changed_status, changed_process_status);
+		}
+		return order;
+	}
+	
+	/**
+	 * 视频上网通知应用发货，按照约定的redis写入
+	 * @param order 订单实体
+	 * @param bindUser 设备绑定的用户实体
+	 * @return
+	 */
+	public boolean videoOrderPermissionNotify(Order order, User bindUser, String ait_time){
+		try{
+			if(order == null) {
+				logger.error("videoOrderPermissionNotify order data not exist");
+				return false;
+			}
+			
+			VideoPermissionThroughNotifyDTO videoPermissionNotifyDto = VideoPermissionThroughNotifyDTO.from(order, ait_time, bindUser);
+			if(videoPermissionNotifyDto != null){
+				String videoPermissionNotifyMessage = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(videoPermissionNotifyDto);
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(videoPermissionNotifyMessage);
+				//判断通知发货成功
+				if(notify_ret != null && notify_ret > 0){
+					logger.info(String.format("videoOrderPermissionNotify success deliver notify: message[%s] rpush_ret[%s]", videoPermissionNotifyMessage, notify_ret));
+					return true;
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error("videoOrderPermissionNotify exception", ex);
+		}
+		return false;
+	}
 }

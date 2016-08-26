@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -177,57 +178,45 @@ public class UserWalletUnitFacadeService {
 			ModelCriteria mc = new ModelCriteria();
 			Criteria createCriteria = mc.createCriteria();
 			createCriteria.andColumnEqualTo("uid", uid);
+			
 			if(transmode != null)
 				createCriteria.andColumnEqualTo("transmode", tmode.getKey());
+			
 			if(transtype != null)
 				createCriteria.andColumnEqualTo("transtype", ttype.getKey());
+			
 			if(start_date != null)
 				createCriteria.andColumnGreaterThanOrEqualTo("updated_at", start_date);
+			
 			if(end_date != null)
 				createCriteria.andColumnLessThanOrEqualTo("updated_at", end_date);
+			
 	    	mc.setPageNumber(pageNo);
 	    	mc.setPageSize(pageSize);
 	    	mc.setOrderByClause(" updated_at desc ");
+	    	
 	    	int count = userSharedealDistributorViewService.countByModelCriteria(mc);
 	    	if(count > 0){
-				List<UserSharedealDistributorView> list = userSharedealDistributorViewService.findModelByCommonCriteria(mc);
+				List<UserSharedealDistributorView> list = userSharedealDistributorViewService
+				    .findModelByCommonCriteria(mc);
 				if(list != null && !list.isEmpty()){
 					List<String> orderids = new ArrayList<String>();
 					for(UserSharedealDistributorView view : list){
 						orderids.add(view.getOrderid());
 					}
+					
 					List<Order> orders = orderService.findByIds(orderids, true, true);
 					int index = 0;
 					for(UserSharedealDistributorView view : list){
 						Order order = orders.get(index);
-						vtos.add(view.toUserWalletLogFFVTO(
-								order!=null?order.getAmount():StringUtils.EMPTY,
-								order!=null?order.getMac():StringUtils.EMPTY));
+						vtos.add(view.toUserWalletLogFFVTO
+						            (order != null ? order.getAmount() : StringUtils.EMPTY,
+								     order != null ? order.getMac() : StringUtils.EMPTY));
 						index++;
 					}
 				}
 	    	}
-			
-/*			TailPage<UserWalletLog> pages = userWalletFacadeService.pageUserWalletlogs(uid, tmode, ttype, 
-					start_date, end_date, pageNo, pageSize);
-			TailPage<UserWalletLogFFVTO> result_pages = null;
-			List<UserWalletLogFFVTO> vtos = new ArrayList<UserWalletLogFFVTO>();
-			if(!pages.isEmpty()){
-				List<String> orderids = new ArrayList<String>();
-				for(UserWalletLog log:pages.getItems()){
-					orderids.add(log.getOrderid());
-				}
-				List<Order> orders = orderService.findByIds(orderids, true, true);
-				//List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
-				int index = 0;
-				for(UserWalletLog log:pages.getItems()){
-					Order order = orders.get(index);
-					vtos.add(log.toUserWalletLogFFVTO(
-							order!=null?order.getAmount():StringUtils.EMPTY,
-							order!=null?order.getMac():StringUtils.EMPTY));
-					index++;
-				}
-			}*/
+
 			result_pages = new CommonPage<UserWalletLogFFVTO>(pageNo, pageSize, count, vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
 		}catch(BusinessI18nCodeException bex){
@@ -712,24 +701,43 @@ public class UserWalletUnitFacadeService {
 		try{
 			RankingListVTO rankingListVTO=new RankingListVTO();
 			List<RankSingle> rankList=new ArrayList<RankSingle>();
-			List<UserIncomeRank> userIncomeRanks=userIncomeRankService.findByLimit(100);
+			String currentDay=GetDateTime("yyyy-MM-dd",0);
+			List<UserIncomeRank> userIncomeRanks=userIncomeRankService.findByLimit(currentDay+"%");
 			if(userIncomeRanks != null){
 				UserIncomeRank incomeRank=userIncomeRankService.getById(String.valueOf(uid));
+				User user=userService.getById(uid);
 				if(incomeRank==null){
-					rankingListVTO.setRankNum(0);
+					rankingListVTO.setRankNum(9999999);
 					rankingListVTO.setUserIncome("0");
+					rankingListVTO.setChangeFlag(1);
 				}else{
+					if(incomeRank.getRank()==incomeRank.getBeforeRank()){
+						rankingListVTO.setChangeFlag(1);
+					}else if(incomeRank.getRank()>incomeRank.getBeforeRank()){
+						rankingListVTO.setChangeFlag(2);
+					}else{
+						rankingListVTO.setChangeFlag(0);
+					}
+					rankingListVTO.setMemo(user.getMemo());
 					rankingListVTO.setRankNum(incomeRank.getRank());
-					rankingListVTO.setUserIncome(incomeRank.getIncome());
+					rankingListVTO.setUserIncome(String.valueOf(round(Float.valueOf(incomeRank.getIncome()),2)));
 				}
 				for(int i=0;i<userIncomeRanks.size();i++){
 					RankSingle rankSingle=new RankSingle();
 					UserIncomeRank userIncomeRank=userIncomeRanks.get(i);
-					User user=userService.getById(Integer.valueOf(userIncomeRank.getId()));
+					User singleUser=userService.getById(Integer.valueOf(userIncomeRank.getId()));
 					rankSingle.setRankNum(userIncomeRank.getRank());
-					rankSingle.setUserIncome(userIncomeRank.getIncome());
-					rankSingle.setUserName(user.getNick());
-					rankSingle.setAvatar(user.getAvatar());
+					rankSingle.setUserIncome(String.valueOf(round(Float.valueOf(userIncomeRank.getIncome()),2)));
+					rankSingle.setUserName(singleUser.getNick());
+					rankSingle.setAvatar(singleUser.getAvatar());
+					rankSingle.setMemo(singleUser.getMemo());
+					if(userIncomeRank.getRank()==userIncomeRank.getBeforeRank()){
+						rankSingle.setChangeFlag(1);
+					}else if(userIncomeRank.getRank()>userIncomeRank.getBeforeRank()){
+						rankSingle.setChangeFlag(2);
+					}else{
+						rankSingle.setChangeFlag(0);
+					}
 					rankList.add(rankSingle);
 				}
 			}
@@ -762,6 +770,7 @@ public class UserWalletUnitFacadeService {
 				// 折线图X轴（日期）
 				lineChartDateInfo.add(getNewDay(startTime, i-30));
 				double lineChartIncome = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalIncomeByDay(uid, getNewDay(startTime, i-30));
+				lineChartIncome=round(lineChartIncome,2);
 				// 折线图Y轴（收益）
 				lineChartIncomeInfo.add(lineChartIncome);
 				double lineChartUserNum = userWalletFacadeService.getUserIncomeService().getEntityDao().countTotalUserNumByDay(uid, getNewDay(startTime, i-30));
@@ -828,4 +837,18 @@ public class UserWalletUnitFacadeService {
 	    retDate = sdf.format(newDay);
 	    return retDate;
     }  
+    /**      
+     * 提供精确的小数位四舍五入处理。      
+     * @param v 需要四舍五入的数字      
+     * @param scale 小数点后保留几位      
+     * @return 四舍五入后的结果      
+     */         
+    public static double round(double v,int scale){         
+		if(scale<0){         
+	           throw new IllegalArgumentException("The scale must be a positive integer or zero");         
+	    }         
+	    BigDecimal b = new BigDecimal(Double.toString(v));         
+	    BigDecimal one = new BigDecimal("1");         
+	    return b.divide(one,scale,BigDecimal.ROUND_HALF_UP).doubleValue();         
+    } 
 }

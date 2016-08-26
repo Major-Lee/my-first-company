@@ -59,6 +59,7 @@ public class RecordController extends BaseController {
 			paymentRecordVTO.setAmount(list.get(i).getAmount());
 			paymentRecordVTO.setCount(list.get(i).getCount());
 			paymentRecordVTO.setDx_count(list.get(i).getDx_count());
+			paymentRecordVTO.setVideo_count(list.get(i).getVideo_count());
 			paymentRecordVTO.setInfo(list.get(i).getInfo());
 			infos.add(paymentRecordVTO);
 		}

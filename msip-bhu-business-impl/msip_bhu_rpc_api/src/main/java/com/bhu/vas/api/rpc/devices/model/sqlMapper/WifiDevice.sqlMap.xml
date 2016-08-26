@@ -42,7 +42,7 @@
     <result property="formatted_address" column="formatted_address"/>
     <result property="carrier" column="carrier"/>
     <result property="bdid" column="bdid"/>
-    <result property="ipgen" column="ipgen"/>
+    <result property="loc_method" column="loc_method"/>
     <result property="uptime" column="uptime"/>
     <result property="tfcard_usage" column="tfcard_usage"/>
     <result property="industry" column="industry"/>
@@ -96,7 +96,7 @@
 	    	formatted_address,
 	    	carrier,
 	    	bdid,
-	    	ipgen,
+	    	loc_method,
 	    	uptime,
 	    	tfcard_usage,
 	    	industry,
@@ -143,7 +143,7 @@
 	    	formatted_address,
 	    	carrier,
 	    	bdid,
-	    	ipgen,
+	    	loc_method,
 	    	uptime,
 	    	tfcard_usage,
 	    	industry,
@@ -191,7 +191,7 @@
 	    	#{formatted_address},
 	    	#{carrier},
 	    	#{bdid},
-	    	#{ipgen},
+	    	#{loc_method},
 	    	#{uptime},
 	    	#{tfcard_usage},
 	    	#{industry},
@@ -237,7 +237,7 @@
 	    	formatted_address = #{formatted_address},
 	    	carrier = #{carrier},
 	    	bdid = #{bdid},
-	    	ipgen = #{ipgen},
+	    	loc_method = #{loc_method},
 	    	uptime = #{uptime},
 	    	tfcard_usage = #{tfcard_usage},
 	    	industry = #{industry},

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
@@ -170,7 +171,7 @@ public class WifiDeviceOnlineLoader {
 	 * 如果在线设备存在经纬度，但是没有获取详细地址，也会进行获取
 	 */
 	public boolean validateCoordinateAndGet(WifiDevice device){
-		if(StringUtils.isEmpty(device.getFormatted_address())){
+		if((WifiDeviceHelper.Device_Location_By_APP != device.getLoc_method()) && StringUtils.isEmpty(device.getFormatted_address())){
 			if(!StringUtils.isEmpty(device.getLat()) && !StringUtils.isEmpty(device.getLon())){
 				return deviceFacadeService.wifiDeiviceGeocoding(device);
 			}

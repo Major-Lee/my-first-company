@@ -8,27 +8,30 @@
     <id property="id" column="id"/>
     <result property="gpath" column="gpath"/>
     <result property="time" column="time"/>
+    <result property="times" column="times"/>
     <result property="income" column="income"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_gpath_income
+	    	t_statistic_gpath_income
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	time,
 	    	gpath,
+	    	time,
+	    	times,
 	    	income,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	time,
 	    	gpath,
+	    	time,
+	    	times,
 	    	income,
 	    	updated_at
 	    ]]>
@@ -36,15 +39,17 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-	    	#{time},
 	    	#{gpath},
+	    	#{time},
+	    	#{times},
 	    	#{income},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	time = #{time},
 			gpath = #{gpath},
+	    	time = #{time},
+	    	times = #{times},
 	    	income = #{income},
 	    	updated_at = #{updated_at}
 	</sql>

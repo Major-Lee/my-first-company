@@ -29,8 +29,9 @@ public class BusinessEnumType {
 	 */
 	public enum CaptchaCodeActType{
 		RegisterOrLogin("注册或登录", "R"),
-		PwdReset("密码充值", "P"),
+		PwdReset("密码重置", "P"),
 		SnkAuth("共享网络短信认证", "S"),
+		Portal("portal身份认证", "I"),
 		;
 		private String name;
 		private String type;
@@ -561,6 +562,7 @@ public class BusinessEnumType {
 	public enum CommdityCategory{
 		RechargeVCurrency(3,"充值虚拟币","充值虚拟币"),
 		SMSInternetLimit(10,"短信认证上网","短信认证上网"),
+		VideoInternetLimit(6,"观看视频上网","观看视频上网"),
 		RewardInternetLimit(0,"打赏上网","打赏上网"),
 		;
 		private Integer category;

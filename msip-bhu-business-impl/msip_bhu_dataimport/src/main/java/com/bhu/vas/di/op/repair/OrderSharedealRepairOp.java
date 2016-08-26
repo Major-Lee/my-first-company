@@ -60,7 +60,7 @@ public class OrderSharedealRepairOp {
 				String description = String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
 						orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP);
 				
-				int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), amount, order.getId(), description, null);//sharedealCashToUserWalletWithProcedure
+				int ret  = userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), order.getUmac(), amount, order.getId(), description, null);//sharedealCashToUserWalletWithProcedure
 				System.out.println(order.getId()+"----"+ret);
 				System.out.println(order.getId());
 			}

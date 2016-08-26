@@ -27,10 +27,14 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	public static final int STATUS_IMPORTED_FILE = 1;
 	//确定导入批次
 	public static final int STATUS_CONFIRMED_DOING = 2;
+	//导入内容正在预处理中
+	public static final int STATUS_CONTENT_PRE_CHECK = 3;
+	//导入内容预处理成功
+	public static final int STATUS_CONTENT_PRE_CHECK_DONE = 4;
 	//导入内容正在处理中
-	public static final int STATUS_CONTENT_IMPORTING = 3;
+	public static final int STATUS_CONTENT_IMPORTING = 5;
 	//导入内容处理成功
-	public static final int STATUS_CONTENT_IMPORTED = 4;
+	public static final int STATUS_CONTENT_IMPORTED = 6;
 	//文件存储路径
 	private String filepath;
 	// 0-文件正在导入 1-文件导入成功 2-确认导入成功

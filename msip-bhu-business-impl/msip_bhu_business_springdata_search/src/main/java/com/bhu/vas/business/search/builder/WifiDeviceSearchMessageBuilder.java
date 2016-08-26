@@ -74,10 +74,10 @@ public class WifiDeviceSearchMessageBuilder {
 		}
 
 		if(StringUtils.isNotEmpty(d_tags)){
-			SearchCondition sc_d_snk_turnstate = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+			SearchCondition sc_d_tags_turnstate = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 					Field.D_TAGS.getName(), SearchConditionPattern.StringEqual.getPattern(), 
-					d_snk_turnstate);
-			pack_must.addChildSearchCondtions(sc_d_snk_turnstate);
+					d_tags);
+			pack_must.addChildSearchCondtions(sc_d_tags_turnstate);
 		}
 		
 		

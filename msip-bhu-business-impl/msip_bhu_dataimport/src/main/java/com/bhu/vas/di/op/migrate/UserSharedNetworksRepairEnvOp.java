@@ -72,8 +72,6 @@ public class UserSharedNetworksRepairEnvOp {
 				List<ParamSharedNetworkDTO> safesecure_configs = snks.get(SharedNetworkType.SafeSecure.getKey());
 				if(safesecure_configs != null && !safesecure_configs.isEmpty()){
 					for(ParamSharedNetworkDTO dto:safesecure_configs){
-						dto.setRemote_auth_url(dto.getRemote_auth_url().replace("123.56.227.18", "ucloud.bhuwifi.com"));
-						dto.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
 						dto.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);
 					}
 					snks.put(SharedNetworkType.SafeSecure.getKey(), safesecure_configs);
@@ -113,14 +111,10 @@ public class UserSharedNetworksRepairEnvOp {
 						if(snkDTO != null && snkDTO.getPsn() != null){
 							ParamSharedNetworkDTO psn = snkDTO.getPsn();
 							if(SharedNetworkType.SafeSecure == snktype){
-								psn.setRemote_auth_url(psn.getRemote_auth_url().replace("123.56.227.18", "ucloud.bhuwifi.com"));
-								psn.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
 								psn.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);
 							}else if(SharedNetworkType.SmsSecure == snktype){
-								psn.setRemote_auth_url(psn.getRemote_auth_url().replace("123.56.227.18", "ucloud.bhuwifi.com"));
-								psn.setPortal_server_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Remote_portal_server_url);
 								psn.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);								
-							}else{
+							}else if(SharedNetworkType.Uplink == snktype){
 								psn.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Uplink_Open_resource);
 							}
 							snk.putInnerModel(snkDTO);

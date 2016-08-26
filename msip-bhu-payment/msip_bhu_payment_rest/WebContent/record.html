@@ -34,6 +34,13 @@ table {
     width: 100%;
     
 }
+.blue{
+    color: #2872C7;
+}
+.green{
+    color: #3BD04A;
+}
+
 #order_detail table td{
     border: none;
 }
@@ -74,7 +81,7 @@ $(document).ready(function(){
                 $('#user_info').html(user_info);
                 
                 var detail = result.detail;
-                var order_detail = "<tr><td>日期</td><td><table><tr><td colspan='2'>微信-单数/金额</td></tr><tr class='linet'><td>手机</td><td class='linel'>电脑</td></tr></table></td><td><table><tr><td colspan='2'>支付宝-单数/金额</td></tr><tr class='linet'><td>手机</td><td class='linel'>电脑</td></tr></table></td><td>累计-单数/金额</td><td>短信-单数</td></tr>";
+                var order_detail = "<tr><td>日期</td><td><table><tr><td colspan='2'>微信-单数/金额</td></tr><tr class='linet'><td>手机</td><td class='linel'>电脑</td></tr></table></td><td><table><tr><td colspan='2'>支付宝-单数/金额</td></tr><tr class='linet'><td>手机</td><td class='linel'>电脑</td></tr></table></td><td>累计-单数/金额</td><td>视频</td></tr>";
                 for(var i=0;i<detail.length;i++){
                     var info = detail[i].info;
                         info = eval("(" + info + ")");
@@ -92,9 +99,9 @@ $(document).ready(function(){
                     "</td><td class='linel'>"+info['PcAlipay'].amount/100+"</td></tr>"+
                     "</table></td>"+
                     "<td><table>"+
-                    "<tr><td>"+detail[i].count+"</td></tr>"+
-                    "<tr class='linet'><td>"+detail[i].amount/100+"</td></tr>"+
-                    "</table></td><td>"+detail[i].dx_count+"</td></tr>";
+                    "<tr><td class='blue'>"+detail[i].count+"</td></tr>"+
+                    "<tr class='linet'><td class='green'>"+detail[i].amount/100+"</td></tr>"+
+                    "</table></td><td>"+detail[i].video_count+"</td></tr>";
 
                 }
                 

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -172,6 +173,42 @@ public class UserDeviceController extends BaseController {
         }
     }
 
+    
+    /**
+     * app定位后，上传地址更新数据库记录
+     * @param response
+     * @param uid
+	 * @param ct
+     * @param dut
+     */
+    @ResponseBody()
+    @RequestMapping(value="/update_location",method={RequestMethod.POST})
+    public void updateDeviceLocation(HttpServletResponse response,
+                @RequestParam(required = true, value = "uid") int uid,
+                @RequestParam(required = false, value = "mac") String mac,
+                @RequestParam(required = false, value = "country") String country,
+                @RequestParam(required = false, value = "province") String province,
+                @RequestParam(required = false, value = "city") String city,
+                @RequestParam(required = false, value = "district") String district,
+                @RequestParam(required = false, value = "street") String street,
+                @RequestParam(required = false, value = "faddress") String faddress,
+                @RequestParam(required = false, value = "lon") String lon,
+                @RequestParam(required = false, value = "lat") String lat){
+    	
+    	if(StringUtils.isEmpty(lon) || StringUtils.isEmpty(lat)){
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY));
+            return;
+    	}
+
+    	RpcResponseDTO<Boolean> rpcResult = userDeviceRpcService.updateDeviceLocation(uid, mac, country, province, city, district, street, faddress, lon, lat);
+        if (!rpcResult.hasError()) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
+
+    
     /**
      * 新增云平台接口
      * @param response

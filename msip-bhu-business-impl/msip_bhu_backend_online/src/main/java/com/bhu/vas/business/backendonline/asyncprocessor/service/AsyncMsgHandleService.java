@@ -313,7 +313,7 @@ public class AsyncMsgHandleService {
 				}
 			}
 
-			afterDeviceOnlineThenCmdDown(dto.getMac(), dto.isNeedLocationQuery(), payloads);
+			afterDeviceOnlineThenCmdDown(dto.getMac(), (WifiDeviceHelper.Device_Location_By_APP == wifiDevice.getLoc_method())?false:dto.isNeedLocationQuery(), payloads);
 
 			boolean needUpdate = false;
 			// boolean needClaim = wifiDevice.needClaim();
@@ -1043,6 +1043,13 @@ public class AsyncMsgHandleService {
 				closeDevices2SharedNetworksWhenDeviceReset(dto.getMac());
 				addDevices2SharedNetwork(-1, dto.getMac());
 			}
+			
+			UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+			if(userWifiDevice != null){
+						userWifiDevice.setDevice_name_modifyed(false);
+						userWifiDeviceService.update(userWifiDevice);
+			}
+			
 		} else {
 			// 检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
 			WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
@@ -1227,6 +1234,7 @@ public class AsyncMsgHandleService {
 				String ssid = deviceFacadeService.getUrouterSSID(mac);
 				if (StringUtils.isNotEmpty(ssid) && !ssid.equals(userWifiDevice.getDevice_name())) {
 					userWifiDevice.setDevice_name(ssid);
+					userWifiDevice.setDevice_name_modifyed(true);
 					userWifiDeviceService.update(userWifiDevice);
 
 					wifiDeviceStatusIndexIncrementService.bindUserDNickUpdIncrement(mac, ssid);
@@ -1249,11 +1257,14 @@ public class AsyncMsgHandleService {
 		// 1:记录wifi设备的坐标 (backend)
 		WifiDevice entity = wifiDeviceService.getById(dto.getMac());
 		if (entity != null) {
+			//app定位的地址优先级最高，不允许覆盖
+			if(WifiDeviceHelper.Device_Location_By_APP == entity.getLoc_method())
+				return;
 			// 如果经纬度和记录的一样(如果经纬度有波动,可以考虑按误差值来判定), 并且地理信息已经提取, 就不再进行提取了
 			if (dto.getLat().equals(entity.getLat()) && dto.getLon().equals(entity.getLon())) {
 				return;
 			}
-
+			
 			entity.setLat(dto.getLat());
 			entity.setLon(dto.getLon());
 			// 2:根据坐标提取地理位置详细信息
@@ -1278,7 +1289,8 @@ public class AsyncMsgHandleService {
 						response = GeocodingHelper.geoPoiUpdate(params);
 						entity.setBdid(String.valueOf(response.getId()));
 					}
-					entity.setIpgen(false);
+//					entity.setIpgen(false);
+					entity.setLoc_method(WifiDeviceHelper.Device_Location_By_Wifi);
 					logger.info(String.format(
 							"AnsyncMsgBackendProcessor wifiDeviceLocationHandle baidu geoid[%s] %s successful",
 							response.getId(), StringUtils.isEmpty(bdid) ? "Create" : "Update"));
@@ -1291,7 +1303,7 @@ public class AsyncMsgHandleService {
 			// 3:增量索引
 			// wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
 			wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(entity.getId(), Double.parseDouble(entity.getLat()),
-					Double.parseDouble(entity.getLon()), entity.getFormatted_address());
+					Double.parseDouble(entity.getLon()), entity.getFormatted_address(),entity.getProvince(),entity.getCity(),entity.getDistrict());
 		}
 		logger.info(
 				String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));
@@ -1576,7 +1588,7 @@ public class AsyncMsgHandleService {
 		// daemonRpcService);
 		// daemonRpcService.wifiDeviceCmdDown(null, dto.getMac(),
 		// dto.getPayload());
-		DaemonHelper.deviceTerminalsRateQuery(dto.getMac(), daemonRpcService);
+		DaemonHelper.deviceTerminalsRateQuery(dto.getMac(),DaemonHelper.DeviceRateQuery_Period,DaemonHelper.DeviceRateQuery_Duration, daemonRpcService);
 		WifiDeviceRealtimeRateStatisticsStringService.getInstance().addHDRateWaiting(dto.getMac());
 		logger.info(String.format("wifiDeviceHDRateFetch message[%s] successful", message));
 	}
@@ -1620,14 +1632,19 @@ public class AsyncMsgHandleService {
 	public void userDeviceRegister(String message) {
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s]", message));
 		UserDeviceRegisterDTO dto = JsonHelper.getDTO(message, UserDeviceRegisterDTO.class);
-		deviceFacadeService.addMobilePresent(dto.getUid(), dto.getMac());
-		afterUserSignedonThenCmdDown(dto.getMac());
+		if(dto.isFromApp()){
+			deviceFacadeService.addMobilePresent(dto.getUid(), dto.getMac());
+			afterUserSignedonThenCmdDown(dto.getMac());
 
-		userDeviceBindOperateSyskeySync(dto.getMac(), dto.getUid());
-		{
-			// 进行分成owner字段重置
-			chargingFacadeService.wifiDeviceBindedNotify(dto.getMac(), dto.getUid());
-			// 给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
+			userDeviceBindOperateSyskeySync(dto.getMac(), dto.getUid());
+			{
+				// 进行分成owner字段重置
+				chargingFacadeService.wifiDeviceBindedNotify(dto.getMac(), dto.getUid());
+				// 给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
+				addDevices2SharedNetwork(dto.getUid(), dto.getMac());
+			}
+		} else {
+			//分成配置等已经在syskey消息中处理完成，此处只需要下发共享网络配置
 			addDevices2SharedNetwork(dto.getUid(), dto.getMac());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s] successful", message));

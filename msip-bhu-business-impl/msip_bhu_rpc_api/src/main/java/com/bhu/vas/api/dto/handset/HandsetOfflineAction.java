@@ -10,6 +10,7 @@ public class HandsetOfflineAction extends TerminalAction{
 	private long tx_bytes;
 	private long rx_bytes;
 	private String authorized;
+	private String act;
 	//新增终端下线
 	private long end_ts;
 	private String hname;
@@ -119,5 +120,8 @@ public class HandsetOfflineAction extends TerminalAction{
 	}
 	public void setVipacc(String vipacc) {
 		this.vipacc = vipacc;
+	}
+	public void setAct(String act) {
+		this.act = act;
 	}
 }

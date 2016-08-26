@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,51 +36,46 @@ import com.midas.util.SnsSigCheck;
 
 public class MidasUtils {
 
-	public static String submitOrder(String reckoningId, String total_fee, String ip,String subject,String openId,String return_url)  {
+	public static String submitOrder(String version ,String reckoningId, String total_fee, String ip,String subject,String openId,String return_url)  {
 		String result = "";
-		Config.price = total_fee;
-        Config.SerialNumber = reckoningId;
-        Config.goodsmeta = subject;
-        Config.openid = openId;
-        Config.payitem = Config.SerialNumber + '*' +(Config.price) + '*' + Config.pay_num;
-        String url_path = Config.url_path;
-        
-        HashMap<String, String> parameters = new HashMap<String, String>();
-        parameters.put("session_id", Config.session_id);
-        parameters.put("session_type", Config.session_type);
-        parameters.put("openid", Config.openid);
-        parameters.put("openkey", Config.openkey);
-        parameters.put("payUrl", Config.pay_url);
-        parameters.put("money", Config.price);
-        parameters.put("pay_token", Config.pay_token);
-        parameters.put("appid", Config.appid);
-        parameters.put("ts", getTimeStamp());
-        parameters.put("payitem", Config.payitem);
-        parameters.put("goodsmeta",Config.goodsmeta+"*"+"必虎服务" );
-        parameters.put("pf", Config.pf);
-        parameters.put("pfkey", Config.pfkey);
-        parameters.put("zoneid", Config.zoneid+"");
-        String secret = Config.secret+ "&";
-
         try {
-			Config.sig = SnsSigCheck.makeSig("get",url_path,parameters,secret);
-		} catch (OpensnsException e) {
-			e.printStackTrace();
-		}
-
-        String prestr = createLinkString(parameters);
-
-        String results = SendGET(Config.token_url+Config.url_path,prestr+"&sig="+Config.sig);
-        //String results = "{'ret':0,'url_params':'/v1/m29/1450006356/mobile_goods_info?token_id=0A666C05BB76758931A7A3112771F0E815342'}";
-        //{"ret":0,"token":"0A666C05BB76758931A7A3112771F0E815342","url_params":"/v1/m29/1450006356/mobile_goods_info?token_id=0A666C05BB76758931A7A3112771F0E815342","attach":""}
-        try {
+        	Config.price = total_fee;
+        	Config.SerialNumber = reckoningId;
+        	Config.goodsmeta = subject;
+        	Config.openid = openId;
+        	Config.payitem = Config.SerialNumber + '*' +(Config.price) + '*' + Config.pay_num;
+        	String url_path = Config.url_path;
+        	
+        	HashMap<String, String> parameters = new HashMap<String, String>();
+        	parameters.put("session_id", Config.session_id);
+        	parameters.put("session_type", Config.session_type);
+        	parameters.put("openid", Config.openid);
+        	parameters.put("openkey", Config.openkey);
+        	parameters.put("payUrl", Config.pay_url);
+        	parameters.put("money", Config.price);
+        	parameters.put("pay_token", Config.pay_token);
+        	parameters.put("appid", Config.appid);
+        	parameters.put("ts", getTimeStamp());
+        	parameters.put("payitem", Config.payitem);
+        	parameters.put("goodsmeta",Config.goodsmeta+"*"+"必虎服务" );
+        	parameters.put("pf", Config.pf);
+        	parameters.put("pfkey", Config.pfkey);
+        	parameters.put("zoneid", Config.zoneid+"");
+        	String secret = Config.secret+ "&";
+        	
+        	Config.sig = SnsSigCheck.makeSig("get",url_path,parameters,secret);
+        	
+        	String prestr = createLinkString(parameters);
+        	
+        	String results = SendGET(Config.token_url+Config.url_path,prestr+"&sig="+Config.sig);
+        	//String results = "{'ret':0,'url_params':'/v1/m29/1450006356/mobile_goods_info?token_id=0A666C05BB76758931A7A3112771F0E815342'}";
+        	//{"ret":0,"token":"0A666C05BB76758931A7A3112771F0E815342","url_params":"/v1/m29/1450006356/mobile_goods_info?token_id=0A666C05BB76758931A7A3112771F0E815342","attach":""}
         	JSONObject json = new JSONObject(results);
 			Integer ret = (Integer) json.get("ret");
 			if(ret != 0){
 				System.out.println(results);
 				return "error";
 			}
-			
 			Config.url_params = (String) json.get("url_params");
 			SortedMap<Object, Object> params = new TreeMap<Object, Object>();
 			params.put("goodstokenurl", Config.url_params);
@@ -96,43 +92,51 @@ public class MidasUtils {
         	params.put("money", Config.price);
 			result = JSONObject.valueToString(params);
 			
-//			SortedMap<Object, Object> payparams = new TreeMap<Object, Object>();
-//			
-//			SortedMap<Object, Object> buyInfo = new TreeMap<Object, Object>();
-//			SortedMap<Object, Object> opt = new TreeMap<Object, Object>();
-//			
-//			SortedMap<Object, Object> extend = new TreeMap<Object, Object>();
-//			
-//			
-//			buyInfo.put("type", "goods");
-//			buyInfo.put("appid", Config.appid);
-//			buyInfo.put("from_h5", 1);
-//			buyInfo.put("zoneid", Config.zoneid);
-//			buyInfo.put("pf", Config.pf);
-//			buyInfo.put("pfkey", Config.pfkey);
-//			buyInfo.put("session_id", Config.session_id);
-//			buyInfo.put("session_type", Config.session_type);
-//			buyInfo.put("openid", Config.openid);
-//			buyInfo.put("openkey", Config.openkey);
-//			
-//			extend.put("showSingleAmt", 0);
-//			extend.put("amtCanChange", 0);
-//			buyInfo.put("extend", extend);
-//			
-//			buyInfo.put("goodstokenurl", Config.url_params);
-//			buyInfo.put("buy_quantity", 1);
-//			payparams.put("buyInfo", buyInfo);
-//			opt.put("sandbox", false);
-//			opt.put("https", false);
-//			payparams.put("opt", opt);
-//			return_url = URLEncoder.encode(return_url, "UTF-8");
-//			payparams.put("callback_url", return_url);
-//			
-//		    String s = URLEncoder.encode(JSONObject.valueToString(payparams), "UTF-8");
-//			result = Config.pay_url+"?payParams="+s;
-			
+			//兼容旧版
+			if(version.equals("0")){
+				return result;
+			}else if(version.equals("v1")){
+				SortedMap<Object, Object> payparams = new TreeMap<Object, Object>();
+				
+				SortedMap<Object, Object> buyInfo = new TreeMap<Object, Object>();
+				SortedMap<Object, Object> opt = new TreeMap<Object, Object>();
+				
+				SortedMap<Object, Object> extend = new TreeMap<Object, Object>();
+				
+				
+				buyInfo.put("type", "goods");
+				buyInfo.put("appid", Config.appid);
+				buyInfo.put("from_h5", 1);
+				buyInfo.put("zoneid", Config.zoneid);
+				buyInfo.put("pf", Config.pf);
+				buyInfo.put("pfkey", Config.pfkey);
+				buyInfo.put("session_id", Config.session_id);
+				buyInfo.put("session_type", Config.session_type);
+				buyInfo.put("openid", Config.openid);
+				buyInfo.put("openkey", Config.openkey);
+				
+				extend.put("showSingleAmt", 0);
+				extend.put("amtCanChange", 0);
+				buyInfo.put("extend", extend);
+				
+				buyInfo.put("goodstokenurl", Config.url_params);
+				buyInfo.put("buy_quantity", 1);
+				payparams.put("buyInfo", buyInfo);
+				opt.put("sandbox", false);
+				opt.put("https", false);
+				payparams.put("opt", opt);
+				return_url = URLEncoder.encode(return_url, "UTF-8");
+				payparams.put("callback_url", return_url);
+				
+			    String s = URLEncoder.encode(JSONObject.valueToString(payparams), "UTF-8");
+				result = Config.pay_url+"?payParams="+s;
+			}
 		} catch (JSONException e) {
-			System.out.println("midas error:"+e.getMessage());
+			System.out.println("midas JSONException error:"+e.getMessage());
+		} catch (UnsupportedEncodingException e) {
+			System.out.println("midas UnsupportedEncodingException error:"+e.getMessage());
+		} catch (OpensnsException e) {
+			System.out.println("midas OpensnsException error:"+e.getMessage());
 		}
        return result;
 	}

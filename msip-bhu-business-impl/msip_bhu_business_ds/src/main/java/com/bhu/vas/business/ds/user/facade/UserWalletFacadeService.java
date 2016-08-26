@@ -46,6 +46,7 @@ import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
@@ -104,6 +105,9 @@ public class UserWalletFacadeService{
 	private MacIncomeService macIncomeService;
 	@Resource
 	private GpathIncomeService gpathIncomeService;
+	
+	@Resource
+	private BusinessWalletCacheService businessWalletCacheService;
 	
 	public GpathIncomeService getGpathIncomeService() {
 		return gpathIncomeService;
@@ -361,9 +365,9 @@ public class UserWalletFacadeService{
 	 * @param orderid
 	 * @param desc
 	 */
-	public int sharedealCashToUserWalletWithProcedure(String dmac, double cash, String orderid,String description,IWalletSharedealNotifyCallback callback){
+	public int sharedealCashToUserWalletWithProcedure(String dmac, String umac, double cash, String orderid,String description,IWalletSharedealNotifyCallback callback){
 		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
-		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, orderid, cash);
+		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, umac, orderid, cash);
 		ShareDealWalletProcedureDTO procedureDTO = ShareDealWalletProcedureDTO.buildWith(sharedeal);
 		procedureDTO.setTransmode(UWalletTransMode.SharedealPayment.getKey());
 		procedureDTO.setTransmode_desc(UWalletTransMode.SharedealPayment.getName());
@@ -379,6 +383,8 @@ public class UserWalletFacadeService{
 			if(sharedeal.isBelong() && callback != null){
 				callback.notifyCashSharedealOper(sharedeal.getOwner(),sharedeal.getOwner_cash());
 			}
+			// 分成成功后清除用户钱包日志统计缓存数据,再次查询时就是最新的数据
+			businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getOwner());
 		}else
 			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
@@ -1128,17 +1134,13 @@ public class UserWalletFacadeService{
         date = calendar.getTime();  
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
         String time =sdf.format(date); 
-        userIncomeRankService.deleteAllRank();
-		//List<DeviceGroupPaymentStatistics> paymentStatistics= deviceGroupPaymentStatisticsService.getRankingList(time);
-//		ModelCriteria mc = new ModelCriteria();
-//		mc.createCriteria().andColumnEqualTo("time", time);
-//		mc.createCriteria().andColumnEqualTo("type", "uid");
-		//mc.setOrderByClause("income");
+        //userIncomeRankService.deleteAllRank();
 		List<UserIncome> userIncomes=this.getUserIncomeService().findListByTime(time);
 		if(userIncomes != null&&userIncomes.size()>0){
 			String beforeIncome="0";
 			int beforeRankNum=0;
 			int n=1;
+			int m=1;
 			for(int i=userIncomes.size()-1;i>=0;i--){
 				UserIncomeRank userIncomeRank=new UserIncomeRank();
 				UserIncome userIncome=userIncomes.get(i);
@@ -1147,17 +1149,33 @@ public class UserWalletFacadeService{
 					beforeIncome=userIncome.getIncome();
 				}else{
 					if(!StringUtils.equals(beforeIncome, userIncome.getIncome())){
-						beforeRankNum=n+1;
+						beforeRankNum=m;
 						beforeIncome=userIncome.getIncome();
-						n++;
+						n=m;
 					}
 				}
 				userIncomeRank.setRank(beforeRankNum);
 				userIncomeRank.setIncome(userIncome.getIncome());
+				UserIncomeRank incomeRank=userIncomeRankService.getById(String.valueOf(userIncome.getUid()));
 				userIncomeRank.setId(String.valueOf(userIncome.getUid()));
-				userIncomeRank.setUpdated_at(date);
-				userIncomeRank.setCreated_at(date);
-				userIncomeRankService.insert(userIncomeRank);
+				if(incomeRank!=null){
+					userIncomeRank.setBeforeIncome(incomeRank.getIncome());
+					userIncomeRank.setBeforeRank(incomeRank.getRank());
+					Date dateNow = new Date();  
+			        Calendar calendarNow = Calendar.getInstance();  
+			        calendarNow.setTime(dateNow);  
+			        calendarNow.add(Calendar.DAY_OF_MONTH, 0);  
+			        dateNow = calendar.getTime();  
+					userIncomeRank.setUpdated_at(dateNow);
+					userIncomeRank.setCreated_at(incomeRank.getCreated_at());
+					userIncomeRankService.update(userIncomeRank);
+				}else{
+					userIncomeRank.setCreated_at(date);
+					userIncomeRank.setBeforeIncome(userIncomeRank.getIncome());
+					userIncomeRank.setBeforeRank(9999999);
+					userIncomeRankService.insert(userIncomeRank);
+				}
+				m++;
 			}
 		}
 	}

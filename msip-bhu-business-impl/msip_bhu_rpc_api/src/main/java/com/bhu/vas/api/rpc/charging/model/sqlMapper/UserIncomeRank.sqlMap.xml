@@ -13,7 +13,7 @@
   </resultMap>  
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_rank_user_income
+	    	t_statistic_rank_user_income
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
@@ -21,6 +21,8 @@
 	    	id,
 	    	rank,
 	    	income,
+	    	beforeRank,
+	    	beforeIncome,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -29,6 +31,8 @@
 	    <![CDATA[
 	    	rank,
 	    	income,
+	    	beforeRank,
+	    	beforeIncome,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -38,6 +42,8 @@
 			#{id},
 	    	#{rank},
 	    	#{income},
+	    	#{beforeRank},
+	    	#{beforeIncome},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -45,6 +51,8 @@
 	<sql id="modelUpdateValues">
 	    	rank = #{rank},
 	    	income = #{income},
+	    	beforeRank = #{beforeRank},
+	    	beforeIncome = #{beforeIncome},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
@@ -96,7 +104,7 @@
 		</where>
 	</select>
 	<select id="findByLimit" resultMap="modelResult" parameterType="java.util.List">
-	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> limit #{num}
+	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> where updated_at like #{time} order by rank limit 100
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">

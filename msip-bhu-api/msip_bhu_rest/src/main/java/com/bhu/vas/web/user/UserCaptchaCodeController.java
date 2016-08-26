@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
+import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -49,6 +50,47 @@ public class UserCaptchaCodeController extends BaseController{
 		RpcResponseDTO<UserCaptchaCodeDTO> rpcResult = userCaptchaCodeRpcService.fetchCaptchaCode(countrycode, acc,act);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+
+	
+	@ResponseBody()
+	@RequestMapping(value="/identity_auth",method={RequestMethod.POST})
+	public void check_identity(
+			HttpServletResponse response,
+			@RequestParam(required = true) String hdmac
+			) {
+		
+		RpcResponseDTO<UserIdentityAuth> rpcResult = userCaptchaCodeRpcService.validateIdentity(hdmac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/validate_captcha",method={RequestMethod.POST})
+	public void validate_code(
+			HttpServletResponse response,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = true) String hdmac,
+			@RequestParam(required = true) String captcha
+			) {
+		
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		
+		RpcResponseDTO<Boolean> rpcResult = userCaptchaCodeRpcService.validateIdentityCode(countrycode, acc, hdmac, captcha);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}

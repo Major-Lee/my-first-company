@@ -26,7 +26,7 @@ public interface IVapRpcService {
     RpcResponseDTO<TailPage<VersionVTO>> pagesDeviceVersions(int uid,String dut,boolean fw,int pn,int ps);
     
     RpcResponseDTO<GrayUsageVTO> modifyRelatedVersion4GrayVersion(int uid,String dut,int gl,String fwid,String omid);
-    RpcResponseDTO<VersionVTO> addDeviceVersion(int uid,String dut,String minid,boolean fw,String versionid,String upgrade_url,String upgrade_slaver_urls);
+    RpcResponseDTO<VersionVTO> addDeviceVersion(int uid,String dut,String minid,boolean fw,String versionid,String upgrade_url,String upgrade_slaver_urls ,String context,String creatorS);
     RpcResponseDTO<VersionVTO> addDeviceVersionUploadFailCallback(int uid,boolean fw,String versionid);
     RpcResponseDTO<VersionVTO> removeDeviceVersion(int uid,String dut,boolean fw,String fileName);
     RpcResponseDTO<List<String>> saveMacs2Gray(int uid, String dut, int gl,List<String> macs);
@@ -41,5 +41,6 @@ public interface IVapRpcService {
     RpcResponseDTO<ModuleDefinedItemVTO> fetchStatDetail(int uid,String style);
 
 	RpcResponseDTO<Boolean> addMiniDeviceVersion(int uid, String versionId, String miniVersionId);
+
 
 }

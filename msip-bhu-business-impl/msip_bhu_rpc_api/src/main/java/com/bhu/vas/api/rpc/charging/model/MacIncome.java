@@ -8,6 +8,14 @@ public class MacIncome extends BaseStringModel{
 	private String time;
 	private String mac;
 	private String income;
+	private int times;
+	
+	public int getTimes() {
+		return times;
+	}
+	public void setTimes(int times) {
+		this.times = times;
+	}
 	public String getTime() {
 		return time;
 	}

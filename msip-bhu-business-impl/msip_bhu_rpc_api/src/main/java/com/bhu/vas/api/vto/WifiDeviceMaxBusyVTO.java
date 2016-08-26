@@ -5,6 +5,8 @@ package com.bhu.vas.api.vto;
 public class WifiDeviceMaxBusyVTO extends WifiDeviceVTO{
 	private long hdc;//handset device count 移动设备接入的总数量
 	
+	private boolean ipgen = false;
+	
 	public long getHdc() {
 		return hdc;
 	}

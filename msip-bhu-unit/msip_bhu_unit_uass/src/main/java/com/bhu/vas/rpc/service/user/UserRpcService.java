@@ -23,10 +23,12 @@ public class UserRpcService implements IUserRpcService{
 	@Resource
 	private UserUnitFacadeService userUnitFacadeService;
 	@Override
-	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
-			String nick,String pwd, String captcha, String sex, String device,String regIp,String deviceuuid,String ut,String org) {
+	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc, String nick, 
+			                                                 String pwd, String captcha, String sex, 
+			                                                 String device, String regIp, String deviceuuid, 
+			                                                 String ut, String org) {
 		logger.info(String.format("createNewUser with countrycode[%s] acc[%s] nick[%s] pwd[%s] sex[%s] device[%s] ut[%s] org[%s] captcha[%s]",
-				countrycode,acc,nick,pwd,sex,device,ut,org,captcha));
+				                  countrycode, acc, nick, pwd, sex, device, ut, org, captcha));
 		return userUnitFacadeService.createNewUser(countrycode, acc, nick,pwd, captcha, sex, device,regIp, deviceuuid, ut,org);
 	}
 	

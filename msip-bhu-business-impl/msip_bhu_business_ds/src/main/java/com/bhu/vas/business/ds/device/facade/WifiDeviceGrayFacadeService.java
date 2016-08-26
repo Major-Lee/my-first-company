@@ -280,7 +280,7 @@ public class WifiDeviceGrayFacadeService {
      * @param versionid
      * @param upgrade_url
      */
-    public VersionVTO addDeviceVersion(VapEnumType.DeviceUnitType dut,String minid,boolean fw,String versionid,String upgrade_url,String upgrade_slaver_urls){
+    public VersionVTO addDeviceVersion(VapEnumType.DeviceUnitType dut,String minid,boolean fw,String versionid,String upgrade_url,String upgrade_slaver_urls ,String context,String creator){
     	validateDut(dut);
     	if(StringUtils.isEmpty(versionid) || StringUtils.isEmpty(upgrade_url)) 
     		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
@@ -298,6 +298,13 @@ public class WifiDeviceGrayFacadeService {
     		versionfw.setMinid(minid);
     		versionfw.setUpgrade_url(upgrade_url);
     		versionfw.setUpgrade_slaver_urls(upgrade_slaver_urls);
+    		if (creator != null) {
+    			versionfw.setCreator(creator);
+			}
+    		if(context !=null){
+    			versionfw.setContext(context);
+    		}
+    		
     		System.out.println("upgrade_url:::::"+upgrade_url);
     		versionfw = wifiDeviceVersionFWService.insert(versionfw);
     		//System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -313,6 +320,14 @@ public class WifiDeviceGrayFacadeService {
     		versionom.setDut(dut.getIndex());
     		versionom.setUpgrade_url(upgrade_url);
     		versionom.setUpgrade_slaver_urls(upgrade_slaver_urls);
+    		
+    		if (creator != null) {
+    			versionom.setCreator(creator);
+			}
+    		if(context !=null){
+    			versionom.setContext(context);
+    		}
+    		
     		versionom = wifiDeviceVersionOMService.insert(versionom);
     		return versionom.toVersionVTO();
     	}

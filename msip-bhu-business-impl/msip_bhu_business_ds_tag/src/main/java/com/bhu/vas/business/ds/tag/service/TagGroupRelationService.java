@@ -10,10 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.business.ds.tag.dao.TagGroupRelationDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractTagService;
+import com.smartwork.msip.cores.orm.service.EntityService;
 
 @Service
 @Transactional("tagTransactionManager")
-public class TagGroupRelationService extends AbstractTagService<String, TagGroupRelation, TagGroupRelationDao>{
+public class TagGroupRelationService extends EntityService<String, TagGroupRelation, TagGroupRelationDao>{
 
     @Resource
     @Override

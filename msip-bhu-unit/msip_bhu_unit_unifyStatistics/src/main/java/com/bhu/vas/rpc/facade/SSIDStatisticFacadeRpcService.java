@@ -18,11 +18,9 @@ import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
-import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -72,7 +70,7 @@ public class SSIDStatisticFacadeRpcService {
 		type = (String) map.get("type");
 		deliveryChannel = (String) map.get("deliveryChannel");
 		mobileNo = (String) map.get("mobileNo");
-		deviceLable = (String) map.get("deviceLable");
+		deviceLable = (String) map.get("deviceLabel");
 		startTime = (String) map.get("startTime");
 		endTime = (String) map.get("endTime");
 		pn = (Integer) map.get("pn");
@@ -84,6 +82,7 @@ public class SSIDStatisticFacadeRpcService {
 			//根据出货渠道查询
 			macList = new ArrayList<String>();
 			macList=queryMacListByDLabel(deliveryChannel);
+			log.info("macList length:"+macList.size());
 			flag=false;
 		}else if(StringUtils.isNotBlank(mobileNo)){
 			//根据手机号查询
@@ -99,11 +98,11 @@ public class SSIDStatisticFacadeRpcService {
 		List<String> timeList = new ArrayList<String>();
 		if(StringUtils.isNotBlank(startTime)&&StringUtils.isNotBlank(endTime)){
 			//根据时间间隔查询设备统计信息
-			timeList = getDaysListAsc(startTime,endTime);
+			timeList = getDaysList(startTime,endTime);
 		}else{
 			//根据天数查询设备统计信息
-			timeList = getLastDayAsc(Integer.parseInt(type));
-			startTime=timeList.get(0);
+			timeList = getLastDay(Integer.parseInt(type));
+			startTime=timeList.get(timeList.size()-1);
 			endTime=DataUtils.beforeDay();
 		}
 		//uv总数
@@ -209,11 +208,13 @@ public class SSIDStatisticFacadeRpcService {
 					}
 					String equipment = StringUtils.EMPTY;
 					equipment = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "equipment");
-					JSONObject obj = JSONObject.fromObject(equipment);
 					if(StringUtils.isNotBlank(equipment)){
+						JSONObject obj = JSONObject.fromObject(equipment);
 						//处理结果
-						if(obj.get("dc") != null && obj.get("doc") != null){
-							dc = (Integer)obj.get("dc");
+						if(obj.get("dc ") != null){
+							dc = (Integer)obj.get("dc ");
+						}
+						if( obj.get("doc") != null){
 							doc = (Integer)obj.get("doc");
 						}
 					}
@@ -357,61 +358,60 @@ public class SSIDStatisticFacadeRpcService {
 						UMStatisticsHashService.getInstance().umHset(timeList.get(i), "androidClickNum", String.valueOf(androidClickNum));
 					}
 				}else if(!flag&&macList != null &&macList.size()>0){
+					dc=macList.size();
 					for(String j:macList){
-						String dayPv = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
-						String dayUv = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
-						if(StringUtils.isNotBlank(dayPv)){
-							dayPV += Integer.parseInt(dayPv);
-						}
-						if(StringUtils.isNotBlank(dayUv)){
-							dayUV += Integer.parseInt(dayUv);
-						}
-						String dC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+date, j);
-						String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DC"+date, j);
-						if(StringUtils.isNoneBlank(dC)){
-							dc+=Integer.parseInt(dC);
-						}
-						if(StringUtils.isNoneBlank(dC)){
+						String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+date, j);
+						if(StringUtils.isNoneBlank(doC)){
 							doc+=Integer.parseInt(doC);
 						}
+						String dayPv=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-PV-"+date, j);
+						if(dayPv!=null){
+							dayPV += Integer.valueOf(dayPv);
+						}
+						String dayUv=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-UV-"+date, j);
+						if(dayUv!=null){
+							dayUV += Integer.valueOf(dayUv);
+						}
 						String orderStatist=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+date, j);
-						JSONObject orderObj = JSONObject.fromObject(orderStatist);
-						if(orderObj.get("occ") != null){
-							//单台订单
-							occ += (Integer)orderObj.get("occ");
-						}
-						if(orderObj.get("ofa") != null){
-							//单台收益
-							ofa += orderObj.getDouble("ofa");
-							dayGains += orderObj.getDouble("ofa");
-						}
-						if(orderObj.get("ofc") != null){
-							//完成订单数
-							ofc += (Integer)orderObj.get("ofc");
-						}
-						String pcOrderNumStr=orderObj.getString("pc_occ");
-						if(StringUtils.isNotBlank(pcOrderNumStr)){
-							pcOrderNum+=Integer.valueOf(pcOrderNumStr);
-						}
-						String pcOrderCompleteStr=orderObj.getString("pc_ofc");
-						if(StringUtils.isNotBlank(pcOrderCompleteStr)){
-							pcOrderComplete+=Integer.valueOf(pcOrderCompleteStr);
-						}
-						String pcOrderAmountStr=orderObj.getString("pc_ofa");
-						if(StringUtils.isNotBlank(pcOrderAmountStr)){
-							pcOrderAmount+=Double.valueOf(pcOrderAmountStr);
-						}
-						String mbOrderNumStr=orderObj.getString("mb_occ");
-						if(StringUtils.isNotBlank(mbOrderNumStr)){
-							mbOrderNum+=Integer.valueOf(mbOrderNumStr);
-						}
-						String mbOrderCompleteStr=orderObj.getString("mb_ofc");
-						if(StringUtils.isNotBlank(mbOrderCompleteStr)){
-							mbOrderComplete+=Integer.valueOf(mbOrderCompleteStr);
-						}
-						String mbOrderAmountStr=orderObj.getString("mb_ofa");
-						if(StringUtils.isNotBlank(mbOrderAmountStr)){
-							mbOrderAmount+=Double.valueOf(mbOrderAmountStr);
+						if(StringUtils.isNotBlank(orderStatist)){
+							JSONObject orderObj = JSONObject.fromObject(orderStatist);
+							if(orderObj.get("occ") != null){
+								//单台订单
+								occ += (Integer)orderObj.get("occ");
+							}
+							if(orderObj.get("ofa") != null){
+								//单台收益
+								ofa += orderObj.getDouble("ofa");
+								dayGains += orderObj.getDouble("ofa");
+							}
+							if(orderObj.get("ofc") != null){
+								//完成订单数
+								ofc += (Integer)orderObj.get("ofc");
+							}
+							String pcOrderNumStr=orderObj.getString("pc_occ");
+							if(StringUtils.isNotBlank(pcOrderNumStr)){
+								pcOrderNum+=Integer.valueOf(pcOrderNumStr);
+							}
+							String pcOrderCompleteStr=orderObj.getString("pc_ofc");
+							if(StringUtils.isNotBlank(pcOrderCompleteStr)){
+								pcOrderComplete+=Integer.valueOf(pcOrderCompleteStr);
+							}
+							String pcOrderAmountStr=orderObj.getString("pc_ofa");
+							if(StringUtils.isNotBlank(pcOrderAmountStr)){
+								pcOrderAmount+=Double.valueOf(pcOrderAmountStr);
+							}
+							String mbOrderNumStr=orderObj.getString("mb_occ");
+							if(StringUtils.isNotBlank(mbOrderNumStr)){
+								mbOrderNum+=Integer.valueOf(mbOrderNumStr);
+							}
+							String mbOrderCompleteStr=orderObj.getString("mb_ofc");
+							if(StringUtils.isNotBlank(mbOrderCompleteStr)){
+								mbOrderComplete+=Integer.valueOf(mbOrderCompleteStr);
+							}
+							String mbOrderAmountStr=orderObj.getString("mb_ofa");
+							if(StringUtils.isNotBlank(mbOrderAmountStr)){
+								mbOrderAmount+=Double.valueOf(mbOrderAmountStr);
+							}
 						}
 						String pcUv= UMStatisticsHashService.getInstance().umHget("MacPcUv"+timeList.get(i), j);
 						if(StringUtils.isNotBlank(pcUv)){
@@ -450,10 +450,10 @@ public class SSIDStatisticFacadeRpcService {
 				if(doc != 0){
 					singleOrderNum = (double) occ/doc;
 					BigDecimal b = new BigDecimal(singleOrderNum);
-					singleOrderNum =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
+					singleOrderNum =  round(b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue(),2);  
 					singleGains = ofa/doc;
 					BigDecimal b1 = new BigDecimal(singleGains);
-					singleGains =  b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();  
+					singleGains =  round(b1.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue(),2);  
 				}
 				totalPV += dayPV;
 				totalUV += dayUV;
@@ -465,8 +465,8 @@ public class SSIDStatisticFacadeRpcService {
 				ssidMap.put("dc", dc);
 				ssidMap.put("doc", doc);
 				ssidMap.put("singleOrderNum", singleOrderNum);
-				ssidMap.put("singleGains", singleGains);
-				ssidMap.put("dayGains", dayGains);
+				ssidMap.put("singleGains", round(singleGains,2));
+				ssidMap.put("dayGains", round(dayGains,2));
 				totalDC += dc;
 				totalDOC += doc;
 				
@@ -503,7 +503,7 @@ public class SSIDStatisticFacadeRpcService {
 					totalMap.put("clickConversion", round((pcOrderNum+mbOrderNum)*1.00/(pcClickNum+mobileClickNum)*100,2)+"%");
 				}
 				totalMap.put("orderComplete", pcOrderComplete+mbOrderComplete);
-				totalMap.put("orderAmount", pcOrderAmount+mbOrderAmount);
+				totalMap.put("orderAmount", round(pcOrderAmount+mbOrderAmount,2));
 				singleMap.put("total", totalMap);
 				
 				
@@ -525,7 +525,7 @@ public class SSIDStatisticFacadeRpcService {
 					pcMap.put("clickConversion", round(pcOrderNum*1.00/pcClickNum*100,2)+"%");
 				}
 				pcMap.put("orderComplete", pcOrderComplete);
-				pcMap.put("orderAmount", pcOrderAmount);
+				pcMap.put("orderAmount", round(pcOrderAmount,2));
 				singleMap.put("PC", pcMap);
 				
 				Map<String,Object> mobileMap=new HashMap<String,Object>();
@@ -546,7 +546,7 @@ public class SSIDStatisticFacadeRpcService {
 					mobileMap.put("clickConversion", round(mbOrderNum*1.00/mobileClickNum*100,2)+"%");
 				}
 				mobileMap.put("orderComplete", mbOrderComplete);
-				mobileMap.put("orderAmount", mbOrderAmount);
+				mobileMap.put("orderAmount", round(mbOrderAmount,2));
 				singleMap.put("mobile", mobileMap);
 				
 				Map<String,Object> iosMap=new HashMap<String,Object>();
@@ -633,9 +633,9 @@ public class SSIDStatisticFacadeRpcService {
 		totalMap.put("totalDOC", totalDOC);
 		BigDecimal b = new BigDecimal(totalSingleGains);
 		totalSingleGains =  b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();  
-		totalMap.put("totalSingleGains", totalSingleGains);
+		totalMap.put("totalSingleGains", round(totalSingleGains,2));
 		totalMap.put("totalSingleOrderNum", totalSingleOrderNum);
-		totalMap.put("totalGains", totalGains);
+		totalMap.put("totalGains", round(totalGains,2));
 		tMaps.put("ssid", totalMap);
 		
 		Map<String,Object> totalUmMap=new HashMap<String,Object>();
@@ -655,7 +655,7 @@ public class SSIDStatisticFacadeRpcService {
 			totalUmMap.put("clickConversion", round((totalPcOrderNum+totalMbOrderNum)*1.00/totalClickNum*100,2)+"%");
 		}
 		totalUmMap.put("orderComplete", totalPcOrderComplete+totalMbOrderComplete);
-		totalUmMap.put("orderAmount", totalPcOrderAmount+totalMbOrderAmount);
+		totalUmMap.put("orderAmount", round(totalPcOrderAmount+totalMbOrderAmount,2));
 		tMaps.put("total",totalUmMap);
 		Map<String,Object> pcMap=new HashMap<String,Object>();
 		pcMap.put("uv", totalPcUV);
@@ -674,7 +674,7 @@ public class SSIDStatisticFacadeRpcService {
 			pcMap.put("clickConversion", round(totalPcOrderNum*1.00/totalPcClickNum*100,2)+"%");
 		}
 		pcMap.put("orderComplete", totalPcOrderComplete);
-		pcMap.put("orderAmount", totalPcOrderAmount);
+		pcMap.put("orderAmount", round(totalPcOrderAmount,2));
 		tMaps.put("PC", pcMap);
 		
 		Map<String,Object> mobileMap=new HashMap<String,Object>();
@@ -694,7 +694,7 @@ public class SSIDStatisticFacadeRpcService {
 			mobileMap.put("clickConversion", round(totalMbOrderNum*1.00/totalMobileClickNum*100,2)+"%");
 		}
 		mobileMap.put("orderComplete", totalMbOrderComplete);
-		mobileMap.put("orderAmount", totalMbOrderAmount);
+		mobileMap.put("orderAmount", round(totalMbOrderAmount,2));
 		tMaps.put("mobile", mobileMap);
 		
 		Map<String,Object> iosMap=new HashMap<String,Object>();
@@ -746,20 +746,44 @@ public class SSIDStatisticFacadeRpcService {
 		resMap.put("dataList", pageResMaps);
 		resMap.put("total", tMaps);
 		
-		equipments.add(time);
-		equipments.add(equipmentNums);
+		//折线图组装数据
+		List<Object> astime=new ArrayList<Object>();
+		List<Object> asequipmentNums=new ArrayList<Object>();
+		
+		List<Object> asorderNums=new ArrayList<Object>();
+		List<Object> asorderComNums=new ArrayList<Object>();
+		
+		List<Object> astotalPrice=new ArrayList<Object>();
+		
+		for(int i=time.size()-1;i>=0;i--){
+			astime.add(time.get(i));
+			asequipmentNums.add(equipmentNums.get(i));
+			asorderNums.add(orderNums.get(i));
+			asorderComNums.add(orderComNums.get(i));
+			astotalPrice.add(totalPrice.get(i));
+		}
+		equipments.add(astime);
+		equipments.add(asequipmentNums);
 		
 		resMap.put("equipment", equipments);
 		
-		orders.add(time);
-		orders.add(orderNums);
-		orders.add(orderComNums);
+		orders.add(astime);
+		orders.add(asorderNums);
+		orders.add(asorderComNums);
 		resMap.put("order", orders);
 		
-		price.add(time);
-		price.add(totalPrice);
+		price.add(astime);
+		price.add(astotalPrice);
 		resMap.put("price", price);
 		
+		resMap.put("pn", pn);
+		int totalPage=1;
+		if(timeList.size()%ps==0){
+			totalPage=timeList.size()/ps;
+		}else{
+			totalPage=timeList.size()/ps+1;
+		}
+		resMap.put("totalpage", totalPage);
 		result=success(resMap);
 		return result;
 	}
@@ -858,14 +882,14 @@ public class SSIDStatisticFacadeRpcService {
 	 * @param dateNum
 	 * @return
 	 */
-	public static List<String> getLastDayAsc(int dateNum){
+	public static List<String> getLastDay(int dateNum){
 		List<String> list = new ArrayList<String>();
 		//获取当前日期
 		for (int i = 1; i <= dateNum; i++) {
 			Date date = new Date();  
 			Calendar calendar = Calendar.getInstance();  
 			calendar.setTime(date); 
-			calendar.add(Calendar.DAY_OF_MONTH, -(dateNum-i));
+			calendar.add(Calendar.DAY_OF_MONTH, -i);
 			date = calendar.getTime();  
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
 			String dateNowStr = sdf.format(date); 
@@ -874,12 +898,12 @@ public class SSIDStatisticFacadeRpcService {
 		return list; 
 	}
 	
-	public static List<String> getDaysListAsc(String beginTime,String endTime){
+	public static List<String> getDaysList(String beginTime,String endTime){
 		List<String> list = new ArrayList<String>();
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
 		Calendar start = Calendar.getInstance();
 		Calendar end = Calendar.getInstance();
-		list.add(beginTime);
+		list.add(endTime);
 		try {
 			start.setTime(format.parse(beginTime));
 			end.setTime(format.parse(endTime));
@@ -888,9 +912,9 @@ public class SSIDStatisticFacadeRpcService {
 		}
 		while(end.after(start))
 		{
-			System.out.println(format.format(start.getTime()));
-			start.add(Calendar.DAY_OF_MONTH,1);
-			list.add(format.format(start.getTime()).toString());
+			//System.out.println(format.format(start.getTime()));
+			end.add(Calendar.DAY_OF_MONTH,-1);
+			list.add(format.format(end.getTime()).toString());
 		}
 		return list; 
 	}
@@ -911,27 +935,11 @@ public class SSIDStatisticFacadeRpcService {
 	}
 	
 	public static void main(String[] args) {
-		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
-		/*String pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-06-01", "2016-06-01", "date", "",1);
-		System.out.println(pcUv);*/
-		//System.out.println(new java.text.DecimalFormat("0.00").format(4.025)); 
-		//System.out.println(Math.round(4.024*100 + 0.5)/100.0); 
-//		double s=3*1.00/2;
-//		 BigDecimal b = new BigDecimal(Double.toString(s));         
-//		 BigDecimal one = new BigDecimal("1");         
-//		 System.out.println(b.divide(one,2,BigDecimal.ROUND_HALF_UP).doubleValue());        
-		 String mobileUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", "2016-07-25", "2016-07-25", "wlanusermac", "",1);
-		 //String mobileUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
-			//String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", "2016-06-07", "2016-06-07", "date,os", "os in ('android','ios')",2);
-			System.out.println(mobileUv);
-			JSONObject jsonObject=JSONObject.fromObject(mobileUv);
-			String ss=jsonObject.get("values").toString();
-			ss=ss.substring(1);
-			ss=ss.substring(0, ss.length()-1);
-			System.out.println(ss);
-			//System.out.println(mobileClick);
-		//BhuCache.getInstance().setEquipment("2016-06-05", "equipment", "{\"dc\":10020,\"doc\":7998}");
-		//BhuCache.getInstance().setStOrder("2016-06-05", "stOrder", "{\"mb_ofc\":833,\"mb_ofa\":\"594\",\"pc_ofc\":26,\"pc_ofa\":\"65\",\"pc_occ\":188,\"ofc\":859,\"mb_occ\":4210,\"ofa\":659.0,\"occ\":4398}");
+		List<String> timeList=getDaysList("2016-08-11","2016-08-17");
+		//List<String> timeList=getLastDay(7);
+		for(String i:timeList){
+			System.out.println(i);
+		}
 	}
 	/**
 	 * 返回成功结果集

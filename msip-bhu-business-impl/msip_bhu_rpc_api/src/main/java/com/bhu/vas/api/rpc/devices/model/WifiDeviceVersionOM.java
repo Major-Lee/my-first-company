@@ -31,6 +31,27 @@ public class WifiDeviceVersionOM extends BaseStringModel{
 	private boolean related;
 	private Date created_at;
 	
+	//版本描述
+	private String context;
+	//上传者
+	private String creator;
+	
+	public String getContext() {
+		return context;
+	}
+
+	public void setContext(String context) {
+		this.context = context;
+	}
+
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -97,6 +118,8 @@ public class WifiDeviceVersionOM extends BaseStringModel{
 		vto.setR(related);
 		vto.setT(VersionVTO.VersionType_OM);
 		vto.setD(DateTimeHelper.formatDate(created_at, DateTimeHelper.FormatPattern1));
+		vto.setContext(context);
+		vto.setCreator(creator);
 		return vto;
 	}
 	

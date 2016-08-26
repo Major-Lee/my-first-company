@@ -528,6 +528,24 @@ public class ChargingFacadeService {
 		}
 		
 	}
+	//add by fengshibo 2016-08-05 start
+	public String fetchForceTime(String dmac,Integer umactype){
+		try{
+			WifiDeviceSharedealConfigs configs = userfulWifiDeviceSharedealConfigs(dmac);
+			String forceTime = null;
+			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
+				forceTime = configs.getAit_pc();
+			}else{
+				forceTime = configs.getAit_mobile();
+			}
+			return forceTime;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return WifiDeviceSharedealConfigs.Default_AIT;
+		}
+		
+	}
+	//add by fengshibo 2016-08-05 end
 	
 	public String fetchAccessInternetTime(String dmac,Integer umactype){
 		try{
@@ -551,29 +569,34 @@ public class ChargingFacadeService {
 	 * @param cash
 	 * @return
 	 */
-	public SharedealInfo calculateSharedeal(String dmac,String orderid,double cash){
+	public SharedealInfo calculateSharedeal(String dmac, String umac, String orderid,double cash) {
 		WifiDeviceSharedealConfigs configs = this.userfulWifiDeviceSharedealConfigs(dmac);
-		SharedealInfo result =  SharedealInfo.calculate(dmac, orderid, cash, configs.getOwner_percent(), configs.getManufacturer_percent(),configs.getDistributor_percent());
-		if(configs.getOwner()>0){
+		SharedealInfo result =  SharedealInfo.calculate(dmac, umac, orderid, cash,  
+				                                        configs.getOwner_percent(), 
+				                                        configs.getManufacturer_percent(),
+				                                        configs.getDistributor_percent());
+		
+		if (configs.getOwner() > 0) {
 			result.setOwner(configs.getOwner());
 			result.setBelong(true);
-		}else{
+		} else {
 			result.setOwner(WifiDeviceSharedealConfigs.Default_Owner);
 			result.setBelong(false);
 		}
-		
-		if(configs.getManufacturer()>0){
+
+		if (configs.getManufacturer() > 0) {
 			result.setManufacturer(configs.getManufacturer());
-		}else{
+		} else {
 			result.setManufacturer(WifiDeviceSharedealConfigs.Default_Manufacturer);
 		}
-		//不存在的 Distributor 分成进入Default_Owner
-		if(configs.getDistributor()>0){
+
+		// 不存在的 Distributor 分成进入Default_Owner
+		if (configs.getDistributor() > 0) {
 			result.setDistributor(configs.getDistributor());
-		}else{
+		} else {
 			result.setDistributor(WifiDeviceSharedealConfigs.Default_Owner);
 		}
-		//result.setDistributor(configs.getDistributor());
+		// result.setDistributor(configs.getDistributor());
 		return result;
 	}
 	

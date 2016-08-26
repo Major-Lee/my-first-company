@@ -14,7 +14,7 @@
   </resultMap>  
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_users_income
+	    	t_statistic_users_income
 	    ]]>
 	</sql>
 	<sql id="modelColumns">

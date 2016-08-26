@@ -8,6 +8,8 @@ public class YunConstant {
 	public static final String QN_BUCKET_URL_OM = "http://7xq3nw.com2.z0.glb.qiniucdn.com/@";
 	public static final String QN_BUCKET_NAME_FW = "devicefw";
 	public static final String QN_BUCKET_NAME_OM = "deviceom";
+	public static final String QN_BUCKET_URL_EXPORT_REWARD_RECORD = "http://obklbhh9z.bkt.clouddn.com/";
+	public static final String QN_BUCKET_NAME_EXPORT_REWARD_RECORD = "rewardrecord";
 	// 阿里云参数
 	public static final String AL_ACCESS_KEY = "stYL3FtcjOTmvyA4";
 	public static final String AL_SECRET_KEY = "aicFwcLeEx397kfVQB7OelSV4iqSON";

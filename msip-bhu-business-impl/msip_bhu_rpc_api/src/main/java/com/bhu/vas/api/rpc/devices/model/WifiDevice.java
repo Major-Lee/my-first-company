@@ -75,7 +75,7 @@ public class WifiDevice extends BaseStringModel{
 	//百度geocoding create result id
 	private String bdid;
 	//通过ip得到的坐标和地址
-	private boolean ipgen = false;
+	private int loc_method = 0;// = false;
 	//设备运行时长
 	private String uptime;
 	private String tfcard_usage;
@@ -373,6 +373,14 @@ public class WifiDevice extends BaseStringModel{
 		this.bdid = bdid;
 	}
 
+	public int getLoc_method() {
+		return loc_method;
+	}
+
+	public void setLoc_method(int loc_method) {
+		this.loc_method = loc_method;
+	}
+/*
 	public boolean isIpgen() {
 		return ipgen;
 	}
@@ -380,7 +388,7 @@ public class WifiDevice extends BaseStringModel{
 	public void setIpgen(boolean ipgen) {
 		this.ipgen = ipgen;
 	}
-
+*/
 	public String getUptime() {
 		return uptime;
 	}

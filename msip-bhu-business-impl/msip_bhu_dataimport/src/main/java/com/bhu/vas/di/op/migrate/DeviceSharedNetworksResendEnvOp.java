@@ -26,7 +26,7 @@ import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
- * 更新共享网络中的open_resource为系统定义的缺省配置
+ * 给在线的共享网络设备重新下发配置
  * @author Edmond
  *
  */

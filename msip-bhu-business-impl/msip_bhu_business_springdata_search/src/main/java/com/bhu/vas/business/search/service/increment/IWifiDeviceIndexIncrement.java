@@ -14,7 +14,7 @@ public interface IWifiDeviceIndexIncrement {
 	 * @param lon 经度
 	 * @param d_address 详细地址
 	 */
-	public void locaitionUpdIncrement(String id, double lat, double lon, String d_address);
+	public void locaitionUpdIncrement(String id, double lat, double lon, String d_address, String province, String city, String district);
 	
 	/**
 	 * 设备模块上线发生变更
@@ -137,5 +137,6 @@ public interface IWifiDeviceIndexIncrement {
 	 * @param sharedNetwork_turnstate
 	 */
 	public void sharedNetworkTurnStateUpdIncrement(String id, String sharedNetwork_turnstate);
+
 
 }

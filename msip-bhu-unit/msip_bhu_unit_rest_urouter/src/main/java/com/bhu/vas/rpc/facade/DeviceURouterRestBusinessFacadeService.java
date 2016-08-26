@@ -2184,7 +2184,6 @@ public class DeviceURouterRestBusinessFacadeService {
 		try {
 			List<UserDeviceDTO> vtos = null;
 			List<String> macs = null;
-			List<UserDeviceDTO> result = new ArrayList<UserDeviceDTO>();
 			int searchPageNo = pageNo >= 1 ? (pageNo - 1) : pageNo;
 			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchByConditionMessage(message,
 					searchPageNo, pageSize);
@@ -2213,6 +2212,10 @@ public class DeviceURouterRestBusinessFacadeService {
 							userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 							userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
 							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
+							if(wifiDeviceDocument.getD_geopoint() != null && wifiDeviceDocument.getD_geopoint().length == 2){
+								userDeviceDTO.setLon(String.valueOf(wifiDeviceDocument.getD_geopoint()[0]));;
+								userDeviceDTO.setLat(String.valueOf(wifiDeviceDocument.getD_geopoint()[1]));;
+							}
 							userDeviceDTO.setO_scalelevel(wifiDeviceDocument.getO_scalelevel());
 							if (wifiDeviceDocument.getD_snk_allowturnoff() != null) {
 								userDeviceDTO.setD_snk_allowturnoff(
@@ -2227,31 +2230,18 @@ public class DeviceURouterRestBusinessFacadeService {
 							}
 							userDeviceDTO.setD_online(wifiDeviceDocument.getD_online());
 							userDeviceDTO.setVer(wifiDeviceDocument.getD_origswver());
+							userDeviceDTO.setProvince(wifiDeviceDocument.getD_province());
+							userDeviceDTO.setCity(wifiDeviceDocument.getD_city());
+							userDeviceDTO.setDistrict(wifiDeviceDocument.getD_district());
 							macs.add(wifiDeviceDocument.getD_mac());
 							vtos.add(userDeviceDTO);
-						}
-
-						if (macs != null) {
-							List<WifiDevice> devices = wifiDeviceService.findByIds(macs);
-							if (devices != null) {
-
-								int index = 0;
-								for (WifiDevice wifiDevice : devices) {
-									UserDeviceDTO userDeviceDTO = vtos.get(index);
-									userDeviceDTO.setProvince(wifiDevice.getProvince());
-									userDeviceDTO.setCity(wifiDevice.getCity());
-									userDeviceDTO.setDistrict(wifiDevice.getDistrict());
-									result.add(userDeviceDTO);
-									index++;
-								}
-							}
 						}
 					}
 				}
 			} else {
 				vtos = Collections.emptyList();
 			}
-			TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, result);
+			TailPage<UserDeviceDTO> returnRet = new CommonPage<UserDeviceDTO>(pageNo, pageSize, total, vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 		} catch (ElasticsearchIllegalArgumentException eiaex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.SEARCH_CONDITION_TYPE_NOTEXIST);

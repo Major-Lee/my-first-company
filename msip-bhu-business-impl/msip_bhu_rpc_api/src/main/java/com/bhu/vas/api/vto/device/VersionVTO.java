@@ -19,6 +19,24 @@ public class VersionVTO implements java.io.Serializable{
 	private String d;
 	//related
 	private boolean r;
+	
+	//版本描述
+	private String context;
+	//上传者
+	private String creator;
+	
+	public String getContext() {
+		return context;
+	}
+	public void setContext(String context) {
+		this.context = context;
+	}
+	public String getCreator() {
+		return creator;
+	}
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
 	public String getId() {
 		return id;
 	}

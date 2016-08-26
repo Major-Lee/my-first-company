@@ -9,6 +9,7 @@ public class HandsetOnlineAction extends TerminalAction{
 	private String vapname;
 	private String bssid;
 	private String authorized;
+	private String act;
 	//新增终端下线
 	private String rssi;
 	private String wan;
@@ -46,6 +47,10 @@ public class HandsetOnlineAction extends TerminalAction{
 
 	public void setAuthorized(String authorized) {
 		this.authorized = authorized;
+	}
+
+	public void setAct(String act) {
+		this.act = act;
 	}
 
 	@Override
@@ -108,4 +113,5 @@ public class HandsetOnlineAction extends TerminalAction{
 	public void setVipacc(String vipacc) {
 		this.vipacc = vipacc;
 	}
+
 }

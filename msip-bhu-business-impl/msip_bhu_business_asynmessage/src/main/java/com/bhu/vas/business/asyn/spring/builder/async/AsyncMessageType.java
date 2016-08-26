@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum AsyncMessageType {
+		BatchImportPreCheck("出库库房设备导入预查","shipment import pre-check","BIPC"),
 		BatchImportConfirm("出库库房设备导入","shipment import","BICF"),
 		BatchSharedealModify("批量更新设备分成","batch sharedeal modify","BSMF"),
 		

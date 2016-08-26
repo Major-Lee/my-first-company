@@ -2,6 +2,8 @@ package com.bhu.vas.api.rpc.user.iservice;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
@@ -66,4 +68,9 @@ public interface IUserDeviceRpcService {
     
     public RpcResponseDTO<TailPage<UserDeviceCloudDTO>> devicePagesByUid(Integer uid, 
     		String dut, int pageNo, int pageSize);
+    
+    
+    
+    public RpcResponseDTO<Boolean> updateDeviceLocation(int uid, String mac, String country, String province, String city, String district, String street, String faddress, String lon, String lat);
+
 }

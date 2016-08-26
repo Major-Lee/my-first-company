@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 import com.bhu.vas.business.yun.YunConstant;
 import com.bhu.vas.business.yun.iservice.IYunUploadService;
 import com.qiniu.common.QiniuException;
+import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
@@ -225,5 +226,44 @@ public class YunOperateService implements IYunUploadService {
 				}
 			}
 		}));
+	}
+	/**
+	 * add by fengshibo 
+	 */
+	@Override
+	public boolean uploadYun(final byte[] bs,final String filepath) {
+		try {
+			return uploadFile2QN(bs,filepath);
+
+		} catch (Exception e) {
+			System.out.println("uploadYun:fail");
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	/**
+	 * 七牛云上传
+	 * 
+	 * @param file
+	 * @param remoteName
+	 *            上传到七牛云之后的文件名称
+	 * @param bucketName
+	 *            库名字
+	 * @throws QiniuException
+	 */
+	public boolean uploadFile2QN(byte[] bs,String filepath) throws Exception {
+
+		Auth auth = Auth.create(YunConstant.QN_ACCESS_KEY, YunConstant.QN_SECRET_KEY);
+		UploadManager uploadManager = new UploadManager();
+		Response r = uploadManager.put(bs, filepath,
+				auth.uploadToken(YunConstant.QN_BUCKET_NAME_EXPORT_REWARD_RECORD));
+		return r.isOK();
+	}
+	
+	public String getURL(String filename) {
+		String QNurl = null;
+		QNurl = String.format("%s%s", YunConstant.QN_BUCKET_URL_EXPORT_REWARD_RECORD,filename);
+		return QNurl;
 	}
 }

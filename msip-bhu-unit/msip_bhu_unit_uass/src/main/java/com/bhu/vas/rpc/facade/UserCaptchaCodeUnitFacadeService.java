@@ -15,7 +15,9 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.model.UserCaptchaCode;
+import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
@@ -29,6 +31,8 @@ public class UserCaptchaCodeUnitFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(UserCaptchaCodeUnitFacadeService.class);
 	@Resource
 	private UserCaptchaCodeService userCaptchaCodeService;
+	@Resource
+	private UserIdentityAuthService userIdentityAuthService;
 	
 	//内部线程池，用于调用sms接口
 	private ExecutorService exec_send = null;//Executors.newFixedThreadPool(30);
@@ -77,6 +81,9 @@ public class UserCaptchaCodeUnitFacadeService {
 										break;
 									case SnkAuth:
 										smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSnkAuthSMS_Template, payload.getCaptcha());
+										break;
+									case Portal:
+										smsg = String.format(BusinessRuntimeConfiguration.Internal_Portal_Template, payload.getCaptcha());
 										break;
 									default:
 										smsg = String.format(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Template, payload.getCaptcha());
@@ -150,6 +157,33 @@ public class UserCaptchaCodeUnitFacadeService {
 		//logger.info(String.format("validateCaptchaCode with countrycode[%s] acc[%s] captcha[%s]", countrycode,acc,captcha));
 		//return userCaptchaCodeUnitFacadeService.validateCaptchaCode(countrycode, acc,captcha);
 	}
+	
+	
+	public RpcResponseDTO<Boolean> validateIdentityCode(int countrycode,
+			 String acc,String hdmac,String captcha){
+		try {
+			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+			ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
+			if(errorCode != null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
+			}
+			userIdentityAuthService.generateIdentityAuth(countrycode, acc, hdmac);
+			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		} catch (BusinessI18nCodeException ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ex.getErrorCode(), ex.getPayload());
+		} 
+	}
+	
+	
+	public RpcResponseDTO<UserIdentityAuth> validateIdentity(String hdmac){
+		try {
+			UserIdentityAuth auth = userIdentityAuthService.validateIdentity(hdmac);
+			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(auth);
+		} catch (BusinessI18nCodeException ex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ex.getErrorCode(), ex.getPayload());
+		} 
+	}
+	
 	
 	/*@PreDestroy
 	public void destory(){

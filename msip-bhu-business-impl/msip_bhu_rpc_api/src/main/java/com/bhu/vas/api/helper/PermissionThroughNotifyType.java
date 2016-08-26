@@ -7,6 +7,7 @@ public enum PermissionThroughNotifyType {
 	
 	RewardPermissionNotify("打赏许可放行通知","reward permission","RDN"),
 	SMSPermissionNotify("短信认证许可放行通知","sms permission","SSN"),
+	VideoPermissionNotify("视频认证许可放行通知","video permission","ADN"),
 	;
 	
 	static Map<String, PermissionThroughNotifyType> allActionMessageTypes;
