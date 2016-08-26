@@ -1,11 +1,12 @@
 package com.bhu.vas.api.dto.procedure;
 
-import java.math.BigDecimal;
+import java.util.Date;
 
 import org.apache.ibatis.type.JdbcType;
 
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.logic.procedure.AbstractProcedureDTO;
 import com.smartwork.msip.cores.orm.logic.procedure.IN;
 import com.smartwork.msip.cores.orm.logic.procedure.OUT;
@@ -35,6 +36,10 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 	
 	@OUT(jdbcType = JdbcType.INTEGER)
 	private int ods;//online devices
+	
+	@OUT(jdbcType = JdbcType.DATE)
+	private Date last_update_cash_datetime;//online devices
+	
 	public int getUserid() {
 		return userid;
 	}
@@ -156,8 +161,10 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 		vto.setUserid(this.getUserid());
 		vto.setOds(this.getOds());
 		vto.setToday_date(this.getToday_date());
-	
-		vto.setToday_cash((float)ArithHelper.round(this.getToday_cash(), 2));
+	    
+		boolean isTheToday = DateTimeHelper.isSameDay(last_update_cash_datetime, new Date());
+		vto.setToday_cash(isTheToday ? (float)ArithHelper.round(this.getToday_cash(), 2) : 0);
+		
 		vto.setToday_nums(this.getToday_nums());
 		vto.setYesterday_date(this.getYesterday_date());
 		vto.setYesterday_cash((float)ArithHelper.round(this.getYesterday_cash(),2));
