@@ -62,7 +62,10 @@
 	    	#{cash},
 	    	#{withdraw},
 	    	#{created_at},
-	    	#{updated_at}
+	    	#{updated_at},
+	    	#{today_cash_sum},
+            #{last_update_cash_time, jdbcType=TIMESTAMP},
+            #{total_cash_sum}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
@@ -135,7 +138,7 @@
 		</where>
 	</delete>
 	<insert id="insert" parameterType="userWallet">
-		insert into <include refid="modelTableName" /> (<include refid="modelInsertValues" />) values (<include refid="modelInsertValues" />);
+		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
 	<update id="update" parameterType="userWallet">
