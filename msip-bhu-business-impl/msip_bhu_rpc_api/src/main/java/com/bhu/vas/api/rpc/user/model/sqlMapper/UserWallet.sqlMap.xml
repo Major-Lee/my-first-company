@@ -135,7 +135,7 @@
 		</where>
 	</delete>
 	<insert id="insert" parameterType="userWallet">
-		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
+		insert into <include refid="modelTableName" /> (<include refid="modelInsertValues" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
 	<update id="update" parameterType="userWallet">
