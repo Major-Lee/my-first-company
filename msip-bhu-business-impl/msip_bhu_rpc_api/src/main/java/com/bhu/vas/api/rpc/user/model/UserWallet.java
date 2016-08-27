@@ -47,8 +47,14 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	
 	@Override
 	public void preInsert() {
-		if (this.created_at == null)
+		if (this.created_at == null) {
 			this.created_at = new Date();
+		}
+		
+		if (this.last_update_cash_time == null) {
+			this.last_update_cash_time = new Date();
+		}
+		
 		if(StringUtils.isNotEmpty(this.plainpwd) && StringUtils.isEmpty(this.password))
 			this.password = BCryptHelper.hashpw(plainpwd, BCryptHelper.gensalt());//DigestHelper.md5ToHex(this.plainpwd);
 		super.preInsert();
