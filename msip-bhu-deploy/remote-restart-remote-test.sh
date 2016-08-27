@@ -13,9 +13,6 @@ Deploy2ComponentServerKafka='101.200.202.106'
 Deploy2ComponentServerElasticsearch='101.200.232.26'
 
 
-echo "stop $Deploy2ComponentServerRedis input components"
-ssh -p 65008 root@$Deploy2ComponentServerRedis '/BHUData/appsh/stop.sh'
-
 echo "restart $Deploy2ComponentServerRedis daemon components"
 ssh -p 65008 root@$Deploy2ComponentServerRedis '/BHUData/appsh/restart.sh'
 sleep 5
@@ -31,10 +28,6 @@ sleep 5
 echo "restart $Deploy2ComponentServerElasticsearch daemon components"
 ssh -p 65008 root@$Deploy2ComponentServerElasticsearch '/BHUData/appsh/restart.sh'
 sleep 5
-
-echo "restart $Deploy2ComponentServerRedis input components"
-ssh -p 65008 root@$Deploy2ComponentServerRedis'/BHUData/appsh/start.sh'
-
 
 sleep 5
 echo "restart $Deploy2WebServerRest web"

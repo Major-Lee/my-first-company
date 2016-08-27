@@ -6,6 +6,8 @@ echo $Current_DIR
 
 Deploy2WebServerRest='123.57.223.47'
 
+#mysql-test1
+Deploy2DataImportMysql='101.200.232.197'
 #redis-test1
 Deploy2ComponentServerRedis='101.200.182.211'
 #openresty-test1
@@ -267,6 +269,13 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_commdity_rest/WEB-INF/lib/spr
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_commdity_rest/WEB-INF/lib/msip_*.jar   root@$Deploy2WebServerRest:/BHUData/apps/msip_bhu_commdity_rest/WEB-INF/lib/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_commdity_rest/WEB-INF/classes/com/     root@$Deploy2WebServerRest:/BHUData/apps/msip_bhu_commdity_rest/WEB-INF/classes/com/
 echo 'deploy msip_bhu_commdity_rest successfully @'$Deploy2WebServerRest
+
+
+echo 'deploy msip_bhu_commdity_rest to ...@'$Deploy2DataImportMysql
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/lib/spring*.RELEASE.jar    root@$Deploy2DataImportMysql:/BHUData/apps/msip_bhu_dataimport/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/lib/msip_*.jar   root@$Deploy2DataImportMysql:/BHUData/apps/msip_bhu_dataimport/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_dataimport/classes/com/   root@$Deploy2DataImportMysql:/BHUData/apps/msip_bhu_dataimport/bin/com/
+echo 'deploy msip_bhu_dataimport successfully @'$Deploy2DataImportMysql
 
 echo '发布其他服务成功'
 
