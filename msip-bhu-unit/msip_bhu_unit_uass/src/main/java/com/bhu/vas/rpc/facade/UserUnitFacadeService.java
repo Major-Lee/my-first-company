@@ -8,9 +8,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javassist.bytecode.Mnemonic;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
@@ -732,6 +735,14 @@ public class UserUnitFacadeService {
 			String createEndTime = StringUtils.EMPTY;
 			createEndTime = (String) map.get("createEndTime");
 			System.out.println("****createEndTime【"+createEndTime+"】****");
+			
+			// 绑定设备数
+			int boundEquNum = NumberUtils.toInt(map.get("boundEquNum") + "");
+			
+			// 绑定设备数匹配符号
+			String boundEquNumPattern = StringUtils.EMPTY;
+			boundEquNumPattern = (String) map.get("boundEquNumPattern");
+			
 			//是否返现
 			//String isCashBack = StringUtils.EMPTY;
 			//当前页
@@ -757,7 +768,6 @@ public class UserUnitFacadeService {
 				}
 			}
 			if(StringUtils.isNotBlank(regdevice)){
-				// cri.andColumnEqualTo("regdevice", regdevice);
 				cri.andColumnIn("regdevice", Arrays.asList(regdevice));
 			}
 			if(StringUtils.isNotBlank(createStartTime) && StringUtils.isNotBlank(createEndTime)){
@@ -765,6 +775,7 @@ public class UserUnitFacadeService {
 				createEndTime = createEndTime+" 23:59:59";
 				cri.andColumnBetween("created_at", createStartTime, createEndTime);
 			}
+			
 			cri.andSimpleCaulse(" 1=1 ");
 			mc.setOrderByClause(" id desc ");
 			mc.setPageNumber(pageNo);
@@ -776,6 +787,23 @@ public class UserUnitFacadeService {
 				if(_user == null){
 					continue;
 				}
+				
+				//根据用户Id查询设备离线数量
+				long deviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Offline.getType(), "","");
+				//根据用户Id查询在线设备数量
+				long onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "","");
+				long deviceCount = onLinedeviceNum + deviceNum;
+				
+				if ("gt".equalsIgnoreCase(boundEquNumPattern)) {
+					if (deviceCount < boundEquNum) {
+						continue;
+					}
+				} else if ("lt".equalsIgnoreCase(boundEquNumPattern)){
+					if (deviceCount > boundEquNum) {
+						continue;
+					}	
+				}
+				
 				userManageDTO = new UserManageDTO();
 				userManageDTO.setUid(_user.getId());
 				userManageDTO.setUserType(String.valueOf(_user.getUtype()));
@@ -802,11 +830,7 @@ public class UserUnitFacadeService {
 					userManageDTO.setVcurrency(0);
 					userManageDTO.setWalletMoney(0.00);
 				}
-				//根据用户Id查询设备离线数量
-				long deviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Offline.getType(), "","");
-				//根据用户Id查询在线设备数量
-				long onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "","");
-				userManageDTO.setDc(onLinedeviceNum+deviceNum);
+				userManageDTO.setDc(deviceCount);
 				userManageDTO.setDoc(onLinedeviceNum);
 				vtos.add(userManageDTO);
 			}
