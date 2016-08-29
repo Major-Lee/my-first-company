@@ -793,12 +793,15 @@ public class UserUnitFacadeService {
 				//根据用户Id查询在线设备数量
 				long onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "","");
 				long deviceCount = onLinedeviceNum + deviceNum;
-				
+				System.out.println("***boundEquNum****" + boundEquNum);
+				System.out.println("***deviceCount****" + deviceCount);
 				if ("gt".equalsIgnoreCase(boundEquNumPattern)) {
+					System.out.println("***大于号(gt)****" + (deviceCount < boundEquNum));
 					if (deviceCount < boundEquNum) {
 						continue;
 					}
 				} else if ("lt".equalsIgnoreCase(boundEquNumPattern)){
+					System.out.println("***小于号(lt)****" + (deviceCount > boundEquNum));
 					if (deviceCount > boundEquNum) {
 						continue;
 					}	
@@ -833,6 +836,7 @@ public class UserUnitFacadeService {
 				userManageDTO.setDc(deviceCount);
 				userManageDTO.setDoc(onLinedeviceNum);
 				vtos.add(userManageDTO);
+				System.out.println("****vtos size****" + vtos.size());
 			}
 			TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(tailusers.getPageNumber(), pageSize, tailusers.getTotalItemsCount(), vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
