@@ -66,6 +66,7 @@ public class ConsoleUserController extends BaseController {
              @RequestParam(required = false) String userType,
              @RequestParam(required = false) String regdevice,
  			 @RequestParam(required = false) String boundEquNum,
+ 			 @RequestParam(required  = false) String boundEquNumPattern,
  			 @RequestParam(required  = false) String createStartTime,
  			 @RequestParam(required  = false) String createEndTime,
  			 @RequestParam(required  = false) String isCashBack,
@@ -85,8 +86,8 @@ public class ConsoleUserController extends BaseController {
     	if(StringUtils.isNotBlank(boundEquNum)){
     		map.put("boundEquNum", boundEquNum);
     	}
-    	if(StringUtils.isNotBlank(boundEquNum)){
-    		map.put("boundEquNum", boundEquNum);
+    	if(StringUtils.isNotBlank(boundEquNumPattern)){
+    		map.put("boundEquNumPattern", boundEquNumPattern);
     	}
     	if(StringUtils.isNotBlank(createStartTime) && StringUtils.isNotBlank(createEndTime)){
     		map.put("createStartTime", createStartTime);

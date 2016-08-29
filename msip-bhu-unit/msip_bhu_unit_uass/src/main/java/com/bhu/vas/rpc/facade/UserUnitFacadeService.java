@@ -2,6 +2,7 @@ package com.bhu.vas.rpc.facade;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -756,7 +757,8 @@ public class UserUnitFacadeService {
 				}
 			}
 			if(StringUtils.isNotBlank(regdevice)){
-				cri.andColumnEqualTo("regdevice", regdevice);
+				// cri.andColumnEqualTo("regdevice", regdevice);
+				cri.andColumnIn("regdevice", Arrays.asList(regdevice));
 			}
 			if(StringUtils.isNotBlank(createStartTime) && StringUtils.isNotBlank(createEndTime)){
 				createStartTime = createStartTime+" 00:00:00";
@@ -801,11 +803,9 @@ public class UserUnitFacadeService {
 					userManageDTO.setWalletMoney(0.00);
 				}
 				//根据用户Id查询设备离线数量
-				long deviceNum = 0;
-				deviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Offline.getType(), "","");
+				long deviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Offline.getType(), "","");
 				//根据用户Id查询在线设备数量
-				long onLinedeviceNum = 0;
-				onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "","");
+				long onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "","");
 				userManageDTO.setDc(onLinedeviceNum+deviceNum);
 				userManageDTO.setDoc(onLinedeviceNum);
 				vtos.add(userManageDTO);
