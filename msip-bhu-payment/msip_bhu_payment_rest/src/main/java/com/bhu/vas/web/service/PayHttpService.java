@@ -116,6 +116,8 @@ public class PayHttpService {
     String testMchId;
     @Value("#{p['pay.testMchKey']}")
     String testMchKey;
+    
+    //BHU WiFi reward app Weixin info
     @Value("#{p['pay.appAppId']}")
     String appAppId;
     @Value("#{p['pay.appAppSecret']}")
@@ -124,6 +126,16 @@ public class PayHttpService {
     String appMchId;
     @Value("#{p['pay.appMchKey']}")
     String appMchKey;
+    
+  //BHU WiFi tools app Weixin info
+    @Value("#{p['pay.appDSAppId']}")
+    String appDSAppId;
+    @Value("#{p['pay.appDSAppSecret']}")
+    String appDSAppSecret;
+    @Value("#{p['pay.appDSMchId']}")
+    String appDSMchId;
+    @Value("#{p['pay.appDSMchKey']}")
+    String appDSMchKey;
     
     @Value("#{p['pay.env']}")
     String env;
@@ -674,6 +686,38 @@ public class PayHttpService {
 		this.appMchKey = appMchKey;
 	}
 
+	public String getAppDSAppId() {
+		return appDSAppId;
+	}
+
+	public void setAppDSAppId(String appDSAppId) {
+		this.appDSAppId = appDSAppId;
+	}
+
+	public String getAppDSAppSecret() {
+		return appDSAppSecret;
+	}
+
+	public void setAppDSAppSecret(String appDSAppSecret) {
+		this.appDSAppSecret = appDSAppSecret;
+	}
+
+	public String getAppDSMchId() {
+		return appDSMchId;
+	}
+
+	public void setAppDSMchId(String appDSMchId) {
+		this.appDSMchId = appDSMchId;
+	}
+
+	public String getAppDSMchKey() {
+		return appDSMchKey;
+	}
+
+	public void setAppDSMchKey(String appDSMchKey) {
+		this.appDSMchKey = appDSMchKey;
+	}
+
 	public String getEnv() {
 		return env;
 	}
@@ -734,20 +778,22 @@ public class PayHttpService {
         return unifiedOrderResponse;
     }
 
-	 public AppUnifiedOrderResponse unifiedorderForApp(String out_trade_no,String commodityName, String totalPrice,String localIp,String payCallUrl,String openId ) {
+	 public AppUnifiedOrderResponse unifiedorderForApp(String appId,String mchId,String mchKey,String out_trade_no,String commodityName, String totalPrice,String localIp,String payCallUrl,String openId ) {
 		 initPayHttpService();  
 		 if("0:0:0:0:0:0:0:1".equals(localIp)){
 	            localIp="10.96.5.235";
 	        }
+		 
+		 
 	        /** 总金额(分为单位) */
 	        //totalPrice;
 	        SortedMap<Object, Object> parameters = new TreeMap<Object, Object>();
 	        /** 公众号APPID */
-	        parameters.put("appid", appAppId);
+	        parameters.put("appid", appId);
 	        /** 商户号 */
 	        parameters.put("attach", "bhu_app");
 	        /** 商户号 */
-	        parameters.put("mch_id", appMchId);
+	        parameters.put("mch_id", mchId);
 	        /** 随机字符串 */
 	        parameters.put("nonce_str", getNonceStr());
 	        /** 商品名称 */
@@ -768,7 +814,7 @@ public class PayHttpService {
 	        parameters.put("openid", openId);
 
 	        /** MD5进行签名，必须为UTF-8编码，注意上面几个参数名称的大小写 */
-	        String sign = createSign(appMchKey, "UTF-8", parameters);
+	        String sign = createSign(mchKey, "UTF-8", parameters);
 	        parameters.put("sign", sign);
 
 	        /** 生成xml结构的数据，用于统一下单接口的请求 */
