@@ -252,7 +252,7 @@ public class AsyncOrderPaymentNotifyService{
 											SharedealNotifyPushDTO sharedeal_push_dto = new SharedealNotifyPushDTO();
 											sharedeal_push_dto.setMac(mac);
 											sharedeal_push_dto.setUid(uid);
-											sharedeal_push_dto.setCash(String.valueOf(cash));
+											sharedeal_push_dto.setCash(ArithHelper.getCuttedCurrency(String.valueOf(cash)));
 											sharedeal_push_dto.setHd_mac(umac);
 											sharedeal_push_dto.setPayment_type(order_payment_type);
 											sharedeal_push_dto.setUmac_type(order_umac_type);
