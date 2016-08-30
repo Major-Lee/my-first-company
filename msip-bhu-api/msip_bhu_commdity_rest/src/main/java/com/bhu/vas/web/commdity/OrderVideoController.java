@@ -39,11 +39,12 @@ public class OrderVideoController extends BaseController{
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) String umac,
 			@RequestParam(required = false) String context,
+			@RequestParam(required = false, defaultValue = "0") Integer channel,
 			@RequestParam(required = false, defaultValue = "2") Integer umactype
 			) {
 		String user_agent = request.getHeader("User-Agent");
 		RpcResponseDTO<OrderVideoVTO> orderRpcResult = orderRpcService.createVideoOrder(commdityid,mac, umac, 
-					umactype, context, user_agent);
+					umactype, context, channel, user_agent);
 		if(!orderRpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(orderRpcResult.getPayload()));
 		}else{

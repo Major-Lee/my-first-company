@@ -50,7 +50,7 @@ public interface IOrderRpcService {
 			Integer status, String dut, long start_created_ts, long end_created_ts,int pageNo, int pageSize);
 	
 	public RpcResponseDTO<OrderVideoVTO> createVideoOrder(Integer commdityid,String mac, String umac, Integer umactype, 
-			String context, String user_agent);
+			String context, Integer channel, String user_agent);
 
 	public RpcResponseDTO<Boolean> authorizeVideoOrder(String token, String context);
 }

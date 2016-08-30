@@ -799,7 +799,7 @@ public class OrderUnitFacadeService {
 	public static final String EXPORT_REWARD_RECORD_URL = "http://obklbhh9z.bkt.clouddn.com/";
 	
 	public RpcResponseDTO<OrderVideoVTO> createVideoOrder(Integer commdityid,String mac, String umac, Integer umactype, 
-			String context, String user_agent){
+			String context, Integer channel,String user_agent){
 		try{
 			//验证mac umac
 			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
@@ -820,7 +820,7 @@ public class OrderUnitFacadeService {
 			//生成订单
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createVideoOrder(commdityid,mac_lower, mac_dut, umac_lower, umactype, bindUser,
-					context, user_agent);
+					context, channel,user_agent);
 			
 			commdityMessageService.sendOrderCreatedMessage(order.getId());
 			
