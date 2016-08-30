@@ -16,8 +16,10 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 		Map<String,Object> map = new HashMap<String,Object>();
 		try{
 			map.put("uid", uid);
-			map.put("start_time", start_time);
-			map.put("end_time", end_time);
+			if (start_time != null && !start_time.isEmpty())
+				map.put("start_time", start_time);
+			if (end_time != null && !end_time.isEmpty())
+				map.put("end_time", end_time);
 			if (mac != null && !mac.isEmpty())
 				map.put("mac", mac);
 			if (umac != null && !umac.isEmpty())

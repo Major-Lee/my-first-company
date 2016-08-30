@@ -586,8 +586,12 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
 			RewardQueryPagesDetailVTO vto = new RewardQueryPagesDetailVTO();
-			String start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
-			String end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
+			String start_time = null;
+			String end_time = null;
+			if (start_created_ts != 0)
+				start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
+			if (end_created_ts != 0)
+				end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
 			logger.info("rewardOrderPagesDetail uid: "+uid+" start_time: "+start_time+" end_time: "+end_time+" mac: "+mac);
 			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,umac,status,dut);
 			vto.setCashSum((Double)map.get("cashSum"));
