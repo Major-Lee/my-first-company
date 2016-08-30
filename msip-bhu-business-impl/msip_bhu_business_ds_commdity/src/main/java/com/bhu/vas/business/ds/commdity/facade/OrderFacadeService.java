@@ -703,10 +703,11 @@ public class OrderFacadeService {
 	 * @param umactype 用户终端类型
 	 * @param bindUser
 	 * @param context 
+	 * @param channel 订单渠道 3为utool 
 	 * @return
 	 */
 	public Order createVideoOrder(Integer commdityid,String mac, String mac_dut, String umac, Integer umactype, User bindUser,
-			String context, String user_agent){
+			String context, Integer channel,String user_agent){
 		//商品信息验证
 		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 		//验证商品是否合理
@@ -719,6 +720,7 @@ public class OrderFacadeService {
 		order.setCommdityid(commdity.getId());
 		order.setAppid(CommdityApplication.DEFAULT.getKey());
 		order.setType(commdity.getCategory());
+		order.setChannel(channel);
 		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setMac(mac);

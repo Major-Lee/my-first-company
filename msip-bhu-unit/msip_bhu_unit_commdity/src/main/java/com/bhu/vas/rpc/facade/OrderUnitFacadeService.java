@@ -586,8 +586,12 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
 			RewardQueryPagesDetailVTO vto = new RewardQueryPagesDetailVTO();
-			String start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
-			String end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
+			String start_time = null;
+			String end_time = null;
+			if (start_created_ts != 0)
+				start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
+			if (end_created_ts != 0)
+				end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
 			logger.info("rewardOrderPagesDetail uid: "+uid+" start_time: "+start_time+" end_time: "+end_time+" mac: "+mac);
 			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,umac,status,dut);
 			vto.setCashSum((Double)map.get("cashSum"));
@@ -795,7 +799,7 @@ public class OrderUnitFacadeService {
 	public static final String EXPORT_REWARD_RECORD_URL = "http://obklbhh9z.bkt.clouddn.com/";
 	
 	public RpcResponseDTO<OrderVideoVTO> createVideoOrder(Integer commdityid,String mac, String umac, Integer umactype, 
-			String context, String user_agent){
+			String context, Integer channel,String user_agent){
 		try{
 			//验证mac umac
 			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
@@ -816,7 +820,7 @@ public class OrderUnitFacadeService {
 			//生成订单
 			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createVideoOrder(commdityid,mac_lower, mac_dut, umac_lower, umactype, bindUser,
-					context, user_agent);
+					context, channel,user_agent);
 			
 			commdityMessageService.sendOrderCreatedMessage(order.getId());
 			

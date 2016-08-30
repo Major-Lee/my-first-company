@@ -131,10 +131,10 @@ public class OrderRpcService implements IOrderRpcService{
 	}
 	
 	public RpcResponseDTO<OrderVideoVTO> createVideoOrder(Integer commdityid,String mac, String umac, Integer umactype, 
-			String context, String user_agent){
-		logger.info(String.format("createVideoOrder with commdityid[%s] mac[%s] umac[%s] umactype[%s] context[%s] user_agent[%s]",
-				commdityid,mac, umac, umactype, context, user_agent));
-		return orderUnitFacadeService.createVideoOrder(commdityid,mac, umac, umactype, context, user_agent);
+			String context, Integer channel,String user_agent){
+		logger.info(String.format("createVideoOrder with commdityid[%s] mac[%s] umac[%s] umactype[%s] context[%s] channel[%s] user_agent[%s]",
+				commdityid,mac, umac, umactype, context, channel,user_agent));
+		return orderUnitFacadeService.createVideoOrder(commdityid,mac, umac, umactype, context, channel, user_agent);
 	}
 	public RpcResponseDTO<Boolean> authorizeVideoOrder(String token, String context){
 		logger.info(String.format("authorizeVideoOrder with token[%s] context[%s]",token,context));
