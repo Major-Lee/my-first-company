@@ -604,7 +604,7 @@ public class DeviceBusinessFacadeService {
 		}
 
 		portraitMemcachedCacheService.storePortraitCacheResult(dto.getMac()+hdMac, message);
-		System.out.println("do WangAn store CacheResult"+message);
+		logger.info("do WangAn store CacheResult"+message);
 	}
 	
 	private void processHandsetOffline(String message){
@@ -696,11 +696,11 @@ public class DeviceBusinessFacadeService {
 		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(mac + hdMac); //从新格式key中取
 		if(StringUtils.isEmpty(handsetOnline))
 			handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(hdMac); //尝试从旧格式key中取
-		System.out.println("do WangAn Authorize handsetOnline" + handsetOnline);
+		logger.info("do WangAn Authorize handsetOnline" + handsetOnline);
 		HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
 		if(handsetOnline != null || !"".equals(handsetOnline)){
 			HandsetDeviceDTO handsetDeviceDTO =	HandsetStorageFacadeService.handset(dto.getMac(),dto.getHmac());
-			System.out.println("do WangAn Authouize handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
+			logger.info("do WangAn Authouize handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
 			
 			if(StringUtils.isEmpty(dto.getHip())){
 				dto.setHip(StringUtils.isEmpty(handsetDeviceDTO.getIp())?onlineDto.getHip():handsetDeviceDTO.getIp());
@@ -716,7 +716,7 @@ public class DeviceBusinessFacadeService {
 		}
 		
 		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
-		System.out.println("do WangAn authoize newAddFields" + newAddFields);
+		logger.info("do WangAn authoize newAddFields" + newAddFields);
 		if(newAddFields != null){
 			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
 			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
