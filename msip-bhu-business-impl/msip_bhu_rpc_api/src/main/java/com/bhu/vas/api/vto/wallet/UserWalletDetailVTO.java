@@ -3,6 +3,7 @@ package com.bhu.vas.api.vto.wallet;
 import java.util.List;
 
 import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
+import com.smartwork.msip.cores.helper.ArithHelper;
 
 /**
  * 
@@ -26,7 +27,7 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 		this.uid = uid;
 	}
 	public double getCash() {
-		return cash;
+		return Float.valueOf(ArithHelper.getCuttedCurrency(cash + ""));
 	}
 	public void setCash(double cash) {
 		this.cash = cash;
@@ -70,5 +71,4 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 	public void setMobileNo(String mobileNo) {
 		this.mobileNo = mobileNo;
 	}
-	
 }
