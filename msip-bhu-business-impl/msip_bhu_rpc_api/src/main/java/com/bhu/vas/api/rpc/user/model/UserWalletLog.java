@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.user.model;
 
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.model.BaseLongModel;
 
@@ -141,7 +142,7 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 		vto.setOrderid(orderid);
 		vto.setNick(nick);
 		vto.setMobileno(mobileno);
-                vto.setCash(ArithHelper.getCuttedCurrency(cash));
+        vto.setCash(ArithHelper.getCuttedCurrency(cash));
 		vto.setRmoney(rmoney);
 		vto.setVcurrency(vcurrency);
 		vto.setTransmode(transmode);
