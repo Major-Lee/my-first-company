@@ -820,6 +820,23 @@ public class PaymentController extends BaseController{
 		PaymentTypeVTO result= new PaymentTypeVTO();
         String NOTIFY_URL = PayHttpService.WEIXIN_NOTIFY_URL;
         String product_name= paymentName;//订单名称
+        String appId = "";
+		 String mchId = "";
+		 String mchKey = "";
+		 
+		 if(paymentName.equals("打赏")){
+			 appId = payHttpService.getAppDSAppId();
+			 mchId = payHttpService.getAppDSMchId();
+			 mchKey = payHttpService.getAppDSMchKey();
+		 }else if(paymentName.equals("虎钻")){
+			 appId = payHttpService.getAppAppId();
+			 mchId = payHttpService.getAppMchId();
+			 mchKey = payHttpService.getAppMchKey();
+		 }else{
+			 appId = payHttpService.getAppDSAppId();
+			 mchId = payHttpService.getAppDSMchId();
+			 mchKey = payHttpService.getAppDSMchKey();
+		 }
     	total_fee = BusinessHelper.getMoney(total_fee);
         //记录请求的Goods_no
         String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,"0",total_fee,Ip,PaymentChannelCode.BHU_APP_WEIXIN.i18n(),usermac,paymentName,appid);
@@ -835,7 +852,7 @@ public class PaymentController extends BaseController{
 
 		logger.info(String.format("apply App wx payment reckoningId [%s] product_name [%s] total_fee [%s] ip [%s]"
         		+ "NOTIFY_URL [%s] ",reckoningId, product_name, total_fee, request.getRemoteAddr(),NOTIFY_URL ));
-		AppUnifiedOrderResponse unifiedOrderResponse = payHttpService.unifiedorderForApp(reckoningId, product_name, total_fee, request.getRemoteAddr(), NOTIFY_URL, "");
+		AppUnifiedOrderResponse unifiedOrderResponse = payHttpService.unifiedorderForApp(appId,mchId,mchKey,reckoningId, product_name, total_fee, request.getRemoteAddr(), NOTIFY_URL, "");
 
         if(!unifiedOrderResponse.isResultSuccess()){
         	String status = unifiedOrderResponse.getResultErrorCode();
@@ -850,15 +867,15 @@ public class PaymentController extends BaseController{
         String noncestr = payHttpService.getNonceStr();//生成随机字符串
         String prepay_id = unifiedOrderResponse.getPrepay_id();
         SortedMap<Object, Object> params = new TreeMap<Object,Object>();
-        params.put("appid", payHttpService.getAppAppId());
-        params.put("partnerid", payHttpService.getAppMchId());
+        params.put("appid", appId);
+        params.put("partnerid", mchId);
         params.put("prepayid", prepay_id);
         params.put("package", "Sign=WXPay");
         params.put("noncestr", noncestr);
         params.put("timestamp",timestamp);
 
         //生成支付签名,这个签名 给 微信支付的调用使用
-        String paySign =  payHttpService.createSign(payHttpService.getAppMchKey(),"UTF-8", params);
+        String paySign =  payHttpService.createSign(mchKey,"UTF-8", params);
         
         params.put("sign", paySign);
     	String json= JsonHelper.getJSONString(params);
@@ -1529,7 +1546,7 @@ public class PaymentController extends BaseController{
 	            }
 			}else{
 				logger.info("账单流水号："+out_trade_no+"支付账单、订单状态状态修改成功!");
-		            return "error";
+		            return "success";
 			}
         } catch (JDOMException e) {
             logger.info("账单流水号："+out_trade_no+"捕获到微信通知/notify_success方法的异常："+e.getMessage()+e.getCause());

@@ -157,8 +157,12 @@
 	    <where>
 	    	t_walletlog.uid = #{uid}
 	    	AND t_walletlog.transtype = 'P2C'
-	    	AND t_walletlog.updated_at &gt;= #{start_time}
-	    	AND t_walletlog.updated_at &lt;= #{end_time}
+	    	<if test="start_time != null">
+	    		AND t_walletlog.updated_at &gt;= #{start_time}
+	    	</if>
+	    	<if test="end_time != null">
+	    		AND t_walletlog.updated_at &lt;= #{end_time}
+	    	</if>
 	    	AND t_walletlog.orderid = t_orders.id
 	    	<if test="mac != null">
 	    		AND	t_walletlog.mac = #{mac}

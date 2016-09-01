@@ -73,10 +73,12 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			if(batchImport == null){
 				logger.info(String.format("process batchno[%s] not exist!", batchno));
 			}
+/*
 			if(batchImport.getStatus() != WifiDeviceBatchImport.STATUS_CONTENT_PRE_CHECK_DONE){
 				logger.error(String.format("bathno[%s] precheck is not done", batchno));
 				return;
 			}
+*/
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_IMPORTING);
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
 			final AtomicInteger atomic_failed = new AtomicInteger(0);
