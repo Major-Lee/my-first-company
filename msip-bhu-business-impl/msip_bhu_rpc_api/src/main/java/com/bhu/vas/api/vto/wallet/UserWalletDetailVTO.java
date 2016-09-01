@@ -27,7 +27,7 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 		this.uid = uid;
 	}
 	public double getCash() {
-		return Float.valueOf(ArithHelper.getCuttedCurrency(cash + ""));
+		return Double.valueOf(ArithHelper.getCuttedCurrency(cash + ""));
 	}
 	public void setCash(double cash) {
 		this.cash = cash;
