@@ -717,23 +717,18 @@ public class UserUnitFacadeService {
 			//电话
 			String mobileNo = StringUtils.EMPTY;
 			mobileNo = (String) map.get("mobileNo");
-			System.out.println("****mobileNo【"+mobileNo+"】****");
 			//用户类型
 			String userType = StringUtils.EMPTY;
 			userType = (String) map.get("userType");
-			System.out.println("****userType【"+userType+"】****");
 			//终端类型
 			String regdevice = StringUtils.EMPTY;
 			regdevice = (String) map.get("regdevice");
-			System.out.println("****regdevice【"+regdevice+"】****");
 			//开始时间
 			String createStartTime = StringUtils.EMPTY;
 			createStartTime = (String) map.get("createStartTime");
-			System.out.println("****createStartTime【"+createStartTime+"】****");
 			//结束时间
 			String createEndTime = StringUtils.EMPTY;
 			createEndTime = (String) map.get("createEndTime");
-			System.out.println("****createEndTime【"+createEndTime+"】****");
 			
 			// 绑定设备数
 			int boundEquNum = NumberUtils.toInt(map.get("boundEquNum") + "");
@@ -747,11 +742,9 @@ public class UserUnitFacadeService {
 			//当前页
 			int pageNo = 1;
 			pageNo =  (int) map.get("pageNo");
-			System.out.println("****pageNo【"+pageNo+"】****");
 			//每页分页条数
 			int pageSize = 10;
 			pageSize = (int) map.get("pageSize");
-			System.out.println("****pageSize【"+pageSize+"】****");
 			if(StringUtils.isNotBlank(mobileNo)){
 				cri.andColumnEqualTo("mobileno", mobileNo);
 			}
@@ -824,24 +817,6 @@ public class UserUnitFacadeService {
 				userManageDTO.setDoc(onLinedeviceNum);
 				vtos.add(userManageDTO);
 			}
-			
-//			if (vtos.size() > 0 && (StringUtils.isNotBlank(boundEquNumPattern) && boundEquNum > 0)) {
-//				Iterator<UserManageDTO> it = vtos.iterator();
-//				while(it.hasNext()){
-//					UserManageDTO dto = it.next();
-//					if ("gt".equalsIgnoreCase(boundEquNumPattern)) {
-//						if (dto.getDc() < boundEquNum) {
-//							it.remove();
-//						}
-//					} else if ("lt".equalsIgnoreCase(boundEquNumPattern)){
-//						if (dto.getDc() > boundEquNum) {
-//							it.remove();
-//						}	
-//					}
-//				}
-//				TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(pageNo, pageSize, vtos.size(), vtos);
-//				return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
-//			}
 			
 			TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(tailusers.getPageNumber(), pageSize, tailusers.getTotalItemsCount(), vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
