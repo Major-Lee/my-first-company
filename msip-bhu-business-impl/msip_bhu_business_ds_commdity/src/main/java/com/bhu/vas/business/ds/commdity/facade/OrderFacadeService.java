@@ -109,10 +109,10 @@ public class OrderFacadeService {
 			criteria.andColumnEqualTo("type", type);
 		}
 		if(start_created_ts > 0){
-			criteria.andColumnGreaterThanOrEqualTo("created_at", new Date(start_created_ts));
+			criteria.andColumnGreaterThanOrEqualTo("updated_at", new Date(start_created_ts));
 		}
 		if(end_created_ts > 0){
-			criteria.andColumnLessThanOrEqualTo("created_at", new Date(end_created_ts));
+			criteria.andColumnLessThanOrEqualTo("updated_at", new Date(end_created_ts));
 		}
 		return orderService.countByModelCriteria(mc);
 	}
