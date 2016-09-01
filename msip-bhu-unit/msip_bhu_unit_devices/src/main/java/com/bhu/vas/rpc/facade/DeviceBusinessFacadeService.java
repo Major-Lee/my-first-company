@@ -516,7 +516,7 @@ public class DeviceBusinessFacadeService {
 				processHandsetOnline(JsonHelper.getJSONString(onlineMsg));
 			}
 			else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
-				logger.info("do WangAn Processor "+ fristDto.getAction());
+/*				logger.info("do WangAn Processor "+ fristDto.getAction());
 				
 				com.bhu.vas.api.dto.charging.HandsetOfflineAction offlineMsg = ActionBuilder.builderHandsetOfflineAction(fristDto.getMac(),parserHeader.getMac().toLowerCase(),
 						fristDto.getUptime(),
@@ -525,7 +525,7 @@ public class DeviceBusinessFacadeService {
 						Long.parseLong(fristDto.getTx_bytes()),Long.parseLong(fristDto.getRx_bytes()), System.currentTimeMillis());
 				logger.info("do WangAn Processor device offline msg " + JsonHelper.getJSONString(offlineMsg));
 				processHandsetOffline(JsonHelper.getJSONString(offlineMsg));
-			}
+*/			}
 			/*else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
 				handsetDeviceSync(ctx, parserHeader.getMac(), dtos);
 			}
@@ -593,7 +593,7 @@ public class DeviceBusinessFacadeService {
 		
 		if(memHandsetOnline != null){
 			HandsetOnlineAction memDto = JsonHelper.getDTO(memHandsetOnline, HandsetOnlineAction.class);
-			dto.setTs(memDto.getTs());
+//			dto.setTs(memDto.getTs());
 			if(StringUtils.isEmpty(dto.getHname()))
 				dto.setHmac(memDto.getHname());
 			if(StringUtils.isEmpty(dto.getHip()))
