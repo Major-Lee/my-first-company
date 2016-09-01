@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javassist.bytecode.Mnemonic;
 
 import javax.annotation.Resource;
 
@@ -783,6 +782,7 @@ public class UserUnitFacadeService {
 			TailPage<User> tailusers = this.userService.findModelTailPageByModelCriteria(mc);
 			List<UserManageDTO> vtos = new ArrayList<UserManageDTO>();
 			UserManageDTO userManageDTO = null;
+			
 			for(User _user:tailusers.getItems()){
 				if(_user == null){
 					continue;
@@ -795,17 +795,6 @@ public class UserUnitFacadeService {
 				long deviceCount = onLinedeviceNum + deviceNum;
 				System.out.println("***boundEquNum****" + boundEquNum);
 				System.out.println("***deviceCount****" + deviceCount);
-				if ("gt".equalsIgnoreCase(boundEquNumPattern)) {
-					System.out.println("***大于号(gt)****" + (deviceCount < boundEquNum));
-					if (deviceCount < boundEquNum) {
-						continue;
-					}
-				} else if ("lt".equalsIgnoreCase(boundEquNumPattern)){
-					System.out.println("***小于号(lt)****" + (deviceCount > boundEquNum));
-					if (deviceCount > boundEquNum) {
-						continue;
-					}	
-				}
 				
 				userManageDTO = new UserManageDTO();
 				userManageDTO.setUid(_user.getId());
@@ -838,6 +827,27 @@ public class UserUnitFacadeService {
 				vtos.add(userManageDTO);
 				System.out.println("****vtos size****" + vtos.size());
 			}
+			
+			if (vtos.size() > 0 && (StringUtils.isNotBlank(boundEquNumPattern) && boundEquNum > 0)) {
+				Iterator<UserManageDTO> it = vtos.iterator();
+				while(it.hasNext()){
+					UserManageDTO dto = it.next();
+					if ("gt".equalsIgnoreCase(boundEquNumPattern)) {
+						System.out.println("***大于号(gt)****" + (dto.getDc() < boundEquNum));
+						if (dto.getDc() < boundEquNum) {
+							vtos.remove(dto);
+						}
+					} else if ("lt".equalsIgnoreCase(boundEquNumPattern)){
+						System.out.println("***小于号(lt)****" + (dto.getDc() > boundEquNum));
+						if (dto.getDc() > boundEquNum) {
+							vtos.remove(dto);
+						}	
+					}
+				}
+				TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(pageNo, pageSize, vtos.size(), vtos);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
+			}
+			
 			TailPage<UserManageDTO> pages = new CommonPage<UserManageDTO>(tailusers.getPageNumber(), pageSize, tailusers.getTotalItemsCount(), vtos);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(pages);
 		}catch(BusinessI18nCodeException bex){
@@ -944,14 +954,17 @@ public class UserUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	public static void main(String[] args) {
-		Date date = new Date();  
-        Calendar calendar = Calendar.getInstance();  
-        calendar.setTime(date);  
-        calendar.add(Calendar.DAY_OF_MONTH, 0);  
-        date = calendar.getTime();  
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
-        String time =sdf.format(date); 
-        System.out.println(time);
-        System.out.println(date.toString());
+//		Date date = new Date();  
+//        Calendar calendar = Calendar.getInstance();  
+//        calendar.setTime(date);  
+//        calendar.add(Calendar.DAY_OF_MONTH, 0);  
+//        date = calendar.getTime();  
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+//        String time =sdf.format(date); 
+//        System.out.println(time);
+//        System.out.println(date.toString());
+		  
+		  String regdevice = "R,O";
+		  System.out.println(Arrays.asList(regdevice));
 	}
 }
