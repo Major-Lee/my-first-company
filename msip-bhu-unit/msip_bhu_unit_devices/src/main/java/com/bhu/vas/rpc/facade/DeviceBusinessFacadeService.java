@@ -664,6 +664,11 @@ public class DeviceBusinessFacadeService {
 		String memdtoStr = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getMac() + dto.getHmac()); //从新格式key中取
 		if(StringUtils.isEmpty(memdtoStr))
 			memdtoStr = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac()); //尝试从旧格式key中取
+		
+		if(StringUtils.isEmpty(memdtoStr)){
+			logger.info("cant find it from memcache, drop");
+			return;
+		}
 
 		logger.info("do WangAn Authorize handsetOnline" + memdtoStr);
 		HandsetOnlineAction memdto = JsonHelper.getDTO(memdtoStr, HandsetOnlineAction.class);
