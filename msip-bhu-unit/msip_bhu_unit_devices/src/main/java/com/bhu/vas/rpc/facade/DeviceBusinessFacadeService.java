@@ -550,60 +550,29 @@ public class DeviceBusinessFacadeService {
 	
 	private void processHandsetOnline(String message){
 		HandsetOnlineAction dto = JsonHelper.getDTO(message, HandsetOnlineAction.class);
+		HandsetOnlineAction memdto = null;
 		logger.info("do WangAn Processor" + dto.getMac());
-		//2016-07-28增加终端上线判断终端是否认证，若认证，发送认证消息给网安
-		String authorize = dto.getAuthorized();
-		String mac = dto.getMac();
-		String hdMac = dto.getHmac();
-		if(authorize != null && authorize.equalsIgnoreCase("true")){
-			logger.info("do WangAn Processor  authorize is true" + dto.getMac());
-			String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
-			if(newAddFields != null){
-				OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
-				//2016-07-22 fixed 数据库wan_id 和终端ip写反了
-				dto.setWan(addMsg.getIp());
-				dto.setInternet(addMsg.getWan_ip());
-				//2016-07-22 fixed 数据库wan_id 和终端ip写反了
-				int vipType = addMsg.getType();
-				switch (vipType) {
-				case 0:
-					dto.setViptype("WX");
-					break;
-				case 10:
-					dto.setViptype("DX");
-					dto.setVipacc(addMsg.getUmac_mobileno());
-					break;
-
-				default:
-					break;
-				}
-				message =  JsonHelper.getJSONString(dto);
-				String curTime =WriterThread.getCurrentTime();
-				//WriterThread.writeLog(curTime +" - "+ActionMode.HandsetOnline.getPrefix()+message);
-				//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
-			}
-		}else{   
-			logger.info("do WangAn Processor  authorize is false or null" + dto.getMac());
-		}
 		
-		String memHandsetOnline = null;
-		memHandsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getMac()+dto.getHmac()); //从新格式key中取
+		String memHandsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getMac()+dto.getHmac()); //从新格式key中取
 		if(StringUtils.isEmpty(memHandsetOnline))
 			memHandsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac()); //尝试从旧格式中获取
-		
-		if(memHandsetOnline != null){
-			HandsetOnlineAction memDto = JsonHelper.getDTO(memHandsetOnline, HandsetOnlineAction.class);
-//			dto.setTs(memDto.getTs());
-			if(StringUtils.isEmpty(dto.getHname()))
-				dto.setHmac(memDto.getHname());
-			if(StringUtils.isEmpty(dto.getHip()))
-				dto.setHip(memDto.getHip());
-			if(StringUtils.isEmpty(dto.getRssi()))
-				dto.setRssi(memDto.getRssi());
-			message =  JsonHelper.getJSONString(dto);
+
+		if(StringUtils.isEmpty(memHandsetOnline)){
+			memdto = dto;
+		} else {
+			memdto = JsonHelper.getDTO(memHandsetOnline, HandsetOnlineAction.class);
+			
+			if(StringUtils.isEmpty(memdto.getHname()))
+				memdto.setHname(dto.getHname());
+			if(StringUtils.isEmpty(memdto.getHip()))
+				memdto.setHip(dto.getHip());
+			if(StringUtils.isEmpty(memdto.getRssi()))
+				memdto.setRssi(dto.getRssi());
 		}
 
-		portraitMemcachedCacheService.storePortraitCacheResult(dto.getMac()+hdMac, message);
+		message =  JsonHelper.getJSONString(dto);
+
+		portraitMemcachedCacheService.storePortraitCacheResult(dto.getMac()+dto.getHmac(), message);
 		logger.info("do WangAn store CacheResult"+message);
 	}
 	
@@ -691,87 +660,83 @@ public class DeviceBusinessFacadeService {
 	private void processHandsetAuthorize(String message){
 		logger.info("do WangAn Processor  Authorize is true" + message);
 		HandsetOnlineAction dto = JsonHelper.getDTO(message, HandsetOnlineAction.class);
-		String mac = dto.getMac();
-		String hdMac = dto.getHmac();
-		String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(mac + hdMac); //从新格式key中取
-		if(StringUtils.isEmpty(handsetOnline))
-			handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(hdMac); //尝试从旧格式key中取
-		logger.info("do WangAn Authorize handsetOnline" + handsetOnline);
-		HandsetOnlineAction onlineDto = JsonHelper.getDTO(handsetOnline, HandsetOnlineAction.class);
-		if(handsetOnline != null || !"".equals(handsetOnline)){
+		
+		String memdtoStr = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getMac() + dto.getHmac()); //从新格式key中取
+		if(StringUtils.isEmpty(memdtoStr))
+			memdtoStr = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac()); //尝试从旧格式key中取
+
+		logger.info("do WangAn Authorize handsetOnline" + memdtoStr);
+		HandsetOnlineAction memdto = JsonHelper.getDTO(memdtoStr, HandsetOnlineAction.class);
+		if(StringUtils.isEmpty(memdto.getHip()) || StringUtils.isEmpty(memdto.getHname()) || StringUtils.isEmpty(memdto.getRssi())){
 			HandsetDeviceDTO handsetDeviceDTO =	HandsetStorageFacadeService.handset(dto.getMac(),dto.getHmac());
 			logger.info("do WangAn Authouize handsetDeviceDTO" + JsonHelper.getJSONString(handsetDeviceDTO));
 			
-			if(StringUtils.isEmpty(dto.getHip())){
-				dto.setHip(StringUtils.isEmpty(handsetDeviceDTO.getIp())?onlineDto.getHip():handsetDeviceDTO.getIp());
-			}
+			if(StringUtils.isEmpty(memdto.getHip()))
+				memdto.setHip(handsetDeviceDTO.getIp());
 			
-			if(StringUtils.isEmpty(dto.getHname())){
-				dto.setHname(StringUtils.isEmpty(handsetDeviceDTO.getDhcp_name())?onlineDto.getHname():handsetDeviceDTO.getDhcp_name());
-			}
+			if(StringUtils.isEmpty(memdto.getHname()))
+				memdto.setHname(handsetDeviceDTO.getDhcp_name());
 			
-			if(StringUtils.isEmpty(dto.getRssi())){
-				dto.setRssi(StringUtils.isEmpty(handsetDeviceDTO.getRssi())?onlineDto.getRssi():handsetDeviceDTO.getRssi());
-			}
+			if(StringUtils.isEmpty(memdto.getRssi()))
+				memdto.setRssi(handsetDeviceDTO.getRssi());
 		}
 		
-		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(mac, hdMac);
+		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(dto.getMac(), dto.getHmac());
 		logger.info("do WangAn authoize newAddFields" + newAddFields);
-		if(newAddFields != null){
+		if(StringUtils.isNotEmpty(newAddFields)){
 			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
 			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
-			dto.setWan(addMsg.getIp());
-			dto.setInternet(addMsg.getWan_ip());
+			memdto.setWan(addMsg.getIp());
+			memdto.setInternet(addMsg.getWan_ip());
 			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
 			int vipType = addMsg.getType();
 			switch (vipType) {
 			case 0:
-				dto.setViptype("WX");
+				memdto.setViptype("WX");
 				break;
 			case 10:
-				dto.setViptype("DX");
-				dto.setVipacc(addMsg.getUmac_mobileno());
+				memdto.setViptype("DX");
+				memdto.setVipacc(addMsg.getUmac_mobileno());
 				break;
-				
 			default:
 				break;
 			}
-			
-			logger.info("Yetao: " + dto.getAuthorized());
-			String act = "";
-			if(dto.getAuthorized() != null && dto.getAuthorized().equals("true")){
-				act = ActionMode.HandsetOnline.getPrefix();
-				dto.setAct(ActionMode.HandsetOnline.getPrefix());
-				dto.setTs(System.currentTimeMillis()); //设置上线时间为当前时间，并需要存入memcache
-				message =  JsonHelper.getJSONString(dto);
-
-				portraitMemcachedCacheService.storePortraitCacheResult(mac+hdMac, message);
-			} else { 
-				act = ActionMode.HandsetOffline.getPrefix();
-				dto.setAct(ActionMode.HandsetOffline.getPrefix());
-				HandsetOfflineAction offdto = new HandsetOfflineAction();
-				logger.info("handle offline ");
-				offdto.setAct(act);
-				offdto.setAuthorized(dto.getAuthorized());
-				offdto.setBssid(dto.getBssid());
-				offdto.setHip(dto.getHip());
-				offdto.setHmac(dto.getHmac());
-				offdto.setHname(dto.getHname());
-				offdto.setInternet(dto.getInternet());
-				offdto.setMac(dto.getMac());
-				offdto.setRssi(dto.getRssi());
-				offdto.setTs(onlineDto.getTs()); //从memcache中记录的ts获取上线时间
-				offdto.setVapname(dto.getVapname());
-				offdto.setVipacc(dto.getVipacc());
-				offdto.setViptype(dto.getViptype());
-				offdto.setWan(dto.getWan());
-				offdto.setEnd_ts(System.currentTimeMillis());
-				message =  JsonHelper.getJSONString(offdto);
-			}
-			String curTime =WriterThread.getCurrentTime();
-			WriterThread.writeLog(curTime +" - "+act+message);
-			//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
 		}
+		
+		logger.info("Yetao: " + dto.getAuthorized());
+		String act = "";
+		if(dto.getAuthorized() != null && dto.getAuthorized().equals("true")){
+			act = ActionMode.HandsetOnline.getPrefix();
+			memdto.setAct(ActionMode.HandsetOnline.getPrefix());
+			memdto.setTs(System.currentTimeMillis()); //设置上线时间为当前时间，并需要存入memcache
+			message =  JsonHelper.getJSONString(memdto);
+
+			portraitMemcachedCacheService.storePortraitCacheResult(dto.getMac()+dto.getHmac(), message);
+			logger.info("do WangAn store CacheResult "+message);
+		} else { 
+			HandsetOfflineAction offdto = new HandsetOfflineAction();
+			act = ActionMode.HandsetOffline.getPrefix();
+			logger.info("handle offline ");
+			offdto.setAct(act);
+			offdto.setAuthorized(memdto.getAuthorized());
+			offdto.setBssid(memdto.getBssid());
+			offdto.setHip(memdto.getHip());
+			offdto.setHmac(memdto.getHmac());
+			offdto.setHname(memdto.getHname());
+			offdto.setInternet(memdto.getInternet());
+			offdto.setMac(memdto.getMac());
+			offdto.setRssi(memdto.getRssi());
+			offdto.setTs(memdto.getTs()); //从memcache中记录的ts获取上线时间
+			offdto.setVapname(memdto.getVapname());
+			offdto.setVipacc(memdto.getVipacc());
+			offdto.setViptype(memdto.getViptype());
+			offdto.setWan(memdto.getWan());
+			offdto.setEnd_ts(System.currentTimeMillis());
+			message =  JsonHelper.getJSONString(offdto);
+		}
+		String curTime =WriterThread.getCurrentTime();
+		WriterThread.writeLog(curTime +" - "+act+message);
+		//TerminalStatusNotifyLogger.doTerminalStatusMessageLog(ActionMode.HandsetOnline.getPrefix()+message);
 	}
 	
 	
