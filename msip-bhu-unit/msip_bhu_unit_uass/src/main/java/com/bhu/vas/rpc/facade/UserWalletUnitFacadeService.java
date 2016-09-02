@@ -715,10 +715,11 @@ public class UserWalletUnitFacadeService {
 					}else{
 						rankingListVTO.setChangeFlag(0);
 					}
-					rankingListVTO.setMemo(user.getMemo());
 					rankingListVTO.setRankNum(incomeRank.getRank());
 					rankingListVTO.setUserIncome(String.valueOf(round(Float.valueOf(incomeRank.getIncome()),2)));
 				}
+				rankingListVTO.setMemo(user.getMemo());
+				rankingListVTO.setAvatar(user.getAvatar());
 				for(int i=0;i<userIncomeRanks.size();i++){
 					RankSingle rankSingle=new RankSingle();
 					UserIncomeRank userIncomeRank=userIncomeRanks.get(i);
