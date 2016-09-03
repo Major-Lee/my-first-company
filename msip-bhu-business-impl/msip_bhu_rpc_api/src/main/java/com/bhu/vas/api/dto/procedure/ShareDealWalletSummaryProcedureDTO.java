@@ -171,9 +171,10 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 		vto.setOds(this.getOds());
 		vto.setToday_date(this.getToday_date());
 	    
-		boolean isTheToday = DateTimeHelper.isSameDay(this.getLast_update_cash_datetime(), new Date());
-		vto.setToday_cash(isTheToday ? Float.valueOf(ArithHelper.getCuttedCurrency(this.getToday_cash() + "")) : 0);
+		boolean isTheToday = (this.getLast_update_cash_datetime() == null) ? false : 
+			DateTimeHelper.isSameDay(this.getLast_update_cash_datetime(), new Date());
 		
+		vto.setToday_cash(isTheToday ? Float.valueOf(ArithHelper.getCuttedCurrency(this.getToday_cash() + "")) : 0);
 		vto.setToday_nums(this.getToday_nums());
 		vto.setYesterday_date(this.getYesterday_date());
 		vto.setYesterday_cash(Float.valueOf(ArithHelper.getCuttedCurrency(this.getYesterday_cash() + "")));

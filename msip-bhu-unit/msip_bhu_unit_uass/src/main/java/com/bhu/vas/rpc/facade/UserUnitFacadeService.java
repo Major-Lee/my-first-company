@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javassist.bytecode.Mnemonic;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -729,6 +731,10 @@ public class UserUnitFacadeService {
 			//结束时间
 			String createEndTime = StringUtils.EMPTY;
 			createEndTime = (String) map.get("createEndTime");
+<<<<<<< HEAD
+=======
+			System.out.println("****createEndTime【"+createEndTime+"】****");
+>>>>>>> release20160825
 			
 			// 绑定设备数
 			int boundEquNum = NumberUtils.toInt(map.get("boundEquNum") + "");
@@ -786,6 +792,19 @@ public class UserUnitFacadeService {
 				//根据用户Id查询在线设备数量
 				long onLinedeviceNum = wifiDeviceDataSearchService.searchCountByCommon(_user.getId(), "", "", "", OnlineEnum.Online.getType(), "","");
 				long deviceCount = onLinedeviceNum + deviceNum;
+				System.out.println("***boundEquNum****" + boundEquNum);
+				System.out.println("***deviceCount****" + deviceCount);
+				if ("gt".equalsIgnoreCase(boundEquNumPattern)) {
+					System.out.println("***大于号(gt)****" + (deviceCount < boundEquNum));
+					if (deviceCount < boundEquNum) {
+						continue;
+					}
+				} else if ("lt".equalsIgnoreCase(boundEquNumPattern)){
+					System.out.println("***小于号(lt)****" + (deviceCount > boundEquNum));
+					if (deviceCount > boundEquNum) {
+						continue;
+					}	
+				}			
 				
 				userManageDTO = new UserManageDTO();
 				userManageDTO.setUid(_user.getId());

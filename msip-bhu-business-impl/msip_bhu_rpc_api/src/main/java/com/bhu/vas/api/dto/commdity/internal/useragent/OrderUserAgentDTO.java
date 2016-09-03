@@ -154,6 +154,7 @@ public class OrderUserAgentDTO {
 			Date created_at, String wan_ip , String ip){
 		OrderUserAgentDTO userAgentDto = new OrderUserAgentDTO();
 		userAgentDto.setOrderid(orderid);
+
 		userAgentDto.setUmac(umac);
 		userAgentDto.setUmactype(umactype);
 		userAgentDto.setUmac_uid(umac_uid);
@@ -164,7 +165,9 @@ public class OrderUserAgentDTO {
 		userAgentDto.setCreated_at(created_at);
 		userAgentDto.setWan_ip(wan_ip);
 		userAgentDto.setIp(ip);
+
 		userAgentDto.setMac(mac);
+
 		return userAgentDto;
 	}
 }

@@ -18,8 +18,6 @@ import org.elasticsearch.ElasticsearchIllegalArgumentException;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import redis.clients.jedis.Tuple;
-
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
@@ -81,7 +79,6 @@ import com.bhu.vas.api.vto.guest.URouterVisitorDetailVTO;
 import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
@@ -96,11 +93,9 @@ import com.bhu.vas.business.ds.user.service.UserConfigsStateService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.ibm.icu.text.SimpleDateFormat;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
@@ -110,6 +105,8 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+
+import redis.clients.jedis.Tuple;
 
 /**
  * device urouter Rest RPC组件的业务service
@@ -2145,7 +2142,6 @@ public class DeviceURouterRestBusinessFacadeService {
 				}
 
 				if (detailVTO != null) {
-					// 如果不是获取所有类型终端，判断需要的类型
 					if (!type.equals(All)) {
 						if (detailVTO.getS() == null || !detailVTO.getS().equals(type)) {
 							cursor++;

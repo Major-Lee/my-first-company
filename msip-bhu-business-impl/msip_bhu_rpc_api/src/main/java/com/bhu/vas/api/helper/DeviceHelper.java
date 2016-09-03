@@ -952,7 +952,7 @@ public class DeviceHelper {
 					"<webportal>"+
 						"<setting>"+
 							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3,wlan13\" auth_mode=\"remote\" block_mode=\"%s\" local_mode=\"immediate\" signal_limit=\"%s\"  max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+ 
-							" guest_portal_en=\"disable\" allow_ip=\"\" allow_domain=\"\" tmp_pass=\"enable\" tmp_pass_duration=\"60\" manage_server=\"disable\" "+
+							" guest_portal_en=\"disable\" allow_ip=\"\" allow_domain=\"\" tmp_pass=\"enable\" tmp_pass_duration=\"120\" tmp_pass_duration_max=\"600\" tmp_pass_wait=\"300\" manage_server=\"disable\" "+
 							" open_resource=\"%s\" forbid_management=\"enable\" allow_https=\"disable\" "+
 							" remote_auth_url=\"%s\" portal_server_url=\"%s\" dns_default_ip=\"%s\"  "+
 							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+
@@ -1012,7 +1012,7 @@ public class DeviceHelper {
 					"<webportal>"+
 						"<setting>"+
 							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3\" auth_mode=\"remote\" block_mode=\"%s\" local_mode=\"immediate\" signal_limit=\"%s\"  max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+ 
-							" guest_portal_en=\"disable\" allow_ip=\"\" allow_domain=\"\" tmp_pass=\"enable\" tmp_pass_duration=\"60\" manage_server=\"disable\" "+
+							" guest_portal_en=\"disable\" allow_ip=\"\" allow_domain=\"\" tmp_pass=\"enable\" tmp_pass_duration=\"120\" tmp_pass_duration_max=\"600\" tmp_pass_wait=\"300\" manage_server=\"disable\" "+
 							" open_resource=\"%s\" forbid_management=\"enable\" allow_https=\"disable\" "+
 							" remote_auth_url=\"%s\" portal_server_url=\"%s\" dns_default_ip=\"%s\"  "+
 							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+

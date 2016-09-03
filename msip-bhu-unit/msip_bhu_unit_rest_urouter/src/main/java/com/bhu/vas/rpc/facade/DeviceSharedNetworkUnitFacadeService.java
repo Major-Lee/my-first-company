@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.SharedNetworksHelper;
 import com.bhu.vas.api.helper.VapEnumType;
-import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -30,7 +30,6 @@ import com.bhu.vas.api.vto.device.SnkPortalVTO;
 import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
