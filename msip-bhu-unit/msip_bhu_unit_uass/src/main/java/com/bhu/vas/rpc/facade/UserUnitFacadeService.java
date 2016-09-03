@@ -731,10 +731,7 @@ public class UserUnitFacadeService {
 			//结束时间
 			String createEndTime = StringUtils.EMPTY;
 			createEndTime = (String) map.get("createEndTime");
-<<<<<<< HEAD
-=======
 			System.out.println("****createEndTime【"+createEndTime+"】****");
->>>>>>> release20160825
 			
 			// 绑定设备数
 			int boundEquNum = NumberUtils.toInt(map.get("boundEquNum") + "");
