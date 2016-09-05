@@ -305,7 +305,9 @@ public class BusinessModelBuilder {
 			vto.setTx_bytes(hd_entity.getRx_bytes());
 			vto.setEthernet(StringHelper.TRUE.equals(hd_entity.getEthernet()));
 			vto.setTs(hd_entity.getTs());
-			vto.setGuest(hd_entity.getPortal().equals(HandsetDeviceDTO.PROTAL_REMOTE));
+			if(hd_entity.getPortal() != null){
+				vto.setGuest(hd_entity.getPortal().equals(HandsetDeviceDTO.PROTAL_REMOTE));
+			}
 		}
 		vto.setRx_rate(String.valueOf(rx_rate));
 		return vto;
