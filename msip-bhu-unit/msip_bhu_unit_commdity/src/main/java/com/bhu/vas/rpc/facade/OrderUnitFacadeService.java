@@ -53,6 +53,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserQueryDateHashService;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
@@ -106,6 +107,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private OrderService orderService;
+	
+	@Resource
+	private ChargingFacadeService chargingFacadeService;
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -826,6 +830,8 @@ public class OrderUnitFacadeService {
 			
 			OrderVideoVTO orderVto = new OrderVideoVTO();
 			orderVto.setId(order.getId());
+			orderVto.setForceTime(chargingFacadeService.fetchForceTime(mac,umactype));
+			orderVto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
