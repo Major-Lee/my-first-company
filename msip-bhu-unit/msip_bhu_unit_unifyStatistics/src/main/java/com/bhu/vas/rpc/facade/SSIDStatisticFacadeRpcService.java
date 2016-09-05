@@ -739,7 +739,7 @@ public class SSIDStatisticFacadeRpcService {
 				pageResMaps.add(resMaps.get(i));
 			}
 		}else if(num>pn*ps){
-			for(int i=(pn-1)*ps;i<=pn*ps;i++){
+			for(int i=(pn-1)*ps;i<pn*ps;i++){
 				pageResMaps.add(resMaps.get(i));
 			}
 		}
