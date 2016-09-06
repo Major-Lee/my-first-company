@@ -396,6 +396,8 @@ public class DeviceOrderStatitics {
 			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-PV-"+getNextDay(), entry.getKey().toString(),pv);
 			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-UV-"+getNextDay(), entry.getKey().toString(), uv);
 		}
+		ctx.stop();
+		ctx.close();
 	}
 //	public static void main(String[] args) {
 //		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
