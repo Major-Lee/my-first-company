@@ -31,7 +31,17 @@ public class URouterDeviceConfigMutilVTO implements Serializable{
 	
 	//设备基本信息
 	private URouterInfoVTO info;
-	
+
+	//自动重启
+	private URouterDeviceConfigAutoRebootVTO autoreboot;
+
+	public URouterDeviceConfigAutoRebootVTO getAutoreboot() {
+		return autoreboot;
+	}
+	public void setAutoreboot(URouterDeviceConfigAutoRebootVTO autoreboot) {
+		this.autoreboot = autoreboot;
+	}
+
 	public String getRf_2in1() {
 		return rf_2in1;
 	}

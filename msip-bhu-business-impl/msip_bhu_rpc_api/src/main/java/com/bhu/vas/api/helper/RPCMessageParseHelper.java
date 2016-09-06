@@ -623,25 +623,43 @@ public class RPCMessageParseHelper {
 				dto.setUsers(user_dtos);
 			}
 			//解析设备配置流水号
-			Element config_element = Dom4jHelper.select(doc, "dev/sys/config/ITEM");
-			if(config_element != null){
-				dto.setSequence(config_element.attributeValue("sequence"));
-				String boot_on_reset = config_element.attributeValue("boot_on_reset");
+			List<Element> eles = Dom4jHelper.selectElements(doc, "dev/sys/config/ITEM");
+			if(eles != null && eles.size() > 0){
+				String sequence = null;
+				String boot_on_reset = null;
+				String reboot_enable = null;
+				String reboot_time = null;
+				String rf2in1 = null;
+				for(Element config_element:eles){
+					if(config_element.attributeValue("sequence") != null)
+						sequence = config_element.attributeValue("sequence");
+					if(config_element.attributeValue("boot_on_reset") != null)
+						boot_on_reset = config_element.attributeValue("boot_on_reset");
+					if(config_element.attributeValue("rf_2in1") != null)
+						rf2in1 = config_element.attributeValue("rf_2in1");
+					if(config_element.attributeValue("reboot_enable") != null)
+						reboot_enable = config_element.attributeValue("reboot_enable");
+					if(config_element.attributeValue("reboot_time") != null)
+						reboot_time = config_element.attributeValue("reboot_time");
+				}
+				if(sequence != null)
+					dto.setSequence(sequence);
 				if(StringUtils.isNotEmpty(boot_on_reset) && Integer.parseInt(boot_on_reset) == WifiDeviceHelper.Boot_On_Reset_Happen)
 					dto.setBoot_on_reset(WifiDeviceHelper.Boot_On_Reset_Happen);
 				else
 					dto.setBoot_on_reset(WifiDeviceHelper.Boot_On_Reset_NotHappen);
-				dto.setRf_2in1(config_element.attributeValue("rf_2in1"));
-
-				String ab_enable = config_element.attributeValue("reboot_enable");
-				WifiDeviceSettingAutoRebootDTO ab_dto = new WifiDeviceSettingAutoRebootDTO();
-				ab_dto.setEnable(ab_enable);
-				ab_dto.setTime(config_element.attributeValue("reboot_time"));
-				if(!WifiDeviceHelper.Enable.equals(ab_dto.getEnable()))
-					ab_dto.setEnable(WifiDeviceHelper.Disable);
-				if(DateTimeHelper.isValidDayTime(ab_dto.getTime()))
-					ab_dto.setTime(WifiDeviceSettingAutoRebootDTO.DefaultTime);
-				dto.setAutoreboot(ab_dto);
+				if(rf2in1 != null)
+					dto.setRf_2in1(rf2in1);
+				if(reboot_enable != null){
+					WifiDeviceSettingAutoRebootDTO ab_dto = new WifiDeviceSettingAutoRebootDTO();
+					ab_dto.setEnable(reboot_enable);
+					ab_dto.setTime(reboot_time);
+					if(!WifiDeviceHelper.Enable.equals(ab_dto.getEnable()))
+						ab_dto.setEnable(WifiDeviceHelper.Disable);
+					if(!DateTimeHelper.isValidDayTime(ab_dto.getTime()))
+						ab_dto.setTime(WifiDeviceSettingAutoRebootDTO.DefaultTime);
+					dto.setAutoreboot(ab_dto);
+				}
 			}
 			
 			//解析插件配置
@@ -869,13 +887,28 @@ public class RPCMessageParseHelper {
         	 ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage(text2, ModifyDeviceSettingDTO.class);
              System.out.println(dto.getConfig_sequence());
         }*/
-       String payload = "000010018482F419010C1510001002029000100000001<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><net><interface><ITEM name=\"wlan0\" enable=\"disable\" /></interface></net></dev>";
-		String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
+//       String payload = "000010018482F419010C1510001002029000100000001<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><net><interface><ITEM name=\"wlan0\" enable=\"disable\" /></interface></net></dev>";
+//		String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
+//
+//		WifiDeviceSettingDTO setting_dto = new WifiDeviceSettingDTO();
+//		WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(cmdWithoutHeader);
+//		DeviceHelper.mergeDS(modify_setting_dto, setting_dto);
+//       
+//       System.out.println(setting_dto);
+       
 
-		WifiDeviceSettingDTO setting_dto = new WifiDeviceSettingDTO();
-		WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(cmdWithoutHeader);
-		DeviceHelper.mergeDS(modify_setting_dto, setting_dto);
-        
-        System.out.println(setting_dto);
+   	String str = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><sys><config><ITEM reboot_enable=\"enable\" "
+   			+ "reboot_time=\"23:00\" /></config></sys></dev>";
+	   	Document doc = parserMessage(str);
+//		Element ele = Dom4jHelper.select(doc, "dev/sys/config/ITEM");
+//	   	System.out.println(ele.attributeValue("sequence"));
+
+	   	List<Element> list1 = doc.selectNodes("dev/sys/config/ITEM");
+	   	for(Element n : list1){
+		   	System.out.println(n.attributeValue("sequence"));
+		   	System.out.println(n.attributeValue("reboot_enable"));
+		   	System.out.println("------------------------------------------");
+	   	}
+   	
 	}
 }

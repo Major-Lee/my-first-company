@@ -1645,6 +1645,7 @@ public class DeviceURouterRestBusinessFacadeService {
 				URouterDeviceConfigAutoRebootVTO ab_vto = new URouterDeviceConfigAutoRebootVTO();
 				ab_vto.setEnable(ab_dto.getEnable());
 				ab_vto.setTime(ab_dto.getTime());
+				vto.setAutoreboot(ab_vto);
 			}
 
 			// 设备基本信息
