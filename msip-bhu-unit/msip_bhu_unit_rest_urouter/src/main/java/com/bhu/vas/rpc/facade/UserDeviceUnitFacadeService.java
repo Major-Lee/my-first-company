@@ -430,6 +430,8 @@ public class UserDeviceUnitFacadeService {
 				userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 				userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
 				userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
+				userDeviceDTO.setLastlogoutat(wifiDeviceDocument.getD_lastlogoutat());
+				userDeviceDTO.setLastregedat(wifiDeviceDocument.getD_lastregedat());
 				if (wifiDeviceDocument.getD_snk_allowturnoff() != null) {
 					userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
 				} else {
@@ -509,6 +511,8 @@ public class UserDeviceUnitFacadeService {
 							userDeviceDTO.setProvince(wifiDeviceDocument.getD_province());
 							userDeviceDTO.setCity(wifiDeviceDocument.getD_city());
 							userDeviceDTO.setDistrict(wifiDeviceDocument.getD_district());
+							userDeviceDTO.setLastlogoutat(wifiDeviceDocument.getD_lastlogoutat());
+							userDeviceDTO.setLastregedat(wifiDeviceDocument.getD_lastregedat());
 							macs.add(wifiDeviceDocument.getD_mac());
 							vtos.add(userDeviceDTO);
 						}

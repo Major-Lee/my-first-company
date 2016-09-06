@@ -10,6 +10,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCloudDTO;
@@ -20,8 +21,10 @@ import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.rpc.facade.UserDeviceUnitFacadeService;
+import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -36,7 +39,10 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 
     @Resource
     private UserDeviceUnitFacadeService userDeviceUnitFacadeService;
-    
+
+    @Resource
+	private WifiDeviceService wifiDeviceService;
+
 /*    @Resource
     private UserDeviceFacadeService userDeviceFacadeService;*/
     
@@ -88,15 +94,27 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
         } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_UROOTER) {
         	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_NOT_MATCHED,new String[]{mac});
-        }  else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_BINDED
-                || deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_ONLINE) {
+        } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_UNBINDED){
+            return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+        }else if (deviceStatus != IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_ONLINE){
+        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_MUST_OFFLINE_24_HOUR,new String[]{mac});
+        }
+        
+        WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+        if(wifiDevice.getLast_logout_at().getTime() > wifiDevice.getLast_reged_at().getTime() && 
+        		System.currentTimeMillis() - wifiDevice.getLast_logout_at().getTime() > 3600*1000*24){
             return userDeviceUnitFacadeService.unBindDevice(mac, uid);
-        } /*else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_UNBINDED) {
+        }
+        
+        return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_MUST_OFFLINE_24_HOUR,new String[]{mac});
+        
+         /*else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_UNBINDED) {
             //TODO(bluesand):未绑定过装备的时候，取消绑定
         	return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         }*/
-        return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+        //return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
     }
+    
 
     //@Override
     private int validateDeviceStatusIsOnlineAndBinded(String mac) {

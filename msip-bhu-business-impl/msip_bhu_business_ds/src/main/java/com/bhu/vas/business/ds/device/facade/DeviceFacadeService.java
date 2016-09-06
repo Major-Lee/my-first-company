@@ -500,11 +500,8 @@ public class DeviceFacadeService{
 	 * @return
 	 */
 	public WifiDevice validateUserDevice(Integer uid, String mac){
-		//验证设备是否存在
-		WifiDevice device_entity = wifiDeviceService.getById(mac);
-		if(device_entity == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
-		}
+		//验证设备
+		WifiDevice device_entity = validateDevice(mac);
 		//验证用户是否管理设备
 /*		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
 		if(userdevice_entity == null){
@@ -513,7 +510,23 @@ public class DeviceFacadeService{
 		userWifiDeviceFacadeService.validateUserWifiDevice(mac, uid);
 		return device_entity;
 	}
+
+	/**
+	 * 验证用户所管理的设备, 忽略设备是否在线
+	 * 1：设备是否存在
+	 * 2：设备是否被此用户管理
+	 * @param uid
+	 * @param mac
+	 * @return
+	 */
+	public WifiDevice validateUserDeviceIgnoreOffline(Integer uid, String mac){
+		//验证设备
+		WifiDevice device_entity = this.validateDeviceIgoneOffline(mac);
+		userWifiDeviceFacadeService.validateUserWifiDevice(mac, uid);
+		return device_entity;
+	}
 	
+
 	/**
 	 * 验证设备
 	 * 1：设备是否存在

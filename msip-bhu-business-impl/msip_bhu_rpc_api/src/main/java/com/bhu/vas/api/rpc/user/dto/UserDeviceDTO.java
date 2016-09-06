@@ -41,12 +41,33 @@ public class UserDeviceDTO implements Serializable {
     
     private String district;
     
+    //最近一次登入时间
+    private long lastregedat;
+    //最近一次登出时间
+    private long lastlogoutat;
+    
     //app获取后可判断是否需要更新位置信息
     private String lat;
     private String lon;
     
     
-    public String getLat() {
+    public long getLastregedat() {
+		return lastregedat;
+	}
+
+	public void setLastregedat(long lastregedat) {
+		this.lastregedat = lastregedat;
+	}
+
+	public long getLastlogoutat() {
+		return lastlogoutat;
+	}
+
+	public void setLastlogoutat(long lastlogoutat) {
+		this.lastlogoutat = lastlogoutat;
+	}
+
+	public String getLat() {
 		return lat;
 	}
 
