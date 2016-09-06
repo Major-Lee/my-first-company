@@ -7,30 +7,38 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
+import com.bhu.vas.api.rpc.tag.dto.TagGroupHandsetDetailDTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
+import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
+import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.ds.charging.facade.ChargingStatisticsFacadeService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
+import com.bhu.vas.business.ds.tag.service.TagGroupHandsetDetailService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -77,7 +85,12 @@ public class TagFacadeRpcSerivce {
 	
 	@Resource
 	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
-
+	
+	@Resource
+	private TagGroupHandsetDetailService tagGroupHandsetDetailService;
+	
+	@Resource
+	private UserIdentityAuthService userIdentityAuthService;
 	private void addTag(int uid, String tag) {
 
 		ModelCriteria mc = new ModelCriteria();
@@ -645,5 +658,62 @@ public class TagFacadeRpcSerivce {
 			list.add(vto);
 		}
 		return list;
+	}
+	
+	public  void handsetDeviceOnline(String ctx, HandsetDeviceDTO dto, String wifiId,String action){
+		if(dto == null) 
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+		TagGroupHandsetDetailDTO handsetDto = handsetComming(dto, wifiId);
+		if (handsetDto !=null) {
+			TagGroupHandsetDetail detail = new TagGroupHandsetDetail();
+			detail.setGid(handsetDto.getGid());
+			detail.setHdmac(handsetDto.getHdMac());
+			detail.setNewuser(isNewHandset(handsetDto.getHdMac(), handsetDto.getGid()));
+			tagGroupHandsetDetailService.insert(detail);
+		}
+	}
+
+	public void handsetDeviceSync(String ctx, String mac, List<HandsetDeviceDTO> dtos){
+		if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(ctx))
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+		if((dtos != null && !dtos.isEmpty()) && dtos.get(0).getMac() != null){
+			
+		}
+	}
+	
+	private TagGroupHandsetDetailDTO handsetComming(HandsetDeviceDTO dto, String wifiId){
+		
+		TagGroupHandsetDetailDTO handsetDto = null;
+		
+		TagGroupRelation tagGroupRelation = tagGroupRelationService.getById(wifiId);
+		if(tagGroupRelation == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+		String hdmac = dto.getMac();
+		int gid = tagGroupRelation.getGid();
+		String timestr = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7);
+		//1.判断当天是否该终端是否存在记录
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("hdmac", hdmac).andColumnEqualTo("gid", gid).andColumnEqualTo("timestr", timestr);
+		int count = tagGroupHandsetDetailService.countByModelCriteria(mc);
+		if (count > 0) {
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+		handsetDto.setGid(gid);
+		handsetDto.setHdMac(hdmac);
+		return handsetDto;
+	}
+	
+	private boolean isNewHandset(String hdmac,int gid){
+		boolean flag = false;
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("hdmac", hdmac).andColumnEqualTo("gid", gid);
+		int count = tagGroupHandsetDetailService.countByModelCriteria(mc);
+		if (count == 0) {
+			flag = true;
+		}
+		return flag;
 	}
 }
