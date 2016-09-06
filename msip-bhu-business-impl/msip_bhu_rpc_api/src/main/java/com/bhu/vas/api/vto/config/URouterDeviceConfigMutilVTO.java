@@ -31,7 +31,9 @@ public class URouterDeviceConfigMutilVTO implements Serializable{
 	
 	//设备基本信息
 	private URouterInfoVTO info;
-
+	//设备共享模板ssid
+	private String sn_ssid;
+	
 	//自动重启
 	private URouterDeviceConfigAutoRebootVTO autoreboot;
 
@@ -40,6 +42,13 @@ public class URouterDeviceConfigMutilVTO implements Serializable{
 	}
 	public void setAutoreboot(URouterDeviceConfigAutoRebootVTO autoreboot) {
 		this.autoreboot = autoreboot;
+	}
+
+	public String getSn_ssid() {
+		return sn_ssid;
+	}
+	public void setSn_ssid(String sn_ssid) {
+		this.sn_ssid = sn_ssid;
 	}
 
 	public String getRf_2in1() {

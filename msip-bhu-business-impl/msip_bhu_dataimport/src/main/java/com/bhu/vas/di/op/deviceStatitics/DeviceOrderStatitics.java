@@ -294,12 +294,11 @@ public class DeviceOrderStatitics {
 						mb_ofaF+=Float.valueOf(orders.get(i).getAmount());
 						mb_ofc++;
 					}
+				}
+				if(orders.get(i).getUmactype()==1){
+					pc_occ++;
 				}else{
-					if(orders.get(i).getUmactype()==1){
-						pc_occ++;
-					}else{
-						mb_occ++;
-					}
+					mb_occ++;
 				}
 				occ++;
 				if(macList!=null&&macList.size()>0){
