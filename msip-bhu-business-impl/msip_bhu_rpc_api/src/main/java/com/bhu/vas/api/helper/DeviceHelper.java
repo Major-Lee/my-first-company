@@ -2050,7 +2050,7 @@ public class DeviceHelper {
 		if(ab_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		
-		if(WifiDeviceHelper.Enable.equals(ab_dto.getEnable()) && DateTimeHelper.isValidDayTime(ab_dto.getTime()))
+		if(WifiDeviceHelper.Enable.equals(ab_dto.getEnable()) && !DateTimeHelper.isValidDayTime(ab_dto.getTime()))
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 
 		String item = builderDeviceSettingItem(DeviceSetting_AutoReboot, ab_dto.builderProperties());
