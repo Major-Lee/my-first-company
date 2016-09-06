@@ -13,11 +13,12 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
 import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
@@ -47,8 +48,7 @@ public class SSIDStatisticFacadeRpcService {
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
-	
-	private static Logger log = Logger.getLogger(SSIDStatisticFacadeRpcService.class);
+	private final Logger log = LoggerFactory.getLogger(SSIDStatisticFacadeRpcService.class);
 	public Map<String,Object> querySSIDStatisticInfo(Map<String,Object> map){
 		Map<String,Object> result = new HashMap<String,Object>();
 		//查询日期类型
