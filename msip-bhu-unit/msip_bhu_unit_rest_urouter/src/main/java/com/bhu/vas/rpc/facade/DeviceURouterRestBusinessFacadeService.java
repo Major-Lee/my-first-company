@@ -44,6 +44,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.user.dto.UserConfigsStateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
@@ -99,6 +100,7 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.comparator.SortMapHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
@@ -1654,7 +1656,13 @@ public class DeviceURouterRestBusinessFacadeService {
 			info_vto.setCarrier(device_entity.getCarrier());
 			info_vto.setWm(device_entity.getWork_mode());
 			vto.setInfo(info_vto);
-
+			
+			//设备应用共享模板ssid
+			WifiDeviceSharedNetwork dsn =sharedNetworksFacadeService.fetchDeviceSharedNetwork(dmac);
+			if (dsn != null) {
+				SharedNetworkSettingDTO sns = JsonHelper.getDTO(dsn.getExtension_content(), SharedNetworkSettingDTO.class);
+				vto.setSn_ssid(sns.getPsn().getSsid());
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		} catch (BusinessI18nCodeException bex) {
 			bex.printStackTrace(System.out);
