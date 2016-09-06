@@ -85,4 +85,8 @@ public class HandsetStatisticsService extends AbstractRelationHashCache {
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.HANDSETPRESENT);
 	}
+	
+	public static void main(String[] args) {
+		
+	}
 }

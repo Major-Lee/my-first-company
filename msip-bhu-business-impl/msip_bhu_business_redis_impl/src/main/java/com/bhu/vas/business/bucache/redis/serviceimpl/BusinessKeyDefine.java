@@ -17,6 +17,7 @@ public class BusinessKeyDefine {
 		public static final String PresentLogKey 				= "HPL.";
 		public static final String PresentRelationKey 			= "HPR.";
 		public static final String StatisticsTRBKey 			= "HPT.";
+		public static final String GroupStatisticsPrefixKey     = "HGS.";
 	}
 	
 	
