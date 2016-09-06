@@ -24,6 +24,7 @@ import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceVapReturnDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAutoRebootDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
@@ -41,6 +42,7 @@ import com.bhu.vas.api.dto.vap.HttpRedirectModuleDTO;
 import com.bhu.vas.api.dto.vap.ModuleDTO;
 import com.bhu.vas.api.dto.vap.RegisterDTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.XStreamHelper;
 import com.smartwork.msip.cores.helper.dom4j.Dom4jHelper;
@@ -630,6 +632,16 @@ public class RPCMessageParseHelper {
 				else
 					dto.setBoot_on_reset(WifiDeviceHelper.Boot_On_Reset_NotHappen);
 				dto.setRf_2in1(config_element.attributeValue("rf_2in1"));
+
+				String ab_enable = config_element.attributeValue("reboot_enable");
+				WifiDeviceSettingAutoRebootDTO ab_dto = new WifiDeviceSettingAutoRebootDTO();
+				ab_dto.setEnable(ab_enable);
+				ab_dto.setTime(config_element.attributeValue("reboot_time"));
+				if(!WifiDeviceHelper.Enable.equals(ab_dto.getEnable()))
+					ab_dto.setEnable(WifiDeviceHelper.Disable);
+				if(DateTimeHelper.isValidDayTime(ab_dto.getTime()))
+					ab_dto.setTime(WifiDeviceSettingAutoRebootDTO.DefaultTime);
+				dto.setAutoreboot(ab_dto);
 			}
 			
 			//解析插件配置

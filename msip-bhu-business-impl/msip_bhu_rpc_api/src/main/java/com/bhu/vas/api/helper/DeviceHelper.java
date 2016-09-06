@@ -16,6 +16,7 @@ import com.bhu.vas.api.dto.ret.param.ParamVapAdDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAutoRebootDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
@@ -33,6 +34,7 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -392,6 +394,12 @@ public class DeviceHelper {
 		return vap_dtos;
 	}
 	
+	public static WifiDeviceSettingAutoRebootDTO getUrouterDeviceAutoReboot(WifiDeviceSettingDTO dto){
+		if(dto == null)
+			return null;
+		return dto.getAutoreboot();
+	}
+	
 	public static String getLinkModeValue(WifiDeviceSettingDTO dto){
 		if(dto == null) return null;
 		WifiDeviceSettingLinkModeDTO linkmode_dto = dto.getLinkmode();
@@ -620,6 +628,12 @@ public class DeviceHelper {
 				if(source.getRf_2in1() != null){
 					target.setRf_2in1(source.getRf_2in1());
 				}
+				
+				//合并autoreboot
+				if(source.getAutoreboot() != null){
+					ReflectionHelper.copyProperties(source.getAutoreboot(), target.getAutoreboot());
+				}
+
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -708,6 +722,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_AdminPasswordOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><users>%s</users></sys></dev>");
 	public static final String DeviceSetting_KeyStatusOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><syskey>%s</syskey></sys></dev>");
 	public static final String DeviceSetting_InterfaceOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><interface>%s</interface></net></dev>");
+	public static final String DeviceSetting_AutoRebootOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><config>%s</config></sys></dev>");
 
 	public static final String DeviceSetting_MMOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><mac_management>%s</mac_management></net></dev>");
 	public static final String DeviceSetting_LinkModeOuter ="<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<mod><basic><wan>%s</wan></basic></mod></dev>");
@@ -906,7 +921,10 @@ public class DeviceHelper {
 	//主网络统一限速
 	public static final String DeviceSetting_Master_Limit = "<ITEM name=\"%s\" users_tx_rate=\"%s\" users_rx_rate=\"%s\" />";
 	
-	
+
+	//自动重启
+	public static final String DeviceSetting_AutoReboot = "<ITEM reboot_enable=\"%s\" reboot_time=\"%s\" />";
+
 	///complete_isolate_ports 区分 工作模式和单双频
 	public static final String DeviceSetting_Start_SharedNetworkWifi_Uplink_Dual =
 			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
@@ -2019,6 +2037,27 @@ public class DeviceHelper {
 		}
 		return builderDeviceSettingOuter(DeviceSetting_InterfaceOuter, config_sequence, items.toString());
 	}
+	
+	/**
+	 * 构建主网络统一限速配置multi
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return 
+	 */
+	public static String builderDSAutoRebootOuter(String config_sequence, String extparams){
+		WifiDeviceSettingAutoRebootDTO ab_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingAutoRebootDTO.class);
+		if(ab_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		if(WifiDeviceHelper.Enable.equals(ab_dto.getEnable()) && DateTimeHelper.isValidDayTime(ab_dto.getTime()))
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+
+		String item = builderDeviceSettingItem(DeviceSetting_AutoReboot, ab_dto.builderProperties());
+				
+		return builderDeviceSettingOuter(DeviceSetting_AutoRebootOuter, config_sequence, item);
+	}
+	
 	
 	/**
 	 * 解析设备的软件版本

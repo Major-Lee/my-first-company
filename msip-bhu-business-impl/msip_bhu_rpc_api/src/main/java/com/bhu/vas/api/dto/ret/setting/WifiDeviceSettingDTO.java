@@ -46,6 +46,10 @@ public class WifiDeviceSettingDTO {
 	//终端别名列表
 	private List<WifiDeviceSettingPluginDTO> plugins;
 	
+	//自动重启
+	
+	private WifiDeviceSettingAutoRebootDTO autoreboot;
+	
 	//广告
 	private WifiDeviceSettingVapAdDTO ad;
 	
@@ -186,6 +190,15 @@ public class WifiDeviceSettingDTO {
 			if(pluginName.equals(plugin.getName())) return true;
 		}
 		return false;
+	}
+
+	
+	public WifiDeviceSettingAutoRebootDTO getAutoreboot() {
+		return autoreboot;
+	}
+
+	public void setAutoreboot(WifiDeviceSettingAutoRebootDTO autoreboot) {
+		this.autoreboot = autoreboot;
 	}
 
 	public WifiDeviceSettingSyskeyDTO getSyskey() {

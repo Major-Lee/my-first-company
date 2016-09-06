@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.elasticsearch.ElasticsearchIllegalArgumentException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import com.bhu.vas.api.dto.HandsetLogDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapVistorWifiDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAutoRebootDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
@@ -67,6 +69,7 @@ import com.bhu.vas.api.vto.URouterWSCommunityVTO;
 import com.bhu.vas.api.vto.URouterWSHotVTO;
 import com.bhu.vas.api.vto.URouterWSRecentVTO;
 import com.bhu.vas.api.vto.WifiSinfferSettingVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigAutoRebootVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigInterfaceVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMMVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMutilVTO;
@@ -1634,6 +1637,14 @@ public class DeviceURouterRestBusinessFacadeService {
 					}
 				}
 				vto.setIfs(interface_vtos);
+			}
+			
+			//自动重启
+			WifiDeviceSettingAutoRebootDTO ab_dto = setting_dto.getAutoreboot();
+			if(ab_dto != null){
+				URouterDeviceConfigAutoRebootVTO ab_vto = new URouterDeviceConfigAutoRebootVTO();
+				ab_vto.setEnable(ab_dto.getEnable());
+				ab_vto.setTime(ab_dto.getTime());
 			}
 
 			// 设备基本信息

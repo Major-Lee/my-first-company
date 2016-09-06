@@ -21,6 +21,7 @@ public enum OperationDS {
 	DS_VapGuest("08","修改vap访客网络开关"),
 	DS_LinkMode("10","修改上网方式"),
 	
+	
 	DS_InterfaceMasterSwitch_multi("44","主网络开关"),
 	DS_InterfaceMasterLimit_multi("45","主网络限速"),
 	
@@ -55,7 +56,9 @@ public enum OperationDS {
 	DS_Switch_WorkMode("30","设备工作模式切换指令"),
 	
 	DS_Plugins("50","plugins"),
-	
+
+	DS_AutoReboot("31", "定时重启"),
+
 	//DS_PassThrough("99","透传配置"),
 	;
 

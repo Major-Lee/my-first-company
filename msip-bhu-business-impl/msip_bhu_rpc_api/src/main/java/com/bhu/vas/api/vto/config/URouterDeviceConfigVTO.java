@@ -34,6 +34,7 @@ public class URouterDeviceConfigVTO implements Serializable{
 	private List<URouterDeviceConfigMMVTO> mms;
 	//上网方式
 	private URouterModeVTO linkmode;
+	private URouterDeviceConfigAutoRebootVTO autoreboot;
 	
 	//设备基本信息
 	private URouterInfoVTO info;
@@ -130,5 +131,11 @@ public class URouterDeviceConfigVTO implements Serializable{
 	}
 	public void setReal_channel(int real_channel) {
 		this.real_channel = real_channel;
+	}
+	public URouterDeviceConfigAutoRebootVTO getAutoreboot() {
+		return autoreboot;
+	}
+	public void setAutoreboot(URouterDeviceConfigAutoRebootVTO autoreboot) {
+		this.autoreboot = autoreboot;
 	}
 }

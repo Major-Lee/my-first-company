@@ -109,6 +109,8 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 				return DeviceHelper.builderDSInterfaceMasterSwitchMultiOuter(config_sequence, extparams);
 			case DS_InterfaceMasterLimit_multi:
 				return DeviceHelper.builderDSInterfaceMasterLimitMultiOuter(config_sequence, extparams);
+			case DS_AutoReboot:
+				return DeviceHelper.builderDSAutoRebootOuter(config_sequence, extparams);
 				
 //			case DS_VapGuest:
 //				return DeviceHelper.builderDSVapGuestOuter(config_sequence, extparams, ds_dto);
