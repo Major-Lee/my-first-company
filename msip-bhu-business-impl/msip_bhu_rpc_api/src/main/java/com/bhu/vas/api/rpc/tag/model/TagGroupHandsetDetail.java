@@ -15,9 +15,10 @@ public class TagGroupHandsetDetail extends BaseLongModel implements Serializable
 	private String timestr;
 	private String mobileno;
 	private boolean newuser;
-	private String auth = "false";
+	private String auth;
 	private Date created_at;
 	private Date updated_at;
+	
 	
 	public String getAuth() {
 		return auth;

@@ -660,21 +660,22 @@ public class TagFacadeRpcSerivce {
 		return list;
 	}
 	
-	public  void handsetDeviceOnline(String ctx, HandsetDeviceDTO dto, String wifiId,String action){
+	public  void handsetOnline(String ctx, HandsetDeviceDTO dto, String wifiId,String action){
 		if(dto == null) 
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
-		TagGroupHandsetDetailDTO handsetDto = handsetComming(dto, wifiId);
-		if (handsetDto !=null) {
-			TagGroupHandsetDetail detail = new TagGroupHandsetDetail();
-			detail.setGid(handsetDto.getGid());
-			detail.setHdmac(handsetDto.getHdMac());
-			detail.setNewuser(isNewHandset(handsetDto.getHdMac(), handsetDto.getGid()));
-			tagGroupHandsetDetailService.insert(detail);
-		}
+		handsetComming(dto, wifiId);
 	}
 
+	public  void handsetOffline(String ctx, HandsetDeviceDTO dto, String wifiId,String action){
+		if(dto == null) 
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+		handsetComming(dto, wifiId);
+	}
+	
 	public void handsetDeviceSync(String ctx, String mac, List<HandsetDeviceDTO> dtos){
 		if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(ctx))
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
@@ -683,7 +684,22 @@ public class TagFacadeRpcSerivce {
 		}
 	}
 	
-	private TagGroupHandsetDetailDTO handsetComming(HandsetDeviceDTO dto, String wifiId){
+	public  void handsetAuth(String ctx, HandsetDeviceDTO dto, String wifiId,String action){
+		if(dto == null) 
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+		TagGroupHandsetDetail detail = handsetComming(dto, wifiId);
+		if(detail !=null){
+			if (StringHelper.FALSE.equals(detail.getAuth())) {
+				detail.setAuth(StringHelper.TRUE);
+				tagGroupHandsetDetailService.update(detail);
+			}
+		}
+	}
+	
+	
+	private TagGroupHandsetDetail handsetComming(HandsetDeviceDTO dto, String wifiId){
 		
 		TagGroupHandsetDetailDTO handsetDto = null;
 		
@@ -697,13 +713,16 @@ public class TagFacadeRpcSerivce {
 		//1.判断当天是否该终端是否存在记录
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("hdmac", hdmac).andColumnEqualTo("gid", gid).andColumnEqualTo("timestr", timestr);
-		int count = tagGroupHandsetDetailService.countByModelCriteria(mc);
-		if (count > 0) {
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		List<TagGroupHandsetDetail> entitys = tagGroupHandsetDetailService.findModelByModelCriteria(mc);
+		if (entitys == null || entitys.isEmpty()) {
+			TagGroupHandsetDetail detail =new TagGroupHandsetDetail();
+			detail.setAuth(dto.getAction());
+			detail.setHdmac(hdmac);
+			detail.setGid(gid);
+			detail.setNewuser(isNewHandset(hdmac, gid));
+			tagGroupHandsetDetailService.insert(detail);
 		}
-		handsetDto.setGid(gid);
-		handsetDto.setHdMac(hdmac);
-		return handsetDto;
+		return entitys.get(0);
 	}
 	
 	private boolean isNewHandset(String hdmac,int gid){
