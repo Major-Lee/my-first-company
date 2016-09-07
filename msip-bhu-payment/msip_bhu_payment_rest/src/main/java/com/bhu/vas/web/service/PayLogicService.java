@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.rpc.payment.model.PaymentOrderRel;
 import com.bhu.vas.api.rpc.payment.model.PaymentParameter;
 import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
 import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
 import com.bhu.vas.api.rpc.payment.vto.PaymentReckoningVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.payment.service.PaymentAlipaylocationService;
+import com.bhu.vas.business.ds.payment.service.PaymentOrderRelService;
 import com.bhu.vas.business.ds.payment.service.PaymentParameterService;
 import com.bhu.vas.business.ds.payment.service.PaymentReckoningService;
 import com.bhu.vas.business.ds.payment.service.PaymentWithdrawService;
@@ -35,6 +37,8 @@ public class PayLogicService {
 	PaymentParameterService paymentParameterService;
 	@Resource
 	PaymentReckoningService paymentReckoningService;
+	@Resource
+	PaymentOrderRelService paymentOrderRelService;
 	@Resource
 	PaymentWithdrawService paymentWithdrawService;
 	@Resource
@@ -68,6 +72,16 @@ public class PayLogicService {
 	public PaymentReckoningVTO findPayStatusByOrderId(String goods_no) {
 		logger.info(String.format("query payment order status [%s]", goods_no));
 		PaymentReckoning order = paymentReckoningService.findByOrderId(goods_no);
+		if(order == null){
+			return null;
+		}
+		PaymentReckoningVTO payReckoningVTO = queryPaymentVTO(order);
+		return payReckoningVTO;
+	}
+	
+	public PaymentReckoningVTO findPaymentByRemark(String remark) {
+		logger.info(String.format("query payment order by remark [%s]", remark));
+		PaymentReckoning order = paymentReckoningService.findByThreeOrderId(remark);
 		if(order == null){
 			return null;
 		}
@@ -247,6 +261,29 @@ public class PayLogicService {
 			logger.info(String.format("write out_trade_no [%s] order_id [%s] to cache finished.",out_trade_no,payNotice.getOrder_id()));
 		}
 		logger.info("success");
+    }
+    /**
+     * 模拟充值通知接口备用
+     * @param updatePayStatus 需要修改的流水号对象
+     * @param out_trade_no 支付流水号
+     * @param thirdPartCode 第三方支付流水号
+     * @param thridType 第三方标识
+     * @param billo 第三方流程号
+     */
+    public void updatePaymentStatusBackup(PaymentReckoning updatePayStatus,String out_trade_no,String thirdPartCode,
+    		String thridType,String billo){
+    	PaymentOrderRel order = new PaymentOrderRel();
+		order.setId(out_trade_no);
+		order.setOrder_id(updatePayStatus.getOrder_id());
+		order.setAmount(updatePayStatus.getAmount());
+		order.setPayment_type("WapWeixin");
+		order.setThird_party_code(thirdPartCode);
+		order.setSubject("打赏");
+		order.setAppid("1000");
+		order.setChannel_no(billo);
+		order.setChannel_type(thridType);
+		paymentOrderRelService.insert(order);
+    	logger.info(String.format("insert payment order rel out_trade_no [%s] finished.",out_trade_no));
     }
     
     /**

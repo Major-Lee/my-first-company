@@ -7,7 +7,7 @@
 <meta name="format-detection" content="telephone=no" />
 
 <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-<script type="text/javascript" src="http://static.jdguanjia.com/js/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
 <title></title>
 <style type="text/css">
 	.block{
@@ -95,8 +95,7 @@
 		
 		$('#WapWeixin2').click(function(){
 	           var goods_no = Date.parse(new Date());
-	            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=Midas&total_fee=0.01&goods_no='+goods_no;
-	          alert(datas);
+	            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=WapWeixin&version=v1&total_fee=0.01&goods_no='+goods_no;
 	            $.ajax({
 	            	url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay/',
 	               //url:'http://localhost:8080/msip_bhu_payment_rest/pay',
@@ -107,13 +106,7 @@
 	            	   
 	            	   if(json.success){
 							var params = $.parseJSON(json.params);
-						var callbackType = params.type;
-						if(callbackType=='json'){
-							var url = $.parseJSON(params.url);
-	                        //loc(url);
-						}else{
 		                    location.href = params.url;
-						}
 	                   }else{
 	                       alert(json.msg);
 	                   } 

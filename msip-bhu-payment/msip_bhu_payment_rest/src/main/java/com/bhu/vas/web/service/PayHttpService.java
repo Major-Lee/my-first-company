@@ -51,7 +51,7 @@ public class PayHttpService {
     
     
     //重定向地址
-    public static String PAY_HOST_URL = "http://upay.bhuwifi.com/msip_bhu_payment_rest/payment";
+    public static String PAY_HOST_URL = "http://119.29.75.134:8080/msip_bhu_payment_rest/payment";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
@@ -85,13 +85,13 @@ public class PayHttpService {
     
     //打赏失败web回调地址
     //public static String WEB_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
-    //public static String WEB_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
-    public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
+    public static String WEB_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
+  //public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
     //public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/unsuccess";
     //充值失败web回调地址
-   //public static String PREPAID_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
-   //public static String PREPAID_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
-   public static String PREPAID_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
+  //public static String PREPAID_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
+   public static String PREPAID_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
+  //public static String PREPAID_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
     //证书地址
     public static String WITHDRAW_URL = "/home";
     
@@ -152,8 +152,6 @@ public class PayHttpService {
     		this.mchId = this.testMchId;
     		this.mchKey = this.testMchKey;
     	}
-    	System.out.println("app:"+appAppId+appAppSecret+appMchId+appMchKey);
-    	System.out.println(appId+appSecret+mchId+mchKey);
     }
     
     public UnifiedOrderResponse unifiedorder(String orderId,String commodityName, double totalPrice,String localIp,String payCallUrl,String openId ) {

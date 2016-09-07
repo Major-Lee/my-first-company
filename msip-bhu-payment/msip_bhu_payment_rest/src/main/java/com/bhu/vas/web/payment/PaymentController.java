@@ -592,6 +592,7 @@ public class PaymentController extends BaseController{
         				}else{
         					result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}
+    					//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
     				}
                 	break;
     			case BHU_MIDAS_WEIXIN: //米大师
@@ -1655,7 +1656,7 @@ public class PaymentController extends BaseController{
      */
    	@RequestMapping(value = "/payment/midasNotifySuccess", method = { RequestMethod.GET,RequestMethod.POST })
    	public void midasNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
-    	logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师通知",BusinessHelper.gettimestamp(),"Starting"));
+    	logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师midasNotifySuccess",BusinessHelper.gettimestamp(),"Starting"));
     	//获取POST过来反馈信息
    		MidasRespone result = null;
    		result = new MidasRespone(1,"通知订单信息无效");
@@ -1683,7 +1684,7 @@ public class PaymentController extends BaseController{
 		String notify_url = PayHttpService.MIDAS_NOTIFY_URL;
 		
 		//商户订单号
-		String out_trade_no = BusinessHelper.formatPayItem(payHttpService.getEnv(), goods_no) ;
+		String out_trade_no = BusinessHelper.formatPayItem(payHttpService.getEnv(), goods_no);
 
 		//交易号 (米大师给的微信流水号)
 		String trade_no = new String(request.getParameter("cftid").getBytes("ISO-8859-1"),"UTF-8");
@@ -1712,11 +1713,25 @@ public class PaymentController extends BaseController{
 				//支付成功
 				logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
 				payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
+				result.setMsg("OK");
+				result.setRet(0);
+				SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+				return;
+			}else{
+				PaymentReckoningVTO paidPaymentOrder = payLogicService.findPaymentByRemark(billno);
+				if(paidPaymentOrder != null){
+					logger.info("订单支付成功状态已修改完成,记录 midas 再次发送回掉通知信息out_trade_no[%s],  billno[%s],trade_no[%s]",out_trade_no,billno,trade_no);
+					payLogicService.updatePaymentStatusBackup(payReckoning,out_trade_no,trade_no,"Midas",billno);
+				}else{
+					logger.info("订单支付成功状态已修改完成,记录 midas 再次发送回掉通知信息out_trade_no[%s],  billno[%s],trade_no[%s]",out_trade_no,billno,trade_no);
+					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
+				}
+				
+				result.setMsg("OK");
+				result.setRet(0);
+				SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+				return;
 			}
-			result.setMsg("OK");
-			result.setRet(0);
-			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
-			return;
 				
 		}else{//验证失败
 			logger.info(String.format("get midas notifysign [%s] verify fail", sign));
@@ -2065,7 +2080,7 @@ public class PaymentController extends BaseController{
      */
 	@RequestMapping(value = "/payment/midasReturn" , method = { RequestMethod.GET,RequestMethod.POST })
    	public void midasReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
-   		logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师备用通知",BusinessHelper.gettimestamp(),"Starting"));
+   		logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师备用通知midasReturn",BusinessHelper.gettimestamp(),"Starting"));
     	//获取POST过来反馈信息
    		MidasRespone result = null;
    		result = new MidasRespone(1,"通知订单信息无效");
@@ -2122,11 +2137,25 @@ public class PaymentController extends BaseController{
 				//支付成功
 				logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
 				payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
+				result.setMsg("OK");
+				result.setRet(0);
+				SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+				return;
+			}else{
+				PaymentReckoningVTO paidPaymentOrder = payLogicService.findPaymentByRemark(billno);
+				if(paidPaymentOrder != null){
+					logger.info("订单支付成功状态已修改完成,记录 midas 再次发送回掉通知信息out_trade_no[%s],  billno[%s],trade_no[%s]",out_trade_no,billno,trade_no);
+					payLogicService.updatePaymentStatusBackup(payReckoning,out_trade_no,trade_no,"Midas",billno);
+				}else{
+					logger.info("订单支付成功状态已修改完成,记录 midas 再次发送回掉通知信息out_trade_no[%s],  billno[%s],trade_no[%s]",out_trade_no,billno,trade_no);
+					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
+				}
+				
+				result.setMsg("OK");
+				result.setRet(0);
+				SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+				return;
 			}
-			result.setMsg("OK");
-			result.setRet(0);
-			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
-			return;
 				
 		}else{//验证失败
 			logger.info(String.format("get midas notifysign [%s] verify fail", sign));

@@ -548,6 +548,7 @@ public class DeviceOrderStatitics {
 		        }
 		        zipFile.close();
 		        zin.close();
+		        in.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

@@ -45,6 +45,14 @@ public class PaymentReckoningService extends AbstractPaymentService<String, Paym
 		List<PaymentReckoning> list = this.findModelByModelCriteria(mc);
 		return list.isEmpty() ? null : list.get(0);
 	}
+	
+	// 通过第三方支付订单号查找订单
+	public PaymentReckoning findByThreeOrderId(String gid) {
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("remark", gid);
+		List<PaymentReckoning> list = this.findModelByModelCriteria(mc);
+		return list.isEmpty() ? null : list.get(0);
+	}
 
 	// 通过Upay支付订单号获取订单ID
 	/*public Long getIdByReckoningId(String tid) {

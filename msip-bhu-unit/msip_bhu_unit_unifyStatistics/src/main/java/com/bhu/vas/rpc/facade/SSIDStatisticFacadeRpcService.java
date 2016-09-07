@@ -19,10 +19,14 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
+import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.util.DataUtils;
@@ -42,7 +46,10 @@ import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 public class SSIDStatisticFacadeRpcService {
 	@Resource
 	private UserService userService;
-	
+	@Resource
+	private UserWifiDeviceService userWifiDeviceService;
+	@Resource
+	private TagDevicesService tagDevicesService;
 //	@Resource
 //	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
@@ -63,6 +70,9 @@ public class SSIDStatisticFacadeRpcService {
 		String startTime = StringUtils.EMPTY;
 		//查询结束时间
 		String endTime = StringUtils.EMPTY;
+		//单独mac查询
+		String mac=StringUtils.EMPTY;
+		
 		//当前页数
 		int pn = 1;
 		//每页显示条数
@@ -71,6 +81,7 @@ public class SSIDStatisticFacadeRpcService {
 		deliveryChannel = (String) map.get("deliveryChannel");
 		mobileNo = (String) map.get("mobileNo");
 		deviceLable = (String) map.get("deviceLabel");
+		mac = (String) map.get("mac");
 		startTime = (String) map.get("startTime");
 		endTime = (String) map.get("endTime");
 		pn = (Integer) map.get("pn");
@@ -93,6 +104,9 @@ public class SSIDStatisticFacadeRpcService {
 			//根据设备标签查询
 			macList = new ArrayList<String>();
 			macList=queryMacListByDLabel(deviceLable);
+			flag=false;
+		}else if(StringUtils.isNotBlank(mac)){
+			macList.add(mac);
 			flag=false;
 		}
 		List<String> timeList = new ArrayList<String>();
@@ -822,22 +836,27 @@ public class SSIDStatisticFacadeRpcService {
 				return macList;
 			}
 			for(User i:userList){
-				//获取在线Mac集合
-				wifiDeviceDataSearchService.iteratorAllByCommon(i.getId(), "", 
-						"", "",  "","", "",
-					 100, new IteratorNotify<Page<WifiDeviceDocument>>() {
-				    @Override
-				    public void notifyComming(Page<WifiDeviceDocument> pages) {
-				    	for (WifiDeviceDocument doc : pages) {
-				    		String mac = doc.getD_mac();
-				    		macList.add(mac);
-				    	}
-				    }
-				});
+				ModelCriteria mcDevice = new ModelCriteria();
+				Criteria criDevice = mcDevice.createCriteria();
+				criDevice.andColumnEqualTo("uid", i.getId());
+				List<UserWifiDevice> devices=userWifiDeviceService.findModelByCommonCriteria(mcDevice);
+				for(UserWifiDevice j:devices){
+					macList.add(j.getId());
+				}
+//				//获取在线Mac集合
+//				wifiDeviceDataSearchService.iteratorAllByCommon(i.getId(), "", 
+//						"", "",  "","", "",
+//					 100, new IteratorNotify<Page<WifiDeviceDocument>>() {
+//				    @Override
+//				    public void notifyComming(Page<WifiDeviceDocument> pages) {
+//				    	for (WifiDeviceDocument doc : pages) {
+//				    		String mac = doc.getD_mac();
+//				    		macList.add(mac);
+//				    	}
+//				    }
+//				});
 			}
 			
-			//根据用户Id查询mac列表
-			//macList = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(userList.get(0).getId());
 		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
 		}
@@ -852,25 +871,42 @@ public class SSIDStatisticFacadeRpcService {
 	public List<String> queryMacListByDLabel(String deviceLabel){
 		final List<String> macList = new ArrayList<String>();
 		if(StringUtils.isBlank(deviceLabel)){
-			log.info("电话号码为空");
+			log.info("标签为空");
 			return macList;
 		}
 		try {
-				//获取在线Mac集合
-				wifiDeviceDataSearchService.iteratorAllByCommon(null, "", 
-						"", "",  "","", deviceLabel,
-					 100, new IteratorNotify<Page<WifiDeviceDocument>>() {
-				    @Override
-				    public void notifyComming(Page<WifiDeviceDocument> pages) {
-				    	for (WifiDeviceDocument doc : pages) {
-				    		String mac = doc.getD_mac();
-				    		macList.add(mac);
-				    	}
-				    }
-				});
+			ModelCriteria mc = new ModelCriteria();
+			Criteria cri = mc.createCriteria();
+			cri.andColumnLike("extension_content", "%"+deviceLabel+"%");
+			cri.andSimpleCaulse(" 1=1 ");
 			
-			//根据用户Id查询mac列表
-			//macList = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(userList.get(0).getId());
+			List<TagDevices> tagDevices=tagDevicesService.findModelByCommonCriteria(mc);
+			if(tagDevices == null || tagDevices.size()<=0){
+				return macList;
+			}
+			for(TagDevices i:tagDevices){
+				String tags=i.getTag2ES();
+				String[] tagsArray=tags.split(" ");
+				for(String j:tagsArray){
+					if(j.equals(deviceLabel)){
+						macList.add(i.getId());
+						break;
+					}
+				}
+			}
+//				//获取在线Mac集合
+//				wifiDeviceDataSearchService.iteratorAllByCommon(null, "", 
+//						"", "",  "","", deviceLabel,
+//					 100, new IteratorNotify<Page<WifiDeviceDocument>>() {
+//				    @Override
+//				    public void notifyComming(Page<WifiDeviceDocument> pages) {
+//				    	for (WifiDeviceDocument doc : pages) {
+//				    		String mac = doc.getD_mac();
+//				    		macList.add(mac);
+//				    	}
+//				    }
+//				});
+			
 		} catch (Exception ex) {
 			ex.printStackTrace(System.out);
 		}
