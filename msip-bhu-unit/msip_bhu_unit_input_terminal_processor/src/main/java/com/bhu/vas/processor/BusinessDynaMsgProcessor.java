@@ -193,6 +193,45 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 		}
 	}
 	
+	
+	private void terminalBehavior(final String ctx, final String payload, final int type,
+            final ParserHeader headers){
+		//System.out.println(String.format("ctx[%s] type[%s] paylod[%s]", ctx,type,payload));
+		if(headers != null && OperationCMD.DeviceCmdPassThrough.getNo().equals(headers.getOpt())){
+		BusinessDefinedLogger.doInfoLog(String.format("ctx[%s] mac[%s] paylod[%s]", 
+		                                   ctx, headers.getMac(), payload));
+		}
+		switch(type){
+			case ParserHeader.Transfer_Prefix:
+				// 终端上下线
+				if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt()==7){
+				List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage
+				 (payload, HandsetDeviceDTO.class);
+				if(dtos != null && !dtos.isEmpty()){
+					HandsetDeviceDTO fristDto = dtos.get(0);
+					if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
+						//TODO终端上线
+					}
+					else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
+						//TODO终端下线
+					}
+					else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
+						List<String> hmacs = new ArrayList<String>();
+						for(HandsetDeviceDTO dto:dtos){
+							hmacs.add(dto.getMac());
+						}
+						//TODO终端同步
+					}
+					else if(HandsetDeviceDTO.Action_Authorize.equals(fristDto.getAction())) {
+						//TODO终端认证
+					}
+			}
+		}
+		break;
+	}
+}
+	
+	
 	private void onProcessor(final String topic, final String payload, final int type, 
 			                 final ParserHeader headers) {
 		String mac = headers.getMac();
@@ -205,7 +244,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 				try{
 					String ctx = CmCtxInfo.parserCtxName(topic);
 					doSpecialProcessor(ctx,payload,type,headers);
-//					deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
+					terminalBehavior(ctx,payload,type,headers);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("BusinessDynaMsgProcessor onProcessor", ex);
