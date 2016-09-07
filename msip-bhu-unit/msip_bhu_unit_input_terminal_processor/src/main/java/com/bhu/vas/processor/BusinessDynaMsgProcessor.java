@@ -8,6 +8,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 
+
+
+
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -24,12 +28,13 @@ import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
+import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
+import com.bhu.vas.business.ds.tag.facade.TagGroupFacadeService;
 import com.bhu.vas.processor.bulogs.DynamicLogWriter;
 import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
 import com.smartwork.msip.business.logger.BusinessDefinedLogger;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.task.TaskEngine;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -48,10 +53,12 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 	private int[] hits;
 	private int hash_prime = 50;
 
+//	@Resource
+//	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
+	
 	@Resource
-	private IDeviceMessageDispatchRpcService deviceMessageDispatchRpcService;
-
-
+	private TagGroupFacadeService tagGroupFacadeService;
+	
 	@PostConstruct
 	public void initialize(){
 		logger.info("BusinessDynaMsgProcessor initialize...");
@@ -88,14 +95,14 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 					String payload = null;
 					switch(type){
 						case ParserHeader.DeviceOffline_Prefix://0000000362687500003e
-							headers = ParserHeader.builder(null, type);
-							payload = StringHelper.formatMacAddress(message.substring(8));
-							headers.setMac(payload);
+//							headers = ParserHeader.builder(null, type);
+//							payload = StringHelper.formatMacAddress(message.substring(8));
+//							headers.setMac(payload);
 							break;
 						case ParserHeader.DeviceNotExist_Prefix:
-						    headers = ParserHeader.builder(null, type);
-							payload = StringHelper.formatMacAddress(message.substring(8));
-							headers.setMac(payload);
+//						    headers = ParserHeader.builder(null, type);
+//							payload = StringHelper.formatMacAddress(message.substring(8));
+//							headers.setMac(payload);
 							break;
 						case ParserHeader.Transfer_Prefix:
 							headers = ParserHeader.builder(message.substring

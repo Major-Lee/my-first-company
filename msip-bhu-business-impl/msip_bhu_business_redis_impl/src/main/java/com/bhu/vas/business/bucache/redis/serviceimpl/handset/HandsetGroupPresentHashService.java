@@ -8,6 +8,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 public class HandsetGroupPresentHashService extends AbstractRelationHashCache{
@@ -38,12 +39,12 @@ public class HandsetGroupPresentHashService extends AbstractRelationHashCache{
 		return sb.toString();
 	}
 	
-	public void groupHandsetComming(int gid,String timestr){
-		this.hincrby(generateKey(gid,timestr), HANDSET_GROUP_PRESENT_TOTAL, DEFAULT_INCRBY);
+	public void groupHandsetComming(int gid){
+		this.hincrby(generateKey(gid,DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7)), HANDSET_GROUP_PRESENT_TOTAL, DEFAULT_INCRBY);
 	}
 	
-	public void groupNewlyHandsetComming(int gid,String timestr){
-		this.hincrby(generateKey(gid,timestr), HANDSET_GROUP_PRESENT_NEWLY, DEFAULT_INCRBY);
+	public void groupNewlyHandsetComming(int gid){
+		this.hincrby(generateKey(gid,DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7)), HANDSET_GROUP_PRESENT_NEWLY, DEFAULT_INCRBY);
 	}
 	
 	public Map<String, String> fetchGroupDetail(int gid,String timestr){
@@ -66,6 +67,6 @@ public class HandsetGroupPresentHashService extends AbstractRelationHashCache{
 	}
 	
 	public static void main(String[] args) {
-		HandsetGroupPresentHashService.getInstance().groupHandsetComming(10000,"20160906");
+		HandsetGroupPresentHashService.getInstance().groupHandsetComming(10000);
 	}
 }
