@@ -106,7 +106,7 @@ public class DeviceUpgradeFacadeService {
     	retDTO.setMac(dmac);
     	//retDTO.setUid(uid);
     	retDTO.setOnline(wifiDevice.isOnline());
-    	retDTO.setDut(upgrade!=null?upgrade.getDut():StringHelper.MINUS_STRING_GAP);
+    	retDTO.setDut(upgrade!=null?upgrade.getDuts():StringHelper.MINUS_STRING_GAP);
     	retDTO.setGray(upgrade!=null?upgrade.getGl():0);
     	retDTO.setForceDeviceUpdate(upgrade!=null?upgrade.isForceDeviceUpgrade():false);
     	retDTO.setForceAppUpdate(upgrade!=null?upgrade.isForceAppUpgrade():false);

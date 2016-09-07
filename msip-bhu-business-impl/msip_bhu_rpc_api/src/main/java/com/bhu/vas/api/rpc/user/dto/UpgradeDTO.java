@@ -10,7 +10,7 @@ import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 public class UpgradeDTO {
-	private String dut;
+	private String duts;
 	private int gl;
 	//升级类别 true固件升级 false 增值组件升级
 	private boolean fw;
@@ -35,13 +35,13 @@ public class UpgradeDTO {
     }
     
 	public UpgradeDTO(String dut,int gl,boolean fw,boolean forceDeviceUpgrade) {
-		this.dut = dut;
+		this.duts = dut;
 		this.gl = gl;
 		this.fw = fw;
 		this.forceDeviceUpgrade = forceDeviceUpgrade;
 	}
 	public UpgradeDTO(String dut,int gl,boolean fw,boolean forceDeviceUpgrade, String name, String upgradeurl) {
-		this.dut = dut;
+		this.duts = dut;
 		this.gl = gl;
 		this.fw = fw;
 		this.forceDeviceUpgrade = forceDeviceUpgrade;
@@ -83,7 +83,7 @@ public class UpgradeDTO {
 	}
 	public String toString(){
 		return String.format("dut[%s] gl[%s] fw[%s] minid[%s] currentDVB[%s] forceDeviceUpgrade[%s] name[%s] upgradeurl[%s] forceAppUpgrade[%s] desc[%s] currentGrayPublished_at[%s]", 
-				dut,gl,fw,minid,currentDVB,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,desc,
+				duts,gl,fw,minid,currentDVB,forceDeviceUpgrade,name,upgradeurl,forceAppUpgrade,desc,
 				currentGrayPublished_at!=null?DateTimeHelper.formatDate(currentGrayPublished_at, DateTimeHelper.longDateFormat):null);
 		/*StringBuilder sb = new StringBuilder();
 		sb.append("gray")
@@ -95,11 +95,11 @@ public class UpgradeDTO {
 	public void setCurrentDVB(String currentDVB) {
 		this.currentDVB = currentDVB;
 	}
-	public String getDut() {
-		return dut;
+	public String getDuts() {
+		return duts;
 	}
-	public void setDut(String dut) {
-		this.dut = dut;
+	public void setDuts(String dut) {
+		this.duts = dut;
 	}
 	public int getGl() {
 		return gl;
