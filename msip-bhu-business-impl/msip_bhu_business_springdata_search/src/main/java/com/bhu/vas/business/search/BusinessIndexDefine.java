@@ -60,6 +60,7 @@ public interface BusinessIndexDefine {
 			D_LASTLOGOUTAT("d_lastlogoutat", null),//设备的最新的下线时间
 			D_CREATEDAT("d_createdat", null),//设备的接入时间(入库时间)
 			D_DEVICEUNITTYPE("d_dut", null),//设备的业务线定义
+			D_DEVICE_BSNAME("d_mn", null),//设备的软件版本N属性
 			D_UPTIME("d_uptime", null),//设备在线总时长 单位秒
 			D_WANIP("d_wanip", null),//设备wanip
 			D_INDUSTRY("d_industry", null),//设备行业信息
