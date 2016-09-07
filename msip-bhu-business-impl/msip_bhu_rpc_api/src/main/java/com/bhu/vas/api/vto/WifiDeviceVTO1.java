@@ -164,6 +164,13 @@ public class WifiDeviceVTO1 implements Serializable{
 	public void setD_dut(String d_dut) {
 		this.d_dut = d_dut;
 	}
+	
+	public String getD_mn() {
+		return d_mn;
+	}
+	public void setD_mn(String d_mn) {
+		this.d_mn = d_mn;
+	}
 	public String getD_uptime() {
 		return d_uptime;
 	}
