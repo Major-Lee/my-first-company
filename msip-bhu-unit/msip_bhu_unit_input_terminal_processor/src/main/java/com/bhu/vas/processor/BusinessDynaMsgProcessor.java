@@ -211,19 +211,19 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 					HandsetDeviceDTO fristDto = dtos.get(0);
 					if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
 						//TODO终端上线
+						tagGroupFacadeService.handsetOnline(ctx, fristDto, headers.getMac());
 					}
 					else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
 						//TODO终端下线
+						tagGroupFacadeService.handsetOffline(ctx, fristDto, headers.getMac());
 					}
 					else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
-						List<String> hmacs = new ArrayList<String>();
-						for(HandsetDeviceDTO dto:dtos){
-							hmacs.add(dto.getMac());
-						}
 						//TODO终端同步
+						tagGroupFacadeService.handsetDeviceSync(ctx, dtos,headers.getMac());
 					}
 					else if(HandsetDeviceDTO.Action_Authorize.equals(fristDto.getAction())) {
 						//TODO终端认证
+						tagGroupFacadeService.handsetAuth(ctx, fristDto, headers.getMac());
 					}
 			}
 		}

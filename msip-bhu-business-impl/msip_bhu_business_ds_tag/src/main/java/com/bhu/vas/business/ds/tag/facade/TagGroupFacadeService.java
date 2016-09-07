@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.tag.dto.TagGroupHandsetDetailDTO;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresentHashService;
 import com.bhu.vas.business.ds.tag.service.TagGroupHandsetDetailService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
@@ -80,11 +81,13 @@ public class TagGroupFacadeService {
 		handsetComming(dto, wifiId);
 	}
 	
-	public void handsetDeviceSync(String ctx, String mac, List<HandsetDeviceDTO> dtos){
-		if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(ctx))
+	public void handsetDeviceSync(String ctx, List<HandsetDeviceDTO> dtos,String wifiId){
+		if(StringUtils.isEmpty(wifiId) || StringUtils.isEmpty(ctx))
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		if((dtos != null && !dtos.isEmpty()) && dtos.get(0).getMac() != null){
-			
+			for(HandsetDeviceDTO dto : dtos){
+				handsetComming(dto, wifiId);
+			}
 		}
 	}
 	
@@ -125,8 +128,10 @@ public class TagGroupFacadeService {
 			detail.setGid(gid);
 			if(isNewHandset(hdmac, gid)){
 				detail.setNewuser(true);
+				HandsetGroupPresentHashService.getInstance().groupNewlyHandsetComming(gid);
 			}
 			tagGroupHandsetDetailService.insert(detail);
+			HandsetGroupPresentHashService.getInstance().groupHandsetComming(gid);
 		}
 		return entitys.get(0);
 	}
