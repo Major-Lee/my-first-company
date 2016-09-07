@@ -204,6 +204,15 @@ public class WifiDeviceDocument extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
+			searchAnalyzer = "whitespace",
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_mn;//软件版本中的N属性
+
+	
+	@Field(
+			type = FieldType.String,
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
@@ -587,6 +596,16 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public String getD_dut() {
 		return d_dut;
+	}
+	
+	
+
+	public String getD_mn() {
+		return d_mn;
+	}
+
+	public void setD_mn(String d_mn) {
+		this.d_mn = d_mn;
 	}
 
 	public String getD_uptime() {

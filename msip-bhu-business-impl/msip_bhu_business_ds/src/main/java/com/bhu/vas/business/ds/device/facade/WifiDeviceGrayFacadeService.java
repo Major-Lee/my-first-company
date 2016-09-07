@@ -183,24 +183,24 @@ public class WifiDeviceGrayFacadeService {
         		if(wdg == null){
         			wdg = new WifiDeviceGray();
         			wdg.setId(mac);
-        			wdg.setDut(dut.getIndex());
+        			wdg.setDuts(dut.getIndex());
         			wdg.setGl(gray.getIndex());
         			wifiDeviceGrayService.insert(wdg);
         			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getOrCreateById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
         			dgv.setDevices(dgv.getDevices()+1);
         			wifiDeviceGrayVersionService.update(dgv);
         		}else{
-        			if(wdg.getDut().equals(dut.getIndex()) && wdg.getGl() == gray.getIndex()){//产品类型和灰度等级没有变更
+        			if(wdg.getDuts().equals(dut.getIndex()) && wdg.getGl() == gray.getIndex()){//产品类型和灰度等级没有变更
         				;
         			}else{
-        				if(wdg.getDut().equals(dut.getIndex())){
-        					wdg.setDut(dut.getIndex());
+        				if(wdg.getDuts().equals(dut.getIndex())){
+        					wdg.setDuts(dut.getIndex());
         	    			wdg.setGl(gray.getIndex());
         	    			wifiDeviceGrayService.update(wdg);
-        	    			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getOrCreateById(new WifiDeviceGrayVersionPK(wdg.getDut(),wdg.getGl()));
+        	    			WifiDeviceGrayVersion dgv = wifiDeviceGrayVersionService.getOrCreateById(new WifiDeviceGrayVersionPK(wdg.getDuts(),wdg.getGl()));
         	    			dgv.setDevices(dgv.getDevices()==0?0:(dgv.getDevices()-1));
         	    			wifiDeviceGrayVersionService.update(dgv);
-        	    			wdg.setDut(dut.getIndex());
+        	    			wdg.setDuts(dut.getIndex());
         	    			wdg.setGl(gray.getIndex());
         	    			wifiDeviceGrayService.update(wdg);
         	    			dgv = wifiDeviceGrayVersionService.getOrCreateById(new WifiDeviceGrayVersionPK(dut.getIndex(),gray.getIndex()));
@@ -249,7 +249,7 @@ public class WifiDeviceGrayFacadeService {
     	if(!dgv.getD_fwid().equals(fwid)){
     		if(StringUtils.isNotEmpty(fwid) && !StringHelper.MINUS_STRING_GAP.equals(fwid)){
     			WifiDeviceVersionFW dvfw = wifiDeviceVersionFWService.getById(fwid);
-            	if(dvfw == null || !dvfw.getDut().equals(dut.getIndex()) ){
+            	if(dvfw == null || !dvfw.getDuts().equals(dut.getIndex()) ){
             		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionFW"});
             	}
             	dvfw.setRelated(true);
@@ -261,7 +261,7 @@ public class WifiDeviceGrayFacadeService {
     	if(!dgv.getD_omid().equals(omid)){
     		if(StringUtils.isNotEmpty(omid) && !StringHelper.MINUS_STRING_GAP.equals(omid)){
 	    		WifiDeviceVersionOM dvom = wifiDeviceVersionOMService.getById(omid);
-	        	if(dvom == null || !dvom.getDut().equals(dut.getIndex())){
+	        	if(dvom == null || !dvom.getDuts().equals(dut.getIndex())){
 	        		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"WifiDeviceVersionOM"});
 	        	}
 	        	dvom.setRelated(true);
@@ -293,7 +293,7 @@ public class WifiDeviceGrayFacadeService {
     		versionfw = new WifiDeviceVersionFW();
     		versionfw.setId(versionid);
     		versionfw.setName(versionid);
-    		versionfw.setDut(dut.getIndex());
+    		versionfw.setDuts(dut.getIndex());
     		if(StringUtils.isEmpty(minid)) minid = StringHelper.MINUS_STRING_GAP;
     		versionfw.setMinid(minid);
     		versionfw.setUpgrade_url(upgrade_url);
@@ -317,7 +317,7 @@ public class WifiDeviceGrayFacadeService {
     		versionom = new WifiDeviceVersionOM();
     		versionom.setId(versionid);
     		versionom.setName(versionid);
-    		versionom.setDut(dut.getIndex());
+    		versionom.setDuts(dut.getIndex());
     		versionom.setUpgrade_url(upgrade_url);
     		versionom.setUpgrade_slaver_urls(upgrade_slaver_urls);
     		
@@ -415,7 +415,7 @@ public class WifiDeviceGrayFacadeService {
     	if(deviceGray == null){
     		return null;
     	}else{
-    		return new WifiDeviceGrayVersionPK(deviceGray.getDut(),deviceGray.getGl());
+    		return new WifiDeviceGrayVersionPK(deviceGray.getDuts(),deviceGray.getGl());
     	}
     }
     /**
@@ -432,7 +432,7 @@ public class WifiDeviceGrayFacadeService {
 		if(deviceUnitGrayPk == null){//不在灰度等级中，则采用缺省的 其他定义 属于其他灰度
 			//获取d_version中的dut
 			DeviceVersion dvparser = DeviceVersion.parser(d_version);
-			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersionPrefix(dvparser.getDut(), dvparser.getPrefix());//.fromIndex(dvparser.getPrefix(x));//Integer.parseInt(dvparser.getHdt()));
+			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersionPrefix(dvparser.getSt(), dvparser.getMn(), dvparser.getPrefix());//.fromIndex(dvparser.getPrefix(x));//Integer.parseInt(dvparser.getHdt()));
 			if(dutype != null){
 				dut = dutype.getIndex();
 			}else{
@@ -441,7 +441,7 @@ public class WifiDeviceGrayFacadeService {
 			}
 			gl = VapEnumType.GrayLevel.Other.getIndex();
 		}else{
-			dut = deviceUnitGrayPk.getDut();
+			dut = deviceUnitGrayPk.getDuts();
 			gl = deviceUnitGrayPk.getGl();
 		}
     	return upgradeDecideAction(dmac,dut,gl,d_version,WifiDeviceHelper.WIFI_DEVICE_UPGRADE_FW);
@@ -453,11 +453,11 @@ public class WifiDeviceGrayFacadeService {
 			deviceUnitGrayPk = new WifiDeviceGrayVersionPK();
 			//获取d_version中的dut
 			DeviceVersion dvparser = DeviceVersion.parser(d_version);
-			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersionPrefix(dvparser.getDut(), dvparser.getPrefix());//.fromIndex(dvparser.getPrefix(x));//Integer.parseInt(dvparser.getHdt()));
+			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersionPrefix(dvparser.getSt(),  dvparser.getMn(), dvparser.getPrefix());//.fromIndex(dvparser.getPrefix(x));//Integer.parseInt(dvparser.getHdt()));
 			if(dutype != null){
-				deviceUnitGrayPk.setDut(dutype.getIndex());
+				deviceUnitGrayPk.setDuts(dutype.getIndex());
 			}else{
-				deviceUnitGrayPk.setDut(null);
+				deviceUnitGrayPk.setDuts(null);
 			}
 			deviceUnitGrayPk.setGl(VapEnumType.GrayLevel.Other.getIndex());
 		}/*else{
@@ -476,7 +476,7 @@ public class WifiDeviceGrayFacadeService {
 			//获取d_version中的dut
 			DeviceVersion dvfmparser = DeviceVersion.parser(d_version);
 			DeviceOMVersion dvomparser = DeviceOMVersion.parser(d_om_version);
-			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromHdType(dvfmparser.getDut(),dvomparser.getVp());
+			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersionPrefix(dvfmparser.getSt(), dvfmparser.getMn(), dvomparser.getVp());
 			if(dutype != null){
 				dut = dutype.getIndex();
 			}else{
@@ -485,7 +485,7 @@ public class WifiDeviceGrayFacadeService {
 			}
 			gl = VapEnumType.GrayLevel.Other.getIndex();
 		}else{
-			dut = deviceUnitGrayPk.getDut();
+			dut = deviceUnitGrayPk.getDuts();
 			gl = deviceUnitGrayPk.getGl();
 		}
     	return upgradeDecideAction(dmac,dut,gl,d_om_version,WifiDeviceHelper.WIFI_DEVICE_UPGRADE_OM);
@@ -576,7 +576,7 @@ public class WifiDeviceGrayFacadeService {
 					;
 				}else{
 					ModelCriteria mc_device_gray = new ModelCriteria();
-					mc_device_gray.createCriteria().andColumnEqualTo("dut", gv.getDut()).andColumnEqualTo("gl", gv.getGl());
+					mc_device_gray.createCriteria().andColumnEqualTo("dut", gv.getDuts()).andColumnEqualTo("gl", gv.getGl());
 					int relate_count = wifiDeviceGrayService.countByModelCriteria(mc_device_gray);
 					gv.setDevices(relate_count);
 					wifiDeviceGrayVersionService.update(gv);
@@ -652,7 +652,7 @@ public class WifiDeviceGrayFacadeService {
     		if(versionfw == null){
     			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{versionid});
     		}
-    		dut = versionfw.getDut();
+    		dut = versionfw.getDuts();
     		upgradeUrl = versionfw.getUpgrade_url();
     		upgrade_slaver_urls = versionfw.getUpgrade_slaver_urls();
     		if(StringUtils.isEmpty(beginTime)) beginTime = StringUtils.EMPTY;
@@ -662,7 +662,7 @@ public class WifiDeviceGrayFacadeService {
     		if(versionom == null){
     			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{versionid});
     		}
-    		dut = versionom.getDut();
+    		dut = versionom.getDuts();
     		upgradeUrl = versionom.getUpgrade_url();
     		upgrade_slaver_urls = versionom.getUpgrade_slaver_urls();
     	}

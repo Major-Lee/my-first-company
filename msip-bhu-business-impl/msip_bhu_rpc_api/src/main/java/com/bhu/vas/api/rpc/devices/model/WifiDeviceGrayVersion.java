@@ -35,18 +35,18 @@ public class WifiDeviceGrayVersion extends BasePKModel<WifiDeviceGrayVersionPK>{
 	}
 
 	
-    public String getDut() {
+    public String getDuts() {
     	if (this.getId() == null) {
             return null;
         }
-        return this.getId().getDut();
+        return this.getId().getDuts();
 	}
 
-	public void setDut(String dut) {
+	public void setDuts(String dut) {
 	 	if (this.getId() == null) {
             this.setId(new WifiDeviceGrayVersionPK());
         }
-	    this.getId().setDut(dut);
+	    this.getId().setDuts(dut);
 	}
 
 	public int getGl() {
@@ -97,7 +97,7 @@ public class WifiDeviceGrayVersion extends BasePKModel<WifiDeviceGrayVersionPK>{
 	
 	public GrayUsageVTO toGrayUsageVTO(){
 		GrayUsageVTO vto = new GrayUsageVTO();
-		vto.setDut(id.getDut());
+		vto.setDut(id.getDuts());
 		vto.setGl(getGl());
 		vto.setFwid(d_fwid);
 		vto.setOmid(d_omid);

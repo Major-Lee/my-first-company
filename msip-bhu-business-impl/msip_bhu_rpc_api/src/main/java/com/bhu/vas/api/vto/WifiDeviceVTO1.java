@@ -27,7 +27,8 @@ public class WifiDeviceVTO1 implements Serializable{
 	private long d_lastregedat;//设备的最新的上线时间
 	private long d_lastlogoutat;//设备的最新的下线时间
 	private long d_createdat;//设备的接入时间(入库时间)
-	private String d_dut;//设备的业务线定义
+	private String d_dut;//软件版本业务线定义
+	private String d_mn;//软件版本的N属性
 	private String d_uptime;//设备在线总时长 单位秒
 	private String d_snk_type;//设备的共享网络类型
 	private String d_snk_turnstate;//设备的共享网络开启状态
@@ -256,7 +257,7 @@ public class WifiDeviceVTO1 implements Serializable{
 	public String getD_duts() {
 		if(StringUtils.isEmpty(d_dut)) return StringHelper.MINUS_STRING_GAP;
 		if(StringUtils.isEmpty(d_type)) return StringHelper.MINUS_STRING_GAP;
-		return VapEnumType.DeviceUnitType.buildDutIndex4HdType(d_dut, d_type);
+		return VapEnumType.DeviceUnitType.buildDutIndex4HdType(d_dut, d_mn, d_type);
 	}
 	public String getUg_name() {
 		return ug_name;

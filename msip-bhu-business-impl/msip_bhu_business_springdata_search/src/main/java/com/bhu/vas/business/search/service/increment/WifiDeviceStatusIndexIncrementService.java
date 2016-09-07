@@ -126,9 +126,9 @@ public class WifiDeviceStatusIndexIncrementService{
 		
 		DeviceVersion parser = DeviceVersion.parser(entity.getOrig_swver());
 		if(parser != null){
-			String dut = parser.getDut();
-			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), dut);
-			DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromHdType(dut, entity.getHdtype());
+			String st = parser.getSt();
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), st);
+			DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionPrefix(st, parser.getMn(), entity.getHdtype());
 			if(deviceUnitType != null){
 				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE_SNAME.getName(), deviceUnitType.getSname());
 			}

@@ -84,6 +84,7 @@ public class WifiDeviceDataSearchServiceTest extends BaseTest{
 		doc1.setD_lastregedat(0l);
 		doc1.setD_lastlogoutat(0l);
 		doc1.setD_dut("TU");
+		doc1.setD_mn("NSL");
 		doc1.setD_uptime("3600");
 		doc1.setUpdatedat(DateTimeHelper.getDateTime());
 		doc1.setO_template("style001");

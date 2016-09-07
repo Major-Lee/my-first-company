@@ -5,7 +5,7 @@
 <mapper namespace="com.bhu.vas.api.rpc.devices.model.WifiDeviceGrayVersion">
 
     <resultMap id="modelResult" type="wifiDeviceGrayVersion">
-        <id property="dut" column="dut"/>
+        <id property="duts" column="duts"/>
         <id property="gl" column="gl"/>
         <result property="devices" 	column="devices"/>
         <result property="d_fwid" 	column="d_fwid"/>
@@ -21,7 +21,7 @@
 	</sql>
     <sql id="modelColumns">
 		<![CDATA[
-			dut,
+			duts,
 	    	gl,
 	    	devices,
 	    	d_fwid,
@@ -43,7 +43,7 @@
 	</sql>
 
     <sql id="modelInsertValues">
-		#{dut},
+		#{duts},
 		#{gl},
 		#{devices},
 		#{d_fwid},
@@ -107,7 +107,7 @@
         <include refid="modelTableName"/>
         <where>
             <if test="_parameter != null">
-                dut = #{dut} and gl = #{gl}
+                duts = #{duts} and gl = #{gl}
             </if>
         </where>
     </select>
@@ -115,7 +115,7 @@
     <delete id="deleteByPrimaryKey" parameterType="wifiDeviceGrayVersionPK">
         delete from
         <include refid="modelTableName"/>
-        where dut = #{dut} and gl = #{gl}
+        where duts = #{duts} and gl = #{gl}
     </delete>
 
     <delete id="delete" parameterType="wifiDeviceGrayVersion">
@@ -123,7 +123,7 @@
         <include refid="modelTableName"/>
         <where>
             <if test="id != null">
-                dut = #{dut} and gl = #{gl}
+                duts = #{duts} and gl = #{gl}
             </if>
         </where>
     </delete>
@@ -139,7 +139,7 @@
         <include refid="modelTableName"/>
         set
         <include refid="modelUpdateValues"/>
-        WHERE dut = #{dut} and gl = #{gl}
+        WHERE duts = #{duts} and gl = #{gl}
     </update>
 
     <select id="selectByIds" resultMap="modelResult" parameterType="java.util.List">
@@ -149,7 +149,7 @@
         <include refid="modelTableName"/>
         <where>
             <foreach item="item" index="index" collection="list" open="(" separator=" or " close=")">
-                ( dut = #{item.dut} and gl= #{item.gl} )
+                ( duts = #{item.duts} and gl= #{item.gl} )
             </foreach>
         </where>
     </select>
@@ -159,13 +159,13 @@
         <include refid="modelTableName"/>
         <where>
             <foreach item="item" index="index" collection="list" open="(" separator=" or " close=")">
-                ( dut = #{item.dut} and gl= #{item.gl} )
+                ( duts = #{item.duts} and gl= #{item.gl} )
             </foreach>
         </where>
     </delete>
 
     <select id="pkSelectByModelCriteria" resultType="wifiDeviceGrayVersionPK">
-        select dut, gl from
+        select duts, gl from
         <include refid="modelTableName"/>
         <if test="_parameter != null">
             <include refid="model_CRITERIA_SQL_GenCondition"/>

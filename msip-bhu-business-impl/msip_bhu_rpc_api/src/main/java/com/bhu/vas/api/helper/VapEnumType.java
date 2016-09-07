@@ -115,6 +115,9 @@ public class VapEnumType {
 		uRouterAcTU_401("TU_H401",	"AP401","BN210","Z02",DUT_uRouter,"uRouter AC","uRouter","2.4GHz 5GHz 家用AP","64M内存、TF卡版本、9531+9887芯片"),
 		uRouterAcPlusTU_403("TU_H403",	"AP403","BN403","Z05",DUT_uRouter,"uRouter AC Plus","uRouter","2.4GHz 5GHz 家用AP","128M内存、TF卡版本、9531+9887芯片"),
 		uRouterMiniTU_901("TU_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter mini","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+		uRouterMiniTU_NSL_901("TU_NSL_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter mini(SL)","uRouter","2.4GHz 家用AP(赛龙)","64M内存、TF卡版本、9341芯片"),
+
+		
 		
 		MassAP_2_103("TS_H103",		"AP103",DUT_soc,"MassAP 2 H103","MassAP 2","2.4GHz 室内单频AP","8M Flash、64M内存、9341芯片"),
 		MassAP_2_110("TS_H110",		"AP110",DUT_soc,"MassAP 2 H110","MassAP 2","2.4GHz 室内单频AP","16M Flash、64M内存、9341芯片"),
@@ -257,21 +260,28 @@ public class VapEnumType {
 			DeviceUnitType dType = allDeviceUnitHDTypes.get(index); 
 			return dType;
 		}
-		
+/*				
 		public static DeviceUnitType fromHdType(String dut,String hdtype){
 			StringBuilder sb_key = new StringBuilder();
 			sb_key.append(dut).append(StringHelper.UNDERLINE_STRING_GAP).append(hdtype);
 			DeviceUnitType dType = allDeviceUnitHDTypes.get(sb_key.toString()); 
 			return dType;
 		}
-		
-		public static DeviceUnitType fromVersionPrefix(String dut,String prefix){
+*/		
+		public static DeviceUnitType fromVersionPrefix(String dut, String mn, String prefix){
 			StringBuilder sb_key = new StringBuilder();
-			sb_key.append(dut).append(StringHelper.UNDERLINE_STRING_GAP).append(prefix);
+			sb_key.append(dut).append(StringHelper.UNDERLINE_STRING_GAP);
+			if(mn != null)
+				sb_key.append(mn).append(StringHelper.UNDERLINE_STRING_GAP);
+			sb_key.append(prefix);
 			DeviceUnitType dType = allDeviceUnitPrefixTypes.get(sb_key.toString()); 
 			return dType;
 		}
-		
+
+		/*
+		 * 目前根据SN并不能准确识别出真正的DUT，（UrouterMini TU版本中，还会有赛龙的版本），
+		 * 目前只有再sn导入的时候调用此函数， 先匹配一个。需要等设备上线的时候，上报软件版本后再做修正
+		 */
 		//BN205CD100121AA 15位
 		public static DeviceUnitType fromDeviceSN(String sn){
 			if(StringUtils.isNotEmpty(sn) && sn.length() == 15){
@@ -281,20 +291,31 @@ public class VapEnumType {
 		}
 		
 		
-		public static String buildDutIndex4HdType(String dut,String hdtype){
+		public static String buildDutIndex4HdType(String st, String mn, String hdtype){
 			StringBuilder sb_key = new StringBuilder();
-			sb_key.append(dut).append(StringHelper.UNDERLINE_STRING_GAP).append(hdtype);
+			sb_key.append(st).append(StringHelper.UNDERLINE_STRING_GAP);
+			if(mn != null)
+				sb_key.append(mn).append(StringHelper.UNDERLINE_STRING_GAP);
+			sb_key.append(hdtype);
 			return sb_key.toString();
 		}
 		
 		/**
-		 * 拆分index数据为数组 TU H106
+		 * 拆分index数据为数组 TU NSL H106
 		 * @param index TU_H106
 		 * @return
 		 */
 		public static String[] parserIndex(String index){
 			if(StringUtils.isEmpty(index)) return null;
-			return index.split(StringHelper.UNDERLINE_STRING_GAP);
+			String[] spt = index.split(StringHelper.UNDERLINE_STRING_GAP);
+			if(spt.length == 3)
+				return spt;
+			String[] ret = new String[3];
+			ret[0] = spt[0];
+			ret[1] = null;
+			ret[2] = spt[1];
+			spt = null;
+			return ret;
 		}
 		
 		/*public static DeviceUnitType fromHdType(String hdtype){
@@ -314,11 +335,12 @@ public class VapEnumType {
 			return false;
 		}*/
 		
-		public static boolean isURouter(String prefix,String dut) {
-			if(StringUtils.isEmpty(prefix) || StringUtils.isEmpty(dut)) return false;
+		public static boolean isURouter(String prefix,String type) {
+			if(StringUtils.isEmpty(prefix) || StringUtils.isEmpty(type)) return false;
 			if((prefix.equals(uRouterTU_106.getPrefix()) || prefix.equals(uRouterPlusTU_112.getPrefix()) 
 					|| prefix.equals(uRouterAcTU_401.getPrefix()) || prefix.equals(uRouterAcPlusTU_403.getPrefix()) 
-					|| prefix.equals(uRouterMiniTU_901.getPrefix())) && dut.equals(uRouterRoot.getIndex())){
+					|| prefix.equals(uRouterMiniTU_901.getPrefix())
+					|| prefix.equals(uRouterMiniTU_NSL_901.getPrefix())) && type.equals(uRouterRoot.getIndex())){
 				return true;
 			}
 			return false;

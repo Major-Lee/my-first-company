@@ -133,9 +133,10 @@ public class WifiDeviceDocumentHelper {
 			
 			DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
 			if(parser != null){
-				String dut = parser.getDut();
-				doc.setD_dut(dut);
-				DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromHdType(dut, wifiDevice.getHdtype());
+				String st = parser.getSt();
+				doc.setD_dut(st);
+				doc.setD_mn(parser.getMn());
+				DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionPrefix(st, parser.getMn(), wifiDevice.getHdtype());
 				if(deviceUnitType != null){
 					doc.setD_type_sname(deviceUnitType.getSname());
 				}
@@ -268,12 +269,13 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_monline(WifiDeviceDocumentEnumType.MOnlineEnum.MNeverOnline.getType());
 			
 			String[] parserHdtypes = VapEnumType.DeviceUnitType.parserIndex(agentDeviceClaim.getHdtype());
-			if(parserHdtypes != null && parserHdtypes.length == 2){
-				String dut = parserHdtypes[0];
-				String hdtype = parserHdtypes[1];
+			if(parserHdtypes != null && parserHdtypes.length == 3){
+				String st = parserHdtypes[0];
+				String mn = parserHdtypes[1];
+				String hdtype = parserHdtypes[2];
 				if(!StringUtils.isEmpty(hdtype)){
 					doc.setD_type(hdtype);
-					DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromHdType(dut, hdtype);
+					DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionPrefix(st,  mn,  hdtype);
 					if(deviceUnitType != null){
 						doc.setD_type_sname(deviceUnitType.getSname());
 					}

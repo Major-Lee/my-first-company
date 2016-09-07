@@ -111,7 +111,7 @@ public class WifiDeviceHelper {
 	public static boolean autoDeviceSecureSharedNetworkStrategy(String orig_swver){
 		DeviceVersion ver = DeviceVersion.parser(orig_swver);
 		if(ver == null || !ver.valid()) return false;
-		if(BusinessRuntimeConfiguration.Device_SharedNetwork_DUT.equals(ver.getDut())){
+		if(BusinessRuntimeConfiguration.Device_SharedNetwork_DUT.equals(ver.getSt())){
 			String[] orig_swver1_versions = ver.parseDeviceSwverVersion();
 			int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], BusinessRuntimeConfiguration.Device_SharedNetwork_Top_Version);
 			if(top_ret>=0){
@@ -143,10 +143,10 @@ public class WifiDeviceHelper {
 	}
 	
 	
-	public static String dutDevice(String orig_swver){
+	public static String stDevice(String orig_swver){
 		DeviceVersion parser = DeviceVersion.parser(orig_swver);
 		if(parser != null){
-			return parser.getDut();
+			return parser.getSt();
 		}
 		return null;
 	}

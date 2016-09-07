@@ -29,7 +29,7 @@ public class DeviceVersion {
 	//版本号1.3.0、1.3.0r1、1.3.2Build8606、1.2.16Buildwaip
 	private String ver;
 	//Device software type T：设备软件类型， 取值： U(家用版本，urouter), C(商业wifi版本), S(soc版本) 
-	private String dut;
+	private String st;
 	//Manufacturer name N：厂家名称，在属性T取值为C(商业wifi)时，存在此属性项. 该属性的取值为各个商业wifi厂家的缩写.
 	private String mn;
 	
@@ -46,15 +46,15 @@ public class DeviceVersion {
 		this.ver = ver;
 	}
 
-	public String getDut() {
+	public String getSt() {
 		if(wasDutURouter()){
 			return VapEnumType.DUT_uRouter;
 		}
-		return dut;
+		return st;
 	}
 	
-	public void setDut(String dut) {
-		this.dut = dut;
+	public void setSt(String dut) {
+		this.st = dut;
 	}
 	public String getMn() {
 		return mn;
@@ -88,10 +88,10 @@ public class DeviceVersion {
 	 * @return
 	 */
 	public boolean wasDutURouter(){
-		if(StringUtils.isEmpty(dut) && StringUtils.isNotEmpty(prefix)){//兼容老的版本号没有_TU的uRouter
+		if(StringUtils.isEmpty(st) && StringUtils.isNotEmpty(prefix)){//兼容老的版本号没有_TU的uRouter
 			return "AP106".equals(prefix);
 		}
-		return DeviceUnitType.isURouter(prefix, dut);//DeviceUnitType.uRouterRoot.getIndex().equals(dut);
+		return DeviceUnitType.isURouter(prefix, st);//DeviceUnitType.uRouterRoot.getIndex().equals(dut);
 	}
 	
 	/*public boolean wasDutCWifi(){
@@ -99,7 +99,7 @@ public class DeviceVersion {
 	}*/
 	
 	public String toDeviceUnitTypeIndex(){
-		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(getDut(), prefix);
+		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(getSt(), getMn(), prefix);
 		if(fromVersionPrefix != null){
 			return fromVersionPrefix.getIndex();
 		}
@@ -112,8 +112,8 @@ public class DeviceVersion {
 	
 	/**/
 	public boolean wasDutSoc(){
-		if(StringUtils.isEmpty(dut)) return false;
-		return DeviceUnitType.SOCRoot.getIndex().equals(dut);
+		if(StringUtils.isEmpty(st)) return false;
+		return DeviceUnitType.SOCRoot.getIndex().equals(st);
 	}
 	/**
 	 * 解析设备的软件版本
@@ -175,7 +175,7 @@ public class DeviceVersion {
 			if(index > 1){
 				char _prefix = s.charAt(0);
 				if(_prefix == 'T'){
-					dv.setDut(s);
+					dv.setSt(s);
 				}else if(_prefix == 'N'){
 					dv.setMn(s);
 				}
@@ -259,12 +259,16 @@ public class DeviceVersion {
 			System.out.println(orig);
 		}*/
 		
-		DeviceVersion parser = DeviceVersion.parser("AP401P06V1.5.7Build9673_TU");
+		DeviceVersion parser = DeviceVersion.parser("AP401P06V1.5.7Build9673_TU_NSL");
 		System.out.println(" ver:"+parser.toDeviceUnitTypeIndex());
 		System.out.println(" ver:"+parser.wasDutURouter());
+		System.out.println(" dut:"+parser.getSt());
+		System.out.println(" Mn:"+parser.getMn());
+		System.out.println(" Prefix:"+parser.getPrefix());
 		
-		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(parser.getDut(), parser.getPrefix());
-		System.out.println(parser.getDut());
+		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(parser.getSt(), null, parser.getPrefix());
+		System.out.println(parser.getSt());
+		System.out.println(parser.getMn());
 		System.out.println(parser.getPrefix());
 		System.out.println(fromVersionPrefix);
 	}

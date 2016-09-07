@@ -47,7 +47,7 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 			String versionfw = String.format(WifiDeviceVersionFW_template, i,String.format("%04d", RandomData.intNumber(100, 9000)));
 			WifiDeviceVersionFW fw = new WifiDeviceVersionFW();
 			fw.setId(versionfw);
-			fw.setDut(VapEnumType.DeviceUnitType.uRouterTU_106.getIndex());
+			fw.setDuts(VapEnumType.DeviceUnitType.uRouterTU_106.getIndex());
 			fw.setName(versionfw);
 			fw.setRelated(false);
 			fw.setUpgrade_url(String.format(fw_upgrade_url_template,versionfw));
@@ -56,7 +56,7 @@ public class WifiDeviceGrayFacadeServiceTest extends BaseTest{
 			String versionom = String.format(WifiDeviceVersionOM_template, i,String.format("%04d", RandomData.intNumber(100, 9000)));
 			WifiDeviceVersionOM om = new WifiDeviceVersionOM();
 			om.setId(versionom);
-			om.setDut(VapEnumType.DeviceUnitType.uRouterTU_106.getIndex());
+			om.setDuts(VapEnumType.DeviceUnitType.uRouterTU_106.getIndex());
 			om.setName(versionom);
 			om.setRelated(false);
 			om.setUpgrade_url(om_upgrade_url_template);

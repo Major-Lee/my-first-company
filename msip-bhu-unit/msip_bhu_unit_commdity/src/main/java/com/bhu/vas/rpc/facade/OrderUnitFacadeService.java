@@ -144,7 +144,7 @@ public class OrderUnitFacadeService {
 			User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
 			
 			//生成订单
-			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
+			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createRewardOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
 					bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent, channel);
 
@@ -457,7 +457,7 @@ public class OrderUnitFacadeService {
 			}
 			User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
 			//生成订单
-			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
+			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createSMSOrder(mac_lower, mac_dut, umac_lower, umactype, bindUser,
 					context, user_agent, spendvcurrency);
 			
@@ -822,7 +822,7 @@ public class OrderUnitFacadeService {
 			}
 			User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
 			//生成订单
-			String mac_dut = WifiDeviceHelper.dutDevice(wifiDevice.getOrig_swver());
+			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createVideoOrder(commdityid,mac_lower, mac_dut, umac_lower, umactype, bindUser,
 					context, channel,user_agent);
 			

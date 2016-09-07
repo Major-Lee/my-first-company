@@ -11,7 +11,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 public class WifiDeviceGrayVersionPK implements Serializable {
 
 	//device unit type TU_H106 TS_H103
-    private String dut;
+    private String duts;
     //gray level
     private int gl;
 
@@ -20,16 +20,16 @@ public class WifiDeviceGrayVersionPK implements Serializable {
     }
 
     public WifiDeviceGrayVersionPK(String dut, int gl) {
-        this.dut = dut;
+        this.duts = dut;
         this.gl = gl;
     }
 
-    public String getDut() {
-		return dut;
+    public String getDuts() {
+		return duts;
 	}
 
-	public void setDut(String dut) {
-		this.dut = dut;
+	public void setDuts(String dut) {
+		this.duts = dut;
 	}
 
 	public int getGl() {
@@ -43,7 +43,7 @@ public class WifiDeviceGrayVersionPK implements Serializable {
 	@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(dut).append(StringHelper.MINUS_CHAR_GAP).append(gl);
+        sb.append(duts).append(StringHelper.MINUS_CHAR_GAP).append(gl);
         return sb.toString();
     }
 
@@ -54,7 +54,7 @@ public class WifiDeviceGrayVersionPK implements Serializable {
 
         WifiDeviceGrayVersionPK that = (WifiDeviceGrayVersionPK) o;
 
-        if (dut.equals(that.dut) && gl == that.gl) return true;
+        if (duts.equals(that.duts) && gl == that.gl) return true;
         return false;
     }
 

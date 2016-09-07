@@ -213,7 +213,7 @@ public class ConsoleServiceHandler {
 		bw.append(formatStr(doc.getD_origswver()));
 		bw.append(formatStr(doc.getD_origvapmodule()));
 		DeviceVersion parser = DeviceVersion.parser(doc.getD_origswver());
-		bw.append(formatStr(parser.getDut()));
+		bw.append(formatStr(parser.getSt()));
 		OnlineEnum onlineEnum = WifiDeviceDocumentEnumType.OnlineEnum.getOnlineEnumFromType(doc.getD_online());
 		if(onlineEnum != null){
 			bw.append(formatStr(onlineEnum.getName()));

@@ -91,7 +91,7 @@ public class ManufacturerDeviceDataImportOP {
 						wifiDevice = new WifiDevice();
 						wifiDevice.setId(mac);
 						wifiDevice.setSn(sn);
-						wifiDevice.setHdtype(DeviceUnitType.parserIndex(dut.getIndex())[1]);
+						wifiDevice.setHdtype(DeviceUnitType.parserIndex(dut.getIndex())[2]);
 						wifiDevice.setOrig_vendor(Default_orig_vendor);
 						wifiDevice.setOrig_model(dut.getName());
 						wifiDevice.setOrig_hdver("Z01");

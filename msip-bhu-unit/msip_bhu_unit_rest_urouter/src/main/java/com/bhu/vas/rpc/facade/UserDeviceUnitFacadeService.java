@@ -776,8 +776,8 @@ public class UserDeviceUnitFacadeService {
 			dbv.setHdtype(wifiDevice.getHdtype());
 			DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
 			// String dut = parser.toDeviceUnitTypeIndex();
-			dbv.setDut(parser.getDut());
-			DeviceUnitType unitType = DeviceUnitType.fromIndex(parser.getDut());
+			dbv.setDut(parser.getSt());
+			DeviceUnitType unitType = DeviceUnitType.fromIndex(parser.getSt());
 			dbv.setDutn(unitType != null ? unitType.getName() : StringHelper.MINUS_STRING_GAP);
 			if (wifiDeviceSharedNetwork != null) {
 				dbv.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
@@ -825,7 +825,7 @@ public class UserDeviceUnitFacadeService {
 			DeviceOperationVTO dov = new DeviceOperationVTO();
 			WifiDeviceGrayVersionPK deviceGray = wifiDeviceGrayFacadeService.determineDeviceGray(wifiDevice.getId(),
 					wifiDevice.getOrig_swver());
-			dov.setDut(deviceGray.getDut());
+			dov.setDut(deviceGray.getDuts());
 			dov.setGl(deviceGray.getGl());
 			dov.setGln(VapEnumType.GrayLevel.fromIndex(deviceGray.getGl()).getName());
 			String mstyle = wifiDevicePersistenceCMDStateService.fetchDeviceVapModuleStyle(wifiDevice.getId());

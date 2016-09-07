@@ -10,7 +10,7 @@
     <result property="upgrade_url" column="upgrade_url"/>
     <result property="upgrade_slaver_urls" column="upgrade_slaver_urls"/>
     
-    <result property="dut" column="dut"/>
+    <result property="duts" column="duts"/>
     <result property="minid" column="minid"/>
     <result property="context" column="context"/>
     <result property="creator" column="creator"/>
@@ -30,7 +30,7 @@
 	    	name,
 	    	upgrade_url,
 	    	upgrade_slaver_urls,
-	    	dut,
+	    	duts,
 	    	minid,
 	    	context,
 	    	creator,
@@ -44,7 +44,7 @@
 			name,
 	    	upgrade_url,
 	    	upgrade_slaver_urls,
-	    	dut,
+	    	duts,
 	    	minid,
 	    	context,
 	    	creator,
@@ -59,7 +59,7 @@
 	    	#{name},
 	    	#{upgrade_url},
 	    	#{upgrade_slaver_urls},
-	    	#{dut},
+	    	#{duts},
 	    	#{minid},
 	    	#{context},
 	    	#{creator},
@@ -72,7 +72,7 @@
 	    	name = #{name},
 	    	upgrade_url = #{upgrade_url},
 	    	upgrade_slaver_urls = #{upgrade_slaver_urls},
-	    	dut= #{dut},
+	    	duts= #{duts},
 	    	minid = #{minid},
 	    	context = #{context},
 	    	creator = #{creator},

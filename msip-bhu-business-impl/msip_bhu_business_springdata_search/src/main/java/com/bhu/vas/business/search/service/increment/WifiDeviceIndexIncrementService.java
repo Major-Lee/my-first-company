@@ -156,12 +156,13 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SN.getName(), agentDeviceClaim.getId());
 			
 			String[] parserHdtypes = VapEnumType.DeviceUnitType.parserIndex(agentDeviceClaim.getHdtype());
-			if(parserHdtypes != null && parserHdtypes.length == 2){
-				String dut = parserHdtypes[0];
-				String hdtype = parserHdtypes[1];
+			if(parserHdtypes != null && parserHdtypes.length == 3){
+				String st = parserHdtypes[0];
+				String mn = parserHdtypes[1];
+				String hdtype = parserHdtypes[2];
 				if(!StringUtils.isEmpty(hdtype)){
 					sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE.getName(), hdtype);
-					DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromHdType(dut, hdtype);
+					DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionPrefix(st,  mn,  hdtype);
 					if(deviceUnitType != null){
 						sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE_SNAME.getName(), deviceUnitType.getSname());
 					}
@@ -218,9 +219,9 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		
 		DeviceVersion parser = DeviceVersion.parser(entity.getOrig_swver());
 		if(parser != null){
-			String dut = parser.getDut();
-			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), dut);
-			DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromHdType(dut, entity.getHdtype());
+			String st = parser.getSt();
+			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), st);
+			DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionPrefix(st, parser.getMn(), entity.getHdtype());
 			if(deviceUnitType != null){
 				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE_SNAME.getName(), deviceUnitType.getSname());
 			}
@@ -275,9 +276,9 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 			
 			DeviceVersion parser = DeviceVersion.parser(entity.getOrig_swver());
 			if(parser != null){
-				String dut = parser.getDut();
-				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), dut);
-				DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromHdType(dut, entity.getHdtype());
+				String st = parser.getSt();
+				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), st);
+				DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionPrefix(st, parser.getMn(), entity.getHdtype());
 				if(deviceUnitType != null){
 					sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE_SNAME.getName(), deviceUnitType.getSname());
 				}

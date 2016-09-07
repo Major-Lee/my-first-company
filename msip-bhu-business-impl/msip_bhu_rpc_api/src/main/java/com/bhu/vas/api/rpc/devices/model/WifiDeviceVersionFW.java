@@ -25,7 +25,7 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 	//备用固件文件下载url 逗号分割
 	private String upgrade_slaver_urls;
 	//适用的产品类型
-	private String dut;
+	private String duts;
 	//最小版本号，在设备当前版本号<=最小版本号的情况下，有给app的提示会存在立刻升级的特性
 	private String minid;
 	//当前灰度中被引用
@@ -93,12 +93,12 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 		super.preInsert();
 	}
 	
-	public String getDut() {
-		return dut;
+	public String getDuts() {
+		return duts;
 	}
 
-	public void setDut(String dut) {
-		this.dut = dut;
+	public void setDuts(String dut) {
+		this.duts = dut;
 	}
 	
 	public String getUpgrade_slaver_urls() {
@@ -117,7 +117,7 @@ public class WifiDeviceVersionFW extends BaseStringModel{
 		VersionVTO vto = new VersionVTO();
 		vto.setId(id);
 		vto.setN(name);
-		vto.setDut(dut);
+		vto.setDut(duts);
 		vto.setMinid(StringUtils.isEmpty(minid)?StringHelper.MINUS_STRING_GAP:minid);
 		vto.setR(related);
 		vto.setT(VersionVTO.VersionType_FW);
