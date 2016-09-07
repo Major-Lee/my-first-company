@@ -1500,7 +1500,7 @@ public class DeviceURouterRestBusinessFacadeService {
 
 	public RpcResponseDTO<URouterDeviceConfigMutilVTO> urouterConfigsSupportMulti(Integer uid, String dmac) {
 		try {
-			WifiDevice device_entity = deviceFacadeService.validateUserDevice(uid, dmac);
+			WifiDevice device_entity = deviceFacadeService.validateUserDeviceIgnoreOffline(uid, dmac);
 			WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(dmac);
 			WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 
