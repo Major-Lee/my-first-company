@@ -132,6 +132,7 @@ public class TagGroupFacadeService {
 			}
 			tagGroupHandsetDetailService.insert(detail);
 			HandsetGroupPresentHashService.getInstance().groupHandsetComming(gid);
+			return detail;
 		}
 		return entitys.get(0);
 	}
