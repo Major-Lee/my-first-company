@@ -40,6 +40,7 @@
         <module>msip-bhu-cm-control/msip_jorion</module>
         -->
         <module>msip-bhu-unit/msip_bhu_unit_input_processor</module>
+        <module>msip-bhu-unit/msip_bhu_unit_input_terminal_processor</module>
         <module>msip-bhu-unit/msip_bhu_unit_daemon_processor</module>
         <module>msip-bhu-unit/msip_bhu_unit_uass</module>
         <module>msip-bhu-unit/msip_bhu_unit_devices</module>

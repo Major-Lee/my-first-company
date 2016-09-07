@@ -5,6 +5,7 @@
 		<groupId>com.bhu</groupId>
 		<artifactId>bhu-parent</artifactId>
 		<version>1.0</version>
+		<relativePath>../..</relativePath>
 	</parent>
 	
 	<artifactId>msip_bhu_unit_input_terminal_processor</artifactId>
