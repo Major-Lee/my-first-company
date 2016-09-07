@@ -110,7 +110,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="tagGroupHansetDetail">
+	<delete id="delete" parameterType="tagGroupHandsetDetail">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -119,7 +119,7 @@
 		</where>
 	</delete>
 	
-	<insert id="insert" parameterType="tagGroupHansetDetail" useGeneratedKeys="true" keyProperty="id">
+	<insert id="insert" parameterType="tagGroupHandsetDetail" useGeneratedKeys="true" keyProperty="id">
 		insert into
 		<include refid="modelTableName" />
 		(
@@ -129,7 +129,7 @@
 		);
 	</insert>
  
-	<update id="update" parameterType="tagGroupHansetDetail">
+	<update id="update" parameterType="tagGroupHandsetDetail">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
