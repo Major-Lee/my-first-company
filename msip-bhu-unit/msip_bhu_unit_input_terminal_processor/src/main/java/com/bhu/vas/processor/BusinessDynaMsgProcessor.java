@@ -198,7 +198,7 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 				try{
 					String ctx = CmCtxInfo.parserCtxName(topic);
 					doSpecialProcessor(ctx,payload,type,headers);
-					deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
+//					deviceMessageDispatchRpcService.messageDispatch(ctx,payload,headers);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("BusinessDynaMsgProcessor onProcessor", ex);
