@@ -852,7 +852,7 @@ public class OrderUnitFacadeService {
 			}
 			long isExpire = System.currentTimeMillis() - order.getCreated_at().getTime();
 			//默认视频最短时间15秒
-			if (isExpire < 15){
+			if (isExpire < 15000){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID);
 			}
 			order.setStatus(OrderStatus.PaySuccessed.getKey());
