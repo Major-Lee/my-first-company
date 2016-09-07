@@ -112,7 +112,8 @@ public class TagGroupFacadeService {
 		
 		TagGroupRelation tagGroupRelation = tagGroupRelationService.getById(wifiId);
 		if(tagGroupRelation == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+			System.out.println(String.format("当前设备： %s 不存在分组", wifiId));
+			return null;
 		}
 		String hdmac = dto.getMac();
 		int gid = tagGroupRelation.getGid();
@@ -123,7 +124,7 @@ public class TagGroupFacadeService {
 		List<TagGroupHandsetDetail> entitys = tagGroupHandsetDetailService.findModelByModelCriteria(mc);
 		if (entitys == null || entitys.isEmpty()) {
 			TagGroupHandsetDetail detail =new TagGroupHandsetDetail();
-			detail.setAuth(dto.getAction());
+			detail.setAuth(dto.getAuthorized());
 			detail.setHdmac(hdmac);
 			detail.setGid(gid);
 			if(isNewHandset(hdmac, gid)){
