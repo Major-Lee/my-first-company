@@ -124,7 +124,8 @@ public class TagGroupFacadeService {
 		List<TagGroupHandsetDetail> entitys = tagGroupHandsetDetailService.findModelByModelCriteria(mc);
 		if (entitys == null || entitys.isEmpty()) {
 			TagGroupHandsetDetail detail =new TagGroupHandsetDetail();
-			detail.setAuth(dto.getAuthorized());
+			
+			detail.setAuth(dto.getAuthorized() == null ? StringHelper.FALSE : dto.getAuthorized());
 			detail.setHdmac(hdmac);
 			detail.setGid(gid);
 			if(isNewHandset(hdmac, gid)){
