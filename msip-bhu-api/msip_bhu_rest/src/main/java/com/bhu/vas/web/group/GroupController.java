@@ -17,6 +17,8 @@ import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -242,6 +244,51 @@ public class GroupController extends BaseController{
     	    @RequestParam(required = false) String gids,
     	    @RequestParam(required = false) String paths) {
     	RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> rpcResult = tagRpcService.groupsGainsStatistics(uid, gids, paths);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
+
+    /**
+	 * 统计分组连接用户数
+	 * @param gid 分组id
+	 * @param timeStr 获取数据的时间 格式yyyyMMdd
+	 */
+    @ResponseBody()
+    @RequestMapping(value = "/count/users", method = {RequestMethod.POST})
+    public void group_count_users(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int gid,
+    	    @RequestParam(required = true) long time) {
+    	RpcResponseDTO<GroupUsersStatisticsVTO> rpcResult = tagRpcService.groupUsersStatistics(gid, time);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
+    
+    /**
+	 * 统计分组连接用户数
+	 * @param gid 分组id
+	 * @param timeStr 获取数据的时间 格式yyyyMMdd
+	 */
+    @ResponseBody()
+    @RequestMapping(value = "/users/detail", method = {RequestMethod.POST})
+    public void group_users_detail(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int gid,
+    	    @RequestParam(required = true) long beginTime,
+    	    @RequestParam(required = true) long endTime,
+    	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+    	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
+    	RpcResponseDTO<List<TagGroupHandsetDetailVTO>> rpcResult = tagRpcService.groupUsersDetail(gid, beginTime, endTime, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
