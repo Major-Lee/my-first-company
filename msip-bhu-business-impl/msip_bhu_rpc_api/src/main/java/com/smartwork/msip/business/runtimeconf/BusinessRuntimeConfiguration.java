@@ -57,6 +57,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static void appendProperties(Properties paramProperties) {  
         {  
+        	DeviceUnBindOfflineHour = PropertiesHelper.getDouble("device.unbind.offline.hour", paramProperties, DeviceUnBindOfflineHourDefault);
         	contentFilterWord = PropertiesHelper.getBoolean("content.filter.word", paramProperties, false);
         	SameArticleSharePeruserTimesLimit = PropertiesHelper.getInt("samearticle.share.peruser.times.limit", paramProperties, SameArticleSharePeruserTimesLimit);
         	UserPushLimit = PropertiesHelper.getInt("push.limit", paramProperties, UserPushLimit);
@@ -314,6 +315,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static final int Guest_Uid = -1;
 	public static int Weixin_Share_Uid = 65;
 
+	public static Double DeviceUnBindOfflineHourDefault = 24d;
+	public static Double DeviceUnBindOfflineHour = DeviceUnBindOfflineHourDefault;
 	
 	public static String IosPushKeystore = "D:/push.store.p12";
 	public static String IosPushKeyproduction = "D:/push.production.p12";

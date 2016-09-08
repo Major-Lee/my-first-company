@@ -203,7 +203,7 @@ public enum ResponseErrorCode {
 	DEVICE_NOT_BINDED("345","device.not.binded"),
 	DEVICE_NOT_MATCHED("346", "device.not.matched"),
 	DEVICE_NOT_YOURBINDED("347","device.not.yourbinded"),
-	DEVICE_DATA_MUST_OFFLINE_24_HOUR("348","device.data.mustoffline.24hour"),
+	DEVICE_DATA_OFFLINE_NOT_ENOUGH("348","device.data.offline.not.enough"),
 	DEVICE_TYPE_NOT_SUPPORTED("350","device.type.notsupported"),
 	
 	UPLOAD_FILE_FORMAT_INVALID("360","upload.file.format.invalid"),

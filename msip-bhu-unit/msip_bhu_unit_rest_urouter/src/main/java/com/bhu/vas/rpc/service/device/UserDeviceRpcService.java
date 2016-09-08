@@ -24,7 +24,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.rpc.facade.UserDeviceUnitFacadeService;
-import com.smartwork.msip.cores.helper.DateHelper;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -97,16 +97,18 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
         } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_UNBINDED){
             return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
         }else if (deviceStatus != IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_ONLINE){
-        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_MUST_OFFLINE_24_HOUR,new String[]{mac});
+        	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_OFFLINE_NOT_ENOUGH,
+        			new String[]{String.valueOf(BusinessRuntimeConfiguration.DeviceUnBindOfflineHour)});
         }
         
         WifiDevice wifiDevice = wifiDeviceService.getById(mac);
         if(wifiDevice.getLast_logout_at().getTime() > wifiDevice.getLast_reged_at().getTime() && 
-        		System.currentTimeMillis() - wifiDevice.getLast_logout_at().getTime() > 3600*1000*24){
+        		System.currentTimeMillis() - wifiDevice.getLast_logout_at().getTime() > 3600*1000*BusinessRuntimeConfiguration.DeviceUnBindOfflineHour){
             return userDeviceUnitFacadeService.unBindDevice(mac, uid);
         }
         
-        return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_MUST_OFFLINE_24_HOUR,new String[]{mac});
+    	return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_OFFLINE_NOT_ENOUGH,
+    			new String[]{String.valueOf(BusinessRuntimeConfiguration.DeviceUnBindOfflineHour)});
         
          /*else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_UNBINDED) {
             //TODO(bluesand):未绑定过装备的时候，取消绑定
