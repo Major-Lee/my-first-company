@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.devices.model;
 
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.smartwork.msip.cores.orm.model.extjson.DtoJsonExtPKModel;
 
@@ -15,10 +16,33 @@ import com.smartwork.msip.cores.orm.model.extjson.DtoJsonExtPKModel;
 public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetworkSettingDTO> {
 	public static final String ModuleStyleTemplete = "%04d";
 	private Integer owner;
+	private Integer idle_timeout;	//因为网安特别添加，当此字段存在时，需要忽略json中的idle_timeout值
+	
 	//采用的模板编号四位字符串 整数format
 	private String template;
 	private String sharednetwork_type;
+
+
+	public SharedNetworkSettingDTO getInnerModel(){
+		SharedNetworkSettingDTO dto = super.getInnerModel();
+		if(dto == null)
+			return null;
+		if(idle_timeout != null){
+			ParamSharedNetworkDTO psn = dto.getPsn();
+			if(psn != null)
+				psn.setIdle_timeout(idle_timeout.intValue());
+		}
+		return dto;
+	}
 	
+	public Integer getIdle_timeout() {
+		return idle_timeout;
+	}
+
+	public void setIdle_timeout(Integer idle_timeout) {
+		this.idle_timeout = idle_timeout;
+	}
+
 	public String getSharednetwork_type() {
 		return sharednetwork_type;
 	}
