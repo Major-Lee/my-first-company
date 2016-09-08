@@ -1,4 +1,4 @@
-package com.bhu.vas.api.rpc.charging.vto;
+package com.bhu.vas.api.rpc.tag.vto;
 
 @SuppressWarnings("serial")
 public class GroupUsersStatisticsVTO implements java.io.Serializable{
