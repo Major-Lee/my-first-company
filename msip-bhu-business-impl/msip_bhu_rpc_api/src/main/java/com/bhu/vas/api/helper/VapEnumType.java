@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -143,7 +144,7 @@ public class VapEnumType {
 		//H104, H108, H109,H201, H110, H303
 		;
 		//key index,value DeviceUnitType
-		static Map<String, DeviceUnitType> allDeviceUnitHDTypes;
+		static Map<String, DeviceUnitType> allDeviceUnitTypes;
 		//key parent_prefix ,value DeviceUnitType
 		static Map<String, DeviceUnitType> allDeviceUnitPrefixTypes;
 		static Map<String, DeviceUnitType> allDeviceUnitSNPrefixTypes;
@@ -257,7 +258,7 @@ public class VapEnumType {
 			this.hdver = hdver;
 		}
 		public static DeviceUnitType fromIndex(String index){
-			DeviceUnitType dType = allDeviceUnitHDTypes.get(index); 
+			DeviceUnitType dType = allDeviceUnitTypes.get(index); 
 			return dType;
 		}
 /*				
@@ -268,14 +269,31 @@ public class VapEnumType {
 			return dType;
 		}
 */		
-		public static DeviceUnitType fromVersionPrefix(String dut, String mn, String prefix){
+		public static DeviceUnitType fromVersionElements(String dut, String mn, String hdtype){
 			StringBuilder sb_key = new StringBuilder();
 			sb_key.append(dut).append(StringHelper.UNDERLINE_STRING_GAP);
 			if(mn != null)
 				sb_key.append(mn).append(StringHelper.UNDERLINE_STRING_GAP);
-			sb_key.append(prefix);
-			DeviceUnitType dType = allDeviceUnitPrefixTypes.get(sb_key.toString()); 
-			return dType;
+			sb_key.append(hdtype);
+			return fromIndex(sb_key.toString());
+		}
+
+		/*
+		 *	根据版本号得出DUT 
+		 */
+		public static DeviceUnitType fromVersion(String version){
+			StringBuilder sb_key = new StringBuilder();
+			try{
+				DeviceVersion parser = DeviceVersion.parser(version);
+				sb_key.append(parser.getSt()).append(StringHelper.UNDERLINE_STRING_GAP);
+				if(parser.getMn() != null)
+					sb_key.append(parser.getMn()).append(StringHelper.UNDERLINE_STRING_GAP);
+				sb_key.append(parser.getHdtype());
+			}catch(Exception e){
+				e.printStackTrace(System.out);
+				return null;
+			}
+			return fromIndex(sb_key.toString());
 		}
 
 		/*
@@ -404,7 +422,7 @@ public class VapEnumType {
 		}
 		
 		static {
-			allDeviceUnitHDTypes = new HashMap<String,DeviceUnitType>();
+			allDeviceUnitTypes = new HashMap<String,DeviceUnitType>();
 			allDeviceUnitPrefixTypes = new HashMap<String,DeviceUnitType>();
 			allDeviceUnitSNPrefixTypes = new HashMap<String,DeviceUnitType>();
 			allRootDeviceUnitTypes = new LinkedHashMap<String,List<DeviceUnitType>>();
@@ -412,7 +430,7 @@ public class VapEnumType {
 			allMassAPHdTypes = new ArrayList<String>();
 			DeviceUnitType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
 			for (DeviceUnitType type : types){
-				allDeviceUnitHDTypes.put(type.getIndex(), type);
+				allDeviceUnitTypes.put(type.getIndex(), type);
 				if(StringHelper.MINUS_STRING_GAP.equals(type.parent)){//root
 					allRootDeviceUnitTypes.put(type.getIndex(), new ArrayList<DeviceUnitType>());
 					//allDeviceUnitTypeVTO.add(new DeviceUnitTypeVTO(type.getIndex(),type.getName()));
@@ -523,13 +541,15 @@ public class VapEnumType {
 	
 	
 	public static void main(String[] argv){
-		//DeviceUnitType unitType = VapEnumType.DeviceUnitType.fromIndex("TU_H106");
-		//System.out.print(unitType.name);
+//		uRouterMiniTU_NSL_901("TU_NSL_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter mini(SL)","uRouter","2.4GHz 家用AP(赛龙)","64M内存、TF卡版本、9341芯片"),
+		DeviceUnitType unitType = VapEnumType.DeviceUnitType.fromIndex("TU_H106");
+		System.out.println("index:" + unitType.index);
+		System.out.println("name:" + unitType.name);
 		
-		String[] parserIndex = VapEnumType.DeviceUnitType.parserIndex("TU_H106");
-		for(String p:parserIndex){
-			System.out.println(p);
-		}
-		System.out.println("BN205CD100121AA".substring(0, 5));
+//		String[] parserIndex = VapEnumType.DeviceUnitType.parserIndex("TU_H106");
+//		for(String p:parserIndex){
+//			System.out.println(p);
+//		}
+//		System.out.println("BN205CD100121AA".substring(0, 5));
 	}
 }

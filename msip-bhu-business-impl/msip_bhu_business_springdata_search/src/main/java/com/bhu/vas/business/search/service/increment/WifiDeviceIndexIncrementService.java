@@ -162,7 +162,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 				String hdtype = parserHdtypes[2];
 				if(!StringUtils.isEmpty(hdtype)){
 					sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE.getName(), hdtype);
-					DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionPrefix(st,  mn,  hdtype);
+					DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionElements(st,  mn,  hdtype);
 					if(deviceUnitType != null){
 						sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE_SNAME.getName(), deviceUnitType.getSname());
 					}
@@ -221,7 +221,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		if(parser != null){
 			String st = parser.getSt();
 			sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), st);
-			DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionPrefix(st, parser.getMn(), entity.getHdtype());
+			DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionElements(st, parser.getMn(), entity.getHdtype());
 			if(deviceUnitType != null){
 				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE_SNAME.getName(), deviceUnitType.getSname());
 			}
@@ -278,7 +278,7 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 			if(parser != null){
 				String st = parser.getSt();
 				sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_DEVICEUNITTYPE.getName(), st);
-				DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionPrefix(st, parser.getMn(), entity.getHdtype());
+				DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionElements(st, parser.getMn(), entity.getHdtype());
 				if(deviceUnitType != null){
 					sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_TYPE_SNAME.getName(), deviceUnitType.getSname());
 				}

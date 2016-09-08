@@ -136,7 +136,7 @@ public class WifiDeviceDocumentHelper {
 				String st = parser.getSt();
 				doc.setD_dut(st);
 				doc.setD_mn(parser.getMn());
-				DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionPrefix(st, parser.getMn(), wifiDevice.getHdtype());
+				DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionElements(st, parser.getMn(), wifiDevice.getHdtype());
 				if(deviceUnitType != null){
 					doc.setD_type_sname(deviceUnitType.getSname());
 				}
@@ -275,7 +275,7 @@ public class WifiDeviceDocumentHelper {
 				String hdtype = parserHdtypes[2];
 				if(!StringUtils.isEmpty(hdtype)){
 					doc.setD_type(hdtype);
-					DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionPrefix(st,  mn,  hdtype);
+					DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionElements(st,  mn,  hdtype);
 					if(deviceUnitType != null){
 						doc.setD_type_sname(deviceUnitType.getSname());
 					}

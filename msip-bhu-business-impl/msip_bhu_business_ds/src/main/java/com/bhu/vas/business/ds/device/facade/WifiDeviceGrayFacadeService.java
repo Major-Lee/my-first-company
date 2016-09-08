@@ -430,9 +430,7 @@ public class WifiDeviceGrayFacadeService {
     	String duts = null;
     	int gl = 0;
 		if(deviceUnitGrayPk == null){//不在灰度等级中，则采用缺省的 其他定义 属于其他灰度
-			//获取d_version中的dut
-			DeviceVersion dvparser = DeviceVersion.parser(d_version);
-			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersionPrefix(dvparser.getSt(), dvparser.getMn(), dvparser.getPrefix());//.fromIndex(dvparser.getPrefix(x));//Integer.parseInt(dvparser.getHdt()));
+			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersion(d_version);
 			if(dutype != null){
 				duts = dutype.getIndex();
 			}else{
@@ -452,8 +450,7 @@ public class WifiDeviceGrayFacadeService {
 		if(deviceUnitGrayPk == null){//不在灰度等级中，则采用缺省的 其他定义
 			deviceUnitGrayPk = new WifiDeviceGrayVersionPK();
 			//获取d_version中的dut
-			DeviceVersion dvparser = DeviceVersion.parser(d_version);
-			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersionPrefix(dvparser.getSt(),  dvparser.getMn(), dvparser.getPrefix());//.fromIndex(dvparser.getPrefix(x));//Integer.parseInt(dvparser.getHdt()));
+			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersion(d_version);
 			if(dutype != null){
 				deviceUnitGrayPk.setDuts(dutype.getIndex());
 			}else{
@@ -474,9 +471,9 @@ public class WifiDeviceGrayFacadeService {
     	int gl = 0;
 		if(deviceUnitGrayPk == null){//不在灰度等级中，则采用缺省的 其他定义
 			//获取d_version中的dut
-			DeviceVersion dvfmparser = DeviceVersion.parser(d_version);
-			DeviceOMVersion dvomparser = DeviceOMVersion.parser(d_om_version);
-			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersionPrefix(dvfmparser.getSt(), dvfmparser.getMn(), dvomparser.getVp());
+//			DeviceVersion dvfmparser = DeviceVersion.parser(d_version);
+//			DeviceOMVersion dvomparser = DeviceOMVersion.parser(d_om_version);
+			DeviceUnitType dutype = VapEnumType.DeviceUnitType.fromVersion(d_version);
 			if(dutype != null){
 				duts = dutype.getIndex();
 			}else{

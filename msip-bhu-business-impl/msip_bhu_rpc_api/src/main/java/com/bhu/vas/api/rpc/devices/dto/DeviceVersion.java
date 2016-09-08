@@ -33,6 +33,15 @@ public class DeviceVersion {
 	//Manufacturer name N：厂家名称，在属性T取值为C(商业wifi)时，存在此属性项. 该属性的取值为各个商业wifi厂家的缩写.
 	private String mn;
 	
+	
+	public String getHdtype() {
+		if(StringUtils.startsWith(prefix, Prefix_AP))
+			return "H" + prefix.substring(Prefix_AP.length());
+		if(StringUtils.startsWith(prefix, Prefix_CPE))
+			return "H" + prefix.substring(Prefix_CPE.length());;
+		return null;
+	}
+	
 	/*public String getVp() {
 		return vp;
 	}
@@ -99,9 +108,9 @@ public class DeviceVersion {
 	}*/
 	
 	public String toDeviceUnitTypeIndex(){
-		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(getSt(), getMn(), prefix);
-		if(fromVersionPrefix != null){
-			return fromVersionPrefix.getIndex();
+		DeviceUnitType dut = DeviceUnitType.fromVersionElements(getSt(), getMn(), getHdtype());
+		if(dut != null){
+			return dut.getIndex();
 		}
 		return StringHelper.EMPTY_STRING_GAP;
 	}
@@ -259,17 +268,12 @@ public class DeviceVersion {
 			System.out.println(orig);
 		}*/
 		
-		DeviceVersion parser = DeviceVersion.parser("AP401P06V1.5.7Build9673_TU_NSL");
+		DeviceVersion parser = DeviceVersion.parser("AP901P06V1.5.12Build519_TU_NSL");
 		System.out.println(" ver:"+parser.toDeviceUnitTypeIndex());
 		System.out.println(" ver:"+parser.wasDutURouter());
-		System.out.println(" dut:"+parser.getSt());
+		System.out.println(" st:"+parser.getSt());
 		System.out.println(" Mn:"+parser.getMn());
 		System.out.println(" Prefix:"+parser.getPrefix());
-		
-		DeviceUnitType fromVersionPrefix = DeviceUnitType.fromVersionPrefix(parser.getSt(), null, parser.getPrefix());
-		System.out.println(parser.getSt());
-		System.out.println(parser.getMn());
-		System.out.println(parser.getPrefix());
-		System.out.println(fromVersionPrefix);
+		System.out.println(" Hdtype:"+parser.getHdtype());
 	}
 }
