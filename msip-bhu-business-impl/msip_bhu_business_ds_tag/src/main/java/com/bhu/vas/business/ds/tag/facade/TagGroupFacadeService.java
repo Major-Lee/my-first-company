@@ -16,10 +16,12 @@ import com.bhu.vas.api.rpc.tag.dto.TagGroupHandsetDetailDTO;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
+import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresentHashService;
 import com.bhu.vas.business.ds.tag.service.TagGroupHandsetDetailService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
+import com.bhu.vas.business.ds.user.facade.UserIdentityAuthFacadeService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -39,6 +41,9 @@ public class TagGroupFacadeService {
 	
 	@Resource
 	private TagGroupHandsetDetailService tagGroupHandsetDetailService;
+	
+	@Resource 
+	private UserIdentityAuthFacadeService userIdentityAuthFacadeService;
 	
 	public List<String> findGroupNamesByMacs(List<String> macs){
 		if(macs == null || macs.isEmpty()) return Collections.emptyList();
@@ -133,6 +138,8 @@ public class TagGroupFacadeService {
 				detail.setNewuser(true);
 				HandsetGroupPresentHashService.getInstance().groupNewlyHandsetComming(gid);
 			}
+			detail.setMobileno(userIdentityAuthFacadeService.fetchUserMobilenoByHdmac(hdmac));
+			
 			tagGroupHandsetDetailService.insert(detail);
 			HandsetGroupPresentHashService.getInstance().groupHandsetComming(gid);
 			return detail;

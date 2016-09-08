@@ -54,6 +54,7 @@ import com.bhu.vas.business.ds.statistics.service.GpathIncomeService;
 import com.bhu.vas.business.ds.statistics.service.MacIncomeService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
+import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
@@ -108,6 +109,9 @@ public class UserWalletFacadeService{
 	
 	@Resource
 	private BusinessWalletCacheService businessWalletCacheService;
+	
+	@Resource
+	private UserIdentityAuthService userIdentityAuthService;
 	
 	public GpathIncomeService getGpathIncomeService() {
 		return gpathIncomeService;
