@@ -11,11 +11,13 @@ import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.rpc.facade.TagFacadeRpcSerivce;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -257,9 +259,10 @@ public class TagRpcService implements ITagRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid, String timeStr) {
-		logger.info(String.format("groupUsersStatistics gid[%s] timeStr[%s]", gid, timeStr));
+	public RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid, long time) {
+		logger.info(String.format("groupUsersStatistics gid[%s] time[%s]", gid, time));
 		try{
+			String timeStr = DateTimeHelper.formatDate(new Date(time), DateTimeHelper.FormatPattern7);
 			GroupUsersStatisticsVTO result = tagFacadeRpcSerivce.groupUsersStatistics(gid, timeStr);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException bex){

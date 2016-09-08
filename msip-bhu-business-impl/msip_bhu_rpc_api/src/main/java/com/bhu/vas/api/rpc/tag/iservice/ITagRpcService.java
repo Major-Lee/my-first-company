@@ -61,5 +61,5 @@ public interface ITagRpcService {
 
 	List<GroupCountOnlineVTO> groupsStatsOnline(int uid, String gids);
 	
-	RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid,String timeStr);
+	RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid,long time);
 }	
