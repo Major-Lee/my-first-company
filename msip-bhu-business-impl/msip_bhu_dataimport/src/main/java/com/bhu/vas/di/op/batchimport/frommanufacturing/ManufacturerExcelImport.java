@@ -77,7 +77,8 @@ public class ManufacturerExcelImport {
 	        		String mac = mac_cell.getStringCellValue();
 	        		String sn = cn_cell.getStringCellValue();
 	        		if(StringUtils.isNotEmpty(mac) && StringUtils.isNotEmpty(sn)){
-	        			mac = mac.replaceAll(StringHelper.MINUS_STRING_GAP, StringHelper.EMPTY_STRING_GAP);
+	        			mac = mac.replaceAll(StringHelper.MINUS_STRING_GAP, StringHelper.EMPTY_STRING_GAP).trim();
+	        			sn = sn.trim();
 	        			notify.elementNotify(StringHelper.formatMacAddress(mac).toLowerCase(), sn);
 	        		}
 	        	}
