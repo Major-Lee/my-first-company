@@ -61,6 +61,8 @@ echo '清除目录'$CuDateDir'下所有的文件成功'
 #拷贝生成的zip包到发布目录中。。。
 echo '拷贝文件 msip_bhu_unit_input_processor-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_input_processor/target/msip_bhu_unit_input_processor-bin.zip ./$CuDateDir
+echo '拷贝文件 msip_bhu_unit_input_terminal_processor-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_input_terminal_processor/target/msip_bhu_unit_input_terminal_processor-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_unit_daemon_processor-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_daemon_processor/target/msip_bhu_unit_daemon_processor-bin.zip ./$CuDateDir
 echo '拷贝文件 msip_bhu_unit_devices-bin.zip到'$CuDateDir
@@ -131,6 +133,8 @@ cd $CuDateDir
 echo '进行文件解压过程'
 unzip -q msip_bhu_unit_input_processor-bin.zip
 unzip -qo msip_bhu_unit_input_processor/bin/msip_bhu_unit_input_processor.jar -d msip_bhu_unit_input_processor/classes/
+unzip -q msip_bhu_unit_input_terminal_processor-bin.zip
+unzip -qo msip_bhu_unit_input_terminal_processor/bin/msip_bhu_unit_input_terminal_processor.jar -d msip_bhu_unit_input_terminal_processor/classes/
 unzip -q msip_bhu_unit_daemon_processor-bin.zip
 unzip -qo msip_bhu_unit_daemon_processor/bin/msip_bhu_unit_daemon_processor.jar -d msip_bhu_unit_daemon_processor/classes/
 unzip -q msip_bhu_unit_devices-bin.zip
@@ -222,6 +226,12 @@ rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/spring*
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/lib/msip_*.jar    root@$Deploy2ServerInput2:/BHUData/apps/msip_bhu_unit_input_processor/libs/
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_processor/classes/com/    root@$Deploy2ServerInput2:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
 echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2ServerInput2
+
+echo 'deploy msip_bhu_unit_input_terminal_processor to ...@'$Deploy2Server2
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_terminal_processor/lib/spring*.RELEASE.jar   root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_terminal_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_terminal_processor/lib/msip_*.jar    root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_terminal_processor/libs/
+rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_input_terminal_processor/classes/com/    root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_terminal_processor/classes/com/
+echo 'deploy msip_bhu_unit_input_terminal_processor successfully @'$Deploy2Server2
 
 echo 'deploy msip_bhu_unit_daemon_processor to ...@'$Deploy2ServerDaemon
 rsync -avz -progress -e 'ssh -p 22'  ./msip_bhu_unit_daemon_processor/lib/spring*.RELEASE.jar root@$Deploy2ServerDaemon:/BHUData/apps/msip_bhu_unit_daemon_processor/libs/

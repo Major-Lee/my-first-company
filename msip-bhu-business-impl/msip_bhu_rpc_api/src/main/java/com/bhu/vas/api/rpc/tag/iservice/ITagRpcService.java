@@ -5,6 +5,8 @@ import java.util.List;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -59,4 +61,10 @@ public interface ITagRpcService {
 	RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> groupsGainsStatistics(int uid, String gids, String paths);
 
 	List<GroupCountOnlineVTO> groupsStatsOnline(int uid, String gids);
+	
+	RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid,long time);
+
+
+	RpcResponseDTO<List<TagGroupHandsetDetailVTO>> groupUsersDetail(int gid,
+			long beginTime, long endTime, int pageNo, int pageSize);
 }	

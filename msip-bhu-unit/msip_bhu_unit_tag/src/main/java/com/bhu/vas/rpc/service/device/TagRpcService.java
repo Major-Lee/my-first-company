@@ -7,14 +7,19 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.rpc.facade.TagFacadeRpcSerivce;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -253,5 +258,36 @@ public class TagRpcService implements ITagRpcService {
 		logger.info(String.format("groupsStatsOnline uid[%s] gids[%s]", uid, gids));
 		List<GroupCountOnlineVTO> list = tagFacadeRpcSerivce.groupsStatsOnline(uid, gids);
 		return list;
+	}
+
+	@Override
+	public RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid, long time) {
+		logger.info(String.format("groupUsersStatistics gid[%s] time[%s]", gid, time));
+		try{
+			String timeStr = DateTimeHelper.formatDate(new Date(time), DateTimeHelper.FormatPattern7);
+			GroupUsersStatisticsVTO result = tagFacadeRpcSerivce.groupUsersStatistics(gid, timeStr);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("groupUsersStatistics Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	@Override
+	public RpcResponseDTO<List<TagGroupHandsetDetailVTO>> groupUsersDetail(int gid, long beginTime,long endTime,int pageNo,int pageSize) {
+		logger.info(String.format("groupUsersDetail gid[%s] beginTime[%s] endTime[%s] pageNo[%s] pageSize[%s]", gid, beginTime,endTime,pageNo,pageSize));
+		try{
+			String beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
+			String endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
+			List<TagGroupHandsetDetailVTO> result = tagFacadeRpcSerivce.groupUsersDetail(gid, beginTimeStr, endTimeStr, pageNo, pageSize);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("groupUsersStatistics Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 }

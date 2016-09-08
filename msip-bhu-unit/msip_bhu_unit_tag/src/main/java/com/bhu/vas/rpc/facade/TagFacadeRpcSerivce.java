@@ -1,7 +1,9 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,6 +11,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
@@ -17,20 +21,26 @@ import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresentHashService;
 import com.bhu.vas.business.ds.charging.facade.ChargingStatisticsFacadeService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
+import com.bhu.vas.business.ds.tag.service.TagGroupHandsetDetailService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -43,7 +53,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 @Service
 public class TagFacadeRpcSerivce {
-
+	private final Logger logger = LoggerFactory.getLogger(TagFacadeRpcSerivce.class);
 	@Resource
 	private TagNameService tagNameService;
 
@@ -77,7 +87,12 @@ public class TagFacadeRpcSerivce {
 	
 	@Resource
 	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
-
+	
+	@Resource
+	private TagGroupHandsetDetailService tagGroupHandsetDetailService;
+	
+	@Resource
+	private UserIdentityAuthService userIdentityAuthService;
 	private void addTag(int uid, String tag) {
 
 		ModelCriteria mc = new ModelCriteria();
@@ -646,4 +661,42 @@ public class TagFacadeRpcSerivce {
 		}
 		return list;
 	}
+	/**
+	 * 分组用户连接情况
+	 * @param gid
+	 * @param timeStr
+	 * @return
+	 */
+	public GroupUsersStatisticsVTO groupUsersStatistics(int gid, String timeStr) {
+		GroupUsersStatisticsVTO vto = new GroupUsersStatisticsVTO();
+		Date date = DateTimeHelper.fromDateStr(timeStr);
+		Date dateDaysAgo = DateTimeHelper.getDateDaysAgo(date, 1);
+		String yesterday = DateTimeHelper.formatDate(dateDaysAgo, DateTimeHelper.FormatPattern7);
+		Map<String, String> todayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, timeStr);
+		Map<String, String> yesterdayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, yesterday);
+		vto.setToday_newly(todayMap.get("newly"));
+		vto.setToday_total(todayMap.get("total"));
+		vto.setYesterday_newly(yesterdayMap.get("newly"));
+		vto.setYesterday_total(yesterdayMap.get("total"));
+		vto.setCount(HandsetGroupPresentHashService.getInstance().fetchGroupConnTotal(gid));
+		return vto;
+	}
+	
+	/**
+	 * 分组用户详情
+	 * @param gid
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
+	public List<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,int pageNo,int pageSize){
+		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime);
+		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
+		for(Map<String, Object> map : handsetMap){
+			TagGroupHandsetDetailVTO vto =new TagGroupHandsetDetailVTO();
+			vtos.add(vto.toVto(map));
+		}
+		return vtos;
+	}
+	
 }
