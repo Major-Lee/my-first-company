@@ -20,7 +20,6 @@ import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagName;
-import com.bhu.vas.api.rpc.tag.vto.GroupConnCountVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
@@ -662,7 +661,12 @@ public class TagFacadeRpcSerivce {
 		}
 		return list;
 	}
-
+	/**
+	 * 分组用户连接情况
+	 * @param gid
+	 * @param timeStr
+	 * @return
+	 */
 	public GroupUsersStatisticsVTO groupUsersStatistics(int gid, String timeStr) {
 		GroupUsersStatisticsVTO vto = new GroupUsersStatisticsVTO();
 		Date date = DateTimeHelper.fromDateStr(timeStr);
@@ -675,8 +679,6 @@ public class TagFacadeRpcSerivce {
 		vto.setYesterday_newly(yesterdayMap.get("newly"));
 		vto.setYesterday_total(yesterdayMap.get("total"));
 		vto.setCount(HandsetGroupPresentHashService.getInstance().fetchGroupConnTotal(gid));
-		logger.info(String.format("groupUsersStatistics today_newly[%s] today_total[%s] yesterday_newly[%s] yesterday_total[%s] count[%s]", 
-				vto.getToday_newly(),vto.getToday_total(),vto.getYesterday_newly(),vto.getYesterday_total(),vto.getCount()));
 		return vto;
 	}
 	

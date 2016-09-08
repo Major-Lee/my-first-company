@@ -165,12 +165,14 @@
 	    SELECT <include refid="modelUserDetail" /> FROM <include refid="modelTableName" /> 
 	    <where>
 			gid = #{gid}
-			AND
-			timestr
-			BETWEEN
-			#{beginTime}
-			AND
-			#{endTime}
+			<if test="beginTime !=null and endTime != null">
+				AND
+					timestr
+				BETWEEN
+					#{beginTime}
+				AND
+					#{endTime}
+			</if>
 	    </where> 
 	    GROUP BY hdmac;
 	</select>
