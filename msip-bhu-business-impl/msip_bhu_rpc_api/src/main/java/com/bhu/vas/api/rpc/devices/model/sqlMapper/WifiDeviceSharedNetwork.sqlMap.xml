@@ -7,6 +7,7 @@
   <resultMap id="modelResult" type="wifiDeviceSharedNetwork">
     <id property="id" column="id"/>
     <result property="owner" column="owner"/>
+    <result property="idle_timeout" column="idle_timeout"/>
     <result property="template" column="template"/>
     
     <result property="sharednetwork_type" column="sharednetwork_type"/>
@@ -24,6 +25,7 @@
 	    <![CDATA[
 	    	id,
 	    	owner,
+	    	idle_timeout,
 	    	template,
 	    	sharednetwork_type,
 	    	updated_at,
@@ -34,6 +36,7 @@
 	<sql id="modelInsertValues">
 	    	#{id},
 	    	#{owner},
+	    	#{idle_timeout},
 	    	#{template},
 	    	#{sharednetwork_type},
 	    	#{updated_at},
@@ -42,6 +45,7 @@
 	
 	<sql id="modelUpdateValues">
 	    	owner = #{owner},
+	    	idle_timeout = #{idle_timeout},
 	    	template = #{template},
 	    	sharednetwork_type = #{sharednetwork_type},	
 	    	updated_at=#{updated_at},
@@ -51,6 +55,7 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	owner,
+	    	idle_timeout,
 	    	template,
 	    	sharednetwork_type,	    
 	    	updated_at,
