@@ -8,7 +8,7 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 	private String hdMac;
 	private String mobileno;
 	private String manu;
-	private Integer count;
+	private Long count;
 	private String firstTime;
 	private String lastTime;
 	
@@ -30,10 +30,10 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 	public void setManu(String manu) {
 		this.manu = manu;
 	}
-	public int getCount() {
+	public Long getCount() {
 		return count;
 	}
-	public void setCount(int count) {
+	public void setCount(Long count) {
 		this.count = count;
 	}
 	public String getFirstTime() {
@@ -53,7 +53,7 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 		TagGroupHandsetDetailVTO vto = new TagGroupHandsetDetailVTO();
 		vto.setHdMac((String)map.get("hdmac"));
 		vto.setMobileno((String)map.get("mobileno"));
-		vto.setCount((Integer)map.get("count"));
+		vto.setCount((Long)map.get("count"));
 		vto.setFirstTime((String)map.get("min"));
 		vto.setLastTime((String)map.get("max"));
 		return vto;
