@@ -261,6 +261,7 @@ public class GroupController extends BaseController{
     public void group_count_users(
             HttpServletRequest request,
             HttpServletResponse response,
+            @RequestParam(required = true) int uid,
             @RequestParam(required = true) int gid,
     	    @RequestParam(required = true) long time) {
     	RpcResponseDTO<GroupUsersStatisticsVTO> rpcResult = tagRpcService.groupUsersStatistics(gid, time);
@@ -281,6 +282,7 @@ public class GroupController extends BaseController{
     public void group_users_detail(
             HttpServletRequest request,
             HttpServletResponse response,
+            @RequestParam(required = true) int uid,
             @RequestParam(required = true) int gid,
     	    @RequestParam(required = true) long beginTime,
     	    @RequestParam(required = true) long endTime,
