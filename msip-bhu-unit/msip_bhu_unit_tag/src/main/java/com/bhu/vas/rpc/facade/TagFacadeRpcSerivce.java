@@ -20,12 +20,14 @@ import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagName;
+import com.bhu.vas.api.rpc.tag.vto.GroupConnCountVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresentHashService;
 import com.bhu.vas.business.ds.charging.facade.ChargingStatisticsFacadeService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupHandsetDetailService;
@@ -659,4 +661,17 @@ public class TagFacadeRpcSerivce {
 		}
 		return list;
 	}
+	/**
+	 * 获得分组下终端连接数
+	 * @return
+	 */
+	public GroupConnCountVTO groupsStatsConn(int gid){
+		
+		GroupConnCountVTO vto = new GroupConnCountVTO();
+		 vto.setToday(HandsetGroupPresentHashService.getInstance().fetchGroupDetail(gid, DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7))); 
+		 vto.setYesterday(HandsetGroupPresentHashService.getInstance().fetchGroupDetail(gid, DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1), 
+	    			DateTimeHelper.FormatPattern7)));
+		return vto;
+	}
+	
 }

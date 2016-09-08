@@ -72,7 +72,7 @@ public class TagGroupHandsetDetail extends BaseLongModel implements Serializable
 			this.created_at = new Date();
 		
 		if(this.timestr == null)
-			this.timestr = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7);
+			this.timestr = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 		
 		if (this.updated_at == null)
 			this.updated_at = new Date();

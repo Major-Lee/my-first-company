@@ -117,7 +117,7 @@ public class TagGroupFacadeService {
 		}
 		String hdmac = dto.getMac();
 		int gid = tagGroupRelation.getGid();
-		String timestr = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7);
+		String timestr = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 		//1.判断当天是否该终端是否存在记录
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("hdmac", hdmac).andColumnEqualTo("gid", gid).andColumnEqualTo("timestr", timestr);
