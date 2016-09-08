@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
+import com.bhu.vas.api.rpc.charging.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
@@ -242,6 +243,26 @@ public class GroupController extends BaseController{
     	    @RequestParam(required = false) String gids,
     	    @RequestParam(required = false) String paths) {
     	RpcResponseDTO<List<DeviceGroupPaymentStatisticsVTO>> rpcResult = tagRpcService.groupsGainsStatistics(uid, gids, paths);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
+
+    /**
+	 * 统计分组连接用户数
+	 * @param gid 分组id
+	 * @param timeStr 获取数据的时间 格式yyyyMMdd
+	 */
+    @ResponseBody()
+    @RequestMapping(value = "/count/users", method = {RequestMethod.POST})
+    public void group_count_users(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int gid,
+    	    @RequestParam(required = true) String timeStr) {
+    	RpcResponseDTO<GroupUsersStatisticsVTO> rpcResult = tagRpcService.groupUsersStatistics(gid, timeStr);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

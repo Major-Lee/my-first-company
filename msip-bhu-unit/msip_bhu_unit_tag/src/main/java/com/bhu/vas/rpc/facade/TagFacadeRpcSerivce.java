@@ -1,19 +1,27 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.common.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
+import com.bhu.vas.api.rpc.charging.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.dto.TagGroupHandsetDetailDTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
@@ -53,7 +61,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  */
 @Service
 public class TagFacadeRpcSerivce {
-
+	private final Logger logger = LoggerFactory.getLogger(TagFacadeRpcSerivce.class);
 	@Resource
 	private TagNameService tagNameService;
 
@@ -674,5 +682,27 @@ public class TagFacadeRpcSerivce {
 	    			DateTimeHelper.FormatPattern7)));
 		return vto;
 	}
-	
+
+	public RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid, String timeStr) {
+		GroupUsersStatisticsVTO vto = new GroupUsersStatisticsVTO();
+		Date date = DateTimeHelper.fromDateStr(timeStr);
+		Date dateDaysAgo = DateTimeHelper.getDateDaysAgo(date, 1);
+		String yesterday = DateTimeHelper.formatDate(dateDaysAgo, DateTimeHelper.FormatPattern7);
+		try{
+			Map<String, String> todayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, timeStr);
+			Map<String, String> yesterdayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, yesterday);
+			vto.setToday_newly(todayMap.get("newly"));
+			vto.setToday_total(todayMap.get("total"));
+			vto.setYesterday_newly(yesterdayMap.get("newly"));
+			vto.setYesterday_total(yesterdayMap.get("total"));
+			vto.setCount(HandsetGroupPresentHashService.getInstance().fetchGroupConnTotal(gid));
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("groupUsersStatistics Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

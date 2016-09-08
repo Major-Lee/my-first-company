@@ -5,6 +5,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
+import com.bhu.vas.api.rpc.charging.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
@@ -253,5 +254,11 @@ public class TagRpcService implements ITagRpcService {
 		logger.info(String.format("groupsStatsOnline uid[%s] gids[%s]", uid, gids));
 		List<GroupCountOnlineVTO> list = tagFacadeRpcSerivce.groupsStatsOnline(uid, gids);
 		return list;
+	}
+
+	@Override
+	public RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid, String timeStr) {
+		logger.info(String.format("groupUsersStatistics gid[%s] timeStr[%s]", gid, timeStr));
+		return tagFacadeRpcSerivce.groupUsersStatistics(gid, timeStr);
 	}
 }
