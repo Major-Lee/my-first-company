@@ -39,16 +39,27 @@ public class HandsetGroupPresentHashService extends AbstractRelationHashCache{
 		return sb.toString();
 	}
 	
+	private static String generateKey(int gid){
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.HandsetPresent.GroupStatisticsPrefixKey);
+		sb.append(gid);
+		return sb.toString();
+	}
+	
 	public void groupHandsetComming(int gid){
 		this.hincrby(generateKey(gid,DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7)), HANDSET_GROUP_PRESENT_TOTAL, DEFAULT_INCRBY);
+		this.hincrby(generateKey(gid), HANDSET_GROUP_PRESENT_TOTAL, DEFAULT_INCRBY);
 	}
 	
 	public void groupNewlyHandsetComming(int gid){
 		this.hincrby(generateKey(gid,DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7)), HANDSET_GROUP_PRESENT_NEWLY, DEFAULT_INCRBY);
 	}
 	
-	public Map<String, String> fetchGroupDetail(int gid,String timestr){
+	public Map<String, String> fetchGroupConnDetail(int gid,String timestr){
 		return this.hgetall(generateKey(gid,timestr));
+	}
+	
+	public String fetchGroupConnTotal(int gid){
+		return this.hget(generateKey(gid),HANDSET_GROUP_PRESENT_TOTAL);
 	}
 	
 	@Override

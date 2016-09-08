@@ -668,8 +668,9 @@ public class TagFacadeRpcSerivce {
 	public GroupConnCountVTO groupsStatsConn(int gid){
 		
 		GroupConnCountVTO vto = new GroupConnCountVTO();
-		 vto.setToday(HandsetGroupPresentHashService.getInstance().fetchGroupDetail(gid, DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7))); 
-		 vto.setYesterday(HandsetGroupPresentHashService.getInstance().fetchGroupDetail(gid, DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1), 
+		vto.setTotal(HandsetGroupPresentHashService.getInstance().fetchGroupConnTotal(gid));
+		vto.setToday(HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7))); 
+		vto.setYesterday(HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1), 
 	    			DateTimeHelper.FormatPattern7)));
 		return vto;
 	}
