@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.tag.vto;
 
 import java.io.Serializable;
 import java.util.Map;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 
 @SuppressWarnings("serial")
 public class TagGroupHandsetDetailVTO implements Serializable{
@@ -54,6 +55,7 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 		vto.setHdMac((String)map.get("hdmac"));
 		vto.setMobileno((String)map.get("mobileno"));
 		vto.setCount((Long)map.get("count"));
+		vto.setManu(MacDictParserFilterHelper.prefixMactch(vto.getHdMac(),true,false));
 		vto.setFirstTime((String)map.get("min"));
 		vto.setLastTime((String)map.get("max"));
 		return vto;
