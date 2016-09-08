@@ -23,6 +23,7 @@ import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.GroupConnCountVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
@@ -661,19 +662,6 @@ public class TagFacadeRpcSerivce {
 		}
 		return list;
 	}
-	/**
-	 * 获得分组下终端连接数
-	 * @return
-	 */
-	public GroupConnCountVTO groupsStatsConn(int gid){
-		
-		GroupConnCountVTO vto = new GroupConnCountVTO();
-		vto.setTotal(HandsetGroupPresentHashService.getInstance().fetchGroupConnTotal(gid));
-		vto.setToday(HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7))); 
-		vto.setYesterday(HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, DateTimeHelper.formatDate(DateTimeHelper.getDateDaysAgo(1), 
-	    			DateTimeHelper.FormatPattern7)));
-		return vto;
-	}
 
 	public GroupUsersStatisticsVTO groupUsersStatistics(int gid, String timeStr) {
 		GroupUsersStatisticsVTO vto = new GroupUsersStatisticsVTO();
@@ -691,4 +679,22 @@ public class TagFacadeRpcSerivce {
 				vto.getToday_newly(),vto.getToday_total(),vto.getYesterday_newly(),vto.getYesterday_total(),vto.getCount()));
 		return vto;
 	}
+	
+	/**
+	 * 分组用户详情
+	 * @param gid
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
+	public List<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,int pageNo,int pageSize){
+		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime);
+		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
+		for(Map<String, Object> map : handsetMap){
+			TagGroupHandsetDetailVTO vto =new TagGroupHandsetDetailVTO();
+			vtos.add(vto.toVto(map));
+		}
+		return vtos;
+	}
+	
 }

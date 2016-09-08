@@ -3,7 +3,6 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail">
-
   <resultMap id="modelResult" type="tagGroupHandsetDetail">
 	  <id property="id" column="id" />
 	  <result property="hdmac" column="hdmac"/>
@@ -14,6 +13,18 @@
 	  <result property="auth" column="auth"/>
 	  <result property="created_at" column="created_at"/>
 	  <result property="updated_at" column="updated_at"/>
+  </resultMap>  
+  
+  <resultMap id="HandsetMap" type="hashmap">
+  	<result property="hdmac" column="hdmac"/>
+  	<result property="mobileno" column="mobileno"/>
+  	<result property="timestr" column="timestr"/>
+  	<result property="mobileno" column="mobileno"/>
+  	<result property="newuser" column="newuser"/>
+  	<result property="auth" column="auth"/>
+  	<result property="count" column="count(hdmac)"/>
+  	<result property="min" column="MIN(timestr)"/>
+  	<result property="max" column="MAX(timestr)"/>
   </resultMap>  
   
   	<sql id="modelTableName">
@@ -32,6 +43,17 @@
 	    	auth,
 	    	created_at,
 	    	updated_at
+	    ]]>
+	</sql>  
+	
+	<sql id="modelUserDetail">
+	    <![CDATA[
+	    	hdmac,
+	    	gid,
+	    	mobileno,
+	    	count(hdmac),
+	    	MIN(timestr),
+	    	MAX(timestr)
 	    ]]>
 	</sql>  
 	
@@ -141,6 +163,20 @@
 			    #{item}
 			</foreach>
 	  	</where>
+	</select>
+	  
+	<select id="selectHandsetDetail" resultMap="HandsetMap" parameterType="map">
+	    SELECT <include refid="modelUserDetail" /> FROM <include refid="modelTableName" /> 
+	    <where>
+			gid = #{gid}
+			AND
+			timestr
+			BETWEEN
+			#{beginTime}
+			AND
+			#{endTime}
+	    </where> 
+	    GROUP BY hdmac;
 	</select>
 	  
 	<delete id="deleteByIds" parameterType="java.util.List">
