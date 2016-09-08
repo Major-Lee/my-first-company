@@ -18,10 +18,6 @@
   <resultMap id="HandsetMap" type="hashmap">
   	<result property="hdmac" column="hdmac"/>
   	<result property="mobileno" column="mobileno"/>
-  	<result property="timestr" column="timestr"/>
-  	<result property="mobileno" column="mobileno"/>
-  	<result property="newuser" column="newuser"/>
-  	<result property="auth" column="auth"/>
   	<result property="count" column="count(hdmac)"/>
   	<result property="min" column="MIN(timestr)"/>
   	<result property="max" column="MAX(timestr)"/>
