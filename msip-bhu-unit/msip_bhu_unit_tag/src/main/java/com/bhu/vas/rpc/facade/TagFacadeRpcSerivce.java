@@ -9,30 +9,22 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.common.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.charging.vto.GroupUsersStatisticsVTO;
-import com.bhu.vas.api.rpc.tag.dto.TagGroupHandsetDetailDTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
-import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.GroupConnCountVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
-import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresentHashService;
@@ -683,26 +675,20 @@ public class TagFacadeRpcSerivce {
 		return vto;
 	}
 
-	public RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid, String timeStr) {
+	public GroupUsersStatisticsVTO groupUsersStatistics(int gid, String timeStr) {
 		GroupUsersStatisticsVTO vto = new GroupUsersStatisticsVTO();
 		Date date = DateTimeHelper.fromDateStr(timeStr);
 		Date dateDaysAgo = DateTimeHelper.getDateDaysAgo(date, 1);
 		String yesterday = DateTimeHelper.formatDate(dateDaysAgo, DateTimeHelper.FormatPattern7);
-		try{
-			Map<String, String> todayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, timeStr);
-			Map<String, String> yesterdayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, yesterday);
-			vto.setToday_newly(todayMap.get("newly"));
-			vto.setToday_total(todayMap.get("total"));
-			vto.setYesterday_newly(yesterdayMap.get("newly"));
-			vto.setYesterday_total(yesterdayMap.get("total"));
-			vto.setCount(HandsetGroupPresentHashService.getInstance().fetchGroupConnTotal(gid));
-			
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
-		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
-		}catch(Exception ex){
-			logger.error("groupUsersStatistics Exception:", ex);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
+		Map<String, String> todayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, timeStr);
+		Map<String, String> yesterdayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, yesterday);
+		vto.setToday_newly(todayMap.get("newly"));
+		vto.setToday_total(todayMap.get("total"));
+		vto.setYesterday_newly(yesterdayMap.get("newly"));
+		vto.setYesterday_total(yesterdayMap.get("total"));
+		vto.setCount(HandsetGroupPresentHashService.getInstance().fetchGroupConnTotal(gid));
+		logger.info(String.format("groupUsersStatistics today_newly[%s] today_total[%s] yesterday_newly[%s] yesterday_total[%s] count[%s]", 
+				vto.getToday_newly(),vto.getToday_total(),vto.getYesterday_newly(),vto.getYesterday_total(),vto.getCount()));
+		return vto;
 	}
 }
