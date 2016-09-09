@@ -48,9 +48,14 @@ public class TagGroupHandsetDetailService extends AbstractTagService<Long, TagGr
 		return this.getEntityDao().getSqlSessionMasterTemplate().selectList(TagGroupHandsetDetail.class.getName()+".selectHandsetDetail", map);
 	}
 	
-	public List<Map<String,String>> selectGroupUsersRank(int gid,int pageNo,int pageSize){
+	public List<Map<String,String>> selectGroupUsersRank(int gid,String startTime, String endTime, int pageNo, int pageSize){
 		Map<String,Object> map = new HashMap<>();
 		map.put("gid",gid);
+		if (startTime != null && !startTime.isEmpty())
+			map.put("startTime", startTime);
+		if (endTime != null && !endTime.isEmpty())
+			map.put("endTime", endTime);
+		
 		map.put("pn", (pageNo-1) * pageSize);
 		map.put("ps", pageSize);
 		

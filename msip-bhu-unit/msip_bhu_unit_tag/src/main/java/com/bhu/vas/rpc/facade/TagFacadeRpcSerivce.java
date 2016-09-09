@@ -26,6 +26,8 @@ import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupRankUsersVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupUserConnectDataVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
@@ -744,16 +746,46 @@ public class TagFacadeRpcSerivce {
 		return resultList;
 	}
 	
-	
-	
-	public TailPage<TagGroupRankUsersVTO> groupRankUsers(int uid, int gid, int pageNo, int pageSize) {
-		List<Map<String, String>> handsetMap = tagGroupHandsetDetailService.selectGroupUsersRank(gid, pageNo, pageSize);
+	private TailPage<TagGroupRankUsersVTO> groupRankUsers(int uid, int gid, String startTime, 
+			String endTime ,int pageNo, int pageSize) {
+		List<Map<String, String>> handsetMap = tagGroupHandsetDetailService.selectGroupUsersRank(gid, 
+				startTime, endTime, pageNo, pageSize);
 		List<TagGroupRankUsersVTO> vtos = new ArrayList<TagGroupRankUsersVTO>();
 		for(Map<String, String> map : handsetMap){
 			logger.info(String.format("groupRankUsers count[%s] date[%s]", map.get("count"), map.get("date")));
 			vtos.add(BusinessTagModelBuilder.builderGroupRankUsers(map));
 		}
 		return new CommonPage<TagGroupRankUsersVTO>(pageNo, pageSize, vtos.size(), vtos);
+	}
+	
+	private List<TagGroupUserConnectDataVTO> groupUserConnectData(int uid, int gid, String startTime, 
+			String endTime) {
+		long count = DateTimeHelper.getTwoDateDifferentDay(endTime, startTime, DateTimeHelper.FormatPattern5);
+		Date date = null;
+		Date dateDaysAgo = null;
+		List<TagGroupUserConnectDataVTO> vtos = new ArrayList<TagGroupUserConnectDataVTO>();
+		for (int i = 1; i <= count;i++){
+			date = DateTimeHelper.fromDateStr(startTime);
+			dateDaysAgo = DateTimeHelper.getDateDaysAfter(date, i);
+			TagGroupUserConnectDataVTO vto = new TagGroupUserConnectDataVTO();
+			String today = DateTimeHelper.formatDate(dateDaysAgo, DateTimeHelper.FormatPattern7);
+			Map<String, String> detail = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, today);
+			vto.setDate(today);
+			vto.setNewly(detail.get("newly"));
+			vto.setTotal(detail.get("total"));
+			vtos.add(vto);
+		}
+		return vtos;
+	}
+	
+	public TagGroupUserStatisticsConnectVTO groupUserStatisticsConnect(int uid, int gid, long startTime, long endTime,
+			int pageNo, int pageSize) {
+		String startTimeStr = DateTimeHelper.formatDate(new Date(startTime), DateTimeHelper.FormatPattern5);
+		String endTimeStr = DateTimeHelper.formatDate(new Date(endTime), DateTimeHelper.FormatPattern5);
+		TagGroupUserStatisticsConnectVTO vto = new TagGroupUserStatisticsConnectVTO();
+		vto.setRankList(groupRankUsers(uid,gid,startTimeStr,endTimeStr,pageNo,pageSize));
+		vto.setUserConnectData(groupUserConnectData(uid,gid,startTimeStr,endTimeStr));
+		return vto;
 	}
 	
 }

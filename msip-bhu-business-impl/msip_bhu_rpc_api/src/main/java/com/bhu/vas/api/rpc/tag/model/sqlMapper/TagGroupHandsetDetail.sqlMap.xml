@@ -188,6 +188,14 @@
 	    SELECT timestr,count(timestr) <include refid="modelUserDetail" /> FROM <include refid="modelTableName" /> 
 	    <where>
 			gid = #{gid}
+			<if test="starTime !=null and endTime != null">
+				AND
+					timestr
+				BETWEEN
+					#{starTime}
+				AND
+					#{endTime}
+			</if>
 	    </where> 
 	    group by timestr
 	    order by timestr desc

@@ -9,7 +9,7 @@ import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
-import com.bhu.vas.api.rpc.tag.vto.TagGroupRankUsersVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.rpc.facade.TagFacadeRpcSerivce;
@@ -307,15 +307,18 @@ public class TagRpcService implements ITagRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<TagGroupRankUsersVTO>> groupRankUsers(int uid, int gid, int pageNo, int pageSize) {
-		logger.info(String.format("groupRankUsers uid[%s] gid[%s] pageNo[%s] pageSize[%s]", uid,gid, pageNo, pageSize));
-		try{
-			TailPage<TagGroupRankUsersVTO> result = tagFacadeRpcSerivce.groupRankUsers(uid,gid,pageNo,pageSize);
+	public RpcResponseDTO<TagGroupUserStatisticsConnectVTO> groupUserStatisticsConnect(int uid, int gid, long startTime,
+			long endTime, int pageNo, int pageSize) {
+		logger.info(String.format("groupUserStatisticsConnect uid[%s] gid[%s] startTime[%s] endTime[%s] pageNo[%s] pageSize[%s]", 
+				uid,gid, startTime,  endTime, pageNo, pageSize));
+		try {
+			TagGroupUserStatisticsConnectVTO result = tagFacadeRpcSerivce.groupUserStatisticsConnect(uid, 
+					gid, startTime, endTime,pageNo, pageSize);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
-		}catch(BusinessI18nCodeException bex){
+		} catch (BusinessI18nCodeException bex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
-			logger.error("groupUsersStatistics Exception:", ex);
+			logger.error("groupUserStatisticsConnect Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

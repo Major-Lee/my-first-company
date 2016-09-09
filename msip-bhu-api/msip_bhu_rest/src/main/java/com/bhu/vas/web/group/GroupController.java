@@ -20,7 +20,7 @@ import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
-import com.bhu.vas.api.rpc.tag.vto.TagGroupRankUsersVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -253,29 +253,9 @@ public class GroupController extends BaseController{
 		}
     }
 
-    /**
-	 * 统计分组连接用户数
-	 * @param gid 分组id
-	 * @param timeStr 获取数据的时间 格式yyyyMMdd
-	 */
-    @ResponseBody()
-    @RequestMapping(value = "/count/users", method = {RequestMethod.POST})
-    public void group_count_users(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            @RequestParam(required = true) int uid,
-            @RequestParam(required = true) int gid,
-    	    @RequestParam(required = true) long time) {
-    	RpcResponseDTO<GroupUsersStatisticsVTO> rpcResult = tagRpcService.groupUsersStatistics(gid, time);
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}
-    }
     
     /**
-	 * 统计分组连接用户数
+	 * 分组用户连接数
 	 * @param gid 分组id
 	 * @param timeStr 获取数据的时间 格式yyyyMMdd
 	 */
@@ -321,20 +301,49 @@ public class GroupController extends BaseController{
     }
     
     /**
-  	 * 统计分组连接排名
+  	 * 统计分组昨日和今日连接用户数
+  	 * @param uid 用户id
   	 * @param gid 分组id
-  	 * @param timeStr 获取数据的时间 格式yyyyMMdd
+  	 * @param time 获取数据的时间 格式毫秒时间戳
   	 */
       @ResponseBody()
-      @RequestMapping(value = "/rank/users", method = {RequestMethod.POST})
-      public void group_rank_users(
+      @RequestMapping(value = "/user/nearly2days", method = {RequestMethod.POST})
+      public void group_count_users(
               HttpServletRequest request,
               HttpServletResponse response,
               @RequestParam(required = true) int uid,
               @RequestParam(required = true) int gid,
+      	    @RequestParam(required = true) long time) {
+      	RpcResponseDTO<GroupUsersStatisticsVTO> rpcResult = tagRpcService.groupUsersStatistics(gid, time);
+  		if(!rpcResult.hasError()){
+  			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+  		}else{
+  			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+  		}
+      }
+      
+    /**
+  	 * 统计设备分组连接数,根据筛选条件返回数据以及排行
+  	 * @param uid 用户id
+  	 * @param gid 分组id
+  	 * @param startTime 起始时间毫秒时间戳
+  	 * @param endTime 结束时间毫秒时间戳
+  	 * @param pageNo 排行数据No
+  	 * @param pageSize 获取数据Size
+  	 */
+      @ResponseBody()
+      @RequestMapping(value = "user/statistics/connect", method = {RequestMethod.POST})
+      public void group_user_statistics_connect(
+              HttpServletRequest request,
+              HttpServletResponse response,
+              @RequestParam(required = true) int uid,
+              @RequestParam(required = true) int gid,
+              @RequestParam(required = false) long startTime,
+              @RequestParam(required = false) long endTime,
               @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
               @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
-      	RpcResponseDTO<TailPage<TagGroupRankUsersVTO>> rpcResult = tagRpcService.groupRankUsers(uid,gid, pageNo,pageSize);
+      	RpcResponseDTO<TagGroupUserStatisticsConnectVTO> rpcResult = tagRpcService.groupUserStatisticsConnect(uid, 
+      			gid, startTime , endTime, pageNo, pageSize);
   		if(!rpcResult.hasError()){
   			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
   		}else{

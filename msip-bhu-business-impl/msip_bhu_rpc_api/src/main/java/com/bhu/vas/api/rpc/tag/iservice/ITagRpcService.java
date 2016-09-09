@@ -8,7 +8,7 @@ import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
-import com.bhu.vas.api.rpc.tag.vto.TagGroupRankUsersVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -69,10 +69,10 @@ public interface ITagRpcService {
 	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(
 			int gid, long beginTime, long endTime, boolean filter, int count,String mobileno, int pageNo, int pageSize);
 
-	RpcResponseDTO<TailPage<TagGroupRankUsersVTO>> groupRankUsers(int uid, 
-			int gid, int pageNo, int pageSize);
-
 	RpcResponseDTO<List<Date>> groupUserDetail(int gid, String hdmac,
 			int pageNo, int pageSize);
-}
 
+	RpcResponseDTO<TagGroupUserStatisticsConnectVTO> groupUserStatisticsConnect(int uid, int gid, long startTime,
+			long endTime, int pageNo, int pageSize);
+
+}
