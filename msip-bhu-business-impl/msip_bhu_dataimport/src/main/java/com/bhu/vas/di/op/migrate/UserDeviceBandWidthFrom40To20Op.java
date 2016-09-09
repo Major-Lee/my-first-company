@@ -54,7 +54,7 @@ public class UserDeviceBandWidthFrom40To20Op {
 					continue;
 				radio.setChannel_bandwidth("20MHz");
 				userdevice_setting.setRadios(radios);
-				uds.setExtension_content(JsonHelper.getJSONString(userdevice_setting));
+				uds.putInnerModel(userdevice_setting);
 				wifiDeviceSettingService.update(uds);
 				
 				WifiDevice wifiDevice = wifiDeviceService.getById(uds.getId());

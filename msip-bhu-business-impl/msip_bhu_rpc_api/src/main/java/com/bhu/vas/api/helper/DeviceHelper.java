@@ -631,7 +631,7 @@ public class DeviceHelper {
 				
 				//合并autoreboot
 				if(source.getAutoreboot() != null){
-					ReflectionHelper.copyProperties(source.getAutoreboot(), target.getAutoreboot());
+					target.setAutoreboot(source.getAutoreboot());
 				}
 
 			}
