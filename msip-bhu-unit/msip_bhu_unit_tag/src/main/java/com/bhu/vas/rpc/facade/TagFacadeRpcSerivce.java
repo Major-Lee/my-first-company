@@ -28,6 +28,7 @@ import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresentHashService;
+import com.bhu.vas.business.ds.builder.BusinessTagModelBuilder;
 import com.bhu.vas.business.ds.charging.facade.ChargingStatisticsFacadeService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupHandsetDetailService;
@@ -694,7 +695,7 @@ public class TagFacadeRpcSerivce {
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			TagGroupHandsetDetailVTO vto =new TagGroupHandsetDetailVTO();
-			vtos.add(vto.toVto(map));
+			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
 		}
 		return vtos;
 	}
