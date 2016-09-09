@@ -12,6 +12,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -46,12 +47,14 @@ public class UserDeviceBandWidthFrom40To20Op {
 				if(userdevice_setting == null)
 					continue;
 				List<WifiDeviceSettingRadioDTO> radios = userdevice_setting.getRadios();
-				if(radios.size() <= 0)
+				if(radios == null || radios.size() <= 0)
 					continue;
 				WifiDeviceSettingRadioDTO radio = radios.get(0); //只修改2.4G射频
 				if(radio == null || !StringUtils.contains(radio.getChannel_bandwidth(), "40M"))
 					continue;
-				radio.setChannel_bandwidth("20M");
+				radio.setChannel_bandwidth("20MHz");
+				userdevice_setting.setRadios(radios);
+				uds.setExtension_content(JsonHelper.getJSONString(userdevice_setting));
 				wifiDeviceSettingService.update(uds);
 				
 				WifiDevice wifiDevice = wifiDeviceService.getById(uds.getId());
@@ -60,8 +63,8 @@ public class UserDeviceBandWidthFrom40To20Op {
 					continue;
 				}
 				
-				String cmd = "<dev><sys><config><ITEM sequence=\"-1\" /></config></sys><wifi><radio><ITEM name=\"wifi0\" channel_bandwidth=\"20M\" /></radio></wifi></dev>";
-				
+				String cmd = "<dev><sys><config><ITEM sequence=\"-1\" /></config></sys><wifi><radio><ITEM name=\"wifi0\" channel_bandwidth=\"20MHz\" /></radio></wifi></dev>";
+				System.out.println(String.format("sending cmd for mac[%s]", uds.getId()));
 				daemonRpcService.wifiDeviceCmdDown(null, uds.getId(), cmd);
 			}
 		}
