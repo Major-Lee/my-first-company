@@ -36,11 +36,14 @@ public class TagGroupHandsetDetailService extends AbstractTagService<Long, TagGr
 		return count == 0;
 	}
 
-	public List<Map<String,Object>> selectHandsetDetail(int gid,String beginTime,String endTime){
+	public List<Map<String,Object>> selectHandsetDetail(int gid,String beginTime,String endTime,int pageNo,int PageSize){
 		Map<String,Object> map = new HashMap<>();
 		map.put("gid", gid);
 		map.put("beginTime", beginTime);
 		map.put("endTime", endTime);
+		map.put("pn", (pageNo-1) * PageSize);
+		map.put("ps", PageSize);
+		
 		return this.getEntityDao().getSqlSessionMasterTemplate().selectList(TagGroupHandsetDetail.class.getName()+".selectHandsetDetail", map);
 	}
 }

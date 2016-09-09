@@ -175,6 +175,9 @@
 			</if>
 	    </where> 
 	    GROUP BY hdmac;
+	    LIMIT 
+	    #{pn},
+	    #{ps}
 	</select>
 	  
 	<delete id="deleteByIds" parameterType="java.util.List">
