@@ -695,19 +695,19 @@ public class TagFacadeRpcSerivce {
 	 * @param endTime
 	 * @return
 	 */
-	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,boolean filter,int count,int pageNo,int pageSize){
+	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,boolean filter,int count,String mobileno,int pageNo,int pageSize){
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime,pageNo,pageSize);
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
 		}
 		
-		{// 根据参数过滤无手机号的用户信息
+		{// 根据连接次数和手机号过滤
 			if (filter) {
 				Iterator<TagGroupHandsetDetailVTO> iter = vtos.iterator();
 				while (iter.hasNext()) {
 					TagGroupHandsetDetailVTO rv = iter.next();
-					if (rv.isFilter(count))
+					if (rv.isFilter(count,mobileno))
 						iter.remove();
 				}
 			}
