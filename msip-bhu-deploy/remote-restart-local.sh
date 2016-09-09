@@ -5,11 +5,11 @@ echo $CuDateDir
 echo "stop 192.168.66.188 input components"
 ssh -p 22 root@192.168.66.188 '/BHUData/appsh/stop.sh'
 
-echo "stop 192.168.66.155 input components"
-ssh -p 22 root@192.168.66.155 '/BHUData/appsh/stop.sh'
-
 echo "stop 192.168.66.147 input components"
 ssh -p 22 root@192.168.66.147 '/BHUData/appsh/stop.sh'
+
+echo "stop 192.168.66.155 input_termianl components"
+ssh -p 22 root@192.168.66.155 '/BHUData/appsh/stop.sh'
 
 echo "stop 192.168.66.123 input components"
 ssh -p 22 root@192.168.66.123 '/BHUData/appsh/stop.sh'
@@ -34,14 +34,15 @@ sleep 5
 echo "restart 192.168.66.188 input components"
 ssh -p 22 root@192.168.66.188 '/BHUData/appsh/start.sh'
 
-echo "restart 192.168.66.155 input components"
-ssh -p 22 root@192.168.66.155 '/BHUData/appsh/start.sh'
-
 echo "restart 192.168.66.147 input components"
 ssh -p 22 root@192.168.66.147 '/BHUData/appsh/start.sh'
 
 echo "restart 192.168.66.123 input components"
 ssh -p 22 root@192.168.66.123 '/BHUData/appsh/start.sh'
+
+echo "restart 192.168.66.155 input_terminal components"
+ssh -p 22 root@192.168.66.155 '/BHUData/appsh/start.sh'
+
 
 sleep 5
 echo "restart 192.168.66.7 web"

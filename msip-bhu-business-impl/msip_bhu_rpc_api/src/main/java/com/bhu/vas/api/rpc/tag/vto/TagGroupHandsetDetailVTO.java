@@ -1,7 +1,7 @@
 package com.bhu.vas.api.rpc.tag.vto;
 
 import java.io.Serializable;
-import java.util.Map;
+
 
 @SuppressWarnings("serial")
 public class TagGroupHandsetDetailVTO implements Serializable{
@@ -47,17 +47,6 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 	}
 	public void setLastTime(String lastTime) {
 		this.lastTime = lastTime;
-	}
-	
-	public TagGroupHandsetDetailVTO toVto(Map<String,Object> map){
-		TagGroupHandsetDetailVTO vto = new TagGroupHandsetDetailVTO();
-		vto.setHdMac((String)map.get("hdmac"));
-		vto.setMobileno((String)map.get("mobileno"));
-		vto.setCount((Long)map.get("count"));
-//		vto.setManu(MacDictParserFilterHelper.prefixMactch(vto.getHdMac(),true,false));
-		vto.setFirstTime((String)map.get("min"));
-		vto.setLastTime((String)map.get("max"));
-		return vto;
 	}
 	
 }
