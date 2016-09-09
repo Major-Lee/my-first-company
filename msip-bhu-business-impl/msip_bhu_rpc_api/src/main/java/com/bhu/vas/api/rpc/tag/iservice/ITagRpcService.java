@@ -64,7 +64,7 @@ public interface ITagRpcService {
 	
 	RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid,long time);
 
-
-	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(int gid,
-			long beginTime, long endTime, int pageNo, int pageSize);
+	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(
+			int gid, long beginTime, long endTime, boolean filter, int count,
+			int pageNo, int pageSize);
 }	
