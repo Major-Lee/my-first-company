@@ -49,4 +49,11 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 		this.lastTime = lastTime;
 	}
 	
+	public boolean isFilter(int count){
+		
+		if (this.getMobileno() == null || this.getMobileno().isEmpty() || this.count < count)
+			return true;
+		else
+			return false;
+	}
 }

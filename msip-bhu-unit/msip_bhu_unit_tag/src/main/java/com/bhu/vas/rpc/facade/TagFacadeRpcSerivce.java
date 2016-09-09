@@ -2,6 +2,7 @@ package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -25,6 +26,7 @@ import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
+import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresentHashService;
@@ -690,13 +692,25 @@ public class TagFacadeRpcSerivce {
 	 * @param endTime
 	 * @return
 	 */
-	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,int pageNo,int pageSize){
+	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,boolean filter,int count,int pageNo,int pageSize){
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime,pageNo,pageSize);
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			TagGroupHandsetDetailVTO vto =new TagGroupHandsetDetailVTO();
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
 		}
+		
+		{// 根据参数过滤无手机号的用户信息
+			if (filter) {
+				Iterator<TagGroupHandsetDetailVTO> iter = vtos.iterator();
+				while (iter.hasNext()) {
+					TagGroupHandsetDetailVTO rv = iter.next();
+					if (rv.isFilter(count))
+						iter.remove();
+				}
+			}
+		}
+		
 		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, vtos.size(), vtos);
 	}
 	
