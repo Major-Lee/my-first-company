@@ -174,10 +174,10 @@
 					#{endTime}
 			</if>
 	    </where> 
-	    GROUP BY hdmac;
+	    GROUP BY hdmac 
 	    LIMIT 
 	    #{pn},
-	    #{ps}
+	    #{ps};
 	</select>
 	  
 	<delete id="deleteByIds" parameterType="java.util.List">
