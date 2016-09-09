@@ -289,7 +289,7 @@ public class GroupController extends BaseController{
     	    @RequestParam(required = false) long beginTime,
     	    @RequestParam(required = false) long endTime,
     	    @RequestParam(required = false) boolean filter,
-    	    @RequestParam(required = false) int count,
+    	    @RequestParam(required = false, defaultValue = "0") int count,
     	    @RequestParam(required = false) String mobileno,
     	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
