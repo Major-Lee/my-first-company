@@ -72,7 +72,7 @@ public interface ITagRpcService {
 	RpcResponseDTO<TailPage<TagGroupRankUsersVTO>> groupRankUsers(int uid, 
 			int gid, int pageNo, int pageSize);
 
-	RpcResponseDTO<List<Date>> groupUserDetail(int gid, String hdmac,
+	RpcResponseDTO<List<Date>> groupUserDetail(int gid, String mobileno,
 			int pageNo, int pageSize);
 }
 
