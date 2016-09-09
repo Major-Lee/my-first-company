@@ -19,6 +19,7 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
+import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
@@ -715,7 +716,35 @@ public class TagFacadeRpcSerivce {
 		
 		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, vtos.size(), vtos);
 	}
-
+	
+	/**
+	 * 分组用户详情
+	 * @param gid
+	 * @param beginTime
+	 * @param endTime
+	 * @return 
+	 * @return
+	 */
+	public List<Date> groupUserDetail(int gid,String hdmac,int pageNo,int pageSize){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("hdmac", hdmac);
+		mc.setPageNumber(pageNo);
+		mc.setPageSize(pageSize);
+		mc.setOrderByClause(" created_at desc");
+		List<TagGroupHandsetDetail> list = tagGroupHandsetDetailService.findModelByModelCriteria(mc);
+		
+		List<Date> resultList = new ArrayList<Date>();
+		if(!list.isEmpty()){
+			for(TagGroupHandsetDetail detail : list){
+				resultList.add(detail.getCreated_at());
+			}
+		}
+		
+		return resultList;
+	}
+	
+	
+	
 	public TailPage<TagGroupRankUsersVTO> groupRankUsers(int uid, int gid, int pageNo, int pageSize) {
 		List<Map<String, String>> handsetMap = tagGroupHandsetDetailService.selectGroupUsersRank(gid, pageNo, pageSize);
 		List<TagGroupRankUsersVTO> vtos = new ArrayList<TagGroupRankUsersVTO>();

@@ -291,6 +291,20 @@ public class TagRpcService implements ITagRpcService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	@Override
+	public RpcResponseDTO<List<Date>> groupUserDetail(int gid,String mobileno,int pageNo,int pageSize) {
+		logger.info(String.format("groupUserDetail gid[%s] mobileno[%s] pageNo[%s] pageSize[%s]", gid,mobileno,pageNo,pageSize));
+		try{
+			List<Date> result = tagFacadeRpcSerivce.groupUserDetail(gid,mobileno, pageNo, pageSize);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("groupUsersStatistics Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 
 	@Override
 	public RpcResponseDTO<TailPage<TagGroupRankUsersVTO>> groupRankUsers(int uid, int gid, int pageNo, int pageSize) {

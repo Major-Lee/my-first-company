@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.tag.iservice;
 
+import java.util.Date;
 import java.util.List;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -70,5 +71,8 @@ public interface ITagRpcService {
 
 	RpcResponseDTO<TailPage<TagGroupRankUsersVTO>> groupRankUsers(int uid, 
 			int gid, int pageNo, int pageSize);
+
+	RpcResponseDTO<List<Date>> groupUserDetail(int gid, String mobileno,
+			int pageNo, int pageSize);
 }
 
