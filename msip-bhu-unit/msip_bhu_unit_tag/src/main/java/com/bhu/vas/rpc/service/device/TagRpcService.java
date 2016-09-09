@@ -294,7 +294,7 @@ public class TagRpcService implements ITagRpcService {
 	
 	@Override
 	public RpcResponseDTO<List<Date>> groupUserDetail(int gid,String hdmac,int pageNo,int pageSize) {
-		logger.info(String.format("groupUserDetail gid[%s] hdmac[%s] pageNo[%s] pageSize[%s]", gid,h,pageNo,pageSize));
+		logger.info(String.format("groupUserDetail gid[%s] hdmac[%s] pageNo[%s] pageSize[%s]", gid,hdmac,pageNo,pageSize));
 		try{
 			List<Date> result = tagFacadeRpcSerivce.groupUserDetail(gid,hdmac, pageNo, pageSize);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
