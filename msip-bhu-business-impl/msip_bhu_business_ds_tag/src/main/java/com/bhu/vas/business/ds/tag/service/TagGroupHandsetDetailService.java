@@ -1,5 +1,6 @@
 package com.bhu.vas.business.ds.tag.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,5 +46,14 @@ public class TagGroupHandsetDetailService extends AbstractTagService<Long, TagGr
 		map.put("ps", PageSize);
 		
 		return this.getEntityDao().getSqlSessionMasterTemplate().selectList(TagGroupHandsetDetail.class.getName()+".selectHandsetDetail", map);
+	}
+	
+	public List<Map<String,String>> selectGroupUsersRank(int gid,int pageNo,int pageSize){
+		Map<String,Object> map = new HashMap<>();
+		map.put("gid",gid);
+		map.put("pn", (pageNo-1) * pageSize);
+		map.put("ps", pageSize);
+		
+		return this.getEntityDao().getSqlSessionMasterTemplate().selectList(TagGroupHandsetDetail.class.getName()+".selectGroupUsersRank", map);
 	}
 }

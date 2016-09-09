@@ -24,6 +24,7 @@ import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupRankUsersVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
@@ -675,6 +676,8 @@ public class TagFacadeRpcSerivce {
 		Date date = DateTimeHelper.fromDateStr(timeStr);
 		Date dateDaysAgo = DateTimeHelper.getDateDaysAgo(date, 1);
 		String yesterday = DateTimeHelper.formatDate(dateDaysAgo, DateTimeHelper.FormatPattern7);
+		logger.info(String.format("groupUsersStatistics timeStr[%s] date[%s] dateDaysAgo[%s] yesterday[%s]",
+				timeStr,date,dateDaysAgo,yesterday));
 		Map<String, String> todayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, timeStr);
 		Map<String, String> yesterdayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, yesterday);
 		vto.setToday_newly(todayMap.get("newly"));
@@ -696,7 +699,6 @@ public class TagFacadeRpcSerivce {
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime,pageNo,pageSize);
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
-			TagGroupHandsetDetailVTO vto =new TagGroupHandsetDetailVTO();
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
 		}
 		
@@ -712,6 +714,16 @@ public class TagFacadeRpcSerivce {
 		}
 		
 		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, vtos.size(), vtos);
+	}
+
+	public TailPage<TagGroupRankUsersVTO> groupRankUsers(int uid, int gid, int pageNo, int pageSize) {
+		List<Map<String, String>> handsetMap = tagGroupHandsetDetailService.selectGroupUsersRank(gid, pageNo, pageSize);
+		List<TagGroupRankUsersVTO> vtos = new ArrayList<TagGroupRankUsersVTO>();
+		for(Map<String, String> map : handsetMap){
+			logger.info(String.format("groupRankUsers count[%s] date[%s]", map.get("count"), map.get("date")));
+			vtos.add(BusinessTagModelBuilder.builderGroupRankUsers(map));
+		}
+		return new CommonPage<TagGroupRankUsersVTO>(pageNo, pageSize, vtos.size(), vtos);
 	}
 	
 }

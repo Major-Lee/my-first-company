@@ -3,6 +3,7 @@ package com.bhu.vas.business.ds.builder;
 import java.util.Map;
 
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupRankUsersVTO;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 /**
  * 用于dto和model之间的转换builder
@@ -19,6 +20,13 @@ public class BusinessTagModelBuilder {
 		vto.setManu(MacDictParserFilterHelper.prefixMactch(vto.getHdMac(),true,false));
 		vto.setFirstTime((String)map.get("min"));
 		vto.setLastTime((String)map.get("max"));
+		return vto;
+	}
+	
+	public static TagGroupRankUsersVTO builderGroupRankUsers(Map<String,String> map){
+		TagGroupRankUsersVTO vto = new TagGroupRankUsersVTO();
+		vto.setDate(map.get("date"));
+		vto.setCount(map.get("count"));
 		return vto;
 	}
 }

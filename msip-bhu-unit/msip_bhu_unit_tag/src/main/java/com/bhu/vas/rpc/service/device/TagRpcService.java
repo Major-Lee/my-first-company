@@ -9,6 +9,7 @@ import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupRankUsersVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
 import com.bhu.vas.rpc.facade.TagFacadeRpcSerivce;
@@ -282,6 +283,20 @@ public class TagRpcService implements ITagRpcService {
 			String beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
 			String endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
 			TailPage<TagGroupHandsetDetailVTO> result = tagFacadeRpcSerivce.groupUsersDetail(gid, beginTimeStr, endTimeStr, filter, count, pageNo, pageSize);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("groupUsersStatistics Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<TagGroupRankUsersVTO>> groupRankUsers(int uid, int gid, int pageNo, int pageSize) {
+		logger.info(String.format("groupRankUsers uid[%s] gid[%s] pageNo[%s] pageSize[%s]", uid,gid, pageNo, pageSize));
+		try{
+			TailPage<TagGroupRankUsersVTO> result = tagFacadeRpcSerivce.groupRankUsers(uid,gid,pageNo,pageSize);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

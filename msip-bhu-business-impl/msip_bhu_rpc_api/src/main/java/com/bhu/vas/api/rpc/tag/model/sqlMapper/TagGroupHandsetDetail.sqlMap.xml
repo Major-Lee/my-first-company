@@ -21,8 +21,12 @@
   	<result property="count" column="count(hdmac)"/>
   	<result property="min" column="MIN(timestr)"/>
   	<result property="max" column="MAX(timestr)"/>
-  </resultMap>  
-  
+  </resultMap> 
+   
+	<resultMap id="GroupUsersRankMap" type="hashmap">
+		<result property="date" column="timestr" javaType="java.lang.String"/>	
+		<result property="count" column="count(timestr)" javaType="java.lang.String"/>		
+   </resultMap>
   	<sql id="modelTableName">
 	    <![CDATA[
 	    	t_tag_group_handset_detail
@@ -176,6 +180,18 @@
 	    </where> 
 	    GROUP BY hdmac 
 	    LIMIT 
+	    #{pn},
+	    #{ps};
+	</select>
+	
+	<select id="selectGroupUsersRank" resultMap="GroupUsersRankMap" parameterType="map">
+	    SELECT timestr,count(timestr) <include refid="modelUserDetail" /> FROM <include refid="modelTableName" /> 
+	    <where>
+			gid = #{gid}
+	    </where> 
+	    group by timestr
+	    order by timestr desc
+	    limit 
 	    #{pn},
 	    #{ps};
 	</select>
