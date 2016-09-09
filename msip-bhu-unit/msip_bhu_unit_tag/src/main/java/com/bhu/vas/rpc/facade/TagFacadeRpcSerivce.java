@@ -676,10 +676,11 @@ public class TagFacadeRpcSerivce {
 		GroupUsersStatisticsVTO vto = new GroupUsersStatisticsVTO();
 		Date date = DateTimeHelper.fromDateStr(timeStr);
 		Date dateDaysAgo = DateTimeHelper.getDateDaysAgo(date, 1);
+		String today = DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern7);
 		String yesterday = DateTimeHelper.formatDate(dateDaysAgo, DateTimeHelper.FormatPattern7);
-		logger.info(String.format("groupUsersStatistics timeStr[%s] date[%s] dateDaysAgo[%s] yesterday[%s]",
-				timeStr,date,dateDaysAgo,yesterday));
-		Map<String, String> todayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, timeStr);
+		logger.info(String.format("groupUsersStatistics timeStr[%s] date[%s] today[%s] yesterday[%s]",
+				timeStr,date,today,yesterday));
+		Map<String, String> todayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, today);
 		Map<String, String> yesterdayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, yesterday);
 		vto.setToday_newly(todayMap.get("newly"));
 		vto.setToday_total(todayMap.get("total"));
