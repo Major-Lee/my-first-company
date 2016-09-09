@@ -284,11 +284,11 @@ public class GroupController extends BaseController{
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) int gid,
-    	    @RequestParam(required = true) long beginTime,
-    	    @RequestParam(required = true) long endTime,
+    	    @RequestParam(required = false) long beginTime,
+    	    @RequestParam(required = false) long endTime,
     	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
-    	RpcResponseDTO<List<TagGroupHandsetDetailVTO>> rpcResult = tagRpcService.groupUsersDetail(gid, beginTime, endTime, pageNo, pageSize);
+    	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> rpcResult = tagRpcService.groupUsersDetail(gid, beginTime, endTime, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

@@ -690,14 +690,14 @@ public class TagFacadeRpcSerivce {
 	 * @param endTime
 	 * @return
 	 */
-	public List<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,int pageNo,int pageSize){
+	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,int pageNo,int pageSize){
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime,pageNo,pageSize);
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			TagGroupHandsetDetailVTO vto =new TagGroupHandsetDetailVTO();
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
 		}
-		return vtos;
+		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, vtos.size(), vtos);
 	}
 	
 }
