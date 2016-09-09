@@ -80,6 +80,10 @@ public class DeviceSharedNetworksResendFromFileOP {
 						System.out.println(String.format("mac[%s] snkDto not exists", mac));
 						continue;
 					}
+					if(!snkDTO.isOn()){
+						System.out.println(String.format("mac[%s] snkDto is not on", mac));
+						continue;
+					}
 					matched.incrementAndGet();
 					WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 					if(wifiDevice == null || !wifiDevice.isOnline()){
