@@ -798,7 +798,7 @@ public class TagFacadeRpcSerivce {
 		
 		ModelCriteria authTotalMC = new ModelCriteria();
 		authTotalMC.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("auth",StringHelper.TRUE).andColumnBetween("timestr", beginTime, endTime);
-		int authTotal = tagGroupHandsetDetailService.countByModelCriteria(connTotalMC);
+		int authTotal = tagGroupHandsetDetailService.countByModelCriteria(authTotalMC);
 		
 		vto.setAuthTotal(authTotal);
 		vto.setConnTotal(connTotal);
