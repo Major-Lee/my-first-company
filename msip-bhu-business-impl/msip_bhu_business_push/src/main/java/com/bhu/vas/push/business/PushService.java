@@ -512,6 +512,15 @@ public class PushService{
 		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 
+	
+	
+	private String cutDoubleMobile(String str){
+		if(!StringUtils.isEmpty(str) && str.contains("手机手机"))
+			str.replaceAll("手机手机", "手机");
+		return str;
+	}
+	
+	
 	/**
 	 * 构建打赏分成push的透传内容
 	 * @param pushMsg
@@ -520,11 +529,11 @@ public class PushService{
 	 */
 	public void builderSharedealNotifyPushMsg(PushMsg pushMsg, NotificationPushDTO notificationPushDto, SharedealNofityContext context){
 		pushMsg.setTitle(PushType.SharedealNotify.getTitle());
-		pushMsg.setText(String.format(PushType.SharedealNotify.getText(), context.getUmac_mf(), 
-				context.getUmac_type_desc(), context.getPayment_type_name(), context.getCash()));
+		pushMsg.setText(cutDoubleMobile(String.format(PushType.SharedealNotify.getText(), context.getUmac_mf(), 
+				context.getUmac_type_desc(), context.getPayment_type_name(), context.getCash())));
 		notificationPushDto.setTitle(PushType.SharedealNotify.getP_title());
-		notificationPushDto.setText(String.format(PushType.SharedealNotify.getP_text(), context.getUmac_mf(), 
-				context.getUmac_type_desc(), context.getPayment_type_name(), context.getCash()));
+		notificationPushDto.setText(cutDoubleMobile(String.format(PushType.SharedealNotify.getP_text(), context.getUmac_mf(), 
+				context.getUmac_type_desc(), context.getPayment_type_name(), context.getCash())));
 		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}
 	
