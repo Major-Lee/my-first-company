@@ -24,8 +24,8 @@
   </resultMap> 
    
 	<resultMap id="GroupUsersRankMap" type="hashmap">
-		<result property="date" column="timestr" javaType="java.lang.String"/>	
-		<result property="count" column="count(timestr)" javaType="java.lang.String"/>		
+		<result property="date" column="date" javaType="java.lang.String"/>	
+		<result property="count" column="count" javaType="java.lang.String"/>		
    </resultMap>
   	<sql id="modelTableName">
 	    <![CDATA[
@@ -185,20 +185,16 @@
 	</select>
 	
 	<select id="selectGroupUsersRank" resultMap="GroupUsersRankMap" parameterType="map">
-	    SELECT timestr,count(timestr) <include refid="modelUserDetail" /> FROM <include refid="modelTableName" /> 
+	    SELECT timestr as date,count(timestr) as count <include refid="modelUserDetail" /> FROM <include refid="modelTableName" /> 
 	    <where>
 			gid = #{gid}
 			<if test="starTime !=null and endTime != null">
-				AND
-					timestr
-				BETWEEN
-					#{starTime}
-				AND
-					#{endTime}
+				AND	timestr &gt;= #{starTime}
+				AND timestr &lt;= #{endTime}
 			</if>
 	    </where> 
 	    group by timestr
-	    order by timestr desc
+	    order by count desc
 	    limit 
 	    #{pn},
 	    #{ps};
