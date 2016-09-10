@@ -19,6 +19,7 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
+import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
@@ -675,10 +676,11 @@ public class TagFacadeRpcSerivce {
 		GroupUsersStatisticsVTO vto = new GroupUsersStatisticsVTO();
 		Date date = DateTimeHelper.fromDateStr(timeStr);
 		Date dateDaysAgo = DateTimeHelper.getDateDaysAgo(date, 1);
+		String today = DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern7);
 		String yesterday = DateTimeHelper.formatDate(dateDaysAgo, DateTimeHelper.FormatPattern7);
-		logger.info(String.format("groupUsersStatistics timeStr[%s] date[%s] dateDaysAgo[%s] yesterday[%s]",
-				timeStr,date,dateDaysAgo,yesterday));
-		Map<String, String> todayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, timeStr);
+		logger.info(String.format("groupUsersStatistics timeStr[%s] date[%s] today[%s] yesterday[%s]",
+				timeStr,date,today,yesterday));
+		Map<String, String> todayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, today);
 		Map<String, String> yesterdayMap = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, yesterday);
 		vto.setToday_newly(todayMap.get("newly"));
 		vto.setToday_total(todayMap.get("total"));
@@ -695,19 +697,19 @@ public class TagFacadeRpcSerivce {
 	 * @param endTime
 	 * @return
 	 */
-	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,boolean filter,int count,int pageNo,int pageSize){
+	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,boolean filter,int count,String mobileno,int pageNo,int pageSize){
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime,pageNo,pageSize);
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
 		}
 		
-		{// 根据参数过滤无手机号的用户信息
+		{// 根据连接次数和手机号过滤
 			if (filter) {
 				Iterator<TagGroupHandsetDetailVTO> iter = vtos.iterator();
 				while (iter.hasNext()) {
 					TagGroupHandsetDetailVTO rv = iter.next();
-					if (rv.isFilter(count))
+					if (rv.isFilter(count,mobileno))
 						iter.remove();
 				}
 			}
@@ -715,7 +717,35 @@ public class TagFacadeRpcSerivce {
 		
 		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, vtos.size(), vtos);
 	}
-
+	
+	/**
+	 * 分组用户详情
+	 * @param gid
+	 * @param beginTime
+	 * @param endTime
+	 * @return 
+	 * @return
+	 */
+	public List<Date> groupUserDetail(int gid,String mobileno,int pageNo,int pageSize){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("mobileno", mobileno);
+		mc.setPageNumber(pageNo);
+		mc.setPageSize(pageSize);
+		mc.setOrderByClause(" created_at desc");
+		List<TagGroupHandsetDetail> list = tagGroupHandsetDetailService.findModelByModelCriteria(mc);
+		
+		List<Date> resultList = new ArrayList<Date>();
+		if(!list.isEmpty()){
+			for(TagGroupHandsetDetail detail : list){
+				resultList.add(detail.getCreated_at());
+			}
+		}
+		
+		return resultList;
+	}
+	
+	
+	
 	public TailPage<TagGroupRankUsersVTO> groupRankUsers(int uid, int gid, int pageNo, int pageSize) {
 		List<Map<String, String>> handsetMap = tagGroupHandsetDetailService.selectGroupUsersRank(gid, pageNo, pageSize);
 		List<TagGroupRankUsersVTO> vtos = new ArrayList<TagGroupRankUsersVTO>();

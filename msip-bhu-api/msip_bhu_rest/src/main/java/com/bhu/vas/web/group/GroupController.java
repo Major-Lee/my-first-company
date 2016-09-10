@@ -1,5 +1,6 @@
 package com.bhu.vas.web.group;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -279,19 +280,39 @@ public class GroupController extends BaseController{
 	 * @param timeStr 获取数据的时间 格式yyyyMMdd
 	 */
     @ResponseBody()
-    @RequestMapping(value = "/users/detail", method = {RequestMethod.POST})
+    @RequestMapping(value = "/users", method = {RequestMethod.POST})
     public void group_users_detail(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) int gid,
-    	    @RequestParam(required = false) long beginTime,
-    	    @RequestParam(required = false) long endTime,
+    	    @RequestParam(required = false) Long beginTime,
+    	    @RequestParam(required = false) Long endTime,
     	    @RequestParam(required = false) boolean filter,
-    	    @RequestParam(required = false) int count,
+    	    @RequestParam(required = false, defaultValue = "0") int count,
+    	    @RequestParam(required = false) String mobileno,
     	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
-    	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> rpcResult = tagRpcService.groupUsersDetail(gid, beginTime, endTime,filter,count, pageNo, pageSize);
+    	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> rpcResult = tagRpcService.groupUsersDetail(gid, beginTime, endTime,filter,count,mobileno, pageNo, pageSize);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
+    
+
+    @ResponseBody()
+    @RequestMapping(value = "/user/detail", method = {RequestMethod.POST})
+    public void group_user_detail(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int gid,
+    	    @RequestParam(required = true) String mobileno,
+    	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+    	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
+    	RpcResponseDTO<List<Date>> rpcResult = tagRpcService.groupUserDetail(gid,mobileno, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
