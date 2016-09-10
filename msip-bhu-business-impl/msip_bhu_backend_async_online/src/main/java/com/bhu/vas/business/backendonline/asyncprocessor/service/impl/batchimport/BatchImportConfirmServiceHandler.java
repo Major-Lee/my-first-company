@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
@@ -28,7 +29,9 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
+import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
@@ -48,6 +51,12 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 	
 	@Resource
 	private UserWifiDeviceService userWifiDeviceService;
+
+	@Resource
+	private UserService userService;
+	
+	@Resource
+	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
 	
 	@Resource
 	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
@@ -88,6 +97,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			final BatchImportVTO importVto = batchImport.toBatchImportVTO(null, null,null);
 			//final String mobileno = batchImport.getMobileno();
 			final Integer uid_willbinded = UniqueFacadeService.fetchUidByMobileno(86,batchImport.getMobileno());
+			
 			ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), new ExcelElementCallback(){
 				@Override
 				public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
@@ -119,8 +129,13 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 					for(int pageno= 1;pageno<=totalPages;pageno++){
 						List<String> pages = PageHelper.pageList(all_dmacs, pageno, 100);
 						logger.info(String.format("pageno:%s pagesize:%s pages:%s", pageno,100,pages));
-						if(uid_willbinded != null && uid_willbinded.intValue() >0){
+						User user_willbinded = null;
+						if(uid_willbinded != null && uid_willbinded > 0)
+							user_willbinded = userService.getById(uid_willbinded);
+
+						if(user_willbinded != null){
 							//userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
+							List<String> group_macs = new ArrayList<String>();
 							for(String dmac:pages){
 								//UserDevicePK udp = userDeviceFacadeService.deviceBinded(dmac);
 								UserWifiDevice userWifiDevice = userWifiDeviceService.getById(dmac);
@@ -132,6 +147,9 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 										userWifiDeviceService.delete(userWifiDevice);
 										userWifiDeviceFacadeService.insertUserWifiDevice(dmac, uid_willbinded.intValue());
 							            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
+										// 更新索引
+										wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(dmac, user_willbinded, null, null);
+										group_macs.add(dmac);
 									}else{
 										//已经此用户绑定，不动作
 									}
@@ -142,7 +160,10 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 						            userDeviceFacadeService.getUserDeviceService().insert(userDevice);*/
 									userWifiDeviceFacadeService.insertUserWifiDevice(dmac, uid_willbinded.intValue());
 						            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
+									// 更新索引
+									wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(dmac, user_willbinded, null, null);
 								}
+								
 								chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, importVto.getDistributor(),
 										dmac, 
 										importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
@@ -150,6 +171,15 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 										importVto.getOwner_percent(), importVto.getManufacturer_percent(),importVto.getDistributor_percent(),
 					        			importVto.getRcm(), importVto.getRcp(), importVto.getAit(), false);
 					        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);
+							}
+
+							//清除分组关系
+							if(!group_macs.isEmpty()){
+								for(String gmac:group_macs){
+									deviceFacadeService.destoryDeviceMobilePresentString(gmac);
+								}
+								tagGroupRelationService.cleanDeviceGroupRels(group_macs);
+								wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(group_macs, null);
 							}
 							logger.info(String.format("A uid_willbinded:%s doForceBindDevices:%s", uid_willbinded,pages));
 						}else{
@@ -174,6 +204,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 										deviceFacadeService.destoryDeviceMobilePresentString(dmac);
 									}
 									tagGroupRelationService.cleanDeviceGroupRels(forceUnbindedDevices);
+									wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(forceUnbindedDevices, null);
 								}
 									
 								//变更分成比例

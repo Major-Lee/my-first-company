@@ -58,7 +58,7 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 		boolean flag = false;
 		
 		if(mobileno != null){
-			if(!mobileno.equals(this.mobileno) && this.count < count){
+			if(!mobileno.equals(this.mobileno) || this.count < count){
 				flag = true;
 			}
 		}else{

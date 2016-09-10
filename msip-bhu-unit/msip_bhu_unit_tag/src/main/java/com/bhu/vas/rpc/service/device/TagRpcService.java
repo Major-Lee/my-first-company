@@ -277,11 +277,15 @@ public class TagRpcService implements ITagRpcService {
 	}
 	
 	@Override
-	public RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(int gid, long beginTime,long endTime,boolean filter,int count,String mobileno,int pageNo,int pageSize) {
+	public RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(int gid, Long beginTime,Long endTime,boolean filter,int count,String mobileno,int pageNo,int pageSize) {
 		logger.info(String.format("groupUsersDetail gid[%s] beginTime[%s] endTime[%s] filter[%s] count[%s] mobileno[%s] pageNo[%s] pageSize[%s]", gid, beginTime,endTime,filter,count,mobileno,pageNo,pageSize));
 		try{
-			String beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
-			String endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
+			String beginTimeStr = null;
+			String endTimeStr = null;
+			if(beginTime !=null && endTime!=null){
+				beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
+				endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
+			}
 			TailPage<TagGroupHandsetDetailVTO> result = tagFacadeRpcSerivce.groupUsersDetail(gid, beginTimeStr, endTimeStr, filter, count,mobileno, pageNo, pageSize);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException bex){
@@ -293,10 +297,10 @@ public class TagRpcService implements ITagRpcService {
 	}
 	
 	@Override
-	public RpcResponseDTO<List<Date>> groupUserDetail(int gid,String hdmac,int pageNo,int pageSize) {
-		logger.info(String.format("groupUserDetail gid[%s] hdmac[%s] pageNo[%s] pageSize[%s]", gid,hdmac,pageNo,pageSize));
+	public RpcResponseDTO<List<Date>> groupUserDetail(int gid,String mobileno,int pageNo,int pageSize) {
+		logger.info(String.format("groupUserDetail gid[%s] mobileno[%s] pageNo[%s] pageSize[%s]", gid,mobileno,pageNo,pageSize));
 		try{
-			List<Date> result = tagFacadeRpcSerivce.groupUserDetail(gid,hdmac, pageNo, pageSize);
+			List<Date> result = tagFacadeRpcSerivce.groupUserDetail(gid,mobileno, pageNo, pageSize);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
