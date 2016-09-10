@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.tag.vto;
 
-public class TagGroupRankUsersVTO {
+@SuppressWarnings("serial")
+public class TagGroupRankUsersVTO implements java.io.Serializable{
 	private String date;
 	private String count;
 	
