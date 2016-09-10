@@ -185,7 +185,7 @@
 	</select>
 	
 	<select id="selectGroupUsersRank" resultMap="GroupUsersRankMap" parameterType="map">
-	    SELECT timestr as date,count(timestr) as count <include refid="modelUserDetail" /> FROM <include refid="modelTableName" /> 
+	    SELECT timestr as date,count(timestr) as count FROM <include refid="modelTableName" /> 
 	    <where>
 			gid = #{gid}
 			<if test="starTime !=null and endTime != null">
