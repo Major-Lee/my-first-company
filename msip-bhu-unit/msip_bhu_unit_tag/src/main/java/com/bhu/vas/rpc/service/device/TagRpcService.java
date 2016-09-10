@@ -7,6 +7,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
@@ -287,6 +288,26 @@ public class TagRpcService implements ITagRpcService {
 				endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
 			}
 			TailPage<TagGroupHandsetDetailVTO> result = tagFacadeRpcSerivce.groupUsersDetail(gid, beginTimeStr, endTimeStr, filter, count,mobileno, pageNo, pageSize);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("groupUsersStatistics Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	@Override
+	public RpcResponseDTO<GroupStatDetailVTO> groupUsersCount(int gid, Long beginTime,Long endTime) {
+		logger.info(String.format("groupUsersCount gid[%s] beginTime[%s] endTime[%s]", gid,beginTime,endTime));
+		try{
+			String beginTimeStr = null;
+			String endTimeStr = null;
+			if(beginTime !=null && endTime!=null){
+				beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
+				endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
+			}
+			GroupStatDetailVTO result = tagFacadeRpcSerivce.groupUsersCount(gid,beginTimeStr,endTimeStr);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

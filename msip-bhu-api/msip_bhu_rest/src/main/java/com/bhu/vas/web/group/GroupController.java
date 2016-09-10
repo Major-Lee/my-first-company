@@ -18,6 +18,7 @@ import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
@@ -293,6 +294,23 @@ public class GroupController extends BaseController{
     	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
     	RpcResponseDTO<List<Date>> rpcResult = tagRpcService.groupUserDetail(gid,mobileno, pageNo, pageSize);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value = "/user/count", method = {RequestMethod.POST})
+    public void group_user_count(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) int gid,
+    	    @RequestParam(required = false) Long beginTime,
+    	    @RequestParam(required = false) Long endTime) {
+    	RpcResponseDTO<GroupStatDetailVTO> rpcResult = tagRpcService.groupUsersCount(gid,beginTime, endTime);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
