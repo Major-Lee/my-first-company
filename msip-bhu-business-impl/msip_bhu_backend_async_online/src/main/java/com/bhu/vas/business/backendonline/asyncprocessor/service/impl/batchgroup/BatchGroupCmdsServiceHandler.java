@@ -19,6 +19,7 @@ import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -30,6 +31,9 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
+	@Resource
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 
 	@Resource
 	private TaskFacadeService taskFacadeService;
@@ -60,6 +64,7 @@ public class BatchGroupCmdsServiceHandler implements IMsgHandlerService {
 							
 							WifiDeviceDownTask task = null;
 								try {
+									userWifiDeviceFacadeService.validateUserWifiDevice(doc.getD_mac(), uid);
 									task = autoGenerateCmds(uid,doc.getD_mac(),opt,subopt,extparams,
 											DeviceStatusExchangeDTO.build(doc.getD_workmodel(), doc.getD_origswver()),channel,channel_taskid);
 									downCmdsList.add(DownCmds.builderDownCmds(doc.getD_mac(),task.getPayload()));
