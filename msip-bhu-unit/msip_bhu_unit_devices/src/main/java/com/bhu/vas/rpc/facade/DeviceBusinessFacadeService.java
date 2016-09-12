@@ -1688,7 +1688,7 @@ public class DeviceBusinessFacadeService {
 			wifiDeviceSettingService.insert(entity);
 			
 			if(state == DeviceHelper.RefreashDeviceSetting_RestoreFactory){
-				state = DeviceHelper.RefreashDeviceSetting_Normal;
+				state = DeviceHelper.RefreashDeviceSetting_RestoreFactory_Can_Ignore;
 				logger.info(String.format("Mac[%s] Restore operation can not excute because no device setting data", mac));
 			}
 			

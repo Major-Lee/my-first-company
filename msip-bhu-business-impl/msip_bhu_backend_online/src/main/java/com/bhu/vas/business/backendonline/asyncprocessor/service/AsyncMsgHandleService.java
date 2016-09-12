@@ -1051,6 +1051,11 @@ public class AsyncMsgHandleService {
 			}
 			
 		} else {
+			//某些特殊版本首次上线，上报的恢复出厂可以被忽略 (yetao)
+			if (DeviceHelper.RefreashDeviceSetting_RestoreFactory_Can_Ignore == dto.getRefresh_status()) {
+				cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(), CMDBuilder.AutoGen));
+			}
+			
 			// 检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
 			WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
 			if (entity != null) {
