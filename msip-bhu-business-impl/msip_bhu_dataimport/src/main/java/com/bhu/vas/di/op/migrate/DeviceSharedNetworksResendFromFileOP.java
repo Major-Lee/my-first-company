@@ -36,8 +36,9 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 public class DeviceSharedNetworksResendFromFileOP {
 	public static void main(String[] argv){
 		
-		if(argv == null || argv.length < 1){
-			System.out.println("Please give the input macs file");
+		if(argv == null || argv.length < 2){
+			System.out.println("参数不足，参数1：mac列表文件（逗号分割）, 参数2：超时时间");
+			System.out.println("Param not enough, param1：mac input file, param 2：idle_timeout");
 			return;
 		}
 			
@@ -58,64 +59,73 @@ public class DeviceSharedNetworksResendFromFileOP {
 		FileInputStream fis = null;
 		InputStreamReader isr = null;
 		BufferedReader br = null; // 用于包装InputStreamReader,提高处理性能。因为BufferedReader有缓冲的，而InputStreamReader没有。
-		try {
-			String str = null;
-			fis = new FileInputStream(argv[0]);
-			isr = new InputStreamReader(fis);
-			br = new BufferedReader(isr);
-			while ((str = br.readLine()) != null) {
-				String[] macs = str.split(",");
-				if(macs == null || macs.length <= 0)
-					continue;
-				for(String mac:macs){
-					mac = mac.trim();
-					total.incrementAndGet();
-					WifiDeviceSharedNetwork snk = sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().getById(mac);
-					if(snk == null){
-						System.out.println(String.format("mac[%s] snk not exists", mac));
-						continue;
-					}
-					SharedNetworkSettingDTO snkDTO = snk.getInnerModel();
-					if(snkDTO == null){
-						System.out.println(String.format("mac[%s] snkDto not exists", mac));
-						continue;
-					}
-					if(!snkDTO.isOn()){
-						System.out.println(String.format("mac[%s] snkDto is not on", mac));
-						continue;
-					}
-					matched.incrementAndGet();
-					WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-					if(wifiDevice == null || !wifiDevice.isOnline()){
-						System.out.println(String.format("mac[%s] not exists or offline", mac));
-						continue;
-					}
-
-					ParamSharedNetworkDTO psn = snkDTO.getPsn();
-					String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,
-							OperationDS.DS_SharedNetworkWifi_Start, snk.getId(), CMDBuilder.AutoGen,
-							JsonHelper.getJSONString(psn), DeviceStatusExchangeDTO
-									.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),
-							deviceCMDGenFacadeService);
-					daemonRpcService.wifiDeviceCmdDown(null, snk.getId(), sharedNetworkCMD);
-					matched_send.incrementAndGet();
-					System.out.println(String.format("mac[%s] send CMD[%s]", mac,sharedNetworkCMD));
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace(System.out);
-		} finally {
+		int idle_timeout = Integer.valueOf(argv[1]);
+		if(idle_timeout <= 0){
+			System.out.println("超时时间不正确");
+		} else {
 			try {
-				br.close();
-				isr.close();
-				fis.close();
-				// 关闭的时候最好按照先后顺序关闭最后开的先关闭所以先关s,再关n,最后关m
+				String str = null;
+				fis = new FileInputStream(argv[0]);
+				isr = new InputStreamReader(fis);
+				br = new BufferedReader(isr);
+				while ((str = br.readLine()) != null) {
+					String[] macs = str.split(",");
+					if(macs == null || macs.length <= 0)
+						continue;
+					for(String mac:macs){
+						mac = mac.trim();
+						total.incrementAndGet();
+						WifiDeviceSharedNetwork snk = sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().getById(mac);
+						if(snk == null){
+							System.out.println(String.format("mac[%s] snk not exists", mac));
+							continue;
+						}
+						
+						snk.setIdle_timeout(idle_timeout);
+						sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(snk);
+						
+						SharedNetworkSettingDTO snkDTO = snk.getInnerModel();
+						if(snkDTO == null){
+							System.out.println(String.format("mac[%s] snkDto not exists", mac));
+							continue;
+						}
+						if(!snkDTO.isOn()){
+							System.out.println(String.format("mac[%s] snkDto is not on", mac));
+							continue;
+						}
+						matched.incrementAndGet();
+						WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+						if(wifiDevice == null || !wifiDevice.isOnline()){
+							System.out.println(String.format("mac[%s] not exists or offline", mac));
+							continue;
+						}
+	
+						ParamSharedNetworkDTO psn = snkDTO.getPsn();
+						String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,
+								OperationDS.DS_SharedNetworkWifi_Start, snk.getId(), CMDBuilder.AutoGen,
+								JsonHelper.getJSONString(psn), DeviceStatusExchangeDTO
+										.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),
+								deviceCMDGenFacadeService);
+						daemonRpcService.wifiDeviceCmdDown(null, snk.getId(), sharedNetworkCMD);
+						matched_send.incrementAndGet();
+						System.out.println(String.format("mac[%s] send CMD[%s]", mac,sharedNetworkCMD));
+					}
+				}
 			} catch (Exception e) {
 				e.printStackTrace(System.out);
-			}
-		}		
-		
-		System.out.println("total:"+total + " macthed:"+matched.get() +" send:"+matched_send);
+			} finally {
+				try {
+					br.close();
+					isr.close();
+					fis.close();
+					// 关闭的时候最好按照先后顺序关闭最后开的先关闭所以先关s,再关n,最后关m
+				} catch (Exception e) {
+					e.printStackTrace(System.out);
+				}
+			}		
+			
+			System.out.println("total:"+total + " macthed:"+matched.get() +" send:"+matched_send);
+		}
 		ctx.stop();
 		ctx.close();
 		System.exit(1);
