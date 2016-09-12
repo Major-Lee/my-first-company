@@ -232,6 +232,8 @@ public enum ResponseErrorCode {
 	VALIDATE_ORDER_UID_INVALID("417","validate.order.uid.invalid"),
 	VALIDATE_ORDER_UMACTYPE_INVALID("418","validate.order.umactype.invalid"),
 	
+	ORDER_PAYMENT_VCURRENCY_DEDUCT_FAILED("419","order.payment.vcurrency.deduct.failed"),
+	ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT("420","order.payment.vcurrency.notsufficient"),
 	
 	VALIDATE_COMMDITY_DATA_NOTEXIST("450","validate.commdity.data.notexist"),
 	VALIDATE_COMMDITY_NOT_ONSALE("451","validate.commdity.not.onsale"),
@@ -241,6 +243,7 @@ public enum ResponseErrorCode {
 	VALIDATE_PAYMENT_DATA_ALREADY_EXIST("454","validate.payment.data.already.exists"),	
 	VALIDATE_COMMDITY_DATA_ILLEGAL("455","validate.commdity.data.illegal"),
 	ORDER_PAYMENT_STATUS_PAYSUCCESSED("460","order.payment.status.paysuccessed"),
+	
 	
 	//INTERNAL_COMMUNICATION_PAYMENTURL_FAILED("490","internal.communication.paymenturl.failed"),
 	INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID("491","internal.communication.paymenturl.response.invalid"),

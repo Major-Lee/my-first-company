@@ -808,4 +808,36 @@ public class OrderFacadeService {
 		}
 		return false;
 	}
+	
+	
+	/**
+	 * 生成短信营销订单
+	 * @param commdityid 
+	 * @param bindUser User 
+	 * @param cost_vcurrency 花费多少虎钻
+	 * @return
+	 */
+	public Order createSMSPromotionOrder(Integer commdityid, User bindUser,long cost_vcurrency){
+		//商品信息验证
+		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+		//验证商品是否合理
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.VideoInternetLimit)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
+		}
+		
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdity.getId());
+		order.setAppid(CommdityApplication.DEFAULT.getKey());
+		order.setType(commdity.getCategory());
+		order.setVcurrency(cost_vcurrency);
+		order.setStatus(OrderStatus.NotPay.getKey());
+		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
+		if(bindUser != null){
+			order.setUid(bindUser.getId());
+		}
+		orderService.insert(order);
+		
+		return order;
+	}
 }
