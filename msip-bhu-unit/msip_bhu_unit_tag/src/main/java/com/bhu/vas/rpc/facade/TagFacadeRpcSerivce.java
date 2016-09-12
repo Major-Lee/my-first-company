@@ -815,7 +815,6 @@ public class TagFacadeRpcSerivce {
 		vto.setUserTotal(userTotal);
 		
 		return vto;
-		
 	}
 	
 }
