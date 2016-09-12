@@ -746,6 +746,16 @@ public class TagFacadeRpcSerivce {
 		return resultList;
 	}
 	
+	/**
+	 * 分组用户排名
+	 * @param uid
+	 * @param gid
+	 * @param startTime
+	 * @param endTime
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
 	private TailPage<TagGroupRankUsersVTO> groupRankUsers(int uid, int gid, String startTime, 
 			String endTime ,int pageNo, int pageSize) {
 		List<Map<String, String>> handsetMap = tagGroupHandsetDetailService.selectGroupUsersRank(gid, 
