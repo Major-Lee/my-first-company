@@ -16,8 +16,12 @@ public class TagGroupSortMessage extends SetJsonExtIntModel<String> implements S
 	public static final String deafult =  "pending";
 	public static final String doing = "doing";
 	public static final String done = "done";
+	public static final int commdityId = 13;
+	public static final String commdityDesc = "虎钻消费 用于短信营销";
 	
 	private int gid;
+	private int uid;
+	private String orderid;
 	private String context;
 	private String start;
 	private String end;
@@ -33,6 +37,22 @@ public class TagGroupSortMessage extends SetJsonExtIntModel<String> implements S
 
 	public void setGid(int gid) {
 		this.gid = gid;
+	}
+
+	public int getUid() {
+		return uid;
+	}
+
+	public void setUid(int uid) {
+		this.uid = uid;
+	}
+
+	public String getOrderid() {
+		return orderid;
+	}
+
+	public void setOrderid(String orderid) {
+		this.orderid = orderid;
 	}
 
 	public String getContext() {

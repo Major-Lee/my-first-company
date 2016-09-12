@@ -11,6 +11,7 @@ import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportPreCheckDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
+import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupSendSortMessageDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkClearDTO;
@@ -126,6 +127,14 @@ public class AsyncDeliverMessageService {
 		dto.setSnk_type(snk_type);
 		dto.setTemplate(template);
 		dto.setTs(System.currentTimeMillis());
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sentGroupSmsActionMessage(int uid , int taskid,String commdityid){
+		BatchGroupSendSortMessageDTO dto = new BatchGroupSendSortMessageDTO();
+		dto.setUid(uid);
+		dto.setTaskid(taskid);
+		dto.setCommdityid(commdityid);
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 }

@@ -42,10 +42,14 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	private IMsgHandlerService batchGroupCmdsServiceHandler;
 	
 	@Resource
+	private IMsgHandlerService batchGroupSendSortMessageServiceHandler;
+	
+	@Resource
 	private IMsgHandlerService batchDeviceSnkApplyServiceHandler;
 	
 	@Resource
 	private IMsgHandlerService batchGroupDeviceSnkApplyServiceHandler;
+	
 	
 	@Resource
 	private BatchDeviceSnkClearServiceHandler batchDeviceSnkClearServiceHandler;
@@ -101,6 +105,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;	
 						case BatchDeviceSnkClear:
 							batchDeviceSnkClearServiceHandler.process(message);
+							break;
+						case BatchGroupSendSortMessage:
+							batchGroupSendSortMessageServiceHandler.process(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);

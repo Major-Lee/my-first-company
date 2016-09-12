@@ -80,7 +80,7 @@ public interface ITagRpcService {
 	RpcResponseDTO<TagGroupUserStatisticsConnectVTO> groupUserStatisticsConnect(int uid, int gid, long startTime,
 			long endTime, int pageNo, int pageSize);
 
-	RpcResponseDTO<TagGroupSendSortMessageVTO> groupSendSortMessage(int uid,
+	RpcResponseDTO<TagGroupSendSortMessageVTO> generateGroupSendSMSTask(int uid,
 			int gid, int count, String context, Long beginTime, Long endTime);
 
 }

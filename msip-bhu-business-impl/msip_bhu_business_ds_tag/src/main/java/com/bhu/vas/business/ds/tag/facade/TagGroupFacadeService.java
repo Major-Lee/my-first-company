@@ -100,7 +100,7 @@ public class TagGroupFacadeService {
 	public  void handsetAuth(String ctx, HandsetDeviceDTO dto, String wifiId){
 		if(dto == null) 
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
-		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(dto.getBssid()) || StringUtils.isEmpty(ctx))
+		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		TagGroupHandsetDetail detail = handsetComming(dto, wifiId);
 		if(detail !=null){

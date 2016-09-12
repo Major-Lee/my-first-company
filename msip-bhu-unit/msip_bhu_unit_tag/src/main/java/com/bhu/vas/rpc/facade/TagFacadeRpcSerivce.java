@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.commdity.OrderSMSPromotionDTO;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
@@ -833,7 +834,7 @@ public class TagFacadeRpcSerivce {
 		return vto;
 	}
 	
-	public TagGroupSendSortMessageVTO groupSendSortMessage(int uid ,int gid ,int count,String context,String startTime, String endTime){
+	public TagGroupSendSortMessageVTO generateGroupSendSMSTask(int uid ,int gid ,int count,String context,String startTime, String endTime){
 		
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, startTime, endTime,0,0);
 		List<TagGroupHandsetDetailDTO> dtos = new ArrayList<TagGroupHandsetDetailDTO>();
@@ -867,6 +868,7 @@ public class TagFacadeRpcSerivce {
 					mobilenoList.add(detailDto.getMobileno());
 				}
 				TagGroupSortMessage tagGroupSortMessage = new TagGroupSortMessage();
+				tagGroupSortMessage.setUid(uid);
 				tagGroupSortMessage.setGid(gid);
 				tagGroupSortMessage.setContext(context);
 				tagGroupSortMessage.setStart(startTime);
@@ -879,5 +881,16 @@ public class TagFacadeRpcSerivce {
 			}
 		}
 		return vto;
+	}
+	
+	public boolean executeSendTask(int uid ,int taskid){
+		TagGroupSortMessage entity =tagGroupSortMessageService.getById(taskid);
+		if(entity !=null && entity.getUid() == uid){
+			OrderSMSPromotionDTO dto = userWalletFacadeService.vcurrencyFromUserWalletForSMSPromotion(uid, TagGroupSortMessage.commdityId, entity.getSmtotal(), TagGroupSortMessage.commdityDesc);
+			asyncDeliverMessageService.sentGroupSmsActionMessage(uid, taskid, dto.getId());
+		}else{
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_TASK_NOT_EXIST);
+		}
+		return true;
 	}
 }

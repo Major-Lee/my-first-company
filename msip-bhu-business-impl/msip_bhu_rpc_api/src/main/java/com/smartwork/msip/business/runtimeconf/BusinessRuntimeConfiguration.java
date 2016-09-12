@@ -242,6 +242,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static final String Internal_SNK_NeedCharging_Template = "温馨提示：截止%s，您当前的虎钻剩余%s颗，虎钻用完后，使用短信认证服务的网络将被停止认证服务，请及时充值。【必虎】";
 	public static final String Internal_SNK_Stop_Template = "重要通知：截止%s，您当前的虎钻剩余%s颗，使用短信认证服务的网络已被停止认证服务，请及时充值。【必虎】";
 	public static final String Internal_Portal_Template = "验证码：%s，用于认证上网操作，请勿将验证码泄露给他人！【必虎】";
+	public static final String Internal_group_Template = "%s 【必虎】";
 	
 	//public static final String InternalCaptchaCodeSMS_Template = "[uRouter]验证码:%s,欢迎使用uRouter智能路由器！";//【华信联创】
 	//public static final String WillExpiredPush_Template = "【快看】你有%s条消息将于1小时候后过期销毁，赶快过来看看吧!";

@@ -6,6 +6,8 @@
 
 	<resultMap id="modelResult" type="tagGroupSortMessage">
 		<id property="id" column="id" />
+		<result property="uid" column="uid" />
+		<result property="orderid" column="orderid" />
 		<result property="gid" column="gid" />
 		<result property="context" column="context" />
 		<result property="start" column="start" />
@@ -26,6 +28,8 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	uid,
+	    	orderid,
 	    	gid,
 	    	context,
 	    	start,
@@ -41,6 +45,8 @@
 
 	<sql id="modelInsertValues">
 		#{id},
+		#{uid},
+		#{orderid},
 		#{gid},
 		#{context},
 		#{start},
@@ -55,7 +61,9 @@
 
 	<sql id="modelUpdateValues">
 		id = #{id},
-		gid = #{gid},
+		uid = #{uid},
+		gid = #{gid}
+		orderid = #{orderid}
 		context = #{context},
 		start = #{start},
 		end = #{end},

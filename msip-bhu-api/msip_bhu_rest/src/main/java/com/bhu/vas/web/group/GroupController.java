@@ -402,17 +402,19 @@ public class GroupController extends BaseController{
       }
       
       
-      /**
-    	 * 统计设备分组连接数,根据筛选条件返回数据以及排行
-    	 * @param uid 用户id
-    	 * @param gid 分组id
-    	 * @param startTime 起始时间毫秒时间戳
-    	 * @param endTime 结束时间毫秒时间戳
-    	 * @param pageNo 排行数据No
-    	 * @param pageSize 获取数据Size
-    	 */
+      	/**
+      	 * 生成发送短信任务ID
+      	 * @param request
+      	 * @param response
+      	 * @param uid
+      	 * @param gid
+      	 * @param count
+      	 * @param context
+      	 * @param startTime
+      	 * @param endTime
+      	 */
         @ResponseBody()
-        @RequestMapping(value = "/send/sms", method = {RequestMethod.POST})
+        @RequestMapping(value = "/send/message/generate", method = {RequestMethod.POST})
         public void group_send_sm(
                 HttpServletRequest request,
                 HttpServletResponse response,
@@ -422,7 +424,7 @@ public class GroupController extends BaseController{
                 @RequestParam(required = true) String context,
                 @RequestParam(required = true) long startTime,
                 @RequestParam(required = true) long endTime) {
-        	RpcResponseDTO<TagGroupSendSortMessageVTO> rpcResult = tagRpcService.groupSendSortMessage(uid ,gid ,count,context,startTime,endTime);
+        	RpcResponseDTO<TagGroupSendSortMessageVTO> rpcResult = tagRpcService.generateGroupSendSMSTask(uid ,gid ,count,context,startTime,endTime);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{

@@ -13,6 +13,7 @@ public enum AsyncMessageType {
 		BatchGroupDeviceSnkApply("用户群组设备共享网络应用","batch group device sharednetwork apply","BGSN"),
 		BatchDeviceSnkApply("用户设备共享网络应用","batch device sharednetwork apply","BDSN"),
 		BatchDeviceSnkClear("用户设备共享网络模板清除","batch device sharednetwork clear","BDSC"),
+		BatchGroupSendSortMessage("分组批量发送短信","batch group send sort message","BGSM"),
 		//BatchDeviceBindTag("设备批量绑定标签", "batch device bind tag", "BDBT"),
 		//BatchDeviceDelTag("设备批量删除标签", "batch device del tag", "BDDT"),
 		;
