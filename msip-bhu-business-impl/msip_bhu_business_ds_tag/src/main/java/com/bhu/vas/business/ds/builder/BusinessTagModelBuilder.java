@@ -2,6 +2,7 @@ package com.bhu.vas.business.ds.builder;
 
 import java.util.Map;
 
+import com.bhu.vas.api.rpc.tag.dto.TagGroupHandsetDetailDTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupRankUsersVTO;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
@@ -23,18 +24,14 @@ public class BusinessTagModelBuilder {
 		return vto;
 	}
 	
-	public static TagGroupHandsetDetailVTO builderGroupUserDetailFilterVTO(Map<String,Object> map ,int count){
-		TagGroupHandsetDetailVTO vto = new TagGroupHandsetDetailVTO();
+	public static TagGroupHandsetDetailDTO builderGroupUserDetailFilterVTO(Map<String,Object> map ,int count){
+		TagGroupHandsetDetailDTO dto = new TagGroupHandsetDetailDTO();
 		if(map.get("mobileno") == null || (Long)map.get("count") < count){
 			return null;
 		}
-		vto.setHdMac((String)map.get("hdmac"));
-		vto.setMobileno((String)map.get("mobileno"));
-		vto.setCount((Long)map.get("count"));
-		vto.setManu(MacDictParserFilterHelper.prefixMactch(vto.getHdMac(),true,false));
-		vto.setFirstTime((String)map.get("min"));
-		vto.setLastTime((String)map.get("max"));
-		return vto;
+		dto.setHdMac((String)map.get("hdmac"));
+		dto.setMobileno((String)map.get("mobileno"));
+		return dto;
 	}
 	
 	

@@ -17,6 +17,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
+import com.bhu.vas.api.rpc.tag.dto.TagGroupHandsetDetailDTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
@@ -835,20 +836,20 @@ public class TagFacadeRpcSerivce {
 	public TagGroupSendSortMessageVTO groupSendSortMessage(int uid ,int gid ,int count,String context,String startTime, String endTime){
 		
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, startTime, endTime,0,0);
-		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
+		List<TagGroupHandsetDetailDTO> dtos = new ArrayList<TagGroupHandsetDetailDTO>();
 		for(Map<String, Object> map : handsetMap){
-			TagGroupHandsetDetailVTO vto = BusinessTagModelBuilder.builderGroupUserDetailFilterVTO(map,count);
-			if(vto == null)
+			TagGroupHandsetDetailDTO dto = BusinessTagModelBuilder.builderGroupUserDetailFilterVTO(map,count);
+			if(dto == null)
 				continue;
-			vtos.add(vto);
+			dtos.add(dto);
 		}
 		TagGroupSendSortMessageVTO vto = new TagGroupSendSortMessageVTO();	
 		UserWallet uwallet = userWalletService.getById(uid);
 		long total_vcurrency = (uwallet.getVcurrency()+uwallet.getVcurrency_bing());
 		
-		if(!vtos.isEmpty()){
+		if(!dtos.isEmpty()){
 			boolean flag = false;
-			int sm_count = vtos.size();
+			int sm_count = dtos.size();
 			long vcurrency_cost = userWalletFacadeService.getSMSPromotionSpendvcurrency(uid,sm_count);
 			vto.setTotal_vcurrency(total_vcurrency);
 			vto.setSm_count(sm_count);
@@ -862,8 +863,8 @@ public class TagFacadeRpcSerivce {
 			
 			if(flag){
 				List<String> mobilenoList = new ArrayList<String>();
-				for(TagGroupHandsetDetailVTO detailVto: vtos){
-					mobilenoList.add(detailVto.getMobileno());
+				for(TagGroupHandsetDetailDTO detailDto: dtos){
+					mobilenoList.add(detailDto.getMobileno());
 				}
 				TagGroupSortMessage tagGroupSortMessage = new TagGroupSortMessage();
 				tagGroupSortMessage.setGid(gid);
