@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.tag.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.smartwork.msip.cores.orm.model.extjson.SetJsonExtIntModel;
@@ -10,7 +11,7 @@ import com.smartwork.msip.cores.orm.model.extjson.SetJsonExtIntModel;
  *
  */
 @SuppressWarnings("serial")
-public class TagGroupSortMessage extends SetJsonExtIntModel<String>{
+public class TagGroupSortMessage extends SetJsonExtIntModel<String> implements Serializable{
 	
 	public static final String deafult =  "pending";
 	public static final String doing = "doing";
