@@ -729,9 +729,9 @@ public class TagFacadeRpcSerivce {
 	 * @return 
 	 * @return
 	 */
-	public List<Date> groupUserDetail(int gid,String mobileno,int pageNo,int pageSize){
+	public List<Date> groupUserDetail(int gid,String hdmac,int pageNo,int pageSize){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("mobileno", mobileno);
+		mc.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("hdmac", hdmac);
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
 		mc.setOrderByClause(" created_at desc");

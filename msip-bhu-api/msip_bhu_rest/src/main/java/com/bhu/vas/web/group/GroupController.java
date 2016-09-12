@@ -256,10 +256,19 @@ public class GroupController extends BaseController{
 
     
     /**
-	 * 分组用户详情
-	 * @param gid 分组id
-	 * @param timeStr 获取数据的时间 格式yyyyMMdd
-	 */
+     * 分组用户详情
+     * @param request
+     * @param response
+     * @param uid
+     * @param gid
+     * @param beginTime
+     * @param endTime
+     * @param filter 是否过滤（若此字段为false，下面两个条件不生效）
+     * @param count 过滤条件（连接次数）
+     * @param mobileno 过滤条件（手机号）
+     * @param pageNo
+     * @param pageSize
+     */
     @ResponseBody()
     @RequestMapping(value = "/users", method = {RequestMethod.POST})
     public void group_users_detail(
@@ -283,12 +292,12 @@ public class GroupController extends BaseController{
     }
     
     /**
-     * 分组指定用户连接详情
+     * 分组指定终端mac连接详情
      * @param request
      * @param response
      * @param uid
      * @param gid
-     * @param mobileno
+     * @param hdmac
      * @param pageNo
      * @param pageSize
      */
@@ -299,10 +308,10 @@ public class GroupController extends BaseController{
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) int gid,
-    	    @RequestParam(required = true) String mobileno,
+    	    @RequestParam(required = true) String hdmac,
     	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
-    	RpcResponseDTO<List<Date>> rpcResult = tagRpcService.groupUserDetail(gid,mobileno, pageNo, pageSize);
+    	RpcResponseDTO<List<Date>> rpcResult = tagRpcService.groupUserDetail(gid,hdmac, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

@@ -318,10 +318,10 @@ public class TagRpcService implements ITagRpcService {
 	}
 	
 	@Override
-	public RpcResponseDTO<List<Date>> groupUserDetail(int gid,String mobileno,int pageNo,int pageSize) {
-		logger.info(String.format("groupUserDetail gid[%s] mobileno[%s] pageNo[%s] pageSize[%s]", gid,mobileno,pageNo,pageSize));
+	public RpcResponseDTO<List<Date>> groupUserDetail(int gid,String hdmac,int pageNo,int pageSize) {
+		logger.info(String.format("groupUserDetail gid[%s] hdmac[%s] pageNo[%s] pageSize[%s]", gid,hdmac,pageNo,pageSize));
 		try{
-			List<Date> result = tagFacadeRpcSerivce.groupUserDetail(gid,mobileno, pageNo, pageSize);
+			List<Date> result = tagFacadeRpcSerivce.groupUserDetail(gid,hdmac, pageNo, pageSize);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
