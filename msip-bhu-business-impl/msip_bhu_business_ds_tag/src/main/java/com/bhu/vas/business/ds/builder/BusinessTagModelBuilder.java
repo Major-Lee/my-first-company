@@ -23,6 +23,21 @@ public class BusinessTagModelBuilder {
 		return vto;
 	}
 	
+	public static TagGroupHandsetDetailVTO builderGroupUserDetailFilterVTO(Map<String,Object> map ,int count){
+		TagGroupHandsetDetailVTO vto = new TagGroupHandsetDetailVTO();
+		if(map.get("mobileno") == null || (Long)map.get("count") < count){
+			return null;
+		}
+		vto.setHdMac((String)map.get("hdmac"));
+		vto.setMobileno((String)map.get("mobileno"));
+		vto.setCount((Long)map.get("count"));
+		vto.setManu(MacDictParserFilterHelper.prefixMactch(vto.getHdMac(),true,false));
+		vto.setFirstTime((String)map.get("min"));
+		vto.setLastTime((String)map.get("max"));
+		return vto;
+	}
+	
+	
 	public static TagGroupRankUsersVTO builderGroupRankUsers(Map<String,String> map){
 		TagGroupRankUsersVTO vto = new TagGroupRankUsersVTO();
 		vto.setDate(map.get("date"));

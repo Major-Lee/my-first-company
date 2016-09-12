@@ -20,9 +20,9 @@ public class TagGroupSortMessage extends SetJsonExtIntModel<String>{
 	private String context;
 	private String start;
 	private String end;
-	private String connect;
-	private String smtotal;
-	private String state;
+	private int connect;
+	private int smtotal;
+	private String state = deafult;
 	private Date created_at;
 	private Date update_at;
 	
@@ -58,19 +58,19 @@ public class TagGroupSortMessage extends SetJsonExtIntModel<String>{
 		this.end = end;
 	}
 
-	public String getConnect() {
+	public int getConnect() {
 		return connect;
 	}
 
-	public void setConnect(String connect) {
+	public void setConnect(int connect) {
 		this.connect = connect;
 	}
 
-	public String getSmtotal() {
+	public int getSmtotal() {
 		return smtotal;
 	}
 
-	public void setSmtotal(String smtotal) {
+	public void setSmtotal(int smtotal) {
 		this.smtotal = smtotal;
 	}
 

@@ -21,6 +21,7 @@ import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupSendSortMessageVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
@@ -399,4 +400,33 @@ public class GroupController extends BaseController{
   			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
   		}
       }
+      
+      
+      /**
+    	 * 统计设备分组连接数,根据筛选条件返回数据以及排行
+    	 * @param uid 用户id
+    	 * @param gid 分组id
+    	 * @param startTime 起始时间毫秒时间戳
+    	 * @param endTime 结束时间毫秒时间戳
+    	 * @param pageNo 排行数据No
+    	 * @param pageSize 获取数据Size
+    	 */
+        @ResponseBody()
+        @RequestMapping(value = "/send/sms", method = {RequestMethod.POST})
+        public void group_send_sm(
+                HttpServletRequest request,
+                HttpServletResponse response,
+                @RequestParam(required = true) int uid,
+                @RequestParam(required = true) int gid,
+                @RequestParam(required = false, defaultValue = "0") int count,
+                @RequestParam(required = true) String context,
+                @RequestParam(required = true) long startTime,
+                @RequestParam(required = true) long endTime) {
+        	RpcResponseDTO<TagGroupSendSortMessageVTO> rpcResult = tagRpcService.groupSendSortMessage(uid ,gid ,count,context,startTime,endTime);
+    		if(!rpcResult.hasError()){
+    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    		}else{
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		}
+        }
 }
