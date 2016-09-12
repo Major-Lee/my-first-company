@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.iservice.IUnifyStatisticsRpcService;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.OnlineStatisticsVTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.SsidStatisticsOutLineVTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.StateStatisticsVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -74,6 +75,7 @@ public class ConsoleStatisticsController extends BaseController{
             @RequestParam(required = false) String mobileNo,
             @RequestParam(required = false) String startTime,
             @RequestParam(required = false) String endTime,
+            @RequestParam(required = false) String mac,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
 			){
@@ -86,9 +88,25 @@ public class ConsoleStatisticsController extends BaseController{
 		map.put("mobileNo", mobileNo);
 		map.put("startTime", startTime);
 		map.put("endTime", endTime);
+		map.put("mac", mac);
 		map.put("pn", pageNo);
 		map.put("ps", pageSize);
 		result = unifyStatisticsRpcService.querySSIDStatisticsInfo(map);
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value = "/querySSIDStatisticOutLine", method = {RequestMethod.POST})
+	public void querySSIDStatisticOutLine(
+			HttpServletRequest request,
+			HttpServletResponse response
+			){
+		//返回结果
+		RpcResponseDTO<SsidStatisticsOutLineVTO> rpcResult = unifyStatisticsRpcService.sSIDStatisticsOutLineInfo();
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
 	}
 }

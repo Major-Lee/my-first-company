@@ -7,6 +7,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.unifyStatistics.iservice.IUnifyStatisticsRpcService;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.OnlineStatisticsVTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.SsidStatisticsOutLineVTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.StateStatisticsVTO;
 import com.bhu.vas.rpc.facade.SSIDStatisticFacadeRpcService;
 import com.bhu.vas.rpc.facade.UnifyStatisticsFacadeRpcSerivce;
@@ -51,5 +52,14 @@ public class UnifyStatisticsRpcService implements IUnifyStatisticsRpcService {
 		Map<String,Object> result = new HashMap<String,Object>();
 		result = statisticFacadeRpcService.querySSIDStatisticInfo(map);
 		return result;
+	}
+	@Override
+	public RpcResponseDTO<SsidStatisticsOutLineVTO> sSIDStatisticsOutLineInfo() {
+		try {
+			SsidStatisticsOutLineVTO vto = statisticFacadeRpcService.sSIDStatisticsOutLineInfo();
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		} catch (BusinessI18nCodeException i18nex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		}
 	}
 }

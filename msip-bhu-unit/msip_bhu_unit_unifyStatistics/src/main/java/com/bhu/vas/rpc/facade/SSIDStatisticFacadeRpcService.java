@@ -14,12 +14,13 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.elasticsearch.common.lang3.StringUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.SsidStatisticsOutLineVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
@@ -27,12 +28,10 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHas
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.util.DataUtils;
 import com.bhu.vas.rpc.util.JSONObject;
 import com.bhu.vas.rpc.util.um.OpenApiCnzzImpl;
-import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 
@@ -156,6 +155,9 @@ public class SSIDStatisticFacadeRpcService {
 		int totalMbOrderComplete=0;
 		double totalMbOrderAmount=0;
 		
+		int totalFreeClickNum=0;
+		int totalFreeOfc=0;
+		
 		//折线图组装数据
 		List<Object> time=new ArrayList<Object>();
 		List<List<Object>> equipments=new ArrayList<List<Object>>();
@@ -203,6 +205,9 @@ public class SSIDStatisticFacadeRpcService {
 				int iosClickNum=0;
 				//获取手机android端点击数
 				int androidClickNum=0;
+				//获取免费打赏点击数
+				int freeClickNum=0;
+				
 				int pcOrderComplete=0;
 				int pcOrderNum=0;
 				double pcOrderAmount=0;
@@ -210,6 +215,7 @@ public class SSIDStatisticFacadeRpcService {
 				double mbOrderAmount=0;
 				int mbOrderNum=0;
 				int ofc=0;
+				int freeOfc=0;
 				date = timeList.get(i);
 				if(flag){
 					String dayPv = DeviceStatisticsHashService.getInstance().deviceMacHget(date, "dayPV");
@@ -249,6 +255,10 @@ public class SSIDStatisticFacadeRpcService {
 						if(orderObj.get("ofc") != null){
 							//完成订单数
 							ofc = (Integer)orderObj.get("ofc");
+						}
+						if(orderObj.get("free_ofc") != null){
+							//完成订单数
+							freeOfc = (Integer)orderObj.get("free_ofc");
 						}
 						String pcOrderNumStr=orderObj.getString("pc_occ");
 						if(StringUtils.isNotBlank(pcOrderNumStr)){
@@ -299,6 +309,35 @@ public class SSIDStatisticFacadeRpcService {
 						pcClickNum=Integer.valueOf(pcClickJsonStr.split(",")[0].replace(".0", "").trim());
 						UMStatisticsHashService.getInstance().umHset(timeList.get(i), "pcClickNum", String.valueOf(pcClickNum));
 					}
+					
+					String freePcClick= UMStatisticsHashService.getInstance().umHget(timeList.get(i), "freePcClickNum");
+					if(StringUtils.isNotBlank(freePcClick)){
+						freeClickNum+=Integer.valueOf(freePcClick);
+					}else{
+						freePcClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", timeList.get(i), timeList.get(i), "", "",1);
+						JSONObject freePcClickJson=JSONObject.fromObject(freePcClick);
+						String freePcClickJsonStr=freePcClickJson.getString("values");
+						freePcClickJsonStr=freePcClickJsonStr.substring(1);
+						freePcClickJsonStr=freePcClickJsonStr.substring(0, freePcClickJsonStr.length()-1);
+						int freePcClickNum=Integer.valueOf(freePcClickJsonStr.split(",")[0].replace(".0", "").trim());
+						freeClickNum+=freePcClickNum;
+						UMStatisticsHashService.getInstance().umHset(timeList.get(i), "freePcClickNum", String.valueOf(freePcClickNum));
+					}
+					
+					String freeMobileClick= UMStatisticsHashService.getInstance().umHget(timeList.get(i), "freeMobileClickNum");
+					if(StringUtils.isNotBlank(freeMobileClick)){
+						freeClickNum+=Integer.valueOf(freeMobileClick);
+					}else{
+						freePcClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", timeList.get(i), timeList.get(i), "", "",1);
+						JSONObject freeMobileClickJson=JSONObject.fromObject(freeMobileClick);
+						String freeMobileClickJsonStr=freeMobileClickJson.getString("values");
+						freeMobileClickJsonStr=freeMobileClickJsonStr.substring(1);
+						freeMobileClickJsonStr=freeMobileClickJsonStr.substring(0, freeMobileClickJsonStr.length()-1);
+						int freeMobileClickNum=Integer.valueOf(freeMobileClickJsonStr.split(",")[0].replace(".0", "").trim());
+						freeClickNum+=freeMobileClickNum;
+						UMStatisticsHashService.getInstance().umHset(timeList.get(i), "freeMobileClickNum", String.valueOf(freeMobileClickNum));
+					}
+					
 					String mobileUv= UMStatisticsHashService.getInstance().umHget(timeList.get(i), "mobileUv");
 					if(StringUtils.isNotBlank(mobileUv)){
 						mobileUV=Integer.valueOf(mobileUv);
@@ -339,7 +378,7 @@ public class SSIDStatisticFacadeRpcService {
 					if(StringUtils.isNotBlank(mobileClick)){
 						mobileClickNum=Integer.valueOf(mobileClick);
 					}else{
-						mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", timeList.get(i), timeList.get(i), "", "",2);
+						mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏", timeList.get(i), timeList.get(i), "", "",2);
 						JSONObject mobileClickJson=JSONObject.fromObject(mobileClick);
 						String mobileClickJsonStr=mobileClickJson.getString("values");
 						mobileClickJsonStr=mobileClickJsonStr.substring(1);
@@ -351,7 +390,7 @@ public class SSIDStatisticFacadeRpcService {
 					if(StringUtils.isNotBlank(iosClick)){
 						iosClickNum=Integer.valueOf(iosClick);
 					}else{
-						iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", timeList.get(i), timeList.get(i), "", "os = 'ios'",2);
+						iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏", timeList.get(i), timeList.get(i), "", "os = 'ios'",2);
 						JSONObject iosClickJson=JSONObject.fromObject(iosClick);
 						String iosClickJsonStr=iosClickJson.getString("values");
 						iosClickJsonStr=iosClickJsonStr.substring(1);
@@ -363,7 +402,7 @@ public class SSIDStatisticFacadeRpcService {
 					if(StringUtils.isNotBlank(androidClick)){
 						androidClickNum=Integer.valueOf(androidClick);
 					}else{
-						androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", timeList.get(i), timeList.get(i), "", "os = 'android'",2);
+						androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏", timeList.get(i), timeList.get(i), "", "os = 'android'",2);
 						JSONObject androidClickJson=JSONObject.fromObject(androidClick);
 						String androidClickJsonStr=androidClickJson.getString("values");
 						androidClickJsonStr=androidClickJsonStr.substring(1);
@@ -611,6 +650,12 @@ public class SSIDStatisticFacadeRpcService {
 //				otherMap.put("orderComConversion", "-");
 //				singleMap.put("other", otherMap);
 				
+				Map<String,Object> freeMap=new HashMap<String,Object>();
+				freeMap.put("freeClickNum", freeClickNum);
+				freeMap.put("freeOfc", freeOfc);
+				freeMap.put("freeComConversion", round(freeOfc*1.00/(pcUV+mobileUV)*100,2)+"%");
+				singleMap.put("free", freeMap);
+				
 				resMaps.add(singleMap);
 				totalAndroidUV+=androidUV;
 				totalAndroidClickNum+=androidClickNum;
@@ -627,6 +672,9 @@ public class SSIDStatisticFacadeRpcService {
 				totalUv+=pcUV+mobileUV;
 				totalClickNum+=pcClickNum+mobileClickNum;
 				
+				totalFreeClickNum+=freeClickNum;
+				totalFreeOfc+=freeOfc;
+				
 				equipmentNums.add(doc);
 				
 				orderNums.add(occ);
@@ -639,6 +687,13 @@ public class SSIDStatisticFacadeRpcService {
 			totalDOC = totalDOC/timeList.size();
 			
 		LinkedHashMap<String,Object> tMaps=new LinkedHashMap<String,Object>();
+		
+		Map<String,Object> tfreeMap=new HashMap<String,Object>();
+		tfreeMap.put("freeClickNum", totalFreeClickNum);
+		tfreeMap.put("freeOfc", totalFreeOfc);
+		tfreeMap.put("freeComConversion", round(totalFreeOfc*1.00/totalUV*100,2)+"%");
+		tMaps.put("free", tfreeMap);
+		
 		Map<String,Object> totalMap=new HashMap<String,Object>();
 		totalMap.put("totalPV", totalPV);
 		totalMap.put("totalUV", totalUV);
@@ -955,6 +1010,13 @@ public class SSIDStatisticFacadeRpcService {
 		return list; 
 	}
 	
+	public SsidStatisticsOutLineVTO sSIDStatisticsOutLineInfo(){
+		SsidStatisticsOutLineVTO vto=new SsidStatisticsOutLineVTO();
+		return vto;
+	}
+	
+	
+	
 	/**      
 	    * 提供精确的小数位四舍五入处理。      
 	     * @param v 需要四舍五入的数字      
@@ -971,11 +1033,14 @@ public class SSIDStatisticFacadeRpcService {
 	}
 	
 	public static void main(String[] args) {
-		List<String> timeList=getDaysList("2016-08-11","2016-08-17");
-		//List<String> timeList=getLastDay(7);
-		for(String i:timeList){
-			System.out.println(i);
-		}
+//		List<String> timeList=getDaysList("2016-08-11","2016-08-17");
+//		//List<String> timeList=getLastDay(7);
+//		for(String i:timeList){
+//			System.out.println(i);
+//		}
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+		String s= apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", "2016-09-07","2016-09-07", "", "",1);
+		System.out.println(s);
 	}
 	/**
 	 * 返回成功结果集

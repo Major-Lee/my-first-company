@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.OnlineStatisticsVTO;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.SsidStatisticsOutLineVTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.StateStatisticsVTO;
 
 public interface IUnifyStatisticsRpcService {
@@ -14,4 +15,5 @@ public interface IUnifyStatisticsRpcService {
 	//查询SSID统计信息
 	public Map<String,Object> querySSIDStatisticsInfo(Map<String,Object> map);
 	//add By Jason 2016-07-18 E N D
+	public RpcResponseDTO<SsidStatisticsOutLineVTO> sSIDStatisticsOutLineInfo();
 }

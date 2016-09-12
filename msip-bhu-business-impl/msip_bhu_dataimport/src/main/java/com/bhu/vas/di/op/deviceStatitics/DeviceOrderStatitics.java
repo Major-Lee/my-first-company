@@ -92,6 +92,52 @@ public class DeviceOrderStatitics {
 			}
 		}
 		
+		String freePcClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", getNextDay(), getNextDay(), "", "",1);
+		JSONObject freePcClickJson=JSONObject.fromObject(freePcClick);
+		String freePcClickJsonStr=freePcClickJson.getString("values");
+		freePcClickJsonStr=freePcClickJsonStr.substring(1);
+		freePcClickJsonStr=freePcClickJsonStr.substring(0, freePcClickJsonStr.length()-1);
+		int freePcClickNum=Integer.valueOf(freePcClickJsonStr.split(",")[0].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "freePcClickNum", String.valueOf(freePcClickNum));
+		
+		String freePcClickMac= apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", getNextDay(), getNextDay(), "wlanapmac", "",1);
+		JSONObject freePcMac=JSONObject.fromObject(freePcClickMac);
+		String freePcMacData=freePcMac.getString("values");
+		freePcMacData=freePcMacData.substring(1);
+		freePcMacData=freePcMacData.substring(0,freePcMacData.length()-1);
+		if(!freePcMacData.equals("0,0,0")){
+			String[] freePcMacDataArray=freePcMacData.split("],");
+			if(freePcMacDataArray.length>0){
+				for(String i:freePcMacDataArray){
+					UMStatisticsHashService.getInstance().umHset("MacFreePcClickNum"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
+				}
+			}
+		}
+		
+		String freeMobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+我要免费上网", getNextDay(), getNextDay(), "", "",2);
+		JSONObject freeMobileClickJson=JSONObject.fromObject(freeMobileClick);
+		String freeMobileClickJsonStr=freeMobileClickJson.getString("values");
+		freeMobileClickJsonStr=freeMobileClickJsonStr.substring(1);
+		freeMobileClickJsonStr=freeMobileClickJsonStr.substring(0, freeMobileClickJsonStr.length()-1);
+		int freeMobileClickNum=Integer.valueOf(freeMobileClickJsonStr.split(",")[0].replace(".0", "").trim());
+		UMStatisticsHashService.getInstance().umHset(getNextDay(), "freeMobileClickNum", String.valueOf(freeMobileClickNum));
+		
+		String freeMobileClickMac= apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", getNextDay(), getNextDay(), "wlanapmac", "",2);
+		JSONObject freeMobileMac=JSONObject.fromObject(freeMobileClickMac);
+		String freeMobileMacData=freeMobileMac.getString("values");
+		freeMobileMacData=freeMobileMacData.substring(1);
+		freeMobileMacData=freeMobileMacData.substring(0,freeMobileMacData.length()-1);
+		if(!freeMobileMacData.equals("0,0,0")){
+			String[] freeMobileMacDataArray=freeMobileMacData.split("],");
+			if(freeMobileMacDataArray.length>0){
+				for(String i:freeMobileMacDataArray){
+					UMStatisticsHashService.getInstance().umHset("MacFreeMobileClickNum"+getNextDay(), i.split("=")[0].replace("%", ":").trim(), i.split(",")[1].replace(".0", "").trim());
+				}
+			}
+		}
+		
+		
+		
 		String pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", getNextDay(), getNextDay(), "", "",1);
 		JSONObject pcClickJson=JSONObject.fromObject(pcClick);
 		String pcClickJsonStr=pcClickJson.getString("values");
@@ -124,7 +170,7 @@ public class DeviceOrderStatitics {
 		UMStatisticsHashService.getInstance().umHset(getNextDay(), "mobileUv", String.valueOf(mobileUV));
 
 		
-		String mobileMacUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "", "",2);
+		String mobileMacUv= apiCnzzImpl.queryCnzzStatistic("mobile打赏页PV", getNextDay(), getNextDay(), "wlanapmac", "",2);
 		JSONObject mobileMacUvJson=JSONObject.fromObject(mobileMacUv);
 		String mobileMacUvData=mobileMacUvJson.getString("values");
 		mobileMacUvData=mobileMacUvData.substring(1);
@@ -185,7 +231,7 @@ public class DeviceOrderStatitics {
 		}
 		
 		
-		String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "",2);
+		String mobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏", getNextDay(), getNextDay(), "", "",2);
 		JSONObject mobileClickJson=JSONObject.fromObject(mobileClick);
 		String mobileClickJsonStr=mobileClickJson.getString("values");
 		mobileClickJsonStr=mobileClickJsonStr.substring(1);
@@ -194,7 +240,7 @@ public class DeviceOrderStatitics {
 		UMStatisticsHashService.getInstance().umHset(getNextDay(), "mobileClickNum", String.valueOf(mobileClickNum));
 
 		
-		String mobileMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "wlanapmac", "",2);
+		String mobileMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏", getNextDay(), getNextDay(), "wlanapmac", "",2);
 		JSONObject mobileMacClickJson=JSONObject.fromObject(mobileMacClick);
 		String mobileMacClickData=mobileMacClickJson.getString("values");
 		mobileMacClickData=mobileMacClickData.substring(1);
@@ -208,7 +254,7 @@ public class DeviceOrderStatitics {
 			}
 		}
 		
-		String iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "os = 'ios'",2);
+		String iosClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏", getNextDay(), getNextDay(), "", "os = 'ios'",2);
 		JSONObject iosClickJson=JSONObject.fromObject(iosClick);
 		String iosClickJsonStr=iosClickJson.getString("values");
 		iosClickJsonStr=iosClickJsonStr.substring(1);
@@ -217,7 +263,7 @@ public class DeviceOrderStatitics {
 		UMStatisticsHashService.getInstance().umHset(getNextDay(), "iosClickNum", String.valueOf(iosClickNum));
 
 	
-		String iosMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "wlanapmac", "os = 'ios'",2);
+		String iosMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏", getNextDay(), getNextDay(), "wlanapmac", "os = 'ios'",2);
 		JSONObject iosMacClickJson=JSONObject.fromObject(iosMacClick);
 		String iosMacClickData=iosMacClickJson.getString("values");
 		iosMacClickData=iosMacClickData.substring(1);
@@ -231,7 +277,7 @@ public class DeviceOrderStatitics {
 			}
 		}
 		
-		String androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "", "os = 'android'",2);
+		String androidClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏", getNextDay(), getNextDay(), "", "os = 'android'",2);
 		JSONObject androidClickJson=JSONObject.fromObject(androidClick);
 		String androidClickJsonStr=androidClickJson.getString("values");
 		androidClickJsonStr=androidClickJsonStr.substring(1);
@@ -240,7 +286,7 @@ public class DeviceOrderStatitics {
 		UMStatisticsHashService.getInstance().umHset(getNextDay(), "androidClickNum", String.valueOf(androidClickNum));
 
 	
-		String androidMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏+plus", getNextDay(), getNextDay(), "wlanapmac", "os = 'android'",2);
+		String androidMacClick=apiCnzzImpl.queryCnzzStatistic("mobile+赏", getNextDay(), getNextDay(), "wlanapmac", "os = 'android'",2);
 		JSONObject androidMacClickJson=JSONObject.fromObject(androidMacClick);
 		String androidMacClickData=androidMacClickJson.getString("values");
 		androidMacClickData=androidMacClickData.substring(1);
@@ -277,6 +323,9 @@ public class DeviceOrderStatitics {
 		long mb_occ = 0;
 		//移动端订单支付数量
 		long mb_ofc = 0;
+		//免费上网完成订单数
+		long free_ofc=0;
+		
 		
 		float ofaF=0;
 		float pc_ofaF=0;
@@ -284,31 +333,39 @@ public class DeviceOrderStatitics {
 		List<String> macList=new ArrayList<String>();
 		if(orders!=null&&orders.size()>0){
 			for(int i=0;i<orders.size();i++){
-				if(orders.get(i).getStatus()==10){
-					ofaF+=Float.valueOf(orders.get(i).getAmount());
-					ofc++;
+				
+				if(orders.get(i).getType()==0){
+					if(orders.get(i).getStatus()==10){
+						ofaF+=Float.valueOf(orders.get(i).getAmount());
+						ofc++;
+						if(orders.get(i).getUmactype()==1){
+							pc_ofaF+=Float.valueOf(orders.get(i).getAmount());
+							pc_ofc++;
+						}else{
+							mb_ofaF+=Float.valueOf(orders.get(i).getAmount());
+							mb_ofc++;
+						}
+					}
 					if(orders.get(i).getUmactype()==1){
-						pc_ofaF+=Float.valueOf(orders.get(i).getAmount());
-						pc_ofc++;
+						pc_occ++;
 					}else{
-						mb_ofaF+=Float.valueOf(orders.get(i).getAmount());
-						mb_ofc++;
+						mb_occ++;
+					}
+					occ++;
+					if(macList!=null&&macList.size()>0){
+						if(!macList.contains(orders.get(i).getMac())){  
+							macList.add(orders.get(i).getMac());  
+							//System.out.println(orders.get(i).getMac());
+						}  
+					}else{
+						macList.add(orders.get(i).getMac());
+					}
+				}else if(orders.get(i).getType()==6){
+					if(orders.get(i).getStatus()==10){
+						free_ofc++;
 					}
 				}
-				if(orders.get(i).getUmactype()==1){
-					pc_occ++;
-				}else{
-					mb_occ++;
-				}
-				occ++;
-				if(macList!=null&&macList.size()>0){
-					if(!macList.contains(orders.get(i).getMac())){  
-						macList.add(orders.get(i).getMac());  
-						//System.out.println(orders.get(i).getMac());
-					}  
-				}else{
-					macList.add(orders.get(i).getMac());
-				}
+				
 			}
 		}
 		for(int i=0;i<macList.size();i++){
@@ -324,6 +381,8 @@ public class DeviceOrderStatitics {
 			long smb_occ = 0;
 			//移动端订单支付数量
 			long smb_ofc = 0;
+			//免费上网订单数量
+			long sfree_ofc=0;
 			
 			float sofaF=0;
 			float spc_ofaF=0;
@@ -332,25 +391,33 @@ public class DeviceOrderStatitics {
 			Map<String,Object> singleMapS=new HashMap<String,Object>();
 			for(int j=0;j<orders.size();j++){
 				if(macList.get(i)!=null){
-					if(macList.get(i).equals(orders.get(j).getMac())){
-						if(orders.get(j).getStatus()==10){
-							sofc++;
-							sofaF+=(float)(Math.round(Float.valueOf(orders.get(j).getAmount())*100/100));
-							if(orders.get(j).getUmactype()==1){
-								spc_ofaF+=(float)(Math.round(Float.valueOf(orders.get(j).getAmount())*100/100));
-								spc_ofc++;
+					if(orders.get(j).getType()==0){
+						if(macList.get(i).equals(orders.get(j).getMac())){
+							if(orders.get(j).getStatus()==10){
+								sofc++;
+								sofaF+=(float)(Math.round(Float.valueOf(orders.get(j).getAmount())*100/100));
+								if(orders.get(j).getUmactype()==1){
+									spc_ofaF+=(float)(Math.round(Float.valueOf(orders.get(j).getAmount())*100/100));
+									spc_ofc++;
+								}else{
+									smb_ofaF+=(float)(Math.round(Float.valueOf(orders.get(j).getAmount())*100/100));
+									smb_ofc++;
+								}
 							}else{
-								smb_ofaF+=(float)(Math.round(Float.valueOf(orders.get(j).getAmount())*100/100));
-								smb_ofc++;
+								if(orders.get(j).getUmactype()==1){
+									spc_occ++;
+								}else{
+									smb_occ++;
+								}
 							}
-						}else{
-							if(orders.get(j).getUmactype()==1){
-								spc_occ++;
-							}else{
-								smb_occ++;
+							socc++;
+						}
+					}else if(orders.get(j).getType()==6){
+						if(macList.get(i).equals(orders.get(j).getMac())){
+							if(orders.get(j).getStatus()==10){
+								sfree_ofc++;
 							}
 						}
-						socc++;
 					}
 				}
 			}
@@ -363,6 +430,7 @@ public class DeviceOrderStatitics {
 			singleMapS.put("mb_occ", smb_occ);
 			singleMapS.put("mb_ofc", smb_ofc);
 			singleMapS.put("mb_ofa", smb_ofaF);
+			singleMapS.put("free_ofc", sfree_ofc);
 			DeviceStatisticsHashService.getInstance().deviceMacHset("MAC-"+getNextDay(), macList.get(i), JsonHelper.getJSONString(singleMapS));
 		}
 		//存储到redis缓存
@@ -376,6 +444,7 @@ public class DeviceOrderStatitics {
 		resultMap.put("mb_occ", mb_occ);
 		resultMap.put("mb_ofc", mb_ofc);
 		resultMap.put("mb_ofa", mb_ofaF);
+		resultMap.put("free_ofc", free_ofc);
 		DeviceStatisticsHashService.getInstance().deviceMacHset(getNextDay(), "stOrder",JsonHelper.getJSONString(resultMap));
 		//getDeviceOrder();
 		//存储mac地址
@@ -398,23 +467,8 @@ public class DeviceOrderStatitics {
 		}
 		ctx.stop();
 		ctx.close();
+		System.exit(0);
 	}
-//	public static void main(String[] args) {
-//		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
-//		String pcMacUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", getNextDay(), getNextDay(), "wlanusermac", "",1);
-//		JSONObject pcMac=JSONObject.fromObject(pcMacUv);
-//		String data=pcMac.getString("values");
-//		data=data.substring(1);
-//		data=data.substring(0,data.length()-1);
-//		String[] dataArray=data.split("],");
-//		if(dataArray.length>0){
-//			for(String i:dataArray){
-//				System.out.println(i);
-//				System.out.println(i.split(",")[1].replace(".0", "").trim());
-//				System.out.println(i.split("=")[0].replace("%", ":").trim());
-//			}
-//		}
-//	}
 	/**
 	 * 读取文件
 	 * @author Jason
