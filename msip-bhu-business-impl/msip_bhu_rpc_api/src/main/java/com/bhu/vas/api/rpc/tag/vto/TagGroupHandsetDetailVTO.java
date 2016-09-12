@@ -24,7 +24,7 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 	public void setMobileno(String mobileno) {
 		if(mobileno != null){
 			StringBuilder sb = new StringBuilder(mobileno);
-			sb.replace(6,10, "****");
+			sb.replace(3,7, "****");
 			this.mobileno = sb.toString();
 		}
 	}
