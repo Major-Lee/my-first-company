@@ -1,23 +1,22 @@
 package com.bhu.vas.business.payment;
 
-import java.util.Date;
-
 import javax.annotation.Resource;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
+import com.bhu.vas.api.rpc.payment.dto.PaymentErrorCountDTO;
 import com.bhu.vas.business.ds.payment.service.PaymentReckoningService;
-import com.bhu.vas.business.payment.help.BusinessHelper;
+import com.bhu.vas.business.ds.payment.service.PaymentRecordService;
 import com.smartwork.msip.localunit.BaseTest;
-import com.smartwork.msip.localunit.RandomPicker;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PaymentReckoningServiceTest extends BaseTest {
 	@Resource
 	PaymentReckoningService paymentReckoningService;
+	@Resource
+	PaymentRecordService paymentRecordService;
 
 	static String[] letters = { "a", "b", "c", "d", "e", "f", "g", "h", "i",
 			"j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
@@ -41,14 +40,28 @@ public class PaymentReckoningServiceTest extends BaseTest {
 		}
 	}*/
 	
+//	@Test
+//	public void test002update() {
+//		PaymentReckoning updatePayStatus = paymentReckoningService.getById("PROPCWX1466992205468nkwk");
+//		updatePayStatus.setThird_party_code("11");
+//		updatePayStatus.setPay_status(1);
+//		updatePayStatus.setPaid_at(new Date());
+//			updatePayStatus.setRemark("ssss");
+// 		paymentReckoningService.update(updatePayStatus);
+//	}
 	@Test
-	public void test002update() {
-		PaymentReckoning updatePayStatus = paymentReckoningService.getById("PROPCWX1466992205468nkwk");
-		updatePayStatus.setThird_party_code("11");
-		updatePayStatus.setPay_status(1);
-		updatePayStatus.setPaid_at(new Date());
-			updatePayStatus.setRemark("ssss");
- 		paymentReckoningService.update(updatePayStatus);
+	public void findErrorCountByType() {
+//		String startTime = "2016-09-02 19:16";
+//		String endTime = "2016-09-03 19:16";
+//		String channelType = "Now";
+//		List<PaymentReckoning> payment = paymentReckoningService.findErrorCountByType(startTime,endTime,channelType);
+//		if(payment != null){
+//			System.out.println(payment.size());
+//		}
+		
+		PaymentErrorCountDTO errorCount = paymentReckoningService.paymentRecordInfo();
+		System.out.println(errorCount.getMidas_more_one_min_count());
+		System.out.println(errorCount.getMidas_more_three_min_count());
 	}
 
 //	@Test

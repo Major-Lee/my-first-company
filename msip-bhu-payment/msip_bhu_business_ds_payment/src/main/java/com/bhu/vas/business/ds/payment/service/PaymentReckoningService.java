@@ -9,10 +9,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bhu.vas.api.rpc.payment.dto.PaymentErrorCountDTO;
 import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
 import com.bhu.vas.business.ds.payment.dao.PaymentReckoningDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractPaymentService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * @Editor Eclipse
@@ -52,6 +55,26 @@ public class PaymentReckoningService extends AbstractPaymentService<String, Paym
 		mc.createCriteria().andColumnEqualTo("remark", gid);
 		List<PaymentReckoning> list = this.findModelByModelCriteria(mc);
 		return list.isEmpty() ? null : list.get(0);
+	}
+	// 统计当前订单的错单情况
+	public List<PaymentReckoning> findErrorCountByType(String startTime,String endTime,String channelType) {
+		ModelCriteria mc = new ModelCriteria();
+		//mc.createCriteria().andColumnEqualTo("appid", 1000);
+		//mc.createCriteria().andColumnGreaterThanOrEqualTo("created_at ", startTime);
+		//mc.createCriteria().andColumnLessThan("created_at ", endTime);
+		mc.createCriteria().andColumnEqualTo("payment_type ", "WapWeixin");
+		mc.createCriteria().andColumnEqualTo("channel_type", channelType);
+		//mc.createCriteria().andColumnGreaterThanOrEqualTo("UNIX_TIMESTAMP(paid_at) - UNIX_TIMESTAMP(created_at)", 120);
+		return this.findModelByModelCriteria(mc);
+	}
+	
+	public PaymentErrorCountDTO paymentRecordInfo(){
+		PaymentErrorCountDTO recordInfoDTO = new PaymentErrorCountDTO();
+		int executeRet = this.executeProcedure(recordInfoDTO);
+		if(executeRet != 0)
+			System.out.println(executeRet);
+		
+		return recordInfoDTO;
 	}
 
 	// 通过Upay支付订单号获取订单ID
