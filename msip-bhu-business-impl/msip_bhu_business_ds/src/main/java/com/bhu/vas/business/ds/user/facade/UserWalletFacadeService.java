@@ -1202,4 +1202,14 @@ public class UserWalletFacadeService{
 			}
 		}
 	}
+	/***
+	 * @param uid 用户id
+	 * @param count 短信数目
+	 * 
+	 * */
+	public long getSMSPromotionSpendvcurrency(int uid,int count){
+		long cost_vcurrency = 20*count;
+		return cost_vcurrency;
+		
+	}
 }
