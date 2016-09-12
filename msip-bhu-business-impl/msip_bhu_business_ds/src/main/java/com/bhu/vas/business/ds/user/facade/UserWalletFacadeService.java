@@ -1212,4 +1212,26 @@ public class UserWalletFacadeService{
 		return cost_vcurrency;
 		
 	}
+	
+	private SnkAuthenticateResultType deductVcurrencyForSMSPromotion(int uid,String orderid,long vcurrency_cost,String desc, IWalletVCurrencySpendCallback callback){
+		return null;
+	}
+	/**
+	 * 共享网络 短信营销 虚拟币扣款 
+	 * @param uid
+	 * @param commdityid
+	 * @param count
+	 * @param desc
+	 * @param 
+	 * @return
+	 * 	
+	 */
+	public SnkAuthenticateResultType vcurrencyFromUserWalletForSMSPromotion(int uid, int commdityid, int count,String desc){
+		UserValidateServiceHelper.validateUser(uid,this.userService);
+		UserWallet uwallet = userWalletService.getById(uid);
+		if(uwallet == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"用户钱包"});
+		}
+		return SnkAuthenticateResultType.Success;
+	}
 }
