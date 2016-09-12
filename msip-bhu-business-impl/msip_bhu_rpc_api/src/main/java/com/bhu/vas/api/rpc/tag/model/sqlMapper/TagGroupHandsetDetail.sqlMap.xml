@@ -27,6 +27,11 @@
 		<result property="date" column="date" javaType="java.lang.String"/>	
 		<result property="count" column="count" javaType="java.lang.String"/>		
    </resultMap>
+   
+   	<resultMap id="countGroupUsers" type="hashmap">
+		<result property="userCount" column="count(distinct(hdmac))" javaType = "java.lang.Integer"/>		
+   </resultMap>
+   
   	<sql id="modelTableName">
 	    <![CDATA[
 	    	t_tag_group_handset_detail
@@ -185,7 +190,7 @@
 	</select>
 	
 	<select id="selectGroupUsersRank" resultMap="GroupUsersRankMap" parameterType="map">
-	    SELECT timestr as date,count(timestr) as count <include refid="modelUserDetail" /> FROM <include refid="modelTableName" /> 
+	    SELECT timestr as date,count(timestr) as count FROM <include refid="modelTableName" /> 
 	    <where>
 			gid = #{gid}
 			<if test="starTime !=null and endTime != null">
@@ -199,6 +204,21 @@
 	    #{pn},
 	    #{ps};
 	</select>
+	  
+	<select id="countGroupUsers" resultMap="countGroupUsers" parameterType="map">
+	    select count(distinct(hdmac)) FROM <include refid="modelTableName" />
+	    <where>
+			gid = #{gid}
+			<if test="beginTime !=null and endTime != null">
+				AND
+					timestr
+				BETWEEN
+					#{beginTime}
+				AND
+					#{endTime}
+			</if>
+	    </where> 
+	</select>  
 	  
 	<delete id="deleteByIds" parameterType="java.util.List">
 	  	delete from <include refid="modelTableName" />

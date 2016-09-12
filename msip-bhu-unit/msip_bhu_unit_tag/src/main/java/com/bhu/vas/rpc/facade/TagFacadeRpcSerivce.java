@@ -23,6 +23,7 @@ import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupRankUsersVTO;
@@ -742,10 +743,19 @@ public class TagFacadeRpcSerivce {
 				resultList.add(detail.getCreated_at());
 			}
 		}
-		
 		return resultList;
 	}
 	
+	/**
+	 * 分组用户排名
+	 * @param uid
+	 * @param gid
+	 * @param startTime
+	 * @param endTime
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
 	private TailPage<TagGroupRankUsersVTO> groupRankUsers(int uid, int gid, String startTime, 
 			String endTime ,int pageNo, int pageSize) {
 		List<Map<String, String>> handsetMap = tagGroupHandsetDetailService.selectGroupUsersRank(gid, 
@@ -786,6 +796,26 @@ public class TagFacadeRpcSerivce {
 		vto.setRankList(groupRankUsers(uid,gid,startTimeStr,endTimeStr,pageNo,pageSize));
 		vto.setUserConnectData(groupUserConnectData(uid,gid,startTimeStr,endTimeStr));
 		return vto;
+	}
+	public GroupStatDetailVTO groupUsersCount(int gid,String beginTime,String endTime){
+		GroupStatDetailVTO vto = new GroupStatDetailVTO();
+
+		int userTotal = tagGroupHandsetDetailService.countGroupUsers(gid, beginTime, endTime);
+		
+		ModelCriteria connTotalMC = new ModelCriteria();
+		connTotalMC.createCriteria().andColumnEqualTo("gid", gid).andColumnBetween("timestr", beginTime, endTime);
+		int connTotal = tagGroupHandsetDetailService.countByModelCriteria(connTotalMC);
+		
+		ModelCriteria authTotalMC = new ModelCriteria();
+		authTotalMC.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("auth",StringHelper.TRUE).andColumnBetween("timestr", beginTime, endTime);
+		int authTotal = tagGroupHandsetDetailService.countByModelCriteria(authTotalMC);
+		
+		vto.setAuthTotal(authTotal);
+		vto.setConnTotal(connTotal);
+		vto.setUserTotal(userTotal);
+		
+		return vto;
+		
 	}
 	
 }
