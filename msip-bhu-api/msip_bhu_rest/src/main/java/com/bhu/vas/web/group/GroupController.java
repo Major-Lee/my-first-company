@@ -256,7 +256,7 @@ public class GroupController extends BaseController{
 
     
     /**
-	 * 分组用户连接数
+	 * 分组用户详情
 	 * @param gid 分组id
 	 * @param timeStr 获取数据的时间 格式yyyyMMdd
 	 */
@@ -282,7 +282,16 @@ public class GroupController extends BaseController{
 		}
     }
     
-
+    /**
+     * 分组指定用户连接详情
+     * @param request
+     * @param response
+     * @param uid
+     * @param gid
+     * @param mobileno
+     * @param pageNo
+     * @param pageSize
+     */
     @ResponseBody()
     @RequestMapping(value = "/user/detail", method = {RequestMethod.POST})
     public void group_user_detail(
@@ -301,6 +310,19 @@ public class GroupController extends BaseController{
 		}
     }
     
+    /**
+     * 分组用户连接数统计
+     * 
+     * 用户认证数
+     * 用户连接总数
+     * 用户数
+     * @param request
+     * @param response
+     * @param uid
+     * @param gid
+     * @param beginTime
+     * @param endTime
+     */
     @ResponseBody()
     @RequestMapping(value = "/user/count", method = {RequestMethod.POST})
     public void group_user_count(
