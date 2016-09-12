@@ -184,9 +184,11 @@
 			</if>
 	    </where> 
 	    GROUP BY hdmac 
-	    LIMIT 
-	    #{pn},
-	    #{ps};
+		<if test="pn!=null and ps !=null">
+			LIMIT 
+	    	#{pn},
+	   		#{ps}
+		</if>
 	</select>
 	
 	<select id="selectGroupUsersRank" resultMap="GroupUsersRankMap" parameterType="map">

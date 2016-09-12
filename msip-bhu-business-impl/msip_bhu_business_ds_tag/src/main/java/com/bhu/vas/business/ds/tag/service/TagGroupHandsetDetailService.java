@@ -45,8 +45,10 @@ public class TagGroupHandsetDetailService
 		map.put("gid", gid);
 		map.put("beginTime", beginTime);
 		map.put("endTime", endTime);
-		map.put("pn", (pageNo - 1) * PageSize);
-		map.put("ps", PageSize);
+		if (pageNo != 0 && PageSize !=0) {
+			map.put("pn", (pageNo - 1) * PageSize);
+			map.put("ps", PageSize);
+		}
 
 		return this
 				.getEntityDao()

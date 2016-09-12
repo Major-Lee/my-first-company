@@ -27,6 +27,7 @@
 		<typeAlias alias="tagGroupRelation"
 			type="com.bhu.vas.api.rpc.tag.model.TagGroupRelation" />
 		<typeAlias alias="tagGroupHandsetDetail" type="com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail" />
+		<typeAlias alias="tagGroupSortMessage" type="com.bhu.vas.api.rpc.tag.model.TagGroupSortMessage" />
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin"> 
@@ -39,6 +40,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/tag/model/sqlMapper/TagGroup.sqlMap.xml" />
 		<mapper	resource="com/bhu/vas/api/rpc/tag/model/sqlMapper/TagGroupRelation.sqlMap.xml" />
 		<mapper	resource="com/bhu/vas/api/rpc/tag/model/sqlMapper/TagGroupHandsetDetail.sqlMap.xml" />
+		<mapper	resource="com/bhu/vas/api/rpc/tag/model/sqlMapper/TagGroupSortMessage.sqlMap.xml" />
 	</mappers>
 
 </configuration>

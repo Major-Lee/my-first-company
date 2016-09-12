@@ -1,5 +1,7 @@
 package com.bhu.vas.business.ds.tag.dao;
 
+import org.springframework.stereotype.Repository;
+
 import com.bhu.vas.api.rpc.tag.model.TagGroupSortMessage;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractTagDao;
 
@@ -8,6 +10,7 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractTagDao;
  * @author xiaowei
  *
  */
+@Repository
 public class TagGroupSortMessageDao extends AbstractTagDao<Integer, TagGroupSortMessage>{
 
 }

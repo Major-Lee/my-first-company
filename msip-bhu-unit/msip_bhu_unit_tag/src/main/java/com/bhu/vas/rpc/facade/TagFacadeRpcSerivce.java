@@ -21,16 +21,19 @@ import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
+import com.bhu.vas.api.rpc.tag.model.TagGroupSortMessage;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupRankUsersVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupSendSortMessageVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserConnectDataVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
+import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
@@ -41,10 +44,13 @@ import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupHandsetDetailService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
+import com.bhu.vas.business.ds.tag.service.TagGroupSortMessageService;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
+import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
+import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.ArrayHelper;
@@ -101,6 +107,15 @@ public class TagFacadeRpcSerivce {
 	
 	@Resource
 	private UserIdentityAuthService userIdentityAuthService;
+	
+	@Resource
+	private UserWalletService userWalletService;
+	
+	@Resource
+	private TagGroupSortMessageService tagGroupSortMessageService;
+	
+	@Resource UserWalletFacadeService userWalletFacadeService;
+	
 	private void addTag(int uid, String tag) {
 
 		ModelCriteria mc = new ModelCriteria();
@@ -817,4 +832,51 @@ public class TagFacadeRpcSerivce {
 		return vto;
 	}
 	
+	public TagGroupSendSortMessageVTO groupSendSortMessage(int uid ,int gid ,int count,String context,String startTime, String endTime){
+		
+		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, startTime, endTime,0,0);
+		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
+		for(Map<String, Object> map : handsetMap){
+			TagGroupHandsetDetailVTO vto = BusinessTagModelBuilder.builderGroupUserDetailFilterVTO(map,count);
+			if(vto == null)
+				continue;
+			vtos.add(vto);
+		}
+		TagGroupSendSortMessageVTO vto = new TagGroupSendSortMessageVTO();	
+		UserWallet uwallet = userWalletService.getById(uid);
+		long total_vcurrency = (uwallet.getVcurrency()+uwallet.getVcurrency_bing());
+		
+		if(!vtos.isEmpty()){
+			boolean flag = false;
+			int sm_count = vtos.size();
+			long vcurrency_cost = userWalletFacadeService.getSMSPromotionSpendvcurrency(uid,sm_count);
+			vto.setTotal_vcurrency(total_vcurrency);
+			vto.setSm_count(sm_count);
+			vto.setVcurrency_cost(vcurrency_cost);
+			if(total_vcurrency >= vcurrency_cost){
+				vto.setMessage(String.format("当前虎钻余额%s颗", total_vcurrency));
+				flag = true;
+			}else{
+				vto.setMessage(String.format("当前虎钻余额%s颗,余额不足,请充值", total_vcurrency));
+			}
+			
+			if(flag){
+				List<String> mobilenoList = new ArrayList<String>();
+				for(TagGroupHandsetDetailVTO detailVto: vtos){
+					mobilenoList.add(detailVto.getMobileno());
+				}
+				TagGroupSortMessage tagGroupSortMessage = new TagGroupSortMessage();
+				tagGroupSortMessage.setGid(gid);
+				tagGroupSortMessage.setContext(context);
+				tagGroupSortMessage.setStart(startTime);
+				tagGroupSortMessage.setEnd(endTime);
+				tagGroupSortMessage.setConnect(count);
+				tagGroupSortMessage.replaceInnerModels(mobilenoList);
+				tagGroupSortMessage.setSmtotal(sm_count);
+				TagGroupSortMessage resultEntity =  tagGroupSortMessageService.insert(tagGroupSortMessage);
+				vto.setTaskid(resultEntity.getId());
+			}
+		}
+		return vto;
+	}
 }

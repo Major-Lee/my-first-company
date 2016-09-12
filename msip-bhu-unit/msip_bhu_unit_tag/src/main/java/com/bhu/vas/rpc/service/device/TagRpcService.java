@@ -10,6 +10,7 @@ import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupSendSortMessageVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
@@ -339,6 +340,28 @@ public class TagRpcService implements ITagRpcService {
 		try {
 			TagGroupUserStatisticsConnectVTO result = tagFacadeRpcSerivce.groupUserStatisticsConnect(uid, 
 					gid, startTime, endTime,pageNo, pageSize);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+		} catch (BusinessI18nCodeException bex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("groupUserStatisticsConnect Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	public RpcResponseDTO<TagGroupSendSortMessageVTO> groupSendSortMessage(int uid ,int gid ,int count,String context,Long beginTime,
+			Long endTime) {
+		logger.info(String.format("groupSendSortMessage uid[%s] gid[%s] count[%s] context[%s] beginTime[%s] endTime[%s]", 
+				uid,gid, count, context, beginTime, endTime));
+		String beginTimeStr = null;
+		String endTimeStr = null;
+		if(beginTime !=null && endTime!=null){
+			beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
+			endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
+		}
+		try {
+			TagGroupSendSortMessageVTO result = tagFacadeRpcSerivce.groupSendSortMessage(uid, 
+					gid, count ,context,beginTimeStr, endTimeStr);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		} catch (BusinessI18nCodeException bex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
