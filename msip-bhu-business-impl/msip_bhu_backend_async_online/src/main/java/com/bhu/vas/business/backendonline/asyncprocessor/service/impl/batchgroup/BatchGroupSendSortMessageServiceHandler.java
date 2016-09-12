@@ -48,6 +48,7 @@ public class BatchGroupSendSortMessageServiceHandler implements IMsgHandlerServi
 		if(StringUtils.isNotEmpty(smsg)){
 			String response = SmsSenderFactory.buildSender(
 				BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, accs);
+			logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",accs.toString(),smsg,response));
 		}
 		
 		logger.info(String.format("process message[%s] successful", message));
