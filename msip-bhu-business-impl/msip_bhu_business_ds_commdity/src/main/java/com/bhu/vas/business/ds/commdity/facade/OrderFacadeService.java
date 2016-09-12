@@ -821,7 +821,7 @@ public class OrderFacadeService {
 		//商品信息验证
 		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 		//验证商品是否合理
-		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.VideoInternetLimit)){
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.SMSPromotionLimit)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
 		}
 		

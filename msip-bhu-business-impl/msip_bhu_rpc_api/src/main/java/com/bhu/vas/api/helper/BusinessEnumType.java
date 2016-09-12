@@ -563,6 +563,7 @@ public class BusinessEnumType {
 		RechargeVCurrency(3,"充值虚拟币","充值虚拟币"),
 		SMSInternetLimit(10,"短信认证上网","短信认证上网"),
 		VideoInternetLimit(6,"视频认证上网","视频认证上网"),
+		SMSPromotionLimit(7,"短信营销商品","短信营销商品"),
 		RewardInternetLimit(0,"打赏上网","打赏上网"),
 		;
 		private Integer category;
