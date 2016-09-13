@@ -22,6 +22,7 @@
         <module>msip-bhu-business-impl/msip_bhu_business_ds</module>
         <module>msip-bhu-business-impl/msip_bhu_business_ds_commdity</module>
 		<module>msip-bhu-business-impl/msip_bhu_business_ds_portrait</module>
+		<module>msip-bhu-business-impl/msip_bhu_business_ds_payment_pro</module>
 <!--        <module>msip-bhu-business-impl/msip_bhu_business_ds_social</module>
 -->
         <module>msip-bhu-business-impl/msip_bhu_business_ds_tag</module>
@@ -68,6 +69,7 @@
     -->
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task_statistics</module>
+		<module>msip-bhu-business-impl/msip_bhu_backend_task_payment</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task_applies_notify</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_commdity</module>
 		<module>msip-bhu-business-impl/msip_bhu_backend_terminal_status</module>
@@ -187,6 +189,11 @@
             <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_ds_commdity</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+			<dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_ds_payment_pro</artifactId>
                 <version>${project.version}</version>
             </dependency>
 			 <dependency>
