@@ -83,4 +83,6 @@ public interface ITagRpcService {
 	RpcResponseDTO<TagGroupSendSortMessageVTO> generateGroupSendSMSTask(int uid,
 			int gid, int count, String context, Long beginTime, Long endTime);
 
+	RpcResponseDTO<Boolean> executeSendTask(int uid, int taskid);
+
 }

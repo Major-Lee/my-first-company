@@ -833,7 +833,16 @@ public class TagFacadeRpcSerivce {
 		
 		return vto;
 	}
-	
+	/**
+	 * 创建发送短信任务，实现生成好需要发送的信息
+	 * @param uid
+	 * @param gid
+	 * @param count
+	 * @param context
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
 	public TagGroupSendSortMessageVTO generateGroupSendSMSTask(int uid ,int gid ,int count,String context,String startTime, String endTime){
 		
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, startTime, endTime,0,0);
@@ -851,16 +860,16 @@ public class TagFacadeRpcSerivce {
 		if(!dtos.isEmpty()){
 			boolean flag = false;
 			int sm_count = dtos.size();
-			long vcurrency_cost = userWalletFacadeService.getSMSPromotionSpendvcurrency(uid,sm_count);
-			vto.setTotal_vcurrency(total_vcurrency);
-			vto.setSm_count(sm_count);
-			vto.setVcurrency_cost(vcurrency_cost);
-			if(total_vcurrency >= vcurrency_cost){
-				vto.setMessage(String.format("当前虎钻余额%s颗", total_vcurrency));
-				flag = true;
-			}else{
-				vto.setMessage(String.format("当前虎钻余额%s颗,余额不足,请充值", total_vcurrency));
-			}
+//			long vcurrency_cost = userWalletFacadeService.getSMSPromotionSpendvcurrency(uid,sm_count);
+//			vto.setTotal_vcurrency(total_vcurrency);
+//			vto.setSm_count(sm_count);
+//			vto.setVcurrency_cost(vcurrency_cost);
+//			if(total_vcurrency >= vcurrency_cost){
+//				vto.setMessage(String.format("当前虎钻余额%s颗", total_vcurrency));
+//				flag = true;
+//			}else{
+//				vto.setMessage(String.format("当前虎钻余额%s颗,余额不足,请充值", total_vcurrency));
+//			}
 			
 			if(flag){
 				List<String> mobilenoList = new ArrayList<String>();
@@ -886,8 +895,8 @@ public class TagFacadeRpcSerivce {
 	public boolean executeSendTask(int uid ,int taskid){
 		TagGroupSortMessage entity =tagGroupSortMessageService.getById(taskid);
 		if(entity !=null && entity.getUid() == uid){
-			OrderSMSPromotionDTO dto = userWalletFacadeService.vcurrencyFromUserWalletForSMSPromotion(uid, TagGroupSortMessage.commdityId, entity.getSmtotal(), TagGroupSortMessage.commdityDesc);
-			asyncDeliverMessageService.sentGroupSmsActionMessage(uid, taskid, dto.getId());
+//			OrderSMSPromotionDTO dto = userWalletFacadeService.vcurrencyFromUserWalletForSMSPromotion(uid, TagGroupSortMessage.commdityId, entity.getSmtotal(), TagGroupSortMessage.commdityDesc);
+			asyncDeliverMessageService.sentGroupSmsActionMessage(uid, taskid, "000");
 		}else{
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_TASK_NOT_EXIST);
 		}

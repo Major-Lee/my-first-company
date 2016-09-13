@@ -33,7 +33,7 @@ public class BatchGroupSendSortMessageServiceHandler implements IMsgHandlerServi
 		TagGroupSortMessage entity = tagGroupSortMessageService.getById(taskid);
 		entity.setOrderid(commdityid);
 		entity.setState(TagGroupSortMessage.doing);
-
+		tagGroupSortMessageService.update(entity);
 		String smsg = String.format(BusinessRuntimeConfiguration.Internal_group_Template, entity.getContext());
 		
 		Set<String> accSet = entity.getInnerModels();
@@ -50,7 +50,8 @@ public class BatchGroupSendSortMessageServiceHandler implements IMsgHandlerServi
 				BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, accs);
 			logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",accs.toString(),smsg,response));
 		}
-		
+		entity.setState(TagGroupSortMessage.done);
+		tagGroupSortMessageService.update(entity);
 		logger.info(String.format("process message[%s] successful", message));
 	}
 }

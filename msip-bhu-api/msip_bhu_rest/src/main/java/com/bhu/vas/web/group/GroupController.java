@@ -431,4 +431,26 @@ public class GroupController extends BaseController{
     			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     		}
         }
+        
+        /**
+         * 执行分组发短信任务
+         * @param request
+         * @param response
+         * @param uid
+         * @param taskid
+         */
+        @ResponseBody()
+        @RequestMapping(value = "/execute/task", method = {RequestMethod.POST})
+        public void group_send_sm(
+                HttpServletRequest request,
+                HttpServletResponse response,
+                @RequestParam(required = true) int uid,
+                @RequestParam(required = true) int taskid) {
+        	RpcResponseDTO<Boolean> rpcResult = tagRpcService.executeSendTask(uid ,taskid);
+    		if(!rpcResult.hasError()){
+    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    		}else{
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		}
+        }
 }

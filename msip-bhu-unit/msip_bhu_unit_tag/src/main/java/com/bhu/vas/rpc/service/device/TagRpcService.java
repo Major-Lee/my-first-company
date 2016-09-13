@@ -349,6 +349,7 @@ public class TagRpcService implements ITagRpcService {
 		}
 	}
 	
+	@Override
 	public RpcResponseDTO<TagGroupSendSortMessageVTO> generateGroupSendSMSTask(int uid ,int gid ,int count,String context,Long beginTime,
 			Long endTime) {
 		logger.info(String.format("groupSendSortMessage uid[%s] gid[%s] count[%s] context[%s] beginTime[%s] endTime[%s]", 
@@ -362,6 +363,20 @@ public class TagRpcService implements ITagRpcService {
 		try {
 			TagGroupSendSortMessageVTO result = tagFacadeRpcSerivce.generateGroupSendSMSTask(uid, 
 					gid, count ,context,beginTimeStr, endTimeStr);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+		} catch (BusinessI18nCodeException bex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("groupUserStatisticsConnect Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> executeSendTask(int uid ,int taskid) {
+		logger.info(String.format("executeSendTask uid[%s] taskid[%s]", uid,taskid));
+		try {
+			boolean result = tagFacadeRpcSerivce.executeSendTask(uid, taskid);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		} catch (BusinessI18nCodeException bex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
