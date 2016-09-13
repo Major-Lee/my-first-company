@@ -35,9 +35,7 @@ public class BatchGroupSendSortMessageServiceHandler implements IMsgHandlerServi
 		entity.setOrderid(orderid);
 		entity.setState(TagGroupSortMessage.doing);
 		
-		System.out.println(JsonHelper.getJSONString(entity));
 		tagGroupSortMessageService.update(entity);
-		System.out.println("222222222");
 		
 		String smsg = String.format(BusinessRuntimeConfiguration.Internal_group_Template, entity.getContext());
 		
