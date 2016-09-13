@@ -2,6 +2,7 @@ package com.bhu.vas.business.ds.commdity.facade;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Resource;
 
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
+import com.bhu.vas.api.dto.commdity.OrderSMSPromotionDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
@@ -22,18 +24,22 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
+import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.PermissionThroughNotifyFactoryBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
+import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -52,6 +58,12 @@ public class OrderFacadeService {
 	
 	@Resource
 	private CommdityFacadeService commdityFacadeService;
+	
+	@Resource
+	private UserService userService;
+	
+	@Resource
+	private UserWalletFacadeService userWalletFacadeService;
 	
 	/**
 	 * 查询最近的一条满足条件的订单
@@ -839,5 +851,64 @@ public class OrderFacadeService {
 		orderService.insert(order);
 		
 		return order;
+	}
+	/***
+	 * @param uid 用户id
+	 * @param count 短信数目
+	 * 
+	 * */
+	public long getSMSPromotionSpendvcurrency(int uid,int count){
+		long cost_vcurrency = 20*count;
+		return cost_vcurrency;
+		
+	}
+	
+	public OrderSMSPromotionDTO vcurrencyFromUserWalletForSMSPromotion(int uid, int commdityid, int count,String desc){
+		logger.info(String.format("vcurrencyFromUserWalletForSMSPromotion uid[%s] commdityid[%s] count[%s] desc[%s]",
+				uid,commdityid,count,desc));
+		long cost_vcurrency = getSMSPromotionSpendvcurrency(uid, count);
+		User bindUser = userService.getById(uid);
+		Order order = createSMSPromotionOrder(commdityid, bindUser, cost_vcurrency);
+		if (order == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
+		final AtomicLong vcurrency_current_leave = new AtomicLong(0l);
+		SnkAuthenticateResultType ret = userWalletFacadeService.deductVcurrencyForSMSPromotion(uid,order.getId(),order.getVcurrency(),desc,new IWalletVCurrencySpendCallback(){
+
+			@Override
+			public boolean beforeCheck(int uid, long vcurrency_cost, long vcurrency_has) {
+				if(vcurrency_has < vcurrency_cost){
+					return false;
+				}else{
+					return true;
+				}
+			}
+
+			@Override
+			public String after(int uid, long vcurrency_leave) {
+				vcurrency_current_leave.addAndGet(vcurrency_leave);
+				return null;
+			}
+		});
+		if (ret == SnkAuthenticateResultType.Success){
+			order.setPaymented_at(new Date());
+			order.setStatus(OrderStatus.PaySuccessed.getKey());
+			order.setProcess_status(OrderProcessStatus.SharedealCompleted.getKey());
+			
+			OrderSMSPromotionDTO dto = new OrderSMSPromotionDTO();
+			dto.setId(order.getId());
+			dto.setUid(order.getUid().intValue());
+			dto.setVcurrency_cost(order.getVcurrency());
+			logger.info(String.format("SMSPromotion successfully [%s]", dto.toString()));
+			return dto;
+		}else if(ret == SnkAuthenticateResultType.FailedThresholdVcurrencyNotsufficient){
+			logger.info(String.format("vcurrencyFromUserWalletForSMSPromotion failed ErrInfo[Vcurrency Not sufficient]"));
+			throw new BusinessI18nCodeException(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_NOTSUFFICIENT,new String[]{""});
+		}else if (ret == SnkAuthenticateResultType.Failed){
+			logger.info(String.format("vcurrencyFromUserWalletForSMSPromotion failed ErrInfo[Vcurrency deduct failed]"));
+			throw new BusinessI18nCodeException(ResponseErrorCode.ORDER_PAYMENT_VCURRENCY_DEDUCT_FAILED,new String[]{""});
+		}
+		
+		return null;
+		
 	}
 }
