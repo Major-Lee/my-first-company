@@ -5,7 +5,7 @@ import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 
 public class BatchGroupSendSortMessageDTO extends AsyncDTO{
 	private int taskid;
-	private String commdityid;
+	private String orderid;
 	
 	
 	public int getTaskid() {
@@ -17,14 +17,16 @@ public class BatchGroupSendSortMessageDTO extends AsyncDTO{
 	public void setTaskid(int taskid) {
 		this.taskid = taskid;
 	}
+	
 
-
-	public String getCommdityid() {
-		return commdityid;
+	public String getOrderid() {
+		return orderid;
 	}
 
-	public void setCommdityid(String commdityid) {
-		this.commdityid = commdityid;
+
+
+	public void setOrderid(String orderid) {
+		this.orderid = orderid;
 	}
 
 

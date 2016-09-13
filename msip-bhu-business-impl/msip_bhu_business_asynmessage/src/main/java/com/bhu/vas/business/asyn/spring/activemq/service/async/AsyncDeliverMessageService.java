@@ -130,11 +130,11 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sentGroupSmsActionMessage(int uid , int taskid,String commdityid){
+	public void sentGroupSmsActionMessage(int uid , int taskid,String orderid){
 		BatchGroupSendSortMessageDTO dto = new BatchGroupSendSortMessageDTO();
 		dto.setUid(uid);
 		dto.setTaskid(taskid);
-		dto.setCommdityid(commdityid);
+		dto.setOrderid(orderid);
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 }
