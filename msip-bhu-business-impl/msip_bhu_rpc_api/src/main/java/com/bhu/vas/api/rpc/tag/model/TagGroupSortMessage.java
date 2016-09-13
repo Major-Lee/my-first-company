@@ -21,7 +21,7 @@ public class TagGroupSortMessage extends SetJsonExtIntModel<String> implements S
 	
 	private int gid;
 	private int uid;
-	private String goodsid;
+	private String orderid;
 	private String context;
 	private String start;
 	private String end;
@@ -47,12 +47,12 @@ public class TagGroupSortMessage extends SetJsonExtIntModel<String> implements S
 		this.uid = uid;
 	}
 
-	public String getGoodsid() {
-		return goodsid;
+	public String getOrderid() {
+		return orderid;
 	}
 
-	public void setGoodsid(String goodsid) {
-		this.goodsid = goodsid;
+	public void setOrderid(String orderid) {
+		this.orderid = orderid;
 	}
 
 	public String getContext() {

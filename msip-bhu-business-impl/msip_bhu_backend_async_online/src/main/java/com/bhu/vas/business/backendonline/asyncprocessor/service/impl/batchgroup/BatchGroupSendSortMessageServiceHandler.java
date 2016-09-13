@@ -32,7 +32,7 @@ public class BatchGroupSendSortMessageServiceHandler implements IMsgHandlerServi
 		String orderid = dto.getOrderid();
 		
 		TagGroupSortMessage entity = tagGroupSortMessageService.getById(taskid);
-		entity.setGoodsid(orderid);
+		entity.setOrderid(orderid);
 		entity.setState(TagGroupSortMessage.doing);
 		
 		System.out.println(JsonHelper.getJSONString(entity));
