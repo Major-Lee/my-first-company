@@ -11,6 +11,7 @@ import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupSendSortMessageVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupSortMessageVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
@@ -377,6 +378,20 @@ public class TagRpcService implements ITagRpcService {
 		logger.info(String.format("executeSendTask uid[%s] taskid[%s]", uid,taskid));
 		try {
 			boolean result = tagFacadeRpcSerivce.executeSendTask(uid, taskid);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+		} catch (BusinessI18nCodeException bex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("groupUserStatisticsConnect Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	@Override
+	public RpcResponseDTO<TailPage<TagGroupSortMessageVTO>> sendMessageDetail(int uid ,int gid,int pageNo,int pageSize) {
+		logger.info(String.format("sendMessageDetail uid[%s] gid[%s] pageNo[%s] pageSize[%s]", uid,gid,pageNo,pageSize));
+		try {
+			TailPage<TagGroupSortMessageVTO> result = tagFacadeRpcSerivce.sendMessageDetail(uid, gid,pageNo,pageSize);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		} catch (BusinessI18nCodeException bex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

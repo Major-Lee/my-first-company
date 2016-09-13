@@ -10,6 +10,7 @@ import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupSendSortMessageVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupSortMessageVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagNameVTO;
@@ -84,5 +85,8 @@ public interface ITagRpcService {
 			int gid, int count, String context, Long beginTime, Long endTime);
 
 	RpcResponseDTO<Boolean> executeSendTask(int uid, int taskid);
+
+	RpcResponseDTO<TailPage<TagGroupSortMessageVTO>> sendMessageDetail(int uid,
+			int gid, int pageNo, int pageSize);
 
 }

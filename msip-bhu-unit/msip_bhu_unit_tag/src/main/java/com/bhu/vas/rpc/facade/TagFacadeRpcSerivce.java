@@ -31,6 +31,7 @@ import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupRankUsersVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupSendSortMessageVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupSortMessageVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserConnectDataVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
@@ -893,7 +894,11 @@ public class TagFacadeRpcSerivce {
 	
 	public boolean executeSendTask(int uid ,int taskid){
 		TagGroupSortMessage entity =tagGroupSortMessageService.getById(taskid);
+
 		if(entity !=null && entity.getUid() == uid){
+			if(!entity.getState().equals(TagGroupSortMessage.deafult)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_TASK_AlREADY_DONE);
+			}
 			OrderSMSPromotionDTO dto = orderFacadeService.vcurrencyFromUserWalletForSMSPromotion(uid, TagGroupSortMessage.commdityId, entity.getSmtotal(), TagGroupSortMessage.commdityDesc);
 			asyncDeliverMessageService.sentGroupSmsActionMessage(uid, taskid, dto.getId());
 		}else{
@@ -901,4 +906,31 @@ public class TagFacadeRpcSerivce {
 		}
 		return true;
 	}
+	
+	public TailPage<TagGroupSortMessageVTO> sendMessageDetail(int uid ,int gid,int pageNo,int pageSize){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("gid", gid);
+		mc.setPageNumber(pageNo);
+		mc.setPageSize(pageSize);
+		List<TagGroupSortMessage> list = tagGroupSortMessageService.findModelByModelCriteria(mc);
+		List<TagGroupSortMessageVTO> vtos = new ArrayList<TagGroupSortMessageVTO>();
+		for(TagGroupSortMessage entity : list){
+			vtos.add(builderSendMEssageVTO(entity));
+		}
+		return new CommonPage<TagGroupSortMessageVTO>(pageNo, pageSize, vtos.size(), vtos);
+	}
+	
+	private TagGroupSortMessageVTO builderSendMEssageVTO(TagGroupSortMessage entity){
+		TagGroupSortMessageVTO vto = new TagGroupSortMessageVTO();
+		TagGroup groupEntity = tagGroupService.getById(entity.getGid());
+		vto.setGroupName(groupEntity.getName());
+		vto.setContext(entity.getContext());
+		vto.setCount(entity.getConnect());
+		vto.setSendCount(entity.getSmtotal());
+		vto.setSendTime(entity.getCreated_at());
+		vto.setStart(entity.getStart());
+		vto.setEnd(entity.getEnd());
+		return vto;
+	}
+	
 }

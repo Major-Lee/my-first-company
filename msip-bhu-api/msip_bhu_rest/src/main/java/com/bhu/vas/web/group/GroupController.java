@@ -22,6 +22,7 @@ import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupSendSortMessageVTO;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupSortMessageVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
@@ -441,12 +442,38 @@ public class GroupController extends BaseController{
          */
         @ResponseBody()
         @RequestMapping(value = "/execute/task", method = {RequestMethod.POST})
-        public void group_send_sm(
+        public void group_execute_task(
                 HttpServletRequest request,
                 HttpServletResponse response,
                 @RequestParam(required = true) int uid,
                 @RequestParam(required = true) int taskid) {
         	RpcResponseDTO<Boolean> rpcResult = tagRpcService.executeSendTask(uid ,taskid);
+    		if(!rpcResult.hasError()){
+    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    		}else{
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		}
+        }
+        
+        /**
+         * 短信营销详情
+         * @param request
+         * @param response
+         * @param uid
+         * @param gid
+         * @param pageNo
+         * @param pageSize
+         */
+        @ResponseBody()
+        @RequestMapping(value = "/sm/detail", method = {RequestMethod.POST})
+        public void send_message_detail(
+                HttpServletRequest request,
+                HttpServletResponse response,
+                @RequestParam(required = true) int uid,
+                @RequestParam(required = true) int gid,
+                @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
+        	RpcResponseDTO<TailPage<TagGroupSortMessageVTO>> rpcResult = tagRpcService.sendMessageDetail(uid, gid, pageNo, pageSize);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
