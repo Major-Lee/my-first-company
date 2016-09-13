@@ -51,7 +51,6 @@ import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
-import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
@@ -123,8 +122,6 @@ public class UserWalletFacadeService{
 	@Resource
 	private OrderFacadeService orderFacadeService;
 	
-	@Resource
-	private CommdityMessageService commdityMessageService;
 	
 	public GpathIncomeService getGpathIncomeService() {
 		return gpathIncomeService;
@@ -1273,11 +1270,8 @@ public class UserWalletFacadeService{
 		long cost_vcurrency = getSMSPromotionSpendvcurrency(uid,count);
 		User bindUser = userService.getById(uid);
 		Order order = orderFacadeService.createSMSPromotionOrder(commdityid, bindUser, cost_vcurrency);
-		if (order == null){
+		if (order == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST); 
-		}else{
-			commdityMessageService.sendOrderCreatedMessage(order.getId());
-		}
 		
 		final AtomicLong vcurrency_current_leave = new AtomicLong(0l);
 		SnkAuthenticateResultType ret = deductVcurrencyForSMSPromotion(uid,order.getId(),order.getVcurrency(),desc,new IWalletVCurrencySpendCallback(){

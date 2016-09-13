@@ -43,11 +43,6 @@
         
         <dependency>
             <groupId>com.bhu</groupId>
-            <artifactId>msip_bhu_business_asynmessage</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_i18n</artifactId>
         </dependency>
 		<dependency>
