@@ -891,8 +891,9 @@ public class OrderFacadeService {
 		});
 		if (ret == SnkAuthenticateResultType.Success){
 			order.setPaymented_at(new Date());
-			order.setStatus(OrderStatus.PaySuccessed.getKey());
+			order.setStatus(OrderStatus.DeliverCompleted.getKey());
 			order.setProcess_status(OrderProcessStatus.SharedealCompleted.getKey());
+			orderService.update(order);
 			
 			OrderSMSPromotionDTO dto = new OrderSMSPromotionDTO();
 			dto.setId(order.getId());
