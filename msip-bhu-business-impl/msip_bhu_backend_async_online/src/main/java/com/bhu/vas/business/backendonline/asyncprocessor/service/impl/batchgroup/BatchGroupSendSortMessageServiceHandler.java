@@ -29,11 +29,16 @@ public class BatchGroupSendSortMessageServiceHandler implements IMsgHandlerServi
 		logger.info(String.format("process message[%s]", message));
 		final BatchGroupSendSortMessageDTO dto = JsonHelper.getDTO(message, BatchGroupSendSortMessageDTO.class);
 		int taskid = dto.getTaskid();
-		String commdityid = dto.getCommdityid();
+		String orderid = dto.getOrderid();
+		
 		TagGroupSortMessage entity = tagGroupSortMessageService.getById(taskid);
-		entity.setOrderid(commdityid);
+		entity.setOrderid(orderid);
 		entity.setState(TagGroupSortMessage.doing);
+		
+		System.out.println(JsonHelper.getJSONString(entity));
 		tagGroupSortMessageService.update(entity);
+		System.out.println("222222222");
+		
 		String smsg = String.format(BusinessRuntimeConfiguration.Internal_group_Template, entity.getContext());
 		
 		Set<String> accSet = entity.getInnerModels();
