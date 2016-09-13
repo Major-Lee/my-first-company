@@ -790,7 +790,7 @@ public class TagFacadeRpcSerivce {
 		Date date = null;
 		Date dateDaysAgo = null;
 		List<TagGroupUserConnectDataVTO> vtos = new ArrayList<TagGroupUserConnectDataVTO>();
-		for (int i = 1; i <= count;i++){
+		for (int i = 0; i <= count;i++){
 			date = DateTimeHelper.fromDateStr(startTime);
 			dateDaysAgo = DateTimeHelper.getDateDaysAfter(date, i);
 			TagGroupUserConnectDataVTO vto = new TagGroupUserConnectDataVTO();
