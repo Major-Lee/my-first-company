@@ -62,8 +62,8 @@
 	<sql id="modelUpdateValues">
 		id = #{id},
 		uid = #{uid},
-		gid = #{gid}
-		orderid = #{orderid}
+		gid = #{gid},
+		orderid = #{orderid},
 		context = #{context},
 		start = #{start},
 		end = #{end},
