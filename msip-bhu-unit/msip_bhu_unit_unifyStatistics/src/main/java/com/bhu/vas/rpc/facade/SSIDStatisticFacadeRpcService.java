@@ -1012,6 +1012,7 @@ public class SSIDStatisticFacadeRpcService {
 	
 	public SsidStatisticsOutLineVTO sSIDStatisticsOutLineInfo(){
 		SsidStatisticsOutLineVTO vto=new SsidStatisticsOutLineVTO();
+		
 		return vto;
 	}
 	

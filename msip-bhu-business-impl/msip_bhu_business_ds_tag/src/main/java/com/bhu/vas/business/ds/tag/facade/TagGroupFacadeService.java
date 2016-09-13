@@ -13,11 +13,13 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.rpc.tag.dto.TagGroupHandsetDetailDTO;
+import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresentHashService;
+import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupHandsetDetailService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
@@ -26,6 +28,7 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -42,9 +45,21 @@ public class TagGroupFacadeService {
 	@Resource
 	private TagGroupHandsetDetailService tagGroupHandsetDetailService;
 	
+	@Resource
+	private TagDevicesService tagDevicesService;
+	
 	@Resource 
 	private UserIdentityAuthFacadeService userIdentityAuthFacadeService;
 	
+	
+	public TagDevicesService getTagDevicesService() {
+		return tagDevicesService;
+	}
+
+	public void setTagDevicesService(TagDevicesService tagDevicesService) {
+		this.tagDevicesService = tagDevicesService;
+	}
+
 	public List<String> findGroupNamesByMacs(List<String> macs){
 		if(macs == null || macs.isEmpty()) return Collections.emptyList();
 		
@@ -146,6 +161,7 @@ public class TagGroupFacadeService {
 		}
 		return entitys.get(0);
 	}
+	
 	
 	private boolean isNewHandset(String hdmac,int gid){
 		boolean flag = false;

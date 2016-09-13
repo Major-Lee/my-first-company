@@ -87,6 +87,14 @@ public class WifiDevice extends BaseStringModel{
 	private String last_start_at;
 	//最后一次登录时间
 	private Date last_reged_at;
+	
+	/*Start By Lapaus 2016-09-13 add field channel_lv1 and channel_lv2 */
+	//一级出货渠道
+	private String channel_lv1;
+	//二级出货渠道
+	private String channel_lv2;
+	/*End By Lapaus 2016-09-13 add field channel_lv1 and channel_lv2 */
+	
 	//最后一次登出时间
 	private Date last_logout_at;
 	//第一次设备注册时间
@@ -471,6 +479,22 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setFirst_reged_at(Date first_reged_at) {
 		this.first_reged_at = first_reged_at;
+	}
+
+	public String getChannel_lv1() {
+		return channel_lv1;
+	}
+
+	public void setChannel_lv1(String channel_lv1) {
+		this.channel_lv1 = channel_lv1;
+	}
+
+	public String getChannel_lv2() {
+		return channel_lv2;
+	}
+
+	public void setChannel_lv2(String channel_lv2) {
+		this.channel_lv2 = channel_lv2;
 	}
 	
 }

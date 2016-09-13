@@ -137,6 +137,14 @@ public class DeviceFacadeService{
 		return null;
 	}
 	
+	public WifiDeviceService getWifiDeviceService() {
+		return wifiDeviceService;
+	}
+
+	public void setWifiDeviceService(WifiDeviceService wifiDeviceService) {
+		this.wifiDeviceService = wifiDeviceService;
+	}
+
 	/**
 	 * 更新设备的行业信息
 	 * @param mac

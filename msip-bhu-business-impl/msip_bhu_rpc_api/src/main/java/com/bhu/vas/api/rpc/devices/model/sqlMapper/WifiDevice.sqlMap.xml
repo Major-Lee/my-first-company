@@ -51,6 +51,9 @@
     <result property="last_logout_at" column="last_logout_at"/>
     <result property="first_reged_at" column="first_reged_at"/>
     
+    <result property="channel_lv1" column="channel_lv1"/>
+    <result property="channel_lv2" column="channel_lv2"/>
+    
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -104,6 +107,8 @@
 	    	last_reged_at,
 	    	last_logout_at,
 	    	first_reged_at,
+	    	channel_lv1,
+	    	channel_lv2,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -151,6 +156,8 @@
 	    	last_reged_at,
 	    	last_logout_at,
 	    	first_reged_at,
+	    	channel_lv1,
+	    	channel_lv2,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -199,6 +206,8 @@
 	    	#{last_reged_at},
 	    	#{last_logout_at},
 	    	#{first_reged_at},
+	    	#{channel_lv1},
+	    	#{channel_lv2},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -244,6 +253,8 @@
 	    	last_start_at = #{last_start_at},
 	    	last_reged_at = #{last_reged_at},
 	    	last_logout_at = #{last_logout_at},
+	    	channel_lv1=#{channel_lv1},
+	    	channel_lv2=#{channel_lv2},
 	    	first_reged_at = #{first_reged_at},
 	    	updated_at = #{updated_at}
 	</sql>
