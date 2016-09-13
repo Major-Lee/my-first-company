@@ -983,8 +983,9 @@ public class AsyncMsgHandleService {
 		WifiDeviceSettingQueryDTO dto = JsonHelper.getDTO(message, WifiDeviceSettingQueryDTO.class);
 		final List<String> cmdPayloads = dto.getPayloads() == null ? new ArrayList<String>() : dto.getPayloads();
 		// if(cmdPayloads == null) cmdPayloads = new ArrayList<String>();
-
 		String mac = dto.getMac();
+		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		int status = dto.getRefresh_status();
 		// 只有urouter设备才会执行
 		// 配置状态如果为恢复出厂 则清空设备的相关业务数据,只限于家用 TU uRouter
 		/*
@@ -1000,8 +1001,17 @@ public class AsyncMsgHandleService {
 		 * cmdPayloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(dto.getMac
 		 * (), WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer)); } } } }
 		 */
+		if (status == DeviceHelper.RefreashDeviceSetting_RestoreFactory && entity != null){
+			if(!entity.getQuery_from_device()){
+				entity.setQuery_from_device(true);
+				wifiDeviceSettingService.update(entity);
+				status = DeviceHelper.RefreashDeviceSetting_RestoreFactory_Can_Ignore;
+			}
+		}
+		
+			
 
-		if (DeviceHelper.RefreashDeviceSetting_RestoreFactory == dto.getRefresh_status()) {
+		if (DeviceHelper.RefreashDeviceSetting_RestoreFactory == status) {
 			try{
 				//reset解绑后发送push通知
 				DeviceResetPushDTO pushDto = new DeviceResetPushDTO();
@@ -1052,12 +1062,11 @@ public class AsyncMsgHandleService {
 			
 		} else {
 			//某些特殊版本首次上线，上报的恢复出厂可以被忽略 (yetao)
-			if (DeviceHelper.RefreashDeviceSetting_RestoreFactory_Can_Ignore == dto.getRefresh_status()) {
+			if (DeviceHelper.RefreashDeviceSetting_RestoreFactory_Can_Ignore == status) {
 				cmdPayloads.add(CMDBuilder.builderClearDeviceBootReset(dto.getMac(), CMDBuilder.AutoGen));
 			}
 			
 			// 检查设备配置中的设备绑定数据是否与服务器一致，如果不一致，下发数据同步配置
-			WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
 			if (entity != null) {
 				WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
 				WifiDeviceSettingSyskeyDTO syskey_dto = setting_dto.getSyskey();

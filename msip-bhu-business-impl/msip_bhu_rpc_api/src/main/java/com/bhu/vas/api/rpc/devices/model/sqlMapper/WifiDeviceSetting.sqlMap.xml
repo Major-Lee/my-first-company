@@ -6,6 +6,7 @@
 
   <resultMap id="modelResult" type="wifiDeviceSetting">
     <id property="id" column="id"/>
+    <id property="query_from_device" column="query_from_device"/>
     <result property="updated_at" column="updated_at"/>
     <result property="extension_content" column="extension_content"/>
   </resultMap>  
@@ -19,6 +20,7 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	query_from_device,
 	    	updated_at,
 	    	extension_content
 	    ]]>
@@ -26,17 +28,20 @@
 	
 	<sql id="modelInsertValues">
 	    	#{id},
+	    	#{query_from_device},
 	    	#{updated_at},
 	    	#{extension_content}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
+	    	query_from_device=#{query_from_device},
 	    	updated_at=#{updated_at},
 	    	extension_content=#{extension_content}
 	</sql> 		
 	
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+		    query_from_device,
 	    	updated_at,
 	    	extension_content
 	    ]]>
