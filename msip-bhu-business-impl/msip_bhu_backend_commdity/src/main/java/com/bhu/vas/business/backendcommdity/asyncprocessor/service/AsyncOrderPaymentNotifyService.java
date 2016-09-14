@@ -241,7 +241,7 @@ public class AsyncOrderPaymentNotifyService{
 				final String mac = order.getMac();
 				final String umac = order.getUmac();
 				OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
-				userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), order.getUmac(), amount, orderid, 
+				userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), order.getUmac(), amount, orderid, order.getPaymented_at(),
 						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
 								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP),
 								new IWalletSharedealNotifyCallback(){

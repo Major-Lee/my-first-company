@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.procedure;
 
+import java.util.Date;
+
 import org.apache.ibatis.type.JdbcType;
 
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
@@ -48,6 +50,18 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 	private String manufacturer_memo;
 	@IN(jdbcType = JdbcType.VARCHAR)
 	private String distributor_memo;
+	@IN(jdbcType = JdbcType.DATE)
+	private Date pay_time;	//订单时间
+
+	
+	
+	public Date getPay_time() {
+		return pay_time;
+	}
+
+	public void setPay_time(Date order_time) {
+		this.pay_time = order_time;
+	}
 
 	public String getOrderid() {
 		return orderid;

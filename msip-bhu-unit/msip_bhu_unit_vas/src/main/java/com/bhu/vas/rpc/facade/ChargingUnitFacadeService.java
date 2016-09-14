@@ -76,7 +76,7 @@ public class ChargingUnitFacadeService {
 			String owner_percent,String manufacturer_percent,String distributor_percent,
 			String range_cash_mobile, String range_cash_pc,
 			String access_internet_time,
-			String channel_lv1, String channel_lv2,
+//			String channel_lv1, String channel_lv2,
 			boolean needCheckBinding) {
 		try{
 			//User operUser = chargingFacadeService.getUserService().getById(uid);
