@@ -10,6 +10,8 @@ import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.tag.facade.TagGroupFacadeService;
 import com.bhu.vas.di.op.deviceStatitics.DeviceOrderStatitics;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 
 public class deviceTranslation {
 	public static void main(String[] args) {
@@ -41,10 +43,13 @@ public class deviceTranslation {
 						break;
 					}
 				}
-				if(flag){
-					 WifiDevice wifiDevice= deviceFacadeService.getWifiDeviceService().getById(i.getId());
-					 wifiDevice.setChannel_lv1(channel_lv1);
-					 deviceFacadeService.getWifiDeviceService().update(wifiDevice);
+				if(!flag){
+					channel_lv1="XSXX";
+				}
+				WifiDevice wifiDevice= deviceFacadeService.getWifiDeviceService().getById(i.getId());
+				if(wifiDevice.getHdtype().equals("H106")||wifiDevice.getHdtype().equals("H401")||wifiDevice.getHdtype().equals("H112")||wifiDevice.getHdtype().equals("H901")||wifiDevice.getHdtype().equals("H403")){
+					wifiDevice.setChannel_lv1(channel_lv1);
+					deviceFacadeService.getWifiDeviceService().update(wifiDevice);
 				}
 			}
 		}
