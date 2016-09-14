@@ -15,6 +15,7 @@
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
     <result property="today_cash_sum" column="today_cash_sum"/>
+    <result property="month_cash_sum" column="month_cash_sum"/>
     <result property="last_update_cash_time" column="last_update_cash_time"/>
     <result property="total_cash_sum" column="total_cash_sum"/>
   </resultMap>  
@@ -35,6 +36,7 @@
 	    	created_at,
 	    	updated_at,
 	    	today_cash_sum,
+	    	month_cash_sum,
 	    	last_update_cash_time,
 	    	total_cash_sum
 	    ]]>
@@ -49,6 +51,7 @@
 	    	created_at,
 	    	updated_at,
 	    	today_cash_sum,
+	    	month_cash_sum,
 	    	last_update_cash_time,
 	    	total_cash_sum
 	    ]]>
@@ -64,6 +67,7 @@
 	    	#{created_at},
 	    	#{updated_at},
 	    	#{today_cash_sum},
+	    	#{month_cash_sum},
             #{last_update_cash_time, jdbcType=TIMESTAMP},
             #{total_cash_sum}
 	</sql> 

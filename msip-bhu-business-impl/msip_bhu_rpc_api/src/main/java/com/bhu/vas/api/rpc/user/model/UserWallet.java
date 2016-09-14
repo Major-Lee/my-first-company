@@ -42,6 +42,8 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	private double today_cash_sum = 0.00d;
 	// 更新时间
 	private Date last_update_cash_time;
+	
+	private double month_cash_sum = 0.00d;
 	// 累计收益
 	private double total_cash_sum;
 	
@@ -154,5 +156,14 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	public double getTotal_cash_sum() {
 		return total_cash_sum;
 	}
+
+	public double getMonth_cash_sum() {
+		// 判断时间是否是当月收益, 如果不是现实的时候显示为0
+		if (!DateTimeHelper.isSameMonth(last_update_cash_time, new Date())) {
+			month_cash_sum = 0.00d;
+		}
+		return month_cash_sum;
+	}
+
     
 }
