@@ -133,6 +133,14 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 						if(uid_willbinded != null && uid_willbinded > 0)
 							user_willbinded = userService.getById(uid_willbinded);
 
+						//设置出货渠道
+						List<WifiDevice> wifiDevices = wifiDeviceService.findByIds(pages);
+						for(WifiDevice device:wifiDevices){
+							device.setChannel_lv1(importVto.getChannel_lv1());
+							device.setChannel_lv2(importVto.getChannel_lv2());
+						}
+						wifiDeviceService.updateAll(wifiDevices);
+
 						if(user_willbinded != null){
 							//userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
 							List<String> group_macs = new ArrayList<String>();
@@ -186,7 +194,6 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							//如果设备从未上线则强制解绑，如果设备上线过则不动作
 							List<String> forceUnbindedDevices = new ArrayList<>();
 							List<String> noActionDevices = new ArrayList<>();
-							List<WifiDevice> wifiDevices = wifiDeviceService.findByIds(pages);
 							try{
 								for(WifiDevice device:wifiDevices){
 									if(device.getLast_logout_at() == null 

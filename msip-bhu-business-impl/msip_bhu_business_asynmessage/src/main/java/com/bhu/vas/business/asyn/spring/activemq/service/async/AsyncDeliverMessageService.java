@@ -45,7 +45,7 @@ public class AsyncDeliverMessageService {
 	
 	public void sendBatchSharedealModifyActionMessage(int uid,String message,
 			Boolean cbto,Boolean el,boolean customized,String owner_percent,String manufacturer_percent,String distributor_percent,
-			String rcm,String rcp,String ait,boolean needCheckBinding){
+			String rcm,String rcp,String ait,/* String channel_lv1, String channel_lv2, */boolean needCheckBinding){
 		BatchSharedealModifyDTO dto = new BatchSharedealModifyDTO();
 		dto.setUid(uid);
 		dto.setMessage(message);
@@ -59,6 +59,8 @@ public class AsyncDeliverMessageService {
 		dto.setRcp(rcp);
 		dto.setAit(ait);
 		dto.setNeedCheckBinding(needCheckBinding);
+//		dto.setChannel_lv1(channel_lv1);
+//		dto.setChannel_lv2(channel_lv2);
 		dto.setTs(System.currentTimeMillis());
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}

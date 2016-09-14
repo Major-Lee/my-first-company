@@ -15,7 +15,8 @@ public interface IChargingRpcService {
 			Boolean enterpriselevel,
 			boolean customized,
 			String owner_percent,String manufacturer_percent,String distributor_percent,
-			String range_cash_mobile,String range_cash_pc,String access_internet_time,boolean needCheckBinding);
+			String range_cash_mobile,String range_cash_pc,String access_internet_time,
+			boolean needCheckBinding);
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,
 			int countrycode,String bmobileno,int distributor_uid,
 			String sellor,String partner,
@@ -23,6 +24,7 @@ public interface IChargingRpcService {
             boolean customized,
 			String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent,
 			String range_cash_mobile,String range_cash_pc,String access_internet_time,
+			String channel_lv1, String channel_lv2,
             String remark);
 	public RpcResponseDTO<BatchImportVTO> doCancelDeviceRecord(int uid,String batchno);
 	public RpcResponseDTO<BatchImportVTO> doConfirmDeviceRecord(int uid,String batchno);

@@ -72,6 +72,7 @@ public class ChargingFacadeService {
     		boolean customized,
     		String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
     		String range_cash_mobile,String range_cash_pc,String access_internet_time,
+			String channel_lv1, String channel_lv2,
     		String remark){
     	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
     	
@@ -97,6 +98,8 @@ public class ChargingFacadeService {
     	batch_import.setCanbeturnoff(canbeturnoff);
     	batch_import.setEnterpriselevel(enterpriselevel);
     	batch_import.setCustomized(customized);
+    	batch_import.setChannel_lv1(channel_lv1);
+    	batch_import.setChannel_lv2(channel_lv2);
     	//填充数据
     	WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
     	if(!customized){

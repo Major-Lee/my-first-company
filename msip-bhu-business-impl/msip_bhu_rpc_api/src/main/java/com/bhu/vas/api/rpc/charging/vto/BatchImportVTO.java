@@ -28,8 +28,12 @@ public class BatchImportVTO implements java.io.Serializable{
 	private int succeed;
 	private int failed;
 	private String remark;
+	private String channel_lv1;
+	private String channel_lv2;
 	private String created_at;
 	private String updated_at;
+	
+	
 	public String getId() {
 		return id;
 	}
@@ -209,5 +213,17 @@ public class BatchImportVTO implements java.io.Serializable{
 	}
 	public void setDistributor_nick(String distributor_nick) {
 		this.distributor_nick = distributor_nick;
+	}
+	public String getChannel_lv1() {
+		return channel_lv1;
+	}
+	public void setChannel_lv1(String channel_lv1) {
+		this.channel_lv1 = channel_lv1;
+	}
+	public String getChannel_lv2() {
+		return channel_lv2;
+	}
+	public void setChannel_lv2(String channel_lv2) {
+		this.channel_lv2 = channel_lv2;
 	}
 }

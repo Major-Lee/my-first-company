@@ -110,6 +110,20 @@ public class WifiDeviceDocument extends AbstractDocument{
 	)
 	private String d_type_sname;//设备的类型的sname
 
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_channel_lv1;//设备出货渠道1
+
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_channel_lv2;//设备出货渠道2
+
 	
 	/**
 	 * 建立索引的时候 数组为 经度 纬度
@@ -836,7 +850,21 @@ public class WifiDeviceDocument extends AbstractDocument{
 	public void setT_uc_extension(String t_uc_extension) {
 		this.t_uc_extension = t_uc_extension;
 	}
-	
-	
+
+	public String getD_channel_lv1() {
+		return d_channel_lv1;
+	}
+
+	public void setD_channel_lv1(String d_channel_lv1) {
+		this.d_channel_lv1 = d_channel_lv1;
+	}
+
+	public String getD_channel_lv2() {
+		return d_channel_lv2;
+	}
+
+	public void setD_channel_lv2(String d_channel_lv2) {
+		this.d_channel_lv2 = d_channel_lv2;
+	}
 
 }

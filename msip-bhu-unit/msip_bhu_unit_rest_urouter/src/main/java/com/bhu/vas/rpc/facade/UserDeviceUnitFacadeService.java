@@ -774,6 +774,8 @@ public class UserDeviceUnitFacadeService {
 			dbv.setOrig_hdver(wifiDevice.getOrig_hdver());
 			dbv.setWork_mode(wifiDevice.getWork_mode());
 			dbv.setHdtype(wifiDevice.getHdtype());
+			dbv.setChannel_lv1(wifiDevice.getChannel_lv1());
+			dbv.setChannel_lv2(wifiDevice.getChannel_lv2());
 			DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
 			// String dut = parser.toDeviceUnitTypeIndex();
 			dbv.setDut(parser.getSt());

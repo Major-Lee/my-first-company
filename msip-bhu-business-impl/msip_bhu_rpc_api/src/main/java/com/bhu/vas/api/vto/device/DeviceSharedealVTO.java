@@ -20,6 +20,7 @@ public class DeviceSharedealVTO implements java.io.Serializable{
 	private String rcm;
 	private String aitm;
 	private String aitp;
+	
 	/*public int getOwner() {
 		return owner;
 	}
@@ -99,5 +100,4 @@ public class DeviceSharedealVTO implements java.io.Serializable{
 	public void setDistributor_percent(double distributor_percent) {
 		this.distributor_percent = distributor_percent;
 	}
-	
 }

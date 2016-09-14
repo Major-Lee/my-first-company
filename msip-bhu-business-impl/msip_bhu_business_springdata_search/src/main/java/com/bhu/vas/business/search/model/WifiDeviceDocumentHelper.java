@@ -151,6 +151,8 @@ public class WifiDeviceDocumentHelper {
 			if(!StringUtils.isEmpty(wifiDevice.getUptime())){
 				doc.setD_uptime(wifiDevice.getUptime());
 			}
+			doc.setD_channel_lv1(wifiDevice.getChannel_lv1());
+			doc.setD_channel_lv2(wifiDevice.getChannel_lv2());
 		}
 
 		if(deviceModule != null){

@@ -82,6 +82,8 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = false,value = "rcm") String range_cash_mobile,
             @RequestParam(required = false,value = "rcp") String range_cash_pc,
             @RequestParam(required = false,value = "ait") String access_internet_time
+//            @RequestParam(required = false,value = "chlv1") String channel_lv1,
+//            @RequestParam(required = false,value = "chlv2") String channel_lv2
             ) {
     	try{
     		if(!customized){
@@ -116,7 +118,7 @@ public class ConsoleChargingController extends BaseController {
         			canbeturnoff,enterpriselevel,
         			customized,
         			owner_percent,manufacturer_percent,distributor_percent,
-        			range_cash_mobile,range_cash_pc,access_internet_time,false);
+        			range_cash_mobile,range_cash_pc,access_internet_time, /* channel_lv1, channel_lv2, */false);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
@@ -170,6 +172,8 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = false,value = "rcm") String range_cash_mobile,
             @RequestParam(required = false,value = "rcp") String range_cash_pc,
             @RequestParam(required = false,value = "ait") String access_internet_time,
+            @RequestParam(required = true,value = "chlv1") String channel_lv1,
+            @RequestParam(required = true,value = "chlv2") String channel_lv2,
             @RequestParam(required = false) String remark
     ) {
     	if(file == null){
@@ -220,6 +224,7 @@ public class ConsoleChargingController extends BaseController {
         			customized,
         			owner_percent,manufacturer_percent,distributor_percent,
         			range_cash_mobile,range_cash_pc, access_internet_time,
+        			channel_lv1, channel_lv2,
         			remark);
 			if(!rpcResult.hasError()){
 				System.out.println("path:"+rpcResult.getPayload().toAbsoluteFileInputPath());

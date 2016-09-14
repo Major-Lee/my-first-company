@@ -26,6 +26,11 @@ public class DeviceBaseVTO implements java.io.Serializable{
 	private String work_mode;
 	//设备共享网络类型
 	private String d_snk_type;
+
+	//一级出货渠道
+	private String channel_lv1;
+	//二级出货渠道
+	private String channel_lv2;
 	
 	public String getMac() {
 		return mac;
@@ -93,4 +98,17 @@ public class DeviceBaseVTO implements java.io.Serializable{
 	public void setD_snk_type(String d_snk_type) {
 		this.d_snk_type = d_snk_type;
 	}
+	public String getChannel_lv1() {
+		return channel_lv1;
+	}
+	public void setChannel_lv1(String channel_lv1) {
+		this.channel_lv1 = channel_lv1;
+	}
+	public String getChannel_lv2() {
+		return channel_lv2;
+	}
+	public void setChannel_lv2(String channel_lv2) {
+		this.channel_lv2 = channel_lv2;
+	}
+	
 }

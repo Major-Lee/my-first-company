@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
@@ -76,6 +77,10 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 									sharedealDTO.isCustomized(),
 									sharedealDTO.getOwner_percent(),sharedealDTO.getManufacturer_percent(),sharedealDTO.getDistributor_percent(),
 									sharedealDTO.getRcm(), sharedealDTO.getRcp(), sharedealDTO.getAit(), false);
+//							//更新出货渠道
+//							WifiDevice wifidevice = wifiDeviceService.getById(dmac);
+//							wifidevice.setChannel_lv1(sharedealDTO.getChannel_lv1());
+//							wifidevice.setChannel_lv2(sharedealDTO.getChannel_lv2());
 						}
 						try {
 							RewardOrderAmountHashService.getInstance().removeAllRAmountByMacs(macList.toArray(new String[0]));
