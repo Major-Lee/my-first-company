@@ -930,6 +930,7 @@ public class TagFacadeRpcSerivce {
 		vto.setSendTime(entity.getCreated_at());
 		vto.setStart(entity.getStart());
 		vto.setEnd(entity.getEnd());
+		vto.setState(entity.getState());
 		return vto;
 	}
 	
