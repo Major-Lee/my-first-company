@@ -2,10 +2,12 @@ package com.bhu.vas.api.rpc.charging.model;
 
 import java.util.Date;
 
+import com.smartwork.msip.cores.orm.model.BaseIntModel;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
-public class UserIncomeRank extends BaseStringModel{
+public class UserIncomeRank extends BaseIntModel{
+	private int uid;
 	//用户排名
 	private int rank;
 	//用户收入
@@ -46,6 +48,12 @@ public class UserIncomeRank extends BaseStringModel{
 	}
 	public void setBeforeIncome(String beforeIncome) {
 		this.beforeIncome = beforeIncome;
+	}
+	public int getUid() {
+		return uid;
+	}
+	public void setUid(int uid) {
+		this.uid = uid;
 	}
 	
 }
