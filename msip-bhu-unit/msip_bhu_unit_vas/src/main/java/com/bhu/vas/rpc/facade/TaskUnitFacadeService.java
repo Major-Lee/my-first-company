@@ -50,6 +50,36 @@ public class TaskUnitFacadeService {
 		deliverMessageService.sendWifiCmdGenMessage(uid.intValue(), gid,dependency, mac, opt, subopt, extparams, channel, channel_taskid);//sendWifiCmdCommingNotifyMessage(mac,downTask.getId(),opt,downTask.getPayload());
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
+
+	
+	/**
+	 * 批量修改指定mac设备的配置
+	 * @param macs
+	 * @param opt
+	 * @param subopt
+	 * @param extparams //目前是修改配置的opt传递的是json串；//0个或1个值，如果是超过一个值则传递的是json串
+	 * @param channel
+	 * @param channel_taskid
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> taskBatchGenerate(final String macs, String opt, String subopt, final String extparams,
+			String channel, String channel_taskid){
+		try{
+			//发送异步消息到Queue
+			deliverMessageService.sendBatchWifiModifyMessage(macs, opt, subopt, extparams, channel, channel_taskid);
+			return new RpcResponseDTO<Boolean>(null,true);
+		}catch(BusinessI18nCodeException bex){
+			logger.error("TaskBatchGenerate invoke exception : " + bex.getMessage(), bex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(), false);
+			//return new RpcResponseDTO<TaskResDTO>(bex.getErrorCode(),null);
+		}catch(Exception ex){
+			ex.printStackTrace();
+			logger.error("TaskBatchGenerate invoke exception : " + ex.getMessage(), ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR, false);
+			//return new RpcResponseDTO<TaskResDTO>(ResponseErrorCode.COMMON_BUSINESS_ERROR,null);
+		}
+	}
+	
 	
 	/**
 	 * @param uid

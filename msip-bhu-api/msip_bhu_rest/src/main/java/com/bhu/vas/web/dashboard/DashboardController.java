@@ -107,6 +107,40 @@ public class DashboardController extends BaseController{
 	}
 	
 	/**
+	 * 批量修改设备配置
+	 * @param request
+	 * @param response
+	 * @param mac
+	 * @param opt
+	 * @param channel
+	 * @param channel_taskid
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/cmd/batch_generate",method={RequestMethod.POST})
+	public void cmdBatchGenerate(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true,value="sk") String secretKey,
+			@RequestParam(required = true) String macs,
+			@RequestParam(required = true) String opt,
+			@RequestParam(required = false, defaultValue="00") String subopt,
+			@RequestParam(required = false) String extparams,
+			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
+			@RequestParam(required = false) String channel_taskid) throws  Exception{
+		ResponseError validateError = validate(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		RpcResponseDTO<Boolean> rpcResult = taskRpcService.createNewBatchTask(macs.toLowerCase(), opt, subopt, extparams,/*payload,*/ channel, channel_taskid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	}
+
+	
+	/**
 	 * 创建任务接口
 	 * @param request
 	 * @param response

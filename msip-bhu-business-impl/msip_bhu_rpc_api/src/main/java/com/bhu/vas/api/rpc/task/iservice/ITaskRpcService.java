@@ -16,6 +16,7 @@ public interface ITaskRpcService {
 			String extparams,
 			String channel, 
 			String channel_taskid);
+	
 	public RpcResponseDTO<TaskResDTO> createNewTask(
 			Integer uid,
 			String mac,
@@ -26,6 +27,13 @@ public interface ITaskRpcService {
 			String channel,
 			String channel_taskid);
 	
+	public RpcResponseDTO<Boolean> createNewBatchTask(
+			String macs,
+			String opt,
+			String subopt,
+			String extparams,
+			String channel,
+			String channel_taskid);
 	
 	
 	public void taskStatusFetch(

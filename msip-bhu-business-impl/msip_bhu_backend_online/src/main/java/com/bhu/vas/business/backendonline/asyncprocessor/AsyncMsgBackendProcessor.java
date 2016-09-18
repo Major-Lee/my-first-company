@@ -135,6 +135,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiMultiCmdsDownNotify:
 							asyncMsgHandleService.wifiMultiCmdsDownNotifyHandle(message);
 							break;
+						case WifiDevicesBatchModify:
+							asyncMsgHandleService.wifiDeviceBatchModifyHandle(message);
+							break;
 						case DeviceModifySettingAclMacs:
 							asyncMsgHandleService.deviceModifySettingAclMacs(message);
 							break;

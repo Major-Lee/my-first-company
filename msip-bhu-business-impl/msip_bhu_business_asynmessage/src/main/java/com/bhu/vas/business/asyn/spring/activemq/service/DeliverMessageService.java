@@ -32,6 +32,7 @@ import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdsNotifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceBatchModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceGroupAsynCreateIndexDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceModuleOnlineDTO;
@@ -84,6 +85,18 @@ public class DeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}*/
+	
+	public void sendBatchWifiModifyMessage(final String macs, String opt, String subopt, final String extparams,
+			String channel, String channel_taskid){
+		WifiDeviceBatchModifyDTO dto = new WifiDeviceBatchModifyDTO();
+		dto.setChannel(channel);
+		dto.setChannel_taskid(channel_taskid);
+		dto.setMacs(macs);
+		dto.setExtparams(extparams);
+		dto.setOpt(opt);
+		dto.setSubopt(subopt);
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
 	
 	public void sendWifiCmdsCommingNotifyMessage(String mac,String... payloads){
 		sendWifiCmdsCommingNotifyMessage(mac,Arrays.asList(payloads));

@@ -47,6 +47,8 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
+import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
+import com.bhu.vas.api.rpc.task.notify.ITaskProcessNotifyCallback;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
@@ -62,6 +64,7 @@ import com.bhu.vas.business.asyn.spring.model.UserDeviceForceBindDTO;
 import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
 import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiCmdsNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceBatchModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceModuleOnlineDTO;
 import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
@@ -75,7 +78,6 @@ import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
@@ -111,6 +113,8 @@ import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 import com.smartwork.msip.cores.helper.ip.IpLookup;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class AsyncMsgHandleService {
@@ -1498,6 +1502,38 @@ public class AsyncMsgHandleService {
 		logger.info(String.format("wifiMultiCmdsDownNotifyHandle message[%s] successful", message));
 	}
 
+
+	public void wifiDeviceBatchModifyHandle(String message) {
+		logger.info(String.format("wifiDeviceBatchModifyHandle message[%s]", message));
+		WifiDeviceBatchModifyDTO dto = JsonHelper.getDTO(message, WifiDeviceBatchModifyDTO.class);
+		String[] macs = dto.getMacs().split(",");
+		List<DownCmds> cl = new ArrayList<DownCmds>();
+		for(String mac:macs){
+			try{
+				WifiDeviceDownTask downTask = taskFacadeService.apiTaskGenerate(BusinessRuntimeConfiguration.Sys_Uid, mac, dto.getOpt(), dto.getSubopt(), dto.getExtparams(), dto.getChannel(), dto.getChannel_taskid(),
+						new ITaskProcessNotifyCallback(){
+							@Override
+							public void notify(int uid, OperationCMD opt_cmd,
+									OperationDS ods_cmd, String dmac, Object payload) {
+							}
+					
+				});
+				cl.add(DownCmds.builderDownCmds(mac, downTask.getPayload()));
+			}catch(BusinessI18nCodeException be){
+				logger.warn(String.format("wifiDeviceBatchModifyHandle business exceptino:%s\n%s", be.getMessage(), be.getLocalizedMessage()));
+				be.printStackTrace();
+			}catch(Exception e){
+				e.printStackTrace();
+				logger.warn("wifiDeviceBatchModifyHandle failed to generate task for mac:" + mac);
+			}
+		}
+		if(cl.size() > 0){
+			DaemonHelper.daemonMultiCmdsDown(daemonRpcService, cl.toArray(new DownCmds[0]));
+		}
+		logger.info("wifiDeviceBatchModifyHandle successful, cmd down dev:");
+	}
+	
+	
 	/**
 	 * 修改黑名单列表内容的后续操作 黑名单列表里的终端需要删除urouter 终端redis 保证不出现在urouter app终端列表中显示
 	 * 

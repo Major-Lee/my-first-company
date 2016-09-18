@@ -42,6 +42,19 @@ public class TaskRpcService implements ITaskRpcService{
 	}
 
 	/**
+	 * 创建任务
+	 * 创建任务成功后发送任务创建成功的异步消息
+	 * 并返回taskid给客户端
+	 */
+	@Override
+	public RpcResponseDTO<Boolean> createNewBatchTask(String macs, String opt, String subopt, String extparams,
+			String channel, String channel_taskid) {
+		logger.info(String.format("createNewTask macs:%s opt:%s subopt:%s extparams:%s channel:%s channel_taskid:%s", 
+				macs,opt,subopt,extparams,channel,channel_taskid));
+		return taskUnitFacadeService.taskBatchGenerate(macs, opt,subopt,extparams, channel, channel_taskid);
+	}
+
+	/**
 	 * 任务状态获取（对内）
 	 */
 	@Override

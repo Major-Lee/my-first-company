@@ -24,7 +24,8 @@ public enum ActionMessageType {
 	WifiDeviceUsedStatus("下发设备的网速","wdspeed","WU"),
 	WifiDevicesGrayChanged("设备灰度变更","wdgraychanged","WG"),
 	WifiDevicesModuleStyleChanged("设备增值模板变更","wdmodulestylechanged","WD"),
-	
+	WifiDevicesBatchModify("批量修改设备配置", "batch modify wifi device config", "BM"),
+
 	DeviceModifySettingAclMacs("修改黑名单内容","dsaclmacs","DA"),
 	DeviceModifySettingAalias("修改终端别名","dsalias","DI"),
 	DeviceModifySettingVap("修改VAP信息","dsvap","DV"),

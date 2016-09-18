@@ -35,6 +35,15 @@ public class TaskServiceStub implements ITaskRpcService{
 	}
 
 	@Override
+	public RpcResponseDTO<Boolean> createNewBatchTask(String macs, String opt, String subopt, String extparams,/*String payload,*/
+			String channel, String channel_taskid) {
+		if(StringUtils.isEmpty(macs)) 
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
+		return taskRpcService.createNewBatchTask(macs, opt, subopt, extparams,/*payload,*/
+				channel, channel_taskid);
+	}
+
+	@Override
 	public void taskStatusFetch(long taskid) {
 		taskRpcService.taskStatusFetch(taskid);
 	}

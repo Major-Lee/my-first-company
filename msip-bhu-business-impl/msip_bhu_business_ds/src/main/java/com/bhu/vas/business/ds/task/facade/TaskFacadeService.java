@@ -50,6 +50,8 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
+import ch.qos.logback.classic.Logger;
+
 @Service
 public class TaskFacadeService {
 	@Resource
