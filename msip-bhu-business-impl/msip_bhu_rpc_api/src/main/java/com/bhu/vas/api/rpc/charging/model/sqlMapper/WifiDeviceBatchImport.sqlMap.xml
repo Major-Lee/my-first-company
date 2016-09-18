@@ -22,7 +22,8 @@
 	  <result property="range_cash_mobile" column="range_cash_mobile"/>
 	  <result property="range_cash_pc" column="range_cash_pc"/>
 	  <result property="access_internet_time" column="access_internet_time"/>
-	  <result property="channel_lv1" column="channel_lv2"/>
+	  <result property="channel_lv1" column="channel_lv1"/>
+	  <result property="channel_lv2" column="channel_lv2"/>
 	  <result property="succeed" column="succeed"/>
 	  <result property="failed" column="failed"/>
 	  <result property="remark" column="remark"/>
