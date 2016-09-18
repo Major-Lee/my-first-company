@@ -1040,7 +1040,7 @@ public class DeviceBusinessFacadeService {
 //		}
 		
 		if (!isVisitorWithOutAuth(dto)) {
-			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, lowercase_d_mac, handset.getTs());
+			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().addOfflinePresent(lowercase_mac, lowercase_d_mac, dto.getTs());
 		}else{
 			WifiDeviceHandsetUnitPresentSortedSetService.getInstance().removePresent(lowercase_mac, lowercase_d_mac);
 		}
