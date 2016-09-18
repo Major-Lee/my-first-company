@@ -1147,6 +1147,13 @@ public class UserWalletFacadeService{
         dateNow = calendarNow.getTime();  
         String timeNow =sdf.format(dateNow); 
         System.out.println(timeNow);
+        
+        Date datebefore = new Date();  
+        Calendar calendarBefore = Calendar.getInstance();  
+        calendarBefore.setTime(datebefore);  
+        calendarBefore.add(Calendar.DAY_OF_MONTH, x-2);  
+        dateNow = calendarBefore.getTime();  
+        String timeBefore =sdf.format(datebefore); 
         //userIncomeRankService.deleteAllRank();
 		List<UserIncome> userIncomes=this.getUserIncomeService().findListByTime(time);
 		if(userIncomes != null&&userIncomes.size()>0){
@@ -1169,36 +1176,19 @@ public class UserWalletFacadeService{
 				}
 				userIncomeRank.setRank(beforeRankNum);
 				userIncomeRank.setIncome(userIncome.getIncome());
-				UserIncomeRank incomeRank=userIncomeRankService.getById(String.valueOf(userIncome.getUid()));
-				userIncomeRank.setId(String.valueOf(userIncome.getUid()));
+				UserIncomeRank incomeRank=userIncomeRankService.getByUid(userIncome.getUid(),timeBefore+"%");
+				userIncomeRank.setUid(userIncome.getUid());
 				if(incomeRank!=null){
 					userIncomeRank.setBeforeIncome(incomeRank.getIncome());
 					userIncomeRank.setBeforeRank(incomeRank.getRank());
-					userIncomeRank.setCreated_at(dateNow);
-					userIncomeRankService.update(userIncomeRank);
+					userIncomeRank.setCreated_at(date);
 				}else{
-					userIncomeRank.setCreated_at(dateNow);
+					userIncomeRank.setCreated_at(date);
 					userIncomeRank.setBeforeIncome(userIncomeRank.getIncome());
 					userIncomeRank.setBeforeRank(9999999);
-					userIncomeRankService.insert(userIncomeRank);
 				}
+				userIncomeRankService.insert(userIncomeRank);
 				m++;
-			}
-		}
-		List<UserIncomeRank> userIncomeRanks=userIncomeRankService.findAll();
-		for(UserIncomeRank i:userIncomeRanks){
-			String singleTime=sdf.format(i.getCreated_at());
-			System.out.println(i.getId());
-			System.out.println(singleTime);
-			if(!singleTime.equals(timeNow)){
-				int rank=i.getRank();
-				String income=i.getIncome();
-				i.setBeforeIncome(income);
-				i.setBeforeRank(rank);
-				i.setCreated_at(date);
-				i.setIncome("0");
-				i.setRank(9999999);
-				userIncomeRankService.update(i);
 			}
 		}
 	}

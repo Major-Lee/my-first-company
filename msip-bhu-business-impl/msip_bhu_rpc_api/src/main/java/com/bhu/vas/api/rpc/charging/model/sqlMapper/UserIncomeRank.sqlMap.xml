@@ -6,6 +6,7 @@
 
   <resultMap id="modelResult" type="userIncomeRank">
     <id property="id" column="id"/>
+    <result property="uid" column="uid"/>
     <result property="rank" column="rank"/>
     <result property="income" column="income"/>
     <result property="beforeRank" column="beforeRank"/>
@@ -21,6 +22,7 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	uid,
 	    	rank,
 	    	income,
 	    	beforeRank,
@@ -31,6 +33,7 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	uid,
 	    	rank,
 	    	income,
 	    	beforeRank,
@@ -42,6 +45,7 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{uid},
 	    	#{rank},
 	    	#{income},
 	    	#{beforeRank},
@@ -51,6 +55,7 @@
 	</sql> 
 	
 	<sql id="modelUpdateValues">
+	    	uid = #{uid},
 	    	rank = #{rank},
 	    	income = #{income},
 	    	beforeRank = #{beforeRank},
