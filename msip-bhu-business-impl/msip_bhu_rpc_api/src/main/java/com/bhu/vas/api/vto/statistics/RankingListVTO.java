@@ -1,11 +1,12 @@
 package com.bhu.vas.api.vto.statistics;
 
 import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class RankingListVTO implements java.io.Serializable{
 	//收益前一百用户排名
-	private List<RankSingle> rankingList;
+	private Map<String,Object> rankingList;
 	//用户个人排名
 	private int rankNum;
 	//用户昨日收益
@@ -32,11 +33,14 @@ public class RankingListVTO implements java.io.Serializable{
 		this.memo = memo;
 	}
 
-	public List<RankSingle> getRankingList() {
+
+	
+
+	public Map<String, Object> getRankingList() {
 		return rankingList;
 	}
 
-	public void setRankingList(List<RankSingle> rankingList) {
+	public void setRankingList(Map<String, Object> rankingList) {
 		this.rankingList = rankingList;
 	}
 

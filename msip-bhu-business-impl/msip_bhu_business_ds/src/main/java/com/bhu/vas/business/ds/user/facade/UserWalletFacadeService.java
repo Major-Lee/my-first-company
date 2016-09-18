@@ -1192,6 +1192,68 @@ public class UserWalletFacadeService{
 			}
 		}
 	}
+	public void monthRankingList() {
+		int x=0;
+		Date date = new Date();  
+		Calendar calendar = Calendar.getInstance();  
+		calendar.setTime(date);  
+		calendar.add(Calendar.DAY_OF_MONTH, x-1);  
+		date = calendar.getTime();  
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+		String time =sdf.format(date); 
+		System.out.println(time);
+		Date dateNow = new Date();  
+		Calendar calendarNow = Calendar.getInstance();  
+		calendarNow.setTime(dateNow);  
+		calendarNow.add(Calendar.DAY_OF_MONTH, x);  
+		dateNow = calendarNow.getTime();  
+		String timeNow =sdf.format(dateNow); 
+		System.out.println(timeNow);
+		
+		Date datebefore = new Date();  
+		Calendar calendarBefore = Calendar.getInstance();  
+		calendarBefore.setTime(datebefore);  
+		calendarBefore.add(Calendar.DAY_OF_MONTH, x-2);  
+		dateNow = calendarBefore.getTime();  
+		String timeBefore =sdf.format(datebefore); 
+		//userIncomeRankService.deleteAllRank();
+		List<UserIncome> userIncomes=this.getUserIncomeService().findListByTime(time);
+		if(userIncomes != null&&userIncomes.size()>0){
+			String beforeIncome="0";
+			int beforeRankNum=0;
+			int n=1;
+			int m=1;
+			for(int i=userIncomes.size()-1;i>=0;i--){
+				UserIncomeRank userIncomeRank=new UserIncomeRank();
+				UserIncome userIncome=userIncomes.get(i);
+				if(i==userIncomes.size()-1){
+					beforeRankNum=n;
+					beforeIncome=userIncome.getIncome();
+				}else{
+					if(!StringUtils.equals(beforeIncome, userIncome.getIncome())){
+						beforeRankNum=m;
+						beforeIncome=userIncome.getIncome();
+						n=m;
+					}
+				}
+				userIncomeRank.setRank(beforeRankNum);
+				userIncomeRank.setIncome(userIncome.getIncome());
+				UserIncomeRank incomeRank=userIncomeRankService.getByUid(userIncome.getUid(),timeBefore+"%");
+				userIncomeRank.setUid(userIncome.getUid());
+				if(incomeRank!=null){
+					userIncomeRank.setBeforeIncome(incomeRank.getIncome());
+					userIncomeRank.setBeforeRank(incomeRank.getRank());
+					userIncomeRank.setCreated_at(date);
+				}else{
+					userIncomeRank.setCreated_at(date);
+					userIncomeRank.setBeforeIncome(userIncomeRank.getIncome());
+					userIncomeRank.setBeforeRank(9999999);
+				}
+				userIncomeRankService.insert(userIncomeRank);
+				m++;
+			}
+		}
+	}
 	
 	/**
 	 * 短信营销 虚拟币扣款 

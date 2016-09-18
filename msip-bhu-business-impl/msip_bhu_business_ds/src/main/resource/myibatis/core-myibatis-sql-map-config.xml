@@ -142,6 +142,8 @@
 		<!-- 排名统计 -->
 		<typeAlias alias="userIncomeRank"
 			type="com.bhu.vas.api.rpc.charging.model.UserIncomeRank" />
+		<typeAlias alias="userIncomeMonthRank"
+			type="com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank" />
 		<!-- 排名统计 -->
 		<!-- 收益统计 -->
 		<typeAlias alias="userIncome"
@@ -276,6 +278,7 @@
 			resource="com/bhu/vas/api/rpc/agent/model/sqlMapper/AgentDeviceMark.sqlMap.xml" />
 		<!-- 排名统计 -->
 		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/UserIncomeRank.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/UserIncomeMonthRank.sqlMap.xml" />
 		<!-- 排名统计 -->
 		<!-- 收益统计 -->
 		<mapper resource="com/bhu/vas/api/rpc/charging/model/sqlMapper/UserIncome.sqlMap.xml" />

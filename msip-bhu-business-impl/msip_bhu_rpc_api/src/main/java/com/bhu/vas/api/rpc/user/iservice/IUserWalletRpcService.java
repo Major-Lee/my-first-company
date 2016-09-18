@@ -117,7 +117,7 @@ public interface IUserWalletRpcService {
 	 * 昨日用户收益排行
 	 * @return
 	 */
-	public RpcResponseDTO<RankingListVTO> rankingList(int uid);
+	public RpcResponseDTO<RankingListVTO> rankingList(int uid,int type,String time);
 	/**
 	 * 丰富统计信息
 	 * @return
