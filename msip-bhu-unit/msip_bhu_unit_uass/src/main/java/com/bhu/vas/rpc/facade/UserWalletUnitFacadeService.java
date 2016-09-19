@@ -726,7 +726,7 @@ public class UserWalletUnitFacadeService {
 			if(type==1){
 				String currentDay=StringUtils.EMPTY;
 				if(StringUtils.isBlank(time)){
-					currentDay=GetDateTime("yyyy-MM-dd",-1);
+					currentDay=GetDateTime("yyyy-MM-dd",0);
 				}else{
 					currentDay=time;
 				}
