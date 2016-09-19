@@ -38,6 +38,14 @@ public class TagGroupService extends EntityService<Integer, TagGroup, TagGroupDa
 		return super.insert(entity);
 	}
 
+	public boolean checkGroup(Integer gid,int uid){
+		TagGroup group = this.getById(gid);
+		if(group == null || group.getCreator()!=uid){
+			return false;
+		}
+		return true;
+	}
+	
 	public String generateRelativePath(TagGroup group){
 		if(group == null) return null;
 		boolean hasParent = group.getPid() != 0;

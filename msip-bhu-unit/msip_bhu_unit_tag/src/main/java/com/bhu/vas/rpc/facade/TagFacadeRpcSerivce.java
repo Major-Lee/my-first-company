@@ -844,6 +844,15 @@ public class TagFacadeRpcSerivce {
 	 */
 	public TagGroupSendSortMessageVTO generateGroupSendSMSTask(int uid ,int gid ,int count,String context,String startTime, String endTime){
 		
+		boolean isGroup = tagGroupService.checkGroup(gid, uid);
+		if(!isGroup){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+		}
+		
+		if(context == null || context.isEmpty() || context.length() >TagGroupSortMessage.msgLength){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_MSG_TOO_LONG_OR_NULL);
+		}
+		
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, startTime, endTime,0,0);
 		List<TagGroupHandsetDetailDTO> dtos = new ArrayList<TagGroupHandsetDetailDTO>();
 		for(Map<String, Object> map : handsetMap){
@@ -932,5 +941,4 @@ public class TagFacadeRpcSerivce {
 		vto.setState(entity.getState());
 		return vto;
 	}
-	
 }

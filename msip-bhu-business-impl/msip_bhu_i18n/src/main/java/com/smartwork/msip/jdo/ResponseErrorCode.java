@@ -279,7 +279,9 @@ public enum ResponseErrorCode {
 	TAG_GROUP_NAME_FORMAT_ERROR("1116","tagGroup.name.format.error"),
 	TAG_GROUPREL_DEVICE_NOEXIST("1117","tagGroupRel.Device.noexist"),
 	TAG_GROUP_TASK_NOT_EXIST("1118","tagGroup.task.not.exist"),
-	TAG_GROUP_TASK_AlREADY_DONE("1119","tagGroup.task.already.done");
+	TAG_GROUP_TASK_AlREADY_DONE("1119","tagGroup.task.already.done"),
+	TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH("1120","tagGroup.not.exist.or.user.nomatch"),
+	TAG_GROUP_MSG_TOO_LONG_OR_NULL("1121","tagGroup.msg.too.long.or.null");
 
     private String code;
     private String i18n;

@@ -18,6 +18,7 @@ public class TagGroupSortMessage extends SetJsonExtIntModel<String> implements S
 	public static final String done = "done";
 	public static final int commdityId = 13;
 	public static final String commdityDesc = "虎钻消费 用于短信营销";
+	public static final int msgLength = 58;
 	
 	private int gid;
 	private int uid;
