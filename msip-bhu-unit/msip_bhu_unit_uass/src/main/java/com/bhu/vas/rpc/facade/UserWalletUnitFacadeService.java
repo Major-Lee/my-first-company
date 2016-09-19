@@ -733,6 +733,7 @@ public class UserWalletUnitFacadeService {
 				if(GetDateTime("yyyy-MM-dd",0).equals(currentDay)){
 					ModelCriteria mc=new ModelCriteria();
 					mc.createCriteria().andColumnNotEqualTo("today_cash_sum", "0");
+					mc.createCriteria().andColumnLike("last_update_cash_time", currentDay+"%");
 					mc.setOrderByClause("today_cash_sum asc");
 					List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
 					rankingListVTO.setRankNum(9999999);
@@ -802,6 +803,7 @@ public class UserWalletUnitFacadeService {
 				if(GetMonthTime(0).equals(currentMonth)){
 					ModelCriteria mc=new ModelCriteria();
 					mc.createCriteria().andColumnNotEqualTo("today_cash_sum", "0");
+					mc.createCriteria().andColumnLike("last_update_cash_time", currentMonth+"%");
 					mc.setOrderByClause("today_cash_sum asc");
 					List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
 					rankingListVTO.setRankNum(9999999);
