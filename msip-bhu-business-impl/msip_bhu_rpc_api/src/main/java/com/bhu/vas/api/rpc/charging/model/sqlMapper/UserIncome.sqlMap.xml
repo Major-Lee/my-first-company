@@ -27,6 +27,12 @@
 	    	updated_at
 	    ]]>
 	</sql>  
+	<sql id="modelMonthColumns">
+	    <![CDATA[
+	    	uid,
+	    	sum(income) as income
+	    ]]>
+	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	uid,
@@ -157,6 +163,9 @@
 	    </if>  
 	</select>
 	
+	<select id="findMonthList" resultType="userIncome" parameterType="String">
+		SELECT  <include refid="modelMonthColumns" /> from <include refid="modelTableName" /> WHERE time LIKE #{time} GROUP BY uid ORDER BY SUM(income)  		
+	</select>
 	<select id="countByModelCriteria" resultType="int">
 		select count(*) from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 

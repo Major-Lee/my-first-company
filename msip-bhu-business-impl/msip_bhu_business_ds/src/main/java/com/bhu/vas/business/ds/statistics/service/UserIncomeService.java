@@ -24,7 +24,7 @@ public class UserIncomeService extends AbstractCoreService<String, UserIncome, U
 	public List<UserIncome> findListByTime(String time){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria()
-		.andColumnEqualTo("time", time);
+		.andColumnLike("time", time+"%");
 		mc.setOrderByClause("income*1");
 		return super.findModelByModelCriteria(mc);
 	}
@@ -36,5 +36,7 @@ public class UserIncomeService extends AbstractCoreService<String, UserIncome, U
 		mc.setOrderByClause("income");
 		return super.findModelByModelCriteria(mc);
 	}
-
+	public List<UserIncome> findMonthList(String time){
+		return super.entityDao.findMonthList(time);
+	}
 }
