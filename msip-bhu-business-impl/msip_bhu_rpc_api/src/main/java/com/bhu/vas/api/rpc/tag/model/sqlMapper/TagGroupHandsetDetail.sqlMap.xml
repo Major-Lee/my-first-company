@@ -183,7 +183,7 @@
 					#{endTime}
 			</if>
 	    </where> 
-	    GROUP BY #{groupBy}
+	    GROUP BY #{grouping}
 		<if test="pn!=null and ps !=null">
 			LIMIT 
 	    	#{pn},

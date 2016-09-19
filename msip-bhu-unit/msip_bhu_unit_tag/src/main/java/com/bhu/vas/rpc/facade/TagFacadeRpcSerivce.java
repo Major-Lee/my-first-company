@@ -734,7 +734,6 @@ public class TagFacadeRpcSerivce {
 				}
 			}
 		}
-		
 		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, vtos.size(), vtos);
 	}
 	
