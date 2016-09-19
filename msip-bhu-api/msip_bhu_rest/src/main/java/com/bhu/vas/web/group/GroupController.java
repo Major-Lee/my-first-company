@@ -285,7 +285,7 @@ public class GroupController extends BaseController{
     	    @RequestParam(required = false) String mobileno,
     	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
-    	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> rpcResult = tagRpcService.groupUsersDetail(gid, beginTime, endTime,filter,count,mobileno, pageNo, pageSize);
+    	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> rpcResult = tagRpcService.groupUsersDetail(uid,gid, beginTime, endTime,filter,count,mobileno, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -313,7 +313,7 @@ public class GroupController extends BaseController{
     	    @RequestParam(required = true) String hdmac,
     	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
-    	RpcResponseDTO<List<Date>> rpcResult = tagRpcService.groupUserDetail(gid,hdmac, pageNo, pageSize);
+    	RpcResponseDTO<List<Date>> rpcResult = tagRpcService.groupUserDetail(uid,gid,hdmac, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

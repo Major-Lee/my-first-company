@@ -717,7 +717,13 @@ public class TagFacadeRpcSerivce {
 	 * @param endTime
 	 * @return
 	 */
-	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,boolean filter,int count,String mobileno,int pageNo,int pageSize){
+	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int uid,int gid,String beginTime,String endTime,boolean filter,int count,String mobileno,int pageNo,int pageSize){
+		
+		boolean isGroup = tagGroupService.checkGroup(gid, uid);
+		if(!isGroup){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+		}
+		
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime,pageNo,pageSize);
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
@@ -745,7 +751,13 @@ public class TagFacadeRpcSerivce {
 	 * @return 
 	 * @return
 	 */
-	public List<Date> groupUserDetail(int gid,String hdmac,int pageNo,int pageSize){
+	public List<Date> groupUserDetail(int uid ,int gid,String hdmac,int pageNo,int pageSize){
+		
+		boolean isGroup = tagGroupService.checkGroup(gid, uid);
+		if(!isGroup){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+		}
+		
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("hdmac", hdmac);
 		mc.setPageNumber(pageNo);
