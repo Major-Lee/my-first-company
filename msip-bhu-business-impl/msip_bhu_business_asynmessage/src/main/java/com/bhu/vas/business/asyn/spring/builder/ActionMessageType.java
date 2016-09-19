@@ -47,7 +47,6 @@ public enum ActionMessageType {
 	
 	//UserDeviceSharedNetworkApply("用户设备共享网络应用","user device sharednetwork apply","UD"),
 	UserPortalUpdate("用户Portal数据更新","user portal data update","UU"),
-	
 	USERDEVICEFORCEBIND("用户设备强制绑定","user device force bind","DF"),
 	
 	TOPICCMJoinNotify("topic消息CM加入通知","topic cm join","TJ"),

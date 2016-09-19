@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.async.AsyncDeliverMessageQueueProducer;
+import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
@@ -16,6 +17,7 @@ import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkClearDTO;
 import com.bhu.vas.business.asyn.spring.model.async.tag.OperTagDTO;
+import com.bhu.vas.business.asyn.spring.model.async.user.UserIdentityRepairDTO;
 
 
 public class AsyncDeliverMessageService {
@@ -138,5 +140,12 @@ public class AsyncDeliverMessageService {
 		dto.setTaskid(taskid);
 		dto.setOrderid(orderid);
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendUserIdentityRepariActionMessage(String hdmac,String acc){
+		UserIdentityRepairDTO dto = new UserIdentityRepairDTO();
+		dto.setHdmac(hdmac);
+		dto.setMobileno(acc);
+		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 }

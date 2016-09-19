@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchsnk.BatchDeviceSnkClearServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
@@ -50,9 +49,11 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	@Resource
 	private IMsgHandlerService batchGroupDeviceSnkApplyServiceHandler;
 	
+	@Resource
+	private IMsgHandlerService batchDeviceSnkClearServiceHandler;
 	
 	@Resource
-	private BatchDeviceSnkClearServiceHandler batchDeviceSnkClearServiceHandler;
+	private IMsgHandlerService batchUserIdentityRepairServiceHandler;
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncMsgBackendProcessor initialize...");
@@ -109,6 +110,8 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case BatchGroupSendSortMessage:
 							batchGroupSendSortMessageServiceHandler.process(message);
 							break;
+						case BatchUserIdentityRepair:
+							batchUserIdentityRepairServiceHandler.process(message);
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

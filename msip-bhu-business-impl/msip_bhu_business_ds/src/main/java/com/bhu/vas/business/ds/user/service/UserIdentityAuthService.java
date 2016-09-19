@@ -4,12 +4,15 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.ds.user.dao.UserIdentityAuthDao;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.service.EntityService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -33,6 +36,7 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 	 * @param hdmac 终端mac
 	 */
 	public void generateIdentityAuth(int countrycode ,String acc,String hdmac){	
+		
 		String accWithCountryCode = PhoneHelper.format(countrycode, acc);
 		
 		UserIdentityAuth auth = this.getById(hdmac);

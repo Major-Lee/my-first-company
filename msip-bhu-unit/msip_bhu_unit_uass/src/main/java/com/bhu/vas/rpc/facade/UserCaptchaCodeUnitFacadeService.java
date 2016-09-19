@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import sun.nio.cs.ext.MacHebrew;
+
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.helper.BusinessEnumType.CaptchaCodeActType;
@@ -16,10 +18,13 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.model.UserCaptchaCode;
 import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
+import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -33,6 +38,9 @@ public class UserCaptchaCodeUnitFacadeService {
 	private UserCaptchaCodeService userCaptchaCodeService;
 	@Resource
 	private UserIdentityAuthService userIdentityAuthService;
+	
+	@Resource
+	private AsyncDeliverMessageService asyncDeliverMessageService;
 	
 	//内部线程池，用于调用sms接口
 	private ExecutorService exec_send = null;//Executors.newFixedThreadPool(30);
@@ -162,12 +170,21 @@ public class UserCaptchaCodeUnitFacadeService {
 	public RpcResponseDTO<Boolean> validateIdentityCode(int countrycode,
 			 String acc,String hdmac,String captcha){
 		try {
+			//验证mac
+			if(StringUtils.isEmpty(hdmac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			if(!StringHelper.isValidMac(hdmac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+			}
+			
 			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
 			ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithCountryCode, captcha);
 			if(errorCode != null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(errorCode);
 			}
 			userIdentityAuthService.generateIdentityAuth(countrycode, acc, hdmac);
+			asyncDeliverMessageService.sendUserIdentityRepariActionMessage(hdmac,acc);
 			return  RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		} catch (BusinessI18nCodeException ex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ex.getErrorCode(), ex.getPayload());
