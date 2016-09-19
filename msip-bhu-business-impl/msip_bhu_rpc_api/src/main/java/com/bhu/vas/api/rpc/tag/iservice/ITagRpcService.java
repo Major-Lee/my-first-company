@@ -75,7 +75,7 @@ public interface ITagRpcService {
 	RpcResponseDTO<List<Date>> groupUserDetail(int uid ,int gid, String hdmac,
 			int pageNo, int pageSize);
 
-	RpcResponseDTO<GroupStatDetailVTO> groupUsersCount(int gid, Long beginTime,
+	RpcResponseDTO<GroupStatDetailVTO> groupUsersCount(int uid ,int gid, Long beginTime,
 			Long endTime);
 
 	RpcResponseDTO<TagGroupUserStatisticsConnectVTO> groupUserStatisticsConnect(int uid, int gid, long startTime,

@@ -300,8 +300,8 @@ public class TagRpcService implements ITagRpcService {
 	}
 	
 	@Override
-	public RpcResponseDTO<GroupStatDetailVTO> groupUsersCount(int gid, Long beginTime,Long endTime) {
-		logger.info(String.format("groupUsersCount gid[%s] beginTime[%s] endTime[%s]", gid,beginTime,endTime));
+	public RpcResponseDTO<GroupStatDetailVTO> groupUsersCount(int uid ,int gid, Long beginTime,Long endTime) {
+		logger.info(String.format("groupUsersCount uid[%s] gid[%s] beginTime[%s] endTime[%s]",uid, gid,beginTime,endTime));
 		try{
 			String beginTimeStr = null;
 			String endTimeStr = null;
@@ -309,7 +309,7 @@ public class TagRpcService implements ITagRpcService {
 				beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
 				endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
 			}
-			GroupStatDetailVTO result = tagFacadeRpcSerivce.groupUsersCount(gid,beginTimeStr,endTimeStr);
+			GroupStatDetailVTO result = tagFacadeRpcSerivce.groupUsersCount(uid,gid,beginTimeStr,endTimeStr);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

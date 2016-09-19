@@ -797,6 +797,12 @@ public class TagFacadeRpcSerivce {
 	 */
 	private TailPage<TagGroupRankUsersVTO> groupRankUsers(int uid, int gid, String startTime, 
 			String endTime ,int pageNo, int pageSize) {
+		
+		boolean isGroup = tagGroupService.checkGroup(gid, uid);
+		if(!isGroup){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+		}
+		
 		List<Map<String, String>> handsetMap = tagGroupHandsetDetailService.selectGroupUsersRank(gid, 
 				startTime, endTime, pageNo, pageSize);
 		List<TagGroupRankUsersVTO> vtos = new ArrayList<TagGroupRankUsersVTO>();
@@ -809,6 +815,12 @@ public class TagFacadeRpcSerivce {
 	
 	private List<TagGroupUserConnectDataVTO> groupUserConnectData(int uid, int gid, String startTime, 
 			String endTime) {
+		
+		boolean isGroup = tagGroupService.checkGroup(gid, uid);
+		if(!isGroup){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+		}
+		
 		long count = DateTimeHelper.getTwoDateDifferentDay(endTime, startTime, DateTimeHelper.FormatPattern5);
 		Date date = null;
 		Date dateDaysAgo = null;
@@ -829,6 +841,12 @@ public class TagFacadeRpcSerivce {
 	
 	public TagGroupUserStatisticsConnectVTO groupUserStatisticsConnect(int uid, int gid, long startTime, long endTime,
 			int pageNo, int pageSize) {
+		
+		boolean isGroup = tagGroupService.checkGroup(gid, uid);
+		if(!isGroup){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+		}
+		
 		String startTimeStr = DateTimeHelper.formatDate(new Date(startTime), DateTimeHelper.FormatPattern5);
 		String endTimeStr = DateTimeHelper.formatDate(new Date(endTime), DateTimeHelper.FormatPattern5);
 		TagGroupUserStatisticsConnectVTO vto = new TagGroupUserStatisticsConnectVTO();
@@ -836,7 +854,13 @@ public class TagFacadeRpcSerivce {
 		vto.setUserConnectData(groupUserConnectData(uid,gid,startTimeStr,endTimeStr));
 		return vto;
 	}
-	public GroupStatDetailVTO groupUsersCount(int gid,String beginTime,String endTime){
+	public GroupStatDetailVTO groupUsersCount(int uid ,int gid,String beginTime,String endTime){
+		
+		boolean isGroup = tagGroupService.checkGroup(gid, uid);
+		if(!isGroup){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+		}
+		
 		GroupStatDetailVTO vto = new GroupStatDetailVTO();
 
 		int userTotal = tagGroupHandsetDetailService.countGroupUsers(gid, beginTime, endTime);
@@ -939,6 +963,12 @@ public class TagFacadeRpcSerivce {
 	}
 	
 	public TailPage<TagGroupSortMessageVTO> sendMessageDetail(int uid ,int gid,int pageNo,int pageSize){
+		
+		boolean isGroup = tagGroupService.checkGroup(gid, uid);
+		if(!isGroup){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+		}
+		
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("gid", gid);
 		mc.setPageNumber(pageNo);
