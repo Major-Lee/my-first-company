@@ -24,6 +24,7 @@ import com.bhu.vas.business.ds.payment.service.PaymentWithdrawService;
 import com.bhu.vas.business.helper.BusinessHelper;
 import com.bhu.vas.business.helper.PaymentChannelCode;
 import com.bhu.vas.web.cache.BusinessCacheService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.localunit.RandomPicker;
 
@@ -66,6 +67,48 @@ public class PayLogicService {
     	}
     	result = paymentParameter.getValue();
     	businessCacheService.storePaymentWapWeixinMerchantCacheResult(result);    	
+    	return result;
+    }
+    
+    public String findWapWeixinMerchantServiceByCondition(String total_fee){
+    	String result = "Midas";
+//    	String cacheMerchName = businessCacheService.getWapWeixinMerchantNameFromCache();
+//    	if(cacheMerchName != null ){
+//    		result = cacheMerchName;
+//    		return result;
+//    	}
+    	
+    	String total_fee_fen = BusinessHelper.getMoney(total_fee);
+    	int tempFee = Integer.parseInt(total_fee_fen);
+    	//PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
+    	PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEI_XIN");
+    	if(paymentParameter == null){
+    		return result;
+    	}
+    	
+		int curLevel = paymentParameter.getStatus();
+    	String channelOptions = paymentParameter.getValue();
+    	String channelRate = paymentParameter.getCharge_rate();
+    	
+		switch (curLevel) {
+		case 1:
+			if(tempFee >= 50 || !channelOptions.equals("Hee")){
+				result = channelOptions;
+			}
+			break;
+		case 2:
+			result = BusinessHelper.generatePaymentChannelType(tempFee,channelRate,channelOptions,2);
+			break;
+		case 3:
+			result =BusinessHelper.generatePaymentChannelType(tempFee,channelRate,channelOptions,3);
+			break;
+
+		default:
+			break;
+		}
+		System.out.println("result    "+result);
+    	
+//    	businessCacheService.storePaymentWapWeixinMerchantCacheResult(result);    	
     	return result;
     }
 
@@ -363,66 +406,15 @@ public class PayLogicService {
 		return getPayOrder;
 	}*/
     public static void main(String[] args) {
-    	//System.out.println(RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR));
-    	//ResponseError.embed();
-//    	PaymentTypeVTO result = new PaymentTypeVTO();
-//    	result.setType("weixin");
-//    	result.setUrl("@#$%^&*(");
-//    	System.out.println(1002==BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey());
-//    	System.out.println(BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getSecret().equals("1F915A8DA370422582CBAC1DB6A806UU"));
-//    	if("1002".equals(BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey())&&BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getSecret().equals("1F915A8DA370422582CBAC1DB6A806UU")){
-//			System.out.println("虎钻"); ;
-//		}else if("1001".equals(BusinessEnumType.CommdityApplication.DEFAULT.getKey())&&BusinessEnumType.CommdityApplication.DEFAULT.getSecret().equals("1F915A8DA370422582CBAC1DB6A806DD")){
-//			System.out.println("打赏"); ;
-//		}else{
-//			System.out.println("err"); ;
-//		}
-    	
-//    	System.out.println(CommdityApplication.BHU_PREPAID_BUSINESS.getKey().equals(Integer.parseInt("1002")));
-//    	HashMap<String,String> params = new HashMap<String,String>();
-//         params.put("pubacct_payamt_coins", "");
-//         params.put("ts", "1466061172");
-//         params.put("payitem", "TESTMDWX1466061152460achy*0.10*1");
-//         params.put("zoneid", "1");
-//         params.put("cftid","4000952001201606167356678736");
-//         params.put("appid", "1450006356");
-//         params.put("channel_id", "2001-html5-2011-bhuwifi-st_dummy");
-//         params.put("version", "v3");
-//         params.put("amt", "1");
-//         
-//         params.put("providetype", "5");
-//         params.put("appmeta", "*wechat*st_dummy");
-//         
-//         params.put("token", "070AC9513366A723769DE3889EB34A4D30614");
-//         params.put("clientver", "html5");
-//         params.put("mbazinga", "1");
-//         params.put("payamt_coins", "0");
-//         params.put("openid", "WSWW22");
-//         params.put("billno", "-APPDJ54004-20160616-1512375035");
-//         //params.put("sig", "ApNHSKKUkPrO/bZqHOEeaciBsoY=");
-//         String sign = "ApNHSKKUkPrO/bZqHOEeaciBsoY=";
-//         String notify_url = PayHttpService.MIDAS_RETURN_URL;
-//         boolean verifySig = MidasUtils.verifySig(params,notify_url,sign);
-//         System.out.println(verifySig);
-
-         //生成支付签名,这个签名 给 微信支付的调用使用
-         //String paySign =  payHttpService.createSign(payHttpService.getMchKey(),"UTF-8", params);
-//         
-//         params.put("sign", "222");
-//     	String json= JsonHelper.getJSONString(params);
-    	
-//      	SpringMVCHelper.renderJson(response, result);
-    	//System.out.println(BusinessHelper.formatMac("84:82:f4:28:7a:ec"));
-    	
-    	ResponsePaymentCompletedNotifyDTO rpcn_dto = new ResponsePaymentCompletedNotifyDTO();
- 		rpcn_dto.setSuccess(true);
- 		rpcn_dto.setOrderid("11");
- 		rpcn_dto.setPayment_type("22");
- 		//String fmtDate = BusinessHelper.formatDate("2016-08-12 12:32:23", "yyyy-MM-dd HH:mm:ss");
- 		rpcn_dto.setPaymented_ds("2016-08-12 12:32:23");
- 		String notify_message = JsonHelper.getJSONString(rpcn_dto);
- 		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
- 		System.out.println("OK");
-    }
+    	int tempFee = 20;
+    	String channelOptions = "Hee";
+    	String result = "Midas";
+    	if(tempFee >= 50 || !channelOptions.equals("Hee")){
+			result = channelOptions;
+			System.out.println(result);
+		}else{
+			System.out.println(result);
+		}
+	}
 	
 }

@@ -51,7 +51,7 @@ public class PayHttpService {
     
     
     //重定向地址
-    public static String PAY_HOST_URL = "http://119.29.75.134:8080/msip_bhu_payment_rest/payment";
+    public static String PAY_HOST_URL = "http://mpays.bhuwifi.com//msip_bhu_payment_rest/payment";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址

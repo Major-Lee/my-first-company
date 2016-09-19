@@ -1,6 +1,7 @@
 package com.bhu.vas.business.payment;
 
 import java.util.Date;
+import java.util.Random;
 
 import javax.annotation.Resource;
 
@@ -10,6 +11,8 @@ import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.rpc.payment.model.PaymentParameter;
 import com.bhu.vas.business.ds.payment.service.PaymentParameterService;
+import com.bhu.vas.business.payment.help.BusinessHelper;
+import com.mysql.jdbc.StringUtils;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.localunit.BaseTest;
 
@@ -108,8 +111,30 @@ public class PaymentParameterServiceTest extends BaseTest {
 //	}
 	@Test
 	public void test01FindByName(){
+		
+		String result ="Midas";
 		String cdate = DateTimeHelper.formatDate(new Date(), DateTimeHelper.FormatPattern5);
-		PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
-    	System.out.println("dddd:"+paymentParameter.getValue());
+		PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEI_XIN_2");
+		int curLevel = paymentParameter.getStatus();
+    	String channelOptions = paymentParameter.getValue();
+    	String channelRate = paymentParameter.getCharge_rate();
+    	
+		switch (curLevel) {
+		case 1:
+			result = channelOptions;
+			break;
+		case 2:
+			result =BusinessHelper.generatePaymentChannelType(20,channelRate,channelOptions,2);
+			
+			break;
+		case 3:
+			result =BusinessHelper.generatePaymentChannelType(30,channelRate,channelOptions,3);
+			break;
+
+		default:
+			result ="Midas";
+			break;
+		}
+		System.out.println("result    "+result);
    	}
 }

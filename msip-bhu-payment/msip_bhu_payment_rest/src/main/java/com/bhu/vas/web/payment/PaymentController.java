@@ -582,7 +582,8 @@ public class PaymentController extends BaseController{
     					result =  doNativeWxPayment(request,response,type,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
         				
     				}else{
-    					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByName();
+    					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByCondition(total_fee);
+//    					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByName();
         				if(agentMerchant.equals("Midas")){
         					result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}else if(agentMerchant.equals("Hee")){
