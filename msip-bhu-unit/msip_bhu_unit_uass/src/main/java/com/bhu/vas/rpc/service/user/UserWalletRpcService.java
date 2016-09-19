@@ -138,6 +138,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 
 	@Override
 	public RpcResponseDTO<RankingListVTO> rankingList(int uid,int type,String time) {
+		logger.info(String.format("rankingList with uid[%s] type[%s] time[%s]",uid,type,time));
 		return userWalletUnitFacadeService.rankingList(uid,type,time);
 	}
 

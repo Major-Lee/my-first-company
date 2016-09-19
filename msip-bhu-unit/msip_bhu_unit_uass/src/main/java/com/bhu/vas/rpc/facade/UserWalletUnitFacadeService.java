@@ -755,23 +755,23 @@ public class UserWalletUnitFacadeService {
 					rankingListVTO.setChangeFlag(1);
 				}else{
 					List<UserIncomeRank> userIncomeRanks=userIncomeRankService.findByLimit(currentDay+"%");
-					if(userIncomeRanks != null){
-						UserIncomeRank incomeRank=userIncomeRankService.getByUid(uid,currentDay+"%");
-						if(incomeRank==null){
-							rankingListVTO.setRankNum(9999999);
-							rankingListVTO.setUserIncome("0");
+					UserIncomeRank incomeRank=userIncomeRankService.getByUid(uid,currentDay+"%");
+					if(incomeRank==null){
+						rankingListVTO.setRankNum(9999999);
+						rankingListVTO.setUserIncome("0");
+						rankingListVTO.setChangeFlag(1);
+					}else{
+						if(incomeRank.getRank()==incomeRank.getBeforeRank()){
 							rankingListVTO.setChangeFlag(1);
+						}else if(incomeRank.getRank()>incomeRank.getBeforeRank()){
+							rankingListVTO.setChangeFlag(2);
 						}else{
-							if(incomeRank.getRank()==incomeRank.getBeforeRank()){
-								rankingListVTO.setChangeFlag(1);
-							}else if(incomeRank.getRank()>incomeRank.getBeforeRank()){
-								rankingListVTO.setChangeFlag(2);
-							}else{
-								rankingListVTO.setChangeFlag(0);
-							}
-							rankingListVTO.setRankNum(incomeRank.getRank());
-							rankingListVTO.setUserIncome(String.valueOf(round(Float.valueOf(incomeRank.getIncome()),2)));
+							rankingListVTO.setChangeFlag(0);
 						}
+						rankingListVTO.setRankNum(incomeRank.getRank());
+						rankingListVTO.setUserIncome(String.valueOf(round(Float.valueOf(incomeRank.getIncome()),2)));
+					}
+					if(userIncomeRanks != null&&userIncomeRanks.size()>0){
 						for(int i=0;i<userIncomeRanks.size();i++){
 							RankSingle rankSingle=new RankSingle();
 							UserIncomeRank userIncomeRank=userIncomeRanks.get(i);
@@ -825,23 +825,23 @@ public class UserWalletUnitFacadeService {
 					rankingListVTO.setChangeFlag(1);
 				}else{
 					List<UserIncomeMonthRank> userIncomeMonthRanks=userIncomeMonthRankService.findByLimit(currentMonth+"%");
-					if(userIncomeMonthRanks != null){
-						UserIncomeMonthRank incomeMonthRank=userIncomeMonthRankService.getByUid(uid,currentMonth+"%");
-						if(incomeMonthRank==null){
-							rankingListVTO.setRankNum(9999999);
-							rankingListVTO.setUserIncome("0");
+					UserIncomeMonthRank incomeMonthRank=userIncomeMonthRankService.getByUid(uid,currentMonth+"%");
+					if(incomeMonthRank==null){
+						rankingListVTO.setRankNum(9999999);
+						rankingListVTO.setUserIncome("0");
+						rankingListVTO.setChangeFlag(1);
+					}else{
+						if(incomeMonthRank.getRank()==incomeMonthRank.getBeforeRank()){
 							rankingListVTO.setChangeFlag(1);
+						}else if(incomeMonthRank.getRank()>incomeMonthRank.getBeforeRank()){
+							rankingListVTO.setChangeFlag(2);
 						}else{
-							if(incomeMonthRank.getRank()==incomeMonthRank.getBeforeRank()){
-								rankingListVTO.setChangeFlag(1);
-							}else if(incomeMonthRank.getRank()>incomeMonthRank.getBeforeRank()){
-								rankingListVTO.setChangeFlag(2);
-							}else{
-								rankingListVTO.setChangeFlag(0);
-							}
-							rankingListVTO.setRankNum(incomeMonthRank.getRank());
-							rankingListVTO.setUserIncome(String.valueOf(round(Float.valueOf(incomeMonthRank.getIncome()),2)));
+							rankingListVTO.setChangeFlag(0);
 						}
+						rankingListVTO.setRankNum(incomeMonthRank.getRank());
+						rankingListVTO.setUserIncome(String.valueOf(round(Float.valueOf(incomeMonthRank.getIncome()),2)));
+					}
+					if(userIncomeMonthRanks != null&&userIncomeMonthRanks.size()>0){
 						for(int i=0;i<userIncomeMonthRanks.size();i++){
 							RankSingle rankSingle=new RankSingle();
 							UserIncomeMonthRank userIncomeMonthRank=userIncomeMonthRanks.get(i);
@@ -1011,7 +1011,7 @@ public class UserWalletUnitFacadeService {
 	public static List<String> getLastDay(int dateNum){
 		List<String> list = new ArrayList<String>();
 		//获取当前日期
-		for (int i = 0; i <= dateNum; i++) {
+		for (int i = dateNum; i >= 0; i--) {
 			Date date = new Date();  
 			Calendar calendar = Calendar.getInstance();  
 			calendar.setTime(date); 

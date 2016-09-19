@@ -16,10 +16,6 @@ public class UserIncomeMonthRankOp {
 			context.start();
 			UserWalletFacadeService userWalletFacadeService = context.getBean("userWalletFacadeService",UserWalletFacadeService.class);
 			userWalletFacadeService.monthRankingList();
-//			List<UserIncome> user= userWalletFacadeService.getUserIncomeService().findMonthList("2016-08%");
-//			for(UserIncome i:user){
-//				System.out.println(i.getUid()+":"+i.getIncome());
-//			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}finally{
