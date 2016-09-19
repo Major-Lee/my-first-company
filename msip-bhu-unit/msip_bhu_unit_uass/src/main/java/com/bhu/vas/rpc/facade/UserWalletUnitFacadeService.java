@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -706,8 +707,8 @@ public class UserWalletUnitFacadeService {
 		try{
 			RankingListVTO rankingListVTO=new RankingListVTO();
 			List<RankSingle> rankList=new ArrayList<RankSingle>();
-			Map<String,List<RankSingle>> rankDayMap=new HashMap<String,List<RankSingle>>();
-			Map<String,List<RankSingle>> rankMonthMap=new HashMap<String,List<RankSingle>>();
+			Map<String,List<RankSingle>> rankDayMap=new LinkedHashMap<String,List<RankSingle>>();
+			Map<String,List<RankSingle>> rankMonthMap=new LinkedHashMap<String,List<RankSingle>>();
 			
 			Map<String,Object> rankMap=new HashMap<String,Object>();
 			rankMap.put("total", null);
