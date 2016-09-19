@@ -28,7 +28,9 @@ public class AsyncOrderPaymentNotifyProcessor{
 	private ExecutorService exec_dispatcher = null;//Executors.newSingleThreadExecutor();
 	@Resource
 	private AsyncOrderPaymentNotifyService asyncOrderPaymentNotifyService;
-	
+	private static final int [] dispatcherSleepStrategy = new int[]{10,20,50,100};
+	private static final int maxStrategyIndex = dispatcherSleepStrategy.length - 1;
+	private static int strategyIndex = 0;
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncOrderPaymentNotifyProcessor initialize...");
@@ -60,8 +62,16 @@ public class AsyncOrderPaymentNotifyProcessor{
 							String message = CommdityInternalNotifyListService.getInstance().lpopOrderPaymentNotify();
 							/*if(StringUtils.isNotEmpty(message))
 								logger.info(String.format("AsyncOrderPaymentNotifyProcessor receive: message[%s]", message));*/
-							
-							onProcessor(message);
+							if (StringUtils.isNotEmpty(message)){
+								onProcessor(message);
+								strategyIndex = 0;
+							}else{
+								if (strategyIndex > maxStrategyIndex)
+									strategyIndex = maxStrategyIndex;
+								
+								Thread.sleep(dispatcherSleepStrategy[strategyIndex]);
+								strategyIndex++;
+							}
 						}else{
 							Thread.sleep(100);
 						}
