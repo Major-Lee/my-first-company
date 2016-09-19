@@ -22,11 +22,7 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 		return mobileno;
 	}
 	public void setMobileno(String mobileno) {
-		if(mobileno != null){
-			StringBuilder sb = new StringBuilder(mobileno);
-			sb.replace(3,7, "****");
-			this.mobileno = sb.toString();
-		}
+			this.mobileno = mobileno;
 	}
 	public String getManu() {
 		return manu;
@@ -57,7 +53,7 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 		
 		boolean flag = false;
 		
-		if(mobileno != null){
+		if(mobileno != null && !mobileno.isEmpty()){
 			if(!mobileno.equals(this.mobileno) || this.count < count){
 				flag = true;
 			}

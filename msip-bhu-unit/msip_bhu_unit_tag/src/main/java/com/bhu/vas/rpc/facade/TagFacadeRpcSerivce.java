@@ -58,6 +58,7 @@ import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrem
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -739,7 +740,17 @@ public class TagFacadeRpcSerivce {
 						iter.remove();
 				}
 			}
+			if(mobileno ==null || mobileno.isEmpty()){
+				for(TagGroupHandsetDetailVTO vto : vtos){
+					if(vto.getMobileno() != null){
+						StringBuilder sb = new StringBuilder(vto.getMobileno());
+						sb.replace(3,7, "****");
+						vto.setMobileno(sb.toString());
+					}
+				}
+			}
 		}
+		
 		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, vtos.size(), vtos);
 	}
 	
