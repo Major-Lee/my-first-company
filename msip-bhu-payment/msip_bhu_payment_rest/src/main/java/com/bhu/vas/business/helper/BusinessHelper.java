@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
@@ -887,4 +888,65 @@ public class BusinessHelper extends PropertyEditorSupport {
             return false;
         }
     }
+
+
+		/**
+	 * 
+	 * @param type (Type 值对应不同支付渠道的缩写或代名词)
+	 * @return
+	 */
+	public static String generatePaymentChannelType(int tempFee,String channelRate,String channelOptions,int level){
+		String result = "Midas";
+		int num = 0;
+    	Random r = new Random();	//随机数生成器
+    	num = r.nextInt(100) + 1;
+		String[] channelOptionsArray = channelOptions.split("-");
+		String firstOption = channelOptionsArray[0];
+		String secondOption = channelOptionsArray[1];
+		String[] channelRateArray = channelRate.split("-");
+		int firstChannelInt = Integer.valueOf(channelRateArray[0]);
+		int secondChannelInt = Integer.valueOf(channelRateArray[1]);
+		int thirdChannelInt = 0;
+		String thirdOption = "";
+		switch (level) {
+		case 2:
+			
+			if(tempFee < 50 && firstOption.equals("Hee") && !secondOption.equals("Hee")){
+				result = secondOption;
+			}else if(tempFee < 50 && secondOption.equals("Hee")  && !firstOption.equals("Hee")){
+				result = firstOption;
+			}else {
+				if(num <= firstChannelInt){
+					result = firstOption;
+				}else if(num <= secondChannelInt){
+					result = secondOption;
+				}
+			}
+			
+			break;
+		case 3:
+			
+			thirdOption = channelOptionsArray[2];
+			thirdChannelInt = Integer.valueOf(channelRateArray[2]);
+			if(tempFee < 50 && firstOption.equals("Hee") && !secondOption.equals("Hee")){
+				result = secondOption;
+			}else if(tempFee < 50 && secondOption.equals("Hee")  && !thirdOption.equals("Hee")){
+				result = thirdOption;
+			}else if(tempFee < 50 && thirdOption.equals("Hee")  && !firstOption.equals("Hee")){
+				result = firstOption;
+			}else {
+				if(num <= firstChannelInt){
+					result = firstOption;
+				}else if(num <= secondChannelInt){
+					result = secondOption;
+				}else if(num <= thirdChannelInt){
+					result = thirdOption;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+		return  result;
+	}
 }

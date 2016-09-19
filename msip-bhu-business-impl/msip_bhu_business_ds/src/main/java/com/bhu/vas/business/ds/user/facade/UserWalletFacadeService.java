@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,6 +28,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
+import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyGroupSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealDailyUserSummaryProcedureVTO;
@@ -51,6 +53,7 @@ import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsServ
 import com.bhu.vas.business.ds.statistics.service.FincialStatisticsService;
 import com.bhu.vas.business.ds.statistics.service.GpathIncomeService;
 import com.bhu.vas.business.ds.statistics.service.MacIncomeService;
+import com.bhu.vas.business.ds.statistics.service.UserIncomeMonthRankService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeRankService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
 import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
@@ -99,6 +102,8 @@ public class UserWalletFacadeService{
 	private DeviceGroupPaymentStatisticsService deviceGroupPaymentStatisticsService;
 	@Resource
 	private UserIncomeRankService userIncomeRankService;
+	@Resource
+	private UserIncomeMonthRankService userIncomeMonthRankService;
 	@Resource
 	private UserIncomeService userIncomeService;
 	@Resource
@@ -1152,7 +1157,7 @@ public class UserWalletFacadeService{
         Calendar calendarBefore = Calendar.getInstance();  
         calendarBefore.setTime(datebefore);  
         calendarBefore.add(Calendar.DAY_OF_MONTH, x-2);  
-        dateNow = calendarBefore.getTime();  
+        datebefore = calendarBefore.getTime();  
         String timeBefore =sdf.format(datebefore); 
         //userIncomeRankService.deleteAllRank();
 		List<UserIncome> userIncomes=this.getUserIncomeService().findListByTime(time);
@@ -1197,15 +1202,15 @@ public class UserWalletFacadeService{
 		Date date = new Date();  
 		Calendar calendar = Calendar.getInstance();  
 		calendar.setTime(date);  
-		calendar.add(Calendar.DAY_OF_MONTH, x-1);  
+		calendar.add(Calendar.MONTH, x-1);  
 		date = calendar.getTime();  
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");  
 		String time =sdf.format(date); 
 		System.out.println(time);
 		Date dateNow = new Date();  
 		Calendar calendarNow = Calendar.getInstance();  
 		calendarNow.setTime(dateNow);  
-		calendarNow.add(Calendar.DAY_OF_MONTH, x);  
+		calendarNow.add(Calendar.MONTH, x);  
 		dateNow = calendarNow.getTime();  
 		String timeNow =sdf.format(dateNow); 
 		System.out.println(timeNow);
@@ -1213,18 +1218,18 @@ public class UserWalletFacadeService{
 		Date datebefore = new Date();  
 		Calendar calendarBefore = Calendar.getInstance();  
 		calendarBefore.setTime(datebefore);  
-		calendarBefore.add(Calendar.DAY_OF_MONTH, x-2);  
-		dateNow = calendarBefore.getTime();  
+		calendarBefore.add(Calendar.MONTH, x-2);  
+		datebefore = calendarBefore.getTime();  
 		String timeBefore =sdf.format(datebefore); 
 		//userIncomeRankService.deleteAllRank();
-		List<UserIncome> userIncomes=this.getUserIncomeService().findListByTime(time);
+		List<UserIncome> userIncomes=this.getUserIncomeService().findMonthList(time+"%");
 		if(userIncomes != null&&userIncomes.size()>0){
 			String beforeIncome="0";
 			int beforeRankNum=0;
 			int n=1;
 			int m=1;
 			for(int i=userIncomes.size()-1;i>=0;i--){
-				UserIncomeRank userIncomeRank=new UserIncomeRank();
+				UserIncomeMonthRank userIncomeMonthRank=new UserIncomeMonthRank();
 				UserIncome userIncome=userIncomes.get(i);
 				if(i==userIncomes.size()-1){
 					beforeRankNum=n;
@@ -1236,20 +1241,20 @@ public class UserWalletFacadeService{
 						n=m;
 					}
 				}
-				userIncomeRank.setRank(beforeRankNum);
-				userIncomeRank.setIncome(userIncome.getIncome());
-				UserIncomeRank incomeRank=userIncomeRankService.getByUid(userIncome.getUid(),timeBefore+"%");
-				userIncomeRank.setUid(userIncome.getUid());
+				userIncomeMonthRank.setRank(beforeRankNum);
+				userIncomeMonthRank.setIncome(userIncome.getIncome());
+				UserIncomeMonthRank incomeRank=userIncomeMonthRankService.getByUid(userIncome.getUid(),timeBefore+"%");
+				userIncomeMonthRank.setUid(userIncome.getUid());
 				if(incomeRank!=null){
-					userIncomeRank.setBeforeIncome(incomeRank.getIncome());
-					userIncomeRank.setBeforeRank(incomeRank.getRank());
-					userIncomeRank.setCreated_at(date);
+					userIncomeMonthRank.setBeforeIncome(incomeRank.getIncome());
+					userIncomeMonthRank.setBeforeRank(incomeRank.getRank());
+					userIncomeMonthRank.setCreated_at(date);
 				}else{
-					userIncomeRank.setCreated_at(date);
-					userIncomeRank.setBeforeIncome(userIncomeRank.getIncome());
-					userIncomeRank.setBeforeRank(9999999);
+					userIncomeMonthRank.setCreated_at(date);
+					userIncomeMonthRank.setBeforeIncome(userIncomeMonthRank.getIncome());
+					userIncomeMonthRank.setBeforeRank(9999999);
 				}
-				userIncomeRankService.insert(userIncomeRank);
+				userIncomeMonthRankService.insert(userIncomeMonthRank);
 				m++;
 			}
 		}

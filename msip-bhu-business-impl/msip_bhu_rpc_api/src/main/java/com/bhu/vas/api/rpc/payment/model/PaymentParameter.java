@@ -11,6 +11,7 @@ public class PaymentParameter extends BaseStringModel{
 	private int status;
 	private Date changed_at;
 	private String remark;
+	private String charge_rate;
 
 	public String getName() {
 		return name;
@@ -52,8 +53,13 @@ public class PaymentParameter extends BaseStringModel{
 		this.remark = remark;
 	}
 
+	public String getCharge_rate() {
+		return charge_rate;
+	}
 
-
+	public void setCharge_rate(String charge_rate) {
+		this.charge_rate = charge_rate;
+	}
 
 	@Override
 	public void preInsert() {

@@ -1,6 +1,7 @@
 package com.bhu.vas.business.ds.statistics.dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -57,6 +58,10 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 		} catch (Exception e) {
 			return userNum;
 		}
+		return userNum;
+	}
+	public List<UserIncome> findMonthList(String time) {
+		List<UserIncome> userNum = super.getSqlSessionMasterTemplate().selectList(UserIncome.class.getName()+".findMonthList",time);
 		return userNum;
 	}
 	public Order selectOrdersInfo(String orderid) {

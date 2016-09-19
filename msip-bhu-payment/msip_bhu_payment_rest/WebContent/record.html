@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -58,7 +59,24 @@ table {
 <table id='order_detail'><tr><td>数据加载中.....</td></tr></table>
 <script type="text/javascript" src="http://down.bhuwifi.com/Public/Home/js/jquery-1.11.2.min.js"></script>
 <script type="text/javascript">
+function fixedStr(num,str,isMoney,before){
+    if(isMoney){
+        str = str.toFixed(2);
+    }
+    
+    var len = str.toString().length;
+
+    for(var i = 0;i<num-len;i++){
+        if(!before){
+            str = str + '&nbsp;&nbsp;';
+        }else{
+            str = '&nbsp;&nbsp;' + str;
+        }
+    }
+    return str;
+}
 $(document).ready(function(){
+
     $.ajax({
         url:"/msip_bhu_payment_rest/record/info",
         async: false,
@@ -81,27 +99,53 @@ $(document).ready(function(){
                 $('#user_info').html(user_info);
                 
                 var detail = result.detail;
-                var order_detail = "<tr><td>日期</td><td><table><tr><td colspan='2'>微信-单数/金额</td></tr><tr class='linet'><td>手机</td><td class='linel'>电脑</td></tr></table></td><td><table><tr><td colspan='2'>支付宝-单数/金额</td></tr><tr class='linet'><td>手机</td><td class='linel'>电脑</td></tr></table></td><td>累计-单数/金额</td><td>视频</td></tr>";
+                var order_detail = "<tr><td>期</td>"+
+
+                "<td><table><tr><td>手机&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;微信</td></tr><tr class='linet'><td>手机&nbsp;支付宝</td></tr></table></td>"+
+
+                "<td><table><tr><td>电脑&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;微信</td></tr><tr class='linet'><td>电脑&nbsp;支付宝</td></tr></table></td>"+
+
+                "<td><table><tr><td>APP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;微信</td></tr><tr class='linet'><td>APP&nbsp;支付宝</td></tr></table></td>"+
+
+                "<td><table><tr><td>代付</td></tr><tr class='linet'><td>累计</td></tr></table></td>"+
+
+                "<td><table><tr><td>utool</td></tr><tr class='linet'><td>ucloud</td></tr></table></td>"
+
+                +"</tr>";
                 for(var i=0;i<detail.length;i++){
                     var info = detail[i].info;
                         info = eval("(" + info + ")");
 
-                    order_detail +="<tr><td>"+detail[i].timeD+"</td><td><table>"+
-                    "<tr><td>"+info['WapWeixin'].count+"</td>"+
-                    "<td class='linel'>"+info['PcWeixin'].count+"</td></tr>"+
-                    "<tr class='linet'><td>"+info['WapWeixin'].amount/100+
-                    "</td><td class='linel'>"+info['PcWeixin'].amount/100+"</td></tr>"+
-                    "</table></td>"+
-                    "<td><table>"+
-                    "<tr><td>"+info['WapAlipay'].count+"</td>"+
-                    "<td class='linel'>"+info['PcAlipay'].count+"</td></tr>"+
-                    "<tr class='linet'><td>"+info['WapAlipay'].amount/100+
-                    "</td><td class='linel'>"+info['PcAlipay'].amount/100+"</td></tr>"+
-                    "</table></td>"+
-                    "<td><table>"+
-                    "<tr><td class='blue'>"+detail[i].count+"</td></tr>"+
-                    "<tr class='linet'><td class='green'>"+detail[i].amount/100+"</td></tr>"+
-                    "</table></td><td>"+detail[i].video_count+"</td></tr>";
+                    order_detail +="<tr><td>"+detail[i].timeD+"</td>"+
+
+                    "<td><table><tr><td>￥"+fixedStr(7,info['WapWeixin'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(4,info['WapWeixin'].count,false,true)+
+                    "</td></tr><tr class='linet'><td>￥"+fixedStr(7,info['WapAlipay'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(4,info['WapAlipay'].count,false,true)+
+                    "</td></tr></table></td>"+
+
+                    "<td><table><tr><td>￥"+fixedStr(6,info['PcWeixin'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,info['PcWeixin'].count,false,true)+
+                    "</td></tr><tr class='linet'><td>￥"+fixedStr(6,info['PcAlipay'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,info['PcAlipay'].count,false,true)+
+                    "</td></tr></table></td>"+
+
+                    "<td><table><tr><td>￥"+fixedStr(6,info['AppWeixin'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,info['AppWeixin'].count,false,true)+
+                    "</td></tr><tr class='linet'><td>￥"+fixedStr(6,info['AppAlipay'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,info['AppAlipay'].count,false,true)+
+                    "</td></tr></table></td>"+
+
+                    "<td><table><tr><td>￥"+fixedStr(6,info['WapWeixinNative'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,info['WapWeixinNative'].count,false,true)+
+                    "</td></tr><tr class='linet'><td><em class='green'>￥"+fixedStr(6,detail[i].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,detail[i].count,false,true)+
+                    "</em></td></tr></table></td>"+
+
+                    "<td><table><tr><td>"+detail[i].video_count+"</td></tr>"+
+                    "<tr class='linet'><td>"+detail[i].dx_count+"</td></tr></table></td>"+
+
+                    "</tr>";
 
                 }
                 

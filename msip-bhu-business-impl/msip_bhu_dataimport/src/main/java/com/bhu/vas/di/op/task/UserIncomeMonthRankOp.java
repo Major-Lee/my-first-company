@@ -1,5 +1,6 @@
 package com.bhu.vas.di.op.task;
 
+
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
@@ -15,6 +16,10 @@ public class UserIncomeMonthRankOp {
 			context.start();
 			UserWalletFacadeService userWalletFacadeService = context.getBean("userWalletFacadeService",UserWalletFacadeService.class);
 			userWalletFacadeService.monthRankingList();
+//			List<UserIncome> user= userWalletFacadeService.getUserIncomeService().findMonthList("2016-08%");
+//			for(UserIncome i:user){
+//				System.out.println(i.getUid()+":"+i.getIncome());
+//			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}finally{
