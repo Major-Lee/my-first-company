@@ -167,7 +167,7 @@ public class OrderFacadeService {
 		if(end_created_ts > 0){
 			criteria.andColumnLessThanOrEqualTo("updated_at", new Date(end_created_ts));
 		}
-		mc.setOrderByClause("created_at desc");
+		mc.setOrderByClause("updated_at desc");
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
 		return orderService.findModelByModelCriteria(mc);
