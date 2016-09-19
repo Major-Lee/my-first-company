@@ -28,7 +28,8 @@ public class AsyncOrderPaymentNotifyProcessor{
 	private ExecutorService exec_dispatcher = null;//Executors.newSingleThreadExecutor();
 	@Resource
 	private AsyncOrderPaymentNotifyService asyncOrderPaymentNotifyService;
-	private static final int [] dispatcherSleepStrategy = new int[]{10,20,50,100};
+	//private static final int [] dispatcherSleepStrategy = new int[]{10,20,50,100};
+	private static final int [] dispatcherSleepStrategy = new int[]{10};
 	private static final int maxStrategyIndex = dispatcherSleepStrategy.length - 1;
 	private static int strategyIndex = 0;
 	@PostConstruct
@@ -73,7 +74,7 @@ public class AsyncOrderPaymentNotifyProcessor{
 								strategyIndex++;
 							}
 						}else{
-							Thread.sleep(100);
+							Thread.sleep(10);
 						}
 					}catch(Exception ex){
 						ex.printStackTrace(System.out);
