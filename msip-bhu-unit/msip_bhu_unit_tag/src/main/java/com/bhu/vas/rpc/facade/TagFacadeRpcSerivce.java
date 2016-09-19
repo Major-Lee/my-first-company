@@ -718,7 +718,7 @@ public class TagFacadeRpcSerivce {
 	 * @return
 	 */
 	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int gid,String beginTime,String endTime,boolean filter,int count,String mobileno,int pageNo,int pageSize){
-		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime,pageNo,pageSize);
+		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime,pageNo,pageSize,TagGroupHandsetDetail.groupByHdmac);
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
@@ -845,7 +845,7 @@ public class TagFacadeRpcSerivce {
 	 */
 	public TagGroupSendSortMessageVTO generateGroupSendSMSTask(int uid ,int gid ,int count,String context,String startTime, String endTime){
 		
-		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, startTime, endTime,0,0);
+		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, startTime, endTime,0,0,TagGroupHandsetDetail.groupByMobileno);
 		List<TagGroupHandsetDetailDTO> dtos = new ArrayList<TagGroupHandsetDetailDTO>();
 		for(Map<String, Object> map : handsetMap){
 			TagGroupHandsetDetailDTO dto = BusinessTagModelBuilder.builderGroupUserDetailFilterVTO(map,count);

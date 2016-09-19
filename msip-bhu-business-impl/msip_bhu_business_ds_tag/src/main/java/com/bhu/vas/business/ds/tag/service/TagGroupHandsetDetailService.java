@@ -40,7 +40,7 @@ public class TagGroupHandsetDetailService
 	}
 
 	public List<Map<String, Object>> selectHandsetDetail(int gid,
-			String beginTime, String endTime, int pageNo, int PageSize) {
+			String beginTime, String endTime, int pageNo, int PageSize,String groupBy) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("gid", gid);
 		map.put("beginTime", beginTime);
@@ -49,7 +49,8 @@ public class TagGroupHandsetDetailService
 			map.put("pn", (pageNo - 1) * PageSize);
 			map.put("ps", PageSize);
 		}
-
+		map.put("groupBy", groupBy);
+		
 		return this
 				.getEntityDao()
 				.getSqlSessionMasterTemplate()

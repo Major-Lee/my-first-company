@@ -10,6 +10,9 @@ import com.smartwork.msip.cores.orm.model.BaseLongModel;
 @SuppressWarnings("serial")
 public class TagGroupHandsetDetail extends BaseLongModel implements Serializable{
 	
+	public final static String groupByHdmac = "hdmac";
+	public final static String groupByMobileno = "mobileno";
+	
 	private String hdmac;
 	private int gid;
 	private String timestr;

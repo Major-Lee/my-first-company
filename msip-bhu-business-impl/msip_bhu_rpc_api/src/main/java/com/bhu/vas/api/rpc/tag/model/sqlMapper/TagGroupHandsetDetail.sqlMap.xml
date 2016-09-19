@@ -183,7 +183,7 @@
 					#{endTime}
 			</if>
 	    </where> 
-	    GROUP BY hdmac 
+	    GROUP BY #{groupBy}
 		<if test="pn!=null and ps !=null">
 			LIMIT 
 	    	#{pn},
