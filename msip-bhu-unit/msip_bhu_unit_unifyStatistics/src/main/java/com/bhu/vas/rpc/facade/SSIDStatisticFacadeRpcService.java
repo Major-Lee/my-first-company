@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.SsidOutLine;
@@ -659,7 +658,10 @@ public class SSIDStatisticFacadeRpcService {
 				Map<String,Object> freeMap=new HashMap<String,Object>();
 				freeMap.put("freeClickNum", freeClickNum);
 				freeMap.put("freeOfc", freeOfc);
-				freeMap.put("freeComConversion", round(freeOfc*1.00/(pcUV+mobileUV)*100,2)+"%");
+				freeMap.put("freeComConversion", "-");
+				if((pcUV+mobileUV)!=0){
+					freeMap.put("freeComConversion", round(freeOfc*1.00/(pcUV+mobileUV)*100,2)+"%");
+				}
 				singleMap.put("free", freeMap);
 				
 				resMaps.add(singleMap);
@@ -697,7 +699,10 @@ public class SSIDStatisticFacadeRpcService {
 		Map<String,Object> tfreeMap=new HashMap<String,Object>();
 		tfreeMap.put("freeClickNum", totalFreeClickNum);
 		tfreeMap.put("freeOfc", totalFreeOfc);
-		tfreeMap.put("freeComConversion", round(totalFreeOfc*1.00/totalUV*100,2)+"%");
+		tfreeMap.put("freeComConversion", "-");
+		if(totalUV!=0){
+			tfreeMap.put("freeComConversion", round(totalFreeOfc*1.00/totalUV*100,2)+"%");
+		}
 		tMaps.put("free", tfreeMap);
 		
 		Map<String,Object> totalMap=new HashMap<String,Object>();
