@@ -734,7 +734,7 @@ public class UserWalletUnitFacadeService {
 				}
 				if(GetDateTime("yyyy-MM-dd",0).equals(currentDay)){
 					ModelCriteria mc=new ModelCriteria();
-					mc.createCriteria().andColumnNotEqualTo("today_cash_sum", "0");
+					mc.createCriteria().andColumnNotEqualTo("today_cash_sum", 0);
 					mc.createCriteria().andColumnLike("last_update_cash_time", currentDay+"%");
 					mc.setOrderByClause("today_cash_sum desc");
 					List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
@@ -808,7 +808,7 @@ public class UserWalletUnitFacadeService {
 				}
 				if(GetMonthTime(0).equals(currentMonth)){
 					ModelCriteria mc=new ModelCriteria();
-					mc.createCriteria().andColumnNotEqualTo("month_cash_sum", "0");
+					mc.createCriteria().andColumnNotEqualTo("month_cash_sum", 0);
 					mc.createCriteria().andColumnLike("last_update_cash_time", currentMonth+"%");
 					mc.setOrderByClause("month_cash_sum desc");
 					List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
@@ -878,7 +878,7 @@ public class UserWalletUnitFacadeService {
 				rankingListVTO.setUserIncome("0");
 				rankingListVTO.setChangeFlag(1);
 				ModelCriteria mc=new ModelCriteria();
-				mc.createCriteria().andColumnNotEqualTo("total_cash_sum", "0");
+				mc.createCriteria().andColumnNotEqualTo("total_cash_sum", 0);
 				mc.setOrderByClause("total_cash_sum desc");
 				List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
 				if(userWallets!=null&&userWallets.size()>0){
@@ -1061,16 +1061,19 @@ public class UserWalletUnitFacadeService {
 		try{
 			RankingCardInfoVTO rankingCardInfoVTO=new RankingCardInfoVTO();
 			String currentDay=StringUtils.EMPTY;
-			currentDay=GetDateTime("yyyy-MM-dd",-1);
-			UserIncomeRank incomeRank=userIncomeRankService.getByUid(uid,currentDay+"%");
-			if(incomeRank==null){
-				rankingCardInfoVTO.setRank(9999999);
-				rankingCardInfoVTO.setIncome("0");
-			}else{
-				rankingCardInfoVTO.setRank(incomeRank.getRank());
-				rankingCardInfoVTO.setIncome(String.valueOf(round(Float.valueOf(incomeRank.getIncome()),2)));
+			ModelCriteria mc=new ModelCriteria();
+			mc.createCriteria().andColumnNotEqualTo("today_cash_sum", 0);
+			mc.createCriteria().andColumnLike("last_update_cash_time", currentDay+"%");
+			mc.setOrderByClause("today_cash_sum desc");
+			List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
+			rankingCardInfoVTO.setRank(9999999);
+			rankingCardInfoVTO.setIncome("0");
+			for(int i=0;i<userWallets.size();i++){
+				if(uid==userWallets.get(i).getId()){
+					rankingCardInfoVTO.setRank(i+1);
+					rankingCardInfoVTO.setIncome(String.valueOf(round(userWallets.get(i).getToday_cash_sum(),2)));
+				}
 			}
-			
 			rankingCardInfoVTO.setAge(0);
 			User user=userService.getById(uid);
 			if(user!=null){

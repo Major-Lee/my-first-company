@@ -160,7 +160,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 
 	@Override
 	public RpcResponseDTO<RankingCardInfoVTO> rankingCardInfo(Integer uid) {
-		logger.info(String.format("rankingList with uid[%s]",uid));
+		logger.info(String.format("rankingCardInfo with uid[%s]",uid));
 		return userWalletUnitFacadeService.rankingCardInfo(uid);
 	}
 }
