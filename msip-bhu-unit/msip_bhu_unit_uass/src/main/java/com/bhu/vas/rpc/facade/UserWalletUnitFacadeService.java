@@ -1074,7 +1074,17 @@ public class UserWalletUnitFacadeService {
 			rankingCardInfoVTO.setAge(0);
 			User user=userService.getById(uid);
 			if(user!=null){
-				rankingCardInfoVTO.setAge(daysBetween(user.getCreated_at().toString(),GetDateTime("yyyy-MM-dd",0)));
+				 // 得到日历
+			    Calendar calendar = Calendar.getInstance();
+			    // 把当前时间赋给日历
+			    calendar.setTime(user.getCreated_at());
+			    // 设置为前一天
+			    calendar.add(Calendar.DAY_OF_MONTH, 0);
+			    // 得到前一天的时间
+			    Date dBefore = calendar.getTime();
+			    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			    String retDate = sdf.format(dBefore);
+				rankingCardInfoVTO.setAge(daysBetween(retDate,GetDateTime("yyyy-MM-dd",0)));
 				rankingCardInfoVTO.setMemo(user.getMemo());
 				rankingCardInfoVTO.setAvatar(user.getAvatar());
 			}
