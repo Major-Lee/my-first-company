@@ -26,15 +26,16 @@ import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
+import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.WifiDevicePresentVTO;
+import com.bhu.vas.api.vto.device.DeviceConfigDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
-import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -79,6 +80,10 @@ public class DashboardController extends BaseController{
 	
     @Resource
     private IDeviceRestRpcService deviceRestRpcService;
+    
+    @Resource
+    private IUserDeviceRpcService userDeviceRpcService;
+
 	
 	private static final String DefaultSecretkey = "PzdfTFJSUEBHG0dcWFcLew==";
 	
@@ -106,6 +111,33 @@ public class DashboardController extends BaseController{
 		}
 		return null;
 	}
+	
+	
+	
+	
+	
+    /**
+     * 设备详细信息
+     * @param request
+     * @param response
+     * @param uid
+     * @param mac
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/device_config_detail", method = {RequestMethod.POST})
+    public void detail(
+            HttpServletRequest request,
+            HttpServletResponse response,
+			@RequestParam(required = true,value="sk") String secretKey,
+            @RequestParam(required = true) String mac
+    		) {
+		RpcResponseDTO<DeviceConfigDetailVTO> rpcResult = userDeviceRpcService.deviceConfigDetail(mac.toLowerCase());
+		if(!rpcResult.hasError())
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		else
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    }
+
 	
 	/**
 	 * 批量修改设备配置

@@ -14,7 +14,16 @@ public class URouterDeviceConfigVapVTO implements Serializable{
 	private String vap_hide_ssid;
 	//vap 密码
 	private String vap_pwd;
+	//是否启用
+	private String enable;
 	
+	
+	public String getEnable() {
+		return enable;
+	}
+	public void setEnable(String enable) {
+		this.enable = enable;
+	}
 	public String getVap_name() {
 		return vap_name;
 	}

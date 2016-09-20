@@ -1520,6 +1520,7 @@ public class DeviceURouterRestBusinessFacadeService {
 					vap_vto.setVap_ssid(vap.getSsid());
 					vap_vto.setVap_pwd(JNIRsaHelper.jniRsaDecryptHexStr(vap.getAuth_key_rsa()));
 					vap_vto.setVap_hide_ssid(vap.getHide_ssid());
+					vap_vto.setEnable(vap.getEnable());
 					vaps_vto.add(vap_vto);
 				}
 				vto.setVaps(vaps_vto);

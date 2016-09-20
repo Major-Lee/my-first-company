@@ -2,14 +2,13 @@ package com.bhu.vas.api.rpc.user.iservice;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCloudDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
+import com.bhu.vas.api.vto.device.DeviceConfigDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
@@ -62,6 +61,7 @@ public interface IUserDeviceRpcService {
     
 	RpcResponseDTO<DeviceDetailVTO> deviceDetail(int uid,String mac);
 	
+	RpcResponseDTO<DeviceConfigDetailVTO> deviceConfigDetail(String mac);
 //    RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid);
     
     //RpcResponseDTO<DeviceProfileVTO> portalDeviceProfile(String mac);

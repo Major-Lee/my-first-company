@@ -11,7 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
@@ -22,6 +25,8 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
@@ -34,7 +39,10 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigInterfaceVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigVapVTO;
 import com.bhu.vas.api.vto.device.DeviceBaseVTO;
+import com.bhu.vas.api.vto.device.DeviceConfigDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceOperationVTO;
 import com.bhu.vas.api.vto.device.DevicePresentVTO;
@@ -43,7 +51,6 @@ import com.bhu.vas.api.vto.device.UserDeviceStatisticsVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
@@ -71,6 +78,7 @@ import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrem
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -866,6 +874,132 @@ public class UserDeviceUnitFacadeService {
 		}
 	}
 
+
+	public RpcResponseDTO<DeviceConfigDetailVTO> deviceConfigDetail(String mac) {
+		try {
+			DeviceConfigDetailVTO ret = new DeviceConfigDetailVTO();
+			
+			WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+			WifiDeviceSetting wifiDeviceSetting = wifiDeviceSettingService.getById(mac);
+			if (wifiDevice == null) {
+				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST, new String[] { "mac" });
+			}
+			User user = null;
+			// Integer bindUid = userDeviceService.fetchBindUid(mac);
+			Integer bindUid = userWifiDeviceFacadeService.findUidById(mac);
+			if (bindUid != null) {
+				user = userService.getById(bindUid);
+			}
+
+			WifiDeviceSharedNetwork wifiDeviceSharedNetwork = sharedNetworksFacadeService.fetchDeviceSharedNetwork(mac);
+			
+			ret.setMac(mac);
+			ret.setSn(wifiDevice.getSn());
+			ret.setOrig_hdver(wifiDevice.getOrig_hdver());
+			ret.setOrig_swver(wifiDevice.getOrig_swver());
+			ret.setWork_mode(wifiDevice.getWork_mode());
+			ret.setUid((user == null)?0:bindUid);
+			ret.setMobileno((user == null)?StringUtils.EMPTY:user.getMobileno());
+			ret.setOnline(wifiDevice.isOnline());
+			ret.setAddress(wifiDevice.getFormatted_address());
+			ret.setFirst_reg_at((wifiDevice.getFirst_reged_at()  == null)?StringHelper.MINUS_STRING_GAP:DateTimeHelper.formatDate(wifiDevice.getFirst_reged_at(), DateTimeHelper.FormatPattern0));
+			ret.setLast_logout_at((wifiDevice.getLast_logout_at()  == null)?StringHelper.MINUS_STRING_GAP:DateTimeHelper.formatDate(wifiDevice.getLast_logout_at(), DateTimeHelper.FormatPattern0));
+			ret.setLast_reg_at((wifiDevice.getLast_reged_at()  == null)?StringHelper.MINUS_STRING_GAP:DateTimeHelper.formatDate(wifiDevice.getLast_reged_at(), DateTimeHelper.FormatPattern0));
+			ret.setDod(wifiDevice.getUptime());	
+			
+			if(wifiDeviceSetting != null){
+				WifiDeviceSettingDTO psn = wifiDeviceSetting.getInnerModel();
+				ret.setRf_2in1(psn.getRf_2in1());
+				if(psn.getUsers() != null){
+					for(WifiDeviceSettingUserDTO duser:psn.getUsers()){
+						if(WifiDeviceSettingUserDTO.Admin_Name.equals(duser.getName())){
+							if(StringUtils.isEmpty(duser.getPassword()) && StringUtils.isNotEmpty(duser.getPassword_rsa())){
+								ret.setAdmin_pwd(JNIRsaHelper.jniRsaDecryptHexStr(duser.getPassword_rsa()));
+							} else {
+								ret.setAdmin_pwd(duser.getPassword());
+							}
+							break;
+						}
+					}
+				}
+				if(psn.getVaps() != null && !psn.getVaps().isEmpty()){
+					List<URouterDeviceConfigVapVTO> vaps_vto = new ArrayList<URouterDeviceConfigVapVTO>();
+					URouterDeviceConfigVapVTO vap_vto = null;
+					for (WifiDeviceSettingVapDTO vap : psn.getVaps()) {
+						vap_vto = new URouterDeviceConfigVapVTO();
+						vap_vto.setVap_auth(vap.getAuth());
+						vap_vto.setVap_name(vap.getName());
+						vap_vto.setVap_ssid(vap.getSsid());
+						vap_vto.setVap_pwd(JNIRsaHelper.jniRsaDecryptHexStr(vap.getAuth_key_rsa()));
+						vap_vto.setVap_hide_ssid(vap.getHide_ssid());
+						vap_vto.setEnable(vap.getEnable());
+						vaps_vto.add(vap_vto);
+					}
+					ret.setVaps(vaps_vto);
+				}
+				
+				if(psn.getInterfaces() != null && !psn.getInterfaces().isEmpty()){
+					List<URouterDeviceConfigInterfaceVTO> interface_vtos = new ArrayList<URouterDeviceConfigInterfaceVTO>();
+					for (WifiDeviceSettingInterfaceDTO interface_dto : psn.getInterfaces()) {
+						String interface_name = interface_dto.getName();
+						if (StringUtils.isNotEmpty(interface_name)) {
+							if (interface_name.startsWith("wlan")) {
+								URouterDeviceConfigInterfaceVTO interface_vto = new URouterDeviceConfigInterfaceVTO();
+								interface_vto.setName(interface_dto.getName());
+								interface_vto.setEnable(interface_dto.getEnable());
+								if (interface_dto.getUsers_tx_rate() != null) {
+									interface_vto.setUsers_tx_rate(interface_dto.getUsers_tx_rate().intValue() / 8);// Kbps转KBps
+								}
+								if (interface_dto.getUsers_rx_rate() != null) {
+									interface_vto.setUsers_rx_rate(interface_dto.getUsers_rx_rate().intValue() / 8);// Kbps转KBps
+								}
+								interface_vtos.add(interface_vto);
+							}
+						}
+					}
+					ret.setIfs(interface_vtos);
+				}
+			}
+			
+			if(wifiDeviceSharedNetwork != null && wifiDeviceSharedNetwork.getInnerModel() != null){
+				SharedNetworkSettingDTO snkdto = wifiDeviceSharedNetwork.getInnerModel();
+				ParamSharedNetworkDTO snkpsn = snkdto.getPsn();
+				ret.setSnk_on(snkdto.isOn());
+				if(snkpsn != null){
+					ret.setSnk_type(snkpsn.getNtype());
+					ret.setSnk_ssid(snkpsn.getSsid());
+					ret.setRemote_auth_url(snkpsn.getRemote_auth_url());
+					ret.setUsers_rx_rate(snkpsn.getUsers_rx_rate());
+					ret.setUsers_tx_rate(snkpsn.getUsers_tx_rate());
+				}
+			}
+
+			// 分成详情
+			WifiDeviceSharedealConfigs configs = chargingFacadeService.userfulWifiDeviceSharedealConfigsJust4View(mac);
+			DeviceSharedealVTO dsv = new DeviceSharedealVTO();
+			dsv.setMac(configs.getId());
+			dsv.setBatchno(configs.getBatchno());
+			dsv.setOwner_percent(configs.getOwner_percent());
+			dsv.setManufacturer_percent(configs.getManufacturer_percent());
+			dsv.setDistributor_percent(configs.getDistributor_percent());
+			dsv.setRcm(configs.getRange_cash_mobile());
+			dsv.setRcp(configs.getRange_cash_pc());
+			dsv.setAitm(configs.getAit_mobile());
+			dsv.setAitp(configs.getAit_pc());
+			dsv.setCanbeturnoff(configs.isCanbe_turnoff());
+			dsv.setRuntime_applydefault(configs.isRuntime_applydefault());
+			dsv.setCustomized(configs.isCustomized());
+			
+			ret.setDsv(dsv);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
+		} catch (BusinessI18nCodeException i18nex) {
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 	/**
 	 * 根据用户uid获取绑定的设备分页数据
 	 * 
