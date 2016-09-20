@@ -280,7 +280,7 @@ public class GroupController extends BaseController{
             @RequestParam(required = true) int gid,
     	    @RequestParam(required = false) Long beginTime,
     	    @RequestParam(required = false) Long endTime,
-    	    @RequestParam(required = false) boolean filter,
+    	    @RequestParam(required = true) boolean filter,
     	    @RequestParam(required = false, defaultValue = ">") String match,
     	    @RequestParam(required = false, defaultValue = "0") int count,
     	    @RequestParam(required = false) String mobileno,
