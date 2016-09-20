@@ -333,7 +333,7 @@ public class SSIDStatisticFacadeRpcService {
 					if(StringUtils.isNotBlank(freeMobileClick)){
 						freeClickNum+=Integer.valueOf(freeMobileClick);
 					}else{
-						freePcClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", timeList.get(i), timeList.get(i), "", "",1);
+						freeMobileClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", timeList.get(i), timeList.get(i), "", "",1);
 						JSONObject freeMobileClickJson=JSONObject.fromObject(freeMobileClick);
 						String freeMobileClickJsonStr=freeMobileClickJson.getString("values");
 						freeMobileClickJsonStr=freeMobileClickJsonStr.substring(1);
@@ -1041,10 +1041,9 @@ public class SSIDStatisticFacadeRpcService {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
 		String dateStr = sdf.format(date); 
 		
-		
 		ModelCriteria mc=new ModelCriteria();
-		mc.createCriteria().andColumnNotEqualTo("channel_lv1", null);
-		List<WifiDevice> wifiDevices= wifiDeviceService.findModelByModelCriteria(mc);
+		mc.createCriteria().andColumnNotEqualTo("channel_lv1", "");
+		//List<WifiDevice> wifiDevices= wifiDeviceService.findModelByModelCriteria(mc);
 		int waDoc=0;
 		double waIncome=0;
 		int zjDoc=0;
@@ -1053,58 +1052,77 @@ public class SSIDStatisticFacadeRpcService {
 		double yysIncome=0;
 		int xsxxDoc=0;
 		double xsxxIncome=0;
-		if(wifiDevices!=null&&wifiDevices.size()>0){
-			for(WifiDevice i:wifiDevices){
-				String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+dateStr, i.getId());
-				if(StringUtils.isNoneBlank(doC)){
-					if(i.getChannel_lv1().equals("WA")){
-						waDoc+=Integer.parseInt(doC);
-					}else if(i.getChannel_lv1().equals("ZJ")){
-						zjDoc+=Integer.parseInt(doC);
-					}else if(i.getChannel_lv1().equals("YYS")){
-						yysDoc+=Integer.parseInt(doC);
-					}else if(i.getChannel_lv1().equals("XSXX")){
-						xsxxDoc+=Integer.parseInt(doC);
-					}
-				}
-				String orderStatist=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+dateStr, i.getId());
-				if(StringUtils.isNotBlank(orderStatist)){
-					JSONObject orderObj = JSONObject.fromObject(orderStatist);
-					if(orderObj.get("ofa") != null){
-						if(i.getChannel_lv1().equals("WA")){
-							waIncome+=orderObj.getDouble("ofa");
-						}else if(i.getChannel_lv1().equals("ZJ")){
-							zjIncome+=orderObj.getDouble("ofa");
-						}else if(i.getChannel_lv1().equals("YYS")){
-							yysIncome+=orderObj.getDouble("ofa");
-						}else if(i.getChannel_lv1().equals("XSXX")){
-							xsxxIncome+=orderObj.getDouble("ofa");
-						}
-					}
-				}
-			}
-		}
+//		if(wifiDevices!=null&&wifiDevices.size()>0){
+//			for(WifiDevice i:wifiDevices){
+//				String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+dateStr, i.getId());
+//				if(StringUtils.isNoneBlank(doC)){
+//					if(i.getChannel_lv1().equals("WA")){
+//						waDoc+=Integer.parseInt(doC);
+//					}else if(i.getChannel_lv1().equals("ZJ")){
+//						zjDoc+=Integer.parseInt(doC);
+//					}else if(i.getChannel_lv1().equals("YYS")){
+//						yysDoc+=Integer.parseInt(doC);
+//					}else if(i.getChannel_lv1().equals("XSXX")){
+//						xsxxDoc+=Integer.parseInt(doC);
+//					}
+//				}
+//				String orderStatist=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+dateStr, i.getId());
+//				if(StringUtils.isNotBlank(orderStatist)){
+//					JSONObject orderObj = JSONObject.fromObject(orderStatist);
+//					if(orderObj.get("ofa") != null){
+//						if(i.getChannel_lv1().equals("WA")){
+//							waIncome+=orderObj.getDouble("ofa");
+//						}else if(i.getChannel_lv1().equals("ZJ")){
+//							zjIncome+=orderObj.getDouble("ofa");
+//						}else if(i.getChannel_lv1().equals("YYS")){
+//							yysIncome+=orderObj.getDouble("ofa");
+//						}else if(i.getChannel_lv1().equals("XSXX")){
+//							xsxxIncome+=orderObj.getDouble("ofa");
+//						}
+//					}
+//				}
+//			}
+//		}
 		double total=waIncome+zjIncome+yysIncome+xsxxIncome;
 		SsidOutLine waoutLine=new SsidOutLine();
 		waoutLine.setDoc(waDoc);
 		waoutLine.setIncome(String.valueOf(round(waIncome,2)));
-		waoutLine.setRate(round(waIncome/total*100, 2));
+		waoutLine.setRate(0);
+		if(total!=0){
+			waoutLine.setRate(round(waIncome/total*100, 2));
+		}
 		SsidOutLine zjoutLine=new SsidOutLine();
 		zjoutLine.setDoc(zjDoc);
 		zjoutLine.setIncome(String.valueOf(round(waIncome,2)));
-		zjoutLine.setRate(round(zjIncome/total*100, 2));
+		zjoutLine.setRate(0);
+		if(total!=0){
+			zjoutLine.setRate(round(zjIncome/total*100, 2));
+		}
 		SsidOutLine yysoutLine=new SsidOutLine();
 		yysoutLine.setDoc(yysDoc);
 		yysoutLine.setIncome(String.valueOf(round(yysIncome,2)));
-		yysoutLine.setRate(round(yysIncome/total*100, 2));
+		yysoutLine.setRate(0);
+		if(total!=0){
+			yysoutLine.setRate(round(yysIncome/total*100, 2));
+		}
 		SsidOutLine xsxxoutLine=new SsidOutLine();
 		xsxxoutLine.setDoc(xsxxDoc);
 		xsxxoutLine.setIncome(String.valueOf(round(xsxxIncome,2)));
-		xsxxoutLine.setRate(100-round(yysIncome/total*100, 2)-round(zjIncome/total*100, 2)-round(waIncome/total*100, 2));
+		xsxxoutLine.setRate(0);
+		if(total!=0){
+			xsxxoutLine.setRate(100-round(yysIncome/total*100, 2)-round(zjIncome/total*100, 2)-round(waIncome/total*100, 2));
+		}
 		channelInfos.put("WA", waoutLine);
 		channelInfos.put("ZJ", zjoutLine);
 		channelInfos.put("YYS", yysoutLine);
 		channelInfos.put("XSXX", xsxxoutLine);
+		
+		
+		methodStatistics.put("ds", 0);
+		methodStatistics.put("dx", 0);
+		methodStatistics.put("sp", 0);
+		methodStatistics.put("utool", 0);
+		
 		vto.setMethodStatistics(methodStatistics);
 		vto.setChannelInfos(channelInfos);
 		return vto;

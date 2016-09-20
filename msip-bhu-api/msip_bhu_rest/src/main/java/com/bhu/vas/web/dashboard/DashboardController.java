@@ -33,6 +33,7 @@ import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
 import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
@@ -610,6 +611,21 @@ public class DashboardController extends BaseController{
     		@RequestParam(required = true) Integer type,
     		@RequestParam(required = false,defaultValue = "") String time){
     	RpcResponseDTO<RankingListVTO> rpcResult = userWalletRpcService.rankingList(uid,type,time);
+    	if(!rpcResult.hasError()){
+    		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    	}else{
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    	}
+    }
+    /**
+     * 收益排名名片
+     * @param response
+     * @param uid
+     */
+    @ResponseBody()
+    @RequestMapping(value="/wallet/rankingCardInfo", method={RequestMethod.GET,RequestMethod.POST})
+    public void rankingCardInfo(HttpServletResponse response, @RequestParam(required = true) Integer uid){
+    	RpcResponseDTO<RankingCardInfoVTO> rpcResult = userWalletRpcService.rankingCardInfo(uid);
     	if(!rpcResult.hasError()){
     		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     	}else{

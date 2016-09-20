@@ -42,6 +42,7 @@ import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RankSingle;
+import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
@@ -1054,5 +1055,62 @@ public class UserWalletUnitFacadeService {
 	    BigDecimal b = new BigDecimal(Double.toString(v));         
 	    BigDecimal one = new BigDecimal("1");         
 	    return b.divide(one,scale,BigDecimal.ROUND_HALF_UP).doubleValue();         
-    } 
+    }
+
+	public RpcResponseDTO<RankingCardInfoVTO> rankingCardInfo(Integer uid) {
+		try{
+			RankingCardInfoVTO rankingCardInfoVTO=new RankingCardInfoVTO();
+			String currentDay=StringUtils.EMPTY;
+			currentDay=GetDateTime("yyyy-MM-dd",-1);
+			UserIncomeRank incomeRank=userIncomeRankService.getByUid(uid,currentDay+"%");
+			if(incomeRank==null){
+				rankingCardInfoVTO.setRank(9999999);
+				rankingCardInfoVTO.setIncome("0");
+			}else{
+				rankingCardInfoVTO.setRank(incomeRank.getRank());
+				rankingCardInfoVTO.setIncome(String.valueOf(round(Float.valueOf(incomeRank.getIncome()),2)));
+			}
+			
+			rankingCardInfoVTO.setAge(0);
+			User user=userService.getById(uid);
+			if(user!=null){
+				rankingCardInfoVTO.setAge(daysBetween(user.getCreated_at().toString(),GetDateTime("yyyy-MM-dd",0)));
+				rankingCardInfoVTO.setMemo(user.getMemo());
+				rankingCardInfoVTO.setAvatar(user.getAvatar());
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rankingCardInfoVTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	} 
+	public static void main(String[] args) {
+		System.out.println(daysBetween("2016-09-16 14:22:36", "2016-09-20 22:50:50"));
+	}
+	/** 
+	*字符串的日期格式的计算 
+	*/  
+	 public static int daysBetween(String smdate,String bdate){  
+		 SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
+		 Calendar cal = Calendar.getInstance();    
+		 try {
+			cal.setTime(sdf.parse(smdate));
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}    
+		 long time1 = cal.getTimeInMillis();                 
+		 try {
+			cal.setTime(sdf.parse(bdate));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    
+		 long time2 = cal.getTimeInMillis();         
+		 long between_days=(time2-time1)/(1000*3600*24);  
+		return Integer.parseInt(String.valueOf(between_days));     
+	}  
+
 }

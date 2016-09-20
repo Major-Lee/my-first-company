@@ -14,6 +14,7 @@ import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
@@ -155,5 +156,11 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 		logger.info(String.format("pageUserWalletlogsByFeifan with uid[%s] transmode[%s] transtype[%s] start_date[%s] end_date[%s] pn[%s] ps[%s]",
 				uid, transmode, transtype, start_date, end_date, pageNo, pageSize));
 		return userWalletUnitFacadeService.pageUserWalletlogsByFeifan(uid, transmode, transtype, start_date, end_date, pageNo, pageSize);
+	}
+
+	@Override
+	public RpcResponseDTO<RankingCardInfoVTO> rankingCardInfo(Integer uid) {
+		logger.info(String.format("rankingList with uid[%s]",uid));
+		return userWalletUnitFacadeService.rankingCardInfo(uid);
 	}
 }
