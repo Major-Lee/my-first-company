@@ -7,7 +7,7 @@ public class PersistenceCMDDTO implements java.io.Serializable{
 	private String opt;
 	private String subopt;
 	private String extparams;
-	
+	private boolean ds;
 	public PersistenceCMDDTO() {
 	}
 	
@@ -35,6 +35,14 @@ public class PersistenceCMDDTO implements java.io.Serializable{
 		this.extparams = extparams;
 	}
 	
+	public boolean isDs() {
+		return ds;
+	}
+
+	public void setDs(boolean ds) {
+		this.ds = ds;
+	}
+
 	public String toKey(){
 		return WifiDeviceHelper.builderPersistenceKey(opt, subopt);
 	}

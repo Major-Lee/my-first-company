@@ -8,6 +8,11 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 @SuppressWarnings("serial")
 public class CmCtxInfo implements java.io.Serializable{
+	//private String _mq_host;
+	//activemq host
+	private String mq_host;
+	//activemq port
+	private int mq_port;
 	private String name;
 	private String process_seq;
 	private String max_client;
@@ -56,10 +61,10 @@ public class CmCtxInfo implements java.io.Serializable{
 		this.last_frag = last_frag;
 	}
 	public String toUpQueueString(){
-		return "up_".concat(toString());
+		return UpPrefix.concat(toString());
 	}
 	public String toDownQueueString(){
-		return "down_".concat(toString());
+		return DownPrefix.concat(toString());
 	}
 	public String toString(){
 		return name.concat(StringHelper.UNDERLINE_STRING_GAP).concat(process_seq);
@@ -76,7 +81,61 @@ public class CmCtxInfo implements java.io.Serializable{
 		if(split.length != 2) return null;
 		return new CmCtxInfo(split[0],split[1]);
 	}
+	
 	public static String builderDownQueueName(String ctx_name){
-		return "down_".concat(ctx_name);
+		return DownPrefix.concat(ctx_name);
+	}
+	
+	public static String builderUpQueueName(String ctx_name){
+		return UpPrefix.concat(ctx_name);
+	}
+	
+	public static String parserCtxName(String queue_name){
+		if(StringUtils.isEmpty(queue_name)) return null;
+		if(queue_name.startsWith(UpPrefix)){
+			return queue_name.substring(UpPrefix.length());
+		}else if(queue_name.startsWith(DownPrefix)){
+			return queue_name.substring(DownPrefix.length());
+		}else{
+			return queue_name;
+		}
+		//String[] split = queue_name.split(StringHelper.UNDERLINE_STRING_GAP);
+		//return split[0];
+		//return UpPrefix.concat(ctx_name);
+	}
+	
+	public String getMq_host() {
+		return mq_host;
+	}
+	public void setMq_host(String mq_host) {
+		this.mq_host = mq_host;
+	}
+	public int getMq_port() {
+		return mq_port;
+	}
+	public void setMq_port(int mq_port) {
+		this.mq_port = mq_port;
+	}
+
+	/*public String get_mq_host() {
+		return _mq_host;
+	}
+	public void set_mq_host(String _mq_host) {
+		this._mq_host = _mq_host;
+	}*/
+
+	public static final String DownPrefix = "down_";
+	public static final String UpPrefix = "up_";
+	
+	public static void main(String[] argv){
+		
+		String queue_name = "down_ursids3_0";
+		System.out.println(CmCtxInfo.parserCtxName(queue_name));
+		/*CmCtxInfo info = new CmCtxInfo();
+		info.set_mq_host("1234");
+		String json = (JsonHelper.getJSONString(info));
+		
+		CmCtxInfo dto = JsonHelper.getDTO(json, CmCtxInfo.class);
+		System.out.println(dto.get_mq_host());*/
 	}
 }

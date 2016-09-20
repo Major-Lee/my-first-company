@@ -7,18 +7,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
+import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -33,22 +40,30 @@ public class UserDeviceController extends BaseController {
     @Resource
     private IUserDeviceRpcService userDeviceRpcService;
 
+
+    /**
+     * 用户绑定设备
+     * @param response
+     * @param mac
+     * @param uid
+     * @throws Exception
+     */
     @ResponseBody()
     @RequestMapping(value="/bind",method={RequestMethod.POST})
     public void bindDevice(HttpServletResponse response,
                            @RequestParam(required = true, value = "mac") String mac,
                            @RequestParam(required = true, value = "uid") int uid) throws Exception{
+    	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return;
         }
 
         RpcResponseDTO<UserDeviceDTO> userDeviceResult = userDeviceRpcService.bindDevice(mac, uid);
-        if (userDeviceResult.getErrorCode() != null) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(userDeviceResult.getErrorCode()));
-            return;
+        if (!userDeviceResult.hasError()) {
+        	SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
+        	SpringMVCHelper.renderJson(response, ResponseError.embed(userDeviceResult));
         }
 
     }
@@ -65,11 +80,12 @@ public class UserDeviceController extends BaseController {
                              @RequestParam(required = true, value = "mac") String mac,
                              @RequestParam(required = true, value = "uid") int uid
     ) {
+    	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return ;
         }
-        int deviceStatus = userDeviceRpcService.validateDeviceStatusIsOnlineAndBinded(mac);
+        /*int deviceStatus = userDeviceRpcService.validateDeviceStatusIsOnlineAndBinded(mac);
         logger.debug("devicestatus==" + deviceStatus);
         if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_NOT_EXIST ) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.DEVICE_DATA_NOT_EXIST));
@@ -87,30 +103,195 @@ public class UserDeviceController extends BaseController {
         } else if (deviceStatus == IUserDeviceRpcService.WIFI_DEVICE_STATUS_UNBINDED) {
             //TODO(bluesand):未绑定过装备的时候，取消绑定
             SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+        }*/
+        RpcResponseDTO<Boolean> rpcResult = userDeviceRpcService.unBindDevice(mac, uid);
+        if (!rpcResult.hasError()) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
-
     }
 
     @ResponseBody()
     @RequestMapping(value="/validate",method={RequestMethod.POST})
     public void validateDevice(HttpServletResponse response,
                                @RequestParam(required = true, value = "mac") String mac) {
+    	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return ;
         }
-        SpringMVCHelper.renderJson(response,ResponseSuccess.embed(userDeviceRpcService.validateDeviceStatus(mac).getPayload()));
+        RpcResponseDTO<UserDeviceStatusDTO> rpcResult = userDeviceRpcService.validateDeviceStatus(mac);
+        if (!rpcResult.hasError()) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+        //SpringMVCHelper.renderJson(response,ResponseSuccess.embed(userDeviceRpcService.validateDeviceStatus(mac).getPayload()));
     }
 
+
+    /**
+     * 获取用户绑定列表,默认为urouter
+     * @param response
+     * @param uid
+     * @param dut
+     */
     @ResponseBody()
     @RequestMapping(value="/fetchbinded",method={RequestMethod.POST})
     public void listBindDevice(HttpServletResponse response,
-                               @RequestParam(required = true, value = "uid") int uid) {
-        RpcResponseDTO<List<UserDeviceDTO>> userDeviceResult = userDeviceRpcService.fetchBindDevices(uid);
-        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
+                @RequestParam(required = true, value = "uid") int uid,
+                @RequestParam(required = false, defaultValue = VapEnumType.DUT_uRouter, value = "dut") String dut,
+        		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+        		@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
+    	RpcResponseDTO<List<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchBindDevices(uid, dut, pageNo, pageSize);
+        if (!rpcResult.hasError()) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
+
+    /**
+     * 获取用户绑定分页列表,默认为urouter
+     * @param response
+     * @param uid
+     * @param dut
+     */
+    @ResponseBody()
+    @RequestMapping(value="/fetchbinded_pages",method={RequestMethod.POST})
+    public void pageBindDevice(HttpServletResponse response,
+                @RequestParam(required = true, value = "uid") int uid,
+                @RequestParam(required = false, defaultValue = VapEnumType.DUT_uRouter, value = "dut") String dut,
+        		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+        		@RequestParam(required = false, defaultValue = "50", value = "ps") int pageSize){
+    	RpcResponseDTO<TailPage<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchPageBindDevices(uid, dut, pageNo, pageSize);
+        if (!rpcResult.hasError()) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
+
+    
+    /**
+     * app定位后，上传地址更新数据库记录
+     * @param response
+     * @param uid
+	 * @param ct
+     * @param dut
+     */
+    @ResponseBody()
+    @RequestMapping(value="/update_location",method={RequestMethod.POST})
+    public void updateDeviceLocation(HttpServletResponse response,
+                @RequestParam(required = true, value = "uid") int uid,
+                @RequestParam(required = false, value = "mac") String mac,
+                @RequestParam(required = false, value = "country") String country,
+                @RequestParam(required = false, value = "province") String province,
+                @RequestParam(required = false, value = "city") String city,
+                @RequestParam(required = false, value = "district") String district,
+                @RequestParam(required = false, value = "street") String street,
+                @RequestParam(required = false, value = "faddress") String faddress,
+                @RequestParam(required = false, value = "lon") String lon,
+                @RequestParam(required = false, value = "lat") String lat){
+    	
+    	if(StringUtils.isEmpty(lon) || StringUtils.isEmpty(lat)){
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY));
+            return;
+    	}
+
+    	RpcResponseDTO<Boolean> rpcResult = userDeviceRpcService.updateDeviceLocation(uid, mac, country, province, city, district, street, faddress, lon, lat);
+        if (!rpcResult.hasError()) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
+
+    
+    /**
+     * 新增云平台接口
+     * @param response
+     * @param uid
+     * @param u_id
+     * @param d_online
+     * @param s_content
+     * @param pageNo
+     * @param pageSize
+     */
+    @ResponseBody()
+    @RequestMapping(value="/pagebinded_custom",method={RequestMethod.POST})
+    public void pageBindedDeviceCustom(HttpServletResponse response,
+                               	 @RequestParam(required = true) Integer uid,
+                               	 @RequestParam(required = false) Integer u_id,
+                                 @RequestParam(required = false) String d_online,
+                                 @RequestParam(required = false) String s_content,
+                                 @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                                 @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+
+                                 ) {
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+        UserDeviceTCPageVTO rpcResult = userDeviceRpcService.pageBindDevicesCustom(uid, u_id, d_online,
+        		s_content, pageNo, pageSize);
+//        System.out.println("ret===" + rpcResult.isEmpty());
+        if (rpcResult != null) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.ERROR);
+        }
     }
 
 
+    /**
+     * 通用获取设备列表接口
+     * @param response
+     * @param uid
+     * @param u_id
+     * @param d_online
+     * @param s_content
+     * @param pageNo
+     * @param pageSize
+     */
+    @ResponseBody()
+    @RequestMapping(value="/pagebinded",method={RequestMethod.POST})
+    public void pageBindedDevice(HttpServletResponse response,
+                                 @RequestParam(required = true) Integer uid,
+                                 @RequestParam(required = false) Integer u_id,
+                                 @RequestParam(required = false) String d_online,
+                                 @RequestParam(required = false) String s_content,
+                                 @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+                                 @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+
+    ) {
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+        List<UserDeviceVTO>rpcResult = userDeviceRpcService.pageBindDevices(uid, u_id, d_online,
+                s_content, pageNo, pageSize);
+//        System.out.println("ret===" + rpcResult.isEmpty());
+        if (rpcResult != null) {
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
+        } else {
+            SpringMVCHelper.renderJson(response, ResponseError.ERROR);
+        }
+    }
+
+
+    /**
+     * 修改设备昵称
+     * @param request
+     * @param response
+     * @param uid
+     * @param mac
+     * @param deviceName
+     * @throws Exception
+     */
     @ResponseBody()
     @RequestMapping(value="/modify/device_name",method={RequestMethod.POST})
     public void modifyDeviceName(HttpServletRequest request,
@@ -118,7 +299,7 @@ public class UserDeviceController extends BaseController {
                                  @RequestParam(required = true) Integer uid,
                                  @RequestParam(required = true) String mac,
                                  @RequestParam(required = true, value = "device_name") String deviceName) throws Exception{
-
+    	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return;
@@ -144,16 +325,17 @@ public class UserDeviceController extends BaseController {
                                @RequestParam(required = true) String mac,
                                @RequestParam(required = true) String appver
                                ) {
+    	mac = mac.toLowerCase();
     	if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return;
         }
-        RpcResponseDTO<UserDeviceCheckUpdateDTO> resp = userDeviceRpcService.checkDeviceUpdate(uid, mac, appver);
-		if(!resp.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
+        RpcResponseDTO<UserDeviceCheckUpdateDTO> rpcResult = userDeviceRpcService.checkDeviceUpdate(uid, mac, appver);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			return;
 		}
-		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     }
     
     @ResponseBody()
@@ -162,6 +344,7 @@ public class UserDeviceController extends BaseController {
                                @RequestParam(required = true, value = "uid") int uid,
                                @RequestParam(required = true) String mac
                                ) {
+    	mac = mac.toLowerCase();
     	if (!StringHelper.isValidMac(mac)) {
             SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
             return;
@@ -171,7 +354,7 @@ public class UserDeviceController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
 			return;
 		}
-		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp));
     }
     
     private boolean validateDeviceName(String deviceName) throws  Exception {

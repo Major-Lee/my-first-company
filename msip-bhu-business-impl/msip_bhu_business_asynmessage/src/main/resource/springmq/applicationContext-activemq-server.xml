@@ -17,6 +17,8 @@
                 <property name="useAsyncSend" value="true" />
                 <property name="brokerURL" value="failover://(tcp://127.0.0.1:61616?tcpNoDelay=true)" />
                  -->
+                <!--慢消费者设置为true,快消费者设置为false
+				<property name="dispatchAsync" value="true" /> -->                  
             </bean>  
         </property>  
         <!-- 创建多少连接进行消费和生产

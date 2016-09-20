@@ -7,11 +7,13 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.newA
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.skip;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.aggregation.TypedAggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -23,6 +25,7 @@ import com.bhu.vas.business.ds.agent.dto.SettlementCountDTO;
 import com.bhu.vas.business.ds.agent.dto.SettlementSummaryDTO;
 import com.bhu.vas.business.ds.agent.mdao.AgentSettlementsRecordMDao;
 import com.bhu.vas.business.ds.agent.mdto.AgentSettlementsRecordMDTO;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 
@@ -44,7 +47,7 @@ public class AgentSettlementsRecordMService {
 		mdto.setDate(date);
 		mdto.setAgent(agent);
 		mdto.setiSVPrice(iSVPrice);
-		mdto.setStatus(AgentSettlementsRecordMDTO.Settlement_Created);
+		mdto.setStatus(AgentSettlementsRecordMDTO.Settlement_Bill_Created);
 		mdto.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
 		return this.save(mdto);
 	}
@@ -72,7 +75,61 @@ public class AgentSettlementsRecordMService {
 		AgentSettlementsRecordMDTO mdto = this.getSettlement(date, agent);
 		return mdto != null;
 	}
-		
+	
+	/**
+	 * 对指定代理商进行结算 指定金额 对未结算的bills列表进行结算
+	 * @param agent
+	 * @param price
+	 */
+	public String iterateSettleBills(int operator,String operNick,int agent,double price){
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format("结算总金额[%s]<BR/>\n", price));
+		if(agent >0 && price>0){
+			List<AgentSettlementsRecordMDTO> fetchBillsByAgent = fetchBillsByAgent(agent, AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted);
+			Iterator<AgentSettlementsRecordMDTO> iter = fetchBillsByAgent.iterator();
+			String settled_at =  DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1);
+			sb.append(String.format("结算日期[%s]<BR/>\n", settled_at));
+			while(iter.hasNext()){//逐条进行结算
+				AgentSettlementsRecordMDTO bill = iter.next();
+				double takeoff = ArithHelper.sub(bill.getiSVPrice(),bill.getSdPrice()); 
+				if(takeoff > 0){
+					double old_sdPrice = bill.getSdPrice();
+					if(price >= takeoff){
+						bill.setReckoner(operator);
+						bill.setSdPrice(bill.getiSVPrice());
+						bill.setStatus(AgentSettlementsRecordMDTO.Settlement_Bill_Done);
+						bill.setSettled_at(settled_at);
+						price = ArithHelper.sub(price , takeoff);
+					}else{
+						//price = 0;
+						bill.setReckoner(operator);
+						bill.setSdPrice(ArithHelper.add(bill.getSdPrice(),price));
+						bill.setStatus(AgentSettlementsRecordMDTO.Settlement_Bill_Parted);
+						bill.setSettled_at(settled_at);
+						price = 0;
+					}
+					sb.append(String.format("明细 流水[%s] 结算人[%s] 金额[%s] 曾经结算[%s] 当前结算[%s] 最后结算日期[%s] 状态[%s]<BR/>\n", 
+								bill.getId(),operNick,bill.getiSVPrice(),old_sdPrice,ArithHelper.sub(bill.getSdPrice(),old_sdPrice),settled_at,bill.getStatus()));
+					save(bill);
+				}
+				if(price <= 0) break;
+			}
+		}
+		sb.append(String.format("剩余金额[%s]<BR/>\n", price));
+		return sb.toString();
+	}
+	
+	/**
+	 * 获取指定代理商指定状态的所有bills列表
+	 * @param agent
+	 * @param status
+	 * @return
+	 */
+	public List<AgentSettlementsRecordMDTO> fetchBillsByAgent(int agent,Object... status){
+		Query query = Query.query(Criteria.where("agent").is(agent).and("status").in(status)).with(new Sort(Direction.ASC,"date"));
+		return agentSettlementsRecordMDao.find(query);
+	}
+	
 	/**
 	 * 统计指定时间段区间内结算列表 
 	 * @param mac
@@ -80,7 +137,7 @@ public class AgentSettlementsRecordMService {
 	 * @param dateEnd
 	 * @return
 	 */
-	public List<SettlementSummaryDTO> summaryAggregationBetween(List<Integer> agents,int status,
+	public List<SettlementSummaryDTO> summaryAggregationBetween(List<Integer> agents,Object[] status,
 			String dateStart,String dateEnd,
 			int pageNo,int pageSize
 			){
@@ -89,8 +146,8 @@ public class AgentSettlementsRecordMService {
 			criteria.and("agent").in(agents);
 		}
 		//Criteria criteria = Criteria.where("agent").in(agents);//.and("date").gte(dateStart).lte(dateEnd);
-		if(status >= 0)
-			criteria.and("status").is(status);
+		if(status != null && status.length >0)
+			criteria.and("status").in(status);
 		
 		boolean isStartNotEmpty = StringUtils.isNotEmpty(dateStart);
 		boolean isEndNotEmpty = StringUtils.isNotEmpty(dateEnd);
@@ -108,6 +165,7 @@ public class AgentSettlementsRecordMService {
 		TypedAggregation<AgentSettlementsRecordMDTO> aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
 				match(criteria),
 			    group("agent")
+			    	.sum("sdPrice").as("sdmoney")
 			    	.sum("iSVPrice").as("money"),
 			    sort(Direction.ASC, "money"),
 			    skip(startIndex),
@@ -117,31 +175,22 @@ public class AgentSettlementsRecordMService {
 		return aggregate;
 	}
 	/**
-	 * 统计代理商管理页面中的 所有、未结算、已经结算的统计数据
+	 * 统计代理商管理页面中的 
+	 * 所有 所有代理商
+	 * 未结算 存在未结算单据的代理商    	所属单据中有状态为 	AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted
+	 * 已经结算 单据都被结算清的代理商   	所属单据中的状态均为	AgentSettlementsRecordMDTO.Settlement_Bill_Done 就是没有单据状态为AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted
 	 * 如果agent>0 则是所有用户汇总统计
 	 * @param agent
 	 * @return
 	 */
 	public SettlementStatisticsVTO statistics(int agent){
 		SettlementStatisticsVTO result = new SettlementStatisticsVTO();
-		Criteria unsettled_criteria = Criteria.where("status").is(AgentSettlementsRecordMDTO.Settlement_Created);
-		Criteria settled_criteria = Criteria.where("status").is(AgentSettlementsRecordMDTO.Settlement_Done);
+		Criteria unsettled_criteria = Criteria.where("status").in(new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted});
+		Criteria settled_criteria = Criteria.where("status").nin(new Object[]{AgentSettlementsRecordMDTO.Settlement_Bill_Created,AgentSettlementsRecordMDTO.Settlement_Bill_Parted});
 		if(agent>0){
 			unsettled_criteria.and("agent").is(agent);
 			settled_criteria.and("agent").is(agent);
 		}
-		
-		/*TypedAggregation<AgentSettlementsRecordMDTO> total_aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
-				group("agent"),//.count().as("count1"),
-				group().count().as("count")
-			    //group("status","agent")
-			    	//.count().as("count")
-			);
-		List<SettlementCountDTO> total_aggregate = agentSettlementsRecordMDao.aggregate(total_aggregation, SettlementCountDTO.class);
-		if(total_aggregate != null && !total_aggregate.isEmpty()){
-			long total = total_aggregate.get(0).getCount();
-			result.setTs(total);
-		}*/
 		TypedAggregation<AgentSettlementsRecordMDTO> unsettled_aggregation = newAggregation(AgentSettlementsRecordMDTO.class,
 				match(unsettled_criteria),
 				group("agent"),//.count().as("count1"),

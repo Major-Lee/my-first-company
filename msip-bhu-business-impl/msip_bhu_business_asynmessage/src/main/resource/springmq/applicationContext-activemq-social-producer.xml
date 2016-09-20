@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+    default-lazy-init="true">
+    <!--  ActiveMQ destinations  -->
+    <!--  使用Queue方式-->
+	<bean id="destinationSocialMessageQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg index="0" value="${activemq.queue.social.name}" />
+    </bean> 
+	<!--  Spring JmsTemplate config -->
+	<bean id="jmsSocialMessageTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsFactory" />  
+		<!-- custom MessageConverter 
+		<property name="messageConverter" ref="defaultFeedMessageConverter" />-->
+	</bean>
+	<!-- POJO which send Message uses  Spring JmsTemplate -->
+	<bean id="socialMessageQueueProducer" class="com.bhu.vas.business.asyn.spring.activemq.queue.producer.SocialMessageQueueProducer">
+		<property name="template" ref="jmsSocialMessageTemplate" />
+		<property name="destination" ref="destinationSocialMessageQueue" />
+	</bean>
+	
+	<bean id="socialMessageService" class="com.bhu.vas.business.asyn.spring.activemq.service.SocialMessageService">
+	</bean>
+</beans>

@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.dto.CmCtxInfo;
-import com.bhu.vas.business.asyn.normal.activemq.ActiveMQDynamicProducer;
+import com.bhu.vas.business.asyn.normal.activemq.single.ActiveMQDynamicProducer;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.localunit.RandomData;
 import com.smartwork.msip.localunit.RandomPicker;

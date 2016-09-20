@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.cache.entitycache.Cache;
 import com.smartwork.msip.cores.cache.entitycache.CacheService;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -62,7 +63,8 @@ public class BusinessCacheService {
 	public void storeQTerminalPushNotifyCacheResult(String mac, String hd_mac){
 		String key = generateQTerminalPushNotifyCachePrefixKeyBy(mac, hd_mac);
 		//this.entityCache.remove(key);
-		this.entityCache.put(key, true ,15*60);//15分钟
+		//this.entityCache.put(key, true ,15*60);//15分钟
+		this.entityCache.put(key, true , BusinessRuntimeConfiguration.Terminal_Push_Notify_Exprie_Second);
 	}
 	
 	public boolean getQTerminalPushNotifyCacheByQ(String mac, String hd_mac){

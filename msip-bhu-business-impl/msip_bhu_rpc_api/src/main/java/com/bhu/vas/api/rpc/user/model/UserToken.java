@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.business.token.service.TokenServiceHelper;
 import com.smartwork.msip.cores.orm.model.BaseIntModel;
 @SuppressWarnings("serial")
@@ -62,5 +63,7 @@ public class UserToken extends BaseIntModel{
 		this.refresh_token = refresh_token;
 	}
 		
-	
+	public UserTokenDTO toUserTokenDTO(){
+		return new UserTokenDTO(id,access_token,refresh_token);
+	}
 }

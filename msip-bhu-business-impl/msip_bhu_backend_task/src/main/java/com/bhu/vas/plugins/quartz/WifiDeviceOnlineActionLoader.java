@@ -55,17 +55,19 @@ public class WifiDeviceOnlineActionLoader {
 				for(WifiDevice device:next){
 					{
 						Set<String> payloads =  new HashSet<String>();
-						if(WifiDeviceHelper.isURooterDeviceWithOrigModel(device.getOrig_model())){
+						if(WifiDeviceHelper.isURouterDevice(device.getOrig_swver())){
 							//确定是否需要下发指令
-							boolean needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(device.getId(),false);
+							//由于此部分数据没有别的地方显示，暂时注释掉 commented by EmondLee @20160526
+							/*boolean needDeviceUsedQuery = BusinessMarkerService.getInstance().needNewRequestAndMarker(device.getId(),false);
 							if(needDeviceUsedQuery){
 								payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(device.getId()));
-							}
+							}*/
 							if(StringUtils.isEmpty(device.getLat()) || StringUtils.isEmpty(device.getLon())){
 								payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(device.getId()));
 							}
 							
 						}else{
+							//非uRouter设备定时下发查询终端在线指令
 							payloads.add(CMDBuilder.builderQuerySyncDeviceOnlineTerminalsQuery(device.getId()));
 							//cmdPayload = CMDBuilder.builderQuerySyncDeviceOnlineTerminalsQuery(device.getId());
 							//downCmds.add(DownCmds.builderDownCmds(device.getId(), new String[]{cmdPayload}));

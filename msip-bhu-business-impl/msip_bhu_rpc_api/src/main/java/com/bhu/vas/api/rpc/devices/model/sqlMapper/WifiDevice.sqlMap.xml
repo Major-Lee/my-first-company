@@ -11,7 +11,6 @@
     <result property="orig_model" column="orig_model"/>
     <result property="orig_hdver" column="orig_hdver"/>
     <result property="orig_swver" column="orig_swver"/>
-    <result property="orig_vap_module" column="orig_vap_module"/>
     
     <result property="oem_vendor" column="oem_vendor"/>
     <result property="oem_model" column="oem_model"/>
@@ -26,7 +25,6 @@
     <result property="config_mode" column="config_mode"/>
     <result property="work_mode" column="work_mode"/>
     <result property="online" column="online"/>
-    <result property="module_online" column="module_online"/>
     
     <result property="agentuser" column="agentuser"/>
     
@@ -44,11 +42,18 @@
     <result property="formatted_address" column="formatted_address"/>
     <result property="carrier" column="carrier"/>
     <result property="bdid" column="bdid"/>
-    <result property="ipgen" column="ipgen"/>
+    <result property="loc_method" column="loc_method"/>
     <result property="uptime" column="uptime"/>
+    <result property="tfcard_usage" column="tfcard_usage"/>
+    <result property="industry" column="industry"/>
 	<result property="last_start_at" column="last_start_at"/>
     <result property="last_reged_at" column="last_reged_at"/>
     <result property="last_logout_at" column="last_logout_at"/>
+    <result property="first_reged_at" column="first_reged_at"/>
+    
+    <result property="channel_lv1" column="channel_lv1"/>
+    <result property="channel_lv2" column="channel_lv2"/>
+    
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -66,7 +71,6 @@
 	    	orig_model,
 	    	orig_hdver,
 	    	orig_swver,
-	    	orig_vap_module,
 	    	oem_vendor,
 	    	oem_model,
 	    	oem_hdver,
@@ -80,7 +84,6 @@
 	    	config_mode,
 	    	work_mode,
 	    	online,
-	    	module_online,
 	    	agentuser,
 	    	rx_bytes,
 	    	tx_bytes,
@@ -96,11 +99,16 @@
 	    	formatted_address,
 	    	carrier,
 	    	bdid,
-	    	ipgen,
+	    	loc_method,
 	    	uptime,
+	    	tfcard_usage,
+	    	industry,
 	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
+	    	first_reged_at,
+	    	channel_lv1,
+	    	channel_lv2,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -112,7 +120,6 @@
 	    	orig_model,
 	    	orig_hdver,
 	    	orig_swver,
-	    	orig_vap_module
 	    	oem_vendor,
 	    	oem_model,
 	    	oem_hdver,
@@ -126,7 +133,6 @@
 	    	config_mode,
 	    	work_mode,
 	    	online,
-	    	module_online,
 	    	agentuser,
 	    	rx_bytes,
 	    	tx_bytes,
@@ -142,11 +148,16 @@
 	    	formatted_address,
 	    	carrier,
 	    	bdid,
-	    	ipgen,
+	    	loc_method,
 	    	uptime,
+	    	tfcard_usage,
+	    	industry,
 	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
+	    	first_reged_at,
+	    	channel_lv1,
+	    	channel_lv2,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -159,7 +170,6 @@
 	    	#{orig_model},
 	    	#{orig_hdver},
 	    	#{orig_swver},
-	    	#{orig_vap_module},
 	    	#{oem_vendor},
 	    	#{oem_model},
 	    	#{oem_hdver},
@@ -173,7 +183,6 @@
 	    	#{config_mode},
 	    	#{work_mode},
 	    	#{online},
-	    	#{module_online},
 	    	#{agentuser},
 	    	#{rx_bytes},
 	    	#{tx_bytes},
@@ -189,11 +198,16 @@
 	    	#{formatted_address},
 	    	#{carrier},
 	    	#{bdid},
-	    	#{ipgen},
+	    	#{loc_method},
 	    	#{uptime},
+	    	#{tfcard_usage},
+	    	#{industry},
 	    	#{last_start_at},
 	    	#{last_reged_at},
 	    	#{last_logout_at},
+	    	#{first_reged_at},
+	    	#{channel_lv1},
+	    	#{channel_lv2},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -204,7 +218,6 @@
 	    	orig_model = #{orig_model},
 	    	orig_hdver = #{orig_hdver},
 	    	orig_swver = #{orig_swver},
-	    	orig_vap_module = #{orig_vap_module},
 	    	oem_vendor = #{oem_vendor},
 	    	oem_model = #{oem_model},
 	    	oem_hdver = #{oem_hdver},
@@ -218,7 +231,6 @@
 	    	config_mode = #{config_mode},
 	    	work_mode = #{work_mode},
 	    	online = #{online},
-	    	module_online = #{module_online},
 	    	agentuser = #{agentuser},
 	    	rx_bytes = #{rx_bytes},
 	    	tx_bytes = #{tx_bytes},
@@ -234,11 +246,16 @@
 	    	formatted_address = #{formatted_address},
 	    	carrier = #{carrier},
 	    	bdid = #{bdid},
-	    	ipgen = #{ipgen},
+	    	loc_method = #{loc_method},
 	    	uptime = #{uptime},
+	    	tfcard_usage = #{tfcard_usage},
+	    	industry = #{industry},
 	    	last_start_at = #{last_start_at},
 	    	last_reged_at = #{last_reged_at},
 	    	last_logout_at = #{last_logout_at},
+	    	channel_lv1=#{channel_lv1},
+	    	channel_lv2=#{channel_lv2},
+	    	first_reged_at = #{first_reged_at},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">

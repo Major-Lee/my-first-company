@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans:beans xmlns="http://www.springframework.org/schema/security"  
+    xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans  
+           http://www.springframework.org/schema/beans/spring-beans.xsd  
+           http://www.springframework.org/schema/security  
+           http://www.springframework.org/schema/security/spring-security.xsd">  
+    <global-method-security pre-post-annotations="enabled">  
+  
+    </global-method-security>  
+  
+    <!-- entry-point-ref 为用户第一次访问受保护的url时的处理程序.  -->  
+    <http use-expressions="true" entry-point-ref="authenticationEntryPoint">  
+        <!-- 这里是拒绝用户访问的处理程序 -->  
+        <access-denied-handler ref="accessDeniedHandler" />  
+        <!-- 配置一些不需要认证过滤的地址 -->  
+        <intercept-url pattern="/roots/login.jsp" filters="none" />  
+        <intercept-url pattern="/css/**" filters="none" />  
+        <intercept-url pattern="/common/**" filters="none" />  
+        <intercept-url pattern="/images/**" filters="none" />  
+        <intercept-url pattern="/scripts/**" filters="none" />  
+        <intercept-url pattern="/DatePicker/**" filters="none" />  
+        <intercept-url pattern="/fckeditor/**" filters="none" />  
+          
+        <!-- cooki认证的配置,具体 看rememberMeServices的配置. -->  
+        <remember-me services-ref="rememberMeServices" />  
+  
+        <!--  
+            增加一个filter，这点与Acegi是不一样的，不能修改默认的filter了，这个filter位于FILTER_SECURITY_INTERCEPTOR之前  
+        -->  
+        <custom-filter position="LOGOUT_FILTER" ref="logoutFilter"></custom-filter>  
+        <custom-filter before="FILTER_SECURITY_INTERCEPTOR" ref="myFilter" />  
+        <custom-filter position="FORM_LOGIN_FILTER" ref="myAuthFilter" />  
+        <!-- 限制用户的最大登陆数,防止一个账号被多人使用 -->  
+        <custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />  
+        <session-management session-authentication-strategy-ref="sas" />  
+    </http>  
+  
+    <!-- 认证管理器，实现用户认证的入口，主要实现UserDetailsService接口即可 如下,可以配置多个Provider-->  
+    <authentication-manager alias="authenticationManager">  
+  
+        <authentication-provider ref="daoAuthenticationProvider">  
+            <password-encoder hash="plaintext"></password-encoder>  
+        </authentication-provider>  
+        <authentication-provider ref="rememberMeAuthenticationProvider">  
+            <password-encoder hash="plaintext"></password-encoder>  
+        </authentication-provider>  
+    </authentication-manager>  
+  
+    <beans:bean id="daoAuthenticationProvider"  
+        class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">  
+        <beans:property name="userDetailsService" ref="myUserDetailService" />  
+    </beans:bean>  
+  
+    <!--  
+        一个自定义的filter，必须包含authenticationManager,accessDecisionManager,securityMetadataSource三个属性，  
+        我们的所有控制将在这三个类中实现，解释详见具体配置  
+    -->  
+    <beans:bean id="myFilter" class="com.security.MyFilterSecurityInterceptor">  
+        <beans:property name="authenticationManager" ref="authenticationManager" />  
+        <beans:property name="accessDecisionManager" ref="myAccessDecisionManagerBean" />  
+        <beans:property name="securityMetadataSource" ref="securityMetadataSource" />  
+    </beans:bean>  
+  
+    <!--  
+        下面的3个类,已做自动扫描 <beans:bean id="myUserDetailService"  
+        class="com.security.MyUserDetailService" />  
+  
+        访问决策器，决定某个用户具有的角色，是否有足够的权限去访问某个资源 <beans:bean  
+        id="myAccessDecisionManagerBean"  
+        class="com.security.MyAccessDecisionManager"> </beans:bean>  
+  
+        资源源数据定义，即定义某一资源可以被哪些角色访问 <beans:bean id="securityMetadataSource"  
+        class="com.security.MyInvocationSecurityMetadataSource" >  
+  
+        </beans:bean>  
+    -->  
+  
+    <beans:bean id="logoutFilter"  
+        class="org.springframework.security.web.authentication.logout.LogoutFilter">  
+        <beans:constructor-arg value="/roots/login.jsp" />  
+        <beans:constructor-arg>  
+            <beans:list>  
+                <beans:ref local="rememberMeServices" />  
+                <beans:bean  
+                    class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"></beans:bean>  
+            </beans:list>  
+        </beans:constructor-arg>  
+        <beans:property name="filterProcessesUrl" value="/ss_Loginout"></beans:property>  
+    </beans:bean>  
+  
+  
+    <beans:bean id="concurrencyFilter"  
+        class="org.springframework.security.web.session.ConcurrentSessionFilter">  
+        <beans:property name="sessionRegistry" ref="sessionRegistry" />  
+        <beans:property name="expiredUrl" value="/error/expired.jsp" />  
+    </beans:bean>  
+    <beans:bean id="sas"  
+        class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">  
+        <beans:constructor-arg name="sessionRegistry"  
+            ref="sessionRegistry" />  
+        <beans:property name="maximumSessions" value="1" />  
+    </beans:bean>  
+  
+    <beans:bean id="myAuthFilter"  
+        class="com.security.fliter.MyUsernamePasswordAuthenticationFilter">  
+        <beans:property name="sessionAuthenticationStrategy"  
+            ref="sas" />  
+        <beans:property name="authenticationManager" ref="authenticationManager" />  
+        <beans:property name="rememberMeServices" ref="rememberMeServices"></beans:property>  
+        <beans:property name="authenticationFailureHandler"  
+            ref="failureHandler" />  
+        <beans:property name="authenticationSuccessHandler"  
+            ref="successHandler" />  
+        <beans:property name="filterProcessesUrl" value="/ss_Login"></beans:property>  
+  
+    </beans:bean>  
+    <beans:bean id="successHandler"  
+        class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">  
+        <beans:property name="defaultTargetUrl" value="/roots/index.jsp" />  
+    </beans:bean>  
+    <beans:bean id="failureHandler"  
+        class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">  
+        <beans:property name="defaultFailureUrl" value="/roots/login.jsp?error=true" />  
+    </beans:bean>  
+  
+    <beans:bean id="sessionRegistry"  
+        class="org.springframework.security.core.session.SessionRegistryImpl" />  
+  
+  
+  
+    <!--  
+        remember me fliter 此fliter的配置没有使用留做参考 <beans:bean  
+        id="rememberMeFilter"  
+        class="org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter">  
+        <beans:property name="rememberMeServices" ref="rememberMeServices" />  
+        <beans:property name="authenticationManager"  
+        ref="authenticationManager" /> </beans:bean>  
+    -->  
+  
+    <beans:bean id="rememberMeServices"  
+        class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">  
+        <beans:property name="userDetailsService" ref="myUserDetailService" />  
+        <beans:property name="key" value="springsecurityCookies1" />  
+        <beans:property name="alwaysRemember" value="true"></beans:property>  
+        <beans:property name="tokenValiditySeconds" value="86400"></beans:property>  
+        <beans:property name="parameter" value="_spring_security_remember_me"></beans:property>  
+    </beans:bean>  
+  
+    <beans:bean id="rememberMeAuthenticationProvider"  
+        class="org.springframework.security.authentication.RememberMeAuthenticationProvider">  
+        <beans:property name="key" value="springsecurityCookies1" />  
+    </beans:bean>  
+  
+    <!--  
+        此fliter的配置没有使用留做参考 <beans:bean id="exceptionTranslationFilter"  
+        class="org.springframework.security.web.access.ExceptionTranslationFilter">  
+        <beans:property name="authenticationEntryPoint"  
+        ref="authenticationEntryPoint"/> <beans:property  
+        name="accessDeniedHandler" ref="accessDeniedHandler"/> </beans:bean>  
+    -->  
+  
+    <beans:bean id="authenticationEntryPoint"  
+        class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">  
+        <beans:property name="loginFormUrl" value="/roots/login.jsp" />  
+    </beans:bean>  
+  
+    <beans:bean id="accessDeniedHandler"  
+        class="org.springframework.security.web.access.AccessDeniedHandlerImpl">  
+        <beans:property name="errorPage" value="/roots/login.jsp?error=ad" />  
+    </beans:bean>  
+  
+  
+  
+    <!-- 下面配置,security对于方法的保护 -->  
+    <beans:bean id="methodSecurityInterceptor"  
+        class="org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor">  
+        <beans:property name="validateConfigAttributes">  
+            <beans:value>false</beans:value>  
+        </beans:property>  
+        <beans:property name="authenticationManager">  
+            <beans:ref bean="authenticationManager" />  
+        </beans:property>  
+        <beans:property name="accessDecisionManager">  
+            <beans:ref bean="myAccessDecisionManagerBean" />  
+        </beans:property>  
+        <!-- 这里配置通过数据库配置来查找权限 myMethodSecurityMetadataSource 这个类继承AbstractMethodSecurityMetadataSource -->  
+        <beans:property name="securityMetadataSource" ref="myMethodSecurityMetadataSource" />  
+        <!--  
+            说明:下面的模式是配置了ISome类的doSupervisor的方法只需要ROLE_SUPERVISOR 来访问 <value>  
+            com.acegi.MethodInterceptionTest.method* = ROLE_ADMIN </value>  
+            </property>  
+        -->  
+    </beans:bean>  
+    <!--  
+        在数据库里配置role and datebase... 下面的autoProxyCreator还是要配置切入点的.  
+        myMethodSecurityMetadataSource 已经配置在自动扫描中.  
+    -->  
+    <beans:bean id="sprintsecurityAutoIntercept"  
+        class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator"  
+        scope="singleton">  
+        <beans:property name="beanNames">  
+            <!-- 在这里配置要切的类的名称, 可以为一个配置好的bean的id,多个id用逗号分隔 -->  
+            <beans:value>*test</beans:value>  
+        </beans:property>  
+  
+  
+        <!-- 这里就写上切入点 -->  
+        <beans:property name="interceptorNames">  
+            <beans:list>  
+                <beans:value>methodSecurityInterceptor</beans:value>  
+            </beans:list>  
+        </beans:property>  
+        <!-- 这个,如果你的类被代理了,比如在spring中使用,一定要设置这个属性为true -->  
+        <beans:property name="proxyTargetClass" value="true" />  
+    </beans:bean>  
+  
+  
+    <!--这里接收security日志的配置  
+        <bean id="authenticationLoggerListener"  
+        class="org.springframework.security.authentication.event.LoggerListener"/>  
+        <bean id="authorizationLoggerListener"  
+        class="org.springframework.security.access.event.LoggerListener"/>  
+    -->  
+  
+  
+</beans:beans>  

@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
-import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.ScoreDTO;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
@@ -24,12 +24,16 @@ import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTxPeakSectionDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceVapReturnDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAutoRebootDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
@@ -38,62 +42,63 @@ import com.bhu.vas.api.dto.vap.HttpRedirectModuleDTO;
 import com.bhu.vas.api.dto.vap.ModuleDTO;
 import com.bhu.vas.api.dto.vap.RegisterDTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.XStreamHelper;
 import com.smartwork.msip.cores.helper.dom4j.Dom4jHelper;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class RPCMessageParseHelper {
 	
 	public static <T> T generateDTOFromMessage(String message, Class<T> clazz){
 		if(StringUtils.isEmpty(message)){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		}
 		
 		try{
 			return parserMessageByDom4j(message, clazz);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 	
 	public static <T> List<T> generateDTOListFromMessage(String message, Class<T> clazz){
 		if(StringUtils.isEmpty(message)){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		}
 		
 		try{
 			return parserMessageListByDom4j(message, clazz);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 	
 	public static <T> T generateDTOFromMessage(Document doc, Class<T> clazz){
 		if(doc == null){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		}
 		
 		try{
 			return parserMessageByDom4j(doc, clazz);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 	
 	public static WifiDeviceVapReturnDTO generateVapDTOFromMessage(Document doc){
 		if(doc == null){
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
 		}
 		try{
 			return parserVapDTOByDom4j(doc);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 	
@@ -160,7 +165,7 @@ public class RPCMessageParseHelper {
 			return parserDocumentByDom4j(message);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 	}
 	
@@ -210,7 +215,7 @@ public class RPCMessageParseHelper {
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return dto;
 	}
@@ -260,7 +265,7 @@ public class RPCMessageParseHelper {
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return dto;
 	}
@@ -301,7 +306,7 @@ public class RPCMessageParseHelper {
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return dtos;
 	}
@@ -385,7 +390,7 @@ public class RPCMessageParseHelper {
 			dto.analyseMaxFlow();
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}finally{
 		}
 		return dto;
@@ -414,7 +419,7 @@ public class RPCMessageParseHelper {
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return dto;
 	}
@@ -438,6 +443,19 @@ public class RPCMessageParseHelper {
 	public static WifiDeviceSettingDTO generateDTOFromQueryDeviceSetting(String message, WifiDeviceSettingDTO dto){
 		Document doc = parserMessage(message);
 		try{
+			String current_mode = WifiDeviceHelper.WorkMode_Router;
+			//解析mode配置
+			Element mode_element = Dom4jHelper.select(doc, "dev/mod/basic/mode/ITEM");
+			if(mode_element != null){
+				WifiDeviceSettingModeDTO mode_dto = new WifiDeviceSettingModeDTO();
+				String mode = mode_element.attributeValue("mode");
+				mode_dto.setMode(mode);
+				dto.setMode(mode_dto);
+				
+				if(StringUtils.isNotEmpty(mode))
+					current_mode = mode;
+			}
+			
 			//解析 radio 多频设备会有多个
 			List<Element> radio_items = Dom4jHelper.selectElements(doc, "dev/wifi/radio/ITEM");
 			if(radio_items != null && !radio_items.isEmpty()){
@@ -447,6 +465,9 @@ public class RPCMessageParseHelper {
 					radio_dto.setName(radio_item.attributeValue("name"));
 					radio_dto.setPower(radio_item.attributeValue("power"));
 					radio_dto.setReal_channel(radio_item.attributeValue("real_channel"));
+					radio_dto.setRf(radio_item.attributeValue("rf"));
+					radio_dto.setCountry(radio_item.attributeValue("country"));
+					radio_dto.setChannel_bandwidth(radio_item.attributeValue("channel_bandwidth"));
 					radio_dtos.add(radio_dto);
 				}
 				dto.setRadios(radio_dtos);
@@ -455,24 +476,34 @@ public class RPCMessageParseHelper {
 //			if(radio_item != null){
 //				dto.setPower(radio_item.attributeValue("power"));
 //			}
-			
-			//解析 wan
-			Element wan_item = Dom4jHelper.select(doc, "dev/mod/basic/wan/ITEM");
-			if(wan_item != null){
-				WifiDeviceSettingLinkModeDTO linkmodel_dto = new WifiDeviceSettingLinkModeDTO();
-				linkmodel_dto.setModel(wan_item.attributeValue("mode"));
-				linkmodel_dto.setGateway(wan_item.attributeValue("gateway"));
-				linkmodel_dto.setDns(wan_item.attributeValue("dns"));
-				linkmodel_dto.setIp(wan_item.attributeValue("ip"));
-				linkmodel_dto.setNetmask(wan_item.attributeValue("netmask"));
-				linkmodel_dto.setPassword_rsa(wan_item.attributeValue("password_rsa"));
-				linkmodel_dto.setWan_interface(wan_item.attributeValue("wan_interface"));
-				//linkmodel_dto.setReal_ipaddr(wan_item.attributeValue("real_ipaddr"));
-				//linkmodel_dto.setReal_netmask(wan_item.attributeValue("real_netmask"));
-				linkmodel_dto.setUsername(wan_item.attributeValue("username"));
-				//dto.setMode(wan_item.attributeValue("mode"));
-				dto.setMode(linkmodel_dto);
+			if(WifiDeviceHelper.isWorkModeRouter(current_mode)){
+				//解析 wan
+				Element wan_item = Dom4jHelper.select(doc, "dev/mod/basic/wan/ITEM");
+				if(wan_item != null){
+					WifiDeviceSettingLinkModeDTO linkmodel_dto = new WifiDeviceSettingLinkModeDTO();
+					linkmodel_dto.setModel(wan_item.attributeValue("mode"));
+					linkmodel_dto.setGateway(wan_item.attributeValue("gateway"));
+					linkmodel_dto.setDns(wan_item.attributeValue("dns"));
+					linkmodel_dto.setIp(wan_item.attributeValue("ip"));
+					linkmodel_dto.setNetmask(wan_item.attributeValue("netmask"));
+					linkmodel_dto.setPassword_rsa(wan_item.attributeValue("password_rsa"));
+					linkmodel_dto.setWan_interface(wan_item.attributeValue("wan_interface"));
+					//linkmodel_dto.setReal_ipaddr(wan_item.attributeValue("real_ipaddr"));
+					//linkmodel_dto.setReal_netmask(wan_item.attributeValue("real_netmask"));
+					linkmodel_dto.setUsername(wan_item.attributeValue("username"));
+					//dto.setMode(wan_item.attributeValue("mode"));
+					dto.setLinkmode(linkmodel_dto);
+				}
+			}else{
+				//由于桥模式只是dhcpc方式，所以只获取上网方式即可，其他信息通过dhcpcstatus指令查询
+				Element lan_item = Dom4jHelper.select(doc, "dev/mod/basic/lan/ITEM");
+				if(lan_item != null){
+					WifiDeviceSettingLinkModeDTO linkmodel_dto = new WifiDeviceSettingLinkModeDTO();
+					linkmodel_dto.setModel(lan_item.attributeValue("ip_mode"));
+					dto.setLinkmode(linkmodel_dto);
+				}
 			}
+			
 			//解析 vaps
 			List<Element> vap_items = Dom4jHelper.selectElements(doc, "dev/wifi/vap/ITEM");
 			if(vap_items != null && !vap_items.isEmpty()){
@@ -489,6 +520,7 @@ public class RPCMessageParseHelper {
 					vap_dto.setGuest_en(vap_item.attributeValue("guest_en"));
 					vap_dto.setAuth_key_rsa(vap_item.attributeValue("auth_key_rsa"));
 					vap_dto.setMode(vap_item.attributeValue("mode"));
+					vap_dto.setHide_ssid(vap_item.attributeValue("hide_ssid"));
 					vap_dtos.add(vap_dto);
 				}
 				dto.setVaps(vap_dtos);
@@ -521,8 +553,15 @@ public class RPCMessageParseHelper {
 					interface_dto.setEnable(interface_item.attributeValue("enable"));
 					interface_dto.setIf_tx_rate(interface_item.attributeValue("if_tx_rate"));
 					interface_dto.setIf_rx_rate(interface_item.attributeValue("if_rx_rate"));
-					interface_dto.setUsers_tx_rate(interface_item.attributeValue("users_tx_rate"));
-					interface_dto.setUsers_rx_rate(interface_item.attributeValue("users_rx_rate"));
+					
+					String users_tx_rate = interface_item.attributeValue("users_tx_rate");
+					if(StringUtils.isNotEmpty(users_tx_rate)){
+						interface_dto.setUsers_tx_rate(Integer.parseInt(users_tx_rate));
+					}
+					String users_rx_rate = interface_item.attributeValue("users_rx_rate");
+					if(StringUtils.isNotEmpty(users_rx_rate)){
+						interface_dto.setUsers_rx_rate(Integer.parseInt(users_rx_rate));
+					}
 					interface_dtos.add(interface_dto);
 				}
 				dto.setInterfaces(interface_dtos);
@@ -536,7 +575,7 @@ public class RPCMessageParseHelper {
 					ratecontrol_dto.setMac(ratecontrol_item.attributeValue("mac"));
 					ratecontrol_dto.setTx(ratecontrol_item.attributeValue("tx"));
 					ratecontrol_dto.setRx(ratecontrol_item.attributeValue("rx"));
-					ratecontrol_dto.setIndex(ratecontrol_item.attributeValue("index"));
+					//ratecontrol_dto.setIndex(ratecontrol_item.attributeValue("index"));
 					ratecontrol_dto.setSsdel(ratecontrol_item.attributeValue("ssdel"));
 					ratecontrol_dtos.add(ratecontrol_dto);
 				}
@@ -584,13 +623,72 @@ public class RPCMessageParseHelper {
 				dto.setUsers(user_dtos);
 			}
 			//解析设备配置流水号
-			Element config_element = Dom4jHelper.select(doc, "dev/sys/config/ITEM");
-			if(config_element != null){
-				dto.setSequence(config_element.attributeValue("sequence"));
+			List<Element> eles = Dom4jHelper.selectElements(doc, "dev/sys/config/ITEM");
+			if(eles != null && eles.size() > 0){
+				String sequence = null;
+				String boot_on_reset = null;
+				String reboot_enable = null;
+				String reboot_time = null;
+				String rf2in1 = null;
+				for(Element config_element:eles){
+					if(config_element.attributeValue("sequence") != null)
+						sequence = config_element.attributeValue("sequence");
+					if(config_element.attributeValue("boot_on_reset") != null)
+						boot_on_reset = config_element.attributeValue("boot_on_reset");
+					if(config_element.attributeValue("rf_2in1") != null)
+						rf2in1 = config_element.attributeValue("rf_2in1");
+					if(config_element.attributeValue("reboot_enable") != null)
+						reboot_enable = config_element.attributeValue("reboot_enable");
+					if(config_element.attributeValue("reboot_time") != null)
+						reboot_time = config_element.attributeValue("reboot_time");
+				}
+				if(sequence != null)
+					dto.setSequence(sequence);
+				if(StringUtils.isNotEmpty(boot_on_reset) && Integer.parseInt(boot_on_reset) == WifiDeviceHelper.Boot_On_Reset_Happen)
+					dto.setBoot_on_reset(WifiDeviceHelper.Boot_On_Reset_Happen);
+				else
+					dto.setBoot_on_reset(WifiDeviceHelper.Boot_On_Reset_NotHappen);
+				if(rf2in1 != null)
+					dto.setRf_2in1(rf2in1);
+				if(reboot_enable != null){
+					WifiDeviceSettingAutoRebootDTO ab_dto = new WifiDeviceSettingAutoRebootDTO();
+					ab_dto.setEnable(reboot_enable);
+					ab_dto.setTime(reboot_time);
+					if(!WifiDeviceHelper.Enable.equals(ab_dto.getEnable()))
+						ab_dto.setEnable(WifiDeviceHelper.Disable);
+					if(!DateTimeHelper.isValidDayTime(ab_dto.getTime()))
+						ab_dto.setTime(WifiDeviceSettingAutoRebootDTO.DefaultTime);
+					dto.setAutoreboot(ab_dto);
+				}
+			}
+			
+			//解析插件配置
+			List<Element> plugin_items = Dom4jHelper.selectElements(doc, "dev/sys/external_plugins/ITEM");
+			if(plugin_items != null && !plugin_items.isEmpty()){
+				List<WifiDeviceSettingPluginDTO> plugin_dtos = new ArrayList<WifiDeviceSettingPluginDTO>();
+				for(Element plugin : plugin_items){
+					WifiDeviceSettingPluginDTO mm_dto = new WifiDeviceSettingPluginDTO();
+					mm_dto.setName(plugin.attributeValue("name"));
+					mm_dto.setEnable(plugin.attributeValue("enable"));
+					mm_dto.setStart_cmd(plugin.attributeValue("start_cmd"));
+					mm_dto.setStop_cmd(plugin.attributeValue("stop_cmd"));
+					mm_dto.setDownload_path(plugin.attributeValue("download_path"));
+					mm_dto.setVer(plugin.attributeValue("ver"));
+					plugin_dtos.add(mm_dto);
+				}
+				dto.setPlugins(plugin_dtos);
+			}
+			//解析设备绑定数据
+			Element syskey_element = Dom4jHelper.select(doc, "dev/sys/syskey/ITEM");
+			if(syskey_element != null){
+				WifiDeviceSettingSyskeyDTO syskey_dto = new WifiDeviceSettingSyskeyDTO();
+				syskey_dto.setKeynum(syskey_element.attributeValue("keynum"));
+				syskey_dto.setKeystatus(syskey_element.attributeValue("keystatus"));
+				dto.setSyskey(syskey_dto);
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return dto;
 	}
@@ -622,6 +720,9 @@ public class RPCMessageParseHelper {
 						dto.setData_rx_rate(element.attributeValue("data_rx_rate"));
 						dto.setRx_bytes(element.attributeValue("rx_bytes"));
 						dto.setTx_bytes(element.attributeValue("tx_bytes"));
+						dto.setAuthorized(element.attributeValue("authorized"));
+						dto.setEthernet(element.attributeValue("ethernet"));
+						dto.setPortal(element.attributeValue("portal"));
 						dtos.add(dto);
 					}
 				}
@@ -629,7 +730,7 @@ public class RPCMessageParseHelper {
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		}
 		return Collections.emptyList();
 	}
@@ -710,12 +811,12 @@ public class RPCMessageParseHelper {
 		System.out.println(dto.getSequence());*/
 		
         
-		String text = "<ITEM serial=\"0200000002\" cmd=\"netspeed_test\" statue=\"doing\"><download><SUB time_cost=\"3333\" rx_bytes=\"1111\" last=\"true\"/></download><upload><SUB time_cost=\"4444\" tx_bytes=\"1113\" /></upload></ITEM>";
+/*		String text = "<ITEM serial=\"0200000002\" cmd=\"netspeed_test\" statue=\"doing\"><download><SUB time_cost=\"3333\" rx_bytes=\"1111\" last=\"true\"/></download><upload><SUB time_cost=\"4444\" tx_bytes=\"1113\" /></upload></ITEM>";
 		Document doc = RPCMessageParseHelper.parserMessage(text);
 		WifiDevicePeakSectionDTO obj = generateDTOFromQuerySpeedTest(doc);
         System.out.println(obj.toString());
         
-        /*String text1 = "<register>"+
+        String text1 = "<register>"+
 							"<login>"+
 							    "<ITEM mac=\"62:68:75:aa:00:00\" version=\"1.2.15M23\" />"+
 							"</login>"+
@@ -728,8 +829,8 @@ public class RPCMessageParseHelper {
 							        "<ITEM enable=\"disable\" />"+
 							    "</redirect>"+
 							"</bhu_module>"+
-						"</register>";*/
-        /*String text1 = 
+						"</register>";
+        String text1 = 
 				"<bhu_module>"+
 				    "<http404>"+
 				        "<ITEM enable=\"enable\" codes=\"404,50*\" url=\"vap.bhunetworks.com/urlwrite\" ver=\"style001-00.00.03\" />"+
@@ -738,7 +839,7 @@ public class RPCMessageParseHelper {
 				        //"<ITEM enable=\"enable\" rule=\"**(TBD)\" ver=\"style001-00.00.03\" />"+
 				        "<ITEM enable=\"disable\" />"+
 				    "</redirect>"+
-				"</bhu_module>";*/
+				"</bhu_module>";
         //Document doc = RPCMessageParseHelper.parserMessage(payload);
 		//WifiDeviceVapReturnDTO vapDTO = RPCMessageParseHelper.generateVapDTOFromMessage(doc);
         
@@ -760,5 +861,54 @@ public class RPCMessageParseHelper {
         
         System.out.println(generateVapDTOFromMessage);
         
+        
+        String text2 = "<return>\n"+
+			"<ITEM result=\"ok\" config_sequence=\"241\" />"+
+		"</return>";
+        
+        String payload = "000010018482F42306E81510001003151000100000001"+
+        		"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"
+        		+ "<net>"
+	        		+ "<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"220\" users_rx_rate=\"220\" /></interface>"
+	        		+ "<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"wlan3\" /></bridge>"
+	        		+ "<webportal>"
+	        		+ "<setting><ITEM interface=\"br-lan,wlan3\" enable=\"enable\" auth_mode=\"local\" local_mode=\"signal\" signal_limit=\"-30\" block_mode=\"route\" extend_memory_enable=\"disable\" guest_portal_en=\"enable\"  progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\"   redirect_url=\"www.bhuwifi.com\"  max_clients=\"256\" idle_timeout=\"1200\" force_timeout=\"21600\" open_resource=\"/\" forbid_management=\"enable\"/></setting>"
+	        		+ "</webportal>"
+        		+ "</net>"
+        		+ "<wifi><vap><ITEM name=\"wlan3\" ssid=\"BhuWIFI-访客test\" guest_en=\"enable\" isolation=\"7\" /></vap></wifi>"
+        		+ "<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"
+        		+ "</dev>";
+        String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
+        System.out.println(cmdWithoutHeader);
+        if(!StringUtils.isEmpty(cmdWithoutHeader)){
+			WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(cmdWithoutHeader);
+        }
+        for(int i=0;i<100;i++){
+        	 ModifyDeviceSettingDTO dto = RPCMessageParseHelper.generateDTOFromMessage(text2, ModifyDeviceSettingDTO.class);
+             System.out.println(dto.getConfig_sequence());
+        }*/
+//       String payload = "000010018482F419010C1510001002029000100000001<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><net><interface><ITEM name=\"wlan0\" enable=\"disable\" /></interface></net></dev>";
+//		String cmdWithoutHeader = CMDBuilder.builderCMDWithoutHeader(payload);
+//
+//		WifiDeviceSettingDTO setting_dto = new WifiDeviceSettingDTO();
+//		WifiDeviceSettingDTO modify_setting_dto = RPCMessageParseHelper.generateDTOFromQueryDeviceSetting(cmdWithoutHeader);
+//		DeviceHelper.mergeDS(modify_setting_dto, setting_dto);
+//       
+//       System.out.println(setting_dto);
+       
+
+   	String str = "<dev><sys><config><ITEM sequence=\"-1\"/></config></sys><sys><config><ITEM reboot_enable=\"enable\" "
+   			+ "reboot_time=\"23:00\" /></config></sys></dev>";
+	   	Document doc = parserMessage(str);
+//		Element ele = Dom4jHelper.select(doc, "dev/sys/config/ITEM");
+//	   	System.out.println(ele.attributeValue("sequence"));
+
+	   	List<Element> list1 = doc.selectNodes("dev/sys/config/ITEM");
+	   	for(Element n : list1){
+		   	System.out.println(n.attributeValue("sequence"));
+		   	System.out.println(n.attributeValue("reboot_enable"));
+		   	System.out.println("------------------------------------------");
+	   	}
+   	
 	}
 }

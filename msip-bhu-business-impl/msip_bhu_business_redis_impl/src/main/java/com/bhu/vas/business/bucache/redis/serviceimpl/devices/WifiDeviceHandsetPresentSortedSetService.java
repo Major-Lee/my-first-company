@@ -21,7 +21,7 @@ import com.smartwork.msip.cores.orm.support.page.PageHelper;
  *  wifi设备对应的在线移动设备列表
  *  ZSET 
  *  	key：wifiId 
- *  	score 在线状态基础数值(在线是100亿，100,0000,0000 离线是0) + 终端下行速率(百兆每秒速率是亿级别)
+ *  	score 在线状态基础数值(在线是100亿，100,0000,0000,离线是0) + 终端下行速率(百兆每秒速率是亿级别)
  *  	value 移动设备的mac
  *  
  * 1：移动设备上线新增，下线删除，sync更新数据
@@ -50,6 +50,17 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.Present.WifiDeviceHandsetPresentPrefixKey);
 		sb.append(StringHelper.POINT_CHAR_GAP).append(wifiId);
 		return sb.toString();
+	}
+	
+	private static String[] generateKeys(List<String> wifiIds){
+		if(wifiIds == null || wifiIds.isEmpty()) return null;
+		String[] keys = new String[wifiIds.size()];
+		int cursor = 0;
+		for(String wifiId : wifiIds){
+			keys[cursor] = generateKey(wifiId);
+			cursor++;
+		}
+		return keys;
 	}
 	
 //	public void addPresent(String wifiId, String handsetId, long login_at){
@@ -85,6 +96,11 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return super.zcount(generateKey(wifiId), OnlineBaseScore, Long.MAX_VALUE);
 	}
 	
+	public List<Object> presentOnlineSizes(List<String> wifiIds){
+		if(wifiIds == null || wifiIds.isEmpty()) return null;
+		return super.pipelineZCount_diffKeyWithSameScore(generateKeys(wifiIds), OnlineBaseScore, Long.MAX_VALUE);
+	}
+	
 	public Long presentOfflineSize(String wifiId){
 		return super.zcount(generateKey(wifiId), 0, (OnlineBaseScore-1));
 	}
@@ -97,7 +113,7 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 		return super.zadd(generateKey(wifiId), OnlineBaseScore+rx_rate, handsetId);
 	}
 	
-	public long addOfflinePresent(String wifiId, String handsetId, double rx_rate){
+	public long  addOfflinePresent(String wifiId, String handsetId, double rx_rate){
 		return super.zadd(generateKey(wifiId), rx_rate, handsetId);
 	}
 	
@@ -136,6 +152,13 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 			return true;
 		}
 		return false;
+	}
+	
+	public double get_rx_rate(double score){
+		if(isOnline(score)){
+			return score - OnlineBaseScore;
+		}
+		return 0;
 	}
 	
 	/**
@@ -210,7 +233,7 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 	
 	@Override
 	public String getName() {
-		return WifiDeviceHandsetPresentSortedSetService.class.getName();
+		return WifiDeviceHandsetPresentSortedSetServiceOld.class.getName();
 	}
 	
 	@Override
@@ -224,6 +247,7 @@ public class WifiDeviceHandsetPresentSortedSetService extends AbstractRelationSo
 			WifiDeviceHandsetPresentSortedSetService.getInstance().addOnlinePresent(wifiId, 
 					"hh:hh:hh:hh:hh:h".concat(String.valueOf(i)), 1024+i);
 		}
+		
 		for(int i = 0;i<20;i++){
 			WifiDeviceHandsetPresentSortedSetService.getInstance().addOfflinePresent(wifiId, 
 					"oo:oo:oo:oo:oo:o".concat(String.valueOf(i)), 1024+i);

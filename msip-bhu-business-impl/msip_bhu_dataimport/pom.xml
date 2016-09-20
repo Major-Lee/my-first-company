@@ -33,6 +33,16 @@
         </dependency>
         
         <dependency>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_ds_tag</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_ds_commdity</artifactId>
+        </dependency>
+        
+        <dependency>
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_springdata_search</artifactId>
         </dependency>        
@@ -42,15 +52,27 @@
             <artifactId>dubbo</artifactId>
         </dependency>
         
+<!--             
         <dependency>
             <groupId>com.github.sgroschupf</groupId>
             <artifactId>zkclient</artifactId>
         </dependency>  
+            -->
         
         <dependency>
             <groupId>nl.bitwalker</groupId>
             <artifactId>UserAgentUtils</artifactId>
             <version>1.2.4</version>
+        </dependency>
+		<dependency>
+		    <groupId>com.qiniu</groupId>
+		    <artifactId>sdk</artifactId>
+		    <version>6.0.0</version>
+		</dependency>    
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.10-FINAL</version>
         </dependency>
     </dependencies>
 

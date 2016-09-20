@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
+import com.smartwork.msip.cores.helper.StringHelper;
+
 import org.apache.commons.lang.StringUtils;
 
 import redis.clients.jedis.Tuple;
@@ -19,9 +22,11 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
 import com.bhu.vas.api.dto.search.WifiDeviceSearchDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceAlarm;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
@@ -29,6 +34,7 @@ import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
 import com.smartwork.msip.cores.helper.ArithHelper;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 /**
  * 用于dto和model之间的转换builder
  * @author tangzichao
@@ -184,7 +190,8 @@ public class BusinessModelBuilder {
 			vto.setOesv(entity.getOem_swver());
 			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
 			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
-			vto.setIpgen(entity.isIpgen());
+			vto.setLoc_method(entity.getLoc_method());
+			vto.setIpgen((entity.getLoc_method() == WifiDeviceHelper.Device_Location_By_WanIp));
 			vto.setSn(entity.getSn());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){
@@ -218,7 +225,8 @@ public class BusinessModelBuilder {
 			vto.setOesv(entity.getOem_swver());
 			vto.setDof(StringUtils.isEmpty(entity.getRx_bytes()) ? 0 : Long.parseLong(entity.getRx_bytes()));
 			vto.setUof(StringUtils.isEmpty(entity.getTx_bytes()) ? 0 : Long.parseLong(entity.getTx_bytes()));
-			vto.setIpgen(entity.isIpgen());
+			vto.setLoc_method(entity.getLoc_method());
+			vto.setIpgen((entity.getLoc_method() == WifiDeviceHelper.Device_Location_By_WanIp));
 			vto.setSn(entity.getSn());
 			//如果是离线 计算离线时间
 			if(vto.getOl() == 0){
@@ -261,13 +269,15 @@ public class BusinessModelBuilder {
 		return vto;
 	}*/
 	
-	public static URouterHdVTO toURouterHdVTO(int uid, String hd_mac, boolean online, HandsetDeviceDTO hd_entity,
-			WifiDeviceSettingDTO setting_dto){
+	public static URouterHdVTO toURouterHdVTO(int uid, String hd_mac, boolean online, double rx_rate, 
+			HandsetDeviceDTO hd_entity, WifiDeviceSettingDTO setting_dto, String alia){
 		URouterHdVTO vto = new URouterHdVTO();
 		vto.setHd_mac(hd_mac);
 		vto.setOnline(online);
+		vto.setTt(MacDictParserFilterHelper.prefixMactch(hd_mac,true,false));
+		
 //		vto.setN(DeviceHelper.getHandsetDeviceAlias(hd_mac, setting_dto));
-		vto.setN(getHandsetDeviceAlias(uid, hd_mac));
+		vto.setN(alia);
 		//Data_rx_limit 设备发送终端的限速 kbps 转换成 bps
 		WifiDeviceSettingRateControlDTO rc = DeviceHelper.matchRateControl(
 				setting_dto, hd_mac);
@@ -283,20 +293,29 @@ public class BusinessModelBuilder {
 			if(StringUtils.isEmpty(vto.getN())){
 				vto.setN(hd_entity.getDhcp_name());
 			}
+			vto.setHd_vapname(hd_entity.getVapname());
+			vto.setIp(hd_entity.getIp());
+			vto.setUptime(hd_entity.getUptime());
 			//Data_rx_rate是设备接收终端的速率 反过来就是终端的上行速率 bps
-			vto.setTx_rate(hd_entity.getData_rx_rate());
+			//vto.setTx_rate(hd_entity.getData_rx_rate());
 			//Data_tx_rate是设备发送终端的速率 反过来就是终端的下行速率 bps
-			vto.setRx_rate(hd_entity.getData_tx_rate());
-			if(!StringUtils.isEmpty(hd_entity.getVapname()))
-				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
+			//vto.setRx_rate(hd_entity.getData_tx_rate());
+//			if(!StringUtils.isEmpty(hd_entity.getVapname()))
+//				vto.setGuest(DeviceHelper.isGuest(hd_entity.getVapname(), setting_dto));
 
 			vto.setRx_bytes(hd_entity.getTx_bytes());
 			vto.setTx_bytes(hd_entity.getRx_bytes());
+			vto.setEthernet(StringHelper.TRUE.equals(hd_entity.getEthernet()));
+			vto.setTs(hd_entity.getTs());
+			if(hd_entity.getPortal() != null){
+				vto.setGuest(hd_entity.getPortal().equals(HandsetDeviceDTO.PROTAL_REMOTE));
+			}
 		}
+		vto.setRx_rate(String.valueOf(rx_rate));
 		return vto;
 	}
 
-	private static String getHandsetDeviceAlias(int uid, String hd_mac){
+	public static String getHandsetDeviceAlias(int uid, String hd_mac){
 		return WifiDeviceHandsetAliasService.getInstance().hgetHandsetAlias(uid, hd_mac);
 	}
 
@@ -371,5 +390,4 @@ public class BusinessModelBuilder {
 		}
 		return rets;
 	}
-	
 }

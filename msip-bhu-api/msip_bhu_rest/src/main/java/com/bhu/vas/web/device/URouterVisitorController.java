@@ -1,0 +1,223 @@
+package com.bhu.vas.web.device;
+
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
+import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
+import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
+import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseSuccess;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Created by bluesand on 10/26/15.
+ * 访客网络
+ */
+
+@Controller
+@RequestMapping("/urouter/visitor")
+public class URouterVisitorController extends BaseController {
+
+    @Resource
+    private IDeviceURouterRestRpcService deviceURouterRestRpcService;
+
+    /**
+     * 访客网络认证在线列表
+     * @param request
+     * @param response
+     * @param uid
+     * @param mac
+     */
+    @ResponseBody()
+    @RequestMapping(value="/list",method={RequestMethod.POST})
+    public void list(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) String mac,
+            @RequestParam(required = false, defaultValue="0", value = "st") int start,
+            @RequestParam(required = false, defaultValue="5", value = "ps") int size
+            ) {
+
+        RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorList(uid, mac,start, size);
+        if(rpcResult != null && !rpcResult.hasError()){
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        }else{
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
+
+
+    /**
+     * 访客网络认证离线列表
+     * @param request
+     * @param response
+     * @param uid
+     * @param mac
+     * @param start
+     * @param size
+     */
+    @ResponseBody()
+    @RequestMapping(value="/auth/offline",method={RequestMethod.POST})
+    public void listOffLine(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) String mac,
+            @RequestParam(required = false, defaultValue="0", value = "st") int start,
+            @RequestParam(required = false, defaultValue="5", value = "ps") int size
+    ) {
+
+        RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListOffline(uid, mac,start, size);
+        if(rpcResult != null && !rpcResult.hasError()){
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        }else{
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
+
+
+    /**
+     * 访客网络未认证仅连接上线的列表
+     * @param request
+     * @param response
+     * @param uid
+     * @param mac
+     * @param start
+     * @param size
+     */
+    @ResponseBody()
+    @RequestMapping(value="/noauth/online",method={RequestMethod.POST})
+    public void listNoauth(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) String mac,
+            @RequestParam(required = false, defaultValue="0", value = "st") int start,
+            @RequestParam(required = false, defaultValue="5", value = "ps") int size
+    ) {
+
+        RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListOnline(uid, mac,start, size);
+        if(rpcResult != null && !rpcResult.hasError()){
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        }else{
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
+
+
+    /**
+     * 访客网络所有在线终端(包括未认证,认证在线,认证离线)
+     * @param request
+     * @param response
+     * @param uid
+     * @param mac
+     * @param start
+     * @param size
+     */
+    @ResponseBody()
+    @RequestMapping(value="/all",method={RequestMethod.POST})
+    public void listAll(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = true) String mac,
+            @RequestParam(required = false, defaultValue="0", value = "st") int start,
+            @RequestParam(required = false, defaultValue="5", value = "ps") int size
+    ) {
+
+        RpcResponseDTO<URouterVisitorListVTO> rpcResult = deviceURouterRestRpcService.urouterVisitorListAll(uid, mac,start, size);
+        if(rpcResult != null && !rpcResult.hasError()){
+            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+        }else{
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+//    /**
+//     * 踢出终端
+//     * @param request
+//     * @param response
+//     * @param uid
+//     * @param mac
+//     */
+//    @ResponseBody()
+//    @RequestMapping(value="/remove",method={RequestMethod.POST})
+//    public void remove(
+//            HttpServletRequest request,
+//            HttpServletResponse response,
+//            @RequestParam(required = true) Integer uid,
+//            @RequestParam(required = true) String mac,
+//            @RequestParam(required = true) String hd_mac
+//    ) {
+//        RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterVisitorRemoveHandset(uid, mac, hd_mac);
+//        if(rpcResponse.getErrorCode() == null){
+//            SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+//        }else{
+//            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+//        }
+//    }
+
+
+//    /**
+//     * 访客网络详细信息
+//     * @param request
+//     * @param response
+//     * @param uid
+//     * @param mac
+//     */
+//    @ResponseBody()
+//    @RequestMapping(value="/detail",method={RequestMethod.POST})
+//    public void detail(
+//            HttpServletRequest request,
+//            HttpServletResponse response,
+//            @RequestParam(required = true) Integer uid,
+//            @RequestParam(required = true) String mac) {
+//        deviceURouterRestRpcService.urouterGuestDetail(uid, mac);
+//    }
+
+
+
+
+
+//    /**
+//     * 修改访客网络昵称
+//     * @param request
+//     * @param response
+//     * @param uid
+//     * @param mac
+//     * @param name
+//     */
+//    @ResponseBody()
+//    @RequestMapping(value="/rename",method={RequestMethod.POST})
+//    public void modify(
+//            HttpServletRequest request,
+//            HttpServletResponse response,
+//            @RequestParam(required = true) Integer uid,
+//            @RequestParam(required = true) String mac,
+//            @RequestParam(required = true) String name) {
+//        deviceURouterRestRpcService.urouterGuestRename(uid, mac, name);
+//    }
+
+
+
+
+}

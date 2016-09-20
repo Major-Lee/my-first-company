@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.vto.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,10 +16,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
+import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserTerminalOnlineSettingDTO;
+import com.bhu.vas.api.vto.URouterAdminPasswordVTO;
+import com.bhu.vas.api.vto.URouterEnterVTO;
+import com.bhu.vas.api.vto.URouterHdDetailVTO;
+import com.bhu.vas.api.vto.URouterHdHostNameVTO;
+import com.bhu.vas.api.vto.URouterMainEnterVTO;
+import com.bhu.vas.api.vto.URouterModeVTO;
+import com.bhu.vas.api.vto.URouterPeakSectionsDTO;
+import com.bhu.vas.api.vto.URouterRealtimeRateVTO;
+import com.bhu.vas.api.vto.URouterSettingVTO;
+import com.bhu.vas.api.vto.URouterVapPasswordVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigMutilVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
@@ -30,6 +42,32 @@ public class URouterDeviceController extends BaseController{
 	
 	@Resource
 	private IDeviceURouterRestRpcService deviceURouterRestRpcService;
+	
+	
+	/**
+	 * 获取urouter主入口界面数据
+	 * 	hd_list接口需要终端的所有数据
+		路由器上下行速率数据
+		绑定的路由器在线状态、终端个数、路由器个数、路由器名称
+		需要路由器版本号.
+	 * @param request
+	 * @param response
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/mainenter",method={RequestMethod.POST})
+	public void mainenter(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac) {
+		
+		RpcResponseDTO<URouterMainEnterVTO> rpcResult = deviceURouterRestRpcService.urouterMainEnter(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
 	
 	/**
 	 * 获取urouter入口界面数据
@@ -43,12 +81,12 @@ public class URouterDeviceController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
-
-		RpcResponseDTO<URouterEnterVTO> rpcResponse = deviceURouterRestRpcService.urouterEnter(uid, mac);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		
+		RpcResponseDTO<URouterEnterVTO> rpcResult = deviceURouterRestRpcService.urouterEnter(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	
@@ -62,6 +100,7 @@ public class URouterDeviceController extends BaseController{
 	 * @param status 1:在线 2:离线 0:所有
 	 * @param start
 	 * @param size
+	 * @param filterWiredHandset true 结果集中过滤了有线终端  false不过滤
 	 */
 	@ResponseBody()
 	@RequestMapping(value="/hd_list",method={RequestMethod.POST})
@@ -72,17 +111,70 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = false, defaultValue="1") int status,
 			@RequestParam(required = false, defaultValue="0", value = "st") int start,
-			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
+			@RequestParam(required = false, defaultValue="5", value = "ps") int size,
+			@RequestParam(required = false, defaultValue="true", value = "fw") boolean filterWiredHandset
+			) {
 		
-		RpcResponseDTO<Map<String,Object>> rpcResponse = deviceURouterRestRpcService.urouterHdList(uid, mac, status, start, size);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<Map<String,Object>> rpcResult = 
+				deviceURouterRestRpcService.urouterHdList(uid, mac.toLowerCase(), status, start, size,filterWiredHandset?Boolean.TRUE:Boolean.FALSE);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 
-
+	/**
+	 * 获取设备的终端列表 (主网络访客网络统一)
+	 * 默认按照终端的速率倒序排序 在线排序
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 * @param start
+	 * @param size
+	 * @param filterWiredHandset true 结果集中过滤了有线终端  false不过滤
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/hd_unit_list",method={RequestMethod.POST})
+	public void hd_list_all(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = false, defaultValue="0", value = "st") int start,
+			@RequestParam(required = false, defaultValue="5", value = "ps") int size,
+			@RequestParam(required = false, defaultValue="true", value = "fw") boolean filterWiredHandset
+			) {
+		
+		RpcResponseDTO<Map<String,Object>> rpcResult = 
+				deviceURouterRestRpcService.urouterAllHdList(uid, mac.toLowerCase(), start, size,filterWiredHandset?Boolean.TRUE:Boolean.FALSE);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/count_hd",method={RequestMethod.POST})
+	public void count_hd(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String macs,
+			@RequestParam(required = true) Long timestamp
+			) {
+		
+		RpcResponseDTO<Map<String, String>> rpcResult = 
+				deviceURouterRestRpcService.countOnlineByTimestamp(uid, macs, timestamp);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
 	@ResponseBody()
 	@RequestMapping(value="/hd_detail",method={RequestMethod.POST})
 	public void hd_detail(
@@ -92,11 +184,11 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) String hd_mac) {
 
-		RpcResponseDTO<URouterHdDetailVTO> rpcResponse = deviceURouterRestRpcService.urouterHdDetail(uid, mac, hd_mac);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<URouterHdDetailVTO> rpcResult = deviceURouterRestRpcService.urouterHdDetail(uid, mac.toLowerCase(), hd_mac);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 
@@ -111,11 +203,11 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) String alias
 			) {
 
-		RpcResponseDTO<Long> rpcResponse = deviceURouterRestRpcService.urouterHdModifyAlias(uid, mac, hd_mac, alias);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<Long> rpcResult = deviceURouterRestRpcService.urouterHdModifyAlias(uid, mac.toLowerCase(), hd_mac.toLowerCase(), alias);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 
@@ -135,11 +227,11 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
 		
-		RpcResponseDTO<URouterRealtimeRateVTO> rpcResponse = deviceURouterRestRpcService.urouterRealtimeRate(uid, mac);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<URouterRealtimeRateVTO> rpcResult = deviceURouterRestRpcService.urouterRealtimeRate(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	
@@ -164,11 +256,11 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = false, defaultValue="10", value = "dr") int duration,
 			@RequestParam(required = false, defaultValue="1") int type) {
 		
-		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterPeakSection(uid, mac, type, period, duration);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<String> rpcResult = deviceURouterRestRpcService.urouterPeakSection(uid, mac.toLowerCase(), type, period, duration);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	
@@ -187,11 +279,11 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
 		
-		RpcResponseDTO<URouterPeakSectionsVTO> rpcResponse = deviceURouterRestRpcService.urouterPeakSectionFetch(uid, mac);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<URouterPeakSectionsDTO> rpcResult = deviceURouterRestRpcService.urouterPeakSectionFetch(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	/**
@@ -211,11 +303,11 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = false, defaultValue="0", value = "st") int start,
 			@RequestParam(required = false, defaultValue="5", value = "ps") int size) {
 		
-		RpcResponseDTO<Map<String,Object>> rpcResponse = deviceURouterRestRpcService.urouterBlockList(uid, mac, start, size);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<Map<String,Object>> rpcResult = deviceURouterRestRpcService.urouterBlockList(uid, mac.toLowerCase(), start, size);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	
@@ -234,11 +326,11 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
 		
-		RpcResponseDTO<URouterSettingVTO> rpcResponse = deviceURouterRestRpcService.urouterSetting(uid, mac);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<URouterSettingVTO> rpcResult = deviceURouterRestRpcService.urouterSetting(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	
@@ -257,11 +349,11 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
 		
-		RpcResponseDTO<URouterModeVTO> rpcResponse = deviceURouterRestRpcService.urouterLinkMode(uid, mac);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<URouterModeVTO> rpcResult = deviceURouterRestRpcService.urouterLinkMode(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 
@@ -280,11 +372,11 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
 		
-		RpcResponseDTO<Map<String,Object>> rpcResponse = deviceURouterRestRpcService.urouterPlugins(uid, mac);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<Map<String,Object>> rpcResult = deviceURouterRestRpcService.urouterPlugins(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	
@@ -313,12 +405,12 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = false, defaultValue=UserTerminalOnlineSettingDTO.Default_Timeslot) String timeslot,
 			@RequestParam(required = true) int timeslot_mode) {
 		
-		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterUpdPluginTerminalOnline(
-				uid, mac, on, stranger_on, alias_on, timeslot, timeslot_mode);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<Boolean> rpcResult = deviceURouterRestRpcService.urouterUpdPluginTerminalOnline(
+				uid, mac.toLowerCase(), on, stranger_on, alias_on, timeslot, timeslot_mode);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 
@@ -330,13 +422,30 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac,
 			@RequestParam(required = true) boolean on) {
-		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterUpdPluginWifisniffer(uid, mac, on);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<Boolean> rpcResult = deviceURouterRestRpcService.urouterUpdPluginWifisniffer(uid, mac.toLowerCase(), on);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/upd_notify_reward",method={RequestMethod.POST})
+	public void upd_notify_reward(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) boolean on) {
+		
+		RpcResponseDTO<Boolean> rpcResult = deviceURouterRestRpcService.urouterUpdNotifyReward(uid, on);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
 	
 	@ResponseBody()
 	@RequestMapping(value="/device_query_used_status",method={RequestMethod.POST})
@@ -345,11 +454,11 @@ public class URouterDeviceController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
-		RpcResponseDTO<DeviceUsedStatisticsDTO> rpcResponse = deviceURouterRestRpcService.urouterDeviceUsedStatusQuery(uid, mac);
-		if(!rpcResponse.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<DeviceUsedStatisticsDTO> rpcResult = deviceURouterRestRpcService.urouterDeviceUsedStatusQuery(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	
@@ -369,11 +478,35 @@ public class URouterDeviceController extends BaseController{
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String mac) {
 		
-		RpcResponseDTO<URouterDeviceConfigVTO> rpcResponse = deviceURouterRestRpcService.urouterConfigs(uid, mac);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<URouterDeviceConfigVTO> rpcResult = deviceURouterRestRpcService.urouterConfigs(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	/**
+	 * 获取urouter设备的相关配置数据multi
+	 * 支持双频
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param mac
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/configs_multi",method={RequestMethod.POST})
+	public void configs_multi(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String mac) {
+		
+		RpcResponseDTO<URouterDeviceConfigMutilVTO> rpcResult = deviceURouterRestRpcService.urouterConfigsSupportMulti(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	
@@ -390,13 +523,14 @@ public class URouterDeviceController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) String macs) {
+			@RequestParam(required = true) String dmac,
+			@RequestParam(required = true) String hmacs) {
 		
-		RpcResponseDTO<List<URouterHdHostNameVTO>> rpcResponse = deviceURouterRestRpcService.terminalHostnames(uid, macs);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<List<URouterHdHostNameVTO>> rpcResult = deviceURouterRestRpcService.terminalHostnames(uid,dmac.toLowerCase(), hmacs.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	
@@ -413,11 +547,11 @@ public class URouterDeviceController extends BaseController{
 								   HttpServletResponse response,
 								   @RequestParam(required = true) Integer uid,
 								   @RequestParam(required = true) String mac) {
-		RpcResponseDTO<URouterAdminPasswordVTO> rpcResponse = deviceURouterRestRpcService.urouterAdminPassword(uid, mac);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<URouterAdminPasswordVTO> rpcResult = deviceURouterRestRpcService.urouterAdminPassword(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 
@@ -434,12 +568,37 @@ public class URouterDeviceController extends BaseController{
 								   HttpServletResponse response,
 								   @RequestParam(required = true) Integer uid,
 								   @RequestParam(required = true) String mac) {
-		RpcResponseDTO<URouterVapPasswordVTO> rpcResponse = deviceURouterRestRpcService.urouterVapPassword(uid, mac);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		RpcResponseDTO<URouterVapPasswordVTO> rpcResult = deviceURouterRestRpcService.urouterVapPassword(uid, mac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
+	
+	
+    /**
+     * 多条件组合搜索接口(APP专用的返回值)
+     * @param uid
+     * @param conditions
+     * @param pageNo
+     * @param pageSize
+     * @param request
+     * @param response
+     */
+    @ResponseBody()
+    @RequestMapping(value = "/fetch_by_condition_message", method = {RequestMethod.POST})
+    public void fetch_by_condition_message(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = false) Integer uid,
+            @RequestParam(required = false) String message,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
+
+        RpcResponseDTO<TailPage<UserDeviceDTO>> vtos = deviceURouterRestRpcService.urouterFetchBySearchConditionMessage(
+        		uid, message, pageNo, pageSize);
+        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
+    }
 	
 }

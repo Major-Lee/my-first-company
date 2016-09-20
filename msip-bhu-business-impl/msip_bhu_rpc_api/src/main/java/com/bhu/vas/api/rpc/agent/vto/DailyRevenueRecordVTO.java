@@ -11,6 +11,11 @@ public class DailyRevenueRecordVTO implements java.io.Serializable{
 	//当日上线终端总数
 	private long oh;
 	//compare 相较上月同日收益比较百分比 正负 n%  （currentR-lastR）/lastR
+	
+	//cashback devices
+	private int cd;
+	//cashback sameday devices;
+	private int csd;
 	private String c;
 	public String getDate() {
 		return date;
@@ -48,6 +53,18 @@ public class DailyRevenueRecordVTO implements java.io.Serializable{
 	}
 	public void setIndex(int index) {
 		this.index = index;
+	}
+	public int getCd() {
+		return cd;
+	}
+	public void setCd(int cd) {
+		this.cd = cd;
+	}
+	public int getCsd() {
+		return csd;
+	}
+	public void setCsd(int csd) {
+		this.csd = csd;
 	}
 	
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
+import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -37,39 +38,61 @@ public class UserCaptchaCodeController extends BaseController{
 	public void fetch_captcha(
 			HttpServletResponse response,
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
-			@RequestParam(required = true) String acc) {
-		/*int charlen = acc.length();
-		if(charlen < 6 || charlen > 16){
-			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_LENGTH,new String[]{"6","16"});//renderHtml(response, html, headers)
-		}
-		
-		if(!StringHelper.isValidMobilenoCharacter(mobileno)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_FORMAT);//renderHtml(response, html, headers)
-		}*/
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = false,defaultValue="R") String act
+			) {
 		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<UserCaptchaCodeDTO> rpcResult = userCaptchaCodeRpcService.fetchCaptchaCode(countrycode, acc);
-		if(rpcResult.getErrorCode() == null){
+		
+		RpcResponseDTO<UserCaptchaCodeDTO> rpcResult = userCaptchaCodeRpcService.fetchCaptchaCode(countrycode, acc,act);
+		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+
+	
+	@ResponseBody()
+	@RequestMapping(value="/identity_auth",method={RequestMethod.POST})
+	public void check_identity(
+			HttpServletResponse response,
+			@RequestParam(required = true) String hdmac
+			) {
+		
+		RpcResponseDTO<UserIdentityAuth> rpcResult = userCaptchaCodeRpcService.validateIdentity(hdmac.toLowerCase());
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/validate_captcha",method={RequestMethod.POST})
+	public void validate_code(
+			HttpServletResponse response,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = true) String hdmac,
+			@RequestParam(required = true) String captcha
+			) {
+		
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
 		}
 		
-		/*try{
-			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-			CaptchaCode code = captchaCodeService.doGenerateCaptchaCode(accWithCountryCode);
-			deliverMessageService.sendUserCaptchaCodeFetchActionMessage(DeliverMessageType.AC.getPrefix(), countrycode, acc, code.getCaptcha());//sendUserSignedonActionMessage(DeliverMessageType.AC.getPrefix(), user.getId(), remoteIp, from_device);
-			SpringMVCHelper.renderJson(response, Response.SUCCESS);
-		}catch(BusinessI18nCodeException ex){
-			System.out.println("cc:"+countrycode +" acc:"+acc);
-			ex.printStackTrace(System.out);
-			SpringMVCHelper.renderJson(response, ResponseError.embed(ex.getErrorCode()));
-		}catch(Exception ex){
-			ex.printStackTrace(System.out);
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
-		}*/
+		RpcResponseDTO<Boolean> rpcResult = userCaptchaCodeRpcService.validateIdentityCode(countrycode, acc, hdmac, captcha);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
 	}
 }

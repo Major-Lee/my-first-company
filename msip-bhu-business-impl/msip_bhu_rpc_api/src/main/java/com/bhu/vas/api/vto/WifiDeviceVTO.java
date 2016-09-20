@@ -25,9 +25,17 @@ public class WifiDeviceVTO implements Serializable{
 	private long cts;//创建时间
 	private long rts;//最后注册时间
 	private boolean ipgen;
+	private int	loc_method;//地理位置定位方法,替代ipgen，为了兼容，暂时保留ipgen
 	private long oftd;//离线时长
 	private long ofts;//离线时间
 	private String gids;//所属群组ids
+	
+	public int getLoc_method() {
+		return loc_method;
+	}
+	public void setLoc_method(int loc_method) {
+		this.loc_method = loc_method;
+	}
 	public String getWid() {
 		return wid;
 	}

@@ -1,7 +1,5 @@
 package com.bhu.vas.api.rpc.user.model;
 
-import org.springframework.util.StringUtils;
-
 import com.bhu.vas.api.rpc.user.dto.UserSettingDTO;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.model.extjson.KeyDtoMapJsonExtStringModel;
@@ -38,10 +36,12 @@ public class UserSettingState extends KeyDtoMapJsonExtStringModel<String> {
 	 */
 	public <T> T getUserSetting(String setting_key, Class<T> clazz){
 		String setting_json = super.getInnerModel(setting_key);
-		if(!StringUtils.isEmpty(setting_key)){
+		if(setting_json == null) return null;
+		return JsonHelper.getDTO(setting_json, clazz);
+		/*if(!StringUtils.isEmpty(setting_key)){
 			return JsonHelper.getDTO(setting_json, clazz);
 		}
-		return null;
+		return null;*/
 	}
 	
 }

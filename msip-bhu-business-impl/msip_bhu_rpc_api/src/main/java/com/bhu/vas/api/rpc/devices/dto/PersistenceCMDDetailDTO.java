@@ -11,7 +11,8 @@ public class PersistenceCMDDetailDTO implements java.io.Serializable{
 	private String subopt;
 	private String suboptname;
 	private String extparams;
-	
+	//指令下发后设备返回响应的成功值
+	private boolean ds = false;
 	public String getOpt() {
 		return opt;
 	}
@@ -45,6 +46,12 @@ public class PersistenceCMDDetailDTO implements java.io.Serializable{
 	public void setSuboptname(String suboptname) {
 		this.suboptname = suboptname;
 	}
+	public boolean isDs() {
+		return ds;
+	}
+	public void setDs(boolean ds) {
+		this.ds = ds;
+	}
 	public static PersistenceCMDDetailDTO from(PersistenceCMDDTO cmdDto){
 		if(cmdDto == null) return null;
 		
@@ -60,6 +67,7 @@ public class PersistenceCMDDetailDTO implements java.io.Serializable{
 			result.setSubopt(ods_cmd.getNo());
 			result.setSuboptname(ods_cmd.getDesc());
 		}
+		result.setDs(cmdDto.isDs());
 		result.setExtparams(cmdDto.getExtparams());
 		return result;
 	}

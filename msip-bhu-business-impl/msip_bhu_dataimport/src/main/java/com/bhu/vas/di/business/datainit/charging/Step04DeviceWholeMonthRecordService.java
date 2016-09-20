@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.business.ds.agent.dto.RecordSummaryDTO;
+import com.bhu.vas.business.ds.agent.dto.RecordDeviceWholeDaySummaryDTO;
 import com.bhu.vas.business.ds.agent.mdto.LineRecords;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeMonthMDTO;
 import com.bhu.vas.business.ds.agent.mservice.WifiDeviceWholeDayMService;
@@ -66,10 +66,10 @@ public class Step04DeviceWholeMonthRecordService {
 		Date monthEndDate = DateTimeExtHelper.getLastDateOfMonth(certainDate);
 		
 		String monthKey = DateTimeHelper.formatDate(certainDate, DateTimeHelper.FormatPattern11);
-		List<RecordSummaryDTO> summary = wifiDeviceWholeDayMService.summaryAggregationBetween(macs, 
+		List<RecordDeviceWholeDaySummaryDTO> summary = wifiDeviceWholeDayMService.summaryAggregationBetween(macs, 
 				DateTimeHelper.formatDate(monthStartDate, DateTimeHelper.FormatPattern5), 
-				DateTimeHelper.formatDate(monthEndDate, DateTimeHelper.FormatPattern5));
-		for(RecordSummaryDTO dto:summary){
+				DateTimeHelper.formatDate(monthEndDate, DateTimeHelper.FormatPattern5),Boolean.TRUE);
+		for(RecordDeviceWholeDaySummaryDTO dto:summary){
 			WifiDeviceWholeMonthMDTO monthdto = new WifiDeviceWholeMonthMDTO();
 			monthdto.setId(WifiDeviceWholeMonthMDTO.generateId(monthKey, dto.getId()));
 			monthdto.setDate(monthKey);
@@ -83,6 +83,8 @@ public class Step04DeviceWholeMonthRecordService {
 			monthdto.setHod(dto.getT_hod());
 			monthdto.setHtx_bytes(dto.getT_htx_bytes());
 			monthdto.setHrx_bytes(dto.getT_hrx_bytes());
+			monthdto.setCashbacks(dto.getT_cashback());
+			monthdto.setSamedays(dto.getT_sameday());
 			monthdto.setUpdated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
 			wifiDeviceWholeMonthMService.save(monthdto);
 		}

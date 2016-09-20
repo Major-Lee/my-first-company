@@ -4,10 +4,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class DaemonRpcServiceStub implements IDaemonRpcService{
@@ -22,30 +21,30 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 	@Override
 	public boolean wifiDeviceOnline(String ctx,String mac) {
 		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(mac)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		return daemonRpcService.wifiDeviceOnline(ctx,mac);
 	}
 	@Override
 	public boolean wifiDeviceOffline(String ctx,String mac) {
 		if(StringUtils.isEmpty(ctx) || StringUtils.isEmpty(mac)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		return daemonRpcService.wifiDeviceOffline(ctx,mac);
 	}
 	@Override
 	public boolean wifiDeviceCmdDown(String ctx,String mac, String cmd) {
 		if(/*StringUtils.isEmpty(ctx) || */StringUtils.isEmpty(mac) || StringUtils.isEmpty(cmd)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		return daemonRpcService.wifiDeviceCmdDown(ctx,mac,cmd);
 	}
 	
 	@Override
 	public boolean wifiDeviceCmdsDown(String ctx, String mac, List<String> cmds) {
 		if(StringUtils.isEmpty(mac) || cmds == null || cmds.isEmpty()) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		return daemonRpcService.wifiDeviceCmdsDown(ctx,mac,cmds);
 	}
 	
-	@Override
+/*	@Override
 	public boolean cmJoinService(CmCtxInfo info) {
 		if(info == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
@@ -57,7 +56,7 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 		if(info == null) 
 			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 		return daemonRpcService.cmLeave(info);
-	}
+	}*/
 
 	/*@Override
 	public boolean wifiDeviceSerialTaskComming(String ctx, String payload, ParserHeader parserHeader){//String mac,QuerySerialReturnDTO dto) {
@@ -69,7 +68,7 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 	@Override
 	public boolean wifiDevicesOnline(String ctx, List<String> macs) {
 		if(StringUtils.isEmpty(ctx) || macs == null || macs.isEmpty()) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		return daemonRpcService.wifiDevicesOnline(ctx,macs);
 	}
 
@@ -86,7 +85,7 @@ public class DaemonRpcServiceStub implements IDaemonRpcService{
 	@Override
 	public boolean wifiMultiDevicesCmdsDown(DownCmds... downCmds) {
 		if(downCmds == null || downCmds.length ==0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		return daemonRpcService.wifiMultiDevicesCmdsDown(downCmds);
 	}
 

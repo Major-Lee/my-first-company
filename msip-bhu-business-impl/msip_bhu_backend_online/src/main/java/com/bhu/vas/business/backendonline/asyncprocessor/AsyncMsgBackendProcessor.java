@@ -1,7 +1,6 @@
 package com.bhu.vas.business.backendonline.asyncprocessor;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -14,9 +13,11 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.AsyncMsgHandleService;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.AgentDeviceClaimServiceHandler;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.ConsoleServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
+import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 /**
  * 此类加载必须保证lazy=false，正常加入消息监听列表，才能收到消息
@@ -26,26 +27,44 @@ import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;
 @Service
 public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	private final Logger logger = LoggerFactory.getLogger(AsyncMsgBackendProcessor.class);
-	private ExecutorService exec = Executors.newFixedThreadPool(100);
+	private ExecutorService exec = null;//Executors.newFixedThreadPool(100);
 	
 	@Resource
 	private AsyncMsgHandleService asyncMsgHandleService;
 	
 	@Resource
 	private IMsgHandlerService wifiDeviceGroupServiceHandler;
-
+//	@Resource
+//	private IMsgHandlerService userDeviceSharedNetworkApplyServiceHandler;
+//	@Resource
+//	private IMsgHandlerService batchImportConfirmServiceHandler;
+	//@Resource
+	//private BatchSharedealServiceHandler batchSharedealServiceHandler;
+	@Resource
+	private IMsgHandlerService userPortalUpdateServiceHandler;
 	@Resource
 	private AgentDeviceClaimServiceHandler agentDeviceClaimServiceHandler;
 	
 	@Resource
 	private IMsgHandlerService wifiDeviceUsedStatusServiceHandler;
 	
+	@Resource
+	private ConsoleServiceHandler consoleServiceHandler;
+	
 	@PostConstruct
 	public void initialize() {
 		logger.info("AnsyncMsgBackendProcessor initialize...");
+		exec = ExecObserverManager.buildExecutorService(this.getClass(),"AsyncBackend消息处理",100);
 		QueueMsgObserverManager.SpringQueueMessageObserver.addSpringQueueMessageListener(this);
 	}
 	
+	/*@PreDestroy
+	public void destory(){
+		logger.info("AsyncMsgBackendProcessor destory...");
+		this.destory(exec, "AsyncMsgBackendProcessor");
+		Thread desstoryThread = new Thread(new DaemonExecRunnable(exec));
+		desstoryThread.start();
+	}*/
 	@Override
 	public void onMessage(final String messagejsonHasPrefix){
 		//logger.info(String.format("AnsyncMsgBackendProcessor receive message[%s]", messagejsonHasPrefix));
@@ -77,6 +96,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case HandsetDeviceSync:
 							asyncMsgHandleService.handsetDeviceSyncHandle(message);
 							break;
+						case HandsetDeviceVisitorAuthorizeOnline:
+							asyncMsgHandleService.handsetDeviceVisitorAuthorizeOnline(message);
+							break;
 						case WifiDeviceLocation:
 							asyncMsgHandleService.wifiDeviceLocationHandle(message);
 							break;
@@ -98,9 +120,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDeviceRealtimeRateFetch:
 							asyncMsgHandleService.wifiDeviceRealtimeRateFetch(message);
 							break;		
-						case WifiDeviceSpeedFetch:
+/*						case WifiDeviceSpeedFetch:
 							asyncMsgHandleService.wifiDevicePeakRateFetch(message);
-							break;	
+							break;	*/
 						case WifiDeviceHDRateFetch:
 							asyncMsgHandleService.wifiDeviceHDRateFetch(message);
 							break;
@@ -110,11 +132,20 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiCmdsDownNotify:
 							asyncMsgHandleService.wifiCmdsDownNotifyHandle(message);
 							break;
+						case WifiMultiCmdsDownNotify:
+							asyncMsgHandleService.wifiMultiCmdsDownNotifyHandle(message);
+							break;
+						case WifiDevicesBatchModify:
+							asyncMsgHandleService.wifiDeviceBatchModifyHandle(message);
+							break;
 						case DeviceModifySettingAclMacs:
 							asyncMsgHandleService.deviceModifySettingAclMacs(message);
 							break;
 						case DeviceModifySettingAalias:
 							asyncMsgHandleService.deviceModifySettingAalias(message);
+							break;
+						case DeviceModifySettingVap:
+							asyncMsgHandleService.deviceModifySettingVap(message);
 							break;
 						case USERFETCHCAPTCHACODE:
 							asyncMsgHandleService.sendCaptchaCodeNotifyHandle(message);
@@ -125,6 +156,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case USERREGISTERED:
 							asyncMsgHandleService.userRegister(message);
 							break;
+						case USERDEVICEFORCEBIND:
+							asyncMsgHandleService.userDeviceForceBind(message);
+							break;
 						case USERDEVICEREGISTER:
 							asyncMsgHandleService.userDeviceRegister(message);
 							break;
@@ -134,18 +168,45 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case WifiDeviceAsyncCMDGen:
 							wifiDeviceGroupServiceHandler.process(message);
 							break;
-						case WifiDeviceGroupCreateIndex:
-							wifiDeviceGroupServiceHandler.createDeviceGroupIndex(message);
-							break;
+						//case WifiDeviceGroupCreateIndex:
+						//	wifiDeviceGroupServiceHandler.createDeviceGroupIndex(message);
+						//	break;
 						case USERBBSSIGNEDON:
 							asyncMsgHandleService.userBBSsignedon(message);
 							break;
 						case WifiDeviceUsedStatus:
 							wifiDeviceUsedStatusServiceHandler.process(message);
 							break;
-						case AgentDeviceClaimImport:
-							agentDeviceClaimServiceHandler.importAgentDeviceClaim(message);
+						case WifiDevicesGrayChanged:
+							asyncMsgHandleService.wifiDevicesGrayChanged(message);
 							break;
+						case WifiDevicesModuleStyleChanged:
+							asyncMsgHandleService.wifiDevicesModuleStyleChanged(message);
+							break;
+						case AgentDeviceClaimUpdate:
+							//agentDeviceClaimServiceHandler.updateAgentDeviceClaim(message);
+							break;
+						case WifiDeviceResultExportFile:
+							consoleServiceHandler.exportWifiDeviceFile(message);
+							break;
+						case OrderResultExportFile:
+							consoleServiceHandler.exportOrderFile(message);
+							break;
+						/*case BatchImportConfirm:
+							batchImportConfirmServiceHandler.process(message);
+							break;
+						case BatchSharedealModify:
+							batchSharedealServiceHandler.process(message);
+							break;*/
+						/*case UserPortalUpdate:
+							userPortalUpdateServiceHandler.process(message);
+							break;*/
+						/*case DeviceBatchBindTag:
+							asyncMsgHandleService.deviceBatchBindTag(message);
+							break;
+						case DeviceBatchDelTag:
+							asyncMsgHandleService.deviceBatchDelTag(message);
+							break;*/
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

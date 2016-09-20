@@ -1,10 +1,15 @@
 package com.bhu.vas.validate;
 
 //import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
+import org.apache.commons.lang.StringUtils;
+
+import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.helper.NumberValidateHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.plugins.reservedwordfilter.ReservedWordFilterHelper;
 import com.smartwork.msip.cores.plugins.wordfilter.WordFilterHelper;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 //import com.smartwork.msip.cores.plugins.reservedwordfilter.ReservedWordFilterHelper;
 //import com.smartwork.msip.cores.plugins.wordfilter.WordFilterHelper;
 import com.smartwork.msip.jdo.ResponseError;
@@ -37,6 +42,43 @@ public class ValidateService {
 		else return true;
 	}*/
 	
+	public static ResponseError validateParamValueEmpty(String paramName,String paramValue){
+		if(StringUtils.isEmpty(paramValue)){
+			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{paramName.concat(paramValue)});
+		}
+		return null;
+	}
+	
+	public static ResponseError validatePageSize(int pageSize){
+		if(pageSize >50){
+			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"pageSize:".concat(String.valueOf(pageSize)),String.valueOf(1),String.valueOf(50)});
+		}
+		return null;
+	}
+	
+	public static boolean validateUserTypeApiGen(UserType ut){
+		if(!ut.isApiGen()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_PARAM_USERTYPE_APIGEN_FORBIDDEN, new String[]{ut.getSname()});
+		}
+		return true;
+	}
+	
+	public static boolean validAmountRange(String param,double minValue, double maxValue){
+		boolean ret = NumberValidateHelper.validAmountRange(param, minValue, maxValue);
+		if(!ret){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"amount:".concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
+		}
+		return ret;
+	}
+	
+	public static boolean validAitRange(String param,int minValue, int maxValue){
+		boolean ret = NumberValidateHelper.validAitRange(param, minValue, maxValue);
+		if(!ret){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"ait:".concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
+		}
+		return ret;
+	}
+	
 	public static boolean checkNickValidate(String nick){
 		ResponseError error = validateNick(nick);
 		if(error == null) return false;
@@ -48,6 +90,8 @@ public class ValidateService {
 		if(error == null) return false;
 		else return true;
 	}
+	
+	
 	
 	/*public static ResponseError validateEmail(String email){//,UserService userService){
 		if(StringUtils.isEmpty(email)){
@@ -181,6 +225,21 @@ public class ValidateService {
 		return null;
 	}
 	
+	public static ResponseError validateDeviceMac(String mac){
+		if(mac == null){
+			;
+		}
+		String lowmac = mac.toLowerCase();
+		int charlen = lowmac.length();
+		if(charlen != 17 || !StringHelper.isValidMac(lowmac)){
+			return ResponseError.embed(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT,new String[]{mac});//renderHtml(response, html, headers)
+		}
+		
+		/*if(!StringHelper.isValidUUIDCharacter(lowuuid)){
+			return ResponseError.embed(ResponseErrorCode.AUTH_UUID_INVALID_FORMAT,new String[]{lowuuid});//renderHtml(response, html, headers)
+		}*/
+		return null;
+	}
 	
 /*	public boolean isEmailExist(String email){
 		if(StringUtils.isEmpty(email)) return true;

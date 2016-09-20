@@ -12,7 +12,7 @@
     </bean> 
 	<!--  Spring JmsTemplate config -->
 	<bean id="jmsDeliverMessageTopicTemplate" class="org.springframework.jms.core.JmsTemplate">
-		<property name="connectionFactory" ref="jmsFactory" />  
+		<property name="connectionFactory" ref="jmsTopicFactory" />  
 		<!-- custom MessageConverter 
 		<property name="messageConverter" ref="defaultFeedMessageConverter" />-->
 	</bean>

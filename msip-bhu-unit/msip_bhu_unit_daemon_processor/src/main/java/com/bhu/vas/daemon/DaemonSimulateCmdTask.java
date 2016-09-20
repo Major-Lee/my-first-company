@@ -18,6 +18,7 @@ import com.bhu.vas.daemon.observer.DaemonObserverManager;
  * @author Edmond
  *
  */
+@Deprecated
 public class DaemonSimulateCmdTask extends TimerTask{
 	@Override
 	public void run() {
@@ -60,8 +61,10 @@ public class DaemonSimulateCmdTask extends TimerTask{
 //						//访客网络开启
 //						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderCMD4HttpPortalResourceUpdate(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), "{\"style\":\"style000\"}"));
 //						//查询终端速率
-						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceTerminalsQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10));
-//						//查询设备网速
+//						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceTerminalsQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10));
+						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceTerminalsQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence()));
+
+						//查询设备网速
 						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceSpeedNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), 2, 10, "", ""));
 						//查询设备实时速率
 						DaemonObserverManager.CmdDownObserver.notifyCmdDown(info.getCtx(), info.getMac(), CMDBuilder.builderDeviceRateNotifyQuery(info.getMac(), CMDBuilder.auto_taskid_fragment.getNextSequence(), "wan", 2, 10));

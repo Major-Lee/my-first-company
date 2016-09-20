@@ -99,7 +99,6 @@ public class DailyStatisticsHashService extends AbstractRelationHashCache{
 		}
 		
 		System.out.println(dto.getNews());
-		System.out.println(dto.getActives());
-		
+		System.out.println(dto.getActives());		
 	}
 }

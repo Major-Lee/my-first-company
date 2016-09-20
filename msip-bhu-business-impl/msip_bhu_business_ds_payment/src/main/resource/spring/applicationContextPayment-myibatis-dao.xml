@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+    default-lazy-init="true">
+	<!-- Core数据源定义,使用Apache DBCP 连接池 -->
+	<bean id="dataSourcePaymentMaster" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" 	value="${payment.jdbc.master.driverClassName}"/>
+		<property name="url" 				value="${payment.jdbc.master.url}"/>
+		<property name="username" 			value="${payment.jdbc.master.username}"/>
+		<property name="password" 			value="${payment.jdbc.master.password}"/>
+		<property name="initialSize" 		value="${payment.jdbc.master.pool.initialsize}"/>
+		<property name="maxActive" 			value="${payment.jdbc.master.pool.maxactive}"/>
+		<property name="maxIdle" 			value="${payment.jdbc.master.pool.maxidle}"/>
+		<property name="maxWait" 			value="10000"/>
+		<property name="testWhileIdle" 		value="true"/>
+		<property name="validationQuery" 	value="Select 1"/>
+	</bean>
+	
+	<bean id="dataSourcePaymentSlaver" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" 	value="${payment.jdbc.slaver.driverClassName}"/>
+		<property name="url" 				value="${payment.jdbc.slaver.url}"/>
+		<property name="username" 			value="${payment.jdbc.slaver.username}"/>
+		<property name="password" 			value="${payment.jdbc.slaver.password}"/>
+		<property name="initialSize" 		value="${payment.jdbc.slaver.pool.initialsize}"/>
+		<property name="maxActive" 			value="${payment.jdbc.slaver.pool.maxactive}"/>
+		<property name="maxIdle" 			value="${payment.jdbc.slaver.pool.maxidle}"/>
+		<property name="maxWait" 			value="10000"/>
+		<property name="testWhileIdle" 		value="true"/>
+		<property name="validationQuery" 	value="Select 1"/>
+	</bean>	
+
+    <bean id="sqlSessionPaymentMaster" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:myibatis/payment-myibatis-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourcePaymentMaster"/>
+        </property>    
+    </bean>
+	<!-- scope="prototype" just for mybatis 3.2.x  如果是mybatis3.1.x则不需要scope="prototype"-->
+    <bean id="sqlSessionTemplatePaymentMaster"     class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg index="0" ref="sqlSessionPaymentMaster" />
+    </bean> 
+
+    <bean id="sqlSessionPaymentSlaver" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:myibatis/payment-myibatis-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourcePaymentSlaver"/>
+        </property>    
+    </bean>
+	<!-- scope="prototype" just for mybatis 3.2.x  如果是mybatis3.1.x则不需要scope="prototype"-->
+    <bean id="sqlSessionTemplatePaymentSlaver"     class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg index="0" ref="sqlSessionPaymentSlaver" />
+    </bean> 
+ 
+	<bean id="paymentTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"><!-- org.springframework.transaction.jta.JtaTransactionManager"> -->
+		<property name="dataSource" ref="dataSourcePaymentMaster"/>
+	</bean>
+	
+</beans>

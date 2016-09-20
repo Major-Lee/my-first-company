@@ -13,7 +13,13 @@ public class BusinessKeyDefine {
 	public static class HandsetPresent{
 		public static final String StatisticsPrefixKey 			= "HPS.";
 		public static final String PresentPrefixKey 			= "HPP.";
+		public static final String EntityPresentPrefixKey 		= "HEP.";
+		public static final String PresentLogKey 				= "HPL.";
+		public static final String PresentRelationKey 			= "HPR.";
+		public static final String StatisticsTRBKey 			= "HPT.";
+		public static final String GroupStatisticsPrefixKey     = "HGS.";
 	}
+	
 	
 	public static class Present{
 		public static final String MarkPrefixKey = "MP";
@@ -27,6 +33,8 @@ public class BusinessKeyDefine {
 		public static final String WifiDeviceHandsetPresentPrefixKey 			= "WDHP";
 		public static final String WifiDeviceModeStatusPrefixKey 			= "WDMS";
 		public static final String WifiDeviceMobilePresentPrefixKey 			= "WDMP";
+		public static final String UserSearchCondition = "SUSC";
+		public static final String WifiDeviceHandsetUnitPresentPrefixKey	="WDHUP";
 	}
 	
 	public static class Statistics{
@@ -59,31 +67,86 @@ public class BusinessKeyDefine {
 		public static final String WifiDeviceStatistics_PeakSectionRate 		= "PSR";
 		//public static final String WifiDeviceStatistics_PeakRateWaiting 		= "PRWG";
 		public static final String WifiDeviceStatistics_HDRateWaiting 		= "HDRWG";
+		
+		public static final String DeviceStateStatistics	="DDS.";
+		public static final String UserStateStatistics	="UDS.";
+		
+		//add By Jason 2016-07-18 Start
+		public static final String UserDeviceStatistics = "UDVS.";
+		//add By Jason 2016-07-18 E N D
+		//add By Lapaus 2016-07-25 Start
+		public static final String UMStatistics = "UMVS.";
+		//add By Lapaus 2016-07-25 E N D
 	}
 	public static class Unique{
 		public static final String EmailCheck = "WUEC";
 		public static final String NickCheck = "WUNC";
 		public static final String MobilenoCheck = "WUMC";
+		public static final String AccCheck = "WUAC";
 		//public static final String PermalinkCheck = "UPC";
 		//public static final String SnsTokenCheck = "USC";
 		public static final String UserSnsCheck  = "WUSC";
 		
 		public static final String Sequence = "SEQ";
 	}
-
-	public static class WifiStasniffer{
+	
+	public static class Marker{
+		public static final String SnkCharging = "SnkC.";
+	}
+	/*public static class WifiStasniffer{
 		public static final String TerminalRecent = "WSTR";
 		public static final String TerminalHot = "WSTH";
 		public static final String TerminalDetailRecent = "WSTDR";
 		public static final String TerminalDeviceTypeCount = "WSDTC";
 		public static final String TerminalLastTime = "WSLT";
 		public static final String UserTerminalFocus = "WSUTF";
-	}
+	}*/
 	public static class VapMode {
 		public static final String VapModeCount = "VM.";
 	}
 
 	public static class UserWifiDeviceHandset {
 		public static final String Nick = "UDHN";
+	}
+
+	public static class WifiDeviceGuest {
+		public static final String Guest = "WDG";
+	}
+
+	public static class ModuleStat{
+		public static final String StylePrefix = "MSSP";
+		public static final String ModulePrefix = "MSMP";
+	}
+	
+	public static class Commdity{
+		public static final String OrderPaymentNotifyKey = "OPN_KEY";
+		public static final String OrderDeliverNotifyKey = "ODN_KEY";
+		
+		public static final String WithdrawAppliesRequestNotifyKey = "WAR_KEY";
+		
+		public static final String RewardOrderRecent7DaysKey = "ROR7D_KEY";
+		
+		public static final String UserAgentPrefixKey = "UA";
+		
+		public static final String UserQueryDataPrefixKey = "UQD";
+
+	}
+	
+	public static class CommdityRAmount {
+		public static final String CommdityIntervalAmountPrefixKey = "CIA";
+	}
+
+	public static class Social{
+		public static final String ACTION = "SA.";
+		public static final String MEET = "SM";
+
+		public static final String COMMENT = "CM";
+
+		public static final String RELATION= "SREL.";
+
+		public static final String VISITOR= "SV";
+
+		public static final String CARE = "SC.";
+
 	}
 }

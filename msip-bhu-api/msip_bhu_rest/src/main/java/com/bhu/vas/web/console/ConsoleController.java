@@ -9,12 +9,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
-import com.bhu.vas.api.rpc.statistics.dto.*;
-import com.bhu.vas.api.vto.*;
-import com.smartwork.msip.cores.helper.DateHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +18,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
+import com.bhu.vas.api.rpc.statistics.dto.UserAccessStatisticsDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserBrandSubDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserUrlDTO;
+import com.bhu.vas.api.rpc.statistics.dto.UserUrlSubDTO;
 import com.bhu.vas.api.rpc.statistics.iservice.IStatisticsRpcService;
+import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.api.vto.HandsetDeviceVTO;
+import com.bhu.vas.api.vto.StatisticsGeneralVTO;
+import com.bhu.vas.api.vto.UserBrandVTO;
+import com.bhu.vas.api.vto.UserUrlVTO;
+import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
+import com.smartwork.msip.cores.helper.DateHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -42,6 +51,10 @@ public class ConsoleController extends BaseController {
 
     @Resource
     private IDeviceRestRpcService deviceRestRpcService;
+
+    @Resource
+    private IUserDeviceRpcService userDeviceRpcService;
+
 
     @Resource
     private IStatisticsRpcService statisticsRpcService;
@@ -110,7 +123,7 @@ public class ConsoleController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
 
-        TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeywords(mac, sn, orig_swver,origvapmodule,
+        TailPage<WifiDeviceVTO> vtos_page = deviceRestRpcService.fetchWDevicesByKeywords(mac!=null?mac.toLowerCase():mac, sn, orig_swver,origvapmodule,
                 adr, work_mode, config_mode, devicetype, online,moduleonline, newVersionDevice,canOperateable, region, excepts, 
                 groupids, groupids_excepts, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos_page));
@@ -195,11 +208,28 @@ public class ConsoleController extends BaseController {
             @RequestParam(required = true, value = "wid") String wifiId,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
-
-        TailPage<HandsetDeviceVTO> result = deviceRestRpcService.fetchHDevices(wifiId, pageNo, pageSize);
+    	
+        TailPage<HandsetDeviceVTO> result = deviceRestRpcService.fetchHDevices(wifiId!=null?wifiId.toLowerCase():wifiId, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(result));
     }
 
+/*    @ResponseBody()
+    @RequestMapping(value="/un_bindedbyaccortid",method={RequestMethod.POST})
+    public void unBindedByAccOrTid(HttpServletResponse response,
+					    		@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+								@RequestParam(required = false) String acc,
+					    		@RequestParam(required = true) int tid,
+                                @RequestParam(required = true, value = "uid") int uid) {
+    	RpcResponseDTO<Boolean> rpcResult = userDeviceRpcService.unBindDevicesByAccOrUid(countrycode, acc, tid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+        //RpcResponseDTO<List<UserDeviceDTO>> userDeviceResult = userDeviceRpcService.fetchBindDevices(uid);
+        //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
+    }*/
+    
     /**
      * 获取地图设备数据
      * 暂时采用读取500条wifi设备全量返回
@@ -246,10 +276,10 @@ public class ConsoleController extends BaseController {
         if (ml > 5) ml = 5;
 
         RpcResponseDTO<Map<String, Object>> rpcResult = statisticsRpcService.buildHandsetOnline4Chart(type, ml);
-        if (rpcResult.getErrorCode() == null) {
+        if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
         //Map<String,List<String>> result = build4Chart(type,ml);
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(build4Chart(type,ml)));
@@ -273,10 +303,10 @@ public class ConsoleController extends BaseController {
         if (ml > 5) ml = 5;
 
         RpcResponseDTO<Map<String, Object>> rpcResult = statisticsRpcService.buildDeviceOnline4Chart(type, ml);
-        if (rpcResult.getErrorCode() == null) {
+        if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult.getErrorCode()));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
         //Map<String,List<String>> result = build4Chart(type,ml);
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(build4Chart(type,ml)));
@@ -319,11 +349,9 @@ public class ConsoleController extends BaseController {
         if (date == null || date.isEmpty()) {
             date = DateHelper.COMMON_HELPER.getDateText(new Date());
         }
-        RpcResponseDTO<List<UserBrandDTO>> result = statisticsRpcService.fetchUserBrandStatistics(date);
-
-
-        if (result != null && result.getPayload() != null) {
-            List<UserBrandDTO> userBrandDTOList = result.getPayload();
+        RpcResponseDTO<List<UserBrandDTO>> rpcResult = statisticsRpcService.fetchUserBrandStatistics(date);
+        if (!rpcResult.hasError()) {
+            List<UserBrandDTO> userBrandDTOList = rpcResult.getPayload();
             List<UserBrandVTO> userBrandVTOList = new ArrayList<UserBrandVTO>();
 
 
@@ -346,7 +374,7 @@ public class ConsoleController extends BaseController {
 
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandVTOList)));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
 
 
@@ -405,12 +433,12 @@ public class ConsoleController extends BaseController {
         if (StringUtils.isEmpty(mac)) {
         	throw new BusinessException(ResponseStatus.Forbidden, ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
         }
-        RpcResponseDTO<List<PersistenceCMDDetailDTO>> resp = deviceRestRpcService.fetchDevicePersistenceDetailCMD(mac);//.fetchUserUrlStatistics(date);
+        RpcResponseDTO<List<PersistenceCMDDetailDTO>> resp = deviceRestRpcService.fetchDevicePersistenceDetailCMD(mac.toLowerCase());//.fetchUserUrlStatistics(date);
 
 		if(!resp.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
 			return;
 		}
-		SpringMVCHelper.renderJson(response, ResponseError.embed(resp.getErrorCode()));
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp));
     }
 }

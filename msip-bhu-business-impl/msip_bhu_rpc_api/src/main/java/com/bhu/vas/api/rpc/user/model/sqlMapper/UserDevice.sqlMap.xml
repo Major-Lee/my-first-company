@@ -8,6 +8,7 @@
         <id property="mac" column="mac"/>
         <id property="uid" column="uid"/>
         <result property="device_name" column="device_name"/>
+        <result property="device_name_modifyed" column="device_name_modifyed"/>
         <result property="created_at" column="created_at"/>
         <result property="updated_at" column="updated_at"/>
     </resultMap>
@@ -25,6 +26,7 @@
 	    	mac,
 	    	uid,
 	    	device_name,
+	    	device_name_modifyed,
 	    	created_at,
 	    	updated_at
 
@@ -34,6 +36,7 @@
 		<![CDATA[
 
 	    	device_name,
+	    	device_name_modifyed,
 	    	created_at,
 	    	updated_at
 
@@ -44,11 +47,13 @@
 		#{mac},
 		#{uid},
 		#{device_name},
+		#{device_name_modifyed},
 		#{created_at},
 		#{updated_at}
 	</sql>
     <sql id="modelUpdateValues">
 		device_name = #{device_name},
+		device_name_modifyed = #{device_name_modifyed},
 		created_at = #{created_at},
 		updated_at = #{updated_at}
 	</sql>

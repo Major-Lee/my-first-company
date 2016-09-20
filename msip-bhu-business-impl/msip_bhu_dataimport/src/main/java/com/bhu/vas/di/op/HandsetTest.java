@@ -12,9 +12,9 @@ public class HandsetTest {
 
     public static void main(String[] args){
 
-        long ts= 1444455624105L ;
+        long ts= 1450848467 * 1000L ;
         System.out.println(DateTimeHelper.formatDate(new Date(ts), DateTimeHelper.longDateFormat));
-//        System.out.println(DateTimeHelper.parseDate("2015-08-17", DateTimeHelper.shortDateFormat).getTime());
+        System.out.println(DateTimeHelper.parseDate("2015-12-11", DateTimeHelper.shortDateFormat).getTime());
 //        System.out.println(getDateZeroTime(new Date()).getTime());
 //
 //        System.out.println((int)(1439740800779L - 1439783798513L) / (24 * 3600 * 1000));

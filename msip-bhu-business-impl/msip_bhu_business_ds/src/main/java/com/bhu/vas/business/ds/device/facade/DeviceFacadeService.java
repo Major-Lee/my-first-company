@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -21,28 +19,16 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.DeviceMobilePresentDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.dto.statistics.DeviceStatistics;
-import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.DeviceHelper;
-import com.bhu.vas.api.helper.IGenerateDeviceSetting;
-import com.bhu.vas.api.helper.OperationCMD;
-import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
-import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
-import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
-import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
-import com.bhu.vas.api.rpc.user.model.PushMessageConstant;
-import com.bhu.vas.api.rpc.user.model.UserDevice;
 import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
-import com.bhu.vas.api.rpc.user.model.pk.UserDevicePK;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
@@ -50,28 +36,25 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStat
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
-import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
-import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
-import com.bhu.vas.business.ds.user.service.UserDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceStateService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingAddressDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingResultDTO;
-import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
-public class DeviceFacadeService implements IGenerateDeviceSetting{
+public class DeviceFacadeService{
 	private final Logger logger = LoggerFactory.getLogger(DeviceFacadeService.class);
 	/**
 	 * 存在多种混合状态
@@ -90,26 +73,31 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	@Resource
 	private WifiDeviceSettingService wifiDeviceSettingService;
 	
-	/*@Resource
-	private HandsetDeviceService handsetDeviceService;*/
+/*	@Resource
+	private UserDeviceService userDeviceService;*/
 	
 	@Resource
-	private UserDeviceService userDeviceService;
+	private UserWifiDeviceService userWifiDeviceService;
 	
 	@Resource
 	private UserMobileDeviceService userMobileDeviceService;
 	
 	@Resource
 	private UserMobileDeviceStateService userMobileDeviceStateService;
-	
-	@Resource
-	private WifiDevicePersistenceCMDStateService wifiDevicePersistenceCMDStateService;
-	
-	@Resource
-	private VasModuleCmdDefinedService vasModuleCmdDefinedService;
-	
+
 	@Resource
 	private UserSettingStateService userSettingStateService;
+	
+	@Resource
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
+	
+	//@Resource
+	//private UserService userService;
+	
+//	@Resource
+//	private SharedNetworkFacadeService sharedNetworkFacadeService;
+//	@Resource
+//	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 
 	
 	/**
@@ -120,19 +108,21 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @return  在线设备
 	 */
 	public List<HandsetDeviceDTO> allHandsetDoOfflines(String wifiId){
+		long current = System.currentTimeMillis();
 		List<String> onlinePresents = WifiDeviceHandsetPresentSortedSetService.getInstance().fetchAllOnlinePresents(wifiId);
 		if(onlinePresents != null && !onlinePresents.isEmpty()){
-			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(onlinePresents);
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(wifiId.toLowerCase(),onlinePresents);
 			List<HandsetDeviceDTO> do_offline_handsets = new ArrayList<HandsetDeviceDTO>();
 			for(HandsetDeviceDTO dto:handsets){
 				if(dto != null){
 					dto.setAction(HandsetDeviceDTO.Action_Offline);
 					do_offline_handsets.add(dto);
-
 				}
 				//dto.setAction(HandsetDeviceDTO.Action_Offline);
 			}
 			HandsetStorageFacadeService.handsetsComming(do_offline_handsets);
+			//修改为redis实现终端上下线日志 2015-12-11
+			HandsetStorageFacadeService.wifiDeviceHandsetsOffline(wifiId, onlinePresents, current);
 			//清除设备在线终端列表
 			WifiDeviceHandsetPresentSortedSetService.getInstance().changeOnlinePresentsToOffline(wifiId);
 			return handsets;
@@ -146,7 +136,27 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}*/
 		return null;
 	}
+	
+	public WifiDeviceService getWifiDeviceService() {
+		return wifiDeviceService;
+	}
 
+	public void setWifiDeviceService(WifiDeviceService wifiDeviceService) {
+		this.wifiDeviceService = wifiDeviceService;
+	}
+
+	/**
+	 * 更新设备的行业信息
+	 * @param mac
+	 * @param industry
+	 */
+	public void updateDeviceIndustry(String mac, String industry){
+        WifiDevice entity = wifiDeviceService.getById(mac);
+        if(entity != null){
+        	entity.setIndustry(industry);
+        	wifiDeviceService.update(entity);
+        }
+	}
 
 	/**
 	 * 根据wifi设备的经纬度获取地理信息数据，并且进行填充
@@ -163,7 +173,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			if(geocodingDto != null && geocodingDto.getStatus() == GeocodingDTO.Success_Status){
 				GeocodingResultDTO resultDto = geocodingDto.getResult();
 				if(resultDto != null){
-					entity.setFormatted_address(resultDto.getFormatted_address());
+					//entity.setFormatted_address(resultDto.getFormatted_address());
 					GeocodingAddressDTO addressDto = geocodingDto.getResult().getAddressComponent();
 					if(addressDto != null){
 						entity.setCountry(addressDto.getCountry());
@@ -171,6 +181,15 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 						entity.setCity(addressDto.getCity());
 						entity.setDistrict(addressDto.getDistrict());
 						entity.setStreet(addressDto.getStreet());
+						
+						StringBuffer formatted_address_buffer = new StringBuffer();
+						if(StringUtils.isNotEmpty(addressDto.getCountry())){
+							formatted_address_buffer.append(addressDto.getCountry());
+						}
+						if(StringUtils.isNotEmpty(resultDto.getFormatted_address())){
+							formatted_address_buffer.append(resultDto.getFormatted_address());
+						}
+						entity.setFormatted_address(formatted_address_buffer.toString());
 						return true;
 					}
 				}
@@ -433,9 +452,13 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 
 		if (wifiDevice == null) {
 			return WIFI_DEVICE_STATUS_NOT_EXIST;
-		} else if (!isURooterDevice(mac)) {
+		}
+		
+		if (!WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver())) {
 			return WIFI_DEVICE_STATUS_NOT_UROOTER;
-		} else if (wifiDevice.isOnline()){
+		}
+		
+		if (wifiDevice.isOnline()){
 			return WIFI_DEVICE_STATUS_ONLINE;
 		} else {
 			return WIFI_DEVICE_STATUS_NOT_ONLINE;
@@ -447,14 +470,34 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @param mac
 	 * @return
 	 */
-	public boolean isURooterDevice(String mac) {
+	public boolean isURouterDevice(String mac) {
 		if(StringUtils.isEmpty(mac)) return false;
 		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 		if(wifiDevice == null) return false;
-		return WifiDeviceHelper.isURooterDeviceWithOrigModel(wifiDevice.getOrig_model());
+		return WifiDeviceHelper.isURouterDevice(wifiDevice.getOrig_swver());
 	}
 	
-
+	public WifiDevice validateDevice4CMDDown(Integer uid, String mac){
+		//验证设备
+		//验证设备是否存在
+		WifiDevice device_entity = wifiDeviceService.getById(mac);
+		if(device_entity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
+		}
+		//验证设备是否在线
+		if(!device_entity.isOnline()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
+		}
+		//验证用户是否管理设备
+/*		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
+		if(userdevice_entity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_YOURBINDED,new String[]{mac});
+		}*/
+		userWifiDeviceFacadeService.validateUserWifiDevice(mac, uid);
+		return device_entity;
+	}
+	
+	
 	/**
 	 * 验证用户所管理的设备
 	 * 1：设备是否存在
@@ -468,13 +511,30 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		//验证设备
 		WifiDevice device_entity = validateDevice(mac);
 		//验证用户是否管理设备
-		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
+/*		UserDevice userdevice_entity = userDeviceService.getById(new UserDevicePK(mac, uid));
 		if(userdevice_entity == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_BINDED);
-		}
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_YOURBINDED,new String[]{mac});
+		}*/
+		userWifiDeviceFacadeService.validateUserWifiDevice(mac, uid);
+		return device_entity;
+	}
+
+	/**
+	 * 验证用户所管理的设备, 忽略设备是否在线
+	 * 1：设备是否存在
+	 * 2：设备是否被此用户管理
+	 * @param uid
+	 * @param mac
+	 * @return
+	 */
+	public WifiDevice validateUserDeviceIgnoreOffline(Integer uid, String mac){
+		//验证设备
+		WifiDevice device_entity = this.validateDeviceIgoneOffline(mac);
+		userWifiDeviceFacadeService.validateUserWifiDevice(mac, uid);
 		return device_entity;
 	}
 	
+
 	/**
 	 * 验证设备
 	 * 1：设备是否存在
@@ -486,16 +546,33 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		//验证设备是否存在
 		WifiDevice device_entity = wifiDeviceService.getById(mac);
 		if(device_entity == null){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
 		}
 		//验证设备是否在线
 		if(!device_entity.isOnline()){
-			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE,new String[]{mac});
 		}
+		//验证是否是urouter
+/*		if(!WifiDeviceHelper.isURouterDevice(device_entity.getOrig_swver())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_MATCHED,new String[]{mac});
+		}*/
+		return device_entity;
+	}
+	
+	public WifiDevice validateDeviceIgoneOffline(String mac){
+		//验证设备是否存在
+		WifiDevice device_entity = wifiDeviceService.getById(mac);
+		if(device_entity == null){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{mac});
+		}
+		/*//验证设备是否在线
+		if(!device_entity.isOnline()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_ONLINE);
+		}*/
 		return device_entity;
 	}
 	/**
-	 * 验证设备是否加载配置
+	 * 验证设备是否加载正确配置
 	 * @param mac
 	 * @return
 	 */
@@ -509,37 +586,39 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 		return entity;
 	}
+	
+
 	/**
 	 * 验证设备是否存在配置数据并且返回配置数据dto
 	 * @param mac
 	 * @return
 	 */
-	public WifiDeviceSettingDTO validateDeviceSettingAndGet(String mac){
-		return validateDeviceSetting(mac).getInnerModel();
-	}
+//	public WifiDeviceSettingDTO validateDeviceSettingAndGet(String mac){
+//		return validateDeviceSetting(mac).getInnerModel();
+//	}
 	
 	/**
 	 * 获取用户绑定的设备PKS
 	 * @param uid
 	 * @return
 	 */
-	public List<UserDevicePK> getUserDevices(Integer uid){
+/*	public List<UserDevicePK> getUserDevices(Integer uid){
 		CommonCriteria mc = new CommonCriteria();
 		mc.createCriteria().andColumnEqualTo("uid", uid);
 		return userDeviceService.findIdsByCommonCriteria(mc);
-	}
+	}*/
 	
-	public UserDevice getUserDevice(Integer uid, String mac){
+/*	public UserDevice getUserDevice(Integer uid, String mac){
 		return userDeviceService.getById(new UserDevicePK(mac, uid));
-	}
+	}*/
 	
-	public String getUserDeviceName(Integer uid, String mac){
+/*	public String getUserDeviceName(Integer uid, String mac){
 		UserDevice entity = this.getUserDevice(uid, mac);
 		if(entity != null){
 			return entity.getDevice_name();
 		}
 		return null;
-	}
+	}*/
 	
 	/**
 	 * 更新设备的mode状态信息
@@ -597,13 +676,32 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			}
 
 			for(WifiDeviceSettingVapDTO vap : vaps){
-				if(WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getEnable())
-						&& !WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getGuest_en())){
+				if(WifiDeviceHelper.Enable.equalsIgnoreCase(vap.getEnable())
+						&& !WifiDeviceHelper.Enable.equalsIgnoreCase(vap.getGuest_en())){
 					return vap.getSsid();
 				}
 			}
 		}
 		return null;
+	} 
+	
+	/**
+	 * 获得设备的默认昵称
+	 * 获取设备第一个可用的ssid作为名称，如果获取不到，则用mac地址代替
+	 * @param mac
+	 * @return
+	 */
+	public String getBindDeviceName(String mac){
+		String bindDeviceName = mac;
+		try{
+			String ssid = getUrouterSSID(mac);
+			if(StringUtils.isNotEmpty(ssid)){
+				bindDeviceName = ssid;
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+		}
+		return bindDeviceName;
 	}
 
 	/**
@@ -625,7 +723,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @param mac
 	 * @return
 	 */
-	public String queryPushHandsetDeviceAliasName(String hd_mac, String mac){
+/*	public String queryPushHandsetDeviceAliasName(String hd_mac, String mac){
 		WifiDeviceSettingDTO setting_dto = queryDeviceSettingDTO(mac);
 		if(setting_dto != null){
 			//查询终端别名
@@ -635,7 +733,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			}
 		}
 		return null;
-	}
+	}*/
 	
 	/**
 	 * 获取终端主机名
@@ -644,7 +742,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @return
 	 * modified by Edmond Lee for handset storage
 	 */
-	public String queryPushHandsetDeviceHostname(String hd_mac, String mac){
+/*	public String queryPushHandsetDeviceHostname(String hd_mac, String mac){
 		
 		HandsetDeviceDTO handset = HandsetStorageFacadeService.handset(hd_mac);
 		//System.out.println(String.format("queryPushHandsetDeviceHostname handset [%s] hd_mac [%s]", handset, hd_mac));
@@ -660,7 +758,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		}
 		return null;
 		//如果没有别名 以终端主机名填充
-		/*HandsetDevice hd_entity = handsetDeviceService.getById(hd_mac);
+		HandsetDevice hd_entity = handsetDeviceService.getById(hd_mac);
 		if(hd_entity != null){
 			String hostname = hd_entity.getHostname();
 			if(!StringUtils.isEmpty(hostname)){
@@ -670,8 +768,8 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				return StringHelper.chopMiddleString(hostname, 16, StringHelper.ELLIPSIS_STRING_GAP);
 			}
 		}
-		return null;*/
-	}
+		return null;
+	}*/
 	
 	/**
 	 * 获取设备的名称
@@ -681,7 +779,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @param mac
 	 * @return
 	 */
-	public String queryDeviceName(Integer uid, String mac){
+/*	public String queryDeviceName(Integer uid, String mac){
 		UserDevice userDevice = userDeviceService.getById(new UserDevicePK(mac, uid));
 		if(userDevice != null){
 			if(!StringUtils.isEmpty(userDevice.getDevice_name())){
@@ -689,7 +787,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			}
 		}
 		return null;
-	}
+	}*/
 	/**
 	 * 用户注册app移动设备信息
 	 * 1:当前用户使用app移动设备数据
@@ -716,6 +814,9 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 		DeviceEnum de = DeviceEnum.getBySName(d);
 		if(de == null || !DeviceEnum.isHandsetDevice(de)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_TYPE_NOT_SUPPORTED);
+		}
+		if(!StringUtils.isEmpty(dm)){
+			dm = dm.toLowerCase();
 		}
 		//1:当前用户使用app移动设备数据
 		userMobileDeviceService.deviceRegister(uid, dm, dt, d, pt);
@@ -755,13 +856,98 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	}
 	
 	/**
+	 * 设备重置 解绑、清除相关设备和用户之间的数据
+	 * @param mac
+	 */
+	public void deviceResetDestory(String mac){
+		System.out.println("~~~~~~~~~~1:设备重置解除绑定操作："+mac);
+		//现在一台设备只能被一个客户端绑定。此处考虑冗余兼容可能出现的多个用户绑定单个设备的情况
+//		List<UserDevice> bindDevices = userDeviceService.fetchBindDevicesUsers(mac);
+//		List<Integer> uids = new ArrayList<Integer>();
+//        for (UserDevice bindDevice : bindDevices) {
+//        	uids.add(bindDevice.getUid());
+//        }
+//        System.out.println("~~~~~~~~~~2:设备绑定用户："+uids);
+//        for(Integer uid :uids){
+//        	//UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+//        	System.out.println("~~~~~~~~~~21:设备绑定用户清除："+uid);
+//        	//userDeviceService.deleteById(userDevicePK);
+//        	userWifiDeviceService.deleteById(mac);
+//        	System.out.println("~~~~~~~~~~22:设备状态清除："+uid);
+//        	/*String present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
+//        	System.out.println("~~~~~~~~~~221:清除前：present:"+present);*/
+//        	this.removeMobilePresent(uid, mac);
+//        	/*present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
+//        	System.out.println("~~~~~~~~~~221:清除后：present:"+present);*/
+//        	System.out.println("~~~~~~~~~~23:设备插件状态清除："+uid);
+//			userSettingStateService.deleteById(mac);
+//			//System.out.println("~~~~~~~~~~24:设备插件状态清除："+uid);
+//			/*//如果没有绑定其他设备，删除别名
+//			int count = userDeviceService.countBindDevices(uid);
+//			if(count == 0 ){
+//				WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(uid, mac);
+//			}*/
+//        }
+		
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
+		if(userWifiDevice != null){
+			Integer uid = userWifiDevice.getUid();
+			if(uid != null){
+	        	//UserDevicePK userDevicePK = new UserDevicePK(mac, uid);
+	        	System.out.println("~~~~~~~~~~21:设备绑定用户清除："+uid);
+	        	//userDeviceService.deleteById(userDevicePK);
+	        	userWifiDeviceService.deleteById(mac);
+	        	System.out.println("~~~~~~~~~~22:设备状态清除："+uid);
+	        	/*String present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
+	        	System.out.println("~~~~~~~~~~221:清除前：present:"+present);*/
+	        	this.removeMobilePresent(uid, mac);
+	        	/*present = WifiDeviceMobilePresentStringService.getInstance().getMobilePresent(mac);
+	        	System.out.println("~~~~~~~~~~221:清除后：present:"+present);*/
+	        	System.out.println("~~~~~~~~~~23:设备插件状态清除："+uid);
+				userSettingStateService.deleteById(mac);
+				//System.out.println("~~~~~~~~~~24:设备插件状态清除："+uid);
+				/*//如果没有绑定其他设备，删除别名
+				int count = userDeviceService.countBindDevices(uid);
+				if(count == 0 ){
+					WifiDeviceHandsetAliasService.getInstance().hdelHandsetAlias(uid, mac);
+				}*/
+			}
+		}
+	
+        //清除设备的行业信息
+        WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+        if(wifiDevice != null){
+        	wifiDevice.setIndustry(null);
+        	wifiDeviceService.update(wifiDevice);
+        }
+        System.out.println("~~~~~~~~~~3:deviceResetDestory ok!");
+	}
+	
+	//生成用户绑定设备的push present的业务动作
+	//新增设备
+	public static final Integer DeviceMobilePresentOperationAddAction = 1;
+	//移除设备
+	public static final Integer DeviceMobilePresentOperationRemoveAction = 2;
+	
+	
+	/**
 	 * 移除设备与用户移动设备信息的关联
 	 * @param uid
 	 * @param mac
 	 */
 	public void removeMobilePresent(Integer uid, String mac){
 		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(mac);
-		this.generateDeviceMobilePresents(uid);
+		this.generateDeviceMobilePresentsWithAction(uid, mac, DeviceMobilePresentOperationRemoveAction, null);
+	}
+	
+	
+	/**
+	 * 增加设备与用户移动设备信息的关联
+	 * @param uid
+	 * @param mac
+	 */
+	public void addMobilePresent(Integer uid, String mac){
+		this.generateDeviceMobilePresentsWithAction(uid, mac, DeviceMobilePresentOperationAddAction, null);
 	}
 	
 	/**
@@ -770,35 +956,105 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @param presentDto
 	 */
 	public void generateDeviceMobilePresents(Integer uid, DeviceMobilePresentDTO presentDto){
-		if(uid == null || presentDto == null) return;
-		
-		List<UserDevicePK> userDevices = this.getUserDevices(uid);
-		int size = userDevices.size();
-		if(size == 0) return;
-		
-		List<String> macs = new ArrayList<String>();
-		for(UserDevicePK pk : userDevices){
-			macs.add(pk.getMac());
-		}
-		
-		presentDto.setMulti(size > 1 ? true : false);
-		WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
-				JsonHelper.getJSONString(presentDto));
+		if(uid == null) return;
+		generateDeviceMobilePresentsWithAction(uid, null, null, presentDto);
 	}
 	
 	/**
 	 * 根据用户所管理的设备 生成mobile和设备的关系信息
 	 * @param uid
+	 * @param action_mac 业务上下文mac
+	 * @param action 业务动作
+	 * @param presentDto
 	 */
-	public void generateDeviceMobilePresents(Integer uid){
+	public void generateDeviceMobilePresentsWithAction(Integer uid, String action_mac, Integer action, 
+			DeviceMobilePresentDTO presentDto){
+		if(uid == null) return;
+		
+		if(presentDto == null){
+			UserMobileDevice userMobileDevice = userMobileDeviceService.getById(uid);
+			if(userMobileDevice != null){
+				presentDto = new DeviceMobilePresentDTO(uid, userMobileDevice.getD(), userMobileDevice.getDt(), 
+						userMobileDevice.getPt(), userMobileDevice.getDm());
+			}
+		}
+		
+		if(presentDto != null){
+			List<String> macs = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(uid);
+			//处理业务action
+			if(StringUtils.isNotEmpty(action_mac) && action != null){
+				//防止主从数据库同步问题的处理
+				if(DeviceMobilePresentOperationAddAction.equals(action)){
+					if(!macs.contains(action_mac)){
+						macs.add(action_mac);
+					}
+				}
+				else if(DeviceMobilePresentOperationRemoveAction.equals(action)){
+					macs.remove(action_mac);
+				}
+			}
+			
+			int bindmac_size = macs.size();
+			if(bindmac_size > 0){
+				presentDto.setMulti(bindmac_size > 1 ? true : false);
+				WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
+						JsonHelper.getJSONString(presentDto));
+			}
+		}
+	}
+	/**
+	 * 增加push redis数据关联 设备与用户push信息关联
+	 * @param uid
+	 * @param mac
+	 */
+	public void gainDeviceMobilePresentString(Integer uid, String mac){
+		if(uid == null || StringUtils.isEmpty(mac)) return;
+		
+		UserMobileDevice userMobileDevice = userMobileDeviceService.getById(uid);
+		if(userMobileDevice != null){
+			DeviceMobilePresentDTO presentDto = new DeviceMobilePresentDTO(uid, userMobileDevice.getD(), userMobileDevice.getDt(), 
+					userMobileDevice.getPt(), userMobileDevice.getDm());
+			WifiDeviceMobilePresentStringService.getInstance().setMobilePresent(mac, 
+					JsonHelper.getJSONString(presentDto));
+		}
+	}
+	
+	/**
+	 * 移除push redis数据关联 设备与用户push信息关联
+	 * @param mac
+	 */
+	public void destoryDeviceMobilePresentString(String mac){
+		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(mac);
+	}
+	
+/*	*//**
+	 * 根据用户所管理的设备 生成mobile和设备的关系信息
+	 * @param macs 用户管理的设备macs
+	 * @param presentDto
+	 *//*
+	public void generateDeviceMobilePresents(List<String> macs, DeviceMobilePresentDTO presentDto){
+		if(macs == null || macs.isEmpty() || presentDto == null) return;
+		
+		int bindmac_size = macs.size();
+		presentDto.setMulti(bindmac_size > 1 ? true : false);
+		WifiDeviceMobilePresentStringService.getInstance().setMobilePresents(macs, 
+				JsonHelper.getJSONString(presentDto));
+	}
+	
+	*//**
+	 * 根据用户所管理的设备 生成mobile和设备的关系信息
+	 * @param uid
+	 * @param macs 目前该用户所管理的设备macs
+	 *//*
+	public void generateDeviceMobilePresents(Integer uid, List<String> macs){
 		if(uid == null) return;
 		
 		UserMobileDevice entity = userMobileDeviceService.getById(uid);
 		if(entity != null){
-			this.generateDeviceMobilePresents(uid, new DeviceMobilePresentDTO(uid, entity.getD(), entity.getDt(),
+			this.generateDeviceMobilePresents(macs, new DeviceMobilePresentDTO(uid, entity.getD(), entity.getDt(),
 					entity.getPt(), entity.getDm()));
 		}
-	}
+	}*/
 	
 	/**
 	 * 根据用户所管理的设备 清除mobile和设备的关系信息
@@ -807,20 +1063,22 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	public void clearDeviceMobilePresents(Integer uid){
 		if(uid == null) return;
 		
-		List<UserDevicePK> userDevices = this.getUserDevices(uid);
+/*		List<UserDevicePK> userDevices = this.getUserDevices(uid);
 		if(userDevices.isEmpty()) return;
 		
 		List<String> macs = new ArrayList<String>();
 		for(UserDevicePK pk : userDevices){
 			macs.add(pk.getMac());
-		}
+		}*/
+		List<String> macs = userWifiDeviceFacadeService.findUserWifiDeviceIdsByUid(uid);
+		if(macs.isEmpty()) return;
+		
 		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(macs);
 	}
 
 	
 	/**************************  具体业务修改配置数据 封装 **********************************/
-	//修改设备配置的通用序列号
-	public static final String Common_Config_Sequence = "-1";
+
 	
 	/**
 	 * 生成设备配置的广告配置数据
@@ -830,51 +1088,63 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @return
 	 * @throws Exception 
 	 */
-	public String generateDeviceSetting(String mac, OperationDS ods, String extparams) throws Exception {
+/*	public String generateDeviceSetting(String mac, OperationDS ods, String extparams) throws Exception {
 		if(ods == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String config_sequence = Common_Config_Sequence;
+		String config_sequence = DeviceHelper.Common_Config_Sequence;
 		
 		switch(ods){
 			case DS_Http_Ad_Start:
 				return DeviceHelper.builderDSHttpAdStartOuter(config_sequence, extparams);
 			case DS_Http_Ad_Stop:
 				return DeviceHelper.builderDSHttpAdStopOuter(config_sequence);	
-			case DS_Http_Redirect_Start:
-				return DeviceHelper.builderDSHttpRedirectStartOuter(config_sequence, extparams);
-			case DS_Http_Redirect_Stop:
-				return DeviceHelper.builderDSHttpRedirectStopOuter(config_sequence);
-				
-			case DS_Http_404_Start:
-				return DeviceHelper.builderDSHttp404StartOuter(config_sequence, extparams);
-			case DS_Http_404_Stop:
-				return DeviceHelper.builderDSHttp404StopOuter(config_sequence);
-			case DS_Http_Portal_Start:
-				return DeviceHelper.builderDSStartHttpPortalOuter(config_sequence, extparams);
-			case DS_Http_Portal_Stop:
-				return DeviceHelper.builderDSStopHttpPortalOuter(config_sequence);
+			case DS_SharedNetworkWifi_Start:
+				return DeviceHelper.builderDSStartSharedNetworkWifiOuter(extparams);
+			case DS_SharedNetworkWifi_Stop:
+				return DeviceHelper.builderDSStopSharedNetworkWifiOuter();
+			case DS_Plugins:
+				return DeviceHelper.builderDSPluginOuter(extparams);
+			case DS_Switch_WorkMode:
+				return generateDeviceSettingWithSwitchWorkMode(mac, extparams);
 			case DS_Power:
-				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSPowerOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_RealChannel:
-				return DeviceHelper.builderDSRealChannelOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSRealChannelOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_VapPassword:
-				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSVapPasswordOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_AclMacs:
-				return DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSAclMacsOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_RateControl:
-				return DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSRateControlOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
 			case DS_AdminPassword:
 				return DeviceHelper.builderDSAdminPasswordOuter(config_sequence, extparams);
 			case DS_LinkMode:
 				return DeviceHelper.builderDSLinkModeOuter(config_sequence, extparams);
 			case DS_MM:
-				return DeviceHelper.builderDSHDAliasOuter(config_sequence, extparams, validateDeviceSettingAndGet(mac));
+				return DeviceHelper.builderDSHDAliasOuter(config_sequence, extparams, validateDeviceSettingReturnDTO(mac));
+			
 //			case DS_VapGuest:
 //				return DeviceHelper.builderDSVapGuestOuter(config_sequence, extparams, ds_dto);
 			default:
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
-	}
+	}*/
+	
+	//ParamSharedNetworkDTO
+/*	public String generateDeviceSettingWithSwitchWorkMode(String mac, String extparams){
+		ParamVasSwitchWorkmodeDTO wk_dto = JsonHelper.getDTO(extparams, ParamVasSwitchWorkmodeDTO.class);
+		int switchAct = wk_dto.getWmode();
+		if(switchAct == WifiDeviceHelper.SwitchMode_Router2Bridge_Act || switchAct == WifiDeviceHelper.SwitchMode_Bridge2Router_Act){
+			ParamSharedNetworkDTO vw_dto = null;
+			SharedNetworkSettingDTO sharedNetworkConf = sharedNetworkFacadeService.fetchDeviceSharedNetworkConf(mac);
+			if(sharedNetworkConf != null && sharedNetworkConf.isOn() && sharedNetworkConf.getPsn() != null){
+				vw_dto = sharedNetworkConf.getPsn();
+				vw_dto.switchWorkMode(switchAct);
+			}
+			return DeviceHelper.builderDSWorkModeSwitchOuter(mac, switchAct, validateDeviceSettingReturnDTO(mac), vw_dto);
+		}
+		return null;
+	}*/
 	
 	/**
 	 * 获取持久化指令中的vapmodule支持的增值指令
@@ -882,7 +1152,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 	 * @param mac
 	 * @return
 	 */
-	public List<String> fetchWifiDevicePersistenceVapModuleCMD(String mac){
+/*	public List<String> fetchWifiDevicePersistenceVapModuleCMD(String mac){
 		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
 		if(cmdState == null || cmdState.getExtension().isEmpty()) return null;
 		List<String> payloads = null;
@@ -894,7 +1164,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			for(Entry<String, PersistenceCMDDTO> entry : entrySet){
 				PersistenceCMDDTO dto = entry.getValue();
 				OperationCMD opt_cmd = OperationCMD.getOperationCMDFromNo(dto.getOpt());
-				if(opt_cmd == null || StringUtils.isEmpty(dto.getExtparams())){
+				if(opt_cmd == null){// || StringUtils.isEmpty(dto.getExtparams())){
 					continue;
 				}
 				OperationDS ods_cmd = OperationDS.getOperationDSFromNo(dto.getSubopt());
@@ -911,7 +1181,10 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 							if(cmdDefined == null || StringUtils.isEmpty(cmdDefined.getTemplate())){
 								continue;
 							}
-							payloads.add(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(),cmdDefined.getTemplate()));
+							payloads.add(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_vapstart_fragment.getNextSequence(),cmdDefined.getTemplate()));
+						}else if(OperationDS.DS_Http_VapModuleCMD_Stop == ods_cmd){
+							String templated = vasModuleCmdDefinedService.fetchCommonStopTemplate();
+							payloads.add(CMDBuilder.autoBuilderVapFullCMD4Opt(mac, CMDBuilder.auto_taskid_vapstop_fragment.getNextSequence(), templated));
 						}else{
 							vap_module_ds.add(ods_cmd);
 							vap_module_ds_extparams.add(dto.getExtparams());
@@ -919,15 +1192,13 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 					}
 				}
 			}
-			if(vap_module_ds != null && !vap_module_ds.isEmpty()){
-				/*if(vap_module_ds.contains(OperationDS.DS_Http_VapModuleCMD_Start)){
-					vap_module_ds
-				}*/
-				String cmd = CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
-						CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0]));
-				if(StringUtils.isNotEmpty(cmd))
-					payloads.add(cmd);
-			}
+			//取消老的增值指令下发数据 20151023
+			//if(vap_module_ds != null && !vap_module_ds.isEmpty()){
+			//	String cmd = CMDBuilder.autoBuilderVapCMD4Opt(OperationCMD.ModifyDeviceSetting,vap_module_ds.toArray(new OperationDS[0]),mac,
+			//			CMDBuilder.auto_taskid_fragment.getNextSequence(),vap_module_ds_extparams.toArray(new String[0]));/
+			//	if(StringUtils.isNotEmpty(cmd))
+			//		payloads.add(cmd);
+			//}
 			return payloads;
 		}finally{
 			if(vap_module_ds != null){
@@ -939,14 +1210,14 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 				vap_module_ds_extparams = null;
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * 获取持久化指令中除vapmodule支持的增值指令的其他指令
 	 * @param mac
 	 * @return
 	 */
-	public List<String> fetchWifiDevicePersistenceExceptVapModuleCMD(String mac){
+/*	public List<String> fetchWifiDevicePersistenceExceptVapModuleCMD(String mac){
 		WifiDevicePersistenceCMDState cmdState = wifiDevicePersistenceCMDStateService.getById(mac);
 		if(cmdState == null || cmdState.getExtension().isEmpty()) return null;
 		List<String> payloads = null;
@@ -967,12 +1238,12 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 						case DS_Http_Ad_Start:
 							sb_setting_inner.append(DeviceHelper.builderDSHttpAdStartFragmentOuter(dto.getExtparams()));
 							break;	
-						/*case DS_Http_404_Start:
+						case DS_Http_404_Start:
 							sb_setting_inner.append(DeviceHelper.builderDSHttp404StartFragmentOuter(dto.getExtparams()));
 							break;	
 						case DS_Http_Redirect_Start:
 							sb_setting_inner.append(DeviceHelper.builderDSHttpRedirectStartFragmentOuter(dto.getExtparams()));
-							break;*/	
+							break;	
 						default:
 							break;
 					}
@@ -996,7 +1267,7 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 			return payloads;
 		}finally{
 		}
-	}
+	}*/
 	
 	
 /*	public List<String> fetchWifiDevicePersistenceCMD4VapModuleSupportedDevice(String mac,boolean ignoreVapModule){
@@ -1195,5 +1466,4 @@ public class DeviceFacadeService implements IGenerateDeviceSetting{
 
 	}*/
 
-	
 }

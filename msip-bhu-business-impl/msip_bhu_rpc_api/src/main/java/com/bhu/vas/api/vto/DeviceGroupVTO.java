@@ -1,9 +1,9 @@
 package com.bhu.vas.api.vto;
 
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 @SuppressWarnings("serial")
 public class DeviceGroupVTO implements java.io.Serializable{
+	
 	private long gid;
 
 	private long pid;
@@ -13,12 +13,15 @@ public class DeviceGroupVTO implements java.io.Serializable{
 	private String pname;
 	
 	private String path;
+	
+	private boolean parent;
+	
+	//private int children;
 
-	private int children;
+	//private boolean isParent;
+	//private int device_count;
 
-	private int device_count;
-
-	private TailPage<WifiDeviceVTO> page_devices;
+	//private TailPage<WifiDeviceVTO> page_devices;
 
 	public long getGid() {
 		return gid;
@@ -26,14 +29,6 @@ public class DeviceGroupVTO implements java.io.Serializable{
 
 	public void setGid(long gid) {
 		this.gid = gid;
-	}
-
-	public long getPid() {
-		return pid;
-	}
-
-	public void setPid(long pid) {
-		this.pid = pid;
 	}
 
 	public String getName() {
@@ -60,27 +55,72 @@ public class DeviceGroupVTO implements java.io.Serializable{
 		this.path = path;
 	}
 
-	public int getDevice_count() {
+	/*public int getDevice_count() {
 		return device_count;
 	}
 
 	public void setDevice_count(int device_count) {
 		this.device_count = device_count;
-	}
+	}*/
 
-	public int getChildren() {
+/*	public int getChildren() {
 		return children;
 	}
 
 	public void setChildren(int children) {
 		this.children = children;
+	}*/
+
+	/*public long getpId() {
+		return pId;
 	}
 
-	public TailPage<WifiDeviceVTO> getPage_devices() {
+	public void setpId(long pId) {
+		this.pId = pId;
+	}*/
+
+	public long getPid() {
+		return pid;
+	}
+
+	public void setPid(long pid) {
+		this.pid = pid;
+	}
+
+	public boolean isParent() {
+		return parent;
+	}
+
+	public void setParent(boolean parent) {
+		this.parent = parent;
+	}
+
+	/*public boolean isParent() {
+		return children>0;
+	}*/
+
+	/*public void setParent(boolean isParent) {
+		this.isParent = isParent;
+	}*/
+
+	/*public boolean isIsparent() {
+		return children>0;
+	}
+
+	public boolean isParent() {
+		return isParent;
+	}
+
+	public void setParent(boolean isParent) {
+		this.isParent = isParent;
+	}*/
+	
+
+	/*public TailPage<WifiDeviceVTO> getPage_devices() {
 		return page_devices;
 	}
 
 	public void setPage_devices(TailPage<WifiDeviceVTO> page_devices) {
 		this.page_devices = page_devices;
-	}
+	}*/
 }

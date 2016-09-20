@@ -9,29 +9,27 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bhu.vas.api.rpc.user.model.UserToken;
 import com.bhu.vas.business.ds.user.dao.UserTokenDao;
 import com.bhu.vas.exception.TokenValidateBusinessException;
+import com.smartwork.msip.business.token.ITokenService;
+import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.business.token.service.TokenServiceHelper;
 import com.smartwork.msip.cores.orm.service.EntityService;
 
 @Service
 @Transactional("coreTransactionManager")
-public class UserTokenService extends EntityService<Integer,UserToken, UserTokenDao>{
+public class UserTokenService extends EntityService<Integer,UserToken, UserTokenDao> implements ITokenService{
 	@Resource
 	@Override
 	public void setEntityDao(UserTokenDao userTokenDao) {
 		super.setEntityDao(userTokenDao);
 	}
-	public static final int Access_Token_Matched = 1;
-	public static final int Access_Token_Illegal_Format= 2;
-	public static final int Access_Token_Expired = 3;
-	public static final int Access_Token_NotExist = 4;
-	public static final int Access_Token_NotMatch = 5;
 	
 	/**
 	 * 
 	 * @param uid
 	 * @param ifExistThenGenerated 已经存在是否替换新的
 	 */
-	public UserToken generateUserAccessToken(Integer uid,boolean ifExpiredThenReplaced,boolean ifExistThenReplaced){
+	@Override
+	public UserTokenDTO generateUserAccessToken(Integer uid,boolean ifExpiredThenReplaced,boolean ifExistThenReplaced){
 		if(uid == null || uid.intValue() ==0) return null;
 		UserToken userToken = this.getById(uid);
 		if(userToken == null){
@@ -51,29 +49,39 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 				}
 			}
 		}
-		return userToken;
+		return userToken.toUserTokenDTO();
 	}
-	
-	public UserToken validateUserAccessToken(String accessToken){
-		try{
+	@Override
+	public UserTokenDTO validateUserAccessToken(String accessToken){
+		//try{
+			//System.out.println("validateUserAccessToken a accessToken:"+accessToken);
 			if(StringUtils.isEmpty(accessToken)) throw new TokenValidateBusinessException(Access_Token_Illegal_Format);//return Access_Token_Illegal_Format;
 			if(TokenServiceHelper.isNotExpiredAccessToken4User(accessToken)){
+				//System.out.println("validateUserAccessToken b accessToken:"+accessToken);
 				Integer uid = TokenServiceHelper.parserAccessToken4User(accessToken);
-				UserToken userToken = this.getById(uid);
-				if(userToken == null) throw new TokenValidateBusinessException(Access_Token_NotExist);
-				if(accessToken.equals(userToken.getAccess_token())){
-					return userToken;//Access_Token_Matched;
+				//System.out.println("validateUserAccessToken c uid:"+uid);
+				if(uid == null || uid.intValue() <=0){
+					throw new TokenValidateBusinessException(Access_Token_Illegal_Format);
 				}
-				else throw new TokenValidateBusinessException(Access_Token_NotMatch);
+				//System.out.println("validateUserAccessToken d uid:"+uid);
+				UserToken userToken = this.getById(uid);
+				if(userToken == null) throw new TokenValidateBusinessException(uid,Access_Token_NotExist);
+				//System.out.println("validateUserAccessToken e userToken:"+userToken.getAccess_token());
+				if(accessToken.equals(userToken.getAccess_token())){
+					return userToken.toUserTokenDTO();//Access_Token_Matched;
+				}
+				else throw new TokenValidateBusinessException(uid,Access_Token_NotMatch);
 			}else{
 				throw new TokenValidateBusinessException(Access_Token_Expired);
 			}
-		}catch(Exception ex){
+		/*}catch(Exception ex){
+			System.out.println("validateUserAccessToken f accessToken:"+accessToken);
+			ex.printStackTrace(System.out);
 			throw new TokenValidateBusinessException(Access_Token_Illegal_Format);
-		}
+		}*/
 	}
-	
-	public UserToken doRefreshUserAccessToken(String refreshToken){
+	@Override
+	public UserTokenDTO doRefreshUserAccessToken(String refreshToken){
 		try{
 			if(StringUtils.isEmpty(refreshToken)) return null;
 			Integer uid = TokenServiceHelper.parserRefreshToken4User(refreshToken);
@@ -82,9 +90,8 @@ public class UserTokenService extends EntityService<Integer,UserToken, UserToken
 			if(refreshToken.equals(userToken.getRefresh_token())){
 				userToken.doTokenRefresh();
 				this.update(userToken);
-			}
-			else return null;
-			return userToken;
+			}else return null;
+			return userToken.toUserTokenDTO();
 		}catch(Exception ex){
 			//throw new RuntimeException("refreshToken exception");
 			return null;

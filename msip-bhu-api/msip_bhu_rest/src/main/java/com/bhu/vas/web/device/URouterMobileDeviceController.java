@@ -53,12 +53,12 @@ public class URouterMobileDeviceController extends BaseController{
 //			@RequestParam(required = false,defaultValue = "") String dn,
 //			@RequestParam(required = false,defaultValue = "") String duuid
 			){
-		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterUserMobileDeviceRegister(uid, device,
+		RpcResponseDTO<Boolean> rpcResult = deviceURouterRestRpcService.urouterUserMobileDeviceRegister(uid, device,
 				dt, dm, cv, pv, ut, pt);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	
@@ -76,12 +76,12 @@ public class URouterMobileDeviceController extends BaseController{
 			@RequestParam(required = false, value="d",defaultValue="R") String device,
 			@RequestParam(required = true) String dt){
 		
-		RpcResponseDTO<Boolean> rpcResponse = deviceURouterRestRpcService.urouterUserMobileDeviceDestory(uid, 
+		RpcResponseDTO<Boolean> rpcResult = deviceURouterRestRpcService.urouterUserMobileDeviceDestory(uid, 
 				device, dt);
-		if(rpcResponse.getErrorCode() == null){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()));
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse.getErrorCode()));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
 	

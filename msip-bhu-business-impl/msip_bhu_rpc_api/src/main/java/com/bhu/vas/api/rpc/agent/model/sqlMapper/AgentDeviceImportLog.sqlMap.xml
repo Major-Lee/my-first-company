@@ -7,7 +7,13 @@
   <resultMap id="modelResult" type="agentDeviceImportLog">
     <id property="id" column="id"/>
 	  <result property="aid" column="aid"/>
-	  <result property="count" column="count"/>
+	  <result property="sid" column="sid"/>
+	  <result property="bid" column="bid"/>
+	  <result property="success_count" column="success_count"/>
+	  <result property="fail_count" column="fail_count"/>
+	  <result property="status" column="status"/>
+	  <result property="remark" column="remark"/>
+	  <result property="content" column="content"/>
 	  <result property="created_at" column="created_at"/>
 	  <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -21,7 +27,13 @@
 	    <![CDATA[
 	    	id,
 	    	aid,
-	    	count,
+	    	sid,
+	    	bid,
+	    	success_count,
+	    	fail_count,
+	    	status,
+	    	remark,
+	    	content,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -29,7 +41,13 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	aid,
-	    	count,
+	    	sid,
+	    	bid,
+	    	success_count,
+	    	fail_count,
+	    	status,
+	    	remark,
+	    	content,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -38,14 +56,26 @@
 	<sql id="modelInsertValues">
 			#{id},
 			#{aid},
-			#{count},
+			#{sid},
+			#{bid},
+			#{success_count},
+			#{fail_count},
+			#{status},
+			#{remark},
+			#{content},
 			#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
 	    	aid = #{aid},
-	    	count = #{count},
+	    	sid = #{sid},
+	    	bid = #{bid},
+	    	success_count = #{success_count},
+	    	fail_count = #{fail_count},
+	    	status = #{status},
+	    	remark = #{remark},
+	    	content = #{content},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
@@ -97,7 +127,7 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	

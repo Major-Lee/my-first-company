@@ -4,6 +4,7 @@ import com.bhu.vas.business.asyn.spring.builder.ActionMessageType;
 
 public class WifiDeviceSettingQueryDTO extends WifiCmdsNotifyDTO {
 
+	private boolean deviceURouter;
 	private int refresh_status;
 	
 	public int getRefresh_status() {
@@ -12,6 +13,14 @@ public class WifiDeviceSettingQueryDTO extends WifiCmdsNotifyDTO {
 
 	public void setRefresh_status(int refresh_status) {
 		this.refresh_status = refresh_status;
+	}
+
+	public boolean isDeviceURouter() {
+		return deviceURouter;
+	}
+
+	public void setDeviceURouter(boolean deviceURouter) {
+		this.deviceURouter = deviceURouter;
 	}
 
 	@Override

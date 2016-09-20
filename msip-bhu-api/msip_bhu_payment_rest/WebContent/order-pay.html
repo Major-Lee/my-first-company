@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+
+<meta name="format-detection" content="telephone=no" />
+
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript" src="http://static.jdguanjia.com/js/jquery.min.js"></script>
+<title></title>
+<style type="text/css">
+	.block{
+	width: 68%;
+		margin: 20px auto;
+		padding: 0.5em 1em;
+		font-size: 4em;
+		text-align: center;
+		background-color: #3875d7;
+		color: #FFFFFF;
+			}
+			.WeixinImg{
+				position: fixed;
+				top: 0px;
+				display: none;
+			}
+    body { 
+        background: #fff;
+    }
+</style>
+</head>
+
+<body>
+	<div class="wap-box">
+		<div class="wap-box-display">
+			<!--标题-->
+			<div class="wap-title wap-bor">
+				<i onclick="history.go(-1)"></i>订单支付 
+			</div>
+			<!--设置列表-->
+            <div class="wap-pay">
+                <section>
+                    <div class="mypad">
+                        请支付：<font id="totalprice"></font>
+                    </div>
+                </section>
+                <h3><div class="mypad">选择支付方式</div></h3>
+                <div id="Hee2" class="Hee2 block">uPays-汇元宝</div>
+				<div id="WapAlipay2" class="WapAlipay2 block">uPays-手机支付宝</div>
+				<div id="PcWeixin2" class="PcWeixin2 block">uPays-微信支付</div>
+				<div id="PcAlipay2" class="PcAlipay2 block">uPays-支付宝支付</div>
+				<div id="weixin2" class="weixin2 block">uPays-微信提现</div>
+				<div class="WeixinImg"><img src=" "/></div>
+            </div>
+	</div>
+			<div class="wap-box">
+			    <div class="wap-display">
+				<div class="pay-zf">
+				</div>
+			</div>
+			</div>
+		</div>
+<script>
+
+
+</script>
+<script type='text/javascript'> 
+		
+		
+        $('#Hee2').click(function(){
+           var goods_no = Date.parse(new Date());
+           var datas = 'payment_type=Midas&total_fee=0.50&goods_no='+goods_no;
+           $.ajax({
+               url:'http://upays.bhuwifi.com/api/ucloud/pay',
+               //url:'http://localhost:8080/pay',
+               type:'post',
+               async: false,
+               data: datas,
+               success:function(json){
+                   console.log(json.result);
+                   
+                    if(json.success){
+                        location.href = json.result.url;
+                    }else{
+                        alert(json.msg);
+                    }
+               }
+           });
+       });
+
+        $('#PcWeixin2').click(function(){
+            var goods_no = Date.parse(new Date());
+            var datas = 'payment_type=PcWeixin&total_fee=0.01&goods_no='+goods_no;
+           $.ajax({
+               url:'http://upays.bhuwifi.com/api/ucloud/pay',
+                type:'post',
+                async: false,
+                data: datas,
+                success:function(json){
+                    if(json.success){
+                        console.log(json.result);
+                        
+                        $('.WeixinImg').find('img').eq(0).attr('src',json.result.url);
+                        $('.WeixinImg').show();
+                    }else{
+                        alert(json.msg);
+                    }
+                }
+            });
+        });
+
+        $('#PcAlipay2').click(function(){
+            var goods_no = Date.parse(new Date());
+            var datas = 'payment_type=PcAlipay&total_fee=0.01&goods_no='+goods_no;
+           $.ajax({
+               url:'http://upays.bhuwifi.com/api/ucloud/pay',
+                type:'post',
+                async: false,
+                data: datas,
+                success:function(json){
+                    if(json.success){
+                        console.log(json.result);
+                        
+                        location.href = json.result.url;
+                    }else{
+                        alert(json.msg);
+                    }
+                }
+            });
+        });
+
+        $('#WapAlipay2').click(function(){
+            var goods_no = Date.parse(new Date());
+            var datas = 'payment_type=WapAlipay&total_fee=0.01&goods_no='+goods_no;
+           $.ajax({
+               url:'http://upays.bhuwifi.com/api/ucloud/pay',
+                type:'post',
+                async: false,
+                data: datas,
+                success:function(json){
+                    if(json.success){
+                        console.log(json.result);
+                        
+                        location.href = json.result.url;
+                    }else{
+                        alert(json.msg);
+                    }
+                }
+            });
+        });
+
+        $('#weixin2').click(function(){
+            var goods_no = Date.parse(new Date());
+             var datas = 'withdraw_type=weixin&total_fee=0.50&withdraw_no='+goods_no;
+            $.ajax({
+                url:'http://upays.bhuwifi.com/api/ucloud/withdraw',
+                type:'post',
+                async: false,
+                data: datas,
+                success:function(json){
+                    if(json.success){
+                        console.log(json);
+                    }else{
+                        alert(json.msg);
+                    }
+                }
+            });
+        });
+
+</script>
+
+</body>
+</html>

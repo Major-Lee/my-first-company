@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+    default-lazy-init="true">
+	<!-- Core数据源定义,使用Apache DBCP 连接池 -->
+	<bean id="dataSourceCommdityMaster" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" 	value="${commdity.jdbc.master.driverClassName}"/>
+		<property name="url" 				value="${commdity.jdbc.master.url}"/>
+		<property name="username" 			value="${commdity.jdbc.master.username}"/>
+		<property name="password" 			value="${commdity.jdbc.master.password}"/>
+		<property name="initialSize" 		value="${commdity.jdbc.master.pool.initialsize}"/>
+		<property name="maxActive" 			value="${commdity.jdbc.master.pool.maxactive}"/>
+		<property name="maxIdle" 			value="${commdity.jdbc.master.pool.maxidle}"/>
+		<property name="maxWait" 			value="10000"/>
+		<property name="testWhileIdle" 		value="true"/>
+		<property name="validationQuery" 	value="Select 1"/>
+	</bean>
+	
+	<bean id="dataSourceCommditySlaver" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" 	value="${commdity.jdbc.slaver.driverClassName}"/>
+		<property name="url" 				value="${commdity.jdbc.slaver.url}"/>
+		<property name="username" 			value="${commdity.jdbc.slaver.username}"/>
+		<property name="password" 			value="${commdity.jdbc.slaver.password}"/>
+		<property name="initialSize" 		value="${commdity.jdbc.slaver.pool.initialsize}"/>
+		<property name="maxActive" 			value="${commdity.jdbc.slaver.pool.maxactive}"/>
+		<property name="maxIdle" 			value="${commdity.jdbc.slaver.pool.maxidle}"/>
+		<property name="maxWait" 			value="10000"/>
+		<property name="testWhileIdle" 		value="true"/>
+		<property name="validationQuery" 	value="Select 1"/>
+	</bean>	
+
+    <bean id="sqlSessionCommdityMaster" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:myibatis/commdity-myibatis-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceCommdityMaster"/>
+        </property>    
+    </bean>
+	<!-- scope="prototype" just for mybatis 3.2.x  如果是mybatis3.1.x则不需要scope="prototype"-->
+    <bean id="sqlSessionTemplateCommdityMaster"     class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg index="0" ref="sqlSessionCommdityMaster" />
+    </bean> 
+
+    <bean id="sqlSessionCommditySlaver" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation">
+            <value> 
+                classpath:myibatis/commdity-myibatis-sql-map-config.xml
+            </value>
+        </property>
+        <property name="dataSource">
+            <ref bean="dataSourceCommditySlaver"/>
+        </property>    
+    </bean>
+	<!-- scope="prototype" just for mybatis 3.2.x  如果是mybatis3.1.x则不需要scope="prototype"-->
+    <bean id="sqlSessionTemplateCommditySlaver"     class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg index="0" ref="sqlSessionCommditySlaver" />
+    </bean> 
+ 
+	<bean id="commdityTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"><!-- org.springframework.transaction.jta.JtaTransactionManager"> -->
+		<property name="dataSource" ref="dataSourceCommdityMaster"/>
+	</bean>
+	
+</beans>

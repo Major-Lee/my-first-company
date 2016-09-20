@@ -1,78 +1,338 @@
 package com.bhu.vas.business.search.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.api.helper.DeviceHelper;
+import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.VapEnumType.DeviceUnitType;
+import com.bhu.vas.api.helper.VapEnumType.GrayLevel;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OScaleLevelEnum;
+import com.bhu.vas.api.rpc.agent.model.AgentDeviceClaim;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
+import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.bhu.vas.api.vto.WifiDeviceVTO;
-import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceGray;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
+import com.bhu.vas.api.rpc.tag.model.TagDevices;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 
 
 public class WifiDeviceDocumentHelper {
-	public static WifiDeviceDocument fromWifiDevice(WifiDevice wifiDevice,List<Long> groupids){
-		WifiDeviceDocument doc1 = new WifiDeviceDocument();
-		doc1.setId(wifiDevice.getId());
-		doc1.setSn(wifiDevice.getSn());
-		doc1.setAddress(wifiDevice.getFormatted_address());
-		doc1.setOnline(wifiDevice.isOnline()?Boolean.TRUE:Boolean.FALSE);
-		doc1.setModuleonline(wifiDevice.isModule_online()?Boolean.TRUE:Boolean.FALSE);
-		doc1.setConfigmodel(wifiDevice.getConfig_mode());
-		doc1.setWorkmodel(wifiDevice.getWork_mode());
-		doc1.setOrigswver(wifiDevice.getOrig_swver());
-		doc1.setOrigvapmodule(wifiDevice.getOrig_vap_module());
-		doc1.setDevicetype(wifiDevice.getHdtype());
-		doc1.setNvd(DeviceHelper.isNewOrigSwverDevice(wifiDevice.getOrig_swver()) ? 1 : 0);
-		if(StringUtils.isNotEmpty(wifiDevice.getLon()) && StringUtils.isNotEmpty(wifiDevice.getLat())){
-			doc1.setGeopoint(new double[]{Double.parseDouble(wifiDevice.getLon()),Double.parseDouble(wifiDevice.getLat())});
+//	public static WifiDeviceDocument fromWifiDevice(WifiDevice wifiDevice,WifiDeviceModule deviceModule,List<Long> groupids){
+//		WifiDeviceDocument doc1 = new WifiDeviceDocument();
+//		doc1.setId(wifiDevice.getId());
+//		doc1.setSn(wifiDevice.getSn());
+//		doc1.setAddress(wifiDevice.getFormatted_address());
+//		doc1.setOnline(wifiDevice.isOnline()?Boolean.TRUE:Boolean.FALSE);
+//		if(deviceModule != null){
+//			doc1.setModuleonline(deviceModule.isModule_online()?Boolean.TRUE:Boolean.FALSE);
+//			doc1.setOrigvapmodule(deviceModule.getOrig_vap_module());
+//		}else{
+//			doc1.setModuleonline(false);
+//			doc1.setOrigvapmodule(null);
+//		}
+//		
+//		doc1.setConfigmodel(wifiDevice.getConfig_mode());
+//		doc1.setWorkmodel(wifiDevice.getWork_mode());
+//		doc1.setOrigswver(wifiDevice.getOrig_swver());
+//		
+//		doc1.setDevicetype(wifiDevice.getHdtype());
+//		
+//		doc1.setNvd(DeviceHelper.isNewOrigSwverDevice(wifiDevice.getOrig_swver()) ? 1 : 0);
+//		if(StringUtils.isNotEmpty(wifiDevice.getLon()) && StringUtils.isNotEmpty(wifiDevice.getLat())){
+//			doc1.setGeopoint(new double[]{Double.parseDouble(wifiDevice.getLon()),Double.parseDouble(wifiDevice.getLat())});
+//		}
+//		if(groupids != null && !groupids.isEmpty())
+//			doc1.setGroups(ArrayHelper.toSplitString(groupids, StringHelper.WHITESPACE_STRING_GAP));
+//		doc1.setRegisteredat(wifiDevice.getCreated_at().getTime());
+//		doc1.setUpdatedat(DateTimeHelper.getDateTime());
+//		return doc1;
+//	}
+	
+	public static List<String> generateDocumentIds(List<WifiDeviceDocument> wifiDeviceDocuments){
+		if(wifiDeviceDocuments == null || wifiDeviceDocuments.isEmpty()) return Collections.emptyList();
+		
+		List<String> ids = new ArrayList<String>();
+		for(WifiDeviceDocument wifiDeviceDocument : wifiDeviceDocuments){
+			ids.add(wifiDeviceDocument.getId());
 		}
-		if(groupids != null && !groupids.isEmpty())
-			doc1.setGroups(ArrayHelper.toSplitString(groupids, StringHelper.WHITESPACE_STRING_GAP));
-		doc1.setRegisteredat(wifiDevice.getCreated_at().getTime());
-		doc1.setUpdatedat(DateTimeHelper.getDateTime());
-		return doc1;
+		return ids;
 	}
 	
-	
-	public static WifiDeviceVTO toWifiDeviceVTO(WifiDeviceDocument doc,WifiDevice wifiDevice){
-		WifiDeviceVTO vto = new WifiDeviceVTO();
-		if(doc != null){
-			vto.setWid(doc.getId());
-			vto.setOl(doc.getOnline()?1:0);
-			if(doc.getModuleonline() != null){
-				vto.setMol(doc.getModuleonline()?1:0);
-			}else{
-				vto.setMol(0);
-			}
-			vto.setCohc(doc.getCount());
-			vto.setAdr(doc.getAddress());
-			vto.setDt(doc.getDevicetype());
-			vto.setOsv(doc.getOrigswver());
-			vto.setOsm(doc.getOrigvapmodule());
-			vto.setGids(doc.getGroups());
-		}
+	/**
+	 * 创建上过线的设备的索引数据
+	 * @param wifiDevice
+	 * @param deviceModule
+	 * @param agentDeviceClaim
+	 * @param wifiDeviceGray
+	 * @param bindUser
+	 * @param bindUserDNick 用户绑定的设备的昵称
+	 * @param agentUser
+	 * @param tagDevices
+	 * @param o_template
+	 * @param hoc
+	 * @param wifiDeviceSharedNetwork
+	 * @param wifiDeviceShareConfig
+	 * @param t_uc_extension
+	 * @return
+	 */
+	public static WifiDeviceDocument fromNormalWifiDevice(WifiDevice wifiDevice, WifiDeviceModule deviceModule,
+			WifiDeviceGray wifiDeviceGray, User bindUser, String bindUserDNick, 
+			TagDevices tagDevices, String o_template, int hoc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork,
+			WifiDeviceSharedealConfigs wifiDeviceShareConfig, String t_uc_extension,User distributor){
+		if(wifiDevice == null) return null;
+		
+		WifiDeviceDocument doc = new WifiDeviceDocument();
 		if(wifiDevice != null){
-			vto.setOm(StringUtils.isEmpty(wifiDevice.getOem_model()) ? wifiDevice.getOrig_model() : wifiDevice.getOem_model());
-			vto.setWm(wifiDevice.getWork_mode());
-			vto.setCfm(wifiDevice.getConfig_mode());
-			vto.setRts(wifiDevice.getLast_reged_at().getTime());
-			vto.setCts(wifiDevice.getCreated_at().getTime());
-			vto.setOvd(StringUtils.isEmpty(wifiDevice.getOem_vendor()) ? wifiDevice.getOrig_vendor() : wifiDevice.getOem_vendor());
-			vto.setOesv(wifiDevice.getOem_swver());
-			vto.setDof(StringUtils.isEmpty(wifiDevice.getRx_bytes()) ? 0 : Long.parseLong(wifiDevice.getRx_bytes()));
-			vto.setUof(StringUtils.isEmpty(wifiDevice.getTx_bytes()) ? 0 : Long.parseLong(wifiDevice.getTx_bytes()));
-			vto.setIpgen(wifiDevice.isIpgen());
-			vto.setSn(wifiDevice.getSn());
-			//如果是离线 计算离线时间
-			if(vto.getOl() == 0){
-				long logout_ts = wifiDevice.getLast_logout_at().getTime();
-				vto.setOfts(logout_ts);
-				vto.setOftd(System.currentTimeMillis() - logout_ts);
+			doc.setId(wifiDevice.getId());
+			doc.setD_mac(wifiDevice.getId());
+			doc.setD_sn(wifiDevice.getSn());
+			doc.setD_origswver(wifiDevice.getOrig_swver());
+			doc.setD_origmodel(wifiDevice.getOrig_model());
+			doc.setD_workmodel(wifiDevice.getWork_mode());
+			doc.setD_configmodel(wifiDevice.getConfig_mode());
+			doc.setD_type(wifiDevice.getHdtype());
+			doc.setD_wanip(wifiDevice.getWan_ip());
+			doc.setD_industry(wifiDevice.getIndustry());
+			doc.setT_uc_extension(t_uc_extension);
+			if(StringUtils.isNotEmpty(wifiDevice.getLon()) && StringUtils.isNotEmpty(wifiDevice.getLat())){
+				doc.setD_geopoint(new double[]{Double.parseDouble(wifiDevice.getLon()), 
+						Double.parseDouble(wifiDevice.getLat())});
+			}
+			doc.setD_address(wifiDevice.getFormatted_address());
+			if(wifiDevice.getFirst_reged_at() == null){
+				doc.setD_online(WifiDeviceDocumentEnumType.OnlineEnum.NeverOnline.getType());
+			}else{
+				doc.setD_online(wifiDevice.isOnline() ? WifiDeviceDocumentEnumType.OnlineEnum.Online.getType()
+						: WifiDeviceDocumentEnumType.OnlineEnum.Offline.getType());
+			}
+
+			if(wifiDevice.getFirst_reged_at() != null){
+				doc.setD_firstregedat(wifiDevice.getFirst_reged_at().getTime());
+			}
+			if(wifiDevice.getLast_reged_at() != null){
+				doc.setD_lastregedat(wifiDevice.getLast_reged_at().getTime());
+			}
+			if(wifiDevice.getLast_logout_at() != null){
+				doc.setD_lastlogoutat(wifiDevice.getLast_logout_at().getTime());
+			}
+			if(wifiDevice.getCreated_at() != null){
+				doc.setD_createdat(wifiDevice.getCreated_at().getTime());
+			}
+			//增加省市区三个字段
+			doc.setD_province(wifiDevice.getProvince());
+			doc.setD_city(wifiDevice.getCity());
+			doc.setD_district(wifiDevice.getDistrict());
+			
+			DeviceVersion parser = DeviceVersion.parser(wifiDevice.getOrig_swver());
+			if(parser != null){
+				String st = parser.getSt();
+				doc.setD_dut(st);
+				doc.setD_mn(parser.getMn());
+				DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionElements(st, parser.getMn(), wifiDevice.getHdtype());
+				if(deviceUnitType != null){
+					doc.setD_type_sname(deviceUnitType.getSname());
+				}
+			}
+			/*if(DeviceUnitType.isSocHdType(wifiDevice.getHdtype())){
+				doc.setD_dut(DeviceVersion.DUT_soc);
+			}else if(DeviceUnitType.isURouterHdType(wifiDevice.getHdtype())){
+				doc.setD_dut(DeviceVersion.DUT_uRouter);
+			}else{
+				doc.setD_dut(DeviceVersion.DUT_CWifi);
+			}*/
+			if(!StringUtils.isEmpty(wifiDevice.getUptime())){
+				doc.setD_uptime(wifiDevice.getUptime());
+			}
+			doc.setD_channel_lv1(wifiDevice.getChannel_lv1());
+			doc.setD_channel_lv2(wifiDevice.getChannel_lv2());
+		}
+
+		if(deviceModule != null){
+			String orig_vap_module = deviceModule.getOrig_vap_module();
+			if(!StringUtils.isEmpty(orig_vap_module)){
+				doc.setD_origvapmodule(orig_vap_module);
+				doc.setO_operate(WifiDeviceDocumentEnumType.OperateEnum.Operate.getType());
+			}
+			doc.setD_monline(deviceModule.isModule_online() ? WifiDeviceDocumentEnumType.MOnlineEnum.MOnline.getType() 
+					: WifiDeviceDocumentEnumType.MOnlineEnum.MOffline.getType());
+		}
+		
+/*		if(agentDeviceClaim != null){
+			if(agentDeviceClaim.getImport_id() > 0){
+				doc.setO_batch(String.valueOf(agentDeviceClaim.getImport_id()));
+			}
+		}*/
+		
+		if(wifiDeviceGray != null){
+			doc.setO_graylevel(String.valueOf(wifiDeviceGray.getGl()));
+		}else{
+			doc.setO_graylevel(String.valueOf(GrayLevel.Other.getIndex()));
+		}
+		doc.setO_template(o_template);
+		if(bindUser != null){
+			doc.setU_binded(WifiDeviceDocumentEnumType.UBindedEnum.UBinded.getType());
+			doc.setU_id(String.valueOf(bindUser.getId()));
+			doc.setU_nick(bindUser.getNick());
+			doc.setU_mno(bindUser.getMobileno());
+			doc.setU_mcc(String.valueOf(bindUser.getCountrycode()));
+			doc.setU_type(String.valueOf(bindUser.getUtype()));
+			doc.setU_dnick(bindUserDNick);
+		}
+/*		
+		if(agentUser != null){
+			doc.setA_id(String.valueOf(agentUser.getId()));
+			doc.setA_nick(agentUser.getNick());
+			doc.setA_org(agentUser.getOrg());
+		}*/
+		doc.setD_hoc(hoc);
+		
+		String d_snk_turnstate = WifiDeviceDocumentEnumType.SnkTurnStateEnum.Off.getType();
+		if(wifiDeviceSharedNetwork != null){
+/*			String sharedNetwork_type = wifiDeviceSharedNetwork.getSharednetwork_type();
+			if(StringUtils.isNotEmpty(sharedNetwork_type)){
+				doc.setD_snk_type(sharedNetwork_type);
+			}*/
+			doc.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
+			doc.setD_snk_template(wifiDeviceSharedNetwork.getTemplate());
+			SharedNetworkSettingDTO sharedNetworkSettingDto = wifiDeviceSharedNetwork.getInnerModel();
+			if(sharedNetworkSettingDto != null){
+				if(sharedNetworkSettingDto.isOn()){
+					d_snk_turnstate = WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType();
+				}
+			}
+			//doc.setD_snk_turnstate(d_snk_turnstate);
+		}
+		doc.setD_snk_turnstate(d_snk_turnstate);
+		
+		doc.setO_scalelevel(OScaleLevelEnum.NORMAL.getType());
+		if(wifiDeviceShareConfig != null){
+			if(wifiDeviceShareConfig.isEnterpriselevel()){
+				doc.setO_scalelevel(OScaleLevelEnum.ENTERPRISE.getType());
+			}
+			doc.setD_snk_allowturnoff(wifiDeviceShareConfig.isCanbe_turnoff() ? "1" : "0");
+			doc.setO_batch(wifiDeviceShareConfig.getBatchno());
+		}else{
+			doc.setD_snk_allowturnoff("1");
+		}
+		if(tagDevices != null){
+			doc.setD_tags(tagDevices.getTag2ES());
+		}
+		doc.setUpdatedat(DateTimeHelper.getDateTime());
+		
+		if (distributor != null) {
+			doc.setA_id(distributor.getMobileno());
+		}
+		return doc;
+	}
+	
+	/**
+	 * 构建扩展字段的设备doc
+	 * @param doc
+	 * @param wifiDeviceSharedNetwork 设备共享网络实体
+	 * @return
+	 */
+/*	public static WifiDeviceDocument fromExtension(WifiDeviceDocument doc, WifiDeviceSharedNetwork wifiDeviceSharedNetwork){
+		if(doc == null) return null;
+		
+		String sharedNetworkExtension =  WifiDeviceExtensionBuilder.builderSharedNetworkExtension(wifiDeviceSharedNetwork);
+		*//**
+		 * 当扩展属性是多个的时候 再加入
+		 * String d_extension = WifiDeviceExtensionBuilder.generateExtensionString(sharedNetworkExtension);
+		 *//*
+		String d_extension = sharedNetworkExtension;
+		doc.setD_extension(d_extension);
+		return doc;
+	}*/
+	
+	/**
+	 * 创建在导入的确认的设备数据
+	 * @param agentDeviceClaim
+	 * @return
+	 */
+	@Deprecated
+	public static WifiDeviceDocument fromClaimWifiDevice(AgentDeviceClaim agentDeviceClaim){
+		if(agentDeviceClaim == null) return null;
+		
+		WifiDeviceDocument doc = new WifiDeviceDocument();
+		if(agentDeviceClaim != null){
+			doc.setId(agentDeviceClaim.getMac());
+			doc.setD_mac(agentDeviceClaim.getMac());
+			doc.setD_sn(agentDeviceClaim.getId());
+			//doc.setD_type(agentDeviceClaim.getHdtype());
+			doc.setD_online(WifiDeviceDocumentEnumType.OnlineEnum.NeverOnline.getType());
+			doc.setD_monline(WifiDeviceDocumentEnumType.MOnlineEnum.MNeverOnline.getType());
+			
+			String[] parserHdtypes = VapEnumType.DeviceUnitType.parserIndex(agentDeviceClaim.getHdtype());
+			if(parserHdtypes != null && parserHdtypes.length == 3){
+				String st = parserHdtypes[0];
+				String mn = parserHdtypes[1];
+				String hdtype = parserHdtypes[2];
+				if(!StringUtils.isEmpty(hdtype)){
+					doc.setD_type(hdtype);
+					DeviceUnitType deviceUnitType = VapEnumType.DeviceUnitType.fromVersionElements(st,  mn,  hdtype);
+					if(deviceUnitType != null){
+						doc.setD_type_sname(deviceUnitType.getSname());
+					}
+				}
+			}
+			
+			if(agentDeviceClaim.getSold_at() != null){
+				doc.setD_createdat(agentDeviceClaim.getSold_at().getTime());
+			}
+			
+			if(agentDeviceClaim.getImport_id() > 0){
+				doc.setO_batch(String.valueOf(agentDeviceClaim.getImport_id()));
 			}
 		}
-		return vto;
+		doc.setD_hoc(0);
+		doc.setUpdatedat(DateTimeHelper.getDateTime());
+		return doc;
 	}
+	
+//	public static WifiDeviceVTO toWifiDeviceVTO(WifiDeviceDocument doc,WifiDevice wifiDevice){
+//		WifiDeviceVTO vto = new WifiDeviceVTO();
+//		if(doc != null){
+//			vto.setWid(doc.getId());
+//			vto.setOl(doc.getOnline()?1:0);
+//			if(doc.getModuleonline() != null){
+//				vto.setMol(doc.getModuleonline()?1:0);
+//			}else{
+//				vto.setMol(0);
+//			}
+//			vto.setCohc(doc.getCount());
+//			vto.setAdr(doc.getAddress());
+//			vto.setDt(doc.getDevicetype());
+//			vto.setOsv(doc.getOrigswver());
+//			vto.setOsm(doc.getOrigvapmodule());
+//			vto.setGids(doc.getGroups());
+//		}
+//		if(wifiDevice != null){
+//			vto.setOm(StringUtils.isEmpty(wifiDevice.getOem_model()) ? wifiDevice.getOrig_model() : wifiDevice.getOem_model());
+//			vto.setWm(wifiDevice.getWork_mode());
+//			vto.setCfm(wifiDevice.getConfig_mode());
+//			vto.setRts(wifiDevice.getLast_reged_at().getTime());
+//			vto.setCts(wifiDevice.getCreated_at().getTime());
+//			vto.setOvd(StringUtils.isEmpty(wifiDevice.getOem_vendor()) ? wifiDevice.getOrig_vendor() : wifiDevice.getOem_vendor());
+//			vto.setOesv(wifiDevice.getOem_swver());
+//			vto.setDof(StringUtils.isEmpty(wifiDevice.getRx_bytes()) ? 0 : Long.parseLong(wifiDevice.getRx_bytes()));
+//			vto.setUof(StringUtils.isEmpty(wifiDevice.getTx_bytes()) ? 0 : Long.parseLong(wifiDevice.getTx_bytes()));
+//			vto.setIpgen(wifiDevice.isIpgen());
+//			vto.setSn(wifiDevice.getSn());
+//			//如果是离线 计算离线时间
+//			if(vto.getOl() == 0){
+//				long logout_ts = wifiDevice.getLast_logout_at().getTime();
+//				vto.setOfts(logout_ts);
+//				vto.setOftd(System.currentTimeMillis() - logout_ts);
+//			}
+//		}
+//		return vto;
+//	}
 }

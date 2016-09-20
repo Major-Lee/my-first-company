@@ -5,7 +5,9 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class I18nTest {
@@ -14,6 +16,12 @@ public class I18nTest {
 		WifiDeviceService wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
 		DeviceFacadeService deviceFacadeService = (DeviceFacadeService)ctx.getBean("deviceFacadeService");
 		
+		
+		
+		
+		String jsonString = JsonHelper.getJSONString(
+				ResponseError.embed(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL, new String[]{"a","b"}));
+		System.out.println(jsonString);
 		
 		throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		//throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_TOO_HIGH);

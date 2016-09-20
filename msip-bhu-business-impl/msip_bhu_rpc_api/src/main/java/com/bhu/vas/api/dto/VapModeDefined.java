@@ -1,23 +1,108 @@
 package com.bhu.vas.api.dto;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.util.StringUtils;
 
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 public class VapModeDefined {
 	
-	private static final String Vap_Supported_Work_Mode1 = "router-ap";
+	/*private static final String Vap_Supported_Work_Mode1 = "router-ap";
 	private static final String Vap_Supported_Work_Mode2 = "wwan_router-ap";
 	private static final String Vap_Supported_Work_Mode3 = "bridge-ap";
 	
 	public static boolean supported(String device_workmode){
 		return Vap_Supported_Work_Mode1.equals(device_workmode) 
 				|| Vap_Supported_Work_Mode2.equals(device_workmode) || Vap_Supported_Work_Mode3.equals(device_workmode);
+	}*/
+
+	public enum VapModeType {
+		Http404(1, "http404", "http404增值模块"),
+		Redirect(2, "redirect", "重定向"),
+		Brand(3, "brand", "品牌展示"),
+		Channel(4, "channel", "渠道号");
+
+		private int type;
+		private String style;
+		private String desc;
+
+		VapModeType(int type, String style, String desc) {
+			this.type = type;
+			this.style = style;
+			this.desc = desc;
+		}
+
+		public int getType() {
+			return type;
+		}
+
+		public void setType(int type) {
+			this.type = type;
+		}
+
+		public String getStyle() {
+			return style;
+		}
+
+		public void setStyle(String style) {
+			this.style = style;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+
+		public static VapModeType getDescByType(int type) {
+			if (Http404.getType() == type) {
+				return Http404;
+			} else if (Redirect.getType() == type) {
+				return Redirect;
+			} else if (Brand.getType() == type) {
+				return Brand;
+			} else if (Channel.getType() == type) {
+				return Channel;
+			} else {
+				return null;
+			}
+		}
+
+		public static VapModeType getDescByStyle(String style) {
+			if (style.equals(Http404.getStyle())) {
+				return Http404;
+			} else if (style.equals(Redirect.getStyle())){
+				return Redirect;
+			} else if (style.equals(Brand.getStyle())) {
+				return Brand;
+			} else if (style.equals(Channel.getStyle())) {
+				return Channel;
+			} else {
+				return null;
+			}
+		}
+
+
+		public static List<VapModeType> getAllModeType() {
+			List<VapModeType> list = new ArrayList<>();
+			list.add(Http404);
+			list.add(Redirect);
+			list.add(Brand);
+			list.add(Channel);
+			return list;
+		}
+
 	}
+
+
+
 	
 	//<img src="http://192.168.66.7/vap/ad/001/js/../images/hot_1.png" alt="Hot">
 	//private final static String url_prefix = "http://vap.bhunetworks.com/vap/";
@@ -47,9 +132,9 @@ public class VapModeDefined {
 
 	public enum HtmlInjectAdv{
 		STYLE000("style000","00.00.01","1000000","http://auth.wi2o.cn/ad/ad.js"),
-		STYLE001("style001","00.00.01","1000001",RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/001/js/ad.js")),
-		STYLE002("style002","00.00.01","1000002",RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/002/js/ad.js")),
-		STYLE003("style003","00.00.01","1000003",RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/003/js/ad.js")),
+		STYLE001("style001","00.00.01","1000001",BusinessRuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/001/js/ad.js")),
+		STYLE002("style002","00.00.01","1000002",BusinessRuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/002/js/ad.js")),
+		STYLE003("style003","00.00.01","1000003",BusinessRuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("ad/003/js/ad.js")),
 		;
 		//private String index;
 		private String style;
@@ -184,9 +269,9 @@ public class VapModeDefined {
 	 */
 	public enum HtmlInject404{
 		STYLE000("style000","00.00.01","404,500",
-				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10001")),
+				BusinessRuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10001")),
 		STYLE001("style001","00.00.03","40*,50*,10*",
-				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10002")),
+				BusinessRuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10002")),
 				
 		/*STYLE002("style002","00.00.03","40*,50*,10*",
 				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("rw404?bid=10002")),
@@ -316,13 +401,13 @@ public class VapModeDefined {
 	 */
 	public enum HtmlPortal{
 		STYLE000("style000","00.00.01",
-				RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/urlportal"),
+				BusinessRuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/urlportal"),
 				"192.168.66.7,bhunetworks.com",
-				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("portal/rawfiles/style001.tar.gz")),
+				BusinessRuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("portal/rawfiles/style001.tar.gz")),
 		STYLE001("style001","00.00.02",
-				RuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/urlportal"),
+				BusinessRuntimeConfiguration.Vap_Http_Api_UrlPrefix.concat("v1/noauth/vap/urlportal"),
 				"192.168.66.7,bhunetworks.com",
-				RuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("portal/rawfiles/style001.tar.gz")),
+				BusinessRuntimeConfiguration.Vap_Http_Res_UrlPrefix.concat("portal/rawfiles/style001.tar.gz")),
 		;
 		
 		private String style;
@@ -524,6 +609,9 @@ public class VapModeDefined {
 				return HtmlRedirect.STYLE000;
 		}
 	}
+
+
+
 	
 	
 	public static void main(String[] argv){

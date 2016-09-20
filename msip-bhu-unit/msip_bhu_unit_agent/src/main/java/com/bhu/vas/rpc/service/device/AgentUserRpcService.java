@@ -24,6 +24,7 @@ public class AgentUserRpcService implements IAgentUserRpcService {
 	public RpcResponseDTO<Map<String, Object>> createNewUser(int countrycode, String acc,
 			String pwd, String nick, String sex,
 			String org,
+			String bln,
 			String addr1,
 			String addr2,
 			String memo,
@@ -32,6 +33,7 @@ public class AgentUserRpcService implements IAgentUserRpcService {
 				countrycode,acc,pwd,nick,sex,device));
 		return agentUserUnitFacadeService.createNewUser(countrycode, acc,pwd, nick, sex,
 				org,
+				bln,
 				addr1,
 				addr2,
 				memo,
@@ -59,10 +61,10 @@ public class AgentUserRpcService implements IAgentUserRpcService {
 
 	@Override
 	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode,
-			String acc, String pwd, String device, String remoteIp) {
-		logger.info(String.format("userLogin with countrycode[%s] acc[%s] pwd[%s] device[%s] remoteIp[%s]",
-				countrycode,acc,pwd,device,remoteIp));
-		return agentUserUnitFacadeService.userLogin(countrycode, acc, pwd, device, remoteIp);
+			String acc, String pwd, String ut, String device, String remoteIp) {
+		logger.info(String.format("userLogin with countrycode[%s] acc[%s] pwd[%s] utype[%s]device[%s] remoteIp[%s]",
+				countrycode,acc,pwd,ut,device,remoteIp));
+		return agentUserUnitFacadeService.userLogin(countrycode, acc, pwd,ut, device, remoteIp);
 	}
 
 	@Override
@@ -79,9 +81,9 @@ public class AgentUserRpcService implements IAgentUserRpcService {
 
 	@Override
 	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid,int tid, String nick,
-			String org, String addr1, String addr2, String memo) {
+			String org,String bln, String addr1, String addr2, String memo) {
 		logger.info(String.format("userModify with uid[%s] tid[%s] nick[%s] org[%s]",uid,tid,nick,org));
-		return agentUserUnitFacadeService.userModify(uid,tid, nick, org, addr1, addr2, memo);
+		return agentUserUnitFacadeService.userModify(uid,tid, nick, org,bln, addr1, addr2, memo);
 	}
 
 }

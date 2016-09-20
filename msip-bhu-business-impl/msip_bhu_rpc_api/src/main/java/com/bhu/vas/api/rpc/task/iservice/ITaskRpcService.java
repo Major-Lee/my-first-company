@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.task.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
+import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 
 
 public interface ITaskRpcService {
@@ -15,6 +16,7 @@ public interface ITaskRpcService {
 			String extparams,
 			String channel, 
 			String channel_taskid);
+	
 	public RpcResponseDTO<TaskResDTO> createNewTask(
 			Integer uid,
 			String mac,
@@ -25,11 +27,24 @@ public interface ITaskRpcService {
 			String channel,
 			String channel_taskid);
 	
+	public RpcResponseDTO<Boolean> createNewBatchTask(
+			String macs,
+			String opt,
+			String subopt,
+			String extparams,
+			String channel,
+			String channel_taskid);
 	
 	
 	public void taskStatusFetch(
 			long taskid
 			);
+	
+	public RpcResponseDTO<TaskResDetailDTO> taskStatusDetailFetch4ThirdParties(
+			Integer uid, 
+			String channel, 
+			String channel_taskid, 
+			Long taskid);
 	
 	public RpcResponseDTO<TaskResDTO> taskStatusFetch4ThirdParties(
 			Integer uid,

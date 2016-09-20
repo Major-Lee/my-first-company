@@ -1,0 +1,8 @@
+./startupbuilder_agentlog_import.sh 2015-10-17 /BHUData/bulogs/copylogs/%s/chargingsimulogs/ /BHUData/bulogs/copylogs/%s/charginglogs/
+
+#crontab -e
+# 5AM clock each day 执行每日设备日志导入，生成 设备每日、每月汇总及代理商每日每月汇总
+00 05 * * * /BHUData/apps/msip_bhu_dataimport/startupbuilder_agentlog_import_crontab.sh
+# 9AM clock at the first day of each month 每月1号执行 生成代理商每月结算记录
+#每月1号上午9点0分
+00 09 01 * * /BHUData/apps/msip_bhu_dataimport/startupbuilder_agent_selltement_gen_crontab.sh

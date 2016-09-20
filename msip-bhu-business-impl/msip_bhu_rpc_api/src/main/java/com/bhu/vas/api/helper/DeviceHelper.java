@@ -13,33 +13,34 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.ret.param.ParamVapAdDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
+import com.bhu.vas.api.dto.ret.param.ParamVasPluginDTO;
 import com.bhu.vas.api.dto.ret.setting.DeviceSettingBuilderDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAutoRebootDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingMMDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRateControlDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRf2in1DTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingSyskeyDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapAdDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpPortalDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.param.RateControlParamDTO;
+import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
-import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
-import com.smartwork.msip.localunit.RandomPicker;
 
 public class DeviceHelper {
 	
@@ -47,10 +48,14 @@ public class DeviceHelper {
 	public static final int Device_Peak_Section_Type_OnlyUpload = 2;//设备只测速上行
 	public static final int Device_Peak_Section_Type_All = 3;//设备上下行都进行测速
 	
+	public static final String[] NormalVapNames = new String[]{"wlan0","wlan10"};
+	
 	//获取配置数据正常
 	public static final int RefreashDeviceSetting_Normal = 0;
-	//获取配置数据序列号比当前小 认为是恢复出厂
+	//获取配置数据序列号比当前小 认为是恢复出厂 或者 通过配置中的 dev.sys.config boot_on_reset属性来判定
 	public static final int RefreashDeviceSetting_RestoreFactory = 1;
+	//设备首次上线后获取配置，设备上报恢复出厂，服务端可以忽略不处理.
+	public static final int RefreashDeviceSetting_RestoreFactory_Can_Ignore = 2;
 	
 	/**
 	 * 获取可用的vap的names
@@ -75,7 +80,7 @@ public class DeviceHelper {
 	 */
 	public static boolean isVapEnable(WifiDeviceSettingVapDTO vap){
 		if(vap == null) return false;
-		if(WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getEnable())){
+		if(WifiDeviceHelper.Enable.equalsIgnoreCase(vap.getEnable())){
 			return true;
 		}
 		return false;
@@ -89,7 +94,20 @@ public class DeviceHelper {
 	 */
 	public static boolean isVapGuestEnable(WifiDeviceSettingVapDTO vap){
 		if(vap == null) return false;
-		if(WifiDeviceSettingVapDTO.Enable.equalsIgnoreCase(vap.getGuest_en())){
+		if(WifiDeviceHelper.Enable.equalsIgnoreCase(vap.getGuest_en())){
+			return true;
+		}
+		return false;
+	}
+	
+	/***
+	 * 判断设备上网方式是否为dhcpc
+	 * @param linkmode_value
+	 * @return
+	 */
+	public static boolean isDhcpcLinkMode(String linkmode_value){
+		if(StringUtils.isEmpty(linkmode_value)) return false;
+		if(WifiDeviceSettingDTO.Mode_Dhcpc.equals(linkmode_value)){
 			return true;
 		}
 		return false;
@@ -259,7 +277,7 @@ public class DeviceHelper {
 		if(vap_dtos == null || vap_dtos.isEmpty()) return false;
 		int index = vap_dtos.indexOf(new WifiDeviceSettingVapDTO(vapname));
 		if(index == -1) return false;
-		if(WifiDeviceSettingVapDTO.Enable.equals(vap_dtos.get(index).getGuest_en())){
+		if(WifiDeviceHelper.Enable.equals(vap_dtos.get(index).getGuest_en())){
 			return true;
 		}
 		return false;
@@ -285,8 +303,12 @@ public class DeviceHelper {
 	 * @return
 	 */
 	public static String[] getURouterDevicePowerAndRealChannel(WifiDeviceSettingDTO dto){
-		String[] result = new String[2];
 		WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(dto);
+		return getURouterDevicePowerAndRealChannel(radio_dto);
+	}
+	
+	public static String[] getURouterDevicePowerAndRealChannel(WifiDeviceSettingRadioDTO radio_dto){
+		String[] result = new String[5];
 		if(radio_dto == null){
 			result[0] = Unknow_Power;
 			result[1] = Unknow_RealChannel;
@@ -294,6 +316,9 @@ public class DeviceHelper {
 			result[0] = StringUtils.isEmpty(radio_dto.getPower())?Unknow_Power:radio_dto.getPower();
 			result[1] = StringUtils.isEmpty(radio_dto.getReal_channel())?Unknow_RealChannel:radio_dto.getReal_channel();
 		}
+		result[2] = radio_dto.getRf();
+		result[3] = radio_dto.getCountry();
+		result[4] = radio_dto.getChannel_bandwidth();
 		return result;
 	}
 	
@@ -320,14 +345,14 @@ public class DeviceHelper {
 	 * @param rc_list
 	 * @return
 	 */
-	public static List<Integer> getDeviceRateControlIndex(List<WifiDeviceSettingRateControlDTO> rc_list){
+/*	public static List<Integer> getDeviceRateControlIndex(List<WifiDeviceSettingRateControlDTO> rc_list){
 		if(rc_list == null || rc_list.isEmpty()) return null;
 		List<Integer> indexs = new ArrayList<Integer>();
 		for(WifiDeviceSettingRateControlDTO rc_dto : rc_list){
 			indexs.add(Integer.parseInt(rc_dto.getIndex()));
 		}
 		return indexs;
-	}
+	}*/
 	
 	/**
 	 * 获取urouter设备的正常vap
@@ -348,7 +373,59 @@ public class DeviceHelper {
 		}
 		return null;
 	}
+	/**
+	 * 获取指定name的vap节点对象
+	 * @param dto
+	 * @param names
+	 * @return
+	 */
+	public static List<WifiDeviceSettingVapDTO> getUrouterDeviceVapWithNames(WifiDeviceSettingDTO dto, String... names){
+		if(dto == null || names == null || names.length == 0) return null;
+		List<WifiDeviceSettingVapDTO> vaps = dto.getVaps();
+		if(vaps == null || vaps.isEmpty()) return null;
+		
+		List<WifiDeviceSettingVapDTO> vap_dtos = new ArrayList<WifiDeviceSettingVapDTO>();
+		for(WifiDeviceSettingVapDTO vap : vaps){
+			for(String name : names){
+				if(name.equals(vap.getName())){
+					vap_dtos.add(vap);
+					break;
+				}
+			}
+		}
+		return vap_dtos;
+	}
 	
+	public static WifiDeviceSettingAutoRebootDTO getUrouterDeviceAutoReboot(WifiDeviceSettingDTO dto){
+		if(dto == null)
+			return null;
+		return dto.getAutoreboot();
+	}
+	
+	public static String getLinkModeValue(WifiDeviceSettingDTO dto){
+		if(dto == null) return null;
+		WifiDeviceSettingLinkModeDTO linkmode_dto = dto.getLinkmode();
+		if(linkmode_dto == null) return null;
+		
+		return linkmode_dto.getModel();
+	}
+	
+	public static WifiDeviceSettingSyskeyDTO getSyskey(WifiDeviceSettingDTO dto){
+		if(dto == null) return null;
+		return dto.getSyskey();
+	}
+	
+	public static WifiDeviceSettingSyskeyDTO builderDeviceSettingSyskeyDTO(String keynum, String industry){
+		WifiDeviceSettingSyskeyDTO syskeyDTO = new WifiDeviceSettingSyskeyDTO();
+		syskeyDTO.setKeynum(keynum == null ? StringHelper.EMPTY_STRING_GAP : keynum);
+		syskeyDTO.setIndustry(industry == null ? StringHelper.EMPTY_STRING_GAP : industry);
+		if(StringUtils.isNotEmpty(keynum)){
+			syskeyDTO.setKeystatus(WifiDeviceSettingSyskeyDTO.KEY_STATUS_SUCCESSED);
+		}else{
+			syskeyDTO.setKeystatus(WifiDeviceSettingSyskeyDTO.KEY_STATUS_NOBIND);
+		}
+		return syskeyDTO;
+	}
 	
 	/**
 	 * 获取设备的总运行时长
@@ -426,69 +503,6 @@ public class DeviceHelper {
 			//ex.printStackTrace(System.out);
 		}
 		return false;
-//		for(String newOrigSwver : newOrigSwvers){
-//			if(orig_swver.contains(newOrigSwver)){
-//				return true;
-//			}
-//		}
-//		return false;
-	}
-	
-	/**
-	 * 比较两个设备的软件版本号
-	 * 返回 1 表示 orig_swver1 大于 orig_swver2
-	 * 返回 0 表示 orig_swver1 等于 orig_swver2
-	 * 返回 -1 表示 orig_swver1 小于 orig_swver2
-	 * @param orig_swver1
-	 * @param orig_swver2
-	 * @return
-	 */
-	public static int compareDeviceVersions(String orig_swver1, String orig_swver2){
-		if(StringUtils.isEmpty(orig_swver1) || StringUtils.isEmpty(orig_swver2)) 
-			throw new RuntimeException("param validate empty");
-		
-		String[] orig_swver1_versions = parseDeviceSwverVersion(orig_swver1);
-		if(orig_swver1_versions == null) return -1;
-		String[] orig_swver2_versions = parseDeviceSwverVersion(orig_swver2);
-		if(orig_swver2_versions == null) return 1;
-		//判断大版本号
-		int top_ret = StringHelper.compareVersion(orig_swver1_versions[0], orig_swver2_versions[0]);
-		//System.out.println("top ret " + top_ret);
-		if(top_ret != 0) return top_ret;
-		
-		//判断小版本号
-		int bottom_ret = StringHelper.compareVersion(orig_swver1_versions[1], orig_swver2_versions[1]);
-		//System.out.println("bottom ret " + bottom_ret);
-		return bottom_ret;
-	}
-	
-	/**
-	 * 解析设备的软件版本
-	 * 返回数组 0 大版本号 1 小版本号
-	 * @param orig_swver
-	 * @return
-	 */
-	public static String[] parseDeviceSwverVersion(String orig_swver){
-		try{
-	    	Pattern p = Pattern.compile("V(.*)(B|r)");
-	    	Matcher m = p.matcher(orig_swver);
-	    	String top_version = null;
-	    	while(m.find()){  
-	    		top_version = m.group(1);  
-	    	}
-	    	
-	    	p = Pattern.compile("Build(\\d+)");
-	    	m = p.matcher(orig_swver);
-	    	String bottom_version = null;
-	    	while(m.find()){  
-	    		bottom_version = m.group(1);  
-	    	}
-	    	System.out.println(top_version + "-" + bottom_version);
-	    	return new String[]{top_version, bottom_version};
-		}catch(Exception ex){
-			
-		}
-		return null;
 	}
 	
 	/**
@@ -559,17 +573,17 @@ public class DeviceHelper {
 		try{
 			if(source != null && target != null){
 				//合并 radio 多频设备会有多个
-				List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios());
+				List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios(), false);
 				if(m_radios != null){
 					target.setRadios(m_radios);
 				}
 				//合并 wan
-				WifiDeviceSettingLinkModeDTO mode = source.getMode();
-				if(mode != null){
-					ReflectionHelper.copyProperties(source.getMode(), target.getMode());
+				WifiDeviceSettingLinkModeDTO linkmode = source.getLinkmode();
+				if(linkmode != null){
+					ReflectionHelper.copyProperties(source.getLinkmode(), target.getLinkmode());
 				}
 				//合并 vaps
-				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps());
+				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps(), false);
 				if(m_vaps != null){
 					target.setVaps(m_vaps);
 				}
@@ -579,7 +593,7 @@ public class DeviceHelper {
 					target.setAcls(m_acls);
 				}
 				//合并接口速率控制
-				List<WifiDeviceSettingInterfaceDTO> m_interfaces = mergeList(source.getInterfaces(), target.getInterfaces());
+				List<WifiDeviceSettingInterfaceDTO> m_interfaces = mergeList(source.getInterfaces(), target.getInterfaces(), false);
 				if(m_interfaces != null){
 					target.setInterfaces(m_interfaces);
 				}
@@ -602,6 +616,60 @@ public class DeviceHelper {
 				if(m_users != null){
 					target.setUsers(m_users);
 				}
+				//合并mode
+				if(source.getMode() != null){
+					ReflectionHelper.copyProperties(source.getMode(), target.getMode());
+				}
+				
+				//合并syskey
+				if(source.getSyskey() != null){
+					ReflectionHelper.copyProperties(source.getSyskey(), target.getSyskey());
+				}
+				
+				//合并rf_2in1
+				if(source.getRf_2in1() != null){
+					target.setRf_2in1(source.getRf_2in1());
+				}
+				
+				//合并autoreboot
+				if(source.getAutoreboot() != null){
+					target.setAutoreboot(source.getAutoreboot());
+				}
+
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 针对设备切换工作模式进行合并陪hi
+	 * @param source
+	 * @param target
+	 */
+	public static void mergeDSOnWorkModeChanged(WifiDeviceSettingDTO source, WifiDeviceSettingDTO target){
+		try{
+			if(source != null && target != null){
+				//合并 radio 多频设备会有多个
+				List<WifiDeviceSettingRadioDTO> m_radios = mergeList(source.getRadios(), target.getRadios(), false);
+				if(m_radios != null){
+					target.setRadios(m_radios);
+				}
+				//合并 vaps
+				List<WifiDeviceSettingVapDTO> m_vaps = mergeList(source.getVaps(), target.getVaps(), false);
+				if(m_vaps != null){
+					target.setVaps(m_vaps);
+				}
+				//合并黑白名单 由于黑名单删除方式不是ssdel的 所以特殊处理
+				List<WifiDeviceSettingAclDTO> m_acls = mergeList(source.getAcls(), target.getAcls());
+				if(m_acls != null){
+					target.setAcls(m_acls);
+				}
+				//合并终端速率控制
+				List<WifiDeviceSettingRateControlDTO> m_ratecontrols = mergeList(source.getRatecontrols(), target.getRatecontrols());
+				if(m_ratecontrols != null){
+					target.setRatecontrols(m_ratecontrols);
+				}
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
@@ -609,6 +677,10 @@ public class DeviceHelper {
 	}
 	
 	public static <T extends DeviceSettingBuilderDTO> List<T> mergeList(List<T> source, List<T> target) throws Exception{
+		return mergeList(source, target, true);
+	}
+	
+	public static <T extends DeviceSettingBuilderDTO> List<T> mergeList(List<T> source, List<T> target, boolean addNotExist) throws Exception{
 		if(source == null) return null;
 		//如果当前为空 则直接覆盖
 		if(target == null || target.isEmpty()){
@@ -622,7 +694,9 @@ public class DeviceHelper {
 					if(index != -1){
 						ReflectionHelper.copyProperties(source_item, target.get(index));
 					}else{
-						target.add(source_item);
+						if(addNotExist){
+							target.add(source_item);
+						}
 					}
 				}
 			}
@@ -631,9 +705,12 @@ public class DeviceHelper {
 	}
 	
 	/*******************************    设备配置修改模板  ****************************************/
+	//修改设备配置的通用序列号
+	public static final String Common_Config_Sequence = "-1";
 	
 	public static final String DeviceSetting_ConfigSequenceOuter = "<dev><sys><config><ITEM sequence=\"%s\"/></config></sys></dev>";
 	public static final String DeviceSetting_ConfigSequenceInner = "<sys><config><ITEM sequence=\"%s\"/></config></sys>";
+	public static final String DeviceSetting_ConfigSequenceRf2in1Outer = "<dev><sys><config><ITEM sequence=\"%s\" rf_2in1=\"%s\"/></config></sys></dev>";
 	
 	public static final String DeviceSetting_URouterDefaultVapAclOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><vap>%s</vap><acllist>%s</acllist></wifi></dev>");
 	
@@ -645,6 +722,9 @@ public class DeviceHelper {
 	public static final String DeviceSetting_RadioOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<wifi><radio>%s</radio></wifi></dev>");
 	public static final String DeviceSetting_RatecontrolOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><rate_control>%s</rate_control></net></dev>");
 	public static final String DeviceSetting_AdminPasswordOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><users>%s</users></sys></dev>");
+	public static final String DeviceSetting_KeyStatusOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><syskey>%s</syskey></sys></dev>");
+	public static final String DeviceSetting_InterfaceOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><interface>%s</interface></net></dev>");
+	public static final String DeviceSetting_AutoRebootOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<sys><config>%s</config></sys></dev>");
 
 	public static final String DeviceSetting_MMOuter = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<net><mac_management>%s</mac_management></net></dev>");
 	public static final String DeviceSetting_LinkModeOuter ="<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("<mod><basic><wan>%s</wan></basic></mod></dev>");
@@ -653,7 +733,9 @@ public class DeviceHelper {
 	public static final String DeviceSetting_Portal_Outer = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("%s</dev>");
 
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
+	public static final String DeviceSetting_VapWorkModeChangeItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\" auth_key_rsa=\"%s\" wds=\"enable\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
+	public static final String DeviceSetting_KeyStatusItem = "<ITEM keynum=\"%s\" keystatus=\"%s\" industry=\"%s\" />";
 	
 	
 	public static final String DeviceSetting_Start_HttpAdItem 	= "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
@@ -663,28 +745,37 @@ public class DeviceHelper {
 		    bhu_http_redirect_rule="1,20:00:00,21:00:00,http://www.src1.com,http://www.dst1.com,http://src2.com,http://dst2.com ..."
 		 />*/
 	//public static final String DeviceSetting_Http404Item = "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"http://auth.wi2o.cn/404/\" bhu_http404_codes=\"404,502\"/>";
-	public static final String DeviceSetting_Start_Http404Item 		= "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" bhu_http404_codes=\"40*,502\"/>";
+	/*public static final String DeviceSetting_Start_Http404Item 		= "<ITEM bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" bhu_http404_codes=\"40*,502\"/>";
 	public static final String DeviceSetting_Stop_Http404Item 		= "<ITEM bhu_http404_enable=\"disable\"/>";
 	public static final String DeviceSetting_Start_HttpRedirectItem = "<ITEM bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\"/>";
 	public static final String DeviceSetting_Stop_HttpRedirectItem 	= "<ITEM bhu_http_redirect_enable=\"disable\"/>";
 	
-	public static final String DeviceSetting_Start_VapItem_Begin_Fragment 		= "<ITEM ";
-	public static final String DeviceSetting_Start_HttpAdItem_Inner_Fragment 	= " bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" ";
+	
+	
 	public static final String DeviceSetting_Start_Http404Item_Inner_Fragment 	= " bhu_http404_enable=\"%s\" bhu_http404_url=\"%s\" bhu_http404_codes=\"%s\" ";
 	public static final String DeviceSetting_Start_HttpRedirectItem_Inner_Fragment = " bhu_http_redirect_enable=\"%s\" bhu_http_redirect_rule=\"%s\" ";
+	*/
+	
+	public static final String DeviceSetting_Start_VapItem_Begin_Fragment 		= "<ITEM ";
+	public static final String DeviceSetting_Start_HttpAdItem_Inner_Fragment 	= " bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" ";
 	public static final String DeviceSetting_Start_VapItem_End_Fragment 	= " />";
 	
 	//mac type opt taskid
 	public static final String DeviceSetting_VapModule_VapItem_Header_Fragment 	= "00001001%s0000000000000000100000012%s%s%s";
-	public static final String DeviceSetting_VapModule_VapItem_Begin_Fragment 	= "<bhu_module>";
+/*	public static final String DeviceSetting_VapModule_VapItem_Begin_Fragment 	= "<bhu_module>";
 	public static final String DeviceSetting_VapModule_VapItem_End_Fragment 	= "</bhu_module>";
 	public static final String DeviceSetting_VapModule_Start_Http404Item 		= "<http404><ITEM enable=\"%s\" url=\"%s\" codes=\"%s\" ver=\"%s\"/></http404>";
 	public static final String DeviceSetting_VapModule_Stop_Http404Item 		= "<http404><ITEM enable=\"disable\"/></http404>";
 	public static final String DeviceSetting_VapModule_Start_HttpRedirectItem 	= "<redirect><ITEM enable=\"%s\" rule=\"%s\" ver=\"%s\" /></redirect>";
 	public static final String DeviceSetting_VapModule_Stop_HttpRedirectItem 	= "<redirect><ITEM enable=\"disable\"/></redirect>";
+*/	
+	
 	public static final String DeviceSetting_VapModule_Upgrade = "<upgrade><ITEM url = “” retry_count=”” retry_interval=”” /></upgrade>";
 	
-	public static final String DeviceSetting_VapModuleFull_Stop = "<bhu_module>"+
+/*	public static final String DeviceSetting_VapModuleFull_Stop = "<bhu_module>"+
+								"<stat_server>"+
+									"<ITEM enable=\"disable\"/>"+
+								"</stat_server>"+
 							    "<channel>"+
 							        "<ITEM enable=\"disable\"/>"+
 							    "</channel>"+
@@ -697,14 +788,21 @@ public class DeviceHelper {
 							    "<http404>"+
 							        "<ITEM enable=\"disable\"/>"+
 							    "</http404>"+
-							"</bhu_module>";
+							"</bhu_module>";*/
+	
+/*	public static final String DeviceSetting_VapModuleFull_StatSetting = 
+		"<bhu_module>"+
+				"<stat_server>"+
+					"<ITEM enable=\"enable/disable\" url=\"http://7xo2t3.com2.z0.glb.qiniucdn.com/*\" batch_number=\"10\" cache_time=\"10\"/>"+
+				"</stat_server>"+
+		"</bhu_module>";*/
 	
 	/*public static final String VapModule_Setting_MsgType = "00000003";
 	public static final String VapModule_Query_MsgType = "00000004";*/
 	
 	//TODO:待完善
 	//public static final String DeviceSetting_HttpPortalItem = "<ITEM bhu_id=\"%s\" bhu_ad_url=\"%s\" bhu_enable=\"%s\" />";
-	public static final String DeviceSetting_Start_HttpPortalItem =  	
+/*	public static final String DeviceSetting_Start_HttpPortalItem =  	
      "<net>"+
           "<interface>"+
                "<ITEM name=\"wlan3\" enable=\"enable\" if_tx_rate=\"512\" if_rx_rate=\"512\" />"+
@@ -734,17 +832,244 @@ public class DeviceHelper {
      "<wifi>"+
           "<vap><ITEM name=\"wlan3\" guest_en=\"disable\" isolation=\"7\" /></vap>"+
      "</wifi>"+
-     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>";
+     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>";*/
+	
+	//开启访客网络指令
+	//开启访客网络isolation="14"，关闭访客网络isolation="0".
+	//open_resource=bhuwifi.com,bhunetworks.com
+	//切AP模式需修改参数：将block_mode="route"改为block_mode="bridge"。
+	//参数顺序 users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
+	/*public static final String DeviceSetting_Start_VisitorWifi =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<net>"+
+				"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\" /></interface>"+
+				"<webportal>"+
+					"<setting>"+
+						"<ITEM interface=\"br-lan,wlan3\" enable=\"enable\" auth_mode=\"local\" local_mode=\"signal\" signal_limit=\"%s\" "
+						+ "extend_memory_enable=\"disable\" guest_portal_en=\"enable\"  progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\"   "
+						+ "redirect_url=\"%s\"  max_clients=\"256\" idle_timeout=\"%s\" force_timeout=\"%s\" "
+						+ "open_resource=\"%s/\" forbid_management=\"enable\" block_mode=\"%s\"/>"+
+					"</setting>"+
+				"</webportal>"+
+				"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"%s\" /></bridge>"+	
+				"</net>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" guest_en=\"enable\" isolation=\"14\" /></vap></wifi>"+
+				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+
+			"</dev>";
+	//访客网络单独限速指令
+	public static final String DeviceSetting_Limit_VisitorWifi =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<net>"+
+				"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\" /></interface>"+
+				"</net>"+
+			"</dev>";
+	public static final String DeviceSetting_Stop_VisitorWifi =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+			     "<net>"+
+			          "<interface><ITEM name=\"wlan3\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\"/></interface>"+
+			          "<webportal><setting><ITEM  enable=\"disable\"  /></setting></webportal>"+
+			     "</net>"+
+			     "<wifi>"+
+			          "<vap><ITEM name=\"wlan3\" guest_en=\"disable\" isolation=\"0\" /></vap>"+
+			     "</wifi>"+
+			     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>"+
+		    "</dev>";*/
+	public static final String DeviceSetting_Plugins_Samba =
+	"<dev>"+
+	    "<sys>"+
+	    	"<config><ITEM sequence=\"-1\" /></config>"+
+	        "<external_plugins>"+
+	            "<ITEM name=\"%s\" enable=\"%s\" start_cmd=\"%s\" stop_cmd=\"%s\" download_path=\"%s\" ver=\"%s\"/>"+
+	        "</external_plugins>"+
+	    "</sys>"+
+	"</dev>";
+	//bridge-ap 和 router-ap之间的设备工作模式切换
+	public static final String DeviceSetting_Switch_Workmode_Router2Bridge =
+			"<dev>"+
+			    "<sys>"+
+			    	"<config><ITEM sequence=\"-1\" /></config>"+
+			    "</sys>"+
+			    "<mod>"+
+					"<basic>"+
+						"<mode><ITEM mode=\"bridge-ap\" scene=\"ap\"/></mode>"+
+						"<lan><ITEM ip_mode=\"dhcpc\" /></lan>"+
+					"</basic>"+
+				"</mod>"+
+				"<net>"
+				+ "<interface>"
+					+ "<ITEM name=\"wlan2\" enable=\"disable\" />"
+					+ "<ITEM name=\"wlan3\" enable=\"disable\" />"
+				+ "</interface>"
+				+ "</net>"+
+			"</dev>";
+	
+	public static final String DeviceSetting_Switch_Workmode_Bridge2Router =
+			"<dev>"+
+			    "<sys>"+
+			    	"<config><ITEM sequence=\"-1\" /></config>"+
+			    "</sys>"+
+			    "<mod>"+
+					"<basic>"+
+						"<mode><ITEM mode=\"router-ap\" scene=\"router\"/></mode>"+
+						"<wan><ITEM mode=\"dhcpc\" /></wan>"+
+						"<lan><ITEM ip=\"192.168.62.1\" netmask=\"255.255.255.0\" dhcp_enable=\"enable\" /></lan>"+
+					"</basic>"+
+				"</mod>"+
+				"<net><interface><ITEM name=\"wlan2\" enable=\"disable\" /><ITEM name=\"wlan3\" enable=\"disable\" /></interface></net>"+
+			"</dev>";
+
+	//主网络开关
+	public static final String DeviceSetting_Master_Switch = "<ITEM name=\"%s\" enable=\"%s\" />";
+	//主网络统一限速
+	public static final String DeviceSetting_Master_Limit = "<ITEM name=\"%s\" users_tx_rate=\"%s\" users_rx_rate=\"%s\" />";
+	
+
+	//自动重启
+	public static final String DeviceSetting_AutoReboot = "<ITEM reboot_enable=\"%s\" reboot_time=\"%s\" />";
+
+	///complete_isolate_ports 区分 工作模式和单双频
+	public static final String DeviceSetting_Start_SharedNetworkWifi_Uplink_Dual =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<wifi><vap>"
+				+ "<ITEM name=\"wlan3\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" />"
+				+ "<ITEM name=\"wlan13\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" />"
+				+ "</vap></wifi>"+
+				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+	
+				"<net>"+
+					"<interface>"
+					+ "<ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/>"
+					+ "<ITEM name=\"wlan13\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/>"
+					+ "</interface>"+
+					"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"%s\"/></bridge>"+
+					"<webportal>"+
+						"<setting>"+
+							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3,wlan13\" auth_mode=\"local\" block_mode=\"%s\" local_mode=\"signal\" signal_limit=\"%s\" max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+
+							"extend_memory_enable=\"disable\" guest_portal_en=\"enable\" allow_https=\"disable\" progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\" "+ 
+							"open_resource=\"%s\" forbid_management=\"enable\" "+ 
+							"redirect_url=\"%s\""+
+							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+
+							" drop_url=\"mazu.3g.qq.com,c-adash.m.taobao.com,dldir1.qq.com,adash.m.taobao.com,dc.51y5.net,pdata.video.qiyi.com,mmsns.qpic.cn,loc.map.baidu.com,monitor.uu.qq.com,apps.game.qq.com,usr.mb.hd.sohu.com,mmbiz.qpic.cn,wireless.mapbar.com,wx.qlogo.cn,q.qlogo.cn\" "+
+							" drop_agent=\"Apache-HttpClient/*\" " +
+							"/>"+ 
+						"</setting>"+
+					"</webportal>"+
+				"</net>"+
+			"</dev>";
+	
+	public static final String DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Dual =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<wifi><vap>"
+				+ "<ITEM name=\"wlan3\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" />"
+				+ "<ITEM name=\"wlan13\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" />"
+				+ "</vap></wifi>"+
+				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+		
+				"<net>"+
+					"<interface>"
+					+ "<ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/>"
+					+ "<ITEM name=\"wlan13\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/>"
+					+ "</interface>"+
+					"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"%s\"/></bridge>"+	
+					"<webportal>"+
+						"<setting>"+
+							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3,wlan13\" auth_mode=\"remote\" block_mode=\"%s\" local_mode=\"immediate\" signal_limit=\"%s\"  max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+ 
+							" guest_portal_en=\"disable\" allow_ip=\"\" allow_domain=\"\" tmp_pass=\"enable\" tmp_pass_duration=\"120\" tmp_pass_duration_max=\"600\" tmp_pass_wait=\"300\" manage_server=\"disable\" "+
+							" open_resource=\"%s\" forbid_management=\"enable\" allow_https=\"disable\" "+
+							" remote_auth_url=\"%s\" portal_server_url=\"%s\" dns_default_ip=\"%s\"  "+
+							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+
+							" drop_url=\"mazu.3g.qq.com,c-adash.m.taobao.com,dldir1.qq.com,adash.m.taobao.com,dc.51y5.net,pdata.video.qiyi.com,mmsns.qpic.cn,loc.map.baidu.com,monitor.uu.qq.com,apps.game.qq.com,usr.mb.hd.sohu.com,mmbiz.qpic.cn,wireless.mapbar.com,wx.qlogo.cn,q.qlogo.cn\" "+
+							" drop_agent=\"Apache-HttpClient/*\" " +
+							"/>"+ 
+						"</setting>"+
+					"</webportal>"+
+				"</net>"+	
+			"</dev>";
+	public static final String DeviceSetting_Stop_SharedNetworkWifi_Dual =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+			     "<net>"+
+			          "<interface>"
+			          + "<ITEM name=\"wlan3\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\"/>"
+			          + "<ITEM name=\"wlan13\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\"/>"
+			          + "</interface>"+
+			          "<webportal><setting><ITEM  enable=\"disable\"  /></setting></webportal>"+
+			     "</net>"+
+			     "<wifi>"+
+			          "<vap>"
+			          + "<ITEM name=\"wlan3\" guest_en=\"disable\" isolation=\"0\" />"
+			          + "<ITEM name=\"wlan13\" guest_en=\"disable\" isolation=\"0\" />"
+			          + "</vap>"+
+			     "</wifi>"+
+			     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>"+
+		    "</dev>";
+	
+	public static final String DeviceSetting_Start_SharedNetworkWifi_Uplink_Single =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" /></vap></wifi>"+
+				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+	
+				"<net>"+
+					"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/></interface>"+
+					"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"%s\"/></bridge>"+
+					"<webportal>"+
+						"<setting>"+
+							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3\" auth_mode=\"local\" block_mode=\"%s\" local_mode=\"signal\" signal_limit=\"%s\" max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+
+							"extend_memory_enable=\"disable\" guest_portal_en=\"enable\" allow_https=\"disable\" progressbar_duration=\"0\" get_portal_method=\"Local Default\"  manage_server=\"disable\" "+ 
+							"open_resource=\"%s\" forbid_management=\"enable\" "+ 
+							"redirect_url=\"%s\""+
+							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+
+							" drop_url=\"mazu.3g.qq.com,c-adash.m.taobao.com,dldir1.qq.com,adash.m.taobao.com,dc.51y5.net,pdata.video.qiyi.com,mmsns.qpic.cn,loc.map.baidu.com,monitor.uu.qq.com,apps.game.qq.com,usr.mb.hd.sohu.com,mmbiz.qpic.cn,wireless.mapbar.com,wx.qlogo.cn,q.qlogo.cn\" "+
+							" drop_agent=\"Apache-HttpClient/*\" " +
+							"/>"+ 
+						"</setting>"+
+					"</webportal>"+
+				"</net>"+
+			"</dev>";
+	public static final String DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Single =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" /></vap></wifi>"+
+				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+		
+				"<net>"+
+					"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/></interface>"+
+					"<bridge><ITEM name=\"br-lan\" complete_isolate_ports=\"%s\"/></bridge>"+	
+					"<webportal>"+
+						"<setting>"+
+							"<ITEM enable=\"enable\" interface=\"br-lan,wlan3\" auth_mode=\"remote\" block_mode=\"%s\" local_mode=\"immediate\" signal_limit=\"%s\"  max_clients=\"%s\" idle_timeout=\"%s\" force_timeout=\"%s\" "+ 
+							" guest_portal_en=\"disable\" allow_ip=\"\" allow_domain=\"\" tmp_pass=\"enable\" tmp_pass_duration=\"120\" tmp_pass_duration_max=\"600\" tmp_pass_wait=\"300\" manage_server=\"disable\" "+
+							" open_resource=\"%s\" forbid_management=\"enable\" allow_https=\"disable\" "+
+							" remote_auth_url=\"%s\" portal_server_url=\"%s\" dns_default_ip=\"%s\"  "+
+							" allow_empty_agent=\"disable\" allow_unknown_http=\"disable\" allow_empty_host=\"disable\"	"+
+							" drop_url=\"mazu.3g.qq.com,c-adash.m.taobao.com,dldir1.qq.com,adash.m.taobao.com,dc.51y5.net,pdata.video.qiyi.com,mmsns.qpic.cn,loc.map.baidu.com,monitor.uu.qq.com,apps.game.qq.com,usr.mb.hd.sohu.com,mmbiz.qpic.cn,wireless.mapbar.com,wx.qlogo.cn,q.qlogo.cn\" "+
+							" drop_agent=\"Apache-HttpClient/*\" " +
+							"/>"+ 
+						"</setting>"+
+					"</webportal>"+
+				"</net>"+	
+			"</dev>";
+	
+	public static final String DeviceSetting_Stop_SharedNetworkWifi_Single =
+			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
+			     "<net>"+
+			          "<interface><ITEM name=\"wlan3\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\"/></interface>"+
+			          "<webportal><setting><ITEM  enable=\"disable\"  /></setting></webportal>"+
+			     "</net>"+
+			     "<wifi>"+
+			          "<vap><ITEM name=\"wlan3\" guest_en=\"disable\" isolation=\"0\" /></vap>"+
+			     "</wifi>"+
+			     "<sys><manage><plugin><ITEM guest=\"disable\" /></plugin></manage></sys>"+
+		    "</dev>";
 	
 	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
-	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" />";
+	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" real_channel=\"%s\"/>";
 	
-	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\"/>";
-	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
+	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\" hide_ssid=\"%s\"/>";
+	public static final String DeviceSetting_MultiVapPasswordItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\" hide_ssid=\"%s\"/>";
+	public static final String DeviceSetting_VapHidessidItem = "<ITEM name=\"%s\" hide_ssid=\"%s\"/>";
+	public static final String DeviceSetting_MultiVapHidessidItem = "<ITEM name=\"%s\" radio=\"%s\" hide_ssid=\"%s\"/>";
+	//public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" index=\"%s\"/>";
+	public static final String DeviceSetting_RatecontrolItem = "<ITEM mac=\"%s\" tx=\"%s\" rx=\"%s\" />";
 	public static final String DeviceSetting_AdminPasswordItem = "<ITEM password_rsa=\"%s\" name=\"admin\" />";
 	public static final String DeviceSetting_MMItem = "<ITEM mac=\"%s\" name=\"%s\" />";
 	
-	public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM index=\"%s\" ssdel=\"1\" mac=\"%s\"/>";
+	//public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM index=\"%s\" ssdel=\"1\" mac=\"%s\"/>";
+	public static final String DeviceSetting_RemoveRatecontrolItem = "<ITEM ssdel=\"1\" mac=\"%s\"/>";
 	public static final String DeviceSetting_RemoveMMItem = "<ITEM mac=\"%s\" ssdel=\"1\" />";
 
 	public static final String DeviceSetting_LinkModelPPPOEItem = "<ITEM mode=\"%s\" username=\"%s\" password_rsa=\"%s\" link_mode=\"%s\" idle=\"%s\"/>";
@@ -905,6 +1230,7 @@ public class DeviceHelper {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		return builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpAdItem_Inner_Fragment, WifiDeviceSettingVapAdDTO.fromParamVapAdDTO(pad_dto));
 	}
+	/*
 	public static String builderDSHttpRedirectStartFragmentOuter(String extparams){
 		ParamVapHttpRedirectDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapHttpRedirectDTO.class);
 		if(pad_dto == null)
@@ -918,7 +1244,7 @@ public class DeviceHelper {
 		if(ad_dto == null)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		return builderDeviceSettingItemWithDto(DeviceSetting_Start_Http404Item_Inner_Fragment, WifiDeviceSettingVapHttp404DTO.fromParamVapAdDTO(ad_dto));
-	}
+	}*/
 	
 	/**
 	 * 构建广告配置数据
@@ -940,7 +1266,7 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_HttpAdItem);
 	}
 	
-	public static String builderDSHttpRedirectStartOuter(String config_sequence, String extparams){
+	/*public static String builderDSHttpRedirectStartOuter(String config_sequence, String extparams){
 		ParamVapHttpRedirectDTO pad_dto = JsonHelper.getDTO(extparams, ParamVapHttpRedirectDTO.class);
 		//WifiDeviceSettingVapHttpRedirectDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpRedirectDTO.class);
 		if(pad_dto == null)
@@ -963,25 +1289,188 @@ public class DeviceHelper {
 	}
 	public static String builderDSHttp404StopOuter(String config_sequence){
 		return builderDeviceSettingOuter(DeviceSetting_AdOuter, config_sequence, DeviceSetting_Stop_Http404Item);
+	}*/
+	
+	/*public static String builderDSStartVisitorWifiOuter(String extparams){
+		ParamVapVistorWifiDTO vistor_dto = JsonHelper.getDTO(extparams, ParamVapVistorWifiDTO.class);
+		return builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi,vistor_dto.builderProperties());
+	}
+	public static String builderDSLimitVisitorWifiOuter(String extparams){
+		ParamVapVistorLimitWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorLimitWifiDTO.class);
+		ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
+		return builderDeviceSettingItem(DeviceSetting_Limit_VisitorWifi,ad_dto.builderProperties());
+	}
+	public static String builderDSStopVisitorWifiOuter(){
+		return DeviceSetting_Stop_VisitorWifi;
+	}*/
+	
+	/**
+	 * 
+	 * @param extparams 此参数注意的内容数据需要包括 bridge和router相关
+	 * @return
+	 */
+	public static String builderDSStartSharedNetworkWifiOuter(String extparams,DeviceStatusExchangeDTO device_status){
+		ParamSharedNetworkDTO psn_dto = JsonHelper.getDTO(extparams, ParamSharedNetworkDTO.class);
+		return builderDSStartSharedNetworkWifiOuter(psn_dto,device_status);
+		/*String startShareNetworkTemplate = null;
+		if(SharedNetworkType.SafeSecure.getKey().equals(psn_dto.getNtype())){
+			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Dual;
+			}else{
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Single;
+			}
+		}else{
+			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_Uplink_Dual;
+			}else{
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_Uplink_Single;
+			}
+		}
+		return builderDeviceSettingItem(startShareNetworkTemplate,psn_dto.builderProperties(device_status));*/
+	}
+	public static String builderDSStartSharedNetworkWifiOuter(ParamSharedNetworkDTO psn_dto,DeviceStatusExchangeDTO device_status){
+		String startShareNetworkTemplate = null;
+		if(SharedNetworkType.SafeSecure.getKey().equals(psn_dto.getNtype()) || SharedNetworkType.SmsSecure.getKey().equals(psn_dto.getNtype())){
+			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Dual;
+			}else{
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Single;
+			}
+		}else{
+			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_Uplink_Dual;
+			}else{
+				startShareNetworkTemplate = DeviceSetting_Start_SharedNetworkWifi_Uplink_Single;
+			}
+		}
+		return builderDeviceSettingItem(startShareNetworkTemplate,psn_dto.builderProperties(device_status));
 	}
 	
-	public static String builderDSStartHttpPortalOuter(String config_sequence, String extparams){
-		ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
-		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
-		if(ad_dto == null)
-			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		String item = builderDeviceSettingItemWithDto(DeviceSetting_Start_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
-		return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, item);
+	/*public static String builderDSLimitSharedNetworkWifiOuter(String extparams){
+		ParamVapVistorLimitWifiDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapVistorLimitWifiDTO.class);
+		ad_dto = ParamVapVistorLimitWifiDTO.fufillWithDefault(ad_dto);
+		
+		
+		return builderDeviceSettingItem(DeviceSetting_Limit_SharedNetworkWifi,ad_dto.builderProperties());
+	}*/
+	public static String builderDSStopSharedNetworkWifiOuter(DeviceStatusExchangeDTO device_status){
+		String stopShareNetworkTemplate = null;
+		if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
+			stopShareNetworkTemplate = DeviceSetting_Stop_SharedNetworkWifi_Dual;
+		}else{
+			stopShareNetworkTemplate = DeviceSetting_Stop_SharedNetworkWifi_Single;
+		}
+		return stopShareNetworkTemplate;
 	}
 	
-	public static String builderDSStopHttpPortalOuter(String config_sequence){
-		//ParamVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, ParamVapHttpPortalDTO.class);
-		//WifiDeviceSettingVapHttpPortalDTO ad_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingVapHttpPortalDTO.class);
-		//if(ad_dto == null)
-		//	throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		//String item = builderDeviceSettingItemWithDto(DeviceSetting_Stop_HttpPortalItem, WifiDeviceSettingVapHttpPortalDTO.fromParamVapAdDTO(ad_dto));
-		return builderDeviceSettingOuter(DeviceSetting_Portal_Outer, config_sequence, DeviceSetting_Stop_HttpPortalItem);
+	
+	public static String builderDSPluginOuter(String extparams){
+		ParamVasPluginDTO ad_dto = JsonHelper.getDTO(extparams, ParamVasPluginDTO.class);
+		return builderDeviceSettingItem(DeviceSetting_Plugins_Samba,ad_dto.builderProperties());
 	}
+	
+	public static String builderDSWorkModeSwitchOuter(String mac, int switchAct, WifiDeviceSettingDTO s_dto, SharedNetworkSettingDTO vw_dto,DeviceStatusExchangeDTO will_device_status){
+		StringBuffer workModeSwitchBuilder = new StringBuffer();
+		//组装切换工作模式配置修改指令
+		if(switchAct == WifiDeviceHelper.SwitchMode_Router2Bridge_Act){
+			workModeSwitchBuilder.append(DeviceSetting_Switch_Workmode_Router2Bridge);
+		}else{
+			workModeSwitchBuilder.append(DeviceSetting_Switch_Workmode_Bridge2Router);
+		}
+		//3、ssid 密码
+		//4、黑名单
+		//5、别名(暂时不需要下发指令)
+		//6、限速
+		//7、功率
+		if(s_dto != null){
+			List<String> dsworkModelChangedCMDList = DeviceHelper.builderDSWorkModeChanged(s_dto);
+			if(dsworkModelChangedCMDList != null && !dsworkModelChangedCMDList.isEmpty()){
+				for(String dsworkModelChangedCMD : dsworkModelChangedCMDList){
+					workModeSwitchBuilder.append(dsworkModelChangedCMD);
+//					payloads.add(CMDBuilder.builderDeviceSettingModify(dmac, 0l, dsworkModelChanged));
+				}
+			}
+		}
+		//组装访客网络配置修改指令
+		if(vw_dto != null && vw_dto.isOn() && vw_dto.getPsn() != null){
+			workModeSwitchBuilder.append(builderDSStartSharedNetworkWifiOuter(vw_dto.getPsn(),will_device_status));
+/*			if(SharedNetworkType.SafeSecure.getKey().equals(vw_dto.getPsn().getNtype()))
+				workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_SafeSecure,vw_dto.builderProperties()));
+			else
+				workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_SharedNetworkWifi_Uplink,vw_dto.builderProperties()));*/
+			/*workModeSwitchBuilder.append(builderDeviceSettingItem(DeviceSetting_Start_VisitorWifi, 
+					vw_dto.builderProperties()));*/
+		}
+		if(workModeSwitchBuilder.length() > 0){
+			return workModeSwitchBuilder.toString();
+			//return CMDBuilder.builderDeviceSettingModify(mac, 0l, workModeSwitchBuilder.toString());
+		}
+		return null;
+	}
+
+	/**
+	 * 设备切换工作模式以后需要下发的配置修改生成
+	 *  //ssid 密码
+	 * 	//黑名单
+		//别名(暂时不需要下发指令)
+		//限速
+		//功率
+	 * @param ds_dto
+	 * @return
+	 */
+	public static List<String> builderDSWorkModeChanged(WifiDeviceSettingDTO ds_dto){
+		List<String> dsworkModelChangedList = null;
+		if(ds_dto != null){
+			dsworkModelChangedList = new ArrayList<String>();
+			//获取当前配置功率
+/*			WifiDeviceSettingRadioDTO radio_dto = getFristDeviceRadio(ds_dto);
+			if(radio_dto != null){
+				//功率
+				String radio_item = builderDeviceSettingItem(DeviceSetting_RadioItem_Power, 
+						radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
+				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RadioOuter, 
+						Common_Config_Sequence, radio_item));
+			}*/
+			List<WifiDeviceSettingRadioDTO> radio_dtos = ds_dto.getRadios();
+			if(radio_dtos != null && !radio_dtos.isEmpty()){
+				List<Object[]> radio_dto_properties = new ArrayList<Object[]>();
+				for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
+					radio_dto_properties.add(radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
+				}
+				String radio_items = builderDeviceSettingItems(DeviceSetting_RadioItem_Power, radio_dto_properties);
+				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RadioOuter, 
+						Common_Config_Sequence, radio_items));
+			}
+
+			//限速
+			List<WifiDeviceSettingRateControlDTO> rc_dtos = ds_dto.getRatecontrols();
+			if(rc_dtos != null && !rc_dtos.isEmpty()){
+				String rc_items = builderDeviceSettingItemsWithDto(DeviceSetting_RatecontrolItem, rc_dtos);
+				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RatecontrolOuter, 
+						Common_Config_Sequence, rc_items));
+			}
+			//黑名单
+			WifiDeviceSettingAclDTO acl_dto = matchDefaultAcl(ds_dto);
+			if(acl_dto != null){
+				String acl_items = builderDeviceSettingItem(DeviceSetting_AclItem, acl_dto.builderProperties());
+				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_AclOuter, 
+						Common_Config_Sequence, acl_items));
+			}
+			//ssid 密码
+			List<WifiDeviceSettingVapDTO> vap_dtos = ds_dto.getVaps();
+			if(vap_dtos != null && !vap_dtos.isEmpty()){
+				List<Object[]> vap_dto_properties = new ArrayList<Object[]>();
+				for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
+					vap_dto_properties.add(vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_WorkModeChanged));
+				}
+				String vap_items = builderDeviceSettingItems(DeviceSetting_VapWorkModeChangeItem, vap_dto_properties);
+				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_VapOuter, 
+						Common_Config_Sequence, vap_items));
+			}
+		}
+		return dsworkModelChangedList;
+	}
+	
 	/**
 	 * 构建信号强度配置数据
 	 * @param config_sequence
@@ -1015,17 +1504,51 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
 	}
 	
+	/**
+	 * 构建信号强度multi配置数据
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return 
+	 */
+	public static String builderDSPowerMultiOuter(String config_sequence, String extparams){
+		List<WifiDeviceSettingRadioDTO> radio_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingRadioDTO.class);
+		if(radio_dtos == null || radio_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+		
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
+			if(radio_dto == null || StringUtils.isEmpty(radio_dto.getPower())) {
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			int power_int = Integer.parseInt(radio_dto.getPower());
+			if(power_int < 0 || power_int > 27){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			
+			String item = builderDeviceSettingItem(DeviceSetting_RadioItem_Power, 
+					radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
+			items.append(item);
+		}
+		//String item = builderDeviceSettingItemWithDto(DeviceSetting_RadioItem_Power, radio_dto);
+		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, items.toString());
+	}
 	
-	private static final String[] optionalChannel4URouter = {"1","6","11"};
+	
+	//private static final String[] optionalChannel4URouter = {"1","6","11"};
 	public static String builderDSRealChannelOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
 		WifiDeviceSettingRadioDTO radio_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRadioDTO.class);
 		if(radio_dto == null /*|| StringUtils.isEmpty(radio_dto.getReal_channel()) || 
 				Integer.parseInt(radio_dto.getReal_channel()) < 0*/)
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
-		
-		if(!StringUtils.isEmpty(radio_dto.getName())){
-			//如果radio名称不存在 则返回null
+		if(StringUtils.isNotEmpty(radio_dto.getName())){
+			//如果radio名称不存在 则抛出异常
 			if(!isExistRadioName(radio_dto.getName(), ds_dto)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			//在radio名称不为空的情况下，必须指定real_channel
+			if(StringUtils.isEmpty(radio_dto.getReal_channel())){
 				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 			}
 		}else{
@@ -1035,12 +1558,14 @@ public class DeviceHelper {
 			if(frist_radio_dto == null) 
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_SETTING_ERROR);
 			if(StringUtils.isEmpty(radio_dto.getReal_channel())){
-				String old_real_channel = frist_radio_dto.getReal_channel();
+				/*String old_real_channel = frist_radio_dto.getReal_channel();
 				Set<String> optionals = ArrayHelper.toSet(optionalChannel4URouter);
 				if(StringUtils.isNotEmpty(old_real_channel)){
 					optionals.remove(old_real_channel);
 				}
-				radio_dto.setReal_channel(RandomPicker.pick(optionals));
+				radio_dto.setReal_channel(RandomPicker.pick(optionals));*/
+				//在没有传递参数Real_channel的情况下，使用0，代表设备自动随机
+				radio_dto.setReal_channel("0");
 			}
 			radio_dto.setName(frist_radio_dto.getName());
 		}
@@ -1048,6 +1573,26 @@ public class DeviceHelper {
 		String item = builderDeviceSettingItem(DeviceSetting_RadioItem_RealChannel, 
 				radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_RealChannel_Radio));
 		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, item);
+	}
+	
+	public static String builderDSRealChannelMultiOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
+		List<WifiDeviceSettingRadioDTO> radio_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingRadioDTO.class);
+		if(radio_dtos == null || radio_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+		
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
+			if(StringUtils.isEmpty(radio_dto.getName())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			if(StringUtils.isEmpty(radio_dto.getReal_channel())){
+				radio_dto.setReal_channel("0");
+			}
+			items.append(builderDeviceSettingItem(DeviceSetting_RadioItem_RealChannel, 
+					radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_RealChannel_Radio)));
+		}
+		return builderDeviceSettingOuter(DeviceSetting_RadioOuter, config_sequence, items.toString());
 	}
 	
 	/**
@@ -1076,6 +1621,71 @@ public class DeviceHelper {
 		String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
 				vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
 		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, item);
+	}
+	
+	/**
+	 * 构建vap密码修改配置multi
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return 
+	 */
+	public static String builderDSVapPasswordMultiOuter(String config_sequence, String extparams){
+		List<WifiDeviceSettingVapDTO> vap_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingVapDTO.class);
+		if(vap_dtos == null || vap_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+	
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
+			if(StringUtils.isEmpty(vap_dto.getName()) || StringUtils.isEmpty(vap_dto.getAuth())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			String auth_key = vap_dto.getAuth_key();
+			if(!"open".equals(vap_dto.getAuth()) && StringUtils.isEmpty(auth_key)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			
+			if(StringUtils.isEmpty(auth_key)){
+				vap_dto.setAuth_key_rsa(StringHelper.EMPTY_STRING_GAP);
+			}else{
+				vap_dto.setAuth_key_rsa(JNIRsaHelper.jniRsaEncryptHexStr(auth_key));
+			}
+
+//			String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem, 
+//					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
+			String item = builderDeviceSettingItem(DeviceSetting_MultiVapPasswordItem, 
+					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_MultiVapPassword));
+			items.append(item);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, items.toString());
+	}
+	
+	/**
+	 * 构建vap隐藏ssid修改配置multi
+	 * @param config_sequence
+	 * @param extparams
+	 * @return
+	 */
+	public static String builderDSVapHidessidMultiOuter(String config_sequence, String extparams){
+		List<WifiDeviceSettingVapDTO> vap_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingVapDTO.class);
+		if(vap_dtos == null || vap_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+	
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingVapDTO vap_dto : vap_dtos){
+			if(StringUtils.isEmpty(vap_dto.getName()) || StringUtils.isEmpty(vap_dto.getHide_ssid())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			
+//			String item = builderDeviceSettingItem(DeviceSetting_VapHidessidItem, 
+//					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapHidessid));
+			String item = builderDeviceSettingItem(DeviceSetting_MultiVapHidessidItem, 
+					vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_MultiVapHidessid));
+			items.append(item);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_VapOuter, config_sequence, items.toString());
 	}
 	
 //	public static String builderDSVapGuestOuter(String config_sequence, String extparams, WifiDeviceSettingDTO ds_dto){
@@ -1168,9 +1778,9 @@ public class DeviceHelper {
 		
 		List<RateControlParamDTO> rc_incr_dtos = rc_dto_map.get(DeviceSettingAction_Incr);
 		if(rc_incr_dtos != null && !rc_incr_dtos.isEmpty()){
-			List<Integer> rc_indexs = getDeviceRateControlIndex(rc_current_dtos);
+/*			List<Integer> rc_indexs = getDeviceRateControlIndex(rc_current_dtos);
 			if(rc_indexs == null)
-				rc_indexs = new ArrayList<Integer>();
+				rc_indexs = new ArrayList<Integer>();*/
 			
 			for(RateControlParamDTO rc_incr_dto : rc_incr_dtos){
 				//验证限速数值是否合法
@@ -1188,13 +1798,13 @@ public class DeviceHelper {
 				}
 				//没匹配到 说明是新增 获取新的index
 				else{
-					int index = ArrayHelper.getMinOrderNumberVacant(rc_indexs);
+					//int index = ArrayHelper.getMinOrderNumberVacant(rc_indexs);
 					match_rc_dto = new WifiDeviceSettingRateControlDTO();
 					match_rc_dto.setMac(rc_incr_dto.getMac());
-					match_rc_dto.setIndex(String.valueOf(index));
+					//match_rc_dto.setIndex(String.valueOf(index));
 					match_rc_dto.setTx(rc_incr_dto.getTm_rx());
 					match_rc_dto.setRx(rc_incr_dto.getTm_tx());
-					rc_indexs.add(index);
+					//rc_indexs.add(index);
 					rc_changed_count++;
 				}
 				ds.append(builderDeviceSettingItem(DeviceSetting_RatecontrolItem, match_rc_dto.builderProperties()));
@@ -1258,6 +1868,24 @@ public class DeviceHelper {
 		String item = builderDeviceSettingItem(DeviceSetting_AdminPasswordItem, user_dto.builderProperties());
 		return builderDeviceSettingOuter(DeviceSetting_AdminPasswordOuter, config_sequence, item);
 	}
+	
+	/**
+		构建rf_2in1的配置修改
+     *  双频合一
+	 * @param config_sequence
+	 * @param extparams
+	 * @return
+	 * @throws Exception 
+	 */
+	public static String builderDSMultiCombineOuter(String config_sequence, String extparams)
+			throws Exception {
+		WifiDeviceSettingRf2in1DTO rf2in1_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingRf2in1DTO.class);
+		if(rf2in1_dto == null || StringUtils.isEmpty(rf2in1_dto.getRf_2in1())){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_ConfigSequenceRf2in1Outer, config_sequence, rf2in1_dto.getRf_2in1());
+	}
+	
 
 	/**
 	 * 修改上网方式配置()
@@ -1345,6 +1973,125 @@ public class DeviceHelper {
 		return builderDeviceSettingOuter(DeviceSetting_MMOuter, config_sequence, ds.toString());
 	}
 	
+	/**
+	 * 用户强制绑定设备的修改配置
+	 * @param config_sequence
+	 * @param dto
+	 * @return
+	 */
+	public static String builderDSKeyStatusOuter(DeviceSettingBuilderDTO dto){
+		String item = builderDeviceSettingItem(DeviceSetting_KeyStatusItem, dto.builderProperties());
+		return builderDeviceSettingOuter(DeviceSetting_KeyStatusOuter, Common_Config_Sequence, item);
+	}
+	
+	/**
+	 * 构建主网络开关修改配置multi
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return 
+	 */
+	public static String builderDSInterfaceMasterSwitchMultiOuter(String config_sequence, String extparams){
+		List<WifiDeviceSettingInterfaceDTO> interface_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingInterfaceDTO.class);
+		if(interface_dtos == null || interface_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+	
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingInterfaceDTO interface_dto : interface_dtos){
+			if(StringUtils.isEmpty(interface_dto.getName()) || !WifiDeviceHelper.isLegalSwitch(interface_dto.getEnable())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+
+			String item = builderDeviceSettingItem(DeviceSetting_Master_Switch, 
+					interface_dto.builderProperties(WifiDeviceSettingInterfaceDTO.BuilderType_InterfaceMasterSwitch));
+			items.append(item);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_InterfaceOuter, config_sequence, items.toString());
+	}
+	
+	/**
+	 * 构建主网络统一限速配置multi
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return 
+	 */
+	public static String builderDSInterfaceMasterLimitMultiOuter(String config_sequence, String extparams){
+		List<WifiDeviceSettingInterfaceDTO> interface_dtos = JsonHelper.getDTOList(extparams, WifiDeviceSettingInterfaceDTO.class);
+		if(interface_dtos == null || interface_dtos.isEmpty()){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		}
+	
+		StringBuffer items = new StringBuffer();
+		for(WifiDeviceSettingInterfaceDTO interface_dto : interface_dtos){
+			if(StringUtils.isEmpty(interface_dto.getName())){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+			
+			if(interface_dto.getUsers_tx_rate() < 0 || interface_dto.getUsers_rx_rate() < 0){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+			}
+
+			String item = builderDeviceSettingItem(DeviceSetting_Master_Limit, 
+					interface_dto.builderProperties(WifiDeviceSettingInterfaceDTO.BuilderType_InterfaceMasterLimit));
+			items.append(item);
+		}
+		return builderDeviceSettingOuter(DeviceSetting_InterfaceOuter, config_sequence, items.toString());
+	}
+	
+	/**
+	 * 构建主网络统一限速配置multi
+	 * @param config_sequence
+	 * @param extparams
+	 * @param ds_dto
+	 * @return 
+	 */
+	public static String builderDSAutoRebootOuter(String config_sequence, String extparams){
+		WifiDeviceSettingAutoRebootDTO ab_dto = JsonHelper.getDTO(extparams, WifiDeviceSettingAutoRebootDTO.class);
+		if(ab_dto == null)
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+		
+		if(WifiDeviceHelper.Enable.equals(ab_dto.getEnable()) && !DateTimeHelper.isValidDayTime(ab_dto.getTime()))
+			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
+
+		String item = builderDeviceSettingItem(DeviceSetting_AutoReboot, ab_dto.builderProperties());
+				
+		return builderDeviceSettingOuter(DeviceSetting_AutoRebootOuter, config_sequence, item);
+	}
+	
+	
+	/**
+	 * 解析设备的软件版本
+	 * 返回数组 0 大版本号 1 小版本号
+	 * AP106P06V1.3.2Build8606
+	 * AP106P07V1.3.2r1_TU
+	 * AP106P06V1.3.2Build8606_TU
+	 * @param orig_swver
+	 * @return
+	 */
+	/*public static String[] parseDeviceSwverVersion(String orig_swver){
+		try{
+	    	Pattern p = Pattern.compile("V(.*)(B|r)");
+	    	Matcher m = p.matcher(orig_swver);
+	    	String top_version = null;
+	    	while(m.find()){  
+	    		top_version = m.group(1);  
+	    	}
+	    	
+	    	p = Pattern.compile("Build(\\d+)");
+	    	m = p.matcher(orig_swver);
+	    	String bottom_version = null;
+	    	while(m.find()){  
+	    		bottom_version = m.group(1);  
+	    	}
+	    	System.out.println(top_version + "-" + bottom_version);
+	    	return new String[]{top_version, bottom_version};
+		}catch(Exception ex){
+			
+		}
+		return null;
+	}*/
 	
 	public static void main(String[] args){
 //		WifiDeviceSettingVapDTO v1 = new WifiDeviceSettingVapDTO();
@@ -1416,17 +2163,90 @@ public class DeviceHelper {
 			vap_dto.setAuth_key(auth_key);
 			vap_dto.setAuth_key_rsa("1234567890");
 		}
-		String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem,
-				vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
+		String item = builderDeviceSettingItem(DeviceSetting_VapPasswordItem,vap_dto.builderProperties(WifiDeviceSettingVapDTO.BuilderType_VapPassword));
 
 
 		System.out.println(item);
-		
+		/*		
 		
 		System.out.println(isNewOrigSwverDevice("AP104P06V1.2.12r2"));
 		
-		parseDeviceSwverVersion("AP106P06V1.2.15BuildYt");
+		String[] parseDeviceSwverVersion = parseDeviceSwverVersion("AP106P06V1.3.2Build8606_TU");
+		for(String aa:parseDeviceSwverVersion){
+			System.out.println("---:"+aa);
+		}
 		compareDeviceVersions("AP106P06V1.2.16Build8057", "AP106P06V1.2.15Build8057");
+		*/
+		
+		String[] array = {"AP106P07V1.3.2r1_TU","AP106P07V1.3.2r1_TU","AP106P06V1.3.2Build8606_TU","AP109P06V1.3.0_TC_NGT","CPE302P07V1.2.16r1","AP106P06V1.2.16Buildwaip_oldsytle"};
+		
+		/*
+		 * AP106P06V1.3.2Build8606
+		 * AP106P07V1.3.2r1_TU
+		 * AP106P06V1.3.2Build8606_TU*/
+		for(String orig:array){
+			Pattern p = Pattern.compile("V(.*)(B|r|_T|_N)");
+	    	Matcher m = p.matcher(orig);
+	    	String top_version = null;
+	    	while(m.find()){  
+	    		top_version = m.group(1);  
+	    	}
+	    	
+	    	p = Pattern.compile("Build(\\d+)|r(\\d+)");
+	    	m = p.matcher(orig);
+	    	String bottom_version = null;
+	    	while(m.find()){  
+	    		bottom_version = m.group();  
+	    	}
+	    	
+	    	p = Pattern.compile("_T(.*)");
+	    	m = p.matcher(orig);
+	    	String flag_version = null;
+	    	while(m.find()){  
+	    		flag_version = m.group(1);  
+	    	}
+	    	System.out.println("   :"+top_version +"   :"+bottom_version +"  :"+flag_version);
+		}
+		
+		System.out.println("~~~~~~~~~~~~~");
+		String Common_Spliter_Patterns = "[V|_]+";
+		for(String orig:array){
+			System.out.println(orig);
+			String[] split = orig.split(Common_Spliter_Patterns);
+			for(String s:split){
+				System.out.println(s);
+			}
+			System.out.println(split.length);
+		}
+		/*Pattern p = Pattern.compile("V(.*)(B|r)");
+    	Matcher m = p.matcher(array[0]);
+    	String top_version = null;
+    	while(m.find()){  
+    		top_version = m.group(1);  
+    	}
+    	
+    	p = Pattern.compile("Build|r(\\d+)");
+    	m = p.matcher(array[0]);
+    	String bottom_version = null;
+    	while(m.find()){  
+    		bottom_version = m.group();  
+    	}
+    	
+    	p = Pattern.compile("_(.*)");
+    	m = p.matcher(array[0]);
+    	String flag_version = null;
+    	while(m.find()){  
+    		flag_version = m.group(1);  
+    	}*/
+		String str = "one123";  
+        String regex = "(?<=one)(?=123)";  
+        String[] strs = str.split(regex);  
+        for(int i = 0; i < strs.length; i++) {  
+            System.out.printf("strs[%d] = %s%n", i, strs[i]);  
+        } 
+    	
+    	
+    	
 	}
 
 }

@@ -1,0 +1,153 @@
+package com.bhu.vas.business.ds.user.facade;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Service;
+
+import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
+import com.bhu.vas.api.rpc.user.dto.UserOAuthStateDTO;
+import com.bhu.vas.api.rpc.user.model.UserOAuthState;
+import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
+import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
+import com.bhu.vas.business.ds.user.service.UserOAuthStateService;
+import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.cores.helper.encrypt.Base64Helper;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
+
+@Service
+public class UserOAuthFacadeService {
+	@Resource
+	private UserService userService;
+	
+	@Resource
+	private UserOAuthStateService userOAuthStateService;
+
+	/**
+	 * 
+	 * @param uid
+	 * @param payment true 返回带支付帐号属性的相关数据， false 全部返回
+	 * @return
+	 */
+	public List<UserOAuthStateVTO> fetchRegisterIdentifies(Integer uid, boolean payment){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("uid", uid);
+		List<UserOAuthState> models = userOAuthStateService.findModelByModelCriteria(mc);
+		List<UserOAuthStateVTO> dtos = new ArrayList<UserOAuthStateVTO>();
+		if(!models.isEmpty()){
+			for(UserOAuthState model : models){
+				if(payment){
+					if(OAuthType.paymentSupported(model.getIdentify())){
+						dtos.add(model.getInnerModel().toVTO());
+					}
+				}else{
+					dtos.add(model.getInnerModel().toVTO());
+				}
+			}
+		}
+		return dtos;
+	}
+	
+	/*public List<UserOAuthStateDTO> fetchRegisterPaymentIdentifies(Integer uid){
+		List<UserOAuthStateDTO> dtos = fetchRegisterIdentifies(uid);
+		Iterator<UserOAuthStateDTO> iter = dtos.iterator();
+		while(iter.hasNext()){
+			UserOAuthStateDTO next = iter.next();
+			if(!OAuthType.paymentSupported(next.getIdentify())){
+				iter.remove();
+			}
+		}
+		return dtos;
+	}*/
+	
+	public UserOAuthStateVTO fetchRegisterIndetify(int uid,OAuthType type,boolean validatePayment){
+		if(validatePayment){
+			if(!type.isPayment()) return null;
+		}
+		UserOAuthStatePK pk = new UserOAuthStatePK(uid,type.getType());
+		UserOAuthState state = userOAuthStateService.getById(pk);
+		if(state != null){
+			return state.getInnerModel().toVTO();
+		}
+		return null;
+	}
+	
+	
+	public boolean removeIdentifies(Integer uid,String identify){
+		UserOAuthStatePK pk = new UserOAuthStatePK(uid,identify);
+		userOAuthStateService.deleteById(pk);
+		return true;
+	}
+	
+	/**
+	 * uid不可以为空
+	 * @param uid
+	 * @param identify
+	 * @param auid
+	 * @param nick
+	 * @param avatar
+	 * @return
+	 */
+	public UserOAuthStateVTO createOrUpdateIdentifies(Integer uid,String identify,String auid,String nick,String avatar){
+		if(uid == null || uid.intValue() == 0 || StringUtils.isEmpty(identify))
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"uid|identify"});
+		UserOAuthStatePK pk = new UserOAuthStatePK(uid,identify);
+		UserOAuthState oauthState = userOAuthStateService.getById(pk);
+		UserOAuthStateDTO dto = null;
+		if(oauthState != null){
+			dto = new UserOAuthStateDTO();
+			dto.setIdentify(identify);
+			dto.setAuid(auid);
+			if(StringUtils.isNotEmpty(nick))
+				dto.setNick(new String(Base64Helper.encode(nick.getBytes())));
+			dto.setAvatar(avatar);
+			oauthState.putInnerModel(dto);
+			userOAuthStateService.update(oauthState);
+		}else{
+			oauthState = new UserOAuthState();
+			oauthState.setId(pk);
+			oauthState.setAuid(auid);
+			dto = new UserOAuthStateDTO();
+			dto.setIdentify(identify);
+			dto.setAuid(auid);
+			if(StringUtils.isNotEmpty(nick))
+				dto.setNick(new String(Base64Helper.encode(nick.getBytes())));
+			dto.setAvatar(avatar);
+			oauthState.putInnerModel(dto);
+			userOAuthStateService.insert(oauthState);
+		}
+		return dto.toVTO();
+	}
+
+	public UserOAuthStateService getUserOAuthStateService() {
+		return userOAuthStateService;
+	}
+
+	
+/*	public UserSnsStateDTO updateUserSnsInfo(int uid, ApplicationIdentify identify, GeneralOAuth2AccessToken generalOAuth2AccessToken) throws Exception{
+		UserSnsStatePK pk = new UserSnsStatePK(uid,identify.toString());
+		UserSnsState model = userSnsStateService.getById(pk);
+		System.out.println("++++++++++++++ updateUserSnsInfo :" + model);
+		if(model != null){
+			System.out.println("++++++++++++++ getJUser :" + generalOAuth2AccessToken.getGeneralOAuth2User().getAuid());
+			UserSnsFriendDTO snsUserDto = applicationSupport.getJUser(identify, generalOAuth2AccessToken, generalOAuth2AccessToken.getGeneralOAuth2User().getAuid());
+			System.out.println("++++++++++++++ getJUser :" + snsUserDto);
+			if(snsUserDto != null){
+				UserSnsStateDTO dto = new UserSnsStateDTO();
+				dto.setAuid(snsUserDto.getAuid());
+				dto.setNick(snsUserDto.getNick());
+				dto.setAvatar(snsUserDto.getAvatar());
+				dto.setIdentify(identify.toString());
+				model.putInnerModel(dto);
+				userSnsStateService.update(model);
+				return dto;
+			}
+		}
+		return null;
+	}*/
+}

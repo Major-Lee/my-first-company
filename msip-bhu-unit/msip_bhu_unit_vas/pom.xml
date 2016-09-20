@@ -39,6 +39,20 @@
                 <groupId>com.bhu</groupId>
                 <artifactId>msip_bhu_business_asynmessage</artifactId>
         </dependency>
+        <dependency>
+                <groupId>com.bhu</groupId>
+                <artifactId>msip_bhu_business_springdata_search</artifactId>
+        </dependency>  
+     	 <!-- add by Jason 2016-07-04  Start-->
+        <dependency>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_ds_commdity</artifactId>
+        </dependency>
+      	<dependency>
+            <groupId>com.bhu</groupId>
+            <artifactId>msip_bhu_business_ds_tag</artifactId>
+		</dependency>
+        <!-- add by Jason 2016-07-04  E N D-->
         <!-- 
         <dependency>
             <groupId>com.smartwork</groupId>
@@ -50,10 +64,11 @@
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
         </dependency>
+        <!-- 
         <dependency>
             <groupId>com.github.sgroschupf</groupId>
             <artifactId>zkclient</artifactId>
-        </dependency>     
+        </dependency> -->     
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>

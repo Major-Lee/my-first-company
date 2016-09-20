@@ -31,6 +31,7 @@ public interface IAgentUserRpcService {
 			String sex,
 			
 			String org,
+			String bln,
 			String addr1,
 			String addr2,
 			String memo,
@@ -72,13 +73,14 @@ public interface IAgentUserRpcService {
 	 * @param remoteIp
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String device,String remoteIp);
+	public RpcResponseDTO<Map<String, Object>> userLogin(int countrycode, String acc,String pwd,String ut,String device,String remoteIp);
 	
 	
 	public RpcResponseDTO<AgentUserDetailVTO> userDetail(int uid,int tid);
 	public RpcResponseDTO<AgentUserDetailVTO> userModify(int uid,int tid,
 			String nick,
 			String org,
+			String bln,
 			String addr1,
 			String addr2,
 			String memo

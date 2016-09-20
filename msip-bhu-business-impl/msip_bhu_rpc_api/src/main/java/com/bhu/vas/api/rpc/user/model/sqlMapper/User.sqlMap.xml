@@ -14,12 +14,14 @@
     <!-- 
     <result property="plainpwd" column="plainpwd"/>
      -->
+    <result property="avatar" column="avatar"/> 
     <result property="locked" column="locked"/>
     <result property="validated" column="validated"/>
     <result property="sex" column="sex"/>
     <result property="birthday" column="birthday"/>
     
     <result property="org" column="org"/>
+    <result property="bln" column="bln"/>
     <result property="addr1" column="addr1"/>
     <result property="addr2" column="addr2"/>
     <result property="memo" column="memo"/> 
@@ -45,11 +47,13 @@
 	    	nick,
 	    	password,
 	    	utype,
+	    	avatar,
 	    	locked,
 	    	validated,
 	    	sex,
 	    	birthday,
 	    	org,
+	    	bln,
 	    	addr1,
 	    	addr2,
 	    	memo,
@@ -68,11 +72,13 @@
 	    	nick,
 	    	password,
 	    	utype,
+	    	avatar,
 	    	locked,
 	    	validated,
 	    	sex,
 	    	birthday,
 	    	org,
+	    	bln,
 	    	addr1,
 	    	addr2,
 	    	memo,
@@ -92,11 +98,13 @@
 	    	#{nick},
 	    	#{password},
 	    	#{utype},
+	    	#{avatar},
 	    	#{locked},
 	    	#{validated},
 	    	#{sex},
 	    	#{birthday},
 	    	#{org},
+	    	#{bln},
 	    	#{addr1},
 	    	#{addr2},
 	    	#{memo},
@@ -114,11 +122,13 @@
 	    	nick = #{nick},
 	    	password = #{password},
 	    	utype = #{utype},
+	    	avatar = #{avatar},
 	    	locked = #{locked},
 	    	validated = #{validated},
 	    	sex = #{sex},
 	    	birthday = #{birthday},
 	    	org = #{org},
+	    	bln = #{bln},
 	    	addr1 = #{addr1},
 	    	addr2 = #{addr2},
 	    	memo = #{memo},

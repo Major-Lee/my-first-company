@@ -10,6 +10,7 @@ public class AgentUserDetailVTO implements java.io.Serializable{
 	private boolean reg = false;
 	private int utype;
 	private String org;
+	private String bln;
 	private String addr1;
 	private String addr2;
 	private String memo;
@@ -20,6 +21,7 @@ public class AgentUserDetailVTO implements java.io.Serializable{
 			String mobileno, 
 			String nick,
 			String org,
+			String bln,
 			String addr1,
 			String addr2,
 			String memo,
@@ -32,6 +34,7 @@ public class AgentUserDetailVTO implements java.io.Serializable{
 		this.nick = nick;
 		
 		this.org = org;
+		this.bln = bln;
 		this.addr1 = addr1;
 		this.addr2 = addr2;
 		this.memo = memo;
@@ -98,6 +101,12 @@ public class AgentUserDetailVTO implements java.io.Serializable{
 	}
 	public void setMemo(String memo) {
 		this.memo = memo;
+	}
+	public String getBln() {
+		return bln;
+	}
+	public void setBln(String bln) {
+		this.bln = bln;
 	}
 	
 }

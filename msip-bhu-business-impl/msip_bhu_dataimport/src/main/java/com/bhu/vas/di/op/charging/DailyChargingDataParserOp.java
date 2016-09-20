@@ -6,7 +6,7 @@ import java.io.UnsupportedEncodingException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.bhu.vas.di.business.datainit.charging.Step00ParserLogService;
+import com.bhu.vas.di.business.datainit.charging.Step00ReadLogService;
 import com.bhu.vas.di.business.datainit.charging.Step01Result2FileService;
 import com.bhu.vas.di.business.datainit.charging.Step02DeviceWholeDayRecordService;
 import com.bhu.vas.di.business.datainit.charging.Step04DeviceWholeMonthRecordService;
@@ -25,7 +25,7 @@ public class DailyChargingDataParserOp {
 		//String date = "2015-09-10";
 		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
 		
-		Step00ParserLogService step00ParserLogService = (Step00ParserLogService)ctx.getBean("step00ParserLogService");
+		Step00ReadLogService step00ReadLogService = (Step00ReadLogService)ctx.getBean("step00ReadLogService");
 		Step01Result2FileService step01Result2FileService = (Step01Result2FileService)ctx.getBean("step01Result2FileService");
 		Step02DeviceWholeDayRecordService step02DeviceWholeDayRecordService = (Step02DeviceWholeDayRecordService)ctx.getBean("step02DeviceWholeDayRecordService");
 		
@@ -33,18 +33,19 @@ public class DailyChargingDataParserOp {
 		Step05AgentWholeDayRecordService step05AgentWholeDayRecordService = (Step05AgentWholeDayRecordService)ctx.getBean("step05AgentWholeDayRecordService");
 		Step10AgentDeviceSimulateDateGenService step10AgentDeviceSimulateDateGenService = (Step10AgentDeviceSimulateDateGenService)ctx.getBean("step10AgentDeviceSimulateDateGenService");
 		long ts1 = System.currentTimeMillis();
+		String[] dates = new String[]{"2015-09-10"};
 		//String[] dates = new String[]{"2015-09-10","2015-09-11","2015-09-12","2015-09-13"};
 		//String[] dates = new String[]{"2015-09-14","2015-09-15","2015-09-16","2015-09-17"};
 		//String[] dates = new String[]{"2015-09-18","2015-09-19","2015-09-20","2015-09-21"};
-		String[] dates = new String[]{"2015-09-22"};
+		//String[] dates = new String[]{"2015-09-22"};
 		
 		for(String date:dates){
 			//DailyChargingDataParserOp op = new DailyChargingDataParserOp();
-			step00ParserLogService.reset();
-			step00ParserLogService.parser(date);
-			step00ParserLogService.processEnd(step00ParserLogService.getDevice_records());
-			System.out.println("Device_records size:"+step00ParserLogService.getDevice_records().size());
-			System.out.println("Device_handset_records size:"+step00ParserLogService.getDevice_handset_records().size());
+			step00ReadLogService.reset();
+			step00ReadLogService.parser(date);
+			step00ReadLogService.processEnd(step00ReadLogService.getDevice_records());
+			System.out.println("Device_records size:"+step00ReadLogService.getDevice_records().size());
+			System.out.println("Device_handset_records size:"+step00ReadLogService.getDevice_handset_records().size());
 			
 			/*int handsets = 0;
 			Iterator<Entry<String, Map<String, LineRecords>>> iterator = step00ParserLogService.getDevice_handset_records().entrySet().iterator();
@@ -55,19 +56,19 @@ public class DailyChargingDataParserOp {
 			System.out.println(handsets);*/
 			long ts2 = System.currentTimeMillis();
 			//step10AgentDeviceSimulateDateGenService.deviceDataGen(date, step00ParserLogService.getDevice_records());
-			System.out.println(String.format("Step1 Completed cost %s ms", ts2-ts1));
+			/*System.out.println(String.format("Step1 Completed cost %s ms", ts2-ts1));
 			//step01Result2FileService.records2File(date, step00ParserLogService.getDevice_records(), step00ParserLogService.getDevice_handset_records());
 			long ts3 = System.currentTimeMillis();
-			step02DeviceWholeDayRecordService.deviceRecord2Mongo(date, step00ParserLogService.getDevice_records(), step00ParserLogService.getDevice_handset_records());
+			step02DeviceWholeDayRecordService.deviceRecord2Mongo(date, step00ReadLogService.getDevice_records(), step00ReadLogService.getDevice_handset_records());
 			long ts4 = System.currentTimeMillis();
 			System.out.println(String.format("Step2 Completed cost %s ms", ts4-ts3));
-			step04DeviceWholeMonthRecordService.deviceMonthlyRecord2Mongo(date, step00ParserLogService.getDevice_records());
+			step04DeviceWholeMonthRecordService.deviceMonthlyRecord2Mongo(date, step00ReadLogService.getDevice_records());
 			long ts5 = System.currentTimeMillis();
 			System.out.println(String.format("Step4 Completed cost %s ms", ts5-ts4));
 			
-			step05AgentWholeDayRecordService.agentDailyRecord2Mongo(date,step00ParserLogService.getDevice_records(),step00ParserLogService.getDevice_handset_records());
+			step05AgentWholeDayRecordService.agentDailyRecord2Mongo(date,step00ReadLogService.getDevice_records(),step00ReadLogService.getDevice_handset_records());
 			long ts6 = System.currentTimeMillis();
-			System.out.println(String.format("Step5 Completed cost %s ms", ts6-ts5));
+			System.out.println(String.format("Step5 Completed cost %s ms", ts6-ts5));*/
 		}
 	}
 }

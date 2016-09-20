@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 public class BusinessStatisticsLogger {
 	private static final Logger logger = LoggerFactory.getLogger(BusinessStatisticsLogger.class);
 	private static final String DynaQueue_Recv_Template = "DynaQueue[%s] Recv:%s";
+	private static final String AsyncQueue_Recv_Template = "AsyncQueue Recv:%s";
 	private static final String Queue_Recv_Template = "Queue Recv:%s";
 	private static final String Topic_Recv_Template = "Topic Recv:%s";
 	/*
@@ -23,6 +24,12 @@ public class BusinessStatisticsLogger {
 		//System.out.println("+++++++++++++++ doActionMessageLog : " + json);
 		logger.info(String.format(DynaQueue_Recv_Template,ctx, messagejson));
 	}
+	public static void doQueueAsyncMessageLog(String messagejson){
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(DeliverMessageType.AC.getPrefix(), uid, ActionMessageFactoryBuilder.toJsonHasPrefix(new UserSnsShareDTO(uid,snsto,mid,sharemark,sharetime)));
+		//System.out.println("+++++++++++++++ doActionMessageLog : " + json);
+		logger.info(String.format(AsyncQueue_Recv_Template, messagejson));
+	}
+	
 	
 	public static void doActionQueueMessageLog(String messagejson){
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(DeliverMessageType.AC.getPrefix(), uid, ActionMessageFactoryBuilder.toJsonHasPrefix(new UserSnsShareDTO(uid,snsto,mid,sharemark,sharetime)));

@@ -5,10 +5,7 @@ import com.bhu.vas.api.rpc.agent.vto.AgentDeviceStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.AgentRevenueStatisticsVTO;
 import com.bhu.vas.api.rpc.agent.vto.DailyRevenueRecordVTO;
 import com.bhu.vas.api.rpc.agent.vto.SettlementPageVTO;
-import com.bhu.vas.api.vto.agent.AgentBulltinBoardVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceClaimVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceImportLogVTO;
-import com.bhu.vas.api.vto.agent.AgentDeviceVTO;
+import com.bhu.vas.api.vto.agent.*;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
@@ -16,29 +13,16 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
  */
 public interface IAgentRpcService {
 
-      String PATH_INPUT_PREFIX = "/BHUData/agent/input";
-      String PATH_OUTPUT_PREFIX = "/BHUData/agent/output";
+    String PATH_INPUT_PREFIX = "/BHUData/agent/input";
+    String PATH_OUTPUT_PREFIX = "/BHUData/agent/output";
+    String PATH_INVOICE_PREFIX = "/BHUData/agent/invoice";
+    String PATH_RECEIPT_PREFIX = "/BHUData/agent/receipt";
 
-//    /**
-//     * 生成代理商
-//     * @param agentDeviceClaim
-//     */
-//    void createAgent(AgentDeviceClaim agentDeviceClaim);
-//
     /**
      * 设备认领代理商
      * @param sn
      */
-    int claimAgentDevice(String sn);
-
-//    /**
-//     * 代理商设备列表
-//     * @param uid
-//     * @param pageNo
-//     * @param pageSize
-//     * @return
-//     */
-//    TailPage<AgentDeviceClaimVTO> pageClaimedAgentDeviceByUid(int uid, int pageNo, int pageSize);
+    int claimAgentDevice(String sn, String mac, String hdtype);
 
 
     /**
@@ -58,7 +42,8 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    AgentDeviceVTO pageClaimedAgentDevice(int status, int pageNo, int pageSize);
+    AgentDeviceVTO pageClaimedAgentDevice(int uid, int status, int pageNo, int pageSize);
+
 
     /**
      * 获取具体代理商未认领的设备
@@ -67,7 +52,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize);
+    AgentDeviceVTO pageUnClaimAgentDeviceByUid(int uid, int pageNo, int pageSize);
 
     /**
      * 获取未认领的设备
@@ -75,7 +60,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceClaimVTO> pageUnClaimAgentDevice(int pageNo, int pageSize);
+    AgentDeviceVTO pageUnClaimAgentDevice(int pageNo, int pageSize);
 
     /**
      * 代理商导入设备
@@ -85,7 +70,20 @@ public interface IAgentRpcService {
      * @param outputPath excel文件位置
      * @param originName 文件原始名称
      */
-    void importAgentDeviceClaim(int uid, int aid, String inputPath, String outputPath, String originName);
+    AgentDeviceImportLogVTO importAgentDeviceClaim(int uid, int aid, int wid,
+                                                   String inputPath, String outputPath,
+                                                   String originName, String remark);
+
+
+    /**
+     * 获取单条导入记录
+     * @param uid
+     * @param logId
+     * @return
+     */
+    AgentDeviceImportLogVTO findAgentDeviceImportLogById(int uid, long logId);
+
+
 
 
     /**
@@ -94,7 +92,7 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int pageNo, int pageSize);
+    TailPage<AgentDeviceImportLogVTO> pageAgentDeviceImportLog(int uid, int pageNo, int pageSize);
 
     /**
      * 代理商首页面的统计数据，包括本月收入，上月收入，昨日收入，总上线设备数，总收入数以及图表数据
@@ -102,7 +100,7 @@ public interface IAgentRpcService {
      * @param enddate 截止日期
      * @return
      */
-    public RpcResponseDTO<AgentRevenueStatisticsVTO> statistics(int uid, String enddate);
+    RpcResponseDTO<AgentRevenueStatisticsVTO> statistics(int uid, String enddate);
     
     /**
      * 代理商首页面首页面 每日历史收益列表
@@ -112,7 +110,7 @@ public interface IAgentRpcService {
      * @param pageSize 
      * @return
      */
-    public RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> pageHistoryRecords(int uid,String dateEndStr,int pageNo, int pageSize);
+    RpcResponseDTO<TailPage<DailyRevenueRecordVTO>> pageHistoryRecords(int uid,String dateEndStr,int pageNo, int pageSize);
 
     /**
      * 代理商结算列表页面
@@ -122,20 +120,20 @@ public interface IAgentRpcService {
      * @param pageSize
      * @return
      */
-    public RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus,int pageNo, int pageSize);
+    RpcResponseDTO<SettlementPageVTO> pageSettlements(int operator_user,int viewstatus,String q,String sort_field,boolean desc,int pageNo, int pageSize);
     
     /**
      * 获取代理商代理设备的所有数量、在线数量、离线数量
      * @param agentuser
      * @return
      */
-    public RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser);
+    RpcResponseDTO<AgentDeviceStatisticsVTO> fetchAgentDeviceStatistics(int agentuser);
     /**
      * 获取公告
      * @param bid
      * @return
      */
-    AgentBulltinBoardVTO findAgentBulltinBoardById(long bid);
+    AgentBulltinBoardVTO findAgentBulltinBoardById(int uid, long bid);
 
     /**
      * 获取代理商公告
@@ -147,4 +145,60 @@ public interface IAgentRpcService {
     TailPage<AgentBulltinBoardVTO> pageAgentBulltinBoardByUid(int uid, int pageNo, int pageSize);
 
 
+    /**
+     * 获取仓库管理员
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    TailPage<UserVTO> pageSellorVTO(int uid, int pageNo, int pageSize);
+
+    /**
+     * 获取代理商
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    TailPage<UserAgentVTO> pageUserAgentVTO(int uid, int pageNo, int pageSize);
+
+
+    /**
+     * 确定导入完毕
+     * @param uid
+     * @param logId
+     */
+    boolean updateAgentDeviceImport(int uid, int logId);
+
+    /**
+     * 取消导入
+     * @param uid
+     * @param logId
+     * @return
+     */
+    boolean cancelAgentDeviceImport(int uid, int logId);
+
+
+    /**
+     *
+     * @param uid
+     * @param aid
+     * @param amount
+     * @param invoice
+     * @param receipt
+     * @param remark
+     * @return
+     */
+    RpcResponseDTO<Boolean> postAgentFinancialSettlement(int uid, int aid, String amount, String invoice, String receipt, String remark);
+
+
+    /**
+     * 获取结算记录列表
+     * @param uid
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    TailPage<AgentFinancialSettlementVTO> pageAgentFinancialSettlementVTO(int uid, int pageNo, int pageSize);
 }

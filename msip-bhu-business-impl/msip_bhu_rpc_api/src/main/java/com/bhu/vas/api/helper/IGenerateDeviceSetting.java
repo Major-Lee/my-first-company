@@ -1,5 +1,7 @@
 package com.bhu.vas.api.helper;
 
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
+
 public interface IGenerateDeviceSetting {
 	
 	//DeviceFacadeService implements this
@@ -11,5 +13,5 @@ public interface IGenerateDeviceSetting {
 	 * @return
 	 * @throws Exception 
 	 */
-	public String generateDeviceSetting(String mac, OperationDS ods, String extparams) throws Exception;
+	public String generateDeviceSetting(String mac, OperationDS ods, String extparams,DeviceStatusExchangeDTO device_status) throws Exception;
 }

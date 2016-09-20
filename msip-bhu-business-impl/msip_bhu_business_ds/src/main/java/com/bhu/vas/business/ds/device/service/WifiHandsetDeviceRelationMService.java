@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
@@ -29,10 +26,11 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
  * @author tangzichao
  *
  */
-@Service
+//@Service
+@Deprecated
 public class WifiHandsetDeviceRelationMService {
 	
-	@Resource
+	//@Resource
 	private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
 	
 //	@Resource
@@ -169,7 +167,7 @@ public class WifiHandsetDeviceRelationMService {
 
         }
 
-        WriteResult writeResult = wifiHandsetDeviceRelationMDao.upsert(query, update);
+        wifiHandsetDeviceRelationMDao.upsert(query, update);
 
     }
 

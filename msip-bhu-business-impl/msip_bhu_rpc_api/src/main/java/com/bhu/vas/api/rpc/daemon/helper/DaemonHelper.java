@@ -3,12 +3,10 @@ package com.bhu.vas.api.rpc.daemon.helper;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.helper.CMDBuilder;
-import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
-import com.smartwork.msip.cores.helper.StringHelper;
 
 public class DaemonHelper {
 	public static void afterDeviceOnline(String mac,boolean needLocationQuery,List<String> payloads,
@@ -39,12 +37,12 @@ public class DaemonHelper {
 			payloads.add(CMDBuilder.builderDeviceLocationNotifyQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence()));
 		}
 		//开启或关闭wiffsinffer
-		//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
+		//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamDeviceRemoteControlDTO.Start_Sta_Sniffer:ParamDeviceRemoteControlDTO.Stop_Sta_Sniffer)));
 /*		if(needWiffsniffer){
 			//开启wiffsinffer
-			//String CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)
+			//String CMDBuilder.builderDeviceWifiSnifferSetting(wifiId,on?ParamDeviceRemoteControlDTO.Start_Sta_Sniffer:ParamDeviceRemoteControlDTO.Stop_Sta_Sniffer)
 			payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, WifiDeviceHelper.WifiSniffer_Start_Sta_Sniffer));
-			//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)));
+			//payloads.add(CMDBuilder.builderDeviceWifiSnifferSetting(mac, CMDBuilder.builderDeviceWifiSnifferSetting(mac,needWiffsniffer?ParamDeviceRemoteControlDTO.Start_Sta_Sniffer:ParamDeviceRemoteControlDTO.Stop_Sta_Sniffer)));
 		}*/
 		
 //		if(StringUtils.isNotEmpty(dhcpcStatusQuery_interface)){
@@ -77,14 +75,15 @@ public class DaemonHelper {
 	public static void afterUserSignedon(String mac,boolean needDeviceUsedQuery, IDaemonRpcService daemonRpcService){
 		List<String> payloads = new ArrayList<String>();
 		//用户登录后 给其绑定的设备mac地址发送设备使用情况
-		if(needDeviceUsedQuery)
+		//由于此部分数据没有别的地方显示，暂时注释掉 commented by EmondLee @20160526
+		/*if(needDeviceUsedQuery)
 			payloads.add(CMDBuilder.builderDeviceUsedStatusQuery(mac));//(mac, CMDBuilder.device_speed_taskid_fragment.getNextSequence()));
-		//查询用户绑定设备的定时开关状态
+*/		//查询用户绑定设备的定时开关状态
 		payloads.add(CMDBuilder.autoBuilderCMD4Opt(OperationCMD.DeviceWifiTimerQuery/*.getNo()*/, mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), null));
 		//可能需要用户登录后根据其个人绑定的设备，下发配置开启wifi探测
 		/*if(needWiffsniffer){
 			//开启wiffsinffer
-			CMDBuilder.builderDeviceWifiSnifferSetting(mac,on?ParamWifisinfferDTO.Start_Sta_Sniffer:ParamWifisinfferDTO.Stop_Sta_Sniffer)
+			CMDBuilder.builderDeviceWifiSnifferSetting(mac,on?ParamDeviceRemoteControlDTO.Start_Sta_Sniffer:ParamDeviceRemoteControlDTO.Stop_Sta_Sniffer)
 		}*/
 		
 		//获取设备测速
@@ -106,6 +105,10 @@ public class DaemonHelper {
 		daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 	}
 	
+	public static void daemonMultiCmdsDown(IDaemonRpcService daemonRpcService,DownCmds... downCmds){
+		daemonRpcService.wifiMultiDevicesCmdsDown(downCmds);//.wifiDeviceCmdDown(null, mac, cmd);
+	}
+	
 //	public static void deviceTerminalsQuery(String mac,List<String> vapnames,IDaemonRpcService daemonRpcService){
 //		if(vapnames != null && !vapnames.isEmpty()){
 //			List<String> cmds = CMDBuilder.builderDeviceTerminalsQueryWithAutoTaskid(mac, vapnames);
@@ -114,9 +117,10 @@ public class DaemonHelper {
 //	}
 	
 	//上报周期10秒一次
-	public static final int DeviceRateQuery_Period = 5;
+	public static final int DeviceRateQuery_Period = 1;
 	//上报时长5分钟
-	public static final int DeviceRateQuery_Duration = 300;
+//	public static final int DeviceRateQuery_Duration = 300;
+	public static final int DeviceRateQuery_Duration = 2;
 	//wan口的实时速率
 	public static final String Wan_Interface_Name = "wan";
 	
@@ -138,14 +142,15 @@ public class DaemonHelper {
 	}
 	
 	public static void deviceTerminalsRateQuery(String mac,IDaemonRpcService daemonRpcService){
-		deviceTerminalsRateQuery(mac, DeviceRateQuery_Period, DeviceRateQuery_Duration, daemonRpcService);
+		String cmd = CMDBuilder.builderDeviceTerminalsQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence());
+		daemonCmdDown(mac, cmd, daemonRpcService);
 	}
 	
 	public static void deviceTerminalsRateQuery(String mac,int period, int duration, IDaemonRpcService daemonRpcService){
 		String cmd = CMDBuilder.builderDeviceTerminalsQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(), 
 				period, duration);
 		daemonCmdDown(mac, cmd, daemonRpcService);
-	}
+	}	
 	
 	/**
 	 * 获取设备的系统信息
@@ -162,7 +167,7 @@ public class DaemonHelper {
 //	//设备测速数据上报间隔2秒
 //	public static final int DeviceSpeedQuery_Period = 2;
 	
-	public static void deviceSpeedQuery(String mac, int type, int period, int duration, IDaemonRpcService daemonRpcService){
+/*	public static void deviceSpeedQuery(String mac, int type, int period, int duration, IDaemonRpcService daemonRpcService){
 		String download_url = StringHelper.EMPTY_STRING_GAP;
 		String upload_url = StringHelper.EMPTY_STRING_GAP;
 		switch(type){
@@ -183,7 +188,7 @@ public class DaemonHelper {
 		String cmd = CMDBuilder.builderDeviceSpeedNotifyQuery(mac, CMDBuilder.auto_taskid_fragment.getNextSequence()
 				,period, duration, download_url, upload_url);
 		daemonCmdDown(mac, cmd, daemonRpcService);
-	}
+	}*/
 	
 	public static void deviceSettingModify(String mac, String paylod, IDaemonRpcService daemonRpcService){
 		String cmd = CMDBuilder.builderDeviceSettingModify(mac, CMDBuilder.auto_taskid_fragment.getNextSequence(),

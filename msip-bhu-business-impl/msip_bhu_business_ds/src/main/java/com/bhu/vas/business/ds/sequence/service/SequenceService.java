@@ -15,6 +15,7 @@ import com.bhu.vas.api.rpc.sequence.helper.ISequenceGenable;
 import com.bhu.vas.api.rpc.sequence.model.Sequence;
 import com.bhu.vas.business.ds.sequence.dao.SequenceDao;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.cores.orm.logic.puresql.CustomizedPureSql;
 import com.smartwork.msip.cores.orm.service.EntityService;
 import com.smartwork.msip.localunit.RandomData;
 /**
@@ -70,7 +71,8 @@ public class SequenceService extends EntityService<String,Sequence,SequenceDao>{
 		logger.info("SequenceService getNextID By {}",name);
     	Sequence o = new Sequence(name, -1);
     	try{
-    		//this.getEntityDao().begin();
+    		this.getEntityDao().executePureSql(CustomizedPureSql.build("SET AUTOCOMMIT=0;"));
+    		this.getEntityDao().executePureSql(CustomizedPureSql.build("BEGIN WORK;"));
     		o = this.getById(name);
         	if(o == null){
         		Integer start = tableSequenceStart.get(name);
@@ -94,6 +96,8 @@ public class SequenceService extends EntityService<String,Sequence,SequenceDao>{
         	}    		
     	}finally{
     		//this.getEntityDao().commit();
+    		this.getEntityDao().executePureSql(CustomizedPureSql.build("COMMIT WORK;"));
+    		this.getEntityDao().executePureSql(CustomizedPureSql.build("SET AUTOCOMMIT=1;"));
     	}
     }
 	

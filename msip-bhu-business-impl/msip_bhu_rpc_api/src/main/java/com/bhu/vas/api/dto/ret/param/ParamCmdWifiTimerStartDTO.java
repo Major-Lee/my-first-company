@@ -7,8 +7,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 
 /**
- * 设备配置信息的ad
- * 广告信息配置
+ * wifi定时开关
  * @author edmond
  *
  */

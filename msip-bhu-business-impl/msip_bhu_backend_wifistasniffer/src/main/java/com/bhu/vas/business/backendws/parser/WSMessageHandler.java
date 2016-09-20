@@ -1,4 +1,4 @@
-package com.bhu.vas.business.backendws.parser;
+/*package com.bhu.vas.business.backendws.parser;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -25,7 +25,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePr
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.UserTerminalFocusHashService;
 import com.bhu.vas.push.business.PushService;
@@ -33,13 +32,13 @@ import com.smartwork.async.messagequeue.kafka.parser.iface.IMessageHandler;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 
-/**
+*//**
  * 周边探测终端handle
  * 1) 周边探测业务数据持久化
  * 2) 周边探测push发送
  * @author tangzichao
  *
- */
+ *//*
 public class WSMessageHandler implements IMessageHandler<byte[]>{
 	private final Logger logger = LoggerFactory.getLogger(WSMessageHandler.class);
 
@@ -76,12 +75,12 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 		
 	}
 	
-	/**
+	*//**
 	 * 同一个设备mac的探测数据
 	 * 1)处理终端探测流水记录
 	 * 2)处理最近的探测终端和最热的探测终端
 	 * @param message
-	 */
+	 *//*
 	public void doBusinessWifistasnifferData(WifistasnifferRddto dto){
 		String mac = dto.getMac();
 		try{
@@ -113,12 +112,12 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 		}
 	}
 	
-	/**
+	*//**
 	 * 处理最近的探测终端和最热的探测终端
 	 * 只针对上线终端消息
 	 * @param mac
 	 * @param wifistasnifferOnlines
-	 */
+	 *//*
 	public void doWifiStasnifferRecentAndHot(String mac, Set<WifistasnifferItemRddto> wifistasnifferOnlines){
 		int onlines_size = wifistasnifferOnlines.size();
 		if(onlines_size == 0) return;
@@ -137,7 +136,7 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 			incr_sniffcounts[cursor] = 1d;
 			cursor++;
 			this.doTerminalDeviceTypeCount(mac, item_dto.getMac());
-			this.doTerminalLastTime(mac, item_dto.getMac(), item_dto.getSnifftime());
+			//this.doTerminalLastTime(mac, item_dto.getMac(), item_dto.getSnifftime());
 		}
 		//录入最近出现的终端记录
 		TerminalRecentSortedSetService.getInstance().addTerminalRecents(mac, hd_macs, snifftimes);
@@ -145,12 +144,12 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 		TerminalHotSortedSetService.getInstance().addTerminalHots(mac, hd_macs, incr_sniffcounts);
 	}
 	
-	/**
+	*//**
 	 * 根据终端mac分析终端设备型号
 	 * 统计周边探测的型号次数
 	 * @param mac
 	 * @param hd_mac
-	 */
+	 *//*
 	public void doTerminalDeviceTypeCount(String mac, String hd_mac){
 		if(!StringUtils.isEmpty(mac) && !StringUtils.isEmpty(hd_mac)){
 			String scn = MacDictParserFilterHelper.prefixMactch(hd_mac,true,false);
@@ -159,24 +158,24 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 			}
 		}
 	}
-	/**
+	*//**
 	 * 记录终端最后探测时间
 	 * @param mac
 	 * @param hd_mac
 	 * @param snifftime
-	 */
+	 *//*
 	public void doTerminalLastTime(String mac, String hd_mac, long snifftime){
 		if(!StringUtils.isEmpty(mac) && !StringUtils.isEmpty(hd_mac)){
 			TerminalLastTimeStringService.getInstance().set(mac, hd_mac, snifftime);
 		}
 	}
 	
-	/**
+	*//**
 	 * 处理终端探测流水记录
 	 * @param mac 设备mac
 	 * @param wifistasnifferOnlines 上线终端
 	 * @param wifistasnifferOfflines 下线终端
-	 */
+	 *//*
 	public void doWifiStasnifferDetail(String mac, Set<WifistasnifferItemRddto> wifistasnifferOnlines,
 			Set<WifistasnifferItemRddto> wifistasnifferOfflines){
 		Set<WifistasnifferItemRddto> merge_onlines = new HashSet<WifistasnifferItemRddto>(wifistasnifferOnlines);
@@ -202,7 +201,7 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 					wifistasnifferOnlines.remove(item_dto);
 				}
 			}
-/*			for(WifistasnifferItemRddto item_dto : merge_onlines){
+			for(WifistasnifferItemRddto item_dto : merge_onlines){
 				//String detail_item_value = WifiStasnifferBuilder.generateDetailItemValue(item_dto);
 				//if(!StringUtils.isEmpty(detail_item_value)){
 				TerminalDetailDTO online_dto = new TerminalDetailDTO();
@@ -210,7 +209,7 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 				TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOnline(mac, item_dto.getMac(),
 						online_dto);
 				//}
-			}*/
+			}
 		}
 		
 		//处理终端流水下线情况
@@ -235,11 +234,11 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 	}
 	
 	
-	/**
+	*//**
 	 * 处理同一个设备下的终端探测数据的push消息
 	 * @param dto
 	 * @return
-	 */
+	 *//*
 	public void doPushMessage(WifistasnifferRddto dto){
 		String mac = dto.getMac();
 		try{
@@ -264,14 +263,14 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 
 	
 	
-	/**
+	*//**
 	 * 对探测的终端进行过滤
 	 * 1：终端上线数据
 	 * 2：终端被用户关注
 	 * 3：终端push延迟过滤
 	 * @param dto
 	 * @return
-	 */
+	 *//*
 	public List<HandsetDeviceWSOnlinePushDTO> filtersNeedPushItems(WifistasnifferRddto dto, 
 			DeviceMobilePresentDTO mobile_present_dto){
 		if(dto == null) return null;
@@ -331,11 +330,11 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 		return push_dtos;
 	}
 	
-	/**
+	*//**
 	 * 发送终端探测push消息
 	 * 并且加入延迟标记
 	 * @param push_dtos
-	 */
+	 *//*
 	public void wsMessagePush(List<HandsetDeviceWSOnlinePushDTO> push_dtos, DeviceMobilePresentDTO mobile_present_dto){
 		if(push_dtos == null || push_dtos.isEmpty()) return;
 		
@@ -348,3 +347,4 @@ public class WSMessageHandler implements IMessageHandler<byte[]>{
 		}
 	}
 }
+*/

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration>
+	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
+	
+	<property name="log.base" value="/BHUData/logs/weblogs/${Dtomcat.instanceno}/msip_bhu_payment_rest" />
+	<!-- 
+	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
+	 -->
+	<jmxConfigurator />
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<Encoding>UTF-8</Encoding>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="service" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}.service.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd_HH}.service.zip</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+	<appender name="core" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<File>${log.base}.core.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd_HH}.core.zip</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<logger name="com.bhu.vas.web.service" additivity="false" level="INFO">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="service" />
+	</logger>
+	
+	<logger name="com.bhu.vas.web.payment" additivity="false" level="INFO">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="core" />
+	</logger>
+	<root level="INFO">
+		<appender-ref ref="stdout" />
+	</root> 
+</configuration>
+

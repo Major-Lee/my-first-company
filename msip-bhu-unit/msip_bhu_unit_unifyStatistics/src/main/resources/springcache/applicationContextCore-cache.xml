@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd" default-lazy-init="true">
+	<!-- local Ehcached defined-->
+	<!--
+	<bean id="coreCacheService" class="com.sinousa.msip.cores.cache.impl.ehcache.EhCacheService">
+        <property name="nullMode" value="false"/>
+    </bean> 
+    
+	<bean id="testCacheService" class="com.huanju8.smartwork.cores.cache.impl.ehcache.EhCacheService">
+        <property name="nullMode" value="true"/>
+    </bean>
+    -->
+    <!-- local Spy Memcached defined
+    <bean id="coreCacheService" class="com.sinousa.msip.cores.cache.impl.memcached.spy.SpyMemCacheService">
+        <property name="serverURLs" value="localhost:11211"/>
+        <property name="nullMode" value="false"/>
+    </bean>
+    -->
+    <!-- 
+    <bean id="coreCacheService" class="com.et.msip.cores.cache.entitycache.impl.ehcache.EhCacheService">
+        <property name="nullMode" value="false"/>
+    </bean>  -->
+    <!--   local Alisoft Memcached defined   -->
+    <bean id="coreCacheService" class="com.smartwork.msip.cores.cache.entitycache.impl.memcached.alisoft.AliMemCacheService">
+        <property name="configFile" value="deploy/cached/memcached.xml"/>
+        <property name="nullMode" value="false"/>
+    </bean>
+    
+    <!-- for sping ver lower then 3.0
+    <bean name="xmemcachedClient"
+		class="net.rubyeye.xmemcached.utils.XMemcachedClientFactoryBean" destroy-method="shutdown">
+		<property name="servers">
+			<value>${memcached.servers}</value>
+		</property>
+		
+		<property name="connectionPoolSize" value="${memcached.poolsize}"/>
+		<property name="commandFactory">
+		    <bean class="net.rubyeye.xmemcached.command.BinaryCommandFactory"></bean>
+		 	<bean class="net.rubyeye.xmemcached.command.TextCommandFactory"></bean>
+		</property>
+		<property name="sessionLocator">
+			<bean class="net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator"></bean>
+		</property>
+		<property name="transcoder">
+			<bean class="net.rubyeye.xmemcached.transcoders.SerializingTranscoder" />
+		</property>
+		<property name="bufferAllocator">
+			<bean class="net.rubyeye.xmemcached.buffer.SimpleBufferAllocator"></bean>
+		</property>
+		<property name="failureMode" value="true"/>
+	</bean>
+	 -->
+	 <!-- for sping ver lower then 3.0  
+	 <bean id="coreCacheService" class="com.et.msip.cores.cache.entitycache.impl.memcached.xmem.XMemCacheService">
+        <property name="client" ref="xmemcachedClient"/>
+        <property name="nullMode" value="false"/>
+    </bean>
+    <bean name="memcachedClientBuilder" class="net.rubyeye.xmemcached.XMemcachedClientBuilder">
+        <constructor-arg>
+               <list>
+                <bean class="java.net.InetSocketAddress">
+                    <constructor-arg>
+                            <value>localhost</value>
+                    </constructor-arg>
+                    <constructor-arg>
+                            <value>11211</value>
+                    </constructor-arg>
+                </bean>
+                <bean class="java.net.InetSocketAddress">
+                    <constructor-arg>
+                            <value>localhost</value>
+                    </constructor-arg>
+                    <constructor-arg>
+                            <value>11212</value>
+                    </constructor-arg>
+                </bean>
+               </list>
+        </constructor-arg>
+        <constructor-arg>
+               <list>
+                       <value>1</value>
+                       <value>2</value>
+               </list>
+        </constructor-arg>
+        <property name="connectionPoolSize" value="2"></property>
+        <property name="commandFactory">
+                <bean class="net.rubyeye.xmemcached.command.TextCommandFactory"></bean>
+        </property>
+        <property name="sessionLocator">
+                <bean class="net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator"></bean>
+        </property>
+        <property name="transcoder">
+                <bean class="net.rubyeye.xmemcached.transcoders.SerializingTranscoder" />
+        </property>
+	</bean>
+    <bean name="xmemcachedClient" factory-bean="memcachedClientBuilder" factory-method="build" destroy-method="shutdown"/>
+             -->
+</beans>

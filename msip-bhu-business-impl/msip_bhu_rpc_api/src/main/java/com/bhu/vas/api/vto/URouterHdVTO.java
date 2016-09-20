@@ -11,12 +11,17 @@ import java.io.Serializable;
 public class URouterHdVTO implements Serializable{
 	//终端mac
 	private String hd_mac;
+	//终端所在的vapname
+	private String hd_vapname;
 	//终端上行速率 bps
 	private String tx_rate;
 	//终端下行速率 bps
 	private String rx_rate;
 	//昵称
 	private String n;
+	//TODO:数据待加入
+	//终端IP地址
+	private String ip;
 	//终端的下行限速 bps
 	private String rx_limit;
 	//终端的上行限速 bps
@@ -27,6 +32,17 @@ public class URouterHdVTO implements Serializable{
 	private String tx_bytes;
 	//是否在线
 	private boolean online;
+	//时长
+	private String uptime;
+	//终端类型
+	private String tt;
+	//最后时间（在线 登录时间 离线为离线时间）
+	private long ts;
+	
+	/**
+	 * 终端是否来自于有线口
+	 */
+	private boolean ethernet;
 	//是否是访客网络的
 	private boolean guest;
 	
@@ -35,6 +51,12 @@ public class URouterHdVTO implements Serializable{
 	}
 	public void setHd_mac(String hd_mac) {
 		this.hd_mac = hd_mac;
+	}
+	public String getHd_vapname() {
+		return hd_vapname;
+	}
+	public void setHd_vapname(String hd_vapname) {
+		this.hd_vapname = hd_vapname;
 	}
 	public String getRx_rate() {
 		return rx_rate;
@@ -95,4 +117,37 @@ public class URouterHdVTO implements Serializable{
 	public void setGuest(boolean guest) {
 		this.guest = guest;
 	}
+
+	public boolean isEthernet() {
+		return ethernet;
+	}
+
+	public void setEthernet(boolean ethernet) {
+		this.ethernet = ethernet;
+	}
+	public String getIp() {
+		return ip;
+	}
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+	public String getUptime() {
+		return uptime;
+	}
+	public void setUptime(String uptime) {
+		this.uptime = uptime;
+	}
+	public String getTt() {
+		return tt;
+	}
+	public void setTt(String tt) {
+		this.tt = tt;
+	}
+	public long getTs() {
+		return ts;
+	}
+	public void setTs(long ts) {
+		this.ts = ts;
+	}
+	
 }

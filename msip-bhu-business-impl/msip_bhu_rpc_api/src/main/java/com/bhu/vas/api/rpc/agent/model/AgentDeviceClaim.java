@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by bluesand on 9/7/15.
  */
 @SuppressWarnings("serial")
-public class AgentDeviceClaim extends BaseStringModel {
+public class    AgentDeviceClaim extends BaseStringModel {
     /**
      * 设备sn号
      */
@@ -34,6 +34,11 @@ public class AgentDeviceClaim extends BaseStringModel {
     private String stock_name;
 
     /**
+     * 设备类型
+     */
+    private String hdtype;
+
+    /**
      * 0:导入 1:认领
      */
     private int status;
@@ -42,6 +47,12 @@ public class AgentDeviceClaim extends BaseStringModel {
      * 导入批次id
      */
     private long import_id;
+
+
+    /**
+     * 导入状态 0:未确认 1:已确认
+     */
+    private int import_status;
 
     /**
      * 设备售出日期
@@ -81,6 +92,14 @@ public class AgentDeviceClaim extends BaseStringModel {
         this.stock_code = stock_code;
     }
 
+    public String getHdtype() {
+        return hdtype;
+    }
+
+    public void setHdtype(String hdtype) {
+        this.hdtype = hdtype;
+    }
+
     public String getStock_name() {
         return stock_name;
     }
@@ -99,6 +118,14 @@ public class AgentDeviceClaim extends BaseStringModel {
 
     public void setImport_id(long import_id) {
         this.import_id = import_id;
+    }
+
+    public int getImport_status() {
+        return import_status;
+    }
+
+    public void setImport_status(int import_status) {
+        this.import_status = import_status;
     }
 
     public Date getSold_at() {

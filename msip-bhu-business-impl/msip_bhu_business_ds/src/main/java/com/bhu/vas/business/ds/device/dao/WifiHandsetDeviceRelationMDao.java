@@ -3,12 +3,12 @@ package com.bhu.vas.business.ds.device.dao;
 import javax.annotation.Resource;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
 import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.BaseMongoDAOImpl;
 
-@Repository
+//@Repository
+@Deprecated
 public class WifiHandsetDeviceRelationMDao extends BaseMongoDAOImpl<WifiHandsetDeviceRelationMDTO>{
 
 	public static final String M_ID = "_id";

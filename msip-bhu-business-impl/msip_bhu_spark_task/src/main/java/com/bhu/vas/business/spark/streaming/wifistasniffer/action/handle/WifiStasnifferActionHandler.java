@@ -10,11 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.bhu.vas.api.dto.wifistasniffer.TerminalDetailDTO;
 import com.bhu.vas.api.dto.wifistasniffer.WifistasnifferItemRddto;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDetailRecentSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalDeviceTypeCountHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalHotSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalLastTimeStringService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.wifistasniffer.TerminalRecentSortedSetService;
 import com.bhu.vas.business.spark.streaming.log.SparkTaskLog;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 
@@ -79,12 +74,12 @@ public class WifiStasnifferActionHandler implements Serializable{
 			incr_sniffcounts[cursor] = 1d;
 			cursor++;
 			this.doTerminalDeviceTypeCount(mac, item_dto.getMac());
-			this.doTerminalLastTime(mac, item_dto.getMac(), item_dto.getSnifftime());
+			//this.doTerminalLastTime(mac, item_dto.getMac(), item_dto.getSnifftime());
 		}
-		//录入最近出现的终端记录
+		/*//录入最近出现的终端记录
 		TerminalRecentSortedSetService.getInstance().addTerminalRecents(mac, hd_macs, snifftimes);
 		//录入最热的终端记录
-		TerminalHotSortedSetService.getInstance().addTerminalHots(mac, hd_macs, incr_sniffcounts);
+		TerminalHotSortedSetService.getInstance().addTerminalHots(mac, hd_macs, incr_sniffcounts);*/
 	}
 	
 	/**
@@ -97,7 +92,7 @@ public class WifiStasnifferActionHandler implements Serializable{
 		if(!StringUtils.isEmpty(mac) && !StringUtils.isEmpty(hd_mac)){
 			String scn = MacDictParserFilterHelper.prefixMactch(hd_mac,true,false);
 			if(!StringUtils.isEmpty(scn)){
-				TerminalDeviceTypeCountHashService.getInstance().incrby(mac, scn);
+				//TerminalDeviceTypeCountHashService.getInstance().incrby(mac, scn);
 			}
 		}
 	}
@@ -107,11 +102,11 @@ public class WifiStasnifferActionHandler implements Serializable{
 	 * @param hd_mac
 	 * @param snifftime
 	 */
-	public void doTerminalLastTime(String mac, String hd_mac, long snifftime){
+/*	public void doTerminalLastTime(String mac, String hd_mac, long snifftime){
 		if(!StringUtils.isEmpty(mac) && !StringUtils.isEmpty(hd_mac)){
 			TerminalLastTimeStringService.getInstance().set(mac, hd_mac, snifftime);
 		}
-	}
+	}*/
 	
 	/**
 	 * 处理终端探测流水记录
@@ -137,8 +132,8 @@ public class WifiStasnifferActionHandler implements Serializable{
 				WifistasnifferItemRddto item_dto = merge_onlines_iterator.next();
 				TerminalDetailDTO online_dto = new TerminalDetailDTO();
 				online_dto.setSnifftime(item_dto.getSnifftime());
-				boolean newed = TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOnline(mac, item_dto.getMac(),
-						online_dto);
+				boolean newed = true; 
+						//TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOnline(mac, item_dto.getMac(),online_dto);
 				//设备有可能会重复上报相同时间的相同探测终端 这种情况不需要重复记录最近最热次数等数据
 				if(!newed){
 					wifistasnifferOnlines.remove(item_dto);
@@ -165,8 +160,8 @@ public class WifiStasnifferActionHandler implements Serializable{
 				offline_dto.setSnifftime(item_dto.getSnifftime());
 				offline_dto.setDuration(item_dto.getDuration());
 				offline_dto.setState(WifistasnifferItemRddto.State_Offline);
-				boolean newed = TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOffline(mac, item_dto.getMac(),
-						offline_dto);
+				boolean newed =true;
+				// TerminalDetailRecentSortedSetService.getInstance().addTerminalDetailOffline(mac, item_dto.getMac(),offline_dto);
 				//设备有可能会重复上报相同时间的相同探测终端 这种情况不需要重复记录最近最热次数等数据
 				if(!newed){
 					wifistasnifferOnlines.remove(item_dto);

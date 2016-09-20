@@ -28,6 +28,8 @@ public class AgentDeviceClaimVTO implements Serializable {
      */
     private String mac;
 
+    private String org;
+
     /**
      * 存货编码
      */
@@ -102,6 +104,14 @@ public class AgentDeviceClaimVTO implements Serializable {
 
     public void setNick(String nick) {
         this.nick = nick;
+    }
+
+    public String getOrg() {
+        return org;
+    }
+
+    public void setOrg(String org) {
+        this.org = org;
     }
 
     public String getMac() {

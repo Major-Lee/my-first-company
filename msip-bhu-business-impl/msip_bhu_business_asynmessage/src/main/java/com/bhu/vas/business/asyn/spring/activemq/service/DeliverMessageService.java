@@ -5,13 +5,53 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.ret.WifiDeviceTerminalDTO;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.DeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
-import com.bhu.vas.business.asyn.spring.model.*;
+import com.bhu.vas.business.asyn.spring.model.CMUPWithWifiDeviceOnlinesDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAclMacsDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingAliasDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceModifySettingVapDTO;
+import com.bhu.vas.business.asyn.spring.model.DeviceSearchResultExportFileDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOfflineDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceSyncDTO;
+import com.bhu.vas.business.asyn.spring.model.HandsetDeviceVisitorAuthorizeOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.OrderSearchResultExportFileDTO;
+import com.bhu.vas.business.asyn.spring.model.UserBBSsignedonDTO;
+import com.bhu.vas.business.asyn.spring.model.UserCaptchaCodeFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceDestoryDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceForceBindDTO;
+import com.bhu.vas.business.asyn.spring.model.UserDeviceRegisterDTO;
+import com.bhu.vas.business.asyn.spring.model.UserPortalUpdateDTO;
+import com.bhu.vas.business.asyn.spring.model.UserRegisteredDTO;
+import com.bhu.vas.business.asyn.spring.model.UserResetPwdDTO;
+import com.bhu.vas.business.asyn.spring.model.UserSignedonDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiCmdsNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceAsynCmdGenerateDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceBatchModifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceGroupAsynCreateIndexDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceLocationDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceModuleOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceOfflineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceOnlineDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingChangedDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingModifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSettingQueryDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceSpeedFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceTerminalNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDeviceUsedStatusDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDevicesGrayChangedDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiDevicesModuleStyleChangedDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiHDRateFetchDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiMultiCmdsNotifyDTO;
+import com.bhu.vas.business.asyn.spring.model.WifiRealtimeRateFetchDTO;
 import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimImportDTO;
+import com.bhu.vas.business.asyn.spring.model.agent.AgentDeviceClaimUpdateDTO;
+import com.bhu.vas.business.asyn.spring.model.async.user.UserIdentityRepairDTO;
 
 
 public class DeliverMessageService {
@@ -47,6 +87,18 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}*/
 	
+	public void sendBatchWifiModifyMessage(final String macs, String opt, String subopt, final String extparams,
+			String channel, String channel_taskid){
+		WifiDeviceBatchModifyDTO dto = new WifiDeviceBatchModifyDTO();
+		dto.setChannel(channel);
+		dto.setChannel_taskid(channel_taskid);
+		dto.setMacs(macs);
+		dto.setExtparams(extparams);
+		dto.setOpt(opt);
+		dto.setSubopt(subopt);
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
 	public void sendWifiCmdsCommingNotifyMessage(String mac,String... payloads){
 		sendWifiCmdsCommingNotifyMessage(mac,Arrays.asList(payloads));
 	}
@@ -57,25 +109,27 @@ public class DeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
-	/*public void sendWifiCmdsCommingNotifyMessage(String mac,int taskid,String opt,List<String> payloads){
-		WifiCmdNotifyDTO dto = new WifiCmdNotifyDTO();
-		dto.setMac(mac);
-		dto.setTaskid(taskid);
-		dto.setOpt(opt);
-		dto.setPayload(payload);
+	
+	public void sendWifiMultiCmdsCommingNotifyMessage(int uid,List<DownCmds> downCmds){
+		WifiMultiCmdsNotifyDTO dto = new WifiMultiCmdsNotifyDTO();
+		dto.setUid(uid);
+		dto.setDownCmds(downCmds);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-	}*/
+	}
 	
-	public void sendWifiDeviceModuleOnlineMessage(String wifiId){
+	public void sendWifiDeviceModuleOnlineMessage(String wifiId,String orig_vap_module){
 		WifiDeviceModuleOnlineDTO dto = new WifiDeviceModuleOnlineDTO();
 		dto.setMac(wifiId);
+		dto.setOrig_vap_module(orig_vap_module);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
 	public void sendWifiDeviceOnlineActionMessage(String wifiId, String join_reason, long login_ts, 
-			long last_login_at, boolean newWifi,boolean wanIpChanged,boolean needLocationQuery){
+			long last_login_at, boolean newWifi,boolean wanIpChanged,boolean needLocationQuery,
+			String o_wmode,String n_wmode/*boolean workModeChanged*/
+			){
 		WifiDeviceOnlineDTO dto = new WifiDeviceOnlineDTO();
 		dto.setMac(wifiId);
 		dto.setJoin_reason(join_reason);
@@ -84,6 +138,9 @@ public class DeliverMessageService {
 		dto.setLast_login_at(last_login_at);
 		dto.setNeedLocationQuery(needLocationQuery);
 		dto.setWanIpChanged(wanIpChanged);
+		//dto.setWorkModeChanged(workModeChanged);
+		dto.setO_wmode(o_wmode);
+		dto.setN_wmode(n_wmode);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
@@ -114,13 +171,23 @@ public class DeliverMessageService {
 	}
 	
 	public void sendHandsetDeviceOnlineActionMessage(String wifiId, String handsetId, long login_ts, 
-			long last_login_at, boolean newHandset){
+			long last_login_at, boolean newHandset,boolean isNew4This){
 		HandsetDeviceOnlineDTO dto = new HandsetDeviceOnlineDTO();
 		dto.setMac(handsetId);
 		dto.setWifiId(wifiId);
 		dto.setNewHandset(newHandset);
+		dto.setNh4t(isNew4This);
 		dto.setLogin_ts(login_ts);
 		dto.setLast_login_at(last_login_at);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+
+	public void sendHandsetDeviceVisitorAuthorizeOnlineMessage(String wifiId, String handsetId, long login_ts) {
+		HandsetDeviceVisitorAuthorizeOnlineDTO dto = new HandsetDeviceVisitorAuthorizeOnlineDTO();
+		dto.setMac(handsetId);
+		dto.setWifiId(wifiId);
+		dto.setLogin_ts(login_ts);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
@@ -175,8 +242,6 @@ public class DeliverMessageService {
 		dto.setMac(wifiId);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//deliverMessageQueueProducer.send(message);
 	}
 	
 	public void sendDeviceHDRateFetchActionMessage(String wifiId){
@@ -184,8 +249,6 @@ public class DeliverMessageService {
 		dto.setMac(wifiId);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//deliverMessageQueueProducer.send(message);
 	}
 	
 	public void sendQueryDeviceSpeedFetchActionMessage(String wifiId, int type, int period, int duration){
@@ -196,8 +259,6 @@ public class DeliverMessageService {
 		dto.setDuration(duration);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
-		//deliverMessageQueueProducer.send(message);
 	}
 	
 	public void sendUserSignedonActionMessage(int uid,String remoteip,String d){
@@ -221,10 +282,23 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
-	public void sendUserDeviceRegisterActionMessage(int uid, String mac){
+	public void sendUserDeviceRegisterActionMessage(int uid, String mac, boolean fromApp){
 		UserDeviceRegisterDTO dto = new UserDeviceRegisterDTO();
 		dto.setUid(uid);
 		dto.setMac(mac);
+		dto.setFromApp(fromApp);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendUserDeviceForceBindActionMessage(int uid, int old_uid, String mac, String orig_swver){
+		UserDeviceForceBindDTO dto = new UserDeviceForceBindDTO();
+		dto.setUid(uid);
+		dto.setOld_uid(old_uid);
+		dto.setMac(mac);
+		dto.setOrig_swver(orig_swver);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
@@ -246,9 +320,10 @@ public class DeliverMessageService {
 		//deliverMessageQueueProducer.send(message);
 	}
 	
-	public void sendDeviceSettingQueryActionMessage(String mac, int refresh_status, List<String> payloads){
+	public void sendDeviceSettingQueryActionMessage(String mac,boolean uRouter, int refresh_status, List<String> payloads){
 		WifiDeviceSettingQueryDTO dto = new WifiDeviceSettingQueryDTO();
 		dto.setMac(mac);
+		dto.setDeviceURouter(uRouter);
 		dto.setRefresh_status(refresh_status);
 		dto.setPayloads(payloads);
 		dto.setTs(System.currentTimeMillis());
@@ -326,6 +401,16 @@ public class DeliverMessageService {
 		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 		//deliverMessageQueueProducer.send(message);
 	}
+	
+	public void sendDeviceModifySettingVapActionMessage(Integer uid, String mac){
+		DeviceModifySettingVapDTO dto = new DeviceModifySettingVapDTO();
+		dto.setUid(uid);
+		dto.setMac(mac);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
 
 	public void sendDeviceGroupCreateIndexMessage(String wifiIds, long gid, String type) {
 		WifiDeviceGroupAsynCreateIndexDTO dto = new WifiDeviceGroupAsynCreateIndexDTO();
@@ -349,10 +434,10 @@ public class DeliverMessageService {
 	}
 
 
-	public void sendAgentDeviceClaimImportMessage(Integer uid, Integer aid, String inputPath, String outputPath, String originName) {
+	public void sendAgentDeviceClaimImportMessage(Integer uid, Long logId, String inputPath, String outputPath, String originName) {
 		AgentDeviceClaimImportDTO dto = new AgentDeviceClaimImportDTO();
 		dto.setUid(uid);
-		dto.setAid(aid);
+		dto.setLogId(logId);
 		dto.setInputPath(inputPath);
 		dto.setOutputPath(outputPath);
 		dto.setOriginName(originName);
@@ -360,4 +445,99 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 
 	}
+
+	public void sendAgentDeviceClaimUpdateMessage(Integer uid, Long logId) {
+		AgentDeviceClaimUpdateDTO dto = new AgentDeviceClaimUpdateDTO();
+		dto.setUid(uid);
+		dto.setLogId(logId);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+
+	}
+	
+	public void sendDevicesGrayChangedNotifyMessage(Integer uid,String dut,int gl,List<String> macs){
+		WifiDevicesGrayChangedDTO dto = new WifiDevicesGrayChangedDTO();
+		dto.setDut(dut);
+		dto.setGl(gl);
+		dto.setUid(uid);
+		dto.setMacs(macs);
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	public void sendDevicesModuleStyleChangedNotifyMessage(Integer uid,String style,String... macs){
+		WifiDevicesModuleStyleChangedDTO dto = new WifiDevicesModuleStyleChangedDTO();
+		dto.setUid(uid);
+		dto.setStyle(style);
+		dto.setMacs(Arrays.asList(macs));
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendWifiDeviceSearchResultExportFileMessage(int uid, String message, String exportFilePath){
+		DeviceSearchResultExportFileDTO dto = new DeviceSearchResultExportFileDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setExportFilePath(exportFilePath);
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendOrderSearchResultExportFileMessage(int uid, String message, int messagetype, String exportFilePath, String start_date, String end_date){
+		OrderSearchResultExportFileDTO dto = new OrderSearchResultExportFileDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setMessagetype(messagetype);
+		dto.setExportFilePath(exportFilePath);
+		dto.setStart_date(start_date);
+		dto.setEnd_date(end_date);
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//DeliverMessage message = DeliverMessageFactoryBuilder.buildDeliverMessage(type, uid, ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		//deliverMessageQueueProducer.send(message);
+	}
+	
+	public void sendPortalUpdateUserChangedActionMessage(int uid,String nick,String mobileno,String avatar){
+		UserPortalUpdateDTO dto = new UserPortalUpdateDTO();
+		dto.setUid(uid);
+		dto.setType(UserPortalUpdateDTO.PortalUpdate_User);
+		dto.setNick(nick);
+		dto.setMobileno(mobileno);
+		dto.setAvatar(avatar);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendPortalUpdateRateChangedActionMessage(int uid,String snk,String tpl,int users_rate){
+		UserPortalUpdateDTO dto = new UserPortalUpdateDTO();
+		dto.setUid(uid);
+		dto.setType(UserPortalUpdateDTO.PortalUpdate_SNK);
+		dto.setSnk(snk);
+		dto.setTpl(tpl);
+		dto.setUsers_rate(users_rate);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	/*public void sendBatchImportConfirmActionMessage(int uid,String batchno){
+		BatchImportConfirmDTO dto = new BatchImportConfirmDTO();
+		dto.setUid(uid);
+		dto.setBatchno(batchno);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendBatchSharedealModifyActionMessage(int uid,String message,
+			Boolean cbto,Boolean el,double owner_percent,
+			String rcm,String rcp,String ait){
+		BatchSharedealModifyDTO dto = new BatchSharedealModifyDTO();
+		dto.setUid(uid);
+		dto.setMessage(message);
+		dto.setCbto(cbto);
+		dto.setEl(el);
+		dto.setOwner_percent(owner_percent);
+		dto.setRcm(rcm);
+		dto.setRcp(rcp);
+		dto.setAit(ait);
+		dto.setTs(System.currentTimeMillis());
+		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}*/
+	
 }

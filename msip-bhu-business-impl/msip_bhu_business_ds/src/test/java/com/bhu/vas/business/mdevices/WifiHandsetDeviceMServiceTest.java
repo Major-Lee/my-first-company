@@ -5,19 +5,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.junit.Test;
 
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemDetailMDTO;
 import com.bhu.vas.api.mdto.WifiHandsetDeviceItemLogMDTO;
 import com.bhu.vas.api.vto.URouterHdTimeLineVTO;
-import com.bhu.vas.business.ds.device.dao.WifiHandsetDeviceRelationMDao;
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceRelationMDTO;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
-import com.smartwork.msip.cores.helper.DateTimeExtHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.localunit.BaseTest;
 
 /**
@@ -32,12 +25,12 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
     private static final String HANDSET_LOGIN_TYPE = "login";
     private static final String HANDSET_LOGOUT_TYPE = "logout";
 
-    @Resource
-    private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
+    //@Resource
+    //private WifiHandsetDeviceRelationMService wifiHandsetDeviceRelationMService;
 
 
-    @Resource
-    private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
+    //@Resource
+    //private WifiHandsetDeviceRelationMDao wifiHandsetDeviceRelationMDao;
 
     @Test
     public void test() {
@@ -49,14 +42,14 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
 
 //        for (WifiHandsetDeviceRelationMDTO dto : results) {
 
-            String wifiId = "84:82:f4:19:01:0c";
-            String mac = "b4:0b:44:0d:96:31";
+            //String wifiId = "84:82:f4:1c:e8:b8";
+            // mac = "d0:67:e5:40:89:a2";
 
 //            wifiId = dto.getWifiId();
 //            mac = dto.getHandsetId();
 
 
-            WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
+            /*WifiHandsetDeviceRelationMDTO wifiHandsetDeviceRelationMDTO =
                     wifiHandsetDeviceRelationMService.getRelation(wifiId, mac);
 
             List<String> weeks = DateTimeExtHelper.getSevenDateOfWeek();
@@ -87,7 +80,7 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
             }
             System.out.println(JsonHelper.getJSONString(uRouterHdTimeLineVTOList));
 //        }
-    }
+*/    }
 
 
 
@@ -119,12 +112,49 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
                 if (offset > 5) {
                     //offset = 5; //7天外的数据直接忽略
                     if (HANDSET_LOGOUT_TYPE.equals(last_type)) { //如果最后一天数据是隔天数据
-                        URouterHdTimeLineVTO vto = vtos.get(6);
-                        List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
-                        if (mdtos_ != null && !mdtos_.isEmpty()) {
-                            WifiHandsetDeviceItemDetailMDTO dto_ = mdtos_.get(mdtos_.size()-1);
-                            dto_.setLogin_at(getDateZeroTime(new Date(ts)).getTime());
-                            vto.setDetail(mdtos_);
+
+                        //long end_space = currentTime - last_ts;
+                        //int end_offset = (int) (end_space/(DAY_TIME_MILLION_SECOND));
+
+//                        for (int i=0 ;i <=6 ;i ++) {
+//                            URouterHdTimeLineVTO vto = vtos.get(i);
+//                            List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
+//                            if ( i ==0 || (mdtos_ != null && !mdtos_.isEmpty())) {
+//                                continue;
+//                            } else {
+//                                URouterHdTimeLineVTO last_vto = vtos.get(i-1);
+//                                List<WifiHandsetDeviceItemDetailMDTO> last_mdtos = last_vto.getDetail();
+//                                WifiHandsetDeviceItemDetailMDTO last_dto = last_mdtos.get(last_mdtos.size() - 1);
+//                                last_dto.setLogin_at(getDateZeroTime(new Date(last_ts - end_offset * DAY_TIME_MILLION_SECOND )).getTime());
+//                                last_vto.setDetail(last_mdtos);
+//                                break;
+//                            }
+//
+//                        }
+
+//                        URouterHdTimeLineVTO vto = vtos.get(6);
+//                        List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
+//                        if (mdtos_ != null && !mdtos_.isEmpty()) {
+//                            WifiHandsetDeviceItemDetailMDTO dto_ = mdtos_.get(mdtos_.size()-1);
+//                            dto_.setLogin_at(getDateZeroTime(new Date(ts)).getTime());
+//                            vto.setDetail(mdtos_);
+//                        }
+
+
+                        for (int i=6 ; i >=0 ;i--) {
+                            URouterHdTimeLineVTO vto = vtos.get(i);
+                            List<WifiHandsetDeviceItemDetailMDTO> mdtos_ = vto.getDetail();
+                            if(mdtos_ != null && !mdtos_.isEmpty()) {
+                                URouterHdTimeLineVTO last_vto = vtos.get(i);
+                                List<WifiHandsetDeviceItemDetailMDTO> last_mdtos = last_vto.getDetail();
+                                System.out.println("=====[" + i +  "] ==>" +  last_mdtos.size());
+                                WifiHandsetDeviceItemDetailMDTO last_dto = last_mdtos.get(last_mdtos.size() - 1);
+                                System.out.println("====" + last_dto);
+
+                                last_dto.setLogin_at(getDateZeroTime(DateTimeHelper.parseDate(last_vto.getDate(), DateTimeHelper.shortDateFormat)).getTime());
+                                last_vto.setDetail(last_mdtos);
+                                break;
+                            }
                         }
 
                     }
@@ -279,6 +309,10 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
                         if (last_ts - ts < IGNORE_LOGIN_TIME_SPACE) { //小于15分钟的记录
                             //忽略操作
 //							logger.info("ignore 15 min" + (ts - last_ts));
+                            System.out.println("=========" + mdtos.size());
+                            if (mdtos.size()  == 0)
+                                return;
+
                             dto = mdtos.get(mdtos.size() - 1);
                             if (!online) { //如果不在线的话就累加
                                 dto.setRx_bytes(dto.getRx_bytes() + rx_bytes);
@@ -317,6 +351,10 @@ public class WifiHandsetDeviceMServiceTest extends BaseTest{
 
                     if (HANDSET_LOGIN_TYPE.equals(type)) {
                         //忽略
+                        //忽略
+                        dto = new WifiHandsetDeviceItemDetailMDTO();
+                        dto.setLogin_at(ts);
+                        mdtos.add(dto);
                     }
 
                 }

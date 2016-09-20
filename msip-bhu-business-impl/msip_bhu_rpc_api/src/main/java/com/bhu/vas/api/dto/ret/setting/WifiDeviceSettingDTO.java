@@ -1,6 +1,8 @@
 package com.bhu.vas.api.dto.ret.setting;
 
 import java.util.List;
+
+import org.springframework.util.StringUtils;
 /**
  * 设备的配置dto
  * @author tangzichao
@@ -21,9 +23,13 @@ public class WifiDeviceSettingDTO {
 	private List<WifiDeviceSettingRadioDTO> radios;
 	//上网方式
 	//private String mode;
-	private WifiDeviceSettingLinkModeDTO mode;
+	private WifiDeviceSettingLinkModeDTO linkmode;
 	//配置流水号
 	private String sequence;
+	//双频合一
+	private String rf_2in1;
+	//取值0和1， 1 表示设备做过reset后重启进行的上报数据。
+	private int boot_on_reset;
 	//VAP列表
 	private List<WifiDeviceSettingVapDTO> vaps;
 	//黑白名单列表
@@ -36,8 +42,20 @@ public class WifiDeviceSettingDTO {
 	private List<WifiDeviceSettingUserDTO> users;
 	//终端别名列表
 	private List<WifiDeviceSettingMMDTO> mms;
+	
+	//终端别名列表
+	private List<WifiDeviceSettingPluginDTO> plugins;
+	
+	//自动重启
+	
+	private WifiDeviceSettingAutoRebootDTO autoreboot;
+	
 	//广告
 	private WifiDeviceSettingVapAdDTO ad;
+	
+	private WifiDeviceSettingModeDTO mode;
+	
+	private WifiDeviceSettingSyskeyDTO syskey;
 	
 //	public String getPower() {
 //		return power;
@@ -51,14 +69,34 @@ public class WifiDeviceSettingDTO {
 	public String getSequence() {
 		return sequence;
 	}
+	
+	public String getRf_2in1() {
+		return rf_2in1;
+	}
 
-	public WifiDeviceSettingLinkModeDTO getMode() {
+	public void setRf_2in1(String rf_2in1) {
+		this.rf_2in1 = rf_2in1;
+	}
+
+	public WifiDeviceSettingLinkModeDTO getLinkmode() {
+		return linkmode;
+	}
+
+
+	public void setLinkmode(WifiDeviceSettingLinkModeDTO linkmode) {
+		this.linkmode = linkmode;
+	}
+
+
+	public WifiDeviceSettingModeDTO getMode() {
 		return mode;
 	}
 
-	public void setMode(WifiDeviceSettingLinkModeDTO mode) {
+
+	public void setMode(WifiDeviceSettingModeDTO mode) {
 		this.mode = mode;
 	}
+
 
 	public void setSequence(String sequence) {
 		this.sequence = sequence;
@@ -126,5 +164,48 @@ public class WifiDeviceSettingDTO {
 
 	public void setAd(WifiDeviceSettingVapAdDTO ad) {
 		this.ad = ad;
+	}
+
+	public int getBoot_on_reset() {
+		return boot_on_reset;
+	}
+
+	public void setBoot_on_reset(int boot_on_reset) {
+		this.boot_on_reset = boot_on_reset;
+	}
+
+	public List<WifiDeviceSettingPluginDTO> getPlugins() {
+		return plugins;
+	}
+
+	public void setPlugins(List<WifiDeviceSettingPluginDTO> plugins) {
+		this.plugins = plugins;
+	}
+	
+	public boolean hasPlugin(String pluginName){
+		//参数为空直接返回true
+		if(StringUtils.isEmpty(pluginName)) return true;
+		if(this.getPlugins() == null || this.getPlugins().isEmpty()) return false;
+		for(WifiDeviceSettingPluginDTO plugin:this.getPlugins()){
+			if(pluginName.equals(plugin.getName())) return true;
+		}
+		return false;
+	}
+
+	
+	public WifiDeviceSettingAutoRebootDTO getAutoreboot() {
+		return autoreboot;
+	}
+
+	public void setAutoreboot(WifiDeviceSettingAutoRebootDTO autoreboot) {
+		this.autoreboot = autoreboot;
+	}
+
+	public WifiDeviceSettingSyskeyDTO getSyskey() {
+		return syskey;
+	}
+
+	public void setSyskey(WifiDeviceSettingSyskeyDTO syskey) {
+		this.syskey = syskey;
 	}
 }

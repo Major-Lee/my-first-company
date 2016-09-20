@@ -6,19 +6,15 @@ import com.bhu.vas.api.dto.VapModeDefined;
 import com.bhu.vas.api.dto.VapModeDefined.HtmlPortal;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapHttp404DTO;
 import com.bhu.vas.api.dto.ret.param.ParamVapHttpPortalDTO;
-import com.bhu.vas.api.dto.ret.param.ParamVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceModuleUpgradeDTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttp404DTO;
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapHttpRedirectDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceUpgradeDTO;
-import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
-import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceVisitorKickoffDTO;
+import com.bhu.vas.api.dto.ret.transfer.ParamDeviceRemoteControlDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.exception.BusinessI18nCodeException;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  *  上端下发消息：
@@ -66,18 +62,40 @@ public class CMDBuilder {
 	}
 	
 	public static String builderDeviceWifiSnifferSetting(String wifi_mac,String sta_sniffer){
-		return String.format(OperationCMD.ParamWifiSinffer.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac),sta_sniffer,RuntimeConfiguration.Vap_Wifistasniffer_Batch_Num,RuntimeConfiguration.Vap_Wifistasniffer_Delay,RuntimeConfiguration.Vap_Wifistasniffer_Url);
+		return String.format(OperationCMD.ParamWifiSinffer.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac), sta_sniffer, 
+				BusinessRuntimeConfiguration.Vap_Wifistasniffer_Batch_Num, 
+				BusinessRuntimeConfiguration.Vap_Wifistasniffer_Delay, 
+				BusinessRuntimeConfiguration.Vap_Wifistasniffer_Url);
 	}
 	
 	public static String builderDeviceUsedStatusQuery(String wifi_mac){
 		//return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
 		//		StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),String.format(SuffixTemplete, query_device_used_status.getNextSequence()));
-		return builderDeviceUsedStatusQuery(wifi_mac,auto_taskid_fragment.getNextSequence());
+		return builderDeviceUsedStatusQuery(wifi_mac, auto_taskid_fragment.getNextSequence());
 	}
 	public static String builderDeviceUsedStatusQuery(String wifi_mac,long taskid){
 		return String.format(OperationCMD.QueryDeviceUsedStatus.getCmdtpl(), 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),builderTaskidFormat(taskid));
 	}
+	
+	public static String builderDeviceCmdPassThrough(String wifi_mac,long taskid,String cmdContent){
+		if(taskid <= AutoGen){
+			taskid = auto_taskid_fragment.getNextSequence();
+		}
+		return String.format(OperationCMD.DeviceCmdPassThrough.getCmdtpl(), 
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.DeviceCmdPassThrough.getNo(),builderTaskidFormat(taskid),cmdContent);
+	}
+	
+	public static final long AutoGen = 0l;
+	
+	public static String builderClearDeviceBootReset(String wifi_mac,long taskid){
+		if(taskid <= AutoGen){
+			taskid = auto_taskid_fragment.getNextSequence();
+		}
+		return String.format(OperationCMD.ClearDeviceBootReset.getCmdtpl(), 
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceUsedStatus.getNo(),builderTaskidFormat(taskid));
+	}
+	
 	public static String builderDeviceStatusQuery(String wifi_mac,long taskid){
 		return String.format(OperationCMD.QueryDeviceStatus.getCmdtpl(), 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceStatus.getNo(),builderTaskidFormat(taskid));
@@ -94,18 +112,42 @@ public class CMDBuilder {
 	}
 	
 	public static String builderDeviceSettingModify(String wifi_mac,long taskid, String payload){
+		if(taskid <= AutoGen){
+			taskid = auto_taskid_fragment.getNextSequence();
+		}
 		return String.format(OperationCMD.ModifyDeviceSetting.getCmdtpl(),//query_device_flow_cmd_template, 
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(taskid), payload);
 	}
 	
-	public static String builderDeviceSpeedNotifyQuery(String wifi_mac,long taskid, int period, int duration, String download_url, String upload_url){
+	public static String builderDeviceSpeedNotifyQuery(String wifi_mac, long taskid, int type, 
+			int period, int duration){
+		String download_url = StringHelper.EMPTY_STRING_GAP;
+		String upload_url = StringHelper.EMPTY_STRING_GAP;
+		switch(type){
+			case DeviceHelper.Device_Peak_Section_Type_OnlyDownload:
+				download_url = BusinessRuntimeConfiguration.Device_SpeedTest_Download_url;
+				break;
+			case DeviceHelper.Device_Peak_Section_Type_OnlyUpload:
+				upload_url = BusinessRuntimeConfiguration.Device_SpeedTest_Upload_url;
+				break;
+			case DeviceHelper.Device_Peak_Section_Type_All:
+				download_url = BusinessRuntimeConfiguration.Device_SpeedTest_Download_url;
+				upload_url = BusinessRuntimeConfiguration.Device_SpeedTest_Upload_url;
+				break;
+			default:
+				return null;
+		}
+		return builderDeviceSpeedNotifyQuery(wifi_mac, taskid, period, duration, download_url, upload_url);
+	}
+	
+	public static String builderDeviceSpeedNotifyQuery(String wifi_mac, long taskid, int period, int duration, String download_url, String upload_url){
 		String opt = OperationCMD.QueryDeviceSpeedNotify.getNo();
 		String taskid_format = builderTaskidFormat(taskid);
 		return String.format(OperationCMD.QueryDeviceSpeedNotify.getCmdtpl(),//query_device_flow_cmd_template, 
 				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, download_url, upload_url, period, duration, builderCMDSerial(opt, taskid_format));
 	}
 
-	public static String builderDeviceUpgrade(String wifi_mac, long taskid, String upgrade_begin, String upgrade_end, String url) {
+	public static String builderDeviceUpgrade(String wifi_mac, long taskid, String upgrade_begin, String upgrade_end, String url,String url_groups) {
 		String opt = OperationCMD.DeviceUpgrade.getNo();
 		String taskid_format = builderTaskidFormat(taskid);
 		String searilno = builderFirmwareUpdateSerialno(taskid);
@@ -113,7 +155,7 @@ public class CMDBuilder {
 //				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url, builderCMDSerial(opt, taskid_format));
 		
 		return String.format(OperationCMD.DeviceUpgrade.getCmdtpl(),
-				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url,upgrade_begin, upgrade_end, searilno);//RandomData.longNumber(153050000, 153180000));//builderCMDSerial(opt, taskid_format));
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, url,url_groups,upgrade_begin, upgrade_end, searilno);//RandomData.longNumber(153050000, 153180000));//builderCMDSerial(opt, taskid_format));
 	}
 	
 	public static String builderDhcpcStatusQuery(String wifi_mac,long taskid,String interface_name){
@@ -127,6 +169,15 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.QueryDeviceSysinfo.getNo(),
 				builderTaskidFormat(taskid));
 	}
+
+	public static String builderCMDKickOffVisitorDeviceWifiHandset(String wifi_mac, String hd_mac, long taskid) {
+		return String.format(OperationCMD.KickOffVisitorDeviceWifiHandset.getCmdtpl(),
+				StringHelper.unformatMacAddress(wifi_mac),OperationCMD.KickOffVisitorDeviceWifiHandset.getNo(),
+				builderTaskidFormat(taskid), hd_mac);
+	}
+
+
+
 	
 	/**
 	 * 查询设备实时速率指令
@@ -189,6 +240,15 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format, period, duration, 
 				builderCMDSerial(opt, taskid_format));
 	}
+	
+	public static String builderDeviceTerminalsQuery(String wifi_mac, long taskid){
+		String opt = OperationCMD.QueryDeviceTerminals.getNo();
+		String taskid_format = builderTaskidFormat(taskid);
+		
+		return String.format(OperationCMD.QueryDeviceTerminals.getCmdtpl(),
+				StringHelper.unformatMacAddress(wifi_mac), opt, taskid_format);
+	}
+	
 	
 	public static String builderQuerySyncDeviceOnlineTerminalsQuery(String wifi_mac){
 		return String.format(OperationCMD.ParamQuerySyncDeviceOnlineTeminals.getCmdtpl(), StringHelper.unformatMacAddress(wifi_mac));
@@ -296,15 +356,28 @@ public class CMDBuilder {
 	 * 			其余属性直接extparams为相关参数，可能是字符串 可能是jason参数
 	 * @return
 	 */
-	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams/*,String orig_swver*/,IGenerateDeviceSetting generateDeviceSetting){
+	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams,IGenerateDeviceSetting generateDeviceSetting){
+		return autoBuilderCMD4Opt(opt,subopt,wifi_mac,taskid,extparams,null,generateDeviceSetting);
+	}
+	public static String autoBuilderCMD4Opt(OperationCMD opt, OperationDS subopt,String wifi_mac,long taskid,String extparams, DeviceStatusExchangeDTO device_status,IGenerateDeviceSetting generateDeviceSetting){
 		String resultCmd = null;
 		if(opt != null){
-			if(taskid == 0){
-				taskid = auto_taskid_fragment.getNextSequence();
+			if(taskid <= AutoGen){
+				if(subopt == OperationDS.DS_SharedNetworkWifi_Start || subopt == OperationDS.DS_SharedNetworkWifi_Stop || subopt == OperationDS.DS_SharedNetworkWifi_Limit){
+					taskid = auto_taskid_sharednetwork_fragment.getNextSequence();
+				}else{
+					taskid = auto_taskid_fragment.getNextSequence();
+				}
 			}
 			switch(opt){
 				case ModifyDeviceSetting:
-					//新版本增值模块指令构造 目前支持增值指令 404 redirect
+					try{
+						String payload = generateDeviceSetting.generateDeviceSetting(wifi_mac, subopt, extparams,device_status);
+						resultCmd = builderDeviceSettingModify(wifi_mac, taskid, payload);
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
+					/*//新版本增值模块指令构造 目前支持增值指令 404 redirect
 					if(WifiDeviceHelper.isVapCmdModuleSupported(opt,subopt)){// && WifiDeviceHelper.isVapModuleSupported(orig_swver)){
 						resultCmd = autoBuilderVapCMD4Opt(opt,new OperationDS[]{subopt},wifi_mac,taskid,new String[]{extparams});
 					}else{
@@ -314,7 +387,7 @@ public class CMDBuilder {
 						}catch(Exception ex){
 							ex.printStackTrace(System.out);
 						}
-					}
+					}*/
 					break;
 				case TurnOnDeviceDPINotify:
 					String dpiServerIp = extparams;
@@ -323,24 +396,45 @@ public class CMDBuilder {
 					break;
 				case DeviceUpgrade:
 					WifiDeviceUpgradeDTO upgradeDto = JsonHelper.getDTO(extparams, WifiDeviceUpgradeDTO.class);
-					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, upgradeDto.getUpgrade_begin(),upgradeDto.getUpgrade_end(), upgradeDto.getUrl());
+					resultCmd = builderDeviceUpgrade(wifi_mac, taskid, upgradeDto.getUpgrade_begin(),upgradeDto.getUpgrade_end(), upgradeDto.getUrl(),upgradeDto.getUrl_groups());
 					break;
 				case DeviceModuleUpgrade:
 					WifiDeviceModuleUpgradeDTO moduleupgradeDto = JsonHelper.getDTO(extparams, WifiDeviceModuleUpgradeDTO.class);
-					resultCmd = builderVapModuleUpgrade(wifi_mac, taskid,moduleupgradeDto.getUrlprefix(),moduleupgradeDto.getRetry_count(), moduleupgradeDto.getRetry_interval());
+					resultCmd = builderVapModuleUpgrade(wifi_mac, taskid,moduleupgradeDto.getUrlprefix(),moduleupgradeDto.getUrl_groups(),moduleupgradeDto.getRetry_count(), moduleupgradeDto.getRetry_interval());
 					break;
 				case DeviceWifiTimerStart:
 					ParamCmdWifiTimerStartDTO timerDto = JsonHelper.getDTO(extparams, ParamCmdWifiTimerStartDTO.class);
 					String[] timeSlot = ParamCmdWifiTimerStartDTO.fetchSlot(timerDto.getTimeslot());
 					String days = timerDto.getDays();
 					StringBuilder daysParam = new StringBuilder();
-					if(StringUtils.isNotEmpty(days))
+					//区分空字符串和不空字符串以及null代表不通意义
+					if(days != null){
 						daysParam.append(StringHelper.COMMA_STRING_GAP).append(days).append(StringHelper.MINUS_STRING_GAP).append(WifiDeviceHelper.WifiTimer_Days);
+						/*if(StringUtils.isNotEmpty(days))
+							daysParam.append(StringHelper.COMMA_STRING_GAP).append(days).append(StringHelper.MINUS_STRING_GAP).append(WifiDeviceHelper.WifiTimer_Days);
+						else
+							daysParam.append(StringHelper.COMMA_STRING_GAP).append(WifiDeviceHelper.WifiTimer_Days);*/
+					}
+					/*if(StringUtils.isNotEmpty(days))
+						daysParam.append(StringHelper.COMMA_STRING_GAP).append(days).append(StringHelper.MINUS_STRING_GAP).append(WifiDeviceHelper.WifiTimer_Days);
+					*/	
 						//daysParam = ;//days.concat(StringHelper.MINUS_STRING_GAP).concat(WifiDeviceHelper.WifiTimer_Default_Days);
 						//daysParam = days.concat(StringHelper.MINUS_STRING_GAP).concat(WifiDeviceHelper.WifiTimer_Days);
 					resultCmd = String.format(opt.getCmdtpl(), 
 								StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),timeSlot[0],timeSlot[1],daysParam);
-						
+					break;
+				case RemoteDeviceControlTransfer:
+					ParamDeviceRemoteControlDTO paramDto = JsonHelper.getDTO(extparams, ParamDeviceRemoteControlDTO.class);
+					resultCmd = String.format(opt.getCmdtpl(), 
+							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),JsonHelper.getJSONString(paramDto));
+					break;
+				case KickOffVisitorDeviceWifiHandset:
+					WifiDeviceVisitorKickoffDTO dto = JsonHelper.getDTO(extparams, WifiDeviceVisitorKickoffDTO.class);
+					resultCmd = String.format(opt.getCmdtpl(),
+							StringHelper.unformatMacAddress(wifi_mac),opt.getNo(),builderTaskidFormat(taskid),dto.getHd_mac());
+					break;
+				case DeviceCmdPassThrough:
+					resultCmd = CMDBuilder.builderDeviceCmdPassThrough(wifi_mac,taskid,extparams);
 					break;
 				default://extparams = null 不需要参数构建的cmd
 					//String[] params = genParserParams(wifi_mac,opt,taskid,extparams);
@@ -353,7 +447,8 @@ public class CMDBuilder {
 		return resultCmd;
 	}
 	
-	public static String autoBuilderVapCMD4Opt(OperationCMD opt,OperationDS[] subopts,String wifi_mac,long taskid,String[] extparams){
+	
+	/*public static String autoBuilderVapCMD4Opt(OperationCMD opt,OperationDS[] subopts,String wifi_mac,long taskid,String[] extparams){
 		if(subopts == null || subopts.length==0) return null;
 		StringBuilder innercmd = new StringBuilder();
 		int index = 0;
@@ -391,9 +486,12 @@ public class CMDBuilder {
 			return resultCmd.toString();
 		}
 		return null;
-	}
+	}*/
 	
 	public static String autoBuilderVapFullCMD4Opt(String wifi_mac,long taskid,String template){
+		if(taskid <= 0){
+			taskid = auto_taskid_fragment.getNextSequence();
+		}
 		StringBuilder resultCmd = new StringBuilder(
 				String.format(DeviceHelper.DeviceSetting_VapModule_VapItem_Header_Fragment, StringHelper.unformatMacAddress(wifi_mac),builder8LenFormat(ParserHeader.Vap_Module_VapSetting_REQ_S2D),OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(taskid)));
 		resultCmd.append(template);
@@ -405,49 +503,18 @@ public class CMDBuilder {
 				StringHelper.unformatMacAddress(wifi_mac),builder8LenFormat(ParserHeader.Vap_Module_Register_RES_S2D),OperationCMD.ModifyDeviceSetting.getNo(),builderTaskidFormat(auto_taskid_fragment.getNextSequence()));
 	}
 	
-	public static String builderVapModuleUpgrade(String wifi_mac, long taskid, String urlprefix, int retry_count, int retry_interval) {
+	public static String builderVapModuleUpgrade(String wifi_mac, long taskid, String urlprefix,String url_groups, int retry_count, int retry_interval) {
 		String taskid_format = builderTaskidFormat(taskid);
 		
 		return String.format(OperationCMD.DeviceModuleUpgrade.getCmdtpl(),
-				StringHelper.unformatMacAddress(wifi_mac), 
-				builder8LenFormat(ParserHeader.Vap_Module_Upgrade_REQ_S2D), 
+				StringHelper.unformatMacAddress(wifi_mac),
+				builder8LenFormat(ParserHeader.Vap_Module_Upgrade_REQ_S2D),
 				OperationCMD.DeviceModuleUpgrade.getNo(),
 				taskid_format,//builderTaskidFormat(auto_taskid_fragment.getNextSequence()), 
 				urlprefix,
-				retry_count, 
+				url_groups,
+				retry_count,
 				retry_interval);//RandomData.longNumber(153050000, 153180000));//builderCMDSerial(opt, taskid_format));
-	}
-	
-	
-	private static String[] genParserParams(String wifi_mac,String opt,long taskid,String extparams){
-		String[] params = new String[3];
-		params[0] = StringHelper.unformatMacAddress(wifi_mac);
-		params[1] = opt;
-		params[2] = builderTaskidFormat(taskid);
-		String[] split = extparams.split(StringHelper.OR_STRING_GAP_4SPLIT);
-		if(split != null && split.length>0)
-			return ArrayHelper.join(params, split);
-		else{
-			return params;
-		}
-		/*for(int i=3;i<10;i++){
-			
-		}*/
-		/*if(StringUtils.isEmpty(extparams)) {
-			params = new String[3];
-			params[0] = StringHelper.unformatMacAddress(wifi_mac);
-			params[1] = opt;
-			params[2] = String.format(SuffixTemplete,taskid);
-			return params;
-		}else{
-			
-			params = new String[3+split.length];
-			params[0] = StringHelper.unformatMacAddress(wifi_mac);
-			params[1] = opt;
-			params[2] = String.format(SuffixTemplete,taskid);
-			
-		}
-		return extparams.split(StringHelper.OR_STRING_GAP_4SPLIT);*/
 	}
 	
 	public static String builderCMDSerial(String opt, String taskid_format){
@@ -498,20 +565,41 @@ public class CMDBuilder {
 	
 	//用于特殊渠道后台指定定时任务给商业wifi发送查询在线终端指令
 	//public static TaskSequenceFragment auto_special_query_commercial_terminals_taskid_fragment = new TaskSequenceFragment(1,10000);
-	public static TaskSequenceFragment auto_taskid_fragment = new TaskSequenceFragment(1,999999);
+	public static TaskSequenceFragment auto_taskid_fragment = new TaskSequenceFragment(1,899999);
+	public static TaskSequenceFragment auto_taskid_sharednetwork_fragment = new TaskSequenceFragment(850000,899999);
+	public static TaskSequenceFragment auto_taskid_vapstart_fragment = new TaskSequenceFragment(900000,950000);
+	public static TaskSequenceFragment auto_taskid_vapstop_fragment = new TaskSequenceFragment(950001,999999);
+	
 	//其他taskid区间，此部分区间数据是在数据库中有相应的taskid
 	public static TaskSequenceFragment normal_taskid_fragment = new TaskSequenceFragment(1000000,Integer.MAX_VALUE);
+	
 	public static boolean wasAutoTaskid(long taskid){
 		return !normal_taskid_fragment.wasInFragment(taskid);
+	}
+	
+	public static boolean wasAutoVapStartTaskid(long taskid){
+		return auto_taskid_vapstart_fragment.wasInFragment(taskid);
+	}
+	
+	public static boolean wasAutoVapStopTaskid(long taskid){
+		return auto_taskid_vapstop_fragment.wasInFragment(taskid);
+	}
+	
+	public static boolean wasAutoSharedNetworkTaskid(long taskid){
+		return auto_taskid_sharednetwork_fragment.wasInFragment(taskid);
 	}
 	
 	public static boolean wasNormalTaskid(long taskid){
 		return normal_taskid_fragment.wasInFragment(taskid);
 	}
 	
-	/*public static void main(String[] argv){
-		String[] params = new String[]{};
-		String resultCmd = String.format("",params);
-		System.out.println(new Date(1436407520276l));
-	}*/
+	public static void main(String[] argv){
+//		String[] params = new String[]{};
+//		String resultCmd = String.format("",params);
+//		System.out.println(new Date(1436407520276l));
+		String taskid_format = CMDBuilder.builderTaskidFormat(99999);
+		System.out.println(CMDBuilder.builderTaskidFormat(99999));
+		System.out.println(CMDBuilder.builderCMDSerial(OperationCMD.QueryDeviceSpeedNotify.getNo(), taskid_format));
+		
+	}
 }

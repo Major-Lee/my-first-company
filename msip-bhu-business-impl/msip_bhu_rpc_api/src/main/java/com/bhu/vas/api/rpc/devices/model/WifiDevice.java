@@ -19,7 +19,7 @@ public class WifiDevice extends BaseStringModel{
 	//原始软件版本号
 	private String orig_swver;
 	//原始软件vapmodule版本号
-	private String orig_vap_module;
+	//private String orig_vap_module;
 	//oem厂商
 	private String oem_vendor;
 	//oem后设备型号
@@ -45,7 +45,7 @@ public class WifiDevice extends BaseStringModel{
 	private String work_mode;
 	//wifi设备是否在线
 	private boolean online;
-	private boolean module_online;
+	//private boolean module_online;
 	//下行流量
 	private String rx_bytes;
 	//上行流量
@@ -75,17 +75,31 @@ public class WifiDevice extends BaseStringModel{
 	//百度geocoding create result id
 	private String bdid;
 	//通过ip得到的坐标和地址
-	private boolean ipgen = false;
+	private int loc_method = 0;// = false;
 	//设备运行时长
 	private String uptime;
+	private String tfcard_usage;
 	// 设备认领的代理商 userid，如果为0 未进行认领 -1则代表认领失败，可能是由于认领库中不存在相关设备
 	private int agentuser;
+	//设备行业编号
+	private String industry;
 	//最后一次设备启动时间戳
 	private String last_start_at;
 	//最后一次登录时间
 	private Date last_reged_at;
+	
+	/*Start By Lapaus 2016-09-13 add field channel_lv1 and channel_lv2 */
+	//一级出货渠道
+	private String channel_lv1;
+	//二级出货渠道
+	private String channel_lv2;
+	/*End By Lapaus 2016-09-13 add field channel_lv1 and channel_lv2 */
+	
 	//最后一次登出时间
 	private Date last_logout_at;
+	//第一次设备注册时间
+	private Date first_reged_at;
+	//记录创建时间，不一定是设备第一次上线时间
 	private Date created_at;
 	
 	@Override
@@ -238,9 +252,9 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setOnline(boolean online) {
 		this.online = online;
-		if(!online){
+		/*if(!online){
 			this.module_online = false;
-		}
+		}*/
 	}
 	
 	public String getRx_bytes() {
@@ -367,6 +381,14 @@ public class WifiDevice extends BaseStringModel{
 		this.bdid = bdid;
 	}
 
+	public int getLoc_method() {
+		return loc_method;
+	}
+
+	public void setLoc_method(int loc_method) {
+		this.loc_method = loc_method;
+	}
+/*
 	public boolean isIpgen() {
 		return ipgen;
 	}
@@ -374,7 +396,7 @@ public class WifiDevice extends BaseStringModel{
 	public void setIpgen(boolean ipgen) {
 		this.ipgen = ipgen;
 	}
-
+*/
 	public String getUptime() {
 		return uptime;
 	}
@@ -407,7 +429,7 @@ public class WifiDevice extends BaseStringModel{
 		this.carrier = carrier;
 	}
 
-	public String getOrig_vap_module() {
+	/*public String getOrig_vap_module() {
 		return orig_vap_module;
 	}
 
@@ -421,7 +443,7 @@ public class WifiDevice extends BaseStringModel{
 
 	public void setModule_online(boolean module_online) {
 		this.module_online = module_online;
-	}
+	}*/
 
 	public int getAgentuser() {
 		return agentuser;
@@ -431,7 +453,48 @@ public class WifiDevice extends BaseStringModel{
 		this.agentuser = agentuser;
 	}
 	
+	public String getIndustry() {
+		return industry;
+	}
+
+	public void setIndustry(String industry) {
+		this.industry = industry;
+	}
+
 	public boolean needClaim(){
 		return this.agentuser == 0;
 	}
+
+	public String getTfcard_usage() {
+		return tfcard_usage;
+	}
+
+	public void setTfcard_usage(String tfcard_usage) {
+		this.tfcard_usage = tfcard_usage;
+	}
+
+	public Date getFirst_reged_at() {
+		return first_reged_at;
+	}
+
+	public void setFirst_reged_at(Date first_reged_at) {
+		this.first_reged_at = first_reged_at;
+	}
+
+	public String getChannel_lv1() {
+		return channel_lv1;
+	}
+
+	public void setChannel_lv1(String channel_lv1) {
+		this.channel_lv1 = channel_lv1;
+	}
+
+	public String getChannel_lv2() {
+		return channel_lv2;
+	}
+
+	public void setChannel_lv2(String channel_lv2) {
+		this.channel_lv2 = channel_lv2;
+	}
+	
 }

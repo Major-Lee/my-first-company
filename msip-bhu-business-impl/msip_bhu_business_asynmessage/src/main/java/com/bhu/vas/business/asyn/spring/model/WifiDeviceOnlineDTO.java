@@ -10,6 +10,11 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 	private boolean newWifi;//是否是新增wifi设备
 	private boolean wanIpChanged;//wanip变更
 	private boolean needLocationQuery;//是否需要发送查询地理位置指令
+	private boolean workModeChanged;//设备工作模式是否切换
+	//旧的workmode
+	private String o_wmode;
+	//新的workmode
+	private String n_wmode;
 	private String dhcpcStatusQuery_interface;//是否需要发送查询dhcp状态信息
 	@Override
 	public String getActionType() {
@@ -70,6 +75,30 @@ public class WifiDeviceOnlineDTO extends ActionDTO {
 
 	public void setWanIpChanged(boolean wanIpChanged) {
 		this.wanIpChanged = wanIpChanged;
-	}	
+	}
+
+	public boolean isWorkModeChanged() {
+		return workModeChanged;
+	}
+
+	public void setWorkModeChanged(boolean workModeChanged) {
+		this.workModeChanged = workModeChanged;
+	}
+
+	public String getO_wmode() {
+		return o_wmode;
+	}
+
+	public void setO_wmode(String o_wmode) {
+		this.o_wmode = o_wmode;
+	}
+
+	public String getN_wmode() {
+		return n_wmode;
+	}
+
+	public void setN_wmode(String n_wmode) {
+		this.n_wmode = n_wmode;
+	}
 	
 }

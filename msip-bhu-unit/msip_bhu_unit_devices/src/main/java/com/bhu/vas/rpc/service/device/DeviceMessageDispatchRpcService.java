@@ -19,7 +19,7 @@ import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.rpc.facade.DeviceBusinessFacadeService;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
@@ -43,7 +43,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	 */
 	@Override
 	public void messageDispatch(String ctx, String payload, ParserHeader parserHeader) {
-		logger.info(String.format("DeviceMessageRPC messageDispatch invoke ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
+		logger.info(String.format("messageDispatch invoke ctx [%s] payload [%s] header[%s]", ctx, payload, parserHeader));
 		
 		try{
 			int type = parserHeader.getType();
@@ -61,18 +61,17 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
 			}
-			logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",
-					ctx, payload, parserHeader));
+			//logger.info(String.format("DeviceMessageRPC messageDispatch successful ctx [%s] payload [%s] header[%s]",ctx, payload, parserHeader));
 			//logger.info("1");
-		}catch(RpcBusinessI18nCodeException ex){
-			logger.info(String.format("DeviceMessageRPC messageDispatch failed ctx [%s] payload [%s] header[%s]", 
+		}catch(BusinessI18nCodeException ex){
+			logger.info(String.format("messageDispatch failed ctx [%s] payload [%s] header[%s]", 
 					ctx, payload, parserHeader));
 			throw ex;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceMessageRPC messageDispatch exception ctx [%s] payload [%s] header[%s] exmsg[%s]",
+			logger.error(String.format("messageDispatch exception ctx [%s] payload [%s] header[%s] exmsg[%s]",
 					ctx, payload, parserHeader, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 		
 	}
@@ -126,6 +125,7 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					break;
 				case 7://3.4.16	WLAN用户上下线消息
 					deviceBusinessFacadeService.handsetDeviceConnectState(ctx, payload, parserHeader);
+					deviceBusinessFacadeService.doWangAnProcessor(ctx, payload, parserHeader);
 					break;
 //				case 8://3.4.17	应用隧道消息
 //					break;
@@ -138,7 +138,10 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 				case ParserHeader.Transfer_stype_12://增值指令
 					deviceVapModuleResponse(ctx, payload, parserHeader);
 					//taskNotifyResponse(ctx, payload, parserHeader);
-					break;	
+					break;
+				case 13:
+					deviceBusinessFacadeService.wifiDeviceDirectBind(ctx, payload, parserHeader);
+					break;
 				default:
 					messageDispatchUnsupport(ctx, payload, parserHeader);
 					break;
@@ -207,17 +210,21 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					/*case TriggerHttp404ResourceUpdate:
 						deviceBusinessFacadeService.taskTriggerHttp404Processor(ctx, payload, mac, taskid);
 						break;	*/
-					case TriggerHttpPortalResourceUpdate:
+					/*case TriggerHttpPortalResourceUpdate:
 						deviceBusinessFacadeService.taskTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
-						break;
+						break;*/
 					case DeviceUpgrade:
 						deviceBusinessFacadeService.taskDeviceUpgrade(ctx, payload, mac, taskid);
 						break;
 					case QueryDeviceSysinfo:
 						deviceBusinessFacadeService.taskQuerySysinfoSpeed(ctx, payload, mac, taskid);
 						break;
+					case QueryDeviceTerminals:
+						deviceBusinessFacadeService.taskQueryDeviceTerminals(ctx, payload, mac, taskid);
+						break;
 					default:
-						messageDispatchUnsupport(ctx, payload, parserHeader);
+						deviceBusinessFacadeService.taskCommonProcessor(ctx, payload, mac, taskid);
+						//messageDispatchUnsupport(ctx, payload, parserHeader);
 						break;
 				}
 			}else{
@@ -309,9 +316,9 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 					else if(OperationCMD.QueryDeviceTerminals.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskQueryDeviceTerminalsNotify(ctx, doc, serialDto, mac, taskid);
 					}
-					else if(OperationCMD.TriggerHttpPortalResourceUpdate.getNo().equals(opt)){
+					/*else if(OperationCMD.TriggerHttpPortalResourceUpdate.getNo().equals(opt)){
 						deviceBusinessFacadeService.taskNotifyTriggerHttpPortalProcessor(ctx, payload, mac, taskid);
-					}
+					}*/
 				}
 			}else{
 				char first = serial.charAt(0);
@@ -374,19 +381,19 @@ public class DeviceMessageDispatchRpcService implements IDeviceMessageDispatchRp
 	@Override
 	public void cmupWithWifiDeviceOnlines(String ctx, List<WifiDeviceDTO> dtos) {
 		try{
-			logger.info(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines invoke ctx [%s] ", ctx));
+			logger.info(String.format("cmupWithWifiDeviceOnlines invoke ctx [%s] ", ctx));
 			
 			deviceBusinessFacadeService.cmupWithWifiDeviceOnlines(ctx, dtos);
 			
-			logger.info(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines successful ctx [%s] ",ctx));
-		}catch(RpcBusinessI18nCodeException ex){
-			logger.info(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines failed ctx [%s] ", ctx));
+			//logger.info(String.format("cmupWithWifiDeviceOnlines successful ctx [%s] ",ctx));
+		}catch(BusinessI18nCodeException ex){
+			logger.info(String.format("cmupWithWifiDeviceOnlines failed ctx [%s] ", ctx));
 			throw ex;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			logger.error(String.format("DeviceMessageRPC cmupWithWifiDeviceOnlines exception ctx [%s] exmsg[%s]",
+			logger.error(String.format("cmupWithWifiDeviceOnlines exception ctx [%s] exmsg[%s]",
 					ctx, ex.getMessage()), ex);
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 

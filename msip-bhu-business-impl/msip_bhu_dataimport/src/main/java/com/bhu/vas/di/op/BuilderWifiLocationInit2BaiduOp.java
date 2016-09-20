@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -47,6 +48,8 @@ public class BuilderWifiLocationInit2BaiduOp {
 					String lat = device.getLat();
 					String lon = device.getLon();
 					String bdid = device.getBdid();
+					if(WifiDeviceHelper.Device_Location_By_APP == device.getLoc_method())
+						continue;
 					if(StringUtils.isNotEmpty(lat) && StringUtils.isNotEmpty(lon) ){
 						if(StringUtils.isNotEmpty(bdid)){
 							total++;
@@ -109,7 +112,8 @@ public class BuilderWifiLocationInit2BaiduOp {
 										ex.printStackTrace(System.out);
 									}
 								}
-								device.setIpgen(true);
+								device.setLoc_method(WifiDeviceHelper.Device_Location_By_WanIp);
+//								device.setIpgen(true);
 								wifiDeviceService.update(device);
 							}
 						}else{

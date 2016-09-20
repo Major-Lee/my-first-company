@@ -19,7 +19,7 @@ package com.bhu.vas.api.dto.ret;
 public class QuerySysinfoSerialReturnDTO extends QuerySerialReturnDTO{
 	//当前设备运行时长  返回的格式时间戳[小时:分钟:秒]18:15:58 累加的
 	private String uptime;
-
+	private String tfcard_usage;
 	public String getUptime() {
 		return uptime;
 	}
@@ -27,4 +27,13 @@ public class QuerySysinfoSerialReturnDTO extends QuerySerialReturnDTO{
 	public void setUptime(String uptime) {
 		this.uptime = uptime;
 	}
+
+	public String getTfcard_usage() {
+		return tfcard_usage;
+	}
+
+	public void setTfcard_usage(String tfcard_usage) {
+		this.tfcard_usage = tfcard_usage;
+	}
+	
 }

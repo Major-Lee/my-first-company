@@ -12,6 +12,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
  * @author Edmond
  */
 @Document(collection = "t_wifi_device_wholeday_usedlog")
+@Deprecated
 public class WifiDeviceWholeDayUsedLogMDTO {
 	/**
 	 * 规则为 yyyy-MM-dd_mac

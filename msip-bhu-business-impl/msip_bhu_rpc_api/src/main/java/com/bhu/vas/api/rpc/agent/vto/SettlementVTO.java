@@ -5,12 +5,15 @@ public class SettlementVTO implements java.io.Serializable{
 	private int index;
 	private int uid;
 	private String org;
-	//Total Revenue 除去当月之外的所有金额
+	//Total Revenue 除去当月之外的所有需要被结算金额
 	private String tr;
-	//unsettle Revenue 本月未结算金额 
+	//unsettle Revenue 除去当月之外的未结算金额 
 	private String ur;
-	//settled Revenue of lastmonth
-	private String lsr;
+	
+	
+	public static final String Sort_Field_UR = "ur";
+	public static final String Sort_Field_TR = "tr";
+	public static final String Sort_Field_ORG = "org";
 	public int getIndex() {
 		return index;
 	}
@@ -41,12 +44,12 @@ public class SettlementVTO implements java.io.Serializable{
 	public void setUr(String ur) {
 		this.ur = ur;
 	}
-	public String getLsr() {
+	/*public String getLsr() {
 		return lsr;
 	}
 	public void setLsr(String lsr) {
 		this.lsr = lsr;
-	}
+	}*/
 	
 	
 }

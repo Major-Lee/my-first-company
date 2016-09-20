@@ -8,12 +8,17 @@ import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
+import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
+import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO1;
+import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.exception.RpcBusinessI18nCodeException;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
@@ -28,7 +33,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public List<WifiDeviceMaxBusyVTO> fetchWDevicesOrderMaxHandset(int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchWDevicesOrderMaxHandset(pageNo, pageSize);
 	}
@@ -36,7 +41,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 //	@Override
 //	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword, int pageNo, int pageSize) {
 //		if(pageNo < 0 || pageSize < 0) 
-//			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+//			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
 //		
 //		return deviceRestRpcService.fetchWDevicesByKeyword(keyword, pageNo, pageSize);
 //	}
@@ -45,7 +50,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	public TailPage<WifiDeviceVTO> fetchWDevicesByKeyword(String keyword,
 			String region, String excepts, int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchWDevicesByKeyword(keyword, region, excepts, pageNo, pageSize);
 	}
@@ -56,7 +61,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 			String config_mode, String devicetype, Boolean online,Boolean moduleonline, Boolean newVersionDevice, Boolean canOperateable,
 			String region, String excepts, String groupids, String groupids_excepts, int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		return deviceRestRpcService.fetchWDevicesByKeywords(mac, sn, orig_swver,origvapmodule, adr,work_mode, config_mode, 
 				devicetype, online,moduleonline, newVersionDevice,canOperateable, region, excepts, groupids, groupids_excepts, pageNo, pageSize);
 	}
@@ -64,7 +69,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public List<RegionCountDTO> fetchWDeviceRegionCount(String regions){
 		if(StringUtils.isEmpty(regions)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchWDeviceRegionCount(regions);
 	}
@@ -72,7 +77,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public TailPage<WifiDeviceVTO> fetchRecentWDevice(int pageNo, int pageSize) {
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchRecentWDevice(pageNo, pageSize);
 	}
@@ -80,9 +85,9 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize) {
 		if(StringUtils.isEmpty(wifiId)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		if(pageNo < 0 || pageSize < 0) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchHDevices(wifiId, pageNo, pageSize);
 	}
@@ -95,14 +100,82 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public RpcResponseDTO<List<PersistenceCMDDetailDTO>> fetchDevicePersistenceDetailCMD(String wifiId) {
 		if(StringUtils.isEmpty(wifiId)) 
-			throw new RpcBusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL.code());
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
 		return deviceRestRpcService.fetchDevicePersistenceDetailCMD(wifiId);
 	}
 
-	/*@Override
-	public Collection<GeoMapVTO> fetchGeoMap() {
-		return deviceRestRpcService.fetchGeoMap();
-	}*/
+	@Override
+	public RpcResponseDTO<String> fetchDevicePresent(String wifiId) {
+		if (StringUtils.isEmpty(wifiId))
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
+		return deviceRestRpcService.fetchDevicePresent(wifiId);
+	}
+
+	@Override
+	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(int pageNo, int pageSize, String... messages) {
+		if(pageNo < 0 || pageSize < 0) 
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
+		
+		return deviceRestRpcService.fetchBySearchConditionMessages(pageNo, pageSize, messages);
+
+	}
+
+	@Override
+	public RpcResponseDTO<UserSearchConditionDTO> storeUserSearchCondition(int uid,String message,String desc) {
+		if(StringUtils.isEmpty(message))
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
+		
+		return deviceRestRpcService.storeUserSearchCondition(uid, message, desc);
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts) {
+		return deviceRestRpcService.removeUserSearchCondition(uid, ts);
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> removeUserSearchConditions(int uid, String message_ts_splits) {
+		return deviceRestRpcService.removeUserSearchConditions(uid, message_ts_splits);
+	}
+	
+	@Override
+	public RpcResponseDTO<TailPage<UserSearchConditionDTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize) {
+		if(pageNo < 0 || pageSize < 0) 
+			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
+		
+		return deviceRestRpcService.fetchUserSearchConditions(uid, pageNo, pageSize);
+	}
+
+	@Override
+	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid) {
+		return deviceRestRpcService.fetchAgents(uid);
+	}
+
+	@Override
+	public RpcResponseDTO<String> exportWifiDeviceResult(int uid, String message) {
+		return deviceRestRpcService.exportWifiDeviceResult(uid, message);
+	}
+	
+	@Override
+	public RpcResponseDTO<String> exportOrderResult(int uid, String message, int messagetype, String start_date, String end_date) {
+		return deviceRestRpcService.exportOrderResult(uid, message, messagetype, start_date, end_date);
+	}
+
+	@Override
+	public long countByUCExtensionOnline(int uid, String t_uc_extension, String online) {
+		return deviceRestRpcService.countByUCExtensionOnline(uid, t_uc_extension, online);
+	}
+
+	@Override
+	public RpcResponseDTO<DeviceStatisticsVTO> deviceStatistics(String d_snk_turnstate, String d_snk_type) {
+		return deviceRestRpcService.deviceStatistics(d_snk_turnstate, d_snk_type);
+	}
+
+	@Override
+	public RpcResponseDTO<List<WifiDevicePresentVTO>> fetchDevicesPresent(
+			List<String> dmacs) {
+		return deviceRestRpcService.fetchDevicesPresent(dmacs);
+	}
 
 }

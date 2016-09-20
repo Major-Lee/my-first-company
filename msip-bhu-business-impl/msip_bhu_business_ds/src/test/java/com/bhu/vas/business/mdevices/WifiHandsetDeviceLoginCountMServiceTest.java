@@ -1,15 +1,7 @@
 package com.bhu.vas.business.mdevices;
 
-import javax.annotation.Resource;
 
-import org.junit.Test;
-
-import com.bhu.vas.business.ds.device.mdto.WifiHandsetDeviceLoginCountMDTO;
-import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceLoginCountMService;
-import com.smartwork.msip.cores.cache.relationcache.impl.springmongo.Pagination;
-import com.smartwork.msip.localunit.BaseTest;
-
-public class WifiHandsetDeviceLoginCountMServiceTest extends BaseTest{
+/*public class WifiHandsetDeviceLoginCountMServiceTest extends BaseTest{
 	@Resource
 	private WifiHandsetDeviceLoginCountMService wifiHandsetDeviceLoginCountMService;
 	
@@ -28,4 +20,4 @@ public class WifiHandsetDeviceLoginCountMServiceTest extends BaseTest{
 		}
 	}
 	
-}
+}*/

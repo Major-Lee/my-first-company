@@ -7,51 +7,103 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceGroupRpcService;
+import com.bhu.vas.api.rpc.devicegroup.iservice.IDeviceGroupRpcService;
+import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
+import com.bhu.vas.api.vto.BackendTaskVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
 import com.bhu.vas.rpc.facade.DeviceGroupUnitFacadeRpcService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 @Service("deviceGroupRpcService")
-public class DeviceGroupRpcService implements IDeviceGroupRpcService{
+public class DeviceGroupRpcService implements IDeviceGroupRpcService {
+    private final Logger logger = LoggerFactory
+	    .getLogger(DeviceGroupRpcService.class);
+    @Resource
+    private DeviceGroupUnitFacadeRpcService deviceGroupUnitFacadeRpcService;
 
-	private final Logger logger = LoggerFactory.getLogger(DeviceGroupRpcService.class);
-	@Resource
-	private DeviceGroupUnitFacadeRpcService deviceGroupUnitFacadeRpcService;
-	@Override
-	public TailPage<DeviceGroupVTO> birthTree(Integer uid,
-			long pid, int pageNo, int pageSize) {
-		logger.info(String.format("birthTree uid:%s pid:%s",uid,pid));
-		return deviceGroupUnitFacadeRpcService.birthTree(uid, pid, pageNo, pageSize);
-	}
-	@Override
-	public RpcResponseDTO<DeviceGroupVTO> save(Integer uid, long gid,
-			long pid, String name) {
-		logger.info(String.format("save uid:%s gid:%s pid:%s name:%s",uid,gid,pid,name));
-		return deviceGroupUnitFacadeRpcService.save(uid, gid, pid, name);
-	}
+    @Override
+    public RpcResponseDTO<TailPage<DeviceGroupVTO>> birthTree(Integer uid,
+	    long pid, int pageNo, int pageSize) {
+	logger.info(String.format("birthTree uid:%s pid:%s", uid, pid));
+	return deviceGroupUnitFacadeRpcService.birthTree(uid, pid, pageNo,
+		pageSize);
+    }
 
-	@Override
-	public RpcResponseDTO<DeviceGroupVTO> detail(Integer uid, long gid, int pageNo, int pageSize) {
-		logger.info(String.format("detail uid:%s gid:%s pageNo:%s pageSize:%s",uid,gid,pageNo,pageSize));
-		return deviceGroupUnitFacadeRpcService.detail(uid, gid, pageNo, pageSize);
-	}
+    @Override
+    public RpcResponseDTO<DeviceGroupVTO> deviceGroupSave(Integer uid, long gid,
+	    long pid, String name) {
+	logger.info(
+		String.format("deviceGroupSave uid:%s gid:%s pid:%s name:%s",
+			uid, gid, pid, name));
+	return deviceGroupUnitFacadeRpcService.deviceGroupSave(uid, gid, pid,
+		name);
+    }
 
-	@Override
-	public RpcResponseDTO<Boolean> remove(Integer uid, String gids) {
-		logger.info(String.format("detail uid:%s gids:%s",uid,gids));
-		return deviceGroupUnitFacadeRpcService.remove(uid, gids);
-	}
-	@Override
-	public RpcResponseDTO<Boolean> grant(Integer uid, long gid, String wifi_ids) {
-		logger.info(String.format("grant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids));
-		return deviceGroupUnitFacadeRpcService.grant(uid, gid, wifi_ids);
-	}
-	@Override
-	public RpcResponseDTO<Boolean> ungrant(Integer uid, long gid,String wifi_ids) {
-		logger.info(String.format("ungrant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids));
-		return deviceGroupUnitFacadeRpcService.ungrant(uid, gid, wifi_ids);
-	}
+    @Override
+    public RpcResponseDTO<DeviceGroupDetailVTO> deviceGroupDetail(Integer uid,
+	    long gid) {
+	logger.info(
+		String.format("deviceGroupDetail uid:%s gid:%s ", uid, gid));
+	return deviceGroupUnitFacadeRpcService.deviceGroupDetail(uid, gid);
+    }
 
-	
+    @Override
+    public RpcResponseDTO<Boolean> deviceGroupCleanUpByIds(Integer uid,
+	    String gids) {
+	logger.info(String.format("deviceGroupCleanUpByIds uid:%s gids:%s", uid,
+		gids));
+	return deviceGroupUnitFacadeRpcService.deviceGroupCleanUpByIds(uid,
+		gids);
+    }
+
+    @Override
+    public RpcResponseDTO<Boolean> assignUserSearchCondition4DeviceGroup(
+	    Integer assignor, Long gid, String message, String desc) {
+	logger.info(String.format(
+		"assignUserSearchCondition4DeviceGroup assignor:%s gid:%s message:%s desc:%s",
+		assignor, gid, message, desc));
+	return deviceGroupUnitFacadeRpcService
+		.assignUserSearchCondition4DeviceGroup(assignor, gid, message,
+			desc);
+    }
+
+    @Override
+    public RpcResponseDTO<TailPage<BackendTaskVTO>> fetch_backendtask(int uid,
+	    String state, int pageNo, int pageSize) {
+	logger.info(String.format(
+		"fetchBackendtask uid:%s state:%s pageNo:%s pageSize:%s", uid,
+		state, pageNo, pageSize));
+	return deviceGroupUnitFacadeRpcService.fetch_backendtask(uid, state,
+		pageNo, pageSize);
+    }
+
+    @Override
+    public RpcResponseDTO<Boolean> generateBackendTask(int uid, String message,
+	    String opt, String subopt, String extparams) {
+	logger.info(String.format(
+		"generateBackendTask uid:%s message:%s opt:%s subopt:%s extparams:%s",
+		uid, message, opt, subopt, extparams));
+	return deviceGroupUnitFacadeRpcService.generateBackendTask(uid, message,
+		opt, subopt, extparams);
+    }
+    /*
+     * @Override public RpcResponseDTO<Boolean> grant(Integer uid, long gid,
+     * String wifi_ids) { logger.info(String.format(
+     * "grant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids)); return
+     * deviceGroupUnitFacadeRpcService.grant(uid, gid, wifi_ids); }
+     * 
+     * @Override public RpcResponseDTO<Boolean> ungrant(Integer uid, long
+     * gid,String wifi_ids) { logger.info(String.format(
+     * "ungrant uid:%s gid:%s wifi_ids:%s",uid,gid,wifi_ids)); return
+     * deviceGroupUnitFacadeRpcService.ungrant(uid, gid, wifi_ids); }
+     */
+
+    @Override
+    public RpcResponseDTO<Boolean> modifyBackendTask(int uid, long taskId,
+	    String extparams) {
+	logger.info(String.format(
+		"modifyBackendTask uid:%s taskId:%s extparams:%s",
+		uid, taskId, extparams));
+	return deviceGroupUnitFacadeRpcService.modifyBackendTask(uid, taskId, extparams);
+    }
 }

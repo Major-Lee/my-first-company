@@ -5,10 +5,15 @@ import java.util.List;
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
+import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
+import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.api.vto.WifiDeviceVTO1;
+import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 
@@ -27,5 +32,20 @@ public interface IDeviceRestRpcService {
 	public TailPage<HandsetDeviceVTO> fetchHDevices(String wifiId, int pageNo, int pageSize);
 	
 	public RpcResponseDTO<List<PersistenceCMDDetailDTO>> fetchDevicePersistenceDetailCMD(String wifiId);
+	public RpcResponseDTO<String> fetchDevicePresent(String wifiId);
+	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(int pageNo, int pageSize, String... messages);
+
 	//public Collection<GeoMapVTO> fetchGeoMap();
+	
+	public RpcResponseDTO<UserSearchConditionDTO> storeUserSearchCondition(int uid, String message, String desc);
+	public RpcResponseDTO<Boolean> removeUserSearchCondition(int uid, long ts);
+	public RpcResponseDTO<Boolean> removeUserSearchConditions(int uid, String message_ts_splits);
+	public RpcResponseDTO<TailPage<UserSearchConditionDTO>> fetchUserSearchConditions(int uid, int pageNo, int pageSize);
+	public RpcResponseDTO<List<UserAgentVTO>> fetchAgents(int uid);
+	public RpcResponseDTO<String> exportWifiDeviceResult(int uid, String message);
+	public RpcResponseDTO<String> exportOrderResult(int uid, String message, int messagetype, String start_date, String end_date);
+
+	public long countByUCExtensionOnline(int uid, String t_uc_extension, String online);
+	public RpcResponseDTO<DeviceStatisticsVTO> deviceStatistics(String d_snk_turnstate, String d_snk_type);
+	public RpcResponseDTO<List<WifiDevicePresentVTO>> fetchDevicesPresent(List<String> dmacs);
 }

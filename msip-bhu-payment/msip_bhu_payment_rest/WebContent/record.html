@@ -1,0 +1,162 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="format-detection"content="telephone=no, email=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" /><!-- 删除苹果默认的工具栏和菜单栏 -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black" /><!-- 设置苹果工具栏颜色 -->
+<title></title>
+<style>
+body {
+    margin: 0px;
+    padding: 0px;
+    color: #65735B;
+    font-family: "Microsoft Yahei";
+    text-align: center;
+    font-size:0.6em;
+}
+td {
+    border: solid #E4C0C0 1px;
+    height: 40px;
+    display: table-cell;
+    vertical-align: inherit;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    
+}
+.blue{
+    color: #2872C7;
+}
+.green{
+    color: #3BD04A;
+}
+
+#order_detail table td{
+    border: none;
+}
+.linet{
+    border-top: solid #E4C0C0 1px;
+}
+.linel{
+    border-left: solid #E4C0C0 1px !important;
+    width:50%;
+}
+</style>
+</head>
+<body>
+<table><tr><td id='user_info'>数据加载中.....</td></tr></table>
+<table id='order_detail'><tr><td>数据加载中.....</td></tr></table>
+<script type="text/javascript" src="http://down.bhuwifi.com/Public/Home/js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+function fixedStr(num,str,isMoney,before){
+    if(isMoney){
+        str = str.toFixed(2);
+    }
+    
+    var len = str.toString().length;
+
+    for(var i = 0;i<num-len;i++){
+        if(!before){
+            str = str + '&nbsp;&nbsp;';
+        }else{
+            str = '&nbsp;&nbsp;' + str;
+        }
+    }
+    return str;
+}
+$(document).ready(function(){
+
+    $.ajax({
+        url:"/msip_bhu_payment_rest/record/info",
+        async: false,
+        dataType:"json",
+        contentType: "application/json;utf-8",     
+        success:function(json){
+            if(json.success){
+                var result = json.result;
+                
+                if(result.history_order_user==0){
+                    var deves = 0;
+                }else{
+                    var deves = result.pay_again_user_count/result.history_order_user;
+                        deves = deves*100;
+                        deves = deves.toFixed(4);
+                }
+                
+                var user_info = "打赏历史累计订单:"+result.history_order_count+";总用户:"+result.history_order_user
+                +"<br />二次打赏用户数:"+result.pay_again_user_count+"["+deves+"%]";
+                $('#user_info').html(user_info);
+                
+                var detail = result.detail;
+                var order_detail = "<tr><td>期</td>"+
+
+                "<td><table><tr><td>手机&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;微信</td></tr><tr class='linet'><td>手机&nbsp;支付宝</td></tr></table></td>"+
+
+                "<td><table><tr><td>电脑&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;微信</td></tr><tr class='linet'><td>电脑&nbsp;支付宝</td></tr></table></td>"+
+
+                "<td><table><tr><td>APP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;微信</td></tr><tr class='linet'><td>APP&nbsp;支付宝</td></tr></table></td>"+
+
+                "<td><table><tr><td>代付</td></tr><tr class='linet'><td>累计</td></tr></table></td>"+
+
+                "<td><table><tr><td>utool</td></tr><tr class='linet'><td>ucloud</td></tr></table></td>"
+
+                +"</tr>";
+                for(var i=0;i<detail.length;i++){
+                    var info = detail[i].info;
+                        info = eval("(" + info + ")");
+
+                    order_detail +="<tr><td>"+detail[i].timeD+"</td>"+
+
+                    "<td><table><tr><td>￥"+fixedStr(7,info['WapWeixin'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(4,info['WapWeixin'].count,false,true)+
+                    "</td></tr><tr class='linet'><td>￥"+fixedStr(7,info['WapAlipay'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(4,info['WapAlipay'].count,false,true)+
+                    "</td></tr></table></td>"+
+
+                    "<td><table><tr><td>￥"+fixedStr(6,info['PcWeixin'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,info['PcWeixin'].count,false,true)+
+                    "</td></tr><tr class='linet'><td>￥"+fixedStr(6,info['PcAlipay'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,info['PcAlipay'].count,false,true)+
+                    "</td></tr></table></td>"+
+
+                    "<td><table><tr><td>￥"+fixedStr(6,info['AppWeixin'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,info['AppWeixin'].count,false,true)+
+                    "</td></tr><tr class='linet'><td>￥"+fixedStr(6,info['AppAlipay'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,info['AppAlipay'].count,false,true)+
+                    "</td></tr></table></td>"+
+
+                    "<td><table><tr><td>￥"+fixedStr(6,info['WapWeixinNative'].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,info['WapWeixinNative'].count,false,true)+
+                    "</td></tr><tr class='linet'><td><em class='green'>￥"+fixedStr(6,detail[i].amount/100,true)+
+                    "&nbsp;&nbsp;"+fixedStr(3,detail[i].count,false,true)+
+                    "</em></td></tr></table></td>"+
+
+                    "<td><table><tr><td>"+detail[i].video_count+"</td></tr>"+
+                    "<tr class='linet'><td>"+detail[i].dx_count+"</td></tr></table></td>"+
+
+                    "</tr>";
+
+                }
+                
+                $('#order_detail').html(order_detail);
+            }else{
+                alert("请求数据失败");
+            }
+            
+        }
+    });
+});
+</script>
+</body>
+</html>

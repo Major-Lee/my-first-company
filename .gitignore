@@ -15,12 +15,16 @@ db/*.sqlite3
 **/bin/*
 **/build/*
 **/build.jar/*
+**/classes/*
 **/.settings/*
 **/.classpath
 **/.project
 **/msip-bhu-deploy/deploy/*
 .idea
+.metadata/
+.recommenders/
 *.iml
 **/.gitignore
 bhu-parent.ipr
 bhu-parent.iws
+msip-bhu-api/msip_bhu_agent_rest/src/main/java/com/bhu/vas/web/user/LoginSessionController.java

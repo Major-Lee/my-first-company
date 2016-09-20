@@ -5,6 +5,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 
 public class BackendTaskMain {
+	@SuppressWarnings("resource")
 	public static void main(String[] args) throws InterruptedException {
 		//String[] locations = {"classpath*:/springtest/testCtx.xml"};//,"classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-consumer.xml"};
 		//org.springframework.scheduling.quartz

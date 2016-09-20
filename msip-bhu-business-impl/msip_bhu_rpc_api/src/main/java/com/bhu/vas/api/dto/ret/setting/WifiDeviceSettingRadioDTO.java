@@ -18,6 +18,13 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 	//信道
 	private String real_channel;
 	
+	//rf 射频类型
+	private String rf;
+	//国家码
+	private String country;
+	//频宽
+	private String channel_bandwidth;
+	
 	public WifiDeviceSettingRadioDTO(){
 		
 	}
@@ -65,13 +72,16 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 	
 	@Override
 	public Object[] builderProperties(int type) {
-		Object[] properties = new Object[2];
+		Object[] properties = null;
 		if (MODEL_Power_Radio == type) {
+			properties = new Object[2];
 			properties[0] = name;
 			properties[1] = power;
         }else if (MODEL_RealChannel_Radio == type) {
+        	properties = new Object[3];
         	properties[0] = name;
 			properties[1] = real_channel;
+			properties[2] = real_channel;
         }
 		return properties;
 	}
@@ -88,6 +98,29 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 	public void setReal_channel(String real_channel) {
 		this.real_channel = real_channel;
 	}
-	
+
+	public String getRf() {
+		return rf;
+	}
+
+	public void setRf(String rf) {
+		this.rf = rf;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getChannel_bandwidth() {
+		return channel_bandwidth;
+	}
+
+	public void setChannel_bandwidth(String channel_bandwidth) {
+		this.channel_bandwidth = channel_bandwidth;
+	}
 	
 }

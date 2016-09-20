@@ -1,5 +1,9 @@
 package com.bhu.vas.api.dto.ret.setting;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.bhu.vas.api.helper.WifiDeviceHelper;
+
 
 /**
  * 设备配置信息的vap item
@@ -36,6 +40,8 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	private String auth_key;
 
 	private String auth_key_rsa;
+	//是否隐藏ssid 默认为关 不隐藏
+	private String hide_ssid = WifiDeviceHelper.Disable;
 
 	public WifiDeviceSettingVapDTO(){
 		
@@ -90,6 +96,16 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	public String getRadio() {
 		return radio;
 	}
+	public String getSpecialRadio(){
+		if(StringUtils.isEmpty(radio)){
+			if("wlan0".equals(name)){
+				return "wifi0";
+			}else if("wlan10".equals(name)){
+				return "wifi1";
+			}
+		}
+		return radio;
+	}
 	public void setRadio(String radio) {
 		this.radio = radio;
 	}
@@ -111,6 +127,12 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
+	public String getHide_ssid() {
+		return hide_ssid;
+	}
+	public void setHide_ssid(String hide_ssid) {
+		this.hide_ssid = hide_ssid;
+	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -131,7 +153,7 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 		Object[] properties = new Object[8];
 		properties[0] = name;
 		properties[1] = radio;
-		properties[2] = ssid;
+		properties[2] = WifiDeviceHelper.xmlContentEncoder(ssid);//StringEscapeUtils.escapeXml(ssid);
 		properties[3] = auth;
 		properties[4] = enable;
 		properties[5] = acl_type;
@@ -141,19 +163,56 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 	}
 	//修改vap的密码
 	public static final int BuilderType_VapPassword = 1;
+	public static final int BuilderType_MultiVapPassword = 4;
+	public static final int BuilderType_WorkModeChanged = 2;
+	public static final int BuilderType_VapHidessid = 3;
+	public static final int BuilderType_MultiVapHidessid = 5;
 	
 	@Override
 	public Object[] builderProperties(int type) {
 		Object[] properties = null;
 		switch(type){
 			case BuilderType_VapPassword:
-				properties = new Object[5];
+				properties = new Object[6];
 				properties[0] = name;
-				properties[1] = ssid;
+				properties[1] = WifiDeviceHelper.xmlContentEncoder(ssid);//StringEscapeUtils.escapeXml(ssid);
 				properties[2] = auth;
-				properties[3] = auth_key;
+				properties[3] = WifiDeviceHelper.xmlContentEncoder(auth_key);
 				properties[4] = auth_key_rsa;
+				properties[5] = hide_ssid;
 				break;
+			case BuilderType_MultiVapPassword:
+				properties = new Object[7];
+				properties[0] = name;
+				properties[1] = getSpecialRadio();
+				properties[2] = WifiDeviceHelper.xmlContentEncoder(ssid);//StringEscapeUtils.escapeXml(ssid);
+				properties[3] = auth;
+				properties[4] = WifiDeviceHelper.xmlContentEncoder(auth_key);
+				properties[5] = auth_key_rsa;
+				properties[6] = hide_ssid;
+				break;
+			case BuilderType_WorkModeChanged:
+				properties = new Object[9];
+				properties[0] = name;
+				properties[1] = radio;
+				properties[2] = WifiDeviceHelper.xmlContentEncoder(ssid);//StringEscapeUtils.escapeXml(ssid);
+				properties[3] = auth;
+				properties[4] = enable;
+				properties[5] = acl_type;
+				properties[6] = acl_name;
+				properties[7] = guest_en;
+				properties[8] = auth_key_rsa;
+				break;
+			case BuilderType_VapHidessid:
+				properties = new Object[2];
+				properties[0] = name;
+				properties[1] = hide_ssid;
+				break;
+			case BuilderType_MultiVapHidessid:
+				properties = new Object[3];
+				properties[0] = name;
+				properties[1] = getSpecialRadio();
+				properties[2] = hide_ssid;
 			default:
 				properties = builderProperties();
 				break;

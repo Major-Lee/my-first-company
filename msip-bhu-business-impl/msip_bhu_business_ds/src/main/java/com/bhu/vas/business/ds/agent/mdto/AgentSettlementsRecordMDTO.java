@@ -14,8 +14,14 @@ import com.smartwork.msip.cores.helper.StringHelper;
 public class AgentSettlementsRecordMDTO {
 	public static final int Settlement_Illegal = -1000;
 	public static final int Settlement_View_All = -1;
-	public static final int Settlement_Created = 0;
-	public static final int Settlement_Done = 1;
+	//public static final int Settlement_Created = 0;
+	//public static final int Settlement_Done = 1;
+	
+	public static final int Settlement_Bill_Created = 0;
+	public static final int Settlement_Bill_Parted = 1;
+	public static final int Settlement_Bill_Done = 2;
+	
+	
 	@Id
 	private String id;//2015-09_user
 	//yyyyMMdd
@@ -24,8 +30,10 @@ public class AgentSettlementsRecordMDTO {
 	//结算人
 	private int reckoner;
 	
-	//结算金额
+	//需要结算金额
 	private double iSVPrice;
+	//settledPrice 已经结算的金额
+	private double sdPrice;
 	//结算单状态
 	private int status;
 	//结算单生成日期
@@ -94,6 +102,14 @@ public class AgentSettlementsRecordMDTO {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public double getSdPrice() {
+		return sdPrice;
+	}
+
+	public void setSdPrice(double sdPrice) {
+		this.sdPrice = sdPrice;
 	}
 
 	public static String generateId(String date, int agent){

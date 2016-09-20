@@ -1,6 +1,7 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.impl.mobleno.UniqueMobilenoHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.unique.impl.nick.UniqueNickHashService;
 
 public class UniqueFacadeService {
 	//public static 
@@ -15,6 +16,17 @@ public class UniqueFacadeService {
 			return null;
 		}
 	}
+	
+	
+	public static boolean checkEmailExist(String email){
+		try{
+			return UniqueEmailHashService.getInstance().check(email);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return true;
+		}
+	}*/
+	
 	public static Integer fetchUidByNick(String nick){
 		String uidStr =  UniqueNickHashService.getInstance().fetchUidByNick(nick);
 		if(uidStr == null) return null;
@@ -25,16 +37,6 @@ public class UniqueFacadeService {
 			return null;
 		}
 	}
-	
-	public static boolean checkEmailExist(String email){
-		try{
-			return UniqueEmailHashService.getInstance().check(email);
-		}catch(Exception ex){
-			ex.printStackTrace(System.out);
-			return true;
-		}
-	}
-	
 	public static boolean checkNickExist(String nick){
 		try{
 			return UniqueNickHashService.getInstance().check(nick);
@@ -42,7 +44,16 @@ public class UniqueFacadeService {
 			ex.printStackTrace(System.out);
 			return true;
 		}
-	}*/
+	}
+	
+	public static Integer fetchUidByAcc(int countryCode,String acc){
+		Integer uid = fetchUidByMobileno(countryCode,acc);
+		if(uid == null){
+			uid = fetchUidByNick(acc);
+		}
+		return uid;
+	}
+	
 	
 	public static Integer fetchUidByMobileno(int countryCode,String mobileno){
 		String uidStr =  UniqueMobilenoHashService.getInstance().fetchUidByMobileno(countryCode,mobileno);
@@ -54,7 +65,6 @@ public class UniqueFacadeService {
 			return null;
 		}
 	}
-	
 	public static Integer fetchUidByMobileno(String mobilenoWithCountryCode){
 		String uidStr =  UniqueMobilenoHashService.getInstance().fetchUidByMobileno(mobilenoWithCountryCode);
 		if(uidStr == null) return null;
@@ -84,14 +94,29 @@ public class UniqueFacadeService {
 		}
 	}
 	
-	public static void uniqueRegister(int uid,int countrycode,String mobileno){
-		System.out.println(String.format("uid[%s] countrycode[%s] mobileno[%s]", uid,countrycode, mobileno));
+	public static void uniqueMobilenoRegister(int uid,int countrycode,String mobileno){
+		//System.out.println(String.format("uid[%s] countrycode[%s] mobileno[%s]", uid,countrycode, mobileno));
 		UniqueMobilenoHashService.getInstance().registerOrUpdate(countrycode,mobileno, uid, null);
 	}
 	
+	public static void uniqueMobilenoChanged(int uid,int countrycode,String mobileno,String oldmobileno){
+		UniqueMobilenoHashService.getInstance().registerOrUpdate(countrycode,mobileno, uid,oldmobileno);
+	}
+	
+	
+	public static void uniqueNickRegister(int uid,String nick){
+		//System.out.println(String.format("uid[%s] nick[%s]", uid,nick));
+		UniqueNickHashService.getInstance().registerOrUpdate(nick, uid, null);
+	}
+	
+	public static void uniqueNickChanged(int uid,String nick,String oldnick){
+		//System.out.println(String.format("uid[%s] nick[%s] oldnick[%s]", uid,nick, oldnick));
+		UniqueNickHashService.getInstance().registerOrUpdate(nick, uid,oldnick);
+	}
+	
 	/*public static void uniqueRegister(int uid,String email,String pwd,String nick,String mobileno){
-		System.out.println(String.format("uid[%s] email[%s] pwd[%s] nick[%s] mobileno[%s]", uid, email, pwd, nick, mobileno));
-		UniqueEmailHashService.getInstance().registerOrUpdate(email, uid, pwd,null);
+		//System.out.println(String.format("uid[%s] email[%s] pwd[%s] nick[%s] mobileno[%s]", uid, email, pwd, nick, mobileno));
+		//UniqueEmailHashService.getInstance().registerOrUpdate(email, uid, pwd,null);
 		UniqueNickHashService.getInstance().registerOrUpdate(nick, uid, null);
 		UniqueMobilenoHashService.getInstance().registerOrUpdate(mobileno, uid, null);
 	}
@@ -102,12 +127,7 @@ public class UniqueFacadeService {
 	
 	public static void uniqueEmailChanged(int uid,String email,String pwd,String oldemail){
 		UniqueEmailHashService.getInstance().registerOrUpdate(email, uid, pwd,oldemail);
-	}*/
-	
-	public static void uniqueMobilenoChanged(int uid,int countrycode,String mobileno,String oldmobileno){
-		UniqueMobilenoHashService.getInstance().registerOrUpdate(countrycode,mobileno, uid,oldmobileno);
-	}
-	
+	}*/	
 	/*public static void uniqueNickUpdate(int uid,String nick,String oldnick,boolean isNickUpd){
 		if(isNickUpd)
 			UniqueNickHashService.getInstance().registerOrUpdate(nick, uid, oldnick);
@@ -128,4 +148,10 @@ public class UniqueFacadeService {
 		UniqueEmailHashService.getInstance().registerOrUpdate(email, uid, pwd);
 		UniqueNickHashService.getInstance().registerOrUpdate(email, uid, pwd);
 	}*/
+	
+	
+	public static void main(String[] argv){
+		Integer uid_willbinded = UniqueFacadeService.fetchUidByMobileno(86,"18612272825");
+		System.out.println(uid_willbinded);
+	}
 }

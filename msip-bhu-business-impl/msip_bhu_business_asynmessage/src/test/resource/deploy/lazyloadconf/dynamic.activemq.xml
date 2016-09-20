@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<dynamic>
+    <mqservers>
+        <server host="192.168.66.155" port="61616" url="failover:(tcp://192.168.66.155:61616?tcpNoDelay=true)">
+            <queues>A1</queues>
+            <queues>B1</queues>
+            <queues>C1</queues>
+            <queues>D1</queues>
+        </server>
+        <server host="192.168.66.7" port="61616" url="failover:(tcp://192.168.66.7:61616?tcpNoDelay=true)">
+            <queues>A2</queues>
+            <queues>B2</queues>
+            <queues>C2</queues>
+            <queues>D2</queues>
+        </server>
+    </mqservers>
+</dynamic>

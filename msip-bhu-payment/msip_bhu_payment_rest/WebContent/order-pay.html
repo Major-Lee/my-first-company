@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+
+<meta name="format-detection" content="telephone=no" />
+
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<title></title>
+<style type="text/css">
+	.block{
+	width: 68%;
+		margin: 20px auto;
+		padding: 0.5em 1em;
+		font-size: 4em;
+		text-align: center;
+		background-color: #3875d7;
+		color: #FFFFFF;
+			}
+			.WeixinImg{
+				position: fixed;
+				top: 0px;
+				display: none;
+			}
+    body { 
+        background: #fff;
+    }
+</style>
+</head>
+
+<body>
+	<div class="wap-box">
+		<div class="wap-box-display">
+			<!--标题-->
+			<div class="wap-title wap-bor">
+				<i onclick="history.go(-1)"></i>订单支付 
+			</div>
+			<!--设置列表-->
+            <div class="wap-pay">
+                <section>
+                    <div class="mypad">
+                        请支付：<font id="totalprice">￥0.01</font>
+                    </div>
+                </section>
+                <h3><div class="mypad">选择支付方式</div></h3>
+                <div id="WapWeixin2" class="WapWeixin2 block">pay-手机微信</div>
+				<div id="WapAlipay2" class="WapAlipay2 block">pay-手机支付宝</div>
+				<div id="PcWeixin2" class="PcWeixin2 block">pay-微信支付</div>
+				<div id="PcAlipay2" class="PcAlipay2 block">pay-支付宝支付</div>
+				<div id="weixin2" class="weixin2 block">pay-微信提现</div>
+				<div class="WeixinImg"><img src=" "/></div>
+            </div>
+	</div>
+			<div class="wap-box">
+			    <div class="wap-display">
+				<div class="pay-zf">
+				</div>
+			</div>
+			</div>
+		</div>
+
+<script type='text/javascript'> 
+		/* function loc(data){
+		    var url = 'http://www.jd.com';//支付完成后跳转的页面
+		    var payparams = {
+		        buyInfo:{
+		            type:data.type,
+		            appid:data.appid,//业务侧在midas.qq.com上申请的
+		            from_h5:1,
+		            zoneid:data.zoneid,
+		            pf:data.pf,
+		            pfkey:data.pfkey,//
+		            session_id:data.session_id,
+		            session_type:data.session_type,
+		            openid:data.openid,
+		            openkey:data.openkey,
+		            extend:{
+		                showSingleAmt:0,
+		                amtCanChange:0
+		            },
+		            goodstokenurl:data.goodstokenurl,
+		            buy_quantity:1
+		        },//见业务侧传入订单信息的文档
+		        opt:{sandbox:false,https:false},
+		        callback_url:encodeURIComponent(url)//回调url
+		    }
+		    console.log(payparams);
+		    payparams = JSON.stringify(payparams);
+		    //payparams = encodeURIComponent(payparams);
+		    var reqUrl = data.payUrl + "?payParams=" + payparams;
+		    location.href = reqUrl;
+		} */
+		
+		$('#WapWeixin2').click(function(){
+	           var goods_no = Date.parse(new Date());
+	            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=WapWeixin&version=v1&total_fee=0.01&goods_no='+goods_no;
+	            $.ajax({
+	            	url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay/',
+	               //url:'http://localhost:8080/msip_bhu_payment_rest/pay',
+	               type:'post',
+	               async: false,
+	               data: datas,
+	               success:function(json){
+	            	   
+	            	   if(json.success){
+							var params = $.parseJSON(json.params);
+		                    location.href = params.url;
+	                   }else{
+	                       alert(json.msg);
+	                   } 
+	            	   
+	            	 
+	               }
+	           });
+	       });
+		
+        $('#PcWeixin2').click(function(){
+            var goods_no = Date.parse(new Date());
+            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=PcWeixin&total_fee=0.01&goods_no='+goods_no;
+           $.ajax({
+               url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
+                type:'post',
+                async: false,
+                data: datas,
+                success:function(json){
+                    if(json.success){
+                        console.log(json.params);
+                        var params = $.parseJSON(json.params);
+                        $('.WeixinImg').find('img').eq(0).attr('src',params.url);
+                        $('.WeixinImg').show();
+                    }else{
+                        alert(json.msg);
+                    }
+                }
+            });
+        });
+
+        $('#PcAlipay2').click(function(){
+            var goods_no = Date.parse(new Date());
+            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=PcAlipay&total_fee=0.01&goods_no='+goods_no;
+           $.ajax({
+               url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
+                type:'post',
+                async: false,
+                data: datas,
+                success:function(json){
+                    if(json.success){
+                        console.log(json.params);
+                        var params = $.parseJSON(json.params);
+                        location.href = params.url;
+                    }else{
+                        alert(json.msg);
+                    }
+                }
+            });
+        });
+
+        $('#WapAlipay2').click(function(){
+            var goods_no = Date.parse(new Date());
+            
+            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=WapAlipay&total_fee=0.01&goods_no='+goods_no;
+          alert(datas);
+            $.ajax({
+              // url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
+               url:'http://localhost:8080/msip_bhu_payment_rest/pay',
+                type:'get',
+                async: false,
+                data: datas,
+                success:function(json){
+                    if(json.success){
+                        console.log(json.params);
+                        var params = $.parseJSON(json.params);
+                        location.href = params.url;
+                    }else{
+                        alert(json.msg);
+                    }
+                }
+            });
+        });
+
+        $('#weixin2').click(function(){
+            var goods_no = Date.parse(new Date());
+          	alert("操作提现已禁止！");
+             
+        });
+
+</script>
+
+</body>
+</html>

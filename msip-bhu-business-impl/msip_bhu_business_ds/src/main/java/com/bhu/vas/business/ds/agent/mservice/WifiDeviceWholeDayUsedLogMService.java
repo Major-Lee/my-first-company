@@ -5,7 +5,6 @@ import javax.annotation.Resource;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.ds.agent.mdao.WifiDeviceWholeDayUsedLogMDao;
 import com.bhu.vas.business.ds.agent.mdto.WifiDeviceWholeDayUsedLogMDTO;
@@ -14,7 +13,8 @@ import com.mongodb.WriteResult;
 /**
  *
  */
-@Service
+//@Service
+@Deprecated
 public class WifiDeviceWholeDayUsedLogMService {
 	
 	@Resource

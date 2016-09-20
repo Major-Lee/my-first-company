@@ -1,0 +1,257 @@
+package com.bhu.vas.business.bucache.redis.serviceimpl.commdity;
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+
+import redis.clients.jedis.JedisPool;
+
+import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
+import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
+import com.bhu.vas.api.helper.PermissionThroughNotifyFactoryBuilder;
+import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
+import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
+import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationListCache;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
+
+/**
+ * 用于存放支付系统支付成功的通知消息
+ * @author tangzichao
+ *
+ */
+public class CommdityInternalNotifyListService extends AbstractRelationListCache {
+    private static class ServiceHolder{
+        private static CommdityInternalNotifyListService instance =new CommdityInternalNotifyListService();
+    }
+    /**
+     * 获取工厂单例
+     * @return
+     */
+    public static CommdityInternalNotifyListService getInstance() {
+        return ServiceHolder.instance;
+    }
+
+    private CommdityInternalNotifyListService(){
+    	
+    }
+
+    private String generateOrderPaymentNotifyKey() {
+    	return BusinessKeyDefine.Commdity.OrderPaymentNotifyKey;
+    }
+    
+    private String generateOrderDeliverNotifyKey() {
+    	return BusinessKeyDefine.Commdity.OrderDeliverNotifyKey;
+    }
+
+    private String generateWithdrawAppliesRequestNotifyKey() {
+    	return BusinessKeyDefine.Commdity.WithdrawAppliesRequestNotifyKey;
+    }
+    
+    public String lpopOrderPaymentNotify(){
+    	return super.lpop(generateOrderPaymentNotifyKey());
+    }
+    
+    public String blpopOrderPaymentNotify(){
+    	//return super.blpop(generateOrderPaymentNotifyKey());
+    	return null;
+    }
+    
+    public String lpopWithdrawAppliesRequestNotify(){
+    	return super.lpop(generateWithdrawAppliesRequestNotifyKey());
+    }
+    
+    public void rpushOrderPaymentNotify(String notify_message){
+    	super.rpush(generateOrderPaymentNotifyKey(), notify_message);
+    	//super.rpush_llen_multi(generateOrderPaymentNotifyKey(), notify_message);
+    }
+    
+    public List<Object> rpushOrderDeliverNotifyTransaction(String notify_message){
+    	//return super.rpush(generateOrderDeliverNotifyKey(), notify_message);
+    	return super.rpush_llen_multi("ODN_KEY2", notify_message);
+    }
+    
+    public Long rpushOrderDeliverNotify(String notify_message){
+    	return super.rpush(generateOrderDeliverNotifyKey(), notify_message);
+    	//return super.rpush_llen_multi(generateOrderDeliverNotifyKey(), notify_message);
+    }
+    
+    public void rpushWithdrawAppliesRequestNotify(String notify_message){
+    	super.rpush(generateWithdrawAppliesRequestNotifyKey(), notify_message);
+    }
+    
+    @Override
+    public String getRedisKey() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return CommdityInternalNotifyListService.class.getName();
+    }
+    @Override
+    public JedisPool getRedisPool() {
+        return RedisPoolManager.getInstance().getPool(RedisKeyEnum.COMMDITY);
+    }
+
+
+    public static void main(String[] args) {
+        //System.out.println(OrderPaymentNotifyListService.getInstance().pipelineHSet_sameKeyWithDiffFieldValue("TTTT", new String[]{"TT1,TT2"}, new String[]{"1", "2"}));
+
+        //WifiDeviceModuleStatService.getInstance().hset("TTTT", "T", "1234");
+    	//CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNofity(OrderPaymentNotifyDTO);
+    	
+    	//String orderid = "10012016030900000000000000000011";
+    	//boolean success = true;
+    	//simulateResponsePaymentCompletedNotify(orderid, success);
+    	//simulateDeliverNotify();
+//    	while(true){
+//    		simulateUpayDrawPaymentCompletedNotify(true);
+//    	}
+//    	for(int i = 0;i<1000;i++){
+//    		simulateDeliverNotify();
+//    	}
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459500", true);
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459501", true);
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459502", true);
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459503", true);
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459504", true);
+    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459505", true);
+    	//simulateMultiDeliverNotify();
+    	//simulateResponsePaymentCompletedNotify("10002016061400000000000000001023", true);
+    	//simulateResponseSMSPaymentCompletedNotify("10022016060500000000000000001008", true);
+    }
+    
+    /*************           test           **************/
+    
+    public static void simulateResponsePaymentCompletedNotify(String orderid, boolean success){
+        ResponsePaymentCompletedNotifyDTO opn_dto = new ResponsePaymentCompletedNotifyDTO();
+    	opn_dto.setSuccess(success);
+    	opn_dto.setOrderid(orderid);
+    	opn_dto.setPayment_type("WapWeixin");
+    	//opn_dto.setPaymented_ts(System.currentTimeMillis());
+    	opn_dto.setPaymented_ds(DateTimeHelper.formatDate(DateTimeHelper.DefalutFormatPattern));
+    	if(!success){
+    		opn_dto.setErrorcode("001");
+    		opn_dto.setMsg("simulate error msg");
+    	}
+    	//String json = JsonHelper.getJSONString(opn_dto);
+    	String json = PaymentNotifyFactoryBuilder.toJson(opn_dto);
+    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(json);
+    }
+    
+    public static void simulateResponseSMSPaymentCompletedNotify(String orderid, boolean success){
+    	ResponseSMSValidateCompletedNotifyDTO opn_dto = new ResponseSMSValidateCompletedNotifyDTO();
+    	opn_dto.setSuccess(success);
+    	opn_dto.setOrderid(orderid);
+    	//opn_dto.setPaymented_ts(System.currentTimeMillis());
+    	opn_dto.setPaymented_ds(new Date());
+    	if(!success){
+    		opn_dto.setErrorcode("001");
+    		opn_dto.setMsg("simulate error msg");
+    	}
+    	//String json = JsonHelper.getJSONString(opn_dto);
+    	String json = PaymentNotifyFactoryBuilder.toJsonHasPrefix(opn_dto);
+    	CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(json);
+    }
+
+    public static void simulateUpayDrawPaymentCompletedNotify(boolean success){
+    	String lpop_draw_message = CommdityInternalNotifyListService.getInstance().lpopWithdrawAppliesRequestNotify();
+    	System.out.println("lpopWithdrawAppliesRequestNotify : " + lpop_draw_message);
+    	if(StringUtils.isNotEmpty(lpop_draw_message)){
+    		RequestWithdrawNotifyDTO dto = JsonHelper.getDTO(lpop_draw_message, RequestWithdrawNotifyDTO.class);
+    		simulateResponsePaymentCompletedNotify(dto.getOrderid(), success);
+    	}
+    }
+    
+    public static void simulateDeliverNotify(){
+		RewardPermissionThroughNotifyDTO requestDeliverNotifyDto = new RewardPermissionThroughNotifyDTO();
+		requestDeliverNotifyDto.setOrderid("10012016031800000000000000000030");
+		requestDeliverNotifyDto.setAmount("0.1");
+		requestDeliverNotifyDto.setApp_deliver_detail("14400");
+		requestDeliverNotifyDto.setBu_mobileno("18673117874");
+		requestDeliverNotifyDto.setMac("84:82:f4:09:54:27");
+		requestDeliverNotifyDto.setUmac("38:bc:1a:2f:7e:2a");
+		requestDeliverNotifyDto.setPaymented_ds(DateTimeHelper.getDateTime());
+		requestDeliverNotifyDto.setCommdityid(1);
+		requestDeliverNotifyDto.setContext("aaa");
+		String notify_message = JsonHelper.getJSONString(requestDeliverNotifyDto);
+		System.out.println(notify_message);
+		//String notify_message = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(requestDeliverNotifyDto);
+		//for(int i = 0;i<1000;i++){
+		System.out.println("ok1");
+		CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(notify_message);
+		//}
+		System.out.println("ok");
+    }
+    
+    public static void simulateSMSDeliverNotify(){
+    	SMSPermissionThroughNotifyDTO requestDeliverNotifyDto = new SMSPermissionThroughNotifyDTO();
+		requestDeliverNotifyDto.setOrderid("10012016031800000000000000000030");
+		requestDeliverNotifyDto.setVcurrency(20);
+		requestDeliverNotifyDto.setApp_deliver_detail("14400");
+		requestDeliverNotifyDto.setBu_mobileno("18673117874");
+		requestDeliverNotifyDto.setMac("84:82:f4:09:54:27");
+		requestDeliverNotifyDto.setUmac("38:bc:1a:2f:7e:2a");
+		requestDeliverNotifyDto.setPaymented_ds(DateTimeHelper.getDateTime());
+		requestDeliverNotifyDto.setCommdityid(9);
+		requestDeliverNotifyDto.setContext("aaa");
+		//String notify_message = JsonHelper.getJSONString(requestDeliverNotifyDto);
+		String notify_message = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(requestDeliverNotifyDto);
+		//for(int i = 0;i<1000;i++){
+		System.out.println("ok1");
+		CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(notify_message);
+		//}
+		System.out.println("ok");
+    }
+    
+    public static void simulateMultiDeliverNotify(){
+    	
+    	simulateResponsePaymentCompletedNotify("10022016071400000000000000459284", true);
+/*    	String umac_prefix = "38:bc:1a:2f:7e:";
+    	String orderid_prefix = "10012016010100000000";
+    	//System.out.println(umac_prefix.concat(String.format("%02d", RandomData.intNumber(99))));
+    	String mac = "84:82:f4:09:54:80";
+    	int batch_sequence = 1;
+    	long order_sequence = 1;
+    	try{
+	    	//while(true){
+	    		//for(int i=1;i<501;i++){
+	    			String umac = umac_prefix.concat(String.format("%02d", RandomData.intNumber(99)));
+	    			String orderid = orderid_prefix.concat(String.format("%012d", order_sequence));
+		    		RequestDeliverNotifyDTO requestDeliverNotifyDto = new RequestDeliverNotifyDTO();
+		    		requestDeliverNotifyDto.setOrderid(orderid);
+		    		requestDeliverNotifyDto.setAmount("0.1");
+		    		requestDeliverNotifyDto.setApp_deliver_detail("14400");
+		    		requestDeliverNotifyDto.setBu_mobileno("18673117874");
+		    		requestDeliverNotifyDto.setMac(mac);
+		    		requestDeliverNotifyDto.setUmac(umac);
+		    		requestDeliverNotifyDto.setPaymented_ds(DateTimeHelper.getDateTime());
+		    		requestDeliverNotifyDto.setCommdityid(1);
+		    		requestDeliverNotifyDto.setContext("aaa");
+		    		String notify_message = JsonHelper.getJSONString(requestDeliverNotifyDto);
+		    		List<Object> rets = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotifyTransaction(notify_message);
+		    		System.out.println(String.format("slen[%s] rpush_ret[%s] elen[%s]", rets.get(0), rets.get(1), rets.get(2)));
+		    		//System.out.println(String.format("rpush_ret[%s] lindex[%s]", rets.get(0), rets.get(1)));
+		    		order_sequence++;
+	    		//}
+	    		Thread.sleep(10l);
+	    		System.out.println(batch_sequence);
+	    		batch_sequence++;
+	    	//}
+    	}catch(Exception ex){
+    		ex.printStackTrace();
+    	}*/
+
+		//for(int i = 0;i<1000;i++){
+		//System.out.println("ok1");
+		
+    }
+
+}

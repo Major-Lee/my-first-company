@@ -1,6 +1,9 @@
 package com.bhu.vas.api.mdto;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 /**
  * Created by bluesand on 6/24/15.
@@ -37,4 +40,27 @@ public class WifiHandsetDeviceItemDetailMDTO implements Serializable{
     public void setRx_bytes(long rx_bytes) {
         this.rx_bytes = rx_bytes;
     }
+
+    public String getOd(){
+    	if(login_at >0){
+    		return DateTimeHelper.getDateTime(new Date(login_at), DateTimeHelper.FormatPattern3);
+    	}else{
+    		return null;
+    	}
+    }
+    public String getFd(){
+    	if(logout_at >0){
+    		return DateTimeHelper.getDateTime(new Date(logout_at), DateTimeHelper.FormatPattern3);
+    	}else{
+    		return null;
+    	}
+    }
+    public WifiHandsetDeviceItemDetailMDTO() {
+	}
+	public WifiHandsetDeviceItemDetailMDTO(long login_at, long logout_at,
+			long rx_bytes) {
+		this.login_at = login_at;
+		this.logout_at = logout_at;
+		this.rx_bytes = rx_bytes;
+	}
 }

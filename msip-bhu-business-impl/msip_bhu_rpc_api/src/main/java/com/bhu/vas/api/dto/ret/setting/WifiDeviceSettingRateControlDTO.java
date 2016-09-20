@@ -14,7 +14,7 @@ public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
 	//不限制速率
 	public static final String Rate_Unlimited = "0";
 	//所处序号
-	private String index;
+	//private String index;
 	//终端mac
 	private String mac;
 	//设备发送终端速率(kbps)
@@ -43,12 +43,12 @@ public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
 	public void setRx(String rx) {
 		this.rx = rx;
 	}
-	public String getIndex() {
+/*	public String getIndex() {
 		return index;
 	}
 	public void setIndex(String index) {
 		this.index = index;
-	}
+	}*/
 	public String getSsdel() {
 		return ssdel;
 	}
@@ -72,11 +72,11 @@ public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
 	
 	@Override
 	public Object[] builderProperties() {
-		Object[] properties = new Object[4];
+		Object[] properties = new Object[3];
 		properties[0] = mac;
 		properties[1] = tx;
 		properties[2] = rx;
-		properties[3] = index;
+		//properties[3] = index;
 		return properties;
 	}
 	
@@ -88,9 +88,9 @@ public class WifiDeviceSettingRateControlDTO implements DeviceSettingBuilderDTO{
 		Object[] properties = null;
 		switch(type){
 			case BuilderType_RemoveRC:
-				properties = new Object[2];
-				properties[0] = index;
-				properties[1] = mac;
+				properties = new Object[1];
+				//properties[0] = index;
+				properties[0] = mac;
 				break;
 			default:
 				properties = builderProperties();

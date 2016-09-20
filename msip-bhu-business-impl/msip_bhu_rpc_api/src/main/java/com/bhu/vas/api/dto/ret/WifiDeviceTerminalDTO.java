@@ -36,6 +36,12 @@ public class WifiDeviceTerminalDTO implements Serializable{
 	//vap名称
 	@JsonProperty("interface") 
 	private String vapname;
+
+	private String ethernet;
+
+	private String portal;
+
+	private String authorized;
 	
 	public String getMac() {
 		return mac;
@@ -83,5 +89,29 @@ public class WifiDeviceTerminalDTO implements Serializable{
 	}
 	public void setVapname(String vapname) {
 		this.vapname = vapname;
+	}
+
+	public String getEthernet() {
+		return ethernet;
+	}
+
+	public void setEthernet(String ethernet) {
+		this.ethernet = ethernet;
+	}
+
+	public String getPortal() {
+		return portal;
+	}
+
+	public void setPortal(String portal) {
+		this.portal = portal;
+	}
+
+	public String getAuthorized() {
+		return authorized;
+	}
+
+	public void setAuthorized(String authorized) {
+		this.authorized = authorized;
 	}
 }
