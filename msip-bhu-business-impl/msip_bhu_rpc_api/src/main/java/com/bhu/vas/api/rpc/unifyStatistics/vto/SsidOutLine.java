@@ -8,9 +8,12 @@ public class SsidOutLine implements Serializable{
 	//收入
 	private String income;
 	//占比
+	private double rate;
 	
+	public double getRate() {
 		return rate;
 	}
+	public void setRate(double rate) {
 		this.rate = rate;
 	}
 	public int getDoc() {
