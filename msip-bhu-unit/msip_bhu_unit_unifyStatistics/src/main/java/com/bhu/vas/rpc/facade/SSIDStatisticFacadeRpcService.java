@@ -19,12 +19,15 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.tag.model.TagDevices;
+import com.bhu.vas.api.rpc.unifyStatistics.vto.SsidOutLine;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.SsidStatisticsOutLineVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
@@ -49,6 +52,8 @@ public class SSIDStatisticFacadeRpcService {
 	private UserWifiDeviceService userWifiDeviceService;
 	@Resource
 	private TagDevicesService tagDevicesService;
+	@Resource
+	private WifiDeviceService wifiDeviceService;
 //	@Resource
 //	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
@@ -91,7 +96,7 @@ public class SSIDStatisticFacadeRpcService {
 		if(StringUtils.isNotBlank(deliveryChannel)){
 			//根据出货渠道查询
 			macList = new ArrayList<String>();
-			macList=queryMacListByDLabel(deliveryChannel);
+			macList=queryMacListByDChannel(deliveryChannel);
 			log.info("macList length:"+macList.size());
 			flag=false;
 		}else if(StringUtils.isNotBlank(mobileNo)){
@@ -105,6 +110,7 @@ public class SSIDStatisticFacadeRpcService {
 			macList=queryMacListByDLabel(deviceLable);
 			flag=false;
 		}else if(StringUtils.isNotBlank(mac)){
+			macList = new ArrayList<String>();
 			macList.add(mac);
 			flag=false;
 		}
@@ -864,6 +870,14 @@ public class SSIDStatisticFacadeRpcService {
 	 */
 	public List<String> queryMacListByDChannel(String deliveryChannel){
 		List<String> macList = new ArrayList<String>();
+		ModelCriteria mc=new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("channel_lv1", deliveryChannel);
+		List<WifiDevice> wifiDevices= wifiDeviceService.findModelByModelCriteria(mc);
+		if(wifiDevices!=null&&wifiDevices.size()>0){
+			for(WifiDevice i:wifiDevices){
+				macList.add(i.getId());
+			}
+		}
 		return macList;
 	}
 	
@@ -1012,7 +1026,82 @@ public class SSIDStatisticFacadeRpcService {
 	
 	public SsidStatisticsOutLineVTO sSIDStatisticsOutLineInfo(){
 		SsidStatisticsOutLineVTO vto=new SsidStatisticsOutLineVTO();
+		Map<String,SsidOutLine> channelInfos=new HashMap<String, SsidOutLine>();
+		Map<String,Integer> methodStatistics=new HashMap<String,Integer>();
+		Date date = new Date();  
+		Calendar calendar = Calendar.getInstance();  
+		calendar.setTime(date); 
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		date = calendar.getTime();  
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+		String dateStr = sdf.format(date); 
 		
+		
+		ModelCriteria mc=new ModelCriteria();
+		mc.createCriteria().andColumnNotEqualTo("channel_lv1", null);
+		List<WifiDevice> wifiDevices= wifiDeviceService.findModelByModelCriteria(mc);
+		int waDoc=0;
+		double waIncome=0;
+		int zjDoc=0;
+		double zjIncome=0;
+		int yysDoc=0;
+		double yysIncome=0;
+		int xsxxDoc=0;
+		double xsxxIncome=0;
+		if(wifiDevices!=null&&wifiDevices.size()>0){
+			for(WifiDevice i:wifiDevices){
+				String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+dateStr, i.getId());
+				if(StringUtils.isNoneBlank(doC)){
+					if(i.getChannel_lv1().equals("WA")){
+						waDoc+=Integer.parseInt(doC);
+					}else if(i.getChannel_lv1().equals("ZJ")){
+						zjDoc+=Integer.parseInt(doC);
+					}else if(i.getChannel_lv1().equals("YYS")){
+						yysDoc+=Integer.parseInt(doC);
+					}else if(i.getChannel_lv1().equals("XSXX")){
+						xsxxDoc+=Integer.parseInt(doC);
+					}
+				}
+				String orderStatist=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+dateStr, i.getId());
+				if(StringUtils.isNotBlank(orderStatist)){
+					JSONObject orderObj = JSONObject.fromObject(orderStatist);
+					if(orderObj.get("ofa") != null){
+						if(i.getChannel_lv1().equals("WA")){
+							waIncome+=orderObj.getDouble("ofa");
+						}else if(i.getChannel_lv1().equals("ZJ")){
+							zjIncome+=orderObj.getDouble("ofa");
+						}else if(i.getChannel_lv1().equals("YYS")){
+							yysIncome+=orderObj.getDouble("ofa");
+						}else if(i.getChannel_lv1().equals("XSXX")){
+							xsxxIncome+=orderObj.getDouble("ofa");
+						}
+					}
+				}
+			}
+		}
+		double total=waIncome+zjIncome+yysIncome+xsxxIncome;
+		SsidOutLine waoutLine=new SsidOutLine();
+		waoutLine.setDoc(waDoc);
+		waoutLine.setIncome(String.valueOf(round(waIncome,2)));
+		waoutLine.setRate(round(waIncome/total*100, 2));
+		SsidOutLine zjoutLine=new SsidOutLine();
+		zjoutLine.setDoc(zjDoc);
+		zjoutLine.setIncome(String.valueOf(round(waIncome,2)));
+		zjoutLine.setRate(round(zjIncome/total*100, 2));
+		SsidOutLine yysoutLine=new SsidOutLine();
+		yysoutLine.setDoc(yysDoc);
+		yysoutLine.setIncome(String.valueOf(round(yysIncome,2)));
+		yysoutLine.setRate(round(yysIncome/total*100, 2));
+		SsidOutLine xsxxoutLine=new SsidOutLine();
+		xsxxoutLine.setDoc(xsxxDoc);
+		xsxxoutLine.setIncome(String.valueOf(round(xsxxIncome,2)));
+		xsxxoutLine.setRate(100-round(yysIncome/total*100, 2)-round(zjIncome/total*100, 2)-round(waIncome/total*100, 2));
+		channelInfos.put("WA", waoutLine);
+		channelInfos.put("ZJ", zjoutLine);
+		channelInfos.put("YYS", yysoutLine);
+		channelInfos.put("XSXX", xsxxoutLine);
+		vto.setMethodStatistics(methodStatistics);
+		vto.setChannelInfos(channelInfos);
 		return vto;
 	}
 	
@@ -1039,9 +1128,10 @@ public class SSIDStatisticFacadeRpcService {
 //		for(String i:timeList){
 //			System.out.println(i);
 //		}
-		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
-		String s= apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", "2016-09-07","2016-09-07", "", "",1);
-		System.out.println(s);
+//		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
+//		String s= apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", "2016-09-07","2016-09-07", "", "",1);
+//		System.out.println(s);
+		System.out.println(getLastDay(1));
 	}
 	/**
 	 * 返回成功结果集

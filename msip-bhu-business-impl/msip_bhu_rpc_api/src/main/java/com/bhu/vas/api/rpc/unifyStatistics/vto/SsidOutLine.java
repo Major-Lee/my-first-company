@@ -7,6 +7,12 @@ public class SsidOutLine implements Serializable{
 	private int doc;
 	//收入
 	private String income;
+	//占比
+	
+		return rate;
+	}
+		this.rate = rate;
+	}
 	public int getDoc() {
 		return doc;
 	}

@@ -735,7 +735,7 @@ public class UserWalletUnitFacadeService {
 					ModelCriteria mc=new ModelCriteria();
 					mc.createCriteria().andColumnNotEqualTo("today_cash_sum", "0");
 					mc.createCriteria().andColumnLike("last_update_cash_time", currentDay+"%");
-					mc.setOrderByClause("today_cash_sum asc");
+					mc.setOrderByClause("today_cash_sum desc");
 					List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
 					rankingListVTO.setRankNum(9999999);
 					rankingListVTO.setUserIncome("0");
@@ -805,7 +805,7 @@ public class UserWalletUnitFacadeService {
 					ModelCriteria mc=new ModelCriteria();
 					mc.createCriteria().andColumnNotEqualTo("month_cash_sum", "0");
 					mc.createCriteria().andColumnLike("last_update_cash_time", currentMonth+"%");
-					mc.setOrderByClause("month_cash_sum asc");
+					mc.setOrderByClause("month_cash_sum desc");
 					List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
 					rankingListVTO.setRankNum(9999999);
 					rankingListVTO.setUserIncome("0");
@@ -870,21 +870,23 @@ public class UserWalletUnitFacadeService {
 				rankingListVTO.setChangeFlag(1);
 				ModelCriteria mc=new ModelCriteria();
 				mc.createCriteria().andColumnNotEqualTo("total_cash_sum", "0");
-				mc.setOrderByClause("total_cash_sum asc");
+				mc.setOrderByClause("total_cash_sum desc");
 				List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
-				for(int i=0;i<userWallets.size();i++){
-					RankSingle rankSingle=new RankSingle();
-					if(uid==userWallets.get(i).getId()){
-						rankingListVTO.setRankNum(i+1);
-						rankingListVTO.setUserIncome(String.valueOf(round(userWallets.get(i).getTotal_cash_sum(),2)));
+				if(userWallets!=null&&userWallets.size()>0){
+					for(int i=0;i<userWallets.size();i++){
+						RankSingle rankSingle=new RankSingle();
+						if(uid==userWallets.get(i).getId()){
+							rankingListVTO.setRankNum(i+1);
+							rankingListVTO.setUserIncome(String.valueOf(round(userWallets.get(i).getTotal_cash_sum(),2)));
+						}
+						User singleUser=userService.getById(Integer.valueOf(userWallets.get(i).getId()));
+						rankSingle.setRankNum(i+1);
+						rankSingle.setUserIncome(String.valueOf(round(userWallets.get(i).getTotal_cash_sum(),2)));
+						rankSingle.setUserName(singleUser.getNick());
+						rankSingle.setAvatar(singleUser.getAvatar());
+						rankSingle.setMemo(singleUser.getMemo());
+						rankList.add(rankSingle);
 					}
-					User singleUser=userService.getById(Integer.valueOf(userWallets.get(i).getId()));
-					rankSingle.setRankNum(i+1);
-					rankSingle.setUserIncome(String.valueOf(round(userWallets.get(i).getTotal_cash_sum(),2)));
-					rankSingle.setUserName(singleUser.getNick());
-					rankSingle.setAvatar(singleUser.getAvatar());
-					rankSingle.setMemo(singleUser.getMemo());
-					rankList.add(rankSingle);
 				}
 				rankMap.put("total", rankList);
 			}else{

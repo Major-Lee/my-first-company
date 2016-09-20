@@ -182,23 +182,6 @@ public class UserWalletController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
     }
-    /**
-     * 昨日收益排名
-     * @param response
-     * @param uid
-     */
-    @ResponseBody()
-    @RequestMapping(value="/wallet/rankingList", method={RequestMethod.GET,RequestMethod.POST})
-    public void rankingList(HttpServletResponse response, @RequestParam(required = true) Integer uid,
-    		@RequestParam(required = true) Integer type,
-    		@RequestParam(required = false,defaultValue = "") String time){
-    	RpcResponseDTO<RankingListVTO> rpcResult = userWalletRpcService.rankingList(uid,type,time);
-    	if(!rpcResult.hasError()){
-    		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-    	}else{
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-    	}
-    }
     
     @ResponseBody()
     @RequestMapping(value="/richStatistics", method={RequestMethod.GET,RequestMethod.POST})
