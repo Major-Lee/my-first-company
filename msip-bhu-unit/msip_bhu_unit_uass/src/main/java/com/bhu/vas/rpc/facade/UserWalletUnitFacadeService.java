@@ -748,9 +748,11 @@ public class UserWalletUnitFacadeService {
 						User singleUser=userService.getById(userWallets.get(i).getId());
 						rankSingle.setRankNum(i+1);
 						rankSingle.setUserIncome(String.valueOf(round(userWallets.get(i).getToday_cash_sum(),2)));
-						rankSingle.setUserName(singleUser.getNick());
-						rankSingle.setAvatar(singleUser.getAvatar());
-						rankSingle.setMemo(singleUser.getMemo());
+						if(singleUser!=null){
+							rankSingle.setUserName(singleUser.getNick());
+							rankSingle.setAvatar(singleUser.getAvatar());
+							rankSingle.setMemo(singleUser.getMemo());
+						}
 						rankList.add(rankSingle);
 					}
 					rankingListVTO.setChangeFlag(1);
@@ -779,9 +781,11 @@ public class UserWalletUnitFacadeService {
 							User singleUser=userService.getById(Integer.valueOf(userIncomeRank.getUid()));
 							rankSingle.setRankNum(userIncomeRank.getRank());
 							rankSingle.setUserIncome(String.valueOf(round(Float.valueOf(userIncomeRank.getIncome()),2)));
-							rankSingle.setUserName(singleUser.getNick());
-							rankSingle.setAvatar(singleUser.getAvatar());
-							rankSingle.setMemo(singleUser.getMemo());
+							if(singleUser!=null){
+								rankSingle.setUserName(singleUser.getNick());
+								rankSingle.setAvatar(singleUser.getAvatar());
+								rankSingle.setMemo(singleUser.getMemo());
+							}
 							if(userIncomeRank.getRank()==userIncomeRank.getBeforeRank()){
 								rankSingle.setChangeFlag(1);
 							}else if(userIncomeRank.getRank()>userIncomeRank.getBeforeRank()){
@@ -818,9 +822,11 @@ public class UserWalletUnitFacadeService {
 						User singleUser=userService.getById(Integer.valueOf(userWallets.get(i).getId()));
 						rankSingle.setRankNum(i+1);
 						rankSingle.setUserIncome(String.valueOf(round(userWallets.get(i).getMonth_cash_sum(),2)));
-						rankSingle.setUserName(singleUser.getNick());
-						rankSingle.setAvatar(singleUser.getAvatar());
-						rankSingle.setMemo(singleUser.getMemo());
+						if(singleUser!=null){
+							rankSingle.setUserName(singleUser.getNick());
+							rankSingle.setAvatar(singleUser.getAvatar());
+							rankSingle.setMemo(singleUser.getMemo());
+						}
 						rankList.add(rankSingle);
 					}
 					rankingListVTO.setChangeFlag(1);
@@ -849,9 +855,11 @@ public class UserWalletUnitFacadeService {
 							User singleUser=userService.getById(Integer.valueOf(userIncomeMonthRank.getUid()));
 							rankSingle.setRankNum(userIncomeMonthRank.getRank());
 							rankSingle.setUserIncome(String.valueOf(round(Float.valueOf(userIncomeMonthRank.getIncome()),2)));
-							rankSingle.setUserName(singleUser.getNick());
-							rankSingle.setAvatar(singleUser.getAvatar());
-							rankSingle.setMemo(singleUser.getMemo());
+							if(singleUser!=null){
+								rankSingle.setUserName(singleUser.getNick());
+								rankSingle.setAvatar(singleUser.getAvatar());
+								rankSingle.setMemo(singleUser.getMemo());
+							}
 							if(userIncomeMonthRank.getRank()==userIncomeMonthRank.getBeforeRank()){
 								rankSingle.setChangeFlag(1);
 							}else if(userIncomeMonthRank.getRank()>userIncomeMonthRank.getBeforeRank()){
@@ -880,11 +888,14 @@ public class UserWalletUnitFacadeService {
 							rankingListVTO.setUserIncome(String.valueOf(round(userWallets.get(i).getTotal_cash_sum(),2)));
 						}
 						User singleUser=userService.getById(Integer.valueOf(userWallets.get(i).getId()));
+						if(singleUser!=null){
+							rankSingle.setUserName(singleUser.getNick());
+							rankSingle.setAvatar(singleUser.getAvatar());
+							rankSingle.setMemo(singleUser.getMemo());
+						}
 						rankSingle.setRankNum(i+1);
 						rankSingle.setUserIncome(String.valueOf(round(userWallets.get(i).getTotal_cash_sum(),2)));
-						rankSingle.setUserName(singleUser.getNick());
-						rankSingle.setAvatar(singleUser.getAvatar());
-						rankSingle.setMemo(singleUser.getMemo());
+						
 						rankList.add(rankSingle);
 					}
 				}
@@ -896,8 +907,10 @@ public class UserWalletUnitFacadeService {
 			rankMap.put("month", rankMonthMap);
 			rankingListVTO.setRankingList(rankMap);
 			User user=userService.getById(uid);
-			rankingListVTO.setMemo(user.getMemo());
-			rankingListVTO.setAvatar(user.getAvatar());
+			if(user!=null){
+				rankingListVTO.setMemo(user.getMemo());
+				rankingListVTO.setAvatar(user.getAvatar());
+			}
 			rankingListVTO.setRankingList(rankMap);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rankingListVTO);
 		}catch(BusinessI18nCodeException bex){
