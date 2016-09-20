@@ -830,8 +830,9 @@ public class TagFacadeRpcSerivce {
 			dateDaysAgo = DateTimeHelper.getDateDaysAfter(date, i);
 			TagGroupUserConnectDataVTO vto = new TagGroupUserConnectDataVTO();
 			String today = DateTimeHelper.formatDate(dateDaysAgo, DateTimeHelper.FormatPattern7);
+			String today_date = DateTimeHelper.formatDate(dateDaysAgo, DateTimeHelper.FormatPattern5);
 			Map<String, String> detail = HandsetGroupPresentHashService.getInstance().fetchGroupConnDetail(gid, today);
-			vto.setDate(today);
+			vto.setDate(today_date);
 			vto.setNewly(detail.get("newly"));
 			vto.setTotal(detail.get("total"));
 			vtos.add(vto);

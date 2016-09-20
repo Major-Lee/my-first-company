@@ -42,6 +42,7 @@ import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RankSingle;
+import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
@@ -733,7 +734,7 @@ public class UserWalletUnitFacadeService {
 				}
 				if(GetDateTime("yyyy-MM-dd",0).equals(currentDay)){
 					ModelCriteria mc=new ModelCriteria();
-					mc.createCriteria().andColumnNotEqualTo("today_cash_sum", "0");
+					mc.createCriteria().andColumnNotEqualTo("today_cash_sum", 0);
 					mc.createCriteria().andColumnLike("last_update_cash_time", currentDay+"%");
 					mc.setOrderByClause("today_cash_sum desc");
 					List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
@@ -807,7 +808,7 @@ public class UserWalletUnitFacadeService {
 				}
 				if(GetMonthTime(0).equals(currentMonth)){
 					ModelCriteria mc=new ModelCriteria();
-					mc.createCriteria().andColumnNotEqualTo("month_cash_sum", "0");
+					mc.createCriteria().andColumnNotEqualTo("month_cash_sum", 0);
 					mc.createCriteria().andColumnLike("last_update_cash_time", currentMonth+"%");
 					mc.setOrderByClause("month_cash_sum desc");
 					List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
@@ -877,7 +878,7 @@ public class UserWalletUnitFacadeService {
 				rankingListVTO.setUserIncome("0");
 				rankingListVTO.setChangeFlag(1);
 				ModelCriteria mc=new ModelCriteria();
-				mc.createCriteria().andColumnNotEqualTo("total_cash_sum", "0");
+				mc.createCriteria().andColumnNotEqualTo("total_cash_sum", 0);
 				mc.setOrderByClause("total_cash_sum desc");
 				List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
 				if(userWallets!=null&&userWallets.size()>0){
@@ -1054,5 +1055,76 @@ public class UserWalletUnitFacadeService {
 	    BigDecimal b = new BigDecimal(Double.toString(v));         
 	    BigDecimal one = new BigDecimal("1");         
 	    return b.divide(one,scale,BigDecimal.ROUND_HALF_UP).doubleValue();         
-    } 
+    }
+
+	public RpcResponseDTO<RankingCardInfoVTO> rankingCardInfo(Integer uid) {
+		try{
+			RankingCardInfoVTO rankingCardInfoVTO=new RankingCardInfoVTO();
+			String currentDay=StringUtils.EMPTY;
+			ModelCriteria mc=new ModelCriteria();
+			mc.createCriteria().andColumnNotEqualTo("today_cash_sum", 0);
+			mc.createCriteria().andColumnLike("last_update_cash_time", currentDay+"%");
+			mc.setOrderByClause("today_cash_sum desc");
+			List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
+			rankingCardInfoVTO.setRank(9999999);
+			rankingCardInfoVTO.setIncome("0");
+			for(int i=0;i<userWallets.size();i++){
+				if(uid==userWallets.get(i).getId()){
+					rankingCardInfoVTO.setRank(i+1);
+					rankingCardInfoVTO.setIncome(String.valueOf(round(userWallets.get(i).getToday_cash_sum(),2)));
+				}
+			}
+			rankingCardInfoVTO.setAge(0);
+			User user=userService.getById(uid);
+			if(user!=null){
+				 // 得到日历
+			    Calendar calendar = Calendar.getInstance();
+			    // 把当前时间赋给日历
+			    calendar.setTime(user.getCreated_at());
+			    // 设置为前一天
+			    calendar.add(Calendar.DAY_OF_MONTH, 0);
+			    // 得到前一天的时间
+			    Date dBefore = calendar.getTime();
+			    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			    String retDate = sdf.format(dBefore);
+				rankingCardInfoVTO.setAge(daysBetween(retDate,GetDateTime("yyyy-MM-dd",0)));
+				rankingCardInfoVTO.setMemo(user.getMemo());
+				rankingCardInfoVTO.setAvatar(user.getAvatar());
+				rankingCardInfoVTO.setUserName(user.getNick());
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rankingCardInfoVTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	} 
+	public static void main(String[] args) {
+		System.out.println(daysBetween("2016-09-16 14:22:36", "2016-09-20 22:50:50"));
+	}
+	/** 
+	*字符串的日期格式的计算 
+	*/  
+	 public static int daysBetween(String smdate,String bdate){  
+		 SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
+		 Calendar cal = Calendar.getInstance();    
+		 try {
+			cal.setTime(sdf.parse(smdate));
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}    
+		 long time1 = cal.getTimeInMillis();                 
+		 try {
+			cal.setTime(sdf.parse(bdate));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    
+		 long time2 = cal.getTimeInMillis();         
+		 long between_days=(time2-time1)/(1000*3600*24);  
+		return Integer.parseInt(String.valueOf(between_days));     
+	}  
+
 }

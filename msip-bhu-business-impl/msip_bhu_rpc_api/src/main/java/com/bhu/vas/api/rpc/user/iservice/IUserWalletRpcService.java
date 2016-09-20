@@ -7,6 +7,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
@@ -126,6 +127,12 @@ public interface IUserWalletRpcService {
 	
 	public RpcResponseDTO<TailPage<UserWalletLogFFVTO>> pageUserWalletlogsByFeifan(int uid, String transmode,String transtype, 
 			Date start_date, Date end_date, int pageNo, int pageSize);
+	/**
+	 * 排行名片信息
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<RankingCardInfoVTO> rankingCardInfo(Integer uid);
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

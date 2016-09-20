@@ -26,6 +26,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UMStatisticsHashService;
+import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -53,6 +54,8 @@ public class SSIDStatisticFacadeRpcService {
 	private TagDevicesService tagDevicesService;
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	@Resource
+	private OrderService orderService;
 //	@Resource
 //	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
@@ -333,7 +336,7 @@ public class SSIDStatisticFacadeRpcService {
 					if(StringUtils.isNotBlank(freeMobileClick)){
 						freeClickNum+=Integer.valueOf(freeMobileClick);
 					}else{
-						freePcClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", timeList.get(i), timeList.get(i), "", "",1);
+						freeMobileClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", timeList.get(i), timeList.get(i), "", "",1);
 						JSONObject freeMobileClickJson=JSONObject.fromObject(freeMobileClick);
 						String freeMobileClickJsonStr=freeMobileClickJson.getString("values");
 						freeMobileClickJsonStr=freeMobileClickJsonStr.substring(1);
@@ -875,10 +878,8 @@ public class SSIDStatisticFacadeRpcService {
 	 */
 	public List<String> queryMacListByDChannel(String deliveryChannel){
 		List<String> macList = new ArrayList<String>();
-		ModelCriteria mc=new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("channel_lv1", deliveryChannel);
-		List<WifiDevice> wifiDevices= wifiDeviceService.findModelByModelCriteria(mc);
-		if(wifiDevices!=null&&wifiDevices.size()>0){
+		List<WifiDevice> wifiDevices= wifiDeviceService.findListByChannelLv1(deliveryChannel);
+		if(wifiDevices!=null && wifiDevices.size() > 0){
 			for(WifiDevice i:wifiDevices){
 				macList.add(i.getId());
 			}
@@ -1041,9 +1042,8 @@ public class SSIDStatisticFacadeRpcService {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
 		String dateStr = sdf.format(date); 
 		
-		
 		ModelCriteria mc=new ModelCriteria();
-		mc.createCriteria().andColumnNotEqualTo("channel_lv1", null);
+		mc.createCriteria().andColumnIsNotNull("channel_lv1");
 		List<WifiDevice> wifiDevices= wifiDeviceService.findModelByModelCriteria(mc);
 		int waDoc=0;
 		double waIncome=0;
@@ -1088,23 +1088,45 @@ public class SSIDStatisticFacadeRpcService {
 		SsidOutLine waoutLine=new SsidOutLine();
 		waoutLine.setDoc(waDoc);
 		waoutLine.setIncome(String.valueOf(round(waIncome,2)));
-		waoutLine.setRate(round(waIncome/total*100, 2));
+		waoutLine.setRate(0);
+		if(total!=0){
+			waoutLine.setRate(round(waIncome/total*100, 2));
+		}
 		SsidOutLine zjoutLine=new SsidOutLine();
 		zjoutLine.setDoc(zjDoc);
 		zjoutLine.setIncome(String.valueOf(round(waIncome,2)));
-		zjoutLine.setRate(round(zjIncome/total*100, 2));
+		zjoutLine.setRate(0);
+		if(total!=0){
+			zjoutLine.setRate(round(zjIncome/total*100, 2));
+		}
 		SsidOutLine yysoutLine=new SsidOutLine();
 		yysoutLine.setDoc(yysDoc);
 		yysoutLine.setIncome(String.valueOf(round(yysIncome,2)));
-		yysoutLine.setRate(round(yysIncome/total*100, 2));
+		yysoutLine.setRate(0);
+		if(total!=0){
+			yysoutLine.setRate(round(yysIncome/total*100, 2));
+		}
 		SsidOutLine xsxxoutLine=new SsidOutLine();
 		xsxxoutLine.setDoc(xsxxDoc);
 		xsxxoutLine.setIncome(String.valueOf(round(xsxxIncome,2)));
-		xsxxoutLine.setRate(100-round(yysIncome/total*100, 2)-round(zjIncome/total*100, 2)-round(waIncome/total*100, 2));
+		xsxxoutLine.setRate(0);
+		if(total!=0){
+			xsxxoutLine.setRate(100-round(yysIncome/total*100, 2)-round(zjIncome/total*100, 2)-round(waIncome/total*100, 2));
+		}
 		channelInfos.put("WA", waoutLine);
 		channelInfos.put("ZJ", zjoutLine);
 		channelInfos.put("YYS", yysoutLine);
 		channelInfos.put("XSXX", xsxxoutLine);
+		
+		
+		int dsNum= orderService.countByType(0,0);
+		int spNum= orderService.countByType(0,6);
+		int dxNum= orderService.countByType(0,10);
+		int utoolNum= orderService.countByType(1,2);
+		methodStatistics.put("ds", dsNum);
+		methodStatistics.put("dx", dxNum);
+		methodStatistics.put("sp", spNum);
+		methodStatistics.put("utool", utoolNum);
 		vto.setMethodStatistics(methodStatistics);
 		vto.setChannelInfos(channelInfos);
 		return vto;
