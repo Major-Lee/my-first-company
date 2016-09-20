@@ -29,7 +29,6 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserOrderDetailsH
 import com.bhu.vas.pa.dto.PaHandsetOnlineAction;
 import com.bhu.vas.pa.log.WriterThread;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 

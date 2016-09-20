@@ -65,6 +65,7 @@ public class ActionBuilder {
 		HandsetOffline("HF"),
 		HandsetAuthorize("HA"),
 		HandsetSync("HS"),
+		HandsetUpdate("HD"),
 		;
 		static Map<String, ActionMode> allActionMode;
 		private String prefix;
@@ -123,6 +124,16 @@ public class ActionBuilder {
 		return action;
 	}
 	
+    public static HandsetUpdateAction builderHandsetUpdateAction(String hmac, String mac, String hip, String hname, long ts) {
+    	HandsetUpdateAction updateAction = new HandsetUpdateAction();
+    	updateAction.setHip(hip);
+    	updateAction.setHmac(hmac);
+    	updateAction.setHname(hname);
+    	updateAction.setMac(mac);
+    	updateAction.setTs(ts);
+    	return updateAction;
+    }
+  
 	
 	public static HandsetOnlineAction builderHandsetOnlineAction(String hmac,String mac,
 			//终端上线时间，终端名称，终端ip，终端mac
