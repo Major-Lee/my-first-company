@@ -1087,6 +1087,7 @@ public class UserWalletUnitFacadeService {
 				rankingCardInfoVTO.setAge(daysBetween(retDate,GetDateTime("yyyy-MM-dd",0)));
 				rankingCardInfoVTO.setMemo(user.getMemo());
 				rankingCardInfoVTO.setAvatar(user.getAvatar());
+				rankingCardInfoVTO.setUserName(user.getNick());
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rankingCardInfoVTO);
 		}catch(BusinessI18nCodeException bex){

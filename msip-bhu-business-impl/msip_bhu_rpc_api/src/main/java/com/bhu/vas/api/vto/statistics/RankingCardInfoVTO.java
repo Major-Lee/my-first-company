@@ -6,6 +6,7 @@ import java.io.Serializable;
 public class RankingCardInfoVTO implements Serializable{
 	private int rank;
 	private String income;
+	private String userName;
 	private int age;
 	//头像
 	private String avatar;
@@ -22,6 +23,12 @@ public class RankingCardInfoVTO implements Serializable{
 	}
 	public void setIncome(String income) {
 		this.income = income;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	public int getAge() {
 		return age;
