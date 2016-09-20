@@ -5,6 +5,11 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class TagGroupHandsetDetailVTO implements Serializable{
+	
+	public static final String greater = ">";
+	public static final String equal = "=";
+	public static final String less = "<";
+	
 	private String hdMac;
 	private String mobileno;
 	private String manu;
@@ -49,7 +54,7 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 		this.lastTime = lastTime;
 	}
 	
-	public boolean isFilter(int count,String mobileno){
+	public boolean isFilter(String match,int count,String mobileno){
 		
 		boolean flag = false;
 		
@@ -58,11 +63,22 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 				flag = true;
 			}
 		}else{
-			if(this.count < count){
-				flag = true;
+			if(match.equals(greater) || match == null || match.isEmpty()){
+				if(count > this.count){
+					flag = true;
+				}
+			}
+			if(match.equals(equal)){
+				if(!(count == this.count)){
+					flag = true;
+				}
+			}
+			if(match.equals(less)){
+				if(count < this.count){
+					flag = true;
+				}
 			}
 		}
-		
 		return flag;
 	}
 }

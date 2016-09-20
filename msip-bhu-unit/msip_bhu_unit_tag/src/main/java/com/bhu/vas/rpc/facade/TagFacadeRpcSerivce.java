@@ -718,7 +718,7 @@ public class TagFacadeRpcSerivce {
 	 * @param endTime
 	 * @return
 	 */
-	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int uid,int gid,String beginTime,String endTime,boolean filter,int count,String mobileno,int pageNo,int pageSize){
+	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int uid,int gid,String beginTime,String endTime,boolean filter,String match,int count,String mobileno,int pageNo,int pageSize){
 		
 		boolean isGroup = tagGroupService.checkGroup(gid, uid);
 		if(!isGroup){
@@ -736,7 +736,7 @@ public class TagFacadeRpcSerivce {
 				Iterator<TagGroupHandsetDetailVTO> iter = vtos.iterator();
 				while (iter.hasNext()) {
 					TagGroupHandsetDetailVTO rv = iter.next();
-					if (rv.isFilter(count,mobileno))
+					if (rv.isFilter(match,count,mobileno))
 						iter.remove();
 				}
 			}

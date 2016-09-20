@@ -70,7 +70,7 @@ public interface ITagRpcService {
 	RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid,long time);
 
 	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(
-			int uid,int gid, Long beginTime, Long endTime, boolean filter, int count,String mobileno, int pageNo, int pageSize);
+			int uid,int gid, Long beginTime, Long endTime, boolean filter, String match,int count,String mobileno, int pageNo, int pageSize);
 
 	RpcResponseDTO<List<Date>> groupUserDetail(int uid ,int gid, String hdmac,
 			int pageNo, int pageSize);
