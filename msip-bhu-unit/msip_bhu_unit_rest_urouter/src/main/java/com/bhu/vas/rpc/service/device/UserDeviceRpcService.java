@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.user.dto.UserDeviceCloudDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.api.vto.device.DeviceConfigDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
@@ -232,7 +233,13 @@ public class UserDeviceRpcService implements IUserDeviceRpcService {
 		logger.info(String.format("deviceDetail uid[%s] mac[%s]",uid,mac));
 		return userDeviceUnitFacadeService.deviceDetail(uid, mac);
 	}
-	
+
+	@Override
+	public RpcResponseDTO<DeviceConfigDetailVTO> deviceConfigDetail(String mac){
+		logger.info(String.format("deviceConfigDetail mac[%s]", mac));
+		return userDeviceUnitFacadeService.deviceConfigDetail(mac);
+	}
+
 /*    @Override
     public RpcResponseDTO<List<DeviceDetailVTO>> userDetail(int uid,int countrycode,String acc,int tid) {
         logger.info(String.format("userDetail with uid[%s] countrycode[%s] acc[%s] tid[%s]", uid,countrycode,acc,tid));
