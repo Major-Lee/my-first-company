@@ -77,25 +77,8 @@ public class MidasUtils {
 				return "error";
 			}
 			Config.url_params = (String) json.get("url_params");
-			SortedMap<Object, Object> params = new TreeMap<Object, Object>();
-			params.put("goodstokenurl", Config.url_params);
-        	params.put("type", "goods");
-        	params.put("appid", Config.appid);
-        	params.put("zoneid", Config.zoneid);
-        	params.put("pf", Config.pf);
-        	params.put("pfkey", Config.pfkey);
-        	params.put("session_id", Config.session_id);
-        	params.put("session_type", Config.session_type);
-        	params.put("openid", Config.openid);
-        	params.put("openkey", Config.openkey);
-        	params.put("payUrl", Config.pay_url);
-        	params.put("money", Config.price);
-			result = JSONObject.valueToString(params);
 			
-			//兼容旧版
-			if(version.equals("0")){
-				return result;
-			}else if(version.equals("v1")){
+			if(version.equals("v1")){
 				SortedMap<Object, Object> payparams = new TreeMap<Object, Object>();
 				
 				SortedMap<Object, Object> buyInfo = new TreeMap<Object, Object>();

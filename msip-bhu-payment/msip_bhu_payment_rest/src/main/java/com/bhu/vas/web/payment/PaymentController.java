@@ -47,6 +47,7 @@ import com.bhu.vas.business.ds.payment.service.PaymentWithdrawService;
 import com.bhu.vas.business.helper.BusinessHelper;
 import com.bhu.vas.business.helper.PaymentChannelCode;
 import com.bhu.vas.business.helper.XMLUtil;
+import com.bhu.vas.web.http.PostRequestUtil;
 import com.bhu.vas.web.http.response.AppUnifiedOrderResponse;
 import com.bhu.vas.web.http.response.PaySuccessNotifyResponse;
 import com.bhu.vas.web.http.response.UnifiedOrderResponse;
@@ -585,31 +586,30 @@ public class PaymentController extends BaseController{
     					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByCondition(total_fee);
 //    					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByName();
         				if(agentMerchant.equals("Midas")){
-        					result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					//String cur = System.currentTimeMillis()+"";
+        					String par = "secret="+secret+"&appid="+appid+"&payment_type="+payment_type+"&goods_no="+goods_no+
+        							"&total_fee="+total_fee+"&umac="+umac+"&version="+version;
+        					String jsonStr = PostRequestUtil.sendPost("http://mpays.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment", par);
+        					SpringMVCHelper.renderJson(response, jsonStr);
+        					return;
+        					//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}else if(agentMerchant.equals("Hee")){
         					result =  doHee(response,"3", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}else if(agentMerchant.equals("Now")){
         					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}else{
-        					result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}
+        				//*******并存线*****************//
+        				//腾讯云启动midas支付通道
     					//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
     				}
                 	break;
-    			case BHU_MIDAS_WEIXIN: //米大师
-    				System.out.println("apply payment payment_type is old midas ...........");
-//    				String agentMerchants = payLogicService.findWapWeixinMerchantServiceByName();
-//    				if(agentMerchants.equals("Midas")){
-//    					result =  doMidas(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
-//    				}else if(agentMerchants.equals("Hee")){
-//    					result =  doHee(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
-//    				}else if(agentMerchants.equals("Now")){
-//    					result =  doNowpay(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
-//    				}else{
-//    					result =  doMidas(response, total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
-//    				}
-    				result =  doMidas(response,"0","1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
-            		break;
+//    			case BHU_MIDAS_WEIXIN: //米大师
+//    				System.out.println("apply payment payment_type is old midas ...........");
+//    				result =  doMidas(response,"0","1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+//            		break;
     			case BHU_WAP_ALIPAY: //Wap微信支付
     				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
     	        	break;
@@ -1131,36 +1131,7 @@ public class PaymentController extends BaseController{
     	String total_fee_fen = BusinessHelper.getMoney(total_fee);
     	
     	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,type,total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName,appid);
-    	if(version.equals("0")){
-    		
-    		//记录请求支付完成后返回的地址
-        	if (StringUtils.isBlank(return_url)) {
-        		return_url = PayHttpService.WEB_NOTIFY_URL;
-        		logger.info(String.format(" midas  return_url location is null so we set default value %s ",return_url));
-        	}else{
-        		logger.info(String.format("get midas location [%s] ",return_url));
-        		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
-        		orderLocation.setTid(reckoningId);
-        		orderLocation.setLocation(return_url);
-        		paymentAlipaylocationService.insert(orderLocation);
-        		logger.info(String.format("apply midas set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
-        	}
-
-        	double fenTemp = Double.parseDouble(total_fee_fen);
-        	double jiaoTemp =fenTemp/10;
-        	String results = MidasUtils.submitOrder("0",reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
-        	logger.info(String.format("apply midas results [%s]",results));
-        	if("error".equalsIgnoreCase(results)){
-        		result.setType("FAIL");
-            	result.setUrl("支付请求失败");
-            	return result;
-        	}else{
-            	result.setType("Midas");
-            	result.setUrl(results);
-            	return result;
-        	}
-    		
-    	}else if(version.equals("v1")){
+    		if(version.equals("v1")){
     		//记录请求支付完成后返回的地址
         	if (StringUtils.isBlank(return_url)) {
         		return_url = PayHttpService.WEB_NOTIFY_URL;
@@ -1195,8 +1166,7 @@ public class PaymentController extends BaseController{
             	return result;
         	}
     	}
-    	return result;
-    	
+    	return result;    	
 	}
 //    /**
 //     * 处理米大师支付服务请求

@@ -63,6 +63,8 @@
         <module>msip-bhu-business-impl/msip_bhu_business_push</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_online</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_async_online</module>
+        
+        <module>msip-bhu-business-impl/msip_bhu_backend_wangan</module>
         <!--
         <module>msip-bhu-business-impl/msip_bhu_backend_wifistasniffer</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_modulestat</module>
