@@ -24,6 +24,7 @@ import com.bhu.vas.api.rpc.user.dto.UserConfigsStateDTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.PushType;
 import com.bhu.vas.api.rpc.user.model.UserConfigsState;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPushFlowHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserConfigsStateService;
@@ -704,9 +705,11 @@ public class PushService{
 	 */
 	protected PushMsg generatePushMsg(DeviceMobilePresentDTO presentDto, PushDTO pushDto){
 		if(presentDto == null) return null;
-		
 		PushMsg pushMsg = new PushMsg();
+		int badge = WifiDeviceHandsetPushFlowHashService.getInstance().pushComming(presentDto.getUid()).intValue();
+		System.out.println("pushComming: "+badge);
 		BeanUtils.copyProperties(presentDto, pushMsg);
+		pushMsg.setBadge(badge);
 		if(pushDto != null){
 			pushMsg.setPaylod(JsonHelper.getJSONString(pushDto));
 		}
