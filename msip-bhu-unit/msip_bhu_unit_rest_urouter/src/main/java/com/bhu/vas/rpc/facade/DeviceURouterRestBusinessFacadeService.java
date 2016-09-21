@@ -1975,6 +1975,21 @@ public class DeviceURouterRestBusinessFacadeService {
 		}
 	}
 
+	/**
+	 * 清除用户push流水
+	 * 
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> urouterUserMobilePushFlowDestory(Integer uid) {
+		try {
+			deviceFacadeService.clearDeviceMobilePushFlow(uid);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		} catch (BusinessI18nCodeException bex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(), bex.getPayload());
+		}
+	}
+	
 	public RpcResponseDTO<URouterAdminPasswordVTO> urouterAdminPassword(Integer uid, String wifiId) {
 		try {
 

@@ -93,6 +93,8 @@ public interface IDeviceURouterRestRpcService {
 	RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Integer uid, String message, int pageNo, int pageSize);
 
 	RpcResponseDTO<Map<String, String>> countOnlineByTimestamp(Integer uid, String mac, Long timestamp);
+	
+	RpcResponseDTO<Boolean> urouterUserMobilePushDestory(Integer uid);
 
 
 }

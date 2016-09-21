@@ -646,8 +646,10 @@ public class DashboardController extends BaseController{
     @RequestMapping(value="/wallet/rankingList", method={RequestMethod.GET,RequestMethod.POST})
     public void rankingList(HttpServletResponse response, @RequestParam(required = true) Integer uid,
     		@RequestParam(required = true) Integer type,
-    		@RequestParam(required = false,defaultValue = "") String time){
-    	RpcResponseDTO<RankingListVTO> rpcResult = userWalletRpcService.rankingList(uid,type,time);
+    		@RequestParam(required = false,defaultValue = "") String time,
+    		@RequestParam(required = true) Integer pn,
+    		@RequestParam(required = true) Integer ps){
+    	RpcResponseDTO<RankingListVTO> rpcResult = userWalletRpcService.rankingList(uid,type,time,pn,ps);
     	if(!rpcResult.hasError()){
     		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     	}else{

@@ -31,6 +31,7 @@ import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPushFlowHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceModeStatusService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
@@ -853,6 +854,8 @@ public class DeviceFacadeService{
 		userMobileDeviceStateService.userDeviceSignedOff(uid, dt, de);
 		//3:清除用户所管理的设备的数据关系
 		this.clearDeviceMobilePresents(uid);
+		//4:清除用户push流水
+		this.clearDeviceMobilePushFlow(uid);
 	}
 	
 	/**
@@ -1075,7 +1078,15 @@ public class DeviceFacadeService{
 		
 		WifiDeviceMobilePresentStringService.getInstance().destoryMobilePresent(macs);
 	}
-
+	
+	/**
+	 * 清除push流水
+	 * @param uid
+	 */
+	public void clearDeviceMobilePushFlow(Integer uid){
+		if(uid == null) return;
+		WifiDeviceHandsetPushFlowHashService.getInstance().pushFlowClear(uid);
+	}
 	
 	/**************************  具体业务修改配置数据 封装 **********************************/
 

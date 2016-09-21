@@ -17,6 +17,34 @@ public class RankingListVTO implements java.io.Serializable{
 	private String memo;
 	private String avatar;
 	
+	private int pn;
+	private int ps;
+	private int totalPage;
+	
+	public int getPn() {
+		return pn;
+	}
+
+	public void setPn(int pn) {
+		this.pn = pn;
+	}
+
+	public int getPs() {
+		return ps;
+	}
+
+	public void setPs(int ps) {
+		this.ps = ps;
+	}
+
+	public int getTotalPage() {
+		return totalPage;
+	}
+
+	public void setTotalPage(int totalPage) {
+		this.totalPage = totalPage;
+	}
+
 	public String getAvatar() {
 		return avatar;
 	}

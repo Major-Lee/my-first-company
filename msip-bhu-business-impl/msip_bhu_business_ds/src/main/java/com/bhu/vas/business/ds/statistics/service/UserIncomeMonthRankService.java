@@ -25,7 +25,12 @@ public class UserIncomeMonthRankService extends AbstractCommdityService<String, 
 		super.entityDao.deleteAllRank();
 	}
 	
-	public List<UserIncomeMonthRank> findByLimit(String time){
+	public List<UserIncomeMonthRank> findByLimit(String time,int pn,int ps){
+		ModelCriteria mc=new ModelCriteria();
+		mc.createCriteria().andColumnLike("created_at", time);
+		mc.setOrderByClause("rank");
+		mc.setPageSize(ps);
+		mc.setPageNumber(pn);
 		return super.entityDao.findByLimit(time);
 	}
 	
