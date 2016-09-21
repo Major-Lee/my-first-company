@@ -27,6 +27,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
+import com.bhu.vas.api.rpc.charging.model.UserIncome;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -725,6 +726,12 @@ public class UserWalletUnitFacadeService {
 			rankMonthMap.put(GetMonthTime(-2), null);
 			rankMonthMap.put(GetMonthTime(-1), null);
 			rankMonthMap.put(GetMonthTime(0), null);
+			
+			String beforeIncome="0";
+			int beforeRankNum=0;
+			int n=1;
+			int m=1;
+			
 			if(type==1){
 				String currentDay=StringUtils.EMPTY;
 				if(StringUtils.isBlank(time)){
@@ -742,12 +749,22 @@ public class UserWalletUnitFacadeService {
 					rankingListVTO.setUserIncome("0");
 					for(int i=0;i<userWallets.size();i++){
 						RankSingle rankSingle=new RankSingle();
+						if(i==0){
+							beforeRankNum=n;
+							beforeIncome=String.valueOf(round(userWallets.get(i).getToday_cash_sum(),2));
+						}else{
+							if(!StringUtils.equals(beforeIncome, String.valueOf(round(userWallets.get(i).getToday_cash_sum(),2)))){
+								beforeRankNum=m;
+								beforeIncome=String.valueOf(round(userWallets.get(i).getToday_cash_sum(),2));
+								n=m;
+							}
+						}
 						if(uid==userWallets.get(i).getId()){
-							rankingListVTO.setRankNum(i+1);
+							rankingListVTO.setRankNum(beforeRankNum);
 							rankingListVTO.setUserIncome(String.valueOf(round(userWallets.get(i).getToday_cash_sum(),2)));
 						}
 						User singleUser=userService.getById(userWallets.get(i).getId());
-						rankSingle.setRankNum(i+1);
+						rankSingle.setRankNum(beforeRankNum);
 						rankSingle.setUserIncome(String.valueOf(round(userWallets.get(i).getToday_cash_sum(),2)));
 						if(singleUser!=null){
 							rankSingle.setUserName(singleUser.getNick());
@@ -755,6 +772,7 @@ public class UserWalletUnitFacadeService {
 							rankSingle.setMemo(singleUser.getMemo());
 						}
 						rankList.add(rankSingle);
+						m++;
 					}
 					rankingListVTO.setChangeFlag(1);
 				}else{
@@ -816,18 +834,29 @@ public class UserWalletUnitFacadeService {
 					rankingListVTO.setUserIncome("0");
 					for(int i=0;i<userWallets.size();i++){
 						RankSingle rankSingle=new RankSingle();
+						if(i==0){
+							beforeRankNum=n;
+							beforeIncome=String.valueOf(round(userWallets.get(i).getMonth_cash_sum(),2));
+						}else{
+							if(!StringUtils.equals(beforeIncome, String.valueOf(round(userWallets.get(i).getMonth_cash_sum(),2)))){
+								beforeRankNum=m;
+								beforeIncome=String.valueOf(round(userWallets.get(i).getMonth_cash_sum(),2));
+								n=m;
+							}
+						}
 						if(uid==userWallets.get(i).getId()){
-							rankingListVTO.setRankNum(i+1);
+							rankingListVTO.setRankNum(beforeRankNum);
 							rankingListVTO.setUserIncome(String.valueOf(round(userWallets.get(i).getMonth_cash_sum(),2)));
 						}
 						User singleUser=userService.getById(Integer.valueOf(userWallets.get(i).getId()));
-						rankSingle.setRankNum(i+1);
+						rankSingle.setRankNum(beforeRankNum);
 						rankSingle.setUserIncome(String.valueOf(round(userWallets.get(i).getMonth_cash_sum(),2)));
 						if(singleUser!=null){
 							rankSingle.setUserName(singleUser.getNick());
 							rankSingle.setAvatar(singleUser.getAvatar());
 							rankSingle.setMemo(singleUser.getMemo());
 						}
+						m++;
 						rankList.add(rankSingle);
 					}
 					rankingListVTO.setChangeFlag(1);
@@ -884,8 +913,18 @@ public class UserWalletUnitFacadeService {
 				if(userWallets!=null&&userWallets.size()>0){
 					for(int i=0;i<userWallets.size();i++){
 						RankSingle rankSingle=new RankSingle();
+						if(i==0){
+							beforeRankNum=n;
+							beforeIncome=String.valueOf(round(userWallets.get(i).getTotal_cash_sum(),2));
+						}else{
+							if(!StringUtils.equals(beforeIncome, String.valueOf(round(userWallets.get(i).getTotal_cash_sum(),2)))){
+								beforeRankNum=m;
+								beforeIncome=String.valueOf(round(userWallets.get(i).getTotal_cash_sum(),2));
+								n=m;
+							}
+						}
 						if(uid==userWallets.get(i).getId()){
-							rankingListVTO.setRankNum(i+1);
+							rankingListVTO.setRankNum(beforeRankNum);
 							rankingListVTO.setUserIncome(String.valueOf(round(userWallets.get(i).getTotal_cash_sum(),2)));
 						}
 						User singleUser=userService.getById(Integer.valueOf(userWallets.get(i).getId()));
@@ -894,9 +933,9 @@ public class UserWalletUnitFacadeService {
 							rankSingle.setAvatar(singleUser.getAvatar());
 							rankSingle.setMemo(singleUser.getMemo());
 						}
-						rankSingle.setRankNum(i+1);
+						rankSingle.setRankNum(beforeRankNum);
 						rankSingle.setUserIncome(String.valueOf(round(userWallets.get(i).getTotal_cash_sum(),2)));
-						
+						m++;
 						rankList.add(rankSingle);
 					}
 				}
