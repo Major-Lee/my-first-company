@@ -67,7 +67,7 @@ public interface ITagRpcService {
 
 	List<GroupCountOnlineVTO> groupsStatsOnline(int uid, String gids);
 	
-	RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid,long time);
+	RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int uid ,int gid,long time);
 
 	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(
 			int uid,int gid, Long beginTime, Long endTime, boolean filter, String match,int count,String mobileno, int pageNo, int pageSize);

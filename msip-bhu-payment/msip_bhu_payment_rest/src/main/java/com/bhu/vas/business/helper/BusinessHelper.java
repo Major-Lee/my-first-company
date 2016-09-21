@@ -896,7 +896,7 @@ public class BusinessHelper extends PropertyEditorSupport {
 	 * @return
 	 */
 	public static String generatePaymentChannelType(int tempFee,String channelRate,String channelOptions,int level){
-		String result = "Midas";
+		String result = "Now";
 		int num = 0;
     	Random r = new Random();	//随机数生成器
     	num = r.nextInt(100) + 1;
