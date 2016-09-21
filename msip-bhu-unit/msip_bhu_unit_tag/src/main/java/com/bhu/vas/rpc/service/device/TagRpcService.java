@@ -266,7 +266,7 @@ public class TagRpcService implements ITagRpcService {
 
 	@Override
 	public RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int uid ,int gid, long time) {
-		logger.info(String.format("groupUsersStatistics gid[%s] time[%s]", gid, time));
+		logger.info(String.format("groupUsersStatistics uid [%s] gid[%s] time[%s]", uid, gid, time));
 		try{
 			String timeStr = DateTimeHelper.formatDate(new Date(time), DateTimeHelper.FormatPattern5);
 			GroupUsersStatisticsVTO result = tagFacadeRpcSerivce.groupUsersStatistics(uid,gid, timeStr);

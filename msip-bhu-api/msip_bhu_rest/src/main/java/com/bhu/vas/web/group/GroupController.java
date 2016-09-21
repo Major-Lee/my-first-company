@@ -366,7 +366,7 @@ public class GroupController extends BaseController{
               @RequestParam(required = true) int uid,
               @RequestParam(required = true) int gid,
       	    @RequestParam(required = true) long time) {
-      	RpcResponseDTO<GroupUsersStatisticsVTO> rpcResult = tagRpcService.groupUsersStatistics(gid, time);
+      	RpcResponseDTO<GroupUsersStatisticsVTO> rpcResult = tagRpcService.groupUsersStatistics(uid,gid, time);
   		if(!rpcResult.hasError()){
   			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
   		}else{
