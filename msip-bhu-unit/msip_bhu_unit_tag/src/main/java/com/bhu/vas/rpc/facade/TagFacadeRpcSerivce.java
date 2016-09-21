@@ -693,7 +693,13 @@ public class TagFacadeRpcSerivce {
 	 * @param timeStr
 	 * @return
 	 */
-	public GroupUsersStatisticsVTO groupUsersStatistics(int gid, String timeStr) {
+	public GroupUsersStatisticsVTO groupUsersStatistics(int uid ,int gid, String timeStr) {
+		
+		boolean isGroup = tagGroupService.checkGroup(gid, uid);
+		if(!isGroup){
+			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+		}
+		
 		GroupUsersStatisticsVTO vto = new GroupUsersStatisticsVTO();
 		Date date = DateTimeHelper.fromDateStr(timeStr);
 		Date dateDaysAgo = DateTimeHelper.getDateDaysAgo(date, 1);

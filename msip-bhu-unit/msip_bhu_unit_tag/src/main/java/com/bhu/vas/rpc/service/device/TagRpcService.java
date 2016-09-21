@@ -265,11 +265,11 @@ public class TagRpcService implements ITagRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int gid, long time) {
+	public RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int uid ,int gid, long time) {
 		logger.info(String.format("groupUsersStatistics gid[%s] time[%s]", gid, time));
 		try{
 			String timeStr = DateTimeHelper.formatDate(new Date(time), DateTimeHelper.FormatPattern5);
-			GroupUsersStatisticsVTO result = tagFacadeRpcSerivce.groupUsersStatistics(gid, timeStr);
+			GroupUsersStatisticsVTO result = tagFacadeRpcSerivce.groupUsersStatistics(uid,gid, timeStr);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
