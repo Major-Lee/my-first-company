@@ -743,8 +743,7 @@ public class UserWalletUnitFacadeService {
 				}
 				if(GetDateTime("yyyy-MM-dd",0).equals(currentDay)){
 					ModelCriteria mc=new ModelCriteria();
-					mc.createCriteria().andColumnNotEqualTo("today_cash_sum", 0);
-					mc.createCriteria().andColumnLike("last_update_cash_time", currentDay+"%");
+					mc.createCriteria().andColumnNotEqualTo("today_cash_sum", 0).andColumnLike("last_update_cash_time", currentDay+"%");
 					mc.setOrderByClause("today_cash_sum desc");
 					List<UserWallet> userWallets=userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
 					rankingListVTO.setRankNum(9999999);
@@ -1045,7 +1044,7 @@ public class UserWalletUnitFacadeService {
 	 * @param simpleDateFormat 日期的格式
 	 * @param days 取得那天日期  如：0：今天
 	 */
-	public String GetDateTime(String simpleDateFormat, int days) {
+	public static String GetDateTime(String simpleDateFormat, int days) {
 		// 返回日期
 	    String retDate = StringUtils.EMPTY;
 	    // 当前时间
@@ -1176,7 +1175,8 @@ public class UserWalletUnitFacadeService {
 		}
 	} 
 	public static void main(String[] args) {
-		System.out.println(daysBetween("2016-09-16 14:22:36", "2016-09-20 22:50:50"));
+		
+		System.out.println(GetDateTime("yyyy-MM-dd",0));
 	}
 	/** 
 	*字符串的日期格式的计算 
