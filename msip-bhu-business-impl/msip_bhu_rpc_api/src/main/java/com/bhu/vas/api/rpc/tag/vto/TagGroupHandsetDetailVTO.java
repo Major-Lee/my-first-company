@@ -80,7 +80,7 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 			}
 		}else{
 			if(match.equals(greater) || match == null || match.isEmpty()){
-				if(count > this.count){
+				if(count >= this.count){
 					flag = true;
 				}
 			}
@@ -90,7 +90,7 @@ public class TagGroupHandsetDetailVTO implements Serializable{
 				}
 			}
 			if(match.equals(less)){
-				if(count < this.count){
+				if(count <= this.count){
 					flag = true;
 				}
 			}
