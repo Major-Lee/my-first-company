@@ -34,7 +34,7 @@ public class BatchUserIdentityRepairServiceHandler implements IMsgHandlerService
 		List<TagGroupHandsetDetail> list = tagGroupHandsetDetailService.findModelByModelCriteria(mc);
 		List<TagGroupHandsetDetail> updateList = new ArrayList<TagGroupHandsetDetail>();	
 		for(TagGroupHandsetDetail entity : list){
-			if(entity.getMobileno() == null){
+			if(entity.getMobileno() == null || entity.getMobileno().isEmpty()){
 				entity.setMobileno(mobileno);
 				updateList.add(entity);
 			}
