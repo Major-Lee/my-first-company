@@ -900,6 +900,7 @@ public class UserDeviceUnitFacadeService {
 			ret.setWork_mode(wifiDevice.getWork_mode());
 			ret.setUid((user == null)?0:bindUid);
 			ret.setMobileno((user == null)?StringUtils.EMPTY:user.getMobileno());
+			ret.setNick((user == null)?StringUtils.EMPTY:user.getNick());
 			ret.setOnline(wifiDevice.isOnline());
 			ret.setAddress(wifiDevice.getFormatted_address());
 			ret.setFirst_reg_at((wifiDevice.getFirst_reged_at()  == null)?StringHelper.MINUS_STRING_GAP:DateTimeHelper.formatDate(wifiDevice.getFirst_reged_at(), DateTimeHelper.FormatPattern0));
@@ -926,6 +927,9 @@ public class UserDeviceUnitFacadeService {
 					List<URouterDeviceConfigVapVTO> vaps_vto = new ArrayList<URouterDeviceConfigVapVTO>();
 					URouterDeviceConfigVapVTO vap_vto = null;
 					for (WifiDeviceSettingVapDTO vap : psn.getVaps()) {
+						if(vap.getName() == null ||
+								(!vap.getName().equals(WifiDeviceSetting.VAPNAME_WLAN0) && !vap.getName().equals(WifiDeviceSetting.VAPNAME_WLAN10)))
+							continue;
 						vap_vto = new URouterDeviceConfigVapVTO();
 						vap_vto.setVap_auth(vap.getAuth());
 						vap_vto.setVap_name(vap.getName());
@@ -941,21 +945,19 @@ public class UserDeviceUnitFacadeService {
 				if(psn.getInterfaces() != null && !psn.getInterfaces().isEmpty()){
 					List<URouterDeviceConfigInterfaceVTO> interface_vtos = new ArrayList<URouterDeviceConfigInterfaceVTO>();
 					for (WifiDeviceSettingInterfaceDTO interface_dto : psn.getInterfaces()) {
-						String interface_name = interface_dto.getName();
-						if (StringUtils.isNotEmpty(interface_name)) {
-							if (interface_name.startsWith("wlan")) {
-								URouterDeviceConfigInterfaceVTO interface_vto = new URouterDeviceConfigInterfaceVTO();
-								interface_vto.setName(interface_dto.getName());
-								interface_vto.setEnable(interface_dto.getEnable());
-								if (interface_dto.getUsers_tx_rate() != null) {
-									interface_vto.setUsers_tx_rate(interface_dto.getUsers_tx_rate().intValue() / 8);// Kbps转KBps
-								}
-								if (interface_dto.getUsers_rx_rate() != null) {
-									interface_vto.setUsers_rx_rate(interface_dto.getUsers_rx_rate().intValue() / 8);// Kbps转KBps
-								}
-								interface_vtos.add(interface_vto);
-							}
+						if(interface_dto.getName() == null || 
+								(!interface_dto.getName().equals(WifiDeviceSetting.VAPNAME_WLAN0) && !interface_dto.getName().equals(WifiDeviceSetting.VAPNAME_WLAN10)))
+							continue;
+						URouterDeviceConfigInterfaceVTO interface_vto = new URouterDeviceConfigInterfaceVTO();
+						interface_vto.setName(interface_dto.getName());
+						interface_vto.setEnable(interface_dto.getEnable());
+						if (interface_dto.getUsers_tx_rate() != null) {
+							interface_vto.setUsers_tx_rate(interface_dto.getUsers_tx_rate().intValue() / 8);// Kbps转KBps
 						}
+						if (interface_dto.getUsers_rx_rate() != null) {
+							interface_vto.setUsers_rx_rate(interface_dto.getUsers_rx_rate().intValue() / 8);// Kbps转KBps
+						}
+						interface_vtos.add(interface_vto);
 					}
 					ret.setIfs(interface_vtos);
 				}

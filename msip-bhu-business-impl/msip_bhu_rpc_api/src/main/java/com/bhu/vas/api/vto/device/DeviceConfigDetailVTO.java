@@ -24,6 +24,8 @@ public class DeviceConfigDetailVTO implements java.io.Serializable{
 
 	//绑定的uid
 	private int uid;
+	//绑定的用户昵称
+	private String nick;
 	//绑定用户手机号
 	private String mobileno;
 	//是否在线
@@ -59,6 +61,13 @@ public class DeviceConfigDetailVTO implements java.io.Serializable{
 	private String remote_auth_url;
 	private int users_tx_rate;
 	private int users_rx_rate;
+	
+	public String getNick() {
+		return nick;
+	}
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
 	public String getMac() {
 		return mac;
 	}
