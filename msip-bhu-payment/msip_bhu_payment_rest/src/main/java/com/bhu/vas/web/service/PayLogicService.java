@@ -71,7 +71,7 @@ public class PayLogicService {
     }
     
     public String findWapWeixinMerchantServiceByCondition(String total_fee){
-    	String result = "Midas";
+    	String result = "Now";
 //    	String cacheMerchName = businessCacheService.getWapWeixinMerchantNameFromCache();
 //    	if(cacheMerchName != null ){
 //    		result = cacheMerchName;
