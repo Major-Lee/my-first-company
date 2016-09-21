@@ -132,6 +132,11 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = true,value="sk") String secretKey,
             @RequestParam(required = true) String mac
     		) {
+		ResponseError validateError = validate(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
 		RpcResponseDTO<DeviceConfigDetailVTO> rpcResult = userDeviceRpcService.deviceConfigDetail(mac.toLowerCase());
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
