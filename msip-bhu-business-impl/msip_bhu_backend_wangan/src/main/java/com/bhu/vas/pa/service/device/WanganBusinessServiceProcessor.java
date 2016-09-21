@@ -3,7 +3,6 @@ package com.bhu.vas.pa.service.device;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
@@ -11,12 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.pure.kafka.business.observer.KafkaMsgObserverManager;
-import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
 import com.bhu.pure.kafka.client.producer.StringKafkaMessageProducer;
 import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
-import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
 import com.bhu.vas.api.dto.charging.HandsetAuthorizeAction;
@@ -27,7 +23,6 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserOrderDetailsHashService;
 import com.bhu.vas.pa.dto.PaHandsetOnlineAction;
-import com.bhu.vas.pa.log.WriterThread;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -38,19 +33,12 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
  *
  */
 @Service
-public class WanganBusinessServiceProcessor implements DynaMessageListener {
+public class WanganBusinessServiceProcessor{
 	private final Logger logger = LoggerFactory.getLogger(WanganBusinessServiceProcessor.class);
 
 	
 	@Resource
-	private StringKafkaMessageProducer wanganMessageTopicProducer;
-	
-	
-	@PostConstruct
-	public void initialize(){
-		logger.info("WanganBusinessServiceProcessor initialize...");
-		KafkaMsgObserverManager.DynaMsgCommingObserver.addMsgCommingListener(this);
-	}
+	private StringKafkaMessageProducer paTopicProducer;
 	
 	/**
 	 * 移动设备连接状态请求生成，网安终端上线消息
@@ -59,13 +47,12 @@ public class WanganBusinessServiceProcessor implements DynaMessageListener {
 	 * 3:auth
 	 * @param ctx
 	 * @param payload
-	 * modified by PengYu Zhang for handset storage
 	 */
-	public void doWangAnProcessor(String ctx, String payload, ParserHeader parserHeader) {
-		logger.info("..............wangan processor..............");
+	public void doPaProcessor(String payload, ParserHeader parserHeader) {
+		/*
 		try {
 			if(parserHeader != null && OperationCMD.DeviceCmdPassThrough.getNo().equals(parserHeader.getOpt())){
-				logger.info(String.format("ctx[%s] mac[%s] paylod[%s]", ctx,parserHeader.getMac(),payload));
+				logger.info(String.format("mac[%s] paylod[%s]", parserHeader.getMac(),payload));
 			}
 			List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage
 			    (payload, HandsetDeviceDTO.class);
@@ -143,6 +130,7 @@ public class WanganBusinessServiceProcessor implements DynaMessageListener {
 		} catch (Exception e) {
 			System.out.println("doWangAnProcessor error .....");
 		}
+		*/
 	}
 	
 	/**
@@ -173,7 +161,7 @@ public class WanganBusinessServiceProcessor implements DynaMessageListener {
 		HandsetStoragePaService.getInstance().saveAuthOnline(memdto.getMac(), memdto.getHmac(), message);
 		
 		try {
-			wanganMessageTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
+			paTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
 		} catch (Exception e) {
 			logger.error("processHandsetAuthorize error", e);
 		} 
@@ -211,7 +199,7 @@ public class WanganBusinessServiceProcessor implements DynaMessageListener {
 		HandsetStoragePaService.getInstance().saveAuthOnline(dto.getMac(), dto.getHmac(), message);
 		
 		try {
-			wanganMessageTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
+			paTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
 		} catch (Exception e) {
 			logger.error("processHandsetAuthorize error", e);
 		} 
@@ -282,7 +270,7 @@ public class WanganBusinessServiceProcessor implements DynaMessageListener {
 			
 			HandsetStoragePaService.getInstance().saveAuthOnline(dto.getMac(), dto.getHmac(), message);
 			try {
-				wanganMessageTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
+				paTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
 			} catch (Exception e) {
 				logger.error("processHandsetAuthorize error", e);
 			} 
@@ -309,8 +297,6 @@ public class WanganBusinessServiceProcessor implements DynaMessageListener {
 			offdto.setEnd_ts(System.currentTimeMillis());
 			message =  JsonHelper.getJSONString(offdto);
 		}
-		String curTime =WriterThread.getCurrentTime();
-		WriterThread.writeLog(curTime + " - " + act + message);
 	}
     
 	/**
@@ -353,7 +339,7 @@ public class WanganBusinessServiceProcessor implements DynaMessageListener {
 		HandsetStoragePaService.getInstance().saveAuthOnline(dto.getMac(), dto.getHmac(), message);
 		
 		try {
-			wanganMessageTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
+			paTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
 		} catch (Exception e) {
 			logger.error("handsetDeviceOffline error", e);
 		} 
@@ -403,28 +389,11 @@ public class WanganBusinessServiceProcessor implements DynaMessageListener {
 			
 			for (PaHandsetOnlineAction onlineAction : paHandsetOnlineActions) {
 				try {
-					wanganMessageTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), onlineAction.getHmac(), 
+					paTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), onlineAction.getHmac(), 
 							                        JsonHelper.getJSONString(onlineAction));
 				} catch (Exception e) {
 					logger.error("handsetDeviceOffline error", e);
 				}
 			}
 	}
-	
-	public void cmupWithWifiDeviceOnlines(String ctx, List<WifiDeviceDTO> dtos) {
-		
-	}
-  
-	@Override
-	public void onMessage(final String topic,final int partition,final String key,final String message, 
-			              final long offset,final String consumerId) {
-		int type = Integer.parseInt(message.substring(0, 8));
-		ParserHeader headers = ParserHeader.builder(message.substring(8, ParserHeader.Cmd_Header_Length), type);
-	
-		if (headers != null) {
-			String payload = message.substring(ParserHeader.Cmd_Vap_Header_Length);
-			doWangAnProcessor(topic, payload, headers);
-		}
-	}
-	
 }

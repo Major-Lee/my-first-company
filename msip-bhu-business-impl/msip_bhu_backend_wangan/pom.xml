@@ -34,11 +34,6 @@
         
         <dependency>
             <groupId>com.bhu</groupId>
-            <artifactId>msip_bhu_business_ds_commdity</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_asynmessage</artifactId>
         </dependency>
         
@@ -46,6 +41,11 @@
             <groupId>com.bhu</groupId>
             <artifactId>msip_bhu_business_push</artifactId>
         </dependency>
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+            </dependency>
            
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
@@ -56,12 +56,6 @@
 	<build>
 		<finalName>msip_bhu_backend_wangan</finalName>
 		<plugins>
-			<!-- mina打包为了bundle格式，为此，需要添加插件 在maven的pom.xml中plugins段中加入plugin即可 -->
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-			</plugin>
 			<!-- The configuration of maven-assembly-plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -100,7 +94,7 @@
 								used to specify that all needed libraries are found under lib/ directory. -->
 							<classpathPrefix>../lib/</classpathPrefix>
 							<!-- Specifies the main class of the application -->
-							<mainClass>com.smartwork.multiplexer.starter.ServerStarter</mainClass>
+							<mainClass>com.bhu.vas.pa.BackendWanganMain</mainClass>
 						</manifest>
 						<manifestEntries>
 							<Class-Path>../conf/</Class-Path>
@@ -148,9 +142,12 @@
 				</includes>
 			</testResource>
 			<testResource>
-				<directory>src/test/resources</directory>
+				<directory>src/test/resource</directory>
 			</testResource>
 		</testResources>
+                <filters>
+                        <filter>src/main/filters/filters-${env}.properties</filter>
+                </filters>
 	</build>
 
 

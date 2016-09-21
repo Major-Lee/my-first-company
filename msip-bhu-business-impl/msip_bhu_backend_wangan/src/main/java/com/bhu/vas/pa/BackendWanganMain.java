@@ -4,11 +4,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.smartwork.msip.plugins.hook.ShutdownHookThread;
 
-public class WanganMain {
+public class BackendWanganMain {
     
 	public static void main(String[] args) {
 		String[] CONFIG = {"/spring/appCtxBackend.xml"};
-		final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(CONFIG, WanganMain.class);
+		final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(CONFIG, BackendWanganMain.class);
 		context.start();
 		Runtime.getRuntime().addShutdownHook(new ShutdownHookThread(context,"WanganMain Server"));
 	}

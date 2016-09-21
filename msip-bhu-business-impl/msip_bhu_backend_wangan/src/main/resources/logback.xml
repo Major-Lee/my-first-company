@@ -2,59 +2,80 @@
 <!DOCTYPE configuration>
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
-	<property name="log.base" value="/BHUData/logs/backendlogs/msip-backend-wangan/${provider.port}/wangan" />
+	
+	<property name="log.base" 		value="/BHUData/logs/backendwangan/backendwangan" />
+	<Property name="datalog.base" 	value="/BHUData/bulogs/actionlogs/business-data-action" />
+	<Property name="flowlog.base" 	value="/BHUData/bulogs/flowlogs/business-data-flow" />
+	<!-- 
+	<substitutionProperty name="datalog.base" value="../logs/msip-business-data" />
+	 -->
 	<jmxConfigurator />
 
 	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
-		<encoder>
-			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
-			<charset>UTF-8</charset>
-		</encoder>
+		<Encoding>UTF-8</Encoding>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
 	</appender>
+
 	<appender name="logfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
 		<File>${log.base}.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.log.zip</FileNamePattern>
 		</rollingPolicy>
-		<encoder>
-			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
-			<charset>UTF-8</charset>
-		</encoder>
-	</appender>	
-
-	<appender name="unitrequestfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<File>${log.base}.unitrequest.log</File>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
+	</appender>
+	<!--
+	<appender name="sqllogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${log.base}.sqllog.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.unitrequest.zip</FileNamePattern>
+			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.sqllog.zip</FileNamePattern>
 		</rollingPolicy>
-		<encoder>
-			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
-			<charset>UTF-8</charset>
-		</encoder>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date [%thread] %-5level %logger{80} - %msg%n</pattern>
+		</layout>
 	</appender>	
-
-	<appender name="unittopicrecvfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<File>${log.base}.unittopicrecvfile.log</File>
+			-->
+	<appender name="actionlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${datalog.base}.actionlog.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<FileNamePattern>${log.base}.%d{yyyy-MM-dd}.unittopicrecvfile.zip</FileNamePattern>
+			<FileNamePattern>${datalog.base}.%d{yyyy-MM-dd}.actionlog.zip</FileNamePattern>
 		</rollingPolicy>
-		<encoder>
-			<pattern>%date [%thread] %-5level %logger{15} - %msg%n</pattern>
-			<charset>UTF-8</charset>
-		</encoder>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%msg%n</pattern>
+		</layout>
 	</appender>	
-
-	<logger name="com.bhu.vas.rpc.service" additivity="false" level="INFO">
-		<appender-ref ref="unitrequestfile" />
-	</logger>
-	<logger name="com.bhu.pure.kafka.client.producer" additivity="false" level="INFO">
+	
+	<appender name="wifideviceflowlogfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<File>${flowlog.base}.wifideviceflowlog.log</File>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${datalog.base}.%d{yyyy-MM-dd}.actionlog.zip</FileNamePattern>
+		</rollingPolicy>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%msg%n</pattern>
+		</layout>
+	</appender>	
+	<!--
+	<logger name="java.sql" additivity="false">
+		<level value="DEBUG" />
 		<appender-ref ref="stdout" />
+		<appender-ref ref="sqllogfile" />
 	</logger>
-	<logger name="com.bhu.vas.daemon.processor" additivity="false" level="INFO">
-		<appender-ref ref="unittopicrecvfile" />
+-->
+	<logger name="com.bhu.vas.pa" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="logfile" />
 	</logger>
-	<root level="WARN">
+	<root>
+		<level value="WARN" />
 		<appender-ref ref="stdout" />
 		<appender-ref ref="logfile" />
 	</root> 
 </configuration>
+
