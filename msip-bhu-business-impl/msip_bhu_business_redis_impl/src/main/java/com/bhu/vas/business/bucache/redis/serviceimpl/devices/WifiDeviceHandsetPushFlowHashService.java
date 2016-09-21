@@ -31,7 +31,7 @@ public class WifiDeviceHandsetPushFlowHashService extends AbstractRelationString
 	}
 	
 	public void pushFlowClear(int uid){
-		super.set(generateKey(uid), "0");
+		super.del(generateKey(uid));
 	}
 	
 	public String fetchPushFlow(int uid){

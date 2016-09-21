@@ -335,4 +335,9 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	public RpcResponseDTO<Boolean> urouterUpdNotifyReward(Integer uid, boolean on) {
 		return deviceURouterRestRpcService.urouterUpdNotifyReward(uid, on);
 	}
+
+	@Override
+	public RpcResponseDTO<Boolean> urouterUserMobilePushDestory(Integer uid) {
+		return deviceURouterRestRpcService.urouterUserMobilePushDestory(uid);
+	}
 }

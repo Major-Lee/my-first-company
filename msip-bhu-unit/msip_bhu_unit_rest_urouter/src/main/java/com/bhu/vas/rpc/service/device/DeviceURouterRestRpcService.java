@@ -364,6 +364,26 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 	
 	@Override
+	public RpcResponseDTO<Boolean> urouterUserMobilePushDestory(Integer uid) {
+		logger.info(String.format("DeviceURouterRestRPC urouterUserMobilePushDestory invoke uid [%s]", uid));
+		
+		try{
+			return deviceURouterRestBusinessFacadeService.urouterUserMobilePushFlowDestory(uid);
+		}
+		catch(BusinessI18nCodeException ex){
+			logger.info(String.format("DeviceURouterRestRPC urouterUserMobilePushDestory failed uid [%s]",uid));
+			throw ex;
+		}
+		catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceURouterRestRPC urouterUserMobilePushDestory exception uid [%s] exmsg[%s]",
+					uid, ex.getMessage()), ex);
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	
+	@Override
 	public RpcResponseDTO<Map<String,Object>> urouterPlugins(Integer uid, String wifiId){
 		logger.info(String.format("DeviceURouterRestRPC urouterPlugins invoke uid [%s] mac [%s]", 
 				uid, wifiId));

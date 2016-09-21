@@ -85,4 +85,25 @@ public class URouterMobileDeviceController extends BaseController{
 		}
 	}
 	
+	/**
+	 * 清除push流水
+	 * @param response
+	 * @param request
+	 * @param uid
+	 * @param device
+	 * @param dt
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/push/clear",method={RequestMethod.POST})
+	public void push_clear(HttpServletResponse response, HttpServletRequest request,
+			@RequestParam(required = true) int uid){
+		
+		RpcResponseDTO<Boolean> rpcResult = deviceURouterRestRpcService.urouterUserMobilePushDestory(uid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
 }
