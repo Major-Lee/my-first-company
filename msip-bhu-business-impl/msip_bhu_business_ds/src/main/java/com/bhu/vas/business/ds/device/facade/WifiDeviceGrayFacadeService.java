@@ -519,7 +519,7 @@ public class WifiDeviceGrayFacadeService {
 								grayVersion.getD_fwid(),versionfw.getUpgrade_url());
 						resultDto.setUpgrade_slaver_urls(versionfw.getUpgrade_slaver_urls());
 						resultDto.setCurrentDVB(d_version);
-						resultDto.setCurrentGrayPublished_at(versionfw.getCreated_at());
+						resultDto.setCurrentGrayPublished_at(grayVersion.getUpdated_at());//versionfw.getCreated_at());
 						resultDto.setMinid(versionfw.getMinid());
 						System.out.println("FW upgradeDecideAction outPutSuccessfully:"+resultDto);
 					}else{
