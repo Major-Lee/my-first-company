@@ -196,8 +196,8 @@
 	    SELECT timestr as date,count(timestr) as count FROM <include refid="modelTableName" /> 
 	    <where>
 			gid = #{gid}
-			<if test="starTime !=null and endTime != null">
-				AND	timestr &gt;= #{starTime}
+			<if test="startTime !=null and endTime != null">
+				AND	timestr &gt;= #{startTime}
 				AND timestr &lt;= #{endTime}
 			</if>
 	    </where> 
