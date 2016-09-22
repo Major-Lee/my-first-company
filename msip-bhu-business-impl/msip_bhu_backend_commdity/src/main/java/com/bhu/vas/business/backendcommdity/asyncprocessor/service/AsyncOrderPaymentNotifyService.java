@@ -391,7 +391,8 @@ public class AsyncOrderPaymentNotifyService{
 		   			case SuccessButThresholdNeedCharging:
 		   				//通知uportal可以放行
 		   				//判定是否存在标记位 进行短消息充值提醒通知
-		   				if(SnkChargingMarkerService.getInstance().level1marker(uid) == 1 && StringUtils.isNotEmpty(mobileno)){
+		   				if(StringUtils.isNotEmpty(mobileno)){
+		   					SnkChargingMarkerService.getInstance().level1marker(uid);
 			   				String smsg_snk_needcharging = String.format(BusinessRuntimeConfiguration.Internal_SNK_NeedCharging_Template,DateTimeHelper.formatDate(DateTimeHelper.FormatPattern13), vcurrency_current_leave);
 			   				String response_snk_needcharging = SmsSenderFactory.buildSender(
 									BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_needcharging, mobileno);
@@ -403,7 +404,8 @@ public class AsyncOrderPaymentNotifyService{
 		   				//通知uportal可以放行
 		   				//远程通知uportal 静态页 关闭访客网络
 		   				//判定是否存在标记位 进行短消息关闭通知
-		   				if(SnkChargingMarkerService.getInstance().level2marker(uid) == 1 && StringUtils.isNotEmpty(mobileno)){
+		   				if(StringUtils.isNotEmpty(mobileno)){
+		   					SnkChargingMarkerService.getInstance().level2marker(uid);
 			   				String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_SNK_Stop_Template,DateTimeHelper.formatDate(DateTimeHelper.FormatPattern13), vcurrency_current_leave);
 			   				String response_snk_stop = SmsSenderFactory.buildSender(
 									BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, mobileno);
