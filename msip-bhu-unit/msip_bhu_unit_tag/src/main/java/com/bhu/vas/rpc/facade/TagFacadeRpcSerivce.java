@@ -732,17 +732,21 @@ public class TagFacadeRpcSerivce {
 		}
 		
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime,pageNo,pageSize);
+		int allCount = tagGroupHandsetDetailService.countGroupUsers(gid, beginTime, endTime);
+		int filterCount = 0;
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
 		}
 		
-		{// 根据连接次数和手机号过滤
+		{   
+			// 根据连接次数和手机号过滤
 			if (filter) {
 				Iterator<TagGroupHandsetDetailVTO> iter = vtos.iterator();
 				while (iter.hasNext()) {
 					TagGroupHandsetDetailVTO rv = iter.next();
 					if (rv.isFilter(match,count,mobileno))
+						filterCount++;
 						iter.remove();
 				}
 			}
@@ -757,7 +761,7 @@ public class TagFacadeRpcSerivce {
 			}
 		}
 		
-		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, vtos.size(), vtos);
+		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, allCount-filterCount, vtos);
 	}
 	
 	/**
@@ -811,6 +815,7 @@ public class TagFacadeRpcSerivce {
 		
 		List<Map<String, String>> handsetMap = tagGroupHandsetDetailService.selectGroupUsersRank(gid, 
 				startTime, endTime, pageNo, pageSize);
+		
 		List<TagGroupRankUsersVTO> vtos = new ArrayList<TagGroupRankUsersVTO>();
 		for(Map<String, String> map : handsetMap){
 			logger.info(String.format("groupRankUsers count[%s] date[%s]", map.get("count"), map.get("date")));
@@ -978,6 +983,8 @@ public class TagFacadeRpcSerivce {
 		
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("gid", gid);
+		int count = tagGroupSortMessageService.countByModelCriteria(mc);
+		
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
 		List<TagGroupSortMessage> list = tagGroupSortMessageService.findModelByModelCriteria(mc);
@@ -985,7 +992,7 @@ public class TagFacadeRpcSerivce {
 		for(TagGroupSortMessage entity : list){
 			vtos.add(builderSendMEssageVTO(entity));
 		}
-		return new CommonPage<TagGroupSortMessageVTO>(pageNo, pageSize, vtos.size(), vtos);
+		return new CommonPage<TagGroupSortMessageVTO>(pageNo, pageSize, count, vtos);
 	}
 	
 	private TagGroupSortMessageVTO builderSendMEssageVTO(TagGroupSortMessage entity){
