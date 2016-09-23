@@ -1007,12 +1007,14 @@ public class AsyncMsgHandleService {
 		 */
 		if (status == DeviceHelper.RefreashDeviceSetting_RestoreFactory && entity != null){
 			if(!entity.getQuery_from_device()){
-				entity.setQuery_from_device(true);
-				wifiDeviceSettingService.update(entity);
 				status = DeviceHelper.RefreashDeviceSetting_RestoreFactory_Can_Ignore;
 			}
 		}
 		
+		if(entity != null){
+			entity.setQuery_from_device(true);
+			wifiDeviceSettingService.update(entity);
+		}
 			
 
 		if (DeviceHelper.RefreashDeviceSetting_RestoreFactory == status) {
