@@ -814,10 +814,11 @@ public class SSIDStatisticFacadeRpcService {
 		tMaps.put("android", androidMap);
 		
 		Map<String,Object> resMap=new HashMap<String,Object>();
-		
+		log.info("resMapLength:"+resMaps.size());
+		log.info("resMap  data:"+resMaps.toString());
 		List<LinkedHashMap<String,Object>> pageResMaps=new ArrayList<LinkedHashMap<String,Object>>();
 		int num=timeList.size();
-		if(num>(pn-1)*ps&&num<pn*ps){
+		if(num>(pn-1)*ps&&num<=pn*ps){
 			for(int i=(pn-1)*ps;i<=num-1;i++){
 				pageResMaps.add(resMaps.get(i));
 			}
@@ -826,9 +827,11 @@ public class SSIDStatisticFacadeRpcService {
 				pageResMaps.add(resMaps.get(i));
 			}
 		}
+		log.info("num  data:"+num);
 		resMap.put("dataList", pageResMaps);
 		resMap.put("total", tMaps);
 		
+		log.info("resMap  data:"+resMap.toString());
 		//折线图组装数据
 		List<Object> astime=new ArrayList<Object>();
 		List<Object> asequipmentNums=new ArrayList<Object>();
