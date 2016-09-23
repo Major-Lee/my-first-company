@@ -18,12 +18,14 @@ import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
+import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresentHashService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupHandsetDetailService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.tag.service.TagGroupService;
 import com.bhu.vas.business.ds.user.facade.UserIdentityAuthFacadeService;
+import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -51,6 +53,9 @@ public class TagGroupFacadeService {
 	@Resource 
 	private UserIdentityAuthFacadeService userIdentityAuthFacadeService;
 	
+    @Resource
+    private UserWifiDeviceService userWifiDeviceService;
+
 	
 	public TagDevicesService getTagDevicesService() {
 		return tagDevicesService;
@@ -132,17 +137,22 @@ public class TagGroupFacadeService {
 		TagGroupHandsetDetailDTO handsetDto = null;
 		
 		TagGroupRelation tagGroupRelation = tagGroupRelationService.getById(wifiId);
+		String timestr = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 		if(tagGroupRelation == null){
-			System.out.println(String.format("当前设备： %s 不存在分组", wifiId));
+			System.out.println(String.format("time: %s  当前设备： %s 不存在分组",timestr, wifiId));
 			return null;
 		}
 		String hdmac = dto.getMac();
 		int gid = tagGroupRelation.getGid();
-		String timestr = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 		//1.判断当天是否该终端是否存在记录
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("hdmac", hdmac).andColumnEqualTo("gid", gid).andColumnEqualTo("timestr", timestr);
 		List<TagGroupHandsetDetail> entitys = tagGroupHandsetDetailService.findModelByModelCriteria(mc);
+		
+		//2.获取绑定的uid
+		UserWifiDevice userWifiDevice = userWifiDeviceService.getById(wifiId);
+		Integer uid = userWifiDevice.getUid();
+		
 		if (entitys == null || entitys.isEmpty()) {
 			TagGroupHandsetDetail detail =new TagGroupHandsetDetail();
 			
@@ -151,12 +161,12 @@ public class TagGroupFacadeService {
 			detail.setGid(gid);
 			if(isNewHandset(hdmac, gid)){
 				detail.setNewuser(true);
-				HandsetGroupPresentHashService.getInstance().groupNewlyHandsetComming(gid);
+				HandsetGroupPresentHashService.getInstance().groupNewlyHandsetComming(gid,uid);
 			}
 			detail.setMobileno(userIdentityAuthFacadeService.fetchUserMobilenoByHdmac(hdmac));
 			
 			tagGroupHandsetDetailService.insert(detail);
-			HandsetGroupPresentHashService.getInstance().groupHandsetComming(gid);
+			HandsetGroupPresentHashService.getInstance().groupHandsetComming(gid,uid);
 			return detail;
 		}
 		return entitys.get(0);

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
@@ -319,6 +320,18 @@ public class UserController extends BaseController{
     		@RequestParam(required = false) String rate,
     		@RequestParam(required = true) Integer status){
     	RpcResponseDTO<Boolean> rpcResult = userRpcService.activitySet(uid,bind_num,income,rate,status);
+    	if(!rpcResult.hasError()){
+    		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    	}else{
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    	}
+    }
+	
+	@ResponseBody()
+    @RequestMapping(value="/conn/stat", method={RequestMethod.GET,RequestMethod.POST})
+    public void conn_stat(HttpServletResponse response, @RequestParam(required = true) int uid,
+    		@RequestParam(required = true) long time ){
+    	RpcResponseDTO<GroupUsersStatisticsVTO> rpcResult = userRpcService.UsersStatistics(uid,time);
     	if(!rpcResult.hasError()){
     		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     	}else{

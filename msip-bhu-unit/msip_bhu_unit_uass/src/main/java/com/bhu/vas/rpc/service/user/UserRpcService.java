@@ -10,6 +10,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
@@ -160,4 +161,11 @@ public class UserRpcService implements IUserRpcService{
 			Double income, String rate,Integer status) {
 		return userUnitFacadeService.activitySet(uid,bind_num,income,rate,status);
 	}
+	
+	@Override
+	public RpcResponseDTO<GroupUsersStatisticsVTO> UsersStatistics(int uid,long time) {
+		
+		return userUnitFacadeService.UsersStatistics(uid,time);
+	}
+	
 }

@@ -22,6 +22,7 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
+import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.UserConfigsStateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
@@ -34,6 +35,7 @@ import com.bhu.vas.api.rpc.user.model.UserMobileDevice;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresentHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.statistics.service.UserIncomeService;
@@ -54,6 +56,7 @@ import com.bhu.vas.validate.UserTypeValidateService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.business.token.UserTokenDTO;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
@@ -939,6 +942,40 @@ public class UserUnitFacadeService {
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
+	
+	/**
+	 * 用户连接情况
+	 * @param gid
+	 * @param timeStr
+	 * @return
+	 */
+	public RpcResponseDTO<GroupUsersStatisticsVTO> UsersStatistics(int uid, long time) {
+		
+		try {
+			String timeStr = DateTimeHelper.formatDate(new Date(time), DateTimeHelper.FormatPattern5);
+			
+			GroupUsersStatisticsVTO vto = new GroupUsersStatisticsVTO();
+			Date date = DateTimeHelper.fromDateStr(timeStr);
+			Date dateDaysAgo = DateTimeHelper.getDateDaysAgo(date, 1);
+			String today = DateTimeHelper.formatDate(date, DateTimeHelper.FormatPattern7);
+			String yesterday = DateTimeHelper.formatDate(dateDaysAgo, DateTimeHelper.FormatPattern7);
+			Map<String, String> todayMap = HandsetGroupPresentHashService.getInstance().fetchUserConnDetail(uid, today);
+			Map<String, String> yesterdayMap = HandsetGroupPresentHashService.getInstance().fetchUserConnDetail(uid, yesterday);
+			vto.setToday_newly(todayMap.get("newly"));
+			vto.setToday_total(todayMap.get("total"));
+			vto.setYesterday_newly(yesterdayMap.get("newly"));
+			vto.setYesterday_total(yesterdayMap.get("total"));
+			vto.setCount(HandsetGroupPresentHashService.getInstance().fetchUserConnTotal(uid));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			bex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 	public static void main(String[] args) {
 //		Date date = new Date();  
 //        Calendar calendar = Calendar.getInstance();  
