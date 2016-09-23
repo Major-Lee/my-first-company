@@ -193,7 +193,7 @@ public class WanganBusinessServiceProcessor{
 	private void sendKafkaMessage(String message, String hmac){
 		if(StringUtils.isNotEmpty(message)){
 			try{
-				paTopicProducer.send(KAFKA_QUEUE_NAME, 0, hmac, message);
+				paTopicProducer.send(KAFKA_QUEUE_NAME, 0, null, message);
 				logger.info("kafka sent:" + message);
 			}catch(Exception e){
 				e.printStackTrace(System.out);
