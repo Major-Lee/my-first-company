@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.user.iservice;
 import java.util.Map;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserManageDTO;
 import com.bhu.vas.api.vto.agent.UserActivityVTO;
@@ -180,4 +181,7 @@ public interface IUserRpcService {
 	
 	public RpcResponseDTO<Boolean> activitySet(Integer uid,
 			Integer bind_num, Double income, String rate,Integer status);
+
+	RpcResponseDTO<GroupUsersStatisticsVTO> UsersStatistics(int uid,
+			long time);
 }

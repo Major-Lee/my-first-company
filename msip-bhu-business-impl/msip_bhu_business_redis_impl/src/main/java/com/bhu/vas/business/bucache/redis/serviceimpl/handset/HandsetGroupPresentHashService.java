@@ -45,21 +45,48 @@ public class HandsetGroupPresentHashService extends AbstractRelationHashCache{
 		return sb.toString();
 	}
 	
-	public void groupHandsetComming(int gid){
-		this.hincrby(generateKey(gid,DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7)), HANDSET_GROUP_PRESENT_TOTAL, DEFAULT_INCRBY);
-		this.hincrby(generateKey(gid), HANDSET_GROUP_PRESENT_TOTAL, DEFAULT_INCRBY);
+	private static String generateKeyWithUid(int uid){
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.HandsetPresent.UserStatisticsConnPrefixKey);
+		sb.append(uid);
+		return sb.toString();
 	}
 	
-	public void groupNewlyHandsetComming(int gid){
+	private static String generateKeyWithUid(int uid,String timestr){
+		StringBuilder sb = new StringBuilder(BusinessKeyDefine.HandsetPresent.UserStatisticsConnPrefixKey);
+		sb.append(uid).append(StringHelper.MINUS_CHAR_GAP).append(timestr);
+		return sb.toString();
+	}
+	
+	public void groupHandsetComming(int gid,Integer uid){
+		this.hincrby(generateKey(gid,DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7)), HANDSET_GROUP_PRESENT_TOTAL, DEFAULT_INCRBY);
+		this.hincrby(generateKey(gid), HANDSET_GROUP_PRESENT_TOTAL, DEFAULT_INCRBY);
+		if(uid !=null){
+			this.hincrby(generateKeyWithUid(uid,DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7)), HANDSET_GROUP_PRESENT_TOTAL, DEFAULT_INCRBY);
+			this.hincrby(generateKeyWithUid(uid), HANDSET_GROUP_PRESENT_TOTAL, DEFAULT_INCRBY);
+		}
+	}
+	
+	public void groupNewlyHandsetComming(int gid,Integer uid){
 		this.hincrby(generateKey(gid,DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7)), HANDSET_GROUP_PRESENT_NEWLY, DEFAULT_INCRBY);
+		if(uid !=null){
+			this.hincrby(generateKeyWithUid(uid,DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern7)), HANDSET_GROUP_PRESENT_NEWLY, DEFAULT_INCRBY);
+		}
 	}
 	
 	public Map<String, String> fetchGroupConnDetail(int gid,String timestr){
 		return this.hgetall(generateKey(gid,timestr));
 	}
 	
+	public Map<String, String> fetchUserConnDetail(int uid,String timestr){
+		return this.hgetall(generateKeyWithUid(uid,timestr));
+	}
+	
 	public String fetchGroupConnTotal(int gid){
 		return this.hget(generateKey(gid),HANDSET_GROUP_PRESENT_TOTAL);
+	}
+	
+	public String fetchUserConnTotal(int uid){
+		return this.hget(generateKeyWithUid(uid),HANDSET_GROUP_PRESENT_TOTAL);
 	}
 	
 	@Override
@@ -75,9 +102,5 @@ public class HandsetGroupPresentHashService extends AbstractRelationHashCache{
 	@Override
 	public String getName() {
 		return HandsetGroupPresentHashService.class.getName();
-	}
-	
-	public static void main(String[] args) {
-		HandsetGroupPresentHashService.getInstance().groupHandsetComming(10000);
 	}
 }
