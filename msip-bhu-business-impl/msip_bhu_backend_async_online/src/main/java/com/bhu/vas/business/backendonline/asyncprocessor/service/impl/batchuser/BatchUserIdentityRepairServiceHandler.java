@@ -38,7 +38,7 @@ public class BatchUserIdentityRepairServiceHandler implements IMsgHandlerService
 		//1.修复分组终端详情
 		repairGroupHandsetDetail(hdmac,mobileno);
 		//2. 修复potal身份认证表
-		repairUserPortalAuth(hdmac,mobileno);
+//		repairUserPortalAuth(hdmac,mobileno);
 		
 		logger.info(String.format("process message[%s] successful", message));
 	}
