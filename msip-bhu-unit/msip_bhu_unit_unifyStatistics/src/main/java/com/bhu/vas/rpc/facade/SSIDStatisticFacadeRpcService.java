@@ -422,7 +422,7 @@ public class SSIDStatisticFacadeRpcService {
 					dc=macList.size();
 					for(String j:macList){
 						String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+date, j);
-						if(StringUtils.isNoneBlank(doC)){
+						if(StringUtils.isNotBlank(doC)){
 							doc+=Integer.parseInt(doC);
 						}
 						String dayPv=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-PV-"+date, j);
@@ -1056,7 +1056,7 @@ public class SSIDStatisticFacadeRpcService {
 		if(wifiDevices!=null&&wifiDevices.size()>0){
 			for(WifiDevice i:wifiDevices){
 				String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+dateStr, i.getId());
-				if(StringUtils.isNoneBlank(doC)){
+				if(StringUtils.isNotBlank(doC)){
 					if(i.getChannel_lv1().equals("WA")){
 						waDoc+=Integer.parseInt(doC);
 					}else if(i.getChannel_lv1().equals("ZJ")){
