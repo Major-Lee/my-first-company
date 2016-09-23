@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
+import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.asyn.spring.model.async.user.UserIdentityRepairDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.tag.service.TagGroupHandsetDetailService;
+import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
@@ -22,6 +24,10 @@ public class BatchUserIdentityRepairServiceHandler implements IMsgHandlerService
 	
 	@Resource
 	private TagGroupHandsetDetailService tagGroupHandsetDetailService;
+	
+	@Resource
+	private UserIdentityAuthService userIdentityAuthService;
+	
 	@Override
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
@@ -29,6 +35,16 @@ public class BatchUserIdentityRepairServiceHandler implements IMsgHandlerService
 		String hdmac = userIdentityRepairDTO.getHdmac();
 		String mobileno = userIdentityRepairDTO.getMobileno();
 		
+		//1.修复分组终端详情
+		repairGroupHandsetDetail(hdmac,mobileno);
+		//2. 修复potal身份认证表
+		repairUserPortalAuth(hdmac,mobileno);
+		
+		logger.info(String.format("process message[%s] successful", message));
+	}
+	
+	
+	private void repairGroupHandsetDetail(String hdmac,String mobileno){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("hdmac", hdmac);
 		List<TagGroupHandsetDetail> list = tagGroupHandsetDetailService.findModelByModelCriteria(mc);
@@ -42,8 +58,12 @@ public class BatchUserIdentityRepairServiceHandler implements IMsgHandlerService
 		if(!updateList.isEmpty()){
 			tagGroupHandsetDetailService.updateAll(updateList);
 		}
-		
-		logger.info(String.format("process message[%s] successful", message));
 	}
-
+	
+	private void repairUserPortalAuth(String hdmac,String mobileno){
+		UserIdentityAuth auth = userIdentityAuthService.getById(hdmac);
+		if(auth == null){
+			userIdentityAuthService.generateIdentityAuth(UserIdentityAuth.countrycode, mobileno, hdmac);
+		}
+	}
 }
