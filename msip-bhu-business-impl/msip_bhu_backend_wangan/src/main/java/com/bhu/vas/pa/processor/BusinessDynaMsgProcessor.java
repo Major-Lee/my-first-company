@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.pure.kafka.business.observer.KafkaMsgObserverManager;
 import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
-import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.pa.processor.task.DaemonProcessesStatusTask;
 import com.bhu.vas.pa.service.device.WanganBusinessServiceProcessor;
@@ -77,16 +76,14 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 			@Override
 			public void run() {
 				try{
-					logger.info(String.format("Dyna Received message: topic[%s] partition[%s] key[%s] message[%s] offset[%s] consumerId[%s]",
-							topic, partition,
-							key, message,
-							offset, consumerId));					
 					if(Integer.parseInt(message.substring(0, 8)) != ParserHeader.Transfer_Prefix)
 						return;
 					ParserHeader headers = ParserHeader.builder(message.substring(8, ParserHeader.Cmd_Header_Length), ParserHeader.Transfer_Prefix);
 					if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt() == 7){ //7://3.4.16	WLAN用户上下线消息
 						String payload = message.substring(ParserHeader.Cmd_Header_Length);
 						onProcessor(payload, headers);
+					} else {
+						logger.info("not care, ignore");
 					}
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);

@@ -1,6 +1,5 @@
 package com.bhu.vas.pa.service.device;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,21 +10,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.pure.kafka.client.producer.StringKafkaMessageProducer;
-import com.bhu.vas.api.dto.CmCtxInfo;
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
-import com.bhu.vas.api.dto.charging.ActionBuilder;
 import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
-import com.bhu.vas.api.dto.charging.HandsetAuthorizeAction;
-import com.bhu.vas.api.dto.commdity.internal.useragent.OrderUserAgentDTO;
-import com.bhu.vas.api.dto.handset.HandsetOfflineAction;
 import com.bhu.vas.api.dto.header.ParserHeader;
-import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
-import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserOrderDetailsHashService;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.user.facade.UserIdentityAuthFacadeService;
 import com.bhu.vas.pa.dto.PaHandsetOnlineAction;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.exception.BusinessI18nCodeException;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 
 /**
  * device RPC组件的业务service
@@ -36,9 +30,16 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 public class WanganBusinessServiceProcessor{
 	private final Logger logger = LoggerFactory.getLogger(WanganBusinessServiceProcessor.class);
 
+	private final String KAFKA_QUEUE_NAME = "sjrz";
 	
 	@Resource
 	private StringKafkaMessageProducer paTopicProducer;
+
+	@Resource
+	WifiDeviceService wifiDeviceService;
+
+	@Resource
+	UserIdentityAuthFacadeService userIdentityAuthFacadeService;
 	
 	/**
 	 * 移动设备连接状态请求生成，网安终端上线消息
@@ -49,88 +50,38 @@ public class WanganBusinessServiceProcessor{
 	 * @param payload
 	 */
 	public void doPaProcessor(String payload, ParserHeader parserHeader) {
-		/*
 		try {
-			if(parserHeader != null && OperationCMD.DeviceCmdPassThrough.getNo().equals(parserHeader.getOpt())){
-				logger.info(String.format("mac[%s] paylod[%s]", parserHeader.getMac(),payload));
-			}
+			logger.info("process begin:" + payload);
 			List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage
 			    (payload, HandsetDeviceDTO.class);
 			
 			if(dtos == null || dtos.isEmpty()) return;
-			
-			for (HandsetDeviceDTO dto : dtos) {
-				logger.info("do WangAn Processor" + dto.getAction());
-				dto.setLast_wifi_id(parserHeader.getMac().toLowerCase());
-				dto.setTs(System.currentTimeMillis());
-			}
-			
-			HandsetDeviceDTO fristDto = dtos.get(0);
-			if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
-				logger.info("do WangAn Processor" + fristDto.getAction());
-				
-				PaHandsetOnlineAction onlineAction = PaHandsetOnlineAction.builderHandsetOnlineAction
-				    (fristDto.getMac(), parserHeader.getMac().toLowerCase(), fristDto.getDhcp_name(), fristDto.getIp(),
-					 fristDto.getVapname(), fristDto.getBssid(), fristDto.getRssi(), fristDto.getSnr(),
-					 fristDto.getAuthorized(), fristDto.getEthernet(), System.currentTimeMillis(), fristDto.getSsid());
-				
-				String onlineActionStr = JsonHelper.getJSONString(onlineAction);
-				logger.info("do WangAn Processor device online msg " + onlineActionStr);
-				
-				processHandsetOnline(ctx, onlineActionStr);
-				
-			}
-			else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
-				
-				com.bhu.vas.api.dto.charging.HandsetOfflineAction offlineAction = ActionBuilder.builderHandsetOfflineAction
-				    (fristDto.getMac(), parserHeader.getMac(), fristDto.getUptime(), fristDto.getVapname(), 
-				     fristDto.getBssid(), fristDto.getRssi(), fristDto.getSnr(), 
-					 fristDto.getAuthorized(), fristDto.getEthernet(), Long.parseLong(fristDto.getTx_bytes()),
-					 Long.parseLong(fristDto.getRx_bytes()), System.currentTimeMillis());
-				
-				String offlineActionStr = JsonHelper.getJSONString(offlineAction);
-                handsetDeviceOffline(ctx, offlineActionStr);
-			}
-			else if(HandsetDeviceDTO.Action_Authorize.equals(fristDto.getAction())){
-				logger.info("do WangAn Processor "+ fristDto.getAction());
-				
-				HandsetAuthorizeAction authorizeAction = ActionBuilder.builderHandsetAuthorizeAction
-					(fristDto.getMac(), parserHeader.getMac().toLowerCase(), fristDto.getVapname(), 
-					 fristDto.getAuthorized(), System.currentTimeMillis());
-				
-				String authorizeActionStr = JsonHelper.getJSONString(authorizeAction);
-				logger.info("do WangAn Processor device Authorize msg " + authorizeActionStr);
-				
-				logger.info(String.format("wanganDown " + HandsetDeviceDTO.Action_Authorize +" with topic ctx[%s] mac[%s] ", 
-		                    CmCtxInfo.builderDownQueueName(ctx), ctx, fristDto.getMac()));
-				
-				processHandsetAuthorize(ctx, authorizeActionStr);
-				
-			} 
-			else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
-			    
-				List<PaHandsetOnlineAction> onlineActions = new ArrayList<>();
-				for (HandsetDeviceDTO dto : dtos) {
-					PaHandsetOnlineAction onlineAction = PaHandsetOnlineAction.builderHandsetOnlineAction
-					    (dto.getMac(), parserHeader.getMac().toLowerCase(), dto.getDhcp_name(), dto.getIp(),
-			    		 dto.getVapname(), dto.getBssid(), dto.getRssi(), dto.getSnr(),
-			    		 dto.getAuthorized(), dto.getEthernet(), System.currentTimeMillis(), dto.getSsid());
-					
-					onlineActions.add(onlineAction);
-				}
-				handsetDeviceSync(ctx, parserHeader.getMac(), onlineActions);
-			}
-			else if(HandsetDeviceDTO.Action_Update.equals(fristDto.getAction())){
-				com.bhu.vas.api.dto.charging.HandsetUpdateAction onlineAction = ActionBuilder.builderHandsetUpdateAction
-				    (fristDto.getMac(), parserHeader.getMac(), fristDto.getIp(), fristDto.getDhcp_name(), fristDto.getTs());
-				
-				String updateActionStr = JsonHelper.getJSONString(onlineAction);
-				handsetDeviceUpdate(ctx, updateActionStr);
+
+			String mac = parserHeader.getMac().toLowerCase();
+			HandsetDeviceDTO firstDto = dtos.get(0);
+			logger.debug("action:" + firstDto.getAction());
+			switch(firstDto.getAction()){
+				case HandsetDeviceDTO.Action_Online:
+					processHandsetOnline(mac, firstDto);
+					break;
+				case HandsetDeviceDTO.Action_Offline:
+					processHandsetOffline(mac, firstDto);
+					break;
+				case HandsetDeviceDTO.Action_Authorize:
+					processHandsetAuthorize(mac, firstDto);
+					break;
+				case HandsetDeviceDTO.Action_Update:
+					processHandsetUpdate(mac, firstDto);
+					break;
+				case HandsetDeviceDTO.Action_Sync:
+					processHandsetSync(mac, dtos);
+					break;
 			}
 		} catch (Exception e) {
-			System.out.println("doWangAnProcessor error .....");
+			e.printStackTrace(System.out);
+			logger.error("handle error:" + e.getMessage());
 		}
-		*/
+		logger.info("handle done");
 	}
 	
 	/**
@@ -138,262 +89,159 @@ public class WanganBusinessServiceProcessor{
 	 * @param ctx
 	 * @param message
 	 */
-	private void handsetDeviceUpdate(String ctx, String message) {
-		PaHandsetOnlineAction dto = JsonHelper.getDTO(message, PaHandsetOnlineAction.class);
-		if(dto == null) 
-			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
-		
-		if(StringUtils.isEmpty(dto.getMac()) || StringUtils.isEmpty(ctx))
-			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
-		
-		String memdtoStr = HandsetStoragePaService.getInstance().getAuthOnline(dto.getMac(), dto.getHmac());
+	private void processHandsetUpdate(String mac, HandsetDeviceDTO dto) {
+		String memdtoStr = HandsetStoragePaService.getInstance().getHandset(mac, dto.getMac());
 		if(StringUtils.isEmpty(memdtoStr)){
 			logger.info("cant find it from redis, drop");
 			return;
 		}
 		PaHandsetOnlineAction memdto = JsonHelper.getDTO(memdtoStr, PaHandsetOnlineAction.class);
-		//handset.setAction(HandsetDeviceDTO.Action_Online);
-		memdto.setHname(dto.getHname());
-		memdto.setHip(dto.getHip());
-		memdto.setMac(dto.getMac());
+		if(StringUtils.isNotEmpty(dto.getDhcp_name()))
+			memdto.setHname(dto.getDhcp_name());
+		if(StringUtils.isNotEmpty(dto.getIp()) )
+			memdto.setHip(dto.getIp());
 		
-		message = JsonHelper.getJSONString(dto);
-		HandsetStoragePaService.getInstance().saveAuthOnline(memdto.getMac(), memdto.getHmac(), message);
-		
-		try {
-			paTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
-		} catch (Exception e) {
-			logger.error("processHandsetAuthorize error", e);
-		} 
+		String message = JsonHelper.getJSONString(memdto);
+		HandsetStoragePaService.getInstance().saveHandset(mac, dto.getMac(), message);
+		logger.info("save handset info: " + message);
 	}
 	
     /**
      * 终端上线处理
      * @param message
      */
-	public void processHandsetOnline(String ctx, String message){
-		PaHandsetOnlineAction dto = JsonHelper.getDTO(message, PaHandsetOnlineAction.class);
-		
-		logger.info("do WangAn Processor" + dto.getMac());
-		
+	public void processHandsetOnline(String mac, HandsetDeviceDTO dto){
+		logger.debug(String.format("processHandsetOnline for [%s][%s], vap[%s], ethernet[%s]", mac, dto.getMac(), dto.getVapname(), dto.getEthernet()));
+
+		if(!WifiDeviceSetting.VAPNAME_WLAN3.equals(dto.getVapname()) &&
+				!WifiDeviceSetting.VAPNAME_WLAN13.equals(dto.getVapname())){
+			logger.debug(String.format("handset[%s] is not in a expected vap", dto.getMac()));
+			return;
+		}
+		if(String.valueOf(true).equals(dto.getEthernet())){
+			logger.debug(String.format("handset[%s] come from ethernet", dto.getMac()));
+			return;
+		}
+
 		String memHandsetOnline = HandsetStoragePaService.getInstance()
-		    .getAuthOnline(dto.getMac(), dto.getHmac());
+		    .getHandset(mac, dto.getMac());
 		
 		PaHandsetOnlineAction memdto = null;
 		if(StringUtils.isEmpty(memHandsetOnline)){
-			memdto = dto;
+			memdto = PaHandsetOnlineAction.builderHandsetOnlineAction(mac, dto);
 		} else {
 			memdto = JsonHelper.getDTO(memHandsetOnline, PaHandsetOnlineAction.class);
 			
-			if(StringUtils.isEmpty(memdto.getHname()))
-				memdto.setHname(dto.getHname());
-			
-			if(StringUtils.isEmpty(memdto.getHip()))
-				memdto.setHip(dto.getHip());
-			
-			if(StringUtils.isEmpty(memdto.getRssi()))
+			if(StringUtils.isNotEmpty(dto.getDhcp_name()))
+				memdto.setHname(dto.getDhcp_name());
+			if(StringUtils.isNotEmpty(dto.getIp()) )
+				memdto.setHip(dto.getIp());
+			if(StringUtils.isNotEmpty(dto.getRssi()))
 				memdto.setRssi(dto.getRssi());
+			if(StringUtils.isNotEmpty(dto.getSsid()))
+				memdto.setSsid(dto.getSsid());
+			if(StringUtils.isNotEmpty(dto.getBssid()))
+				memdto.setBssid(dto.getBssid());
 		}
         
-		message = JsonHelper.getJSONString(memdto);
-		HandsetStoragePaService.getInstance().saveAuthOnline(dto.getMac(), dto.getHmac(), message);
-		
-		try {
-			paTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
-		} catch (Exception e) {
-			logger.error("processHandsetAuthorize error", e);
-		} 
-		logger.info("do WangAn store CacheResult"+message);
+		String message = JsonHelper.getJSONString(memdto);
+		HandsetStoragePaService.getInstance().saveHandset(mac, dto.getMac(), message);
+		logger.info("save handset info: " + message);
 	}
+	
+	
+	private void sendAuthorizeMessage(PaHandsetOnlineAction memdto, boolean online){
+		if(StringUtils.isEmpty(memdto.getWan())){
+			WifiDevice entity = wifiDeviceService.getById(memdto.getMac());
+			memdto.setWan(entity.getIp());
+			memdto.setInternet(entity.getWan_ip());
+		}
+		if(StringUtils.isEmpty(memdto.getVipacc())){
+			userIdentityAuthFacadeService.fetchUserMobilenoByHdmac(memdto.getHmac());
+		}		
+
+		if(online){
+			memdto.setAct(ActionMode.HandsetOnline.getPrefix());
+			memdto.setTs(System.currentTimeMillis());
+			memdto.setEnd_ts(null);
+		} else { 
+			memdto.setAct(ActionMode.HandsetOffline.getPrefix());
+			memdto.setEnd_ts(System.currentTimeMillis());
+		}
+		String message = JsonHelper.getJSONString(memdto);
+		HandsetStoragePaService.getInstance().saveHandset(memdto.getMac(), memdto.getHmac(), message);
+		logger.info("save handset info: " + message);
+		sendKafkaMessage(message, memdto.getHmac());
+	}
+	
+	
 	
     /**
      * 终端验证处理
      * @param message
      */
-	private void processHandsetAuthorize(String ctx, String message) {
-		logger.info("do WangAn Processor  Authorize is true" + message);
-		PaHandsetOnlineAction dto = JsonHelper.getDTO(message, PaHandsetOnlineAction.class);
+	private void processHandsetAuthorize(String mac, HandsetDeviceDTO dto) {
+		logger.info("got authorize message: ");
+		String memHandsetOnline = HandsetStoragePaService.getInstance()
+			    .getHandset(mac, dto.getMac());
 
-		String memdtoStr = HandsetStoragePaService.getInstance().getAuthOnline(dto.getMac(), dto.getHmac());
-		if(StringUtils.isEmpty(memdtoStr)){
-			logger.info("cant find it from redis, drop");
-			return;
-		}
-
-		logger.info("do WangAn Authorize handsetOnline" + memdtoStr);
-		PaHandsetOnlineAction memdto = JsonHelper.getDTO(memdtoStr, PaHandsetOnlineAction.class);
-		if(StringUtils.isEmpty(memdto.getHip()) || 
-		   StringUtils.isEmpty(memdto.getHname()) || 
-		   StringUtils.isEmpty(memdto.getRssi())) {
-			
-			if(StringUtils.isEmpty(memdto.getHip()))
-				memdto.setHip(dto.getHip());
-			
-			if(StringUtils.isEmpty(memdto.getHname()))
-				memdto.setHname(dto.getHname());
-			
-			if(StringUtils.isEmpty(memdto.getRssi()))
-				memdto.setRssi(dto.getRssi());
-		}
-		
-		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail
-			(dto.getMac(), dto.getHmac());
-		
-		logger.info("do WangAn authoize newAddFields" + newAddFields);
-		if(StringUtils.isNotEmpty(newAddFields)){
-			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
-			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
-			memdto.setWan(addMsg.getIp());
-			memdto.setInternet(addMsg.getWan_ip());
-			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
-			int vipType = addMsg.getType();
-			switch (vipType) {
-			case 0:
-				memdto.setViptype("WX");
-				break;
-			case 10:
-				memdto.setViptype("DX");
-				memdto.setVipacc(addMsg.getUmac_mobileno());
-				break;
-			default:
-				break;
-			}
-		}
-		
-		String act = "";
-		if(dto.getAuthorized() != null && dto.getAuthorized().equals("true")){
-			act = ActionMode.HandsetOnline.getPrefix();
-			memdto.setAct(act);
-			memdto.setTs(System.currentTimeMillis());
-			
-			message =  JsonHelper.getJSONString(memdto);
-			
-			HandsetStoragePaService.getInstance().saveAuthOnline(dto.getMac(), dto.getHmac(), message);
-			try {
-				paTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
-			} catch (Exception e) {
-				logger.error("processHandsetAuthorize error", e);
-			} 
-			logger.info("do WangAn store CacheResult " + message);
-		} else { 
-			HandsetOfflineAction offdto = new HandsetOfflineAction();
-			act = ActionMode.HandsetOffline.getPrefix();
-			logger.info("handle offline ");
-			offdto.setAct(act);
-			offdto.setAuthorized(memdto.getAuthorized());
-			offdto.setBssid(memdto.getBssid());
-			offdto.setHip(memdto.getHip());
-			offdto.setHmac(memdto.getHmac());
-			offdto.setHname(memdto.getHname());
-			offdto.setInternet(memdto.getInternet());
-			offdto.setMac(memdto.getMac());
-			offdto.setRssi(memdto.getRssi());
-			// 从redis中记录的ts获取上线时间
-			offdto.setTs(memdto.getTs()); 
-			offdto.setVapname(memdto.getVapname());
-			offdto.setVipacc(memdto.getVipacc());
-			offdto.setViptype(memdto.getViptype());
-			offdto.setWan(memdto.getWan());
-			offdto.setEnd_ts(System.currentTimeMillis());
-			message =  JsonHelper.getJSONString(offdto);
-		}
+		PaHandsetOnlineAction memdto = JsonHelper.getDTO(memHandsetOnline, PaHandsetOnlineAction.class);
+		sendAuthorizeMessage(memdto, dto.getAuthorized().equals("true"));
 	}
     
+	
+	private void sendKafkaMessage(String message, String hmac){
+		if(StringUtils.isNotEmpty(message)){
+			try{
+				paTopicProducer.send(KAFKA_QUEUE_NAME, 0, hmac, message);
+				logger.info("kafka sent:" + message);
+			}catch(Exception e){
+				e.printStackTrace(System.out);
+				logger.error("failed to send msg to kafka:" + e.getMessage());
+			}
+		}
+	}
 	/**
 	 *
-	 * 访客网络移动设备下线
-	 * 1:更新移动设备的online状态为false
-	 *
-	 *
 	 * 移动设备下线
-	 * 1:更新移动设备的online状态为false
-	 * 2:wifi设备对应handset在线列表redis移除
-	 * 3:统计增量 移动设备的daily访问时长增量 (backend)
-	 * @param ctx
-	 * @param dto
-	 * modified by Edmond Lee for handset storage
 	 */
-	void handsetDeviceOffline(String ctx, String message){
-		if (StringUtils.isEmpty(message)) {
-			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+	void processHandsetOffline(String mac, HandsetDeviceDTO dto){
+		logger.debug(String.format("processHandsetOnline for [%s][%s], vap[%s], ethernet[%s]", mac, dto.getMac(), dto.getVapname(), dto.getEthernet()));
+
+		if(!WifiDeviceSetting.VAPNAME_WLAN3.equals(dto.getVapname()) &&
+				!WifiDeviceSetting.VAPNAME_WLAN13.equals(dto.getVapname())){
+			logger.debug(String.format("handset[%s] is not in a expected vap", dto.getMac()));
+			return;
 		}
-        
-		PaHandsetOnlineAction dto = JsonHelper.getDTO(message, PaHandsetOnlineAction.class);
-		if (dto == null) {
-			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+		if(String.valueOf(true).equals(dto.getEthernet())){
+			logger.debug(String.format("handset[%s] come from ethernet", dto.getMac()));
+			return;
 		}
-		
-		//1:更新移动设备的online状态为false
-		String memHandsetOnline = HandsetStoragePaService.getInstance()
-			    .getAuthOnline(dto.getMac(), dto.getHmac());
-		if(StringUtils.isNotEmpty(memHandsetOnline)) {
-			PaHandsetOnlineAction memdto = JsonHelper.getDTO(memHandsetOnline, PaHandsetOnlineAction.class);
-			dto.setVapname(memdto.getVapname());
-			if (memdto.getHname() != null) {
-				dto.setHname(memdto.getHname());
-			}
-			dto.setHip(memdto.getHip() == null ? "0.0.0.0" : memdto.getHip());
-		}
-        
-		message = JsonHelper.getJSONString(dto);
-		HandsetStoragePaService.getInstance().saveAuthOnline(dto.getMac(), dto.getHmac(), message);
-		
-		try {
-			paTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), dto.getHmac(), message);
-		} catch (Exception e) {
-			logger.error("handsetDeviceOffline error", e);
-		} 
 	}
 	
 	
 	/**
 	 * 移动设备连接状态sync
-	 * 1:清除wifi设备对应handset在线列表redis 并重新写入 (backend)
-	 * 2:移动设备基础信息更新 (backend)
-	 * 3:统计增量 移动设备的daily新增用户或活跃用户增量(backend)
-	 * 4:统计增量 移动设备的daily启动次数增量(backend)
-	 * 	a:如果移动设备目前不在线或者不存在移动设备数据，则执行设备上线相同操作
-	 * 		1:移动设备连接wifi设备的接入记录(非流水) (backend)
-	 * 		2:移动设备连接wifi设备的流水log (backend)
-	 * 		3:wifi设备接入移动设备的接入数量 (backend)
-	 * 5. 终端
-	 * @param ctx
-	 * @param dto
 	 */
-	public void handsetDeviceSync(String ctx, String mac, List<PaHandsetOnlineAction> onlineActions){
-		if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(ctx)) {
-			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY);
+	public void processHandsetSync(String mac, List<HandsetDeviceDTO> dtos){
+		for(HandsetDeviceDTO dto:dtos){
+			//太复杂的逻辑不考虑，只做最常见的情况处理
+			if(!WifiDeviceSetting.VAPNAME_WLAN3.equals(dto.getVapname()) &&
+					!WifiDeviceSetting.VAPNAME_WLAN13.equals(dto.getVapname()))
+				continue;
+			if(String.valueOf(true).equals(dto.getEthernet()))
+				continue;
+			if(dto.getAuthorized() == null || !dto.getAuthorized().equals("true"))
+				continue;
+
+			String memHandsetOnline = HandsetStoragePaService.getInstance()
+				    .getHandset(mac, dto.getMac());
+			if(StringUtils.isEmpty(memHandsetOnline))
+				continue;
+			PaHandsetOnlineAction memdto = JsonHelper.getDTO(memHandsetOnline, PaHandsetOnlineAction.class);
+			if(memdto.getEnd_ts() == null){ //记录的状态是认证离线，那么可以产生一次认证上线
+				sendAuthorizeMessage(memdto, true);
+			}
 		}
-			List<String> hmacs = new ArrayList<String>();
-			for (PaHandsetOnlineAction onlineAction : onlineActions) {
-				hmacs.add(onlineAction.getHmac());
-			}
-		
-		    List<PaHandsetOnlineAction> memOnlineActions = HandsetStoragePaService.getInstance().gets(mac, hmacs);
-			for(PaHandsetOnlineAction onlineAction : onlineActions){
-				if(onlineAction != null){
-					for (PaHandsetOnlineAction memOnlineAction : memOnlineActions) {
-						if (onlineAction.getHmac().equalsIgnoreCase(memOnlineAction.getHmac())) {
-							onlineAction.setHname(memOnlineAction.getHname());
-							onlineAction.setHip(memOnlineAction.getHip() == null || memOnlineAction.getHip().isEmpty() ? "0.0.0.0" : memOnlineAction.getHip());
-							//onlineAction.set(handset.getData_tx_rate() == null || handset.getData_tx_rate().isEmpty() ? 0 + "" : handset.getData_tx_rate());
-						}
-					}
-				}
-			}
-			
-			List<PaHandsetOnlineAction> paHandsetOnlineActions = JsonHelper.getDTOList
-				(JsonHelper.getJSONString(onlineActions), PaHandsetOnlineAction.class);
-			
-			HandsetStoragePaService.getInstance().handsetsComming(paHandsetOnlineActions);
-			
-			for (PaHandsetOnlineAction onlineAction : paHandsetOnlineActions) {
-				try {
-					paTopicProducer.send(CmCtxInfo.builderUpQueueName(ctx), onlineAction.getHmac(), 
-							                        JsonHelper.getJSONString(onlineAction));
-				} catch (Exception e) {
-					logger.error("handsetDeviceOffline error", e);
-				}
-			}
 	}
 }

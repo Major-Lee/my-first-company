@@ -13,6 +13,6 @@
 
 	<!-- SpringContext Holder-->
 	<bean id="paTopicProducer" class="com.bhu.pure.kafka.client.producer.StringKafkaMessageProducer" lazy-init="false" >
-		<property name="producerId" value="pa"/>
+		<property name="producerId" value="sjrz"/>
 	</bean>
 </beans>

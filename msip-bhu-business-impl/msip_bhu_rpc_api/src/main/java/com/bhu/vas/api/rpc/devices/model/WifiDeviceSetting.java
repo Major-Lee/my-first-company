@@ -13,6 +13,8 @@ public class WifiDeviceSetting extends SimpleJsonExtStringModel<WifiDeviceSettin
 	public static final String VAPNAME_WLAN10 = "wlan10";
 	public static final String VAPNAME_WLAN0 = "wlan0";
 	
+	public static final String VAPNAME_WLAN3 = "wlan3";
+	public static final String VAPNAME_WLAN13 = "wlan13";
 
         //设置是否从设备上查询过配置(用户识别数据库中的记录是否系统生成，接着用户忽略设备的的首次恢复出厂)
         private boolean query_from_device = false;

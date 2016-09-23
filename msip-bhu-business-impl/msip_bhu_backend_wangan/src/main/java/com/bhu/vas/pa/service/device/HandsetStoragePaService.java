@@ -48,7 +48,7 @@ public class HandsetStoragePaService extends AbstractRelationStringCache {
 		return sb.toString();
 	}
 	
-	public  void saveAuthOnline(String mac, String hmac, String objstr){
+	public  void saveHandset(String mac, String hmac, String objstr){
 		this.set(generateKey(mac, hmac), objstr);
 	}
     
@@ -105,32 +105,17 @@ public class HandsetStoragePaService extends AbstractRelationStringCache {
 		return result;
 	}
 	
-//	private static String generateKey(String macJoin){
-//		int hashvalue = HashAlgorithmsHelper.additiveHash(macJoin, hasPrimeValue);
-//		StringBuilder sb = new StringBuilder(BusinessKeyDefine.HandsetPresent.EntityPresentPrefixKey);
-//		sb.append(String.format("%05d", hashvalue));
-//		return sb.toString();
-//	}
 	
-	public String getAuthOnline(String mac, String hmac){
+	public String getHandset(String mac, String hmac){
 		String str = this.get(generateKey(mac, hmac));
 		this.expire(generateKey(mac, hmac), expire_time);
 		return str;
 	}
 	
-	public void removeAuthOnline(String mac, String hmac){
+	public void removeHandset(String mac, String hmac){
 		this.del(generateKey(mac, hmac));
 	}
     	
-	private static String join(String dmac,String hmac){
-		String macJoin = StringHelper.join(StringHelper.MINUS_STRING_GAP, new String[]{dmac,hmac});
-		return macJoin;
-	}
-	
-/*	public void handsetLeave(String mac){
-		this.hdel(generateKey(wifiId),wifiId);
-	}*/
-	
 	
 	@Override
 	public String getRedisKey() {

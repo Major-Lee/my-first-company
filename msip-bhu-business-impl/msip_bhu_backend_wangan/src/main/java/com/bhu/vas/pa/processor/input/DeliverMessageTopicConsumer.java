@@ -15,7 +15,7 @@ import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
 public class DeliverMessageTopicConsumer extends StringKafkaMessageConsumer{
 	private final Logger logger = LoggerFactory.getLogger(DeliverMessageTopicConsumer.class);
-	private final String LoggerFormatTemplate = "Deliver Recv: topic[%s] partition[%s] key[%s] value[%s] offset[%s] consumerId[%s]";
+	private final String LoggerFormatTemplate = "Deliver Recv: topic[%s] partition[%s] key[%s] offset[%s] consumerId[%s] value[%s] ";
 	public void init(){
 		ScheduledExecutorService delay_exec = (ScheduledExecutorService) ExecObserverManager.
 				buildNewScheduledThreadPool(this.getClass(), "DeliverMessageTopicConsumer Delay load", 1);
@@ -31,8 +31,8 @@ public class DeliverMessageTopicConsumer extends StringKafkaMessageConsumer{
 							logger.info(String
 									.format(LoggerFormatTemplate,
 											record.topic(), record.partition(),
-											record.key(), record.value(),
-											record.offset(), consumerId));
+											record.key(), 
+											record.offset(), consumerId, record.value()));
 							
 							KafkaMsgObserverManager.DynaMsgCommingObserver.notifyMsgComming(record.topic(), record.partition(), record.key(), record.value(), record.offset(), consumerId);
 						}
