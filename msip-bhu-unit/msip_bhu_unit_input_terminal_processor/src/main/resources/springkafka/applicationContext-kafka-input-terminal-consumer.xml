@@ -16,4 +16,8 @@
 		<property name="consumerId" value="deliver"/>
 	</bean>
 
+	<bean id="cmNotifyTopicConsumer" 		class="com.bhu.vas.processor.input.CMNotifyTopicConsumer" lazy-init="false" init-method="init">
+		<property name="consumerId" value="cm"/>
+	</bean>
+
 </beans>
