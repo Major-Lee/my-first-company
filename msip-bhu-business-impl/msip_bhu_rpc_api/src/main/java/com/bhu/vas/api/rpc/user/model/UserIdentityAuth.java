@@ -5,6 +5,8 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
 public class UserIdentityAuth extends BaseStringModel {
+	
+	public static final int countrycode = 86;
 	private String mobileno;
 	private String created_at;
 	
