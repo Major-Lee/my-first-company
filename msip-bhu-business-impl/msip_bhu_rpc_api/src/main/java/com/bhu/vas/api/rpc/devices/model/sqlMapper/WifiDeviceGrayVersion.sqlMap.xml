@@ -10,6 +10,7 @@
         <result property="devices" 	column="devices"/>
         <result property="d_fwid" 	column="d_fwid"/>
         <result property="d_omid" 	column="d_omid"/>
+        <result property="fw_time" 	column="fw_time"/>
         <result property="created_at" column="created_at"/>
         <result property="updated_at" column="updated_at"/>
     </resultMap>
@@ -26,6 +27,7 @@
 	    	devices,
 	    	d_fwid,
 	    	d_omid,
+	    	fw_time,
 	    	created_at,
 	    	updated_at
 
@@ -36,6 +38,7 @@
 	    	devices,
 	    	d_fwid,
 	    	d_omid,
+	    	fw_time,
 	    	created_at,
 	    	updated_at
 
@@ -48,6 +51,7 @@
 		#{devices},
 		#{d_fwid},
 		#{d_omid},
+		#{fw_time},
 		#{created_at},
 		#{updated_at}
 	</sql>
@@ -55,6 +59,7 @@
     	devices = #{devices},
 		d_fwid = #{d_fwid},
 		d_omid = #{d_omid},
+		fw_time = #{fw_time},
 		created_at = #{created_at},
 		updated_at = #{updated_at}
 	</sql>

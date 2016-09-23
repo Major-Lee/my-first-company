@@ -1,6 +1,7 @@
 package com.bhu.vas.business.ds.device.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -256,6 +257,7 @@ public class WifiDeviceGrayFacadeService {
             	wifiDeviceVersionFWService.update(dvfw);
     		}
         	dgv.setD_fwid(fwid);
+        	dgv.setFw_time(new Date());
     	}
     	
     	if(!dgv.getD_omid().equals(omid)){
@@ -519,7 +521,7 @@ public class WifiDeviceGrayFacadeService {
 								grayVersion.getD_fwid(),versionfw.getUpgrade_url());
 						resultDto.setUpgrade_slaver_urls(versionfw.getUpgrade_slaver_urls());
 						resultDto.setCurrentDVB(d_version);
-						resultDto.setCurrentGrayPublished_at(grayVersion.getUpdated_at());//versionfw.getCreated_at());
+						resultDto.setCurrentGrayPublished_at((grayVersion.getFw_time() == null)?versionfw.getCreated_at():grayVersion.getFw_time());//versionfw.getCreated_at());
 						resultDto.setMinid(versionfw.getMinid());
 						System.out.println("FW upgradeDecideAction outPutSuccessfully:"+resultDto);
 					}else{

@@ -25,6 +25,8 @@ public class WifiDeviceGrayVersion extends BasePKModel<WifiDeviceGrayVersionPK>{
 	private String d_fwid = StringHelper.MINUS_STRING_GAP;
 	//增值模块 版本id
 	private String d_omid = StringHelper.MINUS_STRING_GAP;
+	//从界面上给灰度指定版本的时间
+	private Date fw_time;
 	private Date created_at;
 	
 	@Override
@@ -35,7 +37,20 @@ public class WifiDeviceGrayVersion extends BasePKModel<WifiDeviceGrayVersionPK>{
 	}
 
 	
-    public String getDuts() {
+	
+    public Date getFw_time() {
+		return fw_time;
+	}
+
+
+
+	public void setFw_time(Date fw_time) {
+		this.fw_time = fw_time;
+	}
+
+
+
+	public String getDuts() {
     	if (this.getId() == null) {
             return null;
         }
