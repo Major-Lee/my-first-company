@@ -51,7 +51,9 @@ public class PayHttpService {
     
     
     //重定向地址
-    public static String PAY_HOST_URL = "http://mpays.bhuwifi.com//msip_bhu_payment_rest/payment";
+    public static String PAY_HOST_URL = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment";
+    //重定向地址
+    public static String MIDAS_REQURST_URL = "http://mpays.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
@@ -86,7 +88,7 @@ public class PayHttpService {
     //打赏失败web回调地址
     //public static String WEB_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
     public static String WEB_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
-  //public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
+      //public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
     //public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/unsuccess";
     //充值失败web回调地址
   //public static String PREPAID_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
@@ -95,6 +97,8 @@ public class PayHttpService {
     //证书地址
     public static String WITHDRAW_URL = "/home";
     
+   // public static String PRUE_LOGO_URL = "E:"+File.separator+"logo_big.png";
+   // public static String QR_CODE_URL = "E:"+File.separator+"picture.png";
     public static String PRUE_LOGO_URL = "/home/payment/qrcode"+File.separator+"logo_big.png";
     public static String QR_CODE_URL = "/home/payment/qrcode"+File.separator+"picture.png";
 
@@ -141,6 +145,9 @@ public class PayHttpService {
     String env;
 
 
+    @Value("#{p['pay.OutTime']}")
+    int ot;
+    
     String accessToken;
     String ticket;
     
@@ -715,6 +722,14 @@ public class PayHttpService {
 	public void setAppDSMchKey(String appDSMchKey) {
 		this.appDSMchKey = appDSMchKey;
 	}
+	
+	public int getOt() {
+		return ot;
+	}
+
+	public void setOt(int ot) {
+		this.ot = ot;
+	}
 
 	public String getEnv() {
 		return env;
@@ -723,8 +738,9 @@ public class PayHttpService {
 	public void setEnv(String env) {
 		this.env = env;
 	}
-
 	
+	
+
 	public UnifiedOrderResponse unifiedorder(String out_trade_no,String commodityName, String totalPrice,String localIp,String payCallUrl,String openId ) {
 		initPayHttpService();
 		if("0:0:0:0:0:0:0:1".equals(localIp)){
@@ -742,6 +758,17 @@ public class PayHttpService {
         parameters.put("nonce_str", getNonceStr());
         /** 商品名称 */
         parameters.put("body", commodityName);
+//        GoodDetailEntity goods = new GoodDetailEntity();
+//        goods.setGoods_id(out_trade_no);
+//        goods.setQuantity(1);
+//        goods.setGoods_name(commodityName);
+//        goods.setBody(commodityName+"-"+out_trade_no);
+//        List<GoodDetailEntity> detailArray = new ArrayList<GoodDetailEntity>(); 
+//        detailArray.add(goods);
+//        String detail = JsonHelper.getJSONString(detailArray);
+//        System.out.println(detail);
+//        /** 商品详情 */
+//        parameters.put("detail", detail);
 
         /** 订单号 */
         parameters.put("out_trade_no", out_trade_no);

@@ -7,9 +7,12 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import com.bhu.vas.api.rpc.payment.dto.PaymentErrorCountDTO;
+import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
 import com.bhu.vas.business.ds.payment.service.PaymentReckoningService;
 import com.bhu.vas.business.ds.payment.service.PaymentRecordService;
+import com.bhu.vas.business.payment.help.BusinessHelper;
 import com.smartwork.msip.localunit.BaseTest;
+import com.smartwork.msip.localunit.RandomPicker;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PaymentReckoningServiceTest extends BaseTest {
@@ -22,7 +25,7 @@ public class PaymentReckoningServiceTest extends BaseTest {
 			"j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
 			"w", "x", "y", "z" };
 
-	/*@Test
+	@Test
 	public void test001BatchCreateOrder() {
 		for (int i = 1; i < 2; i++) {
 			PaymentReckoning order = new PaymentReckoning();
@@ -33,12 +36,12 @@ public class PaymentReckoningServiceTest extends BaseTest {
 			order.setPayment_type("PcAlipay");
 			order.setOpenid("BHUUSERMAC000000000000");
 			order.setSubject("打赏");
-			order.setExter_invoke_ip("213.42.3.24");
+			order.setExter_invoke_ip("101.19.137.15");
 			order.setAppid("1000");
 			order.setToken(RandomPicker.randString(letters, 10));
 			paymentReckoningService.insert(order);
 		}
-	}*/
+	}
 	
 //	@Test
 //	public void test002update() {
