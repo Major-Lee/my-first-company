@@ -745,9 +745,10 @@ public class TagFacadeRpcSerivce {
 				Iterator<TagGroupHandsetDetailVTO> iter = vtos.iterator();
 				while (iter.hasNext()) {
 					TagGroupHandsetDetailVTO rv = iter.next();
-					if (rv.isFilter(match,count,mobileno))
+					if (rv.isFilter(match,count,mobileno)){
 						filterCount++;
 						iter.remove();
+					}
 				}
 			}
 			if(mobileno ==null || mobileno.isEmpty()){
