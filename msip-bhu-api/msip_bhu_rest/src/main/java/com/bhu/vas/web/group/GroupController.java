@@ -425,8 +425,8 @@ public class GroupController extends BaseController{
         	    @RequestParam(required = false, defaultValue = ">") String match,
         	    @RequestParam(required = false, defaultValue = "0") int count,
                 @RequestParam(required = true) String context,
-                @RequestParam(required = false) long startTime,
-                @RequestParam(required = false) long endTime) {
+                @RequestParam(required = false) Long startTime,
+                @RequestParam(required = false) Long endTime) {
         	RpcResponseDTO<TagGroupSendSortMessageVTO> rpcResult = tagRpcService.generateGroupSendSMSTask(uid ,gid ,match,count,context,startTime,endTime);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

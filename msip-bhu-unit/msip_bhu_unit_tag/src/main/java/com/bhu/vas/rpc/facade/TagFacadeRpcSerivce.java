@@ -751,11 +751,11 @@ public class TagFacadeRpcSerivce {
 		}
 		
 		GroupHandsetDetailVTO resultVto = new GroupHandsetDetailVTO();
-		resultVto.setTailPage(new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize,allCount.get("userCount") , vtos));
-		resultVto.setUserTotal(allCount.get("userCount"));
-		resultVto.setConnTotal(allCount.get("userSum"));
+		resultVto.setTailPage(new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize,allCount.get("userCount") == null ? 0 : allCount.get("userCount"), vtos));
+		resultVto.setUserTotal(allCount.get("userCount") == null ? 0 : allCount.get("userCount"));
+		resultVto.setConnTotal(allCount.get("userSum") == null ? 0 : allCount.get("userSum"));
 		Map<String, Integer> filterCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno,StringHelper.TRUE);
-		resultVto.setAuthTotal(filterCount.get("userCount"));
+		resultVto.setAuthTotal(filterCount.get("userCount") == null ? 0 : filterCount.get("userCount"));
 		
 		return resultVto;
 	}
