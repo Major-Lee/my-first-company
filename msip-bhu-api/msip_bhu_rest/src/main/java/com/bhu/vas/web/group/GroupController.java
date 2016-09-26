@@ -18,6 +18,7 @@ import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
@@ -285,7 +286,7 @@ public class GroupController extends BaseController{
     	    @RequestParam(required = false) String mobileno,
     	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
-    	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> rpcResult = tagRpcService.groupUsersDetail(uid,gid, beginTime, endTime,match,count,mobileno, pageNo, pageSize);
+    	RpcResponseDTO<GroupHandsetDetailVTO> rpcResult = tagRpcService.groupUsersDetail(uid,gid, beginTime, endTime,match,count,mobileno, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

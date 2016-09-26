@@ -83,7 +83,7 @@ public class TagGroupHandsetDetailService
 								+ ".selectHandsets", map);
 	}
 
-	public Integer countHandsets(int gid,
+	public Map<String, Integer> countHandsets(int gid,
 			String beginTime, String endTime, String match,int count ,String mobileno) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("gid", gid);
@@ -100,7 +100,7 @@ public class TagGroupHandsetDetailService
 				.selectOne(
 						TagGroupHandsetDetail.class.getName()
 								+ ".countHandsets", map);
-		return resultMap.get("userCount");
+		return resultMap;
 	}
 	
 	public int countGroupUsers(int gid, String beginTime, String endTime) {
@@ -137,18 +137,5 @@ public class TagGroupHandsetDetailService
 				.selectList(
 						TagGroupHandsetDetail.class.getName()
 								+ ".selectGroupUsersRank", map);
-	}
-	
-	private String transforMatch(String match){
-		String sqlmatch = null;
-		
-		if(match.equals(TagGroupHandsetDetailVTO.greater) || match == null || match.isEmpty()){
-			sqlmatch = "&gt;";
-		}else if(match.equals(TagGroupHandsetDetailVTO.less)){
-			sqlmatch = "&lt;";
-		}else if(match.equals(TagGroupHandsetDetailVTO.equal)){
-			sqlmatch = "=";
-		}
-		return sqlmatch;
 	}
 }

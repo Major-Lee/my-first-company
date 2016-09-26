@@ -7,6 +7,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
@@ -280,7 +281,7 @@ public class TagRpcService implements ITagRpcService {
 	}
 	
 	@Override
-	public RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(int uid ,int gid, Long beginTime,Long endTime,String match,int count,String mobileno,int pageNo,int pageSize) {
+	public RpcResponseDTO<GroupHandsetDetailVTO> groupUsersDetail(int uid ,int gid, Long beginTime,Long endTime,String match,int count,String mobileno,int pageNo,int pageSize) {
 		logger.info(String.format("groupUsersDetail uid[%s] gid[%s] beginTime[%s] endTime[%s]  match[%s] count[%s] mobileno[%s] pageNo[%s] pageSize[%s]",uid, gid, beginTime,endTime,match,count,mobileno,pageNo,pageSize));
 		try{
 			String beginTimeStr = null;
@@ -289,7 +290,7 @@ public class TagRpcService implements ITagRpcService {
 				beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
 				endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
 			}
-			TailPage<TagGroupHandsetDetailVTO> result = tagFacadeRpcSerivce.groupUsersDetail(uid,gid, beginTimeStr, endTimeStr, match,count,mobileno, pageNo, pageSize);
+			GroupHandsetDetailVTO result = tagFacadeRpcSerivce.groupUsersDetail(uid,gid, beginTimeStr, endTimeStr, match,count,mobileno, pageNo, pageSize);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

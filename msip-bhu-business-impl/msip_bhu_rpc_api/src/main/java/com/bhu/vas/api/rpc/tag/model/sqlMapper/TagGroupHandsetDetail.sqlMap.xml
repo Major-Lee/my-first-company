@@ -33,7 +33,8 @@
    </resultMap>
    
    <resultMap id="countHandsets" type="hashmap">
-		<result property="userCount" column="count(t.hdmac)" javaType = "java.lang.Integer"/>		
+		<result property="userCount" column="count(t.hdmac)" javaType = "java.lang.Integer"/>	
+		<result property="userSum" column="sum(t.c)" javaType = "java.lang.Integer"/>	
    </resultMap>
    
   	<sql id="modelTableName">
@@ -64,8 +65,19 @@
 	    	MIN(timestr),
 	    	MAX(timestr)
 	    ]]>
-	</sql>  
+	</sql> 
 	
+	<sql id="modelUserCount">
+	    <![CDATA[
+	    	hdmac,
+	    	gid,
+	    	mobileno,
+	    	count(hdmac) as c,
+	    	MIN(timestr),
+	    	MAX(timestr)
+	    ]]>
+	</sql>  
+ 	
 	<sql id="modelInsertValues">
 			#{id},
 	    	#{hdmac},
@@ -222,7 +234,7 @@
 	</select>
 	
 	<select id="countHandsets" resultMap="countHandsets" parameterType="map">
-	    select count(t.hdmac) from (SELECT <include refid="modelUserDetail" /> FROM <include refid="modelTableName" /> 
+	    select count(t.hdmac),sum(t.c) from (SELECT <include refid="modelUserCount" /> FROM <include refid="modelTableName" /> 
 	    <where>
 			gid = #{gid}
 			<if test="beginTime !=null and endTime != null">
