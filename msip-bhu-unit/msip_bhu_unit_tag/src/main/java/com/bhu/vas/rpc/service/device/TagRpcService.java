@@ -280,8 +280,8 @@ public class TagRpcService implements ITagRpcService {
 	}
 	
 	@Override
-	public RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(int uid ,int gid, Long beginTime,Long endTime,boolean filter,String match,int count,String mobileno,int pageNo,int pageSize) {
-		logger.info(String.format("groupUsersDetail uid[%s] gid[%s] beginTime[%s] endTime[%s] filter[%s] match[%s] count[%s] mobileno[%s] pageNo[%s] pageSize[%s]",uid, gid, beginTime,endTime,filter,match,count,mobileno,pageNo,pageSize));
+	public RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(int uid ,int gid, Long beginTime,Long endTime,String match,int count,String mobileno,int pageNo,int pageSize) {
+		logger.info(String.format("groupUsersDetail uid[%s] gid[%s] beginTime[%s] endTime[%s]  match[%s] count[%s] mobileno[%s] pageNo[%s] pageSize[%s]",uid, gid, beginTime,endTime,match,count,mobileno,pageNo,pageSize));
 		try{
 			String beginTimeStr = null;
 			String endTimeStr = null;
@@ -289,7 +289,7 @@ public class TagRpcService implements ITagRpcService {
 				beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
 				endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
 			}
-			TailPage<TagGroupHandsetDetailVTO> result = tagFacadeRpcSerivce.groupUsersDetail(uid,gid, beginTimeStr, endTimeStr, filter, match,count,mobileno, pageNo, pageSize);
+			TailPage<TagGroupHandsetDetailVTO> result = tagFacadeRpcSerivce.groupUsersDetail(uid,gid, beginTimeStr, endTimeStr, match,count,mobileno, pageNo, pageSize);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

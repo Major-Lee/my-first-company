@@ -724,7 +724,7 @@ public class TagFacadeRpcSerivce {
 	 * @param endTime
 	 * @return
 	 */
-	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int uid,int gid,String beginTime,String endTime,boolean filter,String match,int count,String mobileno,int pageNo,int pageSize){
+	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int uid,int gid,String beginTime,String endTime,String match,int count,String mobileno,int pageNo,int pageSize){
 		
 		boolean isGroup = tagGroupService.checkGroup(gid, uid);
 		if(!isGroup){
@@ -732,25 +732,13 @@ public class TagFacadeRpcSerivce {
 		}
 		
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsets(gid, beginTime, endTime,pageNo,pageSize,match,count,mobileno);
-		int allCount = tagGroupHandsetDetailService.countGroupUsers(gid, beginTime, endTime);
-		int filterCount = 0;
+		int allCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno);
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
 		}
 		
 		{   
-			// 根据连接次数和手机号过滤
-//			if (filter) {
-//				Iterator<TagGroupHandsetDetailVTO> iter = vtos.iterator();
-//				while (iter.hasNext()) {
-//					TagGroupHandsetDetailVTO rv = iter.next();
-//					if (rv.isFilter(match,count,mobileno)){
-//						filterCount++;
-//						iter.remove();
-//					}
-//				}
-//			}
 			if(mobileno ==null || mobileno.isEmpty()){
 				for(TagGroupHandsetDetailVTO vto : vtos){
 					if(vto.getMobileno() != null){
