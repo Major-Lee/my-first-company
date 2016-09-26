@@ -53,7 +53,7 @@ public class PayHttpService {
     //重定向地址
     public static String PAY_HOST_URL = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
-    public static String MIDAS_REQURST_URL = "http://mpays.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment";
+    public static String MIDAS_REQURST_URL = "http://mpays.bhuwifi.com/msip_bhu_payment_rest/payment/getMidas";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址
@@ -97,8 +97,7 @@ public class PayHttpService {
     //证书地址
     public static String WITHDRAW_URL = "/home";
     
-   // public static String PRUE_LOGO_URL = "E:"+File.separator+"logo_big.png";
-   // public static String QR_CODE_URL = "E:"+File.separator+"picture.png";
+
     public static String PRUE_LOGO_URL = "/home/payment/qrcode"+File.separator+"logo_big.png";
     public static String QR_CODE_URL = "/home/payment/qrcode"+File.separator+"picture.png";
 
@@ -145,15 +144,20 @@ public class PayHttpService {
     String env;
 
 
-    @Value("#{p['pay.OutTime']}")
-    int ot;
+    @Value("#{p['pay.outTime']}")
+    int outTime;
     
     String accessToken;
     String ticket;
     
     public void initPayHttpService(){
     	String env = this.env;
-    	if(env.equalsIgnoreCase("test")){
+    	 if(env.equalsIgnoreCase("inner")){ //判断是内网环境
+    		this.appId = this.testAppId;
+    		this.appSecret = this.testAppSecret;
+    		this.mchId = this.testMchId;
+    		this.mchKey = this.testMchKey;
+    	}else if(env.equalsIgnoreCase("test")){//判断是测试环境
     		this.appId = this.testAppId;
     		this.appSecret = this.testAppSecret;
     		this.mchId = this.testMchId;
@@ -724,11 +728,11 @@ public class PayHttpService {
 	}
 	
 	public int getOt() {
-		return ot;
+		return outTime;
 	}
 
 	public void setOt(int ot) {
-		this.ot = ot;
+		this.outTime = ot;
 	}
 
 	public String getEnv() {

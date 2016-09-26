@@ -607,30 +607,37 @@ public class PaymentController extends BaseController{
         				logger.info(goods_no+"WAP微信他人代付耗时：" + WAP_WEIXIN_NATIVE_end + "毫秒");
     				}else{
     					long get_agentMerchant_begin = System.currentTimeMillis();
-    					//String agentMerchant = payLogicService.findWapWeixinMerchantServiceByCondition(total_fee);
-    					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByName();
+    					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByCondition(total_fee);
+    					//String agentMerchant = payLogicService.findWapWeixinMerchantServiceByName();
     					long get_agentMerchant_end = System.currentTimeMillis() -  get_agentMerchant_begin; 
         				logger.info(goods_no+"查询WAP微信获取支付渠道耗时：" + get_agentMerchant_end + "毫秒");
-        				if(agentMerchant.equals("Midas")){
+        				
+        				/*******2016-09-26*******start****判断是内网环境WapWeixin 只用现在支付**/
+        				String curEnv = payHttpService.getEnv().toUpperCase();
+        				if(curEnv.equals("INNER") && agentMerchant.equals("Midas")){
+        					agentMerchant = "Now";
+        				}
+        				/*******2016-09-26****end*********/
+        				
+        				if(agentMerchant.equals("Now")){
+        					long WAP_WEIXIN_Now_begin = System.currentTimeMillis();
+        					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					long WAP_WEIXIN_Now_end = System.currentTimeMillis() - WAP_WEIXIN_Now_begin; 
+            				logger.info(goods_no+"Wap微信现在支付获取支付url耗时：" + WAP_WEIXIN_Now_end + "毫秒");
+        				}else if(agentMerchant.equals("Midas")){
         					long WAP_WEIXIN_MIDSA_begin = System.currentTimeMillis();
-        					String par = "secret="+secret+"&appid="+appid+"&payment_type="+payment_type+"&goods_no="+goods_no+
-        							"&total_fee="+total_fee+"&umac="+umac+"&version="+version;
-        					String jsonStr = PostRequestUtil.sendPost(PayHttpService.MIDAS_REQURST_URL, par);
-        					SpringMVCHelper.renderJson(response, jsonStr);
+//        					String par = "secret="+secret+"&appid="+appid+"&payment_type="+payment_type+"&goods_no="+goods_no+
+//        							"&total_fee="+total_fee+"&umac="+umac+"&version="+version;
+//        					String jsonStr = PostRequestUtil.sendPost(PayHttpService.MIDAS_REQURST_URL, par);
+        					result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         					long WAP_WEIXIN_MIDSA_end = System.currentTimeMillis() - WAP_WEIXIN_MIDSA_begin; 
-            				logger.info(goods_no+"Wap微信米大师支付获取支付url耗时：" + WAP_WEIXIN_MIDSA_end + "毫秒");
-        					return;
-        					//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					logger.info(goods_no+"Wap微信米大师支付获取支付url耗时：" + WAP_WEIXIN_MIDSA_end + "毫秒");
+//        					SpringMVCHelper.renderJson(response, jsonStr);
         				}else if(agentMerchant.equals("Hee")){
         					long WAP_WEIXIN_Hee_begin = System.currentTimeMillis();
         					result =  doHee(response,"3", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         					long WAP_WEIXIN_Hee_end = System.currentTimeMillis() - WAP_WEIXIN_Hee_begin; 
             				logger.info(goods_no+"Wap微信汇元支付获取支付url耗时：" + WAP_WEIXIN_Hee_end + "毫秒");
-        				}else if(agentMerchant.equals("Now")){
-        					long WAP_WEIXIN_Now_begin = System.currentTimeMillis();
-        					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
-        					long WAP_WEIXIN_Now_end = System.currentTimeMillis() - WAP_WEIXIN_Now_begin; 
-            				logger.info(goods_no+"Wap微信现在支付获取支付url耗时：" + WAP_WEIXIN_Now_end + "毫秒");
         				}else{
         					long WAP_WEIXIN_Now_begin = System.currentTimeMillis();
         					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
@@ -1193,6 +1200,7 @@ public class PaymentController extends BaseController{
     		logger.info(out_trade_no+"请求现在支付获取支付url耗时：" + request_now_url_end + "毫秒");
     		int nowOutTimeLevel = payHttpService.getOt();
     		if(request_now_url_end > nowOutTimeLevel){
+    			logger.info(out_trade_no+"请求现在支付获取支付url超时"+(request_now_url_end-1000)+"毫秒,记录错误数据。");
     			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
     			paymentNowpayErrorLog.setId(reckoningId);
     			paymentNowpayErrorLog.setOrder_id(out_trade_no);
@@ -1267,7 +1275,11 @@ public class PaymentController extends BaseController{
         	double fenTemp = Double.parseDouble(total_fee_fen);
         	double jiaoTemp =fenTemp/10;
         	long get_midas_url_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
-        	String results = MidasUtils.submitOrder("v1",reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
+        	
+        	String par = "reckoningId="+reckoningId+"&jiaoTemp="+jiaoTemp+"&ip="+ip+"&paymentName="+paymentName+
+        			"&usermac="+usermac+"&return_url="+return_url;
+        	String results = PostRequestUtil.sendPost(PayHttpService.MIDAS_REQURST_URL, par);
+        	//String results = MidasUtils.submitOrder("v1",reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
         	long get_midas_url_end = System.currentTimeMillis() - get_midas_url_begin; // 这段代码放在程序执行后
     		logger.info(out_trade_no+"请求midas获取支付URL耗时：" + get_midas_url_end + "毫秒");
     		int nowOutTimeLevel = payHttpService.getOt();
@@ -1293,6 +1305,22 @@ public class PaymentController extends BaseController{
     	}
     	return result;    	
 	}
+    
+    @ResponseBody
+	@RequestMapping(value={"/payment/getMidas","/midas"},method={RequestMethod.GET,RequestMethod.POST})
+    public String getMidas(HttpServletResponse response,
+    		@RequestParam(required = true)  String reckoningId, 
+    		@RequestParam(required = true)  String jiaoTemp,
+    		@RequestParam(required = true)  String ip,
+    		@RequestParam(required = true)  String paymentName,
+    		@RequestParam(required = true)  String return_url,
+    		@RequestParam(required = true)  String usermac
+    		) {
+    	response.setHeader("Access-Control-Allow-Origin", "*");
+    	
+    	return  MidasUtils.submitOrder("v1",reckoningId, jiaoTemp, ip,paymentName,usermac,return_url);
+    		
+    }
 
     /**
      * 处理汇付宝支付服务请求
