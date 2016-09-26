@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
+import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.business.ds.tag.dao.TagGroupHandsetDetailDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractTagService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -57,6 +58,30 @@ public class TagGroupHandsetDetailService
 						TagGroupHandsetDetail.class.getName()
 								+ ".selectHandsetDetail", map);
 	}
+	
+	public List<Map<String, Object>> selectHandsets(int gid,
+			String beginTime, String endTime, int pageNo, int PageSize,String match,int count ,String mobileno) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("gid", gid);
+		map.put("beginTime", beginTime);
+		map.put("endTime", endTime);
+		if (pageNo != 0 && PageSize !=0) {
+			map.put("pn", (pageNo - 1) * PageSize);
+			map.put("ps", PageSize);
+		}
+		map.put("match", match);
+		map.put("count", count);
+		if(mobileno !=null && !mobileno.isEmpty()){
+			map.put("mobileno", mobileno);
+		}
+		
+		return this
+				.getEntityDao()
+				.getSqlSessionMasterTemplate()
+				.selectList(
+						TagGroupHandsetDetail.class.getName()
+								+ ".selectHandsets", map);
+	}
 
 	public int countGroupUsers(int gid, String beginTime, String endTime) {
 		Map<String, Object> map = new HashMap<>();
@@ -92,5 +117,18 @@ public class TagGroupHandsetDetailService
 				.selectList(
 						TagGroupHandsetDetail.class.getName()
 								+ ".selectGroupUsersRank", map);
+	}
+	
+	private String transforMatch(String match){
+		String sqlmatch = null;
+		
+		if(match.equals(TagGroupHandsetDetailVTO.greater) || match == null || match.isEmpty()){
+			sqlmatch = "&gt;";
+		}else if(match.equals(TagGroupHandsetDetailVTO.less)){
+			sqlmatch = "&lt;";
+		}else if(match.equals(TagGroupHandsetDetailVTO.equal)){
+			sqlmatch = "=";
+		}
+		return sqlmatch;
 	}
 }

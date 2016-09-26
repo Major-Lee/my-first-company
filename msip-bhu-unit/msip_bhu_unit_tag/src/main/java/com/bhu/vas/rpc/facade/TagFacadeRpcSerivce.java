@@ -731,7 +731,7 @@ public class TagFacadeRpcSerivce {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
 		}
 		
-		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime,pageNo,pageSize);
+		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsets(gid, beginTime, endTime,pageNo,pageSize,match,count,mobileno);
 		int allCount = tagGroupHandsetDetailService.countGroupUsers(gid, beginTime, endTime);
 		int filterCount = 0;
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
@@ -741,16 +741,16 @@ public class TagFacadeRpcSerivce {
 		
 		{   
 			// 根据连接次数和手机号过滤
-			if (filter) {
-				Iterator<TagGroupHandsetDetailVTO> iter = vtos.iterator();
-				while (iter.hasNext()) {
-					TagGroupHandsetDetailVTO rv = iter.next();
-					if (rv.isFilter(match,count,mobileno)){
-						filterCount++;
-						iter.remove();
-					}
-				}
-			}
+//			if (filter) {
+//				Iterator<TagGroupHandsetDetailVTO> iter = vtos.iterator();
+//				while (iter.hasNext()) {
+//					TagGroupHandsetDetailVTO rv = iter.next();
+//					if (rv.isFilter(match,count,mobileno)){
+//						filterCount++;
+//						iter.remove();
+//					}
+//				}
+//			}
 			if(mobileno ==null || mobileno.isEmpty()){
 				for(TagGroupHandsetDetailVTO vto : vtos){
 					if(vto.getMobileno() != null){
@@ -762,7 +762,7 @@ public class TagFacadeRpcSerivce {
 			}
 		}
 		
-		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, allCount-filterCount, vtos);
+		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, allCount, vtos);
 	}
 	
 	/**

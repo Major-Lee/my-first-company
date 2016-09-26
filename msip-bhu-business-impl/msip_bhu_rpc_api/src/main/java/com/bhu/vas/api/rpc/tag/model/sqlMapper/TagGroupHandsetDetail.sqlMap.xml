@@ -192,6 +192,31 @@
 		</if>
 	</select>
 	
+	<select id="selectHandsets" resultMap="HandsetMap" parameterType="map">
+	    SELECT <include refid="modelUserDetail" /> FROM <include refid="modelTableName" /> 
+	    <where>
+			gid = #{gid}
+			<if test="beginTime !=null and endTime != null">
+				AND
+					timestr
+				BETWEEN
+					#{beginTime}
+				AND
+					#{endTime}
+			</if>
+	    </where> 
+	    GROUP BY hdmac
+	    HAVING COUNT(hdmac) ${match} #{count}
+	    <if test="mobileno !=null">
+			AND mobileno = #{mobileno}
+		</if>
+		<if test="pn!=null and ps !=null">
+			LIMIT 
+	    	#{pn},
+	   		#{ps}
+		</if>
+	</select>
+	
 	<select id="selectGroupUsersRank" resultMap="GroupUsersRankMap" parameterType="map">
 	    SELECT timestr as date,count(timestr) as count FROM <include refid="modelTableName" /> 
 	    <where>
@@ -221,8 +246,8 @@
 					#{endTime}
 			</if>
 	    </where> 
-	</select>  
-	  
+	</select>
+	   
 	<delete id="deleteByIds" parameterType="java.util.List">
 	  	delete from <include refid="modelTableName" />
 	  	<where>
