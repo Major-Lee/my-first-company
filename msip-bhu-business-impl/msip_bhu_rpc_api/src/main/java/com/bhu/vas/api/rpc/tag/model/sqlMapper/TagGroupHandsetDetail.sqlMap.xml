@@ -245,6 +245,10 @@
 				AND
 					#{endTime}
 			</if>
+			<if test = "filter != null">
+				AND
+					 mobileno is not null
+			</if>
 	    </where> 
 	    GROUP BY hdmac
 	    HAVING COUNT(hdmac) ${match} #{count}

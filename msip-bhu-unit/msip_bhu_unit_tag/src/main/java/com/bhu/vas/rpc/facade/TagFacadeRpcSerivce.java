@@ -733,12 +733,11 @@ public class TagFacadeRpcSerivce {
 		}
 		
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsets(gid, beginTime, endTime,pageNo,pageSize,match,count,mobileno);
-		Map<String, Integer> allCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno);
+		Map<String, Integer> allCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno,"");
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
 		}
-		int filter = 0;
 		{   
 			if(mobileno ==null || mobileno.isEmpty()){
 				for(TagGroupHandsetDetailVTO vto : vtos){
@@ -746,7 +745,6 @@ public class TagFacadeRpcSerivce {
 						StringBuilder sb = new StringBuilder(vto.getMobileno());
 						sb.replace(3,7, "****");
 						vto.setMobileno(sb.toString());
-						filter++;
 					}
 				}
 			}
@@ -756,7 +754,8 @@ public class TagFacadeRpcSerivce {
 		resultVto.setTailPage(new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize,allCount.get("userCount") , vtos));
 		resultVto.setUserTotal(allCount.get("userCount"));
 		resultVto.setConnTotal(allCount.get("userSum"));
-		resultVto.setAuthTotal(filter);
+		Map<String, Integer> filterCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno,StringHelper.TRUE);
+		resultVto.setAuthTotal(filterCount.get("userCount"));
 		
 		return resultVto;
 	}
