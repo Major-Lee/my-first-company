@@ -863,31 +863,31 @@ public class TagFacadeRpcSerivce {
 		vto.setUserConnectData(groupUserConnectData(uid,gid,startTimeStr,endTimeStr));
 		return vto;
 	}
-	public GroupStatDetailVTO groupUsersCount(int uid ,int gid,String beginTime,String endTime){
-		
-		boolean isGroup = tagGroupService.checkGroup(gid, uid);
-		if(!isGroup){
-			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
-		}
-		
-		GroupStatDetailVTO vto = new GroupStatDetailVTO();
-
-		int userTotal = tagGroupHandsetDetailService.countGroupUsers(gid, beginTime, endTime);
-		
-		ModelCriteria connTotalMC = new ModelCriteria();
-		connTotalMC.createCriteria().andColumnEqualTo("gid", gid).andColumnBetween("timestr", beginTime, endTime);
-		int connTotal = tagGroupHandsetDetailService.countByModelCriteria(connTotalMC);
-		
-		ModelCriteria authTotalMC = new ModelCriteria();
-		authTotalMC.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("auth",StringHelper.TRUE).andColumnBetween("timestr", beginTime, endTime);
-		int authTotal = tagGroupHandsetDetailService.countByModelCriteria(authTotalMC);
-		
-		vto.setAuthTotal(authTotal);
-		vto.setConnTotal(connTotal);
-		vto.setUserTotal(userTotal);
-		
-		return vto;
-	}
+//	public GroupStatDetailVTO groupUsersCount(int uid ,int gid,String beginTime,String endTime){
+//		
+//		boolean isGroup = tagGroupService.checkGroup(gid, uid);
+//		if(!isGroup){
+//			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+//		}
+//		
+//		GroupStatDetailVTO vto = new GroupStatDetailVTO();
+//
+//		int userTotal = tagGroupHandsetDetailService.countGroupUsers(gid, beginTime, endTime);
+//		
+//		ModelCriteria connTotalMC = new ModelCriteria();
+//		connTotalMC.createCriteria().andColumnEqualTo("gid", gid).andColumnBetween("timestr", beginTime, endTime);
+//		int connTotal = tagGroupHandsetDetailService.countByModelCriteria(connTotalMC);
+//		
+//		ModelCriteria authTotalMC = new ModelCriteria();
+//		authTotalMC.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("auth",StringHelper.TRUE).andColumnBetween("timestr", beginTime, endTime);
+//		int authTotal = tagGroupHandsetDetailService.countByModelCriteria(authTotalMC);
+//		
+//		vto.setAuthTotal(authTotal);
+//		vto.setConnTotal(connTotal);
+//		vto.setUserTotal(userTotal);
+//		
+//		return vto;
+//	}
 	/**
 	 * 创建发送短信任务，实现生成好需要发送的信息
 	 * @param uid
@@ -898,7 +898,7 @@ public class TagFacadeRpcSerivce {
 	 * @param endTime
 	 * @return
 	 */
-	public TagGroupSendSortMessageVTO generateGroupSendSMSTask(int uid ,int gid ,int count,String context,String startTime, String endTime){
+	public TagGroupSendSortMessageVTO generateGroupSendSMSTask(int uid ,int gid ,String match,int count,String context,String startTime, String endTime){
 		
 		boolean isGroup = tagGroupService.checkGroup(gid, uid);
 		if(!isGroup){
@@ -909,10 +909,10 @@ public class TagFacadeRpcSerivce {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_MSG_TOO_LONG_OR_NULL);
 		}
 		
-		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, startTime, endTime,0,0);
+		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsets(gid, startTime, endTime,0,0,match,count,"");
 		List<TagGroupHandsetDetailDTO> dtos = new ArrayList<TagGroupHandsetDetailDTO>();
 		for(Map<String, Object> map : handsetMap){
-			TagGroupHandsetDetailDTO dto = BusinessTagModelBuilder.builderGroupUserDetailFilterVTO(map,count);
+			TagGroupHandsetDetailDTO dto = BusinessTagModelBuilder.builderGroupUserDetailFilterVTO(map);
 			if(dto == null)
 				continue;
 			dtos.add(dto);

@@ -24,9 +24,9 @@ public class BusinessTagModelBuilder {
 		return vto;
 	}
 	
-	public static TagGroupHandsetDetailDTO builderGroupUserDetailFilterVTO(Map<String,Object> map ,int count){
+	public static TagGroupHandsetDetailDTO builderGroupUserDetailFilterVTO(Map<String,Object> map){
 		TagGroupHandsetDetailDTO dto = new TagGroupHandsetDetailDTO();
-		if(map.get("mobileno") == null || (Long)map.get("count") < count){
+		if(map.get("mobileno") == null){
 			return null;
 		}
 		dto.setHdMac((String)map.get("hdmac"));

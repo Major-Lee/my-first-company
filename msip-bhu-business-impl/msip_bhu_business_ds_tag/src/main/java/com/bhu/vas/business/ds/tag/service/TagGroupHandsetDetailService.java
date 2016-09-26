@@ -40,24 +40,24 @@ public class TagGroupHandsetDetailService
 		return count == 0;
 	}
 
-	public List<Map<String, Object>> selectHandsetDetail(int gid,
-			String beginTime, String endTime, int pageNo, int PageSize) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("gid", gid);
-		map.put("beginTime", beginTime);
-		map.put("endTime", endTime);
-		if (pageNo != 0 && PageSize !=0) {
-			map.put("pn", (pageNo - 1) * PageSize);
-			map.put("ps", PageSize);
-		}
-		
-		return this
-				.getEntityDao()
-				.getSqlSessionMasterTemplate()
-				.selectList(
-						TagGroupHandsetDetail.class.getName()
-								+ ".selectHandsetDetail", map);
-	}
+//	public List<Map<String, Object>> selectHandsetDetail(int gid,
+//			String beginTime, String endTime, int pageNo, int PageSize) {
+//		Map<String, Object> map = new HashMap<>();
+//		map.put("gid", gid);
+//		map.put("beginTime", beginTime);
+//		map.put("endTime", endTime);
+//		if (pageNo != 0 && PageSize !=0) {
+//			map.put("pn", (pageNo - 1) * PageSize);
+//			map.put("ps", PageSize);
+//		}
+//		
+//		return this
+//				.getEntityDao()
+//				.getSqlSessionMasterTemplate()
+//				.selectList(
+//						TagGroupHandsetDetail.class.getName()
+//								+ ".selectHandsetDetail", map);
+//	}
 	
 	public List<Map<String, Object>> selectHandsets(int gid,
 			String beginTime, String endTime, int pageNo, int PageSize,String match,int count ,String mobileno) {

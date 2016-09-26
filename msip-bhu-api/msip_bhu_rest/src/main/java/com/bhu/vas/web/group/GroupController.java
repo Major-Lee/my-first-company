@@ -322,35 +322,35 @@ public class GroupController extends BaseController{
 		}
     }
     
-    /**
-     * 分组用户连接数统计
-     * 
-     * 用户认证数
-     * 用户连接总数
-     * 用户数
-     * @param request
-     * @param response
-     * @param uid
-     * @param gid
-     * @param beginTime
-     * @param endTime
-     */
-    @ResponseBody()
-    @RequestMapping(value = "/user/count", method = {RequestMethod.POST})
-    public void group_user_count(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            @RequestParam(required = true) int uid,
-            @RequestParam(required = true) int gid,
-    	    @RequestParam(required = false) Long beginTime,
-    	    @RequestParam(required = false) Long endTime) {
-    	RpcResponseDTO<GroupStatDetailVTO> rpcResult = tagRpcService.groupUsersCount(uid,gid,beginTime, endTime);
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}
-    }
+//    /**
+//     * 分组用户连接数统计
+//     * 
+//     * 用户认证数
+//     * 用户连接总数
+//     * 用户数
+//     * @param request
+//     * @param response
+//     * @param uid
+//     * @param gid
+//     * @param beginTime
+//     * @param endTime
+//     */
+//    @ResponseBody()
+//    @RequestMapping(value = "/user/count", method = {RequestMethod.POST})
+//    public void group_user_count(
+//            HttpServletRequest request,
+//            HttpServletResponse response,
+//            @RequestParam(required = true) int uid,
+//            @RequestParam(required = true) int gid,
+//    	    @RequestParam(required = false) Long beginTime,
+//    	    @RequestParam(required = false) Long endTime) {
+//    	RpcResponseDTO<GroupStatDetailVTO> rpcResult = tagRpcService.groupUsersCount(uid,gid,beginTime, endTime);
+//		if(!rpcResult.hasError()){
+//			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+//		}else{
+//			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+//		}
+//    }
     
     /**
   	 * 统计分组昨日和今日连接用户数
@@ -422,11 +422,12 @@ public class GroupController extends BaseController{
                 HttpServletResponse response,
                 @RequestParam(required = true) int uid,
                 @RequestParam(required = true) int gid,
-                @RequestParam(required = false, defaultValue = "0") int count,
+        	    @RequestParam(required = false, defaultValue = ">") String match,
+        	    @RequestParam(required = false, defaultValue = "0") int count,
                 @RequestParam(required = true) String context,
-                @RequestParam(required = true) long startTime,
-                @RequestParam(required = true) long endTime) {
-        	RpcResponseDTO<TagGroupSendSortMessageVTO> rpcResult = tagRpcService.generateGroupSendSMSTask(uid ,gid ,count,context,startTime,endTime);
+                @RequestParam(required = false) long startTime,
+                @RequestParam(required = false) long endTime) {
+        	RpcResponseDTO<TagGroupSendSortMessageVTO> rpcResult = tagRpcService.generateGroupSendSMSTask(uid ,gid ,match,count,context,startTime,endTime);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{

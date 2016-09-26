@@ -75,19 +75,20 @@ public interface ITagRpcService {
 
 	RpcResponseDTO<List<Date>> groupUserDetail(int uid ,int gid, String hdmac,
 			int pageNo, int pageSize);
-
-	RpcResponseDTO<GroupStatDetailVTO> groupUsersCount(int uid ,int gid, Long beginTime,
-			Long endTime);
+//
+//	RpcResponseDTO<GroupStatDetailVTO> groupUsersCount(int uid ,int gid, Long beginTime,
+//			Long endTime);
 
 	RpcResponseDTO<TagGroupUserStatisticsConnectVTO> groupUserStatisticsConnect(int uid, int gid, long startTime,
 			long endTime, int pageNo, int pageSize);
-
-	RpcResponseDTO<TagGroupSendSortMessageVTO> generateGroupSendSMSTask(int uid,
-			int gid, int count, String context, Long beginTime, Long endTime);
 
 	RpcResponseDTO<Boolean> executeSendTask(int uid, int taskid);
 
 	RpcResponseDTO<TailPage<TagGroupSortMessageVTO>> sendMessageDetail(int uid,
 			int gid, int pageNo, int pageSize);
+
+	RpcResponseDTO<TagGroupSendSortMessageVTO> generateGroupSendSMSTask(
+			int uid, int gid, String match, int count, String context,
+			Long beginTime, Long endTime);
 
 }
