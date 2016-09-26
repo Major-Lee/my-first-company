@@ -26,6 +26,7 @@ import com.bhu.vas.api.rpc.tag.model.TagGroupRelation;
 import com.bhu.vas.api.rpc.tag.model.TagGroupSortMessage;
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
@@ -724,33 +725,20 @@ public class TagFacadeRpcSerivce {
 	 * @param endTime
 	 * @return
 	 */
-	public TailPage<TagGroupHandsetDetailVTO> groupUsersDetail(int uid,int gid,String beginTime,String endTime,boolean filter,String match,int count,String mobileno,int pageNo,int pageSize){
+	public GroupHandsetDetailVTO groupUsersDetail(int uid,int gid,String beginTime,String endTime,String match,int count,String mobileno,int pageNo,int pageSize){
 		
 		boolean isGroup = tagGroupService.checkGroup(gid, uid);
 		if(!isGroup){
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
 		}
 		
-		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, beginTime, endTime,pageNo,pageSize);
-		int allCount = tagGroupHandsetDetailService.countGroupUsers(gid, beginTime, endTime);
-		int filterCount = 0;
+		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsets(gid, beginTime, endTime,pageNo,pageSize,match,count,mobileno);
+		Map<String, Integer> allCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno,"");
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
 		}
-		
 		{   
-			// 根据连接次数和手机号过滤
-			if (filter) {
-				Iterator<TagGroupHandsetDetailVTO> iter = vtos.iterator();
-				while (iter.hasNext()) {
-					TagGroupHandsetDetailVTO rv = iter.next();
-					if (rv.isFilter(match,count,mobileno)){
-						filterCount++;
-						iter.remove();
-					}
-				}
-			}
 			if(mobileno ==null || mobileno.isEmpty()){
 				for(TagGroupHandsetDetailVTO vto : vtos){
 					if(vto.getMobileno() != null){
@@ -762,7 +750,14 @@ public class TagFacadeRpcSerivce {
 			}
 		}
 		
-		return new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize, allCount-filterCount, vtos);
+		GroupHandsetDetailVTO resultVto = new GroupHandsetDetailVTO();
+		resultVto.setTailPage(new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize,allCount.get("userCount") == null ? 0 : allCount.get("userCount"), vtos));
+		resultVto.setUserTotal(allCount.get("userCount") == null ? 0 : allCount.get("userCount"));
+		resultVto.setConnTotal(allCount.get("userSum") == null ? 0 : allCount.get("userSum"));
+		Map<String, Integer> filterCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno,StringHelper.TRUE);
+		resultVto.setAuthTotal(filterCount.get("userCount") == null ? 0 : filterCount.get("userCount"));
+		
+		return resultVto;
 	}
 	
 	/**
@@ -867,31 +862,31 @@ public class TagFacadeRpcSerivce {
 		vto.setUserConnectData(groupUserConnectData(uid,gid,startTimeStr,endTimeStr));
 		return vto;
 	}
-	public GroupStatDetailVTO groupUsersCount(int uid ,int gid,String beginTime,String endTime){
-		
-		boolean isGroup = tagGroupService.checkGroup(gid, uid);
-		if(!isGroup){
-			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
-		}
-		
-		GroupStatDetailVTO vto = new GroupStatDetailVTO();
-
-		int userTotal = tagGroupHandsetDetailService.countGroupUsers(gid, beginTime, endTime);
-		
-		ModelCriteria connTotalMC = new ModelCriteria();
-		connTotalMC.createCriteria().andColumnEqualTo("gid", gid).andColumnBetween("timestr", beginTime, endTime);
-		int connTotal = tagGroupHandsetDetailService.countByModelCriteria(connTotalMC);
-		
-		ModelCriteria authTotalMC = new ModelCriteria();
-		authTotalMC.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("auth",StringHelper.TRUE).andColumnBetween("timestr", beginTime, endTime);
-		int authTotal = tagGroupHandsetDetailService.countByModelCriteria(authTotalMC);
-		
-		vto.setAuthTotal(authTotal);
-		vto.setConnTotal(connTotal);
-		vto.setUserTotal(userTotal);
-		
-		return vto;
-	}
+//	public GroupStatDetailVTO groupUsersCount(int uid ,int gid,String beginTime,String endTime){
+//		
+//		boolean isGroup = tagGroupService.checkGroup(gid, uid);
+//		if(!isGroup){
+//			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+//		}
+//		
+//		GroupStatDetailVTO vto = new GroupStatDetailVTO();
+//
+//		int userTotal = tagGroupHandsetDetailService.countGroupUsers(gid, beginTime, endTime);
+//		
+//		ModelCriteria connTotalMC = new ModelCriteria();
+//		connTotalMC.createCriteria().andColumnEqualTo("gid", gid).andColumnBetween("timestr", beginTime, endTime);
+//		int connTotal = tagGroupHandsetDetailService.countByModelCriteria(connTotalMC);
+//		
+//		ModelCriteria authTotalMC = new ModelCriteria();
+//		authTotalMC.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("auth",StringHelper.TRUE).andColumnBetween("timestr", beginTime, endTime);
+//		int authTotal = tagGroupHandsetDetailService.countByModelCriteria(authTotalMC);
+//		
+//		vto.setAuthTotal(authTotal);
+//		vto.setConnTotal(connTotal);
+//		vto.setUserTotal(userTotal);
+//		
+//		return vto;
+//	}
 	/**
 	 * 创建发送短信任务，实现生成好需要发送的信息
 	 * @param uid
@@ -902,7 +897,7 @@ public class TagFacadeRpcSerivce {
 	 * @param endTime
 	 * @return
 	 */
-	public TagGroupSendSortMessageVTO generateGroupSendSMSTask(int uid ,int gid ,int count,String context,String startTime, String endTime){
+	public TagGroupSendSortMessageVTO generateGroupSendSMSTask(int uid ,int gid ,String match,int count,String context,String startTime, String endTime){
 		
 		boolean isGroup = tagGroupService.checkGroup(gid, uid);
 		if(!isGroup){
@@ -913,10 +908,10 @@ public class TagFacadeRpcSerivce {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_MSG_TOO_LONG_OR_NULL);
 		}
 		
-		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsetDetail(gid, startTime, endTime,0,0);
+		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsets(gid, startTime, endTime,0,0,match,count,"");
 		List<TagGroupHandsetDetailDTO> dtos = new ArrayList<TagGroupHandsetDetailDTO>();
 		for(Map<String, Object> map : handsetMap){
-			TagGroupHandsetDetailDTO dto = BusinessTagModelBuilder.builderGroupUserDetailFilterVTO(map,count);
+			TagGroupHandsetDetailDTO dto = BusinessTagModelBuilder.builderGroupUserDetailFilterVTO(map);
 			if(dto == null)
 				continue;
 			dtos.add(dto);

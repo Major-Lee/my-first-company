@@ -10,8 +10,6 @@ import com.bhu.vas.api.rpc.tag.model.TagDevices;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.tag.facade.TagGroupFacadeService;
 import com.bhu.vas.di.op.deviceStatitics.DeviceOrderStatitics;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
-import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 
 public class deviceTranslation {
 	public static void main(String[] args) {

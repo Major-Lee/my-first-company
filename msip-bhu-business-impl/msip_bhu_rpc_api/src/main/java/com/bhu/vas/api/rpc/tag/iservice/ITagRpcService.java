@@ -6,6 +6,7 @@ import java.util.List;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
@@ -69,24 +70,25 @@ public interface ITagRpcService {
 	
 	RpcResponseDTO<GroupUsersStatisticsVTO> groupUsersStatistics(int uid ,int gid,long time);
 
-	RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(
-			int uid,int gid, Long beginTime, Long endTime, boolean filter, String match,int count,String mobileno, int pageNo, int pageSize);
+	RpcResponseDTO<GroupHandsetDetailVTO> groupUsersDetail(
+			int uid,int gid, Long beginTime, Long endTime, String match,int count,String mobileno, int pageNo, int pageSize);
 
 	RpcResponseDTO<List<Date>> groupUserDetail(int uid ,int gid, String hdmac,
 			int pageNo, int pageSize);
-
-	RpcResponseDTO<GroupStatDetailVTO> groupUsersCount(int uid ,int gid, Long beginTime,
-			Long endTime);
+//
+//	RpcResponseDTO<GroupStatDetailVTO> groupUsersCount(int uid ,int gid, Long beginTime,
+//			Long endTime);
 
 	RpcResponseDTO<TagGroupUserStatisticsConnectVTO> groupUserStatisticsConnect(int uid, int gid, long startTime,
 			long endTime, int pageNo, int pageSize);
-
-	RpcResponseDTO<TagGroupSendSortMessageVTO> generateGroupSendSMSTask(int uid,
-			int gid, int count, String context, Long beginTime, Long endTime);
 
 	RpcResponseDTO<Boolean> executeSendTask(int uid, int taskid);
 
 	RpcResponseDTO<TailPage<TagGroupSortMessageVTO>> sendMessageDetail(int uid,
 			int gid, int pageNo, int pageSize);
+
+	RpcResponseDTO<TagGroupSendSortMessageVTO> generateGroupSendSMSTask(
+			int uid, int gid, String match, int count, String context,
+			Long beginTime, Long endTime);
 
 }

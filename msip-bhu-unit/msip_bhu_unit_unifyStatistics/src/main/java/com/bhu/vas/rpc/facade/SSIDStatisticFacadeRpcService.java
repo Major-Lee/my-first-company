@@ -174,6 +174,7 @@ public class SSIDStatisticFacadeRpcService {
 		List<List<Object>> orders=new ArrayList<List<Object>>();
 		List<Object> orderNums=new ArrayList<Object>();
 		List<Object> orderComNums=new ArrayList<Object>();
+		List<Object> orderFreeComNums=new ArrayList<Object>();
 		
 		List<List<Object>> price=new ArrayList<List<Object>>();
 		List<Object> totalPrice=new ArrayList<Object>();
@@ -690,6 +691,7 @@ public class SSIDStatisticFacadeRpcService {
 				
 				orderNums.add(occ);
 				orderComNums.add(ofc);
+				orderFreeComNums.add(freeOfc);
 				
 				totalPrice.add(ofa);
 				time.add(date);
@@ -838,6 +840,7 @@ public class SSIDStatisticFacadeRpcService {
 		
 		List<Object> asorderNums=new ArrayList<Object>();
 		List<Object> asorderComNums=new ArrayList<Object>();
+		List<Object> freeOrderComNums=new ArrayList<Object>();
 		
 		List<Object> astotalPrice=new ArrayList<Object>();
 		
@@ -847,6 +850,7 @@ public class SSIDStatisticFacadeRpcService {
 			asorderNums.add(orderNums.get(i));
 			asorderComNums.add(orderComNums.get(i));
 			astotalPrice.add(totalPrice.get(i));
+			freeOrderComNums.add(orderFreeComNums.get(i));
 		}
 		equipments.add(astime);
 		equipments.add(asequipmentNums);
@@ -856,6 +860,7 @@ public class SSIDStatisticFacadeRpcService {
 		orders.add(astime);
 		orders.add(asorderNums);
 		orders.add(asorderComNums);
+		orders.add(freeOrderComNums);
 		resMap.put("order", orders);
 		
 		price.add(astime);

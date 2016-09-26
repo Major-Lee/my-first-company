@@ -24,7 +24,6 @@ import com.bhu.vas.business.ds.payment.service.PaymentWithdrawService;
 import com.bhu.vas.business.helper.BusinessHelper;
 import com.bhu.vas.business.helper.PaymentChannelCode;
 import com.bhu.vas.web.cache.BusinessCacheService;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.localunit.RandomPicker;
 
@@ -62,7 +61,7 @@ public class PayLogicService {
     	}
     	PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
     	if(paymentParameter == null){
-    		result = "Midas";
+    		result = "Now";
     		return result;
     	}
     	result = paymentParameter.getValue();
@@ -265,8 +264,11 @@ public class PayLogicService {
      * @param thridType 第三方标识
      * @param billo 第三方流程号
      */
-    public void updatePaymentStatus(PaymentReckoning updatePayStatus,String out_trade_no,String thirdPartCode,
-    		String thridType,String billo){
+    public void updatePaymentStatus(PaymentReckoning updatePayStatus,
+						    		String out_trade_no,
+						    		String thirdPartCode,
+						    		String thridType,
+						    		String billo){
 		updatePayStatus.setThird_party_code(thirdPartCode);
 		updatePayStatus.setPay_status(1);
 		updatePayStatus.setPaid_at(new Date());
@@ -274,7 +276,10 @@ public class PayLogicService {
 			updatePayStatus.setRemark(billo);
 			updatePayStatus.setChannel_type(thridType);
 		}
+		long update_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
  		paymentReckoningService.update(updatePayStatus);
+ 		long update_end = System.currentTimeMillis() - update_begin; // 这段代码放在程序执行后
+ 		logger.info(updatePayStatus.getOrder_id()+"修改支付状态耗时：" + update_end + "毫秒");
  		logger.info(String.format("update out_trade_no [%s] payment status finished.",out_trade_no));
  		
  		//通知订单
@@ -289,17 +294,25 @@ public class PayLogicService {
  			rpcn_dto.setPayment_proxy_type(thridType);
  		}
  		String notify_message = JsonHelper.getJSONString(rpcn_dto);
+ 		long notify_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
  		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+ 		long notify_end = System.currentTimeMillis() - notify_begin; // 这段代码放在程序执行后
+ 		logger.info(updatePayStatus.getOrder_id()+"通知商品中心耗时：" + notify_end + "毫秒");
  		logger.info(String.format("notify out_trade_no [%s] payment status to redis: [%s]",out_trade_no,notify_message));
  		
  		//修改订单的通知状态
  		updatePayStatus.setNotify_status(1);
  		updatePayStatus.setNotify_at(new Date());
+ 		long update_notify_status_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
  		paymentReckoningService.update(updatePayStatus);
+ 		long update_notify_status_end = System.currentTimeMillis() - update_notify_status_begin; // 这段代码放在程序执行后
+ 		logger.info(updatePayStatus.getOrder_id()+"修改通知状态耗时：" + update_notify_status_end + "毫秒");
  		logger.info(String.format("update out_trade_no [%s] notify status finished.",out_trade_no));
  		
+ 		long Cache_status_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
  		PaymentReckoningVTO payOrderCache = updatePaymentCache(payNotice.getOrder_id(),out_trade_no);
-		
+ 		long Cache_status_end = System.currentTimeMillis() - Cache_status_begin; // 这段代码放在程序执行后
+ 		logger.info(updatePayStatus.getOrder_id()+"修改缓存状态耗时：" + Cache_status_end + "毫秒");
 		if(payOrderCache != null){
 			logger.info(String.format("write out_trade_no [%s] order_id [%s] to cache finished.",out_trade_no,payNotice.getOrder_id()));
 		}

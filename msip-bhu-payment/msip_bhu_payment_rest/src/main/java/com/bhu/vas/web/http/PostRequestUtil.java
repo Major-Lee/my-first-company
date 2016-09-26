@@ -19,8 +19,11 @@ public class PostRequestUtil {
 		// String sr = sendPost("http://localhost:8080/hac/submitOrder", param);
 		// String sr = sendPost("http://localhost:8080/queryItemServiceRanges",
 		// null);
-		String par = "methodName=updateOrderStatus&orderId=2099021509170013&status=4&sign=1BA5FC1A19824109A6688339C0CF57F1";
-		Object sr = sendPost("http://m.api.51ping.com/tohome/openapi/jiadianguanjia/", par);
+//		String par = "methodName=updateOrderStatus&orderId=2099021509170013&status=4&sign=1BA5FC1A19824109A6688339C0CF57F1";
+	//	Object sr = sendPost("http://m.api.51ping.com/tohome/openapi/jiadianguanjia/", par);
+		String cur = System.currentTimeMillis()+"";
+		String par = "secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&payment_type=WapWeixin&goods_no="+cur+"&total_fee=0.01&umac=ws:ww:22&version=v1";
+		Object sr = sendPost("http://mpays.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment", par);
 		//Object sr = sendPost("http://m.api.dianping.com/tohome/openapi/jiadianguanjia/", par);
 
 		System.out.println(sr);

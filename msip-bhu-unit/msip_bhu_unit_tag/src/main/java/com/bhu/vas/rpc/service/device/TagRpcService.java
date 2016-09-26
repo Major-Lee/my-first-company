@@ -7,6 +7,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.vto.DeviceGroupPaymentStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
+import com.bhu.vas.api.rpc.tag.vto.GroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
@@ -280,8 +281,8 @@ public class TagRpcService implements ITagRpcService {
 	}
 	
 	@Override
-	public RpcResponseDTO<TailPage<TagGroupHandsetDetailVTO>> groupUsersDetail(int uid ,int gid, Long beginTime,Long endTime,boolean filter,String match,int count,String mobileno,int pageNo,int pageSize) {
-		logger.info(String.format("groupUsersDetail uid[%s] gid[%s] beginTime[%s] endTime[%s] filter[%s] match[%s] count[%s] mobileno[%s] pageNo[%s] pageSize[%s]",uid, gid, beginTime,endTime,filter,match,count,mobileno,pageNo,pageSize));
+	public RpcResponseDTO<GroupHandsetDetailVTO> groupUsersDetail(int uid ,int gid, Long beginTime,Long endTime,String match,int count,String mobileno,int pageNo,int pageSize) {
+		logger.info(String.format("groupUsersDetail uid[%s] gid[%s] beginTime[%s] endTime[%s]  match[%s] count[%s] mobileno[%s] pageNo[%s] pageSize[%s]",uid, gid, beginTime,endTime,match,count,mobileno,pageNo,pageSize));
 		try{
 			String beginTimeStr = null;
 			String endTimeStr = null;
@@ -289,7 +290,7 @@ public class TagRpcService implements ITagRpcService {
 				beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
 				endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
 			}
-			TailPage<TagGroupHandsetDetailVTO> result = tagFacadeRpcSerivce.groupUsersDetail(uid,gid, beginTimeStr, endTimeStr, filter, match,count,mobileno, pageNo, pageSize);
+			GroupHandsetDetailVTO result = tagFacadeRpcSerivce.groupUsersDetail(uid,gid, beginTimeStr, endTimeStr, match,count,mobileno, pageNo, pageSize);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -299,25 +300,25 @@ public class TagRpcService implements ITagRpcService {
 		}
 	}
 	
-	@Override
-	public RpcResponseDTO<GroupStatDetailVTO> groupUsersCount(int uid ,int gid, Long beginTime,Long endTime) {
-		logger.info(String.format("groupUsersCount uid[%s] gid[%s] beginTime[%s] endTime[%s]",uid, gid,beginTime,endTime));
-		try{
-			String beginTimeStr = null;
-			String endTimeStr = null;
-			if(beginTime !=null && endTime!=null){
-				beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
-				endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
-			}
-			GroupStatDetailVTO result = tagFacadeRpcSerivce.groupUsersCount(uid,gid,beginTimeStr,endTimeStr);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
-		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
-		}catch(Exception ex){
-			logger.error("groupUsersStatistics Exception:", ex);
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
-	}
+//	@Override
+//	public RpcResponseDTO<GroupStatDetailVTO> groupUsersCount(int uid ,int gid, Long beginTime,Long endTime) {
+//		logger.info(String.format("groupUsersCount uid[%s] gid[%s] beginTime[%s] endTime[%s]",uid, gid,beginTime,endTime));
+//		try{
+//			String beginTimeStr = null;
+//			String endTimeStr = null;
+//			if(beginTime !=null && endTime!=null){
+//				beginTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(beginTime),DateTimeHelper.FormatPattern5));
+//				endTimeStr = DateTimeHelper.formatDate(DateTimeHelper.getDateTime(new Date(endTime),DateTimeHelper.FormatPattern5));
+//			}
+//			GroupStatDetailVTO result = tagFacadeRpcSerivce.groupUsersCount(uid,gid,beginTimeStr,endTimeStr);
+//			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+//		}catch(BusinessI18nCodeException bex){
+//			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+//		}catch(Exception ex){
+//			logger.error("groupUsersStatistics Exception:", ex);
+//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+//		}
+//	}
 	
 	@Override
 	public RpcResponseDTO<List<Date>> groupUserDetail(int uid ,int gid,String hdmac,int pageNo,int pageSize) {
@@ -351,10 +352,10 @@ public class TagRpcService implements ITagRpcService {
 	}
 	
 	@Override
-	public RpcResponseDTO<TagGroupSendSortMessageVTO> generateGroupSendSMSTask(int uid ,int gid ,int count,String context,Long beginTime,
+	public RpcResponseDTO<TagGroupSendSortMessageVTO> generateGroupSendSMSTask(int uid ,int gid ,String match,int count,String context,Long beginTime,
 			Long endTime) {
-		logger.info(String.format("groupSendSortMessage uid[%s] gid[%s] count[%s] context[%s] beginTime[%s] endTime[%s]", 
-				uid,gid, count, context, beginTime, endTime));
+		logger.info(String.format("groupSendSortMessage uid[%s] gid[%s] match[%s]count[%s] context[%s] beginTime[%s] endTime[%s]", 
+				uid,gid, match,count, context, beginTime, endTime));
 		String beginTimeStr = null;
 		String endTimeStr = null;
 		if(beginTime !=null && endTime!=null){
@@ -363,7 +364,7 @@ public class TagRpcService implements ITagRpcService {
 		}
 		try {
 			TagGroupSendSortMessageVTO result = tagFacadeRpcSerivce.generateGroupSendSMSTask(uid, 
-					gid, count ,context,beginTimeStr, endTimeStr);
+					gid, match,count ,context,beginTimeStr, endTimeStr);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
 		} catch (BusinessI18nCodeException bex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

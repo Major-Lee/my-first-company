@@ -37,11 +37,13 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.payment.model.PaymentAlipaylocation;
+import com.bhu.vas.api.rpc.payment.model.PaymentOutimeErrorLog;
 import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
 import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
 import com.bhu.vas.api.rpc.payment.vto.PaymentReckoningVTO;
 import com.bhu.vas.api.vto.payment.PaymentTypeVTO;
 import com.bhu.vas.business.ds.payment.service.PaymentAlipaylocationService;
+import com.bhu.vas.business.ds.payment.service.PaymentOutimeErrorLogService;
 import com.bhu.vas.business.ds.payment.service.PaymentReckoningService;
 import com.bhu.vas.business.ds.payment.service.PaymentWithdrawService;
 import com.bhu.vas.business.helper.BusinessHelper;
@@ -95,6 +97,8 @@ public class PaymentController extends BaseController{
 	PaymentWithdrawService paymentWithdrawService;
 	@Resource
 	PaymentAlipaylocationService paymentAlipaylocationService;
+	@Resource
+	PaymentOutimeErrorLogService paymentOutimeErrorLogService;
 	
 	/**
 	 * 查询支付流水号接口
@@ -489,6 +493,8 @@ public class PaymentController extends BaseController{
     		@RequestParam(required = false, value = "") String payment_completed_url,
     		@RequestParam(required = false, value = "") String paymentName){ 
 		response.setHeader("Access-Control-Allow-Origin", "*");
+		long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+
 		logger.info(String.format("apply payment goods_no [%s]", goods_no));
 		try{
 			String type = request.getParameter("channel");
@@ -555,7 +561,10 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
+        	long select_isExist_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
     		PaymentReckoning paymentReckoning = paymentReckoningService.findByOrderId(goods_no);
+    		long select_isExist_end = System.currentTimeMillis() - select_isExist_begin; // 这段代码放在程序执行后
+    		logger.info(goods_no+"查询订单是否存在耗时：" + select_isExist_end + "毫秒");
         	if(paymentReckoning != null){
         		logger.error(String.format("apply payment goods_no [%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
         		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
@@ -567,52 +576,86 @@ public class PaymentController extends BaseController{
         	PaymentChannelCode paymentChannel = PaymentChannelCode.getPaymentChannelCodeByCode(payment_type);
     		switch(paymentChannel){
     			case BHU_PC_WEIXIN: //PC微信支付
+    				long PC_WEIXIN_begin = System.currentTimeMillis();
     				result =  doNativeWxPayment(request,response,"0",total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
+    				long PC_WEIXIN_end = System.currentTimeMillis() - PC_WEIXIN_begin; 
+    				logger.info(goods_no+"PC微信支付耗时：" + PC_WEIXIN_end + "毫秒");
     				break;
     			case BHU_PC_ALIPAY: //PC支付宝
+    				long PC_ALIPAY_begin = System.currentTimeMillis();
     				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
-    	        	break;
+    				long PC_ALIPAY_end = System.currentTimeMillis() - PC_ALIPAY_begin; 
+    				logger.info(goods_no+"PC支付宝耗时：" + PC_ALIPAY_end + "毫秒");
+    				break;
     			case BHU_APP_WEIXIN: //App微信支付
+    				long APP_WEIXIN_begin = System.currentTimeMillis();
     				result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
-    	            break;
+    				long APP_WEIXIN_end = System.currentTimeMillis() - APP_WEIXIN_begin; 
+    				logger.info(goods_no+"APP微信支付耗时：" + APP_WEIXIN_end + "毫秒");
+    				break;
     			case BHU_APP_ALIPAY: //App支付宝
+    				long APP_ALIPAY_begin = System.currentTimeMillis();
     				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
-    	            break;
+    				long APP_ALIPAY_end = System.currentTimeMillis() - APP_ALIPAY_begin; 
+    				logger.info(goods_no+"App支付宝耗时：" + APP_ALIPAY_end + "毫秒");
+    				break;
     			case BHU_WAP_WEIXIN: //汇付宝
     				if(type.equals("2")){
+    					long WAP_WEIXIN_NATIVE_begin = System.currentTimeMillis();
     					result =  doNativeWxPayment(request,response,type,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
-        				
+    					long WAP_WEIXIN_NATIVE_end = System.currentTimeMillis() -  WAP_WEIXIN_NATIVE_begin; 
+        				logger.info(goods_no+"WAP微信他人代付耗时：" + WAP_WEIXIN_NATIVE_end + "毫秒");
     				}else{
-    					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByCondition(total_fee);
-//    					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByName();
+    					long get_agentMerchant_begin = System.currentTimeMillis();
+    					//String agentMerchant = payLogicService.findWapWeixinMerchantServiceByCondition(total_fee);
+    					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByName();
+    					long get_agentMerchant_end = System.currentTimeMillis() -  get_agentMerchant_begin; 
+        				logger.info(goods_no+"查询WAP微信获取支付渠道耗时：" + get_agentMerchant_end + "毫秒");
         				if(agentMerchant.equals("Midas")){
-        					//String cur = System.currentTimeMillis()+"";
+        					long WAP_WEIXIN_MIDSA_begin = System.currentTimeMillis();
         					String par = "secret="+secret+"&appid="+appid+"&payment_type="+payment_type+"&goods_no="+goods_no+
         							"&total_fee="+total_fee+"&umac="+umac+"&version="+version;
-        					String jsonStr = PostRequestUtil.sendPost("http://mpays.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment", par);
+        					String jsonStr = PostRequestUtil.sendPost(PayHttpService.MIDAS_REQURST_URL, par);
         					SpringMVCHelper.renderJson(response, jsonStr);
+        					long WAP_WEIXIN_MIDSA_end = System.currentTimeMillis() - WAP_WEIXIN_MIDSA_begin; 
+            				logger.info(goods_no+"Wap微信米大师支付获取支付url耗时：" + WAP_WEIXIN_MIDSA_end + "毫秒");
         					return;
         					//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}else if(agentMerchant.equals("Hee")){
+        					long WAP_WEIXIN_Hee_begin = System.currentTimeMillis();
         					result =  doHee(response,"3", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					long WAP_WEIXIN_Hee_end = System.currentTimeMillis() - WAP_WEIXIN_Hee_begin; 
+            				logger.info(goods_no+"Wap微信汇元支付获取支付url耗时：" + WAP_WEIXIN_Hee_end + "毫秒");
         				}else if(agentMerchant.equals("Now")){
+        					long WAP_WEIXIN_Now_begin = System.currentTimeMillis();
         					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					long WAP_WEIXIN_Now_end = System.currentTimeMillis() - WAP_WEIXIN_Now_begin; 
+            				logger.info(goods_no+"Wap微信现在支付获取支付url耗时：" + WAP_WEIXIN_Now_end + "毫秒");
         				}else{
+        					long WAP_WEIXIN_Now_begin = System.currentTimeMillis();
         					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
-        					//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+        					long WAP_WEIXIN_Now_end = System.currentTimeMillis() - WAP_WEIXIN_Now_begin; 
+            				logger.info(goods_no+"Wap微信现在支付获取支付url耗时：" + WAP_WEIXIN_Now_end + "毫秒");
+            				//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}
         				//*******并存线*****************//
         				//腾讯云启动midas支付通道
-    					//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
+//        				long WAP_WEIXIN_MIDSA_begin = System.currentTimeMillis();
+    					//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
+//        				long WAP_WEIXIN_MIDSA_end = System.currentTimeMillis() - WAP_WEIXIN_MIDSA_begin; 
+//        				logger.info(goods_no+"Wap微信Midas支付耗时：" + WAP_WEIXIN_MIDSA_end + "毫秒");
     				}
                 	break;
 //    			case BHU_MIDAS_WEIXIN: //米大师
-//    				System.out.println("apply payment payment_type is old midas ...........");
+//    				logger.info("apply payment payment_type is old midas ...........");
 //    				result =  doMidas(response,"0","1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
 //            		break;
     			case BHU_WAP_ALIPAY: //Wap微信支付
+    				long WAP_ALIPAY_begin = System.currentTimeMillis();
     				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
-    	        	break;
+    				long WAP_ALIPAY_end = System.currentTimeMillis() - WAP_ALIPAY_begin; 
+    				logger.info(goods_no+"Wap支付宝支付耗时：" + WAP_ALIPAY_end + "毫秒");
+    				break;
     			default:
     				logger.info(String.format("apply payment payment_type [%s]",payment_type + ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
         					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT))));
@@ -630,15 +673,10 @@ public class PaymentController extends BaseController{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(respone)));
     			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(respone));
     		}
-    		else if(types.equalsIgnoreCase("Midas")){
-//    			PaymentTypeVTO results = new PaymentTypeVTO();
-//    			results.setType("json");
-//    			results.setUrl(msg);
-//    			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(results)));
-//    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(results)));
-    			logger.info(String.format("apply payment return result [%s]",msg));
-    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(msg));
-    		}
+//    		else if(types.equalsIgnoreCase("Midas")){
+//    			logger.info(String.format("apply payment return result [%s]",msg));
+//    			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(msg));
+//    		}
     		else{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(result)));
     			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
@@ -654,6 +692,9 @@ public class PaymentController extends BaseController{
 		}finally{
 			
 		}
+
+		long end = System.currentTimeMillis() - begin;
+		logger.info(goods_no+"请求总耗时：" + end + "毫秒！！！！！！");
     }
 	
 	/**
@@ -754,7 +795,6 @@ public class PaymentController extends BaseController{
      */
 	private PaymentTypeVTO doNativeWxPayment(HttpServletRequest request, HttpServletResponse response,String channel_type,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac,String paymentName,String appId){
 		
-		
 		PaymentTypeVTO result= new PaymentTypeVTO();
         String NOTIFY_URL = PayHttpService.WEIXIN_NOTIFY_URL;
         String PRUE_LOGO_URL = PayHttpService.PRUE_LOGO_URL;
@@ -768,7 +808,10 @@ public class PaymentController extends BaseController{
     		type = PaymentChannelCode.BHU_WAP_WEIXIN.i18n();
     	}
         //记录请求的Goods_no
+    	long begin = System.currentTimeMillis(); 
         String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,channel_type,total_fee,Ip,type,usermac,paymentName,appId);
+        long end = System.currentTimeMillis() - begin; 
+        logger.info(out_trade_no+"生成支付流水号耗时：" + end + "毫秒");
         
       //记录请求支付完成后返回的地址
 		if (!StringUtils.isBlank(locationUrl)) {
@@ -776,13 +819,28 @@ public class PaymentController extends BaseController{
 			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
 			orderLocation.setTid(reckoningId);
 			orderLocation.setLocation(locationUrl);
+			long insert_locationUrl_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 			paymentAlipaylocationService.insert(orderLocation);
+			long insert_locationUrl_end = System.currentTimeMillis() - insert_locationUrl_begin; // 这段代码放在程序执行后
+			logger.info(out_trade_no+"插入完成地址入库耗时：" + insert_locationUrl_end + "毫秒");
 		}
 
 		logger.info(String.format("apply wx payment reckoningId [%s] product_name [%s] total_fee [%s] ip [%s]"
         		+ "NOTIFY_URL [%s] ",reckoningId, product_name, total_fee, request.getRemoteAddr(),NOTIFY_URL ));
-        UnifiedOrderResponse unifiedOrderResponse = payHttpService.unifiedorder(reckoningId, product_name, total_fee, request.getRemoteAddr(), NOTIFY_URL, "");
-
+		long request_unifiedorder_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+		UnifiedOrderResponse unifiedOrderResponse = payHttpService.unifiedorder(reckoningId, product_name, total_fee, request.getRemoteAddr(), NOTIFY_URL, "");
+		long request_unifiedorder_end = System.currentTimeMillis() - request_unifiedorder_begin; // 这段代码放在程序执行后
+		logger.info(out_trade_no+"调用native微信统一下单接口耗时：" + request_unifiedorder_end + "毫秒");
+		int nowOutTimeLevel = payHttpService.getOt();
+		if(request_unifiedorder_end > nowOutTimeLevel){
+			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+			paymentNowpayErrorLog.setId(reckoningId);
+			paymentNowpayErrorLog.setOrder_id(out_trade_no);
+			paymentNowpayErrorLog.setOt(new Long(request_unifiedorder_end).intValue());
+			paymentNowpayErrorLog.setC_type("NativeWeixin");
+			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+		}
+		
         if(!unifiedOrderResponse.isResultSuccess()){
         	String status = unifiedOrderResponse.getResultErrorCode();
 			String msg = unifiedOrderResponse.getResultMessage();
@@ -795,13 +853,16 @@ public class PaymentController extends BaseController{
     	String codeUrl = unifiedOrderResponse.getCode_url();
     	String base64CodeUrl = "";
 		try {
+			long base64Code_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 			base64CodeUrl = BusinessHelper.GetBase64ImageStr(codeUrl,QR_CODE_URL,PRUE_LOGO_URL);
+			long base64Code_end = System.currentTimeMillis() - base64Code_begin; // 这段代码放在程序执行后
+			logger.info(out_trade_no+"生成二维码64位code耗时：" + base64Code_end + "毫秒");
+		
 		} catch (WriterException | IOException e) {
 			logger.error(String.format("return pc weixin catch WriterException "+e.getCause()));
 		}
     	base64CodeUrl = base64CodeUrl.replace("\r\n", "");
     	base64CodeUrl = base64CodeUrl.replace("\n", "");	
-    	System.out.println(base64CodeUrl);
     	result.setType("img");
     	result.setUrl(base64CodeUrl);
         return result;
@@ -854,8 +915,19 @@ public class PaymentController extends BaseController{
 
 		logger.info(String.format("apply App wx payment reckoningId [%s] product_name [%s] total_fee [%s] ip [%s]"
         		+ "NOTIFY_URL [%s] ",reckoningId, product_name, total_fee, request.getRemoteAddr(),NOTIFY_URL ));
+		long request_unifiedorder_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 		AppUnifiedOrderResponse unifiedOrderResponse = payHttpService.unifiedorderForApp(appId,mchId,mchKey,reckoningId, product_name, total_fee, request.getRemoteAddr(), NOTIFY_URL, "");
-
+		long request_unifiedorder_end = System.currentTimeMillis() - request_unifiedorder_begin; // 这段代码放在程序执行后
+		logger.info(out_trade_no+"调用App微信统一下单接口耗时：" + request_unifiedorder_end + "毫秒");
+		int nowOutTimeLevel = payHttpService.getOt();
+		if(request_unifiedorder_end > nowOutTimeLevel){
+			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+			paymentNowpayErrorLog.setId(reckoningId);
+			paymentNowpayErrorLog.setOrder_id(out_trade_no);
+			paymentNowpayErrorLog.setOt(new Long(request_unifiedorder_end).intValue());
+			paymentNowpayErrorLog.setC_type("AppWeixin");
+			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+		}
         if(!unifiedOrderResponse.isResultSuccess()){
         	String status = unifiedOrderResponse.getResultErrorCode();
 			String msg = unifiedOrderResponse.getResultMessage();
@@ -1003,7 +1075,20 @@ public class PaymentController extends BaseController{
 		//建立支付宝支付请求
 		String sHtmlText = "";
         try {
-            sHtmlText = AlipaySubmit.buildRequest(sParaTemp,"post","确认"); 
+        	long request_alipay_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+            sHtmlText = AlipaySubmit.buildRequest(sParaTemp,"post","确认");
+    		long request_unifiedorder_end = System.currentTimeMillis() - request_alipay_begin; // 这段代码放在程序执行后
+    		logger.info(out_trade_no+"请求支付宝url接口耗时：" + request_unifiedorder_end + "毫秒");
+    		int nowOutTimeLevel = payHttpService.getOt();
+    		if(request_unifiedorder_end > nowOutTimeLevel){
+    			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+    			paymentNowpayErrorLog.setId(reckoningId);
+    			paymentNowpayErrorLog.setOrder_id(out_trade_no);
+    			paymentNowpayErrorLog.setOt(new Long(request_unifiedorder_end).intValue());
+    			paymentNowpayErrorLog.setC_type("Alipay");
+    			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+    		}
+    		
             result = new PaymentTypeVTO();
             result.setType("http");
             result.setUrl(sHtmlText);
@@ -1025,9 +1110,15 @@ public class PaymentController extends BaseController{
 	 * @param ip 用户Ip
 	 * @return
 	 */
-    private PaymentTypeVTO doNowpay(HttpServletResponse response, String type,
-    		String totalPrice,String out_trade_no,String ip,String locationUrl,String usermac,
-    		String paymentName,String appid){
+    private PaymentTypeVTO doNowpay(HttpServletResponse response, 
+						    		String type,
+						    		String totalPrice,
+						    		String out_trade_no,
+						    		String ip,
+						    		String locationUrl,
+						    		String usermac,
+						    		String paymentName,
+						    		String appid){
     	response.setCharacterEncoding("utf-8");
     	PaymentTypeVTO result = new PaymentTypeVTO();
     	
@@ -1041,17 +1132,10 @@ public class PaymentController extends BaseController{
 		String subject = paymentName;//;new String("打赏".getBytes("ISO-8859-1"), "utf-8");
 		//付款金额
 		String total_fee = totalPrice;
-		
 
 		//订单描述
 		String body = "必虎服务";
 
-		//////////////////////////////////////////////////////////////////////////////////
-			
-		 //以上为正式支付前必有的订单信息，用户信息验证，接下来将用订单号生成一个支付流水号进行在线支付
-		//把请求参数打包成数组
-		Map<String, String> dataMap = new HashMap<String, String>();
-		String reckoningId = null;
 		//数据库存的是分，此处需要把传来的支付金额转换成分，而传给支付宝的保持不变（默认元）
 		String total_fee_fen = BusinessHelper.getMoney(total_fee);
 		
@@ -1059,7 +1143,14 @@ public class PaymentController extends BaseController{
 		if(CommdityApplication.BHU_PREPAID_BUSINESS.getKey().equals(Integer.parseInt(appid))){
 			return_url = PayHttpService.ALIPAY_PREPAID_RETURN_URL;
 		}
-		reckoningId = payLogicService.createPaymentReckoning(out_trade_no,"4",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName,appid);
+		//////////////////////////////////////////////////////////////////////////////////
+			
+		Map<String, String> dataMap = new HashMap<String, String>();
+		
+		long get_now_reckoning_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+		String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,"4",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName,appid);
+		long get_now_reckoning_end = System.currentTimeMillis() - get_now_reckoning_begin; // 这段代码放在程序执行后
+		logger.info(out_trade_no+"现在支付获取支付流水号耗时：" + get_now_reckoning_end + "毫秒");
 		//做MD5签名
 		dataMap.put("appId", NowpayConfig.appId);
 		dataMap.put("mhtOrderNo", reckoningId);
@@ -1076,7 +1167,6 @@ public class PaymentController extends BaseController{
 		//商户保留域， 可以不用填。 如果商户有需要对每笔交易记录一些自己的东西，可以放在这个里面
 		dataMap.put("mhtReserved", NowpayConfig.mhtReserved);
 		String mhtSignature = MD5Facade.getFormDataParamMD5(dataMap, NowpayConfig.appKey, "UTF-8");
-		
 		dataMap.put("mhtSignType", NowpayConfig.mhtSignType);
 		dataMap.put("mhtSignature", mhtSignature);
 		dataMap.put("funcode", NowpayConfig.funcode);
@@ -1087,14 +1177,30 @@ public class PaymentController extends BaseController{
 			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
 			orderLocation.setTid(reckoningId);
 			orderLocation.setLocation(locationUrl);
+			long insert_locationUrl_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 			paymentAlipaylocationService.insert(orderLocation);
+			long insert_locationUrl_end = System.currentTimeMillis() - insert_locationUrl_begin; // 这段代码放在程序执行后
+			logger.info(out_trade_no+"现在支付locationUrlr入库耗时：" + insert_locationUrl_end + "毫秒");
 			logger.info(String.format("apply nowpay set location reckoningId [%s] locationUrl [%s] insert finished.",reckoningId, locationUrl));
 		}
 		
 		//建立支付宝支付请求
 		String sHtmlText = "";
         try {
+        	long request_now_url_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
             sHtmlText = NowpaySubmit.buildRequest(dataMap,"post","确认");
+            long request_now_url_end = System.currentTimeMillis() - request_now_url_begin; // 这段代码放在程序执行后
+    		logger.info(out_trade_no+"请求现在支付获取支付url耗时：" + request_now_url_end + "毫秒");
+    		int nowOutTimeLevel = payHttpService.getOt();
+    		if(request_now_url_end > nowOutTimeLevel){
+    			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+    			paymentNowpayErrorLog.setId(reckoningId);
+    			paymentNowpayErrorLog.setOrder_id(out_trade_no);
+    			paymentNowpayErrorLog.setOt(new Long(request_now_url_end).intValue());
+    			paymentNowpayErrorLog.setC_type("Now");
+    			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+    		}
+    		//返回 结果
             result = new PaymentTypeVTO();
             result.setChannel("Now");
             result.setType("http");
@@ -1129,9 +1235,12 @@ public class PaymentController extends BaseController{
     	}
     	
     	String total_fee_fen = BusinessHelper.getMoney(total_fee);
-    	
+    	long get_midas_reckoning_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
     	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,type,total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName,appid);
-    		if(version.equals("v1")){
+    	long get_midas_reckoning_end = System.currentTimeMillis() - get_midas_reckoning_begin; // 这段代码放在程序执行后
+		logger.info(out_trade_no+"midas支付获取支付流水号耗时：" + get_midas_reckoning_end + "毫秒");
+		
+    	if(version.equals("v1")){
     		//记录请求支付完成后返回的地址
         	if (StringUtils.isBlank(return_url)) {
         		return_url = PayHttpService.WEB_NOTIFY_URL;
@@ -1141,7 +1250,11 @@ public class PaymentController extends BaseController{
         		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
         		orderLocation.setTid(reckoningId);
         		orderLocation.setLocation(return_url);
+        		long insert_midas_url_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
         		paymentAlipaylocationService.insert(orderLocation);
+        		long insert_midas_url_end = System.currentTimeMillis() - insert_midas_url_begin; // 这段代码放在程序执行后
+        		logger.info(out_trade_no+"midas插入支付完成URL耗时：" + insert_midas_url_end + "毫秒");
+        		
         		logger.info(String.format("apply midas set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
         		if(return_url.contains("payokurl=")){
         			String[] Str =return_url.split("payokurl=");
@@ -1153,9 +1266,21 @@ public class PaymentController extends BaseController{
 
         	double fenTemp = Double.parseDouble(total_fee_fen);
         	double jiaoTemp =fenTemp/10;
+        	long get_midas_url_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
         	String results = MidasUtils.submitOrder("v1",reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
-        	//String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac);
-        	logger.info(String.format("apply midas results [%s]",results));
+        	long get_midas_url_end = System.currentTimeMillis() - get_midas_url_begin; // 这段代码放在程序执行后
+    		logger.info(out_trade_no+"请求midas获取支付URL耗时：" + get_midas_url_end + "毫秒");
+    		int nowOutTimeLevel = payHttpService.getOt();
+    		if(get_midas_url_end > nowOutTimeLevel){
+    			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+    			paymentNowpayErrorLog.setId(reckoningId);
+    			paymentNowpayErrorLog.setOrder_id(out_trade_no);
+    			paymentNowpayErrorLog.setOt(new Long(get_midas_url_end).intValue());
+    			paymentNowpayErrorLog.setC_type("Midas");
+    			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+    		}
+    		
+    		logger.info(String.format("apply midas results [%s]",results));
         	if("error".equalsIgnoreCase(results)){
         		result.setType("FAIL");
             	result.setUrl("支付请求失败");
@@ -1168,65 +1293,7 @@ public class PaymentController extends BaseController{
     	}
     	return result;    	
 	}
-//    /**
-//     * 处理米大师支付服务请求
-//     * @param response
-//     * @param total_fee
-//     * @param goods_no
-//     * @param paymentName 
-//     * @param umac 
-//     * @param payment_completed_url 
-//     * @param exter_invoke_ip 
-//     * @return
-//     */
-//    private PaymentTypeVTO doMidas_v1(HttpServletResponse response, String type,String total_fee, String out_trade_no, String ip, String return_url, String usermac, String paymentName,String appid) {
-//    	PaymentTypeVTO result = new PaymentTypeVTO();
-//    	if(ip == "" || ip == null){
-//    		ip = "213.42.3.24";
-//    	}
-//    	
-//    	if(usermac.equals("")){
-//    		usermac = RandomPicker.randString(BusinessHelper.letters, 8);
-//    	}
-//    	
-//    	String total_fee_fen = BusinessHelper.getMoney(total_fee);
-//    	
-//    	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,type,total_fee_fen,ip,PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n(),usermac,paymentName,appid);
-//    	//记录请求支付完成后返回的地址
-//    	if (StringUtils.isBlank(return_url)) {
-//    		return_url = PayHttpService.WEB_NOTIFY_URL;
-//    		logger.info(String.format(" midas  return_url location is null so we set default value %s ",return_url));
-//    	}else{
-//    		logger.info(String.format("get midas location [%s] ",return_url));
-//    		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
-//    		orderLocation.setTid(reckoningId);
-//    		orderLocation.setLocation(return_url);
-//    		paymentAlipaylocationService.insert(orderLocation);
-//    		logger.info(String.format("apply midas set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
-//    		if(return_url.contains("payokurl=")){
-//    			String[] Str =return_url.split("payokurl=");
-//    			if( Str.length > 0){
-//    				return_url = Str[1];
-//    			}
-//    		}
-//    	}
-//    	
-//    	double fenTemp = Double.parseDouble(total_fee_fen);
-//    	double jiaoTemp =fenTemp/10;
-//    	String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
-//    	//String results = MidasUtils.submitOrder(reckoningId, jiaoTemp+"", ip,paymentName,usermac);
-//    	logger.info(String.format("apply midas results [%s]",results));
-//    	if("error".equalsIgnoreCase(results)){
-//    		result.setType("FAIL");
-//    		result.setUrl("支付请求失败");
-//    		return result;
-//    	}else{
-//    		result.setType("http");
-//    		result.setUrl(results);
-//    		return result;
-//    	}
-//    }
-   
+
     /**
      * 处理汇付宝支付服务请求
      * @param response
@@ -1266,11 +1333,27 @@ public class PaymentController extends BaseController{
     		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
     		orderLocation.setTid(reckoningId);
     		orderLocation.setLocation(locationUrl);
+    		long insert_hee_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
     		paymentAlipaylocationService.insert(orderLocation);
+    		long insert_hee_end = System.currentTimeMillis() - insert_hee_begin; // 这段代码放在程序执行后
+    		logger.info(out_trade_no+"汇元url入库耗时：" + insert_hee_end + "毫秒");
     		logger.info(String.format("apply heepay set reckoningId [%s] location url [%s] insert finished.",reckoningId,locationUrl));
     	}
+    	long requset_hee_url_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
     	String url = Heepay.order(reckoningId, total_fee, ip,notify_url,return_url);
-    	if("error".equalsIgnoreCase(url)){
+    	long requset_hee_url_end = System.currentTimeMillis() - requset_hee_url_begin; // 这段代码放在程序执行后
+		logger.info(out_trade_no+"请求汇元获取url耗时：" + requset_hee_url_end + "毫秒");
+		int nowOutTimeLevel = payHttpService.getOt();
+		if(requset_hee_url_end > nowOutTimeLevel){
+			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+			paymentNowpayErrorLog.setId(reckoningId);
+			paymentNowpayErrorLog.setOrder_id(out_trade_no);
+			paymentNowpayErrorLog.setOt(new Long(requset_hee_url_end).intValue());
+			paymentNowpayErrorLog.setC_type("Hee");
+			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+		}
+		
+		if("error".equalsIgnoreCase(url)){
     		result.setType("FAIL");
         	result.setUrl("支付请求失败");
         	return result;
@@ -1296,7 +1379,7 @@ public class PaymentController extends BaseController{
 	@RequestMapping(value = "/payment/alipayNotifySuccess")
    	public void alipayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","支付宝订单支付通知",BusinessHelper.gettimestamp(),"Starting"));
-
+   		long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
         //获取支付宝POST过来反馈信息
 		Map<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
@@ -1367,6 +1450,9 @@ public class PaymentController extends BaseController{
 			logger.info("fail");
 		}
 		SpringMVCHelper.renderJson(response, "success");
+
+		long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
+		logger.info(payReckoning.getOrder_id()+"支付宝回调通知总耗时：" + end + "毫秒");
 		return;
     }
     
@@ -1382,7 +1468,7 @@ public class PaymentController extends BaseController{
    	public void nowpayNotifySuccess(HttpServletRequest request,
    			HttpServletResponse response) throws IOException, JDOMException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","现在订单支付通知",BusinessHelper.gettimestamp(),"Starting"));
-
+   		long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
    	//获取通知数据需要从body中流式读取
 		BufferedReader reader = request.getReader();
 		StringBuilder reportBuilder = new StringBuilder();
@@ -1443,9 +1529,13 @@ public class PaymentController extends BaseController{
 				}
 			}
         	response.getOutputStream().write("success=Y".getBytes());
+        	long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
+        	logger.info(payReckoning.getOrder_id()+"现在支付通知总耗时：" + end + "毫秒");
         	return;
         } else{
         	response.getOutputStream().write("success=N".getBytes());
+        	long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
+        	logger.info(payReckoning.getOrder_id()+"现在支付通知总耗时：" + end + "毫秒");
         	return;
         }
     }
@@ -1462,7 +1552,8 @@ public class PaymentController extends BaseController{
     public String wxPayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info(String.format("******[%s]********[%s]*******[%s]********","微信订单支付通知",BusinessHelper.gettimestamp(),"Starting"));
 
-       
+        long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
+        
         PrintWriter out = response.getWriter();
         InputStream inStream = request.getInputStream();
         ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
@@ -1478,6 +1569,7 @@ public class PaymentController extends BaseController{
         Map<String, String> map = null;
         String out_trade_no = "";
         String thirdPartCode = "";
+        String orderId = "";
         try {
             logger.info(result);
             map = XMLUtil.doXMLParse(result);
@@ -1499,7 +1591,7 @@ public class PaymentController extends BaseController{
             if (payReckoning == null) {
             	return "error";
             }
-            String orderId = payReckoning.getOrder_id();
+            orderId = payReckoning.getOrder_id();
             logger.info(String.format("get wx notify reckoningId [%s] trade_no [%s] orderId [%s]",out_trade_no, thirdPartCode,orderId));
             
             //判断当前账单的实际状态，如果是以支付状态就不做处理了
@@ -1520,11 +1612,14 @@ public class PaymentController extends BaseController{
 				logger.info("账单流水号："+out_trade_no+"支付账单、订单状态状态修改成功!");
 		            return "success";
 			}
+			
         } catch (JDOMException e) {
             logger.info("账单流水号："+out_trade_no+"捕获到微信通知/notify_success方法的异常："+e.getMessage()+e.getCause());
             String noticeStr = "";//XMLUtil.setXML("FAIL", "");
             out.print(new ByteArrayInputStream(noticeStr.getBytes(Charset.forName("UTF-8"))));
         }
+        long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
+	    logger.info(orderId+"微信通知总耗时：" + end + "毫秒");
         return "success";
     }
 
@@ -1543,7 +1638,8 @@ public class PaymentController extends BaseController{
    	@RequestMapping(value = "/payment/heepayNotifySuccess", method = { RequestMethod.GET,RequestMethod.POST })
    	public String heepayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
     	logger.info(String.format("******[%s]********[%s]*******[%s]********","汇元宝通知",BusinessHelper.gettimestamp(),"Starting"));
-        //获取POST过来反馈信息
+
+    	long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 		Map<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
 		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
@@ -1606,13 +1702,18 @@ public class PaymentController extends BaseController{
 						return "error";
 					}
 				}
+				 long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
+				 logger.info(orderId+"微信通知总耗时：" + end + "毫秒");
 				return "ok";
 				
 		}else{//验证失败
+			
 			logger.info(String.format("get heepay notify  mysign [%s] sign [%s] sign verify fail",mySign, sign));
+			 long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
+			 logger.info(orderId+"汇元通知总耗时：" + end + "毫秒");
 			return "error";
 		}
-    	
+		
     }
     
     /***************************Hee end**************************************/
@@ -1628,7 +1729,8 @@ public class PaymentController extends BaseController{
    	@RequestMapping(value = "/payment/midasNotifySuccess", method = { RequestMethod.GET,RequestMethod.POST })
    	public void midasNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
     	logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师midasNotifySuccess",BusinessHelper.gettimestamp(),"Starting"));
-    	//获取POST过来反馈信息
+
+    	long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
    		MidasRespone result = null;
    		result = new MidasRespone(1,"通知订单信息无效");
     	
@@ -1665,8 +1767,10 @@ public class PaymentController extends BaseController{
 		
 		//交易签名
 		String sign = new String(request.getParameter("sig").getBytes("ISO-8859-1"),"UTF-8");
-
+		long select_ID_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
+		long select_ID_end = System.currentTimeMillis() - select_ID_begin; // 这段代码放在程序执行后
+		logger.info(out_trade_no+"查询订单是否存在耗时：" + select_ID_end + "毫秒");
 		if (payReckoning == null) {
         	logger.info("get midas notice payReckoning " +payReckoning);
         	SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
@@ -1709,6 +1813,8 @@ public class PaymentController extends BaseController{
 			result.setMsg("请求参数错误：（sig）");
 			result.setRet(2);
 			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+			 long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
+			 logger.info(orderId+"汇元通知总耗时：" + end + "毫秒");
 			return;
 		}
     	
@@ -1864,7 +1970,7 @@ public class PaymentController extends BaseController{
 				valueStr = (i == values.length - 1) ? valueStr + values[i]
 						: valueStr + values[i] + ",";
 			}
-			System.out.println("N:"+name+"V:"+valueStr);
+			logger.info("N:"+name+"V:"+valueStr);
 			params.put(name, valueStr);
 		}
 		String isNull = request.getParameter("out_trade_no");
@@ -1910,7 +2016,7 @@ public class PaymentController extends BaseController{
 				valueStr = (i == values.length - 1) ? valueStr + values[i]
 						: valueStr + values[i] + ",";
 			}
-			System.out.println("N:"+name+"V:"+valueStr);
+			logger.info("N:"+name+"V:"+valueStr);
 			params.put(name, valueStr);
 		}
 		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
@@ -2052,7 +2158,8 @@ public class PaymentController extends BaseController{
 	@RequestMapping(value = "/payment/midasReturn" , method = { RequestMethod.GET,RequestMethod.POST })
    	public void midasReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师备用通知midasReturn",BusinessHelper.gettimestamp(),"Starting"));
-    	//获取POST过来反馈信息
+
+   		long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
    		MidasRespone result = null;
    		result = new MidasRespone(1,"通知订单信息无效");
     	
@@ -2125,6 +2232,8 @@ public class PaymentController extends BaseController{
 				result.setMsg("OK");
 				result.setRet(0);
 				SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+				long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
+				logger.info(orderId+"米大师通知总耗时：" + end + "毫秒");
 				return;
 			}
 				
@@ -2133,6 +2242,8 @@ public class PaymentController extends BaseController{
 			result.setMsg("请求参数错误：(sig)");
 			result.setRet(2);
 			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
+			 long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
+			 logger.info(orderId+"米大师通知总耗时：" + end + "毫秒");
 			return;
 		}
 	}
