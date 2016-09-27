@@ -733,7 +733,7 @@ public class TagFacadeRpcSerivce {
 		}
 		
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsets(gid, beginTime, endTime,pageNo,pageSize,match,count,mobileno);
-		Map<String, Integer> allCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count);
+		Map<String, Integer> allCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno);
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
