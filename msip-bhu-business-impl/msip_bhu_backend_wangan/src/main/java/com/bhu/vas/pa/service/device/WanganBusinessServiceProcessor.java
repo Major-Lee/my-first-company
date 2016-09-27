@@ -157,7 +157,7 @@ public class WanganBusinessServiceProcessor{
 			memdto.setInternet(entity.getWan_ip());
 		}
 		if(StringUtils.isEmpty(memdto.getVipacc())){
-			userIdentityAuthFacadeService.fetchUserMobilenoByHdmac(memdto.getHmac());
+			memdto.setVipacc(userIdentityAuthFacadeService.fetchUserMobilenoByHdmac(memdto.getHmac()));
 		}		
 
 		if(online){
