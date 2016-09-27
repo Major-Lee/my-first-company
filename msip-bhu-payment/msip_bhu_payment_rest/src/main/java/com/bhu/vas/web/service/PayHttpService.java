@@ -53,7 +53,7 @@ public class PayHttpService {
     //重定向地址
     public static String PAY_HOST_URL = "http://pays.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
-    public static String MIDAS_REQURST_URL = "http://mpays.bhuwifi.com/msip_bhu_payment_rest/payment/getMidas";
+    public static String MIDAS_REQURST_URL = "http://mpays.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/payment/getMidas";
     //重定向地址
     public static String REDIRECT_URL = PAY_HOST_URL+"/weixinPay";
     //异步回调地址

@@ -79,8 +79,8 @@ public class PayLogicService {
     	
     	String total_fee_fen = BusinessHelper.getMoney(total_fee);
     	int tempFee = Integer.parseInt(total_fee_fen);
-    	//PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
-    	PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEI_XIN");
+    	PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
+    	//PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEI_XIN");
     	if(paymentParameter == null){
     		return result;
     	}
