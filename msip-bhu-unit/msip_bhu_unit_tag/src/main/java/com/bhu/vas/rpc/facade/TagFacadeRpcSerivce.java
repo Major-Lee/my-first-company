@@ -945,6 +945,7 @@ public class TagFacadeRpcSerivce {
 				tagGroupSortMessage.setStart(startTime);
 				tagGroupSortMessage.setEnd(endTime);
 				tagGroupSortMessage.setConnect(count);
+				tagGroupSortMessage.setFilter(match);
 				tagGroupSortMessage.replaceInnerModels(mobilenoList);
 				tagGroupSortMessage.setSmtotal(sm_count);
 				TagGroupSortMessage resultEntity =  tagGroupSortMessageService.insert(tagGroupSortMessage);
@@ -971,13 +972,16 @@ public class TagFacadeRpcSerivce {
 	
 	public TailPage<TagGroupSortMessageVTO> sendMessageDetail(int uid ,int gid,int pageNo,int pageSize){
 		
-		boolean isGroup = tagGroupService.checkGroup(gid, uid);
-		if(!isGroup){
-			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
-		}
-		
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("gid", gid);
+		if(gid != 0){
+			boolean isGroup = tagGroupService.checkGroup(gid, uid);
+			if(!isGroup){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+			}
+			mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("gid", gid);
+		}else{
+			mc.createCriteria().andColumnEqualTo("uid", uid);
+		}
 		int count = tagGroupSortMessageService.countByModelCriteria(mc);
 		
 		mc.setPageNumber(pageNo);
@@ -999,6 +1003,9 @@ public class TagFacadeRpcSerivce {
 		vto.setSendCount(entity.getSmtotal());
 		vto.setSendTime(entity.getCreated_at());
 		vto.setStart(entity.getStart());
+		if(entity.getFilter()!=null && !entity.getFilter().isEmpty()){
+			vto.setFilter(entity.getFilter());
+		}
 		vto.setEnd(entity.getEnd());
 		vto.setState(entity.getState());
 		return vto;
