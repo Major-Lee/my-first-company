@@ -13,6 +13,7 @@
 		<result property="start" column="start" />
 		<result property="end" column="end" />
 		<result property="connect" column="connect" />
+		<result property="match" column="match" />
 		<result property="smtotal" column="smtotal" />
 		<result property="state" column="state" />
 		<result property="extension_content" column="extension_content" />
@@ -35,6 +36,7 @@
 	    	start,
 	    	end,
 	    	connect,
+	    	match,
 	    	smtotal,
 	    	state,
 	        extension_content,
@@ -52,6 +54,7 @@
 		#{start},
 		#{end},
 		#{connect},
+		#{match},
 		#{smtotal},
 		#{state},
 		#{extension_content},
@@ -68,6 +71,7 @@
 		start = #{start},
 		end = #{end},
 		connect = #{connect},
+		match = #{match},
 		smtotal = #{smtotal},
 		state = #{state},
 		extension_content = #{extension_content},

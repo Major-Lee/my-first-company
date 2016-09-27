@@ -14,7 +14,14 @@ public class TagGroupSortMessageVTO implements Serializable{
 	private Date sendTime;
 	private int sendCount;
 	private String state;
+	private String match;
 	
+	public String getMatch() {
+		return match;
+	}
+	public void setMatch(String match) {
+		this.match = match;
+	}
 	public String getState() {
 		return state;
 	}
