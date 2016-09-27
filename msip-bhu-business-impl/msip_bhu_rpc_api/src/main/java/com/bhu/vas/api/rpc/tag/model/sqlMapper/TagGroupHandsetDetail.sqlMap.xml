@@ -22,6 +22,10 @@
   	<result property="min" column="MIN(timestr)"/>
   	<result property="max" column="MAX(timestr)"/>
   </resultMap> 
+  
+   <resultMap id="mobilenoMap" type="hashmap">
+  	<result property="mobileno" column="mobileno"/>
+  </resultMap> 
    
 	<resultMap id="GroupUsersRankMap" type="hashmap">
 		<result property="date" column="date" javaType="java.lang.String"/>	
@@ -213,7 +217,7 @@
 		</if>
 	</select>
 	
-	<select id="selectMobilenos" resultMap="map" parameterType="map">
+	<select id="selectMobilenos" resultMap="mobilenoMap" parameterType="map">
 	    SELECT distinct mobileno FROM <include refid="modelTableName" /> 
 	    <where>
 			gid = #{gid}
@@ -246,9 +250,6 @@
 	    </where> 
 	    GROUP BY hdmac
 	    HAVING COUNT(hdmac) ${match} #{count}
-	    <if test="mobileno !=null">
-			AND mobileno = #{mobileno}
-		</if>
 		) t
 	</select>
 	
