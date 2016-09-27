@@ -733,7 +733,7 @@ public class TagFacadeRpcSerivce {
 		}
 		
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsets(gid, beginTime, endTime,pageNo,pageSize,match,count,mobileno);
-		Map<String, Integer> allCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno,"");
+		Map<String, Integer> allCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno);
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
@@ -754,8 +754,7 @@ public class TagFacadeRpcSerivce {
 		resultVto.setTailPage(new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize,allCount.get("userCount") == null ? 0 : allCount.get("userCount"), vtos));
 		resultVto.setUserTotal(allCount.get("userCount") == null ? 0 : allCount.get("userCount"));
 		resultVto.setConnTotal(allCount.get("userSum") == null ? 0 : allCount.get("userSum"));
-		Map<String, Integer> filterCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno,StringHelper.TRUE);
-		resultVto.setAuthTotal(filterCount.get("userCount") == null ? 0 : filterCount.get("userCount"));
+		resultVto.setAuthTotal(allCount.get("userMobileno") == null ? 0 : allCount.get("userMobileno"));
 		
 		return resultVto;
 	}
@@ -908,7 +907,7 @@ public class TagFacadeRpcSerivce {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_MSG_TOO_LONG_OR_NULL);
 		}
 		
-		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsets(gid, startTime, endTime,0,0,match,count,"");
+		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectMobileno(gid, startTime, endTime,match,count);
 		List<TagGroupHandsetDetailDTO> dtos = new ArrayList<TagGroupHandsetDetailDTO>();
 		for(Map<String, Object> map : handsetMap){
 			TagGroupHandsetDetailDTO dto = BusinessTagModelBuilder.builderGroupUserDetailFilterVTO(map);
