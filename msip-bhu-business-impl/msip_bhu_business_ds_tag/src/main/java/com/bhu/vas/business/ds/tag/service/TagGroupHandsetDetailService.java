@@ -103,17 +103,13 @@ public class TagGroupHandsetDetailService
 	
 
 	public Map<String, Integer> countHandsets(int gid,
-			String beginTime, String endTime, String match,int count ,String mobileno) {
+			String beginTime, String endTime, String match,int count) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("gid", gid);
 		map.put("beginTime", beginTime);
 		map.put("endTime", endTime);
 		map.put("match", match);
 		map.put("count", count);
-		
-		if(mobileno !=null && !mobileno.isEmpty()){
-			map.put("mobileno", mobileno);
-		}
 		
 		Map<String, Integer> resultMap = this.getEntityDao()
 				.getSqlSessionMasterTemplate()
