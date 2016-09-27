@@ -945,7 +945,6 @@ public class TagFacadeRpcSerivce {
 				tagGroupSortMessage.setStart(startTime);
 				tagGroupSortMessage.setEnd(endTime);
 				tagGroupSortMessage.setConnect(count);
-				tagGroupSortMessage.setMatch(match);
 				tagGroupSortMessage.replaceInnerModels(mobilenoList);
 				tagGroupSortMessage.setSmtotal(sm_count);
 				TagGroupSortMessage resultEntity =  tagGroupSortMessageService.insert(tagGroupSortMessage);
@@ -997,9 +996,6 @@ public class TagFacadeRpcSerivce {
 		vto.setGroupName(groupEntity.getName());
 		vto.setContext(entity.getContext());
 		vto.setCount(entity.getConnect());
-		if(entity.getMatch() != null && !entity.getMatch().isEmpty()){
-			vto.setMatch(entity.getMatch());
-		}
 		vto.setSendCount(entity.getSmtotal());
 		vto.setSendTime(entity.getCreated_at());
 		vto.setStart(entity.getStart());
