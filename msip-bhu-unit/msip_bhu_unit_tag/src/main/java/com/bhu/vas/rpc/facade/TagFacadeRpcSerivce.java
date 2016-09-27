@@ -1003,7 +1003,9 @@ public class TagFacadeRpcSerivce {
 		vto.setSendCount(entity.getSmtotal());
 		vto.setSendTime(entity.getCreated_at());
 		vto.setStart(entity.getStart());
-		if(entity.getFilter()!=null && !entity.getFilter().isEmpty()){
+		if(entity.getFilter() == null || entity.getFilter().isEmpty()){
+			vto.setFilter(">");
+		}else{
 			vto.setFilter(entity.getFilter());
 		}
 		vto.setEnd(entity.getEnd());
