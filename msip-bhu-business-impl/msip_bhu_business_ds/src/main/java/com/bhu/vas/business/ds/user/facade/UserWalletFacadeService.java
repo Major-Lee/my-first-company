@@ -1283,12 +1283,7 @@ public class UserWalletFacadeService{
 			if(executeRet == 0){
 				long total_vcurrency_leave = total_vcurrency-vcurrency_cost;
 				callback.after(uid,total_vcurrency_leave);
-				
-				if(total_vcurrency_leave <= BusinessRuntimeConfiguration.Sharednetwork_Auth_Threshold_NeedCharging){
-					return SnkAuthenticateResultType.SuccessButThresholdNeedCharging;
-				}else{
-					return SnkAuthenticateResultType.Success;
-				}
+				return SnkAuthenticateResultType.Success;
 			}else{
 				return SnkAuthenticateResultType.Failed;
 			}
