@@ -31,7 +31,16 @@ public class TagGroupSortMessage extends SetJsonExtIntModel<String> implements S
 	private String state = deafult;
 	private Date created_at;
 	private Date update_at;
+	private String filter;
 	
+	public String getFilter() {
+		return filter;
+	}
+
+	public void setFilter(String filter) {
+		this.filter = filter;
+	}
+
 	public int getGid() {
 		return gid;
 	}

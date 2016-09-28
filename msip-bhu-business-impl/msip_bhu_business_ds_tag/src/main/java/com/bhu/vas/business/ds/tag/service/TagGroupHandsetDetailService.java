@@ -82,23 +82,34 @@ public class TagGroupHandsetDetailService
 						TagGroupHandsetDetail.class.getName()
 								+ ".selectHandsets", map);
 	}
-
-	public Map<String, Integer> countHandsets(int gid,
-			String beginTime, String endTime, String match,int count ,String mobileno,String filter) {
+	
+	public List<Map<String, Object>> selectMobileno(int gid,
+			String beginTime, String endTime,String match,int count) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("gid", gid);
 		map.put("beginTime", beginTime);
 		map.put("endTime", endTime);
 		map.put("match", match);
 		map.put("count", count);
-		
-		if(filter !=null && !filter.isEmpty()){
-			map.put("filter",filter);
-		}
-		
-		if(mobileno !=null && !mobileno.isEmpty()){
-			map.put("mobileno", mobileno);
-		}
+
+		return this
+				.getEntityDao()
+				.getSqlSessionMasterTemplate()
+				.selectList(
+						TagGroupHandsetDetail.class.getName()
+								+ ".selectMobilenos", map);
+	}
+	
+	
+
+	public Map<String, Integer> countHandsets(int gid,
+			String beginTime, String endTime, String match,int count) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("gid", gid);
+		map.put("beginTime", beginTime);
+		map.put("endTime", endTime);
+		map.put("match", match);
+		map.put("count", count);
 		
 		Map<String, Integer> resultMap = this.getEntityDao()
 				.getSqlSessionMasterTemplate()

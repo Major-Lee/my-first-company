@@ -29,7 +29,6 @@ public class BusinessTagModelBuilder {
 		if(map.get("mobileno") == null){
 			return null;
 		}
-		dto.setHdMac((String)map.get("hdmac"));
 		dto.setMobileno((String)map.get("mobileno"));
 		return dto;
 	}

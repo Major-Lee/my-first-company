@@ -19,9 +19,7 @@ import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.tag.iservice.ITagRpcService;
 import com.bhu.vas.api.rpc.tag.vto.GroupCountOnlineVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupHandsetDetailVTO;
-import com.bhu.vas.api.rpc.tag.vto.GroupStatDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.GroupUsersStatisticsVTO;
-import com.bhu.vas.api.rpc.tag.vto.TagGroupHandsetDetailVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupSendSortMessageVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupSortMessageVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
@@ -472,7 +470,7 @@ public class GroupController extends BaseController{
                 HttpServletRequest request,
                 HttpServletResponse response,
                 @RequestParam(required = true) int uid,
-                @RequestParam(required = true) int gid,
+                @RequestParam(required = false, defaultValue = "0") int gid,
                 @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
                 @RequestParam(required = false, defaultValue = "5", value = "ps") int pageSize) {
         	RpcResponseDTO<TailPage<TagGroupSortMessageVTO>> rpcResult = tagRpcService.sendMessageDetail(uid, gid, pageNo, pageSize);

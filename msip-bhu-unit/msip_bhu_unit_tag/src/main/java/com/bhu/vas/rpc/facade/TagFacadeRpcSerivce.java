@@ -733,7 +733,7 @@ public class TagFacadeRpcSerivce {
 		}
 		
 		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsets(gid, beginTime, endTime,pageNo,pageSize,match,count,mobileno);
-		Map<String, Integer> allCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno,"");
+		Map<String, Integer> allCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count);
 		List<TagGroupHandsetDetailVTO> vtos = new ArrayList<TagGroupHandsetDetailVTO>();
 		for(Map<String, Object> map : handsetMap){
 			vtos.add(BusinessTagModelBuilder.builderGroupUserDetailVTO(map));
@@ -754,8 +754,7 @@ public class TagFacadeRpcSerivce {
 		resultVto.setTailPage(new CommonPage<TagGroupHandsetDetailVTO>(pageNo, pageSize,allCount.get("userCount") == null ? 0 : allCount.get("userCount"), vtos));
 		resultVto.setUserTotal(allCount.get("userCount") == null ? 0 : allCount.get("userCount"));
 		resultVto.setConnTotal(allCount.get("userSum") == null ? 0 : allCount.get("userSum"));
-		Map<String, Integer> filterCount = tagGroupHandsetDetailService.countHandsets(gid, beginTime, endTime,match,count,mobileno,StringHelper.TRUE);
-		resultVto.setAuthTotal(filterCount.get("userCount") == null ? 0 : filterCount.get("userCount"));
+		resultVto.setAuthTotal(allCount.get("userMobileno") == null ? 0 : allCount.get("userMobileno"));
 		
 		return resultVto;
 	}
@@ -908,7 +907,7 @@ public class TagFacadeRpcSerivce {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_MSG_TOO_LONG_OR_NULL);
 		}
 		
-		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectHandsets(gid, startTime, endTime,0,0,match,count,"");
+		List<Map<String, Object>> handsetMap = tagGroupHandsetDetailService.selectMobileno(gid, startTime, endTime,match,count);
 		List<TagGroupHandsetDetailDTO> dtos = new ArrayList<TagGroupHandsetDetailDTO>();
 		for(Map<String, Object> map : handsetMap){
 			TagGroupHandsetDetailDTO dto = BusinessTagModelBuilder.builderGroupUserDetailFilterVTO(map);
@@ -946,6 +945,7 @@ public class TagFacadeRpcSerivce {
 				tagGroupSortMessage.setStart(startTime);
 				tagGroupSortMessage.setEnd(endTime);
 				tagGroupSortMessage.setConnect(count);
+				tagGroupSortMessage.setFilter(match);
 				tagGroupSortMessage.replaceInnerModels(mobilenoList);
 				tagGroupSortMessage.setSmtotal(sm_count);
 				TagGroupSortMessage resultEntity =  tagGroupSortMessageService.insert(tagGroupSortMessage);
@@ -972,13 +972,16 @@ public class TagFacadeRpcSerivce {
 	
 	public TailPage<TagGroupSortMessageVTO> sendMessageDetail(int uid ,int gid,int pageNo,int pageSize){
 		
-		boolean isGroup = tagGroupService.checkGroup(gid, uid);
-		if(!isGroup){
-			throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
-		}
-		
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("gid", gid);
+		if(gid != 0){
+			boolean isGroup = tagGroupService.checkGroup(gid, uid);
+			if(!isGroup){
+				throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
+			}
+			mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("gid", gid).andColumnEqualTo("state",TagGroupSortMessage.done);
+		}else{
+			mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("state",TagGroupSortMessage.done);
+		}
 		int count = tagGroupSortMessageService.countByModelCriteria(mc);
 		
 		mc.setPageNumber(pageNo);
@@ -1000,6 +1003,11 @@ public class TagFacadeRpcSerivce {
 		vto.setSendCount(entity.getSmtotal());
 		vto.setSendTime(entity.getCreated_at());
 		vto.setStart(entity.getStart());
+		if(entity.getFilter() == null || entity.getFilter().isEmpty()){
+			vto.setFilter(">");
+		}else{
+			vto.setFilter(entity.getFilter());
+		}
 		vto.setEnd(entity.getEnd());
 		vto.setState(entity.getState());
 		return vto;
