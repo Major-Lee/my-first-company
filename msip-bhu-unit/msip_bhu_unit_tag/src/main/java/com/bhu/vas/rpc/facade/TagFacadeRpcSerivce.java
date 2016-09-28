@@ -978,9 +978,9 @@ public class TagFacadeRpcSerivce {
 			if(!isGroup){
 				throw new BusinessI18nCodeException(ResponseErrorCode.TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH);
 			}
-			mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("gid", gid);
+			mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("gid", gid).andColumnEqualTo("state",TagGroupSortMessage.done);
 		}else{
-			mc.createCriteria().andColumnEqualTo("uid", uid);
+			mc.createCriteria().andColumnEqualTo("uid", uid).andColumnEqualTo("state",TagGroupSortMessage.done);
 		}
 		int count = tagGroupSortMessageService.countByModelCriteria(mc);
 		
