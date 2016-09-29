@@ -11,12 +11,12 @@ public class PushMsg extends PushBasicMsg{
 	//push title
 	private String title;
 	
-//	public int getBadge() {
-//		return badge;
-//	}
-//	public void setBadge(int badge) {
-//		this.badge = badge;
-//	}
+	public int getBadge() {
+		return badge;
+	}
+	public void setBadge(int badge) {
+		this.badge = badge;
+	}
 	public String getSound() {
 		return sound;
 	}
