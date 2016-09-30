@@ -31,7 +31,7 @@ public class UserIncomeRankService extends AbstractCommdityService<String, UserI
 		mc.setOrderByClause("rank");
 		mc.setPageSize(ps);
 		mc.setPageNumber(pn);
-		return super.entityDao.findByLimit(time);
+		return this.findModelByModelCriteria(mc);
 	}
 	
 	public void updateBytime(String time){
