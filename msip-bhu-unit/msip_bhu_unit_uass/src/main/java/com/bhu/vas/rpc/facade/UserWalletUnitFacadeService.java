@@ -17,6 +17,8 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.dubbo.common.logger.Logger;
+import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
@@ -27,7 +29,6 @@ import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
-import com.bhu.vas.api.rpc.charging.model.UserIncome;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
 import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.bhu.vas.api.rpc.commdity.model.Order;
@@ -107,7 +108,7 @@ public class UserWalletUnitFacadeService {
 	
 	@Resource
 	private UserSharedealDistributorViewService userSharedealDistributorViewService;
-	
+	private final Logger logger = LoggerFactory.getLogger(UserWalletUnitFacadeService.class);
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, 
 			String transmode,String transtype, 
@@ -784,13 +785,20 @@ public class UserWalletUnitFacadeService {
 					}
 					rankingListVTO.setChangeFlag(1);
 				}else{
-					List<UserIncomeRank> userIncomeRanks=userIncomeRankService.findByLimit(currentDay+"%",pn,ps);
+					System.out.println(time+"========"+currentDay);
+					logger.info("info:time=======>"+time);
+					logger.info("info:currentDay=======>"+currentDay);
+					List<UserIncomeRank> userIncomeRanks=userIncomeRankService.findByLimit(currentDay+"%",(pn-1)*ps,pn*ps);
+					
+					logger.info("info:userIncomeRanks=======>"+userIncomeRanks.size());
 					UserIncomeRank incomeRank=userIncomeRankService.getByUid(uid,currentDay+"%");
 					if(incomeRank==null){
 						rankingListVTO.setRankNum(9999999);
 						rankingListVTO.setUserIncome("0");
 						rankingListVTO.setChangeFlag(1);
 					}else{
+						System.out.println("1:"+incomeRank.getIncome());
+						logger.info("info:incomeRank=======>"+incomeRank.getIncome());
 						if(incomeRank.getRank()==incomeRank.getBeforeRank()){
 							rankingListVTO.setChangeFlag(1);
 						}else if(incomeRank.getRank()>incomeRank.getBeforeRank()){
@@ -802,6 +810,7 @@ public class UserWalletUnitFacadeService {
 						rankingListVTO.setUserIncome(String.valueOf(round(Float.valueOf(incomeRank.getIncome()),2)));
 					}
 					if(userIncomeRanks != null&&userIncomeRanks.size()>0){
+						System.out.println("2:"+userIncomeRanks.size());
 						if(userIncomeRanks.size()%ps==0){
 							totalPage=userIncomeRanks.size()/ps;
 						}else{
@@ -881,7 +890,7 @@ public class UserWalletUnitFacadeService {
 					}
 					rankingListVTO.setChangeFlag(1);
 				}else{
-					List<UserIncomeMonthRank> userIncomeMonthRanks=userIncomeMonthRankService.findByLimit(currentMonth+"%",pn,ps);
+					List<UserIncomeMonthRank> userIncomeMonthRanks=userIncomeMonthRankService.findByLimit(currentMonth+"%",(pn-1)*ps,pn*ps);
 					UserIncomeMonthRank incomeMonthRank=userIncomeMonthRankService.getByUid(uid,currentMonth+"%");
 					if(incomeMonthRank==null){
 						rankingListVTO.setRankNum(9999999);
