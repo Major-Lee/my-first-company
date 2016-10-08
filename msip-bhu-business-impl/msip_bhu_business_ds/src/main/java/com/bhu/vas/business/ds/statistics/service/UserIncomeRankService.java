@@ -31,7 +31,7 @@ public class UserIncomeRankService extends AbstractCommdityService<String, UserI
 		mc.setOrderByClause("rank");
 		mc.setPageSize(ps);
 		mc.setPageNumber(pn);
-		return this.findModelByModelCriteria(mc);
+		return super.findModelByModelCriteria(mc);
 	}
 	
 	public void updateBytime(String time){
@@ -41,7 +41,7 @@ public class UserIncomeRankService extends AbstractCommdityService<String, UserI
 	public UserIncomeRank getByUid(int uid,String time) {
 		ModelCriteria mc=new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("uid", uid).andColumnLike("created_at", time);
-		List<UserIncomeRank> incomeRanks= this.findModelByModelCriteria(mc);
+		List<UserIncomeRank> incomeRanks= super.findModelByModelCriteria(mc);
 		if(incomeRanks!=null&&incomeRanks.size()>0){
 			return incomeRanks.get(0);
 		}else{
