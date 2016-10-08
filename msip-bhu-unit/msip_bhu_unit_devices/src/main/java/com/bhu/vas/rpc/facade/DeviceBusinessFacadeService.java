@@ -83,7 +83,6 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceStatusService;
 import com.bhu.vas.business.ds.task.facade.TaskFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
-import com.bhu.vas.business.ds.user.facade.UserIdentityAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
@@ -163,9 +162,6 @@ public class DeviceBusinessFacadeService {
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
 
-	@Resource
-	private UserIdentityAuthFacadeService userIdentityAuthFacadeService;
-	
 	
 	@Resource
 	private WifiDeviceStatusIndexIncrementService wifiDeviceStatusIndexIncrementService;
@@ -690,33 +686,25 @@ public class DeviceBusinessFacadeService {
 				memdto.setRssi(handsetDeviceDTO.getRssi());
 		}
 		
-		if(StringUtils.isEmpty(memdto.getVipacc())){
-			//优先从mac地址-手机号对应表获取
-			memdto.setVipacc(userIdentityAuthFacadeService.fetchUserMobilenoByHdmac(memdto.getHmac()));
-		
-			//获取不到，再重试从订单表获取
-			if(StringUtils.isEmpty(memdto.getVipacc())){
-				String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(dto.getMac(), dto.getHmac());
-				logger.info("do WangAn authoize newAddFields" + newAddFields);
-				if(StringUtils.isNotEmpty(newAddFields)){
-					OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
-					//2016-07-22 fixed 数据库wan_id 和终端ip写反了
-					memdto.setWan(addMsg.getIp());
-					memdto.setInternet(addMsg.getWan_ip());
-					//2016-07-22 fixed 数据库wan_id 和终端ip写反了
-					int vipType = addMsg.getType();
-					switch (vipType) {
-					case 0:
-						memdto.setViptype("WX");
-						break;
-					case 10:
-						memdto.setViptype("DX");
-						memdto.setVipacc(addMsg.getUmac_mobileno());
-						break;
-					default:
-						break;
-					}
-				}
+		String newAddFields = UserOrderDetailsHashService.getInstance().fetchUserOrderDetail(dto.getMac(), dto.getHmac());
+		logger.info("do WangAn authoize newAddFields" + newAddFields);
+		if(StringUtils.isNotEmpty(newAddFields)){
+			OrderUserAgentDTO addMsg = JsonHelper.getDTO(newAddFields, OrderUserAgentDTO.class);
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
+			memdto.setWan(addMsg.getIp());
+			memdto.setInternet(addMsg.getWan_ip());
+			//2016-07-22 fixed 数据库wan_id 和终端ip写反了
+			int vipType = addMsg.getType();
+			switch (vipType) {
+			case 0:
+				memdto.setViptype("WX");
+				break;
+			case 10:
+				memdto.setViptype("DX");
+				memdto.setVipacc(addMsg.getUmac_mobileno());
+				break;
+			default:
+				break;
 			}
 		}
 		
