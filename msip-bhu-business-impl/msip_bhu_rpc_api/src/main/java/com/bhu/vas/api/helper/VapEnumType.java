@@ -111,7 +111,7 @@ public class VapEnumType {
 		SOCRoot(DUT_soc, StringHelper.MINUS_STRING_GAP,"SOC"),
 		CWifiRoot(DUT_CWifi, StringHelper.MINUS_STRING_GAP,"商业WiFi"),
 		
-		uRouterTU_106("TU_H106",	"AP106","BN207","Z01",DUT_uRouter,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+		uRouterTU_106("TU_H106",	"AP106","BN207,BN027","Z01",DUT_uRouter,"uRouter","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		uRouterPlusTU_112("TU_H112","AP112","BN209","Z03",DUT_uRouter,"uRouter Plus","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		uRouterAcTU_401("TU_H401",	"AP401","BN210","Z02",DUT_uRouter,"uRouter AC","uRouter","2.4GHz 5GHz 家用AP","64M内存、TF卡版本、9531+9887芯片"),
 		uRouterAcPlusTU_403("TU_H403",	"AP403","BN403","Z05",DUT_uRouter,"uRouter AC Plus","uRouter","2.4GHz 5GHz 家用AP","128M内存、TF卡版本、9531+9887芯片"),
@@ -156,8 +156,8 @@ public class VapEnumType {
 		private String index;
 		//orig_swver 前缀
 		private String prefix;
-		//对应于SN号的前缀
-		private String snprefix;
+		//对应于SN号的前缀范围
+		private String snprefix_range;
 		private String hdver;//orig_swver;
 		private String name;
 		private String sname;
@@ -178,10 +178,10 @@ public class VapEnumType {
 			this.fname = fname;
 			this.desc = desc;
 		}
-		private DeviceUnitType(String index,String prefix,String snprefix,String hdver, String parent,String name,String sname,String fname,String desc){
+		private DeviceUnitType(String index,String prefix,String snprefix_range,String hdver, String parent,String name,String sname,String fname,String desc){
 			this.index = index;
 			this.prefix = prefix;
-			this.snprefix = snprefix;
+			this.snprefix_range = snprefix_range;
 			this.hdver = hdver;
 			this.name = name;
 			this.sname = sname;
@@ -244,11 +244,11 @@ public class VapEnumType {
 			this.sname = sname;
 		}
 
-		public String getSnprefix() {
-			return snprefix;
+		public String getSnprefix_range() {
+			return snprefix_range;
 		}
-		public void setSnprefix(String snprefix) {
-			this.snprefix = snprefix;
+		public void setSnprefix_range(String snprefix) {
+			this.snprefix_range = snprefix;
 		}
 		
 		public String getHdver() {
@@ -441,8 +441,10 @@ public class VapEnumType {
 					if(list != null)
 						list.add(type);
 				}
-				if(StringUtils.isNotEmpty(type.getSnprefix())){
-					allDeviceUnitSNPrefixTypes.put(type.getSnprefix(), type);
+				if(StringUtils.isNotEmpty(type.getSnprefix_range())){
+					String[] ranges = type.getSnprefix_range().split(",");
+					for(String range:ranges)
+						allDeviceUnitSNPrefixTypes.put(range, type);
 				}
 			}
 			
