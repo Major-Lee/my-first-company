@@ -690,6 +690,8 @@ public class DeviceBusinessFacadeService {
 				memdto.setRssi(handsetDeviceDTO.getRssi());
 		}
 		
+
+		
 		if(StringUtils.isEmpty(memdto.getVipacc())){
 			//优先从mac地址-手机号对应表获取
 			memdto.setVipacc(userIdentityAuthFacadeService.fetchUserMobilenoByHdmac(memdto.getHmac()));
@@ -719,7 +721,13 @@ public class DeviceBusinessFacadeService {
 				}
 			}
 		}
-		
+
+		if(StringUtils.isEmpty(memdto.getWan())){
+			WifiDevice entity = wifiDeviceService.getById(memdto.getMac());
+			memdto.setWan(entity.getIp());
+			memdto.setInternet(entity.getWan_ip());
+		}
+
 		logger.info("Yetao: " + dto.getAuthorized());
 		String act = "";
 		if(dto.getAuthorized() != null && dto.getAuthorized().equals("true")){
