@@ -128,7 +128,7 @@ public class HandsetStoragePaService extends AbstractRelationStringCache {
 	}
 	@Override
 	public JedisPool getRedisPool() {
-		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.HANDSETPRESENT);
+		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.PAHANDSET);
 	}
 	
 	public static void main(String[] argv){
