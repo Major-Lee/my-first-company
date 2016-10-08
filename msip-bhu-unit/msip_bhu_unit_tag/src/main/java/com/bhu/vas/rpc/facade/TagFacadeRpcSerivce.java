@@ -369,6 +369,12 @@ public class TagFacadeRpcSerivce {
 				int count = delChildNodeDevices(uid, group.getPath());
 				tagGroupService.removeAllByPath(group.getPath(), true);
 				
+				//删除节点的短信营销记录
+				ModelCriteria mc = new ModelCriteria();
+				mc.createCriteria().andColumnEqualTo("gid", gid).andColumnEqualTo("uid", uid);
+				tagGroupSortMessageService.deleteByModelCriteria(mc);
+				
+				
 				if (pid != 0) {
 					TagGroup parent_group = tagGroupService.getById(pid);
 					parent_group.setChildren(parent_group.getChildren() - 1);
