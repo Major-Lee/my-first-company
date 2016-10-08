@@ -986,7 +986,14 @@ public class TagFacadeRpcSerivce {
 		List<TagGroupSortMessage> list = tagGroupSortMessageService.findModelByModelCriteria(mc);
 		List<TagGroupSortMessageVTO> vtos = new ArrayList<TagGroupSortMessageVTO>();
 		for(TagGroupSortMessage entity : list){
-			vtos.add(builderSendMEssageVTO(entity));
+			if(builderSendMEssageVTO(entity) == null){
+				if(count != 0){
+					count--;
+				}
+			}else{
+				vtos.add(builderSendMEssageVTO(entity));
+			}
+			
 		}
 		return new CommonPage<TagGroupSortMessageVTO>(pageNo, pageSize, count, vtos);
 	}
@@ -994,6 +1001,9 @@ public class TagFacadeRpcSerivce {
 	private TagGroupSortMessageVTO builderSendMEssageVTO(TagGroupSortMessage entity){
 		TagGroupSortMessageVTO vto = new TagGroupSortMessageVTO();
 		TagGroup groupEntity = tagGroupService.getById(entity.getGid());
+		if(groupEntity == null){
+			return null;
+		}
 		vto.setGroupName(groupEntity.getName());
 		vto.setContext(entity.getContext());
 		vto.setCount(entity.getConnect());
