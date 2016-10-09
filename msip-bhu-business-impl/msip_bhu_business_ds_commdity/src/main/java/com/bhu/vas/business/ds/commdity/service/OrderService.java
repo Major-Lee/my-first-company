@@ -28,7 +28,7 @@ public class OrderService extends AbstractCommdityService<String, Order, OrderDa
 		}
 		return super.insert(entity);
 	}
-	public int countByType(int type,int data){
+	public int countByType(int type,int data,String date){
 		ModelCriteria mc=new ModelCriteria();
 		//type 0:type 1:channel
 		if(type!=0){
@@ -36,6 +36,7 @@ public class OrderService extends AbstractCommdityService<String, Order, OrderDa
 		}else{
 			mc.createCriteria().andColumnEqualTo("type", data);
 		}
+		mc.createCriteria().andColumnLike("created_at", date);
 		int n=super.countByCommonCriteria(mc);
 		return n;
 	}
