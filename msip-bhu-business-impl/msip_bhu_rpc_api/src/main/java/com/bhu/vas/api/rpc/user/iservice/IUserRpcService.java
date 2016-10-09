@@ -60,6 +60,18 @@ public interface IUserRpcService {
 	public RpcResponseDTO<Boolean> tokenValidate(String uidParam, String token,String d_udid);
 	
 	/**
+	 * 运营商帐号密码登录
+	 * @param countrycode
+	 * @param acc
+	 * @param pwd
+	 * @param device
+	 * @param remoteIp
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> operatorLogin(int countrycode,
+			String acc, String pwd, String device, String remoteIp);
+	
+	/**
 	 * 检测acc是否已经存在
 	 * @param countrycode
 	 * @param acc
@@ -184,4 +196,5 @@ public interface IUserRpcService {
 
 	RpcResponseDTO<GroupUsersStatisticsVTO> UsersStatistics(int uid,
 			long time);
+
 }

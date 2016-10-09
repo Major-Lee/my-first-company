@@ -42,6 +42,14 @@ public class UserRpcService implements IUserRpcService{
 	}
 	
 	@Override
+	public RpcResponseDTO<Map<String, Object>> operatorLogin(int countrycode,
+			String acc, String pwd, String device, String remoteIp) {
+		logger.info(String.format("operatorLogin with countrycode[%s] acc[%s] pwd[%s] device[%s] remoteIp[%s]",
+				countrycode,acc,pwd,device,remoteIp));
+		return userUnitFacadeService.operatorLogin(countrycode, acc,pwd, device,remoteIp);
+	}
+	
+	@Override
 	public RpcResponseDTO<Boolean> checkAcc(int countrycode, String acc){
 		logger.info(String.format("checkAcc with countrycode[%s] acc[%s]",countrycode,acc));
 		return userUnitFacadeService.checkAcc(countrycode, acc);

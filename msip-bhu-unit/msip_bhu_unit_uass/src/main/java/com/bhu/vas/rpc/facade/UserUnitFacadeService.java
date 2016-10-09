@@ -106,6 +106,8 @@ public class UserUnitFacadeService {
 	@Resource
 	private UserConfigsStateService userConfigsStateService;
 	
+	@Resource
+	private UserWalletFacadeService userWalletFacadeService;
 
 	/**
 	 * 需要兼容uidParam为空的情况
@@ -382,6 +384,44 @@ public class UserUnitFacadeService {
 		}
 	}
 	
+	/**
+	 * 运营商登录接口
+	 * @param countrycode
+	 * @param acc
+	 * @param pwd
+	 * @param device
+	 * @param remoteIp
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> operatorLogin(int countrycode, String acc,String pwd, String device,String remoteIp) {
+		try{
+			Integer uid = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
+			if(uid == null || uid.intValue() == 0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			User user = this.userService.getById(uid);
+			if(user == null){//存在不干净的数据，需要清理数据
+				cleanDirtyUserData(uid,countrycode,acc);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			if(user.getUtype() != UserType.DistributorNormal.getIndex()){//检查是否是运营商帐号
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_NOT_OPERATOR);
+			}
+			if(!BCryptHelper.checkpw(pwd,user.getPassword())){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_UNAME_OR_PWD_INVALID);
+			}
+			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserLogin(user, device, remoteIp, null, null);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(
+					userExchange);
+//			deliverMessageService.sendUserSignedonActionMessage(user.getId(), remoteIp, device);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 
 	
 	/**
@@ -502,8 +542,6 @@ public class UserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	@Resource
-	private UserWalletFacadeService userWalletFacadeService;
 	
 	/**
 	 * 此接口返回

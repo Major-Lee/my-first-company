@@ -107,6 +107,7 @@ public enum ResponseErrorCode {
 	//LOGIN_COOKIE_TOKEN_EXPIRED("203","login.cookie.token.expired"),
 	//LOGIN_COOKIE_VALIDATE_ACTION_EXCEPTION("204","login.cookie.token.validate.exception"),
 	LOGIN_USER_DATA_NOTEXIST("205","login.user.data.notexist"),
+	LOGIN_USER_NOT_OPERATOR("206","login.user.not.operator"),
     
 	AUTH_CRON_EXPRESSION_INVALID("245","auth.cron.expression.invalid"),
 	AUTH_CRON_EXPRESSION_EMPTY("246","auth.cron.expression.empty"),
