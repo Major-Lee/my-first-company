@@ -32,11 +32,10 @@ public class OrderService extends AbstractCommdityService<String, Order, OrderDa
 		ModelCriteria mc=new ModelCriteria();
 		//type 0:type 1:channel
 		if(type!=0){
-			mc.createCriteria().andColumnEqualTo("channel", data);
+			mc.createCriteria().andColumnEqualTo("channel", data).andColumnLike("created_at", date);
 		}else{
-			mc.createCriteria().andColumnEqualTo("type", data);
+			mc.createCriteria().andColumnEqualTo("type", data).andColumnLike("created_at", date);
 		}
-		mc.createCriteria().andColumnLike("created_at", date);
 		int n=super.countByCommonCriteria(mc);
 		return n;
 	}

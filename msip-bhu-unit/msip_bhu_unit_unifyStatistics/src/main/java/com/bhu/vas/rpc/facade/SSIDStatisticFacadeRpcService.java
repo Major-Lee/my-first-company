@@ -1126,8 +1126,8 @@ public class SSIDStatisticFacadeRpcService {
 		channelInfos.put("YYS", yysoutLine);
 		channelInfos.put("XSXX", xsxxoutLine);
 		
-		
 		int dsNum= orderService.countByType(0,0,dateStr+"%");
+		log.info("start data:"+dsNum);
 		int spNum= orderService.countByType(0,6,dateStr+"%");
 		int dxNum= orderService.countByType(0,10,dateStr+"%");
 		int utoolNum= orderService.countByType(1,2,dateStr+"%");
