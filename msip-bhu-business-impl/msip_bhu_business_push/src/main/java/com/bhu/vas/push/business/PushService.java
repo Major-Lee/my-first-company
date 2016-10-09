@@ -516,8 +516,8 @@ public class PushService{
 	
 	
 	private String cutDoubleMobile(String str){
-		if(!StringUtils.isEmpty(str) && str.contains("手机手机"))
-			str.replaceAll("手机手机", "手机");
+		if(!StringUtils.isEmpty(str))
+			return str.replaceAll("手机手机", "手机");
 		return str;
 	}
 	
