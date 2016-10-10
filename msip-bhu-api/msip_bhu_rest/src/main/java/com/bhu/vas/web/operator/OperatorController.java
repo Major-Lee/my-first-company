@@ -68,7 +68,7 @@ public class OperatorController extends BaseController{
 	}
 	
 	/**
-	 * 普通用户升级成分销商
+	 * 查看用户信息
 	 * @param request
 	 * @param response
 	 * @param uid
