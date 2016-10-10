@@ -197,4 +197,6 @@ public interface IUserRpcService {
 	RpcResponseDTO<GroupUsersStatisticsVTO> UsersStatistics(int uid,
 			long time);
 
+	public RpcResponseDTO<Map<String, Object>> upgradeOperator(int uid, String org);
+
 }

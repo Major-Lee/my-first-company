@@ -97,6 +97,13 @@ public class UserRpcService implements IUserRpcService{
 	}
 
 	@Override
+	public RpcResponseDTO<Map<String, Object>> upgradeOperator(int uid,String org) {
+		logger.info(String.format("upgradeOperator with uid[%s] org[%s]",
+				uid,org));
+		return userUnitFacadeService.upgradeOperator(uid, org);
+	}
+	
+	@Override
 	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,
 			String nick, String avatar, String sex, String birthday,String org,String memo) {
 		logger.info(String.format("updateProfile with uid[%s] nick[%s] avatar[%s] sex[%s] birthday[%s] org[%s] memo[%s]",
