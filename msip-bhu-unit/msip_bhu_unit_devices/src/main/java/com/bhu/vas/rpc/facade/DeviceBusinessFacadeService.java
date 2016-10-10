@@ -90,6 +90,7 @@ import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.bhu.vas.rpc.log.WriterThread;
+import com.bhu.vas.rpc.service.device.HandsetStoragePaService;
 import com.bhu.vas.rpc.service.device.PortraitMemcachedCacheService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -173,8 +174,6 @@ public class DeviceBusinessFacadeService {
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	
-	@Resource
-	private PortraitMemcachedCacheService portraitMemcachedCacheService;
 	/**
 	 * wifi设备上线
 	 * 1：wifi设备基础信息更新
@@ -557,10 +556,8 @@ public class DeviceBusinessFacadeService {
 		HandsetOnlineAction memdto = null;
 		logger.info("do WangAn Processor" + dto.getMac());
 		
-		String memHandsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getMac()+dto.getHmac()); //从新格式key中取
-		if(StringUtils.isEmpty(memHandsetOnline))
-			memHandsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac()); //尝试从旧格式中获取
-
+		String memHandsetOnline = HandsetStoragePaService.getInstance().getAuthOnline(dto.getMac(), dto.getHmac());
+		
 		if(StringUtils.isEmpty(memHandsetOnline)){
 			memdto = dto;
 		} else {
@@ -576,7 +573,7 @@ public class DeviceBusinessFacadeService {
 
 		message =  JsonHelper.getJSONString(dto);
 
-		portraitMemcachedCacheService.storePortraitCacheResult(dto.getMac()+dto.getHmac(), message);
+		HandsetStoragePaService.getInstance().saveAuthOnline(dto.getMac(),  dto.getHmac(),  message);
 		logger.info("do WangAn store CacheResult"+message);
 	}
 	
@@ -586,10 +583,9 @@ public class DeviceBusinessFacadeService {
 		String authorize = dto.getAuthorized();
 		if(authorize != null && authorize.equalsIgnoreCase("true")){
 			logger.info("do WangAn Processor  offline is true" + message);
-			String handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getMac()+dto.getHmac());
-			if(StringUtils.isEmpty(handsetOnline))
-				handsetOnline = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac());
-				
+
+			String handsetOnline = HandsetStoragePaService.getInstance().getAuthOnline(dto.getMac(), dto.getHmac());
+
 			System.out.println("do WangAn offline handsetOnline" + handsetOnline);
 			long end_ts = dto.getTs();
 			if(handsetOnline != null || !"".equals(handsetOnline)){
@@ -665,10 +661,8 @@ public class DeviceBusinessFacadeService {
 		logger.info("do WangAn Processor  Authorize is true" + message);
 		HandsetOnlineAction dto = JsonHelper.getDTO(message, HandsetOnlineAction.class);
 		
-		String memdtoStr = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getMac() + dto.getHmac()); //从新格式key中取
-		if(StringUtils.isEmpty(memdtoStr))
-			memdtoStr = portraitMemcachedCacheService.getPortraitOrderCacheByOrderId(dto.getHmac()); //尝试从旧格式key中取
-		
+		String memdtoStr = HandsetStoragePaService.getInstance().getAuthOnline(dto.getMac(), dto.getHmac());
+
 		if(StringUtils.isEmpty(memdtoStr)){
 			logger.info("cant find it from memcache, drop");
 			return;
@@ -736,7 +730,7 @@ public class DeviceBusinessFacadeService {
 			memdto.setTs(System.currentTimeMillis()); //设置上线时间为当前时间，并需要存入memcache
 			message =  JsonHelper.getJSONString(memdto);
 
-			portraitMemcachedCacheService.storePortraitCacheResult(dto.getMac()+dto.getHmac(), message);
+			HandsetStoragePaService.getInstance().saveAuthOnline(dto.getMac(),  dto.getHmac(),  message);
 			logger.info("do WangAn store CacheResult "+message);
 		} else { 
 			HandsetOfflineAction offdto = new HandsetOfflineAction();
