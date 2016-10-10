@@ -484,6 +484,41 @@ public class UserUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	/**
+	 * 用户升级成运营商
+	 * @param org 公司名称
+	 * @return
+	 */
+
+	public RpcResponseDTO<Map<String, Object>> upgradeOperator(int uid,String org) {
+		try{
+			User user = this.userService.getById(uid);
+			if(user == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
+			}
+			if(user.getUtype() == UserType.DistributorNormal.getIndex()){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_HAS_BECOME_THE_OPERATOR);
+			}
+			user.setUtype(UserType.DistributorNormal.getIndex());
+			if(org !=null && !org.isEmpty()){
+				user.setOrg(org);
+			}else{
+				user.setOrg(user.getNick());
+			}
+			this.userService.update(user);
+			
+			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 	/**
 	 * 更新用户信息接口
 	 * @param nick 需要进行唯一性验证
