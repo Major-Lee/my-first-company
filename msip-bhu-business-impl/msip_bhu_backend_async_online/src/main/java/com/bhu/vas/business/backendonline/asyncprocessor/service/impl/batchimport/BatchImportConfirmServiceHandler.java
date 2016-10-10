@@ -123,7 +123,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 				}
 
 				@Override
-				public void afterExcelImported(String opsid, Set<String> dmacs) {
+				public void afterExcelImported(String opsid, Set<String> dmacs, Set<String> failed_sns) {
 					if(dmacs.isEmpty()) return;
 					List<String> all_dmacs = new ArrayList<String>(dmacs);
 					int total = all_dmacs.size();
@@ -268,7 +268,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 					}
 					if(!StringUtils.isEmpty(opsid)){
 						//运营商系统的导入，需要回调通知
-						OpsHttpHelper.opsImportCallBackNotify(opsid, StringHelper.toString(all_dmacs.toArray(), StringHelper.COMMA_STRING_GAP));
+						OpsHttpHelper.opsImportCallBackNotify(opsid, StringHelper.toString(failed_sns.toArray(), StringHelper.COMMA_STRING_GAP));
 					}
 				}
 			};

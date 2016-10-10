@@ -73,7 +73,7 @@ public class ShipmentDataSimulateOP {
 			}
 
 			@Override
-			public void afterExcelImported(Set<String> dmacs) {
+			public void afterExcelImported(String opsid, Set<String> dmacs, Set<String> failed_sns) {
 				if(dmacs.isEmpty()) return;
 				List<String> all_dmacs = new ArrayList<String>(dmacs);
 				int total = all_dmacs.size();

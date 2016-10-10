@@ -6,7 +6,7 @@ import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimpor
 
 public interface ImportElementCallback {
 	public DeviceCallbackDTO elementDeviceInfoFetch(String sn);
-	public void afterExcelImported(String opsid, Set<String> dmacs);
+	public void afterExcelImported(String opsid, Set<String> dmacs, Set<String> failed_sns);
 	//public int useridFetch(String mobileno);
 	
 }

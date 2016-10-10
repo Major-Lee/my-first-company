@@ -31,6 +31,7 @@ public class ShipmentStringImport {
 		String[] sns = snsstr.split(StringHelper.COMMA_STRING_GAP);
 		
         Set<String> devices = new HashSet<String>();
+        Set<String> failed_sn = new HashSet<String>();
 		try{
 	         System.out.println(String.format("sns size ===" + sns.length));
 	         for (String sn:sns){
@@ -39,13 +40,14 @@ public class ShipmentStringImport {
         			sn = sn.trim();
         			DeviceCallbackDTO dcDTO = callback.elementDeviceInfoFetch(sn);
         			if(dcDTO == null){
-        		         System.out.println(String.format("[%s] 不存在", sn));
+        				failed_sn.add(sn);
+        		        System.out.println(String.format("[%s] 不存在", sn));
         			}else{
         				devices.add(dcDTO.getMac());
         			}
         		}
 	         }
-	         callback.afterExcelImported(opsid, devices);
+	         callback.afterExcelImported(opsid, devices, failed_sn);
 		}catch(Exception ex){
 			System.out.println("~~~~~~~~~~~~~~~~~~~~exception");
 			ex.printStackTrace(System.out);
@@ -54,7 +56,7 @@ public class ShipmentStringImport {
 
 	public static void main(String[] argv){
 		String filepath = "/Users/Edmond/gospace/20160523-00000008.xlsx";
-		ShipmentStringImport.stringImport(filepath, new ImportElementCallback(){
+		ShipmentStringImport.stringImport(filepath, null, new ImportElementCallback(){
 			@Override
 			public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
 				// TODO Auto-generated method stub
@@ -62,7 +64,7 @@ public class ShipmentStringImport {
 			}
 
 			@Override
-			public void afterExcelImported(Set<String> dmacs) {
+			public void afterExcelImported(String opsid, Set<String> dmacs, Set<String> failed_sn) {
 				// TODO Auto-generated method stub
 				
 			}

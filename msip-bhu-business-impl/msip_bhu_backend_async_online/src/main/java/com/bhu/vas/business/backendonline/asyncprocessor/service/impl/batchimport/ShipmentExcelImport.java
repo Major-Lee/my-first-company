@@ -85,7 +85,7 @@ public class ShipmentExcelImport {
 	         FileOutputStream fileOut = new FileOutputStream(targetFile);
 	         wb.write(fileOut);
 	         fileOut.close();
-	         callback.afterExcelImported(null, devices);
+	         callback.afterExcelImported(null, devices, null);
 		}catch(Exception ex){
 			System.out.println("~~~~~~~~~~~~~~~~~~~~exception");
 			ex.printStackTrace(System.out);
@@ -205,7 +205,7 @@ public class ShipmentExcelImport {
 			}
 
 			@Override
-			public void afterExcelImported(Set<String> dmacs) {
+			public void afterExcelImported(String opsid, Set<String> dmacs, Set<String> failed_sns) {
 				// TODO Auto-generated method stub
 				
 			}
