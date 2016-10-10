@@ -404,7 +404,7 @@ public class UserUnitFacadeService {
 				cleanDirtyUserData(uid,countrycode,acc);
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 			}
-			if(user.getUtype() != UserType.DistributorNormal.getIndex() || uid != 2){//检查是否是运营商帐号或总帐号
+			if(user.getUtype() != UserType.DistributorNormal.getIndex() && uid != 2){//检查是否是运营商帐号或总帐号
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_NOT_OPERATOR);
 			}
 			if(!BCryptHelper.checkpw(pwd,user.getPassword())){
