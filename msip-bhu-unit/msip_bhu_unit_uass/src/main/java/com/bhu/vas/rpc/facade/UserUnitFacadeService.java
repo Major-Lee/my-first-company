@@ -534,7 +534,7 @@ public class UserUnitFacadeService {
 			}
 			Integer observedId = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
 			User observedUser = UserValidateServiceHelper.validateUser(observedId,this.userService);
-			if(observedUser.getUtype() != UserType.DistributorNormal.getIndex() || observedUser.getUtype() != UserType.Normal.getIndex()){
+			if(observedUser.getUtype() != UserType.DistributorNormal.getIndex() && observedUser.getUtype() != UserType.Normal.getIndex()){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_CAN_NOT_BE_VIEWED);
 			}
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(observedUser);
