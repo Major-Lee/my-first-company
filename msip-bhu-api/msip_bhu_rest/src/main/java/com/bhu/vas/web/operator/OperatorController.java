@@ -27,7 +27,7 @@ public class OperatorController extends BaseController{
 	private IUserRpcService userRpcService;
 	
 	
-	private static final String DefaultSecretkey = "PzdfTFJSUEBHG0dcWFcLew==";
+	private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 	
 	private ResponseError validate(String secretKey){
 		if(!DefaultSecretkey.equals(secretKey)){
@@ -60,6 +60,38 @@ public class OperatorController extends BaseController{
 		}
 		
 		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.upgradeOperator(uid, org);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	/**
+	 * 普通用户升级成分销商
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param org
+	 * @param sk
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/fetch/user",method={RequestMethod.POST})
+	public void operatorfetchUser(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = true,value="sk") String secretKey){
+		
+		ResponseError validateError = validate(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		
+		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.operatorfetchUser(uid, countrycode,acc);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

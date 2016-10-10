@@ -158,7 +158,8 @@ public enum ResponseErrorCode {
 	
 	USER_DATA_NOT_EXIST("301","user.data.notexist"),
 	USER_OAUTH_DATA_ALREADY_EXIST("302","user.oauth.data.already.exist"),
-	USER_HAS_BECOME_THE_OPERATOR("303","user.has.become.the.operator"),
+	USER_CAN_NOT_BE_UPGRADED_TO_OPERATORS("303","users.can.not.be.upgraded.to.operators"),
+	USER_CAN_NOT_BE_VIEWED("304","users.can.not.be.viewed"),
 	USER_TOKENS_GEN_ALREADY_FULL("310","user.tokens.gen.already.full"),
 	USER_TOKENS_INVALID("311","user.tokens.invalid"),
 	USER_AVATAR_UPLOAD_IMAGE_FILEFORMAT_INVALID("312","user.avatar.upload.image.fileformat.invalid"),

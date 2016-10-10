@@ -404,7 +404,7 @@ public class UserUnitFacadeService {
 				cleanDirtyUserData(uid,countrycode,acc);
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 			}
-			if(user.getUtype() != UserType.DistributorNormal.getIndex()){//检查是否是运营商帐号
+			if(user.getUtype() != UserType.DistributorNormal.getIndex() || uid != 2){//检查是否是运营商帐号或总帐号
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_NOT_OPERATOR);
 			}
 			if(!BCryptHelper.checkpw(pwd,user.getPassword())){
@@ -497,8 +497,9 @@ public class UserUnitFacadeService {
 			if(user == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 			}
-			if(user.getUtype() == UserType.DistributorNormal.getIndex()){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_HAS_BECOME_THE_OPERATOR);
+			//只有普通帐号可以升级
+			if(user.getUtype() != UserType.Normal.getIndex()){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_CAN_NOT_BE_UPGRADED_TO_OPERATORS);
 			}
 			user.setUtype(UserType.DistributorNormal.getIndex());
 			if(org !=null && !org.isEmpty()){
@@ -509,6 +510,34 @@ public class UserUnitFacadeService {
 			this.userService.update(user);
 			
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(user);
+			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	/**
+	 * 运营商查询用户（运营商，普通用户）基本信息
+	 * @param countrycode
+	 * @param acc
+	 * @return
+	 */
+	public RpcResponseDTO<Map<String, Object>> operatorfetchUser(Integer uid,int countrycode, String acc) {
+		try{
+			User user = UserValidateServiceHelper.validateUser(uid,this.userService);
+			if(user.getUtype() != UserType.DistributorNormal.getIndex() || uid != 2){//检查是否是运营商帐号或总帐号
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_NOT_OPERATOR);
+			}
+			Integer observedId = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
+			User observedUser = UserValidateServiceHelper.validateUser(observedId,this.userService);
+			if(observedUser.getUtype() != UserType.DistributorNormal.getIndex() || observedUser.getUtype() != UserType.Normal.getIndex()){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_CAN_NOT_BE_VIEWED);
+			}
+			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(observedUser);
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(rpcPayload);
 		}catch(BusinessI18nCodeException bex){

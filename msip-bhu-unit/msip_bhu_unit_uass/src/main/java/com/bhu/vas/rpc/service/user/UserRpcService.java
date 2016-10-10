@@ -104,6 +104,13 @@ public class UserRpcService implements IUserRpcService{
 	}
 	
 	@Override
+	public RpcResponseDTO<Map<String, Object>> operatorfetchUser(Integer uid,int countrycode, String acc) {
+		logger.info(String.format("operatorfetchUser with uid[%s] countrycode[%s] acc[%s]",
+				uid,countrycode,acc));
+		return userUnitFacadeService.operatorfetchUser(uid, countrycode,acc);
+	}
+	
+	@Override
 	public RpcResponseDTO<Map<String, Object>> updateProfile(int uid,
 			String nick, String avatar, String sex, String birthday,String org,String memo) {
 		logger.info(String.format("updateProfile with uid[%s] nick[%s] avatar[%s] sex[%s] birthday[%s] org[%s] memo[%s]",
