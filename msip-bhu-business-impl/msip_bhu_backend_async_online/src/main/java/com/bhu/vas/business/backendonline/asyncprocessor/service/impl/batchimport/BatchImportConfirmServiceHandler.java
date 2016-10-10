@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.OpsHttpHelper;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -19,7 +20,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ExcelElementCallback;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ImportElementCallback;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.dto.DeviceCallbackDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
@@ -33,6 +34,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.PageHelper;
 
@@ -98,7 +100,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			//final String mobileno = batchImport.getMobileno();
 			final Integer uid_willbinded = UniqueFacadeService.fetchUidByMobileno(86,batchImport.getMobileno());
 			
-			ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), new ExcelElementCallback(){
+			ImportElementCallback cb = new ImportElementCallback(){
 				@Override
 				public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
 					ModelCriteria mc = new ModelCriteria();
@@ -121,7 +123,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 				}
 
 				@Override
-				public void afterExcelImported(Set<String> dmacs) {
+				public void afterExcelImported(String opsid, Set<String> dmacs) {
 					if(dmacs.isEmpty()) return;
 					List<String> all_dmacs = new ArrayList<String>(dmacs);
 					int total = all_dmacs.size();
@@ -264,9 +266,18 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							
 						}
 					}
+					if(!StringUtils.isEmpty(opsid)){
+						//运营商系统的导入，需要回调通知
+						OpsHttpHelper.opsImportCallBackNotify(opsid, StringHelper.toString(all_dmacs.toArray(), StringHelper.COMMA_STRING_GAP));
+					}
 				}
-			});
+			};
 			
+			if(StringUtils.isEmpty(batchImport.getOpsid()))
+				ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), cb);
+			else
+				ShipmentStringImport.stringImport(importVto.toAbsoluteFileInputPath(), batchImport.getOpsid(), cb);
+				
 			batchImport.setSucceed(atomic_successed.get());
 			batchImport.setFailed(atomic_failed.get());
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_IMPORTED);
@@ -278,6 +289,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 				batchImport.setRange_cash_pc(configs.getRange_cash_pc());
 			}*/
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
+
 		}finally{
 		}
 		logger.info(String.format("process message[%s] successful", message));

@@ -54,6 +54,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	private String range_cash_mobile;
 	private String range_cash_pc;
 	private String access_internet_time;
+	private String opsid; //运营商系统的批次id
 	//private int total;
 	private int succeed;
 	private int failed;
@@ -184,6 +185,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		vto.setStatus(this.getStatus());
 		vto.setSucceed(this.getSucceed());
 		vto.setFailed(this.getFailed());
+		vto.setOpsid(this.getOpsid());
 		vto.setCreated_at(DateTimeHelper.getDateTime(this.getCreated_at(), DateTimeHelper.FormatPattern0));
 		vto.setUpdated_at(DateTimeHelper.getDateTime(this.getCreated_at(), DateTimeHelper.FormatPattern0));
 		vto.setChannel_lv1(this.getChannel_lv1());
@@ -251,5 +253,12 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	public void setChannel_lv2(String channel_lv2) {
 		this.channel_lv2 = channel_lv2;
 	}
+	public String getOpsid() {
+		return opsid;
+	}
+	public void setOpsid(String opsid) {
+		this.opsid = opsid;
+	}
+	
 	
 }

@@ -77,6 +77,25 @@ public class ChargingRpcService  implements IChargingRpcService{
 
 	}
 
+	
+	@Override
+	public RpcResponseDTO<BatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid,
+			int countrycode,String mobileno,int distributor_uid,
+			String sellor,String partner,
+            boolean canbeturnoff,
+            String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent,
+			String channel_lv1, String channel_lv2,
+            String remark){
+		logger.info(String.format("doInputDeviceRecord uid:%s opsid:%s countrycode:%s bmobileno:%s sellor:%s partner:%s canbeturnoff:%s sharedeal_owner_percent:%s sharedeal_manufacturer_percent:%s sharedeal_distributor_percent:%s channel_lv1:%s channel_lv2:%s remark:%s",
+				uid, opsid, countrycode, mobileno,sellor,partner,canbeturnoff,sharedeal_owner_percent,sharedeal_manufacturer_percent, sharedeal_distributor_percent, channel_lv1, channel_lv2, remark));
+		return chargingUnitFacadeService.doOpsInputDeviceRecord(uid, opsid, countrycode, mobileno,distributor_uid,
+				sellor,partner,
+				canbeturnoff,
+				sharedeal_owner_percent, sharedeal_manufacturer_percent,sharedeal_distributor_percent,
+				channel_lv1, channel_lv2, remark);
+	}
+
+
 	@Override
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid,
 			String message, Boolean canbeturnoff,Boolean enterpriselevel, 

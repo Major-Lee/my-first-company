@@ -9,7 +9,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.backendonline.BackendAsyncOnlineMain;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ExcelElementCallback;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ImportElementCallback;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.dto.DeviceCallbackDTO;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
@@ -50,7 +50,7 @@ public class ShipmentDataSimulateOP {
 		@SuppressWarnings("unused")
 		final String batchno = "20160523-00000008";
 		final Integer uid_willbinded = 3;
-		ShipmentExcelImport.excelImport("/Users/Edmond/gospace/20160523-00000008.xlsx","/Users/Edmond/gospace/20160523-00000008-out.xlsx", new ExcelElementCallback(){
+		ShipmentExcelImport.excelImport("/Users/Edmond/gospace/20160523-00000008.xlsx","/Users/Edmond/gospace/20160523-00000008-out.xlsx", new ImportElementCallback(){
 			@Override
 			public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
 				ModelCriteria mc = new ModelCriteria();

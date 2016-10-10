@@ -16,7 +16,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ExcelElementCallback;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ImportElementCallback;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.dto.DeviceCallbackDTO;
 
 public class ShipmentExcelImport {
@@ -31,7 +31,7 @@ public class ShipmentExcelImport {
 		SNFields.add("CISN");
 	}*/
 	
-	public static void excelImport(String fileinputpath,String fileoutpath,ExcelElementCallback callback){
+	public static void excelImport(String fileinputpath,String fileoutpath,ImportElementCallback callback){
 		System.out.println("input file:"+fileinputpath);
 		System.out.println("output file:"+fileoutpath);
         InputStream is = null;
@@ -85,7 +85,7 @@ public class ShipmentExcelImport {
 	         FileOutputStream fileOut = new FileOutputStream(targetFile);
 	         wb.write(fileOut);
 	         fileOut.close();
-	         callback.afterExcelImported(devices);
+	         callback.afterExcelImported(null, devices);
 		}catch(Exception ex){
 			System.out.println("~~~~~~~~~~~~~~~~~~~~exception");
 			ex.printStackTrace(System.out);
@@ -101,7 +101,7 @@ public class ShipmentExcelImport {
 		}
 	}
 	
-	public static int excelPreCheck(String fileinputpath,String fileoutpath,ExcelElementCallback callback){
+	public static int excelPreCheck(String fileinputpath,String fileoutpath,ImportElementCallback callback){
 		System.out.println("input file:"+fileinputpath);
 		System.out.println("output file:"+fileoutpath);
 		final AtomicInteger atomic_failed = new AtomicInteger(0);
@@ -197,7 +197,7 @@ public class ShipmentExcelImport {
 		//uRouter-20160426-双翼.xlsx
 		//uRouter-20160426-共进.xlsx
 		String filepath = "/Users/Edmond/gospace/20160523-00000008.xlsx";
-		ShipmentExcelImport.excelImport(filepath, filepath, new ExcelElementCallback(){
+		ShipmentExcelImport.excelImport(filepath, filepath, new ImportElementCallback(){
 			@Override
 			public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
 				// TODO Auto-generated method stub

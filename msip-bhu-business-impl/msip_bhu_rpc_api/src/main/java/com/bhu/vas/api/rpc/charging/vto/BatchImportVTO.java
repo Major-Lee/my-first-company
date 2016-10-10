@@ -30,6 +30,7 @@ public class BatchImportVTO implements java.io.Serializable{
 	private String remark;
 	private String channel_lv1;
 	private String channel_lv2;
+	private String opsid;
 	private String created_at;
 	private String updated_at;
 	
@@ -226,4 +227,11 @@ public class BatchImportVTO implements java.io.Serializable{
 	public void setChannel_lv2(String channel_lv2) {
 		this.channel_lv2 = channel_lv2;
 	}
+	public String getOpsid() {
+		return opsid;
+	}
+	public void setOpsid(String opsid) {
+		this.opsid = opsid;
+	}
+	
 }

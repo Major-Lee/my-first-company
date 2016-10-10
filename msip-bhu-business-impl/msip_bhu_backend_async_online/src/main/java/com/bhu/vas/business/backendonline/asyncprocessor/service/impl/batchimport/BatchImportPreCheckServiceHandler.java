@@ -16,7 +16,7 @@ import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportPreCheckDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusinessService;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ExcelElementCallback;
+import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.callback.ImportElementCallback;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.dto.DeviceCallbackDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
@@ -74,7 +74,7 @@ public class BatchImportPreCheckServiceHandler implements IMsgHandlerService {
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_PRE_CHECK);
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
 			final BatchImportVTO importVto = batchImport.toBatchImportVTO(null, null,null);
-			int failed = ShipmentExcelImport.excelPreCheck(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), new ExcelElementCallback(){
+			int failed = ShipmentExcelImport.excelPreCheck(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), new ImportElementCallback(){
 				@Override
 				public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
 					ModelCriteria mc = new ModelCriteria();

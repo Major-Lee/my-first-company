@@ -4,9 +4,9 @@ import java.util.Set;
 
 import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport.dto.DeviceCallbackDTO;
 
-public interface ExcelElementCallback {
+public interface ImportElementCallback {
 	public DeviceCallbackDTO elementDeviceInfoFetch(String sn);
-	public void afterExcelImported(Set<String> dmacs);
+	public void afterExcelImported(String opsid, Set<String> dmacs);
 	//public int useridFetch(String mobileno);
 	
 }

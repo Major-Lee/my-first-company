@@ -149,6 +149,62 @@ public class ChargingFacadeService {
     	wifiDeviceBatchImportService.insert(batch_import);
     	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP);
     }
+  
+    public BatchImportVTO doOpsBatchImportCreate(int uid, String opsid,
+    		int countrycode,String mobileno, int distributor_uid,
+    		String sellor,String partner,
+    		boolean canbeturnoff,
+    		String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
+			String channel_lv1, String channel_lv2,
+    		String remark){
+    	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
+    	
+    	if(StringUtils.isNotEmpty(mobileno)){
+    		boolean exist = UniqueFacadeService.checkMobilenoExist(countrycode,mobileno);
+        	if(!exist){
+        		throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"mobileno",mobileno});
+        	}
+    	}
+    	User distributor_user = null;
+    	if(distributor_uid >0){
+    		distributor_user = UserValidateServiceHelper.validateUser(distributor_uid,this.userService);
+    	}
+    	
+    	WifiDeviceBatchImport batch_import = new WifiDeviceBatchImport();
+    	batch_import.setImportor(uid);
+    	batch_import.setMobileno(mobileno);
+    	batch_import.setDistributor(distributor_uid);
+    	batch_import.setSellor(sellor);
+    	batch_import.setPartner(partner);
+    	batch_import.setOpsid(opsid);
+    	batch_import.setCustomized(false);
+    	batch_import.setCanbeturnoff(canbeturnoff);
+    	batch_import.setChannel_lv1(channel_lv1);
+    	batch_import.setChannel_lv2(channel_lv2);
+    	//填充数据
+    	WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
+		if(StringUtils.isEmpty(sharedeal_owner_percent) || StringHelper.MINUS_STRING_GAP.equals(sharedeal_owner_percent)){
+			batch_import.setOwner_percent(String.valueOf(configs.getOwner_percent()));
+		}else{
+			batch_import.setOwner_percent(sharedeal_owner_percent);
+		}
+		if(StringUtils.isEmpty(sharedeal_manufacturer_percent) || StringHelper.MINUS_STRING_GAP.equals(sharedeal_manufacturer_percent)){
+			batch_import.setManufacturer_percent(String.valueOf(configs.getManufacturer_percent()));
+		}else{
+			batch_import.setManufacturer_percent(sharedeal_manufacturer_percent);
+		}
+		if(StringUtils.isEmpty(sharedeal_distributor_percent) || StringHelper.MINUS_STRING_GAP.equals(sharedeal_distributor_percent)){
+			batch_import.setDistributor_percent(String.valueOf(configs.getDistributor_percent()));
+		}else{
+			batch_import.setDistributor_percent(sharedeal_distributor_percent);
+		}
+		
+    	//batch_import.setFilepath(filepath_suffix);
+    	batch_import.setRemark(remark);
+    	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTED_FILE);
+    	wifiDeviceBatchImportService.insert(batch_import);
+    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP);
+    }
     
     public BatchImportVTO doCancelDeviceRecord(int uid,String import_id) {
     	User user = UserValidateServiceHelper.validateUser(uid,this.userService);

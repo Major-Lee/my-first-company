@@ -170,6 +170,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	UserPortalUpdate2UPortalApi = PropertiesHelper.getString("user.portal.update.uportalapi", paramProperties, UserPortalUpdate2UPortalApi);
         	UserPortalChargingNotify2UPortalApi = PropertiesHelper.getString("user.portal.chargingnotify.uportalapi", paramProperties, UserPortalChargingNotify2UPortalApi);
         	Unicorn_Http_Res_UrlPrefix = PropertiesHelper.getString("unicorn.http.res.urlprefix", paramProperties, Unicorn_Http_Res_UrlPrefix);
+        	OpsImportCallbackApi = PropertiesHelper.getString("ops.import.callbackapi", paramProperties, UserPortalChargingNotify2UPortalApi);
         	
         	
         	logger.info("loading business runtime configuration successfully!");  
@@ -413,6 +414,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static String UserPortalUpdate2UPortalApi = "http://ucloud.bhuwifi.com:9158/portal/set/recreate";
 	public static String UserPortalChargingNotify2UPortalApi = "http://ucloud.bhuwifi.com:9158/common/api/save-status";
+	public static String OpsImportCallbackApi = "http://xx/xx";
 	/**
 	 * 判断是否是console用户
 	 * @param uid

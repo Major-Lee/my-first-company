@@ -70,6 +70,34 @@ public class ChargingUnitFacadeService {
 		}
 	}
 
+	public RpcResponseDTO<BatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid, int countrycode,
+			String mobileno,int distributor_uid, 
+			String sellor,String partner,
+			boolean canbeturnoff,
+			String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
+			String channel_lv1, String channel_lv2,
+			String remark) {
+		try{
+			User operUser = chargingFacadeService.getUserService().getById(uid);
+			UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
+			
+			BatchImportVTO ret = 
+					chargingFacadeService.doOpsBatchImportCreate(uid, opsid, countrycode, mobileno,distributor_uid,
+							sellor,partner,
+							canbeturnoff, 
+							sharedeal_owner_percent,sharedeal_manufacturer_percent,sharedeal_distributor_percent,
+							channel_lv1, channel_lv2,
+							remark);
+			asyncDeliverMessageService.sendBatchImportConfirmActionMessage(uid, ret.getId());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid,
 			String message, Boolean canbeturnoff,Boolean enterpriselevel,
 			boolean customized,
