@@ -1,21 +1,16 @@
 package com.bhu.vas.business.ds.user.service;
 
-import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.ds.user.dao.UserIdentityAuthDao;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.service.EntityService;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -37,22 +32,24 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 	 */
 	public void generateIdentityAuth(int countrycode ,String acc,String hdmac){	
 		
-		String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-		
-		UserIdentityAuth auth = this.getById(hdmac);
-		
-		if (auth == null) {
-			auth = new UserIdentityAuth();
-			auth.setId(hdmac);
-			auth.setMobileno(accWithCountryCode);
-			auth.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
-		    this.insert(auth);
-		}else{
-			if (auth.getMobileno() != accWithCountryCode) {
+		if(!isDirtyMac(hdmac)){
+			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
+			
+			UserIdentityAuth auth = this.getById(hdmac);
+			
+			if (auth == null) {
+				auth = new UserIdentityAuth();
+				auth.setId(hdmac);
 				auth.setMobileno(accWithCountryCode);
-				this.update(auth);
+				auth.setCreated_at(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern1));
+			    this.insert(auth);
 			}else{
-				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_EXIST);
+				if (auth.getMobileno() != accWithCountryCode) {
+					auth.setMobileno(accWithCountryCode);
+					this.update(auth);
+				}else{
+					throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_EXIST);
+				}
 			}
 		}
 	}
@@ -72,4 +69,12 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 		}
 	}
 	
+	public static  boolean isDirtyMac(String hdmac){
+		for(String dirtymac : UserIdentityAuth.dirtyMacs){
+			if(hdmac.equals(dirtymac)){
+				return true;
+			}
+		}
+		return false;
+	}
 }
