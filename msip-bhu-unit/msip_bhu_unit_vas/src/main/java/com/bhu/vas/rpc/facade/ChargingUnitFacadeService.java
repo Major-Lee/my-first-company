@@ -1,7 +1,10 @@
 package com.bhu.vas.rpc.facade;
 
+import java.io.File;
+
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.UserType;
@@ -9,6 +12,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
+import com.bhu.vas.api.rpc.charging.vto.OpsBatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
@@ -70,12 +74,13 @@ public class ChargingUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<BatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid, int countrycode,
+	public RpcResponseDTO<OpsBatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid, int countrycode,
 			String mobileno,int distributor_uid, 
 			String sellor,String partner,
 			boolean canbeturnoff,
 			String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
 			String channel_lv1, String channel_lv2,
+			String sns,
 			String remark) {
 		try{
 			User operUser = chargingFacadeService.getUserService().getById(uid);
@@ -88,8 +93,14 @@ public class ChargingUnitFacadeService {
 							sharedeal_owner_percent,sharedeal_manufacturer_percent,sharedeal_distributor_percent,
 							channel_lv1, channel_lv2,
 							remark);
+			
+			System.out.println("path:"+ret.toAbsoluteFileInputPath());
+			File targetFile = new File(ret.toAbsoluteFileInputPath());
+			targetFile.getParentFile().mkdirs();
+			FileUtils.writeStringToFile(targetFile, sns);
+
 			asyncDeliverMessageService.sendBatchImportConfirmActionMessage(uid, ret.getId());
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(OpsBatchImportVTO.fromBatchImportVTO(ret));
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

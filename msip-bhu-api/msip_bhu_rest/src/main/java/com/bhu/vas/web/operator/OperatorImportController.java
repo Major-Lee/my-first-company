@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.helper.NumberValidateHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
-import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
+import com.bhu.vas.api.rpc.charging.vto.OpsBatchImportVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.ArithHelper;
@@ -92,18 +92,15 @@ public class OperatorImportController extends BaseController{
     			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
     		}
 
-        	RpcResponseDTO<BatchImportVTO> rpcResult = chargingRpcService.doOpsInputDeviceRecord(uid, opsid, countrycode, mobileno_needbinded,distributor, 
+        	RpcResponseDTO<OpsBatchImportVTO> rpcResult = chargingRpcService.doOpsInputDeviceRecord(uid, opsid, countrycode, mobileno_needbinded,distributor, 
         			sellor,
         			partner,
         			canbeturnoff,
         			owner_percent,manufacturer_percent,distributor_percent,
         			channel_lv1, channel_lv2,
+        			sns,
         			remark);
 			if(!rpcResult.hasError()){
-				System.out.println("path:"+rpcResult.getPayload().toAbsoluteFileInputPath());
-				File targetFile = new File(rpcResult.getPayload().toAbsoluteFileInputPath());
-				targetFile.getParentFile().mkdirs();
-				FileUtils.writeStringToFile(targetFile, sns);
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
 				//FileHelper.copyFileTo(file, rpcResult.getPayload().toAbsoluteFilePath());

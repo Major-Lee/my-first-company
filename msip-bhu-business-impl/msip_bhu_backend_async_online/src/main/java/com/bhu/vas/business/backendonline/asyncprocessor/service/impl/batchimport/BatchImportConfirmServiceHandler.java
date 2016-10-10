@@ -276,7 +276,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			if(StringUtils.isEmpty(batchImport.getOpsid()))
 				ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), cb);
 			else
-				ShipmentStringImport.stringImport(importVto.toAbsoluteFileInputPath(), batchImport.getOpsid(), cb);
+				ShipmentStringImport.stringImport(importVto.toAbsoluteFileInputPath(), importVto.toAbsoluteFileOutputPath(), batchImport.getOpsid(), cb);
 				
 			batchImport.setSucceed(atomic_successed.get());
 			batchImport.setFailed(atomic_failed.get());
