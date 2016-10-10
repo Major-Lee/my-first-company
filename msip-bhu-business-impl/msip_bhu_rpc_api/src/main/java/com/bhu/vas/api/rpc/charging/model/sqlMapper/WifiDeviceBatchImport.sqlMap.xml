@@ -27,6 +27,7 @@
 	  <result property="succeed" column="succeed"/>
 	  <result property="failed" column="failed"/>
 	  <result property="remark" column="remark"/>
+	  <result property="opsid" column="opsid"/>
 	  <result property="created_at" column="created_at"/>
 	  <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -60,6 +61,7 @@
 	    	succeed,
 	    	failed,
 	    	remark,
+	    	opsid,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -87,6 +89,7 @@
 	    	succeed,
 	    	failed,
 	    	remark,
+	    	opsid,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -115,6 +118,7 @@
 			#{succeed},
 			#{failed},
 			#{remark},
+			#{opsid},
 			#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -141,6 +145,7 @@
 	    	succeed = #{succeed},
 	    	failed = #{failed},
 	    	remark = #{remark},
+	    	opsid = #{opsid},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
