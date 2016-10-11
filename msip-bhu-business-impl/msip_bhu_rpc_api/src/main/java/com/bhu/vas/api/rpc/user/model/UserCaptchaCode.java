@@ -49,14 +49,14 @@ public class UserCaptchaCode extends BaseStringModel{
 	@Override
 	public void preUpdate() {
 		this.setExpired_sec(BusinessRuntimeConfiguration.UserCaptchaCodeExpired);
-		this.setCaptcha(MobileCaptchaCodeHelper.generateCaptchaCode());
+//		this.setCaptcha(MobileCaptchaCodeHelper.generateCaptchaCode());
 		this.setDate(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5));
 		super.preUpdate();
 	}
 	@Override
 	public void preInsert() {
 		this.setExpired_sec(BusinessRuntimeConfiguration.UserCaptchaCodeExpired);
-		this.setCaptcha(MobileCaptchaCodeHelper.generateCaptchaCode());
+//		this.setCaptcha(MobileCaptchaCodeHelper.generateCaptchaCode());
 		this.setDate(DateTimeHelper.formatDate(DateTimeHelper.FormatPattern5));
 		super.preInsert();
 	}

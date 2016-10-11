@@ -62,8 +62,12 @@ public class UserCaptchaCodeUnitFacadeService {
 			final String acc,final String act) {
 		//RpcResponseDTO<UserCaptchaCodeDTO> result = new RpcResponseDTO<UserCaptchaCodeDTO>();
 		try{
+			boolean specialCaptchaCode = false;
 			String accWithCountryCode = PhoneHelper.format(countrycode, acc);
-			UserCaptchaCode code = userCaptchaCodeService.doGenerateCaptchaCode(accWithCountryCode);
+			if(act.equals("I")){
+				specialCaptchaCode = true;
+			}
+			UserCaptchaCode code = userCaptchaCodeService.doGenerateCaptchaCode(accWithCountryCode,specialCaptchaCode);
 			//deliverMessageService.sendUserCaptchaCodeFetchActionMessage(DeliverMessageType.AC.getPrefix(), countrycode, acc, code.getCaptcha());//sendUserSignedonActionMessage(DeliverMessageType.AC.getPrefix(), user.getId(), remoteIp, from_device);
 			//SpringMVCHelper.renderJson(response, Response.SUCCESS);
 			final UserCaptchaCodeDTO payload = new UserCaptchaCodeDTO();

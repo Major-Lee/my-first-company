@@ -10,6 +10,7 @@ import com.bhu.vas.api.rpc.user.model.UserCaptchaCode;
 import com.bhu.vas.business.ds.user.dao.UserCaptchaCodeDao;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.MobileCaptchaCodeHelper;
 import com.smartwork.msip.cores.orm.service.EntityService;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -65,11 +66,20 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 	 * @param igonreExpired 如果为true，则不考虑是否过期,或是否可以获取next
 	 * @return
 	 */
-	public UserCaptchaCode doGenerateCaptchaCode(String accWithContryCode,boolean foreceGen,boolean igonreExpired){
+	public UserCaptchaCode doGenerateCaptchaCode(String accWithContryCode,boolean foreceGen,boolean igonreExpired,boolean specialCaptchaCode){
 		UserCaptchaCode code = this.getById(accWithContryCode);
+		String captchaCode = null;
+		
+		if(!specialCaptchaCode){
+			captchaCode = MobileCaptchaCodeHelper.generateCaptchaCode();
+		}else{
+			captchaCode = MobileCaptchaCodeHelper.generateUniqueCaptchaCode();
+		}
+		
 		if(code == null){
 			code = new UserCaptchaCode();
 			code.setId(accWithContryCode);
+			code.setCaptcha(captchaCode);
 			code.setTimes(1);
 			code = this.insert(code);
 			return code;
@@ -80,6 +90,7 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 				}else{
 					code.setTimes(1);
 				}
+				code.setCaptcha(captchaCode);
 				code = this.update(code);
 				return code;
 			}else{
@@ -97,6 +108,7 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 						//是否可以获取下一条验证码
 						if(igonreExpired || code.canFetchNext()/* || code.wasExpired()*/){//过期
 							code.setTimes(code.getTimes()+1);
+							code.setCaptcha(captchaCode);
 							code = this.update(code);
 							return code;
 						}else{//还没过期
@@ -105,6 +117,7 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 					}
 				}else{
 					code.setTimes(1);
+					code.setCaptcha(captchaCode);
 					code = this.update(code);
 					return code;
 				}
@@ -113,7 +126,11 @@ public class UserCaptchaCodeService extends EntityService<String,UserCaptchaCode
 	}
 	public UserCaptchaCode doGenerateCaptchaCode(String accWithContryCode){
 		//if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(mobileWithCountryCode)){
-		return this.doGenerateCaptchaCode(accWithContryCode, false, false);
+		return this.doGenerateCaptchaCode(accWithContryCode, false, false,false);
 	}
 	
+	public UserCaptchaCode doGenerateCaptchaCode(String accWithContryCode,boolean specialCaptchaCode){
+		//if(!RuntimeConfiguration.isSystemNoneedCaptchaValidAcc(mobileWithCountryCode)){
+		return this.doGenerateCaptchaCode(accWithContryCode, false, false,specialCaptchaCode);
+	}
 }
