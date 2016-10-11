@@ -76,7 +76,8 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 									sharedealDTO.getCbto(),sharedealDTO.getEl(),
 									sharedealDTO.isCustomized(),
 									sharedealDTO.getOwner_percent(),sharedealDTO.getManufacturer_percent(),sharedealDTO.getDistributor_percent(),
-									sharedealDTO.getRcm(), sharedealDTO.getRcp(), sharedealDTO.getAit(), false);
+									//sharedealDTO.getRcm(), sharedealDTO.getRcp(), sharedealDTO.getAit(),
+									false);
 //							//更新出货渠道
 //							WifiDevice wifidevice = wifiDeviceService.getById(dmac);
 //							wifidevice.setChannel_lv1(sharedealDTO.getChannel_lv1());

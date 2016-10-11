@@ -20,7 +20,22 @@ public class DeviceSharedealVTO implements java.io.Serializable{
 	private String rcm;
 	private String aitm;
 	private String aitp;
+	private String faitm;
+	private String faitp;
 	
+	
+	public String getFaitm() {
+		return faitm;
+	}
+	public void setFaitm(String faitm) {
+		this.faitm = faitm;
+	}
+	public String getFaitp() {
+		return faitp;
+	}
+	public void setFaitp(String faitp) {
+		this.faitp = faitp;
+	}
 	/*public int getOwner() {
 		return owner;
 	}

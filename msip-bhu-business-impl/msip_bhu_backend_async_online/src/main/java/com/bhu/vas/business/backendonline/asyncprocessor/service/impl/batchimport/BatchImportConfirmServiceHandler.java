@@ -179,7 +179,8 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 										importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
 										importVto.isCustomized(),
 										importVto.getOwner_percent(), importVto.getManufacturer_percent(),importVto.getDistributor_percent(),
-					        			importVto.getRcm(), importVto.getRcp(), importVto.getAit(), false);
+					        			//importVto.getRcm(), importVto.getRcp(), importVto.getAit(), 
+					        			false);
 					        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);
 							}
 
@@ -222,7 +223,8 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 											importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
 											importVto.isCustomized(),
 											importVto.getOwner_percent(), importVto.getManufacturer_percent(),importVto.getDistributor_percent(),
-						        			importVto.getRcm(), importVto.getRcp(), importVto.getAit(), false);
+						        			//importVto.getRcm(), importVto.getRcp(), importVto.getAit(),
+						        			false);
 						        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);
 								}
 								logger.info(String.format("B uid_willbinded:%s forceUnbindedDevices:%s", uid_willbinded,forceUnbindedDevices));
@@ -231,7 +233,8 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 											importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
 											importVto.isCustomized(),
 											importVto.getOwner_percent(), importVto.getManufacturer_percent(),importVto.getDistributor_percent(),
-						        			importVto.getRcm(), importVto.getRcp(), importVto.getAit(), false);
+						        			//importVto.getRcm(), importVto.getRcp(), importVto.getAit(),
+						        			false);
 						        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);
 								}
 								logger.info(String.format("B uid_willbinded:%s noActionDevices:%s", uid_willbinded,noActionDevices));
