@@ -337,7 +337,7 @@ public class SSIDStatisticFacadeRpcService {
 					if(StringUtils.isNotBlank(freeMobileClick)){
 						freeClickNum+=Integer.valueOf(freeMobileClick);
 					}else{
-						freeMobileClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", timeList.get(i), timeList.get(i), "", "",1);
+						freeMobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+我要免费上网", timeList.get(i), timeList.get(i), "", "",1);
 						JSONObject freeMobileClickJson=JSONObject.fromObject(freeMobileClick);
 						String freeMobileClickJsonStr=freeMobileClickJson.getString("values");
 						freeMobileClickJsonStr=freeMobileClickJsonStr.substring(1);
