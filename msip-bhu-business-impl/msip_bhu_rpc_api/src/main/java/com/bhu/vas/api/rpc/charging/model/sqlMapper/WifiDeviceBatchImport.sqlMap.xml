@@ -28,6 +28,7 @@
 	  <result property="failed" column="failed"/>
 	  <result property="remark" column="remark"/>
 	  <result property="opsid" column="opsid"/>
+	  <result property="distributor_type" column="distributor_type" />
 	  <result property="created_at" column="created_at"/>
 	  <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -62,6 +63,7 @@
 	    	failed,
 	    	remark,
 	    	opsid,
+	    	distributor_type,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -90,6 +92,7 @@
 	    	failed,
 	    	remark,
 	    	opsid,
+	    	distributor_type,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -119,6 +122,7 @@
 			#{failed},
 			#{remark},
 			#{opsid},
+			#{distributor_type},
 			#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -146,6 +150,7 @@
 	    	failed = #{failed},
 	    	remark = #{remark},
 	    	opsid = #{opsid},
+	    	distributor_type = #{distributor_type},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

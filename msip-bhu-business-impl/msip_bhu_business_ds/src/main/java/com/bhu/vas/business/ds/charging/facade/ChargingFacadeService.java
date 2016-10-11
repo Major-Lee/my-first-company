@@ -152,7 +152,7 @@ public class ChargingFacadeService {
     }
   
     public BatchImportVTO doOpsBatchImportCreate(int uid, String opsid,
-    		int countrycode,String mobileno, int distributor_uid,
+    		int countrycode,String mobileno, int distributor_uid, String distributor_type,
     		String sellor,String partner,
     		boolean canbeturnoff,
     		String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
@@ -182,6 +182,7 @@ public class ChargingFacadeService {
     	batch_import.setCanbeturnoff(canbeturnoff);
     	batch_import.setChannel_lv1(channel_lv1);
     	batch_import.setChannel_lv2(channel_lv2);
+    	batch_import.setDistributor_type(distributor_type);
     	//填充数据
     	WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
 		if(StringUtils.isEmpty(sharedeal_owner_percent) || StringHelper.MINUS_STRING_GAP.equals(sharedeal_owner_percent)){
@@ -406,7 +407,7 @@ public class ChargingFacadeService {
 	
 	public void doWifiDeviceSharedealConfigsUpdate(Integer owner,String dmac,
 			String range_cash_mobile,String range_cash_pc, String access_internet_time){
-		this.doWifiDeviceSharedealConfigsUpdate(null, owner, null, dmac,
+		this.doWifiDeviceSharedealConfigsUpdate(null, owner, null, null, dmac,
 				null, null, true, null, null, null, 
 				range_cash_mobile, range_cash_pc, access_internet_time, false);
 	}
@@ -425,7 +426,7 @@ public class ChargingFacadeService {
 	 * @param enterpriselevel null 忽略此属性
 	 * @param runtime_applydefault
 	 */
-	public void doWifiDeviceSharedealConfigsUpdate(String batchno,Integer owner,Integer distributor,String dmac,
+	public void doWifiDeviceSharedealConfigsUpdate(String batchno,Integer owner,Integer distributor, String distributor_type, String dmac,
 			Boolean canbeturnoff,
 			Boolean enterpriselevel,
 			boolean customized,
@@ -483,6 +484,10 @@ public class ChargingFacadeService {
 		}/*else{
 			configs.setDistributor(WifiDeviceSharedealConfigs.None_Distributor);
 		}*/
+		
+		if(distributor_type != null)
+			configs.setDistributor_type(distributor_type);
+		
 		if(customized){
 			if(StringUtils.isEmpty(owner_percent) || StringUtils.isEmpty(manufacturer_percent)){
 				;//以前是啥值就是什么值

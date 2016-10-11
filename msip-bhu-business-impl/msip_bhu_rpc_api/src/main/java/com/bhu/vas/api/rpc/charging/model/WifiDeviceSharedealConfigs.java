@@ -62,6 +62,8 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	private boolean enterpriselevel = false;
 	//生产环境过程中不存在的设备分成配置 会缺省应用并生效缺省配置时，此值为true，通过导入的设备值为false，后续修改设备配置值为false
 	private boolean runtime_applydefault = true;
+	//分销商类型
+	private String distributor_type;
 	
     /**
      * 创建日期
@@ -170,6 +172,13 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	}
 	public void setDistributor_percent(double distributor_percent) {
 		this.distributor_percent = distributor_percent;
+	}
+	
+	public String getDistributor_type() {
+		return distributor_type;
+	}
+	public void setDistributor_type(String distributor_type) {
+		this.distributor_type = distributor_type;
 	}
 	@Override
 	public void preInsert() {

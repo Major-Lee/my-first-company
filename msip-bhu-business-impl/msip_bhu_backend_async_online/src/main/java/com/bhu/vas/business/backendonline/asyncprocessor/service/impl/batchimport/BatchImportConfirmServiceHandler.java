@@ -123,7 +123,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 				}
 
 				@Override
-				public void afterExcelImported(String opsid, Set<String> dmacs, Set<String> failed_sns) {
+				public void afterExcelImported(Set<String> dmacs, Set<String> failed_sns) {
 					if(dmacs.isEmpty()) return;
 					List<String> all_dmacs = new ArrayList<String>(dmacs);
 					int total = all_dmacs.size();
@@ -174,7 +174,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 									wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(dmac, user_willbinded, null, null);
 								}
 								
-								chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, importVto.getDistributor(),
+								chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, importVto.getDistributor(), importVto.getDistributor_type(),
 										dmac, 
 										importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
 										importVto.isCustomized(),
@@ -218,7 +218,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 									
 								//变更分成比例
 								for(String dmac:forceUnbindedDevices){//需要变更owner = -1
-									chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,-1, importVto.getDistributor(),dmac, 
+									chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,-1, importVto.getDistributor(), importVto.getDistributor_type(), dmac, 
 											importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
 											importVto.isCustomized(),
 											importVto.getOwner_percent(), importVto.getManufacturer_percent(),importVto.getDistributor_percent(),
@@ -227,7 +227,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 								}
 								logger.info(String.format("B uid_willbinded:%s forceUnbindedDevices:%s", uid_willbinded,forceUnbindedDevices));
 								for(String dmac:noActionDevices){//不需要变更owner 
-									chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,null, importVto.getDistributor(),dmac,
+									chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,null, importVto.getDistributor(), importVto.getDistributor_type(), dmac,
 											importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
 											importVto.isCustomized(),
 											importVto.getOwner_percent(), importVto.getManufacturer_percent(),importVto.getDistributor_percent(),
@@ -266,9 +266,9 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							
 						}
 					}
-					if(!StringUtils.isEmpty(opsid)){
+					if(!StringUtils.isEmpty(importVto.getOpsid())){
 						//运营商系统的导入，需要回调通知
-						OpsHttpHelper.opsImportCallBackNotify(opsid, StringHelper.toString(failed_sns.toArray(), StringHelper.COMMA_STRING_GAP));
+						OpsHttpHelper.opsImportCallBackNotify(importVto.getOpsid(), StringHelper.toString(failed_sns.toArray(), StringHelper.COMMA_STRING_GAP));
 					}
 				}
 			};
@@ -276,7 +276,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			if(StringUtils.isEmpty(batchImport.getOpsid()))
 				ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), cb);
 			else
-				ShipmentStringImport.stringImport(importVto.toAbsoluteFileInputPath(), importVto.toAbsoluteFileOutputPath(), batchImport.getOpsid(), cb);
+				ShipmentStringImport.stringImport(importVto.toAbsoluteFileInputPath(), importVto.toAbsoluteFileOutputPath(), cb);
 				
 			batchImport.setSucceed(atomic_successed.get());
 			batchImport.setFailed(atomic_failed.get());

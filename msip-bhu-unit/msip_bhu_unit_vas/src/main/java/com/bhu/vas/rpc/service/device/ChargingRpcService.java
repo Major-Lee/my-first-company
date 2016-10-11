@@ -81,7 +81,7 @@ public class ChargingRpcService  implements IChargingRpcService{
 	
 	@Override
 	public RpcResponseDTO<OpsBatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid,
-			int countrycode,String mobileno,int distributor_uid,
+			int countrycode,String mobileno,int distributor_uid, String distributor_type,
 			String sellor,String partner,
             boolean canbeturnoff,
             String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent,
@@ -90,7 +90,7 @@ public class ChargingRpcService  implements IChargingRpcService{
             String remark){
 		logger.info(String.format("doInputDeviceRecord uid:%s opsid:%s countrycode:%s bmobileno:%s sellor:%s partner:%s canbeturnoff:%s sharedeal_owner_percent:%s sharedeal_manufacturer_percent:%s sharedeal_distributor_percent:%s channel_lv1:%s channel_lv2:%s sns:%s remark:%s",
 				uid, opsid, countrycode, mobileno,sellor,partner,canbeturnoff,sharedeal_owner_percent,sharedeal_manufacturer_percent, sharedeal_distributor_percent, channel_lv1, channel_lv2, sns, remark));
-		return chargingUnitFacadeService.doOpsInputDeviceRecord(uid, opsid, countrycode, mobileno,distributor_uid,
+		return chargingUnitFacadeService.doOpsInputDeviceRecord(uid, opsid, countrycode, mobileno,distributor_uid, distributor_type,
 				sellor,partner,
 				canbeturnoff,
 				sharedeal_owner_percent, sharedeal_manufacturer_percent,sharedeal_distributor_percent,

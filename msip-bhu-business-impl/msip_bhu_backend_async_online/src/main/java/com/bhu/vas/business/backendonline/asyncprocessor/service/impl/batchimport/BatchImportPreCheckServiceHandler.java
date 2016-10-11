@@ -94,7 +94,7 @@ public class BatchImportPreCheckServiceHandler implements IMsgHandlerService {
 				}
 
 				@Override
-				public void afterExcelImported(String opsid, Set<String> dmacs, Set<String> failed_sns) {
+				public void afterExcelImported(Set<String> dmacs, Set<String> failed_sns) {
 				}
 			});
 			

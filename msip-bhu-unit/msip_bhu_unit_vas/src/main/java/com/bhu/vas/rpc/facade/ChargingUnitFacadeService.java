@@ -75,7 +75,7 @@ public class ChargingUnitFacadeService {
 	}
 
 	public RpcResponseDTO<OpsBatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid, int countrycode,
-			String mobileno,int distributor_uid, 
+			String mobileno,int distributor_uid, String distributor_type,
 			String sellor,String partner,
 			boolean canbeturnoff,
 			String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
@@ -87,7 +87,7 @@ public class ChargingUnitFacadeService {
 			UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
 			
 			BatchImportVTO ret = 
-					chargingFacadeService.doOpsBatchImportCreate(uid, opsid, countrycode, mobileno,distributor_uid,
+					chargingFacadeService.doOpsBatchImportCreate(uid, opsid, countrycode, mobileno,distributor_uid, distributor_type,
 							sellor,partner,
 							canbeturnoff, 
 							sharedeal_owner_percent,sharedeal_manufacturer_percent,sharedeal_distributor_percent,

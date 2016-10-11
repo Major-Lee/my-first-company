@@ -55,6 +55,7 @@ public class OperatorImportController extends BaseController{
             @RequestParam(required = false,value = "cc",defaultValue="86") int countrycode,
             @RequestParam(required = false,value = "mobileno") String mobileno_needbinded,
             @RequestParam(required = true,defaultValue = "-1") int distributor,
+            @RequestParam(required = true) String distributor_type,
             @RequestParam(required = false) String sellor,
             @RequestParam(required = false) String partner,
             @RequestParam(required = true,value = "cbto",defaultValue="true") boolean canbeturnoff,
@@ -92,7 +93,7 @@ public class OperatorImportController extends BaseController{
     			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
     		}
 
-        	RpcResponseDTO<OpsBatchImportVTO> rpcResult = chargingRpcService.doOpsInputDeviceRecord(uid, opsid, countrycode, mobileno_needbinded,distributor, 
+        	RpcResponseDTO<OpsBatchImportVTO> rpcResult = chargingRpcService.doOpsInputDeviceRecord(uid, opsid, countrycode, mobileno_needbinded,distributor, distributor_type,
         			sellor,
         			partner,
         			canbeturnoff,

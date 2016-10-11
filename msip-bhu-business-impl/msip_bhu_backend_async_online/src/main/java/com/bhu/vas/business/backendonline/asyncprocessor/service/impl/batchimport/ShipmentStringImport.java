@@ -16,7 +16,7 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 public class ShipmentStringImport {
 	
-	public static void stringImport(String fileinputpath, String fileoutpath, String opsid, ImportElementCallback callback){
+	public static void stringImport(String fileinputpath, String fileoutpath, ImportElementCallback callback){
 		System.out.println("input file:"+fileinputpath);
 		String snsstr = null;
 		try {
@@ -53,7 +53,7 @@ public class ShipmentStringImport {
     				sb.append("\n");
         		}
 	         }
-	         callback.afterExcelImported(opsid, devices, failed_sn);
+	         callback.afterExcelImported(devices, failed_sn);
 	         String foutstr = sb.toString();
 	         if(StringUtils.isNotEmpty(foutstr)){
 		         File targetFile = new File(fileoutpath);
@@ -69,7 +69,7 @@ public class ShipmentStringImport {
 
 	public static void main(String[] argv){
 		String filepath = "/Users/Edmond/gospace/20160523-00000008.xlsx";
-		ShipmentStringImport.stringImport(filepath, null, null, new ImportElementCallback(){
+		ShipmentStringImport.stringImport(filepath, null, new ImportElementCallback(){
 			@Override
 			public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
 				// TODO Auto-generated method stub
@@ -77,7 +77,7 @@ public class ShipmentStringImport {
 			}
 
 			@Override
-			public void afterExcelImported(String opsid, Set<String> dmacs, Set<String> failed_sn) {
+			public void afterExcelImported(Set<String> dmacs, Set<String> failed_sn) {
 				// TODO Auto-generated method stub
 				
 			}

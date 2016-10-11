@@ -21,6 +21,7 @@
     <result property="enterpriselevel" column="enterpriselevel"/>
     <result property="customized" column="customized"/>
     <result property="runtime_applydefault" column="runtime_applydefault"/>
+    <result property="distributor_type" column="distributor_type"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -48,6 +49,7 @@
 	    	enterpriselevel,
 	    	customized,
 	    	runtime_applydefault,
+	    	distributor_type,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -69,6 +71,7 @@
 	    	enterpriselevel,
 	    	customized,
 	    	runtime_applydefault,
+	    	distributor_type,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -91,6 +94,7 @@
 	    	#{enterpriselevel},
 	    	#{customized},
 	    	#{runtime_applydefault},
+	    	#{distributor_type},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -111,6 +115,7 @@
 	    	enterpriselevel = #{enterpriselevel},
 	    	customized = #{customized},
 	    	runtime_applydefault = #{runtime_applydefault},
+	    	distributor_type = #{distributor_type},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

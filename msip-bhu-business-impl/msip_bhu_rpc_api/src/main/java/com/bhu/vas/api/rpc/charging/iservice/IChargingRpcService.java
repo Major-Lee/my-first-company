@@ -29,7 +29,7 @@ public interface IChargingRpcService {
             String remark);
 	
 	public RpcResponseDTO<OpsBatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid,
-			int countrycode,String mobileno,int distributor_uid,
+			int countrycode,String mobileno,int distributor_uid, String distributor_type,
 			String sellor,String partner,
             boolean canbeturnoff,
             String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent,
