@@ -171,7 +171,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="wifiDeviceSharedealConfigs">
+	<delete id="delete" parameterType="wifiDeviceSharedealConfigsOld">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -179,11 +179,11 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="wifiDeviceSharedealConfigs">
+	<insert id="insert" parameterType="wifiDeviceSharedealConfigsOld">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="wifiDeviceSharedealConfigs">
+	<update id="update" parameterType="wifiDeviceSharedealConfigsOld">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		

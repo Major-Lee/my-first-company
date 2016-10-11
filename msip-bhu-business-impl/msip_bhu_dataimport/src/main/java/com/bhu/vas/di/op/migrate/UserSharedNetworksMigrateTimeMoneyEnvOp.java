@@ -24,17 +24,20 @@ public class UserSharedNetworksMigrateTimeMoneyEnvOp {
 	public static void main(String[] argv){
 		long t0 = System.currentTimeMillis();
 		String[] CONFIG = {"/com/bhu/vas/di/business/dataimport/dataImportCtx.xml"};
-		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserSharedNetworksMigrateEnvOp.class);
+		final ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CONFIG, UserSharedNetworksMigrateTimeMoneyEnvOp.class);
 		ctx.start();
 	    WifiDeviceSharedealConfigsOldService wifiDeviceSharedealConfigsOldService = (WifiDeviceSharedealConfigsOldService)ctx.getBean("wifiDeviceSharedealConfigsOldService");
 	    SharedNetworksFacadeService sharedNetworksFacadeService = (SharedNetworksFacadeService)ctx.getBean("sharedNetworksFacadeService");
 		
+	    
 		//遍历以后的sharedealconfigs表数据
 		ModelCriteria mc_usersharednetwork = new ModelCriteria();
 		mc_usersharednetwork.createCriteria().andSimpleCaulse(" 1=1 ");//.andColumnEqualTo("singer", 1);//.andColumnBetween("updated_at", d2, d1);
 		mc_usersharednetwork.setOrderByClause("id desc");
 		mc_usersharednetwork.setPageNumber(1);
 		mc_usersharednetwork.setPageSize(200);
+		
+
     	EntityIterator<String, WifiDeviceSharedealConfigsOld> itit = new KeyBasedEntityBatchIterator<String, WifiDeviceSharedealConfigsOld>(String.class, WifiDeviceSharedealConfigsOld.class, wifiDeviceSharedealConfigsOldService.getEntityDao(), mc_usersharednetwork);
 		while(itit.hasNext()){
 			List<WifiDeviceSharedealConfigsOld> list = itit.next();
@@ -47,7 +50,7 @@ public class UserSharedNetworksMigrateTimeMoneyEnvOp {
 					continue;
 				}
 				if(!SharedNetworkType.SafeSecure.getKey().equals(snk.getSharednetwork_type())){
-					System.out.println(String.format("[%s] snk is not a SafeSecure networkd", sdc.getId()));
+					System.out.println(String.format("[%s] snk is not a SafeSecure network", sdc.getId()));
 					continue;
 				}
 				
