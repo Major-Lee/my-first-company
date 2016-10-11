@@ -178,7 +178,7 @@ public class ChargingFacadeService {
     	batch_import.setSellor(sellor);
     	batch_import.setPartner(partner);
     	batch_import.setOpsid(opsid);
-    	batch_import.setCustomized(false);
+    	batch_import.setCustomized(true);
     	batch_import.setCanbeturnoff(canbeturnoff);
     	batch_import.setChannel_lv1(channel_lv1);
     	batch_import.setChannel_lv2(channel_lv2);
