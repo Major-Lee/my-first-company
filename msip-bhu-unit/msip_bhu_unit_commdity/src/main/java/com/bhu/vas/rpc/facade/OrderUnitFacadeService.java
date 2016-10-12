@@ -850,11 +850,11 @@ public class OrderUnitFacadeService {
 			if (order == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
 			}
-			long isExpire = System.currentTimeMillis() - order.getCreated_at().getTime();
-			//默认视频最短时间15秒
-			if (isExpire < 15000){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID);
-			}
+//			2016-10-12按需求取消时间最短15秒的限制
+//			long isExpire = System.currentTimeMillis() - order.getCreated_at().getTime();
+//			if (isExpire < 15000){
+//				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID);
+//			}
 			order.setStatus(OrderStatus.PaySuccessed.getKey());
 			order.setProcess_status(OrderProcessStatus.PaySuccessed.getKey());
 			order.setPaymented_at(new Date());
