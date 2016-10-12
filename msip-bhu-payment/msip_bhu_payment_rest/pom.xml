@@ -74,8 +74,8 @@
         <dependency>
 			<groupId>com.bhu</groupId>
 			<artifactId>msip_bhu_midas</artifactId>
-		</dependency>				
-        <!-- 
+		</dependency>	
+        <!-- 			
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
