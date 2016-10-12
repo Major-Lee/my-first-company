@@ -49,6 +49,7 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String a_id;//代理商的用户id
 	private String a_nick;//代理商的用户名称
 	private String a_org;//代理商的公司名称
+	private String d_distributor_type; //运营商类型
 	
 	public int getIndex() {
 		return index;
@@ -284,4 +285,11 @@ public class WifiDeviceVTO1 implements Serializable{
 	public void setO_scalelevel(String o_scalelevel) {
 		this.o_scalelevel = o_scalelevel;
 	}
+	public String getD_distributor_type() {
+		return d_distributor_type;
+	}
+	public void setD_distributor_type(String d_distributor_type) {
+		this.d_distributor_type = d_distributor_type;
+	}
+	
 }

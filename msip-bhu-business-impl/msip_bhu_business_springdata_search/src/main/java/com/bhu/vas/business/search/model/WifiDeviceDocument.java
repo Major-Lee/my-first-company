@@ -124,6 +124,13 @@ public class WifiDeviceDocument extends AbstractDocument{
 	)
 	private String d_channel_lv2;//设备出货渠道2
 
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_distributor_type; //城市运营商 or 渠道商
+
 	
 	/**
 	 * 建立索引的时候 数组为 经度 纬度
@@ -865,6 +872,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_channel_lv2(String d_channel_lv2) {
 		this.d_channel_lv2 = d_channel_lv2;
+	}
+
+	public String getD_distributor_type() {
+		return d_distributor_type;
+	}
+
+	public void setD_distributor_type(String d_distributor_type) {
+		this.d_distributor_type = d_distributor_type;
 	}
 
 }

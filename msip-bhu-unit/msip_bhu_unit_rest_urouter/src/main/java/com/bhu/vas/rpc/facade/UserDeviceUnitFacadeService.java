@@ -440,6 +440,7 @@ public class UserDeviceUnitFacadeService {
 				userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
 				userDeviceDTO.setLastlogoutat(wifiDeviceDocument.getD_lastlogoutat());
 				userDeviceDTO.setLastregedat(wifiDeviceDocument.getD_lastregedat());
+				userDeviceDTO.setD_distributor_type(wifiDeviceDocument.getD_distributor_type());
 				if (wifiDeviceDocument.getD_snk_allowturnoff() != null) {
 					userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
 				} else {
@@ -498,6 +499,7 @@ public class UserDeviceUnitFacadeService {
 							userDeviceDTO.setIp(wifiDeviceDocument.getD_wanip());
 							userDeviceDTO.setD_sn(wifiDeviceDocument.getD_sn());
 							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
+							userDeviceDTO.setD_distributor_type(wifiDeviceDocument.getD_distributor_type());
 							if(wifiDeviceDocument.getD_geopoint() != null && wifiDeviceDocument.getD_geopoint().length == 2){
 								userDeviceDTO.setLon(String.valueOf(wifiDeviceDocument.getD_geopoint()[0]));;
 								userDeviceDTO.setLat(String.valueOf(wifiDeviceDocument.getD_geopoint()[1]));;

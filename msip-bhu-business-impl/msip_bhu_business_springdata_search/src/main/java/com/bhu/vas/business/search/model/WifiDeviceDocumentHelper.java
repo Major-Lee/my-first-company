@@ -219,6 +219,7 @@ public class WifiDeviceDocumentHelper {
 			}
 			doc.setD_snk_allowturnoff(wifiDeviceShareConfig.isCanbe_turnoff() ? "1" : "0");
 			doc.setO_batch(wifiDeviceShareConfig.getBatchno());
+			doc.setD_distributor_type(wifiDeviceShareConfig.getDistributor_type());
 		}else{
 			doc.setD_snk_allowturnoff("1");
 		}

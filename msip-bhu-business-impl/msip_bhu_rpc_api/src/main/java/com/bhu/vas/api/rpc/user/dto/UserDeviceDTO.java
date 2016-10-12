@@ -49,8 +49,8 @@ public class UserDeviceDTO implements Serializable {
     //app获取后可判断是否需要更新位置信息
     private String lat;
     private String lon;
-    
-    
+    private String d_distributor_type;//运营商类型
+        
     public long getLastregedat() {
 		return lastregedat;
 	}
@@ -227,6 +227,14 @@ public class UserDeviceDTO implements Serializable {
 
 	public void setDistrict(String district) {
 		this.district = district;
+	}
+
+	public String getD_distributor_type() {
+		return d_distributor_type;
+	}
+
+	public void setD_distributor_type(String d_distributor_type) {
+		this.d_distributor_type = d_distributor_type;
 	}
 	
 }
