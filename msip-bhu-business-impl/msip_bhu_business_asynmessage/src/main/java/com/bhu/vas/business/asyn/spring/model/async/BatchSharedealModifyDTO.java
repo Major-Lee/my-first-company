@@ -14,10 +14,20 @@ public class BatchSharedealModifyDTO extends AsyncDTO {
 	private String rcm;
 	private String rcp;
 	private String ait;
+	private String fait;
 //	private String channel_lv1;
 //	private String channel_lv2;
 	
+	
 	private boolean needCheckBinding;
+	public String getFait() {
+		return fait;
+	}
+
+	public void setFait(String fait) {
+		this.fait = fait;
+	}
+
 	public String getMessage() {
 		return message;
 	}
