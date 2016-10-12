@@ -35,6 +35,7 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.util.DataUtils;
 import com.bhu.vas.rpc.util.JSONObject;
 import com.bhu.vas.rpc.util.um.OpenApiCnzzImpl;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 
@@ -1061,37 +1062,84 @@ public class SSIDStatisticFacadeRpcService {
 		double yysIncome=0;
 		int xsxxDoc=0;
 		double xsxxIncome=0;
-		if(wifiDevices!=null&&wifiDevices.size()>0){
-			for(WifiDevice i:wifiDevices){
-				String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+dateStr, i.getId());
-				if(StringUtils.isNotBlank(doC)){
-					if(i.getChannel_lv1().equals("WA")){
-						waDoc+=Integer.parseInt(doC);
-					}else if(i.getChannel_lv1().equals("ZJ")){
-						zjDoc+=Integer.parseInt(doC);
-					}else if(i.getChannel_lv1().equals("YYS")){
-						yysDoc+=Integer.parseInt(doC);
-					}else if(i.getChannel_lv1().equals("XSXX")){
-						xsxxDoc+=Integer.parseInt(doC);
-					}
-				}
-				String orderStatist=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+dateStr, i.getId());
-				if(StringUtils.isNotBlank(orderStatist)){
-					JSONObject orderObj = JSONObject.fromObject(orderStatist);
-					if(orderObj.get("ofa") != null){
+		
+		int dsNum= 0;
+		int spNum= 0;
+		int dxNum= 0;
+		int utoolNum= 0;
+		
+		
+		String outLineResult= DeviceStatisticsHashService.getInstance().deviceMacHget(dateStr, "outLine");
+		if(StringUtils.isNotBlank(outLineResult)){
+			JSONObject outLineObj = JSONObject.fromObject(outLineResult);
+			waDoc=outLineObj.getInt("waDoc");
+			waIncome=outLineObj.getDouble("waIncome");
+			zjDoc=outLineObj.getInt("zjDoc");
+			zjIncome=outLineObj.getDouble("zjIncome");
+			yysDoc=outLineObj.getInt("yysDoc");
+			yysIncome=outLineObj.getDouble("yysIncome");
+			xsxxDoc=outLineObj.getInt("xsxxDoc");
+			xsxxIncome=outLineObj.getDouble("xsxxIncome");
+			
+			dsNum= outLineObj.getInt("dsNum");
+			spNum= outLineObj.getInt("spNum");
+			dxNum= outLineObj.getInt("dxNum");
+			utoolNum= outLineObj.getInt("utoolNum");
+		}else{
+			if(wifiDevices!=null&&wifiDevices.size()>0){
+				for(WifiDevice i:wifiDevices){
+					String doC = DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-DOC"+dateStr, i.getId());
+					if(StringUtils.isNotBlank(doC)){
 						if(i.getChannel_lv1().equals("WA")){
-							waIncome+=orderObj.getDouble("ofa");
+							waDoc+=Integer.parseInt(doC);
 						}else if(i.getChannel_lv1().equals("ZJ")){
-							zjIncome+=orderObj.getDouble("ofa");
+							zjDoc+=Integer.parseInt(doC);
 						}else if(i.getChannel_lv1().equals("YYS")){
-							yysIncome+=orderObj.getDouble("ofa");
+							yysDoc+=Integer.parseInt(doC);
 						}else if(i.getChannel_lv1().equals("XSXX")){
-							xsxxIncome+=orderObj.getDouble("ofa");
+							xsxxDoc+=Integer.parseInt(doC);
+						}
+					}
+					String orderStatist=DeviceStatisticsHashService.getInstance().deviceMacHget("MAC-"+dateStr, i.getId());
+					if(StringUtils.isNotBlank(orderStatist)){
+						JSONObject orderObj = JSONObject.fromObject(orderStatist);
+						if(orderObj.get("ofa") != null){
+							if(i.getChannel_lv1().equals("WA")){
+								waIncome+=orderObj.getDouble("ofa");
+							}else if(i.getChannel_lv1().equals("ZJ")){
+								zjIncome+=orderObj.getDouble("ofa");
+							}else if(i.getChannel_lv1().equals("YYS")){
+								yysIncome+=orderObj.getDouble("ofa");
+							}else if(i.getChannel_lv1().equals("XSXX")){
+								xsxxIncome+=orderObj.getDouble("ofa");
+							}
 						}
 					}
 				}
 			}
+			dsNum= orderService.countByType(0,0,dateStr+"%");
+			log.info("start data:"+dsNum);
+			spNum= orderService.countByType(0,6,dateStr+"%");
+			dxNum= orderService.countByType(0,10,dateStr+"%");
+			utoolNum= orderService.countByType(1,2,dateStr+"%");
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("waDoc", waDoc);
+			map.put("waIncome", waIncome);
+			map.put("zjDoc", zjDoc);
+			map.put("zjIncome", zjIncome);
+			map.put("yysDoc", yysDoc);
+			map.put("yysIncome", yysIncome);
+			map.put("xsxxDoc", xsxxDoc);
+			map.put("xsxxIncome", xsxxIncome);
+			
+			map.put("dsNum", dsNum);
+			map.put("spNum", spNum);
+			map.put("dxNum", dxNum);
+			map.put("utoolNum", utoolNum);
+			
+			DeviceStatisticsHashService.getInstance().deviceMacHset(dateStr, "outLine",JsonHelper.getJSONString(map));
 		}
+		
 		double total=waIncome+zjIncome+yysIncome+xsxxIncome;
 		SsidOutLine waoutLine=new SsidOutLine();
 		waoutLine.setDoc(waDoc);
@@ -1126,11 +1174,7 @@ public class SSIDStatisticFacadeRpcService {
 		channelInfos.put("YYS", yysoutLine);
 		channelInfos.put("XSXX", xsxxoutLine);
 		
-		int dsNum= orderService.countByType(0,0,dateStr+"%");
-		log.info("start data:"+dsNum);
-		int spNum= orderService.countByType(0,6,dateStr+"%");
-		int dxNum= orderService.countByType(0,10,dateStr+"%");
-		int utoolNum= orderService.countByType(1,2,dateStr+"%");
+		
 		methodStatistics.put("ds", dsNum);
 		methodStatistics.put("dx", dxNum);
 		methodStatistics.put("sp", spNum);
