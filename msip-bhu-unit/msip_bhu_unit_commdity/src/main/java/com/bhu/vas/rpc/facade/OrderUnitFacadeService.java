@@ -830,7 +830,7 @@ public class OrderUnitFacadeService {
 			
 			OrderVideoVTO orderVto = new OrderVideoVTO();
 			orderVto.setId(order.getId());
-			orderVto.setForceTime(chargingFacadeService.fetchForceTime(mac,umactype));
+			orderVto.setForceTime(chargingFacadeService.fetchAccessInternetTime(mac,umactype));
 			orderVto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
 		}catch(BusinessI18nCodeException bex){
