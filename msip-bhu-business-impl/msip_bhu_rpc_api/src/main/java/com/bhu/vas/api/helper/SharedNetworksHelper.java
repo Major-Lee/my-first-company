@@ -13,6 +13,8 @@ import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetworks;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class SharedNetworksHelper {
 	public static final String FormatTemplete = "%04d";
@@ -47,7 +49,23 @@ public class SharedNetworksHelper {
 	public static boolean validDefaultCreateTemplateFormat(String template){
     	return DefaultCreateTemplate.equals(template);
     }
-    
+	
+	public static boolean validAmountRange(String param, String name, double minValue, double maxValue){
+		boolean ret = NumberValidateHelper.validAmountRange(param, minValue, maxValue);
+		if(!ret){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{name.concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
+		}
+		return ret;
+	}
+
+	public static boolean validAitRange(String param, String name, int minValue, int maxValue){
+		boolean ret = NumberValidateHelper.validAitRange(param, minValue, maxValue);
+		if(!ret){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{name.concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
+		}
+		return ret;
+	}
+	
 	public static boolean wasDefaultTemplate(String template){
 		return DefaultTemplate.equals(template);
 	}

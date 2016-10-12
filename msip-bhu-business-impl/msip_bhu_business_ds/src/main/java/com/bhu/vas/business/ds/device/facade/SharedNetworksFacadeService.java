@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.NumberValidateHelper;
 import com.bhu.vas.api.helper.SharedNetworksHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
@@ -65,6 +66,13 @@ public class SharedNetworksFacadeService {
 		if(StringUtils.isEmpty(paramDto.getTemplate())){
 			paramDto.setTemplate(SharedNetworksHelper.DefaultTemplate);
 		}
+		SharedNetworksHelper.validAmountRange(paramDto.getRange_cash_mobile(), "rcm", NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
+		SharedNetworksHelper.validAmountRange(paramDto.getRange_cash_pc(), "rcp", NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
+		SharedNetworksHelper.validAitRange(paramDto.getAit_mobile(), "ait_m", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+		SharedNetworksHelper.validAitRange(paramDto.getAit_pc(), "ait_p", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+		SharedNetworksHelper.validAitRange(paramDto.getFree_ait_mobile(), "fait_m", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+		SharedNetworksHelper.validAitRange(paramDto.getFree_ait_pc(), "fait_p", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+		
 		/*if(StringUtils.isEmpty(paramDto.getTemplate_name())){
 			paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
 		}*/
