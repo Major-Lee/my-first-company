@@ -16,6 +16,7 @@ import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusine
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -43,6 +44,9 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
+	@Resource
+	private SharedNetworksFacadeService sharedNetworksFacadeService;
 	
 	@Resource
 	private BackendBusinessService backendBusinessService;
@@ -76,7 +80,11 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 									sharedealDTO.getCbto(),sharedealDTO.getEl(),
 									sharedealDTO.isCustomized(),
 									sharedealDTO.getOwner_percent(),sharedealDTO.getManufacturer_percent(),sharedealDTO.getDistributor_percent(),
-									sharedealDTO.getRcm(), sharedealDTO.getRcp(), sharedealDTO.getAit(), false);
+									//sharedealDTO.getRcm(), sharedealDTO.getRcp(), sharedealDTO.getAit(),
+									false);
+							//更新portal配置中的金额和时长
+							sharedNetworksFacadeService.updateDevicesSharedNetworkTimeMoneyControl(dmac, sharedealDTO.getRcp(), sharedealDTO.getRcm(), sharedealDTO.getAit(),
+									sharedealDTO.getAit(), sharedealDTO.getFait(), sharedealDTO.getFait());
 //							//更新出货渠道
 //							WifiDevice wifidevice = wifiDeviceService.getById(dmac);
 //							wifidevice.setChannel_lv1(sharedealDTO.getChannel_lv1());

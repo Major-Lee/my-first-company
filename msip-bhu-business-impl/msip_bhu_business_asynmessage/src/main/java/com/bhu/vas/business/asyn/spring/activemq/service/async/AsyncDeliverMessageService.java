@@ -113,13 +113,14 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendBatchDeviceSnkApplyActionMessage(int uid,String snk_type,String template, List<String> dmacs,boolean onlyindexupdate,char dtoType){
+	public void sendBatchDeviceSnkApplyActionMessage(int uid,String snk_type,String template, List<String> dmacs, boolean onlyindexupdate, boolean senddevicecmd, char dtoType){
 		BatchDeviceSnkApplyDTO dto = new BatchDeviceSnkApplyDTO();
 		dto.setUid(uid);
 		dto.setSnk_type(snk_type);
 		dto.setTemplate(template);
 		dto.setMacs(dmacs);
 		dto.setOnlyindexupdate(onlyindexupdate);
+		dto.setSenddevicecmd(senddevicecmd);
 		dto.setDtoType(dtoType);
 		dto.setTs(System.currentTimeMillis());
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));

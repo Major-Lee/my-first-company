@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -18,6 +19,17 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  */
 @SuppressWarnings("serial")
 public class ParamSharedNetworkDTO implements java.io.Serializable{
+	
+	@JsonIgnore
+	public static final String Default_Range_Cash_PC = "1.5-3.5";
+	@JsonIgnore
+	public static final String Default_Range_Cash_Mobile = "0.1-0.9";
+	@JsonIgnore
+	public static final String Default_AIT = "14400";
+	@JsonIgnore
+	public static final String Default_Free_AIT = "14400";
+
+	
 	private String ntype;
 	private String template;
 	private String template_name;
@@ -52,6 +64,16 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	@JsonInclude(Include.NON_NULL)
 	private String dns_default_ip;
 	
+	
+	private String range_cash_pc = Default_Range_Cash_PC;
+	private String range_cash_mobile = Default_Range_Cash_Mobile;
+	private String ait_pc = Default_AIT;
+	private String ait_mobile = Default_AIT;
+	//pc免费上网时长
+	private String free_ait_pc = Default_Free_AIT;
+	//手机免费上网时长
+	private String free_ait_mobile = Default_Free_AIT;
+
 	
 	public ParamSharedNetworkDTO() {
 		this.ntype = VapEnumType.SharedNetworkType.Uplink.getKey();
@@ -440,6 +462,42 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return false;
 	}
 	
+	public String getFree_ait_pc() {
+		return free_ait_pc;
+	}
+	public void setFree_ait_pc(String free_ait_pc) {
+		this.free_ait_pc = free_ait_pc;
+	}
+	public String getFree_ait_mobile() {
+		return free_ait_mobile;
+	}
+	public void setFree_ait_mobile(String free_ait_mobile) {
+		this.free_ait_mobile = free_ait_mobile;
+	}
+	public String getRange_cash_pc() {
+		return range_cash_pc;
+	}
+	public void setRange_cash_pc(String range_cash_pc) {
+		this.range_cash_pc = range_cash_pc;
+	}
+	public String getRange_cash_mobile() {
+		return range_cash_mobile;
+	}
+	public void setRange_cash_mobile(String range_cash_mobile) {
+		this.range_cash_mobile = range_cash_mobile;
+	}
+	public String getAit_pc() {
+		return ait_pc;
+	}
+	public void setAit_pc(String ait_pc) {
+		this.ait_pc = ait_pc;
+	}
+	public String getAit_mobile() {
+		return ait_mobile;
+	}
+	public void setAit_mobile(String ait_mobile) {
+		this.ait_mobile = ait_mobile;
+	}
 	public String getTemplate() {
 		return template;
 	}

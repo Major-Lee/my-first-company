@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs">
+<mapper namespace="com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigsOld">
 
-  <resultMap id="modelResult" type="wifiDeviceSharedealConfigs">
+  <resultMap id="modelResult" type="wifiDeviceSharedealConfigsOld">
     <id property="id" column="id"/>
     <result property="batchno" column="batchno"/>
     <result property="owner" column="owner"/>
@@ -13,6 +13,10 @@
     <result property="owner_percent" column="owner_percent"/>
     <result property="manufacturer_percent" column="manufacturer_percent"/>
     <result property="distributor_percent" column="distributor_percent"/>
+    <result property="range_cash_pc" column="range_cash_pc"/>
+    <result property="range_cash_mobile" column="range_cash_mobile"/>
+    <result property="ait_pc" column="ait_pc"/>
+    <result property="ait_mobile" column="ait_mobile"/>
     <result property="canbe_turnoff" column="canbe_turnoff"/>
     <result property="enterpriselevel" column="enterpriselevel"/>
     <result property="customized" column="customized"/>
@@ -37,6 +41,10 @@
 	    	owner_percent,
 	    	manufacturer_percent,
 	    	distributor_percent,
+	    	range_cash_pc,
+	    	range_cash_mobile,
+	    	ait_pc,
+	    	ait_mobile,
 	    	canbe_turnoff,
 	    	enterpriselevel,
 	    	customized,
@@ -55,6 +63,10 @@
 	    	owner_percent,
 	    	manufacturer_percent,
 	    	distributor_percent,
+	    	range_cash_pc,
+	    	range_cash_mobile,
+	    	ait_pc,
+	    	ait_mobile,
 	    	canbe_turnoff,
 	    	enterpriselevel,
 	    	customized,
@@ -74,6 +86,10 @@
 	    	#{owner_percent},
 	    	#{manufacturer_percent},
 	    	#{distributor_percent},
+	    	#{range_cash_pc},
+	    	#{range_cash_mobile},
+	    	#{ait_pc},
+	    	#{ait_mobile},
 	    	#{canbe_turnoff},
 	    	#{enterpriselevel},
 	    	#{customized},
@@ -91,6 +107,10 @@
 	    	owner_percent = #{owner_percent},
 	    	manufacturer_percent = #{manufacturer_percent},
 	    	distributor_percent = #{distributor_percent},
+	    	range_cash_pc = #{range_cash_pc},
+	    	range_cash_mobile = #{range_cash_mobile},
+	    	ait_pc = #{ait_pc},
+	    	ait_mobile = #{ait_mobile},
 	    	canbe_turnoff = #{canbe_turnoff},
 	    	enterpriselevel = #{enterpriselevel},
 	    	customized = #{customized},
@@ -151,7 +171,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="wifiDeviceSharedealConfigs">
+	<delete id="delete" parameterType="wifiDeviceSharedealConfigsOld">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -159,11 +179,11 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="wifiDeviceSharedealConfigs">
+	<insert id="insert" parameterType="wifiDeviceSharedealConfigsOld">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="wifiDeviceSharedealConfigs">
+	<update id="update" parameterType="wifiDeviceSharedealConfigsOld">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		

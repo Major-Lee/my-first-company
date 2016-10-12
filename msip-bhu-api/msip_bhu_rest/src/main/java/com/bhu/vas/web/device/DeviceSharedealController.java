@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,7 +55,8 @@ public class DeviceSharedealController extends BaseController{
             @RequestParam(required = false,value = "percent_d") String distributor_percent,*/
             @RequestParam(required = true,value = "rcm") String range_cash_mobile,
             @RequestParam(required = true,value = "rcp") String range_cash_pc,
-            @RequestParam(required = true,value = "ait") String access_internet_time
+            @RequestParam(required = true,value = "ait") String access_internet_time,
+            @RequestParam(required = false,value = "fait") String free_access_internet_time
             ) {
     	try{
     		ValidateService.validAmountRange(range_cash_mobile,NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
@@ -64,7 +66,7 @@ public class DeviceSharedealController extends BaseController{
         			null,null,
         			true,
         			null,null,null,
-        			range_cash_mobile,range_cash_pc,access_internet_time,true);
+        			range_cash_mobile,range_cash_pc,access_internet_time, StringUtils.isEmpty(free_access_internet_time)?access_internet_time:free_access_internet_time, true);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{

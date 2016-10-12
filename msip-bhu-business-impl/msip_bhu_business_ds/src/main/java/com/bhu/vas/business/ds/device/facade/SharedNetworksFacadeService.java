@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.NumberValidateHelper;
 import com.bhu.vas.api.helper.SharedNetworksHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
@@ -65,6 +66,13 @@ public class SharedNetworksFacadeService {
 		if(StringUtils.isEmpty(paramDto.getTemplate())){
 			paramDto.setTemplate(SharedNetworksHelper.DefaultTemplate);
 		}
+		SharedNetworksHelper.validAmountRange(paramDto.getRange_cash_mobile(), "rcm", NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
+		SharedNetworksHelper.validAmountRange(paramDto.getRange_cash_pc(), "rcp", NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
+		SharedNetworksHelper.validAitRange(paramDto.getAit_mobile(), "ait_m", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+		SharedNetworksHelper.validAitRange(paramDto.getAit_pc(), "ait_p", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+		SharedNetworksHelper.validAitRange(paramDto.getFree_ait_mobile(), "fait_m", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+		SharedNetworksHelper.validAitRange(paramDto.getFree_ait_pc(), "fait_p", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+		
 		/*if(StringUtils.isEmpty(paramDto.getTemplate_name())){
 			paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
 		}*/
@@ -516,6 +524,35 @@ public class SharedNetworksFacadeService {
 			wasUpdated = true;
 		}
 		return wasUpdated;
+	}
+	
+	
+	/**
+	 * 更新指定设备的打赏portal金额范围和时长
+	 * @param mac
+	 * @param rang_pc
+	 * @param rang_m
+	 * @param ait_pc
+	 * @param ait_m
+	 * @param fait_pc
+	 * @param fait_m
+	 */
+	public void updateDevicesSharedNetworkTimeMoneyControl(String mac, String range_pc, String range_m, String ait_pc, String ait_m, String fait_pc, String fait_m){
+		String mac_lowercase = mac.toLowerCase();
+		WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
+		//需要先有配置才更新。目前暂时这样。后续如果有从unicorn更新此数据的需求，再和产品部讨论具体逻辑
+		if(sharednetwork == null)
+			return;
+		SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
+		ParamSharedNetworkDTO psn = sharedNetworkSettingDTO.getPsn();
+		psn.setRange_cash_mobile(range_m);
+		psn.setRange_cash_pc(range_pc);
+		psn.setAit_mobile(ait_m);
+		psn.setAit_pc(ait_pc);
+		psn.setFree_ait_mobile(fait_m);
+		psn.setFree_ait_pc(fait_pc);
+		sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
+		wifiDeviceSharedNetworkService.update(sharednetwork);
 	}
 	
 	

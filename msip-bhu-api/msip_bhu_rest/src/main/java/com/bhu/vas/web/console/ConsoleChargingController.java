@@ -81,7 +81,8 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = false,value = "percent_d") String distributor_percent,
             @RequestParam(required = false,value = "rcm") String range_cash_mobile,
             @RequestParam(required = false,value = "rcp") String range_cash_pc,
-            @RequestParam(required = false,value = "ait") String access_internet_time
+            @RequestParam(required = false,value = "ait") String access_internet_time,
+            @RequestParam(required = false,value = "fait") String free_access_internet_time
 //            @RequestParam(required = false,value = "chlv1") String channel_lv1,
 //            @RequestParam(required = false,value = "chlv2") String channel_lv2
             ) {
@@ -93,11 +94,14 @@ public class ConsoleChargingController extends BaseController {
         		range_cash_mobile = StringHelper.MINUS_STRING_GAP;
         		range_cash_pc = StringHelper.MINUS_STRING_GAP;
         		access_internet_time = StringHelper.MINUS_STRING_GAP;
+        		free_access_internet_time = StringHelper.MINUS_STRING_GAP;
         	}else{
         		ValidateService.validAmountRange(range_cash_mobile,NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
         		ValidateService.validAmountRange(range_cash_pc,NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
         		ValidateService.validAitRange(access_internet_time,NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
-
+        		if(StringUtils.isNotEmpty(free_access_internet_time))
+            		ValidateService.validAitRange(free_access_internet_time,NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+        			
         		if(StringUtils.isEmpty(owner_percent) || !NumberValidateHelper.isValidNumberCharacter(owner_percent)){
     				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{owner_percent});
     			}
@@ -118,7 +122,7 @@ public class ConsoleChargingController extends BaseController {
         			canbeturnoff,enterpriselevel,
         			customized,
         			owner_percent,manufacturer_percent,distributor_percent,
-        			range_cash_mobile,range_cash_pc,access_internet_time, /* channel_lv1, channel_lv2, */false);
+        			range_cash_mobile,range_cash_pc,access_internet_time, StringUtils.isEmpty(free_access_internet_time)?access_internet_time:free_access_internet_time, /* channel_lv1, channel_lv2, */false);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{

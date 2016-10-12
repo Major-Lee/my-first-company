@@ -17,6 +17,7 @@ public class UserWalletlogFacadeServiceTest extends BaseTest{
 	UserWalletLogService userWalletLogService;
 	@Test
 	public void test() {
+		/*
 		String start_time = "2015-08-01 00:00:00";
 		String end_time = "2016-08-11 23:59:59";
 		Integer uid = 100153;
@@ -28,6 +29,7 @@ public class UserWalletlogFacadeServiceTest extends BaseTest{
 			   Map.Entry<String, Object> entry = it.next();
 			   System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
 		}
+		*/
 	}
 	
 }

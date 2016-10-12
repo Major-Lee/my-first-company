@@ -21,12 +21,12 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
  *
  */
 @SuppressWarnings("serial")
-public class WifiDeviceSharedealConfigs extends BaseStringModel{
+public class WifiDeviceSharedealConfigsOld extends BaseStringModel{
 	public static final String Default_ConfigsWifiID  = "00:00:00:00:00:00";
 	public static final String Default_ConfigsBatchno = "00000000-00000000";
-//	public static final String Default_Range_Cash_PC = "1.5-3.5";
-//	public static final String Default_Range_Cash_Mobile = "0.5-0.9";
-//	public static final String Default_AIT = "14400";
+	public static final String Default_Range_Cash_PC = "1.5-3.5";
+	public static final String Default_Range_Cash_Mobile = "0.5-0.9";
+	public static final String Default_AIT = "14400";
 	
 	public static final double Default_Owner_Percent = 0.70d;
 	public static final double Default_Manufacturer_Percent = 0.30d;
@@ -52,11 +52,11 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	private double manufacturer_percent = Default_Manufacturer_Percent;
 	private double distributor_percent = Default_Distributor_Percent;
 	//pc端和移动端的打赏金额范围及相关时长
-//	private String range_cash_pc = Default_Range_Cash_PC;
-//	private String range_cash_mobile = Default_Range_Cash_Mobile;
-//	//acessInternettime ait
-//	private String ait_pc = Default_AIT;
-//	private String ait_mobile = Default_AIT;
+	private String range_cash_pc = Default_Range_Cash_PC;
+	private String range_cash_mobile = Default_Range_Cash_Mobile;
+	//acessInternettime ait
+	private String ait_pc = Default_AIT;
+	private String ait_mobile = Default_AIT;
 	//是否可以关闭开关
 	private boolean canbe_turnoff = true;
 	private boolean enterpriselevel = false;
@@ -110,31 +110,31 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	public void setRuntime_applydefault(boolean runtime_applydefault) {
 		this.runtime_applydefault = runtime_applydefault;
 	}
-//	public String getRange_cash_pc() {
-//		return range_cash_pc;
-//	}
-//	public void setRange_cash_pc(String range_cash_pc) {
-//		this.range_cash_pc = range_cash_pc;
-//	}
-//	public String getRange_cash_mobile() {
-//		return range_cash_mobile;
-//	}
-//	public void setRange_cash_mobile(String range_cash_mobile) {
-//		this.range_cash_mobile = range_cash_mobile;
-//	}
-//	
-//	public String getAit_pc() {
-//		return ait_pc;
-//	}
-//	public void setAit_pc(String ait_pc) {
-//		this.ait_pc = ait_pc;
-//	}
-//	public String getAit_mobile() {
-//		return ait_mobile;
-//	}
-//	public void setAit_mobile(String ait_mobile) {
-//		this.ait_mobile = ait_mobile;
-//	}
+	public String getRange_cash_pc() {
+		return range_cash_pc;
+	}
+	public void setRange_cash_pc(String range_cash_pc) {
+		this.range_cash_pc = range_cash_pc;
+	}
+	public String getRange_cash_mobile() {
+		return range_cash_mobile;
+	}
+	public void setRange_cash_mobile(String range_cash_mobile) {
+		this.range_cash_mobile = range_cash_mobile;
+	}
+	
+	public String getAit_pc() {
+		return ait_pc;
+	}
+	public void setAit_pc(String ait_pc) {
+		this.ait_pc = ait_pc;
+	}
+	public String getAit_mobile() {
+		return ait_mobile;
+	}
+	public void setAit_mobile(String ait_mobile) {
+		this.ait_mobile = ait_mobile;
+	}
 	public boolean isCanbe_turnoff() {
 		return canbe_turnoff;
 	}

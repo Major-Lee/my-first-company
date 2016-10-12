@@ -14,10 +14,13 @@ import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.OpsBatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.validate.UserTypeValidateService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -39,6 +42,9 @@ public class ChargingUnitFacadeService {
 	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
+	
+	@Resource
+	private SharedNetworksFacadeService sharedNetworksFacadeService;
 	
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,int countrycode,
 			String mobileno,int distributor_uid, 
@@ -84,6 +90,7 @@ public class ChargingUnitFacadeService {
 			String remark) {
 		try{
 			User operUser = chargingFacadeService.getUserService().getById(uid);
+			
 			UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
 			
 			BatchImportVTO ret = 
@@ -115,6 +122,7 @@ public class ChargingUnitFacadeService {
 			String owner_percent,String manufacturer_percent,String distributor_percent,
 			String range_cash_mobile, String range_cash_pc,
 			String access_internet_time,
+			String free_access_internet_time,
 //			String channel_lv1, String channel_lv2,
 			boolean needCheckBinding) {
 		try{
@@ -142,16 +150,23 @@ public class ChargingUnitFacadeService {
 			UserValidateServiceHelper.validateUserDevice(uid, mac, chargingFacadeService.getUserWifiDeviceFacadeService());
 			//分成详情
 			WifiDeviceSharedealConfigs configs = chargingFacadeService.userfulWifiDeviceSharedealConfigsJust4View(mac);
+			WifiDeviceSharedNetwork wifiDeviceSharedNetwork = sharedNetworksFacadeService.fetchDeviceSharedNetwork(mac);
+
 			DeviceSharedealVTO dsv = new DeviceSharedealVTO();
 			dsv.setMac(configs.getId());
 			dsv.setBatchno(configs.getBatchno());
 			dsv.setOwner_percent(configs.getOwner_percent());
 			dsv.setManufacturer_percent(configs.getManufacturer_percent());
 			dsv.setDistributor_percent(configs.getDistributor_percent());
-			dsv.setRcm(configs.getRange_cash_mobile());
-			dsv.setRcp(configs.getRange_cash_pc());
-			dsv.setAitm(configs.getAit_mobile());
-			dsv.setAitp(configs.getAit_pc());
+			ParamSharedNetworkDTO pdto = wifiDeviceSharedNetwork.getInnerModel().getPsn();
+			if(pdto != null){
+				dsv.setRcm(pdto.getRange_cash_mobile());
+				dsv.setRcp(pdto.getRange_cash_pc());
+				dsv.setAitm(pdto.getAit_mobile());
+				dsv.setAitp(pdto.getAit_pc());
+				dsv.setFaitm(pdto.getFree_ait_mobile());
+				dsv.setFaitp(pdto.getFree_ait_pc());
+			}
 			dsv.setCanbeturnoff(configs.isCanbe_turnoff());
 			dsv.setRuntime_applydefault(configs.isRuntime_applydefault());
 			dsv.setCustomized(configs.isCustomized());
