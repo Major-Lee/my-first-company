@@ -520,6 +520,35 @@ public class SharedNetworksFacadeService {
 	
 	
 	/**
+	 * 更新指定设备的打赏portal金额范围和时长
+	 * @param mac
+	 * @param rang_pc
+	 * @param rang_m
+	 * @param ait_pc
+	 * @param ait_m
+	 * @param fait_pc
+	 * @param fait_m
+	 */
+	public void updateDevicesSharedNetworkTimeMoneyControl(String mac, String range_pc, String range_m, String ait_pc, String ait_m, String fait_pc, String fait_m){
+		String mac_lowercase = mac.toLowerCase();
+		WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
+		//需要先有配置才更新。目前暂时这样。后续如果有从unicorn更新此数据的需求，再和产品部讨论具体逻辑
+		if(sharednetwork == null)
+			return;
+		SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
+		ParamSharedNetworkDTO psn = sharedNetworkSettingDTO.getPsn();
+		psn.setRange_cash_mobile(range_m);
+		psn.setRange_cash_pc(range_pc);
+		psn.setAit_mobile(ait_m);
+		psn.setAit_pc(ait_pc);
+		psn.setFree_ait_mobile(fait_m);
+		psn.setFree_ait_pc(fait_pc);
+		sharednetwork.replaceInnerModel(sharedNetworkSettingDTO);
+		wifiDeviceSharedNetworkService.update(sharednetwork);
+	}
+	
+	
+	/**
 	 * 移除设备从指定的配置
 	 * 不需要置Sharednetwork_type null
 	 * 需要置turnOff

@@ -105,10 +105,11 @@ public class ChargingRpcService  implements IChargingRpcService{
 			String owner_percent,String manufacturer_percent,String distributor_percent,
 			String range_cash_mobile, String range_cash_pc,
 			String access_internet_time,
+			String free_access_internet_time,
 			boolean needCheckBinding) {
-		logger.info(String.format("doBatchSharedealModify uid:%s message:%s canbeturnoff:%s enterpriselevel:%s customized:%s owner_percent:%s manufacturer_percent:%s distributor_percent:%s range_cash_mobile:%s range_cash_pc:%s needCheckBinding",
-				uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,manufacturer_percent,distributor_percent,range_cash_pc, range_cash_pc,access_internet_time,needCheckBinding));
-		return chargingUnitFacadeService.doBatchSharedealModify(uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,manufacturer_percent,distributor_percent,range_cash_mobile, range_cash_pc,access_internet_time,needCheckBinding);
+		logger.info(String.format("doBatchSharedealModify uid:%s message:%s canbeturnoff:%s enterpriselevel:%s customized:%s owner_percent:%s manufacturer_percent:%s distributor_percent:%s range_cash_mobile:%s range_cash_pc:%s access_internet_time:%s free_access_internet_time:%s needCheckBinding",
+				uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,manufacturer_percent,distributor_percent,range_cash_mobile, range_cash_pc,access_internet_time, free_access_internet_time, needCheckBinding));
+		return chargingUnitFacadeService.doBatchSharedealModify(uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,manufacturer_percent,distributor_percent,range_cash_mobile, range_cash_pc,access_internet_time, free_access_internet_time, needCheckBinding);
 	}
 
 	@Override
