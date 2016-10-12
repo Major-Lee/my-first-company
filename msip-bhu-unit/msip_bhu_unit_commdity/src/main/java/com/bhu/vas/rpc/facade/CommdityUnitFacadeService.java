@@ -115,7 +115,7 @@ public class CommdityUnitFacadeService {
 			}
 			CommdityAmountDTO commdityAmountDto = new CommdityAmountDTO();
 			commdityAmountDto.setAmount(amount);
-			commdityAmountDto.setForceTime(chargingFacadeService.fetchForceTime(mac,umactype));
+			commdityAmountDto.setForceTime(chargingFacadeService.fetchAccessInternetTime(mac,umactype));
 			commdityAmountDto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
 			logger.info(String.format("intervalAMount success commdityid[%s] mac[%s] umac[%s] umactype[%s] amount[%s] force_time[%s] 7dusers[%s]", 
 					commdityid, mac, umac, umactype, amount,commdityAmountDto.getForceTime(),commdityAmountDto.getUser7d()));
