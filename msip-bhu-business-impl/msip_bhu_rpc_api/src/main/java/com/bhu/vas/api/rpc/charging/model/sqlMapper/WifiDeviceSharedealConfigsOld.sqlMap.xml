@@ -2,67 +2,53 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport">
+<mapper namespace="com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigsOld">
 
-  <resultMap id="modelResult" type="wifiDeviceBatchImport">
+  <resultMap id="modelResult" type="wifiDeviceSharedealConfigsOld">
     <id property="id" column="id"/>
-	  <result property="filepath" column="filepath"/>
-	  <result property="status" column="status"/>
-	  <result property="importor" column="importor"/>
-	  <result property="mobileno" column="mobileno"/>
-	  <result property="distributor" column="distributor"/>
-	  <result property="sellor" column="sellor"/>
-	  <result property="partner" column="partner"/>
-	  <result property="canbeturnoff" column="canbeturnoff"/>
-	  <result property="enterpriselevel" column="enterpriselevel"/>
-	  <result property="customized" column="customized"/>
-	  <result property="owner_percent" column="owner_percent"/>
-	  <result property="manufacturer_percent" column="manufacturer_percent"/>
-      <result property="distributor_percent" column="distributor_percent"/>
-	  <result property="range_cash_mobile" column="range_cash_mobile"/>
-	  <result property="range_cash_pc" column="range_cash_pc"/>
-	  <result property="access_internet_time" column="access_internet_time"/>
-	  <result property="channel_lv1" column="channel_lv1"/>
-	  <result property="channel_lv2" column="channel_lv2"/>
-	  <result property="succeed" column="succeed"/>
-	  <result property="failed" column="failed"/>
-	  <result property="remark" column="remark"/>
-	  <result property="opsid" column="opsid"/>
-	  <result property="distributor_type" column="distributor_type" />
-	  <result property="created_at" column="created_at"/>
-	  <result property="updated_at" column="updated_at"/>
+    <result property="batchno" column="batchno"/>
+    <result property="owner" column="owner"/>
+    <result property="manufacturer" column="manufacturer"/>
+    <result property="distributor" column="distributor"/>
+    <result property="owner_percent" column="owner_percent"/>
+    <result property="manufacturer_percent" column="manufacturer_percent"/>
+    <result property="distributor_percent" column="distributor_percent"/>
+    <result property="range_cash_pc" column="range_cash_pc"/>
+    <result property="range_cash_mobile" column="range_cash_mobile"/>
+    <result property="ait_pc" column="ait_pc"/>
+    <result property="ait_mobile" column="ait_mobile"/>
+    <result property="canbe_turnoff" column="canbe_turnoff"/>
+    <result property="enterpriselevel" column="enterpriselevel"/>
+    <result property="customized" column="customized"/>
+    <result property="runtime_applydefault" column="runtime_applydefault"/>
+    <result property="distributor_type" column="distributor_type"/>
+    <result property="created_at" column="created_at"/>
+    <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_charging_wifi_devices_batchimport
+	    	t_charging_wifi_devices_sharedeal_configs
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	filepath,
-	    	status,
-	    	importor,
-	    	mobileno,
+	    	batchno,
+	    	owner,
+	    	manufacturer,
 	    	distributor,
-	    	sellor,
-	    	partner,
-	    	canbeturnoff,
-	    	enterpriselevel,
-	    	customized,
 	    	owner_percent,
 	    	manufacturer_percent,
 	    	distributor_percent,
-	    	range_cash_mobile,
 	    	range_cash_pc,
-	    	access_internet_time,
-	    	channel_lv1,
-	    	channel_lv2,
-	    	succeed,
-	    	failed,
-	    	remark,
-	    	opsid,
+	    	range_cash_mobile,
+	    	ait_pc,
+	    	ait_mobile,
+	    	canbe_turnoff,
+	    	enterpriselevel,
+	    	customized,
+	    	runtime_applydefault,
 	    	distributor_type,
 	    	created_at,
 	    	updated_at
@@ -70,28 +56,21 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	filepath,
-	    	status,
-	    	importor,
-	    	mobileno,
+			batchno,
+	    	owner,
+	    	manufacturer,
 	    	distributor,
-	    	sellor,
-	    	partner,
-	    	canbeturnoff,
-	    	enterpriselevel,
-	    	customized,
 	    	owner_percent,
 	    	manufacturer_percent,
 	    	distributor_percent,
-	    	range_cash_mobile,
 	    	range_cash_pc,
-	    	access_internet_time,
-	    	channel_lv1,
-	    	channel_lv2,
-	    	succeed,
-	    	failed,
-	    	remark,
-	    	opsid,
+	    	range_cash_mobile,
+	    	ait_pc,
+	    	ait_mobile,
+	    	canbe_turnoff,
+	    	enterpriselevel,
+	    	customized,
+	    	runtime_applydefault,
 	    	distributor_type,
 	    	created_at,
 	    	updated_at
@@ -100,56 +79,42 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-			#{filepath},
-			#{status},
-			#{importor},
-			#{mobileno},
-			#{distributor},
-			#{sellor},
-			#{partner},
-			#{canbeturnoff},
-			#{enterpriselevel},
-			#{customized},
-			#{owner_percent},
-			#{manufacturer_percent},
+	    	#{batchno},
+	    	#{owner},
+	    	#{manufacturer},
+	    	#{distributor},
+	    	#{owner_percent},
+	    	#{manufacturer_percent},
 	    	#{distributor_percent},
-			#{range_cash_mobile},
 	    	#{range_cash_pc},
-	    	#{access_internet_time},
-	    	#{channel_lv1},
-	    	#{channel_lv2},
-			#{succeed},
-			#{failed},
-			#{remark},
-			#{opsid},
-			#{distributor_type},
-			#{created_at},
+	    	#{range_cash_mobile},
+	    	#{ait_pc},
+	    	#{ait_mobile},
+	    	#{canbe_turnoff},
+	    	#{enterpriselevel},
+	    	#{customized},
+	    	#{runtime_applydefault},
+	    	#{distributor_type},
+	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	filepath = #{filepath},
-	    	status = #{status},
-	    	importor = #{importor},
-	    	mobileno = #{mobileno},
+	    	batchno = #{batchno},
+	    	owner = #{owner},
+	    	manufacturer = #{manufacturer},
 	    	distributor = #{distributor},
-	    	sellor = #{sellor},
-	    	partner = #{partner},
-	    	canbeturnoff = #{canbeturnoff},
-	    	enterpriselevel = #{enterpriselevel},
-	    	customized = #{customized},
 	    	owner_percent = #{owner_percent},
 	    	manufacturer_percent = #{manufacturer_percent},
 	    	distributor_percent = #{distributor_percent},
-	    	range_cash_mobile = #{range_cash_mobile},
 	    	range_cash_pc = #{range_cash_pc},
-	    	access_internet_time = #{access_internet_time},
-	    	channel_lv1 = #{channel_lv1},
-	    	channel_lv2 = #{channel_lv2},
-	    	succeed = #{succeed},
-	    	failed = #{failed},
-	    	remark = #{remark},
-	    	opsid = #{opsid},
+	    	range_cash_mobile = #{range_cash_mobile},
+	    	ait_pc = #{ait_pc},
+	    	ait_mobile = #{ait_mobile},
+	    	canbe_turnoff = #{canbe_turnoff},
+	    	enterpriselevel = #{enterpriselevel},
+	    	customized = #{customized},
+	    	runtime_applydefault = #{runtime_applydefault},
 	    	distributor_type = #{distributor_type},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
@@ -206,7 +171,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="wifiDeviceBatchImport">
+	<delete id="delete" parameterType="wifiDeviceSharedealConfigsOld">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -214,16 +179,11 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="wifiDeviceBatchImport">
+	<insert id="insert" parameterType="wifiDeviceSharedealConfigsOld">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
-		<!-- 
-		<selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
-			select last_insert_id(); 
-		</selectKey>
-		 -->
 	</insert>
  
-	<update id="update" parameterType="wifiDeviceBatchImport">
+	<update id="update" parameterType="wifiDeviceSharedealConfigsOld">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		

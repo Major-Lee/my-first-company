@@ -23,10 +23,11 @@ public class OpsHttpHelper {
 				headers.put("Connection", "keep-alive");*/
 	}
 	
-	public static Map<String, String> generateOpsImportParamMap(String opsid, String sns){
+	public static Map<String, String> generateOpsImportParamMap(String opsid, String failed_sns){
 		Map<String, String> api_params = new HashMap<String, String>();
-		api_params.put("opsid", opsid);
-		api_params.put("sns", sns);
+		api_params.put("batch_no", opsid);
+		api_params.put("failed_device_sn", failed_sns);
+		api_params.put("token", BusinessRuntimeConfiguration.OpsImportCallbackToken);
 		return api_params;
 	}
 	
@@ -44,13 +45,13 @@ public class OpsHttpHelper {
 	
 	private static ExecutorService exec_remote_portalexchange = ExecObserverManager.buildExecutorService(OpsHttpHelper.class,"Ops系统回调通知",10);
 	
-	public static void opsImportCallBackNotify(final String opsid, final String sns){
+	public static void opsImportCallBackNotify(final String opsid, final String failed_sns){
 		exec_remote_portalexchange.submit((new Runnable() {
 			@Override
 			public void run() {
 				try{
-					Map<String, String> api_params = OpsHttpHelper.generateOpsImportParamMap(opsid, sns);
-					logger.info(String.format("Ops Callback Api request url[%s] params[%s]", BusinessRuntimeConfiguration.UserPortalChargingNotify2UPortalApi, api_params));
+					Map<String, String> api_params = OpsHttpHelper.generateOpsImportParamMap(opsid, failed_sns);
+					logger.info(String.format("Ops Callback Api request url[%s] params[%s]", BusinessRuntimeConfiguration.OpsImportCallbackApi, api_params));
 					String response = OpsHttpHelper.doPost(BusinessRuntimeConfiguration.OpsImportCallbackApi, api_params);
 					logger.info(String.format("response[%s]", response));
 				}catch(Exception ex){

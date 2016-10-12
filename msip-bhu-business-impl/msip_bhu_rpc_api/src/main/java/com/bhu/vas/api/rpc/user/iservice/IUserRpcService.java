@@ -199,4 +199,7 @@ public interface IUserRpcService {
 
 	public RpcResponseDTO<Map<String, Object>> upgradeOperator(int uid, String org);
 
+	RpcResponseDTO<Map<String, Object>> operatorfetchUser(Integer uid,
+			int countrycode, String acc);
+
 }

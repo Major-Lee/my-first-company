@@ -275,6 +275,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     
     @Test
    	public void test010DoSharedeal(){
+    	/*
     	double cashIncomming = 1.00d;
     	//String dmac = "84:82:f4:19:01:0c";
     	String dmac = "64:68:75:00:00:7c";
@@ -285,7 +286,7 @@ public class UserWalletFacadeServiceTest extends BaseTest{
     			                                                                  "10002016082300000000000000000862", 
     			                                                                  "hello world!", null);
     	System.out.println("dddd:"+ret);
-    	
+    	*/
    	}
     
     @Test

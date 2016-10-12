@@ -13,14 +13,11 @@
     <result property="owner_percent" column="owner_percent"/>
     <result property="manufacturer_percent" column="manufacturer_percent"/>
     <result property="distributor_percent" column="distributor_percent"/>
-    <result property="range_cash_pc" column="range_cash_pc"/>
-    <result property="range_cash_mobile" column="range_cash_mobile"/>
-    <result property="ait_pc" column="ait_pc"/>
-    <result property="ait_mobile" column="ait_mobile"/>
     <result property="canbe_turnoff" column="canbe_turnoff"/>
     <result property="enterpriselevel" column="enterpriselevel"/>
     <result property="customized" column="customized"/>
     <result property="runtime_applydefault" column="runtime_applydefault"/>
+    <result property="distributor_type" column="distributor_type"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -40,14 +37,11 @@
 	    	owner_percent,
 	    	manufacturer_percent,
 	    	distributor_percent,
-	    	range_cash_pc,
-	    	range_cash_mobile,
-	    	ait_pc,
-	    	ait_mobile,
 	    	canbe_turnoff,
 	    	enterpriselevel,
 	    	customized,
 	    	runtime_applydefault,
+	    	distributor_type,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -61,14 +55,11 @@
 	    	owner_percent,
 	    	manufacturer_percent,
 	    	distributor_percent,
-	    	range_cash_pc,
-	    	range_cash_mobile,
-	    	ait_pc,
-	    	ait_mobile,
 	    	canbe_turnoff,
 	    	enterpriselevel,
 	    	customized,
 	    	runtime_applydefault,
+	    	distributor_type,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -83,14 +74,11 @@
 	    	#{owner_percent},
 	    	#{manufacturer_percent},
 	    	#{distributor_percent},
-	    	#{range_cash_pc},
-	    	#{range_cash_mobile},
-	    	#{ait_pc},
-	    	#{ait_mobile},
 	    	#{canbe_turnoff},
 	    	#{enterpriselevel},
 	    	#{customized},
 	    	#{runtime_applydefault},
+	    	#{distributor_type},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -103,14 +91,11 @@
 	    	owner_percent = #{owner_percent},
 	    	manufacturer_percent = #{manufacturer_percent},
 	    	distributor_percent = #{distributor_percent},
-	    	range_cash_pc = #{range_cash_pc},
-	    	range_cash_mobile = #{range_cash_mobile},
-	    	ait_pc = #{ait_pc},
-	    	ait_mobile = #{ait_mobile},
 	    	canbe_turnoff = #{canbe_turnoff},
 	    	enterpriselevel = #{enterpriselevel},
 	    	customized = #{customized},
 	    	runtime_applydefault = #{runtime_applydefault},
+	    	distributor_type = #{distributor_type},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

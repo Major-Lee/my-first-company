@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.charging.iservice;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
+import com.bhu.vas.api.rpc.charging.vto.OpsBatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
 import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -27,12 +28,13 @@ public interface IChargingRpcService {
 			String channel_lv1, String channel_lv2,
             String remark);
 	
-	public RpcResponseDTO<BatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid,
-			int countrycode,String mobileno,int distributor_uid,
+	public RpcResponseDTO<OpsBatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid,
+			int countrycode,String mobileno,int distributor_uid, String distributor_type,
 			String sellor,String partner,
             boolean canbeturnoff,
             String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent,
 			String channel_lv1, String channel_lv2,
+			String sns,
             String remark);
 
 	public RpcResponseDTO<BatchImportVTO> doCancelDeviceRecord(int uid,String batchno);

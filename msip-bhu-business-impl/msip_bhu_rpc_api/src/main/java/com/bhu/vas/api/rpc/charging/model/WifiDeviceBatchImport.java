@@ -60,6 +60,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	private int failed;
 	private String channel_lv1;
 	private String channel_lv2;
+	private String distributor_type;
 	private String remark;
     /**
      * 创建日期
@@ -186,6 +187,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		vto.setSucceed(this.getSucceed());
 		vto.setFailed(this.getFailed());
 		vto.setOpsid(this.getOpsid());
+		vto.setDistributor_type(this.getDistributor_type());
 		vto.setCreated_at(DateTimeHelper.getDateTime(this.getCreated_at(), DateTimeHelper.FormatPattern0));
 		vto.setUpdated_at(DateTimeHelper.getDateTime(this.getCreated_at(), DateTimeHelper.FormatPattern0));
 		vto.setChannel_lv1(this.getChannel_lv1());
@@ -258,6 +260,12 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	}
 	public void setOpsid(String opsid) {
 		this.opsid = opsid;
+	}
+	public String getDistributor_type() {
+		return distributor_type;
+	}
+	public void setDistributor_type(String distributor_type) {
+		this.distributor_type = distributor_type;
 	}
 	
 	

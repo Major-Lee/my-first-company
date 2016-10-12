@@ -16,6 +16,8 @@ import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.charging.service.UserWithdrawCostConfigsService;
@@ -23,6 +25,7 @@ import com.bhu.vas.business.ds.charging.service.WifiDeviceBatchDetailService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceBatchImportService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
@@ -60,6 +63,9 @@ public class ChargingFacadeService {
     @Resource
     private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
 
+    @Resource
+    private WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
+    
 	/*public UserService getUserService() {
 		return userService;
 	}*/
@@ -106,9 +112,9 @@ public class ChargingFacadeService {
     		batch_import.setOwner_percent(String.valueOf(configs.getOwner_percent()));
     		batch_import.setManufacturer_percent(String.valueOf(configs.getManufacturer_percent()));
     		batch_import.setDistributor_percent(String.valueOf(configs.getDistributor_percent()));
-        	batch_import.setRange_cash_mobile(configs.getRange_cash_mobile());
-        	batch_import.setRange_cash_pc(configs.getRange_cash_pc());
-        	batch_import.setAccess_internet_time(configs.getAit_pc());
+//        	batch_import.setRange_cash_mobile(configs.getRange_cash_mobile());
+//        	batch_import.setRange_cash_pc(configs.getRange_cash_pc());
+//        	batch_import.setAccess_internet_time(configs.getAit_pc());
     	}else{
     		if(StringUtils.isEmpty(sharedeal_owner_percent) || StringHelper.MINUS_STRING_GAP.equals(sharedeal_owner_percent)){
     			batch_import.setOwner_percent(String.valueOf(configs.getOwner_percent()));
@@ -127,21 +133,21 @@ public class ChargingFacadeService {
     		}
     		
     		
-    		if(StringUtils.isEmpty(range_cash_mobile) || StringHelper.MINUS_STRING_GAP.equals(range_cash_mobile)){
-    			batch_import.setRange_cash_mobile(String.valueOf(configs.getRange_cash_mobile()));
-    		}else{
-    			batch_import.setRange_cash_mobile(range_cash_mobile);
-    		}
-    		if(StringUtils.isEmpty(range_cash_pc) || StringHelper.MINUS_STRING_GAP.equals(range_cash_pc)){
-    			batch_import.setRange_cash_pc(String.valueOf(configs.getRange_cash_pc()));
-    		}else{
-    			batch_import.setRange_cash_pc(range_cash_pc);
-    		}
-    		if(StringUtils.isEmpty(access_internet_time) || StringHelper.MINUS_STRING_GAP.equals(access_internet_time)){
-    			batch_import.setAccess_internet_time(String.valueOf(configs.getAit_pc()));
-    		}else{
-    			batch_import.setAccess_internet_time(access_internet_time);
-    		}
+//    		if(StringUtils.isEmpty(range_cash_mobile) || StringHelper.MINUS_STRING_GAP.equals(range_cash_mobile)){
+//    			batch_import.setRange_cash_mobile(String.valueOf(configs.getRange_cash_mobile()));
+//    		}else{
+//    			batch_import.setRange_cash_mobile(range_cash_mobile);
+//    		}
+//    		if(StringUtils.isEmpty(range_cash_pc) || StringHelper.MINUS_STRING_GAP.equals(range_cash_pc)){
+//    			batch_import.setRange_cash_pc(String.valueOf(configs.getRange_cash_pc()));
+//    		}else{
+//    			batch_import.setRange_cash_pc(range_cash_pc);
+//    		}
+//    		if(StringUtils.isEmpty(access_internet_time) || StringHelper.MINUS_STRING_GAP.equals(access_internet_time)){
+//    			batch_import.setAccess_internet_time(String.valueOf(configs.getAit_pc()));
+//    		}else{
+//    			batch_import.setAccess_internet_time(access_internet_time);
+//    		}
     	}
     	//batch_import.setFilepath(filepath_suffix);
     	batch_import.setRemark(remark);
@@ -151,7 +157,7 @@ public class ChargingFacadeService {
     }
   
     public BatchImportVTO doOpsBatchImportCreate(int uid, String opsid,
-    		int countrycode,String mobileno, int distributor_uid,
+    		int countrycode,String mobileno, int distributor_uid, String distributor_type,
     		String sellor,String partner,
     		boolean canbeturnoff,
     		String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
@@ -177,10 +183,11 @@ public class ChargingFacadeService {
     	batch_import.setSellor(sellor);
     	batch_import.setPartner(partner);
     	batch_import.setOpsid(opsid);
-    	batch_import.setCustomized(false);
+    	batch_import.setCustomized(true);
     	batch_import.setCanbeturnoff(canbeturnoff);
     	batch_import.setChannel_lv1(channel_lv1);
     	batch_import.setChannel_lv2(channel_lv2);
+    	batch_import.setDistributor_type(distributor_type);
     	//填充数据
     	WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
 		if(StringUtils.isEmpty(sharedeal_owner_percent) || StringHelper.MINUS_STRING_GAP.equals(sharedeal_owner_percent)){
@@ -397,18 +404,21 @@ public class ChargingFacadeService {
 		vto.setOwner_percent(configs.getOwner_percent());
 		vto.setManufacturer_percent(configs.getManufacturer_percent());
 		vto.setDistributor_percent(configs.getDistributor_percent());
-		vto.setRcm(configs.getRange_cash_mobile());
-		vto.setRcp(configs.getRange_cash_pc());
-		vto.setAit(configs.getAit_mobile());
+//		vto.setRcm(configs.getRange_cash_mobile());
+//		vto.setRcp(configs.getRange_cash_pc());
+//		vto.setAit(configs.getAit_mobile());
 		return vto;
 	}
 	
+	/*
 	public void doWifiDeviceSharedealConfigsUpdate(Integer owner,String dmac,
 			String range_cash_mobile,String range_cash_pc, String access_internet_time){
-		this.doWifiDeviceSharedealConfigsUpdate(null, owner, null, dmac,
+		this.doWifiDeviceSharedealConfigsUpdate(null, owner, null, null, dmac,
 				null, null, true, null, null, null, 
-				range_cash_mobile, range_cash_pc, access_internet_time, false);
+				range_cash_mobile, range_cash_pc, access_internet_time, 
+				false);
 	}
+	*/
 	
 	/**
 	 * 
@@ -424,12 +434,12 @@ public class ChargingFacadeService {
 	 * @param enterpriselevel null 忽略此属性
 	 * @param runtime_applydefault
 	 */
-	public void doWifiDeviceSharedealConfigsUpdate(String batchno,Integer owner,Integer distributor,String dmac,
+	public void doWifiDeviceSharedealConfigsUpdate(String batchno,Integer owner,Integer distributor, String distributor_type, String dmac,
 			Boolean canbeturnoff,
 			Boolean enterpriselevel,
 			boolean customized,
 			String owner_percent,String manufacturer_percent,String distributor_percent,
-			String range_cash_mobile,String range_cash_pc, String access_internet_time,
+//			String range_cash_mobile,String range_cash_pc, String access_internet_time,
 			boolean runtime_applydefault){
 		boolean insert = false;
 		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
@@ -443,10 +453,10 @@ public class ChargingFacadeService {
 		}else{
 			if(!customized){//填充分成比例、打赏金额和上网时长的缺省值 
 				WifiDeviceSharedealConfigs defaultConfigs = wifiDeviceSharedealConfigsService.getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
-				configs.setAit_mobile(defaultConfigs.getAit_mobile());
-				configs.setAit_pc(defaultConfigs.getAit_pc());
-				configs.setRange_cash_mobile(defaultConfigs.getRange_cash_mobile());
-				configs.setRange_cash_pc(defaultConfigs.getRange_cash_pc());
+//				configs.setAit_mobile(defaultConfigs.getAit_mobile());
+//				configs.setAit_pc(defaultConfigs.getAit_pc());
+//				configs.setRange_cash_mobile(defaultConfigs.getRange_cash_mobile());
+//				configs.setRange_cash_pc(defaultConfigs.getRange_cash_pc());
 				configs.setOwner_percent(defaultConfigs.getOwner_percent());
 				configs.setManufacturer_percent(defaultConfigs.getManufacturer_percent());
 				configs.setDistributor_percent(defaultConfigs.getDistributor_percent());
@@ -482,6 +492,10 @@ public class ChargingFacadeService {
 		}/*else{
 			configs.setDistributor(WifiDeviceSharedealConfigs.None_Distributor);
 		}*/
+		
+		if(distributor_type != null)
+			configs.setDistributor_type(distributor_type);
+		
 		if(customized){
 			if(StringUtils.isEmpty(owner_percent) || StringUtils.isEmpty(manufacturer_percent)){
 				;//以前是啥值就是什么值
@@ -499,18 +513,18 @@ public class ChargingFacadeService {
 			}
 			
 			
-			if(StringUtils.isNotEmpty(range_cash_mobile)){
-				configs.setRange_cash_mobile(range_cash_mobile);
-			}
-			
-			if(StringUtils.isNotEmpty(range_cash_pc)){
-				configs.setRange_cash_pc(range_cash_pc);
-			}
-			
-			if(StringUtils.isNotEmpty(access_internet_time)){
-				configs.setAit_mobile(access_internet_time);
-				configs.setAit_pc(access_internet_time);
-			}
+//			if(StringUtils.isNotEmpty(range_cash_mobile)){
+//				configs.setRange_cash_mobile(range_cash_mobile);
+//			}
+//			
+//			if(StringUtils.isNotEmpty(range_cash_pc)){
+//				configs.setRange_cash_pc(range_cash_pc);
+//			}
+//			
+//			if(StringUtils.isNotEmpty(access_internet_time)){
+//				configs.setAit_mobile(access_internet_time);
+//				configs.setAit_pc(access_internet_time);
+//			}
 		}
 		if(canbeturnoff != null){
 			configs.setCanbe_turnoff(canbeturnoff.booleanValue());
@@ -573,34 +587,34 @@ public class ChargingFacadeService {
 	
 	public String fetchAmountRange(String dmac,Integer umactype){
 		try{
-			WifiDeviceSharedealConfigs configs = userfulWifiDeviceSharedealConfigs(dmac);
+			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
 			String amountRange = null;
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				amountRange = configs.getRange_cash_pc();
+				amountRange = configs.getInnerModel().getPsn().getRange_cash_pc();
 			}else{
-				amountRange = configs.getRange_cash_mobile();
+				amountRange = configs.getInnerModel().getPsn().getRange_cash_mobile();
 			}
 			return amountRange;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			return WifiDeviceSharedealConfigs.Default_Range_Cash_Mobile;
+			return ParamSharedNetworkDTO.Default_Range_Cash_Mobile;
 		}
 		
 	}
 	//add by fengshibo 2016-08-05 start
 	public String fetchForceTime(String dmac,Integer umactype){
 		try{
-			WifiDeviceSharedealConfigs configs = userfulWifiDeviceSharedealConfigs(dmac);
+			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
 			String forceTime = null;
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				forceTime = configs.getAit_pc();
+				forceTime = configs.getInnerModel().getPsn().getAit_pc();
 			}else{
-				forceTime = configs.getAit_mobile();
+				forceTime = configs.getInnerModel().getPsn().getAit_mobile();
 			}
 			return forceTime;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			return WifiDeviceSharedealConfigs.Default_AIT;
+			return ParamSharedNetworkDTO.Default_AIT;
 		}
 		
 	}
@@ -608,17 +622,17 @@ public class ChargingFacadeService {
 	
 	public String fetchAccessInternetTime(String dmac,Integer umactype){
 		try{
-			WifiDeviceSharedealConfigs configs = userfulWifiDeviceSharedealConfigs(dmac);
+			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
 			String ait = null;
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				ait = configs.getAit_pc();
+				ait = configs.getInnerModel().getPsn().getAit_pc();
 			}else{
-				ait = configs.getAit_mobile();
+				ait = configs.getInnerModel().getPsn().getAit_mobile();
 			}
 			return ait;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			return WifiDeviceSharedealConfigs.Default_AIT;
+			return ParamSharedNetworkDTO.Default_AIT;
 		}
 	}
 	
