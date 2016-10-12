@@ -16,7 +16,7 @@ public class BatchDeviceSnkApplyDTO extends AsyncDTO implements IDTO {
 	private boolean onlyindexupdate;
 	private char dtoType;
 	//是否发送portal指令给设备（当把打赏金额时长等参数合入设备portal配置中时，如果只是修改金额和时长，不需要给设备下发portal指令）
-	private boolean senddevicecmd;
+	private boolean senddevicecmd = true;
 	
 	
 	public boolean isSenddevicecmd() {

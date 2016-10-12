@@ -90,7 +90,7 @@ public class BatchGroupDeviceSnkApplyServiceHandler implements IMsgHandlerServic
 					}else{
 						return;
 					}
-					batchSnkApplyService.apply(applyDto.getUid(), applyDto.getDtoType(), dmacs, sharedNetwork, applyDto.getTemplate());
+					batchSnkApplyService.apply(applyDto.getUid(), applyDto.getDtoType(), dmacs, sharedNetwork, applyDto.getTemplate(), true);
 				}
 			});
 		}finally{

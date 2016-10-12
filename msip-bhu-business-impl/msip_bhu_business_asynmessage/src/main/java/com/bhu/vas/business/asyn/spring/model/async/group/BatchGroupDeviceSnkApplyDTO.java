@@ -10,6 +10,7 @@ public class BatchGroupDeviceSnkApplyDTO extends AsyncDTO implements IDTO {
 	private String template;
 	private char dtoType;
 
+	
 	public String getSnk_type() {
 		return snk_type;
 	}
