@@ -240,4 +240,21 @@ public class UserWalletController extends BaseController{
     			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     		}
     	}
+    
+	@ResponseBody()
+	@RequestMapping(value="/withdraw/detail", method={RequestMethod.GET,RequestMethod.POST})
+	public void fetchWithdrawSimpleDetail(
+			HttpServletResponse response, 
+			@RequestParam(required=true) Integer uid){
+		try{
+			RpcResponseDTO<UserWithdrawApplyVTO> rpcResult = userWalletRpcService.fetchWithdrawSimpleDetail(uid);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
 }

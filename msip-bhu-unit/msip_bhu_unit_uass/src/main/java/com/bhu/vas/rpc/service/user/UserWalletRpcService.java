@@ -163,4 +163,11 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 		logger.info(String.format("rankingCardInfo with uid[%s]",uid));
 		return userWalletUnitFacadeService.rankingCardInfo(uid);
 	}
+	
+	@Override
+	public RpcResponseDTO<UserWithdrawApplyVTO> fetchWithdrawSimpleDetail(Integer uid) {
+		logger.info(String.format("fetchWithdrawSimpleDetail with uid[%s]",uid));
+		return userWalletUnitFacadeService.fetchWithdrawSimpleDetail(uid);
+	}
+	
 }

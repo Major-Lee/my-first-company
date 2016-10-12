@@ -706,10 +706,10 @@ public class PushService{
 	protected PushMsg generatePushMsg(DeviceMobilePresentDTO presentDto, PushDTO pushDto){
 		if(presentDto == null) return null;
 		PushMsg pushMsg = new PushMsg();
-//		int badge = WifiDeviceHandsetPushFlowHashService.getInstance().pushComming(presentDto.getUid()).intValue();
-//		System.out.println("pushComming: "+badge);
+		int badge = WifiDeviceHandsetPushFlowHashService.getInstance().pushComming(presentDto.getUid()).intValue();
+		System.out.println("pushComming: "+badge);
 		BeanUtils.copyProperties(presentDto, pushMsg);
-//		pushMsg.setBadge(badge);
+		pushMsg.setBadge(badge);
 		if(pushDto != null){
 			pushMsg.setPaylod(JsonHelper.getJSONString(pushDto));
 		}

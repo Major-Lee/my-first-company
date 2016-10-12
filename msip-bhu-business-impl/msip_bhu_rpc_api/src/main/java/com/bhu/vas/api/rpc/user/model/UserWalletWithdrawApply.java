@@ -144,6 +144,18 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		vto.setCreate_time(sdf.format(created_at));
 		return vto;
 	}
+	
+	public UserWithdrawApplyVTO toUserWithdrawApplySimpleVTO(String mobileno,String nick){
+		UserWithdrawApplyVTO vto = new UserWithdrawApplyVTO();
+		vto.setPayment_type(payment_type);
+		vto.setNick(nick);
+		vto.setMobileno(mobileno);
+		vto.setCash(cash);
+		vto.setWithdraw_oper_desc(BusinessEnumType.UWithdrawStatus.fromKey(withdraw_oper).getName());
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		vto.setCreate_time(sdf.format(created_at));
+		return vto;
+	}
 
 	public void addResponseDTO(WithdrawRemoteResponseDTO resDTO){
 		this.putInnerModel(resDTO);

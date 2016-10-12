@@ -133,6 +133,8 @@ public interface IUserWalletRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<RankingCardInfoVTO> rankingCardInfo(Integer uid);
+
+	public RpcResponseDTO<UserWithdrawApplyVTO> fetchWithdrawSimpleDetail(Integer uid);
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号
