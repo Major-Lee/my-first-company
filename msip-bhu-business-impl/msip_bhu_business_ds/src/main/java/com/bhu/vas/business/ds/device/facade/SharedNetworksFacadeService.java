@@ -120,6 +120,8 @@ public class SharedNetworksFacadeService {
 					paramDto.setTs(System.currentTimeMillis());
 					if(ParamSharedNetworkDTO.wasDeviceRelatedConfigChanged( paramDto,dto_fromdb) || ParamSharedNetworkDTO.wasTemplateNameChanged(paramDto,dto_fromdb)){
 						devicePartChanged = true;
+					} else {
+						configChanged = ParamSharedNetworkDTO.wasServerRelatedConfigChanged( paramDto,dto_fromdb);
 					}
 					models_fromdb.set(index, paramDto);
 					userDevicesSharedNetworksService.update(configs);

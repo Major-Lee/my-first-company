@@ -435,6 +435,21 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			return true;
 		return false;
 	}
+
+	public static boolean wasServerRelatedConfigChanged(ParamSharedNetworkDTO paramDTO,ParamSharedNetworkDTO dbDTO){
+		if(dbDTO == null) return true;
+		if(paramDTO == null) return false;
+		
+		if(!paramDTO.getRange_cash_mobile().equals(dbDTO.getRange_cash_mobile())) return true;
+		if(!paramDTO.getRange_cash_pc().equals(dbDTO.getRange_cash_pc())) return true;
+		if(!paramDTO.getAit_mobile().equals(dbDTO.getAit_mobile())) return true;
+		if(!paramDTO.getAit_pc().equals(dbDTO.getAit_pc())) return true;
+		if(!paramDTO.getFree_ait_mobile().equals(dbDTO.getFree_ait_mobile())) return true;
+		if(!paramDTO.getFree_ait_pc().equals(dbDTO.getFree_ait_pc())) return true;
+		
+		return false;
+	}
+
 	public static boolean wasDeviceRelatedConfigChanged(ParamSharedNetworkDTO paramDTO,ParamSharedNetworkDTO dbDTO){
 		if(dbDTO == null) return true;
 		if(paramDTO == null) return false;
