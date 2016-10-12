@@ -435,7 +435,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			return true;
 		return false;
 	}
-	public static boolean wasConfigChanged(ParamSharedNetworkDTO paramDTO,ParamSharedNetworkDTO dbDTO){
+	public static boolean wasDeviceRelatedConfigChanged(ParamSharedNetworkDTO paramDTO,ParamSharedNetworkDTO dbDTO){
 		if(dbDTO == null) return true;
 		if(paramDTO == null) return false;
 		if(!paramDTO.getNtype().equals(dbDTO.getNtype())){

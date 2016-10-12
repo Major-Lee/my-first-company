@@ -32,6 +32,11 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class SharedNetworksFacadeService {
+	
+	public final static int SHARE_NETWORK_NOT_CHANGED = 0;
+	public final static int SHARE_NETWORK_DEVICE_PART_CHANGED = 1;
+	public final static int SHARE_NETWORK_CHANGED = 2;
+	
 	@Resource
 	private UserService userService;
 
@@ -59,8 +64,9 @@ public class SharedNetworksFacadeService {
 	 * @param paramDto
 	 * @return 配置是否变化了
 	 */
-	public boolean doApplySharedNetworksConfig(int uid,ParamSharedNetworkDTO paramDto){
+	public int doApplySharedNetworksConfig(int uid,ParamSharedNetworkDTO paramDto){
 		boolean configChanged = false;
+		boolean devicePartChanged = false;
 		SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(paramDto.getNtype());
 		paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
 		if(StringUtils.isEmpty(paramDto.getTemplate())){
@@ -91,7 +97,7 @@ public class SharedNetworksFacadeService {
 			models.add(paramDto);
 			configs.put(paramDto.getNtype(), models);*/
 			userDevicesSharedNetworksService.insert(configs);
-			configChanged = true;
+			devicePartChanged = true;
 		}else{
 			List<ParamSharedNetworkDTO> models_fromdb = configs.get(paramDto.getNtype(),new ArrayList<ParamSharedNetworkDTO>(),true);
 			
@@ -112,8 +118,8 @@ public class SharedNetworksFacadeService {
 					if(StringUtils.isEmpty(paramDto.getTemplate_name()))
 						paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
 					paramDto.setTs(System.currentTimeMillis());
-					if(ParamSharedNetworkDTO.wasConfigChanged( paramDto,dto_fromdb) || ParamSharedNetworkDTO.wasTemplateNameChanged(paramDto,dto_fromdb)){
-						configChanged = true;
+					if(ParamSharedNetworkDTO.wasDeviceRelatedConfigChanged( paramDto,dto_fromdb) || ParamSharedNetworkDTO.wasTemplateNameChanged(paramDto,dto_fromdb)){
+						devicePartChanged = true;
 					}
 					models_fromdb.set(index, paramDto);
 					userDevicesSharedNetworksService.update(configs);
@@ -173,7 +179,9 @@ public class SharedNetworksFacadeService {
 				configChanged = true;
 			}*/
 		}
-		return configChanged;
+		if(devicePartChanged)
+			return SHARE_NETWORK_DEVICE_PART_CHANGED;
+		return (configChanged)?SHARE_NETWORK_CHANGED:SHARE_NETWORK_NOT_CHANGED;
 	}
 	
 	

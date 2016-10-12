@@ -98,7 +98,7 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				    }
 				});
 			}
-			batchSnkApplyService.apply(applyDto.getUid(), applyDto.getDtoType(), dmacs, sharedNetwork, applyDto.getTemplate());
+			batchSnkApplyService.apply(applyDto.getUid(), applyDto.getDtoType(), dmacs, sharedNetwork, applyDto.getTemplate(), applyDto.isSenddevicecmd());
 			/*if(!dmacs.isEmpty()){
 				logger.info(String.format("prepare apply sharednetwork conf uid[%s] dtoType[%s] dmacs[%s]",userid,applyDto.getDtoType(), dmacs));
 				if(IDTO.ACT_ADD == applyDto.getDtoType() || IDTO.ACT_UPDATE == applyDto.getDtoType()){//开启

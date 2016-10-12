@@ -63,7 +63,7 @@ public class SharedNetworkFacadeService {
 			configChanged = true;
 		}else{
 			ParamSharedNetworkDTO fromdb = configs.getInnerModel(paramDto.getNtype());
-			if(fromdb == null || ParamSharedNetworkDTO.wasConfigChanged(fromdb, paramDto)){
+			if(fromdb == null || ParamSharedNetworkDTO.wasDeviceRelatedConfigChanged(fromdb, paramDto)){
 				//比对是否变化了
 					configs.putInnerModel(paramDto.getNtype(), paramDto);
 					userDevicesSharedNetworkService.update(configs);

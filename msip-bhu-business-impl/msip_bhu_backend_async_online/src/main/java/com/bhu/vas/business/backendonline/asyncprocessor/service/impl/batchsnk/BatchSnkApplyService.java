@@ -52,8 +52,8 @@ public class BatchSnkApplyService {
 	@Resource
 	private IDaemonRpcService daemonRpcService;
 
-	public void apply(final int userid,char dtoType,List<String> dmacs,SharedNetworkType sharedNetwork,String template) {
-		logger.info(String.format("apply sharednetwork conf uid[%s] dtoType[%s] snk[%s] template[%s] dmacs[%s]",userid,dtoType,sharedNetwork.getKey(),template, dmacs));
+	public void apply(final int userid, final char dtoType,List<String> dmacs, SharedNetworkType sharedNetwork,String template, final boolean senddevicecmd) {
+		logger.info(String.format("apply sharednetwork conf uid[%s] dtoType[%s] snk[%s] template[%s] dmacs[%s] senddevicecmd[%s]",userid,dtoType,sharedNetwork.getKey(),template, dmacs, senddevicecmd));
 		if(dmacs == null || dmacs.isEmpty()) return;
 		try{
 			final List<DownCmds> downCmds = new ArrayList<DownCmds>();
@@ -68,13 +68,15 @@ public class BatchSnkApplyService {
 									if(rdmacs == null || rdmacs.isEmpty()){
 										return;
 									}
-									for(String mac:rdmacs){
-										WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-										if(wifiDevice == null) continue;
-										//生成下发指令
-										String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, mac, -1,JsonHelper.getJSONString(current),
-												DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
-										downCmds.add(DownCmds.builderDownCmds(mac, cmd));
+									if(dtoType == IDTO.ACT_ADD || (dtoType == IDTO.ACT_UPDATE && senddevicecmd)){ //打赏时长合并到portal模板以后，可能只是修改了打赏时长，此时不需要给设备下发指令
+										for(String mac:rdmacs){
+											WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+											if(wifiDevice == null) continue;
+											//生成下发指令
+											String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, mac, -1,JsonHelper.getJSONString(current),
+													DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
+											downCmds.add(DownCmds.builderDownCmds(mac, cmd));
+										}
 									}
 									wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.On.getType());
 								}

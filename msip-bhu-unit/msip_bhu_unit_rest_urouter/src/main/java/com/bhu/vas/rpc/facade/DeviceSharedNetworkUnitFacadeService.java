@@ -180,10 +180,12 @@ public class DeviceSharedNetworkUnitFacadeService {
 			sharednetwork_dto.setNtype(sharedNetwork.getKey());
 			sharednetwork_dto.setTemplate(template);
 			//ParamSharedNetworkDTO.fufillWithDefault(sharednetwork_dto);
-			boolean configChanged = sharedNetworksFacadeService.doApplySharedNetworksConfig(uid, sharednetwork_dto);
-			if(configChanged){
+			int configChanged = sharedNetworksFacadeService.doApplySharedNetworksConfig(uid, sharednetwork_dto);
+			
+			if(configChanged != SharedNetworksFacadeService.SHARE_NETWORK_NOT_CHANGED){
 				//异步消息执行用户的所有设备应用此配置并发送指令
-				asyncDeliverMessageService.sendBatchDeviceSnkApplyActionMessage(uid,sharedNetwork.getKey(),sharednetwork_dto.getTemplate(), null,false, true, IDTO.ACT_UPDATE);
+				asyncDeliverMessageService.sendBatchDeviceSnkApplyActionMessage(uid,sharedNetwork.getKey(),sharednetwork_dto.getTemplate(), null,false, 
+						(configChanged == SharedNetworksFacadeService.SHARE_NETWORK_DEVICE_PART_CHANGED), IDTO.ACT_UPDATE);
 				//deliverMessageService.sendPortalUpdateRateChangedActionMessage(uid, sharedNetwork.getKey(), sharednetwork_dto.getTemplate(), sharednetwork_dto.getUsers_tx_rate());
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(sharednetwork_dto);
