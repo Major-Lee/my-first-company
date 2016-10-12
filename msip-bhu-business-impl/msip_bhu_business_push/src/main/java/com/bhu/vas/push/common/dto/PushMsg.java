@@ -3,7 +3,7 @@ package com.bhu.vas.push.common.dto;
 public class PushMsg extends PushBasicMsg{
 	//应用icon上显示的数字
 //	private int badge;
-	private int badge = 1;
+	private int badge;
 	private String sound = "default";
 	private String logo = "logo_notify.png";
 	//push text
