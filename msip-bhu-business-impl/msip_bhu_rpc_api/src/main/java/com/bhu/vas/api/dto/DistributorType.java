@@ -24,8 +24,12 @@ public enum DistributorType {
 	
 	
 	public static boolean isValidType(String type){
-		if(Channel.equals(type) || City.equals(type))
+		if(Channel.type.equals(type) || City.type.equals(type))
 			return true;
 		return false;
+	}
+	
+	public static void main(String[] args){
+		System.out.println(DistributorType.isValidType("city"));		
 	}
 }

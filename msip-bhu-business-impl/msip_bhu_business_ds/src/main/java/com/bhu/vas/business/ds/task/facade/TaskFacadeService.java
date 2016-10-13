@@ -353,7 +353,7 @@ public class TaskFacadeService {
 		if(OperationCMD.ModifyDeviceSetting == opt_cmd){
 			//运营商设备不允许用户修改
 			WifiDeviceSharedealConfigs sharedeal = wifiDeviceSharedealConfigsService.getById(mac);
-			if(DistributorType.City.equals(sharedeal.getDistributor_type()))//城市运营商设备，不允许修改
+			if(DistributorType.City.getType().equals(sharedeal.getDistributor_type()))//城市运营商设备，不允许修改
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_BELONG_TO_DISTRIBUTOR_CITY);
 		}
 		

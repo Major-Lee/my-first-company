@@ -69,7 +69,7 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 							if(needCheckBinding){
 								logger.info(String.format("******** operUser:%s   uid:%s",operUser,doc.getU_id()));
 								if(operUser.equals(doc.getU_id())){//需要检测绑定的情况下，判断索引中用户id是否和参数相等
-									if(!DistributorType.City.equals(doc.getD_distributor_type())) //城市运营啥的设备不允许修改
+									if(!DistributorType.City.getType().equals(doc.getD_distributor_type())) //城市运营啥的设备不允许修改
 										macList.add(doc.getD_mac());
 								}
 							}else{

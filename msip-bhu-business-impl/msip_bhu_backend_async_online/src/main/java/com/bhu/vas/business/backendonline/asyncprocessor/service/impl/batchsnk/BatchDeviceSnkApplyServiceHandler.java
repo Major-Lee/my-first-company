@@ -99,7 +99,7 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				    @Override
 				    public void notifyComming(Page<WifiDeviceDocument> pages) {
 				    	for (WifiDeviceDocument doc : pages) {
-				    		if(DistributorType.City.equals(doc.getD_distributor_type())) //城市运营商的设备不允许修改
+				    		if(DistributorType.City.getType().equals(doc.getD_distributor_type())) //城市运营商的设备不允许修改
 				    			continue;
 				    		dmacs.add(doc.getD_mac());
 				    	}
