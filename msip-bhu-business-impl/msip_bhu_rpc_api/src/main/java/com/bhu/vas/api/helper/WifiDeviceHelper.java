@@ -72,8 +72,8 @@ public class WifiDeviceHelper {
 	//public final static String VistorWifi_Default_SSID = "BhuWiFi-访客";
 	
 	
-	public final static int VistorWifi_Default_Users_tx_rate= 256;//单位 KB/s
-	public final static int VistorWifi_Default_Users_rx_rate= 256;//单位 KB/s
+	public final static int VistorWifi_Default_Users_tx_rate= 512;//单位 KB/s
+	public final static int VistorWifi_Default_Users_rx_rate= 512;//单位 KB/s
 	public final static int VistorWifi_Default_Signal_limit= -30;
 	public final static int VistorWifi_Default_Idle_timeout= 3*60*60;
 	public final static int VistorWifi_Default_Force_timeout= 12*60*60;
@@ -81,8 +81,8 @@ public class WifiDeviceHelper {
 	//public final static String VistorWifi_Default_SSID = "BhuWiFi-访客";
 	
 	//KB/s 
-	public final static int SharedNetworkWifi_Default_Users_tx_rate= 256;//2Mb/s
-	public final static int SharedNetworkWifi_Default_Users_rx_rate= 256;//2Mb/s
+	public final static int SharedNetworkWifi_Default_Users_tx_rate= 512;//2Mb/s
+	public final static int SharedNetworkWifi_Default_Users_rx_rate= 512;//2Mb/s
 	public final static int SharedNetworkWifi_Default_Signal_limit= -30;
 	public final static int SharedNetworkWifi_Default_Idle_timeout= 20*60;//20分钟
 	public final static int SharedNetworkWifi_Default_Force_timeout= 4*60*60;//4小时
