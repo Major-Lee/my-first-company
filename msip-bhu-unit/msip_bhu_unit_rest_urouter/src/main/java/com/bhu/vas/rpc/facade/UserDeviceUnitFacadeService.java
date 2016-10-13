@@ -991,14 +991,17 @@ public class UserDeviceUnitFacadeService {
 			dsv.setOwner_percent(configs.getOwner_percent());
 			dsv.setManufacturer_percent(configs.getManufacturer_percent());
 			dsv.setDistributor_percent(configs.getDistributor_percent());
-			ParamSharedNetworkDTO pdto = wifiDeviceSharedNetwork.getInnerModel().getPsn();
-			if(pdto != null){
-				dsv.setRcm(pdto.getRange_cash_mobile());
-				dsv.setRcp(pdto.getRange_cash_pc());
-				dsv.setAitm(pdto.getAit_mobile());
-				dsv.setAitp(pdto.getAit_pc());
-				dsv.setFaitm(pdto.getFree_ait_mobile());
-				dsv.setFaitp(pdto.getFree_ait_pc());
+
+			if(wifiDeviceSharedNetwork != null && wifiDeviceSharedNetwork.getInnerModel() != null){
+				ParamSharedNetworkDTO pdto = wifiDeviceSharedNetwork.getInnerModel().getPsn();
+				if(pdto != null){
+					dsv.setRcm(pdto.getRange_cash_mobile());
+					dsv.setRcp(pdto.getRange_cash_pc());
+					dsv.setAitm(pdto.getAit_mobile());
+					dsv.setAitp(pdto.getAit_pc());
+					dsv.setFaitm(pdto.getFree_ait_mobile());
+					dsv.setFaitp(pdto.getFree_ait_pc());
+				}
 			}
 			dsv.setCanbeturnoff(configs.isCanbe_turnoff());
 			dsv.setRuntime_applydefault(configs.isRuntime_applydefault());
