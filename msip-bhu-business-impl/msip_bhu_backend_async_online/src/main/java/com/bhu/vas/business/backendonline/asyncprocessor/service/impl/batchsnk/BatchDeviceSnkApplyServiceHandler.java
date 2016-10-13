@@ -17,6 +17,7 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkApplyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -106,6 +107,8 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				    }
 				});
 			}
+			if (sharedNetwork == SharedNetworkType.SafeSecure)
+				RewardOrderAmountHashService.getInstance().removeAllRAmountByMacs(dmacs.toArray(new String[0]));
 			batchSnkApplyService.apply(applyDto.getUid(), applyDto.getDtoType(), dmacs, sharedNetwork, applyDto.getTemplate(), applyDto.isSenddevicecmd());
 			/*if(!dmacs.isEmpty()){
 				logger.info(String.format("prepare apply sharednetwork conf uid[%s] dtoType[%s] dmacs[%s]",userid,applyDto.getDtoType(), dmacs));
