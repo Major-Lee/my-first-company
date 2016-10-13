@@ -3,6 +3,10 @@ package com.bhu.vas.business.search;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldIndex;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import com.bhu.vas.business.search.core.field.FieldDefine;
 
 public interface BusinessIndexDefine {
@@ -72,7 +76,10 @@ public interface BusinessIndexDefine {
 			D_PROVINCE("d_province", null),//设备的地址位置-省
 			D_CITY("d_city", null),//设备的地址位置-市
 			D_DISTRICT("d_district",null),//设备的地址位置-区
-			
+			D_CHANNEL_LV1("d_channel_lv1", null), //设备的以及出货渠道
+			D_CHANNEL_LV2("d_channel_lv2", null), //设备的以及出货渠道
+			D_DISTRIBUTOR_TYPE("d_distributor_type", null),//城市运营商 or 渠道商
+
 			
 			//D_EXTENSION("d_extension", null),//设备业务扩展字段
 			/**** 运营信息 operate ****/
@@ -94,6 +101,7 @@ public interface BusinessIndexDefine {
 			A_ID("a_id",null),//代理商的用户id
 			A_NICK("a_nick",null),//代理商的用户名称
 			A_ORG("a_org",null),//代理商的公司名称
+			
 			
 			
 			/**** 第三方业务信息 ucloud ****/

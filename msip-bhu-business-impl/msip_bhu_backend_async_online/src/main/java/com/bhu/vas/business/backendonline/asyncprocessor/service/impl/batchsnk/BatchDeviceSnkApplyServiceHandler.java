@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.DistributorType;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
@@ -71,6 +72,13 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 			if(onlyindexupdate){//只进行索引更新
 				logger.info(String.format("process dmacs[%s] sharedNetwork[%s] onlyindexupdate[%s] dtoType[%s]", dmacs,sharedNetwork, onlyindexupdate,dtoType));
 				if(dmacs.isEmpty()) return;
+				
+				for(String mac:dmacs){
+					WifiDeviceDocument doc = wifiDeviceDataSearchService.searchById(mac);
+		    		if(DistributorType.City.equals(doc.getD_distributor_type())) //城市运营商的设备不允许修改
+		    			dmacs.remove(mac);
+				}
+				
 				switch(dtoType){
 					case IDTO.ACT_DELETE:
 						//移除设备的所属类型不清空sharedNetwork
@@ -83,7 +91,6 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				return;
 			}
 			
-			
 			//final List<DownCmds> downCmds = new ArrayList<DownCmds>();
 			if(!dmacs.isEmpty()){//应用指令下发，取值从设备t_wifi_devices_sharednetwork中获取，更新索引生成指令下发
 				;
@@ -92,8 +99,9 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				    @Override
 				    public void notifyComming(Page<WifiDeviceDocument> pages) {
 				    	for (WifiDeviceDocument doc : pages) {
-				    		String mac = doc.getD_mac();
-				    		dmacs.add(mac);
+				    		if(DistributorType.City.equals(doc.getD_distributor_type())) //城市运营商的设备不允许修改
+				    			continue;
+				    		dmacs.add(doc.getD_mac());
 				    	}
 				    }
 				});

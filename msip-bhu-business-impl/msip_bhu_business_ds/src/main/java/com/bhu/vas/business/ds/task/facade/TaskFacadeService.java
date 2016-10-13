@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.DistributorType;
 import com.bhu.vas.api.dto.ret.param.ParamCmdWifiTimerStartDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasModuleDTO;
 import com.bhu.vas.api.dto.ret.param.ParamVasSwitchWorkmodeDTO;
@@ -21,6 +22,7 @@ import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
@@ -34,6 +36,7 @@ import com.bhu.vas.api.rpc.task.notify.ITaskProcessNotifyCallback;
 import com.bhu.vas.api.rpc.user.dto.UserWifiTimerSettingDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceVisitorService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
@@ -49,8 +52,6 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
-
-import ch.qos.logback.classic.Logger;
 
 @Service
 public class TaskFacadeService {
@@ -83,6 +84,9 @@ public class TaskFacadeService {
 	
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
+	
+	@Resource 
+	private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
 
 	/**
 	 * 任务执行callback通知
@@ -346,6 +350,13 @@ public class TaskFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
 
+		if(OperationCMD.ModifyDeviceSetting == opt_cmd){
+			//运营商设备不允许用户修改
+			WifiDeviceSharedealConfigs sharedeal = wifiDeviceSharedealConfigsService.getById(mac);
+			if(DistributorType.City.equals(sharedeal.getDistributor_type()))//城市运营商设备，不允许修改
+				throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEssGAL);
+		}
+		
 		if(OperationCMD.DeviceCmdPassThrough == opt_cmd){//远端透传指令，直接下发，无需生成任务
 			WifiDeviceDownTask simulateTask = new WifiDeviceDownTask();
 			simulateTask.setId(-1l);

@@ -495,6 +495,7 @@ public class DeviceFacadeService{
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_YOURBINDED,new String[]{mac});
 		}*/
 		userWifiDeviceFacadeService.validateUserWifiDevice(mac, uid);
+		
 		return device_entity;
 	}
 	

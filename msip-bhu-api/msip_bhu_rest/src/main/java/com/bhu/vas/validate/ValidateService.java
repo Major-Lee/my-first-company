@@ -78,7 +78,15 @@ public class ValidateService {
 		}
 		return ret;
 	}
-	
+
+	public static boolean validFreeAitRange(String param,int minValue, int maxValue){
+		boolean ret = NumberValidateHelper.validAitRange(param, minValue, maxValue);
+		if(!ret){
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"fait:".concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
+		}
+		return ret;
+	}
+
 	public static boolean checkNickValidate(String nick){
 		ResponseError error = validateNick(nick);
 		if(error == null) return false;

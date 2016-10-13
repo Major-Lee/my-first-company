@@ -100,7 +100,7 @@ public class ConsoleChargingController extends BaseController {
         		ValidateService.validAmountRange(range_cash_pc,NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
         		ValidateService.validAitRange(access_internet_time,NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
         		if(StringUtils.isNotEmpty(free_access_internet_time))
-            		ValidateService.validAitRange(free_access_internet_time,NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+            		ValidateService.validFreeAitRange(free_access_internet_time,NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
         			
         		if(StringUtils.isEmpty(owner_percent) || !NumberValidateHelper.isValidNumberCharacter(owner_percent)){
     				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{owner_percent});
