@@ -76,7 +76,7 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				
 				for(String mac:dmacs){
 					WifiDeviceDocument doc = wifiDeviceDataSearchService.searchById(mac);
-		    		if(DistributorType.City.equals(doc.getD_distributor_type())) //城市运营商的设备不允许修改
+		    		if(DistributorType.City.getType().equals(doc.getD_distributor_type())) //城市运营商的设备不允许修改
 		    			dmacs.remove(mac);
 				}
 				
