@@ -50,6 +50,7 @@ public class HandsetStoragePaService extends AbstractRelationStringCache {
 	
 	public  void saveHandset(String mac, String hmac, String objstr){
 		this.set(generateKey(mac, hmac), objstr);
+		this.expire(generateKey(mac, hmac), expire_time);
 	}
     
 	public void handsetsComming(List<PaHandsetOnlineAction> dtos){

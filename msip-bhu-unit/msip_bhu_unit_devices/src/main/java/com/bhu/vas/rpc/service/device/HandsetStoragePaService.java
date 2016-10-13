@@ -36,6 +36,7 @@ public class HandsetStoragePaService extends AbstractRelationStringCache {
 	
 	public  void saveAuthOnline(String mac, String hmac, String objstr){
 		this.set(generateKey(mac, hmac), objstr);
+		this.expire(generateKey(mac, hmac), expire_time);
 	}
 
 	public String getAuthOnline(String mac, String hmac){
