@@ -440,7 +440,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 	
 	@Field(
 			type = FieldType.String,
-			searchAnalyzer = "lowercase_whitespace",
+//			searchAnalyzer = "lowercase_whitespace",
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
