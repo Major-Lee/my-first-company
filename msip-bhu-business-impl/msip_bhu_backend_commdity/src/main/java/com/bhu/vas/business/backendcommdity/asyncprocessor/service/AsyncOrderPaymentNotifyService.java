@@ -441,7 +441,7 @@ public class AsyncOrderPaymentNotifyService{
 		if(order.getUid() != null){
 			bindUser = userService.getById(order.getUid());
 		}
-		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+		String accessInternetTime = chargingFacadeService.fetchFreeAccessInternetTime(order.getMac(), order.getUmactype());
 		orderFacadeService.videoOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
 	}
 }

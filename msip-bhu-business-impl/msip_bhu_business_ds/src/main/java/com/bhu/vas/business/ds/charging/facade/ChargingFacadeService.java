@@ -617,6 +617,23 @@ public class ChargingFacadeService {
 			return ParamSharedNetworkDTO.Default_AIT;
 		}
 	}
+	//免费上网商品上网时间获取
+	public String fetchFreeAccessInternetTime(String dmac,Integer umactype){
+		try{
+			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
+			String ait = null;
+			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
+				ait = configs.getInnerModel().getPsn().getFree_ait_pc();
+			}else{
+				ait = configs.getInnerModel().getPsn().getFree_ait_mobile();
+			}
+			return ait;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return ParamSharedNetworkDTO.Default_AIT;
+		}
+	}
+
 	
 	/**
 	 * 计算收益分成
