@@ -533,6 +533,9 @@ public class UserUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_NOT_OPERATOR);
 			}
 			Integer observedId = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
+			if(observedId == null){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
+			}
 			User observedUser = UserValidateServiceHelper.validateUser(observedId,this.userService);
 			if(observedUser.getUtype() != UserType.DistributorNormal.getIndex() && observedUser.getUtype() != UserType.Normal.getIndex()){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_CAN_NOT_BE_VIEWED);
