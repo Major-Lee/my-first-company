@@ -534,7 +534,7 @@ public class UserUnitFacadeService {
 			}
 			Integer observedId = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
 			if(observedId == null){
-				throw new BusinessI18nCodeException(ResponseErrorCode.USER_MOBILE_NOT_BE_REGISTER);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_MOBILE_NOT_BE_REGISTER);
 			}
 			User observedUser = UserValidateServiceHelper.validateUser(observedId,this.userService);
 			if(observedUser.getUtype() != UserType.DistributorNormal.getIndex() && observedUser.getUtype() != UserType.Normal.getIndex()){
