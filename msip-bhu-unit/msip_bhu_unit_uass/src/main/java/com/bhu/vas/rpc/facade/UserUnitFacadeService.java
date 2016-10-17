@@ -533,6 +533,9 @@ public class UserUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_NOT_OPERATOR);
 			}
 			Integer observedId = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
+			if(observedId == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_MOBILE_NOT_BE_REGISTER);
+			}
 			User observedUser = UserValidateServiceHelper.validateUser(observedId,this.userService);
 			if(observedUser.getUtype() != UserType.DistributorNormal.getIndex() && observedUser.getUtype() != UserType.Normal.getIndex()){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_CAN_NOT_BE_VIEWED);
