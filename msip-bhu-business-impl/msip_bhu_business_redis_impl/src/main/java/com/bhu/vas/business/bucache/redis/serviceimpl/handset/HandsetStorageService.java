@@ -63,6 +63,10 @@ public class HandsetStorageService extends AbstractRelationHashCache{
 		return sb.toString();
 	}
 	
+	public static String generateKey(String mac, String hdmac){
+		return generateKey(join(mac, hdmac));
+	}
+	
 	private static String generateKeyByHashValue(int hashvalue){
 		StringBuilder sb = new StringBuilder(BusinessKeyDefine.HandsetPresent.EntityPresentPrefixKey);
 		sb.append(String.format("%05d", hashvalue));
