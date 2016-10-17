@@ -3,6 +3,9 @@ package com.bhu.vas.api.dto;
 import java.io.Serializable;
 
 import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 /**
  * 移动设备上下线请求DTO
  * @author tangzichao
@@ -31,51 +34,102 @@ public class HandsetDeviceDTO implements Serializable{
 	private String action;
 	//移动设备mac
 	private String mac;
+	
 	//物理发送速率
+	@JsonInclude(Include.NON_NULL)
 	private String phy_tx_rate;
 	//物理接收速率
+	@JsonInclude(Include.NON_NULL)
 	private String phy_rx_rate;	
 
 	//废弃
+	@JsonInclude(Include.NON_NULL)
 	private String phy_rate;
+
 	//AP对针对此设备的发射功率
+	@JsonInclude(Include.NON_NULL)
 	private String tx_power;
+	
+	@JsonInclude(Include.NON_NULL)
 	private String rx_chain_num;
+	
 	//AP接收到的终端的信号强度
+	@JsonInclude(Include.NON_NULL)
 	private String rssi;
+	
 	//信噪比
+	@JsonInclude(Include.NON_NULL)
 	private String snr;
+	
 	//空闲时间
+	@JsonInclude(Include.NON_NULL)
 	private String idle;
+	
+	
+	@JsonInclude(Include.NON_NULL)
 	private String state;
+	
 	//关联时间
+	@JsonInclude(Include.NON_NULL)
 	private String uptime;
+	
 	//接收包数
+	@JsonInclude(Include.NON_NULL)
 	private String rx_pkts;
+	
 	//接收字节数
+	@JsonInclude(Include.NON_NULL)
 	private String rx_bytes;
+	
 	//发送包数
+	@JsonInclude(Include.NON_NULL)
 	private String tx_pkts;
+	
 	//发送字节数
+	@JsonInclude(Include.NON_NULL)
 	private String tx_bytes;
+	
+	@JsonInclude(Include.NON_NULL)
 	private String rx_unicast;
+	
+	@JsonInclude(Include.NON_NULL)
 	private String tx_assoc;
+	
 	//终端关联的ssid
+	@JsonInclude(Include.NON_NULL)
 	private String ssid;
+	
 	//终端关联的bssid = wifiId
+	@JsonInclude(Include.NON_NULL)
 	private String bssid;
+	
 	//AP位置（ap界面上配置的位置信息）
+	@JsonInclude(Include.NON_NULL)
 	private String location;
+	
 	//当前信道
+	@JsonInclude(Include.NON_NULL)
 	private String channel;
+	
 	//终端hostname
+	@JsonInclude(Include.NON_NULL)
 	private String dhcp_name;
+	
 	//终端连接的设备vapname
+	@JsonInclude(Include.NON_NULL)
 	private String vapname;
+	
 	//终端地址ip
+	@JsonInclude(Include.NON_NULL)
 	private String ip;
+	
+	@JsonInclude(Include.NON_NULL)
 	private String data_tx_rate;
+	
+	@JsonInclude(Include.NON_NULL)
 	private String data_rx_rate;
+	
+	@JsonInclude(Include.NON_NULL)
 	private String last_wifi_id;
 	//记录生成或更新时间
 	private long ts;
@@ -83,15 +137,18 @@ public class HandsetDeviceDTO implements Serializable{
 	/**
 	 * 终端是否来自于有线口
 	 */
+	@JsonInclude(Include.NON_NULL)
 	private String ethernet;
 	/**
 	 * 对于来自开启portal的接口上的终端,表明终端是否认证通过
 	 */
+	@JsonInclude(Include.NON_NULL)
 	private String authorized;
 
 	/**
 	 * 老版本固件没有portal，新版本wlan0:none, wlan3:local
 	 */
+	@JsonInclude(Include.NON_NULL)
 	private String portal;
 
 	public String getAction() {

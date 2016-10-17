@@ -3,6 +3,7 @@ package com.bhu.vas.api.vto.device;
 import java.util.List;
 
 import com.bhu.vas.api.vto.config.URouterDeviceConfigInterfaceVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigRadioVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVapVTO;
 
 /**
@@ -46,6 +47,7 @@ public class DeviceConfigDetailVTO implements java.io.Serializable{
 	//admin管理密码
 	private String admin_pwd;
 
+	private List<URouterDeviceConfigRadioVTO> radios;
 	//vap列表
 	private List<URouterDeviceConfigVapVTO> vaps;
 	//interface列表
@@ -211,5 +213,11 @@ public class DeviceConfigDetailVTO implements java.io.Serializable{
 	}
 	public void setDsv(DeviceSharedealVTO dsv) {
 		this.dsv = dsv;
+	}
+	public List<URouterDeviceConfigRadioVTO> getRadios() {
+		return radios;
+	}
+	public void setRadios(List<URouterDeviceConfigRadioVTO> radios) {
+		this.radios = radios;
 	}
 }

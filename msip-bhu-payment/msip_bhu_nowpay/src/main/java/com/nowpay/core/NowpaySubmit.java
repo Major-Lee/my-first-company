@@ -25,9 +25,9 @@ import com.nowpay.util.PostRequestUtil;
 public class NowpaySubmit {
     
     /**
-     * 支付宝提供给商户的服务接入网关URL(新)
+     * 支付宝提供给商户的服务接入网关URL(新)https://pay.ipaynow.cn(new) http://api.ipaynow.cn/(old)
      */
-    private static final String NOWPAY_GATEWAY_NEW = "http://api.ipaynow.cn/";
+    private static final String NOWPAY_GATEWAY_NEW = "https://pay.ipaynow.cn";
 	
     /**
      * 生成签名结果
