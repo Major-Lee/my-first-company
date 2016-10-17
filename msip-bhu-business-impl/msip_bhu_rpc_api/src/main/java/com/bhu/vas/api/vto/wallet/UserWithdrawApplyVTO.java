@@ -16,6 +16,13 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	private String mobileno;
 	private String nick;
 	private double cash = 0.00d;
+	private int cashInt = 0;
+	public int getCashInt() {
+		return cashInt;
+	}
+	public void setCashInt(int cashInt) {
+		this.cashInt = cashInt;
+	}
 	//当前提现申请的状态
 	private String withdraw_oper;
 	private String withdraw_oper_desc;

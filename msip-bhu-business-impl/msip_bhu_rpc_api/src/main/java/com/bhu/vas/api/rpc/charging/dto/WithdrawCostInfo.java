@@ -11,14 +11,14 @@ public class WithdrawCostInfo {
 	private int uid;
 	private String applyid;
 	//提现金额
-	private double cash;
+	private int cash;
 	//税费
 	private double taxcost;
 	//交易费
 	private double transcost;
 
 	private double remain;
-	public WithdrawCostInfo(int uid,String applyid,double cash) {
+	public WithdrawCostInfo(int uid,String applyid,int cash) {
 		super();
 		this.uid = uid;
 		this.applyid = applyid;
@@ -40,10 +40,10 @@ public class WithdrawCostInfo {
 	public void setUid(int uid) {
 		this.uid = uid;
 	}
-	public double getCash() {
+	public int getCash() {
 		return cash;
 	}
-	public void setCash(double cash) {
+	public void setCash(int cash) {
 		this.cash = cash;
 	}
 	public double getTaxcost() {
@@ -63,7 +63,7 @@ public class WithdrawCostInfo {
 		return ArithHelper.sub(cash,ArithHelper.add(transcost, taxcost));
 	}*/
 	
-	public static WithdrawCostInfo calculate(int uid,String applyid,double cash,
+	public static WithdrawCostInfo calculate(int uid,String applyid,int cash,
 			double withdraw_tax_percent,double withdraw_trancost_percent){
 		WithdrawCostInfo costInfo= new WithdrawCostInfo(uid,applyid,cash);
 		if(cash > 0){

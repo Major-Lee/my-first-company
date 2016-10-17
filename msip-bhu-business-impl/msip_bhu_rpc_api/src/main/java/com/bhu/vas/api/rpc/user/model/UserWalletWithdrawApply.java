@@ -10,6 +10,7 @@ import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.bhu.vas.api.rpc.user.dto.WithdrawRemoteResponseDTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtStringModel;
 
 /**
@@ -26,7 +27,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 	//提现入账账户类别
 	private String payment_type;
 	//申请提现的现金
-	private double cash;
+	private int cash;
 	//提现操作状态BusinessEnumType.UWithdrawStatus
 	private String withdraw_oper;
 	//最后一次的审核员
@@ -56,10 +57,10 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 	public void setCreated_at(Date created_at) {
 		this.created_at = created_at;
 	}
-	public double getCash() {
+	public int getCash() {
 		return cash;
 	}
-	public void setCash(double cash) {
+	public void setCash(int cash) {
 		this.cash = cash;
 	}
 	public String getWithdraw_oper() {
@@ -129,7 +130,8 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		vto.setPayment_type(payment_type);
 		vto.setNick(nick);
 		vto.setMobileno(mobileno);
-		vto.setCash(applyCost.getCash());
+		vto.setCash(ArithHelper.intCurrencyToDouble(applyCost.getCash(), 4));
+		vto.setCashInt(applyCost.getCash());
 		vto.setTaxcost(applyCost.getTaxcost());
 		vto.setTranscost(applyCost.getTranscost());
 		vto.setWithdraw_oper(withdraw_oper);

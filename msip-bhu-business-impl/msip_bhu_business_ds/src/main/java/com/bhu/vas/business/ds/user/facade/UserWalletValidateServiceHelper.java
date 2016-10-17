@@ -10,7 +10,7 @@ import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 public class UserWalletValidateServiceHelper {
-	public static UserWallet validateUserWalletForWithdrawCash(int uid,String pwd,double cash,UserWalletService userWalletService){
+	public static UserWallet validateUserWalletForWithdrawCash(int uid,String pwd,int cash,UserWalletService userWalletService){
 		UserWallet uwallet = userWalletService.getById(uid);
 		if(uwallet == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"用户钱包"});

@@ -62,6 +62,7 @@ import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWalletService;
 import com.bhu.vas.business.ds.user.service.UserWalletWithdrawApplyService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -483,7 +484,7 @@ public class UserWalletFacadeService{
 	 * 需要验证零钱是否小于要出账的金额
 	 * 现金出账需要把提现状态标记
 	 */
-	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,double cash,String description,IWalletNotifyCallback callback){
+	private UserWallet cashWithdrawOperFromUserWallet(int uid, String pwd,int cash,String description,IWalletNotifyCallback callback){
 		if(StringUtils.isEmpty(pwd) || cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -511,7 +512,7 @@ public class UserWalletFacadeService{
 		if(!BCryptHelper.checkpw(pwd,uwallet.getPassword())){
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_VALIDATEPWD_FAILED);
 		}*/
-		double wallettotal = uwallet.getCash();
+		int wallettotal = uwallet.getCash();
 		uwallet.setCash(uwallet.getCash()-cash);
 		uwallet.setWithdraw(true);
 		uwallet = userWalletService.update(uwallet);
@@ -525,7 +526,7 @@ public class UserWalletFacadeService{
 	 * @param uid
 	 * @param cash
 	 */
-	private void cashWithdrawRollback2UserWalletWhenVerifyFailed(int uid,String applyid, double cash,String description){
+	private void cashWithdrawRollback2UserWalletWhenVerifyFailed(int uid,String applyid, int cash,String description){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -544,7 +545,7 @@ public class UserWalletFacadeService{
 	 * @param uid
 	 * @param cash
 	 */
-	private void cashWithdrawRollback2UserWalletWhenRemoteFailed(int uid,String applyid, double cash,String description){
+	private void cashWithdrawRollback2UserWalletWhenRemoteFailed(int uid,String applyid, int cash,String description){
 		if(cash <=0){
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
@@ -647,7 +648,7 @@ public class UserWalletFacadeService{
 	 * @param pwd
 	 * @param cash 
 	 */
-	public UserWalletWithdrawApply doWithdrawApply(int appid,OAuthType type,int uid, String pwd,double cash,String remoteip){
+	public UserWalletWithdrawApply doWithdrawApply(int appid,OAuthType type,int uid, String pwd,int cash,String remoteip){
 		//modify by dongrui 2016-06-15 Start
 		//validateOAuthPaymentType(uid,type);
 		logger.info("提现验证====>当前提现类型为【"+type+"】");
@@ -685,7 +686,7 @@ public class UserWalletFacadeService{
 		}
 	}
 	
-	private UserWalletWithdrawApply doWithdrawApplyOper(final int appid,final OAuthType type,final int uid, String pwd,double cash,final String remoteip){
+	private UserWalletWithdrawApply doWithdrawApplyOper(final int appid,final OAuthType type,final int uid, String pwd,int cash,final String remoteip){
 		synchronized(lockObjectFetch(uid)){
 			logger.info(String.format("生成提现申请 appid[%s] uid[%s] cash[%s] remoteIp[%s]", appid,uid,cash,remoteip));
 			/*String orderid = StructuredIdHelper.generateStructuredIdString(appid, 
@@ -694,7 +695,7 @@ public class UserWalletFacadeService{
 			final UserWalletWithdrawApply apply = new UserWalletWithdrawApply();
 			this.cashWithdrawOperFromUserWallet(uid, pwd, cash,type.getDescription(),new IWalletNotifyCallback(){
 				@Override
-				public String notifyCashWithdrawOper(double callback_cash) {
+				public String notifyCashWithdrawOper(int callback_cash) {
 					apply.setUid(uid);
 					apply.setAppid(appid);
 					apply.setPayment_type(type.getType());
@@ -932,7 +933,7 @@ public class UserWalletFacadeService{
 			BusinessEnumType.UWalletTransMode transMode,
 			BusinessEnumType.UWalletTransType transType,
 			String description,
-			double rmoney,double cash,double vcurrency,String memo){
+			int rmoney,int cash,double vcurrency,String memo){
 		//System.out.println("~~~~~~~~~~~~~~:"+description);
 		UserWalletLog wlog = new UserWalletLog();
 		wlog.setUid(uid);

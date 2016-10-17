@@ -673,7 +673,7 @@ public class ChargingFacadeService {
 	}
 	
 	
-	public WithdrawCostInfo calculateWithdrawCost(int uid,String applyid,double cash){
+	public WithdrawCostInfo calculateWithdrawCost(int uid,String applyid,int cash){
 		return userWithdrawCostConfigsService.calculateWithdrawCost(uid,applyid,cash);
 	}
 	

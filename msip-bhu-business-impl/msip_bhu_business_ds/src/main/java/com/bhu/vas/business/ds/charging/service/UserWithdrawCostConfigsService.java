@@ -28,7 +28,7 @@ public class UserWithdrawCostConfigsService extends AbstractCoreService<Integer,
 		return this.getById(UserWithdrawCostConfigs.Default_ConfigsID);
 	}
 	
-	public WithdrawCostInfo calculateWithdrawCost(int uid,String applyid,double cash){
+	public WithdrawCostInfo calculateWithdrawCost(int uid,String applyid,int cash){
 		UserWithdrawCostConfigs walletConfigs = this.userfulWithdrawConfigs(uid);
 		WithdrawCostInfo cost = WithdrawCostInfo.calculate(uid, applyid, cash, walletConfigs.getWithdraw_tax_percent(), walletConfigs.getWithdraw_trancost_percent());
 		return cost;

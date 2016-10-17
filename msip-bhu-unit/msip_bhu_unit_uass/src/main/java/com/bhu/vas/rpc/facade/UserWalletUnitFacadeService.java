@@ -64,6 +64,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSharedealDistributorViewService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
@@ -632,6 +633,7 @@ public class UserWalletUnitFacadeService {
 			String payment_type, int uid, String pwd, double cash,
 			String remoteip) {
 		try {
+			int cashInt = ArithHelper.doubleCurrencyToInt(cash, 4);
 			// 验证appid
 			if (!CommdityApplication.supported(appid)) {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -666,7 +668,7 @@ public class UserWalletUnitFacadeService {
 
 			UserWalletWithdrawApply apply = userWalletFacadeService
 					.doWithdrawApply(appid, OAuthType.fromType(payment_type),
-							uid, pwd, cash, remoteip);
+							uid, pwd, cashInt, remoteip);
 			// UserWalletConfigs walletConfigs =
 			// userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(uid);
 			WithdrawCostInfo calculateApplyCost = userWalletFacadeService

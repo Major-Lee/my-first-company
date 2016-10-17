@@ -29,7 +29,7 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	//虚拟币virtual_currency 充值生成 绑定（系统或活动赠送的）
 	private long vcurrency_bing = 0l;
 	//现金零钱
-	private double cash = 0.00d;
+	private int cash = 0;
 	//提现状态 目前处于的提现状态 申请提现后，此状态为true 提现成功后此状态置为初始false
 	private boolean withdraw = false;
 	
@@ -105,10 +105,10 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	public void setVcurrency_bing(long vcurrency_bing) {
 		this.vcurrency_bing = vcurrency_bing;
 	}
-	public double getCash() {
+	public int getCash() {
 		return cash;
 	}
-	public void setCash(double cash) {
+	public void setCash(int cash) {
 		this.cash = cash;
 	}
 	public boolean isWithdraw() {
