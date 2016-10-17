@@ -7,12 +7,14 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingInterfaceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingLinkModeDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingUserDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.helper.DeviceHelper;
@@ -40,6 +42,7 @@ import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigInterfaceVTO;
+import com.bhu.vas.api.vto.config.URouterDeviceConfigRadioVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVapVTO;
 import com.bhu.vas.api.vto.device.DeviceBaseVTO;
 import com.bhu.vas.api.vto.device.DeviceConfigDetailVTO;
@@ -930,6 +933,18 @@ public class UserDeviceUnitFacadeService {
 						}
 					}
 				}
+				
+				if(psn.getRadios() != null && !psn.getRadios().isEmpty()){
+					List<URouterDeviceConfigRadioVTO> radios_vto = new ArrayList<URouterDeviceConfigRadioVTO>();
+					URouterDeviceConfigRadioVTO radio_vto = null;
+					for (WifiDeviceSettingRadioDTO ra : psn.getRadios()) {
+						radio_vto = new URouterDeviceConfigRadioVTO();
+						BeanUtils.copyProperties(ra, radio_vto);
+						radios_vto.add(radio_vto);
+					}
+					ret.setRadios(radios_vto);
+				}
+				
 				if(psn.getVaps() != null && !psn.getVaps().isEmpty()){
 					List<URouterDeviceConfigVapVTO> vaps_vto = new ArrayList<URouterDeviceConfigVapVTO>();
 					URouterDeviceConfigVapVTO vap_vto = null;
