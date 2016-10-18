@@ -6,6 +6,6 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 
 @Service("advertiseRpcService")
-public class advertiseRpcService extends IAdvertiseRpcService{
+public class advertiseRpcService{
 	private final Logger logger = LoggerFactory.getLogger(advertiseRpcService.class);
 }
