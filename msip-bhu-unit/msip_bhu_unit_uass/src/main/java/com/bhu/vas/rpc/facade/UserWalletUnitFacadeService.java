@@ -51,6 +51,7 @@ import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
+import com.bhu.vas.api.vto.wallet.UserWithdrawDetailVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.charging.service.DeviceGroupPaymentStatisticsService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
@@ -1569,7 +1570,7 @@ public class UserWalletUnitFacadeService {
 	 * @param uid
 	 * @return
 	 */
-	public RpcResponseDTO<UserWithdrawApplyVTO> fetchWithdrawSimpleDetail(
+	public RpcResponseDTO<UserWithdrawDetailVTO> fetchWithdrawSimpleDetail(
 			int uid) {
 		try {
 			ModelCriteria mc = new ModelCriteria();
@@ -1584,16 +1585,16 @@ public class UserWalletUnitFacadeService {
 							BusinessEnumType.UWithdrawStatus.WithdrawFailed
 									.getKey());
 			List<UserWalletWithdrawApply> applys = userWalletFacadeService.getUserWalletWithdrawApplyService().findModelByModelCriteria(mc);
-			UserWithdrawApplyVTO vto = null;
-			
+			UserWithdrawDetailVTO vto = new UserWithdrawDetailVTO();
 			if(!applys.isEmpty()){
 				User user = UserValidateServiceHelper.validateUser(
 						uid,userWalletFacadeService.getUserService());
 				UserWalletWithdrawApply apply = applys.get(0);
-				vto = apply.toUserWithdrawApplySimpleVTO(user.getMobileno(), user.getNick());
+				UserWithdrawApplyVTO applyVTO = apply.toUserWithdrawApplySimpleVTO(user.getMobileno(), user.getNick());
+				vto.setWithDrawApplydetail(applyVTO);
+				vto.setDescribe("当前用户正在进行提现");
 			}else{
-				return RpcResponseDTOBuilder
-						.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_NOT_HAS_RECORD);
+				vto.setDescribe("当前用户允许提现");
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		} catch (BusinessI18nCodeException bex) {

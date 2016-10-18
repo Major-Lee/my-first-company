@@ -13,6 +13,7 @@ import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
+import com.bhu.vas.api.vto.wallet.UserWithdrawDetailVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 public interface IUserWalletRpcService {
@@ -134,7 +135,7 @@ public interface IUserWalletRpcService {
 	 */
 	public RpcResponseDTO<RankingCardInfoVTO> rankingCardInfo(Integer uid);
 
-	public RpcResponseDTO<UserWithdrawApplyVTO> fetchWithdrawSimpleDetail(Integer uid);
+	public RpcResponseDTO<UserWithdrawDetailVTO> fetchWithdrawSimpleDetail(Integer uid);
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

@@ -20,6 +20,7 @@ import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
+import com.bhu.vas.api.vto.wallet.UserWithdrawDetailVTO;
 import com.bhu.vas.business.yun.iservice.IYunUploadService;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -247,7 +248,7 @@ public class UserWalletController extends BaseController{
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid){
 		try{
-			RpcResponseDTO<UserWithdrawApplyVTO> rpcResult = userWalletRpcService.fetchWithdrawSimpleDetail(uid);
+			RpcResponseDTO<UserWithdrawDetailVTO> rpcResult = userWalletRpcService.fetchWithdrawSimpleDetail(uid);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

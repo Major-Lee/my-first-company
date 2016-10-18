@@ -20,6 +20,7 @@ import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
+import com.bhu.vas.api.vto.wallet.UserWithdrawDetailVTO;
 import com.bhu.vas.rpc.facade.UserWalletUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -165,7 +166,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<UserWithdrawApplyVTO> fetchWithdrawSimpleDetail(Integer uid) {
+	public RpcResponseDTO<UserWithdrawDetailVTO> fetchWithdrawSimpleDetail(Integer uid) {
 		logger.info(String.format("fetchWithdrawSimpleDetail with uid[%s]",uid));
 		return userWalletUnitFacadeService.fetchWithdrawSimpleDetail(uid);
 	}
