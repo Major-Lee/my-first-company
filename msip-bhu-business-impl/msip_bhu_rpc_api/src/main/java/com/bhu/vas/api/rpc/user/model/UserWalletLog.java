@@ -142,8 +142,13 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 		vto.setOrderid(orderid);
 		vto.setNick(nick);
 		vto.setMobileno(mobileno);
-		vto.setCash(ArithHelper.getCuttedCurrency(cash));
-		vto.setRmoney(rmoney);
+		
+		vto.setCash(ArithHelper.
+				getCuttedCurrency(String.valueOf(ArithHelper.
+				intCurrencyToDouble(Integer.parseInt(cash),4))));
+		vto.setRmoney(ArithHelper.
+				getCuttedCurrency(String.valueOf(ArithHelper.
+				intCurrencyToDouble(Integer.parseInt(rmoney),4))));
 		vto.setVcurrency(vcurrency);
 		vto.setTransmode(transmode);
 		vto.setTransmode_desc(transmode_desc);

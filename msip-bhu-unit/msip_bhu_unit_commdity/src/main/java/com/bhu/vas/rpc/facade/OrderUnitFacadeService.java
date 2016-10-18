@@ -63,6 +63,7 @@ import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -559,7 +560,9 @@ public class OrderUnitFacadeService {
 				if(orderid.equals(log.getOrderid())){
 					String cash = log.getCash();
 					if(StringUtils.isNotEmpty(cash) && cash.startsWith(StringHelper.PLUS_STRING_GAP) && cash.length()>=1){
-						return cashFormat2DecimalPoint(cash.substring(1));
+						return cashFormat2DecimalPoint(String.valueOf(ArithHelper.
+										intCurrencyToDouble(Integer.parseInt(cash), 4))
+										.substring(1));
 					}else
 						return log.getCash();
 				}

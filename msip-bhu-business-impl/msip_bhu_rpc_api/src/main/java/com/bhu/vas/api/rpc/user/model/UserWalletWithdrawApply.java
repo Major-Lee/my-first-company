@@ -130,7 +130,8 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		vto.setPayment_type(payment_type);
 		vto.setNick(nick);
 		vto.setMobileno(mobileno);
-		vto.setCash(ArithHelper.intCurrencyToDouble(applyCost.getCash(), 4));
+		
+		vto.setCash(Double.parseDouble(ArithHelper.getCuttedCurrency(String.valueOf(ArithHelper.intCurrencyToDouble(applyCost.getCash(), 4)))));
 		vto.setCashInt(applyCost.getCash());
 		vto.setTaxcost(applyCost.getTaxcost());
 		vto.setTranscost(applyCost.getTranscost());

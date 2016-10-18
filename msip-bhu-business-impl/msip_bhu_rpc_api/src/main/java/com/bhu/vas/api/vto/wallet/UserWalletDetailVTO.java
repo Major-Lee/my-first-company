@@ -15,7 +15,14 @@ public class UserWalletDetailVTO implements java.io.Serializable {
 	private int uid;
 	private long vcurrency = 0l;
 	private long vcurrency_bing = 0l;
-	private double cash = 0.00d;;
+	private double cash = 0.00d;
+	private int cashInt = 0;
+	public int getCashInt() {
+		return cashInt;
+	}
+	public void setCashInt(int cashInt) {
+		this.cashInt = cashInt;
+	}
 	private boolean withdraw = false;
 	private boolean haspwd = false; 
 	private String mobileNo;

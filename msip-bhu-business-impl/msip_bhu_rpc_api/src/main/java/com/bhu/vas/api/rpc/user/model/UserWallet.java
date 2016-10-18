@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.encrypt.BCryptHelper;
 import com.smartwork.msip.cores.orm.model.BaseIntModel;
@@ -125,7 +126,8 @@ public class UserWallet extends BaseIntModel{// implements ISequenceGenable,Tabl
 	public UserWalletDetailVTO toUserWalletDetailVTO(){
 		UserWalletDetailVTO detail = new UserWalletDetailVTO();
 		detail.setUid(id);
-		detail.setCash(cash);
+		detail.setCashInt(cash);
+		detail.setCash(Double.parseDouble(ArithHelper.getCuttedCurrency(String.valueOf(ArithHelper.intCurrencyToDouble(cash, 4)))));
 		detail.setVcurrency(vcurrency);
 		detail.setVcurrency_bing(vcurrency_bing);
 		detail.setWithdraw(withdraw);
