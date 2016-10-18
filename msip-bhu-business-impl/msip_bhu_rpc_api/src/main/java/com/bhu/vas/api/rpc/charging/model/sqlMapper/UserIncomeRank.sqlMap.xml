@@ -110,8 +110,11 @@
 			</if>
 		</where>
 	</select>
-	<select id="findByLimit" resultMap="modelResult" parameterType="java.util.List">
-	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> where created_at like #{time} order by rank limit 100
+	<select id="findByLimit" resultMap="modelResult" parameterType="java.util.Map">
+	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> where created_at like #{time} order by rank limit #{limit} OFFSET #{start}
+	</select>
+	<select id="getByUid" resultMap="modelResult" parameterType="java.util.Map">
+	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> where created_at like #{time} and uid=#{uid}
 	</select>
 	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
