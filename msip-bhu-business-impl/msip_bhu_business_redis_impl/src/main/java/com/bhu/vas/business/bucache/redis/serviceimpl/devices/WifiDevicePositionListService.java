@@ -1,4 +1,4 @@
-package com.bhu.vas.business.bucache.redis.serviceimpl.advertise;
+package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
 import redis.clients.jedis.JedisPool;
 
@@ -7,31 +7,20 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationListCache;
 
 /**
- * 
+ * 设备地理位置
  * @author xiaowei
  *
  */
-public class WifiDeviceAdvertiseListService extends AbstractRelationListCache{
+public class WifiDevicePositionListService extends AbstractRelationListCache{
 
-    private static class ServiceHolder{
-        private static WifiDeviceAdvertiseListService instance =new WifiDeviceAdvertiseListService();
-    }
-	
-    /**
-     * 获取工厂单例
-     * @return
-     */
-    public static WifiDeviceAdvertiseListService getInstance() {
-        return ServiceHolder.instance;
-    }
-    
 	@Override
 	public String getName() {
-		return WifiDeviceAdvertiseListService.class.getName();
+		return WifiDevicePositionListService.class.getName();
 	}
 
 	@Override
 	public String getRedisKey() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -39,4 +28,5 @@ public class WifiDeviceAdvertiseListService extends AbstractRelationListCache{
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.ADVERTISE);
 	}
+
 }
