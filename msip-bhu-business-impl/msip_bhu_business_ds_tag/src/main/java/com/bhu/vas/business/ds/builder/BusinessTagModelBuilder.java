@@ -33,7 +33,6 @@ public class BusinessTagModelBuilder {
 		return dto;
 	}
 	
-	
 	public static TagGroupRankUsersVTO builderGroupRankUsers(Map<String,String> map){
 		TagGroupRankUsersVTO vto = new TagGroupRankUsersVTO();
 		vto.setDate(map.get("date"));

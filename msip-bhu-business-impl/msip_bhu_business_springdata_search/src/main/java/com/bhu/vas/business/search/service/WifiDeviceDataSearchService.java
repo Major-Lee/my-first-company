@@ -116,6 +116,21 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	}
 	
 	/**
+	 * 根据地理位置搜索数据
+	 * @param d_province
+	 * @param d_city
+	 * @param d_distrcy
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<WifiDeviceDocument> searchCountByPosition(String d_province,String d_city,String d_distrcy, int pageNo, int pageSize){
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(d_province, d_city, d_distrcy);
+		return super.searchByConditionMessage(scm, pageNo, pageSize);
+	}
+	
+	/**
 	 * 根据snk查询设备数量
 	 * @param u_id
 	 * @param d_snk_type

@@ -9,4 +9,5 @@ import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
 @Service("advertiseRpcService")
 public class advertiseRpcService implements IAdvertiseRpcService{
 	private final Logger logger = LoggerFactory.getLogger(advertiseRpcService.class);
+	
 }
