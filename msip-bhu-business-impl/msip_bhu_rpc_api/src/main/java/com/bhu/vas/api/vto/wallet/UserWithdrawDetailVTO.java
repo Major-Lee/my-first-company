@@ -1,6 +1,9 @@
 package com.bhu.vas.api.vto.wallet;
 
-public class UserWithdrawDetailVTO {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class UserWithdrawDetailVTO implements Serializable{
 	private UserWithdrawApplyVTO withDrawApplydetail;
 	private String describe;
 	
