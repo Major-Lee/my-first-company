@@ -199,6 +199,7 @@ public enum ResponseErrorCode {
 	//add by Jason 2016-06-08 start
 	USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST("338","user.wallet.withdraw.publishAccount.exist"),
 	USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST("339","user.wallet.withdraw.publishAccount.notExist"),
+	USER_WALLET_WITHDRAW_NOT_HAS_RECORD("351","user.wallet.withdraw.not.has.record"),
 	//add by Jason 2016-06-08 E N D
 	DEVICE_DATA_NOT_EXIST("340","device.data.notexist"),
 	DEVICE_DATA_NOT_ONLINE("341","device.data.notonline"),

@@ -1591,8 +1591,10 @@ public class UserWalletUnitFacadeService {
 						uid,userWalletFacadeService.getUserService());
 				UserWalletWithdrawApply apply = applys.get(0);
 				vto = apply.toUserWithdrawApplySimpleVTO(user.getMobileno(), user.getNick());
+			}else{
+				return RpcResponseDTOBuilder
+						.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_NOT_HAS_RECORD);
 			}
-			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		} catch (BusinessI18nCodeException bex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(
