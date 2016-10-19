@@ -167,6 +167,9 @@
 		<typeAlias alias="userSharedealDistributorView" 	type="com.bhu.vas.api.rpc.user.model.UserSharedealDistributorView" />
 		<!-- portal 身份认证 -->
 		<typeAlias alias="userIdentityAuth" 	type="com.bhu.vas.api.rpc.user.model.UserIdentityAuth" />
+		
+		<!-- 广告 -->
+		<typeAlias alias="advertise" 	type="com.bhu.vas.api.rpc.advertise.model.Advertise" />
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.pluginu.ShardPlugin"> 
@@ -299,6 +302,8 @@
 		
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSharedealDistributorView.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserIdentityAuth.sqlMap.xml" />
+		<!-- 广告 -->
+		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/Advertise.sqlMap.xml" />
 	</mappers>
 
 </configuration>
