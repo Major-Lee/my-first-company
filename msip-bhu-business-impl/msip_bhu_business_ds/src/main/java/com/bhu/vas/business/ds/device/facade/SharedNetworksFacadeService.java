@@ -118,7 +118,7 @@ public class SharedNetworksFacadeService {
 					if(StringUtils.isEmpty(paramDto.getTemplate_name()))
 						paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
 					paramDto.setTs(System.currentTimeMillis());
-					if(ParamSharedNetworkDTO.wasDeviceRelatedConfigChanged( paramDto,dto_fromdb) || ParamSharedNetworkDTO.wasTemplateNameChanged(paramDto,dto_fromdb)){
+					if(ParamSharedNetworkDTO.wasDeviceRelatedConfigChanged( paramDto,dto_fromdb) /* || ParamSharedNetworkDTO.wasTemplateNameChanged(paramDto,dto_fromdb) */){
 						devicePartChanged = true;
 					} else {
 						configChanged = ParamSharedNetworkDTO.wasServerRelatedConfigChanged( paramDto,dto_fromdb);
