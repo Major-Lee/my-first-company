@@ -18,6 +18,11 @@ public class createDevicePositionRedis {
 		wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
 	}
 	
+	public static void main(String[] args) {
+		initialize();
+		findDevicesPosition();
+	}
+	
 	public static void findDevicesPosition(){
 		
 		List<Map<String, Object>> provinceList =  wifiDeviceService.selectByField("province", true, true, null, null);
