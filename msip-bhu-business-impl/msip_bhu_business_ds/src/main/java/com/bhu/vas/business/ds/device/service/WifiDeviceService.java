@@ -77,15 +77,15 @@ public class WifiDeviceService extends AbstractCoreService<String,WifiDevice, Wi
 		map.put("field", field);
 		
 		if(isDistinct){
-			map.put("isDistinct", StringHelper.TRUE);
+			map.put("isDistinct", 1);
 		}else{
-			map.put("isDistinct", StringHelper.FALSE);
+			map.put("isDistinct", 0);
 		}
 		
 		if(isNotNull){
-			map.put("isNotNull", StringHelper.TRUE);
+			map.put("isNotNull", 1);
 		}else{
-			map.put("isNotNull", StringHelper.FALSE);
+			map.put("isNotNull", 0);
 		}
 		if(judge !=null){
 			map.put("judge", judge);

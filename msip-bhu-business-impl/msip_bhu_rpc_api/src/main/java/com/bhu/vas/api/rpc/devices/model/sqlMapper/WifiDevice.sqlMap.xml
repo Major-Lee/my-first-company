@@ -337,15 +337,15 @@
 	  	</where>
 	</select>
 	
-	<select id="selectByField" resultMap="Map" parameterType="map">
+	<select id="selectByField" resultType="hashmap" parameterType="map">
 	    SELECT  
-	    <if test="isDistinct !=false">
+	    <if test="isDistinct !=0">
 	    	distinct
 	    </if>
 	    #{field} 
 	    FROM <include refid="modelTableName" /> 
 	    <where>
-			<if test="isNotNull !=false">
+			<if test="isNotNull !=0">
 	    		#{field} is not null
 	    	</if>
 			<if test="judge!=null and param !=null" >
