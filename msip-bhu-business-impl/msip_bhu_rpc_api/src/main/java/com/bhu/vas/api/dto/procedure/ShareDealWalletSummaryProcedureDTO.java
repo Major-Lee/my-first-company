@@ -17,20 +17,20 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 	private int userid;
 	@OUT(jdbcType = JdbcType.VARCHAR)
 	private String today_date;
-	@OUT(jdbcType = JdbcType.DOUBLE)
-	private double today_cash;
+	@OUT(jdbcType = JdbcType.INTEGER)
+	private int today_cash;
 	@OUT(jdbcType = JdbcType.INTEGER)
 	private int today_nums;
 	
 	@OUT(jdbcType = JdbcType.VARCHAR)
 	private String yesterday_date;
-	@OUT(jdbcType = JdbcType.DOUBLE)
-	private double yesterday_cash;
+	@OUT(jdbcType = JdbcType.INTEGER)
+	private int yesterday_cash;
 	@OUT(jdbcType = JdbcType.INTEGER)
 	private int yesterday_nums;
 	
-	@OUT(jdbcType = JdbcType.DOUBLE)
-	private double total_cash;
+	@OUT(jdbcType = JdbcType.INTEGER)
+	private int total_cash;
 	@OUT(jdbcType = JdbcType.INTEGER)
 	private int total_nums;
 	
@@ -48,11 +48,11 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 		this.userid = userid;
 	}
 
-	public double getToday_cash() {
+	public int getToday_cash() {
 		return today_cash;
 	}
 
-	public void setToday_cash(double today_cash) {
+	public void setToday_cash(int today_cash) {
 		this.today_cash = today_cash;
 	}
 
@@ -64,11 +64,11 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 		this.today_nums = today_nums;
 	}
 
-	public double getYesterday_cash() {
+	public int getYesterday_cash() {
 		return yesterday_cash;
 	}
 
-	public void setYesterday_cash(double yesterday_cash) {
+	public void setYesterday_cash(int yesterday_cash) {
 		this.yesterday_cash = yesterday_cash;
 	}
 
@@ -80,11 +80,11 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 		this.yesterday_nums = yesterday_nums;
 	}
 
-	public double getTotal_cash() {
+	public int getTotal_cash() {
 		return total_cash;
 	}
 
-	public void setTotal_cash(double total_cash) {
+	public void setTotal_cash(int total_cash) {
 		this.total_cash = total_cash;
 	}
 
@@ -174,10 +174,10 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 		boolean isTheToday = (this.getLast_update_cash_datetime() == null) ? false : 
 			DateTimeHelper.isSameDay(this.getLast_update_cash_datetime(), new Date());
 		
-		vto.setToday_cash(isTheToday ? Float.valueOf(ArithHelper.getCuttedCurrency(this.getToday_cash() + "")) : 0);
+		vto.setToday_cash(isTheToday ? Float.valueOf(ArithHelper.getCuttedCurrency(ArithHelper.intCurrencyToDouble(this.getToday_cash(), 4)+"")) : 0);
 		vto.setToday_nums(this.getToday_nums());
 		vto.setYesterday_date(this.getYesterday_date());
-		vto.setYesterday_cash(Float.valueOf(ArithHelper.getCuttedCurrency(this.getYesterday_cash() + "")));
+		vto.setYesterday_cash(Float.valueOf(ArithHelper.getCuttedCurrency(ArithHelper.intCurrencyToDouble(this.getYesterday_cash(), 4) + "")));
 		vto.setYesterday_nums(this.getYesterday_nums());
 		vto.setTotal_cash(Float.valueOf(ArithHelper.getCuttedCurrency(this.getTotal_cash() + "")));
 		vto.setTotal_nums(this.getTotal_nums());

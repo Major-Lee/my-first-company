@@ -563,31 +563,15 @@ public class OrderUnitFacadeService {
 						return cashFormat2DecimalPoint(String.valueOf(ArithHelper.
 										intCurrencyToDouble(Integer.parseInt(cash), 4))
 										.substring(1));
-					}else
-						return log.getCash();
+					}
 				}
 			}
 		}
 		//return StringHelper.MINUS_STRING_GAP;
-		return "0";
+		return "0.00";
 	}
 	private String cashFormat2DecimalPoint(String cash){
-		String pafter = null;
-		String cash_sub = null;
-		int index = cash.indexOf('.');
-		if(index == -1){
-			cash_sub = cash.concat(".00");
-		}else{
-			pafter = cash.substring(index+1);
-			int len = pafter.length();
-			if(len > 0){
-				if (len == 1)
-					cash_sub = cash.concat("0");
-				else
-					cash_sub = cash.substring(0, index+3);
-			}
-		}
-		return cash_sub;
+		return ArithHelper.getCuttedCurrency(cash);
 	}
 	public RpcResponseDTO<RewardQueryPagesDetailVTO> rewardOrderPagesDetail(Integer uid, String mac, String umac,
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
@@ -601,7 +585,8 @@ public class OrderUnitFacadeService {
 				end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
 			logger.info("rewardOrderPagesDetail uid: "+uid+" start_time: "+start_time+" end_time: "+end_time+" mac: "+mac);
 			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,umac,status,dut);
-			vto.setCashSum((Double)map.get("cashSum"));
+			Double cashSum = Double.valueOf(ArithHelper.getCuttedCurrency(ArithHelper.intCurrencyToDouble((int)map.get("cashSum"), 4)+""));
+			vto.setCashSum(cashSum);
 			vto.setCount((Long)map.get("count"));
 			logger.info("rewardOrderPagesDetail CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
 			

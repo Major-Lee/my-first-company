@@ -3,6 +3,7 @@ package com.bhu.vas.api.dto.procedure;
 import org.apache.ibatis.type.JdbcType;
 
 import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.orm.logic.procedure.AbstractProcedureDTO;
 import com.smartwork.msip.cores.orm.logic.procedure.IN;
 import com.smartwork.msip.cores.orm.logic.procedure.OUT;
@@ -59,7 +60,8 @@ public class RewardOrderNewlyDataProcedureDTO extends AbstractProcedureDTO{
 	public OrderRewardNewlyDataVTO toVTO(){
 		OrderRewardNewlyDataVTO vto = new OrderRewardNewlyDataVTO();
 		vto.setNewly_count(newly_count);
-		vto.setNewly_amount_count(newly_amount_count);
+		vto.setNewly_amount_count(ArithHelper.getCuttedCurrency(ArithHelper.
+				intCurrencyToDouble(Integer.parseInt(newly_amount_count), 4)+""));
 		return vto;
 	}
 	

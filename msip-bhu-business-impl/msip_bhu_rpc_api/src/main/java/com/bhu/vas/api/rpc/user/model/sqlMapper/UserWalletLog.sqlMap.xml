@@ -23,7 +23,7 @@
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   <resultMap id="mapcountAndsum" type="hashmap">
-    <result property="cashSum" column="cashSum" javaType="java.lang.Double"/>
+    <result property="cashSum" column="cashSum" javaType="java.lang.integer"/>
     <result property="count" column="count" javaType="java.lang.Long"/>
   </resultMap>  
   
@@ -153,7 +153,7 @@
 	</select>
 	
 	<select id="countAndsum" resultMap="mapcountAndsum" parameterType="Map">
-	    select truncate(sum(t_walletlog.cash),2) as cashSum,count(*) as count from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
+	    select sum(t_walletlog.cash) as cashSum,count(*) as count from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
 	    <where>
 	    	t_walletlog.uid = #{uid}
 	    	AND t_walletlog.transtype = 'P2C'
