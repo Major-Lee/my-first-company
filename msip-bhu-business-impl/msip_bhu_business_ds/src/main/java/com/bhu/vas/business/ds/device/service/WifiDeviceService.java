@@ -1,6 +1,8 @@
 package com.bhu.vas.business.ds.device.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -8,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
 import com.bhu.vas.business.ds.device.dao.WifiDeviceDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 //EntityCacheableSpliterService
@@ -58,4 +62,43 @@ public class WifiDeviceService extends AbstractCoreService<String,WifiDevice, Wi
 	public long count(){
 		return super.countByModelCriteria(new ModelCriteria());
 	}
+	
+	/**
+	 * 
+	 * @param field 要搜索的字段名
+	 * @param isDistinct 是否去重
+	 * @param isNotNull 是否不能为空
+	 * @param judge where的字段
+	 * @param param  字段限定
+	 * @return
+	 */
+	public List<Map<String, Object>> selectByField(String field,boolean isDistinct,boolean isNotNull,String judge,String param) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("field", field);
+		
+		if(isDistinct){
+			map.put("isDistinct", StringHelper.TRUE);
+		}else{
+			map.put("isDistinct", StringHelper.FALSE);
+		}
+		
+		if(isNotNull){
+			map.put("isNotNull", StringHelper.TRUE);
+		}else{
+			map.put("isNotNull", StringHelper.FALSE);
+		}
+		if(judge !=null){
+			map.put("judge", judge);
+		}
+		if(param !=null){
+			map.put("param", param);
+		}
+		return super
+				.getEntityDao()
+				.getSqlSessionMasterTemplate()
+				.selectList(
+						WifiDevice.class.getName()
+								+ ".selectByField", map);
+	}
+	
 }

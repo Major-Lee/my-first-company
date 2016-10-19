@@ -336,6 +336,25 @@
 			</foreach>
 	  	</where>
 	</select>
+	
+	<select id="selectByField" resultMap="HandsetMap" parameterType="map">
+	    SELECT  
+	    <if test="isDistinct !=false">
+	    	distinct
+	    </if>
+	    #{field} 
+	    FROM <include refid="modelTableName" /> 
+	    <where>
+			<if test="isNotNull !=false">
+	    		#{field} is not null
+	    	</if>
+			<if test="judge!=null and param !=null" >
+				and
+					${judge} = #{param}
+			</if>
+			
+	    </where> 
+	</select>
 	  
 	<delete id="deleteByIds" parameterType="java.util.List">
 	  	delete from <include refid="modelTableName" />

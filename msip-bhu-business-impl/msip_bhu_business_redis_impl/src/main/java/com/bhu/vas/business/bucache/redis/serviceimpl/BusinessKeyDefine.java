@@ -37,6 +37,9 @@ public class BusinessKeyDefine {
 		public static final String UserSearchCondition = "SUSC";
 		public static final String WifiDeviceHandsetUnitPresentPrefixKey	="WDHUP";
 		public static final String WifiDeviceHandsetPushFlowPrefixKey	="WDHPF";
+		public static final String WifiDeviceAllProvincePrefixKey = "WDAP.";
+		public static final String WifiDeviceProvincePrefixKey = "WDP.";
+		public static final String WifiDeviceCityPrefixKey = "WDC.";
 	}
 	
 	public static class Statistics{
