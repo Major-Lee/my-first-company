@@ -337,7 +337,7 @@
 	  	</where>
 	</select>
 	
-	<select id="selectByField" resultMap="HandsetMap" parameterType="map">
+	<select id="selectByField" resultMap="Map" parameterType="map">
 	    SELECT  
 	    <if test="isDistinct !=false">
 	    	distinct
