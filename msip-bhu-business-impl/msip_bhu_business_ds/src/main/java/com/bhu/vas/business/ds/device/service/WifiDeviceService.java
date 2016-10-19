@@ -72,7 +72,7 @@ public class WifiDeviceService extends AbstractCoreService<String,WifiDevice, Wi
 	 * @param param  字段限定
 	 * @return
 	 */
-	public List<Map<String, Object>> selectByField(String field,boolean isDistinct,boolean isNotNull,String judge,String param) {
+	public List<String> selectByField(String field,boolean isDistinct,boolean isNotNull,String judge,String param) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("field", field);
 		

@@ -8,37 +8,35 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 
 public class createDevicePositionRedis {
 	
-	private static WifiDeviceService wifiDeviceService;
-	
-	public static void initialize(){
-		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
-		wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
-	}
-	
 	public static void main(String[] args) {
-		initialize();
-		findDevicesPosition();
-	}
-	
-	public static void findDevicesPosition(){
+		ApplicationContext ctx = new FileSystemXmlApplicationContext("classpath*:com/bhu/vas/di/business/dataimport/dataImportCtx.xml");
+		WifiDeviceService  wifiDeviceService = (WifiDeviceService)ctx.getBean("wifiDeviceService");
 		
-		List<Map<String, Object>> provinceList =  wifiDeviceService.selectByField("province", true, true, null, null);
-		for(Map<String,Object> provinceMap :provinceList){
-			WifiDevicePositionListService.getInstance().generateAllProvince((String)provinceMap.get("province"));
-			System.out.println((String)provinceMap.get("province"));
-			
-			List<Map<String, Object>> cityList =  wifiDeviceService.selectByField("city", true, true, "province", (String)provinceMap.get("province"));
-			for(Map<String,Object> cityMap :cityList){
-				WifiDevicePositionListService.getInstance().generateProvince((String)provinceMap.get("province"), (String)cityMap.get("city"));
-				System.out.println((String)provinceMap.get("province") +"-"+(String)cityMap.get("city"));
+		List<String> provinceList =  wifiDeviceService.selectByField("province", true, true, null, null);
+		System.out.println(JsonHelper.getJSONString(provinceList));
+		for(String province :provinceList){
+			if(province!=null){
+				WifiDevicePositionListService.getInstance().generateAllProvince(province);
+				System.out.println(province);
 				
-				List<Map<String, Object>> districtList =  wifiDeviceService.selectByField("district", true, true, "city", (String)cityMap.get("city"));
-				for(Map<String,Object> districtMap : districtList){
-					WifiDevicePositionListService.getInstance().generateCity((String)cityMap.get("city"), (String)districtMap.get("district"));
-					System.out.println((String)provinceMap.get("province") +"-"+ (String)cityMap.get("city") + "-"+(String)districtMap.get("district"));
+				List<String> cityList =  wifiDeviceService.selectByField("city", true, true, "province", province);
+				for(String city :cityList){
+					if(city !=null){
+						WifiDevicePositionListService.getInstance().generateProvince(province, city);
+						System.out.println(province +"-"+city);
+						
+						List<String> districtList =  wifiDeviceService.selectByField("district", true, true, "city", city);
+						for(String district : districtList){
+							if(district !=null){
+								WifiDevicePositionListService.getInstance().generateCity(city, district);
+								System.out.println(province +"-"+ city + "-"+district);
+							}
+						}
+					}
 				}
 			}
 		}

@@ -1,5 +1,6 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import redis.clients.jedis.JedisPool;
@@ -36,18 +37,18 @@ public class WifiDevicePositionListService extends AbstractRelationListCache{
 	
 	public String generateKeyProvince(String province){
 		StringBuilder sb = new StringBuilder();
-		sb.append(BusinessKeyDefine.Present.WifiDeviceProvincePrefixKey).append(province);
+		sb.append(BusinessKeyDefine.Present.WifiDeviceProvincePrefixKey).append(stringencoding(province));
 		return sb.toString();
 	}
 	
 	public String generateKeyCity(String city){
 		StringBuilder sb = new StringBuilder();
-		sb.append(BusinessKeyDefine.Present.WifiDeviceCityPrefixKey).append(city);
+		sb.append(BusinessKeyDefine.Present.WifiDeviceCityPrefixKey).append(stringencoding(city));
 		return sb.toString();
 	}
 	
 	public void generateAllProvince(String province){
-		this.lpush(generateKeyAllProvince(), province);
+		this.lpush(generateKeyAllProvince(), stringencoding(province));
 	}
 	
 	public List<String> fetchAllProvince(){
@@ -55,7 +56,7 @@ public class WifiDevicePositionListService extends AbstractRelationListCache{
 	}
 	
 	public void generateProvince(String province,String city){
-		this.lpush(generateKeyProvince(province), city);
+		this.lpush(generateKeyProvince(province), stringencoding(city));
 	}
 	
 	public List<String> fetchProvince(String province){
@@ -85,5 +86,14 @@ public class WifiDevicePositionListService extends AbstractRelationListCache{
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.ADVERTISE);
 	}
-
+	
+	private String stringencoding(String str) {
+		String newStr = null;
+		try {
+			newStr = new String(str.getBytes(), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}  
+		return newStr;
+	}
 }

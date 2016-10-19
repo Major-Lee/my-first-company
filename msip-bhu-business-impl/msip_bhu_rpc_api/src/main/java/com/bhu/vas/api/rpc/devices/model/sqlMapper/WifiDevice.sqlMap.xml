@@ -337,23 +337,19 @@
 	  	</where>
 	</select>
 	
-	<select id="selectByField" resultType="hashmap" parameterType="map">
+	<select id="selectByField" resultType="java.lang.String" parameterType="map">
 	    SELECT  
 	    <if test="isDistinct !=0">
 	    	distinct
 	    </if>
-	    #{field} 
+	    ${field} 
 	    FROM <include refid="modelTableName" /> 
 	    <where>
-			<if test="isNotNull !=0">
-	    		#{field} is not null
-	    	</if>
 			<if test="judge!=null and param !=null" >
 				and
 					${judge} = #{param}
 			</if>
-			
-	    </where> 
+	    </where>
 	</select>
 	  
 	<delete id="deleteByIds" parameterType="java.util.List">
