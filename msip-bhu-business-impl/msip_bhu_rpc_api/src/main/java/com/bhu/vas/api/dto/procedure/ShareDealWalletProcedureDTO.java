@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.ibatis.type.JdbcType;
 
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.orm.logic.procedure.AbstractProcedureDTO;
 import com.smartwork.msip.cores.orm.logic.procedure.IN;
 
@@ -25,14 +26,14 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 	private int manufacturerid;
 	@IN(jdbcType = JdbcType.INTEGER)
 	private int distributorid;
-	@IN(jdbcType = JdbcType.DOUBLE)
-	private double ownercash;
+	@IN(jdbcType = JdbcType.INTEGER)
+	private int ownercash;
 	// @IN(jdbcType = JdbcType.DOUBLE)
 	// private double agentcash;
-	@IN(jdbcType = JdbcType.DOUBLE)
-	private double manufacturercash;
-	@IN(jdbcType = JdbcType.DOUBLE)
-	private double distributorcash;
+	@IN(jdbcType = JdbcType.INTEGER)
+	private int manufacturercash;
+	@IN(jdbcType = JdbcType.INTEGER)
+	private int distributorcash;
 
 	@IN(jdbcType = JdbcType.VARCHAR)
 	private String transmode;
@@ -91,11 +92,11 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 	 * public int getAgentid() { return agentid; } public void setAgentid(int
 	 * agentid) { this.agentid = agentid; }
 	 */
-	public double getOwnercash() {
+	public int getOwnercash() {
 		return ownercash;
 	}
 
-	public void setOwnercash(double ownercash) {
+	public void setOwnercash(int ownercash) {
 		this.ownercash = ownercash;
 	}
 
@@ -103,11 +104,11 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 	 * public double getAgentcash() { return agentcash; } public void
 	 * setAgentcash(double agentcash) { this.agentcash = agentcash; }
 	 */
-	public double getManufacturercash() {
+	public int getManufacturercash() {
 		return manufacturercash;
 	}
 
-	public void setManufacturercash(double manufacturercash) {
+	public void setManufacturercash(int manufacturercash) {
 		this.manufacturercash = manufacturercash;
 	}
 
@@ -175,11 +176,11 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 		this.distributorid = distributorid;
 	}
 
-	public double getDistributorcash() {
+	public int getDistributorcash() {
 		return distributorcash;
 	}
 
-	public void setDistributorcash(double distributorcash) {
+	public void setDistributorcash(int distributorcash) {
 		this.distributorcash = distributorcash;
 	}
 
@@ -204,9 +205,9 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 		dto.setOwnerid(sharedeal.getOwner());
 		dto.setManufacturerid(sharedeal.getManufacturer());
 		dto.setDistributorid(sharedeal.getDistributor());
-		dto.setOwnercash(sharedeal.getOwner_cash());
-		dto.setManufacturercash(sharedeal.getManufacturer_cash());
-		dto.setDistributorcash(sharedeal.getDistributor_cash());
+		dto.setOwnercash(ArithHelper.doubleCurrencyToInt(sharedeal.getOwner_cash(), 4));
+		dto.setManufacturercash(ArithHelper.doubleCurrencyToInt(sharedeal.getManufacturer_cash(), 4));
+		dto.setDistributorcash(ArithHelper.doubleCurrencyToInt(sharedeal.getDistributor_cash(), 4));
 		return dto;
 	}
 
