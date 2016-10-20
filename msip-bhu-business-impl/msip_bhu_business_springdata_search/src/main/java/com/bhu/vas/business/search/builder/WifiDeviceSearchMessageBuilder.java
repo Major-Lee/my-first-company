@@ -115,7 +115,11 @@ public class WifiDeviceSearchMessageBuilder {
 		SearchConditionSort sc_sortByOnine = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.WifiDevice.
 				Field.D_ONLINE.getName(), SearchConditionSortPattern.Sort.getPattern(),
 				SortOrder.DESC, null);
+		SearchConditionSort sc_sortByDnick = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.WifiDevice.
+				Field.U_DNICK.getName(), SearchConditionSortPattern.Sort.getPattern(),
+				SortOrder.ASC, null);
 		scm.addSorts(sc_sortByOnine);
+		scm.addSorts(sc_sortByDnick);
 		return scm;
 	}
 	
