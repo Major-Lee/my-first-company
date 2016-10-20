@@ -997,9 +997,12 @@ public class TagFacadeRpcSerivce {
 					count--;
 				}
 			}else{
-				vtos.add(builderSendMEssageVTO(entity));
+				TagGroupSortMessageVTO vto =builderSendMEssageVTO(entity);
+				if(vto== null){
+					continue;
+				}
+				vtos.add(vto);
 			}
-			
 		}
 		return new CommonPage<TagGroupSortMessageVTO>(pageNo, pageSize, count, vtos);
 	}
