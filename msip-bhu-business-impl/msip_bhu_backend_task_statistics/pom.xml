@@ -13,7 +13,7 @@
         </repository>
     </repositories>
 
-    <artifactId>msip_bhu_backend_task_statistics</artifactId>
+    <artifactId>msip_bhu_backend_task_advertise</artifactId>
 
     <dependencies>
         <dependency>
@@ -99,7 +99,7 @@
     </dependencies>
 
     <build>
-        <finalName>msip_bhu_backend_task_statistics</finalName>
+        <finalName>msip_bhu_backend_task_advertise</finalName>
         <plugins>
             <!-- The configuration of maven-assembly-plugin -->
             <plugin>
@@ -142,7 +142,7 @@
                             -->
                             <classpathPrefix>../lib/</classpathPrefix>
                             <!-- Specifies the main class of the application -->
-                            <mainClass>com.bhu.vas.business.BackendTaskStatisticsMain</mainClass>
+                            <mainClass>com.bhu.vas.business.BackendTaskAdvertiseMain</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>../conf/</Class-Path>
