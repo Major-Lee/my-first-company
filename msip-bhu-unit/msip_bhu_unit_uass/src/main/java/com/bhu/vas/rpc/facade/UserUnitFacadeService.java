@@ -498,7 +498,7 @@ public class UserUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 			}
 			//只有普通帐号可以升级
-			if(user.getUtype() != UserType.Normal.getIndex()){
+			if(user.getUtype() != UserType.Normal.getIndex() || user.getUtype() != UserType.DistributorNormal.getIndex()){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_CAN_NOT_BE_UPGRADED_TO_OPERATORS);
 			}
 			user.setUtype(UserType.DistributorNormal.getIndex());
