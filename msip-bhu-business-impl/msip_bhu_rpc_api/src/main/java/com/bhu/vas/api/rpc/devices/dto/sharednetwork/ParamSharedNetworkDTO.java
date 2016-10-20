@@ -73,6 +73,10 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String free_ait_pc = Default_Free_AIT;
 	//手机免费上网时长
 	private String free_ait_mobile = Default_Free_AIT;
+	//是否开启免费上网
+	private int isfree = 0;
+	//是否开启首次认证
+	private int firstLogin = 0;
 
 	
 	public ParamSharedNetworkDTO() {
@@ -447,6 +451,9 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(!paramDTO.getAit_pc().equals(dbDTO.getAit_pc())) return true;
 		if(!paramDTO.getFree_ait_mobile().equals(dbDTO.getFree_ait_mobile())) return true;
 		if(!paramDTO.getFree_ait_pc().equals(dbDTO.getFree_ait_pc())) return true;
+		if(!paramDTO.getFree_ait_pc().equals(dbDTO.getFree_ait_pc())) return true;
+		if(paramDTO.getIsfree() != dbDTO.getIsfree()) return true;
+		if(paramDTO.getFirstLogin() != dbDTO.getFirstLogin()) return true;
 		
 		return false;
 	}
@@ -534,6 +541,19 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			return this.template.equals(oo.template);
 		}
 		return false;
+	}
+	
+	public int getIsfree() {
+		return isfree;
+	}
+	public void setIsfree(int isfree) {
+		this.isfree = isfree;
+	}
+	public int getFirstLogin() {
+		return firstLogin;
+	}
+	public void setFirstLogin(int firstLogin) {
+		this.firstLogin = firstLogin;
 	}
 	public static void main(String[] argv){
 /*		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.builderDefault(null, true).builderProperties()));
