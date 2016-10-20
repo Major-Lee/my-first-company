@@ -15,6 +15,7 @@
     <result property="end" column="end"/>
     <result property="duration" column="duration"/>
     <result property="count" column="count"/>
+    <result property="reject_reason" column="reject_reason"/>
     <result property="state" column="state"/>
     
     <result property="verify_uid" column="verify_uid"/>
@@ -39,6 +40,7 @@
 	    	end,
 	    	duration,
 	    	count,
+	    	reject_reason,
 	    	state,
 	    	verify_uid,
 	    	created_at,
@@ -56,6 +58,7 @@
 	    	end,
 	    	duration,
 	    	count,
+	    	reject_reason,
 	    	state,
 	    	verify_uid,
 	    	created_at,
@@ -74,6 +77,7 @@
 	    	#{end},
 	    	#{duration},
 	    	#{count},
+	    	#{reject_reason},
 	    	#{state},
 	    	#{verify_uid},
 	    	#{created_at},
@@ -90,6 +94,7 @@
 	    	end = #{end},
 	    	duration = #{duration},
 	    	count = #{count},
+	    	reject_reason = #{reject_reason},
 	    	state = #{state},
 	    	verify_uid = #{verify_uid},
 	    	created_at = #{created_at},

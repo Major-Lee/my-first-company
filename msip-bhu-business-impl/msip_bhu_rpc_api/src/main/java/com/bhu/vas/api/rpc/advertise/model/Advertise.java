@@ -8,14 +8,23 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
 public class Advertise extends BaseIntModel{
 	private String image;
 	private String url;
+	//省
 	private String province;
+	//市
 	private String city;
+	//区
 	private String district;
 	private Date start;
 	private Date end;
+	//广告持续时间
 	private int duration;
+	//广告覆盖的设备数
 	private int count;
+	//审核驳回原因
+	private String reject_reason;
+	//0:待付款 1:待审核 2:待发布 3:发布中 4:发布完成 5:审核驳回 6:订单取消
 	private String state;
+	//审核人id
 	private int verify_uid;
 	private Date created_at;
 	public String getImage() {
@@ -89,6 +98,12 @@ public class Advertise extends BaseIntModel{
 	}
 	public void setEnd(Date end) {
 		this.end = end;
+	}
+	public String getReject_reason() {
+		return reject_reason;
+	}
+	public void setReject_reason(String reject_reason) {
+		this.reject_reason = reject_reason;
 	}
 	
 }
