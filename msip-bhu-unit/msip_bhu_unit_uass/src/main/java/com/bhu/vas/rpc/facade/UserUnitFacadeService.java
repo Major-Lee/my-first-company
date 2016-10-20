@@ -529,7 +529,7 @@ public class UserUnitFacadeService {
 	public RpcResponseDTO<Map<String, Object>> operatorfetchUser(Integer uid,int countrycode, String acc) {
 		try{
 			User user = UserValidateServiceHelper.validateUser(uid,this.userService);
-			if(user.getUtype() != UserType.DistributorNormal.getIndex() && uid != 2){//检查是否是运营商帐号或总帐号
+			if(user.getUtype() != UserType.DistributorNormal.getIndex() && uid != UserInnerExchangeDTO.opsAdminUid){//检查是否是运营商帐号或总帐号
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_NOT_OPERATOR);
 			}
 			Integer observedId = UniqueFacadeService.fetchUidByAcc(countrycode,acc);
@@ -537,8 +537,10 @@ public class UserUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_MOBILE_NOT_BE_REGISTER);
 			}
 			User observedUser = UserValidateServiceHelper.validateUser(observedId,this.userService);
-			if(observedUser.getUtype() != UserType.DistributorNormal.getIndex() && observedUser.getUtype() != UserType.Normal.getIndex()){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_CAN_NOT_BE_VIEWED);
+			if(uid != UserInnerExchangeDTO.opsAdminUid){
+				if(observedUser.getUtype() != UserType.DistributorNormal.getIndex() && observedUser.getUtype() != UserType.Normal.getIndex()){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_CAN_NOT_BE_VIEWED);
+				}
 			}
 			UserInnerExchangeDTO userExchange = userSignInOrOnFacadeService.commonUserProfile(observedUser);
 			Map<String, Object> rpcPayload = RpcResponseDTOBuilder.builderUserRpcPayload(userExchange);
