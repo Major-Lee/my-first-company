@@ -440,6 +440,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(dbDTO == null) return true;
 		if(paramDTO == null) return false;
 		
+		if(!paramDTO.getTemplate_name().equals(dbDTO.getTemplate_name())) return true;
 		if(!paramDTO.getRange_cash_mobile().equals(dbDTO.getRange_cash_mobile())) return true;
 		if(!paramDTO.getRange_cash_pc().equals(dbDTO.getRange_cash_pc())) return true;
 		if(!paramDTO.getAit_mobile().equals(dbDTO.getAit_mobile())) return true;
@@ -458,7 +459,6 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		}
 		
 		if(!paramDTO.getSsid().equals(dbDTO.getSsid())) return true;
-		
 		if(paramDTO.getUsers_rx_rate() != dbDTO.getUsers_rx_rate()) return true;
 		if(paramDTO.getUsers_tx_rate() != dbDTO.getUsers_tx_rate()) return true;
 		if(paramDTO.getSignal_limit() != dbDTO.getSignal_limit()) return true;
