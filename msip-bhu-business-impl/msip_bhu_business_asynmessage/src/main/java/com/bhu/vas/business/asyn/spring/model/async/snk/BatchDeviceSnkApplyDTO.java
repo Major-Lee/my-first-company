@@ -2,6 +2,7 @@ package com.bhu.vas.business.asyn.spring.model.async.snk;
 
 import java.util.List;
 
+import com.bhu.vas.api.helper.SharedNetworkChangeType;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncDTO;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
@@ -16,15 +17,15 @@ public class BatchDeviceSnkApplyDTO extends AsyncDTO implements IDTO {
 	private boolean onlyindexupdate;
 	private char dtoType;
 	//是否发送portal指令给设备（当把打赏金额时长等参数合入设备portal配置中时，如果只是修改金额和时长，不需要给设备下发portal指令）
-	private boolean senddevicecmd = true;
+	private SharedNetworkChangeType configChanged;
 	
-	
-	public boolean isSenddevicecmd() {
-		return senddevicecmd;
+
+	public SharedNetworkChangeType getConfigChanged() {
+		return configChanged;
 	}
 
-	public void setSenddevicecmd(boolean senddevicecmd) {
-		this.senddevicecmd = senddevicecmd;
+	public void setConfigChanged(SharedNetworkChangeType configChanged) {
+		this.configChanged = configChanged;
 	}
 
 	public List<String> getMacs() {

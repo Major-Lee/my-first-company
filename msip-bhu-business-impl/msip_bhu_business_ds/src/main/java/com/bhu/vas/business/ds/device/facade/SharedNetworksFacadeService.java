@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.NumberValidateHelper;
+import com.bhu.vas.api.helper.SharedNetworkChangeType;
 import com.bhu.vas.api.helper.SharedNetworksHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
@@ -64,7 +65,7 @@ public class SharedNetworksFacadeService {
 	 * @param paramDto
 	 * @return 配置是否变化了
 	 */
-	public int doApplySharedNetworksConfig(int uid,ParamSharedNetworkDTO paramDto){
+	public SharedNetworkChangeType doApplySharedNetworksConfig(int uid,ParamSharedNetworkDTO paramDto){
 		boolean configChanged = false;
 		boolean devicePartChanged = false;
 		SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(paramDto.getNtype());
@@ -182,8 +183,8 @@ public class SharedNetworksFacadeService {
 			}*/
 		}
 		if(devicePartChanged)
-			return SHARE_NETWORK_DEVICE_PART_CHANGED;
-		return (configChanged)?SHARE_NETWORK_CHANGED:SHARE_NETWORK_NOT_CHANGED;
+			return SharedNetworkChangeType.SHARE_NETWORK_DEVICE_PART_CHANGED;
+		return (configChanged)?SharedNetworkChangeType.SHARE_NETWORK_CHANGED:SharedNetworkChangeType.SHARE_NETWORK_NOT_CHANGED;
 	}
 	
 	

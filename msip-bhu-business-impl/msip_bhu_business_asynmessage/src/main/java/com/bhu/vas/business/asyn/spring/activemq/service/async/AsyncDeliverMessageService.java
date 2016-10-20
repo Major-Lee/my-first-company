@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.helper.SharedNetworkChangeType;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.async.AsyncDeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
@@ -114,14 +115,14 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendBatchDeviceSnkApplyActionMessage(int uid,String snk_type,String template, List<String> dmacs, boolean onlyindexupdate, boolean senddevicecmd, char dtoType){
+	public void sendBatchDeviceSnkApplyActionMessage(int uid,String snk_type,String template, List<String> dmacs, boolean onlyindexupdate, SharedNetworkChangeType configChanged, char dtoType){
 		BatchDeviceSnkApplyDTO dto = new BatchDeviceSnkApplyDTO();
 		dto.setUid(uid);
 		dto.setSnk_type(snk_type);
 		dto.setTemplate(template);
 		dto.setMacs(dmacs);
 		dto.setOnlyindexupdate(onlyindexupdate);
-		dto.setSenddevicecmd(senddevicecmd);
+		dto.setConfigChanged(configChanged);
 		dto.setDtoType(dtoType);
 		dto.setTs(System.currentTimeMillis());
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));

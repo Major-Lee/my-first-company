@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.SharedNetworkChangeType;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
@@ -90,7 +91,7 @@ public class BatchGroupDeviceSnkApplyServiceHandler implements IMsgHandlerServic
 					}else{
 						return;
 					}
-					batchSnkApplyService.apply(applyDto.getUid(), applyDto.getDtoType(), dmacs, sharedNetwork, applyDto.getTemplate(), true);
+					batchSnkApplyService.apply(applyDto.getUid(), applyDto.getDtoType(), dmacs, sharedNetwork, applyDto.getTemplate(), SharedNetworkChangeType.SHARE_NETWORK_DEVICE_PART_CHANGED);
 				}
 			});
 		}finally{
