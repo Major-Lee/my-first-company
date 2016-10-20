@@ -633,6 +633,17 @@ public class ChargingFacadeService {
 			return ParamSharedNetworkDTO.Default_AIT;
 		}
 	}
+	//是否开启了免费上网方式
+	public boolean fetchDeviceIsOpenFreeMode(String dmac,Integer umactype){
+		try{
+			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
+			
+			return configs.getInnerModel().getPsn().getIsfree() == 1 ? true:false;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return false;
+		}
+	}
 
 	
 	/**
