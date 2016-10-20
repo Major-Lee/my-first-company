@@ -458,7 +458,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		}
 		
 		if(!paramDTO.getSsid().equals(dbDTO.getSsid())) return true;
-		
+		if(!paramDTO.getTemplate_name().equals(dbDTO.getTemplate_name())) return true;
 		if(paramDTO.getUsers_rx_rate() != dbDTO.getUsers_rx_rate()) return true;
 		if(paramDTO.getUsers_tx_rate() != dbDTO.getUsers_tx_rate()) return true;
 		if(paramDTO.getSignal_limit() != dbDTO.getSignal_limit()) return true;

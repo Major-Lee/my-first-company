@@ -181,7 +181,6 @@ public class DeviceSharedNetworkUnitFacadeService {
 			sharednetwork_dto.setTemplate(template);
 			//ParamSharedNetworkDTO.fufillWithDefault(sharednetwork_dto);
 			int configChanged = sharedNetworksFacadeService.doApplySharedNetworksConfig(uid, sharednetwork_dto);
-			
 			if(configChanged != SharedNetworksFacadeService.SHARE_NETWORK_NOT_CHANGED){
 				//异步消息执行用户的所有设备应用此配置并发送指令
 				asyncDeliverMessageService.sendBatchDeviceSnkApplyActionMessage(uid,sharedNetwork.getKey(),sharednetwork_dto.getTemplate(), null,false, 
