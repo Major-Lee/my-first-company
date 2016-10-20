@@ -4,12 +4,12 @@ public class HandsetOfflineAction extends ChargingAction{
 	private String hmac;
 	private String huptime;
 	private String vapname;
-	private String bssid;
+//	private String bssid;
 	private long tx_bytes;
 	private long rx_bytes;
 	
-	private String rssi;
-	private String snr;
+//	private String rssi;
+//	private String snr;
 	private String authorized;
 	private String ethernet;
 	
@@ -51,24 +51,25 @@ public class HandsetOfflineAction extends ChargingAction{
 	public void setVapname(String vapname) {
 		this.vapname = vapname;
 	}
-	public String getBssid() {
-		return bssid;
-	}
-	public void setBssid(String bssid) {
-		this.bssid = bssid;
-	}
-	public String getRssi() {
-		return rssi;
-	}
-	public void setRssi(String rssi) {
-		this.rssi = rssi;
-	}
-	public String getSnr() {
-		return snr;
-	}
-	public void setSnr(String snr) {
-		this.snr = snr;
-	}
+	
+//	public String getBssid() {
+//		return bssid;
+//	}
+//	public void setBssid(String bssid) {
+//		this.bssid = bssid;
+//	}
+//	public String getRssi() {
+//		return rssi;
+//	}
+//	public void setRssi(String rssi) {
+//		this.rssi = rssi;
+//	}
+//	public String getSnr() {
+//		return snr;
+//	}
+//	public void setSnr(String snr) {
+//		this.snr = snr;
+//	}
 	public String getAuthorized() {
 		return authorized;
 	}

@@ -1,6 +1,5 @@
 package com.bhu.vas.pa.dto;
 
-import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -42,7 +41,7 @@ public class PaHandsetOnlineAction {
 	private String act;
 
 
-	public static PaHandsetOnlineAction builderHandsetOnlineAction(String mac, HandsetDeviceDTO dto){
+	public static PaHandsetOnlineAction builderHandsetOnlineAction(String mac, PaHandsetDeviceDTO dto){
 		PaHandsetOnlineAction action = new PaHandsetOnlineAction();
 		action.setMac(mac);
 		action.setHmac(dto.getMac());

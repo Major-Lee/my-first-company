@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto;
+package com.bhu.vas.pa.dto;
 
 import java.io.Serializable;
 
@@ -11,9 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *
  */
 @SuppressWarnings("serial")
-public class HandsetDeviceDTO implements Serializable{
-//	public static final String[] copyIgnoreProperties = {"data_tx_rate","data_rx_rate","dhcp_name"};
-	
+public class PaHandsetDeviceDTO implements Serializable{
 	public static final String Action_Online = "online";
 	public static final String Action_Offline = "offline";
 	public static final String Action_Sync = "sync";
@@ -54,6 +52,8 @@ public class HandsetDeviceDTO implements Serializable{
 	
 	@JsonInclude(Include.NON_NULL)
 	private String rx_chain_num;
+	*/
+	
 	//AP接收到的终端的信号强度
 	@JsonInclude(Include.NON_NULL)
 	private String rssi;
@@ -62,7 +62,6 @@ public class HandsetDeviceDTO implements Serializable{
 	@JsonProperty("n")
 	@JsonInclude(Include.NON_NULL)
 	private String snr;
-	 */
 	/*
 	//空闲时间
 	@JsonInclude(Include.NON_NULL)
@@ -108,11 +107,9 @@ public class HandsetDeviceDTO implements Serializable{
 	@JsonInclude(Include.NON_NULL)
 	private String ssid;
 
-	/*
 	//终端关联的bssid = wifiId
 	@JsonInclude(Include.NON_NULL)
 	private String bssid;
-	*/
 	/*
 	//AP位置（ap界面上配置的位置信息）
 	@JsonInclude(Include.NON_NULL)
@@ -219,6 +216,8 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setRx_chain_num(String rx_chain_num) {
 		this.rx_chain_num = rx_chain_num;
 	}
+	*/
+	
 	public String getRssi() {
 		return rssi;
 	}
@@ -231,7 +230,7 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setSnr(String snr) {
 		this.snr = snr;
 	}
-	
+	/*
 	public String getIdle() {
 		return idle;
 	}
@@ -298,13 +297,13 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setSsid(String ssid) {
 		this.ssid = ssid;
 	}
-	/*
 	public String getBssid() {
 		return bssid;
 	}
 	public void setBssid(String bssid) {
 		this.bssid = bssid;
 	}
+	/*
 	public String getLocation() {
 		return location;
 	}

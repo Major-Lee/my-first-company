@@ -139,8 +139,8 @@ public class ActionBuilder {
 			//终端上线时间，终端名称，终端ip，终端mac
 			String hname,String hip,
 			//网络名称、bssid
-			String vapname,String bssid,
-			String rssi,String snr,String authorized,String ethernet,
+			String vapname, /*String bssid,
+			String rssi,String snr,*/String authorized,String ethernet,
 			long ts){
 		HandsetOnlineAction action = new HandsetOnlineAction();
 		action.setHmac(hmac);
@@ -148,9 +148,9 @@ public class ActionBuilder {
 		action.setHname(hname);
 		action.setHip(hip);
 		action.setVapname(vapname);
-		action.setBssid(bssid);
-		action.setRssi(rssi);
-		action.setSnr(snr);
+//		action.setBssid(bssid);
+//		action.setRssi(rssi);
+//		action.setSnr(snr);
 		action.setAuthorized(authorized);
 		action.setEthernet(ethernet);
 		action.setTs(ts);
@@ -168,8 +168,8 @@ public class ActionBuilder {
 	public static HandsetOfflineAction builderHandsetOfflineAction(String hmac,String mac,
 			String huptime,
 			//网络名称、bssid
-			String vapname,String bssid,
-			String rssi,String snr,String authorized,String ethernet,
+			String vapname, /*String bssid,
+			String rssi,String snr,*/String authorized,String ethernet,
 			long tx_bytes,long rx_bytes,long ts){
 		HandsetOfflineAction action = new HandsetOfflineAction();
 		action.setHmac(hmac);
@@ -177,9 +177,9 @@ public class ActionBuilder {
 		action.setHuptime(huptime);
 		
 		action.setVapname(vapname);
-		action.setBssid(bssid);
-		action.setRssi(rssi);
-		action.setSnr(snr);
+//		action.setBssid(bssid);
+//		action.setRssi(rssi);
+//		action.setSnr(snr);
 		action.setAuthorized(authorized);
 		action.setEthernet(ethernet);
 		

@@ -6,10 +6,10 @@ public class HandsetOnlineAction extends ChargingAction{
 	private String hname;
 	private String hip;
 	private String vapname;
-	private String bssid;
 	
-	private String rssi;
-	private String snr;
+//	private String bssid;
+//	private String rssi;
+//	private String snr;
 	private String authorized;
 	private String ethernet;
 	
@@ -53,7 +53,8 @@ public class HandsetOnlineAction extends ChargingAction{
 	public void setVapname(String vapname) {
 		this.vapname = vapname;
 	}
-
+	
+	/*
 	public String getBssid() {
 		return bssid;
 	}
@@ -61,7 +62,6 @@ public class HandsetOnlineAction extends ChargingAction{
 	public void setBssid(String bssid) {
 		this.bssid = bssid;
 	}
-
 	public String getRssi() {
 		return rssi;
 	}
@@ -77,7 +77,7 @@ public class HandsetOnlineAction extends ChargingAction{
 	public void setSnr(String snr) {
 		this.snr = snr;
 	}
-
+*/
 	public String getAuthorized() {
 		return authorized;
 	}

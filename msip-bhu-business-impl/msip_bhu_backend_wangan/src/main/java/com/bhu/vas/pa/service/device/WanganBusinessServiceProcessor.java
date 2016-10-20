@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.pure.kafka.client.producer.StringKafkaMessageProducer;
-import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.charging.ActionBuilder.ActionMode;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
@@ -18,6 +17,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserIdentityAuthFacadeService;
+import com.bhu.vas.pa.dto.PaHandsetDeviceDTO;
 import com.bhu.vas.pa.dto.PaHandsetOnlineAction;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -52,28 +52,28 @@ public class WanganBusinessServiceProcessor{
 	public void doPaProcessor(String payload, ParserHeader parserHeader) {
 		try {
 			logger.info("process begin:" + payload);
-			List<HandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage
-			    (payload, HandsetDeviceDTO.class);
+			List<PaHandsetDeviceDTO> dtos = RPCMessageParseHelper.generateDTOListFromMessage
+			    (payload, PaHandsetDeviceDTO.class);
 			
 			if(dtos == null || dtos.isEmpty()) return;
 
 			String mac = parserHeader.getMac().toLowerCase();
-			HandsetDeviceDTO firstDto = dtos.get(0);
+			PaHandsetDeviceDTO firstDto = dtos.get(0);
 			logger.debug("action:" + firstDto.getAction());
 			switch(firstDto.getAction()){
-				case HandsetDeviceDTO.Action_Online:
+				case PaHandsetDeviceDTO.Action_Online:
 					processHandsetOnline(mac, firstDto);
 					break;
-				case HandsetDeviceDTO.Action_Offline:
+				case PaHandsetDeviceDTO.Action_Offline:
 					processHandsetOffline(mac, firstDto);
 					break;
-				case HandsetDeviceDTO.Action_Authorize:
+				case PaHandsetDeviceDTO.Action_Authorize:
 					processHandsetAuthorize(mac, firstDto);
 					break;
-				case HandsetDeviceDTO.Action_Update:
+				case PaHandsetDeviceDTO.Action_Update:
 					processHandsetUpdate(mac, firstDto);
 					break;
-				case HandsetDeviceDTO.Action_Sync:
+				case PaHandsetDeviceDTO.Action_Sync:
 					processHandsetSync(mac, dtos);
 					break;
 			}
@@ -89,7 +89,7 @@ public class WanganBusinessServiceProcessor{
 	 * @param ctx
 	 * @param message
 	 */
-	private void processHandsetUpdate(String mac, HandsetDeviceDTO dto) {
+	private void processHandsetUpdate(String mac, PaHandsetDeviceDTO dto) {
 		String memdtoStr = HandsetStoragePaService.getInstance().getHandset(mac, dto.getMac());
 		if(StringUtils.isEmpty(memdtoStr)){
 			logger.info("cant find it from redis, drop");
@@ -110,7 +110,7 @@ public class WanganBusinessServiceProcessor{
      * 终端上线处理
      * @param message
      */
-	public void processHandsetOnline(String mac, HandsetDeviceDTO dto){
+	public void processHandsetOnline(String mac, PaHandsetDeviceDTO dto){
 		logger.debug(String.format("processHandsetOnline for [%s][%s], vap[%s], ethernet[%s]", mac, dto.getMac(), dto.getVapname(), dto.getEthernet()));
 
 		if(!WifiDeviceSetting.VAPNAME_WLAN3.equals(dto.getVapname()) &&
@@ -180,7 +180,7 @@ public class WanganBusinessServiceProcessor{
      * 终端验证处理
      * @param message
      */
-	private void processHandsetAuthorize(String mac, HandsetDeviceDTO dto) {
+	private void processHandsetAuthorize(String mac, PaHandsetDeviceDTO dto) {
 		logger.info("got authorize message: ");
 		String memHandsetOnline = HandsetStoragePaService.getInstance()
 			    .getHandset(mac, dto.getMac());
@@ -205,7 +205,7 @@ public class WanganBusinessServiceProcessor{
 	 *
 	 * 移动设备下线
 	 */
-	void processHandsetOffline(String mac, HandsetDeviceDTO dto){
+	void processHandsetOffline(String mac, PaHandsetDeviceDTO dto){
 		logger.debug(String.format("processHandsetOnline for [%s][%s], vap[%s], ethernet[%s]", mac, dto.getMac(), dto.getVapname(), dto.getEthernet()));
 
 		if(!WifiDeviceSetting.VAPNAME_WLAN3.equals(dto.getVapname()) &&
@@ -223,8 +223,8 @@ public class WanganBusinessServiceProcessor{
 	/**
 	 * 移动设备连接状态sync
 	 */
-	public void processHandsetSync(String mac, List<HandsetDeviceDTO> dtos){
-		for(HandsetDeviceDTO dto:dtos){
+	public void processHandsetSync(String mac, List<PaHandsetDeviceDTO> dtos){
+		for(PaHandsetDeviceDTO dto:dtos){
 			//太复杂的逻辑不考虑，只做最常见的情况处理
 			if(!WifiDeviceSetting.VAPNAME_WLAN3.equals(dto.getVapname()) &&
 					!WifiDeviceSetting.VAPNAME_WLAN13.equals(dto.getVapname()))

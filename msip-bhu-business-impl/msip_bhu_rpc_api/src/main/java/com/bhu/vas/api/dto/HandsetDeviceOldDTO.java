@@ -2,17 +2,18 @@ package com.bhu.vas.api.dto;
 
 import java.io.Serializable;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * 移动设备上下线请求DTO
  * @author tangzichao
  *
  */
 @SuppressWarnings("serial")
-public class HandsetDeviceDTO implements Serializable{
-//	public static final String[] copyIgnoreProperties = {"data_tx_rate","data_rx_rate","dhcp_name"};
+public class HandsetDeviceOldDTO implements Serializable{
+	public static final String[] copyIgnoreProperties = {"data_tx_rate","data_rx_rate","dhcp_name"};
 	
 	public static final String Action_Online = "online";
 	public static final String Action_Offline = "offline";
@@ -30,13 +31,10 @@ public class HandsetDeviceDTO implements Serializable{
 	public static final String PROTAL_REMOTE= "remote";
 
 
-	@JsonProperty("f")
 	private String action;
 	//移动设备mac
-	@JsonProperty("m")
 	private String mac;
 	
-	/*
 	//物理发送速率
 	@JsonInclude(Include.NON_NULL)
 	private String phy_tx_rate;
@@ -54,124 +52,102 @@ public class HandsetDeviceDTO implements Serializable{
 	
 	@JsonInclude(Include.NON_NULL)
 	private String rx_chain_num;
+	
 	//AP接收到的终端的信号强度
 	@JsonInclude(Include.NON_NULL)
 	private String rssi;
 	
 	//信噪比
-	@JsonProperty("n")
 	@JsonInclude(Include.NON_NULL)
 	private String snr;
-	 */
-	/*
+	
 	//空闲时间
 	@JsonInclude(Include.NON_NULL)
 	private String idle;
 	
+	
 	@JsonInclude(Include.NON_NULL)
 	private String state;
-	*/
+	
 	//关联时间
-	@JsonProperty("u")
 	@JsonInclude(Include.NON_NULL)
 	private String uptime;
 	
-	/*
 	//接收包数
 	@JsonInclude(Include.NON_NULL)
 	private String rx_pkts;
+	
+	//接收字节数
+	@JsonInclude(Include.NON_NULL)
+	private String rx_bytes;
 	
 	//发送包数
 	@JsonInclude(Include.NON_NULL)
 	private String tx_pkts;
 	
+	//发送字节数
+	@JsonInclude(Include.NON_NULL)
+	private String tx_bytes;
 	
 	@JsonInclude(Include.NON_NULL)
 	private String rx_unicast;
 	
 	@JsonInclude(Include.NON_NULL)
 	private String tx_assoc;
-	*/
-
-	//接收字节数
-	@JsonProperty("r")
-	@JsonInclude(Include.NON_NULL)
-	private String rx_bytes;
 	
-	//发送字节数
-	@JsonProperty("t")
-	@JsonInclude(Include.NON_NULL)
-	private String tx_bytes;
-
 	//终端关联的ssid
-	@JsonProperty("d")
 	@JsonInclude(Include.NON_NULL)
 	private String ssid;
-
-	/*
+	
 	//终端关联的bssid = wifiId
 	@JsonInclude(Include.NON_NULL)
 	private String bssid;
-	*/
-	/*
+	
 	//AP位置（ap界面上配置的位置信息）
 	@JsonInclude(Include.NON_NULL)
 	private String location;
-	*/
 	
-	/*
 	//当前信道
 	@JsonInclude(Include.NON_NULL)
 	private String channel;
-	*/
 	
 	//终端hostname
-	@JsonProperty("h")
 	@JsonInclude(Include.NON_NULL)
 	private String dhcp_name;
 	
 	//终端连接的设备vapname
-	@JsonProperty("v")
 	@JsonInclude(Include.NON_NULL)
 	private String vapname;
 	
 	//终端地址ip
-	@JsonProperty("p")
 	@JsonInclude(Include.NON_NULL)
 	private String ip;
 	
-	@JsonProperty("x")
 	@JsonInclude(Include.NON_NULL)
 	private String data_tx_rate;
 	
-	@JsonProperty("y")
 	@JsonInclude(Include.NON_NULL)
 	private String data_rx_rate;
 	
-	@JsonProperty("l")
 	@JsonInclude(Include.NON_NULL)
 	private String last_wifi_id;
-	
 	//记录生成或更新时间
 	private long ts;
 
 	/**
 	 * 终端是否来自于有线口
 	 */
-	@JsonProperty("e")
 	@JsonInclude(Include.NON_NULL)
 	private String ethernet;
 	/**
 	 * 对于来自开启portal的接口上的终端,表明终端是否认证通过
 	 */
-	@JsonProperty("a")
 	@JsonInclude(Include.NON_NULL)
 	private String authorized;
 
 	/**
 	 * 老版本固件没有portal，新版本wlan0:none, wlan3:local
 	 */
-	@JsonProperty("o")
 	@JsonInclude(Include.NON_NULL)
 	private String portal;
 
@@ -187,7 +163,6 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setMac(String mac) {
 		this.mac = mac;
 	}
-	/*
 	public String getPhy_tx_rate() {
 		return phy_tx_rate;
 	}
@@ -231,40 +206,47 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setSnr(String snr) {
 		this.snr = snr;
 	}
-	
 	public String getIdle() {
 		return idle;
 	}
 	public void setIdle(String idle) {
 		this.idle = idle;
 	}
-	*/
-	/*
 	public String getState() {
 		return state;
 	}
 	public void setState(String state) {
 		this.state = state;
 	}
-	*/
 	public String getUptime() {
 		return uptime;
 	}
 	public void setUptime(String uptime) {
 		this.uptime = uptime;
 	}
-	/*
 	public String getRx_pkts() {
 		return rx_pkts;
 	}
 	public void setRx_pkts(String rx_pkts) {
 		this.rx_pkts = rx_pkts;
 	}
+	public String getRx_bytes() {
+		return rx_bytes;
+	}
+	public void setRx_bytes(String rx_bytes) {
+		this.rx_bytes = rx_bytes;
+	}
 	public String getTx_pkts() {
 		return tx_pkts;
 	}
 	public void setTx_pkts(String tx_pkts) {
 		this.tx_pkts = tx_pkts;
+	}
+	public String getTx_bytes() {
+		return tx_bytes;
+	}
+	public void setTx_bytes(String tx_bytes) {
+		this.tx_bytes = tx_bytes;
 	}
 	public String getRx_unicast() {
 		return rx_unicast;
@@ -278,27 +260,12 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setTx_assoc(String tx_assoc) {
 		this.tx_assoc = tx_assoc;
 	}
-	*/
-	public String getRx_bytes() {
-		return rx_bytes;
-	}
-	public void setRx_bytes(String rx_bytes) {
-		this.rx_bytes = rx_bytes;
-	}
-
-	public String getTx_bytes() {
-		return tx_bytes;
-	}
-	public void setTx_bytes(String tx_bytes) {
-		this.tx_bytes = tx_bytes;
-	}
 	public String getSsid() {
 		return ssid;
 	}
 	public void setSsid(String ssid) {
 		this.ssid = ssid;
 	}
-	/*
 	public String getBssid() {
 		return bssid;
 	}
@@ -317,7 +284,7 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setChannel(String channel) {
 		this.channel = channel;
 	}
-	 */
+
 	public String getVapname() {
 		return vapname;
 	}
@@ -341,6 +308,7 @@ public class HandsetDeviceDTO implements Serializable{
 	public boolean wasOnline(){
 		return !Action_Offline.equals(action);
 	}
+	
 	public String getData_tx_rate() {
 		return data_tx_rate;
 	}
@@ -359,15 +327,12 @@ public class HandsetDeviceDTO implements Serializable{
 	public void setDhcp_name(String dhcp_name) {
 		this.dhcp_name = dhcp_name;
 	}
-	
-	/*
 	public double fetchData_rx_rate_double(){
 		if(StringUtils.isEmpty(data_rx_rate)){
 			return 0;
 		}
 		return Double.parseDouble(data_rx_rate);
 	}
-	*/
 
 	public String getEthernet() {
 		return ethernet;
