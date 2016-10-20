@@ -142,6 +142,8 @@ public class DeviceSharedNetworkUnitFacadeService {
 				SnkPortalVTO inner = new SnkPortalVTO();
 				inner.setTpl(snk.getTemplate());
 				inner.setUsers_rate(snk.getUsers_tx_rate());
+				inner.setIsfree(snk.getIsfree());
+				inner.setFirstlogin(snk.getFirstLogin());
 				vto.getSnks().add(inner);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
