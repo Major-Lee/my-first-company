@@ -31,9 +31,9 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 public class ImportIsFreeFromUcloudOp {
 	public static void main(String[] argv){
 		
-		if(argv == null || argv.length < 2){
-			System.out.println("参数不足，参数1：数据文件路径");
-			System.out.println("Param not enough, param1：data file path");
+		if(argv == null || argv.length < 1){
+			System.out.println("参数不足，参数：数据文件路径");
+			System.out.println("Param not enough, param：data file path");
 			return;
 		}
 
@@ -105,6 +105,7 @@ public class ImportIsFreeFromUcloudOp {
 								ParamSharedNetworkDTO psn = snkDTO.getPsn();
 								psn.setIsfree(isfree);
 								psn.setFirstLogin(firstlogin);
+								snk.putInnerModel(snkDTO);
 							}
 						}
 						wifiDeviceSharedNetworkService.updateAll(snks);
