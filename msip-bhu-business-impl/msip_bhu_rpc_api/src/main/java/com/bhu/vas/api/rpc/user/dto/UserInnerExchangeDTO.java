@@ -4,10 +4,15 @@ import java.util.List;
 
 import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.smartwork.msip.business.token.UserTokenDTO;
 
 @SuppressWarnings("serial")
 public class UserInnerExchangeDTO implements java.io.Serializable{
+	
+	@JsonIgnore
+	public static final int opsAdminUid = 2;
+	
 	private UserDTO user;
 	private UserTokenDTO token;
 	private UserWalletDetailVTO wallet;
