@@ -1,7 +1,9 @@
 package com.bhu.vas.web.advertise;
 
+import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
 import com.bhu.vas.api.rpc.user.model.DeviceEnum;
 import com.bhu.vas.business.helper.BusinessWebHelper;
@@ -35,6 +38,9 @@ import com.smartwork.msip.jdo.ResponseSuccess;
 @Controller
 @RequestMapping("/ad")
 public class AdvertiseController extends BaseController{
+	
+	@Resource
+	private IAdvertiseRpcService advertiseRpcService;
 
 	@ResponseBody()
     @RequestMapping(value = "/sharedeal/default", method = {RequestMethod.POST})
@@ -50,15 +56,34 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) String start,
             @RequestParam(required = true) String end
             ) {
+
+    }
+	
+	
+	/**
+	 * 查询设备地理位置分布
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param province
+	 * @param city
+	 */
+    @ResponseBody()
+    @RequestMapping(value = "/fetch_device_position", method = {RequestMethod.POST})
+    public void fetch_device_position_distribution(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) Integer uid,
+            @RequestParam(required = false) String province,
+            @RequestParam(required = false) String city) {
 		try{
-			
+	        RpcResponseDTO<List<String>> vtos = advertiseRpcService.fetchDevicePositionDistribution(province, city);
+	        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
 		}catch(BusinessI18nCodeException i18nex){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
 		}catch(Exception ex){
 			ex.printStackTrace();
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
-		}finally{
-			
 		}
     }
 }
