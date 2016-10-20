@@ -820,6 +820,9 @@ public class OrderUnitFacadeService {
 			if(wifiDevice == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
 			}
+			if (!chargingFacadeService.fetchDeviceIsOpenFreeMode(mac_lower, umactype)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_DEVICE_ISFREE_STATUS_INVALID);
+			}
 			User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
 			//生成订单
 			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
@@ -849,6 +852,9 @@ public class OrderUnitFacadeService {
 			Order order = orderService.getById(orderid);
 			if (order == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
+			}
+			if (order.getStatus() == OrderStatus.PaySuccessed.getKey()){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_ORDER_TIMEOUT);
 			}
 //			2016-10-12按需求取消时间最短15秒的限制
 //			long isExpire = System.currentTimeMillis() - order.getCreated_at().getTime();

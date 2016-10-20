@@ -256,7 +256,8 @@ public enum ResponseErrorCode {
 	
 	INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_INVALID("496","internal.communication.withdrawurl.response.invalid"),
 	INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE("497","internal.communication.withdrawurl.response.false"),
-	
+	VALIDATE_COMMDITY_DEVICE_ISFREE_STATUS_INVALID("498","validate.commdity.device.isfreestatus.invalid"),
+	VALIDATE_COMMDITY_ORDER_TIMEOUT("499","validate.commdity.order.timeout"),
 	/******************    payment    ******************/
 	USER_APPID_UNSUPPORT("461","internal.user.appid.invalid"),
 	INVALID_COMMDITY_ORDERID_UNSUPPORT("462","internal.commdity.orderId.invalid"),
