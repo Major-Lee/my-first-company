@@ -151,7 +151,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		vto.setNick(nick);
 		vto.setMobileno(mobileno);
 		vto.setCash(cash);
-		vto.setWithdraw_oper_desc(BusinessEnumType.UWithdrawStatus.fromKey(withdraw_oper).getName());
+		vto.setWithdraw_oper_desc(withdraw_oper);
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		vto.setCreate_time(sdf.format(created_at));
 		return vto;
