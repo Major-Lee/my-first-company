@@ -4,12 +4,15 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -20,15 +23,17 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePosition
 public class AdvertiseUnitFacadeService {
 	@Resource
 	private AdvertiseService advertiseService;
-	
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
 			String image, String url, String province, String city,
-			String district, long start, long end) {
+			String district,String description,String title, long start, long end) {
 		try{
 			Advertise entity=new Advertise();
 			entity.setCity(city);
-			//
-			entity.setCount(0);
+			
+			long count=wifiDeviceDataSearchService.searchCountByPosition(province, city, district);
+			entity.setCount(count);
 			Date date=new Date();
 			entity.setCreated_at(date);
 			entity.setDistrict(district);
@@ -38,7 +43,11 @@ public class AdvertiseUnitFacadeService {
 			entity.setProvince(province);
 			Date startDate=new Date(start);
 			entity.setStart(startDate);
-			entity.setState("0");
+			entity.setState(AdvertiseType.UnPaid.getType());
+			
+			entity.setDescription(description);
+			entity.setTitle(title);
+			entity.setUid(uid);
 			//间隔天数
 			long between_days = (end - start) / (1000 * 3600 * 24);
 			int duration=Integer.parseInt(String.valueOf(between_days));

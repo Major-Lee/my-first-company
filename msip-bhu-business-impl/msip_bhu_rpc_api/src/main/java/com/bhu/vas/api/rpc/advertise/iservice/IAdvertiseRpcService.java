@@ -24,7 +24,7 @@ public interface IAdvertiseRpcService{
 	 */
 	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
 			String image, String url, String province, String city,
-			String district, long start, long end);
+			String district,String description,String title, long start, long end);
 
 	RpcResponseDTO<List<String>> fetchDevicePositionDistribution(
 			String province, String city);

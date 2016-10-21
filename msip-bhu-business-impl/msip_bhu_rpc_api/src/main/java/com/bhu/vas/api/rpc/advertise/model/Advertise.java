@@ -6,6 +6,11 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
 
 @SuppressWarnings("serial")
 public class Advertise extends BaseIntModel{
+	private int uid;
+	private String title;
+	private int type;
+	private String orderId;
+	private String description;
 	private String image;
 	private String url;
 	//省
@@ -14,16 +19,17 @@ public class Advertise extends BaseIntModel{
 	private String city;
 	//区
 	private String district;
+	private int cash;
 	private Date start;
 	private Date end;
 	//广告持续时间
 	private int duration;
 	//广告覆盖的设备数
-	private int count;
+	private long count;
 	//审核驳回原因
 	private String reject_reason;
 	//0:待付款 1:待审核 2:待发布 3:发布中 4:发布完成 5:审核驳回 6:订单取消
-	private String state;
+	private int state;
 	//审核人id
 	private int verify_uid;
 	private Date created_at;
@@ -63,16 +69,17 @@ public class Advertise extends BaseIntModel{
 	public void setDuration(int duration) {
 		this.duration = duration;
 	}
-	public int getCount() {
+	public long getCount() {
 		return count;
 	}
-	public void setCount(int count) {
+	public void setCount(long count) {
 		this.count = count;
 	}
-	public String getState() {
+	
+	public int getState() {
 		return state;
 	}
-	public void setState(String state) {
+	public void setState(int state) {
 		this.state = state;
 	}
 	public int getVerify_uid() {
@@ -104,6 +111,42 @@ public class Advertise extends BaseIntModel{
 	}
 	public void setReject_reason(String reject_reason) {
 		this.reject_reason = reject_reason;
+	}
+	public int getUid() {
+		return uid;
+	}
+	public void setUid(int uid) {
+		this.uid = uid;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	public String getOrderId() {
+		return orderId;
+	}
+	public void setOrderId(String orderId) {
+		this.orderId = orderId;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public int getCash() {
+		return cash;
+	}
+	public void setCash(int cash) {
+		this.cash = cash;
 	}
 	
 }

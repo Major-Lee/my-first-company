@@ -32,7 +32,7 @@ public class AdvertiseController extends BaseController{
 	private IAdvertiseRpcService advertiseRpcService;
 
 	@ResponseBody()
-    @RequestMapping(value = "/sharedeal/default", method = {RequestMethod.POST})
+    @RequestMapping(value = "/createNewAdvertise", method = {RequestMethod.POST})
     public void sharedeal_default(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -42,12 +42,14 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) String province,
             @RequestParam(required = true) String city,
             @RequestParam(required = true) String district,
+            @RequestParam(required = true) String description,
+            @RequestParam(required = true) String title,
             @RequestParam(required = true) long start,
             @RequestParam(required = true) long end
             ) {
 		try{
 			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.createNewAdvertise
-					    (uid, image, url, province, city, district, start, end);
+					    (uid, image, url, province, city, district,description,title, start, end);
 					if(!rpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 					}else{

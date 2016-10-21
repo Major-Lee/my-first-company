@@ -6,11 +6,17 @@
 
   <resultMap id="modelResult" type="advertise">
     <id property="id" column="id"/>
+    <result property="uid" column="uid"/>
+    <result property="title" column="title"/>
+    <result property="type" column="type"/>
+    <result property="orderId" column="orderId"/>
+    <result property="description" column="description"/>
     <result property="image" column="image"/>
     <result property="url" column="url"/>
     <result property="province" column="province"/>
     <result property="city" column="city"/>
     <result property="district" column="district"/>
+    <result property="cash" column="cash"/>
     <result property="start" column="start"/> 
     <result property="end" column="end"/>
     <result property="duration" column="duration"/>
@@ -31,11 +37,17 @@
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
+	    	uid,
+	    	title,
+	    	type,
+	    	orderId,
+	    	description,
 	    	image,
 	    	url,
 	    	province,
 	    	city,
 	    	district,
+	    	cash,
 	    	start,
 	    	end,
 	    	duration,
@@ -49,11 +61,17 @@
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
+	    	uid,
+	    	title,
+	    	type,
+	    	orderId,
+	    	description,
 	    	image,
 	    	url,
 	    	province,
 	    	city,
 	    	district,
+	    	cash,
 	    	start,
 	    	end,
 	    	duration,
@@ -68,11 +86,17 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
+			#{uid},
+			#{title},
+			#{type},
+			#{orderId},
+			#{description},
 	    	#{image},
 	    	#{url},
 	    	#{province},
 	    	#{city},
 	    	#{district},
+	    	#{cash},
 	    	#{start},
 	    	#{end},
 	    	#{duration},
@@ -85,11 +109,17 @@
 	</sql> 
 	
 	<sql id="modelUpdateValues">
+	    	uid = #{uid},
+	    	title = #{title},
+	    	type = #{type},
+	    	orderId = #{orderId},
+	    	description = #{description},
 	    	image = #{image},
 	    	url = #{url},
 	    	province = #{province},
 	    	city = #{city},
 	    	district = #{district},
+	    	cash = #{cash},
 	    	start = #{start},
 	    	end = #{end},
 	    	duration = #{duration},

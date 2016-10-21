@@ -36,11 +36,11 @@ public class advertiseRpcService implements IAdvertiseRpcService{
 
 	@Override
 	public RpcResponseDTO<Boolean> createNewAdvertise(int uid, String image,
-			String url, String province, String city, String district,
+			String url, String province, String city, String district,String description,String title,
 			long start, long end) {
-		logger.info(String.format("createNewAdvertise with uid[%s] image[%s] url[%s] province[%s] city[%s] district[%s] start[%s] start[%s]",
-				uid, image, url, province, city, district, start, end));
-		return advertiseUnitFacadeService.createNewAdvertise(uid, image, url, province, city, district, start, end);
+		logger.info(String.format("createNewAdvertise with uid[%s] image[%s] url[%s] province[%s] city[%s] district[%s] title[%s] description[%s] start[%s] start[%s]",
+				uid, image, url, province, city, district,description, start, end));
+		return advertiseUnitFacadeService.createNewAdvertise(uid, image, url, province, city, district,description,title, start, end);
 	}
 
 }
