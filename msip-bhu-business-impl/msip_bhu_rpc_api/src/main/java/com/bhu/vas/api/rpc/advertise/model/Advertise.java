@@ -33,6 +33,14 @@ public class Advertise extends BaseIntModel{
 	//审核人id
 	private int verify_uid;
 	private Date created_at;
+	private Date updated_at;
+	
+	public Date getUpdated_at() {
+		return updated_at;
+	}
+	public void setUpdated_at(Date updated_at) {
+		this.updated_at = updated_at;
+	}
 	public String getImage() {
 		return image;
 	}
