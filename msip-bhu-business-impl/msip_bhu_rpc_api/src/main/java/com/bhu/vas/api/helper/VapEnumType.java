@@ -533,8 +533,9 @@ public class VapEnumType {
 			SharedNetworkType[] types = values();
 			for (SharedNetworkType type : types){
 				allSharedNetworkTypes.put(type.getKey(), type);
-				sharedNetworkVtos.add(new SharedNetworkVTO(type.getKey(),type.getName(),type.getDefaultSsid()));
 			}
+			//支持的共享网络类型目前只保留打赏网络
+			sharedNetworkVtos.add(new SharedNetworkVTO(SafeSecure.getKey(), SafeSecure.getName(), SafeSecure.getDefaultSsid()));
 		}
 		public static List<SharedNetworkVTO> getSharedNetworkVtos() {
 			return sharedNetworkVtos;
