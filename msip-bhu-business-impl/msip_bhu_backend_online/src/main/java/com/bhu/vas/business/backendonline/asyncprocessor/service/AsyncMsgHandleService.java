@@ -266,8 +266,9 @@ public class AsyncMsgHandleService {
 						BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start));
 				if (BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start) {
 					if (WifiDeviceHelper.autoDeviceSecureSharedNetworkStrategy(wifiDevice.getOrig_swver())) {
-						SharedNetworkSettingDTO sharedNetwork = sharedNetworksFacadeService
+						WifiDeviceSharedNetwork wifiSharedNetwork = sharedNetworksFacadeService
 								.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(dto.getMac(), true, true);
+						SharedNetworkSettingDTO sharedNetwork = wifiSharedNetwork.getInnerModel();
 						ParamSharedNetworkDTO psn = sharedNetwork.getPsn();
 						if (sharedNetwork != null) {
 							if (sharedNetwork.isOn() && psn != null
