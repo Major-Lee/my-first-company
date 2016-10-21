@@ -939,7 +939,12 @@ public class UserDeviceUnitFacadeService {
 					URouterDeviceConfigRadioVTO radio_vto = null;
 					for (WifiDeviceSettingRadioDTO ra : psn.getRadios()) {
 						radio_vto = new URouterDeviceConfigRadioVTO();
-						BeanUtils.copyProperties(ra, radio_vto);
+						radio_vto.setName(ra.getName());
+						radio_vto.setChannel_bandwidth(ra.getChannel_bandwidth());
+						radio_vto.setCountry(ra.getCountry());
+						radio_vto.setPower(Integer.valueOf(ra.getPower()));
+						radio_vto.setReal_channel(Integer.valueOf(ra.getReal_channel()));
+						radio_vto.setRf(ra.getRf());
 						radios_vto.add(radio_vto);
 					}
 					ret.setRadios(radios_vto);
