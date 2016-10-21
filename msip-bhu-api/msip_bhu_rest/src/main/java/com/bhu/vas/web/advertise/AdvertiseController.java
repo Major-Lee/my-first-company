@@ -39,6 +39,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) String image,
             @RequestParam(required = true) String url,
+            @RequestParam(required = true) String domain,
             @RequestParam(required = true) String province,
             @RequestParam(required = true) String city,
             @RequestParam(required = true) String district,
@@ -49,7 +50,7 @@ public class AdvertiseController extends BaseController{
             ) {
 		try{
 			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.createNewAdvertise
-					    (uid, image, url, province, city, district,description,title, start, end);
+					    (uid, image, url,domain, province, city, district,description,title, start, end);
 					if(!rpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 					}else{
@@ -71,6 +72,7 @@ public class AdvertiseController extends BaseController{
 			@RequestParam(required = true) int uid,
 			@RequestParam(required = true) String image,
 			@RequestParam(required = true) String url,
+			@RequestParam(required = true) String domain,
 			@RequestParam(required = true) String province,
 			@RequestParam(required = true) String city,
 			@RequestParam(required = true) String district,
@@ -81,7 +83,7 @@ public class AdvertiseController extends BaseController{
 			) {
 		try{
 			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.createNewAdvertise
-					(uid, image, url, province, city, district,description,title, start, end);
+					(uid, image, url,domain, province, city, district,description,title, start, end);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
