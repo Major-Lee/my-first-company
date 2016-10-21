@@ -33,7 +33,7 @@ public class AdvertiseController extends BaseController{
 
 	@ResponseBody()
     @RequestMapping(value = "/createNewAdvertise", method = {RequestMethod.POST})
-    public void sharedeal_default(
+    public void createNewAdvertise(
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
@@ -63,6 +63,38 @@ public class AdvertiseController extends BaseController{
 			}
 
     }
+	@ResponseBody()
+	@RequestMapping(value = "/queryAdvertiseList", method = {RequestMethod.POST})
+	public void queryAdvertise(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) int uid,
+			@RequestParam(required = true) String image,
+			@RequestParam(required = true) String url,
+			@RequestParam(required = true) String province,
+			@RequestParam(required = true) String city,
+			@RequestParam(required = true) String district,
+			@RequestParam(required = true) String description,
+			@RequestParam(required = true) String title,
+			@RequestParam(required = true) long start,
+			@RequestParam(required = true) long end
+			) {
+		try{
+			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.createNewAdvertise
+					(uid, image, url, province, city, district,description,title, start, end);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+		
+	}
 	
 	
 	/**

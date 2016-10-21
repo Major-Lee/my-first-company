@@ -32,7 +32,6 @@ public class AdvertiseUnitFacadeService {
 		try{
 			Advertise entity=new Advertise();
 			entity.setCity(city);
-			
 			long count=wifiDeviceDataSearchService.searchCountByPosition(province, city, district);
 			entity.setCount(count);
 			entity.setDistrict(district);
