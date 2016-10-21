@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
@@ -35,12 +36,14 @@ public class AdvertiseBackendTaskLoader {
 	public void execute() {
 		logger.info("AdvertiseBackendTaskLoader start...");
 		String nowDate = DateTimeHelper.getDateTime(new Date(), DateTimeHelper.FormatPattern0);
+		logger.info("nowDate:"+nowDate);
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLike("start", nowDate+"%").andColumnEqualTo("state", "1");
+		mc.createCriteria().andColumnLike("start", nowDate+"%").andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
-			//TODO(发送异步消息)
-			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage();
+			logger.info("ready applied ad sum" + lists.size());
+			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(lists);
+			logger.info("notify backend..done");
 		}
 		logger.info("AdvertiseBackendTaskLoader end...");
 	}

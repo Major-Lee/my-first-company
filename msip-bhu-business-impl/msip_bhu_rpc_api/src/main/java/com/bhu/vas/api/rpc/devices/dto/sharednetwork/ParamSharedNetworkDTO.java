@@ -41,6 +41,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private int idle_timeout;
 	private int force_timeout;
 	private String open_resource;
+//	private String open_resource_ad;
 	private int signal_limit;
 	private int max_clients;
 	//users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")

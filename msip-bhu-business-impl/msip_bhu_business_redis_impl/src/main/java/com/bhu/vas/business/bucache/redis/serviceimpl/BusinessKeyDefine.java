@@ -154,4 +154,8 @@ public class BusinessKeyDefine {
 		public static final String CARE = "SC.";
 
 	}
+	
+	public static class Advertise{
+		public static final String ADVERTISE = "ad.";
+	}
 }
