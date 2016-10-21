@@ -853,7 +853,7 @@ public class OrderUnitFacadeService {
 			if (order == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
 			}
-			if (order.getStatus() == OrderStatus.DeliverCompleted.getKey()){
+			if (order.getStatus().intValue() == OrderStatus.DeliverCompleted.getKey().intValue()){
 				logger.info(String.format("authorizeVideoOrder orderid[%s] timeout", orderid));
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_ORDER_TIMEOUT);
 			}
