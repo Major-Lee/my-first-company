@@ -1032,7 +1032,84 @@ public class BusinessEnumType {
 			}
 		}
 	}
-	
+	/**
+	 * 广告状态枚举
+	 * @author dell
+	 *
+	 */
+	public enum AdvertiseType{
+		UnPaid(0,"待支付","待付款"),
+		UnVerified(1,"待审核","待审核"),
+		UnPublish(2,"待发布","待发布"),
+		OnPublish(3,"发布中","发布中"),
+		Published(4,"发布完成","发布完成"),
+		VerifyFailure(5,"审核驳回","审核驳回"),
+		EscapeOrder(6,"订单取消","订单取消"),
+		;
+		//0:待付款 1:待审核 2:待发布 3:发布中 4:发布完成 5:审核驳回 6:订单取消
+		private Integer type;
+		private String name;
+		private String desc;
+		
+		static Map<Integer, AdvertiseType> allAdvertiseTypeTypes;
+		
+		private AdvertiseType(Integer type,String name,String desc){
+			this.type = type;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		
+		public Integer getType() {
+			return type;
+		}
+
+
+		public void setType(Integer type) {
+			this.type = type;
+		}
+
+
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public static boolean correct(Integer type, AdvertiseType advertiseType){
+			if(type == null || advertiseType == null) return false;
+			
+			if(type.equals(advertiseType.getType())){
+				return true;
+			}
+			return false;
+		}
+		
+		public static AdvertiseType fromKey(Integer type){
+			if(type == null) return null;
+			return allAdvertiseTypeTypes.get(type);
+		}
+		
+		public static boolean supported(Integer type){
+			return allAdvertiseTypeTypes.containsKey(type);
+		}
+		
+		
+		static {
+			allAdvertiseTypeTypes = new HashMap<Integer, AdvertiseType>();
+			AdvertiseType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (AdvertiseType type : types){
+				allAdvertiseTypeTypes.put(type.getType(), type);
+			}
+		}
+	}
 	public static void main(String [] args){
 		OrderPaymentType payment_type = OrderPaymentType.fromKey("Alipay");
 		System.out.println(payment_type.getDesc());
