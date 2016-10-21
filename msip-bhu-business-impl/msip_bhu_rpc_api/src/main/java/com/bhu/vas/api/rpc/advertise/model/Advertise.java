@@ -13,6 +13,8 @@ public class Advertise extends BaseIntModel{
 	private String description;
 	private String image;
 	private String url;
+	//域名
+	private String domain;
 	//省
 	private String province;
 	//市
@@ -35,6 +37,12 @@ public class Advertise extends BaseIntModel{
 	private Date created_at;
 	private Date updated_at;
 	
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
 	public Date getUpdated_at() {
 		return updated_at;
 	}
