@@ -124,10 +124,10 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param pageSize
 	 * @return
 	 */
-	public Page<WifiDeviceDocument> searchCountByPosition(String d_province,String d_city,String d_distrcy, int pageNo, int pageSize){
+	public long searchCountByPosition(String d_province,String d_city,String d_distrcy){
 		
 		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(d_province, d_city, d_distrcy);
-		return super.searchByConditionMessage(scm, pageNo, pageSize);
+		return super.searchCountByConditionMessage(scm);
 	}
 	
 	/**
