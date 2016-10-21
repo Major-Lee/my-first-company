@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.Date;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -25,17 +26,15 @@ public class AdvertiseUnitFacadeService {
 	private AdvertiseService advertiseService;
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
 	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
-			String image, String url, String province, String city,
+			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end) {
 		try{
 			Advertise entity=new Advertise();
 			entity.setCity(city);
-			
 			long count=wifiDeviceDataSearchService.searchCountByPosition(province, city, district);
 			entity.setCount(count);
-			Date date=new Date();
-			entity.setCreated_at(date);
 			entity.setDistrict(district);
 			Date endDate=new Date(end);
 			entity.setEnd(endDate);
@@ -45,13 +44,13 @@ public class AdvertiseUnitFacadeService {
 			entity.setStart(startDate);
 			entity.setState(AdvertiseType.UnPaid.getType());
 			
+			entity.setDomain(domain);
 			entity.setDescription(description);
 			entity.setTitle(title);
 			entity.setUid(uid);
 			//间隔天数
 			long between_days = (end - start) / (1000 * 3600 * 24);
 			int duration=Integer.parseInt(String.valueOf(between_days));
-			
 			entity.setDuration(duration);
 			entity.setUrl(url);
 			advertiseService.insert(entity);
@@ -77,5 +76,10 @@ public class AdvertiseUnitFacadeService {
 		}else{
 			return WifiDevicePositionListService.getInstance().fetchAllProvince();
 		}
+	}
+	
+	public List<Advertise> queryAdvertiseList(List<Map<String,Object>> conditionMap){
+		
+		return null;
 	}
 }

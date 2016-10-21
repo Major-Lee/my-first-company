@@ -13,6 +13,7 @@
     <result property="description" column="description"/>
     <result property="image" column="image"/>
     <result property="url" column="url"/>
+    <result property="domain" column="domain"/>
     <result property="province" column="province"/>
     <result property="city" column="city"/>
     <result property="district" column="district"/>
@@ -44,6 +45,7 @@
 	    	description,
 	    	image,
 	    	url,
+	    	domain,
 	    	province,
 	    	city,
 	    	district,
@@ -68,6 +70,7 @@
 	    	description,
 	    	image,
 	    	url,
+	    	domain,
 	    	province,
 	    	city,
 	    	district,
@@ -93,6 +96,7 @@
 			#{description},
 	    	#{image},
 	    	#{url},
+	    	#{domain},
 	    	#{province},
 	    	#{city},
 	    	#{district},
@@ -116,6 +120,7 @@
 	    	description = #{description},
 	    	image = #{image},
 	    	url = #{url},
+	    	domain = #{domain},
 	    	province = #{province},
 	    	city = #{city},
 	    	district = #{district},

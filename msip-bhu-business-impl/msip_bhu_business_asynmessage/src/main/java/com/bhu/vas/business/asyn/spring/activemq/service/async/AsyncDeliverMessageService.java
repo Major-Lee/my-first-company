@@ -153,9 +153,10 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendBatchDeviceApplyAdvertiseActionMessage(List<Advertise> adlist){
+	public void sendBatchDeviceApplyAdvertiseActionMessage(List<Advertise> adlist,char dto_type){
 		BatchDeviceApplyAdvertiseDTO dto = new BatchDeviceApplyAdvertiseDTO();
 		dto.setAdList(adlist);
+		dto.setDto_type(dto_type);
 		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	

@@ -72,7 +72,7 @@
         <module>msip-bhu-business-impl/msip_bhu_backend_modulestat</module>
     -->
         <module>msip-bhu-business-impl/msip_bhu_backend_task</module>
-        <module>msip-bhu-business-impl/msip_bhu_backend_task_statistics</module>
+        <module>msip-bhu-business-impl/msip_bhu_backend_task_advertise</module>
 		<module>msip-bhu-business-impl/msip_bhu_backend_task_payment</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_task_applies_notify</module>
         <module>msip-bhu-business-impl/msip_bhu_backend_commdity</module>

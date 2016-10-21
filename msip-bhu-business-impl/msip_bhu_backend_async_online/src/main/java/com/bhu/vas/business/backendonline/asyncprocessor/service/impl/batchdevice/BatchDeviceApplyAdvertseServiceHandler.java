@@ -22,6 +22,7 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
@@ -60,12 +61,6 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
 		final BatchDeviceApplyAdvertiseDTO adDTO = JsonHelper.getDTO(message, BatchDeviceApplyAdvertiseDTO.class);
-		/*
-		 * 0.es拿到区域下的设备
-		 * 1.redis广告dto
-		 * 2.设备配置白名单
-		 */
-		
 		for(Advertise ad : adDTO.getAdList()){
 			int batch = 200;
 			final List<String> macList = new ArrayList<String>();
@@ -120,6 +115,17 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			 * 2.redis增加广告
 			 */
 			WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad));
+			
+			switch(adDTO.getDto_type()){
+				case IDTO.ACT_ADD:
+					WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad));
+				  break;
+				case IDTO.ACT_DELETE:
+					WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdInvalid(macList);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }

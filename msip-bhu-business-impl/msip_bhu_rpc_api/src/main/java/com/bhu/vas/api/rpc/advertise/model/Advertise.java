@@ -13,6 +13,8 @@ public class Advertise extends BaseIntModel{
 	private String description;
 	private String image;
 	private String url;
+	//域名
+	private String domain;
 	//省
 	private String province;
 	//市
@@ -33,6 +35,20 @@ public class Advertise extends BaseIntModel{
 	//审核人id
 	private int verify_uid;
 	private Date created_at;
+	private Date updated_at;
+	
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+	public Date getUpdated_at() {
+		return updated_at;
+	}
+	public void setUpdated_at(Date updated_at) {
+		this.updated_at = updated_at;
+	}
 	public String getImage() {
 		return image;
 	}
@@ -147,6 +163,18 @@ public class Advertise extends BaseIntModel{
 	}
 	public void setCash(int cash) {
 		this.cash = cash;
+	}
+	
+	@Override
+	public void preInsert() {
+		if (this.created_at == null)
+			this.created_at = new Date();
+		super.preInsert();
+	}
+	
+	@Override
+	public void preUpdate() {
+		super.preUpdate();
 	}
 	
 }
