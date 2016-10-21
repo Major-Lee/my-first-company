@@ -1,6 +1,5 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchdevice;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,96 +35,104 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 @Service
-public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerService{
-	private final Logger logger = LoggerFactory.getLogger(BatchDeviceApplyAdvertseServiceHandler.class);
-	
+public class BatchDeviceApplyAdvertseServiceHandler implements
+		IMsgHandlerService {
+	private final Logger logger = LoggerFactory
+			.getLogger(BatchDeviceApplyAdvertseServiceHandler.class);
+
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
-	
+
 	@Resource
 	private WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
-	
+
 	@Resource
 	private WifiDeviceService wifiDeviceService;
-	
+
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
 
 	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
-	
-    @Resource
-    private IDaemonRpcService daemonRpcService;
-	
+
+	@Resource
+	private IDaemonRpcService daemonRpcService;
+
 	@Override
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
-		final BatchDeviceApplyAdvertiseDTO adDTO = JsonHelper.getDTO(message, BatchDeviceApplyAdvertiseDTO.class);
-		for(Advertise ad : adDTO.getAdList()){
-			int batch = 200;
+		final BatchDeviceApplyAdvertiseDTO adDTO = JsonHelper.getDTO(message,
+				BatchDeviceApplyAdvertiseDTO.class);
+		for (final Advertise ad : adDTO.getAdList()) {
+			final int batch = 200;
 			final List<String> macList = new ArrayList<String>();
-			wifiDeviceDataSearchService.iteratorWithPosition(ad.getProvince(), ad.getCity(), ad.getDistrict(), batch, new IteratorNotify<Page<WifiDeviceDocument>>() {
-				
-				@Override
-				public void notifyComming(Page<WifiDeviceDocument> pages) {
-					for (WifiDeviceDocument doc : pages) {
-						macList.add(doc.getD_mac());
-					}
-				}
-			});
+			wifiDeviceDataSearchService.iteratorWithPosition(ad.getProvince(),
+					ad.getCity(), ad.getDistrict(), batch,
+					new IteratorNotify<Page<WifiDeviceDocument>>() {
 
-			
-			int fromIndex = 0;
-			int toIndex = 0;
-			List<DownCmds> downCmds = new ArrayList<DownCmds>(batch);
-			do{
-				toIndex = fromIndex + batch;
-				if(toIndex > macList.size())
-					toIndex = macList.size();
-				List<String> todoList = macList.subList(fromIndex, toIndex);
-				
-				for(String mac:todoList){
-					WifiDeviceSharedNetwork sharednetwork = sharedNetworksFacadeService
-							.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(mac, true, true);
-					SharedNetworkSettingDTO snk = sharednetwork.getInnerModel();
-	                ParamSharedNetworkDTO psn = snk.getPsn();
-	                psn.setOpen_resource_ad(); //设置或者清空广告白名单
-	                sharednetwork.putInnerModel(snk);
-	                sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(sharednetwork);
+						@Override
+						public void notifyComming(Page<WifiDeviceDocument> pages) {
+							for (WifiDeviceDocument doc : pages) {
+								macList.add(doc.getD_mac());
+							}
+							test(batch, macList, ad.getDomain(),
+									adDTO.getDto_type(), ad);
+						}
+					});
+		}
+	}
 
-					WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-					if(wifiDevice == null) 
-						continue;
-					//生成下发指令
-					String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, mac, -1,JsonHelper.getJSONString(psn),
-							DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
-					downCmds.add(DownCmds.builderDownCmds(mac, cmd));
-				}
-				
-				if(!downCmds.isEmpty()){
-					daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
-					downCmds.clear();
-				}
-				
-				fromIndex += batch;
-			}while(toIndex < macList.size());
-			
-			/*
-			 * 1.设备添加白名单
-			 * 2.redis增加广告
-			 */
-			WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad));
-			
-			switch(adDTO.getDto_type()){
-				case IDTO.ACT_ADD:
-					WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad));
-				  break;
-				case IDTO.ACT_DELETE:
-					WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdInvalid(macList);
-					break;
-				default:
-					break;
+	public void test(int batch, List<String> macList, String domain,
+			char dtotype, Advertise ad) {
+		int fromIndex = 0;
+		int toIndex = 0;
+		List<DownCmds> downCmds = new ArrayList<DownCmds>(batch);
+		do {
+			toIndex = fromIndex + batch;
+			if (toIndex > macList.size())
+				toIndex = macList.size();
+			List<String> todoList = macList.subList(fromIndex, toIndex);
+
+			for (String mac : todoList) {
+				WifiDeviceSharedNetwork sharednetwork = sharedNetworksFacadeService
+						.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(mac,
+								true, true);
+				SharedNetworkSettingDTO snk = sharednetwork.getInnerModel();
+				ParamSharedNetworkDTO psn = snk.getPsn();
+				psn.setOpen_resource_ad(domain); // 设置或者清空广告白名单
+				sharednetwork.putInnerModel(snk);
+				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService()
+						.update(sharednetwork);
+
+				WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+				if (wifiDevice == null)
+					continue;
+				// 生成下发指令
+				String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, mac, -1,
+						JsonHelper.getJSONString(psn), DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(),wifiDevice.getOrig_swver()),
+						deviceCMDGenFacadeService);
+				downCmds.add(DownCmds.builderDownCmds(mac, cmd));
 			}
+
+			if (!downCmds.isEmpty()) {
+				daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
+				downCmds.clear();
+			}
+
+			fromIndex += batch;
+		} while (toIndex < macList.size());
+
+		switch (dtotype) {
+			case IDTO.ACT_ADD:
+				WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
+						macList, JsonHelper.getJSONString(ad));
+				break;
+			case IDTO.ACT_DELETE:
+				WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdInvalid(
+						macList);
+			break;
+		default:
+			break;
 		}
 	}
 }
