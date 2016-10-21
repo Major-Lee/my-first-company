@@ -853,7 +853,8 @@ public class OrderUnitFacadeService {
 			if (order == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST);
 			}
-			if (order.getStatus() == OrderStatus.PaySuccessed.getKey()){
+			if (order.getStatus() == OrderStatus.DeliverCompleted.getKey()){
+				logger.info(String.format("authorizeVideoOrder orderid[%s] timeout", orderid));
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_ORDER_TIMEOUT);
 			}
 //			2016-10-12按需求取消时间最短15秒的限制
