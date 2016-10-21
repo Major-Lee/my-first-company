@@ -36,12 +36,9 @@ public class WifiDeviceAdvertiseListService extends AbstractRelationListCache{
         return keys;
     }
     
-    public void wifiDeviceAdRem(String mac){
-    	this.lpop(generateKey(mac));
-    }
-    
-    public void wifiDeviceAdApply(String mac,String message){
-    	this.lpush(generateKey(mac), message);
+    public void wifiDevicesAdInvalid(List<String> macs){
+    	List<String> keys = generateKeys(macs);
+    	this.lpop_pipeline(keys,1);
     }
     
     public void wifiDevicesAdApply(List<String> macs,String message){

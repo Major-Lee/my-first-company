@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
@@ -46,11 +47,17 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 					}
 				}
 			});
-			/*
-			 * 1.设备添加白名单
-			 * 2.redis增加广告
-			 */
-			WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad));
+			
+			switch(adDTO.getDto_type()){
+				case IDTO.ACT_ADD:
+					WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad));
+				  break;
+				case IDTO.ACT_DELETE:
+					WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdInvalid(macList);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 }

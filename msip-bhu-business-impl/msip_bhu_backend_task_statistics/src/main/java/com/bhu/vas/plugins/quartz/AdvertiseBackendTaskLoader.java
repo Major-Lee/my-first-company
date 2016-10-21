@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -37,8 +38,14 @@ public class AdvertiseBackendTaskLoader {
 		logger.info("AdvertiseBackendTaskLoader start...");
 		String nowDate = DateTimeHelper.getDateTime(new Date(), DateTimeHelper.FormatPattern0);
 		logger.info("nowDate:"+nowDate);
+		omittedOrTimelyAdApplyNotify(nowDate);
+		AdInvalidNotify(nowDate);
+		logger.info("AdvertiseBackendTaskLoader end...");
+	}
+	
+	public void omittedOrTimelyAdApplyNotify(String nowDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLike("start", nowDate+"%").andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPublish.getType());
+		mc.createCriteria().andColumnGreaterThan("start", nowDate).andColumnLessThan("end", nowDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("ready applied ad sum" + lists.size());
@@ -47,10 +54,26 @@ public class AdvertiseBackendTaskLoader {
 				ad.setState(BusinessEnumType.AdvertiseType.OnPublish.getType());
 			}
 			advertiseService.updateAll(lists);
-			logger.info("notify backend..start");
-			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(lists);
-			logger.info("notify backend..done");
+			logger.info("apply notify backend ..start");
+			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(lists,IDTO.ACT_ADD);
+			logger.info("apply notify backend ..done");
 		}
-		logger.info("AdvertiseBackendTaskLoader end...");
+	}
+	
+	public void AdInvalidNotify(String nowDate){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnGreaterThan("end", nowDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
+		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
+		if(!lists.isEmpty()){
+			logger.info("ready invalid ad sum" + lists.size());
+			
+			for(Advertise ad : lists){
+				ad.setState(BusinessEnumType.AdvertiseType.Published.getType());
+			}
+			advertiseService.updateAll(lists);
+			logger.info("invalid notify backend ..start");
+			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(lists,IDTO.ACT_DELETE);
+			logger.info("invalid notify backend ..done");
+		}
 	}
 }
