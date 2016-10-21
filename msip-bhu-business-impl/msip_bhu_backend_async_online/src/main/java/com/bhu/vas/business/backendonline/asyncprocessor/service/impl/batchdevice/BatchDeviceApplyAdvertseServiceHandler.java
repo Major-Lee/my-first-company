@@ -35,12 +35,6 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
 		final BatchDeviceApplyAdvertiseDTO adDTO = JsonHelper.getDTO(message, BatchDeviceApplyAdvertiseDTO.class);
-		/*
-		 * 0.es拿到区域下的设备
-		 * 1.redis广告dto
-		 * 2.设备配置白名单
-		 */
-		
 		for(Advertise ad : adDTO.getAdList()){
 			final List<String> macList = new ArrayList<String>();
 			wifiDeviceDataSearchService.iteratorWithPosition(ad.getProvince(), ad.getCity(), ad.getDistrict(), 200, new IteratorNotify<Page<WifiDeviceDocument>>() {

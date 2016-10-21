@@ -149,4 +149,16 @@ public class Advertise extends BaseIntModel{
 		this.cash = cash;
 	}
 	
+	@Override
+	public void preInsert() {
+		if (this.created_at == null)
+			this.created_at = new Date();
+		super.preInsert();
+	}
+	
+	@Override
+	public void preUpdate() {
+		super.preUpdate();
+	}
+	
 }

@@ -42,6 +42,12 @@ public class AdvertiseBackendTaskLoader {
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("ready applied ad sum" + lists.size());
+			
+			for(Advertise ad : lists){
+				ad.setState(BusinessEnumType.AdvertiseType.OnPublish.getType());
+			}
+			advertiseService.updateAll(lists);
+			logger.info("notify backend..start");
 			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(lists);
 			logger.info("notify backend..done");
 		}

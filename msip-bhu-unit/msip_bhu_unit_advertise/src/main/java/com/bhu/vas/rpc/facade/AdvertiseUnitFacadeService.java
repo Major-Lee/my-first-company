@@ -25,6 +25,7 @@ public class AdvertiseUnitFacadeService {
 	private AdvertiseService advertiseService;
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
 	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
 			String image, String url, String province, String city,
 			String district,String description,String title, long start, long end) {
@@ -34,8 +35,6 @@ public class AdvertiseUnitFacadeService {
 			
 			long count=wifiDeviceDataSearchService.searchCountByPosition(province, city, district);
 			entity.setCount(count);
-			Date date=new Date();
-			entity.setCreated_at(date);
 			entity.setDistrict(district);
 			Date endDate=new Date(end);
 			entity.setEnd(endDate);
