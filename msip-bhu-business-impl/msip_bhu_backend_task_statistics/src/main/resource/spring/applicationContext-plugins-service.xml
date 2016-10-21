@@ -9,6 +9,8 @@
 	-->
 	<import resource="classpath*:com/bhu/vas/plugins/quartz/applicationContext-quartz.xml"/>
 	<import resource="classpath*:springunit/applicationContextRpc*.xml"/>
+	<import resource="classpath*:springmq/applicationContext-activemq-async-deliver-producer.xml" />
+	<import resource="classpath*:springmq/applicationContext-activemq-server.xml" />
 	<!-- 
 	<import resource="classpath*:com/et/msip/plugins/mail/applicationContext-mail.xml"/> -->
 	<!-- load activemq ticker business conf "classpath:springmq/applicationContext-activemq-server.xml", "classpath:springmq/applicationContext-activemq-message-producer.xml" -->

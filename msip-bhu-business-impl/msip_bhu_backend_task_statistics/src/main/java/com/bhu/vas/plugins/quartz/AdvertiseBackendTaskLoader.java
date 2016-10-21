@@ -1,6 +1,6 @@
 package com.bhu.vas.plugins.quartz;
 
-import java.util.Calendar;
+
 import java.util.Date;
 import java.util.List;
 
@@ -9,15 +9,13 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bhu.vas.api.dto.statistics.DeviceStateStatisticsDTO;
-import com.bhu.vas.api.dto.statistics.UserStateStatisticsDTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStateStatisticsHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.UserStateStatisticsHashService;
+import com.bhu.vas.api.rpc.advertise.model.Advertise;
+import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
-import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.ds.user.service.UserService;
-import com.smartwork.msip.cores.helper.DateTimeExtHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+
+
 
 /**
  * 此任务暂定5分钟执行一次 根据配置的同时运行的任务数量决定是否需要重新把新的任务加入到任务池中
@@ -30,13 +28,20 @@ public class AdvertiseBackendTaskLoader {
 
 	@Resource
 	private AdvertiseService advertiseService;
-
-    @Resource
-    private UserService userService;
 	
+	@Resource
+	private AsyncDeliverMessageService asyncDeliverMessageService;
+		
 	public void execute() {
 		logger.info("AdvertiseBackendTaskLoader start...");
-		
+		String nowDate = DateTimeHelper.getDateTime(new Date(), DateTimeHelper.FormatPattern0);
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnLike("start", nowDate+"%").andColumnEqualTo("state", "1");
+		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
+		if(!lists.isEmpty()){
+			//TODO(发送异步消息)
+			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage();
+		}
 		logger.info("AdvertiseBackendTaskLoader end...");
 	}
 }
