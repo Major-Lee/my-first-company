@@ -1,24 +1,26 @@
 package com.bhu.vas.rpc.facade;
 
-import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.helper.AdvertiseHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
-import com.bhu.vas.api.rpc.user.dto.UserInnerExchangeDTO;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
-import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+import java.util.List;
 
+import org.springframework.stereotype.Service;
+
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
+
+@Service
 public class AdvertiseUnitFacadeService {
 	@Resource
 	private AdvertiseService advertiseService;
+	
 	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
 			String image, String url, String province, String city,
 			String district, long start, long end) {
@@ -49,6 +51,22 @@ public class AdvertiseUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	/**
+	 * 获取现有设备地理位置
+	 * @param province
+	 * @param city
+	 * @return
+	 */
+	public List<String> fetchDevicePositionDistribution(String province,String city){
+		if(city !=null){
+			return WifiDevicePositionListService.getInstance().fetchCity(city);
+		}else if(province !=null){
+			return WifiDevicePositionListService.getInstance().fetchProvince(province);
+		}else{
+			return WifiDevicePositionListService.getInstance().fetchAllProvince();
 		}
 	}
 }

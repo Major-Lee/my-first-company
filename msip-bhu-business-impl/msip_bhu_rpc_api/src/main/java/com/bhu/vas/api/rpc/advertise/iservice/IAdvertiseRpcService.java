@@ -1,6 +1,6 @@
 package com.bhu.vas.api.rpc.advertise.iservice;
 
-import java.util.Map;
+import java.util.List;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 
@@ -25,5 +25,8 @@ public interface IAdvertiseRpcService{
 	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
 			String image, String url, String province, String city,
 			String district, long start, long end);
+
+	RpcResponseDTO<List<String>> fetchDevicePositionDistribution(
+			String province, String city);
 
 }

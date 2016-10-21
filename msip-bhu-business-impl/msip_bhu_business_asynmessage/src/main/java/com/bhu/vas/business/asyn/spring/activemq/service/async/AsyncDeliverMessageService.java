@@ -11,6 +11,7 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportPreCheckDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
+import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupSendSortMessageDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
@@ -150,4 +151,10 @@ public class AsyncDeliverMessageService {
 		dto.setMobileno(acc);
 		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
+	
+	public void sendBatchDeviceApplyAdvertiseActionMessage(){
+		BatchDeviceApplyAdvertiseDTO dto = new BatchDeviceApplyAdvertiseDTO();
+		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
 }
