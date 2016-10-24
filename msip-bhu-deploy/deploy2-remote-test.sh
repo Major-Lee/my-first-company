@@ -179,9 +179,9 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_processor/classes/
 echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2ComponentServerRedis
 
 echo 'deploy msip_bhu_unit_input_terminal_processor to ...@'$Deploy2ComponentServerRedis
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/lib/spring*.RELEASE.jar   root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_terminal_processor/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/lib/msip_*.jar    root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_terminal_processor/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/classes/com/    root@$Deploy2Server2:/BHUData/apps/msip_bhu_unit_input_terminal_processor/classes/com/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/lib/spring*.RELEASE.jar   root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_unit_input_terminal_processor/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/lib/msip_*.jar    root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_unit_input_terminal_processor/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/classes/com/    root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_unit_input_terminal_processor/classes/com/
 echo 'deploy msip_bhu_unit_input_terminal_processor successfully @'$Deploy2ComponentServerRedis
 
 
