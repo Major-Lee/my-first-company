@@ -1,6 +1,5 @@
 package com.bhu.vas.business.asyn.spring.model.async.user;
 
-import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncDTO;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 
