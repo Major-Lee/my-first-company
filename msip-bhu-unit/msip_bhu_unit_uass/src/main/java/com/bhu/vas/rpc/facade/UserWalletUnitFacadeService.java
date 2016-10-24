@@ -1577,8 +1577,8 @@ public class UserWalletUnitFacadeService {
 			mc.createCriteria()
 					.andColumnEqualTo("uid", uid)
 					.andColumnNotEqualTo("withdraw_oper",BusinessEnumType.UWithdrawStatus.WithdrawSucceed.getKey())
-					.andColumnNotEqualTo("withdraw_oper",BusinessEnumType.UWithdrawStatus.WithdrawFailed.getKey()
-					.andColumnNotEqualTo("withdraw_oper",BusinessEnumType.UWithdrawStatus.VerifyFailed.getKey()));
+					.andColumnNotEqualTo("withdraw_oper",BusinessEnumType.UWithdrawStatus.WithdrawFailed.getKey())
+					.andColumnNotEqualTo("withdraw_oper",BusinessEnumType.UWithdrawStatus.VerifyFailed.getKey());
 			List<UserWalletWithdrawApply> applys = userWalletFacadeService.getUserWalletWithdrawApplyService().findModelByModelCriteria(mc);
 			UserWithdrawDetailVTO vto = new UserWithdrawDetailVTO();
 			if(!applys.isEmpty()){
