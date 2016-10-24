@@ -115,29 +115,10 @@ public class AdvertiseRpcService implements IAdvertiseRpcService{
 			List<AdvertiseVTO> advertiseVTOs=new ArrayList<AdvertiseVTO>();
 			if(advertises!=null){
 				for(Advertise ad:advertises){
-					AdvertiseVTO singleAdvertise=new AdvertiseVTO();
-					//金额处理
-					int cash=ad.getCash();
-					double sd=cash/(10000*1.0);
-					DecimalFormat formater = new DecimalFormat();
-					formater.setMaximumFractionDigits(2);
-					formater.setGroupingSize(0);
-					formater.setRoundingMode(RoundingMode.FLOOR);
-					singleAdvertise.setCash(formater.format(sd));
-					singleAdvertise.setCity(ad.getCity());
-					singleAdvertise.setCount(ad.getCount());
-					singleAdvertise.setDescription(ad.getDescription());
-					singleAdvertise.setDistrict(ad.getDistrict());
-					singleAdvertise.setEnd(ad.getEnd());
-					singleAdvertise.setId(ad.getId());
+					AdvertiseVTO singleAdvertise = ad.toVTO();
 					//广告提交人信心
 					User user=userService.getById(ad.getUid());
 					singleAdvertise.setOwnerName(user.getNick());
-					singleAdvertise.setProvince(ad.getProvince());
-					singleAdvertise.setStart(ad.getStart());
-					singleAdvertise.setTitle(ad.getTitle());
-					singleAdvertise.setType(ad.getType());
-					singleAdvertise.setState(ad.getState());
 					advertiseVTOs.add(singleAdvertise);
 				}
 			}

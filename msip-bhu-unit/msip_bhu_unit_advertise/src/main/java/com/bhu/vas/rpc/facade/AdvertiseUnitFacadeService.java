@@ -165,29 +165,11 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<AdvertiseVTO> queryAdvertiseInfo(int advertiseId){
 		try{
 			Advertise advertise=advertiseService.getById(advertiseId);
-			AdvertiseVTO advertiseVTO=new AdvertiseVTO();
-			//金额处理
-			int cash=advertise.getCash();
-			double sd=cash/(10000*1.0);
-			DecimalFormat formater = new DecimalFormat();
-			formater.setMaximumFractionDigits(2);
-			formater.setGroupingSize(0);
-			formater.setRoundingMode(RoundingMode.FLOOR);
-			advertiseVTO.setCash(formater.format(sd));
-			advertiseVTO.setCity(advertise.getCity());
-			advertiseVTO.setCount(advertise.getCount());
-			advertiseVTO.setDescription(advertise.getDescription());
-			advertiseVTO.setDistrict(advertise.getDistrict());
-			advertiseVTO.setEnd(advertise.getEnd());
-			advertiseVTO.setId(advertise.getId());
+			AdvertiseVTO advertiseVTO=advertise.toVTO();
 			//广告提交人信心
 			User user=userService.getById(advertise.getUid());
 			advertiseVTO.setOwnerName(user.getNick());
-			advertiseVTO.setProvince(advertise.getProvince());
-			advertiseVTO.setStart(advertise.getStart());
-			advertiseVTO.setTitle(advertise.getTitle());
-			advertiseVTO.setType(advertise.getType());
-			advertiseVTO.setState(advertise.getState());
+
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

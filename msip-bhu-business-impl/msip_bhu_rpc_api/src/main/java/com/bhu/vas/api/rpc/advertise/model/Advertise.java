@@ -1,7 +1,11 @@
 package com.bhu.vas.api.rpc.advertise.model;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Date;
 
+import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.smartwork.msip.cores.orm.model.BaseIntModel;
 
 @SuppressWarnings("serial")
@@ -175,6 +179,31 @@ public class Advertise extends BaseIntModel{
 	@Override
 	public void preUpdate() {
 		super.preUpdate();
+	}
+	
+	public AdvertiseVTO toVTO(){
+		
+		AdvertiseVTO singleAdvertise=new AdvertiseVTO();
+		//金额处理
+		int cash=this.cash;
+		double sd=cash/(10000*1.0);
+		DecimalFormat formater = new DecimalFormat();
+		formater.setMaximumFractionDigits(2);
+		formater.setGroupingSize(0);
+		formater.setRoundingMode(RoundingMode.FLOOR);
+		singleAdvertise.setCash(formater.format(sd));
+		singleAdvertise.setCity(this.city);
+		singleAdvertise.setCount(this.count);
+		singleAdvertise.setDescription(this.description);
+		singleAdvertise.setDistrict(this.district);
+		singleAdvertise.setEnd(this.end);
+		singleAdvertise.setId(this.id);
+		singleAdvertise.setProvince(this.province);
+		singleAdvertise.setStart(this.start);
+		singleAdvertise.setTitle(this.title);
+		singleAdvertise.setType(this.type);
+		singleAdvertise.setState(this.state);
+		return singleAdvertise;
 	}
 	
 }
