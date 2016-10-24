@@ -1,9 +1,10 @@
 package com.bhu.vas.business.asyn.spring.model.async.user;
 
 import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
+import com.bhu.vas.business.asyn.spring.builder.async.AsyncDTO;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 
-public class UserIdentityRepairDTO extends ActionDTO{
+public class UserIdentityRepairDTO extends AsyncDTO{
 
 	private String hdmac;
 	private String mobileno;
@@ -25,8 +26,7 @@ public class UserIdentityRepairDTO extends ActionDTO{
 	}
 
 	@Override
-	public String getActionType() {
+	public String getAsyncType() {
 		return AsyncMessageType.BatchUserIdentityRepair.getPrefix();
 	}
-	
 }
