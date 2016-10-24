@@ -17,8 +17,8 @@ import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service("advertiseRpcService")
-public class advertiseRpcService implements IAdvertiseRpcService{
-	private final Logger logger = LoggerFactory.getLogger(advertiseRpcService.class);
+public class AdvertiseRpcService implements IAdvertiseRpcService{
+	private final Logger logger = LoggerFactory.getLogger(AdvertiseRpcService.class);
 	@Resource
 	private AdvertiseUnitFacadeService advertiseUnitFacadeService;
 	
