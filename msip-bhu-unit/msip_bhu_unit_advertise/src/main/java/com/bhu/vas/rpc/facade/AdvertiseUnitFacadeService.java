@@ -1,16 +1,23 @@
 package com.bhu.vas.rpc.facade;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -26,6 +33,8 @@ public class AdvertiseUnitFacadeService {
 	private AdvertiseService advertiseService;
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	@Resource
+	private UserService userService;
 	
 	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
 			String image, String url,String domain, String province, String city,
@@ -44,6 +53,7 @@ public class AdvertiseUnitFacadeService {
 			entity.setStart(startDate);
 			entity.setState(AdvertiseType.UnPaid.getType());
 			
+			entity.setType(0);
 			entity.setDomain(domain);
 			entity.setDescription(description);
 			entity.setTitle(title);
@@ -77,9 +87,121 @@ public class AdvertiseUnitFacadeService {
 			return WifiDevicePositionListService.getInstance().fetchAllProvince();
 		}
 	}
-	
+	/**
+	 * 根据条件查询广告列表
+	 * @param conditionMap
+	 * @return
+	 */
 	public List<Advertise> queryAdvertiseList(List<Map<String,Object>> conditionMap){
-		
-		return null;
+		List<Advertise> advertises=null;
+		if(conditionMap!=null&&conditionMap.size()>0){
+			ModelCriteria mc=new ModelCriteria();
+			Criteria criteria= mc.createCriteria();
+			for(Map<String,Object> singleMap:conditionMap){
+				criteria.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
+			}
+			advertises=advertiseService.findModelByModelCriteria(mc);
+		}
+		return advertises;
+	}
+	/**
+	 * 审核广告
+	 * @param verify_uid
+	 * @param advertiseId
+	 * @param msg
+	 * @param state
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> verifyAdvertise(int verify_uid,int advertiseId,String msg,int state){
+		try{ 
+			Advertise advertise=advertiseService.getById(advertiseId);
+			advertise.setVerify_uid(verify_uid);
+			if(state==0){
+				advertise.setState(AdvertiseType.UnPublish.getType());
+			}else{
+				advertise.setState(AdvertiseType.VerifyFailure.getType());
+				advertise.setReject_reason(msg);
+			}
+			advertiseService.update(advertise);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	/**
+	 * 查询广告详情
+	 * @param advertiseId
+	 * @return
+	 */
+	public RpcResponseDTO<AdvertiseVTO> queryAdvertiseInfo(int advertiseId){
+		try{
+			Advertise advertise=advertiseService.getById(advertiseId);
+			AdvertiseVTO advertiseVTO=new AdvertiseVTO();
+			//金额处理
+			int cash=advertise.getCash();
+			double sd=cash/(10000*1.0);
+			DecimalFormat formater = new DecimalFormat();
+			formater.setMaximumFractionDigits(2);
+			formater.setGroupingSize(0);
+			formater.setRoundingMode(RoundingMode.FLOOR);
+			advertiseVTO.setCash(formater.format(sd));
+			advertiseVTO.setCity(advertise.getCity());
+			advertiseVTO.setCount(advertise.getCount());
+			advertiseVTO.setDescription(advertise.getDescription());
+			advertiseVTO.setDistrict(advertise.getDistrict());
+			advertiseVTO.setEnd(advertise.getEnd());
+			advertiseVTO.setId(advertise.getId());
+			//广告提交人信心
+			User user=userService.getById(advertise.getUid());
+			advertiseVTO.setOwnerName(user.getNick());
+			advertiseVTO.setProvince(advertise.getProvince());
+			advertiseVTO.setStart(advertise.getStart());
+			advertiseVTO.setTitle(advertise.getTitle());
+			advertiseVTO.setType(advertise.getType());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseVTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<Boolean> updateAdvertise(int uid,int advertiseId, String image,
+			String url, String domain, String province, String city,
+			String district, String description, String title, long start,
+			long end) {
+		try{
+			Advertise entity=advertiseService.getById(advertiseId);
+			entity.setCity(city);
+			long count=wifiDeviceDataSearchService.searchCountByPosition(province, city, district);
+			entity.setCount(count);
+			entity.setDistrict(district);
+			Date endDate=new Date(end);
+			entity.setEnd(endDate);
+			entity.setImage(image);
+			entity.setProvince(province);
+			Date startDate=new Date(start);
+			entity.setStart(startDate);
+			entity.setState(AdvertiseType.UnPaid.getType());
+			
+			entity.setType(0);
+			entity.setDomain(domain);
+			entity.setDescription(description);
+			entity.setTitle(title);
+			entity.setUid(uid);
+			//间隔天数
+			long between_days = (end - start) / (1000 * 3600 * 24);
+			int duration=Integer.parseInt(String.valueOf(between_days));
+			entity.setDuration(duration);
+			entity.setUrl(url);
+			advertiseService.update(entity);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 }
