@@ -20,6 +20,14 @@ public class AdvertiseVTO implements java.io.Serializable{
 	private Date end;
 	//广告覆盖的设备数
 	private long count;
+	private int state;
+	
+	public int getState() {
+		return state;
+	}
+	public void setState(int state) {
+		this.state = state;
+	}
 	public int getId() {
 		return id;
 	}

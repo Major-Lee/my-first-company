@@ -1,18 +1,28 @@
 package com.bhu.vas.rpc.service.advertise;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
+import com.bhu.vas.api.rpc.advertise.model.Advertise;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.rpc.facade.AdvertiseUnitFacadeService;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -21,7 +31,8 @@ public class AdvertiseRpcService implements IAdvertiseRpcService{
 	private final Logger logger = LoggerFactory.getLogger(AdvertiseRpcService.class);
 	@Resource
 	private AdvertiseUnitFacadeService advertiseUnitFacadeService;
-	
+	@Resource
+	private UserService userService;
 	@Override
 	public RpcResponseDTO<List<String>> fetchDevicePositionDistribution(String province, String city) {
 		logger.info(String.format("fetchDevicePositionDistribution province[%s] city[%s]", province, city));
@@ -69,4 +80,73 @@ public class AdvertiseRpcService implements IAdvertiseRpcService{
 		return advertiseUnitFacadeService.queryAdvertiseInfo(advertiseId);
 	}
 
+	@Override
+	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(int uid, String province,
+			String city, String district, String publishStartTime,
+			String publishEndTime, int type, String createStartTime,
+			String createEndTime, String userName) {
+		logger.info(String.format("queryAdvertiseList uid[%s] province[%s] city[%s] district[%s] publishStartTime[%s] publishEndTime[%s] type[%s] createStartTime[%s] createEndTime[%s] userName[%s]",
+				uid,province,city,district,publishStartTime,publishEndTime,type,createStartTime,createEndTime,userName));
+		List<Map<String,Object>> maps=new ArrayList<Map<String,Object>>();
+		if(StringUtils.isNoneBlank(province)){
+			Map<String,Object> provinceMap=new HashMap<String,Object>();
+			provinceMap.put("name", "province");
+			provinceMap.put("value", province);
+			maps.add(provinceMap);
+		}
+		if(StringUtils.isNoneBlank(city)){
+			Map<String,Object> cityMap=new HashMap<String,Object>();
+			cityMap.put("name", "city");
+			cityMap.put("value", city);
+			maps.add(cityMap);
+		}
+		if(StringUtils.isNoneBlank(district)){
+			Map<String,Object> districtMap=new HashMap<String,Object>();
+			districtMap.put("name", "district");
+			districtMap.put("value", district);
+		}
+		Map<String,Object> typeMap=new HashMap<String,Object>();
+		typeMap.put("name", "type");
+		typeMap.put("value", type);
+		maps.add(typeMap);
+		try{
+			List<Advertise> advertises=advertiseUnitFacadeService.queryAdvertiseList(maps,publishStartTime,publishEndTime,createStartTime,createEndTime,userName);
+			AdvertiseListVTO advertiseListVTO=new AdvertiseListVTO();
+			List<AdvertiseVTO> advertiseVTOs=new ArrayList<AdvertiseVTO>();
+			if(advertises!=null){
+				for(Advertise ad:advertises){
+					AdvertiseVTO singleAdvertise=new AdvertiseVTO();
+					//金额处理
+					int cash=ad.getCash();
+					double sd=cash/(10000*1.0);
+					DecimalFormat formater = new DecimalFormat();
+					formater.setMaximumFractionDigits(2);
+					formater.setGroupingSize(0);
+					formater.setRoundingMode(RoundingMode.FLOOR);
+					singleAdvertise.setCash(formater.format(sd));
+					singleAdvertise.setCity(ad.getCity());
+					singleAdvertise.setCount(ad.getCount());
+					singleAdvertise.setDescription(ad.getDescription());
+					singleAdvertise.setDistrict(ad.getDistrict());
+					singleAdvertise.setEnd(ad.getEnd());
+					singleAdvertise.setId(ad.getId());
+					//广告提交人信心
+					User user=userService.getById(ad.getUid());
+					singleAdvertise.setOwnerName(user.getNick());
+					singleAdvertise.setProvince(ad.getProvince());
+					singleAdvertise.setStart(ad.getStart());
+					singleAdvertise.setTitle(ad.getTitle());
+					singleAdvertise.setType(ad.getType());
+					singleAdvertise.setState(ad.getState());
+					advertiseVTOs.add(singleAdvertise);
+				}
+			}
+			advertiseListVTO.setAdvertiseList(advertiseVTOs);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseListVTO);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

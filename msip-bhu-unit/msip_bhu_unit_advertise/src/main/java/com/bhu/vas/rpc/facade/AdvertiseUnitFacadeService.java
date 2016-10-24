@@ -23,6 +23,7 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 
 import java.util.List;
 
+import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
@@ -92,16 +93,37 @@ public class AdvertiseUnitFacadeService {
 	 * @param conditionMap
 	 * @return
 	 */
-	public List<Advertise> queryAdvertiseList(List<Map<String,Object>> conditionMap){
+	public List<Advertise> queryAdvertiseList(List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName){
 		List<Advertise> advertises=null;
+		ModelCriteria mc=new ModelCriteria();
+		Criteria criteria= mc.createCriteria();
 		if(conditionMap!=null&&conditionMap.size()>0){
-			ModelCriteria mc=new ModelCriteria();
-			Criteria criteria= mc.createCriteria();
 			for(Map<String,Object> singleMap:conditionMap){
 				criteria.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
 			}
-			advertises=advertiseService.findModelByModelCriteria(mc);
 		}
+		if(StringUtils.isNotBlank(publishStartTime)){
+			if(StringUtils.isNotBlank(publishEndTime)){
+				criteria.andColumnBetween("start", publishStartTime, publishEndTime);
+			}else{
+				criteria.andColumnEqualTo("start", publishStartTime);
+			}
+		}
+		if(StringUtils.isNotBlank(createStartTime)){
+			if(StringUtils.isNotBlank(createEndTime)){
+				criteria.andColumnBetween("created_at", createStartTime, createStartTime);
+			}else{
+				criteria.andColumnEqualTo("created_at", createEndTime);
+			}
+		}
+		if(StringUtils.isNotBlank(userName)){
+			ModelCriteria userMc=new ModelCriteria();
+			Criteria userCriteria= userMc.createCriteria();
+			userCriteria.andColumnLike("nick", userName);
+			List<Integer> userIds=userService.findIdsByModelCriteria(userMc);
+			criteria.andColumnIn("uid", userIds);
+		}
+		advertises=advertiseService.findModelByModelCriteria(mc);
 		return advertises;
 	}
 	/**
@@ -122,8 +144,13 @@ public class AdvertiseUnitFacadeService {
 				advertise.setState(AdvertiseType.VerifyFailure.getType());
 				advertise.setReject_reason(msg);
 			}
-			advertiseService.update(advertise);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+			User user=userService.getById(verify_uid);
+			if(verify_uid==2||user.getUtype()==13){
+				advertiseService.update(advertise);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+			}else{
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+			}
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
@@ -160,6 +187,7 @@ public class AdvertiseUnitFacadeService {
 			advertiseVTO.setStart(advertise.getStart());
 			advertiseVTO.setTitle(advertise.getTitle());
 			advertiseVTO.setType(advertise.getType());
+			advertiseVTO.setState(advertise.getState());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

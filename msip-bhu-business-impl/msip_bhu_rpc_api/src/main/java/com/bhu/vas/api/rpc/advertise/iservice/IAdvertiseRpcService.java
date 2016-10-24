@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.advertise.iservice;
 
 import java.util.List;
 
+import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 
@@ -65,5 +66,23 @@ public interface IAdvertiseRpcService{
 	 * @return
 	 */
 	public RpcResponseDTO<AdvertiseVTO> queryAdvertise(int advertiseId);
+	/**
+	 * 查询广告列表
+	 * @param uid
+	 * @param province
+	 * @param city
+	 * @param district
+	 * @param publishStartTime
+	 * @param publishEndTime
+	 * @param type
+	 * @param createStartTime
+	 * @param createEndTime
+	 * @param userName
+	 * @return
+	 */
+	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(int uid, String province,
+			String city, String district, String publishStartTime,
+			String publishEndTime, int type, String createStartTime,
+			String createEndTime, String userName);
 
 }

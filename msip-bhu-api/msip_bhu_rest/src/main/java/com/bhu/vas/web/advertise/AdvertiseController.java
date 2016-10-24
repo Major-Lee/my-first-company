@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
@@ -133,20 +134,19 @@ public class AdvertiseController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) int uid,
-			@RequestParam(required = true) String image,
-			@RequestParam(required = true) String url,
-			@RequestParam(required = true) String domain,
-			@RequestParam(required = true) String province,
-			@RequestParam(required = true) String city,
-			@RequestParam(required = true) String district,
-			@RequestParam(required = true) String description,
-			@RequestParam(required = true) String title,
-			@RequestParam(required = true) long start,
-			@RequestParam(required = true) long end
+			@RequestParam(required = false) String province,
+			@RequestParam(required = false) String city,
+			@RequestParam(required = false) String district,
+			@RequestParam(required = false) String publishStartTime,
+			@RequestParam(required = false) String publishEndTime,
+			@RequestParam(required = false,defaultValue="0") int type,
+			@RequestParam(required = false) String  createStartTime,
+			@RequestParam(required = false) String createEndTime,
+			@RequestParam(required = false) String userName
 			) {
 		try{
-			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.createNewAdvertise
-					(uid, image, url,domain, province, city, district,description,title, start, end);
+			RpcResponseDTO<AdvertiseListVTO> rpcResult = advertiseRpcService.queryAdvertiseList
+					(uid, province, city,district, publishStartTime, publishEndTime, type,createStartTime,createEndTime,userName);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
