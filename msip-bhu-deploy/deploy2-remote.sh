@@ -6,7 +6,10 @@ echo $Current_DIR
 Deploy2WebServerRest='182.92.229.26'
 
 Deploy2ComponentServerInputFranky='123.57.82.6'
+Deploy2ComponentServerInputSunny='123.56.79.210'
 Deploy2ComponentServerInputRobin='123.57.13.158'
+
+
 
 #Sanji
 Deploy2ComponentServerSanji='123.56.121.220'
@@ -57,8 +60,13 @@ echo '清除目录'$CuDateDir'下所有的文件成功'
 #拷贝生成的zip包到发布目录中。。。
 echo '拷贝文件 msip_bhu_unit_input_processor-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_input_processor/target/msip_bhu_unit_input_processor-bin.zip ./$CuDateDir
+
+echo '拷贝文件 msip_bhu_unit_input_terminal_processor-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_input_terminal_processor/target/msip_bhu_unit_input_terminal_processor-bin.zip ./$CuDateDir
+
 echo '拷贝文件 msip_bhu_unit_daemon_processor-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_daemon_processor/target/msip_bhu_unit_daemon_processor-bin.zip ./$CuDateDir
+
 echo '拷贝文件 msip_bhu_unit_devices-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_devices/target/msip_bhu_unit_devices-bin.zip ./$CuDateDir
 
@@ -124,8 +132,13 @@ cd $CuDateDir
 echo '进行文件解压过程'
 unzip -q msip_bhu_unit_input_processor-bin.zip
 unzip -qo msip_bhu_unit_input_processor/bin/msip_bhu_unit_input_processor.jar -d msip_bhu_unit_input_processor/classes/
+
+unzip -q msip_bhu_unit_input_terminal_processor-bin.zip
+unzip -qo msip_bhu_unit_input_terminal_processor/bin/msip_bhu_unit_input_terminal_processor.jar -d msip_bhu_unit_input_terminal_processor/classes/
+
 unzip -q msip_bhu_unit_daemon_processor-bin.zip
 unzip -qo msip_bhu_unit_daemon_processor/bin/msip_bhu_unit_daemon_processor.jar -d msip_bhu_unit_daemon_processor/classes/
+
 unzip -q msip_bhu_unit_devices-bin.zip
 unzip -qo msip_bhu_unit_devices/bin/msip_bhu_unit_devices.jar -d msip_bhu_unit_devices/classes/
 
@@ -203,6 +216,14 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_processor/lib/spri
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_processor/lib/msip_*.jar   root@$Deploy2ComponentServerInputRobin:/BHUData/apps/msip_bhu_unit_input_processor/libs/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_processor/classes/com/   root@$Deploy2ComponentServerInputRobin:/BHUData/apps/msip_bhu_unit_input_processor/classes/com/
 echo 'deploy msip_bhu_unit_input_processor successfully @'$Deploy2ComponentServerInputRobin
+
+echo '准备发布业务Input组件到'$Deploy2ComponentServerInputSunny'-&-'$Deploy2ComponentServerInputSunny
+
+echo 'deploy msip_bhu_unit_input_terminal_processor to ...@'$Deploy2ComponentServerInputSunny
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/lib/spring*.RELEASE.jar   root@$Deploy2ComponentServerInputSunny:/BHUData/apps/msip_bhu_unit_input_terminal_processor/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/lib/msip_*.jar    root@$Deploy2ComponentServerInputSunny:/BHUData/apps/msip_bhu_unit_input_terminal_processor/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/classes/com/    root@$Deploy2ComponentServerInputSunny:/BHUData/apps/msip_bhu_unit_input_terminal_processor/classes/com/
+echo 'deploy msip_bhu_unit_input_terminal_processor successfully @'$Deploy2ComponentServerInputSunny
 
 
 echo '准备发布业务组件到'$Deploy2ComponentServerBrook
