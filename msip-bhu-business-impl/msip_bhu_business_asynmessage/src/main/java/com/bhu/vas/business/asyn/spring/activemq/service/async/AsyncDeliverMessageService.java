@@ -149,6 +149,6 @@ public class AsyncDeliverMessageService {
 		UserIdentityRepairDTO dto = new UserIdentityRepairDTO();
 		dto.setHdmac(hdmac);
 		dto.setMobileno(acc);
-		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 }
