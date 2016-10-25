@@ -570,6 +570,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	}
 	public void setFirstLogin(int firstLogin) {
 		this.firstLogin = firstLogin;
+	}
 	
 	public String getOpen_resource_ad() {
 		return open_resource_ad;
