@@ -248,6 +248,10 @@
 	    </if>  		
 	</select>
 	
+	<select id="countByAdvertiseTime" resultType="int" parameterType="Map">
+		select count(*) from <include refid="modelTableName" /> where <![CDATA[  (`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end}))]]>;	
+	</select>
+	
 	<delete id="removeByModelCriteria">
 		delete from <include refid="modelTableName" />  
 		<if test="_parameter != null"> 

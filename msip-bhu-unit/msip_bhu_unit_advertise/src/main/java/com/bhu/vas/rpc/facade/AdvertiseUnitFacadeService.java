@@ -62,8 +62,13 @@ public class AdvertiseUnitFacadeService {
 			int duration=Integer.parseInt(String.valueOf(between_days));
 			entity.setDuration(duration);
 			entity.setUrl(url);
-			advertiseService.insert(entity);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate);
+			if(n==0){
+				advertiseService.insert(entity);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+			}else{
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+			}
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
@@ -204,8 +209,13 @@ public class AdvertiseUnitFacadeService {
 			int duration=Integer.parseInt(String.valueOf(between_days));
 			entity.setDuration(duration);
 			entity.setUrl(url);
-			advertiseService.update(entity);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate);
+			if(n==0){
+				advertiseService.update(entity);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+			}else{
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+			}
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
