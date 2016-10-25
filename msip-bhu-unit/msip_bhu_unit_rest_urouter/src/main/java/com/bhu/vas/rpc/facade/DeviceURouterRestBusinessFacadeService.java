@@ -2267,6 +2267,8 @@ public class DeviceURouterRestBusinessFacadeService {
 							userDeviceDTO.setProvince(wifiDeviceDocument.getD_province());
 							userDeviceDTO.setCity(wifiDeviceDocument.getD_city());
 							userDeviceDTO.setDistrict(wifiDeviceDocument.getD_district());
+							userDeviceDTO.setLastlogoutat(wifiDeviceDocument.getD_lastlogoutat());
+							userDeviceDTO.setLastregedat(wifiDeviceDocument.getD_lastregedat());
 							macs.add(wifiDeviceDocument.getD_mac());
 							vtos.add(userDeviceDTO);
 						}
