@@ -28,7 +28,7 @@ public interface IAdvertiseRpcService{
 			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end);
 
-	RpcResponseDTO<List<String>> fetchDevicePositionDistribution(
+	public RpcResponseDTO<List<String>> fetchDevicePositionDistribution(
 			String province, String city);
 	/**
 	 * 更新广告

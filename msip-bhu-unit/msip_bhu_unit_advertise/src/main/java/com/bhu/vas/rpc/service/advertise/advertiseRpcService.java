@@ -31,8 +31,8 @@ public class AdvertiseRpcService implements IAdvertiseRpcService{
 	private AdvertiseUnitFacadeService advertiseUnitFacadeService;
 	@Resource
 	private UserService userService;
-	@Override
 	
+	@Override
 	public RpcResponseDTO<List<String>> fetchDevicePositionDistribution(String province, String city) {
 		logger.info(String.format("fetchDevicePositionDistribution province[%s] city[%s]", province, city));
 		try {
