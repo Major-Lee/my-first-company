@@ -7,6 +7,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
+import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -53,4 +54,7 @@ public interface IOrderRpcService {
 			String context, Integer channel, String user_agent);
 
 	public RpcResponseDTO<Boolean> authorizeVideoOrder(String token, String context);
+
+	public RpcResponseDTO<RewardCreateMonthlyServiceVTO> rewardCreateMonthlyService(Integer commdityid, String mac, String umac,
+			String context, Integer umactype, Integer channel, String user_agent, String uname, String acc, String address, int count);
 }

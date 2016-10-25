@@ -19,6 +19,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
+import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -451,5 +452,73 @@ public void reward_query_pages_detail(
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
+	}
+
+/**
+ * 创建包月订单
+ * 1:生成订单
+ * 2：放行用户
+ * @param request
+ * @param response
+ * @param orderId 订单id
+ * @param payment_type 支付方式
+ */
+@ResponseBody()
+@RequestMapping(value="/physical/mini/paymenturl",method={RequestMethod.GET,RequestMethod.POST})
+public void physical_mini_paymenturl(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		@RequestParam(required = true) String mac,
+		@RequestParam(required = true) String umac,
+		@RequestParam(required = true) String uname,
+		@RequestParam(required = true) String acc,
+		@RequestParam(required = true) String address,
+		@RequestParam(required = true) String payment_type,
+		@RequestParam(required = false, defaultValue = "1") int count,
+		@RequestParam(required = false) String context,
+		@RequestParam(required = false, value = "pcd_url") String payment_completed_url,
+		@RequestParam(required = false, defaultValue = "2") Integer umactype,
+		@RequestParam(required = false, defaultValue = "14") Integer commdityid,
+		@RequestParam(required = false, defaultValue = "0") Integer channel,
+		@RequestParam(required = false, defaultValue = "0") String version
+		) {
+		long start = System.currentTimeMillis();
+		
+		String user_agent = request.getHeader("User-Agent");
+		//1:生成订单
+		RpcResponseDTO<RewardCreateMonthlyServiceVTO> rpcResult = orderRpcService.rewardCreateMonthlyService(commdityid, mac, umac, 
+				context, umactype, channel, user_agent,uname,acc,address,count);
+		if(rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			return;
+		}
+		//2:请求支付系统返回支付url
+		RewardCreateMonthlyServiceVTO order_vto = rpcResult.getPayload();
+		String orderid = order_vto.getOrderid();
+		String order_amount = order_vto.getAmount();
+		String requestIp = WebHelper.getRemoteAddr(request);
+		Integer appid = order_vto.getAppid();
+		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
+				order_amount, requestIp, umac, orderid, payment_completed_url,channel+"",version);
+		if(rcp_dto == null){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID)));
+			return;
+		}
+		if(!rcp_dto.isSuccess()){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE)));
+			return;
+		}
+		
+		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
+				+ "ip[%s] mac[%s] umac[%s] rep_time[%s]", orderid, payment_type, commdityid, requestIp, mac, umac,
+				(System.currentTimeMillis() - start)+"ms"));
+		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
+		
+		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
+		retDto.setId(order_vto.getOrderid());
+		retDto.setThird_payinfo(rcp_dto.getParams());
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
 	}
 }

@@ -13,6 +13,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
+import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -140,4 +141,15 @@ public class OrderRpcService implements IOrderRpcService{
 		logger.info(String.format("authorizeVideoOrder with token[%s] context[%s]",token,context));
 		return orderUnitFacadeService.authorizeVideoOrder(token,context);
 	}
+
+	@Override
+	public RpcResponseDTO<RewardCreateMonthlyServiceVTO> rewardCreateMonthlyService(Integer commdityid, String mac,
+			String umac, String context, Integer umactype, Integer channel, String user_agent, String uname, String acc, String address, int count) {
+		logger.info(String.format("rewardCreateMonthlyService with commdityid[%s] mac[%s] umac[%s] umactype[%s] context[%s] channel[%s] user_agent[%s] uname[%s] acc[%s] address[%s] count[%s]",
+				commdityid,mac, umac, umactype, context, channel,user_agent,uname,acc,address,count));
+		return orderUnitFacadeService.rewardCreateMonthlyService(commdityid, mac,
+				 umac, context, umactype, channel, user_agent, uname, acc, address, count);
+	}
+	
+	
 }
