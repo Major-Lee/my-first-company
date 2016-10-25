@@ -14,6 +14,7 @@ import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
+import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -82,4 +83,37 @@ public class CommdityController extends BaseController{
 		}
 	}
 	
+	
+	@ResponseBody()
+	@RequestMapping(value="/physical/get_address",method={RequestMethod.GET,RequestMethod.POST})
+	public void physical_get_address(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) String umac) {
+		String umac_lower = umac.toLowerCase();
+		RpcResponseDTO<CommdityPhysical> rpcResult = commdityRpcService.physical_get_address(umac_lower);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/physical/set_address",method={RequestMethod.GET,RequestMethod.POST})
+	public void physical_set_address(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) String umac,
+			@RequestParam(required = true) String uname,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = true) String address) {
+		String umac_lower = umac.toLowerCase();
+		RpcResponseDTO<CommdityPhysical> rpcResult = commdityRpcService.physical_set_address(umac_lower,uname,acc,address);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
 }

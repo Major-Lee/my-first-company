@@ -11,9 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSPromotionDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.PhysicalPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.VideoPermissionThroughNotifyDTO;
@@ -29,6 +31,7 @@ import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.PermissionThroughNotifyFactoryBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
+import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
@@ -36,11 +39,13 @@ import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
+import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -55,6 +60,9 @@ public class OrderFacadeService {
 	
 	@Resource
 	private CommdityService commdityService;
+	
+	@Resource
+	private CommdityPhysicalService commdityPhysicalService;
 	
 	@Resource
 	private CommdityFacadeService commdityFacadeService;
@@ -911,5 +919,125 @@ public class OrderFacadeService {
 		
 		return null;
 		
+	}
+
+	public Order createMonthlyServiceOrder(Integer commdityid, String mac, String mac_dut, String umac,
+			Integer umactype, User bindUser, String context, Integer channel, String user_agent, int count, String acc) {
+		//商品信息验证
+		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+		//验证商品是否合理
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
+		}
+		
+		String amount = String.valueOf(count * Integer.parseInt(commdity.getPrice()));
+		
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdity.getId());
+		order.setAppid(CommdityApplication.DEFAULT.getKey());
+		order.setType(commdity.getCategory());
+		order.setChannel(channel);
+		order.setAmount(amount);
+		order.setContext(count + "," + acc);
+		order.setStatus(OrderStatus.NotPay.getKey());
+		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
+		order.setMac(mac);
+		order.setMac_dut(mac_dut);
+		order.setUmac(umac);
+		order.setUmactype(umactype);
+		if(bindUser != null){
+			order.setUid(bindUser.getId());
+		}
+		order.setUser_agent(user_agent);
+		orderService.insert(order);
+				
+		return order;
+	}
+	
+	public CommdityPhysical buildCommdityPhysical(String umac,String uname, String acc, String address){
+		CommdityPhysical order = new CommdityPhysical();
+		order.setId(umac);
+		CommdityPhysicalDTO dto = CommdityPhysicalDTO.buildCommdityPhysicalDTO(uname, acc, address);
+		order.setExtension_content(JsonHelper.getJSONString(dto));
+		return order;
+	}
+	
+	
+	/**
+	 * 购买实体商品支付完成的订单处理逻辑
+	 * 更新订单状态为支付成功
+	 * 通知应用发货成功以后 更新支付状态为发货完成
+	 * @param success 支付是否成功
+	 * @param order 订单实体
+	 * @param bindUser 设备绑定的用户实体
+	 * @param paymented_ds 支付时间 yyyy-MM-dd HH:mm:ss
+	 * @param payment_type 支付方式
+	 * @param payment_proxy_type 支付代理方式
+	 */
+	public Order CommdityPhysicalOrderPaymentCompletedNotify(boolean success, Order order, User bindUser, String paymented_ds,
+			String payment_type, String payment_proxy_type,String ait_time){
+		Integer changed_status = null;
+		Integer changed_process_status = null;
+		try{
+			String orderid = order.getId();
+			
+			if(StringUtils.isNotEmpty(paymented_ds)){
+				order.setPayment_type(payment_type);
+				order.setPayment_proxy_type(payment_proxy_type);
+				order.setPaymented_at(DateTimeHelper.parseDate(paymented_ds, DateTimeHelper.DefalutFormatPattern));
+			}
+			
+			//支付成功
+			if(success){
+				changed_status = OrderStatus.PaySuccessed.getKey();
+				changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
+
+				logger.info(String.format("CommdityPhysicalOrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
+				//进行发货通知
+				boolean deliver_notify_ret = commdityPhysicalOrderPermissionNotify(order, bindUser, ait_time);
+				//判断通知发货成功 更新订单状态
+				if(deliver_notify_ret){
+					changed_status = OrderStatus.DeliverCompleted.getKey();
+					changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
+					logger.info(String.format("CommdityPhysicalOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+				}else{
+					logger.info(String.format("CommdityPhysicalOrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
+				}
+			}else{
+				changed_status = OrderStatus.PayFailured.getKey();
+				changed_process_status = OrderProcessStatus.PayFailured.getKey();
+			}
+		}catch(Exception ex){
+			throw ex; 
+		}finally{
+			orderStatusChanged(order, changed_status, changed_process_status);
+		}
+		return order;
+	}
+	
+	
+	public boolean commdityPhysicalOrderPermissionNotify(Order order, User bindUser, String ait_time){
+		try{
+			if(order == null) {
+				logger.error("commdityPhysicalOrderPermissionNotify order data not exist");
+				return false;
+			}
+			
+			PhysicalPermissionThroughNotifyDTO physicalPermissionNotifyDto = PhysicalPermissionThroughNotifyDTO.from(order, ait_time, bindUser);
+			if(physicalPermissionNotifyDto != null){
+				String physicalPermissionNotifyMessage = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(physicalPermissionNotifyDto);
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(physicalPermissionNotifyMessage);
+				//判断通知发货成功
+				if(notify_ret != null && notify_ret > 0){
+					logger.info(String.format("commdityPhysicalOrderPermissionNotify success deliver notify: message[%s] rpush_ret[%s]", physicalPermissionNotifyMessage, notify_ret));
+					return true;
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error("commdityPhysicalOrderPermissionNotify exception", ex);
+		}
+		return false;
 	}
 }

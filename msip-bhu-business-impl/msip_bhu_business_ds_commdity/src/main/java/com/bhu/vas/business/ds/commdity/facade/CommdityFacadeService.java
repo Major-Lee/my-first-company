@@ -4,10 +4,13 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
+import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
+import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -20,6 +23,8 @@ public class CommdityFacadeService {
 	@Resource
 	private CommdityService commdityService;
 	
+	@Resource 
+	private CommdityPhysicalService commdityPhysicalService;
 	/**
 	 * 根据商品不同状态查询商品数量
 	 * @param status 商品状态
@@ -75,6 +80,33 @@ public class CommdityFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_NOT_ONSALE);
 		}
 		return commdity;
+	}
+	
+	public List<CommdityPhysical> findCommdityPhysicalByParam(String umac){
+		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		if(StringUtils.isNotEmpty(umac)){
+			criteria.andColumnEqualTo("id", umac);
+		}
+		mc.setOrderByClause("updated_at desc");
+		return commdityPhysicalService.findModelByModelCriteria(mc);
+	}
+	
+	public int countCommdityPhysicalByParam(String umac){
+		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		if(StringUtils.isNotEmpty(umac)){
+			criteria.andColumnEqualTo("id", umac);
+		}
+		return commdityPhysicalService.countByModelCriteria(mc);
+	}
+	
+	public CommdityPhysical updateCommdityPhysical(CommdityPhysical commdityPhysical){
+		return commdityPhysicalService.update(commdityPhysical);
+	}
+	
+	public CommdityPhysical insertCommdityPhysical(CommdityPhysical commdityPhysical){
+		return commdityPhysicalService.insert(commdityPhysical);
 	}
 	
 	/**
