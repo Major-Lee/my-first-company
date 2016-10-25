@@ -60,4 +60,5 @@
     <import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-publicAccount-reference.xml"/>
     <import resource="classpath*:com/bhu/vas/api/rpc/unifyStatistics/spring/dubbo-bhu-unifyStatistics-reference.xml"/>
     <import resource="classpath*:com/bhu/vas/api/rpc/user/spring/dubbo-bhu-user-mange-reference.xml"/>		
+    <import resource="classpath*:com/bhu/vas/api/rpc/advertise/spring/dubbo-bhu-advertise-reference.xml"/>	
 </beans>
