@@ -1,7 +1,5 @@
 package com.bhu.vas.rpc.service.advertise;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +32,7 @@ public class AdvertiseRpcService implements IAdvertiseRpcService{
 	@Resource
 	private UserService userService;
 	@Override
+	
 	public RpcResponseDTO<List<String>> fetchDevicePositionDistribution(String province, String city) {
 		logger.info(String.format("fetchDevicePositionDistribution province[%s] city[%s]", province, city));
 		try {
