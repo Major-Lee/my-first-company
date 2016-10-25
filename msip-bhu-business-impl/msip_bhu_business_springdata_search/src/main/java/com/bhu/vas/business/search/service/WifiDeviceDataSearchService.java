@@ -116,6 +116,21 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	}
 	
 	/**
+	 * 根据地理位置查询设备数量
+	 * @param d_province
+	 * @param d_city
+	 * @param d_distrcy
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public long searchCountByPosition(String d_province,String d_city,String d_distrcy){
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(d_province, d_city, d_distrcy);
+		return super.searchCountByConditionMessage(scm);
+	}
+	
+	/**
 	 * 根据snk查询设备数量
 	 * @param u_id
 	 * @param d_snk_type
@@ -144,6 +159,24 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		if(u_id == null) return;
 		
 		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithSharedNetwork(u_id, sharedNetwork_type,d_snk_template, d_dut);
+		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
+		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
+				message, pageSize, notify);
+	}
+	
+	
+	/**
+	 * 根据设备的定位位置进行scan的iterator
+	 * @param d_province
+	 * @param d_city
+	 * @param d_distrcy
+	 * @param pageSize
+	 * @param notify
+	 */
+	public void iteratorWithPosition(String d_province,String d_city, String d_distrcy, 
+			 int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(d_province, d_city, d_distrcy);
 		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
 		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
 				message, pageSize, notify);

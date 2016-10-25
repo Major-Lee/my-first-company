@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
  * 设备配置信息的ad
@@ -41,7 +42,13 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private int idle_timeout;
 	private int force_timeout;
 	private String open_resource;
+
+	@JsonInclude(Include.NON_NULL)
+	private String open_resource_ad; //全城热播所使用的广告所需要放行的白名单
+	
+	@JsonInclude(Include.NON_NULL)
 	private int signal_limit;
+	
 	private int max_clients;
 	//users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
 	
@@ -108,7 +115,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[9] = max_clients;
 				properties[10] = idle_timeout;
 				properties[11] = force_timeout;
-				properties[12] = open_resource;
+				properties[12] = combineOpenResource();
 				properties[13] = redirect_url;
 			}else{//单频
 				properties = new Object[11];
@@ -126,7 +133,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[6] = max_clients;
 				properties[7] = idle_timeout;
 				properties[8] = force_timeout;
-				properties[9] = open_resource;
+				properties[9] = combineOpenResource();
 				properties[10] = redirect_url;
 			}
 		}else{
@@ -149,7 +156,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[9] = max_clients;
 				properties[10] = idle_timeout;
 				properties[11] = force_timeout;
-				properties[12] = open_resource;
+				properties[12] = combineOpenResource();
 				properties[13] = remote_auth_url;
 				properties[14] = portal_server_url;
 				properties[15] = dns_default_ip;
@@ -169,7 +176,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[6] = max_clients;
 				properties[7] = idle_timeout;
 				properties[8] = force_timeout;
-				properties[9] = open_resource;
+				properties[9] = combineOpenResource();
 				properties[10] = remote_auth_url;
 				properties[11] = portal_server_url;
 				properties[12] = dns_default_ip;
@@ -335,6 +342,15 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	public static ParamSharedNetworkDTO builderDefault(){
 		return builderDefault(SharedNetworkType.SafeSecure.getKey());
 	}
+	
+	private String combineOpenResource(){
+		StringBuilder sb = new StringBuilder(this.open_resource);
+		if(!StringUtils.isEmpty(this.open_resource_ad)){
+			sb.append(StringHelper.COMMA_STRING_GAP).append(open_resource_ad);
+		}
+		return sb.toString();	
+	}
+	
 	////users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
 	public static ParamSharedNetworkDTO builderDefault(String ntype){
 		ParamSharedNetworkDTO param = new ParamSharedNetworkDTO();
@@ -554,6 +570,12 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	}
 	public void setFirstLogin(int firstLogin) {
 		this.firstLogin = firstLogin;
+	
+	public String getOpen_resource_ad() {
+		return open_resource_ad;
+	}
+	public void setOpen_resource_ad(String open_resource_ad) {
+		this.open_resource_ad = open_resource_ad;
 	}
 	public static void main(String[] argv){
 /*		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.builderDefault(null, true).builderProperties()));

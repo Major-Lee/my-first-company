@@ -265,6 +265,39 @@ public class WifiDeviceSearchMessageBuilder {
 		return SearchConditionMessage.builderSearchConditionMessage(SearchType.COUNT.id(), pack_must);
 	}
 	
+	/**
+	 * 根据设备地理位置(省市区)构建搜索message对象
+	 * @param d_province 省
+	 * @param d_city 市
+	 * @param d_distrcy 区
+	 * @return
+	 */
+	public static SearchConditionMessage builderSearchMessageWithPosition(String d_province,String d_city,String d_distrcy){
+		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionMustPack();
+		
+		if(StringUtils.isNotEmpty(d_province)){
+			SearchCondition sc_d_province = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_PROVINCE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_province);
+			pack_must.addChildSearchCondtions(sc_d_province);
+		}
+		
+		if(StringUtils.isNotEmpty(d_city)){
+			SearchCondition sc_d_city = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_CITY.getName(), SearchConditionPattern.StringEqual.getPattern(), d_city);
+			pack_must.addChildSearchCondtions(sc_d_city);
+		}
+		
+		if(StringUtils.isNotEmpty(d_city)){
+			SearchCondition sc_d_distrcy = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), d_distrcy);
+			pack_must.addChildSearchCondtions(sc_d_distrcy);
+		}
+		
+		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
+		
+		return scm;
+	}
+	
 	public static String builderSearchMessageString(SearchConditionMessage searchConditionMessage){
 		if(searchConditionMessage == null) return null;
 		return JsonHelper.getJSONString(searchConditionMessage);

@@ -600,5 +600,5 @@ public class URouterDeviceController extends BaseController{
         		uid, message, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
     }
-	
+    
 }

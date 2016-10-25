@@ -389,7 +389,7 @@ public class SharedNetworksFacadeService {
 	 * @param existIfOnFalseAndDsFalseThenOn true 存在并且on=false ds=false 则开启的共享网络  false 忽略
 	 * @return
 	 */
-	public SharedNetworkSettingDTO fetchDeviceSharedNetworkConfWhenEmptyThenCreate(String mac,boolean notExistThenOn,boolean existIfOnFalseAndDsFalseThenOn){
+	public WifiDeviceSharedNetwork fetchDeviceSharedNetworkConfWhenEmptyThenCreate(String mac,boolean notExistThenOn,boolean existIfOnFalseAndDsFalseThenOn){
 		String mac_lowercase = mac.toLowerCase();
 		WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
 		if(sharednetwork != null){
@@ -401,7 +401,7 @@ public class SharedNetworksFacadeService {
 					wifiDeviceSharedNetworkService.update(sharednetwork);
 				}
 			}
-			return settingDto;
+			return sharednetwork;
 		}else{
 			sharednetwork = new WifiDeviceSharedNetwork();
 			sharednetwork.setId(mac_lowercase);
@@ -418,7 +418,7 @@ public class SharedNetworksFacadeService {
 				sharedNetworkSettingDTO.turnOff(configDto);
 			sharednetwork.putInnerModel(sharedNetworkSettingDTO);
 			wifiDeviceSharedNetworkService.insert(sharednetwork);
-			return sharedNetworkSettingDTO;
+			return sharednetwork;
 		}
 	}
 	

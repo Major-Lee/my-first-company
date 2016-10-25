@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.helper.SharedNetworkChangeType;
+import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.async.AsyncDeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
@@ -12,6 +13,7 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportPreCheckDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
+import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupSendSortMessageDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
@@ -151,4 +153,12 @@ public class AsyncDeliverMessageService {
 		dto.setMobileno(acc);
 		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
+	
+	public void sendBatchDeviceApplyAdvertiseActionMessage(List<Advertise> adlist,char dto_type){
+		BatchDeviceApplyAdvertiseDTO dto = new BatchDeviceApplyAdvertiseDTO();
+		dto.setAdList(adlist);
+		dto.setDto_type(dto_type);
+		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
 }

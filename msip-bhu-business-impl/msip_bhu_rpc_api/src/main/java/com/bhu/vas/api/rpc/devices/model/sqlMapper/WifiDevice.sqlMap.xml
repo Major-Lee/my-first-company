@@ -336,6 +336,21 @@
 			</foreach>
 	  	</where>
 	</select>
+	
+	<select id="selectByField" resultType="java.lang.String" parameterType="map">
+	    SELECT  
+	    <if test="isDistinct !=0">
+	    	distinct
+	    </if>
+	    ${field} 
+	    FROM <include refid="modelTableName" /> 
+	    <where>
+			<if test="judge!=null and param !=null" >
+				and
+					${judge} = #{param}
+			</if>
+	    </where>
+	</select>
 	  
 	<delete id="deleteByIds" parameterType="java.util.List">
 	  	delete from <include refid="modelTableName" />
