@@ -151,14 +151,14 @@ public class AsyncDeliverMessageService {
 		UserIdentityRepairDTO dto = new UserIdentityRepairDTO();
 		dto.setHdmac(hdmac);
 		dto.setMobileno(acc);
-		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
 	public void sendBatchDeviceApplyAdvertiseActionMessage(List<Advertise> adlist,char dto_type){
 		BatchDeviceApplyAdvertiseDTO dto = new BatchDeviceApplyAdvertiseDTO();
 		dto.setAdList(adlist);
 		dto.setDto_type(dto_type);
-		asyncDeliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
 }

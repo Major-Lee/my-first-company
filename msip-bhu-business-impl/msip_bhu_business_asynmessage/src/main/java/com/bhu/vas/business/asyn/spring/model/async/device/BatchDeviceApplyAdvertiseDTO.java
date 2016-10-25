@@ -3,10 +3,10 @@ package com.bhu.vas.business.asyn.spring.model.async.device;
 import java.util.List;
 
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
-import com.bhu.vas.business.asyn.spring.builder.ActionDTO;
+import com.bhu.vas.business.asyn.spring.builder.async.AsyncDTO;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 
-public class BatchDeviceApplyAdvertiseDTO extends ActionDTO {
+public class BatchDeviceApplyAdvertiseDTO extends AsyncDTO {
 	private List<Advertise> adList;
 	private char dto_type;
 	public List<Advertise> getAdList() {
@@ -26,8 +26,8 @@ public class BatchDeviceApplyAdvertiseDTO extends ActionDTO {
 	}
 
 	@Override
-	public String getActionType() {
+	public String getAsyncType() {
 		return AsyncMessageType.BatchDeviceApplyAdvertise.getPrefix();
 	}
-	
+
 }
