@@ -202,14 +202,11 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = false) String province,
             @RequestParam(required = false) String city) {
-		try{
-	        RpcResponseDTO<List<String>> vtos = advertiseRpcService.fetchDevicePositionDistribution(province, city);
-	        SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
-		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
-		}catch(Exception ex){
-			ex.printStackTrace();
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
-		}
+	        RpcResponseDTO<List<String>> rpcResult = advertiseRpcService.fetchDevicePositionDistribution(province, city);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
     }
 }
