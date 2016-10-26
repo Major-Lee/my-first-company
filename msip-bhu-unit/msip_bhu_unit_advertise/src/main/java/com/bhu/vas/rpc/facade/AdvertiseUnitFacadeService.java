@@ -83,9 +83,9 @@ public class AdvertiseUnitFacadeService {
 	 * @return
 	 */
 	public List<String> fetchDevicePositionDistribution(String province,String city){
-		if(city !=null){
+		if(StringUtils.isNotBlank(city)){
 			return WifiDevicePositionListService.getInstance().fetchCity(city);
-		}else if(province !=null){
+		}else if(StringUtils.isNoneBlank(province)){
 			return WifiDevicePositionListService.getInstance().fetchProvince(province);
 		}else{
 			return WifiDevicePositionListService.getInstance().fetchAllProvince();
