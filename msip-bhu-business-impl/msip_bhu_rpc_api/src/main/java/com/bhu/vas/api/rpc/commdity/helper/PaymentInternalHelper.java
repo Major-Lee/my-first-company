@@ -44,7 +44,7 @@ public class PaymentInternalHelper {
 	 * @return
 	 */
 	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(Integer appid, String payment_type, 
-			String amount, String requestip, String umac, String orderid, String payment_completed_url,String channel,String version){
+			String amount, String requestip, String umac, String orderid, String payment_completed_url,String channel,String version, String payment_name){
 		Map<String, String> api_params = generatePaymentApiParamMap(appid);
 		if(api_params == null){
 			logger.info(String.format("CreatePaymentUrlCommunication generate params error orderid[%s] payment_type[%s] "
@@ -61,6 +61,9 @@ public class PaymentInternalHelper {
 		api_params.put("payment_completed_url", payment_completed_url);
 		api_params.put("channel", channel);
 		api_params.put("version", version);
+		if (!payment_name.isEmpty() && payment_name != null){
+			api_params.put("paymentName", payment_name);
+		}
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = null;
 		try {
