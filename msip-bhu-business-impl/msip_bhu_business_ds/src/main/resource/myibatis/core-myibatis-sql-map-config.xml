@@ -299,7 +299,6 @@
 		
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserSharedealDistributorView.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserIdentityAuth.sqlMap.xml" />
-		<mapper resource="com/bhu/vas/api/rpc/commdity/model/sqlMapper/CommdityPhysical.sqlMap.xml"	/>
 	</mappers>
 
 </configuration>

@@ -23,6 +23,7 @@
 	<typeAliases>
 		<typeAlias alias="order" type="com.bhu.vas.api.rpc.commdity.model.Order" />
 		<typeAlias alias="commdity" type="com.bhu.vas.api.rpc.commdity.model.Commdity" />
+		<typeAlias alias="commdityPhysical" type="com.bhu.vas.api.rpc.commdity.model.CommdityPhysical" />
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.plugin.ShardPlugin"> 
@@ -32,6 +33,7 @@
 	<mappers>
 		<mapper resource="com/bhu/vas/api/rpc/commdity/model/sqlMapper/Order.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/commdity/model/sqlMapper/Commdity.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/commdity/model/sqlMapper/CommdityPhysical.sqlMap.xml" />
 	</mappers>
 
 </configuration>
