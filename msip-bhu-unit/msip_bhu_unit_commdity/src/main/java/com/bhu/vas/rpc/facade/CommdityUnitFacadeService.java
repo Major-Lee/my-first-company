@@ -138,14 +138,7 @@ public class CommdityUnitFacadeService {
 
 	public RpcResponseDTO<CommdityPhysical> physical_get_address(String umac) {
 		try{
-			List<CommdityPhysical> findCommdityPhysical = commdityFacadeService.findCommdityPhysicalByParam(umac);
-			CommdityPhysical commdityPhysical = null;
-			if (findCommdityPhysical.size() >= 1){
-				commdityPhysical = findCommdityPhysical.get(0);
-			}
-			if (commdityPhysical == null){
-				commdityPhysical = new CommdityPhysical();
-			}
+			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityPhysical);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -158,10 +151,10 @@ public class CommdityUnitFacadeService {
 	public RpcResponseDTO<CommdityPhysical> physical_set_address(String umac, String uname, String acc,
 			String address) {
 		try{
-			int count = commdityFacadeService.countCommdityPhysicalByParam(umac);
-			CommdityPhysical commdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address);
-			if (count > 0){
-				commdityFacadeService.updateCommdityPhysical(commdityPhysical);
+			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
+			if (commdityPhysical != null){
+				CommdityPhysical newCommdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address);
+				commdityFacadeService.updateCommdityPhysical(newCommdityPhysical);
 			}else{
 				commdityFacadeService.insertCommdityPhysical(commdityPhysical);
 			}

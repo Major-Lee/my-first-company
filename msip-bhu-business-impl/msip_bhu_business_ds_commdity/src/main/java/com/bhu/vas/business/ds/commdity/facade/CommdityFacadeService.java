@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
@@ -82,23 +81,6 @@ public class CommdityFacadeService {
 		return commdity;
 	}
 	
-	public List<CommdityPhysical> findCommdityPhysicalByParam(String umac){
-		ModelCriteria mc = new ModelCriteria();
-		if(StringUtils.isNotEmpty(umac)){
-			mc.createCriteria().andColumnEqualTo("id", umac).andSimpleCaulse("1=1");
-		}
-
-		return commdityPhysicalService.findModelByModelCriteria(mc);
-	}
-	
-	public int countCommdityPhysicalByParam(String umac){
-		ModelCriteria mc = new ModelCriteria();
-		
-		if(StringUtils.isNotEmpty(umac)){
-			mc.createCriteria().andColumnEqualTo("id", umac).andSimpleCaulse("1=1");
-		}
-		return commdityPhysicalService.countByModelCriteria(mc);
-	}
 	
 	public CommdityPhysical updateCommdityPhysical(CommdityPhysical commdityPhysical){
 		return commdityPhysicalService.update(commdityPhysical);
