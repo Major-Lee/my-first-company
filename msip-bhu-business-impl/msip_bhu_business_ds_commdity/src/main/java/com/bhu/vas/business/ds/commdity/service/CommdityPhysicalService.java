@@ -12,6 +12,7 @@ import com.smartwork.msip.business.abstractmsd.service.AbstractCommdityService;
 @Transactional("commdityTransactionManager")
 public class CommdityPhysicalService extends AbstractCommdityService<String, CommdityPhysical, CommdityPhysicalDao>{
 	@Resource
+	@Override
 	public void setEntityDao(CommdityPhysicalDao commdityPhysicalDao) {
 		super.setEntityDao(commdityPhysicalDao);
 	}
