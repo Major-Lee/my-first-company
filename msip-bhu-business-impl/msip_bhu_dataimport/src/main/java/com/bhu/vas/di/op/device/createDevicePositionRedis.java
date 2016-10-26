@@ -40,5 +40,6 @@ public class createDevicePositionRedis {
 				}
 			}
 		}
+		System.exit(0);;
 	}
 }
