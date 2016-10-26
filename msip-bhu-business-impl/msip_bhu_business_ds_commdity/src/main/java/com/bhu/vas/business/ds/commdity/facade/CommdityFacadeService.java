@@ -88,6 +88,7 @@ public class CommdityFacadeService {
 		if(StringUtils.isNotEmpty(umac)){
 			criteria.andColumnEqualTo("id", umac);
 		}
+
 		return commdityPhysicalService.findModelByModelCriteria(mc);
 	}
 	
