@@ -25,20 +25,18 @@
 	</sql>  
 	
 	<sql id="modelInsertValues">
-	    	#{id},
+			#{id},
 	    	#{extension_content},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-			id = #{id},
 	    	extension_content=#{extension_content},
 	    	updated_at=#{updated_at}
 	</sql> 		
 	
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-			id,
 	    	extension_content,
 	    	updated_at
 	    ]]>
@@ -92,6 +90,9 @@
 		</where>
 	</select>
 	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from <include refid="modelTableName" /> where id=#{id}
+	</delete>
 	
 	<delete id="delete" parameterType="commdityPhysical">
 		delete from <include refid="modelTableName" />
