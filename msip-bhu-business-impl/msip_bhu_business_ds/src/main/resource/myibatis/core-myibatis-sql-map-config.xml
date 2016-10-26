@@ -304,8 +304,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserIdentityAuth.sqlMap.xml" />
 		<!-- 广告 -->
 		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/Advertise.sqlMap.xml" />
-		<!-- 购买实体商品 -->
-		<mapper resource="com/bhu/vas/api/rpc/commdity/model/sqlMapper/CommdityPhysical.sqlMap.xml"	/>
+
 	</mappers>
 
 </configuration>
