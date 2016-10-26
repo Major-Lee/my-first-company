@@ -50,7 +50,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 			String url,String domain, String province, String city, String district,String description,String title,
 			long start, long end) {
 		logger.info(String.format("createNewAdvertise with uid[%s] image[%s] url[%s] domain[%s] province[%s] city[%s] district[%s] title[%s] description[%s] start[%s] start[%s]",
-				uid, image, url,domain, province, city, district,description, start, end));
+				uid, image, url,domain,title, province, city, district,description, start, end));
 		return advertiseUnitFacadeService.createNewAdvertise(uid, image, url,domain, province, city, district,description,title, start, end);
 	}
 
@@ -59,8 +59,8 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 			String url, String domain, String province, String city,
 			String district, String description, String title, long start,
 			long end) {
-		logger.info(String.format("updateAdvertise with uid[%s] advertiseId[%s] image[%s] url[%s] domain[%s] province[%s] city[%s] district[%s] title[%s] description[%s] start[%s] start[%s]",
-				uid,advertiseId, image, url,domain, province, city, district,description, start, end));
+		logger.info(String.format("updateAdvertise with uid[%s] advertiseId[%s] image[%s] url[%s] domain[%s] province[%s] city[%s] district[%s] title[%s] description[%s] start[%s] end[%s]",
+				uid,advertiseId, image, url,domain, province, city, district,title,description, start, end));
 		return advertiseUnitFacadeService.updateAdvertise(uid,advertiseId, image, url,domain, province, city, district,description,title, start, end);
 	}
 

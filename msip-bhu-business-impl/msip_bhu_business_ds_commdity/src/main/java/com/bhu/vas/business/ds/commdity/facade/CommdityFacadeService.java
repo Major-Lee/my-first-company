@@ -84,9 +84,8 @@ public class CommdityFacadeService {
 	
 	public List<CommdityPhysical> findCommdityPhysicalByParam(String umac){
 		ModelCriteria mc = new ModelCriteria();
-		Criteria criteria = mc.createCriteria();
 		if(StringUtils.isNotEmpty(umac)){
-			criteria.andColumnEqualTo("id", umac);
+			mc.createCriteria().andColumnEqualTo("id", umac);
 		}
 
 		return commdityPhysicalService.findModelByModelCriteria(mc);
@@ -94,9 +93,9 @@ public class CommdityFacadeService {
 	
 	public int countCommdityPhysicalByParam(String umac){
 		ModelCriteria mc = new ModelCriteria();
-		Criteria criteria = mc.createCriteria();
+		
 		if(StringUtils.isNotEmpty(umac)){
-			criteria.andColumnEqualTo("id", umac);
+			mc.createCriteria().andColumnEqualTo("id", umac);
 		}
 		return commdityPhysicalService.countByModelCriteria(mc);
 	}
