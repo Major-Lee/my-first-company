@@ -6,7 +6,6 @@
 
   <resultMap id="modelResult" type="commdityPhysical">
     <id property="id" column="id"/>
-    <id property="umac" column="umac"/>
     <result property="extension_content" column="extension_content"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
