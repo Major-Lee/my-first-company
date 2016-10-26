@@ -45,7 +45,7 @@ public class AdvertiseBackendTaskLoader {
 	
 	public void omittedOrTimelyAdApplyNotify(String nowDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnGreaterThan("start", nowDate).andColumnLessThan("end", nowDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPublish.getType());
+		mc.createCriteria().andColumnLessThan("start", nowDate).andColumnGreaterThan("end", nowDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("ready applied ad sum" + lists.size());
@@ -62,7 +62,7 @@ public class AdvertiseBackendTaskLoader {
 	
 	public void AdInvalidNotify(String nowDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnGreaterThan("end", nowDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
+		mc.createCriteria().andColumnEqualTo("end", nowDate).andColumnGreaterThan("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("ready invalid ad sum" + lists.size());
