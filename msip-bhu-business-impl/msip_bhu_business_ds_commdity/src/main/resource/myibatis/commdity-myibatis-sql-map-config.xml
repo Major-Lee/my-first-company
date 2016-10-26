@@ -33,7 +33,7 @@
 	<mappers>
 		<mapper resource="com/bhu/vas/api/rpc/commdity/model/sqlMapper/Order.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/commdity/model/sqlMapper/Commdity.sqlMap.xml" />
-				<!-- 购买实体商品 -->
+		<!-- 购买实体商品 -->
 		<mapper resource="com/bhu/vas/api/rpc/commdity/model/sqlMapper/CommdityPhysical.sqlMap.xml"	/>
 	</mappers>
 
