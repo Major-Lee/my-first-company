@@ -88,7 +88,6 @@ public class CommdityFacadeService {
 		if(StringUtils.isNotEmpty(umac)){
 			criteria.andColumnEqualTo("id", umac);
 		}
-		mc.setOrderByClause("updated_at desc");
 		return commdityPhysicalService.findModelByModelCriteria(mc);
 	}
 	
