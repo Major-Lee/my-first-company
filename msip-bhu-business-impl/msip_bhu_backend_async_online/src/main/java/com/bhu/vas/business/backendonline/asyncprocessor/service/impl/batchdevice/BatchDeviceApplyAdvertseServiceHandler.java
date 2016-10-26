@@ -25,6 +25,7 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
+import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
@@ -57,13 +58,18 @@ public class BatchDeviceApplyAdvertseServiceHandler implements
 
 	@Resource
 	private IDaemonRpcService daemonRpcService;
+	
+	@Resource
+	private AdvertiseService advertiseService;
 
 	@Override
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
 		final BatchDeviceApplyAdvertiseDTO adDTO = JsonHelper.getDTO(message,
 				BatchDeviceApplyAdvertiseDTO.class);
-		for (final Advertise ad : adDTO.getAdList()) {
+		List<Advertise> adlists = advertiseService.findByIds(adDTO.getAdList());
+		
+		for (final Advertise ad : adlists) {
 			final int batch = 200;
 			final List<String> macList = new ArrayList<String>();
 			wifiDeviceDataSearchService.iteratorWithPosition(ad.getProvince(),
@@ -78,7 +84,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements
 							test(batch, macList, ad.getDomain(),
 									adDTO.getDto_type(), ad);
 						}
-					});
+			});
 		}
 	}
 

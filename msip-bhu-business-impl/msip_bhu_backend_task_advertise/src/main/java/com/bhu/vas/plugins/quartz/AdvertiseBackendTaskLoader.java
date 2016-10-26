@@ -1,6 +1,7 @@
 package com.bhu.vas.plugins.quartz;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -49,30 +50,32 @@ public class AdvertiseBackendTaskLoader {
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("ready applied ad sum" + lists.size());
-			
+			List<Integer> adIds = new ArrayList<Integer>();
 			for(Advertise ad : lists){
+				adIds.add(ad.getId());
 				ad.setState(BusinessEnumType.AdvertiseType.OnPublish.getType());
 			}
 			advertiseService.updateAll(lists);
 			logger.info("apply notify backend ..start");
-			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(lists,IDTO.ACT_ADD);
+			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_ADD);
 			logger.info("apply notify backend ..done");
 		}
 	}
 	
 	public void AdInvalidNotify(String nowDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("end", nowDate).andColumnGreaterThan("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
+		mc.createCriteria().andColumnLessThan("end", nowDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("ready invalid ad sum" + lists.size());
-			
+			List<Integer> adIds = new ArrayList<Integer>();
 			for(Advertise ad : lists){
+				adIds.add(ad.getId());
 				ad.setState(BusinessEnumType.AdvertiseType.Published.getType());
 			}
 			advertiseService.updateAll(lists);
 			logger.info("invalid notify backend ..start");
-			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(lists,IDTO.ACT_DELETE);
+			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_DELETE);
 			logger.info("invalid notify backend ..done");
 		}
 	}
