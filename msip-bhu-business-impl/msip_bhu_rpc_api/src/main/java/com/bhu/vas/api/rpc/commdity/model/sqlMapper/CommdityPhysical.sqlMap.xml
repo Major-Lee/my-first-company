@@ -93,7 +93,7 @@
 	</select>
 	
 	
-	<delete id="delete" parameterType="CommdityPhysical">
+	<delete id="delete" parameterType="commdityPhysical">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -102,11 +102,11 @@
 		</where>
 	</delete>
 	
-	<insert id="insert" parameterType="CommdityPhysical">
+	<insert id="insert" parameterType="commdityPhysical">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="CommdityPhysical">
+	<update id="update" parameterType="commdityPhysical">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
