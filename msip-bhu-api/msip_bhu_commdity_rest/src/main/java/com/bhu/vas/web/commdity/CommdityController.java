@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
+import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
-import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -91,7 +91,7 @@ public class CommdityController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) String umac) {
 		String umac_lower = umac.toLowerCase();
-		RpcResponseDTO<CommdityPhysical> rpcResult = commdityRpcService.physical_get_address(umac_lower);
+		RpcResponseDTO<CommdityPhysicalDTO> rpcResult = commdityRpcService.physical_get_address(umac_lower);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
@@ -109,7 +109,7 @@ public class CommdityController extends BaseController{
 			@RequestParam(required = true) String acc,
 			@RequestParam(required = true) String address) {
 		String umac_lower = umac.toLowerCase();
-		RpcResponseDTO<CommdityPhysical> rpcResult = commdityRpcService.physical_set_address(umac_lower,uname,acc,address);
+		RpcResponseDTO<CommdityPhysicalDTO> rpcResult = commdityRpcService.physical_set_address(umac_lower,uname,acc,address);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

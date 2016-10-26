@@ -11,7 +11,6 @@ import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
-import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
 import com.bhu.vas.rpc.facade.CommdityUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -36,13 +35,13 @@ public class CommdityRpcService implements ICommdityRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<CommdityPhysical> physical_get_address(String umac) {
+	public RpcResponseDTO<CommdityPhysicalDTO> physical_get_address(String umac) {
 		logger.info(String.format("physical_get_address with umac[%s]", umac));
 		return commdityUnitFacadeService.physical_get_address(umac);
 	}
 
 	@Override
-	public RpcResponseDTO<CommdityPhysical> physical_set_address(String umac, String uname, String acc,
+	public RpcResponseDTO<CommdityPhysicalDTO> physical_set_address(String umac, String uname, String acc,
 			String address) {
 		logger.info(String.format("physical_set_address with umac[%s] uname[%s] acc[%s] address[%s]", 
 				umac, uname, acc, address));

@@ -44,6 +44,7 @@ import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -929,8 +930,7 @@ public class OrderFacadeService {
 		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
 		}
-		
-		String amount = String.valueOf(count * Integer.parseInt(commdity.getPrice()));
+		String amount = ArithHelper.getCuttedCurrency(ArithHelper.mul(Double.parseDouble(count+""), Double.parseDouble(commdity.getPrice()))+"");
 		
 		//订单生成
 		Order order = new Order();
@@ -958,7 +958,7 @@ public class OrderFacadeService {
 	public CommdityPhysical buildCommdityPhysical(String umac,String uname, String acc, String address){
 		CommdityPhysical order = new CommdityPhysical();
 		order.setId(umac);
-		CommdityPhysicalDTO dto = CommdityPhysicalDTO.buildCommdityPhysicalDTO(uname, acc, address);
+		CommdityPhysicalDTO dto = CommdityPhysicalDTO.buildCommdityPhysicalDTO(umac,uname, acc, address);
 		order.setExtension_content(JsonHelper.getJSONString(dto));
 		return order;
 	}

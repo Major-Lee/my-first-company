@@ -14,6 +14,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
+import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
@@ -26,6 +27,7 @@ import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -136,13 +138,14 @@ public class CommdityUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<CommdityPhysical> physical_get_address(String umac) {
+	public RpcResponseDTO<CommdityPhysicalDTO> physical_get_address(String umac) {
 		try{
 			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
 			if (commdityPhysical == null){
 				commdityPhysical = new CommdityPhysical();
 			}
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityPhysical);
+			CommdityPhysicalDTO dto = JsonHelper.getDTO(commdityPhysical.getExtension_content(), CommdityPhysicalDTO.class);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
@@ -151,7 +154,7 @@ public class CommdityUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<CommdityPhysical> physical_set_address(String umac, String uname, String acc,
+	public RpcResponseDTO<CommdityPhysicalDTO> physical_set_address(String umac, String uname, String acc,
 			String address) {
 		try{
 			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
@@ -161,7 +164,8 @@ public class CommdityUnitFacadeService {
 			}else{
 				commdityFacadeService.insertCommdityPhysical(newCommdityPhysical);
 			}
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityPhysical);
+			CommdityPhysicalDTO dto = JsonHelper.getDTO(newCommdityPhysical.getExtension_content(), CommdityPhysicalDTO.class);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
