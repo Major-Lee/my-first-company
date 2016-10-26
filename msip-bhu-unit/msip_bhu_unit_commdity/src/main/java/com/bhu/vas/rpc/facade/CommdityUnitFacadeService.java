@@ -139,6 +139,9 @@ public class CommdityUnitFacadeService {
 	public RpcResponseDTO<CommdityPhysical> physical_get_address(String umac) {
 		try{
 			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
+			if (commdityPhysical == null){
+				commdityPhysical = new CommdityPhysical();
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityPhysical);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -152,11 +155,11 @@ public class CommdityUnitFacadeService {
 			String address) {
 		try{
 			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
+			CommdityPhysical newCommdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address);
 			if (commdityPhysical != null){
-				CommdityPhysical newCommdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address);
 				commdityFacadeService.updateCommdityPhysical(newCommdityPhysical);
 			}else{
-				commdityFacadeService.insertCommdityPhysical(commdityPhysical);
+				commdityFacadeService.insertCommdityPhysical(newCommdityPhysical);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityPhysical);
 		}catch(BusinessI18nCodeException bex){
