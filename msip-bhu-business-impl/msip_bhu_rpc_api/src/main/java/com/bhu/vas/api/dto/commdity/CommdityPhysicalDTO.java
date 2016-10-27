@@ -2,12 +2,20 @@ package com.bhu.vas.api.dto.commdity;
 
 @SuppressWarnings("serial")
 public class CommdityPhysicalDTO implements java.io.Serializable{
+	//用户mac
+	private String umac;
 	//收货人
 	private String uname;
 	//手机号
 	private String acc;
 	//收货地址
 	private String address;
+	public String getUmac() {
+		return umac;
+	}
+	public void setUmac(String umac) {
+		this.umac = umac;
+	}
 	public String getUname() {
 		return uname;
 	}
@@ -27,8 +35,9 @@ public class CommdityPhysicalDTO implements java.io.Serializable{
 		this.address = address;
 	}
 	
-	public static CommdityPhysicalDTO buildCommdityPhysicalDTO(String uname, String acc, String address){
+	public static CommdityPhysicalDTO buildCommdityPhysicalDTO(String umac, String uname, String acc, String address){
 		CommdityPhysicalDTO dto = new CommdityPhysicalDTO();
+		dto.setUmac(umac);
 		dto.setAcc(acc);
 		dto.setUname(uname);
 		dto.setAddress(address);

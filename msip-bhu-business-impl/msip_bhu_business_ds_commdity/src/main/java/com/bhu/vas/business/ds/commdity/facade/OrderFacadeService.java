@@ -958,7 +958,7 @@ public class OrderFacadeService {
 	public CommdityPhysical buildCommdityPhysical(String umac,String uname, String acc, String address){
 		CommdityPhysical order = new CommdityPhysical();
 		order.setId(umac);
-		CommdityPhysicalDTO dto = CommdityPhysicalDTO.buildCommdityPhysicalDTO(uname, acc, address);
+		CommdityPhysicalDTO dto = CommdityPhysicalDTO.buildCommdityPhysicalDTO(umac,uname, acc, address);
 		order.setExtension_content(JsonHelper.getJSONString(dto));
 		return order;
 	}

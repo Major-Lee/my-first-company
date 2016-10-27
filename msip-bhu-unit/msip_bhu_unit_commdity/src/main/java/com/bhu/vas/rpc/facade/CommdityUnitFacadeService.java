@@ -138,17 +138,14 @@ public class CommdityUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<CommdityPhysical> physical_get_address(String umac) {
+	public RpcResponseDTO<CommdityPhysicalDTO> physical_get_address(String umac) {
 		try{
-			List<CommdityPhysical> findCommdityPhysical = commdityFacadeService.findCommdityPhysicalByParam(umac);
-			CommdityPhysical commdityPhysical = null;
-			if (findCommdityPhysical.size() >= 1){
-				commdityPhysical = findCommdityPhysical.get(0);
-			}
+			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
 			if (commdityPhysical == null){
 				commdityPhysical = new CommdityPhysical();
 			}
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityPhysical);
+			CommdityPhysicalDTO dto = commdityPhysical.getInnerModel();
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
@@ -157,17 +154,18 @@ public class CommdityUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<CommdityPhysical> physical_set_address(String umac, String uname, String acc,
+	public RpcResponseDTO<CommdityPhysicalDTO> physical_set_address(String umac, String uname, String acc,
 			String address) {
 		try{
-			int count = commdityFacadeService.countCommdityPhysicalByParam(umac);
-			CommdityPhysical commdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address);
-			if (count > 0){
-				commdityFacadeService.updateCommdityPhysical(commdityPhysical);
+			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
+			CommdityPhysical newcommdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address);
+			if (commdityPhysical != null){
+				commdityFacadeService.updateCommdityPhysical(newcommdityPhysical);
 			}else{
-				commdityFacadeService.insertCommdityPhysical(commdityPhysical);
+				commdityFacadeService.insertCommdityPhysical(newcommdityPhysical);
 			}
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityPhysical);
+			CommdityPhysicalDTO dto = newcommdityPhysical.getInnerModel();
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
@@ -82,31 +83,16 @@ public class CommdityFacadeService {
 		return commdity;
 	}
 	
-	public List<CommdityPhysical> findCommdityPhysicalByParam(String umac){
-		ModelCriteria mc = new ModelCriteria();
-		Criteria criteria = mc.createCriteria();
-		if(StringUtils.isNotEmpty(umac)){
-			criteria.andColumnEqualTo("id", umac);
-		}
-		mc.setOrderByClause("updated_at desc");
-		return commdityPhysicalService.findModelByModelCriteria(mc);
-	}
-	
-	public int countCommdityPhysicalByParam(String umac){
-		ModelCriteria mc = new ModelCriteria();
-		Criteria criteria = mc.createCriteria();
-		if(StringUtils.isNotEmpty(umac)){
-			criteria.andColumnEqualTo("id", umac);
-		}
-		return commdityPhysicalService.countByModelCriteria(mc);
-	}
-	
 	public CommdityPhysical updateCommdityPhysical(CommdityPhysical commdityPhysical){
 		return commdityPhysicalService.update(commdityPhysical);
 	}
 	
 	public CommdityPhysical insertCommdityPhysical(CommdityPhysical commdityPhysical){
 		return commdityPhysicalService.insert(commdityPhysical);
+	}
+	
+	public CommdityPhysicalDTO getCommdityPhysicalDTO(String umac){
+		return commdityPhysicalService.getById(umac).getInnerModel();
 	}
 	
 	/**
