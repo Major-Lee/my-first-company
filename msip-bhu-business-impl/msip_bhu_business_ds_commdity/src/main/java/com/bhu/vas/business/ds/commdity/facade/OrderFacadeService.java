@@ -942,7 +942,10 @@ public class OrderFacadeService {
 		order.setType(commdity.getCategory());
 		order.setChannel(channel);
 		order.setAmount(amount);
-		order.setContext(userInfo);
+		if (userInfo.length() > 255)
+			order.setContext(userInfo.substring(0, 255));
+		else
+			order.setContext(userInfo);
 		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setMac(mac);
