@@ -230,76 +230,80 @@ public class AsyncOrderPaymentNotifyService{
 	/*			Integer commdityid = order.getCommdityid();
 				Commdity commdity = commdityService.getById(commdityid);
 				if(commdity != null && CommdityCategory.isInternetLimit(commdity.getCategory())){*/
-					//进行订单分成处理逻辑
-					//String dmac = order.getMac();
-					double amount = Double.parseDouble(order.getAmount());
-					//userWalletFacadeService.sharedealCashToUserWallet(order.getUid(), amount, orderid);
-					OrderUmacType uMacType = OrderUmacType.fromKey(order.getUmactype());
-					if(uMacType == null){
-						uMacType = OrderUmacType.Terminal;
-					}
-					if(StringUtils.isEmpty(order.getPayment_type())){
-						order.setPayment_type(BusinessEnumType.unknownPaymentType);
-					}
-					/*StringBuilder sb_description = new StringBuilder();
-					if(uMacType != null){
-						sb_description.append(uMacType.getName());
-					}
-					if(StringUtils.isNotEmpty(order.getPayment_type())){
-						if(sb_description.length()>0)	
-							sb_description.append(StringHelper.MINUS_CHAR_GAP);
-						sb_description.append(order.getPayment_type());
-					}*/
-					final String order_payment_type = order.getPayment_type();
-					final Integer order_umac_type = order.getUmactype();
-					final String mac = order.getMac();
-					final String umac = order.getUmac();
-					OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
-					userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), order.getUmac(), amount, orderid, order.getPaymented_at(),
-							String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
-									orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP),
-									new IWalletSharedealNotifyCallback(){
-										@Override
-										public String notifyCashSharedealOper(int uid, double cash) {
-											logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper: uid[%s] "
-													+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
-											if(uid > 0 && cash >= 0.01){
-												SharedealNotifyPushDTO sharedeal_push_dto = new SharedealNotifyPushDTO();
-												sharedeal_push_dto.setMac(mac);
-												sharedeal_push_dto.setUid(uid);
-												sharedeal_push_dto.setCash(ArithHelper.getCuttedCurrency(String.valueOf(cash)));
-												sharedeal_push_dto.setHd_mac(umac);
-												sharedeal_push_dto.setPayment_type(order_payment_type);
-												sharedeal_push_dto.setUmac_type(order_umac_type);
-												pushService.pushSharedealNotify(sharedeal_push_dto);
-											}
-											logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper successful: uid[%s] "
-													+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
-											return null;
+				//进行订单分成处理逻辑
+				//String dmac = order.getMac();
+				double amount = Double.parseDouble(order.getAmount());
+				//userWalletFacadeService.sharedealCashToUserWallet(order.getUid(), amount, orderid);
+				OrderUmacType uMacType = OrderUmacType.fromKey(order.getUmactype());
+				if(uMacType == null){
+					uMacType = OrderUmacType.Terminal;
+				}
+				if(StringUtils.isEmpty(order.getPayment_type())){
+					order.setPayment_type(BusinessEnumType.unknownPaymentType);
+				}
+				/*StringBuilder sb_description = new StringBuilder();
+				if(uMacType != null){
+					sb_description.append(uMacType.getName());
+				}
+				if(StringUtils.isNotEmpty(order.getPayment_type())){
+					if(sb_description.length()>0)	
+						sb_description.append(StringHelper.MINUS_CHAR_GAP);
+					sb_description.append(order.getPayment_type());
+				}*/
+				final String order_payment_type = order.getPayment_type();
+				final Integer order_umac_type = order.getUmactype();
+				final String mac = order.getMac();
+				final String umac = order.getUmac();
+				OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+				userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), order.getUmac(), amount, orderid, order.getPaymented_at(),
+						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
+								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP),
+								new IWalletSharedealNotifyCallback(){
+									@Override
+									public String notifyCashSharedealOper(int uid, double cash) {
+										logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper: uid[%s] "
+												+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
+										if(uid > 0 && cash >= 0.01){
+											SharedealNotifyPushDTO sharedeal_push_dto = new SharedealNotifyPushDTO();
+											sharedeal_push_dto.setMac(mac);
+											sharedeal_push_dto.setUid(uid);
+											sharedeal_push_dto.setCash(ArithHelper.getCuttedCurrency(String.valueOf(cash)));
+											sharedeal_push_dto.setHd_mac(umac);
+											sharedeal_push_dto.setPayment_type(order_payment_type);
+											sharedeal_push_dto.setUmac_type(order_umac_type);
+											pushService.pushSharedealNotify(sharedeal_push_dto);
 										}
+										logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper successful: uid[%s] "
+												+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
+										return null;
+									}
 					});
 					
-					/*userWalletFacadeService.sharedealCashToUserWallet(order.getMac(), amount, orderid, 
-							String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
-									orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
-					/*userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
-							String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
-									orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
+				/*userWalletFacadeService.sharedealCashToUserWallet(order.getMac(), amount, orderid, 
+						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
+								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
+				/*userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
+						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
+								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
 				//}
-			}else if (CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
-				if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
-					
-					accessInternetTime = commdity.getApp_deliver_detail();
-					order = orderFacadeService.CommdityPhysicalOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
-							payment_type, payment_proxy_type, accessInternetTime);
-					CommdityPhysicalDTO commdityPhysicalDTO = commdityFacadeService.getCommdityPhysicalDTO(order.getUmac());
-					if (commdityPhysicalDTO != null){
-						String acc = commdityPhysicalDTO.getAcc();
-						if (PhoneHelper.isValidPhoneCharacter(86, acc)){
-							String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
-								RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
-							String response_snk_stop = SmsSenderFactory.buildSender(
-								BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
+			}
+		}else if (CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
+			
+			accessInternetTime = commdity.getApp_deliver_detail();
+			order = orderFacadeService.CommdityPhysicalOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
+					payment_type, payment_proxy_type, accessInternetTime);
+				
+			//判断订单状态为支付成功或发货成功
+			Integer order_status = order.getStatus();
+			if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
+				CommdityPhysicalDTO commdityPhysicalDTO = commdityFacadeService.getCommdityPhysicalDTO(order.getUmac());
+				if (commdityPhysicalDTO != null){
+					String acc = commdityPhysicalDTO.getAcc();
+					if (PhoneHelper.isValidPhoneCharacter(86, acc)){
+						String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
+							RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
+						String response_snk_stop = SmsSenderFactory.buildSender(
+							BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
 							logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",acc,smsg_snk_stop,response_snk_stop));
 						}
 					}else{
@@ -307,7 +311,6 @@ public class AsyncOrderPaymentNotifyService{
 					}
 				}
 			}
-		}
 	}
 	
 	/**
