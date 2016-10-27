@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
@@ -91,9 +90,6 @@ public class CommdityFacadeService {
 		return commdityPhysicalService.insert(commdityPhysical);
 	}
 	
-	public CommdityPhysicalDTO getCommdityPhysicalDTO(String umac){
-		return commdityPhysicalService.getById(umac).getInnerModel();
-	}
 	/**
 	 * 如果商品是区间金额 则返回随机金额
 	 * 如果不是 正常返回

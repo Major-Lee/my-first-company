@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
-import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
@@ -44,6 +43,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerSe
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
+import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
@@ -53,7 +53,6 @@ import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -91,6 +90,9 @@ public class AsyncOrderPaymentNotifyService{
 	
 	@Resource
 	private CommdityFacadeService commdityFacadeService;
+	
+	@Resource
+	private CommdityPhysicalService commdityPhysicalService;
 	
 	@PostConstruct
 	public void initialize() {
@@ -209,7 +211,7 @@ public class AsyncOrderPaymentNotifyService{
 		//支付完成时进行设备的uid获取并设置订单
 		//User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
 		//User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
-		Commdity commdity = commdityFacadeService.validateCommdity( order.getCommdityid());
+		Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
 		User bindUser = null;
 		if(order.getUid() != null){
 			bindUser = userService.getById(order.getUid());
@@ -288,29 +290,25 @@ public class AsyncOrderPaymentNotifyService{
 				//}
 			}
 		}else if (CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
-			
+				
 			accessInternetTime = commdity.getApp_deliver_detail();
 			order = orderFacadeService.CommdityPhysicalOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
-					payment_type, payment_proxy_type, accessInternetTime);
-				
-			//判断订单状态为支付成功或发货成功
+						payment_type, payment_proxy_type, accessInternetTime);
+					
+				//判断订单状态为支付成功或发货成功
 			Integer order_status = order.getStatus();
 			if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
-				CommdityPhysicalDTO commdityPhysicalDTO = commdityFacadeService.getCommdityPhysicalDTO(order.getUmac());
-				if (commdityPhysicalDTO != null){
-					String acc = commdityPhysicalDTO.getAcc();
-					if (PhoneHelper.isValidPhoneCharacter(86, acc)){
-						String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
-							RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
-						String response_snk_stop = SmsSenderFactory.buildSender(
-							BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
-							logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",acc,smsg_snk_stop,response_snk_stop));
-						}
-					}else{
-						logger.info(String.format("send CommdityPhysical is null or acc invalid orderid[%s]",order.getId()));
-					}
-				}
+					
+				String acc = commdityPhysicalService.getById(order.getUmac()).getInnerModel().getAcc();
+				String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
+						RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
+				String response_snk_stop = SmsSenderFactory.buildSender(
+						BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
+				logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",acc,smsg_snk_stop,response_snk_stop));
+			}else{
+				logger.info(String.format("PayFailed or DeliverFailed orderid[%s]",order.getId()));
 			}
+		}
 	}
 	
 	/**
