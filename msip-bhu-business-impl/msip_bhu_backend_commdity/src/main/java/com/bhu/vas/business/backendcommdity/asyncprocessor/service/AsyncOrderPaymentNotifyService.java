@@ -52,6 +52,7 @@ import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -207,14 +208,14 @@ public class AsyncOrderPaymentNotifyService{
 		//支付完成时进行设备的uid获取并设置订单
 		//User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
 		//User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
-		Integer commdityid = order.getCommdityid();
+		Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
 		User bindUser = null;
 		if(order.getUid() != null){
 			bindUser = userService.getById(order.getUid());
 		}
 		String accessInternetTime = null;
 		//根据商品id判断是打赏还是购买实体商品
-		if (CommdityCategory.correct(commdityid, CommdityCategory.RewardInternetLimit)){
+		if (CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardInternetLimit)){
 			
 			accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
 			
@@ -284,25 +285,21 @@ public class AsyncOrderPaymentNotifyService{
 							String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
 									orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
 				//}
-			}else if (CommdityCategory.correct(commdityid, CommdityCategory.RewardMonthlyServiceLimit)){
-				Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+			}else if (CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
+				
 				accessInternetTime = commdity.getApp_deliver_detail();
-				order = orderFacadeService.rewardOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
+				order = orderFacadeService.CommdityPhysicalOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
 						payment_type, payment_proxy_type, accessInternetTime);
-				String context = order.getContext();
-				String[] split = context.split(",");
-				String mobileno = null;
-				String commdityPhysicalCount = null;
-				if (split.length >= 2){
-					mobileno = split[1];
-					commdityPhysicalCount = split[0];
+				String acc = commdityFacadeService.getCommdityPhysicalDTO(order.getUmac()).getAcc();
+				if (PhoneHelper.isValidPhoneCharacter(86, acc)){
 					String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
 							RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
 	   				String response_snk_stop = SmsSenderFactory.buildSender(
-							BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, mobileno);
-					logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",mobileno,smsg_snk_stop,response_snk_stop));
+							BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
+					logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",acc,smsg_snk_stop,response_snk_stop));
+				}else{
+					logger.info(String.format("send CommdityPhysical acc  invalid "));
 				}
-				logger.info(String.format("send CommdityPhysical acc[%s] commdityPhysicalCount[%s]",mobileno,commdityPhysicalCount));
 				
 			}
 		}
