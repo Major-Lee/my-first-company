@@ -4,10 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
@@ -89,10 +87,6 @@ public class CommdityFacadeService {
 	
 	public CommdityPhysical insertCommdityPhysical(CommdityPhysical commdityPhysical){
 		return commdityPhysicalService.insert(commdityPhysical);
-	}
-	
-	public CommdityPhysicalDTO getCommdityPhysicalDTO(String umac){
-		return commdityPhysicalService.getById(umac).getInnerModel();
 	}
 	
 	/**
