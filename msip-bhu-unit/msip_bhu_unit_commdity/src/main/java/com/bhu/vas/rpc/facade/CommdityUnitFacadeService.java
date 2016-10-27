@@ -139,6 +139,12 @@ public class CommdityUnitFacadeService {
 
 	public RpcResponseDTO<CommdityPhysicalDTO> physical_get_address(String umac) {
 		try{
+			if(StringUtils.isEmpty(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			if(!StringHelper.isValidMac(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+			}
 			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
 			if (commdityPhysical == null){
 				commdityPhysical = new CommdityPhysical();
@@ -156,6 +162,13 @@ public class CommdityUnitFacadeService {
 	public RpcResponseDTO<CommdityPhysicalDTO> physical_set_address(String umac, String uname, String acc,
 			String address) {
 		try{
+			if(StringUtils.isEmpty(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			if(!StringHelper.isValidMac(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+			}
+			
 			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
 			CommdityPhysical newcommdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address);
 			if (commdityPhysical != null){
