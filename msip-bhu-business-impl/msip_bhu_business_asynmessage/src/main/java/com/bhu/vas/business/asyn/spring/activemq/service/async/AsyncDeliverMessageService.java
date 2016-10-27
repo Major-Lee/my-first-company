@@ -5,9 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.helper.SharedNetworkChangeType;
-import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.async.AsyncDeliverMessageQueueProducer;
-import com.bhu.vas.business.asyn.spring.builder.ActionMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
@@ -156,8 +154,8 @@ public class AsyncDeliverMessageService {
 	
 	public void sendBatchDeviceApplyAdvertiseActionMessage(List<Integer> adIds,char dto_type){
 		BatchDeviceApplyAdvertiseDTO dto = new BatchDeviceApplyAdvertiseDTO();
-		dto.setAdList(adIds);
-		dto.setDto_type(dto_type);
+		dto.setDtoType(dto_type);
+		dto.setIds(adIds);
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	

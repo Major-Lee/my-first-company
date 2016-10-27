@@ -36,8 +36,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 @Service
-public class BatchDeviceApplyAdvertseServiceHandler implements
-		IMsgHandlerService {
+public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerService {
 	private final Logger logger = LoggerFactory
 			.getLogger(BatchDeviceApplyAdvertseServiceHandler.class);
 
