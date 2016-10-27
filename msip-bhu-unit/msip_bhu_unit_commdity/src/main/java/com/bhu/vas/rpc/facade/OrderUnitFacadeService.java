@@ -894,6 +894,9 @@ public class OrderUnitFacadeService {
 //			if (!PhoneHelper.isValidPhoneCharacter(86, acc)){
 //				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_INVALID_FORMAT);
 //			}
+			if (count < 0 ){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"count"});
+			}
 			String mac_lower = mac.toLowerCase();
 			String umac_lower = umac.toLowerCase();
 			//检查设备是否接入过
