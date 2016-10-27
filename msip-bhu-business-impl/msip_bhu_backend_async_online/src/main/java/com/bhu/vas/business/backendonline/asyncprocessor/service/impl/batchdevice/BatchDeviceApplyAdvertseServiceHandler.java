@@ -66,7 +66,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		logger.info(String.format("process message[%s]", message));
 		final BatchDeviceApplyAdvertiseDTO adDTO = JsonHelper.getDTO(message,
 				BatchDeviceApplyAdvertiseDTO.class);
-		List<Advertise> adlists = advertiseService.findByIds(adDTO.getAdList());
+		List<Advertise> adlists = advertiseService.findByIds(adDTO.getIds());
 		
 		for (final Advertise ad : adlists) {
 			final int batch = 200;
@@ -81,7 +81,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 								macList.add(doc.getD_mac());
 							}
 							test(batch, macList, ad.getDomain(),
-									adDTO.getDto_type(), ad);
+									adDTO.getDtoType(), ad);
 						}
 			});
 		}
