@@ -923,7 +923,8 @@ public class OrderFacadeService {
 	}
 
 	public Order createMonthlyServiceOrder(Integer commdityid, String mac, String mac_dut, String umac,
-			Integer umactype, User bindUser, String context, Integer channel, String user_agent, int count, String acc) {
+			Integer umactype, User bindUser, String context, Integer channel, 
+			String user_agent, int count, String acc, String uname, String address) {
 		//商品信息验证
 		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 		//验证商品是否合理
@@ -931,7 +932,7 @@ public class OrderFacadeService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
 		}
 		String amount = ArithHelper.getCuttedCurrency(ArithHelper.mul(Double.parseDouble(count+""), Double.parseDouble(commdity.getPrice()))+"");
-		
+		String userInfo = String.format("%s,%s,%s,%s",count,acc,uname,address);
 		//订单生成
 		Order order = new Order();
 		order.setCommdityid(commdity.getId());
@@ -939,7 +940,11 @@ public class OrderFacadeService {
 		order.setType(commdity.getCategory());
 		order.setChannel(channel);
 		order.setAmount(amount);
-		order.setContext(count + "," + acc);
+		if (userInfo.length() > 255){
+			order.setContext(userInfo.substring(0, 255));
+		}else{
+			order.setContext(userInfo);
+		}
 		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setMac(mac);

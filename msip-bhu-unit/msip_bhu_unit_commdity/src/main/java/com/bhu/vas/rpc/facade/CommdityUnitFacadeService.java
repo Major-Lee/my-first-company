@@ -144,7 +144,7 @@ public class CommdityUnitFacadeService {
 			if (commdityPhysical == null){
 				commdityPhysical = new CommdityPhysical();
 			}
-			CommdityPhysicalDTO dto = JsonHelper.getDTO(commdityPhysical.getExtension_content(), CommdityPhysicalDTO.class);
+			CommdityPhysicalDTO dto = commdityPhysical.getInnerModel();
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -164,7 +164,7 @@ public class CommdityUnitFacadeService {
 			}else{
 				commdityFacadeService.insertCommdityPhysical(newCommdityPhysical);
 			}
-			CommdityPhysicalDTO dto = JsonHelper.getDTO(newCommdityPhysical.getExtension_content(), CommdityPhysicalDTO.class);
+			CommdityPhysicalDTO dto = newCommdityPhysical.getInnerModel();
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

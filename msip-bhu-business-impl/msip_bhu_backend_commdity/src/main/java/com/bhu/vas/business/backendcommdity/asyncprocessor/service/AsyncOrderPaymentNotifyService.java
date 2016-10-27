@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
+import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
@@ -52,6 +53,7 @@ import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -287,22 +289,21 @@ public class AsyncOrderPaymentNotifyService{
 			}else if (CommdityCategory.correct(commdityid, CommdityCategory.RewardMonthlyServiceLimit)){
 				Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 				accessInternetTime = commdity.getApp_deliver_detail();
-				order = orderFacadeService.rewardOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
+				order = orderFacadeService.CommdityPhysicalOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
 						payment_type, payment_proxy_type, accessInternetTime);
-				String context = order.getContext();
-				String[] split = context.split(",");
-				String mobileno = null;
-				String commdityPhysicalCount = null;
-				if (split.length >= 2){
-					mobileno = split[1];
-					commdityPhysicalCount = split[0];
-					String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
+				CommdityPhysicalDTO commdityPhysicalDTO = commdityFacadeService.getCommdityPhysicalDTO(order.getUmac());
+				if (commdityPhysicalDTO != null){
+					String acc = commdityPhysicalDTO.getAcc();
+					if (PhoneHelper.isValidPhoneCharacter(86, acc)){
+						String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
 							RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
-	   				String response_snk_stop = SmsSenderFactory.buildSender(
-							BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, mobileno);
-					logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",mobileno,smsg_snk_stop,response_snk_stop));
+						String response_snk_stop = SmsSenderFactory.buildSender(
+							BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
+						logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",acc,smsg_snk_stop,response_snk_stop));
+					}
+				}else{
+					logger.info(String.format("send CommdityPhysical is null or acc invalid orderid[%s]",order.getId()));
 				}
-				logger.info(String.format("send CommdityPhysical acc[%s] commdityPhysicalCount[%s]",mobileno,commdityPhysicalCount));
 				
 			}
 		}

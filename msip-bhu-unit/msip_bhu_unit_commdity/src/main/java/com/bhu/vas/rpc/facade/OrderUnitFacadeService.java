@@ -905,7 +905,7 @@ public class OrderUnitFacadeService {
 			//生成订单
 			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createMonthlyServiceOrder(commdityid,mac_lower, mac_dut, umac_lower, umactype, bindUser,
-					context, channel,user_agent,count,acc);
+					context, channel, user_agent, count, acc, uname, address);
 			
 			RewardCreateMonthlyServiceVTO vto = new RewardCreateMonthlyServiceVTO();
 			vto.setOrderid(order.getId());
