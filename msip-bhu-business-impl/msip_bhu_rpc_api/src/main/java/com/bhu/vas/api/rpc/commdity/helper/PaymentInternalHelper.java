@@ -61,9 +61,7 @@ public class PaymentInternalHelper {
 		api_params.put("payment_completed_url", payment_completed_url);
 		api_params.put("channel", channel);
 		api_params.put("version", version);
-		if (!payment_name.isEmpty() && payment_name != null){
-			api_params.put("paymentName", payment_name);
-		}
+		api_params.put("paymentName", payment_name);
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = null;
 		try {

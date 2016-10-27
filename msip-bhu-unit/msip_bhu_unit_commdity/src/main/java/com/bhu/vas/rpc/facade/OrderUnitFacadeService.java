@@ -891,9 +891,9 @@ public class OrderUnitFacadeService {
 			if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
 			}
-			if (!PhoneHelper.isValidPhoneCharacter(86, acc)){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_INVALID_FORMAT);
-			}
+//			if (!PhoneHelper.isValidPhoneCharacter(86, acc)){
+//				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_INVALID_FORMAT);
+//			}
 			String mac_lower = mac.toLowerCase();
 			String umac_lower = umac.toLowerCase();
 			//检查设备是否接入过
@@ -905,7 +905,7 @@ public class OrderUnitFacadeService {
 			//生成订单
 			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createMonthlyServiceOrder(commdityid,mac_lower, mac_dut, umac_lower, umactype, bindUser,
-					context, channel,user_agent,count,acc);
+					context, channel,user_agent,count,acc,uname,address);
 			
 			RewardCreateMonthlyServiceVTO vto = new RewardCreateMonthlyServiceVTO();
 			vto.setOrderid(order.getId());
