@@ -31,14 +31,12 @@
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-			id = #{id},
 	    	extension_content=#{extension_content},
 	    	updated_at=#{updated_at}
 	</sql> 		
 	
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-			id,
 	    	extension_content,
 	    	updated_at
 	    ]]>
@@ -93,7 +91,7 @@
 	</select>
 	
 	
-	<delete id="delete" parameterType="CommdityPhysical">
+	<delete id="delete" parameterType="commdityPhysical">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -102,11 +100,11 @@
 		</where>
 	</delete>
 	
-	<insert id="insert" parameterType="CommdityPhysical">
+	<insert id="insert" parameterType="commdityPhysical">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 	</insert>
  
-	<update id="update" parameterType="CommdityPhysical">
+	<update id="update" parameterType="commdityPhysical">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
@@ -130,7 +128,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="string">
+	<select id="pkSelectByModelCriteria" resultType="String">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	      	<include refid="model_CRITERIA_SQL_GenCondition" />
