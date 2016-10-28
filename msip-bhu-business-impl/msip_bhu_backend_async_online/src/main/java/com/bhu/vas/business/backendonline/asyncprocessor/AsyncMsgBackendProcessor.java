@@ -55,6 +55,12 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Resource
 	private IMsgHandlerService batchUserIdentityRepairServiceHandler;
+	
+	@Resource
+	private IMsgHandlerService batchDeviceApplyAdvertseServiceHandler;
+	
+	
+	
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncMsgBackendProcessor initialize...");
