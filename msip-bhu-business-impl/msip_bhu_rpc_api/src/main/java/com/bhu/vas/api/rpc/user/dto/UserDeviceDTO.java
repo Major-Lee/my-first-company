@@ -234,7 +234,7 @@ public class UserDeviceDTO implements Serializable {
 	}
 
 	public void setD_distributor_type(String d_distributor_type) {
-//		this.d_distributor_type = d_distributor_type;
+		this.d_distributor_type = d_distributor_type;
 	}
 	
 }
