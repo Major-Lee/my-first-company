@@ -19,7 +19,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 @Service
-public class BatchUserIdentityRepairServiceHandler implements IMsgHandlerService{
+public class BatchUserIdentityRepairServiceHandler implements IMsgHandlerService {
 	private final Logger logger = LoggerFactory.getLogger(BatchUserIdentityRepairServiceHandler.class);
 	
 	@Resource
@@ -38,7 +38,7 @@ public class BatchUserIdentityRepairServiceHandler implements IMsgHandlerService
 		//1.修复分组终端详情
 		repairGroupHandsetDetail(hdmac,mobileno);
 		//2. 修复potal身份认证表
-//		repairUserPortalAuth(hdmac,mobileno);
+		repairUserPortalAuth(hdmac,mobileno);
 		
 		logger.info(String.format("process message[%s] successful", message));
 	}
