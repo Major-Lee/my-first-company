@@ -298,10 +298,22 @@ public class AsyncOrderPaymentNotifyService{
 				//判断订单状态为支付成功或发货成功
 			Integer order_status = order.getStatus();
 			if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
-					
+				//由于生产环境打赏用户数目较多,做除以100处理
+				String user = RewardOrderFinishCountStringService.getInstance().getRecent7daysValue();
+				String ucount = null;
+				int userInt = 0;
+				if(user.isEmpty() || user == null){
+					ucount = user;
+				}else{
+					userInt = Integer.parseInt(user);
+					if (userInt <= 100)
+						ucount = user;
+					else
+						ucount = userInt/100 + "";
+				}
 				String acc = commdityPhysicalService.getById(order.getUmac()).getInnerModel().getAcc();
 				String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
-						RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
+						ucount);
 				String response_snk_stop = SmsSenderFactory.buildSender(
 						BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
 				logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",acc,smsg_snk_stop,response_snk_stop));
