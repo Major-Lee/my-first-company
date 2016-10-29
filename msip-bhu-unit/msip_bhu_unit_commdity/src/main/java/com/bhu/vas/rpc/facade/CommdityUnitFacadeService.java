@@ -27,7 +27,6 @@ import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -140,11 +139,17 @@ public class CommdityUnitFacadeService {
 
 	public RpcResponseDTO<CommdityPhysicalDTO> physical_get_address(String umac) {
 		try{
+			if(StringUtils.isEmpty(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			if(!StringHelper.isValidMac(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+			}
 			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
 			if (commdityPhysical == null){
 				commdityPhysical = new CommdityPhysical();
 			}
-			CommdityPhysicalDTO dto = JsonHelper.getDTO(commdityPhysical.getExtension_content(), CommdityPhysicalDTO.class);
+			CommdityPhysicalDTO dto = commdityPhysical.getInnerModel();
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -157,6 +162,13 @@ public class CommdityUnitFacadeService {
 	public RpcResponseDTO<CommdityPhysicalDTO> physical_set_address(String umac, String uname, String acc,
 			String address) {
 		try{
+			if(StringUtils.isEmpty(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			if(!StringHelper.isValidMac(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+			}
+			
 			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
 			CommdityPhysical newCommdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address);
 			if (commdityPhysical != null){
@@ -164,7 +176,7 @@ public class CommdityUnitFacadeService {
 			}else{
 				commdityFacadeService.insertCommdityPhysical(newCommdityPhysical);
 			}
-			CommdityPhysicalDTO dto = JsonHelper.getDTO(newCommdityPhysical.getExtension_content(), CommdityPhysicalDTO.class);
+			CommdityPhysicalDTO dto = newCommdityPhysical.getInnerModel();
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

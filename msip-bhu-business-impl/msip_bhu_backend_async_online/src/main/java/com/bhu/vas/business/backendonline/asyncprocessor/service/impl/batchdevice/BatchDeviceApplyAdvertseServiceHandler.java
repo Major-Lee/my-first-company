@@ -36,8 +36,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 @Service
-public class BatchDeviceApplyAdvertseServiceHandler implements
-		IMsgHandlerService {
+public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerService {
 	private final Logger logger = LoggerFactory
 			.getLogger(BatchDeviceApplyAdvertseServiceHandler.class);
 
@@ -67,7 +66,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements
 		logger.info(String.format("process message[%s]", message));
 		final BatchDeviceApplyAdvertiseDTO adDTO = JsonHelper.getDTO(message,
 				BatchDeviceApplyAdvertiseDTO.class);
-		List<Advertise> adlists = advertiseService.findByIds(adDTO.getAdList());
+		List<Advertise> adlists = advertiseService.findByIds(adDTO.getIds());
 		
 		for (final Advertise ad : adlists) {
 			final int batch = 200;
@@ -82,7 +81,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements
 								macList.add(doc.getD_mac());
 							}
 							test(batch, macList, ad.getDomain(),
-									adDTO.getDto_type(), ad);
+									adDTO.getDtoType(), ad);
 						}
 			});
 		}

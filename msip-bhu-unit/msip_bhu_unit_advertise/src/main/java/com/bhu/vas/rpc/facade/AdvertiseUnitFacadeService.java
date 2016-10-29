@@ -62,7 +62,7 @@ public class AdvertiseUnitFacadeService {
 			int duration=Integer.parseInt(String.valueOf(between_days));
 			entity.setDuration(duration);
 			entity.setUrl(url);
-			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate);
+			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate,province, city, district);
 			if(n==0){
 				advertiseService.insert(entity);
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
@@ -209,7 +209,7 @@ public class AdvertiseUnitFacadeService {
 			int duration=Integer.parseInt(String.valueOf(between_days));
 			entity.setDuration(duration);
 			entity.setUrl(url);
-			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate);
+			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate,province, city, district);
 			if(n==0){
 				advertiseService.update(entity);
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);

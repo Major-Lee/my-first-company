@@ -233,6 +233,8 @@ public class SharedNetworksFacadeService {
 		}
 		SharedNetworkType[] snks = SharedNetworkType.values();
 		for(SharedNetworkType snk:snks){
+			if(snk != SharedNetworkType.SafeSecure) //目前只保留打赏
+				continue;
 			List<ParamSharedNetworkDTO> sharedNetworkType_models = configs.get(snk.getKey(),new ArrayList<ParamSharedNetworkDTO>(),true);
 			if(sharedNetworkType_models.isEmpty()){
 				ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(snk.getKey());
@@ -284,6 +286,9 @@ public class SharedNetworksFacadeService {
 	 */
 	public ParamSharedNetworkDTO fetchUserSharedNetworkConf(int uid,VapEnumType.SharedNetworkType sharedNetwork,String template){
 		if(StringUtils.isEmpty(template)) template = SharedNetworksHelper.DefaultTemplate;
+		if(sharedNetwork != SharedNetworkType.SafeSecure) //目前只保留打赏
+			return null;
+
 		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
 		ParamSharedNetworkDTO dto = null;
 		//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);

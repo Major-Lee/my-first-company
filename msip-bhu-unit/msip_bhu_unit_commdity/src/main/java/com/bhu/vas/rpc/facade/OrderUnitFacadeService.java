@@ -44,7 +44,6 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
-import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -52,6 +51,7 @@ import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
+import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserQueryDateHashService;
@@ -69,7 +69,6 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
-import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -113,6 +112,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
+	
+	@Resource
+	private AsyncDeliverMessageService asyncDeliverMessageService;
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -465,7 +467,7 @@ public class OrderUnitFacadeService {
 					context, user_agent, spendvcurrency);
 			
 			commdityMessageService.sendOrderCreatedMessage(order.getId());
-			
+			asyncDeliverMessageService.sendUserIdentityRepariActionMessage(umac_lower,context.substring(3));
 			OrderSMSVTO orderVto = new OrderSMSVTO();
 			BeanUtils.copyProperties(order, orderVto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
@@ -894,6 +896,9 @@ public class OrderUnitFacadeService {
 //			if (!PhoneHelper.isValidPhoneCharacter(86, acc)){
 //				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MOBILENO_INVALID_FORMAT);
 //			}
+			if (count < 0 ){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"count"});
+			}
 			String mac_lower = mac.toLowerCase();
 			String umac_lower = umac.toLowerCase();
 			//检查设备是否接入过
@@ -905,7 +910,7 @@ public class OrderUnitFacadeService {
 			//生成订单
 			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createMonthlyServiceOrder(commdityid,mac_lower, mac_dut, umac_lower, umactype, bindUser,
-					context, channel,user_agent,count,acc);
+					context, channel, user_agent, count, acc, uname, address);
 			
 			RewardCreateMonthlyServiceVTO vto = new RewardCreateMonthlyServiceVTO();
 			vto.setOrderid(order.getId());
