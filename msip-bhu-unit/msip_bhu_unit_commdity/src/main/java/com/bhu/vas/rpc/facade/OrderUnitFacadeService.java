@@ -113,8 +113,8 @@ public class OrderUnitFacadeService {
 	@Resource
 	private ChargingFacadeService chargingFacadeService;
 	
-//	@Resource
-//	private AsyncDeliverMessageService asyncDeliverMessageService;
+	@Resource
+	private AsyncDeliverMessageService asyncDeliverMessageService;
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -467,7 +467,7 @@ public class OrderUnitFacadeService {
 					context, user_agent, spendvcurrency);
 			
 			commdityMessageService.sendOrderCreatedMessage(order.getId());
-//			asyncDeliverMessageService.sendUserIdentityRepariActionMessage(umac_lower,context.substring(3));
+			asyncDeliverMessageService.sendUserIdentityRepariActionMessage(umac_lower,context.substring(3));
 			OrderSMSVTO orderVto = new OrderSMSVTO();
 			BeanUtils.copyProperties(order, orderVto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
