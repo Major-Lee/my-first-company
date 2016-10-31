@@ -104,7 +104,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 								true, true);
 				SharedNetworkSettingDTO snk = sharednetwork.getInnerModel();
 				ParamSharedNetworkDTO psn = snk.getPsn();
-				psn.setOpen_resource_ad(domain); // 设置或者清空广告白名单
+				psn.setOpen_resource_ad(dtotype == IDTO.ACT_ADD ? domain : null); // 设置或者清空广告白名单
 				sharednetwork.putInnerModel(snk);
 				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService()
 						.update(sharednetwork);
