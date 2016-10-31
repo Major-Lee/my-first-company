@@ -91,7 +91,12 @@ public class ImportIsFreeFromUcloudOp {
 						dto.setIsfree(isfree);
 						dto.setFirstLogin(firstlogin);
 						models.set(index, dto);
-						userDevicesSharedNetworksService.update(configs);
+						try{
+							userDevicesSharedNetworksService.update(configs);
+						}catch(Exception e){
+							System.out.println("user error:" + configs.getId() + " len:" + configs.getExtension_content().length());
+							e.printStackTrace();
+						}
 					}
 				}
 				
@@ -103,12 +108,20 @@ public class ImportIsFreeFromUcloudOp {
 							if(mode.equals(snk.getSharednetwork_type()) && tpl.equals(snk.getTemplate())){
 								SharedNetworkSettingDTO snkDTO = snk.getInnerModel();
 								ParamSharedNetworkDTO psn = snkDTO.getPsn();
+								if(psn == null)
+									continue;
 								psn.setIsfree(isfree);
 								psn.setFirstLogin(firstlogin);
 								snk.putInnerModel(snkDTO);
+								try{
+									wifiDeviceSharedNetworkService.update(snk);
+								}catch(Exception e){
+									System.out.println("mac:" + snk.getId());
+									e.printStackTrace();
+								}
 							}
 						}
-						wifiDeviceSharedNetworkService.updateAll(snks);
+//						wifiDeviceSharedNetworkService.updateAll(snks);
 					}
 				}
 			}
