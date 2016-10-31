@@ -78,11 +78,12 @@ public interface IAdvertiseRpcService{
 	 * @param createStartTime
 	 * @param createEndTime
 	 * @param userName
+	 * @param state
 	 * @return
 	 */
 	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(int uid, String province,
 			String city, String district, String publishStartTime,
 			String publishEndTime, int type, String createStartTime,
-			String createEndTime, String userName);
+			String createEndTime, String userName,int state);
 
 }

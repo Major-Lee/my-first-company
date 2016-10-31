@@ -83,27 +83,33 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(int uid, String province,
 			String city, String district, String publishStartTime,
 			String publishEndTime, int type, String createStartTime,
-			String createEndTime, String userName) {
-		logger.info(String.format("queryAdvertiseList uid[%s] province[%s] city[%s] district[%s] publishStartTime[%s] publishEndTime[%s] type[%s] createStartTime[%s] createEndTime[%s] userName[%s]",
-				uid,province,city,district,publishStartTime,publishEndTime,type,createStartTime,createEndTime,userName));
+			String createEndTime, String userName,int state) {
+		logger.info(String.format("queryAdvertiseList uid[%s] province[%s] city[%s] district[%s] publishStartTime[%s] publishEndTime[%s] type[%s] createStartTime[%s] createEndTime[%s] userName[%s] state[%s]",
+				uid,province,city,district,publishStartTime,publishEndTime,type,createStartTime,createEndTime,userName,state));
 		List<Map<String,Object>> maps=new ArrayList<Map<String,Object>>();
-		if(StringUtils.isNoneBlank(province)){
+		if(StringUtils.isNotBlank(province)){
 			Map<String,Object> provinceMap=new HashMap<String,Object>();
 			provinceMap.put("name", "province");
 			provinceMap.put("value", province);
 			maps.add(provinceMap);
 		}
-		if(StringUtils.isNoneBlank(city)){
+		if(StringUtils.isNotBlank(city)){
 			Map<String,Object> cityMap=new HashMap<String,Object>();
 			cityMap.put("name", "city");
 			cityMap.put("value", city);
 			maps.add(cityMap);
 		}
-		if(StringUtils.isNoneBlank(district)){
+		if(StringUtils.isNotBlank(district)){
 			Map<String,Object> districtMap=new HashMap<String,Object>();
 			districtMap.put("name", "district");
 			districtMap.put("value", district);
 		}
+		if(state!=-1){
+			Map<String,Object> districtMap=new HashMap<String,Object>();
+			districtMap.put("name", "state");
+			districtMap.put("value", state);
+		}
+		
 		Map<String,Object> typeMap=new HashMap<String,Object>();
 		typeMap.put("name", "type");
 		typeMap.put("value", type);
