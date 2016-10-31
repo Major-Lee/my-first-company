@@ -17,12 +17,7 @@ public class CommdityPhysicalDTO implements java.io.Serializable{
 	private String acc;
 	//收货地址
 	private String address;
-	public String getUmac() {
-		return umac;
-	}
-	public void setUmac(String umac) {
-		this.umac = umac;
-	}
+	
 	public String getUname() {
 		return uname;
 	}
