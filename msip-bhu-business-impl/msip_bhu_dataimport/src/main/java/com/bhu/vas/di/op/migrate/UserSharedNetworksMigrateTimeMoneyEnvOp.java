@@ -55,7 +55,11 @@ public class UserSharedNetworksMigrateTimeMoneyEnvOp {
 				}
 				
 				SharedNetworkSettingDTO snkdto = snk.getInnerModel();
+				if(snkdto == null)
+					continue;
 				ParamSharedNetworkDTO psn = snkdto.getPsn();
+				if(psn == null)
+					continue;
 				psn.setRange_cash_mobile(sdc.getRange_cash_mobile());
 				psn.setRange_cash_pc(sdc.getRange_cash_pc());
 				psn.setAit_mobile(sdc.getAit_mobile());
