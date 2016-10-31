@@ -81,7 +81,6 @@ public class CommdityFacadeService {
 		return commdity;
 	}
 	
-	
 	public CommdityPhysical updateCommdityPhysical(CommdityPhysical commdityPhysical){
 		return commdityPhysicalService.update(commdityPhysical);
 	}

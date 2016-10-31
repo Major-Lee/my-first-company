@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
-import com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchuser.BatchUserIdentityRepairServiceHandler;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.observer.QueueMsgObserverManager;
 import com.bhu.vas.business.observer.listener.SpringQueueMessageListener;

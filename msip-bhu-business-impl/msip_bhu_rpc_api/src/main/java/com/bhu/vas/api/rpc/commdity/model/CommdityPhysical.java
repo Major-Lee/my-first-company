@@ -5,12 +5,10 @@ import com.smartwork.msip.cores.orm.model.extjson.DtoJsonExtPKModel;
 
 @SuppressWarnings("serial")
 public class CommdityPhysical extends DtoJsonExtPKModel<String,CommdityPhysicalDTO>{
-
 	@Override
 	public String getId() {
 		return super.getId();
 	}
-
 	@Override
 	public void setId(String id) {
 		super.setId(id);

@@ -170,13 +170,13 @@ public class CommdityUnitFacadeService {
 			}
 			
 			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
-			CommdityPhysical newCommdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address);
+			CommdityPhysical newcommdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address);
 			if (commdityPhysical != null){
-				commdityFacadeService.updateCommdityPhysical(newCommdityPhysical);
+				commdityFacadeService.updateCommdityPhysical(newcommdityPhysical);
 			}else{
-				commdityFacadeService.insertCommdityPhysical(newCommdityPhysical);
+				commdityFacadeService.insertCommdityPhysical(newcommdityPhysical);
 			}
-			CommdityPhysicalDTO dto = newCommdityPhysical.getInnerModel();
+			CommdityPhysicalDTO dto = newcommdityPhysical.getInnerModel();
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

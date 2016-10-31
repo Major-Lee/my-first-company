@@ -931,8 +931,10 @@ public class OrderFacadeService {
 		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
 		}
-		String amount = ArithHelper.getCuttedCurrency(ArithHelper.mul(Double.parseDouble(count+""), Double.parseDouble(commdity.getPrice()))+"");
-		String userInfo = String.format("%s,%s,%s,%s",count,acc,uname,address);
+		String amount = ArithHelper.
+				getCuttedCurrency(ArithHelper.
+						mul(Double.parseDouble(count+""), Double.parseDouble(commdity.getPrice()))+"");
+		String userInfo = String.format("%s,%s,%s,%s",count, acc, uname, address);
 		//订单生成
 		Order order = new Order();
 		order.setCommdityid(commdity.getId());
@@ -940,12 +942,10 @@ public class OrderFacadeService {
 		order.setType(commdity.getCategory());
 		order.setChannel(channel);
 		order.setAmount(amount);
-		if (userInfo.length() > 255){
+		if (userInfo.length() > 255)
 			order.setContext(userInfo.substring(0, 255));
-		}else{
-			order.setContext(userInfo);
-		}
-		order.setStatus(OrderStatus.NotPay.getKey());
+		else
+			order.setContext(userInfo);		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setMac(mac);
 		order.setMac_dut(mac_dut);

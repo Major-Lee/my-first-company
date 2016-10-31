@@ -322,7 +322,6 @@ public class AsyncOrderPaymentNotifyService{
 			}
 		}
 	}
-	
 	/**
 	 * 充值虎钻订单支付结束处理
 	 * @param order
