@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
@@ -63,7 +64,16 @@ public class AdvertiseUnitFacadeService {
 			entity.setDuration(duration);
 			entity.setUrl(url);
 			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate,province, city, district);
-			if(n==0){
+			ModelCriteria mc=new ModelCriteria();
+			List<Integer> stateList=new ArrayList<Integer>();
+			stateList.add(AdvertiseType.UnPaid.getType());
+			stateList.add(AdvertiseType.UnPublish.getType());
+			stateList.add(AdvertiseType.UnVerified.getType());
+			stateList.add(AdvertiseType.OnPublish.getType());
+			mc.createCriteria().andColumnIn("state", stateList).andColumnEqualTo("uid", uid);
+			
+			int num=advertiseService.countByModelCriteria(mc);
+			if(n==0&&num<2){
 				advertiseService.insert(entity);
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 			}else{
