@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.DistributorType;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -501,11 +502,11 @@ public class UserUnitFacadeService {
 			if(user.getUtype() != UserType.Normal.getIndex() && user.getUtype() != UserType.DistributorNormal.getIndex() && user.getUtype() != UserType.URBANOPERATORS.getIndex()){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_CAN_NOT_BE_UPGRADED_TO_OPERATORS);
 			}
-//			if(!ischannel){
-//				user.setUtype(UserType.DistributorNormal.getIndex());
-//			}else{
-//				user.setUtype(UserType.ChannelOperators.getIndex());
-//			}
+			if(userType.equals(DistributorType.Channel.getType())){
+				user.setUtype(UserType.DistributorNormal.getIndex());
+			}else{
+				user.setUtype(UserType.URBANOPERATORS.getIndex());
+			}
 			if(org !=null && !org.isEmpty()){
 				user.setOrg(org);
 			}else{
