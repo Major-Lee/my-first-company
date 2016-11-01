@@ -61,6 +61,7 @@ public class UserSharedNetworksModifyRateControlOp {
 				List<ParamSharedNetworkDTO> safesecure_configs = snks.get(SharedNetworkType.SafeSecure.getKey());
 				if(safesecure_configs != null && !safesecure_configs.isEmpty()){
 					for(ParamSharedNetworkDTO dto:safesecure_configs){
+						System.out.println(String.format("user[%s], type[%s], pl[%s], value[%s]", snks.getId(), SharedNetworkType.SafeSecure.getKey(), dto.getTemplate(), dto.getUsers_rx_rate()));
 						UserSharedNetworksModifyRateControlOp.modifyRateControl(dto);
 					}
 					snks.put(SharedNetworkType.SafeSecure.getKey(), safesecure_configs);
@@ -68,6 +69,7 @@ public class UserSharedNetworksModifyRateControlOp {
 				List<ParamSharedNetworkDTO> uplink_configs = snks.get(SharedNetworkType.Uplink.getKey());
 				if(uplink_configs != null && !uplink_configs.isEmpty()){
 					for(ParamSharedNetworkDTO dto:uplink_configs){
+						System.out.println(String.format("user[%s], type[%s], pl[%s], value[%s]", snks.getId(), SharedNetworkType.SafeSecure.getKey(), dto.getTemplate(), dto.getUsers_rx_rate()));
 						UserSharedNetworksModifyRateControlOp.modifyRateControl(dto);
 					}
 					snks.put(SharedNetworkType.Uplink.getKey(), uplink_configs);
@@ -75,6 +77,7 @@ public class UserSharedNetworksModifyRateControlOp {
 				List<ParamSharedNetworkDTO> sms_configs = snks.get(SharedNetworkType.SmsSecure.getKey());
 				if(sms_configs != null && !sms_configs.isEmpty()){
 					for(ParamSharedNetworkDTO dto:sms_configs){
+						System.out.println(String.format("user[%s], type[%s], pl[%s], value[%s]", snks.getId(), SharedNetworkType.SafeSecure.getKey(), dto.getTemplate(), dto.getUsers_rx_rate()));
 						UserSharedNetworksModifyRateControlOp.modifyRateControl(dto);
 					}
 					snks.put(SharedNetworkType.SmsSecure.getKey(), sms_configs);
@@ -100,9 +103,15 @@ public class UserSharedNetworksModifyRateControlOp {
 						SharedNetworkSettingDTO snkDTO = snk.getInnerModel();
 						if(snkDTO != null && snkDTO.getPsn() != null){
 							ParamSharedNetworkDTO psn = snkDTO.getPsn();
+							int oldvalue = psn.getUsers_rx_rate();
 							UserSharedNetworksModifyRateControlOp.modifyRateControl(psn);
+							int newvalue = psn.getUsers_rx_rate();
 							snk.putInnerModel(snkDTO);
 							sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(snk);
+							if(oldvalue == newvalue){
+								System.out.println(String.format("mac[%s] rate value not changed", snk.getId()));
+								continue;
+							}
 							{
 								if(!snkDTO.isOn()) continue;
 								WifiDevice wifiDevice = wifiDeviceService.getById(snk.getId());
