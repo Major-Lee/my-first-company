@@ -21,6 +21,6 @@ public class UserIncomeMonthRankDao extends AbstractCoreDao<Integer, UserIncomeM
 		return super.getSqlSessionMasterTemplate().selectList(UserIncomeMonthRank.class.getName()+".findByLimit",map);
 	}
 	public List<UserIncomeMonthRank> getByUid(Map<String,Object> map) {
-		return super.getSqlSessionMasterTemplate().selectList(UserIncomeRank.class.getName()+".getByUid",map);
+		return super.getSqlSessionMasterTemplate().selectList(UserIncomeMonthRank.class.getName()+".getByUid",map);
 	}
 }
