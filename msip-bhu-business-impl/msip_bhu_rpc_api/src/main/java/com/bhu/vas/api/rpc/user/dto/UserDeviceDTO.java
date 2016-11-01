@@ -49,7 +49,7 @@ public class UserDeviceDTO implements Serializable {
     //app获取后可判断是否需要更新位置信息
     private String lat;
     private String lon;
-    private String d_distributor_type = "channel";//运营商类型
+    private String d_distributor_type;//运营商类型
         
     public long getLastregedat() {
 		return lastregedat;

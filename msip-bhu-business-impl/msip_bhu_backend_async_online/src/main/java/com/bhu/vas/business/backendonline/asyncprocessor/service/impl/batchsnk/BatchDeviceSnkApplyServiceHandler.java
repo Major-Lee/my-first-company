@@ -100,10 +100,8 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				    @Override
 				    public void notifyComming(Page<WifiDeviceDocument> pages) {
 				    	for (WifiDeviceDocument doc : pages) {
-/* 产品规划上线时间出错，暂时把校验去掉
 				    		if(DistributorType.City.getType().equals(doc.getD_distributor_type())) //城市运营商的设备不允许修改
 				    			continue;
-*/
 				    		dmacs.add(doc.getD_mac());
 				    	}
 				    }
