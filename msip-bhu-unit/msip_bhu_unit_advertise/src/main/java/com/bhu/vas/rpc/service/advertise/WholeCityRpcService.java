@@ -115,7 +115,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		typeMap.put("value", type);
 		maps.add(typeMap);
 		try{
-			List<Advertise> advertises=advertiseUnitFacadeService.queryAdvertiseList(maps,publishStartTime,publishEndTime,createStartTime,createEndTime,userName,pn,ps);
+			List<Advertise> advertises=advertiseUnitFacadeService.queryAdvertiseList(uid,maps,publishStartTime,publishEndTime,createStartTime,createEndTime,userName,pn,ps);
 			AdvertiseListVTO advertiseListVTO=new AdvertiseListVTO();
 			List<AdvertiseVTO> advertiseVTOs=new ArrayList<AdvertiseVTO>();
 			if(advertises!=null){

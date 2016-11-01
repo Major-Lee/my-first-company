@@ -106,7 +106,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param conditionMap
 	 * @return
 	 */
-	public List<Advertise> queryAdvertiseList(List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName,int pn,int ps){
+	public List<Advertise> queryAdvertiseList(Integer uid,List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName,int pn,int ps){
 		List<Advertise> advertises=null;
 		ModelCriteria mc=new ModelCriteria();
 		Criteria criteria= mc.createCriteria();
@@ -117,6 +117,11 @@ public class AdvertiseUnitFacadeService {
 				criteria.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
 			}
 		}
+		
+		if(uid != null){
+			criteria.andColumnEqualTo("uid",uid);
+		}
+		
 		if(StringUtils.isNotBlank(publishStartTime)){
 			if(StringUtils.isNotBlank(publishEndTime)){
 				criteria.andColumnBetween("start", publishStartTime, publishEndTime);
