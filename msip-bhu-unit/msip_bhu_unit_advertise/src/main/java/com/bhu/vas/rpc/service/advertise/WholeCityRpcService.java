@@ -47,7 +47,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Map<String,Object>> createNewAdvertise(int uid, String image,
+	public RpcResponseDTO<Boolean> createNewAdvertise(int uid, String image,
 			String url,String domain, String province, String city, String district,String description,String title,
 			long start, long end) {
 		logger.info(String.format("createNewAdvertise with uid[%s] image[%s] url[%s] domain[%s] province[%s] city[%s] district[%s] title[%s] description[%s] start[%s] start[%s]",
@@ -56,7 +56,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Map<String,Object>> updateAdvertise(int uid,int advertiseId, String image,
+	public RpcResponseDTO<Boolean> updateAdvertise(int uid,int advertiseId, String image,
 			String url, String domain, String province, String city,
 			String district, String description, String title, long start,
 			long end) {

@@ -52,7 +52,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) long end
             ) {
 		try{
-			RpcResponseDTO<Map<String,Object>> rpcResult = advertiseRpcService.createNewAdvertise
+			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.createNewAdvertise
 					    (uid, image, url,domain, province, city, district,description,title, start, end);
 					if(!rpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -87,7 +87,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) long end
             ) {
 		try{
-			RpcResponseDTO<Map<String,Object>> rpcResult = advertiseRpcService.updateAdvertise
+			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.updateAdvertise
 					    (uid,advertiseId, image, url,domain, province, city, district,description,title, start, end);
 					if(!rpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

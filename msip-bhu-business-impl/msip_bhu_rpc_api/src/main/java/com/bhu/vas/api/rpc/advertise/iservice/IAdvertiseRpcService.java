@@ -25,7 +25,7 @@ public interface IAdvertiseRpcService{
 	 * @param end
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String,Object>> createNewAdvertise(int uid,
+	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
 			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end);
 
@@ -46,7 +46,7 @@ public interface IAdvertiseRpcService{
 	 * @param end
 	 * @return
 	 */
-	public RpcResponseDTO<Map<String,Object>> updateAdvertise(int uid,int advertiseId, String image,
+	public RpcResponseDTO<Boolean> updateAdvertise(int uid,int advertiseId, String image,
 			String url, String domain, String province, String city,
 			String district, String description, String title, long start,
 			long end);
