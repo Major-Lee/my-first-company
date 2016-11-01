@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
-import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 @Repository
 public class UserIncomeMonthRankDao extends AbstractCoreDao<Integer, UserIncomeMonthRank>{
