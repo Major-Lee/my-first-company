@@ -84,8 +84,8 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 			String city, String district, String publishStartTime,
 			String publishEndTime, int type, String createStartTime,
 			String createEndTime, String userName,int state,int pn,int ps) {
-		logger.info(String.format("queryAdvertiseList uid[%s] province[%s] city[%s] district[%s] publishStartTime[%s] publishEndTime[%s] type[%s] createStartTime[%s] createEndTime[%s] userName[%s] state[%s]",
-				uid,province,city,district,publishStartTime,publishEndTime,type,createStartTime,createEndTime,userName,state));
+		logger.info(String.format("queryAdvertiseList uid[%s] province[%s] city[%s] district[%s] publishStartTime[%s] publishEndTime[%s] type[%s] createStartTime[%s] createEndTime[%s] userName[%s] state[%s] pn[%s] ps[%s]",
+				uid,province,city,district,publishStartTime,publishEndTime,type,createStartTime,createEndTime,userName,state,pn,ps));
 		List<Map<String,Object>> maps=new ArrayList<Map<String,Object>>();
 		if(StringUtils.isNotBlank(province)){
 			Map<String,Object> provinceMap=new HashMap<String,Object>();
