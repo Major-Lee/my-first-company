@@ -82,7 +82,7 @@ public interface IAdvertiseRpcService{
 	 * @return
 	 */
 
-	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(int uid,
+	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(Integer uid,
 			String province, String city, String district,
 			String publishStartTime, String publishEndTime, int type,
 			String createStartTime, String createEndTime, String userName,

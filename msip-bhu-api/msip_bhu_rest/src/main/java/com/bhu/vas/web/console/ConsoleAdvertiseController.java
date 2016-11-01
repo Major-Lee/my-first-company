@@ -57,7 +57,7 @@ public class ConsoleAdvertiseController extends BaseController{
 	public void queryAdvertise(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = true) int uid,
+			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false) String province,
 			@RequestParam(required = false) String city,
 			@RequestParam(required = false) String district,
@@ -73,7 +73,7 @@ public class ConsoleAdvertiseController extends BaseController{
 			) {
 		try{
 			RpcResponseDTO<AdvertiseListVTO> rpcResult = advertiseRpcService.queryAdvertiseList
-					(uid, province, city,district, publishStartTime, publishEndTime, type,createStartTime,createEndTime,userName,state,pageNo,pageSize);
+					(null, province, city,district, publishStartTime, publishEndTime, type,createStartTime,createEndTime,userName,state,pageNo,pageSize);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

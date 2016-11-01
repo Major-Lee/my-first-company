@@ -80,7 +80,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(int uid, String province,
+	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(Integer uid, String province,
 			String city, String district, String publishStartTime,
 			String publishEndTime, int type, String createStartTime,
 			String createEndTime, String userName,int state,int pn,int ps) {
