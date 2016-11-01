@@ -103,32 +103,6 @@ public class AdvertiseController extends BaseController{
     }
 	
 	@ResponseBody()
-	@RequestMapping(value = "/verifyAdvertise", method = {RequestMethod.POST})
-	public void updateAdvertise(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = true) int uid,
-			@RequestParam(required = true) int advertiseId,
-			@RequestParam(required = true) String msg,
-			@RequestParam(required = true) int state
-			) {
-		try{
-			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.verifyAdvertise
-					(uid,advertiseId, msg,state);
-			if(!rpcResult.hasError()){
-				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-			}
-		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
-		}catch(Exception ex){
-			ex.printStackTrace();
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
-		}
-		
-	}
-	@ResponseBody()
 	@RequestMapping(value = "/queryAdvertiseList", method = {RequestMethod.POST})
 	public void queryAdvertise(
 			HttpServletRequest request,
@@ -161,7 +135,6 @@ public class AdvertiseController extends BaseController{
 			ex.printStackTrace();
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
-		
 	}
 	@ResponseBody()
 	@RequestMapping(value = "/queryAdvertiseInfo", method = {RequestMethod.POST})
