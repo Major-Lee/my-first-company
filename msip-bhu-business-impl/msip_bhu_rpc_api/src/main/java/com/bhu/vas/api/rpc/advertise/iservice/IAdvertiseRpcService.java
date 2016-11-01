@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.advertise.iservice;
 
 import java.util.List;
+import java.util.Map;
 
 import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
@@ -24,7 +25,7 @@ public interface IAdvertiseRpcService{
 	 * @param end
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
+	public RpcResponseDTO<Map<String,Object>> createNewAdvertise(int uid,
 			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end);
 
@@ -45,7 +46,7 @@ public interface IAdvertiseRpcService{
 	 * @param end
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> updateAdvertise(int uid,int advertiseId, String image,
+	public RpcResponseDTO<Map<String,Object>> updateAdvertise(int uid,int advertiseId, String image,
 			String url, String domain, String province, String city,
 			String district, String description, String title, long start,
 			long end);

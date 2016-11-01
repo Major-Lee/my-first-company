@@ -1,6 +1,7 @@
 package com.bhu.vas.web.advertise;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -51,7 +52,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) long end
             ) {
 		try{
-			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.createNewAdvertise
+			RpcResponseDTO<Map<String,Object>> rpcResult = advertiseRpcService.createNewAdvertise
 					    (uid, image, url,domain, province, city, district,description,title, start, end);
 					if(!rpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -86,7 +87,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) long end
             ) {
 		try{
-			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.updateAdvertise
+			RpcResponseDTO<Map<String,Object>> rpcResult = advertiseRpcService.updateAdvertise
 					    (uid,advertiseId, image, url,domain, province, city, district,description,title, start, end);
 					if(!rpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

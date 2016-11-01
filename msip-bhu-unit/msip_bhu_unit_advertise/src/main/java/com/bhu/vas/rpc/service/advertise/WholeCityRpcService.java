@@ -21,6 +21,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.rpc.facade.AdvertiseUnitFacadeService;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -46,7 +47,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> createNewAdvertise(int uid, String image,
+	public RpcResponseDTO<Map<String,Object>> createNewAdvertise(int uid, String image,
 			String url,String domain, String province, String city, String district,String description,String title,
 			long start, long end) {
 		logger.info(String.format("createNewAdvertise with uid[%s] image[%s] url[%s] domain[%s] province[%s] city[%s] district[%s] title[%s] description[%s] start[%s] start[%s]",
@@ -55,7 +56,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> updateAdvertise(int uid,int advertiseId, String image,
+	public RpcResponseDTO<Map<String,Object>> updateAdvertise(int uid,int advertiseId, String image,
 			String url, String domain, String province, String city,
 			String district, String description, String title, long start,
 			long end) {
@@ -115,7 +116,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		typeMap.put("value", type);
 		maps.add(typeMap);
 		try{
-			List<Advertise> advertises=advertiseUnitFacadeService.queryAdvertiseList(uid,maps,publishStartTime,publishEndTime,createStartTime,createEndTime,userName,pn,ps);
+			TailPage<Advertise> advertises=advertiseUnitFacadeService.queryAdvertiseList(uid,maps,publishStartTime,publishEndTime,createStartTime,createEndTime,userName,pn,ps);
 			AdvertiseListVTO advertiseListVTO=new AdvertiseListVTO();
 			List<AdvertiseVTO> advertiseVTOs=new ArrayList<AdvertiseVTO>();
 			if(advertises!=null){
@@ -127,6 +128,9 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 					advertiseVTOs.add(singleAdvertise);
 				}
 			}
+			advertiseListVTO.setPageNumber(pn);
+			advertiseListVTO.setPageSize(ps);
+			advertiseListVTO.setTotalPageCount(advertises.getTotalPageCount());
 			advertiseListVTO.setAdvertiseList(advertiseVTOs);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseListVTO);
 		}catch(BusinessI18nCodeException bex){

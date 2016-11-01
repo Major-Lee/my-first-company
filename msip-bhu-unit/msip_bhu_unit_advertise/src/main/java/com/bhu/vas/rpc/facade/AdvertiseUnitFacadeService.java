@@ -2,6 +2,7 @@ package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -17,6 +18,8 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -36,7 +39,7 @@ public class AdvertiseUnitFacadeService {
 	@Resource
 	private UserService userService;
 	
-	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
+	public RpcResponseDTO<Map<String,Object>> createNewAdvertise(int uid,
 			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end) {
 		try{
@@ -63,7 +66,13 @@ public class AdvertiseUnitFacadeService {
 			int duration=Integer.parseInt(String.valueOf(between_days));
 			entity.setDuration(duration);
 			entity.setUrl(url);
+			Map<String,Object> map=new HashMap<String,Object>();
 			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate,province, city, district);
+			if(n!=0){
+				map.put("flag", false);
+				map.put("msg", ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(map);
+			}
 			ModelCriteria mc=new ModelCriteria();
 			List<Integer> stateList=new ArrayList<Integer>();
 			stateList.add(AdvertiseType.UnPaid.getType());
@@ -73,12 +82,14 @@ public class AdvertiseUnitFacadeService {
 			mc.createCriteria().andColumnIn("state", stateList).andColumnEqualTo("uid", uid);
 			
 			int num=advertiseService.countByModelCriteria(mc);
-			if(n==0&&num<2){
-				advertiseService.insert(entity);
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
-			}else{
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+			if(num>=2){
+				map.put("flag", false);
+				map.put("msg", ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(map);
 			}
+				advertiseService.insert(entity);
+				map.put("flag", true);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(map);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
@@ -106,12 +117,11 @@ public class AdvertiseUnitFacadeService {
 	 * @param conditionMap
 	 * @return
 	 */
-	public List<Advertise> queryAdvertiseList(Integer uid,List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName,int pn,int ps){
+	public TailPage<Advertise> queryAdvertiseList(Integer uid,List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName,int pn,int ps){
 		List<Advertise> advertises=null;
 		ModelCriteria mc=new ModelCriteria();
 		Criteria criteria= mc.createCriteria();
-		mc.setPageNumber(pn);
-		mc.setPageSize(ps);;
+		
 		if(conditionMap!=null&&conditionMap.size()>0){
 			for(Map<String,Object> singleMap:conditionMap){
 				criteria.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
@@ -143,8 +153,11 @@ public class AdvertiseUnitFacadeService {
 			List<Integer> userIds=userService.findIdsByModelCriteria(userMc);
 			criteria.andColumnIn("uid", userIds);
 		}
+		int total=advertiseService.countByModelCriteria(mc);
+		mc.setPageNumber(pn);
+		mc.setPageSize(ps);
 		advertises=advertiseService.findModelByModelCriteria(mc);
-		return advertises;
+		return new CommonPage<Advertise>(pn, ps, total,advertises);
 	}
 	/**
 	 * 审核广告
@@ -198,7 +211,7 @@ public class AdvertiseUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<Boolean> updateAdvertise(int uid,int advertiseId, String image,
+	public RpcResponseDTO<Map<String,Object>> updateAdvertise(int uid,int advertiseId, String image,
 			String url, String domain, String province, String city,
 			String district, String description, String title, long start,
 			long end) {
@@ -227,12 +240,16 @@ public class AdvertiseUnitFacadeService {
 			entity.setDuration(duration);
 			entity.setUrl(url);
 			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate,province, city, district);
-			if(n==0){
-				advertiseService.update(entity);
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
-			}else{
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+			Map<String,Object> map=new HashMap<String,Object>();
+			if(n!=0){
+				map.put("flag", false);
+				map.put("msg", ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(map);
 			}
+			
+			advertiseService.update(entity);
+			map.put("flag", true);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(map);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
