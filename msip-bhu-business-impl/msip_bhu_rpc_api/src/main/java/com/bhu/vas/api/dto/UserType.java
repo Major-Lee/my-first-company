@@ -13,7 +13,7 @@ public enum UserType {
 	AgentWarehouseManager(20,"AW","仓储用户"),
 	AgentSellor(30,"AS","销售用户"),
 	
-	DistributorNormal(13,"DN","分销商用户"),
+	DistributorNormal(13,"DN","渠道运营商"),
 	VerifyFinance(14,"VF","财务支付用户"),
 	PaymentFinance(15,"PF","财务支付用户"),
 	
@@ -25,7 +25,7 @@ public enum UserType {
 	BusinessSelfor(42,"BS","自运营的商户"),
 	//add by Jason 2016-07-11 start
 	//城市运营商
-	URBANOPERATORS(43,"UP","渠道运营商"),
+	URBANOPERATORS(43,"UP","城市运营商"),
 	//add by Jason 2016-07-11 start
 	//Comprehensive management department
 	SelfCmdUser(50,"S","我司综合管理部门用户"),
