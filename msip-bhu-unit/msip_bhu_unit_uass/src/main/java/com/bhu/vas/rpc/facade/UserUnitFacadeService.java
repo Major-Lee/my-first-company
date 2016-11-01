@@ -491,17 +491,21 @@ public class UserUnitFacadeService {
 	 * @return
 	 */
 
-	public RpcResponseDTO<Map<String, Object>> upgradeOperator(int uid,String org) {
+	public RpcResponseDTO<Map<String, Object>> upgradeOperator(int uid,String org,boolean ischannel) {
 		try{
 			User user = this.userService.getById(uid);
 			if(user == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_DATA_NOTEXIST);
 			}
 			//只有普通帐号可以升级
-			if(user.getUtype() != UserType.Normal.getIndex() && user.getUtype() != UserType.DistributorNormal.getIndex()){
+			if(user.getUtype() != UserType.Normal.getIndex() && user.getUtype() != UserType.DistributorNormal.getIndex() && user.getUtype() != UserType.ChannelOperators.getIndex()){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.USER_CAN_NOT_BE_UPGRADED_TO_OPERATORS);
 			}
-			user.setUtype(UserType.DistributorNormal.getIndex());
+			if(!ischannel){
+				user.setUtype(UserType.DistributorNormal.getIndex());
+			}else{
+				user.setUtype(UserType.ChannelOperators.getIndex());
+			}
 			if(org !=null && !org.isEmpty()){
 				user.setOrg(org);
 			}else{

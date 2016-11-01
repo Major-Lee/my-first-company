@@ -26,6 +26,7 @@ public enum UserType {
 	//add by Jason 2016-07-11 start
 	//城市运营商
 	URBANOPERATORS(43,"UP","城市运营商"),
+	ChannelOperators(44,"CO","渠道运营商"),
 	//add by Jason 2016-07-11 start
 	//Comprehensive management department
 	SelfCmdUser(50,"S","我司综合管理部门用户"),

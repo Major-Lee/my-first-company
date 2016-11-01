@@ -197,7 +197,7 @@ public interface IUserRpcService {
 	RpcResponseDTO<GroupUsersStatisticsVTO> UsersStatistics(int uid,
 			long time);
 
-	public RpcResponseDTO<Map<String, Object>> upgradeOperator(int uid, String org);
+	public RpcResponseDTO<Map<String, Object>> upgradeOperator(int uid, String org,boolean ischannel);
 
 	RpcResponseDTO<Map<String, Object>> operatorfetchUser(Integer uid,
 			int countrycode, String acc);
