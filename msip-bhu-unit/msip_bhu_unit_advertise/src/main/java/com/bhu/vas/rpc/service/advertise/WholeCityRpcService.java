@@ -83,7 +83,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(int uid, String province,
 			String city, String district, String publishStartTime,
 			String publishEndTime, int type, String createStartTime,
-			String createEndTime, String userName,int state) {
+			String createEndTime, String userName,int state,int pn,int ps) {
 		logger.info(String.format("queryAdvertiseList uid[%s] province[%s] city[%s] district[%s] publishStartTime[%s] publishEndTime[%s] type[%s] createStartTime[%s] createEndTime[%s] userName[%s] state[%s]",
 				uid,province,city,district,publishStartTime,publishEndTime,type,createStartTime,createEndTime,userName,state));
 		List<Map<String,Object>> maps=new ArrayList<Map<String,Object>>();
@@ -115,7 +115,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		typeMap.put("value", type);
 		maps.add(typeMap);
 		try{
-			List<Advertise> advertises=advertiseUnitFacadeService.queryAdvertiseList(maps,publishStartTime,publishEndTime,createStartTime,createEndTime,userName);
+			List<Advertise> advertises=advertiseUnitFacadeService.queryAdvertiseList(maps,publishStartTime,publishEndTime,createStartTime,createEndTime,userName,pn,ps);
 			AdvertiseListVTO advertiseListVTO=new AdvertiseListVTO();
 			List<AdvertiseVTO> advertiseVTOs=new ArrayList<AdvertiseVTO>();
 			if(advertises!=null){

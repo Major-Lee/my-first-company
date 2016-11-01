@@ -106,10 +106,12 @@ public class AdvertiseUnitFacadeService {
 	 * @param conditionMap
 	 * @return
 	 */
-	public List<Advertise> queryAdvertiseList(List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName){
+	public List<Advertise> queryAdvertiseList(List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName,int pn,int ps){
 		List<Advertise> advertises=null;
 		ModelCriteria mc=new ModelCriteria();
 		Criteria criteria= mc.createCriteria();
+		mc.setPageNumber(pn);
+		mc.setPageSize(ps);;
 		if(conditionMap!=null&&conditionMap.size()>0){
 			for(Map<String,Object> singleMap:conditionMap){
 				criteria.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));

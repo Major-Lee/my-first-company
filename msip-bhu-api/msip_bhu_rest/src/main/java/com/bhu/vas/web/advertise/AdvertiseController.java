@@ -143,12 +143,13 @@ public class AdvertiseController extends BaseController{
 			@RequestParam(required = false) String  createStartTime,
 			@RequestParam(required = false) String createEndTime,
 			@RequestParam(required = false) String userName,
-			@RequestParam(required = false,defaultValue="-1") int state
-			
+			@RequestParam(required = false,defaultValue="-1") int state,
+    	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+    	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 		try{
 			RpcResponseDTO<AdvertiseListVTO> rpcResult = advertiseRpcService.queryAdvertiseList
-					(uid, province, city,district, publishStartTime, publishEndTime, type,createStartTime,createEndTime,userName,state);
+					(uid, province, city,district, publishStartTime, publishEndTime, type,createStartTime,createEndTime,userName,state,pageNo,pageSize);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
