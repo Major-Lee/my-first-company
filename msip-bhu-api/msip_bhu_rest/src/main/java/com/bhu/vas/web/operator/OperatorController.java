@@ -51,7 +51,7 @@ public class OperatorController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) int uid,
 			@RequestParam(required = false) String org,
-			@RequestParam(required = false,value="ic",defaultValue="false") boolean ischannel,
+			@RequestParam(required = false,value="ic",defaultValue="channel") String userType,
 			@RequestParam(required = true,value="sk") String secretKey){
 		
 		ResponseError validateError = validate(secretKey);
@@ -60,7 +60,7 @@ public class OperatorController extends BaseController{
 			return;
 		}
 		
-		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.upgradeOperator(uid, org,ischannel);
+		RpcResponseDTO<Map<String, Object>> rpcResult = userRpcService.upgradeOperator(uid, org,userType);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

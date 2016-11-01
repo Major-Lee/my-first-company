@@ -97,10 +97,10 @@ public class UserRpcService implements IUserRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Map<String, Object>> upgradeOperator(int uid,String org,boolean ischannel) {
-		logger.info(String.format("upgradeOperator with uid[%s] org[%s] ischannel[%s]",
-				uid,org,ischannel));
-		return userUnitFacadeService.upgradeOperator(uid, org,ischannel);
+	public RpcResponseDTO<Map<String, Object>> upgradeOperator(int uid,String org,String userType) {
+		logger.info(String.format("upgradeOperator with uid[%s] org[%s] userType[%s]",
+				uid,org,userType));
+		return userUnitFacadeService.upgradeOperator(uid, org,userType);
 	}
 	
 	@Override
