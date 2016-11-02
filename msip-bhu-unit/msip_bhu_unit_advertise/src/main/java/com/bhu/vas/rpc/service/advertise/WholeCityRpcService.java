@@ -129,7 +129,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 				int pubComNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(pubMc);
 				advertiseListVTO.setPubComNum(pubComNum);
 				ModelCriteria vfMc=new ModelCriteria();
-				pubMc.createCriteria().andColumnEqualTo("state", AdvertiseType.VerifyFailure.getType()).andColumnEqualTo("uid", uid);
+				vfMc.createCriteria().andColumnEqualTo("state", AdvertiseType.VerifyFailure.getType()).andColumnEqualTo("uid", uid);
 				int vfNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(vfMc);
 				advertiseListVTO.setVerifyFalNum(vfNum);
 			}
