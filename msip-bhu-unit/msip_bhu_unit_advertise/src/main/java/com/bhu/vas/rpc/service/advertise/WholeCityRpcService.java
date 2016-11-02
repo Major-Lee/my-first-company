@@ -140,4 +140,11 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+
+	@Override
+	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, int advertiseId) {
+		logger.info(String.format("escapeAdvertise uid[%s] advertiseId[%s]",uid,
+				advertiseId));
+		return advertiseUnitFacadeService.escapeAdvertise(uid,advertiseId);
+	}
 }

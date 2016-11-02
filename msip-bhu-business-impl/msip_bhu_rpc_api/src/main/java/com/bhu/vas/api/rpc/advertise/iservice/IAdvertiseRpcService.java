@@ -88,5 +88,12 @@ public interface IAdvertiseRpcService{
 			String publishStartTime, String publishEndTime, int type,
 			String createStartTime, String createEndTime, String mobileNo,
 			int state, int pn, int ps);
+	/**
+	 * 取消广告
+	 * @param uid
+	 * @param advertiseId
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, int advertiseId);
 
 }

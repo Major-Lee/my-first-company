@@ -297,4 +297,18 @@ public class AdvertiseUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+
+	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, int advertiseId) {
+		Advertise advertise=advertiseService.getById(advertiseId);
+		if(advertise.getUid()!=uid){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
+		}
+		if(advertise.getState()==AdvertiseType.UnVerified.getType()){
+			advertise.setState(AdvertiseType.EscapeOrder.getType());
+			advertiseService.update(advertise);
+		}else{
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
 }
