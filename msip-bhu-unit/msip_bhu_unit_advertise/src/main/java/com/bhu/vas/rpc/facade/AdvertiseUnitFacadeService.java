@@ -260,7 +260,7 @@ public class AdvertiseUnitFacadeService {
 			long end) {
 		try{
 			Advertise entity=advertiseService.getById(advertiseId);
-			if(entity.getState()!=AdvertiseType.UnVerified.getType()){
+			if(entity.getState()!=AdvertiseType.UnVerified.getType()||entity.getUid()!=uid){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
 			}
 			entity.setCity(city);
