@@ -54,7 +54,7 @@ public class SharedNetworkFacadeService {
 	public boolean doApplySharedNetworksConfig(int uid,ParamSharedNetworkDTO paramDto){
 		boolean configChanged = false;
 		UserDevicesSharedNetwork configs = userDevicesSharedNetworkService.getById(uid);
-		paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
+		paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto, null);
 		if(configs == null){
 			configs = new UserDevicesSharedNetwork();
 			configs.setId(uid);
@@ -231,7 +231,7 @@ public class SharedNetworkFacadeService {
 		}else{
 			sharednetwork = new WifiDeviceSharedNetwork();
 			sharednetwork.setId(mac_lowercase);
-			ParamSharedNetworkDTO configDto = ParamSharedNetworkDTO.builderDefault();
+			ParamSharedNetworkDTO configDto = ParamSharedNetworkDTO.builderDefault(null);
 			sharednetwork.setSharednetwork_type(configDto.getNtype());
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
 			sharedNetworkSettingDTO.turnOn(configDto);

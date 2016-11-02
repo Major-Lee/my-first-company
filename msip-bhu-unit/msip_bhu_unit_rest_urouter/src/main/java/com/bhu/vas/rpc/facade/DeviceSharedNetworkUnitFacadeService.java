@@ -281,7 +281,13 @@ public class DeviceSharedNetworkUnitFacadeService {
 					}
 				}
 			}
-			UserValidateServiceHelper.validateUserDevices(uid, dmacs, userWifiDeviceFacadeService);
+			try{
+				//校验用户是否绑定此设备
+				UserValidateServiceHelper.validateUserDevices(uid, dmacs, userWifiDeviceFacadeService);
+			}catch(BusinessI18nCodeException be){
+				//校验此设备是否属于这些城市运营商
+				UserValidateServiceHelper.validateCityUsersDevices(uid, dmacs, chargingFacadeService.getWifiDeviceSharedealConfigsService());
+			}
 			//template 不为空并且 是无效的template格式,如果为空或者是有效的格式 则传递后续处理
 			if(StringUtils.isNotEmpty(template) && !SharedNetworksHelper.validTemplateFormat(template)){
 				template = SharedNetworksHelper.DefaultTemplate;

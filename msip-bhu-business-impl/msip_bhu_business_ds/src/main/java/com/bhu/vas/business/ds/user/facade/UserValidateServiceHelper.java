@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserDevice;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -35,6 +36,21 @@ public class UserValidateServiceHelper {
 			int count = userWifiDeviceFacadeService.countByUidAndMacsParam(uid, dmacs);
 			if(dmacs.size() != count){
 				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_YOURBINDED,new String[]{dmacs.toString()});
+			}
+		}
+	}
+	
+	/**
+	 * 校验设备是否属于该城市运营商
+	 * @param uid
+	 * @param dmacs
+	 * @param wifiDeviceSharedealConfigsService
+	 */
+	public static void validateCityUsersDevices(int uid, List<String> dmacs, WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService){
+		if(!BusinessRuntimeConfiguration.isConsoleUser(uid)){
+			int count = wifiDeviceSharedealConfigsService.countByUidAndMacsParam(uid, dmacs);
+			if(dmacs.size() != count){
+				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_YOURMANAGED,new String[]{dmacs.toString()});
 			}
 		}
 	}

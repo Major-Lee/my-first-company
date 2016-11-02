@@ -129,7 +129,14 @@ public class WifiDeviceDocument extends AbstractDocument{
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private String d_distributor_type; //城市运营商 or 渠道商
+	private String d_distributor_id; //城市运营商 or 渠道商
+
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_distributor_type; //城市运营商 or 渠道商类型
 
 	
 	/**
@@ -262,6 +269,15 @@ public class WifiDeviceDocument extends AbstractDocument{
 	)
 	private String d_extension;//设备业务扩展大字段
 */	
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String d_snk_owner;//设备的共享网络owner，可能是绑定的用户，或者是运营商
+	
+
 	@Field(
 			type = FieldType.String,
 			searchAnalyzer = "whitespace",
@@ -269,7 +285,7 @@ public class WifiDeviceDocument extends AbstractDocument{
 			store = true
 	)
 	private String d_snk_type;//设备的共享网络类型
-	
+
 	@Field(
 			type = FieldType.String,
 			index = FieldIndex.not_analyzed,
@@ -880,6 +896,22 @@ public class WifiDeviceDocument extends AbstractDocument{
 
 	public void setD_distributor_type(String d_distributor_type) {
 		this.d_distributor_type = d_distributor_type;
+	}
+
+	public String getD_snk_owner() {
+		return d_snk_owner;
+	}
+
+	public void setD_snk_owner(String d_snk_owner) {
+		this.d_snk_owner = d_snk_owner;
+	}
+
+	public String getD_distributor_id() {
+		return d_distributor_id;
+	}
+
+	public void setD_distributor_id(String d_distributor_id) {
+		this.d_distributor_id = d_distributor_id;
 	}
 
 }

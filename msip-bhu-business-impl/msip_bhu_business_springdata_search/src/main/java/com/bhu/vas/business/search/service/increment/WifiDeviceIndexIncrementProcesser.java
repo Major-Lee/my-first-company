@@ -400,14 +400,14 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * @param sharedNetwork_type
 	 * @param template
 	 */
-	public void sharedNetworkUpdIncrement(final String id, final String sharedNetwork_type, final String template,final String sharedNetwork_turnstate){
+	public void sharedNetworkUpdIncrement(final String id, final int owner, final String sharedNetwork_type, final String template,final String sharedNetwork_turnstate){
 		ExecutorService executor = singleExecProcesser(id);
 		if(executor != null){
 			executor.submit((new Runnable() {
 				@Override
 				public void run() {
 					try{
-						wifiDeviceIndexIncrement.sharedNetworkUpdIncrement(id, sharedNetwork_type, template,sharedNetwork_turnstate);
+						wifiDeviceIndexIncrement.sharedNetworkUpdIncrement(id, owner, sharedNetwork_type, template,sharedNetwork_turnstate);
 					}catch(Exception ex){
 						ex.printStackTrace(System.out);
 					}

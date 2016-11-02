@@ -134,8 +134,10 @@ public class WifiDeviceSearchMessageBuilder {
 			String d_dut){
 		SearchConditionPack pack_must = SearchConditionPack.builderSearchConditionMustPack();
 		//if(u_id != null){
+//		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+//				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
 		SearchCondition sc_u_id = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
+				Field.D_SHAREDNETWORK_OWNER.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
 		pack_must.addChildSearchCondtions(sc_u_id);
 		//}
 
@@ -243,8 +245,10 @@ public class WifiDeviceSearchMessageBuilder {
 	
 	public static SearchConditionMessage builderSearchMessageWithSnkType(Integer u_id, 
 			String d_snk_type, String d_snk_turnstate, String d_snk_template){
+//		SearchCondition sc_d_uid = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+//				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
 		SearchCondition sc_d_uid = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
-				Field.U_ID.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
+				Field.D_SHAREDNETWORK_OWNER.getName(), SearchConditionPattern.StringEqual.getPattern(), String.valueOf(u_id));
 		
 		SearchCondition sc_d_snk_type = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 				Field.D_SHAREDNETWORK_TYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_snk_type);

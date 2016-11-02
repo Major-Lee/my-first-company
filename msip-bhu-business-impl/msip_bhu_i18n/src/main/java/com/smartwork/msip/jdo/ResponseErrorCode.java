@@ -210,6 +210,7 @@ public enum ResponseErrorCode {
 	DEVICE_NOT_YOURBINDED("347","device.not.yourbinded"),
 	DEVICE_DATA_OFFLINE_NOT_ENOUGH("348","device.data.offline.not.enough"),
 	DEVICE_TYPE_NOT_SUPPORTED("350","device.type.notsupported"),
+	DEVICE_NOT_YOURMANAGED("351","device.not.yourmanaged"),
 	
 	UPLOAD_FILE_FORMAT_INVALID("360","upload.file.format.invalid"),
 	UPLOAD_FILE_FID_GEN_ERROR("361","upload.file.fid.gen.error"),

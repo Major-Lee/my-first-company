@@ -11,14 +11,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.DistributorType;
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkApplyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
@@ -43,6 +46,9 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	
+	@Resource
+	private UserService userService;
 	
 /*	@Resource
 	private DeviceCMDGenFacadeService deviceCMDGenFacadeService;
@@ -70,13 +76,20 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				logger.info("UserDeviceSharedNetworkApplyServiceHandler 条件不符");
 				return;
 			}
+			
+			final User user = userService.getById(userid);
+			if(user == null){
+				logger.info(String.format("用户[%s]不存在", userid));
+				return;
+			}
+				
 			if(onlyindexupdate){//只进行索引更新
 				logger.info(String.format("process dmacs[%s] sharedNetwork[%s] onlyindexupdate[%s] dtoType[%s]", dmacs,sharedNetwork, onlyindexupdate,dtoType));
 				if(dmacs.isEmpty()) return;
 				
 				for(String mac:dmacs){
 					WifiDeviceDocument doc = wifiDeviceDataSearchService.searchById(mac);
-		    		if(DistributorType.City.getType().equals(doc.getD_distributor_type())) //城市运营商的设备不允许修改
+		    		if(user.getUtype() != UserType.URBANOPERATORS.getIndex() && DistributorType.City.getType().equals(doc.getD_distributor_type())) //非城市运营商不能修改城市运营商的设备
 		    			dmacs.remove(mac);
 				}
 				
@@ -100,7 +113,7 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				    @Override
 				    public void notifyComming(Page<WifiDeviceDocument> pages) {
 				    	for (WifiDeviceDocument doc : pages) {
-				    		if(DistributorType.City.getType().equals(doc.getD_distributor_type())) //城市运营商的设备不允许修改
+				    		if(user.getUtype() != UserType.URBANOPERATORS.getIndex() && DistributorType.City.getType().equals(doc.getD_distributor_type())) //非城市运营商不能修改城市运营商的设备
 				    			continue;
 				    		dmacs.add(doc.getD_mac());
 				    	}

@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.devices.dto.sharednetwork;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.bhu.vas.api.dto.DistributorType;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
@@ -22,9 +23,13 @@ import com.smartwork.msip.cores.helper.StringHelper;
 public class ParamSharedNetworkDTO implements java.io.Serializable{
 	
 	@JsonIgnore
-	public static final String Default_Range_Cash_PC = "1.5-3.5";
+	public static final String Default_City_Range_Cash_PC = "1.5-3.5";
 	@JsonIgnore
-	public static final String Default_Range_Cash_Mobile = "0.1-0.9";
+	public static final String Default_City_Range_Cash_Mobile = "0.1-0.9";
+	@JsonIgnore
+	public static final String Default_Channel_Range_Cash_PC = "0.5-1.0";
+	@JsonIgnore
+	public static final String Default_Channel_Range_Cash_Mobile = "0.1-0.2";
 	@JsonIgnore
 	public static final String Default_AIT = "14400";
 	@JsonIgnore
@@ -72,8 +77,8 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String dns_default_ip;
 	
 	
-	private String range_cash_pc = Default_Range_Cash_PC;
-	private String range_cash_mobile = Default_Range_Cash_Mobile;
+	private String range_cash_pc = Default_Channel_Range_Cash_PC;
+	private String range_cash_mobile = Default_Channel_Range_Cash_Mobile;
 	private String ait_pc = Default_AIT;
 	private String ait_mobile = Default_AIT;
 	//pc免费上网时长
@@ -339,8 +344,8 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	public void setDns_default_ip(String dns_default_ip) {
 		this.dns_default_ip = dns_default_ip;
 	}
-	public static ParamSharedNetworkDTO builderDefault(){
-		return builderDefault(SharedNetworkType.SafeSecure.getKey());
+	public static ParamSharedNetworkDTO builderDefault(String dtype){
+		return builderDefault(SharedNetworkType.SafeSecure.getKey(), dtype);
 	}
 	
 	private String combineOpenResource(){
@@ -352,7 +357,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	}
 	
 	////users_tx_rate users_rx_rate signal_limit(-30) redirect_url("www.bhuwifi.com") idle_timeout(1200) force_timeout(21600) open_resource("") ssid("BhuWIFI-访客")
-	public static ParamSharedNetworkDTO builderDefault(String ntype){
+	public static ParamSharedNetworkDTO builderDefault(String ntype, String distributor_type){
 		ParamSharedNetworkDTO param = new ParamSharedNetworkDTO();
 		if(StringUtils.isEmpty(ntype)) ntype = (SharedNetworkType.SafeSecure.getKey());
 		param.setNtype(ntype);
@@ -363,6 +368,13 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		param.setForce_timeout(WifiDeviceHelper.SharedNetworkWifi_Default_Force_timeout);
 		//param.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Open_resource);
 		param.setMax_clients(WifiDeviceHelper.SharedNetworkWifi_Default_Maxclients);
+		if(DistributorType.City.getType().equals(distributor_type)){
+			param.setRange_cash_mobile(ParamSharedNetworkDTO.Default_City_Range_Cash_Mobile);
+			param.setRange_cash_pc(ParamSharedNetworkDTO.Default_City_Range_Cash_PC);
+		} else {
+			param.setRange_cash_mobile(ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile);
+			param.setRange_cash_pc(ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC);
+		}
 		//param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		//param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
 		if(SharedNetworkType.Uplink.getKey().equals(param.getNtype())){
@@ -388,8 +400,8 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		return param;
 	}
 	
-	public static ParamSharedNetworkDTO fufillWithDefault(ParamSharedNetworkDTO param){
-		if(param == null) return builderDefault(SharedNetworkType.SafeSecure.getKey());
+	public static ParamSharedNetworkDTO fufillWithDefault(ParamSharedNetworkDTO param, String distributor_type){
+		if(param == null) return builderDefault(SharedNetworkType.SafeSecure.getKey(), distributor_type);
 		if(StringUtils.isEmpty(param.getNtype())) param.setNtype(SharedNetworkType.SafeSecure.getKey());
 		
 		if(param.getSignal_limit() == 0) param.setSignal_limit(WifiDeviceHelper.SharedNetworkWifi_Default_Signal_limit);
@@ -588,6 +600,6 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		//System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO()).builderProperties()));
 		//System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_SafeSecure, ParamSharedNetworkDTO.fufillWithDefault(new ParamSharedNetworkDTO(SharedNetworkType.SafeSecure.getKey())).builderProperties()));
 		System.out.println(JsonHelper.getJSONString(ParamSharedNetworkDTO.builderDefault(SharedNetworkType.Uplink.getKey())));
-		System.out.println(JsonHelper.getJSONString(ParamSharedNetworkDTO.builderDefault()));
+		System.out.println(JsonHelper.getJSONString(ParamSharedNetworkDTO.builderDefault(null)));
 	}
 }

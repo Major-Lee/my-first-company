@@ -200,6 +200,7 @@ public class WifiDeviceDocumentHelper {
 			if(StringUtils.isNotEmpty(sharedNetwork_type)){
 				doc.setD_snk_type(sharedNetwork_type);
 			}*/
+			doc.setD_snk_owner(String.valueOf(wifiDeviceSharedNetwork.getOwner()));
 			doc.setD_snk_type(wifiDeviceSharedNetwork.getSharednetwork_type());
 			doc.setD_snk_template(wifiDeviceSharedNetwork.getTemplate());
 			SharedNetworkSettingDTO sharedNetworkSettingDto = wifiDeviceSharedNetwork.getInnerModel();
@@ -220,6 +221,7 @@ public class WifiDeviceDocumentHelper {
 			doc.setD_snk_allowturnoff(wifiDeviceShareConfig.isCanbe_turnoff() ? "1" : "0");
 			doc.setO_batch(wifiDeviceShareConfig.getBatchno());
 			doc.setD_distributor_type(wifiDeviceShareConfig.getDistributor_type());
+			doc.setD_distributor_id(String.valueOf(wifiDeviceShareConfig.getDistributor()));
 		}else{
 			doc.setD_snk_allowturnoff("1");
 		}

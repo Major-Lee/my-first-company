@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.DistributorType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
@@ -588,16 +589,31 @@ public class ChargingFacadeService {
 	public String fetchAmountRange(String dmac,Integer umactype){
 		try{
 			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
-			String amountRange = null;
-			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				amountRange = configs.getInnerModel().getPsn().getRange_cash_pc();
-			}else{
-				amountRange = configs.getInnerModel().getPsn().getRange_cash_mobile();
+			if(configs == null){
+				WifiDeviceSharedealConfigs sharedeal = wifiDeviceSharedealConfigsService.getById(dmac);
+				if(DistributorType.City.getType().equals(sharedeal.getDistributor_type())){
+					if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue())
+						return ParamSharedNetworkDTO.Default_City_Range_Cash_PC;
+					else
+						return ParamSharedNetworkDTO.Default_City_Range_Cash_Mobile;
+				} else {
+					if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue())
+						return ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC;
+					else
+						return ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile;
+				}
+			} else {
+				String amountRange = null;
+				if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
+					amountRange = configs.getInnerModel().getPsn().getRange_cash_pc();
+				}else{
+					amountRange = configs.getInnerModel().getPsn().getRange_cash_mobile();
+				}
+				return amountRange;
 			}
-			return amountRange;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			return ParamSharedNetworkDTO.Default_Range_Cash_Mobile;
+			return ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile;
 		}
 		
 	}

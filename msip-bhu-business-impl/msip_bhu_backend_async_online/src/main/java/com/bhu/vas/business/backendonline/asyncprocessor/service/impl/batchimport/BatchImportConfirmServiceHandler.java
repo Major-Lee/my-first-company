@@ -13,9 +13,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.helper.OpsHttpHelper;
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
@@ -27,6 +31,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmount
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
@@ -72,6 +77,9 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 	@Resource
 	private TagGroupRelationService tagGroupRelationService;
 	
+	@Resource
+	private SharedNetworksFacadeService sharedNetworksFacadeService;
+	
 	@Override
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
@@ -90,6 +98,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 				return;
 			}
 */
+			final int distributor = batchImport.getDistributor();
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_IMPORTING);
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
 			final AtomicInteger atomic_failed = new AtomicInteger(0);
@@ -99,7 +108,8 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			final BatchImportVTO importVto = batchImport.toBatchImportVTO(null, null,null);
 			//final String mobileno = batchImport.getMobileno();
 			final Integer uid_willbinded = UniqueFacadeService.fetchUidByMobileno(86,batchImport.getMobileno());
-			
+			final ParamSharedNetworkDTO psn = sharedNetworksFacadeService.fetchUserSharedNetworkConf(batchImport.getDistributor(), VapEnumType.SharedNetworkType.SafeSecure);
+
 			ImportElementCallback cb = new ImportElementCallback(){
 				@Override
 				public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {
@@ -143,6 +153,18 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							}
 							wifiDeviceService.updateAll(wifiDevices);
 	
+							//检查共享网络是否需要变更模板(城市运营商变更)
+							List<WifiDeviceSharedNetwork> wifiDevicesSnks = sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().findByIds(pages);
+							for(WifiDeviceSharedNetwork wsnk:wifiDevicesSnks){
+								if(distributor != -1 && wsnk.getOwner() != distributor){
+									wsnk.setOwner(distributor);
+									SharedNetworkSettingDTO dto = wsnk.getInnerModel();
+									dto.setPsn(psn);
+									wsnk.putInnerModel(dto);
+									sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(wsnk); //后面会针对设备重建索引 
+								}
+							}
+							
 							if(user_willbinded != null){
 								//userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
 								List<String> group_macs = new ArrayList<String>();

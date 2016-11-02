@@ -79,7 +79,7 @@ public class SharedNetworkSettingDTO implements java.io.Serializable{
 	
 	public static SharedNetworkSettingDTO buildOffSetting(){
 		SharedNetworkSettingDTO result = new SharedNetworkSettingDTO();
-		result.setPsn(ParamSharedNetworkDTO.builderDefault());
+		result.setPsn(ParamSharedNetworkDTO.builderDefault(null));
 		result.turnOff();
 		return result;
 	}

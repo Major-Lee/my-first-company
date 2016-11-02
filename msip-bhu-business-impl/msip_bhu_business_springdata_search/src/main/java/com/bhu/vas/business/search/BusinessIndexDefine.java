@@ -14,7 +14,7 @@ public interface BusinessIndexDefine {
 	interface WifiDevice{
 		//public static final String IndexName	= "wifi_device_index3";
 		public static final String IndexNameNew	= "wifi_device_index_new";
-		public static final String IndexName	= "wifi_device_index_v5";
+		public static final String IndexName	= "wifi_device_index_v6";
 		public static final String Type 		= "wifiDevice";
 		public static final int Shards		    = 5;
 		public static final int replicas 		= 1;
@@ -68,6 +68,7 @@ public interface BusinessIndexDefine {
 			D_UPTIME("d_uptime", null),//设备在线总时长 单位秒
 			D_WANIP("d_wanip", null),//设备wanip
 			D_INDUSTRY("d_industry", null),//设备行业信息
+			D_SHAREDNETWORK_OWNER("d_snk_owner", null),//设备的共享网络类型
 			D_SHAREDNETWORK_TYPE("d_snk_type", null),//设备的共享网络类型
 			D_SHAREDNETWORK_TEMPLATE("d_snk_template", null),//设备的共享网络模板
 			D_SHAREDNETWORK_TURNSTATE("d_snk_turnstate", null),//设备的共享网络的开启状态
@@ -78,7 +79,8 @@ public interface BusinessIndexDefine {
 			D_DISTRICT("d_district",null),//设备的地址位置-区
 			D_CHANNEL_LV1("d_channel_lv1", null), //设备的以及出货渠道
 			D_CHANNEL_LV2("d_channel_lv2", null), //设备的以及出货渠道
-			D_DISTRIBUTOR_TYPE("d_distributor_type", null),//城市运营商 or 渠道商
+			D_DISTRIBUTOR_TYPE("d_distributor_type", null),//城市运营商 or 渠道商类型
+			D_DISTRIBUTOR_ID("d_distributor_id", null),//城市运营商 or 渠道商
 
 			
 			//D_EXTENSION("d_extension", null),//设备业务扩展字段

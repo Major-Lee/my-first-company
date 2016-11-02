@@ -70,7 +70,7 @@ public class UserSharedNetworkMigrateEnvOp {
 							psn.setSsid(vw.getSsid());
 							psn.setUsers_rx_rate(vw.getUsers_rx_rate());
 							psn.setUsers_tx_rate(vw.getUsers_tx_rate());
-							sharedNetworkSettingDTO.setPsn(ParamSharedNetworkDTO.fufillWithDefault(psn));
+							sharedNetworkSettingDTO.setPsn(ParamSharedNetworkDTO.fufillWithDefault(psn, null));
 							snk_on = SnkTurnStateEnum.On;
 						}else{
 							snk_on = SnkTurnStateEnum.Off;
@@ -92,7 +92,7 @@ public class UserSharedNetworkMigrateEnvOp {
 							psn.setSsid(vw.getSsid());
 							psn.setUsers_rx_rate(vw.getUsers_rx_rate());
 							psn.setUsers_tx_rate(vw.getUsers_tx_rate());
-							sharedNetworkSettingDTO.setPsn(ParamSharedNetworkDTO.fufillWithDefault(psn));
+							sharedNetworkSettingDTO.setPsn(ParamSharedNetworkDTO.fufillWithDefault(psn, null));
 							snk_on = SnkTurnStateEnum.On;
 						}else{
 							snk_on = SnkTurnStateEnum.Off;
@@ -101,7 +101,7 @@ public class UserSharedNetworkMigrateEnvOp {
 						sharednetwork.putInnerModel(sharedNetworkSettingDTO);
 						sharedNetworkFacadeService.getWifiDeviceSharedNetworkService().update(sharednetwork);
 					}
-					wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(setting.getId(), sharednetwork.getSharednetwork_type(),sharednetwork.getTemplate(),snk_on.getType());
+					wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(setting.getId(), sharednetwork.getOwner(), sharednetwork.getSharednetwork_type(),sharednetwork.getTemplate(),snk_on.getType());
 					System.out.println(String.format("mac[%s] sharednetwork_type[%s]", setting.getId(), sharednetwork.getSharednetwork_type()));
 				}
 			}

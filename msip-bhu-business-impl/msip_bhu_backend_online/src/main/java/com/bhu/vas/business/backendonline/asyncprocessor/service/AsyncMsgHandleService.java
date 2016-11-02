@@ -277,7 +277,7 @@ public class AsyncMsgHandleService {
 								logger.info(
 										String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
 								// 更新索引，下发指令
-								wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), psn.getNtype(),
+								wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), wifiSharedNetwork.getOwner(), psn.getNtype(),
 										psn.getTemplate(),SnkTurnStateEnum.On.getType());
 								// psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
 								// 生成下发指令
@@ -1138,7 +1138,7 @@ public class AsyncMsgHandleService {
 			String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Stop, mac, -1,null,
 					DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
 			daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);*/
-			wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(mac,sharednetwork.getSharednetwork_type(),sharednetwork.getTemplate(),SnkTurnStateEnum.Off.getType());
+			wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(mac, sharednetwork.getOwner(), sharednetwork.getSharednetwork_type(),sharednetwork.getTemplate(),SnkTurnStateEnum.Off.getType());
 			logger.info(String.format("Device[%s] SharedNetwork Clear Successfully!",mac));
 			sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().deleteById(mac);
 		}

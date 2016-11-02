@@ -539,11 +539,12 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 	 * @param template
 	 */
 	@Override
-	public void sharedNetworkUpdIncrement(String id, String sharedNetwork_type, String template,String sharedNetwork_turnstate) {
+	public void sharedNetworkUpdIncrement(String id, int owner, String sharedNetwork_type, String template,String sharedNetwork_turnstate) {
 		logger.info(String.format("sharedNetworkUpdIncrement Request id [%s] d_snk_type [%s] d_snk_template [%s]", id, sharedNetwork_type, template));
 		if(StringUtils.isEmpty(id)) return;
 		
 		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_OWNER.getName(), String.valueOf(owner));
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TYPE.getName(), sharedNetwork_type);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TEMPLATE.getName(), template);
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_SHAREDNETWORK_TURNSTATE.getName(), sharedNetwork_turnstate);

@@ -10,12 +10,15 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.DistributorType;
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.NumberValidateHelper;
 import com.bhu.vas.api.helper.SharedNetworkChangeType;
 import com.bhu.vas.api.helper.SharedNetworksHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkVTO;
@@ -23,6 +26,8 @@ import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetworks;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
+import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.service.UserDevicesSharedNetworksService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
@@ -48,6 +53,9 @@ public class SharedNetworksFacadeService {
 	private WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService;
 
 	@Resource
+	private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
+	
+	@Resource
 	private UserDevicesSharedNetworksService userDevicesSharedNetworksService;
 
 /*    @Resource
@@ -69,12 +77,20 @@ public class SharedNetworksFacadeService {
 		boolean configChanged = false;
 		boolean devicePartChanged = false;
 		SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(paramDto.getNtype());
-		paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
+		User user = userService.getById(uid);
+		paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto, (UserType.URBANOPERATORS.getIndex() == user.getUtype())?DistributorType.City.getType():DistributorType.Channel.getType());
 		if(StringUtils.isEmpty(paramDto.getTemplate())){
 			paramDto.setTemplate(SharedNetworksHelper.DefaultTemplate);
 		}
-		SharedNetworksHelper.validAmountRange(paramDto.getRange_cash_mobile(), "rcm", NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
-		SharedNetworksHelper.validAmountRange(paramDto.getRange_cash_pc(), "rcp", NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
+		
+		if(UserType.URBANOPERATORS.getIndex() != user.getUtype()){
+			paramDto.setRange_cash_mobile(ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile);
+			paramDto.setRange_cash_pc(ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC);
+		} else {
+			SharedNetworksHelper.validAmountRange(paramDto.getRange_cash_mobile(), "rcm", NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
+			SharedNetworksHelper.validAmountRange(paramDto.getRange_cash_pc(), "rcp", NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
+		}
+		
 		SharedNetworksHelper.validAitRange(paramDto.getAit_mobile(), "ait_m", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
 		SharedNetworksHelper.validAitRange(paramDto.getAit_pc(), "ait_p", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
 		SharedNetworksHelper.validAitRange(paramDto.getFree_ait_mobile(), "fait_m", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
@@ -410,12 +426,26 @@ public class SharedNetworksFacadeService {
 		}else{
 			sharednetwork = new WifiDeviceSharedNetwork();
 			sharednetwork.setId(mac_lowercase);
-			ParamSharedNetworkDTO configDto = ParamSharedNetworkDTO.builderDefault(SharedNetworkType.SafeSecure.getKey());
-			configDto.setTemplate(SharedNetworksHelper.DefaultTemplate);
-			configDto.setTemplate_name(SharedNetworksHelper.buildTemplateName(SharedNetworkType.SafeSecure, SharedNetworksHelper.DefaultTemplate));//SharedNetworkType.SafeSecure.getName().concat(DefaultTemplate));
+			ParamSharedNetworkDTO configDto = null;
+			WifiDeviceSharedealConfigs sharedeal = wifiDeviceSharedealConfigsService.getById(mac);
+			int uid = -1;
+			if(sharedeal != null){
+				if(DistributorType.City.getType().equals(sharedeal.getDistributor_type()))
+					uid = sharedeal.getDistributor();
+				else 
+					uid = sharedeal.getOwner();
+			}
+			if(uid != -1){
+				configDto = fetchUserSharedNetworkConf(uid, VapEnumType.SharedNetworkType.SafeSecure);
+			} else {
+				configDto = ParamSharedNetworkDTO.builderDefault(SharedNetworkType.SafeSecure.getKey(), null);
+				configDto.setTemplate(SharedNetworksHelper.DefaultTemplate);
+				configDto.setTemplate_name(SharedNetworksHelper.buildTemplateName(SharedNetworkType.SafeSecure, SharedNetworksHelper.DefaultTemplate));//SharedNetworkType.SafeSecure.getName().concat(DefaultTemplate));
+			}
+			sharednetwork.setOwner(uid);
 			configDto.setTs(System.currentTimeMillis());
 			sharednetwork.setSharednetwork_type(configDto.getNtype());
-			sharednetwork.setTemplate(SharedNetworksHelper.DefaultTemplate);
+			sharednetwork.setTemplate(configDto.getTemplate());
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
 			if(notExistThenOn)
 				sharedNetworkSettingDTO.turnOn(configDto);
@@ -472,6 +502,7 @@ public class SharedNetworksFacadeService {
 				sharednetwork.setId(mac_lowercase);
 				sharednetwork.setSharednetwork_type(configDto.getNtype());
 				sharednetwork.setTemplate(template);
+				sharednetwork.setOwner(uid);
 				SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
 				sharedNetworkSettingDTO.turnOn(configDto);
 				sharednetwork.putInnerModel(sharedNetworkSettingDTO);
@@ -485,6 +516,7 @@ public class SharedNetworksFacadeService {
 				}
 				sharednetwork.setSharednetwork_type(configDto.getNtype());
 				sharednetwork.setTemplate(template);
+				sharednetwork.setOwner(uid);
 				SharedNetworkSettingDTO sharedNetworkSettingDTO = sharednetwork.getInnerModel();
 				
 				sharedNetworkSettingDTO.turnOn(configDto);

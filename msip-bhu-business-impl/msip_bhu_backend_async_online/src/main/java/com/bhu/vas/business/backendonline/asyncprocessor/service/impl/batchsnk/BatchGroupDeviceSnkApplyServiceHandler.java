@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.DistributorType;
+import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.SharedNetworkChangeType;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
@@ -84,6 +86,10 @@ public class BatchGroupDeviceSnkApplyServiceHandler implements IMsgHandlerServic
 								}
 							}
 						}
+						
+						//目前分组只在ucloud中存在。所以此处不允许修改分组中属于运营商的设备
+			    		if(DistributorType.City.getType().equals(doc.getD_distributor_type())) //非城市运营商不能修改城市运营商的设备
+			    			continue;
 			    		dmacs.add(mac);
 			    	}
 					if(!dmacs.isEmpty()){
