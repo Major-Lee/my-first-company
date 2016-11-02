@@ -104,11 +104,13 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 			Map<String,Object> districtMap=new HashMap<String,Object>();
 			districtMap.put("name", "district");
 			districtMap.put("value", district);
+			maps.add(districtMap);
 		}
 		if(state!=-1){
-			Map<String,Object> districtMap=new HashMap<String,Object>();
-			districtMap.put("name", "state");
-			districtMap.put("value", state);
+			Map<String,Object> stateMap=new HashMap<String,Object>();
+			stateMap.put("name", "state");
+			stateMap.put("value", state);
+			maps.add(stateMap);
 		}
 		
 		Map<String,Object> typeMap=new HashMap<String,Object>();
