@@ -110,11 +110,7 @@ public class AdvertiseUnitFacadeService {
 	 * @return
 	 */
 	public List<String> fetchDevicePositionDistribution(String province,String city,String district){
-		if(StringUtils.isNotBlank(city)){
-			return WifiDevicePositionListService.getInstance().fetchCity(city);
-		}else if(StringUtils.isNoneBlank(province)){
-			return WifiDevicePositionListService.getInstance().fetchProvince(province);
-		}else if(StringUtils.isNoneBlank(district)){
+		if(StringUtils.isNotBlank(district)){
 			List<String> disableTime = new ArrayList<String>();
 			ModelCriteria mc=new ModelCriteria();
 			try {
@@ -133,6 +129,10 @@ public class AdvertiseUnitFacadeService {
 				e.printStackTrace();
 			}
 			return disableTime;
+		}else if(StringUtils.isNoneBlank(city)){
+			return WifiDevicePositionListService.getInstance().fetchCity(city);
+		}else if(StringUtils.isNoneBlank(province)){
+			return WifiDevicePositionListService.getInstance().fetchProvince(province);
 		}else{
 			return WifiDevicePositionListService.getInstance().fetchAllProvince();
 		}
