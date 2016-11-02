@@ -214,7 +214,8 @@ public class SharedNetworksFacadeService {
 		UserDevicesSharedNetworks configs = userDevicesSharedNetworksService.getById(uid);
 		//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
 		if(configs == null){
-			configs = SharedNetworksHelper.buildDefaultUserDevicesSharedNetworks(uid, sharedNetwork, SharedNetworksHelper.DefaultTemplate);
+			User user = userService.getById(uid);
+			configs = SharedNetworksHelper.buildDefaultUserDevicesSharedNetworks(uid, sharedNetwork, SharedNetworksHelper.DefaultTemplate, (user != null && UserType.URBANOPERATORS.getIndex() == user.getUtype())?DistributorType.City.getType():DistributorType.Channel.getType());
 			/*configs = new UserDevicesSharedNetworks();
 			configs.setId(uid);
 			List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
@@ -309,7 +310,8 @@ public class SharedNetworksFacadeService {
 		ParamSharedNetworkDTO dto = null;
 		//paramDto = ParamSharedNetworkDTO.fufillWithDefault(paramDto);
 		if(configs == null){
-			configs = SharedNetworksHelper.buildDefaultUserDevicesSharedNetworks(uid, sharedNetwork, SharedNetworksHelper.DefaultTemplate);//.buildDefault(uid, sharedNetwork, DefaultTemplate);
+			User user = userService.getById(uid);
+			configs = SharedNetworksHelper.buildDefaultUserDevicesSharedNetworks(uid, sharedNetwork, SharedNetworksHelper.DefaultTemplate, (user != null && UserType.URBANOPERATORS.getIndex() == user.getUtype())?DistributorType.City.getType():DistributorType.Channel.getType());
 			userDevicesSharedNetworksService.insert(configs);
 			dto = configs.get(sharedNetwork.getKey()).get(0);
 			/*configs = new UserDevicesSharedNetworks();

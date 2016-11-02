@@ -132,11 +132,11 @@ public class SharedNetworksHelper {
 		return configs;
 	}
 	
-	public static UserDevicesSharedNetworks buildDefaultUserDevicesSharedNetworks(int uid,VapEnumType.SharedNetworkType sharedNetwork,String template){
+	public static UserDevicesSharedNetworks buildDefaultUserDevicesSharedNetworks(int uid,VapEnumType.SharedNetworkType sharedNetwork,String template, String dtype){
 		UserDevicesSharedNetworks configs = new UserDevicesSharedNetworks();
 		configs.setId(uid);
 		List<ParamSharedNetworkDTO> sharedNetworkType_models = new ArrayList<ParamSharedNetworkDTO>();
-		ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey());
+		ParamSharedNetworkDTO dto = ParamSharedNetworkDTO.builderDefault(sharedNetwork.getKey(), dtype);
 		dto.setTs(System.currentTimeMillis());
 		dto.setTemplate(template);
 		dto.setTemplate_name(buildTemplateName(sharedNetwork,template));//sharedNetwork.getName().concat(template));
