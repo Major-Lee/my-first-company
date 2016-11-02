@@ -189,14 +189,18 @@ public class AdvertiseUnitFacadeService {
 		try{ 
 			Advertise advertise=advertiseService.getById(advertiseId);
 			advertise.setVerify_uid(verify_uid);
-			if(state==0){
-				advertise.setState(AdvertiseType.UnPublish.getType());
+			if(advertise.getState()==AdvertiseType.UnVerified.getType()){
+				if(state==0){
+					advertise.setState(AdvertiseType.UnPublish.getType());
+				}else{
+					advertise.setState(AdvertiseType.VerifyFailure.getType());
+					advertise.setReject_reason(msg);
+				}
+				advertiseService.update(advertise);
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 			}else{
-				advertise.setState(AdvertiseType.VerifyFailure.getType());
-				advertise.setReject_reason(msg);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
 			}
-			advertiseService.update(advertise);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
