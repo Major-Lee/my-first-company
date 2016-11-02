@@ -249,7 +249,7 @@
 	</select>
 	
 	<select id="countByAdvertiseTime" resultType="int" parameterType="Map">
-		select count(*) from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end}))) and province=#{province} and city=#{city} and district=#{district}]]>;	
+		select count(*) from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end}))) and province=#{province} and city=#{city} and district=#{district} and state not in (5,6)]]>;	
 	</select>
 	
 	<delete id="removeByModelCriteria">
