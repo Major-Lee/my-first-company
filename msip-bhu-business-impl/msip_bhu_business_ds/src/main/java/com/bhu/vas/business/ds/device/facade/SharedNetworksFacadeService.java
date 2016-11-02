@@ -86,15 +86,19 @@ public class SharedNetworksFacadeService {
 		if(UserType.URBANOPERATORS.getIndex() != user.getUtype()){
 			paramDto.setRange_cash_mobile(ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile);
 			paramDto.setRange_cash_pc(ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC);
+			paramDto.setAit_mobile(ParamSharedNetworkDTO.Default_AIT);
+			paramDto.setAit_pc(ParamSharedNetworkDTO.Default_AIT);
+			paramDto.setFree_ait_mobile(ParamSharedNetworkDTO.Default_Free_AIT);
+			paramDto.setFree_ait_pc(ParamSharedNetworkDTO.Default_Free_AIT);
 		} else {
 			SharedNetworksHelper.validAmountRange(paramDto.getRange_cash_mobile(), "rcm", NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
 			SharedNetworksHelper.validAmountRange(paramDto.getRange_cash_pc(), "rcp", NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
+			SharedNetworksHelper.validAitRange(paramDto.getAit_mobile(), "ait_m", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+			SharedNetworksHelper.validAitRange(paramDto.getAit_pc(), "ait_p", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+			SharedNetworksHelper.validAitRange(paramDto.getFree_ait_mobile(), "fait_m", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+			SharedNetworksHelper.validAitRange(paramDto.getFree_ait_pc(), "fait_p", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
 		}
 		
-		SharedNetworksHelper.validAitRange(paramDto.getAit_mobile(), "ait_m", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
-		SharedNetworksHelper.validAitRange(paramDto.getAit_pc(), "ait_p", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
-		SharedNetworksHelper.validAitRange(paramDto.getFree_ait_mobile(), "fait_m", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
-		SharedNetworksHelper.validAitRange(paramDto.getFree_ait_pc(), "fait_p", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
 		
 		/*if(StringUtils.isEmpty(paramDto.getTemplate_name())){
 			paramDto.setTemplate_name(sharedNetwork.getName().concat(paramDto.getTemplate()));
