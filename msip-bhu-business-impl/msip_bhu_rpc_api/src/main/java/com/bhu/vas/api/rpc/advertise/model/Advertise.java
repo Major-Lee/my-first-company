@@ -203,6 +203,9 @@ public class Advertise extends BaseIntModel{
 		singleAdvertise.setTitle(this.title);
 		singleAdvertise.setType(this.type);
 		singleAdvertise.setState(this.state);
+		singleAdvertise.setImage(this.image);
+		singleAdvertise.setUrl(this.url);
+		singleAdvertise.setDomain(this.domain);
 		return singleAdvertise;
 	}
 	
