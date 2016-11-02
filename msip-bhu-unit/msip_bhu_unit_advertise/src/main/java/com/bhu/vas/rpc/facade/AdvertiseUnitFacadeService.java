@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -113,7 +115,24 @@ public class AdvertiseUnitFacadeService {
 		}else if(StringUtils.isNoneBlank(province)){
 			return WifiDevicePositionListService.getInstance().fetchProvince(province);
 		}else if(StringUtils.isNoneBlank(district)){
-			return null;
+			List<String> disableTime = new ArrayList<String>();
+			ModelCriteria mc=new ModelCriteria();
+			try {
+				mc.createCriteria().andColumnBetween("start", DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 15));
+				List<Advertise> advertises = advertiseService.findModelByModelCriteria(mc);
+				for(Advertise advertise : advertises){
+					String startTime = DateTimeHelper.getDateTime(advertise.getStart(), DateTimeHelper.FormatPattern5);
+					disableTime.add(startTime);
+					if(advertise.getDuration() != 0){
+						for(int i=1; i<=advertise.getDuration(); i++){
+							disableTime.add(DateTimeHelper.getAfterDate(startTime, i));
+						}
+					}
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			return disableTime;
 		}else{
 			return WifiDevicePositionListService.getInstance().fetchAllProvince();
 		}
@@ -275,7 +294,4 @@ public class AdvertiseUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
-	
-	
 }
