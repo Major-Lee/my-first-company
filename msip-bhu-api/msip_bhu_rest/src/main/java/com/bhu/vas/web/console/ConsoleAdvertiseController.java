@@ -22,14 +22,14 @@ import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
-@RequestMapping("/console")
+@RequestMapping("/console/ad")
 public class ConsoleAdvertiseController extends BaseController{
 	@Resource
 	private IAdvertiseRpcService advertiseRpcService;
 	
 	
 	@ResponseBody()
-	@RequestMapping(value = "/ad/verifyAdvertise", method = {RequestMethod.POST})
+	@RequestMapping(value = "/verifyAdvertise", method = {RequestMethod.POST})
 	public void updateAdvertise(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -55,7 +55,7 @@ public class ConsoleAdvertiseController extends BaseController{
 	}
 	
 	@ResponseBody()
-	@RequestMapping(value = "/ad/queryAdvertiseList", method = {RequestMethod.POST})
+	@RequestMapping(value = "/queryAdvertiseList", method = {RequestMethod.POST})
 	public void queryAdvertise(
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -89,7 +89,7 @@ public class ConsoleAdvertiseController extends BaseController{
 		}
 	}
 	@ResponseBody()
-	@RequestMapping(value = "/ad/queryAdvertiseInfo", method = {RequestMethod.POST})
+	@RequestMapping(value = "/queryAdvertiseInfo", method = {RequestMethod.POST})
 	public void queryAdvertise(
 			HttpServletRequest request,
 			HttpServletResponse response,
