@@ -163,6 +163,7 @@ public class UserSharedNetworksForCityOp {
 					System.out.println("dev:" + snk.getId() + " not belong to a city distributor, modify device portal money");
 					SharedNetworkSettingDTO snkDTO = snk.getInnerModel();
 					ParamSharedNetworkDTO wpsn = snkDTO.getPsn();
+					snk.setOwner(wsdcfg.getOwner());
 					if(wpsn != null){
 						wpsn.setRange_cash_mobile(ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile);
 						wpsn.setRange_cash_pc(ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC);
@@ -172,8 +173,8 @@ public class UserSharedNetworksForCityOp {
 						wpsn.setAit_pc(ParamSharedNetworkDTO.Default_AIT);
 						snkDTO.setPsn(wpsn);
 						snk.putInnerModel(snkDTO);
-						sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(snk);
 					}
+					sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(snk);
 					continue;
 				}
 				if(wsdcfg.getDistributor() <= 0){
