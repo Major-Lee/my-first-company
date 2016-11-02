@@ -114,7 +114,10 @@ public class AdvertiseUnitFacadeService {
 			List<String> disableTime = new ArrayList<String>();
 			ModelCriteria mc=new ModelCriteria();
 			try {
-				mc.createCriteria().andColumnBetween("start", DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 15));
+				mc.createCriteria().andColumnEqualTo("province", province)
+				.andColumnEqualTo("city", city).andColumnEqualTo("district", district)
+				.andColumnBetween("start", DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5),
+						DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 15));
 				List<Advertise> advertises = advertiseService.findModelByModelCriteria(mc);
 				for(Advertise advertise : advertises){
 					String startTime = DateTimeHelper.getDateTime(advertise.getStart(), DateTimeHelper.FormatPattern5);
