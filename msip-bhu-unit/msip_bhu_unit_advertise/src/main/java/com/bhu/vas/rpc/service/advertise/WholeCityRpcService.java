@@ -34,10 +34,10 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	private UserService userService;
 	
 	@Override
-	public RpcResponseDTO<List<String>> fetchDevicePositionDistribution(String province, String city) {
-		logger.info(String.format("fetchDevicePositionDistribution province[%s] city[%s]", province, city));
+	public RpcResponseDTO<List<String>> fetchDevicePositionDistribution(String province, String city, String district) {
+		logger.info(String.format("fetchDevicePositionDistribution province[%s] city[%s] district[%s]", province, city, district));
 		try {
-			List<String> list = advertiseUnitFacadeService.fetchDevicePositionDistribution(province, city);
+			List<String> list = advertiseUnitFacadeService.fetchDevicePositionDistribution(province, city, district);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(list);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
@@ -81,7 +81,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(Integer uid, String province,
+	public RpcResponseDTO<TailPage<AdvertiseVTO>> queryAdvertiseList(Integer uid, String province,
 			String city, String district, String publishStartTime,
 			String publishEndTime, int type, String createStartTime,
 			String createEndTime, String userName,int state,int pn,int ps) {
@@ -116,23 +116,8 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		typeMap.put("value", type);
 		maps.add(typeMap);
 		try{
-			TailPage<Advertise> advertises=advertiseUnitFacadeService.queryAdvertiseList(uid,maps,publishStartTime,publishEndTime,createStartTime,createEndTime,userName,pn,ps);
-			AdvertiseListVTO advertiseListVTO=new AdvertiseListVTO();
-			List<AdvertiseVTO> advertiseVTOs=new ArrayList<AdvertiseVTO>();
-			if(advertises!=null){
-				for(Advertise ad:advertises){
-					AdvertiseVTO singleAdvertise = ad.toVTO();
-					//广告提交人信心
-					User user=userService.getById(ad.getUid());
-					singleAdvertise.setOwnerName(user.getNick());
-					advertiseVTOs.add(singleAdvertise);
-				}
-			}
-			advertiseListVTO.setPageNumber(pn);
-			advertiseListVTO.setPageSize(ps);
-			advertiseListVTO.setTotalPageCount(advertises.getTotalPageCount());
-			advertiseListVTO.setAdvertiseList(advertiseVTOs);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseListVTO);
+			TailPage<AdvertiseVTO> advertises=advertiseUnitFacadeService.queryAdvertiseList(uid,maps,publishStartTime,publishEndTime,createStartTime,createEndTime,userName,pn,ps);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertises);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

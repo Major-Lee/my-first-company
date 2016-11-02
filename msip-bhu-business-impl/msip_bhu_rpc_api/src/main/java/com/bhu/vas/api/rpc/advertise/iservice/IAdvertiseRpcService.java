@@ -6,6 +6,8 @@ import java.util.Map;
 import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.advertise.model.Advertise;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * 
@@ -30,7 +32,7 @@ public interface IAdvertiseRpcService{
 			String district,String description,String title, long start, long end);
 
 	public RpcResponseDTO<List<String>> fetchDevicePositionDistribution(
-			String province, String city);
+			String province, String city ,String district);
 	/**
 	 * 更新广告
 	 * @param uid
@@ -83,7 +85,7 @@ public interface IAdvertiseRpcService{
 	 * @return
 	 */
 
-	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(Integer uid,
+	public RpcResponseDTO<TailPage<AdvertiseVTO>> queryAdvertiseList(Integer uid,
 			String province, String city, String district,
 			String publishStartTime, String publishEndTime, int type,
 			String createStartTime, String createEndTime, String userName,

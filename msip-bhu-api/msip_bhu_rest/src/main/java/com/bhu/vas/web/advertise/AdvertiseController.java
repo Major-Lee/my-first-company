@@ -17,8 +17,10 @@ import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
+import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -123,7 +125,7 @@ public class AdvertiseController extends BaseController{
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 		try{
-			RpcResponseDTO<AdvertiseListVTO> rpcResult = advertiseRpcService.queryAdvertiseList
+			RpcResponseDTO<TailPage<AdvertiseVTO>> rpcResult = advertiseRpcService.queryAdvertiseList
 					(uid, province, city,district, publishStartTime, publishEndTime, type,createStartTime,createEndTime,userName,state,pageNo,pageSize);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -178,8 +180,9 @@ public class AdvertiseController extends BaseController{
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
             @RequestParam(required = false) String province,
-            @RequestParam(required = false) String city) {
-	        RpcResponseDTO<List<String>> rpcResult = advertiseRpcService.fetchDevicePositionDistribution(province, city);
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String district) {
+	        RpcResponseDTO<List<String>> rpcResult = advertiseRpcService.fetchDevicePositionDistribution(province, city, district);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

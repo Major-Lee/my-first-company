@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -97,11 +98,13 @@ public class AdvertiseUnitFacadeService {
 	 * @param city
 	 * @return
 	 */
-	public List<String> fetchDevicePositionDistribution(String province,String city){
+	public List<String> fetchDevicePositionDistribution(String province,String city,String district){
 		if(StringUtils.isNotBlank(city)){
 			return WifiDevicePositionListService.getInstance().fetchCity(city);
 		}else if(StringUtils.isNoneBlank(province)){
 			return WifiDevicePositionListService.getInstance().fetchProvince(province);
+		}else if(StringUtils.isNoneBlank(district)){
+			return null;
 		}else{
 			return WifiDevicePositionListService.getInstance().fetchAllProvince();
 		}
@@ -111,7 +114,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param conditionMap
 	 * @return
 	 */
-	public TailPage<Advertise> queryAdvertiseList(Integer uid,List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName,int pn,int ps){
+	public TailPage<AdvertiseVTO> queryAdvertiseList(Integer uid,List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName,int pn,int ps){
 		List<Advertise> advertises=null;
 		ModelCriteria mc=new ModelCriteria();
 		Criteria criteria= mc.createCriteria();
@@ -151,7 +154,18 @@ public class AdvertiseUnitFacadeService {
 		mc.setPageNumber(pn);
 		mc.setPageSize(ps);
 		advertises=advertiseService.findModelByModelCriteria(mc);
-		return new CommonPage<Advertise>(pn, ps, total,advertises);
+		
+		List<AdvertiseVTO> advertiseVTOs=new ArrayList<AdvertiseVTO>();
+		if(advertises!=null){
+			for(Advertise ad:advertises){
+				AdvertiseVTO singleAdvertise = ad.toVTO();
+				//广告提交人信心
+				User user=userService.getById(ad.getUid());
+				singleAdvertise.setOwnerName(user.getNick());
+				advertiseVTOs.add(singleAdvertise);
+			}
+		}
+		return new CommonPage<AdvertiseVTO>(pn, ps, total,advertiseVTOs);
 	}
 	/**
 	 * 审核广告
