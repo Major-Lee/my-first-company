@@ -1127,8 +1127,7 @@ public class UserWalletUnitFacadeService {
 				if (GetMonthTime(0).equals(currentMonth)) {
 					ModelCriteria mc = new ModelCriteria();
 					mc.createCriteria()
-							.andColumnNotEqualTo("month_cash_sum", 0);
-					mc.createCriteria().andColumnLike("last_update_cash_time",
+							.andColumnNotEqualTo("month_cash_sum", 0).andColumnLike("last_update_cash_time",
 							currentMonth + "%");
 					mc.setOrderByClause("month_cash_sum desc");
 					List<UserWallet> userWallets = userWalletFacadeService

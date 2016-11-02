@@ -1,6 +1,8 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -16,6 +18,8 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
+import com.smartwork.msip.cores.orm.support.page.CommonPage;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -63,12 +67,23 @@ public class AdvertiseUnitFacadeService {
 			entity.setDuration(duration);
 			entity.setUrl(url);
 			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate,province, city, district);
-			if(n==0){
-				advertiseService.insert(entity);
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
-			}else{
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+			if(n!=0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 			}
+			ModelCriteria mc=new ModelCriteria();
+			List<Integer> stateList=new ArrayList<Integer>();
+			stateList.add(AdvertiseType.UnPaid.getType());
+			stateList.add(AdvertiseType.UnPublish.getType());
+			stateList.add(AdvertiseType.UnVerified.getType());
+			stateList.add(AdvertiseType.OnPublish.getType());
+			mc.createCriteria().andColumnIn("state", stateList).andColumnEqualTo("uid", uid);
+			
+			int num=advertiseService.countByModelCriteria(mc);
+			if(num>=2){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
+			}
+			advertiseService.insert(entity);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
@@ -82,11 +97,13 @@ public class AdvertiseUnitFacadeService {
 	 * @param city
 	 * @return
 	 */
-	public List<String> fetchDevicePositionDistribution(String province,String city){
+	public List<String> fetchDevicePositionDistribution(String province,String city,String district){
 		if(StringUtils.isNotBlank(city)){
 			return WifiDevicePositionListService.getInstance().fetchCity(city);
 		}else if(StringUtils.isNoneBlank(province)){
 			return WifiDevicePositionListService.getInstance().fetchProvince(province);
+		}else if(StringUtils.isNoneBlank(district)){
+			return null;
 		}else{
 			return WifiDevicePositionListService.getInstance().fetchAllProvince();
 		}
@@ -96,15 +113,21 @@ public class AdvertiseUnitFacadeService {
 	 * @param conditionMap
 	 * @return
 	 */
-	public List<Advertise> queryAdvertiseList(List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName){
+	public TailPage<AdvertiseVTO> queryAdvertiseList(Integer uid,List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName,int pn,int ps){
 		List<Advertise> advertises=null;
 		ModelCriteria mc=new ModelCriteria();
 		Criteria criteria= mc.createCriteria();
+		
 		if(conditionMap!=null&&conditionMap.size()>0){
 			for(Map<String,Object> singleMap:conditionMap){
 				criteria.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
 			}
 		}
+		
+		if(uid != null){
+			criteria.andColumnEqualTo("uid",uid);
+		}
+		
 		if(StringUtils.isNotBlank(publishStartTime)){
 			if(StringUtils.isNotBlank(publishEndTime)){
 				criteria.andColumnBetween("start", publishStartTime, publishEndTime);
@@ -126,8 +149,22 @@ public class AdvertiseUnitFacadeService {
 			List<Integer> userIds=userService.findIdsByModelCriteria(userMc);
 			criteria.andColumnIn("uid", userIds);
 		}
+		int total=advertiseService.countByModelCriteria(mc);
+		mc.setPageNumber(pn);
+		mc.setPageSize(ps);
 		advertises=advertiseService.findModelByModelCriteria(mc);
-		return advertises;
+		
+		List<AdvertiseVTO> advertiseVTOs=new ArrayList<AdvertiseVTO>();
+		if(advertises!=null){
+			for(Advertise ad:advertises){
+				AdvertiseVTO singleAdvertise = ad.toVTO();
+				//广告提交人信心
+				User user=userService.getById(ad.getUid());
+				singleAdvertise.setOwnerName(user.getNick());
+				advertiseVTOs.add(singleAdvertise);
+			}
+		}
+		return new CommonPage<AdvertiseVTO>(pn, ps, total,advertiseVTOs);
 	}
 	/**
 	 * 审核广告
@@ -187,6 +224,9 @@ public class AdvertiseUnitFacadeService {
 			long end) {
 		try{
 			Advertise entity=advertiseService.getById(advertiseId);
+			if(entity.getState()==AdvertiseType.UnPaid.getType()){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
+			}
 			entity.setCity(city);
 			long count=wifiDeviceDataSearchService.searchCountByPosition(province, city, district);
 			entity.setCount(count);
@@ -210,12 +250,11 @@ public class AdvertiseUnitFacadeService {
 			entity.setDuration(duration);
 			entity.setUrl(url);
 			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate,province, city, district);
-			if(n==0){
-				advertiseService.update(entity);
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
-			}else{
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
+			if(n!=0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 			}
+			advertiseService.update(entity);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

@@ -3,6 +3,7 @@ package com.bhu.vas.di.op.device;
 import java.util.List;
 import java.util.Map;
 
+import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -19,19 +20,19 @@ public class createDevicePositionRedis {
 		List<String> provinceList =  wifiDeviceService.selectByField("province", true, true, null, null);
 		System.out.println(JsonHelper.getJSONString(provinceList));
 		for(String province :provinceList){
-			if(province!=null){
+			if(StringUtils.isNotBlank(province)){
 				WifiDevicePositionListService.getInstance().generateAllProvince(province);
 				System.out.println(province);
 				
 				List<String> cityList =  wifiDeviceService.selectByField("city", true, true, "province", province);
 				for(String city :cityList){
-					if(city !=null){
+					if(StringUtils.isNoneBlank(city)){
 						WifiDevicePositionListService.getInstance().generateProvince(province, city);
 						System.out.println(province +"-"+city);
 						
 						List<String> districtList =  wifiDeviceService.selectByField("district", true, true, "city", city);
 						for(String district : districtList){
-							if(district !=null){
+							if(StringUtils.isNotBlank(district)){
 								WifiDevicePositionListService.getInstance().generateCity(city, district);
 								System.out.println(province +"-"+ city + "-"+district);
 							}

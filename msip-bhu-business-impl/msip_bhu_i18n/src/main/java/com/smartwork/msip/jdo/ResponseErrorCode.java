@@ -272,6 +272,12 @@ public enum ResponseErrorCode {
 	REQUEST_IMAGE_UPLOAD_EXCEPTION("501","501.image.upload.exception"),
 	REQUEST_UNKNOW_ERROR("599","unknow.pagerequest.error"),
 
+	/********* advertise ****************/
+	ADVERTISE_TIMEFIELD_OVERLAY("502","advertise.time.overlay"),
+	ADVERTISE_NUMFIELD_BEYOND("503","advertise.num.beyond"),
+	ADVERTISE_UPFIELD_UNSUPPORT("504","advertise.upload.unsupport"),
+	
+	
 	//Social
 	SOCIAL_FOLLOW_ERROR("1100","follow.error"),
 	SOCIAL_FOLLOW_MAX("1101","follow.max.error"),
@@ -290,6 +296,9 @@ public enum ResponseErrorCode {
 	TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH("1120","tagGroup.not.exist.or.user.nomatch"),
 	TAG_GROUP_MSG_TOO_LONG_OR_NULL("1121","tagGroup.msg.too.long.or.null");
 
+	
+	
+	
     private String code;
     private String i18n;
 

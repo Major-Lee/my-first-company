@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
-import com.bhu.vas.api.rpc.charging.model.UserIncomeRank;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 @Repository
 public class UserIncomeMonthRankDao extends AbstractCoreDao<Integer, UserIncomeMonthRank>{
@@ -21,6 +20,6 @@ public class UserIncomeMonthRankDao extends AbstractCoreDao<Integer, UserIncomeM
 		return super.getSqlSessionMasterTemplate().selectList(UserIncomeMonthRank.class.getName()+".findByLimit",map);
 	}
 	public List<UserIncomeMonthRank> getByUid(Map<String,Object> map) {
-		return super.getSqlSessionMasterTemplate().selectList(UserIncomeRank.class.getName()+".getByUid",map);
+		return super.getSqlSessionMasterTemplate().selectList(UserIncomeMonthRank.class.getName()+".getByUid",map);
 	}
 }

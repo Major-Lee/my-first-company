@@ -534,7 +534,7 @@ public class UserUnitFacadeService {
 	public RpcResponseDTO<Map<String, Object>> operatorfetchUser(Integer uid,int countrycode, String acc) {
 		try{
 			User user = UserValidateServiceHelper.validateUser(uid,this.userService);
-			if(user.getUtype() != UserType.DistributorNormal.getIndex() && uid != UserInnerExchangeDTO.opsAdminUid){//检查是否是运营商帐号或总帐号
+			if(user.getUtype() != UserType.DistributorNormal.getIndex() &&user.getUtype() != UserType.URBANOPERATORS.getIndex() && uid != UserInnerExchangeDTO.opsAdminUid){//检查是否是运营商帐号或总帐号
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_NOT_OPERATOR);
 			}
 			Integer observedId = UniqueFacadeService.fetchUidByAcc(countrycode,acc);

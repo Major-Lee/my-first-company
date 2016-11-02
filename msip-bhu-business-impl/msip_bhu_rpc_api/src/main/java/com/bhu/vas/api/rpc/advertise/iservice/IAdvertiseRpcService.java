@@ -2,9 +2,9 @@ package com.bhu.vas.api.rpc.advertise.iservice;
 
 import java.util.List;
 
-import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * 
@@ -29,7 +29,7 @@ public interface IAdvertiseRpcService{
 			String district,String description,String title, long start, long end);
 
 	public RpcResponseDTO<List<String>> fetchDevicePositionDistribution(
-			String province, String city);
+			String province, String city ,String district);
 	/**
 	 * 更新广告
 	 * @param uid
@@ -81,9 +81,11 @@ public interface IAdvertiseRpcService{
 	 * @param state
 	 * @return
 	 */
-	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(int uid, String province,
-			String city, String district, String publishStartTime,
-			String publishEndTime, int type, String createStartTime,
-			String createEndTime, String userName,int state);
+
+	public RpcResponseDTO<TailPage<AdvertiseVTO>> queryAdvertiseList(Integer uid,
+			String province, String city, String district,
+			String publishStartTime, String publishEndTime, int type,
+			String createStartTime, String createEndTime, String userName,
+			int state, int pn, int ps);
 
 }
