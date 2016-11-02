@@ -66,7 +66,7 @@ public class AdvertiseUnitFacadeService {
 			entity.setProvince(province);
 			Date startDate=new Date(start);
 			entity.setStart(startDate);
-			entity.setState(AdvertiseType.UnPaid.getType());
+			entity.setState(AdvertiseType.UnVerified.getType());
 			
 			entity.setType(0);
 			entity.setDomain(domain);
@@ -260,7 +260,7 @@ public class AdvertiseUnitFacadeService {
 			long end) {
 		try{
 			Advertise entity=advertiseService.getById(advertiseId);
-			if(entity.getState()==AdvertiseType.UnPaid.getType()){
+			if(entity.getState()!=AdvertiseType.UnVerified.getType()){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
 			}
 			entity.setCity(city);
@@ -273,7 +273,7 @@ public class AdvertiseUnitFacadeService {
 			entity.setProvince(province);
 			Date startDate=new Date(start);
 			entity.setStart(startDate);
-			entity.setState(AdvertiseType.UnPaid.getType());
+			entity.setState(AdvertiseType.UnVerified.getType());
 			
 			entity.setType(0);
 			entity.setDomain(domain);
