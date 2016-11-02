@@ -88,5 +88,28 @@ public class ConsoleAdvertiseController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
 	}
-	
+	@ResponseBody()
+	@RequestMapping(value = "/ad/queryAdvertiseInfo", method = {RequestMethod.POST})
+	public void queryAdvertise(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) int advertiseId
+			) {
+		try{
+			RpcResponseDTO<AdvertiseVTO> rpcResult = advertiseRpcService.queryAdvertise
+					(null,advertiseId);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+		
+	}
 }

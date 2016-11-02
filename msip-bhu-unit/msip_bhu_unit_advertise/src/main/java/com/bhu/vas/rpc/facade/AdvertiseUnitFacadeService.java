@@ -208,14 +208,18 @@ public class AdvertiseUnitFacadeService {
 	 * @param advertiseId
 	 * @return
 	 */
-	public RpcResponseDTO<AdvertiseVTO> queryAdvertiseInfo(int advertiseId){
+	public RpcResponseDTO<AdvertiseVTO> queryAdvertiseInfo(Integer uid,int advertiseId){
 		try{
 			Advertise advertise=advertiseService.getById(advertiseId);
 			AdvertiseVTO advertiseVTO=advertise.toVTO();
 			//广告提交人信心
 			User user=userService.getById(advertise.getUid());
 			advertiseVTO.setOwnerName(user.getNick());
-
+			if(uid!=null){
+				if(uid!=advertise.getUid()){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_NOT_OPERATOR);
+				}
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

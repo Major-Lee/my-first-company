@@ -66,7 +66,7 @@ public interface IAdvertiseRpcService{
 	 * @param advertiseId
 	 * @return
 	 */
-	public RpcResponseDTO<AdvertiseVTO> queryAdvertise(int advertiseId);
+	public RpcResponseDTO<AdvertiseVTO> queryAdvertise(Integer uid,int advertiseId);
 	/**
 	 * 查询广告列表
 	 * @param uid

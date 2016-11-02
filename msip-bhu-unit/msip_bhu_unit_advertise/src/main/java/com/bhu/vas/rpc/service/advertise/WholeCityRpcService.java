@@ -76,10 +76,10 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<AdvertiseVTO> queryAdvertise(int advertiseId) {
-		logger.info(String.format("queryAdvertise advertiseId[%s]",
+	public RpcResponseDTO<AdvertiseVTO> queryAdvertise(Integer uid,int advertiseId) {
+		logger.info(String.format("queryAdvertise uid[%s] advertiseId[%s]",uid,
 				advertiseId));
-		return advertiseUnitFacadeService.queryAdvertiseInfo(advertiseId);
+		return advertiseUnitFacadeService.queryAdvertiseInfo(uid,advertiseId);
 	}
 
 	@Override

@@ -147,7 +147,7 @@ public class AdvertiseController extends BaseController{
 			) {
 		try{
 			RpcResponseDTO<AdvertiseVTO> rpcResult = advertiseRpcService.queryAdvertise
-					(advertiseId);
+					(uid,advertiseId);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
