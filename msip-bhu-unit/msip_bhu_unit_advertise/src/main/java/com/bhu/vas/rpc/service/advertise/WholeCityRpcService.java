@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
+import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
@@ -20,6 +22,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.rpc.facade.AdvertiseUnitFacadeService;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -80,12 +83,12 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<AdvertiseVTO>> queryAdvertiseList(Integer uid, String province,
+	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(Integer uid, String province,
 			String city, String district, String publishStartTime,
 			String publishEndTime, int type, String createStartTime,
-			String createEndTime, String userName,int state,int pn,int ps) {
-		logger.info(String.format("queryAdvertiseList uid[%s] province[%s] city[%s] district[%s] publishStartTime[%s] publishEndTime[%s] type[%s] createStartTime[%s] createEndTime[%s] userName[%s] state[%s] pn[%s] ps[%s]",
-				uid,province,city,district,publishStartTime,publishEndTime,type,createStartTime,createEndTime,userName,state,pn,ps));
+			String createEndTime, String mobileNo,int state,int pn,int ps) {
+		logger.info(String.format("queryAdvertiseList uid[%s] province[%s] city[%s] district[%s] publishStartTime[%s] publishEndTime[%s] type[%s] createStartTime[%s] createEndTime[%s] mobileNo[%s] state[%s] pn[%s] ps[%s]",
+				uid,province,city,district,publishStartTime,publishEndTime,type,createStartTime,createEndTime,mobileNo,state,pn,ps));
 		List<Map<String,Object>> maps=new ArrayList<Map<String,Object>>();
 		if(StringUtils.isNotBlank(province)){
 			Map<String,Object> provinceMap=new HashMap<String,Object>();
@@ -117,8 +120,20 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		typeMap.put("value", type);
 		maps.add(typeMap);
 		try{
-			TailPage<AdvertiseVTO> advertises=advertiseUnitFacadeService.queryAdvertiseList(uid,maps,publishStartTime,publishEndTime,createStartTime,createEndTime,userName,pn,ps);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertises);
+			AdvertiseListVTO advertiseListVTO=new AdvertiseListVTO();
+			TailPage<AdvertiseVTO> advertises=advertiseUnitFacadeService.queryAdvertiseList(uid,maps,publishStartTime,publishEndTime,createStartTime,createEndTime,mobileNo,pn,ps);
+			advertiseListVTO.setAdvertises(advertises);
+			if(uid!=null){
+				ModelCriteria pubMc=new ModelCriteria();
+				pubMc.createCriteria().andColumnEqualTo("state", AdvertiseType.Published.getType()).andColumnEqualTo("uid", uid);
+				int pubComNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(pubMc);
+				advertiseListVTO.setPubComNum(pubComNum);
+				ModelCriteria vfMc=new ModelCriteria();
+				pubMc.createCriteria().andColumnEqualTo("state", AdvertiseType.VerifyFailure.getType()).andColumnEqualTo("uid", uid);
+				int vfNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(vfMc);
+				advertiseListVTO.setVerifyFalNum(vfNum);
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseListVTO);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

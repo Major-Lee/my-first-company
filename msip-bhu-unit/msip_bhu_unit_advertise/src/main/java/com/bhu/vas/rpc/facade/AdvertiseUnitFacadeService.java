@@ -29,6 +29,7 @@ import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 
 @Service
 public class AdvertiseUnitFacadeService {
@@ -39,6 +40,15 @@ public class AdvertiseUnitFacadeService {
 	@Resource
 	private UserService userService;
 	
+	
+	public AdvertiseService getAdvertiseService() {
+		return advertiseService;
+	}
+
+	public void setAdvertiseService(AdvertiseService advertiseService) {
+		this.advertiseService = advertiseService;
+	}
+
 	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
 			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end) {
@@ -113,7 +123,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param conditionMap
 	 * @return
 	 */
-	public TailPage<AdvertiseVTO> queryAdvertiseList(Integer uid,List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String userName,int pn,int ps){
+	public TailPage<AdvertiseVTO> queryAdvertiseList(Integer uid,List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String mobileNo,int pn,int ps){
 		List<Advertise> advertises=null;
 		ModelCriteria mc=new ModelCriteria();
 		Criteria criteria= mc.createCriteria();
@@ -142,12 +152,13 @@ public class AdvertiseUnitFacadeService {
 				criteria.andColumnEqualTo("created_at", createEndTime);
 			}
 		}
-		if(StringUtils.isNotBlank(userName)){
-			ModelCriteria userMc=new ModelCriteria();
-			Criteria userCriteria= userMc.createCriteria();
-			userCriteria.andColumnLike("nick", userName);
-			List<Integer> userIds=userService.findIdsByModelCriteria(userMc);
-			criteria.andColumnIn("uid", userIds);
+		
+		if(StringUtils.isNotBlank(mobileNo)){
+			Integer uidM = UniqueFacadeService.fetchUidByAcc(86,mobileNo);
+			if(uidM == null || uidM.intValue() == 0){
+				return new CommonPage<AdvertiseVTO>(pn, ps, 0,null);
+			}
+			criteria.andColumnEqualTo("uid", uidM);
 		}
 		int total=advertiseService.countByModelCriteria(mc);
 		mc.setPageNumber(pn);
@@ -184,13 +195,8 @@ public class AdvertiseUnitFacadeService {
 				advertise.setState(AdvertiseType.VerifyFailure.getType());
 				advertise.setReject_reason(msg);
 			}
-			User user=userService.getById(verify_uid);
-			if(verify_uid==2||user.getUtype()==13){
-				advertiseService.update(advertise);
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
-			}else{
-				return RpcResponseDTOBuilder.builderSuccessRpcResponse(false);
-			}
+			advertiseService.update(advertise);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

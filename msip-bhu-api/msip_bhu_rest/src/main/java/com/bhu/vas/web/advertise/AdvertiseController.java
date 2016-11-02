@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
@@ -116,14 +117,14 @@ public class AdvertiseController extends BaseController{
 			@RequestParam(required = false,defaultValue="0") int type,
 			@RequestParam(required = false) String  createStartTime,
 			@RequestParam(required = false) String createEndTime,
-			@RequestParam(required = false) String userName,
+			@RequestParam(required = false) String mobileNo,
 			@RequestParam(required = false,defaultValue="-1") int state,
     	    @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 		try{
-			RpcResponseDTO<TailPage<AdvertiseVTO>> rpcResult = advertiseRpcService.queryAdvertiseList
-					(uid, province, city,district, publishStartTime, publishEndTime, type,createStartTime,createEndTime,userName,state,pageNo,pageSize);
+			RpcResponseDTO<AdvertiseListVTO> rpcResult = advertiseRpcService.queryAdvertiseList
+					(uid, province, city,district, publishStartTime, publishEndTime, type,createStartTime,createEndTime,mobileNo,state,pageNo,pageSize);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

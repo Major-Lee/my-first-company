@@ -16,12 +16,33 @@ public class AdvertiseVTO implements java.io.Serializable{
 	//区
 	private String district;
 	private String cash;
+	private String url;
+	private String image;
+	private String domain;
 	private Date start;
 	private Date end;
 	//广告覆盖的设备数
 	private long count;
 	private int state;
 	
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
+	}
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
 	public int getState() {
 		return state;
 	}

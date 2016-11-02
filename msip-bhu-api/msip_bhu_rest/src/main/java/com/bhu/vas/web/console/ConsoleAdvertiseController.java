@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
@@ -73,7 +74,7 @@ public class ConsoleAdvertiseController extends BaseController{
     	    @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 		try{
-			RpcResponseDTO<TailPage<AdvertiseVTO>> rpcResult = advertiseRpcService.queryAdvertiseList
+			RpcResponseDTO<AdvertiseListVTO> rpcResult = advertiseRpcService.queryAdvertiseList
 					(null, province, city,district, publishStartTime, publishEndTime, type,createStartTime,createEndTime,userName,state,pageNo,pageSize);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

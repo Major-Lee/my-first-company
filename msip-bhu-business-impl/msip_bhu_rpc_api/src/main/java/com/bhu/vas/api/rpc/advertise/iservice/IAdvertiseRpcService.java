@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.advertise.iservice;
 
 import java.util.List;
 
+import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -82,10 +83,10 @@ public interface IAdvertiseRpcService{
 	 * @return
 	 */
 
-	public RpcResponseDTO<TailPage<AdvertiseVTO>> queryAdvertiseList(Integer uid,
+	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(Integer uid,
 			String province, String city, String district,
 			String publishStartTime, String publishEndTime, int type,
-			String createStartTime, String createEndTime, String userName,
+			String createStartTime, String createEndTime, String mobileNo,
 			int state, int pn, int ps);
 
 }
