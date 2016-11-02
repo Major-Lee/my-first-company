@@ -276,6 +276,8 @@ public enum ResponseErrorCode {
 	ADVERTISE_TIMEFIELD_OVERLAY("502","advertise.time.overlay"),
 	ADVERTISE_NUMFIELD_BEYOND("503","advertise.num.beyond"),
 	ADVERTISE_UPFIELD_UNSUPPORT("504","advertise.upload.unsupport"),
+	ADVERTISE_VERIFY_TYPESUPPORT("505","advertise.verify.typeerror"),
+	ADVERTISE_UPFIELD_TYPEERROR("506","advertise.upload.typeerror"),
 	
 	
 	//Social

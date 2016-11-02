@@ -221,7 +221,7 @@ public class AdvertiseUnitFacadeService {
 				advertiseService.update(advertise);
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 			}else{
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_VERIFY_TYPESUPPORT);
 			}
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -260,9 +260,19 @@ public class AdvertiseUnitFacadeService {
 			long end) {
 		try{
 			Advertise entity=advertiseService.getById(advertiseId);
-			if(entity.getState()!=AdvertiseType.UnVerified.getType()||entity.getUid()!=uid){
+			if(entity.getState()!=AdvertiseType.UnVerified.getType()){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_TYPEERROR);
+			}
+			if(entity.getUid()!=uid){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
 			}
+			Date date=new Date();
+			
+			long between_daysNow = (start - date.getTime()) / (1000 * 3600 * 24);
+			if(between_daysNow<2){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_TYPEERROR);
+			}
+			
 			entity.setCity(city);
 			long count=wifiDeviceDataSearchService.searchCountByPosition(province, city, district);
 			entity.setCount(count);
@@ -307,7 +317,7 @@ public class AdvertiseUnitFacadeService {
 			advertise.setState(AdvertiseType.EscapeOrder.getType());
 			advertiseService.update(advertise);
 		}else{
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_TYPEERROR);
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
