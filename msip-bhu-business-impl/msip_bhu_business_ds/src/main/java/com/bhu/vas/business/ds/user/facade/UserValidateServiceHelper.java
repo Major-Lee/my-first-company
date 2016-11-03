@@ -48,7 +48,7 @@ public class UserValidateServiceHelper {
 	 */
 	public static void validateCityUsersDevices(int uid, List<String> dmacs, WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService){
 		if(!BusinessRuntimeConfiguration.isConsoleUser(uid)){
-			int count = wifiDeviceSharedealConfigsService.countByUidAndMacsParam(uid, dmacs);
+			int count = wifiDeviceSharedealConfigsService.countByUidOrDistributorMacsParam(uid, dmacs);
 			if(dmacs.size() != count){
 				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_NOT_YOURMANAGED,new String[]{dmacs.toString()});
 			}
