@@ -124,7 +124,8 @@ public class AdvertiseUnitFacadeService {
 				.andColumnEqualTo("city", city).andColumnEqualTo("district", district)
 				.andColumnBetween("start", DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5),
 						DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 15))
-				.andColumnNotEqualTo("state", BusinessEnumType.AdvertiseType.EscapeOrder.getType());
+				.andColumnNotEqualTo("state", BusinessEnumType.AdvertiseType.EscapeOrder.getType())
+				.andColumnNotEqualTo("state", BusinessEnumType.AdvertiseType.VerifyFailure.getType());
 				List<Advertise> advertises = advertiseService.findModelByModelCriteria(mc);
 				for(Advertise advertise : advertises){
 					String startTime = DateTimeHelper.getDateTime(advertise.getStart(), DateTimeHelper.FormatPattern5);
