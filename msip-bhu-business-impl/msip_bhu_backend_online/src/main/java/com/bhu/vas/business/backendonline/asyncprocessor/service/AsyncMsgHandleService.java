@@ -1150,7 +1150,7 @@ public class AsyncMsgHandleService {
 	 * @param mac
 	 * @param cmdPayloads
 	 */
-	private void addDevices2SharedNetwork(int uid, String mac) {
+	private void addDevices2SharedNetwork(final int uid, String mac) {
 		{// 开启共享网络开关判定
 			logger.info(String.format("Device SharedNetwork Option[%s]",BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start));
 			if (!BusinessRuntimeConfiguration.Device_SharedNetwork_Default_Start) {
@@ -1185,7 +1185,7 @@ public class AsyncMsgHandleService {
 										deviceCMDGenFacadeService);
 								daemonRpcService.wifiDeviceCmdDown(null, mac, cmd);
 							}
-							wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.On.getType());
+							wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(uid, rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.On.getType());
 						}
 					});
 		} finally {

@@ -96,10 +96,10 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				switch(dtoType){
 					case IDTO.ACT_DELETE:
 						//移除设备的所属类型不清空sharedNetwork
-						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey(),template,SnkTurnStateEnum.Off.getType());
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(userid, dmacs, sharedNetwork.getKey(),template,SnkTurnStateEnum.Off.getType());
 						break;
 					default:
-						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(dmacs, sharedNetwork.getKey(),template,SnkTurnStateEnum.On.getType());
+						wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(userid, dmacs, sharedNetwork.getKey(),template,SnkTurnStateEnum.On.getType());
 						break;
 				}
 				return;

@@ -74,7 +74,7 @@ public class BatchDeviceSnkClearServiceHandler implements IMsgHandlerService {
 									if(rdmacs == null || rdmacs.isEmpty()){
 										return;
 									}
-									wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.Off.getType());
+									wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(userid, rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.Off.getType());
 								}
 							});
 			    }

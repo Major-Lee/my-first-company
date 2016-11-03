@@ -81,7 +81,7 @@ public class BatchSnkApplyService {
 											downCmds.add(DownCmds.builderDownCmds(mac, cmd));
 										}
 									}
-									wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.On.getType());
+									wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(userid, rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.On.getType());
 								}
 							});
 					break;
@@ -101,7 +101,7 @@ public class BatchSnkApplyService {
 											DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
 									downCmds.add(DownCmds.builderDownCmds(mac, cmd));
 								}
-								wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.Off.getType());
+								wifiDeviceIndexIncrementService.sharedNetworkMultiUpdIncrement(userid, rdmacs, current.getNtype(),current.getTemplate(),SnkTurnStateEnum.Off.getType());
 							}
 						});
 					 

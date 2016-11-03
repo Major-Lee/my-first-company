@@ -282,14 +282,9 @@ public class DeviceSharedNetworkUnitFacadeService {
 					}
 				}
 			}
-			User user = sharedNetworksFacadeService.getUserService().getById(uid);
-			if(UserType.URBANOPERATORS.getIndex() == user.getUtype()){
-				//校验用户是否有权限修改设备portal模板。
-				UserValidateServiceHelper.validateCityUsersDevices(uid, dmacs, chargingFacadeService.getWifiDeviceSharedealConfigsService());
-//			} else {
-//				//校验用户是否绑定此设备
-//				UserValidateServiceHelper.validateUserDevices(uid, dmacs, userWifiDeviceFacadeService);
-			}
+			//校验用户是否有权限修改设备portal模板。
+			UserValidateServiceHelper.validateCityUsersDevices(uid, dmacs, chargingFacadeService.getWifiDeviceSharedealConfigsService());
+
 			//template 不为空并且 是无效的template格式,如果为空或者是有效的格式 则传递后续处理
 			if(StringUtils.isNotEmpty(template) && !SharedNetworksHelper.validTemplateFormat(template)){
 				template = SharedNetworksHelper.DefaultTemplate;

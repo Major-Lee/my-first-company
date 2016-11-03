@@ -382,12 +382,12 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 	 * @param ids
 	 * @param sharedNetwork_type
 	 */
-	public void sharedNetworkMultiUpdIncrement(final List<String> ids, final String sharedNetwork_type,final String template,final String sharedNetwork_turnstate){
+	public void sharedNetworkMultiUpdIncrement(final int uid, final List<String> ids, final String sharedNetwork_type,final String template,final String sharedNetwork_turnstate){
 		multiExecProcesser().submit((new Runnable() {
 			@Override
 			public void run() {
 				try{
-					wifiDeviceIndexIncrement.sharedNetworkMultiUpdIncrement(ids, sharedNetwork_type,template, sharedNetwork_turnstate);
+					wifiDeviceIndexIncrement.sharedNetworkMultiUpdIncrement(uid, ids, sharedNetwork_type,template, sharedNetwork_turnstate);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}
