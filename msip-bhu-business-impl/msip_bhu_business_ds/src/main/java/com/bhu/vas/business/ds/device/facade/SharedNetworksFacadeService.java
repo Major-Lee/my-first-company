@@ -17,6 +17,7 @@ import com.bhu.vas.api.helper.SharedNetworkChangeType;
 import com.bhu.vas.api.helper.SharedNetworksHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
+import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
@@ -32,6 +33,7 @@ import com.bhu.vas.business.ds.device.service.UserDevicesSharedNetworksService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -57,6 +59,9 @@ public class SharedNetworksFacadeService {
 	
 	@Resource
 	private UserDevicesSharedNetworksService userDevicesSharedNetworksService;
+	
+	@Resource
+	private WifiDeviceIndexIncrementService wifiDeviceIndexIncrementService;
 
 /*    @Resource
     private UserDeviceService userDeviceService;*/
@@ -378,12 +383,15 @@ public class SharedNetworksFacadeService {
 			ParamSharedNetworkDTO sharedNetworkConf = this.fetchUserSharedNetworkConf(uid, SharedNetworkType.SafeSecure);
 			configs  = new WifiDeviceSharedNetwork();
 			configs.setId(mac);
+			configs.setOwner(uid);
 			configs.setSharednetwork_type(sharedNetworkConf.getNtype());
 			configs.setTemplate(sharedNetworkConf.getTemplate());
 			SharedNetworkSettingDTO sharedNetworkSettingDTO = new SharedNetworkSettingDTO();
 			sharedNetworkSettingDTO.turnOff(sharedNetworkConf);
 			configs.putInnerModel(sharedNetworkSettingDTO);
 			wifiDeviceSharedNetworkService.insert(configs);
+			wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(mac, uid, sharedNetworkConf.getNtype(), sharedNetworkConf.getTemplate(), 
+					sharedNetworkSettingDTO.isOn()?SnkTurnStateEnum.On.getType():SnkTurnStateEnum.Off.getType());
 			return sharedNetworkSettingDTO;
 		}
 	}
@@ -459,6 +467,10 @@ public class SharedNetworksFacadeService {
 				sharedNetworkSettingDTO.turnOff(configDto);
 			sharednetwork.putInnerModel(sharedNetworkSettingDTO);
 			wifiDeviceSharedNetworkService.insert(sharednetwork);
+			// 更新索引
+			wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(mac_lowercase, uid, configDto.getNtype(), configDto.getTemplate(),
+					sharedNetworkSettingDTO.isOn()?SnkTurnStateEnum.On.getType():SnkTurnStateEnum.Off.getType());
+
 			return sharednetwork;
 		}
 	}

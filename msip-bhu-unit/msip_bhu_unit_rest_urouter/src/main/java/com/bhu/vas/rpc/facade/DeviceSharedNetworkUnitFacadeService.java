@@ -34,6 +34,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessa
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
@@ -386,7 +387,10 @@ public class DeviceSharedNetworkUnitFacadeService {
 	
 	public RpcResponseDTO<SharedNetworkSettingDTO> fetchDeviceNetworkConf(int uid, String mac) {
 		try{
-			UserValidateServiceHelper.validateUserDevice(uid, mac, userWifiDeviceFacadeService);
+			List<String> macs = new ArrayList<String>();
+			macs.add(mac);
+			UserValidateServiceHelper.validateCityUsersDevices(uid, macs, chargingFacadeService.getWifiDeviceSharedealConfigsService());
+
 			/*SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
 			if(sharedNetwork == null){
 				sharedNetwork = SharedNetworkType.SafeSecure;

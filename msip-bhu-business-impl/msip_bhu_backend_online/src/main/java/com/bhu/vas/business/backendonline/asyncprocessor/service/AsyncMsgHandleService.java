@@ -274,11 +274,6 @@ public class AsyncMsgHandleService {
 							if (sharedNetwork.isOn() && psn != null
 									&& SharedNetworkType.SafeSecure.getKey().equals(psn.getNtype())) {// 如果是开启的
 																										// 重新下发开启指令
-								logger.info(
-										String.format("Device SharedNetwork Model[%s]", JsonHelper.getJSONString(psn)));
-								// 更新索引，下发指令
-								wifiDeviceIndexIncrementService.sharedNetworkUpdIncrement(dto.getMac(), wifiSharedNetwork.getOwner(), psn.getNtype(),
-										psn.getTemplate(),SnkTurnStateEnum.On.getType());
 								// psn.switchWorkMode(WifiDeviceHelper.isWorkModeRouter(wifiDevice.getWork_mode()));
 								// 生成下发指令
 								String sharedNetworkCMD = CMDBuilder.autoBuilderCMD4Opt(
