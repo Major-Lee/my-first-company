@@ -50,6 +50,40 @@ public class StructuredIdHelper {
 		
 		return orderId.toString();
 	}
+	/**
+	 * 生成id
+	 * id规则 
+	 * 8位应用id+8位日期+8位扩展占位+autoid
+	 * @param appid 应用id
+	 * @param ext_segment 8位扩展占位
+	 * @param autoId 流水id
+	 * @return
+	 */
+	public static String generateStructuredIdStringAD(Integer appid, String ext_segment, Long autoId){
+		//应用id验证
+		if(appid == null || appid < 0 || appid > 99999999){
+			throw new RuntimeException(String.format("Generate Id Appid [%s] Illegal ", appid));
+		}
+		//如果扩展占位为空 则生成8位扩展占位字符串补零
+		if(StringUtils.isEmpty(ext_segment)){
+			ext_segment = String.format("%01d", 0);
+		}
+		//流水id验证
+		//Long autoId = SequenceService.getInstance().getNextId(Order.class.getName());
+		if(autoId == null || String.valueOf(autoId).length() > 12){
+			throw new RuntimeException(String.format("Generate Id AutoId [%s] Illegal ", autoId));
+		}
+		
+		StringBuffer orderId = new StringBuffer();
+		//4位应用id
+		orderId.append(String.format("%08d", appid));
+		//8位扩展占位
+		orderId.append(ext_segment);
+		//12位autoId
+		orderId.append(String.format("%04d", autoId));
+		
+		return orderId.toString();
+	}
 	
 	public static String generateStructuredIdString(Integer appid, Long autoId){
 		return generateStructuredIdString(appid, null, autoId);

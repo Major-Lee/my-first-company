@@ -4,7 +4,7 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public class AdvertiseVTO implements java.io.Serializable{
-	private int id;
+	private String id;
 	private int type;
 	private String title;
 	private String description;
@@ -66,10 +66,10 @@ public class AdvertiseVTO implements java.io.Serializable{
 		this.state = state;
 	}
 	
-	public int getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public int getType() {

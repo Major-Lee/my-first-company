@@ -8,10 +8,10 @@ import java.util.Date;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
-import com.smartwork.msip.cores.orm.model.BaseIntModel;
+import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
-public class Advertise extends BaseIntModel implements IRedisSequenceGenable{
+public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	private int uid;
 	private String title;
 	private int type;
@@ -223,8 +223,13 @@ public class Advertise extends BaseIntModel implements IRedisSequenceGenable{
 	public void setSequenceKey(Long autoId) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
 		int fir=Integer.valueOf(df.format(new Date()));
-		String randoms=StructuredIdHelper.generateStructuredIdString(fir, this.type+"", autoId);
-		int fid=Integer.valueOf(randoms);
-		this.setId(fid);
+		String randoms=StructuredIdHelper.generateStructuredIdStringAD(fir, this.type+"", autoId);
+		this.setId(randoms);
+	}
+	public static void main(String[] args) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
+		int fir=Integer.valueOf(df.format(new Date()));
+		String randoms=StructuredIdHelper.generateStructuredIdStringAD(fir, "1", 1L);
+		System.out.println(randoms);
 	}
 }
