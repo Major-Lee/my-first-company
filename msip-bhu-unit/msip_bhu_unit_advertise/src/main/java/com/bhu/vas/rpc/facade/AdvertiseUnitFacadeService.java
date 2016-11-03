@@ -122,9 +122,10 @@ public class AdvertiseUnitFacadeService {
 			try {
 				mc.createCriteria().andColumnEqualTo("province", province)
 				.andColumnEqualTo("city", city).andColumnEqualTo("district", district)
-				.andColumnBetween("start", DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5),
-						DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 15))
-				.andColumnNotEqualTo("state", BusinessEnumType.AdvertiseType.EscapeOrder.getType());
+				.andColumnBetween("start", DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2),
+						DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17))
+				.andColumnNotEqualTo("state", BusinessEnumType.AdvertiseType.EscapeOrder.getType())
+				.andColumnNotEqualTo("state", BusinessEnumType.AdvertiseType.VerifyFailure.getType());
 				List<Advertise> advertises = advertiseService.findModelByModelCriteria(mc);
 				for(Advertise advertise : advertises){
 					String startTime = DateTimeHelper.getDateTime(advertise.getStart(), DateTimeHelper.FormatPattern5);
@@ -248,6 +249,16 @@ public class AdvertiseUnitFacadeService {
 			//广告提交人信心
 			User user=userService.getById(advertise.getUid());
 			advertiseVTO.setOwnerName(user.getNick());
+			advertiseVTO.setEscapeFlag(false);
+			if(advertise.getState()==AdvertiseType.UnPublish.getType()){
+				Date date=new Date();
+				if(advertise.getStart().getTime()>date.getTime()){
+					long between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24);
+					if(between_daysNow>2){
+						advertiseVTO.setEscapeFlag(true);
+					}
+				}
+			}
 			if(uid!=null){
 				if(uid!=advertise.getUid()){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_NOT_OPERATOR);
@@ -323,7 +334,9 @@ public class AdvertiseUnitFacadeService {
 		if(advertise.getUid()!=uid){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
 		}
-		if(advertise.getState()==AdvertiseType.UnVerified.getType()){
+		Date date=new Date();
+		long between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24);
+		if(advertise.getState()==AdvertiseType.UnPublish.getType()&&advertise.getStart().getTime()>date.getTime()&&between_daysNow>2){
 			advertise.setState(AdvertiseType.EscapeOrder.getType());
 			advertiseService.update(advertise);
 		}else{

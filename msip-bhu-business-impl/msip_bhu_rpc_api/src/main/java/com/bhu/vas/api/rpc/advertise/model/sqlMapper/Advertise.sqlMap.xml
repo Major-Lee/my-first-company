@@ -22,6 +22,7 @@
     <result property="end" column="end"/>
     <result property="duration" column="duration"/>
     <result property="count" column="count"/>
+    <result property="ableDevicesNum" column="ableDevicesNum"/>
     <result property="reject_reason" column="reject_reason"/>
     <result property="state" column="state"/>
     
@@ -54,6 +55,7 @@
 	    	end,
 	    	duration,
 	    	count,
+	    	ableDevicesNum,
 	    	reject_reason,
 	    	state,
 	    	verify_uid,
@@ -79,6 +81,7 @@
 	    	end,
 	    	duration,
 	    	count,
+	    	ableDevicesNum,
 	    	reject_reason,
 	    	state,
 	    	verify_uid,
@@ -105,6 +108,7 @@
 	    	#{end},
 	    	#{duration},
 	    	#{count},
+	    	#{ableDevicesNum},
 	    	#{reject_reason},
 	    	#{state},
 	    	#{verify_uid},
@@ -129,6 +133,7 @@
 	    	end = #{end},
 	    	duration = #{duration},
 	    	count = #{count},
+	    	ableDevicesNum = #{ableDevicesNum},
 	    	reject_reason = #{reject_reason},
 	    	state = #{state},
 	    	verify_uid = #{verify_uid},
@@ -195,7 +200,7 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="advertise" useGeneratedKeys="true" keyProperty="id">
+	<insert id="insert" parameterType="advertise"  keyProperty="id">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 		<!-- 
 		<selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
@@ -249,7 +254,7 @@
 	</select>
 	
 	<select id="countByAdvertiseTime" resultType="int" parameterType="Map">
-		select count(*) from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end}))) and province=#{province} and city=#{city} and district=#{district} and state not in (5,6)]]>;	
+		select count(*) from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end}))) and province=#{province} and city=#{city} and district=#{district} and state not in (6)]]>;	
 	</select>
 	
 	<delete id="removeByModelCriteria">

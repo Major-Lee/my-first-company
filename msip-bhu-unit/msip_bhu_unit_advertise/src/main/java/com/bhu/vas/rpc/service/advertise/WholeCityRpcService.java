@@ -128,10 +128,36 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 				pubMc.createCriteria().andColumnEqualTo("state", AdvertiseType.Published.getType()).andColumnEqualTo("uid", uid);
 				int pubComNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(pubMc);
 				advertiseListVTO.setPubComNum(pubComNum);
+				
 				ModelCriteria vfMc=new ModelCriteria();
 				vfMc.createCriteria().andColumnEqualTo("state", AdvertiseType.VerifyFailure.getType()).andColumnEqualTo("uid", uid);
 				int vfNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(vfMc);
 				advertiseListVTO.setVerifyFalNum(vfNum);
+				
+				ModelCriteria escapeMc=new ModelCriteria();
+				vfMc.createCriteria().andColumnEqualTo("state", AdvertiseType.EscapeOrder.getType()).andColumnEqualTo("uid", uid);
+				int escapeNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(escapeMc);
+				advertiseListVTO.setEscapeNum(escapeNum);
+				
+				ModelCriteria onPublishMc=new ModelCriteria();
+				vfMc.createCriteria().andColumnEqualTo("state", AdvertiseType.OnPublish.getType()).andColumnEqualTo("uid", uid);
+				int onPublishNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(onPublishMc);
+				advertiseListVTO.setOnPublishNum(onPublishNum);
+				
+				ModelCriteria unpaidMc=new ModelCriteria();
+				vfMc.createCriteria().andColumnEqualTo("state", AdvertiseType.UnPaid.getType()).andColumnEqualTo("uid", uid);
+				int unPaidNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(unpaidMc);
+				advertiseListVTO.setUnPaidNum(unPaidNum);
+				
+				ModelCriteria unPublishMc=new ModelCriteria();
+				vfMc.createCriteria().andColumnEqualTo("state", AdvertiseType.UnPublish.getType()).andColumnEqualTo("uid", uid);
+				int unPublishNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(unPublishMc);
+				advertiseListVTO.setUnPublishNum(unPublishNum);
+				
+				ModelCriteria unVerifyMc=new ModelCriteria();
+				vfMc.createCriteria().andColumnEqualTo("state", AdvertiseType.UnVerified.getType()).andColumnEqualTo("uid", uid);
+				int unVerifyNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(unVerifyMc);
+				advertiseListVTO.setUnVerifyNum(unVerifyNum);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseListVTO);
 		}catch(BusinessI18nCodeException bex){

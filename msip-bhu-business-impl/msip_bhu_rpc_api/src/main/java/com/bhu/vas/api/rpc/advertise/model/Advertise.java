@@ -32,6 +32,8 @@ public class Advertise extends BaseIntModel{
 	private int duration;
 	//广告覆盖的设备数
 	private long count;
+	//有效设备数
+	private long ableDevicesNum;
 	//审核驳回原因
 	private String reject_reason;
 	//0:待付款 1:待审核 2:待发布 3:发布中 4:发布完成 5:审核驳回 6:订单取消
@@ -41,6 +43,12 @@ public class Advertise extends BaseIntModel{
 	private Date created_at;
 	private Date updated_at;
 	
+	public long getAbleDevicesNum() {
+		return ableDevicesNum;
+	}
+	public void setAbleDevicesNum(long ableDevicesNum) {
+		this.ableDevicesNum = ableDevicesNum;
+	}
 	public String getDomain() {
 		return domain;
 	}
@@ -206,6 +214,7 @@ public class Advertise extends BaseIntModel{
 		singleAdvertise.setImage(this.image);
 		singleAdvertise.setUrl(this.url);
 		singleAdvertise.setDomain(this.domain);
+		singleAdvertise.setReject_reason(this.reject_reason);
 		return singleAdvertise;
 	}
 	
