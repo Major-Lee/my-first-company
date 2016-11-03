@@ -62,6 +62,7 @@ public class AdvertiseUnitFacadeService {
 			if(start>end){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 			}
+			
 			entity.setCount(count);
 			entity.setDistrict(district);
 			Date endDate=new Date(end);
