@@ -24,7 +24,23 @@ public class AdvertiseVTO implements java.io.Serializable{
 	//广告覆盖的设备数
 	private long count;
 	private int state;
+	private String reject_reason;
 	
+	public String getReject_reason() {
+		return reject_reason;
+	}
+	public void setReject_reason(String reject_reason) {
+		this.reject_reason = reject_reason;
+	}
+	//可取消标识
+	private boolean escapeFlag=false;
+	
+	public boolean isEscapeFlag() {
+		return escapeFlag;
+	}
+	public void setEscapeFlag(boolean escapeFlag) {
+		this.escapeFlag = escapeFlag;
+	}
 	public String getUrl() {
 		return url;
 	}

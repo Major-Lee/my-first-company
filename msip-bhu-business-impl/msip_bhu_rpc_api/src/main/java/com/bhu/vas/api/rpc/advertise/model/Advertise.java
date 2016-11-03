@@ -206,6 +206,7 @@ public class Advertise extends BaseIntModel{
 		singleAdvertise.setImage(this.image);
 		singleAdvertise.setUrl(this.url);
 		singleAdvertise.setDomain(this.domain);
+		singleAdvertise.setReject_reason(this.reject_reason);
 		return singleAdvertise;
 	}
 	
