@@ -160,7 +160,7 @@ public class CommdityUnitFacadeService {
 	}
 
 	public RpcResponseDTO<CommdityPhysicalDTO> physical_set_address(String umac, String uname, String acc,
-			String address) {
+			String address, boolean needInvoice, String invoiceDetail) {
 		try{
 			if(StringUtils.isEmpty(umac)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
@@ -170,7 +170,7 @@ public class CommdityUnitFacadeService {
 			}
 			
 			CommdityPhysical commdityPhysical = commdityPhysicalService.getById(umac);
-			CommdityPhysical newcommdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address);
+			CommdityPhysical newcommdityPhysical = orderFacadeService.buildCommdityPhysical(umac, uname, acc, address, needInvoice, invoiceDetail);
 			if (commdityPhysical != null){
 				commdityFacadeService.updateCommdityPhysical(newcommdityPhysical);
 			}else{

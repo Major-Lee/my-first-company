@@ -17,7 +17,22 @@ public class CommdityPhysicalDTO implements java.io.Serializable{
 	private String acc;
 	//收货地址
 	private String address;
-	
+	//是否需要发票
+	boolean	needInvoice;
+	//发票详细信息
+	String invoiceDetail;
+	public boolean isNeedInvoice() {
+		return needInvoice;
+	}
+	public void setNeedInvoice(boolean needInvoice) {
+		this.needInvoice = needInvoice;
+	}
+	public String getInvoiceDetail() {
+		return invoiceDetail;
+	}
+	public void setInvoiceDetail(String invoiceDetail) {
+		this.invoiceDetail = invoiceDetail;
+	}
 	public String getUname() {
 		return uname;
 	}
@@ -37,12 +52,15 @@ public class CommdityPhysicalDTO implements java.io.Serializable{
 		this.address = address;
 	}
 	
-	public static CommdityPhysicalDTO buildCommdityPhysicalDTO(String umac, String uname, String acc, String address){
+	public static CommdityPhysicalDTO buildCommdityPhysicalDTO(String umac, String uname, String acc, 
+			String address, boolean needInvoice, String invoiceDetail){
 		CommdityPhysicalDTO dto = new CommdityPhysicalDTO();
 		dto.setUmac(umac);
 		dto.setAcc(acc);
 		dto.setUname(uname);
 		dto.setAddress(address);
+		dto.setNeedInvoice(needInvoice);
+		dto.setInvoiceDetail(invoiceDetail);
 		return dto;
 	}
 }

@@ -42,10 +42,10 @@ public class CommdityRpcService implements ICommdityRpcService{
 
 	@Override
 	public RpcResponseDTO<CommdityPhysicalDTO> physical_set_address(String umac, String uname, String acc,
-			String address) {
-		logger.info(String.format("physical_set_address with umac[%s] uname[%s] acc[%s] address[%s]", 
-				umac, uname, acc, address));
-		return commdityUnitFacadeService.physical_set_address(umac, uname, acc, address);
+			String address, boolean needInvoice, String invoiceDetail) {
+		logger.info(String.format("physical_set_address with umac[%s] uname[%s] acc[%s] address[%s] needInvoice[%s] invoiceDetail[%s]", 
+				umac, uname, acc, address, needInvoice, invoiceDetail));
+		return commdityUnitFacadeService.physical_set_address(umac, uname, acc, address, needInvoice, invoiceDetail);
 	}
 
 }

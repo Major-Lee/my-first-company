@@ -945,7 +945,8 @@ public class OrderFacadeService {
 		if (userInfo.length() > 255)
 			order.setContext(userInfo.substring(0, 255));
 		else
-			order.setContext(userInfo);		order.setStatus(OrderStatus.NotPay.getKey());
+			order.setContext(userInfo);		
+		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
 		order.setMac(mac);
 		order.setMac_dut(mac_dut);
@@ -960,10 +961,10 @@ public class OrderFacadeService {
 		return order;
 	}
 	
-	public CommdityPhysical buildCommdityPhysical(String umac,String uname, String acc, String address){
+	public CommdityPhysical buildCommdityPhysical(String umac,String uname, String acc, String address, boolean needInvoice, String invoiceDetail){
 		CommdityPhysical order = new CommdityPhysical();
 		order.setId(umac);
-		CommdityPhysicalDTO dto = CommdityPhysicalDTO.buildCommdityPhysicalDTO(umac,uname, acc, address);
+		CommdityPhysicalDTO dto = CommdityPhysicalDTO.buildCommdityPhysicalDTO(umac,uname, acc, address, needInvoice, invoiceDetail);
 		order.setExtension_content(JsonHelper.getJSONString(dto));
 		return order;
 	}

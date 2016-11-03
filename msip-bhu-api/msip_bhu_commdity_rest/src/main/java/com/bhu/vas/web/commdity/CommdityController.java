@@ -107,9 +107,12 @@ public class CommdityController extends BaseController{
 			@RequestParam(required = true) String umac,
 			@RequestParam(required = true) String uname,
 			@RequestParam(required = true) String acc,
-			@RequestParam(required = true) String address) {
+			@RequestParam(required = true) String address,
+			@RequestParam(required = false,defaultValue = "false") boolean needInvoice,
+			@RequestParam(required = false,defaultValue = "") String invoiceDetail) {
 		String umac_lower = umac.toLowerCase();
-		RpcResponseDTO<CommdityPhysicalDTO> rpcResult = commdityRpcService.physical_set_address(umac_lower,uname,acc,address);
+		RpcResponseDTO<CommdityPhysicalDTO> rpcResult = commdityRpcService.physical_set_address(umac_lower,uname,acc,address,
+				needInvoice, invoiceDetail);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
