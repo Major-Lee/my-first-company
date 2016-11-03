@@ -195,7 +195,7 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="advertise" useGeneratedKeys="true" keyProperty="id">
+	<insert id="insert" parameterType="advertise"  keyProperty="id">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 		<!-- 
 		<selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
