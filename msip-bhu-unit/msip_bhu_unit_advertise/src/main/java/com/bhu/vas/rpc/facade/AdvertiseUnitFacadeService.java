@@ -59,7 +59,7 @@ public class AdvertiseUnitFacadeService {
 			Advertise entity=new Advertise();
 			entity.setCity(city);
 			long count=wifiDeviceDataSearchService.searchCountByPosition(province, city, district);
-			if(end>start){
+			if(start>end){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 			}
 			entity.setCount(count);
@@ -271,7 +271,7 @@ public class AdvertiseUnitFacadeService {
 			if(entity.getUid()!=uid){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
 			}
-			if(end>start){
+			if(start>end){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 			}
 			Date date=new Date();
