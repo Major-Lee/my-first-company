@@ -65,6 +65,7 @@ public class AdvertiseVTO implements java.io.Serializable{
 	public void setState(int state) {
 		this.state = state;
 	}
+	
 	public int getId() {
 		return id;
 	}
