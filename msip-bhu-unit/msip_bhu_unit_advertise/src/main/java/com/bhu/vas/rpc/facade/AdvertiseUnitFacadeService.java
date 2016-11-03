@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -120,7 +121,8 @@ public class AdvertiseUnitFacadeService {
 				mc.createCriteria().andColumnEqualTo("province", province)
 				.andColumnEqualTo("city", city).andColumnEqualTo("district", district)
 				.andColumnBetween("start", DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5),
-						DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 15));
+						DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 15))
+				.andColumnNotEqualTo("state", BusinessEnumType.AdvertiseType.EscapeOrder.getType());
 				List<Advertise> advertises = advertiseService.findModelByModelCriteria(mc);
 				for(Advertise advertise : advertises){
 					String startTime = DateTimeHelper.getDateTime(advertise.getStart(), DateTimeHelper.FormatPattern5);
