@@ -1042,7 +1042,7 @@ public class BusinessEnumType {
 		UnPaid(0,"待支付","待付款"),
 		UnVerified(1,"待审核","待审核"),
 		UnPublish(2,"待发布","待发布"),
-		OnPublish(3,"发布中","生效中"),
+		OnPublish(3,"生效中","生效中"),
 		Published(4,"发布完成","发布完成"),
 		VerifyFailure(5,"审核驳回","审核驳回"),
 		EscapeOrder(6,"订单取消","订单取消"),

@@ -122,8 +122,8 @@ public class AdvertiseUnitFacadeService {
 			try {
 				mc.createCriteria().andColumnEqualTo("province", province)
 				.andColumnEqualTo("city", city).andColumnEqualTo("district", district)
-				.andColumnBetween("start", DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5),
-						DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 15))
+				.andColumnBetween("start", DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2),
+						DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17))
 				.andColumnNotEqualTo("state", BusinessEnumType.AdvertiseType.EscapeOrder.getType())
 				.andColumnNotEqualTo("state", BusinessEnumType.AdvertiseType.VerifyFailure.getType());
 				List<Advertise> advertises = advertiseService.findModelByModelCriteria(mc);
