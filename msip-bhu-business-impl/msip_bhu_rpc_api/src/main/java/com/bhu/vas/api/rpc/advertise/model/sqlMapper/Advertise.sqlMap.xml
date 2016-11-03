@@ -22,6 +22,7 @@
     <result property="end" column="end"/>
     <result property="duration" column="duration"/>
     <result property="count" column="count"/>
+    <result property="ableDevicesNum" column="ableDevicesNum"/>
     <result property="reject_reason" column="reject_reason"/>
     <result property="state" column="state"/>
     
@@ -54,6 +55,7 @@
 	    	end,
 	    	duration,
 	    	count,
+	    	ableDevicesNum,
 	    	reject_reason,
 	    	state,
 	    	verify_uid,
@@ -79,6 +81,7 @@
 	    	end,
 	    	duration,
 	    	count,
+	    	ableDevicesNum,
 	    	reject_reason,
 	    	state,
 	    	verify_uid,
@@ -105,6 +108,7 @@
 	    	#{end},
 	    	#{duration},
 	    	#{count},
+	    	#{ableDevicesNum},
 	    	#{reject_reason},
 	    	#{state},
 	    	#{verify_uid},
@@ -129,6 +133,7 @@
 	    	end = #{end},
 	    	duration = #{duration},
 	    	count = #{count},
+	    	ableDevicesNum = #{ableDevicesNum},
 	    	reject_reason = #{reject_reason},
 	    	state = #{state},
 	    	verify_uid = #{verify_uid},
