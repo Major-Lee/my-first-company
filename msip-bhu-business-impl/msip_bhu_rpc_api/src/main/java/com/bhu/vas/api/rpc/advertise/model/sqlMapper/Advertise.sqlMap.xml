@@ -233,7 +233,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="String">
+	<select id="pkSelectByModelCriteria" resultType="int">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />
