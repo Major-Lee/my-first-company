@@ -153,8 +153,13 @@ public class AdvertiseUnitFacadeService {
 		List<Advertise> advertises=null;
 		ModelCriteria mc=new ModelCriteria();
 		Criteria criteria2=mc.createCriteria();
-		Criteria criteria3=mc.createCriteria();
-		Criteria criteria4=mc.createCriteria();
+		
+		ModelCriteria mc2=new ModelCriteria();
+		ModelCriteria mc3=new ModelCriteria();
+		
+		
+		Criteria criteria3=mc2.createCriteria();
+		Criteria criteria4=mc3.createCriteria();
 		
 		if(conditionMap!=null&&conditionMap.size()>0){
 			for(Map<String,Object> singleMap:conditionMap){
@@ -197,12 +202,10 @@ public class AdvertiseUnitFacadeService {
 				criteria2.andColumnBetween("start", publishStartTime, publishEndTime);
 				criteria3.andColumnBetween("end", publishStartTime, publishEndTime);
 				criteria4.andColumnLessThanOrEqualTo("start", publishStartTime).andColumnGreaterThanOrEqualTo("end", publishEndTime);
-				mc.or(criteria2);
 				mc.or(criteria3);
 				mc.or(criteria4);
 			}else{
 				criteria2.andColumnLessThanOrEqualTo("start", publishStartTime);
-				mc.or(criteria2);
 			}
 		}
 		
@@ -232,7 +235,6 @@ public class AdvertiseUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<Boolean> verifyAdvertise(int verify_uid,String advertiseId,String msg,int state){
-		try{ 
 			Advertise advertise=advertiseService.getById(advertiseId);
 			advertise.setVerify_uid(verify_uid);
 			if(advertise.getState()==AdvertiseType.UnVerified.getType()){
@@ -247,11 +249,6 @@ public class AdvertiseUnitFacadeService {
 			}else{
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_VERIFY_TYPESUPPORT);
 			}
-		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
-		}catch(Exception ex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
 	}
 	/**
 	 * 查询广告详情
@@ -259,7 +256,6 @@ public class AdvertiseUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<AdvertiseVTO> queryAdvertiseInfo(Integer uid,String advertiseId){
-		try{
 			Advertise advertise=advertiseService.getById(advertiseId);
 			AdvertiseVTO advertiseVTO=advertise.toVTO();
 			//广告提交人信心
@@ -281,18 +277,12 @@ public class AdvertiseUnitFacadeService {
 				}
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseVTO);
-		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
-		}catch(Exception ex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
 	}
 
 	public RpcResponseDTO<Boolean> updateAdvertise(int uid,String advertiseId, String image,
 			String url, String domain, String province, String city,
 			String district, String description, String title, long start,
 			long end) {
-		try{
 			Advertise entity=advertiseService.getById(advertiseId);
 			if(entity.getState()!=AdvertiseType.VerifyFailure.getType()){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_TYPEERROR);
@@ -338,11 +328,6 @@ public class AdvertiseUnitFacadeService {
 			}
 			advertiseService.update(entity);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
-		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
-		}catch(Exception ex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
 	}
 
 	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, String advertiseId) {
