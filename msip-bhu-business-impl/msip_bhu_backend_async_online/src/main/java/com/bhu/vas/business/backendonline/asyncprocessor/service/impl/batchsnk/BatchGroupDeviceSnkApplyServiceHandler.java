@@ -86,9 +86,14 @@ public class BatchGroupDeviceSnkApplyServiceHandler implements IMsgHandlerServic
 								}
 							}
 						}
+						int owner = -1;
+						try{
+							owner = Integer.parseInt(doc.getD_snk_owner());
+						}catch(Exception e){
+							logger.info(String.format("parse [%s] to int error", doc.getD_snk_owner()));
+						}
 						
-						//目前分组只在ucloud中存在。所以此处不允许修改分组中属于运营商的设备
-			    		if(DistributorType.City.getType().equals(doc.getD_distributor_type())) //非城市运营商不能修改城市运营商的设备
+						if(owner != applyDto.getUid()) //非属于自己的设备portal，不允许修改
 			    			continue;
 			    		dmacs.add(mac);
 			    	}
