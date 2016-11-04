@@ -45,9 +45,13 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	private Date created_at;
 	private Date updated_at;
 	
-	
-	public Advertise(){
+	public Advertise() {
 		super();
+	}
+
+	public Advertise(String id) {
+		super();
+		this.id = id;
 	}
 	
 	public long getAbleDevicesNum() {

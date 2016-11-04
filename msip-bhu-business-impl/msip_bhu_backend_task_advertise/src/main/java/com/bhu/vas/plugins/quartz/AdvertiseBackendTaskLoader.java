@@ -50,7 +50,7 @@ public class AdvertiseBackendTaskLoader {
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("ready applied ad sum" + lists.size());
-			List<Integer> adIds = new ArrayList<Integer>();
+			List<String> adIds = new ArrayList<String>();
 			for(Advertise ad : lists){
 				adIds.add(ad.getId());
 				ad.setState(BusinessEnumType.AdvertiseType.OnPublish.getType());
@@ -68,7 +68,7 @@ public class AdvertiseBackendTaskLoader {
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("ready invalid ad sum" + lists.size());
-			List<Integer> adIds = new ArrayList<Integer>();
+			List<String> adIds = new ArrayList<String>();
 			for(Advertise ad : lists){
 				adIds.add(ad.getId());
 				ad.setState(BusinessEnumType.AdvertiseType.Published.getType());
