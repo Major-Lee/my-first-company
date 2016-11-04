@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
@@ -23,7 +24,6 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 import java.util.List;
@@ -111,9 +111,10 @@ public class AdvertiseUnitFacadeService {
 	 * @param city
 	 * @return
 	 */
-	public List<String> fetchDevicePositionDistribution(String province,String city,String district){
+	public AdDevicePositionVTO fetchDevicePositionDistribution(String province,String city,String district){
+		AdDevicePositionVTO vto = new AdDevicePositionVTO();
+		List<String> list = new ArrayList<String>();
 		if(StringUtils.isNotBlank(district)){
-			List<String> disableTime = new ArrayList<String>();
 			ModelCriteria mc=new ModelCriteria();
 			try {
 				mc.createCriteria().andColumnEqualTo("province", province)
@@ -125,24 +126,26 @@ public class AdvertiseUnitFacadeService {
 				List<Advertise> advertises = advertiseService.findModelByModelCriteria(mc);
 				for(Advertise advertise : advertises){
 					String startTime = DateTimeHelper.getDateTime(advertise.getStart(), DateTimeHelper.FormatPattern5);
-					disableTime.add(startTime);
+					list.add(startTime);
 					if(advertise.getDuration() != 0){
 						for(int i=1; i<=advertise.getDuration(); i++){
-							disableTime.add(DateTimeHelper.getAfterDate(startTime, i));
+							list.add(DateTimeHelper.getAfterDate(startTime, i));
 						}
 					}
 				}
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			return disableTime;
+			vto.setCount(wifiDeviceDataSearchService.searchCountByPosition(province, city, district));
+			vto.setList(list);
 		}else if(StringUtils.isNoneBlank(city)){
-			return WifiDevicePositionListService.getInstance().fetchCity(city);
+			vto.setList(WifiDevicePositionListService.getInstance().fetchCity(city));
 		}else if(StringUtils.isNoneBlank(province)){
-			return WifiDevicePositionListService.getInstance().fetchProvince(province);
+			vto.setList(WifiDevicePositionListService.getInstance().fetchProvince(province));
 		}else{
-			return WifiDevicePositionListService.getInstance().fetchAllProvince();
+			vto.setList(WifiDevicePositionListService.getInstance().fetchAllProvince());
 		}
+		return vto;
 	}
 	/**
 	 * 根据条件查询广告列表
@@ -153,14 +156,9 @@ public class AdvertiseUnitFacadeService {
 		List<Advertise> advertises=null;
 		ModelCriteria mc=new ModelCriteria();
 		Criteria criteria2=mc.createCriteria();
-		
-		ModelCriteria mc2=new ModelCriteria();
-		ModelCriteria mc3=new ModelCriteria();
-		
-		
-		Criteria criteria3=mc2.createCriteria();
-		Criteria criteria4=mc3.createCriteria();
-		
+		Criteria criteria3=mc.createCriteria();
+		Criteria criteria4=mc.createCriteria();
+		System.out.println("mark 11------------------------");
 		if(conditionMap!=null&&conditionMap.size()>0){
 			for(Map<String,Object> singleMap:conditionMap){
 				criteria2.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
@@ -202,18 +200,21 @@ public class AdvertiseUnitFacadeService {
 				criteria2.andColumnBetween("start", publishStartTime, publishEndTime);
 				criteria3.andColumnBetween("end", publishStartTime, publishEndTime);
 				criteria4.andColumnLessThanOrEqualTo("start", publishStartTime).andColumnGreaterThanOrEqualTo("end", publishEndTime);
+				mc.or(criteria2);
 				mc.or(criteria3);
 				mc.or(criteria4);
 			}else{
 				criteria2.andColumnLessThanOrEqualTo("start", publishStartTime);
+				mc.or(criteria2);
 			}
 		}
-		
 		int total=advertiseService.countByModelCriteria(mc);
+		System.out.println("mark 12------------------------"+total);
 		mc.setPageNumber(pn);
 		mc.setPageSize(ps);
 		advertises=advertiseService.findModelByModelCriteria(mc);
 		
+		System.out.println("mark 13------------------------");
 		List<AdvertiseVTO> advertiseVTOs=new ArrayList<AdvertiseVTO>();
 		if(advertises!=null){
 			for(Advertise ad:advertises){
