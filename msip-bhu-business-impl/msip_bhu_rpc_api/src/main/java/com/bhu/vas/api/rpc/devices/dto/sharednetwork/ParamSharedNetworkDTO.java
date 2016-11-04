@@ -77,14 +77,14 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String dns_default_ip;
 	
 	
-	private String range_cash_pc = Default_Channel_Range_Cash_PC;
-	private String range_cash_mobile = Default_Channel_Range_Cash_Mobile;
-	private String ait_pc = Default_AIT;
-	private String ait_mobile = Default_AIT;
+	private String range_cash_pc;
+	private String range_cash_mobile;
+	private String ait_pc;
+	private String ait_mobile;
 	//pc免费上网时长
-	private String free_ait_pc = Default_Free_AIT;
+	private String free_ait_pc;
 	//手机免费上网时长
-	private String free_ait_mobile = Default_Free_AIT;
+	private String free_ait_mobile;
 	//是否开启免费上网
 	private int isfree = 0;
 	//是否开启首次认证
@@ -375,6 +375,11 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			param.setRange_cash_mobile(ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile);
 			param.setRange_cash_pc(ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC);
 		}
+		param.setAit_mobile(ParamSharedNetworkDTO.Default_AIT);
+		param.setAit_pc(ParamSharedNetworkDTO.Default_AIT);
+		param.setFree_ait_mobile(ParamSharedNetworkDTO.Default_Free_AIT);
+		param.setFree_ait_pc(ParamSharedNetworkDTO.Default_Free_AIT);
+		
 		//param.setBlock_mode(router?WifiDeviceHelper.Default_BlockMode_Router:WifiDeviceHelper.Default_BlockMode_Bridge);
 		//param.setComplete_isolate_ports(router?WifiDeviceHelper.Default_CompleteIsolatePorts_Router:WifiDeviceHelper.Default_CompleteIsolatePorts_Bridge);
 		if(SharedNetworkType.Uplink.getKey().equals(param.getNtype())){
@@ -437,6 +442,20 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				if(StringUtils.isEmpty(param.getRemote_auth_url())){
 					param.setRemote_auth_url(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Remote_auth_url);
 				}
+				if(StringUtils.isEmpty(param.getRange_cash_mobile())){
+					param.setRange_cash_mobile((DistributorType.City.getType().equals(distributor_type))?ParamSharedNetworkDTO.Default_City_Range_Cash_Mobile:ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile);
+				}
+				if(StringUtils.isEmpty(param.getRange_cash_pc())){
+					param.setRange_cash_pc((DistributorType.City.getType().equals(distributor_type))?ParamSharedNetworkDTO.Default_City_Range_Cash_PC:ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC);
+				}
+				if(StringUtils.isEmpty(param.getAit_mobile()))
+					param.setAit_mobile(ParamSharedNetworkDTO.Default_AIT);
+				if(StringUtils.isEmpty(param.getAit_pc()))
+					param.setAit_pc(ParamSharedNetworkDTO.Default_AIT);
+				if(StringUtils.isEmpty(param.getFree_ait_mobile()))
+					param.setFree_ait_mobile(ParamSharedNetworkDTO.Default_Free_AIT);
+				if(StringUtils.isEmpty(param.getFree_ait_pc()))
+					param.setFree_ait_pc(ParamSharedNetworkDTO.Default_Free_AIT);
 			}else{
 				if(StringUtils.isEmpty(param.getSsid())){
 					param.setSsid(SharedNetworkType.SmsSecure.getDefaultSsid());
@@ -478,7 +497,6 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(!paramDTO.getAit_mobile().equals(dbDTO.getAit_mobile())) return true;
 		if(!paramDTO.getAit_pc().equals(dbDTO.getAit_pc())) return true;
 		if(!paramDTO.getFree_ait_mobile().equals(dbDTO.getFree_ait_mobile())) return true;
-		if(!paramDTO.getFree_ait_pc().equals(dbDTO.getFree_ait_pc())) return true;
 		if(!paramDTO.getFree_ait_pc().equals(dbDTO.getFree_ait_pc())) return true;
 		if(paramDTO.getIsfree() != dbDTO.getIsfree()) return true;
 		if(paramDTO.getFirstLogin() != dbDTO.getFirstLogin()) return true;
