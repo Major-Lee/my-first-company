@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -204,7 +205,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = false) String province,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String district) {
-	        RpcResponseDTO<List<String>> rpcResult = advertiseRpcService.fetchDevicePositionDistribution(province, city, district);
+	        RpcResponseDTO<AdDevicePositionVTO> rpcResult = advertiseRpcService.fetchDevicePositionDistribution(province, city, district);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

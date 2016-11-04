@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.advertise.iservice;
 
 import java.util.List;
 
+import com.bhu.vas.api.dto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -29,7 +30,7 @@ public interface IAdvertiseRpcService{
 			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end);
 
-	public RpcResponseDTO<List<String>> fetchDevicePositionDistribution(
+	public RpcResponseDTO<AdDevicePositionVTO> fetchDevicePositionDistribution(
 			String province, String city ,String district);
 	/**
 	 * 更新广告

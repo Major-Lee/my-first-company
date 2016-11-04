@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
@@ -36,11 +37,11 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	private UserService userService;
 	
 	@Override
-	public RpcResponseDTO<List<String>> fetchDevicePositionDistribution(String province, String city, String district) {
+	public RpcResponseDTO<AdDevicePositionVTO> fetchDevicePositionDistribution(String province, String city, String district) {
 		logger.info(String.format("fetchDevicePositionDistribution province[%s] city[%s] district[%s]", province, city, district));
 		try {
-			List<String> list = advertiseUnitFacadeService.fetchDevicePositionDistribution(province, city, district);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(list);
+			AdDevicePositionVTO vto = advertiseUnitFacadeService.fetchDevicePositionDistribution(province, city, district);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
 		} catch (Exception ex) {

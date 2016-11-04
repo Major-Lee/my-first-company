@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.dto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
@@ -23,7 +24,6 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
-import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 import java.util.List;
@@ -111,9 +111,10 @@ public class AdvertiseUnitFacadeService {
 	 * @param city
 	 * @return
 	 */
-	public List<String> fetchDevicePositionDistribution(String province,String city,String district){
+	public AdDevicePositionVTO fetchDevicePositionDistribution(String province,String city,String district){
+		AdDevicePositionVTO vto = new AdDevicePositionVTO();
+		List<String> list = new ArrayList<String>();
 		if(StringUtils.isNotBlank(district)){
-			List<String> disableTime = new ArrayList<String>();
 			ModelCriteria mc=new ModelCriteria();
 			try {
 				mc.createCriteria().andColumnEqualTo("province", province)
@@ -125,24 +126,26 @@ public class AdvertiseUnitFacadeService {
 				List<Advertise> advertises = advertiseService.findModelByModelCriteria(mc);
 				for(Advertise advertise : advertises){
 					String startTime = DateTimeHelper.getDateTime(advertise.getStart(), DateTimeHelper.FormatPattern5);
-					disableTime.add(startTime);
+					list.add(startTime);
 					if(advertise.getDuration() != 0){
 						for(int i=1; i<=advertise.getDuration(); i++){
-							disableTime.add(DateTimeHelper.getAfterDate(startTime, i));
+							list.add(DateTimeHelper.getAfterDate(startTime, i));
 						}
 					}
 				}
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			return disableTime;
+			vto.setCount(wifiDeviceDataSearchService.searchCountByPosition(province, city, district));
+			vto.setList(list);
 		}else if(StringUtils.isNoneBlank(city)){
-			return WifiDevicePositionListService.getInstance().fetchCity(city);
+			vto.setList(WifiDevicePositionListService.getInstance().fetchCity(city));
 		}else if(StringUtils.isNoneBlank(province)){
-			return WifiDevicePositionListService.getInstance().fetchProvince(province);
+			vto.setList(WifiDevicePositionListService.getInstance().fetchProvince(province));
 		}else{
-			return WifiDevicePositionListService.getInstance().fetchAllProvince();
+			vto.setList(WifiDevicePositionListService.getInstance().fetchAllProvince());
 		}
+		return vto;
 	}
 	/**
 	 * 根据条件查询广告列表
