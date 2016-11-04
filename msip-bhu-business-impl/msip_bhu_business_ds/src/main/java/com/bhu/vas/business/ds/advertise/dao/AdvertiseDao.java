@@ -7,9 +7,9 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
-import com.smartwork.msip.business.abstractmsd.dao.AbstractCommdityDao;
+import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 @Repository
-public class AdvertiseDao extends AbstractCommdityDao<String, Advertise>{
+public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 	public int countByAdvertiseTime(Date start,Date end,String province, String city,
 			String district ){
 		int n=0;

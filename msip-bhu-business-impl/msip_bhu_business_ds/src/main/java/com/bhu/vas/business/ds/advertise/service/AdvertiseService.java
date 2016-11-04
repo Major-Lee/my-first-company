@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.SequenceService;
 import com.bhu.vas.business.ds.advertise.dao.AdvertiseDao;
-import com.smartwork.msip.business.abstractmsd.service.AbstractCommdityService;
+import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 @Service
 @Transactional("coreTransactionManager")
-public class AdvertiseService extends AbstractCommdityService<String, Advertise, AdvertiseDao>{
+public class AdvertiseService extends AbstractCoreService<String, Advertise, AdvertiseDao>{
 	@Resource
 	@Override
 	public void setEntityDao(AdvertiseDao advertiseDao) {
