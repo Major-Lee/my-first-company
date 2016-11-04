@@ -152,38 +152,23 @@ public class AdvertiseUnitFacadeService {
 	public TailPage<AdvertiseVTO> queryAdvertiseList(Integer uid,List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String mobileNo,int pn,int ps){
 		List<Advertise> advertises=null;
 		ModelCriteria mc=new ModelCriteria();
-		Criteria criteria2=mc.createCriteria();
-		
-		ModelCriteria mc2=new ModelCriteria();
-		ModelCriteria mc3=new ModelCriteria();
-		
-		
-		Criteria criteria3=mc2.createCriteria();
-		Criteria criteria4=mc3.createCriteria();
+		Criteria criteria=mc.createCriteria();
 		
 		if(conditionMap!=null&&conditionMap.size()>0){
 			for(Map<String,Object> singleMap:conditionMap){
-				criteria2.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
-				criteria3.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
-				criteria4.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
+				criteria.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
 			}
 		}
 		
 		if(uid != null){
-			criteria2.andColumnEqualTo("uid",uid);
-			criteria3.andColumnEqualTo("uid",uid);
-			criteria4.andColumnEqualTo("uid",uid);
+			criteria.andColumnEqualTo("uid",uid);
 		}
 		
 		if(StringUtils.isNotBlank(createStartTime)){
 			if(StringUtils.isNotBlank(createEndTime)){
-				criteria2.andColumnBetween("created_at", createStartTime, createStartTime);
-				criteria3.andColumnBetween("created_at", createStartTime, createStartTime);
-				criteria4.andColumnBetween("created_at", createStartTime, createStartTime);
+				criteria.andColumnBetween("created_at", createStartTime, createStartTime);
 			}else{
-				criteria2.andColumnEqualTo("created_at", createEndTime);
-				criteria3.andColumnEqualTo("created_at", createEndTime);
-				criteria4.andColumnEqualTo("created_at", createEndTime);
+				criteria.andColumnEqualTo("created_at", createEndTime);
 			}
 		}
 		
@@ -192,23 +177,18 @@ public class AdvertiseUnitFacadeService {
 			if(uidM == null || uidM.intValue() == 0){
 				return new CommonPage<AdvertiseVTO>(pn, ps, 0,null);
 			}
-			criteria2.andColumnEqualTo("uid", uidM);
-			criteria3.andColumnEqualTo("uid", uidM);
-			criteria4.andColumnEqualTo("uid", uidM);
+			criteria.andColumnEqualTo("uid", uidM);
 		}
 		
-		if(StringUtils.isNotBlank(publishStartTime)){
-			if(StringUtils.isNotBlank(publishEndTime)){
-				criteria2.andColumnBetween("start", publishStartTime, publishEndTime);
-				criteria3.andColumnBetween("end", publishStartTime, publishEndTime);
-				criteria4.andColumnLessThanOrEqualTo("start", publishStartTime).andColumnGreaterThanOrEqualTo("end", publishEndTime);
-				mc.or(criteria3);
-				mc.or(criteria4);
-			}else{
-				criteria2.andColumnLessThanOrEqualTo("start", publishStartTime);
-			}
-		}
-		
+//		if(StringUtils.isNotBlank(publishStartTime)){
+//			if(StringUtils.isNotBlank(publishEndTime)){
+//				criteria.andColumnBetween("start", publishStartTime, publishEndTime);
+//				criteria.andColumnBetween("end", publishStartTime, publishEndTime);
+//				criteria.andColumnLessThanOrEqualTo("start", publishStartTime).andColumnGreaterThanOrEqualTo("end", publishEndTime);
+//			}else{
+//				criteria.andColumnLessThanOrEqualTo("start", publishStartTime);
+//			}
+//		}
 		int total=advertiseService.countByModelCriteria(mc);
 		mc.setPageNumber(pn);
 		mc.setPageSize(ps);
