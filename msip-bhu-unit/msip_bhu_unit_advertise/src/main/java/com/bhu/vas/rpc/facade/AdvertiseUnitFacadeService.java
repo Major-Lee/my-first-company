@@ -153,7 +153,7 @@ public class AdvertiseUnitFacadeService {
 		List<Advertise> advertises=null;
 		ModelCriteria mc=new ModelCriteria();
 		Criteria criteria=mc.createCriteria();
-		
+		System.out.println("mark 11------------------------");
 		if(conditionMap!=null&&conditionMap.size()>0){
 			for(Map<String,Object> singleMap:conditionMap){
 				criteria.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
@@ -180,20 +180,22 @@ public class AdvertiseUnitFacadeService {
 			criteria.andColumnEqualTo("uid", uidM);
 		}
 		
-//		if(StringUtils.isNotBlank(publishStartTime)){
-//			if(StringUtils.isNotBlank(publishEndTime)){
-//				criteria.andColumnBetween("start", publishStartTime, publishEndTime);
-//				criteria.andColumnBetween("end", publishStartTime, publishEndTime);
-//				criteria.andColumnLessThanOrEqualTo("start", publishStartTime).andColumnGreaterThanOrEqualTo("end", publishEndTime);
-//			}else{
-//				criteria.andColumnLessThanOrEqualTo("start", publishStartTime);
-//			}
-//		}
+		if(StringUtils.isNotBlank(publishStartTime)){
+			if(StringUtils.isNotBlank(publishEndTime)){
+				criteria.andColumnBetween("start", publishStartTime, publishEndTime);
+				criteria.andColumnBetween("end", publishStartTime, publishEndTime);
+				criteria.andColumnLessThanOrEqualTo("start", publishStartTime).andColumnGreaterThanOrEqualTo("end", publishEndTime);
+			}else{
+				criteria.andColumnLessThanOrEqualTo("start", publishStartTime);
+			}
+		}
 		int total=advertiseService.countByModelCriteria(mc);
+		System.out.println("mark 12------------------------"+total);
 		mc.setPageNumber(pn);
 		mc.setPageSize(ps);
 		advertises=advertiseService.findModelByModelCriteria(mc);
 		
+		System.out.println("mark 13------------------------");
 		List<AdvertiseVTO> advertiseVTOs=new ArrayList<AdvertiseVTO>();
 		if(advertises!=null){
 			for(Advertise ad:advertises){
