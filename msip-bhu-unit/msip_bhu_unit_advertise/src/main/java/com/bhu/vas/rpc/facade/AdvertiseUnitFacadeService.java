@@ -55,7 +55,6 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
 			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end) {
-		try{
 			Advertise entity=new Advertise();
 			
 			entity.setCity(city);
@@ -104,11 +103,6 @@ public class AdvertiseUnitFacadeService {
 			}
 			advertiseService.insert(entity);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
-		}catch(BusinessI18nCodeException bex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
-		}catch(Exception ex){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
 	}
 
 	/**
@@ -237,7 +231,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param state
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> verifyAdvertise(int verify_uid,int advertiseId,String msg,int state){
+	public RpcResponseDTO<Boolean> verifyAdvertise(int verify_uid,String advertiseId,String msg,int state){
 		try{ 
 			Advertise advertise=advertiseService.getById(advertiseId);
 			advertise.setVerify_uid(verify_uid);
@@ -264,7 +258,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param advertiseId
 	 * @return
 	 */
-	public RpcResponseDTO<AdvertiseVTO> queryAdvertiseInfo(Integer uid,int advertiseId){
+	public RpcResponseDTO<AdvertiseVTO> queryAdvertiseInfo(Integer uid,String advertiseId){
 		try{
 			Advertise advertise=advertiseService.getById(advertiseId);
 			AdvertiseVTO advertiseVTO=advertise.toVTO();
@@ -294,7 +288,7 @@ public class AdvertiseUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<Boolean> updateAdvertise(int uid,int advertiseId, String image,
+	public RpcResponseDTO<Boolean> updateAdvertise(int uid,String advertiseId, String image,
 			String url, String domain, String province, String city,
 			String district, String description, String title, long start,
 			long end) {
@@ -351,7 +345,7 @@ public class AdvertiseUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, int advertiseId) {
+	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, String advertiseId) {
 		Advertise advertise=advertiseService.getById(advertiseId);
 		if(advertise.getUid()!=uid){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);

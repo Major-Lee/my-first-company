@@ -46,7 +46,7 @@ public interface IAdvertiseRpcService{
 	 * @param end
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> updateAdvertise(int uid,int advertiseId, String image,
+	public RpcResponseDTO<Boolean> updateAdvertise(int uid,String advertiseId, String image,
 			String url, String domain, String province, String city,
 			String district, String description, String title, long start,
 			long end);
@@ -59,14 +59,14 @@ public interface IAdvertiseRpcService{
 	 * @param state
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> verifyAdvertise(int uid, int advertiseId,String msg,
+	public RpcResponseDTO<Boolean> verifyAdvertise(int uid, String advertiseId,String msg,
 			int state);
 	/**
 	 * 查询广告详情
 	 * @param advertiseId
 	 * @return
 	 */
-	public RpcResponseDTO<AdvertiseVTO> queryAdvertise(Integer uid,int advertiseId);
+	public RpcResponseDTO<AdvertiseVTO> queryAdvertise(Integer uid,String advertiseId);
 	/**
 	 * 查询广告列表
 	 * @param uid
@@ -94,6 +94,6 @@ public interface IAdvertiseRpcService{
 	 * @param advertiseId
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, int advertiseId);
+	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, String advertiseId);
 
 }

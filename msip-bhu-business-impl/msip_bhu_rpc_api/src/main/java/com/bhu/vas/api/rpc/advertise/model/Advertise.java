@@ -45,6 +45,11 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	private Date created_at;
 	private Date updated_at;
 	
+	
+	public Advertise(){
+		super();
+	}
+	
 	public long getAbleDevicesNum() {
 		return ableDevicesNum;
 	}
@@ -223,8 +228,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	public void setSequenceKey(Long autoId) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
 		int fir=Integer.valueOf(df.format(new Date()));
-		String randoms=StructuredIdHelper.generateStructuredIdStringAD(fir, this.type+"", autoId);
-		this.setId(randoms);
+		this.setId(StructuredIdHelper.generateStructuredIdStringAD(fir, this.type+"", autoId));
 	}
 	public static void main(String[] args) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式

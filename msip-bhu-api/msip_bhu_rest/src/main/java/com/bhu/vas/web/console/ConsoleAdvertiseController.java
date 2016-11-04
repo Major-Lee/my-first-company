@@ -34,7 +34,7 @@ public class ConsoleAdvertiseController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) int uid,
-			@RequestParam(required = true) int advertiseId,
+			@RequestParam(required = true) String advertiseId,
 			@RequestParam(required = true) String msg,
 			@RequestParam(required = true) int state
 			) {
@@ -94,7 +94,7 @@ public class ConsoleAdvertiseController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) int advertiseId
+			@RequestParam(required = true) String advertiseId
 			) {
 		try{
 			RpcResponseDTO<AdvertiseVTO> rpcResult = advertiseRpcService.queryAdvertise

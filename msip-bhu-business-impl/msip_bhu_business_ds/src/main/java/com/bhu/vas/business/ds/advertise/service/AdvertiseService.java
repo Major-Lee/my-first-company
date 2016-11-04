@@ -10,7 +10,7 @@ import com.bhu.vas.business.ds.advertise.dao.AdvertiseDao;
 import com.smartwork.msip.business.abstractmsd.service.AbstractCoreService;
 @Service
 @Transactional("coreTransactionManager")
-public class AdvertiseService extends AbstractCoreService<Integer, Advertise, AdvertiseDao>{
+public class AdvertiseService extends AbstractCoreService<String, Advertise, AdvertiseDao>{
 	@Resource
 	@Override
 	public void setEntityDao(AdvertiseDao advertiseDao) {

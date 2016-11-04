@@ -58,7 +58,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> updateAdvertise(int uid,int advertiseId, String image,
+	public RpcResponseDTO<Boolean> updateAdvertise(int uid,String advertiseId, String image,
 			String url, String domain, String province, String city,
 			String district, String description, String title, long start,
 			long end) {
@@ -68,7 +68,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> verifyAdvertise(int uid, int advertiseId,String msg,
+	public RpcResponseDTO<Boolean> verifyAdvertise(int uid, String advertiseId,String msg,
 			int state) {
 		logger.info(String.format("verifyAdvertise with uid[%s] advertiseId[%s] msg[%s] state[%s]",
 				uid,advertiseId, msg,state));
@@ -76,7 +76,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<AdvertiseVTO> queryAdvertise(Integer uid,int advertiseId) {
+	public RpcResponseDTO<AdvertiseVTO> queryAdvertise(Integer uid,String advertiseId) {
 		logger.info(String.format("queryAdvertise uid[%s] advertiseId[%s]",uid,
 				advertiseId));
 		return advertiseUnitFacadeService.queryAdvertiseInfo(uid,advertiseId);
@@ -168,7 +168,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, int advertiseId) {
+	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, String advertiseId) {
 		logger.info(String.format("escapeAdvertise uid[%s] advertiseId[%s]",uid,
 				advertiseId));
 		return advertiseUnitFacadeService.escapeAdvertise(uid,advertiseId);
