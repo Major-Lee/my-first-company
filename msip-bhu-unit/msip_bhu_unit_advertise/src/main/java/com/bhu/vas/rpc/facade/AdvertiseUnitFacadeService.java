@@ -175,13 +175,13 @@ public class AdvertiseUnitFacadeService {
 		
 		if(StringUtils.isNotBlank(createStartTime)){
 			if(StringUtils.isNotBlank(createEndTime)){
-				criteria2.andColumnBetween("created_at", createStartTime, createStartTime);
-				criteria3.andColumnBetween("created_at", createStartTime, createStartTime);
-				criteria4.andColumnBetween("created_at", createStartTime, createStartTime);
+				criteria2.andColumnBetween("created_at", createStartTime, createEndTime);
+				criteria3.andColumnBetween("created_at", createStartTime, createEndTime);
+				criteria4.andColumnBetween("created_at", createStartTime, createEndTime);
 			}else{
-				criteria2.andColumnEqualTo("created_at", createEndTime);
-				criteria3.andColumnEqualTo("created_at", createEndTime);
-				criteria4.andColumnEqualTo("created_at", createEndTime);
+				criteria2.andColumnEqualTo("created_at", createStartTime);
+				criteria3.andColumnEqualTo("created_at", createStartTime);
+				criteria4.andColumnEqualTo("created_at", createStartTime);
 			}
 		}
 		
@@ -258,6 +258,9 @@ public class AdvertiseUnitFacadeService {
 	 */
 	public RpcResponseDTO<AdvertiseVTO> queryAdvertiseInfo(Integer uid,String advertiseId){
 			Advertise advertise=advertiseService.getById(advertiseId);
+			if(advertise==null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
+			}
 			AdvertiseVTO advertiseVTO=advertise.toVTO();
 			//广告提交人信心
 			User user=userService.getById(advertise.getUid());
@@ -274,7 +277,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			if(uid!=null){
 				if(uid!=advertise.getUid()){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.LOGIN_USER_NOT_OPERATOR);
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_QUERY_UNSUPPORT);
 				}
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseVTO);
@@ -289,7 +292,7 @@ public class AdvertiseUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_TYPEERROR);
 			}
 			if(entity.getUid()!=uid){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_TYPEERROR);
 			}
 			if(start>end){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
@@ -333,16 +336,23 @@ public class AdvertiseUnitFacadeService {
 
 	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, String advertiseId) {
 		Advertise advertise=advertiseService.getById(advertiseId);
+		if(advertise==null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_UNSUPPORT);
+		}
 		if(advertise.getUid()!=uid){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_UNSUPPORT);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_UNSUPPORT);
 		}
 		Date date=new Date();
 		long between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24);
-		if(advertise.getState()==AdvertiseType.UnPublish.getType()&&advertise.getStart().getTime()>date.getTime()&&between_daysNow>2){
-			advertise.setState(AdvertiseType.EscapeOrder.getType());
-			advertiseService.update(advertise);
+		if(advertise.getState()==AdvertiseType.UnPublish.getType()){
+			if(advertise.getStart().getTime()>date.getTime()&&between_daysNow>2){
+				advertise.setState(AdvertiseType.EscapeOrder.getType());
+				advertiseService.update(advertise);
+			}else{
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_TIMEERROR);
+			}
 		}else{
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_TYPEERROR);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_TYPEERROR);
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
