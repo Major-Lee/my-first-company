@@ -204,7 +204,7 @@ public class AdvertiseUnitFacadeService {
 				mc.or(criteria3);
 				mc.or(criteria4);
 			}else{
-				criteria2.andColumnLessThanOrEqualTo("start", publishStartTime);
+				criteria2.andColumnGreaterThanOrEqualTo("start", publishStartTime);
 				mc.or(criteria2);
 			}
 		}
