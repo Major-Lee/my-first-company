@@ -79,6 +79,7 @@ import com.bhu.vas.business.backendonline.asyncprocessor.buservice.BackendBusine
 import com.bhu.vas.business.bucache.local.serviceimpl.BusinessCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePresentCtxService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.WifiDeviceRealtimeRateStatisticsStringService;
@@ -1320,6 +1321,8 @@ public class AsyncMsgHandleService {
 			// wifiDeviceIndexIncrementService.wifiDeviceIndexIncrement(entity);
 			wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(entity.getId(), Double.parseDouble(entity.getLat()),
 					Double.parseDouble(entity.getLon()), entity.getFormatted_address(),entity.getProvince(),entity.getCity(),entity.getDistrict());
+			//4:设备位置分布redis修复
+			WifiDevicePositionListService.getInstance().wifiDeviceLocationChanged(entity.getProvince(),entity.getCity(),entity.getDistrict());
 		}
 		logger.info(
 				String.format("AnsyncMsgBackendProcessor wifiDeviceLocationHandle message[%s] successful", message));

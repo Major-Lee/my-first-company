@@ -2,6 +2,7 @@ package com.bhu.vas.business.bucache.redis.serviceimpl.devices;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Set;
 
 import redis.clients.jedis.JedisPool;
 
@@ -95,5 +96,30 @@ public class WifiDevicePositionListService extends AbstractRelationListCache{
 			e.printStackTrace();
 		}  
 		return newStr;
+	}
+	
+	public void wifiDeviceLocationChanged(String province,String city,String district){
+		Set<String> provinceSet = this.keys(BusinessKeyDefine.Present.WifiDeviceProvincePrefixKey+province);
+		if(provinceSet.isEmpty()){
+			generateAllProvince(province);
+			generateProvince(province, city);
+			generateCity(city, district);
+		}else{
+			Set<String> citySet = this.keys(BusinessKeyDefine.Present.WifiDeviceCityPrefixKey+city);
+			if(citySet.isEmpty()){
+				generateProvince(province, city);
+				generateCity(city, district);
+			}else{
+				boolean newdistrict = false;
+				for(String dis : citySet){
+					if(dis.equals(district)){
+						newdistrict = true;
+					}
+				}
+				if(newdistrict){
+					generateCity(city, district);
+				}
+			}
+		}
 	}
 }
