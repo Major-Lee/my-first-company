@@ -226,6 +226,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		singleAdvertise.setUrl(this.url);
 		singleAdvertise.setDomain(this.domain);
 		singleAdvertise.setReject_reason(this.reject_reason);
+		singleAdvertise.setCreate_at(this.created_at);
 		return singleAdvertise;
 	}
 	@Override

@@ -78,8 +78,6 @@ public class AdvertiseUnitFacadeService {
 			entity.setDescription(description);
 			entity.setTitle(title);
 			entity.setUid(uid);
-			Date date=new Date();
-			entity.setCreated_at(date);
 			//间隔天数
 			long between_days = (end - start) / (1000 * 3600 * 24);
 			int duration=Integer.parseInt(String.valueOf(between_days));

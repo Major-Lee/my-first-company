@@ -26,6 +26,15 @@ public class AdvertiseVTO implements java.io.Serializable{
 	private int state;
 	private String reject_reason;
 	
+	private Date create_at;
+	
+	
+	public Date getCreate_at() {
+		return create_at;
+	}
+	public void setCreate_at(Date create_at) {
+		this.create_at = create_at;
+	}
 	public String getReject_reason() {
 		return reject_reason;
 	}
