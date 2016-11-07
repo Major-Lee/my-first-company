@@ -159,6 +159,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 								if(distributor != -1 && wsnk.getOwner() != distributor){
 									wsnk.setOwner(distributor);
 									SharedNetworkSettingDTO dto = wsnk.getInnerModel();
+									dto.setOn(true);
 									dto.setPsn(psn);
 									wsnk.putInnerModel(dto);
 									sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(wsnk); //后面会针对设备重建索引 
