@@ -13,7 +13,7 @@ package com.nowpay.config;
 public class NowpayConfig {
 	
 	public static String appKey = "0VmIA24PLBFddkp1WdVKSbMf8xOUr8dz";
-	public static String Server_url = "http://api.ipaynow.cn";
+	public static String Server_url = "https://pay.ipaynow.cn";
 	public static String appId = "1466063755140964"; //应用ID
 	public static String funcode = "WP001"; //功能码
 	public static String mhtCurrencyType ="156"; //币种

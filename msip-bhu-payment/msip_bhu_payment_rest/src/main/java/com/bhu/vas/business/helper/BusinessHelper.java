@@ -762,11 +762,6 @@ public class BusinessHelper extends PropertyEditorSupport {
         response.getWriter().close();
     }
 	
-	public static void main(String[] args) {
-		//System.out.println(BusinessHelper.generatePaymentReckoningNoByType("pcwx"));
-		System.out.println(BusinessHelper.formatPayItem("test","TESTMDWX1466048432305ypyx*0.10*1"));
-	}
-
 	public static String formatPayItem(String env,String payItem) {
 		String item = "";
 		env =env.toUpperCase();
@@ -895,7 +890,7 @@ public class BusinessHelper extends PropertyEditorSupport {
 	 * @param type (Type 值对应不同支付渠道的缩写或代名词)
 	 * @return
 	 */
-	public static String generatePaymentChannelType(int tempFee,String channelRate,String channelOptions,int level){
+	public static String generatePaymentChannelType(String channelRate,String channelOptions,int level){
 		String result = "Now";
 		int num = 0;
     	Random r = new Random();	//随机数生成器
@@ -910,38 +905,21 @@ public class BusinessHelper extends PropertyEditorSupport {
 		String thirdOption = "";
 		switch (level) {
 		case 2:
-			
-			if(tempFee < 50 && firstOption.equals("Hee") && !secondOption.equals("Hee")){
-				result = secondOption;
-			}else if(tempFee < 50 && secondOption.equals("Hee")  && !firstOption.equals("Hee")){
+			if(num <= firstChannelInt){
 				result = firstOption;
-			}else {
-				if(num <= firstChannelInt){
-					result = firstOption;
-				}else if(num <= secondChannelInt){
-					result = secondOption;
-				}
+			}else if(num <= secondChannelInt){
+				result = secondOption;
 			}
-			
 			break;
 		case 3:
-			
 			thirdOption = channelOptionsArray[2];
 			thirdChannelInt = Integer.valueOf(channelRateArray[2]);
-			if(tempFee < 50 && firstOption.equals("Hee") && !secondOption.equals("Hee")){
-				result = secondOption;
-			}else if(tempFee < 50 && secondOption.equals("Hee")  && !thirdOption.equals("Hee")){
-				result = thirdOption;
-			}else if(tempFee < 50 && thirdOption.equals("Hee")  && !firstOption.equals("Hee")){
+			if(num <= firstChannelInt){
 				result = firstOption;
-			}else {
-				if(num <= firstChannelInt){
-					result = firstOption;
-				}else if(num <= secondChannelInt){
-					result = secondOption;
-				}else if(num <= thirdChannelInt){
-					result = thirdOption;
-				}
+			}else if(num <= secondChannelInt){
+				result = secondOption;
+			}else if(num <= thirdChannelInt){
+				result = thirdOption;
 			}
 			break;
 		default:
@@ -949,4 +927,44 @@ public class BusinessHelper extends PropertyEditorSupport {
 		}
 		return  result;
 	}
+
+
+		public static String parseReckonIdReturnType(String reckonId, String env) {
+			String result = "";
+			if(reckonId.startsWith(env)){
+				result = reckonId.substring(5, 9);
+			}else if(reckonId.startsWith(env)){
+				result = reckonId.substring(4, 8);
+			}else if(reckonId.startsWith(env)){
+				result = reckonId.substring(3, 7);
+			}
+			return result;
+		}
+
+
+		public static long getBetweenTimeCouse(String createdTime, Date payTime) {
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+	        Date d1;
+	        long interval =0l;
+			try {
+				d1 = sdf.parse(createdTime);
+				 interval = (payTime.getTime() - d1.getTime())/1000;
+			} catch (ParseException e) {
+			}  
+			return interval;
+		}
+		
+		public static void main(String[] args) {
+//			String reckonId = "PROAPAL1474879256178pmrn";
+//			String result = "";
+//			if(reckonId.startsWith("INNER")){
+//				result = reckonId.substring(5, 9);
+//			}else if(reckonId.startsWith("TEST")){
+//				result = reckonId.substring(4, 8);
+//			}else if(reckonId.startsWith("PRO")){
+//				result = reckonId.substring(3, 7);
+//			}
+			
+			System.out.println(getBetweenTimeCouse("2016-10-31 17:37:00", new Date()));
+		}
 }

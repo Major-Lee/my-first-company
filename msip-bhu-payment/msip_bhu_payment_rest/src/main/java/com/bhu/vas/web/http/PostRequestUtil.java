@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
 
 /**
  * java发送post请求
@@ -21,12 +20,20 @@ public class PostRequestUtil {
 		// null);
 //		String par = "methodName=updateOrderStatus&orderId=2099021509170013&status=4&sign=1BA5FC1A19824109A6688339C0CF57F1";
 	//	Object sr = sendPost("http://m.api.51ping.com/tohome/openapi/jiadianguanjia/", par);
-		String cur = System.currentTimeMillis()+"";
-		String par = "secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&payment_type=WapWeixin&goods_no="+cur+"&total_fee=0.01&umac=ws:ww:22&version=v1";
-		Object sr = sendPost("http://mpays.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment", par);
+//		String cur = System.currentTimeMillis()+"";
+//		String par = "secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&payment_type=WapWeixin&goods_no="+cur+"&total_fee=0.01&umac=ws:ww:22&version=v1";
+		//Object sr = sendPost("http://localhost:8080/msip_bhu_payment_rest/payment/wxPayNotifySuccess", "aa=qq");
+		
+		//huaxinlianchuang   100032
+		//http://sms.chanzor.com:8001/sms.aspx?action=send&userid=&account=账号&password=密码&mobile=手机号&sendTime=&content=内容
+//		String aa = "action=send&userid=&account=huaxinlianchuang&password=100032&mobile=15127166171&sendTime=&content=验证码123455请勿将验证码泄露给他人【必虎】";
+		String aa = "secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&paymentName=商品&payment_type=WapAlipay&total_fee=0.01&goods_no=w21w54e456";
+		Object sr = sendPost("http://localhost:8080/msip_bhu_payment_rest/payment/submitPayment", aa);
+//		String aa = "action=send&userid=&account=huaxinlianchuang&password=100032&mobile=18515465766&sendTime=&content=验证码123455请勿将验证码泄露给他人【必虎】";
+//		Object sr = sendPost("http://sms.chanzor.com:8001/sms.aspx", aa);
 		//Object sr = sendPost("http://m.api.dianping.com/tohome/openapi/jiadianguanjia/", par);
 
-		System.out.println(sr);
+		System.out.println( sr);
 	}
 
 	public static String sendPost(String url, String param) {
