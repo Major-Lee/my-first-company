@@ -278,7 +278,12 @@ public enum ResponseErrorCode {
 	ADVERTISE_UPFIELD_UNSUPPORT("504","advertise.upload.unsupport"),
 	ADVERTISE_VERIFY_TYPESUPPORT("505","advertise.verify.typeerror"),
 	ADVERTISE_UPFIELD_TYPEERROR("506","advertise.upload.typeerror"),
+	ADVERTISE_ESCFIELD_TYPEERROR("509","advertise.escape.typeerror"),
+	ADVERTISE_ESCFIELD_TIMEERROR("508","advertise.escape.timeerror"),
+	ADVERTISE_ESCFIELD_UNSUPPORT("510","advertise.escape.unsupport"),
 	ADVERTISE_TIME_TIMEERROR("507","advertise.time.timeerror"),
+	ADVERTISE_EMPTY("511","advertise.empty"),
+	ADVERTISE_QUERY_UNSUPPORT("512","advertise.query.unsupport"),
 	
 	
 	//Social

@@ -233,7 +233,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	//public static final String InternalCaptchaCodeSMS_Template = "验证码:%s,请输入以上验证码完成步骤,欢迎体验新时代的Wifi工具！";//【华信联创】
 	//public static final String ForeignCaptchaCodeSMS_Template  = "【Blink】Verification:%s, please enter the verification code as the above to continue.Welcome! You are now using the IM for the new era!";//"[Blink] Code:%s,Please Input!";
-	public static String InternalCaptchaCodeSMS_Gateway = "Chanzor";//【华信联创】
+	public static String InternalCaptchaCodeSMS_Gateway = "Welink";//【华信联创】
 	public static String InternalMarketingSMS_Gateway = "Chuanglan";//【必虎】
 	//public static final String InternalCaptchaCodeSMS_Template = "【uRouter】验证码：%s,欢迎使用uRouter智能路由器！【华信联创】";//【华信联创】
 	//验证码：@，请勿将验证码泄露给他人！【必虎路由】
