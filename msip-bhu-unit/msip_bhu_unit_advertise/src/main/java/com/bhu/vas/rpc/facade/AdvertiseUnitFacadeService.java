@@ -210,6 +210,7 @@ public class AdvertiseUnitFacadeService {
 		System.out.println("mark 12------------------------"+total);
 		mc.setPageNumber(pn);
 		mc.setPageSize(ps);
+		mc.setOrderByClause("created_at desc");
 		advertises=advertiseService.findModelByModelCriteria(mc);
 		
 		System.out.println("mark 13------------------------");
