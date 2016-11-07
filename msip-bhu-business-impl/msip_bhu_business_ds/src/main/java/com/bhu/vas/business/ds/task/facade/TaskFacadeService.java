@@ -349,12 +349,16 @@ public class TaskFacadeService {
 		if(opt_cmd == null){
 			throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);
 		}
+
+		/* 20161107,取消校验
 		if(uid != BusinessRuntimeConfiguration.Sys_Uid && OperationCMD.ModifyDeviceSetting == opt_cmd){
 			//运营商设备不允许用户修改
 			WifiDeviceSharedealConfigs sharedeal = wifiDeviceSharedealConfigsService.getById(mac);
 			if(DistributorType.City.getType().equals(sharedeal.getDistributor_type()))//城市运营商设备，不允许修改
 				throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_BELONG_TO_DISTRIBUTOR_CITY);
 		}
+		*/
+		
 		if(OperationCMD.DeviceCmdPassThrough == opt_cmd){//远端透传指令，直接下发，无需生成任务
 			WifiDeviceDownTask simulateTask = new WifiDeviceDownTask();
 			simulateTask.setId(-1l);
