@@ -266,7 +266,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	//设备测速下行的地址
 	//public static String Device_SpeedTest_Download_url = "http://vap.bhunetworks.com/speedtest/speedtest.tar.gz";
-	public static String Device_SpeedTest_Download_url = "http://dl.quickbird.com/speedtest20M.zip";
+	//public static String Device_SpeedTest_Download_url = "http://dl.quickbird.com/speedtest20M.zip";
+	public static String Device_SpeedTest_Download_url = "http://softfile.3g.qq.com/myapp/webapp_scan_big/speed_test/speedmeasure.zip";
 	
 	//设备测速上行的地址
 	public static String Device_SpeedTest_Upload_url = "uploadtest.quickbird.com:60080";
