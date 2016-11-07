@@ -1,7 +1,9 @@
 package com.bhu.vas.rpc.facade;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1333,7 +1335,7 @@ public class UserWalletUnitFacadeService {
 			// 天数的计算
 			List<String> lineChartDateInfo = new ArrayList<String>();
 			// 折线图Y轴（收益）
-			List<Double> lineChartIncomeInfo = new ArrayList<Double>();
+			List<String> lineChartIncomeInfo = new ArrayList<String>();
 			// 折线图Y轴（用户数）
 			List<Double> lineChartUserNumInfo = new ArrayList<Double>();
 			// 获取当前日期
@@ -1346,9 +1348,8 @@ public class UserWalletUnitFacadeService {
 						.getEntityDao()
 						.countTotalIncomeByDay(uid,
 								getNewDay(startTime, i - 30));
-				lineChartIncome = round(lineChartIncome, 2);
 				// 折线图Y轴（收益）
-				lineChartIncomeInfo.add(lineChartIncome);
+				lineChartIncomeInfo.add(doubleCut2(lineChartIncome, 2));
 				double lineChartUserNum = userWalletFacadeService
 						.getUserIncomeService()
 						.getEntityDao()
@@ -1534,9 +1535,20 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 
+	public static String doubleCut2(double b,int size){
+		DecimalFormat formater = new DecimalFormat();
+
+		 formater.setMaximumFractionDigits(size);
+		 formater.setGroupingSize(0);
+		 formater.setRoundingMode(RoundingMode.FLOOR);
+
+		 System.out.println(formater.format(b));
+		 return formater.format(b);
+	}
 	public static void main(String[] args) {
 
 		System.out.println(GetDateTime("yyyy-MM-dd", 0));
+		System.out.println(doubleCut2(2.356,2));
 	}
 
 	/**
