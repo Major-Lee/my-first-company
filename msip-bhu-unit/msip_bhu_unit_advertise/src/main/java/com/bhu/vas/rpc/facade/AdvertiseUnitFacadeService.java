@@ -96,9 +96,9 @@ public class AdvertiseUnitFacadeService {
 			mc.createCriteria().andColumnIn("state", stateList).andColumnEqualTo("uid", uid);
 			
 			int num=advertiseService.countByModelCriteria(mc);
-//			if(num>=2){
-//				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
-//			}
+			if(num>=2){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
+			}
 			advertiseService.insert(entity);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
@@ -268,7 +268,7 @@ public class AdvertiseUnitFacadeService {
 			if(advertise.getState()==AdvertiseType.UnPublish.getType()){
 				Date date=new Date();
 				if(advertise.getStart().getTime()>date.getTime()){
-					long between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24);
+					double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
 					if(between_daysNow>2){
 						advertiseVTO.setEscapeFlag(true);
 					}
@@ -298,7 +298,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			Date date=new Date();
 			
-			long between_daysNow = (start - date.getTime()) / (1000 * 3600 * 24);
+			double between_daysNow = (start - date.getTime()) / (1000 * 3600 * 24*1.0);
 			if(between_daysNow<2){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_TYPEERROR);
 			}
@@ -342,7 +342,7 @@ public class AdvertiseUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_UNSUPPORT);
 		}
 		Date date=new Date();
-		long between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24);
+		double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
 		if(advertise.getState()==AdvertiseType.UnPublish.getType()){
 			if(advertise.getStart().getTime()>date.getTime()&&between_daysNow>2){
 				advertise.setState(AdvertiseType.EscapeOrder.getType());
