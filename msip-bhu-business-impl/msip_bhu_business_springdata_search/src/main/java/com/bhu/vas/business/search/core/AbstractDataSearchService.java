@@ -37,6 +37,8 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 		this.entityClass = ReflectionHelper.getSuperClassGenricType(getClass(),0);
 	}
 	
+	public abstract int retryOnConflict();
+	
 	//public abstract ElasticsearchTemplate getElasticsearchTemplate();
 	public ElasticsearchTemplate getElasticsearchTemplate(){
 		return elasticsearchTemplate;
@@ -197,10 +199,10 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 		}
 	}
 	//当多线程对es进行操作，有可能会遇到Version Conflict的问题，这个值代表出现此问题时的重试次数
-	public static final int Default_RetryOnConflict = 0;
-	public int retryOnConflict(){
-		return Default_RetryOnConflict;
-	}
+//	public static final int Default_RetryOnConflict = 0;
+//	public int retryOnConflict(){
+//		return Default_RetryOnConflict;
+//	}
 	
 /*	public Map getSetting(){
 		return getElasticsearchTemplate().getSetting(entityClass);
