@@ -114,6 +114,17 @@ cp ../../msip-bhu-api/msip_bhu_commdity_rest/target/msip_bhu_commdity_rest.war .
 echo '拷贝文件 msip_bhu_unit_tag_bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_tag/target/msip_bhu_unit_tag-bin.zip ./$CuDateDir
 
+#statistics
+echo '拷贝文件 msip_bhu_unit_unifyStatistics-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_unifyStatistics/target/msip_bhu_unit_unifyStatistics-bin.zip ./$CuDateDir
+
+#advertise
+echo '拷贝文件 msip_bhu_backend_task_advertise-bin.zip到'$CuDateDir
+cp ../../msip-bhu-business-impl/msip_bhu_backend_task_advertise/target/msip_bhu_backend_task_advertise-bin.zip ./$CuDateDir
+
+echo '拷贝文件 msip_bhu_unit_advertise-bin.zip到'$CuDateDir
+cp ../../msip-bhu-unit/msip_bhu_unit_advertise/target/msip_bhu_unit_advertise-bin.zip ./$CuDateDir
+
 cd $CuDateDir
 echo '进行文件解压过程'
 unzip -q msip_bhu_unit_input_processor-bin.zip
@@ -167,6 +178,17 @@ unzip -qo msip_bhu_commdity_rest.war -d msip_bhu_commdity_rest
 unzip -q msip_bhu_unit_tag-bin.zip
 unzip -qo msip_bhu_unit_tag/bin/msip_bhu_unit_tag.jar -d msip_bhu_unit_tag/classes/
 
+#statistics
+unzip -q msip_bhu_unit_unifyStatistics-bin.zip
+unzip -qo msip_bhu_unit_unifyStatistics/bin/msip_bhu_unit_unifyStatistics.jar -d msip_bhu_unit_unifyStatistics/classes/
+
+#advertise
+unzip -q msip_bhu_backend_task_advertise-bin.zip
+unzip -qo msip_bhu_backend_task_advertise/bin/msip_bhu_backend_task_advertise.jar -d msip_bhu_backend_task_advertise/classes/
+
+unzip -q msip_bhu_unit_advertise-bin.zip
+unzip -qo msip_bhu_unit_advertise/bin/msip_bhu_unit_advertise.jar -d msip_bhu_unit_advertise/classes/
+
 echo '文件解压过程成功'
 
 
@@ -210,6 +232,12 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_online/lib/msip_*.jar
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_online/classes/com/    root@$Deploy2ComponentServerOpenresty:/BHUData/apps/msip_bhu_backend_online/bin/com/
 echo 'deploy msip_bhu_backend_online successfully @'$Deploy2ComponentServerOpenresty
 
+echo 'deploy msip_bhu_unit_unifyStatistics to ...@'$Deploy2ComponentServerOpenresty
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_unifyStatistics/lib/spring*.RELEASE.jar  root@$Deploy2ComponentServerOpenresty:/BHUData/apps/msip_bhu_unit_unifyStatistics/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_unifyStatistics/lib/msip_*.jar           root@$Deploy2ComponentServerOpenresty:/BHUData/apps/msip_bhu_unit_unifyStatistics/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_unifyStatistics/classes/com/             root@$Deploy2ComponentServerOpenresty:/BHUData/apps/msip_bhu_unit_unifyStatistics/classes/com/
+echo 'deploy msip_bhu_unit_unifyStatistics successfully @'$Deploy2ComponentServerOpenresty
+
 
 echo '发布业务组件成功'$Deploy2ComponentServerOpenresty
 
@@ -226,6 +254,18 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task/lib/spring*.RELE
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task/lib/msip_*.jar    root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task/libs/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task/classes/com/    root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task/bin/com/
 echo 'deploy msip_bhu_backend_task successfully @'$Deploy2ComponentServerKafka
+
+echo 'deploy msip_bhu_backend_task_advertise to ...@'$Deploy2ComponentServerKafka
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_advertise/lib/spring*.RELEASE.jar      root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task_advertise/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_advertise/lib/msip_*.jar     root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task_advertise/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_advertise/classes/com/     root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task_advertise/bin/com/
+echo 'deploy msip_bhu_backend_task_advertise successfully @'$Deploy2ComponentServerKafka
+
+echo 'deploy msip_bhu_unit_advertise to ...@'$Deploy2ComponentServerKafka
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_advertise/lib/spring*.RELEASE.jar root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_unit_advertise/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_advertise/lib/msip_*.jar  root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_unit_advertise/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_advertise/classes/com/    root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_unit_advertise/classes/com/
+echo 'deploy msip_bhu_unit_advertise successfully @'$Deploy2ComponentServerKafka
 
 echo '发布业务组件成功'$Deploy2ComponentServerKafka
 
