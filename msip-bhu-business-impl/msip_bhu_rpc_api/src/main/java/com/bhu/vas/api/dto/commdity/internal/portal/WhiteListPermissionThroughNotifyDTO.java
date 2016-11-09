@@ -84,7 +84,7 @@ public class WhiteListPermissionThroughNotifyDTO implements PermissionThroughNot
 	
 	@Override
 	public String getPermissionNotifyType() {
-		return PermissionThroughNotifyType.VideoPermissionNotify.getPrefix();
+		return PermissionThroughNotifyType.WhiteListPermissionNotify.getPrefix();
 	}
 	
 	public static WhiteListPermissionThroughNotifyDTO from(Order order, String ait_time, User bindUser){
