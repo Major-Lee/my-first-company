@@ -50,10 +50,6 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 		SystemNoneedCaptchaValidAccs.add("86 13611361274");//T3
 		SystemTestUsers.add(9);
 		
-		String[] whileListAccs = CommdityWhiteListStr.split(",");
-		for(String acc : whileListAccs){
-			CommdityWhiteListAccs.add(acc);
-		}
 //		SystemNoneedCaptchaValidAccs.add("86 15910526881");//T3
 //		SystemTestUsers.add(101767);
 	}
@@ -176,7 +172,15 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	OpsImportCallbackApi = PropertiesHelper.getString("ops.import.callbackapi", paramProperties, UserPortalChargingNotify2UPortalApi);
         	OpsImportCallbackToken = PropertiesHelper.getString("ops.import.callbacktoken", paramProperties, OpsImportCallbackToken);
         	
-        	CommdityWhiteListStr = PropertiesHelper.getString("commdity.whitelist.accs", paramProperties, CommdityWhiteListStr);
+        	String commdityWhiteListStr = PropertiesHelper.getString("commdity.whitelist.accs", paramProperties, "");
+    		
+    		if(StringUtils.isNotEmpty(commdityWhiteListStr)){
+    			String[] whileListAccs = commdityWhiteListStr.split(StringHelper.COMMA_STRING_GAP);
+            	for(String acc : whileListAccs){
+            		logger.info(String.format("loading business runtime configuration acc[%s]",acc));
+        			CommdityWhiteListAccs.add(acc);
+        		}
+            }
         	logger.info("loading business runtime configuration successfully!");  
         }  
     }  
@@ -427,7 +431,6 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String UserPortalChargingNotify2UPortalApi = "http://ucloud.bhuwifi.com:9158/common/api/save-status";
 	public static String OpsImportCallbackApi = "http://ops.bhuwifi.com/api/unicorn/device-out-confirm";
 	public static String OpsImportCallbackToken = "MzZhMWIzMDdiYjIyOGI5NzllZTM2M2FlZTc0NGIyOTA=";
-	public static String CommdityWhiteListStr = "";
 	/**
 	 * 判断是否是console用户
 	 * @param uid
@@ -454,6 +457,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static boolean isCommdityWhiteList(String userAcc){
 		for(String acc: CommdityWhiteListAccs){
+			logger.info(String.format("isCommdityWhiteList userAcc[%s] acc[%s]", userAcc, acc));
 			if (acc.equals(userAcc)){
 				return true;
 			}
