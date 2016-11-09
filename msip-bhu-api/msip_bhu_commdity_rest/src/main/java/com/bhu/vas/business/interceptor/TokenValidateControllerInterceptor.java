@@ -46,6 +46,11 @@ public class TokenValidateControllerInterceptor extends AbstractTokenValidateCon
 		ignoreTokensValidateUrlSet.add("commdity/physical/get_address");
 		ignoreTokensValidateUrlSet.add("commdity/physical/set_address");
 		ignoreTokensValidateUrlSet.add("order/physical/mini/paymenturl");
+		
+		ignoreTokensValidateUrlSet.add("commdity/fetch_captcha");
+		ignoreTokensValidateUrlSet.add("commdity/identity_auth");
+		ignoreTokensValidateUrlSet.add("commdity/validate_captcha");
+		ignoreTokensValidateUrlSet.add("commdity/check_user_in_whitelist");
 		//ignoreTokensValidateUrlSet.add("/order/query/umac/status");
 	}
 	

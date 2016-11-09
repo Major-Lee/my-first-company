@@ -11,7 +11,17 @@ public class UserIdentityAuth extends BaseStringModel {
 	public static final int countrycode = 86;
 	private String mobileno;
 	private String created_at;
-	
+	private boolean isInWhiteList;
+
+
+	public boolean isInWhiteList() {
+		return isInWhiteList;
+	}
+
+	public void setInWhiteList(boolean isInWhiteList) {
+		this.isInWhiteList = isInWhiteList;
+	}
+
 	public String getMobileno() {
 		return mobileno;
 	}

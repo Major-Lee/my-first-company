@@ -13,6 +13,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
+import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
@@ -150,6 +151,23 @@ public class OrderRpcService implements IOrderRpcService{
 		return orderUnitFacadeService.rewardCreateMonthlyService(commdityid, mac,
 				 umac, context, umactype, channel, user_agent, uname, acc, address, count);
 	}
-	
+
+	@Override
+	public RpcResponseDTO<OrderWhiteListVTO> createWhiteListOrder(Integer commdityid, String mac, String umac,
+			Integer umactype, String context, String user_agent, Integer channel) {
+		logger.info(String.format("createWhiteListOrder with commdityid[%s] mac[%s] umac[%s] umactype[%s] context[%s] user_agent[%s] channel[%s]",
+				commdityid, mac, umac, umactype, context, user_agent, channel));
+		return orderUnitFacadeService.createWhiteListOrder(commdityid, mac, umac, 
+				umactype, context, user_agent, channel);
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> commdity_check_user_in_whiteList(String mac, String umac, String acc, String context,
+			Integer umactype, Integer commdityid, String user_agent, Integer channel) {
+		logger.info(String.format("check_user_in_whiteList mac[%s] umac[%s] acc[%s] context[%s] umactype[%s] commdityid[%s] user_agent[%s] channel[%s]",
+				mac, umac, acc, context, umactype, commdityid, user_agent, channel));
+		return orderUnitFacadeService.check_user_in_whiteList(mac, umac, acc, context, umactype, commdityid, user_agent, channel);
+	}
+
 	
 }

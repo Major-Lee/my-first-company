@@ -28,6 +28,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
+import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
@@ -65,6 +66,7 @@ import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -150,9 +152,19 @@ public class OrderUnitFacadeService {
 			
 			//生成订单
 			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
-			Order order = orderFacadeService.createRewardOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
-					bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent, channel);
-
+			Order order = null;
+			switch (commdityid.intValue()) {
+			case BusinessRuntimeConfiguration.Reward_Monthly_Internet_Commdity_ID:
+				order = orderFacadeService.createRewardMonthlyInternetOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
+						bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent, channel);
+				break;
+			case BusinessRuntimeConfiguration.Reward_Internet_Commdity_ID:
+			default:
+				order = orderFacadeService.createRewardOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
+						bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent, channel);
+				break;
+			}
+				
 			commdityMessageService.sendOrderCreatedMessage(order.getId());
 
 			OrderRewardVTO orderVto = new OrderRewardVTO();
@@ -919,6 +931,75 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
 			logger.error("rewardCreateMonthlyService Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<OrderWhiteListVTO> createWhiteListOrder(Integer commdityid, String mac, String umac,
+			Integer umactype, String context, String user_agent, Integer channel) {
+		
+		try{
+			//验证mac umac
+			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+			}
+			String mac_lower = mac.toLowerCase();
+			String umac_lower = umac.toLowerCase();
+			//检查设备是否接入过
+			WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
+			if(wifiDevice == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+			}
+			User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
+			//生成订单
+			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
+			Order order = orderFacadeService.createWhiteListOrder(commdityid, mac_lower, mac_dut, umac_lower, 
+					umactype, bindUser, context, user_agent);
+			
+			OrderWhiteListVTO vto = new OrderWhiteListVTO();
+			vto.setOrderid(order.getId());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+			
+		}catch(Exception ex){
+			logger.error("createWhiteListOrder Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<Boolean> check_user_in_whiteList(String mac, String umac, String acc, String context,
+			Integer umactype, Integer commdityid, String user_agent, Integer channel) {
+		try{
+			if (!BusinessRuntimeConfiguration.isCommdityWhileList(acc)){
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.FALSE);
+			}else{
+				//验证mac umac
+				if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+				}
+				if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+				}
+				String mac_lower = mac.toLowerCase();
+				String umac_lower = umac.toLowerCase();
+				//检查设备是否接入过
+				WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
+				if(wifiDevice == null){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+				}
+				User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
+				//生成订单
+				String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
+				Order order = orderFacadeService.createWhiteListOrder(commdityid, mac_lower, mac_dut, umac_lower, 
+						umactype, bindUser, context, user_agent);
+				logger.info(String.format("check_user_in_whiteList create order[%s]",order.getId()));
+				return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+			}
+			
+		}catch(Exception ex){
+			logger.error("check_user_in_whiteList Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

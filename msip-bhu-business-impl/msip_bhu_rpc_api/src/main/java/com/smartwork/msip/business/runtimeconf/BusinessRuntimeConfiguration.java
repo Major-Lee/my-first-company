@@ -50,7 +50,10 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 		SystemNoneedCaptchaValidAccs.add("86 13611361274");//T3
 		SystemTestUsers.add(9);
 		
-		
+		String[] whileListAccs = CommdityWhiteListStr.split(",");
+		for(String acc : whileListAccs){
+			CommdityWhiteListAccs.add(acc);
+		}
 //		SystemNoneedCaptchaValidAccs.add("86 15910526881");//T3
 //		SystemTestUsers.add(101767);
 	}
@@ -173,7 +176,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	OpsImportCallbackApi = PropertiesHelper.getString("ops.import.callbackapi", paramProperties, UserPortalChargingNotify2UPortalApi);
         	OpsImportCallbackToken = PropertiesHelper.getString("ops.import.callbacktoken", paramProperties, OpsImportCallbackToken);
         	
-        	
+        	CommdityWhiteListStr = PropertiesHelper.getString("commdity.whitelist.accs", paramProperties, CommdityWhiteListStr);
         	logger.info("loading business runtime configuration successfully!");  
         }  
     }  
@@ -286,6 +289,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String BatchImport_Sub_Output_Dir = "output/";
 	
 	public static final List<String> SystemNoneedCaptchaValidAccs = new ArrayList<String>(); 
+	public static final List<String> CommdityWhiteListAccs = new ArrayList<String>();
 	public static final String  DefaultCaptchaCode = "123456";
 	public static final List<Integer> SystemTestUsers = new ArrayList<Integer>();
 	
@@ -416,11 +420,14 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static int SharedNetworksTemplateMaxLimit = 50;
 	
+	public static final int Reward_Internet_Commdity_ID = 1;
+	public static final int Reward_Monthly_Internet_Commdity_ID = 16;
+	
 	public static String UserPortalUpdate2UPortalApi = "http://ucloud.bhuwifi.com:9158/portal/set/recreate";
 	public static String UserPortalChargingNotify2UPortalApi = "http://ucloud.bhuwifi.com:9158/common/api/save-status";
 	public static String OpsImportCallbackApi = "http://ops.bhuwifi.com/api/unicorn/device-out-confirm";
 	public static String OpsImportCallbackToken = "MzZhMWIzMDdiYjIyOGI5NzllZTM2M2FlZTc0NGIyOTA=";
-	
+	public static String CommdityWhiteListStr = "";
 	/**
 	 * 判断是否是console用户
 	 * @param uid
@@ -443,5 +450,15 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static boolean isInitialDeviceFirmwareVersion(String orig_swver){
 		return Device_Firmware_Initial_Versions.contains(orig_swver);
+	}
+	
+	public static boolean isCommdityWhileList(String userAcc){
+		for(String acc: CommdityWhiteListAccs){
+			if (acc.equals(userAcc)){
+				return true;
+			}
+		}
+		return false;
+		
 	}
 }
