@@ -7,6 +7,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSVTO;
 import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
+import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
@@ -57,4 +58,10 @@ public interface IOrderRpcService {
 
 	public RpcResponseDTO<RewardCreateMonthlyServiceVTO> rewardCreateMonthlyService(Integer commdityid, String mac, String umac,
 			String context, Integer umactype, Integer channel, String user_agent, String uname, String acc, String address, int count);
+
+	public RpcResponseDTO<OrderWhiteListVTO> createWhiteListOrder(Integer commdityid, String mac, String umac,
+			Integer umactype, String context, String user_agent, Integer channel);
+
+	public RpcResponseDTO<Boolean> commdity_check_user_in_whiteList(String mac, String umac, String acc, String context,
+			Integer umactype, Integer commdityid, String user_agent, Integer channel);
 }

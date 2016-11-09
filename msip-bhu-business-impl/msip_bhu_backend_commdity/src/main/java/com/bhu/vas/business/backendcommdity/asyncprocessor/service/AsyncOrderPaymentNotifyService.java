@@ -126,6 +126,9 @@ public class AsyncOrderPaymentNotifyService{
 				case AdvertiseNotify:
 					orderVideoNotifyCompletedHandle(messageNoPrefix);
 					break;
+				case WhiteListNotify:
+					orderWhiteListNotifyCompletedHandle(messageNoPrefix);
+					break;
 				default:
 					throw new RuntimeException(String.format("PaymentNotifyType unsupport message[%s]", message));
 			}
@@ -137,6 +140,7 @@ public class AsyncOrderPaymentNotifyService{
 		}
 	}
 	
+
 	/**
 	 * 订单通过支付系统通知
 	 * @param message
@@ -218,9 +222,44 @@ public class AsyncOrderPaymentNotifyService{
 		}
 		String accessInternetTime = null;
 		//根据商品id判断是打赏还是购买实体商品
-		if (CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardInternetLimit)){
+		if (CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
 			
-			accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+			accessInternetTime = commdity.getApp_deliver_detail();
+			order = orderFacadeService.CommdityPhysicalOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
+						payment_type, payment_proxy_type, accessInternetTime);
+					
+				//判断订单状态为支付成功或发货成功
+			Integer order_status = order.getStatus();
+			if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
+				//由于生产环境打赏用户数目较多,做除以100处理
+				String user = RewardOrderFinishCountStringService.getInstance().getRecent7daysValue();
+				String ucount = null;
+				int userInt = 0;
+				if(user.isEmpty() || user == null){
+					ucount = user;
+				}else{
+					userInt = Integer.parseInt(user);
+					if (userInt <= 100)
+						ucount = user;
+					else
+						ucount = userInt/100 + "";
+				}
+				String acc = commdityPhysicalService.getById(order.getUmac()).getInnerModel().getAcc();
+				String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
+						ucount);
+				String response_snk_stop = SmsSenderFactory.buildSender(
+						BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
+				logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",acc,smsg_snk_stop,response_snk_stop));
+			}else{
+				logger.info(String.format("PayFailed or DeliverFailed orderid[%s]",order.getId()));
+			}
+		}
+		else{
+			if (!(commdity.getApp_deliver_detail().isEmpty())){
+				accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+			}else{
+				accessInternetTime = commdity.getApp_deliver_detail();
+			}
 			
 			order = orderFacadeService.rewardOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
 					payment_type, payment_proxy_type, accessInternetTime);
@@ -288,37 +327,6 @@ public class AsyncOrderPaymentNotifyService{
 						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
 								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
 				//}
-			}
-		}else if (CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
-				
-			accessInternetTime = commdity.getApp_deliver_detail();
-			order = orderFacadeService.CommdityPhysicalOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
-						payment_type, payment_proxy_type, accessInternetTime);
-					
-				//判断订单状态为支付成功或发货成功
-			Integer order_status = order.getStatus();
-			if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
-				//由于生产环境打赏用户数目较多,做除以100处理
-				String user = RewardOrderFinishCountStringService.getInstance().getRecent7daysValue();
-				String ucount = null;
-				int userInt = 0;
-				if(user.isEmpty() || user == null){
-					ucount = user;
-				}else{
-					userInt = Integer.parseInt(user);
-					if (userInt <= 100)
-						ucount = user;
-					else
-						ucount = userInt/100 + "";
-				}
-				String acc = commdityPhysicalService.getById(order.getUmac()).getInnerModel().getAcc();
-				String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
-						ucount);
-				String response_snk_stop = SmsSenderFactory.buildSender(
-						BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
-				logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",acc,smsg_snk_stop,response_snk_stop));
-			}else{
-				logger.info(String.format("PayFailed or DeliverFailed orderid[%s]",order.getId()));
 			}
 		}
 	}
@@ -490,5 +498,25 @@ public class AsyncOrderPaymentNotifyService{
 		}
 		String accessInternetTime = chargingFacadeService.fetchFreeAccessInternetTime(order.getMac(), order.getUmactype());
 		orderFacadeService.videoOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
+	}
+	
+	/**
+	 * 白名单上网通过通知
+	 * @param message
+	 */
+	public void orderWhiteListNotifyCompletedHandle(String message){
+		ResponseVideoValidateCompletedNotifyDTO videov_dto = PaymentNotifyFactoryBuilder.fromJson(message, ResponseVideoValidateCompletedNotifyDTO.class);
+		String orderid = videov_dto.getOrderid();
+		boolean success = videov_dto.isSuccess();
+		Date paymented_ds = videov_dto.getPaymented_ds();
+		
+		//订单处理逻辑 
+		Order order = orderFacadeService.validateOrderId(orderid);
+		User bindUser = null;
+		if(order.getUid() != null){
+			bindUser = userService.getById(order.getUid());
+		}
+		String accessInternetTime = chargingFacadeService.fetchFreeAccessInternetTime(order.getMac(), order.getUmactype());
+		orderFacadeService.whiteListOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
 	}
 }

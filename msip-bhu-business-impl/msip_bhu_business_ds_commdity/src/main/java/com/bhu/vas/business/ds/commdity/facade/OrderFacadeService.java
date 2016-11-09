@@ -15,10 +15,12 @@ import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSPromotionDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseWhiteListValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.PhysicalPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.VideoPermissionThroughNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.WhiteListPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.procedure.DeviceOrderStatisticsProduceDTO;
 import com.bhu.vas.api.dto.procedure.RewardOrderNewlyDataProcedureDTO;
 import com.bhu.vas.api.dto.procedure.RewardOrderStatisticsProcedureDTO;
@@ -234,7 +236,7 @@ public class OrderFacadeService {
 	
 
 	/*************            打赏             ****************/
-
+	
 	
 	/**
 	 * 生成打赏订单
@@ -525,6 +527,8 @@ public class OrderFacadeService {
 	/*************            短信认证             ****************/
 	
 	public static final int SMS_VALIDATE_COMMDITY_ID = 9;
+	
+
 	/**
 	 * 生成短信认证订单
 	 * @param mac 设备mac
@@ -1043,6 +1047,158 @@ public class OrderFacadeService {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error("commdityPhysicalOrderPermissionNotify exception", ex);
+		}
+		return false;
+	}
+	
+	/**
+	 * 生成白名单认证订单
+	 * @param mac 设备mac
+	 * @param umac 用户终端mac
+	 * @param umactype 用户终端类型
+	 * @param bindUser
+	 * @param context 验证的手机号
+	 * @return
+	 */
+	public Order createWhiteListOrder(Integer commdityid, String mac, String mac_dut, String umac, Integer umactype, User bindUser,
+			String context, String user_agent){
+		//商品信息验证
+		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+		//验证商品是否合理
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.WhileListLimit)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
+		}
+		
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdity.getId());
+		order.setAppid(CommdityApplication.DEFAULT.getKey());
+		order.setType(commdity.getCategory());
+		order.setStatus(OrderStatus.PaySuccessed.getKey());
+		order.setProcess_status(OrderProcessStatus.PaySuccessed.getKey());
+		order.setMac(mac);
+		order.setMac_dut(mac_dut);
+		order.setUmac(umac);
+		order.setUmactype(umactype);
+		if(bindUser != null){
+			order.setUid(bindUser.getId());
+		}
+		order.setContext(context);
+		order.setUser_agent(user_agent);
+		order.setPaymented_at(new Date());
+		orderService.insert(order);
+		
+		//白名单订单生成时候已经验证通过 直接进行放行数据通知
+		String notify_message = PaymentNotifyFactoryBuilder.toJsonHasPrefix(ResponseWhiteListValidateCompletedNotifyDTO.
+				builder(order));
+		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+		return order;
+	}
+	
+	/*************            打赏包月             ****************/
+	
+	/**
+	 * 生成打赏包月订单
+	 * @param commdity 商品实体
+	 * @param appid 应用id
+	 * @param bindUser 
+	 * @param mac 设备mac
+	 * @param mac_dut 设备业务线
+	 * @param umac 用户mac
+	 * @param umactype 终端类型
+	 * @param payment_type 支付方式
+	 * @param context 业务上下文
+	 * @param user_agent 
+	 * @return
+	 */
+	public Order createRewardMonthlyInternetOrder(Integer commdityid, Integer appid, User bindUser, String mac, 
+			String mac_dut, String umac, Integer umactype, String payment_type, String context, String user_agent,
+			Integer channel){
+		//商品信息验证
+		//验证商品是否合法
+		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+		//验证商品是否合理
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyInternetLimit)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
+		}
+		
+		
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdityid);
+		order.setAppid(appid);
+		if(bindUser != null){
+			order.setUid(bindUser.getId());
+		}
+		order.setChannel(channel);
+		order.setMac(mac);
+		order.setMac_dut(mac_dut);
+		order.setUmac(umac);
+		order.setUmactype(umactype);
+		order.setType(commdity.getCategory());
+		order.setPayment_type(payment_type);
+		order.setContext(context);
+		order.setUser_agent(user_agent);
+		order.setStatus(OrderStatus.NotPay.getKey());
+		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
+		order.setAmount(commdity.getPrice());
+		orderService.insert(order);
+		return order;
+	}
+	
+	public Order whiteListOrderPaymentCompletedNotify(boolean success, Order order, User bindUser, Date paymented_ds,
+			String ait_time){
+		Integer changed_status = null;
+		Integer changed_process_status = null;
+		try{
+			String orderid = order.getId();
+			order.setPaymented_at(paymented_ds);
+
+			//支付成功
+			if(success){
+				logger.info(String.format("whiteListOrderPaymentCompletedNotify prepare deliver notify: orderid[%s]", orderid));
+				//进行发货通知
+				boolean deliver_notify_ret = whiteListOrderPermissionNotify(order, bindUser, ait_time);
+				//判断通知发货成功 更新订单状态
+				if(deliver_notify_ret){
+					changed_status = OrderStatus.DeliverCompleted.getKey();
+					changed_process_status = OrderProcessStatus.SharedealCompleted.getKey();
+					logger.info(String.format("whiteListOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+				}else{
+					logger.info(String.format("whiteListOrderPaymentCompletedNotify failed deliver notify: orderid[%s]", orderid));
+				}
+			}else{
+				changed_status = OrderStatus.PayFailured.getKey();
+				changed_process_status = OrderProcessStatus.PayFailured.getKey();
+			}
+		}catch(Exception ex){
+			throw ex; 
+		}finally{
+			orderStatusChanged(order, changed_status, changed_process_status);
+		}
+		return order;
+	}
+	
+	public boolean whiteListOrderPermissionNotify(Order order, User bindUser, String ait_time){
+		try{
+			if(order == null) {
+				logger.error("whiteListOrderPermissionNotify order data not exist");
+				return false;
+			}
+			
+			WhiteListPermissionThroughNotifyDTO whiteListPermissionNotifyDto = WhiteListPermissionThroughNotifyDTO.from(order, ait_time, bindUser);
+			if(whiteListPermissionNotifyDto != null){
+				String whiteListPermissionNotifyMessage = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(whiteListPermissionNotifyDto);
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(whiteListPermissionNotifyMessage);
+				//判断通知发货成功
+				if(notify_ret != null && notify_ret > 0){
+					logger.info(String.format("whiteListPermissionNotifyMessage success deliver notify: message[%s] rpush_ret[%s]", whiteListPermissionNotifyMessage, notify_ret));
+					return true;
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error("whiteListPermissionNotifyMessage exception", ex);
 		}
 		return false;
 	}

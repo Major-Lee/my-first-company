@@ -5,14 +5,19 @@ import java.util.Date;
 import com.bhu.vas.api.helper.PaymentNotifyType;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 
+
+/**
+ * 短信验证完成的消息DTO
+ * @author tangzichao
+ *
+ */
 @SuppressWarnings("serial")
-public class ResponseVideoValidateCompletedNotifyDTO extends ResponsePaymentDTO implements ResponsePaymentNotifyTypeDTO{
-	
+public class ResponseWhiteListValidateCompletedNotifyDTO extends ResponsePaymentDTO implements ResponsePaymentNotifyTypeDTO{
 	//订单id
 	private String orderid;
 	//订单支付成功时间 
 	private Date paymented_ds;
-		
+	
 	public String getOrderid() {
 		return orderid;
 	}
@@ -25,6 +30,7 @@ public class ResponseVideoValidateCompletedNotifyDTO extends ResponsePaymentDTO 
 	public void setPaymented_ds(Date paymented_ds) {
 		this.paymented_ds = paymented_ds;
 	}
+	
 	public static ResponseWhiteListValidateCompletedNotifyDTO builder(Order order){
 		if(order == null) return null;
 		ResponseWhiteListValidateCompletedNotifyDTO dto = new ResponseWhiteListValidateCompletedNotifyDTO();
@@ -35,8 +41,7 @@ public class ResponseVideoValidateCompletedNotifyDTO extends ResponsePaymentDTO 
 	}
 	@Override
 	public String getPaymentNotifyType() {
-		
 		return PaymentNotifyType.WhiteListNotify.getPrefix();
 	}
-
 }
+

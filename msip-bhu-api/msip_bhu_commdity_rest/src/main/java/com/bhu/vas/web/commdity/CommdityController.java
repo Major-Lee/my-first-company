@@ -13,8 +13,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
+import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
+import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
+import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
+import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
+import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
+import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -27,6 +33,12 @@ public class CommdityController extends BaseController{
 	
 	@Resource
 	private ICommdityRpcService commdityRpcService;
+	
+	@Resource
+	private IUserCaptchaCodeRpcService userCaptchaCodeRpcService;
+	
+	@Resource
+	private IOrderRpcService orderRpcService;
 	
 	/**
 	 * 针对商品的区间价格 生成随机金额
@@ -119,4 +131,111 @@ public class CommdityController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
+	
+	/**
+	 * 请求获取验证码接口
+	 * @param response
+	 * @param countrycode
+	 * @param acc
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/fetch_captcha",method={RequestMethod.POST})
+	public void fetch_captcha(
+			HttpServletResponse response,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = false,defaultValue="R") String act
+			) {
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		
+		RpcResponseDTO<UserCaptchaCodeDTO> rpcResult = userCaptchaCodeRpcService.fetchCaptchaCode(countrycode, acc,act);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+
+	
+	@ResponseBody()
+	@RequestMapping(value="/identity_auth",method={RequestMethod.POST})
+	public void commdity_check_identity(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) String umac,
+			@RequestParam(required = false) String context,
+			@RequestParam(required = false, defaultValue = "2") Integer umactype,
+			@RequestParam(required = false, defaultValue = "15") Integer commdityid,
+			@RequestParam(required = false, defaultValue = "0") Integer channel
+			) {
+		
+		RpcResponseDTO<UserIdentityAuth> rpcResult = userCaptchaCodeRpcService.validateIdentity(umac.toLowerCase());
+		if(!rpcResult.hasError()){
+			if(rpcResult.getPayload().isInWhiteList()){
+				String user_agent = request.getHeader("User-Agent");
+				RpcResponseDTO<OrderWhiteListVTO> orderResult = orderRpcService.createWhiteListOrder(commdityid, mac, umac, umactype, 
+						context, user_agent, channel);
+				if (orderResult.hasError()){
+					SpringMVCHelper.renderJson(response, ResponseError.embed(orderResult));
+				}
+			}
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/validate_captcha",method={RequestMethod.POST})
+	public void validate_code(
+			HttpServletResponse response,
+			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = true) String hdmac,
+			@RequestParam(required = true) String captcha
+			) {
+		
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		
+		RpcResponseDTO<Boolean> rpcResult = userCaptchaCodeRpcService.validateIdentityCode(countrycode, acc, hdmac, captcha);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/check_user_in_whitelist",method={RequestMethod.POST})
+	public void commdity_check_user_in_whiteList(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) String umac,
+			@RequestParam(required = true) String acc,
+			@RequestParam(required = false) String context,
+			@RequestParam(required = false, defaultValue = "2") Integer umactype,
+			@RequestParam(required = false, defaultValue = "15") Integer commdityid,
+			@RequestParam(required = false, defaultValue = "0") Integer channel
+			) {
+		String user_agent = request.getHeader("User-Agent");
+		RpcResponseDTO<Boolean> rpcResult = orderRpcService.commdity_check_user_in_whiteList(mac, umac, acc, context, umactype, commdityid, user_agent,channel);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+
+
 }

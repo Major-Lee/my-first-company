@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.business.ds.user.dao.UserIdentityAuthDao;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.service.EntityService;
@@ -60,6 +61,8 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 			UserIdentityAuth auth = this.getById(hdmac);
 			
 			if (auth != null) {
+				String acc = auth.getMobileno().substring(3);
+				auth.setInWhiteList(BusinessRuntimeConfiguration.isCommdityWhileList(acc));
 				return auth;
 			}else{
 				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_NOT_EXIST);

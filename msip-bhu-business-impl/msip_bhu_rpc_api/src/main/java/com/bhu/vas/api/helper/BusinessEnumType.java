@@ -565,6 +565,8 @@ public class BusinessEnumType {
 		VideoInternetLimit(6,"视频认证上网","视频认证上网"),
 		SMSPromotionLimit(7,"短信营销商品","短信营销商品"),
 		RewardMonthlyServiceLimit(8,"上网时长包月商品","上网时长包月商品"),
+		WhileListLimit(20,"白名单免费上网","白名单免费上网"),
+		RewardMonthlyInternetLimit(1,"打赏认证包月商品","打赏认证包月商品"),
 		RewardInternetLimit(0,"打赏上网","打赏上网"),
 		;
 		private Integer category;
