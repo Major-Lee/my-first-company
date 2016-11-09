@@ -255,10 +255,10 @@ public class AsyncOrderPaymentNotifyService{
 			}
 		}
 		else{
-			if (!(commdity.getApp_deliver_detail().isEmpty())){
-				accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
-			}else{
+			if (!commdity.getApp_deliver_detail().isEmpty()){
 				accessInternetTime = commdity.getApp_deliver_detail();
+			}else{
+				accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
 			}
 			
 			order = orderFacadeService.rewardOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
