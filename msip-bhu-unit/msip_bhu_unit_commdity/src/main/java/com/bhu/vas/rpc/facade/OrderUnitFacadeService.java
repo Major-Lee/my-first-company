@@ -972,7 +972,7 @@ public class OrderUnitFacadeService {
 	public RpcResponseDTO<Boolean> check_user_in_whiteList(String mac, String umac, String acc, String context,
 			Integer umactype, Integer commdityid, String user_agent, Integer channel) {
 		try{
-			if (!BusinessRuntimeConfiguration.isCommdityWhileList(acc)){
+			if (!BusinessRuntimeConfiguration.isCommdityWhiteList(acc)){
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.FALSE);
 			}else{
 				//验证mac umac

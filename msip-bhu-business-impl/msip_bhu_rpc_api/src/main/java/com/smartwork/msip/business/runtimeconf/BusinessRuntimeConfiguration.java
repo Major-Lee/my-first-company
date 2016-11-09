@@ -452,7 +452,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 		return Device_Firmware_Initial_Versions.contains(orig_swver);
 	}
 	
-	public static boolean isCommdityWhileList(String userAcc){
+	public static boolean isCommdityWhiteList(String userAcc){
 		for(String acc: CommdityWhiteListAccs){
 			if (acc.equals(userAcc)){
 				return true;
