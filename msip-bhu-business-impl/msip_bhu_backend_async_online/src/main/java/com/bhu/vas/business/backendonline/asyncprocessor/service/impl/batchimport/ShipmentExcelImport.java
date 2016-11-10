@@ -31,7 +31,8 @@ public class ShipmentExcelImport {
 		SNFields.add("CISN");
 	}*/
 	
-	public static void excelImport(String fileinputpath,String fileoutpath,ImportElementCallback callback){
+	public static boolean excelImport(String fileinputpath,String fileoutpath,ImportElementCallback callback){
+		boolean result = false;
 		System.out.println("input file:"+fileinputpath);
 		System.out.println("output file:"+fileoutpath);
         InputStream is = null;
@@ -86,9 +87,11 @@ public class ShipmentExcelImport {
 	         wb.write(fileOut);
 	         fileOut.close();
 	         callback.afterExcelImported(devices, null);
+	         result = true;
 		}catch(Exception ex){
 			System.out.println("~~~~~~~~~~~~~~~~~~~~exception");
 			ex.printStackTrace(System.out);
+			result = false;
 		}finally{
             if(is != null){
                 try {
@@ -99,6 +102,7 @@ public class ShipmentExcelImport {
                 is = null;
             }
 		}
+		return result;
 	}
 	
 	public static int excelPreCheck(String fileinputpath,String fileoutpath,ImportElementCallback callback){

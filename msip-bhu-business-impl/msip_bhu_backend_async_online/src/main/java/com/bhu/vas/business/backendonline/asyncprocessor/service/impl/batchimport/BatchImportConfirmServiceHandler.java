@@ -182,8 +182,6 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 											userWifiDeviceService.delete(userWifiDevice);
 											userWifiDeviceFacadeService.insertUserWifiDevice(dmac, uid_willbinded.intValue());
 								            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
-											// 更新索引
-											wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(dmac, user_willbinded, null, null);
 											group_macs.add(dmac);
 										}else{
 											//已经此用户绑定，不动作
@@ -195,8 +193,6 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							            userDeviceFacadeService.getUserDeviceService().insert(userDevice);*/
 										userWifiDeviceFacadeService.insertUserWifiDevice(dmac, uid_willbinded.intValue());
 							            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
-										// 更新索引
-										wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(dmac, user_willbinded, null, null);
 									}
 									
 									chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, importVto.getDistributor(), importVto.getDistributor_type(),
@@ -303,26 +299,21 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 				}
 			};
 			
+			boolean result = false;
 			if(StringUtils.isEmpty(batchImport.getOpsid()))
-				ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), cb);
+				result = ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), cb);
 			else
-				ShipmentStringImport.stringImport(importVto.toAbsoluteFileInputPath(), importVto.toAbsoluteFileOutputPath(), cb);
+				result = ShipmentStringImport.stringImport(importVto.toAbsoluteFileInputPath(), importVto.toAbsoluteFileOutputPath(), cb);
 				
-			batchImport.setSucceed(atomic_successed.get());
-			batchImport.setFailed(atomic_failed.get());
-			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_IMPORTED);
-			/*WifiDeviceSharedealConfigs configs = chargingFacadeService.getWifiDeviceSharedealConfigsService().getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
-			if(importVto.isCustomized()){
-				batchImport.setAccess_internet_time(configs.getAit_pc());
-				batchImport.setOwner_percent(String.valueOf(configs.getOwner_percent()));
-				batchImport.setRange_cash_mobile(configs.getRange_cash_mobile());
-				batchImport.setRange_cash_pc(configs.getRange_cash_pc());
-			}*/
-			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
-
+			if(result){
+				batchImport.setSucceed(atomic_successed.get());
+				batchImport.setFailed(atomic_failed.get());
+				batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_IMPORTED);
+				chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
+				logger.info(String.format("process message[%s] successful", message));
+			}
 		}finally{
 		}
-		logger.info(String.format("process message[%s] successful", message));
 	}
 	
 /*	*//**
