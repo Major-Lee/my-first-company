@@ -11,6 +11,7 @@ import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
+import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -64,4 +65,9 @@ public interface IOrderRpcService {
 
 	public RpcResponseDTO<Boolean> commdity_check_user_in_whiteList(String mac, String umac, String acc, String context,
 			Integer umactype, Integer commdityid, String user_agent, Integer channel);
+
+	public RpcResponseDTO<UserValidateCaptchaDTO> validate_code_check_authorize(String mac, String umac,
+			int countrycode, String acc, String captcha, String context, Integer umactype, Integer commdityid,
+			Integer channel, String user_agent);
+
 }

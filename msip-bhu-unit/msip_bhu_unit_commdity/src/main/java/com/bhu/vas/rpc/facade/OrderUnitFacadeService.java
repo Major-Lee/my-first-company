@@ -32,6 +32,7 @@ import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
+import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseVideoValidateCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
@@ -63,6 +64,7 @@ import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
+import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
@@ -71,6 +73,7 @@ import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
+import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -117,6 +120,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
+	
+	@Resource
+	private UserCaptchaCodeService userCaptchaCodeService;
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -1000,6 +1006,47 @@ public class OrderUnitFacadeService {
 			
 		}catch(Exception ex){
 			logger.error("check_user_in_whiteList Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<UserValidateCaptchaDTO> validate_code_check_authorize(String mac, String umac,
+			int countrycode, String acc, String captcha, String context, Integer umactype, Integer commdityid,
+			Integer channel, String user_agent) {
+		try{
+			UserValidateCaptchaDTO dto = new UserValidateCaptchaDTO();
+			String accWithContryCode = PhoneHelper.format(countrycode, acc);
+			ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithContryCode, captcha);
+			if (errorCode == null){
+				dto.setValidate_captcha(true);
+			}
+			//是否在白名单中
+			dto.setAuthorize(BusinessRuntimeConfiguration.isCommdityWhiteList(acc));
+			if(dto.isAuthorize()){
+				//验证mac umac
+				if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+				}
+				if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+				}
+				String mac_lower = mac.toLowerCase();
+				String umac_lower = umac.toLowerCase();
+				//检查设备是否接入过
+				WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
+				if(wifiDevice == null){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+				}
+				User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
+				//生成订单
+				String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
+				Order order = orderFacadeService.createWhiteListOrder(commdityid, mac_lower, mac_dut, umac_lower, 
+						umactype, bindUser, context, user_agent);
+				logger.info(String.format("validate_code_check_authorize create order[%s]",order.getId()));
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
+		}catch(Exception ex){
+			logger.error("validate_code_check_authorize Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
