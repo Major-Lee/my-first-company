@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.DistributorType;
 import com.bhu.vas.api.dto.DownCmds;
 import com.bhu.vas.api.dto.WifiDeviceDTO;
 import com.bhu.vas.api.dto.baidumap.GeoPoiExtensionDTO;
@@ -986,6 +987,7 @@ public class AsyncMsgHandleService {
 		// if(cmdPayloads == null) cmdPayloads = new ArrayList<String>();
 		String mac = dto.getMac();
 		WifiDeviceSetting entity = wifiDeviceSettingService.getById(mac);
+		WifiDeviceDocument wifiDeviceDoc = wifiDeviceDataSearchService.searchById(mac);
 		int status = dto.getRefresh_status();
 		// 只有urouter设备才会执行
 		// 配置状态如果为恢复出厂 则清空设备的相关业务数据,只限于家用 TU uRouter
@@ -1053,14 +1055,18 @@ public class AsyncMsgHandleService {
 				 * getOrig_swver())){
 				 * addDevices2SharedNetwork(-1,dto.getMac(),cmdPayloads); } }
 				 */
-				closeDevices2SharedNetworksWhenDeviceReset(dto.getMac());
-				addDevices2SharedNetwork(-1, dto.getMac());
+				
+				//非城市运营商设备才会去修改默认网络
+				if (wifiDeviceDoc != null && !DistributorType.City.getType().equals(wifiDeviceDoc.getD_distributor_type())) {
+					closeDevices2SharedNetworksWhenDeviceReset(dto.getMac());
+					addDevices2SharedNetwork(-1, dto.getMac());
+				}
 			}
 			
 			UserWifiDevice userWifiDevice = userWifiDeviceService.getById(mac);
 			if(userWifiDevice != null){
-						userWifiDevice.setDevice_name_modifyed(false);
-						userWifiDeviceService.update(userWifiDevice);
+				userWifiDevice.setDevice_name_modifyed(false);
+				userWifiDeviceService.update(userWifiDevice);
 			}
 			
 		} else {
@@ -1075,7 +1081,6 @@ public class AsyncMsgHandleService {
 				WifiDeviceSettingSyskeyDTO syskey_dto = setting_dto.getSyskey();
 				// 只有绑定配置是成功状态的才检测数据同步，如果不是成功状态，设备会主动上报来检测，避免重复
 				if (syskey_dto != null && syskey_dto.isSuccessedStatus()) {
-					WifiDeviceDocument wifiDeviceDoc = wifiDeviceDataSearchService.searchById(mac);
 					if (wifiDeviceDoc != null) {
 						WifiDeviceSettingSyskeyDTO syskey_current_dto = DeviceHelper
 								.builderDeviceSettingSyskeyDTO(wifiDeviceDoc.getU_mno(), wifiDeviceDoc.getD_industry());
