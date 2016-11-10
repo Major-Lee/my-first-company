@@ -16,19 +16,19 @@ import com.smartwork.msip.cores.helper.StringHelper;
 
 public class ShipmentStringImport {
 	
-	public static void stringImport(String fileinputpath, String fileoutpath, ImportElementCallback callback){
-		System.out.println("input file:"+fileinputpath);
+	public static boolean stringImport(String fileinputpath, String fileoutpath, ImportElementCallback callback){
+		System.out.println(Thread.currentThread().getId() + ":input file:"+fileinputpath);
 		String snsstr = null;
 		try {
 			snsstr = FileUtils.readFileToString(new File(fileinputpath));
 		} catch (IOException e) {
-			System.out.println(String.format("文件[%s]打开失败", fileinputpath));
+			System.out.println(String.format(Thread.currentThread().getId() + ":文件[%s]打开失败", fileinputpath));
 			e.printStackTrace();
-			return;
+			return false;
 		}
 		if(StringUtils.isEmpty(snsstr)){
-			System.out.println("input file:"+fileinputpath);
-			return;
+			System.out.println(Thread.currentThread().getId() + ":input file:"+fileinputpath);
+			return false;
 		}
 		String[] sns = snsstr.split(StringHelper.COMMA_STRING_GAP);
 		
@@ -36,7 +36,7 @@ public class ShipmentStringImport {
         Set<String> failed_sn = new HashSet<String>();
         StringBuilder sb = new StringBuilder();
 		try{
-	         System.out.println(String.format("sns size ===" + sns.length));
+	         System.out.println(String.format(Thread.currentThread().getId() + ":sns size ===" + sns.length));
 	         for (String sn:sns){
         		if(StringUtils.isNotEmpty(sn) && StringUtils.isNotEmpty(sn.trim())){
 	        		System.out.println("sn:" + sn);
@@ -45,10 +45,11 @@ public class ShipmentStringImport {
         			if(dcDTO == null){
         				failed_sn.add(sn);
         				sb.append(sn);
-        		        System.out.println(String.format("[%s] 不存在", sn));
+        		        System.out.println(String.format(Thread.currentThread().getId() + ":[%s] 不存在", sn));
         			}else{
         				devices.add(dcDTO.getMac());
         				sb.append(String.format("%s %s", sn, dcDTO.getMac()));
+            			System.out.println(Thread.currentThread().getId() + ":sn -> " + dcDTO.getMac());
         			}
     				sb.append("\n");
         		}
@@ -60,10 +61,11 @@ public class ShipmentStringImport {
 				 targetFile.getParentFile().mkdirs();
 	        	 FileHelper.StrToFile(foutstr, fileoutpath);
 	         }
-
+	         return true;
 		}catch(Exception ex){
-			System.out.println("~~~~~~~~~~~~~~~~~~~~exception");
+			System.out.println(Thread.currentThread().getId() + ":~~~~~~~~~~~~~~~~~~~~exception");
 			ex.printStackTrace(System.out);
+			return false;
 		}
 	}
 

@@ -124,6 +124,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 
 				@Override
 				public void afterExcelImported(Set<String> dmacs, Set<String> failed_sns) {
+					System.out.println(Thread.currentThread().getId() + ":func afterExcelImported");
 					if(!dmacs.isEmpty()){
 						List<String> all_dmacs = new ArrayList<String>(dmacs);
 						int total = all_dmacs.size();
@@ -143,10 +144,13 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							}
 							wifiDeviceService.updateAll(wifiDevices);
 	
+							System.out.println(Thread.currentThread().getId() + ":user_willbined:" + user_willbinded);
 							if(user_willbinded != null){
 								//userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);
 								List<String> group_macs = new ArrayList<String>();
 								for(String dmac:pages){
+									System.out.println(Thread.currentThread().getId() + ": mac " + dmac);
+
 									//UserDevicePK udp = userDeviceFacadeService.deviceBinded(dmac);
 									UserWifiDevice userWifiDevice = userWifiDeviceService.getById(dmac);
 									//if(udp != null){
@@ -157,8 +161,6 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 											userWifiDeviceService.delete(userWifiDevice);
 											userWifiDeviceFacadeService.insertUserWifiDevice(dmac, uid_willbinded.intValue());
 								            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
-											// 更新索引
-											wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(dmac, user_willbinded, null, null);
 											group_macs.add(dmac);
 										}else{
 											//已经此用户绑定，不动作
@@ -170,10 +172,9 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							            userDeviceFacadeService.getUserDeviceService().insert(userDevice);*/
 										userWifiDeviceFacadeService.insertUserWifiDevice(dmac, uid_willbinded.intValue());
 							            deviceFacadeService.gainDeviceMobilePresentString(uid_willbinded,dmac);
-										// 更新索引
-										wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(dmac, user_willbinded, null, null);
 									}
 									
+									System.out.println(Thread.currentThread().getId() + ": update sharedealconfigs1 ");
 									chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno,uid_willbinded, importVto.getDistributor(), importVto.getDistributor_type(),
 											dmac, 
 											importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
@@ -181,9 +182,11 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 											importVto.getOwner_percent(), importVto.getManufacturer_percent(),importVto.getDistributor_percent(),
 						        			//importVto.getRcm(), importVto.getRcp(), importVto.getAit(), 
 						        			false);
+									System.out.println(Thread.currentThread().getId() + ": store device batch detail");
 						        	chargingFacadeService.getWifiDeviceBatchDetailService().deviceStore(dmac, importVto.getSellor(), importVto.getPartner(), importVto.getImportor(), batchno);
 								}
 	
+								System.out.println(Thread.currentThread().getId() + ": checking group releation");
 								//清除分组关系
 								if(!group_macs.isEmpty()){
 									for(String gmac:group_macs){
@@ -257,6 +260,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 								
 							}
 							
+							System.out.println(Thread.currentThread().getId() + ": rebuild index ");
 							try {
 								RewardOrderAmountHashService.getInstance().removeAllRAmountByMacs(pages.toArray(new String[0]));
 								backendBusinessService.blukIndexs(pages);
@@ -270,7 +274,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							}
 						}
 					}
-					
+					System.out.println(Thread.currentThread().getId() + ":checking call back to ops");
 					if(!StringUtils.isEmpty(importVto.getOpsid())){
 						//运营商系统的导入，需要回调通知
 						OpsHttpHelper.opsImportCallBackNotify(importVto.getOpsid(), StringHelper.toString(failed_sns.toArray(), StringHelper.COMMA_STRING_GAP));
@@ -278,26 +282,24 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 				}
 			};
 			
+			boolean result = false;
+System.out.println(Thread.currentThread().getId() + ":-------------before-call import------");			
 			if(StringUtils.isEmpty(batchImport.getOpsid()))
-				ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), cb);
+				result = ShipmentExcelImport.excelImport(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), cb);
 			else
-				ShipmentStringImport.stringImport(importVto.toAbsoluteFileInputPath(), importVto.toAbsoluteFileOutputPath(), cb);
-				
-			batchImport.setSucceed(atomic_successed.get());
-			batchImport.setFailed(atomic_failed.get());
-			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_IMPORTED);
-			/*WifiDeviceSharedealConfigs configs = chargingFacadeService.getWifiDeviceSharedealConfigsService().getById(WifiDeviceSharedealConfigs.Default_ConfigsWifiID);
-			if(importVto.isCustomized()){
-				batchImport.setAccess_internet_time(configs.getAit_pc());
-				batchImport.setOwner_percent(String.valueOf(configs.getOwner_percent()));
-				batchImport.setRange_cash_mobile(configs.getRange_cash_mobile());
-				batchImport.setRange_cash_pc(configs.getRange_cash_pc());
-			}*/
-			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
+				result = ShipmentStringImport.stringImport(importVto.toAbsoluteFileInputPath(), importVto.toAbsoluteFileOutputPath(), cb);
 
+System.out.println(Thread.currentThread().getId() + ":-------------after-call import----result:[" + result + "]--");			
+
+			if(result){
+				batchImport.setSucceed(atomic_successed.get());
+				batchImport.setFailed(atomic_failed.get());
+				batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_IMPORTED);
+				chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
+				logger.info(String.format("process message[%s] successful", message));
+			}
 		}finally{
 		}
-		logger.info(String.format("process message[%s] successful", message));
 	}
 	
 /*	*//**
