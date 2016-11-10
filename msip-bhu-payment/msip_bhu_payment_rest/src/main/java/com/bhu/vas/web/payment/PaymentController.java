@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,12 +39,14 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.payment.model.PaymentAlipaylocation;
 import com.bhu.vas.api.rpc.payment.model.PaymentOutimeErrorLog;
+import com.bhu.vas.api.rpc.payment.model.PaymentParameter;
 import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
 import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
 import com.bhu.vas.api.rpc.payment.vto.PaymentReckoningVTO;
 import com.bhu.vas.api.vto.payment.PaymentTypeVTO;
 import com.bhu.vas.business.ds.payment.service.PaymentAlipaylocationService;
 import com.bhu.vas.business.ds.payment.service.PaymentOutimeErrorLogService;
+import com.bhu.vas.business.ds.payment.service.PaymentParameterService;
 import com.bhu.vas.business.ds.payment.service.PaymentReckoningService;
 import com.bhu.vas.business.ds.payment.service.PaymentWithdrawService;
 import com.bhu.vas.business.helper.BusinessHelper;
@@ -89,7 +92,28 @@ import com.smartwork.msip.localunit.RandomPicker;
 @Controller
 public class PaymentController extends BaseController{
 	private final Logger logger = LoggerFactory.getLogger(PaymentController.class);
-	
+	private int weixinWithdrawWarningCount;
+    private String weixinWithdrawWarningTime = "";
+    private String weixinWithdrawErrorTime = "";    
+    private int weixinNativeWarningCount;
+    private String weixinNativeWarningTime = "";
+    private String weixinNativeErrorTime = "";	
+    private int weixinAppWarningCount;
+    private String weixinAppWarningTime = "";
+    private String weixinAppErrorTime = "";    
+    private int midasWarningCount;
+    private String midasWarningTime = "";
+    private String midasErrorTime = "";    
+    private int alipayWarningCount;
+	private String alipayWarningTime = "";
+	private String alipayErrorTime = "";	
+    private int nowWarningCount;
+    private String nowWarningTime = "";
+    private String nowErrorTime = "";    
+    private int heeWarningCount;
+	private String heeWarningTime = "";
+	private String heeErrorTime = "";
+
 	@Autowired
 	PayLogicService payLogicService;
 	@Autowired
@@ -102,7 +126,8 @@ public class PaymentController extends BaseController{
 	PaymentAlipaylocationService paymentAlipaylocationService;
 	@Resource
 	PaymentOutimeErrorLogService paymentOutimeErrorLogService;
-	
+	@Resource
+	PaymentParameterService paymentParameterService;
 	/**
 	 * 查询支付流水号接口
 	 * @param request
@@ -154,7 +179,6 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
-        	
         	if (StringUtils.isBlank(appid)) {
         		logger.error(String.format("apply payment appid[%s]", appid));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -162,7 +186,6 @@ public class PaymentController extends BaseController{
         		return;
         	}
         	
-        	//判断请求提现类型
 			int appId = Integer.parseInt(appid);
 			boolean isAllowedBusiness = BusinessEnumType.CommdityApplication.verifyed(appId, secret);
 			if(isAllowedBusiness){
@@ -203,7 +226,6 @@ public class PaymentController extends BaseController{
 			}
 			
 			PaymentReckoningVTO paymentVTO = payLogicService.updatePaymentStatusByOrderId(order);
-			
 			if(paymentVTO != null){
 				logger.info(String.format("update payment order status success result [%s]", JsonHelper.getJSONString(paymentVTO)));
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(paymentVTO));
@@ -223,6 +245,101 @@ public class PaymentController extends BaseController{
 		}
 	}
 	
+	@RequestMapping(value={"/payment/change","/change"},method={RequestMethod.GET,RequestMethod.POST})
+	public void updateChangeRate(HttpServletRequest request,
+			HttpServletResponse response,
+			int level,
+			String value,
+			String rate,
+			String appid,
+			String secret){
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		logger.info(String.format("updateChangeRate level[%s] value [%s] value [%s]", level,value,rate));
+		try{
+			//判断非空参数
+			if (StringUtils.isBlank(level+"")) {
+				logger.error(String.format("apply payment level[%s]", level));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+				return;
+			}
+			if (StringUtils.isBlank(value)) {
+				logger.error(String.format("apply payment value[%s]", value));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+				return;
+			}
+			if (StringUtils.isBlank(rate)) {
+				logger.error(String.format("apply payment rate[%s]", rate));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+				return;
+			}
+			if (StringUtils.isBlank(secret)) {
+				logger.error(String.format("apply payment secret[%s]", secret));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+				return;
+			}
+			if (StringUtils.isBlank(appid)) {
+				logger.error(String.format("apply payment appid[%s]", appid));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+				return;
+			}
+			
+			int appId = Integer.parseInt(appid);
+			boolean isAllowedBusiness = BusinessEnumType.CommdityApplication.verifyed(appId, secret);
+			if(isAllowedBusiness){
+				boolean flag = false;
+				CommdityApplication app = BusinessEnumType.CommdityApplication.fromKey(appId);
+				switch(app){
+				case DEFAULT:
+					logger.info(String.format("apply  DEFAULT payment appid[%s] secret[%s]", appid,secret));
+					flag = true;
+					break;
+				default:
+					break;
+				}
+				if(!flag){
+					logger.info(String.format("apply payment appid [%s] is invaild.", appid));
+					SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+							ResponseErrorCode.USER_APPID_UNSUPPORT)));
+					return;
+				}
+			}else{
+				logger.error(String.format("apply payment appid[%s] secret[%s]", appid,secret));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+						ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
+				return;
+			}
+			/////
+			
+			PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
+			//PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEI_XIN");
+			paymentParameter.setStatus(level);
+	    	paymentParameter.setUpdated_at(new Date());
+	    	paymentParameter.setValue(value);
+	    	paymentParameter.setCharge_rate(rate);
+	    	PaymentParameter paymentVTO =paymentParameterService.update(paymentParameter);
+	    	if(paymentVTO != null){
+				logger.info(String.format("update_payment order status success result [%s]", JsonHelper.getJSONString(paymentVTO)));
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(paymentVTO));
+				return;
+			}else{
+				logger.info(String.format("update_payment order status error result [%s]", ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SendMailHelper.doSendMail(3,"updateChangeRate接口："+i18nex.getMessage()+i18nex.getCause());
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			SendMailHelper.doSendMail(3,"updateChangeRate接口："+ex.getMessage()+ex.getCause());
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}finally{
+			
+		}
+	}
+	
 	/**
 	 * 模拟通知商品中心充值成功接口
 	 * @param request
@@ -235,14 +352,12 @@ public class PaymentController extends BaseController{
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		logger.info(String.format("update_payment prepaid order status [%s]", goods_no));
 		try{
-			//判断非空参数
         	if (StringUtils.isBlank(secret)) {
         		logger.error(String.format("apply prepaid secret[%s]", secret));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
-        	
         	if (StringUtils.isBlank(appid)) {
         		logger.error(String.format("apply prepaid appid[%s]", appid));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -250,7 +365,6 @@ public class PaymentController extends BaseController{
         		return;
         	}
         	
-        	//判断请求提现类型
 			int appId = Integer.parseInt(appid);
 			boolean isAllowedBusiness = BusinessEnumType.CommdityApplication.verifyed(appId, secret);
 			if(isAllowedBusiness){
@@ -341,14 +455,12 @@ public class PaymentController extends BaseController{
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		logger.info(String.format("apply withdrawals withdraw_no [%s]", withdraw_no));
 		try{
-			//判断非空参数
         	if (StringUtils.isBlank(secret)) {
         		logger.error(String.format("apply withdrawals secret[%s]", secret));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
-        	
         	if (StringUtils.isBlank(appid)) {
         		logger.error(String.format("apply withdrawals appid[%s]", appid));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -356,7 +468,6 @@ public class PaymentController extends BaseController{
         		return;
         	}
         	
-        	//判断请求提现类型
 			int appId = Integer.parseInt(appid);
 			boolean isAllowedBusiness = BusinessEnumType.CommdityApplication.verifyed(appId, secret);
 			if(isAllowedBusiness){
@@ -414,7 +525,6 @@ public class PaymentController extends BaseController{
         	int temp = Integer.parseInt(total_fee_fen);
         	if(temp < 1000){
         		logger.error(String.format("apply withdrawals total_fee[%s] errorMsg:[%s] , [%s]", total_fee,ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT.i18n(),"10元"));
-        		//通知商品中心提现失败
         		payLogicService.updateWithdrawalsStatus(null, withdraw_no, withdraw_type,false);
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT,new String[]{"10元"})));
@@ -427,15 +537,8 @@ public class PaymentController extends BaseController{
         		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
         	}
         	ResponseCreateWithdrawDTO result = null;
-        	//判断请求支付类型    	
         	if(withdraw_type.equals("weixin")){ //微信支付
         		result =  doWxWithdrawals(request,response,total_fee,withdraw_no,exter_invoke_ip,userId,userName);
-        	}else if(withdraw_type.equals("alipay")){ //支付宝
-        		logger.info(String.format("apply withdrawals withdraw_type [%s]",withdraw_type + ResponseErrorCode.RPC_MESSAGE_UNSUPPORT));
-        		//result =  doAlipayWithdrawals(response,request, total_fee, withdraw_no,exter_invoke_ip);
-        		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT)));
-        		return;
         	}else{//提示暂不支持的支付方式
         		logger.info(String.format("apply withdrawals withdraw_type [%s]",withdraw_type + ResponseErrorCode.RPC_MESSAGE_UNSUPPORT));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -450,7 +553,6 @@ public class PaymentController extends BaseController{
     			respone.setMsg(msg);
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(respone)));
     			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(respone));
-    		
     		}else{
     			logger.info(String.format("apply withdrawals return result [%s]",JsonHelper.getJSONString(result)));
         		SpringMVCHelper.renderJson(response, result);
@@ -499,28 +601,26 @@ public class PaymentController extends BaseController{
     		@RequestParam(required = true) String payment_type,
     		@RequestParam(required = false, value = "") String exter_invoke_ip,
     		@RequestParam(required = false, value = "") String payment_completed_url,
+    		@RequestParam(required = false, value = "") String channel,
+    		@RequestParam(required = false, value = "") String version,
     		@RequestParam(required = false, value = "") String paymentName){ 
 		response.setHeader("Access-Control-Allow-Origin", "*");
-		long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
-
 		logger.info(String.format("apply payment goods_no [%s]", goods_no));
+		
+		long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 		try{
-			String type = request.getParameter("channel");
-			if(StringUtils.isBlank(type)){
-				type = "0";
+			if(StringUtils.isBlank(channel)){
+				channel = "0";
 			}			
-			String version = request.getParameter("version");
 			if(StringUtils.isBlank(version)){
 				version = "0";
 			}
-			//判断非空参数
 			if (StringUtils.isBlank(appid)) {
         		logger.error(String.format("apply payment appid [%s]", appid));
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
     			return;
     		}
-			
 			if (StringUtils.isBlank(secret)) {
         		logger.error(String.format("apply payment secret [%s]", secret));
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -534,10 +634,14 @@ public class PaymentController extends BaseController{
 				CommdityApplication app = BusinessEnumType.CommdityApplication.fromKey(appId);
 				switch(app){
     			case BHU_PREPAID_BUSINESS:
-    				paymentName = "虎钻";
+    				if (StringUtils.isBlank(paymentName)) {
+    					paymentName = "虎钻";
+    				}
     				break;
     			case DEFAULT: 
-    				paymentName = "打赏";
+    				if (StringUtils.isBlank(paymentName)) {
+    					paymentName = "打赏";
+    				}
     				break;
     			default:
     				paymentName = "打赏";
@@ -549,7 +653,6 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
 				return;
 			}
-			
         	if (StringUtils.isBlank(payment_type)) {
         		logger.error(String.format("apply payment payment_type [%s]", payment_type));
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -562,13 +665,15 @@ public class PaymentController extends BaseController{
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
-        	
         	if (StringUtils.isBlank(goods_no)) {
         		logger.error(String.format("apply payment goods_no [%s]", goods_no));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
         	}
+        	
+        	PaymentTypeVTO result = null;
+        	//逻辑处理
         	long select_isExist_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
     		PaymentReckoning paymentReckoning = paymentReckoningService.findByOrderId(goods_no);
     		long select_isExist_end = System.currentTimeMillis() - select_isExist_begin; // 这段代码放在程序执行后
@@ -577,10 +682,7 @@ public class PaymentController extends BaseController{
         		logger.error(String.format("apply payment goods_no [%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
         		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
         	}
-        	PaymentTypeVTO result = null;
-        	
         	umac = BusinessHelper.formatMac(umac);
-        	//判断请求支付类型
         	PaymentChannelCode paymentChannel = PaymentChannelCode.getPaymentChannelCodeByCode(payment_type);
     		switch(paymentChannel){
     			case BHU_PC_WEIXIN: //PC微信支付
@@ -608,22 +710,21 @@ public class PaymentController extends BaseController{
     				logger.info(goods_no+"App支付宝耗时：" + APP_ALIPAY_end + "毫秒");
     				break;
     			case BHU_WAP_WEIXIN: //汇付宝
-    				if(type.equals("2")){
+    				if(channel.equals("2")){
     					long WAP_WEIXIN_NATIVE_begin = System.currentTimeMillis();
-    					result =  doNativeWxPayment(request,response,type,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
+    					result =  doNativeWxPayment(request,response,channel,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
     					long WAP_WEIXIN_NATIVE_end = System.currentTimeMillis() -  WAP_WEIXIN_NATIVE_begin; 
         				logger.info(goods_no+"WAP微信他人代付耗时：" + WAP_WEIXIN_NATIVE_end + "毫秒");
     				}else{
     					long get_agentMerchant_begin = System.currentTimeMillis();
-    					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByCondition(total_fee);
-    					//String agentMerchant = payLogicService.findWapWeixinMerchantServiceByName();
+    					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByCondition();
     					long get_agentMerchant_end = System.currentTimeMillis() -  get_agentMerchant_begin; 
         				logger.info(goods_no+"查询WAP微信获取支付渠道耗时：" + get_agentMerchant_end + "毫秒");
         				
         				/*******2016-09-26*******start****判断是内网环境WapWeixin 只用现在支付**/
         				String curEnv = payHttpService.getEnv().toUpperCase();
         				if(curEnv.equals("INNER") && agentMerchant.equals("Midas")){
-        					agentMerchant = "Now";
+        					agentMerchant = "Hee";
         				}
         				/*******2016-09-26****end*********/
         				
@@ -634,13 +735,9 @@ public class PaymentController extends BaseController{
             				logger.info(goods_no+"Wap微信现在支付获取支付url耗时：" + WAP_WEIXIN_Now_end + "毫秒");
         				}else if(agentMerchant.equals("Midas")){
         					long WAP_WEIXIN_MIDSA_begin = System.currentTimeMillis();
-//        					String par = "secret="+secret+"&appid="+appid+"&payment_type="+payment_type+"&goods_no="+goods_no+
-//        							"&total_fee="+total_fee+"&umac="+umac+"&version="+version;
-//        					String jsonStr = PostRequestUtil.sendPost(PayHttpService.MIDAS_REQURST_URL, par);
         					result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         					long WAP_WEIXIN_MIDSA_end = System.currentTimeMillis() - WAP_WEIXIN_MIDSA_begin; 
         					logger.info(goods_no+"Wap微信米大师支付获取支付url耗时：" + WAP_WEIXIN_MIDSA_end + "毫秒");
-//        					SpringMVCHelper.renderJson(response, jsonStr);
         				}else if(agentMerchant.equals("Hee")){
         					long WAP_WEIXIN_Hee_begin = System.currentTimeMillis();
         					result =  doHee(response,"3", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
@@ -651,20 +748,9 @@ public class PaymentController extends BaseController{
         					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         					long WAP_WEIXIN_Now_end = System.currentTimeMillis() - WAP_WEIXIN_Now_begin; 
             				logger.info(goods_no+"Wap微信现在支付获取支付url耗时：" + WAP_WEIXIN_Now_end + "毫秒");
-            				//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         				}
-        				//*******并存线*****************//
-        				//腾讯云启动midas支付通道
-//        				long WAP_WEIXIN_MIDSA_begin = System.currentTimeMillis();
-    					//result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
-//        				long WAP_WEIXIN_MIDSA_end = System.currentTimeMillis() - WAP_WEIXIN_MIDSA_begin; 
-//        				logger.info(goods_no+"Wap微信Midas支付耗时：" + WAP_WEIXIN_MIDSA_end + "毫秒");
     				}
                 	break;
-//    			case BHU_MIDAS_WEIXIN: //米大师
-//    				logger.info("apply payment payment_type is old midas ...........");
-//    				result =  doMidas(response,"0","1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
-//            		break;
     			case BHU_WAP_ALIPAY: //Wap微信支付
     				long WAP_ALIPAY_begin = System.currentTimeMillis();
     				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
@@ -691,15 +777,13 @@ public class PaymentController extends BaseController{
     			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(result)));
     			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
     		}
-        	
-        	
 		}catch(BusinessI18nCodeException i18nex){
 			logger.error(String.format("submitPayment catch BusinessI18nCodeException [%s]",ResponseError.embed(i18nex)));
-			SendMailHelper.doSendMail(2,"submitPayment接口："+i18nex.getMessage()+i18nex.getCause());
+			SendMailHelper.doSendMail(3,"submitPayment接口："+i18nex.getMessage()+i18nex.getCause());
 			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
 		}catch(Exception ex){
 			logger.error(String.format("submitPayment catch Exception [%s]",ResponseError.SYSTEM_ERROR));
-			SendMailHelper.doSendMail(2,"submitPayment接口："+ex.getMessage()+ex.getCause());
+			SendMailHelper.doSendMail(3,"submitPayment接口："+ex.getMessage()+ex.getCause());
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}finally{
 			
@@ -707,10 +791,6 @@ public class PaymentController extends BaseController{
 		long end = System.currentTimeMillis() - begin;
 		logger.info(goods_no+"请求总耗时：" + end + "毫秒！！！！！！");
     }
-	
-	private int weixinWithdrawWarningCount;
-    private String weixinWithdrawWarningTime = "";
-    private String weixinWithdrawErrorTime = "";
 	
 	/**
 	 * 处理微信提现
@@ -732,7 +812,6 @@ public class PaymentController extends BaseController{
         String product_name="必虎提现";//订单名称
     	total_fee = BusinessHelper.getMoney(total_fee);
         String reckoningId = payLogicService.createPaymentWithdraw(withdraw_no,total_fee,Ip,"WDWX",userId);
-
         logger.info(String.format("doWxWithdrawals reckoningId [%s] product_name [%s] total_fee [%s] ip [%s]"
         		+ "certificateUrl [%s] userId [%s] userName [%s]",reckoningId, product_name, total_fee, request.getRemoteAddr(), certificateUrl, userId,userName));
         long request_unifiedorder_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
@@ -740,31 +819,26 @@ public class PaymentController extends BaseController{
         long request_unifiedorder_end = System.currentTimeMillis() - request_unifiedorder_begin; // 这段代码放在程序执行后
         logger.info(withdraw_no+"调用微信提现统一下单接口耗时：" + request_unifiedorder_end + "毫秒");
 		int nowOutTimeLevel = payHttpService.getOt();
-		if(request_unifiedorder_end > nowOutTimeLevel){
+		try{
 			
-			String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "微信提现支付",request_unifiedorder_end+"");
-			if(request_unifiedorder_end > 7000){
-				weixinWithdrawWarningCount++;
-			}
-			if(request_unifiedorder_end > 30000){
-				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
-				String acc = PayHttpService.Internal_level1_error_man;
-				//String acc = "15127166171";
-				String resp = "true";
-				if(!weixinWithdrawErrorTime.equals(curDate)){
-					SendMailHelper.doSendMail(1,smsg);
-					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-					weixinWithdrawErrorTime = curDate;
+			if(request_unifiedorder_end > nowOutTimeLevel){
+				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "微信提现支付",request_unifiedorder_end+"");
+				if(request_unifiedorder_end > 7000){
+					weixinWithdrawWarningCount++;
 				}
-				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
-			}	
-			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
-			paymentNowpayErrorLog.setId(reckoningId);
-			paymentNowpayErrorLog.setOrder_id(withdraw_no);
-			paymentNowpayErrorLog.setOt(new Long(request_unifiedorder_end).intValue());
-			paymentNowpayErrorLog.setC_type("withdrawWeixin");
-			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
-		}
+				if(request_unifiedorder_end > 30000){
+					String sendMsg = payLogicService.updatePaymentParam(7,smsg,weixinWithdrawErrorTime);
+					if(!StringUtils.isBlank(sendMsg)){
+						weixinWithdrawErrorTime =sendMsg;
+					}
+				}	
+				PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+				paymentNowpayErrorLog.setId(reckoningId);
+				paymentNowpayErrorLog.setOrder_id(withdraw_no);
+				paymentNowpayErrorLog.setOt(new Long(request_unifiedorder_end).intValue());
+				paymentNowpayErrorLog.setC_type("withdrawWeixin");
+				paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+			}
 		
 			switch (weixinWithdrawWarningCount) {
 			case 3:
@@ -780,20 +854,19 @@ public class PaymentController extends BaseController{
 				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
 				weixinWithdrawWarningCount = 0;
 				break;
-
 			default:
 				break;
 			}
-        
+		}catch(Exception e){
+			logger.info(String.format("apply Withdraw catch exception [%s]",e.getMessage()+e.getCause()));
+		}
         PaymentWithdraw payWithdraw =  paymentWithdrawService.getById(reckoningId);
-        // 1.1 如果订单不存在则返回订单不存在
         if (payWithdraw == null) {
         	logger.error(String.format("get WxWithdrawals payWithdraw [%s] is null",payWithdraw));
         	payLogicService.updateWithdrawalsStatus(null, reckoningId, "weixin",false);
         	return null;
         }
         String orderId = payWithdraw.getOrderId();
-        
         if(unifiedOrderResponse == null){
         	logger.error(String.format("apply payment unifiedOrderResponse [%s]", unifiedOrderResponse));
         	result.setWithdraw_type("FAIL");
@@ -814,24 +887,18 @@ public class PaymentController extends BaseController{
          	return result;
         }
         
-        //收到微信的提现成功请求
         String out_trade_no = unifiedOrderResponse.getPartner_trade_no();
         String trade_no = unifiedOrderResponse.getPayment_no();
-        
         logger.info(String.format("return WxWithdrawals reckoningId [%s] trade_no [%s] orderId [%s]",out_trade_no, trade_no,orderId));
-        
-        //判断当前账单的实际状态，如果是以支付状态就不做处理了
 		int withdrawStatus = payWithdraw.getWithdrawStatus();
 		if(withdrawStatus == 0){ //0未支付;1支付成功
             if("SUCCESS".equals(unifiedOrderResponse.getReturn_code()) && "SUCCESS".equals(unifiedOrderResponse.getResult_code())){
- 				//修改成账单状态  1：提现成功 0：提现失败
             	payLogicService.updateWithdrawalsStatus(payWithdraw, out_trade_no, trade_no,true);
              	result.setWithdraw_type("weixin");
              	result.setSuccess(true);
              	result.setUrl("");
              	return result;
             }else{
-                //支付s失败
             	result.setSuccess(false);
     	    	result.setUrl(unifiedOrderResponse.getResultMessage());
     			return result;
@@ -844,10 +911,6 @@ public class PaymentController extends BaseController{
 		}
 	}
     
-	private int weixinNativeWarningCount;
-    private String weixinNativeWarningTime = "";
-    private String weixinNativeErrorTime = "";
-	
     /**
      * 处理微信扫码支付请求
      * @param request
@@ -873,13 +936,11 @@ public class PaymentController extends BaseController{
     	}else if(channel_type.equals("2")){
     		type = PaymentChannelCode.BHU_WAP_WEIXIN.i18n();
     	}
-        //记录请求的Goods_no
     	long begin = System.currentTimeMillis(); 
         String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,channel_type,total_fee,Ip,type,usermac,paymentName,appId);
         long end = System.currentTimeMillis() - begin; 
         logger.info(out_trade_no+"生成支付流水号耗时：" + end + "毫秒");
         
-      //记录请求支付完成后返回的地址
 		if (!StringUtils.isBlank(locationUrl)) {
 			logger.info(String.format("doNativeWxPayment locationUrl [%s] ",locationUrl));
 			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
@@ -898,32 +959,26 @@ public class PaymentController extends BaseController{
 		long request_unifiedorder_end = System.currentTimeMillis() - request_unifiedorder_begin; // 这段代码放在程序执行后
 		logger.info(out_trade_no+"调用native微信统一下单接口耗时：" + request_unifiedorder_end + "毫秒");
 		int nowOutTimeLevel = payHttpService.getOt();
-		if(request_unifiedorder_end > nowOutTimeLevel){
+		try{
+			if(request_unifiedorder_end > nowOutTimeLevel){
+				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "微信扫码支付",request_unifiedorder_end+"");
+				if(request_unifiedorder_end > 7000){
+					weixinNativeWarningCount++;
+				} 
+				if(request_unifiedorder_end > 30000){
+					String sendMsg = payLogicService.updatePaymentParam(4,smsg,weixinNativeErrorTime);
+					if(!StringUtils.isBlank(sendMsg)){
+						weixinNativeErrorTime =sendMsg;
+					}
+				}	
+				PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+				paymentNowpayErrorLog.setId(reckoningId);
+				paymentNowpayErrorLog.setOrder_id(out_trade_no);
+				paymentNowpayErrorLog.setOt(new Long(request_unifiedorder_end).intValue());
+				paymentNowpayErrorLog.setC_type("NativeWeixin");
+				paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+			}
 			
-			String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "微信扫码支付",request_unifiedorder_end+"");
-			if(request_unifiedorder_end > 7000){
-				weixinNativeWarningCount++;
-			} 
-			if(request_unifiedorder_end > 30000){
-				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
-				String acc = PayHttpService.Internal_level1_error_man;
-				//String acc = "15127166171";
-				String resp = "true";
-				if(!weixinNativeErrorTime.equals(curDate)){
-					SendMailHelper.doSendMail(1,smsg);
-					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-					weixinNativeErrorTime = curDate;
-				}
-				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
-			}	
-			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
-			paymentNowpayErrorLog.setId(reckoningId);
-			paymentNowpayErrorLog.setOrder_id(out_trade_no);
-			paymentNowpayErrorLog.setOt(new Long(request_unifiedorder_end).intValue());
-			paymentNowpayErrorLog.setC_type("NativeWeixin");
-			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
-		}
-		
 			switch (weixinNativeWarningCount) {
 			case 3:
 				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "微信扫码支付",request_unifiedorder_end+"");
@@ -938,20 +993,21 @@ public class PaymentController extends BaseController{
 				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
 				weixinNativeWarningCount = 0;
 				break;
-
+	
 			default:
 				break;
 			}
-		
+		}catch(Exception e){
+			logger.info(String.format("apply  NativeWeixin catch exception [%s]",e.getMessage()+e.getCause()));
+		}
         if(!unifiedOrderResponse.isResultSuccess()){
         	String status = unifiedOrderResponse.getResultErrorCode();
 			String msg = unifiedOrderResponse.getResultMessage();
-			logger.info(String.format("apply wx payment status [%s] msg [%s]", status,msg));
-	    	result.setType(status);
-	    	result.setUrl(msg);
+			logger.info(String.format("apply weixin native rqurest weixin server return status [%s] msg [%s]", status,msg));
+	    	result.setType("FAIL");
+	    	result.setUrl("微信服务器连接异常，请求超时。");
 			return result;
         }
-        //String url= "http://qr.liantu.com/api.php?text="+ URLEncoder.encode(unifiedOrderResponse.getCode_url(), "UTF-8");
     	String codeUrl = unifiedOrderResponse.getCode_url();
     	String base64CodeUrl = "";
 		try {
@@ -959,7 +1015,6 @@ public class PaymentController extends BaseController{
 			base64CodeUrl = BusinessHelper.GetBase64ImageStr(codeUrl,QR_CODE_URL,PRUE_LOGO_URL);
 			long base64Code_end = System.currentTimeMillis() - base64Code_begin; // 这段代码放在程序执行后
 			logger.info(out_trade_no+"生成二维码64位code耗时：" + base64Code_end + "毫秒");
-		
 		} catch (WriterException | IOException e) {
 			logger.error(String.format("return pc weixin catch WriterException "+e.getCause()));
 		}
@@ -970,10 +1025,6 @@ public class PaymentController extends BaseController{
         return result;
     }
 	
-	private int weixinAppWarningCount;
-    private String weixinAppWarningTime = "";
-    private String weixinAppErrorTime = "";
-    
 	/**
      * 处理微信APP支付请求
      * @param request
@@ -992,7 +1043,6 @@ public class PaymentController extends BaseController{
         String appId = "";
 		 String mchId = "";
 		 String mchKey = "";
-		 
 		 if(paymentName.equals("打赏")){
 			 appId = payHttpService.getAppDSAppId();
 			 mchId = payHttpService.getAppDSMchId();
@@ -1007,10 +1057,7 @@ public class PaymentController extends BaseController{
 			 mchKey = payHttpService.getAppDSMchKey();
 		 }
     	total_fee = BusinessHelper.getMoney(total_fee);
-        //记录请求的Goods_no
         String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,"0",total_fee,Ip,PaymentChannelCode.BHU_APP_WEIXIN.i18n(),usermac,paymentName,appid);
-        
-      //记录请求支付完成后返回的地址
 		if (!StringUtils.isBlank(locationUrl)) {
 			logger.info(String.format("apply App Wx Payment locationUrl [%s] ",locationUrl));
 			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
@@ -1018,7 +1065,6 @@ public class PaymentController extends BaseController{
 			orderLocation.setLocation(locationUrl);
 			paymentAlipaylocationService.insert(orderLocation);
 		}
-
 		logger.info(String.format("apply App wx payment reckoningId [%s] product_name [%s] total_fee [%s] ip [%s]"
         		+ "NOTIFY_URL [%s] ",reckoningId, product_name, total_fee, request.getRemoteAddr(),NOTIFY_URL ));
 		long request_unifiedorder_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
@@ -1026,32 +1072,27 @@ public class PaymentController extends BaseController{
 		long request_unifiedorder_end = System.currentTimeMillis() - request_unifiedorder_begin; // 这段代码放在程序执行后
 		logger.info(out_trade_no+"调用App微信统一下单接口耗时：" + request_unifiedorder_end + "毫秒");
 		int nowOutTimeLevel = payHttpService.getOt();
-		if(request_unifiedorder_end > nowOutTimeLevel){
+		try{
 			
-			String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "微信App支付",request_unifiedorder_end+"");
-			if(request_unifiedorder_end > 7000){
-				weixinAppWarningCount++;
-			} 
-			if(request_unifiedorder_end > 30000){
-				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
-				String acc = PayHttpService.Internal_level1_error_man;
-				//String acc = "15127166171";
-				String resp = "true";
-				if(!weixinAppErrorTime.equals(curDate)){
-					SendMailHelper.doSendMail(1,smsg);
-					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-					weixinAppErrorTime = curDate;
-				}
-				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
-			}	
-			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
-			paymentNowpayErrorLog.setId(reckoningId);
-			paymentNowpayErrorLog.setOrder_id(out_trade_no);
-			paymentNowpayErrorLog.setOt(new Long(request_unifiedorder_end).intValue());
-			paymentNowpayErrorLog.setC_type("AppWeixin");
-			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
-		}
-		
+			if(request_unifiedorder_end > nowOutTimeLevel){
+				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "微信App支付",request_unifiedorder_end+"");
+				if(request_unifiedorder_end > 7000){
+					weixinAppWarningCount++;
+				} 
+				if(request_unifiedorder_end > 30000){
+					String sendMsg = payLogicService.updatePaymentParam(5,smsg,weixinAppErrorTime);
+					if(!StringUtils.isBlank(sendMsg)){
+						weixinAppErrorTime =sendMsg;
+					}
+				}	
+				PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+				paymentNowpayErrorLog.setId(reckoningId);
+				paymentNowpayErrorLog.setOrder_id(out_trade_no);
+				paymentNowpayErrorLog.setOt(new Long(request_unifiedorder_end).intValue());
+				paymentNowpayErrorLog.setC_type("AppWeixin");
+				paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+			}
+			
 			switch (weixinAppWarningCount) {
 			case 3:
 				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "微信App支付",request_unifiedorder_end+"");
@@ -1066,19 +1107,21 @@ public class PaymentController extends BaseController{
 				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
 				weixinAppWarningCount = 0;
 				break;
-
+				
 			default:
 				break;
 			}
+		}catch(Exception e){
+			logger.info(String.format("apply weixinApp catch exception [%s]",e.getMessage()+e.getCause()));
+		}
         if(!unifiedOrderResponse.isResultSuccess()){
         	String status = unifiedOrderResponse.getResultErrorCode();
 			String msg = unifiedOrderResponse.getResultMessage();
-			logger.info(String.format("apply App wx payment status [%s] msg [%s]", status,msg));
-	    	result.setType(status);
-	    	result.setUrl(msg);
+			logger.info(String.format("apply weixin app rqurest weixin server return  status [%s] msg [%s]", status,msg));
+			result.setType("FAIL");
+	    	result.setUrl("微信服务器连接异常，请求超时。");
 			return result;
         }
-        
         String timestamp = payHttpService.getTimeStamp();//生成1970年到现在的秒数.
         String noncestr = payHttpService.getNonceStr();//生成随机字符串
         String prepay_id = unifiedOrderResponse.getPrepay_id();
@@ -1089,10 +1132,7 @@ public class PaymentController extends BaseController{
         params.put("package", "Sign=WXPay");
         params.put("noncestr", noncestr);
         params.put("timestamp",timestamp);
-
-        //生成支付签名,这个签名 给 微信支付的调用使用
         String paySign =  payHttpService.createSign(mchKey,"UTF-8", params);
-        
         params.put("sign", paySign);
     	String json= JsonHelper.getJSONString(params);
     	result.setType("json");
@@ -1100,10 +1140,6 @@ public class PaymentController extends BaseController{
         return result;
     }
     
-	 private int alipayWarningCount;
-	 private String alipayWarningTime = "";
-	 private String alipayErrorTime = "";
-	
 	/**
 	 *  支付宝支付请求接口
      * @param response
@@ -1118,35 +1154,22 @@ public class PaymentController extends BaseController{
     		String totalPrice,String out_trade_no,String locationUrl,String ip,String type,String usermac,String paymentName,String appid){
     	response.setCharacterEncoding("utf-8");
     	PaymentTypeVTO result = new PaymentTypeVTO();
-    	
 		//服务器异步通知页面路径
 		String notify_url = PayHttpService.ALIPAY_NOTIFY_URL;
-
 		//打赏页面跳转同步通知页面路径
 		String return_url = PayHttpService.ALIPAY_RETURN_URL;
-
 		//订单名称
 		String subject = paymentName;//;new String("打赏".getBytes("ISO-8859-1"), "utf-8");
 		//付款金额
 		String total_fee = totalPrice;
-
 		//订单描述
 		String body = "必虎服务";
-
-		//////////////////////////////////////////////////////////////////////////////////
-			
-		 //以上为正式支付前必有的订单信息，用户信息验证，接下来将用订单号生成一个支付流水号进行在线支付
-		//把请求参数打包成数组
 		Map<String, String> sParaTemp = new HashMap<String, String>();
 		String reckoningId = null;
-		//数据库存的是分，此处需要把传来的支付金额转换成分，而传给支付宝的保持不变（默认元）
 		String total_fee_fen = BusinessHelper.getMoney(total_fee);
-		
-		//判断是否是充值业务
 		if(CommdityApplication.BHU_PREPAID_BUSINESS.getKey().equals(Integer.parseInt(appid))){
 			return_url = PayHttpService.ALIPAY_PREPAID_RETURN_URL;
 		}
-		
 		PaymentChannelCode payChannel =PaymentChannelCode.getPaymentChannelCodeByCode(type);
 		switch (payChannel) {
 		case BHU_WAP_ALIPAY:
@@ -1185,7 +1208,6 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("it_b_pay", "10m");
 			//sParaTemp.put("app_pay", "Y");
 			break;
-			
 		case BHU_PC_ALIPAY:
 			reckoningId = payLogicService.createPaymentReckoning(out_trade_no,"0",total_fee_fen,ip,PaymentChannelCode.BHU_PC_ALIPAY.i18n(),usermac,paymentName,appid);
 			sParaTemp.put("service", AlipayConfig.service);
@@ -1202,14 +1224,10 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
 			sParaTemp.put("it_b_pay", "10m");
-			//sParaTemp.put("app_pay", "Y");
 			break;
-
 		default:
 			break;
 		}
-		
-		//记录请求支付完成后返回的地址
 		if (!StringUtils.isBlank(locationUrl)) {
 			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
 			orderLocation.setTid(reckoningId);
@@ -1217,8 +1235,6 @@ public class PaymentController extends BaseController{
 			paymentAlipaylocationService.insert(orderLocation);
 			logger.info(String.format("apply alipay set location reckoningId [%s] locationUrl [%s] insert finished.",reckoningId, locationUrl));
 		}
-		
-		//建立支付宝支付请求
 		String sHtmlText = "";
         try {
         	long request_alipay_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
@@ -1226,32 +1242,26 @@ public class PaymentController extends BaseController{
     		long request_unifiedorder_end = System.currentTimeMillis() - request_alipay_begin; // 这段代码放在程序执行后
     		logger.info(out_trade_no+"请求支付宝url接口耗时：" + request_unifiedorder_end + "毫秒");
     		int nowOutTimeLevel = payHttpService.getOt();
-    		if(request_unifiedorder_end > nowOutTimeLevel){
-    			
-    			String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "支付宝支付",request_unifiedorder_end+"");
-    			if(request_unifiedorder_end > 7000){
-    				alipayWarningCount++;
-    			}
-    			if(request_unifiedorder_end > 30000){
-    				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
-    				String acc = PayHttpService.Internal_level1_error_man;
-    				//String acc = "15127166171";
-    				String resp = "true";
-    				if(!alipayErrorTime.equals(curDate)){
-    					SendMailHelper.doSendMail(1,smsg);
-    					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-    					alipayErrorTime = curDate;
+    		try{
+    			if(request_unifiedorder_end > nowOutTimeLevel){
+    				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "支付宝支付",request_unifiedorder_end+"");
+    				if(request_unifiedorder_end > 7000){
+    					alipayWarningCount++;
     				}
-    				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
-    			}	
-    			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
-    			paymentNowpayErrorLog.setId(reckoningId);
-    			paymentNowpayErrorLog.setOrder_id(out_trade_no);
-    			paymentNowpayErrorLog.setOt(new Long(request_unifiedorder_end).intValue());
-    			paymentNowpayErrorLog.setC_type("Alipay");
-    			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
-    		}
-    		
+    				if(request_unifiedorder_end > 30000){
+    					String sendMsg = payLogicService.updatePaymentParam(6,smsg,alipayErrorTime);
+    					if(!StringUtils.isBlank(sendMsg)){
+    						alipayErrorTime =sendMsg;
+    					}
+    				}	
+    				PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+    				paymentNowpayErrorLog.setId(reckoningId);
+    				paymentNowpayErrorLog.setOrder_id(out_trade_no);
+    				paymentNowpayErrorLog.setOt(new Long(request_unifiedorder_end).intValue());
+    				paymentNowpayErrorLog.setC_type("Alipay");
+    				paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+    			}
+    			
     			switch (alipayWarningCount) {
     			case 3:
     				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "支付宝支付",request_unifiedorder_end+"");
@@ -1262,14 +1272,16 @@ public class PaymentController extends BaseController{
     					alipayWarningTime = curDate;
     					SendMailHelper.doSendMail(2,smsg);
     					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-    				}
+     				}
     				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
     				alipayWarningCount = 0;
     				break;
-
     			default:
     				break;
     			}
+    		}catch(Exception e){
+    			logger.info(String.format("apply alipay catch exception [%s]",e.getMessage()+e.getCause()));
+    		}
             result = new PaymentTypeVTO();
             result.setType("http");
             result.setUrl(sHtmlText);
@@ -1280,10 +1292,6 @@ public class PaymentController extends BaseController{
             return result;
         }
 	}
-    
-    private int nowWarningCount;
-    private String nowWarningTime = "";
-    private String nowErrorTime = "";
     
     /**
 	 *  支付宝支付请求接口
@@ -1306,30 +1314,21 @@ public class PaymentController extends BaseController{
 						    		String appid){
     	response.setCharacterEncoding("utf-8");
     	PaymentTypeVTO result = new PaymentTypeVTO();
-    	
 		//服务器异步通知页面路径
 		String notify_url = PayHttpService.NOWIPAY_NOTIFY_URL;
-
 		//打赏页面跳转同步通知页面路径
 		String return_url = PayHttpService.NOWPAY_RETURN_URL;
-
 		//订单名称
 		String subject = paymentName;//;new String("打赏".getBytes("ISO-8859-1"), "utf-8");
 		//付款金额
 		String total_fee = totalPrice;
-
 		//订单描述
 		String body = "必虎服务";
-
 		//数据库存的是分，此处需要把传来的支付金额转换成分，而传给支付宝的保持不变（默认元）
 		String total_fee_fen = BusinessHelper.getMoney(total_fee);
-		
-		//判断是否是充值业务
 		if(CommdityApplication.BHU_PREPAID_BUSINESS.getKey().equals(Integer.parseInt(appid))){
 			return_url = PayHttpService.ALIPAY_PREPAID_RETURN_URL;
 		}
-		//////////////////////////////////////////////////////////////////////////////////
-			
 		Map<String, String> dataMap = new HashMap<String, String>();
 		
 		long get_now_reckoning_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
@@ -1349,15 +1348,12 @@ public class PaymentController extends BaseController{
 		dataMap.put("frontNotifyUrl", return_url);
 		dataMap.put("mhtCharset", NowpayConfig.mhtCharset);
 		dataMap.put("payChannelType", NowpayConfig.payChannelType);
-		//商户保留域， 可以不用填。 如果商户有需要对每笔交易记录一些自己的东西，可以放在这个里面
 		dataMap.put("mhtReserved", NowpayConfig.mhtReserved);
 		String mhtSignature = MD5Facade.getFormDataParamMD5(dataMap, NowpayConfig.appKey, "UTF-8");
 		dataMap.put("mhtSignType", NowpayConfig.mhtSignType);
 		dataMap.put("mhtSignature", mhtSignature);
 		dataMap.put("funcode", NowpayConfig.funcode);
 		dataMap.put("deviceType", NowpayConfig.deviceType);
-		
-		//记录请求支付完成后返回的地址
 		if (!StringUtils.isBlank(locationUrl)) {
 			PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
 			orderLocation.setTid(reckoningId);
@@ -1376,54 +1372,49 @@ public class PaymentController extends BaseController{
             long request_now_url_end = System.currentTimeMillis() - request_now_url_begin; // 这段代码放在程序执行后
     		logger.info(out_trade_no+"请求现在支付获取支付url耗时：" + request_now_url_end + "毫秒");
     		int nowOutTimeLevel = payHttpService.getOt();
-    		if(request_now_url_end > nowOutTimeLevel){
-    			String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "现在支付",request_now_url_end+"");
-    			if(request_now_url_end > 7000){
-    				nowWarningCount++;
-    			}
-    			if(request_now_url_end > 30000){
-    				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
-    				String acc = PayHttpService.Internal_level1_error_man;
-    				//String acc = "15127166171";
-    				String resp = "true";
-    				if(!nowErrorTime.equals(curDate)){
-    					SendMailHelper.doSendMail(1,smsg);
-    					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-    					nowErrorTime = curDate;
+    		try{
+    			if(request_now_url_end > nowOutTimeLevel){
+    				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "现在支付",request_now_url_end+"");
+    				if(request_now_url_end > 7000){
+    					nowWarningCount++;
     				}
-    				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
-					//huaxinlianchuang   100032
-    				//http://sms.chanzor.com:8001/sms.aspx?action=send&userid=&account=账号&password=密码&mobile=手机号&sendTime=&content=内容
+    				if(request_now_url_end > 30000){
+    					String sendMsg = payLogicService.updatePaymentParam(1,smsg,nowErrorTime);
+    					if(!StringUtils.isBlank(sendMsg)){
+    						nowErrorTime =sendMsg;
+    					}
+    				}
+    				
+    				logger.info(out_trade_no+"请求现在支付获取支付url超时"+(request_now_url_end-1000)+"毫秒,记录错误数据。");
+    				PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+    				paymentNowpayErrorLog.setId(reckoningId);
+    				paymentNowpayErrorLog.setOrder_id(out_trade_no);
+    				paymentNowpayErrorLog.setOt(new Long(request_now_url_end).intValue());
+    				paymentNowpayErrorLog.setC_type("Now");
+    				paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
     			}
     			
-    			logger.info(out_trade_no+"请求现在支付获取支付url超时"+(request_now_url_end-1000)+"毫秒,记录错误数据。");
-    			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
-    			paymentNowpayErrorLog.setId(reckoningId);
-    			paymentNowpayErrorLog.setOrder_id(out_trade_no);
-    			paymentNowpayErrorLog.setOt(new Long(request_now_url_end).intValue());
-    			paymentNowpayErrorLog.setC_type("Now");
-    			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+    			switch (nowWarningCount) {
+    			case 3:
+    				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "现在支付",request_now_url_end+"");
+    				String resp = "ture";
+    				String acc = PayHttpService.Internal_level2_warning_man;
+    				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
+    				if(!nowWarningTime.equals(curDate)){
+    					nowWarningTime = curDate;
+    					SendMailHelper.doSendMail(2,smsg);
+    					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+    				}
+    				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
+    				nowWarningCount = 0;
+    				break;
+    				
+    			default:
+    				break;
+    			}
+    		}catch(Exception e){
+    			logger.info(String.format("apply now pay catch exception [%s]",e.getMessage()+e.getCause()));
     		}
-    		
-    		switch (nowWarningCount) {
-			case 3:
-				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "现在支付",request_now_url_end+"");
-				String resp = "ture";
-				String acc = PayHttpService.Internal_level2_warning_man;
-				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
-				if(!nowWarningTime.equals(curDate)){
-					nowWarningTime = curDate;
-					SendMailHelper.doSendMail(2,smsg);
-					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-				}
-				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
-				nowWarningCount = 0;
-				break;
-
-			default:
-				break;
-			}
-    		//返回 结果
             result = new PaymentTypeVTO();
             result.setChannel("Now");
             result.setType("http");
@@ -1437,10 +1428,6 @@ public class PaymentController extends BaseController{
         }
 	}
     
-    private int midasWarningCount;
-    private String midasWarningTime = "";
-    private String midasErrorTime = "";
-	
     /**
      * 处理米大师支付服务请求
      * @param response
@@ -1457,19 +1444,15 @@ public class PaymentController extends BaseController{
     	if(ip == "" || ip == null){
     		ip = "213.42.3.24";
     	}
-    	
     	if(usermac.equals("")){
     		usermac = RandomPicker.randString(BusinessHelper.letters, 8);
     	}
-    	
     	String total_fee_fen = BusinessHelper.getMoney(total_fee);
     	long get_midas_reckoning_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
     	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,type,total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName,appid);
     	long get_midas_reckoning_end = System.currentTimeMillis() - get_midas_reckoning_begin; // 这段代码放在程序执行后
 		logger.info(out_trade_no+"midas支付获取支付流水号耗时：" + get_midas_reckoning_end + "毫秒");
-		
     	if(version.equals("v1")){
-    		//记录请求支付完成后返回的地址
         	if (StringUtils.isBlank(return_url)) {
         		return_url = PayHttpService.WEB_NOTIFY_URL;
         		logger.info(String.format(" midas  return_url location is null so we set default value %s ",return_url));
@@ -1482,7 +1465,6 @@ public class PaymentController extends BaseController{
         		paymentAlipaylocationService.insert(orderLocation);
         		long insert_midas_url_end = System.currentTimeMillis() - insert_midas_url_begin; // 这段代码放在程序执行后
         		logger.info(out_trade_no+"midas插入支付完成URL耗时：" + insert_midas_url_end + "毫秒");
-        		
         		logger.info(String.format("apply midas set location reckoningId [%s] location [%s]  insert finished.",reckoningId,return_url));
         		if(return_url.contains("payokurl=")){
         			String[] Str =return_url.split("payokurl=");
@@ -1498,36 +1480,33 @@ public class PaymentController extends BaseController{
         	String par = "reckoningId="+reckoningId+"&jiaoTemp="+jiaoTemp+"&ip="+ip+"&paymentName="+paymentName+
         			"&usermac="+usermac+"&return_url="+return_url;
         	String results = PostRequestUtil.sendPost(PayHttpService.MIDAS_REQURST_URL, par);
+        	//TODO:生产环境请注释掉此方法，放开上方远程调用方法
         	//String results = MidasUtils.submitOrder("v1",reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
         	long get_midas_url_end = System.currentTimeMillis() - get_midas_url_begin; // 这段代码放在程序执行后
     		logger.info(out_trade_no+"请求midas获取支付URL耗时：" + get_midas_url_end + "毫秒");
     		int nowOutTimeLevel = payHttpService.getOt();
-    		if(get_midas_url_end > nowOutTimeLevel){
-    			
-    			String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "Midas",get_midas_url_end+"");
-    			if(get_midas_url_end > 7000){
-    				midasWarningCount++;
-    			}
-    			if(get_midas_url_end > 30000){
-    				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
-    				String resp = "true";
-    				String acc = PayHttpService.Internal_level1_error_man;
-    				//String acc = "15127166171";
-    				if(!midasErrorTime.equals(curDate)){
-    					SendMailHelper.doSendMail(1,smsg);
-    					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-    					midasErrorTime = curDate;
-    				}
-    				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
-    			}	
-    			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
-    			paymentNowpayErrorLog.setId(reckoningId);
-    			paymentNowpayErrorLog.setOrder_id(out_trade_no);
-    			paymentNowpayErrorLog.setOt(new Long(get_midas_url_end).intValue());
-    			paymentNowpayErrorLog.setC_type("Midas");
-    			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
-    		}
     		
+    		try{
+    			if(get_midas_url_end > nowOutTimeLevel){
+    				
+    				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "Midas",get_midas_url_end+"");
+    				if(get_midas_url_end > 7000){
+    					midasWarningCount++;
+    				}
+    				if(get_midas_url_end > 30000){
+    					String sendMsg = payLogicService.updatePaymentParam(2,smsg,midasErrorTime);
+    					if(!StringUtils.isBlank(sendMsg)){
+    						midasErrorTime =sendMsg;
+    					}
+    				}	
+    				PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+    				paymentNowpayErrorLog.setId(reckoningId);
+    				paymentNowpayErrorLog.setOrder_id(out_trade_no);
+    				paymentNowpayErrorLog.setOt(new Long(get_midas_url_end).intValue());
+    				paymentNowpayErrorLog.setC_type("Midas");
+    				paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+    			}
+    			
     			switch (midasWarningCount) {
     			case 3:
     				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "Midas",get_midas_url_end+"");
@@ -1542,12 +1521,12 @@ public class PaymentController extends BaseController{
     				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
     				midasWarningCount = 0;
     				break;
-
     			default:
     				break;
     			}
-    		
-    		
+    		}catch(Exception e){
+    			logger.info(String.format("apply midas catch exception [%s]",e.getMessage()+e.getCause()));
+    		}
     		
     		logger.info(String.format("apply midas results [%s]",results));
         	if("error".equalsIgnoreCase(results)){
@@ -1574,15 +1553,10 @@ public class PaymentController extends BaseController{
     		@RequestParam(required = true)  String usermac
     		) {
     	response.setHeader("Access-Control-Allow-Origin", "*");
-    	
     	return  MidasUtils.submitOrder("v1",reckoningId, jiaoTemp, ip,paymentName,usermac,return_url);
     		
     }
     
-    private int heeWarningCount;
-	private String heeWarningTime = "";
-	private String heeErrorTime = "";
-
     /**
      * 处理汇付宝支付服务请求
      * @param response
@@ -1596,27 +1570,21 @@ public class PaymentController extends BaseController{
     	if(ip == "" || ip == null){
     		ip = "213.42.3.24";
     	}
-    	
     	//服务器异步通知页面路径
 		String notify_url = PayHttpService.HEE_NOTIFY_URL;
-
 		//打赏页面跳转同步通知页面路径
 		String return_url = PayHttpService.HEE_RETURN_URL;
-    	
     	String total_fee_fen = BusinessHelper.getMoney(total_fee);
-    	int temp = Integer.parseInt(total_fee_fen);
-    	if(temp < 50){
-    		total_fee = "0.50";
-    		total_fee_fen = BusinessHelper.getMoney(total_fee);
-    	}
-    	
+//    	int temp = Integer.parseInt(total_fee_fen);
+//    	if(temp < 50){
+//    		total_fee = "0.50";
+//    		total_fee_fen = BusinessHelper.getMoney(total_fee);
+//    	}
     	//判断是否是充值业务
 		if(CommdityApplication.BHU_PREPAID_BUSINESS.getKey().equals(Integer.parseInt(appid))){
 			return_url = PayHttpService.HEE_PREPAID_RETURN_URL;
 		}
-    	
     	String reckoningId = payLogicService.createPaymentReckoning(out_trade_no,"3",total_fee_fen,ip,PaymentChannelCode.BHU_WAP_WEIXIN.i18n(),usermac,paymentName,appid);
-    	//记录请求支付完成后返回的地址
     	if (!StringUtils.isBlank(locationUrl)) {
     		logger.info(String.format("get heepay locationUrl [%s] ",locationUrl));
     		PaymentAlipaylocation orderLocation = new PaymentAlipaylocation();
@@ -1633,41 +1601,27 @@ public class PaymentController extends BaseController{
     	long requset_hee_url_end = System.currentTimeMillis() - requset_hee_url_begin; // 这段代码放在程序执行后
 		logger.info(out_trade_no+"请求汇元获取url耗时：" + requset_hee_url_end + "毫秒");
 		int nowOutTimeLevel = payHttpService.getOt();
-		if(requset_hee_url_end > nowOutTimeLevel){
-			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
-			paymentNowpayErrorLog.setId(reckoningId);
-			paymentNowpayErrorLog.setOrder_id(out_trade_no);
-			paymentNowpayErrorLog.setOt(new Long(requset_hee_url_end).intValue());
-			paymentNowpayErrorLog.setC_type("Hee");
-			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
-		}
-		
-		if(requset_hee_url_end > nowOutTimeLevel){
-			
-			String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "汇元",requset_hee_url_end+"");
-			if(requset_hee_url_end > 7000){
-				heeWarningCount++;
-			}
-			if(requset_hee_url_end > 30000){
-				String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
-				String acc = PayHttpService.Internal_level1_error_man;
-				//String acc = "15127166171";
-				String resp = "true";
-				if(!heeErrorTime.equals(curDate)){
-					SendMailHelper.doSendMail(1,smsg);
-					resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-					heeErrorTime = curDate;
+		try{
+						
+			if(requset_hee_url_end > nowOutTimeLevel){
+				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "汇元",requset_hee_url_end+"");
+				if(requset_hee_url_end > 7000){
+					heeWarningCount++;
 				}
-				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
-			}	
-			PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
-			paymentNowpayErrorLog.setId(reckoningId);
-			paymentNowpayErrorLog.setOrder_id(out_trade_no);
-			paymentNowpayErrorLog.setOt(new Long(requset_hee_url_end).intValue());
-			paymentNowpayErrorLog.setC_type("Hee");
-			paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
-		}
-		
+				if(requset_hee_url_end > 30000){
+					String sendMsg = payLogicService.updatePaymentParam(3,smsg,heeErrorTime);
+					if(!StringUtils.isBlank(sendMsg)){
+						heeErrorTime =sendMsg;
+					}
+				}	
+				PaymentOutimeErrorLog  paymentNowpayErrorLog = new PaymentOutimeErrorLog();
+				paymentNowpayErrorLog.setId(reckoningId);
+				paymentNowpayErrorLog.setOrder_id(out_trade_no);
+				paymentNowpayErrorLog.setOt(new Long(requset_hee_url_end).intValue());
+				paymentNowpayErrorLog.setC_type("Hee");
+				paymentOutimeErrorLogService.insert(paymentNowpayErrorLog);
+			}
+			
 			switch (heeWarningCount) {
 			case 3:
 				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "汇元",requset_hee_url_end+"");
@@ -1682,10 +1636,12 @@ public class PaymentController extends BaseController{
 				logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
 				heeWarningCount = 0;
 				break;
-
 			default:
 				break;
 			}
+		}catch(Exception e){
+			logger.info(String.format("apply midas catch exception [%s]",e.getMessage()+e.getCause()));
+		}
 		if("error".equalsIgnoreCase(url)){
     		result.setType("FAIL");
         	result.setUrl("支付请求失败");
@@ -1713,7 +1669,6 @@ public class PaymentController extends BaseController{
    	public void alipayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","支付宝订单支付通知",BusinessHelper.gettimestamp(),"Starting"));
    		long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
-        //获取支付宝POST过来反馈信息
 		Map<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
 		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
@@ -1736,13 +1691,10 @@ public class PaymentController extends BaseController{
 		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
-
 		//支付宝交易号
 		String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8");
-
 		//交易状态
 		String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8");
-		
 		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
 		if (payReckoning == null) {
         	logger.info("get alipay notice payReckoning " +payReckoning);
@@ -1750,40 +1702,32 @@ public class PaymentController extends BaseController{
         }
 		String orderId = payReckoning.getOrder_id();
         logger.info(String.format("get alipay notify reckoningId [%s] trade_no [%s] orderId [%s] trade_status [%s]",out_trade_no, trade_no,orderId,trade_status));
-        
 		if(AlipayNotify.verify(params)){//验证成功
-	            
-	            //判断当前账单的实际状态，如果是以支付状态就不做处理了
-				int payStatus = payReckoning.getPay_status();
-				if(payStatus == 0){ //0未支付;1支付成功
-					//查询账单号对应的订单号
-					if(trade_status.equals("TRADE_FINISHED")){
-						logger.info(" TRADE_FINISHED success");	//请不要修改或删除
-						SpringMVCHelper.renderJson(response, "success");
-						return;
-						//注意：
-						//退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
-					} else if (trade_status.equals("TRADE_SUCCESS")){
-						//支付成功
-						logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
-						payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"","");
-						SpringMVCHelper.renderJson(response, "success");
-						return;
-					}else{
-						logger.info("支付失败！");	//请不要修改或删除
-						SpringMVCHelper.renderJson(response, "fail");
-						return;
-					}
+			int payStatus = payReckoning.getPay_status();
+			if(payStatus == 0){ //0未支付;1支付成功
+				if(trade_status.equals("TRADE_FINISHED")){
+					logger.info(" TRADE_FINISHED success");	//请不要修改或删除
+					SpringMVCHelper.renderJson(response, "success");
+					return;
+				} else if (trade_status.equals("TRADE_SUCCESS")){
+					//支付成功
+					logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
+					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Alipay","");
+					SpringMVCHelper.renderJson(response, "success");
+					return;
+				}else{
+					logger.info("支付失败！");	//请不要修改或删除
+					SpringMVCHelper.renderJson(response, "fail");
+					return;
 				}
-			
-				SpringMVCHelper.renderJson(response, "success");
-				return;
-				
+			}
+		
+			SpringMVCHelper.renderJson(response, "success");
+			return;
 		}else{//验证失败
 			logger.info("fail");
 		}
 		SpringMVCHelper.renderJson(response, "success");
-
 		long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
 		logger.info(payReckoning.getOrder_id()+"支付宝回调通知总耗时：" + end + "毫秒");
 		return;
@@ -1802,7 +1746,6 @@ public class PaymentController extends BaseController{
    			HttpServletResponse response) throws IOException, JDOMException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","现在订单支付通知",BusinessHelper.gettimestamp(),"Starting"));
    		long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
-   	//获取通知数据需要从body中流式读取
 		BufferedReader reader = request.getReader();
 		StringBuilder reportBuilder = new StringBuilder();
 		String tempStr = "";
@@ -1811,31 +1754,25 @@ public class PaymentController extends BaseController{
 		}		
 		String reportContent = reportBuilder.toString();		
 		Map<String,String> dataMap = FormDateReportConvertor.parseFormDataPatternReportWithDecode(reportContent, "UTF-8", "UTF-8");
-		
 		//去除签名类型和签名值
         dataMap.remove("signType");
         String signature = dataMap.remove("signature");
         //验证签名
         boolean isValidSignature = MD5Facade.validateFormDataParamMD5(dataMap,NowpayConfig.appKey,signature);
-
         String isNull = dataMap.get("mhtOrderNo");
         if (StringUtils.isBlank(isNull)) {
 			logger.error(String.format("get nowpay notify out_trade_no  [%s]", isNull));
 			response.getOutputStream().write("success=N".getBytes());
 			return;
 		}
-        
         //商户订单号
 		String out_trade_no = dataMap.get("mhtOrderNo");
-		
 		//现在支付订单号
 		String trade_no = dataMap.get("nowPayOrderNo");
-		
 		//现在支付渠道订单号
 		String channelOrderNo = dataMap.get("channelOrderNo");
 		//交易状态
 		String trade_status =dataMap.get("tradeStatus");
-		
 		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
 		if (payReckoning == null) {
         	logger.info("get nowpay notice payReckoning " +payReckoning);
@@ -1845,12 +1782,9 @@ public class PaymentController extends BaseController{
         logger.info(String.format("get nowpay notify reckoningId [%s] trade_no [%s] channelOrderNo [%s] orderId [%s] trade_status [%s]",out_trade_no, trade_no, channelOrderNo, orderId,trade_status));
         
         if(isValidSignature){
-        	//验证成功
-            //判断当前账单的实际状态，如果是以支付状态就不做处理了
 			int payStatus = payReckoning.getPay_status();
 			if(payStatus == 0){ //0未支付;1支付成功
 				 if (trade_status.equals("A001")){
-					//支付成功
 					logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
 					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,channelOrderNo,"Now",trade_no);
 					response.getOutputStream().write("success=Y".getBytes());
@@ -1884,9 +1818,7 @@ public class PaymentController extends BaseController{
 	@RequestMapping(value = "/payment/wxPayNotifySuccess")
     public void wxPayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.info(String.format("******[%s]********[%s]*******[%s]********","微信订单支付通知",BusinessHelper.gettimestamp(),"Starting"));
-       
         long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
-        
         PrintWriter out = response.getWriter();
         InputStream inStream = request.getInputStream();
         ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
@@ -1909,10 +1841,8 @@ public class PaymentController extends BaseController{
             paySuccessNotifyResponse=new PaySuccessNotifyResponse();
             paySuccessNotifyResponse.setResponseContent(result);
             paySuccessNotifyResponse.setPropertyMap(map);
-            
             out_trade_no = paySuccessNotifyResponse.getOut_trade_no().trim();
             thirdPartCode = paySuccessNotifyResponse.getTransaction_id().trim();
-          //判断非空参数
         	if (StringUtils.isBlank(out_trade_no)) {
     			logger.error("请求参数(out_trade_no)有误,不能为空");
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -1920,26 +1850,21 @@ public class PaymentController extends BaseController{
     			return;
     		}
             PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
-            // 1.1 如果订单不存在则返回订单不存在
             if (payReckoning == null) {
             	response.getWriter().println("<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[ERROR]]></return_msg></xml>");
 		        return;
             }
             orderId = payReckoning.getOrder_id();
             logger.info(String.format("get wx notify reckoningId [%s] trade_no [%s] orderId [%s]",out_trade_no, thirdPartCode,orderId));
-            
-            //判断当前账单的实际状态，如果是以支付状态就不做处理了
 			int payStatus = payReckoning.getPay_status();
 			if(payStatus == 0){ //0未支付;1支付成功
 				logger.info("账单流水号："+out_trade_no+"支付状态未修改,将进行修改。。。");
 	            if("SUCCESS".equals(paySuccessNotifyResponse.getReturn_code()) && "SUCCESS".equals(paySuccessNotifyResponse.getResult_code())){
 	            	 logger.info("账单流水号："+out_trade_no+"支付成功.微信返回SUCCESS.");
-	 				//修改成账单状态    1:已支付 2：退款已支付 3：退款成功 4：退款失败
-	            	 payLogicService.updatePaymentStatus(payReckoning,out_trade_no,thirdPartCode,"","");
+	            	 payLogicService.updatePaymentStatus(payReckoning,out_trade_no,thirdPartCode,"WX","");
 	            	 response.getWriter().println("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
 	            	 return;
 	            }else{
-	                //支付s失败
 	            	logger.info("支付流水号："+out_trade_no+"支付失败 修改订单的支付状态.");
 	            	response.getWriter().println("<xml><return_code><![CDATA[FAIL]]></return_code><return_msg><![CDATA[ERROR]]></return_msg></xml>");
   		            return;
@@ -1949,7 +1874,6 @@ public class PaymentController extends BaseController{
 				response.getWriter().println("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
 		        return;
 			}
-			
         } catch (JDOMException e) {
             logger.info("账单流水号："+out_trade_no+"捕获到微信通知/notify_success方法的异常："+e.getMessage()+e.getCause());
             String noticeStr = "";//XMLUtil.setXML("FAIL", "");
@@ -1976,7 +1900,6 @@ public class PaymentController extends BaseController{
    	@RequestMapping(value = "/payment/heepayNotifySuccess", method = { RequestMethod.GET,RequestMethod.POST })
    	public String heepayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
     	logger.info(String.format("******[%s]********[%s]*******[%s]********","汇元宝通知",BusinessHelper.gettimestamp(),"Starting"));
-
     	long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 		Map<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
@@ -1990,8 +1913,6 @@ public class PaymentController extends BaseController{
 			}
 			params.put(name, valueStr);
 		}
-		
-
 		String goods_no = request.getParameter("agent_bill_id");
 		if (StringUtils.isBlank(goods_no)) {
 			logger.error(String.format("get heepay notify goods_no [%s]", goods_no));
@@ -2001,19 +1922,14 @@ public class PaymentController extends BaseController{
 		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("agent_bill_id").getBytes("ISO-8859-1"),"UTF-8");
-
 		//汇元交易号
 		String trade_no = new String(request.getParameter("jnet_bill_no").getBytes("ISO-8859-1"),"UTF-8");
-
 		//交易金额
 		String pay_amt = new String(request.getParameter("pay_amt").getBytes("ISO-8859-1"),"UTF-8");
-		
 		//交易签名
 		String sign = new String(request.getParameter("sign").getBytes("ISO-8859-1"),"UTF-8");
-		
 		//交易状态
 		String trade_status = new String(request.getParameter("result").getBytes("ISO-8859-1"),"UTF-8");
-
 		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
 		if (payReckoning == null) {
         	logger.info("get heepay notice payReckoning " +payReckoning);
@@ -2021,37 +1937,30 @@ public class PaymentController extends BaseController{
         }
 		String orderId = payReckoning.getOrder_id();
         logger.info(String.format("get heepay notify reckoningId [%s] trade_no [%s] orderId [%s] trade_status [%s]",out_trade_no, trade_no,orderId,trade_status));
-        
 		String mySign = Heepay.sign(trade_no,out_trade_no,pay_amt);
 		logger.info(String.format("get heepay notify to create mySign[%s] pay_amt [%s] sign [%s]",mySign, pay_amt, sign));
 		if(mySign.equals(sign)){//验证成功
-	            //判断当前账单的实际状态，如果是以支付状态就不做处理了
-				int payStatus = payReckoning.getPay_status();
-				if(payStatus == 0){ //0未支付;1支付成功
-					//查询账单号对应的订单号
-					 if (trade_status.equals("1")){
-						//支付成功
-						logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
-						payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Hee","");
-						return "ok";
-					}else{
-						//1:已支付 2：退款已支付 3：退款成功 4：退款失败
-						logger.info("支付失败！");	//请不要修改或删除
-						return "error";
-					}
+			int payStatus = payReckoning.getPay_status();
+			if(payStatus == 0){ //0未支付;1支付成功
+				 if (trade_status.equals("1")){
+					logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
+					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Hee","");
+					return "ok";
+				}else{
+					logger.info("支付失败！");	//请不要修改或删除
+					return "error";
 				}
-				 long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
-				 logger.info(orderId+"微信通知总耗时：" + end + "毫秒");
-				return "ok";
-				
-		}else{//验证失败
+			}
 			
+			 long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
+			 logger.info(orderId+"微信通知总耗时：" + end + "毫秒");
+			return "ok";
+		}else{//验证失败
 			logger.info(String.format("get heepay notify  mysign [%s] sign [%s] sign verify fail",mySign, sign));
 			 long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
 			 logger.info(orderId+"汇元通知总耗时：" + end + "毫秒");
 			return "error";
 		}
-		
     }
     
     /***************************Hee end**************************************/
@@ -2067,11 +1976,9 @@ public class PaymentController extends BaseController{
    	@RequestMapping(value = "/payment/midasNotifySuccess", method = { RequestMethod.GET,RequestMethod.POST })
    	public void midasNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
     	logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师midasNotifySuccess",BusinessHelper.gettimestamp(),"Starting"));
-
     	long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
    		MidasRespone result = null;
    		result = new MidasRespone(1,"通知订单信息无效");
-    	
     	HashMap<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
 		if(requestParams.isEmpty()){
@@ -2093,16 +2000,12 @@ public class PaymentController extends BaseController{
 		
 		String goods_no = request.getParameter("payitem");
 		String notify_url = PayHttpService.MIDAS_NOTIFY_URL;
-		
 		//商户订单号
 		String out_trade_no = BusinessHelper.formatPayItem(payHttpService.getEnv(), goods_no);
-
 		//交易号 (米大师给的微信流水号)
 		String trade_no = new String(request.getParameter("cftid").getBytes("ISO-8859-1"),"UTF-8");
-
 		//交易号(米大师流水号)
 		String billno = new String(request.getParameter("billno").getBytes("ISO-8859-1"),"UTF-8");
-		
 		//交易签名
 		String sign = new String(request.getParameter("sig").getBytes("ISO-8859-1"),"UTF-8");
 		long select_ID_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
@@ -2116,14 +2019,11 @@ public class PaymentController extends BaseController{
         }
 		String orderId = payReckoning.getOrder_id();
         logger.info(String.format("get midas notify reckoningId [%s] trade_no [%s] orderId [%s] billno [%s]",out_trade_no, trade_no,orderId,billno));
-        
 		boolean verifySig = MidasUtils.verifySig(params,notify_url,sign);
 		logger.info(String.format("get midas notify to create verifySig[%s]",verifySig));
 		if(verifySig){//验证成功
-            //判断当前账单的实际状态，如果是以支付状态就不做处理了
 			int payStatus = payReckoning.getPay_status();
 			if(payStatus == 0){ //0未支付;1支付成功
-				//支付成功
 				logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
 				payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
 				result.setMsg("OK");
@@ -2139,13 +2039,11 @@ public class PaymentController extends BaseController{
 					logger.info("订单支付成功状态已修改完成,记录 midas 再次发送回掉通知信息out_trade_no[%s],  billno[%s],trade_no[%s]",out_trade_no,billno,trade_no);
 					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
 				}
-				
 				result.setMsg("OK");
 				result.setRet(0);
 				SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
 				return;
 			}
-				
 		}else{//验证失败
 			logger.info(String.format("get midas notifysign [%s] verify fail", sign));
 			result.setMsg("请求参数错误：（sig）");
@@ -2155,7 +2053,6 @@ public class PaymentController extends BaseController{
 			 logger.info(orderId+"汇元通知总耗时：" + end + "毫秒");
 			return;
 		}
-    	
     }
     
     /***************************Hee end**************************************/
@@ -2175,8 +2072,6 @@ public class PaymentController extends BaseController{
    	public void heeReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","汇元宝返回通知",BusinessHelper.gettimestamp(),"Starting"));
    		String locationUrl = PayHttpService.WEB_NOTIFY_URL;
-
-        //获取支付宝POST过来反馈信息
 		Map<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
 		if(requestParams.isEmpty()){
@@ -2195,10 +2090,12 @@ public class PaymentController extends BaseController{
 			params.put(name, valueStr);
 		}
 		
-		
 		String pay_amt = request.getParameter("pay_amt");
 		String result = request.getParameter("result");
 		String fbtn = request.getParameter("fbtn");
+		if(fbtn == null){
+			fbtn = "";
+		}
 		if(pay_amt.equals("0.00")||result.equals("0") || fbtn.equals("goback")){
 			String pay_message = request.getParameter("pay_message");
 			logger.info(String.format("get heepay return notify.user canceled this pay and go to locationUrl [%s] pay_message[%s]", locationUrl,pay_message));
@@ -2207,13 +2104,11 @@ public class PaymentController extends BaseController{
 		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("agent_bill_id").getBytes("ISO-8859-1"),"UTF-8");
-		
 		if (StringUtils.isBlank(out_trade_no)) {
 			logger.error(String.format("get heepay return notify out_trade_no [%s]", out_trade_no));
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
 		}
-		
 		String returnUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		if(StringUtils.isNotBlank(returnUrl)){
 			if(returnUrl.startsWith("http")){
@@ -2236,14 +2131,10 @@ public class PaymentController extends BaseController{
    	public void heePrepaidReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","汇元宝充值返回通知",BusinessHelper.gettimestamp(),"Starting"));
    		String locationUrl = PayHttpService.PREPAID_NOTIFY_URL;
-   		
-        //获取支付宝POST过来反馈信息
 		Map<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
 		if(requestParams.isEmpty()){
 			logger.error(String.format("user canceled this payment ,get heepay return notify locationUrl [%s] requestParams [%s]", locationUrl, requestParams));
-			response.sendRedirect(locationUrl);
-			return;
 		}
 		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
 			String name = (String) iter.next();
@@ -2259,21 +2150,21 @@ public class PaymentController extends BaseController{
 		String pay_amt = request.getParameter("pay_amt");
 		String result = request.getParameter("result");
 		String fbtn = request.getParameter("fbtn");
+		if(fbtn == null){
+			fbtn = "";
+		}
 		if(pay_amt.equals("0.00")||result.equals("0") || fbtn.equals("goback")){
 			String pay_message = request.getParameter("pay_message");
 			logger.info(String.format("get heepay return notify.user canceled this pay and go to locationUrl [%s] pay_message[%s]", locationUrl,pay_message));
 			response.sendRedirect(locationUrl);
 			return;
 		}
-		//商户订单号
 		String out_trade_no = new String(request.getParameter("agent_bill_id").getBytes("ISO-8859-1"),"UTF-8");
-		
 		if (StringUtils.isBlank(out_trade_no)) {
 			logger.error(String.format("get heepay return notify out_trade_no [%s]", out_trade_no));
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
 		}
-		
 		String returnUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		if(StringUtils.isNotBlank(returnUrl)){
 			if(returnUrl.startsWith("http")){
@@ -2281,7 +2172,6 @@ public class PaymentController extends BaseController{
 			}
 		}
 		response.sendRedirect(locationUrl);
-
 	}
    	
     /**
@@ -2296,8 +2186,6 @@ public class PaymentController extends BaseController{
 	@RequestMapping(value = "/payment/alipayReturn" , method = { RequestMethod.GET,RequestMethod.POST })
    	public void alipayReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","接收支付宝打赏返回通知",BusinessHelper.gettimestamp(),"Starting"));
-
-        //获取支付宝POST过来反馈信息
 		Map<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
 		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
@@ -2318,7 +2206,6 @@ public class PaymentController extends BaseController{
 			response.sendRedirect(locationUrl);
 			return;
 		}
-		//商户订单号
 		String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
 		String returnUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		if(StringUtils.isNotBlank(returnUrl)){
@@ -2342,8 +2229,6 @@ public class PaymentController extends BaseController{
 	@RequestMapping(value = "/payment/nowpayReturn" , method = { RequestMethod.GET,RequestMethod.POST })
    	public void nowpayReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","接收现在支付打赏返回通知",BusinessHelper.gettimestamp(),"Starting"));
-
-        //获取支付宝POST过来反馈信息
 		Map<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
 		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
@@ -2361,8 +2246,6 @@ public class PaymentController extends BaseController{
 		String isNull = request.getParameter("mhtOrderNo");
 		if (StringUtils.isBlank(isNull)) {
 			logger.info(String.format("get nowpay return notify out_trade_no [%s]", isNull));
-//			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-//					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
 			response.sendRedirect(locationUrl);
 			return;
 		}
@@ -2372,9 +2255,7 @@ public class PaymentController extends BaseController{
 			response.sendRedirect(locationUrl);
 			return;
 		}
-		//商户订单号
 		String out_trade_no = new String(request.getParameter("mhtOrderNo").getBytes("ISO-8859-1"),"UTF-8");
-		
 		String returnUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		if(StringUtils.isNotBlank(returnUrl)){
 			if(returnUrl.startsWith("http")){
@@ -2397,8 +2278,6 @@ public class PaymentController extends BaseController{
 	@RequestMapping(value = "/payment/alipayPrepaidReturn" , method = { RequestMethod.GET,RequestMethod.POST })
    	public void alipayPrepaidReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","接收支付宝充值返回通知",BusinessHelper.gettimestamp(),"Starting"));
-
-        //获取支付宝POST过来反馈信息
 		Map<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
 		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
@@ -2411,7 +2290,6 @@ public class PaymentController extends BaseController{
 			}
 			params.put(name, valueStr);
 		}
-		
 		String isNull = request.getParameter("out_trade_no");
 		String locationUrl = PayHttpService.PREPAID_NOTIFY_URL;
 		if (StringUtils.isBlank(isNull)) {
@@ -2419,7 +2297,6 @@ public class PaymentController extends BaseController{
 			response.sendRedirect(locationUrl);
 			return;
 		}
-		//商户订单号
 		String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
 		String returnUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		if(StringUtils.isNotBlank(returnUrl)){
@@ -2443,8 +2320,6 @@ public class PaymentController extends BaseController{
 	@RequestMapping(value = "/payment/nowpayPrepaidReturn" , method = { RequestMethod.GET,RequestMethod.POST })
    	public void nowpayPrepaidReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","接收现在支付充值返回通知",BusinessHelper.gettimestamp(),"Starting"));
-
-        //获取支付宝POST过来反馈信息
 		Map<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
 		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
@@ -2462,8 +2337,6 @@ public class PaymentController extends BaseController{
 		String isNull = request.getParameter("mhtOrderNo");
 		if (StringUtils.isBlank(isNull)) {
 			logger.error(String.format("get nowpay return notify out_trade_no [%s]", isNull));
-//			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-//					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
 			return;
 		}
 		String transStatus = request.getParameter("transStatus");
@@ -2472,9 +2345,7 @@ public class PaymentController extends BaseController{
 			response.sendRedirect(locationUrl);
 			return;
 		}
-		//商户订单号
 		String out_trade_no = new String(request.getParameter("mhtOrderNo").getBytes("ISO-8859-1"),"UTF-8");
-		
 		String returnUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		if(StringUtils.isNotBlank(returnUrl)){
 			if(returnUrl.startsWith("http")){
@@ -2496,11 +2367,9 @@ public class PaymentController extends BaseController{
 	@RequestMapping(value = "/payment/midasReturn" , method = { RequestMethod.GET,RequestMethod.POST })
    	public void midasReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
    		logger.info(String.format("******[%s]********[%s]*******[%s]********","米大师备用通知midasReturn",BusinessHelper.gettimestamp(),"Starting"));
-
    		long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
    		MidasRespone result = null;
    		result = new MidasRespone(1,"通知订单信息无效");
-    	
     	HashMap<String,String> params = new HashMap<String,String>();
 		Map requestParams = request.getParameterMap();
 		if(requestParams.isEmpty()){
@@ -2522,19 +2391,14 @@ public class PaymentController extends BaseController{
 		
 		String goods_no = request.getParameter("payitem");
 		String notify_url = PayHttpService.MIDAS_RETURN_URL;
-		
 		//商户订单号
 		String out_trade_no = BusinessHelper.formatPayItem(payHttpService.getEnv(), goods_no) ;
-
 		//交易号 (米大师给的微信流水号)
 		String trade_no = new String(request.getParameter("cftid").getBytes("ISO-8859-1"),"UTF-8");
-
 		//交易号(米大师流水号)
 		String billno = new String(request.getParameter("billno").getBytes("ISO-8859-1"),"UTF-8");
-		
 		//交易签名
 		String sign = new String(request.getParameter("sig").getBytes("ISO-8859-1"),"UTF-8");
-
 		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
 		if (payReckoning == null) {
         	logger.info("get midas notice payReckoning " +payReckoning);
@@ -2543,14 +2407,11 @@ public class PaymentController extends BaseController{
         }
 		String orderId = payReckoning.getOrder_id();
         logger.info(String.format("get midas notify reckoningId [%s] trade_no [%s] orderId [%s] billno [%s]",out_trade_no, trade_no,orderId,billno));
-        
 		boolean verifySig = MidasUtils.verifySig(params,notify_url,sign);
 		logger.info(String.format("get midas notify to create verifySig[%s]",verifySig));
 		if(verifySig){//验证成功
-            //判断当前账单的实际状态，如果是以支付状态就不做处理了
 			int payStatus = payReckoning.getPay_status();
 			if(payStatus == 0){ //0未支付;1支付成功
-				//支付成功
 				logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
 				payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
 				result.setMsg("OK");
@@ -2566,7 +2427,6 @@ public class PaymentController extends BaseController{
 					logger.info("订单支付成功状态已修改完成,记录 midas 再次发送回掉通知信息out_trade_no[%s],  billno[%s],trade_no[%s]",out_trade_no,billno,trade_no);
 					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Midas",billno);
 				}
-				
 				result.setMsg("OK");
 				result.setRet(0);
 				SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(result));
@@ -2574,7 +2434,6 @@ public class PaymentController extends BaseController{
 				logger.info(orderId+"米大师通知总耗时：" + end + "毫秒");
 				return;
 			}
-				
 		}else{//验证失败
 			logger.info(String.format("get midas notifysign [%s] verify fail", sign));
 			result.setMsg("请求参数错误：(sig)");
@@ -2585,5 +2444,4 @@ public class PaymentController extends BaseController{
 			return;
 		}
 	}
-   
 }

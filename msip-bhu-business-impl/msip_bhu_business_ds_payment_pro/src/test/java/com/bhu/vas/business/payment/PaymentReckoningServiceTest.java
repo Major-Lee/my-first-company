@@ -6,11 +6,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
 import com.bhu.vas.business.ds.payment.service.PaymentReckoningService;
-import com.bhu.vas.business.payment.help.BusinessHelper;
 import com.smartwork.msip.localunit.BaseTest;
-import com.smartwork.msip.localunit.RandomPicker;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PaymentReckoningServiceTest extends BaseTest {
@@ -24,7 +21,7 @@ public class PaymentReckoningServiceTest extends BaseTest {
 	@Test
 	public void test001BatchCreateOrder() {
 		for (int i = 1; i < 2; i++) {
-			PaymentReckoning order = new PaymentReckoning();
+			/*PaymentReckoning order = new PaymentReckoning();
 			String reckoningId = BusinessHelper.generatePaymentReckoningNoByType("test");
 			order.setId(reckoningId);
 			order.setOrder_id(RandomPicker.randString(letters, 10));
@@ -35,7 +32,7 @@ public class PaymentReckoningServiceTest extends BaseTest {
 			order.setExter_invoke_ip("213.42.3.24");
 			order.setAppid("1000");
 			order.setToken(RandomPicker.randString(letters, 10));
-			paymentReckoningService.insert(order);
+			paymentReckoningService.insert(order);*/
 		}
 	}
 

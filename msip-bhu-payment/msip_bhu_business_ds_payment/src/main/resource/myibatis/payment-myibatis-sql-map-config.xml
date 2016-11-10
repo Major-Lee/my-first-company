@@ -27,6 +27,7 @@
 		<typeAlias alias="paymentParameter" type="com.bhu.vas.api.rpc.payment.model.PaymentParameter" />
 		<typeAlias alias="paymentReckoning" type="com.bhu.vas.api.rpc.payment.model.PaymentReckoning" />
 		<typeAlias alias="paymentOutimeErrorLog" type="com.bhu.vas.api.rpc.payment.model.PaymentOutimeErrorLog" />
+		<typeAlias alias="paymentCallbackSum" type="com.bhu.vas.api.rpc.payment.model.PaymentCallbackSum" />
 		<typeAlias alias="paymentOrderRel" type="com.bhu.vas.api.rpc.payment.model.PaymentOrderRel" />
 		<typeAlias alias="paymentWithdraw" type="com.bhu.vas.api.rpc.payment.model.PaymentWithdraw" />
 	</typeAliases>
@@ -38,6 +39,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentParameter.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentReckoning.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentOutimeErrorLog.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentCallbackSum.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentOrderRel.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/payment/model/sqlMapper/PaymentWithdraw.sqlMap.xml" />
 	</mappers>

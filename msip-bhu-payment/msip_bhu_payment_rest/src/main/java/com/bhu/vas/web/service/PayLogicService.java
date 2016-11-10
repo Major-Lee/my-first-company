@@ -4,12 +4,14 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
+import com.bhu.vas.api.rpc.payment.model.PaymentCallbackSum;
 import com.bhu.vas.api.rpc.payment.model.PaymentOrderRel;
 import com.bhu.vas.api.rpc.payment.model.PaymentParameter;
 import com.bhu.vas.api.rpc.payment.model.PaymentReckoning;
@@ -17,14 +19,18 @@ import com.bhu.vas.api.rpc.payment.model.PaymentWithdraw;
 import com.bhu.vas.api.rpc.payment.vto.PaymentReckoningVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.ds.payment.service.PaymentAlipaylocationService;
+import com.bhu.vas.business.ds.payment.service.PaymentCallbackSumService;
 import com.bhu.vas.business.ds.payment.service.PaymentOrderRelService;
 import com.bhu.vas.business.ds.payment.service.PaymentParameterService;
 import com.bhu.vas.business.ds.payment.service.PaymentReckoningService;
 import com.bhu.vas.business.ds.payment.service.PaymentWithdrawService;
 import com.bhu.vas.business.helper.BusinessHelper;
 import com.bhu.vas.business.helper.PaymentChannelCode;
+import com.bhu.vas.business.qqmail.SendMailHelper;
 import com.bhu.vas.web.cache.BusinessCacheService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.localunit.RandomPicker;
 
 /**
@@ -39,6 +45,8 @@ public class PayLogicService {
 	PaymentReckoningService paymentReckoningService;
 	@Resource
 	PaymentOrderRelService paymentOrderRelService;
+	@Resource
+	PaymentCallbackSumService paymentCallbackSumService;
 	@Resource
 	PaymentWithdrawService paymentWithdrawService;
 	@Resource
@@ -69,7 +77,7 @@ public class PayLogicService {
     	return result;
     }
     
-    public String findWapWeixinMerchantServiceByCondition(String total_fee){
+    public String findWapWeixinMerchantServiceByCondition(){
     	String result = "Now";
 //    	String cacheMerchName = businessCacheService.getWapWeixinMerchantNameFromCache();
 //    	if(cacheMerchName != null ){
@@ -77,8 +85,6 @@ public class PayLogicService {
 //    		return result;
 //    	}
     	
-    	String total_fee_fen = BusinessHelper.getMoney(total_fee);
-    	int tempFee = Integer.parseInt(total_fee_fen);
     	PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
     	//PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEI_XIN");
     	if(paymentParameter == null){
@@ -91,15 +97,13 @@ public class PayLogicService {
     	
 		switch (curLevel) {
 		case 1:
-			if(tempFee >= 50 || !channelOptions.equals("Hee")){
-				result = channelOptions;
-			}
+			result = channelOptions;
 			break;
 		case 2:
-			result = BusinessHelper.generatePaymentChannelType(tempFee,channelRate,channelOptions,2);
+			result = BusinessHelper.generatePaymentChannelType(channelRate,channelOptions,2);
 			break;
 		case 3:
-			result =BusinessHelper.generatePaymentChannelType(tempFee,channelRate,channelOptions,3);
+			result =BusinessHelper.generatePaymentChannelType(channelRate,channelOptions,3);
 			break;
 
 		default:
@@ -256,6 +260,86 @@ public class PayLogicService {
  		return reckoningId;
     }
     
+    public String updatePaymentParam(int agentNo,String smsg,String nowErrorTime) {
+    	String result = "";
+    	//PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
+    	PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEI_XIN");
+    	String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
+		String acc = PayHttpService.Internal_level1_error_man;
+		//String acc = "15127166171";
+		String resp = "true";
+		switch (agentNo) {
+		case 1: //NowPay
+			if(!nowErrorTime.equals(curDate)){
+				SendMailHelper.doSendMail(1,smsg);
+				resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+				
+		    	if(paymentParameter == null){
+		    		return result;
+		    	}
+		    	paymentParameter.setStatus(PayHttpService.ORDER_ALLOCATION_LEVEL);
+		    	paymentParameter.setUpdated_at(new Date());
+		    	paymentParameter.setValue(PayHttpService.ORDER_AGENT);
+		    	paymentParameter.setCharge_rate(PayHttpService.NOW_LEVEL1_RATE);
+		    	paymentParameterService.update(paymentParameter);
+				result = curDate;
+			}
+			break;
+		case 2:  //Midas
+			if(!nowErrorTime.equals(curDate)){
+				SendMailHelper.doSendMail(1,smsg);
+				resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+				paymentParameter.setStatus(PayHttpService.ORDER_ALLOCATION_LEVEL);
+		    	paymentParameter.setUpdated_at(new Date());
+		    	paymentParameter.setValue(PayHttpService.ORDER_AGENT);
+		    	paymentParameter.setCharge_rate(PayHttpService.MIDAS_LEVEL1_RATE);
+		    	paymentParameterService.update(paymentParameter);
+				result = curDate;
+			}
+			break;
+		case 3: //Hee
+			if(!nowErrorTime.equals(curDate)){
+				SendMailHelper.doSendMail(1,smsg);
+				resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+				result = curDate;
+			}
+		break;
+		case 4:// nativeWeixin
+			if(!nowErrorTime.equals(curDate)){
+				SendMailHelper.doSendMail(1,smsg);
+				resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+				result = curDate;
+			}
+			break;
+		case 5:// appWeixin
+			if(!nowErrorTime.equals(curDate)){
+				SendMailHelper.doSendMail(1,smsg);
+				resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+				result = curDate;
+			}
+			break;
+		case 6:// alipay
+			if(!nowErrorTime.equals(curDate)){
+				SendMailHelper.doSendMail(1,smsg);
+				resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+				result = curDate;
+			}
+		case 7:// doWxWithdrawals
+			if(!nowErrorTime.equals(curDate)){
+				SendMailHelper.doSendMail(1,smsg);
+				resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
+				result = curDate;
+			}
+			break;
+
+		default:
+			break;
+		}
+		
+		logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",acc,smsg,resp));
+		return result;
+	}
+    
     /**
      * 模拟充值通知接口
      * @param updatePayStatus 需要修改的流水号对象
@@ -269,9 +353,11 @@ public class PayLogicService {
 						    		String thirdPartCode,
 						    		String thridType,
 						    		String billo){
+    	
+    	Date payTime = new Date();
 		updatePayStatus.setThird_party_code(thirdPartCode);
 		updatePayStatus.setPay_status(1);
-		updatePayStatus.setPaid_at(new Date());
+		updatePayStatus.setPaid_at(payTime);
 		if(thridType != null){
 			updatePayStatus.setRemark(billo);
 			updatePayStatus.setChannel_type(thridType);
@@ -282,6 +368,33 @@ public class PayLogicService {
  		logger.info(updatePayStatus.getOrder_id()+"修改支付状态耗时：" + update_end + "毫秒");
  		logger.info(String.format("update out_trade_no [%s] payment status finished.",out_trade_no));
  		
+ 		//计算订单支付总耗时时间
+ 		Date createdTime = updatePayStatus.getCreated_at();
+ 		try{
+ 			String evn = payHttpService.getEnv().toUpperCase();
+ 			String channelType = updatePayStatus.getChannel_type();
+ 			long between = BusinessHelper.getBetweenTimeCouse(createdTime, payTime);
+ 			if(between < 60){//得0分
+ 				 System.out.println(out_trade_no+"得0分");
+ 			}else if (between < 120){//得1分
+ 				System.out.println(out_trade_no+"得1分");
+ 				innerProcessor(1,updatePayStatus.getId(),evn,channelType);
+ 			}else if (between < 180){//得5分
+ 				System.out.println(out_trade_no+"得5分");
+ 				innerProcessor(5,updatePayStatus.getId(),evn,channelType);
+ 			}else if (between < 300){//得10分
+ 				System.out.println(out_trade_no+"得10分");
+ 				innerProcessor(10,updatePayStatus.getId(),evn,channelType);
+ 			}else if(between < 1800){//得50分
+ 				System.out.println(out_trade_no+"得20分");
+ 				innerProcessor(20,updatePayStatus.getId(),evn,channelType);
+ 			}else {//得100分
+ 				System.out.println(out_trade_no+"得30分");
+ 				innerProcessor(30,updatePayStatus.getId(),evn,channelType);
+ 			}
+ 		}catch(Exception e){
+ 			System.out.println("捕获积分系统异常:"+e.getMessage()+e.getCause());
+ 		}
  		//通知订单
  		PaymentReckoning payNotice =  paymentReckoningService.getById(out_trade_no);
  		ResponsePaymentCompletedNotifyDTO rpcn_dto = new ResponsePaymentCompletedNotifyDTO();
@@ -318,6 +431,73 @@ public class PayLogicService {
 		}
 		logger.info("success");
     }
+    
+    private void innerProcessor (int subtotal,String reckonId,String env,String channel_type){
+    	try{
+    		String curDate = (BusinessHelper.getTimestamp()+"").substring(0, 10);
+        	String type =  BusinessHelper.parseReckonIdReturnType(reckonId, env);
+        	String reckonNo = env+type+curDate;
+        	if(type.equals(PaymentChannelCode.BHU_PC_WEIXIN.i18n())){
+        		paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
+     		}else if(type.equals(PaymentChannelCode.BHU_PC_ALIPAY.i18n())){
+     			paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
+     		}else if(type.equals(PaymentChannelCode.BHU_APP_ALIPAY.i18n())){
+     			paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
+     		}else if(type.equals(PaymentChannelCode.BHU_APP_WEIXIN.i18n())){
+     			paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
+     		}else if(type.equals(PaymentChannelCode.BHU_WAP_WEIXIN.i18n())){
+     			 if(channel_type.equals(PaymentChannelCode.BHU_QRCODE_WEIXIN.code())){
+     				reckonNo = env+PaymentChannelCode.BHU_QRCODE_WEIXIN.i18n()+curDate;
+     				paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
+      			}else if(channel_type.equals(PaymentChannelCode.BHU_MIDAS_WEIXIN.code())){
+      				reckonNo = env+PaymentChannelCode.BHU_MIDAS_WEIXIN.i18n()+curDate;
+     				paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
+     			}else if(channel_type.equals(PaymentChannelCode.BHU_HEEPAY_WEIXIN.code())){
+     				reckonNo = env+PaymentChannelCode.BHU_HEEPAY_WEIXIN.i18n()+curDate;
+     				paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
+     			}else if(channel_type.equals(PaymentChannelCode.BHU_NOW_WEIXIN.code())){
+     				reckonNo = env+PaymentChannelCode.BHU_NOW_WEIXIN.i18n()+curDate;
+     				paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
+     	 		}
+     		}else if(type.equals(PaymentChannelCode.BHU_WAP_ALIPAY.i18n())){
+     			paymentCallbackSumService.updateAddScores(subtotal,reckonNo);
+     		}
+        	//检查是否到达报警阈值
+        	PaymentCallbackSum cur = paymentCallbackSumService.getById(reckonNo);
+        	int score = cur.getSubtotal();
+        	String remark = cur.getRemark();
+        	if(score >= 60 && score < 80){
+        		if( StringUtils.isBlank(remark)){
+        			SendMailHelper.doSendMail(3,cur.getId()+"到达预三级警阈值");
+        			cur.setRemark("三");
+        			paymentCallbackSumService.update(cur);
+        		}
+        	}else if(score >= 80 && score < 100){
+        		if( StringUtils.isBlank(remark)){
+        			SendMailHelper.doSendMail(2,cur.getId()+"到达二级预警阈值");
+        		}else if(remark.equals("三")){
+        			SendMailHelper.doSendMail(2,cur.getId()+"到达二级预警阈值");
+        			cur.setRemark("二");
+        			paymentCallbackSumService.update(cur);
+        		}
+        	}else if(score > 100){
+        		if( StringUtils.isBlank(remark)){
+        			SendMailHelper.doSendMail(2,cur.getId()+"到达一级预警阈值");
+        		}else if(remark.equals("二")){
+        			SendMailHelper.doSendMail(2,cur.getId()+"到达一级预警阈值");
+        			cur.setRemark("F");
+        			paymentCallbackSumService.update(cur);
+        		}else if(remark.equals("三")){
+            		SendMailHelper.doSendMail(2,cur.getId()+"到达一级预警阈值");
+            		cur.setRemark("F");
+        			paymentCallbackSumService.update(cur);
+            	}
+        	}
+    	}catch(Exception e){
+    		logger.info("innerProcessor catch error:"+e.getMessage()+e.getCause());
+    	}
+    }
+    
     /**
      * 模拟充值通知接口备用
      * @param updatePayStatus 需要修改的流水号对象
@@ -419,15 +599,15 @@ public class PayLogicService {
 		return getPayOrder;
 	}*/
     public static void main(String[] args) {
-    	int tempFee = 20;
-    	String channelOptions = "Hee";
-    	String result = "Midas";
-    	if(tempFee >= 50 || !channelOptions.equals("Hee")){
-			result = channelOptions;
-			System.out.println(result);
-		}else{
-			System.out.println(result);
-		}
+    	ResponsePaymentCompletedNotifyDTO rpcn_dto = new ResponsePaymentCompletedNotifyDTO();
+ 		rpcn_dto.setSuccess(true);
+ 		rpcn_dto.setOrderid("10012016102700000001000000000701");
+ 		rpcn_dto.setPayment_type("weixin");
+ 		//String fmtDate = BusinessHelper.formatDate(payNotice.getWithdrawAt(), "yyyy-MM-dd HH:mm:ss");
+ 		rpcn_dto.setPaymented_ds("2016-10-28 17:31:32");
+ 		String notify_message = JsonHelper.getJSONString(rpcn_dto);
+        
+ 		CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
 	}
-	
+
 }

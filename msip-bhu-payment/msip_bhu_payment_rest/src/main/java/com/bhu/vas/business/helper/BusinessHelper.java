@@ -942,16 +942,19 @@ public class BusinessHelper extends PropertyEditorSupport {
 		}
 
 
-		public static long getBetweenTimeCouse(String createdTime, Date payTime) {
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-	        Date d1;
-	        long interval =0l;
-			try {
-				d1 = sdf.parse(createdTime);
-				 interval = (payTime.getTime() - d1.getTime())/1000;
-			} catch (ParseException e) {
+		public static long getBetweenTimeCouse(Date createdTime, Date payTime) {
+			
+	        long sec=0;  
+	        long time1 = createdTime.getTime();  
+			long time2 = payTime.getTime();  
+			long diff ;  
+			if(time1<time2) {  
+			    diff = time2 - time1;  
+			} else {  
+			    diff = time1 - time2;  
 			}  
-			return interval;
+			sec = diff /1000 ;  
+	        return sec;  
 		}
 		
 		public static void main(String[] args) {
@@ -965,6 +968,6 @@ public class BusinessHelper extends PropertyEditorSupport {
 //				result = reckonId.substring(3, 7);
 //			}
 			
-			System.out.println(getBetweenTimeCouse("2016-10-31 17:37:00", new Date()));
+			System.out.println(getBetweenTimeCouse(new Date(), new Date()));
 		}
 }
