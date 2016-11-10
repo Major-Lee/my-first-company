@@ -62,7 +62,7 @@ public class UserIdentityAuthService extends EntityService<String,UserIdentityAu
 			
 			if (auth != null) {
 				String acc = auth.getMobileno().substring(3);
-				auth.setInWhiteList(BusinessRuntimeConfiguration.isCommdityWhiteList(acc));
+				auth.setAuthorize(BusinessRuntimeConfiguration.isCommdityWhiteList(acc));
 				return auth;
 			}else{
 				throw new BusinessI18nCodeException(ResponseErrorCode.AUTH_CAPTCHA_IDENTITY_NOT_EXIST);

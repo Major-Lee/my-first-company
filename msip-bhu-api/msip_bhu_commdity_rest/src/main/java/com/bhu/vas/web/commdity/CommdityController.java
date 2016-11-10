@@ -14,6 +14,7 @@ import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
 import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
+import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
@@ -177,7 +178,7 @@ public class CommdityController extends BaseController{
 		
 		RpcResponseDTO<UserIdentityAuth> rpcResult = userCaptchaCodeRpcService.validateIdentity(umac.toLowerCase());
 		if(!rpcResult.hasError()){
-			if(rpcResult.getPayload().isInWhiteList()){
+			if(rpcResult.getPayload().isAuthorize()){
 				String user_agent = request.getHeader("User-Agent");
 				RpcResponseDTO<OrderWhiteListVTO> orderResult = orderRpcService.createWhiteListOrder(commdityid, mac, umac, umactype, 
 						context, user_agent, channel);
@@ -194,11 +195,17 @@ public class CommdityController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/validate_captcha",method={RequestMethod.POST})
 	public void validate_code(
+			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true, value = "hdmac") String umac,
 			@RequestParam(required = true) String acc,
-			@RequestParam(required = true) String hdmac,
-			@RequestParam(required = true) String captcha
+			@RequestParam(required = true) String captcha,
+			@RequestParam(required = false) String context,
+			@RequestParam(required = false, defaultValue = "2") Integer umactype,
+			@RequestParam(required = false, defaultValue = "15") Integer commdityid,
+			@RequestParam(required = false, defaultValue = "0") Integer channel
 			) {
 		
 		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
@@ -206,36 +213,14 @@ public class CommdityController extends BaseController{
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		
-		RpcResponseDTO<Boolean> rpcResult = userCaptchaCodeRpcService.validateIdentityCode(countrycode, acc, hdmac, captcha);
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}
-	}
-	
-	@ResponseBody()
-	@RequestMapping(value="/check_user_in_whitelist",method={RequestMethod.POST})
-	public void commdity_check_user_in_whiteList(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = true) String mac,
-			@RequestParam(required = true) String umac,
-			@RequestParam(required = true) String acc,
-			@RequestParam(required = false) String context,
-			@RequestParam(required = false, defaultValue = "2") Integer umactype,
-			@RequestParam(required = false, defaultValue = "15") Integer commdityid,
-			@RequestParam(required = false, defaultValue = "0") Integer channel
-			) {
 		String user_agent = request.getHeader("User-Agent");
-		RpcResponseDTO<Boolean> rpcResult = orderRpcService.commdity_check_user_in_whiteList(mac, umac, acc, context, umactype, commdityid, user_agent,channel);
+		RpcResponseDTO<UserValidateCaptchaDTO> rpcResult = orderRpcService.validate_code_check_authorize(mac, 
+				umac, countrycode, acc, captcha, context, umactype, commdityid, channel,user_agent);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
+		
 	}
-
-
 }
