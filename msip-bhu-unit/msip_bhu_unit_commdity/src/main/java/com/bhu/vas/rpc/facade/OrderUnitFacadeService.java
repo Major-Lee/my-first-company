@@ -1019,31 +1019,36 @@ public class OrderUnitFacadeService {
 			ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithContryCode, captcha);
 			if (errorCode == null){
 				dto.setValidate_captcha(true);
+				//是否在白名单中
+				dto.setAuthorize(BusinessRuntimeConfiguration.isCommdityWhiteList(acc));
+				if(dto.isAuthorize()){
+					//验证mac umac
+					if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+					}
+					if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+					}
+					String mac_lower = mac.toLowerCase();
+					String umac_lower = umac.toLowerCase();
+					//检查设备是否接入过
+					WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
+					if(wifiDevice == null){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+					}
+					User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
+					//生成订单
+					String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
+					Order order = orderFacadeService.createWhiteListOrder(commdityid, mac_lower, mac_dut, umac_lower, 
+							umactype, bindUser, context, user_agent);
+					logger.info(String.format("validate_code_check_authorize create order[%s]",order.getId()));
+				}else{
+					logger.info(String.format("validate_code_check_authorize user not in whitelist umac[%s],acc[%s]", umac,acc));
+				}
+			}else{
+				logger.info(String.format("validate_code_check_authorize captcha error umac[%s],acc[%s]", umac,acc));
 			}
-			//是否在白名单中
-			dto.setAuthorize(BusinessRuntimeConfiguration.isCommdityWhiteList(acc));
-			if(dto.isAuthorize()){
-				//验证mac umac
-				if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
-				}
-				if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
-				}
-				String mac_lower = mac.toLowerCase();
-				String umac_lower = umac.toLowerCase();
-				//检查设备是否接入过
-				WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
-				if(wifiDevice == null){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
-				}
-				User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
-				//生成订单
-				String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
-				Order order = orderFacadeService.createWhiteListOrder(commdityid, mac_lower, mac_dut, umac_lower, 
-						umactype, bindUser, context, user_agent);
-				logger.info(String.format("validate_code_check_authorize create order[%s]",order.getId()));
-			}
+			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(Exception ex){
 			logger.error("validate_code_check_authorize Exception:", ex);
