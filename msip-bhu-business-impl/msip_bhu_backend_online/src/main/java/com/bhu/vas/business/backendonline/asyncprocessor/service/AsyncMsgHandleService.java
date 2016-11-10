@@ -38,6 +38,7 @@ import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.VapEnumType.SharedNetworkType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.daemon.helper.DaemonHelper;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
@@ -116,7 +117,6 @@ import com.smartwork.msip.cores.helper.ip.IpLookup;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
-import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
 public class AsyncMsgHandleService {
@@ -1688,6 +1688,15 @@ public class AsyncMsgHandleService {
 	public void userDeviceRegister(String message) {
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s]", message));
 		UserDeviceRegisterDTO dto = JsonHelper.getDTO(message, UserDeviceRegisterDTO.class);
+		WifiDeviceSharedealConfigs sharedeal = chargingFacadeService.getWifiDeviceSharedealConfigsService().getById(dto.getMac());
+		int uid = dto.getUid();
+		
+		//如果是城市运营商出货的设备，使用城市运营商的portal模板
+		if(sharedeal != null){
+			if(DistributorType.City.getType().equals(sharedeal.getDistributor_type()) && sharedeal.getDistributor() != -1){
+				uid = sharedeal.getDistributor();
+			}
+		}
 		if(dto.isFromApp()){
 			deviceFacadeService.addMobilePresent(dto.getUid(), dto.getMac());
 			afterUserSignedonThenCmdDown(dto.getMac());
@@ -1697,11 +1706,11 @@ public class AsyncMsgHandleService {
 				// 进行分成owner字段重置
 				chargingFacadeService.wifiDeviceBindedNotify(dto.getMac(), dto.getUid());
 				// 给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
-				addDevices2SharedNetwork(dto.getUid(), dto.getMac());
+				addDevices2SharedNetwork(uid, dto.getMac());
 			}
 		} else {
 			//分成配置等已经在syskey消息中处理完成，此处只需要下发共享网络配置
-			addDevices2SharedNetwork(dto.getUid(), dto.getMac());
+			addDevices2SharedNetwork(uid, dto.getMac());
 		}
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceRegister message[%s] successful", message));
 	}
@@ -1714,13 +1723,19 @@ public class AsyncMsgHandleService {
 	public void userDeviceDestory(String message) {
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s]", message));
 		UserDeviceDestoryDTO dto = JsonHelper.getDTO(message, UserDeviceDestoryDTO.class);
+		WifiDeviceSharedealConfigs sharedeal = chargingFacadeService.getWifiDeviceSharedealConfigsService().getById(dto.getMac());
+		
 		deviceFacadeService.removeMobilePresent(dto.getUid(), dto.getMac());
 		userDeviceBindOperateSyskeySync(dto.getMac(), null);
 		{
 			// 设备分成owner字段重置
 			chargingFacadeService.wifiDeviceUnBindedNotify(dto.getMac());
-			// 给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
-			addDevices2SharedNetwork(-1, dto.getMac());
+			
+			//非城市运营商设备才允许改变设备portal模板
+			if(!(sharedeal != null && DistributorType.City.getType().equals(sharedeal.getDistributor_type()))){
+				// 给此设备下发此用户的共享网络配置 modify by Edmond Lee 20160322
+				addDevices2SharedNetwork(-1, dto.getMac());
+			}
 		}
 		tagGroupRelationService.cleanDeviceGroupRel(dto.getMac());
 		logger.info(String.format("AnsyncMsgBackendProcessor userDeviceDestory message[%s] successful", message));
