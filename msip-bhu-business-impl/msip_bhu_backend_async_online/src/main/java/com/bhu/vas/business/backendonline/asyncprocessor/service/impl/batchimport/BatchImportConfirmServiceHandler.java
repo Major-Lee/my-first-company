@@ -171,8 +171,12 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 										sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(wsnk); //后面会针对设备重建索引 
 									}
 								} else {
-									//如果之前是运营商设备，出货给分销商,暂时保留不动
-									
+									//如果之前是运营商设备，出货给分销商
+									if(user_willbinded!= null){
+										if(wsnk.getOwner() == null || wsnk.getOwner().intValue() != user_willbinded.getId()){
+											sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().delete(wsnk);
+										}
+									}
 								}
 							}
 							
