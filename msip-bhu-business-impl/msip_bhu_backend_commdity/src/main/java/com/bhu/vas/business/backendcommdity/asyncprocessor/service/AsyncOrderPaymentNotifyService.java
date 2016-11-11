@@ -255,7 +255,7 @@ public class AsyncOrderPaymentNotifyService{
 			}
 		}
 		else{
-			if (!commdity.getApp_deliver_detail().isEmpty()){
+			if (commdity.getApp_deliver_detail() != null && !commdity.getApp_deliver_detail().isEmpty()){
 				accessInternetTime = commdity.getApp_deliver_detail();
 			}else{
 				accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
