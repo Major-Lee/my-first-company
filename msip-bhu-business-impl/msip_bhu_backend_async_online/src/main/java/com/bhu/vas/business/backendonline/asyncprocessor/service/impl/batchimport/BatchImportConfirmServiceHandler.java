@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.DistributorType;
 import com.bhu.vas.api.helper.OpsHttpHelper;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
@@ -99,6 +100,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 			}
 */
 			final int distributor = batchImport.getDistributor();
+			final String distributor_type = batchImport.getDistributor_type();
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_IMPORTING);
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
 			final AtomicInteger atomic_failed = new AtomicInteger(0);
@@ -156,15 +158,21 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							//检查共享网络是否需要变更模板(城市运营商变更)
 							List<WifiDeviceSharedNetwork> wifiDevicesSnks = sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().findByIds(pages);
 							for(WifiDeviceSharedNetwork wsnk:wifiDevicesSnks){
-								if(distributor != -1 && wsnk.getOwner() != distributor){
-									wsnk.setOwner(distributor);
-									wsnk.setTemplate(psn.getTemplate());
-									wsnk.setSharednetwork_type(psn.getNtype());
-									SharedNetworkSettingDTO dto = wsnk.getInnerModel();
-									dto.setOn(true);
-									dto.setPsn(psn);
-									wsnk.putInnerModel(dto);
-									sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(wsnk); //后面会针对设备重建索引 
+								if(DistributorType.City.getType().equals(distributor_type)){
+									//城市运营商的设备，需要检查是否需要变更模板
+									if(distributor != -1 && wsnk.getOwner() != distributor){
+										wsnk.setOwner(distributor);
+										wsnk.setTemplate(psn.getTemplate());
+										wsnk.setSharednetwork_type(psn.getNtype());
+										SharedNetworkSettingDTO dto = wsnk.getInnerModel();
+										dto.setOn(true);
+										dto.setPsn(psn);
+										wsnk.putInnerModel(dto);
+										sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(wsnk); //后面会针对设备重建索引 
+									}
+								} else {
+									//如果之前是运营商设备，出货给分销商,暂时保留不动
+									
 								}
 							}
 							
