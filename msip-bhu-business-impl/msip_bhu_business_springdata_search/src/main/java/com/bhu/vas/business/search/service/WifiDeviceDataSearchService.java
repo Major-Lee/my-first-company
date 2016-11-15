@@ -9,6 +9,7 @@ import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionDTO;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.builder.WifiDeviceSearchMessageBuilder;
 import com.bhu.vas.business.search.core.condition.AbstractDataSearchConditionService;
@@ -124,9 +125,9 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param pageSize
 	 * @return
 	 */
-	public long searchCountByPosition(String d_province,String d_city,String d_distrcy){
+	public long searchCountByPosition(List<AdvertiseTrashPositionDTO> must_not_positions,String d_province,String d_city,String d_distrcy){
 		
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(d_province, d_city, d_distrcy);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(must_not_positions,d_province, d_city, d_distrcy);
 		return super.searchCountByConditionMessage(scm);
 	}
 	
@@ -173,10 +174,10 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param pageSize
 	 * @param notify
 	 */
-	public void iteratorWithPosition(String d_province,String d_city, String d_distrcy, 
+	public void iteratorWithPosition(List<AdvertiseTrashPositionDTO> must_not_positions,String d_province,String d_city, String d_distrcy, 
 			 int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
 		
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(d_province, d_city, d_distrcy);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(must_not_positions,d_province, d_city, d_distrcy);
 		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
 		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
 				message, pageSize, notify);

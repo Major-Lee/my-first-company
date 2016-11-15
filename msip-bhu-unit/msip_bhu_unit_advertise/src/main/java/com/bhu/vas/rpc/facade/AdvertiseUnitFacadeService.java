@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionDTO;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -58,7 +59,7 @@ public class AdvertiseUnitFacadeService {
 			Advertise entity=new Advertise();
 			
 			entity.setCity(city);
-			long count=wifiDeviceDataSearchService.searchCountByPosition(province, city, district);
+			long count=wifiDeviceDataSearchService.searchCountByPosition(null,province, city, district);
 			if(start>end){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 			}
@@ -134,14 +135,14 @@ public class AdvertiseUnitFacadeService {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			vto.setCount(wifiDeviceDataSearchService.searchCountByPosition(province, city, district));
-			vto.setList(list);
+			vto.setCount(wifiDeviceDataSearchService.searchCountByPosition(null,province, city, district));
+			vto.setPositions(list);
 		}else if(StringUtils.isNoneBlank(city)){
-			vto.setList(WifiDevicePositionListService.getInstance().fetchCity(city));
+			vto.setPositions(WifiDevicePositionListService.getInstance().fetchCity(city));
 		}else if(StringUtils.isNoneBlank(province)){
-			vto.setList(WifiDevicePositionListService.getInstance().fetchProvince(province));
+			vto.setPositions(WifiDevicePositionListService.getInstance().fetchProvince(province));
 		}else{
-			vto.setList(WifiDevicePositionListService.getInstance().fetchAllProvince());
+			vto.setPositions(WifiDevicePositionListService.getInstance().fetchAllProvince());
 		}
 		return vto;
 	}
@@ -156,7 +157,6 @@ public class AdvertiseUnitFacadeService {
 		Criteria criteria2=mc.createCriteria();
 		Criteria criteria3=mc.createCriteria();
 		Criteria criteria4=mc.createCriteria();
-		System.out.println("mark 11------------------------");
 		if(conditionMap!=null&&conditionMap.size()>0){
 			for(Map<String,Object> singleMap:conditionMap){
 				criteria2.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));
@@ -207,13 +207,11 @@ public class AdvertiseUnitFacadeService {
 			}
 		}
 		int total=advertiseService.countByModelCriteria(mc);
-		System.out.println("mark 12------------------------"+total);
 		mc.setPageNumber(pn);
 		mc.setPageSize(ps);
 		mc.setOrderByClause("created_at desc");
 		advertises=advertiseService.findModelByModelCriteria(mc);
 		
-		System.out.println("mark 13------------------------");
 		List<AdvertiseVTO> advertiseVTOs=new ArrayList<AdvertiseVTO>();
 		if(advertises!=null){
 			for(Advertise ad:advertises){
@@ -304,7 +302,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			
 			entity.setCity(city);
-			long count=wifiDeviceDataSearchService.searchCountByPosition(province, city, district);
+			long count=wifiDeviceDataSearchService.searchCountByPosition(null,province, city, district);
 			entity.setCount(count);
 			entity.setDistrict(district);
 			Date endDate=new Date(end);

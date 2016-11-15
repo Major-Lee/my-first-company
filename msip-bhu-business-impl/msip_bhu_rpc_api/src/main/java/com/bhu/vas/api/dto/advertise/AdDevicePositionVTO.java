@@ -4,14 +4,14 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public class AdDevicePositionVTO implements java.io.Serializable{
-	private List<String> list; 
+	private List<String> positions; 
 	private long count = 0L;
 	
-	public List<String> getList() {
-		return list;
+	public List<String> getPositions() {
+		return positions;
 	}
-	public void setList(List<String> list) {
-		this.list = list;
+	public void setPositions(List<String> positions) {
+		this.positions = positions;
 	}
 	public long getCount() {
 		return count;
