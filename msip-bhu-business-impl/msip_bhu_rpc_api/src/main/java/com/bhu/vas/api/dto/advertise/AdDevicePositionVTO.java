@@ -19,4 +19,9 @@ public class AdDevicePositionVTO implements java.io.Serializable{
 	public void setCount(long count) {
 		this.count = count;
 	}
+	
+	public static boolean isFilter(String str){
+		String reg = "^[a-zA-Z]+$";
+		return str.trim().substring(0, 1).matches(reg);
+	}
 }
