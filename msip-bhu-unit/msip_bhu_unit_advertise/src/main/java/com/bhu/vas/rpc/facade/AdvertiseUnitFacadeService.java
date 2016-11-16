@@ -70,7 +70,7 @@ public class AdvertiseUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 			}
 			entity.setCount(count);
-			int displayNum=Integer.valueOf(String.valueOf(count*1.1));
+			int displayNum=(int) (count*1.1);
 			entity.setCash(displayNum*2);
 			
 			entity.setDistrict(district);
