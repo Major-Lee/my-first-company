@@ -275,14 +275,11 @@
 		select * from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end})))]]> 	
 		and province=#{province} and city=#{city} and district=#{district} 
 		<choose>
-				<when test="province==null">
-					and province='all'
-				</when>
 				<when test="province!=null and city==null">
-					and ((province=#{province} and city='all' ) or (province='all'))
+					and ((province=#{province} ) or (province='all'))
 				</when>
 				<when test="province!=null and city!=null and district==null">
-					and ((province=#{province} and city=#{city}  and district='all') or (province='all') or (province=#{province} and city='all'))
+					and ((province=#{province} and city=#{city} ) or (province='all') or (province=#{province} and city='all'))
 				</when>
 				<when test="province!=null and city!=null and district!=null">
 			   		and ((province=#{province} and city=#{city} and district=#{district}) or (province='all') or (province=#{province} and city='all') or (province=#{province} and city=#{city} and district='all'))
