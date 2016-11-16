@@ -288,13 +288,11 @@ public class WifiDeviceSearchMessageBuilder {
 					Field.D_PROVINCE.getName(), SearchConditionPattern.StringEqual.getPattern(), d_province);
 			pack.addChildSearchCondtions(sc_d_province);
 		}
-		
 		if(StringUtils.isNotEmpty(d_city)){
 			SearchCondition sc_d_city = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 					Field.D_CITY.getName(), SearchConditionPattern.StringEqual.getPattern(), d_city);
 			pack.addChildSearchCondtions(sc_d_city);
 		}
-		
 		if(StringUtils.isNotEmpty(d_distrcy)){
 			SearchCondition sc_d_distrcy = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 					Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), d_distrcy);
@@ -319,6 +317,10 @@ public class WifiDeviceSearchMessageBuilder {
 					pack.addChildSearchCondtions(sc_d_ms_province);
 				}
 			}
+		}
+		if(pack.getChildSearchCondtions().isEmpty()){
+			SearchCondition sc_all = SearchCondition.builderSearchConditionWithAll();
+			pack.addChildSearchCondtions(sc_all);
 		}
 		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack);
