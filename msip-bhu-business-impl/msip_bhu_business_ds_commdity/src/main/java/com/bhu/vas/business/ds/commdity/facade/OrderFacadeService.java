@@ -928,7 +928,7 @@ public class OrderFacadeService {
 
 	public Order createMonthlyServiceOrder(Integer commdityid, String mac, String mac_dut, String umac,
 			Integer umactype, User bindUser, String context, Integer channel, 
-			String user_agent, int count, String acc, String uname, String address) {
+			String user_agent, int count, String acc, String uname, String address, boolean needInvoice, String invoiceDetail) {
 		//商品信息验证
 		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 		//验证商品是否合理
@@ -938,7 +938,7 @@ public class OrderFacadeService {
 		String amount = ArithHelper.
 				getCuttedCurrency(ArithHelper.
 						mul(Double.parseDouble(count+""), Double.parseDouble(commdity.getPrice()))+"");
-		String userInfo = String.format("%s,%s,%s,%s",count, acc, uname, address);
+		String userInfo = String.format("%s,%s,%s,%s,%s,%s",count, acc, uname, address,needInvoice,invoiceDetail);
 		//订单生成
 		Order order = new Order();
 		order.setCommdityid(commdity.getId());

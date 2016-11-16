@@ -902,7 +902,7 @@ public class OrderUnitFacadeService {
 
 	public RpcResponseDTO<RewardCreateMonthlyServiceVTO> rewardCreateMonthlyService(Integer commdityid, String mac,
 			String umac, String context, Integer umactype, Integer channel, 
-			String user_agent, String uname, String acc, String address, int count) {
+			String user_agent, String uname, String acc, String address, int count, boolean needInvoice, String invoiceDetail) {
 		try{
 			//验证mac umac
 			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
@@ -928,7 +928,7 @@ public class OrderUnitFacadeService {
 			//生成订单
 			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
 			Order order = orderFacadeService.createMonthlyServiceOrder(commdityid,mac_lower, mac_dut, umac_lower, umactype, bindUser,
-					context, channel, user_agent, count, acc, uname, address);
+					context, channel, user_agent, count, acc, uname, address, needInvoice, invoiceDetail);
 			
 			RewardCreateMonthlyServiceVTO vto = new RewardCreateMonthlyServiceVTO();
 			vto.setOrderid(order.getId());
