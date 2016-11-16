@@ -318,11 +318,10 @@ public class WifiDeviceSearchMessageBuilder {
 				}
 			}
 		}
-		if(pack.getChildSearchCondtions().isEmpty()){
+		if(pack.getChildSearchCondtions() == null || pack.getChildSearchCondtions().isEmpty()){
 			SearchCondition sc_all = SearchCondition.builderSearchConditionWithAll();
 			pack.addChildSearchCondtions(sc_all);
 		}
-		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack);
 		return scm;
 	}
