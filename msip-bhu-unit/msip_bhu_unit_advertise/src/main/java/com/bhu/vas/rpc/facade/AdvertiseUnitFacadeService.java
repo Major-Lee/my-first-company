@@ -127,8 +127,8 @@ public class AdvertiseUnitFacadeService {
 			vto.setPositions(WifiDevicePositionListService.getInstance().fetchAllProvince());
 		}
 		
-		if(vto != null && vto.getList() !=null){
-				Iterator<String> iter = vto.getList().iterator();
+		if(vto != null && vto.getPositions() !=null){
+				Iterator<String> iter = vto.getPositions().iterator();
 				while (iter.hasNext()) {
 					String rv = iter.next();
 					if (AdDevicePositionVTO.isFilter(rv))
