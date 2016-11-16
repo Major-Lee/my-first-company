@@ -71,7 +71,7 @@ public class AdvertiseUnitFacadeService {
 			entity.setProvince(province);
 			Date startDate=new Date(start);
 			entity.setStart(startDate);
-			entity.setState(AdvertiseType.UnVerified.getType());
+			entity.setState(AdvertiseType.UnPaid.getType());
 			
 			entity.setType(0);
 			entity.setDomain(domain);
