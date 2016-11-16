@@ -65,6 +65,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserCaptchaCodeService;
+import com.bhu.vas.business.ds.user.service.UserIdentityAuthService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
@@ -123,6 +124,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private UserCaptchaCodeService userCaptchaCodeService;
+	
+	@Resource
+	private UserIdentityAuthService userIdentityAuthService;
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -1019,6 +1023,8 @@ public class OrderUnitFacadeService {
 			ResponseErrorCode errorCode = userCaptchaCodeService.validCaptchaCode(accWithContryCode, captcha);
 			if (errorCode == null){
 				dto.setValidate_captcha(true);
+				userIdentityAuthService.generateIdentityAuth(countrycode, acc, umac);
+				asyncDeliverMessageService.sendUserIdentityRepariActionMessage(umac,acc);
 				//是否在白名单中
 				dto.setAuthorize(BusinessRuntimeConfiguration.isCommdityWhiteList(acc));
 				if(dto.isAuthorize()){
