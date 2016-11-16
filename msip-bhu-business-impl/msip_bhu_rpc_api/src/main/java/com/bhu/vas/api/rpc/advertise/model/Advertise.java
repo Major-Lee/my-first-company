@@ -5,9 +5,9 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
+import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")

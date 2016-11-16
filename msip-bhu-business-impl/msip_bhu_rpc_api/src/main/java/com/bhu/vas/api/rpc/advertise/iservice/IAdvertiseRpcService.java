@@ -2,10 +2,10 @@ package com.bhu.vas.api.rpc.advertise.iservice;
 
 import java.util.List;
 
-import com.bhu.vas.api.dto.advertise.AdDevicePositionVTO;
-import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
-import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**

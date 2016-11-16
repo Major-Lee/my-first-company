@@ -7,7 +7,7 @@ import org.elasticsearch.common.lang3.StringUtils;
 import org.elasticsearch.search.sort.SortOrder;
 
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
-import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionDTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.business.search.BusinessIndexDefine;
 import com.bhu.vas.business.search.core.condition.component.SearchCondition;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionLogicEnumType;
@@ -280,7 +280,7 @@ public class WifiDeviceSearchMessageBuilder {
 	 * @param d_distrcy 区
 	 * @return
 	 */
-	public static SearchConditionMessage builderSearchMessageWithPosition(List<AdvertiseTrashPositionDTO> must_not_positions, String d_province,String d_city,String d_distrcy){
+	public static SearchConditionMessage builderSearchMessageWithPosition(List<AdvertiseTrashPositionVTO> must_not_positions, String d_province,String d_city,String d_distrcy){
 		SearchConditionPack pack = SearchConditionPack.builderSearchConditionMustPack();
 		
 		if(StringUtils.isNotEmpty(d_province)){
@@ -302,7 +302,7 @@ public class WifiDeviceSearchMessageBuilder {
 		}
 		
 		if(must_not_positions != null && !must_not_positions.isEmpty()){
-			for(AdvertiseTrashPositionDTO dto: must_not_positions){
+			for(AdvertiseTrashPositionVTO dto: must_not_positions){
 				if(StringUtils.isNotEmpty(dto.getDistrict())){
 					SearchCondition sc_d_distrcy = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.MustNot,BusinessIndexDefine.WifiDevice.
 							Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), dto.getCity());

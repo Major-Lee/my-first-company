@@ -1,6 +1,7 @@
 package com.bhu.vas.api.vto.advertise;
 
-public class AdvertiseTrashPositionDTO {
+@SuppressWarnings("serial")
+public class AdvertiseTrashPositionVTO implements java.io.Serializable{
 	
 	private String province;
 	private String city;
@@ -24,6 +25,4 @@ public class AdvertiseTrashPositionDTO {
 	public void setDistrict(String district) {
 		this.district = district;
 	}
-	
-	
 }

@@ -8,15 +8,14 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.dto.advertise.AdDevicePositionVTO;
-import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionDTO;
+import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;

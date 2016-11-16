@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.advertise.AdDevicePositionVTO;
-import com.bhu.vas.api.dto.advertise.AdvertiseListVTO;
-import com.bhu.vas.api.dto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
+import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
