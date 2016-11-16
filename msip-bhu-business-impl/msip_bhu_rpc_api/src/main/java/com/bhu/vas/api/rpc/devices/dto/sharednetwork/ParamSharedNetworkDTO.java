@@ -27,9 +27,9 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	@JsonIgnore
 	public static final String Default_City_Range_Cash_Mobile = "0.1-0.9";
 	@JsonIgnore
-	public static final String Default_Channel_Range_Cash_PC = "0.5-1.0";
+	public static final String Default_Channel_Range_Cash_PC = "1.5-3.5";
 	@JsonIgnore
-	public static final String Default_Channel_Range_Cash_Mobile = "0.1-0.2";
+	public static final String Default_Channel_Range_Cash_Mobile = "0.1-0.9";
 	@JsonIgnore
 	public static final String Default_AIT = "14400";
 	@JsonIgnore
