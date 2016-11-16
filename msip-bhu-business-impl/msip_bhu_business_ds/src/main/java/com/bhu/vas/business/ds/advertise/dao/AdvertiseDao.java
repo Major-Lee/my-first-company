@@ -1,7 +1,9 @@
 package com.bhu.vas.business.ds.advertise.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
@@ -26,9 +28,9 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		}	
 		return n;
 	}
-	public int queryByAdvertiseTime(Date start,Date end,String province, String city,
+	public List<Advertise> queryByAdvertiseTime(String start,String end,String province, String city,
 			String district ){
-		int n=0;
+		List<Advertise> ads= new ArrayList<Advertise>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("start", start);
 		map.put("end", end);
@@ -36,10 +38,10 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		map.put("city", city);
 		map.put("district", district);
 		try {
-			n = super.getSqlSessionMasterTemplate().selectOne(Advertise.class.getName()+".queryByAdvertiseTime",map);
+			ads = super.getSqlSessionMasterTemplate().selectList(Advertise.class.getName()+".queryByAdvertiseTime",map);
 		} catch (Exception e) {
-			return n;
+			return ads;
 		}	
-		return n;
+		return ads;
 	}
 }

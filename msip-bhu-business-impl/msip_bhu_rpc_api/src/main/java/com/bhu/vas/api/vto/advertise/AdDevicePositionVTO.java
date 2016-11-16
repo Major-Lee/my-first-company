@@ -5,14 +5,8 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class AdDevicePositionVTO implements java.io.Serializable{
 	private List<String> positions;
-	private long count = 0L;
 	private List<AdvertiseOccupiedVTO> occupyAds;
-	public long getCount() {
-		return count;
-	}
-	public void setCount(long count) {
-		this.count = count;
-	}
+	
 	public List<String> getPositions() {
 		return positions;
 	}
@@ -24,5 +18,10 @@ public class AdDevicePositionVTO implements java.io.Serializable{
 	}
 	public void setOccupyAds(List<AdvertiseOccupiedVTO> occupyAds) {
 		this.occupyAds = occupyAds;
+	}
+	
+	public static boolean isFilter(String str){
+		String reg = "^[a-zA-Z]+$";
+		return str.trim().substring(0, 1).matches(reg);
 	}
 }

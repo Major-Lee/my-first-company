@@ -146,11 +146,12 @@ public class OrderRpcService implements IOrderRpcService{
 
 	@Override
 	public RpcResponseDTO<RewardCreateMonthlyServiceVTO> rewardCreateMonthlyService(Integer commdityid, String mac,
-			String umac, String context, Integer umactype, Integer channel, String user_agent, String uname, String acc, String address, int count) {
-		logger.info(String.format("rewardCreateMonthlyService with commdityid[%s] mac[%s] umac[%s] umactype[%s] context[%s] channel[%s] user_agent[%s] uname[%s] acc[%s] address[%s] count[%s]",
-				commdityid,mac, umac, umactype, context, channel,user_agent,uname,acc,address,count));
+			String umac, String context, Integer umactype, Integer channel, String user_agent, 
+			String uname, String acc, String address, int count, boolean needInvoice, String invoiceDetail) {
+		logger.info(String.format("rewardCreateMonthlyService with commdityid[%s] mac[%s] umac[%s] umactype[%s] context[%s] channel[%s] user_agent[%s] uname[%s] acc[%s] address[%s] count[%s] needInvoice[%s] invoiceDetail[%s]",
+				commdityid,mac, umac, umactype, context, channel,user_agent,uname,acc,address,count,needInvoice,invoiceDetail));
 		return orderUnitFacadeService.rewardCreateMonthlyService(commdityid, mac,
-				 umac, context, umactype, channel, user_agent, uname, acc, address, count);
+				 umac, context, umactype, channel, user_agent, uname, acc, address, count,needInvoice,invoiceDetail);
 	}
 
 	@Override

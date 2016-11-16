@@ -1,21 +1,26 @@
 package com.bhu.vas.rpc.facade;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseOccupiedVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
+import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
+import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -42,6 +47,8 @@ public class AdvertiseUnitFacadeService {
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
 	@Resource
 	private UserService userService;
+	@Resource
+	private AdvertiseFacadeService advertiseFacadeService;
 	
 	
 	public AdvertiseService getAdvertiseService() {
@@ -108,41 +115,27 @@ public class AdvertiseUnitFacadeService {
 	 * @param province
 	 * @param city
 	 * @return
+	 * @throws ParseException 
 	 */
-	public AdDevicePositionVTO fetchDevicePositionDistribution(String province,String city,String district){
-		AdDevicePositionVTO vto = new AdDevicePositionVTO();
-		List<String> list = new ArrayList<String>();
-		if(StringUtils.isNotBlank(district)){
-			ModelCriteria mc=new ModelCriteria();
-			try {
-				mc.createCriteria().andColumnEqualTo("province", province)
-				.andColumnEqualTo("city", city).andColumnEqualTo("district", district)
-				.andColumnBetween("start", DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2),
-						DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17))
-				.andColumnNotEqualTo("state", BusinessEnumType.AdvertiseType.EscapeOrder.getType())
-				.andColumnNotEqualTo("state", BusinessEnumType.AdvertiseType.VerifyFailure.getType());
-				List<Advertise> advertises = advertiseService.findModelByModelCriteria(mc);
-				for(Advertise advertise : advertises){
-					String startTime = DateTimeHelper.getDateTime(advertise.getStart(), DateTimeHelper.FormatPattern5);
-					list.add(startTime);
-					if(advertise.getDuration() != 0){
-						for(int i=1; i<=advertise.getDuration(); i++){
-							list.add(DateTimeHelper.getAfterDate(startTime, i));
-						}
-					}
-				}
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-			vto.setCount(wifiDeviceDataSearchService.searchCountByPosition(null,province, city, district));
-			vto.setPositions(list);
-		}else if(StringUtils.isNoneBlank(city)){
+	public AdDevicePositionVTO fetchDevicePositionDistribution(String province,String city,String district) throws ParseException{
+		AdDevicePositionVTO vto = fetchAdvertiseOccupy(province, city, district);
+		if(StringUtils.isNoneBlank(city)){
 			vto.setPositions(WifiDevicePositionListService.getInstance().fetchCity(city));
 		}else if(StringUtils.isNoneBlank(province)){
 			vto.setPositions(WifiDevicePositionListService.getInstance().fetchProvince(province));
 		}else{
 			vto.setPositions(WifiDevicePositionListService.getInstance().fetchAllProvince());
 		}
+		
+		if(vto != null && vto.getPositions() !=null){
+				Iterator<String> iter = vto.getPositions().iterator();
+				while (iter.hasNext()) {
+					String rv = iter.next();
+					if (AdDevicePositionVTO.isFilter(rv))
+						iter.remove();
+				}
+		}
+		
 		return vto;
 	}
 	/**
@@ -353,5 +346,47 @@ public class AdvertiseUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_TYPEERROR);
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
+	
+	private AdDevicePositionVTO fetchAdvertiseOccupy(String province,String city,String district) throws ParseException {
+		AdDevicePositionVTO positionVto = new AdDevicePositionVTO();
+		String start = null;
+		String end = null;
+		
+		start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
+		end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17);
+
+		
+		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
+		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district);
+		
+		for(int i=2; i<=17; i++){
+			
+			AdvertiseOccupiedVTO occupiedVto = new AdvertiseOccupiedVTO();
+			List<AdvertiseTrashPositionVTO> trashVtos = new ArrayList<AdvertiseTrashPositionVTO>();
+			
+			SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern5);  
+			String time = null;
+			Date nowDate = null;
+			
+			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
+			nowDate  = sdf.parse(time);
+			
+			for(Advertise ad : advertises){
+				if(ad.getStart().getTime() <= nowDate.getTime()  &&  ad.getEnd().getTime() > nowDate.getTime()){
+					AdvertiseTrashPositionVTO trashVto = new AdvertiseTrashPositionVTO();
+					trashVto.setDistrict(ad.getDistrict());
+					trashVto.setCity(ad.getCity());
+					trashVto.setProvince(ad.getProvince());
+					trashVtos.add(trashVto);
+				}
+			}
+			occupiedVto.setTrashs(trashVtos);
+			occupiedVto.setDate(time);
+			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
+			occupiedVtos.add(occupiedVto);
+		}
+		positionVto.setOccupyAds(occupiedVtos);
+		return positionVto;
 	}
 }

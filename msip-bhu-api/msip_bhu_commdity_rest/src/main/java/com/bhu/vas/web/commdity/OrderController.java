@@ -476,6 +476,8 @@ public void physical_mini_paymenturl(
 		@RequestParam(required = true) String payment_type,
 		@RequestParam(required = false, defaultValue = "1") int count,
 		@RequestParam(required = false) String context,
+		@RequestParam(required = false, defaultValue = "false") boolean needInvoice,
+		@RequestParam(required = false, defaultValue = "") String invoiceDetail,
 		@RequestParam(required = false, value = "pcd_url") String payment_completed_url,
 		@RequestParam(required = false, defaultValue = "2") Integer umactype,
 		@RequestParam(required = false, defaultValue = "14") Integer commdityid,
@@ -487,7 +489,7 @@ public void physical_mini_paymenturl(
 		String user_agent = request.getHeader("User-Agent");
 		//1:生成订单
 		RpcResponseDTO<RewardCreateMonthlyServiceVTO> rpcResult = orderRpcService.rewardCreateMonthlyService(commdityid, mac, umac, 
-				context, umactype, channel, user_agent,uname,acc,address,count);
+				context, umactype, channel, user_agent,uname,acc,address,count,needInvoice,invoiceDetail);
 		if(rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			return;

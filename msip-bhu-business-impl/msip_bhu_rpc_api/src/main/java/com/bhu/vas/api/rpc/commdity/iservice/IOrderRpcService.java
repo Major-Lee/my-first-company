@@ -58,7 +58,7 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<Boolean> authorizeVideoOrder(String token, String context);
 
 	public RpcResponseDTO<RewardCreateMonthlyServiceVTO> rewardCreateMonthlyService(Integer commdityid, String mac, String umac,
-			String context, Integer umactype, Integer channel, String user_agent, String uname, String acc, String address, int count);
+			String context, Integer umactype, Integer channel, String user_agent, String uname, String acc, String address, int count, boolean needInvoice, String invoiceDetail);
 
 	public RpcResponseDTO<OrderWhiteListVTO> createWhiteListOrder(Integer commdityid, String mac, String umac,
 			Integer umactype, String context, String user_agent, Integer channel);
