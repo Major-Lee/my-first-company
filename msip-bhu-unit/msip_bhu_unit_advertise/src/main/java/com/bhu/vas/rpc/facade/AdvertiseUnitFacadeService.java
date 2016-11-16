@@ -65,6 +65,13 @@ public class AdvertiseUnitFacadeService {
 			Advertise entity=new Advertise();
 			
 			entity.setCity(city);
+			long count=wifiDeviceDataSearchService.searchCountByPosition(null,province, city, district);
+			if(start>end){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
+			}
+			entity.setCount(count);
+			int displayNum=(int) (count*1.1);
+			entity.setCash(displayNum*2);
 			
 			entity.setDistrict(district);
 			Date endDate=new Date(end);
@@ -74,25 +81,6 @@ public class AdvertiseUnitFacadeService {
 			Date startDate=new Date(start);
 			entity.setStart(startDate);
 			entity.setState(AdvertiseType.UnPaid.getType());
-			
-			SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			
-			List<Advertise> advertises=advertiseService.getEntityDao().queryByAdvertiseTime(format.format(startDate), format.format(endDate), province, city, district);
-			List<AdvertiseTrashPositionVTO> advertiseTrashPositionVTOs=new ArrayList<AdvertiseTrashPositionVTO>();
-			for(Advertise i:advertises){
-				AdvertiseTrashPositionVTO advertiseTrashPositionVTO=new AdvertiseTrashPositionVTO();
-				advertiseTrashPositionVTO.setCity(i.getCity());
-				advertiseTrashPositionVTO.setDistrict(i.getDistrict());
-				advertiseTrashPositionVTO.setProvince(i.getProvince());
-				advertiseTrashPositionVTOs.add(advertiseTrashPositionVTO);
-			}
-			long count=wifiDeviceDataSearchService.searchCountByPosition(advertiseTrashPositionVTOs,province, city, district);
-			if(start>end){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
-			}
-			entity.setCount(count);
-			int displayNum=(int) (count*1.1);
-			entity.setCash(displayNum*2);
 			
 			entity.setType(0);
 			entity.setDomain(domain);
@@ -397,9 +385,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
-			System.out.println("333333");
 			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
-			System.out.println("4444444");
 			occupiedVtos.add(occupiedVto);
 		}
 		positionVto.setOccupyAds(occupiedVtos);
