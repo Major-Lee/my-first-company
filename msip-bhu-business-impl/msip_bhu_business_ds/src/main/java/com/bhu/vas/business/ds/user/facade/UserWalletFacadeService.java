@@ -385,15 +385,21 @@ public class UserWalletFacadeService{
 		procedureDTO.setOwner_memo(String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		procedureDTO.setManufacturer_memo(String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getManufacturer_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		procedureDTO.setDistributor_memo(String.format("Total:%s Incomming:%s distributor:%s mac:%s", cash,sharedeal.getDistributor_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		procedureDTO.setDistributor_l2_memo(String.format("Total:%s Incomming:%s distributor l2:%s mac:%s", cash,sharedeal.getDistributor_l2_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		procedureDTO.setPay_time(pay_time);
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
 			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
-			if(sharedeal.isBelong() && callback != null){
+			if(sharedeal.getOwner_cash() > 0 && sharedeal.isBelong() && callback != null){
 				callback.notifyCashSharedealOper(sharedeal.getOwner(),sharedeal.getOwner_cash());
 			}
 			// 分成成功后清除用户钱包日志统计缓存数据,再次查询时就是最新的数据
-			businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getOwner());
+			if(sharedeal.getOwner_cash() > 0 && sharedeal.getOwner() > 0)
+				businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getOwner());
+			if(sharedeal.getDistributor_cash() > 0 && sharedeal.getDistributor() > 0)
+				businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getDistributor());
+			if(sharedeal.getDistributor_l2_cash() > 0 && sharedeal.getDistributor_l2() > 0)
+				businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getDistributor_l2());
 		}else
 			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());

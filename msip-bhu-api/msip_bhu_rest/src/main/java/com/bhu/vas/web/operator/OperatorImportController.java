@@ -19,6 +19,7 @@ import com.bhu.vas.api.helper.NumberValidateHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
 import com.bhu.vas.api.rpc.charging.vto.OpsBatchImportVTO;
+import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.ArithHelper;
@@ -56,6 +57,7 @@ public class OperatorImportController extends BaseController{
             @RequestParam(required = false,value = "cc",defaultValue="86") int countrycode,
             @RequestParam(required = false,value = "mobileno") String mobileno_needbinded,
             @RequestParam(required = true,defaultValue = "-1") int distributor,
+            @RequestParam(required = true,defaultValue = "-1") int distributor_l2,
             @RequestParam(required = true) String distributor_type,
             @RequestParam(required = false) String sellor,
             @RequestParam(required = false) String partner,
@@ -63,6 +65,7 @@ public class OperatorImportController extends BaseController{
             @RequestParam(required = true,value = "percent") String owner_percent,
             @RequestParam(required = true,value = "percent_m") String manufacturer_percent,
             @RequestParam(required = true,value = "percent_d") String distributor_percent,
+            @RequestParam(required = true,value = "percent_d2") String distributor_l2_percent,
             @RequestParam(required = true,value = "sns") String sns,
             @RequestParam(required = true,value = "opsid") String opsid,
             @RequestParam(required = true,value = "chlv1") String channel_lv1,
@@ -92,17 +95,20 @@ public class OperatorImportController extends BaseController{
     		if(StringUtils.isEmpty(distributor_percent) || !NumberValidateHelper.isValidNumberCharacter(distributor_percent)){
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{distributor_percent});
 			}
+    		if(StringUtils.isEmpty(distributor_l2_percent) || !NumberValidateHelper.isValidNumberCharacter(distributor_l2_percent)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{distributor_l2_percent});
+			}
     		
-    		double sum = ArithHelper.add(Double.valueOf(owner_percent), Double.valueOf(manufacturer_percent),Double.valueOf(distributor_percent));
+    		double sum = ArithHelper.add(Double.valueOf(owner_percent), Double.valueOf(manufacturer_percent),Double.valueOf(distributor_percent), Double.valueOf(distributor_l2_percent));
     		if(sum < 1 || sum >1){
     			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
     		}
 
-        	RpcResponseDTO<OpsBatchImportVTO> rpcResult = chargingRpcService.doOpsInputDeviceRecord(uid, opsid, countrycode, mobileno_needbinded,distributor, distributor_type,
+        	RpcResponseDTO<OpsBatchImportVTO> rpcResult = chargingRpcService.doOpsInputDeviceRecord(uid, opsid, countrycode, mobileno_needbinded,distributor, distributor_l2, distributor_type,
         			sellor,
         			partner,
         			canbeturnoff,
-        			owner_percent,manufacturer_percent,distributor_percent,
+        			owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent,
         			channel_lv1, channel_lv2,
         			sns,
         			remark);
@@ -118,4 +124,85 @@ public class OperatorImportController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
     }
+    
+    
+/*    运营商系统通过出库环节修改设备分成比例，暂时不需要提供单独修改设备比例的接口。
+ * 如果后续需要提供，下面的接口需要增加参数，指定设备mac.
+    @ResponseBody()
+    @RequestMapping(value="/sharedeal/modify",method={RequestMethod.POST})
+    public void modifySharedeal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+			@RequestParam(required = true,value="sk") String secretKey,
+            @RequestParam(required = true) Integer uid,
+//            @RequestParam(required = true,value = "cbto",defaultValue="true") boolean canbeturnoff,
+            @RequestParam(required = true,value = "percent") String owner_percent,
+            @RequestParam(required = true,value = "percent_m") String manufacturer_percent,
+            @RequestParam(required = true,value = "percent_d") String distributor_percent,
+            @RequestParam(required = true,value = "percent_d2") String distributor_l2_percent,
+            @RequestParam(required = true,value = "sns") String sns
+    ) {
+		ResponseError validateError = validateSecretKey(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+
+        try{
+    		if(StringUtils.isEmpty(owner_percent) || !NumberValidateHelper.isValidNumberCharacter(owner_percent)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{owner_percent});
+			}
+    		if(StringUtils.isEmpty(manufacturer_percent) || !NumberValidateHelper.isValidNumberCharacter(manufacturer_percent)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{manufacturer_percent});
+			}
+    		if(StringUtils.isEmpty(distributor_percent) || !NumberValidateHelper.isValidNumberCharacter(distributor_percent)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{distributor_percent});
+			}
+    		if(StringUtils.isEmpty(distributor_l2_percent) || !NumberValidateHelper.isValidNumberCharacter(distributor_l2_percent)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{distributor_l2_percent});
+			}
+    		
+    		double sum = ArithHelper.add(Double.valueOf(owner_percent), Double.valueOf(manufacturer_percent),Double.valueOf(distributor_percent), Double.valueOf(distributor_l2_percent));
+    		if(sum < 1 || sum >1){
+    			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
+    		}
+    		
+           	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, null, 
+        			null,null,
+        			true,
+        			owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent,
+        			null,null,null, null, false);
+    		if(!rpcResult.hasError()){
+    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+    		}else{
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+    }
+*/
+    
+    @ResponseBody()
+    @RequestMapping(value = "/sharedeal/detail", method = {RequestMethod.POST})
+    public void detail(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) String mac
+    		) {
+    	try{
+			RpcResponseDTO<DeviceSharedealVTO> rpcResult = chargingRpcService.sharedealDetail(mac.toLowerCase());
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	    }catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+    }
+
 }

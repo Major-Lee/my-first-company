@@ -63,11 +63,11 @@ public class UserValidateServiceHelper {
 	 * @return
 	 */
 	public static UserDevice validateUserDevice(int uid,String dmac, UserWifiDeviceFacadeService userWifiDeviceFacadeService){
-		if(uid <=0){
-			throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
-		}
 		UserDevice userdevice_entity = null;
 		if(!BusinessRuntimeConfiguration.isConsoleUser(uid)){
+			if(uid <=0){
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_DATA_NOT_EXIST);
+			}
 			//验证用户是否管理设备
 /*			userdevice_entity = userDeviceService.getById(new UserDevicePK(dmac, uid));
 			if(userdevice_entity == null){

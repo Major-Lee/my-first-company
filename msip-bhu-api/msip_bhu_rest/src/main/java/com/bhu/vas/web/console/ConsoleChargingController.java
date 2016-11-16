@@ -79,6 +79,7 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = false,value = "percent") String owner_percent,
             @RequestParam(required = false,value = "percent_m") String manufacturer_percent,
             @RequestParam(required = false,value = "percent_d") String distributor_percent,
+            @RequestParam(required = false,value = "percent_d2") String distributor_l2_percent,
             @RequestParam(required = false,value = "rcm") String range_cash_mobile,
             @RequestParam(required = false,value = "rcp") String range_cash_pc,
             @RequestParam(required = false,value = "ait") String access_internet_time,
@@ -91,6 +92,7 @@ public class ConsoleChargingController extends BaseController {
         		owner_percent = StringHelper.MINUS_STRING_GAP;
         		manufacturer_percent = StringHelper.MINUS_STRING_GAP;
         		distributor_percent = StringHelper.MINUS_STRING_GAP;
+        		distributor_l2_percent = StringHelper.MINUS_STRING_GAP;
         		range_cash_mobile = StringHelper.MINUS_STRING_GAP;
         		range_cash_pc = StringHelper.MINUS_STRING_GAP;
         		access_internet_time = StringHelper.MINUS_STRING_GAP;
@@ -111,8 +113,11 @@ public class ConsoleChargingController extends BaseController {
         		if(StringUtils.isEmpty(distributor_percent) || !NumberValidateHelper.isValidNumberCharacter(distributor_percent)){
     				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{distributor_percent});
     			}
+        		if(StringUtils.isEmpty(distributor_l2_percent) || !NumberValidateHelper.isValidNumberCharacter(distributor_l2_percent)){
+    				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{distributor_l2_percent});
+    			}
         		
-        		double sum = ArithHelper.add(Double.valueOf(owner_percent), Double.valueOf(manufacturer_percent),Double.valueOf(distributor_percent));
+        		double sum = ArithHelper.add(Double.valueOf(owner_percent), Double.valueOf(manufacturer_percent),Double.valueOf(distributor_percent), Double.valueOf(distributor_l2_percent));
         		if(sum < 1 || sum >1){
         			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
         		}
@@ -121,7 +126,7 @@ public class ConsoleChargingController extends BaseController {
         	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, message, 
         			canbeturnoff,enterpriselevel,
         			customized,
-        			owner_percent,manufacturer_percent,distributor_percent,
+        			owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent,
         			range_cash_mobile,range_cash_pc,access_internet_time, StringUtils.isEmpty(free_access_internet_time)?access_internet_time:free_access_internet_time, /* channel_lv1, channel_lv2, */false);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

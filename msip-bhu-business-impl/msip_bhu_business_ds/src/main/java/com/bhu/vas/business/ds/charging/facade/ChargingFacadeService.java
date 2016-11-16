@@ -132,6 +132,7 @@ public class ChargingFacadeService {
     		}else{
     			batch_import.setDistributor_percent(sharedeal_distributor_percent);
     		}
+			batch_import.setDistributor_l2_percent("0.00");
     		
     		
 //    		if(StringUtils.isEmpty(range_cash_mobile) || StringHelper.MINUS_STRING_GAP.equals(range_cash_mobile)){
@@ -154,14 +155,14 @@ public class ChargingFacadeService {
     	batch_import.setRemark(remark);
     	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTED_FILE);
     	wifiDeviceBatchImportService.insert(batch_import);
-    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP);
+    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP);
     }
   
     public BatchImportVTO doOpsBatchImportCreate(int uid, String opsid,
-    		int countrycode,String mobileno, int distributor_uid, String distributor_type,
+    		int countrycode,String mobileno, int distributor_uid, int distributor_l2_uid, String distributor_type,
     		String sellor,String partner,
     		boolean canbeturnoff,
-    		String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
+    		String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, String sharedeal_distributor_l2_percent,
 			String channel_lv1, String channel_lv2,
     		String remark){
     	User user = UserValidateServiceHelper.validateUser(uid,this.userService);
@@ -173,14 +174,19 @@ public class ChargingFacadeService {
         	}
     	}
     	User distributor_user = null;
+    	User distributor_l2_user = null;
     	if(distributor_uid >0){
     		distributor_user = UserValidateServiceHelper.validateUser(distributor_uid,this.userService);
+    	}
+    	if(distributor_l2_uid >0){
+    		distributor_l2_user = UserValidateServiceHelper.validateUser(distributor_l2_uid,this.userService);
     	}
     	
     	WifiDeviceBatchImport batch_import = new WifiDeviceBatchImport();
     	batch_import.setImportor(uid);
     	batch_import.setMobileno(mobileno);
     	batch_import.setDistributor(distributor_uid);
+    	batch_import.setDistributor_l2(distributor_l2_uid);
     	batch_import.setSellor(sellor);
     	batch_import.setPartner(partner);
     	batch_import.setOpsid(opsid);
@@ -206,12 +212,18 @@ public class ChargingFacadeService {
 		}else{
 			batch_import.setDistributor_percent(sharedeal_distributor_percent);
 		}
+		if(StringUtils.isEmpty(sharedeal_distributor_l2_percent) || StringHelper.MINUS_STRING_GAP.equals(sharedeal_distributor_l2_percent)){
+			batch_import.setDistributor_l2_percent(String.valueOf(configs.getDistributor_l2_percent()));
+		}else{
+			batch_import.setDistributor_l2_percent(sharedeal_distributor_l2_percent);
+		}
 		
     	//batch_import.setFilepath(filepath_suffix);
     	batch_import.setRemark(remark);
     	batch_import.setStatus(WifiDeviceBatchImport.STATUS_IMPORTED_FILE);
     	wifiDeviceBatchImportService.insert(batch_import);
-    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP);
+    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP,
+    			distributor_l2_user!=null?distributor_l2_user.getNick():StringHelper.EMPTY_STRING_GAP);
     }
     
     public BatchImportVTO doCancelDeviceRecord(int uid,String import_id) {
@@ -228,7 +240,7 @@ public class ChargingFacadeService {
     	if(batch_import.getDistributor() >0){
     		distributor_user = userService.getById(batch_import.getDistributor());
     	}
-    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP);
+    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP);
     }
     
     public BatchImportVTO doConfirmDeviceRecord(int uid,String import_id) {
@@ -244,7 +256,7 @@ public class ChargingFacadeService {
     	if(batch_import.getDistributor() >0){
     		distributor_user = userService.getById(batch_import.getDistributor());
     	}
-    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP);
+    	return batch_import.toBatchImportVTO(user.getNick(),user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP, StringHelper.EMPTY_STRING_GAP);
     }
     public TailPage<BatchImportVTO> pagesBatchImport(int uid,int status, int pageNo, int pageSize){
     	TailPage<BatchImportVTO> result_pages = null;
@@ -269,10 +281,15 @@ public class ChargingFacadeService {
 			for(WifiDeviceBatchImport batchimport:pages.getItems()){
 				User user = users.get(index);
 				User distributor_user = null;
+				User distributor_l2_user = null;
 		    	if(batchimport.getDistributor() >0){
 		    		distributor_user = userService.getById(batchimport.getDistributor());
 		    	}
-				vtos_result.add(batchimport.toBatchImportVTO(user.getNick(), user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP));
+		    	if(batchimport.getDistributor_l2() >0){
+		    		distributor_l2_user = userService.getById(batchimport.getDistributor_l2());
+		    	}
+				vtos_result.add(batchimport.toBatchImportVTO(user.getNick(), user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP,
+						distributor_l2_user!=null?distributor_l2_user.getNick():StringHelper.EMPTY_STRING_GAP));
 				index++;
 			}
 		}
@@ -325,7 +342,12 @@ public class ChargingFacadeService {
 		    	if(batchimport.getDistributor() >0){
 		    		distributor_user = userService.getById(batchimport.getDistributor());
 		    	}
-				vtos_result.add(batchimport.toBatchImportVTO(user.getNick(), user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP));
+				User distributor_l2_user = null;
+		    	if(batchimport.getDistributor_l2() >0){
+		    		distributor_l2_user = userService.getById(batchimport.getDistributor_l2());
+		    	}
+				vtos_result.add(batchimport.toBatchImportVTO(user.getNick(), user.getMobileno(),distributor_user!=null?distributor_user.getNick():StringHelper.EMPTY_STRING_GAP,
+						distributor_l2_user!=null?distributor_l2_user.getNick():StringHelper.EMPTY_STRING_GAP));
 				index++;
 			}
 		}
@@ -435,11 +457,11 @@ public class ChargingFacadeService {
 	 * @param enterpriselevel null 忽略此属性
 	 * @param runtime_applydefault
 	 */
-	public void doWifiDeviceSharedealConfigsUpdate(String batchno,Integer owner,Integer distributor, String distributor_type, String dmac,
+	public void doWifiDeviceSharedealConfigsUpdate(String batchno,Integer owner,Integer distributor, Integer distributor_l2, String distributor_type, String dmac,
 			Boolean canbeturnoff,
 			Boolean enterpriselevel,
 			boolean customized,
-			String owner_percent,String manufacturer_percent,String distributor_percent,
+			String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent,
 //			String range_cash_mobile,String range_cash_pc, String access_internet_time,
 			boolean runtime_applydefault){
 		boolean insert = false;
@@ -462,6 +484,7 @@ public class ChargingFacadeService {
 				configs.setManufacturer_percent(defaultConfigs.getManufacturer_percent());
 				configs.setDistributor_percent(defaultConfigs.getDistributor_percent());
 				configs.setManufacturer_percent(defaultConfigs.getManufacturer_percent());
+				configs.setDistributor_l2_percent(defaultConfigs.getDistributor_l2_percent());
 			}
 		}
 		if(StringUtils.isNotEmpty(batchno)){
@@ -493,7 +516,15 @@ public class ChargingFacadeService {
 		}/*else{
 			configs.setDistributor(WifiDeviceSharedealConfigs.None_Distributor);
 		}*/
-		
+
+		if(distributor_l2 != null){
+			if(distributor_l2 <=0){
+				configs.setDistributor(WifiDeviceSharedealConfigs.None_Distributor);
+			}else{
+				configs.setDistributor(distributor_l2);
+			}
+		}
+
 		if(distributor_type != null)
 			configs.setDistributor_type(distributor_type);
 		
@@ -504,10 +535,12 @@ public class ChargingFacadeService {
 				try{
 					double custom_owner_percent = Double.valueOf(owner_percent);
 					double custom_manufacturer_percent = Double.valueOf(manufacturer_percent);
-					double custom_distributor_percent = ArithHelper.round(ArithHelper.sub(1, ArithHelper.add(custom_owner_percent,custom_manufacturer_percent)), 2);
+					double custom_distributor_l2_percent = Double.valueOf(distributor_l2_percent);
+					double custom_distributor_percent = ArithHelper.round(ArithHelper.sub(1, ArithHelper.add(custom_owner_percent,custom_manufacturer_percent, custom_distributor_l2_percent)), 2);
 					configs.setOwner_percent(custom_owner_percent);
 					configs.setManufacturer_percent(custom_manufacturer_percent);
 					configs.setDistributor_percent(custom_distributor_percent);
+					configs.setDistributor_l2_percent(custom_distributor_l2_percent);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 				}
@@ -673,7 +706,9 @@ public class ChargingFacadeService {
 		SharedealInfo result =  SharedealInfo.calculate(dmac, umac, orderid, cash,  
 				                                        configs.getOwner_percent(), 
 				                                        configs.getManufacturer_percent(),
-				                                        configs.getDistributor_percent());
+				                                        configs.getDistributor_percent(),
+				                                        configs.getDistributor_l2_percent()
+				                                        );
 		
 		if (configs.getOwner() > 0) {
 			result.setOwner(configs.getOwner());
@@ -695,6 +730,14 @@ public class ChargingFacadeService {
 		} else {
 			result.setDistributor(WifiDeviceSharedealConfigs.Default_Owner);
 		}
+		
+		// 不存在的 Distributor 分成进入Default_Owner
+		if (configs.getDistributor_l2() > 0) {
+			result.setDistributor_l2(configs.getDistributor_l2());
+		} else {
+			result.setDistributor_l2(WifiDeviceSharedealConfigs.Default_Owner);
+		}
+
 		// result.setDistributor(configs.getDistributor());
 		return result;
 	}

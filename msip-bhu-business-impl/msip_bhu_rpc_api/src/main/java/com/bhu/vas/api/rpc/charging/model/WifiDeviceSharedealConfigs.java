@@ -31,6 +31,7 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	public static final double Default_Owner_Percent = 0.70d;
 	public static final double Default_Manufacturer_Percent = 0.30d;
 	public static final double Default_Distributor_Percent = 0.00d;
+	public static final double Default_Distributor_l2_Percent = 0.00d;
 	
 	//如果owner字段为<=0则采用此值为缺省分成用户
 	public static final int Default_Owner = 1;
@@ -46,11 +47,13 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	//厂商用户  必须>零 目前值为定值
 	private int manufacturer = 0;
 	private int distributor = -1;
+	private int distributor_l2 = -1;
 	private boolean customized = false;
 	//约定的收益分成比例 最多小数点保留后两位 70%-30%开，总值为1；
 	private double owner_percent = Default_Owner_Percent;
 	private double manufacturer_percent = Default_Manufacturer_Percent;
 	private double distributor_percent = Default_Distributor_Percent;
+	private double distributor_l2_percent = Default_Distributor_l2_Percent;
 	//pc端和移动端的打赏金额范围及相关时长
 //	private String range_cash_pc = Default_Range_Cash_PC;
 //	private String range_cash_mobile = Default_Range_Cash_Mobile;
@@ -198,4 +201,18 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 		this.setCanbe_turnoff(true);
 		this.setRuntime_applydefault(true);
 	}
+	public int getDistributor_l2() {
+		return distributor_l2;
+	}
+	public void setDistributor_l2(int distributor_l2) {
+		this.distributor_l2 = distributor_l2;
+	}
+	public double getDistributor_l2_percent() {
+		return distributor_l2_percent;
+	}
+	public void setDistributor_l2_percent(double distributor_l2_percent) {
+		this.distributor_l2_percent = distributor_l2_percent;
+	}
+	
+	
 }

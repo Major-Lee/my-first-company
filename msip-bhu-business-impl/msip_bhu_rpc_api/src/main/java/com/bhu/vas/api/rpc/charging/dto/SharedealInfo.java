@@ -25,6 +25,24 @@ public class SharedealInfo {
 
 	private int distributor;
 	private double distributor_cash;
+	private int distributor_l2;
+	private double distributor_l2_cash;
+
+	public int getDistributor_l2() {
+		return distributor_l2;
+	}
+
+	public void setDistributor_l2(int distributor_l2) {
+		this.distributor_l2 = distributor_l2;
+	}
+
+	public double getDistributor_l2_cash() {
+		return distributor_l2_cash;
+	}
+
+	public void setDistributor_l2_cash(double distributor_l2_cash) {
+		this.distributor_l2_cash = distributor_l2_cash;
+	}
 
 	private String umac;
 
@@ -82,16 +100,19 @@ public class SharedealInfo {
 
 	public static SharedealInfo calculate(String mac, String umac, String orderid, 
 			                              double cash, double owner_percent,
-			                              double manufacturer_percent, double distributor_percent) {
+			                              double manufacturer_percent, double distributor_percent, double distributor_l2_percent) {
 		SharedealInfo info = new SharedealInfo(mac, umac, orderid, cash);
 		if (cash > 0) {
 			double owner_cash = ArithHelper.round(ArithHelper.mul(cash, owner_percent), 4);
 			double manufacturer_cash = ArithHelper.round
 			    (ArithHelper.mul(cash, manufacturer_percent), 4);
+			double distributor_cash = ArithHelper.round
+				    (ArithHelper.mul(cash, distributor_percent), 4);
 			info.setOwner_cash(owner_cash);
 			info.setManufacturer_cash(manufacturer_cash);
-			info.setDistributor_cash
-			    (ArithHelper.sub(cash, ArithHelper.add(owner_cash, manufacturer_cash)));
+			info.setDistributor_cash(distributor_cash);
+			info.setDistributor_l2_cash
+			    (ArithHelper.sub(cash, ArithHelper.add(owner_cash, manufacturer_cash, distributor_cash)));
 		}
 		return info;
 	}

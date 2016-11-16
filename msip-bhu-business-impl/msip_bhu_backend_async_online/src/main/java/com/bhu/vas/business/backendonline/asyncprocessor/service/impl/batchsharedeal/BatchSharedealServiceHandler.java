@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.elasticsearch.common.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -78,16 +79,18 @@ public class BatchSharedealServiceHandler implements IMsgHandlerService {
 						}
 						logger.info(String.format("pagesize:%s pages:%s",100,macList));
 						for(String dmac:macList){
-							chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(null,null,null, null, dmac, 
+							chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(null,null,null, null, null, dmac, 
 									sharedealDTO.getCbto(),sharedealDTO.getEl(),
 									sharedealDTO.isCustomized(),
-									sharedealDTO.getOwner_percent(),sharedealDTO.getManufacturer_percent(),sharedealDTO.getDistributor_percent(),
+									sharedealDTO.getOwner_percent(),sharedealDTO.getManufacturer_percent(),sharedealDTO.getDistributor_percent(),sharedealDTO.getDistributor_l2_percent(),
 									//sharedealDTO.getRcm(), sharedealDTO.getRcp(), sharedealDTO.getAit(),
 									false);
-							//更新portal配置中的金额和时长
-							sharedNetworksFacadeService.updateDevicesSharedNetworkTimeMoneyControl(dmac, sharedealDTO.getRcp(), sharedealDTO.getRcm(), sharedealDTO.getAit(),
-									sharedealDTO.getAit(), sharedealDTO.getFait(), sharedealDTO.getFait());
-//							//更新出货渠道
+							if(StringUtils.isNotEmpty(sharedealDTO.getRcm())){
+								//更新portal配置中的金额和时长
+								sharedNetworksFacadeService.updateDevicesSharedNetworkTimeMoneyControl(dmac, sharedealDTO.getRcp(), sharedealDTO.getRcm(), sharedealDTO.getAit(),
+										sharedealDTO.getAit(), sharedealDTO.getFait(), sharedealDTO.getFait());
+							}
+//
 //							WifiDevice wifidevice = wifiDeviceService.getById(dmac);
 //							wifidevice.setChannel_lv1(sharedealDTO.getChannel_lv1());
 //							wifidevice.setChannel_lv2(sharedealDTO.getChannel_lv2());

@@ -14,11 +14,14 @@ public class BatchImportVTO implements java.io.Serializable{
 	
 	private int distributor;
 	private String distributor_nick;
+	private int distributor_l2;
+	private String distributor_l2_nick;
 	private String sellor;
 	private String partner;
 	private String owner_percent;
 	private String manufacturer_percent;
 	private String distributor_percent;
+	private String distributor_l2_percent;
 	private boolean canbeturnoff;
 	private boolean enterpriselevel;
 	private boolean customized = false;
@@ -239,6 +242,24 @@ public class BatchImportVTO implements java.io.Serializable{
 	}
 	public void setDistributor_type(String distributor_type) {
 		this.distributor_type = distributor_type;
+	}
+	public int getDistributor_l2() {
+		return distributor_l2;
+	}
+	public void setDistributor_l2(int distributor_l2) {
+		this.distributor_l2 = distributor_l2;
+	}
+	public String getDistributor_l2_nick() {
+		return distributor_l2_nick;
+	}
+	public void setDistributor_l2_nick(String distributor_l2_nick) {
+		this.distributor_l2_nick = distributor_l2_nick;
+	}
+	public String getDistributor_l2_percent() {
+		return distributor_l2_percent;
+	}
+	public void setDistributor_l2_percent(String distributor_l2_percent) {
+		this.distributor_l2_percent = distributor_l2_percent;
 	}
 	
 }

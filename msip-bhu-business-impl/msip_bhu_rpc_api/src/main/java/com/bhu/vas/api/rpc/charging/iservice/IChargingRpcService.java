@@ -11,11 +11,12 @@ public interface IChargingRpcService {
 	
 	public RpcResponseDTO<SharedealDefaultVTO> doFetchDefaultSharedeal(int uid);
 	public RpcResponseDTO<DeviceSharedealVTO> sharedealDetail(int uid,String mac);
+	public RpcResponseDTO<DeviceSharedealVTO> sharedealDetail(String mac);
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String message, 
 			Boolean canbeturnoff,
 			Boolean enterpriselevel,
 			boolean customized,
-			String owner_percent,String manufacturer_percent,String distributor_percent,
+			String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent,
 			String range_cash_mobile,String range_cash_pc,String access_internet_time, String free_access_internet_time,
 			boolean needCheckBinding);
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,
@@ -29,10 +30,10 @@ public interface IChargingRpcService {
             String remark);
 	
 	public RpcResponseDTO<OpsBatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid,
-			int countrycode,String mobileno,int distributor_uid, String distributor_type,
+			int countrycode,String mobileno,int distributor_uid, int distributor_l2_uid, String distributor_type,
 			String sellor,String partner,
             boolean canbeturnoff,
-            String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent,
+            String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, String sharedeal_distributor_l2_percent,
 			String channel_lv1, String channel_lv2,
 			String sns,
             String remark);

@@ -25,6 +25,8 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 	private int manufacturerid;
 	@IN(jdbcType = JdbcType.INTEGER)
 	private int distributorid;
+	@IN(jdbcType = JdbcType.INTEGER)
+	private int distributorl2id;
 	@IN(jdbcType = JdbcType.DOUBLE)
 	private double ownercash;
 	// @IN(jdbcType = JdbcType.DOUBLE)
@@ -33,6 +35,8 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 	private double manufacturercash;
 	@IN(jdbcType = JdbcType.DOUBLE)
 	private double distributorcash;
+	@IN(jdbcType = JdbcType.DOUBLE)
+	private double distributorl2cash;
 
 	@IN(jdbcType = JdbcType.VARCHAR)
 	private String transmode;
@@ -50,6 +54,8 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 	private String manufacturer_memo;
 	@IN(jdbcType = JdbcType.VARCHAR)
 	private String distributor_memo;
+	@IN(jdbcType = JdbcType.VARCHAR)
+	private String distributor_l2_memo;
 	@IN(jdbcType = JdbcType.DATE)
 	private Date pay_time;	//订单时间
 
@@ -191,6 +197,30 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 		this.distributor_memo = distributor_memo;
 	}
 
+	public int getDistributorl2id() {
+		return distributorl2id;
+	}
+
+	public void setDistributorl2id(int distributorl2id) {
+		this.distributorl2id = distributorl2id;
+	}
+
+	public double getDistributorl2cash() {
+		return distributorl2cash;
+	}
+
+	public void setDistributorl2cash(double distributorl2cash) {
+		this.distributorl2cash = distributorl2cash;
+	}
+
+	public String getDistributor_l2_memo() {
+		return distributor_l2_memo;
+	}
+
+	public void setDistributor_l2_memo(String distributor_l2_memo) {
+		this.distributor_l2_memo = distributor_l2_memo;
+	}
+
 	@Override
 	public String getName() {
 		return "msip_bhu_core.sharedeal";
@@ -204,9 +234,11 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 		dto.setOwnerid(sharedeal.getOwner());
 		dto.setManufacturerid(sharedeal.getManufacturer());
 		dto.setDistributorid(sharedeal.getDistributor());
+		dto.setDistributorl2id(sharedeal.getDistributor_l2());
 		dto.setOwnercash(sharedeal.getOwner_cash());
 		dto.setManufacturercash(sharedeal.getManufacturer_cash());
 		dto.setDistributorcash(sharedeal.getDistributor_cash());
+		dto.setDistributorl2cash(sharedeal.getDistributor_l2_cash());
 		return dto;
 	}
 

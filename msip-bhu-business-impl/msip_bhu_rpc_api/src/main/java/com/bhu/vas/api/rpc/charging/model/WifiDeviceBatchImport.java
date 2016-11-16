@@ -43,6 +43,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	private int importor;
 	private String mobileno;
 	private int distributor = -1;
+	private int distributor_l2 = -1;
 	private String sellor;
 	private String partner;
 	private boolean canbeturnoff;
@@ -51,6 +52,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	private String owner_percent;
 	private String manufacturer_percent;
 	private String distributor_percent;
+	private String distributor_l2_percent;
 	private String range_cash_mobile;
 	private String range_cash_pc;
 	private String access_internet_time;
@@ -161,7 +163,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		return ToStringBuilder.reflectionToString(this);
 	}
 	
-	public BatchImportVTO toBatchImportVTO(String importor_nick,String importor_mobileno,String distributor_nick){
+	public BatchImportVTO toBatchImportVTO(String importor_nick,String importor_mobileno,String distributor_nick, String distributor_l2_nick){
 		BatchImportVTO vto = new BatchImportVTO();
 		vto.setId(this.getId());
 		vto.setImportor(this.getImportor());
@@ -170,11 +172,14 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		vto.setMobileno(this.getMobileno());
 		vto.setDistributor(this.getDistributor());
 		vto.setDistributor_nick(StringUtils.isNotEmpty(distributor_nick)?distributor_nick:StringHelper.EMPTY_STRING_GAP);
+		vto.setDistributor_l2(this.getDistributor_l2());
+		vto.setDistributor_nick(StringUtils.isNotEmpty(distributor_l2_nick)?distributor_l2_nick:StringHelper.EMPTY_STRING_GAP);
 		vto.setSellor(this.getSellor());
 		vto.setPartner(this.getPartner());
 		vto.setOwner_percent(this.getOwner_percent());
 		vto.setManufacturer_percent(this.getManufacturer_percent());
 		vto.setDistributor_percent(this.getDistributor_percent());
+		vto.setDistributor_l2_percent(this.distributor_l2_percent);
 		vto.setCustomized(this.isCustomized());
 		//vto.setManufacturer_percent(manufacturer_percent);
 		vto.setCanbeturnoff(this.isCanbeturnoff());
@@ -267,6 +272,17 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	public void setDistributor_type(String distributor_type) {
 		this.distributor_type = distributor_type;
 	}
-	
+	public int getDistributor_l2() {
+		return distributor_l2;
+	}
+	public void setDistributor_l2(int distributor_l2) {
+		this.distributor_l2 = distributor_l2;
+	}
+	public String getDistributor_l2_percent() {
+		return distributor_l2_percent;
+	}
+	public void setDistributor_l2_percent(String distributor_l2_percent) {
+		this.distributor_l2_percent = distributor_l2_percent;
+	}
 	
 }

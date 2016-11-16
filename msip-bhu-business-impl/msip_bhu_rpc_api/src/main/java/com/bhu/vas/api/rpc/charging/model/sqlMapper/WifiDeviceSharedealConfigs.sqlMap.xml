@@ -10,9 +10,11 @@
     <result property="owner" column="owner"/>
     <result property="manufacturer" column="manufacturer"/>
     <result property="distributor" column="distributor"/>
+    <result property="distributor_l2" column="distributor_l2"/>
     <result property="owner_percent" column="owner_percent"/>
     <result property="manufacturer_percent" column="manufacturer_percent"/>
     <result property="distributor_percent" column="distributor_percent"/>
+    <result property="distributor_l2_percent" column="distributor_l2_percent"/>
     <result property="canbe_turnoff" column="canbe_turnoff"/>
     <result property="enterpriselevel" column="enterpriselevel"/>
     <result property="customized" column="customized"/>
@@ -34,9 +36,11 @@
 	    	owner,
 	    	manufacturer,
 	    	distributor,
+	    	distributor_l2,
 	    	owner_percent,
 	    	manufacturer_percent,
 	    	distributor_percent,
+	    	distributor_l2_percent,
 	    	canbe_turnoff,
 	    	enterpriselevel,
 	    	customized,
@@ -52,9 +56,11 @@
 	    	owner,
 	    	manufacturer,
 	    	distributor,
+	    	distributor_l2,
 	    	owner_percent,
 	    	manufacturer_percent,
 	    	distributor_percent,
+	    	distributor_l2_percent,
 	    	canbe_turnoff,
 	    	enterpriselevel,
 	    	customized,
@@ -71,9 +77,11 @@
 	    	#{owner},
 	    	#{manufacturer},
 	    	#{distributor},
+	    	#{distributor_l2},
 	    	#{owner_percent},
 	    	#{manufacturer_percent},
 	    	#{distributor_percent},
+	    	#{distributor_l2_percent},
 	    	#{canbe_turnoff},
 	    	#{enterpriselevel},
 	    	#{customized},
@@ -88,9 +96,11 @@
 	    	owner = #{owner},
 	    	manufacturer = #{manufacturer},
 	    	distributor = #{distributor},
+	    	distributor_l2 = #{distributor_l2},
 	    	owner_percent = #{owner_percent},
 	    	manufacturer_percent = #{manufacturer_percent},
 	    	distributor_percent = #{distributor_percent},
+	    	distributor_l2_percent = #{distributor_l2_percent},
 	    	canbe_turnoff = #{canbe_turnoff},
 	    	enterpriselevel = #{enterpriselevel},
 	    	customized = #{customized},

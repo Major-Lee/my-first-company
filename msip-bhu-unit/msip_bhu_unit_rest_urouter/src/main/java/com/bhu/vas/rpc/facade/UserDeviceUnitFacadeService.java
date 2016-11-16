@@ -852,11 +852,15 @@ public class UserDeviceUnitFacadeService {
 			// 分成详情
 			WifiDeviceSharedealConfigs configs = chargingFacadeService.userfulWifiDeviceSharedealConfigsJust4View(mac);
 			DeviceSharedealVTO dsv = new DeviceSharedealVTO();
+			dsv.setOwner(configs.getOwner());
+			dsv.setDistributor(configs.getDistributor());
+			dsv.setDistributor_l2(configs.getDistributor_l2());
 			dsv.setMac(configs.getId());
 			dsv.setBatchno(configs.getBatchno());
 			dsv.setOwner_percent(configs.getOwner_percent());
 			dsv.setManufacturer_percent(configs.getManufacturer_percent());
 			dsv.setDistributor_percent(configs.getDistributor_percent());
+			dsv.setDistributor_l2_percent(configs.getDistributor_l2_percent());
 			if(wifiDeviceSharedNetwork != null){
 				ParamSharedNetworkDTO pdto = wifiDeviceSharedNetwork.getInnerModel().getPsn();
 				if(pdto != null){
@@ -1008,11 +1012,15 @@ public class UserDeviceUnitFacadeService {
 			// 分成详情
 			WifiDeviceSharedealConfigs configs = chargingFacadeService.userfulWifiDeviceSharedealConfigsJust4View(mac);
 			DeviceSharedealVTO dsv = new DeviceSharedealVTO();
+			dsv.setOwner(configs.getOwner());
+			dsv.setDistributor(configs.getDistributor());
+			dsv.setDistributor_l2(configs.getDistributor_l2());
 			dsv.setMac(configs.getId());
 			dsv.setBatchno(configs.getBatchno());
 			dsv.setOwner_percent(configs.getOwner_percent());
 			dsv.setManufacturer_percent(configs.getManufacturer_percent());
 			dsv.setDistributor_percent(configs.getDistributor_percent());
+			dsv.setDistributor_l2_percent(configs.getDistributor_l2_percent());
 
 			if(wifiDeviceSharedNetwork != null && wifiDeviceSharedNetwork.getInnerModel() != null){
 				ParamSharedNetworkDTO pdto = wifiDeviceSharedNetwork.getInnerModel().getPsn();

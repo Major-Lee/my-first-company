@@ -22,6 +22,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessa
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
+import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.validate.UserTypeValidateService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -45,7 +46,10 @@ public class ChargingUnitFacadeService {
 	
 	@Resource
 	private SharedNetworksFacadeService sharedNetworksFacadeService;
-	
+
+	@Resource
+	private UserService userService;
+
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,int countrycode,
 			String mobileno,int distributor_uid, 
 			String sellor,String partner,
@@ -81,10 +85,10 @@ public class ChargingUnitFacadeService {
 	}
 
 	public RpcResponseDTO<OpsBatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid, int countrycode,
-			String mobileno,int distributor_uid, String distributor_type,
+			String mobileno,int distributor_uid, int distributor_l2_uid, String distributor_type,
 			String sellor,String partner,
 			boolean canbeturnoff,
-			String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
+			String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, String sharedeal_distributor_l2_percent, 
 			String channel_lv1, String channel_lv2,
 			String sns,
 			String remark) {
@@ -94,10 +98,10 @@ public class ChargingUnitFacadeService {
 			UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
 			
 			BatchImportVTO ret = 
-					chargingFacadeService.doOpsBatchImportCreate(uid, opsid, countrycode, mobileno,distributor_uid, distributor_type,
+					chargingFacadeService.doOpsBatchImportCreate(uid, opsid, countrycode, mobileno,distributor_uid, distributor_l2_uid, distributor_type,
 							sellor,partner,
 							canbeturnoff, 
-							sharedeal_owner_percent,sharedeal_manufacturer_percent,sharedeal_distributor_percent,
+							sharedeal_owner_percent,sharedeal_manufacturer_percent,sharedeal_distributor_percent, sharedeal_distributor_l2_percent,
 							channel_lv1, channel_lv2,
 							remark);
 			
@@ -119,7 +123,7 @@ public class ChargingUnitFacadeService {
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid,
 			String message, Boolean canbeturnoff,Boolean enterpriselevel,
 			boolean customized,
-			String owner_percent,String manufacturer_percent,String distributor_percent,
+			String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent,
 			String range_cash_mobile, String range_cash_pc,
 			String access_internet_time,
 			String free_access_internet_time,
@@ -129,7 +133,7 @@ public class ChargingUnitFacadeService {
 			//User operUser = chargingFacadeService.getUserService().getById(uid);
 			//UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
 			asyncDeliverMessageService.sendBatchSharedealModifyActionMessage(uid, message, canbeturnoff,enterpriselevel,customized, 
-					owner_percent,manufacturer_percent,distributor_percent, range_cash_mobile, range_cash_pc, access_internet_time, free_access_internet_time,
+					owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent, range_cash_mobile, range_cash_pc, access_internet_time, free_access_internet_time,
 					needCheckBinding);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){
@@ -146,18 +150,22 @@ public class ChargingUnitFacadeService {
 			if(wifiDevice == null){
 				throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST,new String[]{"mac"});
 			}*/
-			UserValidateServiceHelper.validateUser(uid, chargingFacadeService.getUserService());
+//			UserValidateServiceHelper.validateUser(uid, chargingFacadeService.getUserService());
 			UserValidateServiceHelper.validateUserDevice(uid, mac, chargingFacadeService.getUserWifiDeviceFacadeService());
 			//分成详情
 			WifiDeviceSharedealConfigs configs = chargingFacadeService.userfulWifiDeviceSharedealConfigsJust4View(mac);
 			WifiDeviceSharedNetwork wifiDeviceSharedNetwork = sharedNetworksFacadeService.fetchDeviceSharedNetwork(mac);
-
+			
 			DeviceSharedealVTO dsv = new DeviceSharedealVTO();
+			dsv.setOwner(configs.getOwner());
+			dsv.setDistributor(configs.getDistributor());
+			dsv.setDistributor_l2(configs.getDistributor_l2());
 			dsv.setMac(configs.getId());
 			dsv.setBatchno(configs.getBatchno());
 			dsv.setOwner_percent(configs.getOwner_percent());
 			dsv.setManufacturer_percent(configs.getManufacturer_percent());
 			dsv.setDistributor_percent(configs.getDistributor_percent());
+			dsv.setDistributor_l2_percent(configs.getDistributor_l2_percent());
 			ParamSharedNetworkDTO pdto = wifiDeviceSharedNetwork.getInnerModel().getPsn();
 			if(pdto != null){
 				dsv.setRcm(pdto.getRange_cash_mobile());

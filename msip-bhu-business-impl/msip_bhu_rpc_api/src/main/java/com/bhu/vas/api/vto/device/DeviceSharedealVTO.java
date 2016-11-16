@@ -10,9 +10,13 @@ public class DeviceSharedealVTO implements java.io.Serializable{
 	//private int owner;
 	private String mac;
 	private String batchno;
+	private int owner;
+	private int distributor;
+	private int distributor_l2;
 	private double owner_percent;
 	private double manufacturer_percent;
 	private double distributor_percent;
+	private double distributor_l2_percent;
 	private boolean canbeturnoff;
 	private boolean runtime_applydefault;
 	private boolean customized;
@@ -24,6 +28,30 @@ public class DeviceSharedealVTO implements java.io.Serializable{
 	private String faitp;
 	
 	
+	public int getOwner() {
+		return owner;
+	}
+	public void setOwner(int owner) {
+		this.owner = owner;
+	}
+	public int getDistributor() {
+		return distributor;
+	}
+	public void setDistributor(int distributor) {
+		this.distributor = distributor;
+	}
+	public int getDistributor_l2() {
+		return distributor_l2;
+	}
+	public void setDistributor_l2(int distributor_l2) {
+		this.distributor_l2 = distributor_l2;
+	}
+	public double getDistributor_l2_percent() {
+		return distributor_l2_percent;
+	}
+	public void setDistributor_l2_percent(double distributor_l2_percent) {
+		this.distributor_l2_percent = distributor_l2_percent;
+	}
 	public String getFaitm() {
 		return faitm;
 	}

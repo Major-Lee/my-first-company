@@ -73,7 +73,7 @@ public class BatchImportPreCheckServiceHandler implements IMsgHandlerService {
 			}
 			batchImport.setStatus(WifiDeviceBatchImport.STATUS_CONTENT_PRE_CHECK);
 			chargingFacadeService.getWifiDeviceBatchImportService().update(batchImport);
-			final BatchImportVTO importVto = batchImport.toBatchImportVTO(null, null,null);
+			final BatchImportVTO importVto = batchImport.toBatchImportVTO(null, null,null, null);
 			int failed = ShipmentExcelImport.excelPreCheck(importVto.toAbsoluteFileInputPath(),importVto.toAbsoluteFileOutputPath(), new ImportElementCallback(){
 				@Override
 				public DeviceCallbackDTO elementDeviceInfoFetch(String sn) {

@@ -11,6 +11,7 @@ public class BatchSharedealModifyDTO extends AsyncDTO {
 	private String owner_percent;
 	private String manufacturer_percent;
 	private String distributor_percent;
+	private String distributor_l2_percent;
 	private String rcm;
 	private String rcp;
 	private String ait;
@@ -20,6 +21,14 @@ public class BatchSharedealModifyDTO extends AsyncDTO {
 	
 	
 	private boolean needCheckBinding;
+	public String getDistributor_l2_percent() {
+		return distributor_l2_percent;
+	}
+
+	public void setDistributor_l2_percent(String distributor_l2_percent) {
+		this.distributor_l2_percent = distributor_l2_percent;
+	}
+
 	public String getFait() {
 		return fait;
 	}
