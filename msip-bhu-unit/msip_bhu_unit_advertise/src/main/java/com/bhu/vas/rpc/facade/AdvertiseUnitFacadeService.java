@@ -118,7 +118,7 @@ public class AdvertiseUnitFacadeService {
 	 * @throws ParseException 
 	 */
 	public AdDevicePositionVTO fetchDevicePositionDistribution(String province,String city,String district) throws ParseException{
-		AdDevicePositionVTO vto = fetchAdvertiseOccupy(district, district, district);
+		AdDevicePositionVTO vto = fetchAdvertiseOccupy(province, city, district);
 		if(StringUtils.isNoneBlank(city)){
 			vto.setPositions(WifiDevicePositionListService.getInstance().fetchCity(city));
 		}else if(StringUtils.isNoneBlank(province)){
