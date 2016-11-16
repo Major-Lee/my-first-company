@@ -213,7 +213,7 @@ public class AdvertiseUnitFacadeService {
 				//广告提交人信心
 				User user=userService.getById(ad.getUid());
 				singleAdvertise.setOwnerName(user.getNick());
-				singleAdvertise.setCount(Integer.valueOf(String.valueOf(singleAdvertise.getCount()*1.1)));
+				singleAdvertise.setCount((int)(singleAdvertise.getCount()*1.1));
 				advertiseVTOs.add(singleAdvertise);
 			}
 		}
@@ -258,7 +258,7 @@ public class AdvertiseUnitFacadeService {
 			User user=userService.getById(advertise.getUid());
 			advertiseVTO.setOwnerName(user.getNick());
 			advertiseVTO.setEscapeFlag(false);
-			advertiseVTO.setCount(Integer.valueOf(String.valueOf(advertiseVTO.getCount()*1.1)));
+			advertiseVTO.setCount((int)(advertiseVTO.getCount()*1.1));
 			if(advertise.getState()==AdvertiseType.UnPublish.getType()){
 				Date date=new Date();
 				if(advertise.getStart().getTime()>date.getTime()){
