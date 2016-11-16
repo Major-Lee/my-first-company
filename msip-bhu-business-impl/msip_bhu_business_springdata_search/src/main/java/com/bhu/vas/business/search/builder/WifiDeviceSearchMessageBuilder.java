@@ -304,17 +304,19 @@ public class WifiDeviceSearchMessageBuilder {
 		if(must_not_positions != null && !must_not_positions.isEmpty()){
 			for(AdvertiseTrashPositionVTO dto: must_not_positions){
 				if(StringUtils.isNotEmpty(dto.getDistrict())){
-					SearchCondition sc_d_distrcy = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.MustNot,BusinessIndexDefine.WifiDevice.
-							Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), dto.getCity());
-					pack.addChildSearchCondtions(sc_d_distrcy);
+					SearchCondition sc_d_ms_distrcy = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.MustNot,BusinessIndexDefine.WifiDevice.
+							Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), dto.getDistrict());
+					pack.addChildSearchCondtions(sc_d_ms_distrcy);
+					
 				}else if(StringUtils.isNotEmpty(dto.getCity())){
-					SearchCondition sc_d_city = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.MustNot,BusinessIndexDefine.WifiDevice.
+					SearchCondition sc_d_ms_city = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.MustNot,BusinessIndexDefine.WifiDevice.
 							Field.D_CITY.getName(), SearchConditionPattern.StringEqual.getPattern(), dto.getCity());
-					pack.addChildSearchCondtions(sc_d_city);
+					pack.addChildSearchCondtions(sc_d_ms_city);
+					
 				}else if(StringUtils.isNotEmpty(dto.getProvince())){
-					SearchCondition sc_d_province = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.MustNot,BusinessIndexDefine.WifiDevice.
+					SearchCondition sc_d_ms_province = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.MustNot,BusinessIndexDefine.WifiDevice.
 							Field.D_PROVINCE.getName(), SearchConditionPattern.StringEqual.getPattern(), dto.getProvince());
-					pack.addChildSearchCondtions(sc_d_province);
+					pack.addChildSearchCondtions(sc_d_ms_province);
 				}
 			}
 		}
