@@ -105,9 +105,9 @@ public class AdvertiseUnitFacadeService {
 			mc.createCriteria().andColumnIn("state", stateList).andColumnEqualTo("uid", uid);
 			
 			int num=advertiseService.countByModelCriteria(mc);
-			if(num>=2){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
-			}
+//			if(num>=2){
+//				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
+//			}
 			advertiseService.insert(entity);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
