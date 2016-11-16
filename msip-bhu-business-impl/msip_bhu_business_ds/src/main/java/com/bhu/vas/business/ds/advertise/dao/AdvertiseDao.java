@@ -26,4 +26,20 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		}	
 		return n;
 	}
+	public int queryByAdvertiseTime(Date start,Date end,String province, String city,
+			String district ){
+		int n=0;
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("start", start);
+		map.put("end", end);
+		map.put("province", province);
+		map.put("city", city);
+		map.put("district", district);
+		try {
+			n = super.getSqlSessionMasterTemplate().selectOne(Advertise.class.getName()+".queryByAdvertiseTime",map);
+		} catch (Exception e) {
+			return n;
+		}	
+		return n;
+	}
 }
