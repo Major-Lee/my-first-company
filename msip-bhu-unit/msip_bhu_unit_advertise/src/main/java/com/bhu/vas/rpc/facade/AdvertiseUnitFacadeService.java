@@ -386,6 +386,7 @@ public class AdvertiseUnitFacadeService {
 			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
 			occupiedVtos.add(occupiedVto);
 		}
+		positionVto.setOccupyAds(occupiedVtos);
 		return positionVto;
 	}
 }
