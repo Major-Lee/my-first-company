@@ -170,6 +170,7 @@
 		
 		<!-- 广告 -->
 		<typeAlias alias="advertise" 	type="com.bhu.vas.api.rpc.advertise.model.Advertise" />
+		<typeAlias alias="advertiseDevicesIncome" 	type="com.bhu.vas.api.rpc.advertise.model.AdvertiseDevicesIncome" />
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.pluginu.ShardPlugin"> 

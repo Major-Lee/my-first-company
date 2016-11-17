@@ -71,7 +71,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			final int batch = 200;
 			final List<String> macList = new ArrayList<String>();
 			wifiDeviceDataSearchService.iteratorWithPosition(null,ad.getProvince(),
-					ad.getCity(), ad.getDistrict(), batch,
+					ad.getCity(), ad.getDistrict(),false,batch,
 					new IteratorNotify<Page<WifiDeviceDocument>>() {
 
 						@Override

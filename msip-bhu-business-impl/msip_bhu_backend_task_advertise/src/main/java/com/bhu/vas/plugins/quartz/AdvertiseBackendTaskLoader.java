@@ -67,7 +67,7 @@ public class AdvertiseBackendTaskLoader {
 		mc.createCriteria().andColumnLessThan("end", nowDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
-			logger.info("ready invalid ad sum" + lists.size());
+			logger.info("ready invalid ad sum: " + lists.size());
 			List<String> adIds = new ArrayList<String>();
 			for(Advertise ad : lists){
 				adIds.add(ad.getId());

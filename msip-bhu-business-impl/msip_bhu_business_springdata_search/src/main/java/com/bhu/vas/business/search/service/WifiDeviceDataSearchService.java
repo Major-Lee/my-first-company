@@ -17,6 +17,7 @@ import com.bhu.vas.business.search.core.condition.component.SearchConditionMessa
 import com.bhu.vas.business.search.core.field.FieldDefine;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.repository.WifiDeviceDocumentRepository;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
 @Service
@@ -127,7 +128,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 */
 	public long searchCountByPosition(List<AdvertiseTrashPositionVTO> must_not_positions,String d_province,String d_city,String d_distrcy){
 		
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(must_not_positions,d_province, d_city, d_distrcy);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(must_not_positions,d_province, d_city, d_distrcy,false);
 		return super.searchCountByConditionMessage(scm);
 	}
 	
@@ -175,9 +176,9 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	 * @param notify
 	 */
 	public void iteratorWithPosition(List<AdvertiseTrashPositionVTO> must_not_positions,String d_province,String d_city, String d_distrcy, 
-			 int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
+			boolean snkTurnOn, int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
 		
-		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(must_not_positions,d_province, d_city, d_distrcy);
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(must_not_positions,d_province, d_city, d_distrcy,snkTurnOn);
 		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
 		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
 				message, pageSize, notify);

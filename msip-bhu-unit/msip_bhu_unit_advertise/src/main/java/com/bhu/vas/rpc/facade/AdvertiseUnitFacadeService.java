@@ -385,6 +385,7 @@ public class AdvertiseUnitFacadeService {
 					trashVto.setCity(ad.getCity());
 					trashVto.setProvince(ad.getProvince());
 					trashVtos.add(trashVto);
+					System.out.println("trash:" +ad.getProvince()+ad.getCity()+ad.getDistrict());
 				}
 			}
 			occupiedVto.setTrashs(trashVtos);

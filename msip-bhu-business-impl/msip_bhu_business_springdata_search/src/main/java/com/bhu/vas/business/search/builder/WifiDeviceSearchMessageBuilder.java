@@ -280,7 +280,7 @@ public class WifiDeviceSearchMessageBuilder {
 	 * @param d_distrcy 区
 	 * @return
 	 */
-	public static SearchConditionMessage builderSearchMessageWithPosition(List<AdvertiseTrashPositionVTO> must_not_positions, String d_province,String d_city,String d_distrcy){
+	public static SearchConditionMessage builderSearchMessageWithPosition(List<AdvertiseTrashPositionVTO> must_not_positions, String d_province,String d_city,String d_distrcy,boolean snkTurnOn){
 		SearchConditionPack pack = SearchConditionPack.builderSearchConditionMustPack();
 		
 		if(StringUtils.isNotEmpty(d_province)){
@@ -318,6 +318,17 @@ public class WifiDeviceSearchMessageBuilder {
 				}
 			}
 		}
+		
+		if(snkTurnOn){
+			SearchCondition sc_d_online = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_ONLINE.getName(), SearchConditionPattern.StringEqual.getPattern(), WifiDeviceDocumentEnumType.OnlineEnum.Online.getType());
+			pack.addChildSearchCondtions(sc_d_online);
+			
+			SearchCondition sc_d_snk_turnOn = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_SHAREDNETWORK_TURNSTATE.getName(), SearchConditionPattern.StringEqual.getPattern(), WifiDeviceDocumentEnumType.SnkTurnStateEnum.On.getType());
+			pack.addChildSearchCondtions(sc_d_snk_turnOn);
+		}
+		
 		if(pack.getChildSearchCondtions() == null || pack.getChildSearchCondtions().isEmpty()){
 			SearchCondition sc_all = SearchCondition.builderSearchConditionWithAll();
 			pack.addChildSearchCondtions(sc_all);

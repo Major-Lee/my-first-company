@@ -11,7 +11,9 @@
 			<list>
 			
 				<!-- 每隔1分钟执行一次 -->
-				<ref bean="advertiseBackendTaskLoaderCronTrigger" />		
+				<ref bean="advertiseBackendTaskLoaderCronTrigger" />	
+				<!-- 每天中午十二点执行一次 -->
+				<ref bean="advertiseOnPublishDevicesStatisticsLoaderCronTrigger" />	
 				
 			</list>
 		</property>
@@ -23,21 +25,27 @@
 		<property name="startupDelay" value="3" />
 	</bean>
 
-		<!-- Cron式Trigger定义 -->
 	<bean id="advertiseBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseBackendTaskLoaderCronJobDetail" />
-		<!-- 每隔1分钟执行一次   0 0/1 * * * ?  -->
 		<property name="cronExpression" value="0 0/1 * * * ?" />
 	</bean>
-	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
 	<bean id="advertiseBackendTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseBackendTaskLoaderJob" />
 		<property name="targetMethod" value="execute" />
-		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
 		<property name="concurrent" value="false" />
 	</bean>
-
-	<!-- 被Cron执行的普通Spring Bean -->
 	<bean id="advertiseBackendTaskLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertiseBackendTaskLoader" />
+	
+	
+	<bean id="advertiseOnPublishDevicesStatisticsLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="advertiseOnPublishDevicesStatisticsLoaderCronJobDetail" />
+		<property name="cronExpression" value="0 0 12 * * ? " />
+	</bean>
+	<bean id="advertiseOnPublishDevicesStatisticsLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="advertiseOnPublishDevicesStatisticsLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="advertiseOnPublishDevicesStatisticsLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertiseOnPublishDevicesStatisticsLoader" />
 	
 </beans>
