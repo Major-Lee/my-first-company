@@ -286,6 +286,20 @@
 			</choose>
 			and state not in (${status});
 	</select>
+		select <include refid="modelColumns" /> from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end})))]]> 	
+			<choose>
+				<when test="province!=null and city==null">
+					and (province=#{province} )
+				</when>
+				<when test="province!=null and city!=null and district==null">
+					and (province=#{province} and city=#{city}  )
+				</when>
+				<when test="province!=null and city!=null and district!=null">
+			   		and 1=0
+				</when>
+			</choose>
+			and state not in (${status}) and id not in (#{id});
+	</select>
 	
 	<delete id="removeByModelCriteria">
 		delete from <include refid="modelTableName" />  
