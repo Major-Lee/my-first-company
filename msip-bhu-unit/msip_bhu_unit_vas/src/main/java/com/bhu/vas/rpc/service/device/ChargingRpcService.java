@@ -112,6 +112,14 @@ public class ChargingRpcService  implements IChargingRpcService{
 				uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,manufacturer_percent,distributor_percent,distributor_percent,range_cash_mobile, range_cash_pc,access_internet_time, free_access_internet_time, needCheckBinding));
 		return chargingUnitFacadeService.doBatchSharedealModify(uid,message, canbeturnoff,enterpriselevel,customized,owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent,range_cash_mobile, range_cash_pc,access_internet_time, free_access_internet_time, needCheckBinding);
 	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String sns,
+			String owner_percent,String manufacturer_percent,String distributor_percent, String distributor_l2_percent){
+		logger.info(String.format("doBatchSharedealModify uid:%s sns:%s owner_percent:%s manufacturer_percent:%s distributor_percent:%s  distributor_l2_percent:%s",
+				uid, sns, owner_percent,manufacturer_percent,distributor_percent,distributor_percent));
+		return chargingUnitFacadeService.doBatchSharedealModify(uid, sns, owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent);
+	}
 
 	@Override
 	public RpcResponseDTO<SharedealDefaultVTO> doFetchDefaultSharedeal(int uid) {

@@ -10,6 +10,7 @@ import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportPreCheckDTO;
+import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyBySnDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
@@ -69,7 +70,21 @@ public class AsyncDeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
+
+	public void sendBatchSharedealModifyBySnActionMessage(int uid,String sns,
+			String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent){
+		BatchSharedealModifyBySnDTO dto = new BatchSharedealModifyBySnDTO();
+		dto.setUid(uid);
+		dto.setSns(sns);
+		dto.setOwner_percent(owner_percent);
+		dto.setManufacturer_percent(manufacturer_percent);
+		dto.setDistributor_percent(distributor_percent);
+		dto.setDistributor_l2_percent(distributor_l2_percent);
+		dto.setTs(System.currentTimeMillis());
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
 	
+
 	public void sentDeviceBatchBindTagActionMessage(int uid,String message ,String tag){
 		OperTagDTO dto = new OperTagDTO();
 		dto.setUid(uid);

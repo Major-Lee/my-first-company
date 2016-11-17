@@ -50,16 +50,16 @@ public class DeviceRestBusinessFacadeServiceTest extends BaseTest{
 		HandsetDeviceDTO dto = new HandsetDeviceDTO();
 		dto.setAction("online");
 		dto.setVapname("wlan0");
-		dto.setChannel("11");
+//		dto.setChannel("11");
 		dto.setSsid("晓玮啊测试");
-		dto.setPhy_rate("0M");
-		dto.setRssi("0dRM");
-		dto.setSnr("0db");
+//		dto.setPhy_rate("0M");
+//		dto.setRssi("0dRM");
+//		dto.setSnr("0db");
 		dto.setEthernet("false");
 		dto.setDhcp_name("huanghhadaw");
 		dto.setIp("192.168.78.111");
 		dto.setMac("68:3e:34:48:b7:35");
-		dto.setBssid("64:68:75:00:00:00");
+//		dto.setBssid("64:68:75:00:00:00");
 		
 		
 		//.processHandsetOnline(JsonHelper.getJSONString(dto));

@@ -42,7 +42,7 @@ public class SharedNetworkFacadeServiceTest extends BaseTest{
 		dto.setUsers_rx_rate(128);
 		dto.setUsers_tx_rate(126);
 		
-		ParamSharedNetworkDTO.fufillWithDefault(dto);
+		ParamSharedNetworkDTO.fufillWithDefault(dto, null);
 		for(int i = 0;i<100;i++){
 			System.out.println(sharedNetworkFacadeService.doApplySharedNetworksConfig(i, dto));
 		}

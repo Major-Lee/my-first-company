@@ -143,7 +143,23 @@ public class ChargingUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
+
+	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String sns, 
+			String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent){
+		try{
+			//User operUser = chargingFacadeService.getUserService().getById(uid);
+			//UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
+			asyncDeliverMessageService.sendBatchSharedealModifyBySnActionMessage(uid, sns,
+					owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
 	public RpcResponseDTO<DeviceSharedealVTO> sharedealDetail(int uid,String mac){
 		try{
 			/*WifiDevice wifiDevice = chargingFacadeService.getWifiDeviceService().getById(mac);

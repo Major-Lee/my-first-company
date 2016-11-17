@@ -1,12 +1,9 @@
 package com.bhu.vas.web.operator;
 
-import java.io.File;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -126,8 +123,7 @@ public class OperatorImportController extends BaseController{
     }
     
     
-/*    运营商系统通过出库环节修改设备分成比例，暂时不需要提供单独修改设备比例的接口。
- * 如果后续需要提供，下面的接口需要增加参数，指定设备mac.
+
     @ResponseBody()
     @RequestMapping(value="/sharedeal/modify",method={RequestMethod.POST})
     public void modifySharedeal(
@@ -167,11 +163,8 @@ public class OperatorImportController extends BaseController{
     			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
     		}
     		
-           	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, null, 
-        			null,null,
-        			true,
-        			owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent,
-        			null,null,null, null, false);
+           	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, sns,
+        			owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
@@ -183,7 +176,6 @@ public class OperatorImportController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
     }
-*/
     
     @ResponseBody()
     @RequestMapping(value = "/sharedeal/detail", method = {RequestMethod.POST})

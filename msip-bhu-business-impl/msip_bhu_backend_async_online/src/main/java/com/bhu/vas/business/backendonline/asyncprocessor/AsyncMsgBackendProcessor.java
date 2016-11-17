@@ -58,6 +58,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	@Resource
 	private IMsgHandlerService batchDeviceApplyAdvertseServiceHandler;
 	
+	@Resource
+	private IMsgHandlerService batchSharedealBySnServiceHandler;
+	
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncMsgBackendProcessor initialize...");
@@ -95,6 +98,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case BatchSharedealModify:
 							batchSharedealServiceHandler.process(message);
+							break;
+						case BatchSharedealModifyBySn:
+							batchSharedealBySnServiceHandler.process(message);
 							break;
 						case BatchDeviceOperTag:
 							batchDeviceTagServiceHandler.process(message);
