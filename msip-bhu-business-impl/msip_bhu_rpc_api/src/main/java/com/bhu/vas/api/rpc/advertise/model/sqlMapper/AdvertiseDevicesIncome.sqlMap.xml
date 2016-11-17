@@ -2,89 +2,37 @@
 <!DOCTYPE mapper
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bhu.vas.api.rpc.advertise.model.Advertise">
+<mapper namespace="com.bhu.vas.api.rpc.advertise.model.AdvertiseDevicesIncome">
 
-  <resultMap id="modelResult" type="advertise">
+  <resultMap id="modelResult" type="advertiseDevicesIncome">
     <id property="id" column="id"/>
-    <result property="uid" column="uid"/>
-    <result property="title" column="title"/>
-    <result property="type" column="type"/>
-    <result property="orderId" column="orderId"/>
-    <result property="description" column="description"/>
-    <result property="image" column="image"/>
-    <result property="url" column="url"/>
-    <result property="domain" column="domain"/>
-    <result property="province" column="province"/>
-    <result property="city" column="city"/>
-    <result property="district" column="district"/>
-    <result property="cash" column="cash"/>
-    <result property="start" column="start"/> 
-    <result property="end" column="end"/>
-    <result property="duration" column="duration"/>
+    <result property="advertiseid" column="advertiseid"/>
     <result property="count" column="count"/>
-    <result property="ableDevicesNum" column="ableDevicesNum"/>
-    <result property="reject_reason" column="reject_reason"/>
-    <result property="state" column="state"/>
-    
-    <result property="verify_uid" column="verify_uid"/>
+	<result property="extension_content" column="extension_content"/>	
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_ops_advertises
+	    	t_ops_advertise_devices_income
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
-	    	uid,
-	    	title,
-	    	type,
-	    	orderId,
-	    	description,
-	    	image,
-	    	url,
-	    	domain,
-	    	province,
-	    	city,
-	    	district,
-	    	cash,
-	    	start,
-	    	end,
-	    	duration,
+	    	advertiseid,
 	    	count,
-	    	ableDevicesNum,
-	    	reject_reason,
-	    	state,
-	    	verify_uid,
+	    	extension_content,
 	    	created_at,
 	    	updated_at
 	    ]]>
 	</sql>  
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
-	    	uid,
-	    	title,
-	    	type,
-	    	orderId,
-	    	description,
-	    	image,
-	    	url,
-	    	domain,
-	    	province,
-	    	city,
-	    	district,
-	    	cash,
-	    	start,
-	    	end,
-	    	duration,
+			advertiseid,
 	    	count,
-	    	ableDevicesNum,
-	    	reject_reason,
-	    	state,
-	    	verify_uid,
+	    	extension_content,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -92,51 +40,17 @@
 	
 	<sql id="modelInsertValues">
 			#{id},
-			#{uid},
-			#{title},
-			#{type},
-			#{orderId},
-			#{description},
-	    	#{image},
-	    	#{url},
-	    	#{domain},
-	    	#{province},
-	    	#{city},
-	    	#{district},
-	    	#{cash},
-	    	#{start},
-	    	#{end},
-	    	#{duration},
-	    	#{count},
-	    	#{ableDevicesNum},
-	    	#{reject_reason},
-	    	#{state},
-	    	#{verify_uid},
+			#{advertiseid},
+			#{count},
+			#{extension_content},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
 	
 	<sql id="modelUpdateValues">
-	    	uid = #{uid},
-	    	title = #{title},
-	    	type = #{type},
-	    	orderId = #{orderId},
-	    	description = #{description},
-	    	image = #{image},
-	    	url = #{url},
-	    	domain = #{domain},
-	    	province = #{province},
-	    	city = #{city},
-	    	district = #{district},
-	    	cash = #{cash},
-	    	start = #{start},
-	    	end = #{end},
-	    	duration = #{duration},
+	    	advertiseid = #{advertiseid},
 	    	count = #{count},
-	    	ableDevicesNum = #{ableDevicesNum},
-	    	reject_reason = #{reject_reason},
-	    	state = #{state},
-	    	verify_uid = #{verify_uid},
+	    	extension_content = #{extension_content},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
@@ -188,11 +102,11 @@
 		</where>
 	</select>
 	
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="advertise">
+	<delete id="delete" parameterType="advertiseDevicesIncome">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -200,7 +114,7 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="advertise"  keyProperty="id">
+	<insert id="insert" parameterType="advertiseDevicesIncome"  useGeneratedKeys="true"  keyProperty="id">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 		<!-- 
 		<selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
@@ -209,7 +123,7 @@
 		 -->
 	</insert>
  
-	<update id="update" parameterType="advertise">
+	<update id="update" parameterType="advertiseDevicesIncome">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
@@ -253,39 +167,6 @@
 	    </if>  		
 	</select>
 	
-	<select id="countByAdvertiseTime" resultType="int" parameterType="Map">
-		select count(*) from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end})))]]> 
-			<choose>
-				<when test="province==null">
-					and province=null
-				</when>
-				<when test="province!=null and city==null">
-					and ((province=#{province} and city=null ) or (province=null))
-				</when>
-				<when test="province!=null and city!=null and district==null">
-					and ((province=#{province} and city=#{city}  and district=null) or (province=null) or (province=#{province} and city=null))
-				</when>
-				<when test="province!=null and city!=null and district!=null">
-			   		and ((province=#{province} and city=#{city} and district=#{district}) or (province=null) or (province=#{province} and city=null) or (province=#{province} and city=#{city} and district=null))
-				</when>
-			</choose>
-			  and state not in (5,6);	
-	</select>
-	<select id="queryByAdvertiseTime" resultMap="modelResult" parameterType="Map">
-		select <include refid="modelColumns" /> from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end})))]]> 	
-		<choose>
-				<when test="province!=null and city==null">
-					and ((province=#{province} ) or (province=null))
-				</when>
-				<when test="province!=null and city!=null and district==null">
-					and ((province=#{province} and city=#{city} ) or (province=null) or (province=#{province} and city=null))
-				</when>
-				<when test="province!=null and city!=null and district!=null">
-			   		and ((province=#{province} and city=#{city} and district=#{district}) or (province=null) or (province=#{province} and city=null) or (province=#{province} and city=#{city} and district=null))
-				</when>
-			</choose>
-			and state not in (5,6);
-	</select>
 	
 	<delete id="removeByModelCriteria">
 		delete from <include refid="modelTableName" />  

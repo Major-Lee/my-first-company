@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -20,7 +19,6 @@ import com.bhu.vas.api.vto.advertise.AdvertiseOccupiedVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
-import com.bhu.vas.api.vto.URouterHdVTO;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;

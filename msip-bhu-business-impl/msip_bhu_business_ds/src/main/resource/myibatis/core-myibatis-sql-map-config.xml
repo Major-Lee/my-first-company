@@ -304,7 +304,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserIdentityAuth.sqlMap.xml" />
 		<!-- 广告 -->
 		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/Advertise.sqlMap.xml" />
-
+		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/AdvertiseDevicesIncome.sqlMap.xml" />
 	</mappers>
 
 </configuration>
