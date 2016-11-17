@@ -519,9 +519,9 @@ public class ChargingFacadeService {
 
 		if(distributor_l2 != null){
 			if(distributor_l2 <=0){
-				configs.setDistributor(WifiDeviceSharedealConfigs.None_Distributor);
+				configs.setDistributor_l2(WifiDeviceSharedealConfigs.None_Distributor);
 			}else{
-				configs.setDistributor(distributor_l2);
+				configs.setDistributor_l2(distributor_l2);
 			}
 		}
 
