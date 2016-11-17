@@ -19,6 +19,7 @@
     <result property="current_gpath" column="current_gpath"/>
     <result property="memo" column="memo"/>
     <result property="description" column="description"/>
+    <result property="role" column="role"/>
     
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -48,6 +49,7 @@
 	    	current_gpath,
 	    	memo,
 	    	description,
+	    	role,
 	    	updated_at
 	    ]]>
 	</sql>  
@@ -66,6 +68,7 @@
 	    	current_gpath,
 	    	memo,
 	    	description,
+	    	role,
 	    	updated_at
 	    ]]>
 	</sql> 	
@@ -85,6 +88,7 @@
 	    	#{current_gpath},
 	    	#{memo},
 	    	#{description},
+	    	#{role},
 	    	#{updated_at}
 	</sql>
 		
@@ -102,6 +106,7 @@
 	    	current_gpath = #{current_gpath},
 	    	memo = #{memo},
 	    	description = #{description},
+	    	role = #{role},
 	    	updated_at = #{updated_at}
 	</sql>
 	<sql id="model_CRITERIA_SQL_GenCondition">

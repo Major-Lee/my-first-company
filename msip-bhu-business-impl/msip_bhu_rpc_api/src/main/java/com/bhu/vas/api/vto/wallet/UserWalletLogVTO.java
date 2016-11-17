@@ -22,6 +22,9 @@ public class UserWalletLogVTO implements java.io.Serializable {
 	//交易内容描述
 	private String memo;
 	private String description;
+	
+	//分成角色
+	private String role;
 	//private String payment_type;
 	//private String withdrawdate;
 	//日志时间
@@ -115,6 +118,12 @@ public class UserWalletLogVTO implements java.io.Serializable {
 	}
 	public void setTranstype(String transtype) {
 		this.transtype = transtype;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
 	}
 	
 }

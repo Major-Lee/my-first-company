@@ -30,6 +30,8 @@ public class UserWalletLogFFVTO implements java.io.Serializable {
 	// 交易内容描述
 	private String memo;
 	private String description;
+	//分成角色
+	private String role;
 	//private String payment_type;
 	//private String withdrawdate;
 	
@@ -131,6 +133,12 @@ public class UserWalletLogFFVTO implements java.io.Serializable {
 	}
 	public void setUmac(String umac) {
 		this.umac = umac;
+	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
 	}
 	
 }

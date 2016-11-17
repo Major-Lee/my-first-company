@@ -38,6 +38,9 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 	//交易内容描述
 	private String memo;
 	private String description;
+	//分成角色(owner, 一级运营商，二级运营商)
+	private String role;
+
 	public UserWalletLog() {
 		super();
 	}
@@ -152,6 +155,7 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 		vto.setDescription(description);
 		//vto.setPayment_type(payment_type);
 		vto.setMemo(memo);
+		vto.setRole(role);
 		vto.setOperdate(DateTimeHelper.formatDate(this.updated_at, DateTimeHelper.FormatPattern0));
 		return vto;
 	}
@@ -173,6 +177,7 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 		vto.setDescription(description);
 		//vto.setPayment_type(payment_type);
 		vto.setMemo(memo);
+		vto.setRole(role);
 		vto.setOperdate(DateTimeHelper.formatDate(this.updated_at, DateTimeHelper.FormatPattern0));
 		return vto;
 	}
@@ -192,4 +197,13 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 	public void setCurrent_gpath(String current_gpath) {
 		this.current_gpath = current_gpath;
 	}
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+	
 }
