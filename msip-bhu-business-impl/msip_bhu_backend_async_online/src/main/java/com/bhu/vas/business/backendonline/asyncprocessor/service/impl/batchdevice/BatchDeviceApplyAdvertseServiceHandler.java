@@ -103,9 +103,18 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 						.fetchDeviceSharedNetworkConfWhenEmptyThenCreate(mac,
 								true, true);
 				SharedNetworkSettingDTO snk = sharednetwork.getInnerModel();
-				ParamSharedNetworkDTO psn = snk.getPsn();
-				psn.setOpen_resource_ad(dtotype == IDTO.ACT_ADD ? domain : null); // 设置或者清空广告白名单
-				sharednetwork.putInnerModel(snk);
+				ParamSharedNetworkDTO psn = null;
+				if(snk != null){
+					psn = snk.getPsn();
+					if(psn != null){
+						psn.setOpen_resource_ad(dtotype == IDTO.ACT_ADD ? domain : null); // 设置或者清空广告白名单
+						sharednetwork.putInnerModel(snk);
+					}else{
+						logger.info(String.format("device is not has psn psn [%s]", mac));
+					}
+				}else{
+					logger.info(String.format("device is not has snk snk [%s]", mac));
+				}
 				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService()
 						.update(sharednetwork);
 
