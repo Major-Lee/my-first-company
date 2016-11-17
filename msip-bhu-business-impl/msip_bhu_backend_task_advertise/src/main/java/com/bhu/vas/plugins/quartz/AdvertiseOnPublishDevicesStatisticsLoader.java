@@ -56,7 +56,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 		List<AdvertiseDevicesIncome> devicesIncome = new ArrayList<AdvertiseDevicesIncome>();
 		for(Advertise ad: ads){
 			final List<String> devices = new ArrayList<String>();
-			List<Advertise> trashAds = advertiseService.getEntityDao().queryByAdvertiseTime(startTime, endTime, ad.getProvince(), ad.getCity(), ad.getDistrict());
+			List<Advertise> trashAds = advertiseService.getEntityDao().queryByAdvertiseTime(startTime, endTime, ad.getProvince(), ad.getCity(), ad.getDistrict(),true);
 			List<AdvertiseTrashPositionVTO> trashs = new ArrayList<AdvertiseTrashPositionVTO>();
 			for(Advertise trashAd : trashAds){
 				AdvertiseTrashPositionVTO trashVto = new AdvertiseTrashPositionVTO();
