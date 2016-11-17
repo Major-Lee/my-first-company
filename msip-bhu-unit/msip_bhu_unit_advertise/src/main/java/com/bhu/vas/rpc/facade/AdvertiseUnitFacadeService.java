@@ -61,8 +61,9 @@ public class AdvertiseUnitFacadeService {
 			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end) {
 			Advertise entity=new Advertise();
-			
-			entity.setCity(city);
+			if(StringUtils.isNotBlank(city)){
+				entity.setCity(city);
+			}
 			long count=wifiDeviceDataSearchService.searchCountByPosition(null,province, city, district);
 			if(start>end){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
@@ -71,11 +72,16 @@ public class AdvertiseUnitFacadeService {
 			int displayNum=(int) (count*1.1);
 			entity.setCash(displayNum*2);
 			
-			entity.setDistrict(district);
+			if(StringUtils.isNotBlank(district)){
+				entity.setDistrict(district);
+			}
+			
 			Date endDate=new Date(end);
 			entity.setEnd(endDate);
 			entity.setImage(image);
-			entity.setProvince(province);
+			if(StringUtils.isNotBlank(province)){
+				entity.setProvince(province);
+			}
 			Date startDate=new Date(start);
 			entity.setStart(startDate);
 			entity.setState(AdvertiseType.UnPaid.getType());
