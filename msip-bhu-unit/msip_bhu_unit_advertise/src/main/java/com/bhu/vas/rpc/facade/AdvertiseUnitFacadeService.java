@@ -102,7 +102,7 @@ public class AdvertiseUnitFacadeService {
 			stateList.add(AdvertiseType.OnPublish.getType());
 			mc.createCriteria().andColumnIn("state", stateList).andColumnEqualTo("uid", uid);
 			
-			int num=advertiseService.countByModelCriteria(mc);
+			//int num=advertiseService.countByModelCriteria(mc);
 //			if(num>=2){
 //				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
 //			}
