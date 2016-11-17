@@ -494,14 +494,15 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 		try{
 			return deviceURouterRestBusinessFacadeService.urouterConfigsSupportMulti(uid, mac);
 		}catch(BusinessI18nCodeException ex){
+			ex.printStackTrace();
 			logger.info(String.format("DeviceURouterRestRPC urouterConfigsSupportMulti failed uid [%s] mac [%s]",
 					uid, mac));
 			throw ex;
 		}
-		catch(Exception ex){
-			ex.printStackTrace(System.out);
+		catch(Exception e){
+			e.printStackTrace();
 			logger.error(String.format("DeviceURouterRestRPC urouterConfigsSupportMulti exception uid [%s] mac [%s] exmsg[%s]",
-					uid, mac, ex.getMessage()), ex);
+					uid, mac, e.getMessage()), e);
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

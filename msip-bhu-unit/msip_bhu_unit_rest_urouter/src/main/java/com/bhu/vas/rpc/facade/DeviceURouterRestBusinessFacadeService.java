@@ -1663,7 +1663,8 @@ public class DeviceURouterRestBusinessFacadeService {
 			WifiDeviceSharedNetwork dsn =sharedNetworksFacadeService.fetchDeviceSharedNetwork(dmac);
 			if (dsn != null) {
 				SharedNetworkSettingDTO sns = JsonHelper.getDTO(dsn.getExtension_content(), SharedNetworkSettingDTO.class);
-				vto.setSn_ssid(sns.getPsn().getSsid());
+				if(sns != null && sns.getPsn() != null)
+					vto.setSn_ssid(sns.getPsn().getSsid());
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		} catch (BusinessI18nCodeException bex) {
