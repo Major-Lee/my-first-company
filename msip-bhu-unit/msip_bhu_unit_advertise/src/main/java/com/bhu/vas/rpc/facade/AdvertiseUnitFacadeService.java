@@ -364,7 +364,7 @@ public class AdvertiseUnitFacadeService {
 
 		
 		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
-		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district);
+		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
 		
 		for(int i=2; i<=17; i++){
 			

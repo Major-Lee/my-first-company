@@ -29,7 +29,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		return n;
 	}
 	public List<Advertise> queryByAdvertiseTime(String start,String end,String province, String city,
-			String district ){
+			String district ,boolean flag){
 		List<Advertise> ads= new ArrayList<Advertise>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("start", start);
@@ -37,6 +37,11 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		map.put("province", province);
 		map.put("city", city);
 		map.put("district", district);
+		if(flag){
+			map.put("status", 3);
+		}else{
+			map.put("status", "5,6");
+		}
 		try {
 			ads = super.getSqlSessionMasterTemplate().selectList(Advertise.class.getName()+".queryByAdvertiseTime",map);
 		} catch (Exception e) {
