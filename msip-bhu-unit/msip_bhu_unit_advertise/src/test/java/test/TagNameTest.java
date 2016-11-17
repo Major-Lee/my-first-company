@@ -10,15 +10,12 @@ import org.junit.Test;
 
 import com.bhu.vas.api.rpc.tag.model.TagName;
 import com.bhu.vas.business.ds.tag.service.TagNameService;
-import com.bhu.vas.rpc.service.device.TagRpcService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.localunit.BaseTest;
 
 public class TagNameTest extends BaseTest {
     
-    @Resource
-    TagRpcService tagRpcService;
     @Resource
     TagNameService tagNameService;
     
