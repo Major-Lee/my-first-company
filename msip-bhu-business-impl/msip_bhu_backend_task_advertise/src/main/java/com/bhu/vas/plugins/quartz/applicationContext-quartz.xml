@@ -14,6 +14,8 @@
 				<ref bean="advertiseBackendTaskLoaderCronTrigger" />	
 				<!-- 每天中午十二点执行一次 -->
 				<ref bean="advertiseOnPublishDevicesStatisticsLoaderCronTrigger" />	
+				<!-- 每天三十秒执行一次 -->
+				<ref bean="advertisePaymentTimeOutTaskLoaderCronTrigger" />
 				
 			</list>
 		</property>
@@ -27,7 +29,7 @@
 
 	<bean id="advertiseBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseBackendTaskLoaderCronJobDetail" />
-		<property name="cronExpression" value="0 0/1 * * * ?" />
+		<property name="cronExpression" value="0 54-59 23 * * ?" />
 	</bean>
 	<bean id="advertiseBackendTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseBackendTaskLoaderJob" />
@@ -47,5 +49,16 @@
 		<property name="concurrent" value="false" />
 	</bean>
 	<bean id="advertiseOnPublishDevicesStatisticsLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertiseOnPublishDevicesStatisticsLoader" />
+	
+	<bean id="advertisePaymentTimeOutTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="advertisePaymentTimeOutTaskLoaderCronJobDetail" />
+		<property name="cronExpression" value="0/30 * * * * ? " />
+	</bean>
+	<bean id="advertisePaymentTimeOutTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="advertisePaymentTimeOutTaskLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="advertisePaymentTimeOutTaskLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertisePaymentTimeOutTaskLoader" />
 	
 </beans>

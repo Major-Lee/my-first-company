@@ -42,12 +42,13 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 	private AdvertiseDevicesIncomeService advertiseDevicesIncomeService;
 	
 	public void execute() {
+		logger.info("AdvertiseOnPublishDevicesStatisticsLoader start....");
 		
 		String startTime = null;
 		String endTime = null;
 		try {
-			startTime = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
-			endTime = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
+			startTime = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 0);
+			endTime = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -55,16 +56,21 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 		List<Advertise> ads = fetchOnpublishAdvertise();
 		List<AdvertiseDevicesIncome> devicesIncome = new ArrayList<AdvertiseDevicesIncome>();
 		for(Advertise ad: ads){
+			logger.info(String.format("AdvertiseOnPublishDevicesStatisticsLoader onpulishAdvertiseId[%s]", ad.getId()));
+			
 			final List<String> devices = new ArrayList<String>();
-			List<Advertise> trashAds = advertiseService.getEntityDao().queryByAdvertiseTime(startTime, endTime, ad.getProvince(), ad.getCity(), ad.getDistrict(),true);
+			List<Advertise> trashAds = advertiseService.getEntityDao().queryByAdvertiseTimeExcept(startTime, endTime, ad.getProvince(), ad.getCity(), ad.getDistrict(),true,ad.getId());
 			List<AdvertiseTrashPositionVTO> trashs = new ArrayList<AdvertiseTrashPositionVTO>();
+			
 			for(Advertise trashAd : trashAds){
+				logger.info(String.format("AdvertiseOnPublishDevicesStatisticsLoader trashAd province[%s] city[%s] district[%s]",trashAd.getProvince(),trashAd.getCity(),trashAd.getDistrict()));
 				AdvertiseTrashPositionVTO trashVto = new AdvertiseTrashPositionVTO();
 				trashVto.setProvince(trashAd.getProvince());
 				trashVto.setCity(trashAd.getCity());
 				trashVto.setDistrict(trashAd.getDistrict());
 				trashs.add(trashVto);
 			}
+			
 			wifiDeviceDataSearchService.iteratorWithPosition(trashs, ad.getProvince(), ad.getCity(), ad.getDistrict(), true, 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
 						@Override
 						public void notifyComming(Page<WifiDeviceDocument> pages) {
@@ -73,6 +79,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 							}
 						}
 			});
+			
 			AdvertiseDevicesIncome income = new AdvertiseDevicesIncome();
 			income.setAdvertiseid(ad.getId());
 			income.setCount(devices.size());
@@ -80,6 +87,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 			devicesIncome.add(income);
 		}
 		advertiseDevicesIncomeService.insertAll(devicesIncome);
+		logger.info("AdvertiseOnPublishDevicesStatisticsLoader end....");
 	}
 	
 	public List<Advertise> fetchOnpublishAdvertise(){

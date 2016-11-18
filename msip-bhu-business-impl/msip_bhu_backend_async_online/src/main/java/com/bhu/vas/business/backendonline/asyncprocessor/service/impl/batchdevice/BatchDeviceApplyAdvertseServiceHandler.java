@@ -132,8 +132,10 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 						macList, JsonHelper.getJSONString(ad));
 				break;
 			case IDTO.ACT_DELETE:
-				WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdInvalid(
-						macList);
+				;
+			case IDTO.ACT_UPDATE:
+				WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
+						macList, JsonHelper.getJSONString(ad));;
 			break;
 		default:
 			break;

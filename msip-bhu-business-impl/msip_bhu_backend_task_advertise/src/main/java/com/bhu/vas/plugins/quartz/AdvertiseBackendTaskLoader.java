@@ -40,7 +40,7 @@ public class AdvertiseBackendTaskLoader {
 		String nowDate = DateTimeHelper.getDateTime(new Date(), DateTimeHelper.FormatPattern0);
 		logger.info("nowDate:"+nowDate);
 		omittedOrTimelyAdApplyNotify(nowDate);
-		AdInvalidNotify(nowDate);
+//		AdInvalidNotify(nowDate);
 		logger.info("AdvertiseBackendTaskLoader end...");
 	}
 	
@@ -61,6 +61,14 @@ public class AdvertiseBackendTaskLoader {
 			logger.info("apply notify backend ..done");
 		}
 	}
+	
+	public void test(String Date){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnLessThan("start", Date).andColumnGreaterThan("end", Date).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
+		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
+		
+	}
+	
 	
 	public void AdInvalidNotify(String nowDate){
 		ModelCriteria mc = new ModelCriteria();
