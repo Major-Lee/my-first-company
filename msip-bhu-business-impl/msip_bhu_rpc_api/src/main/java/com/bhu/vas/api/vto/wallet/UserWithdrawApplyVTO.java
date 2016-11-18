@@ -10,6 +10,7 @@ import com.smartwork.msip.cores.helper.ArithHelper;
 @SuppressWarnings("serial")
 public class UserWithdrawApplyVTO implements java.io.Serializable {
 	private String applyid;
+	private String uType;
 	private int uid;
 	private int appid;
 	private String payment_type;
@@ -23,6 +24,15 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	private double transcost;
 	//交易税费
 	private double taxcost;
+	
+	//用户已提现金额
+	private double total_paid_cash;
+	//用户当前钱包余额
+	private double balance;
+	//用户账户总收入
+	private double total_cash_sum;
+	
+	private int total_paid_num;
 	
 	//add by dongrui 2016-06-17 start
 	//审核人
@@ -38,11 +48,20 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	//申请时间
 	private String create_time;
 	//add by dongrui 2016-06-17 E N D
+	
+	
 	public int getUid() {
 		return uid;
 	}
 	public void setUid(int uid) {
 		this.uid = uid;
+	}
+	
+	public String getuType() {
+		return uType;
+	}
+	public void setuType(String uType) {
+		this.uType = uType;
 	}
 	public String getMobileno() {
 		return mobileno;
@@ -61,6 +80,32 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	}
 	public void setCash(double cash) {
 		this.cash = cash;
+	}
+	
+	public double getTotal_paid_cash() {
+		return total_paid_cash;
+	}
+	public void setTotal_paid_cash(double total_paid_cash) {
+		this.total_paid_cash = total_paid_cash;
+	}
+	public double getBalance() {
+		return balance;
+	}
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
+	public double getTotal_cash_sum() {
+		return total_cash_sum;
+	}
+	public void setTotal_cash_sum(double total_cash_sum) {
+		this.total_cash_sum = total_cash_sum;
+	}
+	
+	public int getTotal_paid_num() {
+		return total_paid_num;
+	}
+	public void setTotal_paid_num(int total_paid_num) {
+		this.total_paid_num = total_paid_num;
 	}
 	public String getWithdraw_oper() {
 		return withdraw_oper;

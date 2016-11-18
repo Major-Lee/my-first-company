@@ -1,5 +1,8 @@
 package com.bhu.vas.web.user;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,22 +14,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
+import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
-import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawDetailVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.business.yun.iservice.IYunUploadService;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
@@ -43,7 +49,12 @@ public class UserWalletController extends BaseController{
 	private IOrderRpcService orderRpcService;
 	@Resource
 	private IYunUploadService yunOperateService;
-
+	
+	
+	public static void main(String[] args) {
+		//System.out.println(BusinessWebHelper.isOpenWithdrawDate());
+		System.out.println(DateTimeHelper.getFirstStrDateOfCurrentMonth());
+	}
 	@ResponseBody()
 	@RequestMapping(value="/wallet/withdraw", method={RequestMethod.GET,RequestMethod.POST})
 	public void walletWithdraw(
@@ -56,6 +67,31 @@ public class UserWalletController extends BaseController{
 			@RequestParam(required = true) double cash
 			){
 		try{
+			
+			//财务结算，不允许每月26~N+5提现
+			boolean isOpen = BusinessWebHelper.isOpenWithdrawDate();
+			if(!isOpen){
+				UserWithdrawApplyVTO rpcResult = new UserWithdrawApplyVTO();
+				rpcResult.setWithdraw_oper_desc(UWithdrawStatus.InvalidTime.getKey());
+				Calendar preCld = BusinessWebHelper.getCalendar(); 
+				preCld.set(Calendar.DATE,26);
+				Calendar sufCld =  BusinessWebHelper.getCalendar();
+				sufCld.add(Calendar.MONTH, 1);
+				sufCld.set(Calendar.DATE,5);
+				SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+				String preTime =  shortDateFormat.format(preCld.getTime());
+				String sufTime = shortDateFormat.format(sufCld.getTime());
+				String rpcDescs = "系统从"+preTime+"至"+sufTime+"为结算时间，暂不受理用户提现，敬请谅解！";
+				rpcResult.setWithdraw_oper(rpcDescs);
+				rpcResult.setPayment_type(payment_type);
+				rpcResult.setCash(cash);
+				rpcResult.setUid(uid);
+				rpcResult.setAppid(appid);
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
+				logger.info(String.format("walletWithdraw  is InvalidTime rpc result [%s]", JsonHelper.getJSONString(ResponseSuccess.embed(rpcResult))));
+				return;
+			}
+			
 			if(cash <= 0){
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,
 						new String[]{"cash:".concat(String.valueOf(cash)),

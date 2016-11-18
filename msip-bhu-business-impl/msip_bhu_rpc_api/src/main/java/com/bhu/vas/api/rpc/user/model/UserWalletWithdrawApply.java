@@ -27,6 +27,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 	private String payment_type;
 	//申请提现的现金
 	private double cash;
+	
 	//提现操作状态BusinessEnumType.UWithdrawStatus
 	private String withdraw_oper;
 	//最后一次的审核员
@@ -110,6 +111,8 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		this.payment_type = payment_type;
 	}
 
+	
+
 	@Override
 	public void setSequenceKey(Long autoid) {
 		this.id = StructuredIdHelper.generateStructuredIdString(appid, 
@@ -121,15 +124,29 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		return String.format("WalletWithdrawApply id[%s] appid[%s] payment_type[%s] uid[%s] cash[%s] withdraw_oper[%s] last_reckoner[%s]", id,appid,payment_type,uid,cash,withdraw_oper,last_reckoner);
 	}
 	
-	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(String mobileno,String nick,String verify_name,String operate_name,WithdrawCostInfo applyCost){
+	public UserWithdrawApplyVTO toUserWithdrawApplyVTO(
+			String uType,
+			String mobileno,
+			String nick,
+			String verify_name,
+			String operate_name,
+			WithdrawCostInfo applyCost,
+			double total_cash_sum,
+			double balance){
 		UserWithdrawApplyVTO vto = new UserWithdrawApplyVTO();
 		vto.setApplyid(id);
 		vto.setUid(uid);
 		vto.setAppid(appid);
 		vto.setPayment_type(payment_type);
 		vto.setNick(nick);
+		vto.setuType(uType);
 		vto.setMobileno(mobileno);
-		vto.setCash(applyCost.getCash());
+		vto.setCash(applyCost.getCash());//提现申请金额
+		
+		vto.setTotal_cash_sum(total_cash_sum);//总收入
+		vto.setBalance(balance);//账户余额
+		vto.setTotal_paid_cash(total_cash_sum-balance);//已提现总额
+		vto.setTotal_paid_num(0);///总交易订单数
 		vto.setTaxcost(applyCost.getTaxcost());
 		vto.setTranscost(applyCost.getTranscost());
 		vto.setWithdraw_oper(withdraw_oper);

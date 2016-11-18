@@ -95,9 +95,9 @@
 		
 		$('#WapWeixin2').click(function(){
 	           var goods_no = Date.parse(new Date());
-	            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=WapWeixin&version=v1&total_fee=0.01&goods_no='+goods_no;
+	            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&paymentName=商品&payment_type=WapWeixin&version=v1&total_fee=0.01&goods_no='+goods_no;
 	            $.ajax({
-	            	url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay/',
+	            	url:'http://pay.bhuwifi.com/msip_bhu_payment_rest/pay/',
 	               //url:'http://localhost:8080/msip_bhu_payment_rest/pay',
 	               type:'post',
 	               async: false,
@@ -118,7 +118,7 @@
 		
         $('#PcWeixin2').click(function(){
             var goods_no = Date.parse(new Date());
-            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=PcWeixin&total_fee=0.01&goods_no='+goods_no;
+            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&paymentName=商品&payment_type=PcWeixin&total_fee=0.01&goods_no='+goods_no;
            $.ajax({
                url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
                 type:'post',
@@ -139,7 +139,7 @@
 
         $('#PcAlipay2').click(function(){
             var goods_no = Date.parse(new Date());
-            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=PcAlipay&total_fee=0.01&goods_no='+goods_no;
+            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&paymentName=商品&payment_type=PcAlipay&total_fee=0.01&goods_no='+goods_no;
            $.ajax({
                url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
                 type:'post',
@@ -160,8 +160,7 @@
         $('#WapAlipay2').click(function(){
             var goods_no = Date.parse(new Date());
             
-            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&payment_type=WapAlipay&total_fee=0.01&goods_no='+goods_no;
-          alert(datas);
+            var datas = 'secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&paymentName=商品&payment_type=WapAlipay&total_fee=0.01&goods_no='+goods_no;
             $.ajax({
               // url:'http://pays.bhuwifi.com/msip_bhu_payment_rest/pay',
                url:'http://localhost:8080/msip_bhu_payment_rest/pay',
