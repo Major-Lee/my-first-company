@@ -158,9 +158,11 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							//检查共享网络是否需要变更模板(城市运营商变更)
 							List<WifiDeviceSharedNetwork> wifiDevicesSnks = sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().findByIds(pages);
 							for(WifiDeviceSharedNetwork wsnk:wifiDevicesSnks){
+								if(wsnk == null)
+									continue;
 								if(DistributorType.City.getType().equals(distributor_type)){
 									//城市运营商的设备，需要检查是否需要变更模板
-									if(distributor != -1 && wsnk.getOwner() != distributor){
+									if(distributor != -1 && wsnk.getOwner() != null && wsnk.getOwner().intValue() != distributor){
 										wsnk.setOwner(distributor);
 										wsnk.setTemplate(psn.getTemplate());
 										wsnk.setSharednetwork_type(psn.getNtype());
