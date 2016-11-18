@@ -79,14 +79,31 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 							for (WifiDeviceDocument doc : pages) {
 								macList.add(doc.getD_mac());
 							}
-							test(batch, macList, ad.getDomain(),
-									adDTO.getDtoType(), ad);
+							
+						switch (adDTO.getDtoType()) {
+							case IDTO.ACT_ADD:
+								WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
+										macList, JsonHelper.getJSONString(ad));
+								deviceLimitDomain(batch, macList, ad.getDomain(),
+										IDTO.ACT_ADD, ad);
+								break;
+							case IDTO.ACT_DELETE:
+								deviceLimitDomain(batch, macList, null,
+										IDTO.ACT_DELETE, ad);
+								break;
+							case IDTO.ACT_UPDATE:
+								WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
+										macList, JsonHelper.getJSONString(ad));;
+								break;
+						default:
+							break;
 						}
+					}
 			});
 		}
 	}
 
-	public void test(int batch, List<String> macList, String domain,
+	public void deviceLimitDomain(int batch, List<String> macList, String domain,
 			char dtotype, Advertise ad) {
 		int fromIndex = 0;
 		int toIndex = 0;
@@ -125,20 +142,5 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 
 			fromIndex += batch;
 		} while (toIndex < macList.size());
-
-		switch (dtotype) {
-			case IDTO.ACT_ADD:
-				WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
-						macList, JsonHelper.getJSONString(ad));
-				break;
-			case IDTO.ACT_DELETE:
-				;
-			case IDTO.ACT_UPDATE:
-				WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
-						macList, JsonHelper.getJSONString(ad));;
-			break;
-		default:
-			break;
-		}
 	}
 }
