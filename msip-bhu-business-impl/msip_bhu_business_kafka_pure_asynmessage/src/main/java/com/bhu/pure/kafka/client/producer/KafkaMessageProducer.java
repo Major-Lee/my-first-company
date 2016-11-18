@@ -109,6 +109,10 @@ public abstract class KafkaMessageProducer<KEY, VALUE> extends KafkaMessageClien
 			logger.info(String.format("send message: topic[%s] partition[%s] key[%s] value[%s]",
 					topic, partition,
 					key, value));	
+			if(value == null){
+				logger.error("value is null, drop message");
+				return null;
+			}
 			return producer.send(new ProducerRecord<KEY, VALUE>(topic, partition, key, value)).get();
 /*		}catch(Exception ex){
 			logger.error(String.format("error send: topic[%s] partition[%s] key[%s] value[%s]",
