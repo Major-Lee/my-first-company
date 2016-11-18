@@ -14,6 +14,7 @@ import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
 import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
@@ -169,6 +170,12 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	public RpcResponseDTO<UserWithdrawDetailVTO> fetchWithdrawSimpleDetail(Integer uid) {
 		logger.info(String.format("fetchWithdrawSimpleDetail with uid[%s]",uid));
 		return userWalletUnitFacadeService.fetchWithdrawSimpleDetail(uid);
+	}
+
+	@Override
+	public RpcResponseDTO<OpertorUserIncomeVTO> operatorMonIncome(Integer uid) {
+		logger.info(String.format("operatorMonIncome with uid[%s]",uid));
+		return userWalletUnitFacadeService.operatorMonIncome(uid);
 	}
 	
 }

@@ -7,6 +7,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
 import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
@@ -137,6 +138,12 @@ public interface IUserWalletRpcService {
 	public RpcResponseDTO<RankingCardInfoVTO> rankingCardInfo(Integer uid);
 
 	public RpcResponseDTO<UserWithdrawDetailVTO> fetchWithdrawSimpleDetail(Integer uid);
+	/**
+	 * 通过uid查询用户当月及上月收益
+	 * @param uid
+	 * @return
+	 */
+	public RpcResponseDTO<OpertorUserIncomeVTO> operatorMonIncome(Integer uid);
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号
