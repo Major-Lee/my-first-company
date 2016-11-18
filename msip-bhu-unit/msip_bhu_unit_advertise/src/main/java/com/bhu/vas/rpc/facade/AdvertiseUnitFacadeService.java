@@ -93,7 +93,20 @@ public class AdvertiseUnitFacadeService {
 				advertiseTrashPositionVTO.setProvince(i.getProvince());
 				advertiseTrashPositionVTOs.add(advertiseTrashPositionVTO);
 			}
-			long count=wifiDeviceDataSearchService.searchCountByPosition(advertiseTrashPositionVTOs,province, city, district);
+			long count=0;
+			try {
+				AdDevicePositionVTO vto = fetchAdvertiseOccupy(format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern5,province, city, district);
+				List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
+				if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
+					for(AdvertiseOccupiedVTO i:advertiseOccupiedVTOs){
+						count+=i.getCount();
+					}
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			//long count=wifiDeviceDataSearchService.searchCountByPosition(advertiseTrashPositionVTOs,province, city, district);
 			if(start>end){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 			}
