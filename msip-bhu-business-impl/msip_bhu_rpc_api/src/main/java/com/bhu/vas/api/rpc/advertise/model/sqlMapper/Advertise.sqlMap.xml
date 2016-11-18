@@ -25,8 +25,8 @@
     <result property="ableDevicesNum" column="ableDevicesNum"/>
     <result property="reject_reason" column="reject_reason"/>
     <result property="state" column="state"/>
-    
     <result property="verify_uid" column="verify_uid"/>
+    <result property="sign" column="sign"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -59,6 +59,7 @@
 	    	reject_reason,
 	    	state,
 	    	verify_uid,
+	    	sign,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -85,6 +86,7 @@
 	    	reject_reason,
 	    	state,
 	    	verify_uid,
+	    	sign,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -112,6 +114,7 @@
 	    	#{reject_reason},
 	    	#{state},
 	    	#{verify_uid},
+	    	#{sign},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -137,6 +140,7 @@
 	    	reject_reason = #{reject_reason},
 	    	state = #{state},
 	    	verify_uid = #{verify_uid},
+	    	sign = #{sign},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

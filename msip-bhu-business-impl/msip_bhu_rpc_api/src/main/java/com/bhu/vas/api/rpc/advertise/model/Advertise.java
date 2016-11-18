@@ -42,6 +42,8 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	private int state;
 	//审核人id
 	private int verify_uid;
+	//当天是否发布过此广告
+	private boolean sign = false;
 	private Date created_at;
 	private Date updated_at;
 	
@@ -188,6 +190,14 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		this.cash = cash;
 	}
 	
+	public boolean isSign() {
+		return sign;
+	}
+
+	public void setSign(boolean sign) {
+		this.sign = sign;
+	}
+
 	@Override
 	public void preInsert() {
 		if (this.created_at == null)
