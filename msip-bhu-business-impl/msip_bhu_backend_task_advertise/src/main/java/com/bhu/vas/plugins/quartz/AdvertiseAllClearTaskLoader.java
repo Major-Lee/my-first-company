@@ -16,6 +16,7 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 public class AdvertiseAllClearTaskLoader {
@@ -29,8 +30,8 @@ public class AdvertiseAllClearTaskLoader {
 	private AsyncDeliverMessageService asyncDeliverMessageService;
 	
 	public void execute(){
-		
 		logger.info("AdvertiseAllClearTaskLoader start...");
+		
 		String afterDate = null;
 		try {
 			afterDate = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
@@ -38,6 +39,12 @@ public class AdvertiseAllClearTaskLoader {
 			e.printStackTrace();
 		}
 		WifiDeviceAdvertiseListService.getInstance().wifiDevicesAllAdInvalid();
+		devicesDomainClear(afterDate);
+		initOnpublishSign();
+		logger.info("AdvertiseAllClearTaskLoader end...");
+	}
+	//失效广告清除域名
+	public void devicesDomainClear(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnLessThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
@@ -50,8 +57,16 @@ public class AdvertiseAllClearTaskLoader {
 			}
 			advertiseService.updateAll(lists);
 			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_DELETE);
-
 		}
-		logger.info("AdvertiseAllClearTaskLoader end...");
+	}
+	//把需要持续发布的广告标志位重置
+	public void initOnpublishSign(){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType()).andColumnEqualTo("sign",StringHelper.TRUE);
+		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
+		for(Advertise ad :ads){
+			ad.setSign(false);
+		}
+		advertiseService.updateAll(ads);
 	}
 }

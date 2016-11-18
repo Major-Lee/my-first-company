@@ -3,7 +3,6 @@ package com.bhu.vas.plugins.quartz;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,9 +14,9 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 
@@ -47,9 +46,10 @@ public class AdvertiseBackendTaskLoader {
 		}
 		logger.info("afterDate:"+afterDate);
 		omittedOrTimelyAdApplyNotify(afterDate);
+		OnpublicContinueApply(afterDate);
 		logger.info("AdvertiseBackendTaskLoader end...");
 	}
-	
+	//发布广告
 	public void omittedOrTimelyAdApplyNotify(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnLessThan("start", afterDate).andColumnGreaterThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPublish.getType());
@@ -60,6 +60,7 @@ public class AdvertiseBackendTaskLoader {
 			for(Advertise ad : lists){
 				adIds.add(ad.getId());
 				ad.setState(BusinessEnumType.AdvertiseType.OnPublish.getType());
+				ad.setSign(true);
 			}
 			advertiseService.updateAll(lists);
 			logger.info("apply notify backend ..start");
@@ -67,10 +68,10 @@ public class AdvertiseBackendTaskLoader {
 			logger.info("apply notify backend ..done");
 		}
 	}
-	
+	//需要持续发布的广告再次发布
 	public void OnpublicContinueApply(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLessThan("start", afterDate).andColumnGreaterThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
+		mc.createCriteria().andColumnLessThan("start", afterDate).andColumnGreaterThan("end", afterDate).andColumnEqualTo("sign", StringHelper.FALSE).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("ready applied ad sum" + lists.size());
