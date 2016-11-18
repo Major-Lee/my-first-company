@@ -272,13 +272,14 @@ public class UserWalletUnitFacadeService {
 	 * @param uid
 	 * @param tuid
 	 * @param withdraw_status
+	 * @param endTime2 
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
 	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(
-			int reckoner, int tuid, String withdraw_status,
-			String payment_type, String startTime, String endTime, int pageNo,
+			int reckoner, int tuid, String mobileno,String withdraw_status,
+			String payment_type, String startTime, String endTime,  int pageNo,
 			int pageSize) {
 		try {
 			User validateUser = UserValidateServiceHelper.validateUser(
@@ -295,6 +296,10 @@ public class UserWalletUnitFacadeService {
 			UWithdrawStatus status = null;
 			if (StringUtils.isNotEmpty(withdraw_status)) {
 				status = UWithdrawStatus.fromKey(withdraw_status);
+			}
+			//根据申请人手机号查询提现申请记录
+			if (StringUtils.isNotEmpty(mobileno)) {
+				tuid = userService.findUniqueIdByProperty("mobileno", mobileno);
 			}
 			TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService
 					.pageWithdrawApplies(tuid, status, payment_type, startTime,
@@ -333,15 +338,22 @@ public class UserWalletUnitFacadeService {
 						operateUser = userService.getById(apply
 								.getOperate_uid());
 					}
+					
+					//userWallet
+					UserWallet uwallet = userWalletFacadeService.userWallet(tuid);
+					double totalCash = uwallet.getTotal_cash_sum();
+					double lastCash = uwallet.getCash();
 					// add by dongrui 2016-06-20 E N D
 					vtos.add(apply.toUserWithdrawApplyVTO(
+							user != null ? UserType.getByIndex(user.getUtype()).getFname()
+									: StringUtils.EMPTY,
 							user != null ? user.getMobileno()
 									: StringUtils.EMPTY,
 							user != null ? user.getNick() : StringUtils.EMPTY,
 							verifyUser != null ? verifyUser.getNick()
 									: StringUtils.EMPTY,
 							operateUser != null ? operateUser.getNick()
-									: StringUtils.EMPTY, calculateApplyCost));
+									: StringUtils.EMPTY, calculateApplyCost,totalCash,lastCash));
 					index++;
 				}
 			}
@@ -437,9 +449,16 @@ public class UserWalletUnitFacadeService {
 				// ApplyCost calculateApplyCost =
 				// userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(),
 				// withdrawApply.getCash());
+				//userWallet
+				UserWallet uwallet = userWalletFacadeService.userWallet(reckoner);
+				double totalCash = uwallet.getTotal_cash_sum();
+				double lastCash = uwallet.getCash();
 				withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(
-						user.getMobileno(), user.getNick(), user.getNick(), "",
-						calculateApplyCost);
+						UserType.getByIndex(user.getUtype()).getFname(),
+						user.getMobileno(),
+						user.getNick(),
+						user.getNick(), "",
+						calculateApplyCost,totalCash,lastCash);
 			}
 			// modify by dongrui 2016-06-20 E N D
 			if (withdrawApplyVTO != null) {
@@ -526,9 +545,12 @@ public class UserWalletUnitFacadeService {
 			// withdrawApply.getCash());
 			// UserWalletConfigs walletConfigs =
 			// userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
+			UserWallet uwallet = userWalletFacadeService.userWallet(reckoner);
+			double totalCash = uwallet.getTotal_cash_sum();
+			double lastCash = uwallet.getCash();
 			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply
-					.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(),
-							"", "", calculateApplyCost);
+					.toUserWithdrawApplyVTO(UserType.getByIndex(user.getUtype()).getFname(),user.getMobileno(), user.getNick(),
+							"", "", calculateApplyCost,totalCash,lastCash);
 
 			// modify by dongrui 2016-06-17 start
 			UserOAuthStateVTO paymentVTO = null;
@@ -617,9 +639,12 @@ public class UserWalletUnitFacadeService {
 			// ApplyCost calculateApplyCost =
 			// userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(),
 			// withdrawApply.getCash());
+			UserWallet uwallet = userWalletFacadeService.userWallet(reckoner);
+			double totalCash = uwallet.getTotal_cash_sum();
+			double lastCash = uwallet.getCash();
 			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply
-					.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(),
-							"", "", calculateApplyCost);
+					.toUserWithdrawApplyVTO(UserType.getByIndex(user.getUtype()).getFname(),user.getMobileno(), user.getNick(),
+							"", "", calculateApplyCost,totalCash,lastCash);
 			return RpcResponseDTOBuilder
 					.builderSuccessRpcResponse(withdrawApplyVTO);
 		} catch (BusinessI18nCodeException bex) {
@@ -679,9 +704,12 @@ public class UserWalletUnitFacadeService {
 			// ApplyCost calculateApplyCost =
 			// userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(uid,
 			// cash);
+			UserWallet uwallet = userWalletFacadeService.userWallet(uid);
+			double totalCash = uwallet.getTotal_cash_sum();
+			double lastCash = uwallet.getCash();
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(apply
-					.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(),
-							"", "", calculateApplyCost));
+					.toUserWithdrawApplyVTO(UserType.getByIndex(user.getUtype()).getFname(),user.getMobileno(), user.getNick(),
+							"", "", calculateApplyCost,totalCash,lastCash));
 		} catch (BusinessI18nCodeException bex) {
 			bex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(

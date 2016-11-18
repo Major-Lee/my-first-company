@@ -249,9 +249,8 @@ public class BusinessEnumType {
 		WithdrawDoing("WD","uPay正在提现处理中"),
 		WithdrawSucceed("WS","uPay提现成功"),
 		WithdrawFailed("WF","uPay提现失败"),
-		//add by dongrui 2016-06-17 start
 		WithdrawVerify("WV","提现待审核"),
-		//add by dongrui 2016-06-17 E N D
+		InvalidTime("IT","提现时间无效"),
 		;
 		private String key;
 		private String name;

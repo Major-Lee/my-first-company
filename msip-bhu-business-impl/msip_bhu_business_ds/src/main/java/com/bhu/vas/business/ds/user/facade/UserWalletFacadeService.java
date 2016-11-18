@@ -199,7 +199,7 @@ public class UserWalletFacadeService{
 	 * @param uid
 	 * @return
 	 */
-	private UserWallet userWallet(int uid){
+	public UserWallet userWallet(int uid){
 		UserValidateServiceHelper.validateUser(uid,this.userService);
 		synchronized(lockObjectFetch(uid)){
 			UserWallet uwallet = userWalletService.getOrCreateById(uid);
@@ -718,12 +718,13 @@ public class UserWalletFacadeService{
 	/**
 	 * 提现申请审核列表
 	 * @param uid
+	 * @param mobileno 
 	 * @param status 
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 */
-	public TailPage<UserWalletWithdrawApply> pageWithdrawApplies(Integer uid,BusinessEnumType.UWithdrawStatus status,String payment_type,String startTime,String endTime,int pageNo,int pageSize){
+	public TailPage<UserWalletWithdrawApply> pageWithdrawApplies(Integer uid, BusinessEnumType.UWithdrawStatus status,String payment_type,String startTime,String endTime,int pageNo,int pageSize){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria createCriteria = mc.createCriteria();
 		if(uid != null && uid.intValue()>0){

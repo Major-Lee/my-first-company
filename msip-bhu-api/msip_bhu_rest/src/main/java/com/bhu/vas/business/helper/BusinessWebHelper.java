@@ -1,5 +1,6 @@
 package com.bhu.vas.business.helper;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
@@ -45,5 +46,30 @@ public class BusinessWebHelper {
 			result[1] = DateTimeHelper.formatDate(DateTimeHelper.FormatPattern16);
 		}
 		return result;
+	}
+	
+	// 各种时间格式
+	public static Calendar getCalendar() {
+		return Calendar.getInstance();
+	}
+	public static String formatDate() {
+		return DateTimeHelper.shortDateFormat.format(getCalendar().getTime());
+	}
+	
+	public static boolean isOpenWithdrawDate(){
+		boolean flag = true;
+		Date currentTime = getCalendar().getTime();
+		Calendar preCld = getCalendar();
+		preCld.set(Calendar.DATE,26);
+		Calendar sufCld = getCalendar();
+		sufCld.add(Calendar.MONTH, 1);
+		sufCld.set(Calendar.DATE,5);
+//		System.out.println("currentTime:"+ DateTimeHelper.shortDateFormat.format(currentTime));
+//		System.out.println("preCld:"+DateTimeHelper.shortDateFormat.format(preCld.getTime()));
+//		System.out.println("sufCld:"+DateTimeHelper.shortDateFormat.format(sufCld.getTime()));
+		if(preCld.getTime().getTime() < currentTime.getTime() && currentTime.getTime() < sufCld.getTime().getTime() ){
+			flag = false;
+		}
+		return flag;
 	}
 }
