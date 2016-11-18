@@ -31,4 +31,5 @@ public class AdvertiseFacadeService {
 		advertiseService.update(ad);
 		logger.info("advertiseCompletionOfPayment  finish");
 	}
+	
 }

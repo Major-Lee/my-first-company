@@ -83,6 +83,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 			AdvertiseDevicesIncome income = new AdvertiseDevicesIncome();
 			income.setAdvertiseid(ad.getId());
 			income.setCount(devices.size());
+			income.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
 			income.setExtension_content(JsonHelper.getJSONString(devices));
 			devicesIncome.add(income);
 		}

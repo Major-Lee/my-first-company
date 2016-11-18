@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.bhu.vas.api.helper.AdvertiseHelper;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -47,7 +48,6 @@ public class AdvertiseUnitFacadeService {
 	private UserService userService;
 	@Resource
 	private AdvertiseFacadeService advertiseFacadeService;
-	
 	
 	public AdvertiseService getAdvertiseService() {
 		return advertiseService;
@@ -388,7 +388,7 @@ public class AdvertiseUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	
-	private AdDevicePositionVTO fetchAdvertiseOccupy(String start,String end,String pattern,String province,String city,String district) throws ParseException {
+	public AdDevicePositionVTO fetchAdvertiseOccupy(String start,String end,String pattern,String province,String city,String district) throws ParseException {
 		AdDevicePositionVTO positionVto = new AdDevicePositionVTO();
 //		String start = null;
 //		String end = null;
@@ -407,9 +407,6 @@ public class AdvertiseUnitFacadeService {
 		
 		for(int i=0; i<=days; i++){
 			
-			AdvertiseOccupiedVTO occupiedVto = new AdvertiseOccupiedVTO();
-			List<AdvertiseTrashPositionVTO> trashVtos = new ArrayList<AdvertiseTrashPositionVTO>();
-			
 			SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern5);  
 			String time = null;
 			Date nowDate = null;
@@ -417,16 +414,9 @@ public class AdvertiseUnitFacadeService {
 			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
 			nowDate  = sdf.parse(time);
 			
-			for(Advertise ad : advertises){
-				if(ad.getStart().getTime() <= nowDate.getTime()  &&  ad.getEnd().getTime() > nowDate.getTime()){
-					AdvertiseTrashPositionVTO trashVto = new AdvertiseTrashPositionVTO();
-					trashVto.setDistrict(ad.getDistrict());
-					trashVto.setCity(ad.getCity());
-					trashVto.setProvince(ad.getProvince());
-					trashVtos.add(trashVto);
-					System.out.println("trash:" +ad.getProvince()+ad.getCity()+ad.getDistrict());
-				}
-			}
+			AdvertiseOccupiedVTO occupiedVto = new AdvertiseOccupiedVTO();
+			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, nowDate);
+
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
 			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));

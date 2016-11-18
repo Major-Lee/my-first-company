@@ -72,13 +72,15 @@ public class AdvertiseBackendTaskLoader {
 	public void OnpublicContinueApply(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnLessThan("start", afterDate).andColumnGreaterThan("end", afterDate).andColumnEqualTo("sign", StringHelper.FALSE).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
-		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
-		if(!lists.isEmpty()){
-			logger.info("ready applied ad sum" + lists.size());
+		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
+		if(!ads.isEmpty()){
+			logger.info("ready applied ad sum" + ads.size());
 			List<String> adIds = new ArrayList<String>();
-			for(Advertise ad : lists){
+			for(Advertise ad : ads){
 				adIds.add(ad.getId());
+				ad.setSign(true);
 			}
+			advertiseService.updateAll(ads);
 			logger.info("apply notify backend ..start");
 			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_ADD);
 			logger.info("apply notify backend ..done");
