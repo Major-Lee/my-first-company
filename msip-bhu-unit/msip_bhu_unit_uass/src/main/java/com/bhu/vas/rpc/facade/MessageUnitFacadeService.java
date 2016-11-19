@@ -21,14 +21,17 @@ public class MessageUnitFacadeService {
 			String sig = MessageSystemHashService.getInstance().fetchMessageUserSig(String.valueOf(uid));
 			if (sig == null){
 				logger.info(String.format("fetch_usersig can't fetch user[%s] from redis", uid));
-			}else{
 				sig = MessageTimHelper.createUserSig(uid+"", MessageTimHelper.defaultExpire);
 				MessageSystemHashService.getInstance().setMessageUserSig(uid+"", sig);
+			}else{
+				sig = MessageSystemHashService.getInstance().fetchMessageUserSig(uid+"");
 			}
 			if (sig != null){
 				dto.setSig(sig);
+				logger.info(String.format("fetch_usersig user[%s] sig[%s] successful!", uid, sig));
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 			}else{
+				logger.info(String.format("fetch_usersig failed user[%s]",uid));
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 			}
 		}catch(Exception ex){
