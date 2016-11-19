@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto.message;
+package com.bhu.vas.api.rpc.message.dto;
 
 @SuppressWarnings("serial")
 public class MessageUserSigDTO implements java.io.Serializable{

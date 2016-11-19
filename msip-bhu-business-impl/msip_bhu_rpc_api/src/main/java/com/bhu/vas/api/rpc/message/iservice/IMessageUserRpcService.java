@@ -1,7 +1,7 @@
 package com.bhu.vas.api.rpc.message.iservice;
 
-import com.bhu.vas.api.dto.message.MessageUserSigDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.message.dto.MessageUserSigDTO;
 
 /**
  * 必虎消息接口定义
