@@ -11,7 +11,7 @@ import com.bhu.vas.api.rpc.message.dto.MessageUserSigDTO;
 import com.bhu.vas.api.rpc.message.iservice.IMessageUserRpcService;
 import com.bhu.vas.rpc.facade.MessageUnitFacadeService;
 
-@Service("MessageUserRpcService")
+@Service("messageUserRpcService")
 public class MessageUserRpcService implements IMessageUserRpcService{
 	private final Logger logger = LoggerFactory.getLogger(MessageUserRpcService.class);
 	@Resource
