@@ -1,4 +1,4 @@
-package com.bhu.vas.api.dto.advertise;
+package com.bhu.vas.api.vto.advertise;
 
 import java.util.Date;
 

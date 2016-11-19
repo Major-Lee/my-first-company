@@ -25,8 +25,8 @@
     <result property="ableDevicesNum" column="ableDevicesNum"/>
     <result property="reject_reason" column="reject_reason"/>
     <result property="state" column="state"/>
-    
     <result property="verify_uid" column="verify_uid"/>
+    <result property="sign" column="sign"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -59,6 +59,7 @@
 	    	reject_reason,
 	    	state,
 	    	verify_uid,
+	    	sign,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -85,6 +86,7 @@
 	    	reject_reason,
 	    	state,
 	    	verify_uid,
+	    	sign,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -112,6 +114,7 @@
 	    	#{reject_reason},
 	    	#{state},
 	    	#{verify_uid},
+	    	#{sign},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -137,6 +140,7 @@
 	    	reject_reason = #{reject_reason},
 	    	state = #{state},
 	    	verify_uid = #{verify_uid},
+	    	sign = #{sign},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
@@ -254,7 +258,52 @@
 	</select>
 	
 	<select id="countByAdvertiseTime" resultType="int" parameterType="Map">
-		select count(*) from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end}))) and province=#{province} and city=#{city} and district=#{district} and state not in (5,6)]]>;	
+		select count(*) from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end})))]]> 
+			<choose>
+				<when test="province==null">
+					and province is null
+				</when>
+				<when test="province!=null and city==null">
+					and ((province=#{province} and city is null ) or (province is null))
+				</when>
+				<when test="province!=null and city!=null and district==null">
+					and ((province=#{province} and city=#{city}  and district is null) or (province is null) or (province=#{province} and city is null))
+				</when>
+				<when test="province!=null and city!=null and district!=null">
+			   		and ((province=#{province} and city=#{city} and district=#{district}) or (province is null) or (province=#{province} and city is null) or (province=#{province} and city=#{city} and district is null))
+				</when>
+			</choose>
+			  and state not in (5,6);	
+	</select>
+	<select id="queryByAdvertiseTime" resultMap="modelResult" parameterType="Map">
+		select <include refid="modelColumns" /> from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end})))]]> 	
+			<choose>
+				<when test="province!=null and city==null">
+					and ((province=#{province} ) or (province is null))
+				</when>
+				<when test="province!=null and city!=null and district==null">
+					and ((province=#{province} and city=#{city} ) or (province is null) or (province=#{province} and city is null))
+				</when>
+				<when test="province!=null and city!=null and district!=null">
+			   		and ((province=#{province} and city=#{city} and district=#{district}) or (province is null) or (province=#{province} and city is null) or (province=#{province} and city=#{city} and district is null))
+				</when>
+			</choose>
+			and state not in (${status});
+	</select>
+	<select id="queryByAdvertiseTimeExcept" resultMap="modelResult" parameterType="Map">
+		select <include refid="modelColumns" /> from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end})))]]> 	
+			<choose>
+				<when test="province!=null and city==null">
+					and (province=#{province} )
+				</when>
+				<when test="province!=null and city!=null and district==null">
+					and (province=#{province} and city=#{city}  )
+				</when>
+				<when test="province!=null and city!=null and district!=null">
+			   		and 1=0
+				</when>
+			</choose>
+			and state not in (${status}) and id not in (#{id});
 	</select>
 	
 	<delete id="removeByModelCriteria">

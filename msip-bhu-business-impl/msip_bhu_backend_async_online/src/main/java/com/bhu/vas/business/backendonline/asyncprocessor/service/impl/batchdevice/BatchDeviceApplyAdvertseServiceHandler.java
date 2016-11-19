@@ -1,6 +1,9 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchdevice;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.DownCmds;
+import com.bhu.vas.api.helper.AdvertiseHelper;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
@@ -21,10 +25,12 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
+import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
+import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
@@ -32,6 +38,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
@@ -60,6 +67,9 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 	
 	@Resource
 	private AdvertiseService advertiseService;
+	
+	@Resource
+	private AdvertiseFacadeService advertiseFacadeService;
 
 	@Override
 	public void process(String message) {
@@ -71,23 +81,55 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		for (final Advertise ad : adlists) {
 			final int batch = 200;
 			final List<String> macList = new ArrayList<String>();
-			wifiDeviceDataSearchService.iteratorWithPosition(ad.getProvince(),
-					ad.getCity(), ad.getDistrict(), batch,
-					new IteratorNotify<Page<WifiDeviceDocument>>() {
+			
+			String start = null;
+			String end = null;
+			SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern5); 
+			
+			try {
+				start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
+				end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
+				List<Advertise> ads = advertiseService.getEntityDao().queryByAdvertiseTimeExcept(start, end, ad.getProvince(), ad.getCity(), ad.getDistrict(), true, ad.getId());
+				List<AdvertiseTrashPositionVTO> trashs = AdvertiseHelper.buildAdvertiseTrashs(ads, sdf.parse(start));
+				
+				wifiDeviceDataSearchService.iteratorWithPosition(trashs,ad.getProvince(),
+						ad.getCity(), ad.getDistrict(),false,batch,
+						new IteratorNotify<Page<WifiDeviceDocument>>() {
 
-						@Override
-						public void notifyComming(Page<WifiDeviceDocument> pages) {
-							for (WifiDeviceDocument doc : pages) {
-								macList.add(doc.getD_mac());
+							@Override
+							public void notifyComming(Page<WifiDeviceDocument> pages) {
+								for (WifiDeviceDocument doc : pages) {
+									macList.add(doc.getD_mac());
+								}
+								
+							switch (adDTO.getDtoType()) {
+								case IDTO.ACT_ADD:
+									WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
+											macList, JsonHelper.getJSONString(ad));
+									deviceLimitDomain(batch, macList, ad.getDomain(),
+											IDTO.ACT_ADD, ad);
+									break;
+								case IDTO.ACT_DELETE:
+									deviceLimitDomain(batch, macList, null,
+											IDTO.ACT_DELETE, ad);
+									break;
+								case IDTO.ACT_UPDATE:
+									WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
+											macList, JsonHelper.getJSONString(ad));;
+									break;
+							default:
+								break;
 							}
-							test(batch, macList, ad.getDomain(),
-									adDTO.getDtoType(), ad);
 						}
-			});
+				});
+			} catch (ParseException e) {
+				logger.info("BatchDeviceApplyAdvertseServiceHandler error..");
+				e.printStackTrace();
+			}
 		}
 	}
 
-	public void test(int batch, List<String> macList, String domain,
+	public void deviceLimitDomain(int batch, List<String> macList, String domain,
 			char dtotype, Advertise ad) {
 		int fromIndex = 0;
 		int toIndex = 0;
@@ -135,18 +177,5 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 
 			fromIndex += batch;
 		} while (toIndex < macList.size());
-
-		switch (dtotype) {
-			case IDTO.ACT_ADD:
-				WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
-						macList, JsonHelper.getJSONString(ad));
-				break;
-			case IDTO.ACT_DELETE:
-				WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdInvalid(
-						macList);
-			break;
-		default:
-			break;
-		}
 	}
 }

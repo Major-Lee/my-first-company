@@ -2,8 +2,10 @@ package com.bhu.vas.business.bucache.redis.serviceimpl.advertise;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import redis.clients.jedis.JedisPool;
+import sun.awt.X11.ListHelper;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
@@ -39,6 +41,17 @@ public class WifiDeviceAdvertiseListService extends AbstractRelationListCache{
     public void wifiDevicesAdInvalid(List<String> macs){
     	List<String> keys = generateKeys(macs);
     	this.lpop_pipeline(keys,1);
+    }
+    
+    public void wifiDevicesAllAdInvalid(){
+    	Set<String> keySet = this.keys("ad*");
+    	String[] keys = new String[keySet.size()];
+    	int index = 0;
+    	for(String key : keySet){
+    		keys[index] = key;
+    		index++;
+    	}
+    	this.del(keys);
     }
     
     public void wifiDevicesAdApply(List<String> macs,String message){

@@ -1047,6 +1047,8 @@ public class BusinessEnumType {
 		Published(4,"发布完成","发布完成"),
 		VerifyFailure(5,"审核驳回","审核驳回"),
 		EscapeOrder(6,"订单取消","订单取消"),
+		UnSharedeal(99,"未分成","参与热播的设备等待分成"),
+		SharedealCompleted(100,"完成分成","所有参与热播的设备完成分成"),
 		;
 		//0:待付款 1:待审核 2:待发布 3:发布中 4:发布完成 5:审核驳回 6:订单取消
 		private Integer type;
