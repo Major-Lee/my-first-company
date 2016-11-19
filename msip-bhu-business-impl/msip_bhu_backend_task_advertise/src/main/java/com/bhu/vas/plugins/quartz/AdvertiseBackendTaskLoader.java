@@ -1,8 +1,8 @@
 package com.bhu.vas.plugins.quartz;
 
 
+import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,6 +16,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessa
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 
@@ -37,16 +38,21 @@ public class AdvertiseBackendTaskLoader {
 		
 	public void execute() {
 		logger.info("AdvertiseBackendTaskLoader start...");
-		String nowDate = DateTimeHelper.getDateTime(new Date(), DateTimeHelper.FormatPattern0);
-		logger.info("nowDate:"+nowDate);
-		omittedOrTimelyAdApplyNotify(nowDate);
-		AdInvalidNotify(nowDate);
+		String afterDate = null;
+		try {
+			afterDate = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		logger.info("afterDate:"+afterDate);
+		omittedOrTimelyAdApplyNotify(afterDate);
+		OnpublicContinueApply(afterDate);
 		logger.info("AdvertiseBackendTaskLoader end...");
 	}
-	
-	public void omittedOrTimelyAdApplyNotify(String nowDate){
+	//发布广告
+	public void omittedOrTimelyAdApplyNotify(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLessThan("start", nowDate).andColumnGreaterThan("end", nowDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPublish.getType());
+		mc.createCriteria().andColumnLessThan("start", afterDate).andColumnGreaterThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("ready applied ad sum" + lists.size());
@@ -54,6 +60,7 @@ public class AdvertiseBackendTaskLoader {
 			for(Advertise ad : lists){
 				adIds.add(ad.getId());
 				ad.setState(BusinessEnumType.AdvertiseType.OnPublish.getType());
+				ad.setSign(true);
 			}
 			advertiseService.updateAll(lists);
 			logger.info("apply notify backend ..start");
@@ -61,22 +68,42 @@ public class AdvertiseBackendTaskLoader {
 			logger.info("apply notify backend ..done");
 		}
 	}
-	
-	public void AdInvalidNotify(String nowDate){
+	//需要持续发布的广告再次发布
+	public void OnpublicContinueApply(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLessThan("end", nowDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
-		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
-		if(!lists.isEmpty()){
-			logger.info("ready invalid ad sum" + lists.size());
+		mc.createCriteria().andColumnLessThan("start", afterDate).andColumnGreaterThan("end", afterDate).andColumnEqualTo("sign", StringHelper.FALSE).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
+		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
+		if(!ads.isEmpty()){
+			logger.info("ready applied ad sum" + ads.size());
 			List<String> adIds = new ArrayList<String>();
-			for(Advertise ad : lists){
+			for(Advertise ad : ads){
 				adIds.add(ad.getId());
-				ad.setState(BusinessEnumType.AdvertiseType.Published.getType());
+				ad.setSign(true);
 			}
-			advertiseService.updateAll(lists);
-			logger.info("invalid notify backend ..start");
-			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_DELETE);
-			logger.info("invalid notify backend ..done");
+			advertiseService.updateAll(ads);
+			logger.info("apply notify backend ..start");
+			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_ADD);
+			logger.info("apply notify backend ..done");
 		}
 	}
+	
+	
+//	public void AdInvalidNotify(String afterDate){
+//		WifiDeviceAdvertiseListService.getInstance().wifiDevicesAllAdInvalid();
+//		ModelCriteria mc = new ModelCriteria();
+//		mc.createCriteria().andColumnLessThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
+//		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
+//		if(!lists.isEmpty()){
+//			logger.info("ready invalid ad sum: " + lists.size());
+//			List<String> adIds = new ArrayList<String>();
+//			for(Advertise ad : lists){
+//				adIds.add(ad.getId());
+//				ad.setState(BusinessEnumType.AdvertiseType.Published.getType());
+//			}
+//			advertiseService.updateAll(lists);
+//			logger.info("invalid notify backend ..start");
+//			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_DELETE);
+//			logger.info("invalid notify backend ..done");
+//		}
+//	}
 }

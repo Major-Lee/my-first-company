@@ -10,8 +10,14 @@
 		<property name="triggers">
 			<list>
 			
-				<!-- 每隔1分钟执行一次 -->
-				<ref bean="advertiseBackendTaskLoaderCronTrigger" />		
+				<!-- 每天23点54-59分 每分钟执行一次 -->
+				<ref bean="advertiseBackendTaskLoaderCronTrigger" />	
+				<!-- 每天中午十二点执行一次 -->
+				<ref bean="advertiseOnPublishDevicesStatisticsLoaderCronTrigger" />	
+				<!-- 每天三十秒执行一次 -->
+				<ref bean="advertisePaymentTimeOutTaskLoaderCronTrigger" />
+				<!-- 每天23点50分执行 -->
+				<ref bean="advertiseAllClearTaskLoaderCronTrigger" />
 				
 			</list>
 		</property>
@@ -22,22 +28,53 @@
 		<!-- 启动时延期3秒开始任务 -->
 		<property name="startupDelay" value="3" />
 	</bean>
-
-		<!-- Cron式Trigger定义 -->
+	
+	<!-- 正常发布逻辑  -->
 	<bean id="advertiseBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseBackendTaskLoaderCronJobDetail" />
-		<!-- 每隔1分钟执行一次   0 0/1 * * * ?  -->
-		<property name="cronExpression" value="0 0/1 * * * ?" />
+		<property name="cronExpression" value="0 54-59 23 * * ?" />
 	</bean>
-	<!-- Cron JobDetajil, 基于MethodInvokingJobDetailFactoryBean调用普通Spring Bean -->
 	<bean id="advertiseBackendTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseBackendTaskLoaderJob" />
 		<property name="targetMethod" value="execute" />
-		<!-- 同一任务在前一次执行未完成而Trigger时间又到时是否并发开始新的执行, 默认为true. -->
 		<property name="concurrent" value="false" />
 	</bean>
-
-	<!-- 被Cron执行的普通Spring Bean -->
 	<bean id="advertiseBackendTaskLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertiseBackendTaskLoader" />
+	
+	<!-- 每天中午十二点统计符合分成的设备 -->
+	<bean id="advertiseOnPublishDevicesStatisticsLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="advertiseOnPublishDevicesStatisticsLoaderCronJobDetail" />
+		<property name="cronExpression" value="0 0 12 * * ? " />
+	</bean>
+	<bean id="advertiseOnPublishDevicesStatisticsLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="advertiseOnPublishDevicesStatisticsLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="advertiseOnPublishDevicesStatisticsLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertiseOnPublishDevicesStatisticsLoader" />
+	
+	<!-- 支付十分钟超时检测 每30秒执行一次 -->
+	<bean id="advertisePaymentTimeOutTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="advertisePaymentTimeOutTaskLoaderCronJobDetail" />
+		<property name="cronExpression" value="0/30 * * * * ? " />
+	</bean>
+	<bean id="advertisePaymentTimeOutTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="advertisePaymentTimeOutTaskLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="advertisePaymentTimeOutTaskLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertisePaymentTimeOutTaskLoader" />
+	
+	<!-- 每天23点五十分 广告数据全清 -->
+	<bean id="advertiseAllClearTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="advertiseAllClearTaskLoaderCronJobDetail" />
+		<property name="cronExpression" value="0 50 23 * * ? " />
+	</bean>
+	<bean id="advertiseAllClearTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="advertiseAllClearTaskLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="advertiseAllClearTaskLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertiseAllClearTaskLoader" />
 	
 </beans>

@@ -170,6 +170,7 @@
 		
 		<!-- 广告 -->
 		<typeAlias alias="advertise" 	type="com.bhu.vas.api.rpc.advertise.model.Advertise" />
+		<typeAlias alias="advertiseDevicesIncome" 	type="com.bhu.vas.api.rpc.advertise.model.AdvertiseDevicesIncome" />
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.pluginu.ShardPlugin"> 
@@ -304,7 +305,7 @@
 		<mapper resource="com/bhu/vas/api/rpc/user/model/sqlMapper/UserIdentityAuth.sqlMap.xml" />
 		<!-- 广告 -->
 		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/Advertise.sqlMap.xml" />
-
+		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/AdvertiseDevicesIncome.sqlMap.xml" />
 	</mappers>
 
 </configuration>

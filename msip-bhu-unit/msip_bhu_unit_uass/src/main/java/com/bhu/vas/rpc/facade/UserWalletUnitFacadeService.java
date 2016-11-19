@@ -46,6 +46,7 @@ import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWalletWithdrawApply;
 import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
+import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
 import com.bhu.vas.api.vto.statistics.RankSingle;
 import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
@@ -1629,6 +1630,32 @@ public class UserWalletUnitFacadeService {
 				vto.setDescribe("当前用户正在进行提现");
 			}else{
 				vto.setDescribe("当前用户允许提现");
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		} catch (BusinessI18nCodeException bex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(
+					bex.getErrorCode(), bex.getPayload());
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder
+					.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<OpertorUserIncomeVTO> operatorMonIncome(Integer uid) {
+		try {
+			OpertorUserIncomeVTO vto=new OpertorUserIncomeVTO();
+			UserIncomeMonthRank incomeMonthRank=userIncomeMonthRankService.getByUid(uid,GetMonthTime(-1)+"%");
+			vto.setUid(uid);
+			vto.setLastMonIncome(String.valueOf(round(Float.valueOf(incomeMonthRank.getIncome()), 2)));
+			ModelCriteria mc = new ModelCriteria();
+			mc.createCriteria().andColumnNotEqualTo("month_cash_sum", 0).andColumnLike("last_update_cash_time",GetMonthTime(0) + "%").andColumnEqualTo("uid", uid);
+			mc.setOrderByClause("month_cash_sum desc");
+			List<UserWallet> userWallets = userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
+			if(userWallets!=null&&userWallets.size()>0){
+				vto.setCurMonIncome(String.valueOf(round(userWallets.get(0).getMonth_cash_sum(),2)));
+			}else{
+				vto.setCurMonIncome("0");
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		} catch (BusinessI18nCodeException bex) {

@@ -1,7 +1,9 @@
 package com.bhu.vas.business.ds.advertise.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
@@ -25,5 +27,48 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 			return n;
 		}	
 		return n;
+	}
+	public List<Advertise> queryByAdvertiseTime(String start,String end,String province, String city,
+			String district ,boolean flag){
+		List<Advertise> ads= new ArrayList<Advertise>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("start", start);
+		map.put("end", end);
+		map.put("province", province);
+		map.put("city", city);
+		map.put("district", district);
+		if(flag){
+			map.put("status", 3);
+		}else{
+			map.put("status", "5,6");
+		}
+		try {
+			ads = super.getSqlSessionMasterTemplate().selectList(Advertise.class.getName()+".queryByAdvertiseTime",map);
+		} catch (Exception e) {
+			return ads;
+		}	
+		return ads;
+	}
+	public List<Advertise> queryByAdvertiseTimeExcept(String start,String end,String province, String city,
+			String district ,boolean flag,String id){
+		List<Advertise> ads= new ArrayList<Advertise>();
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("start", start);
+		map.put("end", end);
+		map.put("province", province);
+		map.put("city", city);
+		map.put("district", district);
+		map.put("id", id);
+		if(flag){
+			map.put("status", 3);
+		}else{
+			map.put("status", "5,6");
+		}
+		try {
+			ads = super.getSqlSessionMasterTemplate().selectList(Advertise.class.getName()+".queryByAdvertiseTimeExcept",map);
+		} catch (Exception e) {
+			return ads;
+		}	
+		return ads;
 	}
 }
