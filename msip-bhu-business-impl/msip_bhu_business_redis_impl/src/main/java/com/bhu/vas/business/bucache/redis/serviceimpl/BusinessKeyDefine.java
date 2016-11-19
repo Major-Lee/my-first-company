@@ -158,4 +158,10 @@ public class BusinessKeyDefine {
 	public static class Advertise{
 		public static final String ADVERTISE = "ad.";
 	}
+	
+	public static class Message{
+		public static final String MessageUserSig = "MSIG.";
+		public static final String MessageFieldSig = "sig";
+	}
+	
 }
