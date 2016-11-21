@@ -289,7 +289,7 @@ public class UserWalletUnitFacadeService {
 			int pageNo,
 			int pageSize) {
 		try {
-			User validateUser = UserValidateServiceHelper.validateUser(reckoner, userWalletFacadeService.getUserService());
+			User validateUser = UserValidateServiceHelper.validateUser(reckoner, this.userService);
 			if (validateUser.getUtype() != UserType.PaymentFinance.getIndex()
 					&& validateUser.getUtype() != UserType.VerifyFinance.getIndex()) {
 				throw new BusinessI18nCodeException(
@@ -313,7 +313,7 @@ public class UserWalletUnitFacadeService {
 				for (UserWalletWithdrawApply apply : pages.getItems()) {
 					uids.add(apply.getUid());
 				}
-				List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
+				List<User> users = this.userService.findByIds(uids, true, true);
 				int index = 0;
 				for (UserWalletWithdrawApply apply : pages.getItems()) {
 					User user = users.get(index);
@@ -323,12 +323,12 @@ public class UserWalletUnitFacadeService {
 					User verifyUser = null;
 					if (apply.getVerify_uid() != 0) {
 						verifyUser = new User();
-						verifyUser = userService.getById(apply.getVerify_uid());
+						verifyUser = this.userService.getById(apply.getVerify_uid());
 					}
 					User operateUser = null;
 					if (apply.getOperate_uid() != 0) {
 						operateUser = new User();
-						operateUser = userService.getById(apply.getOperate_uid());
+						operateUser = this.userService.getById(apply.getOperate_uid());
 					}
 					
 					//userWallet
@@ -350,9 +350,7 @@ public class UserWalletUnitFacadeService {
 					index++;
 				}
 			}
-			result_pages = new CommonPage<UserWithdrawApplyVTO>(
-					pages.getPageNumber(), pages.getPageSize(),
-					pages.getTotalItemsCount(), vtos);
+			result_pages = new CommonPage<UserWithdrawApplyVTO>(pages.getPageNumber(), pages.getPageSize(),pages.getTotalItemsCount(), vtos);
 			logger.info("fetch applies rpc response："+JsonHelper.getJSONString(result_pages));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
 		} catch (BusinessI18nCodeException bex) {
