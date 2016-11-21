@@ -136,7 +136,7 @@ public class OperatorImportController extends BaseController{
             @RequestParam(required = true,value = "percent_m") String manufacturer_percent,
             @RequestParam(required = true,value = "percent_d") String distributor_percent,
             @RequestParam(required = true,value = "percent_d2") String distributor_l2_percent,
-            @RequestParam(required = true,value = "sns") String sns
+            @RequestParam(required = true,value = "macs") String macs
     ) {
 		ResponseError validateError = validateSecretKey(secretKey);
 		if(validateError != null){
@@ -163,7 +163,7 @@ public class OperatorImportController extends BaseController{
     			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_FLOAT_DECIMAL_PART_ERROR,new String[]{String.valueOf(sum)});
     		}
     		
-           	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, sns,
+           	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, macs,
         			owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent);
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

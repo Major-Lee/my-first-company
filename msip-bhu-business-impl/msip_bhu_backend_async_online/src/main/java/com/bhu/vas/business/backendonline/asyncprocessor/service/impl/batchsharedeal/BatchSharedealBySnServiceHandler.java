@@ -1,8 +1,5 @@
 package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchsharedeal;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.elasticsearch.common.lang3.StringUtils;
@@ -15,7 +12,6 @@ import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHa
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.JsonHelper;
-import com.smartwork.msip.cores.orm.support.criteria.CommonCriteria;
 
 @Service
 public class BatchSharedealBySnServiceHandler implements IMsgHandlerService {
@@ -33,26 +29,18 @@ public class BatchSharedealBySnServiceHandler implements IMsgHandlerService {
 		final BatchSharedealModifyBySnDTO sharedealDTO = JsonHelper.getDTO(message, BatchSharedealModifyBySnDTO.class);
 		final String operUser = String.valueOf(sharedealDTO.getUid());
 
-		if(StringUtils.isEmpty(sharedealDTO.getSns()))
+		if(StringUtils.isEmpty(sharedealDTO.getMacs()))
 			return;
-		String[] sns =  sharedealDTO.getSns().split(",");
+		String[] macs =  sharedealDTO.getMacs().split(",");
 		
-		CommonCriteria mc = new CommonCriteria();
-		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnIn("sn", Arrays.asList(sns));
-		List<String> macList = wifiDeviceService.findIdsByCommonCriteria(mc);
-		
-		logger.info(String.format("pagesize:%s pages:%s",100,macList));
-		for(String dmac:macList){
+		logger.info(String.format("pagesize:%s pages:%s",100,macs));
+		for(String dmac:macs){
 			chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(null,null,null, null, null, dmac, 
 					null, null,
 					true,
 					sharedealDTO.getOwner_percent(),sharedealDTO.getManufacturer_percent(),sharedealDTO.getDistributor_percent(),sharedealDTO.getDistributor_l2_percent(),
 					//sharedealDTO.getRcm(), sharedealDTO.getRcp(), sharedealDTO.getAit(),
 					false);
-		}
-		if(macList != null){
-			macList.clear();
-			macList = null;
 		}
 		logger.info(String.format("process message[%s] successful", message));
 	}

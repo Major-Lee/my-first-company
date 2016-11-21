@@ -325,7 +325,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 				}
 			}
 			//校验用户是否有权限修改设备portal模板。
-			UserValidateServiceHelper.validateCityUsersDevices(uid, dmacs, chargingFacadeService.getWifiDeviceSharedealConfigsService());
+			UserValidateServiceHelper.validateCityUsersDevices(uid, dmacs, false, chargingFacadeService.getWifiDeviceSharedealConfigsService());
 
 			//template 不为空并且 是无效的template格式,如果为空或者是有效的格式 则传递后续处理
 			if(StringUtils.isNotEmpty(template) && !SharedNetworksHelper.validTemplateFormat(template)){
@@ -430,7 +430,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 		try{
 			List<String> macs = new ArrayList<String>();
 			macs.add(mac);
-			UserValidateServiceHelper.validateCityUsersDevices(uid, macs, chargingFacadeService.getWifiDeviceSharedealConfigsService());
+			UserValidateServiceHelper.validateCityUsersDevices(uid, macs, true, chargingFacadeService.getWifiDeviceSharedealConfigsService());
 
 			/*SharedNetworkType sharedNetwork = VapEnumType.SharedNetworkType.fromKey(sharenetwork_type);
 			if(sharedNetwork == null){

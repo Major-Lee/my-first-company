@@ -19,7 +19,7 @@ public interface IChargingRpcService {
 			String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent,
 			String range_cash_mobile,String range_cash_pc,String access_internet_time, String free_access_internet_time,
 			boolean needCheckBinding);
-	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String sns,
+	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String macs,
 			String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent);
 
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,

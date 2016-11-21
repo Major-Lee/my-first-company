@@ -114,11 +114,11 @@ public class ChargingRpcService  implements IChargingRpcService{
 	}
 	
 	@Override
-	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String sns,
+	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String macs,
 			String owner_percent,String manufacturer_percent,String distributor_percent, String distributor_l2_percent){
-		logger.info(String.format("doBatchSharedealModify uid:%s sns:%s owner_percent:%s manufacturer_percent:%s distributor_percent:%s  distributor_l2_percent:%s",
-				uid, sns, owner_percent,manufacturer_percent,distributor_percent,distributor_percent));
-		return chargingUnitFacadeService.doBatchSharedealModify(uid, sns, owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent);
+		logger.info(String.format("doBatchSharedealModify uid:%s macs:%s owner_percent:%s manufacturer_percent:%s distributor_percent:%s  distributor_l2_percent:%s",
+				uid, macs, owner_percent,manufacturer_percent,distributor_percent,distributor_percent));
+		return chargingUnitFacadeService.doBatchSharedealModify(uid, macs, owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent);
 	}
 
 	@Override

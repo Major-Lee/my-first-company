@@ -144,12 +144,12 @@ public class ChargingUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String sns, 
+	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String macs, 
 			String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent){
 		try{
 			//User operUser = chargingFacadeService.getUserService().getById(uid);
 			//UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
-			asyncDeliverMessageService.sendBatchSharedealModifyBySnActionMessage(uid, sns,
+			asyncDeliverMessageService.sendBatchSharedealModifyBySnActionMessage(uid, macs,
 					owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){

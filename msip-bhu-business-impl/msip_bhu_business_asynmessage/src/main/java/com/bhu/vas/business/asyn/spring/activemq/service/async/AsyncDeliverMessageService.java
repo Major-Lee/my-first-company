@@ -73,11 +73,11 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 
-	public void sendBatchSharedealModifyBySnActionMessage(int uid,String sns,
+	public void sendBatchSharedealModifyBySnActionMessage(int uid,String macs,
 			String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent){
 		BatchSharedealModifyBySnDTO dto = new BatchSharedealModifyBySnDTO();
 		dto.setUid(uid);
-		dto.setSns(sns);
+		dto.setMacs(macs);
 		dto.setOwner_percent(owner_percent);
 		dto.setManufacturer_percent(manufacturer_percent);
 		dto.setDistributor_percent(distributor_percent);

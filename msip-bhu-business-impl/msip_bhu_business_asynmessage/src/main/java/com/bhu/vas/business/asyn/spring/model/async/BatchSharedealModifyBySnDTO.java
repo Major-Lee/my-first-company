@@ -4,20 +4,20 @@ import com.bhu.vas.business.asyn.spring.builder.async.AsyncDTO;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 
 public class BatchSharedealModifyBySnDTO extends AsyncDTO {
-	private String sns;
+	private String macs;
 	private String owner_percent;
 	private String manufacturer_percent;
 	private String distributor_percent;
 	private String distributor_l2_percent;
 
 
-	public String getSns() {
-		return sns;
+	public String getMacs() {
+		return macs;
 	}
 
 
-	public void setSns(String sns) {
-		this.sns = sns;
+	public void setMacs(String macs) {
+		this.macs = macs;
 	}
 
 

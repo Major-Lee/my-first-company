@@ -29,9 +29,12 @@ public class WifiDeviceSharedealConfigsService extends AbstractCoreService<Strin
 	 * @param macs
 	 * @return
 	 */
-	public int countByUidOrDistributorMacsParam(Integer uid, List<String> macs){
+	public int countByUidOrDistributorMacsParam(Integer uid, List<String> macs, boolean onlyread){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andSimpleCaulse(String.format("((distributor_type='city' and distributor='%s') or ((distributor_type <> 'city' or distributor_type is null) and owner = '%s'))", uid, uid)).andColumnIn("id", macs);
+		if(onlyread)
+			mc.createCriteria().andSimpleCaulse(String.format("(distributor='%s' or owner = '%s')", uid, uid)).andColumnIn("id", macs);
+		else
+			mc.createCriteria().andSimpleCaulse(String.format("((distributor_type='city' and distributor='%s') or ((distributor_type <> 'city' or distributor_type is null) and owner = '%s'))", uid, uid)).andColumnIn("id", macs);
 		return super.countByModelCriteria(mc);
 	}
 

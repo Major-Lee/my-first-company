@@ -168,7 +168,7 @@ public class DeviceSharedNetworkController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 		}
 	}
-	
+
 	/**
 	 * 修改用户共享网络配置并应用接口
 	 * @param request
