@@ -104,7 +104,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 	public boolean checkAdvertiseDevicesIncome (String advertiseId){
 		String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("advertiseId", advertiseId).andColumnLike("created_at", date+"%");
+		mc.createCriteria().andColumnEqualTo("advertiseid", advertiseId).andColumnLike("created_at", date+"%");
 		return (advertiseService.countByModelCriteria(mc)) == 0;
 	}
 	
