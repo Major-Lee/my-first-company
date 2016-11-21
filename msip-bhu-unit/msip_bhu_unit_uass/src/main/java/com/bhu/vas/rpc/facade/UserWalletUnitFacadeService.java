@@ -279,20 +279,22 @@ public class UserWalletUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(
-			int reckoner, int tuid, String mobileno,String withdraw_status,
-			String payment_type, String startTime, String endTime,  int pageNo,
+			int reckoner, 
+			int tuid, 
+			String mobileno,
+			String withdraw_status,
+			String payment_type, 
+			String startTime,
+			String endTime,  
+			int pageNo,
 			int pageSize) {
 		try {
-			User validateUser = UserValidateServiceHelper.validateUser(
-					reckoner, userWalletFacadeService.getUserService());
+			User validateUser = UserValidateServiceHelper.validateUser(reckoner, userWalletFacadeService.getUserService());
 			if (validateUser.getUtype() != UserType.PaymentFinance.getIndex()
-					&& validateUser.getUtype() != UserType.VerifyFinance
-							.getIndex()) {
+					&& validateUser.getUtype() != UserType.VerifyFinance.getIndex()) {
 				throw new BusinessI18nCodeException(
-						ResponseErrorCode.USER_TYPE_NOTMATCHED,
-						new String[] { UserType.PaymentFinance.getSname()
-								.concat(StringHelper.MINUS_STRING_GAP)
-								.concat(UserType.VerifyFinance.getSname()) });
+						ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[] { UserType.PaymentFinance.getSname()
+								.concat(StringHelper.MINUS_STRING_GAP).concat(UserType.VerifyFinance.getSname()) });
 			}
 			UWithdrawStatus status = null;
 			if (StringUtils.isNotEmpty(withdraw_status)) {
@@ -303,8 +305,7 @@ public class UserWalletUnitFacadeService {
 				tuid = userService.findUniqueIdByProperty("mobileno", mobileno);
 			}
 			TailPage<UserWalletWithdrawApply> pages = userWalletFacadeService
-					.pageWithdrawApplies(tuid, status, payment_type, startTime,
-							endTime, pageNo, pageSize);
+					.pageWithdrawApplies(tuid, status, payment_type, startTime,endTime, pageNo, pageSize);
 			TailPage<UserWithdrawApplyVTO> result_pages = null;
 			List<UserWithdrawApplyVTO> vtos = new ArrayList<>();
 			if (!pages.isEmpty()) {
@@ -312,21 +313,12 @@ public class UserWalletUnitFacadeService {
 				for (UserWalletWithdrawApply apply : pages.getItems()) {
 					uids.add(apply.getUid());
 				}
-				List<User> users = userWalletFacadeService.getUserService()
-						.findByIds(uids, true, true);
+				List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
 				int index = 0;
 				for (UserWalletWithdrawApply apply : pages.getItems()) {
 					User user = users.get(index);
-					WithdrawCostInfo calculateApplyCost = userWalletFacadeService
-							.getChargingFacadeService().calculateWithdrawCost(
-									apply.getUid(), apply.getId(),
-									apply.getCash());
-					// ApplyCost calculateApplyCost =
-					// userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(apply.getUid(),
-					// apply.getCash());
-					// UserWalletConfigs walletConfigs =
-					// userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(user.getId());
-					// add by dongrui 2016-06-20 Start
+					WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService()
+							.calculateWithdrawCost(apply.getUid(), apply.getId(),apply.getCash());
 					// 查询操作人和审核人信息
 					User verifyUser = null;
 					if (apply.getVerify_uid() != 0) {
@@ -336,16 +328,14 @@ public class UserWalletUnitFacadeService {
 					User operateUser = null;
 					if (apply.getOperate_uid() != 0) {
 						operateUser = new User();
-						operateUser = userService.getById(apply
-								.getOperate_uid());
+						operateUser = userService.getById(apply.getOperate_uid());
 					}
 					
 					//userWallet
 					UserWallet uwallet = userWalletFacadeService.userWallet(tuid);
 					double totalCash = uwallet.getTotal_cash_sum();
 					double lastCash = uwallet.getCash();
-					// add by dongrui 2016-06-20 E N D
-					vtos.add(apply.toUserWithdrawApplyVTO(
+					UserWithdrawApplyVTO uWithdrawAplyVTO = apply.toUserWithdrawApplyVTO(
 							user != null ? UserType.getByIndex(user.getUtype()).getFname()
 									: StringUtils.EMPTY,
 							user != null ? user.getMobileno()
@@ -354,15 +344,17 @@ public class UserWalletUnitFacadeService {
 							verifyUser != null ? verifyUser.getNick()
 									: StringUtils.EMPTY,
 							operateUser != null ? operateUser.getNick()
-									: StringUtils.EMPTY, calculateApplyCost,totalCash,lastCash));
+									: StringUtils.EMPTY, calculateApplyCost,totalCash,lastCash);
+					logger.info("fetch applies uWithdrawAplyVTO："+JsonHelper.getJSONString(uWithdrawAplyVTO));
+					vtos.add(uWithdrawAplyVTO);
 					index++;
 				}
 			}
 			result_pages = new CommonPage<UserWithdrawApplyVTO>(
 					pages.getPageNumber(), pages.getPageSize(),
 					pages.getTotalItemsCount(), vtos);
-			return RpcResponseDTOBuilder
-					.builderSuccessRpcResponse(result_pages);
+			logger.info("fetch applies rpc response："+JsonHelper.getJSONString(result_pages));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
 		} catch (BusinessI18nCodeException bex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(
 					bex.getErrorCode(), bex.getPayload());
