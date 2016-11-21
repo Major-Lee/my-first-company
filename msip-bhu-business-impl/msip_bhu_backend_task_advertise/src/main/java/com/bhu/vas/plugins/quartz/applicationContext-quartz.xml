@@ -32,7 +32,8 @@
 	<!-- 正常发布逻辑  -->
 	<bean id="advertiseBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseBackendTaskLoaderCronJobDetail" />
-		<property name="cronExpression" value="0 54-59 23 * * ?" />
+		<!--<property name="cronExpression" value="0 54-59 23 * * ?" />  -->
+		<property name="cronExpression" value="0 0/1 * * * ?" />
 	</bean>
 	<bean id="advertiseBackendTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseBackendTaskLoaderJob" />
@@ -44,7 +45,8 @@
 	<!-- 每天中午十二点统计符合分成的设备 -->
 	<bean id="advertiseOnPublishDevicesStatisticsLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseOnPublishDevicesStatisticsLoaderCronJobDetail" />
-		<property name="cronExpression" value="0 0 12 * * ? " />
+		<!-- <property name="cronExpression" value="0 0 12 * * ? " /> -->
+		<property name="cronExpression" value="0 0/5 * * * ?" />
 	</bean>
 	<bean id="advertiseOnPublishDevicesStatisticsLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseOnPublishDevicesStatisticsLoaderJob" />
@@ -68,7 +70,7 @@
 	<!-- 每天23点五十分 广告数据全清 -->
 	<bean id="advertiseAllClearTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseAllClearTaskLoaderCronJobDetail" />
-		<property name="cronExpression" value="0 50 23 * * ? " />
+		<property name="cronExpression" value="0 0/10 0 * * ? " />
 	</bean>
 	<bean id="advertiseAllClearTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseAllClearTaskLoaderJob" />
