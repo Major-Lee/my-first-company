@@ -88,12 +88,12 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 				income.replaceInnerModels(devices);
 				income.setCash(ad.getCash());
 				devicesIncome.add(income);
-				advertiseDevicesIncomeService.insert(income);
+//				advertiseDevicesIncomeService.insert(income);
 			}
 		}
-//		if(!devicesIncome.isEmpty()){
-//			advertiseDevicesIncomeService.insertAll(devicesIncome);
-//		}
+		if(!devicesIncome.isEmpty()){
+			advertiseDevicesIncomeService.insertAll(devicesIncome);
+		}
 		logger.info("AdvertiseOnPublishDevicesStatisticsLoader end....");
 	}
 	
