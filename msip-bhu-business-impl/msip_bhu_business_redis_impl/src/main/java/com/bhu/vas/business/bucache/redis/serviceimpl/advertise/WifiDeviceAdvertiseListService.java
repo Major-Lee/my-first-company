@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import redis.clients.jedis.JedisPool;
-import sun.awt.X11.ListHelper;
-
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationListCache;
-import com.smartwork.msip.cores.helper.StringHelper;
+
+import redis.clients.jedis.JedisPool;
 
 /**
  * 
