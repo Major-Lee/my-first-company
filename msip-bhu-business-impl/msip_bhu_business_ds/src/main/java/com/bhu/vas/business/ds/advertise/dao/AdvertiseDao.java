@@ -50,7 +50,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		return ads;
 	}
 	public List<Advertise> queryByAdvertiseTimeExcept(String start,String end,String province, String city,
-			String district ,boolean flag,String id){
+			String district ,String id){
 		List<Advertise> ads= new ArrayList<Advertise>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("start", start);
@@ -59,11 +59,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		map.put("city", city);
 		map.put("district", district);
 		map.put("id", id);
-		if(flag){
-			map.put("status", 3);
-		}else{
-			map.put("status", "5,6");
-		}
+		map.put("status", 3);
 		try {
 			ads = super.getSqlSessionMasterTemplate().selectList(Advertise.class.getName()+".queryByAdvertiseTimeExcept",map);
 		} catch (Exception e) {

@@ -66,7 +66,10 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 	    @RequestMapping(value="/richStatistics", method={RequestMethod.GET,RequestMethod.POST})
 	    public void richStatistics( HttpServletResponse response, 
 	    		@RequestParam(required = true,value="sk") String secretKey,
-	    		@RequestParam(required = true) Integer uid){
+	    		@RequestParam(required = true) Integer uid,
+	    		@RequestParam(required = false) String  beginTime,
+	    		@RequestParam(required = false) String  endTime
+	    		){
 	 		ResponseError validateError = validate(secretKey);
 			if(validateError != null){
 				SpringMVCHelper.renderJson(response, validateError);

@@ -303,7 +303,7 @@
 			   		and 1=0
 				</when>
 			</choose>
-			and state not in (${status}) and id not in (#{id});
+			and state  in (${status}) and id not in (#{id});
 	</select>
 	
 	<delete id="removeByModelCriteria">
