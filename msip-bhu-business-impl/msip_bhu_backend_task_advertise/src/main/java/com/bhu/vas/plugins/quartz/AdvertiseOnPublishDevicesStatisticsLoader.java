@@ -80,15 +80,19 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 						}
 			});
 			
-			AdvertiseDevicesIncome income = new AdvertiseDevicesIncome();
-			income.setAdvertiseid(ad.getId());
-			income.setCount(devices.size());
-			income.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
-			income.setExtension_content(JsonHelper.getJSONString(devices));
-			income.setCash(ad.getCash());
-			devicesIncome.add(income);
+			if(checkAdvertiseDevicesIncome(ad.getId())){
+				AdvertiseDevicesIncome income = new AdvertiseDevicesIncome();
+				income.setAdvertiseid(ad.getId());
+				income.setCount(devices.size());
+				income.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
+				income.replaceInnerModels(devices);
+				income.setCash(ad.getCash());
+				devicesIncome.add(income);
+			}
 		}
-		advertiseDevicesIncomeService.insertAll(devicesIncome);
+		if(!devicesIncome.isEmpty()){
+			advertiseDevicesIncomeService.insertAll(devicesIncome);
+		}
 		logger.info("AdvertiseOnPublishDevicesStatisticsLoader end....");
 	}
 	
@@ -97,4 +101,11 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
 		return advertiseService.findModelByModelCriteria(mc);
 	}
+	public boolean checkAdvertiseDevicesIncome (String advertiseId){
+		String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("advertiseId", advertiseId).andColumnLike("created_at", date+"%");
+		return (advertiseService.countByModelCriteria(mc)) == 0;
+	}
+	
 }
