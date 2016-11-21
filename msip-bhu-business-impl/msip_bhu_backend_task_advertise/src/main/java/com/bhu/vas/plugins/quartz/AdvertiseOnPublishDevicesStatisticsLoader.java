@@ -20,7 +20,6 @@ import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
@@ -81,18 +80,22 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 			});
 			
 			if(checkAdvertiseDevicesIncome(ad.getId())){
-				AdvertiseDevicesIncome income = new AdvertiseDevicesIncome();
-				income.setAdvertiseid(ad.getId());
-				income.setCount(devices.size());
-				income.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
-				income.replaceInnerModels(devices);
-				income.setCash(ad.getCash());
-				devicesIncome.add(income);
-//				advertiseDevicesIncomeService.insert(income);
+				
+				String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
+				ModelCriteria mc = new ModelCriteria();
+				mc.createCriteria().andColumnEqualTo("publish_time", date).andColumnEqualTo("advertiseid", ad.getId());
+				List<AdvertiseDevicesIncome> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
+				AdvertiseDevicesIncome detail = details.get(0);
+				detail.setActual_count(devices.size());
+				detail.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
+				detail.replaceInnerModels(devices);
+				detail.setCash(devices.size()*2+"");
+				devicesIncome.add(detail);
+				
 			}
 		}
 		if(!devicesIncome.isEmpty()){
-			advertiseDevicesIncomeService.insertAll(devicesIncome);
+			advertiseDevicesIncomeService.updateAll(devicesIncome);
 		}
 		logger.info("AdvertiseOnPublishDevicesStatisticsLoader end....");
 	}

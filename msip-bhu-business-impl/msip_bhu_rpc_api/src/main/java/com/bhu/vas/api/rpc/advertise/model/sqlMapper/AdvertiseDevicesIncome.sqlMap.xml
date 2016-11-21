@@ -7,7 +7,9 @@
   <resultMap id="modelResult" type="advertiseDevicesIncome">
     <id property="id" column="id"/>
     <result property="advertiseid" column="advertiseid"/>
-    <result property="count" column="count"/>
+    <result property="publish_time" column="publish_time"/>
+    <result property="publish_count" column="publish_count"/>
+    <result property="actual_count" column="actual_count"/>
     <result property="state" column="state"/>
     <result property="cash" column="cash"/>
 	<result property="extension_content" column="extension_content"/>	
@@ -17,14 +19,16 @@
   
   	<sql id="modelTableName">
 	    <![CDATA[
-	    	t_ops_advertise_devices_income
+	    	t_ops_advertise_details
 	    ]]>
 	</sql>
 	<sql id="modelColumns">
 	    <![CDATA[
 	    	id,
 	    	advertiseid,
-	    	count,
+	    	publish_time,
+	    	publish_count,
+	    	actual_count,
 	    	state,
 	    	cash,
 	    	extension_content,
@@ -35,7 +39,9 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 			advertiseid,
-	    	count,
+			publish_time,
+			publish_count,
+	    	actual_count,
 	    	state,
 	    	cash,
 	    	extension_content,
@@ -47,7 +53,9 @@
 	<sql id="modelInsertValues">
 			#{id},
 			#{advertiseid},
-			#{count},
+			#{publish_time},
+			#{publish_count},
+			#{actual_count},
 			#{state},
 			#{cash},
 			#{extension_content},
@@ -57,7 +65,9 @@
 	
 	<sql id="modelUpdateValues">
 	    	advertiseid = #{advertiseid},
-	    	count = #{count},
+	    	publish_time = #{publish_time},
+	    	publish_count = #{publish_count},
+	    	actual_count = #{actual_count},
 	    	state = #{state},
 	    	cash = #{cash},
 	    	extension_content = #{extension_content},

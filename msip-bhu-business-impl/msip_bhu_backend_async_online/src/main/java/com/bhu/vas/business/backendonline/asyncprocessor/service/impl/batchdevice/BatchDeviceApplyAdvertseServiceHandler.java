@@ -19,6 +19,7 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
+import com.bhu.vas.api.rpc.advertise.model.AdvertiseDevicesIncome;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
@@ -31,6 +32,7 @@ import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdver
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
+import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
@@ -41,6 +43,7 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
+import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 @Service
 public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerService {
@@ -70,6 +73,9 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 	
 	@Resource
 	private AdvertiseFacadeService advertiseFacadeService;
+	
+	@Resource
+	private AdvertiseDevicesIncomeService advertiseDevicesIncomeService;
 
 	@Override
 	public void process(String message) {
@@ -118,16 +124,16 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 					case IDTO.ACT_ADD:
 						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
 							macList, JsonHelper.getJSONString(ad));
-						deviceLimitDomain(batch, macList, ad.getDomain(),
-							IDTO.ACT_ADD, ad);
+						advertiSesnapshot(ad.getId(), start, macList.size());
+						deviceLimitDomain(batch, macList, ad.getDomain(),IDTO.ACT_ADD, ad);
 						break;
 					case IDTO.ACT_DELETE:
 						deviceLimitDomain(batch, macList, null,
 							IDTO.ACT_DELETE, ad);
 						break;
 					case IDTO.ACT_UPDATE:
-						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
-							macList, JsonHelper.getJSONString(ad));;
+						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad));;
+						advertiSesnapshot(ad.getId(), start, macList.size());
 						break;
 					default:
 						break;
@@ -187,5 +193,20 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 
 			fromIndex += batch;
 		} while (toIndex < macList.size());
+	}
+	
+	public void advertiSesnapshot(String adId,String publishTime,int pushlist_count){
+		
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("advertiseid", adId).andColumnEqualTo("publish_time", publishTime);
+		List<AdvertiseDevicesIncome> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
+		if(details.isEmpty()){
+			AdvertiseDevicesIncome income = new AdvertiseDevicesIncome();
+			income.setAdvertiseid(adId);
+			income.setPublish_count(pushlist_count);
+			income.setPublish_time(publishTime);
+			advertiseDevicesIncomeService.insert(income);
+		}
+		
 	}
 }

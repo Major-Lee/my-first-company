@@ -9,7 +9,9 @@ import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtIntModel;
 public class AdvertiseDevicesIncome extends ListJsonExtIntModel<String>{
 
 	private String advertiseid;
-	private long count;
+	private String publish_time;
+	private int publish_count;
+	private long actual_count;
 	private int state;
 	private String cash;
 	private Date created_at;
@@ -22,13 +24,29 @@ public class AdvertiseDevicesIncome extends ListJsonExtIntModel<String>{
 	public void setAdvertiseid(String advertiseid) {
 		this.advertiseid = advertiseid;
 	}
-
-	public long getCount() {
-		return count;
+	
+	public String getPublish_time() {
+		return publish_time;
 	}
 
-	public void setCount(long count) {
-		this.count = count;
+	public void setPublish_time(String publish_time) {
+		this.publish_time = publish_time;
+	}
+
+	public int getPublish_count() {
+		return publish_count;
+	}
+
+	public void setPublish_count(int publish_count) {
+		this.publish_count = publish_count;
+	}
+
+	public long getActual_count() {
+		return actual_count;
+	}
+
+	public void setActual_count(long actual_count) {
+		this.actual_count = actual_count;
 	}
 
 	public int getState() {
