@@ -6,14 +6,14 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class AdvertiseOccupiedVTO implements java.io.Serializable{
 	private String date;
-	private long count;
+	private int count;
 	private List<AdvertiseTrashPositionVTO> trashs;
 	
-	public long getCount() {
+	public int getCount() {
 		return count;
 	}
 	public void setCount(long count) {
-		this.count = count;
+		this.count = (int) (count*1.1);
 	}
 	public String getDate() {
 		return date;
