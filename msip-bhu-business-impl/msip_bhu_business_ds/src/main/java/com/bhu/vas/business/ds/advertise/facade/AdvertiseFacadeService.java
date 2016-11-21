@@ -24,10 +24,11 @@ public class AdvertiseFacadeService {
 		return ad.getCash();
 	}
 	
-	public void advertiseCompletionOfPayment(String advertiseId){
+	public void advertiseCompletionOfPayment(String advertiseId,String orderId){
 		logger.info(String.format("advertiseCompletionOfPayment  advertiseId[%s]", advertiseId));
 		Advertise ad = advertiseService.getById(advertiseId);
 		ad.setState(BusinessEnumType.AdvertiseType.UnVerified.getType());
+		ad.setOrderId(orderId);
 		advertiseService.update(ad);
 		logger.info("advertiseCompletionOfPayment  finish");
 	}
