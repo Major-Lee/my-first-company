@@ -105,7 +105,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 		String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("advertiseid", advertiseId).andColumnLike("created_at", date+"%");
-		return (advertiseService.countByModelCriteria(mc)) == 0;
+		return (advertiseDevicesIncomeService.countByModelCriteria(mc)) == 0;
 	}
 	
 }
