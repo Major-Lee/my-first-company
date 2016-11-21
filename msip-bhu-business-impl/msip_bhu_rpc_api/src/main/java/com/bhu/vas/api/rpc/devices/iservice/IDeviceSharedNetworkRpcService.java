@@ -46,6 +46,18 @@ public interface IDeviceSharedNetworkRpcService {
 	 */
 	RpcResponseDTO<Boolean> takeEffectNetworkConf(int uid,boolean on,String sharenetwork_type,String template,List<String> macs);
 	//RpcResponseDTO<SharedNetworkSettingDTO> takeEffectiveNetworkConf(int uid,boolean on,String sharenetwork_type,String template,List<String> macs);
+
+	
+	/**
+	 * 修改指定设备的ssid和限速
+	 * @param uid
+	 * @param ssid
+	 * @param rate
+	 * @param macs
+	 * @return
+	 */
+	RpcResponseDTO<Boolean> modifyNetworkConf(int uid, String ssid, int rate, List<String> macs);
+
 	
 	/**
 	 * 指定共享网络类型的设备分页列表

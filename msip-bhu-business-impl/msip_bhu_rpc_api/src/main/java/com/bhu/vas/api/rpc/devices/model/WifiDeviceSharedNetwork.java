@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.devices.model;
 
+import org.springframework.util.StringUtils;
+
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.smartwork.msip.cores.orm.model.extjson.DtoJsonExtPKModel;
@@ -18,6 +20,9 @@ public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetw
 	private Integer owner;
 	private Integer idle_timeout;	//因为网安特别添加，当此字段存在时，需要忽略json中的idle_timeout值
 	
+	private String ssid;
+	private Integer rate;
+	
 	//采用的模板编号四位字符串 整数format
 	private String template;
 	private String sharednetwork_type;
@@ -27,10 +32,16 @@ public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetw
 		SharedNetworkSettingDTO dto = super.getInnerModel();
 		if(dto == null)
 			return null;
-		if(idle_timeout != null){
-			ParamSharedNetworkDTO psn = dto.getPsn();
-			if(psn != null)
+		ParamSharedNetworkDTO psn = dto.getPsn();
+		if(psn != null){
+			if(idle_timeout != null)
 				psn.setIdle_timeout(idle_timeout.intValue());
+			if(!StringUtils.isEmpty(ssid))
+				psn.setSsid(ssid);
+			if(rate != null){
+				psn.setUsers_tx_rate(rate.intValue());
+				psn.setUsers_rx_rate(rate.intValue());
+			}
 		}
 		return dto;
 	}
@@ -86,4 +97,22 @@ public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetw
 	public void setTemplate(String template) {
 		this.template = template;
 	}
+
+	public String getSsid() {
+		return ssid;
+	}
+
+	public void setSsid(String ssid) {
+		this.ssid = ssid;
+	}
+
+	public Integer getRate() {
+		return rate;
+	}
+
+	public void setRate(Integer rate) {
+		this.rate = rate;
+	}
+	
+	
 }
