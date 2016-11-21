@@ -85,6 +85,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 			income.setCount(devices.size());
 			income.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
 			income.setExtension_content(JsonHelper.getJSONString(devices));
+			income.setCash(ad.getCash());
 			devicesIncome.add(income);
 		}
 		advertiseDevicesIncomeService.insertAll(devicesIncome);
