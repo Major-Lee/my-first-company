@@ -79,21 +79,20 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 						}
 			});
 			
-			if(checkAdvertiseDevicesIncome(ad.getId())){
-				
 				String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 				ModelCriteria mc = new ModelCriteria();
 				mc.createCriteria().andColumnEqualTo("publish_time", date).andColumnEqualTo("advertiseid", ad.getId());
 				List<AdvertiseDevicesIncome> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
-				AdvertiseDevicesIncome detail = details.get(0);
-				detail.setActual_count(devices.size());
-				detail.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
-				detail.replaceInnerModels(devices);
-				detail.setCash(devices.size()*2+"");
-				devicesIncome.add(detail);
-				
-			}
+				if(!details.isEmpty()){
+					AdvertiseDevicesIncome detail = details.get(0);
+					detail.setActual_count(devices.size());
+					detail.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
+					detail.replaceInnerModels(devices);
+					detail.setCash(devices.size()*2+"");
+					devicesIncome.add(detail);
+				}
 		}
+				
 		if(!devicesIncome.isEmpty()){
 			advertiseDevicesIncomeService.updateAll(devicesIncome);
 		}
@@ -105,11 +104,4 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
 		return advertiseService.findModelByModelCriteria(mc);
 	}
-	public boolean checkAdvertiseDevicesIncome (String advertiseId){
-		String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
-		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("advertiseid", advertiseId).andColumnLike("created_at", date+"%");
-		return (advertiseDevicesIncomeService.countByModelCriteria(mc)) == 0;
-	}
-	
 }
