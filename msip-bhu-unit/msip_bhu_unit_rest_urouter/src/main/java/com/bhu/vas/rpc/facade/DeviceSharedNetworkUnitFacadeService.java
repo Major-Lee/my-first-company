@@ -256,7 +256,7 @@ public class DeviceSharedNetworkUnitFacadeService {
 	public RpcResponseDTO<Boolean> modifyNetworkConf(int uid, String ssid, int rate, List<String> dmacs){
 		try{
 			//校验用户是否有权限修改设备portal模板。
-			UserValidateServiceHelper.validateCityUsersDevices(uid, dmacs, chargingFacadeService.getWifiDeviceSharedealConfigsService());
+			UserValidateServiceHelper.validateUserDevices(uid, dmacs, userWifiDeviceFacadeService);
 
 			//TODO：等设备版本升级上来后可以去掉此条件约束
 			if(dmacs!= null && !dmacs.isEmpty()){
