@@ -27,7 +27,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	private String city;
 	//区
 	private String district;
-	private int cash;
+	private String cash;
 	private Date start;
 	private Date end;
 	//广告持续时间
@@ -183,10 +183,10 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public int getCash() {
+	public String getCash() {
 		return cash;
 	}
-	public void setCash(int cash) {
+	public void setCash(String cash) {
 		this.cash = cash;
 	}
 	
@@ -214,7 +214,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		
 		AdvertiseVTO singleAdvertise=new AdvertiseVTO();
 		//金额处理
-		int cash=this.cash;
+		int cash=Integer.parseInt(this.cash);
 		double sd=cash;
 		DecimalFormat formater = new DecimalFormat();
 		formater.setMaximumFractionDigits(2);

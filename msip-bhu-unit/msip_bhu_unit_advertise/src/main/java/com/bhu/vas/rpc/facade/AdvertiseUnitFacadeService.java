@@ -112,7 +112,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			entity.setCount(count);
 			int displayNum=(int) (count*1.1);
-			entity.setCash(displayNum*2);
+			entity.setCash(displayNum*2+"");
 			
 			
 			

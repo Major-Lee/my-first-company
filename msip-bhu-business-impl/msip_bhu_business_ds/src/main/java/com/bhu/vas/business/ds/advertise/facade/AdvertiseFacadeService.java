@@ -18,7 +18,7 @@ public class AdvertiseFacadeService {
 	@Resource
 	private AdvertiseService advertiseService;
 	
-	public int advertisePayment(String advertiseId){
+	public String advertisePayment(String advertiseId){
 		logger.info(String.format("advertisePayment  advertiseId[%s]", advertiseId));
 		Advertise ad = advertiseService.getById(advertiseId);
 		return ad.getCash();
