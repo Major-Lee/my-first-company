@@ -1647,9 +1647,13 @@ public class UserWalletUnitFacadeService {
 			OpertorUserIncomeVTO vto=new OpertorUserIncomeVTO();
 			UserIncomeMonthRank incomeMonthRank=userIncomeMonthRankService.getByUid(uid,GetMonthTime(-1)+"%");
 			vto.setUid(uid);
-			vto.setLastMonIncome(String.valueOf(round(Float.valueOf(incomeMonthRank.getIncome()), 2)));
+			if(incomeMonthRank!=null){
+				vto.setLastMonIncome(String.valueOf(round(Float.valueOf(incomeMonthRank.getIncome()), 2)));
+			}else {
+				vto.setLastMonIncome("0");
+			}
 			ModelCriteria mc = new ModelCriteria();
-			mc.createCriteria().andColumnNotEqualTo("month_cash_sum", 0).andColumnLike("last_update_cash_time",GetMonthTime(0) + "%").andColumnEqualTo("uid", uid);
+			mc.createCriteria().andColumnNotEqualTo("month_cash_sum", 0).andColumnLike("last_update_cash_time",GetMonthTime(0) + "%").andColumnEqualTo("id", uid);
 			mc.setOrderByClause("month_cash_sum desc");
 			List<UserWallet> userWallets = userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
 			if(userWallets!=null&&userWallets.size()>0){

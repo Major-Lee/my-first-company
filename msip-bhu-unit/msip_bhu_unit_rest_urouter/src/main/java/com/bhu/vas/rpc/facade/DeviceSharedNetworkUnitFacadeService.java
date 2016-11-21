@@ -244,6 +244,47 @@ public class DeviceSharedNetworkUnitFacadeService {
 	}
 	
 	
+	
+	/**
+	 * 修改指定设备共享网络的ssid和限速
+	 * @param uid
+	 * @param ssid
+	 * @param rate
+	 * @param mac
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> modifyNetworkConf(int uid, String ssid, int rate, List<String> dmacs){
+		try{
+			//校验用户是否有权限修改设备portal模板。
+			UserValidateServiceHelper.validateCityUsersDevices(uid, dmacs, chargingFacadeService.getWifiDeviceSharedealConfigsService());
+
+			//TODO：等设备版本升级上来后可以去掉此条件约束
+			if(dmacs!= null && !dmacs.isEmpty()){
+				List<WifiDevice> wifiDevices = sharedNetworksFacadeService.getWifiDeviceService().findByIds(dmacs);
+				for(WifiDevice device :wifiDevices){
+					if(!WifiDeviceHelper.suppertedDeviceSecureSharedNetwork(device.getOrig_swver())){
+						throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_TOO_LOWER,new String[]{BusinessRuntimeConfiguration.Device_SharedNetwork_Top_Version});
+					}
+				}
+			}
+			//异步消息执行用户的 addDevices2SharedNetwork 设备应用此配置并发送指令
+			asyncDeliverMessageService.sendBatchModifyDeviceSnkActionMessage(uid, ssid, rate, dmacs, IDTO.ACT_UPDATE);
+			/*List<String> addDevices2SharedNetwork = sharedNetworkFacadeService.addDevices2SharedNetwork(uid,sharedNetwork,false,dmacs);
+			if(!addDevices2SharedNetwork.isEmpty()){
+				//异步消息执行用户的 addDevices2SharedNetwork 设备应用此配置并发送指令
+				deliverMessageService.sendUserDeviceSharedNetworkApplyActionMessage(uid,sharedNetwork.getKey(), addDevices2SharedNetwork,IDTO.ACT_UPDATE);
+			}*/
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
+	
+	
 	/**
 	 * 指定的设备应用用户的具体指定配置
 	 * 异步消息修改数据库,并发送指令并且更新索引

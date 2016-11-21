@@ -21,7 +21,10 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.SnkTurnStateEnum;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
+import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
+import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkModifyNotifyCallback;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerService;
@@ -52,6 +55,53 @@ public class BatchSnkApplyService {
 	
 	@Resource
 	private IDaemonRpcService daemonRpcService;
+	
+	
+	
+	public void modify(final int userid, final String ssid, final int rate, List<String> dmacs){
+		logger.info(String.format("modify sharednetwork conf uid[%s] ssid[%s] rate[%s] dmacs[%s]",userid, ssid, rate, dmacs));
+		if(dmacs == null || dmacs.isEmpty()) return;
+		try{
+			final List<DownCmds> downCmds = new ArrayList<DownCmds>();
+			
+			sharedNetworksFacadeService.modifyDevicesSharedNetwork(userid, ssid, rate, dmacs,
+					new ISharedNetworkModifyNotifyCallback(){
+						@Override
+						public void notify(List<WifiDeviceSharedNetwork> snks) {
+							logger.info(String.format("modify snk notify callback"));
+							if(snks == null || snks.isEmpty()){
+								return;
+							}
+							for(WifiDeviceSharedNetwork snk:snks){
+								if(snk == null)
+									continue;
+								SharedNetworkSettingDTO dto = snk.getInnerModel();
+								if(dto == null)
+									continue;
+								ParamSharedNetworkDTO psn = dto.getPsn();
+								if(psn == null)
+									continue;
+								if(!dto.isOn())
+									continue;
+								WifiDevice wifiDevice = wifiDeviceService.getById(snk.getId());
+								if(wifiDevice == null) continue;
+								if(!wifiDevice.isOnline())
+									continue;
+								//生成下发指令
+								String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, snk.getId(), -1,JsonHelper.getJSONString(psn),
+										DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
+								downCmds.add(DownCmds.builderDownCmds(snk.getId(), cmd));
+							}
+						}
+					});
+			
+			if(!downCmds.isEmpty()){
+				daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
+				downCmds.clear();
+			}
+		}finally{
+		}
+	}
 
 	public void apply(final int userid, final char dtoType,List<String> dmacs, SharedNetworkType sharedNetwork,String template, final SharedNetworkChangeType configChanged) {
 		logger.info(String.format("apply sharednetwork conf uid[%s] dtoType[%s] snk[%s] template[%s] dmacs[%s] configChanged[%s]",userid,dtoType,sharedNetwork.getKey(),template, dmacs, configChanged));

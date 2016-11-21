@@ -641,6 +641,29 @@ public class TagFacadeRpcSerivce {
 		}
 	}
 
+	
+	
+	/**
+	 * 分组批量设置共享网络的ssid和限速
+	 * 
+	 * @param uid
+	 * @param message
+	 * @param on
+	 * @param snk_type
+	 * @param template
+	 * @return
+	 */
+	public boolean batchGroupSnkModifyNetworkConf(int uid, String message, String ssid, int rate){
+		try {
+			asyncDeliverMessageService.sendBatchGroupModifyDeviceSnkActionMessage(uid, message, ssid, rate,
+					IDTO.ACT_UPDATE);
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+			return false;
+		}
+	}
+
 	/**
 	 * 获得分组收益统计
 	 * 

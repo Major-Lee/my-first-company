@@ -8,12 +8,14 @@ public enum AsyncMessageType {
 		BatchImportConfirm("出库库房设备导入","shipment import","BICF"),
 		BatchSharedealModify("批量更新设备分成","batch sharedeal modify","BSMF"),
 		BatchSharedealModifyBySn("根据序列号批量更新设备分成","batch sharedeal modify by sn","BSSN"),
-		
+//		
 		BatchDeviceOperTag("设备批量绑定标签", "batch device operation tag", "BDOT"),
 		BatchGroupDownCmds("分组批量下发指令","batch Group down cmds","BGDC"),
 		BatchGroupDeviceSnkApply("用户群组设备共享网络应用","batch group device sharednetwork apply","BGSN"),
+		BatchGroupModifyDeviceSnk("用户群组设备共享网络修改","batch group device sharednetwork modify","BGMS"),
 		BatchDeviceSnkApply("用户设备共享网络应用","batch device sharednetwork apply","BDSN"),
 		BatchDeviceSnkClear("用户设备共享网络模板清除","batch device sharednetwork clear","BDSC"),
+		BatchModifyDeviceSnk("修改共享网络参数","batch modify device sharednetwork param","BMSK"),
 		BatchGroupSendSortMessage("分组批量发送短信","batch group send sort message","BGSM"),
 		BatchUserIdentityRepair("用户身份信息修复","batch user identity repair","BUID"),
 		BatchDeviceApplyAdvertise("设备批量应用广告", "batch device apply advertise", "BDAD"),

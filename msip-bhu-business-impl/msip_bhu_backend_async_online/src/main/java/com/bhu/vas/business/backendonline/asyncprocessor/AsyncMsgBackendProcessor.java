@@ -48,6 +48,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Resource
 	private IMsgHandlerService batchGroupDeviceSnkApplyServiceHandler;
+
+	@Resource
+	private IMsgHandlerService batchGroupModifyDeviceSnkServiceHandler;
 	
 	@Resource
 	private IMsgHandlerService batchDeviceSnkClearServiceHandler;
@@ -57,6 +60,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Resource
 	private IMsgHandlerService batchDeviceApplyAdvertseServiceHandler;
+
+	@Resource
+	private IMsgHandlerService batchModifyDeviceSnkServiceHandler;
 	
 	@Resource
 	private IMsgHandlerService batchSharedealBySnServiceHandler;
@@ -111,8 +117,14 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case BatchGroupDeviceSnkApply:
 							batchGroupDeviceSnkApplyServiceHandler.process(message);
 							break;
+						case BatchGroupModifyDeviceSnk:
+							batchGroupModifyDeviceSnkServiceHandler.process(message);
+							break;
 						case BatchDeviceSnkApply:
 							batchDeviceSnkApplyServiceHandler.process(message);
+							break;	
+						case BatchModifyDeviceSnk:
+							batchModifyDeviceSnkServiceHandler.process(message);
 							break;	
 						case BatchDeviceSnkClear:
 							batchDeviceSnkClearServiceHandler.process(message);
