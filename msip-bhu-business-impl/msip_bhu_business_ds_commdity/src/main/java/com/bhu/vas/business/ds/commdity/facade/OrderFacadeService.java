@@ -41,6 +41,7 @@ import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
+import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
@@ -75,6 +76,9 @@ public class OrderFacadeService {
 	
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
+	
+	@Resource
+	private AdvertiseFacadeService advertiseFacadeService;
 	
 	/**
 	 * 查询最近的一条满足条件的订单
@@ -985,8 +989,8 @@ public class OrderFacadeService {
 	 * @param payment_type 支付方式
 	 * @param payment_proxy_type 支付代理方式
 	 */
-	public Order CommdityPhysicalOrderPaymentCompletedNotify(boolean success, Order order, User bindUser, String paymented_ds,
-			String payment_type, String payment_proxy_type,String ait_time){
+	public Order commdityPhysicalOrderPaymentCompletedNotify(boolean success, Order order, User bindUser, String paymented_ds,
+			String payment_type, String payment_proxy_type, String ait_time){
 		Integer changed_status = null;
 		Integer changed_process_status = null;
 		try{
@@ -1202,4 +1206,56 @@ public class OrderFacadeService {
 		}
 		return false;
 	}
+
+	public Order createHotPlayOrder(Integer commdityid, String hpid, 
+			Integer umactype, String payment_type,Integer channel,String user_agent) {
+		//商品信息验证
+		//验证商品是否合法
+		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+		String amount = advertiseFacadeService.advertisePayment(hpid);
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdityid);
+		order.setAppid(CommdityApplication.DEFAULT.getKey());
+		order.setChannel(channel);
+		order.setUmactype(umactype);
+		order.setType(commdity.getCategory());
+		order.setPayment_type(payment_type);
+		order.setContext(hpid);
+		order.setUser_agent(user_agent);
+		order.setStatus(OrderStatus.NotPay.getKey());
+		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
+		order.setAmount(amount);
+		orderService.insert(order);
+		return order;
+	}
+
+	public Order hotplayOrderPaymentCompletedNotify(boolean success, Order order, String paymented_ds,
+			String payment_type, String payment_proxy_type) {
+		Integer changed_status = null;
+		Integer changed_process_status = null;
+		try{
+			String orderid = order.getId();
+			if(StringUtils.isNotEmpty(paymented_ds)){
+				order.setPayment_type(payment_type);
+				order.setPayment_proxy_type(payment_proxy_type);
+				order.setPaymented_at(DateTimeHelper.parseDate(paymented_ds, DateTimeHelper.DefalutFormatPattern));
+			}
+			//支付成功
+			if(success){
+				changed_status = OrderStatus.DeliverCompleted.getKey();
+				logger.info(String.format("hotplayOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+			}else{
+				changed_status = OrderStatus.PayFailured.getKey();
+				changed_process_status = OrderProcessStatus.PayFailured.getKey();
+			}
+		}catch(Exception ex){
+			throw ex; 
+		}finally{
+			orderStatusChanged(order, changed_status, changed_process_status);
+		}
+		return order;
+	}
+	
+
 }

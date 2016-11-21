@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.commdity.iservice;
 
+import com.bhu.vas.api.dto.commdity.HotPlayOrderVTO;
 import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
@@ -69,5 +70,9 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<UserValidateCaptchaDTO> validate_code_check_authorize(String mac, String umac,
 			int countrycode, String acc, String captcha, String context, Integer umactype, Integer commdityid,
 			Integer channel, String user_agent);
+
+	public RpcResponseDTO<HotPlayOrderVTO> createHotPlayOrder(Integer commdityid, String hpid,Integer umactype,
+			String payment_type, Integer channel, String user_agent);
+
 
 }
