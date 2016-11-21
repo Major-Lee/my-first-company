@@ -207,6 +207,8 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	
 	@Override
 	public void preUpdate() {
+		if (this.updated_at == null)
+			this.updated_at = new Date();
 		super.preUpdate();
 	}
 	
