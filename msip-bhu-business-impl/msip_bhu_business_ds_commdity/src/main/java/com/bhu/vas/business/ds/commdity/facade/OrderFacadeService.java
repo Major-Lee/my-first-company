@@ -1244,6 +1244,7 @@ public class OrderFacadeService {
 			//支付成功
 			if(success){
 				changed_status = OrderStatus.DeliverCompleted.getKey();
+				changed_process_status = OrderProcessStatus.DeliverCompleted.getKey();
 				logger.info(String.format("hotplayOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
 			}else{
 				changed_status = OrderStatus.PayFailured.getKey();
