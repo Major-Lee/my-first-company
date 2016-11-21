@@ -11,6 +11,7 @@ public class AdvertiseDevicesIncome extends ListJsonExtIntModel<String>{
 	private String advertiseid;
 	private long count;
 	private int state;
+	private int cash;
 	private Date created_at;
 	private Date updated_at;
 	
@@ -36,6 +37,14 @@ public class AdvertiseDevicesIncome extends ListJsonExtIntModel<String>{
 
 	public void setState(int state) {
 		this.state = state;
+	}
+
+	public int getCash() {
+		return cash;
+	}
+
+	public void setCash(int cash) {
+		this.cash = cash;
 	}
 
 	public Date getCreated_at() {

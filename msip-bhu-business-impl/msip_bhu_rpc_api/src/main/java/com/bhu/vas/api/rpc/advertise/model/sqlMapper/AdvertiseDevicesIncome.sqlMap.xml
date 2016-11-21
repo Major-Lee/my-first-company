@@ -9,6 +9,7 @@
     <result property="advertiseid" column="advertiseid"/>
     <result property="count" column="count"/>
     <result property="state" column="state"/>
+    <result property="cash" column="cash"/>
 	<result property="extension_content" column="extension_content"/>	
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
@@ -25,6 +26,7 @@
 	    	advertiseid,
 	    	count,
 	    	state,
+	    	cash,
 	    	extension_content,
 	    	created_at,
 	    	updated_at
@@ -35,6 +37,7 @@
 			advertiseid,
 	    	count,
 	    	state,
+	    	cash,
 	    	extension_content,
 	    	created_at,
 	    	updated_at
@@ -46,6 +49,7 @@
 			#{advertiseid},
 			#{count},
 			#{state},
+			#{cash},
 			#{extension_content},
 	    	#{created_at},
 	    	#{updated_at}
@@ -55,6 +59,7 @@
 	    	advertiseid = #{advertiseid},
 	    	count = #{count},
 	    	state = #{state},
+	    	cash = #{cash},
 	    	extension_content = #{extension_content},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
