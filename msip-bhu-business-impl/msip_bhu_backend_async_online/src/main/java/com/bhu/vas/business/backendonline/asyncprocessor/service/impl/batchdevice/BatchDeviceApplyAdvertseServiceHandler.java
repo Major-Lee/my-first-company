@@ -89,8 +89,18 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			try {
 				start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
 				end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
-				List<Advertise> ads = advertiseService.getEntityDao().queryByAdvertiseTimeExcept(start, end, ad.getProvince(), ad.getCity(), ad.getDistrict(), ad.getId());
-				List<AdvertiseTrashPositionVTO> trashs = AdvertiseHelper.buildAdvertiseTrashs(ads, sdf.parse(start));
+//				List<Advertise> ads = advertiseService.getEntityDao().queryByAdvertiseTimeExcept(start, end, ad.getProvince(), ad.getCity(), ad.getDistrict(), ad.getId());
+//				List<AdvertiseTrashPositionVTO> trashs = AdvertiseHelper.buildAdvertiseTrashs(ads, sdf.parse(start));
+				List<Advertise> trashAds = advertiseService.getEntityDao().queryByAdvertiseTimeExcept(start, end, ad.getProvince(), ad.getCity(), ad.getDistrict(),ad.getId());
+				List<AdvertiseTrashPositionVTO> trashs = new ArrayList<AdvertiseTrashPositionVTO>();
+				
+				for(Advertise trashAd : trashAds){
+					AdvertiseTrashPositionVTO trashVto = new AdvertiseTrashPositionVTO();
+					trashVto.setProvince(trashAd.getProvince());
+					trashVto.setCity(trashAd.getCity());
+					trashVto.setDistrict(trashAd.getDistrict());
+					trashs.add(trashVto);
+				}
 				
 				wifiDeviceDataSearchService.iteratorWithPosition(trashs,ad.getProvince(),
 						ad.getCity(), ad.getDistrict(),false,batch,
@@ -101,27 +111,27 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 								for (WifiDeviceDocument doc : pages) {
 									macList.add(doc.getD_mac());
 								}
-								
-							switch (adDTO.getDtoType()) {
-								case IDTO.ACT_ADD:
-									WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
-											macList, JsonHelper.getJSONString(ad));
-									deviceLimitDomain(batch, macList, ad.getDomain(),
-											IDTO.ACT_ADD, ad);
-									break;
-								case IDTO.ACT_DELETE:
-									deviceLimitDomain(batch, macList, null,
-											IDTO.ACT_DELETE, ad);
-									break;
-								case IDTO.ACT_UPDATE:
-									WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
-											macList, JsonHelper.getJSONString(ad));;
-									break;
-							default:
-								break;
-							}
 						}
 				});
+				
+				switch (adDTO.getDtoType()) {
+					case IDTO.ACT_ADD:
+						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
+							macList, JsonHelper.getJSONString(ad));
+						deviceLimitDomain(batch, macList, ad.getDomain(),
+							IDTO.ACT_ADD, ad);
+						break;
+					case IDTO.ACT_DELETE:
+						deviceLimitDomain(batch, macList, null,
+							IDTO.ACT_DELETE, ad);
+						break;
+					case IDTO.ACT_UPDATE:
+						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
+							macList, JsonHelper.getJSONString(ad));;
+						break;
+					default:
+						break;
+				}
 			} catch (ParseException e) {
 				logger.info("BatchDeviceApplyAdvertseServiceHandler error..");
 				e.printStackTrace();
