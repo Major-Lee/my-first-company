@@ -40,6 +40,7 @@ import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerService;
+import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
@@ -93,6 +94,9 @@ public class AsyncOrderPaymentNotifyService{
 	
 	@Resource
 	private CommdityPhysicalService commdityPhysicalService;
+	
+	@Resource
+	private AdvertiseFacadeService advertiseFacadeService;
 	
 	@PostConstruct
 	public void initialize() {
@@ -197,15 +201,147 @@ public class AsyncOrderPaymentNotifyService{
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
 		}
 	}
+	//购买实体商品支付后处理
+	public void physicalOrderPaymentHandle(Order order, boolean success, 
+			User bindUser, String paymented_ds, String payment_type, 
+			String payment_proxy_type, String accessInternetTime){
+		
+		order = orderFacadeService.commdityPhysicalOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
+					payment_type, payment_proxy_type, accessInternetTime);
+		//判断订单状态为支付成功或发货成功
+		Integer order_status = order.getStatus();
+		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
+			//由于生产环境打赏用户数目较多,做除以100处理
+			String user = RewardOrderFinishCountStringService.getInstance().getRecent7daysValue();
+			String ucount = null;
+			int userInt = 0;
+			if(user.isEmpty() || user == null){
+				ucount = user;
+			}else{
+				userInt = Integer.parseInt(user);
+				if (userInt <= 100)
+					ucount = user;
+				else
+					ucount = userInt/100 + "";
+			}
+			String acc = commdityPhysicalService.getById(order.getUmac()).getInnerModel().getAcc();
+			String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
+					ucount);
+			String response_snk_stop = SmsSenderFactory.buildSender(
+					BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
+			logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",acc,smsg_snk_stop,response_snk_stop));
+		}else{
+			logger.info(String.format("PayFailed or DeliverFailed orderid[%s]",order.getId()));
+		}
+	}
 	
+	public void rewardOrderPaymentHandle(Order order, boolean success, 
+			User bindUser, String paymented_ds, String payment_type, 
+			String payment_proxy_type, String accessInternetTime){
+		
+		order = orderFacadeService.rewardOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
+				payment_type, payment_proxy_type, accessInternetTime);
+		
+		//判断订单状态为支付成功或发货成功
+		Integer order_status = order.getStatus();
+		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
+			//判断是否为限时上网商品
+/*			Integer commdityid = order.getCommdityid();
+			Commdity commdity = commdityService.getById(commdityid);
+			if(commdity != null && CommdityCategory.isInternetLimit(commdity.getCategory())){*/
+			//进行订单分成处理逻辑
+			//String dmac = order.getMac();
+			double amount = Double.parseDouble(order.getAmount());
+			//userWalletFacadeService.sharedealCashToUserWallet(order.getUid(), amount, orderid);
+			OrderUmacType uMacType = OrderUmacType.fromKey(order.getUmactype());
+			if(uMacType == null){
+				uMacType = OrderUmacType.Terminal;
+			}
+			if(StringUtils.isEmpty(order.getPayment_type())){
+				order.setPayment_type(BusinessEnumType.unknownPaymentType);
+			}
+			/*StringBuilder sb_description = new StringBuilder();
+			if(uMacType != null){
+				sb_description.append(uMacType.getName());
+			}
+			if(StringUtils.isNotEmpty(order.getPayment_type())){
+				if(sb_description.length()>0)	
+					sb_description.append(StringHelper.MINUS_CHAR_GAP);
+				sb_description.append(order.getPayment_type());
+			}*/
+			final String order_payment_type = order.getPayment_type();
+			final Integer order_umac_type = order.getUmactype();
+			final String mac = order.getMac();
+			final String umac = order.getUmac();
+			OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+			userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), order.getUmac(), amount, order.getId(), order.getPaymented_at(),
+					String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
+							orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP),
+							new IWalletSharedealNotifyCallback(){
+								@Override
+								public String notifyCashSharedealOper(int uid, double cash) {
+									logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper: uid[%s] "
+											+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
+									if(uid > 0 && cash >= 0.01){
+										SharedealNotifyPushDTO sharedeal_push_dto = new SharedealNotifyPushDTO();
+										sharedeal_push_dto.setMac(mac);
+										sharedeal_push_dto.setUid(uid);
+										sharedeal_push_dto.setCash(ArithHelper.getCuttedCurrency(String.valueOf(cash)));
+										sharedeal_push_dto.setHd_mac(umac);
+										sharedeal_push_dto.setPayment_type(order_payment_type);
+										sharedeal_push_dto.setUmac_type(order_umac_type);
+										pushService.pushSharedealNotify(sharedeal_push_dto);
+									}
+									logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper successful: uid[%s] "
+											+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
+									return null;
+								}
+				});
+				
+			/*userWalletFacadeService.sharedealCashToUserWallet(order.getMac(), amount, orderid, 
+					String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
+							orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
+			/*userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
+					String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
+							orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
+			//}
+		}
+	}
 	
+	public void hotplayOrderPaymentHandle(Order order, boolean success, 
+			User bindUser, String paymented_ds, String payment_type, 
+			String payment_proxy_type){
+		
+		order = orderFacadeService.hotplayOrderPaymentCompletedNotify(success, order, paymented_ds, payment_type, payment_proxy_type);
+		Integer order_status = order.getStatus();
+		String hpid = order.getContext();
+		if (OrderStatus.isDeliverCompleted(order_status)){
+			advertiseFacadeService.advertiseCompletionOfPayment(hpid, order.getId());
+			logger.info(String.format("hot play Orderid[%s] hpid[%s] DeliverCompleted", order.getId(), hpid));
+		}else{
+			logger.error(String.format("hot play Orderid[%s] hpid[%s] DeliverFailed", order.getId(), hpid));
+		}
+	}
+	//必虎良品打赏包月不分成
+	public void rewardMonthlyInternetPaymentHandle(Order order, boolean success, 
+			User bindUser, String paymented_ds, String payment_type, 
+			String payment_proxy_type, String accessInternetTime){
+		
+		order = orderFacadeService.rewardOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
+				payment_type, payment_proxy_type, accessInternetTime);
+		Integer order_status = order.getStatus();
+		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
+			logger.info(String.format("rewardMonthlyInternetPaymentHandle Orderid[%s] DeliverCompleted", order.getId()));
+		}else{
+			logger.error(String.format("rewardMonthlyInternetPaymentHandle Orderid[%s] DeliverFailed", order.getId()));
+		}
+	}
 	/**
 	 * 打赏订单支付结束处理
 	 * @param order
 	 * @param rpcn_dto
 	 */
 	public void rewardOrderReceiptHandle(Order order, ResponsePaymentCompletedNotifyDTO rpcn_dto){
-		String orderid = rpcn_dto.getOrderid();
 		boolean success = rpcn_dto.isSuccess();
 		String paymented_ds = rpcn_dto.getPaymented_ds();
 		String payment_type = rpcn_dto.getPayment_type();
@@ -215,119 +351,41 @@ public class AsyncOrderPaymentNotifyService{
 		//支付完成时进行设备的uid获取并设置订单
 		//User bindUser = userDeviceFacadeService.getBindUserByMac(order.getMac());
 		//User bindUser = userWifiDeviceFacadeService.findUserById(order.getMac());
+		CommdityCategory category = CommdityCategory.fromKey(order.getType());
+		
 		Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
+		//获取放行时间
+		String accessInternetTime = null;
+		if (commdity.getApp_deliver_detail() != null && !commdity.getApp_deliver_detail().isEmpty()){
+			accessInternetTime = commdity.getApp_deliver_detail();
+		}else{
+			if (order.getMac() != null && !order.getMac().isEmpty()){
+				accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+			}
+		}
 		User bindUser = null;
 		if(order.getUid() != null){
 			bindUser = userService.getById(order.getUid());
 		}
-		String accessInternetTime = null;
-		//根据商品id判断是打赏还是购买实体商品
-		if (CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
-			
-			accessInternetTime = commdity.getApp_deliver_detail();
-			order = orderFacadeService.CommdityPhysicalOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
-						payment_type, payment_proxy_type, accessInternetTime);
-					
-				//判断订单状态为支付成功或发货成功
-			Integer order_status = order.getStatus();
-			if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
-				//由于生产环境打赏用户数目较多,做除以100处理
-				String user = RewardOrderFinishCountStringService.getInstance().getRecent7daysValue();
-				String ucount = null;
-				int userInt = 0;
-				if(user.isEmpty() || user == null){
-					ucount = user;
-				}else{
-					userInt = Integer.parseInt(user);
-					if (userInt <= 100)
-						ucount = user;
-					else
-						ucount = userInt/100 + "";
-				}
-				String acc = commdityPhysicalService.getById(order.getUmac()).getInnerModel().getAcc();
-				String smsg_snk_stop = String.format(BusinessRuntimeConfiguration.Internal_CommdityPhysical_Payment_Template,
-						ucount);
-				String response_snk_stop = SmsSenderFactory.buildSender(
-						BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
-				logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",acc,smsg_snk_stop,response_snk_stop));
-			}else{
-				logger.info(String.format("PayFailed or DeliverFailed orderid[%s]",order.getId()));
-			}
-		}
-		else{
-			if (commdity.getApp_deliver_detail() != null && !commdity.getApp_deliver_detail().isEmpty()){
-				accessInternetTime = commdity.getApp_deliver_detail();
-			}else{
-				accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
-			}
-			
-			order = orderFacadeService.rewardOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
+		switch (category) {
+		case RewardInternetLimit:
+			rewardOrderPaymentHandle(order, success, bindUser, paymented_ds, 
 					payment_type, payment_proxy_type, accessInternetTime);
-			
-			//判断订单状态为支付成功或发货成功
-			Integer order_status = order.getStatus();
-			if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
-				//判断是否为限时上网商品
-	/*			Integer commdityid = order.getCommdityid();
-				Commdity commdity = commdityService.getById(commdityid);
-				if(commdity != null && CommdityCategory.isInternetLimit(commdity.getCategory())){*/
-				//进行订单分成处理逻辑
-				//String dmac = order.getMac();
-				double amount = Double.parseDouble(order.getAmount());
-				//userWalletFacadeService.sharedealCashToUserWallet(order.getUid(), amount, orderid);
-				OrderUmacType uMacType = OrderUmacType.fromKey(order.getUmactype());
-				if(uMacType == null){
-					uMacType = OrderUmacType.Terminal;
-				}
-				if(StringUtils.isEmpty(order.getPayment_type())){
-					order.setPayment_type(BusinessEnumType.unknownPaymentType);
-				}
-				/*StringBuilder sb_description = new StringBuilder();
-				if(uMacType != null){
-					sb_description.append(uMacType.getName());
-				}
-				if(StringUtils.isNotEmpty(order.getPayment_type())){
-					if(sb_description.length()>0)	
-						sb_description.append(StringHelper.MINUS_CHAR_GAP);
-					sb_description.append(order.getPayment_type());
-				}*/
-				final String order_payment_type = order.getPayment_type();
-				final Integer order_umac_type = order.getUmactype();
-				final String mac = order.getMac();
-				final String umac = order.getUmac();
-				OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
-				userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), order.getUmac(), amount, orderid, order.getPaymented_at(),
-						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
-								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP),
-								new IWalletSharedealNotifyCallback(){
-									@Override
-									public String notifyCashSharedealOper(int uid, double cash) {
-										logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper: uid[%s] "
-												+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
-										if(uid > 0 && cash >= 0.01){
-											SharedealNotifyPushDTO sharedeal_push_dto = new SharedealNotifyPushDTO();
-											sharedeal_push_dto.setMac(mac);
-											sharedeal_push_dto.setUid(uid);
-											sharedeal_push_dto.setCash(ArithHelper.getCuttedCurrency(String.valueOf(cash)));
-											sharedeal_push_dto.setHd_mac(umac);
-											sharedeal_push_dto.setPayment_type(order_payment_type);
-											sharedeal_push_dto.setUmac_type(order_umac_type);
-											pushService.pushSharedealNotify(sharedeal_push_dto);
-										}
-										logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper successful: uid[%s] "
-												+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
-										return null;
-									}
-					});
-					
-				/*userWalletFacadeService.sharedealCashToUserWallet(order.getMac(), amount, orderid, 
-						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
-								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
-				/*userWalletFacadeService.sharedealCashToUserWalletWithBindUid(order.getUid(), amount, orderid,
-						String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
-								orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
-				//}
-			}
+			break;
+		case RewardMonthlyInternetLimit:
+			rewardMonthlyInternetPaymentHandle(order, success, bindUser, paymented_ds, 
+					payment_type, payment_proxy_type, accessInternetTime);
+			break;
+		case HotPlayAdvLimit:
+			hotplayOrderPaymentHandle(order, success, bindUser, paymented_ds, 
+					payment_type, payment_proxy_type);
+			break;
+		case RewardMonthlyServiceLimit:
+			physicalOrderPaymentHandle(order, success, bindUser, paymented_ds, 
+					payment_type, payment_proxy_type, accessInternetTime);
+		default:
+			logger.error("rewardOrderReceiptHandle failed category[%s] is not exist",category.getCategory());
+			break;
 		}
 	}
 	/**

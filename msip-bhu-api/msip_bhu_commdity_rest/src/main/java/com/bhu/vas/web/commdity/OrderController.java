@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.api.dto.commdity.HotPlayOrderVTO;
 import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderPaymentUrlDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
@@ -517,6 +518,69 @@ public void physical_mini_paymenturl(
 				+ "ip[%s] mac[%s] umac[%s] rep_time[%s]", orderid, payment_type, commdityid, requestIp, mac, umac,
 				(System.currentTimeMillis() - start)+"ms"));
 		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
+		
+		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
+		retDto.setId(order_vto.getOrderid());
+		retDto.setThird_payinfo(rcp_dto.getParams());
+		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
+	}
+
+
+/**
+ * 创建全城热播订单
+ * 1:生成订单
+ * @param request
+ * @param response
+ * @param orderId 订单id
+ * @param hpid 热播订单id
+ * @param payment_type 支付方式
+ */
+@ResponseBody()
+@RequestMapping(value="/hotplay/paymenturl",method={RequestMethod.GET,RequestMethod.POST})
+public void hot_play_paymenturl(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		@RequestParam(required = false, defaultValue = "17") Integer commdityid,
+		@RequestParam(required = true) Integer uid,
+		@RequestParam(required = true) String hpid,
+		@RequestParam(required = false, defaultValue = "2") Integer umactype,
+		@RequestParam(required = true) String payment_type,
+		@RequestParam(required = false, value = "pcd_url") String payment_completed_url,
+		@RequestParam(required = false, defaultValue = "0") Integer channel,
+		@RequestParam(required = false, defaultValue = "0") String version
+		) {
+		long start = System.currentTimeMillis();
+		String user_agent = request.getHeader("User-Agent");
+		//1:生成订单
+		RpcResponseDTO<HotPlayOrderVTO> rpcResult = orderRpcService.createHotPlayOrder(commdityid, hpid, 
+				umactype, payment_type, channel, user_agent);
+		if(rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			return;
+		}
+		//2:请求支付系统返回支付url
+		HotPlayOrderVTO order_vto = rpcResult.getPayload();
+		String orderid = order_vto.getOrderid();
+		String order_amount = order_vto.getAmount();
+		String requestIp = WebHelper.getRemoteAddr(request);
+		Integer appid = order_vto.getAppid();
+		
+		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
+				order_amount, requestIp, null, orderid, payment_completed_url,channel+"",version,"全城热播");
+		if(rcp_dto == null){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID)));
+			return;
+		}
+		if(!rcp_dto.isSuccess()){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE)));
+			return;
+		}
+		logger.info(String.format("hot_play_paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
+				+ "ip[%s] rep_time[%s]", orderid, payment_type, commdityid, requestIp,
+				(System.currentTimeMillis() - start)+"ms"));
+		logger.info(String.format("hot_play_paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
 		
 		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
 		retDto.setId(order_vto.getOrderid());

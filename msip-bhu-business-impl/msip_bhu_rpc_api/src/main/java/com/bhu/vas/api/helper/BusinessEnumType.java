@@ -567,6 +567,7 @@ public class BusinessEnumType {
 		WhileListLimit(20,"白名单免费上网","白名单免费上网"),
 		RewardMonthlyInternetLimit(1,"打赏认证包月商品","打赏认证包月商品"),
 		RewardInternetLimit(0,"打赏上网","打赏上网"),
+		HotPlayAdvLimit(30,"全城热播广告商品","全城热播广告商品"),
 		;
 		private Integer category;
 		private String name;

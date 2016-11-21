@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.commdity.HotPlayOrderVTO;
 import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
@@ -182,6 +183,14 @@ public class OrderRpcService implements IOrderRpcService{
 		return orderUnitFacadeService.validate_code_check_authorize(mac, umac,
 				countrycode, acc, captcha, context, umactype, commdityid,
 				channel, user_agent);
+	}
+
+	@Override
+	public RpcResponseDTO<HotPlayOrderVTO> createHotPlayOrder(Integer commdityid, String hpid, Integer umactype,
+			String payment_type, Integer channel, String user_agent) {
+		logger.info(String.format("createHotPlayOrder commdityid[%s] hpid[%s] umactype[%s] payment_type[%s] channel[%s] user_agent[%s]",
+				commdityid, hpid, umactype, payment_type, channel, user_agent));
+		return orderUnitFacadeService.createHotPlayOrder(commdityid, hpid, umactype, payment_type, channel, user_agent);
 	}
 
 	

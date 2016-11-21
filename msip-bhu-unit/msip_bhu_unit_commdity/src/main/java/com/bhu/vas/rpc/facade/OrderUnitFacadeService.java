@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
+import com.bhu.vas.api.dto.commdity.HotPlayOrderVTO;
 import com.bhu.vas.api.dto.commdity.OrderDetailDTO;
 import com.bhu.vas.api.dto.commdity.OrderRechargeVCurrencyVTO;
 import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
@@ -1058,6 +1059,23 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 		}catch(Exception ex){
 			logger.error("validate_code_check_authorize Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<HotPlayOrderVTO> createHotPlayOrder(Integer commdityid, String hpid, Integer umactype,
+			String payment_type, Integer channel, String user_agent) {
+		try{
+			Order order = orderFacadeService.createHotPlayOrder(commdityid, hpid, 
+					umactype, payment_type, channel, user_agent);
+			HotPlayOrderVTO vto = new HotPlayOrderVTO();
+			vto.setOrderid(order.getId());
+			vto.setAmount(order.getAmount());
+			vto.setAppid(order.getAppid());
+			logger.info("createHotPlayOrder successfully!");
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(Exception ex){
+			logger.error("createHotPlayOrder Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
