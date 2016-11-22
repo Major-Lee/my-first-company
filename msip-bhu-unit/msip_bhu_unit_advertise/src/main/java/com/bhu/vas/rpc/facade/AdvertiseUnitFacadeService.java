@@ -406,16 +406,18 @@ public class AdvertiseUnitFacadeService {
 		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
 		
 		for(int i=0; i<=days; i++){
-			
-			SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern5);  
 			String time = null;
-			Date nowDate = null;
-			
 			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
-			nowDate  = sdf.parse(time);
 			
 			AdvertiseOccupiedVTO occupiedVto = new AdvertiseOccupiedVTO();
-			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, nowDate);
+			List<AdvertiseTrashPositionVTO> trashVtos = new ArrayList<AdvertiseTrashPositionVTO>();
+			for(Advertise trashAd : advertises){
+				AdvertiseTrashPositionVTO trashVto = new AdvertiseTrashPositionVTO();
+				trashVto.setProvince(trashAd.getProvince());
+				trashVto.setCity(trashAd.getCity());
+				trashVto.setDistrict(trashAd.getDistrict());
+				trashVtos.add(trashVto);
+			}
 
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
