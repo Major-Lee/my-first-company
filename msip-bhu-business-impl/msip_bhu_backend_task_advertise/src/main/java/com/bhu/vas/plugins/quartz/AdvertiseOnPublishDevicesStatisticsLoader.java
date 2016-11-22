@@ -53,7 +53,6 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 		}
 		
 		List<Advertise> ads = fetchOnpublishAdvertise();
-		List<AdvertiseDevicesIncome> devicesIncome = new ArrayList<AdvertiseDevicesIncome>();
 		for(Advertise ad: ads){
 			logger.info(String.format("AdvertiseOnPublishDevicesStatisticsLoader onpulishAdvertiseId[%s]", ad.getId()));
 			
@@ -79,23 +78,29 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 						}
 			});
 			
-				String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
-				ModelCriteria mc = new ModelCriteria();
-				mc.createCriteria().andColumnEqualTo("publish_time", date).andColumnEqualTo("advertiseid", ad.getId());
-				List<AdvertiseDevicesIncome> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
-				if(!details.isEmpty()){
-					AdvertiseDevicesIncome detail = details.get(0);
-					detail.setActual_count(devices.size());
-					detail.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
-					detail.replaceInnerModels(devices);
-					detail.setCash(devices.size()*2+"");
-					devicesIncome.add(detail);
+				String afterDate =null;
+				try {
+					
+					afterDate = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
+					ModelCriteria mc = new ModelCriteria();
+					mc.createCriteria().andColumnEqualTo("publish_time", afterDate).andColumnEqualTo("advertiseid", ad.getId());
+					List<AdvertiseDevicesIncome> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
+					if(!details.isEmpty()){
+						AdvertiseDevicesIncome detail = details.get(0);
+						detail.setActual_count(devices.size());
+						detail.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
+						detail.replaceInnerModels(devices);
+						detail.setCash(devices.size()*2+"");
+						advertiseDevicesIncomeService.update(detail);
+					}
+				} catch (ParseException e) {
+					e.printStackTrace();
 				}
 		}
 				
-		if(!devicesIncome.isEmpty()){
-			advertiseDevicesIncomeService.updateAll(devicesIncome);
-		}
+//		if(!devicesIncome.isEmpty()){
+//			advertiseDevicesIncomeService.updateAll(devicesIncome);
+//		}
 		logger.info("AdvertiseOnPublishDevicesStatisticsLoader end....");
 	}
 	
