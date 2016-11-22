@@ -1623,14 +1623,12 @@ public class UserWalletUnitFacadeService {
 		try {
 			cal.setTime(sdf.parse(smdate));
 		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		long time1 = cal.getTimeInMillis();
 		try {
 			cal.setTime(sdf.parse(bdate));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		long time2 = cal.getTimeInMillis();
@@ -1724,9 +1722,13 @@ public class UserWalletUnitFacadeService {
 					rewardVTO.setDescription(i.getDescription());
 					rewardVTO.setMac(i.getMac());
 					rewardVTO.setRole(i.getRole());
+					
 					Order order=orderService.getById(i.getOrderid());
 					rewardVTO.setDealCash(order.getAmount());
 					rewardVTO.setUmac(order.getUmac());
+					String rate=String.valueOf((int)(cash*100/Double.valueOf(order.getAmount())));
+					rewardVTO.setRate(rate);
+					
 					rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
 					retDtos.add(rewardVTO);
 				}

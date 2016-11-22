@@ -20,7 +20,15 @@ public class UserWalletRewardVTO implements java.io.Serializable{
 	private String umac_mf;
 	//打赏方式
 	private String description;
+	//收益比例
+	private String rate;
 	
+	public String getRate() {
+		return rate;
+	}
+	public void setRate(String rate) {
+		this.rate = rate;
+	}
 	public String getRole() {
 		return role;
 	}
