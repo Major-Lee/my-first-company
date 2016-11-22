@@ -106,12 +106,13 @@ public class UserWifiDeviceFacadeService {
 			userWifiDevice = insertUserWifiDevice(mac, uid, bindDeviceName);
 			deviceFacadeService.gainDeviceMobilePresentString(uid, mac);
 		}
-
-		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
-		if(wifiDevice != null){
-	        wifiDevice.setIndustry(industry);
-	        wifiDeviceService.update(wifiDevice);
-		}
+		
+//		industry信息改为由ops系统来录入
+//		WifiDevice wifiDevice = wifiDeviceService.getById(mac);
+//		if(wifiDevice != null){
+//	        wifiDevice.setIndustry(industry);
+//	        wifiDeviceService.update(wifiDevice);
+//		}
 		chargingFacadeService.wifiDeviceBindedNotify(mac, uid);
 		return userWifiDevice;
 	}

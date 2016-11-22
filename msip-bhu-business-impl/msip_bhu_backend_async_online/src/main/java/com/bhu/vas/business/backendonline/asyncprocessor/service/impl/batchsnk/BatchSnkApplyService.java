@@ -99,6 +99,8 @@ public class BatchSnkApplyService {
 				daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
 				downCmds.clear();
 			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}finally{
 		}
 	}
