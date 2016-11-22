@@ -60,15 +60,15 @@ public class BatchGroupModifyDeviceSnkServiceHandler implements IMsgHandlerServi
 					List<String> dmacs = new ArrayList<>();
 					for (WifiDeviceDocument doc : pages) {
 						String mac = doc.getD_mac();
-						int owner = -1;
-						try{
-							owner = Integer.parseInt(doc.getD_snk_owner());
-						}catch(Exception e){
-							logger.info(String.format("parse [%s][%s] to int error", doc.getId(), doc.getD_snk_owner()));
-						}
-						
-						if(owner != applyDto.getUid()) //非属于自己的设备portal，不允许修改
-			    			continue;
+//						int owner = -1;
+//						try{
+//							owner = Integer.parseInt(doc.getD_snk_owner());
+//						}catch(Exception e){
+//							logger.info(String.format("parse [%s][%s] to int error", doc.getId(), doc.getD_snk_owner()));
+//						}
+//						
+//						if(owner != applyDto.getUid()) //非属于自己的设备portal，不允许修改
+//			    			continue;
 			    		dmacs.add(mac);
 			    	}
 					if(!dmacs.isEmpty()){
