@@ -430,9 +430,9 @@ public class AdvertiseUnitFacadeService {
 	
 	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,String advertiseId){
 		Advertise ad = advertiseService.getById(advertiseId);
-//		if(ad.getType() != BusinessEnumType.AdvertiseType.Published.getType()){
-//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
-//		}
+		if(ad.getType() != BusinessEnumType.AdvertiseType.Published.getType()){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+		}
 		
 		if(uid != ad.getUid()){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_QUERY_UNSUPPORT);
