@@ -1330,6 +1330,6 @@ public class UserWalletFacadeService{
 		mc.setOrderByClause("updated_at desc");
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
-		return null;
+		return userWalletLogService.findModelByModelCriteria(mc);
 	}
 }

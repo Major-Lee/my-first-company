@@ -1349,6 +1349,7 @@ public class UserWalletUnitFacadeService {
 	 */
 	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(int uid,String beginTime,String endTime) {
 		UcloudMacStatisticsVTO ucloudMacStatisticsVTO = new UcloudMacStatisticsVTO();
+		System.out.println("ss:"+beginTime+"::::hh:"+endTime);
 		try {
 			// 折线图信息
 			// 天数的计算
@@ -1605,7 +1606,7 @@ public class UserWalletUnitFacadeService {
 		 formater.setGroupingSize(0);
 		 formater.setRoundingMode(RoundingMode.FLOOR);
 
-		 System.out.println(formater.format(b));
+		 //System.out.println(formater.format(b));
 		 return formater.format(b);
 	}
 	public static void main(String[] args) {
