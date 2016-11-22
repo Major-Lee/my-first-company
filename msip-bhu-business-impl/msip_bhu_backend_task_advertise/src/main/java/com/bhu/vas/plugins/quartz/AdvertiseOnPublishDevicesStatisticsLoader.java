@@ -83,7 +83,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 					
 					afterDate = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
 					ModelCriteria mc = new ModelCriteria();
-					mc.createCriteria().andColumnEqualTo("publish_time", afterDate).andColumnEqualTo("advertiseid", ad.getId());
+					mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId()).andColumnLike("publish_time", afterDate+"%");
 					logger.info(String.format("AdvertiseOnPublishDevicesStatisticsLoader  publish_time [%s]  advertiseid[%s]", afterDate,ad.getId()));
 					List<AdvertiseDevicesIncome> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
 					if(!details.isEmpty()){
