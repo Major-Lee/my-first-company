@@ -136,8 +136,7 @@ public class UserWalletUnitFacadeService {
 				for (UserWalletLog log : pages.getItems()) {
 					uids.add(log.getUid());
 				}
-				List<User> users = userWalletFacadeService.getUserService()
-						.findByIds(uids, true, true);
+				List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
 				int index = 0;
 				for (UserWalletLog log : pages.getItems()) {
 					User user = users.get(index);
@@ -289,7 +288,7 @@ public class UserWalletUnitFacadeService {
 			int pageNo,
 			int pageSize) {
 		try {
-			User validateUser = UserValidateServiceHelper.validateUser(reckoner, this.userService);
+			User validateUser = UserValidateServiceHelper.validateUser(reckoner, userWalletFacadeService.getUserService());
 			if (validateUser.getUtype() != UserType.PaymentFinance.getIndex()
 					&& validateUser.getUtype() != UserType.VerifyFinance.getIndex()) {
 				throw new BusinessI18nCodeException(
@@ -330,9 +329,8 @@ public class UserWalletUnitFacadeService {
 						operateUser = new User();
 						operateUser = this.userService.getById(apply.getOperate_uid());
 					}
-					
 					//userWallet
-					UserWallet uwallet = userWalletFacadeService.userWallet(tuid);
+					UserWallet uwallet = userWalletFacadeService.userWallet(apply.getUid());
 					double totalCash = uwallet.getTotal_cash_sum();
 					double lastCash = uwallet.getCash();
 					UserWithdrawApplyVTO uWithdrawAplyVTO = apply.toUserWithdrawApplyVTO(
@@ -345,7 +343,6 @@ public class UserWalletUnitFacadeService {
 									: StringUtils.EMPTY,
 							operateUser != null ? operateUser.getNick()
 									: StringUtils.EMPTY, calculateApplyCost,totalCash,lastCash);
-					logger.info("fetch applies uWithdrawAplyVTO："+JsonHelper.getJSONString(uWithdrawAplyVTO));
 					vtos.add(uWithdrawAplyVTO);
 					index++;
 				}
