@@ -43,13 +43,15 @@ public class WifiDeviceAdvertiseListService extends AbstractRelationListCache{
     
     public void wifiDevicesAllAdInvalid(){
     	Set<String> keySet = this.keys("ad*");
-    	String[] keys = new String[keySet.size()];
-    	int index = 0;
-    	for(String key : keySet){
-    		keys[index] = key;
-    		index++;
+    	if(!keySet.isEmpty()){
+        	String[] keys = new String[keySet.size()];
+        	int index = 0;
+        	for(String key : keySet){
+        		keys[index] = key;
+        		index++;
+        	}
+        	this.del(keys);
     	}
-    	this.del(keys);
     }
     
     public void wifiDevicesAdApply(List<String> macs,String message){
