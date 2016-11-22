@@ -70,7 +70,7 @@
 	<!-- 每天23点五十分 广告数据全清 -->
 	<bean id="advertiseAllClearTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseAllClearTaskLoaderCronJobDetail" />
-		<property name="cronExpression" value="0 0/10 0 * * ? " />
+		<property name="cronExpression" value="0 0/10 * * * ? " />
 	</bean>
 	<bean id="advertiseAllClearTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseAllClearTaskLoaderJob" />
