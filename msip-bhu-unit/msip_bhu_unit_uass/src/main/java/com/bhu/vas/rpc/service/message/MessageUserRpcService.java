@@ -21,5 +21,10 @@ public class MessageUserRpcService implements IMessageUserRpcService{
 		logger.info(String.format("fetch_usersig uid[%s] channel[%s]", uid, channel));
 		return messageUnitFacadeService.fetch_usersig(uid, channel);
 	}
+	@Override
+	public RpcResponseDTO<MessageUserSigDTO> fetch_visitor_usersig(String user, Integer channel) {
+		logger.info(String.format("fetch_visitor_usersig user[%s] channel[%s]", user, channel));
+		return messageUnitFacadeService.fetch_visitor_usersig(user, channel);
+	}
 
 }

@@ -26,7 +26,7 @@ public class MessageController extends BaseController{
 
 	@ResponseBody()
 	@RequestMapping(value="/user/fetch_usersig",method={RequestMethod.GET,RequestMethod.POST})
-	public void create(
+	public void user_fetch_usersig(
 			HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam(required = true) Integer uid,
@@ -34,6 +34,23 @@ public class MessageController extends BaseController{
 			){
 		
 		RpcResponseDTO<MessageUserSigDTO> rpcResult = messageUserRpcService.fetch_usersig(uid, channel);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value="/visitor/fetch_usersig",method={RequestMethod.GET,RequestMethod.POST})
+	public void visitor_fetch_usersig(
+			HttpServletRequest request,
+			HttpServletResponse response, 
+			@RequestParam(required = true) String user,
+			@RequestParam(required = false,defaultValue="0") Integer channel
+			){
+		
+		RpcResponseDTO<MessageUserSigDTO> rpcResult = messageUserRpcService.fetch_visitor_usersig(user, channel);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{

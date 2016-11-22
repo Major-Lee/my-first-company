@@ -41,6 +41,14 @@ public class MessageSystemHashService extends AbstractRelationHashCache{
 		return this.hset(generateKey(key),BusinessKeyDefine.Message.MessageFieldSig,sig);
 	}
     
+    public Long setMessageUserSigExpire(String key, String expire){
+		return this.expire(generateKey(key), Integer.parseInt(expire));
+	}
+    
+    public Long getMessageUserSigExpire(String key, String expire){
+		return this.ttl(generateKey(key));
+	}
+    
 	public Map<String, String> fetchAll(String key){
 		return this.hgetall(generateKey(key));
 	}
