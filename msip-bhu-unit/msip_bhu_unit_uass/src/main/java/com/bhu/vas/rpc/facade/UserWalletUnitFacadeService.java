@@ -1720,7 +1720,9 @@ public class UserWalletUnitFacadeService {
 					double cash=Double.valueOf(i.getCash());
 					rewardVTO.setCash(String.valueOf(cash));
 					rewardVTO.setDealMethod(i.getTranstype_desc());
-					rewardVTO.setDealTime(i.getUpdated_at().toString());
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					
+					rewardVTO.setDealTime(sdf.format(i.getUpdated_at()));
 					rewardVTO.setDescription(i.getDescription());
 					rewardVTO.setMac(i.getMac());
 					rewardVTO.setRole(i.getRole());
