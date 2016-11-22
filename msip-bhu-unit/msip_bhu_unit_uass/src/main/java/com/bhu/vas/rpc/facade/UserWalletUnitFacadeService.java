@@ -1729,7 +1729,7 @@ public class UserWalletUnitFacadeService {
 						rewardVTO.setDealCash(order.getAmount());
 						rewardVTO.setUmac(order.getUmac());
 						String rate=String.valueOf((int)(cash*100/Double.valueOf(order.getAmount())));
-						rewardVTO.setRate(rate);
+						rewardVTO.setRate(rate+"%");
 						
 						rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
 					}
