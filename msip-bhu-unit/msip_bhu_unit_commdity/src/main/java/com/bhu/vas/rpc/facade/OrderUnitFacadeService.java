@@ -618,22 +618,24 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
 			RewardQueryPagesDetailVTO vto = new RewardQueryPagesDetailVTO();
-			String start_time = null;
-			String end_time = null;
-			if (start_created_ts != 0)
-				start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
-			if (end_created_ts != 0)
-				end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
-			logger.info("rewardOrderPagesDetail uid: "+uid+" start_time: "+start_time+" end_time: "+end_time+" mac: "+mac);
-			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,umac,status,dut);
-			vto.setCashSum((Double)map.get("cashSum"));
-			vto.setCount((Long)map.get("count"));
-			logger.info("rewardOrderPagesDetail CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
+			
 			
 			List<OrderRewardVTO> retDtos = Collections.emptyList();
 			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, 
 					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts);
 			if(order_count > 0){
+				
+				String start_time = null;
+				String end_time = null;
+				if (start_created_ts != 0)
+					start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
+				if (end_created_ts != 0)
+					end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
+				logger.info("rewardOrderPagesDetail uid: "+uid+" start_time: "+start_time+" end_time: "+end_time+" mac: "+mac);
+				Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,umac,status,dut);
+				vto.setCashSum((Double)map.get("cashSum"));
+				vto.setCount((Long)map.get("count"));
+				logger.info("rewardOrderPagesDetail CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
 				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
 						CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
 						pageNo, pageSize);
