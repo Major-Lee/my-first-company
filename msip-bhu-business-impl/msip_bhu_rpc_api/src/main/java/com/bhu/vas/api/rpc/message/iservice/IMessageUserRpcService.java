@@ -12,5 +12,7 @@ public interface IMessageUserRpcService {
 
 	RpcResponseDTO<MessageUserSigDTO> fetch_usersig(Integer uid, Integer channel);
 
+	RpcResponseDTO<MessageUserSigDTO> fetch_visitor_usersig(String user, Integer channel);
+
 	
 }
