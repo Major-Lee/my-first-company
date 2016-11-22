@@ -794,21 +794,21 @@ public class ChargingFacadeService {
 	public int fetchWifiDeviceSharedNetworkUsersRxRate(String dmac){
 		try{
 			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
-			return configs.getInnerModel().getPsn().getUsers_rx_rate();
+			return configs.getInnerModel().getPsn().getUsers_rx_rate()/InternetSpeedsUnit;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			return WifiDeviceHelper.SharedNetworkWifi_Default_Users_rx_rate;
+			return WifiDeviceHelper.SharedNetworkWifi_Default_Users_rx_rate/InternetSpeedsUnit;
 		}
 	}
 	
 	public int fetchWifiDeviceSharedNetworkUsersTxRate(String dmac){
 		try{
 			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
-			return configs.getInnerModel().getPsn().getUsers_tx_rate();
+			return configs.getInnerModel().getPsn().getUsers_tx_rate()/InternetSpeedsUnit;
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			return WifiDeviceHelper.SharedNetworkWifi_Default_Users_tx_rate;
+			return WifiDeviceHelper.SharedNetworkWifi_Default_Users_tx_rate/InternetSpeedsUnit;
 		}
 	}
-	
+	public static final int InternetSpeedsUnit = 128;
 }

@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.user.iservice;
 import java.util.Date;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
@@ -144,6 +145,20 @@ public interface IUserWalletRpcService {
 	 * @return
 	 */
 	public RpcResponseDTO<OpertorUserIncomeVTO> operatorMonIncome(Integer uid);
+	/**
+	 * 根据uid筛选条件查询用户收益日志列表
+	 * @param uid
+	 * @param mac
+	 * @param role
+	 * @param start_created_ts
+	 * @param end_created_ts
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public RpcResponseDTO<TailPage<UserWalletRewardVTO>> rewardUserWalletPages(
+			Integer uid, String mac, String role, long start_created_ts,
+			long end_created_ts, int pageNo, int pageSize);
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

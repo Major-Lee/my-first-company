@@ -1298,4 +1298,38 @@ public class UserWalletFacadeService{
 			return SnkAuthenticateResultType.FailedThresholdVcurrencyNotsufficient;
 		}
 	}
+	/**
+	 * 
+	 * @param uid
+	 * @param mac
+	 * @param role
+	 * @param start_created_ts
+	 * @param end_created_ts
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public List<UserWalletLog> findByParams(Integer uid, String mac,
+			String role, long start_created_ts, long end_created_ts,
+			int pageNo, int pageSize) {
+		ModelCriteria mc = new ModelCriteria();
+		Criteria criteria = mc.createCriteria();
+		criteria.andColumnEqualTo("uid", uid).andColumnEqualTo("transmode", "SDP").andColumnEqualTo("transtype", "P2C");
+		if(StringUtils.isNotEmpty(mac)){
+			criteria.andColumnEqualTo("mac", mac);
+		}
+		if(StringUtils.isNotBlank(role)){
+			criteria.andColumnEqualTo("role", role);
+		}
+		if(start_created_ts > 0){
+			criteria.andColumnGreaterThanOrEqualTo("updated_at", new Date(start_created_ts));
+		}
+		if(end_created_ts > 0){
+			criteria.andColumnLessThanOrEqualTo("updated_at", new Date(end_created_ts));
+		}
+		mc.setOrderByClause("updated_at desc");
+		mc.setPageNumber(pageNo);
+		mc.setPageSize(pageSize);
+		return null;
+	}
 }
