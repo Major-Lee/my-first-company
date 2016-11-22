@@ -1,6 +1,7 @@
 package com.bhu.vas.api.vto.advertise;
 
-public class AdvertiseBillsVTO {
+@SuppressWarnings("serial")
+public class AdvertiseBillsVTO implements java.io.Serializable{
 	private String expect;
 	private int actual;
 	private int balance;
