@@ -201,12 +201,12 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		mc.createCriteria().andColumnEqualTo("advertiseid", adId).andColumnEqualTo("publish_time", publishTime);
 		List<AdvertiseDevicesIncome> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
 		if(details.isEmpty()){
+			logger.info(String.format("BatchDeviceApplyAdvertseServiceHandler  publish_time [%s]  advertiseid[%s]", publishTime,adId));
 			AdvertiseDevicesIncome income = new AdvertiseDevicesIncome();
 			income.setAdvertiseid(adId);
 			income.setPublish_count(pushlist_count);
 			income.setPublish_time(publishTime);
 			advertiseDevicesIncomeService.insert(income);
 		}
-		
 	}
 }
