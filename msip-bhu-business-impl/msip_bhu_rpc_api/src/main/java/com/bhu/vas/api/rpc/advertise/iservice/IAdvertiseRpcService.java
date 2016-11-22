@@ -5,6 +5,7 @@ import java.util.List;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -96,5 +97,14 @@ public interface IAdvertiseRpcService{
 	 * @return
 	 */
 	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, String advertiseId);
+
+	/**
+	 * 查看广告报表
+	 * @param uid
+	 * @param advertiseId
+	 * @return
+	 */
+	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,
+			String advertiseId);
 
 }
