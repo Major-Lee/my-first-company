@@ -86,12 +86,15 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 					mc.createCriteria().andColumnEqualTo("publish_time", afterDate).andColumnEqualTo("advertiseid", ad.getId());
 					List<AdvertiseDevicesIncome> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
 					if(!details.isEmpty()){
+						logger.info("AdvertiseOnPublishDevicesStatisticsLoader  details update ");
 						AdvertiseDevicesIncome detail = details.get(0);
 						detail.setActual_count(devices.size());
 						detail.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
 						detail.replaceInnerModels(devices);
 						detail.setCash(devices.size()*2+"");
 						advertiseDevicesIncomeService.update(detail);
+					}else{
+						logger.info("AdvertiseOnPublishDevicesStatisticsLoader details null");
 					}
 				} catch (ParseException e) {
 					e.printStackTrace();
