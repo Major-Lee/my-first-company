@@ -178,10 +178,12 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 				if (wifiDevice == null)
 					continue;
 				// 生成下发指令
-				String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, mac, -1,
-						JsonHelper.getJSONString(psn), DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(),wifiDevice.getOrig_swver()),
-						deviceCMDGenFacadeService);
-				downCmds.add(DownCmds.builderDownCmds(mac, cmd));
+				if(psn !=null){
+					String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, mac, -1,
+							JsonHelper.getJSONString(psn), DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(),wifiDevice.getOrig_swver()),
+							deviceCMDGenFacadeService);
+					downCmds.add(DownCmds.builderDownCmds(mac, cmd));
+				}
 			}
 
 			if (!downCmds.isEmpty()) {
