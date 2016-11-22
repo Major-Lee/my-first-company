@@ -4,22 +4,28 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
 import com.bhu.vas.api.helper.AdvertiseHelper;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
+import com.bhu.vas.api.rpc.advertise.model.AdvertiseDevicesIncome;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseBillsVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseOccupiedVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
+import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -48,6 +54,8 @@ public class AdvertiseUnitFacadeService {
 	private UserService userService;
 	@Resource
 	private AdvertiseFacadeService advertiseFacadeService;
+	@Resource
+	private AdvertiseDevicesIncomeService advertiseDevicesIncomeService;
 	
 	public AdvertiseService getAdvertiseService() {
 		return advertiseService;
@@ -95,7 +103,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			long count=0;
 			try {
-				AdDevicePositionVTO vto = fetchAdvertiseOccupy(format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern5,province, city, district);
+				AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern5,province, city, district);
 				List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
 				if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
 					for(AdvertiseOccupiedVTO i:advertiseOccupiedVTOs){
@@ -158,7 +166,7 @@ public class AdvertiseUnitFacadeService {
 		String start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
 		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17);
 		
-		AdDevicePositionVTO vto = fetchAdvertiseOccupy(start,end,DateTimeHelper.FormatPattern5,province, city, district);
+		AdDevicePositionVTO vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district);
 		if(StringUtils.isNoneBlank(city)){
 			vto.setPositions(WifiDevicePositionListService.getInstance().fetchCity(city));
 		}else if(StringUtils.isNoneBlank(province)){
@@ -388,7 +396,7 @@ public class AdvertiseUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	
-	public AdDevicePositionVTO fetchAdvertiseOccupy(String start,String end,String pattern,String province,String city,String district) throws ParseException {
+	public AdDevicePositionVTO fetchAdvertiseOccupy(int index,String start,String end,String pattern,String province,String city,String district) throws ParseException {
 		AdDevicePositionVTO positionVto = new AdDevicePositionVTO();
 //		String start = null;
 //		String end = null;
@@ -405,18 +413,12 @@ public class AdvertiseUnitFacadeService {
 		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
 		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
 		
-		for(int i=0; i<=days; i++){
-			
-			SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern5);  
+		for(int i=index; i<=days; i++){
 			String time = null;
-			Date nowDate = null;
-			
 			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
-			nowDate  = sdf.parse(time);
-			
+			Date times = format.parse(time);
 			AdvertiseOccupiedVTO occupiedVto = new AdvertiseOccupiedVTO();
-			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, nowDate);
-
+			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, times);
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
 			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
@@ -424,5 +426,42 @@ public class AdvertiseUnitFacadeService {
 		}
 		positionVto.setOccupyAds(occupiedVtos);
 		return positionVto;
+	}
+	
+	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,String advertiseId){
+		Advertise ad = advertiseService.getById(advertiseId);
+		if(ad.getType() != BusinessEnumType.AdvertiseType.Published.getType()){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+		}
+		
+		if(uid != ad.getUid()){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_QUERY_UNSUPPORT);
+		}
+		
+		AdvertiseReportVTO report = new AdvertiseReportVTO();
+		AdvertiseVTO adVto = ad.toVTO();
+		
+		Map<String, Integer> adResult = new HashMap<String, Integer>();
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId());
+		List<AdvertiseDevicesIncome> incomes  =  advertiseDevicesIncomeService.findModelByModelCriteria(mc);
+		int sum = 0;
+		for(AdvertiseDevicesIncome income : incomes){
+			adResult.put(income.getPublish_time(), (int) income.getActual_count());
+			sum +=Integer.parseInt(income.getCash());
+		}
+		adResult.put("sum", sum);
+		
+		AdvertiseBillsVTO billVto =  new AdvertiseBillsVTO();
+		billVto.setExpect(ad.getCash());
+		billVto.setActual(sum);
+		
+		int balance = Integer.parseInt(ad.getCash()) < sum ? Integer.parseInt(ad.getCash()) : Integer.parseInt(ad.getCash()) - sum;
+		billVto.setBalance(balance);
+		report.setAdDetail(adVto);
+		report.setAdResult(adResult);
+		report.setAdBills(billVto);
+		
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(report);
 	}
 }

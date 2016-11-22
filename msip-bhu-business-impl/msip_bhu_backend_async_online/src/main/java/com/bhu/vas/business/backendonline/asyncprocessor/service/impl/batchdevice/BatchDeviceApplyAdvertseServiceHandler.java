@@ -3,7 +3,6 @@ package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchdevi
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.DownCmds;
-import com.bhu.vas.api.helper.AdvertiseHelper;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
@@ -201,12 +199,12 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		mc.createCriteria().andColumnEqualTo("advertiseid", adId).andColumnEqualTo("publish_time", publishTime);
 		List<AdvertiseDevicesIncome> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
 		if(details.isEmpty()){
+			logger.info(String.format("BatchDeviceApplyAdvertseServiceHandler  publish_time [%s]  advertiseid[%s]", publishTime,adId));
 			AdvertiseDevicesIncome income = new AdvertiseDevicesIncome();
 			income.setAdvertiseid(adId);
 			income.setPublish_count(pushlist_count);
 			income.setPublish_time(publishTime);
 			advertiseDevicesIncomeService.insert(income);
 		}
-		
 	}
 }

@@ -1344,7 +1344,7 @@ public class UserWalletUnitFacadeService {
 	/**
 	 * 丰富统计信息
 	 */
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(int uid) {
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(int uid,String beginTime,String endTime) {
 		UcloudMacStatisticsVTO ucloudMacStatisticsVTO = new UcloudMacStatisticsVTO();
 		try {
 			// 折线图信息
@@ -1354,26 +1354,49 @@ public class UserWalletUnitFacadeService {
 			List<String> lineChartIncomeInfo = new ArrayList<String>();
 			// 折线图Y轴（用户数）
 			List<Double> lineChartUserNumInfo = new ArrayList<Double>();
-			// 获取当前日期
-			String startTime = GetDateTime("yyyy-MM-dd", 0);
-			for (int i = 0; i < 30; i++) {
-				// 折线图X轴（日期）
-				lineChartDateInfo.add(getNewDay(startTime, i - 30));
-				double lineChartIncome = userWalletFacadeService
-						.getUserIncomeService()
-						.getEntityDao()
-						.countTotalIncomeByDay(uid,
-								getNewDay(startTime, i - 30));
-				// 折线图Y轴（收益）
-				lineChartIncomeInfo.add(doubleCut2(lineChartIncome, 2));
-				double lineChartUserNum = userWalletFacadeService
-						.getUserIncomeService()
-						.getEntityDao()
-						.countTotalUserNumByDay(uid,
-								getNewDay(startTime, i - 30));
-				// 折线图Y轴（用户数）
-				lineChartUserNumInfo.add(lineChartUserNum);
+			if(StringUtils.isBlank(beginTime)||StringUtils.isBlank(endTime)){
+				// 获取当前日期
+				String startTime = GetDateTime("yyyy-MM-dd", 0);
+				for (int i = 0; i < 30; i++) {
+					// 折线图X轴（日期）
+					lineChartDateInfo.add(getNewDay(startTime, i - 30));
+					double lineChartIncome = userWalletFacadeService
+							.getUserIncomeService()
+							.getEntityDao()
+							.countTotalIncomeByDay(uid,
+									getNewDay(startTime, i - 30));
+					// 折线图Y轴（收益）
+					lineChartIncomeInfo.add(doubleCut2(lineChartIncome, 2));
+					double lineChartUserNum = userWalletFacadeService
+							.getUserIncomeService()
+							.getEntityDao()
+							.countTotalUserNumByDay(uid,
+									getNewDay(startTime, i - 30));
+					// 折线图Y轴（用户数）
+					lineChartUserNumInfo.add(lineChartUserNum);
+				}
+			}else{
+				List<String> timeList= getDaysList(beginTime,endTime);
+				for(int i=timeList.size()-1;i>=0;i--){
+					// 折线图X轴（日期）
+					lineChartDateInfo.add(timeList.get(i));
+					double lineChartIncome = userWalletFacadeService
+							.getUserIncomeService()
+							.getEntityDao()
+							.countTotalIncomeByDay(uid,
+									timeList.get(i));
+					// 折线图Y轴（收益）
+					lineChartIncomeInfo.add(doubleCut2(lineChartIncome, 2));
+					double lineChartUserNum = userWalletFacadeService
+							.getUserIncomeService()
+							.getEntityDao()
+							.countTotalUserNumByDay(uid,
+									timeList.get(i));
+					// 折线图Y轴（用户数）
+					lineChartUserNumInfo.add(lineChartUserNum);
+				}
 			}
+			
 
 			// 折线图X轴（日期）
 			ucloudMacStatisticsVTO.setLineChartDateInfo(lineChartDateInfo);
@@ -1395,6 +1418,27 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 
+	public static List<String> getDaysList(String beginTime,String endTime){
+		List<String> list = new ArrayList<String>();
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		Calendar start = Calendar.getInstance();
+		Calendar end = Calendar.getInstance();
+		list.add(endTime);
+		try {
+			start.setTime(format.parse(beginTime));
+			end.setTime(format.parse(endTime));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		while(end.after(start))
+		{
+			//System.out.println(format.format(start.getTime()));
+			end.add(Calendar.DAY_OF_MONTH,-1);
+			list.add(format.format(end.getTime()).toString());
+		}
+		return list; 
+	}
+	
 	/**
 	 * 获取日期
 	 * 
@@ -1562,9 +1606,9 @@ public class UserWalletUnitFacadeService {
 		 return formater.format(b);
 	}
 	public static void main(String[] args) {
-
-		System.out.println(GetDateTime("yyyy-MM-dd", 0));
-		System.out.println(doubleCut2(2.356,2));
+		System.out.println(getDaysList("2016-11-01", "2016-11-11"));
+		//System.out.println(GetDateTime("yyyy-MM-dd", 0));
+		//System.out.println(doubleCut2(2.356,2));
 	}
 
 	/**

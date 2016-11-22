@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -184,7 +185,6 @@ public class AdvertiseController extends BaseController{
 			ex.printStackTrace();
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
-		
 	}
 	
 	
@@ -212,4 +212,29 @@ public class AdvertiseController extends BaseController{
 				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
 			}
     }
+    
+	@ResponseBody()
+	@RequestMapping(value = "/report", method = {RequestMethod.POST})
+	public void fetchAdvertiseReport(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) int uid,
+			@RequestParam(required = true) String advertiseId
+			) {
+		try{
+			RpcResponseDTO<AdvertiseReportVTO> rpcResult = advertiseRpcService.fetchAdvertiseReport
+					(uid,advertiseId);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+		
+	}
 }

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.DistributorType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
+import com.bhu.vas.api.helper.VapEnumType;
+import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
@@ -775,5 +777,38 @@ public class ChargingFacadeService {
 		return userWifiDeviceFacadeService;
 	}
 	
+	public String fetchWifiDeviceSharedNetworkSSID(String dmac){
+		try{
+			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
+			String ssid = configs.getInnerModel().getPsn().getSsid();
+			if(StringUtils.isEmpty(ssid)){
+				ssid = VapEnumType.SharedNetworkType.SafeSecure.getDefaultSsid();
+			}
+			return ssid;
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return VapEnumType.SharedNetworkType.SafeSecure.getDefaultSsid();
+		}
+	}
+	
+	public int fetchWifiDeviceSharedNetworkUsersRxRate(String dmac){
+		try{
+			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
+			return configs.getInnerModel().getPsn().getUsers_rx_rate();
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return WifiDeviceHelper.SharedNetworkWifi_Default_Users_rx_rate;
+		}
+	}
+	
+	public int fetchWifiDeviceSharedNetworkUsersTxRate(String dmac){
+		try{
+			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
+			return configs.getInnerModel().getPsn().getUsers_tx_rate();
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return WifiDeviceHelper.SharedNetworkWifi_Default_Users_tx_rate;
+		}
+	}
 	
 }

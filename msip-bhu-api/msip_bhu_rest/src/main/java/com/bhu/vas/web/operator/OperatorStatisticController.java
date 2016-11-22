@@ -76,7 +76,7 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 				return;
 			}
 	    	try{
-	    		RpcResponseDTO<UcloudMacStatisticsVTO> rpcResult = userWalletRpcService.richStatistics(uid);
+	    		RpcResponseDTO<UcloudMacStatisticsVTO> rpcResult = userWalletRpcService.richStatistics(uid,beginTime,endTime);
 	    		if(!rpcResult.hasError()){
 	    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 	    		}else{
