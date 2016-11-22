@@ -178,4 +178,9 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 		return deviceRestRpcService.fetchDevicesPresent(dmacs);
 	}
 
+	@Override
+	public RpcResponseDTO<Boolean> deviceInfoUpdate(List<String> dmacs, String industry, String merchant_name){
+		return deviceRestRpcService.deviceInfoUpdate(dmacs, industry, merchant_name);
+	}
+
 }

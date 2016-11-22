@@ -923,6 +923,8 @@ public class UserDeviceUnitFacadeService {
 			ret.setLast_logout_at((wifiDevice.getLast_logout_at()  == null)?StringHelper.MINUS_STRING_GAP:DateTimeHelper.formatDate(wifiDevice.getLast_logout_at(), DateTimeHelper.FormatPattern0));
 			ret.setLast_reg_at((wifiDevice.getLast_reged_at()  == null)?StringHelper.MINUS_STRING_GAP:DateTimeHelper.formatDate(wifiDevice.getLast_reged_at(), DateTimeHelper.FormatPattern0));
 			ret.setDod(wifiDevice.getUptime());	
+			ret.setIndustry(wifiDevice.getIndustry());
+			ret.setMerchant_name(wifiDevice.getMerchant_name());
 			
 			if(wifiDeviceSetting != null){
 				WifiDeviceSettingDTO psn = wifiDeviceSetting.getInnerModel();
