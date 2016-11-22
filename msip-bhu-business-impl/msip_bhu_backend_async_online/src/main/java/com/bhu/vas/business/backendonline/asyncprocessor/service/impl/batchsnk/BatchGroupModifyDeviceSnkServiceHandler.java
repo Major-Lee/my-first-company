@@ -64,7 +64,7 @@ public class BatchGroupModifyDeviceSnkServiceHandler implements IMsgHandlerServi
 						try{
 							owner = Integer.parseInt(doc.getD_snk_owner());
 						}catch(Exception e){
-							logger.info(String.format("parse [%s] to int error", doc.getD_snk_owner()));
+							logger.info(String.format("parse [%s][%s] to int error", doc.getId(), doc.getD_snk_owner()));
 						}
 						
 						if(owner != applyDto.getUid()) //非属于自己的设备portal，不允许修改
