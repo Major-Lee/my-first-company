@@ -42,6 +42,8 @@ public class DeviceConfigDetailVTO implements java.io.Serializable{
 	//在线时长
 	private String dod;
 
+	private String industry;
+	private String merchant_name;
 	//双频合一
 	private String rf_2in1;
 	//admin管理密码
@@ -219,5 +221,17 @@ public class DeviceConfigDetailVTO implements java.io.Serializable{
 	}
 	public void setRadios(List<URouterDeviceConfigRadioVTO> radios) {
 		this.radios = radios;
+	}
+	public String getIndustry() {
+		return industry;
+	}
+	public void setIndustry(String industry) {
+		this.industry = industry;
+	}
+	public String getMerchant_name() {
+		return merchant_name;
+	}
+	public void setMerchant_name(String merchant_name) {
+		this.merchant_name = merchant_name;
 	}
 }

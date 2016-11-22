@@ -46,6 +46,7 @@
     <result property="uptime" column="uptime"/>
     <result property="tfcard_usage" column="tfcard_usage"/>
     <result property="industry" column="industry"/>
+    <result property="merchant_name" column="merchant_name"/>
 	<result property="last_start_at" column="last_start_at"/>
     <result property="last_reged_at" column="last_reged_at"/>
     <result property="last_logout_at" column="last_logout_at"/>
@@ -103,6 +104,7 @@
 	    	uptime,
 	    	tfcard_usage,
 	    	industry,
+	    	merchant_name,
 	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
@@ -152,6 +154,7 @@
 	    	uptime,
 	    	tfcard_usage,
 	    	industry,
+	    	merchant_name,
 	    	last_start_at,
 	    	last_reged_at,
 	    	last_logout_at,
@@ -202,6 +205,7 @@
 	    	#{uptime},
 	    	#{tfcard_usage},
 	    	#{industry},
+	    	#{merchant_name},
 	    	#{last_start_at},
 	    	#{last_reged_at},
 	    	#{last_logout_at},
@@ -250,6 +254,7 @@
 	    	uptime = #{uptime},
 	    	tfcard_usage = #{tfcard_usage},
 	    	industry = #{industry},
+	    	merchant_name = #{merchant_name},
 	    	last_start_at = #{last_start_at},
 	    	last_reged_at = #{last_reged_at},
 	    	last_logout_at = #{last_logout_at},

@@ -95,6 +95,9 @@ public class WifiDevice extends BaseStringModel{
 	private String channel_lv2;
 	/*End By Lapaus 2016-09-13 add field channel_lv1 and channel_lv2 */
 	
+	//商户名称
+	private String merchant_name;
+	
 	//最后一次登出时间
 	private Date last_logout_at;
 	//第一次设备注册时间
@@ -496,5 +499,14 @@ public class WifiDevice extends BaseStringModel{
 	public void setChannel_lv2(String channel_lv2) {
 		this.channel_lv2 = channel_lv2;
 	}
+
+	public String getMerchant_name() {
+		return merchant_name;
+	}
+
+	public void setMerchant_name(String merchant_name) {
+		this.merchant_name = merchant_name;
+	}
+	
 	
 }

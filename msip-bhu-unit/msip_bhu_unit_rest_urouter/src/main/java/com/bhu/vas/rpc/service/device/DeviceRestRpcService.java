@@ -340,4 +340,16 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	
+	public RpcResponseDTO<Boolean> deviceInfoUpdate(List<String> dmacs, String industry, String merchant_name){
+		logger.info(String.format("DeviceRestRPC deviceInfoUpdate invoke industry[%s],merchant_name[%s], dmacs[%s]", industry, merchant_name, dmacs));
+		try{
+			return deviceRestBusinessFacadeService.deviceInfoUpdate(dmacs, industry, merchant_name);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC deviceInfoUpdate exception exmsg[%s]",ex.getMessage()), ex);
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

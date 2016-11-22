@@ -14,8 +14,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import redis.clients.jedis.Tuple;
-
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
@@ -24,6 +22,7 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -69,6 +68,8 @@ import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+
+import redis.clients.jedis.Tuple;
 
 /**
  * device Rest RPC组件的业务service
@@ -497,6 +498,23 @@ public class DeviceRestBusinessFacadeService {
 				index ++;
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
+		}
+	}
+	
+	
+	public RpcResponseDTO<Boolean> deviceInfoUpdate(List<String> dmacs, String industry, String merchant_name){
+		try{
+			List<WifiDevice> list = wifiDeviceService.findByIds(dmacs);
+			if(list != null && list.size() > 0){
+				for(WifiDevice dev:list){
+					dev.setIndustry(industry);
+					dev.setMerchant_name(merchant_name);
+				}
+				wifiDeviceService.updateAll(list);
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());
 		}
