@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
@@ -1723,14 +1724,16 @@ public class UserWalletUnitFacadeService {
 					rewardVTO.setDescription(i.getDescription());
 					rewardVTO.setMac(i.getMac());
 					rewardVTO.setRole(i.getRole());
-					
 					Order order=orderService.getById(i.getOrderid());
-					rewardVTO.setDealCash(order.getAmount());
-					rewardVTO.setUmac(order.getUmac());
-					String rate=String.valueOf((int)(cash*100/Double.valueOf(order.getAmount())));
-					rewardVTO.setRate(rate);
-					
-					rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
+					if(order!=null){
+						rewardVTO.setDealCash(order.getAmount());
+						rewardVTO.setUmac(order.getUmac());
+						String rate=String.valueOf((int)(cash*100/Double.valueOf(order.getAmount())));
+						rewardVTO.setRate(rate);
+						
+						rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
+					}
+					retDtos = new ArrayList<UserWalletRewardVTO>();
 					retDtos.add(rewardVTO);
 				}
 			}
