@@ -181,7 +181,7 @@ public class UserDeviceUnitFacadeService {
 			 */
 			userWifiDeviceFacadeService.insertUserWifiDevice(mac, uid, deviceName);
 
-			deviceFacadeService.updateDeviceIndustry(mac, null);
+//			deviceFacadeService.updateDeviceIndustry(mac, null);
 
 			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, user, deviceName, null);
 
@@ -215,7 +215,7 @@ public class UserDeviceUnitFacadeService {
 		 */
 		if (userWifiDeviceService.deleteById(mac) > 0) {
 
-			deviceFacadeService.updateDeviceIndustry(mac, null);
+//			deviceFacadeService.updateDeviceIndustry(mac, null);
 			wifiDeviceStatusIndexIncrementService.bindUserUpdIncrement(mac, null, null, null);
 			deliverMessageService.sendUserDeviceDestoryActionMessage(uid, mac);
 		} /*
