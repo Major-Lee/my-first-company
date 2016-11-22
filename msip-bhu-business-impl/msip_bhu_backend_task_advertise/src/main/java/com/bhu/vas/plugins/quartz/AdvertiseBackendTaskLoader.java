@@ -71,7 +71,7 @@ public class AdvertiseBackendTaskLoader {
 	//需要持续发布的广告再次发布
 	public void OnpublicContinueApply(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLessThan("start", afterDate).andColumnGreaterThan("end", afterDate).andColumnEqualTo("sign", StringHelper.FALSE).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
+		mc.createCriteria().andColumnLessThan("start", afterDate).andColumnGreaterThan("end", afterDate).andColumnEqualTo("sign", false).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
 		if(!ads.isEmpty()){
 			logger.info("ready applied ad sum" + ads.size());

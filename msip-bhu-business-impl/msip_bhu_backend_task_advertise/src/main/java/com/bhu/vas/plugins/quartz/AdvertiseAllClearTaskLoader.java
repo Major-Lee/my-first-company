@@ -16,7 +16,6 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 public class AdvertiseAllClearTaskLoader {
@@ -49,7 +48,7 @@ public class AdvertiseAllClearTaskLoader {
 		mc.createCriteria().andColumnLessThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
-			logger.info("ready invalid ad sum: " + lists.size());
+			logger.info("devicesDomainClear  ready invalid ad sum: " + lists.size());
 			List<String> adIds = new ArrayList<String>();
 			for(Advertise ad : lists){
 				adIds.add(ad.getId());
@@ -62,9 +61,10 @@ public class AdvertiseAllClearTaskLoader {
 	//把需要持续发布的广告标志位重置
 	public void initOnpublishSign(){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType()).andColumnEqualTo("sign",StringHelper.TRUE);
+		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType()).andColumnEqualTo("sign",true);
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
 		for(Advertise ad :ads){
+			System.out.println("initOnpublishSign id :" +ad.getId());
 			ad.setSign(false);
 		}
 		advertiseService.updateAll(ads);
