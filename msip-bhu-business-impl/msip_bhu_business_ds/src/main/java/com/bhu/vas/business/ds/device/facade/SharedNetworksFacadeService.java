@@ -543,6 +543,7 @@ public class SharedNetworksFacadeService {
 		//如果template不存在则返回的dto中是列表的第一个值
 		template = configDto.getTemplate();
 		for(String mac:macs){
+			result.clear();
 			String mac_lowercase = mac.toLowerCase();
 			WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
 			if(sharednetwork == null){
@@ -582,11 +583,11 @@ public class SharedNetworksFacadeService {
 					;
 				}*/
 			}
+			if(callback != null){
+				//触发整合表字段上的ssid和json对象中的ssid
+				callback.notify(sharednetwork.getInnerModel().getPsn(), result);
+			}
 		}
-		if(callback != null){
-			callback.notify(configDto, result);
-		}
-		//return result;
 	}
 	
 	/**
