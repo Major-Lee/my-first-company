@@ -103,7 +103,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			long count=0;
 			try {
-				AdDevicePositionVTO vto = fetchAdvertiseOccupy(format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern5,province, city, district);
+				AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern5,province, city, district);
 				List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
 				if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
 					for(AdvertiseOccupiedVTO i:advertiseOccupiedVTOs){
@@ -166,7 +166,7 @@ public class AdvertiseUnitFacadeService {
 		String start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
 		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17);
 		
-		AdDevicePositionVTO vto = fetchAdvertiseOccupy(start,end,DateTimeHelper.FormatPattern5,province, city, district);
+		AdDevicePositionVTO vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district);
 		if(StringUtils.isNoneBlank(city)){
 			vto.setPositions(WifiDevicePositionListService.getInstance().fetchCity(city));
 		}else if(StringUtils.isNoneBlank(province)){
@@ -396,8 +396,7 @@ public class AdvertiseUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	
-	public AdDevicePositionVTO fetchAdvertiseOccupy(String start,String end,String pattern,String province,String city,String district) throws ParseException {
-		System.out.println("fetchAdvertiseOccupy " +start+"|"+end);
+	public AdDevicePositionVTO fetchAdvertiseOccupy(int index,String start,String end,String pattern,String province,String city,String district) throws ParseException {
 		AdDevicePositionVTO positionVto = new AdDevicePositionVTO();
 //		String start = null;
 //		String end = null;
@@ -414,7 +413,7 @@ public class AdvertiseUnitFacadeService {
 		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
 		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
 		
-		for(int i=0; i<=days; i++){
+		for(int i=index; i<=days; i++){
 			String time = null;
 			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
 			Date times = format.parse(time);
