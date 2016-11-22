@@ -95,7 +95,10 @@ public class ChargingUnitFacadeService {
 		try{
 			User operUser = chargingFacadeService.getUserService().getById(uid);
 			
-			UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
+			if(UserType.SelfCmdUser.getIndex() != operUser.getUtype() && UserType.URBANOPERATORS.getIndex() != operUser.getUtype())
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_TYPE_NOTMATCHED,new String[]{""});
+
+//			UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
 			
 			BatchImportVTO ret = 
 					chargingFacadeService.doOpsBatchImportCreate(uid, opsid, countrycode, mobileno,distributor_uid, distributor_l2_uid, distributor_type,
