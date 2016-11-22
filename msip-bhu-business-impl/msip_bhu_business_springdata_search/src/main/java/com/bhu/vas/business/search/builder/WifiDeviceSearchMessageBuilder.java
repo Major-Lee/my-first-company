@@ -291,10 +291,16 @@ public class WifiDeviceSearchMessageBuilder {
 			pack_must.addChildSearchCondtions(sc_d_city);
 		}
 		
-		if(StringUtils.isNotEmpty(d_city)){
+		if(StringUtils.isNotEmpty(d_distrcy)){
 			SearchCondition sc_d_distrcy = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
 					Field.D_DISTRICT.getName(), SearchConditionPattern.StringEqual.getPattern(), d_distrcy);
 			pack_must.addChildSearchCondtions(sc_d_distrcy);
+		}
+		
+		if(StringUtils.isNotEmpty(d_city) || StringUtils.isNotEmpty(d_distrcy) || StringUtils.isNotEmpty(d_province)){
+			SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+					Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), "TU");
+			pack_must.addChildSearchCondtions(sc_d_dut);
 		}
 		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
