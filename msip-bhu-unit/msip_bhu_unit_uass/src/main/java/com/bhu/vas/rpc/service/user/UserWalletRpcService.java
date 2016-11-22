@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
@@ -176,6 +177,14 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	public RpcResponseDTO<OpertorUserIncomeVTO> operatorMonIncome(Integer uid) {
 		logger.info(String.format("operatorMonIncome with uid[%s]",uid));
 		return userWalletUnitFacadeService.operatorMonIncome(uid);
+	}
+
+	@Override
+	public RpcResponseDTO<TailPage<UserWalletRewardVTO>> rewardUserWalletPages(
+			Integer uid, String mac, String role, long start_created_ts,
+			long end_created_ts, int pageNo, int pageSize) {
+		logger.info(String.format("rewardUserWalletPages with uid[%s] mac[%s] role[%s] start_created_ts[%s] end_created_ts[%s] pageNo[%s] pageSize[%s]",uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize));
+		return userWalletUnitFacadeService.rewardUserWalletPages(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
 	}
 	
 }

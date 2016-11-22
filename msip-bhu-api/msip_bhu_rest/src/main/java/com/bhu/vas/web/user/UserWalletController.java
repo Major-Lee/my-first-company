@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
+import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
@@ -277,6 +278,42 @@ public class UserWalletController extends BaseController{
     			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     		}
     	}
+    
+    /**
+	 * 根据筛选参数查询打赏钱包日志分页列表
+	 * @param request
+	 * @param response
+	 * @param uid 用户id
+	 * @param mac 设备mac
+	 * @param umac 支付订单的用户mac
+	 * @param status 订单状态 默认发货完成
+	 * @param pageNo 页码
+	 * @param pageSize 每页数量
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/reward/query/pages",method={RequestMethod.GET,RequestMethod.POST})
+	public void reward_query_pages(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = false) String mac,
+			@RequestParam(required = false) String role,
+			@RequestParam(required = false, defaultValue = "0") long start_created_ts,
+			@RequestParam(required = false, defaultValue = "0") long end_created_ts,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
+			) {
+
+		RpcResponseDTO<TailPage<UserWalletRewardVTO>> rpcResult = userWalletRpcService.rewardUserWalletPages(uid, mac, role, 
+				start_created_ts, end_created_ts, pageNo, pageSize);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+    
+    
     
 	@ResponseBody()
 	@RequestMapping(value="/withdraw/detail", method={RequestMethod.GET,RequestMethod.POST})

@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -23,6 +24,7 @@ import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.OAuthType;
@@ -76,6 +78,7 @@ import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
@@ -1701,5 +1704,34 @@ public class UserWalletUnitFacadeService {
 			return RpcResponseDTOBuilder
 					.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
+	}
+
+	public RpcResponseDTO<TailPage<UserWalletRewardVTO>> rewardUserWalletPages(
+			Integer uid, String mac, String role, long start_created_ts,
+			long end_created_ts, int pageNo, int pageSize) {
+			List<UserWalletLog> logs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
+			int count=0;
+			List<UserWalletRewardVTO> retDtos = Collections.emptyList();
+			UserWalletRewardVTO rewardVTO=null;
+			if(logs!=null){
+				count=logs.size();
+				for(UserWalletLog i:logs){
+					rewardVTO=new UserWalletRewardVTO();
+					double cash=Double.valueOf(i.getCash());
+					rewardVTO.setCash(String.valueOf(cash));
+					rewardVTO.setDealMethod(i.getTranstype_desc());
+					rewardVTO.setDealTime(i.getUpdated_at().toString());
+					rewardVTO.setDescription(i.getDescription());
+					rewardVTO.setMac(i.getMac());
+					rewardVTO.setRole(i.getRole());
+					Order order=orderService.getById(i.getOrderid());
+					rewardVTO.setDealCash(order.getAmount());
+					rewardVTO.setUmac(order.getUmac());
+					rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
+					retDtos.add(rewardVTO);
+				}
+			}
+			TailPage<UserWalletRewardVTO> returnRet = new CommonPage<UserWalletRewardVTO>(pageNo, pageSize, count, retDtos);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 	}
 }
