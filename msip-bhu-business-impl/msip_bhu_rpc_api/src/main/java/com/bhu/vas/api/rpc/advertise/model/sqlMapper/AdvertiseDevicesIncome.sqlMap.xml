@@ -167,7 +167,7 @@
 	  	</where>
 	</delete>
 	
-	<select id="pkSelectByModelCriteria" resultType="String">
+	<select id="pkSelectByModelCriteria" resultType="java.lang.Integer">
 		select id from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 
 	     	<include refid="model_CRITERIA_SQL_GenCondition" />
