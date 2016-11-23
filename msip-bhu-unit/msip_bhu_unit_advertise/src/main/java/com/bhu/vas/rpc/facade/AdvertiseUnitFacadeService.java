@@ -448,7 +448,7 @@ public class AdvertiseUnitFacadeService {
 		int sum = 0;
 		for(AdvertiseDevicesIncome income : incomes){
 			adResult.put(income.getPublish_time(), (int) income.getActual_count());
-			sum +=income.getActual_count();
+			sum +=Integer.parseInt(income.getCash());
 		}
 		adResult.put("sum", sum);
 		
