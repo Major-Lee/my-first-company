@@ -1709,14 +1709,15 @@ public class UserWalletUnitFacadeService {
 	public RpcResponseDTO<TailPage<UserWalletRewardVTO>> rewardUserWalletPages(
 			Integer uid, String mac, String role, long start_created_ts,
 			long end_created_ts, int pageNo, int pageSize) {
+		System.out.println(uid+"|||"+mac+"|||"+role+"|||"+start_created_ts+"|||"+end_created_ts+"|||"+pageNo+"|||"+pageSize);
 			List<UserWalletLog> logs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
 			int count=0;
 			List<UserWalletRewardVTO> retDtos = Collections.emptyList();
-			UserWalletRewardVTO rewardVTO=null;
 			if(logs!=null){
+				retDtos = new ArrayList<UserWalletRewardVTO>();
 				count=logs.size();
 				for(UserWalletLog i:logs){
-					rewardVTO=new UserWalletRewardVTO();
+					UserWalletRewardVTO rewardVTO=new UserWalletRewardVTO();
 					double cash=Double.valueOf(i.getCash());
 					rewardVTO.setCash(String.valueOf(cash));
 					rewardVTO.setDealMethod(i.getTranstype_desc());
@@ -1735,7 +1736,6 @@ public class UserWalletUnitFacadeService {
 						
 						rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
 					}
-					retDtos = new ArrayList<UserWalletRewardVTO>();
 					retDtos.add(rewardVTO);
 				}
 			}
