@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardListVTO;
-import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
@@ -12,6 +11,7 @@ import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
 import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletDetailPagesVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
@@ -160,6 +160,9 @@ public interface IUserWalletRpcService {
 	public RpcResponseDTO<UserWalletRewardListVTO> rewardUserWalletPages(
 			Integer uid, String mac, String role, long start_created_ts,
 			long end_created_ts, int pageNo, int pageSize);
+
+	public RpcResponseDTO<UserWalletDetailPagesVTO> walletDetailPages(int uid, String transmode, String transtype,
+			int pageNo, int pageSize);
 	
 	/**
 	 * 通过用户id获取其绑定第三方转账帐号

@@ -19,6 +19,7 @@ import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
 import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletDetailPagesVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
@@ -186,6 +187,13 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 			long end_created_ts, int pageNo, int pageSize) {
 		logger.info(String.format("rewardUserWalletPages with uid[%s] mac[%s] role[%s] start_created_ts[%s] end_created_ts[%s] pageNo[%s] pageSize[%s]",uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize));
 		return userWalletUnitFacadeService.rewardUserWalletPages(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
+	}
+
+	@Override
+	public RpcResponseDTO<UserWalletDetailPagesVTO> walletDetailPages(int uid, String transmode, String transtype,
+			int pageNo, int pageSize) {
+		logger.info(String.format("walletDetailPages with uid[%s] transmode[%s] transtype[%s] pn[%s] ps[%s]",uid,transmode,transtype,pageNo,pageSize));
+		return userWalletUnitFacadeService.walletDetailPages(uid, transmode, transtype, pageNo, pageSize);
 	}
 	
 }

@@ -1364,4 +1364,11 @@ public class UserWalletFacadeService{
 		mc.setOrderByClause("updated_at desc");
 		return userWalletLogService.countByModelCriteria(mc);
 	}
+	public String fetchUserWithdrawSuccessCashSum(int uid) {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("uid", uid);
+		return userWalletLogService.getEntityDao().getSqlSessionMasterTemplate().
+				selectOne(UserWalletWithdrawApply.class.getName()+".withdrawSuccessCashSum", map);
+	}
+
 }

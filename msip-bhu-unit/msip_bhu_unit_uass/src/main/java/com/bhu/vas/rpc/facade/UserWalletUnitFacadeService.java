@@ -54,6 +54,7 @@ import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
 import com.bhu.vas.api.vto.statistics.RankSingle;
 import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
+import com.bhu.vas.api.vto.wallet.UserWalletDetailPagesVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogVTO;
@@ -119,67 +120,71 @@ public class UserWalletUnitFacadeService {
 	@Resource
 	private UserSharedealDistributorViewService userSharedealDistributorViewService;
 	private final Logger logger = LoggerFactory.getLogger(UserWalletUnitFacadeService.class);
+	private TailPage<UserWalletLogVTO> fetchPagesUserWalletlogs(int uid, String transmode, String transtype, int pageNo,
+			int pageSize){
+		UWalletTransMode tmode = null;
+		if (StringUtils.isNotEmpty(transmode)) {
+			tmode = UWalletTransMode.fromKey(transmode);
+		}
+
+		UWalletTransType ttype = null;
+		if (StringUtils.isNotEmpty(transtype)) {
+			ttype = UWalletTransType.fromKey(transtype);
+		}
+		TailPage<UserWalletLog> pages = userWalletFacadeService
+				.pageUserWalletlogs(uid, tmode, ttype, pageNo, pageSize);
+		List<UserWalletLogVTO> vtos = new ArrayList<>();
+		if (!pages.isEmpty()) {
+			List<Integer> uids = new ArrayList<>();
+			for (UserWalletLog log : pages.getItems()) {
+				uids.add(log.getUid());
+			}
+			List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
+			int index = 0;
+			for (UserWalletLog log : pages.getItems()) {
+				User user = users.get(index);
+				// String payment_type = StringUtils.EMPTY;
+				// String description = StringUtils.EMPTY;
+				/*
+				 * ThirdpartiesPaymentType paymentType = null;
+				 * if(BusinessEnumType
+				 * .UWalletTransMode.CashPayment.getKey().
+				 * equals(log.getTransmode()) &&
+				 * BusinessEnumType.UWalletTransType
+				 * .Cash2Realmoney.getKey().equals(log.getTranstype()) &&
+				 * StringUtils.isNotEmpty(log.getOrderid())){
+				 * UserWalletWithdrawApply apply =
+				 * userWalletFacadeService.getUserWalletWithdrawApplyService
+				 * ().getById(log.getOrderid()); paymentType =
+				 * ThirdpartiesPaymentType.fromType(apply!= null
+				 * ?apply.getPayment_type():StringUtils.EMPTY); String
+				 * payment_type = apply!= null
+				 * ?apply.getPayment_type():StringUtils.EMPTY;
+				 * if(StringUtils.isNotEmpty(payment_type)){
+				 * if(ThirdpartiesPaymentType.Alipay.equals(payment_type)){
+				 * description =
+				 * ThirdpartiesPaymentType.Alipay.getDescription(); }else
+				 * if(ThirdpartiesPaymentType.Weichat.equals(payment_type))
+				 * { description =
+				 * ThirdpartiesPaymentType.Weichat.getDescription(); } } }
+				 */
+				vtos.add(log.toUserWalletLogVTO(
+						user != null ? user.getMobileno()
+								: StringUtils.EMPTY,
+						user != null ? user.getNick() : StringUtils.EMPTY));
+				index++;
+			}
+		}
+		return new CommonPage<UserWalletLogVTO>(
+				pages.getPageNumber(), pages.getPageSize(),
+				pages.getTotalItemsCount(), vtos);
+		
+	}
 	public RpcResponseDTO<TailPage<UserWalletLogVTO>> pageUserWalletlogs(
 			int uid, String transmode, String transtype, int pageNo,
 			int pageSize) {
 		try {
-			UWalletTransMode tmode = null;
-			if (StringUtils.isNotEmpty(transmode)) {
-				tmode = UWalletTransMode.fromKey(transmode);
-			}
-
-			UWalletTransType ttype = null;
-			if (StringUtils.isNotEmpty(transtype)) {
-				ttype = UWalletTransType.fromKey(transtype);
-			}
-			TailPage<UserWalletLog> pages = userWalletFacadeService
-					.pageUserWalletlogs(uid, tmode, ttype, pageNo, pageSize);
-			TailPage<UserWalletLogVTO> result_pages = null;
-			List<UserWalletLogVTO> vtos = new ArrayList<>();
-			if (!pages.isEmpty()) {
-				List<Integer> uids = new ArrayList<>();
-				for (UserWalletLog log : pages.getItems()) {
-					uids.add(log.getUid());
-				}
-				List<User> users = userWalletFacadeService.getUserService().findByIds(uids, true, true);
-				int index = 0;
-				for (UserWalletLog log : pages.getItems()) {
-					User user = users.get(index);
-					// String payment_type = StringUtils.EMPTY;
-					// String description = StringUtils.EMPTY;
-					/*
-					 * ThirdpartiesPaymentType paymentType = null;
-					 * if(BusinessEnumType
-					 * .UWalletTransMode.CashPayment.getKey().
-					 * equals(log.getTransmode()) &&
-					 * BusinessEnumType.UWalletTransType
-					 * .Cash2Realmoney.getKey().equals(log.getTranstype()) &&
-					 * StringUtils.isNotEmpty(log.getOrderid())){
-					 * UserWalletWithdrawApply apply =
-					 * userWalletFacadeService.getUserWalletWithdrawApplyService
-					 * ().getById(log.getOrderid()); paymentType =
-					 * ThirdpartiesPaymentType.fromType(apply!= null
-					 * ?apply.getPayment_type():StringUtils.EMPTY); String
-					 * payment_type = apply!= null
-					 * ?apply.getPayment_type():StringUtils.EMPTY;
-					 * if(StringUtils.isNotEmpty(payment_type)){
-					 * if(ThirdpartiesPaymentType.Alipay.equals(payment_type)){
-					 * description =
-					 * ThirdpartiesPaymentType.Alipay.getDescription(); }else
-					 * if(ThirdpartiesPaymentType.Weichat.equals(payment_type))
-					 * { description =
-					 * ThirdpartiesPaymentType.Weichat.getDescription(); } } }
-					 */
-					vtos.add(log.toUserWalletLogVTO(
-							user != null ? user.getMobileno()
-									: StringUtils.EMPTY,
-							user != null ? user.getNick() : StringUtils.EMPTY));
-					index++;
-				}
-			}
-			result_pages = new CommonPage<UserWalletLogVTO>(
-					pages.getPageNumber(), pages.getPageSize(),
-					pages.getTotalItemsCount(), vtos);
+			TailPage<UserWalletLogVTO> result_pages = fetchPagesUserWalletlogs(uid, transmode, transtype, pageNo, pageSize);
 			return RpcResponseDTOBuilder
 					.builderSuccessRpcResponse(result_pages);
 		} catch (BusinessI18nCodeException bex) {
@@ -1759,5 +1764,30 @@ public class UserWalletUnitFacadeService {
 			listVTO.setTotalCash(doubleCut2(totalCash,2));
 			listVTO.setTotalDealCash(doubleCut2(totalDealCash,2));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(listVTO);
+	}
+	public RpcResponseDTO<UserWalletDetailPagesVTO> walletDetailPages(int uid, String transmode, String transtype,
+			int pageNo, int pageSize) {
+		try {
+			UserWalletDetailPagesVTO vto = new UserWalletDetailPagesVTO();
+			TailPage<UserWalletLogVTO> pages = fetchPagesUserWalletlogs(uid, transmode, transtype, pageNo, pageSize);
+			vto.setUid(uid);
+			vto.setPages(pages);
+			vto.setLogs_count(pages.getTotalItemsCount());
+			UserWalletDetailVTO walletDetail = userWalletFacadeService.walletDetail(uid);
+			
+			vto.setVcurrency_total(walletDetail.getVcurrency_total());
+			vto.setCash(walletDetail.getCash()+"");
+			
+			vto.setWithdraw_success_sum(userWalletFacadeService.fetchUserWithdrawSuccessCashSum(uid));
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		} catch (BusinessI18nCodeException bex) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(
+					bex.getErrorCode(), bex.getPayload());
+		} catch (Exception ex) {
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder
+					.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
 	}
 }
