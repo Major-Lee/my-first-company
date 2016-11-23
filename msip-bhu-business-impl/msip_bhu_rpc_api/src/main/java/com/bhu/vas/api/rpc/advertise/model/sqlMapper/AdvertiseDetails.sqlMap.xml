@@ -4,7 +4,7 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails">
 
-  <resultMap id="modelResult" type="advertiseDevicesIncome">
+  <resultMap id="modelResult" type="advertiseDetails">
     <id property="id" column="id"/>
     <result property="advertiseid" column="advertiseid"/>
     <result property="publish_time" column="publish_time"/>
@@ -126,7 +126,7 @@
 		delete from <include refid="modelTableName" /> where id=#{id}
 	</delete>
 	
-	<delete id="delete" parameterType="advertiseDevicesIncome">
+	<delete id="delete" parameterType="advertiseDetails">
 		delete from <include refid="modelTableName" />
 		<where>
 			<if test="id != null">
@@ -134,7 +134,7 @@
 			</if>
 		</where>
 	</delete>
-	<insert id="insert" parameterType="advertiseDevicesIncome"  useGeneratedKeys="true"  keyProperty="id">
+	<insert id="insert" parameterType="advertiseDetails"  useGeneratedKeys="true"  keyProperty="id">
 		insert into <include refid="modelTableName" /> (<include refid="modelColumns" />) values (<include refid="modelInsertValues" />);
 		<!-- 
 		<selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
@@ -143,7 +143,7 @@
 		 -->
 	</insert>
  
-	<update id="update" parameterType="advertiseDevicesIncome">
+	<update id="update" parameterType="advertiseDetails">
 	    update <include refid="modelTableName" /> set <include refid="modelUpdateValues" /> WHERE id = #{id}
 	</update>
 		
