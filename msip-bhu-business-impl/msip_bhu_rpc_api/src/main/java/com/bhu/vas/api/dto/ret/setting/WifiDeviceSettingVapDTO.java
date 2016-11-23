@@ -213,6 +213,7 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 				properties[0] = name;
 				properties[1] = getSpecialRadio();
 				properties[2] = hide_ssid;
+				break;
 			default:
 				properties = builderProperties();
 				break;
