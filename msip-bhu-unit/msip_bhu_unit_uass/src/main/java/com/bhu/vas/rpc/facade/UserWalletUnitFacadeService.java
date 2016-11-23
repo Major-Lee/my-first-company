@@ -1711,17 +1711,16 @@ public class UserWalletUnitFacadeService {
 			long end_created_ts, int pageNo, int pageSize) {
 		System.out.println(uid+"|||"+mac+"|||"+role+"|||"+start_created_ts+"|||"+end_created_ts+"|||"+pageNo+"|||"+pageSize);
 			List<UserWalletLog> logs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
-			int count=0;
+			int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
 			List<UserWalletRewardVTO> retDtos = Collections.emptyList();
 			if(logs!=null){
 				retDtos = new ArrayList<UserWalletRewardVTO>();
-				count=logs.size();
 				for(UserWalletLog i:logs){
 					UserWalletRewardVTO rewardVTO=new UserWalletRewardVTO();
 					double cash=Double.valueOf(i.getCash());
 					rewardVTO.setCash(String.valueOf(cash));
 					rewardVTO.setDealMethod(i.getTranstype_desc());
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					
 					rewardVTO.setDealTime(sdf.format(i.getUpdated_at()));
 					rewardVTO.setDescription(i.getDescription());
