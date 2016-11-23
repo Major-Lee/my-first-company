@@ -29,7 +29,6 @@ import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseSharedealDetailService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
-import com.bhu.vas.push.business.PushService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
@@ -56,8 +55,6 @@ public class AdvertiseSharedealTaskLoader {
 	private AdvertiseSharedealDetailService advertiseSharedealDetailService;
 	@Resource 
 	private UserWalletFacadeService userWalletFacadeService;
-	@Resource 
-	private PushService pushService;
 	@Resource
 	private BusinessWalletCacheService businessWalletCacheService;
 	 
