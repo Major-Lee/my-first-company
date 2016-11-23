@@ -32,7 +32,7 @@ public class AdvertisePaymentTimeOutTaskLoader {
 		for(Advertise ad : ads){
 			if(nowTime - ad.getCreated_at().getTime() > 10*60*1000){
 				ad.setState(BusinessEnumType.AdvertiseType.EscapeOrder.getType());
-				ad.setReject_reason("因支付超时,订单取消");
+				ad.setReject_reason("因支付超时,已经取消本推广订单");
 				updateList.add(ad);
 			}
 		}
