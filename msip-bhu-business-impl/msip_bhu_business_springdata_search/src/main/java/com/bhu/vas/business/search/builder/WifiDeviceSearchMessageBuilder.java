@@ -333,6 +333,11 @@ public class WifiDeviceSearchMessageBuilder {
 			SearchCondition sc_all = SearchCondition.builderSearchConditionWithAll();
 			pack.addChildSearchCondtions(sc_all);
 		}
+		
+		SearchCondition sc_d_dut = SearchCondition.builderSearchCondition(BusinessIndexDefine.WifiDevice.
+				Field.D_DEVICEUNITTYPE.getName(), SearchConditionPattern.StringEqual.getPattern(), "TU");
+		pack.addChildSearchCondtions(sc_d_dut);
+		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack);
 		return scm;
 	}
