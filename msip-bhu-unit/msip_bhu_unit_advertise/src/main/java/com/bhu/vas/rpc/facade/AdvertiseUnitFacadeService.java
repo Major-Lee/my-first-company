@@ -66,7 +66,7 @@ public class AdvertiseUnitFacadeService {
 		this.advertiseService = advertiseService;
 	}
 
-	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
+	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,
 			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end) {
 			Advertise entity=new Advertise();
@@ -153,7 +153,8 @@ public class AdvertiseUnitFacadeService {
 //				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
 //			}
 			advertiseService.insert(entity);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(entity.toVTO());
 	}
 
 	/**

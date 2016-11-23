@@ -54,7 +54,7 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) long end
             ) {
 		try{
-			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.createNewAdvertise
+			RpcResponseDTO<AdvertiseVTO> rpcResult = advertiseRpcService.createNewAdvertise
 					    (uid, image, url,domain, province, city, district,description,title, start, end);
 					if(!rpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));

@@ -1,13 +1,11 @@
 package com.bhu.vas.api.rpc.advertise.iservice;
 
-import java.util.List;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * 
@@ -27,7 +25,7 @@ public interface IAdvertiseRpcService{
 	 * @param end
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> createNewAdvertise(int uid,
+	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,
 			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end);
 
