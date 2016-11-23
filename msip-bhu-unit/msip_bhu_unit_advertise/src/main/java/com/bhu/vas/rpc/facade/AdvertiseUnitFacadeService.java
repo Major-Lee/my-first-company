@@ -29,6 +29,7 @@ import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -120,7 +121,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			entity.setCount(count);
 			int displayNum=(int) (count*1.1);
-			entity.setCash(displayNum*2+"");
+			entity.setCash(displayNum*BusinessRuntimeConfiguration.Advertise_Unit_Price+"");
 			
 			
 			

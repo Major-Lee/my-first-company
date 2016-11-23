@@ -19,6 +19,7 @@ import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -90,7 +91,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 						detail.setActual_count(devices.size());
 						detail.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
 						detail.replaceInnerModels(devices);
-						detail.setCash(devices.size()*2+"");
+						detail.setCash(devices.size()*BusinessRuntimeConfiguration.Advertise_Unit_Price+"");
 						advertiseDevicesIncomeService.update(detail);
 					}else{
 						logger.info("AdvertiseOnPublishDevicesStatisticsLoader details null");
