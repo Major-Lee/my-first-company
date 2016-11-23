@@ -21,7 +21,8 @@ public class AdvertiseFacadeService {
 	public String advertisePayment(String advertiseId){
 		logger.info(String.format("advertisePayment  advertiseId[%s]", advertiseId));
 		Advertise ad = advertiseService.getById(advertiseId);
-		return ad.getCash();
+//		return ad.getCash();
+		return "0.1";
 	}
 	
 	public void advertiseCompletionOfPayment(String advertiseId,String orderId){
