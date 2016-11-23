@@ -17,7 +17,7 @@ import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
-import com.bhu.vas.api.rpc.advertise.model.AdvertiseDevicesIncome;
+import com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails;
 import com.bhu.vas.api.rpc.daemon.iservice.IDaemonRpcService;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
@@ -203,10 +203,10 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("advertiseid", adId).andColumnEqualTo("publish_time", publishTime);
-		List<AdvertiseDevicesIncome> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
+		List<AdvertiseDetails> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
 		if(details.isEmpty()){
 			logger.info(String.format("BatchDeviceApplyAdvertseServiceHandler  publish_time [%s]  advertiseid[%s]", publishTime,adId));
-			AdvertiseDevicesIncome income = new AdvertiseDevicesIncome();
+			AdvertiseDetails income = new AdvertiseDetails();
 			income.setAdvertiseid(adId);
 			income.setPublish_count(pushlist_count);
 			income.setPublish_time(publishTime);

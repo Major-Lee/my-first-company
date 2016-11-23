@@ -6,7 +6,7 @@ import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtIntModel;
 
 
 @SuppressWarnings("serial")
-public class AdvertiseDevicesIncome extends ListJsonExtIntModel<String>{
+public class AdvertiseDetails extends ListJsonExtIntModel<String>{
 
 	private String advertiseid;
 	private String publish_time;

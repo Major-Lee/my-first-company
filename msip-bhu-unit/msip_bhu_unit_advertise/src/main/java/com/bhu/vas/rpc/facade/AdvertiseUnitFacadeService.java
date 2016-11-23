@@ -16,7 +16,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
-import com.bhu.vas.api.rpc.advertise.model.AdvertiseDevicesIncome;
+import com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseBillsVTO;
@@ -444,10 +444,10 @@ public class AdvertiseUnitFacadeService {
 		Map<String, Integer> adResult = new HashMap<String, Integer>();
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId());
-		List<AdvertiseDevicesIncome> incomes  =  advertiseDevicesIncomeService.findModelByModelCriteria(mc);
+		List<AdvertiseDetails> incomes  =  advertiseDevicesIncomeService.findModelByModelCriteria(mc);
 		int sum = 0;
 		int cashSum = 0;
-		for(AdvertiseDevicesIncome income : incomes){
+		for(AdvertiseDetails income : incomes){
 			adResult.put(income.getPublish_time(), (int) income.getActual_count());
 			sum +=income.getActual_count();
 			cashSum +=Integer.parseInt(income.getCash());

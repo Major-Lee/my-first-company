@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
-import com.bhu.vas.api.rpc.advertise.model.AdvertiseDevicesIncome;
+import com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails;
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
@@ -83,10 +83,10 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 					ModelCriteria mc = new ModelCriteria();
 					mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId()).andColumnEqualTo("publish_time", afterDate);
 					logger.info(String.format("AdvertiseOnPublishDevicesStatisticsLoader  publish_time [%s]  advertiseid[%s]", afterDate,ad.getId()));
-					List<AdvertiseDevicesIncome> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
+					List<AdvertiseDetails> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
 					if(!details.isEmpty()){
 						logger.info("AdvertiseOnPublishDevicesStatisticsLoader  details update ");
-						AdvertiseDevicesIncome detail = details.get(0);
+						AdvertiseDetails detail = details.get(0);
 						detail.setActual_count(devices.size());
 						detail.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
 						detail.replaceInnerModels(devices);
