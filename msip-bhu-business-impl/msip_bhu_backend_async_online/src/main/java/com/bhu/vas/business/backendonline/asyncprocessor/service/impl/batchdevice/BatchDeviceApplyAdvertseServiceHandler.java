@@ -167,15 +167,19 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 						sharednetwork.putInnerModel(snk);
 					}else{
 						logger.info(String.format("device is not has psn psn [%s]", mac));
+						continue;
 					}
 				}else{
 					logger.info(String.format("device is not has snk snk [%s]", mac));
+					continue;
 				}
 				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService()
 						.update(sharednetwork);
 
 				WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 				if (wifiDevice == null)
+					continue;
+				if(!wifiDevice.isOnline() || !snk.isOn())
 					continue;
 				// 生成下发指令
 				if(psn !=null){
