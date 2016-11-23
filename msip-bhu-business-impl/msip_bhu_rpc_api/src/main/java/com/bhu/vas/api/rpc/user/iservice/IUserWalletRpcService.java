@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.user.iservice;
 import java.util.Date;
 
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.dto.user.UserWalletRewardListVTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
@@ -156,7 +157,7 @@ public interface IUserWalletRpcService {
 	 * @param pageSize
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<UserWalletRewardVTO>> rewardUserWalletPages(
+	public RpcResponseDTO<UserWalletRewardListVTO> rewardUserWalletPages(
 			Integer uid, String mac, String role, long start_created_ts,
 			long end_created_ts, int pageNo, int pageSize);
 	

@@ -25,6 +25,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
+import com.bhu.vas.api.dto.user.UserWalletRewardListVTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
@@ -1706,12 +1707,14 @@ public class UserWalletUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<TailPage<UserWalletRewardVTO>> rewardUserWalletPages(
+	public RpcResponseDTO<UserWalletRewardListVTO> rewardUserWalletPages(
 			Integer uid, String mac, String role, long start_created_ts,
 			long end_created_ts, int pageNo, int pageSize) {
 		System.out.println(uid+"|||"+mac+"|||"+role+"|||"+start_created_ts+"|||"+end_created_ts+"|||"+pageNo+"|||"+pageSize);
 			List<UserWalletLog> logs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
-			int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
+			List<UserWalletLog> totallogs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,0,0);
+			int count=0;
+			//int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
 			List<UserWalletRewardVTO> retDtos = Collections.emptyList();
 			if(logs!=null){
 				retDtos = new ArrayList<UserWalletRewardVTO>();
@@ -1738,7 +1741,23 @@ public class UserWalletUnitFacadeService {
 					retDtos.add(rewardVTO);
 				}
 			}
+			double totalDealCash=0;
+			double totalCash=0;
+			if(totallogs!=null){
+				count=totallogs.size();
+				for(UserWalletLog i:totallogs){
+					totalCash+=Double.valueOf(i.getCash());
+					Order order=orderService.getById(i.getOrderid());
+					if(order!=null){
+						totalDealCash+=Double.valueOf(order.getAmount());
+					}
+				}
+			}
 			TailPage<UserWalletRewardVTO> returnRet = new CommonPage<UserWalletRewardVTO>(pageNo, pageSize, count, retDtos);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
+			UserWalletRewardListVTO listVTO=new UserWalletRewardListVTO();
+			listVTO.setTailPage(returnRet);
+			listVTO.setTotalCash(doubleCut2(totalCash,2));
+			listVTO.setTotalDealCash(doubleCut2(totalDealCash,2));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(listVTO);
 	}
 }
