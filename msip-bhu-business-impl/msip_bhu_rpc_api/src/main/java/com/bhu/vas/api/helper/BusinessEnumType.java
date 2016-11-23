@@ -309,6 +309,8 @@ public class BusinessEnumType {
 		PurchaseGoodsUsedV("PGV","虚拟币购买道具"),
 		PurchaseGoodsUsedC("PGC","零钱购买道具"),
 		Cash2Realmoney("C2M","零钱提现"),
+		Advertise2C("A2C",	 "全城热播"),
+		Advertise2O("A2O",	 "全城退费"),
 		;
 		
 		private String key;
@@ -364,6 +366,8 @@ public class BusinessEnumType {
 		CashRollbackPayment("CRP","零钱支付（Rollback）"),
 		VCurrencyPayment("VCP","虎钻支付"),
 		SharedealPayment("SDP","收益分成"),
+		Refund("RFD","退费"),
+
 		/*Recharge2V("R2V","充值购买虎钻"),
 		Recharge2C("R2C","充值现金"),
 		Cash2C("C2C","现金购买虎钻"),
@@ -503,6 +507,7 @@ public class BusinessEnumType {
 		//DeliverPrepared(6,"准备发货状态","系统通知应用发货失败时更新为此状态"),
 		//Delivering(9,"发货中状态",""),
 		DeliverCompleted(10,"发货完成状态","系统通知应用发货成功时更新为此状态"),
+		SharedealStarted(99,"分成开始状态","系统开始分成时更新为此状态"),//一笔广告订单，需要给多个uid分成
 		SharedealCompleted(100,"分成完成状态","系统分成完成时更新为此状态"),
 		;
 		private Integer key;
@@ -908,6 +913,7 @@ public class BusinessEnumType {
 	public static String unknownPaymentType = "未知支付";
 	public static String templateRedpacketPaymentDesc = "通过%s%s打赏";
 	public static String templateReChargingRealmoney2VCurrencyPaymentDesc = "通过%s%s虎钻充值";
+	public static String advertiseSharedealDesc = "全城热播分成";
 	/**
 	 * 订单的用户持有的设备类型
 	 * @author tangzichao

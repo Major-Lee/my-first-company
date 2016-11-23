@@ -223,7 +223,23 @@ public class UserWalletFacadeService{
 		userWalletService.update(uwallet);
 		this.doWalletLog(uid, orderid,transMode, UWalletTransType.Recharge2C,StringUtils.EMPTY, cash, cash,0d, desc);*/
 	}
+
 	
+	/**
+	 * 广告退费
+	 * 
+	 * @param orderid 可能是充值订单id，也可能是第三方相关的orderid
+	 */
+	public int advertiseRefundToUserWallet(int uid,String orderid, double cash,String desc){
+		logger.info(String.format("advertiseRefundToUserWallet uid[%s] orderid[%s] cash[%s] desc[%s]",uid, orderid, cash,desc));
+		UserValidateServiceHelper.validateUser(uid,this.userService);
+		return userWalletInOutWithProcedure(uid,orderid, UWalletTransMode.Refund,UWalletTransType.Advertise2O,-cash,cash,0,desc,StringHelper.EMPTY_STRING_GAP);
+		/*UserWallet uwallet = userWalletService.getOrCreateById(uid);
+		uwallet.setCash(uwallet.getCash()+cash);
+		userWalletService.update(uwallet);
+		this.doWalletLog(uid, orderid,transMode, UWalletTransType.Recharge2C,StringUtils.EMPTY, cash, cash,0d, desc);*/
+	}
+
 	/**
 	 * 虚拟币入账
 	 * 入账成功需要写入UserWalletLog
@@ -373,33 +389,27 @@ public class UserWalletFacadeService{
 	 * @param orderid
 	 * @param desc
 	 */
-	public int sharedealCashToUserWalletWithProcedure(String dmac, String umac, double cash, String orderid, Date pay_time, String description,IWalletSharedealNotifyCallback callback){
+	public int sharedealCashToUserWalletWithProcedure(String dmac, String umac, double cash, String orderid, Date pay_time, String description, UWalletTransMode transmode, UWalletTransType transtype, long detail_id, IWalletSharedealNotifyCallback callback){
 		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
 		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, umac, orderid, cash);
 		ShareDealWalletProcedureDTO procedureDTO = ShareDealWalletProcedureDTO.buildWith(sharedeal);
-		procedureDTO.setTransmode(UWalletTransMode.SharedealPayment.getKey());
-		procedureDTO.setTransmode_desc(UWalletTransMode.SharedealPayment.getName());
-		procedureDTO.setTranstype(UWalletTransType.ReadPacketSettle2C.getKey());
-		procedureDTO.setTranstype_desc(UWalletTransType.ReadPacketSettle2C.getName());
+		procedureDTO.setTransmode(transmode.getKey());
+		procedureDTO.setTransmode_desc(transmode.getName());
+		procedureDTO.setTranstype(transtype.getKey());
+		procedureDTO.setTranstype_desc(transtype.getName());
 		procedureDTO.setDescription(description);
 		procedureDTO.setOwner_memo(String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		procedureDTO.setManufacturer_memo(String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getManufacturer_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		procedureDTO.setDistributor_memo(String.format("Total:%s Incomming:%s distributor:%s mac:%s", cash,sharedeal.getDistributor_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		procedureDTO.setDistributor_l2_memo(String.format("Total:%s Incomming:%s distributor l2:%s mac:%s", cash,sharedeal.getDistributor_l2_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		procedureDTO.setPay_time(pay_time);
+		procedureDTO.setDetail_id(detail_id);
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
 			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 			if(sharedeal.getOwner_cash() > 0 && sharedeal.isBelong() && callback != null){
-				callback.notifyCashSharedealOper(sharedeal.getOwner(),sharedeal.getOwner_cash());
+				callback.notifyCashSharedealOper(sharedeal);
 			}
-			// 分成成功后清除用户钱包日志统计缓存数据,再次查询时就是最新的数据
-			if(sharedeal.getOwner_cash() > 0 && sharedeal.getOwner() > 0)
-				businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getOwner());
-			if(sharedeal.getDistributor_cash() > 0 && sharedeal.getDistributor() > 0)
-				businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getDistributor());
-			if(sharedeal.getDistributor_l2_cash() > 0 && sharedeal.getDistributor_l2() > 0)
-				businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getDistributor_l2());
 		}else
 			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());

@@ -27,6 +27,7 @@
     <result property="state" column="state"/>
     <result property="verify_uid" column="verify_uid"/>
     <result property="sign" column="sign"/>
+    <result property="process_state" column="process_state"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -60,6 +61,7 @@
 	    	state,
 	    	verify_uid,
 	    	sign,
+	    	process_state,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -87,6 +89,7 @@
 	    	state,
 	    	verify_uid,
 	    	sign,
+	    	process_state,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -115,6 +118,7 @@
 	    	#{state},
 	    	#{verify_uid},
 	    	#{sign},
+	    	#{process_state},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -141,6 +145,7 @@
 	    	state = #{state},
 	    	verify_uid = #{verify_uid},
 	    	sign = #{sign},
+	    	process_state = #{process_state},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

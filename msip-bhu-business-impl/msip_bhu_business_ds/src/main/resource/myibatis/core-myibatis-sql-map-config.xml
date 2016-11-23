@@ -306,6 +306,7 @@
 		<!-- 广告 -->
 		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/Advertise.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/AdvertiseDetails.sqlMap.xml" />
+		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/AdvertiseSharedealDetail.sqlMap.xml" />
 	</mappers>
 
 </configuration>

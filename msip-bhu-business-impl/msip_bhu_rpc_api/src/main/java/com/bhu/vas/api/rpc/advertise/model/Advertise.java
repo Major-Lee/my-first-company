@@ -44,6 +44,8 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	private int verify_uid;
 	//当天是否发布过此广告
 	private boolean sign = false;
+	//分成状态 
+	private int process_state = 0;
 	private Date created_at;
 	private Date updated_at;
 	
@@ -56,6 +58,14 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		this.id = id;
 	}
 	
+	public int getProcess_state() {
+		return process_state;
+	}
+
+	public void setProcess_state(int process_status) {
+		this.process_state = process_status;
+	}
+
 	public long getAbleDevicesNum() {
 		return ableDevicesNum;
 	}

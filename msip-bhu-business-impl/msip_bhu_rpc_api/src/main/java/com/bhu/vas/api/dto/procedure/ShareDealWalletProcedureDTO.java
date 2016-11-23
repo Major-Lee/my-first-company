@@ -58,9 +58,18 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 	private String distributor_l2_memo;
 	@IN(jdbcType = JdbcType.DATE)
 	private Date pay_time;	//订单时间
+	@IN(jdbcType = JdbcType.INTEGER)
+	private long detail_id=-1;	//广告分成时为广告分成明细id
 
 	
-	
+	public long getDetail_id() {
+		return detail_id;
+	}
+
+	public void setDetail_id(long detail_id) {
+		this.detail_id = detail_id;
+	}
+
 	public Date getPay_time() {
 		return pay_time;
 	}

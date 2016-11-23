@@ -26,9 +26,11 @@ import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
+import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.PaymentNotifyType;
 import com.bhu.vas.api.helper.UPortalHttpHelper;
+import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
@@ -38,6 +40,7 @@ import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
@@ -97,7 +100,10 @@ public class AsyncOrderPaymentNotifyService{
 	
 	@Resource
 	private AdvertiseFacadeService advertiseFacadeService;
-	
+
+	@Resource
+	private BusinessWalletCacheService businessWalletCacheService;
+
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncOrderPaymentNotifyService initialize...");
@@ -277,27 +283,36 @@ public class AsyncOrderPaymentNotifyService{
 			userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), order.getUmac(), amount, order.getId(), order.getPaymented_at(),
 					String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
 							orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP),
+					UWalletTransMode.SharedealPayment, UWalletTransType.ReadPacketSettle2C, -1,
 							new IWalletSharedealNotifyCallback(){
-								@Override
-								public String notifyCashSharedealOper(int uid, double cash) {
+								public String notifyCashSharedealOper(SharedealInfo sharedeal) {
 									logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper: uid[%s] "
-											+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
-									if(uid > 0 && cash >= 0.01){
+											+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", sharedeal.getOwner(), sharedeal.getOwner_cash(), 
+											order_payment_type, order_umac_type, mac, umac));
+									if(sharedeal.getOwner() > 0 && sharedeal.getOwner_cash()  >= 0.01){
 										SharedealNotifyPushDTO sharedeal_push_dto = new SharedealNotifyPushDTO();
 										sharedeal_push_dto.setMac(mac);
-										sharedeal_push_dto.setUid(uid);
-										sharedeal_push_dto.setCash(ArithHelper.getCuttedCurrency(String.valueOf(cash)));
+										sharedeal_push_dto.setUid(sharedeal.getOwner());
+										sharedeal_push_dto.setCash(ArithHelper.getCuttedCurrency(String.valueOf(sharedeal.getOwner_cash())));
 										sharedeal_push_dto.setHd_mac(umac);
 										sharedeal_push_dto.setPayment_type(order_payment_type);
 										sharedeal_push_dto.setUmac_type(order_umac_type);
 										pushService.pushSharedealNotify(sharedeal_push_dto);
 									}
 									logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper successful: uid[%s] "
-											+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", uid, cash, order_payment_type, order_umac_type, mac, umac));
+											+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", sharedeal.getOwner(), sharedeal.getOwner_cash(), order_payment_type, order_umac_type, mac, umac));
+									// 分成成功后清除用户钱包日志统计缓存数据,再次查询时就是最新的数据
+									if(sharedeal.getOwner_cash() > 0 && sharedeal.getOwner() > 0)
+										businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getOwner());
+									if(sharedeal.getDistributor_cash() > 0 && sharedeal.getDistributor() > 0)
+										businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getDistributor());
+									if(sharedeal.getDistributor_l2_cash() > 0 && sharedeal.getDistributor_l2() > 0)
+										businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getDistributor_l2());
 									return null;
 								}
 				});
 				
+
 			/*userWalletFacadeService.sharedealCashToUserWallet(order.getMac(), amount, orderid, 
 					String.format(BusinessEnumType.templateRedpacketPaymentDesc, uMacType.getDesc(), 
 							orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP));*/
