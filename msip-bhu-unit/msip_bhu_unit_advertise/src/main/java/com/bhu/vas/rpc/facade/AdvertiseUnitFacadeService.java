@@ -446,15 +446,17 @@ public class AdvertiseUnitFacadeService {
 		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId());
 		List<AdvertiseDevicesIncome> incomes  =  advertiseDevicesIncomeService.findModelByModelCriteria(mc);
 		int sum = 0;
+		int cashSum = 0;
 		for(AdvertiseDevicesIncome income : incomes){
 			adResult.put(income.getPublish_time(), (int) income.getActual_count());
-			sum +=Integer.parseInt(income.getCash());
+			sum +=income.getActual_count();
+			cashSum +=Integer.parseInt(income.getCash());
 		}
 		adResult.put("sum", sum);
 		
 		AdvertiseBillsVTO billVto =  new AdvertiseBillsVTO();
 		billVto.setExpect(ad.getCash());
-		billVto.setActual(sum);
+		billVto.setActual(cashSum);
 		
 		int balance = Integer.parseInt(ad.getCash()) < sum ? Integer.parseInt(ad.getCash()) : Integer.parseInt(ad.getCash()) - sum;
 		billVto.setBalance(balance);
