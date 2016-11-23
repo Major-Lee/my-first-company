@@ -78,10 +78,8 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 						}
 			});
 			
-				String afterDate =null;
-				try {
-					
-					afterDate = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
+					String afterDate =null;
+					afterDate = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 					ModelCriteria mc = new ModelCriteria();
 					mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId()).andColumnEqualTo("publish_time", afterDate);
 					logger.info(String.format("AdvertiseOnPublishDevicesStatisticsLoader  publish_time [%s]  advertiseid[%s]", afterDate,ad.getId()));
@@ -97,9 +95,6 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 					}else{
 						logger.info("AdvertiseOnPublishDevicesStatisticsLoader details null");
 					}
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
 		}
 				
 //		if(!devicesIncome.isEmpty()){
