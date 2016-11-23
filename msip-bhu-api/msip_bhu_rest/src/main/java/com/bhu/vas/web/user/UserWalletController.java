@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
+import com.bhu.vas.api.dto.user.UserWalletRewardListVTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.helper.BusinessEnumType.UWithdrawStatus;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -307,7 +308,7 @@ public class UserWalletController extends BaseController{
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
 
-		RpcResponseDTO<TailPage<UserWalletRewardVTO>> rpcResult = userWalletRpcService.rewardUserWalletPages(uid, mac, role, 
+		RpcResponseDTO<UserWalletRewardListVTO> rpcResult = userWalletRpcService.rewardUserWalletPages(uid, mac, role, 
 				start_created_ts, end_created_ts, pageNo, pageSize);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
