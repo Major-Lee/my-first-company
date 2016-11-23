@@ -145,7 +145,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		
 		vto.setTotal_cash_sum(total_cash_sum);//总收入
 		vto.setBalance(balance);//账户余额
-		vto.setTotal_paid_cash(total_cash_sum-balance);//已提现总额
+		vto.setTotal_paid_cash("--");//已提现总额
 		vto.setTotal_paid_num(0);///总交易订单数
 		vto.setTaxcost(applyCost.getTaxcost());
 		vto.setTranscost(applyCost.getTranscost());
