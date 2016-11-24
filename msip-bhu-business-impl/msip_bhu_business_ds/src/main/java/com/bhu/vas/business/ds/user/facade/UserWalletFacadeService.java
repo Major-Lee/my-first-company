@@ -233,7 +233,7 @@ public class UserWalletFacadeService{
 	public int advertiseRefundToUserWallet(int uid,String orderid, double cash,String desc){
 		logger.info(String.format("advertiseRefundToUserWallet uid[%s] orderid[%s] cash[%s] desc[%s]",uid, orderid, cash,desc));
 		UserValidateServiceHelper.validateUser(uid,this.userService);
-		return userWalletInOutWithProcedure(uid,orderid, UWalletTransMode.Refund,UWalletTransType.Advertise2O,-cash,cash,0,desc,StringHelper.EMPTY_STRING_GAP);
+		return userWalletInOutWithProcedure(uid,orderid, UWalletTransMode.Refund,UWalletTransType.Advertise2O, cash,cash,0,desc,StringHelper.EMPTY_STRING_GAP);
 		/*UserWallet uwallet = userWalletService.getOrCreateById(uid);
 		uwallet.setCash(uwallet.getCash()+cash);
 		userWalletService.update(uwallet);

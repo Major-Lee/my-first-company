@@ -69,13 +69,19 @@ public class AdvertiseSharedealTaskLoader {
 	}
 	
 	private void handleSharedetalDetail(Advertise ad, Order order){
+		logger.info(String.format("handleSharedetalDetail start for  [%s]", ad.getId()));
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("advertiseid", ad.getId()).
 			andColumnNotEqualTo("status", BusinessEnumType.AdvertiseType.SharedealCompleted.getType());
+		mc.setOrderByClause("id asc");
+		mc.setPageNumber(1);
+		mc.setPageSize(200);
     	EntityIterator<Long, AdvertiseSharedealDetail> it = new KeyBasedEntityBatchIterator<Long, AdvertiseSharedealDetail>(Long.class, AdvertiseSharedealDetail.class, advertiseSharedealDetailService.getEntityDao(), mc);
     	final Map<Integer, Double> incomeMap = new HashMap<Integer, Double>();
     	final Set<Integer> alluid = new HashSet<Integer>();
-    	
+
+		logger.info(String.format("it total count[%s]", it.getTotalItemsCount()));
+
 		while(it.hasNext()){
 			List<AdvertiseSharedealDetail> list = it.next();
 			for(AdvertiseSharedealDetail detail:list){
@@ -146,16 +152,11 @@ public class AdvertiseSharedealTaskLoader {
 	private void sharedealOne(Advertise ad){
 		logger.info(String.format("ad sharedeal adid[%s], order id[%s]", ad.getId(), ad.getOrderId()));
 		Order order = orderService.getById(ad.getOrderId());
-		logger.info(String.format("order process_status[%s]", order.getProcess_status()));
-		//已经分成完毕，
-		if(order.getProcess_status() == BusinessEnumType.OrderProcessStatus.SharedealCompleted.getKey()){
-			logger.error(String.format("order sharedeal already finished"));
-			return;
-		}
 		//获取所有待分成明细。计算每个分成身份及其收益
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("advertiseid", ad.getId());
 		List<AdvertiseDetails> list = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
+		logger.info("advertise detail size:" + list.size());
 		Map<String, Integer> devCountMap = new HashMap<String, Integer>(1000);
 		long total = 0;
 		for(AdvertiseDetails detail:list){
@@ -175,6 +176,7 @@ public class AdvertiseSharedealTaskLoader {
 			logger.info(String.format("order id[%s] sharedeal dev is 0", ad.getId()));
 			return;
 		}
+		logger.info("calculaing privce");
 		double cash = 0;
 		cash = Double.parseDouble(ad.getCash());
 		double back_money = 0;
@@ -188,6 +190,9 @@ public class AdvertiseSharedealTaskLoader {
 			//需要退还给用户的款项
 			back_money = (pre_count - total) * real_price;
 		}
+		
+		logger.info("generating sharedeal detail");
+
 		//逐个设备计算分成并入账
 		Iterator<String> it = devCountMap.keySet().iterator();
 		while(it.hasNext()){

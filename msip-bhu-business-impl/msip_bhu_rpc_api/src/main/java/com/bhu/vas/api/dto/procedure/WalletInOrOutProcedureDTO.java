@@ -3,6 +3,7 @@ package com.bhu.vas.api.dto.procedure;
 import org.apache.ibatis.type.JdbcType;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
+import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransType;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.logic.procedure.AbstractProcedureDTO;
@@ -219,6 +220,10 @@ public class WalletInOrOutProcedureDTO extends AbstractProcedureDTO{
 				dto.setPcash(StringHelper.PLUS_STRING_GAP.concat(String.valueOf(cash)));
 				break;
 			case CashRollbackPayment://
+				dto.setPrmoney(StringHelper.MINUS_STRING_GAP.concat(String.valueOf(rmoney)));
+				dto.setPcash(StringHelper.PLUS_STRING_GAP.concat(String.valueOf(cash)));
+				break;
+			case Refund:
 				dto.setPrmoney(StringHelper.MINUS_STRING_GAP.concat(String.valueOf(rmoney)));
 				dto.setPcash(StringHelper.PLUS_STRING_GAP.concat(String.valueOf(cash)));
 				break;
