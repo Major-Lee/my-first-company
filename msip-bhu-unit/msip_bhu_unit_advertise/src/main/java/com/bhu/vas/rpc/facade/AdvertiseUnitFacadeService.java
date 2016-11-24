@@ -421,7 +421,8 @@ public class AdvertiseUnitFacadeService {
 		for(int i=index; i<=days; i++){
 			String time = null;
 			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
-			Date times = format.parse(time);
+			SimpleDateFormat  format2= new SimpleDateFormat(DateTimeHelper.FormatPattern5);
+			Date times = format2.parse(time);
 			AdvertiseOccupiedVTO occupiedVto = new AdvertiseOccupiedVTO();
 			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, times);
 			occupiedVto.setTrashs(trashVtos);
