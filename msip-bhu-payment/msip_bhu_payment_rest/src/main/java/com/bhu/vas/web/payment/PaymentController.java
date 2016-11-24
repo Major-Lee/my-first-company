@@ -607,6 +607,9 @@ public class PaymentController extends BaseController{
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		logger.info(String.format("apply payment goods_no [%s]", goods_no));
 		
+		String ot = request.getParameter("ot");
+		//total_fee = RandomPicker.randomstart(20000, 1)+"";
+		
 		long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 		try{
 			if(StringUtils.isBlank(channel)){
@@ -614,6 +617,9 @@ public class PaymentController extends BaseController{
 			}			
 			if(StringUtils.isBlank(version)){
 				version = "0";
+			}
+			if(StringUtils.isBlank(ot)){
+				ot = "10m";
 			}
 			if (StringUtils.isBlank(appid)) {
         		logger.error(String.format("apply payment appid [%s]", appid));
@@ -664,7 +670,33 @@ public class PaymentController extends BaseController{
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
     					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
         		return;
+        	}else{
+        		logger.error(String.format("apply payment total_fee [%s]", total_fee));
+        		double total_fees = Double.parseDouble(BusinessHelper.getMoney(total_fee));
+        		if(payment_type.contains("Alipay")){
+        			if(total_fees >= 1000000000){
+        				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+            					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+        				return;
+        			}
+        		}else if(payment_type.equalsIgnoreCase("WapWeixin")){
+        			if(total_fees >= 300000){
+        				if(!channel.equals("2")){
+        					SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+        							ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+        					return;
+        				}
+        			}
+        		}else{
+        			if(total_fees >= 2000000){
+        				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+            					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+        				return;
+        			}
+        		}
         	}
+        	
+        	
         	if (StringUtils.isBlank(goods_no)) {
         		logger.error(String.format("apply payment goods_no [%s]", goods_no));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
@@ -673,7 +705,7 @@ public class PaymentController extends BaseController{
         	}
         	
         	PaymentTypeVTO result = null;
-        	//逻辑处理
+//        	//逻辑处理
         	long select_isExist_begin = System.currentTimeMillis(); // 这段代码放在程序执行前
     		PaymentReckoning paymentReckoning = paymentReckoningService.findByOrderId(goods_no);
     		long select_isExist_end = System.currentTimeMillis() - select_isExist_begin; // 这段代码放在程序执行后
@@ -693,7 +725,7 @@ public class PaymentController extends BaseController{
     				break;
     			case BHU_PC_ALIPAY: //PC支付宝
     				long PC_ALIPAY_begin = System.currentTimeMillis();
-    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
+    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid,ot);
     				long PC_ALIPAY_end = System.currentTimeMillis() - PC_ALIPAY_begin; 
     				logger.info(goods_no+"PC支付宝耗时：" + PC_ALIPAY_end + "毫秒");
     				break;
@@ -705,7 +737,7 @@ public class PaymentController extends BaseController{
     				break;
     			case BHU_APP_ALIPAY: //App支付宝
     				long APP_ALIPAY_begin = System.currentTimeMillis();
-    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
+    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid,ot);
     				long APP_ALIPAY_end = System.currentTimeMillis() - APP_ALIPAY_begin; 
     				logger.info(goods_no+"App支付宝耗时：" + APP_ALIPAY_end + "毫秒");
     				break;
@@ -753,7 +785,7 @@ public class PaymentController extends BaseController{
                 	break;
     			case BHU_WAP_ALIPAY: //Wap微信支付
     				long WAP_ALIPAY_begin = System.currentTimeMillis();
-    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid);
+    				result =  doAlipay(response,request, total_fee, goods_no,payment_completed_url,exter_invoke_ip,payment_type,umac,paymentName,appid,ot);
     				long WAP_ALIPAY_end = System.currentTimeMillis() - WAP_ALIPAY_begin; 
     				logger.info(goods_no+"Wap支付宝支付耗时：" + WAP_ALIPAY_end + "毫秒");
     				break;
@@ -782,7 +814,7 @@ public class PaymentController extends BaseController{
 			SendMailHelper.doSendMail(3,"submitPayment接口："+i18nex.getMessage()+i18nex.getCause());
 			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
 		}catch(Exception ex){
-			logger.error(String.format("submitPayment catch Exception [%s]",ResponseError.SYSTEM_ERROR));
+			logger.error(String.format("submitPayment catch Exception [%s]",JsonHelper.getJSONString(ResponseError.SYSTEM_ERROR)));
 			SendMailHelper.doSendMail(3,"submitPayment接口："+ex.getMessage()+ex.getCause());
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}finally{
@@ -1151,7 +1183,15 @@ public class PaymentController extends BaseController{
 	 * @return
 	 */
     private PaymentTypeVTO doAlipay(HttpServletResponse response,HttpServletRequest request,
-    		String totalPrice,String out_trade_no,String locationUrl,String ip,String type,String usermac,String paymentName,String appid){
+    		String totalPrice,
+    		String out_trade_no,
+    		String locationUrl,
+    		String ip,
+    		String type,
+    		String usermac,
+    		String paymentName,
+    		String appid,
+    		String ot){
     	response.setCharacterEncoding("utf-8");
     	PaymentTypeVTO result = new PaymentTypeVTO();
 		//服务器异步通知页面路径
@@ -1187,7 +1227,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("subject", subject);
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
-			sParaTemp.put("it_b_pay", "10m");
+			sParaTemp.put("it_b_pay", ot);
 			//sParaTemp.put("app_pay", "Y");
 			break;
 		case BHU_APP_ALIPAY:
@@ -1205,7 +1245,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("subject", subject);
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
-			sParaTemp.put("it_b_pay", "10m");
+			sParaTemp.put("it_b_pay", ot);
 			//sParaTemp.put("app_pay", "Y");
 			break;
 		case BHU_PC_ALIPAY:
@@ -1223,7 +1263,7 @@ public class PaymentController extends BaseController{
 			sParaTemp.put("subject", subject);
 			sParaTemp.put("total_fee", total_fee);
 			sParaTemp.put("body", body);
-			sParaTemp.put("it_b_pay", "10m");
+			sParaTemp.put("it_b_pay", ot);
 			break;
 		default:
 			break;

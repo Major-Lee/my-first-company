@@ -783,7 +783,7 @@ public class BusinessHelper extends PropertyEditorSupport {
 		return usermac;
 	}
 	
-	
+	static File logoImg = null;
 	@SuppressWarnings("restriction")
 	public static String GetBase64ImageStr(String content,String rqCodeLogoPath, String logoPath) throws WriterException, IOException  {//将图片文件转化为字节数组字符串，并对其进行Base64编码处理
 			 
@@ -795,7 +795,10 @@ public class BusinessHelper extends PropertyEditorSupport {
 				// String rqCodePath = "E:"+File.separator+"picture.png";
 				// rqCodeLogoPath = "E:"+File.separator+"picturelogo.png";
 				String format = "png";
-				File logoImg = new File(logoPath);
+				
+				if(logoImg == null){
+					logoImg = new File(logoPath);
+				}
 				File img = new File(rqCodeLogoPath);
 				//生成二维码
 				EncodeImgQrcode.writeToFile(content, format, img);
@@ -968,6 +971,6 @@ public class BusinessHelper extends PropertyEditorSupport {
 //				result = reckonId.substring(3, 7);
 //			}
 			
-			System.out.println(getBetweenTimeCouse(new Date(), new Date()));
+			System.out.println(RandomPicker.randomstart(20000, 1));
 		}
 }

@@ -51,7 +51,7 @@ public class PayHttpService {
     
     
     //重定向地址
-    public static String PAY_HOST_URL = "http://pay.bhuwifi.com/msip_bhu_payment_rest/payment";
+    public static String PAY_HOST_URL = "http://upay.bhuwifi.com/msip_bhu_payment_rest/payment";
     //重定向地址
     public static String MIDAS_REQURST_URL = "http://mpays.bhuwifi.com/bhu_pay_api/v1/msip_bhu_payment_rest/payment/getMidas";
     //重定向地址
@@ -84,20 +84,20 @@ public class PayHttpService {
     public static String MIDAS_RETURN_URL = "/msip_bhu_payment_rest/payment/midasReturn";
 	
     //打赏失败web回调地址
-    public static String WEB_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
+    //public static String WEB_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
     //public static String WEB_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
-    //public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
+    public static String WEB_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
     //充值失败web回调地址
-     public static String PREPAID_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
+     //public static String PREPAID_NOTIFY_URL = "http://ucloud.bhuwifi.com:9158/portal/unsuccess.html";
     //public static String PREPAID_NOTIFY_URL = "http://101.200.183.44:9158/portal/unsuccess.html";
-    //public static String PREPAID_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
+    public static String PREPAID_NOTIFY_URL = "http://192.168.66.197:9158/portal/unsuccess.html";
   
    //短信预警通知联系人list
    public static String Internal_level1_error_man = "18515465766,13911210204,13718589528,18601267579,18910735595,13911716572,15910526881,15901090128";
    public static String Internal_level2_warning_man = "18515465766,13911210204,13718589528";
    public static String MIDAS_LEVEL1_RATE = "80-100";
    public static String NOW_LEVEL1_RATE = "20-100";
-   public static String ORDER_AGENT = "Now-Midas";
+   public static String ORDER_AGENT = "Now-Hee";
    public static int ORDER_ALLOCATION_LEVEL = 2;
    
    

@@ -289,11 +289,11 @@ public class PayLogicService {
 			if(!nowErrorTime.equals(curDate)){
 				SendMailHelper.doSendMail(1,smsg);
 				resp = SmsSenderFactory.buildSender(BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, acc);
-				paymentParameter.setStatus(PayHttpService.ORDER_ALLOCATION_LEVEL);
-		    	paymentParameter.setUpdated_at(new Date());
-		    	paymentParameter.setValue(PayHttpService.ORDER_AGENT);
-		    	paymentParameter.setCharge_rate(PayHttpService.MIDAS_LEVEL1_RATE);
-		    	paymentParameterService.update(paymentParameter);
+//				paymentParameter.setStatus(PayHttpService.ORDER_ALLOCATION_LEVEL);
+//		    	paymentParameter.setUpdated_at(new Date());
+//		    	paymentParameter.setValue(PayHttpService.ORDER_AGENT);
+//		    	paymentParameter.setCharge_rate(PayHttpService.MIDAS_LEVEL1_RATE);
+//		    	paymentParameterService.update(paymentParameter);
 				result = curDate;
 			}
 			break;
