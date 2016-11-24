@@ -16,7 +16,6 @@ import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessa
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 
@@ -38,12 +37,8 @@ public class AdvertiseBackendTaskLoader {
 		
 	public void execute() {
 		logger.info("AdvertiseBackendTaskLoader start...");
-		String afterDate = null;
-		try {
-			afterDate = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern1), 1);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		String afterDate  = DateTimeHelper.getDateTime(DateTimeHelper.getDateDaysAfter(1), DateTimeHelper.FormatPattern1);
+
 		logger.info("afterDate:"+afterDate);
 		omittedOrTimelyAdApplyNotify(afterDate);
 		OnpublicContinueApply(afterDate);
