@@ -584,6 +584,7 @@ public void hot_play_paymenturl(
 		
 		OrderPaymentUrlDTO retDto = new OrderPaymentUrlDTO();
 		retDto.setId(order_vto.getOrderid());
+		retDto.setAdCommdityVTO(order_vto.getAdCommdityVTO());
 		retDto.setThird_payinfo(rcp_dto.getParams());
 		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(retDto));
 	}

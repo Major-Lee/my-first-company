@@ -1,5 +1,7 @@
 package com.bhu.vas.api.dto.commdity;
 
+import com.bhu.vas.api.vto.advertise.AdCommdityVTO;
+
 @SuppressWarnings("serial")
 public class HotPlayOrderVTO implements java.io.Serializable{
 	//订单号
@@ -8,6 +10,13 @@ public class HotPlayOrderVTO implements java.io.Serializable{
 	private String amount;
 	//appid
 	private Integer appid;
+	private AdCommdityVTO adCommdityVTO;
+	public AdCommdityVTO getAdCommdityVTO() {
+		return adCommdityVTO;
+	}
+	public void setAdCommdityVTO(AdCommdityVTO adCommdityVTO) {
+		this.adCommdityVTO = adCommdityVTO;
+	}
 	public String getOrderid() {
 		return orderid;
 	}

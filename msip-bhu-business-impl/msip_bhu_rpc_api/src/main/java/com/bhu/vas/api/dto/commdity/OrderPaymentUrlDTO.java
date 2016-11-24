@@ -1,5 +1,6 @@
 package com.bhu.vas.api.dto.commdity;
 
+import com.bhu.vas.api.vto.advertise.AdCommdityVTO;
 
 /**
  * 针对应用请求生成订单url处理返回DTO
@@ -13,6 +14,14 @@ public class OrderPaymentUrlDTO implements java.io.Serializable{
 	//第三方支付url信息
 	private String third_payinfo;
 	
+	private AdCommdityVTO adCommdityVTO;
+	
+	public AdCommdityVTO getAdCommdityVTO() {
+		return adCommdityVTO;
+	}
+	public void setAdCommdityVTO(AdCommdityVTO adCommdityVTO) {
+		this.adCommdityVTO = adCommdityVTO;
+	}
 	public String getId() {
 		return id;
 	}

@@ -52,6 +52,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
+import com.bhu.vas.api.vto.advertise.AdCommdityVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
@@ -1074,7 +1075,8 @@ public class OrderUnitFacadeService {
 	public RpcResponseDTO<HotPlayOrderVTO> createHotPlayOrder(Integer commdityid, String hpid, Integer umactype,
 			String payment_type, Integer channel, String user_agent) {
 		try{
-			String amount = advertiseFacadeService.advertisePayment(hpid);
+			AdCommdityVTO advertisePayment = advertiseFacadeService.advertisePayment(hpid);
+			String amount = advertisePayment.getCash();
 			OrderPaymentType pType = BusinessEnumType.OrderPaymentType.fromKey(payment_type);
 			switch (pType) {
 			case PcWeixin:
@@ -1093,6 +1095,7 @@ public class OrderUnitFacadeService {
 			vto.setOrderid(order.getId());
 			vto.setAmount(order.getAmount());
 			vto.setAppid(order.getAppid());
+			vto.setAdCommdityVTO(advertisePayment);
 			logger.info("createHotPlayOrder successfully!");
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
