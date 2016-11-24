@@ -27,6 +27,7 @@ import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
+import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -57,6 +58,9 @@ public class AdvertiseUnitFacadeService {
 	private AdvertiseFacadeService advertiseFacadeService;
 	@Resource
 	private AdvertiseDevicesIncomeService advertiseDevicesIncomeService;
+	
+	@Resource
+	private UserWalletFacadeService userWalletFacadeService;
 	
 	public AdvertiseService getAdvertiseService() {
 		return advertiseService;
@@ -287,6 +291,10 @@ public class AdvertiseUnitFacadeService {
 					advertise.setReject_reason(msg);
 				}
 				advertiseService.update(advertise);
+				if(state!=0){//退费
+					userWalletFacadeService.advertiseRefundToUserWallet(advertise.getUid(), advertise.getOrderId(), Double.parseDouble(advertise.getCash()), 
+							String.format("Order Cash:%s, refund cash:%s", advertise.getCash(), advertise.getCash()));
+				}
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 			}else{
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_VERIFY_TYPESUPPORT);
