@@ -18,6 +18,8 @@
 				<ref bean="advertisePaymentTimeOutTaskLoaderCronTrigger" />
 				<!-- 每天23点50分执行 -->
 				<ref bean="advertiseAllClearTaskLoaderCronTrigger" />
+				<!-- 每小时执行一次分成 -->
+				<ref bean="advertiseSharedealTaskLoaderCronTrigger" />
 				
 			</list>
 		</property>
@@ -83,7 +85,7 @@
 	<!-- 每小时执行一次广告分成 -->
 	<bean id="advertiseSharedealTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseSharedealTaskLoaderCronJobDetail" />
-		<property name="cronExpression" value="0 0 * * * ? " />
+		<property name="cronExpression" value="0 0/1 * * * ? " />
 	</bean>
 	<bean id="advertiseSharedealTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseSharedealTaskLoaderJob" />
