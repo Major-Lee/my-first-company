@@ -207,6 +207,7 @@ public class AdvertiseSharedealTaskLoader {
 			AdvertiseSharedealDetail sd = new AdvertiseSharedealDetail();
 			sd.setAdvertiseid(ad.getId());
 			sd.setCount(1);
+			sd.setRefund(true);
 			sd.setCash(back_money);
 			sd.setTarget(String.valueOf(ad.getUid()));
 			advertiseSharedealDetailService.insert(sd);
@@ -226,7 +227,7 @@ public class AdvertiseSharedealTaskLoader {
 			for(Advertise ad : lists){
 				try{
 					//先标记为已处理。可以允许实际未处理，但是需要避免处理多次
-					ad.setState(BusinessEnumType.AdvertiseType.SharedealCompleted.getType());
+					ad.setProcess_state(BusinessEnumType.AdvertiseType.SharedealCompleted.getType());
 					advertiseService.update(ad);
 					sharedealOne(ad);
 				}catch(Exception e){
