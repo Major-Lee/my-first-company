@@ -245,7 +245,8 @@ public enum ResponseErrorCode {
 	VALIDATE_COMMDITY_NOT_ONSALE("451","validate.commdity.not.onsale"),
 	VALIDATE_COMMDITY_AMOUNT_ILLEGAL("452","validate.commdity.amount.illegal"),
 	VALIDATE_COMMDITY_AMOUNT_INVALID("453","validate.commdity.amount.invalid"),
-	
+	VALIDATE_COMMDITY_AMOUNT_LARGE("409","validate.commdity.amount.toolarge"),
+	VALIDATE_COMMDITY_PAYMENT_TYPE_ERROR("408","validate.commdity.paymenttype.error"),
 	VALIDATE_PAYMENT_DATA_ALREADY_EXIST("454","validate.payment.data.already.exists"),	
 	VALIDATE_COMMDITY_DATA_ILLEGAL("455","validate.commdity.data.illegal"),
 	ORDER_PAYMENT_STATUS_PAYSUCCESSED("460","order.payment.status.paysuccessed"),

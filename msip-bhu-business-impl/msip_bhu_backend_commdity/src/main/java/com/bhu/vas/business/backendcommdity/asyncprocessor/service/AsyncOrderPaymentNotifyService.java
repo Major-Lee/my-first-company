@@ -329,7 +329,7 @@ public class AsyncOrderPaymentNotifyService{
 		
 		order = orderFacadeService.hotplayOrderPaymentCompletedNotify(success, order, paymented_ds, payment_type, payment_proxy_type);
 		Integer order_status = order.getStatus();
-		String hpid = order.getContext();
+		String hpid = order.getUmac();
 		if (OrderStatus.isDeliverCompleted(order_status)){
 			advertiseFacadeService.advertiseCompletionOfPayment(hpid, order.getId());
 			logger.info(String.format("hot play Orderid[%s] hpid[%s] DeliverCompleted", order.getId(), hpid));

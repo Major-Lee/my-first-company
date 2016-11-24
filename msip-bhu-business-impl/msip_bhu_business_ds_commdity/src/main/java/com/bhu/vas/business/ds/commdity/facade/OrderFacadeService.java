@@ -41,7 +41,6 @@ import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
-import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
@@ -76,9 +75,6 @@ public class OrderFacadeService {
 	
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
-	
-	@Resource
-	private AdvertiseFacadeService advertiseFacadeService;
 	
 	/**
 	 * 查询最近的一条满足条件的订单
@@ -1207,12 +1203,11 @@ public class OrderFacadeService {
 		return false;
 	}
 
-	public Order createHotPlayOrder(Integer commdityid, String hpid, 
-			Integer umactype, String payment_type,Integer channel,String user_agent) {
+	public Order createHotPlayOrder(Integer commdityid, String hpid, String amount,
+			Integer umactype, String payment_type, Integer channel, String user_agent) {
 		//商品信息验证
 		//验证商品是否合法
 		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
-		String amount = advertiseFacadeService.advertisePayment(hpid);
 		//订单生成
 		Order order = new Order();
 		order.setCommdityid(commdityid);
@@ -1221,7 +1216,7 @@ public class OrderFacadeService {
 		order.setUmactype(umactype);
 		order.setType(commdity.getCategory());
 		order.setPayment_type(payment_type);
-		order.setContext(hpid);
+		order.setUmac(hpid);
 		order.setUser_agent(user_agent);
 		order.setStatus(OrderStatus.NotPay.getKey());
 		order.setProcess_status(OrderProcessStatus.NotPay.getKey());

@@ -58,6 +58,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessa
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserQueryDateHashService;
+import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
@@ -82,6 +83,8 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+
+import javassist.bytecode.LineNumberAttribute.Pc;
 
 @Service
 public class OrderUnitFacadeService {
@@ -128,6 +131,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private UserIdentityAuthService userIdentityAuthService;
+	
+	@Resource
+	private AdvertiseFacadeService advertiseFacadeService;
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -1068,7 +1074,20 @@ public class OrderUnitFacadeService {
 	public RpcResponseDTO<HotPlayOrderVTO> createHotPlayOrder(Integer commdityid, String hpid, Integer umactype,
 			String payment_type, Integer channel, String user_agent) {
 		try{
-			Order order = orderFacadeService.createHotPlayOrder(commdityid, hpid, 
+			String amount = advertiseFacadeService.advertisePayment(hpid);
+			OrderPaymentType pType = BusinessEnumType.OrderPaymentType.fromKey(payment_type);
+			switch (pType) {
+			case PcWeixin:
+				if (Double.parseDouble(amount) > 20000){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_LARGE);
+				}
+				break;
+			case PcAlipay:
+				break;
+			default:
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_PAYMENT_TYPE_ERROR);
+			}
+			Order order = orderFacadeService.createHotPlayOrder(commdityid, hpid, amount,
 					umactype, payment_type, channel, user_agent);
 			HotPlayOrderVTO vto = new HotPlayOrderVTO();
 			vto.setOrderid(order.getId());
