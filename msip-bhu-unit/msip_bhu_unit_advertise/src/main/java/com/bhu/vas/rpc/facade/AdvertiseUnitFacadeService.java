@@ -100,8 +100,8 @@ public class AdvertiseUnitFacadeService {
 			
 			long count=0;
 			try {
-				AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern5,province, city, district);
-				System.out.println("mark+++++++++++++++++++++++++"+format.format(startDate)+"  "+format.format(endDate)+" "+DateTimeHelper.FormatPattern5+" "+province+" "+city+" "+district );
+				AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern1,province, city, district);
+				System.out.println("mark+++++++++++++++++++++++++"+format.format(startDate)+"  "+format.format(endDate)+" "+DateTimeHelper.FormatPattern1+" "+province+" "+city+" "+district );
 				List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
 				if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
 					for(AdvertiseOccupiedVTO i:advertiseOccupiedVTOs){
