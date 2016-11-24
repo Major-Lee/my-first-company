@@ -7,6 +7,7 @@ import java.util.List;
 public class AdvertiseOccupiedVTO implements java.io.Serializable{
 	private String date;
 	private int count;
+	private String cash;
 	private List<AdvertiseTrashPositionVTO> trashs;
 	
 	public int getCount() {
@@ -14,6 +15,16 @@ public class AdvertiseOccupiedVTO implements java.io.Serializable{
 	}
 	public void setCount(long count) {
 		this.count = (int) (count*1.1);
+	}
+	
+	public String getCash() {
+		return cash;
+	}
+	public void setCash(String cash) {
+		this.cash = cash;
+	}
+	public void setCount(int count) {
+		this.count = count;
 	}
 	public String getDate() {
 		return date;

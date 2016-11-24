@@ -125,7 +125,7 @@ public class AdvertiseUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 			}
 			entity.setCount(count);
-			int displayNum=(int) (count*1.1);
+			int displayNum=(int) (count);
 			entity.setCash(displayNum*BusinessRuntimeConfiguration.Advertise_Unit_Price+"");
 			
 			
@@ -433,6 +433,7 @@ public class AdvertiseUnitFacadeService {
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
 			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
+			occupiedVto.setCash(occupiedVto.getCount() * BusinessRuntimeConfiguration.Advertise_Unit_Price +"");
 			occupiedVtos.add(occupiedVto);
 		}
 		positionVto.setOccupyAds(occupiedVtos);
