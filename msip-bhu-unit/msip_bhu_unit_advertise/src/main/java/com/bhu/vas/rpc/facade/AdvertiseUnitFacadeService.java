@@ -416,8 +416,12 @@ public class AdvertiseUnitFacadeService {
 	    int days = (int)(endLong-startLong)/(1000 * 60 * 60 * 24);
 	    
 		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
+		System.out.println("*********"+start+"|"+end);
 		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
-		
+		System.out.println("**********"+advertises.size());
+		for(Advertise ad : advertises){
+			System.out.println("***********"+ad.getProvince()+"|"+ad.getCity()+"|"+ad.getDistrict());
+		}
 		for(int i=index; i<=days; i++){
 			String time = null;
 			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);

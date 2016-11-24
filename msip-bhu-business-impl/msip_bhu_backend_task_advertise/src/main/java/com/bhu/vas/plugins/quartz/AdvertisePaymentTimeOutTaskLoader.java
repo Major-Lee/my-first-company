@@ -30,7 +30,7 @@ public class AdvertisePaymentTimeOutTaskLoader {
 		logger.info(String.format("AdvertisePaymentTimeOutTaskLoader unpaid timeout sum[%s]", ads.size()));
 		
 		for(Advertise ad : ads){
-			if(nowTime - ad.getCreated_at().getTime() > 10*60*1000){
+			if(nowTime - ad.getCreated_at().getTime() > 20*60*1000){
 				ad.setState(BusinessEnumType.AdvertiseType.EscapeOrder.getType());
 				ad.setReject_reason("因支付超时,已经取消本推广订单");
 				updateList.add(ad);
