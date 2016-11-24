@@ -40,7 +40,7 @@ public class AdvertiseBackendTaskLoader {
 		logger.info("AdvertiseBackendTaskLoader start...");
 		String afterDate = null;
 		try {
-			afterDate = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
+			afterDate = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern0), 1);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
