@@ -100,7 +100,7 @@ public class AdvertiseUnitFacadeService {
 			
 			long count=0;
 			try {
-				AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern1,province, city, district);
+				AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern1,province, city, district,false);
 				System.out.println("mark+++++++++++++++++++++++++"+format.format(startDate)+"  "+format.format(endDate)+" "+DateTimeHelper.FormatPattern1+" "+province+" "+city+" "+district );
 				List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
 				if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
@@ -167,7 +167,7 @@ public class AdvertiseUnitFacadeService {
 		String start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
 		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17);
 		
-		AdDevicePositionVTO vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district);
+		AdDevicePositionVTO vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
 		if(StringUtils.isNoneBlank(city)){
 			vto.setPositions(WifiDevicePositionListService.getInstance().fetchCity(city));
 		}else if(StringUtils.isNoneBlank(province)){
@@ -401,7 +401,7 @@ public class AdvertiseUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	
-	public AdDevicePositionVTO fetchAdvertiseOccupy(int index,String start,String end,String pattern,String province,String city,String district) throws ParseException {
+	public AdDevicePositionVTO fetchAdvertiseOccupy(int index,String start,String end,String pattern,String province,String city,String district,boolean flag) throws ParseException {
 		AdDevicePositionVTO positionVto = new AdDevicePositionVTO();
 //		String start = null;
 //		String end = null;
@@ -428,7 +428,7 @@ public class AdvertiseUnitFacadeService {
 			SimpleDateFormat  format2= new SimpleDateFormat(DateTimeHelper.FormatPattern5);
 			Date times = format2.parse(time);
 			AdvertiseOccupiedVTO occupiedVto = new AdvertiseOccupiedVTO();
-			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, times);
+			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, times,flag);
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
 			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));

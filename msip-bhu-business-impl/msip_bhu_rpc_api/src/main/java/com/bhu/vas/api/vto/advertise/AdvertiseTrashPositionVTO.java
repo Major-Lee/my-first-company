@@ -1,5 +1,7 @@
 package com.bhu.vas.api.vto.advertise;
 
+import com.bhu.vas.api.rpc.advertise.model.Advertise;
+
 @SuppressWarnings("serial")
 public class AdvertiseTrashPositionVTO implements java.io.Serializable{
 	
