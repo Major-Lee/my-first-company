@@ -119,7 +119,9 @@ public class AdvertiseUnitFacadeService {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			
+			if(count==0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
+			}
 			//long count=wifiDeviceDataSearchService.searchCountByPosition(advertiseTrashPositionVTOs,province, city, district);
 			if(start>end){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
