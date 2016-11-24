@@ -80,7 +80,12 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 			});
 			
 					String afterDate =null;
-					afterDate = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
+//					afterDate = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
+					try {
+						afterDate = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 					ModelCriteria mc = new ModelCriteria();
 					mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId()).andColumnEqualTo("publish_time", afterDate);
 					logger.info(String.format("AdvertiseOnPublishDevicesStatisticsLoader  publish_time [%s]  advertiseid[%s]", afterDate,ad.getId()));
