@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
@@ -34,6 +35,16 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("start", start);
 		map.put("end", end);
+		
+		if(StringUtils.isBlank(province)){
+			province=null;
+		}
+		if(StringUtils.isBlank(city)){
+			city=null;
+		}
+		if(StringUtils.isBlank(district)){
+			district=null;
+		}
 		map.put("province", province);
 		map.put("city", city);
 		map.put("district", district);
