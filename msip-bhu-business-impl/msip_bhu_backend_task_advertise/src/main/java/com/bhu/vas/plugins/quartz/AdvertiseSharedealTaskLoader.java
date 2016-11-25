@@ -71,8 +71,7 @@ public class AdvertiseSharedealTaskLoader {
 	private void handleSharedetalDetail(Advertise ad, Order order){
 		logger.info(String.format("handleSharedetalDetail start for  [%s]", ad.getId()));
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("advertiseid", ad.getId()).
-			andColumnNotEqualTo("status", BusinessEnumType.AdvertiseType.SharedealCompleted.getType());
+		mc.createCriteria().andSimpleCaulse(" 1=1 ").andColumnEqualTo("advertiseid", ad.getId());
 		mc.setOrderByClause("id asc");
 		mc.setPageNumber(1);
 		mc.setPageSize(200);
@@ -80,11 +79,16 @@ public class AdvertiseSharedealTaskLoader {
     	final Map<Integer, Double> incomeMap = new HashMap<Integer, Double>();
     	final Set<Integer> alluid = new HashSet<Integer>();
 
-		logger.info(String.format("it total count[%s]", it.getTotalItemsCount()));
-
+		long count = 0;
 		while(it.hasNext()){
 			List<AdvertiseSharedealDetail> list = it.next();
 			for(AdvertiseSharedealDetail detail:list){
+				count ++;
+				if(detail.getStatus() == BusinessEnumType.AdvertiseType.SharedealCompleted.getType()){
+					logger.info(String.format("detail [%s] already sharedeal handled", detail.getId()));
+					continue;
+				}
+
 				if(detail.isRefund()){
 					//给用户退款
 					detail.setStatus(BusinessEnumType.AdvertiseType.SharedealCompleted.getType());
@@ -125,8 +129,10 @@ public class AdvertiseSharedealTaskLoader {
 			}
 		}
 		
+		logger.info(String.format("handleSharedetalDetail total count [%s] done", count));
+		
 		Iterator<Integer> uit = incomeMap.keySet().iterator();
-		while(it.hasNext()){
+		while(uit.hasNext()){
 			Integer uid = uit.next();
 			Double money = incomeMap.get(uid);
 			//给用户发送push通知
