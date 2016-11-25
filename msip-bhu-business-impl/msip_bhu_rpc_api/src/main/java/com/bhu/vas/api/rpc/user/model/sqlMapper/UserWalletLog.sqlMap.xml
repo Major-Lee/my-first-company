@@ -178,6 +178,7 @@
 	    	<if test="dut != null">
 	    		AND	t_orders.mac_dut = #{dut}
 	    	</if>
+	    	AND AND t_orders.commdityid = '1'
 	    	AND t_orders.status = #{status}
 	    	AND (t_walletlog.role = 'OW' or t_walletlog.role is NULL)
 	    </where> 
