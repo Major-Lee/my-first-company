@@ -41,10 +41,12 @@ public class PaymentInternalHelper {
 	 * @param exter_invoke_ip 客户端ip
 	 * @param goods_no 订单id
 	 * @param channel 订单渠道默认为0,1为名片打赏,2为他人代付
+	 * @param orderTimeout 订单超时时间,20m代表20分钟
 	 * @return
 	 */
 	public static ResponseCreatePaymentUrlDTO createPaymentUrlCommunication(Integer appid, String payment_type, 
-			String amount, String requestip, String umac, String orderid, String payment_completed_url,String channel,String version, String payment_name){
+			String amount, String requestip, String umac, String orderid, String payment_completed_url,
+			String channel,String version, String payment_name, String orderTimeout){
 		Map<String, String> api_params = generatePaymentApiParamMap(appid);
 		if(api_params == null){
 			logger.info(String.format("CreatePaymentUrlCommunication generate params error orderid[%s] payment_type[%s] "
@@ -62,6 +64,7 @@ public class PaymentInternalHelper {
 		api_params.put("channel", channel);
 		api_params.put("version", version);
 		api_params.put("paymentName", payment_name);
+		api_params.put("ot", orderTimeout);
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = null;
 		try {
