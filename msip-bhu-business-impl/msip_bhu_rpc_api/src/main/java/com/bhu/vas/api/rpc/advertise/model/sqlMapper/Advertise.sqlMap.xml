@@ -263,7 +263,7 @@
 	</select>
 	
 	<select id="countByAdvertiseTime" resultType="int" parameterType="Map">
-		select count(*) from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end})))]]> 
+		select count(*) from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<=#{start} and `end` >=#{end}) or ((`start`>=#{start} and `start`<=#{end}) or (`end`>=#{start} and `end`<=#{end})))]]> 
 			<choose>
 				<when test="province==null">
 					and province is null
@@ -281,7 +281,7 @@
 			  and state not in (5,6);	
 	</select>
 	<select id="queryByAdvertiseTime" resultMap="modelResult" parameterType="Map">
-		select <include refid="modelColumns" /> from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end})))]]> 	
+		select <include refid="modelColumns" /> from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<=#{start} and `end` >=#{end}) or ((`start`>=#{start} and `start`<=#{end}) or (`end`>=#{start} and `end`<=#{end})))]]> 	
 			<choose>
 				<when test="province!=null and city==null">
 					and ((province=#{province} ) or (province is null))
@@ -296,7 +296,7 @@
 			and state not in (${status});
 	</select>
 	<select id="queryByAdvertiseTimeExcept" resultMap="modelResult" parameterType="Map">
-		select <include refid="modelColumns" /> from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<#{start} and `end` >#{end}) or ((`start`>#{start} and `start`<#{end}) or (`end`>#{start} and `end`<#{end})))]]> 	
+		select <include refid="modelColumns" /> from <include refid="modelTableName" /> where <![CDATA[  ((`start` between #{start} and #{end}) and (`end` BETWEEN #{start} and #{end}) or (`start`<=#{start} and `end` >=#{end}) or ((`start`>=#{start} and `start`<=#{end}) or (`end`>=#{start} and `end`<=#{end})))]]> 	
 			<choose>
 				<when test="province!=null and city==null">
 					and (province=#{province} )
