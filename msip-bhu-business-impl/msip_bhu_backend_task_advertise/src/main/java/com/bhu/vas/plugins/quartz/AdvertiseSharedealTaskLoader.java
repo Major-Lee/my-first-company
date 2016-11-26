@@ -166,15 +166,18 @@ public class AdvertiseSharedealTaskLoader {
 		Map<String, Integer> devCountMap = new HashMap<String, Integer>(1000);
 		long total = 0;
 		for(AdvertiseDetails detail:list){
+            logger.info(String.format("adverertise[%s], detail[%s]", ad.getId(), detail.getId()));
 			List<String> macs = detail.getInnerModels();
-			if(macs != null && macs.isEmpty())
+			if(macs == null || macs.isEmpty()){
+                logger.info("detail content is null");
 				continue;
+            }
 			for(String mac:macs){
 				Integer count = devCountMap.get(mac);
 				if(count == null)
 					devCountMap.put(mac, Integer.valueOf(1));
 				else
-					devCountMap.put(mac, count ++);
+					devCountMap.put(mac, Integer.valueOf(++count));
 				total ++;
 			}
 		}
