@@ -1354,9 +1354,10 @@ public class UserWalletUnitFacadeService {
 	/**
 	 * 丰富统计信息
 	 */
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(int uid,String beginTime,String endTime) {
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(Integer uid,String beginTime,String endTime) {
 		UcloudMacStatisticsVTO ucloudMacStatisticsVTO = new UcloudMacStatisticsVTO();
 		System.out.println("ss:"+beginTime+"::::hh:"+endTime);
+		int specUid=0;
 		try {
 			// 折线图信息
 			// 天数的计算
@@ -1365,6 +1366,10 @@ public class UserWalletUnitFacadeService {
 			List<String> lineChartIncomeInfo = new ArrayList<String>();
 			// 折线图Y轴（用户数）
 			List<Double> lineChartUserNumInfo = new ArrayList<Double>();
+			//特殊uid查询所有的记录
+			if(uid==specUid){
+				uid=null;
+			}
 			if(StringUtils.isBlank(beginTime)||StringUtils.isBlank(endTime)){
 				// 获取当前日期
 				String startTime = GetDateTime("yyyy-MM-dd", 0);
@@ -1716,7 +1721,12 @@ public class UserWalletUnitFacadeService {
 			Integer uid, String mac, String role, long start_created_ts,
 			long end_created_ts, int pageNo, int pageSize) {
 		System.out.println(uid+"|||"+mac+"|||"+role+"|||"+start_created_ts+"|||"+end_created_ts+"|||"+pageNo+"|||"+pageSize);
-			List<UserWalletLog> logs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
+		//特殊uid查询所有的总数据
+		int specUid=0;	
+		if(uid==specUid){
+			uid=null;
+		}
+		List<UserWalletLog> logs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
 			List<UserWalletLog> totallogs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,0,0);
 			int count=0;
 			//int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
