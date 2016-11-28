@@ -42,7 +42,7 @@ public class AdvertiseAllClearTaskLoader {
 		initOnpublishSign();
 		logger.info("AdvertiseAllClearTaskLoader end...");
 	}
-	//失效广告清除域名
+	//失效广告清除域名and状态变更
 	public void devicesDomainClear(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnLessThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
