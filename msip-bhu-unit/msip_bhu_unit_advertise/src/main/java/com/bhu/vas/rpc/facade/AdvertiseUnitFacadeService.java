@@ -467,9 +467,9 @@ public class AdvertiseUnitFacadeService {
 		
 		AdvertiseBillsVTO billVto =  new AdvertiseBillsVTO();
 		billVto.setExpect(ad.getCash());
-		billVto.setActual(cashSum);
-		
-		int balance = Integer.parseInt(ad.getCash()) < sum ? Integer.parseInt(ad.getCash()) : Integer.parseInt(ad.getCash()) - sum;
+		billVto.setActual(Integer.parseInt(ad.getCash()) < cashSum ? Integer.parseInt(ad.getCash()) : cashSum);
+
+		int balance = Integer.parseInt(ad.getCash()) - cashSum;
 		billVto.setBalance(balance);
 		report.setAdDetail(adVto);
 		report.setAdResult(adResult);
