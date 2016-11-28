@@ -121,9 +121,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		maps.add(typeMap);
 		try{
 			AdvertiseListVTO advertiseListVTO=new AdvertiseListVTO();
-			logger.info("mark 1==============================");
 			TailPage<AdvertiseVTO> advertises=advertiseUnitFacadeService.queryAdvertiseList(uid,maps,publishStartTime,publishEndTime,createStartTime,createEndTime,mobileNo,pn,ps);
-			logger.info("mark 2==============================");
 			advertiseListVTO.setAdvertises(advertises);
 			if(uid!=null){
 				ModelCriteria pubMc=new ModelCriteria();

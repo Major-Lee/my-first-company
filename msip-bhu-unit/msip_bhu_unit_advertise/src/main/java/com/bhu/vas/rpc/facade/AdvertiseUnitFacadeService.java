@@ -101,7 +101,6 @@ public class AdvertiseUnitFacadeService {
 			long count=0;
 			try {
 				AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern1,province, city, district,false);
-				System.out.println("mark+++++++++++++++++++++++++"+format.format(startDate)+"  "+format.format(endDate)+" "+DateTimeHelper.FormatPattern1+" "+province+" "+city+" "+district );
 				List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
 				if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
 					for(AdvertiseOccupiedVTO i:advertiseOccupiedVTOs){
@@ -111,7 +110,6 @@ public class AdvertiseUnitFacadeService {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			System.out.println("count====================="+count);
 			if(count==0){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 			}
@@ -416,12 +414,8 @@ public class AdvertiseUnitFacadeService {
 	    int days = (int)(endLong-startLong)/(1000 * 60 * 60 * 24);
 	    
 		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
-		System.out.println("*********"+start+"|"+end);
 		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
-		System.out.println("**********"+advertises.size());
-		for(Advertise ad : advertises){
-			System.out.println("***********"+ad.getProvince()+"|"+ad.getCity()+"|"+ad.getDistrict());
-		}
+
 		for(int i=index; i<=days; i++){
 			String time = null;
 			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
