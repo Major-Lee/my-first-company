@@ -482,10 +482,10 @@ public class RPCMessageParseHelper {
 				if(wan_item != null){
 					WifiDeviceSettingLinkModeDTO linkmodel_dto = new WifiDeviceSettingLinkModeDTO();
 					linkmodel_dto.setModel(wan_item.attributeValue("mode"));
-					linkmodel_dto.setGateway(wan_item.attributeValue("gateway"));
-					linkmodel_dto.setDns(wan_item.attributeValue("dns"));
-					linkmodel_dto.setIp(wan_item.attributeValue("ip"));
-					linkmodel_dto.setNetmask(wan_item.attributeValue("netmask"));
+					linkmodel_dto.setGateway(wan_item.attributeValue("real_gateway"));
+					linkmodel_dto.setDns(wan_item.attributeValue("real_dns"));
+					linkmodel_dto.setIp(wan_item.attributeValue("real_ipaddr"));
+					linkmodel_dto.setNetmask(wan_item.attributeValue("real_netmask"));
 					linkmodel_dto.setPassword_rsa(wan_item.attributeValue("password_rsa"));
 					linkmodel_dto.setWan_interface(wan_item.attributeValue("wan_interface"));
 					//linkmodel_dto.setReal_ipaddr(wan_item.attributeValue("real_ipaddr"));

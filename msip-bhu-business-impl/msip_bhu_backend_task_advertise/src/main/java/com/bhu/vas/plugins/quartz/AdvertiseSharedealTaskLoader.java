@@ -166,15 +166,18 @@ public class AdvertiseSharedealTaskLoader {
 		Map<String, Integer> devCountMap = new HashMap<String, Integer>(1000);
 		long total = 0;
 		for(AdvertiseDetails detail:list){
+            logger.info(String.format("adverertise[%s], detail[%s]", ad.getId(), detail.getId()));
 			List<String> macs = detail.getInnerModels();
-			if(macs != null && macs.isEmpty())
+			if(macs == null || macs.isEmpty()){
+                logger.info("detail content is null");
 				continue;
+            }
 			for(String mac:macs){
 				Integer count = devCountMap.get(mac);
 				if(count == null)
 					devCountMap.put(mac, Integer.valueOf(1));
 				else
-					devCountMap.put(mac, count ++);
+					devCountMap.put(mac, Integer.valueOf(++count));
 				total ++;
 			}
 		}
@@ -183,10 +186,10 @@ public class AdvertiseSharedealTaskLoader {
 			return;
 		}
 		logger.info("calculaing privce");
-		double cash = 0;
-		cash = Double.parseDouble(ad.getCash());
+		float cash = 0;
+		cash = Float.parseFloat(ad.getCash());
 		double back_money = 0;
-		double real_price = BusinessRuntimeConfiguration.Advertise_Unit_Price;
+		float real_price = BusinessRuntimeConfiguration.Advertise_Unit_Price;
 		//根据总金额和单价，计算出广告订单的预设设备广告天次
 		int pre_count = (int) (cash/BusinessRuntimeConfiguration.Advertise_Unit_Price); 
 		if(pre_count <= total){

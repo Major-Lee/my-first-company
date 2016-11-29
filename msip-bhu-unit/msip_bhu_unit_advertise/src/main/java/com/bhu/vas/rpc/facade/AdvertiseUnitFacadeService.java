@@ -101,7 +101,6 @@ public class AdvertiseUnitFacadeService {
 			long count=0;
 			try {
 				AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern1,province, city, district,false);
-				System.out.println("mark+++++++++++++++++++++++++"+format.format(startDate)+"  "+format.format(endDate)+" "+DateTimeHelper.FormatPattern1+" "+province+" "+city+" "+district );
 				List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
 				if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
 					for(AdvertiseOccupiedVTO i:advertiseOccupiedVTOs){
@@ -111,16 +110,15 @@ public class AdvertiseUnitFacadeService {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			System.out.println("count====================="+count);
 			if(count==0){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 			}
 			if(start>end){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 			}
 			entity.setCount(count);
 			int displayNum=(int) (count);
-			entity.setCash(displayNum*BusinessRuntimeConfiguration.Advertise_Unit_Price+"");
+			entity.setCash(displayNum*BusinessRuntimeConfiguration.Advertise_Unit_Price);
 			
 			
 			
@@ -165,7 +163,7 @@ public class AdvertiseUnitFacadeService {
 	public AdDevicePositionVTO fetchDevicePositionDistribution(String province,String city,String district) throws ParseException{
 		
 		String start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
-		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17);
+		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 18);
 		
 		AdDevicePositionVTO vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
 		if(StringUtils.isNoneBlank(city)){
@@ -287,7 +285,7 @@ public class AdvertiseUnitFacadeService {
 				advertiseService.update(advertise);
 				if(state!=0){//退费
 					userWalletFacadeService.advertiseRefundToUserWallet(advertise.getUid(), advertise.getOrderId(), Double.parseDouble(advertise.getCash()), 
-							String.format("Order Cash:%s, refund cash:%s", advertise.getCash(), advertise.getCash()));
+							String.format("verifyAdvertise fail Order Cash:%s, refund cash:%s", advertise.getCash(), advertise.getCash()));
 				}
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 			}else{
@@ -416,12 +414,7 @@ public class AdvertiseUnitFacadeService {
 	    int days = (int)(endLong-startLong)/(1000 * 60 * 60 * 24);
 	    
 		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
-		System.out.println("*********"+start+"|"+end);
 		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
-		System.out.println("**********"+advertises.size());
-		for(Advertise ad : advertises){
-			System.out.println("***********"+ad.getProvince()+"|"+ad.getCity()+"|"+ad.getDistrict());
-		}
 		for(int i=index; i<=days; i++){
 			String time = null;
 			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
@@ -432,7 +425,7 @@ public class AdvertiseUnitFacadeService {
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
 			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
-			occupiedVto.setCash(occupiedVto.getCount() * BusinessRuntimeConfiguration.Advertise_Unit_Price +"");
+			occupiedVto.setCash((float)(occupiedVto.getCount() * BusinessRuntimeConfiguration.Advertise_Unit_Price));
 			occupiedVtos.add(occupiedVto);
 		}
 		positionVto.setOccupyAds(occupiedVtos);
@@ -457,19 +450,19 @@ public class AdvertiseUnitFacadeService {
 		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId());
 		List<AdvertiseDetails> incomes  =  advertiseDevicesIncomeService.findModelByModelCriteria(mc);
 		int sum = 0;
-		int cashSum = 0;
+		float cashSum = 0;
 		for(AdvertiseDetails income : incomes){
 			adResult.put(income.getPublish_time(), (int) income.getActual_count());
 			sum +=income.getActual_count();
-			cashSum +=Integer.parseInt(income.getCash());
+			cashSum +=Double.parseDouble(income.getCash());
 		}
 		adResult.put("sum", sum);
 		
 		AdvertiseBillsVTO billVto =  new AdvertiseBillsVTO();
-		billVto.setExpect(ad.getCash());
-		billVto.setActual(cashSum);
+		billVto.setExpect(Float.parseFloat(ad.getCash()));
+		billVto.setActual(Float.parseFloat(ad.getCash()) < cashSum ? Float.parseFloat(ad.getCash()) : cashSum);
 		
-		int balance = Integer.parseInt(ad.getCash()) < sum ? Integer.parseInt(ad.getCash()) : Integer.parseInt(ad.getCash()) - sum;
+		float balance = Float.parseFloat(ad.getCash()) - cashSum;
 		billVto.setBalance(balance);
 		report.setAdDetail(adVto);
 		report.setAdResult(adResult);

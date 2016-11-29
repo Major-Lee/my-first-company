@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.advertise.model;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -196,8 +197,8 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	public String getCash() {
 		return cash;
 	}
-	public void setCash(String cash) {
-		this.cash = cash;
+	public void setCash(float cash) {
+		this.cash = cutDecimal(cash)+"";
 	}
 	
 	public boolean isSign() {
@@ -226,13 +227,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		
 		AdvertiseVTO singleAdvertise=new AdvertiseVTO();
 		//金额处理
-		int cash=Integer.parseInt(this.cash);
-		double sd=cash;
-		DecimalFormat formater = new DecimalFormat();
-		formater.setMaximumFractionDigits(2);
-		formater.setGroupingSize(0);
-		formater.setRoundingMode(RoundingMode.FLOOR);
-		singleAdvertise.setCash(formater.format(sd));
+		singleAdvertise.setCash(this.cash);
 		singleAdvertise.setCity(this.city);
 		singleAdvertise.setCount(this.count);
 		singleAdvertise.setDescription(this.description);
@@ -262,5 +257,10 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		int fir=Integer.valueOf(df.format(new Date()));
 		String randoms=StructuredIdHelper.generateStructuredIdStringAD(fir, "1", 1L);
 		System.out.println(randoms);
+	}
+	
+	private float cutDecimal (float f){
+		 BigDecimal   b  =   new BigDecimal(f);  
+		 return b.setScale(2, BigDecimal.ROUND_DOWN).floatValue();  
 	}
 }

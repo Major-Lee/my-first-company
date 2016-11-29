@@ -10,6 +10,13 @@ public class HotPlayOrderVTO implements java.io.Serializable{
 	private String amount;
 	//appid
 	private Integer appid;
+	private long restMin;
+	public long getRestMin() {
+		return restMin;
+	}
+	public void setRestMin(long restMin) {
+		this.restMin = restMin;
+	}
 	private AdCommdityVTO adCommdityVTO;
 	public AdCommdityVTO getAdCommdityVTO() {
 		return adCommdityVTO;
