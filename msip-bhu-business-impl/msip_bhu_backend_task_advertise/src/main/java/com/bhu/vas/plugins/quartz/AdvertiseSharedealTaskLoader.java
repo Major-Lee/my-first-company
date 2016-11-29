@@ -186,10 +186,10 @@ public class AdvertiseSharedealTaskLoader {
 			return;
 		}
 		logger.info("calculaing privce");
-		double cash = 0;
-		cash = Double.parseDouble(ad.getCash());
+		float cash = 0;
+		cash = Float.parseFloat(ad.getCash());
 		double back_money = 0;
-		double real_price = BusinessRuntimeConfiguration.Advertise_Unit_Price;
+		float real_price = BusinessRuntimeConfiguration.Advertise_Unit_Price;
 		//根据总金额和单价，计算出广告订单的预设设备广告天次
 		int pre_count = (int) (cash/BusinessRuntimeConfiguration.Advertise_Unit_Price); 
 		if(pre_count <= total){
