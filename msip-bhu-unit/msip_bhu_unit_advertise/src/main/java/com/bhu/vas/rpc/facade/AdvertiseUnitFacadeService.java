@@ -118,7 +118,7 @@ public class AdvertiseUnitFacadeService {
 			}
 			entity.setCount(count);
 			int displayNum=(int) (count);
-			entity.setCash(displayNum*BusinessRuntimeConfiguration.Advertise_Unit_Price+"");
+			entity.setCash(displayNum*BusinessRuntimeConfiguration.Advertise_Unit_Price);
 			
 			
 			

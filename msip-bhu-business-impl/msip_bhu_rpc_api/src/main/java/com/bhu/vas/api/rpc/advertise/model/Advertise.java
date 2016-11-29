@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.advertise.model;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -196,8 +197,8 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	public String getCash() {
 		return cash;
 	}
-	public void setCash(String cash) {
-		this.cash = cash;
+	public void setCash(float cash) {
+		this.cash = cutDecimal(cash)+"";
 	}
 	
 	public boolean isSign() {
@@ -262,5 +263,10 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		int fir=Integer.valueOf(df.format(new Date()));
 		String randoms=StructuredIdHelper.generateStructuredIdStringAD(fir, "1", 1L);
 		System.out.println(randoms);
+	}
+	
+	private float cutDecimal (float f){
+		 BigDecimal   b  =   new BigDecimal(f);  
+		 return b.setScale(2, BigDecimal.ROUND_DOWN).floatValue();  
 	}
 }
