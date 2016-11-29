@@ -426,7 +426,7 @@ public class AdvertiseUnitFacadeService {
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
 			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
-			occupiedVto.setCash(occupiedVto.getCount() * BusinessRuntimeConfiguration.Advertise_Unit_Price);
+			occupiedVto.setCash((float)(occupiedVto.getCount() * BusinessRuntimeConfiguration.Advertise_Unit_Price));
 			occupiedVtos.add(occupiedVto);
 		}
 		positionVto.setOccupyAds(occupiedVtos);
