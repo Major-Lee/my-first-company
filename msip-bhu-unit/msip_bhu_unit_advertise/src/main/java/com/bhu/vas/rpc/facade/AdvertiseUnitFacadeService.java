@@ -163,7 +163,7 @@ public class AdvertiseUnitFacadeService {
 	public AdDevicePositionVTO fetchDevicePositionDistribution(String province,String city,String district) throws ParseException{
 		
 		String start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
-		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17);
+		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 18);
 		
 		AdDevicePositionVTO vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
 		if(StringUtils.isNoneBlank(city)){
