@@ -564,9 +564,10 @@ public void hot_play_paymenturl(
 		String order_amount = order_vto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
+		long restMin = order_vto.getRestMin();
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, null, orderid, payment_completed_url,channel+"",version,"全城热播","20m");
+				order_amount, requestIp, null, orderid, payment_completed_url,channel+"",version,"全城热播",restMin+"m");
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID)));

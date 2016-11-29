@@ -73,6 +73,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -1077,6 +1078,8 @@ public class OrderUnitFacadeService {
 		try{
 			AdCommdityVTO advertisePayment = advertiseFacadeService.advertisePayment(hpid);
 			String amount = advertisePayment.getCash();
+			long orderExpire = 20;
+			long restMin = 20;
 			OrderPaymentType pType = BusinessEnumType.OrderPaymentType.fromKey(payment_type);
 			switch (pType) {
 			case PcWeixin:
@@ -1085,6 +1088,11 @@ public class OrderUnitFacadeService {
 				}
 				break;
 			case PcAlipay:
+				restMin = orderExpire - getBetweenTimeCouse(advertisePayment.getCreated_at(),
+						advertisePayment.getNowDate());
+				if (restMin < 0){
+					restMin = 0;
+				}
 				break;
 			default:
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_PAYMENT_TYPE_ERROR);
@@ -1096,6 +1104,7 @@ public class OrderUnitFacadeService {
 			vto.setAmount(order.getAmount());
 			vto.setAppid(order.getAppid());
 			vto.setAdCommdityVTO(advertisePayment);
+			vto.setRestMin(restMin);
 			logger.info("createHotPlayOrder successfully!");
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
@@ -1103,4 +1112,20 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	public static long getBetweenTimeCouse(Date createdTime, Date payTime) {
+        long min=0;  
+        long time1 = createdTime.getTime();  
+		long time2 = payTime.getTime();  
+		long diff ;  
+		if(time1<time2) {  
+		    diff = time2 - time1;  
+		} else {  
+		    diff = time1 - time2;  
+		}  
+		min = diff /60000 ;  
+        return min;  
+	}
+	
+	
 }
