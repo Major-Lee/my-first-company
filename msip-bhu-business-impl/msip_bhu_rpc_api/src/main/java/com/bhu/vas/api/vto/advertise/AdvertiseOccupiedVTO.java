@@ -1,5 +1,6 @@
 package com.bhu.vas.api.vto.advertise;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -20,8 +21,8 @@ public class AdvertiseOccupiedVTO implements java.io.Serializable{
 	public String getCash() {
 		return cash;
 	}
-	public void setCash(String cash) {
-		this.cash = cash;
+	public void setCash(float cash) {
+		this.cash = cutDecimal(cash) +"";
 	}
 	public void setCount(int count) {
 		this.count = count;
@@ -37,5 +38,10 @@ public class AdvertiseOccupiedVTO implements java.io.Serializable{
 	}
 	public void setTrashs(List<AdvertiseTrashPositionVTO> trashs) {
 		this.trashs = trashs;
+	}
+	
+	private float cutDecimal (float f){
+		 BigDecimal   b  =   new BigDecimal(f);  
+		 return b.setScale(2, BigDecimal.ROUND_DOWN).floatValue();  
 	}
 }
