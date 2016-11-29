@@ -44,7 +44,7 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 	
 	
 	public List<Map<String,Object>> queryRewardOrderpages(Integer uid, String mac, String umac, Integer status, String dut, 
-			Integer type, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
+			Integer type, String role, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
 		Map<String,Object> params = new HashMap<String,Object>();
 		try{
@@ -62,6 +62,8 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 				params.put("status", status);
 			if (dut != null && !dut.isEmpty())
 				params.put("dut", dut);
+			if (role != null && !role.isEmpty())
+				map.put("role", role);
 			result = super.getSqlSessionMasterTemplate().selectList(UserWalletLog.class.getName()+".queryRewardpages", params);
 		}catch (Exception e) {
 			return result;

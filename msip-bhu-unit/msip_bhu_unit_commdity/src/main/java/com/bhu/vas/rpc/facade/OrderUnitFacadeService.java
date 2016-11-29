@@ -639,7 +639,7 @@ public class OrderUnitFacadeService {
 			List<OrderRewardVTO> retDtos = Collections.emptyList();
 			if (vto_count.intValue() > 0){
 				List<Map<String, Object>> logs = userWalletLogService.getEntityDao().queryRewardOrderpages(uid, mac, 
-						umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory(), 
+						umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory(), null,
 						start_created_ts, end_created_ts, pageNo, pageSize);
 				OrderRewardVTO orderRewardVto = null;
 				retDtos = new ArrayList<OrderRewardVTO>();
@@ -656,8 +656,10 @@ public class OrderUnitFacadeService {
 					}
 					orderRewardVto.setAmount((String)log.get("amount"));
 					orderRewardVto.setShare_amount((String)log.get("cash"));
-					orderRewardVto.setPaymented_ts(Long.parseLong((String)log.get("paymented_at")));
-					orderRewardVto.setCreated_ts(Long.parseLong((String)log.get("created_at")));
+					long paymented_ts = DateTimeHelper.parseDate((String)log.get("paymented_at"), DateTimeHelper.DefalutFormatPattern).getTime();
+					orderRewardVto.setPaymented_ts(paymented_ts);
+					long created_ts = DateTimeHelper.parseDate((String)log.get("created_at"), DateTimeHelper.DefalutFormatPattern).getTime();
+					orderRewardVto.setCreated_ts(created_ts);
 					orderRewardVto.setUmactype((Integer)log.get("umactype"));
 				}
 			}
