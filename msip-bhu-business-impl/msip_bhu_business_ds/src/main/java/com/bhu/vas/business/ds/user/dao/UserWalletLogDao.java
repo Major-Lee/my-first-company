@@ -63,7 +63,7 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 			if (dut != null && !dut.isEmpty())
 				params.put("dut", dut);
 			if (role != null && !role.isEmpty())
-				map.put("role", role);
+				params.put("role", role);
 			result = super.getSqlSessionMasterTemplate().selectList(UserWalletLog.class.getName()+".queryRewardpages", params);
 		}catch (Exception e) {
 			return result;
