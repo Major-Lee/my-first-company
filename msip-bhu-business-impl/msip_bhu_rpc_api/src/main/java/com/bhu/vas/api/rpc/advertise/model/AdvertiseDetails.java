@@ -1,5 +1,6 @@
 package com.bhu.vas.api.rpc.advertise.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtIntModel;
@@ -61,8 +62,8 @@ public class AdvertiseDetails extends ListJsonExtIntModel<String>{
 		return cash;
 	}
 
-	public void setCash(String cash) {
-		this.cash = cash;
+	public void setCash(float cash) {
+		this.cash = cutDecimal(cash)+"";
 	}
 
 	public Date getCreated_at() {
@@ -96,5 +97,10 @@ public class AdvertiseDetails extends ListJsonExtIntModel<String>{
 	@Override
 	public Class<String> getJsonParserModel() {
 		return String.class;
+	}
+	
+	private float cutDecimal (float f){
+		 BigDecimal   b  =   new BigDecimal(f);  
+		 return b.setScale(2, BigDecimal.ROUND_DOWN).floatValue();  
 	}
 }

@@ -1,27 +1,34 @@
 package com.bhu.vas.api.vto.advertise;
 
+import java.math.BigDecimal;
+
 @SuppressWarnings("serial")
 public class AdvertiseBillsVTO implements java.io.Serializable{
-	private String expect;
-	private int actual;
-	private int balance;
+	private float expect;
+	private float actual;
+	private float balance;
 	
-	public String getExpect() {
+	public float getExpect() {
 		return expect;
 	}
-	public void setExpect(String string) {
-		this.expect = string;
+	public void setExpect(float expect) {
+		this.expect = cutDecimal(expect);
 	}
-	public int getActual() {
+	public float getActual() {
 		return actual;
 	}
-	public void setActual(int actual) {
-		this.actual = actual;
+	public void setActual(float actual) {
+		this.actual = cutDecimal(actual);
 	}
-	public int getBalance() {
+	public float getBalance() {
 		return balance;
 	}
-	public void setBalance(int balance) {
-		this.balance = balance;
+	public void setBalance(float balance) {
+		this.balance = cutDecimal(balance);
+	}
+	
+	private float cutDecimal (float f){
+		 BigDecimal   b  =   new BigDecimal(f);  
+		 return b.setScale(2, BigDecimal.ROUND_DOWN).floatValue();  
 	}
 }

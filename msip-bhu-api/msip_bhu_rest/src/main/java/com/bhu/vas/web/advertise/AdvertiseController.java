@@ -163,29 +163,30 @@ public class AdvertiseController extends BaseController{
 		}
 		
 	}
-	@ResponseBody()
-	@RequestMapping(value = "/escapeAdvertise", method = {RequestMethod.POST})
-	public void escapeAdvertise(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = true) int uid,
-			@RequestParam(required = true) String advertiseId
-			) {
-		try{
-			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.escapeAdvertise
-					(uid,advertiseId);
-			if(!rpcResult.hasError()){
-				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-			}
-		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
-		}catch(Exception ex){
-			ex.printStackTrace();
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
-		}
-	}
+	
+//	@ResponseBody()
+//	@RequestMapping(value = "/escapeAdvertise", method = {RequestMethod.POST})
+//	public void escapeAdvertise(
+//			HttpServletRequest request,
+//			HttpServletResponse response,
+//			@RequestParam(required = true) int uid,
+//			@RequestParam(required = true) String advertiseId
+//			) {
+//		try{
+//			RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.escapeAdvertise
+//					(uid,advertiseId);
+//			if(!rpcResult.hasError()){
+//				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+//			}else{
+//				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+//			}
+//		}catch(BusinessI18nCodeException i18nex){
+//			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+//		}catch(Exception ex){
+//			ex.printStackTrace();
+//			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+//		}
+//	}
 	
 	
 	/**

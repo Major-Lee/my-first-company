@@ -111,14 +111,14 @@ public class AdvertiseUnitFacadeService {
 				e.printStackTrace();
 			}
 			if(count==0){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 			}
 			if(start>end){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 			}
 			entity.setCount(count);
 			int displayNum=(int) (count);
-			entity.setCash(displayNum*BusinessRuntimeConfiguration.Advertise_Unit_Price+"");
+			entity.setCash(displayNum*BusinessRuntimeConfiguration.Advertise_Unit_Price);
 			
 			
 			
@@ -163,7 +163,7 @@ public class AdvertiseUnitFacadeService {
 	public AdDevicePositionVTO fetchDevicePositionDistribution(String province,String city,String district) throws ParseException{
 		
 		String start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
-		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17);
+		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 18);
 		
 		AdDevicePositionVTO vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
 		if(StringUtils.isNoneBlank(city)){
@@ -212,9 +212,10 @@ public class AdvertiseUnitFacadeService {
 		
 		if(StringUtils.isNotBlank(createStartTime)){
 			if(StringUtils.isNotBlank(createEndTime)){
-				criteria2.andColumnBetween("created_at", createStartTime, createEndTime);
-				criteria3.andColumnBetween("created_at", createStartTime, createEndTime);
-				criteria4.andColumnBetween("created_at", createStartTime, createEndTime);
+				criteria2.andColumnLessThanOrEqualTo("created_at", createEndTime+" 23:59:59").andColumnGreaterThanOrEqualTo("created_at", createStartTime+" 00:00:00");
+				criteria3.andColumnLessThanOrEqualTo("created_at", createEndTime+" 23:59:59").andColumnGreaterThanOrEqualTo("created_at", createStartTime+" 00:00:00");
+				criteria4.andColumnLessThanOrEqualTo("created_at", createEndTime+" 23:59:59").andColumnGreaterThanOrEqualTo("created_at", createStartTime+" 00:00:00");
+				
 			}else{
 				criteria2.andColumnEqualTo("created_at", createStartTime);
 				criteria3.andColumnEqualTo("created_at", createStartTime);
@@ -245,6 +246,7 @@ public class AdvertiseUnitFacadeService {
 				mc.or(criteria2);
 			}
 		}
+		
 		int total=advertiseService.countByModelCriteria(mc);
 		mc.setPageNumber(pn);
 		mc.setPageSize(ps);
@@ -425,7 +427,7 @@ public class AdvertiseUnitFacadeService {
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
 			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
-			occupiedVto.setCash(occupiedVto.getCount() * BusinessRuntimeConfiguration.Advertise_Unit_Price +"");
+			occupiedVto.setCash((float)(occupiedVto.getCount() * BusinessRuntimeConfiguration.Advertise_Unit_Price));
 			occupiedVtos.add(occupiedVto);
 		}
 		positionVto.setOccupyAds(occupiedVtos);
@@ -450,19 +452,19 @@ public class AdvertiseUnitFacadeService {
 		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId());
 		List<AdvertiseDetails> incomes  =  advertiseDevicesIncomeService.findModelByModelCriteria(mc);
 		int sum = 0;
-		int cashSum = 0;
+		float cashSum = 0;
 		for(AdvertiseDetails income : incomes){
 			adResult.put(income.getPublish_time(), (int) income.getActual_count());
 			sum +=income.getActual_count();
-			cashSum +=Integer.parseInt(income.getCash());
+			cashSum +=Double.parseDouble(income.getCash());
 		}
 		adResult.put("sum", sum);
 		
 		AdvertiseBillsVTO billVto =  new AdvertiseBillsVTO();
-		billVto.setExpect(ad.getCash());
-		billVto.setActual(Integer.parseInt(ad.getCash()) < cashSum ? Integer.parseInt(ad.getCash()) : cashSum);
-
-		int balance = Integer.parseInt(ad.getCash()) - cashSum;
+		billVto.setExpect(Float.parseFloat(ad.getCash()));
+		billVto.setActual(Float.parseFloat(ad.getCash()) < cashSum ? Float.parseFloat(ad.getCash()) : cashSum);
+		
+		float balance = Float.parseFloat(ad.getCash()) - cashSum;
 		billVto.setBalance(balance);
 		report.setAdDetail(adVto);
 		report.setAdResult(adResult);
