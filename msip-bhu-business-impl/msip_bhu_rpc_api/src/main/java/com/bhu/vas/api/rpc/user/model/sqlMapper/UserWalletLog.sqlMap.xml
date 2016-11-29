@@ -26,7 +26,19 @@
   <resultMap id="mapcountAndsum" type="hashmap">
     <result property="cashSum" column="cashSum" javaType="java.lang.Double"/>
     <result property="count" column="count" javaType="java.lang.Long"/>
-  </resultMap>  
+  </resultMap>
+  
+   <resultMap id="mapqueryRewardpages" type="hashmap">
+   		<result property="orderid" column="orderid" javaType="java.lang.String"/>
+   		<result property="cash" column="cash" javaType="java.lang.String"/>
+   		<result property="amount" column="amount" javaType="java.lang.String"/>
+   		<result property="mac" column="mac" javaType="java.lang.String"/>
+   		<result property="umac" column="umac" javaType="java.lang.String"/>
+   		<result property="payment_type" column="payment_type" javaType="java.lang.String"/>
+   		<result property="umactype" column="umactype" javaType="java.lang.Integer"/>
+   		<result property="paymented_at" column="paymented_at" javaType="java.lang.String"/>
+   		<result property="created_at" column="created_at" javaType="java.lang.String"/>
+   </resultMap>  
   
   	<sql id="modelTableName">
 	    <![CDATA[
@@ -163,10 +175,10 @@
 	    	t_walletlog.uid = #{uid}
 	    	AND t_walletlog.transtype = 'P2C'
 	    	<if test="start_time != null">
-	    		AND t_orders.updated_at &gt;= #{start_time}
+	    		AND t_orders.created_at &gt;= #{start_time}
 	    	</if>
 	    	<if test="end_time != null">
-	    		AND t_orders.updated_at &lt;= #{end_time}
+	    		AND t_orders.created_at &lt;= #{end_time}
 	    	</if>
 	    	AND t_walletlog.orderid = t_orders.id
 	    	<if test="mac != null">
@@ -178,9 +190,60 @@
 	    	<if test="dut != null">
 	    		AND	t_orders.mac_dut = #{dut}
 	    	</if>
-	    	AND t_orders.commdityid = '1'
-	    	AND t_orders.status = #{status}
-	    	AND t_walletlog.role = 'OW'
+	    	<if test="type != null">
+	    		AND t_orders.type = #{type}
+	    	</if>
+	    	<if test="status != null">
+	    		AND t_orders.status = #{status}
+	    	</if>
+	    	<if test="role != null">
+	    		AND t_walletlog.role = #{role}
+	    	</if>
+	    </where> 
+	</select>
+	
+	<select id="queryRewardpages" resultMap="mapqueryRewardpages" parameterType="Map">
+	    select 
+	    t_walletlog.orderid as orderid,
+		truncate(t_walletlog.cash,2) as cash,
+		t_orders.amount as amount,
+		t_orders.mac as mac,
+		t_orders.umac as umac,
+		t_orders.payment_type as payment_type,
+		t_orders.umactype as umactype,
+		t_orders.paymented_at as paymented_at,
+		t_orders.created_at as created_at 
+	    from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
+	    <where>
+	    	t_walletlog.uid = #{uid}
+	    	AND t_walletlog.transtype = 'P2C'
+	    	<if test="start_created_ts != null">
+	    		AND t_orders.created_at &gt;= #{start_created_ts}
+	    	</if>
+	    	<if test="end_created_ts != null">
+	    		AND t_orders.created_at &lt;= #{end_created_ts}
+	    	</if>
+	    	AND t_walletlog.orderid = t_orders.id
+	    	<if test="mac != null">
+	    		AND	t_orders.mac = #{mac}
+	    	</if>
+	    	<if test="umac != null">
+	    		AND	t_orders.umac = #{umac}
+	    	</if>
+	    	<if test="dut != null">
+	    		AND	t_orders.mac_dut = #{dut}
+	    	</if>
+	    	<if test="type != null">
+	    		AND t_orders.type = #{type}
+	    	</if>
+	    	<if test="status != null">
+	    		AND t_orders.status = #{status}
+	    	</if>
+	    	<if test="role != null">
+	    		AND t_walletlog.role = #{role}
+	    	</if>
+	    	ORDER BY t_orders.updated_at DESC
+	    	limit #{limit} OFFSET #{start}
 	    </where> 
 	</select>
 	

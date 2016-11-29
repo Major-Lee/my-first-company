@@ -73,7 +73,6 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
-import com.smartwork.msip.cores.helper.DateHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -85,8 +84,6 @@ import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
-
-import javassist.bytecode.LineNumberAttribute.Pc;
 
 @Service
 public class OrderUnitFacadeService {
@@ -626,61 +623,45 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
 			RewardQueryPagesDetailVTO vto = new RewardQueryPagesDetailVTO();
-			
+			String start_time = null;
+			String end_time = null;
+			if (start_created_ts != 0)
+				start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
+			if (end_created_ts != 0)
+				end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
+			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, 
+					end_time, mac,umac,status,dut,CommdityCategory.RewardInternetLimit.getCategory(),null);
+			vto.setCashSum((Double)map.get("cashSum"));
+			Long vto_count = (Long)map.get("count");
+			vto.setCount(vto_count);
+			logger.info("rewardOrderPagesDetail CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
 			
 			List<OrderRewardVTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, 
-					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts);
-			if(order_count > 0){
-				
-				String start_time = null;
-				String end_time = null;
-				if (start_created_ts != 0)
-					start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
-				if (end_created_ts != 0)
-					end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
-				logger.info("rewardOrderPagesDetail uid: "+uid+" start_time: "+start_time+" end_time: "+end_time+" mac: "+mac);
-				Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,umac,status,dut);
-				vto.setCashSum((Double)map.get("cashSum"));
-				vto.setCount((Long)map.get("count"));
-				logger.info("rewardOrderPagesDetail CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
-				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
-						CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
-						pageNo, pageSize);
-				
-				if(orderList != null && !orderList.isEmpty()){
-					List<String> orderids = new ArrayList<String>();
-					for(Order order : orderList){
-						orderids.add(order.getId());
+			if (vto_count.intValue() > 0){
+				List<Map<String, Object>> logs = userWalletLogService.getEntityDao().queryRewardOrderpages(uid, mac, 
+						umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory(), 
+						start_created_ts, end_created_ts, pageNo, pageSize);
+				OrderRewardVTO orderRewardVto = null;
+				retDtos = new ArrayList<OrderRewardVTO>();
+				for(Map<String, Object> log : logs){
+					orderRewardVto = new OrderRewardVTO();
+					orderRewardVto.setId((String)log.get("orderid"));
+					orderRewardVto.setMac((String)log.get("mac"));
+					orderRewardVto.setUmac((String)log.get("umac"));
+					orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch((String)log.get("umac"),true,false));
+					orderRewardVto.setPayment_type((String)log.get("payment_type"));
+					OrderPaymentType orderPaymentType = OrderPaymentType.fromKey((String)log.get("payment_type"));
+					if(orderPaymentType != null){
+						orderRewardVto.setPayment_type_name(orderPaymentType.getDesc());
 					}
-					List<UserWalletLog> walletLogs = null;
-					{
-						ModelCriteria mc_wallet_log = new ModelCriteria();
-						mc_wallet_log.createCriteria().andColumnNotEqualTo("uid", WifiDeviceSharedealConfigs.Default_Manufacturer).andColumnIn("orderid", orderids).andSimpleCaulse(" 1=1 ");
-						walletLogs = userWalletFacadeService.getUserWalletLogService().findModelByModelCriteria(mc_wallet_log);
-					}
-					retDtos = new ArrayList<OrderRewardVTO>();
-					OrderRewardVTO orderRewardVto = null;
-					for(Order order : orderList){
-						orderRewardVto = new OrderRewardVTO();
-						BeanUtils.copyProperties(order, orderRewardVto);
-						orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
-						OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
-						if(orderPaymentType != null){
-							orderRewardVto.setPayment_type_name(orderPaymentType.getDesc());
-						}
-						orderRewardVto.setShare_amount(distillOwnercash(order.getId(),walletLogs));
-						if(order.getCreated_at() != null){
-							orderRewardVto.setCreated_ts(order.getCreated_at().getTime());
-						}
-						if(order.getPaymented_at() != null){
-							orderRewardVto.setPaymented_ts(order.getPaymented_at().getTime());
-						}
-						retDtos.add(orderRewardVto);
-					}
+					orderRewardVto.setAmount((String)log.get("amount"));
+					orderRewardVto.setShare_amount((String)log.get("cash"));
+					orderRewardVto.setPaymented_ts(Long.parseLong((String)log.get("paymented_at")));
+					orderRewardVto.setCreated_ts(Long.parseLong((String)log.get("created_at")));
+					orderRewardVto.setUmactype((Integer)log.get("umactype"));
 				}
 			}
-			TailPage<OrderRewardVTO> returnRet = new CommonPage<OrderRewardVTO>(pageNo, pageSize, order_count, retDtos);
+			TailPage<OrderRewardVTO> returnRet = new CommonPage<OrderRewardVTO>(pageNo, pageSize, vto_count.intValue(), retDtos);
 			vto.setTailPages(returnRet);
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
