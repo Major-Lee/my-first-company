@@ -431,7 +431,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String UserPortalChargingNotify2UPortalApi = "http://ucloud.bhuwifi.com:9158/common/api/save-status";
 	public static String OpsImportCallbackApi = "http://ops.bhuwifi.com/api/unicorn/device-out-confirm";
 	public static String OpsImportCallbackToken = "MzZhMWIzMDdiYjIyOGI5NzllZTM2M2FlZTc0NGIyOTA=";
-	public static final  double Advertise_Unit_Price = 0.2;
+	public static final  float Advertise_Unit_Price = 0.2F;
 	
 	
 	/**
