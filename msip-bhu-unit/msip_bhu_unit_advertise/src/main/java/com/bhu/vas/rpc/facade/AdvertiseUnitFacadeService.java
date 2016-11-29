@@ -212,9 +212,10 @@ public class AdvertiseUnitFacadeService {
 		
 		if(StringUtils.isNotBlank(createStartTime)){
 			if(StringUtils.isNotBlank(createEndTime)){
-				criteria2.andColumnBetween("created_at", createStartTime, createEndTime);
-				criteria3.andColumnBetween("created_at", createStartTime, createEndTime);
-				criteria4.andColumnLessThanOrEqualTo("start", createStartTime).andColumnGreaterThanOrEqualTo("end", createEndTime);
+				criteria2.andColumnLessThanOrEqualTo("created_at", createEndTime+" 23:59:59").andColumnGreaterThanOrEqualTo("created_at", createStartTime+" 00:00:00");
+				criteria3.andColumnLessThanOrEqualTo("created_at", createEndTime+" 23:59:59").andColumnGreaterThanOrEqualTo("created_at", createStartTime+" 00:00:00");
+				criteria4.andColumnLessThanOrEqualTo("created_at", createEndTime+" 23:59:59").andColumnGreaterThanOrEqualTo("created_at", createStartTime+" 00:00:00");
+				
 			}else{
 				criteria2.andColumnEqualTo("created_at", createStartTime);
 				criteria3.andColumnEqualTo("created_at", createStartTime);
@@ -237,14 +238,15 @@ public class AdvertiseUnitFacadeService {
 				criteria2.andColumnBetween("start", publishStartTime, publishEndTime);
 				criteria3.andColumnBetween("end", publishStartTime, publishEndTime);
 				criteria4.andColumnLessThanOrEqualTo("start", publishStartTime).andColumnGreaterThanOrEqualTo("end", publishEndTime);
+				mc.or(criteria2);
+				mc.or(criteria3);
+				mc.or(criteria4);
 			}else{
 				criteria2.andColumnGreaterThanOrEqualTo("start", publishStartTime);
-				//mc.or(criteria2);
+				mc.or(criteria2);
 			}
 		}
-		mc.or(criteria2);
-		mc.or(criteria3);
-		mc.or(criteria4);
+		
 		int total=advertiseService.countByModelCriteria(mc);
 		mc.setPageNumber(pn);
 		mc.setPageSize(ps);
