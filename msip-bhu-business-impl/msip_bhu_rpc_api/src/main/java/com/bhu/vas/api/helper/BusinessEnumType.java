@@ -310,7 +310,7 @@ public class BusinessEnumType {
 		PurchaseGoodsUsedC("PGC","零钱购买道具"),
 		Cash2Realmoney("C2M","零钱提现"),
 		Advertise2C("A2C",	 "全城热播"),
-		Advertise2O("A2O",	 "全城热播退费"),
+		Advertise2O("A2O",	 "全城热播(退费)"),
 		;
 		
 		private String key;
