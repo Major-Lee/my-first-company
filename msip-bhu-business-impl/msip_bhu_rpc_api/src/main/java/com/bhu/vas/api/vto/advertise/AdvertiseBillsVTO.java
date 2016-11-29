@@ -2,26 +2,26 @@ package com.bhu.vas.api.vto.advertise;
 
 @SuppressWarnings("serial")
 public class AdvertiseBillsVTO implements java.io.Serializable{
-	private String expect;
-	private int actual;
-	private int balance;
+	private double expect;
+	private double actual;
+	private double balance;
 	
-	public String getExpect() {
+	public double getExpect() {
 		return expect;
 	}
-	public void setExpect(String string) {
+	public void setExpect(double string) {
 		this.expect = string;
 	}
-	public int getActual() {
+	public double getActual() {
 		return actual;
 	}
-	public void setActual(int actual) {
+	public void setActual(double actual) {
 		this.actual = actual;
 	}
-	public int getBalance() {
+	public double getBalance() {
 		return balance;
 	}
-	public void setBalance(int balance) {
+	public void setBalance(double balance) {
 		this.balance = balance;
 	}
 }
