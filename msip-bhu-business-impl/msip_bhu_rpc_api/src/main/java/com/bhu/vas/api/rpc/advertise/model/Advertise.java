@@ -227,13 +227,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		
 		AdvertiseVTO singleAdvertise=new AdvertiseVTO();
 		//金额处理
-		int cash=Integer.parseInt(this.cash);
-		double sd=cash;
-		DecimalFormat formater = new DecimalFormat();
-		formater.setMaximumFractionDigits(2);
-		formater.setGroupingSize(0);
-		formater.setRoundingMode(RoundingMode.FLOOR);
-		singleAdvertise.setCash(formater.format(sd));
+		singleAdvertise.setCash(this.cash);
 		singleAdvertise.setCity(this.city);
 		singleAdvertise.setCount(this.count);
 		singleAdvertise.setDescription(this.description);
