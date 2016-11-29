@@ -661,11 +661,11 @@ public class OrderUnitFacadeService {
 					long created_ts = DateTimeHelper.parseDate((String)log.get("created_at"), DateTimeHelper.DefalutFormatPattern).getTime();
 					orderRewardVto.setCreated_ts(created_ts);
 					orderRewardVto.setUmactype((Integer)log.get("umactype"));
+					retDtos.add(orderRewardVto);
 				}
 			}
 			TailPage<OrderRewardVTO> returnRet = new CommonPage<OrderRewardVTO>(pageNo, pageSize, vto_count.intValue(), retDtos);
 			vto.setTailPages(returnRet);
-			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
