@@ -1376,8 +1376,8 @@ public class UserWalletFacadeService{
 	}
 	public String fetchUserWithdrawSuccessCashSum(int uid) {
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("uid", uid);
-		return userWalletLogService.getEntityDao().getSqlSessionMasterTemplate().
+		map.put("id", uid);
+		return userWalletWithdrawApplyService.getEntityDao().getSqlSessionMasterTemplate().
 				selectOne(UserWalletWithdrawApply.class.getName()+".withdrawSuccessCashSum", map);
 	}
 
