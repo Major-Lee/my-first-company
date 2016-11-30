@@ -129,6 +129,9 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	public long searchCountByPosition(List<AdvertiseTrashPositionVTO> must_not_positions,String d_province,String d_city,String d_distrcy){
 		
 		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithPosition(must_not_positions,d_province, d_city, d_distrcy,false);
+		if(scm == null || scm.equals(null)){
+			return 0L;
+		}
 		return super.searchCountByConditionMessage(scm);
 	}
 	

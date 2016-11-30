@@ -315,6 +315,8 @@ public class WifiDeviceSearchMessageBuilder {
 					SearchCondition sc_d_ms_province = SearchCondition.builderSearchCondition(SearchConditionLogicEnumType.MustNot,BusinessIndexDefine.WifiDevice.
 							Field.D_PROVINCE.getName(), SearchConditionPattern.StringEqual.getPattern(), dto.getProvince());
 					pack.addChildSearchCondtions(sc_d_ms_province);
+				}else{
+					return null;
 				}
 			}
 		}
