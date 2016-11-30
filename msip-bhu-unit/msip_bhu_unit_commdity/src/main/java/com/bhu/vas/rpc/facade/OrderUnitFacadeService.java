@@ -687,12 +687,12 @@ public class OrderUnitFacadeService {
 				end_created_ts = System.currentTimeMillis();
 				logger.info(String.format("rewardQueryExportRecord default time start_ts[%s] end_ts[%s]", start_created_ts,end_created_ts));
 			}
-			List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
-					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
-					pageNo, pageSize);
+			List<Map<String, Object>> logs = userWalletLogService.getEntityDao().queryRewardOrderpages(uid, mac, 
+					umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory(), null,
+					start_created_ts, end_created_ts, pageNo, pageSize);
 			List<String> recordList = Collections.emptyList();
-			if(orderList != null && !orderList.isEmpty()){
-				recordList = outputOrderStringByItem(orderList);
+			if(logs != null && !logs.isEmpty()){
+				recordList = outputOrderStringByItem(logs);
 			}
 			String filename = String.format("%s_%s.csv",DateTimeHelper.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd_HH_mm_ss"),uid);
 			vto.setFilename(filename);
@@ -751,39 +751,36 @@ public class OrderUnitFacadeService {
 		return file;
 	}
 	
-	private List<String> outputOrderStringByItem(List<Order> orderList){
-		List<String> orderids = new ArrayList<String>();
+	private List<String> outputOrderStringByItem(List<Map<String, Object>> orderList){
 		List<String> recordList = new ArrayList<String>();
-		for(Order order : orderList){
-			orderids.add(order.getId());
-		}
-		List<UserWalletLog> walletLogs = null;
-		{
-			ModelCriteria mc_wallet_log = new ModelCriteria();
-			mc_wallet_log.createCriteria().andColumnNotEqualTo("uid", WifiDeviceSharedealConfigs.Default_Manufacturer).andColumnIn("orderid", orderids).andSimpleCaulse(" 1=1 ");
-			walletLogs = userWalletFacadeService.getUserWalletLogService().findModelByModelCriteria(mc_wallet_log);
-		}
-		for(Order order : orderList){
+		for(Map<String, Object> order : orderList){
 			StringBuffer bw = new StringBuffer();
+			String umac = (String)order.get("umac");
+			String paymented_at = (String)order.get("paymented_at");
+			String mac = (String)order.get("mac");
+			String cash = (String)order.get("cash");
+			String payment_type = (String)order.get("payment_type");
 			//厂家
-			bw.append(formatStr(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false)));
+			bw.append(formatStr(MacDictParserFilterHelper.prefixMactch(umac,true,false)));
 			//打赏时间
-			if (order.getPaymented_at() != null)
-				bw.append(formatStr(DateTimeHelper.formatDate(order.getPaymented_at(), DateTimeHelper.FormatPattern0)));
+			if (paymented_at != null) {
+				Date parseDate = DateTimeHelper.parseDate(paymented_at, DateTimeHelper.DefalutFormatPattern);
+				bw.append(formatStr(DateTimeHelper.formatDate(parseDate, DateTimeHelper.DefalutFormatPattern)));
+			}
 			else
 				bw.append(formatStr(""));
 			//打赏收益
-			bw.append(formatStr(distillOwnercash(order.getId(),walletLogs)));
+			bw.append(formatStr(cash));
 			//打赏方式
-			OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+			OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(payment_type);
 			if(orderPaymentType == null){
 				orderPaymentType = OrderPaymentType.Unknown;
 			}
 			bw.append(formatStr(orderPaymentType.getDesc()));
 			//设备mac
-			bw.append(formatStr(order.getMac()));
+			bw.append(formatStr(mac));
 			//终端mac
-			bw.append(formatStr(order.getUmac(),false));
+			bw.append(formatStr(umac,false));
 			recordList.add(bw.toString());
 		}
 		return recordList;
