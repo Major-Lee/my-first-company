@@ -90,7 +90,6 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 	 	@ResponseBody()
 	    @RequestMapping(value = "/wallet/fetch_logstatistics", method = {RequestMethod.POST})
 	    public void fetch_logs(
-	            HttpServletRequest request,
 	            HttpServletResponse response,
 	            @RequestParam(required = true,value="sk") String secretKey,
 	            @RequestParam(required = true) int uid
