@@ -198,7 +198,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		return cash;
 	}
 	public void setCash(float cash) {
-		this.cash = cutDecimal(cash)+"";
+		this.cash = cutDecimal(cash);
 	}
 	
 	public boolean isSign() {
@@ -259,8 +259,11 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		System.out.println(randoms);
 	}
 	
-	private float cutDecimal (float f){
-		 BigDecimal   b  =   new BigDecimal(f);  
-		 return b.setScale(2, BigDecimal.ROUND_DOWN).floatValue();  
+	private String cutDecimal (float f){
+		DecimalFormat formater = new DecimalFormat();
+		formater.setMaximumFractionDigits(2);
+		formater.setGroupingSize(0);
+		formater.setRoundingMode(RoundingMode.FLOOR);
+		return formater.format(f);
 	}
 }
