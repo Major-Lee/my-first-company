@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
+import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -61,6 +62,28 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
     }
+	
+	@ResponseBody()
+    @RequestMapping(value = "/wallet/fetch_logstatistics", method = {RequestMethod.POST})
+    public void fetch_logs(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true,value="sk") String secretKey,
+            @RequestParam(required = true) int uid
+    		) {
+		ResponseError validateError = validate(secretKey);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> rpcResult = userWalletRpcService.walletLogStatistics(uid);
+		if(!rpcResult.hasError()) {
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		} else {
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+    }
+	
 	
 	 	@ResponseBody()
 	    @RequestMapping(value="/richStatistics", method={RequestMethod.GET,RequestMethod.POST})
