@@ -4,6 +4,17 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
 	default-lazy-init="true">
 	<description>Quartz的本地Cron式执行任务配置</description>
+	
+	<!-- spring的属性加载器，加载properties文件中的属性 -->  
+	<bean id="advertisePropertyConfigurer"  
+	    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+		<property name="ignoreUnresolvablePlaceholders" value="true" /> 
+	    <property name="location">
+			<value>classpath:/deploy/runtimeconf/adtask.properties</value>
+	    </property>  
+	    <property name="fileEncoding" value="utf-8" />  
+	</bean>
+
 	<!-- Quartz本地Schduler -->
 	<bean id="localQuartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
 		<!-- Triggers集成 -->
@@ -34,8 +45,15 @@
 	<!-- 正常发布逻辑  -->
 	<bean id="advertiseBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseBackendTaskLoaderCronJobDetail" />
+<<<<<<< HEAD
 		<!--<property name="cronExpression" value="0 54-59 23 * * ?" />  -->
 		<property name="cronExpression" value="0 0/1 * * * ?" />
+=======
+		<!-- 	<property name="cronExpression" value="0 50-59 23 * * ?" /> -->
+		<property name="cronExpression" value="${advertise.cronjob}" />
+		
+		<!-- <property name="cronExpression" value="0 0/1 * * * ?" /> -->
+>>>>>>> beefc26... 定时配置移到properties文件中
 	</bean>
 	<bean id="advertiseBackendTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseBackendTaskLoaderJob" />
@@ -48,7 +66,12 @@
 	<bean id="advertiseOnPublishDevicesStatisticsLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseOnPublishDevicesStatisticsLoaderCronJobDetail" />
 		<!-- <property name="cronExpression" value="0 0 12 * * ? " /> -->
+<<<<<<< HEAD
 		<property name="cronExpression" value="0 0/5 * * * ?" />
+=======
+		<property name="cronExpression" value="${advertise.publish.stat}" />
+		<!-- <property name="cronExpression" value="0 0/5 * * * ?" /> -->
+>>>>>>> beefc26... 定时配置移到properties文件中
 	</bean>
 	<bean id="advertiseOnPublishDevicesStatisticsLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseOnPublishDevicesStatisticsLoaderJob" />
@@ -60,7 +83,8 @@
 	<!-- 支付十分钟超时检测 每30秒执行一次 -->
 	<bean id="advertisePaymentTimeOutTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertisePaymentTimeOutTaskLoaderCronJobDetail" />
-		<property name="cronExpression" value="0/30 * * * * ? " />
+		<!-- <property name="cronExpression" value="0/30 * * * * ? " /> -->
+		<property name="cronExpression" value="${advertise.payment.timeout}" />
 	</bean>
 	<bean id="advertisePaymentTimeOutTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertisePaymentTimeOutTaskLoaderJob" />
@@ -72,7 +96,13 @@
 	<!-- 每天23点五十分 广告数据全清 -->
 	<bean id="advertiseAllClearTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseAllClearTaskLoaderCronJobDetail" />
+<<<<<<< HEAD
 		<property name="cronExpression" value="0 0/20 * * * ? " />
+=======
+		<!-- <property name="cronExpression" value="0 45 23 * * ? " /> -->
+		<property name="cronExpression" value="${advertise.all.clear}" />
+		<!-- <property name="cronExpression" value="0 0/20 * * * ? " /> -->
+>>>>>>> beefc26... 定时配置移到properties文件中
 	</bean>
 	<bean id="advertiseAllClearTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseAllClearTaskLoaderJob" />
@@ -85,7 +115,12 @@
 	<!-- 每小时执行一次广告分成 -->
 	<bean id="advertiseSharedealTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="advertiseSharedealTaskLoaderCronJobDetail" />
+<<<<<<< HEAD
 		<property name="cronExpression" value="0 0/1 * * * ? " />
+=======
+		<!-- <property name="cronExpression" value="0 0 0/1 * * ?" /> -->
+		<property name="cronExpression" value="${advertise.sharedeal}" />
+>>>>>>> beefc26... 定时配置移到properties文件中
 	</bean>
 	<bean id="advertiseSharedealTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="advertiseSharedealTaskLoaderJob" />
