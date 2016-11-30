@@ -149,8 +149,8 @@
 	<select id="withdrawSuccessCashSum" resultType="string">
 	    select truncate(sum(cash),2) from <include refid="modelTableName" /> 
 	    <where>
-			<if test="id != null">
-				id = #{id}
+			<if test="uid != null">
+				uid = #{uid}
 			</if>
 			AND withdraw_oper = 'WS'
 		</where>
