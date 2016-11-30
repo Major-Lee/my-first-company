@@ -100,7 +100,7 @@ public class AdvertiseSharedealTaskLoader {
 					}
 				} else {
 					//分成
-					userWalletFacadeService.sharedealCashToUserWalletWithProcedure(detail.getTarget(), "", detail.getCash(), order.getId(), order.getPaymented_at(),
+					userWalletFacadeService.sharedealCashToUserWalletWithProcedure(detail.getTarget(), "", detail.getCash(), order.getId(), new Date(),
 							BusinessEnumType.advertiseSharedealDesc,
 							UWalletTransMode.SharedealPayment, UWalletTransType.Advertise2C, detail.getId(),
 									new IWalletSharedealNotifyCallback(){
@@ -191,7 +191,7 @@ public class AdvertiseSharedealTaskLoader {
 		double back_money = 0;
 		float real_price = BusinessRuntimeConfiguration.Advertise_Unit_Price;
 		//根据总金额和单价，计算出广告订单的预设设备广告天次
-		int pre_count = (int) (cash/BusinessRuntimeConfiguration.Advertise_Unit_Price); 
+		long pre_count = ad.getCount();//(int) (cash/BusinessRuntimeConfiguration.Advertise_Unit_Price); 
 		if(pre_count <= total){
 			//实际广告数量大于预收款项，需要降低实际单价，来计算各个设备的分成
 			real_price = cash / total;
