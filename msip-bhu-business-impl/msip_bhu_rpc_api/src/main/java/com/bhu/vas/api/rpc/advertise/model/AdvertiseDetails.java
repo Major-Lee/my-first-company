@@ -3,6 +3,7 @@ package com.bhu.vas.api.rpc.advertise.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtIntModel;
 
 
@@ -63,7 +64,7 @@ public class AdvertiseDetails extends ListJsonExtIntModel<String>{
 	}
 
 	public void setCash(float cash) {
-		this.cash = cutDecimal(cash)+"";
+		this.cash = ArithHelper.getCuttedCurrency(cash+"");
 	}
 
 	public Date getCreated_at() {

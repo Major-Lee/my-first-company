@@ -38,6 +38,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
@@ -210,6 +211,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			income.setAdvertiseid(adId);
 			income.setPublish_count(pushlist_count);
 			income.setPublish_time(publishTime);
+			income.setCash((float)(pushlist_count*BusinessRuntimeConfiguration.Advertise_Unit_Price));
 			advertiseDevicesIncomeService.insert(income);
 		}
 	}

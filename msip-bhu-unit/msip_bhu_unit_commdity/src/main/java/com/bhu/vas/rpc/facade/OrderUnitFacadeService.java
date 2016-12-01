@@ -85,8 +85,6 @@ import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterH
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
-import javassist.bytecode.LineNumberAttribute.Pc;
-
 @Service
 public class OrderUnitFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(OrderUnitFacadeService.class);
@@ -625,63 +623,49 @@ public class OrderUnitFacadeService {
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
 			RewardQueryPagesDetailVTO vto = new RewardQueryPagesDetailVTO();
-			
+			String start_time = null;
+			String end_time = null;
+			if (start_created_ts != 0)
+				start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
+			if (end_created_ts != 0)
+				end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
+			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, 
+					end_time, mac,umac,status,dut,CommdityCategory.RewardInternetLimit.getCategory(),null);
+			vto.setCashSum((Double)map.get("cashSum"));
+			Long vto_count = (Long)map.get("count");
+			vto.setCount(vto_count);
+			logger.info("rewardOrderPagesDetail CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
 			
 			List<OrderRewardVTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, 
-					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts);
-			if(order_count > 0){
-				
-				String start_time = null;
-				String end_time = null;
-				if (start_created_ts != 0)
-					start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
-				if (end_created_ts != 0)
-					end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
-				logger.info("rewardOrderPagesDetail uid: "+uid+" start_time: "+start_time+" end_time: "+end_time+" mac: "+mac);
-				Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, end_time, mac,umac,status,dut);
-				vto.setCashSum((Double)map.get("cashSum"));
-				vto.setCount((Long)map.get("count"));
-				logger.info("rewardOrderPagesDetail CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
-				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
-						CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
-						pageNo, pageSize);
-				
-				if(orderList != null && !orderList.isEmpty()){
-					List<String> orderids = new ArrayList<String>();
-					for(Order order : orderList){
-						orderids.add(order.getId());
+			if (vto_count.intValue() > 0){
+				List<Map<String, Object>> logs = userWalletLogService.getEntityDao().queryRewardOrderpages(uid, mac, 
+						umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory(), null,
+						start_created_ts, end_created_ts, pageNo, pageSize);
+				OrderRewardVTO orderRewardVto = null;
+				retDtos = new ArrayList<OrderRewardVTO>();
+				for(Map<String, Object> log : logs){
+					orderRewardVto = new OrderRewardVTO();
+					orderRewardVto.setId((String)log.get("orderid"));
+					orderRewardVto.setMac((String)log.get("mac"));
+					orderRewardVto.setUmac((String)log.get("umac"));
+					orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch((String)log.get("umac"),true,false));
+					orderRewardVto.setPayment_type((String)log.get("payment_type"));
+					OrderPaymentType orderPaymentType = OrderPaymentType.fromKey((String)log.get("payment_type"));
+					if(orderPaymentType != null){
+						orderRewardVto.setPayment_type_name(orderPaymentType.getDesc());
 					}
-					List<UserWalletLog> walletLogs = null;
-					{
-						ModelCriteria mc_wallet_log = new ModelCriteria();
-						mc_wallet_log.createCriteria().andColumnNotEqualTo("uid", WifiDeviceSharedealConfigs.Default_Manufacturer).andColumnIn("orderid", orderids).andSimpleCaulse(" 1=1 ");
-						walletLogs = userWalletFacadeService.getUserWalletLogService().findModelByModelCriteria(mc_wallet_log);
-					}
-					retDtos = new ArrayList<OrderRewardVTO>();
-					OrderRewardVTO orderRewardVto = null;
-					for(Order order : orderList){
-						orderRewardVto = new OrderRewardVTO();
-						BeanUtils.copyProperties(order, orderRewardVto);
-						orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
-						OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
-						if(orderPaymentType != null){
-							orderRewardVto.setPayment_type_name(orderPaymentType.getDesc());
-						}
-						orderRewardVto.setShare_amount(distillOwnercash(order.getId(),walletLogs));
-						if(order.getCreated_at() != null){
-							orderRewardVto.setCreated_ts(order.getCreated_at().getTime());
-						}
-						if(order.getPaymented_at() != null){
-							orderRewardVto.setPaymented_ts(order.getPaymented_at().getTime());
-						}
-						retDtos.add(orderRewardVto);
-					}
+					orderRewardVto.setAmount((String)log.get("amount"));
+					orderRewardVto.setShare_amount((String)log.get("cash"));
+					long paymented_ts = DateTimeHelper.parseDate((String)log.get("paymented_at"), DateTimeHelper.DefalutFormatPattern).getTime();
+					orderRewardVto.setPaymented_ts(paymented_ts);
+					long created_ts = DateTimeHelper.parseDate((String)log.get("created_at"), DateTimeHelper.DefalutFormatPattern).getTime();
+					orderRewardVto.setCreated_ts(created_ts);
+					orderRewardVto.setUmactype((Integer)log.get("umactype"));
+					retDtos.add(orderRewardVto);
 				}
 			}
-			TailPage<OrderRewardVTO> returnRet = new CommonPage<OrderRewardVTO>(pageNo, pageSize, order_count, retDtos);
+			TailPage<OrderRewardVTO> returnRet = new CommonPage<OrderRewardVTO>(pageNo, pageSize, vto_count.intValue(), retDtos);
 			vto.setTailPages(returnRet);
-			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -703,12 +687,12 @@ public class OrderUnitFacadeService {
 				end_created_ts = System.currentTimeMillis();
 				logger.info(String.format("rewardQueryExportRecord default time start_ts[%s] end_ts[%s]", start_created_ts,end_created_ts));
 			}
-			List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
-					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
-					pageNo, pageSize);
+			List<Map<String, Object>> logs = userWalletLogService.getEntityDao().queryRewardOrderpages(uid, mac, 
+					umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory(), null,
+					start_created_ts, end_created_ts, pageNo, pageSize);
 			List<String> recordList = Collections.emptyList();
-			if(orderList != null && !orderList.isEmpty()){
-				recordList = outputOrderStringByItem(orderList);
+			if(logs != null && !logs.isEmpty()){
+				recordList = outputOrderStringByItem(logs);
 			}
 			String filename = String.format("%s_%s.csv",DateTimeHelper.formatDate(new Date(System.currentTimeMillis()), "yyyy-MM-dd_HH_mm_ss"),uid);
 			vto.setFilename(filename);
@@ -767,39 +751,36 @@ public class OrderUnitFacadeService {
 		return file;
 	}
 	
-	private List<String> outputOrderStringByItem(List<Order> orderList){
-		List<String> orderids = new ArrayList<String>();
+	private List<String> outputOrderStringByItem(List<Map<String, Object>> orderList){
 		List<String> recordList = new ArrayList<String>();
-		for(Order order : orderList){
-			orderids.add(order.getId());
-		}
-		List<UserWalletLog> walletLogs = null;
-		{
-			ModelCriteria mc_wallet_log = new ModelCriteria();
-			mc_wallet_log.createCriteria().andColumnNotEqualTo("uid", WifiDeviceSharedealConfigs.Default_Manufacturer).andColumnIn("orderid", orderids).andSimpleCaulse(" 1=1 ");
-			walletLogs = userWalletFacadeService.getUserWalletLogService().findModelByModelCriteria(mc_wallet_log);
-		}
-		for(Order order : orderList){
+		for(Map<String, Object> order : orderList){
 			StringBuffer bw = new StringBuffer();
+			String umac = (String)order.get("umac");
+			String paymented_at = (String)order.get("paymented_at");
+			String mac = (String)order.get("mac");
+			String cash = (String)order.get("cash");
+			String payment_type = (String)order.get("payment_type");
 			//厂家
-			bw.append(formatStr(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false)));
+			bw.append(formatStr(MacDictParserFilterHelper.prefixMactch(umac,true,false)));
 			//打赏时间
-			if (order.getPaymented_at() != null)
-				bw.append(formatStr(DateTimeHelper.formatDate(order.getPaymented_at(), DateTimeHelper.FormatPattern0)));
+			if (paymented_at != null) {
+				Date parseDate = DateTimeHelper.parseDate(paymented_at, DateTimeHelper.DefalutFormatPattern);
+				bw.append(formatStr(DateTimeHelper.formatDate(parseDate, DateTimeHelper.DefalutFormatPattern)));
+			}
 			else
 				bw.append(formatStr(""));
 			//打赏收益
-			bw.append(formatStr(distillOwnercash(order.getId(),walletLogs)));
+			bw.append(formatStr(cash));
 			//打赏方式
-			OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+			OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(payment_type);
 			if(orderPaymentType == null){
 				orderPaymentType = OrderPaymentType.Unknown;
 			}
 			bw.append(formatStr(orderPaymentType.getDesc()));
 			//设备mac
-			bw.append(formatStr(order.getMac()));
+			bw.append(formatStr(mac));
 			//终端mac
-			bw.append(formatStr(order.getUmac(),false));
+			bw.append(formatStr(umac,false));
 			recordList.add(bw.toString());
 		}
 		return recordList;
@@ -1077,6 +1058,8 @@ public class OrderUnitFacadeService {
 		try{
 			AdCommdityVTO advertisePayment = advertiseFacadeService.advertisePayment(hpid);
 			String amount = advertisePayment.getCash();
+			long orderExpire = 20;
+			long restMin = 20;
 			OrderPaymentType pType = BusinessEnumType.OrderPaymentType.fromKey(payment_type);
 			switch (pType) {
 			case PcWeixin:
@@ -1085,6 +1068,11 @@ public class OrderUnitFacadeService {
 				}
 				break;
 			case PcAlipay:
+				restMin = orderExpire - getBetweenTimeCouse(advertisePayment.getCreated_at(),
+						advertisePayment.getNowDate());
+				if (restMin < 0){
+					restMin = 0;
+				}
 				break;
 			default:
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_PAYMENT_TYPE_ERROR);
@@ -1096,6 +1084,7 @@ public class OrderUnitFacadeService {
 			vto.setAmount(order.getAmount());
 			vto.setAppid(order.getAppid());
 			vto.setAdCommdityVTO(advertisePayment);
+			vto.setRestMin(restMin);
 			logger.info("createHotPlayOrder successfully!");
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
@@ -1103,4 +1092,20 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	public static long getBetweenTimeCouse(Date createdTime, Date payTime) {
+        long min=0;  
+        long time1 = createdTime.getTime();  
+		long time2 = payTime.getTime();  
+		long diff ;  
+		if(time1<time2) {  
+		    diff = time2 - time1;  
+		} else {  
+		    diff = time1 - time2;  
+		}  
+		min = diff /60000 ;  
+        return min;  
+	}
+	
+	
 }

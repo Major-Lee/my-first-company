@@ -111,14 +111,14 @@ public class AdvertiseUnitFacadeService {
 				e.printStackTrace();
 			}
 			if(count==0){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 			}
 			if(start>end){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 			}
 			entity.setCount(count);
 			int displayNum=(int) (count);
-			entity.setCash(displayNum*BusinessRuntimeConfiguration.Advertise_Unit_Price+"");
+			entity.setCash(displayNum*BusinessRuntimeConfiguration.Advertise_Unit_Price);
 			
 			
 			
@@ -163,7 +163,7 @@ public class AdvertiseUnitFacadeService {
 	public AdDevicePositionVTO fetchDevicePositionDistribution(String province,String city,String district) throws ParseException{
 		
 		String start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
-		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17);
+		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 18);
 		
 		AdDevicePositionVTO vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
 		if(StringUtils.isNoneBlank(city)){
@@ -212,9 +212,10 @@ public class AdvertiseUnitFacadeService {
 		
 		if(StringUtils.isNotBlank(createStartTime)){
 			if(StringUtils.isNotBlank(createEndTime)){
-				criteria2.andColumnBetween("created_at", createStartTime, createEndTime);
-				criteria3.andColumnBetween("created_at", createStartTime, createEndTime);
-				criteria4.andColumnBetween("created_at", createStartTime, createEndTime);
+				criteria2.andColumnLessThanOrEqualTo("created_at", createEndTime+" 23:59:59").andColumnGreaterThanOrEqualTo("created_at", createStartTime+" 00:00:00");
+				criteria3.andColumnLessThanOrEqualTo("created_at", createEndTime+" 23:59:59").andColumnGreaterThanOrEqualTo("created_at", createStartTime+" 00:00:00");
+				criteria4.andColumnLessThanOrEqualTo("created_at", createEndTime+" 23:59:59").andColumnGreaterThanOrEqualTo("created_at", createStartTime+" 00:00:00");
+				
 			}else{
 				criteria2.andColumnEqualTo("created_at", createStartTime);
 				criteria3.andColumnEqualTo("created_at", createStartTime);
@@ -245,6 +246,7 @@ public class AdvertiseUnitFacadeService {
 				mc.or(criteria2);
 			}
 		}
+		
 		int total=advertiseService.countByModelCriteria(mc);
 		mc.setPageNumber(pn);
 		mc.setPageSize(ps);
@@ -285,7 +287,7 @@ public class AdvertiseUnitFacadeService {
 				advertiseService.update(advertise);
 				if(state!=0){//退费
 					userWalletFacadeService.advertiseRefundToUserWallet(advertise.getUid(), advertise.getOrderId(), Double.parseDouble(advertise.getCash()), 
-							String.format("Order Cash:%s, refund cash:%s", advertise.getCash(), advertise.getCash()));
+							String.format("verifyAdvertise fail Order Cash:%s, refund cash:%s", advertise.getCash(), advertise.getCash()));
 				}
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 			}else{
@@ -415,7 +417,10 @@ public class AdvertiseUnitFacadeService {
 	    
 		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
 		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
+<<<<<<< HEAD
 
+=======
+>>>>>>> release20161130
 		for(int i=index; i<=days; i++){
 			String time = null;
 			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
@@ -455,7 +460,9 @@ public class AdvertiseUnitFacadeService {
 		for(AdvertiseDetails income : incomes){
 			adResult.put(income.getPublish_time(), (int) income.getActual_count());
 			sum +=income.getActual_count();
-			cashSum +=Double.parseDouble(income.getCash());
+			if(income.getCash() !=null || !income.getCash().isEmpty()){
+				cashSum +=Double.parseDouble(income.getCash());
+			}
 		}
 		adResult.put("sum", sum);
 		

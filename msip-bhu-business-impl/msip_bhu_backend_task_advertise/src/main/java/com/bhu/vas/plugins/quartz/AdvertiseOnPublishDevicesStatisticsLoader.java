@@ -96,7 +96,8 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 						detail.setActual_count(devices.size());
 						detail.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
 						detail.replaceInnerModels(devices);
-						detail.setCash((float)(devices.size()*BusinessRuntimeConfiguration.Advertise_Unit_Price));
+
+//						detail.setCash((float)(devices.size()*BusinessRuntimeConfiguration.Advertise_Unit_Price));
 						advertiseDevicesIncomeService.update(detail);
 					}else{
 						logger.info("AdvertiseOnPublishDevicesStatisticsLoader details null");

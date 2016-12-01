@@ -3,6 +3,8 @@ package com.bhu.vas.api.vto.advertise;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.smartwork.msip.cores.helper.ArithHelper;
+
 
 @SuppressWarnings("serial")
 public class AdvertiseOccupiedVTO implements java.io.Serializable{
@@ -22,7 +24,7 @@ public class AdvertiseOccupiedVTO implements java.io.Serializable{
 		return cash;
 	}
 	public void setCash(float cash) {
-		this.cash = cutDecimal(cash) +"";
+		this.cash = ArithHelper.getCuttedCurrency(cash+"");
 	}
 	public void setCount(int count) {
 		this.count = count;
@@ -40,8 +42,4 @@ public class AdvertiseOccupiedVTO implements java.io.Serializable{
 		this.trashs = trashs;
 	}
 	
-	private float cutDecimal (float f){
-		 BigDecimal   b  =   new BigDecimal(f);  
-		 return b.setScale(2, BigDecimal.ROUND_DOWN).floatValue();  
-	}
 }
