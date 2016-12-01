@@ -1,6 +1,5 @@
 package com.bhu.vas.api.vto.advertise;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
@@ -29,11 +28,11 @@ public class AdvertiseBillsVTO implements java.io.Serializable{
 		this.balance = cutDecimal(balance);
 	}
 	
-	private String cutDecimal (float f){
+	private static String cutDecimal (float f){
 		DecimalFormat formater = new DecimalFormat();
 		formater.setMaximumFractionDigits(2);
 		formater.setGroupingSize(0);
-		formater.setRoundingMode(RoundingMode.FLOOR);
+		formater.setRoundingMode(RoundingMode.CEILING);
 		return formater.format(f);
 	}
 }

@@ -105,7 +105,7 @@ public class AdvertiseDetails extends ListJsonExtIntModel<String>{
 		DecimalFormat formater = new DecimalFormat();
 		formater.setMaximumFractionDigits(2);
 		formater.setGroupingSize(0);
-		formater.setRoundingMode(RoundingMode.FLOOR);
+		formater.setRoundingMode(RoundingMode.CEILING);
 		return formater.format(f);
 	}
 }
