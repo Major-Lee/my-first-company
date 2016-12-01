@@ -653,16 +653,16 @@ public class TagFacadeRpcSerivce {
 	 * @param template
 	 * @return
 	 */
-	public boolean batchGroupSnkModifyNetworkConf(int uid, String message, String ssid, int rate){
-		try {
-			asyncDeliverMessageService.sendBatchGroupModifyDeviceSnkActionMessage(uid, message, ssid, rate,
-					IDTO.ACT_UPDATE);
-			return true;
-		} catch (Exception ex) {
-			ex.printStackTrace(System.out);
-			return false;
-		}
-	}
+//	public boolean batchGroupSnkModifyNetworkConf(int uid, String message, String ssid, int rate){
+//		try {
+//			asyncDeliverMessageService.sendBatchGroupModifyDeviceSnkActionMessage(uid, message, ssid, rate,
+//					IDTO.ACT_UPDATE);
+//			return true;
+//		} catch (Exception ex) {
+//			ex.printStackTrace(System.out);
+//			return false;
+//		}
+//	}
 
 	/**
 	 * 获得分组收益统计
