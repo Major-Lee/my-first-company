@@ -20,8 +20,8 @@ public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetw
 	private Integer owner;
 	private Integer idle_timeout;	//因为网安特别添加，当此字段存在时，需要忽略json中的idle_timeout值
 	
-	private String ssid;
-	private Integer rate;
+//	private String ssid;
+//	private Integer rate;
 	
 	//采用的模板编号四位字符串 整数format
 	private String template;
@@ -36,12 +36,12 @@ public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetw
 		if(psn != null){
 			if(idle_timeout != null)
 				psn.setIdle_timeout(idle_timeout.intValue());
-			if(!StringUtils.isEmpty(ssid))
-				psn.setSsid(ssid);
-			if(rate != null){
-				psn.setUsers_tx_rate(rate.intValue());
-				psn.setUsers_rx_rate(rate.intValue());
-			}
+//			if(!StringUtils.isEmpty(ssid))
+//				psn.setSsid(ssid);
+//			if(rate != null){
+//				psn.setUsers_tx_rate(rate.intValue());
+//				psn.setUsers_rx_rate(rate.intValue());
+//			}
 		}
 		return dto;
 	}
@@ -98,21 +98,21 @@ public class WifiDeviceSharedNetwork extends DtoJsonExtPKModel<String,SharedNetw
 		this.template = template;
 	}
 
-	public String getSsid() {
-		return ssid;
-	}
-
-	public void setSsid(String ssid) {
-		this.ssid = ssid;
-	}
-
-	public Integer getRate() {
-		return rate;
-	}
-
-	public void setRate(Integer rate) {
-		this.rate = rate;
-	}
+//	public String getSsid() {
+//		return ssid;
+//	}
+//
+//	public void setSsid(String ssid) {
+//		this.ssid = ssid;
+//	}
+//
+//	public Integer getRate() {
+//		return rate;
+//	}
+//
+//	public void setRate(Integer rate) {
+//		this.rate = rate;
+//	}
 	
 	
 }

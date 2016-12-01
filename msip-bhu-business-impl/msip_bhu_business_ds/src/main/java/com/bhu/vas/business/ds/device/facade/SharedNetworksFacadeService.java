@@ -26,7 +26,6 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkVTO;
 import com.bhu.vas.api.rpc.devices.model.UserDevicesSharedNetworks;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
-import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkModifyNotifyCallback;
 import com.bhu.vas.api.rpc.devices.notify.ISharedNetworkNotifyCallback;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
@@ -476,34 +475,34 @@ public class SharedNetworksFacadeService {
 		}
 	}
 	
-	/*
-	 * 修改设备的共享网络ssid和限速
-	 * 
-	 */
-	public void modifyDevicesSharedNetwork(int uid, String ssid, int rate, List<String> macs,ISharedNetworkModifyNotifyCallback callback){
-		if(macs == null || macs.isEmpty()){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY,new String[]{"macs"});
-		}
-		List<WifiDeviceSharedNetwork> result = new ArrayList<WifiDeviceSharedNetwork>();
-		for(String mac:macs){
-			String mac_lowercase = mac.toLowerCase();
-			WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
-			if(sharednetwork == null){
-				SharedNetworkSettingDTO dto = this.fetchDeviceSharedNetworkConfIfEmptyThenCreate(uid, mac_lowercase);
-				sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
-			}
-			if(sharednetwork == null){
-				continue;
-			}
-			sharednetwork.setSsid(ssid);
-			sharednetwork.setRate(rate);
-			wifiDeviceSharedNetworkService.update(sharednetwork);
-			result.add(sharednetwork);
-		}
-		if(callback != null){
-			callback.notify(result);
-		}
-	}
+//	/*
+//	 * 修改设备的共享网络ssid和限速
+//	 * 
+//	 */
+//	public void modifyDevicesSharedNetwork(int uid, String ssid, int rate, List<String> macs,ISharedNetworkModifyNotifyCallback callback){
+//		if(macs == null || macs.isEmpty()){
+//			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY,new String[]{"macs"});
+//		}
+//		List<WifiDeviceSharedNetwork> result = new ArrayList<WifiDeviceSharedNetwork>();
+//		for(String mac:macs){
+//			String mac_lowercase = mac.toLowerCase();
+//			WifiDeviceSharedNetwork sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
+//			if(sharednetwork == null){
+//				SharedNetworkSettingDTO dto = this.fetchDeviceSharedNetworkConfIfEmptyThenCreate(uid, mac_lowercase);
+//				sharednetwork = wifiDeviceSharedNetworkService.getById(mac_lowercase);
+//			}
+//			if(sharednetwork == null){
+//				continue;
+//			}
+//			sharednetwork.setSsid(ssid);
+//			sharednetwork.setRate(rate);
+//			wifiDeviceSharedNetworkService.update(sharednetwork);
+//			result.add(sharednetwork);
+//		}
+//		if(callback != null){
+//			callback.notify(result);
+//		}
+//	}
 	
 	/**
 	 * 添加设备应用指定的配置

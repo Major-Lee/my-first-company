@@ -402,18 +402,18 @@ public class TagRpcService implements ITagRpcService {
 		}
 	}
 
-	@Override
-	public RpcResponseDTO<Boolean> batchGroupSnkModifyNetworkConf(int uid, String message, String ssid, int rate) {
-		logger.info(
-				String.format("batchGroupSnkModifyNetworkConf uid[%s] message[%s] ssid[%s] rate[%s]",
-						uid, message, ssid, rate));
-		try {
-			boolean ret = tagFacadeRpcSerivce.batchGroupSnkModifyNetworkConf(uid, message, ssid, rate);
-			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret ? Boolean.TRUE : Boolean.FALSE);
-		} catch (BusinessI18nCodeException i18nex) {
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
-		} catch (Exception ex) {
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
-		}
-	}
+//	@Override
+//	public RpcResponseDTO<Boolean> batchGroupSnkModifyNetworkConf(int uid, String message, String ssid, int rate) {
+//		logger.info(
+//				String.format("batchGroupSnkModifyNetworkConf uid[%s] message[%s] ssid[%s] rate[%s]",
+//						uid, message, ssid, rate));
+//		try {
+//			boolean ret = tagFacadeRpcSerivce.batchGroupSnkModifyNetworkConf(uid, message, ssid, rate);
+//			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret ? Boolean.TRUE : Boolean.FALSE);
+//		} catch (BusinessI18nCodeException i18nex) {
+//			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
+//		} catch (Exception ex) {
+//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+//		}
+//	}
 }

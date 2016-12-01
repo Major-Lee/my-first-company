@@ -206,26 +206,26 @@ public class DeviceSharedNetworkController extends BaseController{
 	 * @param rate
 	 * @param mac
 	 */
-	@ResponseBody()
-	@RequestMapping(value="/modify_dev",method={RequestMethod.POST})	
-	public void modifyShareNetworkParam(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) String ssid,
-			@RequestParam(required = true) int rate,
-			@RequestParam(required = true) String macs) {
-		
-		String[] mac_array = macs.toLowerCase().split(StringHelper.COMMA_STRING_GAP);
-		
-		RpcResponseDTO<Boolean> rpcResult = deviceSharedNetworkRpcService.modifyNetworkConf(uid, ssid, rate, Arrays.asList(mac_array));
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}
-	}
-	
+//	@ResponseBody()
+//	@RequestMapping(value="/modify_dev",method={RequestMethod.POST})	
+//	public void modifyShareNetworkParam(
+//			HttpServletRequest request,
+//			HttpServletResponse response,
+//			@RequestParam(required = true) Integer uid,
+//			@RequestParam(required = true) String ssid,
+//			@RequestParam(required = true) int rate,
+//			@RequestParam(required = true) String macs) {
+//		
+//		String[] mac_array = macs.toLowerCase().split(StringHelper.COMMA_STRING_GAP);
+//		
+//		RpcResponseDTO<Boolean> rpcResult = deviceSharedNetworkRpcService.modifyNetworkConf(uid, ssid, rate, Arrays.asList(mac_array));
+//		if(!rpcResult.hasError()){
+//			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+//		}else{
+//			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+//		}
+//	}
+//	
 
 	/**
 	 * 获取用户所属指定共享网络配置的设备分页列表

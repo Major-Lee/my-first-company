@@ -237,28 +237,28 @@ public class GroupController extends BaseController{
 	 * @param sharenetwork_type
 	 * @param mac
 	 */
-	@ResponseBody()
-	@RequestMapping(value="/snk/modify_dev",method={RequestMethod.POST})	
-	public void modify_dev(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) String message,
-			@RequestParam(required = true) String ssid,
-			@RequestParam(required = true) int rate){
-		ResponseError validateError = ValidateService.validateParamValueEmpty("message",message);
-		if(validateError != null){
-			SpringMVCHelper.renderJson(response, validateError);
-			return;
-		}
-		RpcResponseDTO<Boolean> rpcResult = tagRpcService.batchGroupSnkModifyNetworkConf(uid, message, ssid, rate);
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}
-	}
-
+//	@ResponseBody()
+//	@RequestMapping(value="/snk/modify_dev",method={RequestMethod.POST})	
+//	public void modify_dev(
+//			HttpServletRequest request,
+//			HttpServletResponse response,
+//			@RequestParam(required = true) Integer uid,
+//			@RequestParam(required = true) String message,
+//			@RequestParam(required = true) String ssid,
+//			@RequestParam(required = true) int rate){
+//		ResponseError validateError = ValidateService.validateParamValueEmpty("message",message);
+//		if(validateError != null){
+//			SpringMVCHelper.renderJson(response, validateError);
+//			return;
+//		}
+//		RpcResponseDTO<Boolean> rpcResult = tagRpcService.batchGroupSnkModifyNetworkConf(uid, message, ssid, rate);
+//		if(!rpcResult.hasError()){
+//			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+//		}else{
+//			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+//		}
+//	}
+//
 	
     @ResponseBody()
     @RequestMapping(value = "/count/online", method = {RequestMethod.POST})

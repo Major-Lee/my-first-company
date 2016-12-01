@@ -56,7 +56,7 @@ public interface IDeviceSharedNetworkRpcService {
 	 * @param macs
 	 * @return
 	 */
-	RpcResponseDTO<Boolean> modifyNetworkConf(int uid, String ssid, int rate, List<String> macs);
+//	RpcResponseDTO<Boolean> modifyNetworkConf(int uid, String ssid, int rate, List<String> macs);
 
 	
 	/**

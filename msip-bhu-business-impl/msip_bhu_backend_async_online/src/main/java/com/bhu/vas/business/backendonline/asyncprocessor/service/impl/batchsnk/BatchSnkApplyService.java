@@ -58,52 +58,52 @@ public class BatchSnkApplyService {
 	
 	
 	
-	public void modify(final int userid, final String ssid, final int rate, List<String> dmacs){
-		logger.info(String.format("modify sharednetwork conf uid[%s] ssid[%s] rate[%s] dmacs[%s]",userid, ssid, rate, dmacs));
-		if(dmacs == null || dmacs.isEmpty()) return;
-		try{
-			final List<DownCmds> downCmds = new ArrayList<DownCmds>();
-			
-			sharedNetworksFacadeService.modifyDevicesSharedNetwork(userid, ssid, rate, dmacs,
-					new ISharedNetworkModifyNotifyCallback(){
-						@Override
-						public void notify(List<WifiDeviceSharedNetwork> snks) {
-							logger.info(String.format("modify snk notify callback"));
-							if(snks == null || snks.isEmpty()){
-								return;
-							}
-							for(WifiDeviceSharedNetwork snk:snks){
-								if(snk == null)
-									continue;
-								SharedNetworkSettingDTO dto = snk.getInnerModel();
-								if(dto == null)
-									continue;
-								ParamSharedNetworkDTO psn = dto.getPsn();
-								if(psn == null)
-									continue;
-								if(!dto.isOn())
-									continue;
-								WifiDevice wifiDevice = wifiDeviceService.getById(snk.getId());
-								if(wifiDevice == null) continue;
-								if(!wifiDevice.isOnline())
-									continue;
-								//生成下发指令
-								String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, snk.getId(), -1,JsonHelper.getJSONString(psn),
-										DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
-								downCmds.add(DownCmds.builderDownCmds(snk.getId(), cmd));
-							}
-						}
-					});
-			
-			if(!downCmds.isEmpty()){
-				daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
-				downCmds.clear();
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-		}
-	}
+//	public void modify(final int userid, final String ssid, final int rate, List<String> dmacs){
+//		logger.info(String.format("modify sharednetwork conf uid[%s] ssid[%s] rate[%s] dmacs[%s]",userid, ssid, rate, dmacs));
+//		if(dmacs == null || dmacs.isEmpty()) return;
+//		try{
+//			final List<DownCmds> downCmds = new ArrayList<DownCmds>();
+//			
+//			sharedNetworksFacadeService.modifyDevicesSharedNetwork(userid, ssid, rate, dmacs,
+//					new ISharedNetworkModifyNotifyCallback(){
+//						@Override
+//						public void notify(List<WifiDeviceSharedNetwork> snks) {
+//							logger.info(String.format("modify snk notify callback"));
+//							if(snks == null || snks.isEmpty()){
+//								return;
+//							}
+//							for(WifiDeviceSharedNetwork snk:snks){
+//								if(snk == null)
+//									continue;
+//								SharedNetworkSettingDTO dto = snk.getInnerModel();
+//								if(dto == null)
+//									continue;
+//								ParamSharedNetworkDTO psn = dto.getPsn();
+//								if(psn == null)
+//									continue;
+//								if(!dto.isOn())
+//									continue;
+//								WifiDevice wifiDevice = wifiDeviceService.getById(snk.getId());
+//								if(wifiDevice == null) continue;
+//								if(!wifiDevice.isOnline())
+//									continue;
+//								//生成下发指令
+//								String cmd = CMDBuilder.autoBuilderCMD4Opt(OperationCMD.ModifyDeviceSetting,OperationDS.DS_SharedNetworkWifi_Start, snk.getId(), -1,JsonHelper.getJSONString(psn),
+//										DeviceStatusExchangeDTO.build(wifiDevice.getWork_mode(), wifiDevice.getOrig_swver()),deviceCMDGenFacadeService);
+//								downCmds.add(DownCmds.builderDownCmds(snk.getId(), cmd));
+//							}
+//						}
+//					});
+//			
+//			if(!downCmds.isEmpty()){
+//				daemonRpcService.wifiMultiDevicesCmdsDown(downCmds.toArray(new DownCmds[0]));
+//				downCmds.clear();
+//			}
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}finally{
+//		}
+//	}
 
 	public void apply(final int userid, final char dtoType,List<String> dmacs, SharedNetworkType sharedNetwork,String template, final SharedNetworkChangeType configChanged) {
 		logger.info(String.format("apply sharednetwork conf uid[%s] dtoType[%s] snk[%s] template[%s] dmacs[%s] configChanged[%s]",userid,dtoType,sharedNetwork.getKey(),template, dmacs, configChanged));

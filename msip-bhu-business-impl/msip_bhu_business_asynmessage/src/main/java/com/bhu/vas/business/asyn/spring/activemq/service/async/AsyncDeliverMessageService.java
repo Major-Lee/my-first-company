@@ -14,12 +14,10 @@ import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyBySnDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
-import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupModifyDeviceSnkDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupSendSortMessageDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkClearDTO;
-import com.bhu.vas.business.asyn.spring.model.async.snk.BatchModifyDeviceSnkDTO;
 import com.bhu.vas.business.asyn.spring.model.async.tag.OperTagDTO;
 import com.bhu.vas.business.asyn.spring.model.async.user.UserIdentityRepairDTO;
 
@@ -133,16 +131,16 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendBatchGroupModifyDeviceSnkActionMessage(int uid,String message,String ssid, int rate, char dtoType){
-		BatchGroupModifyDeviceSnkDTO dto = new BatchGroupModifyDeviceSnkDTO();
-		dto.setUid(uid);
-		dto.setMessage(message);
-		dto.setSsid(ssid);
-		dto.setRate(rate);
-		dto.setDtoType(dtoType);
-		dto.setTs(System.currentTimeMillis());
-		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
-	}
+//	public void sendBatchGroupModifyDeviceSnkActionMessage(int uid,String message,String ssid, int rate, char dtoType){
+//		BatchGroupModifyDeviceSnkDTO dto = new BatchGroupModifyDeviceSnkDTO();
+//		dto.setUid(uid);
+//		dto.setMessage(message);
+//		dto.setSsid(ssid);
+//		dto.setRate(rate);
+//		dto.setDtoType(dtoType);
+//		dto.setTs(System.currentTimeMillis());
+//		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+//	}
 	
 	
 	
@@ -159,16 +157,16 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 
-	public void sendBatchModifyDeviceSnkActionMessage(int uid,String ssid, int rate, List<String> dmacs, char dtoType){
-		BatchModifyDeviceSnkDTO dto = new BatchModifyDeviceSnkDTO();
-		dto.setUid(uid);
-		dto.setSsid(ssid);
-		dto.setRate(rate);
-		dto.setMacs(dmacs);
-		dto.setDtoType(dtoType);
-		dto.setTs(System.currentTimeMillis());
-		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
-	}
+//	public void sendBatchModifyDeviceSnkActionMessage(int uid,String ssid, int rate, List<String> dmacs, char dtoType){
+//		BatchModifyDeviceSnkDTO dto = new BatchModifyDeviceSnkDTO();
+//		dto.setUid(uid);
+//		dto.setSsid(ssid);
+//		dto.setRate(rate);
+//		dto.setMacs(dmacs);
+//		dto.setDtoType(dtoType);
+//		dto.setTs(System.currentTimeMillis());
+//		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+//	}
 
 	public void sendBatchDeviceSnkTemplateClearActionMessage(int uid,String snk_type,String template){
 		BatchDeviceSnkClearDTO dto = new BatchDeviceSnkClearDTO();

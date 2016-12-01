@@ -9,8 +9,6 @@
     <result property="owner" column="owner"/>
     <result property="idle_timeout" column="idle_timeout"/>
     <result property="template" column="template"/>
-    <result property="ssid" column="ssid"/>
-    <result property="rate" column="rate"/>
     
     <result property="sharednetwork_type" column="sharednetwork_type"/>
     <result property="updated_at" column="updated_at"/>
@@ -27,8 +25,6 @@
 	    <![CDATA[
 	    	id,
 	    	owner,
-	    	ssid,
-	    	rate,
 	    	idle_timeout,
 	    	template,
 	    	sharednetwork_type,
@@ -40,8 +36,6 @@
 	<sql id="modelInsertValues">
 	    	#{id},
 	    	#{owner},
-	    	#{ssid},
-	    	#{rate},
 	    	#{idle_timeout},
 	    	#{template},
 	    	#{sharednetwork_type},
@@ -51,8 +45,6 @@
 	
 	<sql id="modelUpdateValues">
 	    	owner = #{owner},
-	    	ssid = #{ssid},
-	    	rate = #{rate},
 	    	idle_timeout = #{idle_timeout},
 	    	template = #{template},
 	    	sharednetwork_type = #{sharednetwork_type},	
@@ -63,8 +55,6 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	owner,
-	    	ssid,
-	    	rate,
 	    	idle_timeout,
 	    	template,
 	    	sharednetwork_type,	    
