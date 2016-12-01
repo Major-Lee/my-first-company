@@ -167,6 +167,7 @@ public class AdvertiseSharedealTaskLoader {
 		long total = 0;
 		for(AdvertiseDetails detail:list){
             logger.info(String.format("adverertise[%s], detail[%s]", ad.getId(), detail.getId()));
+			total += detail.getPublish_count();
 			List<String> macs = detail.getInnerModels();
 			if(macs == null || macs.isEmpty()){
                 logger.info("detail content is null");
@@ -178,7 +179,6 @@ public class AdvertiseSharedealTaskLoader {
 					devCountMap.put(mac, Integer.valueOf(1));
 				else
 					devCountMap.put(mac, Integer.valueOf(++count));
-				total ++;
 			}
 		}
 		if(total <= 0){
