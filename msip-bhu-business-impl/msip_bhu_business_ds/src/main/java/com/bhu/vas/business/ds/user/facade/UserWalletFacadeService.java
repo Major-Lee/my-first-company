@@ -186,7 +186,7 @@ public class UserWalletFacadeService{
 				}
 			} 
 			userOAuthStateVTO.setOpenid(accountNum);
-			userOAuthStateVTO.setIdentify("public");
+			userOAuthStateVTO.setIdentify("weixin");
 			List<UserOAuthStateVTO> userOAuthStateList = new ArrayList<UserOAuthStateVTO>();
 			userOAuthStateList.add(userOAuthStateVTO);	
 			walletDetail.setPayments(userOAuthStateList);
