@@ -156,31 +156,31 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							wifiDeviceService.updateAll(wifiDevices);
 	
 							//检查共享网络是否需要变更模板(城市运营商变更)
-							List<WifiDeviceSharedNetwork> wifiDevicesSnks = sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().findByIds(pages);
-							for(WifiDeviceSharedNetwork wsnk:wifiDevicesSnks){
-								if(wsnk == null)
-									continue;
-								if(DistributorType.City.getType().equals(distributor_type)){
-									//城市运营商的设备，需要检查是否需要变更模板
-									if(distributor != -1 && wsnk.getOwner() != null && wsnk.getOwner().intValue() != distributor){
-										wsnk.setOwner(distributor);
-										wsnk.setTemplate(psn.getTemplate());
-										wsnk.setSharednetwork_type(psn.getNtype());
-										SharedNetworkSettingDTO dto = wsnk.getInnerModel();
-										dto.setOn(true);
-										dto.setPsn(psn);
-										wsnk.putInnerModel(dto);
-										sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(wsnk); //后面会针对设备重建索引 
-									}
-								} else {
-									//如果之前是运营商设备，出货给分销商
-									if(user_willbinded!= null){
-										if(wsnk.getOwner() == null || wsnk.getOwner().intValue() != user_willbinded.getId()){
-											sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().delete(wsnk);
-										}
-									}
-								}
-							}
+//							List<WifiDeviceSharedNetwork> wifiDevicesSnks = sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().findByIds(pages);
+//							for(WifiDeviceSharedNetwork wsnk:wifiDevicesSnks){
+//								if(wsnk == null)
+//									continue;
+//								if(DistributorType.City.getType().equals(distributor_type)){
+//									//城市运营商的设备，需要检查是否需要变更模板
+//									if(distributor != -1 && wsnk.getOwner() != null && wsnk.getOwner().intValue() != distributor){
+//										wsnk.setOwner(distributor);
+//										wsnk.setTemplate(psn.getTemplate());
+//										wsnk.setSharednetwork_type(psn.getNtype());
+//										SharedNetworkSettingDTO dto = wsnk.getInnerModel();
+//										dto.setOn(true);
+//										dto.setPsn(psn);
+//										wsnk.putInnerModel(dto);
+//										sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(wsnk); //后面会针对设备重建索引 
+//									}
+//								} else {
+//									//如果之前是运营商设备，出货给分销商
+//									if(user_willbinded!= null){
+//										if(wsnk.getOwner() == null || wsnk.getOwner().intValue() != user_willbinded.getId()){
+//											sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().delete(wsnk);
+//										}
+//									}
+//								}
+//							}
 							
 							if(user_willbinded != null){
 								//userDeviceFacadeService.doForceBindDevices(uid_willbinded.intValue(),pages);

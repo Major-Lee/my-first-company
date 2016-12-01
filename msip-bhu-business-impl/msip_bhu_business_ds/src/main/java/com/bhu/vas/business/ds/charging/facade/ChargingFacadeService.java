@@ -625,18 +625,23 @@ public class ChargingFacadeService {
 		try{
 			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
 			if(configs == null){
-				WifiDeviceSharedealConfigs sharedeal = wifiDeviceSharedealConfigsService.getById(dmac);
-				if(DistributorType.City.getType().equals(sharedeal.getDistributor_type())){
-					if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue())
-						return ParamSharedNetworkDTO.Default_City_Range_Cash_PC;
-					else
-						return ParamSharedNetworkDTO.Default_City_Range_Cash_Mobile;
-				} else {
-					if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue())
-						return ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC;
-					else
-						return ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile;
-				}
+				if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue())
+				return ParamSharedNetworkDTO.Default_City_Range_Cash_PC;
+			else
+				return ParamSharedNetworkDTO.Default_City_Range_Cash_Mobile;
+
+//				WifiDeviceSharedealConfigs sharedeal = wifiDeviceSharedealConfigsService.getById(dmac);
+//				if(DistributorType.City.getType().equals(sharedeal.getDistributor_type())){
+//					if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue())
+//						return ParamSharedNetworkDTO.Default_City_Range_Cash_PC;
+//					else
+//						return ParamSharedNetworkDTO.Default_City_Range_Cash_Mobile;
+//				} else {
+//					if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue())
+//						return ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC;
+//					else
+//						return ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile;
+//				}
 			} else {
 				String amountRange = null;
 				if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
