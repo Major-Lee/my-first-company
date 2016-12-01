@@ -8,7 +8,7 @@ public class AdvertiseBillsVTO implements java.io.Serializable{
 	private String actual;
 	private String balance;
 	
-	public float getExpect() {
+	public String getExpect() {
 		return expect;
 	}
 	public void setExpect(float expect) {
