@@ -417,10 +417,7 @@ public class AdvertiseUnitFacadeService {
 	    
 		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
 		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
-<<<<<<< HEAD
 
-=======
->>>>>>> release20161130
 		for(int i=index; i<=days; i++){
 			String time = null;
 			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
