@@ -1,10 +1,8 @@
 package com.bhu.vas.api.rpc.advertise.model;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.Date;
 
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.orm.model.extjson.ListJsonExtIntModel;
 
 
@@ -65,7 +63,7 @@ public class AdvertiseDetails extends ListJsonExtIntModel<String>{
 	}
 
 	public void setCash(float cash) {
-		this.cash = cutDecimal(cash);
+		this.cash = ArithHelper.getCuttedCurrency(cash+"");
 	}
 
 	public Date getCreated_at() {
@@ -99,13 +97,5 @@ public class AdvertiseDetails extends ListJsonExtIntModel<String>{
 	@Override
 	public Class<String> getJsonParserModel() {
 		return String.class;
-	}
-	
-	private String cutDecimal (float f){
-		DecimalFormat formater = new DecimalFormat();
-		formater.setMaximumFractionDigits(2);
-		formater.setGroupingSize(0);
-		formater.setRoundingMode(RoundingMode.CEILING);
-		return formater.format(f);
 	}
 }

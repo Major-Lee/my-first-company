@@ -2,6 +2,8 @@ package com.bhu.vas.api.vto.advertise;
 
 import java.util.Date;
 
+import com.smartwork.msip.cores.helper.ArithHelper;
+
 @SuppressWarnings("serial")
 public class AdCommdityVTO implements java.io.Serializable{
 	private String cash;
@@ -12,7 +14,7 @@ public class AdCommdityVTO implements java.io.Serializable{
 		return cash;
 	}
 	public void setCash(String cash) {
-		this.cash = cash;
+		this.cash = ArithHelper.getCuttedCurrency(cash+"");
 	}
 	public Date getCreated_at() {
 		return created_at;

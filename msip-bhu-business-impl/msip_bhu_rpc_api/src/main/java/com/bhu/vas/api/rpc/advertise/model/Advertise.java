@@ -9,6 +9,7 @@ import java.util.Date;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
@@ -198,7 +199,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		return cash;
 	}
 	public void setCash(float cash) {
-		this.cash = cutDecimal(cash);
+		this.cash = ArithHelper.getCuttedCurrency(cash+"");
 	}
 	
 	public boolean isSign() {

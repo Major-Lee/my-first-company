@@ -1,9 +1,8 @@
 package com.bhu.vas.api.vto.advertise;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.List;
+
+import com.smartwork.msip.cores.helper.ArithHelper;
 
 
 @SuppressWarnings("serial")
@@ -24,7 +23,7 @@ public class AdvertiseOccupiedVTO implements java.io.Serializable{
 		return cash;
 	}
 	public void setCash(float cash) {
-		this.cash = cutDecimal(cash);
+		this.cash = ArithHelper.getCuttedCurrency(cash+"");
 	}
 	public void setCount(int count) {
 		this.count = count;
@@ -42,11 +41,4 @@ public class AdvertiseOccupiedVTO implements java.io.Serializable{
 		this.trashs = trashs;
 	}
 	
-	private String cutDecimal (float f){
-		DecimalFormat formater = new DecimalFormat();
-		formater.setMaximumFractionDigits(2);
-		formater.setGroupingSize(0);
-		formater.setRoundingMode(RoundingMode.FLOOR);
-		return formater.format(f);
-	}
 }

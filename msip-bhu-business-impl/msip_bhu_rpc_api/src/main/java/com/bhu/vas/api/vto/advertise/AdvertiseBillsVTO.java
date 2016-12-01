@@ -1,7 +1,7 @@
 package com.bhu.vas.api.vto.advertise;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
+
+import com.smartwork.msip.cores.helper.ArithHelper;
 
 @SuppressWarnings("serial")
 public class AdvertiseBillsVTO implements java.io.Serializable{
@@ -13,26 +13,18 @@ public class AdvertiseBillsVTO implements java.io.Serializable{
 		return expect;
 	}
 	public void setExpect(float expect) {
-		this.expect = cutDecimal(expect);
+		this.expect = ArithHelper.getCuttedCurrency(expect+"");
 	}
 	public String getActual() {
 		return actual;
 	}
 	public void setActual(float actual) {
-		this.actual = cutDecimal(actual);
+		this.actual = ArithHelper.getCuttedCurrency(actual+"");
 	}
 	public String getBalance() {
 		return balance;
 	}
 	public void setBalance(float balance) {
-		this.balance = cutDecimal(balance);
-	}
-	
-	private static String cutDecimal (float f){
-		DecimalFormat formater = new DecimalFormat();
-		formater.setMaximumFractionDigits(2);
-		formater.setGroupingSize(0);
-		formater.setRoundingMode(RoundingMode.CEILING);
-		return formater.format(f);
+		this.balance = ArithHelper.getCuttedCurrency(balance+"");
 	}
 }
