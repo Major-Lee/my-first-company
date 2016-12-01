@@ -87,11 +87,11 @@ public class BatchDeviceSnkApplyServiceHandler implements IMsgHandlerService {
 				logger.info(String.format("process dmacs[%s] sharedNetwork[%s] onlyindexupdate[%s] dtoType[%s]", dmacs,sharedNetwork, onlyindexupdate,dtoType));
 				if(dmacs.isEmpty()) return;
 				
-				for(String mac:dmacs){
-					WifiDeviceDocument doc = wifiDeviceDataSearchService.searchById(mac);
-		    		if(user.getUtype() != UserType.URBANOPERATORS.getIndex() && DistributorType.City.getType().equals(doc.getD_distributor_type())) //非城市运营商不能修改城市运营商的设备
-		    			dmacs.remove(mac);
-				}
+//				for(String mac:dmacs){
+//					WifiDeviceDocument doc = wifiDeviceDataSearchService.searchById(mac);
+//		    		if(user.getUtype() != UserType.URBANOPERATORS.getIndex() && DistributorType.City.getType().equals(doc.getD_distributor_type())) //非城市运营商不能修改城市运营商的设备
+//		    			dmacs.remove(mac);
+//				}
 				
 				switch(dtoType){
 					case IDTO.ACT_DELETE:
