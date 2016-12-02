@@ -1717,11 +1717,8 @@ public class UserWalletUnitFacadeService {
 			long end_created_ts, int pageNo, int pageSize) {
 		System.out.println(uid+"|||"+mac+"|||"+role+"|||"+start_created_ts+"|||"+end_created_ts+"|||"+pageNo+"|||"+pageSize);
 			List<UserWalletLog> logs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
-			int count=0;
+			int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
 			Map<String,Object> map= userWalletFacadeService.countIncome(uid, mac, role, start_created_ts, end_created_ts);
-			if(map.get("num")!=null){
-				count=(int) map.get("num");
-			}
 			//int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
 			List<UserWalletRewardVTO> retDtos = Collections.emptyList();
 			if(logs!=null){
