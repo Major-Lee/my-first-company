@@ -1121,6 +1121,144 @@ public class BusinessEnumType {
 			}
 		}
 	}
+	
+	
+	
+	/**
+	 * 腾讯im推送频道定义
+	 * @author fengshibo
+	 */
+	public enum TimPushChannel{
+		BHUOfficial(100,"bhuofficial","必虎官方推广"),
+		BHUUnion(101,"bhuunion","必虎联盟推广"),
+		;
+		private Integer channel;
+		private String name;
+		private String desc;
+		
+		static Map<Integer, TimPushChannel> allTimPushChannelTypes;
+		
+		private TimPushChannel(Integer channel,String name,String desc){
+			this.channel = channel;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		public Integer getChannel() {
+			return channel;
+		}
+
+		public void setChannel(Integer channel) {
+			this.channel = channel;
+		}
+
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesc() {
+			return desc;
+		}
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public static boolean validate(Integer channel, TimPushChannel timPushChannel){
+			if(channel == null || timPushChannel == null) return false;
+			
+			if(channel.equals(timPushChannel.getChannel())){
+				return true;
+			}
+			return false;
+		}
+		
+		public static TimPushChannel fromKey(Integer channel){
+			if(channel == null) return null;
+			return allTimPushChannelTypes.get(channel);
+		}
+		
+		public static boolean supported(Integer channel){
+			return allTimPushChannelTypes.containsKey(channel);
+		}
+		
+		static {
+			allTimPushChannelTypes = new HashMap<Integer, TimPushChannel>();
+			TimPushChannel[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (TimPushChannel type : types){
+				allTimPushChannelTypes.put(type.getChannel(), type);
+			}
+		}
+	}
+	
+	/**
+	 * 腾讯im推送消息定义
+	 * @author fengshibo
+	 */
+	public enum TimPushMsgType{
+		TIMTextElem(200,"TIMTextElem","文本消息"),
+		TIMLocationElem(201,"TIMLocationElem","地理位置消息"),
+		TIMFaceElem(202,"TIMFaceElem","表情消息"),
+		TIMCustomElem(203,"TIMCustomElem","自定义消息"),
+		;
+		private Integer msgType;
+		private String name;
+		private String desc;
+		
+		
+		static Map<Integer, TimPushMsgType> allTimPushMsgTypes;
+		
+		private TimPushMsgType(Integer msgType,String name,String desc){
+			this.msgType = msgType;
+			this.name = name;
+			this.desc = desc;
+		}
+
+		public Integer getMsgType() {
+			return msgType;
+		}
+
+		public void setMsgType(Integer msgType) {
+			this.msgType = msgType;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		public static boolean validate(Integer msgType, TimPushMsgType timPushMsgType){
+			if(msgType == null || timPushMsgType == null) return false;
+			
+			if(msgType.equals(timPushMsgType.getMsgType())){
+				return true;
+			}
+			return false;
+		}
+		
+		public static TimPushMsgType fromKey(Integer msgType){
+			if(msgType == null) return null;
+			return allTimPushMsgTypes.get(msgType);
+		}
+		static {
+			allTimPushMsgTypes = new HashMap<Integer, TimPushMsgType>();
+			TimPushMsgType[] types = values();
+			for (TimPushMsgType type : types){
+				allTimPushMsgTypes.put(type.getMsgType(), type);
+			}
+		}
+	}
 	public static void main(String [] args){
 		OrderPaymentType payment_type = OrderPaymentType.fromKey("Alipay");
 		System.out.println(payment_type.getDesc());

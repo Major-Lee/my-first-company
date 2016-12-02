@@ -3,10 +3,31 @@ package com.bhu.vas.api.rpc.message.helper;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.bhu.vas.api.helper.BusinessEnumType;
+import com.bhu.vas.api.helper.BusinessEnumType.TimPushChannel;
+import com.bhu.vas.api.helper.BusinessEnumType.TimPushMsgType;
+import com.bhu.vas.api.rpc.message.dto.TimPushConditionDTO;
+import com.bhu.vas.api.rpc.message.dto.TimPushDTO;
+import com.bhu.vas.api.rpc.message.dto.TimPushMsgBodyDTO;
+import com.bhu.vas.api.rpc.message.dto.TimPushTextMsgContentDTO;
+import com.bhu.vas.api.rpc.message.dto.TimMulImportAccountDTO;
+import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
+import com.bhu.vas.api.rpc.message.dto.TimUserBasicDTO;
+import com.bhu.vas.api.rpc.message.dto.TimUserTagDTO;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.tls.sigcheck.tls_sigcheck;
 
 public class MessageTimHelper {
+	private final static Logger logger = LoggerFactory.getLogger(MessageTimHelper.class);
 	public static final String sdkAppid = "1400018565";
 	public static final String manager = "guoxf";
 	public static final String timLibPath = "/BHUData/apps/tim_msg_lib/jnisigcheck_mt_x64.so";
@@ -65,7 +86,152 @@ public class MessageTimHelper {
 	public static final String Action_Get_Tag = "/im_get_tag";
 	public static final String Action_Remove_Tag = "/im_remove_tag";
 	public static final String Action_Remove_All_Tags = "/im_remove_all_tags";
+	public static final String Action_Send_Msg = "/sendmsg";
 	
+	
+	public static Map<String, String> generateTimApiParamMap(){
+		Map<String, String> api_params = new HashMap<String, String>();
+		api_params.put("identifier", manager);
+		api_params.put("sdkappid", sdkAppid);
+		api_params.put("usersig", managerSig);
+		api_params.put("contenttype", "json");
+		return api_params;
+	}
+	
+	/**
+	 * 腾讯云im 导入用户接口
+	 * @param account 用户名
+	 * @return TimResponseBasicDTO
+	 */
+	
+	public static TimResponseBasicDTO CreateTimAccoutImportUrlCommunication(String account){
+		Map<String, String> api_params = generateTimApiParamMap();
+		TimUserBasicDTO user = new TimUserBasicDTO();
+		user.setIdentifier(account);
+		TimResponseBasicDTO rcp_dto = null;
+		try {
+			String response = TimHttpHelper.postUrlAsString(Tim_Url+Account_Manage+Action_Account_Import,
+					api_params, JsonHelper.getJSONString(user));
+			if(StringUtils.isNotEmpty(response)){
+				logger.info(String.format("CreateTimAccoutImportUrlCommunication response[%s]", response));
+				return JsonHelper.getDTO(response, TimResponseBasicDTO.class);
+			}
+		} catch (Exception ex) {
+			logger.error("CreateTimAccoutImportUrlCommunication error account[%s]", account); 
+			ex.printStackTrace(System.out);
+		}
+		return rcp_dto;
+	}
+	
+	
+	/**
+	 * 腾讯云im 批量导入用户接口
+	 * @param accounts 账户名用户,隔开
+	 * @return TimResponseBasicDTO
+	 */
+	
+	public static TimResponseBasicDTO CreateTimMULAccoutImportUrlCommunication(String accounts){
+		Map<String, String> api_params = generateTimApiParamMap();
+		TimMulImportAccountDTO dto = TimMulImportAccountDTO.buildTimMULImportAccountDTO(accounts);
+		TimResponseBasicDTO rcp_dto = null;
+		try {
+			String response = TimHttpHelper.postUrlAsString(Tim_Url+Account_Manage+Action_MUL_Import,
+					api_params, JsonHelper.getJSONString(dto));
+			if(StringUtils.isNotEmpty(response)){
+				logger.info(String.format("CreateTimMULAccoutImportUrlCommunication response[%s]", response));
+				return JsonHelper.getDTO(response, TimResponseBasicDTO.class);
+			}
+		} catch (Exception ex) {
+			logger.error("CreateTimMULAccoutImportUrlCommunication error accounts[%s]", accounts); 
+			ex.printStackTrace(System.out);
+		}
+		return rcp_dto;
+	}
+	
+	/**
+	 * 腾讯云IM 添加标签接口,每次只能给500个用户添加标签
+	 * @param accounts 用户列表
+	 * @param tags 
+	 * @return
+	 */
+	
+	public static TimResponseBasicDTO CreateTimAddTagUrlCommunication(String accounts, String tags){
+		Map<String, String> api_params = generateTimApiParamMap();
+		TimUserTagDTO utagDto = TimUserTagDTO.buildTimUserTagDTO(accounts, tags);
+		TimResponseBasicDTO rcp_dto = null;
+		try {
+			String response = TimHttpHelper.postUrlAsString(Tim_Url+OpenIM+Action_Add_Tag,
+					api_params, JsonHelper.getJSONString(utagDto));
+			System.out.println(JsonHelper.getJSONString(utagDto));
+			if(StringUtils.isNotEmpty(response)){
+				logger.info(String.format("CreateTimAddTagUrlCommunication response[%s]", response));
+				return JsonHelper.getDTO(response, TimResponseBasicDTO.class);
+			}
+		} catch (Exception ex) {
+			logger.error("CreateTimAddTagUrlCommunication error accounts[%s] tags[%s]", accounts, tags); 
+			ex.printStackTrace(System.out);
+		}
+		return rcp_dto;
+	}
+	
+	/**
+	 * 
+	 * @param fromAcc 推送频道
+	 * @param msgLifeTime 离线消息保存时间默认7天
+	 * @param tags 目标用户,null为全员推送
+	 * @param pushMsgType 推送消息类型
+	 * @param content 推送内容
+	 * @return
+	 */
+	
+	@SuppressWarnings("unchecked")
+	public static <T> TimResponseBasicDTO CreateTimPushUrlCommunication(Integer fromAcc, int msgLifeTime, String tags, Integer pushMsgType,String content){
+		Map<String, String> api_params = generateTimApiParamMap();
+		TimPushChannel  pushChannel = BusinessEnumType.TimPushChannel.fromKey(fromAcc);
+		if (pushChannel == null){
+			
+		}
+		TimPushMsgType msgType = BusinessEnumType.TimPushMsgType.fromKey(pushMsgType);
+		if (msgType == null){
+			
+		}
+		TimPushDTO<T> pushDTO = new TimPushDTO<T>();
+		if (msgLifeTime != 0){
+			pushDTO.setMsgLifeTime(msgLifeTime);
+		}
+		pushDTO.setFromAccount(pushChannel.getName());
+		pushDTO.setCondition(TimPushConditionDTO.buildTimIMPushConditionDTO(tags));
+		switch (msgType) {
+		case TIMTextElem:
+			List<TimPushMsgBodyDTO<T>> msgBodyList = new ArrayList<TimPushMsgBodyDTO<T>>();
+			msgBodyList.add((TimPushMsgBodyDTO<T>) TimPushMsgBodyDTO.buildTimPushMsgBodyDTO(msgType.getName(), 
+					TimPushTextMsgContentDTO.buildTimPushTextMsgContentDTO(content)));
+			pushDTO.setMsgBodyList(msgBodyList);
+			break;
+		default:
+			logger.info(String.format("msgType[%s] is not support", msgType));
+			break;
+		}
+		
+		TimResponseBasicDTO rcp_dto = null;
+		try {
+			String response = TimHttpHelper.postUrlAsString(Tim_Url+OpenIM+Action_IM_Push,
+					api_params, JsonHelper.getJSONString(pushDTO));
+			if(StringUtils.isNotEmpty(response)){
+				logger.info(String.format("CreateTimPushUrlCommunication response[%s]", response));
+				return JsonHelper.getDTO(response, TimResponseBasicDTO.class);
+			}
+		} catch (Exception ex) {
+			logger.error("CreateTimPushUrlCommunication error fromAcc[%s] msgLifeTime[%s]"
+					+ "tags[%s] pushMsgType[%s] content[%s]", fromAcc, msgLifeTime, 
+					tags, pushMsgType, content);
+			ex.printStackTrace(System.out);
+		}
+		return rcp_dto;
+	}
+	public static void main(String[] args) {
+		CreateTimPushUrlCommunication(100,120,null,200,"hello");
+	}
 	
 	
 }
