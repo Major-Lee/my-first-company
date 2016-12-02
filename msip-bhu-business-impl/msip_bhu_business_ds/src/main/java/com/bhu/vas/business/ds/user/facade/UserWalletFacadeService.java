@@ -157,6 +157,7 @@ public class UserWalletFacadeService{
 		UserWalletDetailVTO walletDetail = userWallet.toUserWalletDetailVTO();
 		return walletDetail;
 	}
+	@SuppressWarnings("unused")
 	public UserWalletDetailVTO walletDetail(int uid){
 		UserWallet userWallet = userWallet(uid);
 		UserWalletDetailVTO walletDetail = userWallet.toUserWalletDetailVTO();
@@ -168,7 +169,8 @@ public class UserWalletFacadeService{
 		}
 		//根据uid查询对公账号是否存在
 		UserPublishAccountDetailVTO publicAccountDetail = userPublishAccountFacadeService.publicAccountDetail(uid);
-		if(publicAccountDetail == null){
+//		if(publicAccountDetail == null){
+		if(true){
 			walletDetail.setPayments(userOAuthFacadeService.fetchRegisterIdentifies(uid,true));
 		}else{
 			UserOAuthStateVTO userOAuthStateVTO = new UserOAuthStateVTO();
