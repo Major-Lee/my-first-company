@@ -675,20 +675,20 @@ public class UserWalletUnitFacadeService {
 
 			// add by Jason 2016-06-07 start
 			// 根据uid查询当前用户是否存在对公账号
-			UserPublishAccount userPublishAccount = userPublishAccountService
-					.getById(uid);
-			if (StringUtils.equals(payment_type, "weixin")) {
-				if (userPublishAccount != null) {
-					// 返回错误码 提示当前用户已绑定对公行号 在app端进行对公账号提现
-					return RpcResponseDTOBuilder
-							.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST);
-				}
-			} else if (StringUtils.equals(payment_type, "public")) {
-				if (userPublishAccount == null) {
-					return RpcResponseDTOBuilder
-							.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST);
-				}
-			}
+//			UserPublishAccount userPublishAccount = userPublishAccountService
+//					.getById(uid);
+//			if (StringUtils.equals(payment_type, "weixin")) {
+//				if (userPublishAccount != null) {
+//					// 返回错误码 提示当前用户已绑定对公行号 在app端进行对公账号提现
+//					return RpcResponseDTOBuilder
+//							.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_EXIST);
+//				}
+//			} else if (StringUtils.equals(payment_type, "public")) {
+//				if (userPublishAccount == null) {
+//					return RpcResponseDTOBuilder
+//							.builderErrorRpcResponse(ResponseErrorCode.USER_WALLET_WITHDRAW_PUBLISHACCOUNT_NOTEXIST);
+//				}
+//			}
 			// add by Jason 2016-06-07 E N D
 
 			UserWalletWithdrawApply apply = userWalletFacadeService
