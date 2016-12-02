@@ -14,7 +14,7 @@ public class AdCommdityVTO implements java.io.Serializable{
 		return cash;
 	}
 	public void setCash(String cash) {
-		this.cash = ArithHelper.getCuttedCurrency(cash+"");
+		this.cash = ArithHelper.getCuttedCurrency(cash);
 	}
 	public Date getCreated_at() {
 		return created_at;
