@@ -1717,8 +1717,11 @@ public class UserWalletUnitFacadeService {
 			long end_created_ts, int pageNo, int pageSize) {
 		System.out.println(uid+"|||"+mac+"|||"+role+"|||"+start_created_ts+"|||"+end_created_ts+"|||"+pageNo+"|||"+pageSize);
 			List<UserWalletLog> logs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
-			List<UserWalletLog> totallogs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,0,0);
 			int count=0;
+			Map<String,Object> map= userWalletFacadeService.countIncome(uid, mac, role, start_created_ts, end_created_ts);
+			if(map.get("num")!=null){
+				count=(int) map.get("num");
+			}
 			//int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
 			List<UserWalletRewardVTO> retDtos = Collections.emptyList();
 			if(logs!=null){
@@ -1748,15 +1751,12 @@ public class UserWalletUnitFacadeService {
 			}
 			double totalDealCash=0;
 			double totalCash=0;
-			if(totallogs!=null){
-				count=totallogs.size();
-				for(UserWalletLog i:totallogs){
-					totalCash+=Double.valueOf(i.getCash());
-					Order order=orderService.getById(i.getOrderid());
-					if(order!=null){
-						totalDealCash+=Double.valueOf(order.getAmount());
-					}
-				}
+			
+			if(map.get("amount")!=null){
+				totalDealCash=(double) map.get("amount");
+			}
+			if(map.get("cash")!=null){
+				totalCash=(double) map.get("cash");
 			}
 			TailPage<UserWalletRewardVTO> returnRet = new CommonPage<UserWalletRewardVTO>(pageNo, pageSize, count, retDtos);
 			UserWalletRewardListVTO listVTO=new UserWalletRewardListVTO();
