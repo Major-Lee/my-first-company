@@ -168,30 +168,30 @@ public class UserWalletFacadeService{
 			walletDetail.setMobileNo(user.getMobileno());
 		}
 		//根据uid查询对公账号是否存在
-		UserPublishAccountDetailVTO publicAccountDetail = userPublishAccountFacadeService.publicAccountDetail(uid);
-//		if(publicAccountDetail == null){
+//		UserPublishAccountDetailVTO publicAccountDetail = userPublishAccountFacadeService.publicAccountDetail(uid);
+//		if(publicAccountDetail == null){  暂时取消所有对公帐号操作
 		if(true){
 			walletDetail.setPayments(userOAuthFacadeService.fetchRegisterIdentifies(uid,true));
 		}else{
-			UserOAuthStateVTO userOAuthStateVTO = new UserOAuthStateVTO();
-			userOAuthStateVTO.setAuid(String.valueOf(publicAccountDetail.getUid()));
-			userOAuthStateVTO.setNick(publicAccountDetail.getCompanyName());
-			userOAuthStateVTO.setAvatar(publicAccountDetail.getOpening_bank());
-			//对公账号特殊处理
-			String accountNum = StringUtils.EMPTY;
-			accountNum = publicAccountDetail.getPublish_account_number();
-			if(StringUtils.isNotBlank(accountNum)){
-				//卡号前四位显示 后四位显示 中间*******代替
-				int accountLength = accountNum.length();
-				if(accountLength >= 16){
-					accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
-				}
-			} 
-			userOAuthStateVTO.setOpenid(accountNum);
-			userOAuthStateVTO.setIdentify("weixin");
-			List<UserOAuthStateVTO> userOAuthStateList = new ArrayList<UserOAuthStateVTO>();
-			userOAuthStateList.add(userOAuthStateVTO);	
-			walletDetail.setPayments(userOAuthStateList);
+//			UserOAuthStateVTO userOAuthStateVTO = new UserOAuthStateVTO();
+//			userOAuthStateVTO.setAuid(String.valueOf(publicAccountDetail.getUid()));
+//			userOAuthStateVTO.setNick(publicAccountDetail.getCompanyName());
+//			userOAuthStateVTO.setAvatar(publicAccountDetail.getOpening_bank());
+//			//对公账号特殊处理
+//			String accountNum = StringUtils.EMPTY;
+//			accountNum = publicAccountDetail.getPublish_account_number();
+//			if(StringUtils.isNotBlank(accountNum)){
+//				//卡号前四位显示 后四位显示 中间*******代替
+//				int accountLength = accountNum.length();
+//				if(accountLength >= 16){
+//					accountNum = accountNum.substring(0, accountLength-12)+"********"+accountNum.substring(accountLength-4);
+//				}
+//			} 
+//			userOAuthStateVTO.setOpenid(accountNum);
+//			userOAuthStateVTO.setIdentify("weixin");
+//			List<UserOAuthStateVTO> userOAuthStateList = new ArrayList<UserOAuthStateVTO>();
+//			userOAuthStateList.add(userOAuthStateVTO);	
+//			walletDetail.setPayments(userOAuthStateList);
 		}
 		//add by dongrui 2016-06-14 E N D
 		return walletDetail;
