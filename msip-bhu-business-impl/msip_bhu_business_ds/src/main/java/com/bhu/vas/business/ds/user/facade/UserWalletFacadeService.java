@@ -1392,12 +1392,14 @@ public class UserWalletFacadeService{
 			role=null;
 		}
 		if(start_created_ts!=0){
-			map.put("start_created_ts", start_created_ts);
+			Date date=new Date(start_created_ts);
+			map.put("start_created_ts", date);
 		}else{
 			map.put("start_created_ts", null);
 		}
 		if(end_created_ts!=0){
-			map.put("end_created_ts", end_created_ts);
+			Date date=new Date(end_created_ts);
+			map.put("end_created_ts", date);
 		}else{
 			map.put("end_created_ts", null);
 		}
