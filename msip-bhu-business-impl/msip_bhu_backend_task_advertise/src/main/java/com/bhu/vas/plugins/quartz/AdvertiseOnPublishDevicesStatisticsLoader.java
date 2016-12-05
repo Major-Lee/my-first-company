@@ -82,7 +82,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 					String afterDate =null;
 //					afterDate = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 					try {
-						afterDate = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
+						afterDate = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 0);
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
