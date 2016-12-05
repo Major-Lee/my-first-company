@@ -58,16 +58,21 @@ public class BusinessWebHelper {
 	
 	public static boolean isOpenWithdrawDate(){
 		boolean flag = true;
-		Date currentTime = getCalendar().getTime();
+		//Date currentTime = getCalendar().getTime();
+		Calendar currentCal = getCalendar();
+		//currentCal.add(Calendar.MONTH, -1);
+		//currentCal.set(Calendar.DATE,3);
+		Date currentTime = currentCal.getTime();
 		Calendar preCld = getCalendar();
+		preCld.add(Calendar.MONTH, -1);
 		preCld.set(Calendar.DATE,26);
 		Calendar sufCld = getCalendar();
-		sufCld.add(Calendar.MONTH, 1);
+		//sufCld.add(Calendar.MONTH, 1);
 		sufCld.set(Calendar.DATE,5);
-//		System.out.println("currentTime:"+ DateTimeHelper.shortDateFormat.format(currentTime));
-//		System.out.println("preCld:"+DateTimeHelper.shortDateFormat.format(preCld.getTime()));
-//		System.out.println("sufCld:"+DateTimeHelper.shortDateFormat.format(sufCld.getTime()));
-		if(preCld.getTime().getTime() < currentTime.getTime() && currentTime.getTime() < sufCld.getTime().getTime() ){
+		System.out.println("currentTime:"+ DateTimeHelper.shortDateFormat.format(currentTime));
+		System.out.println("preCld:"+DateTimeHelper.shortDateFormat.format(preCld.getTime()));
+		System.out.println("sufCld:"+DateTimeHelper.shortDateFormat.format(sufCld.getTime()));
+		if(preCld.getTime().getTime() <= currentTime.getTime() && currentTime.getTime() <= sufCld.getTime().getTime() ){
 			flag = false;
 		}
 		return flag;

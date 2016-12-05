@@ -84,6 +84,11 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 import com.smartwork.msip.localunit.RandomPicker;
 
+import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.OperatingSystem;
+import eu.bitwalker.useragentutils.UserAgent;
+import eu.bitwalker.useragentutils.Version;
+
 /**
  * Pay支付控制层
  * @author Pengyu
@@ -340,6 +345,109 @@ public class PaymentController extends BaseController{
 		}
 	}
 	
+	@RequestMapping(value={"/payment/judgmentChannels","/judgmentChannels"},method={RequestMethod.GET,RequestMethod.POST})
+	public void judgmentChannels(HttpServletRequest request,
+			HttpServletResponse response,
+			String ua,
+			String appid,
+			String secret){
+		response.setHeader("Access-Control-Allow-Origin", "*");
+		logger.info(String.format("judgmentChannels ua[%s]", ua));
+		try{
+			//判断非空参数
+			if (StringUtils.isBlank(ua)) {
+				 ua = request.getHeader("User-Agent"); 
+//				logger.error(String.format("apply payment judgmentChannels ua[%s]", ua));
+//				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+//						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+//				return;
+			}
+			if (StringUtils.isBlank(secret)) {
+				logger.error(String.format("apply payment judgmentChannels secret[%s]", secret));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+				return;
+			}
+			if (StringUtils.isBlank(appid)) {
+				logger.error(String.format("apply payment judgmentChannels appid[%s]", appid));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+				return;
+			}
+			
+			int appId = Integer.parseInt(appid);
+			boolean isAllowedBusiness = BusinessEnumType.CommdityApplication.verifyed(appId, secret);
+			if(isAllowedBusiness){
+				boolean flag = false;
+				CommdityApplication app = BusinessEnumType.CommdityApplication.fromKey(appId);
+				switch(app){
+				case DEFAULT:
+					logger.info(String.format("apply  DEFAULT payment appid[%s] secret[%s]", appid,secret));
+					flag = true;
+					break;
+				default:
+					break;
+				}
+				if(!flag){
+					logger.info(String.format("apply payment appid [%s] is invaild.", appid));
+					SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+							ResponseErrorCode.USER_APPID_UNSUPPORT)));
+					return;
+				}
+			}else{
+				logger.error(String.format("apply payment judgmentChannels appid[%s] secret[%s]", appid,secret));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+						ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
+				return;
+			}
+			System.out.println("当前用户手机浏览器信息："+ua);
+			/////
+//			String userAgents = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36";
+//			String userAgents = "User-Agent: Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1";
+//			String userAgents = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0); 360Spider";
+//	    	String userAgents ="Mozilla/5.0 (Linux; Android 5.0.2; SAMSUNG SM-A5000 Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.3 Chrome/38.0.2125.102 Mobile Safari/537.36";
+	    	//String userAgents ="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586";
+//	    	String userAgents ="Mozilla/5.0 (Linux; U; Android 5.1; zh-CN; m2 note Build/LMY47D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/10.10.8.822 U3/0.8.0 Mobile Safari/534.30";
+	    	
+	    	UserAgent userAgent = UserAgent.parseUserAgentString(ua);  
+			Browser browser = userAgent.getBrowser(); 
+			Version browserVersion = userAgent.getBrowserVersion();
+			OperatingSystem os = userAgent.getOperatingSystem();
+			System.out.println("browserVersion:"+browserVersion.getVersion());
+			System.out.println("browserName:"+browser.getName());
+			System.out.println("browserType:"+browser.getBrowserType());
+			System.out.println("browser ManufacturerName:"+browser.getManufacturer());
+			System.out.println("browser RenderingEngine:"+browser.getRenderingEngine());
+			System.out.println("OS name:"+ os.getName());
+			System.out.println("OS isMobileDevice:"+os.isMobileDevice());
+			System.out.println("OS ID:"+os.getId());
+			System.out.println("OS DeviceType:"+os.getDeviceType());
+			System.out.println("OS Manufacturer:"+os.getManufacturer());
+//			PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
+//			//PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEI_XIN");
+//			paymentParameter.setStatus(level);
+//			paymentParameter.setUpdated_at(new Date());
+//			paymentParameter.setValue(value);
+//			paymentParameter.setCharge_rate(rate);
+//			PaymentParameter paymentVTO =paymentParameterService.update(paymentParameter);
+//			if(paymentVTO != null){
+//				logger.info(String.format("update_payment order status success result [%s]", JsonHelper.getJSONString(paymentVTO)));
+//				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(paymentVTO));
+//				return;
+//			}else{
+//				logger.info(String.format("update_payment order status error result [%s]", ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST));
+//			}
+		}catch(BusinessI18nCodeException i18nex){
+			SendMailHelper.doSendMail(3,"judgmentChannels接口："+i18nex.getMessage()+i18nex.getCause());
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			SendMailHelper.doSendMail(3,"judgmentChannels接口："+ex.getMessage()+ex.getCause());
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}finally{
+			
+		}
+	}
+	
 	/**
 	 * 模拟通知商品中心充值成功接口
 	 * @param request
@@ -569,6 +677,8 @@ public class PaymentController extends BaseController{
 			
 		}
 	}
+	
+	
 	
 
 	/**
@@ -1521,7 +1631,7 @@ public class PaymentController extends BaseController{
         			"&usermac="+usermac+"&return_url="+return_url;
         	String results = PostRequestUtil.sendPost(PayHttpService.MIDAS_REQURST_URL, par);
         	//TODO:生产环境请注释掉此方法，放开上方远程调用方法
-        	//String results = MidasUtils.submitOrder("v1",reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
+//        	String results = MidasUtils.submitOrder("v1",reckoningId, jiaoTemp+"", ip,paymentName,usermac,return_url);
         	long get_midas_url_end = System.currentTimeMillis() - get_midas_url_begin; // 这段代码放在程序执行后
     		logger.info(out_trade_no+"请求midas获取支付URL耗时：" + get_midas_url_end + "毫秒");
     		int nowOutTimeLevel = payHttpService.getOt();
