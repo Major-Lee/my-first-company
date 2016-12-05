@@ -25,7 +25,7 @@ public interface IAdvertiseRpcService{
 	 * @param end
 	 * @return
 	 */
-	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,
+	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,int type,
 			String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end);
 

@@ -71,59 +71,63 @@ public class AdvertiseUnitFacadeService {
 	}
 
 	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,
-			String image, String url,String domain, String province, String city,
+			int type,String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end) {
-			Advertise entity=new Advertise();
-			
-			if(StringUtils.isNotBlank(city)){
-				entity.setCity(city);
-			}
-			
-			if(StringUtils.isNotBlank(district)){
-				entity.setDistrict(district);
-			}
-			
-			if(StringUtils.isNotBlank(province)){
-				entity.setProvince(province);
-			}
 			
 			Date endDate=new Date(end);
-			entity.setEnd(endDate);
-			entity.setImage(image);
-
 			Date startDate=new Date(start);
-			entity.setStart(startDate);
-			entity.setState(AdvertiseType.UnPaid.getType());
-			
-			
-			SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
 			long count=0;
-			try {
-				AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,format.format(startDate),format.format(endDate),DateTimeHelper.FormatPattern1,province, city, district,false);
-				List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
-				if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
-					for(AdvertiseOccupiedVTO i:advertiseOccupiedVTOs){
-						count+=i.getCount();
+			
+			switch(type){
+				case Advertise.homeImage :
+					try {
+						AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,DateTimeHelper.formatDate(startDate,DateTimeHelper.FormatPattern1),DateTimeHelper.formatDate(endDate,DateTimeHelper.FormatPattern1),DateTimeHelper.FormatPattern1,province, city, district,false);
+						List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
+						if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
+							for(AdvertiseOccupiedVTO i:advertiseOccupiedVTOs){
+								count+=i.getCount();
+							}
+						}
+					} catch (ParseException e) {
+						e.printStackTrace();
 					}
-				}
-			} catch (ParseException e) {
-				e.printStackTrace();
+					
+					int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate,province, city, district);
+					if(n!=0){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
+					}
+					
+					break;
+				case Advertise.sortMessage :
+					
+					break;
+				default:
+					break;
 			}
+			
 			if(count==0){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 			}
-			if(start>end){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
-			}
-			entity.setCount(count);
-			int displayNum=(int) (count);
-			entity.setCash(displayNum*BusinessRuntimeConfiguration.Advertise_Unit_Price);
 			
+			Advertise entity=new Advertise();
 			
+			if(StringUtils.isNotBlank(city))
+				entity.setCity(city);
+			if(StringUtils.isNotBlank(district))
+				entity.setDistrict(district);
+			if(StringUtils.isNotBlank(province))
+				entity.setProvince(province);
 			
-			entity.setType(0);
+			entity.setEnd(endDate);
+			entity.setStart(startDate);
+			entity.setCash(((int)count)*BusinessRuntimeConfiguration.Advertise_Unit_Price);
+			entity.setImage(image);
 			entity.setDomain(domain);
+			entity.setUrl(url);
+			entity.setState(AdvertiseType.UnPaid.getType());
+			entity.setCount(count);
+			entity.setType(type);
 			entity.setDescription(description);
 			entity.setTitle(title);
 			entity.setUid(uid);
@@ -131,11 +135,10 @@ public class AdvertiseUnitFacadeService {
 			long between_days = (end - start) / (1000 * 3600 * 24);
 			int duration=Integer.parseInt(String.valueOf(between_days));
 			entity.setDuration(duration);
-			entity.setUrl(url);
-			int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate,province, city, district);
-			if(n!=0){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
-			}
+
+			
+			
+			/*不限制发布次数
 			ModelCriteria mc=new ModelCriteria();
 			List<Integer> stateList=new ArrayList<Integer>();
 			stateList.add(AdvertiseType.UnPaid.getType());
@@ -144,10 +147,10 @@ public class AdvertiseUnitFacadeService {
 			stateList.add(AdvertiseType.OnPublish.getType());
 			mc.createCriteria().andColumnIn("state", stateList).andColumnEqualTo("uid", uid);
 			
-			//int num=advertiseService.countByModelCriteria(mc);
-//			if(num>=2){
-//				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
-//			}
+			int num=advertiseService.countByModelCriteria(mc);
+			if(num>=2){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
+			}*/
 			advertiseService.insert(entity);
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(entity.toVTO());

@@ -1,8 +1,5 @@
 package com.bhu.vas.api.rpc.advertise.model;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,6 +11,10 @@ import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
 public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
+	
+	public static final int homeImage = 0;
+	public static final int sortMessage = 1;
+	
 	private int uid;
 	private String title;
 	private int type;
@@ -252,19 +253,5 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
 		int fir=Integer.valueOf(df.format(new Date()));
 		this.setId(StructuredIdHelper.generateStructuredIdStringAD(fir, this.type+"", autoId));
-	}
-	public static void main(String[] args) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
-		int fir=Integer.valueOf(df.format(new Date()));
-		String randoms=StructuredIdHelper.generateStructuredIdStringAD(fir, "1", 1L);
-		System.out.println(randoms);
-	}
-	
-	private String cutDecimal (float f){
-		DecimalFormat formater = new DecimalFormat();
-		formater.setMaximumFractionDigits(2);
-		formater.setGroupingSize(0);
-		formater.setRoundingMode(RoundingMode.CEILING);
-		return formater.format(f);
 	}
 }

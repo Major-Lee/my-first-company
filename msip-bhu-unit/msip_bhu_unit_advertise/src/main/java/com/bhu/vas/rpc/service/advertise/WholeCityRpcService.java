@@ -49,12 +49,15 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid, String image,
+	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid, int type,String image,
 			String url,String domain, String province, String city, String district,String description,String title,
 			long start, long end) {
-		logger.info(String.format("createNewAdvertise with uid[%s] image[%s] url[%s] domain[%s] province[%s] city[%s] district[%s] title[%s] description[%s] start[%s] start[%s]",
-				uid, image, url,domain,province, city, district,title,description, start, end));
-		return advertiseUnitFacadeService.createNewAdvertise(uid, image, url,domain, province, city, district,description,title, start, end);
+		logger.info(String.format("createNewAdvertise with uid[%s] type[%s] image[%s] url[%s] domain[%s] province[%s] city[%s] district[%s] title[%s] description[%s] start[%s] start[%s]",
+				uid, type,image, url,domain,province, city, district,title,description, start, end));
+		if(start>end){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
+		}
+		return advertiseUnitFacadeService.createNewAdvertise(uid,type, image, url,domain, province, city, district,description,title, start, end);
 	}
 
 	@Override
