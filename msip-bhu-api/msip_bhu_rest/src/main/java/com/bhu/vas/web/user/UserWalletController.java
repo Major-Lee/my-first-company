@@ -54,8 +54,8 @@ public class UserWalletController extends BaseController{
 	
 	
 	public static void main(String[] args) {
-		//System.out.println(BusinessWebHelper.isOpenWithdrawDate());
-		System.out.println(DateTimeHelper.getFirstStrDateOfCurrentMonth());
+		System.out.println(BusinessWebHelper.isOpenWithdrawDate());
+//		System.out.println(DateTimeHelper.getFirstStrDateOfCurrentMonth());
 	}
 	@ResponseBody()
 	@RequestMapping(value="/wallet/withdraw", method={RequestMethod.GET,RequestMethod.POST})
@@ -69,16 +69,18 @@ public class UserWalletController extends BaseController{
 			@RequestParam(required = true) double cash
 			){
 		try{
-			
+			System.out.println(String.format("walletWithdraw uid [%s] appid [%s] payment_type [%s] pwd [%s] cash [%s]", 
+					uid,appid,payment_type,pwd,cash));
 			//财务结算，不允许每月26~N+5提现
 			boolean isOpen = BusinessWebHelper.isOpenWithdrawDate();
+//			boolean isOpen = true;//BusinessWebHelper.isOpenWithdrawDate();
 			if(!isOpen){
 				UserWithdrawApplyVTO rpcResult = new UserWithdrawApplyVTO();
 				rpcResult.setWithdraw_oper_desc(UWithdrawStatus.InvalidTime.getKey());
 				Calendar preCld = BusinessWebHelper.getCalendar(); 
+				preCld.add(Calendar.MONTH, -1);
 				preCld.set(Calendar.DATE,26);
 				Calendar sufCld =  BusinessWebHelper.getCalendar();
-				sufCld.add(Calendar.MONTH, 1);
 				sufCld.set(Calendar.DATE,5);
 				SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
 				String preTime =  shortDateFormat.format(preCld.getTime());
@@ -93,7 +95,6 @@ public class UserWalletController extends BaseController{
 				logger.info(String.format("walletWithdraw  is InvalidTime rpc result [%s]", JsonHelper.getJSONString(ResponseSuccess.embed(rpcResult))));
 				return;
 			}
-			
 			if(cash <= 0){
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,
 						new String[]{"cash:".concat(String.valueOf(cash)),
