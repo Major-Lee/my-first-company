@@ -3,7 +3,7 @@ package com.bhu.vas.api.rpc.message.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @SuppressWarnings("serial")
-public class TimPushTextMsgContentDTO implements java.io.Serializable{
+public class TimTextMsgContentDTO implements java.io.Serializable{
 	@JsonProperty("Text")
 	private String text;
 
@@ -15,8 +15,8 @@ public class TimPushTextMsgContentDTO implements java.io.Serializable{
 		this.text = text;
 	}
 	
-	public static TimPushTextMsgContentDTO buildTimPushTextMsgContentDTO(String text){
-		TimPushTextMsgContentDTO dto = new TimPushTextMsgContentDTO();
+	public static TimTextMsgContentDTO buildTimTextMsgContentDTO(String text){
+		TimTextMsgContentDTO dto = new TimTextMsgContentDTO();
 		dto.setText(text);
 		return dto;
 	}

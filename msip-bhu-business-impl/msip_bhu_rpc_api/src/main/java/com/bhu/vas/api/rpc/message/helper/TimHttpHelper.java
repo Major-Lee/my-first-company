@@ -113,7 +113,7 @@ public class TimHttpHelper {
 		}
 		HttpPost httpPost = new HttpPost(buf.toString());
 		try {
-			httpPost.setEntity(new StringEntity(rawBody));
+			httpPost.setEntity(new StringEntity(rawBody,encode));
 		} catch (UnsupportedEncodingException e) {
 			log.error("httpPost setEntity Error",e);
 		}

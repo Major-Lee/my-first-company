@@ -3,7 +3,7 @@ package com.bhu.vas.api.rpc.message.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @SuppressWarnings("serial")
-public class TimPushMsgBodyDTO<T> implements java.io.Serializable{
+public class TimMsgBodyDTO<T> implements java.io.Serializable{
 	@JsonProperty("MsgType")
 	private String msgType;
 	
@@ -23,9 +23,9 @@ public class TimPushMsgBodyDTO<T> implements java.io.Serializable{
 		this.msgContent = msgContent;
 	}
 	
-	public static <T> TimPushMsgBodyDTO<T> buildTimPushMsgBodyDTO(String msgType, T msgContent){
+	public static <T> TimMsgBodyDTO<T> buildTimMsgBodyDTO(String msgType, T msgContent){
 		
-		TimPushMsgBodyDTO<T> dto = new TimPushMsgBodyDTO<T>();
+		TimMsgBodyDTO<T> dto = new TimMsgBodyDTO<T>();
 		dto.setMsgType(msgType);
 		dto.setMsgContent(msgContent);
 		return dto;

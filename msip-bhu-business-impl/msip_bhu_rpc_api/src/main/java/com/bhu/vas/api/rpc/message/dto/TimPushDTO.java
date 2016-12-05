@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.message.dto;
 
 import java.util.List;
 
+import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,7 +32,7 @@ public class TimPushDTO<T> implements java.io.Serializable{
 	}
 
 	@JsonProperty("MsgBody")
-	private List<TimPushMsgBodyDTO<T>> msgBodyList;
+	private List<TimMsgBodyDTO<T>> msgBodyList;
 	
 	public int getMsgRandom() {
 		return msgRandom;
@@ -52,14 +53,15 @@ public class TimPushDTO<T> implements java.io.Serializable{
 		this.fromAccount = fromAccount;
 	}
 	
-	public List<TimPushMsgBodyDTO<T>> getMsgBodyList() {
+	public List<TimMsgBodyDTO<T>> getMsgBodyList() {
 		return msgBodyList;
 	}
-	public void setMsgBodyList(List<TimPushMsgBodyDTO<T>> msgBodyList) {
+	public void setMsgBodyList(List<TimMsgBodyDTO<T>> msgBodyList) {
 		this.msgBodyList = msgBodyList;
 	}
 	public TimPushDTO(){
 		//离线时间默认7天
-		this.msgRandom = RandomData.intNumber(999999999);
+		this.setMsgRandom(RandomData.intNumber(MessageTimHelper.MAXMSGRANDOM));
+		this.setMsgLifeTime(MessageTimHelper.DefaultMsgLifeTime);
 	}
 }

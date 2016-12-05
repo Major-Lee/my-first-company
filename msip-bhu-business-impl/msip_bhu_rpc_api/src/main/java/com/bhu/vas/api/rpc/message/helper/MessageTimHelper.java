@@ -17,10 +17,12 @@ import com.bhu.vas.api.helper.BusinessEnumType.TimPushChannel;
 import com.bhu.vas.api.helper.BusinessEnumType.TimPushMsgType;
 import com.bhu.vas.api.rpc.message.dto.TimPushConditionDTO;
 import com.bhu.vas.api.rpc.message.dto.TimPushDTO;
-import com.bhu.vas.api.rpc.message.dto.TimPushMsgBodyDTO;
-import com.bhu.vas.api.rpc.message.dto.TimPushTextMsgContentDTO;
+import com.bhu.vas.api.rpc.message.dto.TimMsgBodyDTO;
+import com.bhu.vas.api.rpc.message.dto.TimTextMsgContentDTO;
+import com.bhu.vas.api.rpc.message.dto.TimGetPushReportDTO;
 import com.bhu.vas.api.rpc.message.dto.TimMulImportAccountDTO;
 import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
+import com.bhu.vas.api.rpc.message.dto.TimSendMsgDTO;
 import com.bhu.vas.api.rpc.message.dto.TimUserBasicDTO;
 import com.bhu.vas.api.rpc.message.dto.TimUserTagDTO;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -35,6 +37,8 @@ public class MessageTimHelper {
 	public static String priKeyContent = null;
 	public static String visitorExpire = "604800";
 	public static String defaultExpire = "315360000";
+	public static final int MAXMSGRANDOM = 999999999;
+	public static final int DefaultMsgLifeTime = 604800;
 	public static final String managerSig = "eJxljstOg0AARfd8BZltjQ7zqNTEBSWYmvpKhVrcE"
 			+ "JxHO7QyEzogxvjvttjESbzbc27u-fJ83wfp3fN5yZhua1vYTyOAf*UDCM7*oDGKF6UtcMP-"
 			+ "QdEb1YiilFY0AwwopQhC11Fc1FZJdTLWre6lg-d8Wwwbv31yKAchHVNXUesB3idZfJuUmPB"
@@ -82,6 +86,7 @@ public class MessageTimHelper {
 	public static final String Action_Account_Import = "/account_import";
 	public static final String Action_MUL_Import = "/multiaccount_import";
 	public static final String Action_IM_Push = "/im_push";
+	public static final String Action_IM_Get_Push_Report = "/im_get_push_report";
 	public static final String Action_Add_Tag = "/im_add_tag";
 	public static final String Action_Get_Tag = "/im_get_tag";
 	public static final String Action_Remove_Tag = "/im_remove_tag";
@@ -203,9 +208,9 @@ public class MessageTimHelper {
 		pushDTO.setCondition(TimPushConditionDTO.buildTimIMPushConditionDTO(tags));
 		switch (msgType) {
 		case TIMTextElem:
-			List<TimPushMsgBodyDTO<T>> msgBodyList = new ArrayList<TimPushMsgBodyDTO<T>>();
-			msgBodyList.add((TimPushMsgBodyDTO<T>) TimPushMsgBodyDTO.buildTimPushMsgBodyDTO(msgType.getName(), 
-					TimPushTextMsgContentDTO.buildTimPushTextMsgContentDTO(content)));
+			List<TimMsgBodyDTO<T>> msgBodyList = new ArrayList<TimMsgBodyDTO<T>>();
+			msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(), 
+					TimTextMsgContentDTO.buildTimTextMsgContentDTO(content)));
 			pushDTO.setMsgBodyList(msgBodyList);
 			break;
 		default:
@@ -229,8 +234,72 @@ public class MessageTimHelper {
 		}
 		return rcp_dto;
 	}
+	
+	
+	/**
+	 * 腾讯云im 批量导入用户接口
+	 * @param accounts 账户名用户,隔开
+	 * @return TimResponseBasicDTO
+	 */
+	
+	public static TimResponseBasicDTO CreateTimGetPushReportUrlCommunication(String taskids){
+		Map<String, String> api_params = generateTimApiParamMap();
+		TimGetPushReportDTO getReportDto = TimGetPushReportDTO.buildTimGetPushReportDTO(taskids);
+		TimResponseBasicDTO rcp_dto = null;
+		try {
+			String response = TimHttpHelper.postUrlAsString(Tim_Url+OpenIM+Action_IM_Get_Push_Report,
+					api_params, JsonHelper.getJSONString(getReportDto));
+			if(StringUtils.isNotEmpty(response)){
+				logger.info(String.format("CreateTimGetPushReportUrlCommunication response[%s]", response));
+				return JsonHelper.getDTO(response, TimResponseBasicDTO.class);
+			}
+		} catch (Exception ex) {
+			logger.error("CreateTimGetPushReportUrlCommunication error accounts[%s]", taskids); 
+			ex.printStackTrace(System.out);
+		}
+		return rcp_dto;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> TimResponseBasicDTO CreateTimSendMsgUrlCommunication(Integer fromAcc, String toAcc, Integer pushMsgType, String content){
+		
+		Map<String, String> api_params = generateTimApiParamMap();
+		TimPushChannel  pushChannel = BusinessEnumType.TimPushChannel.fromKey(fromAcc);
+		if (pushChannel == null){
+			
+		}
+		TimPushMsgType msgType = BusinessEnumType.TimPushMsgType.fromKey(pushMsgType);
+		if (msgType == null){
+			
+		}
+		TimSendMsgDTO<T> sendMsgDto = new TimSendMsgDTO<T>();
+		sendMsgDto.setFrom_Account(pushChannel.getName());
+		sendMsgDto.setTo_Account(toAcc);
+		List<TimMsgBodyDTO<T>> msgBodyList = new ArrayList<TimMsgBodyDTO<T>>();
+		msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(),
+				TimTextMsgContentDTO.buildTimTextMsgContentDTO(content)));
+		sendMsgDto.setMsgBodyList(msgBodyList);
+		TimResponseBasicDTO rcp_dto = null;
+		try {
+			String response = TimHttpHelper.postUrlAsString(Tim_Url+OpenIM+Action_Send_Msg,
+					api_params, JsonHelper.getJSONString(sendMsgDto));
+			if(StringUtils.isNotEmpty(response)){
+				logger.info(String.format("CreateTimSendMsgUrlCommunication response[%s]", response));
+				return JsonHelper.getDTO(response, TimResponseBasicDTO.class);
+			}
+		} catch (Exception ex) {
+			logger.error("CreateTimSendMsgUrlCommunication error accounts[%s]", content); 
+			ex.printStackTrace(System.out);
+		}
+		return rcp_dto;
+	}
+	
+	
 	public static void main(String[] args) {
-		CreateTimPushUrlCommunication(100,120,null,200,"hello");
+		//CreateTimGetPushReportUrlCommunication("144115199865189666_612259469_612259469");
+		CreateTimPushUrlCommunication(100, 0, null, 200, "你们这些愚蠢的地球人必虎官方tui");
+		//CreateTimSendMsgUrlCommunication(100,"100146",200,"单发你好啊大美女gag");
+		//CreateTimMULAccoutImportUrlCommunication("utool1,utool10,utool2,utool3,utool4,utool5");
 	}
 	
 	
