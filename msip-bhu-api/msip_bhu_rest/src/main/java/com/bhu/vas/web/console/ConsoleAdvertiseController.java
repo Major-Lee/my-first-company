@@ -34,7 +34,7 @@ public class ConsoleAdvertiseController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true) int uid,
 			@RequestParam(required = true) String advertiseId,
-			@RequestParam(required = true) String msg,
+			@RequestParam(required = false) String msg,
 			@RequestParam(required = true) int state
 			) {
 		try{
