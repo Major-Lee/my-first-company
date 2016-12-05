@@ -1,6 +1,8 @@
 package com.bhu.vas.api.rpc.advertise.iservice;
 
 
+import java.text.ParseException;
+
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
@@ -24,10 +26,11 @@ public interface IAdvertiseRpcService{
 	 * @param start
 	 * @param end
 	 * @return
+	 * @throws ParseException 
 	 */
 	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,int type,
 			String image, String url,String domain, String province, String city,
-			String district,String description,String title, long start, long end);
+			String district,String description,String title, long start, long end) throws ParseException;
 
 	public RpcResponseDTO<AdDevicePositionVTO> fetchDevicePositionDistribution(
 			String province, String city ,String district);

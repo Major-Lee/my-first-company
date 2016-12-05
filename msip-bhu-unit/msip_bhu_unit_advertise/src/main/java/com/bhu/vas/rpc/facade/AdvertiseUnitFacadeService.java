@@ -72,7 +72,7 @@ public class AdvertiseUnitFacadeService {
 
 	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,
 			int type,String image, String url,String domain, String province, String city,
-			String district,String description,String title, long start, long end) {
+			String district,String description,String title, long start, long end) throws ParseException {
 			
 			Date endDate=new Date(end);
 			Date startDate=new Date(start);
@@ -81,17 +81,17 @@ public class AdvertiseUnitFacadeService {
 			
 			switch(type){
 				case Advertise.homeImage :
-					try {
-						AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,DateTimeHelper.formatDate(startDate,DateTimeHelper.FormatPattern1),DateTimeHelper.formatDate(endDate,DateTimeHelper.FormatPattern1),DateTimeHelper.FormatPattern1,province, city, district,false);
+					
+						AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,DateTimeHelper.formatDate(startDate,DateTimeHelper.FormatPattern1),
+								DateTimeHelper.formatDate(endDate,DateTimeHelper.FormatPattern1),
+								DateTimeHelper.FormatPattern1,province, city, district,false);
+						
 						List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
 						if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
 							for(AdvertiseOccupiedVTO i:advertiseOccupiedVTOs){
 								count+=i.getCount();
 							}
 						}
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
 					
 					int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate,province, city, district);
 					if(n!=0){
