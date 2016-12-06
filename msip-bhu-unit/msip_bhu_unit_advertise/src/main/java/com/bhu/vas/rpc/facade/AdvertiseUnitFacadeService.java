@@ -43,6 +43,7 @@ import java.util.List;
 import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 
@@ -79,6 +80,8 @@ public class AdvertiseUnitFacadeService {
 			
 			long count=0;
 			
+			Advertise entity=new Advertise();
+
 			switch(type){
 				case Advertise.homeImage :
 					
@@ -97,10 +100,16 @@ public class AdvertiseUnitFacadeService {
 					if(n!=0){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 					}
-					
+					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Unit_Price);
+
 					break;
 				case Advertise.sortMessage :
 					
+					StringBuilder sb = new StringBuilder(province);
+					sb.append(city).append(district);
+					
+					count = UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(sb.toString());
+					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Sm_Price);
 					break;
 				default:
 					break;
@@ -109,8 +118,6 @@ public class AdvertiseUnitFacadeService {
 			if(count==0){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 			}
-			
-			Advertise entity=new Advertise();
 			
 			if(StringUtils.isNotBlank(city))
 				entity.setCity(city);
@@ -121,7 +128,6 @@ public class AdvertiseUnitFacadeService {
 			
 			entity.setEnd(endDate);
 			entity.setStart(startDate);
-			entity.setCash(((int)count)*BusinessRuntimeConfiguration.Advertise_Unit_Price);
 			entity.setImage(image);
 			entity.setDomain(domain);
 			entity.setUrl(url);

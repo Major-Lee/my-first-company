@@ -11,19 +11,19 @@ import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
 
-public class UserMobilePositionRelationSetService extends AbstractRelationSortedSetCache{
+public class UserMobilePositionRelationSortedSetService extends AbstractRelationSortedSetCache{
 	
-	private static final int DefaultScore = 0; 
+	private static final long DefaultScore = 0L; 
 	
     private static class ServiceHolder{
-        private static UserMobilePositionRelationSetService instance =new UserMobilePositionRelationSetService();
+        private static UserMobilePositionRelationSortedSetService instance =new UserMobilePositionRelationSortedSetService();
     }
 
     /**
      * 获取工厂单例
      * @return
      */
-    public static UserMobilePositionRelationSetService getInstance() {
+    public static UserMobilePositionRelationSortedSetService getInstance() {
         return ServiceHolder.instance;
     }
     
@@ -51,7 +51,7 @@ public class UserMobilePositionRelationSetService extends AbstractRelationSorted
     	return mobileList;
     }
     
-    public int scardPostionMobileno(String postion){
+    public int zcardPostionMobileno(String postion){
     	Set<String> keys = fetchKeys(postion);
     	int count = 0;
     	for(String key : keys){
@@ -62,7 +62,7 @@ public class UserMobilePositionRelationSetService extends AbstractRelationSorted
     
 	@Override
 	public String getName() {
-		return UserMobilePositionRelationSetService.class.getName();
+		return UserMobilePositionRelationSortedSetService.class.getName();
 	}
 
 	@Override
@@ -73,5 +73,17 @@ public class UserMobilePositionRelationSetService extends AbstractRelationSorted
 	@Override
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.ADVERTISE);
+	}
+	
+	public static void main(String[] args) {
+		UserMobilePositionRelationSortedSetService.getInstance().mobilenoRecord("噼里啪啦", "12312312");
+		System.out.println("end");
+		
+			List<String> list = UserMobilePositionRelationSortedSetService.getInstance().fetchPostionMobileno("");
+			for(String mo : list){
+				System.out.println(mo);
+			}
+			int i =  UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno("");
+			System.out.println(i);
 	}
 }
