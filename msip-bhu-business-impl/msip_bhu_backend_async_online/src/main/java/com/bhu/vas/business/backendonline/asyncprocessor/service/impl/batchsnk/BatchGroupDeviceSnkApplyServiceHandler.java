@@ -86,6 +86,7 @@ public class BatchGroupDeviceSnkApplyServiceHandler implements IMsgHandlerServic
 								}
 							}
 						}
+						/*
 						int owner = -1;
 						try{
 							owner = Integer.parseInt(doc.getD_snk_owner());
@@ -95,6 +96,7 @@ public class BatchGroupDeviceSnkApplyServiceHandler implements IMsgHandlerServic
 						
 						if(owner != applyDto.getUid()) //非属于自己的设备portal，不允许修改
 			    			continue;
+			    		*/
 			    		dmacs.add(mac);
 			    	}
 					if(!dmacs.isEmpty()){
