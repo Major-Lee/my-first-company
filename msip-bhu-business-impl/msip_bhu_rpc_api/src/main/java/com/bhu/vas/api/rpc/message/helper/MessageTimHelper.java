@@ -297,8 +297,8 @@ public class MessageTimHelper {
 	
 	public static void main(String[] args) {
 		//CreateTimGetPushReportUrlCommunication("144115199865189666_612259469_612259469");
-		CreateTimPushUrlCommunication(100, 0, null, 200, "你们这些愚蠢的地球人必虎官方tui");
-		//CreateTimSendMsgUrlCommunication(100,"100146",200,"单发你好啊大美女gag");
+		CreateTimPushUrlCommunication(101, 0, null, 200, "推送测试");
+		//CreateTimSendMsgUrlCommunication(100,"100146",200,"123");
 		//CreateTimMULAccoutImportUrlCommunication("utool1,utool10,utool2,utool3,utool4,utool5");
 	}
 	

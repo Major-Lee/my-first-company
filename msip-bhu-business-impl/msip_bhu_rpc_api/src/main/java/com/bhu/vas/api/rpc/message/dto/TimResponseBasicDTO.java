@@ -79,5 +79,9 @@ public class TimResponseBasicDTO implements java.io.Serializable{
 		this.errorCode = errorCode;
 	}
 	
+	public boolean isExecutedSuccess(){
+		return this.getActionStatus().equals("OK");
+	}
+	
 	
 }

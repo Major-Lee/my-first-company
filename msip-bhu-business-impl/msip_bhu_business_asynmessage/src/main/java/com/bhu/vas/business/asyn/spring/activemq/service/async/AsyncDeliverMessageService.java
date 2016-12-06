@@ -16,6 +16,8 @@ import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdver
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupSendSortMessageDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
+import com.bhu.vas.business.asyn.spring.model.async.message.AsyncTimUserAddTagDTO;
+import com.bhu.vas.business.asyn.spring.model.async.message.AsyncTimUserRegisterDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkClearDTO;
 import com.bhu.vas.business.asyn.spring.model.async.tag.OperTagDTO;
@@ -196,6 +198,20 @@ public class AsyncDeliverMessageService {
 		BatchDeviceApplyAdvertiseDTO dto = new BatchDeviceApplyAdvertiseDTO();
 		dto.setDtoType(dto_type);
 		dto.setIds(adIds);
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendBatchTimUserRegisterActionMessage(Integer uid, String nick){
+		AsyncTimUserRegisterDTO dto = new AsyncTimUserRegisterDTO();
+		dto.setUid(uid);
+		dto.setNick(nick);
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+	
+	public void sendBatchTimUserAddTagActionMessage(String acc, String tags){
+		AsyncTimUserAddTagDTO dto = new AsyncTimUserAddTagDTO();
+		dto.setAcc(acc);
+		dto.setTags(tags);
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	

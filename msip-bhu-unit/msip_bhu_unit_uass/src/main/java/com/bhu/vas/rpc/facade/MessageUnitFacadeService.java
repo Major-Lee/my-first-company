@@ -64,6 +64,9 @@ public class MessageUnitFacadeService {
 		if (sig == null){
 			logger.info(String.format("fetch_usersig can't fetch user[%s] from redis", user));
 			sig = MessageTimHelper.createUserSig(user, expire);
+			
+			MessageSystemHashService.getInstance().setMessageUserSig(user, utype, sig);
+			MessageSystemHashService.getInstance().setMessageUserSigExpire(user, utype, expire);
 			//游客不入库,只在腾讯im存储
 			if (utype.equals(BusinessKeyDefine.Message.User)){
 				MessageUser messageUser = messageUserFacadeService.validate(user);
@@ -75,8 +78,6 @@ public class MessageUnitFacadeService {
 				messageUserFacadeService.updateMessageUserData(messageUser);
 			}
 			
-			MessageSystemHashService.getInstance().setMessageUserSig(user, utype, sig);
-			MessageSystemHashService.getInstance().setMessageUserSigExpire(user, utype, expire);
 		}
 		return sig;
 	} 
