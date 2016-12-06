@@ -2048,7 +2048,7 @@ public class PaymentController extends BaseController{
      */
     @SuppressWarnings("rawtypes")
    	@RequestMapping(value = "/payment/heepayNotifySuccess", method = { RequestMethod.GET,RequestMethod.POST })
-   	public String heepayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
+   	public void heepayNotifySuccess(HttpServletRequest request, HttpServletResponse response) throws IOException, JDOMException {
     	logger.info(String.format("******[%s]********[%s]*******[%s]********","汇元宝通知",BusinessHelper.gettimestamp(),"Starting"));
     	long begin = System.currentTimeMillis(); // 这段代码放在程序执行前
 		Map<String,String> params = new HashMap<String,String>();
@@ -2066,9 +2066,8 @@ public class PaymentController extends BaseController{
 		String goods_no = request.getParameter("agent_bill_id");
 		if (StringUtils.isBlank(goods_no)) {
 			logger.error(String.format("get heepay notify goods_no [%s]", goods_no));
-			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
-			return "error";
+			 response.getOutputStream().write("success=N".getBytes());
+			return;
 		}
 		//商户订单号
 		String out_trade_no = new String(request.getParameter("agent_bill_id").getBytes("ISO-8859-1"),"UTF-8");
@@ -2083,7 +2082,8 @@ public class PaymentController extends BaseController{
 		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
 		if (payReckoning == null) {
         	logger.info("get heepay notice payReckoning " +payReckoning);
-        	return "error";
+        	 response.getOutputStream().write("success=N".getBytes());
+        	return;
         }
 		String orderId = payReckoning.getOrder_id();
         logger.info(String.format("get heepay notify reckoningId [%s] trade_no [%s] orderId [%s] trade_status [%s]",out_trade_no, trade_no,orderId,trade_status));
@@ -2095,21 +2095,25 @@ public class PaymentController extends BaseController{
 				 if (trade_status.equals("1")){
 					logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
 					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Hee","");
-					return "ok";
+					response.getOutputStream().write("success=Y".getBytes());
+					return;
 				}else{
 					logger.info("支付失败！");	//请不要修改或删除
-					return "error";
+					 response.getOutputStream().write("success=N".getBytes());
+					return;
 				}
 			}
 			
 			 long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
 			 logger.info(orderId+"微信通知总耗时：" + end + "毫秒");
-			return "ok";
+			 response.getOutputStream().write("success=Y".getBytes());
+			return;
 		}else{//验证失败
 			logger.info(String.format("get heepay notify  mysign [%s] sign [%s] sign verify fail",mySign, sign));
 			 long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
 			 logger.info(orderId+"汇元通知总耗时：" + end + "毫秒");
-			return "error";
+			 response.getOutputStream().write("success=N".getBytes());
+			return;
 		}
     }
     
