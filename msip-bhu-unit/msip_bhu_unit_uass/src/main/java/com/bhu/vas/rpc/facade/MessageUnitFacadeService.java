@@ -11,6 +11,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.message.dto.MessageUserSigDTO;
 import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
 import com.bhu.vas.api.rpc.message.model.MessageUser;
+import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.message.MessageSystemHashService;
 import com.bhu.vas.business.ds.message.facade.MessageUserFacadeService;
@@ -20,7 +21,9 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 public class MessageUnitFacadeService {
 	private final Logger logger = LoggerFactory.getLogger(MessageUnitFacadeService.class);
 	@Resource
-	MessageUserFacadeService messageUserFacadeService;
+	private MessageUserFacadeService messageUserFacadeService;
+	@Resource
+	private AsyncDeliverMessageService asyncDeliverMessageService;
 	public RpcResponseDTO<MessageUserSigDTO> fetch_usersig(Integer uid, Integer channel) {
 		try{
 			MessageUserSigDTO dto = new MessageUserSigDTO();
@@ -77,7 +80,7 @@ public class MessageUnitFacadeService {
 				messageUser.setSig(sig);
 				messageUserFacadeService.updateMessageUserData(messageUser);
 			}
-			
+			asyncDeliverMessageService.sendBatchTimUserAddTagActionMessage(user, utype, channel);
 		}
 		return sig;
 	} 

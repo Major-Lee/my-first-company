@@ -19,6 +19,8 @@ import com.bhu.vas.api.rpc.message.dto.TimPushConditionDTO;
 import com.bhu.vas.api.rpc.message.dto.TimPushDTO;
 import com.bhu.vas.api.rpc.message.dto.TimMsgBodyDTO;
 import com.bhu.vas.api.rpc.message.dto.TimTextMsgContentDTO;
+import com.bhu.vas.api.rpc.message.dto.TimCustomMsgContentDTO;
+import com.bhu.vas.api.rpc.message.dto.TimCustomMsgDefaultDataDTO;
 import com.bhu.vas.api.rpc.message.dto.TimGetPushReportDTO;
 import com.bhu.vas.api.rpc.message.dto.TimMulImportAccountDTO;
 import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
@@ -205,12 +207,19 @@ public class MessageTimHelper {
 			pushDTO.setMsgLifeTime(msgLifeTime);
 		}
 		pushDTO.setFromAccount(pushChannel.getName());
-		pushDTO.setCondition(TimPushConditionDTO.buildTimIMPushConditionDTO(tags));
+		pushDTO.setCondition(TimPushConditionDTO.builder(tags));
+		List<TimMsgBodyDTO<T>> msgBodyList = new ArrayList<TimMsgBodyDTO<T>>();
 		switch (msgType) {
 		case TIMTextElem:
-			List<TimMsgBodyDTO<T>> msgBodyList = new ArrayList<TimMsgBodyDTO<T>>();
 			msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(), 
-					TimTextMsgContentDTO.buildTimTextMsgContentDTO(content)));
+					TimTextMsgContentDTO.builder(content)));
+			pushDTO.setMsgBodyList(msgBodyList);
+			break;
+		case TIMCustomElem:
+			TimCustomMsgDefaultDataDTO msgContentDTO = JsonHelper.getDTO(content, TimCustomMsgDefaultDataDTO.class);
+			
+			msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(), 
+					TimCustomMsgContentDTO.builder(msgContentDTO)));
 			pushDTO.setMsgBodyList(msgBodyList);
 			break;
 		default:
@@ -277,7 +286,7 @@ public class MessageTimHelper {
 		sendMsgDto.setTo_Account(toAcc);
 		List<TimMsgBodyDTO<T>> msgBodyList = new ArrayList<TimMsgBodyDTO<T>>();
 		msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(),
-				TimTextMsgContentDTO.buildTimTextMsgContentDTO(content)));
+				TimTextMsgContentDTO.builder(content)));
 		sendMsgDto.setMsgBodyList(msgBodyList);
 		TimResponseBasicDTO rcp_dto = null;
 		try {
@@ -297,7 +306,10 @@ public class MessageTimHelper {
 	
 	public static void main(String[] args) {
 		//CreateTimGetPushReportUrlCommunication("144115199865189666_612259469_612259469");
-		CreateTimPushUrlCommunication(101, 0, null, 200, "推送测试");
+		//CreateTimPushUrlCommunication(101, 0, null, 200, "推送测试");
+		TimCustomMsgDefaultDataDTO dto = TimCustomMsgDefaultDataDTO.builder(1, "title test", "自定义测试", "图",
+				"http://jingyan.baidu.com/album/ceb9fb10e297c18cad2ba0f6.html?picindex=2", true,true);
+		CreateTimPushUrlCommunication(101, 0, null, 203, JsonHelper.getJSONString(dto));
 		//CreateTimSendMsgUrlCommunication(100,"100146",200,"123");
 		//CreateTimMULAccoutImportUrlCommunication("utool1,utool10,utool2,utool3,utool4,utool5");
 	}

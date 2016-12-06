@@ -6,11 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
 import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
 import com.bhu.vas.api.rpc.message.model.MessageUser;
 import com.bhu.vas.business.asyn.spring.model.async.message.AsyncTimUserAddTagDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.ds.message.facade.MessageUserFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -25,29 +27,44 @@ public class BatchTimUserAddTagServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("BatchTimUserAddTagServiceHandler process message[%s]", message));
 		final AsyncTimUserAddTagDTO userTagdto = JsonHelper.getDTO(message, AsyncTimUserAddTagDTO.class);
 		String acc = userTagdto.getAcc();
-		String tags = userTagdto.getTags();
-		String sig = userTagdto.getSig();
-		ayscTimeUserAddTag(acc, tags, sig);
+		String utype = userTagdto.getUtype();
+		Integer channel = userTagdto.getChannel();
+		
+		ayscTimeUserAddTag(acc, utype, channel);
 		
 		logger.info(String.format("BatchTimUserAddTagServiceHandler process message[%s] successful", message));
 	}
-	private void ayscTimeUserAddTag(String acc, String tags, String sig) {
+	private void ayscTimeUserAddTag(String acc, String utype, Integer channel) {
 		MessageUser user = messageUserFacadeService.validate(acc);
-		if (user == null){
-			user = new MessageUser();
-			user.setId(acc);
-			user.setExtension_content(tags);
+		String tags = utype+channel.intValue();
+		if (utype.equals(BusinessKeyDefine.Message.User)){
+			if (user == null){
+				user = new MessageUser();
+				user.setId(acc);
+				user.setExtension_content(tags);
+			}else{
+				String oldTags = user.getExtension_content();
+				user.setExtension_content(replaceTags(oldTags, tags));
+			}
 		}
-		user.setSig(sig);
 		TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimAddTagUrlCommunication(acc, tags);
 		if (ret_dto.isExecutedSuccess()){
 			user.setSync(1);
 		}else{
 			user.setSync(0);
+			logger.info(String.format("ayscTimeUserAddTag tim add user[%s] tags[%s] failed!", acc, tags));
 		}
 		messageUserFacadeService.updateMessageUserData(user);
 	}
 	
-	
+	private String replaceTags(String oldTags, String newTag){
+		String[] split = oldTags.split(",");
+		for (String tag : split){
+			if(tag.equals(newTag)){
+				return  oldTags;
+			}
+		}
+		return oldTags.concat(",").concat(newTag);
+	}
 	
 }

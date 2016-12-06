@@ -1,69 +1,76 @@
 package com.bhu.vas.api.rpc.message.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.smartwork.msip.cores.helper.JsonHelper;
+
 @SuppressWarnings("serial")
 public class TimCustomMsgContentDTO implements java.io.Serializable{
+	@JsonProperty("Data")
+	private String data;
 	
-	private int type;
-	private String title;
+	@JsonProperty("Desc")
 	private String desc;
-	private String pic;
-	private String url;
-	private boolean displayPic;
-	private boolean isClick;
 	
-	public int getType() {
-		return type;
+	@JsonProperty("Ext")
+	private String ext;
+	
+	@JsonProperty("Sound")
+	private String sound;
+	
+	
+
+	public String getData() {
+		return data;
 	}
-	public void setType(int type) {
-		this.type = type;
+
+
+
+	public void setData(String data) {
+		this.data = data;
 	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
+
+
+
 	public String getDesc() {
 		return desc;
 	}
+
+
+
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
-	public String getPic() {
-		return pic;
+
+
+
+	public String getExt() {
+		return ext;
 	}
-	public void setPic(String pic) {
-		this.pic = pic;
+
+
+
+	public void setExt(String ext) {
+		this.ext = ext;
 	}
-	public String getUrl() {
-		return url;
+
+
+
+	public String getSound() {
+		return sound;
 	}
-	public void setUrl(String url) {
-		this.url = url;
+
+
+
+	public void setSound(String sound) {
+		this.sound = sound;
 	}
-	public boolean isDisplayPic() {
-		return displayPic;
-	}
-	public void setDisplayPic(boolean displayPic) {
-		this.displayPic = displayPic;
-	}
-	public boolean isClick() {
-		return isClick;
-	}
-	public void setClick(boolean isClick) {
-		this.isClick = isClick;
-	}
-	
-	public static TimCustomMsgContentDTO buildTimCustomMsgContentDTO(int type, String title,
-			String desc, String pic, String url, boolean displayPic, boolean isClick){
-		TimCustomMsgContentDTO dto = new TimCustomMsgContentDTO();
-		dto.setType(type);
-		dto.setTitle(title);
-		dto.setDesc(desc);
-		dto.setPic(pic);
-		dto.setUrl(url);
-		dto.setDisplayPic(displayPic);
-		dto.setClick(isClick);
+
+
+
+	public static TimCustomMsgContentDTO builder(TimCustomMsgDefaultDataDTO data){
+		TimCustomMsgContentDTO dto  = new TimCustomMsgContentDTO();
+		dto.setDesc(data.getDesc());
+		dto.setData(JsonHelper.getJSONString(data));
 		return dto;
 	}
 }

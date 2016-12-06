@@ -70,6 +70,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	@Resource
 	private IMsgHandlerService batchTimUserRegisterServiceHandler;
 	
+	@Resource
+	private IMsgHandlerService batchTimUserAddTagServiceHandler;
+	
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncMsgBackendProcessor initialize...");
@@ -143,6 +146,9 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case BatchTimUserRegister:
 							batchTimUserRegisterServiceHandler.process(message);
+							break;
+						case BatchTimUserAddTag:
+							batchTimUserAddTagServiceHandler.process(message);
 							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);

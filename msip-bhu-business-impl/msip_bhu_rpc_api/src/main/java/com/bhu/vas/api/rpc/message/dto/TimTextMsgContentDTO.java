@@ -15,7 +15,7 @@ public class TimTextMsgContentDTO implements java.io.Serializable{
 		this.text = text;
 	}
 	
-	public static TimTextMsgContentDTO buildTimTextMsgContentDTO(String text){
+	public static TimTextMsgContentDTO builder(String text){
 		TimTextMsgContentDTO dto = new TimTextMsgContentDTO();
 		dto.setText(text);
 		return dto;

@@ -34,7 +34,7 @@ public class TimPushConditionDTO implements java.io.Serializable{
 		this.tagsAnd = tagsAnd;
 	}
 	
-	public static TimPushConditionDTO buildTimIMPushConditionDTO(String tags){
+	public static TimPushConditionDTO builder(String tags){
 		if (StringUtils.isEmpty(tags))
 			return null;
 		TimPushConditionDTO dto = new TimPushConditionDTO();
