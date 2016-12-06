@@ -25,9 +25,9 @@ public class ResponseVideoValidateCompletedNotifyDTO extends ResponsePaymentDTO 
 	public void setPaymented_ds(Date paymented_ds) {
 		this.paymented_ds = paymented_ds;
 	}
-	public static ResponseWhiteListValidateCompletedNotifyDTO builder(Order order){
+	public static ResponseVideoValidateCompletedNotifyDTO builder(Order order){
 		if(order == null) return null;
-		ResponseWhiteListValidateCompletedNotifyDTO dto = new ResponseWhiteListValidateCompletedNotifyDTO();
+		ResponseVideoValidateCompletedNotifyDTO dto = new ResponseVideoValidateCompletedNotifyDTO();
 		dto.setSuccess(true);
 		dto.setOrderid(order.getId());
 		dto.setPaymented_ds(order.getPaymented_at());
@@ -36,7 +36,7 @@ public class ResponseVideoValidateCompletedNotifyDTO extends ResponsePaymentDTO 
 	@Override
 	public String getPaymentNotifyType() {
 		
-		return PaymentNotifyType.WhiteListNotify.getPrefix();
+		return PaymentNotifyType.AdvertiseNotify.getPrefix();
 	}
 
 }
