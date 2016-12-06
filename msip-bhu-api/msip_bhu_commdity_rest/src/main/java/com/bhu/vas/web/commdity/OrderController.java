@@ -501,8 +501,9 @@ public void physical_mini_paymenturl(
 		String order_amount = order_vto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
+		String goods_name = order_vto.getGoods_name();
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, umac, orderid, payment_completed_url,channel+"",version,"必虎路由mini",null);
+				order_amount, requestIp, umac, orderid, payment_completed_url,channel+"",version,goods_name,null);
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID)));
@@ -515,7 +516,7 @@ public void physical_mini_paymenturl(
 		}
 		
 		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"
-				+ "ip[%s] mac[%s] umac[%s] rep_time[%s]", orderid, payment_type, commdityid, requestIp, mac, umac,
+				+ "ip[%s] mac[%s] umac[%s] goods_name[%s]rep_time[%s]", orderid, payment_type, commdityid, requestIp, mac, umac, goods_name,
 				(System.currentTimeMillis() - start)+"ms"));
 		logger.info(String.format("Rest Paymenturl Response Success orderid[%s] rcp_dto[%s]",orderid,rcp_dto.toString()));
 		

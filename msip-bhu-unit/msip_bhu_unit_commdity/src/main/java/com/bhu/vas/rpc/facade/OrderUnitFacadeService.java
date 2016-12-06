@@ -922,13 +922,15 @@ public class OrderUnitFacadeService {
 			User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
 			//生成订单
 			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
-			Order order = orderFacadeService.createMonthlyServiceOrder(commdityid,mac_lower, mac_dut, umac_lower, umactype, bindUser,
+			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+			Order order = orderFacadeService.createMonthlyServiceOrder(commdity,mac_lower, mac_dut, umac_lower, umactype, bindUser,
 					context, channel, user_agent, count, acc, uname, address, needInvoice, invoiceDetail);
 			
 			RewardCreateMonthlyServiceVTO vto = new RewardCreateMonthlyServiceVTO();
 			vto.setOrderid(order.getId());
 			vto.setAmount(order.getAmount());
 			vto.setAppid(order.getAppid());
+			vto.setGoods_name(commdity.getName());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
 			logger.error("rewardCreateMonthlyService Exception:", ex);
