@@ -286,6 +286,7 @@ public enum ResponseErrorCode {
 	ADVERTISE_EMPTY("511","advertise.empty"),
 	ADVERTISE_QUERY_UNSUPPORT("512","advertise.query.unsupport"),
 	ADVERTISE_REPOST_NOT_EXIST("513","advertise.repost.not.exist"),
+	ADVERTISE_TYPE_ERROR("514","advertise.type.error"),
 	
 	//Social
 	SOCIAL_FOLLOW_ERROR("1100","follow.error"),
