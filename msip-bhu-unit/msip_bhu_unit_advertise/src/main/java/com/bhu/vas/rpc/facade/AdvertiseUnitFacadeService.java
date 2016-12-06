@@ -101,7 +101,7 @@ public class AdvertiseUnitFacadeService {
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 					}
 					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Unit_Price);
-
+					entity.setType(Advertise.homeImage);
 					break;
 				case Advertise.sortMessage :
 					
@@ -110,6 +110,7 @@ public class AdvertiseUnitFacadeService {
 					
 					count = UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(sb.toString());
 					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Sm_Price);
+					entity.setType(Advertise.sortMessage);
 					break;
 				default:
 					break;
@@ -133,7 +134,7 @@ public class AdvertiseUnitFacadeService {
 			entity.setUrl(url);
 			entity.setState(AdvertiseType.UnPaid.getType());
 			entity.setCount(count);
-			entity.setType(type);
+//			entity.setType(type);
 			entity.setDescription(description);
 			entity.setTitle(title);
 			entity.setUid(uid);

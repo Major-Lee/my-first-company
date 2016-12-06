@@ -20,6 +20,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		map.put("start", start);
 		map.put("end", end);
 		map.put("province", province);
+		map.put("type", Advertise.homeImage);
 		map.put("city", city);
 		map.put("district", district);
 		try {
@@ -46,6 +47,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 			district=null;
 		}
 		map.put("province", province);
+		map.put("type", Advertise.homeImage);
 		map.put("city", city);
 		map.put("district", district);
 		if(flag){
@@ -65,6 +67,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		List<Advertise> ads= new ArrayList<Advertise>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("start", start);
+		map.put("type", Advertise.homeImage);
 		map.put("end", end);
 		map.put("province", province);
 		map.put("city", city);

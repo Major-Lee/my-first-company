@@ -233,7 +233,7 @@ public class AdvertiseSharedealTaskLoader {
 	public void adOrdersForSharedeal(){
 		Date tm = new Date(System.currentTimeMillis() - 14 * 3600 * 1000);
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLessThan("end", tm).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.Published.getType()).
+		mc.createCriteria().andColumnLessThan("end", tm).andColumnEqualTo("type", Advertise.homeImage).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.Published.getType()).
 							andColumnNotEqualTo("process_state", BusinessEnumType.AdvertiseType.SharedealCompleted.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){

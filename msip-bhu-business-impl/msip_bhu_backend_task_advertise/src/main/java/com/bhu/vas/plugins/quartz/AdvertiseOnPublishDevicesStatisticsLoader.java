@@ -111,7 +111,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 	
 	public List<Advertise> fetchOnpublishAdvertise(){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
+		mc.createCriteria().andColumnEqualTo("type", Advertise.homeImage).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
 		return advertiseService.findModelByModelCriteria(mc);
 	}
 }
