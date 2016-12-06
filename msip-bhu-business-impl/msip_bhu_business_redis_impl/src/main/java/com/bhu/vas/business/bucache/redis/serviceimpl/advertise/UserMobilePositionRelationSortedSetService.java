@@ -27,22 +27,22 @@ public class UserMobilePositionRelationSortedSetService extends AbstractRelation
         return ServiceHolder.instance;
     }
     
-    private static String generateKey(String postion){
+    private static String generateKey(String province,String city ,String district){
         StringBuilder sb = new StringBuilder(BusinessKeyDefine.Advertise.AdvertiseMobilePostion);
-        sb.append(postion);
+        sb.append(province).append(city).append(district);
         return sb.toString();
     }
     
-    public void mobilenoRecord(String postion,String mobileno){
-    	this.zadd(generateKey(postion), DefaultScore, mobileno);
+    public void mobilenoRecord(String province,String city ,String district,String mobileno){
+    	this.zadd(generateKey(province,city,district), DefaultScore, mobileno);
     }
     
-    public  Set<String> fetchKeys(String postion){
-    	return this.keys(generateKey(postion)+"*");
+    public  Set<String> fetchKeys(String province,String city ,String district){
+    	return this.keys(generateKey(province,city,district)+"*");
     }
     
-    public List<String> fetchPostionMobileno(String postion){
-    	Set<String> keys = fetchKeys(postion);
+    public List<String> fetchPostionMobileno(String province,String city ,String district){
+    	Set<String> keys = fetchKeys(province,city,district);
     	List<String> mobileList = new ArrayList<String>();
     	for(String key : keys){
     		Set<String> mobileSet =   this.zrange(key, 0, -1);
@@ -51,8 +51,8 @@ public class UserMobilePositionRelationSortedSetService extends AbstractRelation
     	return mobileList;
     }
     
-    public int zcardPostionMobileno(String postion){
-    	Set<String> keys = fetchKeys(postion);
+    public int zcardPostionMobileno(String province,String city ,String district){
+    	Set<String> keys = fetchKeys(province,city,district);
     	int count = 0;
     	for(String key : keys){
     		count += this.zcard(key);
@@ -73,17 +73,5 @@ public class UserMobilePositionRelationSortedSetService extends AbstractRelation
 	@Override
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.ADVERTISE);
-	}
-	
-	public static void main(String[] args) {
-		UserMobilePositionRelationSortedSetService.getInstance().mobilenoRecord("噼里啪啦", "12312312");
-		System.out.println("end");
-		
-			List<String> list = UserMobilePositionRelationSortedSetService.getInstance().fetchPostionMobileno("");
-			for(String mo : list){
-				System.out.println(mo);
-			}
-			int i =  UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno("");
-			System.out.println(i);
 	}
 }
