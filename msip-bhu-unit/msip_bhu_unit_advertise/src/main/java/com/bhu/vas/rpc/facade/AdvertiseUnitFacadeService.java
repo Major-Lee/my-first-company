@@ -27,6 +27,7 @@ import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
+import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
@@ -62,6 +63,9 @@ public class AdvertiseUnitFacadeService {
 	
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
+	
+	@Resource
+	private UserFacadeService userFacadeService;
 	
 	public AdvertiseService getAdvertiseService() {
 		return advertiseService;
@@ -100,7 +104,12 @@ public class AdvertiseUnitFacadeService {
 					if(n!=0){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 					}
-					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Unit_Price);
+					float cash = count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+					if(userFacadeService.checkOperatorByUid(uid)){
+						entity.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
+					}else{
+						entity.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
+					}
 					entity.setType(Advertise.homeImage);
 					
 					break;
@@ -109,7 +118,6 @@ public class AdvertiseUnitFacadeService {
 					count = UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(province, city, district);
 					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Sm_Price);
 					entity.setType(Advertise.sortMessage);
-					
 					break;
 				default:
 					break;

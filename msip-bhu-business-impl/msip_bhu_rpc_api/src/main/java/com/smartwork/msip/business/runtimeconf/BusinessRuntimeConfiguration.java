@@ -172,6 +172,9 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	OpsImportCallbackApi = PropertiesHelper.getString("ops.import.callbackapi", paramProperties, UserPortalChargingNotify2UPortalApi);
         	OpsImportCallbackToken = PropertiesHelper.getString("ops.import.callbacktoken", paramProperties, OpsImportCallbackToken);
         	
+        	AdvertiseOperatorDiscount = PropertiesHelper.getFloat("ad.op.discount", paramProperties, AdvertiseOperatorDiscount);
+        	AdvertiseCommonDiscount = PropertiesHelper.getFloat("ad.common.discount", paramProperties, AdvertiseCommonDiscount);
+        	
         	String commdityWhiteListStr = PropertiesHelper.getString("commdity.whitelist.accs", paramProperties, "");
     		
     		if(StringUtils.isNotEmpty(commdityWhiteListStr)){
@@ -431,8 +434,11 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String UserPortalChargingNotify2UPortalApi = "http://ucloud.bhuwifi.com:9158/common/api/save-status";
 	public static String OpsImportCallbackApi = "http://ops.bhuwifi.com/api/unicorn/device-out-confirm";
 	public static String OpsImportCallbackToken = "MzZhMWIzMDdiYjIyOGI5NzllZTM2M2FlZTc0NGIyOTA=";
+	
 	public static final float Advertise_Unit_Price = 20F;
 	public static final float Advertise_Sm_Price = 0.1F;
+	public static float AdvertiseOperatorDiscount = 0.1F;
+	public static float AdvertiseCommonDiscount = 0.5F;
 	
 	/**
 	 * 判断是否是console用户

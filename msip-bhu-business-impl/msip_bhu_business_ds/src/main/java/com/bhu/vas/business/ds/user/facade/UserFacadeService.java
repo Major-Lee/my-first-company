@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.dto.UserType;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceMobilePresentStringService;
@@ -105,6 +107,11 @@ public class UserFacadeService {
 		return result.get(0);
 	}
 	
+	
+	public boolean checkOperatorByUid(int uid){
+		User user = userService.getById(uid);
+		return (user.getUtype() == UserType.DistributorNormal.getIndex() || user.getUtype() == UserType.URBANOPERATORS.getIndex());
+	}
 /*	public UserSnsStateDTO updateUserSnsInfo(int uid, ApplicationIdentify identify, GeneralOAuth2AccessToken generalOAuth2AccessToken) throws Exception{
 		UserSnsStatePK pk = new UserSnsStatePK(uid,identify.toString());
 		UserSnsState model = userSnsStateService.getById(pk);
