@@ -102,15 +102,14 @@ public class AdvertiseUnitFacadeService {
 					}
 					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Unit_Price);
 					entity.setType(Advertise.homeImage);
+					
 					break;
 				case Advertise.sortMessage :
 					
-					StringBuilder sb = new StringBuilder(province);
-					sb.append(city).append(district);
-					
-					count = UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(sb.toString());
+					count = UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(province, city, district);
 					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Sm_Price);
 					entity.setType(Advertise.sortMessage);
+					
 					break;
 				default:
 					break;
@@ -170,18 +169,24 @@ public class AdvertiseUnitFacadeService {
 	 * @return
 	 * @throws ParseException 
 	 */
-	public AdDevicePositionVTO fetchDevicePositionDistribution(String province,String city,String district) throws ParseException{
+	public AdDevicePositionVTO fetchDevicePositionDistribution(int type ,String province,String city,String district) throws ParseException{
 		
 		String start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
 		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 18);
 		
-		AdDevicePositionVTO vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
-		if(StringUtils.isNoneBlank(city)){
-			vto.setPositions(WifiDevicePositionListService.getInstance().fetchCity(city));
-		}else if(StringUtils.isNoneBlank(province)){
-			vto.setPositions(WifiDevicePositionListService.getInstance().fetchProvince(province));
+		AdDevicePositionVTO vto = new AdDevicePositionVTO();
+		
+		if(type == Advertise.sortMessage){
+			vto.setMobilenos(UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(province, city, district));
 		}else{
-			vto.setPositions(WifiDevicePositionListService.getInstance().fetchAllProvince());
+			vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
+			if(StringUtils.isNoneBlank(city)){
+				vto.setPositions(WifiDevicePositionListService.getInstance().fetchCity(city));
+			}else if(StringUtils.isNoneBlank(province)){
+				vto.setPositions(WifiDevicePositionListService.getInstance().fetchProvince(province));
+			}else{
+				vto.setPositions(WifiDevicePositionListService.getInstance().fetchAllProvince());
+			}
 		}
 		
 		if(vto != null && vto.getPositions() !=null){
@@ -192,7 +197,6 @@ public class AdvertiseUnitFacadeService {
 						iter.remove();
 				}
 		}
-		
 		return vto;
 	}
 	/**
@@ -206,6 +210,7 @@ public class AdvertiseUnitFacadeService {
 		Criteria criteria2=mc.createCriteria();
 		Criteria criteria3=mc.createCriteria();
 		Criteria criteria4=mc.createCriteria();
+		
 		if(conditionMap!=null&&conditionMap.size()>0){
 			for(Map<String,Object> singleMap:conditionMap){
 				criteria2.andColumnEqualTo(singleMap.get("name").toString(), singleMap.get("value"));

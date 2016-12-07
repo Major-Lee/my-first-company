@@ -204,10 +204,11 @@ public class AdvertiseController extends BaseController{
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) Integer uid,
+            @RequestParam(required = false,defaultValue = "0") int  type,
             @RequestParam(required = false) String province,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String district) {
-	        RpcResponseDTO<AdDevicePositionVTO> rpcResult = advertiseRpcService.fetchDevicePositionDistribution(province, city, district);
+	        RpcResponseDTO<AdDevicePositionVTO> rpcResult = advertiseRpcService.fetchDevicePositionDistribution(type,province, city, district);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
