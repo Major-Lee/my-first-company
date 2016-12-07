@@ -23,11 +23,17 @@ public class AdvertisePaymentTimeOutTaskLoader {
 		logger.info("AdvertisePaymentTimeOutTaskLoader start.....");
 		Date nowDate = new Date();
 		long nowTime = nowDate.getTime();
+		homeImagePaymentTimeOut(nowTime);
+		sortMessagePaymentTimeOut(nowTime);
+		logger.info("AdvertisePaymentTimeOutTaskLoader end.....");
+	}
+	
+	public void homeImagePaymentTimeOut(long nowTime){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPaid.getType());
+		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPaid.getType()).andColumnEqualTo("type", Advertise.homeImage);
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
 		List<Advertise> updateList = new ArrayList<Advertise>(); 		
-		logger.info(String.format("AdvertisePaymentTimeOutTaskLoader unpaid timeout sum[%s]", ads.size()));
+		logger.info(String.format("AdvertiseHomeImagePaymentTimeOutTaskLoader unpaid timeout sum[%s]", ads.size()));
 		
 		for(Advertise ad : ads){
 			if(nowTime - ad.getCreated_at().getTime() > 20*60*1000){
@@ -37,6 +43,22 @@ public class AdvertisePaymentTimeOutTaskLoader {
 			}
 		}
 		advertiseService.updateAll(updateList);
-		logger.info("AdvertisePaymentTimeOutTaskLoader end.....");
+	}
+	
+	public void sortMessagePaymentTimeOut(long nowTime){
+		ModelCriteria mc = new ModelCriteria();
+		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPaid.getType()).andColumnEqualTo("type", Advertise.sortMessage);
+		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
+		List<Advertise> updateList = new ArrayList<Advertise>(); 		
+		logger.info(String.format("AdvertiseSortMessagePaymentTimeOutTaskLoader unpaid timeout sum[%s]", ads.size()));
+		
+		for(Advertise ad : ads){
+			if(ad.getStart().getTime() - nowTime < 24*60*60*1000){
+				ad.setState(BusinessEnumType.AdvertiseType.EscapeOrder.getType());
+				ad.setReject_reason("因支付超时,已经取消本推广订单");
+				updateList.add(ad);
+			}
+		}
+		advertiseService.updateAll(updateList);
 	}
 }
