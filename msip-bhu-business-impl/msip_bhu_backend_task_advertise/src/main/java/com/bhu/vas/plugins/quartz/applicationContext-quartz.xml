@@ -31,6 +31,8 @@
 				<ref bean="advertiseAllClearTaskLoaderCronTrigger" />
 				<!-- 每小时执行一次分成 -->
 				<ref bean="advertiseSharedealTaskLoaderCronTrigger" />
+				<!-- 每天八点提交短信 -->
+				<ref bean="advertiseSortMessageSenderTaskLoaderCronTrigger" />
 				
 			</list>
 		</property>
