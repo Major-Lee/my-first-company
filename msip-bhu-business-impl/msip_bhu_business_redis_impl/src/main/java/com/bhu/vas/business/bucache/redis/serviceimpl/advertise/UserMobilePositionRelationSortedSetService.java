@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import redis.clients.jedis.JedisPool;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
@@ -29,7 +31,15 @@ public class UserMobilePositionRelationSortedSetService extends AbstractRelation
     
     private static String generateKey(String province,String city ,String district){
         StringBuilder sb = new StringBuilder(BusinessKeyDefine.Advertise.AdvertiseMobilePostion);
-        sb.append(province).append(city).append(district);
+        if(!StringUtils.isBlank(province)) {
+        	sb.append(province);
+		}
+        if(!StringUtils.isBlank(city)) {
+        	sb.append(city);
+		}
+        if(!StringUtils.isBlank(district)) {
+        	sb.append(district);
+		}
         return sb.toString();
     }
     
@@ -74,11 +84,13 @@ public class UserMobilePositionRelationSortedSetService extends AbstractRelation
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.ADVERTISE);
 	}
-//	public static void main(String[] args) {
-//		UserMobilePositionRelationSortedSetService.getInstance().mobilenoRecord("河北省", "石家庄市", "裕华区", "666666");
-//		List<String> list = UserMobilePositionRelationSortedSetService.getInstance().fetchPostionMobileno("", "", "");
-//		for(String str : list){
-//			System.out.println(str);
-//		}
-//	}
+	public static void main(String[] args) {
+//		UserMobilePositionRelationSortedSetService.getInstance().mobilenoRecord("山西省", "五魁首", "六六六", "15127166171");
+		int a = UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno("山西省", "", "");
+		System.out.println(a);
+		List<String>  list= UserMobilePositionRelationSortedSetService.getInstance().fetchPostionMobileno("山西省", null, null);
+		for(String acc : list){
+			System.out.println(acc);
+		}
+	}
 }

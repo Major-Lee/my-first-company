@@ -45,4 +45,10 @@ public class AdvertiseSortMessageSenderTaskLoader {
 				BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, accs);
 		logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",accs.toString(),smsg,response));
 	}
+	public static void main(String[] args) {
+		List<String> mobilenos = UserMobilePositionRelationSortedSetService.getInstance().fetchPostionMobileno("山西省", "", "");
+		for(String str : mobilenos){
+			System.out.println(str);
+		}
+	}
 }
