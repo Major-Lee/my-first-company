@@ -112,4 +112,17 @@
 	</bean>
 	<bean id="advertiseSharedealTaskLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertiseSharedealTaskLoader" />
 	
+	<!-- 每天八点提交短信 -->
+	<bean id="advertiseSortMessageSenderTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="advertiseSortMessageSenderTaskLoaderCronJobDetail" />
+		<!-- <property name="cronExpression" value="0 0 0/1 * * ?" /> -->
+		<property name="cronExpression" value="${advertise.sms}" />
+	</bean>
+	<bean id="advertiseSortMessageSenderTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="advertiseSortMessageSenderTaskLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="advertiseSortMessageSenderTaskLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertiseSortMessageSenderTaskLoader" />
+	
 </beans>

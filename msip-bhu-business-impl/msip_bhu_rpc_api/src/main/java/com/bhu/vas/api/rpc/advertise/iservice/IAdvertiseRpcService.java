@@ -33,7 +33,7 @@ public interface IAdvertiseRpcService{
 			String district,String description,String title, long start, long end) throws ParseException;
 
 	public RpcResponseDTO<AdDevicePositionVTO> fetchDevicePositionDistribution(
-			String province, String city ,String district);
+			int type, String province, String city ,String district);
 	/**
 	 * 更新广告
 	 * @param uid

@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 
 
 
+
 /*import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;*/
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceMessageDispatchRpcService;
 import com.bhu.vas.api.rpc.tag.model.TagGroupHandsetDetail;
+import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.tag.facade.TagGroupFacadeService;
 import com.bhu.vas.processor.bulogs.DynamicLogWriter;
 import com.bhu.vas.processor.task.DaemonProcessesStatusTask;
@@ -58,6 +60,8 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 	
 	@Resource
 	private TagGroupFacadeService tagGroupFacadeService;
+	@Resource
+	private AdvertiseFacadeService advertiseFacadeService;
 	
 	@PostConstruct
 	public void initialize(){
@@ -212,18 +216,22 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 					if(HandsetDeviceDTO.Action_Online.equals(fristDto.getAction())){
 						//TODO终端上线
 						tagGroupFacadeService.handsetOnline(ctx, fristDto, headers.getMac());
+						advertiseFacadeService.userMobilenoCollect(headers.getMac(), fristDto.getMac());
 					}
 					else if(HandsetDeviceDTO.Action_Offline.equals(fristDto.getAction())){
 						//TODO终端下线
 						tagGroupFacadeService.handsetOffline(ctx, fristDto, headers.getMac());
+						advertiseFacadeService.userMobilenoCollect(headers.getMac(), fristDto.getMac());
 					}
 					else if(HandsetDeviceDTO.Action_Sync.equals(fristDto.getAction())){
 						//TODO终端同步
 						tagGroupFacadeService.handsetDeviceSync(ctx, dtos,headers.getMac());
+						advertiseFacadeService.userMobilenoCollect(headers.getMac(), dtos);
 					}
 					else if(HandsetDeviceDTO.Action_Authorize.equals(fristDto.getAction())) {
 						//TODO终端认证
 						tagGroupFacadeService.handsetAuth(ctx, fristDto, headers.getMac());
+						advertiseFacadeService.userMobilenoCollect(headers.getMac(), fristDto.getMac());
 					}
 			}
 		}

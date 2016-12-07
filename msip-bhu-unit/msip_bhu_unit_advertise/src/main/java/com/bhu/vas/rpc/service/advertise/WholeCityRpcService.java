@@ -37,10 +37,10 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	private UserService userService;
 	
 	@Override
-	public RpcResponseDTO<AdDevicePositionVTO> fetchDevicePositionDistribution(String province, String city, String district) {
-		logger.info(String.format("fetchDevicePositionDistribution province[%s] city[%s] district[%s]", province, city, district));
+	public RpcResponseDTO<AdDevicePositionVTO> fetchDevicePositionDistribution(int type,String province, String city, String district) {
+		logger.info(String.format("fetchDevicePositionDistribution type[%s] province[%s] city[%s] district[%s]",type, province, city, district));
 		try {
-			AdDevicePositionVTO vto = advertiseUnitFacadeService.fetchDevicePositionDistribution(province, city, district);
+			AdDevicePositionVTO vto = advertiseUnitFacadeService.fetchDevicePositionDistribution(type,province, city, district);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		} catch (BusinessI18nCodeException i18nex) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(), i18nex.getPayload());
