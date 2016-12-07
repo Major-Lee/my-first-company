@@ -74,4 +74,11 @@ public class UserMobilePositionRelationSortedSetService extends AbstractRelation
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.ADVERTISE);
 	}
+//	public static void main(String[] args) {
+//		UserMobilePositionRelationSortedSetService.getInstance().mobilenoRecord("河北省", "石家庄市", "裕华区", "666666");
+//		List<String> list = UserMobilePositionRelationSortedSetService.getInstance().fetchPostionMobileno("", "", "");
+//		for(String str : list){
+//			System.out.println(str);
+//		}
+//	}
 }

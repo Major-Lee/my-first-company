@@ -180,13 +180,14 @@ public class AdvertiseUnitFacadeService {
 			vto.setMobilenos(UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(province, city, district));
 		}else{
 			vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
-			if(StringUtils.isNoneBlank(city)){
-				vto.setPositions(WifiDevicePositionListService.getInstance().fetchCity(city));
-			}else if(StringUtils.isNoneBlank(province)){
-				vto.setPositions(WifiDevicePositionListService.getInstance().fetchProvince(province));
-			}else{
-				vto.setPositions(WifiDevicePositionListService.getInstance().fetchAllProvince());
-			}
+		}
+		
+		if(StringUtils.isNoneBlank(city)){
+			vto.setPositions(WifiDevicePositionListService.getInstance().fetchCity(city));
+		}else if(StringUtils.isNoneBlank(province)){
+			vto.setPositions(WifiDevicePositionListService.getInstance().fetchProvince(province));
+		}else{
+			vto.setPositions(WifiDevicePositionListService.getInstance().fetchAllProvince());
 		}
 		
 		if(vto != null && vto.getPositions() !=null){
