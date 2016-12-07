@@ -325,7 +325,7 @@ public class AdvertiseUnitFacadeService {
 			User user=userService.getById(advertise.getUid());
 			advertiseVTO.setOwnerName(user.getNick());
 			advertiseVTO.setEscapeFlag(false);
-			advertiseVTO.setCount(advertiseVTO.getCount());
+//			advertiseVTO.setCount(advertiseVTO.getCount());
 			if(advertise.getState()==AdvertiseType.UnPublish.getType()){
 				Date date=new Date();
 				if(advertise.getStart().getTime()>date.getTime()){
