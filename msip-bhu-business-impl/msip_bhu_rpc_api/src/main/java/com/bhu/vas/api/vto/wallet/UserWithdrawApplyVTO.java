@@ -28,9 +28,9 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	//用户已提现金额
 	private String total_paid_cash;
 	//用户当前钱包余额
-	private double balance;
+	private String balance;
 	//用户账户总收入
-	private double total_cash_sum;
+	private String total_cash_sum;
 	
 	private int total_paid_num;
 	
@@ -88,19 +88,19 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	public void setTotal_paid_cash(String total_paid_cash) {
 		this.total_paid_cash = total_paid_cash;
 	}
-	public double getBalance() {
+
+	public String getBalance() {
 		return balance;
 	}
-	public void setBalance(double balance) {
+	public void setBalance(String balance) {
 		this.balance = balance;
 	}
-	public double getTotal_cash_sum() {
+	public String getTotal_cash_sum() {
 		return total_cash_sum;
 	}
-	public void setTotal_cash_sum(double total_cash_sum) {
+	public void setTotal_cash_sum(String total_cash_sum) {
 		this.total_cash_sum = total_cash_sum;
 	}
-	
 	public int getTotal_paid_num() {
 		return total_paid_num;
 	}

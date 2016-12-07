@@ -56,6 +56,7 @@ public class ConsoleWithdrawController extends BaseController {
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
             @RequestParam(required = false,defaultValue = "0", value = "tuid") int tuid,
+            @RequestParam(required = false, defaultValue = "", value = "utype") String utype,
             @RequestParam(required = false,defaultValue = "", value = "status") String withdraw_status,
             @RequestParam(required = false, defaultValue = "weixin", value = "payment_type") String payment_type,
             @RequestParam(required = false, defaultValue = "", value = "startTime") String startTime,
@@ -69,7 +70,7 @@ public class ConsoleWithdrawController extends BaseController {
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-		RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pageWithdrawApplies(uid, tuid,mobileno, withdraw_status,payment_type,startTime,endTime,pageNo, pageSize);
+		RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> rpcResult = userWalletRpcService.pageWithdrawApplies(uid, tuid,utype,mobileno, withdraw_status,payment_type,startTime,endTime,pageNo, pageSize);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else

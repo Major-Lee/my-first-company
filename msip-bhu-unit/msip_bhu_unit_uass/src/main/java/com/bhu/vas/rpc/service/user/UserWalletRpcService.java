@@ -4,13 +4,13 @@ import java.util.Date;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardListVTO;
-import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
@@ -34,16 +34,17 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	@Resource
 	private UserWalletUnitFacadeService userWalletUnitFacadeService;
 	
+
 	/**
 	 * update by dongrui 2016-06-14 start
 	 * 接口增加参数payment_type 提现类型【微信&对公账号】
 	 * update by dongtui 2016-06-14 E N D
 	 */
 	@Override
-	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(int reckoner, int tuid,String mobileno, String withdraw_status,String payment_type,String startTime,String endTime,int pageNo, int pageSize) {
-		logger.info(String.format("pageWithdrawApplies with reckoner[%s] tuid [%s]mobileno [%s] withdraw_status[%s] payment_type[%s] startTime[%s] endtTime[%s] pn[%s] ps[%s]",
-				reckoner,tuid,mobileno,withdraw_status,payment_type,startTime,endTime,pageNo,pageSize));
-		return userWalletUnitFacadeService.pageWithdrawApplies(reckoner, tuid,mobileno, withdraw_status,payment_type,startTime,endTime,pageNo, pageSize);
+	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(int reckoner, int tuid,String utype,String mobileno, String withdraw_status,String payment_type,String startTime,String endTime,int pageNo, int pageSize) {
+		logger.info(String.format("pageWithdrawApplies with reckoner[%s] tuid [%s] utype [%s] mobileno [%s] withdraw_status[%s] payment_type[%s] startTime[%s] endtTime[%s] pn[%s] ps[%s]",
+				reckoner,tuid,utype,mobileno,withdraw_status,payment_type,startTime,endTime,pageNo,pageSize));
+		return userWalletUnitFacadeService.pageWithdrawApplies(reckoner, tuid,utype,mobileno, withdraw_status,payment_type,startTime,endTime,pageNo, pageSize);
 	}
 
 	@Override
