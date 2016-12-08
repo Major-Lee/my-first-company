@@ -304,10 +304,11 @@ public enum ResponseErrorCode {
 	TAG_GROUP_TASK_NOT_EXIST("1118","tagGroup.task.not.exist"),
 	TAG_GROUP_TASK_AlREADY_DONE("1119","tagGroup.task.already.done"),
 	TAG_GROUP_NOT_EXIST_OR_USER_NO_MATCH("1120","tagGroup.not.exist.or.user.nomatch"),
-	TAG_GROUP_MSG_TOO_LONG_OR_NULL("1121","tagGroup.msg.too.long.or.null");
+	TAG_GROUP_MSG_TOO_LONG_OR_NULL("1121","tagGroup.msg.too.long.or.null"),
 
-	
-	
+	/******************    message    ******************/
+	MESSAGE_PUSH_CHANNEL_ERROR("1210","message.pushchannel.error"),
+	MESSAGE_MSG_TYPE_ERROR("1211","message.msgtype.error");
 	
     private String code;
     private String i18n;

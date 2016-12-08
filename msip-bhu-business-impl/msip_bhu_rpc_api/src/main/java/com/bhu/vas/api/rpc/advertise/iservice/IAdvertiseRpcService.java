@@ -88,7 +88,7 @@ public interface IAdvertiseRpcService{
 
 	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(Integer uid,
 			String province, String city, String district,
-			String publishStartTime, String publishEndTime, int type,
+			String publishStartTime, String publishEndTime, Integer type,
 			String createStartTime, String createEndTime, String mobileNo,
 			int state, int pn, int ps,boolean isConsole);
 	/**

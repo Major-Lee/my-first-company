@@ -6,9 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.helper.BusinessEnumType.TimPushChannel;
+import com.bhu.vas.api.helper.BusinessEnumType.TimPushMsgType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.message.dto.MessageUserSigDTO;
+import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
 import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
 import com.bhu.vas.api.rpc.message.model.MessageUser;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
@@ -83,6 +86,51 @@ public class MessageUnitFacadeService {
 			asyncDeliverMessageService.sendBatchTimUserAddTagActionMessage(user, utype, channel);
 		}
 		return sig;
-	} 
+	}
 
+	public RpcResponseDTO<TimResponseBasicDTO> send_single_msg(Integer sendChannel, String toAcc, Integer msgType,
+			String content) {
+		try{
+			TimPushChannel channel = MessageTimHelper.validateTimPushChannel(sendChannel);
+			if (channel == null)
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_PUSH_CHANNEL_ERROR);
+			
+			TimPushMsgType type = MessageTimHelper.validateTimPushMsgType(msgType);
+			if (type == null)
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_MSG_TYPE_ERROR);
+			
+			TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimSendMsgUrlCommunication(channel, 
+					toAcc, type, content);
+			if (!ret_dto.getActionStatus().equals("OK")){
+				logger.info(String.format("send_single_msg failed errorInfo[%s] errorno[%s]", ret_dto.getErrorInfo(), ret_dto.getErrorCode()));
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret_dto);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<TimResponseBasicDTO> send_push(Integer sendChannel, String tags, int msgLifeTime,
+			Integer msgType, String content) {
+		try{
+			TimPushChannel channel = MessageTimHelper.validateTimPushChannel(sendChannel);
+			if (channel == null)
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_PUSH_CHANNEL_ERROR);
+			
+			TimPushMsgType type = MessageTimHelper.validateTimPushMsgType(msgType);
+			if (type == null)
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_MSG_TYPE_ERROR);
+			
+			TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimPushUrlCommunication(channel, msgLifeTime, tags, type, content);
+			if (!ret_dto.getActionStatus().equals("OK")){
+				logger.info(String.format("send_push failed errorInfo[%s] errorno[%s]", ret_dto.getErrorInfo(), ret_dto.getErrorCode()));
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret_dto);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+	
 }

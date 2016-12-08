@@ -14,6 +14,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositi
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
@@ -25,8 +26,10 @@ public class AdvertiseSortMessageSenderTaskLoader {
 	
 	public void execute() {
 		logger.info("AdvertiseSortMessageSenderTaskLoader start...");
+		
+		String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("type", Advertise.sortMessage).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPublish.getType());
+		mc.createCriteria().andColumnEqualTo("type", Advertise.sortMessage).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPublish.getType()).andColumnLike("start", date+"%");
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
 		if(!ads.isEmpty()){
 			for(Advertise ad : ads){

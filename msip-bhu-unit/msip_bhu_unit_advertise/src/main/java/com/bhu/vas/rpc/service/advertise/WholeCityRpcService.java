@@ -89,7 +89,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	@Override
 	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(Integer uid, String province,
 			String city, String district, String publishStartTime,
-			String publishEndTime, int type, String createStartTime,
+			String publishEndTime, Integer type, String createStartTime,
 			String createEndTime, String mobileNo,int state,int pn,int ps,boolean isConsole) {
 		logger.info(String.format("queryAdvertiseList uid[%s] province[%s] city[%s] district[%s] publishStartTime[%s] publishEndTime[%s] type[%s] createStartTime[%s] createEndTime[%s] mobileNo[%s] state[%s] pn[%s] ps[%s] isConsole[%s]",
 				uid,province,city,district,publishStartTime,publishEndTime,type,createStartTime,createEndTime,mobileNo,state,pn,ps,isConsole));
@@ -119,10 +119,12 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 			maps.add(stateMap);
 		}
 		
-		Map<String,Object> typeMap=new HashMap<String,Object>();
-		typeMap.put("name", "type");
-		typeMap.put("value", type);
-		maps.add(typeMap);
+		if(type != null){
+			Map<String,Object> typeMap=new HashMap<String,Object>();
+			typeMap.put("name", "type");
+			typeMap.put("value", type);
+			maps.add(typeMap);
+		}
 		try{
 			AdvertiseListVTO advertiseListVTO=new AdvertiseListVTO();
 			TailPage<AdvertiseVTO> advertises=advertiseUnitFacadeService.queryAdvertiseList(uid,maps,publishStartTime,publishEndTime,createStartTime,createEndTime,mobileNo,pn,ps,isConsole);

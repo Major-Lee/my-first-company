@@ -437,7 +437,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String OpsImportCallbackToken = "MzZhMWIzMDdiYjIyOGI5NzllZTM2M2FlZTc0NGIyOTA=";
 	
 	public static final float Advertise_Unit_Price = 20F;
-	public static final float Advertise_Sm_Price = 0.1F;
+	public static final float Advertise_Sm_Price = 0.2F;
 	public static float AdvertiseOperatorDiscount = 0.01F;
 	public static float AdvertiseCommonDiscount = 0.05F;
 	
