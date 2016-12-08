@@ -33,6 +33,7 @@ public class MessageSystemHashService extends AbstractRelationHashCache{
     	StringBuilder sb = new StringBuilder();
     	sb.append(BusinessKeyDefine.Message.MessageUserSig);
     	sb.append(utype);
+    	sb.append(key);
         return sb.toString();
     }
     
