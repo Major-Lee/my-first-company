@@ -55,11 +55,11 @@ public class LoginConsoleSessionController extends BaseController{
 			@RequestParam(required = true) String pwd,
 			@RequestParam(required = false, value="d",defaultValue="P") String device) {
 		//step 1.手机号正则验证
-		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode, acc);
-		if(validateError != null){
-			SpringMVCHelper.renderJson(response, validateError);
-			return;
-		}
+//		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode, acc);
+//		if(validateError != null){
+//			SpringMVCHelper.renderJson(response, validateError);
+//			return;
+//		}
 		String remoteIp = WebHelper.getRemoteAddr(request);
 		String from_device = DeviceEnum.getBySName(device).getSname();
 		
