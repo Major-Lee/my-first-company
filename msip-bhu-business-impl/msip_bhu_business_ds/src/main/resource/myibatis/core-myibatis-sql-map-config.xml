@@ -172,6 +172,9 @@
 		<typeAlias alias="advertise" 	type="com.bhu.vas.api.rpc.advertise.model.Advertise" />
 		<typeAlias alias="advertiseDetails" 	type="com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails" />
 		<typeAlias alias="advertiseSharedealDetail" 	type="com.bhu.vas.api.rpc.advertise.model.AdvertiseSharedealDetail" />
+		
+		<!-- messageSystem -->
+		<typeAlias alias="messageUser" 	type="com.bhu.vas.api.rpc.message.model.MessageUser" />
 	</typeAliases>
 
 	<!-- <plugins> <plugin interceptor="com.google.code.shardbatis.pluginu.ShardPlugin"> 
