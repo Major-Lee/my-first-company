@@ -1444,4 +1444,30 @@ public class UserWalletFacadeService{
 		return userWalletLogService.getEntityDao().getSqlSessionMasterTemplate().
 				selectOne(UserWalletLog.class.getName()+".countDealIncome", map);
 	}
+	
+	public Map<String,Object> accountIncome(Integer uid, String mac,
+			String role, String start_created_ts, String end_created_ts){
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(StringUtils.isBlank(mac)){
+			mac=null;
+		}
+		if(StringUtils.isBlank(role)){
+			role=null;
+		}
+		if(StringUtils.isNotBlank(start_created_ts)){
+			map.put("start_created_ts", start_created_ts);
+		}else{
+			map.put("start_created_ts", null);
+		}
+		if(StringUtils.isNotBlank(end_created_ts)){
+			map.put("end_created_ts", end_created_ts);
+		}else{
+			map.put("end_created_ts", null);
+		}
+		map.put("uid", uid);
+		map.put("mac", mac);
+		map.put("role", role);
+		return userWalletLogService.getEntityDao().getSqlSessionSlaverTemplate().
+				selectOne(UserWalletLog.class.getName()+".accountIncome", map);
+	}
 }
