@@ -308,7 +308,10 @@ public class UserWalletController extends BaseController{
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
-
+		int specId=2;
+		if(uid==specId){
+			uid=null;
+		}
 		RpcResponseDTO<UserWalletRewardListVTO> rpcResult = userWalletRpcService.rewardUserWalletPages(uid, mac, role, 
 				start_created_ts, end_created_ts, pageNo, pageSize);
 		if(!rpcResult.hasError()){

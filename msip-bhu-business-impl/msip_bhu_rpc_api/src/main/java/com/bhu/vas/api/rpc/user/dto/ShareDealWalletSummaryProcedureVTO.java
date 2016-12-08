@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 @SuppressWarnings("serial")
 public class ShareDealWalletSummaryProcedureVTO implements java.io.Serializable{
-	private int userid;
+	private Integer userid;
 	private String today_date;
 	private float today_cash;
 	private int today_nums;
@@ -17,11 +17,11 @@ public class ShareDealWalletSummaryProcedureVTO implements java.io.Serializable{
 	private int total_nums;
 	
 	private int ods;//online devices
-	public int getUserid() {
+	public Integer getUserid() {
 		return userid;
 	}
 
-	public void setUserid(int userid) {
+	public void setUserid(Integer userid) {
 		this.userid = userid;
 	}
 

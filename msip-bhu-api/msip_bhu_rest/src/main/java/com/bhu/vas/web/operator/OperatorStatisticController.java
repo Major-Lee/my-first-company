@@ -76,6 +76,10 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
 			}
+			int specId=2;
+			if(uid==specId){
+				uid=null;
+			}
 	    	try{
 	    		RpcResponseDTO<UcloudMacStatisticsVTO> rpcResult = userWalletRpcService.richStatistics(uid,beginTime,endTime);
 	    		if(!rpcResult.hasError()){
@@ -92,12 +96,16 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 	    public void fetch_logs(
 	            HttpServletResponse response,
 	            @RequestParam(required = true,value="sk") String secretKey,
-	            @RequestParam(required = true) int uid
+	            @RequestParam(required = true) Integer uid
 	    		) {
 			ResponseError validateError = validate(secretKey);
 			if(validateError != null){
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
+			}
+			int specId=2;
+			if(uid==specId){
+				uid=null;
 			}
 			RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> rpcResult = userWalletRpcService.walletLogStatistics(uid);
 			if(!rpcResult.hasError()) {
