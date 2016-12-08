@@ -423,6 +423,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static boolean Device_SharedNetwork_Default_Start = false;
 	public static String Device_SharedNetwork_DUT = "TU";
 	public static String Device_SharedNetwork_Top_Version = "1.5.6";
+	public static String Device_WorkMode_Swith_NewIf_Version = "1.5.18";
 	
 	
 	public static int SharedNetworksTemplateMaxLimit = 50;

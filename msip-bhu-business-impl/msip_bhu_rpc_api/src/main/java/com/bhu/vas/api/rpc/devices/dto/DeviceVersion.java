@@ -235,6 +235,45 @@ public class DeviceVersion {
 		}
 		return 0;
 	}
+	
+	//比较两个版本字符串的版本号部分  AP106P07V1.5.18Build2222_TU, 只比较1.5.18部分
+	public static int compareMainVersions(String str1, String str2){
+		if(str1.equalsIgnoreCase(str2)) return 0;
+		DeviceVersion ver1 = DeviceVersion.parser(str1);
+		if(ver1 == null)
+			return -1;
+		DeviceVersion ver2 = DeviceVersion.parser(str2);
+		if(ver2 == null)
+			return 1;
+		String[] x = ver1.parseDeviceSwverVersion();
+		
+		String[] a1 = (ver1.parseDeviceSwverVersion())[0].split(StringHelper.SPLIT_POINT_STRING_GAP);
+		String[] a2 = (ver2.parseDeviceSwverVersion())[0].split(StringHelper.SPLIT_POINT_STRING_GAP);
+		int m1 = 0, s1 = 0, t1 = 0;
+		int m2 = 0, s2 = 0, t2 = 0;
+		try{
+			m1 = Integer.parseInt(a1[0]);
+			s1 = Integer.parseInt(a1[1]);
+			t1 = Integer.parseInt(a1[2]);
+			m2 = Integer.parseInt(a2[0]);
+			s2 = Integer.parseInt(a2[1]);
+			t2 = Integer.parseInt(a2[2]);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+		if(m1 > m2) return 1;
+		else if(m1 < m2) return -1;
+		if(s1 > s2) return 1;
+		else if(s1 < s2) return -1;
+		if(t1 > t2) return 1;
+		else if(t1 < t2) return -1;
+		
+		return 0;
+	}
+		
+	
+	
 	public boolean valid(){
 		return StringUtils.isNotEmpty(prefix) && StringUtils.isNotEmpty(pno) && StringUtils.isNotEmpty(ver);
 	}
@@ -271,9 +310,13 @@ public class DeviceVersion {
 		DeviceVersion parser = DeviceVersion.parser("AP901P06V1.5.12Build519_TU_NSL");
 		System.out.println(" ver:"+parser.toDeviceUnitTypeIndex());
 		System.out.println(" ver:"+parser.wasDutURouter());
+		System.out.println(" ver:"+parser.getVer());
 		System.out.println(" st:"+parser.getSt());
 		System.out.println(" Mn:"+parser.getMn());
 		System.out.println(" Prefix:"+parser.getPrefix());
 		System.out.println(" Hdtype:"+parser.getHdtype());
+		
+		
+		System.out.println("compare:" + DeviceVersion.compareMainVersions("AP112P06V1.5.0Build2233_TU", "AP106P06V1.5.0Build4233_TU"));
 	}
 }

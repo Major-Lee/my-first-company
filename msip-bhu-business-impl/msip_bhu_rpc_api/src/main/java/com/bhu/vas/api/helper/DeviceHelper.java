@@ -883,6 +883,32 @@ public class DeviceHelper {
 	        "</external_plugins>"+
 	    "</sys>"+
 	"</dev>";
+
+	public static final String DeviceSetting_Dev_Auto_Switch_Router2Bridge = 
+			"<dev>"+
+				    "<sys>"+
+				    	"<config><ITEM sequence=\"-1\" /></config>"+
+				    "</sys>"+
+				    "<mod>"+
+						"<server>"+
+							"<mode><ITEM mode=\"bridge-ap\" /></mode>"+
+						"</server>"+
+					"</mod>"+
+				"</dev>";
+
+	public static final String DeviceSetting_Dev_Auto_Switch_Bridge2Router = 
+			"<dev>"+
+				    "<sys>"+
+				    	"<config><ITEM sequence=\"-1\" /></config>"+
+				    "</sys>"+
+				    "<mod>"+
+						"<server>"+
+							"<mode><ITEM mode=\"router-ap\" /></mode>"+
+						"</server>"+
+					"</mod>"+
+				"</dev>";
+
+	
 	//bridge-ap 和 router-ap之间的设备工作模式切换
 	public static final String DeviceSetting_Switch_Workmode_Router2Bridge =
 			"<dev>"+
@@ -1370,6 +1396,25 @@ public class DeviceHelper {
 		return builderDeviceSettingItem(DeviceSetting_Plugins_Samba,ad_dto.builderProperties());
 	}
 	
+	
+	/**
+	 * 设备自主切换工作模式，不需要服务器下发其余需要保留的配置
+	 * @param mac
+	 * @param switchAct
+	 * @param s_dto
+	 * @param vw_dto
+	 * @param will_device_status
+	 * @return
+	 */
+	public static String builderDevAutoDSWorkModeSwitchOuter(String mac, int switchAct){
+		//组装切换工作模式配置修改指令
+		if(switchAct == WifiDeviceHelper.SwitchMode_Router2Bridge_Act){
+			return DeviceSetting_Dev_Auto_Switch_Router2Bridge;
+		}else{
+			return DeviceSetting_Dev_Auto_Switch_Bridge2Router;
+		}
+	}
+
 	public static String builderDSWorkModeSwitchOuter(String mac, int switchAct, WifiDeviceSettingDTO s_dto, SharedNetworkSettingDTO vw_dto,DeviceStatusExchangeDTO will_device_status){
 		StringBuffer workModeSwitchBuilder = new StringBuffer();
 		//组装切换工作模式配置修改指令

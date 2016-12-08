@@ -19,16 +19,20 @@ import com.bhu.vas.api.helper.IGenerateDeviceSetting;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
+import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.DeviceStatusExchangeDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDevicePersistenceCMDState;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.task.model.VasModuleCmdDefined;
 import com.bhu.vas.api.rpc.task.model.pk.VasModuleCmdPK;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.bhu.vas.business.ds.task.service.VasModuleCmdDefinedService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -51,6 +55,9 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 	
 	@Resource
 	private DeviceFacadeService deviceFacadeService;
+	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
 	/**************************  具体业务修改配置数据 封装 **********************************/
 
 	
@@ -127,6 +134,11 @@ public class DeviceCMDGenFacadeService implements IGenerateDeviceSetting{
 			//ParamSharedNetworkDTO vw_dto = sharedNetworksFacadeService.fetchDeviceSharedNetworkConfAndSwitchWorkmode(mac, switchAct);
 			//return DeviceHelper.builderDSWorkModeSwitchOuter(mac, switchAct, validateDeviceSettingReturnDTO(mac), vw_dto);
 			SharedNetworkSettingDTO sharedNetworkConf = sharedNetworksFacadeService.fetchDeviceSharedNetworkConf(mac);
+			WifiDevice dev = wifiDeviceService.getById(mac);
+			if(DeviceVersion.compareMainVersions(dev.getOrig_swver(), BusinessRuntimeConfiguration.Device_WorkMode_Swith_NewIf_Version)  >= 0){
+				//用新接口给设备下发切换模式
+				return DeviceHelper.builderDevAutoDSWorkModeSwitchOuter(mac, switchAct);
+			}
 			return DeviceHelper.builderDSWorkModeSwitchOuter(mac, switchAct, validateDeviceSettingReturnDTO(mac), sharedNetworkConf,will_device_status);
 		}
 		return null;
