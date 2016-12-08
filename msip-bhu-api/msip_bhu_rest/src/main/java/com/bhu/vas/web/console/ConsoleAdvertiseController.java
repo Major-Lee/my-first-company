@@ -64,7 +64,7 @@ public class ConsoleAdvertiseController extends BaseController{
 			@RequestParam(required = false) String district,
 			@RequestParam(required = false) String publishStartTime,
 			@RequestParam(required = false) String publishEndTime,
-			@RequestParam(required = false,defaultValue="0") int type,
+			@RequestParam(required = false) Integer type,
 			@RequestParam(required = false) String  createStartTime,
 			@RequestParam(required = false) String createEndTime,
 			@RequestParam(required = false) String mobileNo,

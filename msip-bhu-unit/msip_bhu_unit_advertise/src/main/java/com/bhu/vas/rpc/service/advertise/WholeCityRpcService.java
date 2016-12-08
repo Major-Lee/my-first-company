@@ -119,7 +119,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 			maps.add(stateMap);
 		}
 		
-		if(type != null){
+		if(type !=null){
 			Map<String,Object> typeMap=new HashMap<String,Object>();
 			typeMap.put("name", "type");
 			typeMap.put("value", type);
