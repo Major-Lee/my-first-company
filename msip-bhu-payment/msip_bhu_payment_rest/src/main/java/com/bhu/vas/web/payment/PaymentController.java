@@ -2066,7 +2066,7 @@ public class PaymentController extends BaseController{
 		String goods_no = request.getParameter("agent_bill_id");
 		if (StringUtils.isBlank(goods_no)) {
 			logger.error(String.format("get heepay notify goods_no [%s]", goods_no));
-			 response.getOutputStream().write("success=N".getBytes());
+			 response.getOutputStream().write("error".getBytes());
 			return;
 		}
 		//商户订单号
@@ -2082,7 +2082,7 @@ public class PaymentController extends BaseController{
 		PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
 		if (payReckoning == null) {
         	logger.info("get heepay notice payReckoning " +payReckoning);
-        	 response.getOutputStream().write("success=N".getBytes());
+        	 response.getOutputStream().write("error".getBytes());
         	return;
         }
 		String orderId = payReckoning.getOrder_id();
@@ -2095,24 +2095,24 @@ public class PaymentController extends BaseController{
 				 if (trade_status.equals("1")){
 					logger.info("支付成功 修改订单的支付状态,TRADE_SUCCESS");
 					payLogicService.updatePaymentStatus(payReckoning,out_trade_no,trade_no,"Hee","");
-					response.getOutputStream().write("success=Y".getBytes());
+					response.getOutputStream().write("ok".getBytes());
 					return;
 				}else{
 					logger.info("支付失败！");	//请不要修改或删除
-					 response.getOutputStream().write("success=N".getBytes());
+					 response.getOutputStream().write("error".getBytes());
 					return;
 				}
 			}
 			
 			 long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
 			 logger.info(orderId+"微信通知总耗时：" + end + "毫秒");
-			 response.getOutputStream().write("success=Y".getBytes());
+			 response.getOutputStream().write("ok".getBytes());
 			return;
 		}else{//验证失败
 			logger.info(String.format("get heepay notify  mysign [%s] sign [%s] sign verify fail",mySign, sign));
 			 long end = System.currentTimeMillis() - begin; // 这段代码放在程序执行后
 			 logger.info(orderId+"汇元通知总耗时：" + end + "毫秒");
-			 response.getOutputStream().write("success=N".getBytes());
+			 response.getOutputStream().write("error".getBytes());
 			return;
 		}
     }

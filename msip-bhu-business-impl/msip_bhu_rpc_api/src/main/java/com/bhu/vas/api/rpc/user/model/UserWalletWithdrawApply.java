@@ -131,8 +131,10 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 			String verify_name,
 			String operate_name,
 			WithdrawCostInfo applyCost,
-			double total_cash_sum,
-			double balance){
+			String total_cash_sum,
+			String totalPaidCash,
+			int totalOrderNum,
+			String balance ){
 		UserWithdrawApplyVTO vto = new UserWithdrawApplyVTO();
 		vto.setApplyid(id);
 		vto.setUid(uid);
@@ -145,8 +147,8 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		
 		vto.setTotal_cash_sum(total_cash_sum);//总收入
 		vto.setBalance(balance);//账户余额
-		vto.setTotal_paid_cash("--");//已提现总额
-		vto.setTotal_paid_num(0);///总交易订单数
+		vto.setTotal_paid_cash(totalPaidCash);//已提现总额
+		vto.setTotal_paid_num(totalOrderNum);///总交易订单数
 		vto.setTaxcost(applyCost.getTaxcost());
 		vto.setTranscost(applyCost.getTranscost());
 		vto.setWithdraw_oper(withdraw_oper);

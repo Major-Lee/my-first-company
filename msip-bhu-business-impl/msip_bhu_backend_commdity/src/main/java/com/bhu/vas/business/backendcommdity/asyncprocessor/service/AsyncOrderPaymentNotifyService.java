@@ -17,6 +17,7 @@ import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseVideoValidateCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.pay.ResponseWhiteListValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.push.SharedealNotifyPushDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
@@ -578,7 +579,7 @@ public class AsyncOrderPaymentNotifyService{
 	 * @param message
 	 */
 	public void orderWhiteListNotifyCompletedHandle(String message){
-		ResponseVideoValidateCompletedNotifyDTO videov_dto = PaymentNotifyFactoryBuilder.fromJson(message, ResponseVideoValidateCompletedNotifyDTO.class);
+		ResponseWhiteListValidateCompletedNotifyDTO videov_dto = PaymentNotifyFactoryBuilder.fromJson(message, ResponseWhiteListValidateCompletedNotifyDTO.class);
 		String orderid = videov_dto.getOrderid();
 		boolean success = videov_dto.isSuccess();
 		Date paymented_ds = videov_dto.getPaymented_ds();

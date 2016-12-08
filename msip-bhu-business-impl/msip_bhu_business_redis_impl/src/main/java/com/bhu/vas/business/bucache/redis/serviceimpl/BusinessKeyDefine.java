@@ -163,6 +163,8 @@ public class BusinessKeyDefine {
 	public static class Message{
 		public static final String MessageUserSig = "MSIG.";
 		public static final String MessageFieldSig = "sig";
+		public static final String Visitor = "V.";
+		public static final String User = "U.";
 	}
 	
 }

@@ -27,8 +27,8 @@ public class PostRequestUtil {
 		//huaxinlianchuang   100032
 		//http://sms.chanzor.com:8001/sms.aspx?action=send&userid=&account=账号&password=密码&mobile=手机号&sendTime=&content=内容
 //		String aa = "action=send&userid=&account=huaxinlianchuang&password=100032&mobile=15127166171&sendTime=&content=验证码123455请勿将验证码泄露给他人【必虎】";
-		String aa = "secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&umac=ws:ww:22&paymentName=商品&payment_type=WapAlipay&total_fee=0.01&goods_no=w21w54e456";
-		Object sr = sendPost("http://localhost:8080/msip_bhu_payment_rest/payment/submitPayment", aa);
+		String aa = "result=1&pay_message=&agent_id=2069082&jnet_bill_no=H1612068664835AM&agent_bill_id=PROWPWX1480986364582ieja&pay_type=30&pay_amt=0.35&remark=&sign=55982346017a69747c4ca53042d0c8de";
+		Object sr = sendPost("http://localhost:8080/msip_bhu_payment_rest/payment/heepayNotifySuccess", aa);
 //		String aa = "action=send&userid=&account=huaxinlianchuang&password=100032&mobile=18515465766&sendTime=&content=验证码123455请勿将验证码泄露给他人【必虎】";
 //		Object sr = sendPost("http://sms.chanzor.com:8001/sms.aspx", aa);
 		//Object sr = sendPost("http://m.api.dianping.com/tohome/openapi/jiadianguanjia/", par);

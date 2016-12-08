@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.UserType;
-import com.bhu.vas.api.dto.commdity.OrderRewardVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.RequestWithdrawNotifyDTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardListVTO;
 import com.bhu.vas.api.dto.user.UserWalletRewardVTO;
@@ -290,6 +289,7 @@ public class UserWalletUnitFacadeService {
 	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(
 			int reckoner, 
 			int tuid, 
+			String utype,
 			String mobileno,
 			String withdraw_status,
 			String payment_type, 
@@ -341,22 +341,53 @@ public class UserWalletUnitFacadeService {
 					}
 					//userWallet
 					UserWallet uwallet = userWalletFacadeService.userWallet(apply.getUid());
-					double totalCash = uwallet.getTotal_cash_sum();
-					double lastCash = uwallet.getCash();
-					UserWithdrawApplyVTO uWithdrawAplyVTO = apply.toUserWithdrawApplyVTO(
-							user != null ? UserType.getByIndex(user.getUtype()).getFname()
+//					double totalCash = uwallet.getTotal_cash_sum();
+					String totalCash = null;
+					String  lastCash = uwallet.getCash()+"";
+					int totalOrderNum = 0;
+					System.out.println(1);
+					String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(apply.getUid());
+					System.out.println("totalPaidCash"+totalPaidCash);
+					Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(apply.getUid(), null, null, startTime, endTime);
+					System.out.println("totalIncomeMap size"+totalIncomeMap.size());
+					if(totalIncomeMap.get("num")!=null){
+						totalOrderNum=(int) totalIncomeMap.get("num");
+					}
+					if(totalIncomeMap.get("cash")!=null){
+						totalCash=(String) totalIncomeMap.get("cash");
+					}
+					System.out.println("totalOrderNum  "+totalOrderNum+"     totalCash"+totalCash);
+					UserWithdrawApplyVTO uWithdrawAplyVTO = null;
+					if (StringUtils.isNotEmpty(utype)) {
+						if(user.getUtype()==Integer.parseInt(utype)){
+							uWithdrawAplyVTO = apply.toUserWithdrawApplyVTO(
+									user != null ? UserType.getByIndex(user.getUtype()).getFname()
 									: StringUtils.EMPTY,
-							user != null ? user.getMobileno()
-									: StringUtils.EMPTY,
-							user != null ? user.getNick() : StringUtils.EMPTY,
-							verifyUser != null ? verifyUser.getNick()
-									: StringUtils.EMPTY,
-							operateUser != null ? operateUser.getNick()
-									: StringUtils.EMPTY, calculateApplyCost,totalCash,lastCash);
+									user != null ? user.getMobileno()
+											: StringUtils.EMPTY,
+									user != null ? user.getNick() : StringUtils.EMPTY,
+									verifyUser != null ? verifyUser.getNick()
+											: StringUtils.EMPTY,
+									operateUser != null ? operateUser.getNick()
+											: StringUtils.EMPTY, calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash);
+						}
+					}else{
+						uWithdrawAplyVTO = apply.toUserWithdrawApplyVTO(
+								user != null ? UserType.getByIndex(user.getUtype()).getFname()
+								: StringUtils.EMPTY,
+								user != null ? user.getMobileno()
+										: StringUtils.EMPTY,
+								user != null ? user.getNick() : StringUtils.EMPTY,
+								verifyUser != null ? verifyUser.getNick()
+										: StringUtils.EMPTY,
+								operateUser != null ? operateUser.getNick()
+										: StringUtils.EMPTY, calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash);
+					}
 					vtos.add(uWithdrawAplyVTO);
 					index++;
 				}
 			}
+			System.out.println("JJJKKK"+JsonHelper.getJSONString(vtos));
 			result_pages = new CommonPage<UserWithdrawApplyVTO>(pages.getPageNumber(), pages.getPageSize(),pages.getTotalItemsCount(), vtos);
 			logger.info("fetch applies rpc response："+JsonHelper.getJSONString(result_pages));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(result_pages);
@@ -449,14 +480,24 @@ public class UserWalletUnitFacadeService {
 				// withdrawApply.getCash());
 				//userWallet
 				UserWallet uwallet = userWalletFacadeService.userWallet(reckoner);
-				double totalCash = uwallet.getTotal_cash_sum();
-				double lastCash = uwallet.getCash();
+//				double totalCash = uwallet.getTotal_cash_sum();
+				String totalCash = null;
+				String  lastCash = uwallet.getCash()+"";
+				int totalOrderNum = 0;
+				String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(reckoner);
+				Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(reckoner, null, null, null, null);
+				if(totalIncomeMap.get("num")!=null){
+					totalOrderNum=(int) totalIncomeMap.get("num");
+				}
+				if(totalIncomeMap.get("cash")!=null){
+					totalCash=(String) totalIncomeMap.get("cash");
+				}
 				withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(
 						UserType.getByIndex(user.getUtype()).getFname(),
 						user.getMobileno(),
 						user.getNick(),
 						user.getNick(), "",
-						calculateApplyCost,totalCash,lastCash);
+						calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash);
 			}
 			// modify by dongrui 2016-06-20 E N D
 			if (withdrawApplyVTO != null) {
@@ -544,11 +585,21 @@ public class UserWalletUnitFacadeService {
 			// UserWalletConfigs walletConfigs =
 			// userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
 			UserWallet uwallet = userWalletFacadeService.userWallet(reckoner);
-			double totalCash = uwallet.getTotal_cash_sum();
-			double lastCash = uwallet.getCash();
+//			double totalCash = uwallet.getTotal_cash_sum();
+			String totalCash = null;
+			String  lastCash = uwallet.getCash()+"";
+			int totalOrderNum = 0;
+			String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(reckoner);
+			Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(reckoner, null, null, null, null);
+			if(totalIncomeMap.get("num")!=null){
+				totalOrderNum=(int) totalIncomeMap.get("num");
+			}
+			if(totalIncomeMap.get("cash")!=null){
+				totalCash=(String) totalIncomeMap.get("cash");
+			}
 			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply
 					.toUserWithdrawApplyVTO(UserType.getByIndex(user.getUtype()).getFname(),user.getMobileno(), user.getNick(),
-							"", "", calculateApplyCost,totalCash,lastCash);
+							"", "", calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash);
 
 			// modify by dongrui 2016-06-17 start
 			UserOAuthStateVTO paymentVTO = null;
@@ -638,11 +689,21 @@ public class UserWalletUnitFacadeService {
 			// userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(),
 			// withdrawApply.getCash());
 			UserWallet uwallet = userWalletFacadeService.userWallet(reckoner);
-			double totalCash = uwallet.getTotal_cash_sum();
-			double lastCash = uwallet.getCash();
+//			double totalCash = uwallet.getTotal_cash_sum();
+			String totalCash = null;
+			String  lastCash = uwallet.getCash()+"";
+			int totalOrderNum = 0;
+			String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(reckoner);
+			Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(reckoner, null, null, null, null);
+			if(totalIncomeMap.get("num")!=null){
+				totalOrderNum=(int) totalIncomeMap.get("num");
+			}
+			if(totalIncomeMap.get("cash")!=null){
+				totalCash=(String) totalIncomeMap.get("cash");
+			}
 			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply
 					.toUserWithdrawApplyVTO(UserType.getByIndex(user.getUtype()).getFname(),user.getMobileno(), user.getNick(),
-							"", "", calculateApplyCost,totalCash,lastCash);
+							"", "", calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash);
 			return RpcResponseDTOBuilder
 					.builderSuccessRpcResponse(withdrawApplyVTO);
 		} catch (BusinessI18nCodeException bex) {
@@ -703,11 +764,21 @@ public class UserWalletUnitFacadeService {
 			// userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(uid,
 			// cash);
 			UserWallet uwallet = userWalletFacadeService.userWallet(uid);
-			double totalCash = uwallet.getTotal_cash_sum();
-			double lastCash = uwallet.getCash();
+//			double totalCash = uwallet.getTotal_cash_sum();
+			String totalCash = null;
+			String  lastCash = uwallet.getCash()+"";
+			int totalOrderNum = 0;
+			String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(uid);
+			Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(uid, null, null, null, null);
+			if(totalIncomeMap.get("num")!=null){
+				totalOrderNum=(int) totalIncomeMap.get("num");
+			}
+			if(totalIncomeMap.get("cash")!=null){
+				totalCash=(String) totalIncomeMap.get("cash");
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(apply
 					.toUserWithdrawApplyVTO(UserType.getByIndex(user.getUtype()).getFname(),user.getMobileno(), user.getNick(),
-							"", "", calculateApplyCost,totalCash,lastCash));
+							"", "", calculateApplyCost,totalCash,totalPaidCash,totalOrderNum,lastCash));
 		} catch (BusinessI18nCodeException bex) {
 			bex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(

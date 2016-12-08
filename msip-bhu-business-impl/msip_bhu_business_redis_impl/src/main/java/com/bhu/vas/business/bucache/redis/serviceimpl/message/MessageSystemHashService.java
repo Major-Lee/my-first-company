@@ -29,28 +29,31 @@ public class MessageSystemHashService extends AbstractRelationHashCache{
     	
     }
     
-    private static String generateKey(String key){
-        return new StringBuilder(BusinessKeyDefine.Message.MessageUserSig).append(key).toString();
+    private static String generateKey(String key, String utype){
+    	StringBuilder sb = new StringBuilder();
+    	sb.append(BusinessKeyDefine.Message.MessageUserSig);
+    	sb.append(utype);
+        return sb.toString();
     }
     
-    public String fetchMessageUserSig(String key){
-		return this.hget(generateKey(key),BusinessKeyDefine.Message.MessageFieldSig);
+    public String fetchMessageUserSig(String key, String utype){
+		return this.hget(generateKey(key, utype),BusinessKeyDefine.Message.MessageFieldSig);
 	}
     
-    public Long setMessageUserSig(String key, String sig){
-		return this.hset(generateKey(key),BusinessKeyDefine.Message.MessageFieldSig,sig);
+    public Long setMessageUserSig(String key, String utype, String sig){
+		return this.hset(generateKey(key, utype),BusinessKeyDefine.Message.MessageFieldSig,sig);
 	}
     
-    public Long setMessageUserSigExpire(String key, String expire){
-		return this.expire(generateKey(key), Integer.parseInt(expire));
+    public Long setMessageUserSigExpire(String key, String utype, String expire){
+		return this.expire(generateKey(key, utype), Integer.parseInt(expire));
 	}
     
-    public Long getMessageUserSigExpire(String key, String expire){
-		return this.ttl(generateKey(key));
+    public Long getMessageUserSigExpire(String key, String utype, String expire){
+		return this.ttl(generateKey(key, utype));
 	}
     
-	public Map<String, String> fetchAll(String key){
-		return this.hgetall(generateKey(key));
+	public Map<String, String> fetchAll(String key, String utype){
+		return this.hgetall(generateKey(key, utype));
 	}
     @Override
     public String getRedisKey() {

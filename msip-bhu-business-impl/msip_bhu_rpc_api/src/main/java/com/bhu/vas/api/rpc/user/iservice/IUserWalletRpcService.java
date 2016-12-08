@@ -47,6 +47,7 @@ public interface IUserWalletRpcService {
 	 * @param tuid 指定谁的提现申请uid
 	 * @param withdraw_status 指定提现申请的状态
 	 * @param endTime2 
+	 * @param endTime2 
 	 * @param pageNo 分页no
 	 * @param pageSize 分页size
 	 * 
@@ -56,7 +57,7 @@ public interface IUserWalletRpcService {
 	 * endTime 查询条件
 	 * update by dongrui 2016-06-14 E N D
 	 */
-	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(int reckoner,int tuid,String mobileno,String withdraw_status,String payment_type,String startTime,String endTime, int pageNo,int pageSize);
+	public RpcResponseDTO<TailPage<UserWithdrawApplyVTO>> pageWithdrawApplies(int reckoner,int tuid,String utype,String mobileno,String withdraw_status,String payment_type,String startTime,String endTime,  int pageNo,int pageSize);
 	
 	public RpcResponseDTO<String> withdrawApplyStatus(int reckoner,String applyid);
 	/**
