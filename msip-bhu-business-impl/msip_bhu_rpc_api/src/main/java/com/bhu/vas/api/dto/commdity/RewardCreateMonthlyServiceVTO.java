@@ -8,6 +8,9 @@ public class RewardCreateMonthlyServiceVTO implements java.io.Serializable{
 	private String amount;
 	//appid
 	private Integer appid;
+	//商品名
+	private String goods_name;
+	
 	public String getAmount() {
 		return amount;
 	}
@@ -25,6 +28,12 @@ public class RewardCreateMonthlyServiceVTO implements java.io.Serializable{
 	}
 	public void setOrderid(String orderid) {
 		this.orderid = orderid;
+	}
+	public String getGoods_name() {
+		return goods_name;
+	}
+	public void setGoods_name(String goods_name) {
+		this.goods_name = goods_name;
 	}
 	
 }

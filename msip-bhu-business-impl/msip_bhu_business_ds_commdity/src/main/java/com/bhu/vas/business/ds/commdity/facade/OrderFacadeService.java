@@ -926,11 +926,9 @@ public class OrderFacadeService {
 		
 	}
 
-	public Order createMonthlyServiceOrder(Integer commdityid, String mac, String mac_dut, String umac,
+	public Order createMonthlyServiceOrder(Commdity commdity, String mac, String mac_dut, String umac,
 			Integer umactype, User bindUser, String context, Integer channel, 
 			String user_agent, int count, String acc, String uname, String address, boolean needInvoice, String invoiceDetail) {
-		//商品信息验证
-		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 		//验证商品是否合理
 		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
