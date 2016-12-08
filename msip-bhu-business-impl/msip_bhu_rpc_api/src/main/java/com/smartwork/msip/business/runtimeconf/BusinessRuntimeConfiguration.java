@@ -437,8 +437,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	public static final float Advertise_Unit_Price = 20F;
 	public static final float Advertise_Sm_Price = 0.1F;
-	public static float AdvertiseOperatorDiscount = 0.1F;
-	public static float AdvertiseCommonDiscount = 0.5F;
+	public static float AdvertiseOperatorDiscount = 0.01F;
+	public static float AdvertiseCommonDiscount = 0.05F;
 	
 	/**
 	 * 判断是否是console用户
