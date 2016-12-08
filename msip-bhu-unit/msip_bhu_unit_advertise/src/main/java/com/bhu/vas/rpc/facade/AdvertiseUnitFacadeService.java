@@ -213,7 +213,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param conditionMap
 	 * @return
 	 */
-	public TailPage<AdvertiseVTO> queryAdvertiseList(Integer uid,List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String mobileNo,int pn,int ps){
+	public TailPage<AdvertiseVTO> queryAdvertiseList(Integer uid,List<Map<String,Object>> conditionMap,String publishStartTime,String publishEndTime,String createStartTime,String createEndTime,String mobileNo,int pn,int ps,boolean isConsole){
 		List<Advertise> advertises=null;
 		ModelCriteria mc=new ModelCriteria();
 		Criteria criteria2=mc.createCriteria();
@@ -283,7 +283,11 @@ public class AdvertiseUnitFacadeService {
 				AdvertiseVTO singleAdvertise = ad.toVTO();
 				//广告提交人信心
 				User user=userService.getById(ad.getUid());
+				
 				singleAdvertise.setOwnerName(user.getNick());
+				if(isConsole){
+					singleAdvertise.setMobileno(user.getMobileno());
+				}
 				singleAdvertise.setCount(singleAdvertise.getCount());
 				advertiseVTOs.add(singleAdvertise);
 			}

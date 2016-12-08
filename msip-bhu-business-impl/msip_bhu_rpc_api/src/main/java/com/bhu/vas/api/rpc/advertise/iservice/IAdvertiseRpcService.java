@@ -90,7 +90,7 @@ public interface IAdvertiseRpcService{
 			String province, String city, String district,
 			String publishStartTime, String publishEndTime, int type,
 			String createStartTime, String createEndTime, String mobileNo,
-			int state, int pn, int ps);
+			int state, int pn, int ps,boolean isConsole);
 	/**
 	 * 取消广告
 	 * @param uid

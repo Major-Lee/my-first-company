@@ -9,6 +9,7 @@ public class AdvertiseVTO implements java.io.Serializable{
 	private String title;
 	private String description;
 	private String ownerName;
+	private String mobileno;
 	//省
 	private String province;
 	//市
@@ -104,6 +105,12 @@ public class AdvertiseVTO implements java.io.Serializable{
 	}
 	public void setOwnerName(String ownerName) {
 		this.ownerName = ownerName;
+	}
+	public String getMobileno() {
+		return mobileno;
+	}
+	public void setMobileno(String mobileno) {
+		this.mobileno = mobileno;
 	}
 	public String getProvince() {
 		return province;

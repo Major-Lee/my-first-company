@@ -90,9 +90,9 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	public RpcResponseDTO<AdvertiseListVTO> queryAdvertiseList(Integer uid, String province,
 			String city, String district, String publishStartTime,
 			String publishEndTime, int type, String createStartTime,
-			String createEndTime, String mobileNo,int state,int pn,int ps) {
-		logger.info(String.format("queryAdvertiseList uid[%s] province[%s] city[%s] district[%s] publishStartTime[%s] publishEndTime[%s] type[%s] createStartTime[%s] createEndTime[%s] mobileNo[%s] state[%s] pn[%s] ps[%s]",
-				uid,province,city,district,publishStartTime,publishEndTime,type,createStartTime,createEndTime,mobileNo,state,pn,ps));
+			String createEndTime, String mobileNo,int state,int pn,int ps,boolean isConsole) {
+		logger.info(String.format("queryAdvertiseList uid[%s] province[%s] city[%s] district[%s] publishStartTime[%s] publishEndTime[%s] type[%s] createStartTime[%s] createEndTime[%s] mobileNo[%s] state[%s] pn[%s] ps[%s] isConsole[%s]",
+				uid,province,city,district,publishStartTime,publishEndTime,type,createStartTime,createEndTime,mobileNo,state,pn,ps,isConsole));
 		List<Map<String,Object>> maps=new ArrayList<Map<String,Object>>();
 		if(StringUtils.isNotBlank(province)){
 			Map<String,Object> provinceMap=new HashMap<String,Object>();
@@ -125,7 +125,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		maps.add(typeMap);
 		try{
 			AdvertiseListVTO advertiseListVTO=new AdvertiseListVTO();
-			TailPage<AdvertiseVTO> advertises=advertiseUnitFacadeService.queryAdvertiseList(uid,maps,publishStartTime,publishEndTime,createStartTime,createEndTime,mobileNo,pn,ps);
+			TailPage<AdvertiseVTO> advertises=advertiseUnitFacadeService.queryAdvertiseList(uid,maps,publishStartTime,publishEndTime,createStartTime,createEndTime,mobileNo,pn,ps,isConsole);
 			advertiseListVTO.setAdvertises(advertises);
 			if(uid!=null){
 				ModelCriteria pubMc=new ModelCriteria();
