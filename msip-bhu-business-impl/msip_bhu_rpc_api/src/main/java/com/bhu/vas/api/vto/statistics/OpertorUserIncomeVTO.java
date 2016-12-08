@@ -5,6 +5,14 @@ public class OpertorUserIncomeVTO implements java.io.Serializable{
 	private int uid;
 	private String curMonIncome;
 	private String lastMonIncome;
+	private String totalIncome;
+	
+	public String getTotalIncome() {
+		return totalIncome;
+	}
+	public void setTotalIncome(String totalIncome) {
+		this.totalIncome = totalIncome;
+	}
 	public int getUid() {
 		return uid;
 	}

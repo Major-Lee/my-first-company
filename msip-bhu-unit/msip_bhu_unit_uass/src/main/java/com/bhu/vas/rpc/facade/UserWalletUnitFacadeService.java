@@ -1763,6 +1763,13 @@ public class UserWalletUnitFacadeService {
 			}else {
 				vto.setLastMonIncome("0");
 			}
+			//增加总收益
+			UserWallet userWallet=userWalletFacadeService.getUserWalletService().getById(uid);
+			if(userWallet!=null){
+				vto.setTotalIncome(String.valueOf(round(userWallet.getTotal_cash_sum(),2)));
+			}else{
+				vto.setTotalIncome("0");
+			}
 			ModelCriteria mc = new ModelCriteria();
 			mc.createCriteria().andColumnNotEqualTo("month_cash_sum", 0).andColumnLike("last_update_cash_time",GetMonthTime(0) + "%").andColumnEqualTo("id", uid);
 			mc.setOrderByClause("month_cash_sum desc");
