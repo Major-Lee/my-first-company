@@ -1,6 +1,7 @@
 package com.bhu.vas.plugins.quartz;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -38,17 +39,11 @@ public class AdvertiseSortMessageSenderTaskLoader {
 	}
 	
 	public void sendMessage(Advertise ad){
-		List<String> mobilenos = UserMobilePositionRelationSortedSetService.getInstance().fetchPostionMobileno(ad.getProvince(), ad.getCity(), ad.getDistrict());
+		Set<String> mobilenos = UserMobilePositionRelationSortedSetService.getInstance().fetchMobilenoSnapShot(ad.getId());
 		String[] accs = ArrayHelper.toStringArray(mobilenos);
 		String smsg = ad.getDescription();
 		String response = SmsSenderFactory.buildSender(
 				BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, accs);
-		logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",accs.toString(),smsg,response));
-	}
-	public static void main(String[] args) {
-		List<String> mobilenos = UserMobilePositionRelationSortedSetService.getInstance().fetchPostionMobileno("山西省", "", "");
-		for(String str : mobilenos){
-			System.out.println(str);
-		}
+		logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",ArrayHelper.toString(accs),smsg,response));
 	}
 }

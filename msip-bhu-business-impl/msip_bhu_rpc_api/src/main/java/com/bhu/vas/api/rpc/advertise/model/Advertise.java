@@ -14,6 +14,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	
 	public static final int homeImage = 0;
 	public static final int sortMessage = 1;
+	public static final int sortMessageLength = 66;
 	
 	private int uid;
 	private String title;

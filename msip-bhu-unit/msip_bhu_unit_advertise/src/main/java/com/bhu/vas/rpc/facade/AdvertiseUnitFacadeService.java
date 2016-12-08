@@ -89,7 +89,7 @@ public class AdvertiseUnitFacadeService {
 			switch(type){
 				case Advertise.homeImage :
 					
-						AdDevicePositionVTO vto = fetchAdvertiseOccupy(0,DateTimeHelper.formatDate(startDate,DateTimeHelper.FormatPattern1),
+						AdDevicePositionVTO vto = fetchAdvertiseOccupy(uid,0,DateTimeHelper.formatDate(startDate,DateTimeHelper.FormatPattern1),
 								DateTimeHelper.formatDate(endDate,DateTimeHelper.FormatPattern1),
 								DateTimeHelper.FormatPattern1,province, city, district,false);
 						
@@ -114,9 +114,9 @@ public class AdvertiseUnitFacadeService {
 					
 					break;
 				case Advertise.sortMessage :
-					
 					count = UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(province, city, district);
-					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Sm_Price);
+					int num = description.length()/Advertise.sortMessageLength +1;
+					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Sm_Price*num);
 					entity.setType(Advertise.sortMessage);
 					break;
 				default:
@@ -165,8 +165,10 @@ public class AdvertiseUnitFacadeService {
 			if(num>=2){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
 			}*/
-			advertiseService.insert(entity);
-			
+			Advertise smAd= advertiseService.insert(entity);
+			if(type == Advertise.sortMessage){
+				UserMobilePositionRelationSortedSetService.getInstance().generateMobilenoSnapShot(smAd.getId(), province, city, district);
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(entity.toVTO());
 	}
 
@@ -177,7 +179,7 @@ public class AdvertiseUnitFacadeService {
 	 * @return
 	 * @throws ParseException 
 	 */
-	public AdDevicePositionVTO fetchDevicePositionDistribution(int type ,String province,String city,String district) throws ParseException{
+	public AdDevicePositionVTO fetchDevicePositionDistribution(int uid,int type ,String province,String city,String district) throws ParseException{
 		
 		String start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
 		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 18);
@@ -187,7 +189,7 @@ public class AdvertiseUnitFacadeService {
 		if(type == Advertise.sortMessage){
 			vto.setMobilenos(UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(province, city, district));
 		}else{
-			vto = fetchAdvertiseOccupy(2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
+			vto = fetchAdvertiseOccupy(uid,2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
 		}
 		
 		if(StringUtils.isNoneBlank(city)){
@@ -429,7 +431,7 @@ public class AdvertiseUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	
-	public AdDevicePositionVTO fetchAdvertiseOccupy(int index,String start,String end,String pattern,String province,String city,String district,boolean flag) throws ParseException {
+	public AdDevicePositionVTO fetchAdvertiseOccupy(int uid,int index,String start,String end,String pattern,String province,String city,String district,boolean flag) throws ParseException {
 		AdDevicePositionVTO positionVto = new AdDevicePositionVTO();
 //		String start = null;
 //		String end = null;
@@ -456,7 +458,13 @@ public class AdvertiseUnitFacadeService {
 			occupiedVto.setTrashs(trashVtos);
 			occupiedVto.setDate(time);
 			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
-			occupiedVto.setCash((float)(occupiedVto.getCount() * BusinessRuntimeConfiguration.Advertise_Unit_Price));
+			
+			float cash = occupiedVto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+			if(userFacadeService.checkOperatorByUid(uid)){
+				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
+			}else{
+				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
+			}
 			occupiedVtos.add(occupiedVto);
 		}
 		positionVto.setOccupyAds(occupiedVtos);

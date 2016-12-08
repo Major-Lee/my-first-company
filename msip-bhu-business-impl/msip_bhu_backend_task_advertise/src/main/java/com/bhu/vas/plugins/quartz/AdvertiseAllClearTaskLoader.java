@@ -13,6 +13,7 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
@@ -53,6 +54,9 @@ public class AdvertiseAllClearTaskLoader {
 			for(Advertise ad : lists){
 				adIds.add(ad.getId());
 				ad.setState(BusinessEnumType.AdvertiseType.Published.getType());
+				if (ad.getType() == Advertise.sortMessage) {
+					UserMobilePositionRelationSortedSetService.getInstance().destoryMobilenoSnaoShot(ad.getId());
+				}
 			}
 			advertiseService.updateAll(lists);
 			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_DELETE);

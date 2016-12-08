@@ -45,6 +45,27 @@ public class UserMobilePositionRelationSortedSetService extends AbstractRelation
         return sb.toString();
     }
     
+    private static String generateSSKey(String adId){
+        StringBuilder sb = new StringBuilder(BusinessKeyDefine.Advertise.AdvertiseSnapShot);
+        sb.append(adId);
+        return sb.toString();
+    }
+    
+    public void generateMobilenoSnapShot(String adId ,String province,String city ,String district){
+    	List<String> mobilenos = fetchPostionMobileno(province, city, district);
+    	for(String mobileno : mobilenos){
+    		this.zadd(generateSSKey(adId),DefaultScore, mobileno);
+    	}
+    }
+    
+    public Set<String> fetchMobilenoSnapShot(String adId){
+    	return this.zrange(generateSSKey(adId), 0, -1);
+    }
+    
+    public void destoryMobilenoSnaoShot(String adId){
+    	this.del(generateSSKey(adId));
+    }
+    
     public void mobilenoRecord(String province,String city ,String district,String mobileno){
     	this.zadd(generateKey(province,city,district), DefaultScore, mobileno);
     }
