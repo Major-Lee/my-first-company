@@ -311,6 +311,9 @@
 		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/Advertise.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/AdvertiseDetails.sqlMap.xml" />
 		<mapper resource="com/bhu/vas/api/rpc/advertise/model/sqlMapper/AdvertiseSharedealDetail.sqlMap.xml" />
+		
+		<!-- messageUser -->
+		<mapper resource="com/bhu/vas/api/rpc/message/model/sqlMapper/MessageUser.sqlMap.xml" />
 	</mappers>
 
 </configuration>
