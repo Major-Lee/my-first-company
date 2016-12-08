@@ -22,6 +22,8 @@ public class MessageUserFacadeService {
 	}
 	
 	public MessageUser validate(String id){
+		MessageUser user = messageUserService.getById(id);
+		if (user == null) return null;
 		return messageUserService.getById(id);
 	}
 	
