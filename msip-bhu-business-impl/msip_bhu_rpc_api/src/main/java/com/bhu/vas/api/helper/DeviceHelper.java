@@ -733,7 +733,7 @@ public class DeviceHelper {
 	public static final String DeviceSetting_Portal_Outer = "<dev>".concat(DeviceSetting_ConfigSequenceInner).concat("%s</dev>");
 
 	public static final String DeviceSetting_VapItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\"/>";
-	public static final String DeviceSetting_VapWorkModeChangeItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\" auth_key_rsa=\"%s\" wds=\"enable\"/>";
+	public static final String DeviceSetting_VapWorkModeChangeItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" enable=\"%s\" acl_type=\"%s\" acl_name=\"%s\" guest_en=\"%s\" auth_key_rsa=\"%s\" hide_ssid=\"%s\" wds=\"enable\"/>";
 	public static final String DeviceSetting_AclItem = "<ITEM name=\"%s\" macs=\"%s\" />";
 	public static final String DeviceSetting_KeyStatusItem = "<ITEM keynum=\"%s\" keystatus=\"%s\" industry=\"%s\" />";
 	
@@ -1058,6 +1058,7 @@ public class DeviceHelper {
 	
 	public static final String DeviceSetting_RadioItem_Power = "<ITEM name=\"%s\" power=\"%s\" />";
 	public static final String DeviceSetting_RadioItem_RealChannel = "<ITEM name=\"%s\" channel=\"%s\" real_channel=\"%s\"/>";
+	public static final String DeviceSetting_RadioItem_All = "<ITEM name=\"%s\" power=\"%s\" channel=\"%s\" real_channel=\"%s\"/>";
 	
 	public static final String DeviceSetting_VapPasswordItem = "<ITEM name=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\" hide_ssid=\"%s\"/>";
 	public static final String DeviceSetting_MultiVapPasswordItem = "<ITEM name=\"%s\" radio=\"%s\" ssid=\"%s\" auth=\"%s\" auth_key=\"%s\" auth_key_rsa=\"%s\" hide_ssid=\"%s\"/>";
@@ -1435,9 +1436,9 @@ public class DeviceHelper {
 			if(radio_dtos != null && !radio_dtos.isEmpty()){
 				List<Object[]> radio_dto_properties = new ArrayList<Object[]>();
 				for(WifiDeviceSettingRadioDTO radio_dto : radio_dtos){
-					radio_dto_properties.add(radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Power_Radio));
+					radio_dto_properties.add(radio_dto.builderProperties(WifiDeviceSettingRadioDTO.MODEL_Radio_ALL));
 				}
-				String radio_items = builderDeviceSettingItems(DeviceSetting_RadioItem_Power, radio_dto_properties);
+				String radio_items = builderDeviceSettingItems(DeviceSetting_RadioItem_All, radio_dto_properties);
 				dsworkModelChangedList.add(builderDeviceSettingOuter(DeviceSetting_RadioOuter, 
 						Common_Config_Sequence, radio_items));
 			}

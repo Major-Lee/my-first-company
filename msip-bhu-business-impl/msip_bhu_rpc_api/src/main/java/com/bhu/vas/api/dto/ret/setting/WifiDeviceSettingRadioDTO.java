@@ -9,6 +9,7 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
 	
     public static final int MODEL_Power_Radio = 0;
     public static final int MODEL_RealChannel_Radio = 1;
+    public static final int MODEL_Radio_ALL = 2;
 	
 	//名称
 	private String name;
@@ -82,6 +83,12 @@ public class WifiDeviceSettingRadioDTO implements DeviceSettingBuilderDTO{
         	properties[0] = name;
 			properties[1] = real_channel;
 			properties[2] = real_channel;
+        } else if(MODEL_Radio_ALL == type){
+        	properties = new Object[4];
+        	properties[0] = name;
+			properties[1] = power;
+			properties[2] = real_channel;
+			properties[3] = real_channel;
         }
 		return properties;
 	}
