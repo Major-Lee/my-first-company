@@ -30,7 +30,7 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 		}
 		return income;
 	}
-	public double countTotalIncomeByDay(int uid,String time) {
+	public double countTotalIncomeByDay(Integer uid,String time) {
 		Double income = 0.0;
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("uid", uid);
@@ -45,7 +45,7 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 		}	
 		return income;
 	}
-	public double countTotalUserNumByDay(int uid,String time) {
+	public double countTotalUserNumByDay(Integer uid,String time) {
 		Double userNum = 0.0;
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("uid", uid);

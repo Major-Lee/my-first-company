@@ -857,7 +857,7 @@ public class UserWalletUnitFacadeService {
 	 */
 
 	public RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> walletLogStatistics(
-			int uid) {
+			Integer uid) {
 		try {
 			ShareDealWalletSummaryProcedureVTO cacheByUser = businessWalletCacheService
 					.getWalletLogStatisticsDSCacheByUser(uid);
@@ -1354,7 +1354,7 @@ public class UserWalletUnitFacadeService {
 	/**
 	 * 丰富统计信息
 	 */
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(int uid,String beginTime,String endTime) {
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(Integer uid,String beginTime,String endTime) {
 		UcloudMacStatisticsVTO ucloudMacStatisticsVTO = new UcloudMacStatisticsVTO();
 		System.out.println("ss:"+beginTime+"::::hh:"+endTime);
 		try {
@@ -1715,15 +1715,14 @@ public class UserWalletUnitFacadeService {
 	public RpcResponseDTO<UserWalletRewardListVTO> rewardUserWalletPages(
 			Integer uid, String mac, String role, long start_created_ts,
 			long end_created_ts, int pageNo, int pageSize) {
-		System.out.println(uid+"|||"+mac+"|||"+role+"|||"+start_created_ts+"|||"+end_created_ts+"|||"+pageNo+"|||"+pageSize);
+			System.out.println(uid+"|||"+mac+"|||"+role+"|||"+start_created_ts+"|||"+end_created_ts+"|||"+pageNo+"|||"+pageSize);
 			List<UserWalletLog> logs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
 			int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
 			Map<String,Object> map= userWalletFacadeService.countIncome(uid, mac, role, start_created_ts, end_created_ts);
 			Map<String,Object> dealMap= userWalletFacadeService.countDealIncome(uid, mac, role, start_created_ts, end_created_ts);
 			//int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
-			List<UserWalletRewardVTO> retDtos = Collections.emptyList();
+			List<UserWalletRewardVTO> retDtos = new ArrayList<UserWalletRewardVTO>();
 			if(logs!=null){
-				retDtos = new ArrayList<UserWalletRewardVTO>();
 				for(UserWalletLog i:logs){
 					UserWalletRewardVTO rewardVTO=new UserWalletRewardVTO();
 					double cash=Double.valueOf(i.getCash());

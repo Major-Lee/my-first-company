@@ -126,7 +126,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 
 	@Override
 	public RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> walletLogStatistics(
-			int uid) {
+			Integer uid) {
 		logger.info(String.format("doWithdrawNotifyFromLocal with uid[%s]",uid));
 		return userWalletUnitFacadeService.walletLogStatistics(uid);
 	}
@@ -149,7 +149,7 @@ public class UserWalletRpcService implements IUserWalletRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(int uid,String beginTime,String endTime) {
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(Integer uid,String beginTime,String endTime) {
 		logger.info(String.format("richStatistics"));
 		return userWalletUnitFacadeService.richStatistics(uid,beginTime,endTime);
 

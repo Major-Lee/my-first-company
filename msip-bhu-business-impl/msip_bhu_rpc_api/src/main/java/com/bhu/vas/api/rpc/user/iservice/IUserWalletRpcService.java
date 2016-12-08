@@ -113,7 +113,7 @@ public interface IUserWalletRpcService {
 	public RpcResponseDTO<UserWalletDetailVTO> walletDetail(int uid);
 	
 	public RpcResponseDTO<Boolean> directDrawPresent(int uid,String thirdparties_orderid,double cash,String desc);
-	public RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> walletLogStatistics(int uid);
+	public RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> walletLogStatistics(Integer uid);
 	/**
 	 * 每月财务对账信息
 	 * @return
@@ -128,7 +128,7 @@ public interface IUserWalletRpcService {
 	 * 丰富统计信息
 	 * @return
 	 */
-	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(int uid,String startTime,String endTime);
+	public RpcResponseDTO<UcloudMacStatisticsVTO> richStatistics(Integer uid,String startTime,String endTime);
 	
 	public RpcResponseDTO<TailPage<UserWalletLogFFVTO>> pageUserWalletlogsByFeifan(int uid, String transmode,String transtype, 
 			Date start_date, Date end_date, int pageNo, int pageSize);

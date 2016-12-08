@@ -1326,7 +1326,10 @@ public class UserWalletFacadeService{
 			int pageNo, int pageSize) {
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
-		criteria.andColumnEqualTo("uid", uid).andColumnEqualTo("transmode", "SDP").andColumnEqualTo("transtype", "P2C");
+		criteria.andColumnEqualTo("transmode", "SDP").andColumnEqualTo("transtype", "P2C");
+		if(uid!=null){
+			criteria.andColumnEqualTo("uid", uid);
+		}
 		if(StringUtils.isNotEmpty(mac)){
 			criteria.andColumnEqualTo("mac", mac);
 		}
@@ -1360,7 +1363,10 @@ public class UserWalletFacadeService{
 			String role, long start_created_ts, long end_created_ts) {
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
-		criteria.andColumnEqualTo("uid", uid).andColumnEqualTo("transmode", "SDP").andColumnEqualTo("transtype", "P2C");
+		criteria.andColumnEqualTo("transmode", "SDP").andColumnEqualTo("transtype", "P2C");
+		if(uid!=null){
+			criteria.andColumnEqualTo("uid", uid);
+		}
 		if(StringUtils.isNotEmpty(mac)){
 			criteria.andColumnEqualTo("mac", mac);
 		}
