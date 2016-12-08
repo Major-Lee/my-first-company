@@ -73,6 +73,8 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		ignoreTokensValidateUriSet.add("/account/oauth/create");
 		
 		ignoreTokensValidateUriSet.add("/message/visitor/fetch_usersig");
+		ignoreTokensValidateUriSet.add("/message/send/push");
+		ignoreTokensValidateUriSet.add("/message/send/single_msg");
 		//ignoreTokensValidateUrlSet.add("/account/check_nick");
 		//ignoreTokensValidateUrlSet.add("/account/check_email");
 		//ignoreTokensValidateUrlSet.add("/account/check_mobileno");

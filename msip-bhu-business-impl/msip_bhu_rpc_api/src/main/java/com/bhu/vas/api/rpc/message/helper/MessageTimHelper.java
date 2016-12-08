@@ -192,16 +192,8 @@ public class MessageTimHelper {
 	 */
 	
 	@SuppressWarnings("unchecked")
-	public static <T> TimResponseBasicDTO CreateTimPushUrlCommunication(Integer fromAcc, int msgLifeTime, String tags, Integer pushMsgType,String content){
+	public static <T> TimResponseBasicDTO CreateTimPushUrlCommunication(TimPushChannel  pushChannel, int msgLifeTime, String tags, TimPushMsgType msgType, String content){
 		Map<String, String> api_params = generateTimApiParamMap();
-		TimPushChannel  pushChannel = BusinessEnumType.TimPushChannel.fromKey(fromAcc);
-		if (pushChannel == null){
-			
-		}
-		TimPushMsgType msgType = BusinessEnumType.TimPushMsgType.fromKey(pushMsgType);
-		if (msgType == null){
-			
-		}
 		TimPushDTO<T> pushDTO = new TimPushDTO<T>();
 		if (msgLifeTime != 0){
 			pushDTO.setMsgLifeTime(msgLifeTime);
@@ -236,9 +228,9 @@ public class MessageTimHelper {
 				return JsonHelper.getDTO(response, TimResponseBasicDTO.class);
 			}
 		} catch (Exception ex) {
-			logger.error("CreateTimPushUrlCommunication error fromAcc[%s] msgLifeTime[%s]"
-					+ "tags[%s] pushMsgType[%s] content[%s]", fromAcc, msgLifeTime, 
-					tags, pushMsgType, content);
+			logger.error("CreateTimPushUrlCommunication error pushChannel[%s] msgLifeTime[%s]"
+					+ "tags[%s] msgType[%s] content[%s]", pushChannel.getName(), msgLifeTime, 
+					tags, msgType.getName(), content);
 			ex.printStackTrace(System.out);
 		}
 		return rcp_dto;
@@ -270,17 +262,9 @@ public class MessageTimHelper {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T> TimResponseBasicDTO CreateTimSendMsgUrlCommunication(Integer fromAcc, String toAcc, Integer pushMsgType, String content){
+	public static <T> TimResponseBasicDTO CreateTimSendMsgUrlCommunication(TimPushChannel  pushChannel, String toAcc, TimPushMsgType msgType, String content){
 		
 		Map<String, String> api_params = generateTimApiParamMap();
-		TimPushChannel  pushChannel = BusinessEnumType.TimPushChannel.fromKey(fromAcc);
-		if (pushChannel == null){
-			
-		}
-		TimPushMsgType msgType = BusinessEnumType.TimPushMsgType.fromKey(pushMsgType);
-		if (msgType == null){
-			
-		}
 		TimSendMsgDTO<T> sendMsgDto = new TimSendMsgDTO<T>();
 		sendMsgDto.setFrom_Account(pushChannel.getName());
 		sendMsgDto.setTo_Account(toAcc);
@@ -288,6 +272,7 @@ public class MessageTimHelper {
 		msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(),
 				TimTextMsgContentDTO.builder(content)));
 		sendMsgDto.setMsgBodyList(msgBodyList);
+		
 		TimResponseBasicDTO rcp_dto = null;
 		try {
 			String response = TimHttpHelper.postUrlAsString(Tim_Url+OpenIM+Action_Send_Msg,
@@ -297,22 +282,21 @@ public class MessageTimHelper {
 				return JsonHelper.getDTO(response, TimResponseBasicDTO.class);
 			}
 		} catch (Exception ex) {
-			logger.error("CreateTimSendMsgUrlCommunication error accounts[%s]", content); 
+			logger.error("CreateTimSendMsgUrlCommunication error toAcc[%s] content", toAcc, content); 
 			ex.printStackTrace(System.out);
 		}
 		return rcp_dto;
 	}
 	
-	
-	public static void main(String[] args) {
-		//CreateTimGetPushReportUrlCommunication("144115199865189666_612259469_612259469");
-		//CreateTimPushUrlCommunication(101, 0, null, 200, "推送测试");
-		TimCustomMsgDefaultDataDTO dto = TimCustomMsgDefaultDataDTO.builder(1, "title test", "自定义测试", "图",
-				"http://jingyan.baidu.com/album/ceb9fb10e297c18cad2ba0f6.html?picindex=2", true,true);
-		CreateTimPushUrlCommunication(101, 0, null, 203, JsonHelper.getJSONString(dto));
-		//CreateTimSendMsgUrlCommunication(100,"100146",200,"123");
-		//CreateTimMULAccoutImportUrlCommunication("utool1,utool10,utool2,utool3,utool4,utool5");
+	public static TimPushChannel validateTimPushChannel(Integer channel){
+		if (channel == null) 
+			return null;
+		return BusinessEnumType.TimPushChannel.fromKey(channel);
 	}
 	
-	
+	public static TimPushMsgType validateTimPushMsgType(Integer type){
+		if (type == null) 
+			return null;
+		return BusinessEnumType.TimPushMsgType.fromKey(type);
+	}
 }
