@@ -14,7 +14,7 @@ import com.smartwork.msip.cores.orm.logic.procedure.OUT;
 @SuppressWarnings("serial")
 public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 	@IN(jdbcType = JdbcType.INTEGER)
-	private int userid;
+	private Integer userid;
 	@OUT(jdbcType = JdbcType.VARCHAR)
 	private String today_date;
 	@OUT(jdbcType = JdbcType.DOUBLE)
@@ -40,11 +40,11 @@ public class ShareDealWalletSummaryProcedureDTO extends AbstractProcedureDTO{
 	@OUT(jdbcType = JdbcType.DATE)
 	private Date last_update_cash_datetime;//online devices
 	
-	public int getUserid() {
+	public Integer getUserid() {
 		return userid;
 	}
 
-	public void setUserid(int userid) {
+	public void setUserid(Integer userid) {
 		this.userid = userid;
 	}
 

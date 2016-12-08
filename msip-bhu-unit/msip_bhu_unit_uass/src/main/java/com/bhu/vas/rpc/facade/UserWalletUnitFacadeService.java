@@ -859,13 +859,19 @@ public class UserWalletUnitFacadeService {
 	public RpcResponseDTO<ShareDealWalletSummaryProcedureVTO> walletLogStatistics(
 			Integer uid) {
 		try {
-			ShareDealWalletSummaryProcedureVTO cacheByUser = businessWalletCacheService
-					.getWalletLogStatisticsDSCacheByUser(uid);
-			if (cacheByUser == null) {
+			ShareDealWalletSummaryProcedureVTO cacheByUser =new ShareDealWalletSummaryProcedureVTO();
+			if(uid!=null){
+				cacheByUser = businessWalletCacheService
+						.getWalletLogStatisticsDSCacheByUser(uid);
+				if (cacheByUser == null) {
+					cacheByUser = userWalletFacadeService
+							.sharedealSummaryWithProcedure(uid);
+					businessWalletCacheService
+					.storeWalletLogStatisticsDSCacheResult(uid, cacheByUser);
+				}
+			}else{
 				cacheByUser = userWalletFacadeService
-						.sharedealSummaryWithProcedure(uid);
-				businessWalletCacheService
-						.storeWalletLogStatisticsDSCacheResult(uid, cacheByUser);
+						.sharedealSummaryWithProcedure(null);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(cacheByUser);
 		} catch (BusinessI18nCodeException bex) {

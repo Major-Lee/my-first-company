@@ -421,7 +421,7 @@ public class UserWalletFacadeService{
 		return executeRet;
 	}
 	
-	public ShareDealWalletSummaryProcedureVTO sharedealSummaryWithProcedure(int uid){
+	public ShareDealWalletSummaryProcedureVTO sharedealSummaryWithProcedure(Integer uid){
 		ShareDealWalletSummaryProcedureDTO procedureDTO = new ShareDealWalletSummaryProcedureDTO();
 		procedureDTO.setUserid(uid);
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
