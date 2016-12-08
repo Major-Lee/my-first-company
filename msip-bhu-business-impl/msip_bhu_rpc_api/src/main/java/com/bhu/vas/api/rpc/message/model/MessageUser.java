@@ -51,4 +51,13 @@ public class MessageUser extends SetJsonExtStringModel<String> implements Serial
 		return String.class;
 	}
 	
+	@Override
+	public String getId() {
+		return super.getId();
+	}
+	@Override
+	public void setId(String id) {
+		super.setId(id);
+	}
+	
 }
