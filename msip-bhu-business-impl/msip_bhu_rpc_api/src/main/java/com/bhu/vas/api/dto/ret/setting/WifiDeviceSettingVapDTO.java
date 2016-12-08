@@ -192,7 +192,7 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 				properties[6] = hide_ssid;
 				break;
 			case BuilderType_WorkModeChanged:
-				properties = new Object[9];
+				properties = new Object[10];
 				properties[0] = name;
 				properties[1] = radio;
 				properties[2] = WifiDeviceHelper.xmlContentEncoder(ssid);//StringEscapeUtils.escapeXml(ssid);
@@ -202,6 +202,7 @@ public class WifiDeviceSettingVapDTO implements DeviceSettingBuilderDTO{
 				properties[6] = acl_name;
 				properties[7] = guest_en;
 				properties[8] = auth_key_rsa;
+				properties[9] = hide_ssid;
 				break;
 			case BuilderType_VapHidessid:
 				properties = new Object[2];
