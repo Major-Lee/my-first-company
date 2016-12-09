@@ -1836,7 +1836,6 @@ public class UserWalletUnitFacadeService {
 					retDtos.add(rewardVTO);
 				}
 			}
-			
 			double totalCash=0;
 			
 			if(map.get("cash")!=null){
