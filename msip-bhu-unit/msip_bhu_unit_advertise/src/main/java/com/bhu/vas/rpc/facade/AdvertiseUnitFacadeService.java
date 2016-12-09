@@ -454,8 +454,8 @@ public class AdvertiseUnitFacadeService {
 		int sum = 0;
 		float cashSum = 0;
 		for(AdvertiseDetails income : incomes){
-			adResult.put(income.getPublish_time(), (int) income.getActual_count());
-			sum +=income.getActual_count();
+			adResult.put(income.getPublish_time(), (int) income.getPublish_count());
+			sum +=income.getPublish_count();
 			if(income.getCash() !=null || !income.getCash().isEmpty()){
 				cashSum +=Double.parseDouble(income.getCash());
 			}
