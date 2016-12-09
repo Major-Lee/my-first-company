@@ -354,7 +354,7 @@ public class UserWalletUnitFacadeService {
 						totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
 					}
 					if(totalIncomeMap.get("cash")!=null){
-						totalCash=(String) totalIncomeMap.get("cash");
+						totalCash= totalIncomeMap.get("cash")+"";
 					}
 					System.out.println("totalOrderNum  "+totalOrderNum+"     totalCash"+totalCash);
 					UserWithdrawApplyVTO uWithdrawAplyVTO = null;
@@ -491,7 +491,7 @@ public class UserWalletUnitFacadeService {
 					totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
 				}
 				if(totalIncomeMap.get("cash")!=null){
-					totalCash=(String) totalIncomeMap.get("cash");
+					totalCash= totalIncomeMap.get("cash")+"";
 				}
 				withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(
 						UserType.getByIndex(user.getUtype()).getFname(),
@@ -597,7 +597,7 @@ public class UserWalletUnitFacadeService {
 				totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
 			}
 			if(totalIncomeMap.get("cash")!=null){
-				totalCash=(String) totalIncomeMap.get("cash");
+				totalCash= totalIncomeMap.get("cash")+"";
 			}
 			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply
 					.toUserWithdrawApplyVTO(UserType.getByIndex(user.getUtype()).getFname(),user.getMobileno(), user.getNick(),
@@ -702,7 +702,7 @@ public class UserWalletUnitFacadeService {
 				totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
 			}
 			if(totalIncomeMap.get("cash")!=null){
-				totalCash=(String) totalIncomeMap.get("cash");
+				totalCash= totalIncomeMap.get("cash")+"";
 			}
 			UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply
 					.toUserWithdrawApplyVTO(UserType.getByIndex(user.getUtype()).getFname(),user.getMobileno(), user.getNick(),
@@ -778,7 +778,7 @@ public class UserWalletUnitFacadeService {
 				totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
 			}
 			if(totalIncomeMap.get("cash")!=null){
-				totalCash=(String) totalIncomeMap.get("cash");
+				totalCash= totalIncomeMap.get("cash")+"";
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(apply
 					.toUserWithdrawApplyVTO(UserType.getByIndex(user.getUtype()).getFname(),user.getMobileno(), user.getNick(),
