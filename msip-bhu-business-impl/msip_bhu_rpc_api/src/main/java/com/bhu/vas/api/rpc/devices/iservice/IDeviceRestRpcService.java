@@ -49,6 +49,6 @@ public interface IDeviceRestRpcService {
 	public long countByUCExtensionOnline(int uid, String t_uc_extension, String online);
 	public RpcResponseDTO<DeviceStatisticsVTO> deviceStatistics(String d_snk_turnstate, String d_snk_type);
 	public RpcResponseDTO<List<WifiDevicePresentVTO>> fetchDevicesPresent(List<String> dmacs);
-	public RpcResponseDTO<Boolean> deviceInfoUpdate(List<String> dmacs, String industry, String merchant_name);
+	public RpcResponseDTO<Boolean> deviceInfoUpdate(int uid, List<String> dmacs, String industry, String merchant_name);
 	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList();
 }

@@ -243,7 +243,7 @@ public class UserDeviceController extends BaseController {
 
     	String[] macarry = macs.toLowerCase().split(StringHelper.COMMA_STRING_GAP);
 		
-		RpcResponseDTO<Boolean> rpcResult = deviceRestRpcService.deviceInfoUpdate(Arrays.asList(macarry), industry, merchant_name);
+		RpcResponseDTO<Boolean> rpcResult = deviceRestRpcService.deviceInfoUpdate(uid, Arrays.asList(macarry), industry, merchant_name);
 		
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
@@ -256,7 +256,8 @@ public class UserDeviceController extends BaseController {
 	@RequestMapping(value="/fetch_industry_list",method={RequestMethod.POST})
 	public void fetchIndustryInfo(
 			HttpServletRequest request,
-			HttpServletResponse response){
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid){
 		
 		RpcResponseDTO<List<WifiDeviceIndustryVTO>> rpcResult = deviceRestRpcService.fetchIndustyList();
 		

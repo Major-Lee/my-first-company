@@ -49,6 +49,8 @@ import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.tag.facade.TagGroupFacadeService;
+import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
+import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserSearchConditionStateService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.BusinessIndexDefine;
@@ -119,6 +121,9 @@ public class DeviceRestBusinessFacadeService {
 	
 	@Resource
 	private DeliverMessageService deliverMessageService;
+	
+	@Resource
+	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
 	/**
 	 * 获取接入移动设备数量最多的wifi设备列表
@@ -506,9 +511,10 @@ public class DeviceRestBusinessFacadeService {
 	}
 	
 	
-	public RpcResponseDTO<Boolean> deviceInfoUpdate(List<String> dmacs, String industry, String merchant_name){
+	public RpcResponseDTO<Boolean> deviceInfoUpdate(int uid, List<String> dmacs, String industry, String merchant_name){
 		try{
 			List<WifiDevice> list = wifiDeviceService.findByIds(dmacs);
+			UserValidateServiceHelper.validateUserDevices(uid, dmacs, userWifiDeviceFacadeService);
 			if(list != null && list.size() > 0){
 				for(WifiDevice dev:list){
 					dev.setIndustry(industry);

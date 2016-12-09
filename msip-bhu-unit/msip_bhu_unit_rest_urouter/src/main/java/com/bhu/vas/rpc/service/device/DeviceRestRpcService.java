@@ -345,13 +345,13 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 	
 	
-	public RpcResponseDTO<Boolean> deviceInfoUpdate(List<String> dmacs, String industry, String merchant_name){
-		logger.info(String.format("DeviceRestRPC deviceInfoUpdate invoke industry[%s],merchant_name[%s], dmacs[%s]", industry, merchant_name, dmacs));
+	public RpcResponseDTO<Boolean> deviceInfoUpdate(int uid, List<String> dmacs, String industry, String merchant_name){
+		logger.info(String.format("DeviceRestRPC deviceInfoUpdate invoke uid[%s],industry[%s],merchant_name[%s], dmacs[%s]", uid, industry, merchant_name, dmacs));
 		if(!IndustryEnumType.isValideIndustry(industry)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_INVALID_INDUSTRY);			
 		}
 		try{
-			return deviceRestBusinessFacadeService.deviceInfoUpdate(dmacs, industry, merchant_name);
+			return deviceRestBusinessFacadeService.deviceInfoUpdate(uid, dmacs, industry, merchant_name);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC deviceInfoUpdate exception exmsg[%s]",ex.getMessage()), ex);
