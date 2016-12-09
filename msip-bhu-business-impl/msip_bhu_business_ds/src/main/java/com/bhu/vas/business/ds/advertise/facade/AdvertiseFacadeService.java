@@ -41,7 +41,8 @@ public class AdvertiseFacadeService {
 		logger.info(String.format("advertisePayment  advertiseId[%s]", advertiseId));
 		Advertise ad = advertiseService.getById(advertiseId);
 		AdCommdityVTO vto = new AdCommdityVTO();
-		vto.setCash(ad.getCash());
+		vto.setType(ad.getType());
+		vto.setCash("0.1");
 		vto.setCreated_at(ad.getCreated_at());
 		return vto;
 	}
