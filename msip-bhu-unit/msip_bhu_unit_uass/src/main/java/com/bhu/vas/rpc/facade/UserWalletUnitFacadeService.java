@@ -8,7 +8,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -351,7 +350,7 @@ public class UserWalletUnitFacadeService {
 					Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(apply.getUid(), null, null, startTime, endTime);
 					System.out.println("totalIncomeMap size"+totalIncomeMap.size());
 					if(totalIncomeMap.get("num")!=null){
-						totalOrderNum=(int) totalIncomeMap.get("num");
+						totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
 					}
 					if(totalIncomeMap.get("cash")!=null){
 						totalCash=(String) totalIncomeMap.get("cash");
@@ -487,7 +486,7 @@ public class UserWalletUnitFacadeService {
 				String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(reckoner);
 				Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(reckoner, null, null, null, null);
 				if(totalIncomeMap.get("num")!=null){
-					totalOrderNum=(int) totalIncomeMap.get("num");
+					totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
 				}
 				if(totalIncomeMap.get("cash")!=null){
 					totalCash=(String) totalIncomeMap.get("cash");
@@ -592,7 +591,7 @@ public class UserWalletUnitFacadeService {
 			String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(reckoner);
 			Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(reckoner, null, null, null, null);
 			if(totalIncomeMap.get("num")!=null){
-				totalOrderNum=(int) totalIncomeMap.get("num");
+				totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
 			}
 			if(totalIncomeMap.get("cash")!=null){
 				totalCash=(String) totalIncomeMap.get("cash");
@@ -696,7 +695,7 @@ public class UserWalletUnitFacadeService {
 			String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(reckoner);
 			Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(reckoner, null, null, null, null);
 			if(totalIncomeMap.get("num")!=null){
-				totalOrderNum=(int) totalIncomeMap.get("num");
+				totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
 			}
 			if(totalIncomeMap.get("cash")!=null){
 				totalCash=(String) totalIncomeMap.get("cash");
@@ -771,7 +770,7 @@ public class UserWalletUnitFacadeService {
 			String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(uid);
 			Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(uid, null, null, null, null);
 			if(totalIncomeMap.get("num")!=null){
-				totalOrderNum=(int) totalIncomeMap.get("num");
+				totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
 			}
 			if(totalIncomeMap.get("cash")!=null){
 				totalCash=(String) totalIncomeMap.get("cash");
