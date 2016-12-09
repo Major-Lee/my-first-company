@@ -1201,14 +1201,12 @@ public class OrderFacadeService {
 		return false;
 	}
 
-	public Order createHotPlayOrder(Integer commdityid, String hpid, String amount,
+	public Order createHotPlayOrder(Commdity commdity, String hpid, String amount,
 			Integer umactype, String payment_type, Integer channel, String user_agent) {
-		//商品信息验证
-		//验证商品是否合法
-		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+		
 		//订单生成
 		Order order = new Order();
-		order.setCommdityid(commdityid);
+		order.setCommdityid(commdity.getId());
 		order.setAppid(CommdityApplication.DEFAULT.getKey());
 		order.setChannel(channel);
 		order.setUmactype(umactype);
