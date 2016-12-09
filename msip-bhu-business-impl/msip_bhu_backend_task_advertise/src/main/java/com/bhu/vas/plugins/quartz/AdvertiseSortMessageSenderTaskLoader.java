@@ -46,7 +46,7 @@ public class AdvertiseSortMessageSenderTaskLoader {
 		String[] accs = ArrayHelper.toStringArray(mobilenos);
 		String smsg = ad.getDescription();
 		String response = SmsSenderFactory.buildSender(
-				BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, accs);
+				BusinessRuntimeConfiguration.InternalMarketingSMS_Gateway).send(smsg, accs);
 		logger.info(String.format("sendCaptchaCodeNotifyHandle acc[%s] msg[%s] response[%s]",ArrayHelper.toString(accs),smsg,response));
 	}
 }
