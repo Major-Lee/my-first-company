@@ -341,15 +341,12 @@ public class UserWalletUnitFacadeService {
 					//userWallet
 					UserWallet uwallet = userWalletFacadeService.userWallet(apply.getUid());
 //					double totalCash = uwallet.getTotal_cash_sum();
-					String updateTime = apply.getUpdated_at()+"";
+					Date updateTime = apply.getUpdated_at();
 					String totalCash = null;
 					String  lastCash = uwallet.getCash()+"";
 					int totalOrderNum = 0;
-					System.out.println(1);
 					String totalPaidCash = userWalletFacadeService.fetchUserWithdrawSuccessCashSumNew(apply.getUid());
-					System.out.println("totalPaidCash"+totalPaidCash);
 					Map<String,Object> totalIncomeMap = userWalletFacadeService.accountIncome(apply.getUid(), null, null, startTime, endTime);
-					System.out.println("totalIncomeMap size"+totalIncomeMap.size());
 					if(totalIncomeMap.get("num")!=null){
 						totalOrderNum=Integer.parseInt(totalIncomeMap.get("num")+"");
 					}
@@ -481,7 +478,7 @@ public class UserWalletUnitFacadeService {
 				//userWallet
 				UserWallet uwallet = userWalletFacadeService.userWallet(reckoner);
 //				double totalCash = uwallet.getTotal_cash_sum();
-				String updateTime = withdrawApply.getUpdated_at()+"";
+				Date updateTime = withdrawApply.getUpdated_at();
 				String totalCash = null;
 				String  lastCash = uwallet.getCash()+"";
 				int totalOrderNum = 0;
@@ -587,7 +584,7 @@ public class UserWalletUnitFacadeService {
 			// userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
 			UserWallet uwallet = userWalletFacadeService.userWallet(reckoner);
 //			double totalCash = uwallet.getTotal_cash_sum();
-			String updateTime = withdrawApply.getUpdated_at()+"";
+			Date updateTime = withdrawApply.getUpdated_at();
 			String totalCash = null;
 			String  lastCash = uwallet.getCash()+"";
 			int totalOrderNum = 0;
@@ -692,7 +689,7 @@ public class UserWalletUnitFacadeService {
 			// withdrawApply.getCash());
 			UserWallet uwallet = userWalletFacadeService.userWallet(reckoner);
 //			double totalCash = uwallet.getTotal_cash_sum();
-			String updateTime = withdrawApply.getUpdated_at()+"";
+			Date updateTime = withdrawApply.getUpdated_at();
 			String totalCash = null;
 			String  lastCash = uwallet.getCash()+"";
 			int totalOrderNum = 0;
@@ -768,7 +765,7 @@ public class UserWalletUnitFacadeService {
 			// cash);
 			UserWallet uwallet = userWalletFacadeService.userWallet(uid);
 //			double totalCash = uwallet.getTotal_cash_sum();
-			String updateTime = apply.getUpdated_at()+"";
+			Date updateTime = apply.getUpdated_at();
 			String totalCash = null;
 			String  lastCash = uwallet.getCash()+"";
 			int totalOrderNum = 0;
