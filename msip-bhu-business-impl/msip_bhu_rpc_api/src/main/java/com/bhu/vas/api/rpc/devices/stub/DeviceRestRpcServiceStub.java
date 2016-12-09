@@ -180,8 +180,8 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<Boolean> deviceInfoUpdate(List<String> dmacs, String industry, String merchant_name){
-		return deviceRestRpcService.deviceInfoUpdate(dmacs, industry, merchant_name);
+	public RpcResponseDTO<Boolean> deviceInfoUpdate(int uid, List<String> dmacs, String industry, String merchant_name){
+		return deviceRestRpcService.deviceInfoUpdate(uid, dmacs, industry, merchant_name);
 	}
 
 	@Override
