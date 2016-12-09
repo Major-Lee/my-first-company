@@ -1839,9 +1839,10 @@ public class UserWalletUnitFacadeService {
 				}
 			}
 			double totalCash=0;
-			
-			if(map.get("cash")!=null){
-				totalCash=(double) map.get("cash");
+			if(map!=null){
+				if(map.get("cash")!=null){
+					totalCash=(double) map.get("cash");
+				}
 			}
 			TailPage<UserWalletRewardVTO> returnRet = new CommonPage<UserWalletRewardVTO>(pageNo, pageSize, count, retDtos);
 			UserWalletRewardListVTO listVTO=new UserWalletRewardListVTO();
