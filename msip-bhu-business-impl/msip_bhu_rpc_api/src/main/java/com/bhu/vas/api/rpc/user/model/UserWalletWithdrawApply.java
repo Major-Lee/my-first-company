@@ -135,7 +135,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 			String totalPaidCash,
 			int totalOrderNum,
 			String balance,
-			String update_time){
+			Date update_time){
 		UserWithdrawApplyVTO vto = new UserWithdrawApplyVTO();
 		vto.setApplyid(id);
 		vto.setUid(uid);
@@ -162,7 +162,7 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		vto.setNote(note);
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		vto.setCreate_time(sdf.format(created_at));
-		vto.setUpdate_time(update_time);
+		vto.setUpdate_time(sdf.format(update_time));
 		return vto;
 	}
 	

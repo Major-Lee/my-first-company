@@ -8,11 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
+import com.bhu.vas.api.helper.BusinessEnumType.PaymentChannelType;
 import com.bhu.vas.api.helper.BusinessEnumType.TimPushChannel;
 import com.bhu.vas.api.helper.BusinessEnumType.TimPushMsgType;
 import com.bhu.vas.api.rpc.message.dto.TimPushConditionDTO;
@@ -298,5 +300,14 @@ public class MessageTimHelper {
 		if (type == null) 
 			return null;
 		return BusinessEnumType.TimPushMsgType.fromKey(type);
+	}
+	
+	public static boolean isSupportChannel(Integer channel){
+		PaymentChannelType type = BusinessEnumType.PaymentChannelType.fromKey(channel);
+		if (type == null){
+			return false;
+		}else{
+			return true;
+		}
 	}
 }

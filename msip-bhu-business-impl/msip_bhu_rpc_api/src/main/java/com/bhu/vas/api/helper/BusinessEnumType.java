@@ -1259,6 +1259,76 @@ public class BusinessEnumType {
 			}
 		}
 	}
+	
+	public enum PaymentChannelType{
+		BHUWIFIWEB(0,"bhuwifiweb","必虎wifi网页版"),
+		CARDREWARD(1,"cardreward","名片打赏"),
+		OTHERS(2,"others","他人代付"),
+		UTOOL(3,"utool","utool"),
+		BHUWIFIAPP(4,"bhuwifiapp","必虎wifiApp"),
+		OPS(5,"ops","必虎联盟"),
+		;
+		private Integer channel;
+		private String name;
+		private String desc;
+		
+		
+		static Map<Integer, PaymentChannelType> allPaymentChannelTypes;
+		
+		private PaymentChannelType(Integer channel,String name,String desc){
+			this.channel = channel;
+			this.name = name;
+			this.desc = desc;
+		}
+
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+
+		public void setDesc(String desc) {
+			this.desc = desc;
+		}
+		
+		public Integer getChannel() {
+			return channel;
+		}
+
+
+		public void setChannel(Integer channel) {
+			this.channel = channel;
+		}
+		
+		public static boolean validate(Integer msgType, TimPushMsgType timPushMsgType){
+			if(msgType == null || timPushMsgType == null) return false;
+			
+			if(msgType.equals(timPushMsgType.getMsgType())){
+				return true;
+			}
+			return false;
+		}
+		
+		public static PaymentChannelType fromKey(Integer channel){
+			if(channel == null) return null;
+			return allPaymentChannelTypes.get(channel);
+		}
+		static {
+			allPaymentChannelTypes = new HashMap<Integer, PaymentChannelType>();
+			PaymentChannelType[] types = values();
+			for (PaymentChannelType type : types){
+				allPaymentChannelTypes.put(type.getChannel(), type);
+			}
+		}
+		
+	}
 	public static void main(String [] args){
 		OrderPaymentType payment_type = OrderPaymentType.fromKey("Alipay");
 		System.out.println(payment_type.getDesc());
