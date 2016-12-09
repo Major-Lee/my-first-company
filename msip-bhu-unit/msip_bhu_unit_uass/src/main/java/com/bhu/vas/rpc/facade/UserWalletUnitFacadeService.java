@@ -1802,7 +1802,14 @@ public class UserWalletUnitFacadeService {
 			List<UserWalletLog> logs= userWalletFacadeService.findByParams(uid,mac,role,start_created_ts,end_created_ts,pageNo,pageSize);
 			int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
 			Map<String,Object> map= userWalletFacadeService.countIncome(uid, mac, role, start_created_ts, end_created_ts);
-			Map<String,Object> dealMap= userWalletFacadeService.countDealIncome(uid, mac, role, start_created_ts, end_created_ts);
+			Map<String,Object> dealMap= new HashMap<String,Object>();
+			double totalDealCash=0;
+			if(uid!=null){
+				dealMap=userWalletFacadeService.countDealIncome(uid, mac, role, start_created_ts, end_created_ts);
+				if(dealMap.get("amount")!=null){
+					totalDealCash=(double) dealMap.get("amount");
+				}
+			}
 			//int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
 			List<UserWalletRewardVTO> retDtos = new ArrayList<UserWalletRewardVTO>();
 			if(logs!=null){
@@ -1829,12 +1836,9 @@ public class UserWalletUnitFacadeService {
 					retDtos.add(rewardVTO);
 				}
 			}
-			double totalDealCash=0;
+			
 			double totalCash=0;
 			
-			if(dealMap.get("amount")!=null){
-				totalDealCash=(double) dealMap.get("amount");
-			}
 			if(map.get("cash")!=null){
 				totalCash=(double) map.get("cash");
 			}
