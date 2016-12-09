@@ -310,21 +310,21 @@
 	    </if>  		
 	</select>
 	<select id="countIncome" resultType="Map" parameterType="Map">
-		SELECT SUM(o.amount) as amount,sum(l.cash) as cash,count(*) as num from t_vas_users_wallet_log l,msip_bhu_commdity.t_commdity_orders o WHERE  l.orderid=o.id and l.transmode='SDP' and l.transtype='P2C' 	
+		SELECT sum(cash) as cash,count(*) as num from t_vas_users_wallet_log  WHERE   transmode='SDP' and transtype='P2C' 	
 		<if test="uid!=null">
-			and l.uid=#{uid} 
+			and uid=#{uid} 
 		</if>
 		<if test="mac!=null">
-			and l.mac=#{mac}
+			and mac=#{mac}
 		</if>	
 		<if test="role!=null">
-			and l.role=#{role}
+			and role=#{role}
 		</if>
 		<if test="start_created_ts!=null">
-			and l.updated_at >= #{start_created_ts}
+			and updated_at >= #{start_created_ts}
 		</if>
 		<if test="end_created_ts!=null">
-			and <![CDATA[ l.updated_at <= #{end_created_ts} ]]> 
+			and <![CDATA[ updated_at <= #{end_created_ts} ]]> 
 		</if>
 	</select>
 	<select id="countDealIncome" resultType="Map" parameterType="Map">
