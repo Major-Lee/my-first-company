@@ -3990,7 +3990,7 @@ function Buffer (subject, encoding) {
     self = Buffer._augment(new Uint8Array(length)) // eslint-disable-line consistent-this
   } else {
     // Fallback: Return THIS instance of Buffer (created by `new`)
-    self.length = length
+    self.length = length;
     self._isBuffer = true
   }
 

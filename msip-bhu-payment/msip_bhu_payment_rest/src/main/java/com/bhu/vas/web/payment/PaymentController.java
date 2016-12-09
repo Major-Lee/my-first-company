@@ -841,7 +841,7 @@ public class PaymentController extends BaseController{
     				break;
     			case BHU_APP_WEIXIN: //App微信支付
     				long APP_WEIXIN_begin = System.currentTimeMillis();
-    				result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
+    				result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid,channel);
     				long APP_WEIXIN_end = System.currentTimeMillis() - APP_WEIXIN_begin; 
     				logger.info(goods_no+"APP微信支付耗时：" + APP_WEIXIN_end + "毫秒");
     				break;
@@ -857,6 +857,16 @@ public class PaymentController extends BaseController{
     					result =  doNativeWxPayment(request,response,channel,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
     					long WAP_WEIXIN_NATIVE_end = System.currentTimeMillis() -  WAP_WEIXIN_NATIVE_begin; 
         				logger.info(goods_no+"WAP微信他人代付耗时：" + WAP_WEIXIN_NATIVE_end + "毫秒");
+    				}else if(channel.equals("3")){
+    					long WAP_WEIXIN_NATIVE_begin = System.currentTimeMillis();
+    					result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid,channel);
+    					long WAP_WEIXIN_NATIVE_end = System.currentTimeMillis() -  WAP_WEIXIN_NATIVE_begin; 
+        				logger.info(goods_no+"utool耗时：" + WAP_WEIXIN_NATIVE_end + "毫秒");
+    				}else if(channel.equals("4")){
+    					long WAP_WEIXIN_NATIVE_begin = System.currentTimeMillis();
+    					result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid,channel);
+    					long WAP_WEIXIN_NATIVE_end = System.currentTimeMillis() -  WAP_WEIXIN_NATIVE_begin; 
+        				logger.info(goods_no+"必虎wifi管家app耗时：" + WAP_WEIXIN_NATIVE_end + "毫秒");
     				}else{
     					long get_agentMerchant_begin = System.currentTimeMillis();
     					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByCondition();
@@ -1178,18 +1188,18 @@ public class PaymentController extends BaseController{
      * @throws JsonMappingException
      * @throws IOException
      */
-	private PaymentTypeVTO doAppWxPayment(HttpServletRequest request, HttpServletResponse response,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac,String paymentName,String appid){
+	private PaymentTypeVTO doAppWxPayment(HttpServletRequest request, HttpServletResponse response,String total_fee,String out_trade_no,String Ip,String locationUrl,String usermac,String paymentName,String appid,String channel){
 		PaymentTypeVTO result= new PaymentTypeVTO();
         String NOTIFY_URL = PayHttpService.WEIXIN_NOTIFY_URL;
         String product_name= paymentName;//订单名称
         String appId = "";
 		 String mchId = "";
 		 String mchKey = "";
-		 if(paymentName.equals("打赏")){
+		 if(appid.equals("1000")){
 			 appId = payHttpService.getAppDSAppId();
 			 mchId = payHttpService.getAppDSMchId();
 			 mchKey = payHttpService.getAppDSMchKey();
-		 }else if(paymentName.equals("虎钻")){
+		 }else if(appid.equals("1002")){
 			 appId = payHttpService.getAppAppId();
 			 mchId = payHttpService.getAppMchId();
 			 mchKey = payHttpService.getAppMchKey();

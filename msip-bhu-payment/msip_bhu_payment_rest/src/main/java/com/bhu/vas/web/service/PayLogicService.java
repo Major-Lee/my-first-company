@@ -218,6 +218,7 @@ public class PayLogicService {
  			paymentType = PaymentChannelCode.BHU_APP_ALIPAY.code();
  		}else if(type.equals(PaymentChannelCode.BHU_APP_WEIXIN.i18n())){
  			paymentType = PaymentChannelCode.BHU_APP_WEIXIN.code();
+ 			channelType = "BHU";
  		}else if(type.equals(PaymentChannelCode.BHU_WAP_WEIXIN.i18n())){
  			 if(channel_type == "1"){
   				channelType = PaymentChannelCode.BHU_QRCODE_WEIXIN.code();

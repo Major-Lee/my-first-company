@@ -47,6 +47,8 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	private String operate_name;
 	//申请时间
 	private String create_time;
+	
+	private String update_time;
 	//add by dongrui 2016-06-17 E N D
 	
 	
@@ -197,5 +199,10 @@ public class UserWithdrawApplyVTO implements java.io.Serializable {
 	public void setCreate_time(String create_time) {
 		this.create_time = create_time;
 	}
-	
+	public String getUpdate_time() {
+		return update_time;
+	}
+	public void setUpdate_time(String update_time) {
+		this.update_time = update_time;
+	}
 }
