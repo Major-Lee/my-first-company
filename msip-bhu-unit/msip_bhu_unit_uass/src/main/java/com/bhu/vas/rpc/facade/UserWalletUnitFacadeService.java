@@ -1729,8 +1729,10 @@ public class UserWalletUnitFacadeService {
 			double totalDealCash=0;
 			if(uid!=null){
 				dealMap=userWalletFacadeService.countDealIncome(uid, mac, role, start_created_ts, end_created_ts);
-				if(dealMap.get("amount")!=null){
-					totalDealCash=(double) dealMap.get("amount");
+				if(dealMap!=null){
+					if(dealMap.get("amount")!=null){
+						totalDealCash=(double) dealMap.get("amount");
+					}
 				}
 			}
 			
@@ -1761,9 +1763,10 @@ public class UserWalletUnitFacadeService {
 				}
 			}
 			double totalCash=0;
-			
-			if(map.get("cash")!=null){
-				totalCash=(double) map.get("cash");
+			if(map!=null){
+				if(map.get("cash")!=null){
+					totalCash=(double) map.get("cash");
+				}
 			}
 			TailPage<UserWalletRewardVTO> returnRet = new CommonPage<UserWalletRewardVTO>(pageNo, pageSize, count, retDtos);
 			UserWalletRewardListVTO listVTO=new UserWalletRewardListVTO();
