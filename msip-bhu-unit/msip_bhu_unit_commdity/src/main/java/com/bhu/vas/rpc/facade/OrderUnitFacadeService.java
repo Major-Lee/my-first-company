@@ -41,6 +41,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
+import com.bhu.vas.api.helper.BusinessEnumType.PaymentChannelType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -844,8 +845,21 @@ public class OrderUnitFacadeService {
 			User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
 			//生成订单
 			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
+			PaymentChannelType channelType = BusinessEnumType.PaymentChannelType.fromKey(channel);
+			Integer newChannel = channel;
+			switch (channelType) {
+			case CARDREWARD:
+				newChannel = PaymentChannelType.BHUWIFIWEB.getChannel();
+				break;
+			case OTHERS:
+				newChannel = PaymentChannelType.UTOOL.getChannel();
+				break;
+			default:
+				break;
+			}
+			
 			Order order = orderFacadeService.createVideoOrder(commdityid,mac_lower, mac_dut, umac_lower, umactype, bindUser,
-					context, channel,user_agent);
+					context, newChannel,user_agent);
 			
 			commdityMessageService.sendOrderCreatedMessage(order.getId());
 			

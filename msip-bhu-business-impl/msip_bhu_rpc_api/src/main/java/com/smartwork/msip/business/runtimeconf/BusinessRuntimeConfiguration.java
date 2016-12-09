@@ -175,6 +175,10 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	AdvertiseOperatorDiscount = PropertiesHelper.getFloat("ad.op.discount", paramProperties, AdvertiseOperatorDiscount);
         	AdvertiseCommonDiscount = PropertiesHelper.getFloat("ad.common.discount", paramProperties, AdvertiseCommonDiscount);
         	
+        	TimManager = PropertiesHelper.getString("message.tim.manager",paramProperties,TimManager);
+        	TimSdkAppid = PropertiesHelper.getString("message.tim.sdkappid",paramProperties,TimSdkAppid);
+        	TimManagerSig = PropertiesHelper.getString("message.tim.managersig",paramProperties,TimManagerSig);
+        	
         	String commdityWhiteListStr = PropertiesHelper.getString("commdity.whitelist.accs", paramProperties, "");
     		
     		if(StringUtils.isNotEmpty(commdityWhiteListStr)){
@@ -443,6 +447,14 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static final float Advertise_Sm_Price = 0.2F;
 	public static float AdvertiseOperatorDiscount = 0.01F;
 	public static float AdvertiseCommonDiscount = 0.05F;
+	//腾讯im 生产环境参数
+	public static String TimManager = "IMBHU";
+	public static String TimSdkAppid = "1400020930";
+	public static String TimManagerSig = "eJxlz1tPgzAUB-B3PgXhdcb0UMrFNyYmoqDOXaJ7aSqUrW7SA"
+			+ "mVhGr*7S7NEkp3X3--cfizbtp1FNr9mRSH7WlN9VNyxb2wHOVf-qJQoKdMUt*UF8kGJllNWad4"
+			+ "axECwj041ComS11pU4hxJ8*n9csRduaNmiVHwTs0uivB4Qic2BvO799t0lgxE7SDsm3gy1Ji9"
+			+ "PUnxPZkGnyuAIiPzeNGx6JknCXnJ43QbZ-v*Va7XCuSjB9WxO3zMeFYmHmw3IZGokQ-Q*LXP"
+			+ "Yb8ardTii58PCsENvCDCIz3wthOyNgEXAQEXI-O19Wv9AZr5XCQ_";
 	
 	/**
 	 * 判断是否是console用户
