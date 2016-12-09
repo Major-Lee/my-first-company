@@ -1079,7 +1079,10 @@ public class OrderUnitFacadeService {
 			default:
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_PAYMENT_TYPE_ERROR);
 			}
-			Order order = orderFacadeService.createHotPlayOrder(commdityid, hpid, amount,
+			//商品信息验证
+			//验证商品是否合法
+			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+			Order order = orderFacadeService.createHotPlayOrder(commdity, hpid, amount,
 					umactype, payment_type, channel, user_agent);
 			HotPlayOrderVTO vto = new HotPlayOrderVTO();
 			vto.setOrderid(order.getId());
@@ -1087,6 +1090,7 @@ public class OrderUnitFacadeService {
 			vto.setAppid(order.getAppid());
 			vto.setAdCommdityVTO(advertisePayment);
 			vto.setRestMin(restMin);
+			vto.setGoods_name(commdity.getName());
 			logger.info("createHotPlayOrder successfully!");
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
