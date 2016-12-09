@@ -37,6 +37,7 @@ import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
+import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.OrderSearchResultExportFileDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetPresentSortedSetService;
@@ -125,6 +126,9 @@ public class DeviceRestBusinessFacadeService {
 	@Resource
 	private UserWifiDeviceFacadeService userWifiDeviceFacadeService;
 	
+	@Resource
+	private AsyncDeliverMessageService asyncDeliverMessageService;
+
 	/**
 	 * 获取接入移动设备数量最多的wifi设备列表
 	 * TODO：目前直接从mongodb中获取 后续改成后台程序定时从mongodb获取并放入指定的redis中 这边直接从redis提取数据
@@ -513,15 +517,8 @@ public class DeviceRestBusinessFacadeService {
 	
 	public RpcResponseDTO<Boolean> deviceInfoUpdate(int uid, List<String> dmacs, String industry, String merchant_name){
 		try{
-			List<WifiDevice> list = wifiDeviceService.findByIds(dmacs);
 			UserValidateServiceHelper.validateUserDevices(uid, dmacs, userWifiDeviceFacadeService);
-			if(list != null && list.size() > 0){
-				for(WifiDevice dev:list){
-					dev.setIndustry(industry);
-					dev.setMerchant_name(merchant_name);
-				}
-				wifiDeviceService.updateAll(list);
-			}
+			asyncDeliverMessageService.sendBatchUpdateDeviceIndustryActionMessage(uid, industry, merchant_name, dmacs);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode());

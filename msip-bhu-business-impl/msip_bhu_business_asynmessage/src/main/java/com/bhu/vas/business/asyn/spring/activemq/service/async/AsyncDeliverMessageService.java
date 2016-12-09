@@ -13,6 +13,7 @@ import com.bhu.vas.business.asyn.spring.model.async.BatchImportPreCheckDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyBySnDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
+import com.bhu.vas.business.asyn.spring.model.async.device.BatchUpdateDeviceIndustryDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupDeviceSnkApplyDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.BatchGroupSendSortMessageDTO;
 import com.bhu.vas.business.asyn.spring.model.async.group.OperGroupDTO;
@@ -143,6 +144,18 @@ public class AsyncDeliverMessageService {
 //		dto.setTs(System.currentTimeMillis());
 //		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 //	}
+
+	public void sendBatchUpdateDeviceIndustryActionMessage(int uid, String industry,String merchant_name, List<String> dmacs){
+		BatchUpdateDeviceIndustryDTO dto = new BatchUpdateDeviceIndustryDTO();
+		dto.setUid(uid);
+		dto.setMacs(dmacs);
+		dto.setDtoType(IDTO.ACT_UPDATE);
+		dto.setIndustry(industry);
+		dto.setMerchant_name(merchant_name);
+		dto.setTs(System.currentTimeMillis());
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+
 	
 	
 	

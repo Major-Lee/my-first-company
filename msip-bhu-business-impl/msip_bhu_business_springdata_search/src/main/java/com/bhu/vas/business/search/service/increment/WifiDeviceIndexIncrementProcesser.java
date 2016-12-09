@@ -86,7 +86,31 @@ public class WifiDeviceIndexIncrementProcesser implements IWifiDeviceIndexIncrem
 			}));
 		}
 	}
+
 	
+	/**
+	 * 设备行业信息发生变更
+	 * @param id 设备mac
+	 * @param d_industry 行业信息
+	 */
+	@Override
+	public void industryUpdIncrement(final String id, final String d_industry){
+		ExecutorService executor = singleExecProcesser(id);
+		if(executor != null){
+			executor.submit((new Runnable() {
+				@Override
+				public void run() {
+					try{
+						wifiDeviceIndexIncrement.industryUpdIncrement(id, d_industry);
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
+				}
+			}));
+		}
+	}
+	
+
 	/**
 	 * 设备模块上线发生变更
 	 * @param id 设备mac

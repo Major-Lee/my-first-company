@@ -15,7 +15,17 @@ public interface IWifiDeviceIndexIncrement {
 	 * @param d_address 详细地址
 	 */
 	public void locaitionUpdIncrement(String id, double lat, double lon, String d_address, String province, String city, String district);
+
+	/**
+	 * 设备行业信息
+	 * @param id 设备mac
+	 * @param lat 纬度
+	 * @param lon 经度
+	 * @param d_address 详细地址
+	 */
+	public void industryUpdIncrement(String id, String d_industry);
 	
+
 	/**
 	 * 设备模块上线发生变更
 	 * @param id 设备mac

@@ -78,7 +78,31 @@ public class WifiDeviceIndexIncrementService implements IWifiDeviceIndexIncremen
 		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
 		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}
+
 	
+	
+	/**
+	 * 设备行业信息发生变更
+	 * 变更涉及的更改索引字段是
+	 * 1) d_address
+	 * 2) d_geopoint
+	 * @param id 设备mac
+	 * @param lat 纬度
+	 * @param lon 经度
+	 * @param d_address 详细地址
+	 */
+	@Override
+	public void industryUpdIncrement(String id, String d_industry){
+		logger.info(String.format("industryUpdIncrement Request id [%s] d_industry [%s]", id, d_industry));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.D_INDUSTRY.getName(), d_industry);
+		sourceMap.put(BusinessIndexDefine.WifiDevice.Field.UPDATEDAT.getName(), DateTimeHelper.getDateTime());
+		wifiDeviceDataSearchService.updateIndex(id, sourceMap, false, true, true);
+	}
+	
+
 	/**
 	 * 设备模块上线发生变更
 	 * 变更涉及的更改索引字段是

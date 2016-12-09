@@ -50,6 +50,7 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String a_nick;//代理商的用户名称
 	private String a_org;//代理商的公司名称
 	private String d_distributor_type; //运营商类型
+	private String d_industry;//行业信息
 	
 	public int getIndex() {
 		return index;
@@ -291,5 +292,12 @@ public class WifiDeviceVTO1 implements Serializable{
 	public void setD_distributor_type(String d_distributor_type) {
 		this.d_distributor_type = d_distributor_type;
 	}
+	public String getD_industry() {
+		return d_industry;
+	}
+	public void setD_industry(String d_industry) {
+		this.d_industry = d_industry;
+	}
+	
 	
 }
