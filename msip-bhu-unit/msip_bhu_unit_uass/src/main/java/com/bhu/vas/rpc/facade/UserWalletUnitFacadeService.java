@@ -1806,8 +1806,10 @@ public class UserWalletUnitFacadeService {
 			double totalDealCash=0;
 			if(uid!=null){
 				dealMap=userWalletFacadeService.countDealIncome(uid, mac, role, start_created_ts, end_created_ts);
-				if(dealMap.get("amount")!=null){
-					totalDealCash=(double) dealMap.get("amount");
+				if(dealMap!=null){
+					if(dealMap.get("amount")!=null){
+						totalDealCash=(double) dealMap.get("amount");
+					}
 				}
 			}
 			//int count=userWalletFacadeService.countByParams(uid, mac, role, start_created_ts, end_created_ts);
