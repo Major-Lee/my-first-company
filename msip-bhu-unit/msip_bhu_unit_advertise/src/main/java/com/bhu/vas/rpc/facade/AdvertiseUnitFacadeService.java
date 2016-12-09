@@ -473,6 +473,11 @@ public class AdvertiseUnitFacadeService {
 	
 	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,String advertiseId){
 		Advertise ad = advertiseService.getById(advertiseId);
+		
+		if (ad.getType() != Advertise.homeImage) {
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
+		}
+		
 		if(ad.getState() != BusinessEnumType.AdvertiseType.Published.getType()){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
 		}
