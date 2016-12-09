@@ -99,6 +99,7 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_VERSION_TOO_LOWER("762", "wifidevice.version.too.lower"),
 	
 	WIFIDEVICE_BELONG_TO_DISTRIBUTOR_CITY("763", "wifidevice.belong.to.distributor.city"),
+	WIFIDEVICE_INVALID_INDUSTRY("764", "wifidevice.invalid.industry"),
 
 	WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED("770", "wifidevice.gray.deviceunittype.notmatched"),
 	

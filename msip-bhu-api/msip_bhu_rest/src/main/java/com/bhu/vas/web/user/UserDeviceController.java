@@ -1,5 +1,6 @@
 package com.bhu.vas.web.user;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceStatusDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.api.vto.WifiDeviceIndustryVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -26,6 +29,7 @@ import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -39,6 +43,9 @@ public class UserDeviceController extends BaseController {
 
     @Resource
     private IUserDeviceRpcService userDeviceRpcService;
+    
+    @Resource
+    private IDeviceRestRpcService deviceRestRpcService;
 
 
     /**
@@ -207,6 +214,58 @@ public class UserDeviceController extends BaseController {
             SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
         }
     }
+
+    
+	/**
+	 * 修改设备行业信息和商户信息
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param org
+	 * @param sk
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/update_industry",method={RequestMethod.POST})
+	public void deviceInfoUpdate(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid,
+			@RequestParam(required = true) String macs,
+			@RequestParam(required = true) String industry,
+			@RequestParam(required = true) String merchant_name){
+		
+    	if(StringUtils.isEmpty(industry))
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"industry"});
+    	if(StringUtils.isEmpty(merchant_name))
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"merchant_name"});
+    	if(StringUtils.isEmpty(macs))
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"macs"});
+
+    	String[] macarry = macs.toLowerCase().split(StringHelper.COMMA_STRING_GAP);
+		
+		RpcResponseDTO<Boolean> rpcResult = deviceRestRpcService.deviceInfoUpdate(Arrays.asList(macarry), industry, merchant_name);
+		
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
+
+	@ResponseBody()
+	@RequestMapping(value="/fetch_industry_list",method={RequestMethod.POST})
+	public void fetchIndustryInfo(
+			HttpServletRequest request,
+			HttpServletResponse response){
+		
+		RpcResponseDTO<List<WifiDeviceIndustryVTO>> rpcResult = deviceRestRpcService.fetchIndustyList();
+		
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		}
+	}
 
     
     /**

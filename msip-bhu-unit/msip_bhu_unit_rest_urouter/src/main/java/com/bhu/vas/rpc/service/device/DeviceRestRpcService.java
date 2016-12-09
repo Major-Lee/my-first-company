@@ -1,5 +1,6 @@
 package com.bhu.vas.rpc.service.device;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -9,12 +10,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
+import com.bhu.vas.api.helper.IndustryEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
+import com.bhu.vas.api.vto.WifiDeviceIndustryVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
@@ -344,6 +347,9 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	
 	public RpcResponseDTO<Boolean> deviceInfoUpdate(List<String> dmacs, String industry, String merchant_name){
 		logger.info(String.format("DeviceRestRPC deviceInfoUpdate invoke industry[%s],merchant_name[%s], dmacs[%s]", industry, merchant_name, dmacs));
+		if(!IndustryEnumType.isValideIndustry(industry)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_INVALID_INDUSTRY);			
+		}
 		try{
 			return deviceRestBusinessFacadeService.deviceInfoUpdate(dmacs, industry, merchant_name);
 		}catch(Exception ex){
@@ -352,4 +358,17 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
+	
+	
+	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(){
+		logger.info("DeviceRestRPC fetchIndustyList");
+		try{
+			return deviceRestBusinessFacadeService.fetchIndustyList();
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC fetchIndustyList exception exmsg[%s]",ex.getMessage()), ex);
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
 }

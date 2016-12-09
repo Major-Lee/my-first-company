@@ -11,6 +11,7 @@ import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
+import com.bhu.vas.api.vto.WifiDeviceIndustryVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
@@ -183,4 +184,8 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 		return deviceRestRpcService.deviceInfoUpdate(dmacs, industry, merchant_name);
 	}
 
+	@Override
+	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(){
+		return deviceRestRpcService.fetchIndustyList();
+	}
 }

@@ -118,38 +118,38 @@ public class OperatorController extends BaseController{
 	 * @param org
 	 * @param sk
 	 */
-	@ResponseBody()
-	@RequestMapping(value="/devinfo/update",method={RequestMethod.POST})
-	public void deviceInfoUpdate(
-			HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = true) Integer uid,
-			@RequestParam(required = true) String macs,
-			@RequestParam(required = true) String industry,
-			@RequestParam(required = true) String merchant_name,
-			@RequestParam(required = true,value="sk") String secretKey){
-		
-		ResponseError validateError = validate(secretKey);
-		if(validateError != null){
-			SpringMVCHelper.renderJson(response, validateError);
-			return;
-		}
-		
-    	if(StringUtils.isEmpty(industry))
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"industry"});
-    	if(StringUtils.isEmpty(merchant_name))
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"merchant_name"});
-    	if(StringUtils.isEmpty(macs))
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"macs"});
-
-    	String[] macarry = macs.toLowerCase().split(StringHelper.COMMA_STRING_GAP);
-		
-		RpcResponseDTO<Boolean> rpcResult = deviceRestRpcService.deviceInfoUpdate(Arrays.asList(macarry), industry, merchant_name);
-		
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-		}
-	}
+//	@ResponseBody()
+//	@RequestMapping(value="/devinfo/update",method={RequestMethod.POST})
+//	public void deviceInfoUpdate(
+//			HttpServletRequest request,
+//			HttpServletResponse response,
+//			@RequestParam(required = true) Integer uid,
+//			@RequestParam(required = true) String macs,
+//			@RequestParam(required = true) String industry,
+//			@RequestParam(required = true) String merchant_name,
+//			@RequestParam(required = true,value="sk") String secretKey){
+//		
+//		ResponseError validateError = validate(secretKey);
+//		if(validateError != null){
+//			SpringMVCHelper.renderJson(response, validateError);
+//			return;
+//		}
+//		
+//    	if(StringUtils.isEmpty(industry))
+//			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"industry"});
+//    	if(StringUtils.isEmpty(merchant_name))
+//			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"merchant_name"});
+//    	if(StringUtils.isEmpty(macs))
+//			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"macs"});
+//
+//    	String[] macarry = macs.toLowerCase().split(StringHelper.COMMA_STRING_GAP);
+//		
+//		RpcResponseDTO<Boolean> rpcResult = deviceRestRpcService.deviceInfoUpdate(Arrays.asList(macarry), industry, merchant_name);
+//		
+//		if(!rpcResult.hasError()){
+//			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+//		}else{
+//			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+//		}
+//	}
 }

@@ -18,6 +18,7 @@ import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.dto.redis.DailyStatisticsDTO;
 import com.bhu.vas.api.dto.redis.SystemStatisticsDTO;
+import com.bhu.vas.api.helper.IndustryEnumType;
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -29,6 +30,7 @@ import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserSearchConditionState;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
+import com.bhu.vas.api.vto.WifiDeviceIndustryVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
@@ -826,6 +828,18 @@ public class DeviceRestBusinessFacadeService {
 	}
 	
 	
+	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(){
+		List<WifiDeviceIndustryVTO> ret = new ArrayList<WifiDeviceIndustryVTO>();
+		IndustryEnumType[] arr = IndustryEnumType.values();
+		for(IndustryEnumType ind : arr){
+			WifiDeviceIndustryVTO vto = new WifiDeviceIndustryVTO();
+			vto.setIndex(ind.getIndex());
+			vto.setName(ind.getName());
+			ret.add(vto);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
+	}
+
 /*	public static final int GeoMap_Fetch_Count = 500;
 	public Collection<GeoMapVTO> fetchGeoMap(){// throws ESQueryValidateException{
 		Collection<GeoMapVTO> vtos = businessDeviceCacheService.getDeviceGeoMapCacheByQ();

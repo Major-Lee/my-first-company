@@ -8,6 +8,7 @@ import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
+import com.bhu.vas.api.vto.WifiDeviceIndustryVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
@@ -49,4 +50,5 @@ public interface IDeviceRestRpcService {
 	public RpcResponseDTO<DeviceStatisticsVTO> deviceStatistics(String d_snk_turnstate, String d_snk_type);
 	public RpcResponseDTO<List<WifiDevicePresentVTO>> fetchDevicesPresent(List<String> dmacs);
 	public RpcResponseDTO<Boolean> deviceInfoUpdate(List<String> dmacs, String industry, String merchant_name);
+	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList();
 }
