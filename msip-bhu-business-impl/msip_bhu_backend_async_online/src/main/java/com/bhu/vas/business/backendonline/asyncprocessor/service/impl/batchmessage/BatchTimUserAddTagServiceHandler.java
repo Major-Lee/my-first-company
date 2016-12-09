@@ -2,6 +2,7 @@ package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchmess
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,8 @@ public class BatchTimUserAddTagServiceHandler implements IMsgHandlerService {
 	}
 	
 	private String replaceTags(String oldTags, String newTag){
+		if (StringUtils.isEmpty(oldTags))
+			return newTag;
 		String[] split = oldTags.split(",");
 		for (String tag : split){
 			if(tag.equals(newTag)){
