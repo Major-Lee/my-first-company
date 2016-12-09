@@ -181,14 +181,24 @@ public class AdvertiseUnitFacadeService {
 	 */
 	public AdDevicePositionVTO fetchDevicePositionDistribution(int uid,int type ,String province,String city,String district) throws ParseException{
 		
-		String start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
-		String end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 18);
-		
 		AdDevicePositionVTO vto = new AdDevicePositionVTO();
 		
 		if(type == Advertise.sortMessage){
 			vto.setMobilenos(UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(province, city, district));
 		}else{
+			String start = null;
+			String end = null;
+			int startTime = 0;
+			int endTime = 0;
+			if(DateTimeHelper.getDateTime("HH").equals("23")){
+				startTime = 2;
+				endTime = 18;
+			}else{
+				startTime = 1;
+				endTime = 17;
+			}
+			start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), startTime);
+			end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), endTime);
 			vto = fetchAdvertiseOccupy(uid,2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
 		}
 		
