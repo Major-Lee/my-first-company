@@ -195,16 +195,19 @@ public class AdvertiseUnitFacadeService {
 			String end = null;
 			int startTime = 0;
 			int endTime = 0;
+			int index = 0;
 			if(DateTimeHelper.getDateTime("HH").equals("23")){
 				startTime = 2;
 				endTime = 18;
+				index = 2;
 			}else{
 				startTime = 1;
 				endTime = 17;
+				index = 1;
 			}
 			start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), startTime);
 			end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), endTime);
-			vto = fetchAdvertiseOccupy(uid,2,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
+			vto = fetchAdvertiseOccupy(uid,index,start,end,DateTimeHelper.FormatPattern5,province, city, district,true);
 		}
 		
 		if(StringUtils.isNoneBlank(city)){
