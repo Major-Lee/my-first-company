@@ -29,6 +29,9 @@ public class MessageUnitFacadeService {
 	private AsyncDeliverMessageService asyncDeliverMessageService;
 	public RpcResponseDTO<MessageUserSigDTO> fetch_usersig(Integer uid, Integer channel) {
 		try{
+			if (!MessageTimHelper.isSupportChannel(channel)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"channel"});
+			}
 			MessageUserSigDTO dto = new MessageUserSigDTO();
 			String sig = fetchTimUserSig(uid+"", BusinessKeyDefine.Message.User, channel, MessageTimHelper.defaultExpire);
 			if (sig != null){
@@ -48,6 +51,9 @@ public class MessageUnitFacadeService {
 
 	public RpcResponseDTO<MessageUserSigDTO> fetch_visitor_usersig(String user, Integer channel) {
 		try{
+			if (!MessageTimHelper.isSupportChannel(channel)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"channel"});
+			}
 			MessageUserSigDTO dto = new MessageUserSigDTO();
 			String sig = fetchTimUserSig(user, BusinessKeyDefine.Message.Visitor, channel, MessageTimHelper.visitorExpire);
 			if (sig != null){
