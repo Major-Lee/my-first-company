@@ -169,10 +169,6 @@ public class AdvertiseUnitFacadeService {
 			Advertise smAd= advertiseService.insert(entity);
 			if(type == Advertise.sortMessage){
 				UserMobilePositionRelationSortedSetService.getInstance().generateMobilenoSnapShot(smAd.getId(), province, city, district);
-			}else{
-				String smsg = String.format(BusinessRuntimeConfiguration.Advertise_Verify_Notify_Template, smAd.getId());
-				String response = SmsSenderFactory.buildSender(
-						BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, "15127166171");
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(entity.toVTO());
 	}

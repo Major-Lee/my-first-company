@@ -20,6 +20,8 @@ import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserIdentityAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 
 @Service
 public class AdvertiseFacadeService {
@@ -55,6 +57,11 @@ public class AdvertiseFacadeService {
 			ad.setOrderId(orderId);
 			advertiseService.update(ad);
 			logger.info("advertiseCompletionOfPayment  finish");
+			
+			String smsg = String.format(BusinessRuntimeConfiguration.Advertise_Verify_Notify_Template, advertiseId);
+			String response = SmsSenderFactory.buildSender(
+						BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, "15127166171");
+			logger.info(String.format("全程热播订单%s已支付,发送短信提醒成功 response: %s",advertiseId,response));
 		}else{
 			ad.setReject_reason("因订单超时，您所支付的费用已经退回至必虎钱包，您可以在必虎钱包中申请提现");
 			advertiseService.update(ad);
