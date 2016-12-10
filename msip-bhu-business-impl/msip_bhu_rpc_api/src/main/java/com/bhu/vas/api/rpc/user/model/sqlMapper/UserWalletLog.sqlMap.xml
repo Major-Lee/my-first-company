@@ -216,7 +216,7 @@
 	    from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
 	    <where>
 	    	t_walletlog.uid = #{uid}
-	    	AND t_walletlog.transtype = 'P2C'
+	    	AND (t_walletlog.transtype = 'P2C' or t_walletlog.transtype = 'A2C')
 	    	<if test="start_created_ts != null">
 	    		AND t_orders.created_at &gt;= #{start_created_ts}
 	    	</if>
