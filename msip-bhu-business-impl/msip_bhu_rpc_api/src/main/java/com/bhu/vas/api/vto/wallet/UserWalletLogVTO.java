@@ -22,7 +22,8 @@ public class UserWalletLogVTO implements java.io.Serializable {
 	//交易内容描述
 	private String memo;
 	private String description;
-	
+	private String mac;
+	private String umac;
 	//分成角色
 	private String role;
 	//private String payment_type;
@@ -125,5 +126,16 @@ public class UserWalletLogVTO implements java.io.Serializable {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
+	public String getMac() {
+		return mac;
+	}
+	public void setMac(String mac) {
+		this.mac = mac;
+	}
+	public String getUmac() {
+		return umac;
+	}
+	public void setUmac(String umac) {
+		this.umac = umac;
+	}
 }
