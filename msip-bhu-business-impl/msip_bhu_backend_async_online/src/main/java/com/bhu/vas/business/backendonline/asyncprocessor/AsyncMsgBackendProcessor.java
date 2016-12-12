@@ -75,6 +75,10 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 	
 	@Resource
 	private IMsgHandlerService batchUpdateDeviceIndustryServiceHandler;
+	
+	@Resource
+	private IMsgHandlerService batchBindUnbindDeviceServiceHandler;
+	
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncMsgBackendProcessor initialize...");
@@ -155,6 +159,8 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 						case BatchUpdateDeviceIndustry:
 							batchUpdateDeviceIndustryServiceHandler.process(message);
 							break;
+						case BatchBindUnbindDevice:
+							batchBindUnbindDeviceServiceHandler.process(message);
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}

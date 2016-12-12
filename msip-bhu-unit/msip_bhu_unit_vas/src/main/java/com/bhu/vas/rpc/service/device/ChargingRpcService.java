@@ -138,4 +138,17 @@ public class ChargingRpcService  implements IChargingRpcService{
 		logger.info(String.format("sharedealDetail mac[%s]",mac));
 		return chargingUnitFacadeService.sharedealDetail(BusinessRuntimeConfiguration.Sys_Uid, mac);
 	}
+
+	@Override
+	public RpcResponseDTO<Boolean> bindDevice(int uid, String macs, int cc, String mobileno){
+		logger.info(String.format("bindDevice macs[%s], cc[%s], mobileno[%s]",macs, cc, mobileno));
+		return chargingUnitFacadeService.bindDevice(uid, macs, cc, mobileno);
+	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> unbindDevice(int uid, String macs){
+		logger.info(String.format("unbindDevice macs[%s]",macs));
+		return chargingUnitFacadeService.unbindDevice(uid, macs);
+	}
+
 }

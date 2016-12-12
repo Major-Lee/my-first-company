@@ -8,6 +8,7 @@ import com.bhu.vas.api.helper.SharedNetworkChangeType;
 import com.bhu.vas.business.asyn.spring.activemq.queue.producer.async.AsyncDeliverMessageQueueProducer;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageFactoryBuilder;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
+import com.bhu.vas.business.asyn.spring.model.async.BatchBindUnbindDeviceDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportConfirmDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchImportPreCheckDTO;
 import com.bhu.vas.business.asyn.spring.model.async.BatchSharedealModifyBySnDTO;
@@ -49,7 +50,18 @@ public class AsyncDeliverMessageService {
 		dto.setTs(System.currentTimeMillis());
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
-	
+
+	public void sendBatchBindUnbindActionMessage(int uid, String macs, int cc, String mobileno, char dtoType){
+		BatchBindUnbindDeviceDTO dto = new BatchBindUnbindDeviceDTO();
+		dto.setUid(uid);
+		dto.setCc(cc);
+		dto.setMobileno(mobileno);
+		dto.setMacs(macs);
+		dto.setDtoType(dtoType);
+		dto.setTs(System.currentTimeMillis());
+		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
+	}
+
 	public void sendBatchSharedealModifyActionMessage(int uid,String message,
 			Boolean cbto,Boolean el,boolean customized,String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent,
 			String rcm,String rcp,String ait,/* String channel_lv1, String channel_lv2, */String fait, boolean needCheckBinding){
