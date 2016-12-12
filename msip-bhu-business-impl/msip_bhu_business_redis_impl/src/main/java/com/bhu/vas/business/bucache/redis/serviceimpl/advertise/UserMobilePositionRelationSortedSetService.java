@@ -78,19 +78,28 @@ public class UserMobilePositionRelationSortedSetService extends AbstractRelation
     	Set<String> keys = fetchKeys(province,city,district);
     	List<String> mobileList = new ArrayList<String>();
     	for(String key : keys){
-    		Set<String> mobileSet =   this.zrange(key, 0, -1);
-    		mobileList.addAll(mobileSet);
+    		Set<String> mobileSet =  this.zrange(key, 0, -1);
+    		for(String i : mobileSet){
+    			if(!mobileList.contains(i)){
+    				mobileList.add(i);
+    			}
+    		}
     	}
     	return mobileList;
     }
     
     public int zcardPostionMobileno(String province,String city ,String district){
     	Set<String> keys = fetchKeys(province,city,district);
-    	int count = 0;
+        List<String> tempList= new ArrayList<String>(); 
     	for(String key : keys){
-    		count += this.zcard(key);
+    		Set<String> mobileSet = this.zrange(key, 0, -1);
+    	    for(String i:mobileSet){  
+    	        if(!tempList.contains(i)){  
+    	            tempList.add(i);  
+    	        }  
+    	    }  
     	}
-    	return count;
+    	return tempList.size();
     }
     
 	@Override
@@ -107,6 +116,7 @@ public class UserMobilePositionRelationSortedSetService extends AbstractRelation
 	public JedisPool getRedisPool() {
 		return RedisPoolManager.getInstance().getPool(RedisKeyEnum.ADVERTISE);
 	}
+	
 	public static void main(String[] args) {
 		String[] accs = new String[]{
 		"13126634433","13853271585","18013698663","15685176247","18530071572","13951059220","15333253977","13140433222","15229039999","15380003131","18610360797",
