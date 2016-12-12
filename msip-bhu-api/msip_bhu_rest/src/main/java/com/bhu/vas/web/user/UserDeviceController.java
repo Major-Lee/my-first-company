@@ -233,23 +233,30 @@ public class UserDeviceController extends BaseController {
 			@RequestParam(required = true) String macs,
 			@RequestParam(required = true) String industry,
 			@RequestParam(required = true) String merchant_name){
-		
-    	if(StringUtils.isEmpty(industry))
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"industry"});
-    	if(StringUtils.isEmpty(merchant_name))
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"merchant_name"});
-    	if(StringUtils.isEmpty(macs))
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"macs"});
 
-    	String[] macarry = macs.toLowerCase().split(StringHelper.COMMA_STRING_GAP);
-		
-		RpcResponseDTO<Boolean> rpcResult = deviceRestRpcService.deviceInfoUpdate(uid, Arrays.asList(macarry), industry, merchant_name);
-		
-		if(!rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		try{
+	    	if(StringUtils.isEmpty(industry))
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"industry"});
+//    		if(StringUtils.isEmpty(merchant_name))
+//				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"merchant_name"});
+	    	if(StringUtils.isEmpty(macs))
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"macs"});
+	
+	    	String[] macarry = macs.toLowerCase().split(StringHelper.COMMA_STRING_GAP);
+			
+			RpcResponseDTO<Boolean> rpcResult = deviceRestRpcService.deviceInfoUpdate(uid, Arrays.asList(macarry), industry, merchant_name);
+			
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
 		}
+
 	}
 
 	@ResponseBody()
