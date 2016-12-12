@@ -20,7 +20,7 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 		Map<String,Object> map = new HashMap<String,Object>();
 		try{
 			map.put("uid", uid);
-			map.put("type", type);
+			//map.put("type", type);
 			if (role != null && !role.isEmpty())
 				map.put("role", role);
 			if (start_time != null && !start_time.isEmpty())
@@ -51,7 +51,7 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 			params.put("uid", uid);
 			params.put("start_created_ts", new Date(start_created_ts));
 			params.put("end_created_ts", new Date(end_created_ts));
-			params.put("type", type);
+			//params.put("type", type);
 			params.put("start", (pageNo-1)*pageSize);
 			params.put("limit", pageSize);
 			if (mac != null && !mac.isEmpty())

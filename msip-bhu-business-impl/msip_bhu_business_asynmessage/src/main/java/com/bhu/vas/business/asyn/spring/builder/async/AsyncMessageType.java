@@ -8,6 +8,7 @@ public enum AsyncMessageType {
 		BatchImportConfirm("出库库房设备导入","shipment import","BICF"),
 		BatchSharedealModify("批量更新设备分成","batch sharedeal modify","BSMF"),
 		BatchSharedealModifyBySn("根据序列号批量更新设备分成","batch sharedeal modify by sn","BSSN"),
+		BatchBindUnbindDevice("绑定解绑设备","batch bind unbind device","BBUD"),
 //		
 		BatchDeviceOperTag("设备批量绑定标签", "batch device operation tag", "BDOT"),
 		BatchGroupDownCmds("分组批量下发指令","batch Group down cmds","BGDC"),

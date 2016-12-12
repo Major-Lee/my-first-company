@@ -45,4 +45,8 @@ public interface IChargingRpcService {
 	public RpcResponseDTO<BatchImportVTO> doConfirmDeviceRecord(int uid,String batchno);
 	public RpcResponseDTO<TailPage<BatchImportVTO>> doPages(int uid,int status,int pageNo,int pageSize);
 	public RpcResponseDTO<TailPage<BatchImportVTO>> doStatRowPages(int uid,int status,boolean upact,int lastrowid,int start,int ps);
+	
+	public RpcResponseDTO<Boolean> bindDevice(int uid, String macs, int cc, String mobileno);
+	public RpcResponseDTO<Boolean> unbindDevice(int uid, String macs);
+
 }

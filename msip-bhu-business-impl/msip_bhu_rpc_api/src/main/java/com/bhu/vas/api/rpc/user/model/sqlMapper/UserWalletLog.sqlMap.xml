@@ -178,7 +178,7 @@
 	    select truncate(sum(t_walletlog.cash),2) as cashSum,count(*) as count from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
 	    <where>
 	    	t_walletlog.uid = #{uid}
-	    	AND t_walletlog.transtype = 'P2C'
+	    	AND (t_walletlog.transtype = 'P2C' or t_walletlog.transtype = 'A2C')
 	    	<if test="start_time != null">
 	    		AND t_orders.created_at &gt;= #{start_time}
 	    	</if>

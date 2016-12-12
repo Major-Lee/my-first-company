@@ -166,6 +166,11 @@ public class UserWalletUnitFacadeService {
 				 * { description =
 				 * ThirdpartiesPaymentType.Weichat.getDescription(); } } }
 				 */
+				
+				if (!StringHelper.isValidMac(log.getUmac())){
+					log.setUmac(null);
+				}
+				
 				vtos.add(log.toUserWalletLogVTO(
 						user != null ? user.getMobileno()
 								: StringUtils.EMPTY,
