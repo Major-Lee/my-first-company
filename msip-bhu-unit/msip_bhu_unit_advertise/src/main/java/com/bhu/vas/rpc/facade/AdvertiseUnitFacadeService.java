@@ -524,8 +524,8 @@ public class AdvertiseUnitFacadeService {
 		billVto.setExpect(Float.parseFloat(ad.getCash()));
 		billVto.setActual(Float.parseFloat(ad.getCash()) < cashSum ? Float.parseFloat(ad.getCash()) : cashSum);
 		
-		float balance = Float.parseFloat(ad.getCash()) - cashSum;
-		billVto.setBalance(balance > 0 ? balance : 0);
+		float balance = Float.parseFloat(ad.getCash())*10000 - cashSum*10000;
+		billVto.setBalance(balance > 0 ? balance/10000 : 0);
 		report.setAdDetail(adVto);
 		report.setAdResult(adResult);
 		report.setAdBills(billVto);
