@@ -1831,7 +1831,6 @@ public class UserWalletUnitFacadeService {
 					Order order=orderService.getById(i.getOrderid());
 					if(order!=null){
 						rewardVTO.setDealCash(order.getAmount());
-						rewardVTO.setUmac(order.getUmac());
 						int amount=(int) (Double.valueOf(order.getAmount())*10000);
 						int cashInt=(int) (cash*1000000);
 						
@@ -1840,8 +1839,10 @@ public class UserWalletUnitFacadeService {
 						String rate=String.valueOf(rateInt);
 						
 						rewardVTO.setRate(rate+"%");
-						
-						rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
+						if(!i.getTranstype().equals("A2C")){
+							rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
+							rewardVTO.setUmac(order.getUmac());
+						}
 					}
 					retDtos.add(rewardVTO);
 				}
