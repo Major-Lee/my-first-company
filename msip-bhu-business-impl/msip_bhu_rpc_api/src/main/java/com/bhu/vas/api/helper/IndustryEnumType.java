@@ -53,6 +53,11 @@ public enum IndustryEnumType{
 			return allIndustrys.containsKey(index);
 		}
 		
+		public static String getNameByIndex(String index){
+			IndustryEnumType t = allIndustrys.get(index);
+			return (t == null)?null:t.getName();
+		}
+		
 		public static void main(String[] argv){
 		}
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.helper.IndustryEnumType;
 import com.smartwork.msip.cores.helper.StringHelper;
 
 /**
@@ -50,8 +51,27 @@ public class UserDeviceDTO implements Serializable {
     private String lat;
     private String lon;
     private String d_distributor_type;//运营商类型
-        
-    public long getLastregedat() {
+    private String d_industry;//行业信息
+    private String d_industry_desc;//行业信息
+
+    
+    public String getD_industry_desc() {
+		return IndustryEnumType.getNameByIndex(d_distributor_type);
+	}
+
+	public void setD_industry_desc(String d_industry_desc) {
+//		this.d_industry_desc = d_industry_desc;
+	}
+
+	public String getD_industry() {
+		return d_industry;
+	}
+
+	public void setD_industry(String d_industry) {
+		this.d_industry = d_industry;
+	}
+
+	public long getLastregedat() {
 		return lastregedat;
 	}
 

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.springframework.util.StringUtils;
 
+import com.bhu.vas.api.helper.IndustryEnumType;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.smartwork.msip.cores.helper.StringHelper;
 
@@ -51,6 +52,7 @@ public class WifiDeviceVTO1 implements Serializable{
 	private String a_org;//代理商的公司名称
 	private String d_distributor_type; //运营商类型
 	private String d_industry;//行业信息
+	private String d_industry_desc;
 	
 	public int getIndex() {
 		return index;
@@ -297,6 +299,12 @@ public class WifiDeviceVTO1 implements Serializable{
 	}
 	public void setD_industry(String d_industry) {
 		this.d_industry = d_industry;
+	}
+	public String getD_industry_desc() {
+		return IndustryEnumType.getNameByIndex(d_industry_desc);
+	}
+	public void setD_industry_desc(String d_industry_desc) {
+//		this.d_industry_desc = d_industry_desc;
 	}
 	
 	
