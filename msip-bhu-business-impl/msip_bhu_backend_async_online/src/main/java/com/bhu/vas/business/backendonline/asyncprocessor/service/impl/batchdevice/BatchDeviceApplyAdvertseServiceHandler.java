@@ -36,6 +36,7 @@ import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
+import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -76,6 +77,9 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 	@Resource
 	private AdvertiseDevicesIncomeService advertiseDevicesIncomeService;
 
+	@Resource 
+	private UserFacadeService userFacadeService;
+	
 	@Override
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
@@ -123,7 +127,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 					case IDTO.ACT_ADD:
 						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
 							macList, JsonHelper.getJSONString(ad));
-						advertiSesnapshot(ad.getId(), start, macList.size());
+						advertiSesnapshot(ad, start, macList.size());
 						deviceLimitDomain(batch, macList, ad.getDomain(),IDTO.ACT_ADD, ad);
 						break;
 					case IDTO.ACT_DELETE:
@@ -132,7 +136,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 						break;
 					case IDTO.ACT_UPDATE:
 						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad));;
-						advertiSesnapshot(ad.getId(), start, macList.size());
+						advertiSesnapshot(ad, start, macList.size());
 						break;
 					default:
 						break;
@@ -200,18 +204,24 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		} while (toIndex < macList.size());
 	}
 	
-	public void advertiSesnapshot(String adId,String publishTime,int pushlist_count){
+	public void advertiSesnapshot(Advertise ad,String publishTime,int pushlist_count){
 		
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("advertiseid", adId).andColumnEqualTo("publish_time", publishTime);
+		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId()).andColumnEqualTo("publish_time", publishTime);
 		List<AdvertiseDetails> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
 		if(details.isEmpty()){
-			logger.info(String.format("BatchDeviceApplyAdvertseServiceHandler  publish_time [%s]  advertiseid[%s]", publishTime,adId));
+			logger.info(String.format("BatchDeviceApplyAdvertseServiceHandler  publish_time [%s]  advertiseid[%s]", publishTime,ad.getId()));
 			AdvertiseDetails income = new AdvertiseDetails();
-			income.setAdvertiseid(adId);
+			income.setAdvertiseid(ad.getId());
 			income.setPublish_count(pushlist_count);
 			income.setPublish_time(publishTime);
-			income.setCash((float)(pushlist_count*BusinessRuntimeConfiguration.Advertise_Unit_Price));
+			float cash = pushlist_count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+			if(userFacadeService.checkOperatorByUid(ad.getUid())){
+				income.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
+			}else{
+				income.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
+			}
+//			income.setCash((float)(pushlist_count*BusinessRuntimeConfiguration.Advertise_Unit_Price));
 			advertiseDevicesIncomeService.insert(income);
 		}
 	}
