@@ -1754,7 +1754,13 @@ public class UserWalletUnitFacadeService {
 					if(order!=null){
 						rewardVTO.setDealCash(order.getAmount());
 						rewardVTO.setUmac(order.getUmac());
-						String rate=String.valueOf((int)(cash*100/Double.valueOf(order.getAmount())));
+						int amount=(int) (Double.valueOf(order.getAmount())*10000);
+						int cashInt=(int) (cash*1000000);
+						
+						int rateInt=cashInt/amount;
+						
+						String rate=String.valueOf(rateInt);
+						
 						rewardVTO.setRate(rate+"%");
 						
 						rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
