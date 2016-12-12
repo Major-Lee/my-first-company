@@ -331,7 +331,7 @@ public class AdvertiseUnitFacadeService {
 				advertiseService.update(advertise);
 				if(state!=0){//退费
 					userWalletFacadeService.advertiseRefundToUserWallet(advertise.getUid(), advertise.getOrderId(), Double.parseDouble(advertise.getCash()), 
-							String.format("verifyAdvertise fail Order Cash:%s, refund cash:%s", advertise.getCash(), advertise.getCash()));
+							String.format("auditFail,OrderCash:%s,refundCash:%s", advertise.getCash(), advertise.getCash()));
 				}
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 			}else{
