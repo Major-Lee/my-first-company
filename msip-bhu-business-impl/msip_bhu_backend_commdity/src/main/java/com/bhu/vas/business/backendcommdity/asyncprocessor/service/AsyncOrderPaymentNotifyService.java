@@ -212,9 +212,10 @@ public class AsyncOrderPaymentNotifyService{
 	public void physicalOrderPaymentHandle(Order order, boolean success, 
 			User bindUser, String paymented_ds, String payment_type, 
 			String payment_proxy_type, String accessInternetTime){
-		
+		//购买多个实体商品放行时间叠加
+		int forceTime = Integer.parseInt(accessInternetTime) * Integer.parseInt(order.getContext().split(",")[0]);
 		order = orderFacadeService.commdityPhysicalOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, 
-					payment_type, payment_proxy_type, accessInternetTime);
+					payment_type, payment_proxy_type, forceTime+"");
 		//判断订单状态为支付成功或发货成功
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
@@ -236,6 +237,7 @@ public class AsyncOrderPaymentNotifyService{
 					ucount);
 			String response_snk_stop = SmsSenderFactory.buildSender(
 					BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg_snk_stop, acc);
+			
 			logger.info(String.format("send CommdityPhysical acc[%s] msg[%s] response[%s]",acc,smsg_snk_stop,response_snk_stop));
 		}else{
 			logger.info(String.format("PayFailed or DeliverFailed orderid[%s]",order.getId()));
