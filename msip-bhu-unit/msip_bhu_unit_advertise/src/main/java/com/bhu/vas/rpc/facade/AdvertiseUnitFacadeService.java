@@ -476,8 +476,10 @@ public class AdvertiseUnitFacadeService {
 			float cash = occupiedVto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price;
 			if(userFacadeService.checkOperatorByUid(uid)){
 				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
+				positionVto.setSale(BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
 			}else{
 				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
+				positionVto.setSale(BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
 			}
 			occupiedVtos.add(occupiedVto);
 		}

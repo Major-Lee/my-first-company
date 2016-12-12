@@ -2,12 +2,21 @@ package com.bhu.vas.api.vto.advertise;
 
 import java.util.List;
 
+import com.smartwork.msip.cores.helper.ArithHelper;
+
 @SuppressWarnings("serial")
 public class AdDevicePositionVTO implements java.io.Serializable{
 	private List<String> positions;
 	private List<AdvertiseOccupiedVTO> occupyAds;
 	private int mobilenos;
+	private String sale;
 	
+	public String getSale() {
+		return sale;
+	}
+	public void setSale(float sale) {
+		this.sale = ArithHelper.getCuttedCurrency(sale+"");
+	}
 	public List<String> getPositions() {
 		return positions;
 	}
