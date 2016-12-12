@@ -33,10 +33,12 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 	
 	//当前时间 打赏收益 冗余字段 设备mac
 	private String mac;
+	private String umac;
 	//当前时间 打赏收益 冗余字段 设备所属群组
 	private String current_gpath;
 	//交易内容描述
 	private String memo;
+
 	private String description;
 	//分成角色(owner, 一级运营商，二级运营商)
 	private String role;
@@ -156,6 +158,9 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 		//vto.setPayment_type(payment_type);
 		vto.setMemo(memo);
 		vto.setRole(role);
+		vto.setMac(mac);
+		vto.setUmac(umac);
+		
 		vto.setOperdate(DateTimeHelper.formatDate(this.updated_at, DateTimeHelper.FormatPattern0));
 		return vto;
 	}
@@ -206,4 +211,11 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 		this.role = role;
 	}
 	
+	public String getUmac() {
+		return umac;
+	}
+
+	public void setUmac(String umac) {
+		this.umac = umac;
+	}
 }

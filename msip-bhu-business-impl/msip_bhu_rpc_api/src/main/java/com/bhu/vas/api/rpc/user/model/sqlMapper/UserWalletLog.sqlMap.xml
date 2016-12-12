@@ -16,6 +16,7 @@
     <result property="cash" column="cash"/>
     <result property="vcurrency" column="vcurrency"/>
     <result property="mac" column="mac"/>
+    <result property="umac" column="umac"/>
     <result property="current_gpath" column="current_gpath"/>
     <result property="memo" column="memo"/>
     <result property="description" column="description"/>
@@ -58,6 +59,7 @@
 	    	cash,
 	    	vcurrency,
 	    	mac,
+	    	umac,
 	    	current_gpath,
 	    	memo,
 	    	description,
@@ -77,6 +79,7 @@
 	    	cash,
 	    	vcurrency,
 	    	mac,
+	    	umac,
 	    	current_gpath,
 	    	memo,
 	    	description,
@@ -97,6 +100,7 @@
 	    	#{cash},
 	    	#{vcurrency},
 	    	#{mac},
+	    	#{umac},
 	    	#{current_gpath},
 	    	#{memo},
 	    	#{description},
@@ -115,6 +119,7 @@
 	    	cash = #{cash},
 	    	vcurrency = #{vcurrency},
 	    	mac = #{mac},
+	    	umac = #{umac},
 	    	current_gpath = #{current_gpath},
 	    	memo = #{memo},
 	    	description = #{description},
@@ -216,7 +221,7 @@
 	    from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
 	    <where>
 	    	t_walletlog.uid = #{uid}
-	    	AND t_walletlog.transtype = 'P2C'
+	    	AND (t_walletlog.transtype = 'P2C' or t_walletlog.transtype = 'A2C')
 	    	<if test="start_created_ts != null">
 	    		AND t_orders.created_at &gt;= #{start_created_ts}
 	    	</if>
