@@ -168,7 +168,11 @@ public class UserWalletUnitFacadeService {
 				 */
 				
 				if (!StringHelper.isValidMac(log.getUmac())){
-					log.setUmac(null);
+					log.setUmac(StringHelper.MINUS_STRING_GAP);
+				}
+				
+				if (!StringHelper.isValidMac(log.getMac())){
+					log.setMac(StringHelper.MINUS_STRING_GAP);
 				}
 				
 				vtos.add(log.toUserWalletLogVTO(
@@ -1847,6 +1851,9 @@ public class UserWalletUnitFacadeService {
 						if(!i.getTranstype().equals("A2C")){
 							rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
 							rewardVTO.setUmac(order.getUmac());
+						}else{
+							rewardVTO.setUmac_mf("-");
+							rewardVTO.setUmac("-");
 						}
 					}
 					retDtos.add(rewardVTO);
