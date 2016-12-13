@@ -168,7 +168,11 @@ public class UserWalletUnitFacadeService {
 				 */
 				
 				if (!StringHelper.isValidMac(log.getUmac())){
-					log.setUmac(null);
+					log.setUmac(StringHelper.MINUS_STRING_GAP);
+				}
+				
+				if (!StringHelper.isValidMac(log.getMac())){
+					log.setMac(StringHelper.MINUS_STRING_GAP);
 				}
 				
 				vtos.add(log.toUserWalletLogVTO(
