@@ -50,6 +50,8 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
+import com.bhu.vas.rpc.util.JSONObject;
+import com.bhu.vas.rpc.util.um.OpenApiCnzzImpl;
 
 @Service
 public class AdvertiseUnitFacadeService {
@@ -512,7 +514,8 @@ public class AdvertiseUnitFacadeService {
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId());
 		List<AdvertiseDetails> incomes  =  advertiseDevicesIncomeService.findModelByModelCriteria(mc);
-		
+		//um工具对象创建
+		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		
 		int adApplySum = 0;
 		int adPVSum = 0;
@@ -522,16 +525,41 @@ public class AdvertiseUnitFacadeService {
 			AdvertiseDailyResultVTO  dailyVto = new AdvertiseDailyResultVTO();
 			dailyVto.setDate(income.getPublish_time());
 			dailyVto.setAdApplyCount(income.getPublish_count());
-			//TODO dailyVto set dailyPV dailyUV
-			dailyVto.setAdPV(0);
-			dailyVto.setAdUV(0);
+			
+			//dailyVto set dailyPV dailyUV
+			String pcUm=apiCnzzImpl.queryCnzzStatistic("PC热播PV", income.getPublish_time(), income.getPublish_time(), "", "id ="+income.getAdvertiseid(),2);
+			String mobileUm=apiCnzzImpl.queryCnzzStatistic("mobile热播PV", income.getPublish_time(), income.getPublish_time(), "", "id ="+income.getAdvertiseid(),2);
+			
+			int pcUV=0;
+			int pcPV=0;
+			int mobileUV=0;
+			int mobilePV=0;
+			
+			JSONObject pcUvJson=JSONObject.fromObject(pcUm);
+			String pcUvJsonStr=pcUvJson.getString("values");
+			pcUvJsonStr=pcUvJsonStr.substring(1);
+			pcUvJsonStr=pcUvJsonStr.substring(0, pcUvJsonStr.length()-1);
+			pcUV=Integer.valueOf(pcUvJsonStr.split(",")[1].replace(".0", "").trim());
+			pcPV=Integer.valueOf(pcUvJsonStr.split(",")[0].replace(".0", "").trim());
+			
+			JSONObject mobileUvJson=JSONObject.fromObject(mobileUm);
+			String mobileUvJsonStr=mobileUvJson.getString("values");
+			mobileUvJsonStr=mobileUvJsonStr.substring(1);
+			mobileUvJsonStr=mobileUvJsonStr.substring(0, mobileUvJsonStr.length()-1);
+			mobileUV=Integer.valueOf(mobileUvJsonStr.split(",")[1].replace(".0", "").trim());
+			mobilePV=Integer.valueOf(mobileUvJsonStr.split(",")[0].replace(".0", "").trim());
+			
+			dailyVto.setAdPV(pcPV+mobilePV);
+			dailyVto.setAdUV(pcUV+mobileUV);
 			
 			
 			adApplySum +=income.getPublish_count();
 			if(income.getCash() !=null || !income.getCash().isEmpty()){
 				cashSum +=Double.parseDouble(income.getCash());
 			}
-			//TODO PVsum & UVsum
+			//PVsum & UVsum
+			adPVSum+=pcPV+mobilePV;
+			adUvSum+=pcUV+mobileUV;
 			adResults.add(dailyVto);
 		}
 		resultVto.setAdApplySum(adApplySum);
