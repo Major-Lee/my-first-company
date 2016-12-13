@@ -232,7 +232,7 @@ public class UserDeviceController extends BaseController {
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = true) String macs,
 			@RequestParam(required = true) String industry,
-			@RequestParam(required = true) String merchant_name){
+			@RequestParam(required = false) String merchant_name){
 
 		try{
 	    	if(StringUtils.isEmpty(industry))
