@@ -647,9 +647,17 @@ public class OrderUnitFacadeService {
 				for(Map<String, Object> log : logs){
 					orderRewardVto = new OrderRewardVTO();
 					orderRewardVto.setId((String)log.get("orderid"));
-					orderRewardVto.setMac((String)log.get("mac"));
+					
+					if (StringHelper.isValidMac((String)log.get("mac")))
+						orderRewardVto.setMac((String)log.get("mac"));
+					else
+						orderRewardVto.setMac(StringHelper.MINUS_STRING_GAP);
+					
 					if (StringHelper.isValidMac((String)log.get("umac")))
 						orderRewardVto.setUmac((String)log.get("umac"));
+					else
+						orderRewardVto.setUmac(StringHelper.MINUS_STRING_GAP);
+					
 					orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch((String)log.get("umac"),true,false));
 					orderRewardVto.setPayment_type((String)log.get("payment_type"));
 					OrderPaymentType orderPaymentType = OrderPaymentType.fromKey((String)log.get("payment_type"));
