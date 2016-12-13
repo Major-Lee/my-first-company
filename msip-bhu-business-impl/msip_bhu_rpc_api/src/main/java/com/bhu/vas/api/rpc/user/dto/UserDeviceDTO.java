@@ -56,7 +56,7 @@ public class UserDeviceDTO implements Serializable {
 
     
     public String getD_industry_desc() {
-		return IndustryEnumType.getNameByIndex(d_distributor_type);
+    	return d_industry_desc;
 	}
 
 	public void setD_industry_desc(String d_industry_desc) {
@@ -69,6 +69,7 @@ public class UserDeviceDTO implements Serializable {
 
 	public void setD_industry(String d_industry) {
 		this.d_industry = d_industry;
+		this.d_industry_desc = IndustryEnumType.getNameByIndex(d_industry);
 	}
 
 	public long getLastregedat() {

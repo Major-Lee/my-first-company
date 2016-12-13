@@ -59,5 +59,6 @@ public enum IndustryEnumType{
 		}
 		
 		public static void main(String[] argv){
+			System.out.println(IndustryEnumType.getNameByIndex("100"));
 		}
 }

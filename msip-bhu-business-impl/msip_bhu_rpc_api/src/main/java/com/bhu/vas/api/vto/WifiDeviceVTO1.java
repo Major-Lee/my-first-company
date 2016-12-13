@@ -299,9 +299,10 @@ public class WifiDeviceVTO1 implements Serializable{
 	}
 	public void setD_industry(String d_industry) {
 		this.d_industry = d_industry;
+		this.d_industry_desc = IndustryEnumType.getNameByIndex(d_industry);
 	}
 	public String getD_industry_desc() {
-		return IndustryEnumType.getNameByIndex(d_industry_desc);
+		return d_industry_desc;
 	}
 	public void setD_industry_desc(String d_industry_desc) {
 //		this.d_industry_desc = d_industry_desc;
