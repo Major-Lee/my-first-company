@@ -20,8 +20,10 @@ import com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseBillsVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseDailyResultVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseOccupiedVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
+import com.bhu.vas.api.vto.advertise.AdvertiseResultVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
@@ -502,23 +504,40 @@ public class AdvertiseUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_QUERY_UNSUPPORT);
 		}
 		
+		
 		AdvertiseReportVTO report = new AdvertiseReportVTO();
 		AdvertiseVTO adVto = ad.toVTO();
-		
-		Map<String, Integer> adResult = new HashMap<String, Integer>();
+		AdvertiseResultVTO resultVto = new AdvertiseResultVTO();
+		List<AdvertiseDailyResultVTO> adResults = new ArrayList<AdvertiseDailyResultVTO>();
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId());
 		List<AdvertiseDetails> incomes  =  advertiseDevicesIncomeService.findModelByModelCriteria(mc);
-		int sum = 0;
+		
+		
+		int adApplySum = 0;
+		int adPVSum = 0;
+		int adUvSum = 0;
 		float cashSum = 0;
 		for(AdvertiseDetails income : incomes){
-			adResult.put(income.getPublish_time(), (int) income.getPublish_count());
-			sum +=income.getPublish_count();
+			AdvertiseDailyResultVTO  dailyVto = new AdvertiseDailyResultVTO();
+			dailyVto.setDate(income.getPublish_time());
+			dailyVto.setAdApplyCount(income.getPublish_count());
+			//TODO dailyVto set dailyPV dailyUV
+			dailyVto.setAdPV(0);
+			dailyVto.setAdUV(0);
+			
+			
+			adApplySum +=income.getPublish_count();
 			if(income.getCash() !=null || !income.getCash().isEmpty()){
 				cashSum +=Double.parseDouble(income.getCash());
 			}
+			//TODO PVsum & UVsum
+			adResults.add(dailyVto);
 		}
-		adResult.put("sum", sum);
+		resultVto.setAdApplySum(adApplySum);
+		resultVto.setAdPVSum(adPVSum);
+		resultVto.setAdUVSum(adUvSum);
+		resultVto.setAdResult(adResults);
 		
 		AdvertiseBillsVTO billVto =  new AdvertiseBillsVTO();
 		billVto.setExpect(Float.parseFloat(ad.getCash()));
@@ -526,8 +545,9 @@ public class AdvertiseUnitFacadeService {
 		
 		float balance = Float.parseFloat(ad.getCash())*10000 - cashSum*10000;
 		billVto.setBalance(balance > 0 ? balance/10000 : 0);
+		
 		report.setAdDetail(adVto);
-		report.setAdResult(adResult);
+		report.setAdResult(resultVto);
 		report.setAdBills(billVto);
 		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(report);

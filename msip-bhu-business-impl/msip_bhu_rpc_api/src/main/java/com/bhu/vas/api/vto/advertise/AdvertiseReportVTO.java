@@ -5,7 +5,7 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class AdvertiseReportVTO implements java.io.Serializable{
 	private AdvertiseVTO adDetail;
-	private Map<String,Integer> adResult;
+	private AdvertiseResultVTO adResult;
 	private AdvertiseBillsVTO adBills;
 	
 	public AdvertiseVTO getAdDetail() {
@@ -14,10 +14,10 @@ public class AdvertiseReportVTO implements java.io.Serializable{
 	public void setAdDetail(AdvertiseVTO adDetail) {
 		this.adDetail = adDetail;
 	}
-	public Map<String, Integer> getAdResult() {
+	public AdvertiseResultVTO getAdResult() {
 		return adResult;
 	}
-	public void setAdResult(Map<String, Integer> adResult) {
+	public void setAdResult(AdvertiseResultVTO adResult) {
 		this.adResult = adResult;
 	}
 	public AdvertiseBillsVTO getAdBills() {
