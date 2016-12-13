@@ -1851,6 +1851,9 @@ public class UserWalletUnitFacadeService {
 						if(!i.getTranstype().equals("A2C")){
 							rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
 							rewardVTO.setUmac(order.getUmac());
+						}else{
+							rewardVTO.setUmac_mf("-");
+							rewardVTO.setUmac("-");
 						}
 					}
 					retDtos.add(rewardVTO);
