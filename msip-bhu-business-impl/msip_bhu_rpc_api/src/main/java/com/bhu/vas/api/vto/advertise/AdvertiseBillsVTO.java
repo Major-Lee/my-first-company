@@ -12,7 +12,7 @@ public class AdvertiseBillsVTO implements java.io.Serializable{
 		return expect;
 	}
 	public void setExpect(float expect) {
-		this.actual = ArithHelper.getCuttedCurrency(expect+"");
+		this.expect = ArithHelper.getCuttedCurrency(expect+"");
 	}
 
 	public String getActual() {
