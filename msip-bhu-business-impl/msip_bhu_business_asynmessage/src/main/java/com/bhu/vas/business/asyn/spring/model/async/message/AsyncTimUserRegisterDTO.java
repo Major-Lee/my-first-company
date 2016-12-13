@@ -4,6 +4,14 @@ import com.bhu.vas.business.asyn.spring.builder.async.AsyncDTO;
 import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 
 public class AsyncTimUserRegisterDTO extends AsyncDTO{
+	private String user;
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
 
 	private String nick;
 

@@ -274,7 +274,7 @@ public class UserUnitFacadeService {
 			}
 			deliverMessageService.sendUserRegisteredActionMessage(user.getId(),acc, null, device,remoteIp);
 			//将用户导入腾讯im
-			asyncDeliverMessageService.sendBatchTimUserRegisterActionMessage(uid, null);
+			asyncDeliverMessageService.sendBatchTimUserRegisterActionMessage(uid+"", null);
 		}else{//登录
 			reg = false;
 			

@@ -24,8 +24,8 @@ public class BatchTimUserRegisterServiceHandler implements IMsgHandlerService {
 	public void process(String message) {
 		logger.info(String.format("BatchTimUserRegisterServiceHandler process message[%s]", message));
 		final AsyncTimUserRegisterDTO timUserRegisterDTO = JsonHelper.getDTO(message, AsyncTimUserRegisterDTO.class);
-		int uid = timUserRegisterDTO.getUid();
-		ayscTimeUserImport(uid+"");
+		String user = timUserRegisterDTO.getUser();
+		ayscTimeUserImport(user);
 		logger.info(String.format("BatchTimUserRegisterServiceHandler process message[%s] successful", message));
 	}
 	private void ayscTimeUserImport(String uname) {

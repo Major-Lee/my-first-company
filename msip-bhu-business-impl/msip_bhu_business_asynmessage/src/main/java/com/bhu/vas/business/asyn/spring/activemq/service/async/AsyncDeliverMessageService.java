@@ -226,9 +226,9 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendBatchTimUserRegisterActionMessage(Integer uid, String nick){
+	public void sendBatchTimUserRegisterActionMessage(String user, String nick){
 		AsyncTimUserRegisterDTO dto = new AsyncTimUserRegisterDTO();
-		dto.setUid(uid);
+		dto.setUser(user);
 		dto.setNick(nick);
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
