@@ -21,7 +21,7 @@
 		<property name="triggers">
 			<list>
 				<ref bean="messageSystemBackendTaskLoaderCronTrigger" />
-				<ref bean="messageSystemTagBackendTaskLoaderCronTrigger" />		
+				<ref bean="messageSystemBackendTagLoaderCronTrigger" />		
 			</list>
 		</property>
 		<!-- Quartz配置 -->
