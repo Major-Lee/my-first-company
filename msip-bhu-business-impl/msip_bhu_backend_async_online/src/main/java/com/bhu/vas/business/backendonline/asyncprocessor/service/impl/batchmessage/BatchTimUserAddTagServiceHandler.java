@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
 import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
 import com.bhu.vas.api.rpc.message.model.MessageUser;
@@ -55,7 +54,9 @@ public class BatchTimUserAddTagServiceHandler implements IMsgHandlerService {
 			user.setSync(0);
 			logger.info(String.format("ayscTimeUserAddTag tim add user[%s] tags[%s] failed!", acc, tags));
 		}
-		messageUserFacadeService.updateMessageUserData(user);
+		if (utype.equals(BusinessKeyDefine.Message.User)){
+			messageUserFacadeService.updateMessageUserData(user);
+		}
 	}
 	
 	private String replaceTags(String oldTags, String newTag){
