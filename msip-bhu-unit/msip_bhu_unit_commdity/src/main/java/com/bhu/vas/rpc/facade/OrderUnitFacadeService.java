@@ -1203,6 +1203,7 @@ public class OrderUnitFacadeService {
 				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID,new String[]{"remark"});
 			} else {
 				order.setProcess_status(BusinessEnumType.OrderProcessStatus.SharedealCanceled.getKey());
+				order.setRemark(remark);
 				orderService.update(order);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
