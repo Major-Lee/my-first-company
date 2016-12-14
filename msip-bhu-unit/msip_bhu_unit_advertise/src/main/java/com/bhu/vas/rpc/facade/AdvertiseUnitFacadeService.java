@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -35,6 +34,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -193,7 +193,7 @@ public class AdvertiseUnitFacadeService {
 			int startTime = 0;
 			int endTime = 0;
 			int index = 0;
-			if(DateTimeHelper.getDateTime("HH").equals("23")){
+			if(DateTimeHelper.getDateTime("HH").equals("12")){
 				startTime = 2;
 				endTime = 18;
 				index = 2;
