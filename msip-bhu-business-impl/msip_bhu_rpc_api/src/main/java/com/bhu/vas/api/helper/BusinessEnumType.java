@@ -311,6 +311,7 @@ public class BusinessEnumType {
 		Cash2Realmoney("C2M","零钱提现"),
 		Advertise2C("A2C",	 "全城热播"),
 		Advertise2O("A2O",	 "全城热播(退费)"),
+		QualityGoods2C("Q2C",	 "良品分成"),
 		;
 		
 		private String key;
@@ -422,6 +423,7 @@ public class BusinessEnumType {
 		PayFailured(8,"订单支付失败状态","支付平台支付完成并通知此订单支付失败时更新为此状态"),
 		PaySuccessed(9,"订单支付成功状态","支付平台支付完成并通知此订单支付成功时更新为此状态"),
 		DeliverCompleted(10,"发货完成状态","系统通知应用发货成功时更新为此状态"),
+		Refund(20,"退货状态","用户退货时更新为此状态"),
 		;
 		private Integer key;
 		private String name;
@@ -507,6 +509,7 @@ public class BusinessEnumType {
 		//DeliverPrepared(6,"准备发货状态","系统通知应用发货失败时更新为此状态"),
 		//Delivering(9,"发货中状态",""),
 		DeliverCompleted(10,"发货完成状态","系统通知应用发货成功时更新为此状态"),
+		SharedealCanceled(20,"取消分成状态","因为用户退货引起的取消分成状态"),
 		SharedealStarted(99,"分成开始状态","系统开始分成时更新为此状态"),//一笔广告订单，需要给多个uid分成
 		SharedealCompleted(100,"分成完成状态","系统分成完成时更新为此状态"),
 		;
@@ -912,6 +915,7 @@ public class BusinessEnumType {
 	
 	public static String unknownPaymentType = "未知支付";
 	public static String templateRedpacketPaymentDesc = "通过%s%s打赏";
+	public static String templateQualityGoodsSaleDesc = "通过%s%s良品分成";
 	public static String templateReChargingRealmoney2VCurrencyPaymentDesc = "通过%s%s虎钻充值";
 	public static String advertiseSharedealDesc = "全城热播分成";
 	/**

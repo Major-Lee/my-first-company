@@ -49,6 +49,8 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	private Integer channel;
 	//订单状态
 	private Integer status;
+	//备注，订单取消分成时记录取消原因
+	private String remark;
 	//订单流程状态
 	private Integer process_status;
 	//订单创建时间
@@ -223,11 +225,19 @@ public class Order extends BaseStringModel implements IRedisSequenceGenable{
 	public void setCreated_at(Date created_at) {
 		this.created_at = created_at;
 	}
+	
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
 	@Override
 	public void setSequenceKey(Long autoId) {
 		String ext_segment = StructuredIdHelper.buildStructuredExtSegmentString(OrderExtSegmentPayMode.Receipt.getKey());
 		this.setId(StructuredIdHelper.generateStructuredIdString(getAppid(), ext_segment, autoId));
 	}
-
 }

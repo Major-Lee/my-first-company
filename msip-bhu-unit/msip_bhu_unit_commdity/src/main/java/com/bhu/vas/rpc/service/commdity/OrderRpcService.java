@@ -21,6 +21,7 @@ import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
+import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.rpc.facade.OrderUnitFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -193,5 +194,16 @@ public class OrderRpcService implements IOrderRpcService{
 		return orderUnitFacadeService.createHotPlayOrder(commdityid, hpid, umactype, payment_type, channel, user_agent);
 	}
 
-	
+	@Override
+	public RpcResponseDTO<QualityGoodsSharedealVTO> qualityGoodsSharedealPages(int uid, int pageNo, int pageSize){
+		logger.info(String.format("qualityGoodsSharedealPages uid[%s] pageno[%s], pagesize[%s]", uid, pageNo, pageSize));
+		return orderUnitFacadeService.qualityGoodsSharedealPages(uid, pageNo, pageSize);
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> doOrderSharedealCancel(int uid, String orderid, String remark){
+		logger.info(String.format("doOrderSharedealCancel uid[%s] orderid[%s], remark[%s]", uid, orderid, remark));
+		return orderUnitFacadeService.doOrderSharedealCancel(uid, orderid, remark);
+	}
+
 }

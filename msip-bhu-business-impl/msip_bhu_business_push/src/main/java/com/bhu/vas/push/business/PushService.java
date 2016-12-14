@@ -90,7 +90,8 @@ public class PushService{
 						push_ret = this.pushWifiDeviceWorkModeChanged(pushDto);
 						break;
 					case SharedealNotify:
-						push_ret = this.pushSharedealNotify(pushDto);
+					case QualityGoodsSharedealNotify:
+						push_ret = this.pushSharedealNotify(pushDto, pushType);
 						break;
 					case DeviceReset:
 						push_ret = this.pushDeviceReset(pushDto);
@@ -271,7 +272,7 @@ public class PushService{
 	 * @param presentDto
 	 * @return
 	 */
-	public boolean pushSharedealNotify(PushDTO pushDto){
+	public boolean pushSharedealNotify(PushDTO pushDto, PushType puthType){
 		boolean ret = false;
 		try{
 			DeviceMobilePresentDTO presentDto = this.getMobilePresent(pushDto.getMac());
@@ -293,7 +294,7 @@ public class PushService{
 				sharedeal_push_dto.setMac(StringHelper.EMPTY_STRING_GAP);
 				
 				PushMsg pushMsg = this.generatePushMsg(presentDto);
-				this.builderSharedealNotifyPushMsg(pushMsg, sharedeal_push_dto, context);
+				this.builderSharedealNotifyPushMsg(pushMsg, sharedeal_push_dto, context, puthType);
 					//发送push
 				ret = pushNotification(pushMsg);
 				if(ret){
@@ -529,12 +530,12 @@ public class PushService{
 	 * @param context
 	 * @return
 	 */
-	public void builderSharedealNotifyPushMsg(PushMsg pushMsg, NotificationPushDTO notificationPushDto, SharedealNofityContext context){
-		pushMsg.setTitle(PushType.SharedealNotify.getTitle());
-		pushMsg.setText(cutDoubleMobile(String.format(PushType.SharedealNotify.getText(), context.getUmac_mf(), 
+	public void builderSharedealNotifyPushMsg(PushMsg pushMsg, NotificationPushDTO notificationPushDto, SharedealNofityContext context, PushType pushType){
+		pushMsg.setTitle(pushType.getTitle());
+		pushMsg.setText(cutDoubleMobile(String.format(pushType.getText(), context.getUmac_mf(), 
 				context.getUmac_type_desc(), context.getPayment_type_name(), context.getCash())));
-		notificationPushDto.setTitle(PushType.SharedealNotify.getP_title());
-		notificationPushDto.setText(cutDoubleMobile(String.format(PushType.SharedealNotify.getP_text(), context.getUmac_mf(), 
+		notificationPushDto.setTitle(pushType.getP_title());
+		notificationPushDto.setText(cutDoubleMobile(String.format(pushType.getP_text(), context.getUmac_mf(), 
 				context.getUmac_type_desc(), context.getPayment_type_name(), context.getCash())));
 		pushMsg.setPaylod(JsonHelper.getJSONString(notificationPushDto));
 	}

@@ -24,9 +24,21 @@
     <result property="user_agent" column="user_agent"/>
     <result property="status" column="status"/>
     <result property="process_status" column="process_status"/>
+    <result property="remark" column="remark"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
+  
+     <resultMap id="mapQualityGoodsSharedealPages" type="hashmap">
+   		<result property="orderid" column="orderid" javaType="java.lang.String"/>
+   		<result property="commdityid" column="commdityid" javaType="java.lang.String"/>
+   		<result property="commdityname" column="commdityname" javaType="java.lang.String"/>
+   		<result property="amount" column="amount" javaType="java.lang.String"/>
+   		<result property="context" column="context" javaType="java.lang.String"/>
+   		<result property="process_status" column="process_status" javaType="java.lang.String"/>
+   		<result property="created_at" column="created_at" javaType="java.lang.String"/>
+   </resultMap>  
+  
   
   	<sql id="modelTableName">
 	    <![CDATA[
@@ -54,6 +66,7 @@
 	    	user_agent,
 	    	status,
 	    	process_status,
+	    	remark,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -78,6 +91,7 @@
 	    	user_agent,
 	    	status,
 	    	process_status,
+	    	remark,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -103,6 +117,7 @@
 	    	#{user_agent},
 	    	#{status},
 	    	#{process_status},
+	    	#{remark},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -126,6 +141,7 @@
 	    	user_agent = #{user_agent},
 	    	status = #{status},
 	    	process_status = #{process_status},
+	    	remark = #{remark},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>
@@ -250,5 +266,34 @@
 	
 	<select id="executeProcdure" parameterType="java.lang.Object" statementType="CALLABLE" resultType="int">
 		${proc_call} 		
+	</select>
+	
+	<select id="countQualityGoodsSharedeal" resultType="Map" parameterType="Map">
+	    select a.process_status as process_status,
+	    count(*) as count
+	    from <include refid="modelTableName" /> a 
+	    <where>
+	    	a.type='8' AND a.status='10'
+			group by a.process_status
+	    </where> 
+	</select>
+	
+	<select id="qualityGoodsSharedealPages" resultMap="mapQualityGoodsSharedealPages" parameterType="Map">
+	    select 
+	    a.id as orderid,
+	    b.id as commdityid,
+	    b.name as commdityname,
+	    a.amount as amount,
+	    a.context as context,
+	    a.process_status as process_status,
+	    a.created_at as created_at
+	    from <include refid="modelTableName" /> a, msip_bhu_commdity.t_commdity_commditys b
+	    <where>
+	    	a.commdityid = b.id
+	    	AND a.type='8' AND a.status='10' 
+	    	AND a.created_at > DATE_SUB(NOW(), INTERVAL 15 DAY)
+	    	ORDER BY a.created_at DESC
+	    	limit #{limit} OFFSET #{start}
+	    </where> 
 	</select>
 </mapper>

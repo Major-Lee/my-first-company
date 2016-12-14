@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+	default-lazy-init="true">
+	<description>Quartz的本地Cron式执行任务配置</description>
+	
+	<!-- spring的属性加载器，加载properties文件中的属性 -->  
+	<bean id="commdityPropertyConfigurer"  
+	    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+		<property name="ignoreUnresolvablePlaceholders" value="true" /> 
+	    <property name="location">
+			<value>classpath:/deploy/runtimeconf/commditytask.properties</value>
+	    </property>  
+	    <property name="fileEncoding" value="utf-8" />  
+	</bean>
+
+	<!-- Quartz本地Schduler -->
+	<bean id="localQuartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
+		<!-- Triggers集成 -->
+		<property name="triggers">
+			<list>
+				<!-- 每小时执行一次分成 -->
+				<ref bean="qualityGoodsSharedealTaskLoaderCronTrigger" />
+			</list>
+		</property>
+		<!-- Quartz配置 -->
+		<property name="quartzProperties">
+			<props><prop key="org.quartz.threadPool.threadCount">5</prop></props>
+		</property>
+		<!-- 启动时延期3秒开始任务 -->
+		<property name="startupDelay" value="3" />
+	</bean>
+	
+
+	<!-- 每小时执行一次广告分成 -->
+	<bean id="qualityGoodsSharedealTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="qualityGoodsSharedealTaskLoaderCronJobDetail" />
+		<!-- <property name="cronExpression" value="0 0 0/1 * * ?" /> -->
+		<property name="cronExpression" value="${qualityGoods.sharedeal}" />
+	</bean>
+	<bean id="qualityGoodsSharedealTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="qualityGoodsSharedealTaskLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="qualityGoodsSharedealTaskLoaderJob" class="com.bhu.vas.business.backendcommdity.plugins.quartz.QualityGoodsSharedealTaskLoader" />
+	
+</beans>

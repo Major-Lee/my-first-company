@@ -32,6 +32,11 @@ public class Commdity extends BaseIntModel{
 	//private String item_order_detail;
 	//用于商品打分排序字段 默认和商品id一样 可以随时修改
 	private int score;
+	
+	//如果是运营商设备，该商品交易完成后，实际参加分润的金额参数,可以为实际金额或者百分数(如 "30"或者 "20%")
+	private String city_sharedeal;
+	//如果是分销商设备，该商品交易完成后，实际参加分润的金额参数,可以为实际金额或者百分数
+	private String channel_sharedeal;
 	//商品创建时间
 	private Date created_at;
 	
@@ -133,4 +138,21 @@ public class Commdity extends BaseIntModel{
 	public void setCreated_at(Date created_at) {
 		this.created_at = created_at;
 	}
+
+	public String getCity_sharedeal() {
+		return city_sharedeal;
+	}
+
+	public void setCity_sharedeal(String city_sharedeal) {
+		this.city_sharedeal = city_sharedeal;
+	}
+
+	public String getChannel_sharedeal() {
+		return channel_sharedeal;
+	}
+
+	public void setChannel_sharedeal(String channel_sharedeal) {
+		this.channel_sharedeal = channel_sharedeal;
+	}
+	
 }

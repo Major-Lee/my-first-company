@@ -36,12 +36,12 @@ import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseVideoValidateCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
-import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.PaymentChannelType;
+import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -49,6 +49,8 @@ import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealListVTO;
+import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWalletLog;
@@ -1137,4 +1139,70 @@ public class OrderUnitFacadeService {
 	}
 	
 	
+	
+	public RpcResponseDTO<QualityGoodsSharedealVTO> qualityGoodsSharedealPages(int uid, int pageNo, int pageSize){
+		try{
+			QualityGoodsSharedealVTO ret = new QualityGoodsSharedealVTO();
+			List<Map<String, Object>> counts = orderService.getEntityDao().countQualityGoodsSharedeal();
+			List<Map<String, Object>> items = orderService.getEntityDao().qualityGoodsSharedealPages(pageNo, pageSize);
+			for(Map<String, Object> countMap:counts){
+				if(countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey())) != null)
+					ret.setWaitCount((Integer)countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey())));
+				else if(countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.SharedealCanceled.getKey())) != null)
+					ret.setCancelCount((Integer)countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.SharedealCanceled.getKey())));
+				else if(countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.SharedealCompleted.getKey())) != null)
+					ret.setDoneCount((Integer)countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.SharedealCompleted.getKey())));
+			}
+			if(items != null && items.size() > 0){
+				List<QualityGoodsSharedealListVTO> vtos = new ArrayList<QualityGoodsSharedealListVTO>();
+				for(Map<String, Object> item:items){
+					QualityGoodsSharedealListVTO vto = new QualityGoodsSharedealListVTO();
+					vto.setOrderid((String)item.get("orderid"));
+					vto.setCommdityid((String)item.get("commdityid"));
+					vto.setCommdityname((String)item.get("commdityname"));
+					vto.setAmount((String)item.get("amount"));
+					vto.setCreated_at((String)item.get("created_at"));
+					vto.setProcess_status((String)item.get("process_status"));
+					
+					String context = (String)item.get("context");
+					if(StringUtils.isNotEmpty(context)){
+						String[] arr = context.split(StringHelper.COMMA_STRING_GAP);
+						if(arr.length >= 4){
+							vto.setMobileno(arr[1]);
+							vto.setUsername(arr[2]);
+							vto.setAddress(arr[3]);
+						}
+					}
+				}
+				TailPage<QualityGoodsSharedealListVTO> tailPages = new CommonPage<QualityGoodsSharedealListVTO>(pageNo, pageSize, items.size(), vtos);
+				ret.setTailPages(tailPages);
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
+		}catch(Exception ex){
+			logger.error("createHotPlayOrder Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	
+	public RpcResponseDTO<Boolean> doOrderSharedealCancel(int uid, String orderid, String remark){
+		try{
+			Order order = orderService.getById(orderid);
+			if(order == null){
+				logger.info(String.format("doOrderSharedealCancel no such order [%s]" , orderid));
+				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST,new String[]{"remark"});
+			} else if(order.getStatus() != BusinessEnumType.OrderStatus.DeliverCompleted.getKey() || 
+					order.getProcess_status() != BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey()){
+				logger.info(String.format("doOrderSharedealCancel invalide order status [%s] process_status[%s]", order.getStatus(), order.getProcess_status()));
+				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID,new String[]{"remark"});
+			} else {
+				order.setProcess_status(BusinessEnumType.OrderProcessStatus.SharedealCanceled.getKey());
+				orderService.update(order);
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(Exception ex){
+			logger.error("createHotPlayOrder Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 }

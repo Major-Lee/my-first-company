@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 //import com.bhu.vas.business.ds.device.service.WifiHandsetDeviceRelationMService;
 
+import com.bhu.vas.api.dto.DistributorType;
 import com.bhu.vas.api.dto.commdity.id.StructuredExtSegment;
 import com.bhu.vas.api.dto.commdity.id.StructuredId;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponsePaymentCompletedNotifyDTO;
@@ -32,10 +33,12 @@ import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.PaymentNotifyType;
 import com.bhu.vas.api.helper.UPortalHttpHelper;
 import com.bhu.vas.api.rpc.charging.dto.SharedealInfo;
+import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.user.model.PushType;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
@@ -46,6 +49,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinish
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
@@ -104,6 +108,9 @@ public class AsyncOrderPaymentNotifyService{
 
 	@Resource
 	private BusinessWalletCacheService businessWalletCacheService;
+	
+	@Resource
+	private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
 
 	@PostConstruct
 	public void initialize() {
@@ -244,6 +251,86 @@ public class AsyncOrderPaymentNotifyService{
 		}
 	}
 	
+	
+	
+	
+	public void qualityGoodsSharedealHandle(Order order){
+		//判断订单状态
+		if(order.getStatus() != BusinessEnumType.OrderStatus.DeliverCompleted.getKey() || 
+				order.getProcess_status() != BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey()){
+			logger.info(String.format("wrong order status[%s], process_status[%s]", order.getStatus(), order.getProcess_status()));
+			return;
+		}
+
+		Commdity commdity = commdityFacadeService.getCommdityService().getById(order.getCommdityid());
+		if(commdity == null){
+			logger.info(String.format("no such commdity[%s]", order.getCommdityid()));
+			return;
+		}
+		
+		
+		String sharedealStr;
+		double amount = Double.parseDouble(order.getAmount());
+		double sharedealAmount = 0;
+		WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(order.getMac());
+		if(configs == null || !DistributorType.City.getType().equals(configs.getDistributor_type())){
+			sharedealStr = commdity.getChannel_sharedeal();
+		} else {
+			sharedealStr = commdity.getCity_sharedeal();
+		}
+		if(sharedealStr.contains("%")){
+			sharedealStr = sharedealStr.replaceAll("%", "");
+			sharedealAmount = amount * Integer.parseInt(sharedealStr) / 100;
+		} else {
+			sharedealAmount = Double.parseDouble(sharedealStr);
+		}
+				
+		OrderUmacType uMacType = OrderUmacType.fromKey(order.getUmactype());
+		if(uMacType == null){
+			uMacType = OrderUmacType.Terminal;
+		}
+		if(StringUtils.isEmpty(order.getPayment_type())){
+			order.setPayment_type(BusinessEnumType.unknownPaymentType);
+		}
+
+		final String order_payment_type = order.getPayment_type();
+		final Integer order_umac_type = order.getUmactype();
+		final String mac = order.getMac();
+		final String umac = order.getUmac();
+		OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
+		userWalletFacadeService.sharedealCashToUserWalletWithProcedure(order.getMac(), order.getUmac(), sharedealAmount, order.getId(), order.getPaymented_at(),
+				String.format(BusinessEnumType.templateQualityGoodsSaleDesc, uMacType.getDesc(), 
+						orderPaymentType != null ? orderPaymentType.getDesc() : StringHelper.EMPTY_STRING_GAP),
+				UWalletTransMode.SharedealPayment, UWalletTransType.QualityGoods2C, -1,
+						new IWalletSharedealNotifyCallback(){
+							public String notifyCashSharedealOper(SharedealInfo sharedeal) {
+								logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper: uid[%s] "
+										+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", sharedeal.getOwner(), sharedeal.getOwner_cash(), 
+										order_payment_type, order_umac_type, mac, umac));
+								if(sharedeal.getOwner() > 0 && sharedeal.getOwner_cash()  >= 0.01){
+									SharedealNotifyPushDTO sharedeal_push_dto = new SharedealNotifyPushDTO();
+									sharedeal_push_dto.setMac(mac);
+									sharedeal_push_dto.setUid(sharedeal.getOwner());
+									sharedeal_push_dto.setCash(ArithHelper.getCuttedCurrency(String.valueOf(sharedeal.getOwner_cash())));
+									sharedeal_push_dto.setHd_mac(umac);
+									sharedeal_push_dto.setPayment_type(order_payment_type);
+									sharedeal_push_dto.setUmac_type(order_umac_type);
+									pushService.pushSharedealNotify(sharedeal_push_dto, PushType.QualityGoodsSharedealNotify);
+								}
+								logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper successful: uid[%s] "
+										+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", sharedeal.getOwner(), sharedeal.getOwner_cash(), order_payment_type, order_umac_type, mac, umac));
+								// 分成成功后清除用户钱包日志统计缓存数据,再次查询时就是最新的数据
+								if(sharedeal.getOwner_cash() > 0 && sharedeal.getOwner() > 0)
+									businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getOwner());
+								if(sharedeal.getDistributor_cash() > 0 && sharedeal.getDistributor() > 0)
+									businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getDistributor());
+								if(sharedeal.getDistributor_l2_cash() > 0 && sharedeal.getDistributor_l2() > 0)
+									businessWalletCacheService.removeWalletLogStatisticsDSCacheResult(sharedeal.getDistributor_l2());
+								return null;
+							}
+			});
+	}
+	
 	public void rewardOrderPaymentHandle(Order order, boolean success, 
 			User bindUser, String paymented_ds, String payment_type, 
 			String payment_proxy_type, String accessInternetTime){
@@ -300,7 +387,7 @@ public class AsyncOrderPaymentNotifyService{
 										sharedeal_push_dto.setHd_mac(umac);
 										sharedeal_push_dto.setPayment_type(order_payment_type);
 										sharedeal_push_dto.setUmac_type(order_umac_type);
-										pushService.pushSharedealNotify(sharedeal_push_dto);
+										pushService.pushSharedealNotify(sharedeal_push_dto, PushType.SharedealNotify);
 									}
 									logger.info(String.format("AsyncOrderPaymentNotifyProcessor notifyCashSharedealOper successful: uid[%s] "
 											+ "cash[%s] order_payment_type[%s] order_umac_type[%s] mac[%s] umac[%s]", sharedeal.getOwner(), sharedeal.getOwner_cash(), order_payment_type, order_umac_type, mac, umac));

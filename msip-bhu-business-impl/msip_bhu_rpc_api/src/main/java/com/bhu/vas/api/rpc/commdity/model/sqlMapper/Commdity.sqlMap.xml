@@ -16,6 +16,8 @@
     <result property="stock_quantity" column="stock_quantity"/>
     <result property="app_deliver_detail" column="app_deliver_detail"/> 
     <result property="score" column="score"/>
+    <result property="city_sharedeal" column="city_sharedeal"/>
+    <result property="channel_sharedeal" column="channel_sharedeal"/>
     <result property="created_at" column="created_at"/>
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
@@ -38,6 +40,8 @@
 	    	stock_quantity,
 	    	app_deliver_detail,
 	    	score,
+	    	city_sharedeal,
+	    	channel_sharedeal,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -54,6 +58,8 @@
 	    	stock_quantity,
 	    	app_deliver_detail,
 	    	score,
+	    	city_sharedeal,
+	    	channel_sharedeal,
 	    	created_at,
 	    	updated_at
 	    ]]>
@@ -71,6 +77,8 @@
 	    	#{stock_quantity},
 	    	#{app_deliver_detail},
 	    	#{score},
+	    	#{city_sharedeal},
+	    	#{channel_sharedeal},
 	    	#{created_at},
 	    	#{updated_at}
 	</sql> 
@@ -86,6 +94,8 @@
 	    	stock_quantity = #{stock_quantity},
 	    	app_deliver_detail = #{app_deliver_detail},
 	    	score = #{score},
+	    	city_sharedeal = #{city_sharedeal},
+	    	channel_sharedeal = #{channel_sharedeal},
 	    	created_at = #{created_at},
 	    	updated_at = #{updated_at}
 	</sql>

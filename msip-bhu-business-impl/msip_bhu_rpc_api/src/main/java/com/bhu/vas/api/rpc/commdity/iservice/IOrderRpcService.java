@@ -14,6 +14,7 @@ import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -75,4 +76,7 @@ public interface IOrderRpcService {
 			String payment_type, Integer channel, String user_agent);
 
 
+	public RpcResponseDTO<QualityGoodsSharedealVTO> qualityGoodsSharedealPages(int uid, int pageNo, int pageSize);
+	
+	public RpcResponseDTO<Boolean> doOrderSharedealCancel(int uid, String orderid, String remark);
 }

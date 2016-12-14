@@ -387,33 +387,33 @@ public class UserWalletFacadeService{
 		我司
 		TODO：需要改成部分由存储过程实现
 	 * @param uid  具体的入账用户
-	 * @param cash 总收益现金
+	 * @param sharedealCash 总收益现金
 	 * @param orderid
 	 * @param desc
 	 */
-	public int sharedealCashToUserWalletWithProcedure(String dmac, String umac, double cash, String orderid, Date pay_time, String description, UWalletTransMode transmode, UWalletTransType transtype, long detail_id, IWalletSharedealNotifyCallback callback){
-		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,cash));
-		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, umac, orderid, cash);
+	public int sharedealCashToUserWalletWithProcedure(String dmac, String umac, double sharedealCash, String orderid, Date pay_time, String description, UWalletTransMode transmode, UWalletTransType transtype, long detail_id, IWalletSharedealNotifyCallback callback){
+		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,sharedealCash));
+		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, umac, orderid, sharedealCash);
 		ShareDealWalletProcedureDTO procedureDTO = ShareDealWalletProcedureDTO.buildWith(sharedeal);
 		procedureDTO.setTransmode(transmode.getKey());
 		procedureDTO.setTransmode_desc(transmode.getName());
 		procedureDTO.setTranstype(transtype.getKey());
 		procedureDTO.setTranstype_desc(transtype.getName());
 		procedureDTO.setDescription(description);
-		procedureDTO.setOwner_memo(String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
-		procedureDTO.setManufacturer_memo(String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", cash,sharedeal.getManufacturer_cash(),sharedeal.isBelong(),sharedeal.getMac()));
-		procedureDTO.setDistributor_memo(String.format("Total:%s Incomming:%s distributor:%s mac:%s", cash,sharedeal.getDistributor_cash(),sharedeal.isBelong(),sharedeal.getMac()));
-		procedureDTO.setDistributor_l2_memo(String.format("Total:%s Incomming:%s distributor l2:%s mac:%s", cash,sharedeal.getDistributor_l2_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		procedureDTO.setOwner_memo(String.format("Total:%s Incomming:%s owner:%s mac:%s", sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		procedureDTO.setManufacturer_memo(String.format("Total:%s Incomming:%s manufacturer:%s mac:%s", sharedealCash,sharedeal.getManufacturer_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		procedureDTO.setDistributor_memo(String.format("Total:%s Incomming:%s distributor:%s mac:%s", sharedealCash,sharedeal.getDistributor_cash(),sharedeal.isBelong(),sharedeal.getMac()));
+		procedureDTO.setDistributor_l2_memo(String.format("Total:%s Incomming:%s distributor l2:%s mac:%s", sharedealCash,sharedeal.getDistributor_l2_cash(),sharedeal.isBelong(),sharedeal.getMac()));
 		procedureDTO.setPay_time(pay_time);
 		procedureDTO.setDetail_id(detail_id);
 		int executeRet = userWalletService.executeProcedure(procedureDTO);
 		if(executeRet == 0){
-			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+			logger.info( String.format("分成现金入账-成功 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 			if(sharedeal.getOwner_cash() > 0 && sharedeal.isBelong() && callback != null){
 				callback.notifyCashSharedealOper(sharedeal);
 			}
 		}else
-			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,cash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
+			logger.error(String.format("分成现金入账-失败 uid[%s] orderid[%s] cash[%s] incomming[%s] owner[%s]", sharedeal.getOwner(),orderid,sharedealCash,sharedeal.getOwner_cash(),sharedeal.isBelong()));
 		//uwallet.setCash(uwallet.getCash()+sharedeal.getOwner_cash());
 		//uwallet = userWalletService.update(uwallet);
 		//this.doWalletLog(sharedeal.getOwner(), orderid, UWalletTransMode.SharedealPayment,UWalletTransType.ReadPacketSettle2C,description, sharedeal.getOwner_cash(), sharedeal.getOwner_cash(),0d, String.format("Total:%s Incomming:%s owner:%s mac:%s", cash,sharedeal.getOwner_cash(),sharedeal.isBelong(),sharedeal.getMac()));

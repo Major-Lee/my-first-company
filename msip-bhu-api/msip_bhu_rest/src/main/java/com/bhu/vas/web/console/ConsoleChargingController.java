@@ -19,6 +19,8 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
+import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
+import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -36,7 +38,9 @@ public class ConsoleChargingController extends BaseController {
 
     @Resource
     private IChargingRpcService chargingRpcService;
-    
+	@Resource
+	private IOrderRpcService orderRpcService;
+
     @ResponseBody()
     @RequestMapping(value = "/sharedeal/default", method = {RequestMethod.POST})
     public void sharedeal_default(
@@ -347,4 +351,67 @@ public class ConsoleChargingController extends BaseController {
 		}
 	}
 	
+	
+	
+	/**
+	 * 列出最近15天的必虎良品订单
+	 * @param request
+	 * @param response
+	 * @param uid
+	 * @param pageNo
+	 * @param pageSize
+	 */
+	@ResponseBody()
+	@RequestMapping(value = "/sharedeal_order/pages", method = { RequestMethod.POST })
+	public void sharedealOrderPages(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(required = true) int uid,
+			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+			@RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
+		
+		ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		if(validateError != null){
+			SpringMVCHelper.renderJson(response, validateError);
+			return;
+		}
+		try{
+			RpcResponseDTO<QualityGoodsSharedealVTO> rpcResult = orderRpcService.qualityGoodsSharedealPages(uid, pageNo, pageSize);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+	}
+	
+
+	@ResponseBody()
+	@RequestMapping(value = "/sharedeal_order/cancel", method = { RequestMethod.POST })
+	public void sharedealOrderPages(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(required = true) int uid,
+			@RequestParam(required = true) String orderid,
+			@RequestParam(required = true) String remark){		
+        try{
+    		if(StringUtils.isEmpty(orderid)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY,new String[]{"orderid"});
+			}
+    		if(StringUtils.isEmpty(remark)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY,new String[]{"remark"});
+			}
+    		if(remark.length() > 255){
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"remark"});
+    		}
+        	RpcResponseDTO<Boolean> rpcResult = orderRpcService.doOrderSharedealCancel(uid, orderid, remark);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}	}
+
 }

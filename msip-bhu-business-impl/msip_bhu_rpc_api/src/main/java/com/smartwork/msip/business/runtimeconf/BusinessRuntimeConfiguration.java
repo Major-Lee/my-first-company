@@ -179,6 +179,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	TimSdkAppid = PropertiesHelper.getString("message.tim.sdkappid",paramProperties,TimSdkAppid);
         	TimManagerSig = PropertiesHelper.getString("message.tim.managersig",paramProperties,TimManagerSig);
         	
+        	QualityGoodsSharedealWaitSeconds = PropertiesHelper.getLong("qualitygoods.sharedeal.waitseconds", paramProperties, QualityGoodsSharedealWaitSeconds);
+        	
         	String commdityWhiteListStr = PropertiesHelper.getString("commdity.whitelist.accs", paramProperties, "");
     		
     		if(StringUtils.isNotEmpty(commdityWhiteListStr)){
@@ -324,6 +326,9 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static double Present_Draw_Max = 20.00d;
 	public static long Sharednetwork_Auth_Threshold_Notsufficient = 20l;
 	public static long Sharednetwork_Auth_Threshold_NeedCharging = 200l;
+	
+	//良品分润需要等待的时间(秒)
+	public static long QualityGoodsSharedealWaitSeconds = 3600*24*15; //default 15 days
 	
 	public static boolean isSystemNoneedCaptchaValidAcc(String acc){
 		return SystemNoneedCaptchaValidAccs.contains(acc);

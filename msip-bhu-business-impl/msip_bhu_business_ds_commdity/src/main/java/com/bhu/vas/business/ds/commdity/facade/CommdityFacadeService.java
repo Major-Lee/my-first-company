@@ -24,6 +24,19 @@ public class CommdityFacadeService {
 	
 	@Resource 
 	private CommdityPhysicalService commdityPhysicalService;
+	
+	public CommdityService getCommdityService() {
+		return commdityService;
+	}
+	public void setCommdityService(CommdityService commdityService) {
+		this.commdityService = commdityService;
+	}
+	public CommdityPhysicalService getCommdityPhysicalService() {
+		return commdityPhysicalService;
+	}
+	public void setCommdityPhysicalService(CommdityPhysicalService commdityPhysicalService) {
+		this.commdityPhysicalService = commdityPhysicalService;
+	}
 	/**
 	 * 根据商品不同状态查询商品数量
 	 * @param status 商品状态
