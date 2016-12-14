@@ -1,4 +1,4 @@
-package com.bhu.vas.rpc.util;
+package com.bhu.vas.util;
 
 import java.util.Collection;
 import java.util.HashMap;

@@ -98,6 +98,5 @@ public class UserThirdTokenController extends BaseController{
 			e.printStackTrace(System.out);
 			SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
 		}
-
 	}
 }

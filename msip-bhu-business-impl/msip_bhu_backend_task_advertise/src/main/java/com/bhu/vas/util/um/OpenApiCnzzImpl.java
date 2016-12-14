@@ -1,4 +1,4 @@
-package com.bhu.vas.rpc.util.um;
+package com.bhu.vas.util.um;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -6,8 +6,8 @@ import java.util.Map;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
-import com.bhu.vas.rpc.util.JSONObject;
-import com.bhu.vas.rpc.util.OpenApi;
+import com.bhu.vas.util.JSONObject;
+import com.bhu.vas.util.OpenApi;
 
 
 public class OpenApiCnzzImpl implements IopenApiCnzz {

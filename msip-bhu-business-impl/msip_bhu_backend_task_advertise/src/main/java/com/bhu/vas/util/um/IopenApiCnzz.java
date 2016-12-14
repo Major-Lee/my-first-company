@@ -1,4 +1,4 @@
-package com.bhu.vas.rpc.util.um;
+package com.bhu.vas.util.um;
 
 public interface IopenApiCnzz {
 	public static final String api_key = "bbb17e06ffd8701baad664394f181a8d";
