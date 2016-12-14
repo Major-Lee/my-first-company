@@ -1326,10 +1326,7 @@ public class UserWalletFacadeService{
 			int pageNo, int pageSize) {
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
-		List<String> typeList=new ArrayList<String>();
-		typeList.add("P2C");
-		typeList.add("A2C");
-		criteria.andColumnEqualTo("transmode", "SDP").andColumnIn("transtype", typeList);
+		criteria.andColumnEqualTo("transmode", "SDP");
 		if(uid!=null){
 			criteria.andColumnEqualTo("uid", uid);
 		}
@@ -1366,10 +1363,7 @@ public class UserWalletFacadeService{
 			String role, long start_created_ts, long end_created_ts) {
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
-		List<String> typeList=new ArrayList<String>();
-		typeList.add("P2C");
-		typeList.add("A2C");
-		criteria.andColumnEqualTo("transmode", "SDP").andColumnIn("transtype", typeList);
+		criteria.andColumnEqualTo("transmode", "SDP");
 		if(uid!=null){
 			criteria.andColumnEqualTo("uid", uid);
 		}
