@@ -109,11 +109,23 @@ public class WifiDevice extends BaseStringModel{
 	public void preInsert() {
 		if (this.created_at == null)
 			this.created_at = new Date();
+		if (this.province == null)
+			this.province = "其他";
+		if (this.city == null)
+			this.city = "其他";
+		if (this.district == null)
+			this.district = "其他";
 		super.preInsert();
 	}
 	
 	@Override
 	public void preUpdate() {
+		if (this.province == null)
+			this.province = "其他";
+		if (this.city == null)
+			this.city = "其他";
+		if (this.district == null)
+			this.district = "其他";
 		super.preUpdate();
 	}
 
