@@ -3,7 +3,7 @@
  *@date 2013-5-7 
  *@version V1.0
 */
-package com.bhu.vas.rpc.util;
+package com.bhu.vas.util;
 
 import java.util.ArrayList;
 import java.util.Map;

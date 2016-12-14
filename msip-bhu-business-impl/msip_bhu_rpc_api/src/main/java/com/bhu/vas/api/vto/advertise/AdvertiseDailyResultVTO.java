@@ -23,12 +23,12 @@ public class AdvertiseDailyResultVTO implements java.io.Serializable{
 		return adPV;
 	}
 	public void setAdPV(int adPV) {
-		this.adPV = adPV;
+		this.adPV = adPV * 31;
 	}
 	public int getAdUV() {
 		return adUV;
 	}
 	public void setAdUV(int adUV) {
-		this.adUV = adUV;
+		this.adUV = adUV * 31;
 	}
 }

@@ -33,7 +33,8 @@
 				<ref bean="advertiseSharedealTaskLoaderCronTrigger" />
 				<!-- 每天八点提交短信 -->
 				<ref bean="advertiseSortMessageSenderTaskLoaderCronTrigger" />
-				
+				<!-- 每天一点统计pvuv -->
+				<ref bean="advertisePVUVStatTaskLoaderCronJobDetail" />
 			</list>
 		</property>
 		<!-- Quartz配置 -->
@@ -126,5 +127,19 @@
 		<property name="concurrent" value="false" />
 	</bean>
 	<bean id="advertiseSortMessageSenderTaskLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertiseSortMessageSenderTaskLoader" />
+
+	<!-- 每天凌晨一点统计昨天广告的pvuv -->
+	<bean id="advertisePVUVStatTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="advertisePVUVStatTaskLoaderCronJobDetail" />
+		<!-- <property name="cronExpression" value="0 0 1 * * ?" /> -->
+		<property name="cronExpression" value="${advertise.pvuv}" />
+	</bean>
+	<bean id="advertisePVUVStatTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="advertisePVUVStatTaskLoaderTaskLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="advertisePVUVStatTaskLoaderTaskLoaderJob" class="com.bhu.vas.plugins.quartz.AdvertisePVUVStatTaskLoader" />
+
 	
 </beans>

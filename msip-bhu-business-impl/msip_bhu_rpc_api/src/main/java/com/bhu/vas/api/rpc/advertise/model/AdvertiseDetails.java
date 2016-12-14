@@ -16,6 +16,8 @@ public class AdvertiseDetails extends ListJsonExtIntModel<String>{
 	private long actual_count;
 	private int state;
 	private String cash;
+	private int pv;
+	private int uv;
 	private Date created_at;
 	private Date updated_at;
 	
@@ -65,6 +67,22 @@ public class AdvertiseDetails extends ListJsonExtIntModel<String>{
 
 	public void setCash(float cash) {
 		this.cash = ArithHelper.getCuttedCurrency(cash+"");
+	}
+
+	public int getPv() {
+		return pv;
+	}
+
+	public void setPv(int pv) {
+		this.pv = pv;
+	}
+
+	public int getUv() {
+		return uv;
+	}
+
+	public void setUv(int uv) {
+		this.uv = uv;
 	}
 
 	public Date getCreated_at() {

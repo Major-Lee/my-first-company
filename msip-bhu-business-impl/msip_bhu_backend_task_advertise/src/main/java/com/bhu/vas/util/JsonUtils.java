@@ -1,4 +1,4 @@
-package com.bhu.vas.rpc.util;
+package com.bhu.vas.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
