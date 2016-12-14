@@ -22,7 +22,7 @@ public class OrderDao extends AbstractCommdityDao<String, Order>{//ReadWriteSpli
 		try{
 			params.put("start", (pageNo-1)*pageSize);
 			params.put("limit", pageSize);
-			result = super.getSqlSessionMasterTemplate().selectList(UserWalletLog.class.getName()+".queryRewardOrderpages", params);
+			result = super.getSqlSessionMasterTemplate().selectList(UserWalletLog.class.getName()+".qualityGoodsSharedealPages", params);
 		}catch (Exception e) {
 			return result;
 		}

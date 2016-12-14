@@ -652,7 +652,7 @@ public class ChargingFacadeService {
 				return amountRange;
 			}
 		}catch(Exception ex){
-			ex.printStackTrace(System.out);
+//			ex.printStackTrace(System.out);
 			return ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile;
 		}
 		
@@ -669,7 +669,7 @@ public class ChargingFacadeService {
 			}
 			return ait;
 		}catch(Exception ex){
-			ex.printStackTrace(System.out);
+//			ex.printStackTrace(System.out);
 			return ParamSharedNetworkDTO.Default_AIT;
 		}
 	}
@@ -685,7 +685,7 @@ public class ChargingFacadeService {
 			}
 			return ait;
 		}catch(Exception ex){
-			ex.printStackTrace(System.out);
+//			ex.printStackTrace(System.out);
 			return ParamSharedNetworkDTO.Default_AIT;
 		}
 	}
@@ -696,7 +696,7 @@ public class ChargingFacadeService {
 			
 			return configs.getInnerModel().getPsn().getIsfree() == 1 ? true:false;
 		}catch(Exception ex){
-			ex.printStackTrace(System.out);
+//			ex.printStackTrace(System.out);
 			return false;
 		}
 	}
