@@ -12,6 +12,8 @@ public class QualityGoodsSharedealListVTO implements java.io.Serializable{
 	private String address;
 	private String process_status;
 	private String created_at;
+	private String remark;
+	
 	public String getOrderid() {
 		return orderid;
 	}
@@ -66,4 +68,11 @@ public class QualityGoodsSharedealListVTO implements java.io.Serializable{
 	public void setCreated_at(String created_at) {
 		this.created_at = created_at;
 	}
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	
 }

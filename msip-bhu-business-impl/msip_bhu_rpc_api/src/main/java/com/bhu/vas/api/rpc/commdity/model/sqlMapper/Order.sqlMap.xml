@@ -286,6 +286,7 @@
 	    a.amount as amount,
 	    a.context as context,
 	    a.process_status as process_status,
+	    a.remark as remark,
 	    a.created_at as created_at
 	    FROM <include refid="modelTableName" /> a, msip_bhu_commdity.t_commdity_commditys b
 	    WHERE
