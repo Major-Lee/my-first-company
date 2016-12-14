@@ -45,17 +45,17 @@
 	</bean>
 	<bean id="messageSystemBackendTaskLoaderJob" class="com.bhu.vas.plugins.quartz.MessageSystemRegisterBackendTaskLoader" />
 	
-	
-	<!-- 检查标签是否同步到tim -->
-	<bean id="messageSystemTagBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="messageSystemTagBackendTaskLoaderCronJobDetail" />
+	<!-- 扫描未同步到腾讯im的用户进行同步  -->
+	<bean id="messageSystemBackendTagLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="messageSystemBackendTagLoaderJobCronJobDetail" />
 		<!-- 	<property name="cronExpression" value="0 * */12 * * ?" /> -->
 		<property name="cronExpression" value="${message.tag.cronjob}" />
 	</bean>
-	<bean id="messageSystemTagBackendTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="messageSystemTagBackendTaskLoaderJob" />
+	<bean id="messageSystemBackendTagLoaderJobCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="messageSystemBackendTagLoaderJob" />
 		<property name="targetMethod" value="execute" />
 		<property name="concurrent" value="false" />
 	</bean>
-	<bean id="messageSystemTagBackendTaskLoader" class="com.bhu.vas.plugins.quartz.MessageSystemTagBackendTaskLoader" />
+	<bean id="messageSystemBackendTagLoaderJob" class="com.bhu.vas.plugins.quartz.MessageSystemTagBackendTaskLoader" />
+	
 </beans>

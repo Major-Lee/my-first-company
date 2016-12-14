@@ -151,7 +151,7 @@
                             -->
                             <classpathPrefix>../lib/</classpathPrefix>
                             <!-- Specifies the main class of the application -->
-                            <mainClass>com.bhu.vas.business.BackendTaskAdvertiseMain</mainClass>
+                            <mainClass>com.bhu.vas.business.BackendTaskMessageSystemMain</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>../conf/</Class-Path>
