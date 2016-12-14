@@ -23,6 +23,7 @@ public class AdvertisePVUVStatTaskLoader {
 	private AdvertiseDevicesIncomeService advertiseDevicesIncomeService;
 	
 	public void execute() {
+		logger.info("AdvertisePVUVStatTaskLoader start...");
 		String publish_time = null;
 		try {
 			publish_time = DateTimeHelper.getBeforeDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
@@ -33,14 +34,19 @@ public class AdvertisePVUVStatTaskLoader {
 		mc.createCriteria().andColumnEqualTo("publish_time", publish_time);
 		
 		List<AdvertiseDetails> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
-		List<AdvertiseDetails> detailwithpuv = new ArrayList<AdvertiseDetails>();
-		for(AdvertiseDetails detail : details){
-			detailwithpuv.add(advertisePVUVStat(detail));
+		if(details !=null){
+			List<AdvertiseDetails> detailwithpuv = new ArrayList<AdvertiseDetails>();
+			for(AdvertiseDetails detail : details){
+				detailwithpuv.add(advertisePVUVStat(detail));
+			}
+			advertiseDevicesIncomeService.updateAll(detailwithpuv);
 		}
-		advertiseDevicesIncomeService.updateAll(detailwithpuv);
+		
+		logger.info("AdvertisePVUVStatTaskLoader end...");
 	}
 	
 	public AdvertiseDetails advertisePVUVStat(AdvertiseDetails detail){
+		logger.info("advertisePVUVStat adid[%s] ",detail.getAdvertiseid());
 		//um工具对象创建
 		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		
