@@ -88,9 +88,11 @@ public class MessageUnitFacadeService {
 				messageUser.setId(user);
 				messageUser.setSig(sig);
 				messageUserFacadeService.updateMessageUserData(messageUser);
+			}else{
+				asyncDeliverMessageService.sendBatchTimUserRegisterActionMessage(user, null);
 			}
-			asyncDeliverMessageService.sendBatchTimUserAddTagActionMessage(user, utype, channel);
 		}
+		asyncDeliverMessageService.sendBatchTimUserAddTagActionMessage(user, utype, channel);
 		return sig;
 	}
 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+	default-lazy-init="true">
+	<description>Quartz的本地Cron式执行任务配置</description>
+	
+	<!-- spring的属性加载器，加载properties文件中的属性 -->  
+	<bean id="messageSystemPropertyConfigurer"  
+	    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+		<property name="ignoreUnresolvablePlaceholders" value="true" /> 
+	    <property name="location">
+			<value>classpath:/deploy/runtimeconf/messageSystem.properties</value>
+	    </property>  
+	    <property name="fileEncoding" value="utf-8" />  
+	</bean>
+
+	<!-- Quartz本地Schduler -->
+	<bean id="localQuartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
+		<!-- Triggers集成 -->
+		<property name="triggers">
+			<list>
+				<ref bean="messageSystemBackendTaskLoaderCronTrigger" />
+				<ref bean="messageSystemTagBackendTaskLoaderCronTrigger" />		
+			</list>
+		</property>
+		<!-- Quartz配置 -->
+		<property name="quartzProperties">
+			<props><prop key="org.quartz.threadPool.threadCount">5</prop></props>
+		</property>
+		<!-- 启动时延期3秒开始任务 -->
+		<property name="startupDelay" value="3" />
+	</bean>
+	
+	<!-- 正常发布逻辑  -->
+	<bean id="messageSystemBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="messageSystemBackendTaskLoaderJobCronJobDetail" />
+		<!-- 	<property name="cronExpression" value="0 * */6 * * ?" /> -->
+		<property name="cronExpression" value="${message.cronjob}" />
+	</bean>
+	<bean id="messageSystemBackendTaskLoaderJobCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="messageSystemBackendTaskLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="messageSystemBackendTaskLoaderJob" class="com.bhu.vas.plugins.quartz.MessageSystemRegisterBackendTaskLoader" />
+	
+	
+	<!-- 检查标签是否同步到tim -->
+	<bean id="messageSystemTagBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="messageSystemTagBackendTaskLoaderCronJobDetail" />
+		<!-- 	<property name="cronExpression" value="0 * */12 * * ?" /> -->
+		<property name="cronExpression" value="${message.tag.cronjob}" />
+	</bean>
+	<bean id="messageSystemTagBackendTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="messageSystemTagBackendTaskLoaderJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="messageSystemTagBackendTaskLoader" class="com.bhu.vas.plugins.quartz.MessageSystemTagBackendTaskLoader" />
+</beans>
