@@ -77,7 +77,7 @@ public class TagGroupHandsetDetailService
 		
 		return this
 				.getEntityDao()
-				.getSqlSessionMasterTemplate()
+				.getSqlSessionSlaverTemplate()
 				.selectList(
 						TagGroupHandsetDetail.class.getName()
 								+ ".selectHandsets", map);
@@ -94,7 +94,7 @@ public class TagGroupHandsetDetailService
 
 		return this
 				.getEntityDao()
-				.getSqlSessionMasterTemplate()
+				.getSqlSessionSlaverTemplate()
 				.selectList(
 						TagGroupHandsetDetail.class.getName()
 								+ ".selectMobilenos", map);
@@ -112,7 +112,7 @@ public class TagGroupHandsetDetailService
 		map.put("count", count);
 		
 		Map<String, Integer> resultMap = this.getEntityDao()
-				.getSqlSessionMasterTemplate()
+				.getSqlSessionSlaverTemplate()
 				.selectOne(
 						TagGroupHandsetDetail.class.getName()
 								+ ".countHandsets", map);
@@ -127,7 +127,7 @@ public class TagGroupHandsetDetailService
 
 		Map<String, Integer> resultMap = this
 				.getEntityDao()
-				.getSqlSessionMasterTemplate()
+				.getSqlSessionSlaverTemplate()
 				.selectOne(
 						TagGroupHandsetDetail.class.getName()
 								+ ".countGroupUsers", map);
@@ -149,7 +149,7 @@ public class TagGroupHandsetDetailService
 
 		return this
 				.getEntityDao()
-				.getSqlSessionMasterTemplate()
+				.getSqlSessionSlaverTemplate()
 				.selectList(
 						TagGroupHandsetDetail.class.getName()
 								+ ".selectGroupUsersRank", map);

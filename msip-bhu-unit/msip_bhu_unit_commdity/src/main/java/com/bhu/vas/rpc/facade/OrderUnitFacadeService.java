@@ -1145,6 +1145,8 @@ public class OrderUnitFacadeService {
 			QualityGoodsSharedealVTO ret = new QualityGoodsSharedealVTO();
 			List<Map<String, Object>> counts = orderService.getEntityDao().countQualityGoodsSharedeal();
 			List<Map<String, Object>> items = orderService.getEntityDao().qualityGoodsSharedealPages(pageNo, pageSize);
+System.out.println("-----------------[" + counts.size() + "][" + items.size() + 			
+		"]");
 			for(Map<String, Object> countMap:counts){
 				if(countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey())) != null)
 					ret.setWaitCount((Integer)countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey())));

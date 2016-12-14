@@ -11,15 +11,15 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 @Repository
 public class UserIncomeMonthRankDao extends AbstractCoreDao<Integer, UserIncomeMonthRank>{
 	public void deleteAllRank() {
-		super.getSqlSessionMasterTemplate().delete(UserIncomeMonthRank.class.getName()+".deleteAllRank");
+		super.getSqlSessionSlaverTemplate().delete(UserIncomeMonthRank.class.getName()+".deleteAllRank");
 	}
 	public void updateByTime(String time) {
-		super.getSqlSessionMasterTemplate().delete(UserIncomeMonthRank.class.getName()+".updateByTime",time);
+		super.getSqlSessionSlaverTemplate().delete(UserIncomeMonthRank.class.getName()+".updateByTime",time);
 	}
 	public List<UserIncomeMonthRank> findByLimit(Map<String,Object> map) {
-		return super.getSqlSessionMasterTemplate().selectList(UserIncomeMonthRank.class.getName()+".findByLimit",map);
+		return super.getSqlSessionSlaverTemplate().selectList(UserIncomeMonthRank.class.getName()+".findByLimit",map);
 	}
 	public List<UserIncomeMonthRank> getByUid(Map<String,Object> map) {
-		return super.getSqlSessionMasterTemplate().selectList(UserIncomeMonthRank.class.getName()+".getByUid",map);
+		return super.getSqlSessionSlaverTemplate().selectList(UserIncomeMonthRank.class.getName()+".getByUid",map);
 	}
 }

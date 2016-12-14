@@ -11,6 +11,6 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 public class DeviceGroupPaymentStatisticsDao extends AbstractCoreDao<String, DeviceGroupPaymentStatistics>{
 
 	public List<DeviceGroupPaymentStatistics> rankingList(String time) {
-		return super.getSqlSessionMasterTemplate().selectList(DeviceGroupPaymentStatistics.class.getName()+".rankingList",time);
+		return super.getSqlSessionSlaverTemplate().selectList(DeviceGroupPaymentStatistics.class.getName()+".rankingList",time);
 	}
 }

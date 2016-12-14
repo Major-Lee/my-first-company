@@ -95,7 +95,7 @@ public class WifiDeviceService extends AbstractCoreService<String,WifiDevice, Wi
 		}
 		return super
 				.getEntityDao()
-				.getSqlSessionMasterTemplate()
+				.getSqlSessionSlaverTemplate()
 				.selectList(
 						WifiDevice.class.getName()
 								+ ".selectByField", map);

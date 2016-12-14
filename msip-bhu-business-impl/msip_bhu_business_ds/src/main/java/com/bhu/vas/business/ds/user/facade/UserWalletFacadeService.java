@@ -1385,7 +1385,7 @@ public class UserWalletFacadeService{
 	public String fetchUserWithdrawSuccessCashSum(int uid) {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("uid", uid);
-		return userWalletWithdrawApplyService.getEntityDao().getSqlSessionMasterTemplate().
+		return userWalletWithdrawApplyService.getEntityDao().getSqlSessionSlaverTemplate().
 				selectOne(UserWalletWithdrawApply.class.getName()+".withdrawSuccessCashSum", map);
 	}
 	
@@ -1420,7 +1420,7 @@ public class UserWalletFacadeService{
 		map.put("uid", uid);
 		map.put("mac", mac);
 		map.put("role", role);
-		return userWalletLogService.getEntityDao().getSqlSessionMasterTemplate().
+		return userWalletLogService.getEntityDao().getSqlSessionSlaverTemplate().
 				selectOne(UserWalletLog.class.getName()+".countIncome", map);
 	}
 	public Map<String,Object> countDealIncome(Integer uid, String mac,
@@ -1447,7 +1447,7 @@ public class UserWalletFacadeService{
 		map.put("uid", uid);
 		map.put("mac", mac);
 		map.put("role", role);
-		return userWalletLogService.getEntityDao().getSqlSessionMasterTemplate().
+		return userWalletLogService.getEntityDao().getSqlSessionSlaverTemplate().
 				selectOne(UserWalletLog.class.getName()+".countDealIncome", map);
 	}
 	
