@@ -34,7 +34,7 @@
 				<!-- 每天八点提交短信 -->
 				<ref bean="advertiseSortMessageSenderTaskLoaderCronTrigger" />
 				<!-- 每天一点统计pvuv -->
-				<ref bean="advertisePVUVStatTaskLoaderCronJobDetail" />
+				<ref bean="advertisePVUVStatTaskLoaderCronTrigger" />
 			</list>
 		</property>
 		<!-- Quartz配置 -->
