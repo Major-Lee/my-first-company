@@ -527,8 +527,8 @@ public class AdvertiseUnitFacadeService {
 			if(income.getCash() !=null || !income.getCash().isEmpty()){
 				cashSum +=Double.parseDouble(income.getCash());
 			}
-			adPVSum+=income.getPv();
-			adUvSum+=income.getUv();
+			adPVSum+=dailyVto.getAdPV();
+			adUvSum+=dailyVto.getAdUV();
 			adResults.add(dailyVto);
 		}
 		resultVto.setAdApplySum(adApplySum);
