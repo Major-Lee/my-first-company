@@ -12,9 +12,18 @@ import com.smartwork.msip.cores.orm.model.extjson.SetJsonExtStringModel;
 @SuppressWarnings("serial")
 public class MessageUser extends SetJsonExtStringModel<String> implements Serializable{
 	private String sig;
+	private int register;
 	private int sync;
 	private Date created_at;
 	
+	public int getRegister() {
+		return register;
+	}
+
+	public void setRegister(int register) {
+		this.register = register;
+	}
+
 	public String getSig() {
 		return sig;
 	}

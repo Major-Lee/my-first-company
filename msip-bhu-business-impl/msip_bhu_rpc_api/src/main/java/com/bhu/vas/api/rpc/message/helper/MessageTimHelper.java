@@ -147,6 +147,30 @@ public class MessageTimHelper {
 	}
 	
 	/**
+	 * 腾讯云im 批量导入用户接口
+	 * @param accounts 账户名用户list
+	 * @return TimResponseBasicDTO
+	 */
+	
+	public static TimResponseBasicDTO CreateTimMULAccoutImportUrlCommunication(List<String> accounts){
+		Map<String, String> api_params = generateTimApiParamMap();
+		TimMulImportAccountDTO dto = TimMulImportAccountDTO.buildTimMULImportAccountDTO(accounts);
+		TimResponseBasicDTO rcp_dto = null;
+		try {
+			String response = TimHttpHelper.postUrlAsString(Tim_Url+Account_Manage+Action_MUL_Import,
+					api_params, JsonHelper.getJSONString(dto));
+			if(StringUtils.isNotEmpty(response)){
+				logger.info(String.format("CreateTimMULAccoutImportUrlCommunication response[%s]", response));
+				return JsonHelper.getDTO(response, TimResponseBasicDTO.class);
+			}
+		} catch (Exception ex) {
+			logger.error("CreateTimMULAccoutImportUrlCommunication error accounts[%s]", accounts); 
+			ex.printStackTrace(System.out);
+		}
+		return rcp_dto;
+	}
+	
+	/**
 	 * 腾讯云IM 添加标签接口,每次只能给500个用户添加标签
 	 * @param accounts 用户列表
 	 * @param tags 

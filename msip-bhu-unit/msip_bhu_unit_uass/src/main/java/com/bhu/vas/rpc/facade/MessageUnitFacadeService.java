@@ -91,8 +91,8 @@ public class MessageUnitFacadeService {
 			}else{
 				asyncDeliverMessageService.sendBatchTimUserRegisterActionMessage(user, null);
 			}
-			asyncDeliverMessageService.sendBatchTimUserAddTagActionMessage(user, utype, channel);
 		}
+		asyncDeliverMessageService.sendBatchTimUserAddTagActionMessage(user, utype, channel);
 		return sig;
 	}
 

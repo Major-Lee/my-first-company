@@ -32,4 +32,12 @@ public class TimMulImportAccountDTO implements java.io.Serializable{
 		dto.setAccounts(Arrays.asList(accounts.split(",")));
 		return dto;
 	}
+	
+	public static TimMulImportAccountDTO  buildTimMULImportAccountDTO(List<String> accounts){
+		if (accounts.size() == 0)
+			return null;
+		TimMulImportAccountDTO dto = new TimMulImportAccountDTO();
+		dto.setAccounts(accounts);
+		return dto;
+	}
 }
