@@ -16,6 +16,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSPromotionDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseWhiteListValidateCompletedNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.CancleGoodsPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.PhysicalPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
@@ -49,6 +50,7 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -1249,5 +1251,35 @@ public class OrderFacadeService {
 		return order;
 	}
 	
-
+	
+	/**
+	 * 退货通知，按照约定的redis写入
+	 * @param order 订单实体
+	 * @param bindUser 设备绑定的用户实体
+	 * @return
+	 */
+	public boolean cancleGoodsOrderPermissionNotify(Order order){
+		try{
+			if(order == null) {
+				logger.error("cancleGoodsOrderPermissionNotify order data not exist");
+				return false;
+			}
+			Commdity commdity = commdityService.getById(order.getCommdityid());
+			CancleGoodsPermissionThroughNotifyDTO cancleDto = CancleGoodsPermissionThroughNotifyDTO.from(order, StringHelper.MINUS_CHAR_GAP+commdity.getApp_deliver_detail());
+			if(cancleDto != null){
+				//String requestDeliverNotifyMessage = JsonHelper.getJSONString(rewardPermissionNotifyDto);
+				String message = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(cancleDto);
+				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(message);
+				//判断通知发货成功
+				if(notify_ret != null && notify_ret > 0){
+					logger.info(String.format("cancleGoodsOrderPermissionNotify success deliver notify: message[%s] rpush_ret[%s]", message, notify_ret));
+					return true;
+				}
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error("cancleGoodsOrderPermissionNotify exception", ex);
+		}
+		return false;
+	}
 }

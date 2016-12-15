@@ -10,6 +10,7 @@ public enum PermissionThroughNotifyType {
 	VideoPermissionNotify("视频认证许可放行通知","video permission","ADN"),
 	PhysicalPermissionNotify("购买实体商品许可放行通知","physical permission","PDN"),
 	WhiteListPermissionNotify("白名单认证许可放行通知","video permission","WTN"),
+	CancleGoodsPermissionNotify("退货通知","cancle goods permission","CGN"),
 	;
 	
 	static Map<String, PermissionThroughNotifyType> allActionMessageTypes;
