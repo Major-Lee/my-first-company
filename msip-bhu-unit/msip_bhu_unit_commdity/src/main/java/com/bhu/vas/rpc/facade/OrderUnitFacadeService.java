@@ -64,6 +64,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinish
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserQueryDateHashService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
+import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
@@ -136,6 +137,9 @@ public class OrderUnitFacadeService {
 	
 	@Resource
 	private AdvertiseFacadeService advertiseFacadeService;
+	
+	@Resource 
+	private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
 	/**
 	 * 生成打赏订单
 	 * @param commdityid 商品id
@@ -440,8 +444,12 @@ public class OrderUnitFacadeService {
 			Order order = orderFacadeService.validateOrderId(orderid);
 			
 			if(!uid.equals(order.getUid())){
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UID_INVALID);
+				WifiDeviceSharedealConfigs sharedeal = wifiDeviceSharedealConfigsService.getById(order.getMac());
+				if(!uid.equals(sharedeal.getDistributor()) && !uid.equals(sharedeal.getDistributor_l2())){
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UID_INVALID);
+				}
 			}
+			
 			//验证商品是否合法
 			Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
 			
