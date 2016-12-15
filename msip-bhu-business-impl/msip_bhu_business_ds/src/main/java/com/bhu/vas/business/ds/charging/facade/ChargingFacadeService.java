@@ -791,7 +791,7 @@ public class ChargingFacadeService {
 			}
 			return ssid;
 		}catch(Exception ex){
-			ex.printStackTrace(System.out);
+//			ex.printStackTrace(System.out);
 			return VapEnumType.SharedNetworkType.SafeSecure.getDefaultSsid();
 		}
 	}
@@ -801,7 +801,7 @@ public class ChargingFacadeService {
 			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
 			return configs.getInnerModel().getPsn().getUsers_rx_rate()/InternetSpeedsUnit;
 		}catch(Exception ex){
-			ex.printStackTrace(System.out);
+//			ex.printStackTrace(System.out);
 			return WifiDeviceHelper.SharedNetworkWifi_Default_Users_rx_rate/InternetSpeedsUnit;
 		}
 	}
@@ -811,7 +811,7 @@ public class ChargingFacadeService {
 			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
 			return configs.getInnerModel().getPsn().getUsers_tx_rate()/InternetSpeedsUnit;
 		}catch(Exception ex){
-			ex.printStackTrace(System.out);
+//			ex.printStackTrace(System.out);
 			return WifiDeviceHelper.SharedNetworkWifi_Default_Users_tx_rate/InternetSpeedsUnit;
 		}
 	}
