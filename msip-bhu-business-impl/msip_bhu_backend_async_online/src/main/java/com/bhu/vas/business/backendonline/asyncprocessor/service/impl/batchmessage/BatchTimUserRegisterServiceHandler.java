@@ -34,19 +34,21 @@ public class BatchTimUserRegisterServiceHandler implements IMsgHandlerService {
 	private void ayscTimeUserImport(String uname, String utype) {
 		if (uname == null || utype == null) return;
 		TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimAccoutImportUrlCommunication(uname);
-		int sync = 0;
+		int register = 0;
 		if (ret_dto.isExecutedSuccess()){
-			sync = 1;
+			register = 1;
 			logger.info(String.format("ayscTimeUserImport user[%s] successful", uname));
 		}else{
 			logger.info(String.format("ayscTimeUserImport user[%s] failed[%s]", uname, ret_dto.getErrorInfo()));
 		}
 		if (utype.equals(BusinessKeyDefine.Message.User)){
-			MessageUser user = new MessageUser();
-			user.setId(uname);
-			user.setSync(sync);
+			MessageUser user = messageUserFacadeService.validate(uname);
+			if (user == null){
+				user = new MessageUser();
+				user.setId(uname);
+			}
+			user.setRegister(register);
 			messageUserFacadeService.updateMessageUserData(user);
 		}
-	
 	}
 }
