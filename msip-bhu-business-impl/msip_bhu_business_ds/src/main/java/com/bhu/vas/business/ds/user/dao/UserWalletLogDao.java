@@ -35,7 +35,7 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 				map.put("status", status);
 			if (dut != null && !dut.isEmpty())
 				map.put("dut", dut);
-			result = super.getSqlSessionMasterTemplate().selectOne(UserWalletLog.class.getName()+".countAndsum", map);
+			result = super.getSqlSessionSlaverTemplate().selectOne(UserWalletLog.class.getName()+".countAndsum", map);
 		}catch (Exception e) {
 			return result;
 		}
@@ -64,7 +64,7 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 				params.put("dut", dut);
 			if (role != null && !role.isEmpty())
 				params.put("role", role);
-			result = super.getSqlSessionMasterTemplate().selectList(UserWalletLog.class.getName()+".queryRewardpages", params);
+			result = super.getSqlSessionSlaverTemplate().selectList(UserWalletLog.class.getName()+".queryRewardpages", params);
 		}catch (Exception e) {
 			return result;
 		}

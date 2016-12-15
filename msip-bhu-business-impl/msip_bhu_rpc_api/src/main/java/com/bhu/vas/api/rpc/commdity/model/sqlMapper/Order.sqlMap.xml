@@ -272,28 +272,28 @@
 	    select a.process_status as process_status,
 	    count(*) as count
 	    from <include refid="modelTableName" /> a 
-	    <where>
+	    WHERE
 	    	a.type='8' AND a.status='10'
-			group by a.process_status
-	    </where> 
+	    	AND a.created_at > DATE_SUB(NOW(), INTERVAL 15 DAY)
+		GROUP by a.process_status
 	</select>
 	
 	<select id="qualityGoodsSharedealPages" resultMap="mapQualityGoodsSharedealPages" parameterType="Map">
-	    select 
+	    SELECT 
 	    a.id as orderid,
 	    b.id as commdityid,
 	    b.name as commdityname,
 	    a.amount as amount,
 	    a.context as context,
 	    a.process_status as process_status,
+	    a.remark as remark,
 	    a.created_at as created_at
-	    from <include refid="modelTableName" /> a, msip_bhu_commdity.t_commdity_commditys b
-	    <where>
+	    FROM <include refid="modelTableName" /> a, msip_bhu_commdity.t_commdity_commditys b
+	    WHERE
 	    	a.commdityid = b.id
 	    	AND a.type='8' AND a.status='10' 
 	    	AND a.created_at > DATE_SUB(NOW(), INTERVAL 15 DAY)
 	    	ORDER BY a.created_at DESC
 	    	limit #{limit} OFFSET #{start}
-	    </where> 
 	</select>
 </mapper>

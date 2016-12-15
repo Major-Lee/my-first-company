@@ -1145,13 +1145,17 @@ public class OrderUnitFacadeService {
 			QualityGoodsSharedealVTO ret = new QualityGoodsSharedealVTO();
 			List<Map<String, Object>> counts = orderService.getEntityDao().countQualityGoodsSharedeal();
 			List<Map<String, Object>> items = orderService.getEntityDao().qualityGoodsSharedealPages(pageNo, pageSize);
+			
 			for(Map<String, Object> countMap:counts){
-				if(countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey())) != null)
-					ret.setWaitCount((Integer)countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey())));
-				else if(countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.SharedealCanceled.getKey())) != null)
-					ret.setCancelCount((Integer)countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.SharedealCanceled.getKey())));
-				else if(countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.SharedealCompleted.getKey())) != null)
-					ret.setDoneCount((Integer)countMap.get(String.valueOf(BusinessEnumType.OrderProcessStatus.SharedealCompleted.getKey())));
+				String key = String.valueOf(countMap.get("process_status"));
+				String cnt = String.valueOf(countMap.get("count"));
+				
+				if(String.valueOf(BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey()).equals(key))
+					ret.setWaitCount(Integer.parseInt(cnt));
+				else if(String.valueOf(BusinessEnumType.OrderProcessStatus.SharedealCanceled.getKey()).equals(key))
+					ret.setCancelCount(Integer.parseInt(cnt));
+				else if(String.valueOf(BusinessEnumType.OrderProcessStatus.SharedealCompleted.getKey()).equals(key))
+					ret.setDoneCount(Integer.parseInt(cnt));
 			}
 			if(items != null && items.size() > 0){
 				List<QualityGoodsSharedealListVTO> vtos = new ArrayList<QualityGoodsSharedealListVTO>();
@@ -1163,6 +1167,7 @@ public class OrderUnitFacadeService {
 					vto.setAmount((String)item.get("amount"));
 					vto.setCreated_at((String)item.get("created_at"));
 					vto.setProcess_status((String)item.get("process_status"));
+					vto.setRemark((String)item.get("remark"));
 					
 					String context = (String)item.get("context");
 					if(StringUtils.isNotEmpty(context)){
@@ -1173,6 +1178,7 @@ public class OrderUnitFacadeService {
 							vto.setAddress(arr[3]);
 						}
 					}
+					vtos.add(vto);
 				}
 				TailPage<QualityGoodsSharedealListVTO> tailPages = new CommonPage<QualityGoodsSharedealListVTO>(pageNo, pageSize, items.size(), vtos);
 				ret.setTailPages(tailPages);
@@ -1197,6 +1203,8 @@ public class OrderUnitFacadeService {
 				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID,new String[]{"remark"});
 			} else {
 				order.setProcess_status(BusinessEnumType.OrderProcessStatus.SharedealCanceled.getKey());
+				order.setRemark(remark);
+				orderFacadeService.cancelGoodsOrderPermissionNotify(order);
 				orderService.update(order);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);

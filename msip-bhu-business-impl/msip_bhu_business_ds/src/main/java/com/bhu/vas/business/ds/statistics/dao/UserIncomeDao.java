@@ -15,7 +15,7 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 	public double countIncome(int uid) {
 		double income=0;
 		try {
-			income=super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countIncome",uid);
+			income=super.getSqlSessionSlaverTemplate().selectOne(UserIncome.class.getName()+".countIncome",uid);
 		} catch (Exception e) {
 			return income;
 		}
@@ -24,7 +24,7 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 	public double countTotalIncome() {
 		double income = 0;
 		try {
-			income = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncome");
+			income = super.getSqlSessionSlaverTemplate().selectOne(UserIncome.class.getName()+".countTotalIncome");
 		} catch (Exception e) {
 			return income;
 		}
@@ -36,7 +36,7 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 		map.put("uid", uid);
 		map.put("time", time);
 		try {
-			income = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalIncomeByDay",map);
+			income = super.getSqlSessionSlaverTemplate().selectOne(UserIncome.class.getName()+".countTotalIncomeByDay",map);
 		    if (null == income || StringUtils.isBlank(String.valueOf(income))) {
 		    	return 0.0;
 		    }
@@ -51,7 +51,7 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 		map.put("uid", uid);
 		map.put("time", time);
 		try {
-			userNum = super.getSqlSessionMasterTemplate().selectOne(UserIncome.class.getName()+".countTotalUserNumByDay",map);
+			userNum = super.getSqlSessionSlaverTemplate().selectOne(UserIncome.class.getName()+".countTotalUserNumByDay",map);
 			if (null == userNum || StringUtils.isBlank(String.valueOf(userNum))) {
 		    	return 0.0;
 		    }
@@ -61,13 +61,13 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 		return userNum;
 	}
 	public List<UserIncome> findMonthList(String time) {
-		List<UserIncome> userNum = super.getSqlSessionMasterTemplate().selectList(UserIncome.class.getName()+".findMonthList",time);
+		List<UserIncome> userNum = super.getSqlSessionSlaverTemplate().selectList(UserIncome.class.getName()+".findMonthList",time);
 		return userNum;
 	}
 	public Order selectOrdersInfo(String orderid) {
 		Order order = null;
 		try {
-			order=super.getSqlSessionMasterTemplate().selectOne(Order.class.getName()+".selectOrdersInfo", orderid);
+			order=super.getSqlSessionSlaverTemplate().selectOne(Order.class.getName()+".selectOrdersInfo", orderid);
 		} catch (Exception e) {
 			return order;
 		}

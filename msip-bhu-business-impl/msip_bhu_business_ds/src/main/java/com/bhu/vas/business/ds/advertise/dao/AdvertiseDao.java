@@ -24,7 +24,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		map.put("city", city);
 		map.put("district", district);
 		try {
-			n = super.getSqlSessionMasterTemplate().selectOne(Advertise.class.getName()+".countByAdvertiseTime",map);
+			n = super.getSqlSessionSlaverTemplate().selectOne(Advertise.class.getName()+".countByAdvertiseTime",map);
 		} catch (Exception e) {
 			return n;
 		}	
@@ -56,7 +56,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 			map.put("status", "5,6");
 		}
 		try {
-			ads = super.getSqlSessionMasterTemplate().selectList(Advertise.class.getName()+".queryByAdvertiseTime",map);
+			ads = super.getSqlSessionSlaverTemplate().selectList(Advertise.class.getName()+".queryByAdvertiseTime",map);
 		} catch (Exception e) {
 			return ads;
 		}	
@@ -75,7 +75,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		map.put("id", id);
 		map.put("status", 3);
 		try {
-			ads = super.getSqlSessionMasterTemplate().selectList(Advertise.class.getName()+".queryByAdvertiseTimeExcept",map);
+			ads = super.getSqlSessionSlaverTemplate().selectList(Advertise.class.getName()+".queryByAdvertiseTimeExcept",map);
 		} catch (Exception e) {
 			return ads;
 		}	

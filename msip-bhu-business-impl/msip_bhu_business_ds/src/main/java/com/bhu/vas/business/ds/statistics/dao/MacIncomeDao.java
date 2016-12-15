@@ -9,7 +9,7 @@ public class MacIncomeDao extends AbstractCoreDao<Integer, MacIncome>{
 	public double countIncome(String mac) {
 		double income=0;
 		try {
-			income=super.getSqlSessionMasterTemplate().selectOne(MacIncome.class.getName()+".countIncome",mac);
+			income=super.getSqlSessionSlaverTemplate().selectOne(MacIncome.class.getName()+".countIncome",mac);
 		} catch (Exception e) {
 			return income;
 		}
