@@ -46,7 +46,7 @@ public class AdvertisePVUVStatTaskLoader {
 	}
 	
 	public AdvertiseDetails advertisePVUVStat(AdvertiseDetails detail){
-		logger.info("advertisePVUVStat adid[%s] ",detail.getAdvertiseid());
+		logger.info(String.format("advertisePVUVStat adid[%s] ",detail.getAdvertiseid()));
 		//um工具对象创建
 		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		
