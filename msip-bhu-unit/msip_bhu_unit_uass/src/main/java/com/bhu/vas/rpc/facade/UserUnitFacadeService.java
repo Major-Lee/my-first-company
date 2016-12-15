@@ -37,6 +37,7 @@ import com.bhu.vas.api.vto.agent.UserActivityVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetGroupPresentHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
@@ -274,7 +275,7 @@ public class UserUnitFacadeService {
 			}
 			deliverMessageService.sendUserRegisteredActionMessage(user.getId(),acc, null, device,remoteIp);
 			//将用户导入腾讯im
-			asyncDeliverMessageService.sendBatchTimUserRegisterActionMessage(uid+"", null);
+			asyncDeliverMessageService.sendBatchTimUserRegisterActionMessage(uid+"", null, BusinessKeyDefine.Message.User);
 		}else{//登录
 			reg = false;
 			

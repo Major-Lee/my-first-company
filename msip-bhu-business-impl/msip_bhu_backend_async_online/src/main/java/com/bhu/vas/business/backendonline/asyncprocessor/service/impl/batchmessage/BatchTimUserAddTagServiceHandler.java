@@ -35,9 +35,21 @@ public class BatchTimUserAddTagServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("BatchTimUserAddTagServiceHandler process message[%s] successful", message));
 	}
 	private void ayscTimeUserAddTag(String acc, String utype, Integer channel) {
-		MessageUser user = messageUserFacadeService.validate(acc);
+		if (acc == null || utype == null) return;
+		
 		String tags = utype+channel.intValue();
+		int sync = 0;
+		TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimAddTagUrlCommunication(acc, tags);
+		if (ret_dto.isExecutedSuccess()){
+			sync = 1;
+			logger.info(String.format("ayscTimeUserAddTag tim add user[%s] tags[%s] successful!", acc, tags));
+		}else{
+			sync = 0;
+			logger.info(String.format("ayscTimeUserAddTag tim add user[%s] tags[%s] failed[%s]", acc, tags, ret_dto.getErrorInfo()));
+		}
+		
 		if (utype.equals(BusinessKeyDefine.Message.User)){
+			MessageUser user = messageUserFacadeService.validate(acc);
 			if (user == null){
 				user = new MessageUser();
 				user.setId(acc);
@@ -46,15 +58,7 @@ public class BatchTimUserAddTagServiceHandler implements IMsgHandlerService {
 				String oldTags = user.getExtension_content();
 				user.setExtension_content(replaceTags(oldTags, tags));
 			}
-		}
-		TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimAddTagUrlCommunication(acc, tags);
-		if (ret_dto.isExecutedSuccess()){
-			user.setSync(1);
-		}else{
-			user.setSync(0);
-			logger.info(String.format("ayscTimeUserAddTag tim add user[%s] tags[%s] failed!", acc, tags));
-		}
-		if (utype.equals(BusinessKeyDefine.Message.User)){
+			user.setSync(sync);
 			messageUserFacadeService.updateMessageUserData(user);
 		}
 	}

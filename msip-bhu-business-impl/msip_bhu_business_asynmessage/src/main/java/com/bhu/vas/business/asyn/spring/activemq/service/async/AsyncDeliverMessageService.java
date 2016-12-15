@@ -226,10 +226,11 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendBatchTimUserRegisterActionMessage(String user, String nick){
+	public void sendBatchTimUserRegisterActionMessage(String user, String nick, String utype){
 		AsyncTimUserRegisterDTO dto = new AsyncTimUserRegisterDTO();
 		dto.setUser(user);
 		dto.setNick(nick);
+		dto.setUtype(utype);
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	

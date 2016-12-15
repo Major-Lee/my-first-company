@@ -88,10 +88,11 @@ public class MessageUnitFacadeService {
 				messageUser.setId(user);
 				messageUser.setSig(sig);
 				messageUserFacadeService.updateMessageUserData(messageUser);
-			}else{
-				asyncDeliverMessageService.sendBatchTimUserRegisterActionMessage(user, null);
 			}
 		}
+		//导入tim用户
+		asyncDeliverMessageService.sendBatchTimUserRegisterActionMessage(user, null, utype);
+		//添加标签
 		asyncDeliverMessageService.sendBatchTimUserAddTagActionMessage(user, utype, channel);
 		return sig;
 	}

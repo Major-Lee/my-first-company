@@ -11,6 +11,7 @@ import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
 import com.bhu.vas.api.rpc.message.model.MessageUser;
 import com.bhu.vas.business.asyn.spring.model.async.message.AsyncTimUserRegisterDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.ds.message.facade.MessageUserFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -25,20 +26,27 @@ public class BatchTimUserRegisterServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("BatchTimUserRegisterServiceHandler process message[%s]", message));
 		final AsyncTimUserRegisterDTO timUserRegisterDTO = JsonHelper.getDTO(message, AsyncTimUserRegisterDTO.class);
 		String user = timUserRegisterDTO.getUser();
-		ayscTimeUserImport(user);
+		String utype = timUserRegisterDTO.getUtype();
+		ayscTimeUserImport(user, utype);
 		logger.info(String.format("BatchTimUserRegisterServiceHandler process message[%s] successful", message));
 	}
-	private void ayscTimeUserImport(String uname) {
-		MessageUser user = new MessageUser();
-		user.setId(uname);
+	
+	private void ayscTimeUserImport(String uname, String utype) {
+		if (uname == null || utype == null) return;
 		TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimAccoutImportUrlCommunication(uname);
+		int sync = 0;
 		if (ret_dto.isExecutedSuccess()){
-			user.setSync(1);
+			sync = 1;
+			logger.info(String.format("ayscTimeUserImport user[%s] successful", uname));
 		}else{
-			user.setSync(0);
+			logger.info(String.format("ayscTimeUserImport user[%s] failed[%s]", uname, ret_dto.getErrorInfo()));
 		}
-		messageUserFacadeService.updateMessageUserData(user);
+		if (utype.equals(BusinessKeyDefine.Message.User)){
+			MessageUser user = new MessageUser();
+			user.setId(uname);
+			user.setSync(sync);
+			messageUserFacadeService.updateMessageUserData(user);
+		}
+	
 	}
-	
-	
 }
