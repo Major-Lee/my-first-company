@@ -257,7 +257,7 @@ public class AsyncOrderPaymentNotifyService{
 	public void qualityGoodsSharedealHandle(Order order){
 		//判断订单状态
 		if(!BusinessEnumType.OrderStatus.DeliverCompleted.getKey().equals(order.getStatus()) || 
-				 BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey().equals(order.getProcess_status())){
+				 !BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey().equals(order.getProcess_status())){
 			logger.info(String.format("wrong order status[%s], process_status[%s]", order.getStatus(), order.getProcess_status()));
 			return;
 		}
