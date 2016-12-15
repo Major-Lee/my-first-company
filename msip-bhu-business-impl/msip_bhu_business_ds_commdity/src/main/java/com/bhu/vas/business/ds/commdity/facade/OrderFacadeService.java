@@ -16,7 +16,7 @@ import com.bhu.vas.api.dto.commdity.OrderRewardNewlyDataVTO;
 import com.bhu.vas.api.dto.commdity.OrderSMSPromotionDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseSMSValidateCompletedNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseWhiteListValidateCompletedNotifyDTO;
-import com.bhu.vas.api.dto.commdity.internal.portal.CancleGoodsPermissionThroughNotifyDTO;
+import com.bhu.vas.api.dto.commdity.internal.portal.CancelGoodsPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.PhysicalPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.RewardPermissionThroughNotifyDTO;
 import com.bhu.vas.api.dto.commdity.internal.portal.SMSPermissionThroughNotifyDTO;
@@ -1258,17 +1258,17 @@ public class OrderFacadeService {
 	 * @param bindUser 设备绑定的用户实体
 	 * @return
 	 */
-	public boolean cancleGoodsOrderPermissionNotify(Order order){
+	public boolean cancelGoodsOrderPermissionNotify(Order order){
 		try{
 			if(order == null) {
 				logger.error("cancleGoodsOrderPermissionNotify order data not exist");
 				return false;
 			}
 			Commdity commdity = commdityService.getById(order.getCommdityid());
-			CancleGoodsPermissionThroughNotifyDTO cancleDto = CancleGoodsPermissionThroughNotifyDTO.from(order, StringHelper.MINUS_CHAR_GAP+commdity.getApp_deliver_detail());
-			if(cancleDto != null){
+			CancelGoodsPermissionThroughNotifyDTO cancelDto = CancelGoodsPermissionThroughNotifyDTO.from(order, StringHelper.MINUS_CHAR_GAP+commdity.getApp_deliver_detail());
+			if(cancelDto != null){
 				//String requestDeliverNotifyMessage = JsonHelper.getJSONString(rewardPermissionNotifyDto);
-				String message = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(cancleDto);
+				String message = PermissionThroughNotifyFactoryBuilder.toJsonHasPrefix(cancelDto);
 				Long notify_ret = CommdityInternalNotifyListService.getInstance().rpushOrderDeliverNotify(message);
 				//判断通知发货成功
 				if(notify_ret != null && notify_ret > 0){

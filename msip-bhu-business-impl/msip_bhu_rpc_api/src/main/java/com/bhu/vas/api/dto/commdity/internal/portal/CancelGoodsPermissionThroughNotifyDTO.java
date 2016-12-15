@@ -15,7 +15,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
  *
  */
 @SuppressWarnings("serial")
-public class CancleGoodsPermissionThroughNotifyDTO implements PermissionThroughNotifyDTO, Serializable{
+public class CancelGoodsPermissionThroughNotifyDTO implements PermissionThroughNotifyDTO, Serializable{
 	//订单id
 	private String orderid;
 	//订单金额
@@ -95,9 +95,9 @@ public class CancleGoodsPermissionThroughNotifyDTO implements PermissionThroughN
 		return PermissionThroughNotifyType.CancleGoodsPermissionNotify.getPrefix();
 	}
 	
-	public static CancleGoodsPermissionThroughNotifyDTO from(Order order, String ait_time){
+	public static CancelGoodsPermissionThroughNotifyDTO from(Order order, String ait_time){
 		if(order == null || ait_time == null) return null;
-		CancleGoodsPermissionThroughNotifyDTO requestDeliverNotifyDto = new CancleGoodsPermissionThroughNotifyDTO();
+		CancelGoodsPermissionThroughNotifyDTO requestDeliverNotifyDto = new CancelGoodsPermissionThroughNotifyDTO();
 		requestDeliverNotifyDto.setOrderid(order.getId());
 		requestDeliverNotifyDto.setMac(order.getMac());
 		requestDeliverNotifyDto.setUmac(order.getUmac());
@@ -113,7 +113,7 @@ public class CancleGoodsPermissionThroughNotifyDTO implements PermissionThroughN
 	}
 	
 	public static void main(String[] args){
-		CancleGoodsPermissionThroughNotifyDTO dto = new CancleGoodsPermissionThroughNotifyDTO();
+		CancelGoodsPermissionThroughNotifyDTO dto = new CancelGoodsPermissionThroughNotifyDTO();
 		System.out.println(JsonHelper.getJSONString(dto));
 	}
 
