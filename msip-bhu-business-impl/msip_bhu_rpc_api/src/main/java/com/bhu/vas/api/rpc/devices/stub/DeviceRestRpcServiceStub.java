@@ -8,7 +8,6 @@ import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
-import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
@@ -18,6 +17,7 @@ import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.device.UpgradeCheckVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -190,7 +190,7 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 		return deviceRestRpcService.fetchIndustyList();
 	}
 	@Override
-	public RpcResponseDTO<UpgradeDTO> checkDeviceUpdateNoAction(String mac, String origswver){
-		return deviceRestRpcService.checkDeviceUpdateNoAction(mac, origswver);
+	public RpcResponseDTO<UpgradeCheckVTO> checkDeviceUpgradeNoAction(String mac, String origswver){
+		return deviceRestRpcService.checkDeviceUpgradeNoAction(mac, origswver);
 	}
 }

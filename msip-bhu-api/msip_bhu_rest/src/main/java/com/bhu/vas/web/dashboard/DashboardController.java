@@ -26,7 +26,6 @@ import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.dto.TaskResDetailDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
-import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserOAuthRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
@@ -34,6 +33,7 @@ import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.device.DeviceConfigDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
+import com.bhu.vas.api.vto.device.UpgradeCheckVTO;
 import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
@@ -687,7 +687,7 @@ public class DashboardController extends BaseController{
     		@RequestParam(required = true) String mac,
     		@RequestParam(required = true) String ver
     		){
-    	RpcResponseDTO<UpgradeDTO> rpcResult = deviceRestRpcService.checkDeviceUpdateNoAction(mac, ver);
+    	RpcResponseDTO<UpgradeCheckVTO> rpcResult = deviceRestRpcService.checkDeviceUpgradeNoAction(mac, ver);
     	if(!rpcResult.hasError()){
     		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     	}else{
