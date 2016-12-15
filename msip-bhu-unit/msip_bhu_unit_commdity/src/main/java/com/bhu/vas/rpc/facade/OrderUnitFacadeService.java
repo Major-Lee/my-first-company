@@ -1200,7 +1200,7 @@ public class OrderUnitFacadeService {
 			} else if(order.getStatus() != BusinessEnumType.OrderStatus.DeliverCompleted.getKey() || 
 					order.getProcess_status() != BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey()){
 				logger.info(String.format("doOrderSharedealCancel invalide order status [%s] process_status[%s]", order.getStatus(), order.getProcess_status()));
-				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID,new String[]{order.getStatus(), order.getProcess_status()});
+				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID,new String[]{String.valueOf(order.getStatus()), String.valueOf(order.getProcess_status())});
 			} else {
 				order.setProcess_status(BusinessEnumType.OrderProcessStatus.SharedealCanceled.getKey());
 				order.setRemark(remark);
