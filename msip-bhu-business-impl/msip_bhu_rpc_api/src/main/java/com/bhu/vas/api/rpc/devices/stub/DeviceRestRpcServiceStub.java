@@ -8,6 +8,7 @@ import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
+import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
@@ -187,5 +188,9 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(){
 		return deviceRestRpcService.fetchIndustyList();
+	}
+	@Override
+	public RpcResponseDTO<UpgradeDTO> checkDeviceUpdateNoAction(String mac, String origswver){
+		return deviceRestRpcService.checkDeviceUpdateNoAction(mac, origswver);
 	}
 }
