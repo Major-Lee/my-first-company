@@ -37,6 +37,7 @@ public class QualityGoodsSharedealTaskLoader {
 			int count = 0;
 			do{
 				count = doQualidyGoodsSharedealOnePage();
+				Thread.sleep(1000);
 			}while(count > 0);
 		}catch(Exception e){
 			e.printStackTrace();

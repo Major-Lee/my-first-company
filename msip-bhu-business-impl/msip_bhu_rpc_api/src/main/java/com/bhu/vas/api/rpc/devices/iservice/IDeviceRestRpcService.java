@@ -5,6 +5,7 @@ import java.util.List;
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
+import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.HandsetDeviceVTO;
 import com.bhu.vas.api.vto.StatisticsGeneralVTO;
@@ -51,4 +52,5 @@ public interface IDeviceRestRpcService {
 	public RpcResponseDTO<List<WifiDevicePresentVTO>> fetchDevicesPresent(List<String> dmacs);
 	public RpcResponseDTO<Boolean> deviceInfoUpdate(int uid, List<String> dmacs, String industry, String merchant_name);
 	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList();
+	public RpcResponseDTO<UpgradeDTO> checkDeviceUpdateNoAction(String mac, String origswver);
 }

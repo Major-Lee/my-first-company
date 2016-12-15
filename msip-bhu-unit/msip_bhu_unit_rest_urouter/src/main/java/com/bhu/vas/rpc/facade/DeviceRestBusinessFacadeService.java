@@ -23,8 +23,8 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
+import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserSearchConditionState;
@@ -47,6 +47,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatistics
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.tag.facade.TagGroupFacadeService;
@@ -129,6 +130,9 @@ public class DeviceRestBusinessFacadeService {
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
 
+	@Resource
+	private DeviceUpgradeFacadeService deviceUpgradeFacadeService;
+	
 	/**
 	 * 获取接入移动设备数量最多的wifi设备列表
 	 * TODO：目前直接从mongodb中获取 后续改成后台程序定时从mongodb获取并放入指定的redis中 这边直接从redis提取数据
@@ -906,4 +910,9 @@ public class DeviceRestBusinessFacadeService {
 		}
 		return vtos;
 	}*/
+
+	public RpcResponseDTO<UpgradeDTO> checkDeviceUpdateNoAction(String mac, String origswver){
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(deviceUpgradeFacadeService.checkDeviceUpgrade(mac, origswver));
+	}
+	
 }

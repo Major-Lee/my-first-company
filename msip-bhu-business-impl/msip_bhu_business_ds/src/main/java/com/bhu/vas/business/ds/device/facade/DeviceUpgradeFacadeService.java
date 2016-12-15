@@ -41,7 +41,7 @@ public class DeviceUpgradeFacadeService {
 	@Resource
 	private WifiDeviceGrayFacadeService wifiDeviceGrayFacadeService;
 	
-	private UpgradeDTO checkDeviceUpgrade(String dmac,String orig_swver){
+	public UpgradeDTO checkDeviceUpgrade(String dmac,String orig_swver){
 		return wifiDeviceGrayFacadeService.deviceFWUpgradeAutoAction(dmac, orig_swver);
 	}
 	
