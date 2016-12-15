@@ -1197,8 +1197,8 @@ public class OrderUnitFacadeService {
 			if(order == null){
 				logger.info(String.format("doOrderSharedealCancel no such order [%s]" , orderid));
 				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_DATA_NOTEXIST,new String[]{"remark"});
-			} else if(order.getStatus() != BusinessEnumType.OrderStatus.DeliverCompleted.getKey() || 
-					order.getProcess_status() != BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey()){
+			} else if(!BusinessEnumType.OrderStatus.DeliverCompleted.getKey().equals(order.getStatus()) || !
+					BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey().equals(order.getProcess_status())){
 				logger.info(String.format("doOrderSharedealCancel invalide order status [%s] process_status[%s]", order.getStatus(), order.getProcess_status()));
 				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID,new String[]{String.valueOf(order.getStatus()), String.valueOf(order.getProcess_status())});
 			} else {
@@ -1208,6 +1208,8 @@ public class OrderUnitFacadeService {
 				orderService.update(order);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
+		}catch(BusinessI18nCodeException be){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(be.getErrorCode());
 		}catch(Exception ex){
 			logger.error("createHotPlayOrder Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
