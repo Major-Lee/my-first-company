@@ -1204,6 +1204,7 @@ public class OrderUnitFacadeService {
 			} else {
 				order.setProcess_status(BusinessEnumType.OrderProcessStatus.SharedealCanceled.getKey());
 				order.setRemark(remark);
+				orderFacadeService.cancelGoodsOrderPermissionNotify(order);
 				orderService.update(order);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);

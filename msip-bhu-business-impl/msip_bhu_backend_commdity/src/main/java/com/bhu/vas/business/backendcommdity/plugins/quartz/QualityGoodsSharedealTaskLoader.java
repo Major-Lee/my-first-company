@@ -54,9 +54,9 @@ public class QualityGoodsSharedealTaskLoader {
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("type", 8).andColumnLessThan("created_at", tm).
 			andColumnEqualTo("status", BusinessEnumType.OrderStatus.DeliverCompleted.getKey()).
-			andColumnEqualTo("process_status", BusinessEnumType.OrderProcessStatus.DeliverCompleted);
+			andColumnEqualTo("process_status", BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey());
 		mc.setLimit(200);
-
+		
 		List<Order> lists = orderService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("going to sharedeal:" + lists.size());
