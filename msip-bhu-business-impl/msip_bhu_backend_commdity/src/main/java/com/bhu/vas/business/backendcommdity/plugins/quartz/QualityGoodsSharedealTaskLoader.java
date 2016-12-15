@@ -1,6 +1,7 @@
 package com.bhu.vas.business.backendcommdity.plugins.quartz;
 
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -51,8 +52,9 @@ public class QualityGoodsSharedealTaskLoader {
 	//找出一页待处理的订单
 	public int doQualidyGoodsSharedealOnePage(){
 		Date tm = new Date(System.currentTimeMillis() - BusinessRuntimeConfiguration.QualityGoodsSharedealWaitSeconds * 1000);
+		String[] typeList = {"8", "1"};
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("type", 8).andColumnLessThan("created_at", tm).
+		mc.createCriteria().andColumnIn("type",  Arrays.asList(typeList)).andColumnLessThan("created_at", tm).
 			andColumnEqualTo("status", BusinessEnumType.OrderStatus.DeliverCompleted.getKey()).
 			andColumnEqualTo("process_status", BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey());
 		mc.setLimit(200);
