@@ -8,6 +8,13 @@ package com.bhu.vas.api.dto.commdity;
 public class OrderVideoVTO implements java.io.Serializable {
 	//订单id
 	private String id;
+	private boolean noappdl;
+	public boolean isNoappdl() {
+		return noappdl;
+	}
+	public void setNoappdl(boolean noappdl) {
+		this.noappdl = noappdl;
+	}
 	//设备的上网时间 add by fengshibo
 	private String forceTime;
 	//本周用户数

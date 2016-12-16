@@ -73,4 +73,34 @@ public class OrderVideoController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResult));
 		}
 	}
+	/**
+	 * 点击免费上网
+	 * @param request
+	 * @param response
+	 * @param commdityid
+	 * @param mac
+	 * @param umac
+	 * @param channel
+	 * @param umactype
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/click_authorize",method={RequestMethod.POST})
+	public void video_click_authorize(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = false, defaultValue = "21") Integer commdityid,
+			@RequestParam(required = true) String mac,
+			@RequestParam(required = true) String umac,
+			@RequestParam(required = false, defaultValue = "0") Integer channel,
+			@RequestParam(required = false, defaultValue = "2") Integer umactype
+			) {
+		String user_agent = request.getHeader("User-Agent");
+		
+		RpcResponseDTO<OrderVideoVTO> orderRpcResult = orderRpcService.clickAuthorize(commdityid, mac, umac, 
+					umactype, channel, user_agent);
+		if(!orderRpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(orderRpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(orderRpcResult));
+		}
+	}
 }

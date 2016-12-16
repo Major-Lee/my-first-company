@@ -75,6 +75,9 @@ public interface IOrderRpcService {
 	public RpcResponseDTO<HotPlayOrderVTO> createHotPlayOrder(Integer commdityid, String hpid,Integer umactype,
 			String payment_type, Integer channel, String user_agent);
 
+	public RpcResponseDTO<OrderVideoVTO> clickAuthorize(Integer commdityid, String mac, String umac, Integer umactype,
+			Integer channel, String user_agent);
+
 
 	public RpcResponseDTO<QualityGoodsSharedealVTO> qualityGoodsSharedealPages(int uid, int pageNo, int pageSize);
 	

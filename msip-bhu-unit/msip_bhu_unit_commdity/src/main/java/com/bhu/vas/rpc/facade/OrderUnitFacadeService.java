@@ -1157,6 +1157,55 @@ public class OrderUnitFacadeService {
 		min = diff /60000 ;  
         return min;  
 	}
+
+	public RpcResponseDTO<OrderVideoVTO> clickAuthorize(Integer commdityid, String mac, String umac, Integer umactype,
+			Integer channel, String user_agent) {
+		try{
+			//验证mac umac
+			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
+			}
+			if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
+			}
+			String mac_lower = mac.toLowerCase();
+			String umac_lower = umac.toLowerCase();
+			
+			WifiDevice wifiDevice = wifiDeviceService.getById(mac_lower);
+			if(wifiDevice == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+			}
+			if (!chargingFacadeService.fetchDeviceIsOpenFreeMode(mac_lower, umactype)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_DEVICE_ISFREE_STATUS_INVALID);
+			}
+			OrderVideoVTO vto = new OrderVideoVTO();
+			if (chargingFacadeService.fetchDeviceIsNoappdl(mac_lower)){
+				User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
+				//生成订单
+				String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
+				Order order = orderFacadeService.createVideoOrder(commdityid,mac_lower, mac_dut, umac_lower, umactype, bindUser,
+						null, channel,user_agent);
+				//直接放行用户
+				order.setStatus(OrderStatus.PaySuccessed.getKey());
+				order.setProcess_status(OrderProcessStatus.PaySuccessed.getKey());
+				order.setPaymented_at(new Date());
+				String notify_message = PaymentNotifyFactoryBuilder.toJsonHasPrefix(ResponseVideoValidateCompletedNotifyDTO.
+						builder(order));
+				CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
+				vto.setNoappdl(Boolean.TRUE);
+				vto.setId(order.getId());
+				vto.setForceTime(chargingFacadeService.fetchFreeAccessInternetTime(mac,umactype));
+				vto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
+			}
+			
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("CreateVideoOrder Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
 	
 	
 	

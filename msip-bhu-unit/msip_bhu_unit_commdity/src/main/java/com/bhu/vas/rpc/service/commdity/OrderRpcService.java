@@ -205,5 +205,14 @@ public class OrderRpcService implements IOrderRpcService{
 		logger.info(String.format("doOrderSharedealCancel uid[%s] orderid[%s], remark[%s]", uid, orderid, remark));
 		return orderUnitFacadeService.doOrderSharedealCancel(uid, orderid, remark);
 	}
-
+	
+	@Override
+	public RpcResponseDTO<OrderVideoVTO> clickAuthorize(Integer commdityid, String mac, String umac, Integer umactype,
+			Integer channel, String user_agent) {
+		logger.info(String.format("clickAuthorize commdityid[%s] mac[%s] umac[%s] umactype[%s]"
+				+ "channel[%s] user_agent[%s] ", commdityid, mac, umac, umactype, channel, user_agent));
+		return orderUnitFacadeService.clickAuthorize(commdityid, mac, umac, umactype,
+				channel, user_agent);
+	}
+	
 }
