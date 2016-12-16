@@ -11,10 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
+import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.backendcommdity.asyncprocessor.service.AsyncOrderPaymentNotifyService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.orm.iterator.EntityIterator;
+import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 
 /**
@@ -34,10 +38,7 @@ public class QualityGoodsSharedealTaskLoader {
 	public void execute() {
 		logger.info("QualityGoodsSharedealTaskLoader start...");
 		try{
-			int count = 0;
-			do{
-				count = doQualidyGoodsSharedealOnePage();
-			}while(count > 0);
+			doQualidyGoodsSharedeal();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -50,28 +51,30 @@ public class QualityGoodsSharedealTaskLoader {
 	}
 	
 	//找出一页待处理的订单
-	public int doQualidyGoodsSharedealOnePage(){
+	public int doQualidyGoodsSharedeal(){
 		Date tm = new Date(System.currentTimeMillis() - BusinessRuntimeConfiguration.QualityGoodsSharedealWaitSeconds * 1000);
 		String[] typeList = {"8", "1"};
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnIn("type",  Arrays.asList(typeList)).andColumnLessThan("created_at", tm).
 			andColumnEqualTo("status", BusinessEnumType.OrderStatus.DeliverCompleted.getKey()).
 			andColumnEqualTo("process_status", BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey());
-		mc.setLimit(200);
+		mc.setPageNumber(1);
+		mc.setPageSize(200);
 		
-		List<Order> lists = orderService.findModelByModelCriteria(mc);
-		if(!lists.isEmpty()){
-			logger.info("going to sharedeal:" + lists.size());
-			for(Order order : lists){
+		logger.info("going to sharedeal:");
+		//因为订单状态的改变，会造成下次获取第二页的时候，实际取的是第一次查询时候的第三页。不过下次再分润的时候就可以继续分润，所以暂时忽略
+    	EntityIterator<String, Order> it = new KeyBasedEntityBatchIterator<String, Order>(String.class, Order.class, orderService.getEntityDao(), mc);
+		while(it.hasNext()){
+			List<Order> list = it.next();
+			for(Order order:list){
 				try{
 					sharedealOne(order);
 				}catch(Exception e){
 					e.printStackTrace();
 				}
 			}
-			logger.info("sharedeal one page end");
-			return lists.size();
 		}
+		logger.info("sharedeal one page end");
 		return 0;
 	}
 }

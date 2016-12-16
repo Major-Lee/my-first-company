@@ -17,6 +17,7 @@ import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.device.UpgradeCheckVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -187,5 +188,9 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	@Override
 	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(){
 		return deviceRestRpcService.fetchIndustyList();
+	}
+	@Override
+	public RpcResponseDTO<UpgradeCheckVTO> checkDeviceUpgradeNoAction(String mac, String origswver){
+		return deviceRestRpcService.checkDeviceUpgradeNoAction(mac, origswver);
 	}
 }

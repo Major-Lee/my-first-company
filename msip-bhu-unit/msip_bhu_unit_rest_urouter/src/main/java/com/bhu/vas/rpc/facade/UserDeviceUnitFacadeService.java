@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +33,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDeviceModule;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.devices.model.pk.WifiDeviceGrayVersionPK;
+import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCheckUpdateDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCloudDTO;
@@ -416,6 +416,21 @@ public class UserDeviceUnitFacadeService {
 		}
 	}
 
+	
+	
+	/**
+	 * 给设备的接口，根据mac和当前版本号，获取升级的版本信息
+	 * 
+	 * @param uid
+	 * @param mac
+	 * @param orig_swver
+	 * @return
+	 */
+	public RpcResponseDTO<UpgradeDTO> checkDeviceUpdateNoAction(String mac, String origswver) {
+		UpgradeDTO dto = deviceUpgradeFacadeService.checkDeviceUpgrade(mac,  origswver);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
+	}
+	
 	/**
 	 * 获取用户绑定的设备，设备状态只有在线和不在线(兼容旧版app的接口)
 	 * 

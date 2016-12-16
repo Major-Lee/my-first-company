@@ -14,6 +14,7 @@ import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.device.UpgradeCheckVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -51,4 +52,5 @@ public interface IDeviceRestRpcService {
 	public RpcResponseDTO<List<WifiDevicePresentVTO>> fetchDevicesPresent(List<String> dmacs);
 	public RpcResponseDTO<Boolean> deviceInfoUpdate(int uid, List<String> dmacs, String industry, String merchant_name);
 	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList();
+	public RpcResponseDTO<UpgradeCheckVTO> checkDeviceUpgradeNoAction(String mac, String origswver);
 }

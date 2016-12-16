@@ -23,8 +23,8 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.devices.dto.PersistenceCMDDetailDTO;
-import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.tag.model.TagGroup;
+import com.bhu.vas.api.rpc.user.dto.UpgradeDTO;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserSearchConditionState;
@@ -35,6 +35,7 @@ import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.device.UpgradeCheckVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.DeliverMessageService;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
@@ -47,6 +48,7 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DailyStatistics
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.SystemStatisticsHashService;
 import com.bhu.vas.business.ds.builder.BusinessModelBuilder;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
+import com.bhu.vas.business.ds.device.facade.DeviceUpgradeFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDevicePersistenceCMDStateService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.tag.facade.TagGroupFacadeService;
@@ -66,6 +68,7 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -129,6 +132,9 @@ public class DeviceRestBusinessFacadeService {
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
 
+	@Resource
+	private DeviceUpgradeFacadeService deviceUpgradeFacadeService;
+	
 	/**
 	 * 获取接入移动设备数量最多的wifi设备列表
 	 * TODO：目前直接从mongodb中获取 后续改成后台程序定时从mongodb获取并放入指定的redis中 这边直接从redis提取数据
@@ -906,4 +912,26 @@ public class DeviceRestBusinessFacadeService {
 		}
 		return vtos;
 	}*/
+
+	public RpcResponseDTO<UpgradeCheckVTO> checkDeviceUpgradeNoAction(String mac, String origswver){
+		UpgradeDTO dto = deviceUpgradeFacadeService.checkDeviceUpgrade(mac, origswver);
+		UpgradeCheckVTO vto = new UpgradeCheckVTO();
+		if(dto == null){
+			vto.setNeedUpgrade(false);
+			vto.setUrl(null);
+		} else {
+			vto.setNeedUpgrade(true);
+			StringBuffer sb = new StringBuffer();
+			if(!StringUtils.isEmpty(dto.getUpgrade_slaver_urls()))
+				sb.append(dto.getUpgrade_slaver_urls());
+			if(!StringUtils.isEmpty(dto.getUpgradeurl()) && sb.indexOf(dto.getUpgradeurl()) < 0){
+				if(sb.length() > 0)
+					sb.append(StringHelper.COMMA_STRING_GAP);
+				sb.append(dto.getUpgradeurl());
+			}
+			vto.setUrl(sb.toString());
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+	}
+	
 }

@@ -1,6 +1,5 @@
 package com.bhu.vas.rpc.service.device;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -23,6 +22,7 @@ import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.api.vto.device.UpgradeCheckVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.bhu.vas.rpc.facade.DeviceRestBusinessFacadeService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -367,6 +367,17 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchIndustyList exception exmsg[%s]",ex.getMessage()), ex);
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<UpgradeCheckVTO> checkDeviceUpgradeNoAction(String mac, String origswver){
+		logger.info(String.format("DeviceRestRPC checkDeviceUpdateNoAction ", mac, origswver));
+		try{
+			return deviceRestBusinessFacadeService.checkDeviceUpgradeNoAction(mac, origswver);
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			logger.error(String.format("DeviceRestRPC checkDeviceUpdateNoAction exception exmsg[%s]",ex.getMessage()), ex);
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
