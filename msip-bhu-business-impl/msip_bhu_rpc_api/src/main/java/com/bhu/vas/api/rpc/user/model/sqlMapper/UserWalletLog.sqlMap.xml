@@ -31,12 +31,23 @@
   
    <resultMap id="mapqueryRewardpages" type="hashmap">
    		<result property="orderid" column="orderid" javaType="java.lang.String"/>
+   		<result property="commdityid" column="commdityid" javaType="java.lang.Integer"/>
+   		<result property="appid" column="appid" javaType="java.lang.Integer"/>
+   		<result property="type" column="type" javaType="java.lang.Integer"/>
+   		<result property="status" column="status" javaType="java.lang.Integer"/>
+   		<result property="channel" column="channel" javaType="java.lang.Integer"/>
+   		<result property="user_agent" column="user_agent" javaType="java.lang.String"/>
+   		<result property="context" column="context" javaType="java.lang.String"/>
    		<result property="cash" column="cash" javaType="java.lang.String"/>
    		<result property="amount" column="amount" javaType="java.lang.String"/>
    		<result property="mac" column="mac" javaType="java.lang.String"/>
    		<result property="umac" column="umac" javaType="java.lang.String"/>
+   		<result property="uid" column="uid" javaType="java.lang.Integer"/>
    		<result property="payment_type" column="payment_type" javaType="java.lang.String"/>
    		<result property="umactype" column="umactype" javaType="java.lang.Integer"/>
+   		<result property="transmode" column="transmode" javaType="java.lang.String"/>
+   		<result property="transtype" column="transtype" javaType="java.lang.String"/>
+   		<result property="role" column="role" javaType="java.lang.String"/>
    		<result property="paymented_at" column="paymented_at" javaType="java.lang.String"/>
    		<result property="created_at" column="created_at" javaType="java.lang.String"/>
    </resultMap>  
@@ -178,7 +189,9 @@
 	    select truncate(sum(t_walletlog.cash),2) as cashSum,count(*) as count from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
 	    <where>
 	    	t_walletlog.uid = #{uid}
-	    	AND (t_walletlog.transtype = 'P2C' or t_walletlog.transtype = 'A2C')
+	    	<if test="transmode != null">
+	    		AND t_walletlog.transmode = #{transmode}
+	    	</if>
 	    	<if test="start_time != null">
 	    		AND t_orders.created_at &gt;= #{start_time}
 	    	</if>
@@ -210,18 +223,31 @@
 	<select id="queryRewardpages" resultMap="mapqueryRewardpages" parameterType="Map">
 	    select 
 	    t_walletlog.orderid as orderid,
+	    t_orders.commdityid as commdityid,
+	    t_orders.appid as appid,
+	    t_orders.type as type,
+	    t_orders.status as status,
+	    t_orders.channel as channel,
+	    t_orders.user_agent as user_agent,
+	    t_orders.context as context,
 		truncate(t_walletlog.cash,2) as cash,
 		t_orders.amount as amount,
 		t_orders.mac as mac,
 		t_orders.umac as umac,
+		t_orders.uid as uid,
 		t_orders.payment_type as payment_type,
 		t_orders.umactype as umactype,
+		t_walletlog.transmode as transmode,
+		t_walletlog.transtype as transtype,
+		t_walletlog.role as role,
 		t_orders.paymented_at as paymented_at,
 		t_orders.created_at as created_at 
 	    from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
 	    <where>
 	    	t_walletlog.uid = #{uid}
-	    	AND (t_walletlog.transtype = 'P2C' or t_walletlog.transtype = 'A2C')
+	    	<if test="transmode != null">
+	    		AND t_walletlog.transmode = #{transmode}
+	    	</if>
 	    	<if test="start_created_ts != null">
 	    		AND t_orders.created_at &gt;= #{start_created_ts}
 	    	</if>

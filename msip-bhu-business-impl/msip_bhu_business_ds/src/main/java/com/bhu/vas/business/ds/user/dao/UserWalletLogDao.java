@@ -15,12 +15,13 @@ import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 @Repository
 public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 	public Map<String,Object> fetchCashSumAndCountByUid(Integer uid, String start_time, String end_time, String mac,
-			String umac, Integer status, String dut, Integer type, String role){
+			String umac, Integer status, String dut, String transmode, String role){
 		Map<String,Object> result = new HashMap<String,Object>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		try{
 			map.put("uid", uid);
-			//map.put("type", type);
+			if (transmode != null && !transmode.isEmpty())
+				map.put("transmode", transmode);
 			if (role != null && !role.isEmpty())
 				map.put("role", role);
 			if (start_time != null && !start_time.isEmpty())
@@ -44,16 +45,17 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 	
 	
 	public List<Map<String,Object>> queryRewardOrderpages(Integer uid, String mac, String umac, Integer status, String dut, 
-			Integer type, String role, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
+			String transmode, String role, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
 		Map<String,Object> params = new HashMap<String,Object>();
 		try{
 			params.put("uid", uid);
 			params.put("start_created_ts", new Date(start_created_ts));
 			params.put("end_created_ts", new Date(end_created_ts));
-			//params.put("type", type);
 			params.put("start", (pageNo-1)*pageSize);
 			params.put("limit", pageSize);
+			if (transmode != null && !transmode.isEmpty())
+				params.put("transmode", transmode);
 			if (mac != null && !mac.isEmpty())
 				params.put("mac", mac);
 			if (umac != null && !umac.isEmpty())
