@@ -16,6 +16,7 @@
     <result property="distributor_percent" column="distributor_percent"/>
     <result property="distributor_l2_percent" column="distributor_l2_percent"/>
     <result property="canbe_turnoff" column="canbe_turnoff"/>
+    <result property="noappdl" column="noappdl"/>
     <result property="enterpriselevel" column="enterpriselevel"/>
     <result property="customized" column="customized"/>
     <result property="runtime_applydefault" column="runtime_applydefault"/>
@@ -42,6 +43,7 @@
 	    	distributor_percent,
 	    	distributor_l2_percent,
 	    	canbe_turnoff,
+	    	noappdl,
 	    	enterpriselevel,
 	    	customized,
 	    	runtime_applydefault,
@@ -62,6 +64,7 @@
 	    	distributor_percent,
 	    	distributor_l2_percent,
 	    	canbe_turnoff,
+	    	noappdl,
 	    	enterpriselevel,
 	    	customized,
 	    	runtime_applydefault,
@@ -83,6 +86,7 @@
 	    	#{distributor_percent},
 	    	#{distributor_l2_percent},
 	    	#{canbe_turnoff},
+	    	#{noappdl},
 	    	#{enterpriselevel},
 	    	#{customized},
 	    	#{runtime_applydefault},
@@ -102,6 +106,7 @@
 	    	distributor_percent = #{distributor_percent},
 	    	distributor_l2_percent = #{distributor_l2_percent},
 	    	canbe_turnoff = #{canbe_turnoff},
+	    	noappdl = #{noappdl},
 	    	enterpriselevel = #{enterpriselevel},
 	    	customized = #{customized},
 	    	runtime_applydefault = #{runtime_applydefault},
