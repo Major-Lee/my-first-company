@@ -32,4 +32,5 @@
  	<dubbo:monitor protocol="registry"></dubbo:monitor>
 	<!-- -->
 	<import resource="classpath*:com/bhu/vas/api/rpc/daemon/spring/dubbo-bhu-daemon-reference.xml"/>
+	<import resource="classpath*:com/bhu/vas/api/rpc/message/spring/dubbo-bhu-message-reference.xml"/>
 </beans>

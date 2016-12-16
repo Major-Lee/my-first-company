@@ -107,6 +107,10 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 					if(type == null){
 						throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
+					System.out.println("message:" + message);
+					System.out.println("type:" + type);
+					System.out.println("type2:" + type.getPrefix());
+
 					switch(type){
 						case BatchImportPreCheck:
 							batchImportPreCheckServiceHandler.process(message);
@@ -161,6 +165,7 @@ public class AsyncMsgBackendProcessor implements SpringQueueMessageListener{
 							break;
 						case BatchBindUnbindDevice:
 							batchBindUnbindDeviceServiceHandler.process(message);
+							break;
 						default:
 							throwUnsupportedOperationException(type, messagejsonHasPrefix);
 					}
