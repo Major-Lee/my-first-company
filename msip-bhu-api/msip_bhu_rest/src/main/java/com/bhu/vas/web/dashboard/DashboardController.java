@@ -33,7 +33,6 @@ import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.WifiDevicePresentVTO;
 import com.bhu.vas.api.vto.device.DeviceConfigDetailVTO;
 import com.bhu.vas.api.vto.device.DeviceProfileVTO;
-import com.bhu.vas.api.vto.device.UpgradeCheckVTO;
 import com.bhu.vas.api.vto.device.UserSnkPortalVTO;
 import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
@@ -673,26 +672,4 @@ public class DashboardController extends BaseController{
     		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
     	}
     }
-    
-    
-    
-    /**
-     * 收益排名名片
-     * @param response
-     * @param uid
-     */
-    @ResponseBody()
-    @RequestMapping(value="/device/upgrade_check", method={RequestMethod.GET,RequestMethod.POST})
-    public void deviceUpgradeCheck(HttpServletResponse response, 
-    		@RequestParam(required = true) String mac,
-    		@RequestParam(required = true) String ver
-    		){
-    	RpcResponseDTO<UpgradeCheckVTO> rpcResult = deviceRestRpcService.checkDeviceUpgradeNoAction(mac, ver);
-    	if(!rpcResult.hasError()){
-    		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
-    	}else{
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
-    	}
-    }
-    
 }
