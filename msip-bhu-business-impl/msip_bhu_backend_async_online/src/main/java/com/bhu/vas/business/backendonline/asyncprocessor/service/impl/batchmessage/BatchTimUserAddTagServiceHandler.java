@@ -27,40 +27,61 @@ public class BatchTimUserAddTagServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("BatchTimUserAddTagServiceHandler process message[%s]", message));
 		final AsyncTimUserAddTagDTO userTagdto = JsonHelper.getDTO(message, AsyncTimUserAddTagDTO.class);
 		String acc = userTagdto.getAcc();
+		String sig = userTagdto.getSig();
 		String utype = userTagdto.getUtype();
 		Integer channel = userTagdto.getChannel();
+		boolean newly = userTagdto.isNewly();
 		
-		ayscTimeUserAddTag(acc, utype, channel);
+		ayscTimeUserAddTag(acc, sig, utype, channel, newly);
 		
 		logger.info(String.format("BatchTimUserAddTagServiceHandler process message[%s] successful", message));
 	}
-	private void ayscTimeUserAddTag(String acc, String utype, Integer channel) {
-		if (acc == null || utype == null) return;
-		
+	private void ayscTimeUserAddTag(String acc, String sig, String utype, Integer channel, boolean newly) {
+		if (acc == null || utype == null || sig == null) return;
 		String tags = utype+channel.intValue();
-		int sync = 0;
-		TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimAddTagUrlCommunication(acc, tags);
-		if (ret_dto.isExecutedSuccess()){
-			sync = 1;
-			logger.info(String.format("ayscTimeUserAddTag tim add user[%s] tags[%s] successful!", acc, tags));
-		}else{
-			sync = 0;
-			logger.info(String.format("ayscTimeUserAddTag tim add user[%s] tags[%s] failed[%s]", acc, tags, ret_dto.getErrorInfo()));
+		int sync = 0, register = 0;
+		MessageUser user = null;
+		TimResponseBasicDTO ret_dto = null;
+		try{
+			if (newly){
+				ret_dto = MessageTimHelper.CreateTimAccoutImportUrlCommunication(acc);
+				if(ret_dto.isExecutedSuccess()){
+					register = 1;
+					logger.info(String.format("BatchTimUserAddTagServiceHandler import user[%s]"
+							+ " successful", acc));
+				}else{
+					logger.info(String.format("BatchTimUserAddTagServiceHandler import user[%s]"
+							+ " failed[%s]！", acc, ret_dto.getErrorInfo()));
+				}
+			}
+			
+			ret_dto = MessageTimHelper.CreateTimAddTagUrlCommunication(acc, tags);
+			if(ret_dto.isExecutedSuccess()){
+				sync = 1;
+				logger.info(String.format("BatchTimUserAddTagServiceHandler add tag user[%s]"
+						+ " tag[%s] successful", acc, tags));
+			}else{
+				logger.info(String.format("BatchTimUserAddTagServiceHandler add tag user[%s]"
+						+ " tag[%s] failed[%s]!", acc, tags, ret_dto.getErrorInfo()));
+			}
+		}catch(Exception e){
+			System.out.println(e);
+		}finally {
+			if (utype.equals(BusinessKeyDefine.Message.User)){
+				user = messageUserFacadeService.validate(acc);
+				if (user == null){
+					user = new MessageUser();
+					user.setId(acc);
+				}
+				if (newly)
+					user.setRegister(register);
+				user.setSig(sig);
+				user.setSync(sync);
+				user.setExtension_content(replaceTags(user.getExtension_content(),tags));
+				messageUserFacadeService.updateMessageUserData(user);
+			}
 		}
 		
-		if (utype.equals(BusinessKeyDefine.Message.User)){
-			MessageUser user = messageUserFacadeService.validate(acc);
-			if (user == null){
-				user = new MessageUser();
-				user.setId(acc);
-				user.setExtension_content(tags);
-			}else{
-				String oldTags = user.getExtension_content();
-				user.setExtension_content(replaceTags(oldTags, tags));
-			}
-			user.setSync(sync);
-			messageUserFacadeService.updateMessageUserData(user);
-		}
 	}
 	
 	private String replaceTags(String oldTags, String newTag){

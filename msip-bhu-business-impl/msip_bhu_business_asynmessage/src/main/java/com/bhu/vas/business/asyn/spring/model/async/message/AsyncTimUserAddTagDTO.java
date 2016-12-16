@@ -6,8 +6,10 @@ import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 public class AsyncTimUserAddTagDTO extends AsyncDTO{
 
 	private String acc;
+	private String sig;
 	private String utype;
 	private Integer channel;
+	private boolean newly;
 	
 	public String getUtype() {
 		return utype;
@@ -39,6 +41,25 @@ public class AsyncTimUserAddTagDTO extends AsyncDTO{
 	}
 
 
+	public String getSig() {
+		return sig;
+	}
+
+
+	public void setSig(String sig) {
+		this.sig = sig;
+	}
+
+
+
+	public boolean isNewly() {
+		return newly;
+	}
+
+
+	public void setNewly(boolean newly) {
+		this.newly = newly;
+	}
 
 
 	@Override

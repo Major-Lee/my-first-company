@@ -13,7 +13,6 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.message.dto.MessageUserSigDTO;
 import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
 import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
-import com.bhu.vas.api.rpc.message.model.MessageUser;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.message.MessageSystemHashService;
@@ -73,27 +72,16 @@ public class MessageUnitFacadeService {
 	
 	private String fetchTimUserSig(String user, String utype, Integer channel, String expire){
 		String sig = MessageSystemHashService.getInstance().fetchMessageUserSig(user, utype);
+		boolean newly = false;
 		if (sig == null){
 			logger.info(String.format("fetch_usersig can't fetch user[%s] from redis", user));
 			sig = MessageTimHelper.createUserSig(user, expire);
 			
 			MessageSystemHashService.getInstance().setMessageUserSig(user, utype, sig);
 			MessageSystemHashService.getInstance().setMessageUserSigExpire(user, utype, expire);
-			//游客不入库,只在腾讯im存储
-			if (utype.equals(BusinessKeyDefine.Message.User)){
-				MessageUser messageUser = messageUserFacadeService.validate(user);
-				if (messageUser == null){
-					messageUser = new MessageUser();
-				}		
-				messageUser.setId(user);
-				messageUser.setSig(sig);
-				messageUserFacadeService.updateMessageUserData(messageUser);
-			}
+			newly = true;
 		}
-		//导入tim用户
-		asyncDeliverMessageService.sendBatchTimUserRegisterActionMessage(user, null, utype);
-		//添加标签
-		asyncDeliverMessageService.sendBatchTimUserAddTagActionMessage(user, utype, channel);
+		asyncDeliverMessageService.sendBatchTimUserAddTagActionMessage(user, sig, utype, channel, newly);
 		return sig;
 	}
 

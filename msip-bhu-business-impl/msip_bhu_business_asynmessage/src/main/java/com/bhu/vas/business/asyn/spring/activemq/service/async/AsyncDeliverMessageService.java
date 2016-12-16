@@ -234,11 +234,14 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendBatchTimUserAddTagActionMessage(String acc, String utype, Integer channel){
+	public void sendBatchTimUserAddTagActionMessage(String acc, String sig, String utype, Integer channel, boolean newly){
 		AsyncTimUserAddTagDTO dto = new AsyncTimUserAddTagDTO();
 		dto.setAcc(acc);
+		dto.setSig(sig);
 		dto.setUtype(utype);
 		dto.setChannel(channel);
+		dto.setNewly(newly);
+		
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
