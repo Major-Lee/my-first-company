@@ -700,6 +700,17 @@ public class ChargingFacadeService {
 			return false;
 		}
 	}
+	
+	//是否不需要下载app就可以上
+	public boolean fetchDeviceIsNoappdl(String dmac){
+		try{
+			WifiDeviceSharedealConfigs configs = wifiDeviceSharedealConfigsService.getById(dmac);
+			return configs.isNoappdl();
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return false;
+		}
+	}
 
 	
 	/**
