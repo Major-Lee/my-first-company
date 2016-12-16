@@ -23,7 +23,7 @@ public class AdvertiseOccupiedVTO implements java.io.Serializable{
 	public String getCash() {
 		return cash;
 	}
-	public void setCash(float cash) {
+	public void setCash(double cash) {
 		this.cash = ArithHelper.getCuttedCurrency(cash+"");
 	}
 	public void setCount(int count) {

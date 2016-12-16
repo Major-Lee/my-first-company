@@ -14,7 +14,7 @@ public class AdDevicePositionVTO implements java.io.Serializable{
 	public String getSale() {
 		return sale;
 	}
-	public void setSale(float sale) {
+	public void setSale(double sale) {
 		this.sale = ArithHelper.getCuttedCurrency(sale+"");
 	}
 	public List<String> getPositions() {

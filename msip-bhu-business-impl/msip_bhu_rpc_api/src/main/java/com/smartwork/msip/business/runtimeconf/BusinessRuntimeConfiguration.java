@@ -172,8 +172,8 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	OpsImportCallbackApi = PropertiesHelper.getString("ops.import.callbackapi", paramProperties, UserPortalChargingNotify2UPortalApi);
         	OpsImportCallbackToken = PropertiesHelper.getString("ops.import.callbacktoken", paramProperties, OpsImportCallbackToken);
         	
-        	AdvertiseOperatorDiscount = PropertiesHelper.getFloat("ad.op.discount", paramProperties, AdvertiseOperatorDiscount);
-        	AdvertiseCommonDiscount = PropertiesHelper.getFloat("ad.common.discount", paramProperties, AdvertiseCommonDiscount);
+        	AdvertiseOperatorDiscount = PropertiesHelper.getDouble("ad.op.discount", paramProperties, AdvertiseOperatorDiscount);
+        	AdvertiseCommonDiscount = PropertiesHelper.getDouble("ad.common.discount", paramProperties, AdvertiseCommonDiscount);
         	
         	TimManager = PropertiesHelper.getString("message.tim.manager",paramProperties,TimManager);
         	TimSdkAppid = PropertiesHelper.getString("message.tim.sdkappid",paramProperties,TimSdkAppid);
@@ -449,9 +449,9 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String OpsImportCallbackToken = "MzZhMWIzMDdiYjIyOGI5NzllZTM2M2FlZTc0NGIyOTA=";
 	
 	public static final int Advertise_Unit_Price = 20;
-	public static final float Advertise_Sm_Price = 0.2F;
-	public static float AdvertiseOperatorDiscount = 0.01F;
-	public static float AdvertiseCommonDiscount = 0.05F;
+	public static double Advertise_Sm_Price = 0.2D;
+	public static double AdvertiseOperatorDiscount = 0.01D;
+	public static double AdvertiseCommonDiscount = 0.05D;
 	//腾讯im 生产环境参数
 	public static String TimManager = "IMBHU";
 	public static String TimSdkAppid = "1400020930";
