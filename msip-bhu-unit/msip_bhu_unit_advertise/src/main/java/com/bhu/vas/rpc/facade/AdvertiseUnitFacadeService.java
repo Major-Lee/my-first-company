@@ -196,11 +196,11 @@ public class AdvertiseUnitFacadeService {
 			int index = 0;
 			if(DateTimeHelper.getDateTime("HH").equals("23")){
 				startTime = 2;
-				endTime = 18;
+				endTime = 17;
 				index = 2;
 			}else{
 				startTime = 1;
-				endTime = 17;
+				endTime = 16;
 				index = 1;
 			}
 			start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), startTime);
