@@ -448,7 +448,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String OpsImportCallbackApi = "http://ops.bhuwifi.com/api/unicorn/device-out-confirm";
 	public static String OpsImportCallbackToken = "MzZhMWIzMDdiYjIyOGI5NzllZTM2M2FlZTc0NGIyOTA=";
 	
-	public static final float Advertise_Unit_Price = 20F;
+	public static final int Advertise_Unit_Price = 20;
 	public static final float Advertise_Sm_Price = 0.2F;
 	public static float AdvertiseOperatorDiscount = 0.01F;
 	public static float AdvertiseCommonDiscount = 0.05F;

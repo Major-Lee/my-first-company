@@ -193,7 +193,7 @@ public class AdvertiseUnitFacadeService {
 			int startTime = 0;
 			int endTime = 0;
 			int index = 0;
-			if(DateTimeHelper.getDateTime("HH").equals("12")){
+			if(DateTimeHelper.getDateTime("HH").equals("23")){
 				startTime = 2;
 				endTime = 18;
 				index = 2;
@@ -474,7 +474,7 @@ public class AdvertiseUnitFacadeService {
 			occupiedVto.setDate(time);
 			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
 			
-			float cash = occupiedVto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+			int cash = occupiedVto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price;
 			if(userFacadeService.checkOperatorByUid(uid)){
 				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
 				positionVto.setSale(BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
