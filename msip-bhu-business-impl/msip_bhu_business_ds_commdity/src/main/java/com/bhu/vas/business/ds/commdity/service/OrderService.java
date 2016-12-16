@@ -39,4 +39,8 @@ public class OrderService extends AbstractCommdityService<String, Order, OrderDa
 		int n=super.countByCommonCriteria(mc);
 		return n;
 	}
+	
+	public void dropCache(String orderid){
+		this.getEntityCache().remove(orderid);
+	}
 }

@@ -188,7 +188,7 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							if(user_willbinded != null){
 								bindUnbindDeviceService.bindDevice(pages, uid_willbinded);
 							} else {
-								bindUnbindDeviceService.unbindDevice(pages, true);
+								bindUnbindDeviceService.unbindDevice(pages, true, null);
 							}
 							
 							for(String dmac:pages){

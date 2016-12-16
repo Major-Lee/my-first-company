@@ -179,7 +179,11 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	TimSdkAppid = PropertiesHelper.getString("message.tim.sdkappid",paramProperties,TimSdkAppid);
         	TimManagerSig = PropertiesHelper.getString("message.tim.managersig",paramProperties,TimManagerSig);
         	
+        	
         	QualityGoodsSharedealWaitSeconds = PropertiesHelper.getLong("qualitygoods.sharedeal.waitseconds", paramProperties, QualityGoodsSharedealWaitSeconds);
+        	QualityGoodsSharedealStart = PropertiesHelper.getString("qualitygoods.sharedeal.start", paramProperties, QualityGoodsSharedealStart);
+        	ShareDealIgnoreOrderAmount = PropertiesHelper.getBoolean("sharedeal.ignore.order.amount", paramProperties, ShareDealIgnoreOrderAmount);
+        	
         	
         	String commdityWhiteListStr = PropertiesHelper.getString("commdity.whitelist.accs", paramProperties, "");
     		
@@ -329,6 +333,10 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	
 	//良品分润需要等待的时间(秒)
 	public static long QualityGoodsSharedealWaitSeconds = 3600*24*15; //default 15 days
+	//良品分润订单起始时间
+	public static String QualityGoodsSharedealStart = "2017-01-01 00:00:00"; //default 2017-01-01
+	//分润时忽略订单金额（测试中会修改订单金额，实际支付金额小于商品金额）
+	public static boolean ShareDealIgnoreOrderAmount = false;
 	
 	public static boolean isSystemNoneedCaptchaValidAcc(String acc){
 		return SystemNoneedCaptchaValidAccs.contains(acc);

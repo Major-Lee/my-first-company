@@ -1213,6 +1213,9 @@ public class OrderUnitFacadeService {
 	
 	public RpcResponseDTO<Boolean> doOrderSharedealCancel(int uid, String orderid, String remark){
 		try{
+			//存储过程中可能修改过分润状态
+			orderService.dropCache(orderid);
+
 			Order order = orderService.getById(orderid);
 			if(order == null){
 				logger.info(String.format("doOrderSharedealCancel no such order [%s]" , orderid));

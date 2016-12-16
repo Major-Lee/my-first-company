@@ -95,6 +95,10 @@ public class BatchBindUnbindDeviceServiceHandler implements IMsgHandlerService {
 			List<String> all_dmacs = Arrays.asList(dmacs);
 			int total = all_dmacs.size();
 			int totalPages = PageHelper.getTotalPages(total, 100);
+			User opUser = userService.getById(dto.getUid());
+			String mobileno = null;
+			if(opUser != null)
+				mobileno = opUser.getMobileno();
 			
 			for(int pageno= 1;pageno<=totalPages;pageno++){
 				List<String> pages = PageHelper.pageList(all_dmacs, pageno, 100);
@@ -103,7 +107,7 @@ public class BatchBindUnbindDeviceServiceHandler implements IMsgHandlerService {
 				if(dto.getDtoType() == IDTO.ACT_ADD)
 					bindUnbindDeviceService.bindDevice(pages, uid_willbinded);
 				else
-					bindUnbindDeviceService.unbindDevice(pages, false);
+					bindUnbindDeviceService.unbindDevice(pages, false, mobileno);
 				try {
 					RewardOrderAmountHashService.getInstance().removeAllRAmountByMacs(pages.toArray(new String[0]));
 					backendBusinessService.blukIndexs(pages);

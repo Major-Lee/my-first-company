@@ -278,13 +278,19 @@ public class AsyncOrderPaymentNotifyService{
 		} else {
 			sharedealStr = commdity.getCity_sharedeal();
 		}
+
 		if(sharedealStr.contains("%")){
 			sharedealStr = sharedealStr.replaceAll("%", "");
 			sharedealAmount = amount * Integer.parseInt(sharedealStr) / 100;
 		} else {
 			sharedealAmount = Double.parseDouble(sharedealStr);
 		}
-				
+
+		if(!BusinessRuntimeConfiguration.ShareDealIgnoreOrderAmount &&  sharedealAmount > amount){
+			logger.error(String.format("sharedeal amount[%s] greater than order amount[%s]",  sharedealAmount, amount));
+			return;
+		}
+
 		OrderUmacType uMacType = OrderUmacType.fromKey(order.getUmactype());
 		if(uMacType == null){
 			uMacType = OrderUmacType.Terminal;
@@ -329,6 +335,8 @@ public class AsyncOrderPaymentNotifyService{
 								return null;
 							}
 			});
+		//存储过程中已经修改了订单分润状态，外围查询从缓存中获取到的还是旧状态
+		orderService.dropCache(order.getId());
 	}
 	
 	public void rewardOrderPaymentHandle(Order order, boolean success, 

@@ -19,6 +19,7 @@ public enum PushType {
 	SharedealNotify("SDN", "有人给你打赏了", "%s%s用户通过%s打赏%s元", "有人给你打赏了", "%s%s用户通过%s打赏%s元"),//打赏分成通知
 	QualityGoodsSharedealNotify("QDN", "必虎良品分润", "%s%s用户通过%s购买必虎良品分润%s元", "必虎良品分润", "%s%s用户通过%s购买必虎良品分润%s元"),//打赏分成通知
 	DeviceReset("DR", "设备解绑", "[设备解绑] %s通过Reset方式解除绑定", "", "%s"),//Reset解绑设备通知
+	DeviceResetByOps("DRO", "设备解绑", "设备[%s]被运营商%s在%s进行了解绑操作,如有问题请联系%s", "", "%s"),//Reset解绑设备通知
 	WifiDeviceReboot("WDR", null, null, null, null),//设备重启成功后
 	WifiDeviceSettingChanged("WDC", null, null, null, null),//设备配置变更
 	UserBBSsignedon("UBS", "论坛登录", "论坛登录", null, null),//用户bbs登录

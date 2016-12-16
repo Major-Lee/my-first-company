@@ -56,6 +56,7 @@ public class QualityGoodsSharedealTaskLoader {
 		String[] typeList = {"8", "1"};
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnIn("type",  Arrays.asList(typeList)).andColumnLessThan("created_at", tm).
+			andSimpleCaulse(String.format(" created_at > '%s' ", BusinessRuntimeConfiguration.QualityGoodsSharedealStart)).
 			andColumnEqualTo("status", BusinessEnumType.OrderStatus.DeliverCompleted.getKey()).
 			andColumnEqualTo("process_status", BusinessEnumType.OrderProcessStatus.DeliverCompleted.getKey());
 		mc.setPageNumber(1);
