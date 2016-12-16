@@ -26,7 +26,31 @@ public class OrderRewardVTO extends OrderVTO{
 	private String payment_type;
 	//支付方式名称
 	private String payment_type_name;
+	//收益角色
+	private String role;
+	//收益类型 热播、良品、打赏
+	private String transtype;
 	
+	private String transmode;
+	
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
+	public String getTranstype() {
+		return transtype;
+	}
+	public void setTranstype(String transtype) {
+		this.transtype = transtype;
+	}
+	public String getTransmode() {
+		return transmode;
+	}
+	public void setTransmode(String transmode) {
+		this.transmode = transmode;
+	}
 	public String getMac() {
 		return mac;
 	}

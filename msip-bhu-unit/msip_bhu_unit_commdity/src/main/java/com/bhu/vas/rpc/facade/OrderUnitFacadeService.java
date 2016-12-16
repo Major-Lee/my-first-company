@@ -41,6 +41,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.PaymentChannelType;
+import com.bhu.vas.api.helper.BusinessEnumType.UWalletTransMode;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -641,7 +642,7 @@ public class OrderUnitFacadeService {
 			if (end_created_ts != 0)
 				end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
 			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, 
-					end_time, mac,umac,status,dut,CommdityCategory.RewardInternetLimit.getCategory(),null);
+					end_time, mac,umac,status,dut,UWalletTransMode.SharedealPayment.getKey(),null);
 			vto.setCashSum((Double)map.get("cashSum"));
 			Long vto_count = (Long)map.get("count");
 			vto.setCount(vto_count);
@@ -650,13 +651,24 @@ public class OrderUnitFacadeService {
 			List<OrderRewardVTO> retDtos = Collections.emptyList();
 			if (vto_count.intValue() > 0){
 				List<Map<String, Object>> logs = userWalletLogService.getEntityDao().queryRewardOrderpages(uid, mac, 
-						umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory(), null,
+						umac, status, dut, UWalletTransMode.SharedealPayment.getKey(), null,
 						start_created_ts, end_created_ts, pageNo, pageSize);
 				OrderRewardVTO orderRewardVto = null;
 				retDtos = new ArrayList<OrderRewardVTO>();
 				for(Map<String, Object> log : logs){
 					orderRewardVto = new OrderRewardVTO();
 					orderRewardVto.setId((String)log.get("orderid"));
+					orderRewardVto.setCommdityid((Integer)log.get("commdityid"));
+					orderRewardVto.setAppid((Integer)log.get("appid"));
+					orderRewardVto.setChannel((Integer)log.get("channel"));
+					orderRewardVto.setUid((Integer)log.get("uid"));
+					orderRewardVto.setType((Integer)log.get("type"));
+					orderRewardVto.setContext((String)log.get("context"));
+					orderRewardVto.setStatus((Integer)log.get("status"));
+					
+					orderRewardVto.setRole((String)log.get("role"));
+					orderRewardVto.setTransmode((String)log.get("transmode"));
+					orderRewardVto.setTranstype((String)log.get("transtype"));
 					
 					if (StringHelper.isValidMac((String)log.get("mac")))
 						orderRewardVto.setMac((String)log.get("mac"));
@@ -708,7 +720,7 @@ public class OrderUnitFacadeService {
 				logger.info(String.format("rewardQueryExportRecord default time start_ts[%s] end_ts[%s]", start_created_ts,end_created_ts));
 			}
 			List<Map<String, Object>> logs = userWalletLogService.getEntityDao().queryRewardOrderpages(uid, mac, 
-					umac, status, dut, CommdityCategory.RewardInternetLimit.getCategory(), null,
+					umac, status, dut, UWalletTransMode.SharedealPayment.getKey(), null,
 					start_created_ts, end_created_ts, pageNo, pageSize);
 			List<String> recordList = Collections.emptyList();
 			if(logs != null && !logs.isEmpty()){
