@@ -64,9 +64,7 @@ public class BatchTimUserAddTagServiceHandler implements IMsgHandlerService {
 				logger.info(String.format("BatchTimUserAddTagServiceHandler add tag user[%s]"
 						+ " tag[%s] failed[%s]!", acc, tags, ret_dto.getErrorInfo()));
 			}
-		}catch(Exception e){
-			System.out.println(e);
-		}finally {
+			
 			if (utype.equals(BusinessKeyDefine.Message.User)){
 				user = messageUserFacadeService.validate(acc);
 				if (user == null){
@@ -80,8 +78,9 @@ public class BatchTimUserAddTagServiceHandler implements IMsgHandlerService {
 				user.setExtension_content(replaceTags(user.getExtension_content(),tags));
 				messageUserFacadeService.updateMessageUserData(user);
 			}
+		}catch(Exception e){
+			System.out.println(e);
 		}
-		
 	}
 	
 	private String replaceTags(String oldTags, String newTag){
