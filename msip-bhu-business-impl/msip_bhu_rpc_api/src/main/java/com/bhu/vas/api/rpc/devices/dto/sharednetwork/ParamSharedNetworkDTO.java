@@ -49,6 +49,9 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String open_resource;
 
 	@JsonInclude(Include.NON_NULL)
+	private String open_mac;
+
+	@JsonInclude(Include.NON_NULL)
 	private String open_resource_ad; //全城热播所使用的广告所需要放行的白名单
 	
 	@JsonInclude(Include.NON_NULL)
@@ -102,7 +105,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		Object[] properties = null;
 		if(VapEnumType.SharedNetworkType.Uplink.getKey().equals(ntype)){
 			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
-				properties = new Object[14];
+				properties = new Object[15];
 				properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
 				properties[1] = WifiDeviceHelper.xmlContentEncoder(ssid).concat(WifiDeviceHelper.Default_Dual_Suffix);
 				properties[2] = users_tx_rate * 8;//转成大B-》小b的单位
@@ -121,9 +124,10 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[10] = idle_timeout;
 				properties[11] = force_timeout;
 				properties[12] = combineOpenResource();
-				properties[13] = redirect_url;
+				properties[13] = open_mac;
+				properties[14] = redirect_url;
 			}else{//单频
-				properties = new Object[11];
+				properties = new Object[12];
 				properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
 				properties[1] = users_tx_rate * 8;//转成大B-》小b的单位
 				properties[2] = users_rx_rate * 8;//转成大B-》小b的单位
@@ -139,11 +143,12 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[7] = idle_timeout;
 				properties[8] = force_timeout;
 				properties[9] = combineOpenResource();
-				properties[10] = redirect_url;
+				properties[10] = open_mac;
+				properties[11] = redirect_url;
 			}
 		}else{
 			if(VapEnumType.DeviceUnitType.isDualBandByOrigSwver(device_status.getOrig_swver())){//双频
-				properties = new Object[16];
+				properties = new Object[17];
 				properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
 				properties[1] = WifiDeviceHelper.xmlContentEncoder(ssid).concat(WifiDeviceHelper.Default_Dual_Suffix);
 				properties[2] = users_tx_rate * 8;//转成大B-》小b的单位
@@ -162,11 +167,12 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[10] = idle_timeout;
 				properties[11] = force_timeout;
 				properties[12] = combineOpenResource();
-				properties[13] = remote_auth_url;
-				properties[14] = portal_server_url;
-				properties[15] = dns_default_ip;
+				properties[13] = open_mac;
+				properties[14] = remote_auth_url;
+				properties[15] = portal_server_url;
+				properties[16] = dns_default_ip;
 			}else{//单频
-				properties = new Object[13];
+				properties = new Object[14];
 				properties[0] = WifiDeviceHelper.xmlContentEncoder(ssid);
 				properties[1] = users_tx_rate * 8;//转成大B-》小b的单位
 				properties[2] = users_rx_rate * 8;//转成大B-》小b的单位
@@ -182,9 +188,10 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[7] = idle_timeout;
 				properties[8] = force_timeout;
 				properties[9] = combineOpenResource();
-				properties[10] = remote_auth_url;
-				properties[11] = portal_server_url;
-				properties[12] = dns_default_ip;
+				properties[10] = open_mac;
+				properties[11] = remote_auth_url;
+				properties[12] = portal_server_url;
+				properties[13] = dns_default_ip;
 			}
 		}
 		
@@ -434,6 +441,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			if(StringUtils.isEmpty(param.getOpen_resource())) {
 				param.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Uplink_Open_resource);
 			}
+			param.setOpen_mac(null);
 		}else{
 			if(SharedNetworkType.SafeSecure.getKey().equals(param.getNtype())){
 				if(StringUtils.isEmpty(param.getSsid())){
@@ -475,6 +483,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			if(StringUtils.isEmpty(param.getOpen_resource())) {
 				param.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);
 			}
+			param.setOpen_mac(null);
 		}
 		return param;
 	}
@@ -519,6 +528,10 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(paramDTO.getForce_timeout() != dbDTO.getForce_timeout()) return true;
 		if(paramDTO.getMax_clients() != dbDTO.getMax_clients()) return true;
 		if(!paramDTO.getOpen_resource().equals(dbDTO.getOpen_resource())) return true;
+		if((StringUtils.isEmpty(paramDTO.getOpen_mac()) && StringUtils.isNotEmpty(dbDTO.getOpen_mac())) ||
+				(paramDTO.getOpen_mac() != null  && !paramDTO.getOpen_mac().equals(dbDTO.getOpen_mac())))
+			return true;
+
 		
 		if(SharedNetworkType.Uplink.getKey().equals(paramDTO.getNtype())){
 			if(!paramDTO.getRedirect_url().equals(dbDTO.getRedirect_url())) return true;
@@ -607,6 +620,13 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	}
 	public void setOpen_resource_ad(String open_resource_ad) {
 		this.open_resource_ad = open_resource_ad;
+	}
+	
+	public String getOpen_mac() {
+		return open_mac;
+	}
+	public void setOpen_mac(String open_mac) {
+		this.open_mac = open_mac;
 	}
 	public static void main(String[] argv){
 /*		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.builderDefault(null, true).builderProperties()));
