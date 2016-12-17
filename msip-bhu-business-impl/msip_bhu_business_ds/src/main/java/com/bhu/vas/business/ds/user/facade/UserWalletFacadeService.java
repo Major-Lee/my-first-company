@@ -530,11 +530,12 @@ public class UserWalletFacadeService{
 			throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_VALIDATEPWD_FAILED);
 		}*/
 		double wallettotal = uwallet.getCash();
-		uwallet.setCash(uwallet.getCash()-cash);
-		uwallet.setWithdraw(true);
-		uwallet = userWalletService.update(uwallet);
+//		uwallet.setCash(uwallet.getCash()-cash);
+//		uwallet.setWithdraw(true);
+//		uwallet = userWalletService.update(uwallet);
 		String orderid = callback.notifyCashWithdrawOper(cash);
-		this.doWalletLog(uid, orderid,UWalletTransMode.CashPayment, UWalletTransType.Cash2Realmoney,description, cash, cash,0d, String.format("WalletTotal:%s withdraw:%s ",wallettotal, cash));
+//		this.doWalletLog(uid, orderid,UWalletTransMode.CashPayment, UWalletTransType.Cash2Realmoney,description, cash, cash,0d, String.format("WalletTotal:%s withdraw:%s ",wallettotal, cash));
+		userWalletInOutWithProcedure(uid, orderid, UWalletTransMode.CashPayment, UWalletTransType.Cash2Realmoney, cash, cash, 0, description, String.format("WalletTotal:%s withdraw:%s ",wallettotal, cash));
 		return uwallet;
 	}
 	
@@ -548,11 +549,13 @@ public class UserWalletFacadeService{
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
 		UserValidateServiceHelper.validateUser(uid,this.userService);
-		UserWallet uwallet = userWalletService.getById(uid);
-		uwallet.setCash(uwallet.getCash()+cash);
-		uwallet.setWithdraw(false);
-		userWalletService.update(uwallet);
-		this.doWalletLog(uid, applyid,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
+//		UserWallet uwallet = userWalletService.getById(uid);
+//		uwallet.setCash(uwallet.getCash()+cash);
+//		uwallet.setWithdraw(false);
+//		userWalletService.update(uwallet);
+//		this.doWalletLog(uid, applyid,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
+		userWalletInOutWithProcedure(uid, null, UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C, cash, cash, 0, description, null);
+
 	}
 	
 	/**
@@ -567,11 +570,13 @@ public class UserWalletFacadeService{
 			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR);
 		}
 		UserValidateServiceHelper.validateUser(uid,this.userService);
-		UserWallet uwallet = userWalletService.getById(uid);
-		uwallet.setCash(uwallet.getCash()+cash);
-		uwallet.setWithdraw(false);
-		userWalletService.update(uwallet);
-		this.doWalletLog(uid, applyid,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
+//		UserWallet uwallet = userWalletService.getById(uid);
+//		uwallet.setCash(uwallet.getCash()+cash);
+//		uwallet.setWithdraw(false);
+//		userWalletService.update(uwallet);
+//		this.doWalletLog(uid, applyid,UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C,description, cash, cash,0d, null);
+		userWalletInOutWithProcedure(uid, null, UWalletTransMode.CashRollbackPayment, UWalletTransType.Rollback2C, cash, cash, 0, description, null);
+
 	}
 	
 	/**
