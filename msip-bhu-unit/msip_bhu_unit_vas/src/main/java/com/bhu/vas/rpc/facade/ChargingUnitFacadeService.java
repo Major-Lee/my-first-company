@@ -55,7 +55,7 @@ public class ChargingUnitFacadeService {
 	public RpcResponseDTO<BatchImportVTO> doInputDeviceRecord(int uid,int countrycode,
 			String mobileno,int distributor_uid, 
 			String sellor,String partner,
-			boolean canbeturnoff,
+			boolean canbeturnoff,boolean noapp,
 			boolean enterpriselevel,
 			boolean customized,
 			String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, 
@@ -69,7 +69,7 @@ public class ChargingUnitFacadeService {
 			BatchImportVTO ret = 
 					chargingFacadeService.doBatchImportCreate(uid, countrycode, mobileno,distributor_uid,
 							sellor,partner,
-							canbeturnoff, 
+							canbeturnoff, noapp,
 							enterpriselevel,
 							customized,
 							sharedeal_owner_percent,sharedeal_manufacturer_percent,sharedeal_distributor_percent,
@@ -89,7 +89,7 @@ public class ChargingUnitFacadeService {
 	public RpcResponseDTO<OpsBatchImportVTO> doOpsInputDeviceRecord(int uid, String opsid, int countrycode,
 			String mobileno,int distributor_uid, int distributor_l2_uid, String distributor_type,
 			String sellor,String partner,
-			boolean canbeturnoff,
+			boolean canbeturnoff, boolean noapp,
 			String sharedeal_owner_percent,String sharedeal_manufacturer_percent,String sharedeal_distributor_percent, String sharedeal_distributor_l2_percent, 
 			String channel_lv1, String channel_lv2,
 			String sns,
@@ -105,7 +105,7 @@ public class ChargingUnitFacadeService {
 			BatchImportVTO ret = 
 					chargingFacadeService.doOpsBatchImportCreate(uid, opsid, countrycode, mobileno,distributor_uid, distributor_l2_uid, distributor_type,
 							sellor,partner,
-							canbeturnoff, 
+							canbeturnoff, noapp,
 							sharedeal_owner_percent,sharedeal_manufacturer_percent,sharedeal_distributor_percent, sharedeal_distributor_l2_percent,
 							channel_lv1, channel_lv2,
 							remark);
@@ -128,6 +128,7 @@ public class ChargingUnitFacadeService {
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid,
 			String message, Boolean canbeturnoff,Boolean enterpriselevel,
 			boolean customized,
+			boolean noapp,
 			String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent,
 			String range_cash_mobile, String range_cash_pc,
 			String access_internet_time,
@@ -137,7 +138,7 @@ public class ChargingUnitFacadeService {
 		try{
 			//User operUser = chargingFacadeService.getUserService().getById(uid);
 			//UserTypeValidateService.validUserType(operUser, UserType.SelfCmdUser.getSname());
-			asyncDeliverMessageService.sendBatchSharedealModifyActionMessage(uid, message, canbeturnoff,enterpriselevel,customized, 
+			asyncDeliverMessageService.sendBatchSharedealModifyActionMessage(uid, message, canbeturnoff, noapp, enterpriselevel,customized, 
 					owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent, range_cash_mobile, range_cash_pc, access_internet_time, free_access_internet_time,
 					needCheckBinding);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);

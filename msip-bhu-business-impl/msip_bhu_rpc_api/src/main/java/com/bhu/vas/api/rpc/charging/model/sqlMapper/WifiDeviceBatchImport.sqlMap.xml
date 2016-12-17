@@ -15,6 +15,7 @@
 	  <result property="sellor" column="sellor"/>
 	  <result property="partner" column="partner"/>
 	  <result property="canbeturnoff" column="canbeturnoff"/>
+	  <result property="noapp" column="noapp"/>
 	  <result property="enterpriselevel" column="enterpriselevel"/>
 	  <result property="customized" column="customized"/>
 	  <result property="owner_percent" column="owner_percent"/>
@@ -52,6 +53,7 @@
 	    	sellor,
 	    	partner,
 	    	canbeturnoff,
+	    	noapp,
 	    	enterpriselevel,
 	    	customized,
 	    	owner_percent,
@@ -83,6 +85,7 @@
 	    	sellor,
 	    	partner,
 	    	canbeturnoff,
+	    	noapp,
 	    	enterpriselevel,
 	    	customized,
 	    	owner_percent,
@@ -115,6 +118,7 @@
 			#{sellor},
 			#{partner},
 			#{canbeturnoff},
+			#{noapp},
 			#{enterpriselevel},
 			#{customized},
 			#{owner_percent},
@@ -145,6 +149,7 @@
 	    	sellor = #{sellor},
 	    	partner = #{partner},
 	    	canbeturnoff = #{canbeturnoff},
+	    	noapp = #{noapp},
 	    	enterpriselevel = #{enterpriselevel},
 	    	customized = #{customized},
 	    	owner_percent = #{owner_percent},

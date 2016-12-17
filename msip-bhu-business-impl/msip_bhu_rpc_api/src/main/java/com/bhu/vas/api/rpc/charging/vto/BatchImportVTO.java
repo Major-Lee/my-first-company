@@ -23,6 +23,7 @@ public class BatchImportVTO implements java.io.Serializable{
 	private String distributor_percent;
 	private String distributor_l2_percent;
 	private boolean canbeturnoff;
+	private boolean noapp;
 	private boolean enterpriselevel;
 	private boolean customized = false;
 	private String rcp;
@@ -260,6 +261,12 @@ public class BatchImportVTO implements java.io.Serializable{
 	}
 	public void setDistributor_l2_percent(String distributor_l2_percent) {
 		this.distributor_l2_percent = distributor_l2_percent;
+	}
+	public boolean isNoapp() {
+		return noapp;
+	}
+	public void setNoapp(boolean noapp) {
+		this.noapp = noapp;
 	}
 	
 }

@@ -63,7 +63,7 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	//是否可以关闭开关
 	private boolean canbe_turnoff = true;
 	//免费放心时是否允许直接点击上网(不用下载app)
-	private boolean noappdl = false;
+	private boolean noapp = false;
 
 	private boolean enterpriselevel = false;
 	//生产环境过程中不存在的设备分成配置 会缺省应用并生效缺省配置时，此值为true，通过导入的设备值为false，后续修改设备配置值为false
@@ -216,11 +216,11 @@ public class WifiDeviceSharedealConfigs extends BaseStringModel{
 	public void setDistributor_l2_percent(double distributor_l2_percent) {
 		this.distributor_l2_percent = distributor_l2_percent;
 	}
-	public boolean isNoappdl() {
-		return noappdl;
+	public boolean isNoapp() {
+		return noapp;
 	}
-	public void setNoappdl(boolean noappdl) {
-		this.noappdl = noappdl;
+	public void setNoapp(boolean noappdl) {
+		this.noapp = noappdl;
 	}
 	
 }

@@ -47,6 +47,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	private String sellor;
 	private String partner;
 	private boolean canbeturnoff;
+	private boolean noapp;
 	private boolean enterpriselevel;
 	private boolean customized = false;
 	private String owner_percent;
@@ -183,6 +184,7 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 		vto.setCustomized(this.isCustomized());
 		//vto.setManufacturer_percent(manufacturer_percent);
 		vto.setCanbeturnoff(this.isCanbeturnoff());
+		vto.setNoapp(this.isNoapp());
 		vto.setEnterpriselevel(this.isEnterpriselevel());
 		vto.setAit(this.getAccess_internet_time());
 		vto.setRcm(this.getRange_cash_mobile());
@@ -283,6 +285,12 @@ public class WifiDeviceBatchImport extends BaseStringModel implements IRedisSequ
 	}
 	public void setDistributor_l2_percent(String distributor_l2_percent) {
 		this.distributor_l2_percent = distributor_l2_percent;
+	}
+	public boolean isNoapp() {
+		return noapp;
+	}
+	public void setNoapp(boolean noapp) {
+		this.noapp = noapp;
 	}
 	
 }

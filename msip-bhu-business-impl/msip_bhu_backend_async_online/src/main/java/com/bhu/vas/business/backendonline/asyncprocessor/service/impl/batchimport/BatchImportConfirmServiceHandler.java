@@ -194,7 +194,8 @@ public class BatchImportConfirmServiceHandler implements IMsgHandlerService {
 							for(String dmac:pages){
 								chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(batchno, (user_willbinded == null)?null:uid_willbinded, importVto.getDistributor(), importVto.getDistributor_l2(), importVto.getDistributor_type(),
 										dmac, 
-										importVto.isCanbeturnoff(),importVto.isEnterpriselevel(),
+										importVto.isCanbeturnoff(), importVto.isNoapp(),
+										importVto.isEnterpriselevel(),
 										importVto.isCustomized(),
 										importVto.getOwner_percent(), importVto.getManufacturer_percent(),importVto.getDistributor_percent(),importVto.getDistributor_l2_percent(),
 					        			//importVto.getRcm(), importVto.getRcp(), importVto.getAit(), 

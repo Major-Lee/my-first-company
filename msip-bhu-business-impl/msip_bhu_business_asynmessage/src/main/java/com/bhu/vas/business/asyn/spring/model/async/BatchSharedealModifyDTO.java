@@ -6,6 +6,7 @@ import com.bhu.vas.business.asyn.spring.builder.async.AsyncMessageType;
 public class BatchSharedealModifyDTO extends AsyncDTO {
 	private String message;
 	private Boolean cbto;
+	private Boolean noapp;
 	private Boolean el;
 	private boolean customized;
 	private String owner_percent;
@@ -125,7 +126,15 @@ public class BatchSharedealModifyDTO extends AsyncDTO {
 	}
 
 	
-//	public String getChannel_lv1() {
+public Boolean getNoapp() {
+		return noapp;
+	}
+
+	public void setNoapp(Boolean noapp) {
+		this.noapp = noapp;
+	}
+
+	//	public String getChannel_lv1() {
 //		return channel_lv1;
 //	}
 //

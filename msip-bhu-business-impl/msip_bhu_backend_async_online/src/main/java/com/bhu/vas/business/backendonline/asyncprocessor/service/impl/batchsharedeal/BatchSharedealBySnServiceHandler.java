@@ -36,7 +36,7 @@ public class BatchSharedealBySnServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("pagesize:%s pages:%s",100,macs));
 		for(String dmac:macs){
 			chargingFacadeService.doWifiDeviceSharedealConfigsUpdate(null,null,null, null, null, dmac, 
-					null, null,
+					null, null, null,
 					true,
 					sharedealDTO.getOwner_percent(),sharedealDTO.getManufacturer_percent(),sharedealDTO.getDistributor_percent(),sharedealDTO.getDistributor_l2_percent(),
 					//sharedealDTO.getRcm(), sharedealDTO.getRcp(), sharedealDTO.getAit(),

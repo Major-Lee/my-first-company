@@ -65,7 +65,7 @@ public class DeviceSharedealController extends BaseController{
     		if(!StringUtils.isEmpty(free_access_internet_time))
     			ValidateService.validFreeAitRange(free_access_internet_time,NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
         	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, message, 
-        			null,null,
+        			null,null,null,
         			true,
         			null,null,null,null,
         			range_cash_mobile,range_cash_pc,access_internet_time, StringUtils.isEmpty(free_access_internet_time)?access_internet_time:free_access_internet_time, true);

@@ -63,12 +63,13 @@ public class AsyncDeliverMessageService {
 	}
 
 	public void sendBatchSharedealModifyActionMessage(int uid,String message,
-			Boolean cbto,Boolean el,boolean customized,String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent,
+			Boolean cbto,Boolean noapp,Boolean el,boolean customized,String owner_percent,String manufacturer_percent,String distributor_percent,String distributor_l2_percent,
 			String rcm,String rcp,String ait,/* String channel_lv1, String channel_lv2, */String fait, boolean needCheckBinding){
 		BatchSharedealModifyDTO dto = new BatchSharedealModifyDTO();
 		dto.setUid(uid);
 		dto.setMessage(message);
 		dto.setCbto(cbto);
+		dto.setNoapp(noapp);
 		dto.setEl(el);
 		dto.setCustomized(customized);
 		dto.setOwner_percent(owner_percent);

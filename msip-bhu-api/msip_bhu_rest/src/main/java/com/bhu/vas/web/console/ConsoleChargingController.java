@@ -78,6 +78,7 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = true) int uid,
             @RequestParam(required = true) String message,
             @RequestParam(required = false,value = "cbto") Boolean canbeturnoff,
+            @RequestParam(required = false,value = "noapp") Boolean noapp,
             @RequestParam(required = false,value = "el") Boolean enterpriselevel,
             @RequestParam(required = false,defaultValue="false") boolean customized,
             @RequestParam(required = false,value = "percent") String owner_percent,
@@ -128,7 +129,7 @@ public class ConsoleChargingController extends BaseController {
         	}
         	
         	RpcResponseDTO<Boolean> rpcResult = chargingRpcService.doBatchSharedealModify(uid, message, 
-        			canbeturnoff,enterpriselevel,
+        			canbeturnoff,noapp,enterpriselevel,
         			customized,
         			owner_percent,manufacturer_percent,distributor_percent,distributor_l2_percent,
         			range_cash_mobile,range_cash_pc,access_internet_time, StringUtils.isEmpty(free_access_internet_time)?access_internet_time:free_access_internet_time, /* channel_lv1, channel_lv2, */false);
@@ -177,6 +178,7 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = false) String sellor,
             @RequestParam(required = false) String partner,
             @RequestParam(required = false,value = "cbto",defaultValue="true") boolean canbeturnoff,
+            @RequestParam(required = false,value = "noapp",defaultValue="false") boolean noapp,
             @RequestParam(required = false,value = "el",defaultValue="false") boolean enterpriselevel,
             @RequestParam(required = false,defaultValue="false") boolean customized,
             @RequestParam(required = false,value = "percent") String owner_percent,
@@ -233,6 +235,7 @@ public class ConsoleChargingController extends BaseController {
         			sellor,
         			partner,
         			canbeturnoff,
+        			noapp,
         			enterpriselevel,
         			customized,
         			owner_percent,manufacturer_percent,distributor_percent,
