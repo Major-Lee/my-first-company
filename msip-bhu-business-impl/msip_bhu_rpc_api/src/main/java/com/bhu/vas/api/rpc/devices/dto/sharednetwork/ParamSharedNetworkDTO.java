@@ -35,6 +35,19 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	@JsonIgnore
 	public static final String Default_Free_AIT = "14400";
 
+	@JsonIgnore
+	public static final String Default_Range_Cash_Pc_For_Day = "4.99-4.99";
+	@JsonIgnore
+	public static final String Default_Range_Cash_Mobile_For_Day = "1.99-1.99";
+	@JsonIgnore
+	public static final String Default_Range_Cash_Pc_For_Week = "19.99-19.99";
+	@JsonIgnore
+	public static final String Default_Range_Cash_Mobile_For_Week = "10.99-10.99";
+	@JsonIgnore
+	public static final String Default_Range_Cash_Pc_For_Month = "66.99-66.99";
+	@JsonIgnore
+	public static final String Default_Range_Cash_Mobile_For_Month = "39.99-39.99";
+
 	
 	private String ntype;
 	private String template;
