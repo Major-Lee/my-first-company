@@ -77,6 +77,9 @@ public class BatchTimUserAddTagServiceHandler implements IMsgHandlerService {
 				user.setSync(sync);
 				user.setExtension_content(replaceTags(user.getExtension_content(),tags));
 				messageUserFacadeService.updateMessageUserData(user);
+				logger.info(String.format("MessageUser update user[%s] tags[%s] "
+						+ "sync[%s] register[%s]",user.getId(), user.getExtension_content(),
+						user.getSync(), user.getRegister()));
 			}
 		}catch(Exception e){
 			System.out.println(e);
