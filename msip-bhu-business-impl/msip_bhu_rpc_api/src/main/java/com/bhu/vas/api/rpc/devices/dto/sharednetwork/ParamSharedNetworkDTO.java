@@ -441,7 +441,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			if(StringUtils.isEmpty(param.getOpen_resource())) {
 				param.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Uplink_Open_resource);
 			}
-			param.setOpen_mac(null);
+//			param.setOpen_mac(null);
 		}else{
 			if(SharedNetworkType.SafeSecure.getKey().equals(param.getNtype())){
 				if(StringUtils.isEmpty(param.getSsid())){
@@ -483,7 +483,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			if(StringUtils.isEmpty(param.getOpen_resource())) {
 				param.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);
 			}
-			param.setOpen_mac(null);
+//			param.setOpen_mac(null);
 		}
 		return param;
 	}
