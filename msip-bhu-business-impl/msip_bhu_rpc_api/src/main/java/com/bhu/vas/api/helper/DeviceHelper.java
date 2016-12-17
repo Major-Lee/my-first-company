@@ -985,8 +985,8 @@ public class DeviceHelper {
 	public static final String DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Dual =
 			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
 				"<wifi><vap>"
-				+ "<ITEM name=\"wlan3\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" />"
-				+ "<ITEM name=\"wlan13\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" />"
+				+ "<ITEM name=\"wlan3\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\"  acl_name=\"\" />"
+				+ "<ITEM name=\"wlan13\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" acl_name=\"\" />"
 				+ "</vap></wifi>"+
 				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+		
 				"<net>"+
@@ -1013,8 +1013,8 @@ public class DeviceHelper {
 			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
 			     "<net>"+
 			          "<interface>"
-			          + "<ITEM name=\"wlan3\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\"/>"
-			          + "<ITEM name=\"wlan13\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\"/>"
+			          + "<ITEM name=\"wlan3\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\" acl_name=\"\"/>"
+			          + "<ITEM name=\"wlan13\" enable=\"disable\" users_tx_rate=\"0\" users_rx_rate=\"0\" acl_name=\"\"/>"
 			          + "</interface>"+
 			          "<webportal><setting><ITEM  enable=\"disable\"  /></setting></webportal>"+
 			     "</net>"+
@@ -1050,7 +1050,7 @@ public class DeviceHelper {
 			"</dev>";
 	public static final String DeviceSetting_Start_SharedNetworkWifi_SafeSecure_Single =
 			"<dev><sys><config><ITEM sequence=\"-1\" /></config></sys>"+
-				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\" /></vap></wifi>"+
+				"<wifi><vap><ITEM name=\"wlan3\" ssid=\"%s\" auth=\"open\" guest_en=\"enable\" isolation=\"14\"  acl_name=\"\" /></vap></wifi>"+
 				"<sys><manage><plugin><ITEM guest=\"enable\" /></plugin></manage></sys>"+		
 				"<net>"+
 					"<interface><ITEM name=\"wlan3\" enable=\"enable\" users_tx_rate=\"%s\" users_rx_rate=\"%s\"/></interface>"+

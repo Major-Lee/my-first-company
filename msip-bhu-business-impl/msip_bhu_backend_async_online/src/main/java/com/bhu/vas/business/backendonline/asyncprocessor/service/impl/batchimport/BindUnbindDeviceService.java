@@ -130,6 +130,8 @@ public class BindUnbindDeviceService {
 				wifiDeviceStatusIndexIncrementService.ucExtensionMultiUpdIncrement(group_macs, null);
 			}
 	
+			if(snkMacs.size() == 0)
+				return;
 	        //绑定新的共享网络
 			sharedNetworksFacadeService.addDevices2SharedNetwork(uid_willbinded, SharedNetworkType.SafeSecure, SharedNetworksHelper.DefaultTemplate,false,snkMacs,
 					new ISharedNetworkNotifyCallback(){
