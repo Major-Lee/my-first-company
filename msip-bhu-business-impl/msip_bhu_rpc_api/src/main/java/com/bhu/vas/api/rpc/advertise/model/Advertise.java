@@ -252,20 +252,19 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		return singleAdvertise;
 	}
 	
-	@SuppressWarnings("unused")
 	public Map<String, String> toMap(){
 		Map<String,String> adMap = new HashMap<String,String>();
 		adMap.put("uid", this.uid+"");
 		adMap.put("title", this.title);
 		adMap.put("type", this.type+"");
-		adMap.put("orderId", this.orderId+"");
-		adMap.put("description", this.description+"");
-		adMap.put("image", this.image+"");
-		adMap.put("url", this.url+"");
-		adMap.put("domain", this.domain+"");
-		adMap.put("province", this.province+"");
-		adMap.put("city", this.city+"");
-		adMap.put("district", this.district+"");
+		adMap.put("orderId", this.orderId);
+		adMap.put("description", this.description);
+		adMap.put("image", this.image);
+		adMap.put("url", this.url);
+		adMap.put("domain", this.domain);
+		adMap.put("province", this.province);
+		adMap.put("city", this.city);
+		adMap.put("district", this.district);
 		adMap.put("start", this.start+"");
 		adMap.put("end", this.end+"");
 		adMap.put("count", this.count+"");
