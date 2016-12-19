@@ -3,10 +3,12 @@ package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchdevi
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.activemq.util.MapHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,7 @@ import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseDetailsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
@@ -40,6 +43,7 @@ import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.CollectionHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
@@ -127,6 +131,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 					case IDTO.ACT_ADD:
 						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
 							macList, JsonHelper.getJSONString(ad));
+						AdvertiseDetailsHashService.getInstance().advertiseInfo(ad.getId(), ad.toMap());
 						advertiSesnapshot(ad, start, macList.size());
 						deviceLimitDomain(batch, macList, ad.getDomain(),IDTO.ACT_ADD, ad);
 						break;
@@ -136,6 +141,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 						break;
 					case IDTO.ACT_UPDATE:
 						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad));;
+						AdvertiseDetailsHashService.getInstance().advertiseInfo(ad.getId(), ad.toMap());
 						advertiSesnapshot(ad, start, macList.size());
 						break;
 					default:
