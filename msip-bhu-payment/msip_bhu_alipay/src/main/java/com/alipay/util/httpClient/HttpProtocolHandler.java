@@ -38,17 +38,17 @@ public class HttpProtocolHandler {
     private static String              DEFAULT_CHARSET                     = "GBK";
 
     /** 连接超时时间，由bean factory设置，缺省为8秒钟 */
-    private int                        defaultConnectionTimeout            = 8000;
+    private int                        defaultConnectionTimeout            = 2000;
 
     /** 回应超时时间, 由bean factory设置，缺省为30秒钟 */
-    private int                        defaultSoTimeout                    = 30000;
+    private int                        defaultSoTimeout                    = 3000;
 
     /** 闲置连接超时时间, 由bean factory设置，缺省为60秒钟 */
-    private int                        defaultIdleConnTimeout              = 60000;
+    private int                        defaultIdleConnTimeout              = 3000;
 
-    private int                        defaultMaxConnPerHost               = 30;
+    private int                        defaultMaxConnPerHost               = 300;
 
-    private int                        defaultMaxTotalConn                 = 80;
+    private int                        defaultMaxTotalConn                 = 500;
 
     /** 默认等待HttpConnectionManager返回连接超时（只有在达到最大连接数时起作用）：1秒*/
     private static final long          defaultHttpConnectionManagerTimeout = 3 * 1000;

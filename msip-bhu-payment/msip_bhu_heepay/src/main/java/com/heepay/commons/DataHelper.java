@@ -115,6 +115,8 @@ public class DataHelper {
 			    httpurlconnection = (HttpURLConnection) url.openConnection();
 			    httpurlconnection.setRequestMethod(submitMethod.toUpperCase());
 			    httpurlconnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			    httpurlconnection.setConnectTimeout(2000);  
+			    httpurlconnection.setReadTimeout(3000);
 			    httpurlconnection.setDoInput(true);
 			    httpurlconnection.setDoOutput(true);    
 			    if(submitMethod.equalsIgnoreCase("POST"))

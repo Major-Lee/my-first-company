@@ -3,6 +3,8 @@ package com.bhu.vas.api.rpc.user.model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderExtSegmentPayMode;
 import com.bhu.vas.api.rpc.charging.dto.WithdrawCostInfo;
@@ -148,6 +150,9 @@ public class UserWalletWithdrawApply extends ListJsonExtStringModel<WithdrawRemo
 		
 		vto.setTotal_cash_sum(total_cash_sum);//总收入
 		vto.setBalance(balance);//账户余额
+		if(StringUtils.isEmpty(totalPaidCash)){
+			totalPaidCash = "--";
+		}
 		vto.setTotal_paid_cash(totalPaidCash);//已提现总额
 		vto.setTotal_paid_num(totalOrderNum);///总交易订单数
 		vto.setTaxcost(applyCost.getTaxcost());

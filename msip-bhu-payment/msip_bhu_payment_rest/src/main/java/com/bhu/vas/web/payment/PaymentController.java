@@ -357,10 +357,6 @@ public class PaymentController extends BaseController{
 			//判断非空参数
 			if (StringUtils.isBlank(ua)) {
 				 ua = request.getHeader("User-Agent"); 
-//				logger.error(String.format("apply payment judgmentChannels ua[%s]", ua));
-//				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-//						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
-//				return;
 			}
 			if (StringUtils.isBlank(secret)) {
 				logger.error(String.format("apply payment judgmentChannels secret[%s]", secret));
@@ -401,14 +397,6 @@ public class PaymentController extends BaseController{
 				return;
 			}
 			System.out.println("当前用户手机浏览器信息："+ua);
-			/////
-//			String userAgents = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36";
-//			String userAgents = "User-Agent: Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1";
-//			String userAgents = "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0); 360Spider";
-//	    	String userAgents ="Mozilla/5.0 (Linux; Android 5.0.2; SAMSUNG SM-A5000 Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/3.3 Chrome/38.0.2125.102 Mobile Safari/537.36";
-	    	//String userAgents ="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586";
-//	    	String userAgents ="Mozilla/5.0 (Linux; U; Android 5.1; zh-CN; m2 note Build/LMY47D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 UCBrowser/10.10.8.822 U3/0.8.0 Mobile Safari/534.30";
-	    	
 	    	UserAgent userAgent = UserAgent.parseUserAgentString(ua);  
 			Browser browser = userAgent.getBrowser(); 
 			Version browserVersion = userAgent.getBrowserVersion();
@@ -423,20 +411,6 @@ public class PaymentController extends BaseController{
 			System.out.println("OS ID:"+os.getId());
 			System.out.println("OS DeviceType:"+os.getDeviceType());
 			System.out.println("OS Manufacturer:"+os.getManufacturer());
-//			PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEIXIN");
-//			//PaymentParameter paymentParameter = paymentParameterService.findByName("WAP_WEI_XIN");
-//			paymentParameter.setStatus(level);
-//			paymentParameter.setUpdated_at(new Date());
-//			paymentParameter.setValue(value);
-//			paymentParameter.setCharge_rate(rate);
-//			PaymentParameter paymentVTO =paymentParameterService.update(paymentParameter);
-//			if(paymentVTO != null){
-//				logger.info(String.format("update_payment order status success result [%s]", JsonHelper.getJSONString(paymentVTO)));
-//				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(paymentVTO));
-//				return;
-//			}else{
-//				logger.info(String.format("update_payment order status error result [%s]", ResponseErrorCode.VALIDATE_COMMDITY_DATA_NOTEXIST));
-//			}
 		}catch(BusinessI18nCodeException i18nex){
 			SendMailHelper.doSendMail(3,"judgmentChannels接口："+i18nex.getMessage()+i18nex.getCause());
 			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
@@ -659,7 +633,7 @@ public class PaymentController extends BaseController{
     			ResponsePaymentDTO respone = new ResponsePaymentDTO();
     			respone.setSuccess(false);
     			respone.setMsg(msg);
-    			logger.info(String.format("apply payment return result [%s]",JsonHelper.getJSONString(respone)));
+    			logger.info(String.format("apply withdrawals return result [%s]",JsonHelper.getJSONString(respone)));
     			SpringMVCHelper.renderJson(response, JsonHelper.getJSONString(respone));
     		}else{
     			logger.info(String.format("apply withdrawals return result [%s]",JsonHelper.getJSONString(result)));
@@ -820,10 +794,10 @@ public class PaymentController extends BaseController{
     		PaymentReckoning paymentReckoning = paymentReckoningService.findByOrderId(goods_no);
     		long select_isExist_end = System.currentTimeMillis() - select_isExist_begin; // 这段代码放在程序执行后
     		logger.info(goods_no+"查询订单是否存在耗时：" + select_isExist_end + "毫秒");
-        	if(paymentReckoning != null){
-        		logger.error(String.format("apply payment goods_no [%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
-        		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
-        	}
+//        	if(paymentReckoning != null){
+//        		logger.error(String.format("apply payment goods_no [%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
+//        		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
+//        	}
         	umac = BusinessHelper.formatMac(umac);
         	PaymentChannelCode paymentChannel = PaymentChannelCode.getPaymentChannelCodeByCode(payment_type);
     		switch(paymentChannel){
@@ -852,22 +826,9 @@ public class PaymentController extends BaseController{
     				logger.info(goods_no+"App支付宝耗时：" + APP_ALIPAY_end + "毫秒");
     				break;
     			case BHU_WAP_WEIXIN: //汇付宝
-    				if(channel.equals("2")){
-    					long WAP_WEIXIN_NATIVE_begin = System.currentTimeMillis();
-    					result =  doNativeWxPayment(request,response,channel,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
-    					long WAP_WEIXIN_NATIVE_end = System.currentTimeMillis() -  WAP_WEIXIN_NATIVE_begin; 
-        				logger.info(goods_no+"WAP微信他人代付耗时：" + WAP_WEIXIN_NATIVE_end + "毫秒");
-    				}else if(channel.equals("3")){
-    					long WAP_WEIXIN_NATIVE_begin = System.currentTimeMillis();
-    					result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid,channel);
-    					long WAP_WEIXIN_NATIVE_end = System.currentTimeMillis() -  WAP_WEIXIN_NATIVE_begin; 
-        				logger.info(goods_no+"utool耗时：" + WAP_WEIXIN_NATIVE_end + "毫秒");
-    				}else if(channel.equals("4")){
-    					long WAP_WEIXIN_NATIVE_begin = System.currentTimeMillis();
-    					result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid,channel);
-    					long WAP_WEIXIN_NATIVE_end = System.currentTimeMillis() -  WAP_WEIXIN_NATIVE_begin; 
-        				logger.info(goods_no+"必虎wifi管家app耗时：" + WAP_WEIXIN_NATIVE_end + "毫秒");
-    				}else{
+    				int channelI = Integer.parseInt(channel);
+    				switch (channelI) {
+    				case 0:
     					long get_agentMerchant_begin = System.currentTimeMillis();
     					String agentMerchant = payLogicService.findWapWeixinMerchantServiceByCondition();
     					long get_agentMerchant_end = System.currentTimeMillis() -  get_agentMerchant_begin; 
@@ -885,6 +846,8 @@ public class PaymentController extends BaseController{
         					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         					long WAP_WEIXIN_Now_end = System.currentTimeMillis() - WAP_WEIXIN_Now_begin; 
             				logger.info(goods_no+"Wap微信现在支付获取支付url耗时：" + WAP_WEIXIN_Now_end + "毫秒");
+            				long end = System.currentTimeMillis() - begin;
+            	    		logger.info(goods_no+"Wap微信现在支付，逻辑处理完成耗时：" + end + "毫秒！！！！！！");
         				}else if(agentMerchant.equals("Midas")){
         					long WAP_WEIXIN_MIDSA_begin = System.currentTimeMillis();
         					result =  doMidas(response,version,"1", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
@@ -900,8 +863,34 @@ public class PaymentController extends BaseController{
         					result =  doNowpay(response,"4", total_fee, goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid); 
         					long WAP_WEIXIN_Now_end = System.currentTimeMillis() - WAP_WEIXIN_Now_begin; 
             				logger.info(goods_no+"Wap微信现在支付获取支付url耗时：" + WAP_WEIXIN_Now_end + "毫秒");
+            				long end = System.currentTimeMillis() - begin;
+            	    		logger.info(goods_no+"Wap微信现在支付，逻辑处理完成耗时：" + end + "毫秒！！！！！！");
         				}
-    				}
+    					break;
+					case 2:
+						long WAP_WEIXIN_NATIVE_begin = System.currentTimeMillis();
+    					result =  doNativeWxPayment(request,response,channel,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid);
+    					long WAP_WEIXIN_NATIVE_end = System.currentTimeMillis() -  WAP_WEIXIN_NATIVE_begin; 
+        				logger.info(goods_no+"WAP微信他人代付耗时：" + WAP_WEIXIN_NATIVE_end + "毫秒");
+						break;
+					case 3:
+						long B_WEIXIN_NATIVE_begin = System.currentTimeMillis();
+    					result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid,channel);
+    					long B_WEIXIN_NATIVE_end = System.currentTimeMillis() -  B_WEIXIN_NATIVE_begin; 
+        				logger.info(goods_no+"utool耗时：" + B_WEIXIN_NATIVE_end + "毫秒");
+						break;
+					case 4:
+						long A_WEIXIN_NATIVE_begin = System.currentTimeMillis();
+    					result =  doAppWxPayment(request,response,total_fee,goods_no,exter_invoke_ip,payment_completed_url,umac,paymentName,appid,channel);
+    					long A_WEIXIN_NATIVE_end = System.currentTimeMillis() -  A_WEIXIN_NATIVE_begin; 
+        				logger.info(goods_no+"必虎wifi管家app耗时：" + A_WEIXIN_NATIVE_end + "毫秒");
+						break;
+
+					default:
+						logger.info(String.format("apply payment payment_type [%s]",payment_type + ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+	        					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT))));
+						break;
+					}
                 	break;
     			case BHU_WAP_ALIPAY: //Wap微信支付
     				long WAP_ALIPAY_begin = System.currentTimeMillis();
@@ -916,7 +905,9 @@ public class PaymentController extends BaseController{
         					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT)));
     				break;
     		}
-        	
+    		long end = System.currentTimeMillis() - begin;
+    		logger.info(goods_no+"逻辑处理完成耗时：" + end + "毫秒！！！！！！");
+    		
     		String types = result.getType();
     		String msg = result.getUrl();
     		if(types.equalsIgnoreCase("FAIL")){

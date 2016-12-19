@@ -7,6 +7,9 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
+import com.bhu.vas.business.helper.BusinessHelper;
+import com.smartwork.msip.localunit.RandomPicker;
+
 /**
  * java发送post请求
  * 
@@ -27,13 +30,20 @@ public class PostRequestUtil {
 		//huaxinlianchuang   100032
 		//http://sms.chanzor.com:8001/sms.aspx?action=send&userid=&account=账号&password=密码&mobile=手机号&sendTime=&content=内容
 //		String aa = "action=send&userid=&account=huaxinlianchuang&password=100032&mobile=15127166171&sendTime=&content=验证码123455请勿将验证码泄露给他人【必虎】";
-		String aa = "result=1&pay_message=&agent_id=2069082&jnet_bill_no=H1612068664835AM&agent_bill_id=PROWPWX1480986364582ieja&pay_type=30&pay_amt=0.35&remark=&sign=55982346017a69747c4ca53042d0c8de";
-		Object sr = sendPost("http://localhost:8080/msip_bhu_payment_rest/payment/heepayNotifySuccess", aa);
+		
+		for (int i = 0; i < 10000; i++) {
+			String goodNo = RandomPicker.randString(BusinessHelper.letters, 10);
+			String aa = "secret=1F915A8DA370422582CBAC1DB6A806DD&appid=1000&"
+					+ "payment_type=PcWeixin&total_fee=0.01&umac=ws:ww:22&goods_no="+goodNo;
+			Object sr = sendPost("http://pays.bhuwifi.com/msip_bhu_payment_rest/payment/submitPayment", aa);
+//			System.out.println( sr);
+			
+		}
+		
 //		String aa = "action=send&userid=&account=huaxinlianchuang&password=100032&mobile=18515465766&sendTime=&content=验证码123455请勿将验证码泄露给他人【必虎】";
 //		Object sr = sendPost("http://sms.chanzor.com:8001/sms.aspx", aa);
 		//Object sr = sendPost("http://m.api.dianping.com/tohome/openapi/jiadianguanjia/", par);
 
-		System.out.println( sr);
 	}
 
 	public static String sendPost(String url, String param) {
@@ -51,6 +61,8 @@ public class PostRequestUtil {
 			conn.setRequestProperty("user-agent",
 					"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
 			// 发送POST请求必须设置如下两行
+			conn.setConnectTimeout(2000);  
+			conn.setReadTimeout(3000);
 			conn.setDoOutput(true);
 			conn.setDoInput(true);
 			// 获取URLConnection对象对应的输出流
