@@ -493,7 +493,7 @@ public class AsyncOrderPaymentNotifyService{
 			hotplayOrderPaymentHandle(order, success, bindUser, paymented_ds, 
 					payment_type, payment_proxy_type);
 			break;
-		case RewardMonthlyServiceLimit:
+		case PhysicalPresentInternetLimit:
 			physicalOrderPaymentHandle(order, success, bindUser, paymented_ds, 
 					payment_type, payment_proxy_type, accessInternetTime);
 		default:
