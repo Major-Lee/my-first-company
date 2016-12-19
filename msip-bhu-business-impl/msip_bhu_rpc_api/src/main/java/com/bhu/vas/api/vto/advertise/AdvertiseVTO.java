@@ -25,6 +25,7 @@ public class AdvertiseVTO implements java.io.Serializable{
 	//广告覆盖的设备数
 	private long count;
 	private int state;
+	private String extparams;
 	private String reject_reason;
 	
 	private Date create_at;
@@ -154,5 +155,10 @@ public class AdvertiseVTO implements java.io.Serializable{
 	public void setCount(long count) {
 		this.count = count;
 	}
-	
+	public String getExtparams() {
+		return extparams;
+	}
+	public void setExtparams(String extparams) {
+		this.extparams = extparams;
+	}
 }

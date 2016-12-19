@@ -55,6 +55,8 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	private Date created_at;
 	private Date updated_at;
 	
+	private String extparams;
+	
 	public Advertise() {
 		super();
 	}
@@ -213,6 +215,14 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	public void setSign(boolean sign) {
 		this.sign = sign;
 	}
+	
+	public String getExtparams() {
+		return extparams;
+	}
+
+	public void setExtparams(String extparams) {
+		this.extparams = extparams;
+	}
 
 	@Override
 	public void preInsert() {
@@ -249,6 +259,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		singleAdvertise.setDomain(this.domain);
 		singleAdvertise.setReject_reason(this.reject_reason);
 		singleAdvertise.setCreate_at(this.created_at);
+		singleAdvertise.setExtparams(this.extparams);
 		return singleAdvertise;
 	}
 	
@@ -268,7 +279,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		adMap.put("start", this.start+"");
 		adMap.put("end", this.end+"");
 		adMap.put("count", this.count+"");
-		
+		adMap.put("extparams", this.extparams);
 		return adMap;
 	}
 	

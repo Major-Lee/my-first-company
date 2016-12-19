@@ -52,7 +52,8 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = true) String description,
             @RequestParam(required = true) String title,
             @RequestParam(required = true) long start,
-            @RequestParam(required = true) long end
+            @RequestParam(required = true) long end,
+            @RequestParam(required = false) String extparams
             ) {
 		try{
 			RpcResponseDTO<AdvertiseVTO> rpcResult = advertiseRpcService.createNewAdvertise

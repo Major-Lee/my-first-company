@@ -80,7 +80,7 @@ public class AdvertiseUnitFacadeService {
 
 	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,
 			int type,String image, String url,String domain, String province, String city,
-			String district,String description,String title, long start, long end) throws ParseException {
+			String district,String description,String title, long start, long end,String extparams) throws ParseException {
 			
 			Date endDate=new Date(end);
 			Date startDate=new Date(start);
@@ -152,6 +152,7 @@ public class AdvertiseUnitFacadeService {
 			long between_days = (end - start) / (1000 * 3600 * 24);
 			int duration=Integer.parseInt(String.valueOf(between_days));
 			entity.setDuration(duration);
+			entity.setExtparams(extparams);
 
 			
 			
