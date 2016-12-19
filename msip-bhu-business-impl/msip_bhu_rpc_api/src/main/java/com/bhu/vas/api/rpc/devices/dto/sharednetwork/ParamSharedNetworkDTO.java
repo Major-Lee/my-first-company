@@ -1,5 +1,7 @@
 package com.bhu.vas.api.rpc.devices.dto.sharednetwork;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.DistributorType;
@@ -49,7 +51,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private String open_resource;
 
 	@JsonInclude(Include.NON_NULL)
-	private String open_mac;
+	private List<OpenMacDTO> open_macs;
 
 	@JsonInclude(Include.NON_NULL)
 	private String open_resource_ad; //全城热播所使用的广告所需要放行的白名单
@@ -124,7 +126,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[10] = idle_timeout;
 				properties[11] = force_timeout;
 				properties[12] = combineOpenResource();
-				properties[13] = open_mac;
+				properties[13] = getOpen_mac_string();
 				properties[14] = redirect_url;
 			}else{//单频
 				properties = new Object[12];
@@ -143,7 +145,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[7] = idle_timeout;
 				properties[8] = force_timeout;
 				properties[9] = combineOpenResource();
-				properties[10] = open_mac;
+				properties[10] = getOpen_mac_string();
 				properties[11] = redirect_url;
 			}
 		}else{
@@ -167,7 +169,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[10] = idle_timeout;
 				properties[11] = force_timeout;
 				properties[12] = combineOpenResource();
-				properties[13] = open_mac;
+				properties[13] = getOpen_mac_string();
 				properties[14] = remote_auth_url;
 				properties[15] = portal_server_url;
 				properties[16] = dns_default_ip;
@@ -188,7 +190,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				properties[7] = idle_timeout;
 				properties[8] = force_timeout;
 				properties[9] = combineOpenResource();
-				properties[10] = open_mac;
+				properties[10] = getOpen_mac_string();
 				properties[11] = remote_auth_url;
 				properties[12] = portal_server_url;
 				properties[13] = dns_default_ip;
@@ -441,7 +443,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			if(StringUtils.isEmpty(param.getOpen_resource())) {
 				param.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_Uplink_Open_resource);
 			}
-			param.setOpen_mac(null);
+//			param.setOpen_mac(null);
 		}else{
 			if(SharedNetworkType.SafeSecure.getKey().equals(param.getNtype())){
 				if(StringUtils.isEmpty(param.getSsid())){
@@ -483,7 +485,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			if(StringUtils.isEmpty(param.getOpen_resource())) {
 				param.setOpen_resource(BusinessRuntimeConfiguration.SharedNetworkWifi_Default_SafeSecure_Open_resource);
 			}
-			param.setOpen_mac(null);
+//			param.setOpen_mac(null);
 		}
 		return param;
 	}
@@ -528,9 +530,11 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(paramDTO.getForce_timeout() != dbDTO.getForce_timeout()) return true;
 		if(paramDTO.getMax_clients() != dbDTO.getMax_clients()) return true;
 		if(!paramDTO.getOpen_resource().equals(dbDTO.getOpen_resource())) return true;
-		if((StringUtils.isEmpty(paramDTO.getOpen_mac()) && StringUtils.isNotEmpty(dbDTO.getOpen_mac())) ||
-				(paramDTO.getOpen_mac() != null  && !paramDTO.getOpen_mac().equals(dbDTO.getOpen_mac())))
-			return true;
+		
+		if((paramDTO.getOpen_macs() == null || paramDTO.getOpen_macs().isEmpty()) && (dbDTO.getOpen_macs() == null || dbDTO.getOpen_macs().isEmpty())) return true;
+		//只比较size, 具体内容不做比对
+		if(paramDTO.getOpen_macs() != null && dbDTO.getOpen_macs() != null && paramDTO.getOpen_macs().size() == dbDTO.getOpen_macs().size()) return true;
+
 
 		
 		if(SharedNetworkType.Uplink.getKey().equals(paramDTO.getNtype())){
@@ -622,11 +626,27 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		this.open_resource_ad = open_resource_ad;
 	}
 	
-	public String getOpen_mac() {
-		return open_mac;
+	public List<OpenMacDTO> getOpen_macs() {
+		return open_macs;
 	}
-	public void setOpen_mac(String open_mac) {
-		this.open_mac = open_mac;
+	public void setOpen_macs(List<OpenMacDTO> open_mac) {
+		this.open_macs = open_mac;
+	}
+	
+	private String getOpen_mac_string(){
+		if(open_macs == null || open_macs.isEmpty())
+			return null;
+		StringBuffer sb = new StringBuffer();
+		int count = 0;
+		for(OpenMacDTO dto:open_macs){
+			if(!StringHelper.isValidMac(dto.getMac()))
+				continue;
+			if(count != 0)
+				sb.append(StringHelper.COMMA_STRING_GAP);
+			sb.append(dto.getMac());
+			count ++;
+		}
+		return sb.toString();
 	}
 	public static void main(String[] argv){
 /*		System.out.println(String.format(DeviceHelper.DeviceSetting_Start_SharedNetworkWifi_Uplink, ParamSharedNetworkDTO.builderDefault(null, true).builderProperties()));
