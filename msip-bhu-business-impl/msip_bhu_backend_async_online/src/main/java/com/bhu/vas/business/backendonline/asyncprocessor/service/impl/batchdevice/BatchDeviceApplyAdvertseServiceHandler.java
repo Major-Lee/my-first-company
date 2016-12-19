@@ -141,7 +141,6 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 						break;
 					case IDTO.ACT_UPDATE:
 						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad));;
-						AdvertiseDetailsHashService.getInstance().advertiseInfo(ad.getId(), ad.toMap());
 						advertiSesnapshot(ad, start, macList.size());
 						break;
 					default:
