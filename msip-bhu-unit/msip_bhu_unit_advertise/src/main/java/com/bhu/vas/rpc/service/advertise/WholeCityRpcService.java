@@ -58,7 +58,7 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		if(start>end){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIME_TIMEERROR);
 		}
-		return advertiseUnitFacadeService.createNewAdvertise(uid,type, image, url,domain, province, city, district,description,title, start, end);
+		return advertiseUnitFacadeService.createNewAdvertise(uid,type, image, url,domain, province, city, district,description,title, start, end,extparams);
 	}
 
 	@Override
