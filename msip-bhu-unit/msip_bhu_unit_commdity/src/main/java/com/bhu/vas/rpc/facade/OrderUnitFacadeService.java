@@ -176,23 +176,19 @@ public class OrderUnitFacadeService {
 			
 			//生成订单
 			String mac_dut = WifiDeviceHelper.stDevice(wifiDevice.getOrig_swver());
-			Order order = null;
-			switch (commdityid.intValue()) {
-			case BusinessRuntimeConfiguration.Reward_Monthly_Internet_Commdity_ID:
-				order = orderFacadeService.createRewardMonthlyInternetOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
-						bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent, channel);
-				break;
-			case BusinessRuntimeConfiguration.Reward_Internet_Commdity_ID:
-			default:
-				order = orderFacadeService.createRewardOrder(commdityid, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
-						bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent, channel);
-				break;
-			}
+			//商品信息验证
+			//验证商品是否合法
+			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+			
+			Order order = orderFacadeService.createRewardOrder(commdity, BusinessEnumType.CommdityApplication.DEFAULT.getKey(), 
+					bindUser, mac_lower, mac_dut, umac_lower, umactype, payment_type, context, user_agent, channel);
 				
 			commdityMessageService.sendOrderCreatedMessage(order.getId());
 
 			OrderRewardVTO orderVto = new OrderRewardVTO();
 			BeanUtils.copyProperties(order, orderVto);
+			orderVto.setGoods_name(commdity.getName());
+			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

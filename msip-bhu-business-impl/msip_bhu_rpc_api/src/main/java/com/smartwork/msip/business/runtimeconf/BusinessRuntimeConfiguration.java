@@ -469,7 +469,10 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static int SharedNetworksTemplateMaxLimit = 50;
 	
 	public static final int Reward_Internet_Commdity_ID = 1;
-	public static final int Reward_Monthly_Internet_Commdity_ID = 16;
+	public static final int Reward_Month_Internet_Commdity_ID = 16;
+	public static final int Reward_Day_Internet_Commdity_ID = 22;
+	public static final int Reward_Week_Internet_Commdity_ID = 23;
+	
 	
 	public static String UserPortalUpdate2UPortalApi = "http://ucloud.bhuwifi.com:9158/portal/set/recreate";
 	public static String UserPortalChargingNotify2UPortalApi = "http://ucloud.bhuwifi.com:9158/common/api/save-status";

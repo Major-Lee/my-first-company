@@ -32,6 +32,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
 import com.bhu.vas.api.helper.PaymentNotifyFactoryBuilder;
 import com.bhu.vas.api.helper.PermissionThroughNotifyFactoryBuilder;
+import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
@@ -42,11 +43,13 @@ import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
+import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
 import com.bhu.vas.business.ds.commdity.service.CommdityService;
 import com.bhu.vas.business.ds.commdity.service.OrderService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -77,7 +80,8 @@ public class OrderFacadeService {
 	
 	@Resource
 	private UserWalletFacadeService userWalletFacadeService;
-	
+	@Resource
+	private ChargingFacadeService chargingFacadeService;
 	/**
 	 * 查询最近的一条满足条件的订单
 	 * 主要条件为umac
@@ -254,26 +258,24 @@ public class OrderFacadeService {
 	 * @param user_agent 
 	 * @return
 	 */
-	public Order createRewardOrder(Integer commdityid, Integer appid, User bindUser, String mac, 
+	public Order createRewardOrder(Commdity commdity, Integer appid, User bindUser, String mac, 
 			String mac_dut, String umac, Integer umactype, String payment_type, String context, String user_agent,
 			Integer channel){
-		//商品信息验证
-		//验证商品是否合法
-		Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
-		//验证商品是否合理
-		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardInternetLimit)){
-			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
-		}
-		
+		String amount = null;
 		//验证缓存中的商品金额
-		String amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid, umactype);
+		if (commdity.getId() == BusinessRuntimeConfiguration.Reward_Internet_Commdity_ID){
+			amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdity.getId(), umactype);
+		}else{
+			amount = CommdityHelper.generateCommdityAmount(chargingFacadeService.fetchAccessInternetCardAmountRange(commdity, umactype));
+			
+		}
 		if(StringUtils.isEmpty(amount)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_INVALID);
 		}
 		
 		//订单生成
 		Order order = new Order();
-		order.setCommdityid(commdityid);
+		order.setCommdityid(commdity.getId());
 		order.setAppid(appid);
 		if(bindUser != null){
 			order.setUid(bindUser.getId());

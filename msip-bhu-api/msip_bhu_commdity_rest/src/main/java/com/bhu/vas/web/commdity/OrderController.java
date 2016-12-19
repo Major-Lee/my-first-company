@@ -83,8 +83,10 @@ public class OrderController extends BaseController{
 		String order_amount = order_vto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
+		String goods_name = order_vto.getGoods_name();
+		
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
-				order_amount, requestIp, umac, orderid, payment_completed_url,channel+"",version,null,null);
+				order_amount, requestIp, umac, orderid, payment_completed_url,channel+"",version,goods_name,null);
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
 					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID)));

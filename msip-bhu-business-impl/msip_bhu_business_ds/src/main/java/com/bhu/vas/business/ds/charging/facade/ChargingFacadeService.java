@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.api.dto.DistributorType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.helper.VapEnumType;
 import com.bhu.vas.api.helper.WifiDeviceHelper;
@@ -19,6 +18,7 @@ import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
+import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -32,6 +32,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.facade.UserWifiDeviceFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -833,4 +834,35 @@ public class ChargingFacadeService {
 		}
 	}
 	public static final int InternetSpeedsUnit = 128;
+	
+	public String fetchAccessInternetCardAmountRange(Commdity commdity,Integer umactype){
+		String amount = null;
+		switch (commdity.getId()) {
+		case BusinessRuntimeConfiguration.Reward_Month_Internet_Commdity_ID:
+			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
+				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Pc_For_Month;
+			}else{
+				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Mobile_For_Month;
+			}
+			break;
+		case BusinessRuntimeConfiguration.Reward_Week_Internet_Commdity_ID:
+			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
+				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Pc_For_Week;
+			}else{
+				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Mobile_For_Week;
+			}
+			break;
+		case BusinessRuntimeConfiguration.Reward_Day_Internet_Commdity_ID:
+			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
+				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Pc_For_Day;
+			}else{
+				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Mobile_For_Day;
+			}
+			break;
+
+		default:
+			break;
+		}
+		return amount;
+	}
 }
