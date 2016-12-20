@@ -1704,7 +1704,12 @@ public class UserWalletUnitFacadeService {
 		 return formater.format(b);
 	}
 	public static void main(String[] args) {
-		System.out.println(getDaysList("2016-11-01", "2016-11-11"));
+		//System.out.println(getDaysList("2016-11-01", "2016-11-11"));
+		String ss="0.0005";
+		double e=Double.valueOf(ss);
+		System.out.println(e);
+		String se=String.valueOf(e);
+		System.out.println(se);
 		//System.out.println(GetDateTime("yyyy-MM-dd", 0));
 		//System.out.println(doubleCut2(2.356,2));
 	}
@@ -1829,7 +1834,7 @@ public class UserWalletUnitFacadeService {
 				for(UserWalletLog i:logs){
 					UserWalletRewardVTO rewardVTO=new UserWalletRewardVTO();
 					double cash=Double.valueOf(i.getCash());
-					rewardVTO.setCash(String.valueOf(cash));
+					rewardVTO.setCash(i.getCash());
 					rewardVTO.setDealMethod(i.getTranstype_desc());
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					
