@@ -67,7 +67,7 @@ public class MessageSystemHashService extends AbstractRelationHashCache{
     
     @Override
     public JedisPool getRedisPool() {
-        return RedisPoolManager.getInstance().getPool(RedisKeyEnum.COMMDITY);
+        return RedisPoolManager.getInstance().getPool(RedisKeyEnum.MESSAGESYS);
     }
 
 }
