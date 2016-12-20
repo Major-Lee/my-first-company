@@ -934,7 +934,7 @@ public class OrderFacadeService {
 			Integer umactype, User bindUser, String context, Integer channel, 
 			String user_agent, int count, String acc, String uname, String address, boolean needInvoice, String invoiceDetail) {
 		//验证商品是否合理
-		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.RewardMonthlyServiceLimit)){
+		if(!CommdityCategory.correct(commdity.getCategory(), CommdityCategory.PhysicalPresentInternetLimit)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_DATA_ILLEGAL);
 		}
 		String amount = ArithHelper.
