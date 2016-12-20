@@ -131,7 +131,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 					case IDTO.ACT_ADD:
 						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
 							macList, JsonHelper.getJSONString(ad));
-						AdvertiseDetailsHashService.getInstance().advertiseInfo(ad.getId(), ad.toMap());
+//						AdvertiseDetailsHashService.getInstance().advertiseInfo(ad.getId(), ad.toMap());
 						advertiSesnapshot(ad, start, macList.size());
 						deviceLimitDomain(batch, macList, ad.getDomain(),IDTO.ACT_ADD, ad);
 						break;
