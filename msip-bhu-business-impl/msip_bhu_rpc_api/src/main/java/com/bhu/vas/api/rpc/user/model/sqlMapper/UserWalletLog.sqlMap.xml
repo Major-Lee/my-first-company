@@ -15,6 +15,7 @@
     <result property="rmoney" column="rmoney"/>
     <result property="cash" column="cash"/>
     <result property="vcurrency" column="vcurrency"/>
+    <result property="sharedeal_amount" column="sharedeal_amount"/>
     <result property="mac" column="mac"/>
     <result property="umac" column="umac"/>
     <result property="current_gpath" column="current_gpath"/>
@@ -69,6 +70,7 @@
 	    	rmoney,
 	    	cash,
 	    	vcurrency,
+	    	sharedeal_amount,
 	    	mac,
 	    	umac,
 	    	current_gpath,
@@ -89,6 +91,7 @@
 	    	rmoney,
 	    	cash,
 	    	vcurrency,
+	    	sharedeal_amount,
 	    	mac,
 	    	umac,
 	    	current_gpath,
@@ -110,6 +113,7 @@
 	    	#{rmoney},
 	    	#{cash},
 	    	#{vcurrency},
+	    	#{sharedeal_amount},
 	    	#{mac},
 	    	#{umac},
 	    	#{current_gpath},
@@ -129,6 +133,7 @@
 	    	rmoney = #{rmoney},
 	    	cash = #{cash},
 	    	vcurrency = #{vcurrency},
+	    	sharedeal_amount = #{sharedeal_amount},
 	    	mac = #{mac},
 	    	umac = #{umac},
 	    	current_gpath = #{current_gpath},

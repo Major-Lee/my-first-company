@@ -30,6 +30,8 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 	private String cash;
 	//交易虚拟币相关
 	private String vcurrency;
+	//总分润金额
+	private String sharedeal_amount;
 	
 	//当前时间 打赏收益 冗余字段 设备mac
 	private String mac;
@@ -138,6 +140,14 @@ public class UserWalletLog extends BaseLongModel{// implements IRedisSequenceGen
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getSharedeal_amount() {
+		return sharedeal_amount;
+	}
+
+	public void setSharedeal_amount(String sharedeal_amount) {
+		this.sharedeal_amount = sharedeal_amount;
 	}
 
 	public UserWalletLogVTO toUserWalletLogVTO(String mobileno,String nick){

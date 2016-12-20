@@ -60,6 +60,8 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 	private Date pay_time;	//订单时间
 	@IN(jdbcType = JdbcType.INTEGER)
 	private long detail_id=-1;	//广告分成时为广告分成明细id
+	@IN(jdbcType = JdbcType.DOUBLE)
+	private double sharedeal_amount;	//分润总金额
 
 	
 	public long getDetail_id() {
@@ -230,6 +232,15 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 		this.distributor_l2_memo = distributor_l2_memo;
 	}
 
+	
+	public double getSharedeal_amount() {
+		return sharedeal_amount;
+	}
+
+	public void setSharedeal_amount(double sharedeal_amount) {
+		this.sharedeal_amount = sharedeal_amount;
+	}
+
 	@Override
 	public String getName() {
 		return "msip_bhu_core.sharedeal";
@@ -237,6 +248,7 @@ public class ShareDealWalletProcedureDTO extends AbstractProcedureDTO {
 
 	public static ShareDealWalletProcedureDTO buildWith(SharedealInfo sharedeal){
 		ShareDealWalletProcedureDTO dto = new ShareDealWalletProcedureDTO();
+		dto.setSharedeal_amount(sharedeal.getCash());
 		dto.setMac(sharedeal.getMac());
 		dto.setUmac(sharedeal.getUmac());
 		dto.setOrderid(sharedeal.getOrderid());
