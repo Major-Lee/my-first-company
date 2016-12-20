@@ -1843,15 +1843,19 @@ public class UserWalletUnitFacadeService {
 					rewardVTO.setMac(i.getMac());
 					rewardVTO.setRole(i.getRole());
 					rewardVTO.setDealCash(i.getSharedeal_amount());
+					if(i.getSharedeal_amount()!=null){
+						int amount=(int) (Double.valueOf(i.getSharedeal_amount())*10000);
+						int cashInt=(int) (cash*1000000);
+						
+						int rateInt=cashInt/amount;
+						
+						String rate=String.valueOf(rateInt);
+						
+						rewardVTO.setRate(rate+"%");
+					}else{
+						rewardVTO.setRate("-");
+					}
 					
-					int amount=(int) (Double.valueOf(i.getSharedeal_amount())*10000);
-					int cashInt=(int) (cash*1000000);
-					
-					int rateInt=cashInt/amount;
-					
-					String rate=String.valueOf(rateInt);
-					
-					rewardVTO.setRate(rate+"%");
 					
 					if(!i.getTranstype().equals("A2C")){
 						rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(i.getUmac(),true,false));
