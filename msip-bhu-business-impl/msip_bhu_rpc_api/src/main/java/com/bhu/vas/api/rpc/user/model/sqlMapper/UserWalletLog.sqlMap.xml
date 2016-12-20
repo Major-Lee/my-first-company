@@ -364,7 +364,7 @@
 		</if>
 	</select>
 	<select id="countDealIncome" resultType="Map" parameterType="Map">
-		SELECT SUM(a.amount) as amount FROM( 	SELECT amount from t_vas_users_wallet_log l,msip_bhu_commdity.t_commdity_orders o WHERE  l.orderid=o.id and l.transmode='SDP'  	
+		SELECT SUM(a.sharedeal_amount) as amount FROM( 	SELECT sharedeal_amount from t_vas_users_wallet_log l,msip_bhu_commdity.t_commdity_orders o WHERE  l.orderid=o.id and l.transmode='SDP'  	
 		<if test="uid!=null">
 			and l.uid=#{uid} 
 		</if>
