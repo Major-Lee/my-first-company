@@ -1842,25 +1842,25 @@ public class UserWalletUnitFacadeService {
 					rewardVTO.setDescription(i.getDescription());
 					rewardVTO.setMac(i.getMac());
 					rewardVTO.setRole(i.getRole());
-					Order order=orderService.getById(i.getOrderid());
-					if(order!=null){
-						rewardVTO.setDealCash(order.getAmount());
-						int amount=(int) (Double.valueOf(order.getAmount())*10000);
-						int cashInt=(int) (cash*1000000);
-						
-						int rateInt=cashInt/amount;
-						
-						String rate=String.valueOf(rateInt);
-						
-						rewardVTO.setRate(rate+"%");
-						if(!i.getTranstype().equals("A2C")){
-							rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
-							rewardVTO.setUmac(order.getUmac());
-						}else{
-							rewardVTO.setUmac_mf("-");
-							rewardVTO.setUmac("-");
-						}
+					rewardVTO.setDealCash(i.getSharedeal_amount());
+					
+					int amount=(int) (Double.valueOf(i.getSharedeal_amount())*10000);
+					int cashInt=(int) (cash*1000000);
+					
+					int rateInt=cashInt/amount;
+					
+					String rate=String.valueOf(rateInt);
+					
+					rewardVTO.setRate(rate+"%");
+					
+					if(!i.getTranstype().equals("A2C")){
+						rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(i.getUmac(),true,false));
+						rewardVTO.setUmac(i.getUmac());
+					}else{
+						rewardVTO.setUmac_mf("-");
+						rewardVTO.setUmac("-");
 					}
+					
 					retDtos.add(rewardVTO);
 				}
 			}
