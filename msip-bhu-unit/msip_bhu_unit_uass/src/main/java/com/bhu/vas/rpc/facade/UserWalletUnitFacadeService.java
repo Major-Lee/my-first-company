@@ -1842,8 +1842,8 @@ public class UserWalletUnitFacadeService {
 					rewardVTO.setDescription(i.getDescription());
 					rewardVTO.setMac(i.getMac());
 					rewardVTO.setRole(i.getRole());
-					rewardVTO.setDealCash(i.getSharedeal_amount());
 					if(i.getSharedeal_amount()!=null){
+						rewardVTO.setDealCash(i.getSharedeal_amount());
 						int amount=(int) (Double.valueOf(i.getSharedeal_amount())*10000);
 						int cashInt=(int) (cash*1000000);
 						
@@ -1853,6 +1853,7 @@ public class UserWalletUnitFacadeService {
 						
 						rewardVTO.setRate(rate+"%");
 					}else{
+						rewardVTO.setDealCash("-");
 						rewardVTO.setRate("-");
 					}
 					
