@@ -278,7 +278,7 @@
 	    	<if test="role != null">
 	    		AND t_walletlog.role = #{role}
 	    	</if>
-	    	ORDER BY t_orders.updated_at DESC
+	    	ORDER BY t_walletlog.updated_at DESC
 	    	limit #{limit} OFFSET #{start}
 	    </where> 
 	</select>
