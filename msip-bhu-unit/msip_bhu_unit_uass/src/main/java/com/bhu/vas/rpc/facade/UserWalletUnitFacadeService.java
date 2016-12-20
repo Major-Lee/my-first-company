@@ -1840,7 +1840,11 @@ public class UserWalletUnitFacadeService {
 					
 					rewardVTO.setDealTime(sdf.format(i.getUpdated_at()));
 					rewardVTO.setDescription(i.getDescription());
-					rewardVTO.setMac(i.getMac());
+					if(i.getMac()!=null){
+						rewardVTO.setMac(i.getMac());
+					}else{
+						rewardVTO.setMac("-");
+					}
 					rewardVTO.setRole(i.getRole());
 					if(i.getSharedeal_amount()!=null){
 						rewardVTO.setDealCash(i.getSharedeal_amount());
