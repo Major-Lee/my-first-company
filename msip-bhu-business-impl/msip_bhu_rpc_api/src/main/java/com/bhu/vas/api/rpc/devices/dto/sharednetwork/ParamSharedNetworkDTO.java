@@ -50,7 +50,7 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	private int force_timeout;
 	private String open_resource;
 
-	@JsonInclude(Include.NON_NULL)
+//	@JsonInclude(Include.NON_NULL)
 	private List<OpenMacDTO> open_macs;
 
 	@JsonInclude(Include.NON_NULL)
@@ -531,11 +531,15 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(paramDTO.getMax_clients() != dbDTO.getMax_clients()) return true;
 		if(!paramDTO.getOpen_resource().equals(dbDTO.getOpen_resource())) return true;
 		
-		if((paramDTO.getOpen_macs() == null || paramDTO.getOpen_macs().isEmpty()) && (dbDTO.getOpen_macs() == null || dbDTO.getOpen_macs().isEmpty())) return true;
-		//只比较size, 具体内容不做比对
-		if(paramDTO.getOpen_macs() != null && dbDTO.getOpen_macs() != null && paramDTO.getOpen_macs().size() == dbDTO.getOpen_macs().size()) return true;
-
-
+		String paramStr = paramDTO.getOpen_mac_string();
+		String dbdtoStr = dbDTO.getOpen_mac_string();
+	
+		if(StringUtils.isEmpty(paramStr)){
+			if(StringUtils.isNotEmpty(dbdtoStr))
+				return true;
+		} else if(!paramStr.equals(dbdtoStr)){
+			return true;
+		}
 		
 		if(SharedNetworkType.Uplink.getKey().equals(paramDTO.getNtype())){
 			if(!paramDTO.getRedirect_url().equals(dbDTO.getRedirect_url())) return true;
