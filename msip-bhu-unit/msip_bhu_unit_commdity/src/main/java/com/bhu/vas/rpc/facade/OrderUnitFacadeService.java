@@ -442,8 +442,10 @@ public class OrderUnitFacadeService {
 			
 			if(!uid.equals(order.getUid())){
 				WifiDeviceSharedealConfigs sharedeal = wifiDeviceSharedealConfigsService.getById(order.getMac());
-				if(!uid.equals(sharedeal.getDistributor()) && !uid.equals(sharedeal.getDistributor_l2())){
-					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UID_INVALID);
+				if (sharedeal != null){
+					if(!uid.equals(sharedeal.getDistributor()) && !uid.equals(sharedeal.getDistributor_l2())){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_UID_INVALID);
+					}
 				}
 			}
 			
