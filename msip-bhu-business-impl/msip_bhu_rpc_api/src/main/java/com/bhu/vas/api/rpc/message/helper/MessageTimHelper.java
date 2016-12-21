@@ -86,7 +86,7 @@ public class MessageTimHelper {
 	public static final String Action_Remove_All_Tags = "/im_remove_all_tags";
 	public static final String Action_Send_Msg = "/sendmsg";
 	
-	
+	public static final int Response_Tim_Server_Error = 91000;
 	public static Map<String, String> generateTimApiParamMap(){
 		Map<String, String> api_params = new HashMap<String, String>();
 		api_params.put("identifier", BusinessRuntimeConfiguration.TimManager);
@@ -322,5 +322,57 @@ public class MessageTimHelper {
 		}else{
 			return true;
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> TimPushDTO<T> builderPush(TimPushChannel  pushChannel, int msgLifeTime, String tags, TimPushMsgType msgType, String content){
+		TimPushDTO<T> pushDTO = new TimPushDTO<T>();
+		if (msgLifeTime != 0){
+			pushDTO.setMsgLifeTime(msgLifeTime);
+		}
+		pushDTO.setFromAccount(pushChannel.getName());
+		pushDTO.setCondition(TimPushConditionDTO.builder(tags));
+		List<TimMsgBodyDTO<T>> msgBodyList = new ArrayList<TimMsgBodyDTO<T>>();
+		switch (msgType) {
+		case TIMTextElem:
+			msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(), 
+					TimTextMsgContentDTO.builder(content)));
+			pushDTO.setMsgBodyList(msgBodyList);
+			break;
+		case TIMCustomElem:
+			TimCustomMsgDefaultDataDTO msgContentDTO = JsonHelper.getDTO(content, TimCustomMsgDefaultDataDTO.class);
+			
+			msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(), 
+					TimCustomMsgContentDTO.builder(msgContentDTO)));
+			pushDTO.setMsgBodyList(msgBodyList);
+			break;
+		default:
+			logger.info(String.format("msgType[%s] is not support", msgType));
+			break;
+		}
+		return pushDTO;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> TimSendMsgDTO<T> builderSendMsg(TimPushChannel  pushChannel, String toAcc, TimPushMsgType msgType, String content){
+		TimSendMsgDTO<T> sendMsgDto = new TimSendMsgDTO<T>();
+		sendMsgDto.setFrom_Account(pushChannel.getName());
+		sendMsgDto.setTo_Account(toAcc);
+		List<TimMsgBodyDTO<T>> msgBodyList = new ArrayList<TimMsgBodyDTO<T>>();
+		msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(),
+				TimTextMsgContentDTO.builder(content)));
+		sendMsgDto.setMsgBodyList(msgBodyList);
+		return sendMsgDto;
+	}
+	
+	public static TimResponseBasicDTO CreateTimUrlCommunication(String url, String message) throws Exception{
+		logger.info(String.format("CreateTimUrlCommunication url[%s] message[%s]", url, message));
+		Map<String, String> api_params = generateTimApiParamMap();
+		String response = TimHttpHelper.postUrlAsString(url, api_params, message);
+		TimResponseBasicDTO rcp_dto = null;
+		if(StringUtils.isNotEmpty(response)){
+			JsonHelper.getDTO(response, TimResponseBasicDTO.class);
+		}
+		return rcp_dto;
 	}
 }
