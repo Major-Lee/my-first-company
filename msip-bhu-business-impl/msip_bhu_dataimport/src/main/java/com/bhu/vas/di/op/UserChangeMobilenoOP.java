@@ -44,5 +44,7 @@ public class UserChangeMobilenoOP {
 		user.setMobileno(newmobileno);
 		userService.update(user);
 		UniqueFacadeService.uniqueMobilenoChanged(user.getId(), user.getCountrycode(), newmobileno, oldmobileno);
+		
+		System.exit(0);
 	}
 }
