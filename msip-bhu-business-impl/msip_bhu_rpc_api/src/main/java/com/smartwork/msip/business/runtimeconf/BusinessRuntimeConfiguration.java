@@ -366,10 +366,11 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 		return SystemTestUsers.contains(user);
 	}
 	//console用户的最大值
-	public static int UserConsoleMaxIdLimit = 100000;
+	public static int UserConsoleMaxIdLimit = 2;
 	
 	public static final int Guest_Uid = -1;
 	public static final int Sys_Uid = -999999;
+	public static final int Sys_Readonly_Uid = 90034;
 	public static int Weixin_Share_Uid = 65;
 
 	public static Double DeviceUnBindOfflineHourDefault = 24d;
@@ -499,7 +500,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	 */
 	public static boolean isConsoleUser(Integer uid){
 		if(uid != null && uid.intValue()>0 && uid.intValue() <= UserConsoleMaxIdLimit) return true;
-		if(uid != null && uid == Sys_Uid)return true;
+		if(uid != null && (uid == Sys_Uid || uid == Sys_Readonly_Uid))return true;
 		return false;
 	}
 	
