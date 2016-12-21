@@ -2,6 +2,7 @@ package com.bhu.vas.api.rpc.message.dto;
 
 import java.util.List;
 
+import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -83,5 +84,7 @@ public class TimResponseBasicDTO implements java.io.Serializable{
 		return this.getActionStatus().equals("OK");
 	}
 	
-	
+	public boolean isTimServerError(){
+		return this.getErrorCode() == MessageTimHelper.Response_Tim_Server_Error;
+	}
 }

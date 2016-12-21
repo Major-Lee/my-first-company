@@ -10,13 +10,18 @@ import com.bhu.vas.api.helper.BusinessEnumType.TimPushChannel;
 import com.bhu.vas.api.helper.BusinessEnumType.TimPushMsgType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.rpc.message.dto.MessageSystemFailTaskDTO;
 import com.bhu.vas.api.rpc.message.dto.MessageUserSigDTO;
+import com.bhu.vas.api.rpc.message.dto.TimPushDTO;
 import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
+import com.bhu.vas.api.rpc.message.dto.TimSendMsgDTO;
 import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.bhu.vas.business.bucache.redis.serviceimpl.message.MessageSystemFailedTaskListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.message.MessageSystemHashService;
 import com.bhu.vas.business.ds.message.facade.MessageUserFacadeService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 @Service
@@ -87,44 +92,68 @@ public class MessageUnitFacadeService {
 
 	public RpcResponseDTO<TimResponseBasicDTO> send_single_msg(Integer sendChannel, String toAcc, Integer msgType,
 			String content) {
+		String url = MessageTimHelper.Tim_Url+MessageTimHelper.OpenIM+MessageTimHelper.Action_Send_Msg;
+		TimPushChannel channel = MessageTimHelper.validateTimPushChannel(sendChannel);
+		if (channel == null)
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_PUSH_CHANNEL_ERROR);
+		
+		TimPushMsgType type = MessageTimHelper.validateTimPushMsgType(msgType);
+		if (type == null)
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_MSG_TYPE_ERROR);
+		
+		TimSendMsgDTO<Object> sendDto = MessageTimHelper.builderSendMsg(channel, 
+				toAcc, type, content);
+		String message = JsonHelper.getJSONString(sendDto);
+		
 		try{
-			TimPushChannel channel = MessageTimHelper.validateTimPushChannel(sendChannel);
-			if (channel == null)
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_PUSH_CHANNEL_ERROR);
-			
-			TimPushMsgType type = MessageTimHelper.validateTimPushMsgType(msgType);
-			if (type == null)
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_MSG_TYPE_ERROR);
-			
-			TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimSendMsgUrlCommunication(channel, 
-					toAcc, type, content);
-			if (!ret_dto.getActionStatus().equals("OK")){
-				logger.info(String.format("send_single_msg failed errorInfo[%s] errorno[%s]", ret_dto.getErrorInfo(), ret_dto.getErrorCode()));
+			TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimUrlCommunication(url, message);
+			if (ret_dto.isTimServerError()){
+				logger.info(String.format("send_single_msg url[%s] message[%s] failed ", url, message));
+				Long rpush_ret = MessageSystemFailedTaskListService.getInstance().rpushFailedTaskKey(MessageSystemFailTaskDTO.builder(url, message));
+				if (rpush_ret != null && rpush_ret > 0){
+					logger.info(String.format("send_single_msg add failedTask url[%s] message[%s] ", url, message));
+				}
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret_dto);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
+			Long rpush_ret = MessageSystemFailedTaskListService.getInstance().rpushFailedTaskKey(MessageSystemFailTaskDTO.builder(url, message));
+			if (rpush_ret != null && rpush_ret > 0){
+				logger.info(String.format("send_single_msg catch Exception add failedTask url[%s] message[%s] ", url, message));
+			}
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
 
 	public RpcResponseDTO<TimResponseBasicDTO> send_push(Integer sendChannel, String tags, int msgLifeTime,
 			Integer msgType, String content) {
+		String url = MessageTimHelper.Tim_Url+MessageTimHelper.OpenIM+MessageTimHelper.Action_IM_Push;
+		TimPushChannel channel = MessageTimHelper.validateTimPushChannel(sendChannel);
+		if (channel == null)
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_PUSH_CHANNEL_ERROR);
+		
+		TimPushMsgType type = MessageTimHelper.validateTimPushMsgType(msgType);
+		if (type == null)
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_MSG_TYPE_ERROR);
+		
+		TimPushDTO<Object> pushDTO = MessageTimHelper.builderPush(channel, msgLifeTime, tags, type, content);
+		String message = JsonHelper.getJSONString(pushDTO);
+		
 		try{
-			TimPushChannel channel = MessageTimHelper.validateTimPushChannel(sendChannel);
-			if (channel == null)
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_PUSH_CHANNEL_ERROR);
-			
-			TimPushMsgType type = MessageTimHelper.validateTimPushMsgType(msgType);
-			if (type == null)
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.MESSAGE_MSG_TYPE_ERROR);
-			
-			TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimPushUrlCommunication(channel, msgLifeTime, tags, type, content);
-			if (!ret_dto.getActionStatus().equals("OK")){
-				logger.info(String.format("send_push failed errorInfo[%s] errorno[%s]", ret_dto.getErrorInfo(), ret_dto.getErrorCode()));
+			TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimUrlCommunication(url, message);
+			if (ret_dto.isTimServerError()){
+				logger.info(String.format("send_push url[%s] message[%s] failed ", url, message));
+				Long rpush_ret = MessageSystemFailedTaskListService.getInstance().rpushFailedTaskKey(MessageSystemFailTaskDTO.builder(url, message));
+				if (rpush_ret != null && rpush_ret > 0){
+					logger.info(String.format("send_push add failedTask url[%s] message[%s] ", url, message));
+				}
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret_dto);
 		}catch(Exception ex){
+			Long rpush_ret = MessageSystemFailedTaskListService.getInstance().rpushFailedTaskKey(MessageSystemFailTaskDTO.builder(url, message));
+			if (rpush_ret != null && rpush_ret > 0){
+				logger.info(String.format("send_push catch Exception add failedTask url[%s] message[%s] ", url, message));
+			}
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}

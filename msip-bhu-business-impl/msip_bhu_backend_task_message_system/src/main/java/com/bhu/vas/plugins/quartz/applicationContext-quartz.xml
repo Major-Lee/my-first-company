@@ -21,7 +21,8 @@
 		<property name="triggers">
 			<list>
 				<ref bean="messageSystemBackendTaskLoaderCronTrigger" />
-				<ref bean="messageSystemBackendTagLoaderCronTrigger" />		
+				<ref bean="messageSystemBackendTagLoaderCronTrigger" />	
+				<ref bean="messageSystemBackendFailedTaskLoaderCronTrigger" />		
 			</list>
 		</property>
 		<!-- Quartz配置 -->
@@ -58,4 +59,17 @@
 	</bean>
 	<bean id="messageSystemBackendTagLoaderJob" class="com.bhu.vas.plugins.quartz.MessageSystemTagBackendTaskLoader" />
 	
+	
+	<!-- 重新发送失败的task -->
+	<bean id="messageSystemBackendFailedTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="messageSystemBackendFailedTaskLoaderJobCronJobDetail" />
+		<!-- 	<property name="cronExpression" value="0 * */12 * * ?" /> -->
+		<property name="cronExpression" value="${message.failedtask}" />
+	</bean>
+	<bean id="messageSystemBackendFailedTaskLoaderJobCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="messageSystemBackendFailedTaskJob" />
+		<property name="targetMethod" value="execute" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="messageSystemBackendFailedTaskJob" class="com.bhu.vas.plugins.quartz.MessageSystemBackendFailedTaskLoader" />
 </beans>
