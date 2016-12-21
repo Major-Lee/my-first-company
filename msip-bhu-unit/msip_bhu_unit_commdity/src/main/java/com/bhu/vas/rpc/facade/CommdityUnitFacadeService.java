@@ -27,6 +27,7 @@ import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -129,8 +130,32 @@ public class CommdityUnitFacadeService {
 			commdityAmountDto.setUsers_tx_rate(chargingFacadeService.fetchWifiDeviceSharedNetworkUsersTxRate(mac));
 			commdityAmountDto.setForceTime(chargingFacadeService.fetchAccessInternetTime(mac,umactype));
 			commdityAmountDto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
-			logger.info(String.format("intervalAMount success commdityid[%s] mac[%s] umac[%s] umactype[%s] amount[%s] force_time[%s] 7dusers[%s]", 
-					commdityid, mac, umac, umactype, amount,commdityAmountDto.getForceTime(),commdityAmountDto.getUser7d()));
+			commdityAmountDto.setMonthCardAmount(CommdityHelper.
+					generateCommdityAmount(chargingFacadeService.
+							fetchAccessInternetCardAmountRange(BusinessRuntimeConfiguration.
+									Reward_Month_Internet_Commdity_ID, umactype)));
+			
+			commdityAmountDto.setWeekCardAmount(CommdityHelper.
+					generateCommdityAmount(chargingFacadeService.
+							fetchAccessInternetCardAmountRange(BusinessRuntimeConfiguration.
+									Reward_Week_Internet_Commdity_ID, umactype)));
+			
+			commdityAmountDto.setDayCardAmount(CommdityHelper.
+					generateCommdityAmount(chargingFacadeService.
+							fetchAccessInternetCardAmountRange(BusinessRuntimeConfiguration.
+									Reward_Day_Internet_Commdity_ID, umactype)));
+			
+			logger.info(String.format("intervalAMount success commdityid[%s] "
+					+ "mac[%s] umac[%s] umactype[%s] amount[%s] "
+					+ "force_time[%s] 7dusers[%s] monthCardAmount[%s] "
+					+ "weekCardAmount[%s] dayCardAmount[%s]", 
+					commdityid, mac, umac, umactype, amount,
+					commdityAmountDto.getForceTime(), 
+					commdityAmountDto.getUser7d(),
+					commdityAmountDto.getMonthCardAmount(),
+					commdityAmountDto.getWeekCardAmount(),
+					commdityAmountDto.getDayCardAmount()));
+			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(commdityAmountDto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

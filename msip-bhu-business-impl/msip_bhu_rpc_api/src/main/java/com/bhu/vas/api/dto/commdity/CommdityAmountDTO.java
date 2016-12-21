@@ -19,6 +19,30 @@ public class CommdityAmountDTO implements java.io.Serializable{
 	//用户限速
 	private int users_tx_rate;
 	private int users_rx_rate;
+	
+	//包月、包周、包天金额
+	private String monthCardAmount;
+	private String weekCardAmount;
+	private String dayCardAmount;
+	
+	public String getMonthCardAmount() {
+		return monthCardAmount;
+	}
+	public void setMonthCardAmount(String monthCardAmount) {
+		this.monthCardAmount = monthCardAmount;
+	}
+	public String getWeekCardAmount() {
+		return weekCardAmount;
+	}
+	public void setWeekCardAmount(String weekCardAmount) {
+		this.weekCardAmount = weekCardAmount;
+	}
+	public String getDayCardAmount() {
+		return dayCardAmount;
+	}
+	public void setDayCardAmount(String dayCardAmount) {
+		this.dayCardAmount = dayCardAmount;
+	}
 	public String getSsid() {
 		return ssid;
 	}

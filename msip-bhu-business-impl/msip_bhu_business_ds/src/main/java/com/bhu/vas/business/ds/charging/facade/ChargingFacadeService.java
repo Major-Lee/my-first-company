@@ -18,7 +18,6 @@ import com.bhu.vas.api.rpc.charging.model.WifiDeviceBatchImport;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
-import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.user.model.User;
@@ -835,9 +834,9 @@ public class ChargingFacadeService {
 	}
 	public static final int InternetSpeedsUnit = 128;
 	
-	public String fetchAccessInternetCardAmountRange(Commdity commdity,Integer umactype){
+	public String fetchAccessInternetCardAmountRange(Integer commdityid,Integer umactype){
 		String amount = null;
-		switch (commdity.getId()) {
+		switch (commdityid) {
 		case BusinessRuntimeConfiguration.Reward_Month_Internet_Commdity_ID:
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
 				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Pc_For_Month;

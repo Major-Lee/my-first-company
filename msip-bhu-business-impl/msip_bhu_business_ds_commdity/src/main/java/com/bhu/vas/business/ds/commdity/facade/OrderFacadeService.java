@@ -266,7 +266,7 @@ public class OrderFacadeService {
 		if (commdity.getId() == BusinessRuntimeConfiguration.Reward_Internet_Commdity_ID){
 			amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdity.getId(), umactype);
 		}else{
-			amount = CommdityHelper.generateCommdityAmount(chargingFacadeService.fetchAccessInternetCardAmountRange(commdity, umactype));
+			amount = CommdityHelper.generateCommdityAmount(chargingFacadeService.fetchAccessInternetCardAmountRange(commdity.getId(), umactype));
 			
 		}
 		if(StringUtils.isEmpty(amount)){
