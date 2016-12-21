@@ -1648,16 +1648,19 @@ public class UserWalletUnitFacadeService {
 			String currentDay = StringUtils.EMPTY;
 			currentDay=GetDateTime("yyyy-MM-dd", 0);
 			ModelCriteria mc = new ModelCriteria();
-			mc.createCriteria().andColumnNotEqualTo("today_cash_sum", 0);
-			mc.createCriteria().andColumnLike("last_update_cash_time",
+			Criteria criteria = mc.createCriteria();
+			criteria.andColumnNotEqualTo("today_cash_sum", 0).andColumnLike("last_update_cash_time",
 					currentDay + "%");
 			mc.setOrderByClause("today_cash_sum desc");
 			List<UserWallet> userWallets = userWalletFacadeService
 					.getUserWalletService().findModelByModelCriteria(mc);
 			rankingCardInfoVTO.setRank(9999999);
 			rankingCardInfoVTO.setIncome("0");
+			//System.out.println(userWallets.size());
+			//System.out.println("uid:"+uid);
 			for (int i = 0; i < userWallets.size(); i++) {
-				if (uid == userWallets.get(i).getId()) {
+				//System.out.println("userWallets:"+userWallets.get(i).getId());
+				if ((int)uid == (int)userWallets.get(i).getId()) {
 					rankingCardInfoVTO.setRank(i + 1);
 					rankingCardInfoVTO.setIncome(String.valueOf(round(
 							userWallets.get(i).getToday_cash_sum(), 2)));
