@@ -214,6 +214,12 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_input_terminal_processor/classes/com/    root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_unit_input_terminal_processor/classes/com/
 echo 'deploy msip_bhu_unit_input_terminal_processor successfully @'$Deploy2ComponentServerRedis
 
+echo '准备发布业务backend_task_message_system组件到'$Deploy2ComponentServerRedis
+echo 'deploy msip_bhu_backend_task_message_system to ...@'$Deploy2ComponentServerRedis
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_message_system/lib/spring*.RELEASE.jar      root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_backend_task_message_system/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_message_system/lib/msip_*.jar     root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_backend_task_message_system/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_message_system/classes/com/     root@$Deploy2ComponentServerRedis:/BHUData/apps/msip_bhu_backend_task_message_system/bin/com/
+echo 'deploy msip_bhu_backend_task_message_system successfully @'$Deploy2ComponentServerRedis
 
 echo '准备发布业务组件到'$Deploy2ComponentServerOpenresty
 echo 'deploy msip_bhu_unit_uass to ...@'$Deploy2ComponentServerOpenresty
@@ -315,11 +321,6 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_applies_notify/l
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_applies_notify/classes/com/     root@$Deploy2ComponentServerElasticsearch:/BHUData/apps/msip_bhu_backend_task_applies_notify/bin/com/
 echo 'deploy msip_bhu_backend_task_applies_notify successfully @'$Deploy2ComponentServerElasticsearch
 
-echo 'deploy msip_bhu_backend_task_message_system to ...@'$Deploy2ComponentServerElasticsearch
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_message_system/lib/spring*.RELEASE.jar      root@$Deploy2ComponentServerElasticsearch:/BHUData/apps/msip_bhu_backend_task_message_system/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_message_system/lib/msip_*.jar     root@$Deploy2ComponentServerElasticsearch:/BHUData/apps/msip_bhu_backend_task_message_system/libs/
-rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_message_system/classes/com/     root@$Deploy2ComponentServerElasticsearch:/BHUData/apps/msip_bhu_backend_task_message_system/bin/com/
-echo 'deploy msip_bhu_backend_task_message_system successfully @'$Deploy2ComponentServerElasticsearch
 
 
 echo '发布其他服务成功'$Deploy2ComponentServerElasticsearch
