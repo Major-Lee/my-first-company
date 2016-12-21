@@ -50,8 +50,10 @@ public class UserWalletLogDao extends AbstractCoreDao<Long,UserWalletLog>{
 		Map<String,Object> params = new HashMap<String,Object>();
 		try{
 			params.put("uid", uid);
-			params.put("start_created_ts", new Date(start_created_ts));
-			params.put("end_created_ts", new Date(end_created_ts));
+			if (start_created_ts > 0)
+				params.put("start_created_ts", new Date(start_created_ts));
+			if (end_created_ts > 0)
+				params.put("end_created_ts", new Date(end_created_ts));
 			params.put("start", (pageNo-1)*pageSize);
 			params.put("limit", pageSize);
 			if (transmode != null && !transmode.isEmpty())
