@@ -198,10 +198,10 @@
 	    		AND t_walletlog.transmode = #{transmode}
 	    	</if>
 	    	<if test="start_time != null">
-	    		AND t_orders.created_at &gt;= #{start_time}
+	    		AND t_walletlog.updated_at &gt;= #{start_time}
 	    	</if>
 	    	<if test="end_time != null">
-	    		AND t_orders.created_at &lt;= #{end_time}
+	    		AND t_walletlog.updated_at &lt;= #{end_time}
 	    	</if>
 	    	AND t_walletlog.orderid = t_orders.id
 	    	<if test="mac != null">
@@ -254,10 +254,10 @@
 	    		AND t_walletlog.transmode = #{transmode}
 	    	</if>
 	    	<if test="start_created_ts != null">
-	    		AND t_orders.created_at &gt;= #{start_created_ts}
+	    		AND t_walletlog.updated_at &gt;= #{start_created_ts}
 	    	</if>
 	    	<if test="end_created_ts != null">
-	    		AND t_orders.created_at &lt;= #{end_created_ts}
+	    		AND  t_walletlog.updated_at &lt;= #{end_created_ts}
 	    	</if>
 	    	AND t_walletlog.orderid = t_orders.id
 	    	<if test="mac != null">
