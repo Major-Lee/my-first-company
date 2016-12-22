@@ -245,7 +245,7 @@
 		t_walletlog.transmode as transmode,
 		t_walletlog.transtype as transtype,
 		t_walletlog.role as role,
-		t_orders.paymented_at as paymented_at,
+		t_walletlog.updated_at as paymented_at,
 		t_orders.created_at as created_at 
 	    from <include refid="modelTableName" /> t_walletlog,msip_bhu_commdity.t_commdity_orders t_orders
 	    <where>
