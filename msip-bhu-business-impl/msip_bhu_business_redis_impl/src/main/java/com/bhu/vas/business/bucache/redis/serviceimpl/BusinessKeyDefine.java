@@ -156,7 +156,7 @@ public class BusinessKeyDefine {
 	}
 	
 	public static class Advertise{
-		public static final String ADVERTISE = "ad.";
+		public static final String ADVERTISE = "ADIF.";
 		public static final String AdvertiseMobilePostion = "ADMP.";
 		public static final String AdvertiseSnapShot = "ADSS.";
 		public static final String AdvertiseDetail = "ADDT.";
