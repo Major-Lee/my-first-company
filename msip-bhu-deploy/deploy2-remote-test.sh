@@ -118,6 +118,9 @@ cp ../../msip-bhu-unit/msip_bhu_unit_tag/target/msip_bhu_unit_tag-bin.zip ./$CuD
 echo '拷贝文件 msip_bhu_unit_unifyStatistics-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_unifyStatistics/target/msip_bhu_unit_unifyStatistics-bin.zip ./$CuDateDir
 
+echo '拷贝文件 msip_bhu_backend_task_statistics-bin.zip到'$CuDateDir
+cp ../../msip-bhu-business-impl/msip_bhu_backend_task_statistics/target/msip_bhu_backend_task_statistics-bin.zip ./$CuDateDir
+
 #advertise
 echo '拷贝文件 msip_bhu_backend_task_advertise-bin.zip到'$CuDateDir
 cp ../../msip-bhu-business-impl/msip_bhu_backend_task_advertise/target/msip_bhu_backend_task_advertise-bin.zip ./$CuDateDir
@@ -185,6 +188,9 @@ unzip -qo msip_bhu_unit_tag/bin/msip_bhu_unit_tag.jar -d msip_bhu_unit_tag/class
 #statistics
 unzip -q msip_bhu_unit_unifyStatistics-bin.zip
 unzip -qo msip_bhu_unit_unifyStatistics/bin/msip_bhu_unit_unifyStatistics.jar -d msip_bhu_unit_unifyStatistics/classes/
+
+unzip -q msip_bhu_backend_task_statistics-bin.zip
+unzip -qo msip_bhu_backend_task_statistics/bin/msip_bhu_backend_task_statistics.jar -d msip_bhu_backend_task_statistics/classes/
 
 #advertise
 unzip -q msip_bhu_backend_task_advertise-bin.zip
@@ -268,6 +274,12 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task/lib/spring*.RELE
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task/lib/msip_*.jar    root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task/libs/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task/classes/com/    root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task/bin/com/
 echo 'deploy msip_bhu_backend_task successfully @'$Deploy2ComponentServerKafka
+
+echo 'deploy msip_bhu_backend_task_statistics to ...@'$Deploy2ComponentServerKafka
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_statistics/lib/spring*.RELEASE.jar      root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task_statistics/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_statistics/lib/msip_*.jar     root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task_statistics/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_statistics/classes/com/     root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task_statistics/bin/com/
+echo 'deploy msip_bhu_backend_task_statistics successfully @'$Deploy2ComponentServerKafka
 
 echo 'deploy msip_bhu_backend_task_advertise to ...@'$Deploy2ComponentServerKafka
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_advertise/lib/spring*.RELEASE.jar      root@$Deploy2ComponentServerKafka:/BHUData/apps/msip_bhu_backend_task_advertise/libs/
