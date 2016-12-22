@@ -1646,17 +1646,21 @@ public class UserWalletUnitFacadeService {
 		try {
 			RankingCardInfoVTO rankingCardInfoVTO = new RankingCardInfoVTO();
 			String currentDay = StringUtils.EMPTY;
+			currentDay=GetDateTime("yyyy-MM-dd", 0);
 			ModelCriteria mc = new ModelCriteria();
-			mc.createCriteria().andColumnNotEqualTo("today_cash_sum", 0);
-			mc.createCriteria().andColumnLike("last_update_cash_time",
+			Criteria criteria = mc.createCriteria();
+			criteria.andColumnNotEqualTo("today_cash_sum", 0).andColumnLike("last_update_cash_time",
 					currentDay + "%");
 			mc.setOrderByClause("today_cash_sum desc");
 			List<UserWallet> userWallets = userWalletFacadeService
-					.getUserWalletService().findModelByCommonCriteria(mc);
+					.getUserWalletService().findModelByModelCriteria(mc);
 			rankingCardInfoVTO.setRank(9999999);
 			rankingCardInfoVTO.setIncome("0");
+			//System.out.println(userWallets.size());
+			//System.out.println("uid:"+uid);
 			for (int i = 0; i < userWallets.size(); i++) {
-				if (uid == userWallets.get(i).getId()) {
+				//System.out.println("userWallets:"+userWallets.get(i).getId());
+				if ((int)uid == (int)userWallets.get(i).getId()) {
 					rankingCardInfoVTO.setRank(i + 1);
 					rankingCardInfoVTO.setIncome(String.valueOf(round(
 							userWallets.get(i).getToday_cash_sum(), 2)));
@@ -1705,11 +1709,25 @@ public class UserWalletUnitFacadeService {
 	}
 	public static void main(String[] args) {
 		//System.out.println(getDaysList("2016-11-01", "2016-11-11"));
-		String ss="0.0005";
-		double e=Double.valueOf(ss);
-		System.out.println(e);
-		String se=String.valueOf(e);
-		System.out.println(se);
+//		String ss="0.0005";
+//		double e=Double.valueOf(ss);
+//		System.out.println(e);
+//		String se=String.valueOf(e);
+//		System.out.println(se);
+		
+		Date s=new Date();
+		// 得到日历
+		Calendar calendar = Calendar.getInstance();
+		// 把当前时间赋给日历
+		calendar.setTime(s);
+		// 设置为前一天
+		calendar.add(Calendar.DAY_OF_MONTH, 0);
+		// 得到前一天的时间
+		Date dBefore = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String retDate = sdf.format(dBefore);
+		System.out.println(daysBetween("2015-11-09",
+				GetDateTime("yyyy-MM-dd", 0)));
 		//System.out.println(GetDateTime("yyyy-MM-dd", 0));
 		//System.out.println(doubleCut2(2.356,2));
 	}

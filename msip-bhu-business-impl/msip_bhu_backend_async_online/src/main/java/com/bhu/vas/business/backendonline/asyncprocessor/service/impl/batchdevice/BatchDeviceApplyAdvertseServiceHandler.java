@@ -31,7 +31,7 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseDetailsHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
@@ -129,9 +129,9 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 				
 				switch (adDTO.getDtoType()) {
 					case IDTO.ACT_ADD:
-						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(
-							macList, JsonHelper.getJSONString(ad));
-						AdvertiseDetailsHashService.getInstance().advertiseInfo(ad.getId(), ad.toMap());
+						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+							macList, JsonHelper.getJSONString(ad),Double.parseDouble(ad.getId()));
+//						AdvertiseDetailsHashService.getInstance().advertiseInfo(ad.getId(), ad.toMap());
 						advertiSesnapshot(ad, start, macList.size());
 						deviceLimitDomain(batch, macList, ad.getDomain(),IDTO.ACT_ADD, ad);
 						break;
@@ -140,7 +140,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 							IDTO.ACT_DELETE, ad);
 						break;
 					case IDTO.ACT_UPDATE:
-						WifiDeviceAdvertiseListService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad));;
+						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad),Double.parseDouble(ad.getId()));
 						advertiSesnapshot(ad, start, macList.size());
 						break;
 					default:

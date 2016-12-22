@@ -14,7 +14,7 @@ import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -38,7 +38,7 @@ public class AdvertiseAllClearTaskLoader {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		WifiDeviceAdvertiseListService.getInstance().wifiDevicesAllAdInvalid();
+		WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAllAdInvalid();
 		devicesDomainClear(afterDate);
 		initOnpublishSign();
 		logger.info("AdvertiseAllClearTaskLoader end...");

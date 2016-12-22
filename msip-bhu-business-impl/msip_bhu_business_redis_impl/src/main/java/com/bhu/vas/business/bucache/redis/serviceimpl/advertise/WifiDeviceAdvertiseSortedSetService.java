@@ -7,7 +7,7 @@ import java.util.Set;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
-import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationListCache;
+import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationSortedSetCache;
 
 import redis.clients.jedis.JedisPool;
 
@@ -16,10 +16,10 @@ import redis.clients.jedis.JedisPool;
  * @author xiaowei
  *
  */
-public class WifiDeviceAdvertiseListService extends AbstractRelationListCache{
+public class WifiDeviceAdvertiseSortedSetService extends AbstractRelationSortedSetCache{
 
     private static class ServiceHolder{
-        private static WifiDeviceAdvertiseListService instance =new WifiDeviceAdvertiseListService();
+        private static WifiDeviceAdvertiseSortedSetService instance =new WifiDeviceAdvertiseSortedSetService();
     }
 	
     private static String generateKey(String mac){
@@ -36,9 +36,11 @@ public class WifiDeviceAdvertiseListService extends AbstractRelationListCache{
         return keys;
     }
     
-    public void wifiDevicesAdInvalid(List<String> macs){
+    public void wifiDevicesAdInvalid(List<String> macs,double score){
     	List<String> keys = generateKeys(macs);
-    	this.lpop_pipeline(keys,1);
+    	for(String key : keys){
+    		this.zremrangeByScore(key, score, score);
+    	}
     }
     
     public void wifiDevicesAllAdInvalid(){
@@ -54,23 +56,25 @@ public class WifiDeviceAdvertiseListService extends AbstractRelationListCache{
     	}
     }
     
-    public void wifiDevicesAdApply(List<String> macs,String message){
+    public void wifiDevicesAdApply(List<String> macs,String message,double score){
     	List<String> keys = generateKeys(macs);
-    	this.lpop_pipeline(keys, 1);
-    	this.lpush_pipeline_samevalue(keys, message);
+    	for(String key : keys){
+    		this.del(key);
+    		this.zadd(key, score, message);
+    	}
     }
     
     /**
      * 获取工厂单例
      * @return
      */
-    public static WifiDeviceAdvertiseListService getInstance() {
+    public static WifiDeviceAdvertiseSortedSetService getInstance() {
         return ServiceHolder.instance;
     }
     
 	@Override
 	public String getName() {
-		return WifiDeviceAdvertiseListService.class.getName();
+		return WifiDeviceAdvertiseSortedSetService.class.getName();
 	}
 
 	@Override

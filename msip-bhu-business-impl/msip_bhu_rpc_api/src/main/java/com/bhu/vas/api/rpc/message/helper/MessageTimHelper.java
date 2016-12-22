@@ -371,7 +371,7 @@ public class MessageTimHelper {
 		String response = TimHttpHelper.postUrlAsString(url, api_params, message);
 		TimResponseBasicDTO rcp_dto = null;
 		if(StringUtils.isNotEmpty(response)){
-			JsonHelper.getDTO(response, TimResponseBasicDTO.class);
+			return JsonHelper.getDTO(response, TimResponseBasicDTO.class);
 		}
 		return rcp_dto;
 	}

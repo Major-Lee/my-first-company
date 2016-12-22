@@ -107,12 +107,18 @@ public class MessageUnitFacadeService {
 		
 		try{
 			TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimUrlCommunication(url, message);
+			if (ret_dto == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_CONNECT_TIMEOUT_ERROR);
+			}
 			if (ret_dto.isTimServerError()){
 				logger.info(String.format("send_single_msg url[%s] message[%s] failed ", url, message));
 				Long rpush_ret = MessageSystemFailedTaskListService.getInstance().rpushFailedTaskKey(MessageSystemFailTaskDTO.builder(url, message));
 				if (rpush_ret != null && rpush_ret > 0){
 					logger.info(String.format("send_single_msg add failedTask url[%s] message[%s] ", url, message));
 				}
+			}
+			if (ret_dto.isExecutedSuccess()){
+				logger.info(String.format("send_single_msg url[%s] message[%s] successful ", url, message));
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret_dto);
 		}catch(Exception ex){
@@ -141,12 +147,19 @@ public class MessageUnitFacadeService {
 		
 		try{
 			TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimUrlCommunication(url, message);
+			if (ret_dto == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_CONNECT_TIMEOUT_ERROR);
+			}
 			if (ret_dto.isTimServerError()){
 				logger.info(String.format("send_push url[%s] message[%s] failed ", url, message));
 				Long rpush_ret = MessageSystemFailedTaskListService.getInstance().rpushFailedTaskKey(MessageSystemFailTaskDTO.builder(url, message));
 				if (rpush_ret != null && rpush_ret > 0){
 					logger.info(String.format("send_push add failedTask url[%s] message[%s] ", url, message));
 				}
+			}
+			
+			if (ret_dto.isExecutedSuccess()){
+				logger.info(String.format("send_push url[%s] message[%s] successful ", url, message));
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret_dto);
 		}catch(Exception ex){
