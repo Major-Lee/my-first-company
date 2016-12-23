@@ -69,7 +69,7 @@ public class TimCustomMsgContentDTO implements java.io.Serializable{
 
 	public static TimCustomMsgContentDTO builder(TimCustomMsgDefaultDataDTO data){
 		TimCustomMsgContentDTO dto  = new TimCustomMsgContentDTO();
-		dto.setDesc(data.getDesc());
+		dto.setDesc(data.getTitle());
 		dto.setData(JsonHelper.getJSONString(data));
 		return dto;
 	}

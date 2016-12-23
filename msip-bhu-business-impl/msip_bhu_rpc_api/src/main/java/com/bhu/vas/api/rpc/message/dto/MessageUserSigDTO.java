@@ -4,6 +4,13 @@ package com.bhu.vas.api.rpc.message.dto;
 public class MessageUserSigDTO implements java.io.Serializable{
 	
 	private String sig;
+	private Integer channel;
+	public Integer getChannel() {
+		return channel;
+	}
+	public void setChannel(Integer channel) {
+		this.channel = channel;
+	}
 	public String getSig() {
 		return sig;
 	}

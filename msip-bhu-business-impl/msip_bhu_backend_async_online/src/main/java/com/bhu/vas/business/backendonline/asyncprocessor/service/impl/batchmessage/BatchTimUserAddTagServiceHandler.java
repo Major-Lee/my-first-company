@@ -2,7 +2,6 @@ package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchmess
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,7 @@ import com.bhu.vas.api.rpc.message.model.MessageUser;
 import com.bhu.vas.business.asyn.spring.model.async.message.AsyncTimUserAddTagDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.bhu.vas.business.bucache.redis.serviceimpl.message.MessageSystemHashService;
 import com.bhu.vas.business.ds.message.facade.MessageUserFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
@@ -27,34 +27,20 @@ public class BatchTimUserAddTagServiceHandler implements IMsgHandlerService {
 		logger.info(String.format("BatchTimUserAddTagServiceHandler process message[%s]", message));
 		final AsyncTimUserAddTagDTO userTagdto = JsonHelper.getDTO(message, AsyncTimUserAddTagDTO.class);
 		String acc = userTagdto.getAcc();
-		String sig = userTagdto.getSig();
 		String utype = userTagdto.getUtype();
 		Integer channel = userTagdto.getChannel();
-		boolean newly = userTagdto.isNewly();
 		
-		ayscTimeUserAddTag(acc, sig, utype, channel, newly);
+		ayscTimeUserAddTag(acc, utype, channel);
 		
 		logger.info(String.format("BatchTimUserAddTagServiceHandler process message[%s] successful", message));
 	}
-	private void ayscTimeUserAddTag(String acc, String sig, String utype, Integer channel, boolean newly) {
-		if (acc == null || utype == null || sig == null) return;
+	private void ayscTimeUserAddTag(String acc, String utype, Integer channel) {
+		if (acc == null || utype == null || channel == null) return;
 		String tags = utype+channel.intValue();
-		int sync = 0, register = 0;
+		int sync = 0;
 		MessageUser user = null;
 		TimResponseBasicDTO ret_dto = null;
 		try{
-			if (newly){
-				ret_dto = MessageTimHelper.CreateTimAccoutImportUrlCommunication(acc);
-				if(ret_dto.isExecutedSuccess()){
-					register = 1;
-					logger.info(String.format("BatchTimUserAddTagServiceHandler import user[%s]"
-							+ " successful", acc));
-				}else{
-					logger.info(String.format("BatchTimUserAddTagServiceHandler import user[%s]"
-							+ " failed[%s]！", acc, ret_dto.getErrorInfo()));
-				}
-			}
-			
 			ret_dto = MessageTimHelper.CreateTimAddTagUrlCommunication(acc, tags);
 			if(ret_dto.isExecutedSuccess()){
 				sync = 1;
@@ -64,38 +50,25 @@ public class BatchTimUserAddTagServiceHandler implements IMsgHandlerService {
 				logger.info(String.format("BatchTimUserAddTagServiceHandler add tag user[%s]"
 						+ " tag[%s] failed[%s]!", acc, tags, ret_dto.getErrorInfo()));
 			}
-			
 			if (utype.equals(BusinessKeyDefine.Message.User)){
 				user = messageUserFacadeService.validate(acc);
 				if (user == null){
 					user = new MessageUser();
 					user.setId(acc);
 				}
-				if (newly)
-					user.setRegister(register);
-				user.setSig(sig);
 				user.setSync(sync);
-				user.setExtension_content(replaceTags(user.getExtension_content(),tags));
+				user.setExtension_content(MessageTimHelper.replaceTags(user.getExtension_content(),tags));
 				messageUserFacadeService.updateMessageUserData(user);
-				logger.info(String.format("MessageUser update user[%s] tags[%s] "
-						+ "sync[%s] register[%s]",user.getId(), user.getExtension_content(),
-						user.getSync(), user.getRegister()));
 			}
-		}catch(Exception e){
-			System.out.println(e);
+			//将用户tag数据放入redis
+			String oldTags = MessageSystemHashService.getInstance().fetchMessageUserTag(acc, utype);
+			MessageSystemHashService.getInstance().setMessageUserTag(acc, utype, MessageTimHelper.replaceTags(oldTags, tags));
+			
+		}catch(Exception ex){
+			System.out.println(ex);
 		}
 	}
 	
-	private String replaceTags(String oldTags, String newTag){
-		if (StringUtils.isEmpty(oldTags))
-			return newTag;
-		String[] split = oldTags.split(",");
-		for (String tag : split){
-			if(tag.equals(newTag)){
-				return  oldTags;
-			}
-		}
-		return oldTags.concat(",").concat(newTag);
-	}
+
 	
 }

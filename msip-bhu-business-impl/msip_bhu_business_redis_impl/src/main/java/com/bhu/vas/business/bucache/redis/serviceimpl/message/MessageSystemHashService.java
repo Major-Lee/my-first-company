@@ -31,18 +31,27 @@ public class MessageSystemHashService extends AbstractRelationHashCache{
     
     private static String generateKey(String key, String utype){
     	StringBuilder sb = new StringBuilder();
-    	sb.append(BusinessKeyDefine.Message.MessageUserSig);
+    	sb.append(BusinessKeyDefine.Message.Key);
     	sb.append(utype);
     	sb.append(key);
         return sb.toString();
     }
     
     public String fetchMessageUserSig(String key, String utype){
-		return this.hget(generateKey(key, utype),BusinessKeyDefine.Message.MessageFieldSig);
+		return this.hget(generateKey(key, utype),BusinessKeyDefine.Message.FieldSig);
 	}
     
+    
     public Long setMessageUserSig(String key, String utype, String sig){
-		return this.hset(generateKey(key, utype),BusinessKeyDefine.Message.MessageFieldSig,sig);
+		return this.hset(generateKey(key, utype),BusinessKeyDefine.Message.FieldSig, sig);
+	}
+    
+    public Long setMessageUserTag(String key, String utype, String tags){
+		return this.hset(generateKey(key, utype),BusinessKeyDefine.Message.FieldTags, tags);
+	}
+    
+    public String fetchMessageUserTag(String key, String utype){
+		return this.hget(generateKey(key, utype),BusinessKeyDefine.Message.FieldSig);
 	}
     
     public Long setMessageUserSigExpire(String key, String utype, String expire){

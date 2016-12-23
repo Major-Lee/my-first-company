@@ -8,7 +8,25 @@ public class AsyncTimUserRegisterDTO extends AsyncDTO{
 	private String user;
 	private String nick;
 	private String utype;
+	private String sig;
+	private Integer channel ;
 	
+	public Integer getChannel() {
+		return channel;
+	}
+
+	public void setChannel(Integer channel) {
+		this.channel = channel;
+	}
+
+	public String getSig() {
+		return sig;
+	}
+
+	public void setSig(String sig) {
+		this.sig = sig;
+	}
+
 	public String getUtype() {
 		return utype;
 	}
