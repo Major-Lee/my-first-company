@@ -375,4 +375,29 @@ public class MessageTimHelper {
 		}
 		return rcp_dto;
 	}
+	
+	
+	public static boolean isNewUserTag(String oldTags, String newTag){
+		if (StringUtils.isEmpty(oldTags))
+			return true;
+		String[] split = oldTags.split(",");
+		for (String tag : split){
+			if(tag.equals(newTag)){
+				return  false;
+			}
+		}
+		return true;
+	}
+	
+	public static String replaceTags(String oldTags, String newTag){
+		if (StringUtils.isEmpty(oldTags))
+			return newTag;
+		String[] split = oldTags.split(",");
+		for (String tag : split){
+			if(tag.equals(newTag)){
+				return  oldTags;
+			}
+		}
+		return oldTags.concat(",").concat(newTag);
+	}
 }

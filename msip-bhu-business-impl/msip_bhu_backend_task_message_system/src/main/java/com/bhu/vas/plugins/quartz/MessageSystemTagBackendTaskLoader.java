@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
 import com.bhu.vas.api.rpc.message.helper.MessageTimHelper;
 import com.bhu.vas.api.rpc.message.model.MessageUser;
+import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
+import com.bhu.vas.business.bucache.redis.serviceimpl.message.MessageSystemHashService;
 import com.bhu.vas.business.ds.message.facade.MessageUserFacadeService;
 import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
 
@@ -48,8 +50,11 @@ public class MessageSystemTagBackendTaskLoader {
 				try{
 					for (MessageUser user : users){
 						TimResponseBasicDTO ret_dto = MessageTimHelper.CreateTimAddTagUrlCommunication(user.getId(), user.getExtension_content());
-						if (ret_dto.getErrorCode() == 0){
+						if (ret_dto.isExecutedSuccess()){
 							messageUserFacadeService.updateSyncStatus(user, 1);
+							MessageSystemHashService.getInstance().
+							setMessageUserTag(user.getId(), 
+									BusinessKeyDefine.Message.User, user.getExtension_content());
 							logger.info(String.format("onProcessor messageUser[%s] addtag[%s] successful.", 
 									user.getId(), user.getExtension_content()));
 						}else{

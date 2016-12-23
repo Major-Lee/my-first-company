@@ -40,6 +40,7 @@ public class MessageUnitFacadeService {
 			String sig = fetchTimUserSig(uid+"", BusinessKeyDefine.Message.User, channel, MessageTimHelper.defaultExpire);
 			if (sig != null){
 				dto.setSig(sig);
+				dto.setChannel(channel);
 				logger.info(String.format("fetch_usersig user[%s] sig[%s] successful!", uid, sig));
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 			}else{
@@ -62,6 +63,7 @@ public class MessageUnitFacadeService {
 			String sig = fetchTimUserSig(user, BusinessKeyDefine.Message.Visitor, channel, MessageTimHelper.visitorExpire);
 			if (sig != null){
 				dto.setSig(sig);
+				dto.setChannel(channel);
 				logger.info(String.format("fetch_visitor_usersig user[%s] sig[%s] successful!", user, sig));
 				return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
 			}else{
@@ -77,16 +79,18 @@ public class MessageUnitFacadeService {
 	
 	private String fetchTimUserSig(String user, String utype, Integer channel, String expire){
 		String sig = MessageSystemHashService.getInstance().fetchMessageUserSig(user, utype);
-		boolean newly = false;
 		if (sig == null){
 			logger.info(String.format("fetch_usersig can't fetch user[%s] from redis", user));
 			sig = MessageTimHelper.createUserSig(user, expire);
 			
 			MessageSystemHashService.getInstance().setMessageUserSig(user, utype, sig);
 			MessageSystemHashService.getInstance().setMessageUserSigExpire(user, utype, expire);
-			newly = true;
+			asyncDeliverMessageService.sendBatchTimUserRegisterActionMessage(user, null, utype, sig, channel);
+			return sig;
 		}
-		asyncDeliverMessageService.sendBatchTimUserAddTagActionMessage(user, sig, utype, channel, newly);
+		if (MessageTimHelper.isNewUserTag(MessageSystemHashService.getInstance().fetchMessageUserTag(user, utype), utype+channel.intValue())){
+			asyncDeliverMessageService.sendBatchTimUserAddTagActionMessage(user, utype, channel);
+		}
 		return sig;
 	}
 
