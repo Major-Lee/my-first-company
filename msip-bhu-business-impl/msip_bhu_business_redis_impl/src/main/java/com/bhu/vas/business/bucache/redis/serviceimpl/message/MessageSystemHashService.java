@@ -51,7 +51,7 @@ public class MessageSystemHashService extends AbstractRelationHashCache{
 	}
     
     public String fetchMessageUserTag(String key, String utype){
-		return this.hget(generateKey(key, utype),BusinessKeyDefine.Message.FieldSig);
+		return this.hget(generateKey(key, utype),BusinessKeyDefine.Message.FieldTags);
 	}
     
     public Long setMessageUserSigExpire(String key, String utype, String expire){
