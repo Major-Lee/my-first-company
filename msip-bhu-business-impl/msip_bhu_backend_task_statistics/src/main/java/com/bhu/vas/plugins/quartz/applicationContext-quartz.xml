@@ -4,6 +4,15 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
 	default-lazy-init="true">
 	<description>Quartz的本地Cron式执行任务配置</description>
+	<!-- spring的属性加载器，加载properties文件中的属性 -->  
+	<bean id="statisticPropertyConfigurer"  
+	    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+		<property name="ignoreUnresolvablePlaceholders" value="true" /> 
+	    <property name="location">
+			<value>classpath:/deploy/runtimeconf/adtask.properties</value>
+	    </property>  
+	    <property name="fileEncoding" value="utf-8" />  
+	</bean>
 	<!-- Quartz本地Schduler -->
 	<bean id="localQuartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="false">
 		<!-- Triggers集成 -->
@@ -33,7 +42,7 @@
 	<bean id="userIncomeBackendTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="userIncomeBackendTaskLoaderCronJobDetail" />
 		<!--<property name="cronExpression" value="0 54-59 23 * * ?" />  -->
-		<property name="cronExpression" value="0 04 01 ? * *" />
+		<property name="cronExpression" value="${statistic.userIncom}" />
 	</bean>
 	<bean id="userIncomeBackendTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="userIncomeBackendTaskLoaderJob" />
@@ -46,7 +55,7 @@
 	<bean id="userIncomeRankLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="userIncomeRankLoaderCronJobDetail" />
 		<!-- <property name="cronExpression" value="0 0 12 * * ? " /> -->
-		<property name="cronExpression" value="0 09 02 ? * *" />
+		<property name="cronExpression" value="${statistic.userIncomeRank}" />
 	</bean>
 	<bean id="userIncomeRankLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="userIncomeRankLoaderJob" />
@@ -58,7 +67,7 @@
 	<!-- 每月三点运行 -->
 	<bean id="userIncomeMonthRankTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="userIncomeMonthRankTaskLoaderCronJobDetail" />
-		<property name="cronExpression" value="0 00 03 1 * ?" />
+		<property name="cronExpression" value="${statistic.userIncomeMonthRank}" />
 	</bean>
 	<bean id="userIncomeMonthRankTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="userIncomeMonthRankTaskLoaderJob" />
@@ -70,7 +79,7 @@
 	<!-- 每天23点五十分 广告数据全清 -->
 	<bean id="fincialStatisticsTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="fincialStatisticsTaskLoaderCronJobDetail" />
-		<property name="cronExpression" value="0 00 04 1 * ?" />
+		<property name="cronExpression" value="${statistic.fincialStatistics}" />
 	</bean>
 	<bean id="fincialStatisticsTaskLoaderCronJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="fincialStatisticsTaskLoaderJob" />
