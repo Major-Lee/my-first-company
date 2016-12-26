@@ -383,8 +383,9 @@
 		group by l.orderid ) as a
 	</select>
 	
+	
 	<select id="accountIncome" resultType="Map" parameterType="Map">
-		SELECT SUM(o.amount) as amount,sum(l.cash) as cash,count(*) as num from t_vas_users_wallet_log l,msip_bhu_commdity.t_commdity_orders o
+		SELECT SUM(truncate(o.amount,4)) AS amount,SUM(truncate(l.cash,4)) AS cash,count(*) as num from t_vas_users_wallet_log l,msip_bhu_commdity.t_commdity_orders o
 		 WHERE l.uid=#{uid} AND l.orderid=o.id and (l.transmode='SDP' or l.transmode='DWP') and (l.transtype='P2C' or l.transtype='R2C') 	
 		<if test="mac!=null">
 			and l.mac=#{mac}
