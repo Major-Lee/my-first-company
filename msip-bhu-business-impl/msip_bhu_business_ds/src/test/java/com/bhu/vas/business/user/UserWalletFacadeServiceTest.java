@@ -154,8 +154,9 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 			User user = UserValidateServiceHelper.validateUser(applynow.getUid(),userWalletFacadeService.getUserService());
 			//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(applynow.getUid());
 			WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(applynow.getUid(),applynow.getId(),applynow.getCash());
-			UserWithdrawApplyVTO withdrawApplyVTO = applynow.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(),"","", 
-					calculateApplyCost);
+			UserWithdrawApplyVTO withdrawApplyVTO = applynow.toUserWithdrawApplyVTO(null, user.getMobileno(), user.getNick(),"","", 
+					calculateApplyCost, null, null, 0, null, new Date());
+				
 			//ThirdpartiesPaymentDTO paymentDTO = userWalletFacadeService.fetchThirdpartiesPayment(applynow.getUid(), ThirdpartiesPaymentType.fromType(applynow.getPayment_type()));
 			UserOAuthStateVTO paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(applynow.getUid(),OAuthType.fromType(applynow.getPayment_type()),true);
 			RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
@@ -255,9 +256,8 @@ public class UserWalletFacadeServiceTest extends BaseTest{
 				WithdrawCostInfo calculateApplyCost = userWalletFacadeService.getChargingFacadeService().calculateWithdrawCost(withdrawApply.getUid(),withdrawApply.getId(),withdrawApply.getCash());
 				//ApplyCost calculateApplyCost = userWalletFacadeService.getUserWalletConfigsService().calculateApplyCost(withdrawApply.getUid(),withdrawApply.getCash());
 				//UserWalletConfigs walletConfigs = userWalletFacadeService.getUserWalletConfigsService().userfulWalletConfigs(withdrawApply.getUid());
-				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(user.getMobileno(), user.getNick(),"","", 
-						calculateApplyCost);
-				
+				UserWithdrawApplyVTO withdrawApplyVTO = withdrawApply.toUserWithdrawApplyVTO(null, user.getMobileno(), user.getNick(),"","", 
+						calculateApplyCost, null, null, 0, null, new Date());
 				UserOAuthStateVTO paymentDTO = userWalletFacadeService.getUserOAuthFacadeService().fetchRegisterIndetify(withdrawApply.getUid(),OAuthType.fromType(withdrawApply.getPayment_type()),true);//.fetchThirdpartiesPayment(withdrawApply.getUid(), ThirdpartiesPaymentType.fromType(withdrawApply.getPayment_type()));
 				RequestWithdrawNotifyDTO withdrawNotify = RequestWithdrawNotifyDTO.from(withdrawApplyVTO,paymentDTO, System.currentTimeMillis());
 				String jsonNotify = JsonHelper.getJSONString(withdrawNotify);
