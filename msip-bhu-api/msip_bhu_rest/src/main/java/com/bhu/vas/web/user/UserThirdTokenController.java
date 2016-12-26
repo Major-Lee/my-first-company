@@ -38,6 +38,7 @@ public class UserThirdTokenController extends BaseController{
 	private static Set<String> bucketNameSupported = new HashSet<String>();
 	
 	private static final String bucketName_Avatar = "appavatar4bhu";
+	private static final String bucketName_Avatar_Test = "test";
 	private static final String bucketName_Log = "applogs4bhu";
 	
 	private static final String avatar_suffix_name = ".jpeg";
@@ -48,6 +49,7 @@ public class UserThirdTokenController extends BaseController{
 		Config.SECRET_KEY = YunConstant.QN_SECRET_KEY;//"edcDVKq1YESjRCk_h5aBx2jqb-rtmcrmwBEBH8-z";
 	    mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
 	    bucketNameSupported.add(bucketName_Avatar);
+	    bucketNameSupported.add(bucketName_Avatar_Test);
 	    bucketNameSupported.add(bucketName_Log);
 	}
 	
