@@ -237,7 +237,7 @@
 	    t_orders.context as context,
 		truncate(t_walletlog.cash,2) as cash,
 		t_orders.amount as amount,
-		t_orders.mac as mac,
+		t_walletlog.mac as mac,
 		t_orders.umac as umac,
 		t_orders.uid as uid,
 		t_orders.payment_type as payment_type,
