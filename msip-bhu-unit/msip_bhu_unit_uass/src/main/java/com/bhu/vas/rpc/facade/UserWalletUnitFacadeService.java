@@ -1880,13 +1880,12 @@ public class UserWalletUnitFacadeService {
 					}
 					
 					
-					if(!i.getTranstype().equals("A2C")&&i.getUmac()!=null){
-							rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(i.getUmac(),true,false));
-							rewardVTO.setUmac(i.getUmac());
+					if(!i.getTranstype().equals("A2C")){
+						rewardVTO.setUmac(i.getUmac());
 					}else{
-						rewardVTO.setUmac_mf("-");
 						rewardVTO.setUmac("-");
 					}
+					rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(i.getUmac(),true,false));
 					
 					retDtos.add(rewardVTO);
 				}
