@@ -86,7 +86,7 @@ public class UserWalletController extends BaseController{
 				SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
 				String preTime =  shortDateFormat.format(preCld.getTime());
 				String sufTime = shortDateFormat.format(sufCld.getTime());
-				String rpcDescs = "抱歉，当前为系统结算时间。请于"+preTime+"至"+sufTime+"发起提现申请！";
+				String rpcDescs = "抱歉，当前为系统结算时间。";
 				rpcResult.setWithdraw_oper(rpcDescs);
 				rpcResult.setPayment_type(payment_type);
 				rpcResult.setCash(cash);
