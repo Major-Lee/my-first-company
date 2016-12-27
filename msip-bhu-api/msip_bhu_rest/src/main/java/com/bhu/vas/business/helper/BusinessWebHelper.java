@@ -64,10 +64,11 @@ public class BusinessWebHelper {
 		//currentCal.set(Calendar.DATE,25);
 		Date currentTime = currentCal.getTime();
 		Calendar preCld = getCalendar();
-		preCld.add(Calendar.MONTH, -1);
-		preCld.set(Calendar.DATE,26);
+		//preCld.add(Calendar.MONTH, 1);
+		preCld.set(Calendar.DATE,5);
 		Calendar sufCld = getCalendar();
-		sufCld.set(Calendar.DATE,5);
+		//sufCld.add(Calendar.MONTH, 1);
+		sufCld.set(Calendar.DATE,25);
 //		System.out.println("currentTime:"+ DateTimeHelper.shortDateFormat.format(currentTime));
 //		System.out.println("preCld:"+DateTimeHelper.shortDateFormat.format(preCld.getTime()));
 //		System.out.println("sufCld:"+DateTimeHelper.shortDateFormat.format(sufCld.getTime()));
