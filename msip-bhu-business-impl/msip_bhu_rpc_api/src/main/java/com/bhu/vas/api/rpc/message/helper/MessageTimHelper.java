@@ -24,6 +24,7 @@ import com.bhu.vas.api.rpc.message.dto.TimCustomMsgContentDTO;
 import com.bhu.vas.api.rpc.message.dto.TimCustomMsgDefaultDataDTO;
 import com.bhu.vas.api.rpc.message.dto.TimGetPushReportDTO;
 import com.bhu.vas.api.rpc.message.dto.TimMulImportAccountDTO;
+import com.bhu.vas.api.rpc.message.dto.TimOfflinePushInfoDTO;
 import com.bhu.vas.api.rpc.message.dto.TimResponseBasicDTO;
 import com.bhu.vas.api.rpc.message.dto.TimSendMsgDTO;
 import com.bhu.vas.api.rpc.message.dto.TimUserBasicDTO;
@@ -206,7 +207,6 @@ public class MessageTimHelper {
 	 * @return
 	 */
 	
-	@SuppressWarnings("unchecked")
 	public static <T> TimResponseBasicDTO CreateTimPushUrlCommunication(TimPushChannel  pushChannel, int msgLifeTime, String tags, TimPushMsgType msgType, String content){
 		Map<String, String> api_params = generateTimApiParamMap();
 		TimPushDTO<T> pushDTO = new TimPushDTO<T>();
@@ -215,25 +215,8 @@ public class MessageTimHelper {
 		}
 		pushDTO.setFromAccount(pushChannel.getName());
 		pushDTO.setCondition(TimPushConditionDTO.builder(tags));
-		List<TimMsgBodyDTO<T>> msgBodyList = new ArrayList<TimMsgBodyDTO<T>>();
-		switch (msgType) {
-		case TIMTextElem:
-			msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(), 
-					TimTextMsgContentDTO.builder(content)));
-			pushDTO.setMsgBodyList(msgBodyList);
-			break;
-		case TIMCustomElem:
-			TimCustomMsgDefaultDataDTO msgContentDTO = JsonHelper.getDTO(content, TimCustomMsgDefaultDataDTO.class);
-			
-			msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(), 
-					TimCustomMsgContentDTO.builder(msgContentDTO)));
-			pushDTO.setMsgBodyList(msgBodyList);
-			break;
-		default:
-			logger.info(String.format("msgType[%s] is not support", msgType));
-			break;
-		}
-		
+		pushDTO.setMsgBodyList(builderMsgBody(msgType, content));
+		pushDTO.setOfflinePushInfo(TimOfflinePushInfoDTO.builder("{\"pushType\":\"IMPush\"}"));
 		TimResponseBasicDTO rcp_dto = null;
 		try {
 			String response = TimHttpHelper.postUrlAsString(Tim_Url+OpenIM+Action_IM_Push,
@@ -276,18 +259,14 @@ public class MessageTimHelper {
 		return rcp_dto;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <T> TimResponseBasicDTO CreateTimSendMsgUrlCommunication(TimPushChannel  pushChannel, String toAcc, TimPushMsgType msgType, String content){
 		
 		Map<String, String> api_params = generateTimApiParamMap();
 		TimSendMsgDTO<T> sendMsgDto = new TimSendMsgDTO<T>();
 		sendMsgDto.setFrom_Account(pushChannel.getName());
 		sendMsgDto.setTo_Account(toAcc);
-		List<TimMsgBodyDTO<T>> msgBodyList = new ArrayList<TimMsgBodyDTO<T>>();
-		msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(),
-				TimTextMsgContentDTO.builder(content)));
-		sendMsgDto.setMsgBodyList(msgBodyList);
-		
+		sendMsgDto.setMsgBodyList(builderMsgBody(msgType, content));
+		sendMsgDto.setOfflinePushInfo(TimOfflinePushInfoDTO.builder("{\"pushType\":\"IMPush\"}"));
 		TimResponseBasicDTO rcp_dto = null;
 		try {
 			String response = TimHttpHelper.postUrlAsString(Tim_Url+OpenIM+Action_Send_Msg,
@@ -324,7 +303,6 @@ public class MessageTimHelper {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <T> TimPushDTO<T> builderPush(TimPushChannel  pushChannel, int msgLifeTime, String tags, TimPushMsgType msgType, String content){
 		TimPushDTO<T> pushDTO = new TimPushDTO<T>();
 		if (msgLifeTime != 0){
@@ -332,37 +310,39 @@ public class MessageTimHelper {
 		}
 		pushDTO.setFromAccount(pushChannel.getName());
 		pushDTO.setCondition(TimPushConditionDTO.builder(tags));
+		pushDTO.setMsgBodyList(builderMsgBody(msgType, content));
+		pushDTO.setOfflinePushInfo(TimOfflinePushInfoDTO.builder("{\"pushType\":\"IMPush\"}"));
+		return pushDTO;
+	}
+	
+	public static <T> TimSendMsgDTO<T> builderSendMsg(TimPushChannel  pushChannel, String toAcc, TimPushMsgType msgType, String content){
+		TimSendMsgDTO<T> sendMsgDto = new TimSendMsgDTO<T>();
+		sendMsgDto.setFrom_Account(pushChannel.getName());
+		sendMsgDto.setTo_Account(toAcc);
+		sendMsgDto.setMsgBodyList(builderMsgBody(msgType, content));
+		sendMsgDto.setOfflinePushInfo(TimOfflinePushInfoDTO.builder("{\"pushType\":\"IMPush\"}"));
+		return sendMsgDto;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> List<TimMsgBodyDTO<T>> builderMsgBody(TimPushMsgType msgType, String content){
 		List<TimMsgBodyDTO<T>> msgBodyList = new ArrayList<TimMsgBodyDTO<T>>();
 		switch (msgType) {
 		case TIMTextElem:
 			msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(), 
 					TimTextMsgContentDTO.builder(content)));
-			pushDTO.setMsgBodyList(msgBodyList);
 			break;
 		case TIMCustomElem:
 			TimCustomMsgDefaultDataDTO msgContentDTO = JsonHelper.getDTO(content, TimCustomMsgDefaultDataDTO.class);
 			
 			msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(), 
 					TimCustomMsgContentDTO.builder(msgContentDTO)));
-			pushDTO.setMsgBodyList(msgBodyList);
 			break;
 		default:
 			logger.info(String.format("msgType[%s] is not support", msgType));
 			break;
 		}
-		return pushDTO;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static <T> TimSendMsgDTO<T> builderSendMsg(TimPushChannel  pushChannel, String toAcc, TimPushMsgType msgType, String content){
-		TimSendMsgDTO<T> sendMsgDto = new TimSendMsgDTO<T>();
-		sendMsgDto.setFrom_Account(pushChannel.getName());
-		sendMsgDto.setTo_Account(toAcc);
-		List<TimMsgBodyDTO<T>> msgBodyList = new ArrayList<TimMsgBodyDTO<T>>();
-		msgBodyList.add((TimMsgBodyDTO<T>) TimMsgBodyDTO.buildTimMsgBodyDTO(msgType.getName(),
-				TimTextMsgContentDTO.builder(content)));
-		sendMsgDto.setMsgBodyList(msgBodyList);
-		return sendMsgDto;
+		return msgBodyList;
 	}
 	
 	public static TimResponseBasicDTO CreateTimUrlCommunication(String url, String message) throws Exception{
