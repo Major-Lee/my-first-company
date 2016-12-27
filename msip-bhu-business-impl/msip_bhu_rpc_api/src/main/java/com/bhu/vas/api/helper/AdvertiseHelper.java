@@ -1,12 +1,16 @@
 package com.bhu.vas.api.helper;
 
+import java.text.Collator;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
+import com.smartwork.msip.cores.helper.ArrayHelper;
 
 
 public class AdvertiseHelper {
@@ -37,4 +41,11 @@ public class AdvertiseHelper {
 		return trashVtos;
 	}
 	
+	public static List<String> chineseInitialSort(List<String> list){
+		  Comparator comparator = Collator.getInstance(java.util.Locale.CHINA);
+		  String [] arrStrings = ArrayHelper.toStringArray(list);
+		  // 使根据指定比较器产生的顺序对指定对象数组进行排序。
+		  Arrays.sort(arrStrings, comparator);
+		  return ArrayHelper.toList(arrStrings);
+	}
 }
