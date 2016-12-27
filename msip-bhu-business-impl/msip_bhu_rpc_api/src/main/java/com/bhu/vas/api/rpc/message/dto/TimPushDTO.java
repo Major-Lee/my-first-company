@@ -24,6 +24,15 @@ public class TimPushDTO<T> implements java.io.Serializable{
 	@JsonInclude(Include.NON_NULL)
 	private TimPushConditionDTO condition;
 	
+	@JsonProperty("OfflinePushInfo")
+	private TimOfflinePushInfoDTO offlinePushInfo;
+	
+	public TimOfflinePushInfoDTO getOfflinePushInfo() {
+		return offlinePushInfo;
+	}
+	public void setOfflinePushInfo(TimOfflinePushInfoDTO offlinePushInfo) {
+		this.offlinePushInfo = offlinePushInfo;
+	}
 	public TimPushConditionDTO getCondition() {
 		return condition;
 	}
@@ -32,7 +41,7 @@ public class TimPushDTO<T> implements java.io.Serializable{
 	}
 
 	@JsonProperty("MsgBody")
-	private List<TimMsgBodyDTO<T>> msgBodyList;
+	private List<TimMsgBodyDTO<Object>> msgBodyList;
 	
 	public int getMsgRandom() {
 		return msgRandom;
@@ -53,10 +62,10 @@ public class TimPushDTO<T> implements java.io.Serializable{
 		this.fromAccount = fromAccount;
 	}
 	
-	public List<TimMsgBodyDTO<T>> getMsgBodyList() {
+	public List<TimMsgBodyDTO<Object>> getMsgBodyList() {
 		return msgBodyList;
 	}
-	public void setMsgBodyList(List<TimMsgBodyDTO<T>> msgBodyList) {
+	public void setMsgBodyList(List<TimMsgBodyDTO<Object>> msgBodyList) {
 		this.msgBodyList = msgBodyList;
 	}
 	public TimPushDTO(){

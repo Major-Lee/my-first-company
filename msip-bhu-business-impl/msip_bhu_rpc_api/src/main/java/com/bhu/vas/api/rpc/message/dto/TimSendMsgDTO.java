@@ -19,13 +19,32 @@ public class TimSendMsgDTO<T> implements java.io.Serializable{
 	private String to_Account;
 	
 	@JsonProperty("MsgBody")
-	private List<TimMsgBodyDTO<T>> msgBodyList;
+	private List<TimMsgBodyDTO<Object>> msgBodyList;
 	
+	public List<TimMsgBodyDTO<Object>> getMsgBodyList() {
+		return msgBodyList;
+	}
+
+	public void setMsgBodyList(List<TimMsgBodyDTO<Object>> msgBodyList) {
+		this.msgBodyList = msgBodyList;
+	}
+
 	@JsonProperty("MsgRandom")
 	private int msgRandom;
 
 	@JsonProperty("MsgTimeStamp")
 	private int msgTimeStamp;
+	
+	public TimOfflinePushInfoDTO getOfflinePushInfo() {
+		return offlinePushInfo;
+	}
+
+	public void setOfflinePushInfo(TimOfflinePushInfoDTO offlinePushInfo) {
+		this.offlinePushInfo = offlinePushInfo;
+	}
+
+	@JsonProperty("OfflinePushInfo")
+	private TimOfflinePushInfoDTO offlinePushInfo;
 	
 	public int getSync() {
 		return sync;
@@ -51,9 +70,6 @@ public class TimSendMsgDTO<T> implements java.io.Serializable{
 		this.to_Account = to_Account;
 	}
 
-	public List<TimMsgBodyDTO<T>> getMsgBodyList() {
-		return msgBodyList;
-	}
 
 	public int getMsgRandom() {
 		return msgRandom;
@@ -71,10 +87,6 @@ public class TimSendMsgDTO<T> implements java.io.Serializable{
 		this.msgTimeStamp = msgTimeStamp;
 	}
 
-	public void setMsgBodyList(List<TimMsgBodyDTO<T>> msgBodyList) {
-		this.msgBodyList = msgBodyList;
-	}
-	
 	public TimSendMsgDTO(){
 		this.setSync(1);
 		this.setMsgRandom(RandomData.intNumber(MessageTimHelper.MAXMSGRANDOM));
