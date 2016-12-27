@@ -76,10 +76,10 @@ public class UserThirdTokenController extends BaseController{
         	CurrentKey ckey = new CurrentKey();
         	if(upd){
         		String fid = null;//
-            	if(bucketName_Avatar.equals(bucketName)){
-            		fid = uid.toString().concat(avatar_suffix_name);
-            	}else{
+            	if(bucketName_Log.equals(bucketName)){
             		fid = uid.toString().concat(log_suffix_name);
+            	}else{
+            		fid = uid.toString().concat(avatar_suffix_name);
             	}
             	putPolicy = new PutPolicy(bucketName.concat(StringHelper.COLON_STRING_GAP).concat(fid));
             	ckey.setFid(fid);
