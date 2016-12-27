@@ -38,6 +38,7 @@ public class UserThirdTokenController extends BaseController{
 	private static Set<String> bucketNameSupported = new HashSet<String>();
 	
 	private static final String bucketName_Avatar = "appavatar4bhu";
+	private static final String bucketName_Avatar_Test = "test";
 	private static final String bucketName_Log = "applogs4bhu";
 	
 	private static final String avatar_suffix_name = ".jpeg";
@@ -48,6 +49,7 @@ public class UserThirdTokenController extends BaseController{
 		Config.SECRET_KEY = YunConstant.QN_SECRET_KEY;//"edcDVKq1YESjRCk_h5aBx2jqb-rtmcrmwBEBH8-z";
 	    mac = new Mac(Config.ACCESS_KEY, Config.SECRET_KEY);
 	    bucketNameSupported.add(bucketName_Avatar);
+	    bucketNameSupported.add(bucketName_Avatar_Test);
 	    bucketNameSupported.add(bucketName_Log);
 	}
 	
@@ -74,10 +76,10 @@ public class UserThirdTokenController extends BaseController{
         	CurrentKey ckey = new CurrentKey();
         	if(upd){
         		String fid = null;//
-            	if(bucketName_Avatar.equals(bucketName)){
-            		fid = uid.toString().concat(avatar_suffix_name);
-            	}else{
+            	if(bucketName_Log.equals(bucketName)){
             		fid = uid.toString().concat(log_suffix_name);
+            	}else{
+            		fid = uid.toString().concat(avatar_suffix_name);
             	}
             	putPolicy = new PutPolicy(bucketName.concat(StringHelper.COLON_STRING_GAP).concat(fid));
             	ckey.setFid(fid);

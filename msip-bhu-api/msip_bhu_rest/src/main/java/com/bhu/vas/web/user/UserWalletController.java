@@ -74,18 +74,19 @@ public class UserWalletController extends BaseController{
 			//财务结算，不允许每月26~N+5提现
 			boolean isOpen = BusinessWebHelper.isOpenWithdrawDate();
 //			boolean isOpen = true;//BusinessWebHelper.isOpenWithdrawDate();
-			if(!isOpen){
+			if(isOpen){
 				UserWithdrawApplyVTO rpcResult = new UserWithdrawApplyVTO();
 				rpcResult.setWithdraw_oper_desc(UWithdrawStatus.InvalidTime.getKey());
 				Calendar preCld = BusinessWebHelper.getCalendar(); 
-				preCld.add(Calendar.MONTH, -1);
-				preCld.set(Calendar.DATE,26);
+				preCld.add(Calendar.MONTH, 1);
+				preCld.set(Calendar.DATE,6);
 				Calendar sufCld =  BusinessWebHelper.getCalendar();
-				sufCld.set(Calendar.DATE,5);
+				preCld.add(Calendar.MONTH, 1);
+				sufCld.set(Calendar.DATE,25);
 				SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
 				String preTime =  shortDateFormat.format(preCld.getTime());
 				String sufTime = shortDateFormat.format(sufCld.getTime());
-				String rpcDescs = "系统从"+preTime+"至"+sufTime+"为结算时间，暂不受理用户提现，敬请谅解！";
+				String rpcDescs = "抱歉，当前为系统结算时间。";
 				rpcResult.setWithdraw_oper(rpcDescs);
 				rpcResult.setPayment_type(payment_type);
 				rpcResult.setCash(cash);

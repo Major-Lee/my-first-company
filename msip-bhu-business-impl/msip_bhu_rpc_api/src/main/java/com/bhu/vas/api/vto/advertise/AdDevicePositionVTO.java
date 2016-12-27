@@ -2,6 +2,7 @@ package com.bhu.vas.api.vto.advertise;
 
 import java.util.List;
 
+import com.bhu.vas.api.helper.AdvertiseHelper;
 import com.smartwork.msip.cores.helper.ArithHelper;
 
 @SuppressWarnings("serial")
@@ -21,7 +22,7 @@ public class AdDevicePositionVTO implements java.io.Serializable{
 		return positions;
 	}
 	public void setPositions(List<String> positions) {
-		this.positions = positions;
+		this.positions = AdvertiseHelper.chineseInitialSort(positions);
 	}
 	public List<AdvertiseOccupiedVTO> getOccupyAds() {
 		return occupyAds;
