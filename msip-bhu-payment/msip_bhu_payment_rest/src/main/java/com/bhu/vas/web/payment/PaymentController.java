@@ -794,10 +794,12 @@ public class PaymentController extends BaseController{
     		PaymentReckoning paymentReckoning = paymentReckoningService.findByOrderId(goods_no);
     		long select_isExist_end = System.currentTimeMillis() - select_isExist_begin; // 这段代码放在程序执行后
     		logger.info(goods_no+"查询订单是否存在耗时：" + select_isExist_end + "毫秒");
-//        	if(paymentReckoning != null){
-//        		logger.error(String.format("apply payment goods_no [%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
-//        		throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST,new String[]{""}); 
-//        	}
+        	if(paymentReckoning != null){
+        		logger.error(String.format("apply payment goods_no [%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
+    					ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST)));
+        		return;
+        	}
         	umac = BusinessHelper.formatMac(umac);
         	PaymentChannelCode paymentChannel = PaymentChannelCode.getPaymentChannelCodeByCode(payment_type);
     		switch(paymentChannel){
@@ -1526,7 +1528,7 @@ public class PaymentController extends BaseController{
     		try{
     			if(request_now_url_end > nowOutTimeLevel){
     				String smsg = String.format(BusinessRuntimeConfiguration.Internal_payment_warning_Template, "现在支付",request_now_url_end+"");
-    				if(request_now_url_end > 7000){
+    				if(request_now_url_end > 6500){
     					nowWarningCount++;
     				}
     				if(request_now_url_end > 30000){
@@ -2012,7 +2014,7 @@ public class PaymentController extends BaseController{
 				logger.info("账单流水号："+out_trade_no+"支付状态未修改,将进行修改。。。");
 	            if("SUCCESS".equals(paySuccessNotifyResponse.getReturn_code()) && "SUCCESS".equals(paySuccessNotifyResponse.getResult_code())){
 	            	 logger.info("账单流水号："+out_trade_no+"支付成功.微信返回SUCCESS.");
-	            	 payLogicService.updatePaymentStatus(payReckoning,out_trade_no,thirdPartCode,"WX","");
+	            	 payLogicService.updatePaymentStatus(payReckoning,out_trade_no,thirdPartCode,"BHU","");
 	            	 response.getWriter().println("<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>");
 	            	 return;
 	            }else{
