@@ -1880,7 +1880,7 @@ public class UserWalletUnitFacadeService {
 					}
 					
 					
-					if(!i.getTranstype().equals("A2C")){
+					if(!i.getTranstype().equals("A2C")&&i.getUmac()!=null){
 						rewardVTO.setUmac(i.getUmac());
 					}else{
 						rewardVTO.setUmac("-");
