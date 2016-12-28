@@ -30,14 +30,14 @@ public class AdvertisePaymentTimeOutTaskLoader {
 	
 	public void homeImagePaymentTimeOut(long nowTime){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPaid.getType()).andColumnEqualTo("type", Advertise.homeImage);
+		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPaid.getType()).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.HomeImage.getType());
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
 		List<Advertise> updateList = new ArrayList<Advertise>(); 		
 		logger.info(String.format("AdvertiseHomeImagePaymentTimeOutTaskLoader unpaid timeout sum[%s]", ads.size()));
 		
 		for(Advertise ad : ads){
 			if(nowTime - ad.getCreated_at().getTime() > 20*60*1000){
-				ad.setState(BusinessEnumType.AdvertiseType.EscapeOrder.getType());
+				ad.setState(BusinessEnumType.AdvertiseStateType.EscapeOrder.getType());
 				ad.setReject_reason("因支付超时,已经取消本推广订单");
 				updateList.add(ad);
 			}
@@ -47,14 +47,14 @@ public class AdvertisePaymentTimeOutTaskLoader {
 	
 	public void sortMessagePaymentTimeOut(long nowTime){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPaid.getType()).andColumnEqualTo("type", Advertise.sortMessage);
+		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPaid.getType()).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.SortMessage.getType());
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
 		List<Advertise> updateList = new ArrayList<Advertise>(); 		
 		logger.info(String.format("AdvertiseSortMessagePaymentTimeOutTaskLoader unpaid timeout sum[%s]", ads.size()));
 		
 		for(Advertise ad : ads){
 			if(ad.getStart().getTime() - nowTime < 24*60*60*1000){
-				ad.setState(BusinessEnumType.AdvertiseType.EscapeOrder.getType());
+				ad.setState(BusinessEnumType.AdvertiseStateType.EscapeOrder.getType());
 				ad.setReject_reason("因支付超时,已经取消本推广订单");
 				updateList.add(ad);
 			}

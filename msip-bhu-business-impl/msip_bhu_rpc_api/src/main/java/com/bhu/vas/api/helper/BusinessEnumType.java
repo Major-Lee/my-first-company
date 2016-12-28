@@ -1050,7 +1050,7 @@ public class BusinessEnumType {
 	 * @author dell
 	 *
 	 */
-	public enum AdvertiseType{
+	public enum AdvertiseStateType{
 		UnPaid(0,"待支付","待付款"),
 		UnVerified(1,"待审核","待审核"),
 		UnPublish(2,"待发布","待发布"),
@@ -1066,9 +1066,9 @@ public class BusinessEnumType {
 		private String name;
 		private String desc;
 		
-		static Map<Integer, AdvertiseType> allAdvertiseTypeTypes;
+		static Map<Integer, AdvertiseStateType> allAdvertiseTypeTypes;
 		
-		private AdvertiseType(Integer type,String name,String desc){
+		private AdvertiseStateType(Integer type,String name,String desc){
 			this.type = type;
 			this.name = name;
 			this.desc = desc;
@@ -1098,6 +1098,73 @@ public class BusinessEnumType {
 			this.desc = desc;
 		}
 		
+		public static boolean correct(Integer type, AdvertiseStateType advertiseType){
+			if(type == null || advertiseType == null) return false;
+			
+			if(type.equals(advertiseType.getType())){
+				return true;
+			}
+			return false;
+		}
+		
+		public static AdvertiseStateType fromKey(Integer type){
+			if(type == null) return null;
+			return allAdvertiseTypeTypes.get(type);
+		}
+		
+		public static boolean supported(Integer type){
+			return allAdvertiseTypeTypes.containsKey(type);
+		}
+		
+		
+		static {
+			allAdvertiseTypeTypes = new HashMap<Integer, AdvertiseStateType>();
+			AdvertiseStateType[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (AdvertiseStateType type : types){
+				allAdvertiseTypeTypes.put(type.getType(), type);
+			}
+		}
+	}
+	
+	/**
+	 * 广告类型枚举
+	 * @author dell
+	 *
+	 */
+	public enum AdvertiseType{
+		HomeImage(0,"首页图片"),
+		SortMessage(1,"短信推广"),
+		HomeImage_SmallArea(2,"首页图片(小区域)"),
+		;
+		//0:待付款 1:待审核 2:待发布 3:发布中 4:发布完成 5:审核驳回 6:订单取消
+		private Integer type;
+		private String name;
+		
+		static Map<Integer, AdvertiseType> allAdvertiseTypeTypes;
+		
+		private AdvertiseType(Integer type,String name){
+			this.type = type;
+			this.name = name;
+		}
+
+		
+		public Integer getType() {
+			return type;
+		}
+
+
+		public void setType(Integer type) {
+			this.type = type;
+		}
+
+
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		
 		public static boolean correct(Integer type, AdvertiseType advertiseType){
 			if(type == null || advertiseType == null) return false;
 			
@@ -1125,7 +1192,6 @@ public class BusinessEnumType {
 			}
 		}
 	}
-	
 	
 	
 	/**

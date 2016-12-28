@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.dubbo.common.logger.Logger;
 import com.alibaba.dubbo.common.logger.LoggerFactory;
-import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
+import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseStateType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
 import com.bhu.vas.rpc.facade.AdvertiseUnitFacadeService;
@@ -131,37 +131,37 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 			advertiseListVTO.setAdvertises(advertises);
 			if(uid!=null){
 				ModelCriteria pubMc=new ModelCriteria();
-				pubMc.createCriteria().andColumnEqualTo("state", AdvertiseType.Published.getType()).andColumnEqualTo("uid", uid);
+				pubMc.createCriteria().andColumnEqualTo("state", AdvertiseStateType.Published.getType()).andColumnEqualTo("uid", uid);
 				int pubComNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(pubMc);
 				advertiseListVTO.setPubComNum(pubComNum);
 				
 				ModelCriteria vfMc=new ModelCriteria();
-				vfMc.createCriteria().andColumnEqualTo("state", AdvertiseType.VerifyFailure.getType()).andColumnEqualTo("uid", uid);
+				vfMc.createCriteria().andColumnEqualTo("state", AdvertiseStateType.VerifyFailure.getType()).andColumnEqualTo("uid", uid);
 				int vfNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(vfMc);
 				advertiseListVTO.setVerifyFalNum(vfNum);
 				
 				ModelCriteria escapeMc=new ModelCriteria();
-				escapeMc.createCriteria().andColumnEqualTo("state", AdvertiseType.EscapeOrder.getType()).andColumnEqualTo("uid", uid);
+				escapeMc.createCriteria().andColumnEqualTo("state", AdvertiseStateType.EscapeOrder.getType()).andColumnEqualTo("uid", uid);
 				int escapeNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(escapeMc);
 				advertiseListVTO.setEscapeNum(escapeNum);
 				
 				ModelCriteria onPublishMc=new ModelCriteria();
-				onPublishMc.createCriteria().andColumnEqualTo("state", AdvertiseType.OnPublish.getType()).andColumnEqualTo("uid", uid);
+				onPublishMc.createCriteria().andColumnEqualTo("state", AdvertiseStateType.OnPublish.getType()).andColumnEqualTo("uid", uid);
 				int onPublishNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(onPublishMc);
 				advertiseListVTO.setOnPublishNum(onPublishNum);
 				
 				ModelCriteria unpaidMc=new ModelCriteria();
-				unpaidMc.createCriteria().andColumnEqualTo("state", AdvertiseType.UnPaid.getType()).andColumnEqualTo("uid", uid);
+				unpaidMc.createCriteria().andColumnEqualTo("state", AdvertiseStateType.UnPaid.getType()).andColumnEqualTo("uid", uid);
 				int unPaidNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(unpaidMc);
 				advertiseListVTO.setUnPaidNum(unPaidNum);
 				
 				ModelCriteria unPublishMc=new ModelCriteria();
-				unPublishMc.createCriteria().andColumnEqualTo("state", AdvertiseType.UnPublish.getType()).andColumnEqualTo("uid", uid);
+				unPublishMc.createCriteria().andColumnEqualTo("state", AdvertiseStateType.UnPublish.getType()).andColumnEqualTo("uid", uid);
 				int unPublishNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(unPublishMc);
 				advertiseListVTO.setUnPublishNum(unPublishNum);
 				
 				ModelCriteria unVerifyMc=new ModelCriteria();
-				unVerifyMc.createCriteria().andColumnEqualTo("state", AdvertiseType.UnVerified.getType()).andColumnEqualTo("uid", uid);
+				unVerifyMc.createCriteria().andColumnEqualTo("state", AdvertiseStateType.UnVerified.getType()).andColumnEqualTo("uid", uid);
 				int unVerifyNum=advertiseUnitFacadeService.getAdvertiseService().countByModelCriteria(unVerifyMc);
 				advertiseListVTO.setUnVerifyNum(unVerifyNum);
 			}

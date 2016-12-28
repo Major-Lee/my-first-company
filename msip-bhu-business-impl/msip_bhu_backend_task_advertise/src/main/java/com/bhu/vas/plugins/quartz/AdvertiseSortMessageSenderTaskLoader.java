@@ -29,12 +29,12 @@ public class AdvertiseSortMessageSenderTaskLoader {
 		
 		String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("type", Advertise.sortMessage).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.UnPublish.getType()).andColumnLike("start", date+"%");
+		mc.createCriteria().andColumnEqualTo("type", BusinessEnumType.AdvertiseType.SortMessage.getType()).andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPublish.getType()).andColumnLike("start", date+"%");
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
 		if(!ads.isEmpty()){
 			for(Advertise ad : ads){
 				sendMessage(ad);
-				ad.setState(BusinessEnumType.AdvertiseType.Published.getType());
+				ad.setState(BusinessEnumType.AdvertiseStateType.Published.getType());
 			}
 			advertiseService.updateAll(ads);
 		}

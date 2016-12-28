@@ -46,15 +46,15 @@ public class AdvertiseAllClearTaskLoader {
 	//失效广告清除域名and状态变更
 	public void devicesDomainClear(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLessThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
+		mc.createCriteria().andColumnLessThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.OnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("devicesDomainClear  ready invalid ad sum: " + lists.size());
 			List<String> adIds = new ArrayList<String>();
 			for(Advertise ad : lists){
 				adIds.add(ad.getId());
-				ad.setState(BusinessEnumType.AdvertiseType.Published.getType());
-				if (ad.getType() == Advertise.sortMessage) {
+				ad.setState(BusinessEnumType.AdvertiseStateType.Published.getType());
+				if (ad.getType() == BusinessEnumType.AdvertiseType.SortMessage.getType()) {
 					UserMobilePositionRelationSortedSetService.getInstance().destoryMobilenoSnaoShot(ad.getId());
 				}
 			}
@@ -65,7 +65,7 @@ public class AdvertiseAllClearTaskLoader {
 	//把需要持续发布的广告标志位重置
 	public void initOnpublishSign(){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType()).andColumnEqualTo("sign",true);
+		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.OnPublish.getType()).andColumnEqualTo("sign",true);
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
 		for(Advertise ad :ads){
 			System.out.println("initOnpublishSign id :" +ad.getId());

@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 
 import com.bhu.vas.api.helper.AdvertiseHelper;
 import com.bhu.vas.api.helper.BusinessEnumType;
+import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseStateType;
 import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
@@ -88,10 +89,10 @@ public class AdvertiseUnitFacadeService {
 			long count=0;
 			
 			Advertise entity=new Advertise();
-
-			switch(type){
-				case Advertise.homeImage :
-					
+			
+			AdvertiseType adType = BusinessEnumType.AdvertiseType.fromKey(type);
+			switch(adType){
+				case HomeImage :
 						AdDevicePositionVTO vto = fetchAdvertiseOccupy(uid,0,DateTimeHelper.formatDate(startDate,DateTimeHelper.FormatPattern1),
 								DateTimeHelper.formatDate(endDate,DateTimeHelper.FormatPattern1),
 								DateTimeHelper.FormatPattern1,province, city, district,false);
@@ -113,14 +114,17 @@ public class AdvertiseUnitFacadeService {
 					}else{
 						entity.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
 					}
-					entity.setType(Advertise.homeImage);
-					
+					entity.setType(BusinessEnumType.AdvertiseType.HomeImage.getType());
 					break;
-				case Advertise.sortMessage :
+					
+				case SortMessage :
 					count = UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(province, city, district);
 					int num = description.length()/Advertise.sortMessageLength +1;
 					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Sm_Price*num);
-					entity.setType(Advertise.sortMessage);
+					entity.setType(BusinessEnumType.AdvertiseType.SortMessage.getType());
+					break;
+				case HomeImage_SmallArea :
+					
 					break;
 				default:
 					break;
@@ -142,7 +146,7 @@ public class AdvertiseUnitFacadeService {
 			entity.setImage(image);
 			entity.setDomain(domain);
 			entity.setUrl(url);
-			entity.setState(AdvertiseType.UnPaid.getType());
+			entity.setState(AdvertiseStateType.UnPaid.getType());
 			entity.setCount(count);
 //			entity.setType(type);
 			entity.setDescription(description);
@@ -170,7 +174,7 @@ public class AdvertiseUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
 			}*/
 			Advertise smAd= advertiseService.insert(entity);
-			if(type == Advertise.sortMessage){
+			if(type == BusinessEnumType.AdvertiseType.SortMessage.getType()){
 				UserMobilePositionRelationSortedSetService.getInstance().generateMobilenoSnapShot(smAd.getId(), province, city, district);
 			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(entity.toVTO());
@@ -187,7 +191,7 @@ public class AdvertiseUnitFacadeService {
 		
 		AdDevicePositionVTO vto = new AdDevicePositionVTO();
 		
-		if(type == Advertise.sortMessage){
+		if(type == BusinessEnumType.AdvertiseType.SortMessage.getType()){
 			vto.setMobilenos(UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(province, city, district));
 		}else{
 			String start = null;
@@ -324,11 +328,11 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<Boolean> verifyAdvertise(int verify_uid,String advertiseId,String msg,int state){
 			Advertise advertise=advertiseService.getById(advertiseId);
 			advertise.setVerify_uid(verify_uid);
-			if(advertise.getState()==AdvertiseType.UnVerified.getType()){
+			if(advertise.getState()==AdvertiseStateType.UnVerified.getType()){
 				if(state==0){
-					advertise.setState(AdvertiseType.UnPublish.getType());
+					advertise.setState(AdvertiseStateType.UnPublish.getType());
 				}else{
-					advertise.setState(AdvertiseType.VerifyFailure.getType());
+					advertise.setState(AdvertiseStateType.VerifyFailure.getType());
 					advertise.setReject_reason(msg);
 				}
 				advertiseService.update(advertise);
@@ -357,7 +361,7 @@ public class AdvertiseUnitFacadeService {
 			advertiseVTO.setOwnerName(user.getNick());
 			advertiseVTO.setEscapeFlag(false);
 //			advertiseVTO.setCount(advertiseVTO.getCount());
-			if(advertise.getState()==AdvertiseType.UnPublish.getType()){
+			if(advertise.getState()==AdvertiseStateType.UnPublish.getType()){
 				Date date=new Date();
 				if(advertise.getStart().getTime()>date.getTime()){
 					double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
@@ -379,7 +383,7 @@ public class AdvertiseUnitFacadeService {
 			String district, String description, String title, long start,
 			long end) {
 			Advertise entity=advertiseService.getById(advertiseId);
-			if(entity.getState()!=AdvertiseType.VerifyFailure.getType()){
+			if(entity.getState()!=AdvertiseStateType.VerifyFailure.getType()){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_UPFIELD_TYPEERROR);
 			}
 			if(entity.getUid()!=uid){
@@ -405,7 +409,7 @@ public class AdvertiseUnitFacadeService {
 			entity.setProvince(province);
 			Date startDate=new Date(start);
 			entity.setStart(startDate);
-			entity.setState(AdvertiseType.UnVerified.getType());
+			entity.setState(AdvertiseStateType.UnVerified.getType());
 			
 			entity.setType(0);
 			entity.setDomain(domain);
@@ -435,9 +439,9 @@ public class AdvertiseUnitFacadeService {
 		}
 		Date date=new Date();
 		double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
-		if(advertise.getState()==AdvertiseType.UnPublish.getType()){
+		if(advertise.getState()==AdvertiseStateType.UnPublish.getType()){
 			if(advertise.getStart().getTime()>date.getTime()&&between_daysNow>2){
-				advertise.setState(AdvertiseType.EscapeOrder.getType());
+				advertise.setState(AdvertiseStateType.EscapeOrder.getType());
 				advertiseService.update(advertise);
 			}else{
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_TIMEERROR);
@@ -493,11 +497,11 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,String advertiseId){
 		Advertise ad = advertiseService.getById(advertiseId);
 		
-		if (ad.getType() != Advertise.homeImage) {
+		if (ad.getType() != BusinessEnumType.AdvertiseType.HomeImage.getType()) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 		}
 		
-		if(ad.getState() != BusinessEnumType.AdvertiseType.Published.getType()){
+		if(ad.getState() != BusinessEnumType.AdvertiseStateType.Published.getType()){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
 		}
 		

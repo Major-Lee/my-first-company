@@ -93,7 +93,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 						logger.info("AdvertiseOnPublishDevicesStatisticsLoader  details update ");
 						AdvertiseDetails detail = details.get(0);
 						detail.setActual_count(devices.size());
-						detail.setState(BusinessEnumType.AdvertiseType.UnSharedeal.getType());
+						detail.setState(BusinessEnumType.AdvertiseStateType.UnSharedeal.getType());
 						detail.replaceInnerModels(devices);
 
 //						detail.setCash((float)(devices.size()*BusinessRuntimeConfiguration.Advertise_Unit_Price));
@@ -111,7 +111,7 @@ public class AdvertiseOnPublishDevicesStatisticsLoader {
 	
 	public List<Advertise> fetchOnpublishAdvertise(){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("type", Advertise.homeImage).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.OnPublish.getType());
+		mc.createCriteria().andColumnEqualTo("type", BusinessEnumType.AdvertiseType.HomeImage.getType()).andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.OnPublish.getType());
 		return advertiseService.findModelByModelCriteria(mc);
 	}
 }

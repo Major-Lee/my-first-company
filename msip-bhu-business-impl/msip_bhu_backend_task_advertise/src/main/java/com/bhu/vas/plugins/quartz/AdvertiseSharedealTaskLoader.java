@@ -84,14 +84,14 @@ public class AdvertiseSharedealTaskLoader {
 			List<AdvertiseSharedealDetail> list = it.next();
 			for(AdvertiseSharedealDetail detail:list){
 				count ++;
-				if(detail.getStatus() == BusinessEnumType.AdvertiseType.SharedealCompleted.getType()){
+				if(detail.getStatus() == BusinessEnumType.AdvertiseStateType.SharedealCompleted.getType()){
 					logger.info(String.format("detail [%s] already sharedeal handled", detail.getId()));
 					continue;
 				}
 
 				if(detail.isRefund()){
 					//给用户退款
-					detail.setStatus(BusinessEnumType.AdvertiseType.SharedealCompleted.getType());
+					detail.setStatus(BusinessEnumType.AdvertiseStateType.SharedealCompleted.getType());
 					advertiseSharedealDetailService.update(detail);
 					if(detail.getCash() > 0){
 						logger.info(String.format("refund advertise money to [%s], cash[%s]", ad.getUid(), detail.getCash()));
@@ -233,15 +233,15 @@ public class AdvertiseSharedealTaskLoader {
 	public void adOrdersForSharedeal(){
 		Date tm = new Date(System.currentTimeMillis() - 14 * 3600 * 1000);
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLessThan("end", tm).andColumnEqualTo("type", Advertise.homeImage).andColumnEqualTo("state", BusinessEnumType.AdvertiseType.Published.getType()).
-							andColumnNotEqualTo("process_state", BusinessEnumType.AdvertiseType.SharedealCompleted.getType());
+		mc.createCriteria().andColumnLessThan("end", tm).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.HomeImage.getType()).andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.Published.getType()).
+							andColumnNotEqualTo("process_state", BusinessEnumType.AdvertiseStateType.SharedealCompleted.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("going to sharedeal:" + lists.size());
 			for(Advertise ad : lists){
 				try{
 					//先标记为已处理。可以允许实际未处理，但是需要避免处理多次
-					ad.setProcess_state(BusinessEnumType.AdvertiseType.SharedealCompleted.getType());
+					ad.setProcess_state(BusinessEnumType.AdvertiseStateType.SharedealCompleted.getType());
 					advertiseService.update(ad);
 					sharedealOne(ad);
 				}catch(Exception e){

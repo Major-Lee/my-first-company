@@ -52,8 +52,8 @@ public class AdvertiseFacadeService {
 	public void advertiseCompletionOfPayment(String advertiseId,String orderId){
 		logger.info(String.format("advertiseCompletionOfPayment  advertiseId[%s]", advertiseId));
 		Advertise ad = advertiseService.getById(advertiseId);
-		if(ad.getState() == BusinessEnumType.AdvertiseType.UnPaid.getType()){
-			ad.setState(BusinessEnumType.AdvertiseType.UnVerified.getType());
+		if(ad.getState() == BusinessEnumType.AdvertiseStateType.UnPaid.getType()){
+			ad.setState(BusinessEnumType.AdvertiseStateType.UnVerified.getType());
 			ad.setOrderId(orderId);
 			advertiseService.update(ad);
 			logger.info("advertiseCompletionOfPayment  finish");
