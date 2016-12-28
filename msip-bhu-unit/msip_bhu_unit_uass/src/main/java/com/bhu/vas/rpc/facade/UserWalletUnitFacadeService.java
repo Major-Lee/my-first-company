@@ -1798,14 +1798,14 @@ public class UserWalletUnitFacadeService {
 			UserIncomeMonthRank incomeMonthRank=userIncomeMonthRankService.getByUid(uid,GetMonthTime(-1)+"%");
 			vto.setUid(uid);
 			if(incomeMonthRank!=null){
-				vto.setLastMonIncome(String.valueOf(round(Float.valueOf(incomeMonthRank.getIncome()), 2)));
+				vto.setLastMonIncome(String.valueOf(doubleCut2(Float.valueOf(incomeMonthRank.getIncome()), 2)));
 			}else {
 				vto.setLastMonIncome("0");
 			}
 			//增加总收益
 			UserWallet userWallet=userWalletFacadeService.getUserWalletService().getById(uid);
 			if(userWallet!=null){
-				vto.setTotalIncome(String.valueOf(round(userWallet.getTotal_cash_sum(),2)));
+				vto.setTotalIncome(String.valueOf(doubleCut2(userWallet.getTotal_cash_sum(),2)));
 			}else{
 				vto.setTotalIncome("0");
 			}
@@ -1814,7 +1814,7 @@ public class UserWalletUnitFacadeService {
 			mc.setOrderByClause("month_cash_sum desc");
 			List<UserWallet> userWallets = userWalletFacadeService.getUserWalletService().findModelByCommonCriteria(mc);
 			if(userWallets!=null&&userWallets.size()>0){
-				vto.setCurMonIncome(String.valueOf(round(userWallets.get(0).getMonth_cash_sum(),2)));
+				vto.setCurMonIncome(String.valueOf(doubleCut2(userWallets.get(0).getMonth_cash_sum(),2)));
 			}else{
 				vto.setCurMonIncome("0");
 			}
