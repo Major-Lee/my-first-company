@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 @Repository
@@ -20,7 +21,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		map.put("start", start);
 		map.put("end", end);
 		map.put("province", province);
-		map.put("type", Advertise.homeImage);
+		map.put("type", BusinessEnumType.AdvertiseType.HomeImage.getType());
 		map.put("city", city);
 		map.put("district", district);
 		try {
@@ -47,7 +48,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 			district=null;
 		}
 		map.put("province", province);
-		map.put("type", Advertise.homeImage);
+		map.put("type", BusinessEnumType.AdvertiseType.HomeImage.getType());
 		map.put("city", city);
 		map.put("district", district);
 		if(flag){
@@ -67,7 +68,7 @@ public class AdvertiseDao extends AbstractCoreDao<String, Advertise>{
 		List<Advertise> ads= new ArrayList<Advertise>();
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("start", start);
-		map.put("type", Advertise.homeImage);
+		map.put("type", BusinessEnumType.AdvertiseType.HomeImage.getType());
 		map.put("end", end);
 		map.put("province", province);
 		map.put("city", city);
