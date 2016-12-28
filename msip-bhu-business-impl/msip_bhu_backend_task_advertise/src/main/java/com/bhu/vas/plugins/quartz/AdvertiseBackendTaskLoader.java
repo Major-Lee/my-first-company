@@ -38,6 +38,7 @@ public class AdvertiseBackendTaskLoader {
 	public void execute() {
 		logger.info("AdvertiseBackendTaskLoader start...");
 		String afterDate  = DateTimeHelper.getDateTime(DateTimeHelper.getDateDaysAfter(1), DateTimeHelper.FormatPattern1);
+//		String afterDate  = DateTimeHelper.getDateTime(DateTimeHelper.getDateDaysAfter(0), DateTimeHelper.FormatPattern1);
 
 		logger.info("afterDate:"+afterDate);
 		omittedOrTimelyAdApplyNotify(afterDate);

@@ -39,19 +39,22 @@ public class AdvertisePVUVStatTaskLoader {
 			for(AdvertiseDetails detail : details){
 				detailwithpuv.add(advertisePVUVStat(detail));
 			}
+			logger.info("AdvertisePVUVStatTaskLoader updateAll start...");
 			advertiseDevicesIncomeService.updateAll(detailwithpuv);
+			logger.info("AdvertisePVUVStatTaskLoader updateAll end...");
 		}
 		
 		logger.info("AdvertisePVUVStatTaskLoader end...");
 	}
 	
-	public AdvertiseDetails advertisePVUVStat(AdvertiseDetails detail){
+	public static AdvertiseDetails advertisePVUVStat(AdvertiseDetails detail){
 		logger.info(String.format("advertisePVUVStat adid[%s] ",detail.getAdvertiseid()));
+		logger.info(String.format("advertisePVUVStat publish_time[%s] ",detail.getPublish_time()));
 		//um工具对象创建
 		OpenApiCnzzImpl apiCnzzImpl=new OpenApiCnzzImpl();
 		
-		String pcUm=apiCnzzImpl.queryCnzzStatistic("PC热播PV", detail.getPublish_time(), detail.getPublish_time(), "", "id ="+detail.getAdvertiseid(),2);
-		String mobileUm=apiCnzzImpl.queryCnzzStatistic("mobile热播PV", detail.getPublish_time(), detail.getPublish_time(), "", "id ="+detail.getAdvertiseid(),2);
+		String pcUm=apiCnzzImpl.queryCnzzStatistic("PC热播PV", detail.getPublish_time(), detail.getPublish_time(), "", "id ='"+detail.getAdvertiseid()+"'",1);
+		String mobileUm=apiCnzzImpl.queryCnzzStatistic("mobile热播PV", detail.getPublish_time(), detail.getPublish_time(), "", "id ='"+detail.getAdvertiseid()+"'",2);
 		
 		int pcUV=0;
 		int pcPV=0;
@@ -74,7 +77,7 @@ public class AdvertisePVUVStatTaskLoader {
 		
 		detail.setPv(pcPV+mobilePV);
 		detail.setUv(pcUV+mobileUV);
-		
+		logger.info(String.format("advertisePVUVStat pv[%s] uv[%s] ",detail.getPv(),detail.getUv()));
 		return detail;
 	}
 }

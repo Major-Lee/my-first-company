@@ -16,7 +16,8 @@ public enum IndustryEnumType{
 		Tourist("109", "旅游景区"),
 		Park("110", "公园广场"),
 		Family("111", "家庭使用"),
-		Others("112", "其它"),
+		Corps("112", "企事业单位"),
+		Others("199", "其它"),
 		;
 	
 		private String index;
