@@ -117,7 +117,11 @@ public class VapEnumType {
 		uRouterAcPlusTU_403("TU_H403",	"AP403","BN403","Z05",DUT_uRouter,"uRouter AC Plus","uRouter","2.4GHz 5GHz 家用AP","128M内存、TF卡版本、9531+9887芯片"),
 		uRouterMiniTU_901("TU_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter mini","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		uRouterMiniTU_NSL_901("TU_NSL_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter mini(SL)","uRouter","2.4GHz 家用AP(赛龙)","64M内存、TF卡版本、9341芯片"),
-		uRouterTU_801("TU_H801","AP801","*","M01",DUT_uRouter,"uRouter juwan","uRouter JuWan","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+
+		uRouterTU_801("TU_H801","AP801","*","M01",DUT_uRouter,"uRouter juwan","uRouter 801","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+		uRouterTU_802("TU_H802","AP802","*","M02",DUT_uRouter,"uRouter pro","uRouter 802","聚玩9344双频网关","聚玩9344双频网关"),
+		uRouterTU_810("TU_H810","AP810","*","M10",DUT_uRouter,"uRouter pro","uRouter 810","深圳迈旭9344双频AP（支持3g拨号）","深圳迈旭9344双频AP（支持3g拨号）"),
+		uRouterTU_820("TU_H820","AP820","*","M20",DUT_uRouter,"uRouter mini","uRouter 820","海尔MTK7628单频AP","海尔MTK7628单频AP"),
 
 		
 		
@@ -359,7 +363,10 @@ public class VapEnumType {
 			if((prefix.equals(uRouterTU_106.getPrefix()) || prefix.equals(uRouterPlusTU_112.getPrefix()) 
 					|| prefix.equals(uRouterAcTU_401.getPrefix()) || prefix.equals(uRouterAcPlusTU_403.getPrefix()) 
 					|| prefix.equals(uRouterMiniTU_901.getPrefix())
-					|| prefix.equals(uRouterTU_801.getPrefix())
+					|| prefix.equals(uRouterTU_801.getPrefix()) 
+					|| prefix.equals(uRouterTU_802.getPrefix()) 
+					|| prefix.equals(uRouterTU_810.getPrefix()) 
+					|| prefix.equals(uRouterTU_820.getPrefix()) 
 					|| prefix.equals(uRouterMiniTU_NSL_901.getPrefix())) && type.equals(uRouterRoot.getIndex())){
 				return true;
 			}
@@ -378,7 +385,10 @@ public class VapEnumType {
 					|| uRouterAcPlusTU_403.getPrefix().equals(prefix)
 					|| MassAP_Pro_201.getPrefix().equals(prefix)
 					|| MassAP_Pro_303.getPrefix().equals(prefix)
-					|| MassAP_AC_Pro_305.getPrefix().equals(prefix)){
+					|| MassAP_AC_Pro_305.getPrefix().equals(prefix)
+					|| uRouterTU_802.getPrefix().equals(prefix)
+					|| uRouterTU_810.getPrefix().equals(prefix)
+					){
 				return true;
 			}
 			return false;
@@ -390,6 +400,8 @@ public class VapEnumType {
 					|| orig_swver.startsWith(MassAP_Pro_201.getPrefix())
 					|| orig_swver.startsWith(MassAP_Pro_303.getPrefix())
 					|| orig_swver.startsWith(MassAP_AC_Pro_305.getPrefix())
+					|| orig_swver.startsWith(uRouterTU_802.getPrefix())
+					|| orig_swver.startsWith(uRouterTU_810.getPrefix())
 					){
 				return true;
 			}
