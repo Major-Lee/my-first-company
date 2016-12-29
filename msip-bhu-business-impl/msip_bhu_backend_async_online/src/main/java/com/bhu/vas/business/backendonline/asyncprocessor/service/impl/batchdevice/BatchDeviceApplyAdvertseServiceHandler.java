@@ -106,6 +106,11 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 //				List<AdvertiseTrashPositionVTO> trashs = AdvertiseHelper.buildAdvertiseTrashs(ads, sdf.parse(start));
 				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
 					macList = advertiseHomeImage_SmallAreaApply(null, 0d, 0d, null, batch);
+					
+					ad.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
+					ad.setSign(true);
+					advertiseService.update(ad);	
+					
 				}else{
 					macList = advertiseHomeImageApply(start, end, ad, batch);
 				}

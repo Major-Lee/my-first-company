@@ -952,6 +952,7 @@ public class UserWalletFacadeService{
 		return uwallet;
 	}*/
 	
+	@SuppressWarnings("unused")
 	private void doWalletLog(int uid,String orderid,
 			BusinessEnumType.UWalletTransMode transMode,
 			BusinessEnumType.UWalletTransType transType,

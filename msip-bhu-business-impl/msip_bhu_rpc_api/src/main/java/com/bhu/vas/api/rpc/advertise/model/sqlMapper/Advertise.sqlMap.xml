@@ -17,6 +17,9 @@
     <result property="province" column="province"/>
     <result property="city" column="city"/>
     <result property="district" column="district"/>
+    <result property="lat" column="lat"/>
+    <result property="lon" column="lon"/>
+    <result property="distance" column="distance"/>
     <result property="cash" column="cash"/>
     <result property="start" column="start"/> 
     <result property="end" column="end"/>
@@ -52,6 +55,9 @@
 	    	province,
 	    	city,
 	    	district,
+	    	lat,
+	    	lon,
+	    	distance,
 	    	cash,
 	    	start,
 	    	end,
@@ -81,6 +87,9 @@
 	    	province,
 	    	city,
 	    	district,
+	    	lat,
+	    	lon,
+	    	distance,
 	    	cash,
 	    	start,
 	    	end,
@@ -111,6 +120,9 @@
 	    	#{province},
 	    	#{city},
 	    	#{district},
+	    	#{lat},
+	    	#{lon},
+	    	#{distance},
 	    	#{cash},
 	    	#{start},
 	    	#{end},
@@ -139,6 +151,9 @@
 	    	province = #{province},
 	    	city = #{city},
 	    	district = #{district},
+	    	lat = #{lat},
+	    	lon = #{lon},
+	    	distance = #{distance},
 	    	cash = #{cash},
 	    	start = #{start},
 	    	end = #{end},

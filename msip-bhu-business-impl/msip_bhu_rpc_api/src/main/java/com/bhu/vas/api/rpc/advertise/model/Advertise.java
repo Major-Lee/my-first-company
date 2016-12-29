@@ -31,6 +31,9 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	private String city;
 	//区
 	private String district;
+	private double lat;
+	private double lon;
+	private String distance;
 	private String cash;
 	private Date start;
 	private Date end;
@@ -221,6 +224,30 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	public void setExtparams(String extparams) {
 		this.extparams = extparams;
 	}
+	
+	public double getLat() {
+		return lat;
+	}
+
+	public void setLat(double lat) {
+		this.lat = lat;
+	}
+
+	public double getLon() {
+		return lon;
+	}
+
+	public void setLon(double lon) {
+		this.lon = lon;
+	}
+
+	public String getDistance() {
+		return distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
+	}
 
 	@Override
 	public void preInsert() {
@@ -258,6 +285,10 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		singleAdvertise.setReject_reason(this.reject_reason);
 		singleAdvertise.setCreate_at(this.created_at);
 		singleAdvertise.setExtparams(this.extparams);
+		singleAdvertise.setLat(this.lat);
+		singleAdvertise.setLon(this.lon);
+		singleAdvertise.setDistance(this.distance);
+		
 		return singleAdvertise;
 	}
 	
@@ -287,6 +318,4 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		int fir=Integer.valueOf(df.format(new Date()));
 		this.setId(StructuredIdHelper.generateStructuredIdStringAD(fir, this.type+"", autoId));
 	}
-	
-	
 }
