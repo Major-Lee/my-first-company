@@ -20,8 +20,6 @@ import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserIdentityAuthFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
-import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
-import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 
 @Service
 public class AdvertiseFacadeService {
@@ -49,9 +47,13 @@ public class AdvertiseFacadeService {
 		return vto;
 	}
 	
-	public void advertiseCompletionOfPayment(String advertiseId,String orderId){
+	public boolean advertiseCompletionOfPayment(String advertiseId,String orderId){
 		logger.info(String.format("advertiseCompletionOfPayment  advertiseId[%s]", advertiseId));
+		boolean flag = false;
 		Advertise ad = advertiseService.getById(advertiseId);
+		if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
+			flag = true;
+		}
 		if(ad.getState() == BusinessEnumType.AdvertiseStateType.UnPaid.getType()){
 			ad.setState(BusinessEnumType.AdvertiseStateType.UnVerified.getType());
 			ad.setOrderId(orderId);
@@ -68,6 +70,7 @@ public class AdvertiseFacadeService {
 			userWalletFacadeService.advertiseRefundToUserWallet(ad.getUid(), ad.getOrderId(), Double.parseDouble(ad.getCash()), 
 					String.format("Order Cash:%s, all refund cash:%s", ad.getCash(), ad.getCash()));
 		}
+		return flag;
 	}
 	
 	public void userMobilenoCollect(String mac,String hdmac){

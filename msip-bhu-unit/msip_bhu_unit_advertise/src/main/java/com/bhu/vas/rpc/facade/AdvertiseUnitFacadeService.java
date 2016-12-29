@@ -26,6 +26,7 @@ import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseResultVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
+import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
@@ -36,6 +37,7 @@ import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -48,6 +50,7 @@ import java.util.List;
 import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
@@ -79,6 +82,24 @@ public class AdvertiseUnitFacadeService {
 		this.advertiseService = advertiseService;
 	}
 
+	/**
+	 * 创建广告
+	 * @param uid
+	 * @param type
+	 * @param image
+	 * @param url
+	 * @param domain
+	 * @param province
+	 * @param city
+	 * @param district
+	 * @param description
+	 * @param title
+	 * @param start
+	 * @param end
+	 * @param extparams
+	 * @return
+	 * @throws ParseException
+	 */
 	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,
 			int type,String image, String url,String domain, String province, String city,
 			String district,String description,String title, long start, long end,String extparams) throws ParseException {
@@ -91,6 +112,7 @@ public class AdvertiseUnitFacadeService {
 			Advertise entity=new Advertise();
 			
 			AdvertiseType adType = BusinessEnumType.AdvertiseType.fromKey(type);
+			double cash = 0d;
 			switch(adType){
 				case HomeImage :
 						AdDevicePositionVTO vto = fetchAdvertiseOccupy(uid,0,DateTimeHelper.formatDate(startDate,DateTimeHelper.FormatPattern1),
@@ -108,7 +130,7 @@ public class AdvertiseUnitFacadeService {
 					if(n!=0){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 					}
-					float cash = count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+					cash = count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
 					if(userFacadeService.checkOperatorByUid(uid)){
 						entity.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
 					}else{
@@ -120,12 +142,18 @@ public class AdvertiseUnitFacadeService {
 				case SortMessage :
 					count = UserMobilePositionRelationSortedSetService.getInstance().zcardPostionMobileno(province, city, district);
 					int num = description.length()/Advertise.sortMessageLength +1;
-					entity.setCash(count*BusinessRuntimeConfiguration.Advertise_Sm_Price*num);
+					cash = count*BusinessRuntimeConfiguration.Advertise_Sm_Price*num;
+					entity.setCash(cash);
 					entity.setType(BusinessEnumType.AdvertiseType.SortMessage.getType());
 					break;
-				case HomeImage_SmallArea :
 					
+				case HomeImage_SmallArea :
+					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(null, 0d, 0d, null);
+					cash = count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+					entity.setCash(cash);
+					entity.setType(BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType());
 					break;
+					
 				default:
 					break;
 			}
@@ -378,6 +406,22 @@ public class AdvertiseUnitFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(advertiseVTO);
 	}
 
+	/**
+	 * 更新广告
+	 * @param uid
+	 * @param advertiseId
+	 * @param image
+	 * @param url
+	 * @param domain
+	 * @param province
+	 * @param city
+	 * @param district
+	 * @param description
+	 * @param title
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	public RpcResponseDTO<Boolean> updateAdvertise(int uid,String advertiseId, String image,
 			String url, String domain, String province, String city,
 			String district, String description, String title, long start,
@@ -429,6 +473,12 @@ public class AdvertiseUnitFacadeService {
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 
+	/**
+	 * 取消广告
+	 * @param uid
+	 * @param advertiseId
+	 * @return
+	 */
 	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, String advertiseId) {
 		Advertise advertise=advertiseService.getById(advertiseId);
 		if(advertise==null){
@@ -452,48 +502,12 @@ public class AdvertiseUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	
-	public AdDevicePositionVTO fetchAdvertiseOccupy(int uid,int index,String start,String end,String pattern,String province,String city,String district,boolean flag) throws ParseException {
-		AdDevicePositionVTO positionVto = new AdDevicePositionVTO();
-//		String start = null;
-//		String end = null;
-//		
-//		start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
-//		end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17);
-		SimpleDateFormat  format= new SimpleDateFormat(pattern);  
-	    Date startDate = format.parse(start);
-	    Date endDate = format.parse(end);
-	    long startLong = startDate.getTime();  
-	    long endLong = endDate.getTime(); 
-	    int days = (int)(endLong-startLong)/(1000 * 60 * 60 * 24);
-	    
-		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
-		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
-
-		for(int i=index; i<=days; i++){
-			String time = null;
-			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
-			SimpleDateFormat  format2= new SimpleDateFormat(DateTimeHelper.FormatPattern5);
-			Date times = format2.parse(time);
-			AdvertiseOccupiedVTO occupiedVto = new AdvertiseOccupiedVTO();
-			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, times,flag);
-			occupiedVto.setTrashs(trashVtos);
-			occupiedVto.setDate(time);
-			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
-			
-			int cash = occupiedVto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price;
-			if(userFacadeService.checkOperatorByUid(uid)){
-				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
-				positionVto.setSale(BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
-			}else{
-				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
-				positionVto.setSale(BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
-			}
-			occupiedVtos.add(occupiedVto);
-		}
-		positionVto.setOccupyAds(occupiedVtos);
-		return positionVto;
-	}
-	
+	/**
+	 * 查看报表
+	 * @param uid
+	 * @param advertiseId
+	 * @return
+	 */
 	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,String advertiseId){
 		Advertise ad = advertiseService.getById(advertiseId);
 		
@@ -554,5 +568,83 @@ public class AdvertiseUnitFacadeService {
 		report.setAdBills(billVto);
 		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(report);
+	}
+	
+	/**
+	 * 根据经纬度和距离查看周围设备数量
+	 * @param province
+	 * @param city
+	 * @param district
+	 * @param lat
+	 * @param lon
+	 * @param distance
+	 * @return
+	 */
+	public RpcResponseDTO<List<DeviceGEOPointCountVTO>> countDeviceCountByGEOPoint(String province, String city, String district,double lat,double lon,String distances){
+		String[] distinceTemp = distances.split(StringHelper.COMMA_STRING_GAP);
+		StringBuilder sb = null;
+		
+		if(!province.isEmpty())
+	        sb = new StringBuilder(province);
+		if(!city.isEmpty())
+			sb.append(city);
+		if(!district.isEmpty())
+			sb.append(district);
+		
+		String contextId = sb.toString();
+		List<DeviceGEOPointCountVTO> vtos = new ArrayList<DeviceGEOPointCountVTO>();
+		for(String distince : distinceTemp){
+			DeviceGEOPointCountVTO vto = new DeviceGEOPointCountVTO();
+			vto.setProvince(province);
+			vto.setCity(city);
+			vto.setDistrict(district);
+			vto.setLat(lat);
+			vto.setLon(lon);
+			vto.setCount(wifiDeviceDataSearchService.searchCountByGeoPointDistance(contextId, lat, lon, distince));
+			vtos.add(vto);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
+	}
+	
+	private AdDevicePositionVTO fetchAdvertiseOccupy(int uid,int index,String start,String end,String pattern,String province,String city,String district,boolean flag) throws ParseException {
+		AdDevicePositionVTO positionVto = new AdDevicePositionVTO();
+//		String start = null;
+//		String end = null;
+//		
+//		start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
+//		end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 17);
+		SimpleDateFormat  format= new SimpleDateFormat(pattern);  
+	    Date startDate = format.parse(start);
+	    Date endDate = format.parse(end);
+	    long startLong = startDate.getTime();  
+	    long endLong = endDate.getTime(); 
+	    int days = (int)(endLong-startLong)/(1000 * 60 * 60 * 24);
+	    
+		List<AdvertiseOccupiedVTO> occupiedVtos = new ArrayList<AdvertiseOccupiedVTO>();
+		List<Advertise> advertises = advertiseService.getEntityDao().queryByAdvertiseTime(start, end, province, city, district,false);
+
+		for(int i=index; i<=days; i++){
+			String time = null;
+			time = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), i);
+			SimpleDateFormat  format2= new SimpleDateFormat(DateTimeHelper.FormatPattern5);
+			Date times = format2.parse(time);
+			AdvertiseOccupiedVTO occupiedVto = new AdvertiseOccupiedVTO();
+			List<AdvertiseTrashPositionVTO> trashVtos = AdvertiseHelper.buildAdvertiseTrashs(advertises, times,flag);
+			occupiedVto.setTrashs(trashVtos);
+			occupiedVto.setDate(time);
+			occupiedVto.setCount(wifiDeviceDataSearchService.searchCountByPosition(trashVtos,province, city, district));
+			
+			int cash = occupiedVto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+			if(userFacadeService.checkOperatorByUid(uid)){
+				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
+				positionVto.setSale(BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
+			}else{
+				occupiedVto.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
+				positionVto.setSale(BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
+			}
+			occupiedVtos.add(occupiedVto);
+		}
+		positionVto.setOccupyAds(occupiedVtos);
+		return positionVto;
 	}
 }

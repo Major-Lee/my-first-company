@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.DownCmds;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.CMDBuilder;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
@@ -90,10 +91,9 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		final BatchDeviceApplyAdvertiseDTO adDTO = JsonHelper.getDTO(message,
 				BatchDeviceApplyAdvertiseDTO.class);
 		List<Advertise> adlists = advertiseService.findByIds(adDTO.getIds());
-		
+		int batch = 200;
 		for (final Advertise ad : adlists) {
-			final int batch = 200;
-			final List<String> macList = new ArrayList<String>();
+			List<String> macList = null;
 			
 			String start = null;
 			String end = null;
@@ -104,28 +104,11 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 				end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
 //				List<Advertise> ads = advertiseService.getEntityDao().queryByAdvertiseTimeExcept(start, end, ad.getProvince(), ad.getCity(), ad.getDistrict(), ad.getId());
 //				List<AdvertiseTrashPositionVTO> trashs = AdvertiseHelper.buildAdvertiseTrashs(ads, sdf.parse(start));
-				List<Advertise> trashAds = advertiseService.getEntityDao().queryByAdvertiseTimeExcept(start, end, ad.getProvince(), ad.getCity(), ad.getDistrict(),ad.getId());
-				List<AdvertiseTrashPositionVTO> trashs = new ArrayList<AdvertiseTrashPositionVTO>();
-				
-				for(Advertise trashAd : trashAds){
-					AdvertiseTrashPositionVTO trashVto = new AdvertiseTrashPositionVTO();
-					trashVto.setProvince(trashAd.getProvince());
-					trashVto.setCity(trashAd.getCity());
-					trashVto.setDistrict(trashAd.getDistrict());
-					trashs.add(trashVto);
+				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
+					macList = advertiseHomeImage_SmallAreaApply(null, 0d, 0d, null, batch);
+				}else{
+					macList = advertiseHomeImageApply(start, end, ad, batch);
 				}
-				
-				wifiDeviceDataSearchService.iteratorWithPosition(trashs,ad.getProvince(),
-						ad.getCity(), ad.getDistrict(),false,batch,
-						new IteratorNotify<Page<WifiDeviceDocument>>() {
-
-							@Override
-							public void notifyComming(Page<WifiDeviceDocument> pages) {
-								for (WifiDeviceDocument doc : pages) {
-									macList.add(doc.getD_mac());
-								}
-						}
-				});
 				
 				switch (adDTO.getDtoType()) {
 					case IDTO.ACT_ADD:
@@ -220,14 +203,59 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			income.setAdvertiseid(ad.getId());
 			income.setPublish_count(pushlist_count);
 			income.setPublish_time(publishTime);
-			float cash = pushlist_count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
-			if(userFacadeService.checkOperatorByUid(ad.getUid())){
-				income.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
+			double cash = pushlist_count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+			
+			if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage.getType()){
+				if(userFacadeService.checkOperatorByUid(ad.getUid())){
+					income.setCash(cash*BusinessRuntimeConfiguration.AdvertiseOperatorDiscount);
+				}else{
+					income.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
+				}
 			}else{
-				income.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
+				income.setCash(cash);
 			}
-//			income.setCash((float)(pushlist_count*BusinessRuntimeConfiguration.Advertise_Unit_Price));
+			
 			advertiseDevicesIncomeService.insert(income);
 		}
+	}
+	
+	public List<String> advertiseHomeImageApply(String start,String end , Advertise ad,int batch ){
+		List<Advertise> trashAds = advertiseService.getEntityDao().queryByAdvertiseTimeExcept(start, end, ad.getProvince(), ad.getCity(), ad.getDistrict(),ad.getId());
+		List<AdvertiseTrashPositionVTO> trashs = new ArrayList<AdvertiseTrashPositionVTO>();
+		final List<String> macList = new ArrayList<String>();
+		for(Advertise trashAd : trashAds){
+			AdvertiseTrashPositionVTO trashVto = new AdvertiseTrashPositionVTO();
+			trashVto.setProvince(trashAd.getProvince());
+			trashVto.setCity(trashAd.getCity());
+			trashVto.setDistrict(trashAd.getDistrict());
+			trashs.add(trashVto);
+		}
+		
+		wifiDeviceDataSearchService.iteratorWithPosition(trashs,ad.getProvince(),
+				ad.getCity(), ad.getDistrict(),false,batch,
+				new IteratorNotify<Page<WifiDeviceDocument>>() {
+
+					@Override
+					public void notifyComming(Page<WifiDeviceDocument> pages) {
+						for (WifiDeviceDocument doc : pages) {
+							macList.add(doc.getD_mac());
+						}
+				}
+		});
+		
+		return macList;
+	}
+	
+	public List<String> advertiseHomeImage_SmallAreaApply(String contextId, double lat, double lon, String distance, int batch){
+		final List<String> macList = new ArrayList<String>();
+		wifiDeviceDataSearchService.iteratorWithGeoPointDistance(null, 0d, 0d, null, batch, new IteratorNotify<Page<WifiDeviceDocument>>() {
+			@Override
+			public void notifyComming(Page<WifiDeviceDocument> pages) {
+				for (WifiDeviceDocument doc : pages) {
+					macList.add(doc.getD_mac());
+				}	
+			}
+		});
+		return macList;
 	}
 }

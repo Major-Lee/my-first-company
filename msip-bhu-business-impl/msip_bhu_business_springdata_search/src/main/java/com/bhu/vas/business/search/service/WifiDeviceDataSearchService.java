@@ -136,6 +136,24 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	}
 	
 	/**
+	 * 根据经纬度查询设备数量
+	 * @param contextId
+	 * @param lat
+	 * @param lon
+	 * @param distance
+	 * @return
+	 */
+	public long searchCountByGeoPointDistance(String contextId, double lat, double lon, String distance){
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithGeoPointDistance(contextId, lat, lon, distance);
+		if(scm == null || scm.equals(null)){
+			return 0L;
+		}
+		return super.searchCountByConditionMessage(scm);
+	}
+	
+	
+	/**
 	 * 根据snk查询设备数量
 	 * @param u_id
 	 * @param d_snk_type
@@ -186,6 +204,23 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
 				message, pageSize, notify);
 	}
+	
+	/**
+	 * 根据经纬度进行scan的iterator
+	 * @param contextId
+	 * @param lat
+	 * @param lon
+	 * @param distance
+	 * @return
+	 */
+	public void iteratorWithGeoPointDistance(String contextId, double lat, double lon, String distance,int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithGeoPointDistance(contextId, lat, lon, distance);
+		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
+		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
+				message, pageSize, notify);
+	}
+	
 	
 	/**
 	 * 根据通用条件进行scan的iterator
