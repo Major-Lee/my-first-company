@@ -134,6 +134,10 @@ cp ../../msip-bhu-business-impl/msip_bhu_backend_task_advertise/target/msip_bhu_
 echo '拷贝文件 msip_bhu_unit_advertise-bin.zip到'$CuDateDir
 cp ../../msip-bhu-unit/msip_bhu_unit_advertise/target/msip_bhu_unit_advertise-bin.zip ./$CuDateDir
 
+#messagesystem
+echo '拷贝文件 msip_bhu_backend_task_message_system-bin.zip到'$CuDateDir
+cp ../../msip-bhu-business-impl/msip_bhu_backend_task_message_system/target/msip_bhu_backend_task_message_system-bin.zip ./$CuDateDir
+
 cd $CuDateDir
 echo '进行文件解压过程'
 unzip -q msip_bhu_unit_input_processor-bin.zip
@@ -211,6 +215,10 @@ unzip -qo msip_bhu_backend_task_advertise/bin/msip_bhu_backend_task_advertise.ja
 
 unzip -q msip_bhu_unit_advertise-bin.zip
 unzip -qo msip_bhu_unit_advertise/bin/msip_bhu_unit_advertise.jar -d msip_bhu_unit_advertise/classes/
+
+#message_system
+unzip -q msip_bhu_backend_task_message_system-bin.zip
+unzip -qo msip_bhu_backend_task_message_system/bin/msip_bhu_backend_task_message_system.jar -d msip_bhu_backend_task_message_system/classes/
 
 echo '文件解压过程成功'
 
@@ -331,6 +339,14 @@ rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_advertise/lib/spring*.RE
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_advertise/lib/msip_*.jar  root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_advertise/libs/
 rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_unit_advertise/classes/com/    root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_unit_advertise/classes/com/
 echo 'deploy msip_bhu_unit_advertise successfully @'$Deploy2ComponentServerSanji
+
+
+echo 'deploy msip_bhu_backend_task_message_system to ...@'$Deploy2ComponentServerSanji
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_message_system/lib/spring*.RELEASE.jar      root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_task_message_system/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_message_system/lib/msip_*.jar     root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_task_message_system/libs/
+rsync -avz -progress -e 'ssh -p 65008'  ./msip_bhu_backend_task_message_system/classes/com/     root@$Deploy2ComponentServerSanji:/BHUData/apps/msip_bhu_backend_task_message_system/bin/com/
+echo 'deploy msip_bhu_backend_task_message_system successfully @'$Deploy2ComponentServerSanji
+
 
 echo '发布业务组件成功'$Deploy2ComponentServerSanji
 
