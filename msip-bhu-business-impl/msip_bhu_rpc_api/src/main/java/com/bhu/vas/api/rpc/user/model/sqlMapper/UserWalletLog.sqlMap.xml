@@ -261,7 +261,7 @@
 	    	</if>
 	    	AND t_walletlog.orderid = t_orders.id
 	    	<if test="mac != null">
-	    		AND	t_orders.mac = #{mac}
+	    		AND	t_walletlog.mac = #{mac}
 	    	</if>
 	    	<if test="umac != null">
 	    		AND	t_orders.umac = #{umac}
