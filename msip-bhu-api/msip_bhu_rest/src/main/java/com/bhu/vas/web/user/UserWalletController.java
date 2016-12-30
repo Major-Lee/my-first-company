@@ -86,15 +86,15 @@ public class UserWalletController extends BaseController{
 				SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
 				String preTime =  shortDateFormat.format(preCld.getTime());
 				String sufTime = shortDateFormat.format(sufCld.getTime());
-				String rpcDescs = "抱歉，当前为系统结算时间。请于每月6日至25日发起提现申请，如有不便，敬请谅解！";
+				String rpcDescs = "请于每月6日至25日发起提现申请！";
 				rpcResult.setWithdraw_oper(rpcDescs);
 				rpcResult.setPayment_type(payment_type);
 				rpcResult.setCash(cash);
 				rpcResult.setUid(uid);
 				rpcResult.setAppid(appid);
-				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
-				logger.info(String.format("walletWithdraw  is InvalidTime rpc result [%s]", JsonHelper.getJSONString(ResponseSuccess.embed(rpcResult))));
-				return;
+				//ResponseSuccess.embed(rpcResult)
+				//logger.info(String.format("walletWithdraw  is InvalidTime rpc result [%s]", JsonHelper.getJSONString(ResponseSuccess.embed(rpcResult))));
+				throw new BusinessI18nCodeException(ResponseErrorCode.USER_WALLET_WITHDRAW_INVALID_TIME);
 			}
 			if(cash <= 0){
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,
