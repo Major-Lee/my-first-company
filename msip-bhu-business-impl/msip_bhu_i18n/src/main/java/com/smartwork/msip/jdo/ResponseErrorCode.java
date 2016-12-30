@@ -194,6 +194,7 @@ public enum ResponseErrorCode {
 	USER_WALLET_PAYMENT_NOT_VALIDATE_PAYMENTTYPE("334", "user.wallet.payment.not.validate.paymenttype"),
 	USER_WALLET_PAYMENT_DATA_IMPERFECT("335", "user.wallet.payment.data.imperfect"),
 	USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT("336", "user.wallet.withdraw.lowerthan.minlimit"),
+	USER_WALLET_WITHDRAW_INVALID_TIME("295", "user.wallet.withdraw.invalid.time"),
 	
 	USER_WALLET_VCURRENCY_NOT_SUFFICIENT("337", "user.wallet.vcurrency.not.sufficient"),
 	
