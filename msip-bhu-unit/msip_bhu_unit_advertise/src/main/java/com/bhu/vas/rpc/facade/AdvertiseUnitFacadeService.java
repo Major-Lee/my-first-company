@@ -102,7 +102,7 @@ public class AdvertiseUnitFacadeService {
 	 */
 	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,
 			int type,String image, String url,String domain, String province, String city,
-			String district,String description,String title, long start, long end,String extparams) throws ParseException {
+			String district,double lat,double lon,String distance,String description,String title, long start, long end,String extparams) throws ParseException {
 			
 			Date endDate=new Date(end);
 			Date startDate=new Date(start);
@@ -148,10 +148,14 @@ public class AdvertiseUnitFacadeService {
 					break;
 					
 				case HomeImage_SmallArea :
-					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(null, 0d, 0d, null);
+					
+					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(null, lat, lon, distance);
 					cash = count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
 					entity.setCash(cash);
 					entity.setType(BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType());
+					entity.setLat(lat);
+					entity.setLon(lon);
+					entity.setDistance(distance);
 					break;
 					
 				default:
@@ -364,6 +368,10 @@ public class AdvertiseUnitFacadeService {
 					advertise.setReject_reason(msg);
 				}
 				advertiseService.update(advertise);
+				if(advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
+					//TODO (小范围的审核不通过时广告下架)
+					
+				}
 				if(state!=0){//退费
 					userWalletFacadeService.advertiseRefundToUserWallet(advertise.getUid(), advertise.getOrderId(), Double.parseDouble(advertise.getCash()), 
 							String.format("auditFail,OrderCash:%s,refundCash:%s", advertise.getCash(), advertise.getCash()));

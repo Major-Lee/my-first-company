@@ -20,7 +20,6 @@ import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -49,6 +48,9 @@ public class AdvertiseController extends BaseController{
             @RequestParam(required = false) String province,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String district,
+            @RequestParam(required = false) double lat,
+            @RequestParam(required = false) double lon,
+            @RequestParam(required = false) String distance,
             @RequestParam(required = false) String description,
             @RequestParam(required = false) String title,
             @RequestParam(required = true) long start,
@@ -57,7 +59,7 @@ public class AdvertiseController extends BaseController{
             ) {
 		try{
 			RpcResponseDTO<AdvertiseVTO> rpcResult = advertiseRpcService.createNewAdvertise
-					    (uid,type,image, url,domain, province, city, district,description,title, start, end,extparams);
+					    (uid,type,image, url,domain, province, city, district,lat,lon,distance,description,title, start, end,extparams);
 					if(!rpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 					}else{
