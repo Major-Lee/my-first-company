@@ -33,12 +33,12 @@ import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
-import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -48,10 +48,11 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 import java.util.List;
 
 import org.elasticsearch.common.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 
@@ -148,8 +149,14 @@ public class AdvertiseUnitFacadeService {
 					break;
 					
 				case HomeImage_SmallArea :
-					
-					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(null, lat, lon, distance);
+					StringBuilder sb = null;
+					if(!province.isEmpty())
+				        sb = new StringBuilder(province);
+					if(!city.isEmpty())
+						sb.append(city);
+					if(!district.isEmpty())
+						sb.append(district);
+					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(sb.toString(), lat, lon, distance);
 					cash = count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
 					entity.setCash(cash);
 					entity.setType(BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType());
@@ -159,7 +166,7 @@ public class AdvertiseUnitFacadeService {
 					break;
 					
 				default:
-					break;
+					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 			}
 			
 			if(count==0){
@@ -369,8 +376,28 @@ public class AdvertiseUnitFacadeService {
 				}
 				advertiseService.update(advertise);
 				if(advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-					//TODO (小范围的审核不通过时广告下架)
 					
+					StringBuilder sb = null;
+					if(!advertise.getProvince().isEmpty())
+				        sb = new StringBuilder(advertise.getProvince());
+					if(!advertise.getCity().isEmpty())
+						sb.append(advertise.getCity());
+					if(!advertise.getDistrict().isEmpty())
+						sb.append(advertise.getDistrict());
+					
+					String contextId = sb.toString();
+					
+					final List<String> macList = new ArrayList<String>();
+					wifiDeviceDataSearchService.iteratorWithGeoPointDistance(contextId, advertise.getLat(), advertise.getLon(), advertise.getDistance(), 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
+						@Override
+						public void notifyComming(Page<WifiDeviceDocument> pages) {
+							for (WifiDeviceDocument doc : pages) {
+								macList.add(doc.getD_mac());
+							}	
+						}
+					});
+					WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, Double.valueOf(advertiseId));
+					//TODO(已发布了 怎么退费？)
 				}
 				if(state!=0){//退费
 					userWalletFacadeService.advertiseRefundToUserWallet(advertise.getUid(), advertise.getOrderId(), Double.parseDouble(advertise.getCash()), 

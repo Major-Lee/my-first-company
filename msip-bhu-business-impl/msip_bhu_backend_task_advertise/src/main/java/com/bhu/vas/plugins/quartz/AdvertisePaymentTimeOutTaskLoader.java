@@ -8,29 +8,47 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
+import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
+import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 
 public class AdvertisePaymentTimeOutTaskLoader {
 	private static Logger logger = LoggerFactory.getLogger(AdvertisePaymentTimeOutTaskLoader.class);
 	@Resource
 	private AdvertiseService advertiseService;
 	
+	@Resource
+	private WifiDeviceDataSearchService wifiDeviceDataSearchService;	
+	
 	public void execute(){
 		logger.info("AdvertisePaymentTimeOutTaskLoader start.....");
 		Date nowDate = new Date();
 		long nowTime = nowDate.getTime();
 		homeImagePaymentTimeOut(nowTime);
-		sortMessagePaymentTimeOut(nowTime);
+		invaildHomeImageSmallArea(nowDate);
 		logger.info("AdvertisePaymentTimeOutTaskLoader end.....");
 	}
 	
 	public void homeImagePaymentTimeOut(long nowTime){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPaid.getType()).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.HomeImage.getType());
+		Criteria homeImageCriteria=mc.createCriteria();
+		homeImageCriteria.andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPaid.getType()).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.HomeImage.getType());
+		
+		Criteria sortMessageCriteria=mc.createCriteria();
+		sortMessageCriteria.andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPaid.getType()).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.SortMessage.getType());
+		
+		mc.or(homeImageCriteria);
+		mc.or(sortMessageCriteria);
+		
+		
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
 		List<Advertise> updateList = new ArrayList<Advertise>(); 		
 		logger.info(String.format("AdvertiseHomeImagePaymentTimeOutTaskLoader unpaid timeout sum[%s]", ads.size()));
@@ -45,20 +63,39 @@ public class AdvertisePaymentTimeOutTaskLoader {
 		advertiseService.updateAll(updateList);
 	}
 	
-	public void sortMessagePaymentTimeOut(long nowTime){
+	public void invaildHomeImageSmallArea(Date date){
+		logger.info("invaildHomeImageSmallArea start..");
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPaid.getType()).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.SortMessage.getType());
+		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.OnPublish.getType()).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()).andColumnLessThan("end", date);
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
-		List<Advertise> updateList = new ArrayList<Advertise>(); 		
-		logger.info(String.format("AdvertiseSortMessagePaymentTimeOutTaskLoader unpaid timeout sum[%s]", ads.size()));
-		
-		for(Advertise ad : ads){
-			if(ad.getStart().getTime() - nowTime < 24*60*60*1000){
-				ad.setState(BusinessEnumType.AdvertiseStateType.EscapeOrder.getType());
-				ad.setReject_reason("因支付超时,已经取消本推广订单");
-				updateList.add(ad);
+		if(!ads.isEmpty()){
+			for(Advertise ad : ads){
+				logger.info(String.format("invaildHomeImageSmallArea adid[%s] count[%s]", ad.getId(),ad.getCount()));
+
+				StringBuilder sb = null;
+				if(!ad.getProvince().isEmpty())
+			        sb = new StringBuilder(ad.getProvince());
+				if(!ad.getCity().isEmpty())
+					sb.append(ad.getCity());
+				if(!ad.getDistrict().isEmpty())
+					sb.append(ad.getDistrict());
+				
+				String contextId = sb.toString();
+				
+				final List<String> macList = new ArrayList<String>();
+				wifiDeviceDataSearchService.iteratorWithGeoPointDistance(contextId, ad.getLat(), ad.getLon(), ad.getDistance(), 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
+					@Override
+					public void notifyComming(Page<WifiDeviceDocument> pages) {
+						for (WifiDeviceDocument doc : pages) {
+							macList.add(doc.getD_mac());
+						}	
+					}
+				});
+				ad.setState(BusinessEnumType.AdvertiseStateType.Published.getType());
+				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, Double.valueOf(ad.getId()));
 			}
+			advertiseService.updateAll(ads);
 		}
-		advertiseService.updateAll(updateList);
+		logger.info("invaildHomeImageSmallArea end..");
 	}
 }

@@ -23,6 +23,7 @@ import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
+import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -186,5 +187,12 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 		logger.info(String.format("fetchAdvertiseReport uid[%s] advertiseId[%s]",uid,
 				advertiseId));
 		return advertiseUnitFacadeService.fetchAdvertiseReport(uid,advertiseId);
+	}
+	
+	@Override
+	public RpcResponseDTO<List<DeviceGEOPointCountVTO>> countDeviceCountByGEOPoint(int uid ,String province, String city, String district,double lat,double lon,String distances) {
+		logger.info(String.format("countDeviceCountByGEOPoint uid[%s] province[%s] city[%s] district[%s] lat[%s] lon[%s]  distances[%s]",uid,
+				province,city,district,lat,lon,distances));
+		return advertiseUnitFacadeService.countDeviceCountByGEOPoint(province,city,district,lat,lon,distances);
 	}
 }

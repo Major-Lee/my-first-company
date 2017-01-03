@@ -97,7 +97,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			
 			String start = null;
 			String end = null;
-			SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern5); 
+//			SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern5); 
 			
 			try {
 				start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
@@ -105,7 +105,10 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 //				List<Advertise> ads = advertiseService.getEntityDao().queryByAdvertiseTimeExcept(start, end, ad.getProvince(), ad.getCity(), ad.getDistrict(), ad.getId());
 //				List<AdvertiseTrashPositionVTO> trashs = AdvertiseHelper.buildAdvertiseTrashs(ads, sdf.parse(start));
 				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-					macList = advertiseHomeImage_SmallAreaApply(null, 0d, 0d, null, batch);
+					StringBuffer sb = new StringBuffer(ad.getProvince());
+					sb.append(ad.getCity()).append(ad.getDistrict());
+					
+					macList = advertiseHomeImage_SmallAreaApply(sb.toString(), ad.getLat(), ad.getLon(), ad.getDistance(), batch);
 					
 					ad.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
 					ad.setSign(true);
@@ -127,10 +130,10 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 						deviceLimitDomain(batch, macList, null,
 							IDTO.ACT_DELETE, ad);
 						break;
-					case IDTO.ACT_UPDATE:
-						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad),Double.parseDouble(ad.getId()));
-						advertiSesnapshot(ad, start, macList.size());
-						break;
+//					case IDTO.ACT_UPDATE:
+//						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad),Double.parseDouble(ad.getId()));
+//						advertiSesnapshot(ad, start, macList.size());
+//						break;
 					default:
 						break;
 				}
@@ -253,7 +256,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 	
 	public List<String> advertiseHomeImage_SmallAreaApply(String contextId, double lat, double lon, String distance, int batch){
 		final List<String> macList = new ArrayList<String>();
-		wifiDeviceDataSearchService.iteratorWithGeoPointDistance(null, 0d, 0d, null, batch, new IteratorNotify<Page<WifiDeviceDocument>>() {
+		wifiDeviceDataSearchService.iteratorWithGeoPointDistance(contextId, lat, lon, distance, batch, new IteratorNotify<Page<WifiDeviceDocument>>() {
 			@Override
 			public void notifyComming(Page<WifiDeviceDocument> pages) {
 				for (WifiDeviceDocument doc : pages) {

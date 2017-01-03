@@ -2,12 +2,14 @@ package com.bhu.vas.api.rpc.advertise.iservice;
 
 
 import java.text.ParseException;
+import java.util.List;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
+import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 
 /**
  * 
@@ -107,5 +109,9 @@ public interface IAdvertiseRpcService{
 	 */
 	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,
 			String advertiseId);
+
+	public RpcResponseDTO<List<DeviceGEOPointCountVTO>> countDeviceCountByGEOPoint(int uid,
+			String province, String city, String district, double lat,
+			double lon, String distances);
 
 }

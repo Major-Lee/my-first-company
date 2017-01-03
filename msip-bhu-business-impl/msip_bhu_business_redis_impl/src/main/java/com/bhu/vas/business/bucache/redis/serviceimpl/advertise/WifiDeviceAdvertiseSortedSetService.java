@@ -59,7 +59,6 @@ public class WifiDeviceAdvertiseSortedSetService extends AbstractRelationSortedS
     public void wifiDevicesAdApply(List<String> macs,String message,double score){
     	List<String> keys = generateKeys(macs);
     	for(String key : keys){
-    		this.del(key);
     		this.zadd(key, score, message);
     	}
     }

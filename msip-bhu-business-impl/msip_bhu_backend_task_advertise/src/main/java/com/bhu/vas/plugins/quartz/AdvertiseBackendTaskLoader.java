@@ -37,9 +37,8 @@ public class AdvertiseBackendTaskLoader {
 		
 	public void execute() {
 		logger.info("AdvertiseBackendTaskLoader start...");
-		String afterDate  = DateTimeHelper.getDateTime(DateTimeHelper.getDateDaysAfter(1), DateTimeHelper.FormatPattern1);
+		String afterDate  = DateTimeHelper.getDateTime(DateTimeHelper.getDateDaysAfter(1), DateTimeHelper.FormatPattern5);
 //		String afterDate  = DateTimeHelper.getDateTime(DateTimeHelper.getDateDaysAfter(0), DateTimeHelper.FormatPattern1);
-
 		logger.info("afterDate:"+afterDate);
 		omittedOrTimelyAdApplyNotify(afterDate);
 		OnpublicContinueApply(afterDate);
@@ -48,10 +47,10 @@ public class AdvertiseBackendTaskLoader {
 	//发布广告
 	public void omittedOrTimelyAdApplyNotify(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLessThan("start", afterDate).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.HomeImage.getType()).andColumnGreaterThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPublish.getType());
+		mc.createCriteria().andColumnLessThanOrEqualTo("start", afterDate).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.HomeImage.getType()).andColumnGreaterThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPublish.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
-			logger.info("ready applied ad sum" + lists.size());
+			logger.info("ready applied ad sum : " + lists.size());
 			List<String> adIds = new ArrayList<String>();
 			for(Advertise ad : lists){
 				adIds.add(ad.getId());
@@ -67,7 +66,7 @@ public class AdvertiseBackendTaskLoader {
 	//需要持续发布的广告再次发布
 	public void OnpublicContinueApply(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLessThan("start", afterDate).andColumnNotEqualTo("type", BusinessEnumType.AdvertiseType.SortMessage.getType()).andColumnGreaterThan("end", afterDate).andColumnEqualTo("sign", false).andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.OnPublish.getType());
+		mc.createCriteria().andColumnLessThanOrEqualTo("start", afterDate).andColumnNotEqualTo("type", BusinessEnumType.AdvertiseType.SortMessage.getType()).andColumnGreaterThan("end", afterDate).andColumnEqualTo("sign", false).andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.OnPublish.getType());
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
 		if(!ads.isEmpty()){
 			logger.info("ready applied ad sum" + ads.size());

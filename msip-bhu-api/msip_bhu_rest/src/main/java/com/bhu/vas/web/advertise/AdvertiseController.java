@@ -18,6 +18,7 @@ import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
+import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -230,6 +231,36 @@ public class AdvertiseController extends BaseController{
 		try{
 			RpcResponseDTO<AdvertiseReportVTO> rpcResult = advertiseRpcService.fetchAdvertiseReport
 					(uid,advertiseId);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+		}
+		
+	}
+	
+	@ResponseBody()
+	@RequestMapping(value = "/fetch_device_geopoint", method = {RequestMethod.POST})
+	public void countDeviceCountByGEOPoint(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) int uid,
+			@RequestParam(required = false) String province,
+			@RequestParam(required = false) String city,
+			@RequestParam(required = false) String district,
+			@RequestParam(required = true) double lat,
+			@RequestParam(required = true) double lon,
+			@RequestParam(required = true) String distances
+			) {
+		try{
+			RpcResponseDTO<List<DeviceGEOPointCountVTO>> rpcResult = advertiseRpcService.countDeviceCountByGEOPoint
+					(uid, province, city, district, lat, lon,  distances);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
