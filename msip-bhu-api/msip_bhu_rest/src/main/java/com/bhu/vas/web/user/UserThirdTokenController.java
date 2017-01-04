@@ -3,6 +3,7 @@ package com.bhu.vas.web.user;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.dto.qiniu.CurrentKey;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.business.yun.YunConstant;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -63,13 +65,14 @@ public class UserThirdTokenController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/fetch",method={RequestMethod.POST})
 	public void fetch(
+			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid,
 			@RequestParam(required = false,defaultValue = "true") boolean upd,
 			@RequestParam(required = true,value="b") String bucketName) {
         try {
         	if(!bucketNameSupported.contains(bucketName)){
-        		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"bucketName",bucketName}));
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_NOTEXIST,new String[]{"bucketName",bucketName}, BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	PutPolicy putPolicy = null;
@@ -95,10 +98,10 @@ public class UserThirdTokenController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ckey));
 		} catch (AuthException e) {
 			e.printStackTrace(System.out);
-			SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		} catch (JSONException e) {
 			e.printStackTrace(System.out);
-			SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 }

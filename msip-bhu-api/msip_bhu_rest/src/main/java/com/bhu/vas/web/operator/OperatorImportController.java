@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
 import com.bhu.vas.api.rpc.charging.vto.OpsBatchImportVTO;
 import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.ArithHelper;
@@ -36,9 +37,9 @@ public class OperatorImportController extends BaseController{
     private IChargingRpcService chargingRpcService;
 
 	
-	private ResponseError validateSecretKey(String secretKey){
+	private ResponseError validateSecretKey(String secretKey, HttpServletRequest request){
 		if(!DefaultSecretkey.equals(secretKey)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
+			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID, BusinessWebHelper.getLocale(request));
 		}
 		return null;
 	}
@@ -70,7 +71,7 @@ public class OperatorImportController extends BaseController{
             @RequestParam(required = true,value = "chlv2") String channel_lv2,
             @RequestParam(required = false) String remark
     ) {
-		ResponseError validateError = validateSecretKey(secretKey);
+		ResponseError validateError = validateSecretKey(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -114,12 +115,12 @@ public class OperatorImportController extends BaseController{
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
 				//FileHelper.copyFileTo(file, rpcResult.getPayload().toAbsoluteFilePath());
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -139,7 +140,7 @@ public class OperatorImportController extends BaseController{
             @RequestParam(required = true,value = "percent_d2") String distributor_l2_percent,
             @RequestParam(required = true,value = "macs") String macs
     ) {
-		ResponseError validateError = validateSecretKey(secretKey);
+		ResponseError validateError = validateSecretKey(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -169,12 +170,12 @@ public class OperatorImportController extends BaseController{
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
-    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     		}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -190,11 +191,11 @@ public class OperatorImportController extends BaseController{
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	    }catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
     }
 

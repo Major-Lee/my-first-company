@@ -20,6 +20,7 @@ import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkDeviceDTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.SharedNetworkSettingDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceSharedNetworkRpcService;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -65,7 +66,7 @@ public class DeviceSharedNetworkController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -89,7 +90,7 @@ public class DeviceSharedNetworkController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -114,7 +115,7 @@ public class DeviceSharedNetworkController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -129,7 +130,7 @@ public class DeviceSharedNetworkController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -143,7 +144,7 @@ public class DeviceSharedNetworkController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -165,7 +166,7 @@ public class DeviceSharedNetworkController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 
@@ -193,7 +194,7 @@ public class DeviceSharedNetworkController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 
@@ -247,7 +248,7 @@ public class DeviceSharedNetworkController extends BaseController{
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 			) {
-		ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		ResponseError validateError = ValidateService.validatePageSize(pageSize, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -257,7 +258,7 @@ public class DeviceSharedNetworkController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 }

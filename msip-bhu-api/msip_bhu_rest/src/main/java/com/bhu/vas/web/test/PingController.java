@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -35,7 +37,7 @@ public class PingController {
 			//List<Object> ret = UserPlayDurationService.getInstance().hget_pipeline_playDurations(ArrayHelper.toList(uidarray));
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed("ping ok.."));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -57,10 +59,10 @@ public class PingController {
 			if(rpcResponse.getErrorCode() == null){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponse.getPayload()),true);
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse),true);
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResponse, BusinessWebHelper.getLocale(request)),true);
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 }

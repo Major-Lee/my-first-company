@@ -1,5 +1,7 @@
 package com.bhu.vas.di.op.test;
 
+import java.util.Locale;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -20,7 +22,7 @@ public class I18nTest {
 		
 		
 		String jsonString = JsonHelper.getJSONString(
-				ResponseError.embed(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL, new String[]{"a","b"}));
+				ResponseError.embed(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL, new String[]{"a","b"}, Locale.CHINA));
 		System.out.println(jsonString);
 		
 		throw new BusinessI18nCodeException(ResponseErrorCode.TASK_PARAMS_VALIDATE_ILLEGAL);

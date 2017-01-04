@@ -15,9 +15,11 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserPublishAccountRpcService;
 import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -56,10 +58,10 @@ public class UserPublishAccountController extends BaseController{
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
 				System.out.println("**********错误执行***************"+rpcResult);
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 			//SpringMVCHelper.renderJson(response, ex.getMessage());
 		}
 	}
@@ -68,6 +70,7 @@ public class UserPublishAccountController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/publicAccountdetail", method={RequestMethod.GET,RequestMethod.POST})
 	public void publicAccountdetail(
+			HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid){
 		log.info(String.format("publicAccountdetail uid[%s] ",uid));
@@ -76,10 +79,10 @@ public class UserPublishAccountController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -91,6 +94,7 @@ public class UserPublishAccountController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/DelPublicAccount", method={RequestMethod.GET,RequestMethod.POST})
 	public void DelPublicAccount(
+			HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid){
 		log.info(String.format("publicAccountdetail uid[%s] ",uid));
@@ -99,10 +103,10 @@ public class UserPublishAccountController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 }

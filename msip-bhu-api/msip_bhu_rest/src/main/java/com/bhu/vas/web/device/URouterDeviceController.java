@@ -30,6 +30,7 @@ import com.bhu.vas.api.vto.URouterSettingVTO;
 import com.bhu.vas.api.vto.URouterVapPasswordVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigMutilVTO;
 import com.bhu.vas.api.vto.config.URouterDeviceConfigVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -65,7 +66,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -86,7 +87,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -120,7 +121,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 
@@ -152,7 +153,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -171,7 +172,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -188,7 +189,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 
@@ -207,7 +208,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 
@@ -231,7 +232,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -260,7 +261,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -283,7 +284,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	/**
@@ -307,7 +308,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -330,7 +331,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -353,7 +354,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 
@@ -376,7 +377,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -410,7 +411,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 
@@ -426,7 +427,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -442,7 +443,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -458,7 +459,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -482,7 +483,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -506,7 +507,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -530,7 +531,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -551,7 +552,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 
@@ -572,7 +573,7 @@ public class URouterDeviceController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	

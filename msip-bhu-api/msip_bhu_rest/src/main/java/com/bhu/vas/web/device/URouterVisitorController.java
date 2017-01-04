@@ -1,21 +1,23 @@
 package com.bhu.vas.web.device;
 
-import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
-import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
-import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
-import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.jdo.ResponseError;
-import com.smartwork.msip.jdo.ResponseSuccess;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.rpc.devices.iservice.IDeviceURouterRestRpcService;
+import com.bhu.vas.api.vto.guest.URouterVisitorListVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
+import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
+import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
+import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseSuccess;
 
 /**
  * Created by bluesand on 10/26/15.
@@ -51,7 +53,7 @@ public class URouterVisitorController extends BaseController {
         if(rpcResult != null && !rpcResult.hasError()){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
     }
 
@@ -80,7 +82,7 @@ public class URouterVisitorController extends BaseController {
         if(rpcResult != null && !rpcResult.hasError()){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
     }
 
@@ -109,7 +111,7 @@ public class URouterVisitorController extends BaseController {
         if(rpcResult != null && !rpcResult.hasError()){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
     }
 
@@ -138,7 +140,7 @@ public class URouterVisitorController extends BaseController {
         if(rpcResult != null && !rpcResult.hasError()){
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         }else{
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
     }
 

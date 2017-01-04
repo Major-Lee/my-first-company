@@ -18,6 +18,7 @@ import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.api.rpc.vap.iservice.IVapRpcService;
 import com.bhu.vas.api.vto.device.DeviceDetailVTO;
 import com.bhu.vas.api.vto.device.ModuleStyleVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -54,7 +55,7 @@ public class ConsoleDeviceController extends BaseController {
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
     
     /**
@@ -106,14 +107,14 @@ public class ConsoleDeviceController extends BaseController {
     	String[] macarray = StringHelper.split(macs.toLowerCase(), StringHelper.COMMA_STRING_GAP);
     	List<String> masList = Arrays.asList(macarray);
     	if(!StringHelper.isValidMacs(masList)){
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"}));
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"}, BusinessWebHelper.getLocale(request)));
     		return;
     	}
     	RpcResponseDTO<Boolean> rpcResult = vapRpcService.forceDeviceUpgrade(uid, fw, versionid, masList, beginTime, endTime);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
     
     @ResponseBody()
@@ -129,7 +130,7 @@ public class ConsoleDeviceController extends BaseController {
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
     
     
@@ -156,13 +157,13 @@ public class ConsoleDeviceController extends BaseController {
     	String[] macarray = StringHelper.split(macs.toLowerCase(), StringHelper.COMMA_STRING_GAP);
     	List<String> masList = Arrays.asList(macarray);
     	if(!StringHelper.isValidMacs(masList)){
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"}));
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"}, BusinessWebHelper.getLocale(request)));
     		return;
     	}
     	RpcResponseDTO<List<String>> rpcResult = vapRpcService.saveMacs2Gray(uid, dut, gl, masList);
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
 }

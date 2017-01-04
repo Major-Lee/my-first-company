@@ -24,6 +24,7 @@ import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
 import com.bhu.vas.api.vto.WifiDeviceIndustryVTO;
 import com.bhu.vas.api.vto.device.UserDeviceTCPageVTO;
 import com.bhu.vas.api.vto.device.UserDeviceVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -57,12 +58,12 @@ public class UserDeviceController extends BaseController {
      */
     @ResponseBody()
     @RequestMapping(value="/bind",method={RequestMethod.POST})
-    public void bindDevice(HttpServletResponse response,
+    public void bindDevice(HttpServletRequest request, HttpServletResponse response,
                            @RequestParam(required = true, value = "mac") String mac,
                            @RequestParam(required = true, value = "uid") int uid) throws Exception{
     	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, BusinessWebHelper.getLocale(request)));
             return;
         }
 
@@ -70,7 +71,7 @@ public class UserDeviceController extends BaseController {
         if (!userDeviceResult.hasError()) {
         	SpringMVCHelper.renderJson(response, ResponseSuccess.embed(userDeviceResult.getPayload()));
         } else {
-        	SpringMVCHelper.renderJson(response, ResponseError.embed(userDeviceResult));
+        	SpringMVCHelper.renderJson(response, ResponseError.embed(userDeviceResult, BusinessWebHelper.getLocale(request)));
         }
 
     }
@@ -83,13 +84,13 @@ public class UserDeviceController extends BaseController {
      */
     @ResponseBody()
     @RequestMapping(value="/unbind",method={RequestMethod.POST})
-    public void unBindDevice(HttpServletResponse response,
+    public void unBindDevice(HttpServletRequest request, HttpServletResponse response,
                              @RequestParam(required = true, value = "mac") String mac,
                              @RequestParam(required = true, value = "uid") int uid
     ) {
     	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, BusinessWebHelper.getLocale(request)));
             return ;
         }
         /*int deviceStatus = userDeviceRpcService.validateDeviceStatusIsOnlineAndBinded(mac);
@@ -115,24 +116,24 @@ public class UserDeviceController extends BaseController {
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
     }
 
     @ResponseBody()
     @RequestMapping(value="/validate",method={RequestMethod.POST})
-    public void validateDevice(HttpServletResponse response,
+    public void validateDevice(HttpServletRequest request, HttpServletResponse response,
                                @RequestParam(required = true, value = "mac") String mac) {
     	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, BusinessWebHelper.getLocale(request)));
             return ;
         }
         RpcResponseDTO<UserDeviceStatusDTO> rpcResult = userDeviceRpcService.validateDeviceStatus(mac);
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
         //SpringMVCHelper.renderJson(response,ResponseSuccess.embed(userDeviceRpcService.validateDeviceStatus(mac).getPayload()));
     }
@@ -146,7 +147,7 @@ public class UserDeviceController extends BaseController {
      */
     @ResponseBody()
     @RequestMapping(value="/fetchbinded",method={RequestMethod.POST})
-    public void listBindDevice(HttpServletResponse response,
+    public void listBindDevice(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(required = true, value = "uid") int uid,
                 @RequestParam(required = false, defaultValue = VapEnumType.DUT_uRouter, value = "dut") String dut,
         		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
@@ -155,7 +156,7 @@ public class UserDeviceController extends BaseController {
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
     }
 
@@ -167,7 +168,7 @@ public class UserDeviceController extends BaseController {
      */
     @ResponseBody()
     @RequestMapping(value="/fetchbinded_pages",method={RequestMethod.POST})
-    public void pageBindDevice(HttpServletResponse response,
+    public void pageBindDevice(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(required = true, value = "uid") int uid,
                 @RequestParam(required = false, defaultValue = VapEnumType.DUT_uRouter, value = "dut") String dut,
         		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
@@ -176,7 +177,7 @@ public class UserDeviceController extends BaseController {
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
     }
 
@@ -190,7 +191,7 @@ public class UserDeviceController extends BaseController {
      */
     @ResponseBody()
     @RequestMapping(value="/update_location",method={RequestMethod.POST})
-    public void updateDeviceLocation(HttpServletResponse response,
+    public void updateDeviceLocation(HttpServletRequest request, HttpServletResponse response,
                 @RequestParam(required = true, value = "uid") int uid,
                 @RequestParam(required = false, value = "mac") String mac,
                 @RequestParam(required = false, value = "country") String country,
@@ -203,7 +204,7 @@ public class UserDeviceController extends BaseController {
                 @RequestParam(required = false, value = "lat") String lat){
     	
     	if(StringUtils.isEmpty(lon) || StringUtils.isEmpty(lat)){
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_EMPTY, BusinessWebHelper.getLocale(request)));
             return;
     	}
 
@@ -211,7 +212,7 @@ public class UserDeviceController extends BaseController {
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
     }
 
@@ -249,12 +250,12 @@ public class UserDeviceController extends BaseController {
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 
 	}
@@ -271,7 +272,7 @@ public class UserDeviceController extends BaseController {
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 
@@ -288,7 +289,7 @@ public class UserDeviceController extends BaseController {
      */
     @ResponseBody()
     @RequestMapping(value="/pagebinded_custom",method={RequestMethod.POST})
-    public void pageBindedDeviceCustom(HttpServletResponse response,
+    public void pageBindedDeviceCustom(HttpServletRequest request, HttpServletResponse response,
                                	 @RequestParam(required = true) Integer uid,
                                	 @RequestParam(required = false) Integer u_id,
                                  @RequestParam(required = false) String d_online,
@@ -297,7 +298,7 @@ public class UserDeviceController extends BaseController {
                                  @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 
                                  ) {
-    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -325,7 +326,7 @@ public class UserDeviceController extends BaseController {
      */
     @ResponseBody()
     @RequestMapping(value="/pagebinded",method={RequestMethod.POST})
-    public void pageBindedDevice(HttpServletResponse response,
+    public void pageBindedDevice(HttpServletRequest request, HttpServletResponse response,
                                  @RequestParam(required = true) Integer uid,
                                  @RequestParam(required = false) Integer u_id,
                                  @RequestParam(required = false) String d_online,
@@ -334,7 +335,7 @@ public class UserDeviceController extends BaseController {
                                  @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 
     ) {
-    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -368,12 +369,12 @@ public class UserDeviceController extends BaseController {
                                  @RequestParam(required = true, value = "device_name") String deviceName) throws Exception{
     	mac = mac.toLowerCase();
         if (!StringHelper.isValidMac(mac)) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, BusinessWebHelper.getLocale(request)));
             return;
         }
 
         if (!validateDeviceName(deviceName)) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_LENGTH_ILEGAL));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_VALIDATE_LENGTH_ILEGAL, BusinessWebHelper.getLocale(request)));
             return;
         }
 
@@ -387,14 +388,14 @@ public class UserDeviceController extends BaseController {
     
     @ResponseBody()
     @RequestMapping(value="/check_upgrade",method={RequestMethod.POST})
-    public void check_upgrade(HttpServletResponse response,
+    public void check_upgrade(HttpServletRequest request, HttpServletResponse response,
                                @RequestParam(required = true, value = "uid") int uid,
                                @RequestParam(required = true) String mac,
                                @RequestParam(required = true) String appver
                                ) {
     	mac = mac.toLowerCase();
     	if (!StringHelper.isValidMac(mac)) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, BusinessWebHelper.getLocale(request)));
             return;
         }
         RpcResponseDTO<UserDeviceCheckUpdateDTO> rpcResult = userDeviceRpcService.checkDeviceUpdate(uid, mac, appver);
@@ -402,18 +403,18 @@ public class UserDeviceController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			return;
 		}
-		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
     
     @ResponseBody()
     @RequestMapping(value="/force_upgrade",method={RequestMethod.POST})
-    public void force_upgrade(HttpServletResponse response,
+    public void force_upgrade(HttpServletRequest request, HttpServletResponse response,
                                @RequestParam(required = true, value = "uid") int uid,
                                @RequestParam(required = true) String mac
                                ) {
     	mac = mac.toLowerCase();
     	if (!StringHelper.isValidMac(mac)) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, BusinessWebHelper.getLocale(request)));
             return;
         }
         RpcResponseDTO<Boolean> resp = userDeviceRpcService.forceDeviceUpdate(uid, mac);
@@ -421,7 +422,7 @@ public class UserDeviceController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
 			return;
 		}
-		SpringMVCHelper.renderJson(response, ResponseError.embed(resp));
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp, BusinessWebHelper.getLocale(request)));
     }
     
     private boolean validateDeviceName(String deviceName) throws  Exception {

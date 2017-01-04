@@ -1,6 +1,5 @@
 package com.bhu.vas.web.operator;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -8,20 +7,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.DistributorType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserRpcService;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -38,9 +34,9 @@ public class OperatorController extends BaseController{
 	
 	private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 	
-	private ResponseError validate(String secretKey){
+	private ResponseError validate(String secretKey, HttpServletRequest request){
 		if(!DefaultSecretkey.equals(secretKey)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
+			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID, BusinessWebHelper.getLocale(request));
 		}
 		return null;
 	}
@@ -63,7 +59,7 @@ public class OperatorController extends BaseController{
 			@RequestParam(required = false,value="ic",defaultValue="channel") String userType,
 			@RequestParam(required = true,value="sk") String secretKey){
 		
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -73,7 +69,7 @@ public class OperatorController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -95,7 +91,7 @@ public class OperatorController extends BaseController{
 			@RequestParam(required = true) String acc,
 			@RequestParam(required = true,value="sk") String secretKey){
 		
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -105,7 +101,7 @@ public class OperatorController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	

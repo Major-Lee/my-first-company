@@ -17,6 +17,7 @@ import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserCaptchaCodeDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
 import com.smartwork.msip.cores.web.business.validate.ValidateService;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -43,6 +44,7 @@ public class OrderSMSController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/fetch_captcha",method={RequestMethod.POST})
 	public void fetch_captcha(
+			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
 			@RequestParam(required = true) String acc,
@@ -56,13 +58,13 @@ public class OrderSMSController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}finally{
 			
 		}
@@ -106,13 +108,13 @@ public class OrderSMSController extends BaseController{
 				}
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}finally{
 			
 		}

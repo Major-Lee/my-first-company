@@ -21,6 +21,7 @@ import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -52,7 +53,7 @@ public class ConsoleChargingController extends BaseController {
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -136,12 +137,12 @@ public class ConsoleChargingController extends BaseController {
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
-    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     		}
     	}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
     	
     }  
@@ -192,14 +193,14 @@ public class ConsoleChargingController extends BaseController {
             @RequestParam(required = false) String remark
     ) {
     	if(file == null){
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.UPLOAD_FILE_UNKNOW_ERROR));
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.UPLOAD_FILE_UNKNOW_ERROR, BusinessWebHelper.getLocale(request)));
             return ;	
     	}
     	String originName = file.getOriginalFilename();
         String ext = originName.substring(originName.lastIndexOf("."));
         System.out.println("ext===" + ext);
         if (!".xls".equals(ext) && !".xlsx".equals(ext)) {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.UPLOAD_FILE_FORMAT_INVALID));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.UPLOAD_FILE_FORMAT_INVALID, BusinessWebHelper.getLocale(request)));
             return ;
         }
         try{
@@ -250,12 +251,12 @@ public class ConsoleChargingController extends BaseController {
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
 				//FileHelper.copyFileTo(file, rpcResult.getPayload().toAbsoluteFilePath());
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
         //RpcResponseDTO<BatchImportVTO> rpcResult = chargingRpcService.doInputDeviceRecord(uid, countrycode, mobileno, percent, remark);
         /*String inputDirPath = BusinessRuntimeConfiguration.BatchImport_Manufacturer
@@ -282,10 +283,10 @@ public class ConsoleChargingController extends BaseController {
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -298,7 +299,7 @@ public class ConsoleChargingController extends BaseController {
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
 		
-		ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		ResponseError validateError = ValidateService.validatePageSize(pageSize, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -308,10 +309,10 @@ public class ConsoleChargingController extends BaseController {
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -337,7 +338,7 @@ public class ConsoleChargingController extends BaseController {
 			@RequestParam(required = false, defaultValue = "0", value = "st") int start,
 			@RequestParam(required = false, defaultValue = "10", value = "ps") int size) {
 		
-		ResponseError validateError = ValidateService.validatePageSize(size);
+		ResponseError validateError = ValidateService.validatePageSize(size, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -347,10 +348,10 @@ public class ConsoleChargingController extends BaseController {
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -371,7 +372,7 @@ public class ConsoleChargingController extends BaseController {
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
 		
-		ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		ResponseError validateError = ValidateService.validatePageSize(pageSize, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -381,10 +382,10 @@ public class ConsoleChargingController extends BaseController {
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -409,12 +410,12 @@ public class ConsoleChargingController extends BaseController {
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}	}
 
 }

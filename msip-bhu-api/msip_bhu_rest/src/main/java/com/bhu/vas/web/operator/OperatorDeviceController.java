@@ -4,25 +4,17 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.DistributorType;
-import com.bhu.vas.api.helper.NumberValidateHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
-import com.bhu.vas.api.rpc.charging.vto.OpsBatchImportVTO;
-import com.bhu.vas.api.rpc.user.dto.UserDeviceDTO;
-import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.cores.helper.ArithHelper;
-import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
@@ -38,9 +30,9 @@ public class OperatorDeviceController extends BaseController{
     private IChargingRpcService chargingRpcService;
 
 	
-	private ResponseError validateSecretKey(String secretKey){
+	private ResponseError validateSecretKey(String secretKey, HttpServletRequest request){
 		if(!DefaultSecretkey.equals(secretKey)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
+			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID, BusinessWebHelper.getLocale(request));
 		}
 		return null;
 	}
@@ -54,13 +46,13 @@ public class OperatorDeviceController extends BaseController{
      */
     @ResponseBody()
     @RequestMapping(value="/bind",method={RequestMethod.POST})
-    public void bindDevice(HttpServletResponse response,
+    public void bindDevice(HttpServletRequest request, HttpServletResponse response,
     					@RequestParam(required = true,value="sk") String secretKey,
     		            @RequestParam(required = false,value = "cc",defaultValue="86") int countrycode,
     		            @RequestParam(required = true,value = "mobileno") String mobileno,
                            @RequestParam(required = true, value = "macs") String macs,
                            @RequestParam(required = true, value = "uid") int uid) throws Exception{
-		ResponseError validateError = validateSecretKey(secretKey);
+		ResponseError validateError = validateSecretKey(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -69,7 +61,7 @@ public class OperatorDeviceController extends BaseController{
         if (!ret.hasError()) {
         	SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret.getPayload()));
         } else {
-        	SpringMVCHelper.renderJson(response, ResponseError.embed(ret));
+        	SpringMVCHelper.renderJson(response, ResponseError.embed(ret, BusinessWebHelper.getLocale(request)));
         }
     }
 
@@ -81,12 +73,12 @@ public class OperatorDeviceController extends BaseController{
      */
     @ResponseBody()
     @RequestMapping(value="/unbind",method={RequestMethod.POST})
-    public void unBindDevice(HttpServletResponse response,
+    public void unBindDevice(HttpServletRequest request, HttpServletResponse response,
     						@RequestParam(required = true,value="sk") String secretKey,
                              @RequestParam(required = true, value = "macs") String macs,
                              @RequestParam(required = true, value = "uid") int uid
     ) {
-		ResponseError validateError = validateSecretKey(secretKey);
+		ResponseError validateError = validateSecretKey(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -95,7 +87,7 @@ public class OperatorDeviceController extends BaseController{
         if (!ret.hasError()) {
         	SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ret.getPayload()));
         } else {
-        	SpringMVCHelper.renderJson(response, ResponseError.embed(ret));
+        	SpringMVCHelper.renderJson(response, ResponseError.embed(ret, BusinessWebHelper.getLocale(request)));
         }
     }
 }

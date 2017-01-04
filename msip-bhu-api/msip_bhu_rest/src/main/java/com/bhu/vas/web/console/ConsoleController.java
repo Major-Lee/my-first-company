@@ -34,6 +34,7 @@ import com.bhu.vas.api.vto.UserBrandVTO;
 import com.bhu.vas.api.vto.UserUrlVTO;
 import com.bhu.vas.api.vto.WifiDeviceMaxBusyVTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
@@ -279,7 +280,7 @@ public class ConsoleController extends BaseController {
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
         //Map<String,List<String>> result = build4Chart(type,ml);
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(build4Chart(type,ml)));
@@ -306,7 +307,7 @@ public class ConsoleController extends BaseController {
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
         //Map<String,List<String>> result = build4Chart(type,ml);
         //SpringMVCHelper.renderJson(response, ResponseSuccess.embed(build4Chart(type,ml)));
@@ -328,7 +329,7 @@ public class ConsoleController extends BaseController {
         TailPage<UserAccessStatisticsDTO> result;
         if (device_mac != null && !device_mac.isEmpty()) {
             if (!StringHelper.isValidMac(device_mac)) {
-                SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR));
+                SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, BusinessWebHelper.getLocale(request)));
                 return;
             }
             result = statisticsRpcService.fetchUserAccessStatisticsWithDeviceMac(date, device_mac, pageNo, pageSize);
@@ -374,7 +375,7 @@ public class ConsoleController extends BaseController {
 
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.builderSuccessRpcResponse(userBrandVTOList)));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
 
 
@@ -418,7 +419,7 @@ public class ConsoleController extends BaseController {
 
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.builderSuccessRpcResponse(userUrlVTOList)));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+            SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR,  BusinessWebHelper.getLocale(request)));
         }
     }
 
@@ -439,6 +440,6 @@ public class ConsoleController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(resp.getPayload()));
 			return;
 		}
-		SpringMVCHelper.renderJson(response, ResponseError.embed(resp));
+		SpringMVCHelper.renderJson(response, ResponseError.embed(resp, BusinessWebHelper.getLocale(request)));
     }
 }

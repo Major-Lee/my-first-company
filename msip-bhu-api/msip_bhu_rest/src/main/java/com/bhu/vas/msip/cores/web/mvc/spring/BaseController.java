@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.msip.exception.BusinessException;
@@ -72,13 +73,13 @@ public abstract class BaseController implements ServletContextAware {
         if (isJsonRequest(request)) {
         	String jsonpcallback = request.getParameter("jsonpcallback");
         	if(StringUtils.isNotEmpty(jsonpcallback))
-        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ex.getErrorCode(), ex.getPayload()));//.locateResponseErrorCode()));
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ex.getErrorCode(), ex.getPayload(), BusinessWebHelper.getLocale(request)));//.locateResponseErrorCode()));
         	else	
-        		SpringMVCHelper.renderJson(response, ResponseError.embed(ex.getErrorCode(), ex.getPayload()));//, ex.locateResponseErrorCode()));
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(ex.getErrorCode(), ex.getPayload(), BusinessWebHelper.getLocale(request)));//, ex.locateResponseErrorCode()));
             return null;
         }
         if(isXmlRequest(request)){
-        	SpringMVCHelper.renderXml(response, ResponseError.embed(ex.getErrorCode(), ex.getPayload()));//, ex.locateResponseErrorCode()));
+        	SpringMVCHelper.renderXml(response, ResponseError.embed(ex.getErrorCode(), ex.getPayload(), BusinessWebHelper.getLocale(request)));//, ex.locateResponseErrorCode()));
             return null;        	
         }
         ModelAndView mv = new ModelAndView();
@@ -93,13 +94,13 @@ public abstract class BaseController implements ServletContextAware {
         if (isJsonRequest(request)) {
         	String jsonpcallback = request.getParameter("jsonpcallback");
         	if(StringUtils.isNotEmpty(jsonpcallback))
-        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ex.getErrorCode(),ex.getPayload()));
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ex.getErrorCode(),ex.getPayload(), BusinessWebHelper.getLocale(request)));
         	else	
-        		SpringMVCHelper.renderJson(response, ResponseError.embed(ex.getErrorCode(),ex.getPayload()));
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(ex.getErrorCode(),ex.getPayload(), BusinessWebHelper.getLocale(request)));
             return null;
         }
         if(isXmlRequest(request)){
-        	SpringMVCHelper.renderXml(response, ResponseError.embed(ex.getErrorCode(),ex.getPayload()));
+        	SpringMVCHelper.renderXml(response, ResponseError.embed(ex.getErrorCode(),ex.getPayload(), BusinessWebHelper.getLocale(request)));
             return null;        	
         }
         ModelAndView mv = new ModelAndView();
@@ -126,13 +127,13 @@ public abstract class BaseController implements ServletContextAware {
         	else*/
         	String jsonpcallback = request.getParameter("jsonpcallback");
         	if(StringUtils.isNotEmpty(jsonpcallback))
-        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.BUSINESS_ERROR);
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR,  BusinessWebHelper.getLocale(request)));
         	else	
-        		SpringMVCHelper.renderJson(response, ResponseError.BUSINESS_ERROR);
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR,  BusinessWebHelper.getLocale(request)));
             return null;
         }
         if(isXmlRequest(request)){
-        	SpringMVCHelper.renderXml(response, ResponseError.BUSINESS_ERROR);
+        	SpringMVCHelper.renderXml(response, ResponseError.embed(ResponseErrorCode.COMMON_BUSINESS_ERROR,  BusinessWebHelper.getLocale(request)));
             return null;        	
         }
 
@@ -149,13 +150,13 @@ public abstract class BaseController implements ServletContextAware {
         if (isJsonRequest(request)) {
         	String jsonpcallback = request.getParameter("jsonpcallback");
         	if(StringUtils.isNotEmpty(jsonpcallback))
-        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING));
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING, BusinessWebHelper.getLocale(request)));
         	else	
-        		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING));
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING, BusinessWebHelper.getLocale(request)));
             return null;
         }
         if(isXmlRequest(request)){
-        	SpringMVCHelper.renderXml(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING));
+        	SpringMVCHelper.renderXml(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_MISSING, BusinessWebHelper.getLocale(request)));
             return null;        	
         }
         ModelAndView mv = new ModelAndView();
@@ -180,13 +181,13 @@ public abstract class BaseController implements ServletContextAware {
         	else*/
         	String jsonpcallback = request.getParameter("jsonpcallback");
         	if(StringUtils.isNotEmpty(jsonpcallback))
-        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.SYSTEM_ERROR);
+        		SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
         	else	
-        		SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+        		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
             return null;
         }
         if(isXmlRequest(request)){
-        	SpringMVCHelper.renderXml(response, ResponseError.SYSTEM_ERROR);
+        	SpringMVCHelper.renderXml(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
             return null;        	
         }
         ModelAndView mv = new ModelAndView();

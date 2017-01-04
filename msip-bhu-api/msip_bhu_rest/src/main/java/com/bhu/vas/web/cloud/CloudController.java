@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDeviceCloudDTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserDeviceRpcService;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -45,7 +46,7 @@ public class CloudController extends BaseController {
             @RequestParam(required = false) String dut,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize) {
-    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -54,7 +55,7 @@ public class CloudController extends BaseController {
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
         }
     }
 }

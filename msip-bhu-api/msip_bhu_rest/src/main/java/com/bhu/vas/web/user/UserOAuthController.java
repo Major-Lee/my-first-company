@@ -24,6 +24,7 @@ import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -35,7 +36,7 @@ public class UserOAuthController extends BaseController{
 
 	@ResponseBody()
 	@RequestMapping(value="/fetch_identifies", method={RequestMethod.GET,RequestMethod.POST})
-	public void fetch_identifies(HttpServletResponse response, 
+	public void fetch_identifies(HttpServletRequest request, HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid,
 			@RequestParam(required=false, defaultValue="false") boolean payment){
 		try{
@@ -47,10 +48,10 @@ public class UserOAuthController extends BaseController{
 				//BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -58,6 +59,7 @@ public class UserOAuthController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/remove", method={RequestMethod.GET,RequestMethod.POST})
 	public void removebind(
+			HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid,
 			@RequestParam(required=true) String identify){
@@ -66,10 +68,10 @@ public class UserOAuthController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -99,11 +101,11 @@ public class UserOAuthController extends BaseController{
 				BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 			//SpringMVCHelper.renderJson(response, ResponseSuccess.embed(Boolean.TRUE));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 

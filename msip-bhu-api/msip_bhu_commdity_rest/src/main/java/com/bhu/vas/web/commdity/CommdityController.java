@@ -23,6 +23,7 @@ import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
 import com.bhu.vas.api.rpc.user.model.UserIdentityAuth;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
+import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
@@ -65,7 +66,7 @@ public class CommdityController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -92,7 +93,7 @@ public class CommdityController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -108,7 +109,7 @@ public class CommdityController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -129,7 +130,7 @@ public class CommdityController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -142,12 +143,13 @@ public class CommdityController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/fetch_captcha",method={RequestMethod.POST})
 	public void fetch_captcha(
+			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
 			@RequestParam(required = true) String acc,
 			@RequestParam(required = false,defaultValue="R") String act
 			) {
-		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc,request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -157,7 +159,7 @@ public class CommdityController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.SUCCESS);
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -183,12 +185,12 @@ public class CommdityController extends BaseController{
 				RpcResponseDTO<OrderWhiteListVTO> orderResult = orderRpcService.createWhiteListOrder(commdityid, mac, umac, umactype, 
 						context, user_agent, channel);
 				if (orderResult.hasError()){
-					SpringMVCHelper.renderJson(response, ResponseError.embed(orderResult));
+					SpringMVCHelper.renderJson(response, ResponseError.embed(orderResult, BusinessWebHelper.getLocale(request)));
 				}
 			}
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -208,7 +210,7 @@ public class CommdityController extends BaseController{
 			@RequestParam(required = false, defaultValue = "0") Integer channel
 			) {
 		
-		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc,request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -219,7 +221,7 @@ public class CommdityController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 		
 	}

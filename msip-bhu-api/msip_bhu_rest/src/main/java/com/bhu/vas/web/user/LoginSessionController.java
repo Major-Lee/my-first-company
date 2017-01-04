@@ -58,7 +58,7 @@ public class LoginSessionController extends BaseController{
 			//@RequestParam(required = false,defaultValue="") String lang,
 			@RequestParam(required = false, value="d",defaultValue="R") String device) {
 		//step 1.手机号正则验证
-		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode, acc);
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode, acc, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -75,7 +75,7 @@ public class LoginSessionController extends BaseController{
 			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 		
 	}
@@ -119,7 +119,7 @@ public class LoginSessionController extends BaseController{
 			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 		
 	}
@@ -184,7 +184,7 @@ public class LoginSessionController extends BaseController{
 		String aToken = request.getHeader(RuntimeConfiguration.Param_ATokenHeader);
 		System.out.println("~~~~~step2 token:"+aToken);
 		if(StringUtils.isEmpty(aToken)){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_EMPTY));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_EMPTY, BusinessWebHelper.getLocale(request)));
 			return;
 		}
 		
@@ -201,7 +201,7 @@ public class LoginSessionController extends BaseController{
 			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -224,7 +224,7 @@ public class LoginSessionController extends BaseController{
 			@RequestParam(required = true, value="sk") String secretkey) {
 		
 		//step 1.手机号正则验证
-		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode, acc);
+		ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode, acc, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -235,7 +235,7 @@ public class LoginSessionController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 		
 	}

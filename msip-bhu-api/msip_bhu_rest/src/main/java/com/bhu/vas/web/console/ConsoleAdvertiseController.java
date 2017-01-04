@@ -14,10 +14,12 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -43,13 +45,13 @@ public class ConsoleAdvertiseController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			ex.printStackTrace();
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -78,13 +80,13 @@ public class ConsoleAdvertiseController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			ex.printStackTrace();
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	@ResponseBody()
@@ -101,13 +103,13 @@ public class ConsoleAdvertiseController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			ex.printStackTrace();
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 		
 	}

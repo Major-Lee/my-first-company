@@ -18,6 +18,7 @@ import com.bhu.vas.api.rpc.devices.iservice.IDeviceRestRpcService;
 import com.bhu.vas.api.rpc.user.dto.UserSearchConditionDTO;
 import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.agent.UserAgentVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -69,7 +70,7 @@ public class ConsoleSearchController extends BaseController {
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(null));
 			}
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -97,7 +98,7 @@ public class ConsoleSearchController extends BaseController {
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
     

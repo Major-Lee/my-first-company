@@ -1,10 +1,13 @@
 package com.bhu.vas.validate;
 
+import javax.servlet.http.HttpServletRequest;
+
 //import com.bhu.vas.business.bucache.redis.serviceimpl.unique.facade.UniqueFacadeService;
 import org.apache.commons.lang.StringUtils;
 
 import com.bhu.vas.api.dto.UserType;
 import com.bhu.vas.api.helper.NumberValidateHelper;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
 import com.smartwork.msip.cores.plugins.reservedwordfilter.ReservedWordFilterHelper;
@@ -42,16 +45,16 @@ public class ValidateService {
 		else return true;
 	}*/
 	
-	public static ResponseError validateParamValueEmpty(String paramName,String paramValue){
+	public static ResponseError validateParamValueEmpty(String paramName,String paramValue, HttpServletRequest request){
 		if(StringUtils.isEmpty(paramValue)){
-			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{paramName.concat(paramValue)});
+			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{paramName.concat(paramValue)}, BusinessWebHelper.getLocale(request));
 		}
 		return null;
 	}
 	
-	public static ResponseError validatePageSize(int pageSize){
+	public static ResponseError validatePageSize(int pageSize, HttpServletRequest request){
 		if(pageSize >50){
-			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"pageSize:".concat(String.valueOf(pageSize)),String.valueOf(1),String.valueOf(50)});
+			return ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{"pageSize:".concat(String.valueOf(pageSize)),String.valueOf(1),String.valueOf(50)}, BusinessWebHelper.getLocale(request));
 		}
 		return null;
 	}
@@ -87,14 +90,14 @@ public class ValidateService {
 		return ret;
 	}
 
-	public static boolean checkNickValidate(String nick){
-		ResponseError error = validateNick(nick);
+	public static boolean checkNickValidate(String nick, HttpServletRequest request){
+		ResponseError error = validateNick(nick, request);
 		if(error == null) return false;
 		else return true;
 	}
 	
-	public static boolean checkMobilenoValidate(int countryCode,String mobileno){
-		ResponseError error = validateMobileno(countryCode,mobileno);
+	public static boolean checkMobilenoValidate(int countryCode,String mobileno,HttpServletRequest request){
+		ResponseError error = validateMobileno(countryCode,mobileno,request);
 		if(error == null) return false;
 		else return true;
 	}
@@ -133,21 +136,21 @@ public class ValidateService {
 	}*/
 
 	//只对nick进行非法字符串的验证，不进行唯一性的验证
-	public static ResponseError validateNick(String nickname){//,UserService userService){
+	public static ResponseError validateNick(String nickname, HttpServletRequest request){//,UserService userService){
 		int charlen = nickname.length();//StringHelper.realStringCharlength(nickname);
 		if(charlen < 2 || charlen > 14){
-			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_INVALID_LENGTH,new String[]{"2","14"});//renderHtml(response, html, headers)
+			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_INVALID_LENGTH,new String[]{"2","14"}, BusinessWebHelper.getLocale(request));//renderHtml(response, html, headers)
 		}
 		
 		if(!StringHelper.isValidNicknameCharacter(nickname)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_INVALID_FORMAT,new String[]{nickname});//renderHtml(response, html, headers)
+			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_INVALID_FORMAT,new String[]{nickname}, BusinessWebHelper.getLocale(request));//renderHtml(response, html, headers)
 		}
 		String tmpnick = StringHelper.replaceBlankAndLowercase(nickname);
 		if(ReservedWordFilterHelper.isWordAllMatch(tmpnick)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);
+			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST, BusinessWebHelper.getLocale(request));
 		}
 		if(WordFilterHelper.isFilterHtmlHits(tmpnick)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);//,new String[]{nickname}));//renderHtml(response, html, headers)
+			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST, BusinessWebHelper.getLocale(request));//,new String[]{nickname}));//renderHtml(response, html, headers)
 		}
 		/*if(isCmbtNameExist(nickname)){
 			return ResponseError.embed(ResponseErrorCode.AUTH_NICKNAME_DATA_EXIST);//,new String[]{nickname}));//renderHtml(response, html, headers)
@@ -158,19 +161,19 @@ public class ValidateService {
 		return null;
 	}
 	
-	public static ResponseError validateMobileno(int countryCode,String mobileno){
-		return validateMobileno(countryCode,mobileno,null);
+	public static ResponseError validateMobileno(int countryCode,String mobileno, HttpServletRequest request){
+		return validateMobileno(countryCode,mobileno,null,request);
 	}
 	
-	public static ResponseError validateMobilenoRegx(int countryCode,String mobileno){
+	public static ResponseError validateMobilenoRegx(int countryCode,String mobileno, HttpServletRequest request){
 		int charlen = mobileno.length();
 		if(charlen < 6 || charlen > 16){
-			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_LENGTH,new String[]{"6","16"});//renderHtml(response, html, headers)
+			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_LENGTH,new String[]{"6","16"}, BusinessWebHelper.getLocale(request));//renderHtml(response, html, headers)
 		}
 		
 		//if(!StringHelper.isValidMobilenoCharacter(mobileno)){
 		if(!PhoneHelper.isValidPhoneCharacter(countryCode, mobileno)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_FORMAT);//renderHtml(response, html, headers)
+			return ResponseError.embed(ResponseErrorCode.AUTH_MOBILENO_INVALID_FORMAT, BusinessWebHelper.getLocale(request));//renderHtml(response, html, headers)
 		}
 		return null;
 	}
@@ -189,7 +192,7 @@ public class ValidateService {
 		return true;
 	}*/
 	
-	public static ResponseError validateMobileno(int countryCode,String mobileno,String oldmobileno){//,UserService userService){
+	public static ResponseError validateMobileno(int countryCode,String mobileno,String oldmobileno, HttpServletRequest request){//,UserService userService){
 		/*//判断已经修改过一次,就不能修改
 		if(StringUtils.isNotEmpty(oldmobileno)){
 			if(oldmobileno.equals(mobileno)){
@@ -197,7 +200,7 @@ public class ValidateService {
 			}
 		}*/
 		
-		ResponseError error = validateMobilenoRegx(countryCode,mobileno);
+		ResponseError error = validateMobilenoRegx(countryCode,mobileno, request);
 		if(error != null) return error;
 		/*int charlen = mobileno.length();
 		if(charlen < 6 || charlen > 16){
@@ -220,11 +223,11 @@ public class ValidateService {
 	 * @return
 	 */
 	
-	public static ResponseError validateDeviceUUID(String duuid){
+	public static ResponseError validateDeviceUUID(String duuid, HttpServletRequest request){
 		String lowuuid = duuid.toLowerCase();
 		int charlen = lowuuid.length();
 		if(charlen < 32 || charlen > 40){
-			return ResponseError.embed(ResponseErrorCode.AUTH_UUID_INVALID_LENGTH,new String[]{"32","40"});//renderHtml(response, html, headers)
+			return ResponseError.embed(ResponseErrorCode.AUTH_UUID_INVALID_LENGTH,new String[]{"32","40"}, BusinessWebHelper.getLocale(request));//renderHtml(response, html, headers)
 		}
 		
 		/*if(!StringHelper.isValidUUIDCharacter(lowuuid)){
@@ -233,14 +236,14 @@ public class ValidateService {
 		return null;
 	}
 	
-	public static ResponseError validateDeviceMac(String mac){
+	public static ResponseError validateDeviceMac(String mac, HttpServletRequest request){
 		if(mac == null){
 			;
 		}
 		String lowmac = mac.toLowerCase();
 		int charlen = lowmac.length();
 		if(charlen != 17 || !StringHelper.isValidMac(lowmac)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT,new String[]{mac});//renderHtml(response, html, headers)
+			return ResponseError.embed(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT,new String[]{mac}, BusinessWebHelper.getLocale(request));//renderHtml(response, html, headers)
 		}
 		
 		/*if(!StringHelper.isValidUUIDCharacter(lowuuid)){

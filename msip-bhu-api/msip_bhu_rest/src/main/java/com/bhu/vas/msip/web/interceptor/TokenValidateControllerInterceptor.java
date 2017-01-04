@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.token.IegalTokenHashService;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -116,12 +117,12 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		}
 		String method = request.getMethod();
 		if(StringUtils.isEmpty(method)){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR, BusinessWebHelper.getLocale(request)));
 			return false;
 		}
 		//if(!method.equalsIgnoreCase("POST")){
 		if(!RuntimeConfiguration.isRequestMethodSupported(method)){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR, BusinessWebHelper.getLocale(request)));
 			return false;
 		}
 		/*if(isIgnoreUri(uri)) {
@@ -133,7 +134,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		if(StringUtils.isEmpty(accessToken)){
 			accessToken = request.getParameter(RuntimeConfiguration.Param_ATokenRequest);
 			if(StringUtils.isEmpty(accessToken)){
-				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR, BusinessWebHelper.getLocale(request)));
 				return false;
 			}
 		}
@@ -156,7 +157,7 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		try{
 			boolean isReg = IegalTokenHashService.getInstance().validateUserToken(accessToken,uid);
 			if(!isReg){
-				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID, BusinessWebHelper.getLocale(request)));
 				return false;
 			}else{
 				if(uri.startsWith(ConsolePrefixUrl)){
@@ -166,13 +167,13 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 						return true; 
 					}else{
 						System.out.println(UID+"~~~~~~~~~~~~~~不能访问管理页面啦！！！！！！！！");
-						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+						SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR, BusinessWebHelper.getLocale(request)));
 						return false;
 					}
 				}
 			}
 		}catch(TokenValidateBusinessException ex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID, BusinessWebHelper.getLocale(request)));
 			return false;
 		}
 		

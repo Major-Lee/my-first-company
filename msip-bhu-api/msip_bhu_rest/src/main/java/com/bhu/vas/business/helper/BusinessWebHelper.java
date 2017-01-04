@@ -2,15 +2,24 @@ package com.bhu.vas.business.helper;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.util.StringUtils;
+
 import com.bhu.vas.api.rpc.user.model.UserToken;
+import com.bhu.vas.msip.cores.web.util.CookieUtils;
 import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 
 
 public class BusinessWebHelper {
+	
+	private final static String LANGUAGE_KEY = "A-Lang"; 
 	
 	/*public static void setCustomizeHeader(HttpServletResponse response, UserToken uToken) {
 		setCustomizeHeader(response,uToken);//,System.currentTimeMillis());
@@ -76,5 +85,26 @@ public class BusinessWebHelper {
 			flag = false;
 		}
 		return flag;
+	}
+	
+	public static Locale getLocale(HttpServletRequest request){
+		String key = request.getHeader(LANGUAGE_KEY);
+		if(StringUtils.isEmpty(key)){
+			Cookie ck = CookieUtils.getCookie(request, LANGUAGE_KEY);
+			if(ck != null)
+				key = ck.getValue();
+		}
+		
+		if(StringUtils.isEmpty(key))
+			return Locale.CHINA;
+		
+		try{
+			String[] arr = key.split(StringHelper.MINUS_STRING_GAP);
+			if(arr.length >= 2)
+				return new Locale(arr[0], arr[1]);
+			return new Locale(arr[0]);
+		}catch(Exception e){
+			return Locale.CHINA;
+		}
 	}
 }

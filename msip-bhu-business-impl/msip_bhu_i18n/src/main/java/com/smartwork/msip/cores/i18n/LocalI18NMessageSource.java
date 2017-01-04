@@ -30,8 +30,8 @@ public class LocalI18NMessageSource {
 		return messageSource.getMessage(messageKey, texts, Locale.CHINA);//LocaleContextHolder.getLocale());
 	}
 	
-	public String getMessage(String messageKey){
-		return getMessage(messageKey,null);
+	public String getMessage(String messageKey, Locale locale){
+		return getMessage(messageKey,null, locale);
 	}
 	public MessageSource getMessageSource() {
 		return messageSource;

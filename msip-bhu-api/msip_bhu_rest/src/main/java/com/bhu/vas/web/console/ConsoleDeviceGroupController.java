@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.devicegroup.iservice.IDeviceGroupRpcService;
-import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
 import com.bhu.vas.api.vto.BackendTaskVTO;
+import com.bhu.vas.api.vto.DeviceGroupDetailVTO;
 import com.bhu.vas.api.vto.DeviceGroupVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -64,7 +65,7 @@ public class ConsoleDeviceGroupController extends BaseController {
 		    ResponseSuccess.embed(rpcResult.getPayload()));
 	else
 	    SpringMVCHelper.renderJson(response,
-		    ResponseError.embed(rpcResult));
+		    ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
 
     /**
@@ -93,7 +94,7 @@ public class ConsoleDeviceGroupController extends BaseController {
 		    ResponseSuccess.embed(rpcResult.getPayload()));
 	else
 	    SpringMVCHelper.renderJson(response,
-		    ResponseError.embed(rpcResult));
+		    ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
 
     /**
@@ -116,7 +117,7 @@ public class ConsoleDeviceGroupController extends BaseController {
 		    ResponseSuccess.embed(rpcResult.getPayload()));
 	else
 	    SpringMVCHelper.renderJson(response,
-		    ResponseError.embed(rpcResult));
+		    ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
 
     /**
@@ -139,7 +140,7 @@ public class ConsoleDeviceGroupController extends BaseController {
 		    ResponseSuccess.embed(rpcResult.getPayload()));
 	else
 	    SpringMVCHelper.renderJson(response,
-		    ResponseError.embed(rpcResult));
+		    ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
 
     @ResponseBody()
@@ -158,7 +159,7 @@ public class ConsoleDeviceGroupController extends BaseController {
 		    ResponseSuccess.embed(rpcResult.getPayload()));
 	else
 	    SpringMVCHelper.renderJson(response,
-		    ResponseError.embed(rpcResult));
+		    ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
 
     /**
@@ -188,7 +189,7 @@ public class ConsoleDeviceGroupController extends BaseController {
 		    ResponseSuccess.embed(rpcResult.getPayload()));
 	else
 	    SpringMVCHelper.renderJson(response,
-		    ResponseError.embed(rpcResult));
+		    ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 
     }
 
@@ -220,7 +221,7 @@ public class ConsoleDeviceGroupController extends BaseController {
 		    ResponseSuccess.embed(rpcResult.getPayload()));
 	else
 	    SpringMVCHelper.renderJson(response,
-		    ResponseError.embed(rpcResult));
+		    ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
     
     /**
@@ -246,7 +247,7 @@ public class ConsoleDeviceGroupController extends BaseController {
 		    ResponseSuccess.embed(rpcResult.getPayload()));
 	else
 	    SpringMVCHelper.renderJson(response,
-		    ResponseError.embed(rpcResult));
+		    ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	
     }
     

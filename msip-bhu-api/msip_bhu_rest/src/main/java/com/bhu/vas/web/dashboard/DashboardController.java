@@ -38,6 +38,7 @@ import com.bhu.vas.api.vto.statistics.DeviceStatisticsVTO;
 import com.bhu.vas.api.vto.statistics.RankingCardInfoVTO;
 import com.bhu.vas.api.vto.statistics.RankingListVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletLogFFVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -92,23 +93,23 @@ public class DashboardController extends BaseController{
 	
 	private static final String ThirdpartiesFetchSecretkey = "NzdHUFNSUEARTUcKXwRfdg==";
 	
-	private ResponseError validate(String secretKey){
+	private ResponseError validate(String secretKey, HttpServletRequest request){
 		if(!DefaultSecretkey.equals(secretKey)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
+			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID, BusinessWebHelper.getLocale(request));
 		}
 		return null;
 	}
 	
-	private ResponseError validateBackendCharge(String secretKey){
+	private ResponseError validateBackendCharge(String secretKey, HttpServletRequest request){
 		if(!BackendChargeSecretkey.equals(secretKey)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
+			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID, BusinessWebHelper.getLocale(request));
 		}
 		return null;
 	}
 	
-	private ResponseError validateThirdpartiesFetch(String secretKey){
+	private ResponseError validateThirdpartiesFetch(String secretKey, HttpServletRequest request){
 		if(!ThirdpartiesFetchSecretkey.equals(secretKey)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
+			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID, BusinessWebHelper.getLocale(request));
 		}
 		return null;
 	}
@@ -132,7 +133,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = true,value="sk") String secretKey,
             @RequestParam(required = true) String mac
     		) {
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -141,7 +142,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
 
 	
@@ -166,7 +167,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = false) String extparams,
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid) throws  Exception{
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -175,7 +176,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 
 	
@@ -200,7 +201,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = false) String extparams,
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid) throws  Exception{
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -209,7 +210,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	/**
 	 * 查询任务状态接口
@@ -229,7 +230,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid,
 			@RequestParam(required = false) Long taskid) {
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -240,7 +241,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	
 	/**
@@ -261,7 +262,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = false, defaultValue=WifiDeviceDownTask.Task_LOCAL_CHANNEL) String channel,
 			@RequestParam(required = false) String channel_taskid,
 			@RequestParam(required = false) Long taskid) {
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -270,7 +271,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	
 	/**
@@ -287,7 +288,7 @@ public class DashboardController extends BaseController{
 			HttpServletResponse response,
 			@RequestParam(required = true,value="sk") String secretKey,
 			@RequestParam(required = true) String dmac) {
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -296,7 +297,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	
 	/**
@@ -315,7 +316,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
 			@RequestParam(required = false,value="tpl") String tpl,
 			@RequestParam(required = true) int uid) {
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -324,7 +325,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	
 
@@ -347,7 +348,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
 			@RequestParam(required = false,defaultValue= "0001",value="tpl") String template,
 			@RequestParam(required = false) String extparams) {
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -356,7 +357,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -370,7 +371,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = true) String identify,
 			@RequestParam(required = true) String auid,
 			@RequestParam(required = true) String openid) {
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -379,7 +380,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	
 	/**
@@ -427,7 +428,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = true, value="sk") String secretKey,
 			@RequestParam(required = false, defaultValue= "1") String d_snk_turnstate,
 			@RequestParam(required = false, defaultValue= "SafeSecure") String d_snk_type) {
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -436,7 +437,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	
 	/**
@@ -453,7 +454,7 @@ public class DashboardController extends BaseController{
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true,value="sk") String secretKey) {
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -462,7 +463,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	
 	
@@ -478,7 +479,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = true) String orderid,
 			@RequestParam(required = false) String desc
 			) {
-		ResponseError validateError = validateBackendCharge(secretKey);
+		ResponseError validateError = validateBackendCharge(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -497,12 +498,12 @@ public class DashboardController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}finally{
 			
 		}
@@ -517,7 +518,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = false,defaultValue="feifan") String from,
 			@RequestParam(required = true) String macs
 			) {
-		ResponseError validateError = validateThirdpartiesFetch(secretKey);
+		ResponseError validateError = validateThirdpartiesFetch(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -525,7 +526,7 @@ public class DashboardController extends BaseController{
 		String[] macarray = StringHelper.split(macs.toLowerCase(), StringHelper.COMMA_STRING_GAP);
     	List<String> masList = Arrays.asList(macarray);
     	if(!StringHelper.isValidMacs(masList)){
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"}));
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_ERROR,new String[]{"macs"}, BusinessWebHelper.getLocale(request)));
     		return;
     	}
 		try{
@@ -533,12 +534,12 @@ public class DashboardController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}finally{
 			
 		}
@@ -574,12 +575,12 @@ public class DashboardController extends BaseController{
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		) {
 		
-		ResponseError validateError = validateThirdpartiesFetch(secretKey);
+		ResponseError validateError = validateThirdpartiesFetch(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
 		}
-    	validateError = ValidateService.validatePageSize(pageSize);
+    	validateError = ValidateService.validatePageSize(pageSize, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -598,7 +599,7 @@ public class DashboardController extends BaseController{
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	
 	/**
@@ -619,7 +620,7 @@ public class DashboardController extends BaseController{
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
 			@RequestParam(required = true) String acc,
 			@RequestParam(required = false) String jsonpcallback){
-		ResponseError validateError = validateThirdpartiesFetch(secretKey);
+		ResponseError validateError = validateThirdpartiesFetch(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -632,9 +633,9 @@ public class DashboardController extends BaseController{
 				SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
 			if(StringUtils.isEmpty(jsonpcallback))
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			else
-				SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -645,7 +646,7 @@ public class DashboardController extends BaseController{
      */
     @ResponseBody()
     @RequestMapping(value="/wallet/rankingList", method={RequestMethod.GET,RequestMethod.POST})
-    public void rankingList(HttpServletResponse response, @RequestParam(required = true) Integer uid,
+    public void rankingList(HttpServletRequest request,HttpServletResponse response,  @RequestParam(required = true) Integer uid,
     		@RequestParam(required = true) Integer type,
     		@RequestParam(required = false,defaultValue = "") String time,
     		@RequestParam(required = true) Integer pn,
@@ -654,7 +655,7 @@ public class DashboardController extends BaseController{
     	if(!rpcResult.hasError()){
     		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     	}else{
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     	}
     }
     /**
@@ -664,12 +665,12 @@ public class DashboardController extends BaseController{
      */
     @ResponseBody()
     @RequestMapping(value="/wallet/rankingCardInfo", method={RequestMethod.GET,RequestMethod.POST})
-    public void rankingCardInfo(HttpServletResponse response, @RequestParam(required = true) Integer uid){
+    public void rankingCardInfo(HttpServletRequest request, HttpServletResponse response, @RequestParam(required = true) Integer uid){
     	RpcResponseDTO<RankingCardInfoVTO> rpcResult = userWalletRpcService.rankingCardInfo(uid);
     	if(!rpcResult.hasError()){
     		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     	}else{
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     	}
     }
 }

@@ -19,6 +19,7 @@ import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.statistics.FincialStatisticsVTO;
 import com.bhu.vas.api.vto.wallet.UserWithdrawApplyVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.WebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -65,7 +66,7 @@ public class ConsoleWithdrawController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		) {
-    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -74,7 +75,7 @@ public class ConsoleWithdrawController extends BaseController {
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
     
     @ResponseBody()
@@ -90,7 +91,7 @@ public class ConsoleWithdrawController extends BaseController {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
     
     /**
@@ -113,7 +114,7 @@ public class ConsoleWithdrawController extends BaseController {
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
     
     /**
@@ -142,7 +143,7 @@ public class ConsoleWithdrawController extends BaseController {
     				if(!rpcResponseDTO.hasError()){
     					SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResponseDTO));
     				}else{
-    					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     				}
     				return;
     			}else{
@@ -170,12 +171,12 @@ public class ConsoleWithdrawController extends BaseController {
         			System.out.println("apply_payment step 1:"+JsonHelper.getJSONString(rcp_dto));
         			if(rcp_dto == null){
         				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-        						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_INVALID)));
+        						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_INVALID), BusinessWebHelper.getLocale(request)));
         				return;
         			}
         			if(!rcp_dto.isSuccess()){
         				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-        						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE,new String[]{new String(rcp_dto.getMsg())})));
+        						ResponseErrorCode.INTERNAL_COMMUNICATION_WITHDRAWURL_RESPONSE_FALSE,new String[]{new String(rcp_dto.getMsg())}), BusinessWebHelper.getLocale(request)));
         				return;
         			}
         			System.out.println("apply_payment step 2 from uPay: successed"+JsonHelper.getJSONString(rcp_dto));
@@ -183,7 +184,7 @@ public class ConsoleWithdrawController extends BaseController {
         			System.out.println("apply_payment step 3: done!");
     			}
     		}else{
-    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     		}
     		//add by dongrui 2016-06-15 E N D 
     		
@@ -193,6 +194,7 @@ public class ConsoleWithdrawController extends BaseController {
     @ResponseBody()
 	@RequestMapping(value="/fincialStatistics", method={RequestMethod.GET,RequestMethod.POST})
 	public void fincialStatistics(
+			HttpServletRequest request, 
 			HttpServletResponse response, 
 			@RequestParam(required = true) int uid,
 			@RequestParam(required=true) String time){
@@ -201,10 +203,10 @@ public class ConsoleWithdrawController extends BaseController {
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 

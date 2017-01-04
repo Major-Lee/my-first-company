@@ -100,7 +100,7 @@ public class UserWalletController extends BaseController{
 				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,
 						new String[]{"cash:".concat(String.valueOf(cash)),
 						String.valueOf(BusinessRuntimeConfiguration.User_WalletWithdraw_Default_Withdraw_MinLimit),
-						""}));
+						""}, BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			//ValidateService.validAmountRange(String.valueOf(cash),NumberValidateHelper.Range_Amount_Min,NumberValidateHelper.Range_Amount_Max);
@@ -109,12 +109,12 @@ public class UserWalletController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -122,6 +122,7 @@ public class UserWalletController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/wallet/detail", method={RequestMethod.GET,RequestMethod.POST})
 	public void walletDetail(
+			HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid){
 		try{
@@ -129,10 +130,10 @@ public class UserWalletController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -140,6 +141,7 @@ public class UserWalletController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/wallet/pwdset", method={RequestMethod.GET,RequestMethod.POST})
 	public void withdrawPwdSet(
+			HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid,
 			@RequestParam(required=true) String captcha,
@@ -149,10 +151,10 @@ public class UserWalletController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -196,7 +198,7 @@ public class UserWalletController extends BaseController{
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		) {
-    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -205,7 +207,7 @@ public class UserWalletController extends BaseController{
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
     
     
@@ -220,13 +222,13 @@ public class UserWalletController extends BaseController{
 		if(!rpcResult.hasError()) {
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		} else {
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
     
     @ResponseBody()
     @RequestMapping(value="/richStatistics", method={RequestMethod.GET,RequestMethod.POST})
-    public void richStatistics( HttpServletResponse response, 
+    public void richStatistics(HttpServletRequest request, HttpServletResponse response, 
     		@RequestParam(required = true) int uid,
     		@RequestParam(required = false) String  beginTime,
     		@RequestParam(required = false) String  endTime
@@ -236,10 +238,10 @@ public class UserWalletController extends BaseController{
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
-    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     		}
     	}catch(Exception ex){
-    		SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
     	}
     }
     
@@ -281,7 +283,7 @@ public class UserWalletController extends BaseController{
     			yunOperateService.uploadYun(bs, filename);
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
-    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     		}
     	}
     
@@ -318,7 +320,7 @@ public class UserWalletController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
     
@@ -327,6 +329,7 @@ public class UserWalletController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/withdraw/detail", method={RequestMethod.GET,RequestMethod.POST})
 	public void fetchWithdrawSimpleDetail(
+			HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam(required=true) Integer uid){
 		try{
@@ -334,10 +337,10 @@ public class UserWalletController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -362,7 +365,7 @@ public class UserWalletController extends BaseController{
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize
     		) {
-    	ResponseError validateError = ValidateService.validatePageSize(pageSize);
+    	ResponseError validateError = ValidateService.validatePageSize(pageSize, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -371,6 +374,6 @@ public class UserWalletController extends BaseController{
 		if(!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     }
 }

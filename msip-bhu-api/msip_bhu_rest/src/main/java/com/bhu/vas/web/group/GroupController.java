@@ -25,6 +25,7 @@ import com.bhu.vas.api.rpc.tag.vto.TagGroupSortMessageVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupUserStatisticsConnectVTO;
 import com.bhu.vas.api.rpc.tag.vto.TagGroupVTO;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
@@ -62,7 +63,7 @@ public class GroupController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     } 
     
@@ -84,7 +85,7 @@ public class GroupController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -110,7 +111,7 @@ public class GroupController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -136,7 +137,7 @@ public class GroupController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -154,7 +155,7 @@ public class GroupController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     } 
     
@@ -172,7 +173,7 @@ public class GroupController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -192,7 +193,7 @@ public class GroupController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -214,7 +215,7 @@ public class GroupController extends BaseController{
 			@RequestParam(required = false,defaultValue= "SafeSecure",value="snk_type") String sharenetwork_type,
 			@RequestParam(required = false,defaultValue= "0001",value="tpl") String template,
 			@RequestParam(required = false,defaultValue = "true") boolean on) {
-		ResponseError validateError = ValidateService.validateParamValueEmpty("message",message);
+		ResponseError validateError = ValidateService.validateParamValueEmpty("message",message, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -223,7 +224,7 @@ public class GroupController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 
@@ -284,7 +285,7 @@ public class GroupController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
 
@@ -321,7 +322,7 @@ public class GroupController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -349,7 +350,7 @@ public class GroupController extends BaseController{
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
     }
     
@@ -401,7 +402,7 @@ public class GroupController extends BaseController{
   		if(!rpcResult.hasError()){
   			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
   		}else{
-  			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+  			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
   		}
       }
       
@@ -430,7 +431,7 @@ public class GroupController extends BaseController{
   		if(!rpcResult.hasError()){
   			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
   		}else{
-  			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+  			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
   		}
       }
       
@@ -462,7 +463,7 @@ public class GroupController extends BaseController{
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
-    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     		}
         }
         
@@ -484,7 +485,7 @@ public class GroupController extends BaseController{
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
-    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     		}
         }
         
@@ -510,7 +511,7 @@ public class GroupController extends BaseController{
     		if(!rpcResult.hasError()){
     			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     		}else{
-    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     		}
         }
 }

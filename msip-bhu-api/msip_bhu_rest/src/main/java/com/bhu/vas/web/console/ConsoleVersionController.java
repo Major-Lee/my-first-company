@@ -19,6 +19,7 @@ import com.bhu.vas.api.vto.device.CurrentGrayUsageVTO;
 import com.bhu.vas.api.vto.device.DeviceUnitTypeVTO;
 import com.bhu.vas.api.vto.device.GrayUsageVTO;
 import com.bhu.vas.api.vto.device.VersionVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.business.yun.iservice.IYunUploadService;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
@@ -50,7 +51,7 @@ public class ConsoleVersionController extends BaseController {
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class ConsoleVersionController extends BaseController {
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 
 	/**
@@ -86,7 +87,7 @@ public class ConsoleVersionController extends BaseController {
 			@RequestParam(required = true) boolean fw,
 			@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 			@RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
-		ResponseError validateError = ValidateService.validatePageSize(pageSize);
+		ResponseError validateError = ValidateService.validatePageSize(pageSize, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -96,7 +97,7 @@ public class ConsoleVersionController extends BaseController {
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 
 	/**
@@ -121,7 +122,7 @@ public class ConsoleVersionController extends BaseController {
 		if (!rpcResult.hasError())
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 
 	/**
@@ -157,7 +158,7 @@ public class ConsoleVersionController extends BaseController {
 			yunOperateService.uploadYun(bs,  uid,  dut,  fw, versionId, vapRpcService);
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 
 
@@ -183,7 +184,7 @@ public class ConsoleVersionController extends BaseController {
 		if (!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	
 	/**
@@ -207,7 +208,7 @@ public class ConsoleVersionController extends BaseController {
 		if (!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 
 }

@@ -14,6 +14,7 @@ import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
 import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
+import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
@@ -48,7 +49,7 @@ public class OrderVideoController extends BaseController{
 		if(!orderRpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(orderRpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(orderRpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(orderRpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	/**
@@ -70,7 +71,7 @@ public class OrderVideoController extends BaseController{
 		if(!RpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	/**
@@ -100,7 +101,7 @@ public class OrderVideoController extends BaseController{
 		if(!orderRpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(orderRpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(orderRpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(orderRpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 }

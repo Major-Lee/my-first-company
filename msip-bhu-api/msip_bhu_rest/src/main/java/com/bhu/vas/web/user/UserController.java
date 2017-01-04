@@ -29,6 +29,7 @@ import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.Response;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -75,7 +76,7 @@ public class UserController extends BaseController{
 		// step 1.deviceuuid 验证
 		ResponseError validateError = null;
 		if(StringUtils.isNotEmpty(deviceuuid)){
-			validateError = ValidateService.validateDeviceUUID(deviceuuid);//, userService);
+			validateError = ValidateService.validateDeviceUUID(deviceuuid, request);//, userService);
 			if(validateError != null){
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
@@ -87,14 +88,14 @@ public class UserController extends BaseController{
 			UserType userType = UserType.getBySName(ut);
 			ValidateService.validateUserTypeApiGen(userType);
 			//step 2.手机号正则验证及手机是否存在验证
-			validateError = ValidateService.validateMobileno(countrycode,acc);
+			validateError = ValidateService.validateMobileno(countrycode,acc,request);
 			if(validateError != null){
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
 			}
 			
 			if(StringUtils.isNotEmpty(nick)){
-				validateError = ValidateService.validateNick(nick);
+				validateError = ValidateService.validateNick(nick,request);
 				if(validateError != null){
 					SpringMVCHelper.renderJson(response, validateError);
 					return;
@@ -110,13 +111,13 @@ public class UserController extends BaseController{
 				BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			ex.printStackTrace();
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}finally{
 			
 		}
@@ -135,7 +136,7 @@ public class UserController extends BaseController{
 		ResponseError validateError = null;
 		try{
 			//step 2.手机号正则验证
-			validateError = ValidateService.validateMobileno(countrycode,acc);
+			validateError = ValidateService.validateMobileno(countrycode,acc,request);
 			if(validateError != null){
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
@@ -144,11 +145,11 @@ public class UserController extends BaseController{
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -189,7 +190,7 @@ public class UserController extends BaseController{
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	}
 	
 	@ResponseBody()
@@ -207,9 +208,9 @@ public class UserController extends BaseController{
 					SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
 				if(StringUtils.isEmpty(jsonpcallback))
-					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+					SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 				else
-					SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(rpcResult));
+					SpringMVCHelper.renderJsonp(response,jsonpcallback, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 				
 	}
@@ -217,6 +218,7 @@ public class UserController extends BaseController{
 	@ResponseBody()
 	@RequestMapping(value="/check_mobileno",method={RequestMethod.POST})
 	public void check_unique(
+			HttpServletRequest request,
 			HttpServletResponse response,
 			//@RequestParam(required = true,value="t") int type,
 			@RequestParam(required = false,value="cc",defaultValue="86") int countrycode,
@@ -227,7 +229,7 @@ public class UserController extends BaseController{
 				SpringMVCHelper.renderJson(response, Response.SUCCESS);//renderHtml(response, html, headers)
 				return;
 			}
-			ResponseError validateError = ValidateService.validateMobileno(countrycode,acc);
+			ResponseError validateError = ValidateService.validateMobileno(countrycode,acc,request);
 			if(validateError != null){//本地正则验证
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
@@ -236,17 +238,18 @@ public class UserController extends BaseController{
 				if(checkAcc.getErrorCode() == null)
 					SpringMVCHelper.renderJson(response, Response.SUCCESS);
 				else
-					SpringMVCHelper.renderJson(response, ResponseError.embed(checkAcc));
+					SpringMVCHelper.renderJson(response, ResponseError.embed(checkAcc, BusinessWebHelper.getLocale(request)));
 				return;
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
 	@ResponseBody()
 	@RequestMapping(value="/check_nick",method={RequestMethod.POST})
 	public void check_nick(
+			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) String nick,
             @RequestParam(required = false) String oldacc) {
@@ -255,7 +258,7 @@ public class UserController extends BaseController{
 				SpringMVCHelper.renderJson(response, Response.SUCCESS);//renderHtml(response, html, headers)
 				return;
 			}
-			ResponseError validateError = ValidateService.validateNick(nick);
+			ResponseError validateError = ValidateService.validateNick(nick,request);
 			if(validateError != null){//本地正则验证
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
@@ -264,11 +267,11 @@ public class UserController extends BaseController{
 				if(checkAcc.getErrorCode() == null)
 					SpringMVCHelper.renderJson(response, Response.SUCCESS);
 				else
-					SpringMVCHelper.renderJson(response, ResponseError.embed(checkAcc));
+					SpringMVCHelper.renderJson(response, ResponseError.embed(checkAcc, BusinessWebHelper.getLocale(request)));
 				return;
 			}
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -302,19 +305,19 @@ public class UserController extends BaseController{
 	}
 	@ResponseBody()
     @RequestMapping(value="/activity", method={RequestMethod.GET,RequestMethod.POST})
-    public void rankingList(HttpServletResponse response, @RequestParam(required = true) Integer uid){
+    public void rankingList(HttpServletRequest request, HttpServletResponse response, @RequestParam(required = true) Integer uid){
     	
     	RpcResponseDTO<UserActivityVTO> rpcResult = userRpcService.activity(uid);
     	if(!rpcResult.hasError()){
     		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     	}else{
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     	}
     }
 	
 	@ResponseBody()
     @RequestMapping(value="/activitySet", method={RequestMethod.GET,RequestMethod.POST})
-    public void activitySet(HttpServletResponse response, @RequestParam(required = true) Integer uid,
+    public void activitySet(HttpServletRequest request, HttpServletResponse response, @RequestParam(required = true) Integer uid,
     		@RequestParam(required = false) Integer bind_num,
     		@RequestParam(required = false) Double income,
     		@RequestParam(required = false) String rate,
@@ -323,19 +326,19 @@ public class UserController extends BaseController{
     	if(!rpcResult.hasError()){
     		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     	}else{
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     	}
     }
 	
 	@ResponseBody()
     @RequestMapping(value="/conn/stat", method={RequestMethod.GET,RequestMethod.POST})
-    public void conn_stat(HttpServletResponse response, @RequestParam(required = true) int uid,
+    public void conn_stat(HttpServletRequest request, HttpServletResponse response, @RequestParam(required = true) int uid,
     		@RequestParam(required = true) long time ){
     	RpcResponseDTO<GroupUsersStatisticsVTO> rpcResult = userRpcService.UsersStatistics(uid,time);
     	if(!rpcResult.hasError()){
     		SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
     	}else{
-    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+    		SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
     	}
     }
 }

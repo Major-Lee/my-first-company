@@ -86,8 +86,8 @@
         <module>msip-bhu-api/msip_bhu_commdity_rest</module>
         <!--
         <module>msip-bhu-api/msip_bhu_agent_rest</module>
-    -->
         <module>msip-bhu-api/msip_bhu_social_rest</module>
+    -->
         <module>msip-bhu-payment/msip_bhu_heepay</module>
         <module>msip-bhu-payment/msip_bhu_alipay</module>
 		<module>msip-bhu-payment/msip_bhu_nowpay</module>

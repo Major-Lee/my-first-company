@@ -23,6 +23,7 @@ import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.bhu.vas.validate.ValidateService;
 import com.smartwork.msip.business.token.UserTokenDTO;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 /**
  * 密码重置流程
@@ -174,7 +175,7 @@ public class PwdResetFlowController extends BaseController{
 		String remoteIp = WebHelper.getRemoteAddr(request);
 		String from_device = DeviceEnum.getBySName(device).getSname();
 		try{
-			ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc);
+			ResponseError validateError = ValidateService.validateMobilenoRegx(countrycode,acc,request);
 			if(validateError != null){
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
@@ -186,11 +187,11 @@ public class PwdResetFlowController extends BaseController{
 				BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -220,11 +221,11 @@ public class PwdResetFlowController extends BaseController{
 				BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
 }

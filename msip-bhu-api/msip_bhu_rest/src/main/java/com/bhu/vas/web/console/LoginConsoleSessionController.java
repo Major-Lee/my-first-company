@@ -69,14 +69,14 @@ public class LoginConsoleSessionController extends BaseController{
 		if(!rpcResult.hasError()){
 			UserTokenDTO tokenDto =UserTokenDTO.class.cast(rpcResult.getPayload().get(RpcResponseDTOBuilder.Key_UserToken));
 			if(!BusinessRuntimeConfiguration.isConsoleUser(tokenDto.getId())){
-				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_403_ERROR, BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			rpcResult.getPayload().remove(RpcResponseDTOBuilder.Key_UserToken);
 			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 		
 	}
@@ -101,7 +101,7 @@ public class LoginConsoleSessionController extends BaseController{
 		String aToken = request.getHeader(RuntimeConfiguration.Param_ATokenHeader);
 		System.out.println("~~~~~step2 token:"+aToken);
 		if(StringUtils.isEmpty(aToken)){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_EMPTY));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_EMPTY, BusinessWebHelper.getLocale(request)));
 			return;
 		}
 		
@@ -116,7 +116,7 @@ public class LoginConsoleSessionController extends BaseController{
 			BusinessWebHelper.setCustomizeHeader(response, tokenDto.getAtoken(),tokenDto.getRtoken());
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 	}
 }

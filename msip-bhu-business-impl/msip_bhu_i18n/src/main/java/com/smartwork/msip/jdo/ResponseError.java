@@ -2,6 +2,7 @@ package com.smartwork.msip.jdo;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Locale;
 
 import org.springframework.util.Assert;
 
@@ -13,8 +14,8 @@ import com.smartwork.msip.exception.BusinessI18nCodeException;
 
 public class ResponseError extends Response{
 	public static final Response ERROR = new Response(false, "操作失败");
-	public static final Response BUSINESS_ERROR = new ResponseError("操作失败",ResponseErrorCode.COMMON_BUSINESS_ERROR);
-	public static final Response SYSTEM_ERROR = new ResponseError("操作失败",ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR);
+//	public static final Response BUSINESS_ERROR = new ResponseError("操作失败",ResponseErrorCode.COMMON_BUSINESS_ERROR);
+//	public static final Response SYSTEM_ERROR = new ResponseError("操作失败",ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR);
 	private String code;
     private String codemsg;
     @JsonInclude(Include.NON_NULL)
@@ -25,26 +26,26 @@ public class ResponseError extends Response{
     	this.setSuccess(false);
     }
 
-    public ResponseError(String message, ResponseErrorCode responseErrorCode) {
+    public ResponseError(String message, ResponseErrorCode responseErrorCode, Locale locale) {
     	this();
     	this.setMsg(message);
         this.code = responseErrorCode.code();
         Assert.notNull(this.code, "msgcode must be set!");
-        this.codemsg = LocalI18NMessageSource.getInstance().getMessage(responseErrorCode.i18n());
+        this.codemsg = LocalI18NMessageSource.getInstance().getMessage(responseErrorCode.i18n(), locale);
     }
 
-    public ResponseError(String message, ResponseErrorCode responseErrorCode, Object[] txts) {
+    public ResponseError(String message, ResponseErrorCode responseErrorCode, Object[] txts, Locale locale) {
     	this();
     	this.setMsg(message);
         this.code = responseErrorCode.code();
         Assert.notNull(this.code, "msgcode must be set!");
-        this.codemsg = LocalI18NMessageSource.getInstance().getMessage(responseErrorCode.i18n(),txts);
+        this.codemsg = LocalI18NMessageSource.getInstance().getMessage(responseErrorCode.i18n(),txts, locale);
     }
     /*public ResponseError(String message, ResponseErrorCode code) {
         this(message, code.code());
     }*/
 
-    public ResponseError(Throwable t, ResponseErrorCode responseErrorCode, boolean debug) {
+    public ResponseError(Throwable t, ResponseErrorCode responseErrorCode, boolean debug, Locale locale) {
         while (t.getCause() != null) {
             t = t.getCause();
         }
@@ -52,7 +53,7 @@ public class ResponseError extends Response{
     	this.setMsg(t.getMessage());
         this.code = responseErrorCode.code();
         Assert.notNull(this.code, "msgcode must be set!");
-        this.codemsg = LocalI18NMessageSource.getInstance().getMessage(responseErrorCode.i18n());
+        this.codemsg = LocalI18NMessageSource.getInstance().getMessage(responseErrorCode.i18n(), locale);
 
         if (debug){
                 StringWriter s = new StringWriter();
@@ -63,16 +64,16 @@ public class ResponseError extends Response{
         }
     }
     
-    public ResponseError(String message, ResponseErrorCode responseErrorCode, Object result) {
-    	this(message, responseErrorCode, result, null);
+    public ResponseError(String message, ResponseErrorCode responseErrorCode, Object result, Locale locale) {
+    	this(message, responseErrorCode, result, null, locale);
     }
 
-    public ResponseError(String message, ResponseErrorCode responseErrorCode, Object result, Object[] txts) {
+    public ResponseError(String message, ResponseErrorCode responseErrorCode, Object result, Object[] txts, Locale locale) {
     	this();
     	this.setMsg(message);
         this.code = responseErrorCode.code();
         Assert.notNull(this.code, "msgcode must be set!");
-        this.codemsg = LocalI18NMessageSource.getInstance().getMessage(responseErrorCode.i18n(),txts);
+        this.codemsg = LocalI18NMessageSource.getInstance().getMessage(responseErrorCode.i18n(),txts, locale);
         this.result = result;
     }
     
@@ -112,40 +113,40 @@ public class ResponseError extends Response{
 		this.result = result;
 	}
 
-	public static ResponseError embed(String msg,ResponseErrorCode code){
-		ResponseError re = new ResponseError(msg,code);
+	public static ResponseError embed(String msg,ResponseErrorCode code, Locale locale){
+		ResponseError re = new ResponseError(msg,code, locale);
 		return re;
 	}
 	
-	public static ResponseError embed(ResponseErrorCode code){
-		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),code);
+	public static ResponseError embed(ResponseErrorCode code, Locale locale){
+		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),code, locale);
 		return re;
 	}
-	public static ResponseError embed(ResponseErrorCode code,String[] txts){
-		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),code,txts);
-		return re;
-	}
-	
-	public static ResponseError embed(ResponseErrorCode code, Object result){
-		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),code, result);
-		return re;
-	}
-	public static ResponseError embed(ResponseErrorCode code, Object result, String[] txts){
-		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),code, result, txts);
+	public static ResponseError embed(ResponseErrorCode code,String[] txts, Locale locale){
+		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),code,txts, locale);
 		return re;
 	}
 	
-	public static ResponseError embed(BusinessI18nCodeException ex){
-		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),ex.getErrorCode(),ex.getPayload());
+	public static ResponseError embed(ResponseErrorCode code, Object result, Locale locale){
+		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),code, result, locale);
+		return re;
+	}
+	public static ResponseError embed(ResponseErrorCode code, Object result, String[] txts, Locale locale){
+		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),code, result, txts, locale);
 		return re;
 	}
 	
-	public static ResponseError embed(IResponseDTO res){
-		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),res.getErrorCode(),res.getErrorCodeAttach());
+	public static ResponseError embed(BusinessI18nCodeException ex, Locale locale){
+		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),ex.getErrorCode(),ex.getPayload(), locale);
 		return re;
 	}
-	public static ResponseError embed(IResponseDTO res, Object result){
-		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),res.getErrorCode(), result, res.getErrorCodeAttach());
+	
+	public static ResponseError embed(IResponseDTO res, Locale locale){
+		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),res.getErrorCode(),res.getErrorCodeAttach(), locale);
+		return re;
+	}
+	public static ResponseError embed(IResponseDTO res, Object result, Locale locale){
+		ResponseError re = new ResponseError(ResponseError.ERROR.getMsg(),res.getErrorCode(), result, res.getErrorCodeAttach(), locale);
 		return re;
 	}
 }

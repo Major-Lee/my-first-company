@@ -16,6 +16,7 @@ import com.bhu.vas.api.rpc.unifyStatistics.vto.UcloudMacStatisticsVTO;
 import com.bhu.vas.api.rpc.user.dto.ShareDealWalletSummaryProcedureVTO;
 import com.bhu.vas.api.rpc.user.iservice.IUserWalletRpcService;
 import com.bhu.vas.api.vto.statistics.OpertorUserIncomeVTO;
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -31,9 +32,9 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 	@Resource
 	private IUserWalletRpcService userWalletRpcService;
 	
-	private ResponseError validate(String secretKey){
+	private ResponseError validate(String secretKey, HttpServletRequest request){
 		if(!DefaultSecretkey.equals(secretKey)){
-			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID);
+			return ResponseError.embed(ResponseErrorCode.AUTH_TOKEN_INVALID, BusinessWebHelper.getLocale(request));
 		}
 		return null;
 	}
@@ -46,7 +47,7 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
             @RequestParam(required = true,value="sk") String secretKey,
             @RequestParam(required = true) Integer uid
     		) {
-		ResponseError validateError = validate(secretKey);
+		ResponseError validateError = validate(secretKey, request);
 		if(validateError != null){
 			SpringMVCHelper.renderJson(response, validateError);
 			return;
@@ -56,23 +57,23 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	    }catch(BusinessI18nCodeException i18nex){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
     }
 	
 	 	@ResponseBody()
 	    @RequestMapping(value="/richStatistics", method={RequestMethod.GET,RequestMethod.POST})
-	    public void richStatistics( HttpServletResponse response, 
+	    public void richStatistics(HttpServletRequest request, HttpServletResponse response, 
 	    		@RequestParam(required = true,value="sk") String secretKey,
 	    		@RequestParam(required = true) Integer uid,
 	    		@RequestParam(required = false) String  beginTime,
 	    		@RequestParam(required = false) String  endTime
 	    		){
-	 		ResponseError validateError = validate(secretKey);
+	 		ResponseError validateError = validate(secretKey, request);
 			if(validateError != null){
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
@@ -86,20 +87,20 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 	    		if(!rpcResult.hasError()){
 	    			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 	    		}else{
-	    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+	    			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 	    		}
 	    	}catch(Exception ex){
-	    		SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+				SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 	    	}
 	    }
 	 	@ResponseBody()
 	    @RequestMapping(value = "/wallet/fetch_logstatistics", method = {RequestMethod.POST})
-	    public void fetch_logs(
+	    public void fetch_logs(HttpServletRequest request,
 	            HttpServletResponse response,
 	            @RequestParam(required = true,value="sk") String secretKey,
 	            @RequestParam(required = true) Integer uid
 	    		) {
-			ResponseError validateError = validate(secretKey);
+			ResponseError validateError = validate(secretKey, request);
 			if(validateError != null){
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
@@ -112,7 +113,7 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 			if(!rpcResult.hasError()) {
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			} else {
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 	    }
 	 	
@@ -141,7 +142,7 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 	            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
 	            @RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize
 				) {
-			ResponseError validateError = validate(secretKey);
+			ResponseError validateError = validate(secretKey, request);
 			if(validateError != null){
 				SpringMVCHelper.renderJson(response, validateError);
 				return;
@@ -155,7 +156,7 @@ private static final String DefaultSecretkey = "P45zdf2TFJSU6EBHG90dc21FcLew==";
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{
-				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult));
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			}
 		}
 }

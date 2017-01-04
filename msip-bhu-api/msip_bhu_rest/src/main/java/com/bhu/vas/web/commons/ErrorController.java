@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
 import com.bhu.vas.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
@@ -25,7 +26,7 @@ public class ErrorController extends BaseController{
 			@RequestParam(required = true) String url,
 			@RequestParam(required = true) String message,
 			@RequestParam(required = true) String legacy) {
-		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_UNKNOW_ERROR));
+		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_UNKNOW_ERROR, BusinessWebHelper.getLocale(request)));
 	}
 	
 /*	 @RequestMapping(value = {"/commons/{commonCode}.html"})

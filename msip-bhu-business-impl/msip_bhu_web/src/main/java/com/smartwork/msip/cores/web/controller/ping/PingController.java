@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.jdo.ResponseError;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 import com.smartwork.msip.jdo.ResponseSuccess;
 
 @Controller
@@ -86,7 +88,7 @@ public class PingController {
 			//List<Object> ret = UserPlayDurationService.getInstance().hget_pipeline_playDurations(ArrayHelper.toList(uidarray));
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed("ping ok.."));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR,  BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
@@ -101,7 +103,7 @@ public class PingController {
 		try{
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(model));
 		}catch(Exception ex){
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR,  BusinessWebHelper.getLocale(request)));
 		}
 	}
 	
