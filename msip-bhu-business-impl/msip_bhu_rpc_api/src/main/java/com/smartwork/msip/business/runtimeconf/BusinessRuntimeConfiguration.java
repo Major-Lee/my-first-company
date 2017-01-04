@@ -340,7 +340,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static long Sharednetwork_Auth_Threshold_NeedCharging = 200l;
 	
 	//良品分润需要等待的时间(秒)
-	public static long QualityGoodsSharedealWaitSeconds = 3600*24*15; //default 15 days
+	public static long QualityGoodsSharedealWaitSeconds = 10;
 	//良品分润订单起始时间
 	public static String QualityGoodsSharedealStart = "2017-01-01 00:00:00"; //default 2017-01-01
 	//分润时忽略订单金额（测试中会修改订单金额，实际支付金额小于商品金额）
