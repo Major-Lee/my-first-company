@@ -70,7 +70,7 @@ public class BusinessWebHelper {
 		//Date currentTime = getCalendar().getTime();
 		Calendar currentCal = getCalendar();
 		//currentCal.add(Calendar.MONTH, -1);
-		currentCal.set(Calendar.DATE,5);
+//		currentCal.set(Calendar.DATE,5);
 		Date currentTime = currentCal.getTime();
 		Calendar preCld = getCalendar();
 		//preCld.add(Calendar.MONTH, 1);
