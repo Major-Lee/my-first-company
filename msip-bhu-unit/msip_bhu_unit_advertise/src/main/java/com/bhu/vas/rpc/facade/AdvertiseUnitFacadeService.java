@@ -33,8 +33,8 @@ import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
@@ -150,6 +150,7 @@ public class AdvertiseUnitFacadeService {
 					break;
 					
 				case HomeImage_SmallArea :
+					
 					StringBuilder sb = null;
 					if(!province.isEmpty())
 				        sb = new StringBuilder(province);
@@ -158,7 +159,11 @@ public class AdvertiseUnitFacadeService {
 					if(!district.isEmpty())
 						sb.append(district);
 					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(sb.toString(), lat, lon, distance);
-//					cash = count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+
+					if(lat ==0 || lon == 0 || distance.isEmpty() ||count == 0){
+						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
+					}
+					
 					cash = 1;
 					entity.setCash(cash);
 					entity.setType(BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType());
