@@ -10,9 +10,10 @@ public class DeviceGEOPointCountVTO implements java.io.Serializable{
 	private String district;
 	private double lat;
 	private double lon;
-	
 	private List<String> macs;
 	private long count;
+	private String cash;
+	private String saledCash;
 	
 	public String getProvince() {
 		return province;
@@ -57,5 +58,17 @@ public class DeviceGEOPointCountVTO implements java.io.Serializable{
 	}
 	public void setCount(long count) {
 		this.count = count;
+	}
+	public String getCash() {
+		return cash;
+	}
+	public void setCash(String cash) {
+		this.cash = cash;
+	}
+	public String getSaledCash() {
+		return saledCash;
+	}
+	public void setSaledCash(String saledCash) {
+		this.saledCash = saledCash;
 	}
 }

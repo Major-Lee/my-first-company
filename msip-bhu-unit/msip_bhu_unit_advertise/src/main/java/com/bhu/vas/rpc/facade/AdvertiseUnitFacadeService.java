@@ -157,7 +157,8 @@ public class AdvertiseUnitFacadeService {
 					if(!district.isEmpty())
 						sb.append(district);
 					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(sb.toString(), lat, lon, distance);
-					cash = count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+//					cash = count*BusinessRuntimeConfiguration.Advertise_Unit_Price;
+					cash = 1;
 					entity.setCash(cash);
 					entity.setType(BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType());
 					entity.setLat(lat);
@@ -371,35 +372,35 @@ public class AdvertiseUnitFacadeService {
 				if(state==0){
 					advertise.setState(AdvertiseStateType.UnPublish.getType());
 				}else{
+					if(advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
+						
+						StringBuilder sb = null;
+						if(!advertise.getProvince().isEmpty())
+					        sb = new StringBuilder(advertise.getProvince());
+						if(!advertise.getCity().isEmpty())
+							sb.append(advertise.getCity());
+						if(!advertise.getDistrict().isEmpty())
+							sb.append(advertise.getDistrict());
+						
+						String contextId = sb.toString();
+						
+						final List<String> macList = new ArrayList<String>();
+						wifiDeviceDataSearchService.iteratorWithGeoPointDistance(contextId, advertise.getLat(), advertise.getLon(), advertise.getDistance(), 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
+							@Override
+							public void notifyComming(Page<WifiDeviceDocument> pages) {
+								for (WifiDeviceDocument doc : pages) {
+									macList.add(doc.getD_mac());
+								}	
+							}
+						});
+						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, Double.valueOf(advertiseId));
+					}
+					
 					advertise.setState(AdvertiseStateType.VerifyFailure.getType());
 					advertise.setReject_reason(msg);
 				}
 				advertiseService.update(advertise);
-				if(advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-					
-					StringBuilder sb = null;
-					if(!advertise.getProvince().isEmpty())
-				        sb = new StringBuilder(advertise.getProvince());
-					if(!advertise.getCity().isEmpty())
-						sb.append(advertise.getCity());
-					if(!advertise.getDistrict().isEmpty())
-						sb.append(advertise.getDistrict());
-					
-					String contextId = sb.toString();
-					
-					final List<String> macList = new ArrayList<String>();
-					wifiDeviceDataSearchService.iteratorWithGeoPointDistance(contextId, advertise.getLat(), advertise.getLon(), advertise.getDistance(), 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
-						@Override
-						public void notifyComming(Page<WifiDeviceDocument> pages) {
-							for (WifiDeviceDocument doc : pages) {
-								macList.add(doc.getD_mac());
-							}	
-						}
-					});
-					WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, Double.valueOf(advertiseId));
-					//TODO(已发布了 怎么退费？)
-				}
-				if(state!=0){//退费
+				if(state!=0 && advertise.getType() != BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){//退费（个人热播暂不退费）
 					userWalletFacadeService.advertiseRefundToUserWallet(advertise.getUid(), advertise.getOrderId(), Double.parseDouble(advertise.getCash()), 
 							String.format("auditFail,OrderCash:%s,refundCash:%s", advertise.getCash(), advertise.getCash()));
 				}
@@ -636,6 +637,8 @@ public class AdvertiseUnitFacadeService {
 			vto.setLat(lat);
 			vto.setLon(lon);
 			vto.setCount(wifiDeviceDataSearchService.searchCountByGeoPointDistance(contextId, lat, lon, distince));
+			vto.setCash(vto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price+"");
+			vto.setSaledCash("1");
 			vtos.add(vto);
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);

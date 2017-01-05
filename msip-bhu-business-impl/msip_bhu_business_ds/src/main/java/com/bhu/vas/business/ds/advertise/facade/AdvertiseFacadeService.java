@@ -52,19 +52,14 @@ public class AdvertiseFacadeService {
 		logger.info(String.format("advertiseCompletionOfPayment  advertiseId[%s]", advertiseId));
 		boolean flag = false;
 		Advertise ad = advertiseService.getById(advertiseId);
-		if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-			flag = true;
-		}
 		if(ad.getState() == BusinessEnumType.AdvertiseStateType.UnPaid.getType()){
 			ad.setState(BusinessEnumType.AdvertiseStateType.UnVerified.getType());
 			ad.setOrderId(orderId);
 			advertiseService.update(ad);
 			logger.info("advertiseCompletionOfPayment  finish");
-			
-//			String smsg = String.format(BusinessRuntimeConfiguration.Advertise_Verify_Notify_Template, advertiseId);
-//			String response = SmsSenderFactory.buildSender(
-//						BusinessRuntimeConfiguration.InternalCaptchaCodeSMS_Gateway).send(smsg, "15127166171");
-//			logger.info(String.format("全程热播订单%s已支付,发送短信提醒成功 response: %s",advertiseId,response));
+			if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
+				flag = true;
+			}
 		}else{
 			ad.setReject_reason("因订单超时，您所支付的费用已经退回至必虎钱包，您可以在必虎钱包中申请提现");
 			advertiseService.update(ad);
