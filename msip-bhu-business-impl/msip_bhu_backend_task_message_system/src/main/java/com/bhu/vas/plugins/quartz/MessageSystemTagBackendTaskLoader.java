@@ -24,11 +24,12 @@ public class MessageSystemTagBackendTaskLoader {
 	
 	private ThreadPoolExecutor exec_processes = null;
 	private static final int pageSize = 100;
+	private static final int addTagCycle = 100;
 	
 	public void execute(){
 		logger.info("MessageSystemTagBackendTaskLoader start...");
 		exec_processes = (ThreadPoolExecutor)ExecObserverManager.buildExecutorService(this.getClass(),"导入腾讯im用户处理",10);
-		int total = messageUserFacadeService.countMessageUsersByParams("sync", 0);
+		int total = messageUserFacadeService.countMessageUsersByParams(1, 0);
 		if (total > 0){
 			//腾讯im 一次给100个用户添加标签
 			int pageCount= total / pageSize;
@@ -36,7 +37,7 @@ public class MessageSystemTagBackendTaskLoader {
 				pageCount++;
 			}
 			for (int page = 1; page <= pageCount; page++ ){
-				List<MessageUser> users = messageUserFacadeService.findMessageUsersByParams("sync", 0, page, pageSize);
+				List<MessageUser> users = messageUserFacadeService.findMessageUsersByParams(1, 0, page, pageSize);
 				onProcessor(users);
 			}
 		}
@@ -61,6 +62,7 @@ public class MessageSystemTagBackendTaskLoader {
 							logger.info(String.format("onProcessor messageUser[%s] addtag[%s] failed[%s].", 
 									user.getId(), user.getExtension_content(), ret_dto.getErrorInfo()));
 						}
+						Thread.sleep(addTagCycle);
 					}
 						
 				}catch(Exception ex){

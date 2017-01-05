@@ -24,11 +24,13 @@ public class MessageSystemRegisterBackendTaskLoader {
 	
 	private ThreadPoolExecutor exec_processes = null;
 	private static final int pageSize = 100;
+	//腾讯调用接口最大100次/s
+	private static final int registerCycle = 120;
 	
 	public void execute(){
 		logger.info("MessageSystemRegisterBackendTaskLoader start...");
 		exec_processes = (ThreadPoolExecutor)ExecObserverManager.buildExecutorService(this.getClass(),"导入腾讯im用户处理",10);
-		int total = messageUserFacadeService.countMessageUsersByParams("register", 0);
+		int total = messageUserFacadeService.countMessageUsersByParams(0, null);
 		if (total > 0){
 			//腾讯im 接口导入用户一次100个
 			int pageCount= total / pageSize;
@@ -37,7 +39,7 @@ public class MessageSystemRegisterBackendTaskLoader {
 			}
 			List<String> accList = Collections.emptyList();
 			for (int page = 1; page <= pageCount; page++ ){
-				List<MessageUser> users = messageUserFacadeService.findMessageUsersByParams("register", 0, page, pageSize);
+				List<MessageUser> users = messageUserFacadeService.findMessageUsersByParams(0, null, page, pageSize);
 				accList = new ArrayList<String>();
 				for(MessageUser user : users){
 					accList.add(user.getId());
@@ -58,6 +60,7 @@ public class MessageSystemRegisterBackendTaskLoader {
 					if (!ret_dto.getFailAccounts().isEmpty()){
 						messageUserFacadeService.updateRegisterStatus(ret_dto.getFailAccounts(), 0);
 					}
+					Thread.sleep(registerCycle);
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
 					logger.error("Import tim onProcessor", ex);

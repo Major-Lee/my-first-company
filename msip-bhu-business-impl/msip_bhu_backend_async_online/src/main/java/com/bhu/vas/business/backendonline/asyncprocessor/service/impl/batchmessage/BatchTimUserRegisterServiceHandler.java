@@ -31,7 +31,7 @@ public class BatchTimUserRegisterServiceHandler implements IMsgHandlerService {
 		String sig = timUserRegisterDTO.getSig();
 		Integer channel = timUserRegisterDTO.getChannel();
 		ayscTimeUserImport(user, utype, sig, channel);
-		logger.info(String.format("BatchTimUserRegisterServiceHandler process message[%s] successful", message));
+		logger.info(String.format("BatchTimUserRegisterServiceHandler process message[%s] end", message));
 	}
 	
 	private void ayscTimeUserImport(String acc, String utype, String sig, Integer channel) {
@@ -46,19 +46,18 @@ public class BatchTimUserRegisterServiceHandler implements IMsgHandlerService {
 				register = 1;
 				logger.info(String.format("BatchTimUserRegisterServiceHandler import user[%s]"
 						+ " successful", acc));
+				ret_dto = MessageTimHelper.CreateTimAddTagUrlCommunication(acc, tags);
+				if(ret_dto.isExecutedSuccess()){
+					sync = 1;
+					logger.info(String.format("BatchTimUserRegisterServiceHandler add tag user[%s]"
+							+ " tag[%s] successful", acc, tags));
+				}else{
+					logger.info(String.format("BatchTimUserRegisterServiceHandler add tag user[%s]"
+							+ " tag[%s] failed[%s]!", acc, tags, ret_dto.getErrorInfo()));
+				}
 			}else{
 				logger.info(String.format("BatchTimUserRegisterServiceHandler import user[%s]"
 						+ " failed[%s]！", acc, ret_dto.getErrorInfo()));
-			}
-			
-			ret_dto = MessageTimHelper.CreateTimAddTagUrlCommunication(acc, tags);
-			if(ret_dto.isExecutedSuccess()){
-				sync = 1;
-				logger.info(String.format("BatchTimUserRegisterServiceHandler add tag user[%s]"
-						+ " tag[%s] successful", acc, tags));
-			}else{
-				logger.info(String.format("BatchTimUserRegisterServiceHandler add tag user[%s]"
-						+ " tag[%s] failed[%s]!", acc, tags, ret_dto.getErrorInfo()));
 			}
 			
 			if (utype.equals(BusinessKeyDefine.Message.User)){

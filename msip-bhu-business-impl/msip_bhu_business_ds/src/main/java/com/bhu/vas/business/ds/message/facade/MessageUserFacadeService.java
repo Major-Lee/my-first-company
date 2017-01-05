@@ -5,8 +5,6 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.bhu.vas.api.rpc.message.model.MessageUser;
 import com.bhu.vas.business.ds.message.service.MessageUserService;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
@@ -32,22 +30,30 @@ public class MessageUserFacadeService {
 		return messageUserService.getById(id);
 	}
 	
-	public List<MessageUser> findMessageUsersByParams(String param, int status,
+	public List<MessageUser> findMessageUsersByParams(Integer regStatus, Integer syncStatus,
 			int pageNo, int pageSize){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
-		if (!StringUtils.isEmpty(param))
-			criteria.andColumnEqualTo(param, status);
+		if(regStatus != null){
+			criteria.andColumnEqualTo("register", regStatus);
+		}
+		if (syncStatus != null){
+			criteria.andColumnEqualTo("sync", syncStatus);
+		}
 		mc.setPageNumber(pageNo);
 		mc.setPageSize(pageSize);
 		return messageUserService.findModelByModelCriteria(mc);
 	}
 	
-	public int countMessageUsersByParams(String param, int status){
+	public int countMessageUsersByParams(Integer regStatus, Integer syncStatus){
 		ModelCriteria mc = new ModelCriteria();
 		Criteria criteria = mc.createCriteria();
-		if (!StringUtils.isEmpty(param))
-			criteria.andColumnEqualTo(param, status);
+		if(regStatus != null){
+			criteria.andColumnEqualTo("register", regStatus);
+		}
+		if (syncStatus != null){
+			criteria.andColumnEqualTo("sync", syncStatus);
+		}
 		return messageUserService.countByModelCriteria(mc);
 	}
 	
