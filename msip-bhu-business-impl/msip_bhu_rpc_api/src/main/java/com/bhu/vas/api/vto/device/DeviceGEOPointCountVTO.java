@@ -12,6 +12,7 @@ public class DeviceGEOPointCountVTO implements java.io.Serializable{
 	private double lon;
 	private List<String> macs;
 	private long count;
+	private String distance;
 	private String cash;
 	private String saledCash;
 	
@@ -58,6 +59,12 @@ public class DeviceGEOPointCountVTO implements java.io.Serializable{
 	}
 	public void setCount(long count) {
 		this.count = count;
+	}
+	public String getDistance() {
+		return distance;
+	}
+	public void setDistance(String distance) {
+		this.distance = distance;
 	}
 	public String getCash() {
 		return cash;

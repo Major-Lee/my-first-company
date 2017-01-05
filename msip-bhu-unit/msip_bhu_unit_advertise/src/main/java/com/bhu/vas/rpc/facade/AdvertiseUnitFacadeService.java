@@ -617,7 +617,7 @@ public class AdvertiseUnitFacadeService {
 	 * @return
 	 */
 	public RpcResponseDTO<List<DeviceGEOPointCountVTO>> countDeviceCountByGEOPoint(String province, String city, String district,double lat,double lon,String distances){
-		String[] distinceTemp = distances.split(StringHelper.COMMA_STRING_GAP);
+		String[] distanceTemp = distances.split(StringHelper.COMMA_STRING_GAP);
 		StringBuilder sb = null;
 		
 		if(!province.isEmpty())
@@ -629,14 +629,15 @@ public class AdvertiseUnitFacadeService {
 		
 		String contextId = sb.toString();
 		List<DeviceGEOPointCountVTO> vtos = new ArrayList<DeviceGEOPointCountVTO>();
-		for(String distince : distinceTemp){
+		for(String distance : distanceTemp){
 			DeviceGEOPointCountVTO vto = new DeviceGEOPointCountVTO();
 			vto.setProvince(province);
 			vto.setCity(city);
 			vto.setDistrict(district);
 			vto.setLat(lat);
 			vto.setLon(lon);
-			vto.setCount(wifiDeviceDataSearchService.searchCountByGeoPointDistance(contextId, lat, lon, distince));
+			vto.setDistance(distance);
+			vto.setCount(wifiDeviceDataSearchService.searchCountByGeoPointDistance(contextId, lat, lon, distance));
 			vto.setCash(vto.getCount()*BusinessRuntimeConfiguration.Advertise_Unit_Price+"");
 			vto.setSaledCash("1");
 			vtos.add(vto);
