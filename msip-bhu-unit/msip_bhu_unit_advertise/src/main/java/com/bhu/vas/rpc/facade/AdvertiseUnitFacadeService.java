@@ -33,12 +33,10 @@ import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
-import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -48,7 +46,6 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 import java.util.List;
 
 import org.elasticsearch.common.lang3.StringUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
