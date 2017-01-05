@@ -1,5 +1,6 @@
 package com.bhu.vas.business.backendcommdity.asyncprocessor.service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -44,6 +45,8 @@ import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerService;
@@ -111,7 +114,8 @@ public class AsyncOrderPaymentNotifyService{
 	
 	@Resource
 	private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
-
+	@Resource
+	private AsyncDeliverMessageService asyncDeliverMessageService;
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncOrderPaymentNotifyService initialize...");
@@ -429,8 +433,11 @@ public class AsyncOrderPaymentNotifyService{
 		Integer order_status = order.getStatus();
 		String hpid = order.getUmac();
 		if (OrderStatus.isDeliverCompleted(order_status)){
-			advertiseFacadeService.advertiseCompletionOfPayment(hpid, order.getId());
+			boolean needSend = advertiseFacadeService.advertiseCompletionOfPayment(hpid, order.getId());
 			logger.info(String.format("hot play Orderid[%s] hpid[%s] DeliverCompleted", order.getId(), hpid));
+			if (needSend){
+				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(hpid),IDTO.ACT_ADD);
+			}
 		}else{
 			logger.error(String.format("hot play Orderid[%s] hpid[%s] DeliverFailed", order.getId(), hpid));
 		}
