@@ -3,12 +3,10 @@ package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchdevi
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.activemq.util.MapHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -31,7 +29,6 @@ import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseDetailsHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
@@ -42,10 +39,9 @@ import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
-import com.smartwork.msip.cores.helper.CollectionHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
@@ -112,6 +108,11 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 					macList = advertiseHomeImage_SmallAreaApply(sb.toString(), ad.getLat(), ad.getLon(), ad.getDistance(), batch);
 					ad.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
 					ad.setSign(true);
+
+					SimpleDateFormat sdf=new SimpleDateFormat(DateTimeHelper.FormatPattern1);  
+					String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern1);
+					ad.setStart(sdf.parse(date));
+					ad.setEnd(sdf.parse(DateTimeHelper.getAfterDate(date, 1)));
 					advertiseService.update(ad);
 					AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), macList);
 				}else{
@@ -123,7 +124,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
 							macList, JsonHelper.getJSONString(ad),Double.parseDouble(ad.getId()));
 //						AdvertiseDetailsHashService.getInstance().advertiseInfo(ad.getId(), ad.toMap());
-						advertiSesnapshot(ad, start, macList.size());
+						advertiDetails(ad, start, macList.size());
 						deviceLimitDomain(batch, macList, ad.getDomain(),IDTO.ACT_ADD, ad);
 						break;
 					case IDTO.ACT_DELETE:
@@ -200,7 +201,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		} while (toIndex < macList.size());
 	}
 	
-	public void advertiSesnapshot(Advertise ad,String publishTime,int pushlist_count){
+	public void advertiDetails(Advertise ad,String publishTime,int pushlist_count){
 		
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId()).andColumnEqualTo("publish_time", publishTime);

@@ -33,12 +33,13 @@ import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
+import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
+import com.bhu.vas.business.search.model.advertise.AdvertiseDocumentHelper;
+import com.bhu.vas.business.search.service.advertise.AdvertiseDataSearchService;
 import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
-import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -48,7 +49,6 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 import java.util.List;
 
 import org.elasticsearch.common.lang3.StringUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
@@ -63,6 +63,9 @@ public class AdvertiseUnitFacadeService {
 	private AdvertiseService advertiseService;
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
+	@Resource
+	private AdvertiseDataSearchService advertiseDataSearchService;
+	
 	@Resource
 	private UserService userService;
 	@Resource
@@ -138,7 +141,6 @@ public class AdvertiseUnitFacadeService {
 					}else{
 						entity.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
 					}
-					entity.setType(BusinessEnumType.AdvertiseType.HomeImage.getType());
 					break;
 					
 				case SortMessage :
@@ -146,7 +148,6 @@ public class AdvertiseUnitFacadeService {
 					int num = description.length()/Advertise.sortMessageLength +1;
 					cash = count*BusinessRuntimeConfiguration.Advertise_Sm_Price*num;
 					entity.setCash(cash);
-					entity.setType(BusinessEnumType.AdvertiseType.SortMessage.getType());
 					break;
 					
 				case HomeImage_SmallArea :
@@ -166,7 +167,6 @@ public class AdvertiseUnitFacadeService {
 					
 					cash = 1;
 					entity.setCash(cash);
-					entity.setType(BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType());
 					entity.setLat(lat);
 					entity.setLon(lon);
 					entity.setDistance(distance);
@@ -186,15 +186,16 @@ public class AdvertiseUnitFacadeService {
 				entity.setDistrict(district);
 			if(StringUtils.isNotBlank(province))
 				entity.setProvince(province);
-			
-			entity.setEnd(endDate);
-			entity.setStart(startDate);
+			if(type != BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
+				entity.setEnd(endDate);
+				entity.setStart(startDate);
+			}
 			entity.setImage(image);
 			entity.setDomain(domain);
 			entity.setUrl(url);
 			entity.setState(AdvertiseStateType.UnPaid.getType());
 			entity.setCount(count);
-//			entity.setType(type);
+			entity.setType(type);
 			entity.setDescription(description);
 			entity.setTitle(title);
 			entity.setUid(uid);
@@ -220,6 +221,10 @@ public class AdvertiseUnitFacadeService {
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
 			}*/
 			Advertise smAd= advertiseService.insert(entity);
+			
+//			AdvertiseDocument adDoc = AdvertiseDocumentHelper.fromNormalAdvertise(smAd);
+//			advertiseDataSearchService.insertIndex(adDoc, true, true);
+			
 			if(type == BusinessEnumType.AdvertiseType.SortMessage.getType()){
 				UserMobilePositionRelationSortedSetService.getInstance().generateMobilenoSnapShot(smAd.getId(), province, city, district);
 			}
