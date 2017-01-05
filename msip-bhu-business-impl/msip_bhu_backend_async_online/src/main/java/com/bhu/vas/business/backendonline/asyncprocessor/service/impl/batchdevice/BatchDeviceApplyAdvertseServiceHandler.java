@@ -32,6 +32,7 @@ import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.asyn.spring.model.async.device.BatchDeviceApplyAdvertiseDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseDetailsHashService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseDevicesIncomeService;
@@ -109,11 +110,10 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 					sb.append(ad.getCity()).append(ad.getDistrict());
 					
 					macList = advertiseHomeImage_SmallAreaApply(sb.toString(), ad.getLat(), ad.getLon(), ad.getDistance(), batch);
-					
 					ad.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
 					ad.setSign(true);
-					advertiseService.update(ad);	
-					
+					advertiseService.update(ad);
+					AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), macList);
 				}else{
 					macList = advertiseHomeImageApply(start, end, ad, batch);
 				}
@@ -219,6 +219,8 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 				}else{
 					income.setCash(cash*BusinessRuntimeConfiguration.AdvertiseCommonDiscount);
 				}
+			}else if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
+				income.setCash(1);
 			}else{
 				income.setCash(cash);
 			}

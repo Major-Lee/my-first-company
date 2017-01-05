@@ -51,6 +51,7 @@ import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDevicePositionListService;
@@ -373,27 +374,9 @@ public class AdvertiseUnitFacadeService {
 					advertise.setState(AdvertiseStateType.UnPublish.getType());
 				}else{
 					if(advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-						
-						StringBuilder sb = null;
-						if(!advertise.getProvince().isEmpty())
-					        sb = new StringBuilder(advertise.getProvince());
-						if(!advertise.getCity().isEmpty())
-							sb.append(advertise.getCity());
-						if(!advertise.getDistrict().isEmpty())
-							sb.append(advertise.getDistrict());
-						
-						String contextId = sb.toString();
-						
-						final List<String> macList = new ArrayList<String>();
-						wifiDeviceDataSearchService.iteratorWithGeoPointDistance(contextId, advertise.getLat(), advertise.getLon(), advertise.getDistance(), 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
-							@Override
-							public void notifyComming(Page<WifiDeviceDocument> pages) {
-								for (WifiDeviceDocument doc : pages) {
-									macList.add(doc.getD_mac());
-								}	
-							}
-						});
+						List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(advertiseId);
 						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, Double.valueOf(advertiseId));
+						AdvertiseSnapShotListService.getInstance().destorySnapShot(advertiseId);
 					}
 					
 					advertise.setState(AdvertiseStateType.VerifyFailure.getType());

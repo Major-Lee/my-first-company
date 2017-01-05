@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.search.model.WifiDeviceDocument;
@@ -58,6 +59,9 @@ public class AdvertisePaymentTimeOutTaskLoader {
 				ad.setState(BusinessEnumType.AdvertiseStateType.EscapeOrder.getType());
 				ad.setReject_reason("因支付超时,已经取消本推广订单");
 				updateList.add(ad);
+				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
+					AdvertiseSnapShotListService.getInstance().destorySnapShot(ad.getId());
+				}
 			}
 		}
 		advertiseService.updateAll(updateList);
@@ -71,28 +75,9 @@ public class AdvertisePaymentTimeOutTaskLoader {
 		if(!ads.isEmpty()){
 			for(Advertise ad : ads){
 				logger.info(String.format("invaildHomeImageSmallArea adid[%s] count[%s]", ad.getId(),ad.getCount()));
-
-				StringBuilder sb = null;
-				if(!ad.getProvince().isEmpty())
-			        sb = new StringBuilder(ad.getProvince());
-				if(!ad.getCity().isEmpty())
-					sb.append(ad.getCity());
-				if(!ad.getDistrict().isEmpty())
-					sb.append(ad.getDistrict());
-				
-				String contextId = sb.toString();
-				
-				final List<String> macList = new ArrayList<String>();
-				wifiDeviceDataSearchService.iteratorWithGeoPointDistance(contextId, ad.getLat(), ad.getLon(), ad.getDistance(), 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
-					@Override
-					public void notifyComming(Page<WifiDeviceDocument> pages) {
-						for (WifiDeviceDocument doc : pages) {
-							macList.add(doc.getD_mac());
-						}	
-					}
-				});
-				ad.setState(BusinessEnumType.AdvertiseStateType.Published.getType());
+				List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(ad.getId());
 				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, Double.valueOf(ad.getId()));
+				AdvertiseSnapShotListService.getInstance().destorySnapShot(ad.getId());
 			}
 			advertiseService.updateAll(ads);
 		}
