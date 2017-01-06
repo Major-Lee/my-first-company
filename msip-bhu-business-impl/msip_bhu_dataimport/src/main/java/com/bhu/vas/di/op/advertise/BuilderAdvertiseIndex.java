@@ -55,7 +55,10 @@ public class BuilderAdvertiseIndex {
 				}
 			}
 			if(!docs.isEmpty()){
+				System.out.println("bulkIndex start size = "+ docs.size());
 				advertiseDataSearchService.bulkIndex(docs);
+				System.out.println("bulkIndex end");
+
 			}
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
