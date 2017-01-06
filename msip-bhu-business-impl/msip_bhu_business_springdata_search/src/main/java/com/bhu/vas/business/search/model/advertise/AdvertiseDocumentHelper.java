@@ -21,8 +21,12 @@ public class AdvertiseDocumentHelper {
 				advertise.getLat()});
 		doc.setA_distance(advertise.getDistance());
 		doc.setA_count(advertise.getCount());
-		doc.setA_start(DateTimeHelper.getDateTime(advertise.getStart(), DateTimeHelper.FormatPattern1));
-		doc.setA_end(DateTimeHelper.getDateTime(advertise.getEnd(), DateTimeHelper.FormatPattern1));
+		if(advertise.getStart() !=null){
+			doc.setA_start(DateTimeHelper.getDateTime(advertise.getStart(), DateTimeHelper.FormatPattern1));
+		}
+		if(advertise.getEnd() !=null){
+			doc.setA_end(DateTimeHelper.getDateTime(advertise.getEnd(), DateTimeHelper.FormatPattern1));
+		}
 		doc.setA_duration(advertise.getDuration());
 		doc.setA_abledevices_num(advertise.getAbleDevicesNum());
 		doc.setA_state(advertise.getState());
