@@ -23,10 +23,10 @@ import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType.OnlineEnum;
 import com.bhu.vas.business.bucache.redis.serviceimpl.statistics.DeviceStatisticsHashService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
-import com.bhu.vas.business.search.builder.WifiDeviceSearchMessageBuilder;
+import com.bhu.vas.business.search.builder.device.WifiDeviceSearchMessageBuilder;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 

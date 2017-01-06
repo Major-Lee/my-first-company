@@ -5,8 +5,8 @@ import javax.annotation.Resource;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
 
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 import com.smartwork.msip.localunit.BaseTest;
 

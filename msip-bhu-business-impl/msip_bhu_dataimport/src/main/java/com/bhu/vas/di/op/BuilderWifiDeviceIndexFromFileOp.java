@@ -32,9 +32,9 @@ import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.tag.service.TagGroupRelationService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.model.WifiDeviceDocumentHelper;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
+import com.bhu.vas.business.search.model.device.WifiDeviceDocumentHelper;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 /**
  * 全量创建wifiDevice的索引数据
  * @author lawliet

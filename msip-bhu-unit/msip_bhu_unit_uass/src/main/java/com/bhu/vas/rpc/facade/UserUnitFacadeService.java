@@ -49,7 +49,7 @@ import com.bhu.vas.business.ds.user.service.UserConfigsStateService;
 import com.bhu.vas.business.ds.user.service.UserMobileDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserTokenService;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.bhu.vas.exception.TokenValidateBusinessException;
 import com.bhu.vas.validate.UserTypeValidateService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;

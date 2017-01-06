@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
+import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
 
 public class DocumentIdsHelper {
 	public static List<String> buildWifiDeviceDocumentIds(List<WifiDeviceDocument> documents){

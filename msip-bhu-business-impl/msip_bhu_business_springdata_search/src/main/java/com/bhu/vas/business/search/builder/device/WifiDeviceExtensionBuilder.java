@@ -1,4 +1,4 @@
-package com.bhu.vas.business.search.builder;
+package com.bhu.vas.business.search.builder.device;
 
 import org.elasticsearch.common.lang3.StringUtils;
 

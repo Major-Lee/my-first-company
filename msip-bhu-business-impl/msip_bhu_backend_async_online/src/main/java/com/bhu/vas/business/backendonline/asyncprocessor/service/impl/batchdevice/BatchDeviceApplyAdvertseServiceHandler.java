@@ -40,7 +40,9 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.advertise.AdvertiseDataSearchService;
 import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.increment.advertise.AdvertiseIndexIncrementService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -82,6 +84,12 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 	@Resource 
 	private UserFacadeService userFacadeService;
 	
+	@Resource
+	private AdvertiseIndexIncrementService advertiseIndexIncrementService;
+	
+	@Resource
+	private AdvertiseDataSearchService advertiseDataSearchService;
+	
 	@Override
 	public void process(String message) {
 		logger.info(String.format("process message[%s]", message));
@@ -99,27 +107,24 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			try {
 				start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
 				end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
+//				List<Advertise> ads = advertiseService.getEntityDao().queryByAdvertiseTimeExcept(start, end, ad.getProvince(), ad.getCity(), ad.getDistrict(), ad.getId());
+//				List<AdvertiseTrashPositionVTO> trashs = AdvertiseHelper.buildAdvertiseTrashs(ads, sdf.parse(start));
 				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-					StringBuilder sb = null;
-					if(ad.getProvince() != null)
-				        sb = new StringBuilder(ad.getProvince());
-					if(ad.getCity() != null)
-						sb.append(ad.getCity());
-					if(ad.getDistrict() !=null)
-						sb.append(ad.getDistrict());
+					StringBuffer sb = new StringBuffer(ad.getProvince());
+					sb.append(ad.getCity()).append(ad.getDistrict());
 					
-					System.out.println("111111111111111111");
 					macList = advertiseHomeImage_SmallAreaApply(sb.toString(), ad.getLat(), ad.getLon(), ad.getDistance(), batch);
 					ad.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
 					ad.setSign(true);
-					System.out.println("2222222222222222222222222");
+
 					SimpleDateFormat sdf=new SimpleDateFormat(DateTimeHelper.FormatPattern1);  
 					String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern1);
 					ad.setStart(sdf.parse(date));
 					ad.setEnd(sdf.parse(DateTimeHelper.getAfterDate(date, 1)));
-					System.out.println(ad.getStart() + "||" + ad.getEnd());
 					advertiseService.update(ad);
+					advertiseIndexIncrementService.adStartAndEndUpdIncrement(ad.getId(), date, DateTimeHelper.getAfterDate(date, 1));
 					AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), macList);
+					
 				}else{
 					macList = advertiseHomeImageApply(start, end, ad, batch);
 				}
@@ -135,6 +140,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 					case IDTO.ACT_DELETE:
 						deviceLimitDomain(batch, macList, null,
 							IDTO.ACT_DELETE, ad);
+						advertiseIndexIncrementService.adStateUpdIncrement(ad.getId(), BusinessEnumType.AdvertiseStateType.Published.getType(), null);
 						break;
 //					case IDTO.ACT_UPDATE:
 //						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(macList, JsonHelper.getJSONString(ad),Double.parseDouble(ad.getId()));

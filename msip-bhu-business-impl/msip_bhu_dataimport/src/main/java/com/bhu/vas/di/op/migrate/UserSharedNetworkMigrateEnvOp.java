@@ -15,7 +15,7 @@ import com.bhu.vas.api.rpc.user.model.UserSettingState;
 import com.bhu.vas.business.ds.device.facade.SharedNetworkFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserSettingStateService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
+import com.bhu.vas.business.search.service.increment.device.WifiDeviceIndexIncrementService;
 import com.smartwork.msip.cores.orm.iterator.EntityIterator;
 import com.smartwork.msip.cores.orm.iterator.KeyBasedEntityBatchIterator;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;

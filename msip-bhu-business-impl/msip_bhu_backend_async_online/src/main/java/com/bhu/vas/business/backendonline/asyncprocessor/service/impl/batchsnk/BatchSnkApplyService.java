@@ -31,8 +31,8 @@ import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerSe
 import com.bhu.vas.business.ds.device.facade.DeviceCMDGenFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.increment.device.WifiDeviceIndexIncrementService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 @Service

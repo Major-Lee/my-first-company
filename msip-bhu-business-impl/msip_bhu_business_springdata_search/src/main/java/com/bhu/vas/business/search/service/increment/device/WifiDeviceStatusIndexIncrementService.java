@@ -1,4 +1,4 @@
-package com.bhu.vas.business.search.service.increment;
+package com.bhu.vas.business.search.service.increment.device;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import com.bhu.vas.api.rpc.devices.dto.DeviceVersion;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.search.BusinessIndexDefine;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 /**
  * wifi设备增量索引状态的service,同步进行处理，需要数据实时性强的可以使用此service

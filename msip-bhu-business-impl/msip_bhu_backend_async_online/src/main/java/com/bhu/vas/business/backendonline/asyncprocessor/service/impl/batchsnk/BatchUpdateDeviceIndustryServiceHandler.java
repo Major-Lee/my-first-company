@@ -14,8 +14,8 @@ import com.bhu.vas.business.asyn.spring.model.async.snk.BatchDeviceSnkApplyDTO;
 import com.bhu.vas.business.backendonline.asyncprocessor.service.iservice.IMsgHandlerService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementService;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.increment.device.WifiDeviceIndexIncrementService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 
 @Service

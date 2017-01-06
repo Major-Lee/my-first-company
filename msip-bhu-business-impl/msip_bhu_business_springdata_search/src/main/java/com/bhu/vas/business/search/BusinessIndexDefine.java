@@ -155,4 +155,85 @@ public interface BusinessIndexDefine {
 			
 		}
 	}
+	
+	interface Advertise{
+		public static final String IndexName	= "Advertise_index_v1";
+		public static final String Type 		= "Advertise";
+		public static final int Shards		    = 5;
+		public static final int replicas 		= 1;
+		public static final String refreshInterval = "-1";
+		public static final int RetryOnConflict = 3;
+		
+		enum Field implements FieldDefine{
+			ID("id", null),
+			A_TITLE("a_title",null),
+			A_TYPE("a_type",null),
+			A_DESC("a_desc",null),
+			A_IMAGE("a_image",null),
+			A_URL("a_url",null),
+			A_DOMAIN("a_domain",null),
+			A_PROVINCE("a_province",null),
+			A_CITY("a_city",null),
+			A_DISTRICT("a_district",null),
+			A_GEOPOINT("a_geopoint", null),
+			A_DISTANCE("a_distance",null),
+			A_CASH("a_cash",null),
+			A_COUNT("a_count",null),
+			A_START("a_start",null),
+			A_END("a_end",null),
+			A_DURATION("a_duration",null),
+			A_ABLEDEVICESNUM("a_abledevices_num",null),
+			A_STATE("a_state",null),
+			A_REJECT_REASON("a_reject_reason",null),
+			A_VERIFY_UID("a_verify_uid",null),
+			A_PROCESS_STATE("a_process_state",null),
+			A_EXTPARAMS("a_extparams",null),
+			A_CREATED_AT("a_created_at",null),
+			A_UPDATED_AT("a_updated_at",null),
+
+			U_ID("u_id",null),
+			;
+			String name;
+			String score_name;
+			
+			Field(String name, String score_name){
+				this.name = name;
+				this.score_name = score_name;
+			}
+			@Override
+			public String getName() {
+				return name;
+			}
+
+			public void setName(String name) {
+				this.name = name;
+			}
+			@Override
+			public String getScore_name() {
+				return score_name;
+			}
+
+			public void setScore_name(String score_name) {
+				this.score_name = score_name;
+			}
+
+
+
+			private static Map<String, Field> advertiseFieldMaps;
+			
+			static {
+				advertiseFieldMaps = new HashMap<String, Field>();
+				Field[] items = values();//new ThumbType[] {SMALL, MIDDLE, LARGE, ORIGINAL};
+				for (Field item : items){
+					advertiseFieldMaps.put(item.name, item);
+				}
+			}
+			
+
+			public static Field getByName(String name) {
+				Field ret = advertiseFieldMaps.get(name);
+				return ret;
+			}
+		}
+	}
 }
