@@ -99,11 +99,15 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			try {
 				start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
 				end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
-//				List<Advertise> ads = advertiseService.getEntityDao().queryByAdvertiseTimeExcept(start, end, ad.getProvince(), ad.getCity(), ad.getDistrict(), ad.getId());
-//				List<AdvertiseTrashPositionVTO> trashs = AdvertiseHelper.buildAdvertiseTrashs(ads, sdf.parse(start));
 				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-					StringBuffer sb = new StringBuffer(ad.getProvince());
-					sb.append(ad.getCity()).append(ad.getDistrict());
+					StringBuilder sb = null;
+					if(ad.getProvince() != null)
+				        sb = new StringBuilder(ad.getProvince());
+					if(ad.getCity() != null)
+						sb.append(ad.getCity());
+					if(ad.getDistrict() !=null)
+						sb.append(ad.getDistrict());
+					
 					System.out.println("111111111111111111");
 					macList = advertiseHomeImage_SmallAreaApply(sb.toString(), ad.getLat(), ad.getLon(), ad.getDistance(), batch);
 					ad.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
