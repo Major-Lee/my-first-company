@@ -32,7 +32,8 @@ public class BuilderAdvertiseIndex {
 	
 	public static void main(String[] args) {
 		initialize();
-		
+		List<Advertise> entitys = advertiseService.findAll();
+		advertiseIndexs(entitys);
 	}
 	
 	public static void initialize(){
@@ -45,14 +46,14 @@ public class BuilderAdvertiseIndex {
 		try{
 			List<AdvertiseDocument> docs = new ArrayList<AdvertiseDocument>();
 			AdvertiseDocument doc = null;
+			int index = 0;
 			for(Advertise advertise : entitys){
-				
 				doc = AdvertiseDocumentHelper.fromNormalAdvertise(advertise);
 				if(doc != null){
+					System.out.println("index :"+ ++index);
 					docs.add(doc);
 				}
 			}
-			
 			if(!docs.isEmpty()){
 				advertiseDataSearchService.bulkIndex(docs);
 			}
