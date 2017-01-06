@@ -60,8 +60,6 @@ public class AdvertiseUnitFacadeService {
 	private AdvertiseService advertiseService;
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;
-	@Resource
-	private AdvertiseDataSearchService advertiseDataSearchService;
 	
 	@Resource
 	private UserService userService;
