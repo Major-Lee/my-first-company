@@ -199,7 +199,7 @@ public class AdvertiseDocument extends AbstractDocument{
 	
 	@Override
 	public String getId() {
-		return null;
+		return this.id;
 	}
 
 	public void setId(String id) {

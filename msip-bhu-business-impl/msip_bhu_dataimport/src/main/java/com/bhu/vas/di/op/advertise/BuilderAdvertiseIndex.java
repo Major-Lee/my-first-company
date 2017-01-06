@@ -51,15 +51,11 @@ public class BuilderAdvertiseIndex {
 				doc = AdvertiseDocumentHelper.fromNormalAdvertise(advertise);
 				if(doc != null){
 					System.out.println("index :"+ ++index);
-					docs.add(doc);
+					advertiseDataSearchService.insertIndex(doc, false, false);
 				}
 			}
-			if(!docs.isEmpty()){
-				System.out.println("bulkIndex start size = "+ docs.size());
-				advertiseDataSearchService.bulkIndex(docs);
-				System.out.println("bulkIndex end");
-
-			}
+			advertiseDataSearchService.refresh(true);
+			
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}
