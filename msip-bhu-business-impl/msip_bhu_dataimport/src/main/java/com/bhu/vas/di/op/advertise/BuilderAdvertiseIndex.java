@@ -60,5 +60,6 @@ public class BuilderAdvertiseIndex {
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 		}
+		System.exit(1);
 	}
 }
