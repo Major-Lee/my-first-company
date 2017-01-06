@@ -54,7 +54,6 @@ import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealListVTO;
 import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealVTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.rpc.user.model.UserWalletLog;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
 import com.bhu.vas.api.vto.advertise.AdCommdityVTO;
 import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
@@ -83,7 +82,6 @@ import com.smartwork.msip.cores.helper.FileHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
-import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
@@ -238,47 +236,19 @@ public class OrderUnitFacadeService {
 	public RpcResponseDTO<TailPage<OrderRewardVTO>> rewardOrderPages(Integer uid, String mac, String umac, 
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize) {
 		try{
-			List<OrderRewardVTO> retDtos = Collections.emptyList();
-			int order_count = orderFacadeService.countOrderByParams(uid, mac, umac, status, dut, 
-					CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts);
-			if(order_count > 0){
-				List<Order> orderList = orderFacadeService.findOrdersByParams(uid, mac, umac, status, dut, 
-						CommdityCategory.RewardInternetLimit.getCategory(), start_created_ts, end_created_ts, 
-						pageNo, pageSize);
-				
-				if(orderList != null && !orderList.isEmpty()){
-					List<String> orderids = new ArrayList<String>();
-					for(Order order : orderList){
-						orderids.add(order.getId());
-					}
-					List<UserWalletLog> walletLogs = null;
-					{
-						ModelCriteria mc_wallet_log = new ModelCriteria();
-						mc_wallet_log.createCriteria().andColumnNotEqualTo("uid", WifiDeviceSharedealConfigs.Default_Manufacturer).andColumnIn("orderid", orderids).andSimpleCaulse(" 1=1 ");
-						walletLogs = userWalletFacadeService.getUserWalletLogService().findModelByModelCriteria(mc_wallet_log);
-					}
-					retDtos = new ArrayList<OrderRewardVTO>();
-					OrderRewardVTO orderRewardVto = null;
-					for(Order order : orderList){
-						orderRewardVto = new OrderRewardVTO();
-						BeanUtils.copyProperties(order, orderRewardVto);
-						orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch(order.getUmac(),true,false));
-						OrderPaymentType orderPaymentType = OrderPaymentType.fromKey(order.getPayment_type());
-						if(orderPaymentType != null){
-							orderRewardVto.setPayment_type_name(orderPaymentType.getDesc());
-						}
-						orderRewardVto.setShare_amount(distillOwnercash(order.getId(),walletLogs));
-						if(order.getCreated_at() != null){
-							orderRewardVto.setCreated_ts(order.getCreated_at().getTime());
-						}
-						if(order.getPaymented_at() != null){
-							orderRewardVto.setPaymented_ts(order.getPaymented_at().getTime());
-						}
-						retDtos.add(orderRewardVto);
-					}
-				}
-			}
-			TailPage<OrderRewardVTO> returnRet = new CommonPage<OrderRewardVTO>(pageNo, pageSize, order_count, retDtos);
+			
+			String start_time = null;
+			String end_time = null;
+			if (start_created_ts != 0)
+				start_time = DateTimeHelper.formatDate(new Date(start_created_ts), DateTimeHelper.DefalutFormatPattern);
+			if (end_created_ts != 0)
+				end_time = DateTimeHelper.formatDate(new Date(end_created_ts), DateTimeHelper.DefalutFormatPattern);
+			Map<String, Object> map = userWalletLogService.getEntityDao().fetchCashSumAndCountByUid(uid, start_time, 
+					end_time, mac,umac,status,dut,UWalletTransMode.SharedealPayment.getKey(),null);
+			Long total = (Long)map.get("count");
+			TailPage<OrderRewardVTO> returnRet = queryOrdersByUid(total, uid, mac, umac, 
+					status, dut, start_created_ts, end_created_ts, pageNo, pageSize);
+			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(returnRet);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -596,39 +566,6 @@ public class OrderUnitFacadeService {
 		}
 	}
 	
-	private String distillOwnercash(String orderid,List<UserWalletLog> walletLogs){
-		if(walletLogs != null && !walletLogs.isEmpty()){
-			for(UserWalletLog log:walletLogs){
-				if(orderid.equals(log.getOrderid())){
-					String cash = log.getCash();
-					if(StringUtils.isNotEmpty(cash) && cash.startsWith(StringHelper.PLUS_STRING_GAP) && cash.length()>=1){
-						return cashFormat2DecimalPoint(cash.substring(1));
-					}else
-						return log.getCash();
-				}
-			}
-		}
-		//return StringHelper.MINUS_STRING_GAP;
-		return "0";
-	}
-	private String cashFormat2DecimalPoint(String cash){
-		String pafter = null;
-		String cash_sub = null;
-		int index = cash.indexOf('.');
-		if(index == -1){
-			cash_sub = cash.concat(".00");
-		}else{
-			pafter = cash.substring(index+1);
-			int len = pafter.length();
-			if(len > 0){
-				if (len == 1)
-					cash_sub = cash.concat("0");
-				else
-					cash_sub = cash.substring(0, index+3);
-			}
-		}
-		return cash_sub;
-	}
 	public RpcResponseDTO<RewardQueryPagesDetailVTO> rewardOrderPagesDetail(Integer uid, String mac, String umac,
 			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
 		try{
@@ -646,55 +583,9 @@ public class OrderUnitFacadeService {
 			vto.setCount(vto_count);
 			logger.info("rewardOrderPagesDetail CashSum: "+vto.getCashSum()+" Count: "+vto.getCount());
 			
-			List<OrderRewardVTO> retDtos = Collections.emptyList();
-			if (vto_count.intValue() > 0){
-				List<Map<String, Object>> logs = userWalletLogService.getEntityDao().queryRewardOrderpages(uid, mac, 
-						umac, status, dut, UWalletTransMode.SharedealPayment.getKey(), null,
-						start_created_ts, end_created_ts, pageNo, pageSize);
-				OrderRewardVTO orderRewardVto = null;
-				retDtos = new ArrayList<OrderRewardVTO>();
-				for(Map<String, Object> log : logs){
-					orderRewardVto = new OrderRewardVTO();
-					orderRewardVto.setId((String)log.get("orderid"));
-					orderRewardVto.setCommdityid((Integer)log.get("commdityid"));
-					orderRewardVto.setAppid((Integer)log.get("appid"));
-					orderRewardVto.setChannel((Integer)log.get("channel"));
-					orderRewardVto.setUid((Integer)log.get("uid"));
-					orderRewardVto.setType((Integer)log.get("type"));
-					orderRewardVto.setContext((String)log.get("context"));
-					orderRewardVto.setStatus((Integer)log.get("status"));
-					
-					orderRewardVto.setRole((String)log.get("role"));
-					orderRewardVto.setTransmode((String)log.get("transmode"));
-					orderRewardVto.setTranstype((String)log.get("transtype"));
-					
-					if (StringHelper.isValidMac((String)log.get("mac")))
-						orderRewardVto.setMac((String)log.get("mac"));
-					else
-						orderRewardVto.setMac(StringHelper.MINUS_STRING_GAP);
-					
-					if (StringHelper.isValidMac((String)log.get("umac")))
-						orderRewardVto.setUmac((String)log.get("umac"));
-					else
-						orderRewardVto.setUmac(StringHelper.MINUS_STRING_GAP);
-					
-					orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch((String)log.get("umac"),true,false));
-					orderRewardVto.setPayment_type((String)log.get("payment_type"));
-					OrderPaymentType orderPaymentType = OrderPaymentType.fromKey((String)log.get("payment_type"));
-					if(orderPaymentType != null){
-						orderRewardVto.setPayment_type_name(orderPaymentType.getDesc());
-					}
-					orderRewardVto.setAmount((String)log.get("amount"));
-					orderRewardVto.setShare_amount((String)log.get("cash"));
-					long paymented_ts = DateTimeHelper.parseDate((String)log.get("paymented_at"), DateTimeHelper.DefalutFormatPattern).getTime();
-					orderRewardVto.setPaymented_ts(paymented_ts);
-					long created_ts = DateTimeHelper.parseDate((String)log.get("created_at"), DateTimeHelper.DefalutFormatPattern).getTime();
-					orderRewardVto.setCreated_ts(created_ts);
-					orderRewardVto.setUmactype((Integer)log.get("umactype"));
-					retDtos.add(orderRewardVto);
-				}
-			}
-			TailPage<OrderRewardVTO> returnRet = new CommonPage<OrderRewardVTO>(pageNo, pageSize, vto_count.intValue(), retDtos);
+			TailPage<OrderRewardVTO> returnRet = queryOrdersByUid(vto_count, uid, mac, umac,
+				 status, dut, start_created_ts, end_created_ts, pageNo, pageSize);
+			
 			vto.setTailPages(returnRet);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(BusinessI18nCodeException bex){
@@ -703,6 +594,60 @@ public class OrderUnitFacadeService {
 			logger.error("rewardOrderPagesDetail Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
+	}
+	
+	private TailPage<OrderRewardVTO> queryOrdersByUid(Long total, Integer uid, String mac, String umac,
+			Integer status, String dut, long start_created_ts, long end_created_ts, int pageNo, int pageSize){
+		
+		List<OrderRewardVTO> retDtos = Collections.emptyList();
+		if (total.intValue() > 0){
+			List<Map<String, Object>> logs = userWalletLogService.getEntityDao().queryRewardOrderpages(uid, mac, 
+					umac, status, dut, UWalletTransMode.SharedealPayment.getKey(), null,
+					start_created_ts, end_created_ts, pageNo, pageSize);
+			OrderRewardVTO orderRewardVto = null;
+			retDtos = new ArrayList<OrderRewardVTO>();
+			for(Map<String, Object> log : logs){
+				orderRewardVto = new OrderRewardVTO();
+				orderRewardVto.setId((String)log.get("orderid"));
+				orderRewardVto.setCommdityid((Integer)log.get("commdityid"));
+				orderRewardVto.setAppid((Integer)log.get("appid"));
+				orderRewardVto.setChannel((Integer)log.get("channel"));
+				orderRewardVto.setUid((Integer)log.get("uid"));
+				orderRewardVto.setType((Integer)log.get("type"));
+				orderRewardVto.setContext((String)log.get("context"));
+				orderRewardVto.setStatus((Integer)log.get("status"));
+				
+				orderRewardVto.setRole((String)log.get("role"));
+				orderRewardVto.setTransmode((String)log.get("transmode"));
+				orderRewardVto.setTranstype((String)log.get("transtype"));
+				
+				if (StringHelper.isValidMac((String)log.get("mac")))
+					orderRewardVto.setMac((String)log.get("mac"));
+				else
+					orderRewardVto.setMac(StringHelper.MINUS_STRING_GAP);
+				
+				if (StringHelper.isValidMac((String)log.get("umac")))
+					orderRewardVto.setUmac((String)log.get("umac"));
+				else
+					orderRewardVto.setUmac(StringHelper.MINUS_STRING_GAP);
+				
+				orderRewardVto.setUmac_mf(MacDictParserFilterHelper.prefixMactch((String)log.get("umac"),true,false));
+				orderRewardVto.setPayment_type((String)log.get("payment_type"));
+				OrderPaymentType orderPaymentType = OrderPaymentType.fromKey((String)log.get("payment_type"));
+				if(orderPaymentType != null){
+					orderRewardVto.setPayment_type_name(orderPaymentType.getDesc());
+				}
+				orderRewardVto.setAmount((String)log.get("amount"));
+				orderRewardVto.setShare_amount((String)log.get("cash"));
+				long paymented_ts = DateTimeHelper.parseDate((String)log.get("paymented_at"), DateTimeHelper.DefalutFormatPattern).getTime();
+				orderRewardVto.setPaymented_ts(paymented_ts);
+				long created_ts = DateTimeHelper.parseDate((String)log.get("created_at"), DateTimeHelper.DefalutFormatPattern).getTime();
+				orderRewardVto.setCreated_ts(created_ts);
+				orderRewardVto.setUmactype((Integer)log.get("umactype"));
+				retDtos.add(orderRewardVto);
+			}
+		}
+		return new CommonPage<OrderRewardVTO>(pageNo, pageSize, total.intValue(), retDtos);
 	}
 	
 	public	RpcResponseDTO<RewardQueryExportRecordVTO> rewardQueryExportRecord(Integer uid, String mac, String umac, 
