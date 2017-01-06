@@ -157,8 +157,8 @@ public interface BusinessIndexDefine {
 	}
 	
 	interface Advertise{
-		public static final String IndexName	= "Advertise_index_v1";
-		public static final String Type 		= "Advertise";
+		public static final String IndexName	= "advertise_index_v1";
+		public static final String Type 		= "advertise";
 		public static final int Shards		    = 5;
 		public static final int replicas 		= 1;
 		public static final String refreshInterval = "-1";
