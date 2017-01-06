@@ -39,8 +39,8 @@ import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSharedNetworkService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -104,15 +104,16 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
 					StringBuffer sb = new StringBuffer(ad.getProvince());
 					sb.append(ad.getCity()).append(ad.getDistrict());
-					
+					System.out.println("111111111111111111");
 					macList = advertiseHomeImage_SmallAreaApply(sb.toString(), ad.getLat(), ad.getLon(), ad.getDistance(), batch);
 					ad.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
 					ad.setSign(true);
-
+					System.out.println("2222222222222222222222222");
 					SimpleDateFormat sdf=new SimpleDateFormat(DateTimeHelper.FormatPattern1);  
 					String date = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern1);
 					ad.setStart(sdf.parse(date));
 					ad.setEnd(sdf.parse(DateTimeHelper.getAfterDate(date, 1)));
+					System.out.println(ad.getStart() + "||" + ad.getEnd());
 					advertiseService.update(ad);
 					AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), macList);
 				}else{

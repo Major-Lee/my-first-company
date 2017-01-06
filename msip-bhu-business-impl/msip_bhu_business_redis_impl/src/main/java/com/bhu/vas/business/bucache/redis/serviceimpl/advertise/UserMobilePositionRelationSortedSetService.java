@@ -46,7 +46,7 @@ public class UserMobilePositionRelationSortedSetService extends AbstractRelation
     }
     
     private static String generateSSKey(String adId){
-        StringBuilder sb = new StringBuilder(BusinessKeyDefine.Advertise.AdvertiseSnapShot);
+        StringBuilder sb = new StringBuilder(BusinessKeyDefine.Advertise.AdvertiseMobileSnapShot);
         sb.append(adId);
         return sb.toString();
     }
