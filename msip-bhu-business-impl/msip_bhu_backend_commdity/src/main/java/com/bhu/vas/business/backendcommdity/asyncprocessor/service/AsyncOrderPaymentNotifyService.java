@@ -45,6 +45,7 @@ import com.bhu.vas.api.rpc.user.model.UserWallet;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
+import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
@@ -114,8 +115,12 @@ public class AsyncOrderPaymentNotifyService{
 	
 	@Resource
 	private WifiDeviceSharedealConfigsService wifiDeviceSharedealConfigsService;
+	
 	@Resource
 	private AsyncDeliverMessageService asyncDeliverMessageService;
+	
+	@Resource
+	private CommdityMessageService commdityMessageService;
 	@PostConstruct
 	public void initialize() {
 		logger.info("AsyncOrderPaymentNotifyService initialize...");
@@ -507,6 +512,8 @@ public class AsyncOrderPaymentNotifyService{
 			logger.error("rewardOrderReceiptHandle failed category[%s] is not exist",category.getCategory());
 			break;
 		}
+		//统计7天打赏用户数
+		commdityMessageService.sendOrderPaySuccessedMessage(order.getId());
 	}
 	/**
 	 * 充值虎钻订单支付结束处理
