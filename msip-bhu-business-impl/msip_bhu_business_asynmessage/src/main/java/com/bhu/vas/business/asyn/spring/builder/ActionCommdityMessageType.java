@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum ActionCommdityMessageType {
-	//OrderPaySuccessed("订单支付成功","订单支付成功","PS"),
+	OrderPaySuccessed("订单支付成功","订单支付成功","PS"),
 	OrderCreated("订单创建成功","订单创建成功","OC"),
 	;
 	
