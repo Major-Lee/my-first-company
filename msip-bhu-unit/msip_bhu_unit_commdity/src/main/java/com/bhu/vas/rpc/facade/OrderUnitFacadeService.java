@@ -52,6 +52,7 @@ import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealListVTO;
 import com.bhu.vas.api.rpc.commdity.vto.QualityGoodsSharedealVTO;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWifiDevice;
@@ -813,7 +814,9 @@ public class OrderUnitFacadeService {
 			if(wifiDevice == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
 			}
-			if (!chargingFacadeService.fetchDeviceIsOpenFreeMode(mac_lower, umactype)){
+			
+			ParamSharedNetworkDTO psn = chargingFacadeService.getParamSharedNetwork(mac_lower);
+			if (!chargingFacadeService.fetchDeviceIsOpenFreeMode(psn)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_DEVICE_ISFREE_STATUS_INVALID);
 			}
 			User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
@@ -839,7 +842,7 @@ public class OrderUnitFacadeService {
 			
 			OrderVideoVTO orderVto = new OrderVideoVTO();
 			orderVto.setId(order.getId());
-			orderVto.setForceTime(chargingFacadeService.fetchFreeAccessInternetTime(mac,umactype));
+			orderVto.setForceTime(chargingFacadeService.fetchFreeAccessInternetTime(psn,umactype));
 			orderVto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
 		}catch(BusinessI18nCodeException bex){
@@ -1118,9 +1121,11 @@ public class OrderUnitFacadeService {
 			if(wifiDevice == null){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
 			}
-			if (!chargingFacadeService.fetchDeviceIsOpenFreeMode(mac_lower, umactype)){
+			ParamSharedNetworkDTO psn = chargingFacadeService.getParamSharedNetwork(mac_lower);
+
+			if (!chargingFacadeService.fetchDeviceIsOpenFreeMode(psn))
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_DEVICE_ISFREE_STATUS_INVALID);
-			}
+				
 			OrderVideoVTO vto = new OrderVideoVTO();
 			if (chargingFacadeService.fetchDeviceIsNoappdl(mac_lower)){
 				User bindUser = userWifiDeviceFacadeService.findUserById(mac_lower);
@@ -1137,7 +1142,7 @@ public class OrderUnitFacadeService {
 				CommdityInternalNotifyListService.getInstance().rpushOrderPaymentNotify(notify_message);
 				vto.setNoappdl(Boolean.TRUE);
 				vto.setId(order.getId());
-				vto.setForceTime(chargingFacadeService.fetchFreeAccessInternetTime(mac,umactype));
+				vto.setForceTime(chargingFacadeService.fetchFreeAccessInternetTime(psn,umactype));
 				vto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
 			}
 			

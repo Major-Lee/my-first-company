@@ -13,6 +13,7 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
@@ -65,7 +66,8 @@ public class InternetLimitOrderDeliverFailedRetryLoader {
     			if(order.getUid() != null){
     				bindUser = userService.getById(order.getUid());
     			}
-    			String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+    			ParamSharedNetworkDTO psn = chargingFacadeService.getParamSharedNetwork(order.getMac());
+    			String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(psn, order.getUmactype());
 				boolean deliver_notify_ret = orderFacadeService.rewardOrderPermissionNotify(order, bindUser,accessInternetTime);
 				if(deliver_notify_ret){
 					//如果通知发货成功 更新订单状态为发货完成

@@ -37,6 +37,7 @@ import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
 import com.bhu.vas.api.vto.statistics.DeviceOrderStatisticsVTO;
@@ -266,8 +267,8 @@ public class OrderFacadeService {
 		if (commdity.getId() == BusinessRuntimeConfiguration.Reward_Internet_Commdity_ID){
 			amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdity.getId(), umactype);
 		}else{
-			amount = CommdityHelper.generateCommdityAmount(chargingFacadeService.fetchAccessInternetCardAmountRange(commdity.getId(), umactype));
-			
+			ParamSharedNetworkDTO psn = chargingFacadeService.getParamSharedNetwork(mac);
+			amount = CommdityHelper.generateCommdityAmount(chargingFacadeService.fetchAccessInternetCardAmountRange(psn, commdity.getId(), umactype));
 		}
 		if(StringUtils.isEmpty(amount)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_INVALID);

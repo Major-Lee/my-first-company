@@ -39,6 +39,7 @@ import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.Order;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.user.model.PushType;
 import com.bhu.vas.api.rpc.user.model.User;
 import com.bhu.vas.api.rpc.user.model.UserWallet;
@@ -479,13 +480,15 @@ public class AsyncOrderPaymentNotifyService{
 		CommdityCategory category = CommdityCategory.fromKey(order.getType());
 		
 		Commdity commdity = commdityFacadeService.validateCommdity(order.getCommdityid());
+		ParamSharedNetworkDTO psn = chargingFacadeService.getParamSharedNetwork(order.getMac());
+
 		//获取放行时间
 		String accessInternetTime = null;
 		if (commdity.getApp_deliver_detail() != null && !commdity.getApp_deliver_detail().isEmpty()){
 			accessInternetTime = commdity.getApp_deliver_detail();
 		}else{
 			if (order.getMac() != null && !order.getMac().isEmpty()){
-				accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+				accessInternetTime = chargingFacadeService.fetchAccessInternetTime(psn, order.getUmactype());
 			}
 		}
 		User bindUser = null;
@@ -659,8 +662,8 @@ public class AsyncOrderPaymentNotifyService{
 				logger.info(String.format("order[%s] mac[%s] devices unbinded",order.getId(),order.getMac()));
 			}
 		}
-
-		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(order.getMac(), order.getUmactype());
+		ParamSharedNetworkDTO psn = chargingFacadeService.getParamSharedNetwork(order.getMac());
+		String accessInternetTime = chargingFacadeService.fetchAccessInternetTime(psn, order.getUmactype());
 		orderFacadeService.smsOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
 	}
 	
@@ -681,7 +684,8 @@ public class AsyncOrderPaymentNotifyService{
 		if(order.getUid() != null){
 			bindUser = userService.getById(order.getUid());
 		}
-		String accessInternetTime = chargingFacadeService.fetchFreeAccessInternetTime(order.getMac(), order.getUmactype());
+		ParamSharedNetworkDTO psn = chargingFacadeService.getParamSharedNetwork(order.getMac());
+		String accessInternetTime = chargingFacadeService.fetchFreeAccessInternetTime(psn, order.getUmactype());
 		orderFacadeService.videoOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
 	}
 	
@@ -701,7 +705,8 @@ public class AsyncOrderPaymentNotifyService{
 		if(order.getUid() != null){
 			bindUser = userService.getById(order.getUid());
 		}
-		String accessInternetTime = chargingFacadeService.fetchFreeAccessInternetTime(order.getMac(), order.getUmactype());
+		ParamSharedNetworkDTO psn = chargingFacadeService.getParamSharedNetwork(order.getMac());
+		String accessInternetTime = chargingFacadeService.fetchFreeAccessInternetTime(psn, order.getUmactype());
 		orderFacadeService.whiteListOrderPaymentCompletedNotify(success, order, bindUser, paymented_ds, accessInternetTime);
 	}
 }
