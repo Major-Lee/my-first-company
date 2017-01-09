@@ -53,7 +53,7 @@ public class SharedNetworksHelper {
 	public static boolean validAmountRange(String param, String name, double minValue, double maxValue){
 		boolean ret = NumberValidateHelper.validAmountRange(param, minValue, maxValue);
 		if(!ret){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{name.concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{name.concat(":").concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
 		}
 		return ret;
 	}
@@ -61,7 +61,7 @@ public class SharedNetworksHelper {
 	public static boolean validAmountInRange(String param, String name, double minValue, double maxValue){
 		boolean ret = NumberValidateHelper.validAmountInRange(param, minValue, maxValue);
 		if(!ret){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{name.concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{name.concat(":").concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
 		}
 		return ret;
 	}
@@ -71,7 +71,7 @@ public class SharedNetworksHelper {
 	public static boolean validAitRange(String param, String name, int minValue, int maxValue){
 		boolean ret = NumberValidateHelper.validAitRange(param, minValue, maxValue);
 		if(!ret){
-			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{name.concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
+			throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_RANGE_ERROR,new String[]{name.concat(":").concat(param),String.valueOf(minValue),String.valueOf(maxValue)});
 		}
 		return ret;
 	}
