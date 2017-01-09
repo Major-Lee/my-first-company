@@ -172,7 +172,11 @@ public class AdvertiseUnitFacadeService {
 						sb.append(city);
 					if(!district.isEmpty())
 						sb.append(district);
-					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(sb.toString(), lat, lon, distance);
+					String context = null;
+					if(sb != null){
+						context = sb.toString();
+					}
+					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(context, lat, lon, distance);
 
 					if(lat ==0 || lon == 0 || distance.isEmpty() ||count == 0){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
