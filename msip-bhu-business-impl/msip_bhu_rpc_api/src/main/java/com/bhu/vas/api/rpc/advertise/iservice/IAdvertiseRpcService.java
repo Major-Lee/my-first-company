@@ -10,6 +10,7 @@ import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.bhu.vas.api.vto.device.DeviceGEOPointCountVTO;
+import com.smartwork.msip.cores.orm.support.page.TailPage;
 
 /**
  * 
@@ -113,5 +114,8 @@ public interface IAdvertiseRpcService{
 	public RpcResponseDTO<List<DeviceGEOPointCountVTO>> countDeviceCountByGEOPoint(int uid,
 			String province, String city, String district, double lat,
 			double lon, String distances);
+
+	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(
+			int pageNo, int pageSize, String...messages);
 
 }

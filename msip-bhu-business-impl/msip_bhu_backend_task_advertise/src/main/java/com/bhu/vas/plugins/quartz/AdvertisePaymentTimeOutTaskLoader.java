@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 
 import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
+import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
 import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
@@ -28,6 +30,9 @@ public class AdvertisePaymentTimeOutTaskLoader {
 	
 	@Resource
 	private WifiDeviceDataSearchService wifiDeviceDataSearchService;	
+	
+	@Resource
+	private AsyncDeliverMessageService asyncDeliverMessageService;
 	
 	public void execute(){
 		logger.info("AdvertisePaymentTimeOutTaskLoader start.....");
@@ -72,15 +77,19 @@ public class AdvertisePaymentTimeOutTaskLoader {
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.OnPublish.getType()).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()).andColumnLessThan("end", date);
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
+		List<String> adIds = new ArrayList<String>();
 		if(!ads.isEmpty()){
 			for(Advertise ad : ads){
 				logger.info(String.format("invaildHomeImageSmallArea adid[%s] count[%s]", ad.getId(),ad.getCount()));
 				List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(ad.getId());
 				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, Double.valueOf(ad.getId()));
 				AdvertiseSnapShotListService.getInstance().destorySnapShot(ad.getId());
+				ad.setType(BusinessEnumType.AdvertiseStateType.Published.getType());
+				adIds.add(ad.getId());
 			}
 			advertiseService.updateAll(ads);
 		}
+		asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_DELETE);
 		logger.info("invaildHomeImageSmallArea end..");
 	}
 }

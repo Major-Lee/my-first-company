@@ -195,4 +195,12 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 				province,city,district,lat,lon,distances));
 		return advertiseUnitFacadeService.countDeviceCountByGEOPoint(province,city,district,lat,lon,distances);
 	}
+	
+	@Override
+	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(int pageNo,int pageSize,String ... messages) {
+		logger.info(String.format("fetchBySearchConditionMessages pageNo[%s] pageSize[%s] messages[%s]",pageNo,
+				pageSize,messages));
+		List<TailPage<AdvertiseVTO>> vtos = advertiseUnitFacadeService.fetchBySearchConditionMessages(pageNo,pageSize,messages);
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(vtos);
+	}
 }

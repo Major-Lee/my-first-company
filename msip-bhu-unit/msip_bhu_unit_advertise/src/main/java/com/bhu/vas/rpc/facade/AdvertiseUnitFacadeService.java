@@ -172,7 +172,11 @@ public class AdvertiseUnitFacadeService {
 						sb.append(city);
 					if(!district.isEmpty())
 						sb.append(district);
-					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(sb.toString(), lat, lon, distance);
+					String context = null;
+					if(sb != null){
+						context = sb.toString();
+					}
+					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(context, lat, lon, distance);
 
 					if(lat ==0 || lon == 0 || distance.isEmpty() ||count == 0){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
@@ -695,7 +699,7 @@ public class AdvertiseUnitFacadeService {
 		return positionVto;
 	}
 	
-	public void fetchBySearchConditionMessages(int pageNo,int pageSize,String ... messages){
+	public List<TailPage<AdvertiseVTO>> fetchBySearchConditionMessages(int pageNo,int pageSize,String ... messages){
 		List<TailPage<AdvertiseVTO>> resultList = null;
 		if(messages == null || messages.length == 0){
 			resultList = Collections.emptyList();
@@ -733,5 +737,6 @@ public class AdvertiseUnitFacadeService {
 				resultList.add(returnRet);
 			}
 		}
+		return resultList;
 	}
 }

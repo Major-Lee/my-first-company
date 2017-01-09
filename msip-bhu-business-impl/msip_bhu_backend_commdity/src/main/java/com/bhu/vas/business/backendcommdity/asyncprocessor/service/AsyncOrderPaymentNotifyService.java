@@ -441,7 +441,7 @@ public class AsyncOrderPaymentNotifyService{
 			boolean needSend = advertiseFacadeService.advertiseCompletionOfPayment(hpid, order.getId());
 			logger.info(String.format("hot play Orderid[%s] hpid[%s] DeliverCompleted", order.getId(), hpid));
 			if (needSend){
-				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(hpid),IDTO.ACT_ADD);
+				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(hpid),IDTO.ACT_UPDATE);
 			}
 		}else{
 			logger.error(String.format("hot play Orderid[%s] hpid[%s] DeliverFailed", order.getId(), hpid));
