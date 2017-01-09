@@ -74,6 +74,7 @@ import com.nowpay.util.UtilDate;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.sms.SmsSenderFactory;
+import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -156,10 +157,10 @@ public class PaymentController extends BaseController{
 			}
 		}catch(BusinessI18nCodeException i18nex){
 			SendMailHelper.doSendMail(3,"queryOrderPayStatus接口："+i18nex.getMessage()+i18nex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			SendMailHelper.doSendMail(3,"queryOrderPayStatus接口："+ex.getMessage()+ex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.ERROR);
 		}finally{
 			
 		}
@@ -181,13 +182,13 @@ public class PaymentController extends BaseController{
         	if (StringUtils.isBlank(secret)) {
         		logger.error(String.format("apply payment secret[%s]", secret));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	if (StringUtils.isBlank(appid)) {
         		logger.error(String.format("apply payment appid[%s]", appid));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	
@@ -207,13 +208,13 @@ public class PaymentController extends BaseController{
 				if(!flag){
 					logger.info(String.format("apply payment appid [%s] is invaild.", appid));
             		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-        					ResponseErrorCode.USER_APPID_UNSUPPORT)));
+        					ResponseErrorCode.USER_APPID_UNSUPPORT), BusinessWebHelper.getLocale(request)));
 					return;
 				}
 			}else{
 				logger.error(String.format("apply payment appid[%s] secret[%s]", appid,secret));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
+    					ResponseErrorCode.VALIDATE_USERORPWD_ERROR), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			
@@ -226,7 +227,7 @@ public class PaymentController extends BaseController{
 			if(!paymentSubjectType.equals("打赏")){
 				logger.info(String.format("apply payment Subject [%s]",paymentSubjectType));
 	    		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.INVALID_COMMDITY_ORDERID_UNSUPPORT)));
+						ResponseErrorCode.INVALID_COMMDITY_ORDERID_UNSUPPORT), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			
@@ -241,10 +242,10 @@ public class PaymentController extends BaseController{
 			}
 		}catch(BusinessI18nCodeException i18nex){
 			SendMailHelper.doSendMail(3,"updatePaymentStatus接口："+i18nex.getMessage()+i18nex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			SendMailHelper.doSendMail(3,"updatePaymentStatus接口："+ex.getMessage()+ex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.ERROR);
 		}finally{
 			
 		}
@@ -265,31 +266,31 @@ public class PaymentController extends BaseController{
 			if (StringUtils.isBlank(level+"")) {
 				logger.error(String.format("apply payment level[%s]", level));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			if (StringUtils.isBlank(value)) {
 				logger.error(String.format("apply payment value[%s]", value));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			if (StringUtils.isBlank(rate)) {
 				logger.error(String.format("apply payment rate[%s]", rate));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			if (StringUtils.isBlank(secret)) {
 				logger.error(String.format("apply payment secret[%s]", secret));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			if (StringUtils.isBlank(appid)) {
 				logger.error(String.format("apply payment appid[%s]", appid));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			
@@ -309,13 +310,13 @@ public class PaymentController extends BaseController{
 				if(!flag){
 					logger.info(String.format("apply payment appid [%s] is invaild.", appid));
 					SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-							ResponseErrorCode.USER_APPID_UNSUPPORT)));
+							ResponseErrorCode.USER_APPID_UNSUPPORT), BusinessWebHelper.getLocale(request)));
 					return;
 				}
 			}else{
 				logger.error(String.format("apply payment appid[%s] secret[%s]", appid,secret));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
+						ResponseErrorCode.VALIDATE_USERORPWD_ERROR), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			/////
@@ -336,10 +337,10 @@ public class PaymentController extends BaseController{
 			}
 		}catch(BusinessI18nCodeException i18nex){
 			SendMailHelper.doSendMail(3,"updateChangeRate接口："+i18nex.getMessage()+i18nex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			SendMailHelper.doSendMail(3,"updateChangeRate接口："+ex.getMessage()+ex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.ERROR);
 		}finally{
 			
 		}
@@ -361,13 +362,13 @@ public class PaymentController extends BaseController{
 			if (StringUtils.isBlank(secret)) {
 				logger.error(String.format("apply payment judgmentChannels secret[%s]", secret));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			if (StringUtils.isBlank(appid)) {
 				logger.error(String.format("apply payment judgmentChannels appid[%s]", appid));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+						ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			
@@ -387,13 +388,13 @@ public class PaymentController extends BaseController{
 				if(!flag){
 					logger.info(String.format("apply payment appid [%s] is invaild.", appid));
 					SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-							ResponseErrorCode.USER_APPID_UNSUPPORT)));
+							ResponseErrorCode.USER_APPID_UNSUPPORT), BusinessWebHelper.getLocale(request)));
 					return;
 				}
 			}else{
 				logger.error(String.format("apply payment judgmentChannels appid[%s] secret[%s]", appid,secret));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
+						ResponseErrorCode.VALIDATE_USERORPWD_ERROR), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			System.out.println("当前用户手机浏览器信息："+ua);
@@ -413,10 +414,10 @@ public class PaymentController extends BaseController{
 			System.out.println("OS Manufacturer:"+os.getManufacturer());
 		}catch(BusinessI18nCodeException i18nex){
 			SendMailHelper.doSendMail(3,"judgmentChannels接口："+i18nex.getMessage()+i18nex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			SendMailHelper.doSendMail(3,"judgmentChannels接口："+ex.getMessage()+ex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.ERROR);
 		}finally{
 			
 		}
@@ -437,13 +438,13 @@ public class PaymentController extends BaseController{
         	if (StringUtils.isBlank(secret)) {
         		logger.error(String.format("apply prepaid secret[%s]", secret));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	if (StringUtils.isBlank(appid)) {
         		logger.error(String.format("apply prepaid appid[%s]", appid));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	
@@ -463,13 +464,13 @@ public class PaymentController extends BaseController{
 				if(!flag){
 					logger.info(String.format("apply prepaid appid [%s] is invaild.", appid));
             		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-        					ResponseErrorCode.USER_APPID_UNSUPPORT)));
+        					ResponseErrorCode.USER_APPID_UNSUPPORT), BusinessWebHelper.getLocale(request)));
 					return;
 				}
 			}else{
 				logger.error(String.format("apply prepaid appid[%s] secret[%s]", appid,secret));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
+    					ResponseErrorCode.VALIDATE_USERORPWD_ERROR), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			
@@ -483,7 +484,7 @@ public class PaymentController extends BaseController{
 			if(!paymentSubjectType.equals("虎钻")){
 				logger.info(String.format("apply payment Subject [%s]",paymentSubjectType));
 	    		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-						ResponseErrorCode.INVALID_COMMDITY_ORDERID_UNSUPPORT)));
+						ResponseErrorCode.INVALID_COMMDITY_ORDERID_UNSUPPORT), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			
@@ -498,10 +499,10 @@ public class PaymentController extends BaseController{
 			}
 		}catch(BusinessI18nCodeException i18nex){
 			SendMailHelper.doSendMail(3,"updatePrepaidStatus接口："+i18nex.getMessage()+i18nex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
 			SendMailHelper.doSendMail(3,"updatePrepaidStatus接口："+ex.getMessage()+ex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.ERROR);
 		}finally{
 			
 		}
@@ -540,13 +541,13 @@ public class PaymentController extends BaseController{
         	if (StringUtils.isBlank(secret)) {
         		logger.error(String.format("apply withdrawals secret[%s]", secret));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	if (StringUtils.isBlank(appid)) {
         		logger.error(String.format("apply withdrawals appid[%s]", appid));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	
@@ -567,39 +568,39 @@ public class PaymentController extends BaseController{
 			}else{
 				logger.error(String.format("apply payment appid[%s] secret[%s]", appid,secret));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
+    					ResponseErrorCode.VALIDATE_USERORPWD_ERROR), BusinessWebHelper.getLocale(request)));
 				return;
 			}
 			
         	if (StringUtils.isBlank(withdraw_type)) {
     			logger.error(String.format("apply withdrawals withdraw_type [%s]", withdraw_type));
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
     			return;
     		}
         	if (StringUtils.isBlank(total_fee)) {
         		logger.error(String.format("apply withdrawals total_fee[%s]", total_fee));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	if (StringUtils.isBlank(userId)) {
         		logger.error(String.format("apply withdrawals userId[%s]", userId));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	if (StringUtils.isBlank(withdraw_no)) {
         		logger.error(String.format("apply withdrawals withdraw_no[%s]", withdraw_no));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	
         	if (StringUtils.isBlank(secret)) {
         		logger.error(String.format("apply withdrawals secret[%s]", secret));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	
@@ -609,7 +610,7 @@ public class PaymentController extends BaseController{
         		logger.error(String.format("apply withdrawals total_fee[%s] errorMsg:[%s] , [%s]", total_fee,ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT.i18n(),"10元"));
         		payLogicService.updateWithdrawalsStatus(null, withdraw_no, withdraw_type,false);
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT,new String[]{"10元"})));
+    					ResponseErrorCode.USER_WALLET_WITHDRAW_LOWERTHEN_MINLIMIT,new String[]{"10元"}), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	
@@ -624,7 +625,7 @@ public class PaymentController extends BaseController{
         	}else{//提示暂不支持的支付方式
         		logger.info(String.format("apply withdrawals withdraw_type [%s]",withdraw_type + ResponseErrorCode.RPC_MESSAGE_UNSUPPORT));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT)));
+    					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	String type = result.getWithdraw_type();
@@ -640,13 +641,13 @@ public class PaymentController extends BaseController{
         		SpringMVCHelper.renderJson(response, result);
     		}
 		}catch(BusinessI18nCodeException i18nex){
-			logger.error(String.format("submitWithdrawals catch BusinessI18nCodeException [%s]",ResponseError.embed(i18nex)));
+			logger.error(String.format("submitWithdrawals catch BusinessI18nCodeException [%s]",ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request))));
 			SendMailHelper.doSendMail(2,"submitWithdrawals接口："+i18nex.getMessage()+i18nex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
 		}catch(Exception ex){
-			logger.error(String.format("submitWithdrawals catch Exception [%s]",ResponseError.SYSTEM_ERROR));
+			logger.error(String.format("submitWithdrawals catch Exception [%s]",ResponseError.ERROR));
 			SendMailHelper.doSendMail(2,"submitWithdrawals接口："+ex.getMessage()+ex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.ERROR);
 		}finally{
 			
 		}
@@ -708,13 +709,13 @@ public class PaymentController extends BaseController{
 			if (StringUtils.isBlank(appid)) {
         		logger.error(String.format("apply payment appid [%s]", appid));
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
     			return;
     		}
 			if (StringUtils.isBlank(secret)) {
         		logger.error(String.format("apply payment secret [%s]", secret));
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
     			return;
     		}
 			logger.info(String.format("apply payment bussiness appid[%s] secret[%s]", appid,secret));
@@ -740,19 +741,19 @@ public class PaymentController extends BaseController{
 			}else{
 				logger.error(String.format("apply payment appid[%s] secret[%s]", appid,secret));
 				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.VALIDATE_USERORPWD_ERROR)));
+    					ResponseErrorCode.VALIDATE_USERORPWD_ERROR), BusinessWebHelper.getLocale(request)));
 				return;
 			}
         	if (StringUtils.isBlank(payment_type)) {
         		logger.error(String.format("apply payment payment_type [%s]", payment_type));
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
     			return;
     		}
         	if (StringUtils.isBlank(total_fee)) {
         		logger.error(String.format("apply payment total_fee [%s]", total_fee));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}else{
         		logger.error(String.format("apply payment total_fee [%s]", total_fee));
@@ -760,21 +761,21 @@ public class PaymentController extends BaseController{
         		if(payment_type.contains("Alipay")){
         			if(total_fees >= 1000000000){
         				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-            					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+            					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         				return;
         			}
         		}else if(payment_type.equalsIgnoreCase("WapWeixin")){
         			if(total_fees >= 300000){
         				if(!channel.equals("2")){
         					SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-        							ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+        							ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         					return;
         				}
         			}
         		}else{
         			if(total_fees >= 2000000){
         				SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-            					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+            					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         				return;
         			}
         		}
@@ -784,7 +785,7 @@ public class PaymentController extends BaseController{
         	if (StringUtils.isBlank(goods_no)) {
         		logger.error(String.format("apply payment goods_no [%s]", goods_no));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	
@@ -797,7 +798,7 @@ public class PaymentController extends BaseController{
         	if(paymentReckoning != null){
         		logger.error(String.format("apply payment goods_no [%s]", goods_no+ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST));
         		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST)));
+    					ResponseErrorCode.VALIDATE_PAYMENT_DATA_ALREADY_EXIST), BusinessWebHelper.getLocale(request)));
         		return;
         	}
         	umac = BusinessHelper.formatMac(umac);
@@ -890,7 +891,7 @@ public class PaymentController extends BaseController{
 
 					default:
 						logger.info(String.format("apply payment payment_type [%s]",payment_type + ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-	        					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT))));
+	        					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT), BusinessWebHelper.getLocale(request))));
 						break;
 					}
                 	break;
@@ -902,9 +903,9 @@ public class PaymentController extends BaseController{
     				break;
     			default:
     				logger.info(String.format("apply payment payment_type [%s]",payment_type + ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-        					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT))));
+        					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT), BusinessWebHelper.getLocale(request))));
             		SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-        					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT)));
+        					ResponseErrorCode.RPC_MESSAGE_UNSUPPORT), BusinessWebHelper.getLocale(request)));
     				break;
     		}
     		long end = System.currentTimeMillis() - begin;
@@ -923,13 +924,12 @@ public class PaymentController extends BaseController{
     			SpringMVCHelper.renderJson(response, PaymentResponseSuccess.embed(JsonHelper.getJSONString(result)));
     		}
 		}catch(BusinessI18nCodeException i18nex){
-			logger.error(String.format("submitPayment catch BusinessI18nCodeException [%s]",ResponseError.embed(i18nex)));
+			logger.error(String.format("submitPayment catch BusinessI18nCodeException [%s]",ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request))));
 			SendMailHelper.doSendMail(3,"submitPayment接口："+i18nex.getMessage()+i18nex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex));
 		}catch(Exception ex){
-			logger.error(String.format("submitPayment catch Exception [%s]",JsonHelper.getJSONString(ResponseError.SYSTEM_ERROR)));
+			logger.error(String.format("submitPayment catch Exception [%s]",JsonHelper.getJSONString(ResponseError.ERROR)));
 			SendMailHelper.doSendMail(3,"submitPayment接口："+ex.getMessage()+ex.getCause());
-			SpringMVCHelper.renderJson(response, ResponseError.SYSTEM_ERROR);
+			SpringMVCHelper.renderJson(response, ResponseError.ERROR);
 		}finally{
 			
 		}
@@ -1839,7 +1839,7 @@ public class PaymentController extends BaseController{
 		if (StringUtils.isBlank(isNull)) {
 			logger.error(String.format("get alipay notify out_trade_no  [%s]", isNull));
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
 			return;
 		}
 		//商户订单号
@@ -1999,7 +1999,7 @@ public class PaymentController extends BaseController{
         	if (StringUtils.isBlank(out_trade_no)) {
     			logger.error("请求参数(out_trade_no)有误,不能为空");
     			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+    					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
     			return;
     		}
             PaymentReckoning payReckoning =  paymentReckoningService.getById(out_trade_no);
@@ -2264,7 +2264,7 @@ public class PaymentController extends BaseController{
 		if (StringUtils.isBlank(out_trade_no)) {
 			logger.error(String.format("get heepay return notify out_trade_no [%s]", out_trade_no));
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
 		}
 		String returnUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		if(StringUtils.isNotBlank(returnUrl)){
@@ -2320,7 +2320,7 @@ public class PaymentController extends BaseController{
 		if (StringUtils.isBlank(out_trade_no)) {
 			logger.error(String.format("get heepay return notify out_trade_no [%s]", out_trade_no));
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY)));
+					ResponseErrorCode.RPC_PARAMS_VALIDATE_EMPTY), BusinessWebHelper.getLocale(request)));
 		}
 		String returnUrl = paymentAlipaylocationService.getLocationByTid(out_trade_no);
 		if(StringUtils.isNotBlank(returnUrl)){

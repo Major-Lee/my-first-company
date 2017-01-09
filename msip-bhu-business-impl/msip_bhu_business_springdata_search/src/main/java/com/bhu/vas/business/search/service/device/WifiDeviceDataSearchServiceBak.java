@@ -1,3 +1,4 @@
+package com.bhu.vas.business.search.service.device;
 //package com.bhu.vas.business.search.service;
 //
 //import javax.annotation.Resource;

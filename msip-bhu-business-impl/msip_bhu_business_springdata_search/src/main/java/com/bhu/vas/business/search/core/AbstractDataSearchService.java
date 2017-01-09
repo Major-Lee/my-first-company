@@ -23,6 +23,7 @@ import com.bhu.vas.business.search.model.AbstractDocument;
 import com.smartwork.msip.cores.helper.ReflectionHelper;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
 
+
 public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> {
     @Resource
 	private ElasticsearchTemplate elasticsearchTemplate;
@@ -65,6 +66,25 @@ public abstract class AbstractDataSearchService<MODEL extends AbstractDocument> 
 			for(MODEL model:models){
 				indexQuerys.add(new IndexQueryBuilder().withId(model.getId()).withObject(model).build());
 			}
+			getElasticsearchTemplate().bulkIndex(indexQuerys);
+			if(refresh){
+				getElasticsearchTemplate().refresh(entityClass, waitForOperation);
+			}
+		}
+	}
+	
+	/**
+	 * 单条建索引
+	 * 不主动刷新和合并索引，由参数控制（由于springdata save生成索引会自动合并刷新）
+	 * 可以用于索引的批量生成，在打数据量的情况下使用提升性能
+	 * @param model
+	 * @param refresh
+	 * @param waitForOperation
+	 */
+	public void insertIndex(MODEL model,boolean refresh,boolean waitForOperation){
+		if(model !=null){
+			List<IndexQuery> indexQuerys = new ArrayList<IndexQuery>();
+			indexQuerys.add(new IndexQueryBuilder().withId(model.getId()).withObject(model).build());
 			getElasticsearchTemplate().bulkIndex(indexQuerys);
 			if(refresh){
 				getElasticsearchTemplate().refresh(entityClass, waitForOperation);

@@ -44,7 +44,7 @@ public class WifiDeviceAdvertiseSortedSetService extends AbstractRelationSortedS
     }
     
     public void wifiDevicesAllAdInvalid(){
-    	Set<String> keySet = this.keys("ad*");
+    	Set<String> keySet = this.keys(BusinessKeyDefine.Advertise.ADVERTISE+"*");
     	if(!keySet.isEmpty()){
         	String[] keys = new String[keySet.size()];
         	int index = 0;

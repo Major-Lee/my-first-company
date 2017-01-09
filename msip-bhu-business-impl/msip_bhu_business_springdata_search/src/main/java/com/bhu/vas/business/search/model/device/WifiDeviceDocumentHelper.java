@@ -1,4 +1,4 @@
-package com.bhu.vas.business.search.model;
+package com.bhu.vas.business.search.model.device;
 
 import java.util.ArrayList;
 import java.util.Collections;

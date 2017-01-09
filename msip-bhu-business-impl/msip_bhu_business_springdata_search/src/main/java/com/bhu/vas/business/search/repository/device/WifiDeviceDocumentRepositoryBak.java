@@ -1,3 +1,4 @@
+package com.bhu.vas.business.search.repository.device;
 //package com.bhu.vas.business.search.repository;
 //
 //import org.springframework.data.domain.Page;

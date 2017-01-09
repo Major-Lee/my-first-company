@@ -1,4 +1,4 @@
-package com.bhu.vas.business.search.service.increment;
+package com.bhu.vas.business.search.service.increment.device;
 
 import java.util.List;
 

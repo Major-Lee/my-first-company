@@ -31,7 +31,7 @@ import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.tag.service.TagDevicesService;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.util.DataUtils;
 import com.bhu.vas.rpc.util.JSONObject;
 import com.bhu.vas.rpc.util.um.OpenApiCnzzImpl;

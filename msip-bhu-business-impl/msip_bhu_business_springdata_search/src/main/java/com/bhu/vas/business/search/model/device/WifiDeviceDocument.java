@@ -1,4 +1,4 @@
-package com.bhu.vas.business.search.model;
+package com.bhu.vas.business.search.model.device;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -9,6 +9,7 @@ import org.springframework.data.elasticsearch.annotations.GeoPointField;
 
 import com.bhu.vas.api.helper.WifiDeviceDocumentEnumType;
 import com.bhu.vas.business.search.BusinessIndexDefine;
+import com.bhu.vas.business.search.model.AbstractDocument;
 
 @Document(	indexName = BusinessIndexDefine.WifiDevice.IndexName, 
 			type = BusinessIndexDefine.WifiDevice.Type, 

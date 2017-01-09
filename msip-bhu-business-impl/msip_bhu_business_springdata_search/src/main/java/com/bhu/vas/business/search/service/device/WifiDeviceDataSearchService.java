@@ -1,4 +1,4 @@
-package com.bhu.vas.business.search.service;
+package com.bhu.vas.business.search.service.device;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,14 +11,15 @@ import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.bhu.vas.business.search.BusinessIndexDefine;
-import com.bhu.vas.business.search.builder.WifiDeviceSearchMessageBuilder;
+import com.bhu.vas.business.search.builder.device.WifiDeviceSearchMessageBuilder;
 import com.bhu.vas.business.search.core.condition.AbstractDataSearchConditionService;
 import com.bhu.vas.business.search.core.condition.component.SearchConditionMessage;
 import com.bhu.vas.business.search.core.field.FieldDefine;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.repository.WifiDeviceDocumentRepository;
-import com.smartwork.msip.cores.helper.StringHelper;
+import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
+import com.bhu.vas.business.search.repository.device.WifiDeviceDocumentRepository;
 import com.smartwork.msip.cores.orm.iterator.IteratorNotify;
+
+
 
 @Service
 public class WifiDeviceDataSearchService extends AbstractDataSearchConditionService<WifiDeviceDocument>{

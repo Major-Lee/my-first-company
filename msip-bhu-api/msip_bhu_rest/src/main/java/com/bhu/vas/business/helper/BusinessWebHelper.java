@@ -70,18 +70,26 @@ public class BusinessWebHelper {
 		//Date currentTime = getCalendar().getTime();
 		Calendar currentCal = getCalendar();
 		//currentCal.add(Calendar.MONTH, -1);
-		//currentCal.set(Calendar.DATE,25);
+//		currentCal.set(Calendar.DATE,5);
 		Date currentTime = currentCal.getTime();
 		Calendar preCld = getCalendar();
 		//preCld.add(Calendar.MONTH, 1);
-		preCld.set(Calendar.DATE,5);
+		preCld.set(Calendar.DATE,6);
+		preCld.set(Calendar.HOUR_OF_DAY, 0);
+		preCld.set(Calendar.MINUTE, 0); 
+		preCld.set(Calendar.SECOND,0);
+		preCld.set(Calendar.MILLISECOND, 0); 
 		Calendar sufCld = getCalendar();
 		//sufCld.add(Calendar.MONTH, 1);
-		sufCld.set(Calendar.DATE,25);
+		sufCld.set(Calendar.DATE,26);
+		sufCld.set(Calendar.HOUR_OF_DAY, 0);
+		sufCld.set(Calendar.MINUTE, 0); 
+		sufCld.set(Calendar.SECOND,0);
+		sufCld.set(Calendar.MILLISECOND, 0);
 //		System.out.println("currentTime:"+ DateTimeHelper.shortDateFormat.format(currentTime));
 //		System.out.println("preCld:"+DateTimeHelper.shortDateFormat.format(preCld.getTime()));
 //		System.out.println("sufCld:"+DateTimeHelper.shortDateFormat.format(sufCld.getTime()));
-		if(preCld.getTime().getTime() <= currentTime.getTime() && currentTime.getTime() <= sufCld.getTime().getTime() ){
+		if(preCld.getTime().getTime() < currentTime.getTime() && currentTime.getTime() < sufCld.getTime().getTime() ){
 			flag = false;
 		}
 		return flag;

@@ -1,4 +1,4 @@
-package com.bhu.vas.business.search.builder;
+package com.bhu.vas.business.search.builder.device;
 
 import java.util.ArrayList;
 import java.util.List;

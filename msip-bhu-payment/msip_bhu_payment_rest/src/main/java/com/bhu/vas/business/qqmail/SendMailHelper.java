@@ -24,13 +24,13 @@ public class SendMailHelper {
     		
 	        switch (level) {
 			case 1:
-				defaultStr.append(",zhangpy@bhuwifi.com,zhaojiang@bhuwifi.com,");
+				defaultStr.append(",zhangpy@bhuwifi.com,");
 				defaultStr.append("gaokai@bhunetworks.com,yetao@bhunetworks.com,wanglin@bhuwifi.com,");
 				defaultStr.append("luozheng@bhuwifi.com,zongbh@bhunetworks.com,yuyx@bhunetworks.com,");
 				defaultStr.append("yangbin@bhunetworks.com,yangtao@bhunetworks.com");
 				break;
 			case 2:
-				defaultStr.append(",zhangpy@bhuwifi.com,zhaojiang@bhuwifi.com,yetao@bhunetworks.com");
+				defaultStr.append(",zhangpy@bhuwifi.com,yetao@bhunetworks.com");
 				break;
 			case 3:
 				defaultStr.append(",zhangpy@bhuwifi.com");

@@ -11,7 +11,7 @@ import com.bhu.vas.business.ds.agent.service.AgentDeviceClaimService;
 import com.bhu.vas.business.ds.agent.service.AgentDeviceImportLogService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceIndexIncrementProcesser;
+import com.bhu.vas.business.search.service.increment.device.WifiDeviceIndexIncrementProcesser;
 
 /**
  * Created by bluesand on 9/8/15.

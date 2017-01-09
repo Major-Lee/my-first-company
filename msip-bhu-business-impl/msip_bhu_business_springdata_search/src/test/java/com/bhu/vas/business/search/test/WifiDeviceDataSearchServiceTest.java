@@ -32,9 +32,9 @@ import com.bhu.vas.business.search.core.condition.component.payload.SearchCondit
 import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionGeopointPayload;
 import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionGeopointRectanglePayload;
 import com.bhu.vas.business.search.core.condition.component.payload.SearchConditionRangePayload;
-import com.bhu.vas.business.search.model.WifiDeviceDocument;
-import com.bhu.vas.business.search.service.WifiDeviceDataSearchService;
-import com.bhu.vas.business.search.service.increment.WifiDeviceStatusIndexIncrementService;
+import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
+import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
+import com.bhu.vas.business.search.service.increment.device.WifiDeviceStatusIndexIncrementService;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
