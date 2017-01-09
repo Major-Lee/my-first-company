@@ -22,8 +22,8 @@ import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.OrdersFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
@@ -131,7 +131,7 @@ public class CommdityUnitFacadeService {
 			commdityAmountDto.setUsers_rx_rate(chargingFacadeService.fetchWifiDeviceSharedNetworkUsersRxRate(psn));
 			commdityAmountDto.setUsers_tx_rate(chargingFacadeService.fetchWifiDeviceSharedNetworkUsersTxRate(psn));
 			commdityAmountDto.setForceTime(chargingFacadeService.fetchAccessInternetTime(psn,umactype));
-			commdityAmountDto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
+			commdityAmountDto.setUser7d(OrdersFinishCountStringService.getInstance().fetchOrdersFinishRecent7Days()+"");
 			commdityAmountDto.setMonthCardAmount(CommdityHelper.
 					generateCommdityAmount(chargingFacadeService.
 							fetchAccessInternetCardAmountRange(psn, BusinessRuntimeConfiguration.

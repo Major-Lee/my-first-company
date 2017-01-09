@@ -61,6 +61,7 @@ import com.bhu.vas.api.vto.statistics.RewardOrderStatisticsVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.CommdityInternalNotifyListService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.OrdersFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.UserQueryDateHashService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
@@ -843,7 +844,7 @@ public class OrderUnitFacadeService {
 			OrderVideoVTO orderVto = new OrderVideoVTO();
 			orderVto.setId(order.getId());
 			orderVto.setForceTime(chargingFacadeService.fetchFreeAccessInternetTime(psn,umactype));
-			orderVto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
+			orderVto.setUser7d(OrdersFinishCountStringService.getInstance().fetchOrdersFinishRecent7Days()+"");
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -1143,7 +1144,7 @@ public class OrderUnitFacadeService {
 				vto.setNoappdl(Boolean.TRUE);
 				vto.setId(order.getId());
 				vto.setForceTime(chargingFacadeService.fetchFreeAccessInternetTime(psn,umactype));
-				vto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
+				vto.setUser7d(OrdersFinishCountStringService.getInstance().fetchOrdersFinishRecent7Days()+"");
 			}
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);

@@ -50,7 +50,7 @@ import com.bhu.vas.business.asyn.spring.activemq.service.CommdityMessageService;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
-import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.OrdersFinishCountStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.marker.SnkChargingMarkerService;
 import com.bhu.vas.business.ds.advertise.facade.AdvertiseFacadeService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
@@ -237,7 +237,7 @@ public class AsyncOrderPaymentNotifyService{
 		Integer order_status = order.getStatus();
 		if(OrderStatus.isPaySuccessed(order_status) || OrderStatus.isDeliverCompleted(order_status)){
 			//由于生产环境打赏用户数目较多,做除以100处理
-			String user = RewardOrderFinishCountStringService.getInstance().getRecent7daysValue();
+			String user = OrdersFinishCountStringService.getInstance().fetchOrdersFinishRecent7Days()+"";
 			String ucount = null;
 			int userInt = 0;
 			if(user.isEmpty() || user == null){
