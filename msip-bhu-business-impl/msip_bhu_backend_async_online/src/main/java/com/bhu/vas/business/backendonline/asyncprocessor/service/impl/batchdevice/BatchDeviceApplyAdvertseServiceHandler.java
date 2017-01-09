@@ -283,7 +283,6 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			  
 			ad.setEnd(cal.getTime());
 			System.out.println(ad.getStart() +"||" +ad.getEnd());
-			ad.setSign(true);
 			advertiseService.update(ad);
 			
 			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
