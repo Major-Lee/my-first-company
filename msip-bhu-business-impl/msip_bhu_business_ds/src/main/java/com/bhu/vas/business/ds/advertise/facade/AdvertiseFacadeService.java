@@ -57,9 +57,7 @@ public class AdvertiseFacadeService {
 			ad.setOrderId(orderId);
 			advertiseService.update(ad);
 			logger.info("advertiseCompletionOfPayment  finish");
-			if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-				flag = true;
-			}
+			flag = true;
 		}else{
 			ad.setReject_reason("因订单超时，您所支付的费用已经退回至必虎钱包，您可以在必虎钱包中申请提现");
 			advertiseService.update(ad);
