@@ -240,11 +240,12 @@ public class AdvertiseUnitFacadeService {
 			Advertise smAd= advertiseService.insert(entity);
 			
 			AdvertiseDocument adDoc = AdvertiseDocumentHelper.fromNormalAdvertise(smAd);
-			advertiseDataSearchService.insertIndex(adDoc, true, true);
+			advertiseDataSearchService.insertIndex(adDoc, false, false);
 			
 			if(type == BusinessEnumType.AdvertiseType.SortMessage.getType()){
 				UserMobilePositionRelationSortedSetService.getInstance().generateMobilenoSnapShot(smAd.getId(), province, city, district);
 			}
+			advertiseDataSearchService.refresh(true);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(entity.toVTO());
 	}
 
