@@ -81,6 +81,9 @@ public class OrdersFinishCountStringService extends AbstractRelationStringCache 
         	if (hour != null)
         		ordersCount = ordersCount + Long.parseLong((String)hour);
         }
+        if (jedis != null){
+        	jedis.close();
+        }
         return ordersCount;
     }
     
