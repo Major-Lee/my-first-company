@@ -268,7 +268,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
 			
 			System.out.println("2222222222222");
-			ad.setState(BusinessEnumType.AdvertiseStateType.OnPublish.getType());
+			ad.setState(BusinessEnumType.AdvertiseStateType.UnVerified.getType());
 			ad.setSign(true);
 			
 			SimpleDateFormat sdf=new SimpleDateFormat(DateTimeHelper.FormatPattern1);  
