@@ -111,6 +111,8 @@ import com.smartwork.msip.business.runtimeconf.RuntimeConfiguration;
 import com.smartwork.msip.cores.helper.ArrayHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.geo.DistanceAreaHelper;
+import com.smartwork.msip.cores.helper.geo.GPSUtil;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
 import com.smartwork.msip.cores.helper.ip.IpLookup;
@@ -1280,25 +1282,34 @@ public class AsyncMsgHandleService {
 		WifiDevice entity = wifiDeviceService.getById(dto.getMac());
 		if (entity != null) {
 			//app定位的地址优先级最高，不允许覆盖
-			if(WifiDeviceHelper.Device_Location_By_APP == entity.getLoc_method())
+			if(WifiDeviceHelper.Device_Location_By_APP == entity.getLoc_method() && dto.getLoc_method() != WifiDeviceHelper.Device_Location_By_APP)
 				return;
-			// 如果经纬度和记录的一样(如果经纬度有波动,可以考虑按误差值来判定), 并且地理信息已经提取, 就不再进行提取了
-			if (dto.getLat().equals(entity.getLat()) && dto.getLon().equals(entity.getLon())) {
-				return;
+
+			//设备定位是gps坐标系，需要转换为高德坐标系
+			double[] gpsgd = GPSUtil.gps84_To_Gcj02(Double.valueOf(dto.getLat()), Double.valueOf(dto.getLon()));
+
+			if(StringUtils.isNotEmpty(entity.getLon())){
+				double dis = DistanceAreaHelper.getDistance(Double.valueOf(entity.getLon()), Double.valueOf(entity.getLat()), 
+						gpsgd[1], gpsgd[0]);
+				// 如果经纬度和记录的误差小于200米， 
+				if(dis < 500)
+					return;
 			}
 			
-			entity.setLat(dto.getLat());
-			entity.setLon(dto.getLon());
+			entity.setLat(String.valueOf(gpsgd[0]));
+			entity.setLon(String.valueOf(gpsgd[1]));
+			entity.setLoc_method(dto.getLoc_method());
 			// 2:根据坐标提取地理位置详细信息
 			boolean ret = deviceFacadeService.wifiDeiviceGeocoding(entity);
 			if (ret) {
 				try {
+					double[] gpsbd = GPSUtil.gcj02_To_Bd09(Double.valueOf(dto.getLat()), Double.valueOf(dto.getLon()));
 					Map<String, String> params = new HashMap<String, String>();
 					params.put("title", StringUtils.isEmpty(entity.getStreet()) ? entity.getFormatted_address()
 							: entity.getStreet());
 					params.put("address", entity.getFormatted_address());
-					params.put("latitude", dto.getLat());
-					params.put("longitude", dto.getLon());
+					params.put("latitude", String.valueOf(gpsbd[0]));
+					params.put("longitude", String.valueOf(gpsbd[1]));
 					params.put("extension", JsonHelper
 							.getJSONString(new GeoPoiExtensionDTO(entity.getId(), entity.isOnline() ? 1 : 0)));
 					String bdid = entity.getBdid();
@@ -1312,7 +1323,6 @@ public class AsyncMsgHandleService {
 						entity.setBdid(String.valueOf(response.getId()));
 					}
 //					entity.setIpgen(false);
-					entity.setLoc_method(WifiDeviceHelper.Device_Location_By_Wifi);
 					logger.info(String.format(
 							"AnsyncMsgBackendProcessor wifiDeviceLocationHandle baidu geoid[%s] %s successful",
 							response.getId(), StringUtils.isEmpty(bdid) ? "Create" : "Update"));

@@ -884,7 +884,7 @@ public class DeviceBusinessFacadeService {
 		if(WifiDeviceDownTask.State_Done.equals(serialDto.getStatus())){
 			LocationDTO locationDto = RPCMessageParseHelper.generateDTOFromQueryDeviceLocationS2(doc);
 			if(locationDto != null && locationDto.validate()){
-				deliverMessageService.sendQueryDeviceLocationActionMessage(wifiId, locationDto.getLat(), locationDto.getLon());
+				deliverMessageService.sendQueryDeviceLocationActionMessage(wifiId, locationDto.getLat(), locationDto.getLon(), WifiDeviceHelper.Device_Location_By_Wifi);
 			}
 		}
 		//2:任务callback
@@ -902,7 +902,7 @@ public class DeviceBusinessFacadeService {
 			String wifiId, long taskid){
 		LocationDTO locationDto = RPCMessageParseHelper.generateDTOFromQueryDeviceLocationS2(doc);
 		if(locationDto != null && locationDto.validate()){
-			deliverMessageService.sendQueryDeviceLocationActionMessage(wifiId, locationDto.getLat(), locationDto.getLon());
+			deliverMessageService.sendQueryDeviceLocationActionMessage(wifiId, locationDto.getLat(), locationDto.getLon(), WifiDeviceHelper.Device_Location_By_Wifi);
 		}
 	}
 	

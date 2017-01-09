@@ -14,6 +14,7 @@ import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.geo.GPSUtil;
 import com.smartwork.msip.cores.helper.geo.GeocodingHelper;
 import com.smartwork.msip.cores.helper.geo.GeocodingIpDTO;
 import com.smartwork.msip.cores.helper.geo.GeocodingPoiRespDTO;
@@ -55,11 +56,12 @@ public class BuilderWifiLocationInit2BaiduOp {
 							total++;
 							continue;
 						}else{
+							double[] gpsbd = GPSUtil.gcj02_To_Bd09(Double.valueOf(device.getLat()), Double.valueOf(device.getLon()));
 							Map<String, String> params = new HashMap<String, String>();
 							params.put("title",  StringUtils.isEmpty(device.getStreet())?device.getFormatted_address():device.getStreet());
 							params.put("address", device.getFormatted_address());
-							params.put("latitude", device.getLat());
-							params.put("longitude", device.getLon());
+							params.put("latitude", String.valueOf(gpsbd[0]));
+							params.put("longitude", String.valueOf(gpsbd[1]));
 							params.put("extension", JsonHelper.getJSONString(new GeoPoiExtensionDTO(device.getId(),device.isOnline()?1:0)));
 							GeocodingPoiRespDTO response = null;
 							if(StringUtils.isEmpty(bdid)){
@@ -83,8 +85,10 @@ public class BuilderWifiLocationInit2BaiduOp {
 							if(ipDto != null && ipDto.getContent() != null && ipDto.getContent().getPoint() != null ){
 								lat = ipDto.getContent().getPoint().getY();
 								lon = ipDto.getContent().getPoint().getX();
-								device.setLat(lat);
-								device.setLon(lon);
+								//从百度坐标系转换回高德坐标系
+								double[] gpsgd = GPSUtil.gcj02_To_Bd09(Double.valueOf(lat), Double.valueOf(lon));
+								device.setLat(String.valueOf(gpsgd[0]));
+								device.setLon(String.valueOf(gpsgd[1]));
 								//2:根据坐标提取地理位置详细信息
 								boolean ret = deviceFacadeService.wifiDeiviceGeocoding(device);
 								if(ret){
@@ -92,8 +96,8 @@ public class BuilderWifiLocationInit2BaiduOp {
 										Map<String, String> params = new HashMap<String, String>();
 										params.put("title", StringUtils.isEmpty(device.getStreet())?device.getFormatted_address():device.getStreet());
 										params.put("address", device.getFormatted_address());
-										params.put("latitude", device.getLat());
-										params.put("longitude", device.getLon());
+										params.put("latitude", lat);
+										params.put("longitude", lon);
 										params.put("extension", JsonHelper.getJSONString(new GeoPoiExtensionDTO(device.getId(),device.isOnline()?1:0)));
 										GeocodingPoiRespDTO response = null;
 										if(StringUtils.isEmpty(bdid)){

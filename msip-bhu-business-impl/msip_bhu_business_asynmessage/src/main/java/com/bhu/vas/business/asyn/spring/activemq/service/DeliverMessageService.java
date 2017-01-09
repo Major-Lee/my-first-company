@@ -212,11 +212,12 @@ public class DeliverMessageService {
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendQueryDeviceLocationActionMessage(String wifiId, String lat, String lon){
+	public void sendQueryDeviceLocationActionMessage(String wifiId, String lat, String lon, int loc_method){
 		WifiDeviceLocationDTO dto = new WifiDeviceLocationDTO();
 		dto.setMac(wifiId);
 		dto.setLat(lat);
 		dto.setLon(lon);
+		dto.setLoc_method(loc_method);
 		dto.setTs(System.currentTimeMillis());
 		deliverMessageQueueProducer.sendPureText(ActionMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}

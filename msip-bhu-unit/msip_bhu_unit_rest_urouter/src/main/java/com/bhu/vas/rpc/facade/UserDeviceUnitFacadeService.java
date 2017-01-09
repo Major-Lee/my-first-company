@@ -1177,19 +1177,21 @@ public class UserDeviceUnitFacadeService {
 					Boolean.FALSE);
 		}
 
-		wifiDevice.setCountry(country);
-		wifiDevice.setProvince(province);
-		wifiDevice.setCity(city);
-		wifiDevice.setDistrict(district);
-		wifiDevice.setStreet(street);
-		wifiDevice.setFormatted_address(faddress);
-		wifiDevice.setLon(lon);
-		wifiDevice.setLat(lat);
-		wifiDevice.setLoc_method(WifiDeviceHelper.Device_Location_By_APP);
-		
-		wifiDeviceService.update(wifiDevice);
-		wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(mac, Double.parseDouble(lat),
-				Double.parseDouble(lon), faddress ,province ,city ,district);
+		deliverMessageService.sendQueryDeviceLocationActionMessage(mac, lat, lon, WifiDeviceHelper.Device_Location_By_APP);
+
+//		wifiDevice.setCountry(country);
+//		wifiDevice.setProvince(province);
+//		wifiDevice.setCity(city);
+//		wifiDevice.setDistrict(district);
+//		wifiDevice.setStreet(street);
+//		wifiDevice.setFormatted_address(faddress);
+//		wifiDevice.setLon(lon);
+//		wifiDevice.setLat(lat);
+//		wifiDevice.setLoc_method(WifiDeviceHelper.Device_Location_By_APP);
+//		
+//		wifiDeviceService.update(wifiDevice);
+//		wifiDeviceIndexIncrementProcesser.locaitionUpdIncrement(mac, Double.parseDouble(lat),
+//				Double.parseDouble(lon), faddress ,province ,city ,district);
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 	}
 
