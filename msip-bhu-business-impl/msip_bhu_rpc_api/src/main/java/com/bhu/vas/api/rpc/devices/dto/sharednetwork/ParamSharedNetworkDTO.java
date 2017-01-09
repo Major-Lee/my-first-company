@@ -37,19 +37,19 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	@JsonIgnore
 	public static final String Default_Free_AIT = "14400";
 	@JsonIgnore
-	public static String Default_Sharedeal_Cash_Pc_For_Day = "4.99";
+	public static String Default_Cash_Pc_For_Day = "4.99";
 	@JsonIgnore
-	public static String Default_Sharedeal_Cash_Mobile_For_Day = "1.99";
+	public static String Default_Cash_Mobile_For_Day = "1.99";
 	@JsonIgnore
-	public static String Default_Sharedeal_Cash_Pc_For_Week = "19.99";
+	public static String Default_Cash_Pc_For_Week = "19.99";
 	@JsonIgnore
-	public static String Default_Sharedeal_Cash_Mobile_For_Week = "10.99";
+	public static String Default_Cash_Mobile_For_Week = "10.99";
 	@JsonIgnore
-	public static String Default_Sharedeal_Cash_Pc_For_Month = "66.99";
+	public static String Default_Cash_Pc_For_Month = "66.99";
 	@JsonIgnore
-	public static String Default_Sharedeal_Cash_Mobile_For_Month = "39.99";
+	public static String Default_Cash_Mobile_For_Month = "39.99";
 	@JsonIgnore
-	public static String Sharedeal_Package_Max = "500";	//包包打赏的最高限额
+	public static String Cash_Package_Max = "500";	//包包打赏的最高限额
 
 
 	
@@ -99,12 +99,12 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	
 	private String range_cash_pc;
 	private String range_cash_mobile;
-	private String sharedeal_pc_day;
-	private String sharedeal_mobile_day;
-	private String sharedeal_pc_week;
-	private String sharedeal_mobile_week;
-	private String sharedeal_pc_month;
-	private String sharedeal_mobile_month;
+	private String cash_pc_day;
+	private String cash_mobile_day;
+	private String cash_pc_week;
+	private String cash_mobile_week;
+	private String cash_pc_month;
+	private String cash_mobile_month;
 	
 	private String ait_pc;
 	private String ait_mobile;
@@ -406,12 +406,12 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 			param.setRange_cash_mobile(ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile);
 			param.setRange_cash_pc(ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC);
 		}
-		param.setSharedeal_mobile_day(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Day);
-		param.setSharedeal_pc_day(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Day);
-		param.setSharedeal_mobile_week(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Week);
-		param.setSharedeal_pc_week(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Week);
-		param.setSharedeal_mobile_month(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Month);
-		param.setSharedeal_pc_month(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Month);
+		param.setCash_mobile_day(ParamSharedNetworkDTO.Default_Cash_Mobile_For_Day);
+		param.setCash_pc_day(ParamSharedNetworkDTO.Default_Cash_Pc_For_Day);
+		param.setCash_mobile_week(ParamSharedNetworkDTO.Default_Cash_Mobile_For_Week);
+		param.setCash_pc_week(ParamSharedNetworkDTO.Default_Cash_Pc_For_Week);
+		param.setCash_mobile_month(ParamSharedNetworkDTO.Default_Cash_Mobile_For_Month);
+		param.setCash_pc_month(ParamSharedNetworkDTO.Default_Cash_Pc_For_Month);
 		
 		param.setAit_mobile(ParamSharedNetworkDTO.Default_AIT);
 		param.setAit_pc(ParamSharedNetworkDTO.Default_AIT);
@@ -487,18 +487,18 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 				if(StringUtils.isEmpty(param.getRange_cash_pc())){
 					param.setRange_cash_pc((DistributorType.City.getType().equals(distributor_type))?ParamSharedNetworkDTO.Default_City_Range_Cash_PC:ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC);
 				}
-				if(StringUtils.isEmpty(param.getSharedeal_mobile_day()))
-					param.setSharedeal_mobile_day(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Day);
-				if(StringUtils.isEmpty(param.getSharedeal_pc_day()))
-					param.setSharedeal_pc_day(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Day);
-				if(StringUtils.isEmpty(param.getSharedeal_mobile_week()))
-					param.setSharedeal_mobile_week(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Week);
-				if(StringUtils.isEmpty(param.getSharedeal_pc_week()))
-					param.setSharedeal_pc_week(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Week);
-				if(StringUtils.isEmpty(param.getSharedeal_mobile_month()))
-					param.setSharedeal_mobile_month(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Month);
-				if(StringUtils.isEmpty(param.getSharedeal_pc_month()))
-					param.setSharedeal_pc_month(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Month);
+				if(StringUtils.isEmpty(param.getCash_mobile_day()))
+					param.setCash_mobile_day(ParamSharedNetworkDTO.Default_Cash_Mobile_For_Day);
+				if(StringUtils.isEmpty(param.getCash_pc_day()))
+					param.setCash_pc_day(ParamSharedNetworkDTO.Default_Cash_Pc_For_Day);
+				if(StringUtils.isEmpty(param.getCash_mobile_week()))
+					param.setCash_mobile_week(ParamSharedNetworkDTO.Default_Cash_Mobile_For_Week);
+				if(StringUtils.isEmpty(param.getCash_pc_week()))
+					param.setCash_pc_week(ParamSharedNetworkDTO.Default_Cash_Pc_For_Week);
+				if(StringUtils.isEmpty(param.getCash_mobile_month()))
+					param.setCash_mobile_month(ParamSharedNetworkDTO.Default_Cash_Mobile_For_Month);
+				if(StringUtils.isEmpty(param.getCash_pc_month()))
+					param.setCash_pc_month(ParamSharedNetworkDTO.Default_Cash_Pc_For_Month);
 				
 				if(StringUtils.isEmpty(param.getAit_mobile()))
 					param.setAit_mobile(ParamSharedNetworkDTO.Default_AIT);
@@ -553,12 +553,12 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 		if(!paramDTO.getFree_ait_pc().equals(dbDTO.getFree_ait_pc())) return true;
 		if(paramDTO.getIsfree() != dbDTO.getIsfree()) return true;
 		if(paramDTO.getFirstLogin() != dbDTO.getFirstLogin()) return true;
-		if(paramDTO.getSharedeal_mobile_day() != dbDTO.getSharedeal_mobile_day()) return true;
-		if(paramDTO.getSharedeal_pc_day() != dbDTO.getSharedeal_pc_day()) return true;
-		if(paramDTO.getSharedeal_mobile_week() != dbDTO.getSharedeal_mobile_week()) return true;
-		if(paramDTO.getSharedeal_pc_week() != dbDTO.getSharedeal_pc_week()) return true;
-		if(paramDTO.getSharedeal_mobile_month() != dbDTO.getSharedeal_mobile_month()) return true;
-		if(paramDTO.getSharedeal_pc_month() != dbDTO.getSharedeal_pc_month()) return true;
+		if(paramDTO.getCash_mobile_day() != dbDTO.getCash_mobile_day()) return true;
+		if(paramDTO.getCash_pc_day() != dbDTO.getCash_pc_day()) return true;
+		if(paramDTO.getCash_mobile_week() != dbDTO.getCash_mobile_week()) return true;
+		if(paramDTO.getCash_pc_week() != dbDTO.getCash_pc_week()) return true;
+		if(paramDTO.getCash_mobile_month() != dbDTO.getCash_mobile_month()) return true;
+		if(paramDTO.getCash_pc_month() != dbDTO.getCash_pc_month()) return true;
 		
 		return false;
 	}
@@ -659,41 +659,41 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	}
 	
 	
-	public String getSharedeal_pc_day() {
-		return sharedeal_pc_day;
+	public String getCash_pc_day() {
+		return cash_pc_day;
 	}
-	public void setSharedeal_pc_day(String range_pc_day) {
-		this.sharedeal_pc_day = range_pc_day;
+	public void setCash_pc_day(String range_pc_day) {
+		this.cash_pc_day = range_pc_day;
 	}
-	public String getSharedeal_mobile_day() {
-		return sharedeal_mobile_day;
+	public String getCash_mobile_day() {
+		return cash_mobile_day;
 	}
-	public void setSharedeal_mobile_day(String range_mobile_day) {
-		this.sharedeal_mobile_day = range_mobile_day;
+	public void setCash_mobile_day(String range_mobile_day) {
+		this.cash_mobile_day = range_mobile_day;
 	}
-	public String getSharedeal_pc_week() {
-		return sharedeal_pc_week;
+	public String getCash_pc_week() {
+		return cash_pc_week;
 	}
-	public void setSharedeal_pc_week(String range_pc_week) {
-		this.sharedeal_pc_week = range_pc_week;
+	public void setCash_pc_week(String range_pc_week) {
+		this.cash_pc_week = range_pc_week;
 	}
-	public String getSharedeal_mobile_week() {
-		return sharedeal_mobile_week;
+	public String getCash_mobile_week() {
+		return cash_mobile_week;
 	}
-	public void setSharedeal_mobile_week(String range_mobile_week) {
-		this.sharedeal_mobile_week = range_mobile_week;
+	public void setCash_mobile_week(String range_mobile_week) {
+		this.cash_mobile_week = range_mobile_week;
 	}
-	public String getSharedeal_pc_month() {
-		return sharedeal_pc_month;
+	public String getCash_pc_month() {
+		return cash_pc_month;
 	}
-	public void setSharedeal_pc_month(String range_pc_month) {
-		this.sharedeal_pc_month = range_pc_month;
+	public void setCash_pc_month(String range_pc_month) {
+		this.cash_pc_month = range_pc_month;
 	}
-	public String getSharedeal_mobile_month() {
-		return sharedeal_mobile_month;
+	public String getCash_mobile_month() {
+		return cash_mobile_month;
 	}
-	public void setSharedeal_mobile_month(String range_mobile_month) {
-		this.sharedeal_mobile_month = range_mobile_month;
+	public void setCash_mobile_month(String range_mobile_month) {
+		this.cash_mobile_month = range_mobile_month;
 	}
 	public int getIsfree() {
 		return isfree;

@@ -830,23 +830,23 @@ public class ChargingFacadeService {
 		switch (commdityid) {
 		case BusinessRuntimeConfiguration.Reward_Month_Internet_Commdity_ID:
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_pc_month()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Month:psn.getSharedeal_pc_month();
+				amount = (psn == null || StringUtils.isEmpty(psn.getCash_pc_month()))?ParamSharedNetworkDTO.Default_Cash_Pc_For_Month:psn.getCash_pc_month();
 			}else{
-				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_mobile_month()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Month:psn.getSharedeal_mobile_month();
+				amount = (psn == null || StringUtils.isEmpty(psn.getCash_mobile_month()))?ParamSharedNetworkDTO.Default_Cash_Mobile_For_Month:psn.getCash_mobile_month();
 			}
 			break;
 		case BusinessRuntimeConfiguration.Reward_Week_Internet_Commdity_ID:
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_pc_week()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Week:psn.getSharedeal_pc_week();
+				amount = (psn == null || StringUtils.isEmpty(psn.getCash_pc_week()))?ParamSharedNetworkDTO.Default_Cash_Pc_For_Week:psn.getCash_pc_week();
 			}else{
-				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_mobile_week()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Week:psn.getSharedeal_mobile_week();
+				amount = (psn == null || StringUtils.isEmpty(psn.getCash_mobile_week()))?ParamSharedNetworkDTO.Default_Cash_Mobile_For_Week:psn.getCash_mobile_week();
 			}
 			break;
 		case BusinessRuntimeConfiguration.Reward_Day_Internet_Commdity_ID:
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_pc_day()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Day:psn.getSharedeal_pc_day();
+				amount = (psn == null || StringUtils.isEmpty(psn.getCash_pc_day()))?ParamSharedNetworkDTO.Default_Cash_Pc_For_Day:psn.getCash_pc_day();
 			}else{
-				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_mobile_day()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Day:psn.getSharedeal_mobile_day();
+				amount = (psn == null || StringUtils.isEmpty(psn.getCash_mobile_day()))?ParamSharedNetworkDTO.Default_Cash_Mobile_For_Day:psn.getCash_mobile_day();
 			}
 			break;
 
