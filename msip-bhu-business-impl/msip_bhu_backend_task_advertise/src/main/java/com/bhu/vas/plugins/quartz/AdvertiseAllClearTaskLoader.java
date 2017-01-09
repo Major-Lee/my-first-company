@@ -46,7 +46,7 @@ public class AdvertiseAllClearTaskLoader {
 	//失效广告清除域名and状态变更
 	public void devicesDomainClear(String afterDate){
 		ModelCriteria mc = new ModelCriteria();
-		mc.createCriteria().andColumnLessThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.OnPublish.getType());
+		mc.createCriteria().andColumnLessThan("end", afterDate).andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.OnPublish.getType()).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.HomeImage.getType());
 		List<Advertise> lists = advertiseService.findModelByModelCriteria(mc);
 		if(!lists.isEmpty()){
 			logger.info("devicesDomainClear  ready invalid ad sum: " + lists.size());

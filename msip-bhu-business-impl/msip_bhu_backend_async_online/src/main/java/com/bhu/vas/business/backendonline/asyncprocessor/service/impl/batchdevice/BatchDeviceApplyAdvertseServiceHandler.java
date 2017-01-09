@@ -119,6 +119,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 							macList, JsonHelper.getJSONString(ad),Double.parseDouble(ad.getId()));
 						advertiDetails(ad, start, macList.size());
 						deviceLimitDomain(batch, macList, ad.getDomain(),IDTO.ACT_ADD, ad);
+						advertiseIndexIncrementService.adStateUpdIncrement(ad.getId(), BusinessEnumType.AdvertiseStateType.OnPublish.getType(), null);
 						break;
 					case IDTO.ACT_DELETE:
 						deviceLimitDomain(batch, macList, null,
@@ -282,6 +283,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			  
 			ad.setEnd(cal.getTime());
 			System.out.println(ad.getStart() +"||" +ad.getEnd());
+			ad.setSign(true);
 			advertiseService.update(ad);
 			
 			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
