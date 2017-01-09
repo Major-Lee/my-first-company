@@ -185,12 +185,12 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	ShareDealIgnoreOrderAmount = PropertiesHelper.getBoolean("sharedeal.ignore.order.amount", paramProperties, ShareDealIgnoreOrderAmount);
         	
         	
-        	Default_Range_Cash_Pc_For_Day = PropertiesHelper.getString("safesecure.range.cash.pc.day", paramProperties, Default_Range_Cash_Pc_For_Day);
-        	Default_Range_Cash_Mobile_For_Day = PropertiesHelper.getString("safesecure.range.cash.mobile.day", paramProperties, Default_Range_Cash_Mobile_For_Day);
-        	Default_Range_Cash_Pc_For_Week = PropertiesHelper.getString("safesecure.range.cash.pc.week", paramProperties, Default_Range_Cash_Pc_For_Week);
-        	Default_Range_Cash_Mobile_For_Week = PropertiesHelper.getString("safesecure.range.cash.mobile.week", paramProperties, Default_Range_Cash_Mobile_For_Week);
-        	Default_Range_Cash_Pc_For_Month = PropertiesHelper.getString("safesecure.range.cash.pc.month", paramProperties, Default_Range_Cash_Pc_For_Month);
-        	Default_Range_Cash_Mobile_For_Month = PropertiesHelper.getString("safesecure.range.cash.mobile.month", paramProperties, Default_Range_Cash_Mobile_For_Month);
+//        	Default_Range_Cash_Pc_For_Day = PropertiesHelper.getString("safesecure.range.cash.pc.day", paramProperties, Default_Range_Cash_Pc_For_Day);
+//        	Default_Range_Cash_Mobile_For_Day = PropertiesHelper.getString("safesecure.range.cash.mobile.day", paramProperties, Default_Range_Cash_Mobile_For_Day);
+//        	Default_Range_Cash_Pc_For_Week = PropertiesHelper.getString("safesecure.range.cash.pc.week", paramProperties, Default_Range_Cash_Pc_For_Week);
+//        	Default_Range_Cash_Mobile_For_Week = PropertiesHelper.getString("safesecure.range.cash.mobile.week", paramProperties, Default_Range_Cash_Mobile_For_Week);
+//        	Default_Range_Cash_Pc_For_Month = PropertiesHelper.getString("safesecure.range.cash.pc.month", paramProperties, Default_Range_Cash_Pc_For_Month);
+//        	Default_Range_Cash_Mobile_For_Month = PropertiesHelper.getString("safesecure.range.cash.mobile.month", paramProperties, Default_Range_Cash_Mobile_For_Month);
         	
         	
         	String commdityWhiteListStr = PropertiesHelper.getString("commdity.whitelist.accs", paramProperties, "");
@@ -345,17 +345,6 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static String QualityGoodsSharedealStart = "2017-01-01 00:00:00"; //default 2017-01-01
 	//分润时忽略订单金额（测试中会修改订单金额，实际支付金额小于商品金额）
 	public static boolean ShareDealIgnoreOrderAmount = false;
-	
-	
-	
-	public static String Default_Range_Cash_Pc_For_Day = "4.99-4.99";
-	public static String Default_Range_Cash_Mobile_For_Day = "1.99-1.99";
-	public static String Default_Range_Cash_Pc_For_Week = "19.99-19.99";
-	public static String Default_Range_Cash_Mobile_For_Week = "10.99-10.99";
-	public static String Default_Range_Cash_Pc_For_Month = "66.99-66.99";
-	public static String Default_Range_Cash_Mobile_For_Month = "39.99-39.99";
-
-
 	
 	
 	public static boolean isSystemNoneedCaptchaValidAcc(String acc){

@@ -21,6 +21,7 @@ import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
 import com.bhu.vas.api.rpc.commdity.helper.OrderHelper;
 import com.bhu.vas.api.rpc.commdity.model.Commdity;
 import com.bhu.vas.api.rpc.commdity.model.CommdityPhysical;
+import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderAmountHashService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.commdity.RewardOrderFinishCountStringService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
@@ -101,7 +102,6 @@ public class CommdityUnitFacadeService {
 		try{
 			//OrderHelper.supportedAppId(appid);
 			OrderHelper.supportedUMacType(umactype);
-			
 			//验证用户mac umac
 			if(StringUtils.isEmpty(mac) || StringUtils.isEmpty(umac)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_ORDER_MAC_UMAC_ILLEGAL);
@@ -109,12 +109,14 @@ public class CommdityUnitFacadeService {
 			if(!StringHelper.isValidMac(mac) || !StringHelper.isValidMac(umac)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.AUTH_MAC_INVALID_FORMAT);
 			}
-			
+
+			ParamSharedNetworkDTO psn = chargingFacadeService.getParamSharedNetwork(mac);
+
 			//获取此上下文的缓存金额数据
 			String amount = RewardOrderAmountHashService.getInstance().getRAmount(mac, umac, commdityid, umactype);
 			if(StringUtils.isEmpty(amount)){
 				//处理商品金额
-				amount = CommdityHelper.generateCommdityAmount(chargingFacadeService.fetchAmountRange(mac, umactype));
+				amount = CommdityHelper.generateCommdityAmount(chargingFacadeService.fetchAmountRange(psn, umactype));
 				//amount = commdityFacadeService.commdityAmount(commdityid);
 				//CommdityIntervalAmountService.getInstance().addRAmount(mac, umac, commdityid, amount);
 				Long addnx_ret = RewardOrderAmountHashService.getInstance().addNx_RAmount(mac, umac, commdityid, umactype, amount);
@@ -125,24 +127,24 @@ public class CommdityUnitFacadeService {
 			}
 			CommdityAmountDTO commdityAmountDto = new CommdityAmountDTO();
 			commdityAmountDto.setAmount(amount);
-			commdityAmountDto.setSsid(chargingFacadeService.fetchWifiDeviceSharedNetworkSSID(mac));
-			commdityAmountDto.setUsers_rx_rate(chargingFacadeService.fetchWifiDeviceSharedNetworkUsersRxRate(mac));
-			commdityAmountDto.setUsers_tx_rate(chargingFacadeService.fetchWifiDeviceSharedNetworkUsersTxRate(mac));
-			commdityAmountDto.setForceTime(chargingFacadeService.fetchAccessInternetTime(mac,umactype));
+			commdityAmountDto.setSsid(chargingFacadeService.fetchWifiDeviceSharedNetworkSSID(psn));
+			commdityAmountDto.setUsers_rx_rate(chargingFacadeService.fetchWifiDeviceSharedNetworkUsersRxRate(psn));
+			commdityAmountDto.setUsers_tx_rate(chargingFacadeService.fetchWifiDeviceSharedNetworkUsersTxRate(psn));
+			commdityAmountDto.setForceTime(chargingFacadeService.fetchAccessInternetTime(psn,umactype));
 			commdityAmountDto.setUser7d(RewardOrderFinishCountStringService.getInstance().getRecent7daysValue());
 			commdityAmountDto.setMonthCardAmount(CommdityHelper.
 					generateCommdityAmount(chargingFacadeService.
-							fetchAccessInternetCardAmountRange(BusinessRuntimeConfiguration.
+							fetchAccessInternetCardAmountRange(psn, BusinessRuntimeConfiguration.
 									Reward_Month_Internet_Commdity_ID, umactype)));
 			
 			commdityAmountDto.setWeekCardAmount(CommdityHelper.
 					generateCommdityAmount(chargingFacadeService.
-							fetchAccessInternetCardAmountRange(BusinessRuntimeConfiguration.
+							fetchAccessInternetCardAmountRange(psn, BusinessRuntimeConfiguration.
 									Reward_Week_Internet_Commdity_ID, umactype)));
 			
 			commdityAmountDto.setDayCardAmount(CommdityHelper.
 					generateCommdityAmount(chargingFacadeService.
-							fetchAccessInternetCardAmountRange(BusinessRuntimeConfiguration.
+							fetchAccessInternetCardAmountRange(psn, BusinessRuntimeConfiguration.
 									Reward_Day_Internet_Commdity_ID, umactype)));
 			
 			logger.info(String.format("intervalAMount success commdityid[%s] "

@@ -102,6 +102,18 @@ public class SharedNetworksFacadeService {
 			SharedNetworksHelper.validAitRange(paramDto.getAit_pc(), "ait_p", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
 			SharedNetworksHelper.validAitRange(paramDto.getFree_ait_mobile(), "fait_m", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
 			SharedNetworksHelper.validAitRange(paramDto.getFree_ait_pc(), "fait_p", NumberValidateHelper.Range_Ait_Min,NumberValidateHelper.Range_Ait_Max);
+			SharedNetworksHelper.validAmountRange(paramDto.getSharedeal_mobile_day(), "sharedeal_mobile_day", Double.valueOf(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Day),
+					Double.valueOf(ParamSharedNetworkDTO.Sharedeal_Package_Max));
+			SharedNetworksHelper.validAmountRange(paramDto.getSharedeal_pc_day(), "sharedeal_pc_day", Double.valueOf(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Day),
+					Double.valueOf(ParamSharedNetworkDTO.Sharedeal_Package_Max));
+			SharedNetworksHelper.validAmountRange(paramDto.getSharedeal_mobile_week(), "sharedeal_mobile_week", Double.valueOf(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Day),
+					Double.valueOf(ParamSharedNetworkDTO.Sharedeal_Package_Max));
+			SharedNetworksHelper.validAmountRange(paramDto.getSharedeal_pc_week(), "sharedeal_pc_week", Double.valueOf(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Week),
+					Double.valueOf(ParamSharedNetworkDTO.Sharedeal_Package_Max));
+			SharedNetworksHelper.validAmountRange(paramDto.getSharedeal_mobile_month(), "sharedeal_mobile_month", Double.valueOf(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Month),
+					Double.valueOf(ParamSharedNetworkDTO.Sharedeal_Package_Max));
+			SharedNetworksHelper.validAmountRange(paramDto.getSharedeal_pc_month(), "sharedeal_pc_month", Double.valueOf(ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Month),
+					Double.valueOf(ParamSharedNetworkDTO.Sharedeal_Package_Max));
 //		}
 		
 		

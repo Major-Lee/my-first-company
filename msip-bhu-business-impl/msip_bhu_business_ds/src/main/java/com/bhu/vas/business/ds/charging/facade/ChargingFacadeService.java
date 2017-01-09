@@ -627,67 +627,58 @@ public class ChargingFacadeService {
 		return ret;
 	}
 	
-	public String fetchAmountRange(String dmac,Integer umactype){
+	public ParamSharedNetworkDTO getParamSharedNetwork(String dmac){
 		try{
 			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
-			if(configs == null){
+			return configs.getInnerModel().getPsn();
+		}catch(Exception e){
+			return null;
+		}
+	}
+	
+	public String fetchAmountRange(ParamSharedNetworkDTO psn, Integer umactype){
+		try{
+			if(psn == null){
 				if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue())
 				return ParamSharedNetworkDTO.Default_City_Range_Cash_PC;
 			else
 				return ParamSharedNetworkDTO.Default_City_Range_Cash_Mobile;
-
-//				WifiDeviceSharedealConfigs sharedeal = wifiDeviceSharedealConfigsService.getById(dmac);
-//				if(DistributorType.City.getType().equals(sharedeal.getDistributor_type())){
-//					if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue())
-//						return ParamSharedNetworkDTO.Default_City_Range_Cash_PC;
-//					else
-//						return ParamSharedNetworkDTO.Default_City_Range_Cash_Mobile;
-//				} else {
-//					if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue())
-//						return ParamSharedNetworkDTO.Default_Channel_Range_Cash_PC;
-//					else
-//						return ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile;
-//				}
 			} else {
 				String amountRange = null;
 				if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-					amountRange = configs.getInnerModel().getPsn().getRange_cash_pc();
+					amountRange = psn.getRange_cash_pc();
 				}else{
-					amountRange = configs.getInnerModel().getPsn().getRange_cash_mobile();
+					amountRange = psn.getRange_cash_mobile();
 				}
 				return amountRange;
 			}
 		}catch(Exception ex){
-//			ex.printStackTrace(System.out);
 			return ParamSharedNetworkDTO.Default_Channel_Range_Cash_Mobile;
 		}
 		
 	}
-	
-	public String fetchAccessInternetTime(String dmac,Integer umactype){
+
+	public String fetchAccessInternetTime(ParamSharedNetworkDTO psn, Integer umactype){
 		try{
-			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
 			String ait = null;
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				ait = configs.getInnerModel().getPsn().getAit_pc();
+				ait = psn.getAit_pc();
 			}else{
-				ait = configs.getInnerModel().getPsn().getAit_mobile();
+				ait = psn.getAit_mobile();
 			}
 			return ait;
 		}catch(Exception ex){
-//			ex.printStackTrace(System.out);
 			return ParamSharedNetworkDTO.Default_AIT;
 		}
 	}
 	//免费上网商品上网时间获取
-	public String fetchFreeAccessInternetTime(String dmac,Integer umactype){
+	public String fetchFreeAccessInternetTime(ParamSharedNetworkDTO psn, Integer umactype){
 		try{
-			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
 			String ait = null;
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				ait = configs.getInnerModel().getPsn().getFree_ait_pc();
+				ait = psn.getFree_ait_pc();
 			}else{
-				ait = configs.getInnerModel().getPsn().getFree_ait_mobile();
+				ait = psn.getFree_ait_mobile();
 			}
 			return ait;
 		}catch(Exception ex){
@@ -696,11 +687,9 @@ public class ChargingFacadeService {
 		}
 	}
 	//是否开启了免费上网方式
-	public boolean fetchDeviceIsOpenFreeMode(String dmac,Integer umactype){
+	public boolean fetchDeviceIsOpenFreeMode(ParamSharedNetworkDTO psn){
 		try{
-			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
-			
-			return configs.getInnerModel().getPsn().getIsfree() == 1 ? true:false;
+			return psn.getIsfree() == 1 ? true:false;
 		}catch(Exception ex){
 //			ex.printStackTrace(System.out);
 			return false;
@@ -799,63 +788,65 @@ public class ChargingFacadeService {
 		return userWifiDeviceFacadeService;
 	}
 	
-	public String fetchWifiDeviceSharedNetworkSSID(String dmac){
+	public WifiDeviceSharedNetworkService getWifiDeviceSharedNetworkService() {
+		return wifiDeviceSharedNetworkService;
+	}
+
+	public void setWifiDeviceSharedNetworkService(WifiDeviceSharedNetworkService wifiDeviceSharedNetworkService) {
+		this.wifiDeviceSharedNetworkService = wifiDeviceSharedNetworkService;
+	}
+
+	public String fetchWifiDeviceSharedNetworkSSID(ParamSharedNetworkDTO psn){
 		try{
-			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
-			String ssid = configs.getInnerModel().getPsn().getSsid();
+			String ssid = psn.getSsid();
 			if(StringUtils.isEmpty(ssid)){
 				ssid = VapEnumType.SharedNetworkType.SafeSecure.getDefaultSsid();
 			}
 			return ssid;
 		}catch(Exception ex){
-//			ex.printStackTrace(System.out);
 			return VapEnumType.SharedNetworkType.SafeSecure.getDefaultSsid();
 		}
 	}
 	
-	public int fetchWifiDeviceSharedNetworkUsersRxRate(String dmac){
+	public int fetchWifiDeviceSharedNetworkUsersRxRate(ParamSharedNetworkDTO psn){
 		try{
-			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
-			return configs.getInnerModel().getPsn().getUsers_rx_rate()/InternetSpeedsUnit;
+			return psn.getUsers_rx_rate()/InternetSpeedsUnit;
 		}catch(Exception ex){
-//			ex.printStackTrace(System.out);
 			return WifiDeviceHelper.SharedNetworkWifi_Default_Users_rx_rate/InternetSpeedsUnit;
 		}
 	}
 	
-	public int fetchWifiDeviceSharedNetworkUsersTxRate(String dmac){
+	public int fetchWifiDeviceSharedNetworkUsersTxRate(ParamSharedNetworkDTO psn){
 		try{
-			WifiDeviceSharedNetwork configs = wifiDeviceSharedNetworkService.getById(dmac);
-			return configs.getInnerModel().getPsn().getUsers_tx_rate()/InternetSpeedsUnit;
+			return psn.getUsers_tx_rate()/InternetSpeedsUnit;
 		}catch(Exception ex){
-//			ex.printStackTrace(System.out);
 			return WifiDeviceHelper.SharedNetworkWifi_Default_Users_tx_rate/InternetSpeedsUnit;
 		}
 	}
 	public static final int InternetSpeedsUnit = 128;
 	
-	public String fetchAccessInternetCardAmountRange(Integer commdityid,Integer umactype){
+	public String fetchAccessInternetCardAmountRange(ParamSharedNetworkDTO psn, Integer commdityid,Integer umactype){
 		String amount = null;
 		switch (commdityid) {
 		case BusinessRuntimeConfiguration.Reward_Month_Internet_Commdity_ID:
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Pc_For_Month;
+				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_pc_month()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Month:psn.getSharedeal_pc_month();
 			}else{
-				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Mobile_For_Month;
+				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_mobile_month()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Month:psn.getSharedeal_mobile_month();
 			}
 			break;
 		case BusinessRuntimeConfiguration.Reward_Week_Internet_Commdity_ID:
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Pc_For_Week;
+				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_pc_week()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Week:psn.getSharedeal_pc_week();
 			}else{
-				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Mobile_For_Week;
+				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_mobile_week()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Week:psn.getSharedeal_mobile_week();
 			}
 			break;
 		case BusinessRuntimeConfiguration.Reward_Day_Internet_Commdity_ID:
 			if(OrderUmacType.Pc.getKey().intValue() == umactype.intValue()){
-				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Pc_For_Day;
+				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_pc_day()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Pc_For_Day:psn.getSharedeal_pc_day();
 			}else{
-				amount = BusinessRuntimeConfiguration.Default_Range_Cash_Mobile_For_Day;
+				amount = (psn == null || StringUtils.isEmpty(psn.getSharedeal_mobile_day()))?ParamSharedNetworkDTO.Default_Sharedeal_Cash_Mobile_For_Day:psn.getSharedeal_mobile_day();
 			}
 			break;
 
