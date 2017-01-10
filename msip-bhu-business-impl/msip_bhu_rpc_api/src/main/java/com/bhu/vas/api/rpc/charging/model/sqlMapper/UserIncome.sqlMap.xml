@@ -163,6 +163,10 @@
 	    </if>  
 	</select>
 	
+	<select id="findUserIncomeByLimit" resultMap="modelResult" parameterType="java.util.Map">
+	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> where updated_at > #{time} order by time limit #{limit} OFFSET #{start}
+	</select>
+	
 	<select id="findMonthList" resultType="userIncome" parameterType="String">
 		SELECT  <include refid="modelMonthColumns" /> from <include refid="modelTableName" /> WHERE time LIKE #{time} GROUP BY uid ORDER BY SUM(income)  		
 	</select>

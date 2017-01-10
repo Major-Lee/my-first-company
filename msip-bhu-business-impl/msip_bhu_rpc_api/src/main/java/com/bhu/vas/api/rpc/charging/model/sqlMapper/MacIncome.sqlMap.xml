@@ -171,6 +171,10 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
     	</if>  
 	</delete>
+	<select id="findMacIncomeByLimit" resultMap="modelResult" parameterType="java.util.Map">
+	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> where updated_at > #{time} order by time limit #{limit} OFFSET #{start}
+	</select>
+	
 	<select id="countIncome" resultType="Double" parameterType="String">
 	    select sum(income) from <include refid="modelTableName" /> where mac=#{mac}
 	</select>

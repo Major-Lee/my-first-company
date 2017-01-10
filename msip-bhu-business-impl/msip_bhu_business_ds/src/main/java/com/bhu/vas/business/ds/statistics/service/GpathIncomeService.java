@@ -1,7 +1,9 @@
 package com.bhu.vas.business.ds.statistics.service;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -28,5 +30,12 @@ public class GpathIncomeService extends AbstractCommdityService<Integer, GpathIn
 		.andColumnEqualTo("time", time);
 		mc.setOrderByClause("income");
 		return super.findModelByModelCriteria(mc);
+	}
+	public List<GpathIncome>  findByLimit(String time,int start,int limit) {
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("time", time);
+		map.put("limit", limit);
+		map.put("start",start);
+		return super.entityDao.findByLimit(map);
 	}
 }
