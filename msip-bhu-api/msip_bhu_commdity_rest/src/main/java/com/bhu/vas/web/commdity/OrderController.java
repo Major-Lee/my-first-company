@@ -1,5 +1,7 @@
 package com.bhu.vas.web.commdity;
 
+import java.util.Locale;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,24 +80,27 @@ public class OrderController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			return;
 		}
+
+		Locale locale = BusinessWebHelper.getLocale(request);
 		//2:请求支付系统返回支付url
 		OrderRewardVTO order_vto = rpcResult.getPayload();
 		String orderid = order_vto.getId();
 		String order_amount = order_vto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
-		String goods_name = order_vto.getGoods_name();
+		
+		String goods_name = PaymentInternalHelper.getGoodsName(locale, order_vto.getGoods_name(), order_vto.getName_key());
 		
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
 				order_amount, requestIp, umac, orderid, payment_completed_url,channel+"",version,goods_name,null);
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), BusinessWebHelper.getLocale(request)));
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), locale));
 			return;
 		}
 		if(!rcp_dto.isSuccess()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), BusinessWebHelper.getLocale(request)));
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), locale));
 			return;
 		}
 		
@@ -254,8 +259,10 @@ public class OrderController extends BaseController{
 		//1:生成订单
 		RpcResponseDTO<OrderRechargeVCurrencyVTO> rpcResult = orderRpcService.createRechargeVCurrencyOrder(uid, 
 				commdityid, payment_type, umactype, user_agent);
+		
+		Locale locale = BusinessWebHelper.getLocale(request);
 		if(rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
 			return;
 		}
 		//2:请求支付系统返回支付url
@@ -268,12 +275,12 @@ public class OrderController extends BaseController{
 				order_amount, requestIp, null, orderid, payment_completed_url,"0","0",null,null);
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), BusinessWebHelper.getLocale(request)));
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), locale));
 			return;
 		}
 		if(!rcp_dto.isSuccess()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), BusinessWebHelper.getLocale(request)));
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), locale));
 			return;
 		}
 		
@@ -498,23 +505,27 @@ public void physical_mini_paymenturl(
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 			return;
 		}
+		Locale locale = BusinessWebHelper.getLocale(request);
+
 		//2:请求支付系统返回支付url
 		RewardCreateMonthlyServiceVTO order_vto = rpcResult.getPayload();
 		String orderid = order_vto.getOrderid();
 		String order_amount = order_vto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
-		String goods_name = order_vto.getGoods_name();
+		
+		String goods_name = PaymentInternalHelper.getGoodsName(locale, order_vto.getGoods_name(), order_vto.getName_key());
+
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
 				order_amount, requestIp, umac, orderid, payment_completed_url,channel+"",version,goods_name,null);
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), BusinessWebHelper.getLocale(request)));
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), locale));
 			return;
 		}
 		if(!rcp_dto.isSuccess()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), BusinessWebHelper.getLocale(request)));
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), locale));
 			return;
 		}
 		
@@ -555,11 +566,12 @@ public void hot_play_paymenturl(
 		) {
 		long start = System.currentTimeMillis();
 		String user_agent = request.getHeader("User-Agent");
+		Locale locale = BusinessWebHelper.getLocale(request);
 		//1:生成订单
 		RpcResponseDTO<HotPlayOrderVTO> rpcResult = orderRpcService.createHotPlayOrder(commdityid, hpid, 
 				umactype, payment_type, channel, user_agent);
 		if(rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
 			return;
 		}
 		//2:请求支付系统返回支付url
@@ -569,17 +581,18 @@ public void hot_play_paymenturl(
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
 		long restMin = order_vto.getRestMin();
-		String goods_name = order_vto.getGoods_name();
+		String goods_name = PaymentInternalHelper.getGoodsName(locale, order_vto.getGoods_name(), order_vto.getName_key());
+		
 		ResponseCreatePaymentUrlDTO rcp_dto = PaymentInternalHelper.createPaymentUrlCommunication(appid, payment_type, 
 				order_amount, requestIp, null, orderid, payment_completed_url,channel+"",version,goods_name,restMin+"m");
 		if(rcp_dto == null){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), BusinessWebHelper.getLocale(request)));
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_INVALID), locale));
 			return;
 		}
 		if(!rcp_dto.isSuccess()){
 			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResponseDTOBuilder.builderErrorRpcResponse(
-					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), BusinessWebHelper.getLocale(request)));
+					ResponseErrorCode.INTERNAL_COMMUNICATION_PAYMENTURL_RESPONSE_FALSE), locale));
 			return;
 		}
 		logger.info(String.format("hot_play_paymenturl Response Success orderid[%s] payment_type[%s] commdityid[%s]"

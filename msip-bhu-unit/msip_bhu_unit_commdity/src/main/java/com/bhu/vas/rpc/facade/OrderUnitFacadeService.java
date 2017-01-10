@@ -188,6 +188,7 @@ public class OrderUnitFacadeService {
 			OrderRewardVTO orderVto = new OrderRewardVTO();
 			BeanUtils.copyProperties(order, orderVto);
 			orderVto.setGoods_name(commdity.getName());
+			orderVto.setName_key(commdity.getName_key());
 			
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(orderVto);
 		}catch(BusinessI18nCodeException bex){
@@ -923,6 +924,7 @@ public class OrderUnitFacadeService {
 			vto.setAmount(order.getAmount());
 			vto.setAppid(order.getAppid());
 			vto.setGoods_name(commdity.getName());
+			vto.setName_key(commdity.getName_key());
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
 			logger.error("rewardCreateMonthlyService Exception:", ex);
@@ -1083,6 +1085,7 @@ public class OrderUnitFacadeService {
 			vto.setAdCommdityVTO(advertisePayment);
 			vto.setRestMin(restMin);
 			vto.setGoods_name(commdity.getName());
+			vto.setName_key(commdity.getName_key());
 			logger.info("createHotPlayOrder successfully!");
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){

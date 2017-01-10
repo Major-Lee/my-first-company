@@ -12,6 +12,8 @@ import com.smartwork.msip.cores.orm.model.BaseIntModel;
 public class Commdity extends BaseIntModel{
 	//商品名称
 	private String name;
+	//商品名称资源key，用于国际化
+	private String name_key;
 	//商品描述
 	private String description;
 	//商品类别
@@ -153,6 +155,14 @@ public class Commdity extends BaseIntModel{
 
 	public void setChannel_sharedeal(String channel_sharedeal) {
 		this.channel_sharedeal = channel_sharedeal;
+	}
+
+	public String getName_key() {
+		return name_key;
+	}
+
+	public void setName_key(String name_key) {
+		this.name_key = name_key;
 	}
 	
 }

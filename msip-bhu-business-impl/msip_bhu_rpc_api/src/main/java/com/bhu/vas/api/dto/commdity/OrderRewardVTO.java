@@ -35,6 +35,15 @@ public class OrderRewardVTO extends OrderVTO{
 	
 	private String goods_name;
 	
+	private String name_key;
+	
+	
+	public String getName_key() {
+		return name_key;
+	}
+	public void setName_key(String name_key) {
+		this.name_key = name_key;
+	}
 	public String getGoods_name() {
 		return goods_name;
 	}

@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.commdity.helper;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +14,7 @@ import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HttpHelper;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.i18n.LocalI18NMessageSource;
 /**
  * 支付系统调用类
  * @author tangzichao
@@ -34,6 +36,21 @@ public class PaymentInternalHelper {
 	
 	//订单已经支付成功
 	public static final String ERRORCODE_PAYMENT_STATUS_PAYSUCCESSED = "101";
+	
+	
+	
+	public static String getGoodsName(Locale locale, String name, String name_key){
+		String ret = null;
+		if(StringUtils.isNotEmpty(name_key)){
+			ret = LocalI18NMessageSource.getInstance().getMessage(name_key, locale);
+		}
+		if(StringUtils.isNotEmpty(ret))
+			return ret;
+		return name;
+	}
+	
+	
+	
 	/**
 	 * 调用支付系统获取订单支付url
 	 * @param payment_type 支付方式

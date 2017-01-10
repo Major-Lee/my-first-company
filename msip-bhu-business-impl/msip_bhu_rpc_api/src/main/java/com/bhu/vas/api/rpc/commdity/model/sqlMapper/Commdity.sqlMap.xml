@@ -31,6 +31,7 @@
 	    <![CDATA[
 	    	id,
 	    	name,
+	    	name_key,
 	    	description,
 	    	category,
 	    	price,
@@ -49,6 +50,7 @@
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	name,
+	    	name_key,
 	    	description,
 	    	category,
 	    	price,
@@ -68,6 +70,7 @@
 	<sql id="modelInsertValues">
 			#{id},
 			#{name},
+	    	#{name_key},
 			#{description},
 	    	#{category},
 	    	#{price},
@@ -85,6 +88,7 @@
 	
 	<sql id="modelUpdateValues">
 			name = #{name},
+			name_key = #{name_key},
 			description = #{description},
 	    	category = #{category},
 	    	price = #{price},
