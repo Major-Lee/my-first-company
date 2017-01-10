@@ -45,15 +45,7 @@ public class AdvertisePaymentTimeOutTaskLoader {
 	
 	public void homeImagePaymentTimeOut(long nowTime){
 		ModelCriteria mc = new ModelCriteria();
-		Criteria homeImageCriteria=mc.createCriteria();
-		homeImageCriteria.andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPaid.getType()).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.HomeImage.getType());
-		
-		Criteria sortMessageCriteria=mc.createCriteria();
-		sortMessageCriteria.andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPaid.getType()).andColumnEqualTo("type", BusinessEnumType.AdvertiseType.SortMessage.getType());
-		
-		mc.or(homeImageCriteria);
-		mc.or(sortMessageCriteria);
-		
+		mc.createCriteria().andColumnEqualTo("state", BusinessEnumType.AdvertiseStateType.UnPaid.getType());
 		
 		List<Advertise> ads = advertiseService.findModelByModelCriteria(mc);
 		List<Advertise> updateList = new ArrayList<Advertise>(); 		
