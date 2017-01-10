@@ -398,7 +398,7 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<Boolean> verifyAdvertise(int verify_uid,String advertiseId,String msg,int state){
 			Advertise advertise=advertiseService.getById(advertiseId);
 			advertise.setVerify_uid(verify_uid);
-			if(advertise.getState()==AdvertiseStateType.UnVerified.getType()){
+			if(advertise.getState()==AdvertiseStateType.UnVerified.getType() || (advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType() && advertise.getState() == BusinessEnumType.AdvertiseStateType.OnPublish.getType())){
 				if(state==0){
 					advertise.setState(AdvertiseStateType.UnPublish.getType());
 					advertiseIndexIncrementService.adStateUpdIncrement(advertiseId, AdvertiseStateType.UnPublish.getType(),null);

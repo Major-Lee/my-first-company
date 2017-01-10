@@ -22,7 +22,6 @@
     <result property="memo" column="memo"/>
     <result property="description" column="description"/>
     <result property="role" column="role"/>
-    
     <result property="updated_at" column="updated_at"/>
   </resultMap>  
   <resultMap id="mapcountAndsum" type="hashmap">
@@ -79,7 +78,33 @@
 	    	role,
 	    	updated_at
 	    ]]>
-	</sql>  
+	</sql> 
+	
+	<sql id="modelUserIncomeColumns">
+	    <![CDATA[
+	    	count(*) as times, 
+	    	uid, 
+	    	round(sum(cash), 2) as income
+	    ]]>
+	</sql> 
+	
+	<sql id="modelMacIncomeColumns">
+	    <![CDATA[
+	    	count(*) as times, 
+	    	mac,
+	    	uid, 
+	    	round(sum(cash), 2) as income
+	    ]]>
+	</sql> 
+	
+	<sql id="modelGpathIncomeColumns">
+	    <![CDATA[
+	    	count(*) as times, 
+	    	current_gpath,
+	    	uid, 
+	    	round(sum(cash), 2) as income
+	    ]]>
+	</sql> 
 	<sql id="modelWithoutPKColumns">
 	    <![CDATA[
 	    	uid,
@@ -345,6 +370,43 @@
 	      <include refid="model_CRITERIA_SQL_GenCondition" />
 	    </if>  		
 	</select>
+	
+	<select id="findUserIncomeListByTime" resultType="userIncome" parameterType="String">
+		SELECT  <include refid="modelUserIncomeColumns" /> from <include refid="modelTableName" /> 
+		WHERE transmode='SDP'
+		<if test="start_created_ts!=null">
+			and updated_at > #{pre_day}
+		</if>
+		<if test="end_created_ts!=null">
+			and <![CDATA[ updated_at < #{today} ]]> 
+		</if>
+		 GROUP BY uid 		
+	</select>
+	
+	<select id="findMacIncomeListByTime" resultType="userIncome" parameterType="String">
+		SELECT  <include refid="modelMacIncomeColumns" /> from <include refid="modelTableName" /> 
+		WHERE transmode='SDP'
+		<if test="start_created_ts!=null">
+			and updated_at > #{pre_day}
+		</if>
+		<if test="end_created_ts!=null">
+			and <![CDATA[ updated_at < #{today} ]]> 
+		</if>
+		 group by uid,mac 		
+	</select>
+	
+	<select id="findGpathIncomeListByTime" resultType="userIncome" parameterType="String">
+		SELECT  <include refid="modelGpathIncomeColumns" /> from <include refid="modelTableName" /> 
+		WHERE transmode='SDP' and current_gpath is not null
+		<if test="start_created_ts!=null">
+			and updated_at > #{pre_day}
+		</if>
+		<if test="end_created_ts!=null">
+			and <![CDATA[ updated_at < #{today} ]]> 
+		</if>
+		 group by current_gpath		
+	</select>
+	
 	<select id="countIncome" resultType="Map" parameterType="Map">
 		SELECT sum(cash) as cash,count(*) as num from t_vas_users_wallet_log  WHERE   transmode='SDP' 	
 		<if test="uid!=null">
