@@ -78,6 +78,19 @@ public class NumberValidateHelper {
 		return value>= minValue && value <= maxValue;
 	}
 	
+	public static boolean validAmountInRange(String param, double minValue, double maxValue){
+		if(StringUtils.isEmpty(param)) return false;
+		try{
+			if(!isValidNumberCharacter(param))
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_PLUSFLOAT_DECIMAL_PART_ERROR,new String[]{param});
+			double val = Double.parseDouble(param);
+			return amountInRange(val, minValue, maxValue);
+		}catch(NumberFormatException nfe){
+			nfe.printStackTrace(System.out);
+		}
+		return false;
+		//return Math.min(Math.max(value, minValue), maxValue);
+	}
 	public static void main(String[] argv){
 		
 		/*System.out.println(DateTimeHelper.getTimeDiff(2*60*60*1000));
