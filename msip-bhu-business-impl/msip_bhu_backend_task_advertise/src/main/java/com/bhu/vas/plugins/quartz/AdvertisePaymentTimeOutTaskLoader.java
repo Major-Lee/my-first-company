@@ -76,7 +76,7 @@ public class AdvertisePaymentTimeOutTaskLoader {
 				List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(ad.getId());
 				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, Double.valueOf(ad.getId()));
 				AdvertiseSnapShotListService.getInstance().destorySnapShot(ad.getId());
-				ad.setType(BusinessEnumType.AdvertiseStateType.Published.getType());
+				ad.setState(BusinessEnumType.AdvertiseStateType.Published.getType());
 				adIds.add(ad.getId());
 			}
 			advertiseService.updateAll(ads);
