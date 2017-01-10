@@ -10,7 +10,7 @@ import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 
 
 /**
- * 每天三点运行
+ * 每天3，4，5，6点运行
  * @author dell
  *
  */
