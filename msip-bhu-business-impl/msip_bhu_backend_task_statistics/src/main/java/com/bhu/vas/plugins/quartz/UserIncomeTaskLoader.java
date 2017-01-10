@@ -40,8 +40,8 @@ public class UserIncomeTaskLoader {
         String today = CommonTimeHelper.GetDateStr(0);
         System.out.println("preDate:"+preDayDate+"today:"+today);
         try{
-        	List<UserIncome> incomeList =userWalletFacadeService.getUserIncomeService().findByLimit(today,5,0);
-            if(incomeList.size() < 1){
+        	List<UserIncome> incomeList =userWalletFacadeService.getUserIncomeService().findByLimit(today,1,0);
+            if(incomeList.size() <= 1){
             	//统计昨日用户收益userIncome
             	List<Object> userIncomeList = userWalletFacadeService.getUserWalletLogService().findUserIncomeListByTime(preDayDate,today);
             	for (Object object : userIncomeList) {
@@ -56,8 +56,8 @@ public class UserIncomeTaskLoader {
             	}
             }
     		
-            List<MacIncome> macIncomesList=userWalletFacadeService.getMacIncomeService().findByLimit(today,5,0);
-            if(macIncomesList.size() < 1){
+            List<MacIncome> macIncomesList=userWalletFacadeService.getMacIncomeService().findByLimit(today,1,0);
+            if(macIncomesList.size() <= 1){
             	//统计昨日用户收益macIncome
             	List<Object> macIncomeList = userWalletFacadeService.getUserWalletLogService().findMacIncomeListByTime(preDayDate,today);
             	for (Object object : macIncomeList) {
@@ -72,8 +72,8 @@ public class UserIncomeTaskLoader {
             }
             
             //统计昨日用户收益gpathIncome
-            List<GpathIncome> gpathIncomesList=userWalletFacadeService.getGpathIncomeService().findByLimit(today,5,0);
-        	if(gpathIncomesList.size() < 1){
+            List<GpathIncome> gpathIncomesList=userWalletFacadeService.getGpathIncomeService().findByLimit(today,1,0);
+        	if(gpathIncomesList.size() <= 1){
         		List<Object> gpathIncomeList = userWalletFacadeService.getUserWalletLogService().findGpathIncomeListByTime(preDayDate,today);
         		for (Object object : gpathIncomeList) {
         			GpathIncome gpathIncomeVTO = (GpathIncome) object;
