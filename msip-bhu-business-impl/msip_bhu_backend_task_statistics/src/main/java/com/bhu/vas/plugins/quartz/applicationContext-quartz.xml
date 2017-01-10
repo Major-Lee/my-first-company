@@ -23,7 +23,7 @@
 				<ref bean="userIncomeBackendTaskLoaderCronTrigger" />	
 				<!-- 每天两点零九分 -->
 				<ref bean="userIncomeRankLoaderCronTrigger" />	
-				<!-- 每月1号三点执行一次 -->
+				<!-- 每月1号3,4,5,6各执行一次 -->
 				<ref bean="userIncomeMonthRankTaskLoaderCronTrigger" />
 				<!-- 每天1号四点执行 -->
 				<ref bean="fincialStatisticsTaskLoaderCronTrigger" />
@@ -64,7 +64,7 @@
 	</bean>
 	<bean id="userIncomeRankLoaderJob" class="com.bhu.vas.plugins.quartz.UserIncomeRankTaskLoader" />
 	
-	<!-- 每月三点运行 -->
+	<!-- 每月3，4，5，6点运行 -->
 	<bean id="userIncomeMonthRankTaskLoaderCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="userIncomeMonthRankTaskLoaderCronJobDetail" />
 		<property name="cronExpression" value="${statistic.userIncomeMonthRank}" />

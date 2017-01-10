@@ -1,7 +1,6 @@
 package com.bhu.vas.business.ds.user.facade;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,8 +43,6 @@ import com.bhu.vas.api.rpc.user.model.pk.UserOAuthStatePK;
 import com.bhu.vas.api.rpc.user.notify.IWalletNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletSharedealNotifyCallback;
 import com.bhu.vas.api.rpc.user.notify.IWalletVCurrencySpendCallback;
-import com.bhu.vas.api.rpc.user.vto.UserOAuthStateVTO;
-import com.bhu.vas.api.vto.publishAccount.UserPublishAccountDetailVTO;
 import com.bhu.vas.api.vto.wallet.UserWalletDetailVTO;
 import com.bhu.vas.business.bucache.local.serviceimpl.wallet.BusinessWalletCacheService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
@@ -1231,57 +1228,63 @@ public class UserWalletFacadeService{
 		date = calendar.getTime();  
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");  
 		String time =sdf.format(date); 
-		System.out.println(time);
-		Date dateNow = new Date();  
-		Calendar calendarNow = Calendar.getInstance();  
-		calendarNow.setTime(dateNow);  
-		calendarNow.add(Calendar.MONTH, x);  
-		dateNow = calendarNow.getTime();  
-		String timeNow =sdf.format(dateNow); 
-		System.out.println(timeNow);
-		
-		Date datebefore = new Date();  
-		Calendar calendarBefore = Calendar.getInstance();  
-		calendarBefore.setTime(datebefore);  
-		calendarBefore.add(Calendar.MONTH, x-2);  
-		datebefore = calendarBefore.getTime();  
-		String timeBefore =sdf.format(datebefore); 
-		//userIncomeRankService.deleteAllRank();
-		List<UserIncome> userIncomes=this.getUserIncomeService().findMonthList(time+"%");
-		if(userIncomes != null&&userIncomes.size()>0){
-			String beforeIncome="0";
-			int beforeRankNum=0;
-			int n=1;
-			int m=1;
-			for(int i=userIncomes.size()-1;i>=0;i--){
-				UserIncomeMonthRank userIncomeMonthRank=new UserIncomeMonthRank();
-				UserIncome userIncome=userIncomes.get(i);
-				if(i==userIncomes.size()-1){
-					beforeRankNum=n;
-					beforeIncome=userIncome.getIncome();
-				}else{
-					if(!StringUtils.equals(beforeIncome, userIncome.getIncome())){
-						beforeRankNum=m;
+		//如果上月统计已执行，就跳过
+		List<UserIncomeMonthRank> userIncomList = userIncomeMonthRankService.findByLimit(time,5,0);
+		System.out.println("userIncomList size:"+userIncomList.size());
+		if(userIncomList.size()<=0){
+			System.out.println(time +"month rank list task statistics starting...");
+			Date dateNow = new Date();  
+			Calendar calendarNow = Calendar.getInstance();  
+			calendarNow.setTime(dateNow);  
+			calendarNow.add(Calendar.MONTH, x);  
+			dateNow = calendarNow.getTime();  
+			String timeNow =sdf.format(dateNow); 
+			System.out.println(timeNow);
+			Date datebefore = new Date();  
+			Calendar calendarBefore = Calendar.getInstance();  
+			calendarBefore.setTime(datebefore);  
+			calendarBefore.add(Calendar.MONTH, x-2);  
+			datebefore = calendarBefore.getTime();  
+			String timeBefore =sdf.format(datebefore); 
+			//userIncomeRankService.deleteAllRank();
+			List<UserIncome> userIncomes=this.getUserIncomeService().findMonthList(time+"%");
+			if(userIncomes.size()>0){
+				String beforeIncome="0";
+				int beforeRankNum=0;
+				int n=1;
+				int m=1;
+				for(int i=userIncomes.size()-1;i>=0;i--){
+					UserIncomeMonthRank userIncomeMonthRank=new UserIncomeMonthRank();
+					UserIncome userIncome=userIncomes.get(i);
+					if(i==userIncomes.size()-1){
+						beforeRankNum=n;
 						beforeIncome=userIncome.getIncome();
-						n=m;
+					}else{
+						if(!StringUtils.equals(beforeIncome, userIncome.getIncome())){
+							beforeRankNum=m;
+							beforeIncome=userIncome.getIncome();
+							n=m;
+						}
 					}
+					userIncomeMonthRank.setRank(beforeRankNum);
+					userIncomeMonthRank.setIncome(userIncome.getIncome());
+					UserIncomeMonthRank incomeRank=userIncomeMonthRankService.getByUid(userIncome.getUid(),timeBefore+"%");
+					userIncomeMonthRank.setUid(userIncome.getUid());
+					if(incomeRank!=null){
+						userIncomeMonthRank.setBeforeIncome(incomeRank.getIncome());
+						userIncomeMonthRank.setBeforeRank(incomeRank.getRank());
+						userIncomeMonthRank.setCreated_at(date);
+					}else{
+						userIncomeMonthRank.setCreated_at(date);
+						userIncomeMonthRank.setBeforeIncome(userIncomeMonthRank.getIncome());
+						userIncomeMonthRank.setBeforeRank(9999999);
+					}
+					userIncomeMonthRankService.insert(userIncomeMonthRank);
+					m++;
 				}
-				userIncomeMonthRank.setRank(beforeRankNum);
-				userIncomeMonthRank.setIncome(userIncome.getIncome());
-				UserIncomeMonthRank incomeRank=userIncomeMonthRankService.getByUid(userIncome.getUid(),timeBefore+"%");
-				userIncomeMonthRank.setUid(userIncome.getUid());
-				if(incomeRank!=null){
-					userIncomeMonthRank.setBeforeIncome(incomeRank.getIncome());
-					userIncomeMonthRank.setBeforeRank(incomeRank.getRank());
-					userIncomeMonthRank.setCreated_at(date);
-				}else{
-					userIncomeMonthRank.setCreated_at(date);
-					userIncomeMonthRank.setBeforeIncome(userIncomeMonthRank.getIncome());
-					userIncomeMonthRank.setBeforeRank(9999999);
-				}
-				userIncomeMonthRankService.insert(userIncomeMonthRank);
-				m++;
 			}
+		}else{
+			System.out.println(time +"month rank list task statistics had finished.");
 		}
 	}
 	
