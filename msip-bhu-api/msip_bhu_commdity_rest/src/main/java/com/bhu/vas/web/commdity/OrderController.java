@@ -73,15 +73,15 @@ public class OrderController extends BaseController{
 		long start = System.currentTimeMillis();
 		
 		String user_agent = request.getHeader("User-Agent");
+		Locale locale = BusinessWebHelper.getLocale(request);
 		//1:生成订单
 		RpcResponseDTO<OrderRewardVTO> rpcResult = orderRpcService.createRewardOrder(commdityid, mac, umac, umactype,
 				payment_type, context, user_agent, channel);
 		if(rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
 			return;
 		}
 
-		Locale locale = BusinessWebHelper.getLocale(request);
 		//2:请求支付系统返回支付url
 		OrderRewardVTO order_vto = rpcResult.getPayload();
 		String orderid = order_vto.getId();
@@ -498,14 +498,14 @@ public void physical_mini_paymenturl(
 		long start = System.currentTimeMillis();
 		
 		String user_agent = request.getHeader("User-Agent");
+		Locale locale = BusinessWebHelper.getLocale(request);
 		//1:生成订单
 		RpcResponseDTO<RewardCreateMonthlyServiceVTO> rpcResult = orderRpcService.rewardCreateMonthlyService(commdityid, mac, umac, 
 				context, umactype, channel, user_agent,uname,acc,address,count,needInvoice,invoiceDetail);
 		if(rpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
 			return;
 		}
-		Locale locale = BusinessWebHelper.getLocale(request);
 
 		//2:请求支付系统返回支付url
 		RewardCreateMonthlyServiceVTO order_vto = rpcResult.getPayload();
