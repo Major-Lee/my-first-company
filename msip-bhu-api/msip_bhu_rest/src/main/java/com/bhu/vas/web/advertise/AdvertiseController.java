@@ -277,4 +277,30 @@ public class AdvertiseController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
 		}
 	}
+	
+    @ResponseBody()
+    @RequestMapping(value = "/fetch_by_condition_message", method = {RequestMethod.POST})
+    public void fetch_by_condition_message(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = false) Integer uid,
+            @RequestParam(required = false) String message,
+            @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
+            @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
+
+        RpcResponseDTO<List<TailPage<AdvertiseVTO>>> rpcResult = advertiseRpcService.fetchBySearchConditionMessages(
+        		pageNo, pageSize, message);
+		if(!rpcResult.hasError()){
+			//兼容老的界面和接口
+			List<TailPage<AdvertiseVTO>> rpcResultPayload = rpcResult.getPayload();
+			if(rpcResultPayload != null && !rpcResultPayload.isEmpty()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResponseDTOBuilder.
+						builderSuccessRpcResponse(rpcResultPayload.get(0))));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(null));
+			}
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+		}
+    }
 }

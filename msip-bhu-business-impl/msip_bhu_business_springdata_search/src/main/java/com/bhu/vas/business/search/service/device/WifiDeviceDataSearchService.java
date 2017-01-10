@@ -264,4 +264,9 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
 				message, pageSize, notify);
 	}
+	public static void main(String[] args) {
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithGeoPointDistance("北京市北京市海淀区", 29.713245, 116.003778, "20km");
+		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
+		System.out.println(message);
+	}
 }
