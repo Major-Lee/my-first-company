@@ -108,7 +108,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 				start = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 1);
 				end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
 				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
-					macList = advertiseHomeImage_SmallAreaApply(null, ad.getLat(), ad.getLon(), ad.getDistance(), batch);
+					macList = advertiseHomeImage_SmallAreaApply(null, ad.getLat(), ad.getLon(), ad.getDistance());
 				}else{
 					macList = advertiseHomeImageApply(start, end, ad, batch);
 				}
@@ -251,16 +251,12 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 		return macList;
 	}
 	
-	public List<String> advertiseHomeImage_SmallAreaApply(String contextId, double lat, double lon, String distance, int batch){
+	public List<String> advertiseHomeImage_SmallAreaApply(String contextId, double lat, double lon, String distance){
 		final List<String> macList = new ArrayList<String>();
-		wifiDeviceDataSearchService.iteratorWithGeoPointDistance(contextId, lat, lon, distance, batch, new IteratorNotify<Page<WifiDeviceDocument>>() {
-			@Override
-			public void notifyComming(Page<WifiDeviceDocument> pages) {
-				for (WifiDeviceDocument doc : pages) {
-					macList.add(doc.getD_mac());
-				}	
-			}
-		});
+		Page<WifiDeviceDocument> pages= wifiDeviceDataSearchService.searchByGeoPointDistance(contextId, lat, lon, distance);
+		for(WifiDeviceDocument doc : pages){
+			macList.add(doc.getD_mac());
+		}
 		return macList;
 	}
 	

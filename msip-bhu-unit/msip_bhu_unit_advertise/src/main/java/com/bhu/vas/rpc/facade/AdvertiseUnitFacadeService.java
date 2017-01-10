@@ -176,8 +176,9 @@ public class AdvertiseUnitFacadeService {
 					if(sb != null){
 						context = sb.toString();
 					}
-					count = wifiDeviceDataSearchService.searchCountByGeoPointDistance(context, lat, lon, distance);
-
+					
+					long sum = wifiDeviceDataSearchService.searchCountByGeoPointDistance(context, lat, lon, distance);
+					count = sum > 500 ? 500 : sum;
 					if(lat ==0 || lon == 0 || distance.isEmpty() ||count == 0){
 						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 					}

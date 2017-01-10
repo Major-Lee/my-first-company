@@ -153,6 +153,23 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		return super.searchCountByConditionMessage(scm);
 	}
 	
+	/**
+	 * 根据经纬度查询设备
+	 * @param contextId
+	 * @param lat
+	 * @param lon
+	 * @param distance
+	 * @return
+	 */
+	public Page<WifiDeviceDocument> searchByGeoPointDistance(String contextId, double lat, double lon, String distance){
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithGeoPointDistance(contextId, lat, lon, distance);
+		if(scm == null || scm.equals(null)){
+			return null;
+		}
+		return super.searchByConditionMessage(scm, 1, 500);
+	}
+	
 	
 	/**
 	 * 根据snk查询设备数量
@@ -263,5 +280,10 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 	public void iteratorAll(String message, int pageSize, IteratorNotify<Page<WifiDeviceDocument>> notify){
 		super.iteratorAll(BusinessIndexDefine.WifiDevice.IndexName, BusinessIndexDefine.WifiDevice.Type, 
 				message, pageSize, notify);
+	}
+	public static void main(String[] args) {
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithGeoPointDistance("北京市北京市海淀区", 29.713245, 116.003778, "20km");
+		String message = WifiDeviceSearchMessageBuilder.builderSearchMessageString(scm);
+		System.out.println(message);
 	}
 }
