@@ -465,6 +465,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static final int Reward_Month_Internet_Commdity_ID = 16;
 	public static final int Reward_Day_Internet_Commdity_ID = 22;
 	public static final int Reward_Week_Internet_Commdity_ID = 23;
+	public static final int HotPlay_HomeImage_SmallArea_Commdity_ID = 24;
 	
 	
 	public static String UserPortalUpdate2UPortalApi = "http://ucloud.bhuwifi.com:9158/portal/set/recreate";

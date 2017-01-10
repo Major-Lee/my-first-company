@@ -36,6 +36,7 @@ import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseVideoValidateCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
+import com.bhu.vas.api.helper.BusinessEnumType.AdvertiseType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
@@ -1084,8 +1085,26 @@ public class OrderUnitFacadeService {
 			vto.setAppid(order.getAppid());
 			vto.setAdCommdityVTO(advertisePayment);
 			vto.setRestMin(restMin);
-			vto.setGoods_name(commdity.getName());
 			vto.setName_key(commdity.getName_key());
+			//更具广告type决定哪种热播商品名称
+			String goods_name = null;
+			AdvertiseType hpType = AdvertiseType.fromKey(advertisePayment.getType());
+			switch (hpType) {
+			case HomeImage:
+			case SortMessage:
+				goods_name = commdity.getName();
+				break;
+			case HomeImage_SmallArea:
+				Commdity HomeImage_SmallArea_commdityid = commdityFacadeService.
+				validateCommdity(BusinessRuntimeConfiguration.
+						HotPlay_HomeImage_SmallArea_Commdity_ID);
+				goods_name = HomeImage_SmallArea_commdityid.getName();
+				break;
+			default:
+				logger.info("createHotPlayOrder hptype error");
+				break;
+			}
+			vto.setGoods_name(goods_name);
 			logger.info("createHotPlayOrder successfully!");
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
