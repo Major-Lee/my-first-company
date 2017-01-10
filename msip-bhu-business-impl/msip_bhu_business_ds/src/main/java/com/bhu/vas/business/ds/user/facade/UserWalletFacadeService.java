@@ -391,7 +391,8 @@ public class UserWalletFacadeService{
 	 * @param orderid
 	 * @param desc
 	 */
-	public int sharedealCashToUserWalletWithProcedure(String dmac, String umac, double sharedealCash, String orderid, Date pay_time, String description, UWalletTransMode transmode, UWalletTransType transtype, long detail_id, IWalletSharedealNotifyCallback callback){
+	public int sharedealCashToUserWalletWithProcedure(String dmac, String umac, double sharedealCash, String orderid, Date pay_time, String description, 
+			UWalletTransMode transmode, UWalletTransType transtype, long detail_id, IWalletSharedealNotifyCallback callback){
 		logger.info(String.format("分成现金入账-1 dmac[%s] orderid[%s] cash[%s]", dmac,orderid,sharedealCash));
 		SharedealInfo sharedeal = chargingFacadeService.calculateSharedeal(dmac, umac, orderid, sharedealCash);
 		ShareDealWalletProcedureDTO procedureDTO = ShareDealWalletProcedureDTO.buildWith(sharedeal);

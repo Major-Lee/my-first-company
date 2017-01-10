@@ -87,9 +87,9 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_VAP_MODULE_EXCEPT("734","wifidevice.vap.module.except"),
 	
 	WIFIDEVICE_GROUP_NOTEXIST("750","wifidevice.group.notexist"),
-	WIFIDEVICE_GROUP_CURRENT_DEVICES_EMPTY("751","wifidevice.group.current.devices.empty"),
-	WIFIDEVICE_GROUP_DEPENDENCY_DEVICES_EMPTY("752","wifidevice.group.dependency.devices.empty"),
-	WIFIDEVICE_GROUP_ONLINE_DEVICES_EMPTY("753","wifidevice.group.devices.online.empty"),
+//	WIFIDEVICE_GROUP_CURRENT_DEVICES_EMPTY("751","wifidevice.group.current.devices.empty"),
+//	WIFIDEVICE_GROUP_DEPENDENCY_DEVICES_EMPTY("752","wifidevice.group.dependency.devices.empty"),
+//	WIFIDEVICE_GROUP_ONLINE_DEVICES_EMPTY("753","wifidevice.group.devices.online.empty"),
 	WIFIDEVICE_GROUP_TOO_LONG("754","wifidevice.group.devices.too.long"),
 	WIFIDEVICE_GROUP_EXIST_CHILDREN("755", "wifidevice.group.devices.exist.children"),
 	WIFIDEVICE_GROUP_NOTEXIST_PARENT("756", "wifidevice.group.devices.notexist.parent"),
@@ -101,7 +101,7 @@ public enum ResponseErrorCode {
 	WIFIDEVICE_BELONG_TO_DISTRIBUTOR_CITY("763", "wifidevice.belong.to.distributor.city"),
 	WIFIDEVICE_INVALID_INDUSTRY("764", "wifidevice.invalid.industry"),
 
-	WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED("770", "wifidevice.gray.deviceunittype.notmatched"),
+//	WIFIDEVICE_GRAY_DeviceUnitType_NOTMATCHED("770", "wifidevice.gray.deviceunittype.notmatched"),
 	
 	WIFISTASNIFFER_NICK_LENGTH_INVALID("781", "wifistasniffer.nick.length.invalid"),
 	

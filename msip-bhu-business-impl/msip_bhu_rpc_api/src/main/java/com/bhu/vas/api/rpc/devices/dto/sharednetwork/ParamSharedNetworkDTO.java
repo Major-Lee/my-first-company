@@ -99,12 +99,12 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	
 	private String range_cash_pc;
 	private String range_cash_mobile;
-	private String cash_pc_day;
-	private String cash_mobile_day;
-	private String cash_pc_week;
-	private String cash_mobile_week;
-	private String cash_pc_month;
-	private String cash_mobile_month;
+	private String cash_pc_day = Default_Cash_Pc_For_Day;
+	private String cash_mobile_day = Default_Cash_Mobile_For_Day;
+	private String cash_pc_week = Default_Cash_Pc_For_Week;
+	private String cash_mobile_week = Default_Cash_Mobile_For_Week;
+	private String cash_pc_month = Default_Cash_Pc_For_Month;
+	private String cash_mobile_month = Default_Cash_Mobile_For_Month;
 	
 	private String ait_pc;
 	private String ait_mobile;

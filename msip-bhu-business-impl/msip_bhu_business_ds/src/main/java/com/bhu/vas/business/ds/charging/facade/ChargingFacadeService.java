@@ -723,14 +723,6 @@ public class ChargingFacadeService {
 				                                        configs.getDistributor_l2_percent()
 				                                        );
 		
-		if (configs.getOwner() > 0) {
-			result.setOwner(configs.getOwner());
-			result.setBelong(true);
-		} else {
-			result.setOwner(WifiDeviceSharedealConfigs.Default_Owner);
-			result.setBelong(false);
-		}
-
 		if (configs.getManufacturer() > 0) {
 			result.setManufacturer(configs.getManufacturer());
 		} else {
@@ -750,7 +742,22 @@ public class ChargingFacadeService {
 		} else {
 			result.setDistributor_l2(WifiDeviceSharedealConfigs.Default_Owner);
 		}
-
+		
+		if (configs.getOwner() > 0) {
+			result.setOwner(configs.getOwner());
+			result.setBelong(true);
+		} else {
+			//owner不存在，把owner的分润合并到最近的运营商
+			if(configs.getDistributor_l2() > 0){
+				result.setDistributor_l2_cash(result.getDistributor_l2_cash() + result.getOwner_cash());
+				result.setOwner_cash(0);
+			} else if(configs.getDistributor() > 0){
+				result.setDistributor_cash(result.getDistributor_cash() + result.getOwner_cash());
+				result.setOwner_cash(0);
+			}
+			result.setOwner(WifiDeviceSharedealConfigs.Default_Owner);
+			result.setBelong(false);
+		}
 		// result.setDistributor(configs.getDistributor());
 		return result;
 	}
