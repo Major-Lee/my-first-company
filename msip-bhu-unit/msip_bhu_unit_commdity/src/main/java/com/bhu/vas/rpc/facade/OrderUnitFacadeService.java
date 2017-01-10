@@ -1076,7 +1076,22 @@ public class OrderUnitFacadeService {
 			}
 			//商品信息验证
 			//验证商品是否合法
-			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+			Commdity commdity = null;
+			AdvertiseType hpType = AdvertiseType.fromKey(advertisePayment.getType());
+			switch (hpType) {
+			
+			case HomeImage_SmallArea:
+				commdity = commdityFacadeService.
+				validateCommdity(BusinessRuntimeConfiguration.
+						HotPlay_HomeImage_SmallArea_Commdity_ID);
+				break;
+			case HomeImage:
+			case SortMessage:
+			default:
+				commdity = commdityFacadeService.validateCommdity(commdityid);
+				break;
+			}
+			
 			Order order = orderFacadeService.createHotPlayOrder(commdity, hpid, amount,
 					umactype, payment_type, channel, user_agent);
 			HotPlayOrderVTO vto = new HotPlayOrderVTO();
@@ -1086,25 +1101,8 @@ public class OrderUnitFacadeService {
 			vto.setAdCommdityVTO(advertisePayment);
 			vto.setRestMin(restMin);
 			vto.setName_key(commdity.getName_key());
-			//更具广告type决定哪种热播商品名称
-			String goods_name = null;
-			AdvertiseType hpType = AdvertiseType.fromKey(advertisePayment.getType());
-			switch (hpType) {
-			case HomeImage:
-			case SortMessage:
-				goods_name = commdity.getName();
-				break;
-			case HomeImage_SmallArea:
-				Commdity HomeImage_SmallArea_commdityid = commdityFacadeService.
-				validateCommdity(BusinessRuntimeConfiguration.
-						HotPlay_HomeImage_SmallArea_Commdity_ID);
-				goods_name = HomeImage_SmallArea_commdityid.getName();
-				break;
-			default:
-				logger.info("createHotPlayOrder hptype error");
-				break;
-			}
-			vto.setGoods_name(goods_name);
+			vto.setGoods_name(commdity.getName());
+			
 			logger.info("createHotPlayOrder successfully!");
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
 		}catch(Exception ex){
