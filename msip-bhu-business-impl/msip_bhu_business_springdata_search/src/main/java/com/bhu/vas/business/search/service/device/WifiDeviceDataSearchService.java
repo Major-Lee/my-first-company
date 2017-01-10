@@ -153,6 +153,23 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		return super.searchCountByConditionMessage(scm);
 	}
 	
+	/**
+	 * 根据经纬度查询设备
+	 * @param contextId
+	 * @param lat
+	 * @param lon
+	 * @param distance
+	 * @return
+	 */
+	public Page<WifiDeviceDocument> searchByGeoPointDistance(String contextId, double lat, double lon, String distance){
+		
+		SearchConditionMessage scm = WifiDeviceSearchMessageBuilder.builderSearchMessageWithGeoPointDistance(contextId, lat, lon, distance);
+		if(scm == null || scm.equals(null)){
+			return null;
+		}
+		return super.searchByConditionMessage(scm, 1, 500);
+	}
+	
 	
 	/**
 	 * 根据snk查询设备数量
