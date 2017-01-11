@@ -1171,7 +1171,7 @@ public class UserWalletFacadeService{
         List<UserIncomeRank> userIncomRankList = userIncomeRankService.findByLimit(time+"%",0,1);
 		System.out.println("userIncomRankList size:"+userIncomRankList.size());
 		if(userIncomRankList.size()<=0){
-			System.out.println(time +"user rank list task statistics starting...");
+			System.out.println(time +" user rank list task statistics starting...");
 			 Date dateNow = new Date();  
 		        Calendar calendarNow = Calendar.getInstance();  
 		        calendarNow.setTime(dateNow);  
