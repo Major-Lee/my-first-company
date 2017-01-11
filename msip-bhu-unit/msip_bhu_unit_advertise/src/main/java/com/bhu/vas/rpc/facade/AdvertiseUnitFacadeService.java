@@ -725,9 +725,27 @@ public class AdvertiseUnitFacadeService {
 						}else{
 							vtos = new ArrayList<AdvertiseVTO>();
 							AdvertiseVTO vto = null;
-							for(AdvertiseDocument advertiseDocument : searchDocuments){
+							for(AdvertiseDocument doc : searchDocuments){
 								vto = new AdvertiseVTO();
-								BeanUtils.copyProperties(advertiseDocument, vto);
+								vto.setId(doc.getId());
+								vto.setType(doc.getA_type());
+								vto.setTitle(doc.getA_title());
+								vto.setState(doc.getA_state());
+								vto.setDescription(doc.getA_desc());
+								vto.setProvince(doc.getA_province());
+								vto.setCity(doc.getA_city());
+								vto.setDistrict(doc.getA_district());
+								if(doc.getA_geopoint() !=null){
+									vto.setLat(doc.getA_geopoint()[0]);
+									vto.setLon(doc.getA_geopoint()[1]);
+								}
+								vto.setDistance(doc.getA_distance());
+								vto.setUrl(doc.getA_url());
+								vto.setCount(doc.getA_count());
+								vto.setDomain(doc.getA_domain());
+								vto.setImage(doc.getA_image());
+								vto.setExtparams(doc.getA_extparams());
+								vto.setReject_reason(doc.getA_reject_reason());
 								vtos.add(vto);
 							}
 						}
