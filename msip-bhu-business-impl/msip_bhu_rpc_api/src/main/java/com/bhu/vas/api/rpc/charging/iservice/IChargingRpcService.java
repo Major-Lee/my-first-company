@@ -1,9 +1,12 @@
 package com.bhu.vas.api.rpc.charging.iservice;
 
+import java.util.List;
+
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.OpsBatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
+import com.bhu.vas.api.vto.device.BatchDeviceSharedealVTO;
 import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 
@@ -12,6 +15,7 @@ public interface IChargingRpcService {
 	public RpcResponseDTO<SharedealDefaultVTO> doFetchDefaultSharedeal(int uid);
 	public RpcResponseDTO<DeviceSharedealVTO> sharedealDetail(int uid,String mac);
 	public RpcResponseDTO<DeviceSharedealVTO> sharedealDetail(String mac);
+	public RpcResponseDTO<List<BatchDeviceSharedealVTO>> batchSharedealDetail(String macs);
 	public RpcResponseDTO<Boolean> doBatchSharedealModify(int uid, String message, 
 			Boolean canbeturnoff,
 			Boolean noapp,
