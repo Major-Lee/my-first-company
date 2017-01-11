@@ -153,6 +153,10 @@
 	    </if>  
 	</select>
 	
+	<select id="findGpathIncomeByLimit" resultMap="modelResult" parameterType="java.util.Map">
+	    select <include refid="modelColumns" /> from <include refid="modelTableName" /> where updated_at > #{time} order by time limit #{limit} OFFSET #{start}
+	</select>
+	
 	<select id="countByModelCriteria" resultType="int">
 		select count(*) from <include refid="modelTableName" /> 
 		<if test="_parameter != null"> 

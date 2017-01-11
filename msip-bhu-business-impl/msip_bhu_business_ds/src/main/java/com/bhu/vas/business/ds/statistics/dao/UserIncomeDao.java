@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import com.bhu.vas.api.rpc.charging.model.UserIncome;
+import com.bhu.vas.api.rpc.charging.model.UserIncomeMonthRank;
 import com.bhu.vas.api.rpc.commdity.model.Order;
 import com.smartwork.msip.business.abstractmsd.dao.AbstractCoreDao;
 @Repository
@@ -72,5 +73,8 @@ public class UserIncomeDao extends AbstractCoreDao<String, UserIncome>{
 			return order;
 		}
 		return order;
+	}
+	public List<UserIncome> findByLimit(Map<String, Object> map) {
+		return super.getSqlSessionSlaverTemplate().selectList(UserIncome.class.getName()+".findUserIncomeByLimit",map);
 	}
 }
