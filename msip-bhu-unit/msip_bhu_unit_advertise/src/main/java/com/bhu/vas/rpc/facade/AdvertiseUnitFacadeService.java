@@ -634,11 +634,11 @@ public class AdvertiseUnitFacadeService {
 		String[] distanceTemp = distances.split(StringHelper.COMMA_STRING_GAP);
 		StringBuilder sb = null;
 		
-		if(!province.isEmpty())
+		if(province !=null)
 	        sb = new StringBuilder(province);
-		if(!city.isEmpty())
+		if(city!=null)
 			sb.append(city);
-		if(!district.isEmpty())
+		if(district!=null)
 			sb.append(district);
 		
 		String contextId = sb.toString();
