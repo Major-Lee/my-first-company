@@ -1241,7 +1241,7 @@ public class UserWalletFacadeService{
 		//如果上月统计已执行，就跳过
 		List<UserIncomeMonthRank> userIncomList = userIncomeMonthRankService.findByLimit(time+"%",0,1);
 		System.out.println("User Income Month Rank size:"+userIncomList.size());
-		if(userIncomList.size()<0){
+		if(userIncomList.size()<=0){
 			System.out.println(time +"month rank list task statistics starting...");
 			Date dateNow = new Date();  
 			Calendar calendarNow = Calendar.getInstance();  
