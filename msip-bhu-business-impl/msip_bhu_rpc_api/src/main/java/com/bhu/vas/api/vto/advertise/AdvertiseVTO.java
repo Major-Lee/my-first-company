@@ -2,6 +2,8 @@ package com.bhu.vas.api.vto.advertise;
 
 import java.util.Date;
 
+import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
+
 @SuppressWarnings("serial")
 public class AdvertiseVTO implements java.io.Serializable{
 	private String id;
@@ -181,5 +183,25 @@ public class AdvertiseVTO implements java.io.Serializable{
 	}
 	public void setDistance(String distance) {
 		this.distance = distance;
+	}
+	
+	public void document2VTO(AdvertiseDocument doc){
+		this.id = doc.getId();
+		this.type = doc.getA_type();
+		this.title = doc.getA_title();
+		this.state = doc.getA_state();
+		this.description = doc.getA_desc();
+		this.province = doc.getA_province();
+		this.city = doc.getA_city();
+		this.district = doc.getA_district();
+		this.lat=doc.getA_geopoint()[0];
+		this.lon= doc.getA_geopoint()[1];
+		this.distance = doc.getA_distance();
+		this.url = doc.getA_url();
+		this.count = doc.getA_count();
+		this.domain = doc.getA_domain();
+		this.image = doc.getA_image();
+		this.extparams = doc.getA_extparams();
+		this.reject_reason = doc.getA_reject_reason();
 	}
 }

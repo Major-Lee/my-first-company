@@ -727,7 +727,7 @@ public class AdvertiseUnitFacadeService {
 							AdvertiseVTO vto = null;
 							for(AdvertiseDocument advertiseDocument : searchDocuments){
 								vto = new AdvertiseVTO();
-								BeanUtils.copyProperties(advertiseDocument, vto);
+								vto.document2VTO(advertiseDocument);
 								vtos.add(vto);
 							}
 						}
