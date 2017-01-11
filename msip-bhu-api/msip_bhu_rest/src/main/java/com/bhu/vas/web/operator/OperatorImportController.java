@@ -1,5 +1,7 @@
 package com.bhu.vas.web.operator;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +18,7 @@ import com.bhu.vas.api.helper.NumberValidateHelper;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
 import com.bhu.vas.api.rpc.charging.vto.OpsBatchImportVTO;
+import com.bhu.vas.api.vto.device.BatchDeviceSharedealVTO;
 import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.bhu.vas.business.helper.BusinessWebHelper;
 import com.bhu.vas.msip.cores.web.mvc.spring.BaseController;
@@ -188,6 +191,26 @@ public class OperatorImportController extends BaseController{
     		) {
     	try{
 			RpcResponseDTO<DeviceSharedealVTO> rpcResult = chargingRpcService.sharedealDetail(mac.toLowerCase());
+			if(!rpcResult.hasError())
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			else
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+	    }catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex, BusinessWebHelper.getLocale(request)));
+		}catch(Exception ex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
+		}
+    }
+
+    @ResponseBody()
+    @RequestMapping(value = "/sharedeal/batch_detail", method = {RequestMethod.POST})
+    public void batchDetail(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) String macs
+    		) {
+    	try{
+			RpcResponseDTO<List<BatchDeviceSharedealVTO>> rpcResult = chargingRpcService.batchSharedealDetail(macs.toLowerCase());
 			if(!rpcResult.hasError())
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			else

@@ -1,5 +1,7 @@
 package com.bhu.vas.rpc.service.device;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import com.bhu.vas.api.rpc.charging.iservice.IChargingRpcService;
 import com.bhu.vas.api.rpc.charging.vto.BatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.OpsBatchImportVTO;
 import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
+import com.bhu.vas.api.vto.device.BatchDeviceSharedealVTO;
 import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.bhu.vas.rpc.facade.ChargingUnitFacadeService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -137,6 +140,12 @@ public class ChargingRpcService  implements IChargingRpcService{
 	public RpcResponseDTO<DeviceSharedealVTO> sharedealDetail(String mac) {
 		logger.info(String.format("sharedealDetail mac[%s]",mac));
 		return chargingUnitFacadeService.sharedealDetail(BusinessRuntimeConfiguration.Sys_Uid, mac);
+	}
+
+	@Override
+	public RpcResponseDTO<List<BatchDeviceSharedealVTO>> batchSharedealDetail(String macs) {
+		logger.info(String.format("sharedealDetail macs[%s]",macs));
+		return chargingUnitFacadeService.batchSharedealDetail(macs);
 	}
 
 	@Override

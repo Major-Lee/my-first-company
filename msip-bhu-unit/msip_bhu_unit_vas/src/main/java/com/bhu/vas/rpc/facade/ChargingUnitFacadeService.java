@@ -1,6 +1,9 @@
 package com.bhu.vas.rpc.facade;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -17,15 +20,16 @@ import com.bhu.vas.api.rpc.charging.vto.SharedealDefaultVTO;
 import com.bhu.vas.api.rpc.devices.dto.sharednetwork.ParamSharedNetworkDTO;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSharedNetwork;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.vto.device.BatchDeviceSharedealVTO;
 import com.bhu.vas.api.vto.device.DeviceSharedealVTO;
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
-import com.bhu.vas.business.bucache.redis.serviceimpl.unique.impl.mobleno.UniqueMobilenoHashService;
 import com.bhu.vas.business.ds.charging.facade.ChargingFacadeService;
 import com.bhu.vas.business.ds.device.facade.SharedNetworksFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserValidateServiceHelper;
 import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.validate.UserTypeValidateService;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -209,7 +213,38 @@ public class ChargingUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
-	
+
+	public RpcResponseDTO<List<BatchDeviceSharedealVTO>> batchSharedealDetail(String macs){
+		try{
+			List<WifiDeviceSharedealConfigs> configs = chargingFacadeService.getWifiDeviceSharedealConfigsService().findByIds(Arrays.asList(macs.split(StringHelper.COMMA_STRING_GAP)));
+			List<BatchDeviceSharedealVTO> list = new ArrayList<BatchDeviceSharedealVTO>();
+			
+			for(WifiDeviceSharedealConfigs config:configs){
+				if(config == null)
+					continue;
+				BatchDeviceSharedealVTO dsv = new BatchDeviceSharedealVTO();
+				dsv.setOwner(config.getOwner());
+				dsv.setDistributor(config.getDistributor());
+				dsv.setDistributor_l2(config.getDistributor_l2());
+				dsv.setMac(config.getId());
+				dsv.setBatchno(config.getBatchno());
+				dsv.setOwner_percent(config.getOwner_percent());
+				dsv.setManufacturer_percent(config.getManufacturer_percent());
+				dsv.setDistributor_percent(config.getDistributor_percent());
+				dsv.setDistributor_l2_percent(config.getDistributor_l2_percent());
+				dsv.setCanbeturnoff(config.isCanbe_turnoff());
+				list.add(dsv);
+			}
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(list);
+		}catch(BusinessI18nCodeException i18nex){
+			i18nex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(i18nex.getErrorCode(),i18nex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
 	
 	public RpcResponseDTO<BatchImportVTO> doCancelDeviceRecord(int uid,String batchno) {
 		try{
