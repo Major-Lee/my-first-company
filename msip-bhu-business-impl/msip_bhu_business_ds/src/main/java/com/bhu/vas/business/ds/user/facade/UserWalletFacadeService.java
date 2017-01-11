@@ -1168,10 +1168,9 @@ public class UserWalletFacadeService{
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
         String time =sdf.format(date); 
         System.out.println(time);
-        
-        List<UserIncomeRank> userIncomList = userIncomeRankService.findByLimit(time,1,0);
-		System.out.println("userIncomList size:"+userIncomList.size());
-		if(userIncomList.size()<=1){
+        List<UserIncomeRank> userIncomRankList = userIncomeRankService.findByLimit(time+"%",0,1);
+		System.out.println("userIncomRankList size:"+userIncomRankList.size());
+		if(userIncomRankList.size()<=0){
 			System.out.println(time +"user rank list task statistics starting...");
 			 Date dateNow = new Date();  
 		        Calendar calendarNow = Calendar.getInstance();  
@@ -1220,7 +1219,7 @@ public class UserWalletFacadeService{
 							userIncomeRank.setBeforeIncome(userIncomeRank.getIncome());
 							userIncomeRank.setBeforeRank(9999999);
 						}
-						UserIncomeRank incomeRankNow= userIncomeRankService.getByUid(userIncome.getUid(),timeNow+"%");
+						UserIncomeRank incomeRankNow= userIncomeRankService.getByUid(userIncome.getUid(),time+"%");
 						if(incomeRankNow == null){
 							userIncomeRankService.insert(userIncomeRank);
 						}
@@ -1240,7 +1239,7 @@ public class UserWalletFacadeService{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");  
 		String time =sdf.format(date); 
 		//如果上月统计已执行，就跳过
-		List<UserIncomeMonthRank> userIncomList = userIncomeMonthRankService.findByLimit(time,1,0);
+		List<UserIncomeMonthRank> userIncomList = userIncomeMonthRankService.findByLimit(time+"%",0,1);
 		System.out.println("userIncomList size:"+userIncomList.size());
 		if(userIncomList != null&&userIncomList.size()<=1){
 			System.out.println(time +"month rank list task statistics starting...");
@@ -1290,7 +1289,7 @@ public class UserWalletFacadeService{
 						userIncomeMonthRank.setBeforeIncome(userIncomeMonthRank.getIncome());
 						userIncomeMonthRank.setBeforeRank(9999999);
 					}
-					UserIncomeMonthRank incomeRankNow= userIncomeMonthRankService.getByUid(userIncome.getUid(),timeNow+"%");
+					UserIncomeMonthRank incomeRankNow= userIncomeMonthRankService.getByUid(userIncome.getUid(),time+"%");
 					if(incomeRankNow == null){
 						userIncomeMonthRankService.insert(userIncomeMonthRank);
 					}

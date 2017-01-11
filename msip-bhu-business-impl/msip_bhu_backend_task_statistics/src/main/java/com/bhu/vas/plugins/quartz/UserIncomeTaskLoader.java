@@ -40,24 +40,25 @@ public class UserIncomeTaskLoader {
         String today = CommonTimeHelper.GetDateStr(0);
         System.out.println("preDate:"+preDayDate+"today:"+today);
         try{
-        	List<UserIncome> incomeList =userWalletFacadeService.getUserIncomeService().findByLimit(today,1,0);
-            if(incomeList.size() <= 1){
+        	List<UserIncome> userIncomesList =userWalletFacadeService.getUserIncomeService().findByLimit(today,0,1);
+        	System.out.println("select userIncom List size:"+userIncomesList.size());
+            if(userIncomesList.size() <= 0){
             	//统计昨日用户收益userIncome
             	List<Object> userIncomeList = userWalletFacadeService.getUserWalletLogService().findUserIncomeListByTime(preDayDate,today);
             	for (Object object : userIncomeList) {
             		UserIncome userIncomeVTO = (UserIncome) object;
-            		System.out.println(userIncomeVTO.getUid());
             		userIncomeVTO.setTime(preDayDate);
             		userIncomeVTO.setUpdated_at(new Date());
             		List<UserIncome> income=userWalletFacadeService.getUserIncomeService().findListByUid(userIncomeVTO.getUid(), preDayDate);
-            		if(income.size()<1){
+            		if(income.size()<=0){
             			userWalletFacadeService.getUserIncomeService().insert(userIncomeVTO);
             		}
             	}
             }
     		
-            List<MacIncome> macIncomesList=userWalletFacadeService.getMacIncomeService().findByLimit(today,1,0);
-            if(macIncomesList.size() <= 1){
+            List<MacIncome> macIncomesList=userWalletFacadeService.getMacIncomeService().findByLimit(today,0,1);
+            System.out.println("select macIncomes List size:"+macIncomesList.size());
+            if(macIncomesList.size() <= 0){
             	//统计昨日用户收益macIncome
             	List<Object> macIncomeList = userWalletFacadeService.getUserWalletLogService().findMacIncomeListByTime(preDayDate,today);
             	for (Object object : macIncomeList) {
@@ -65,15 +66,16 @@ public class UserIncomeTaskLoader {
             		macIncomeVTO.setTime(preDayDate);
             		macIncomeVTO.setUpdated_at(new Date());
             		List<MacIncome> macIncomes=userWalletFacadeService.getMacIncomeService().findListByMac(macIncomeVTO.getMac(), preDayDate);
-            		if(macIncomes.size()<1){
+            		if(macIncomes.size()<=0){
             			userWalletFacadeService.getMacIncomeService().insert(macIncomeVTO);
             		}
             	}
             }
             
             //统计昨日用户收益gpathIncome
-            List<GpathIncome> gpathIncomesList=userWalletFacadeService.getGpathIncomeService().findByLimit(today,1,0);
-        	if(gpathIncomesList.size() <= 1){
+            List<GpathIncome> gpathIncomesList=userWalletFacadeService.getGpathIncomeService().findByLimit(today,0,1);
+            System.out.println("select gpathIncomes List size:"+gpathIncomesList.size());
+            if(gpathIncomesList.size() <= 0){
         		List<Object> gpathIncomeList = userWalletFacadeService.getUserWalletLogService().findGpathIncomeListByTime(preDayDate,today);
         		for (Object object : gpathIncomeList) {
         			GpathIncome gpathIncomeVTO = (GpathIncome) object;
@@ -81,13 +83,13 @@ public class UserIncomeTaskLoader {
         			gpathIncomeVTO.setTime(preDayDate);
         			gpathIncomeVTO.setUpdated_at(new Date());
         			List<GpathIncome> gpathIncomes=userWalletFacadeService.getGpathIncomeService().findListByGpath(gpathIncomeVTO.getGpath(), preDayDate);
-        			if(gpathIncomes.size()<1){
+        			if(gpathIncomes.size()<=0){
         				userWalletFacadeService.getGpathIncomeService().insert(gpathIncomeVTO);
         			}
         		}
         	}
         }catch(Exception e){
-        	
+        	System.out.println("userIncom catch exception:"+e.getMessage()+e.getCause());
         }
         
     	/*List<UserWalletLog> userWalletLogs= userWalletFacadeService.getUserWalletLogService().findListByTime(time);
