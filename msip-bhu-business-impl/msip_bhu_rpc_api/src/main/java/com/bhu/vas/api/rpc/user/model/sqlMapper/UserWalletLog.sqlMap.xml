@@ -100,7 +100,7 @@
 	<sql id="modelGpathIncomeColumns">
 	    <![CDATA[
 	    	count(*) as times, 
-	    	current_gpath,
+	    	current_gpath gpath,
 	    	uid, 
 	    	round(sum(cash), 2) as income
 	    ]]>
@@ -374,36 +374,24 @@
 	<select id="findUserIncomeListByTime" resultType="userIncome" parameterType="String">
 		SELECT  <include refid="modelUserIncomeColumns" /> from <include refid="modelTableName" /> 
 		WHERE transmode='SDP'
-		<if test="start_created_ts!=null">
 			and updated_at > #{pre_day}
-		</if>
-		<if test="end_created_ts!=null">
 			and <![CDATA[ updated_at < #{today} ]]> 
-		</if>
 		 GROUP BY uid 		
 	</select>
 	
-	<select id="findMacIncomeListByTime" resultType="userIncome" parameterType="String">
+	<select id="findMacIncomeListByTime" resultType="macIncome" parameterType="String">
 		SELECT  <include refid="modelMacIncomeColumns" /> from <include refid="modelTableName" /> 
 		WHERE transmode='SDP'
-		<if test="start_created_ts!=null">
 			and updated_at > #{pre_day}
-		</if>
-		<if test="end_created_ts!=null">
 			and <![CDATA[ updated_at < #{today} ]]> 
-		</if>
 		 group by uid,mac 		
 	</select>
 	
-	<select id="findGpathIncomeListByTime" resultType="userIncome" parameterType="String">
+	<select id="findGpathIncomeListByTime" resultType="gpathIncome" parameterType="String">
 		SELECT  <include refid="modelGpathIncomeColumns" /> from <include refid="modelTableName" /> 
 		WHERE transmode='SDP' and current_gpath is not null
-		<if test="start_created_ts!=null">
 			and updated_at > #{pre_day}
-		</if>
-		<if test="end_created_ts!=null">
 			and <![CDATA[ updated_at < #{today} ]]> 
-		</if>
 		 group by current_gpath		
 	</select>
 	
