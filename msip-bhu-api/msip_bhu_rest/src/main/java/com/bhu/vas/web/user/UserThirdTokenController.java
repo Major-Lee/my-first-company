@@ -40,6 +40,7 @@ public class UserThirdTokenController extends BaseController{
 	private static Set<String> bucketNameSupported = new HashSet<String>();
 	
 	private static final String bucketName_Avatar = "appavatar4bhu";
+	private static final String bucketName_Cloud_Controller = "cloudcontroller";
 	private static final String bucketName_Avatar_Test = "test";
 	private static final String bucketName_Log = "applogs4bhu";
 	
@@ -53,6 +54,7 @@ public class UserThirdTokenController extends BaseController{
 	    bucketNameSupported.add(bucketName_Avatar);
 	    bucketNameSupported.add(bucketName_Avatar_Test);
 	    bucketNameSupported.add(bucketName_Log);
+	    bucketNameSupported.add(bucketName_Cloud_Controller);
 	}
 	
 	/**
