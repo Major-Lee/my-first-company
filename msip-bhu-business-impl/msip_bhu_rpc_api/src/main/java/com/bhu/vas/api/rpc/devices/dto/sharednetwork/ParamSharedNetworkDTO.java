@@ -99,12 +99,12 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	
 	private String range_cash_pc;
 	private String range_cash_mobile;
-	private String cash_pc_day = Default_Cash_Pc_For_Day;
-	private String cash_mobile_day = Default_Cash_Mobile_For_Day;
-	private String cash_pc_week = Default_Cash_Pc_For_Week;
-	private String cash_mobile_week = Default_Cash_Mobile_For_Week;
-	private String cash_pc_month = Default_Cash_Pc_For_Month;
-	private String cash_mobile_month = Default_Cash_Mobile_For_Month;
+	private String cash_pc_day;
+	private String cash_mobile_day;
+	private String cash_pc_week;
+	private String cash_mobile_week;
+	private String cash_pc_month;
+	private String cash_mobile_month;
 	
 	private String ait_pc;
 	private String ait_mobile;
@@ -660,36 +660,48 @@ public class ParamSharedNetworkDTO implements java.io.Serializable{
 	
 	
 	public String getCash_pc_day() {
+		if(StringUtils.isEmpty(cash_pc_day))
+			return ParamSharedNetworkDTO.Default_Cash_Pc_For_Day;
 		return cash_pc_day;
 	}
 	public void setCash_pc_day(String range_pc_day) {
 		this.cash_pc_day = range_pc_day;
 	}
 	public String getCash_mobile_day() {
+		if(StringUtils.isEmpty(cash_mobile_day))
+			return ParamSharedNetworkDTO.Default_Cash_Mobile_For_Day;
 		return cash_mobile_day;
 	}
 	public void setCash_mobile_day(String range_mobile_day) {
 		this.cash_mobile_day = range_mobile_day;
 	}
 	public String getCash_pc_week() {
+		if(StringUtils.isEmpty(cash_pc_week))
+			return ParamSharedNetworkDTO.Default_Cash_Pc_For_Week;
 		return cash_pc_week;
 	}
 	public void setCash_pc_week(String range_pc_week) {
 		this.cash_pc_week = range_pc_week;
 	}
 	public String getCash_mobile_week() {
+		if(StringUtils.isEmpty(cash_mobile_week))
+			return ParamSharedNetworkDTO.Default_Cash_Mobile_For_Week;
 		return cash_mobile_week;
 	}
 	public void setCash_mobile_week(String range_mobile_week) {
 		this.cash_mobile_week = range_mobile_week;
 	}
 	public String getCash_pc_month() {
+		if(StringUtils.isEmpty(cash_pc_month))
+			return ParamSharedNetworkDTO.Default_Cash_Pc_For_Month;
 		return cash_pc_month;
 	}
 	public void setCash_pc_month(String range_pc_month) {
 		this.cash_pc_month = range_pc_month;
 	}
 	public String getCash_mobile_month() {
+		if(StringUtils.isEmpty(cash_mobile_month))
+			return ParamSharedNetworkDTO.Default_Cash_Mobile_For_Month;
 		return cash_mobile_month;
 	}
 	public void setCash_mobile_month(String range_mobile_month) {
