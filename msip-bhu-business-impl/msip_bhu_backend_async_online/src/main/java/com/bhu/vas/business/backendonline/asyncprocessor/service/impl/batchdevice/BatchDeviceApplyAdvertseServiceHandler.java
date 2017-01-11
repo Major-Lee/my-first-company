@@ -283,7 +283,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			
 			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
 					maclist, JsonHelper.getJSONString(ad),Double.parseDouble(ad.getId()));
-			advertiseIndexIncrementService.adStartAndEndUpdIncrement(ad.getId(), date, DateTimeHelper.getAfterDate(date, 1));
+			advertiseIndexIncrementService.adStartAndEndUpdIncrement(ad.getId(), date, DateTimeHelper.getAfterDate(date, 1),BusinessEnumType.AdvertiseStateType.OnPublish.getType());
 			AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), maclist);
 
 		}else{

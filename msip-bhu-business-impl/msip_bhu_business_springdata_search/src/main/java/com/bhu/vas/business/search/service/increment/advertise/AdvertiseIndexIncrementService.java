@@ -51,13 +51,14 @@ public class AdvertiseIndexIncrementService {
 	}
 	
 	//广告持续时间发生变更
-	public void adStartAndEndUpdIncrement(String id ,String start,String end){
+	public void adStartAndEndUpdIncrement(String id ,String start,String end,int state){
 		logger.info(String.format("adStartAndEndUpdIncrement Request id [%s] start [%s] end [%s]", id, start,end));
 		if(StringUtils.isEmpty(id)) return;
 		
 		Map<String, Object> sourceMap = new HashMap<String, Object>();
 		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_START.getName(), start);
 		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_END.getName(), end);
+		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_STATE.getName(), state);
 		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_UPDATED_AT.getName(), DateTimeHelper.getDateTime());
 
 		advertiseDataSearchService.updateIndex(id, sourceMap, false, true, true);
