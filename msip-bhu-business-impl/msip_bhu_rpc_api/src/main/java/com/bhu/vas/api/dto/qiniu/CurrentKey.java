@@ -6,6 +6,7 @@ public class CurrentKey {
 	private String ut;
 	private String dt;
 	private String fid;
+	private String domain;
 	public String getUt() {
 		return ut;
 	}
@@ -30,5 +31,10 @@ public class CurrentKey {
 	public void setFid(String fid) {
 		this.fid = fid;
 	}
-	
+	public String getDomain() {
+		return domain;
+	}
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
 }

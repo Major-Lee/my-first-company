@@ -10,10 +10,15 @@ public class YunConstant {
 	public static final String QN_BUCKET_NAME_OM = "deviceom";
 	public static final String QN_BUCKET_URL_EXPORT_REWARD_RECORD = "http://obklbhh9z.bkt.clouddn.com/";
 	public static final String QN_BUCKET_NAME_EXPORT_REWARD_RECORD = "rewardrecord";
+	public static final String QU_BUCKET_TEST_DOMAIN= "http://7xp7a0.com1.z0.glb.clouddn.com/";
+	public static final String QU_BUCKET_CLOUD_CONTROLLER_DOMAIN= "http://7xlh9v.com1.z0.glb.clouddn.com/";
+
+	
 	// 阿里云参数
 	public static final String AL_ACCESS_KEY = "stYL3FtcjOTmvyA4";
 	public static final String AL_SECRET_KEY = "aicFwcLeEx397kfVQB7OelSV4iqSON";
 	public static final String AL_BUCKET_NAME_FW = "devicefw";
 	public static final String AL_BUCKET_NAME_OM = "deviceom";
 	public static final String AL_END_POINT = "oss-cn-beijing.aliyuncs.com";
+	
 }
