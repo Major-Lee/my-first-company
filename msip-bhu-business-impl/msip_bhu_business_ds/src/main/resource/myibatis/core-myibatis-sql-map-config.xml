@@ -60,6 +60,8 @@
 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceStatus" />
 		<typeAlias alias="wifiDevice"
 			type="com.bhu.vas.api.rpc.devices.model.WifiDevice" />
+		<typeAlias alias="wifiDeviceForGps"
+			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceForGps" />
 		<typeAlias alias="wifiDeviceModule"
 			type="com.bhu.vas.api.rpc.devices.model.WifiDeviceModule" />
 		<typeAlias alias="wifiDeviceAlarm"
@@ -216,6 +218,8 @@
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceStatus.sqlMap.xml" />
 		<mapper
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDevice.sqlMap.xml" />
+		<mapper
+			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceForGps.sqlMap.xml" />
 		<mapper
 			resource="com/bhu/vas/api/rpc/devices/model/sqlMapper/WifiDeviceModule.sqlMap.xml" />
 
