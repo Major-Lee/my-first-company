@@ -546,6 +546,8 @@ public class SharedNetworksFacadeService {
 			for(WifiDevice device :wifiDevices){
 				if(!WifiDeviceHelper.suppertedDeviceSecureSharedNetwork(device.getOrig_swver())){
 					macs.remove(device.getId());
+					//避免设备未上线过，但是设备从其他渠道绑定过用户，导致有记录存在
+					wifiDeviceSharedNetworkService.deleteById(device.getId());
 					//throw new BusinessI18nCodeException(ResponseErrorCode.WIFIDEVICE_VERSION_TOO_LOWER,new String[]{BusinessRuntimeConfiguration.Device_SharedNetwork_Top_Version});
 				}
 			}
