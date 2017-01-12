@@ -43,7 +43,8 @@ public class UserThirdTokenController extends BaseController{
 	private static final String bucketName_Cloud_Controller = "cloudcontroller";
 	private static final String bucketName_Avatar_Test = "test";
 	private static final String bucketName_Log = "applogs4bhu";
-	
+	private static final String domain_test = YunConstant.QU_BUCKET_TEST_DOMAIN;
+	private static final String domain_cloudcontroller = YunConstant.QU_BUCKET_CLOUD_CONTROLLER_DOMAIN;
 	private static final String avatar_suffix_name = ".jpeg";
 	private static final String log_suffix_name = ".log";
 	
@@ -96,6 +97,11 @@ public class UserThirdTokenController extends BaseController{
 			String uptoken = putPolicy.token(mac);
 			ckey.setBn(bucketName);
 			ckey.setUt(uptoken);
+			if(bucketName.equals(bucketName_Avatar_Test)){
+				ckey.setDomain(domain_test);
+			}else if(bucketName.equals(bucketName_Cloud_Controller)){
+				ckey.setDomain(domain_cloudcontroller);
+			}
 			//System.out.println(JsonHelper.getJSONString(ckey));
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(ckey));
 		} catch (AuthException e) {
