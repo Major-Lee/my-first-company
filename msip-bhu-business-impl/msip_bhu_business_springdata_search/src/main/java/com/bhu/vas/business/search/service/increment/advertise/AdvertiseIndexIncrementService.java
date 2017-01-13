@@ -28,7 +28,7 @@ public class AdvertiseIndexIncrementService {
 		if(StringUtils.isEmpty(id)) return;
 		
 		Map<String, Object> sourceMap = new HashMap<String, Object>();
-		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_TYPE.getName(), state);
+		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_STATE.getName(), state);
 		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_UPDATED_AT.getName(), DateTimeHelper.getDateTime());
 		if(msg != null){
 			sourceMap.put(BusinessIndexDefine.Advertise.Field.A_REJECT_REASON.getName(), msg);
