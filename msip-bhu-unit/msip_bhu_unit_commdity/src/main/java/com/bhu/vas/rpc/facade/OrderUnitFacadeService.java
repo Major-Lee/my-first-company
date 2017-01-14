@@ -1060,11 +1060,17 @@ public class OrderUnitFacadeService {
 			OrderPaymentType pType = BusinessEnumType.OrderPaymentType.fromKey(payment_type);
 			switch (pType) {
 			case PcWeixin:
+			case WapWeixin:
+			case Weixin:
+			case AppWeixin:
 				if (Double.parseDouble(amount) > 20000){
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.VALIDATE_COMMDITY_AMOUNT_LARGE);
 				}
 				break;
+			case WapAlipay:
+			case AppAlipay:
 			case PcAlipay:
+			case Alipay:
 				restMin = orderExpire - getBetweenTimeCouse(advertisePayment.getCreated_at(),
 						advertisePayment.getNowDate());
 				if (restMin < 0){
