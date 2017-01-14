@@ -1239,18 +1239,18 @@ public class UserWalletFacadeService{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");  
 		String time =sdf.format(date); 
 		System.out.println("User Income Month Rank brefore month:"+time);
+		Date dateNow = new Date();  
+		Calendar calendarNow = Calendar.getInstance();  
+		calendarNow.setTime(dateNow);  
+		calendarNow.add(Calendar.MONTH, x);  
+		dateNow = calendarNow.getTime();  
+		String timeNow =sdf.format(dateNow); 
+		System.out.println("User Income Month Rank current month:"+timeNow);
 		//如果上月统计已执行，就跳过
-		List<UserIncomeMonthRank> userIncomList = userIncomeMonthRankService.findByLimit(time+"%",0,1);
+		List<UserIncomeMonthRank> userIncomList = userIncomeMonthRankService.findByLimit(timeNow+"%",0,1);
 		System.out.println("User Income Month Rank size:"+userIncomList.size());
 		if(userIncomList.size()<=0){
 			System.out.println(time +"month rank list task statistics starting...");
-			Date dateNow = new Date();  
-			Calendar calendarNow = Calendar.getInstance();  
-			calendarNow.setTime(dateNow);  
-			calendarNow.add(Calendar.MONTH, x);  
-			dateNow = calendarNow.getTime();  
-			String timeNow =sdf.format(dateNow); 
-			System.out.println("User Income Month Rank current month:"+timeNow);
 			Date datebefore = new Date();  
 			Calendar calendarBefore = Calendar.getInstance();  
 			calendarBefore.setTime(datebefore);  

@@ -167,7 +167,7 @@ public class WifiDeviceDataSearchService extends AbstractDataSearchConditionServ
 		if(scm == null || scm.equals(null)){
 			return null;
 		}
-		return super.searchByConditionMessage(scm, 1, 500);
+		return super.searchByConditionMessage(scm, 0, 500);
 	}
 	
 	

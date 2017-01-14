@@ -164,7 +164,7 @@ public class BindUnbindDeviceService {
 	 * 
 	 * @param macs
 	 * @param needDoNothingWhenDevRegat	 false:强制给设备解绑， true：如果设备从从未上线则强制解绑，如果设备上线过则不动作
-	 * @param opUserMobileNo 当前操作员手机号，如果非空，会通知设备当前绑定用户，设备被该手机号解绑
+	 * @param opUserMobileno 当前操作员手机号，如果非空，会通知设备当前绑定用户，设备被该手机号解绑
 	 */
 	public void unbindDevice(List<String>macs, boolean needDoNothingWhenDevRegat, String opUserMobileno){
 		List<String> forceUnbindedDevices = new ArrayList<>();
@@ -208,6 +208,7 @@ public class BindUnbindDeviceService {
 					deviceFacadeService.destoryDeviceMobilePresentString(dmac);
 				}
 				tagGroupRelationService.cleanDeviceGroupRels(forceUnbindedDevices);
+				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().deleteByIds(forceUnbindedDevices);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
