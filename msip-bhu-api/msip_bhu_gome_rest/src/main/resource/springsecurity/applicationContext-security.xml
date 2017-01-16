@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:s="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd"
+	default-lazy-init="true">
+
+	<description>SpringSecurity安全配置</description>                        
+	<!-- http安全配置 auto-config="true"-->
+	<s:http auto-config="true" use-expressions="true">
+		<s:intercept-url pattern="/css/**" filters="none" />
+		<s:intercept-url pattern="/images/**" filters="none" />
+		<s:intercept-url pattern="/js/**" filters="none" />
+		
+		<s:intercept-url pattern="/ucenter/user/indexgrid*" filters="none" />
+		<s:intercept-url pattern="/ucenter/user/test*" filters="none" />
+		<s:intercept-url pattern="/user/test*" access="hasAnyRole('ROLE_USER-SAVE')" />
+		<s:intercept-url pattern="/user/save*" access="hasAnyRole('ROLE_USER-SAVE')" />
+		<s:intercept-url pattern="/user/delete*" access="hasAnyRole('ROLE_USER-DELETE')" />
+		<s:intercept-url pattern="/user*" access="hasAnyRole('ROLE_USER-VIEW')" />
+		<s:intercept-url pattern="/user/index*" access="hasAnyRole('ROLE_USER_MANAGER')" />
+		<s:intercept-url pattern="/role/save*" access="hasAnyRole('ROLE_ROLE-SAVE')" />
+		<s:intercept-url pattern="/role/delete*" access="hasAnyRole('ROLE_ROLE-DELETE')" />
+		<s:intercept-url pattern="/role*" access="hasAnyRole('ROLE_ROLE-VIEW')" />
+
+		<s:remember-me services-ref="rememberMeServices"/>
+		<!--  
+		<s:form-login login-page="/login.html" default-target-url="/loginprocess.html" authentication-failure-url="/loginprocess.html?error=true" />
+		-->
+		<s:form-login login-page="/login.html"  authentication-success-handler-ref="syncLoginHandler"  authentication-failure-url="/loginprocess.html?error=true" />
+		<s:access-denied-handler error-page="/commons/403.html"/>
+		<!-- 
+		<s:logout logout-success-url="/index.html" success-handler-ref="logoutHandler"/>
+		 -->
+		 <!--
+		<s:logout logout-success-url="/index.html" />
+		 -->
+		 <s:logout success-handler-ref="syncLogoutHandler" />
+		 
+		 <!-- 防止同一用户多次登录，使第二次登录失败
+         <s:session-management>  
+            <s:concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />  
+         </s:session-management>
+          -->  
+	</s:http>
+
+	<!-- 登录处理BEAN -->
+	<bean id="syncLoginHandler" class="com.et.web.ucenter.security.handle.SyncLoginHandler" >
+		<property name="syncloginurl" value="/commons/sync.jsp" /> 
+		<property name="defaultTargetUrl" value="/loginprocess.html" />
+	</bean>
+	<!-- 登出处理BEAN -->
+	<bean id="syncLogoutHandler" class="com.et.web.ucenter.security.handle.SyncLogoutHandler" >
+		<property name="synclogouturl" value="/commons/sync.jsp" /> 
+		<property name="logoutSuccessUrl" value="/index.html" />
+	</bean>
+	
+	<!-- 认证配置, 使用userDetailsService提供的用户信息 -->
+	<s:authentication-manager alias="authenticationManager">
+		
+		<s:authentication-provider user-service-ref="userDetailsService">
+			<s:password-encoder ref="localPwdEncoder">
+				<s:salt-source user-property="salt"/>
+			</s:password-encoder>
+			<!-- 
+			<s:password-encoder hash="md5" />
+			 -->
+		</s:authentication-provider>
+		<s:authentication-provider ref="rememberMeAuthenticationProvider">  
+			<s:password-encoder ref="localPwdEncoder">
+				<s:salt-source user-property="salt"/>
+			</s:password-encoder>
+		<!-- 
+            <s:password-encoder hash="md5"/>
+             -->  
+        </s:authentication-provider> 
+	</s:authentication-manager>
+
+	<bean id="localPwdEncoder" class="com.et.business.ucenter.pwdencoder.CertainMd5PasswordEncoder">
+	</bean>
+	<!-- 项目实现的用户查询服务 -->
+	<bean id="userDetailsService" class="com.et.business.ucenter.service.UserDetailsServiceImpl" />
+	
+	<bean id="rememberMeAuthenticationProvider"  
+        class="org.springframework.security.authentication.RememberMeAuthenticationProvider">  
+        <property name="key" value="springsecurityCookies1" />  
+    </bean> 
+    
+    <bean id="rememberMeServices"  
+        class="org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices">  
+        <property name="userDetailsService" ref="userDetailsService" />  
+        <property name="key" value="springsecurityCookies1" />  
+        <property name="alwaysRemember" value="true"/>  
+        <!-- 两周的秒为1209600 -->
+        <property name="tokenValiditySeconds" value="1209600"/>  
+        <property name="parameter" value="_spring_security_remember_me"/>  
+    </bean>     
+    <!--
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    	
+		<property name="basename" value="classpath:i18n/message/messages_zh_CN" />
+		  
+		<property name="basename" value="classpath:org/springframework/security/messages_zh_CN" />
+		
+	</bean>-->
+</beans>

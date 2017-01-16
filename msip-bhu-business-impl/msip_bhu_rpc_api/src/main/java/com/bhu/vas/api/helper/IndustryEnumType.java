@@ -22,6 +22,7 @@ public enum IndustryEnumType{
 	
 		private String index;
 		private String name;
+		private String name_key;
 		
 		static Map<String, IndustryEnumType> allIndustrys;
 		
