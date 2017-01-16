@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -15,7 +16,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.elasticsearch.ElasticsearchIllegalArgumentException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -2213,7 +2213,7 @@ public class DeviceURouterRestBusinessFacadeService {
 	 * @param pageSize
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Integer uid, String message,
+	public RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Locale locale, Integer uid, String message,
 			int pageNo, int pageSize) {
 		try {
 			List<UserDeviceDTO> vtos = null;
@@ -2248,6 +2248,7 @@ public class DeviceURouterRestBusinessFacadeService {
 							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
 							userDeviceDTO.setD_distributor_type(wifiDeviceDocument.getD_distributor_type());
 							userDeviceDTO.setD_industry(wifiDeviceDocument.getD_industry());
+							userDeviceDTO.setD_industry_locale(locale);
 							if(wifiDeviceDocument.getD_geopoint() != null && wifiDeviceDocument.getD_geopoint().length == 2){
 								userDeviceDTO.setLon(String.valueOf(wifiDeviceDocument.getD_geopoint()[0]));;
 								userDeviceDTO.setLat(String.valueOf(wifiDeviceDocument.getD_geopoint()[1]));;

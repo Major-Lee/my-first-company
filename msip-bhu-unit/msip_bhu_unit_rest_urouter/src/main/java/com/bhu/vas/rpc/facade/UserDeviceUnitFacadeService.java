@@ -3,6 +3,7 @@ package com.bhu.vas.rpc.facade;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Resource;
 
@@ -438,7 +439,7 @@ public class UserDeviceUnitFacadeService {
 	 * @param dut
 	 * @return
 	 */
-	public List<UserDeviceDTO> fetchBindDevices(int uid, String dut, int pageNo, int pageSize) {
+	public List<UserDeviceDTO> fetchBindDevices(Locale locale, int uid, String dut, int pageNo, int pageSize) {
 		int searchPageNo = pageNo >= 1 ? (pageNo - 1) : pageNo;
 		List<UserDeviceDTO> dtos = new ArrayList<UserDeviceDTO>();
 		List<WifiDeviceDocument> searchDocuments = wifiDeviceDataSearchService.searchListByUidAndDut(uid, dut,
@@ -460,6 +461,7 @@ public class UserDeviceUnitFacadeService {
 				userDeviceDTO.setLastregedat(wifiDeviceDocument.getD_lastregedat());
 				userDeviceDTO.setD_distributor_type(wifiDeviceDocument.getD_distributor_type());
 				userDeviceDTO.setD_industry(wifiDeviceDocument.getD_industry());
+				userDeviceDTO.setD_industry_locale(locale);
 				if (wifiDeviceDocument.getD_snk_allowturnoff() != null) {
 					userDeviceDTO.setD_snk_allowturnoff(Integer.parseInt(wifiDeviceDocument.getD_snk_allowturnoff()));
 				} else {
@@ -487,7 +489,7 @@ public class UserDeviceUnitFacadeService {
 	 * @param dut
 	 * @return
 	 */
-	public RpcResponseDTO<TailPage<UserDeviceDTO>> fetchPageBindDevices(int uid, String dut, int pageNo, int pageSize) {
+	public RpcResponseDTO<TailPage<UserDeviceDTO>> fetchPageBindDevices(Locale locale, int uid, String dut, int pageNo, int pageSize) {
 		try {
 			int searchPageNo = pageNo >= 1 ? (pageNo - 1) : pageNo;
 			Page<WifiDeviceDocument> search_result = wifiDeviceDataSearchService.searchPageByUidAndDut(uid, dut,
@@ -520,6 +522,7 @@ public class UserDeviceUnitFacadeService {
 							userDeviceDTO.setD_address(wifiDeviceDocument.getD_address());
 							userDeviceDTO.setD_distributor_type(wifiDeviceDocument.getD_distributor_type());
 							userDeviceDTO.setD_industry(wifiDeviceDocument.getD_industry());
+							userDeviceDTO.setD_industry_locale(locale);
 							if(wifiDeviceDocument.getD_geopoint() != null && wifiDeviceDocument.getD_geopoint().length == 2){
 								userDeviceDTO.setLon(String.valueOf(wifiDeviceDocument.getD_geopoint()[0]));;
 								userDeviceDTO.setLat(String.valueOf(wifiDeviceDocument.getD_geopoint()[1]));;

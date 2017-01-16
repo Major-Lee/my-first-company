@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.devices.iservice;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.bhu.vas.api.dto.redis.RegionCountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -35,7 +36,7 @@ public interface IDeviceRestRpcService {
 	
 	public RpcResponseDTO<List<PersistenceCMDDetailDTO>> fetchDevicePersistenceDetailCMD(String wifiId);
 	public RpcResponseDTO<String> fetchDevicePresent(String wifiId);
-	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(int pageNo, int pageSize, String... messages);
+	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(Locale locale, int pageNo, int pageSize, String... messages);
 
 	//public Collection<GeoMapVTO> fetchGeoMap();
 	
@@ -51,6 +52,6 @@ public interface IDeviceRestRpcService {
 	public RpcResponseDTO<DeviceStatisticsVTO> deviceStatistics(String d_snk_turnstate, String d_snk_type);
 	public RpcResponseDTO<List<WifiDevicePresentVTO>> fetchDevicesPresent(List<String> dmacs);
 	public RpcResponseDTO<Boolean> deviceInfoUpdate(int uid, List<String> dmacs, String industry, String merchant_name);
-	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList();
+	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(Locale locale);
 	public RpcResponseDTO<UpgradeCheckVTO> checkDeviceUpgradeNoAction(String mac, String origswver);
 }

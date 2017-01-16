@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -68,7 +69,6 @@ import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.bhu.vas.rpc.bucache.BusinessDeviceCacheService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
-import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
@@ -531,7 +531,7 @@ public class DeviceRestBusinessFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(int pageNo, int pageSize, String... messages){
+	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(Locale locale, int pageNo, int pageSize, String... messages){
 		try{
 			List<TailPage<WifiDeviceVTO1>> resultList = null;
 			if(messages == null || messages.length == 0){
@@ -566,6 +566,7 @@ public class DeviceRestBusinessFacadeService {
 											|| wifiDeviceDocument.getT_uc_extension().isEmpty()? TagGroup.DefaultGroupName : tagGroupNames.get(cursor));
 									vto.setIndex(++startIndex);
 									BeanUtils.copyProperties(wifiDeviceDocument, vto);
+									vto.setD_industry_locale(locale);
 									vtos.add(vto);
 									cursor++;
 								}
@@ -837,13 +838,13 @@ public class DeviceRestBusinessFacadeService {
 	}
 	
 	
-	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(){
+	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(Locale locale){
 		List<WifiDeviceIndustryVTO> ret = new ArrayList<WifiDeviceIndustryVTO>();
 		IndustryEnumType[] arr = IndustryEnumType.values();
 		for(IndustryEnumType ind : arr){
 			WifiDeviceIndustryVTO vto = new WifiDeviceIndustryVTO();
 			vto.setIndex(ind.getIndex());
-			vto.setName(ind.getName());
+			vto.setName(ind.getNameByLocale(locale));
 			ret.add(vto);
 		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);

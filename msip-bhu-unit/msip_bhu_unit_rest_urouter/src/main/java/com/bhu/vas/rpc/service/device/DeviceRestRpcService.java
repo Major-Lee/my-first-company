@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.service.device;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Resource;
 
@@ -213,10 +214,10 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 
 	@Override
-	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(int pageNo, int pageSize, String... messages) {
+	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(Locale locale, int pageNo, int pageSize, String... messages) {
 		logger.info(String.format("DeviceRestRPC fetchBySearchConditionMessage invoke pageNo [%s] pageSize [%s] messages [%s]", pageNo, pageSize, messages));
 		try{
-			return deviceRestBusinessFacadeService.fetchBySearchConditionMessages(pageNo, pageSize, messages);
+			return deviceRestBusinessFacadeService.fetchBySearchConditionMessages(locale, pageNo, pageSize, messages);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchBySearchConditionMessage exception exmsg[%s]",ex.getMessage()), ex);
@@ -360,10 +361,10 @@ public class DeviceRestRpcService implements IDeviceRestRpcService {
 	}
 	
 	
-	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(){
+	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(Locale locale){
 		logger.info("DeviceRestRPC fetchIndustyList");
 		try{
-			return deviceRestBusinessFacadeService.fetchIndustyList();
+			return deviceRestBusinessFacadeService.fetchIndustyList(locale);
 		}catch(Exception ex){
 			ex.printStackTrace(System.out);
 			logger.error(String.format("DeviceRestRPC fetchIndustyList exception exmsg[%s]",ex.getMessage()), ex);

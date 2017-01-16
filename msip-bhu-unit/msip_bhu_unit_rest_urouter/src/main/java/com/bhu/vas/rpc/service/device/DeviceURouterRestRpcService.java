@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.service.device;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -701,11 +702,11 @@ public class DeviceURouterRestRpcService implements IDeviceURouterRestRpcService
 	}
 	
 	@Override
-	public RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Integer uid, String message, 
+	public RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Locale locale, Integer uid, String message, 
 			int pageNo, int pageSize) {
 		logger.info(String.format("DeviceURouterRestRPC fetchBySearchConditionMessage invoke uid[%s] message[%s] pageNo[%s] pageSize[%s]",
 				uid, message, pageNo, pageSize));
-		return deviceURouterRestBusinessFacadeService.urouterFetchBySearchConditionMessage(uid, message, pageNo, pageSize);
+		return deviceURouterRestBusinessFacadeService.urouterFetchBySearchConditionMessage(locale, uid, message, pageNo, pageSize);
 	}
 	
 	@Override

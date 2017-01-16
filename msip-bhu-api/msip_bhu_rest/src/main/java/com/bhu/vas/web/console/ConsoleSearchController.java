@@ -1,6 +1,7 @@
 package com.bhu.vas.web.console;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -52,13 +53,15 @@ public class ConsoleSearchController extends BaseController {
             @RequestParam(required = false) String message,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
+    	
+    	Locale locale = BusinessWebHelper.getLocale(request);
 
 /*    	SearchConditionMessage scm = JsonHelper.getDTO(message, SearchConditionMessage.class);
     	System.out.println(uid + "=" + scm.getSearchType() + "=" +pageNo + "="+pageSize);
     	for(SearchCondition searchCondition : scm.getSearchConditions()){
     		System.out.println("for:"+ searchCondition.getKey() + "=" + searchCondition.getPattern() + "=" + searchCondition.getPayload());
     	}*/
-        RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> rpcResult = deviceRestRpcService.fetchBySearchConditionMessages(
+        RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> rpcResult = deviceRestRpcService.fetchBySearchConditionMessages(locale,
         		pageNo, pageSize, message);
 		if(!rpcResult.hasError()){
 			//兼容老的界面和接口
@@ -70,7 +73,7 @@ public class ConsoleSearchController extends BaseController {
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(null));
 			}
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
 		}
     }
     
@@ -92,8 +95,10 @@ public class ConsoleSearchController extends BaseController {
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
 
+    	Locale locale = BusinessWebHelper.getLocale(request);
+
     	String[] messages = combine_message.split(StringHelper.Split_Special_Str_Outer_Gap);
-        RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> rpcResult = deviceRestRpcService.fetchBySearchConditionMessages(
+        RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> rpcResult = deviceRestRpcService.fetchBySearchConditionMessages(locale,
         		pageNo, pageSize, messages);
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult));

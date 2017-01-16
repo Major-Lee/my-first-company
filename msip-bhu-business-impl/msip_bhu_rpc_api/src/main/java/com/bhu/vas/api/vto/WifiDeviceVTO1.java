@@ -1,6 +1,7 @@
 package com.bhu.vas.api.vto;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import org.springframework.util.StringUtils;
 
@@ -307,6 +308,8 @@ public class WifiDeviceVTO1 implements Serializable{
 	public void setD_industry_desc(String d_industry_desc) {
 //		this.d_industry_desc = d_industry_desc;
 	}
-	
+	public void setD_industry_locale(Locale locale){
+		this.d_industry_desc = IndustryEnumType.getNameByIndex(d_industry, locale);
+	}
 	
 }

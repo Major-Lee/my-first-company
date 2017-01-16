@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.devices.stub;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.util.StringUtils;
@@ -315,9 +316,9 @@ public class DeviceURouterRestRpcServiceStub implements IDeviceURouterRestRpcSer
 	}
 
 	@Override
-	public RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(
+	public RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Locale locale,
 			Integer uid, String message, int pageNo, int pageSize) {
-		return deviceURouterRestRpcService.urouterFetchBySearchConditionMessage(uid, message, pageNo, pageSize);
+		return deviceURouterRestRpcService.urouterFetchBySearchConditionMessage(locale, uid, message, pageNo, pageSize);
 	}
 
 	@Override

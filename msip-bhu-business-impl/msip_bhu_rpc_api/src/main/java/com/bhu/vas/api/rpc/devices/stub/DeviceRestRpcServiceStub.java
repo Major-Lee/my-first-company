@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.devices.stub;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.util.StringUtils;
 
@@ -115,11 +116,11 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(int pageNo, int pageSize, String... messages) {
+	public RpcResponseDTO<List<TailPage<WifiDeviceVTO1>>> fetchBySearchConditionMessages(Locale locale, int pageNo, int pageSize, String... messages) {
 		if(pageNo < 0 || pageSize < 0) 
 			throw new BusinessI18nCodeException(ResponseErrorCode.RPC_PARAMS_VALIDATE_ILLEGAL);
 		
-		return deviceRestRpcService.fetchBySearchConditionMessages(pageNo, pageSize, messages);
+		return deviceRestRpcService.fetchBySearchConditionMessages(locale, pageNo, pageSize, messages);
 
 	}
 
@@ -186,8 +187,8 @@ public class DeviceRestRpcServiceStub implements IDeviceRestRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(){
-		return deviceRestRpcService.fetchIndustyList();
+	public RpcResponseDTO<List<WifiDeviceIndustryVTO>> fetchIndustyList(Locale locale){
+		return deviceRestRpcService.fetchIndustyList(locale);
 	}
 	@Override
 	public RpcResponseDTO<UpgradeCheckVTO> checkDeviceUpgradeNoAction(String mac, String origswver){
