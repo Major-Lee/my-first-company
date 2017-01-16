@@ -118,10 +118,11 @@ public class VapEnumType {
 		uRouterMiniTU_901("TU_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter mini","uRouter","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
 		uRouterMiniTU_NSL_901("TU_NSL_H901","AP901","BN211","Z04",DUT_uRouter,"uRouter mini(SL)","uRouter","2.4GHz 家用AP(赛龙)","64M内存、TF卡版本、9341芯片"),
 
-		uRouterTU_801("TU_H801","AP801","*","M01",DUT_uRouter,"uRouter juwan","uRouter 801","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
-		uRouterTU_802("TU_H802","AP802","*","M02",DUT_uRouter,"uRouter pro","uRouter 802","聚玩9344双频网关","聚玩9344双频网关"),
-		uRouterTU_810("TU_H810","AP810","*","M10",DUT_uRouter,"uRouter pro","uRouter 810","深圳迈旭9344双频AP（支持3g拨号）","深圳迈旭9344双频AP（支持3g拨号）"),
-		uRouterTU_820("TU_H820","AP820","*","M20",DUT_uRouter,"uRouter mini","uRouter 820","海尔MTK7628单频AP","海尔MTK7628单频AP"),
+		uRouterTU_801("TU_H801","AP801","*","M01",DUT_uRouter,"Juwan","uRouter 801","2.4GHz 家用AP","64M内存、TF卡版本、9341芯片"),
+		uRouterTU_802("TU_H802","AP802","*","M02",DUT_uRouter,"Juwan pro","uRouter 802","聚玩9344双频网关","聚玩9344双频网关"),
+		uRouterTU_810("TU_H810","AP810","*","M10",DUT_uRouter,"Maixu pro","uRouter 810","深圳迈旭9344双频AP（支持3g拨号）","深圳迈旭9344双频AP（支持3g拨号）"),
+		uRouterTU_820("TU_H820","AP820","*","M20",DUT_uRouter,"Haier mini","uRouter 820","海尔MTK7628单频AP","海尔MTK7628单频AP"),
+		uRouterTU_830("TU_H830","AP830","*","M30",DUT_uRouter,"Fuqiao mini","uRouter 830","MTK7620单频AP","MTK7620单频AP"),
 
 		
 		
@@ -367,6 +368,7 @@ public class VapEnumType {
 					|| prefix.equals(uRouterTU_802.getPrefix()) 
 					|| prefix.equals(uRouterTU_810.getPrefix()) 
 					|| prefix.equals(uRouterTU_820.getPrefix()) 
+					|| prefix.equals(uRouterTU_830.getPrefix())
 					|| prefix.equals(uRouterMiniTU_NSL_901.getPrefix())) && type.equals(uRouterRoot.getIndex())){
 				return true;
 			}
