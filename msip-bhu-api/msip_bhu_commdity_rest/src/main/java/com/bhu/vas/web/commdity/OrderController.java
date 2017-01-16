@@ -25,6 +25,7 @@ import com.bhu.vas.api.dto.commdity.OrderStatusDTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseCreatePaymentUrlDTO;
+import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.PaymentInternalHelper;
@@ -580,6 +581,9 @@ public void hot_play_paymenturl(
 		String order_amount = order_vto.getAmount();
 		String requestIp = WebHelper.getRemoteAddr(request);
 		Integer appid = order_vto.getAppid();
+		if (channel == BusinessEnumType.PaymentChannelType.BHUWIFIAPP.getChannel()){
+			appid = BusinessEnumType.CommdityApplication.BHU_PREPAID_BUSINESS.getKey();
+		}
 		long restMin = order_vto.getRestMin();
 		String goods_name = PaymentInternalHelper.getGoodsName(locale, order_vto.getGoods_name(), order_vto.getName_key());
 		
