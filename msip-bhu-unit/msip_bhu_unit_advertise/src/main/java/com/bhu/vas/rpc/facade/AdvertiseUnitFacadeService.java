@@ -561,7 +561,7 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,String advertiseId){
 		Advertise ad = advertiseService.getById(advertiseId);
 		
-		if (ad.getType() != BusinessEnumType.AdvertiseType.HomeImage.getType()) {
+		if (ad.getType() == BusinessEnumType.AdvertiseType.SortMessage.getType()) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 		}
 		
