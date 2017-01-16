@@ -42,8 +42,13 @@ public class AdvertiseFacadeService {
 		Advertise ad = advertiseService.getById(advertiseId);
 		AdCommdityVTO vto = new AdCommdityVTO();
 		vto.setType(ad.getType());
-		vto.setCash("0.1");
+//		vto.setCash("0.1");
 //		vto.setCash(ad.getCash());
+		if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
+			vto.setCash("0.1");
+		}else{
+			vto.setCash(ad.getCash());
+		}
 		vto.setCreated_at(ad.getCreated_at());
 		return vto;
 	}
