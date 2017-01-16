@@ -641,7 +641,10 @@ public class AdvertiseUnitFacadeService {
 		if(district!=null)
 			sb.append(district);
 		
-		String contextId = sb.toString();
+		String contextId = null;
+		if(sb !=null){
+			contextId = sb.toString();
+		}
 		List<DeviceGEOPointCountVTO> vtos = new ArrayList<DeviceGEOPointCountVTO>();
 		for(String distance : distanceTemp){
 			DeviceGEOPointCountVTO vto = new DeviceGEOPointCountVTO();
