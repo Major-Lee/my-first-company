@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.user.dto;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 import org.springframework.util.StringUtils;
 
@@ -72,6 +73,10 @@ public class UserDeviceDTO implements Serializable {
 		this.d_industry_desc = IndustryEnumType.getNameByIndex(d_industry);
 	}
 
+	public void setD_industry_locale(Locale locale){
+		this.d_industry_desc = IndustryEnumType.getNameByIndex(d_industry, locale);
+	}
+	
 	public long getLastregedat() {
 		return lastregedat;
 	}

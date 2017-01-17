@@ -27,6 +27,9 @@ public class AdvertiseDocumentHelper {
 		if(advertise.getEnd() !=null){
 			doc.setA_end(DateTimeHelper.getDateTime(advertise.getEnd(), DateTimeHelper.FormatPattern1));
 		}
+		if(advertise.getCash() !=null){
+			doc.setA_cash(advertise.getCash());
+		}
 		doc.setA_duration(advertise.getDuration());
 		doc.setA_abledevices_num(advertise.getAbleDevicesNum());
 		doc.setA_state(advertise.getState());

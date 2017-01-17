@@ -562,7 +562,7 @@ public class AdvertiseUnitFacadeService {
 	public RpcResponseDTO<AdvertiseReportVTO> fetchAdvertiseReport(int uid,String advertiseId){
 		Advertise ad = advertiseService.getById(advertiseId);
 		
-		if (ad.getType() != BusinessEnumType.AdvertiseType.HomeImage.getType()) {
+		if (ad.getType() == BusinessEnumType.AdvertiseType.SortMessage.getType()) {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 		}
 		
@@ -642,7 +642,10 @@ public class AdvertiseUnitFacadeService {
 		if(district!=null)
 			sb.append(district);
 		
-		String contextId = sb.toString();
+		String contextId = null;
+		if(sb !=null){
+			contextId = sb.toString();
+		}
 		List<DeviceGEOPointCountVTO> vtos = new ArrayList<DeviceGEOPointCountVTO>();
 		for(String distance : distanceTemp){
 			DeviceGEOPointCountVTO vto = new DeviceGEOPointCountVTO();
@@ -744,6 +747,15 @@ public class AdvertiseUnitFacadeService {
 								vto.setDistance(doc.getA_distance());
 								vto.setUrl(doc.getA_url());
 								vto.setCount(doc.getA_count());
+								vto.setCash(doc.getA_cash());
+								SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern1);  
+								try {
+									if(doc.getA_start() !=null)
+										vto.setStart(sdf.parse(doc.getA_start()));
+									if(doc.getA_end() != null)
+										vto.setEnd(sdf.parse(doc.getA_end()));
+								} catch (ParseException e) {
+								}
 								vto.setDomain(doc.getA_domain());
 								vto.setImage(doc.getA_image());
 								vto.setExtparams(doc.getA_extparams());

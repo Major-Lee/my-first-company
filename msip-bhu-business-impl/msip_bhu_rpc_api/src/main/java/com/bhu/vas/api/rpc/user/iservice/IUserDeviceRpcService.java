@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.user.iservice;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.user.dto.UserDTO;
@@ -36,8 +37,8 @@ public interface IUserDeviceRpcService {
 /*    @Deprecated
     RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid);*/
 
-    RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(int uid, String dut, int pageNo, int pageSize);
-    RpcResponseDTO<TailPage<UserDeviceDTO>> fetchPageBindDevices(int uid, String dut, int pageNo, int pageSize);
+    RpcResponseDTO<List<UserDeviceDTO>> fetchBindDevices(Locale locale, int uid, String dut, int pageNo, int pageSize);
+    RpcResponseDTO<TailPage<UserDeviceDTO>> fetchPageBindDevices(Locale locale, int uid, String dut, int pageNo, int pageSize);
 
     UserDeviceTCPageVTO pageBindDevicesCustom(Integer uid, Integer u_id,
 			String d_online, String s_content, int pageNo, int pageSize);

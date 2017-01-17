@@ -1,6 +1,7 @@
 package com.bhu.vas.api.rpc.devices.iservice;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.bhu.vas.api.dto.redis.DeviceUsedStatisticsDTO;
@@ -90,7 +91,7 @@ public interface IDeviceURouterRestRpcService {
 
 	RpcResponseDTO<Boolean> urouterVisitorRemoveHandset(Integer uid, String mac, String hd_mac);
 
-	RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Integer uid, String message, int pageNo, int pageSize);
+	RpcResponseDTO<TailPage<UserDeviceDTO>> urouterFetchBySearchConditionMessage(Locale locale, Integer uid, String message, int pageNo, int pageSize);
 
 	RpcResponseDTO<Map<String, String>> countOnlineByTimestamp(Integer uid, String mac, Long timestamp);
 	

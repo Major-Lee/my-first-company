@@ -1,6 +1,7 @@
 package com.bhu.vas.web.device;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -596,8 +597,8 @@ public class URouterDeviceController extends BaseController{
             @RequestParam(required = false) String message,
             @RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
             @RequestParam(required = false, defaultValue = "10", value = "ps") int pageSize) {
-
-        RpcResponseDTO<TailPage<UserDeviceDTO>> vtos = deviceURouterRestRpcService.urouterFetchBySearchConditionMessage(
+    	Locale locale = BusinessWebHelper.getLocale(request);
+        RpcResponseDTO<TailPage<UserDeviceDTO>> vtos = deviceURouterRestRpcService.urouterFetchBySearchConditionMessage(locale,
         		uid, message, pageNo, pageSize);
         SpringMVCHelper.renderJson(response, ResponseSuccess.embed(vtos));
     }

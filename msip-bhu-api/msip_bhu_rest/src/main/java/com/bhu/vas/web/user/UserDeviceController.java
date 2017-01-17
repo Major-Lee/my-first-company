@@ -2,6 +2,7 @@ package com.bhu.vas.web.user;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -152,11 +153,12 @@ public class UserDeviceController extends BaseController {
                 @RequestParam(required = false, defaultValue = VapEnumType.DUT_uRouter, value = "dut") String dut,
         		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
         		@RequestParam(required = false, defaultValue = "20", value = "ps") int pageSize){
-    	RpcResponseDTO<List<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchBindDevices(uid, dut, pageNo, pageSize);
+    	Locale locale = BusinessWebHelper.getLocale(request);
+    	RpcResponseDTO<List<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchBindDevices(locale, uid, dut, pageNo, pageSize);
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
         }
     }
 
@@ -173,11 +175,12 @@ public class UserDeviceController extends BaseController {
                 @RequestParam(required = false, defaultValue = VapEnumType.DUT_uRouter, value = "dut") String dut,
         		@RequestParam(required = false, defaultValue = "1", value = "pn") int pageNo,
         		@RequestParam(required = false, defaultValue = "50", value = "ps") int pageSize){
-    	RpcResponseDTO<TailPage<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchPageBindDevices(uid, dut, pageNo, pageSize);
+    	Locale locale = BusinessWebHelper.getLocale(request);
+    	RpcResponseDTO<TailPage<UserDeviceDTO>> rpcResult = userDeviceRpcService.fetchPageBindDevices(locale, uid, dut, pageNo, pageSize);
         if (!rpcResult.hasError()) {
             SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
         } else {
-            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+            SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
         }
     }
 
@@ -266,13 +269,13 @@ public class UserDeviceController extends BaseController {
 			HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam(required = true) Integer uid){
-		
-		RpcResponseDTO<List<WifiDeviceIndustryVTO>> rpcResult = deviceRestRpcService.fetchIndustyList();
+		Locale locale = BusinessWebHelper.getLocale(request);
+		RpcResponseDTO<List<WifiDeviceIndustryVTO>> rpcResult = deviceRestRpcService.fetchIndustyList(locale);
 		
 		if(!rpcResult.hasError()){
 			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, locale));
 		}
 	}
 
