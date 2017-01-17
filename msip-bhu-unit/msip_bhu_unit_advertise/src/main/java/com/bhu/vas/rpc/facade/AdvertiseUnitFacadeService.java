@@ -704,7 +704,7 @@ public class AdvertiseUnitFacadeService {
 		return positionVto;
 	}
 	
-	public List<TailPage<AdvertiseVTO>> fetchBySearchConditionMessages(int pageNo,int pageSize,String ... messages){
+	public List<TailPage<AdvertiseVTO>> fetchBySearchConditionMessages(int pageNo,int pageSize,String ... messages) throws ParseException{
 		List<TailPage<AdvertiseVTO>> resultList = null;
 		if(messages == null || messages.length == 0){
 			resultList = Collections.emptyList();
@@ -745,6 +745,10 @@ public class AdvertiseUnitFacadeService {
 								vto.setDistance(doc.getA_distance());
 								vto.setUrl(doc.getA_url());
 								vto.setCount(doc.getA_count());
+								vto.setCash(doc.getA_cash());
+								SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern1);  
+								vto.setStart(sdf.parse(doc.getA_start()));
+								vto.setEnd(sdf.parse(doc.getA_end()));
 								vto.setDomain(doc.getA_domain());
 								vto.setImage(doc.getA_image());
 								vto.setExtparams(doc.getA_extparams());
