@@ -31,9 +31,13 @@ public class AdvertisePortalStringService extends AbstractRelationStringCache{
 		List<Object> values = null;
 		List<String> result = new ArrayList<String>();
 		for(String ext : extparams){
-			int index = ext.indexOf(".html");
-			if(index != -1){
-				keys.add(adPortalPv+ext.substring(index - 13, index));
+			if(ext != null){
+				int index = ext.indexOf(".html");
+				if(index != -1){
+					keys.add(adPortalPv+ext.substring(index - 13, index));
+				}else{
+					keys.add(adPortalPv);
+				}
 			}else{
 				keys.add(adPortalPv);
 			}
@@ -55,9 +59,13 @@ public class AdvertisePortalStringService extends AbstractRelationStringCache{
 		List<Object> values = null;
 		List<String> result = new ArrayList<String>();
 		for(String ext : extparams){
-			int index = ext.indexOf(".html");
-			if(index != -1){
-				keys.add(adPortalAct+ext.substring(index - 13, index));
+			if(ext !=null){
+				int index = ext.indexOf(".html");
+				if(index != -1){
+					keys.add(adPortalAct+ext.substring(index - 13, index));
+				}else{
+					keys.add(adPortalAct);
+				}
 			}else{
 				keys.add(adPortalAct);
 			}
