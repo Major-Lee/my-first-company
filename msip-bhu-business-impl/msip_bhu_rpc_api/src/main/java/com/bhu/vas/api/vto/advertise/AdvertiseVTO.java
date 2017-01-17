@@ -30,7 +30,10 @@ public class AdvertiseVTO implements java.io.Serializable{
 	private double lat;
 	private double lon;
 	private String distance;
-	
+	//阅读数
+	private String pv;
+	//点赞数
+	private String act;
 	private Date create_at;
 	
 	
@@ -181,5 +184,17 @@ public class AdvertiseVTO implements java.io.Serializable{
 	}
 	public void setDistance(String distance) {
 		this.distance = distance;
+	}
+	public String getPv() {
+		return pv;
+	}
+	public void setPv(String pv) {
+		this.pv = pv;
+	}
+	public String getAct() {
+		return act;
+	}
+	public void setAct(String act) {
+		this.act = act;
 	}
 }
