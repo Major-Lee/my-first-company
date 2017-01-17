@@ -1,6 +1,5 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.advertise;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import redis.clients.jedis.JedisPool;

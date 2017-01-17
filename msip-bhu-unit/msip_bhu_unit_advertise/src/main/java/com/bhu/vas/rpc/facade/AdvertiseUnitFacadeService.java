@@ -61,6 +61,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.WifiDeviceAdvertiseSortedSetService;
@@ -725,6 +726,7 @@ public class AdvertiseUnitFacadeService {
 						}else{
 							vtos = new ArrayList<AdvertiseVTO>();
 							AdvertiseVTO vto = null;
+							List<String> extparams = new ArrayList<String>();
 							for(AdvertiseDocument doc : searchDocuments){
 								vto = new AdvertiseVTO();
 								vto.setId(doc.getId());
@@ -745,8 +747,17 @@ public class AdvertiseUnitFacadeService {
 								vto.setDomain(doc.getA_domain());
 								vto.setImage(doc.getA_image());
 								vto.setExtparams(doc.getA_extparams());
+								extparams.add(doc.getA_extparams());
 								vto.setReject_reason(doc.getA_reject_reason());
 								vtos.add(vto);
+							}
+							List<String> portalPv =  AdvertisePortalStringService.getInstance().queryAdvertisePV(extparams);
+							List<String> portalAct =  AdvertisePortalStringService.getInstance().queryAdvertiseAct(extparams);
+							int index = 0;
+							for(AdvertiseVTO vto1 : vtos){
+								 vto1.setAct(portalAct.get(index));
+								 vto1.setPv(portalPv.get(index));
+								 index++;
 							}
 						}
 					}
