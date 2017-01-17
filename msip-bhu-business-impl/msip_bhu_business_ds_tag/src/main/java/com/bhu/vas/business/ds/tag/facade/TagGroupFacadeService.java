@@ -145,7 +145,7 @@ public class TagGroupFacadeService {
 		TagGroupRelation tagGroupRelation = tagGroupRelationService.getById(wifiId);
 		String timestr = DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5);
 		if(tagGroupRelation == null){
-			System.out.println(String.format("time: %s  当前设备： %s 不存在分组",timestr, wifiId));
+			logger.info(String.format("time: %s  当前设备： %s 不存在分组",timestr, wifiId));
 			return null;
 		}
 		String hdmac = dto.getMac();
