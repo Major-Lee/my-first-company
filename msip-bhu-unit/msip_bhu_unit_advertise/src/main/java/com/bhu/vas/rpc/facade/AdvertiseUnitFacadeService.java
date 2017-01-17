@@ -745,6 +745,15 @@ public class AdvertiseUnitFacadeService {
 								vto.setDistance(doc.getA_distance());
 								vto.setUrl(doc.getA_url());
 								vto.setCount(doc.getA_count());
+								vto.setCash(doc.getA_cash());
+								SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern1);  
+								try {
+									if(doc.getA_start() !=null)
+										vto.setStart(sdf.parse(doc.getA_start()));
+									if(doc.getA_end() != null)
+										vto.setEnd(sdf.parse(doc.getA_end()));
+								} catch (ParseException e) {
+								}
 								vto.setDomain(doc.getA_domain());
 								vto.setImage(doc.getA_image());
 								vto.setExtparams(doc.getA_extparams());
