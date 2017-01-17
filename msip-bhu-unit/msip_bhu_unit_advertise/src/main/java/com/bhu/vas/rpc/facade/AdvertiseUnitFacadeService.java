@@ -748,8 +748,10 @@ public class AdvertiseUnitFacadeService {
 								vto.setCash(doc.getA_cash());
 								SimpleDateFormat sdf = new SimpleDateFormat(DateTimeHelper.FormatPattern1);  
 								try {
-									vto.setStart(sdf.parse(doc.getA_start()));
-									vto.setEnd(sdf.parse(doc.getA_end()));
+									if(doc.getA_start() !=null)
+										vto.setStart(sdf.parse(doc.getA_start()));
+									if(doc.getA_end() != null)
+										vto.setEnd(sdf.parse(doc.getA_end()));
 								} catch (ParseException e) {
 								}
 								vto.setDomain(doc.getA_domain());
