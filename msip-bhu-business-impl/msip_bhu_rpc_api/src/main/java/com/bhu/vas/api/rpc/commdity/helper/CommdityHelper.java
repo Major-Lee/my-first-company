@@ -75,7 +75,7 @@ public class CommdityHelper {
 		}else{
 			amount = commdity_price;
 		}
-		return amount;
+		return ArithHelper.getCuttedCurrency(amount);
 	}
 	
 	public static void main(String[] args){
