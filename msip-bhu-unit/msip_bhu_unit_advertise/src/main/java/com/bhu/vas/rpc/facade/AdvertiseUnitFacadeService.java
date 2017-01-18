@@ -759,11 +759,7 @@ public class AdvertiseUnitFacadeService {
 								vto.setDomain(doc.getA_domain());
 								vto.setImage(doc.getA_image());
 								vto.setExtparams(doc.getA_extparams());
-								if(doc.getA_extparams() != null){
-									extparams.add(doc.getA_extparams());
-								}else{
-									extparams.add("nothing");
-								}
+								extparams.add(doc.getA_extparams());
 								vto.setReject_reason(doc.getA_reject_reason());
 								vtos.add(vto);
 							}
