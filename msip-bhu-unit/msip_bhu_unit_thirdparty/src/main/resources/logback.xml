@@ -2,7 +2,7 @@
 <!DOCTYPE configuration>
 <configuration>
 	<!-- TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF /ETdata/-->
-	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-devices/${provider.port}/devices" />
+	<property name="log.base" value="/BHUData/logs/unitlogs/msip-unit-thirdparty/${provider.port}/thirdparty" />
 	<jmxConfigurator />
 	<timestamp key="curTime" datePattern="yyyyMMddHHmmss"/>
 

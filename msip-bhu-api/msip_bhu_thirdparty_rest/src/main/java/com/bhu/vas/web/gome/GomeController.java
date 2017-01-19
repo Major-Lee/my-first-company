@@ -1,107 +1,80 @@
 package com.bhu.vas.web.gome;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.bhu.vas.api.dto.commdity.OrderVideoVTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
-import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
-import com.bhu.vas.api.rpc.user.iservice.IUserCaptchaCodeRpcService;
-import com.smartwork.msip.cores.web.business.helper.BusinessWebHelper;
+import com.bhu.vas.api.rpc.thirdparty.iservice.IThirdPartyRpcService;
+import com.bhu.vas.thirdparty.response.GomeResponse;
+import com.bhu.vas.validate.ValidateService;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
-import com.smartwork.msip.jdo.ResponseError;
-import com.smartwork.msip.jdo.ResponseSuccess;
+import com.smartwork.msip.exception.BusinessI18nCodeException;
 @Controller
-@RequestMapping("/gome")
+@RequestMapping("/")
 public class GomeController extends BaseController{
 	@Resource
-	private IUserCaptchaCodeRpcService userCaptchaCodeRpcService;
-	
-	@Resource
-	private IOrderRpcService orderRpcService;
-	
+	private IThirdPartyRpcService thirdPartyRpcService;
+
+
 	/**
-	 * 获取视频认证订单id
+	 * 绑定设备
 	 * 
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/get_orderid",method={RequestMethod.POST})
-	public void video_get_orderid(HttpServletRequest request,
+	@RequestMapping(value="/device/bind",method={RequestMethod.POST})
+	public void bindDevice(HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = false, defaultValue = "12") Integer commdityid,
-			@RequestParam(required = true) String mac,
-			@RequestParam(required = true) String umac,
-			@RequestParam(required = false) String context,
-			@RequestParam(required = false, defaultValue = "0") Integer channel,
-			@RequestParam(required = false, defaultValue = "2") Integer umactype
-			) {
-		String user_agent = request.getHeader("User-Agent");
-		RpcResponseDTO<OrderVideoVTO> orderRpcResult = orderRpcService.createVideoOrder(commdityid,mac, umac, 
-					umactype, context, channel, user_agent);
-		if(!orderRpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(orderRpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(orderRpcResult, BusinessWebHelper.getLocale(request)));
+			@RequestBody String requestBody) {
+		try{
+//			ValidateService.ValidateGomeRequest(request, requestBody, response);
+			Map<String, Object> params = JsonHelper.getMapFromJson(requestBody);
+			String deviceId = (String)params.get("deviceId");
+			RpcResponseDTO<Boolean> rpcResult = thirdPartyRpcService.gomeBindDevice(deviceId);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, GomeResponse.fromSuccessRpcResponse(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, GomeResponse.fromFailRpcResponse(rpcResult));
+			}
+		}catch(BusinessI18nCodeException e){
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(e.getErrorCode()));
 		}
 	}
+
 	/**
-	 * 视频放行接口
-	 * @param response
-	 * @param mac 设备mac
-	 * @param umac 终端mac
-	 * @param umactype 用户类型
+	 * 绑定设备
+	 * 
 	 */
 	@ResponseBody()
-	@RequestMapping(value="/authorize",method={RequestMethod.POST})
-	public void video_authorize(HttpServletRequest request,
+	@RequestMapping(value="/device/unbind",method={RequestMethod.POST})
+	public void unbindDevice(HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = true) String token,
-			@RequestParam(required = false) String context
-			) {
-		RpcResponseDTO<Boolean> RpcResult = orderRpcService.authorizeVideoOrder(token,context);
-		
-		if(!RpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(RpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(RpcResult, BusinessWebHelper.getLocale(request)));
+			@RequestBody String requestBody) {
+		try{
+			ValidateService.ValidateGomeRequest(request, requestBody, response);
+			Map<String, Object> params = JsonHelper.getMapFromJson(requestBody);
+			String deviceId = (String)params.get("deviceId");
+
+			RpcResponseDTO<Boolean> rpcResult = thirdPartyRpcService.gomeUnbindDevice(deviceId);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, GomeResponse.fromSuccessRpcResponse(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, GomeResponse.fromFailRpcResponse(rpcResult));
+			}
+		}catch(BusinessI18nCodeException e){
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(e.getErrorCode()));
 		}
 	}
-	/**
-	 * 点击免费上网
-	 * @param request
-	 * @param response
-	 * @param commdityid
-	 * @param mac
-	 * @param umac
-	 * @param channel
-	 * @param umactype
-	 */
-	@ResponseBody()
-	@RequestMapping(value="/click_authorize",method={RequestMethod.POST})
-	public void video_click_authorize(HttpServletRequest request,
-			HttpServletResponse response,
-			@RequestParam(required = false, defaultValue = "21") Integer commdityid,
-			@RequestParam(required = true) String mac,
-			@RequestParam(required = true) String umac,
-			@RequestParam(required = false, defaultValue = "0") Integer channel,
-			@RequestParam(required = false, defaultValue = "2") Integer umactype
-			) {
-		String user_agent = request.getHeader("User-Agent");
-		
-		RpcResponseDTO<OrderVideoVTO> orderRpcResult = orderRpcService.clickAuthorize(commdityid, mac, umac, 
-					umactype, channel, user_agent);
-		if(!orderRpcResult.hasError()){
-			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(orderRpcResult.getPayload()));
-		}else{
-			SpringMVCHelper.renderJson(response, ResponseError.embed(orderRpcResult, BusinessWebHelper.getLocale(request)));
-		}
-	}
+
+
 }
