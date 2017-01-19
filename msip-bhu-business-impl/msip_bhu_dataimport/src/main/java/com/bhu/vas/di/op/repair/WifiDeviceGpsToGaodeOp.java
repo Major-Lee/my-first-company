@@ -44,7 +44,7 @@ public class WifiDeviceGpsToGaodeOp {
 		WifiDeviceForGpsService wifiDeviceForGpsService = (WifiDeviceForGpsService)ctx.getBean("wifiDeviceForGpsService");
 
 
-		for(int i = 0; i < 1;i ++){
+		for(int i = 0; i < 10;i ++){
 			ModelCriteria mc = new ModelCriteria();
 			mc.createCriteria().andSimpleCaulse(" 1=1 ");
 			mc.setPageNumber(1);

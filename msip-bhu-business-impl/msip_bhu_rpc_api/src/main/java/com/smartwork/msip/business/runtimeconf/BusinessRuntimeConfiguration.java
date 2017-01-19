@@ -15,6 +15,7 @@ import org.springframework.beans.factory.config.PropertyResourceConfigurer;
 
 import com.smartwork.msip.cores.helper.PropertiesHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.encrypt.MD5Helper;
 
 public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	private static final Logger logger = LoggerFactory.getLogger(BusinessRuntimeConfiguration.class);
@@ -184,6 +185,20 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	QualityGoodsSharedealStart = PropertiesHelper.getString("qualitygoods.sharedeal.start", paramProperties, QualityGoodsSharedealStart);
         	ShareDealIgnoreOrderAmount = PropertiesHelper.getBoolean("sharedeal.ignore.order.amount", paramProperties, ShareDealIgnoreOrderAmount);
         	
+        	
+
+        	
+        	GomeApiUrl = PropertiesHelper.getString("gome.api.url", paramProperties, GomeApiUrl);
+        	GomeToBhuAppId = PropertiesHelper.getString("gome.tobhu.appid", paramProperties, GomeToBhuAppId);
+        	GomeToBhuAppKey = PropertiesHelper.getString("gome.tobhu.appkey", paramProperties, GomeToBhuAppKey);
+
+        	BhuToGomeAppId = PropertiesHelper.getString("bhu.togome.appid", paramProperties, BhuToGomeAppId);
+        	BhuToGomeAppKey = PropertiesHelper.getString("bhu.togome.appkey", paramProperties, BhuToGomeAppKey);
+
+        	
+        	GomeToBhuDataKey = MD5Helper.md5(GomeToBhuAppKey).substring(0, 16).getBytes();
+        	BhuToGomeDataKey = MD5Helper.md5(BhuToGomeAppKey).substring(0, 16).getBytes();
+
         	
 //        	Default_Range_Cash_Pc_For_Day = PropertiesHelper.getString("safesecure.range.cash.pc.day", paramProperties, Default_Range_Cash_Pc_For_Day);
 //        	Default_Range_Cash_Mobile_For_Day = PropertiesHelper.getString("safesecure.range.cash.mobile.day", paramProperties, Default_Range_Cash_Mobile_For_Day);
@@ -485,6 +500,18 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 			+ "axECwj041ComS11pU4hxJ8*n9csRduaNmiVHwTs0uivB4Qic2BvO799t0lgxE7SDsm3gy1Ji9"
 			+ "PUnxPZkGnyuAIiPzeNGx6JknCXnJ43QbZ-v*Va7XCuSjB9WxO3zMeFYmHmw3IZGokQ-Q*LXP"
 			+ "Yb8ardTii58PCsENvCDCIz3wthOyNgEXAQEXI-O19Wv9AZr5XCQ_";
+	
+	//国美appid和appkey
+	public static String GomeToBhuAppId = "111";
+	public static String GomeToBhuAppKey = "22";
+	
+	public static String BhuToGomeAppId = "111";
+	public static String BhuToGomeAppKey = "22";
+	
+	public static byte[] GomeToBhuDataKey = null;
+	public static byte[] BhuToGomeDataKey = null;
+	
+	public static String GomeApiUrl = "";
 	
 	/**
 	 * 判断是否是console用户
