@@ -173,4 +173,10 @@ public class BusinessKeyDefine {
 		public static final String User = "U.";
 	}
 	
+	public static class ThirdParty{
+		public static final String DeviceKey = "D.";
+		public static final String FieldBinded = "b";
+		
+	}
+	
 }
