@@ -365,7 +365,7 @@ public class WifiDeviceSearchMessageBuilder {
 		
 		SearchConditionSort sc_sortByGeopoint = SearchConditionSort.builderSearchConditionSort(BusinessIndexDefine.WifiDevice.
 				Field.D_GEOPOINT.getName(), SearchConditionSortPattern.SortGeopointDistance.getPattern(),
-				SortOrder.DESC, JsonHelper.getJSONString(sc_geopointDistance));
+				SortOrder.ASC, JsonHelper.getJSONString(sc_geopointDistance));
 		
 		SearchConditionMessage scm = SearchConditionMessage.builderSearchConditionMessage(pack_must);
 		scm.addSorts(sc_sortByGeopoint);
