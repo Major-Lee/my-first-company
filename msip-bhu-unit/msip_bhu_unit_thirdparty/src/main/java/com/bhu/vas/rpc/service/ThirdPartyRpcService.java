@@ -25,12 +25,12 @@ public class ThirdPartyRpcService implements IThirdPartyRpcService {
 	private final Logger logger = LoggerFactory.getLogger(ThirdPartyRpcService.class);
 
     @Resource
-	private ThirdPartyUnitFacadeService thirdPartyFacadeService;
+	private ThirdPartyUnitFacadeService thirdPartyUnitFacadeService;
 	
 	public RpcResponseDTO<Boolean> gomeBindDevice(String mac){
 		logger.info(String.format("gomeBindDevice mac:%s",mac));
 		try{
-			Boolean ret = thirdPartyFacadeService.gomeBindDevice(mac);
+			Boolean ret = thirdPartyUnitFacadeService.gomeBindDevice(mac);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -43,7 +43,7 @@ public class ThirdPartyRpcService implements IThirdPartyRpcService {
 	public RpcResponseDTO<Boolean> gomeUnbindDevice(String mac){
 		logger.info(String.format("gomeUnBindDevice mac:%s",mac));
 		try{
-			Boolean ret = thirdPartyFacadeService.gomeUnBindDevice(mac);
+			Boolean ret = thirdPartyUnitFacadeService.gomeUnBindDevice(mac);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
@@ -57,7 +57,7 @@ public class ThirdPartyRpcService implements IThirdPartyRpcService {
 	public RpcResponseDTO<Boolean> gomeDeviceControl(String mac, GomeConfigDTO dto){
 		logger.info(String.format("gomeDeviceControl mac:%s, dto:[%s]",mac, JsonHelper.getJSONString(dto)));
 		try{
-			Boolean ret = thirdPartyFacadeService.gomeDeviceControl(mac, dto);
+			Boolean ret = thirdPartyUnitFacadeService.gomeDeviceControl(mac, dto);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
