@@ -1,5 +1,5 @@
 package com.smartwork.msip.cores.web.controller.commons;
-
+/*
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -28,15 +28,5 @@ public class ErrorController extends BaseController{
 			@RequestParam(required = true) String legacy) {
 		SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.REQUEST_UNKNOW_ERROR, BusinessWebHelper.getLocale(request)));
 	}
-	
-/*	 @RequestMapping(value = {"/commons/{commonCode}.html"})
-	 public ModelAndView common(
-			 ModelAndView mv, 
-			 HttpServletRequest request,
-			 @PathVariable String commonCode) {
-		 //this.prepareModelAndView(mv);
-		 //mv.setViewName("/commons/"+commonPage);
-		 return mv;
-	 }*/
-
 }
+*/

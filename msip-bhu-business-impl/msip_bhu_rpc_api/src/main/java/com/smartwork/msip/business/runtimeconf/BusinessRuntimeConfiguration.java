@@ -195,11 +195,12 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	BhuToGomeAppId = PropertiesHelper.getString("bhu.togome.appid", paramProperties, BhuToGomeAppId);
         	BhuToGomeAppKey = PropertiesHelper.getString("bhu.togome.appkey", paramProperties, BhuToGomeAppKey);
 
+        	GomeDistributorId = PropertiesHelper.getInt("gome.distributor.id", paramProperties, GomeDistributorId);        	
+
         	
         	GomeToBhuDataKey = MD5Helper.md5(GomeToBhuAppKey).substring(0, 16).getBytes();
         	BhuToGomeDataKey = MD5Helper.md5(BhuToGomeAppKey).substring(0, 16).getBytes();
 
-        	
 //        	Default_Range_Cash_Pc_For_Day = PropertiesHelper.getString("safesecure.range.cash.pc.day", paramProperties, Default_Range_Cash_Pc_For_Day);
 //        	Default_Range_Cash_Mobile_For_Day = PropertiesHelper.getString("safesecure.range.cash.mobile.day", paramProperties, Default_Range_Cash_Mobile_For_Day);
 //        	Default_Range_Cash_Pc_For_Week = PropertiesHelper.getString("safesecure.range.cash.pc.week", paramProperties, Default_Range_Cash_Pc_For_Week);
@@ -512,6 +513,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static byte[] BhuToGomeDataKey = null;
 	
 	public static String GomeApiUrl = "";
+	public static int GomeDistributorId = 0;
 	
 	/**
 	 * 判断是否是console用户

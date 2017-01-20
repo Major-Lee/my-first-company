@@ -1,13 +1,13 @@
 package com.bhu.vas.business.bucache.redis.serviceimpl.thirdparty;
 
-import redis.clients.jedis.JedisPool;
-
 import java.util.Map;
 
 import com.bhu.vas.business.bucache.redis.serviceimpl.BusinessKeyDefine;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisKeyEnum;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.RedisPoolManager;
 import com.smartwork.msip.cores.cache.relationcache.impl.jedis.impl.AbstractRelationHashCache;
+
+import redis.clients.jedis.JedisPool;
 
 /**
  * 第三方设备再redis中的存储
@@ -34,6 +34,10 @@ public class ThirdPartyDeviceService extends AbstractRelationHashCache{
     	sb.append(BusinessKeyDefine.ThirdParty.DeviceKey);
     	sb.append(mac);
         return sb.toString();
+    }
+    
+    public static boolean isThirdPartyDevice(String mac){
+        return (getBindedCount(mac) != null);
     }
     
     public static Integer getBindedCount(String mac){

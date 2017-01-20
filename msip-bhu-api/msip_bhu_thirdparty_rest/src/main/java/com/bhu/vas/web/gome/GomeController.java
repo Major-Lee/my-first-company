@@ -37,7 +37,7 @@ public class GomeController extends BaseController{
 			HttpServletResponse response,
 			@RequestBody String requestBody) {
 		try{
-//			ValidateService.ValidateGomeRequest(request, requestBody, response);
+			ValidateService.ValidateGomeRequest(request, requestBody, response);
 			Map<String, Object> params = JsonHelper.getMapFromJson(requestBody);
 			String deviceId = (String)params.get("deviceId");
 			RpcResponseDTO<Boolean> rpcResult = thirdPartyRpcService.gomeBindDevice(deviceId);
