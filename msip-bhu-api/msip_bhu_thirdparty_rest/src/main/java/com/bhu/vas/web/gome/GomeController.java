@@ -20,6 +20,7 @@ import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
+import com.smartwork.msip.jdo.ResponseErrorCode;
 @Controller
 @RequestMapping("/")
 public class GomeController extends BaseController{
@@ -46,8 +47,10 @@ public class GomeController extends BaseController{
 			}else{
 				SpringMVCHelper.renderJson(response, GomeResponse.fromFailRpcResponse(rpcResult));
 			}
-		}catch(BusinessI18nCodeException e){
-			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(e.getErrorCode()));
+		}catch(BusinessI18nCodeException be){
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(be.getErrorCode()));
+		}catch(Exception e){
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(ResponseErrorCode.REQUEST_500_ERROR));
 		}
 	}
 
@@ -73,6 +76,8 @@ public class GomeController extends BaseController{
 			}
 		}catch(BusinessI18nCodeException e){
 			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(e.getErrorCode()));
+		}catch(Exception e){
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(ResponseErrorCode.REQUEST_500_ERROR));
 		}
 	}
 

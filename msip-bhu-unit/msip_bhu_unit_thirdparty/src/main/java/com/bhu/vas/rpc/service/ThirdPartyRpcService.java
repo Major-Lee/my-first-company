@@ -29,10 +29,12 @@ public class ThirdPartyRpcService implements IThirdPartyRpcService {
 		logger.info(String.format("gomeBindDevice mac:%s",mac));
 		try{
 			Boolean ret = thirdPartyFacadeService.gomeBindDevice(mac);
+			logger.info(String.format("----2222 gomeBindDevice mac:%s",mac));
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
+			logger.info(String.format("----gomeBindDevice mac:%s",mac));
 			ex.printStackTrace(System.out);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}

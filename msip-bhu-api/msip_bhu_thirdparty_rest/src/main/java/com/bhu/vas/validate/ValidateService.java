@@ -43,11 +43,12 @@ public class ValidateService {
 			throw new BusinessI18nCodeException(ResponseErrorCode.REQUEST_403_ERROR);
 		
 		StringBuffer sb = new StringBuffer();
+		sb.append(request.getRequestURI());
 		sb.append(timestamp).append(nonce).append(BusinessRuntimeConfiguration.GomeToBhuAppKey);
 		if(body != null)
 			sb.append(body);
 		String oraStr = sb.toString();
-		String mysign = CryptoHelper.hmacSha256ToHex(oraStr, BusinessRuntimeConfiguration.GomeToBhuAppKey.getBytes());
+		String mysign = CryptoHelper.sha256(oraStr);
 		if(!mysign.equals(sign))
 			throw new BusinessI18nCodeException(ResponseErrorCode.REQUEST_401_ERROR);
 	}

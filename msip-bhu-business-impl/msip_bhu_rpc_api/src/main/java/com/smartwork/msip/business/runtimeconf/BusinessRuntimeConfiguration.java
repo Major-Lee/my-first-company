@@ -187,7 +187,6 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	
         	
 
-        	
         	GomeApiUrl = PropertiesHelper.getString("gome.api.url", paramProperties, GomeApiUrl);
         	GomeToBhuAppId = PropertiesHelper.getString("gome.tobhu.appid", paramProperties, GomeToBhuAppId);
         	GomeToBhuAppKey = PropertiesHelper.getString("gome.tobhu.appkey", paramProperties, GomeToBhuAppKey);
