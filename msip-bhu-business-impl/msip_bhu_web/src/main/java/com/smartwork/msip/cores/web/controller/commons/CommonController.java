@@ -1,5 +1,5 @@
 package com.smartwork.msip.cores.web.controller.commons;
-/*
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -51,4 +51,3 @@ public class CommonController extends BaseController{
 	
 
 }
-*/

@@ -1,5 +1,5 @@
 package com.bhu.vas.web.commons;
-
+/*
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,3 +30,4 @@ public class ErrorController extends BaseController{
 		SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(ResponseErrorCode.REQUEST_UNKNOW_ERROR));
 	}
 }
+*/

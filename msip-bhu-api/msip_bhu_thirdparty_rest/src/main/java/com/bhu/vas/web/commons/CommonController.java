@@ -1,5 +1,5 @@
 package com.bhu.vas.web.commons;
-
+/*
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -51,3 +51,4 @@ public class CommonController extends BaseController{
 	
 
 }
+*/
