@@ -16,7 +16,9 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.thirdparty.iservice.IThirdPartyRpcService;
 import com.bhu.vas.thirdparty.response.GomeResponse;
 import com.bhu.vas.validate.ValidateService;
+import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.encrypt.CryptoHelper;
 import com.smartwork.msip.cores.web.mvc.spring.BaseController;
 import com.smartwork.msip.cores.web.mvc.spring.helper.SpringMVCHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
@@ -41,7 +43,8 @@ public class GomeController extends BaseController{
 			ValidateService.ValidateGomeRequest(request, requestBody, response);
 			Map<String, Object> params = JsonHelper.getMapFromJson(requestBody);
 			String deviceId = (String)params.get("deviceId");
-			RpcResponseDTO<Boolean> rpcResult = thirdPartyRpcService.gomeBindDevice(deviceId);
+			String mac = CryptoHelper.aesDecryptFromHex(deviceId, BusinessRuntimeConfiguration.GomeToBhuDataKey);
+			RpcResponseDTO<Boolean> rpcResult = thirdPartyRpcService.gomeBindDevice(mac);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, GomeResponse.fromSuccessRpcResponse(rpcResult.getPayload()));
 			}else{
@@ -67,8 +70,8 @@ public class GomeController extends BaseController{
 			ValidateService.ValidateGomeRequest(request, requestBody, response);
 			Map<String, Object> params = JsonHelper.getMapFromJson(requestBody);
 			String deviceId = (String)params.get("deviceId");
-
-			RpcResponseDTO<Boolean> rpcResult = thirdPartyRpcService.gomeUnbindDevice(deviceId);
+			String mac = CryptoHelper.aesDecryptFromHex(deviceId, BusinessRuntimeConfiguration.GomeToBhuDataKey);
+			RpcResponseDTO<Boolean> rpcResult = thirdPartyRpcService.gomeUnbindDevice(mac);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, GomeResponse.fromSuccessRpcResponse(rpcResult.getPayload()));
 			}else{
