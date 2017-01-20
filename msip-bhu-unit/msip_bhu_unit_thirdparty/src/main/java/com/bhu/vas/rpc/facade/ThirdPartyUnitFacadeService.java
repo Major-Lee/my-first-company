@@ -12,8 +12,10 @@ import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
+import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeConfigDTO;
@@ -76,7 +78,16 @@ public class ThirdPartyUnitFacadeService {
 	
 	private void _callTaskCreate(String mac, String subopt, Object obj){
 		String extparams = JsonHelper.getJSONString(obj);
-		taskRpcService.createNewTask(-1, mac, OperationCMD.ModifyDeviceSetting.getNo(), subopt, extparams, WifiDeviceDownTask.Task_LOCAL_CHANNEL, null);
+		try{
+			RpcResponseDTO<TaskResDTO> result = taskRpcService.createNewTask(BusinessRuntimeConfiguration.Sys_Uid, mac,
+					OperationCMD.ModifyDeviceSetting.getNo(), subopt, extparams, WifiDeviceDownTask.Task_LOCAL_CHANNEL, null);
+			if(result.hasError()){
+				throw new BusinessI18nCodeException(result.getErrorCode());
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
 	/**
