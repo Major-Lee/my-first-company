@@ -86,9 +86,7 @@ public class ThirdPartyUnitFacadeService {
 	 * @return
 	 */
 	public Boolean gomeDeviceControl(String mac, GomeConfigDTO dto){
-		String subopt = null;
-		String extparams = null;
-//		[{"name": "wlan0","ssid": "hellox","auth": "open","auth_key": "", "hide_ssid": "disable"}]
+
 		if(!ThirdPartyDeviceService.isThirdPartyDevice(mac)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
 		}
@@ -108,7 +106,6 @@ public class ThirdPartyUnitFacadeService {
 			vap.setSsid(dto.getSsid());
 			change = true;
 		}
-		
 		//修改ssid和密码
 		if(dto.getPassword() != null && dto.getPassword().equals(vap.getAuth_key())){
 			if(StringUtils.isEmpty(dto.getPassword())){

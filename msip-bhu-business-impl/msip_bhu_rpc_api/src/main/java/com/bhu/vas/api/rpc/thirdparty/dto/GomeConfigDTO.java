@@ -1,10 +1,11 @@
 package com.bhu.vas.api.rpc.thirdparty.dto;
 
-import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-public class GomeConfigDTO {
+public class GomeConfigDTO implements Serializable {
 
 	@JsonInclude(Include.NON_NULL)
 	private String ssid;

@@ -110,6 +110,7 @@ public class GomeController extends BaseController{
 		}catch(BusinessI18nCodeException e){
 			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(e.getErrorCode()));
 		}catch(Exception e){
+			e.printStackTrace();
 			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(ResponseErrorCode.REQUEST_500_ERROR));
 		}
 	}
