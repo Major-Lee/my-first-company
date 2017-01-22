@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeConfigDTO;
+import com.bhu.vas.api.rpc.thirdparty.dto.GomeDeviceDTO;
 import com.bhu.vas.api.rpc.thirdparty.iservice.IThirdPartyRpcService;
 import com.bhu.vas.rpc.facade.ThirdPartyUnitFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -58,6 +59,20 @@ public class ThirdPartyRpcService implements IThirdPartyRpcService {
 		logger.info(String.format("gomeDeviceControl mac:%s, dto:[%s]",mac, JsonHelper.getJSONString(dto)));
 		try{
 			Boolean ret = thirdPartyUnitFacadeService.gomeDeviceControl(mac, dto);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<GomeDeviceDTO> gomeDeviceOnlineGet(String mac) {
+		logger.info(String.format("gomeDeviceOnlineGet mac:%s",mac));
+		try{
+			GomeDeviceDTO ret = thirdPartyUnitFacadeService.gomeDeviceOnlineGet(mac);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());

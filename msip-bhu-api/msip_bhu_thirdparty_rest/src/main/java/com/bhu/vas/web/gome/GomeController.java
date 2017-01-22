@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeConfigDTO;
+import com.bhu.vas.api.rpc.thirdparty.dto.GomeDeviceDTO;
 import com.bhu.vas.api.rpc.thirdparty.iservice.IThirdPartyRpcService;
 import com.bhu.vas.thirdparty.response.GomeResponse;
 import com.bhu.vas.validate.ValidateService;
@@ -115,5 +116,31 @@ public class GomeController extends BaseController{
 		}
 	}
 
-
+	/**
+	 * 设备在线状态查询接口
+	 * 
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/device/online/get",method={RequestMethod.POST})
+	public void deviceOnlineGet(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestBody String requestBody) {
+		try{
+			ValidateService.ValidateGomeRequest(request, requestBody, response);
+			Map<String, Object> params = JsonHelper.getMapFromJson(requestBody);
+			String deviceId = (String)params.get("deviceId");
+			String mac = CryptoHelper.aesDecryptFromHex(deviceId, BusinessRuntimeConfiguration.GomeToBhuDataKey);
+			RpcResponseDTO<GomeDeviceDTO> rpcResult = thirdPartyRpcService.gomeDeviceOnlineGet(mac);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, GomeResponse.fromSuccessRpcResponse(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, GomeResponse.fromFailRpcResponse(rpcResult));
+			}
+		}catch(BusinessI18nCodeException e){
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(e.getErrorCode()));
+		}catch(Exception e){
+			e.printStackTrace();
+			SpringMVCHelper.renderJson(response, GomeResponse.fromFailErrorCode(ResponseErrorCode.REQUEST_500_ERROR));
+		}
+	}
 }

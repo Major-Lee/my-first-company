@@ -14,13 +14,16 @@ import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.charging.model.WifiDeviceSharedealConfigs;
+import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
 import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeConfigDTO;
+import com.bhu.vas.api.rpc.thirdparty.dto.GomeDeviceDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.thirdparty.ThirdPartyDeviceService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
+import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
@@ -44,6 +47,9 @@ public class ThirdPartyUnitFacadeService {
 
 	@Resource
 	private WifiDeviceSettingService wifiDeviceSettingService;
+	
+	@Resource
+	private WifiDeviceService wifiDeviceService;
 	
 	/**
 	 * 绑定国美设备，需要校验设备一级分销商是国美，才允许绑定
@@ -146,6 +152,19 @@ public class ThirdPartyUnitFacadeService {
 		//删除
 		
 		return Boolean.TRUE;
+	}
+
+	public GomeDeviceDTO gomeDeviceOnlineGet(String mac) {
+		if(!ThirdPartyDeviceService.isThirdPartyDevice(mac)){
+			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
+		}
+		WifiDevice device = wifiDeviceService.getById(mac);
+		GomeDeviceDTO dto = new GomeDeviceDTO();
+		String online = "0";
+		if (device.isOnline())
+			online = "1";
+		dto.setOnline(online);
+		return dto;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+@SuppressWarnings("serial")
 public class GomeConfigDTO implements Serializable {
 
 	@JsonInclude(Include.NON_NULL)
