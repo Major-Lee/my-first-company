@@ -10,4 +10,5 @@ public interface IThirdPartyRpcService {
 	public RpcResponseDTO<Boolean> gomeUnbindDevice(String mac);
 	public RpcResponseDTO<Boolean> gomeDeviceControl(String mac, GomeConfigDTO dto);
 	public RpcResponseDTO<GomeDeviceDTO> gomeDeviceOnlineGet(String mac);
+	public RpcResponseDTO<GomeConfigDTO> gomeDeviceStatusGet(String mac);
 }

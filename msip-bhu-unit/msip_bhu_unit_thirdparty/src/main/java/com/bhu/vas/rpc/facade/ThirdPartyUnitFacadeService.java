@@ -1,5 +1,10 @@
 package com.bhu.vas.rpc.facade;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import javax.annotation.Resource;
 
 import org.elasticsearch.common.lang3.StringUtils;
@@ -7,9 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.api.dto.HandsetDeviceDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
+import com.bhu.vas.api.helper.DeviceHelper;
 import com.bhu.vas.api.helper.OperationCMD;
 import com.bhu.vas.api.helper.OperationDS;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -21,14 +28,24 @@ import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeConfigDTO;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeDeviceDTO;
+import com.bhu.vas.api.rpc.thirdparty.dto.GomeDeviceStaDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetUnitPresentSortedSetService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.handset.HandsetStorageFacadeService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.thirdparty.ThirdPartyDeviceService;
 import com.bhu.vas.business.ds.charging.service.WifiDeviceSharedealConfigsService;
+import com.bhu.vas.business.ds.device.facade.DeviceFacadeService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceSettingService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.JsonHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
+import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
+import com.smartwork.msip.cores.plugins.dictparser.impl.mac.MacDictParserFilterHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+
+import redis.clients.jedis.Tuple;
 
 /**
  * 第三方业务的service
@@ -50,6 +67,9 @@ public class ThirdPartyUnitFacadeService {
 	
 	@Resource
 	private WifiDeviceService wifiDeviceService;
+	
+	@Resource
+	private DeviceFacadeService deviceFacadeService;
 	
 	/**
 	 * 绑定国美设备，需要校验设备一级分销商是国美，才允许绑定
@@ -167,4 +187,63 @@ public class ThirdPartyUnitFacadeService {
 		return dto;
 	}
 
+	public GomeConfigDTO gomeDeviceStatusGet(String mac) {
+		WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(mac);
+		WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+		GomeConfigDTO dto = new GomeConfigDTO();
+		// 获取正常的device配置
+		WifiDeviceSettingVapDTO vapCfg = DeviceHelper.getUrouterDeviceVap(setting_dto);
+		dto.setSsid(vapCfg.getSsid());
+		String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
+		dto.setPower(Integer.parseInt(powerAndRealChannel[0]));
+		dto.setPassword(JNIRsaHelper.jniRsaDecryptHexStr(vapCfg.getAuth_key_rsa()));
+		
+		List<GomeDeviceStaDTO> vtos = null;
+		Set<Tuple> presents = null;
+
+		presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchPresentWithScores(mac, 0,
+				100);
+
+		// 客户端现在获取实时速率会5秒一次请求。
+		if (!presents.isEmpty()) {
+			List<String> hd_macs = new ArrayList<String>();
+			for (Tuple tuple : presents) {
+				hd_macs.add(tuple.getElement());
+			}
+			List<HandsetDeviceDTO> handsets = HandsetStorageFacadeService.handsets(mac, hd_macs);
+			List<String> handsetAlias = WifiDeviceHandsetAliasService.getInstance().pipelineHandsetAlias(BusinessRuntimeConfiguration.GomeDistributorId,
+					hd_macs);
+			if (!handsets.isEmpty()) {
+				vtos = new ArrayList<GomeDeviceStaDTO>();
+				int cursor = 0;
+				HandsetDeviceDTO hd_entity = null;
+				String alia = null;
+				for (Tuple tuple : presents) {
+					hd_entity = handsets.get(cursor);
+					if (hd_entity != null) {
+						alia = handsetAlias.get(cursor);
+						boolean online = WifiDeviceHandsetUnitPresentSortedSetService.getInstance()
+								.isOnline(tuple.getScore());
+						String tt = MacDictParserFilterHelper.prefixMactch(tuple.getElement(),true,false);
+						GomeDeviceStaDTO vto = GomeDeviceStaDTO.builder(tuple.getElement(), tt, hd_entity, online, alia);
+						vtos.add(vto);
+						cursor++;
+					}
+				}
+			}
+		}
+		dto.setStalist(getStaList(vtos));
+		return dto;
+	}
+
+	private static String getStaList(List<GomeDeviceStaDTO> list){
+		StringBuffer stas = new StringBuffer();
+		for(int i = 0; i< list.size(); i++){
+			stas.append(JsonHelper.getJSONString(list.get(i)));
+			if (i != list.size() - 1){
+				stas.append(StringHelper.COMMA_STRING_GAP);
+			}
+		}
+		return stas.toString();
+	}
 }

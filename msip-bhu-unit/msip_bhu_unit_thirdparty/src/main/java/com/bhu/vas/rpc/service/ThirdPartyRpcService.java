@@ -82,5 +82,19 @@ public class ThirdPartyRpcService implements IThirdPartyRpcService {
 		}
 	}
 
+	@Override
+	public RpcResponseDTO<GomeConfigDTO> gomeDeviceStatusGet(String mac) {
+		logger.info(String.format("gomeDeviceStatusGet mac:%s",mac));
+		try{
+			GomeConfigDTO ret = thirdPartyUnitFacadeService.gomeDeviceStatusGet(mac);
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
 
 }
