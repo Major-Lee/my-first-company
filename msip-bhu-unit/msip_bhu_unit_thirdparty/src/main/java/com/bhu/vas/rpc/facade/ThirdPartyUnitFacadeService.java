@@ -1,7 +1,6 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -54,7 +53,7 @@ import redis.clients.jedis.Tuple;
  */
 @Service
 public class ThirdPartyUnitFacadeService {
-	private final Logger logger = LoggerFactory.getLogger(ThirdPartyUnitFacadeService.class);
+	private final static Logger logger = LoggerFactory.getLogger(ThirdPartyUnitFacadeService.class);
 
 	@Resource
 	private ITaskRpcService taskRpcService;
@@ -238,12 +237,15 @@ public class ThirdPartyUnitFacadeService {
 
 	private static String getStaList(List<GomeDeviceStaDTO> list){
 		StringBuffer stas = new StringBuffer();
-		for(int i = 0; i< list.size(); i++){
-			stas.append(JsonHelper.getJSONString(list.get(i)));
-			if (i != list.size() - 1){
-				stas.append(StringHelper.COMMA_STRING_GAP);
+		if (!list.isEmpty()){
+			for(int i = 0; i< list.size(); i++){
+				stas.append(JsonHelper.getJSONString(list.get(i)));
+				if (i != list.size() - 1){
+					stas.append(StringHelper.COMMA_STRING_GAP);
+				}
 			}
 		}
+		logger.info(String.format("gomeDeviceStatusGet getStaList[%s]", stas.toString()));
 		return stas.toString();
 	}
 }
