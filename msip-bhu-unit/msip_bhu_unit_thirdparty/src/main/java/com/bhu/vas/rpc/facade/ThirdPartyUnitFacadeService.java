@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -197,7 +198,7 @@ public class ThirdPartyUnitFacadeService {
 		dto.setPower(Integer.parseInt(powerAndRealChannel[0]));
 		dto.setPassword(JNIRsaHelper.jniRsaDecryptHexStr(vapCfg.getAuth_key_rsa()));
 		
-		List<GomeDeviceStaDTO> vtos = null;
+		List<GomeDeviceStaDTO> vtos = Collections.emptyList();
 		Set<Tuple> presents = null;
 
 		presents = WifiDeviceHandsetUnitPresentSortedSetService.getInstance().fetchPresentWithScores(mac, 0,
