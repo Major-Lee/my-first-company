@@ -1,6 +1,7 @@
 package com.bhu.vas.rpc.facade;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bhu.vas.api.dto.HandsetDeviceDTO;
+import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingAclDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingRadioDTO;
 import com.bhu.vas.api.dto.ret.setting.WifiDeviceSettingVapDTO;
@@ -168,12 +170,34 @@ public class ThirdPartyUnitFacadeService {
 			_callTaskCreate(mac, OperationDS.DS_Power.getNo(), radio);
 		
 		//增加黑名单
-		
+		if (StringHelper.isNotEmpty(dto.getAddblock())){
+			 String makeBlockListTaskCmd = makeBlockListTaskCmd("incr",dto.getAddblock());
+			if(makeBlockListTaskCmd != null){
+				_callTaskCreate(mac, OperationDS.DS_AclMacs.getNo(), makeBlockListTaskCmd);
+			}else{
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"addblock"});
+			}
+		}
 		//删除
-		
+		if (StringHelper.isNotEmpty(dto.getDelblock())){
+			String makeBlockListTaskCmd = makeBlockListTaskCmd("del",dto.getDelblock());
+			if(makeBlockListTaskCmd != null){
+				_callTaskCreate(mac, OperationDS.DS_AclMacs.getNo(), makeBlockListTaskCmd);
+			}else{
+				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"delblock"});
+			}
+		}
 		return Boolean.TRUE;
 	}
-
+	private String makeBlockListTaskCmd(String cmd, String param){
+		List<String> list = Arrays.asList(param.split(StringHelper.COMMA_STRING_GAP));
+		if (StringHelper.isValidMacs(list)){
+			return String.format("{\"%s\":{\"macs\":%s}}", cmd,JsonHelper.getJSONString(list));
+		}else{
+			return null;
+		}
+	}
+	
 	public GomeDeviceDTO gomeDeviceOnlineGet(String mac) {
 		if(!ThirdPartyDeviceService.isThirdPartyDevice(mac)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
@@ -190,6 +214,7 @@ public class ThirdPartyUnitFacadeService {
 	public GomeConfigDTO gomeDeviceStatusGet(String mac) {
 		WifiDeviceSetting entity = deviceFacadeService.validateDeviceSetting(mac);
 		WifiDeviceSettingDTO setting_dto = entity.getInnerModel();
+		
 		GomeConfigDTO dto = new GomeConfigDTO();
 		// 获取正常的device配置
 		WifiDeviceSettingVapDTO vapCfg = DeviceHelper.getUrouterDeviceVap(setting_dto);
@@ -197,7 +222,7 @@ public class ThirdPartyUnitFacadeService {
 		String[] powerAndRealChannel = DeviceHelper.getURouterDevicePowerAndRealChannel(setting_dto);
 		dto.setPower(Integer.parseInt(powerAndRealChannel[0]));
 		dto.setPassword(JNIRsaHelper.jniRsaDecryptHexStr(vapCfg.getAuth_key_rsa()));
-		
+		//获取终端列表
 		List<GomeDeviceStaDTO> vtos = Collections.emptyList();
 		Set<Tuple> presents = null;
 
@@ -233,9 +258,30 @@ public class ThirdPartyUnitFacadeService {
 			}
 		}
 		dto.setStalist(getStaList(vtos));
+		
+		//获取黑名单列表
+		WifiDeviceSettingAclDTO acl_dto = DeviceHelper.matchDefaultAcl(setting_dto);
+		List<String> block_macs = Collections.emptyList();
+		if (acl_dto != null){
+			block_macs = acl_dto.getMacs();
+		}
+		dto.setBlocklist(getBlockList(block_macs));
 		return dto;
 	}
-
+	
+	private static String getBlockList(List<String> list){
+		StringBuffer stas = new StringBuffer();
+		if (!list.isEmpty()){
+			for(int i = 0; i< list.size(); i++){
+				stas.append(list.get(i));
+				if (i != list.size() - 1){
+					stas.append(StringHelper.COMMA_STRING_GAP);
+				}
+			}
+		}
+		logger.info(String.format("gomeDeviceStatusGet getBlockList[%s]", stas.toString()));
+		return stas.toString();
+	}
 	private static String getStaList(List<GomeDeviceStaDTO> list){
 		StringBuffer stas = new StringBuffer();
 		if (!list.isEmpty()){

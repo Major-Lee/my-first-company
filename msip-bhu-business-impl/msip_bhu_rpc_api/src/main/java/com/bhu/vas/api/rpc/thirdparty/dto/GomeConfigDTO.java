@@ -16,7 +16,31 @@ public class GomeConfigDTO implements Serializable {
 	private String password;
 	@JsonInclude(Include.NON_NULL)
 	private String stalist;
+	@JsonInclude(Include.NON_NULL)
+	private String blocklist;
+	@JsonInclude(Include.NON_NULL)
+	private String addblock;
+	@JsonInclude(Include.NON_NULL)
+	private String delblock;
 
+	public String getAddblock() {
+		return addblock;
+	}
+	public void setAddblock(String addblock) {
+		this.addblock = addblock;
+	}
+	public String getDelblock() {
+		return delblock;
+	}
+	public void setDelblock(String delblock) {
+		this.delblock = delblock;
+	}
+	public String getBlocklist() {
+		return blocklist;
+	}
+	public void setBlocklist(String blocklist) {
+		this.blocklist = blocklist;
+	}
 	public String getSsid() {
 		return ssid;
 	}
