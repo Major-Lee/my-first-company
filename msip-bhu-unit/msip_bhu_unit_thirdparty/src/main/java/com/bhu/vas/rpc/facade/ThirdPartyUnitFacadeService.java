@@ -29,6 +29,7 @@ import com.bhu.vas.api.rpc.task.dto.TaskResDTO;
 import com.bhu.vas.api.rpc.task.iservice.ITaskRpcService;
 import com.bhu.vas.api.rpc.task.model.WifiDeviceDownTask;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeConfigDTO;
+import com.bhu.vas.api.rpc.thirdparty.dto.GomeDeviceCtrlAclDTO;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeDeviceDTO;
 import com.bhu.vas.api.rpc.thirdparty.dto.GomeDeviceStaDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.devices.WifiDeviceHandsetAliasService;
@@ -171,33 +172,24 @@ public class ThirdPartyUnitFacadeService {
 		
 		//增加黑名单
 		if (StringHelper.isNotEmpty(dto.getAddblock())){
-			 String makeBlockListTaskCmd = makeBlockListTaskCmd("incr",dto.getAddblock());
-			if(makeBlockListTaskCmd != null){
-				_callTaskCreate(mac, OperationDS.DS_AclMacs.getNo(), makeBlockListTaskCmd);
+			List<String> blockMacs = Arrays.asList(dto.getAddblock().split(StringHelper.COMMA_STRING_GAP));
+			if(StringHelper.isValidMacs(blockMacs)){
+				_callTaskCreate(mac, OperationDS.DS_AclMacs.getNo(), GomeDeviceCtrlAclDTO.builder("incr", blockMacs));
 			}else{
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"addblock"});
 			}
 		}
 		//删除
 		if (StringHelper.isNotEmpty(dto.getDelblock())){
-			String makeBlockListTaskCmd = makeBlockListTaskCmd("del",dto.getDelblock());
-			if(makeBlockListTaskCmd != null){
-				_callTaskCreate(mac, OperationDS.DS_AclMacs.getNo(), makeBlockListTaskCmd);
+			List<String> blockMacs = Arrays.asList(dto.getDelblock().split(StringHelper.COMMA_STRING_GAP));
+			if(StringHelper.isValidMacs(blockMacs)){
+				_callTaskCreate(mac, OperationDS.DS_AclMacs.getNo(), GomeDeviceCtrlAclDTO.builder("del", blockMacs));
 			}else{
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"delblock"});
 			}
 		}
 		return Boolean.TRUE;
 	}
-	private String makeBlockListTaskCmd(String cmd, String param){
-		List<String> list = Arrays.asList(param.split(StringHelper.COMMA_STRING_GAP));
-		if (StringHelper.isValidMacs(list)){
-			return String.format("{\"%s\":{\"macs\":%s}}", cmd,JsonHelper.getJSONString(list));
-		}else{
-			return null;
-		}
-	}
-	
 	public GomeDeviceDTO gomeDeviceOnlineGet(String mac) {
 		if(!ThirdPartyDeviceService.isThirdPartyDevice(mac)){
 			throw new BusinessI18nCodeException(ResponseErrorCode.DEVICE_DATA_NOT_EXIST);
