@@ -299,7 +299,7 @@ public class SSIDStatisticFacadeRpcService {
 					if(StringUtils.isNotBlank(pcUv)){
 						pcUV=Integer.valueOf(pcUv);
 					}else{
-						pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", timeList.get(i), timeList.get(i), "", "",1);
+						pcUv= apiCnzzImpl.queryCnzzStatistic("PC打赏页PV", timeList.get(i), timeList.get(i), "", "",2);
 						JSONObject pcUvJson=JSONObject.fromObject(pcUv);
 						String pcUvJsonStr=pcUvJson.getString("values");
 						pcUvJsonStr=pcUvJsonStr.substring(1);
@@ -311,7 +311,7 @@ public class SSIDStatisticFacadeRpcService {
 					if(StringUtils.isNotBlank(pcClick)){
 						pcClickNum=Integer.valueOf(pcClick);
 					}else{
-						pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", timeList.get(i), timeList.get(i), "", "",1);
+						pcClick=apiCnzzImpl.queryCnzzStatistic("pc+赏", timeList.get(i), timeList.get(i), "", "",2);
 						JSONObject pcClickJson=JSONObject.fromObject(pcClick);
 						String pcClickJsonStr=pcClickJson.getString("values");
 						pcClickJsonStr=pcClickJsonStr.substring(1);
@@ -324,7 +324,7 @@ public class SSIDStatisticFacadeRpcService {
 					if(StringUtils.isNotBlank(freePcClick)){
 						freeClickNum+=Integer.valueOf(freePcClick);
 					}else{
-						freePcClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", timeList.get(i), timeList.get(i), "", "",1);
+						freePcClick=apiCnzzImpl.queryCnzzStatistic("pc+我要免费上网", timeList.get(i), timeList.get(i), "", "",2);
 						JSONObject freePcClickJson=JSONObject.fromObject(freePcClick);
 						String freePcClickJsonStr=freePcClickJson.getString("values");
 						freePcClickJsonStr=freePcClickJsonStr.substring(1);
@@ -338,7 +338,7 @@ public class SSIDStatisticFacadeRpcService {
 					if(StringUtils.isNotBlank(freeMobileClick)){
 						freeClickNum+=Integer.valueOf(freeMobileClick);
 					}else{
-						freeMobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+我要免费上网", timeList.get(i), timeList.get(i), "", "",1);
+						freeMobileClick=apiCnzzImpl.queryCnzzStatistic("mobile+我要免费上网", timeList.get(i), timeList.get(i), "", "",2);
 						JSONObject freeMobileClickJson=JSONObject.fromObject(freeMobileClick);
 						String freeMobileClickJsonStr=freeMobileClickJson.getString("values");
 						freeMobileClickJsonStr=freeMobileClickJsonStr.substring(1);
