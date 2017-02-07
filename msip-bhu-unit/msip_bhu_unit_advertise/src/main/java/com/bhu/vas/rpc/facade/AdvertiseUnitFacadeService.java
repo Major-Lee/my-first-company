@@ -19,9 +19,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails;
-import com.bhu.vas.api.rpc.tag.model.TagGroup;
 import com.bhu.vas.api.rpc.user.model.User;
-import com.bhu.vas.api.vto.WifiDeviceVTO1;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseBillsVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseDailyResultVTO;
@@ -37,10 +35,8 @@ import com.bhu.vas.business.ds.advertise.service.AdvertiseService;
 import com.bhu.vas.business.ds.user.facade.UserFacadeService;
 import com.bhu.vas.business.ds.user.facade.UserWalletFacadeService;
 import com.bhu.vas.business.ds.user.service.UserService;
-import com.bhu.vas.business.search.helper.DocumentIdsHelper;
 import com.bhu.vas.business.search.model.advertise.AdvertiseDocument;
 import com.bhu.vas.business.search.model.advertise.AdvertiseDocumentHelper;
-import com.bhu.vas.business.search.model.device.WifiDeviceDocument;
 import com.bhu.vas.business.search.service.advertise.AdvertiseDataSearchService;
 import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.advertise.AdvertiseIndexIncrementService;
@@ -50,14 +46,12 @@ import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
-import com.smartwork.msip.cores.orm.support.page.PageHelper;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
 import com.smartwork.msip.jdo.ResponseErrorCode;
 
 import java.util.List;
 
 import org.elasticsearch.common.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -134,16 +128,15 @@ public class AdvertiseUnitFacadeService {
 			double cash = 0d;
 			switch(adType){
 				case HomeImage :
-						AdDevicePositionVTO vto = fetchAdvertiseOccupy(uid,0,DateTimeHelper.formatDate(startDate,DateTimeHelper.FormatPattern1),
-								DateTimeHelper.formatDate(endDate,DateTimeHelper.FormatPattern1),
-								DateTimeHelper.FormatPattern1,province, city, district,false);
-						
-						List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
-						if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
-							for(AdvertiseOccupiedVTO i:advertiseOccupiedVTOs){
-								count+=i.getCount();
-							}
+					AdDevicePositionVTO vto = fetchAdvertiseOccupy(uid,0,DateTimeHelper.formatDate(startDate,DateTimeHelper.FormatPattern1),
+							DateTimeHelper.formatDate(endDate,DateTimeHelper.FormatPattern1),
+							DateTimeHelper.FormatPattern1,province, city, district,false);
+												List<AdvertiseOccupiedVTO> advertiseOccupiedVTOs=vto.getOccupyAds();
+					if(advertiseOccupiedVTOs!=null&&advertiseOccupiedVTOs.size()>0){
+						for(AdvertiseOccupiedVTO i:advertiseOccupiedVTOs){
+							count+=i.getCount();
 						}
+					}
 					
 					int n=advertiseService.getEntityDao().countByAdvertiseTime(startDate, endDate,province, city, district);
 					if(n!=0){

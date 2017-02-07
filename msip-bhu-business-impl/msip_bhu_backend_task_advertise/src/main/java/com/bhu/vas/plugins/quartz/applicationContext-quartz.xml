@@ -28,7 +28,7 @@
 				<!-- 每天三十秒执行一次 -->
 				<ref bean="advertisePaymentTimeOutTaskLoaderCronTrigger" />
 				<!-- 每天23点45分执行 -->
-				<ref bean="advertiseAllClearTaskLoaderCronTrigger" />
+				<!-- <ref bean="advertiseAllClearTaskLoaderCronTrigger" /> -->
 				<!-- 每小时执行一次分成 -->
 				<ref bean="advertiseSharedealTaskLoaderCronTrigger" />
 				<!-- 每天八点提交短信 -->

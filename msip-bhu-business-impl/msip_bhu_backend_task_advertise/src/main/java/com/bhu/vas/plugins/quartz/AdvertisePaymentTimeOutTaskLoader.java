@@ -39,7 +39,7 @@ public class AdvertisePaymentTimeOutTaskLoader {
 		Date nowDate = new Date();
 		long nowTime = nowDate.getTime();
 		homeImagePaymentTimeOut(nowTime);
-		invaildHomeImageSmallArea(nowDate);
+//		invaildHomeImageSmallArea(nowDate);
 		logger.info("AdvertisePaymentTimeOutTaskLoader end.....");
 	}
 	
