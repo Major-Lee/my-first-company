@@ -1281,7 +1281,7 @@ public class OrderUnitFacadeService {
 			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
 			String amount = ArithHelper.getCuttedCurrency(String.valueOf(Double.parseDouble(commdity.getPrice()) * macsList.size()));
 			String context = JsonHelper.getJSONString(TechServiceDataDTO.builder(macsList));
-			Order order = orderFacadeService.createTechServiceOrder(commdity, null, WifiDeviceSharedealConfigs.Default_ConfigsWifiID,amount,
+			Order order = orderFacadeService.createTechServiceOrder(uid, commdity, null, WifiDeviceSharedealConfigs.Default_ConfigsWifiID,amount,
 					payment_type, channel, user_agent, context);
 			TechServiceOrderVTO vto = new TechServiceOrderVTO();
 			vto.setAmount(amount);
