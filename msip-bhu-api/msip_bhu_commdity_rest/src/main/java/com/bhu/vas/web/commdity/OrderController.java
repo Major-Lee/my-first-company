@@ -634,7 +634,7 @@ public void hot_play_paymenturl(
 		@RequestParam(required = true) String macs,
 		@RequestParam(required = true) String payment_type,
 		@RequestParam(required = false, value = "pcd_url") String payment_completed_url,
-		@RequestParam(required = false, defaultValue = "0") Integer channel,
+		@RequestParam(required = false, defaultValue = "5") Integer channel,
 		@RequestParam(required = false, defaultValue = "0") String version
 		){
 		long start = System.currentTimeMillis();
