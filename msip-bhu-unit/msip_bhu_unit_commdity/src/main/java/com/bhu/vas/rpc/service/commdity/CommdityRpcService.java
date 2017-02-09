@@ -50,7 +50,7 @@ public class CommdityRpcService implements ICommdityRpcService{
 	}
 
 	@Override
-	public RpcResponseDTO<CommditySaasAmountDTO> saasAmount(String uid) {
+	public RpcResponseDTO<CommditySaasAmountDTO> saasAmount(Integer uid) {
 		logger.info(String.format("saasAmount uid[%s]", uid));
 		return commdityUnitFacadeService.saasAmount(uid);
 	}

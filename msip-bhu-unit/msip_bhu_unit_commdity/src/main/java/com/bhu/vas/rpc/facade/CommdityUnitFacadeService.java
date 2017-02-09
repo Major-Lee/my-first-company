@@ -218,7 +218,7 @@ public class CommdityUnitFacadeService {
 		}
 	}
 
-	public RpcResponseDTO<CommditySaasAmountDTO> saasAmount(String uid) {
+	public RpcResponseDTO<CommditySaasAmountDTO> saasAmount(Integer uid) {
 		try{
 			CommditySaasAmountDTO dto = new CommditySaasAmountDTO();
 			Commdity commdity = commdityFacadeService.validateCommdity(BusinessRuntimeConfiguration.Soft_Service_Noapp_Commdity_ID);

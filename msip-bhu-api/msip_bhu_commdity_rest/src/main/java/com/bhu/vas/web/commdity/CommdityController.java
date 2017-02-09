@@ -237,7 +237,7 @@ public class CommdityController extends BaseController{
 	public void amount(
 			HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam(required = true) String uid
+			@RequestParam(required = true) Integer uid
 			){
 		RpcResponseDTO<CommditySaasAmountDTO> rpcResult = commdityRpcService.saasAmount(uid);
 		if(!rpcResult.hasError()){

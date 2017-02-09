@@ -18,5 +18,5 @@ public interface ICommdityRpcService {
 	public RpcResponseDTO<CommdityPhysicalDTO> physical_set_address(String umac_lower, String uname, String acc,
 			String address, boolean needInvoice, String invoiceDetail);
 
-	public RpcResponseDTO<CommditySaasAmountDTO> saasAmount(String uid);
+	public RpcResponseDTO<CommditySaasAmountDTO> saasAmount(Integer uid);
 }
