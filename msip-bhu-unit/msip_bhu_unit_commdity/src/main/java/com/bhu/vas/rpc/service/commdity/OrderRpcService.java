@@ -18,6 +18,7 @@ import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
+import com.bhu.vas.api.dto.commdity.TechServiceOrderVTO;
 import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.IOrderRpcService;
@@ -213,6 +214,16 @@ public class OrderRpcService implements IOrderRpcService{
 				+ "channel[%s] user_agent[%s] ", commdityid, mac, umac, umactype, channel, user_agent));
 		return orderUnitFacadeService.clickAuthorize(commdityid, mac, umac, umactype,
 				channel, user_agent);
+	}
+
+	@Override
+	public RpcResponseDTO<TechServiceOrderVTO> createTechServiceOrder(Integer commdityid, Integer uid, String macs,
+			String payment_type, Integer channel, String user_agent) {
+		logger.info(String.format("createTechServiceOrder commdityid[%s] uid[%s] "
+				+ "macs[%s] payment_type[%s] channel[%s] user_agent[%s]", commdityid, uid,
+				macs, payment_type, channel, user_agent));
+		return orderUnitFacadeService.createTechServiceOrder(commdityid, uid,
+				macs, payment_type, channel, user_agent);
 	}
 	
 }

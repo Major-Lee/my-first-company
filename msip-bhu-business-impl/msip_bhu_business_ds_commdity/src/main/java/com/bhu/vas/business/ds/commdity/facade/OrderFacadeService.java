@@ -1285,4 +1285,22 @@ public class OrderFacadeService {
 		}
 		return false;
 	}
+
+	public Order createTechServiceOrder(Commdity commdity, String amount, String payment_type, Integer channel,
+			String user_agent, String context) {
+		//订单生成
+		Order order = new Order();
+		order.setCommdityid(commdity.getId());
+		order.setAppid(CommdityApplication.BHU_PREPAID_BUSINESS.getKey());
+		order.setChannel(channel);
+		order.setType(commdity.getCategory());
+		order.setPayment_type(payment_type);
+		order.setUser_agent(user_agent);
+		order.setContext(context);
+		order.setStatus(OrderStatus.NotPay.getKey());
+		order.setProcess_status(OrderProcessStatus.NotPay.getKey());
+		order.setAmount(amount);
+		orderService.insert(order);
+		return order;
+	}
 }
