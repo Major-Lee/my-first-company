@@ -25,6 +25,7 @@ import com.bhu.vas.api.helper.BusinessEnumType;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityApplication;
 import com.bhu.vas.api.helper.BusinessEnumType.CommdityCategory;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderPaymentType;
+import com.bhu.vas.api.helper.BusinessEnumType.OrderProcessStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderStatus;
 import com.bhu.vas.api.helper.BusinessEnumType.OrderUmacType;
 import com.bhu.vas.api.helper.BusinessEnumType.SnkAuthenticateResultType;
@@ -219,7 +220,13 @@ public class AsyncOrderPaymentNotifyService{
 				rewardOrderReceiptHandle(order, rpcn_dto);
 				break;
 			case BHU_PREPAID_BUSINESS:
-				rechargeVCurrencyOrderReceiptHandle(order, rpcn_dto);
+				if(BusinessEnumType.CommdityCategory.SoftServiceLimit.getCategory() == order.getType()){
+					orderFacadeService.orderStatusChanged(order, OrderStatus.PaySuccessed.getKey(), OrderProcessStatus.PaySuccessed.getKey());
+					//op系统的saas服务，通过异步消息通知asyncbackend做发货处理
+					asyncDeliverMessageService.sendOrderDevlierRequestActionMessage(orderid);
+				} else {
+					rechargeVCurrencyOrderReceiptHandle(order, rpcn_dto);
+				}
 				break;
 			default:
 				throw new BusinessI18nCodeException(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
