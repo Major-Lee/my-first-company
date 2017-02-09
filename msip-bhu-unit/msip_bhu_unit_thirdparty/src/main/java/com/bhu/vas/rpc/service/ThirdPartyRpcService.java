@@ -1,5 +1,7 @@
 package com.bhu.vas.rpc.service;
 
+import java.util.concurrent.ExecutorService;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
@@ -15,6 +17,9 @@ import com.bhu.vas.rpc.facade.ThirdPartyUnitFacadeService;
 import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
+import com.smartwork.msip.plugins.hook.observer.ExecObserverManager;
+
+import helper.GomeCallbackHelper;
 
 /**
  * 第三方业务的组件服务service 对外暴露接口
@@ -24,6 +29,8 @@ import com.smartwork.msip.jdo.ResponseErrorCode;
 @Service("thirdPartyRpcService")
 public class ThirdPartyRpcService implements IThirdPartyRpcService {
 	private final Logger logger = LoggerFactory.getLogger(ThirdPartyRpcService.class);
+
+	private static ExecutorService exec_remote_notify = ExecObserverManager.buildExecutorService(ThirdPartyRpcService.class,"GomeNotify",10);
 
     @Resource
 	private ThirdPartyUnitFacadeService thirdPartyUnitFacadeService;
@@ -88,6 +95,29 @@ public class ThirdPartyRpcService implements IThirdPartyRpcService {
 		try{
 			GomeConfigDTO ret = thirdPartyUnitFacadeService.gomeDeviceStatusGet(mac);
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(ret);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			ex.printStackTrace(System.out);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	@Override
+	public RpcResponseDTO<Boolean> gomeDeviceStatusNotify(final String mac, final int online) {
+		logger.info(String.format("gomeDeviceStatusGet mac:%s",mac));
+		try{
+			exec_remote_notify.submit((new Runnable() {
+				@Override
+				public void run() {
+					try{
+						GomeCallbackHelper.notify(mac, online);
+					}catch(Exception ex){
+						ex.printStackTrace(System.out);
+					}
+				}
+			}));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(Boolean.TRUE);
 		}catch(BusinessI18nCodeException bex){
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){

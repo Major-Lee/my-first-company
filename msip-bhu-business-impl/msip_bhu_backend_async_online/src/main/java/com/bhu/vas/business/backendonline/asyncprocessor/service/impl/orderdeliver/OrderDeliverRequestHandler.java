@@ -1,4 +1,4 @@
-package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.batchimport;
+package com.bhu.vas.business.backendonline.asyncprocessor.service.impl.orderdeliver;
 
 import java.util.List;
 
@@ -91,13 +91,13 @@ public class OrderDeliverRequestHandler implements IMsgHandlerService {
 				try {
 					backendBusinessService.blukIndexs(pages);
 					Thread.sleep(500);
-					orderFacadeService.orderStatusChanged(order, OrderStatus.DeliverCompleted.getKey(), OrderProcessStatus.DeliverCompleted.getKey());
 				} catch (InterruptedException e) {
 					e.printStackTrace(System.out);
 				} catch (Exception e) {
 					e.printStackTrace(System.out);
 				}
 			}
+			orderFacadeService.orderStatusChanged(order, OrderStatus.DeliverCompleted.getKey(), OrderProcessStatus.DeliverCompleted.getKey());
 		}catch(Exception e){
 			logger.error(e.getMessage());
 			e.printStackTrace(System.out);
