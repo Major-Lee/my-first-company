@@ -529,6 +529,41 @@ public class OrderFacadeService {
 		return order;
 	}
 	
+	
+	public Order orderPaymentFinishedDontDeliver(boolean success, Order order, String paymented_ds,
+			String payment_type, String payment_proxy_type){
+		Integer changed_status = null;
+		Integer changed_process_status = null;
+		try{
+			String orderid = order.getId();
+			Integer order_status = order.getStatus();
+			if(!OrderHelper.lte_notpay(order_status)){
+				throw new BusinessI18nCodeException(ResponseErrorCode.VALIDATE_ORDER_STATUS_INVALID, new String[]{orderid, String.valueOf(order_status)});
+			}
+			
+			if(StringUtils.isNotEmpty(paymented_ds)){
+				order.setPayment_type(payment_type);
+				order.setPayment_proxy_type(payment_proxy_type);
+				order.setPaymented_at(DateTimeHelper.parseDate(paymented_ds, DateTimeHelper.DefalutFormatPattern));
+			}
+
+			//支付成功
+			if(success){
+				changed_status = OrderStatus.PaySuccessed.getKey();
+				changed_process_status = OrderProcessStatus.PaySuccessed.getKey();
+				logger.info(String.format("RechargeVCurrencyOrderPaymentCompletedNotify successed deliver notify: orderid[%s]", orderid));
+			}else{
+				changed_status = OrderStatus.PayFailured.getKey();
+				changed_process_status = OrderProcessStatus.PayFailured.getKey();
+			}
+		}catch(Exception ex){
+			throw ex; 
+		}finally{
+			orderStatusChanged(order, changed_status, changed_process_status);
+		}
+		return order;
+	}
+	
 	/*************            短信认证             ****************/
 	
 	public static final int SMS_VALIDATE_COMMDITY_ID = 9;
