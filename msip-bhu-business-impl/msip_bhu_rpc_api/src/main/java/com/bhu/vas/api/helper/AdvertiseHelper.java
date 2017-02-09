@@ -11,6 +11,7 @@ import java.util.List;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.vto.advertise.AdvertiseTrashPositionVTO;
 import com.smartwork.msip.cores.helper.ArrayHelper;
+import com.smartwork.msip.cores.helper.DateTimeHelper;
 
 
 public class AdvertiseHelper {

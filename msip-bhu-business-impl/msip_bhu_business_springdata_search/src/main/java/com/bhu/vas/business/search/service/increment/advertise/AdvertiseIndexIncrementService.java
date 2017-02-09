@@ -51,7 +51,7 @@ public class AdvertiseIndexIncrementService {
 	}
 	
 	//广告持续时间发生变更
-	public void adStartAndEndUpdIncrement(String id ,String start,String end,int state){
+	public void adStartAndEndUpdIncrement(String id ,String start,String end,int state ,long score){
 		logger.info(String.format("adStartAndEndUpdIncrement Request id [%s] start [%s] end [%s]", id, start,end));
 		if(StringUtils.isEmpty(id)) return;
 		
@@ -60,6 +60,20 @@ public class AdvertiseIndexIncrementService {
 		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_END.getName(), end);
 		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_STATE.getName(), state);
 		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_UPDATED_AT.getName(), DateTimeHelper.getDateTime());
+		
+		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_SCORE.getName(), score);
+		
+		advertiseDataSearchService.updateIndex(id, sourceMap, false, true, true);
+	}
+	
+	//广告权值变化
+	public void adScoreUpdIncrement(String id ,long score,int topState){
+		logger.info(String.format("adScoreUpdIncrement Request id [%s] score [%s]", id, score));
+		if(StringUtils.isEmpty(id)) return;
+		
+		Map<String, Object> sourceMap = new HashMap<String, Object>();
+		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_SCORE.getName(), score);
+		sourceMap.put(BusinessIndexDefine.Advertise.Field.A_TOP.getName(), topState);
 
 		advertiseDataSearchService.updateIndex(id, sourceMap, false, true, true);
 	}

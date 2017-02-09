@@ -1193,6 +1193,72 @@ public class BusinessEnumType {
 		}
 	}
 	
+	/**
+	 * 广告标签
+	 *
+	 */
+	public enum AdvertiseTag{
+		Peoplethings(0,"寻人/物"),
+		Notice(1,"告示"),
+		Businessinfor(2,"商户信息"),
+		Friend(3,"交友"),
+		;
+		private Integer type;
+		private String name;
+		
+		static Map<Integer, AdvertiseTag> allAdvertiseTagTypes;
+		
+		private AdvertiseTag(Integer type,String name){
+			this.type = type;
+			this.name = name;
+		}
+
+		
+		public Integer getType() {
+			return type;
+		}
+
+
+		public void setType(Integer type) {
+			this.type = type;
+		}
+
+
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public static boolean correct(Integer type, AdvertiseType advertiseType){
+			if(type == null || advertiseType == null) return false;
+			
+			if(type.equals(advertiseType.getType())){
+				return true;
+			}
+			return false;
+		}
+		
+		public static AdvertiseTag fromKey(Integer type){
+			if(type == null) return null;
+			return allAdvertiseTagTypes.get(type);
+		}
+		
+		public static boolean supported(Integer type){
+			return allAdvertiseTagTypes.containsKey(type);
+		}
+		
+		
+		static {
+			allAdvertiseTagTypes = new HashMap<Integer, AdvertiseTag>();
+			AdvertiseTag[] types = values();//new ImageType[] {JPG, BMP, GIF, PNG, TIFF};
+			for (AdvertiseTag type : types){
+				allAdvertiseTagTypes.put(type.getType(), type);
+			}
+		}
+	}
+
 	
 	/**
 	 * 腾讯im推送频道定义

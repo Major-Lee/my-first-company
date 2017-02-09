@@ -9,6 +9,8 @@
     <result property="uid" column="uid"/>
     <result property="title" column="title"/>
     <result property="type" column="type"/>
+    <result property="tag" column="tag"/>
+    <result property="top" column="top"/>
     <result property="orderId" column="orderId"/>
     <result property="description" column="description"/>
     <result property="image" column="image"/>
@@ -47,6 +49,8 @@
 	    	uid,
 	    	title,
 	    	type,
+	    	tag,
+	    	top,
 	    	orderId,
 	    	description,
 	    	image,
@@ -79,6 +83,8 @@
 	    	uid,
 	    	title,
 	    	type,
+	    	tag,
+	    	top,
 	    	orderId,
 	    	description,
 	    	image,
@@ -112,6 +118,8 @@
 			#{uid},
 			#{title},
 			#{type},
+			#{tag},
+			#{top},
 			#{orderId},
 			#{description},
 	    	#{image},
@@ -143,6 +151,8 @@
 	    	uid = #{uid},
 	    	title = #{title},
 	    	type = #{type},
+	    	tag = #{tag},
+	    	top = #{top},
 	    	orderId = #{orderId},
 	    	description = #{description},
 	    	image = #{image},

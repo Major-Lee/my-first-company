@@ -46,6 +46,9 @@ public class AdvertiseController extends BaseController{
             HttpServletRequest request,
             HttpServletResponse response,
             @RequestParam(required = true) int uid,
+            @RequestParam(required = false) Integer vuid,
+            @RequestParam(required = true) int adid,
+            @RequestParam(required = false) String tag,
             @RequestParam(required = false,defaultValue = "0") int type,
             @RequestParam(required = false) String image,
             @RequestParam(required = false) String url,
@@ -64,7 +67,7 @@ public class AdvertiseController extends BaseController{
             ) {
 		try{
 			RpcResponseDTO<AdvertiseVTO> rpcResult = advertiseRpcService.createNewAdvertise
-					    (uid,type,image, url,domain, province, city, district,lat,lon,distance,description,title, start, end,extparams);
+					    (uid,vuid,adid,tag,type,image, url,domain, province, city, district,lat,lon,distance,description,title, start, end,extparams);
 					if(!rpcResult.hasError()){
 						SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 					}else{

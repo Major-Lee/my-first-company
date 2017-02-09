@@ -1,24 +1,23 @@
 package com.bhu.vas.api.rpc.advertise.model;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.bhu.vas.api.rpc.commdity.helper.StructuredIdHelper;
-import com.bhu.vas.api.rpc.sequence.helper.IRedisSequenceGenable;
 import com.bhu.vas.api.vto.advertise.AdvertiseVTO;
 import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.orm.model.BaseStringModel;
 
 @SuppressWarnings("serial")
-public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
+public class Advertise extends BaseStringModel{
 	
 	public static final int sortMessageLength = 66;
 	
 	private int uid;
 	private String title;
 	private int type;
+	private String tag;
+	private int top = -1;//-1：默认 1：置顶  0：取消置顶
 	private String orderId;
 	private String description;
 	private String image;
@@ -190,6 +189,7 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	public void setType(int type) {
 		this.type = type;
 	}
+
 	public String getOrderId() {
 		return orderId;
 	}
@@ -219,6 +219,22 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 	
 	public String getExtparams() {
 		return extparams;
+	}
+
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	public int getTop() {
+		return top;
+	}
+
+	public void setTop(int top) {
+		this.top = top;
 	}
 
 	public void setExtparams(String extparams) {
@@ -278,11 +294,41 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		singleAdvertise.setStart(this.start);
 		singleAdvertise.setTitle(this.title);
 		singleAdvertise.setType(this.type);
+		singleAdvertise.setTop(this.top);
+		singleAdvertise.setTag(this.tag);
 		singleAdvertise.setState(this.state);
 		singleAdvertise.setImage(this.image);
 		singleAdvertise.setUrl(this.url);
 		singleAdvertise.setDomain(this.domain);
 		singleAdvertise.setReject_reason(this.reject_reason);
+		singleAdvertise.setCreate_at(this.created_at);
+		singleAdvertise.setExtparams(this.extparams);
+		singleAdvertise.setLat(this.lat);
+		singleAdvertise.setLon(this.lon);
+		singleAdvertise.setDistance(this.distance);
+		
+		return singleAdvertise;
+	}
+	
+	public AdvertiseVTO toRedis(){
+		
+		AdvertiseVTO singleAdvertise=new AdvertiseVTO();
+		//金额处理
+		singleAdvertise.setCash(this.cash);
+		singleAdvertise.setCity(this.city);
+		singleAdvertise.setCount(this.count);
+		singleAdvertise.setDescription(this.description);
+		singleAdvertise.setDistrict(this.district);
+		singleAdvertise.setEnd(this.end);
+		singleAdvertise.setId(this.id);
+		singleAdvertise.setProvince(this.province);
+		singleAdvertise.setStart(this.start);
+		singleAdvertise.setTitle(this.title);
+		singleAdvertise.setType(this.type);
+		singleAdvertise.setTag(this.tag);
+		singleAdvertise.setImage(this.image);
+		singleAdvertise.setUrl(this.url);
+		singleAdvertise.setDomain(this.domain);
 		singleAdvertise.setCreate_at(this.created_at);
 		singleAdvertise.setExtparams(this.extparams);
 		singleAdvertise.setLat(this.lat);
@@ -312,10 +358,10 @@ public class Advertise extends BaseStringModel implements IRedisSequenceGenable{
 		return adMap;
 	}
 	
-	@Override
-	public void setSequenceKey(Long autoId) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
-		int fir=Integer.valueOf(df.format(new Date()));
-		this.setId(StructuredIdHelper.generateStructuredIdStringAD(fir, this.type+"", autoId));
-	}
+//	@Override
+//	public void setSequenceKey(Long autoId) {
+//		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");//设置日期格式
+//		int fir=Integer.valueOf(df.format(new Date()));
+//		this.setId(StructuredIdHelper.generateStructuredIdStringAD(fir, this.type+"", autoId));
+//	}
 }
