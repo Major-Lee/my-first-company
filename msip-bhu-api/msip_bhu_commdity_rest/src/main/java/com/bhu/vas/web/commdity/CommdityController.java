@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
+import com.bhu.vas.api.dto.commdity.CommditySaasAmountDTO;
 import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
 import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
@@ -224,5 +225,25 @@ public class CommdityController extends BaseController{
 			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
 		}
 		
+	}
+	
+	
+	/**
+	 * 获取技术服务金额
+	 * @return
+	 */
+	@ResponseBody()
+	@RequestMapping(value="/saas/amount",method={RequestMethod.GET,RequestMethod.POST})
+	public void amount(
+			HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam(required = true) Integer uid
+			){
+		RpcResponseDTO<CommditySaasAmountDTO> rpcResult = commdityRpcService.saasAmount(uid);
+		if(!rpcResult.hasError()){
+			SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+		}else{
+			SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+		}
 	}
 }

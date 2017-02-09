@@ -9,6 +9,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
+import com.bhu.vas.api.dto.commdity.CommditySaasAmountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.commdity.iservice.ICommdityRpcService;
 import com.bhu.vas.rpc.facade.CommdityUnitFacadeService;
@@ -46,6 +47,12 @@ public class CommdityRpcService implements ICommdityRpcService{
 		logger.info(String.format("physical_set_address with umac[%s] uname[%s] acc[%s] address[%s] needInvoice[%s] invoiceDetail[%s]", 
 				umac, uname, acc, address, needInvoice, invoiceDetail));
 		return commdityUnitFacadeService.physical_set_address(umac, uname, acc, address, needInvoice, invoiceDetail);
+	}
+
+	@Override
+	public RpcResponseDTO<CommditySaasAmountDTO> saasAmount(Integer uid) {
+		logger.info(String.format("saasAmount uid[%s]", uid));
+		return commdityUnitFacadeService.saasAmount(uid);
 	}
 
 }

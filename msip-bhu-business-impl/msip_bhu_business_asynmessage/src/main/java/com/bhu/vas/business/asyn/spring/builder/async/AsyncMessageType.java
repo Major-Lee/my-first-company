@@ -25,6 +25,7 @@ public enum AsyncMessageType {
 		//BatchDeviceDelTag("设备批量删除标签", "batch device del tag", "BDDT"),
 		BatchTimUserRegister("Tim用户注册","batch tim user register","BTUR"),
 		BatchTimUserAddTag("Tim用户添加标签","batch tim user addtag","BUAT"),
+		OrderDeliverRequest("订单发货请求","Order deliver request message","ODDR"),
 		;
 		static Map<String, AsyncMessageType> allAsyncMessageTypes;
 		public final static int prefix_length = 4;

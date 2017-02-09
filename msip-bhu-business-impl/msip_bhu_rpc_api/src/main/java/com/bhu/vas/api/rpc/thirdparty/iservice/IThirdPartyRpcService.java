@@ -11,4 +11,6 @@ public interface IThirdPartyRpcService {
 	public RpcResponseDTO<Boolean> gomeDeviceControl(String mac, GomeConfigDTO dto);
 	public RpcResponseDTO<GomeDeviceDTO> gomeDeviceOnlineGet(String mac);
 	public RpcResponseDTO<GomeConfigDTO> gomeDeviceStatusGet(String mac);
+
+	public RpcResponseDTO<Boolean> gomeDeviceStatusNotify(String mac, int online);
 }

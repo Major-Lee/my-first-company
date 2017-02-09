@@ -15,10 +15,12 @@ import org.springframework.stereotype.Service;
 import com.bhu.pure.kafka.business.observer.KafkaMsgObserverManager;
 import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
 import com.bhu.vas.api.dto.header.ParserHeader;
+import com.bhu.vas.api.rpc.thirdparty.iservice.IThirdPartyRpcService;
 import com.bhu.vas.pa.processor.task.DaemonProcessesStatusTask;
 import com.bhu.vas.pa.service.device.WanganBusinessServiceProcessor;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.HashAlgorithmsHelper;
+import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.task.TaskEngine;
 import com.smartwork.msip.exception.BusinessI18nCodeException;
 import com.smartwork.msip.jdo.ResponseErrorCode;
@@ -39,6 +41,9 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 
 	@Resource
 	private WanganBusinessServiceProcessor wanganBusinessServiceProcessor;
+
+	@Resource
+	private IThirdPartyRpcService thirdPartyRpcService;
 
 	//@Resource
 	//private DeliverTopicMessageService deliverTopicMessageService;// =(DeliverTopicMessageService) ctx.getBean("deliverTopicMessageService");
@@ -76,14 +81,26 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 			@Override
 			public void run() {
 				try{
-					if(Integer.parseInt(message.substring(0, 8)) != ParserHeader.Transfer_Prefix)
+					String mac = null;
+					switch(Integer.parseInt(message.substring(0, 8))){
+					case ParserHeader.DeviceOffline_Prefix:
+						mac = message.substring(8);
+						thirdPartyNotify(mac, 0);
+						break;
+					case ParserHeader.Transfer_Prefix:
+						ParserHeader headers = ParserHeader.builder(message.substring(8, ParserHeader.Cmd_Header_Length), ParserHeader.Transfer_Prefix);
+						if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt() == 7){ //7://3.4.16	WLAN用户上下线消息
+							String payload = message.substring(ParserHeader.Cmd_Header_Length);
+							onProcessor(payload, headers);
+						} else if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt() == 1){//device join
+							mac = message.substring(8, 20);
+							thirdPartyNotify(mac, 1);
+						} else {
+							logger.info("not care, ignore");
+						}
+						break;
+					default:
 						return;
-					ParserHeader headers = ParserHeader.builder(message.substring(8, ParserHeader.Cmd_Header_Length), ParserHeader.Transfer_Prefix);
-					if(headers.getMt() == ParserHeader.Transfer_mtype_1 && headers.getSt() == 7){ //7://3.4.16	WLAN用户上下线消息
-						String payload = message.substring(ParserHeader.Cmd_Header_Length);
-						onProcessor(payload, headers);
-					} else {
-						logger.info("not care, ignore");
 					}
 				}catch(Exception ex){
 					ex.printStackTrace(System.out);
@@ -91,6 +108,11 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 				}
 			}
 		}));
+	}
+	
+	public void thirdPartyNotify(String mac, int online){
+		String dmac = StringHelper.formatMacAddress(mac);
+		thirdPartyRpcService.gomeDeviceStatusNotify(dmac.toLowerCase(), online);
 	}
 	
 	public void onProcessor(final String payload, final ParserHeader headers) {

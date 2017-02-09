@@ -15,6 +15,7 @@ import com.alibaba.dubbo.common.logger.LoggerFactory;
 import com.bhu.vas.api.dto.commdity.CommdityAmountDTO;
 import com.bhu.vas.api.dto.commdity.CommdityDTO;
 import com.bhu.vas.api.dto.commdity.CommdityPhysicalDTO;
+import com.bhu.vas.api.dto.commdity.CommditySaasAmountDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.commdity.helper.CommdityHelper;
@@ -29,6 +30,7 @@ import com.bhu.vas.business.ds.commdity.facade.CommdityFacadeService;
 import com.bhu.vas.business.ds.commdity.facade.OrderFacadeService;
 import com.bhu.vas.business.ds.commdity.service.CommdityPhysicalService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.page.CommonPage;
 import com.smartwork.msip.cores.orm.support.page.TailPage;
@@ -212,6 +214,22 @@ public class CommdityUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
 		}catch(Exception ex){
 			logger.error("physical_set_address Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<CommditySaasAmountDTO> saasAmount(Integer uid) {
+		try{
+			CommditySaasAmountDTO dto = new CommditySaasAmountDTO();
+			Commdity commdity = commdityFacadeService.validateCommdity(BusinessRuntimeConfiguration.Soft_Service_Noapp_Commdity_ID);
+			dto.setNoapp(ArithHelper.getCuttedCurrency(commdity.getPrice()));
+			commdity = commdityFacadeService.validateCommdity(BusinessRuntimeConfiguration.Soft_Service_CanbeTurnoff_Commdity_ID);
+			dto.setCanbe_trunoff(ArithHelper.getCuttedCurrency(commdity.getPrice()));
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(dto);
+		}catch(BusinessI18nCodeException bex){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(bex.getErrorCode(),bex.getPayload());
+		}catch(Exception ex){
+			logger.error("saasAmount Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}

@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +34,8 @@ import com.bhu.vas.api.dto.commdity.OrderWhiteListVTO;
 import com.bhu.vas.api.dto.commdity.RewardCreateMonthlyServiceVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryExportRecordVTO;
 import com.bhu.vas.api.dto.commdity.RewardQueryPagesDetailVTO;
+import com.bhu.vas.api.dto.commdity.TechServiceDataDTO;
+import com.bhu.vas.api.dto.commdity.TechServiceOrderVTO;
 import com.bhu.vas.api.dto.commdity.UserValidateCaptchaDTO;
 import com.bhu.vas.api.dto.commdity.internal.pay.ResponseVideoValidateCompletedNotifyDTO;
 import com.bhu.vas.api.helper.BusinessEnumType;
@@ -80,8 +83,10 @@ import com.bhu.vas.business.ds.user.service.UserService;
 import com.bhu.vas.business.ds.user.service.UserWalletLogService;
 import com.bhu.vas.business.ds.user.service.UserWifiDeviceService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
+import com.smartwork.msip.cores.helper.ArithHelper;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
 import com.smartwork.msip.cores.helper.FileHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.helper.encrypt.JNIRsaHelper;
 import com.smartwork.msip.cores.helper.phone.PhoneHelper;
@@ -1259,6 +1264,36 @@ public class OrderUnitFacadeService {
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(be.getErrorCode());
 		}catch(Exception ex){
 			logger.error("createHotPlayOrder Exception:", ex);
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
+		}
+	}
+
+	public RpcResponseDTO<TechServiceOrderVTO> createTechServiceOrder(Integer commdityid, Integer uid, String macs,
+			String payment_type, Integer channel, String user_agent) {
+		try{
+			if (StringHelper.isEmpty(macs)){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"macs"});
+			}
+			List<String> macsList = Arrays.asList(macs.split(StringHelper.COMMA_STRING_GAP));
+			if (!StringHelper.isValidMacs(macsList) || macsList.size() <= 0){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_PARAM_ERROR, new String[]{"macs"});
+			}
+			Commdity commdity = commdityFacadeService.validateCommdity(commdityid);
+			String amount = ArithHelper.getCuttedCurrency(String.valueOf(Double.parseDouble(commdity.getPrice()) * macsList.size()));
+			String context = JsonHelper.getJSONString(TechServiceDataDTO.builder(macsList));
+			Order order = orderFacadeService.createTechServiceOrder(uid, commdity, null, WifiDeviceSharedealConfigs.Default_ConfigsWifiID,amount,
+					payment_type, channel, user_agent, context);
+			TechServiceOrderVTO vto = new TechServiceOrderVTO();
+			vto.setAmount(amount);
+			vto.setAppid(order.getAppid());
+			vto.setOrderid(order.getId());
+			vto.setGoods_name(commdity.getName());
+			vto.setName_key(commdity.getName_key());
+			return RpcResponseDTOBuilder.builderSuccessRpcResponse(vto);
+		}catch(BusinessI18nCodeException be){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(be.getErrorCode());
+		}catch(Exception ex){
+			logger.error("createTechServiceOrder Exception:", ex);
 			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_BUSINESS_ERROR);
 		}
 	}
