@@ -1286,7 +1286,7 @@ public class OrderFacadeService {
 		return false;
 	}
 
-	public Order createTechServiceOrder(Commdity commdity, String mac, String umac, String amount, String payment_type, Integer channel,
+	public Order createTechServiceOrder(Integer uid, Commdity commdity, String mac, String umac, String amount, String payment_type, Integer channel,
 			String user_agent, String context) {
 		//订单生成
 		Order order = new Order();
@@ -1297,6 +1297,8 @@ public class OrderFacadeService {
 		order.setPayment_type(payment_type);
 		order.setUser_agent(user_agent);
 		order.setContext(context);
+		if (uid != null)
+			order.setUid(uid);
 		order.setMac(mac);
 		order.setUmac(umac);
 		order.setStatus(OrderStatus.NotPay.getKey());
