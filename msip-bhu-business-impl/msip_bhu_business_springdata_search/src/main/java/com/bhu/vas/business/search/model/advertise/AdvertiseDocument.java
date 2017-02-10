@@ -41,6 +41,20 @@ public class AdvertiseDocument extends AbstractDocument{
 	private int a_type;
 	
 	@Field(
+			type = FieldType.Integer,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private int a_top;
+	
+	@Field(
+			type = FieldType.String,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private String a_tag;
+	
+	@Field(
 			type = FieldType.String,
 			index = FieldIndex.not_analyzed,
 			store = true
@@ -191,6 +205,13 @@ public class AdvertiseDocument extends AbstractDocument{
 	private String a_updated_at;
 	
 	@Field(
+			type = FieldType.Long,
+			index = FieldIndex.not_analyzed,
+			store = true
+	)
+	private long a_score;
+	
+	@Field(
 			type = FieldType.String,
 			index = FieldIndex.not_analyzed,
 			store = true
@@ -221,6 +242,22 @@ public class AdvertiseDocument extends AbstractDocument{
 
 	public void setA_type(int a_type) {
 		this.a_type = a_type;
+	}
+
+	public int getA_top() {
+		return a_top;
+	}
+
+	public void setA_top(int a_top) {
+		this.a_top = a_top;
+	}
+
+	public String getA_tag() {
+		return a_tag;
+	}
+
+	public void setA_tag(String a_tag) {
+		this.a_tag = a_tag;
 	}
 
 	public String getA_desc() {
@@ -397,6 +434,14 @@ public class AdvertiseDocument extends AbstractDocument{
 
 	public void setA_updated_at(String a_updated_at) {
 		this.a_updated_at = a_updated_at;
+	}
+	
+	public long getA_score() {
+		return a_score;
+	}
+
+	public void setA_score(long a_score) {
+		this.a_score = a_score;
 	}
 
 	public String getU_id() {

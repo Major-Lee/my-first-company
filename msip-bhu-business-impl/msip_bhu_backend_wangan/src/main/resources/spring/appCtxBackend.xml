@@ -13,6 +13,7 @@
        
 	<import resource="classpath*:spring/applicationContext*.xml"/>
 	<import resource="classpath*:springservice/applicationContext-bhu-input-processor-service.xml"/>
+	<import resource="classpath*:springunit/applicationContext*.xml"/>
 	<!-- 
 	<import resource="classpath*:springunit/applicationContextRpc*.xml"/>
  	-->

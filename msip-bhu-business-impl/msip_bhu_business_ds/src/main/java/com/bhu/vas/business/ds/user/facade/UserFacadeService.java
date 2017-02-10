@@ -112,6 +112,11 @@ public class UserFacadeService {
 		User user = userService.getById(uid);
 		return (user.getUtype() == UserType.DistributorNormal.getIndex() || user.getUtype() == UserType.URBANOPERATORS.getIndex());
 	}
+	
+	public boolean isAdminByUid(int uid){
+		return uid == 2;
+	}
+	
 /*	public UserSnsStateDTO updateUserSnsInfo(int uid, ApplicationIdentify identify, GeneralOAuth2AccessToken generalOAuth2AccessToken) throws Exception{
 		UserSnsStatePK pk = new UserSnsStatePK(uid,identify.toString());
 		UserSnsState model = userSnsStateService.getById(pk);

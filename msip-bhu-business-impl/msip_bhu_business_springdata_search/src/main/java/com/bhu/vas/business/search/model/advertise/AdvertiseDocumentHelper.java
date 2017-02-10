@@ -10,6 +10,8 @@ public class AdvertiseDocumentHelper {
 		doc.setId(advertise.getId());
 		doc.setA_title(advertise.getTitle());
 		doc.setA_type(advertise.getType());
+		doc.setA_tag(advertise.getTag());
+		doc.setA_top(advertise.getTop());
 		doc.setA_desc(advertise.getDescription());
 		doc.setA_image(advertise.getImage());
 		doc.setA_url(advertise.getUrl());

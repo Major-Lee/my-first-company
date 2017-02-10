@@ -221,9 +221,12 @@ public class AsyncOrderPaymentNotifyService{
 				break;
 			case BHU_PREPAID_BUSINESS:
 				if(BusinessEnumType.CommdityCategory.SoftServiceLimit.getCategory() == order.getType()){
-					orderFacadeService.orderStatusChanged(order, OrderStatus.PaySuccessed.getKey(), OrderProcessStatus.PaySuccessed.getKey());
-					//op系统的saas服务，通过异步消息通知asyncbackend做发货处理
-					asyncDeliverMessageService.sendOrderDevlierRequestActionMessage(orderid);
+					orderFacadeService.orderPaymentFinishedDontDeliver(rpcn_dto.isSuccess(), order, rpcn_dto.getPaymented_ds(), 
+							rpcn_dto.getPayment_type(), rpcn_dto.getPayment_proxy_type());
+					if(rpcn_dto.isSuccess()){
+						//op系统的saas服务，通过异步消息通知asyncbackend做发货处理
+						asyncDeliverMessageService.sendOrderDevlierRequestActionMessage(orderid);
+					}
 				} else {
 					rechargeVCurrencyOrderReceiptHandle(order, rpcn_dto);
 				}
@@ -449,7 +452,7 @@ public class AsyncOrderPaymentNotifyService{
 			boolean needSend = advertiseFacadeService.advertiseCompletionOfPayment(hpid, order.getId());
 			logger.info(String.format("hot play Orderid[%s] hpid[%s] DeliverCompleted", order.getId(), hpid));
 			if (needSend){
-				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(hpid),IDTO.ACT_UPDATE);
+				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(hpid),IDTO.ACT_UPDATE,false);
 			}
 		}else{
 			logger.error(String.format("hot play Orderid[%s] hpid[%s] DeliverFailed", order.getId(), hpid));
