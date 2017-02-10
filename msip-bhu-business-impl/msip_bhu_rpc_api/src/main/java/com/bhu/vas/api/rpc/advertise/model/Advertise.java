@@ -16,7 +16,7 @@ public class Advertise extends BaseStringModel{
 	private int uid;
 	private String title;
 	private int type;
-	private String tag;
+	private int tag;
 	private int top = -1;//-1：默认 1：置顶  0：取消置顶
 	private String orderId;
 	private String description;
@@ -221,11 +221,11 @@ public class Advertise extends BaseStringModel{
 		return extparams;
 	}
 
-	public String getTag() {
+	public int getTag() {
 		return tag;
 	}
 
-	public void setTag(String tag) {
+	public void setTag(int tag) {
 		this.tag = tag;
 	}
 
@@ -314,7 +314,6 @@ public class Advertise extends BaseStringModel{
 		
 		AdvertiseVTO singleAdvertise=new AdvertiseVTO();
 		//金额处理
-		singleAdvertise.setCash(this.cash);
 		singleAdvertise.setCity(this.city);
 		singleAdvertise.setCount(this.count);
 		singleAdvertise.setDescription(this.description);

@@ -31,7 +31,7 @@ public interface IAdvertiseRpcService{
 	 * @return
 	 * @throws ParseException 
 	 */
-	public 	RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid, Integer vuid,int adid, String tag, int type, String image, String url,
+	public 	RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid, Integer vuid,String adid, int tag, int type, String image, String url,
 			String domain, String province, String city, String district,double lat, double lon, String distance, String description,
 			String title, long start, long end, String extparams)throws ParseException;
 
@@ -117,5 +117,8 @@ public interface IAdvertiseRpcService{
 
 	public RpcResponseDTO<List<TailPage<AdvertiseVTO>>> fetchBySearchConditionMessages(
 			int pageNo, int pageSize, String...messages);
+
+	public RpcResponseDTO<Boolean> advertiseOperation(int uid, String adid,
+			boolean isTop, boolean isRefresh);
 
 }

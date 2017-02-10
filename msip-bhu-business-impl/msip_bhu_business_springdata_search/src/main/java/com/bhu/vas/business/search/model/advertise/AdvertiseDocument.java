@@ -48,11 +48,11 @@ public class AdvertiseDocument extends AbstractDocument{
 	private int a_top;
 	
 	@Field(
-			type = FieldType.String,
+			type = FieldType.Integer,
 			index = FieldIndex.not_analyzed,
 			store = true
 	)
-	private String a_tag;
+	private int a_tag;
 	
 	@Field(
 			type = FieldType.String,
@@ -252,11 +252,11 @@ public class AdvertiseDocument extends AbstractDocument{
 		this.a_top = a_top;
 	}
 
-	public String getA_tag() {
+	public int getA_tag() {
 		return a_tag;
 	}
 
-	public void setA_tag(String a_tag) {
+	public void setA_tag(int a_tag) {
 		this.a_tag = a_tag;
 	}
 
