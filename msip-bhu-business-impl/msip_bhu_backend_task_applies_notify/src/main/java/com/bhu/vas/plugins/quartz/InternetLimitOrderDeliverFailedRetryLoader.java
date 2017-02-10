@@ -1,5 +1,6 @@
 package com.bhu.vas.plugins.quartz;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -50,8 +51,11 @@ public class InternetLimitOrderDeliverFailedRetryLoader {
 		logger.info("OrderDeliverFailedRetryLoader starting...");
 		int pageSize = 100;
 		int failed_count = 0;
+		List<Integer> types = new ArrayList<Integer>();
+		types.add(BusinessEnumType.CommdityCategory.SoftServiceLimit.getCategory());
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("status", BusinessEnumType.OrderStatus.PaySuccessed.getKey());
+		mc.createCriteria().andColumnNotIn("type", types);
 		mc.setOrderByClause(" updated_at ");
     	mc.setPageNumber(1);
     	mc.setPageSize(pageSize);

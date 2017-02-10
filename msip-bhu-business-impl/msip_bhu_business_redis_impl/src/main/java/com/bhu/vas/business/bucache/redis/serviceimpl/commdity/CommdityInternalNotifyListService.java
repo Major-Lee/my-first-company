@@ -117,12 +117,12 @@ public class CommdityInternalNotifyListService extends AbstractRelationListCache
 //    	for(int i = 0;i<1000;i++){
 //    		simulateDeliverNotify();
 //    	}
-    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459500", true);
-    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459501", true);
-    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459502", true);
-    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459503", true);
-    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459504", true);
-    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459505", true);
+//    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459500", true);
+//    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459501", true);
+//    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459502", true);
+//    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459503", true);
+//    	simulateResponsePaymentCompletedNotify("10022016071800000000000000459504", true);
+    	simulateResponsePaymentCompletedNotify("10022017021000000000000000007516", true);
     	//simulateMultiDeliverNotify();
     	//simulateResponsePaymentCompletedNotify("10002016061400000000000000001023", true);
     	//simulateResponseSMSPaymentCompletedNotify("10022016060500000000000000001008", true);

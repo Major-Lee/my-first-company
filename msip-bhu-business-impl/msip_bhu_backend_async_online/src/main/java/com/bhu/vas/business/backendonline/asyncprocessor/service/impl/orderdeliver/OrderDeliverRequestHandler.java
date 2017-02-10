@@ -50,8 +50,9 @@ public class OrderDeliverRequestHandler implements IMsgHandlerService {
 				logger.error(String.format("order is null: %s", dto.getOrderid()));
 				return;
 			}
-			if(BusinessEnumType.CommdityCategory.SoftServiceLimit.getCategory() != order.getType()){
-				logger.error(String.format("order type error: %s, type:%s", dto.getOrderid(), order.getType()));
+			if(!BusinessEnumType.CommdityCategory.SoftServiceLimit.getCategory().equals(order.getType())){
+				logger.error(String.format("order type error: %s, xx:%s, type:%s, status:%s", dto.getOrderid(), 
+						BusinessEnumType.CommdityCategory.SoftServiceLimit.getCategory(), order.getType(), order.getStatus()));
 				return;
 			}
 
