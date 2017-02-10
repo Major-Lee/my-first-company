@@ -18,12 +18,12 @@ public class AdvertiseService extends AbstractCoreService<String, Advertise, Adv
 		super.setEntityDao(advertiseDao);
 	}
 	
-	@Override
-	public Advertise insert(Advertise entity) {
-		//如果订单id为空 会默认生成订单id 并且扩展占位为零
-		if(entity.getId() == null){
-			SequenceService.getInstance().onCreateSequenceKey(entity, false);
-		}
-		return super.insert(entity);
-	}
+//	@Override
+//	public Advertise insert(Advertise entity) {
+//		//如果订单id为空 会默认生成订单id 并且扩展占位为零
+//		if(entity.getId() == null){
+//			SequenceService.getInstance().onCreateSequenceKey(entity, false);
+//		}
+//		return super.insert(entity);
+//	}
 }

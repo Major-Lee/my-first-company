@@ -157,7 +157,7 @@ public interface BusinessIndexDefine {
 	}
 	
 	interface Advertise{
-		public static final String IndexName	= "advertise_index_v1";
+		public static final String IndexName	= "advertise_index_v2";
 		public static final String Type 		= "advertise";
 		public static final int Shards		    = 5;
 		public static final int replicas 		= 1;
@@ -167,6 +167,8 @@ public interface BusinessIndexDefine {
 		enum Field implements FieldDefine{
 			ID("id", null),
 			A_TITLE("a_title",null),
+			A_TAG("a_tag",null),
+			A_TOP("a_top",null),
 			A_TYPE("a_type",null),
 			A_DESC("a_desc",null),
 			A_IMAGE("a_image",null),
@@ -190,7 +192,7 @@ public interface BusinessIndexDefine {
 			A_EXTPARAMS("a_extparams",null),
 			A_CREATED_AT("a_created_at",null),
 			A_UPDATED_AT("a_updated_at",null),
-
+			A_SCORE("a_score",null),
 			U_ID("u_id",null),
 			;
 			String name;

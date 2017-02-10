@@ -221,10 +221,11 @@ public class AsyncDeliverMessageService {
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	
-	public void sendBatchDeviceApplyAdvertiseActionMessage(List<String> adIds,char dto_type){
+	public void sendBatchDeviceApplyAdvertiseActionMessage(List<String> adIds,char dto_type,boolean isAdmin){
 		BatchDeviceApplyAdvertiseDTO dto = new BatchDeviceApplyAdvertiseDTO();
 		dto.setDtoType(dto_type);
 		dto.setIds(adIds);
+		dto.setAdmin(isAdmin);
 		asyncDeliverMessageQueueProducer.sendPureText(AsyncMessageFactoryBuilder.toJsonHasPrefix(dto));
 	}
 	

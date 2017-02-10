@@ -59,7 +59,7 @@ public class AdvertiseBackendTaskLoader {
 			}
 			advertiseService.updateAll(lists);
 			logger.info("apply notify backend ..start");
-			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_ADD);
+			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_ADD,false);
 			logger.info("apply notify backend ..done");
 		}
 	}
@@ -77,7 +77,7 @@ public class AdvertiseBackendTaskLoader {
 			}
 			advertiseService.updateAll(ads);
 			logger.info("apply notify backend ..start");
-			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_ADD);
+			asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_ADD,false);
 			logger.info("apply notify backend ..done");
 		}
 	}

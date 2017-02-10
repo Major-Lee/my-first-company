@@ -81,7 +81,7 @@ public class AdvertisePaymentTimeOutTaskLoader {
 			}
 			advertiseService.updateAll(ads);
 		}
-		asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_DELETE);
+		asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(adIds,IDTO.ACT_DELETE,false);
 		logger.info("invaildHomeImageSmallArea end..");
 	}
 }

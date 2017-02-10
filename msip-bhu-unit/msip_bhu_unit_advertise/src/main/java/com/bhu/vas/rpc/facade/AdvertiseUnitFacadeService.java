@@ -4,6 +4,7 @@ package com.bhu.vas.rpc.facade;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -42,6 +43,7 @@ import com.bhu.vas.business.search.service.device.WifiDeviceDataSearchService;
 import com.bhu.vas.business.search.service.increment.advertise.AdvertiseIndexIncrementService;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
 import com.smartwork.msip.cores.helper.DateTimeHelper;
+import com.smartwork.msip.cores.helper.JsonHelper;
 import com.smartwork.msip.cores.helper.StringHelper;
 import com.smartwork.msip.cores.orm.support.criteria.ModelCriteria;
 import com.smartwork.msip.cores.orm.support.criteria.PerfectCriteria.Criteria;
@@ -55,6 +57,8 @@ import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
+import com.bhu.vas.business.asyn.spring.model.IDTO;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
@@ -87,6 +91,9 @@ public class AdvertiseUnitFacadeService {
 	@Resource
 	private UserFacadeService userFacadeService;
 	
+	@Resource
+	private AsyncDeliverMessageService asyncDeliverMessageService;
+	
 	public AdvertiseService getAdvertiseService() {
 		return advertiseService;
 	}
@@ -113,7 +120,7 @@ public class AdvertiseUnitFacadeService {
 	 * @return
 	 * @throws ParseException
 	 */
-	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,
+	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,Integer vuid,int adid,String tag,
 			int type,String image, String url,String domain, String province, String city,
 			String district,double lat,double lon,String distance,String description,String title, long start, long end,String extparams) throws ParseException {
 			
@@ -173,10 +180,6 @@ public class AdvertiseUnitFacadeService {
 					
 					long sum = wifiDeviceDataSearchService.searchCountByGeoPointDistance(context, lat, lon, distance);
 					count = sum > 500 ? 500 : sum;
-					if(lat ==0 || lon == 0 || distance.isEmpty() ||count == 0){
-						return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
-					}
-					
 					cash = 1;
 					entity.setCash(cash);
 					entity.setLat(lat);
@@ -188,7 +191,7 @@ public class AdvertiseUnitFacadeService {
 					return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TYPE_ERROR);
 			}
 			
-			if(count==0){
+			if(count==0 && !userFacadeService.isAdminByUid(uid)){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_TIMEFIELD_OVERLAY);
 			}
 			
@@ -205,20 +208,23 @@ public class AdvertiseUnitFacadeService {
 			entity.setImage(image);
 			entity.setDomain(domain);
 			entity.setUrl(url);
+			entity.setTag(tag);
 			entity.setState(AdvertiseStateType.UnPaid.getType());
 			entity.setCount(count);
 			entity.setType(type);
 			entity.setDescription(description);
 			entity.setTitle(title);
-			entity.setUid(uid);
+			if(userFacadeService.isAdminByUid(uid)){
+				entity.setUid(vuid);
+			}else{
+				entity.setUid(uid);
+			}
 			//间隔天数
 			long between_days = (end - start) / (1000 * 3600 * 24);
 			int duration=Integer.parseInt(String.valueOf(between_days));
 			entity.setDuration(duration);
 			entity.setExtparams(extparams);
 
-			
-			
 			/*不限制发布次数
 			ModelCriteria mc=new ModelCriteria();
 			List<Integer> stateList=new ArrayList<Integer>();
@@ -232,15 +238,20 @@ public class AdvertiseUnitFacadeService {
 			if(num>=2){
 				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_NUMFIELD_BEYOND);
 			}*/
+			
 			Advertise smAd= advertiseService.insert(entity);
 			
 			AdvertiseDocument adDoc = AdvertiseDocumentHelper.fromNormalAdvertise(smAd);
 			advertiseDataSearchService.insertIndex(adDoc, false, false);
+			advertiseDataSearchService.refresh(true);
 			
 			if(type == BusinessEnumType.AdvertiseType.SortMessage.getType()){
 				UserMobilePositionRelationSortedSetService.getInstance().generateMobilenoSnapShot(smAd.getId(), province, city, district);
 			}
-			advertiseDataSearchService.refresh(true);
+			if(userFacadeService.isAdminByUid(uid)){
+				//运营后台创建广告 直接发布
+				asyncDeliverMessageService.sendBatchDeviceApplyAdvertiseActionMessage(Arrays.asList(adid+""),IDTO.ACT_UPDATE,true);
+			}
 			return RpcResponseDTOBuilder.builderSuccessRpcResponse(entity.toVTO());
 	}
 
@@ -774,5 +785,58 @@ public class AdvertiseUnitFacadeService {
 			}
 		}
 		return resultList;
+	}
+	
+	/**
+	 * 广告操作
+	 * @param isTop 是否置顶
+	 * @param isRefresh 是否刷新
+	 * @return
+	 */
+	public RpcResponseDTO<Boolean> AdvertiseOperation(String adid , boolean isTop,boolean isRefresh){
+		
+		AdvertiseDocument doc = advertiseDataSearchService.searchById(adid);
+		Advertise advertise = advertiseService.getById(adid);
+		long oldScore = doc.getA_score();
+		long topScore = 100000000000000L;
+		int topState = doc.getA_top();
+		List<String> maclist = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(adid);
+
+		if(isTop){//置顶
+			if(topState == 1)
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+			
+			advertise.setTop(1);
+			advertiseService.update(advertise);
+			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+					maclist, JsonHelper.getJSONString(advertise.toRedis()), oldScore + topScore);
+			advertiseIndexIncrementService.adScoreUpdIncrement(adid, oldScore + topScore,1);
+			
+		}else if (isRefresh){//刷新
+			if(topState == 1){
+				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+						maclist, JsonHelper.getJSONString(advertise.toRedis()),  topScore + Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)));
+				advertiseIndexIncrementService.adScoreUpdIncrement(adid, topScore + Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)),1);
+			}else{
+				WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+						maclist, JsonHelper.getJSONString(advertise.toRedis()), Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)));
+				advertiseIndexIncrementService.adScoreUpdIncrement(adid,  Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16)), topState);
+			}
+			
+		}else if (!isTop){//取消置顶
+			if(topState  != 1)
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+			
+			advertise.setTop(0);
+			advertiseService.update(advertise);
+			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
+					maclist, JsonHelper.getJSONString(advertise.toRedis()), oldScore - topScore);
+			advertiseIndexIncrementService.adScoreUpdIncrement(adid, oldScore - topScore,0);
+			
+		}else{
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_REPOST_NOT_EXIST);
+		}
+		
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 }

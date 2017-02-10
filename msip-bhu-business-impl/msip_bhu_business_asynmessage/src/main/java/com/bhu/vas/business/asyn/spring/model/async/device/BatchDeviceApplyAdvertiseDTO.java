@@ -9,6 +9,7 @@ public class BatchDeviceApplyAdvertiseDTO extends AsyncDTO{
 	
 	private List<String> ids;
 	private char dtoType;
+	private boolean isAdmin;
 
 	public List<String> getIds() {
 		return ids;
@@ -24,6 +25,12 @@ public class BatchDeviceApplyAdvertiseDTO extends AsyncDTO{
 		this.dtoType = dtoType;
 	}
 
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
 	@Override
 	public String getAsyncType() {
 		return AsyncMessageType.BatchDeviceApplyAdvertise.getPrefix();

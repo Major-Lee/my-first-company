@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -109,6 +110,19 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 				end = DateTimeHelper.getAfterDate(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern5), 2);
 				if(ad.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
 					macList = advertiseHomeImage_SmallAreaApply(null, ad.getLat(), ad.getLon(), ad.getDistance());
+					
+					if(adDTO.isAdmin()){
+						final List<String> maclist1 = new ArrayList<String>();
+						wifiDeviceDataSearchService.iteratorWithPosition(null, ad.getProvince(), ad.getCity(), ad.getDistrict(), false, 200, new IteratorNotify<Page<WifiDeviceDocument>>() {
+						@Override
+						public void notifyComming(Page<WifiDeviceDocument> pages) {
+							for(WifiDeviceDocument doc: pages){
+								maclist1.add(doc.getD_mac());
+							}
+						}});
+						macList.addAll(maclist1);
+					}
+					
 				}else{
 					macList = advertiseHomeImageApply(start, end, ad, batch);
 				}
@@ -116,9 +130,9 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 				switch (adDTO.getDtoType()) {
 					case IDTO.ACT_ADD:
 						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-							macList, JsonHelper.getJSONString(ad),Double.parseDouble(ad.getId()));
+							macList, JsonHelper.getJSONString(ad.toRedis()),Double.parseDouble(ad.getId()));
 						advertiDetails(ad, start, macList.size());
-						deviceLimitDomain(batch, macList, ad.getDomain(),IDTO.ACT_ADD, ad);
+//						deviceLimitDomain(batch, macList, ad.getDomain(),IDTO.ACT_ADD, ad);
 						advertiseIndexIncrementService.adStateUpdIncrement(ad.getId(), BusinessEnumType.AdvertiseStateType.OnPublish.getType(), null);
 						break;
 					case IDTO.ACT_DELETE:
@@ -169,9 +183,7 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 					logger.info(String.format("device is not has snk snk [%s]", mac));
 					continue;
 				}
-				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService()
-						.update(sharednetwork);
-
+				sharedNetworksFacadeService.getWifiDeviceSharedNetworkService().update(sharednetwork);
 				WifiDevice wifiDevice = wifiDeviceService.getById(mac);
 				if (wifiDevice == null)
 					continue;
@@ -196,7 +208,6 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 	}
 	
 	public void advertiDetails(Advertise ad,String publishTime,int pushlist_count){
-		
 		ModelCriteria mc = new ModelCriteria();
 		mc.createCriteria().andColumnEqualTo("advertiseid", ad.getId()).andColumnEqualTo("publish_time", publishTime);
 		List<AdvertiseDetails> details = advertiseDevicesIncomeService.findModelByModelCriteria(mc);
@@ -219,7 +230,6 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			}else{
 				income.setCash(cash);
 			}
-			
 			advertiseDevicesIncomeService.insert(income);
 		}
 	}
@@ -276,14 +286,19 @@ public class BatchDeviceApplyAdvertseServiceHandler implements IMsgHandlerServic
 			  
 			int inputDayOfYear = cal.get(Calendar.DAY_OF_YEAR);
 			cal.set(Calendar.DAY_OF_YEAR , inputDayOfYear+1);
-			  
-			ad.setEnd(cal.getTime());
+			
+//			ad.setEnd(cal.getTime());
+			SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date end = dateFormat2.parse("2099-12-31 23:59:59");
+			ad.setEnd(end);
 			System.out.println(ad.getStart() +"||" +ad.getEnd());
 			advertiseService.update(ad);
 			
+			long score = Long.parseLong(DateTimeHelper.getDateTime(DateTimeHelper.FormatPattern16));
+			
 			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdApply(
-					maclist, JsonHelper.getJSONString(ad),Double.parseDouble(ad.getId()));
-			advertiseIndexIncrementService.adStartAndEndUpdIncrement(ad.getId(), date, DateTimeHelper.getAfterDate(date, 1),BusinessEnumType.AdvertiseStateType.OnPublish.getType());
+					maclist, JsonHelper.getJSONString(ad.toRedis()),score);
+			advertiseIndexIncrementService.adStartAndEndUpdIncrement(ad.getId(), date, DateTimeHelper.getAfterDate(date, 1),BusinessEnumType.AdvertiseStateType.OnPublish.getType(),score);
 			AdvertiseSnapShotListService.getInstance().generateSnapShot(ad.getId(), maclist);
 
 		}else{
