@@ -194,6 +194,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
         	BhuToGomeAppId = PropertiesHelper.getString("bhu.togome.appid", paramProperties, BhuToGomeAppId);
         	BhuToGomeAppKey = PropertiesHelper.getString("bhu.togome.appkey", paramProperties, BhuToGomeAppKey);
 
+        	BhuToGomeReportGid = PropertiesHelper.getString("bhu.togome.reportgid", paramProperties, BhuToGomeReportGid);
         	GomeDistributorId = PropertiesHelper.getInt("gome.distributor.id", paramProperties, GomeDistributorId);        	
 
         	
@@ -513,6 +514,7 @@ public class BusinessRuntimeConfiguration extends PropertyResourceConfigurer {
 	public static byte[] GomeToBhuDataKey = null;
 	public static byte[] BhuToGomeDataKey = null;
 	
+	public static String BhuToGomeReportGid = "bffrfg";
 	public static String GomeApiUrl = "";
 	public static int GomeDistributorId = 0;
 	

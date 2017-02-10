@@ -16,6 +16,7 @@ import com.bhu.pure.kafka.business.observer.KafkaMsgObserverManager;
 import com.bhu.pure.kafka.business.observer.listener.DynaMessageListener;
 import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.rpc.thirdparty.iservice.IThirdPartyRpcService;
+import com.bhu.vas.business.bucache.redis.serviceimpl.thirdparty.ThirdPartyDeviceService;
 import com.bhu.vas.pa.processor.task.DaemonProcessesStatusTask;
 import com.bhu.vas.pa.service.device.WanganBusinessServiceProcessor;
 import com.smartwork.msip.business.runtimeconf.BusinessRuntimeConfiguration;
@@ -111,8 +112,9 @@ public class BusinessDynaMsgProcessor implements DynaMessageListener{
 	}
 	
 	public void thirdPartyNotify(String mac, int online){
-		String dmac = StringHelper.formatMacAddress(mac);
-		thirdPartyRpcService.gomeDeviceStatusNotify(dmac.toLowerCase(), online);
+		String dmac = StringHelper.formatMacAddress(mac).toLowerCase();
+		if(ThirdPartyDeviceService.isThirdPartyDevice(dmac))
+			thirdPartyRpcService.gomeDeviceStatusNotify(dmac, online);
 	}
 	
 	public void onProcessor(final String payload, final ParserHeader headers) {

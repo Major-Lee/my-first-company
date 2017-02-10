@@ -15,6 +15,7 @@ import com.bhu.vas.api.dto.header.ParserHeader;
 import com.bhu.vas.api.helper.RPCMessageParseHelper;
 import com.bhu.vas.api.rpc.devices.model.WifiDevice;
 import com.bhu.vas.api.rpc.devices.model.WifiDeviceSetting;
+import com.bhu.vas.business.bucache.redis.serviceimpl.thirdparty.ThirdPartyDeviceService;
 import com.bhu.vas.business.ds.device.service.WifiDeviceService;
 import com.bhu.vas.business.ds.user.facade.UserIdentityAuthFacadeService;
 import com.bhu.vas.pa.dto.PaHandsetDeviceDTO;
@@ -36,10 +37,10 @@ public class WanganBusinessServiceProcessor{
 	private StringKafkaMessageProducer paTopicProducer;
 
 	@Resource
-	WifiDeviceService wifiDeviceService;
+	private WifiDeviceService wifiDeviceService;
 
 	@Resource
-	UserIdentityAuthFacadeService userIdentityAuthFacadeService;
+	private UserIdentityAuthFacadeService userIdentityAuthFacadeService;
 	
 	/**
 	 * 移动设备连接状态请求生成，网安终端上线消息

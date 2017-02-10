@@ -111,7 +111,16 @@ public class ThirdPartyRpcService implements IThirdPartyRpcService {
 				@Override
 				public void run() {
 					try{
-						GomeCallbackHelper.notify(mac, online);
+						for(int i = 0; i < 5; i ++){
+							try{
+								if(GomeCallbackHelper.notify(mac, online) != null)
+									return;
+								logger.info("wait for next try");
+								Thread.sleep(3*1000);
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+						}
 					}catch(Exception ex){
 						ex.printStackTrace(System.out);
 					}

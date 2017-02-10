@@ -15,12 +15,21 @@
  - limitations under the License.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
+    <!-- consumer application name -->
+    <dubbo:application name="${appname}"/>
+
+    <!-- registry address, used for consumer to discover services -->
+    <!--
+    <dubbo:registry address="multicast://224.5.6.7:1234" />
+ -->
+        <!--taokeeper-monitor https://github.com/alibaba/taokeeper -->
+        <dubbo:registry protocol="zookeeper" address="${zookeeper}" />
+        <dubbo:monitor protocol="registry"></dubbo:monitor>
 
     <import resource="classpath*:com/bhu/vas/api/rpc/thirdparty/spring/dubbo-bhu-thirdparty-reference.xml"/>
-    
 </beans>
