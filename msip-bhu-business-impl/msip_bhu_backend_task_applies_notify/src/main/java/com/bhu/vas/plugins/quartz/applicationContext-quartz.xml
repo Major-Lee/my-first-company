@@ -10,7 +10,7 @@
 		<property name="triggers">
 			<list>
 				<!-- 每隔5分钟执行一次 -->
-				<ref bean="internetLimitOrderDeliverFailedRetryLoaderCronTrigger" />		
+			<!--	<ref bean="internetLimitOrderDeliverFailedRetryLoaderCronTrigger" />	-->	
 			</list>
 		</property>
 		<!-- Quartz配置 -->
