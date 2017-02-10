@@ -1885,7 +1885,11 @@ public class UserWalletUnitFacadeService {
 					}else{
 						rewardVTO.setUmac("-");
 					}
-					rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(i.getUmac(),true,false));
+					if(StringUtils.isNotBlank(i.getUmac())){
+						rewardVTO.setUmac_mf(MacDictParserFilterHelper.prefixMactch(i.getUmac(),true,false));
+					}else{
+						rewardVTO.setUmac_mf("Unknown");
+					}
 					
 					retDtos.add(rewardVTO);
 				}
