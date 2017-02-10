@@ -120,7 +120,7 @@ public class AdvertiseUnitFacadeService {
 	 * @return
 	 * @throws ParseException
 	 */
-	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,Integer vuid,int adid,String tag,
+	public RpcResponseDTO<AdvertiseVTO> createNewAdvertise(int uid,Integer vuid,String adid,int tag,
 			int type,String image, String url,String domain, String province, String city,
 			String district,double lat,double lon,String distance,String description,String title, long start, long end,String extparams) throws ParseException {
 			
@@ -205,6 +205,7 @@ public class AdvertiseUnitFacadeService {
 				entity.setEnd(endDate);
 				entity.setStart(startDate);
 			}
+			entity.setId(adid);
 			entity.setImage(image);
 			entity.setDomain(domain);
 			entity.setUrl(url);
@@ -402,6 +403,8 @@ public class AdvertiseUnitFacadeService {
 	 */
 	public RpcResponseDTO<Boolean> verifyAdvertise(int verify_uid,String advertiseId,String msg,int state){
 			Advertise advertise=advertiseService.getById(advertiseId);
+			AdvertiseDocument doc = advertiseDataSearchService.searchById(advertiseId);
+
 			advertise.setVerify_uid(verify_uid);
 			if(advertise.getState()==AdvertiseStateType.UnVerified.getType() || (advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType() && advertise.getState() == BusinessEnumType.AdvertiseStateType.OnPublish.getType())){
 				if(state==0){
@@ -410,7 +413,7 @@ public class AdvertiseUnitFacadeService {
 				}else{
 					if(advertise.getType() == BusinessEnumType.AdvertiseType.HomeImage_SmallArea.getType()){
 						List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(advertiseId);
-						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, Double.valueOf(advertiseId));
+						WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, doc.getA_score());
 						AdvertiseSnapShotListService.getInstance().destorySnapShot(advertiseId);
 					}
 					
@@ -536,24 +539,35 @@ public class AdvertiseUnitFacadeService {
 	 */
 	public RpcResponseDTO<Boolean> escapeAdvertise(int uid, String advertiseId) {
 		Advertise advertise=advertiseService.getById(advertiseId);
-		if(advertise==null){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_UNSUPPORT);
+		AdvertiseDocument doc = advertiseDataSearchService.searchById(advertiseId);
+
+		if(advertise.getState() == AdvertiseStateType.OnPublish.getType()){
+			List<String> macList = AdvertiseSnapShotListService.getInstance().fetchAdvertiseSnapShot(advertiseId);
+			WifiDeviceAdvertiseSortedSetService.getInstance().wifiDevicesAdInvalid(macList, doc.getA_score());
+			AdvertiseSnapShotListService.getInstance().destorySnapShot(advertiseId);
 		}
-		if(advertise.getUid()!=uid){
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_UNSUPPORT);
-		}
-		Date date=new Date();
-		double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
-		if(advertise.getState()==AdvertiseStateType.UnPublish.getType()){
-			if(advertise.getStart().getTime()>date.getTime()&&between_daysNow>2){
-				advertise.setState(AdvertiseStateType.EscapeOrder.getType());
-				advertiseService.update(advertise);
-			}else{
-				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_TIMEERROR);
-			}
-		}else{
-			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_TYPEERROR);
-		}
+		advertise.setState(AdvertiseStateType.OnPublish.getType());
+		advertiseService.update(advertise);
+		advertiseIndexIncrementService.adStateUpdIncrement(advertiseId, AdvertiseStateType.EscapeOrder.getType(),null);
+
+//		if(advertise==null){
+//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_UNSUPPORT);
+//		}
+//		if(advertise.getUid()!=uid){
+//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_UNSUPPORT);
+//		}
+//		Date date=new Date();
+//		double between_daysNow = (advertise.getStart().getTime() - date.getTime()) / (1000 * 3600 * 24*1.0);
+//		if(advertise.getState()==AdvertiseStateType.UnPublish.getType()){
+//			if(advertise.getStart().getTime()>date.getTime()&&between_daysNow>2){
+//				advertise.setState(AdvertiseStateType.EscapeOrder.getType());
+//				advertiseService.update(advertise);
+//			}else{
+//				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_TIMEERROR);
+//			}
+//		}else{
+//			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_ESCFIELD_TYPEERROR);
+//		}
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	
@@ -793,7 +807,7 @@ public class AdvertiseUnitFacadeService {
 	 * @param isRefresh 是否刷新
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> AdvertiseOperation(String adid , boolean isTop,boolean isRefresh){
+	public RpcResponseDTO<Boolean> AdvertiseOperation(int uid, String adid , boolean isTop,boolean isRefresh){
 		
 		AdvertiseDocument doc = advertiseDataSearchService.searchById(adid);
 		Advertise advertise = advertiseService.getById(adid);
@@ -839,4 +853,6 @@ public class AdvertiseUnitFacadeService {
 		
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
+	
+	
 }

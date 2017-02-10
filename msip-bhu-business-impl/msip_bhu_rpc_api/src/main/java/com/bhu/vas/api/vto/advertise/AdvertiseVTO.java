@@ -6,7 +6,7 @@ import java.util.Date;
 public class AdvertiseVTO implements java.io.Serializable{
 	private String id;
 	private int type;
-	private String tag;
+	private int tag;
 	private int top = -1;//-1：默认 1：置顶  0：取消置顶
 	private String title;
 	private String description;
@@ -75,10 +75,10 @@ public class AdvertiseVTO implements java.io.Serializable{
 	public String getDomain() {
 		return domain;
 	}
-	public String getTag() {
+	public int getTag() {
 		return tag;
 	}
-	public void setTag(String tag) {
+	public void setTag(int tag) {
 		this.tag = tag;
 	}
 	public int isTop() {
