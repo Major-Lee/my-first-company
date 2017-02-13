@@ -98,7 +98,7 @@ public class VapEnumType {
 	public static final String DUT_CWifi = "TC";
 	public static final String DUT_soc = "TS";
 	
-	public static final String IMAGE_CLOUD = "";
+	public static final String IMAGE_CLOUD = "http://devicecapability.bhuwifi.com/";
 
 	/**
 	 * 采用正式的设备的hdtype中的数字作为子类型的index
