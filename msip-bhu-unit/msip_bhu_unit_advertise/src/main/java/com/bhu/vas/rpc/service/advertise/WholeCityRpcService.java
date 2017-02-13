@@ -19,6 +19,7 @@ import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
 import com.bhu.vas.rpc.facade.AdvertiseUnitFacadeService;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
+import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
@@ -208,6 +209,19 @@ public class WholeCityRpcService implements IAdvertiseRpcService{
 	public RpcResponseDTO<Boolean> advertiseOperation(int uid, String adid , boolean isTop,boolean isRefresh) {
 		logger.info(String.format("advertiseOperation uid[%s] adid[%s] isTop[%s] isRefresh[%s]",uid,
 				adid,isTop,isRefresh));
-		return advertiseUnitFacadeService.AdvertiseOperation(uid,adid,isTop,isRefresh);
+		return advertiseUnitFacadeService.advertiseOperation(uid,adid,isTop,isRefresh);
+	}
+	
+	@Override
+	public RpcResponseDTO<Boolean> advertiseComment(int uid,Integer vuid , String adid,String message,int type,Double score) {
+		logger.info(String.format("AdvertiseComment uid[%s] vuidp[%s] adid[%s] message[%s] type[%s] score[score]",uid,
+				vuid,adid,message,type,score));
+		return advertiseUnitFacadeService.AdvertiseComment(uid,vuid,adid,message,type,score);
+	}
+	
+	@Override
+	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String ... adids) {
+		logger.info("fetchCommentDetail");
+		return advertiseUnitFacadeService.fetchCommentDetail(adids);
 	}
 }

@@ -76,6 +76,9 @@ public class TokenValidateControllerInterceptor extends HandlerInterceptorAdapte
 		ignoreTokensValidateUriSet.add("/message/visitor/fetch_usersig");
 		ignoreTokensValidateUriSet.add("/message/send/push");
 		ignoreTokensValidateUriSet.add("/message/send/single_msg");
+		
+		//查看广告评论
+		ignoreTokensValidateUriSet.add("/ad/comment/detail");
 		//ignoreTokensValidateUrlSet.add("/account/check_nick");
 		//ignoreTokensValidateUrlSet.add("/account/check_email");
 		//ignoreTokensValidateUrlSet.add("/account/check_mobileno");
