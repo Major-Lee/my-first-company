@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.bhu.vas.api.rpc.RpcResponseDTO;
 import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.iservice.IAdvertiseRpcService;
+import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
@@ -320,6 +321,56 @@ public class AdvertiseController extends BaseController{
 		try{
 	        RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.advertiseOperation(
 	        		uid,adid, istop, isrefresh);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex,BusinessWebHelper.getLocale(request)));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
+		}
+    }
+    
+    @ResponseBody()
+    @RequestMapping(value = "/comment", method = {RequestMethod.POST})
+    public void advertiseComment(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) int uid,
+            @RequestParam(required = true) Integer vuid,
+            @RequestParam(required = true) String adid,
+            @RequestParam(required = true) String message,
+            @RequestParam(required = false, defaultValue = "1") int type,
+            @RequestParam(required = false) Double score) {
+
+		try{
+	        RpcResponseDTO<Boolean> rpcResult = advertiseRpcService.advertiseComment(
+	        		uid, vuid,adid, message, type,score);
+			if(!rpcResult.hasError()){
+				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
+			}else{
+				SpringMVCHelper.renderJson(response, ResponseError.embed(rpcResult, BusinessWebHelper.getLocale(request)));
+			}
+		}catch(BusinessI18nCodeException i18nex){
+			SpringMVCHelper.renderJson(response, ResponseError.embed(i18nex,BusinessWebHelper.getLocale(request)));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			SpringMVCHelper.renderJson(response, ResponseError.embed(ResponseErrorCode.COMMON_SYSTEM_UNKOWN_ERROR, BusinessWebHelper.getLocale(request)));
+		}
+    }
+    
+    
+    @ResponseBody()
+    @RequestMapping(value = "/comment/detail", method = {RequestMethod.POST})
+    public void fetchCommentDetail(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(required = true) String[]  adids) {
+		try{
+	        RpcResponseDTO<List<AdCommentsVTO>> rpcResult = advertiseRpcService.fetchCommentDetail(adids);
 			if(!rpcResult.hasError()){
 				SpringMVCHelper.renderJson(response, ResponseSuccess.embed(rpcResult.getPayload()));
 			}else{

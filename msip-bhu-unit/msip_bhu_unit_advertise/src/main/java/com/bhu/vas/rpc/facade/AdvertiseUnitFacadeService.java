@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -21,6 +22,9 @@ import com.bhu.vas.api.rpc.RpcResponseDTOBuilder;
 import com.bhu.vas.api.rpc.advertise.model.Advertise;
 import com.bhu.vas.api.rpc.advertise.model.AdvertiseDetails;
 import com.bhu.vas.api.rpc.user.model.User;
+import com.bhu.vas.api.vto.advertise.AdCommdityVTO;
+import com.bhu.vas.api.vto.advertise.AdCommentVTO;
+import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseBillsVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseDailyResultVTO;
@@ -57,8 +61,11 @@ import org.elasticsearch.common.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import redis.clients.jedis.Tuple;
+
 import com.bhu.vas.business.asyn.spring.activemq.service.async.AsyncDeliverMessageService;
 import com.bhu.vas.business.asyn.spring.model.IDTO;
+import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseCommentSortedSetService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertisePortalStringService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.AdvertiseSnapShotListService;
 import com.bhu.vas.business.bucache.redis.serviceimpl.advertise.UserMobilePositionRelationSortedSetService;
@@ -807,10 +814,15 @@ public class AdvertiseUnitFacadeService {
 	 * @param isRefresh 是否刷新
 	 * @return
 	 */
-	public RpcResponseDTO<Boolean> AdvertiseOperation(int uid, String adid , boolean isTop,boolean isRefresh){
+	public RpcResponseDTO<Boolean> advertiseOperation(int uid, String adid , boolean isTop,boolean isRefresh){
 		
 		AdvertiseDocument doc = advertiseDataSearchService.searchById(adid);
 		Advertise advertise = advertiseService.getById(adid);
+		
+		if(advertise == null || advertise.getState() != BusinessEnumType.AdvertiseStateType.OnPublish.getType()){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
+		}
+		
 		long oldScore = doc.getA_score();
 		long topScore = 100000000000000L;
 		int topState = doc.getA_top();
@@ -854,5 +866,60 @@ public class AdvertiseUnitFacadeService {
 		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
 	}
 	
+	/**
+	 * 广告评论、点赞
+	 * @param uid
+	 * @param adid
+	 * @param message
+	 * @param type
+	 * @param score
+	 * @return 
+	 */
+	public RpcResponseDTO<Boolean> AdvertiseComment(int uid,Integer vuid , String adid,String message,int type,Double score){
+		if(uid == 2){
+			uid = vuid;
+		}
+		switch(type){
+			case 0 :
+				AdvertiseCommentSortedSetService.getInstance().AdComment(uid, adid, message);
+				break;
+			case 1 :
+				AdvertiseCommentSortedSetService.getInstance().AdReply(adid, score, message);
+				break;
+			default:
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(true);
+	}
 	
+	/**
+	 * 获取评论
+	 * @param uid
+	 * @param adid
+	 * @return
+	 */
+	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String ... adids){
+		if(adids == null){
+			return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.COMMON_DATA_VALIDATE_ILEGAL);
+		}
+		List<AdCommentsVTO> results = new ArrayList<AdCommentsVTO>();
+		for(String adid : adids){
+			Advertise advertise = advertiseService.getById(adid);
+			if(advertise == null){
+				return RpcResponseDTOBuilder.builderErrorRpcResponse(ResponseErrorCode.ADVERTISE_EMPTY);
+			}
+			Set<Tuple> tuples = AdvertiseCommentSortedSetService.getInstance().fetchAdComments(adid);
+			List<AdCommentVTO> vtos = new ArrayList<AdCommentVTO>();
+			AdCommentsVTO result = new AdCommentsVTO();
+			for(Tuple tuple : tuples){
+				AdCommentVTO vto = JsonHelper.getDTO(tuple.getElement(), AdCommentVTO.class);
+				vto.setTime(tuple.getScore());
+				vtos.add(vto);
+			}
+			result.setAdid(adid);
+			result.setComments(vtos);
+			results.add(result);
+		}
+		return RpcResponseDTOBuilder.builderSuccessRpcResponse(results);
+	}
 }

@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.List;
 
 import com.bhu.vas.api.rpc.RpcResponseDTO;
+import com.bhu.vas.api.vto.advertise.AdCommentsVTO;
 import com.bhu.vas.api.vto.advertise.AdDevicePositionVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseListVTO;
 import com.bhu.vas.api.vto.advertise.AdvertiseReportVTO;
@@ -120,5 +121,10 @@ public interface IAdvertiseRpcService{
 
 	public RpcResponseDTO<Boolean> advertiseOperation(int uid, String adid,
 			boolean isTop, boolean isRefresh);
+
+	public RpcResponseDTO<Boolean> advertiseComment(int uid,Integer vuid, String adid,
+			String message, int type, Double score);
+
+	public RpcResponseDTO<List<AdCommentsVTO>> fetchCommentDetail(String ... adids);
 
 }
